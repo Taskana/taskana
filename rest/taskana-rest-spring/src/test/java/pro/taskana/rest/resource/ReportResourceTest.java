@@ -25,6 +25,7 @@ import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
 import pro.taskana.impl.report.item.DetailedMonitorQueryItem;
 import pro.taskana.impl.report.item.MonitorQueryItem;
 import pro.taskana.report.ClassificationReport;
+import pro.taskana.report.TimestampReport;
 import pro.taskana.report.WorkbasketReport;
 import pro.taskana.rest.TestConfiguration;
 
@@ -67,6 +68,7 @@ public class ReportResourceTest {
         assertEquals("2019-01-02T00:00:00Z", meta.getDate());
         assertEquals("WORKBASKET KEYS", meta.getRowDesc());
         assertArrayEquals(headers.stream().map(TimeIntervalColumnHeader::getDisplayName).toArray(), meta.getHeader());
+        assertArrayEquals(new String[0], meta.getExpHeader());
         assertEquals("Total", meta.getTotalDesc());
 
         // rows
@@ -103,6 +105,7 @@ public class ReportResourceTest {
         assertEquals("2019-01-02T00:00:00Z", meta.getDate());
         assertEquals("CLASSIFICATION KEYS", meta.getRowDesc());
         assertArrayEquals(headers.stream().map(TimeIntervalColumnHeader::getDisplayName).toArray(), meta.getHeader());
+        assertArrayEquals(new String[0], meta.getExpHeader());
         assertEquals("Total", meta.getTotalDesc());
 
         // rows
@@ -154,6 +157,7 @@ public class ReportResourceTest {
         assertEquals("2019-01-02T00:00:00Z", meta.getDate());
         assertEquals("CLASSIFICATION KEYS", meta.getRowDesc());
         assertArrayEquals(headers.stream().map(TimeIntervalColumnHeader::getDisplayName).toArray(), meta.getHeader());
+        assertArrayEquals(new String[0], meta.getExpHeader());
         assertEquals("Total", meta.getTotalDesc());
 
         // rows
@@ -219,6 +223,7 @@ public class ReportResourceTest {
         assertEquals("2019-01-02T00:00:00Z", meta.getDate());
         assertEquals("TASK CLASSIFICATION KEYS", meta.getRowDesc());
         assertArrayEquals(headers.stream().map(TimeIntervalColumnHeader::getDisplayName).toArray(), meta.getHeader());
+        assertArrayEquals(new String[0], meta.getExpHeader());
         assertEquals("Total", meta.getTotalDesc());
 
         // rows
@@ -319,6 +324,7 @@ public class ReportResourceTest {
         assertEquals("2019-01-02T00:00:00Z", meta.getDate());
         assertEquals("TASK CLASSIFICATION KEYS", meta.getRowDesc());
         assertArrayEquals(headers.stream().map(TimeIntervalColumnHeader::getDisplayName).toArray(), meta.getHeader());
+        assertArrayEquals(new String[0], meta.getExpHeader());
         assertEquals("Total", meta.getTotalDesc());
 
         // rows
@@ -418,4 +424,20 @@ public class ReportResourceTest {
         assertEquals(0, cells.get("2018-12-28").intValue());
     }
 
+    @Test
+    public void testExpandableHeader() {
+        //given
+        TimestampReport report = new TimestampReport(headers);
+        //when
+        ReportResource resource = reportAssembler.toReportResource(report, now.toInstant(ZoneOffset.UTC));
+        //then
+        ReportResource.MetaInformation meta = resource.getMeta();
+        assertEquals("TimestampReport", meta.getName());
+        assertEquals("2019-01-02T00:00:00Z", meta.getDate());
+        assertEquals("STATES", meta.getRowDesc());
+        assertArrayEquals(headers.stream().map(TimeIntervalColumnHeader::getDisplayName).toArray(), meta.getHeader());
+        assertArrayEquals(new String[] {"ORG LEVEL 1", "ORG LEVEL 2", "ORG LEVEL 3", "ORG LEVEL 4"},
+            meta.getExpHeader());
+        assertEquals("Total", meta.getTotalDesc());
+    }
 }

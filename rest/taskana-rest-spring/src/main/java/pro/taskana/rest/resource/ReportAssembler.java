@@ -16,14 +16,14 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.report.row.FoldableRow;
 import pro.taskana.impl.report.row.SingleRow;
-import pro.taskana.report.ClassificationReport;
-import pro.taskana.report.TimestampReport;
-import pro.taskana.report.TaskStatusReport;
-import pro.taskana.report.WorkbasketReport;
 import pro.taskana.impl.report.structure.ColumnHeader;
 import pro.taskana.impl.report.structure.QueryItem;
 import pro.taskana.impl.report.structure.Report;
 import pro.taskana.impl.report.structure.Row;
+import pro.taskana.report.ClassificationReport;
+import pro.taskana.report.TaskStatusReport;
+import pro.taskana.report.TimestampReport;
+import pro.taskana.report.WorkbasketReport;
 import pro.taskana.rest.MonitorController;
 
 /**
@@ -80,7 +80,7 @@ public class ReportAssembler {
             report.getClass().getSimpleName(),
             time.toString(),
             header,
-            report.getRowDesc());
+            report.getExpandableHeaders(), report.getRowDesc());
 
         // iterate over each Row and transform it to a RowResource while keeping the domain key.
         Map<String, ReportResource.RowResource> rows = report.getRows()
