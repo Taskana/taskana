@@ -8,7 +8,7 @@ import {FilterModel} from 'app/models/filter'
 import {SortingModel} from 'app/models/sorting';
 import {Orientation} from 'app/models/orientation';
 
-import {WorkbasketService} from 'app/services/workbasket/workbasket.service'
+import {WorkbasketService} from 'app/shared/services/workbasket/workbasket.service'
 import {OrientationService} from 'app/services/orientation/orientation.service';
 import {TaskanaQueryParameters} from 'app/shared/util/query-parameters';
 import { ImportExportService } from 'app/administration/services/import-export/import-export.service';

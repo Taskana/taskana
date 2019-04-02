@@ -21,17 +21,14 @@ import {ClassificationListComponent} from './classification/master/list/classifi
 import {ClassificationDetailsComponent} from './classification/details/classification-details.component';
 import {ImportExportComponent} from './components/import-export/import-export.component';
 import {ClassificationTypesSelectorComponent} from 'app/shared/classification-types-selector/classification-types-selector.component';
-
 /**
  * Services
  */
-import {WorkbasketService} from 'app/services/workbasket/workbasket.service';
 import {SavingWorkbasketService} from './services/saving-workbaskets/saving-workbaskets.service';
 import {ClassificationDefinitionService} from './services/classification-definition/classification-definition.service';
 import {WorkbasketDefinitionService} from './services/workbasket-definition/workbasket-definition.service';
-import {ClassificationsService} from '../services/classifications/classifications.service';
-import {ClassificationCategoriesService} from 'app/services/classifications/classification-categories.service';
-import { ImportExportService } from './services/import-export/import-export.service';
+import {ClassificationCategoriesService} from 'app/shared/services/classifications/classification-categories.service';
+import {ImportExportService} from './services/import-export/import-export.service';
 import {AccessItemsManagementComponent} from 'app/administration/access-items-management/access-items-management.component';
 
 const MODULES = [
@@ -65,11 +62,9 @@ const DECLARATIONS = [
   declarations: DECLARATIONS,
   imports: MODULES,
   providers: [
-    WorkbasketService,
     ClassificationDefinitionService,
     WorkbasketDefinitionService,
     SavingWorkbasketService,
-    ClassificationsService,
     ClassificationCategoriesService,
     ImportExportService,
   ]

@@ -1,21 +1,21 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {TaskdetailsGeneralFieldsComponent} from './general-fields.component';
-import {FormsModule} from '@angular/forms';
-import {HttpClient, HttpClientModule} from '@angular/common/http';
-import {ClassificationCategoriesService} from 'app/services/classifications/classification-categories.service';
-import {CustomFieldsService} from 'app/services/custom-fields/custom-fields.service';
-import {DomainService} from 'app/services/domain/domain.service';
-import {RouterTestingModule} from '@angular/router/testing';
-import {Routes} from '@angular/router';
-import {Component} from '@angular/core';
-import {RequestInProgressService} from 'app/services/requestInProgress/request-in-progress.service';
-import {SelectedRouteService} from 'app/services/selected-route/selected-route';
-import {ClassificationsService} from '../../../services/classifications/classifications.service';
-import {configureTests} from '../../../app.test.configuration';
-import {Classification} from '../../../models/classification';
-import {Links} from '../../../models/links';
-import {ClassificationResource} from '../../../models/classification-resource';
+import { TaskdetailsGeneralFieldsComponent } from './general-fields.component';
+import { FormsModule } from '@angular/forms';
+import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { ClassificationCategoriesService } from 'app/shared/services/classifications/classification-categories.service';
+import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
+import { DomainService } from 'app/services/domain/domain.service';
+import { RouterTestingModule } from '@angular/router/testing';
+import { Routes } from '@angular/router';
+import { Component } from '@angular/core';
+import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
+import { SelectedRouteService } from 'app/services/selected-route/selected-route';
+import { configureTests } from 'app/app.test.configuration';
+import { ClassificationResource } from 'app/models/classification-resource';
+import { Classification } from 'app/models/classification';
+import { Links } from 'app/models/links';
 
 @Component({
   selector: 'taskana-dummy-detail',

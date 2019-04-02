@@ -8,7 +8,7 @@ import { KEYS, ITreeOptions, TreeComponent, TreeNode } from 'angular-tree-compon
 import { TreeService } from '../../services/tree/tree.service';
 import {
   ClassificationCategoriesService
-} from 'app/services/classifications/classification-categories.service';
+} from 'app/shared/services/classifications/classification-categories.service';
 import { Pair } from 'app/models/pair';
 import { Subscription } from 'rxjs';
 

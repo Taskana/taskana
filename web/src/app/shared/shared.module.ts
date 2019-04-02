@@ -7,6 +7,9 @@ import {RouterModule} from '@angular/router';
 import {TreeModule} from 'angular-tree-component';
 import {AlertModule, TypeaheadModule, BsDatepickerModule} from 'ngx-bootstrap';
 import {AccordionModule} from 'ngx-bootstrap/accordion';
+import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
+import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
+
 
 /**
  * Components
@@ -98,6 +101,8 @@ const DECLARATIONS = [
       multi: true
     },
     AccessIdsService,
+    ClassificationsService,
+    WorkbasketService
   ]
 })
 export class SharedModule {

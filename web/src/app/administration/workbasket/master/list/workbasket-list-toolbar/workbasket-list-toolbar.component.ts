@@ -6,7 +6,7 @@ import { FilterModel } from 'app/models/filter';
 import { Subscription } from 'rxjs';
 import { WorkbasketSummary } from 'app/models/workbasket-summary';
 
-import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
+import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { TaskanaType } from 'app/models/taskana-type';
 import { expandDown } from 'app/shared/animations/expand.animation';
 

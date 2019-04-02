@@ -18,7 +18,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { WorkplaceService } from '../services/workplace.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { OrientationService } from 'app/services/orientation/orientation.service';
-import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
+import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { DomainService } from 'app/services/domain/domain.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { SelectedRouteService } from 'app/services/selected-route/selected-route';

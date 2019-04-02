@@ -18,7 +18,7 @@ import { ImportExportComponent } from 'app/administration/components/import-expo
 
 import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition/workbasket-definition.service';
 import { ClassificationDefinitionService } from 'app/administration/services/classification-definition/classification-definition.service';
-import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
+import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { OrientationService } from 'app/services/orientation/orientation.service';
 import { configureTests } from 'app/app.test.configuration';
 import { Page } from 'app/models/page';
