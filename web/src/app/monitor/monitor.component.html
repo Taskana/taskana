@@ -3,26 +3,35 @@
         <li>
             <a style="display: none"></a>
         </li>
-        <li (click)="selectTab('tasks')" role="presentation" class="active" [ngClass]="{'active':tabSelected === 'tasks'}">
-            <a href="#tasks-tab" data-toggle="tab" aria-controls="Tasks" role="tab" aria-expanded="true">Tasks</a>
+        <li (click)="selectTab('tasks')" [ngClass]="{'active':tabSelected === 'tasks'}" class="active"
+            role="presentation">
+            <a aria-controls="Tasks" aria-expanded="true" data-toggle="tab" href="#tasks-tab" role="tab">Tasks</a>
         </li>
         <li (click)="selectTab('workbaskets')" [ngClass]="{'active':tabSelected === 'workbaskets'}">
-            <a href="#workbaskets-tab" data-toggle="tab" aria-controls="Workbaskets" role="tab" aria-expanded="true">Workbaskets</a>
+            <a aria-controls="Workbaskets" aria-expanded="true" data-toggle="tab" href="#workbaskets-tab" role="tab">Workbaskets</a>
         </li>
         <li (click)="selectTab('classifications')" [ngClass]="{'active':tabSelected === 'classifications'}">
-            <a href="#classifications-tab" data-toggle="tab" aria-controls="Classifications" role="tab" data-toggle="tab"
-                aria-expanded="true">Classifications</a>
+            <a aria-controls="Classifications" aria-expanded="true" data-toggle="tab" href="#classifications-tab"
+               role="tab">Classifications</a>
         </li>
+        <li (click)="selectTab('timestamp')" [ngClass]="{'active':tabSelected === 'timestamp'}">
+            <a aria-controls="Timestamp" aria-expanded="true" data-toggle="tab" href="#timestamp-tab"
+               role="tab">Timestamp</a>
+        </li>
+
     </ul>
     <div class="tab-content">
-        <div role="tabpanel" class="tab-pane active" id="tasks-tab">
+        <div class="tab-pane active" id="tasks-tab" role="tabpanel">
             <taskana-monitor-tasks></taskana-monitor-tasks>
         </div>
-        <div role="tabpanel" class="tab-pane" id="workbaskets-tab">
+        <div class="tab-pane" id="workbaskets-tab" role="tabpanel">
             <taskana-monitor-workbaskets></taskana-monitor-workbaskets>
         </div>
-        <div role="tabpanel" class="tab-pane" id="classifications-tab">
+        <div class="tab-pane" id="classifications-tab" role="tabpanel">
             <taskana-monitor-classification-tasks></taskana-monitor-classification-tasks>
+        </div>
+        <div class="tab-pane" id="timestamp-tab" role="tabpanel">
+            <taskana-monitor-timestamp></taskana-monitor-timestamp>
         </div>
     </div>
 </div>

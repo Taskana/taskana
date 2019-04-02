@@ -3,7 +3,8 @@
 	display: table;
 }
 
-.table-striped div.table-body div.table-row:nth-of-type(odd) {
+.table-striped .table-body .table-row:nth-of-type(odd),
+.table-body-striped .table-body:nth-of-type(odd) {
 	background-color: #f9f9f9;
 }
 
@@ -13,14 +14,18 @@
 
 .table-header, .table-footer {
 	display: table-header-group;
-	cursor: pointer;
 }
 
-.table-header > .table-row:last-child > .table-cell--bold {
+.table-header > .table-row:last-child > .table-cell {
 	border-bottom: 2px solid #ddd;
 }
 
-.table-footer > .table-row > .table-cell--bold, .table-header > .table-row > .table-cell--bold {
+.table-footer > .table-row:first-child > .table-cell {
+	border-top: 1px solid #ddd;
+}
+
+.table-footer > .table-row:last-of-type > .table-cell,
+.table-header > .table-row > .table-cell {
 	border-bottom: none;
 }
 
@@ -32,7 +37,7 @@
 	display: table-row;
 }
 
-.table-cell, .table-cell--bold {
+.table-cell {
 	display: table-cell;
 	padding: 5px;
 	white-space: nowrap;
@@ -40,6 +45,7 @@
 	vertical-align: middle;
 	text-align: center;
 	border-bottom: 1px solid #ddd;
+	cursor: default;
 }
 
 .table-cell--justify {
@@ -58,6 +64,7 @@
 	&.zoom-in {
 		cursor: zoom-in;
 	}
+
 
 	&.zoom-out {
 		cursor: zoom-out;

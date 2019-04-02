@@ -10,22 +10,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.TaskState;
-import pro.taskana.impl.report.item.TimestampQueryItem;
-import pro.taskana.report.Timestamp;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaRole;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.item.TimestampQueryItem;
 import pro.taskana.impl.report.preprocessor.DaysToWorkingDaysPreProcessor;
 import pro.taskana.mappings.TaskMonitorMapper;
+import pro.taskana.report.Timestamp;
 import pro.taskana.report.TimestampReport;
 
 /**
  * The implementation of {@link TimestampReport.Builder}.
  */
 public class TimestampReportBuilderImpl extends
-    TimeIntervalReportBuilderImpl<TimestampReport.Builder, TimestampQueryItem, TimeIntervalColumnHeader.Date>
+    TimeIntervalReportBuilderImpl<TimestampReport.Builder, TimestampQueryItem, TimeIntervalColumnHeader>
     implements TimestampReport.Builder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TimestampReport.Builder.class);

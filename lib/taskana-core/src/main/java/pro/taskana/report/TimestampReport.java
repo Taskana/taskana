@@ -12,10 +12,10 @@ import pro.taskana.impl.report.structure.Report;
 /**
  * A {@link TimestampReport} displays created and competed tasks for a specific dates.
  */
-public class TimestampReport extends Report<TimestampQueryItem, TimeIntervalColumnHeader.Date> {
+public class TimestampReport extends Report<TimestampQueryItem, TimeIntervalColumnHeader> {
 
-    public TimestampReport(List<TimeIntervalColumnHeader.Date> dates) {
-        super(dates, "STATES");
+    public TimestampReport(List<TimeIntervalColumnHeader> dates) {
+        super(dates, "STATES", new String[] {"ORG LEVEL 1", "ORG LEVEL 2", "ORG LEVEL 3", "ORG LEVEL 4"});
     }
 
     @Override
@@ -32,7 +32,7 @@ public class TimestampReport extends Report<TimestampQueryItem, TimeIntervalColu
      * Builder for {@link TimestampReport}.
      */
     public interface Builder extends
-        TimeIntervalReportBuilder<TimestampReport.Builder, TimestampQueryItem, TimeIntervalColumnHeader.Date> {
+        TimeIntervalReportBuilder<TimestampReport.Builder, TimestampQueryItem, TimeIntervalColumnHeader> {
 
         @Override
         TimestampReport buildReport() throws NotAuthorizedException, InvalidArgumentException;
