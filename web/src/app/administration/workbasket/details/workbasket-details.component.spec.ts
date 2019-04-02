@@ -16,7 +16,7 @@ import { Links } from 'app/models/links';
 import { WorkbasketAccessItems } from 'app/models/workbasket-access-items';
 import { LinksWorkbasketSummary } from 'app/models/links-workbasket-summary';
 
-import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
+import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { SavingWorkbasketService } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';

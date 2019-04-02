@@ -9,7 +9,7 @@ import { IconTypeComponent } from 'app/administration/components/type-icon/icon-
 import { SvgIconComponent } from 'angular-svg-icon';
 import { TaskService } from 'app/workplace/services/task.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
+import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { DomainService } from 'app/services/domain/domain.service';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Routes } from '@angular/router';

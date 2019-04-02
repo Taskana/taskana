@@ -6,7 +6,7 @@ import { Workbasket } from 'app/models/workbasket';
 import { ACTION } from 'app/models/action';
 import { MessageModal } from '../../../models/message-modal';
 
-import { WorkbasketService } from 'app/services/workbasket/workbasket.service'
+import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service'
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service'
 import { DomainService } from 'app/services/domain/domain.service';
 import { GeneralModalService } from '../../../services/general-modal/general-modal.service';

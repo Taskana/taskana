@@ -10,7 +10,7 @@ import { WorkbasketDistributionTargetsResource } from 'app/models/workbasket-dis
 import { Direction } from 'app/models/sorting';
 
 import { DomainService } from 'app/services/domain/domain.service';
-import { WorkbasketResource } from '../../models/workbasket-resource';
+import { WorkbasketResource } from '../../../models/workbasket-resource';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { mergeMap, tap, catchError } from 'rxjs/operators';
 import { QueryParametersModel } from 'app/models/query-parameters';

@@ -7,13 +7,13 @@ import { FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TaskService } from '../services/task.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
+import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { Component } from '@angular/core';
 import { DomainService } from 'app/services/domain/domain.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { SelectedRouteService } from 'app/services/selected-route/selected-route';
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
-import { ClassificationsService } from 'app/services/classifications/classifications.service';
+import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
 
 @Component({
   selector: 'taskana-dummy-detail',
