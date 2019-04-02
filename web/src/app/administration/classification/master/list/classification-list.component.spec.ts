@@ -15,7 +15,7 @@ import { ClassificationTypesSelectorComponent } from 'app/shared/classification-
 
 import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition/workbasket-definition.service';
 import { AlertService } from 'app/services/alert/alert.service';
-import { ClassificationsService } from 'app/services/classifications/classifications.service';
+import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
 import { ClassificationDefinitionService } from 'app/administration/services/classification-definition/classification-definition.service';
 import { DomainService } from 'app/services/domain/domain.service';
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
@@ -23,7 +23,7 @@ import { RequestInProgressService } from 'app/services/requestInProgress/request
 import { configureTests } from 'app/app.test.configuration';
 import {
   ClassificationCategoriesService
-} from 'app/services/classifications/classification-categories.service';
+} from 'app/shared/services/classifications/classification-categories.service';
 import { Pair } from 'app/models/pair';
 import { TreeService } from 'app/services/tree/tree.service';
 import { ImportExportService } from 'app/administration/services/import-export/import-export.service';

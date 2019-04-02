@@ -24,7 +24,7 @@ import {
   SavingWorkbasketService,
   SavingInformation
 } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
-import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
+import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';

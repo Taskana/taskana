@@ -18,7 +18,7 @@ import { SortingModel } from 'app/models/sorting';
 import { WorkbasketListToolbarComponent } from './workbasket-list-toolbar.component';
 import { ImportExportComponent } from 'app/administration/components/import-export/import-export.component';
 
-import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
+import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { ClassificationDefinitionService } from 'app/administration/services/classification-definition/classification-definition.service';
 import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition/workbasket-definition.service';
 import { configureTests } from 'app/app.test.configuration';

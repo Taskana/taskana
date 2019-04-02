@@ -10,7 +10,7 @@ import { AlertModel, AlertType } from 'app/models/alert';
 import { highlight } from 'app/shared/animations/validation.animation';
 import { TaskanaDate } from 'app/shared/util/taskana.date';
 
-import { ClassificationsService } from 'app/services/classifications/classifications.service';
+import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
@@ -19,7 +19,7 @@ import { TreeService } from 'app/services/tree/tree.service';
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
 
 // tslint:disable:max-line-length
-import { ClassificationCategoriesService } from 'app/services/classifications/classification-categories.service';
+import { ClassificationCategoriesService } from 'app/shared/services/classifications/classification-categories.service';
 // tslint:enable:max-line-length
 import { DomainService } from 'app/services/domain/domain.service';
 import { CustomFieldsService } from '../../../services/custom-fields/custom-fields.service';

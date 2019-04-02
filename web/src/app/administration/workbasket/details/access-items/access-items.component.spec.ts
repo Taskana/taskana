@@ -17,7 +17,7 @@ import { AccessItemsComponent } from './access-items.component';
 
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { SavingWorkbasketService } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
-import { WorkbasketService } from 'app/services/workbasket/workbasket.service';
+import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';

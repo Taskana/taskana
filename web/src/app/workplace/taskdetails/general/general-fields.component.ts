@@ -1,11 +1,11 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild} from '@angular/core';
-import {Task} from 'app/workplace/models/task';
-import {Classification} from '../../../models/classification';
-import {ClassificationsService} from '../../../services/classifications/classifications.service';
-import {CustomFieldsService} from 'app/services/custom-fields/custom-fields.service';
-import {FormsValidatorService} from 'app/shared/services/forms/forms-validator.service';
-import {NgForm} from '@angular/forms';
-import {DomainService} from '../../../services/domain/domain.service';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, SimpleChanges, OnChanges, HostListener } from '@angular/core';
+import { Task } from 'app/workplace/models/task';
+import { Classification } from '../../../models/classification';
+import { ClassificationsService } from '../../../shared/services/classifications/classifications.service';
+import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
+import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
+import { NgForm } from '@angular/forms';
+import { DomainService } from 'app/services/domain/domain.service';
 
 @Component({
   selector: 'taskana-task-details-general-fields',
