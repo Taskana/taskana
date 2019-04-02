@@ -1,27 +1,26 @@
-<div *ngIf="reportData" class="report table table-striped">
+<div *ngIf="reportData" class="report table table-body-striped">
     <div class="table-header">
         <div class="table-row">
-            <div class="table-cell--bold table-cell--justify">{{reportData.meta.rowDesc}}</div>
-            <div *ngFor="let header of reportData.meta.header" class="table-cell--bold">{{header}}</div>
-            <div class="table-cell--bold">{{reportData.meta.totalDesc}}</div>
+            <div class="table-cell table-cell--bold table-cell--justify">{{reportData.meta.rowDesc}}</div>
+            <ng-container *ngFor="let header of reportData.meta.expHeader; let i = index">
+                <ng-container *ngIf="i < currentExpHeaders">
+                    <div class="table-cell table-cell--bold table-cell--justify">{{header}}</div>
+                </ng-container>
+            </ng-container>
+            <div *ngFor="let header of reportData.meta.header" class="table-cell table-cell--bold">{{header}}</div>
+            <div class="table-cell table-cell--bold">{{reportData.meta.totalDesc}}</div>
         </div>
     </div>
-    <div class="table-body">
-        <div *ngFor="let row of reportData.rows | mapToIterable | orderBy:['key']" [headers]="reportData.meta.header"
-             [row]="row" class="table-row" monitor-report-row>
-        </div>
-    </div>
-    <div class="table-footer">
-        <div class="table-row">
-            <div class="table-cell--bold table-cell--justify">
-                {{reportData.meta.totalDesc}}
-            </div>
-            <div *ngFor="let header of reportData.meta.header" class="table-cell--bold">
-                {{reportData.sumRow.cells[header]}}
-            </div>
-            <div class="table-cell--bold">
-                {{reportData.sumRow.total}}
-            </div>
-        </div>
-    </div>
+    <monitor-report-row (expandedDepth)="expandHeader($event, i)"
+                        *ngFor="let row of reportData.rows | mapToIterable | orderBy:['key']; let i = index"
+                        [headers]="reportData.meta.header"
+                        [maxTableDepth]="currentExpHeaders"
+                        [row]="row"
+                        class="table-body"></monitor-report-row>
+    <monitor-report-row (expandedDepth)="expandHeader($event, expHeaders.length - 1)"
+                        [headers]="reportData.meta.header"
+                        [maxTableDepth]="currentExpHeaders"
+                        [row]="_sumRow"
+                        bold="true"
+                        class="table-footer"></monitor-report-row>
 </div>

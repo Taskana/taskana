@@ -16,8 +16,8 @@ import org.junit.runner.RunWith;
 import pro.taskana.TaskMonitorService;
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
 import pro.taskana.impl.report.item.TimestampQueryItem;
-import pro.taskana.impl.report.row.TimestampRow;
 import pro.taskana.impl.report.row.SingleRow;
+import pro.taskana.impl.report.row.TimestampRow;
 import pro.taskana.report.TimestampReport;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
@@ -43,7 +43,7 @@ public class ProvideTimestampReportAccTest extends AbstractReportAccTest {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         //last 14 days. Today excluded.
-        List<TimeIntervalColumnHeader.Date> headers = IntStream.range(-14, 0)
+        List<TimeIntervalColumnHeader> headers = IntStream.range(-14, 0)
             .mapToObj(TimeIntervalColumnHeader.Date::new)
             .collect(Collectors.toList());
         TimestampReport timestampReport = taskMonitorService.createTimestampReportBuilder()

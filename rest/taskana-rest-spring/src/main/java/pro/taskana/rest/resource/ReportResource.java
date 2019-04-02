@@ -109,12 +109,14 @@ public class ReportResource extends ResourceSupport {
         private String name;
         private String date;
         private String[] header;
+        private String[] expHeader;
         private String rowDesc;
 
-        public MetaInformation(String name, String date, String[] header, String rowDesc) {
+        public MetaInformation(String name, String date, String[] header, String[] expHeader, String rowDesc) {
             this.name = name;
             this.date = date;
             this.header = header;
+            this.expHeader = expHeader;
             this.rowDesc = rowDesc;
         }
 
@@ -134,18 +136,18 @@ public class ReportResource extends ResourceSupport {
             return header;
         }
 
+        public String[] getExpHeader() {
+            return expHeader;
+        }
+
         public String getRowDesc() {
             return rowDesc;
         }
 
         @Override
         public String toString() {
-            return "MetaInformation ["
-                + "name= " + this.name
-                + "date= " + this.date
-                + "header= " + Arrays.toString(this.header)
-                + "rowDesc= " + this.rowDesc
-                + "]";
+            return String.format("MetaInformation [name= %s, date= %s, header= %s, expHeader= %s, rowDesc= %s]",
+                name, date, Arrays.toString(header), Arrays.toString(expHeader), rowDesc);
         }
     }
 }

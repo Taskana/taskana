@@ -1,11 +1,19 @@
-<ng-container *ngIf="headers && row">
-    <div (click)="toggleFold()" class="table-cell table-cell--justify">
-        {{row.key}}
-    </div>
-    <div *ngFor="let header of headers" class="table-cell">
-        {{row.val.cells[header]}}
-    </div>
-    <div class="table-cell--bold">
-        {{row.val.total}}
-    </div>
+<ng-container *ngIf="headers && flatRows">
+    <ng-container *ngFor="let row of flatRows; let i = index">
+        <div *ngIf="currentDepth >= row.depth" class="table-row">
+            <div *ngFor="let _ of range(row.depth)" class="table-cell"></div>
+            <div (click)="toggleFold(row.depth)"
+                 [ngClass]="{'table-cell--clickable': maxDepth > row.depth, 'table-cell--bold' : bold}"
+                 class="table-cell table-cell--justify">
+                {{row.key}}
+            </div>
+            <div *ngFor="let _ of range(maxTableDepth - row.depth)" class="table-cell"></div>
+            <div *ngFor="let header of headers" [ngClass]="{'table-cell--bold' : bold}" class="table-cell">
+                {{row.val.cells[header]}}
+            </div>
+            <div class="table-cell table-cell--bold">
+                {{row.val.total}}
+            </div>
+        </div>
+    </ng-container>
 </ng-container>

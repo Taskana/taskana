@@ -91,11 +91,11 @@ public class MonitorController {
         return response;
     }
 
-    @GetMapping(path = "/daily-entry-exit-report")
+    @GetMapping(path = "/timestamp-report")
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<ReportResource> getDailyEntryExitReport()
         throws NotAuthorizedException, InvalidArgumentException {
-        List<TimeIntervalColumnHeader.Date> columnHeaders = IntStream.range(-14, 0)
+        List<TimeIntervalColumnHeader> columnHeaders = IntStream.range(-14, 0)
             .mapToObj(TimeIntervalColumnHeader.Date::new)
             .collect(Collectors.toList());
         return ResponseEntity.status(HttpStatus.OK)

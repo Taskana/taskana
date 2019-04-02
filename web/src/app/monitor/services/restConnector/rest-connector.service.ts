@@ -33,7 +33,7 @@ export class RestConnectorService {
 
   getDailyEntryExitReport(): Observable<ReportData> {
     return this.httpClient.get<ReportData>(environment.taskanaRestUrl
-      + monitorUrl + 'daily-entry-exit-report');
+      + monitorUrl + 'timestamp-report');
   }
 
   getChartData(source: ReportData): Array<ChartData> {

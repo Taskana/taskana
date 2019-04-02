@@ -1,0 +1,8 @@
+<div *ngIf="reportData" class="panel panel-default">
+    <div class="panel-heading">
+        <h4>{{reportData.meta.name}} ({{reportData.meta.date | dateTimeZone}})</h4>
+    </div>
+    <div class="panel-body blub">
+        <taskana-report [reportData]="reportData"></taskana-report>
+    </div>
+</div>
