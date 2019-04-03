@@ -38,12 +38,10 @@ import pro.taskana.rest.RestConfiguration;
 @SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 public class MonitorControllerRestDocumentation {
 
-    @LocalServerPort
-    int port;
-
     @Rule
     public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
-
+    @LocalServerPort
+    int port;
     @Autowired
     private WebApplicationContext context;
 
@@ -70,6 +68,8 @@ public class MonitorControllerRestDocumentation {
             fieldWithPath("meta.name").description("Name of the report"),
             fieldWithPath("meta.date").description("Date of the report creation"),
             fieldWithPath("meta.header").description("Column-headers of the report"),
+            fieldWithPath("meta.expHeader").description(
+                "Expandable Column-headers which match the depth of the foldable rows within the report."),
             fieldWithPath("meta.rowDesc").description("Descriptions for the rows the report"),
             fieldWithPath("meta.totalDesc").description("Description for the report itself"),
             subsectionWithPath("rows").description("Object holding the rows of the report.\n"
@@ -77,7 +77,7 @@ public class MonitorControllerRestDocumentation {
             fieldWithPath("sumRow").description("Object holding the sums in the columns over all rows"),
             subsectionWithPath("sumRow.cells")
                 .description("Contains the accumulated numbers over all columns defined in meta.header.\n"
-                    + "For the exact structure please check the example response above"),
+                + "For the exact structure please check the example response above"),
             fieldWithPath("sumRow.total").description("Total number of tasks"),
             fieldWithPath("_links.self.href").ignored()
         };

@@ -1,4 +1,19 @@
+@import './src/assets/_colors';
+
 
 .table-cell--clickable {
 	cursor: pointer;
+}
+
+.table-row--highlight,
+.table-row--hover:hover {
+	background-color: #f9f9f9;
+}
+
+.table-row--highlight > .table-cell {
+	border-bottom: 2px solid #ddd;
+}
+
+.table-row--white {
+	background-color: white;
 }
