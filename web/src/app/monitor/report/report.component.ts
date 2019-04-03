@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ReportData} from 'app/monitor/models/report-data';
-import {ReportInfoDataIterable} from "../models/report-info-data";
+import {ReportInfoDataIterable} from '../models/report-info-data';
 
 @Component({
   selector: 'taskana-report',
@@ -11,11 +11,8 @@ export class ReportComponent implements OnInit {
 
 
   expHeaders: Array<number>;
-  currentExpHeaders: number = 0;
+  currentExpHeaders = 0;
   _sumRow: ReportInfoDataIterable;
-
-  constructor() {
-  }
 
   private _reportData: ReportData;
 
@@ -30,6 +27,9 @@ export class ReportComponent implements OnInit {
     this._sumRow = new ReportInfoDataIterable();
     this._sumRow.val = reportData.sumRow;
     this._sumRow.key = reportData.meta.totalDesc;
+  }
+
+  constructor() {
   }
 
   ngOnInit(): void {

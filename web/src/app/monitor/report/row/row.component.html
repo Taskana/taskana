@@ -1,17 +1,26 @@
 <ng-container *ngIf="headers && flatRows">
     <ng-container *ngFor="let row of flatRows; let i = index">
-        <div *ngIf="currentDepth >= row.depth" class="table-row">
+        <div *ngIf="row.display"
+             [ngClass]="{'table-row--highlight': row.depth === 0 && currentDepth > 0,
+             'table-row--hover': row.depth > 0 && currentDepth > 0,
+             'table-row--white': row.depth > 0 && currentDepth > 0}"
+             class="table-row">
             <div *ngFor="let _ of range(row.depth)" class="table-cell"></div>
-            <div (click)="toggleFold(row.depth)"
-                 [ngClass]="{'table-cell--clickable': maxDepth > row.depth, 'table-cell--bold' : bold}"
+            <div (click)="toggleFold(i)"
+                 [ngClass]="{'table-cell--clickable': maxDepth > row.depth,
+                 'table-cell--bold' : bold || row.depth === 0 && currentDepth > 0,
+                 'table-cell--border-right': row.depth === maxTableDepth}"
                  class="table-cell table-cell--justify">
-                {{row.key}}
+                <span *ngIf="maxDepth > row.depth"
+                      class="material-icons md-18">{{ canRowCollapse(i) ? "expand_more" : "expand_less"}}</span>{{row.key}}
             </div>
-            <div *ngFor="let _ of range(maxTableDepth - row.depth)" class="table-cell"></div>
-            <div *ngFor="let header of headers" [ngClass]="{'table-cell--bold' : bold}" class="table-cell">
+            <div *ngFor="let _ of range(maxTableDepth - row.depth); let i = index"
+                 [ngClass]="{'table-cell--border-right': i === maxTableDepth - row.depth - 1}" class="table-cell"></div>
+            <div *ngFor="let header of headers"
+                 [ngClass]="{'table-cell--bold' : bold || row.depth === 0 && currentDepth > 0}" class="table-cell">
                 {{row.val.cells[header]}}
             </div>
-            <div class="table-cell table-cell--bold">
+            <div class="table-cell table-cell--bold table-cell--border-left">
                 {{row.val.total}}
             </div>
         </div>

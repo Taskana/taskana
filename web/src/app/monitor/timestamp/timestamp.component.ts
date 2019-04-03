@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {ReportData} from "../models/report-data";
-import {RestConnectorService} from "../services/restConnector/rest-connector.service";
+import {ReportData} from '../models/report-data';
+import {RestConnectorService} from '../services/restConnector/rest-connector.service';
 
 @Component({
   selector: 'taskana-monitor-timestamp',

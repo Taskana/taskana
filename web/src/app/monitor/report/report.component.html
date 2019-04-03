@@ -1,26 +1,30 @@
 <div *ngIf="reportData" class="report table table-body-striped">
     <div class="table-header">
         <div class="table-row">
-            <div class="table-cell table-cell--bold table-cell--justify">{{reportData.meta.rowDesc}}</div>
+            <div
+                [ngClass]="{'table-cell--border-right': currentExpHeaders === 0}"
+                class="table-cell table-cell--bold table-cell--justify">{{reportData.meta.rowDesc}}</div>
             <ng-container *ngFor="let header of reportData.meta.expHeader; let i = index">
                 <ng-container *ngIf="i < currentExpHeaders">
-                    <div class="table-cell table-cell--bold table-cell--justify">{{header}}</div>
+                    <div [ngClass]="{'table-cell--border-right': currentExpHeaders - 1 === i}"
+                         class="table-cell table-cell--bold table-cell--justify">{{header}}</div>
                 </ng-container>
             </ng-container>
-            <div *ngFor="let header of reportData.meta.header" class="table-cell table-cell--bold">{{header}}</div>
-            <div class="table-cell table-cell--bold">{{reportData.meta.totalDesc}}</div>
+            <div *ngFor="let header of reportData.meta.header"
+                 class="table-cell table-cell--bold">{{header}}</div>
+            <div class="table-cell table-cell--bold table-cell--border-left">{{reportData.meta.totalDesc}}</div>
         </div>
     </div>
-    <monitor-report-row (expandedDepth)="expandHeader($event, i)"
+    <taskana-report-row (expandedDepth)="expandHeader($event, i)"
                         *ngFor="let row of reportData.rows | mapToIterable | orderBy:['key']; let i = index"
                         [headers]="reportData.meta.header"
                         [maxTableDepth]="currentExpHeaders"
                         [row]="row"
-                        class="table-body"></monitor-report-row>
-    <monitor-report-row (expandedDepth)="expandHeader($event, expHeaders.length - 1)"
+                        class="table-body"></taskana-report-row>
+    <taskana-report-row (expandedDepth)="expandHeader($event, expHeaders.length - 1)"
                         [headers]="reportData.meta.header"
                         [maxTableDepth]="currentExpHeaders"
                         [row]="_sumRow"
                         bold="true"
-                        class="table-footer"></monitor-report-row>
+                        class="table-footer"></taskana-report-row>
 </div>
