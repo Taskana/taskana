@@ -8,4 +8,5 @@ export class ReportInfoDataIterable {
   key: string;
   val: ReportInfoData;
   depth: number;
+  display = false;
 }
