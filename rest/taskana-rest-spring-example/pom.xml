@@ -98,7 +98,6 @@
 			<version>9.4.1212</version>
 		</dependency>
 		-->
-
 		<dependency>
 			<groupId>pro.taskana</groupId>
 			<artifactId>taskana-core</artifactId>
