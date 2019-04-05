@@ -1,18 +1,18 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { environment } from 'environments/environment';
-import { combineLatest, Observable, Subject} from 'rxjs';
-import { mergeMap, tap } from 'rxjs/operators';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {environment} from 'environments/environment';
+import {combineLatest, Observable, Subject} from 'rxjs';
+import {mergeMap, tap} from 'rxjs/operators';
 
-import { Classification } from 'app/models/classification';
-import { ClassificationDefinition } from 'app/models/classification-definition';
+import {Classification} from 'app/models/classification';
+import {ClassificationDefinition} from 'app/models/classification-definition';
 
-import { ClassificationResource } from 'app/models/classification-resource';
-import { ClassificationCategoriesService } from './classification-categories.service';
-import { DomainService } from 'app/services/domain/domain.service';
-import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
-import { Direction } from 'app/models/sorting';
-import { QueryParametersModel } from 'app/models/query-parameters';
+import {ClassificationResource} from 'app/models/classification-resource';
+import {ClassificationCategoriesService} from './classification-categories.service';
+import {DomainService} from 'app/services/domain/domain.service';
+import {TaskanaQueryParameters} from 'app/shared/util/query-parameters';
+import {Direction} from 'app/models/sorting';
+import {QueryParametersModel} from 'app/models/query-parameters';
 
 @Injectable()
 export class ClassificationsService {
@@ -37,7 +37,9 @@ export class ClassificationsService {
           `${this.url}${TaskanaQueryParameters.getQueryParameters(this.classificationParameters(domain))}`));
 
       }),
-      tap(() => { this.domainService.domainChangedComplete(); })
+      tap(() => {
+        this.domainService.domainChangedComplete();
+      })
     )
   }
 
@@ -52,13 +54,13 @@ export class ClassificationsService {
   }
 
   // GET
-  getClassification(id: string): Observable<ClassificationDefinition> {
+  getClassification(id: string): Promise<ClassificationDefinition> {
     return this.httpClient.get<ClassificationDefinition>(`${this.url}${id}`)
       .pipe(tap((classification: ClassificationDefinition) => {
         if (classification) {
           this.classificationCategoriesService.selectClassificationType(classification.type);
         }
-      }));
+      })).toPromise();
   }
 
   // POST
@@ -67,8 +69,8 @@ export class ClassificationsService {
   }
 
   // PUT
-  putClassification(url: string, classification: Classification): Observable<Classification> {
-    return this.httpClient.put<Classification>(url, classification);
+  putClassification(url: string, classification: Classification): Promise<Classification> {
+    return this.httpClient.put<Classification>(url, classification).toPromise();
   }
 
   // DELETE

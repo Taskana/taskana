@@ -1,16 +1,25 @@
 import {
-  Component, OnInit, Input, Output, EventEmitter, ViewChild, AfterViewChecked,
-  OnDestroy, ElementRef, HostListener
+  AfterViewChecked,
+  Component,
+  ElementRef,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild
 } from '@angular/core';
-import { TreeNodeModel } from 'app/models/tree-node';
+import {TreeNodeModel} from 'app/models/tree-node';
 
-import { KEYS, ITreeOptions, TreeComponent, TreeNode } from 'angular-tree-component';
-import { TreeService } from '../../services/tree/tree.service';
-import {
-  ClassificationCategoriesService
-} from 'app/shared/services/classifications/classification-categories.service';
-import { Pair } from 'app/models/pair';
-import { Subscription } from 'rxjs';
+import {ITreeOptions, KEYS, TreeComponent, TreeNode} from 'angular-tree-component';
+import {TreeService} from '../../services/tree/tree.service';
+import {ClassificationCategoriesService} from 'app/shared/services/classifications/classification-categories.service';
+import {Pair} from 'app/models/pair';
+import {Subscription} from 'rxjs';
+import {Classification} from '../../models/classification';
+import {ClassificationDefinition} from '../../models/classification-definition';
+import {ClassificationsService} from '../services/classifications/classifications.service';
 
 @Component({
   selector: 'taskana-tree',
@@ -19,19 +28,19 @@ import { Subscription } from 'rxjs';
 })
 export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy {
 
-
   @ViewChild('tree')
   private tree: TreeComponent;
 
-  @Input() treeNodes: TreeNodeModel;
+  @Input() treeNodes: Array<TreeNodeModel>;
   @Output() treeNodesChange = new EventEmitter<Array<TreeNodeModel>>();
   @Input() selectNodeId: string;
   @Output() selectNodeIdChanged = new EventEmitter<string>();
   @Input() filterText: string;
   @Input() filterIcon = '';
+  @Output() refreshClassification = new EventEmitter<string>();
+  @Output() switchTaskanaSpinnerEmit = new EventEmitter<boolean>();
 
-
-  private filterTextOld: string
+  private filterTextOld: string;
   private filterIconOld = '';
   private removedNodeIdSubscription: Subscription;
 
@@ -47,8 +56,10 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
     },
     animateExpand: true,
     animateSpeed: 20,
-    levelPadding: 20
-  }
+    levelPadding: 20,
+    allowDrag: true,
+    allowDrop: true
+  };
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event) {
@@ -60,7 +71,9 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
   constructor(
     private treeService: TreeService,
     private categoryService: ClassificationCategoriesService,
-    private elementRef: ElementRef) { }
+    private elementRef: ElementRef,
+    private classificationsService: ClassificationsService) {
+  }
 
   ngOnInit() {
     this.removedNodeIdSubscription = this.treeService.getRemovedNodeId().subscribe(value => {
@@ -70,7 +83,6 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
       }
     });
   }
-
 
   ngAfterViewChecked(): void {
     if (this.selectNodeId && !this.tree.treeModel.getActiveNode()) {
@@ -96,6 +108,25 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
     this.selectNodeIdChanged.emit(undefined);
   }
 
+  async onMoveNode($event) {
+    this.switchTaskanaSpinner(true);
+    const classification = await this.getClassification($event.node.classificationId);
+    classification.parentId = $event.to.parent.classificationId;
+    classification.parentKey = $event.to.parent.key;
+    this.collapseParentNodeIfItIsTheLastChild($event.node);
+    await this.updateClassification(classification);
+  }
+
+  async onDrop($event) {
+    if ($event.event.target.tagName === 'TREE-VIEWPORT') {
+      this.switchTaskanaSpinner(true);
+      const classification = await this.getClassification($event.element.data.classificationId);
+      this.collapseParentNodeIfItIsTheLastChild($event.element.data);
+      classification.parentId = '';
+      classification.parentKey = '';
+      await this.updateClassification(classification);
+    }
+  }
 
   getCategoryIcon(category: string): Pair {
     return this.categoryService.getCategoryIcon(category);
@@ -103,9 +134,9 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
 
   private selectNode(nodeId: string) {
     if (nodeId) {
-      const selectedNode = this.getNode(nodeId)
+      const selectedNode = this.getNode(nodeId);
       if (selectedNode) {
-        selectedNode.setIsActive(true)
+        selectedNode.setIsActive(true);
         this.expandParent(selectedNode);
       }
     }
@@ -141,6 +172,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
     return (node.data.name.toUpperCase().includes(text.toUpperCase())
       || node.data.key.toUpperCase().includes(text.toUpperCase()))
   }
+
   private checkIcon(node: any, iconText: string): boolean {
     return (node.data.category.toUpperCase() === iconText.toUpperCase()
       || iconText === '')
@@ -160,9 +192,31 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
         event.target.localName === 'taskana-tree')
   }
 
+  private getClassification(classificationId: string): Promise<ClassificationDefinition> {
+    return this.classificationsService.getClassification(classificationId);
+  }
+
+  private async updateClassification(classification: Classification) {
+    await this.classificationsService.putClassification(classification._links.self.href, classification);
+    this.refreshClassification.emit(classification.key);
+    this.switchTaskanaSpinner(false);
+  }
+
+  private collapseParentNodeIfItIsTheLastChild(node: any) {
+    if (node.parentId.length > 0 && this.getNode(node.parentId) && this.getNode(node.parentId).children.length < 2) {
+      this.tree.treeModel.update();
+      this.getNode(node.parentId).collapse();
+    }
+  }
+
+  switchTaskanaSpinner(active: boolean) {
+    this.switchTaskanaSpinnerEmit.emit(active);
+  }
+
   ngOnDestroy(): void {
-    if (this.removedNodeIdSubscription) { this.removedNodeIdSubscription.unsubscribe() }
+    if (this.removedNodeIdSubscription) {
+      this.removedNodeIdSubscription.unsubscribe()
+    }
   }
 
 }
-
