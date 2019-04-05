@@ -60,7 +60,7 @@ const MODULES = [
   AngularSvgIconModule,
   HttpClientModule,
   RouterModule,
-  TreeModule
+  TreeModule.forRoot()
 ];
 
 const DECLARATIONS = [

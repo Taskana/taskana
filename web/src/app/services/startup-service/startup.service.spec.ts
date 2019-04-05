@@ -8,14 +8,14 @@ import {WindowRefService} from '../window/window.service';
 import {environment} from '../../../environments/environment';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 
-fdescribe('StartupService', () => {
-  const environmentFile = '/environments/data-sources/environment-information.json';
+describe('StartupService', () => {
+  const environmentFile = 'environments/data-sources/environment-information.json';
   const someRestUrl = 'someRestUrl';
   const someLogoutUrl = 'someLogoutUrl';
   const dummyEnvironmentInformation = {
     'taskanaRestUrl': someRestUrl,
     'taskanaLogoutUrl': someLogoutUrl
-  }
+  };
 
   let httpMock, service;
 

@@ -288,7 +288,7 @@ export class WorkbasketInformationComponent
               new AlertModel(AlertType.SUCCESS, 'The Workbasket ' + this.workbasket.workbasketId + ' has been marked for deletion')
             );
           }
-          this.router.navigate(['administration/workbaskets']);
+          this.router.navigate(['taskana/administration/workbaskets']);
         }
       );
   }
