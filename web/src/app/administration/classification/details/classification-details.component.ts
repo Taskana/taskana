@@ -165,7 +165,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     this.action = undefined
   }
 
-  private onSave() {
+  private async onSave() {
     this.requestInProgressService.setRequestInProgress(true);
     if (this.action === ACTION.CREATE) {
       this.classificationSavingSubscription = this.classificationsService.postClassification(this.classification)
@@ -180,17 +180,17 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
             this.afterRequest();
           });
     } else {
-      this.classificationSavingSubscription = this.classificationsService
-        .putClassification(this.classification._links.self.href, this.classification)
-        .subscribe((classification: ClassificationDefinition) => {
-          this.classification = classification;
-          this.afterRequest();
-          this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Classification ${classification.key} was saved successfully`));
-          this.cloneClassification(classification);
-        }, error => {
-          this.generalModalService.triggerMessage(new MessageModal('There was error while saving your classification', error))
-          this.afterRequest();
-        })
+      try {
+        this.classification = (<ClassificationDefinition> await this.classificationsService.putClassification(
+          this.classification._links.self.href, this.classification));
+        this.afterRequest();
+        this.alertService.triggerAlert(
+          new AlertModel(AlertType.SUCCESS, `Classification ${this.classification.key} was saved successfully`));
+        this.cloneClassification(this.classification);
+      } catch (error) {
+        this.generalModalService.triggerMessage(new MessageModal('There was error while saving your classification', error))
+        this.afterRequest();
+      }
     }
   }
 
@@ -216,16 +216,15 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     this.classificationsService.triggerClassificationSaved();
   }
 
-  private selectClassification(id: string) {
+  private async selectClassification(id: string) {
     if (this.classificationIsAlreadySelected()) {
       return true;
     }
     this.requestInProgress = true;
-    this.selectedClassificationSubscription = this.classificationsService.getClassification(id).subscribe(classification => {
-      this.fillClassificationInformation(classification)
-      this.classificationsService.selectClassification(classification);
-      this.requestInProgress = false;
-    });
+    const classification = await this.classificationsService.getClassification(id);
+    this.fillClassificationInformation(classification)
+    this.classificationsService.selectClassification(classification);
+    this.requestInProgress = false;
   }
 
   private classificationIsAlreadySelected(): boolean {
@@ -285,7 +284,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         this.classification = undefined;
         this.afterRequest();
         this.classificationsService.selectClassification(undefined);
-        this.router.navigate(['administration/classifications']);
+        this.router.navigate(['taskana/administration/classifications']);
         this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Classification ${key} was removed successfully`))
       }, error => {
         this.generalModalService.triggerMessage(new MessageModal('There was error while removing your classification', error))

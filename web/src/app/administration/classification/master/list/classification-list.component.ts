@@ -13,6 +13,8 @@ import {
 import { Pair } from 'app/models/pair';
 import { ClassificationDefinition } from '../../../../models/classification-definition';
 import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
+import {AlertModel, AlertType} from '../../../../models/alert';
+import {AlertService} from '../../../../services/alert/alert.service';
 
 @Component({
 	selector: 'taskana-classification-list',
@@ -45,7 +47,8 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 		private router: Router,
 		private route: ActivatedRoute,
 		private categoryService: ClassificationCategoriesService,
-		private importExportService: ImportExportService) {
+		private importExportService: ImportExportService,
+    private alertService: AlertService) {
 	}
 
 	ngOnInit() {
@@ -70,20 +73,15 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 
 	selectClassificationType(classificationTypeSelected: string) {
 		this.classifications = [];
-		this.requestInProgress = true;
 		this.categoryService.selectClassificationType(classificationTypeSelected);
-		this.classificationService.getClassifications()
-			.subscribe((classifications: Array<TreeNodeModel>) => {
-				this.classifications = classifications;
-				this.requestInProgress = false;
-			});
+		this.getClassifications();
 		this.selectClassification(undefined);
 	}
 
 	selectClassification(id: string) {
 		this.selectedId = id;
 		if (!id) {
-			this.router.navigate(['administration/classifications']);
+			this.router.navigate(['taskana/administration/classifications']);
 			return;
 		}
 		this.router.navigate([{ outlets: { detail: [this.selectedId] } }], { relativeTo: this.route });
@@ -129,6 +127,24 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 		this.initialized = true;
 
 	}
+
+  private getClassifications(key: string = undefined) {
+    this.requestInProgress = true;
+    this.classificationService.getClassifications()
+      .subscribe((classifications: Array<TreeNodeModel>) => {
+        this.classifications = classifications;
+        this.requestInProgress = false;
+      });
+
+    if (key) {
+      this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Classification ${key} was saved successfully`));
+    }
+  }
+
+  private switchTaskanaSpinner($event) {
+    this.requestInProgress = $event;
+  }
+
 	ngOnDestroy(): void {
 		if (this.classificationServiceSubscription) { this.classificationServiceSubscription.unsubscribe(); }
 		if (this.classificationTypeServiceSubscription) { this.classificationTypeServiceSubscription.unsubscribe(); }
