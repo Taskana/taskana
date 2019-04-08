@@ -9,6 +9,7 @@ import static org.junit.Assert.fail;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import acceptance.AbstractAccTest;
+import pro.taskana.ObjectReference;
 import pro.taskana.Task;
 import pro.taskana.TaskService;
 import pro.taskana.TaskState;
@@ -61,13 +63,17 @@ public class CreateTaskAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
         newTask.setClassificationKey("T2100");
-        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+        ObjectReference objectReference = createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567");
+        newTask.setPrimaryObjRef(objectReference);
+        newTask.setOwner("user_1_1");
         Task createdTask = taskService.createTask(newTask);
 
         assertNotNull(createdTask);
         assertThat(createdTask.getCreator(), equalTo(CurrentUserContext.getUserid()));
+        assertThat(createdTask.getOwner(), equalTo("user_1_1"));
+        assertEquals("USER_1_1", createdTask.getWorkbasketKey());
         assertEquals("T-Vertragstermin VERA", createdTask.getName());
-        assertEquals("1234567", createdTask.getPrimaryObjRef().getValue());
+        assertEquals(objectReference, createdTask.getPrimaryObjRef());
         assertNotNull(createdTask.getCreated());
         assertNotNull(createdTask.getModified());
         assertNotNull(createdTask.getBusinessProcessId());
@@ -80,6 +86,29 @@ public class CreateTaskAccTest extends AbstractAccTest {
         assertEquals(2, createdTask.getPriority());
         assertEquals(false, createdTask.isRead());
         assertEquals(false, createdTask.isTransferred());
+    }
+
+    @WithAccessId(
+        userName = "user_1_1",
+        groupNames = { "group_1" })
+    @Test
+    public void testCreateTaskWithPlanned()
+        throws NotAuthorizedException, InvalidArgumentException,
+        ClassificationNotFoundException, WorkbasketNotFoundException, TaskAlreadyExistException {
+
+        TaskService taskService = taskanaEngine.getTaskService();
+        Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+        newTask.setClassificationKey("T2100");
+        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+        newTask.setOwner("user_1_1");
+        newTask.setPlanned(Instant.now().plus(2, ChronoUnit.HOURS));
+        Task createdTask = taskService.createTask(newTask);
+
+        assertNotNull(createdTask);
+        assertNotNull(createdTask.getCreated());
+        assertNotNull(createdTask.getPlanned());
+        assertEquals(createdTask.getCreated().plus(2, ChronoUnit.HOURS).truncatedTo(ChronoUnit.SECONDS),
+                createdTask.getPlanned().truncatedTo(ChronoUnit.SECONDS));
     }
 
     @WithAccessId(
@@ -414,14 +443,6 @@ public class CreateTaskAccTest extends AbstractAccTest {
         }
     }
 
-    private Task makeNewTask(TaskService taskService) {
-        Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
-        newTask.setClassificationKey("L12010");
-        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-        newTask.setClassificationKey("L12010");
-        return newTask;
-    }
-
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
@@ -505,7 +526,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         newTask.setClassificationKey("T2100");
         try {
             taskService.createTask(newTask);
-            fail("Should have thrown an InvalidArgumentException, becasue ObjRef is null.");
+            fail("Should have thrown an InvalidArgumentException, because ObjRef is null.");
         } catch (InvalidArgumentException ex) {
             // nothing to do
         }
@@ -656,6 +677,52 @@ public class CreateTaskAccTest extends AbstractAccTest {
         Task retrievedTask = taskService.getTask(createdTask.getId());
         assertEquals(callbackInfo, retrievedTask.getCallbackInfo());
 
+    }
+
+    @Test(expected = NotAuthorizedException.class)
+    public void testCreateTaskWithSecurityButNoUserId()
+        throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
+        TaskAlreadyExistException, InvalidArgumentException {
+
+        TaskService taskService = taskanaEngine.getTaskService();
+        Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+        newTask.setClassificationKey("T2100");
+        newTask.setPrimaryObjRef(createObjectReference("COMPANY_B", "SYSTEM_B", "INSTANCE_B", "VNR", "1234567"));
+        taskService.createTask(newTask);
+    }
+
+    @WithAccessId(
+        userName = "user_1_1",
+        groupNames = {"group_1"})
+    @Test(expected = TaskAlreadyExistException.class)
+    public void testCreateTaskAlreadyExisting()
+        throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
+        TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException {
+
+        TaskService taskService = taskanaEngine.getTaskService();
+        Task existingTask = taskService.getTask("TKI:000000000000000000000000000000000000");
+        taskService.createTask(existingTask);
+    }
+
+    @WithAccessId(
+        userName = "user_1_1",
+        groupNames = {"group_1"})
+    @Test(expected = NotAuthorizedException.class)
+    public void testCreateTaskNotAuthorizedOnWorkbasket() throws WorkbasketNotFoundException,
+        ClassificationNotFoundException, NotAuthorizedException, TaskAlreadyExistException,
+        InvalidArgumentException {
+
+        TaskService taskService = taskanaEngine.getTaskService();
+        Task task = taskService.newTask("TEAMLEAD_2", "DOMAIN_A");
+        taskService.createTask(task);
+    }
+
+    private Task makeNewTask(TaskService taskService) {
+        Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+        newTask.setClassificationKey("L12010");
+        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+        newTask.setClassificationKey("L12010");
+        return newTask;
     }
 
 }
