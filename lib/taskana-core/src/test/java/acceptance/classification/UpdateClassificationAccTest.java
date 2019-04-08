@@ -288,7 +288,6 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         classificationService.updateClassification(classification);
     }
 
-
     @WithAccessId(
         userName = "dummy",
         groupNames = {"businessadmin"})

@@ -43,7 +43,7 @@ public class TaskCleanupJobAccTest extends AbstractAccTest {
     @Test
     public void shouldCleanCompletedTasksUntilDate() throws Exception {
         long totalTasksCount = taskService.createTaskQuery().count();
-        assertEquals(72, totalTasksCount);
+        assertEquals(73, totalTasksCount);
 
         taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(false);
 
@@ -51,14 +51,14 @@ public class TaskCleanupJobAccTest extends AbstractAccTest {
         job.run();
 
         totalTasksCount = taskService.createTaskQuery().count();
-        assertEquals(66, totalTasksCount);
+        assertEquals(67, totalTasksCount);
     }
 
     @WithAccessId(userName = "admin")
     @Test
     public void shouldCleanCompletedTasksUntilDateWithSameParentBussiness() throws Exception {
         long totalTasksCount = taskService.createTaskQuery().count();
-        assertEquals(67, totalTasksCount);
+        assertEquals(68, totalTasksCount);
 
         taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(true);
 
@@ -77,7 +77,7 @@ public class TaskCleanupJobAccTest extends AbstractAccTest {
         job.run();
 
         totalTasksCount = taskService.createTaskQuery().count();
-        assertEquals(66, totalTasksCount);
+        assertEquals(67, totalTasksCount);
     }
 
     @WithAccessId(userName = "admin")

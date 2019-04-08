@@ -204,6 +204,10 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         assertFalse(updatedTask2.isRead());
         assertFalse(updatedTask2.getModified().isBefore(updatedTask.getModified()));
 
+        try {
+            taskService.setTaskRead("INVALID", true);
+            fail("TaskNotFoundException should have been thrown.");
+        } catch (TaskNotFoundException e) { }
     }
 
     @WithAccessId(
