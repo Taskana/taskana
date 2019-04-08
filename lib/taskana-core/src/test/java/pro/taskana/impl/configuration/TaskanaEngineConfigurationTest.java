@@ -119,7 +119,7 @@ public class TaskanaEngineConfigurationTest {
      * @param propertiesFileName
      * @return
      */
-    private static DataSource createDataSourceFromProperties(String propertiesFileName) {
+    public static DataSource createDataSourceFromProperties(String propertiesFileName) {
         DataSource ds = null;
         try (InputStream input = new FileInputStream(propertiesFileName)) {
             Properties prop = new Properties();

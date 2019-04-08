@@ -31,6 +31,7 @@ import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketType;
+import pro.taskana.configuration.DbSchemaCreator;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
@@ -68,24 +69,26 @@ import pro.taskana.security.WithAccessId;
 @RunWith(JAASRunner.class)
 public class TaskServiceImplIntExplicitTest {
 
-    private DataSource dataSource;
-    private TaskServiceImpl taskServiceImpl;
-    private TaskanaEngineConfiguration taskanaEngineConfiguration;
-    private TaskanaEngine taskanaEngine;
-    private TaskanaEngineImpl taskanaEngineImpl;
-    private ClassificationService classificationService;
-    private WorkbasketService workbasketService;
-
-    @BeforeClass
-    public static void resetDb() {
-        DataSource ds = TaskanaEngineConfigurationTest.getDataSource();
-        DBCleaner cleaner = new DBCleaner();
-        cleaner.clearDb(ds, true);
-    }
+    private static DataSource dataSource;
+    private static DBCleaner cleaner;
+    private static TaskServiceImpl taskServiceImpl;
+    private static TaskanaEngineConfiguration taskanaEngineConfiguration;
+    private static TaskanaEngine taskanaEngine;
+    private static TaskanaEngineImpl taskanaEngineImpl;
+    private static ClassificationService classificationService;
+    private static WorkbasketService workbasketService;
 
     @Before
-    public void setup() throws SQLException {
-        dataSource = TaskanaEngineConfigurationTest.getDataSource();
+    public void resetDb() {
+        cleaner.clearDb(dataSource, false);
+    }
+
+    @BeforeClass
+    public static void setup() throws SQLException {
+        String userHomeDirectroy = System.getProperty("user.home");
+        String propertiesFileName = userHomeDirectroy + "/taskanaUnitTest.properties";
+
+        dataSource = TaskanaEngineConfigurationTest.createDataSourceFromProperties(propertiesFileName);
         taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false,
             TaskanaEngineConfigurationTest.getSchemaName());
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
@@ -94,8 +97,10 @@ public class TaskServiceImplIntExplicitTest {
         classificationService = taskanaEngine.getClassificationService();
         taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.EXPLICIT);
         workbasketService = taskanaEngine.getWorkbasketService();
-        DBCleaner cleaner = new DBCleaner();
-        cleaner.clearDb(dataSource, false);
+        cleaner = new DBCleaner();
+        cleaner.clearDb(dataSource, true);
+        DbSchemaCreator creator = new DbSchemaCreator(dataSource, dataSource.getConnection().getSchema());
+        creator.run();
     }
 
     @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})

@@ -80,4 +80,16 @@ public class GetTaskAccTest extends AbstractAccTest {
         assertEquals("custom15", task.getCustomAttribute("15"));
         assertEquals("custom16", task.getCustomAttribute("16"));
     }
+
+    @WithAccessId(
+        userName = "user_1_1",
+        groupNames = {"group_1"})
+    @Test(expected = TaskNotFoundException.class)
+    public void testGetTaskByIdNotExisting()
+        throws TaskNotFoundException, NotAuthorizedException {
+        TaskService taskService = taskanaEngine.getTaskService();
+
+        taskService.getTask("INVALID");
+    }
+
 }

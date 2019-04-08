@@ -35,7 +35,7 @@ import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 
 /**
- * Acceptance test for all "update task" scenarios.
+ * Acceptance test for all "transfer task" scenarios.
  */
 @RunWith(JAASRunner.class)
 public class TransferTaskAccTest extends AbstractAccTest {
@@ -112,6 +112,43 @@ public class TransferTaskAccTest extends AbstractAccTest {
         Task task = taskService.getTask("TKI:000000000000000000000000000000000001");
 
         taskService.transfer(task.getId(), "WBI:100000000000000000000000000000000005");
+    }
+
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
+    @Test(expected = WorkbasketNotFoundException.class)
+    public void testTransferDestinationWorkbasketDoesNotExist()
+        throws NotAuthorizedException, WorkbasketNotFoundException, TaskNotFoundException, InvalidStateException,
+        InvalidOwnerException {
+        TaskService taskService = taskanaEngine.getTaskService();
+        Task task = taskService.getTask("TKI:000000000000000000000000000000000003");
+        taskService.claim(task.getId());
+        taskService.setTaskRead(task.getId(), true);
+
+        taskService.transfer(task.getId(), "INVALID");
+    }
+
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"group_1"})
+    @Test(expected = TaskNotFoundException.class)
+    public void testTransferTaskDoesNotExist()
+        throws NotAuthorizedException, WorkbasketNotFoundException, TaskNotFoundException, InvalidStateException {
+        TaskService taskService = taskanaEngine.getTaskService();
+
+        taskService.transfer("Invalid", "WBI:100000000000000000000000000000000006");
+    }
+
+    @WithAccessId(
+        userName = "teamlead_1",
+        groupNames = {"teamlead_1"})
+    @Test(expected = NotAuthorizedException.class)
+    public void testTransferNotAuthorizationOnWorkbasketTransfer()
+        throws NotAuthorizedException, WorkbasketNotFoundException, TaskNotFoundException, InvalidStateException {
+        TaskService taskService = taskanaEngine.getTaskService();
+
+        taskService.transfer("TKI:200000000000000000000000000000000007", "WBI:100000000000000000000000000000000006");
     }
 
     @WithAccessId(

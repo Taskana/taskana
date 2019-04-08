@@ -107,7 +107,7 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
             .orderByCreated(asc)
             .list();
 
-        assertThat(results.size(), equalTo(37));
+        assertThat(results.size(), equalTo(38));
         TaskSummary previousSummary = null;
         for (TaskSummary taskSummary : results) {
             Instant cr = taskSummary.getCreated();

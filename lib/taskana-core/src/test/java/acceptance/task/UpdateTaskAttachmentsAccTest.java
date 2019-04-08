@@ -102,6 +102,29 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
+    @Test
+    public void testAddValidAttachmentTwice()
+        throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
+        NotAuthorizedException,
+        AttachmentPersistenceException {
+        setUpMethod();
+        task.getAttachments().clear();
+        task = taskService.updateTask(task);
+        task = taskService.getTask(task.getId());
+        assertEquals(0, task.getAttachments().size());
+
+        AttachmentImpl attachment = (AttachmentImpl) this.attachment;
+        attachment.setId("TAI:000017");
+        task.addAttachment(attachment);
+        task.addAttachment(attachment);
+        task = taskService.updateTask(task);
+
+        assertEquals(1, task.getAttachments().size());
+    }
+
+    @WithAccessId(
+        userName = "user_1_1",
+        groupNames = {"group_1"})
     @Test(expected = AttachmentPersistenceException.class)
     public void testAddNewAttachmentTwiceWithoutTaskanaMethodWillThrowAttachmentPersistenceException()
         throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
@@ -505,6 +528,9 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         task.addAttachment(attachment);
         taskService.updateTask(task);
         Task updatedTask = taskService.getTask("TKI:000000000000000000000000000000000000");
-        assertEquals("TEST_VALUE", updatedTask.getAttachments().get(0).getCustomAttributes().get("TEST_KEY"));
+        Attachment updatedAttachment = updatedTask.getAttachments().stream()
+                .filter(a -> attachment.getId().equals(a.getId())).findFirst().orElse(null);
+        assertNotNull(updatedAttachment);
+        assertEquals("TEST_VALUE", updatedAttachment.getCustomAttributes().get("TEST_KEY"));
     }
 }
