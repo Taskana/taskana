@@ -63,11 +63,6 @@
 		</dependency>
 		<dependency>
 			<groupId>pro.taskana</groupId>
-			<artifactId>taskana-rest-spring</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>pro.taskana</groupId>
 			<artifactId>taskana-rest-spring-base</artifactId>
 			<version>${project.version}</version>
 		</dependency>

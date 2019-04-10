@@ -42,11 +42,6 @@
 		</dependency>
 		<dependency>
 			<groupId>pro.taskana</groupId>
-			<artifactId>taskana-core</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>pro.taskana</groupId>
 			<artifactId>taskana-spring</artifactId>
 			<version>${project.version}</version>
 		</dependency>

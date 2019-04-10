@@ -181,11 +181,6 @@
             <artifactId>taskana-web</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>pro.taskana</groupId>
-            <artifactId>taskana-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         <!-- Tests -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

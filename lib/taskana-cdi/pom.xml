@@ -153,7 +153,6 @@
 			<groupId>pro.taskana</groupId>
 			<artifactId>taskana-core</artifactId>
 			<version>${project.version}</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
