@@ -53,11 +53,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>pro.taskana</groupId>
-			<artifactId>taskana-rest-spring</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
@@ -97,11 +92,6 @@
 		</dependency>
 		-->
 
-		<dependency>
-			<groupId>pro.taskana</groupId>
-			<artifactId>taskana-core</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
