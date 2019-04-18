@@ -21,7 +21,7 @@ public class TaskStatusReport extends Report<TaskQueryItem, TaskStatusColumnHead
     public TaskStatusReport(List<TaskState> filter) {
         super((filter != null ? filter.stream() : Stream.of(TaskState.values()))
             .map(TaskStatusColumnHeader::new)
-            .collect(Collectors.toList()), "DOMAINS");
+            .collect(Collectors.toList()), new String[] {"DOMAINS"});
     }
 
     /**

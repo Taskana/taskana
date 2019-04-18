@@ -68,17 +68,15 @@ public class MonitorControllerRestDocumentation {
             fieldWithPath("meta.name").description("Name of the report"),
             fieldWithPath("meta.date").description("Date of the report creation"),
             fieldWithPath("meta.header").description("Column-headers of the report"),
-            fieldWithPath("meta.expHeader").description(
-                "Expandable Column-headers which match the depth of the foldable rows within the report."),
             fieldWithPath("meta.rowDesc").description("Descriptions for the rows the report"),
-            fieldWithPath("meta.totalDesc").description("Description for the report itself"),
-            subsectionWithPath("rows").description("Object holding the rows of the report.\n"
-                + "For the exact structure please check the example response above"),
-            fieldWithPath("sumRow").description("Object holding the sums in the columns over all rows"),
-            subsectionWithPath("sumRow.cells")
-                .description("Contains the accumulated numbers over all columns defined in meta.header.\n"
-                + "For the exact structure please check the example response above"),
-            fieldWithPath("sumRow.total").description("Total number of tasks"),
+            fieldWithPath("meta.totalDesc").description("Description for the sum column"),
+            fieldWithPath("rows").description("Array holding the rows of the report."),
+            fieldWithPath("rows[].cells").description("Array holding all the cell values of the given row"),
+            fieldWithPath("rows[].total").description("Sum of all values of the given row"),
+            fieldWithPath("rows[].depth").description("Depth of the row. If the depth is > 0, then this row is a sub-row of a prior row"),
+            fieldWithPath("rows[].desc").description("Array containing description of the row."),
+            fieldWithPath("rows[].display").description("Boolean identifying if the given row should be initially displayed or not."),
+            subsectionWithPath("sumRow").description("Array holding the sums in the columns over all rows. Structure same as 'rows'"),
             fieldWithPath("_links.self.href").ignored()
         };
     }
@@ -113,6 +111,17 @@ public class MonitorControllerRestDocumentation {
             .header("Authorization", "Basic YWRtaW46YWRtaW4="))
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andDo(MockMvcRestDocumentation.document("GetTaskClassificationReportDocTest",
+                responseFields(taskReportFieldDescriptors)));
+    }
+
+    @Test
+    public void getTimestampReport() throws Exception {
+        this.mockMvc.perform(RestDocumentationRequestBuilders
+            .get("http://127.0.0.1:" + port + "/v1/monitor/timestamp-report")
+            .accept("application/hal+json")
+            .header("Authorization", "Basic YWRtaW46YWRtaW4="))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andDo(MockMvcRestDocumentation.document("GetTimestampReportDocTest",
                 responseFields(taskReportFieldDescriptors)));
     }
 }

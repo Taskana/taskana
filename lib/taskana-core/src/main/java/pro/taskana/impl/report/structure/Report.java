@@ -24,18 +24,12 @@ public abstract class Report<I extends QueryItem, H extends ColumnHeader<? super
     protected List<H> columnHeaders;
     private Map<String, Row<I>> reportRows = new LinkedHashMap<>();
     private Row<I> sumRow;
-    private String rowDesc;
-    private String[] expandableHeaders;
+    private String[] rowDesc;
 
-    protected Report(List<H> columnHeaders, String rowDesc, String[] expandableHeaders) {
+    protected Report(List<H> columnHeaders, String[] rowDesc) {
         this.rowDesc = rowDesc;
         sumRow = createRow(columnHeaders.size());
         this.columnHeaders = new ArrayList<>(columnHeaders);
-        this.expandableHeaders = expandableHeaders;
-    }
-
-    protected Report(List<H> columnHeaders, String rowDesc) {
-        this(columnHeaders, rowDesc, new String[0]);
     }
 
     public final Map<String, Row<I>> getRows() {
@@ -50,12 +44,8 @@ public abstract class Report<I extends QueryItem, H extends ColumnHeader<? super
         return columnHeaders;
     }
 
-    public final String getRowDesc() {
+    public final String[] getRowDesc() {
         return rowDesc;
-    }
-
-    public final String[] getExpandableHeaders() {
-        return expandableHeaders;
     }
 
     public Row<I> getRow(String key) {

@@ -29,7 +29,7 @@ public class ReportTest {
 
     @Before
     public void before() {
-        this.report = new Report<MonitorQueryItem, TimeIntervalColumnHeader>(HEADERS, "rowDesc") {
+        this.report = new Report<MonitorQueryItem, TimeIntervalColumnHeader>(HEADERS, new String[] {"rowDesc"}) {
 
         };
 
@@ -116,7 +116,8 @@ public class ReportTest {
     @Test
     public void testInsertItemWithNoColumnHeaders() {
         //given
-        report = new Report<MonitorQueryItem, TimeIntervalColumnHeader>(Collections.emptyList(), "rowDesc") {
+        report = new Report<MonitorQueryItem, TimeIntervalColumnHeader>(Collections.emptyList(),
+            new String[] {"rowDesc"}) {
 
         };
 
@@ -148,7 +149,7 @@ public class ReportTest {
         //given
         List<TimeIntervalColumnHeader> headers = new ArrayList<>(HEADERS);
         headers.add(new TimeIntervalColumnHeader(0, 3));
-        report = new Report<MonitorQueryItem, TimeIntervalColumnHeader>(headers, "rowDesc") {
+        report = new Report<MonitorQueryItem, TimeIntervalColumnHeader>(headers, new String[] {"rowDesc"}) {
 
         };
         item.setAgeInDays(2);

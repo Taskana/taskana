@@ -15,7 +15,7 @@ import pro.taskana.impl.report.structure.Report;
 public class TimestampReport extends Report<TimestampQueryItem, TimeIntervalColumnHeader> {
 
     public TimestampReport(List<TimeIntervalColumnHeader> dates) {
-        super(dates, "STATES", new String[] {"ORG LEVEL 1", "ORG LEVEL 2", "ORG LEVEL 3", "ORG LEVEL 4"});
+        super(dates, new String[] {"STATES", "ORG LEVEL 1", "ORG LEVEL 2", "ORG LEVEL 3", "ORG LEVEL 4"});
     }
 
     @Override
