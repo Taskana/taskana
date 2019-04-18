@@ -1,6 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ReportData} from 'app/monitor/models/report-data';
-import {ReportInfoDataIterable} from '../models/report-info-data';
 
 @Component({
   selector: 'taskana-report',
@@ -10,24 +9,10 @@ import {ReportInfoDataIterable} from '../models/report-info-data';
 export class ReportComponent implements OnInit {
 
 
-  expHeaders: Array<number>;
   currentExpHeaders = 0;
-  _sumRow: ReportInfoDataIterable;
-
-  private _reportData: ReportData;
-
-  get reportData(): ReportData {
-    return this._reportData;
-  }
 
   @Input()
-  set reportData(reportData: ReportData) {
-    this._reportData = reportData;
-    this.expHeaders = new Array<number>(Object.keys(reportData.rows).length + 1).fill(0);
-    this._sumRow = new ReportInfoDataIterable();
-    this._sumRow.val = reportData.sumRow;
-    this._sumRow.key = reportData.meta.totalDesc;
-  }
+  reportData: ReportData;
 
   constructor() {
   }
@@ -35,10 +20,30 @@ export class ReportComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  expandHeader(depth: number, index: number) {
-    this.expHeaders[index] = depth;
-    this.currentExpHeaders = Math.max(...this.expHeaders);
+  toggleFold(index: number, sumRow: boolean = false) {
+    const rows = sumRow ? this.reportData.sumRow : this.reportData.rows;
+    const toggleRow = rows[index++];
+    if (toggleRow.depth < this.reportData.meta.rowDesc.length - 1) {
+      const firstChildRow = rows[index++];
+      firstChildRow.display = !firstChildRow.display;
+
+      let end = false;
+      for (let i = index; i < rows.length && !end; i++) {
+        const row = rows[i];
+        end = row.depth <= toggleRow.depth;
+        if (!end) {
+          row.display = firstChildRow.display && row.depth === firstChildRow.depth;
+        }
+      }
+      this.currentExpHeaders = Math.max(
+        ...this.reportData.rows.filter(r => r.display).map(r => r.depth),
+        ...this.reportData.sumRow.filter(r => r.display).map(r => r.depth)
+      );
+    }
   }
 
-
+  canRowCollapse(index: number, sumRow: boolean = false) {
+    const rows = sumRow ? this.reportData.sumRow : this.reportData.rows;
+    return !rows[index + 1].display;
+  }
 }

@@ -658,6 +658,22 @@ include::../../../{snippets}/GetTaskClassificationReportDocTest/http-response.ad
 
 Same as task status report
 
+=== Get a timestamp report
+
+A `GET` request is used to get the number of tasks sorted by a task timestamp.
+
+==== Example Request
+
+include::../../../{snippets}/GetTimestampReportDocTest/http-request.adoc[]
+
+==== Example Response
+
+include::../../../{snippets}/GetTimestampReportDocTest/http-response.adoc[]
+
+==== Response Structure
+
+Same as task status report
+
 == Other Resources (using the TaskanaEngineController)
 
 These resources are directly connected to the Taskana Engine endpoint.

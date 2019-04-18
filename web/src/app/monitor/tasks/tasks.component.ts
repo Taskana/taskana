@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { RestConnectorService } from '../services/restConnector/rest-connector.service';
-import { ReportData } from 'app/monitor/models/report-data';
+import {Component, OnInit} from '@angular/core';
+import {RestConnectorService} from '../services/restConnector/rest-connector.service';
+import {ReportData} from 'app/monitor/models/report-data';
 
 @Component({
   selector: 'taskana-monitor-tasks',
@@ -21,10 +21,8 @@ export class TasksComponent implements OnInit {
   ngOnInit() {
     this.restConnectorService.getTaskStatusReport().subscribe((data: ReportData) => {
       this.reportData = data;
-      this.pieChartLabels = Object.keys(data.sumRow.cells);
-      Object.keys(data.sumRow.cells).forEach(key => {
-        this.pieChartData.push(data.sumRow.cells[key]);
-      })
+      this.pieChartLabels = data.meta.header;
+      data.sumRow[0].cells.forEach(c => this.pieChartData.push(c));
 
     })
 

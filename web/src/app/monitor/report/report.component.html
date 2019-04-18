@@ -1,30 +1,64 @@
-<div *ngIf="reportData" class="report table table-body-striped">
+<div *ngIf="reportData" class="report table table-striped">
     <div class="table-header">
         <div class="table-row">
-            <div
-                [ngClass]="{'table-cell--border-right': currentExpHeaders === 0}"
-                class="table-cell table-cell--bold table-cell--justify">{{reportData.meta.rowDesc}}</div>
-            <ng-container *ngFor="let header of reportData.meta.expHeader; let i = index">
-                <ng-container *ngIf="i < currentExpHeaders">
-                    <div [ngClass]="{'table-cell--border-right': currentExpHeaders - 1 === i}"
-                         class="table-cell table-cell--bold table-cell--justify">{{header}}</div>
-                </ng-container>
+            <ng-container *ngFor="let header of reportData.meta.rowDesc; let i = index">
+                <div *ngIf="i <= currentExpHeaders"
+                     [ngClass]="{'table-cell--border-right': currentExpHeaders === i}"
+                     class="table-cell table-cell--bold table-cell--justify">{{header}}</div>
             </ng-container>
             <div *ngFor="let header of reportData.meta.header"
                  class="table-cell table-cell--bold">{{header}}</div>
             <div class="table-cell table-cell--bold table-cell--border-left">{{reportData.meta.totalDesc}}</div>
         </div>
     </div>
-    <taskana-report-row (expandedDepth)="expandHeader($event, i)"
-                        *ngFor="let row of reportData.rows | mapToIterable | orderBy:['key']; let i = index"
-                        [headers]="reportData.meta.header"
-                        [maxTableDepth]="currentExpHeaders"
-                        [row]="row"
-                        class="table-body"></taskana-report-row>
-    <taskana-report-row (expandedDepth)="expandHeader($event, expHeaders.length - 1)"
-                        [headers]="reportData.meta.header"
-                        [maxTableDepth]="currentExpHeaders"
-                        [row]="_sumRow"
-                        bold="true"
-                        class="table-footer"></taskana-report-row>
+    <div class="table-body">
+        <ng-container *ngFor="let row of reportData.rows; let i = index">
+            <div *ngIf="row.display" [ngClass]="{'table-row--highlight': row.depth === 0 && currentExpHeaders > 0,
+             'table-row--hover': row.depth > 0 && currentExpHeaders > 0,
+             'table-row--white': row.depth > 0 && currentExpHeaders > 0}" class="table-row">
+                <ng-container *ngFor="let header of row.desc; let idx = index">
+                    <div (click)="toggleFold(i)" *ngIf="idx <= currentExpHeaders"
+                         [ngClass]="{'table-cell--border-right': currentExpHeaders === idx,
+                         'table-cell--bold': row.depth === 0 && currentExpHeaders > 0,
+                         'table-cell--clickable': reportData.meta.rowDesc.length - 1 > row.depth}"
+                         class="table-cell table-cell--justify">
+                        <span *ngIf="reportData.meta.rowDesc.length - 1 > row.depth && idx === row.depth"
+                              class="material-icons md-18">{{ canRowCollapse(i) ? "expand_more" : "expand_less"}}</span>
+                        {{header}}
+                    </div>
+                </ng-container>
+                <div *ngFor="let val of row.cells"
+                     [ngClass]="{'table-cell--bold': row.depth === 0 && currentExpHeaders > 0}" class="table-cell">
+                    {{val}}
+                </div>
+                <div class="table-cell table-cell--bold table-cell--border-left">
+                    {{row.total}}
+                </div>
+            </div>
+        </ng-container>
+    </div>
+    <div class="table-footer">
+        <ng-container *ngFor="let row of reportData.sumRow; let i = index">
+            <div *ngIf="row.display" [ngClass]="{'table-row--highlight': row.depth === 0 && currentExpHeaders > 0,
+             'table-row--hover': row.depth > 0 && currentExpHeaders > 0,
+             'table-row--white': row.depth > 0 && currentExpHeaders > 0}" class="table-row">
+                <ng-container *ngFor="let header of row.desc; let idx = index">
+                    <div (click)="toggleFold(i, true)" *ngIf="idx <= currentExpHeaders"
+                         [ngClass]="{'table-cell--border-right': currentExpHeaders === idx,
+                         'table-cell--clickable': reportData.meta.rowDesc.length - 1 > row.depth}"
+                         class="table-cell table-cell--bold table-cell--justify">
+                        <span *ngIf="reportData.meta.rowDesc.length - 1 > row.depth && idx === row.depth"
+                              class="material-icons md-18">{{ canRowCollapse(i, true) ? "expand_more" : "expand_less"}}</span>
+                        {{header}}
+                    </div>
+                </ng-container>
+                <div *ngFor="let val of row.cells" class="table-cell table-cell--bold">
+                    {{val}}
+                </div>
+                <div class="table-cell table-cell--bold table-cell--border-left">
+                    {{row.total}}
+                </div>
+            </div>
+        </ng-container>
+    </div>
 </div>

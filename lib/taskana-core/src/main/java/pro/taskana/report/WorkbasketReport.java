@@ -22,7 +22,7 @@ import pro.taskana.impl.report.structure.Report;
 public class WorkbasketReport extends Report<MonitorQueryItem, TimeIntervalColumnHeader> {
 
     public WorkbasketReport(List<TimeIntervalColumnHeader> timeIntervalColumnHeaders) {
-        super(timeIntervalColumnHeaders, "WORKBASKET KEYS");
+        super(timeIntervalColumnHeaders, new String[] {"WORKBASKET KEYS"});
     }
 
     /**

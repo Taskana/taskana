@@ -19,7 +19,7 @@ import pro.taskana.impl.report.structure.Report;
 public class CategoryReport extends Report<MonitorQueryItem, TimeIntervalColumnHeader> {
 
     public CategoryReport(List<TimeIntervalColumnHeader> timeIntervalColumnHeaders) {
-        super(timeIntervalColumnHeaders, "CLASSIFICATION CATEGORIES");
+        super(timeIntervalColumnHeaders, new String[] {"CLASSIFICATION CATEGORIES"});
     }
 
     /**
