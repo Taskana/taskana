@@ -4,9 +4,11 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import java.time.Instant;
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
@@ -80,65 +82,52 @@ public class ReportAssembler {
             report.getClass().getSimpleName(),
             time.toString(),
             header,
-            report.getExpandableHeaders(), report.getRowDesc());
+            report.getRowDesc());
 
         // iterate over each Row and transform it to a RowResource while keeping the domain key.
-        Map<String, ReportResource.RowResource> rows = report.getRows()
+        List<ReportResource.RowResource> rows = report.getRows()
             .entrySet()
             .stream()
-            .collect(Collectors.toMap(Map.Entry::getKey, i -> transformRow(i.getValue(), header)));
+            .sorted(Comparator.comparing(e -> e.getKey().toLowerCase()))
+            .map(i -> transformRow(i.getValue(), i.getKey(), new String[report.getRowDesc().length], 0))
+            .flatMap(Collection::stream)
+            .collect(Collectors.toList());
 
-        ReportResource.RowResource sumRow = transformRow(report.getSumRow(), header);
+        List<ReportResource.RowResource> sumRow = transformRow(report.getSumRow(), meta.getTotalDesc(),
+            new String[report.getRowDesc().length], 0);
 
         return new ReportResource(meta, rows, sumRow);
     }
 
-    private <I extends QueryItem> ReportResource.RowResource transformRow(Row<I> row, String[] header) {
+    private <I extends QueryItem> List<ReportResource.RowResource> transformRow(Row<I> row, String currentDesc,
+        String[] desc, int depth) {
         // This is a very dirty solution.. Personally I'd prefer to use a visitor-like pattern here.
         // The issue with that: Addition of the visitor code within taskana-core - and having clean code is not
         // a reason to append code somewhere where it doesn't belong.
         if (row.getClass() == SingleRow.class) {
-            return transformSingleRow((SingleRow<I>) row, header);
+            return Collections.singletonList(transformSingleRow((SingleRow<I>) row, currentDesc, desc, depth));
         }
-        return transformFoldableRow((FoldableRow<I>) row, header);
+        return transformFoldableRow((FoldableRow<I>) row, currentDesc, desc, depth);
     }
 
-    private <I extends QueryItem> ReportResource.SingleRowResource transformSingleRow(SingleRow<I> row,
-        String[] header) {
-        Map<String, Integer> result = new HashMap<>();
-        int[] cells = row.getCells();
-        for (int i = 0; i < cells.length; i++) {
-            result.put(header[i], cells[i]);
-        }
-        return new ReportResource.SingleRowResource(result, row.getTotalValue());
+    private <I extends QueryItem> ReportResource.RowResource transformSingleRow(SingleRow<I> row, String currentDesc,
+        String[] previousRowDesc, int depth) {
+        String[] rowDesc = new String[previousRowDesc.length];
+        System.arraycopy(previousRowDesc, 0, rowDesc, 0, depth);
+        rowDesc[depth] = currentDesc;
+        return new ReportResource.RowResource(row.getCells(), row.getTotalValue(), depth, rowDesc, depth == 0);
     }
 
-    private <I extends QueryItem> ReportResource.FoldableRowResource transformFoldableRow(FoldableRow<I> row,
-        String[] header) {
-        ReportResource.FoldableRowResource base = new ReportResource.FoldableRowResource(
-            transformSingleRow(row, header));
+    private <I extends QueryItem> List<ReportResource.RowResource> transformFoldableRow(FoldableRow<I> row,
+        String currentDesc, String[] previousRowDesc, int depth) {
+        ReportResource.RowResource baseRow = transformSingleRow(row, currentDesc, previousRowDesc, depth);
+        List<ReportResource.RowResource> rowList = new LinkedList<>();
+        rowList.add(baseRow);
         row.getFoldableRowKeySet().stream()
-            .map(k -> new Pair<>(k, row.getFoldableRow(k)))
-            .map(p -> new Pair<>(p.key, transformRow(p.value, header)))
-            .forEachOrdered(p -> base.addRow(p.key, p.value));
-        return base;
+            .sorted(String.CASE_INSENSITIVE_ORDER)
+            .map(s -> transformRow(row.getFoldableRow(s), s, baseRow.getDesc(), depth + 1))
+            .flatMap(Collection::stream)
+            .forEachOrdered(rowList::add);
+        return rowList;
     }
-
-    /**
-     * Simple Pair (tuple).
-     * @param <K> key
-     * @param <V> value
-     */
-    private class Pair<K, V> {
-
-        private final K key;
-        private final V value;
-
-        Pair(K key, V value) {
-            this.key = key;
-            this.value = value;
-        }
-
-    }
-
 }

@@ -1,8 +1,8 @@
-import { ReportInfoData } from './report-info-data';
-import { MetaInfoData } from './meta-info-data';
+import {ReportRow} from './report-row';
+import {MetaInfoData} from './meta-info-data';
 
 export class ReportData {
-    meta: MetaInfoData;
-    rows: Map<string, ReportInfoData>;
-    sumRow: ReportInfoData;
+  meta: MetaInfoData;
+  rows: Array<ReportRow>;
+  sumRow: Array<ReportRow>;
 }

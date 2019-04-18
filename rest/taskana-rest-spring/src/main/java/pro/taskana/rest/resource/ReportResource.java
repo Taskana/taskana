@@ -1,12 +1,9 @@
 package pro.taskana.rest.resource;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import org.springframework.hateoas.ResourceSupport;
-
-import pro.taskana.impl.util.LoggerUtils;
 
 /**
  * Resource class for {@link pro.taskana.impl.report.structure.Report}.
@@ -15,11 +12,11 @@ public class ReportResource extends ResourceSupport {
 
     private MetaInformation meta;
 
-    private Map<String, RowResource> rows;
+    private List<RowResource> rows;
 
-    private RowResource sumRow;
+    private List<RowResource> sumRow;
 
-    public ReportResource(MetaInformation meta, Map<String, RowResource> rows, RowResource sumRow) {
+    public ReportResource(MetaInformation meta, List<RowResource> rows, List<RowResource> sumRow) {
         this.meta = meta;
         this.rows = rows;
         this.sumRow = sumRow;
@@ -29,73 +26,62 @@ public class ReportResource extends ResourceSupport {
         return meta;
     }
 
-    public Map<String, RowResource> getRows() {
+    public List<RowResource> getRows() {
         return rows;
     }
 
-    public RowResource getSumRow() {
+    public List<RowResource> getSumRow() {
         return sumRow;
-    }
-
-    /**
-     * Resource Interface for {@link pro.taskana.impl.report.structure.Row}.
-     */
-    public interface RowResource {
-
-        Map<String, Integer> getCells();
-
-        int getTotal();
     }
 
     /**
      * Resource class for {@link pro.taskana.impl.report.row.SingleRow}.
      */
-    public static class SingleRowResource implements RowResource {
+    public static class RowResource {
 
-        private Map<String, Integer> cells;
+        private int[] cells;
         private int total;
+        private int depth;
+        private String[] desc;
+        private boolean display;
 
-        public SingleRowResource(Map<String, Integer> cells, int total) {
+        public RowResource(int[] cells, int total, int depth, String[] desc, boolean display) {
             this.cells = cells;
             this.total = total;
+            this.depth = depth;
+            this.desc = desc;
+            this.display = display;
         }
 
-        @Override
-        public Map<String, Integer> getCells() {
+        @SuppressWarnings("unused")
+        public int[] getCells() {
             return cells;
         }
 
-        @Override
+        @SuppressWarnings("unused")
         public int getTotal() {
             return total;
         }
 
+        @SuppressWarnings("unused")
+        public int getDepth() {
+            return depth;
+        }
+
+        @SuppressWarnings("unused")
+        public String[] getDesc() {
+            return desc;
+        }
+
+        @SuppressWarnings("unused")
+        public boolean isDisplay() {
+            return display;
+        }
+
         @Override
         public String toString() {
-            return "SingleRowResource ["
-                + "rowDesc= " + LoggerUtils.mapToString(this.cells)
-                + "taskId= " + this.total
-                + "]";
-        }
-    }
-
-    /**
-     * Resource class for {@link pro.taskana.impl.report.row.FoldableRow}.
-     */
-    public static class FoldableRowResource extends SingleRowResource {
-
-        private Map<String, RowResource> foldableRows = new HashMap<>();
-
-        public FoldableRowResource(SingleRowResource row) {
-            super(row.getCells(), row.getTotal());
-        }
-
-        public void addRow(String desc, RowResource row) {
-            foldableRows.put(desc, row);
-        }
-
-        public Map<String, RowResource> getFoldableRows() {
-            return foldableRows;
+            return String.format("RowResourde [cells=%s, total=%d, depth=%d, desc=%s",
+                Arrays.toString(cells), total, depth, Arrays.toString(desc));
         }
     }
 
@@ -109,14 +95,12 @@ public class ReportResource extends ResourceSupport {
         private String name;
         private String date;
         private String[] header;
-        private String[] expHeader;
-        private String rowDesc;
+        private String[] rowDesc;
 
-        public MetaInformation(String name, String date, String[] header, String[] expHeader, String rowDesc) {
+        public MetaInformation(String name, String date, String[] header, String[] rowDesc) {
             this.name = name;
             this.date = date;
             this.header = header;
-            this.expHeader = expHeader;
             this.rowDesc = rowDesc;
         }
 
@@ -136,18 +120,14 @@ public class ReportResource extends ResourceSupport {
             return header;
         }
 
-        public String[] getExpHeader() {
-            return expHeader;
-        }
-
-        public String getRowDesc() {
+        public String[] getRowDesc() {
             return rowDesc;
         }
 
         @Override
         public String toString() {
-            return String.format("MetaInformation [name= %s, date= %s, header= %s, expHeader= %s, rowDesc= %s]",
-                name, date, Arrays.toString(header), Arrays.toString(expHeader), rowDesc);
+            return String.format("MetaInformation [name= %s, date= %s, header= %s, rowDesc= %s]",
+                name, date, Arrays.toString(header), Arrays.toString(rowDesc));
         }
     }
 }
