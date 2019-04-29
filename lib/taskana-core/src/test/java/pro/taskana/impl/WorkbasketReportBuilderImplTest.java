@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -33,8 +32,8 @@ import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.report.CombinedClassificationFilter;
-import pro.taskana.impl.report.item.MonitorQueryItem;
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.item.MonitorQueryItem;
 import pro.taskana.mappings.TaskMonitorMapper;
 import pro.taskana.report.WorkbasketReport;
 
@@ -61,9 +60,9 @@ public class WorkbasketReportBuilderImplTest {
         MockitoAnnotations.initMocks(this);
         Mockito.doNothing().when(taskanaEngineImplMock).openConnection();
         Mockito.doNothing().when(taskanaEngineImplMock).returnConnection();
-        doReturn(taskanaEngineConfiguration).when(taskanaEngineImplMock).getConfiguration();
-        doReturn(true).when(taskanaEngineConfiguration).isGermanPublicHolidaysEnabled();
-        doReturn(null).when(taskanaEngineConfiguration).getCustomHolidays();
+        when(taskanaEngineImplMock.getConfiguration()).thenReturn(taskanaEngineConfiguration);
+        when(taskanaEngineConfiguration.isGermanPublicHolidaysEnabled()).thenReturn(true);
+        when(taskanaEngineConfiguration.getCustomHolidays()).thenReturn(null);
     }
 
     @Test
@@ -86,9 +85,9 @@ public class WorkbasketReportBuilderImplTest {
         monitorQueryItem.setKey("WBI:000000000000000000000000000000000001");
         monitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(monitorQueryItem);
-        doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfWorkbaskets(workbasketIds, states,
+        when(taskMonitorMapperMock.getTaskCountOfWorkbaskets(workbasketIds, states,
             categories, domains, classificationIds, excludedClassificationIds, customAttributeFilter,
-            combinedClassificationFilter);
+            combinedClassificationFilter)).thenReturn(expectedResult);
 
         WorkbasketReport actualResult = cut.createWorkbasketReportBuilder()
             .workbasketIdIn(workbasketIds)
@@ -141,9 +140,9 @@ public class WorkbasketReportBuilderImplTest {
         monitorQueryItem.setAgeInDays(0);
         monitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(monitorQueryItem);
-        doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfWorkbaskets(workbasketIds, states,
+        when(taskMonitorMapperMock.getTaskCountOfWorkbaskets(workbasketIds, states,
             categories, domains, classificationIds, excludedClassificationIds, customAttributeFilter,
-            combinedClassificationFilter);
+            combinedClassificationFilter)).thenReturn(expectedResult);
 
         WorkbasketReport actualResult = cut.createWorkbasketReportBuilder()
             .workbasketIdIn(workbasketIds)

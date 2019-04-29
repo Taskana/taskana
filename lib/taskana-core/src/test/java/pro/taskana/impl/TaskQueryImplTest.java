@@ -1,7 +1,6 @@
 package pro.taskana.impl;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -29,23 +28,18 @@ import pro.taskana.TaskSummary;
 @RunWith(MockitoJUnitRunner.class)
 public class TaskQueryImplTest {
 
-    @InjectMocks
-    private TaskQueryImpl taskQueryImpl;
-
-    @Mock
-    private TaskanaEngineImpl taskanaEngine;
-
-    @Mock
-    private SqlSession sqlSession;
-
-    @Mock
-    private SqlSessionManager sqlSessionManager;
-
     @Mock
     ClassificationServiceImpl classificationService;
-
     @Mock
     TaskServiceImpl taskServiceMock;
+    @InjectMocks
+    private TaskQueryImpl taskQueryImpl;
+    @Mock
+    private TaskanaEngineImpl taskanaEngine;
+    @Mock
+    private SqlSession sqlSession;
+    @Mock
+    private SqlSessionManager sqlSessionManager;
 
     @Before
     public void setup() {
@@ -65,7 +59,7 @@ public class TaskQueryImplTest {
         when(sqlSession.selectList(any(), any())).thenReturn(new ArrayList<>());
         List<TaskSummary> intermediate = new ArrayList<>();
         intermediate.add(new TaskSummaryImpl());
-        doReturn(intermediate).when(taskServiceMock).augmentTaskSummariesByContainedSummaries(any());
+        when(taskServiceMock.augmentTaskSummariesByContainedSummaries(any())).thenReturn(intermediate);
 
         List<TaskSummary> result = taskQueryImpl.nameIn("test", "asd", "blubber")
             .priorityIn(1, 2)
@@ -80,7 +74,7 @@ public class TaskQueryImplTest {
         when(sqlSession.selectList(any(), any(), any())).thenReturn(new ArrayList<>());
         List<TaskSummary> intermediate = new ArrayList<>();
         intermediate.add(new TaskSummaryImpl());
-        doReturn(intermediate).when(taskServiceMock).augmentTaskSummariesByContainedSummaries(any());
+        when(taskServiceMock.augmentTaskSummariesByContainedSummaries(any())).thenReturn(intermediate);
 
         List<TaskSummary> result = taskQueryImpl.nameIn("test", "asd", "blubber")
             .priorityIn(1, 2)
@@ -95,8 +89,8 @@ public class TaskQueryImplTest {
         when(sqlSession.selectOne(any(), any())).thenReturn(new TaskSummaryImpl());
         List<TaskSummary> intermediate = new ArrayList<>();
         intermediate.add(new TaskSummaryImpl());
-        doReturn(intermediate).when(taskServiceMock).augmentTaskSummariesByContainedSummaries(any());
-        // when(taskServiceMock.augmentTaskSummariesByContainedSummaries(any())).thenReturn(intermediate);
+
+        when(taskServiceMock.augmentTaskSummariesByContainedSummaries(any())).thenReturn(intermediate);
 
         TaskSummary result = taskQueryImpl.nameIn("test", "asd", "blubber")
             .priorityIn(1, 2)

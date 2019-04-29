@@ -3,8 +3,8 @@ package pro.taskana.impl;
 import static junit.framework.TestCase.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 
@@ -67,7 +67,7 @@ public class ClassificationServiceImplTest {
         NotAuthorizedException, ClassificationAlreadyExistException {
         try {
             Classification classification = createDummyClassification();
-            doReturn(true).when(taskanaEngineImplMock).domainExists(any());
+            when(taskanaEngineImplMock.domainExists(any())).thenReturn(true);
             cutSpy.createClassification(classification);
         } catch (InvalidArgumentException e) {
             assertEquals(e.getMessage(), "ClassificationId should be null on creation");

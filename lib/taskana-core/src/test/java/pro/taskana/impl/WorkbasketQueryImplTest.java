@@ -43,9 +43,9 @@ public class WorkbasketQueryImplTest {
         when(sqlSession.selectList(any(), any())).thenReturn(new ArrayList<>());
 
         List<WorkbasketSummary> result = workbasketQueryImpl
-                .nameIn("Gruppenpostkorb KSC 1", "Gruppenpostkorb KSC 2")
-                .keyLike("GPK_%")
-                .list();
+            .nameIn("Gruppenpostkorb KSC 1", "Gruppenpostkorb KSC 2")
+            .keyLike("GPK_%")
+            .list();
         Assert.assertNotNull(result);
     }
 
@@ -55,9 +55,9 @@ public class WorkbasketQueryImplTest {
         when(sqlSession.selectList(any(), any(), any())).thenReturn(new ArrayList<>());
 
         List<WorkbasketSummary> result = workbasketQueryImpl
-                .nameIn("Gruppenpostkorb KSC 1", "Gruppenpostkorb KSC 2")
-                .keyLike("GPK_%")
-                .list(1, 1);
+            .nameIn("Gruppenpostkorb KSC 1", "Gruppenpostkorb KSC 2")
+            .keyLike("GPK_%")
+            .list(1, 1);
         Assert.assertNotNull(result);
     }
 
@@ -67,9 +67,9 @@ public class WorkbasketQueryImplTest {
         when(sqlSession.selectOne(any(), any())).thenReturn(new WorkbasketSummaryImpl());
 
         WorkbasketSummary result = workbasketQueryImpl
-                .nameIn("Gruppenpostkorb KSC 1", "Gruppenpostkorb KSC 2")
-                .keyLike("GPK_%")
-                .single();
+            .nameIn("Gruppenpostkorb KSC 1", "Gruppenpostkorb KSC 2")
+            .keyLike("GPK_%")
+            .single();
         Assert.assertNotNull(result);
     }
 }

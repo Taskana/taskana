@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -62,9 +61,9 @@ public class ClassificationReportBuilderImplTest {
         MockitoAnnotations.initMocks(this);
         Mockito.doNothing().when(taskanaEngineImplMock).openConnection();
         Mockito.doNothing().when(taskanaEngineImplMock).returnConnection();
-        doReturn(taskanaEngineConfiguration).when(taskanaEngineImplMock).getConfiguration();
-        doReturn(true).when(taskanaEngineConfiguration).isGermanPublicHolidaysEnabled();
-        doReturn(null).when(taskanaEngineConfiguration).getCustomHolidays();
+        when(taskanaEngineImplMock.getConfiguration()).thenReturn(taskanaEngineConfiguration);
+        when(taskanaEngineConfiguration.isGermanPublicHolidaysEnabled()).thenReturn(true);
+        when(taskanaEngineConfiguration.getCustomHolidays()).thenReturn(null);
     }
 
     @Test
@@ -83,8 +82,8 @@ public class ClassificationReportBuilderImplTest {
         monitorQueryItem.setKey("CLI:000000000000000000000000000000000001");
         monitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(monitorQueryItem);
-        doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfClassifications(workbasketIds, states,
-            categories, domains, classificationIds, excludedClassificationIds, customAttributeFilter);
+        when(taskMonitorMapperMock.getTaskCountOfClassifications(workbasketIds, states, categories, domains,
+            classificationIds, excludedClassificationIds, customAttributeFilter)).thenReturn(expectedResult);
 
         ClassificationReport actualResult = cut.createClassificationReportBuilder()
             .workbasketIdIn(workbasketIds)
@@ -133,8 +132,8 @@ public class ClassificationReportBuilderImplTest {
         monitorQueryItem.setAgeInDays(0);
         monitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(monitorQueryItem);
-        doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfClassifications(workbasketIds, states,
-            categories, domains, classificationIds, excludedClassificationIds, customAttributeFilter);
+        when(taskMonitorMapperMock.getTaskCountOfClassifications(workbasketIds, states, categories, domains,
+            classificationIds, excludedClassificationIds, customAttributeFilter)).thenReturn(expectedResult);
 
         ClassificationReport actualResult = cut.createClassificationReportBuilder()
             .workbasketIdIn(workbasketIds)
@@ -182,8 +181,8 @@ public class ClassificationReportBuilderImplTest {
         detailedMonitorQueryItem.setAttachmentKey("CLI:000000000000000000000000000000000006");
         detailedMonitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(detailedMonitorQueryItem);
-        doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfDetailedClassifications(workbasketIds,
-            states, categories, domains, classificationIds, excludedClassificationIds, customAttributeFilter);
+        when(taskMonitorMapperMock.getTaskCountOfDetailedClassifications(workbasketIds, states, categories, domains,
+            classificationIds, excludedClassificationIds, customAttributeFilter)).thenReturn(expectedResult);
 
         DetailedClassificationReport actualResult = cut.createClassificationReportBuilder()
             .workbasketIdIn(workbasketIds)
@@ -234,8 +233,8 @@ public class ClassificationReportBuilderImplTest {
         detailedMonitorQueryItem.setAgeInDays(0);
         detailedMonitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(detailedMonitorQueryItem);
-        doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfDetailedClassifications(workbasketIds,
-            states, categories, domains, classificationIds, excludedClassificationIds, customAttributeFilter);
+        when(taskMonitorMapperMock.getTaskCountOfDetailedClassifications(workbasketIds, states, categories, domains,
+            classificationIds, excludedClassificationIds, customAttributeFilter)).thenReturn(expectedResult);
 
         DetailedClassificationReport actualResult = cut.createClassificationReportBuilder()
             .workbasketIdIn(workbasketIds)
