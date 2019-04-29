@@ -15,6 +15,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -111,8 +112,8 @@ public class TaskServiceImplTest {
     @Before
     public void setup() throws WorkbasketNotFoundException {
         MockitoAnnotations.initMocks(this);
-        doReturn(workbasketServiceMock).when(taskanaEngineMock).getWorkbasketService();
-        doReturn(classificationServiceImplMock).when(taskanaEngineMock).getClassificationService();
+        when(taskanaEngineMock.getWorkbasketService()).thenReturn(workbasketServiceMock);
+        when(taskanaEngineMock.getClassificationService()).thenReturn(classificationServiceImplMock);
         try {
             Mockito.doNothing().when(workbasketServiceMock).checkAuthorization(any(), any());
         } catch (NotAuthorizedException e) {
@@ -134,14 +135,14 @@ public class TaskServiceImplTest {
         wb.setName("workbasket");
         wb.setDomain(dummyClassification.getDomain());
         doThrow(TaskNotFoundException.class).when(cutSpy).getTask(expectedTask.getId());
-        doReturn(wb).when(workbasketServiceMock).getWorkbasket(wb.getKey(), wb.getDomain());
+        when(workbasketServiceMock.getWorkbasket(wb.getKey(), wb.getDomain())).thenReturn(wb);
         doNothing().when(taskMapperMock).insert(expectedTask);
-        doReturn(dummyClassification).when(
-            classificationServiceImplMock)
-            .getClassification(dummyClassification.getKey(), dummyClassification.getDomain());
+        when(classificationServiceImplMock.getClassification(
+            dummyClassification.getKey(),
+            dummyClassification.getDomain())).thenReturn(dummyClassification);
         expectedTask.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
-        doReturn(taskanaEngineConfigurationMock).when(taskanaEngineMock).getConfiguration();
-        doReturn(false).when(taskanaEngineConfigurationMock).isSecurityEnabled();
+        when(taskanaEngineMock.getConfiguration()).thenReturn(taskanaEngineConfigurationMock);
+        when(taskanaEngineConfigurationMock.isSecurityEnabled()).thenReturn(false);
 
         Task actualTask = cutSpy.createTask(expectedTask);
 
@@ -180,14 +181,13 @@ public class TaskServiceImplTest {
         wb.setName("workbasket");
         wb.setDomain(dummyClassification.getDomain());
         doThrow(TaskNotFoundException.class).when(cutSpy).getTask(expectedTask.getId());
-        doReturn(wb).when(workbasketServiceMock).getWorkbasket(wb.getKey(), wb.getDomain());
+        when(workbasketServiceMock.getWorkbasket(wb.getKey(), wb.getDomain())).thenReturn(wb);
         doNothing().when(taskMapperMock).insert(expectedTask);
-        doReturn(dummyClassification).when(
-            classificationServiceImplMock)
-            .getClassification(dummyClassification.getKey(), dummyClassification.getDomain());
+        when(classificationServiceImplMock.getClassification(dummyClassification.getKey(),
+            dummyClassification.getDomain())).thenReturn(dummyClassification);
         expectedTask.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
-        doReturn(taskanaEngineConfigurationMock).when(taskanaEngineMock).getConfiguration();
-        doReturn(true).when(taskanaEngineConfigurationMock).isSecurityEnabled();
+        when(taskanaEngineMock.getConfiguration()).thenReturn(taskanaEngineConfigurationMock);
+        when(taskanaEngineConfigurationMock.isSecurityEnabled()).thenReturn(true);
 
         cutSpy.createTask(expectedTask);
     }
@@ -208,16 +208,15 @@ public class TaskServiceImplTest {
         expectedTask.setPrimaryObjRef(expectedObjectReference);
         ClassificationSummary classification = expectedTask.getClassificationSummary();
         doThrow(TaskNotFoundException.class).when(cutSpy).getTask(expectedTask.getId());
-        doReturn(wb).when(workbasketServiceMock).getWorkbasket(expectedTask.getWorkbasketKey(),
-            expectedTask.getDomain());
-        doReturn(expectedObjectReference).when(objectReferenceMapperMock)
-            .findByObjectReference(expectedObjectReference);
-        doReturn(dummyClassification).when(
-            classificationServiceImplMock)
-            .getClassification(dummyClassification.getKey(), dummyClassification.getDomain());
+        when(workbasketServiceMock.getWorkbasket(expectedTask.getWorkbasketKey(),
+            expectedTask.getDomain())).thenReturn(wb);
+        when(objectReferenceMapperMock.findByObjectReference(expectedObjectReference)).thenReturn(
+            expectedObjectReference);
+        when(classificationServiceImplMock.getClassification(dummyClassification.getKey(),
+            dummyClassification.getDomain())).thenReturn(dummyClassification);
         doNothing().when(taskMapperMock).insert(expectedTask);
-        doReturn(taskanaEngineConfigurationMock).when(taskanaEngineMock).getConfiguration();
-        doReturn(false).when(taskanaEngineConfigurationMock).isSecurityEnabled();
+        when(taskanaEngineMock.getConfiguration()).thenReturn(taskanaEngineConfigurationMock);
+        when(taskanaEngineConfigurationMock.isSecurityEnabled()).thenReturn(false);
         Task actualTask = cutSpy.createTask(expectedTask);
 
         verify(taskanaEngineMock, times(1)).openConnection();
@@ -256,19 +255,19 @@ public class TaskServiceImplTest {
         wb.setName("workbasket");
         wb.setDomain("dummy-domain");
 
-        doReturn(wb).when(workbasketServiceMock).getWorkbasket(wb.getKey(), wb.getDomain());
+        when(workbasketServiceMock.getWorkbasket(wb.getKey(), wb.getDomain())).thenReturn(wb);
         Classification dummyClassification = createDummyClassification();
         TaskImpl expectedTask = createUnitTestTask("", "DUMMYTASK", "key1", dummyClassification);
         expectedTask.setPrimaryObjRef(expectedObjectReference);
         ClassificationSummary classification = expectedTask.getClassificationSummary();
         doThrow(TaskNotFoundException.class).when(cutSpy).getTask(expectedTask.getId());
-        doReturn(dummyClassification).when(classificationServiceImplMock).getClassification(classification.getKey(),
-            classification.getDomain());
+        when(classificationServiceImplMock.getClassification(classification.getKey(),
+            classification.getDomain())).thenReturn(dummyClassification);
         doNothing().when(taskMapperMock).insert(expectedTask);
         doNothing().when(objectReferenceMapperMock).insert(expectedObjectReference);
-        doReturn(null).when(objectReferenceMapperMock).findByObjectReference(expectedTask.getPrimaryObjRef());
-        doReturn(taskanaEngineConfigurationMock).when(taskanaEngineMock).getConfiguration();
-        doReturn(false).when(taskanaEngineConfigurationMock).isSecurityEnabled();
+        when(objectReferenceMapperMock.findByObjectReference(expectedTask.getPrimaryObjRef())).thenReturn(null);
+        when(taskanaEngineMock.getConfiguration()).thenReturn(taskanaEngineConfigurationMock);
+        when(taskanaEngineConfigurationMock.isSecurityEnabled()).thenReturn(false);
 
         Task actualTask = cutSpy.createTask(expectedTask);
         expectedTask.getPrimaryObjRef().setId(actualTask.getPrimaryObjRef().getId());   // get only new ID
@@ -321,14 +320,14 @@ public class TaskServiceImplTest {
         task.setPrimaryObjRef(expectedObjectReference);
         task.setDescription("simply awesome task");
         doThrow(TaskNotFoundException.class).when(cutSpy).getTask(task.getId());
-        doReturn(wb).when(workbasketServiceMock).getWorkbasket(wb.getId());
-        doReturn(classification).when(classificationServiceImplMock).getClassification(classification.getKey(),
-            wb.getDomain());
-        doReturn(expectedObjectReference).when(objectReferenceMapperMock)
-            .findByObjectReference(expectedObjectReference);
+        when(workbasketServiceMock.getWorkbasket(wb.getId())).thenReturn(wb);
+        when(classificationServiceImplMock.getClassification(classification.getKey(),
+            wb.getDomain())).thenReturn(classification);
+        when(objectReferenceMapperMock.findByObjectReference(expectedObjectReference)).thenReturn(
+            expectedObjectReference);
         doNothing().when(taskMapperMock).insert(task);
-        doReturn(taskanaEngineConfigurationMock).when(taskanaEngineMock).getConfiguration();
-        doReturn(false).when(taskanaEngineConfigurationMock).isSecurityEnabled();
+        when(taskanaEngineMock.getConfiguration()).thenReturn(taskanaEngineConfigurationMock);
+        when(taskanaEngineConfigurationMock.isSecurityEnabled()).thenReturn(false);
 
         cutSpy.createTask(task);
 
@@ -403,7 +402,7 @@ public class TaskServiceImplTest {
         TaskImpl task = createUnitTestTask("", "dummyTask", "1", dummyClassification);
         Workbasket dummyWorkbasket = createWorkbasket("2", "k1");
         task.setWorkbasketSummary(dummyWorkbasket.asSummary());
-        doReturn(dummyWorkbasket).when(workbasketServiceMock).getWorkbasket(any());
+        when(workbasketServiceMock.getWorkbasket(any())).thenReturn(dummyWorkbasket);
         doThrow(TaskNotFoundException.class).when(cutSpy).getTask(task.getId());
         doThrow(NotAuthorizedException.class).when(workbasketServiceMock).checkAuthorization(
             task.getWorkbasketSummary().getId(),
@@ -433,7 +432,7 @@ public class TaskServiceImplTest {
         Classification dummyClassification = createDummyClassification();
         TaskImpl task = createUnitTestTask("", "dumma-task", "1", dummyClassification);
         doThrow(TaskNotFoundException.class).when(cutSpy).getTask(task.getId());
-        doThrow(WorkbasketNotFoundException.class).when(workbasketServiceMock).getWorkbasket(any(), any());
+        when(workbasketServiceMock.getWorkbasket(any(), any())).thenThrow(WorkbasketNotFoundException.class);
         try {
             cutSpy.createTask(task);
         } catch (WorkbasketNotFoundException e) {
@@ -494,7 +493,7 @@ public class TaskServiceImplTest {
     @Test(expected = TaskNotFoundException.class)
     public void testClaimThrowinTaskNotFoundException() throws Exception {
         TaskImpl expectedTask = null;
-        Mockito.doReturn(expectedTask).when(taskMapperMock).findById(any());
+        when(taskMapperMock.findById(any())).thenReturn(expectedTask);
 
         try {
             cut.forceClaim("1");
@@ -686,24 +685,24 @@ public class TaskServiceImplTest {
         task.setState(TaskState.CLAIMED);
         task.setClaimed(Instant.now());
         task.setOwner(CurrentUserContext.getUserid());
-        doReturn(task).when(taskMapperMock).findById(task.getId());
-        doReturn(null).when(attachmentMapperMock).findAttachmentsByTaskId(task.getId());
+        when(taskMapperMock.findById(task.getId())).thenReturn(task);
+        when(attachmentMapperMock.findAttachmentsByTaskId(task.getId())).thenReturn(null);
         doReturn(task).when(cutSpy).completeTask(task.getId());
-        doReturn(classificationQueryImplMock).when(classificationServiceImplMock).createClassificationQuery();
-        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).idIn(any());
-        doReturn(new ArrayList<>()).when(classificationQueryImplMock).list();
-        List<ClassificationSummaryImpl> classificationList = Arrays
+        when(classificationServiceImplMock.createClassificationQuery()).thenReturn(classificationQueryImplMock);
+        when(classificationQueryImplMock.idIn(any())).thenReturn(classificationQueryImplMock);
+        when(classificationQueryImplMock.list()).thenReturn(new ArrayList<>());
+        List<ClassificationSummary> classificationList = Arrays
             .asList((ClassificationSummaryImpl) dummyClassification.asSummary());
-        doReturn(classificationList).when(
-            classificationQueryImplMock)
-            .list();
-        doReturn(workbasketQueryImplMock).when(workbasketServiceMock).createWorkbasketQuery();
-        doReturn(workbasketQueryImplMock).when(workbasketQueryImplMock).idIn(any());
+        when(
+            classificationQueryImplMock
+                .list()).thenReturn(classificationList);
+        when(workbasketServiceMock.createWorkbasketQuery()).thenReturn(workbasketQueryImplMock);
+        when(workbasketQueryImplMock.idIn(any())).thenReturn(workbasketQueryImplMock);
         List<WorkbasketSummary> wbList = new ArrayList<>();
         WorkbasketSummaryImpl wb = new WorkbasketSummaryImpl();
         wb.setDomain("dummy-domain");
         wbList.add(wb);
-        doReturn(wbList).when(workbasketQueryImplMock).list();
+        when(workbasketQueryImplMock.list()).thenReturn(wbList);
 
         Task actualTask = cut.completeTask(task.getId());
 
@@ -905,10 +904,10 @@ public class TaskServiceImplTest {
         TaskImpl task = createUnitTestTask("1", "Unit Test Task 1", "key47", dummyClassification);
         task.setWorkbasketSummary(sourceWorkbasket.asSummary());
         task.setRead(true);
-        doReturn(destinationWorkbasket).when(workbasketServiceMock).getWorkbasket(destinationWorkbasket.getId());
-        doReturn(sourceWorkbasket).when(workbasketServiceMock).getWorkbasket(sourceWorkbasket.getId());
-        doReturn(taskanaEngineConfigurationMock).when(taskanaEngineMock).getConfiguration();
-        doReturn(false).when(taskanaEngineConfigurationMock).isSecurityEnabled();
+        when(workbasketServiceMock.getWorkbasket(destinationWorkbasket.getId())).thenReturn(destinationWorkbasket);
+        when(workbasketServiceMock.getWorkbasket(sourceWorkbasket.getId())).thenReturn(sourceWorkbasket);
+        when(taskanaEngineMock.getConfiguration()).thenReturn(taskanaEngineConfigurationMock);
+        when(taskanaEngineConfigurationMock.isSecurityEnabled()).thenReturn(false);
         doReturn(task).when(cutSpy).getTask(task.getId());
         doNothing().when(taskMapperMock).update(any());
         doNothing().when(workbasketServiceMock).checkAuthorization(destinationWorkbasket.getId(),
@@ -944,10 +943,10 @@ public class TaskServiceImplTest {
         Classification dummyClassification = createDummyClassification();
         TaskImpl task = createUnitTestTask("1", "Unit Test Task 1", "k1", dummyClassification);
         task.setRead(true);
-        doReturn(taskanaEngineConfigurationMock).when(taskanaEngineMock).getConfiguration();
-        doReturn(true).when(taskanaEngineConfigurationMock).isSecurityEnabled();
+        when(taskanaEngineMock.getConfiguration()).thenReturn(taskanaEngineConfigurationMock);
+        when(taskanaEngineConfigurationMock.isSecurityEnabled()).thenReturn(true);
         doReturn(task).when(cutSpy).getTask(task.getId());
-        doReturn(destinationWorkbasket).when(workbasketServiceMock).getWorkbasket(destinationWorkbasket.getId());
+        when(workbasketServiceMock.getWorkbasket(destinationWorkbasket.getId())).thenReturn(destinationWorkbasket);
         doNothing().when(taskMapperMock).update(any());
         doNothing().when(workbasketServiceMock).checkAuthorization(any(), any());
         // doNothing().when(workbasketServiceMock).checkAuthorizationById(any(), WorkbasketAuthorization.TRANSFER);
@@ -1124,25 +1123,25 @@ public class TaskServiceImplTest {
     public void testGetTaskByIdWithExistingTask()
         throws TaskNotFoundException, NotAuthorizedException {
         Classification dummyClassification = createDummyClassification();
-        Task expectedTask = createUnitTestTask("1", "DUMMY-TASK", "1", dummyClassification);
-        doReturn(expectedTask).when(taskMapperMock).findById(expectedTask.getId());
-        doReturn(null).when(attachmentMapperMock).findAttachmentsByTaskId(expectedTask.getId());
+        TaskImpl expectedTask = createUnitTestTask("1", "DUMMY-TASK", "1", dummyClassification);
+        when(taskMapperMock.findById(expectedTask.getId())).thenReturn(expectedTask);
+        when(attachmentMapperMock.findAttachmentsByTaskId(expectedTask.getId())).thenReturn(null);
 
-        doReturn(classificationQueryImplMock).when(classificationServiceImplMock).createClassificationQuery();
-        doReturn(classificationQueryImplMock).when(classificationQueryImplMock).idIn(any());
-        doReturn(workbasketQueryImplMock).when(workbasketServiceMock).createWorkbasketQuery();
-        doReturn(workbasketQueryImplMock).when(workbasketQueryImplMock).idIn(any());
+        when(classificationServiceImplMock.createClassificationQuery()).thenReturn(classificationQueryImplMock);
+        when(classificationQueryImplMock.idIn(any())).thenReturn(classificationQueryImplMock);
+        when(workbasketServiceMock.createWorkbasketQuery()).thenReturn(workbasketQueryImplMock);
+        when(workbasketQueryImplMock.idIn(any())).thenReturn(workbasketQueryImplMock);
         List<WorkbasketSummary> wbList = new ArrayList<>();
         WorkbasketSummaryImpl wb = new WorkbasketSummaryImpl();
         wb.setDomain("dummy-domain");
         wbList.add(wb);
-        doReturn(wbList).when(workbasketQueryImplMock).list();
+        when(workbasketQueryImplMock.list()).thenReturn(wbList);
 
-        List<ClassificationSummaryImpl> classificationList = Arrays
+        List<ClassificationSummary> classificationList = Arrays
             .asList((ClassificationSummaryImpl) dummyClassification.asSummary());
-        doReturn(classificationList).when(
-            classificationQueryImplMock)
-            .list();
+        when(
+            classificationQueryImplMock
+                .list()).thenReturn(classificationList);
         Task actualTask = cut.getTask(expectedTask.getId());
 
         verify(taskanaEngineMock, times(1)).openConnection();
@@ -1166,7 +1165,7 @@ public class TaskServiceImplTest {
     public void testGetTaskByIdWhereTaskDoesNotExist() throws Exception {
         Classification dummyClassification = createDummyClassification();
         Task task = createUnitTestTask("1", "DUMMY-TASK", "1", dummyClassification);
-        doThrow(TaskNotFoundException.class).when(taskMapperMock).findById(task.getId());
+        when(taskMapperMock.findById(task.getId())).thenThrow(TaskNotFoundException.class);
 
         try {
             cut.getTask(task.getId());
@@ -1337,7 +1336,7 @@ public class TaskServiceImplTest {
     }
 
     @Test
-    public void testTaskSummaryEqualsHashCode() throws InterruptedException  {
+    public void testTaskSummaryEqualsHashCode() throws InterruptedException {
         Classification classification = createDummyClassification();
         Workbasket wb = createWorkbasket("WB-ID", "WB-Key");
         Attachment attachment = JunitHelper.createDefaultAttachment();
@@ -1368,7 +1367,7 @@ public class TaskServiceImplTest {
         summaryAfter = taskAfter.asSummary();
         assertEquals(summaryBefore, summaryAfter);
         assertEquals(summaryBefore.hashCode(), summaryAfter.hashCode());
-      }
+    }
 
     private TaskImpl createUnitTestTask(String id, String name, String workbasketKey, Classification classification) {
         TaskImpl task = new TaskImpl();

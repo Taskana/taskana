@@ -53,7 +53,7 @@ public class WorkbasketAccessItemQueryImplTest {
         when(sqlSession.selectList(any(), any(), any())).thenReturn(new ArrayList<>());
 
         List<WorkbasketAccessItem> result = workbasketAccessItemQueryImpl.accessIdIn("test", "asd")
-                .list(1, 1);
+            .list(1, 1);
         Assert.assertNotNull(result);
     }
 

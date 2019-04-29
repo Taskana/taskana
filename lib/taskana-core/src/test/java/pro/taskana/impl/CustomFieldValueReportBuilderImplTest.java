@@ -3,7 +3,6 @@ package pro.taskana.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -30,8 +29,8 @@ import pro.taskana.TaskState;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.report.item.MonitorQueryItem;
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.item.MonitorQueryItem;
 import pro.taskana.mappings.TaskMonitorMapper;
 import pro.taskana.report.CustomFieldValueReport;
 
@@ -58,9 +57,9 @@ public class CustomFieldValueReportBuilderImplTest {
         MockitoAnnotations.initMocks(this);
         Mockito.doNothing().when(taskanaEngineImplMock).openConnection();
         Mockito.doNothing().when(taskanaEngineImplMock).returnConnection();
-        doReturn(taskanaEngineConfiguration).when(taskanaEngineImplMock).getConfiguration();
-        doReturn(true).when(taskanaEngineConfiguration).isGermanPublicHolidaysEnabled();
-        doReturn(null).when(taskanaEngineConfiguration).getCustomHolidays();
+        when(taskanaEngineImplMock.getConfiguration()).thenReturn(taskanaEngineConfiguration);
+        when(taskanaEngineConfiguration.isGermanPublicHolidaysEnabled()).thenReturn(true);
+        when(taskanaEngineConfiguration.getCustomHolidays()).thenReturn(null);
     }
 
     @Test
@@ -79,9 +78,9 @@ public class CustomFieldValueReportBuilderImplTest {
         monitorQueryItem.setKey("Geschaeftsstelle A");
         monitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(monitorQueryItem);
-        doReturn(expectedResult).when(taskMonitorMapperMock)
-            .getTaskCountOfCustomFieldValues(CustomField.CUSTOM_1, workbasketIds, states, categories, domains,
-                classificationIds, excludedClassificationIds, customAttributeFilter);
+        when(taskMonitorMapperMock.getTaskCountOfCustomFieldValues(CustomField.CUSTOM_1, workbasketIds, states,
+            categories,
+            domains, classificationIds, excludedClassificationIds, customAttributeFilter)).thenReturn(expectedResult);
 
         CustomFieldValueReport actualResult = cut.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
             .workbasketIdIn(workbasketIds)
@@ -129,9 +128,9 @@ public class CustomFieldValueReportBuilderImplTest {
         monitorQueryItem.setAgeInDays(0);
         monitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(monitorQueryItem);
-        doReturn(expectedResult).when(taskMonitorMapperMock)
-            .getTaskCountOfCustomFieldValues(CustomField.CUSTOM_1, workbasketIds, states, categories, domains,
-                classificationIds, excludedClassificationIds, customAttributeFilter);
+        when(taskMonitorMapperMock.getTaskCountOfCustomFieldValues(CustomField.CUSTOM_1, workbasketIds, states,
+            categories,
+            domains, classificationIds, excludedClassificationIds, customAttributeFilter)).thenReturn(expectedResult);
 
         CustomFieldValueReport actualResult = cut.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
             .workbasketIdIn(workbasketIds)

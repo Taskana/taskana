@@ -11,6 +11,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -97,7 +98,7 @@ public class WorkbasketServiceImplTest {
         WorkbasketImpl expectedWb = createTestWorkbasket(null, "Key-1");
         doNothing().when(workbasketMapperMock).insert(expectedWb);
         doReturn(expectedWb).when(cutSpy).getWorkbasket(any());
-        doReturn(true).when(taskanaEngineImplMock).domainExists(any());
+        when(taskanaEngineImplMock.domainExists(any())).thenReturn(true);
 
         Workbasket actualWb = cutSpy.createWorkbasket(expectedWb);
         cutSpy.setDistributionTargets(expectedWb.getId(), createTestDistributionTargets(distTargetAmount));
@@ -127,7 +128,7 @@ public class WorkbasketServiceImplTest {
         WorkbasketAlreadyExistException, DomainNotFoundException {
         WorkbasketImpl expectedWb = createTestWorkbasket("ID-1", "Key-1");
         doNothing().when(workbasketMapperMock).insert(expectedWb);
-        doReturn(true).when(taskanaEngineImplMock).domainExists(any());
+        when(taskanaEngineImplMock.domainExists(any())).thenReturn(true);
 
         try {
             cutSpy.createWorkbasket(expectedWb);
@@ -159,7 +160,7 @@ public class WorkbasketServiceImplTest {
         throws Exception {
         WorkbasketImpl expectedWb = createTestWorkbasket(null, "Key-1");
         doNothing().when(workbasketMapperMock).insert(expectedWb);
-        doThrow(WorkbasketNotFoundException.class).when(workbasketMapperMock).findById(any());
+        when(workbasketMapperMock.findById(any())).thenThrow(WorkbasketNotFoundException.class);
 
         try {
             cutSpy.createWorkbasket(expectedWb);

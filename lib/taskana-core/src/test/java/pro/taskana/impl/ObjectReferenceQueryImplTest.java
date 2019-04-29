@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import pro.taskana.ObjectReference;
+
 /**
  * Test for ObjectReferenceQueryImpl.
  *

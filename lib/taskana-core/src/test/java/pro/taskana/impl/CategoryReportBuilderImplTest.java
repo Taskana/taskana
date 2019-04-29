@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -31,8 +30,8 @@ import pro.taskana.TaskState;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.report.item.MonitorQueryItem;
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
+import pro.taskana.impl.report.item.MonitorQueryItem;
 import pro.taskana.mappings.TaskMonitorMapper;
 import pro.taskana.report.CategoryReport;
 
@@ -59,9 +58,9 @@ public class CategoryReportBuilderImplTest {
         MockitoAnnotations.initMocks(this);
         Mockito.doNothing().when(taskanaEngineImplMock).openConnection();
         Mockito.doNothing().when(taskanaEngineImplMock).returnConnection();
-        doReturn(taskanaEngineConfiguration).when(taskanaEngineImplMock).getConfiguration();
-        doReturn(true).when(taskanaEngineConfiguration).isGermanPublicHolidaysEnabled();
-        doReturn(null).when(taskanaEngineConfiguration).getCustomHolidays();
+        when(taskanaEngineImplMock.getConfiguration()).thenReturn(taskanaEngineConfiguration);
+        when(taskanaEngineConfiguration.isGermanPublicHolidaysEnabled()).thenReturn(true);
+        when(taskanaEngineConfiguration.getCustomHolidays()).thenReturn(null);
     }
 
     @Test
@@ -80,8 +79,8 @@ public class CategoryReportBuilderImplTest {
         monitorQueryItem.setKey("EXTERN");
         monitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(monitorQueryItem);
-        doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfCategories(workbasketIds, states, categories,
-            domains, classificationIds, excludedClassificationIds, customAttributeFilter);
+        when(taskMonitorMapperMock.getTaskCountOfCategories(workbasketIds, states, categories, domains,
+            classificationIds, excludedClassificationIds, customAttributeFilter)).thenReturn(expectedResult);
 
         CategoryReport actualResult = cut.createCategoryReportBuilder()
             .workbasketIdIn(workbasketIds)
@@ -128,8 +127,9 @@ public class CategoryReportBuilderImplTest {
         monitorQueryItem.setAgeInDays(0);
         monitorQueryItem.setNumberOfTasks(1);
         expectedResult.add(monitorQueryItem);
-        doReturn(expectedResult).when(taskMonitorMapperMock).getTaskCountOfCategories(workbasketIds, states, categories,
-            domains, classificationIds, excludedClassificationIds, customAttributeFilter);
+        when(taskMonitorMapperMock.getTaskCountOfCategories(workbasketIds, states, categories, domains,
+            classificationIds,
+            excludedClassificationIds, customAttributeFilter)).thenReturn(expectedResult);
 
         CategoryReport actualResult = cut.createCategoryReportBuilder()
             .workbasketIdIn(workbasketIds)
