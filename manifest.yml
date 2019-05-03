@@ -2,6 +2,7 @@
 applications:
 - name: taskana-rest
   path: taskana-rest-spring-example.jar
-  buildpack: https://github.com/cloudfoundry/java-buildpack.git#v3.10
+  buildpacks: 
+  - https://github.com/cloudfoundry/java-buildpack.git#v3.10
   memory: 512M
   disk_quota: 256M
