@@ -17,6 +17,8 @@
 		<powermock.version>1.7.1</powermock.version>
 		<version.wildfly.swarm>2017.4.0</version.wildfly.swarm>
 		<version.resteasy>3.1.2.Final</version.resteasy>
+		<version.spring>5.0.5.RELEASE</version.spring>
+		<version.spring-boot>2.0.2.RELEASE</version.spring-boot>
 	</properties>
 
 	<modules>
