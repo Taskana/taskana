@@ -127,7 +127,7 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
      * Initializes the WorkbasketCleanupJob schedule. <br>
      * All scheduled cleanup jobs are cancelled/deleted and a new one is scheduled.
      *
-     * @param taskanaEngine
+     * @param taskanaEngine the taskana engine
      */
     public static void initializeSchedule(TaskanaEngine taskanaEngine) {
         WorkbasketCleanupJob job = new WorkbasketCleanupJob(taskanaEngine, null, null);

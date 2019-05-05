@@ -327,10 +327,12 @@ public interface WorkbasketService {
      *            the ids of the workbaskets to delete.
      * @return the result of the operations with Id and Exception for each failed workbasket deletion.
      * @throws InvalidArgumentException
-     *             if the WorkbasketId parameter is NULL
+     *             if the WorkbasketIds parameter list is NULL or empty
+     * @throws NotAuthorizedException
+     *             if the current user got no permission for this interaction.
      */
     BulkOperationResults<String, TaskanaException> deleteWorkbaskets(List<String> workbasketsIds)
-        throws NotAuthorizedException, WorkbasketNotFoundException, WorkbasketInUseException, InvalidArgumentException;
+        throws NotAuthorizedException, InvalidArgumentException;
 
     /**
      * Returns the distribution sources for a given workbasket.

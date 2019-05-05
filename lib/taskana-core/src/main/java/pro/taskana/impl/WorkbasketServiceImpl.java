@@ -802,25 +802,23 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             }
             BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
 
-            if (!workbasketsIds.isEmpty()) {
-                Iterator<String> iterator = workbasketsIds.iterator();
-                String workbasketIdForDeleting = null;
-                while (iterator.hasNext()) {
-                    try {
-                        workbasketIdForDeleting = iterator.next();
-                        if (!deleteWorkbasket(workbasketIdForDeleting)) {
-                            bulkLog.addError(workbasketIdForDeleting, new WorkbasketInUseException(
-                                "Workbasket with id " + workbasketIdForDeleting
-                                    + " contains completed tasks not deleted and will not be deleted."));
-                        }
-                    } catch (WorkbasketInUseException ex) {
+            Iterator<String> iterator = workbasketsIds.iterator();
+            String workbasketIdForDeleting = null;
+            while (iterator.hasNext()) {
+                try {
+                    workbasketIdForDeleting = iterator.next();
+                    if (!deleteWorkbasket(workbasketIdForDeleting)) {
                         bulkLog.addError(workbasketIdForDeleting, new WorkbasketInUseException(
-                            "Workbasket with id " + workbasketIdForDeleting + " is in use and will not be deleted."));
-                    } catch (TaskanaException ex) {
-                        bulkLog.addError(workbasketIdForDeleting, new TaskanaException(
                             "Workbasket with id " + workbasketIdForDeleting
-                                + " Throw an exception and couldn't be deleted."));
+                                + " contains completed tasks not deleted and will not be deleted."));
                     }
+                } catch (WorkbasketInUseException ex) {
+                    bulkLog.addError(workbasketIdForDeleting, new WorkbasketInUseException(
+                        "Workbasket with id " + workbasketIdForDeleting + " is in use and will not be deleted."));
+                } catch (TaskanaException ex) {
+                    bulkLog.addError(workbasketIdForDeleting, new TaskanaException(
+                        "Workbasket with id " + workbasketIdForDeleting
+                            + " Throw an exception and couldn't be deleted."));
                 }
             }
             return bulkLog;
