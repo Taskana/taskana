@@ -19,10 +19,13 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 
+/**
+ * TODO.
+ */
 @ApplicationScoped
 public class TaskanaProducers {
 
-    private static final Logger logger = LoggerFactory.getLogger(TaskanaProducers.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaProducers.class);
 
     private static final String TASKANA_PROPERTIES = "taskana.properties";
 
@@ -43,10 +46,10 @@ public class TaskanaProducers {
             ctx = new InitialContext();
             properties.load(propertyStream);
             dataSource = (DataSource) ctx.lookup(properties.getProperty("datasource.jndi"));
-            logger.debug("---------------> " + dataSource.getConnection().getMetaData());
+            LOGGER.debug("---------------> " + dataSource.getConnection().getMetaData());
             this.taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, true, false, "TASKANA");
         } catch (NamingException | SQLException | IOException e) {
-            logger.error("Could not start Taskana: ", e);
+            LOGGER.error("Could not start Taskana: ", e);
         }
     }
 

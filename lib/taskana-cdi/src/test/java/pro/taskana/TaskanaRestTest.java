@@ -25,10 +25,13 @@ import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 
+/**
+ * TODO.
+ */
 @Path("/test")
 public class TaskanaRestTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(TaskanaRestTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaRestTest.class);
 
     @EJB
     private TaskanaEjb taskanaEjb;
@@ -59,7 +62,7 @@ public class TaskanaRestTest {
 
         Task result = taskanaEjb.getTaskService().createTask(task);
 
-        logger.info(result.getId() + ":" + result.getOwner());
+        LOGGER.info(result.getId() + ":" + result.getOwner());
         return Response.status(200).entity(result.getId()).build();
     }
 
@@ -75,7 +78,7 @@ public class TaskanaRestTest {
     @Path("{id}")
     public void completeTask(@PathParam("id") String id)
         throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, NotAuthorizedException {
-        logger.info(id);
+        LOGGER.info(id);
         taskanaEjb.getTaskService().forceCompleteTask(id);
     }
 
