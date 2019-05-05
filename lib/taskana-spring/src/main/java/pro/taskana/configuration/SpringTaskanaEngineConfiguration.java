@@ -8,7 +8,7 @@ import pro.taskana.SpringTaskanaEngineImpl;
 import pro.taskana.TaskanaEngine;
 
 /**
- * This class configures the TaskanaEngineConfiguration for spring
+ * This class configures the TaskanaEngineConfiguration for spring.
  */
 public class SpringTaskanaEngineConfiguration extends TaskanaEngineConfiguration {
 
@@ -23,7 +23,7 @@ public class SpringTaskanaEngineConfiguration extends TaskanaEngineConfiguration
     }
 
     /**
-     * This method creates the Spring-based TaskanaEngine without an sqlSessionFactory
+     * This method creates the Spring-based TaskanaEngine without an sqlSessionFactory.
      *
      * @return the TaskanaEngine
      */
