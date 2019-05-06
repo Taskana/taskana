@@ -15,6 +15,9 @@ import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 
+/**
+ * Example Bootstrap Application.
+ */
 @ApplicationScoped
 public class ExampleBootstrap {
 
