@@ -33,7 +33,7 @@ public interface LdapCache {
     /**
      * Validate a access id.
      * @param accessId the search string.
-     * @return the corresponding access id.
+     * @return the corresponding access ids.
      */
     List<AccessIdResource> validateAccessId(String accessId);
 }

@@ -62,7 +62,8 @@ public class WorkbasketDefinitionController {
 
     @GetMapping
     @Transactional(readOnly = true, rollbackFor = Exception.class)
-    public ResponseEntity<List<WorkbasketDefinitionResource>> exportWorkbaskets(@RequestParam(required = false) String domain)
+    public ResponseEntity<List<WorkbasketDefinitionResource>> exportWorkbaskets(
+        @RequestParam(required = false) String domain)
         throws NotAuthorizedException, WorkbasketNotFoundException {
         LOGGER.debug("Entry to exportWorkbaskets(domain= {})", domain);
         WorkbasketQuery workbasketQuery = workbasketService.createWorkbasketQuery();
@@ -75,7 +76,8 @@ public class WorkbasketDefinitionController {
             basketExports.add(workbasketDefinitionAssembler.toResource(workbasket));
         }
 
-        ResponseEntity<List<WorkbasketDefinitionResource>> response = new ResponseEntity<>(basketExports, HttpStatus.OK);
+        ResponseEntity<List<WorkbasketDefinitionResource>> response = new ResponseEntity<>(basketExports,
+            HttpStatus.OK);
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from exportWorkbaskets(), returning {}", response);
         }
