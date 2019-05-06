@@ -8,7 +8,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.internal.verification.VerificationModeFactory.atLeastOnce;
 
@@ -35,6 +34,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
 import pro.taskana.exceptions.DomainNotFoundException;
@@ -43,7 +43,6 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskanaException;
 import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.history.HistoryEventProducer;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.WorkbasketImpl;
@@ -63,27 +62,31 @@ import pro.taskana.transaction.TaskanaTransactionProvider;
 public class TaskanaTransactionIntTest {
 
     private static final int POOL_TIME_TO_WAIT = 50;
-
-    @Autowired
-    private TestRestTemplate restTemplate;
-
-    @Autowired
-    private DataSource dataSource;
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    private TaskanaEngine taskanaEngine;
-
     @Autowired
     TaskanaTransactionProvider<Object> springTransactionProvider;
-
+    @Autowired
+    private TestRestTemplate restTemplate;
+    @Autowired
+    private DataSource dataSource;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private TaskanaEngine taskanaEngine;
     @Captor
     private ArgumentCaptor<LoggingEvent> captorLoggingEvent;
 
     @Mock
-    private Appender mockAppender;
+    private Appender<ILoggingEvent> mockAppender;
+
+    private static ObjectReference createDefaultObjRef() {
+        ObjectReference objRef = new ObjectReference();
+        objRef.setCompany("company");
+        objRef.setSystem("system");
+        objRef.setSystemInstance("instance");
+        objRef.setType("type");
+        objRef.setValue("value");
+        return objRef;
+    }
 
     @Before
     public void before() {
@@ -323,15 +326,5 @@ public class TaskanaTransactionIntTest {
         task.setClassificationKey(classificationKey);
         task.setPrimaryObjRef(createDefaultObjRef());
         return task;
-    }
-
-    private static ObjectReference createDefaultObjRef() {
-        ObjectReference objRef = new ObjectReference();
-        objRef.setCompany("company");
-        objRef.setSystem("system");
-        objRef.setSystemInstance("instance");
-        objRef.setType("type");
-        objRef.setValue("value");
-        return objRef;
     }
 }

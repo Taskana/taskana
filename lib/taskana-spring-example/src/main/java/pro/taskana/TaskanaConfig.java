@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import pro.taskana.configuration.SpringTaskanaEngineConfiguration;
 
 /**
- * Class to set /load configuration for Taskana Library
+ * Class to set /load configuration for Taskana Library.
  *
  */
 @Configuration
@@ -28,6 +28,9 @@ public class TaskanaConfig {
     @Value("${taskana.schemaName:TASKANA}")
     private String schemaName;
 
+    /**
+     * TODO.
+     */
     @Profile("inmemorydb")
     @Configuration
     @PropertySource("classpath:customdb.properties")
@@ -44,7 +47,8 @@ public class TaskanaConfig {
     @Bean
     @Primary
     public DataSource dataSource(DataSourceProperties properties) {
-        DataSource dataSource = properties.initializeDataSourceBuilder().build();
+        DataSource dataSource = properties.
+            initializeDataSourceBuilder().build();
         // if TaskanaEngineImpl runs with SpringManagedTransactionFactory, then
         // there is no need to wrap the dataSource into TransactionAwareDataSourceProxy ...
         // return new TransactionAwareDataSourceProxy(dataSource);

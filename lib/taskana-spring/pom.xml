@@ -24,6 +24,7 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-tx</artifactId>
 			<version>${version.spring}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
