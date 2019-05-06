@@ -186,7 +186,7 @@ public class ClassificationController extends AbstractPagingController {
         throws ClassificationNotFoundException, ClassificationInUseException, NotAuthorizedException {
         LOGGER.debug("Entry to deleteClassification(classificationId= {})", classificationId);
         classificationService.deleteClassification(classificationId);
-        ResponseEntity response = new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        ResponseEntity<?> response = new ResponseEntity<>(HttpStatus.NO_CONTENT);
         LOGGER.debug("Exit from deleteClassification(), returning {}", response);
         return response;
     }

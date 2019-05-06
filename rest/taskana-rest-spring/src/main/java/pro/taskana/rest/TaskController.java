@@ -390,7 +390,7 @@ public class TaskController extends AbstractPagingController {
 
     private int[] extractPriorities(String[] prioritiesInString) {
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Entry to extractPriorities(prioritiesInString= {})", prioritiesInString);
+            LOGGER.debug("Entry to extractPriorities(prioritiesInString= {})", (Object[]) prioritiesInString);
         }
 
         int[] priorities = new int[prioritiesInString.length];
