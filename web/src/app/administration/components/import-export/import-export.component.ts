@@ -65,6 +65,9 @@ export class ImportExportComponent implements OnInit {
     } else {
       ajax.open('POST', environment.taskanaRestUrl + '/v1/classification-definitions');
     }
+    if (!environment.production) {
+        ajax.setRequestHeader('Authorization', 'Basic YWRtaW46YWRtaW4=');
+    }
     ajax.send(formdata);
     this.uploadservice.isInUse = true;
     this.uploadservice.setCurrentProgressValue(1)
