@@ -4,18 +4,7 @@
 <head>
   <meta charset="utf-8">
   <title>Taskana</title>
-  <base href="/" id="baseHref">
-  <!--This is used for change the base Href of the application, if the application is not located at / folder it will change the href path to whatever precedes to taskana in the url
-  for instance if the application is running at http://localhost:8080/some-path/taskana, the href will be some-path-->
-  <script>
-    (function () {
-      const hrefUrl = window.location.pathname.split('taskana')[0];
-      document.getElementById('baseHref').href =
-        window.location.port != 4200 ?
-          hrefUrl :
-          "/";
-    })();
-  </script>
+  <base href="./" id="baseHref">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="assets/icons/taskana.png">
 </head>
