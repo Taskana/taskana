@@ -9,7 +9,7 @@ import {environment} from '../../../environments/environment';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 
 describe('StartupService', () => {
-  const environmentFile = '/environments/data-sources/environment-information.json';
+  const environmentFile = 'environments/data-sources/environment-information.json';
   const someRestUrl = 'someRestUrl';
   const someLogoutUrl = 'someLogoutUrl';
   const dummyEnvironmentInformation = {
