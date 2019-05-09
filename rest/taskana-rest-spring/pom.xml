@@ -3,13 +3,14 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>taskana-rest-spring</artifactId>
+	<version>1.1.2-SNAPSHOT</version>
 
 	<name>${project.groupId}:${project.artifactId}</name>
 	<description>The taskana rest logic.</description>
 
 	<parent>
-		<artifactId>taskana-rest-parent</artifactId>
 		<groupId>pro.taskana</groupId>
+		<artifactId>taskana-rest-parent</artifactId>
 		<version>1.1.2-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
@@ -101,8 +102,8 @@
 			<scope>test</scope>
 			<exclusions>
 				<exclusion>
-					<artifactId>commons-logging</artifactId>
 					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>

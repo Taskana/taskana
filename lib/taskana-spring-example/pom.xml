@@ -2,13 +2,14 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>taskana-spring-example</artifactId>
+	<version>1.1.2-SNAPSHOT</version>
 
 	<name>${project.groupId}:${project.artifactId}</name>
 	<description>The Taskana Spring sample application.</description>
 
 	<parent>
-		<artifactId>taskana-lib-parent</artifactId>
 		<groupId>pro.taskana</groupId>
+		<artifactId>taskana-lib-parent</artifactId>
 		<version>1.1.2-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
@@ -54,6 +55,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
 	<build>
 		<plugins>
 			<plugin>

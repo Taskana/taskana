@@ -2,14 +2,14 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>taskana-web</artifactId>
-
+	<version>1.1.2-SNAPSHOT</version>
 
 	<name>${project.groupId}:${project.artifactId}</name>
 	<description>taskana web</description>
 
 	<parent>
-		<artifactId>taskana-rest-parent</artifactId>
 		<groupId>pro.taskana</groupId>
+		<artifactId>taskana-rest-parent</artifactId>
 		<version>1.1.2-SNAPSHOT</version>
 		<relativePath>../rest</relativePath>
 	</parent>
