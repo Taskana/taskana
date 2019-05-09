@@ -2,24 +2,17 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>taskana-cdi</artifactId>
+	<version>1.1.2-SNAPSHOT</version>
 
 	<name>${project.groupId}:${project.artifactId}</name>
-	<url>http://taskana.pro</url>
 	<description>The helper module to integrate taskana into CDI projects.</description>
 
 	<parent>
-		<artifactId>taskana-lib-parent</artifactId>
 		<groupId>pro.taskana</groupId>
+		<artifactId>taskana-lib-parent</artifactId>
 		<version>1.1.2-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-
-	<repositories>
-		<repository>
-			<id>jboss</id>
-			<url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
-		</repository>
-	</repositories>
 
 	<dependencies>
 		<dependency>
@@ -41,14 +34,14 @@
 		</dependency>
 		<dependency>
 			<groupId>org.wildfly.swarm</groupId>
-			<version>${version.wildfly.swarm}</version>
 			<artifactId>jaxrs</artifactId>
+			<version>${version.wildfly.swarm}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.wildfly.swarm</groupId>
-			<version>${version.wildfly.swarm}</version>
 			<artifactId>cdi</artifactId>
+			<version>${version.wildfly.swarm}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -78,6 +71,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -94,4 +88,11 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<repositories>
+		<repository>
+			<id>jboss</id>
+			<url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+		</repository>
+	</repositories>
 </project>
