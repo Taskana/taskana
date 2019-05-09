@@ -2,11 +2,15 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>taskana-rest-spring-wildfly-example</artifactId>
+	<version>1.1.2-SNAPSHOT</version>
 	<packaging>war</packaging>
 
+	<name>${project.groupId}:${project.artifactId}</name>
+	<description>Demo project for the taskana REST APP in a wildfly environment.</description>
+
 	<parent>
-		<artifactId>taskana-rest-parent</artifactId>
 		<groupId>pro.taskana</groupId>
+		<artifactId>taskana-rest-parent</artifactId>
 		<version>1.1.2-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
@@ -46,12 +50,6 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	<repositories>
-		<repository>
-			<id>jboss</id>
-			<url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
-		</repository>
-	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -300,4 +298,11 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<repositories>
+		<repository>
+			<id>jboss</id>
+			<url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+		</repository>
+	</repositories>
 </project>

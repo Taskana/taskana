@@ -6,6 +6,7 @@
 	<version>1.1.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
+	<name>${project.groupId}:${project.artifactId}</name>
 	<description>This pom is parent to all taskana modules and serves the common build.</description>
 	<url>http://taskana.pro</url>
 
@@ -38,9 +39,9 @@
 	</developers>
 
 	<scm>
+		<url>http://github.com/taskana/taskana/tree/master</url>
 		<connection>scm:git:git://github.com/taskana/taskana.git</connection>
 		<developerConnection>scm:git:ssh://github.com:taskana/taskana.git</developerConnection>
-		<url>http://github.com/taskana/taskana/tree/master</url>
 	</scm>
 
 	<licenses>
@@ -49,7 +50,6 @@
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
 		</license>
 	</licenses>
-
 
 	<profiles>
 		<profile>
@@ -157,6 +157,7 @@
 					<failOnWarning>false</failOnWarning>
 					<compilerArgs>
 						<arg>-Xlint:all</arg>
+						<arg>-proc:none</arg>
 					</compilerArgs>
 				</configuration>
 			</plugin>
@@ -210,5 +211,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
