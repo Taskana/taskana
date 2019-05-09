@@ -1,22 +1,17 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>pro.taskana</groupId>
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.0.2.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
-	<version>1.1.3-SNAPSHOT</version>
 	<artifactId>taskana-rest-spring-wildfly-example</artifactId>
 	<packaging>war</packaging>
+
+	<parent>
+		<artifactId>taskana-rest-parent</artifactId>
+		<groupId>pro.taskana</groupId>
+		<version>1.1.2-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+
 	<properties>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<version.wildfly.swarm>2017.4.0</version.wildfly.swarm>
-		<version.resteasy>3.1.2.Final</version.resteasy>
 		<skipIntegrationTests>true</skipIntegrationTests>
 		<!-- Default H2 DB configuration -->
 		<connection-url>jdbc:h2:mem:taskana;IGNORECASE=TRUE;LOCK_MODE=0</connection-url>
@@ -25,6 +20,7 @@
 		<user-name>sa</user-name>
 		<password>sa</password>
 	</properties>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -41,6 +37,13 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>${version.spring-boot}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<repositories>
@@ -53,7 +56,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-			<version>2.0.2.RELEASE</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
@@ -106,7 +108,7 @@
 			<version>${version.resteasy}</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- Brought in via WildFly Swarm `bom` -->
+		<!-- Brought in via WildFly Swarm bom -->
 		<dependency>
 			<groupId>org.wildfly.swarm</groupId>
 			<artifactId>arquillian</artifactId>
@@ -126,10 +128,11 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
-			<version>5.1.5.RELEASE</version>
+			<version>${version.spring}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
 	<profiles>
 		<profile>
 			<id>postgres</id>
@@ -163,6 +166,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${version.spring-boot}</version>
 			</plugin>
 			<plugin>
 				<groupId>org.wildfly.plugins</groupId>
@@ -269,7 +273,9 @@
 				</executions>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.1.0</version>
 				<executions>
 					<execution>
 						<id>copy-documentation-to-static-folder</id>
