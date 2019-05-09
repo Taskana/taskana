@@ -107,9 +107,9 @@ export class DomainService {
 
   private getNavigationUrl(): string {
     if (this.router.url.indexOf('workbaskets') !== -1) {
-      return 'administration/workbaskets';
+      return 'taskana/administration/workbaskets';
     } else if (this.router.url.indexOf('classifications') !== -1) {
-      return 'administration/classifications';
+      return 'taskana/administration/classifications';
     }
   }
 }
