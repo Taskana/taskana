@@ -112,7 +112,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
     this.deleteTaskSubscription = this.taskService.deleteTask(this.task).subscribe(() => {
       this.taskService.publishUpdatedTask();
       this.task = null;
-      this.router.navigate([`/workplace/tasks`]);
+      this.router.navigate([`taskana/workplace/tasks`]);
     }, err => {
       this.generalModalService.triggerMessage(
         new MessageModal('An error occurred while deleting the task ', err));
