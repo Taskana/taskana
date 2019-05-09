@@ -12,7 +12,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import pro.taskana.TaskanaEngine;
 import pro.taskana.history.HistoryEventProducer;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.rest.RestConfiguration;
