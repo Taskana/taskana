@@ -73,21 +73,18 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
-			<version>${version.javax.servlet}</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>${version.postgres}</version>
 		</dependency>
 
 		<!-- TEST -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>${version.junit}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -126,7 +123,6 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
-			<version>${version.spring}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
