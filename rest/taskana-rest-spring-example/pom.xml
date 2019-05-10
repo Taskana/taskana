@@ -50,8 +50,7 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>${version.h2}</version>
-		</dependency>
+			</dependency>
 		<dependency>
 			<groupId>com.ibm.db2.jcc</groupId>
 			<artifactId>db2jcc4</artifactId>
