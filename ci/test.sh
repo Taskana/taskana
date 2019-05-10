@@ -36,8 +36,11 @@ function main {
     mvn clean install -q -f $REL/../rest/ -B #reinstalling rest because rest-doc is built during tests.
     mvn clean verify -q -f $REL/../rest/ -B -pl taskana-rest-spring-example -P history.plugin
   elif [[ "$1" == "H2" && "$2" == "LIB" ]]; then
+    mvn clean install -q -f $REL/.. -N -B
     mvn clean install -q -f $REL/../lib/ -B -Dmaven.javadoc.skip
   elif [[ "$1" == "POSTGRES_10_4" && "$2" == "CORE" ]]; then
+    mvn clean install -q -f $REL/.. -N -B
+    mvn clean install -q -f $REL/../lib -N -B
     mvn clean verify -q -f $REL/../lib/taskana-core -B
   elif [[ "$1" == "POSTGRES_10_4" && "$2" == "WILDFLY" ]]; then
     #installing dependencies for rest (since this tests runs in a different cache)

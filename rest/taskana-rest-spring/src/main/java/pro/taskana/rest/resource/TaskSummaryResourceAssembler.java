@@ -25,13 +25,12 @@ public class TaskSummaryResourceAssembler
 
     @Override
     public TaskSummaryResource toResource(TaskSummary taskSummary) {
-        TaskSummaryResource resource = null;
+        TaskSummaryResource resource;
         try {
             resource = new TaskSummaryResource(taskSummary);
+            return resource;
         } catch (InvalidArgumentException e) {
             throw new SystemException("caught unexpected Exception.", e.getCause());
-        } finally {
-            return resource;
         }
     }
 

@@ -111,8 +111,8 @@ public class WorkbasketController extends AbstractPagingController {
         query = applyFilterParams(query, params);
 
         PageMetadata pageMetadata = getPageMetadata(params, query);
-        List<WorkbasketSummary> workbasketSummaries = (List<WorkbasketSummary>) getQueryList(query, pageMetadata);
-        PagedResources pagedResources = workbasketSummaryResourceAssembler.toResources(workbasketSummaries,
+        List<WorkbasketSummary> workbasketSummaries = getQueryList(query, pageMetadata);
+        PagedResources<WorkbasketSummaryResource> pagedResources = workbasketSummaryResourceAssembler.toResources(workbasketSummaries,
             pageMetadata);
 
         ResponseEntity<PagedResources<WorkbasketSummaryResource>> response = new ResponseEntity<>(pagedResources,
