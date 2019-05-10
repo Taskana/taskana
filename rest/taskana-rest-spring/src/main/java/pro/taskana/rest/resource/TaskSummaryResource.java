@@ -84,7 +84,7 @@ public class TaskSummaryResource extends ResourceSupport {
         this.isTransferred = taskSummary.isTransferred();
         this.attachmentSummaryResources = taskSummary.getAttachmentSummaries()
             .stream()
-            .map(attachment -> new AttachmentSummaryResource(attachment))
+            .map(AttachmentSummaryResource::new)
             .collect(Collectors.toList());
         this.custom1 = taskSummary.getCustomAttribute("1");
         this.custom2 = taskSummary.getCustomAttribute("2");

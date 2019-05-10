@@ -25,8 +25,8 @@ import pro.taskana.WorkbasketService;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.ldap.LdapClient;
-import pro.taskana.rest.resource.WorkbasketAccessItemResourceAssembler;
 import pro.taskana.rest.resource.WorkbasketAccessItemResource;
+import pro.taskana.rest.resource.WorkbasketAccessItemResourceAssembler;
 
 /**
  * Controller for Workbasket access.
@@ -79,15 +79,15 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
         query = applySortingParams(query, params);
 
         PagedResources.PageMetadata pageMetadata = getPageMetadata(params, query);
-        List<WorkbasketAccessItem> workbasketAccessItems = (List<WorkbasketAccessItem>) getQueryList(query,
-            pageMetadata);
+        List<WorkbasketAccessItem> workbasketAccessItems = getQueryList(query, pageMetadata);
 
-        PagedResources pagedResources = workbasketAccessItemResourceAssembler.toResources(
+        PagedResources<WorkbasketAccessItemResource> pagedResources = workbasketAccessItemResourceAssembler.toResources(
             workbasketAccessItems,
             pageMetadata
         );
 
-        ResponseEntity<PagedResources<WorkbasketAccessItemResource>> response = new ResponseEntity<>(pagedResources, HttpStatus.OK);
+        ResponseEntity<PagedResources<WorkbasketAccessItemResource>> response = new ResponseEntity<>(pagedResources,
+            HttpStatus.OK);
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from getWorkbasketAccessItems(), returning {}", response);
         }

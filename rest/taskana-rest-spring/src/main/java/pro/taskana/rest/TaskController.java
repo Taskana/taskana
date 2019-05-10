@@ -109,7 +109,7 @@ public class TaskController extends AbstractPagingController {
         query = applySortingParams(query, params);
 
         PageMetadata pageMetadata = getPageMetadata(params, query);
-        List<TaskSummary> taskSummaries = (List<TaskSummary>) getQueryList(query, pageMetadata);
+        List<TaskSummary> taskSummaries = getQueryList(query, pageMetadata);
 
         PagedResources<TaskSummaryResource> pagedResources = taskSummaryResourceAssembler.toResources(taskSummaries,
             pageMetadata);

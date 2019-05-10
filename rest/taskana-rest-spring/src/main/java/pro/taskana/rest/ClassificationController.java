@@ -96,8 +96,7 @@ public class ClassificationController extends AbstractPagingController {
         query = applyFilterParams(query, params);
 
         PageMetadata pageMetadata = getPageMetadata(params, query);
-        List<ClassificationSummary> classificationSummaries = (List<ClassificationSummary>) getQueryList(query,
-            pageMetadata);
+        List<ClassificationSummary> classificationSummaries = getQueryList(query, pageMetadata);
 
         ResponseEntity<PagedResources<ClassificationSummaryResource>> response = new ResponseEntity<>(
             classificationSummaryResourceAssembler.toResources(
