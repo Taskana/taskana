@@ -48,8 +48,8 @@ public abstract class AbstractPagingController {
         return pageMetadata;
     }
 
-    protected List<?> getQueryList(BaseQuery<?, ?> query, PageMetadata pageMetadata) {
-        List<?> resultList;
+    protected <T> List<T> getQueryList(BaseQuery<T, ?> query, PageMetadata pageMetadata) {
+        List<T> resultList;
         if (pageMetadata != null) {
             resultList = query.listPage((int) pageMetadata.getNumber(), (int) pageMetadata.getSize());
         } else {
