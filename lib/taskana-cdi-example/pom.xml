@@ -19,7 +19,7 @@
 		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
-			<version>7.0</version>
+			<version>${version.javaee-api}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
