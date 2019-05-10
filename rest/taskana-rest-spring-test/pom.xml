@@ -21,7 +21,7 @@
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-dependencies</artifactId>
-				<version>${version.spring-boot}</version>
+				<version>${version.spring.boot}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -48,7 +48,7 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>1.4.197</version>
+			<version>${version.h2}</version>
 		</dependency>
 		<dependency>
 			<groupId>pro.taskana</groupId>
@@ -58,7 +58,7 @@
 		<dependency>
 			<groupId>pro.taskana.simplehistory</groupId>
 			<artifactId>taskana-simplehistory-provider</artifactId>
-			<version>0.0.9</version>
+			<version>${version.taskana.history}</version>
 		</dependency>
 
 		<!-- Tests -->
@@ -81,16 +81,11 @@
 
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>${version.spring-boot}</version>
-			</plugin>
 			<!-- Required for generation of REST documentation -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.0.0-M3</version>
+				<version>${version.maven.surefire}</version>
 				<configuration>
 					<!-- Required for skip plugin tests by default -->
 					<excludes>
@@ -107,7 +102,7 @@
 			<plugin>
 				<groupId>org.asciidoctor</groupId>
 				<artifactId>asciidoctor-maven-plugin</artifactId>
-				<version>1.5.3</version>
+				<version>${version.maven.asciidoctor}</version>
 				<executions>
 					<execution>
 						<id>generate-docs</id>
@@ -129,7 +124,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
-				<version>3.1.0</version>
+				<version>${version.maven.resources}</version>
 				<executions>
 					<execution>
 						<id>copy-rest-docs</id>

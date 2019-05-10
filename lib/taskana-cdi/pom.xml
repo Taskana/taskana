@@ -18,18 +18,18 @@
 		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
-			<version>7.0</version>
-			<scope>provided</scope>
+			<version>${version.javaee-api}</version>
 		</dependency>
 		<dependency>
 			<groupId>pro.taskana</groupId>
 			<artifactId>taskana-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.12</version>
+			<version>${version.junit}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -53,7 +53,7 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>1.4.194</version>
+			<version>${version.h2}</version>
 			<scope>test</scope>
 		</dependency>
 		<!-- Brought in via WildFly Swarm `bom` -->
@@ -67,7 +67,7 @@
 		<dependency>
 			<groupId>org.jboss.arquillian.junit</groupId>
 			<artifactId>arquillian-junit-container</artifactId>
-			<version>1.1.10.Final</version>
+			<version>${version.arquillian}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

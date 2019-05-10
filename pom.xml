@@ -10,24 +10,69 @@
 	<description>This pom is parent to all taskana modules and serves the common build.</description>
 	<url>http://taskana.pro</url>
 
+	<modules>
+		<module>lib</module>
+		<module>rest</module>
+	</modules>
+
 	<properties>
 		<java.version>1.8</java.version>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<powermock.version>1.7.1</powermock.version>
-		<version.wildfly.swarm>2017.4.0</version.wildfly.swarm>
-		<version.resteasy>3.1.2.Final</version.resteasy>
-		<version.spring>5.0.5.RELEASE</version.spring>
-		<version.spring.ldap>2.3.2.RELEASE</version.spring.ldap>
-		<version.spring-boot>2.0.2.RELEASE</version.spring-boot>
-	</properties>
 
-	<modules>
-		<module>lib</module>
-		<module>rest</module>
-	</modules>
+		<version.taskana.history>0.0.9</version.taskana.history>
+
+		<version.mybatis>3.4.5</version.mybatis>
+		<version.slf4j>1.7.25</version.slf4j>
+		<version.json>20180130</version.json>
+		<version.jackson>2.9.8</version.jackson>
+
+		<version.javax.validation>2.0.1.Final</version.javax.validation>
+		<version.javax.servlet>4.0.1</version.javax.servlet>
+
+		<!-- build dependencies -->
+		<version.maven.checkstyle>3.0.0</version.maven.checkstyle>
+		<version.maven.jar>3.1.1</version.maven.jar>
+		<version.maven.compiler>3.8.1</version.maven.compiler>
+		<version.maven.source>3.0.1</version.maven.source>
+		<version.maven.javadoc>3.1.0</version.maven.javadoc>
+		<version.maven.resources>3.0.2</version.maven.resources>
+		<version.maven.surefire>3.0.0-M3</version.maven.surefire>
+		<version.maven.asciidoctor>1.5.3</version.maven.asciidoctor>
+		<version.maven.wildfly>2.0.0.Final</version.maven.wildfly>
+
+		<!-- release dependencies -->
+		<version.maven.gpg>1.5</version.maven.gpg>
+		<version.sonatype>1.6.8</version.sonatype>
+
+		<!-- spring dependencies -->
+		<version.spring>5.0.5.RELEASE</version.spring>
+		<version.spring.core>1.2.0.RELEASE</version.spring.core>
+		<version.spring.boot>2.0.2.RELEASE</version.spring.boot>
+		<version.spring.mybatis>1.3.1</version.spring.mybatis>
+		<version.spring.ldap>2.3.2.RELEASE</version.spring.ldap>
+		<version.spring.hateos>0.24.0.RELEASE</version.spring.hateos>
+
+		<!-- java ee dependencies -->
+		<version.resteasy>3.1.2.Final</version.resteasy>
+		<version.wildfly.swarm>2017.4.0</version.wildfly.swarm>
+		<version.javaee-api>7.0</version.javaee-api>
+		<version.arquillian>1.1.10.Final</version.arquillian>
+
+		<!-- test dependencies -->
+		<version.junit>4.12</version.junit>
+		<version.log4j>2.8.1</version.log4j>
+		<version.mockito>2.8.47</version.mockito>
+		<version.powermock>1.7.1</version.powermock>
+		<version.hamcrest>1.3</version.hamcrest>
+
+		<!-- database driver versions -->
+		<version.h2>1.4.197</version.h2>
+		<version.db2>11.1.1.1</version.db2>
+		<version.postgres>42.2.5</version.postgres>
+	</properties>
 
 	<developers>
 		<developer>
@@ -59,7 +104,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.5</version>
+						<version>${version.maven.gpg}</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
@@ -73,7 +118,7 @@
 					<plugin>
 						<groupId>org.sonatype.plugins</groupId>
 						<artifactId>nexus-staging-maven-plugin</artifactId>
-						<version>1.6.8</version>
+						<version>${version.sonatype}</version>
 						<extensions>true</extensions>
 						<configuration>
 							<serverId>ossrh</serverId>
@@ -97,7 +142,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.5</version>
+						<version>${version.maven.gpg}</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
@@ -111,7 +156,7 @@
 					<plugin>
 						<groupId>org.sonatype.plugins</groupId>
 						<artifactId>nexus-staging-maven-plugin</artifactId>
-						<version>1.6.8</version>
+						<version>${version.sonatype}</version>
 						<extensions>true</extensions>
 						<configuration>
 							<serverId>ossrh</serverId>
@@ -139,7 +184,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.1.1</version>
+				<version>${version.maven.jar}</version>
 				<configuration>
 					<archive>
 						<manifest>
@@ -151,10 +196,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
+				<version>${version.maven.compiler}</version>
 				<configuration>
 					<showWarnings>true</showWarnings>
-					<failOnWarning>false</failOnWarning>
+					<failOnWarning>true</failOnWarning>
 					<compilerArgs>
 						<arg>-Xlint:all</arg>
 						<arg>-proc:none</arg>
@@ -164,7 +209,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>3.0.1</version>
+				<version>${version.maven.source}</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -177,7 +222,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.1.0</version>
+				<version>${version.maven.javadoc}</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -190,7 +235,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>3.0.0</version>
+				<version>${version.maven.checkstyle}</version>
 				<executions>
 					<execution>
 						<id>validate</id>
