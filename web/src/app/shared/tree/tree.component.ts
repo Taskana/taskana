@@ -54,6 +54,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
         }
       }
     },
+    useVirtualScroll: true,
     animateExpand: true,
     animateSpeed: 20,
     levelPadding: 20,
