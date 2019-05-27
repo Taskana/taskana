@@ -337,6 +337,37 @@ public class ClassificationDefinitionControllerIntTest {
         assertNotEquals(wrongParentCl.getClassificationId(), childCl.getParentId());
     }
 
+    @Test
+    public void testChangeParentByImportingExistingClassification() throws IOException, InterruptedException {
+        ClassificationSummaryResource child1 = this.getClassificationWithKeyAndDomain("L110105", "DOMAIN_A");
+        assertEquals("L11010", child1.getParentKey());
+        child1.setParentId("CLI:100000000000000000000000000000000002");
+        child1.setParentKey("L10303");
+        String withNewParent = objMapper.writeValueAsString(child1);
+
+        ClassificationSummaryResource child2 = this.getClassificationWithKeyAndDomain("L110107", "DOMAIN_A");
+        assertEquals("L11010", child2.getParentKey());
+        child2.setParentId("");
+        child2.setParentKey("");
+        String withoutParent = objMapper.writeValueAsString(child2);
+
+        List<String> clList = new ArrayList<>();
+        clList.add(withNewParent);
+        clList.add(withoutParent);
+
+        ResponseEntity<String> response = importRequest(clList);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        Thread.sleep(10);
+        LOGGER.debug("Wait for 10 s to give the system a chance to update");
+
+        ClassificationSummaryResource childWithNewParent = this.getClassificationWithKeyAndDomain("L110105", "DOMAIN_A");
+        assertEquals(child1.parentKey, childWithNewParent.parentKey);
+
+        ClassificationSummaryResource childWithoutParent = this.getClassificationWithKeyAndDomain("L110107", "DOMAIN_A");
+        assertEquals(child2.parentId, childWithoutParent.parentId);
+        assertEquals(child2.parentKey, childWithoutParent.parentKey);
+    }
+
     private ClassificationResource createClassification(String id, String key, String domain, String parentId,
         String parentKey) {
         ClassificationResource classificationResource = new ClassificationResource();
