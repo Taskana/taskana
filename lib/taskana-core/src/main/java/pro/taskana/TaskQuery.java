@@ -205,7 +205,7 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
     TaskQuery workbasketKeyDomainIn(KeyDomain... workbasketIdentifiers);
 
     /**
-     * Add your workbasket key to the query.
+     * Add your workbasket id to the query.
      *
      * @param workbasketIds
      *            the ids of workbaskets
