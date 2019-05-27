@@ -187,7 +187,7 @@ public class ClassificationDefinitionController {
             Classification child = classificationService
                     .getClassification(childRes.getKey(), childRes.getDomain());
             String parentKey = childrenInFile.get(childRes);
-            String parentId = classificationService.getClassification(parentKey, childRes.getDomain()).getId();
+            String parentId = (parentKey == null) ? "" : classificationService.getClassification(parentKey, childRes.getDomain()).getId();
             child.setParentKey(parentKey);
             child.setParentId(parentId);
             classificationService.updateClassification(child);
@@ -206,6 +206,8 @@ public class ClassificationDefinitionController {
         currentClassification.setCategory(cl.category);
         currentClassification.setIsValidInDomain(cl.isValidInDomain);
         currentClassification.setName(cl.name);
+        currentClassification.setParentId(cl.parentId);
+        currentClassification.setParentKey(cl.parentKey);
         currentClassification.setDescription(cl.description);
         currentClassification.setPriority(cl.priority);
         currentClassification.setServiceLevel(cl.serviceLevel);
