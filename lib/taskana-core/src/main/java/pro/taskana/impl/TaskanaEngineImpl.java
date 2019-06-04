@@ -391,7 +391,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     /**
      * creates the MyBatis transaction factory.
      *
-     * @param useManagedTransactions
+     * @param useManagedTransactions true, if managed transations should be used. Otherwise false.
      */
     private void createTransactionFactory(boolean useManagedTransactions) {
         if (useManagedTransactions) {
