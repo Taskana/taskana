@@ -26,21 +26,10 @@ import pro.taskana.configuration.TaskanaEngineConfiguration;
  */
 public class TaskanaEngineConfigurationTest {
 
-    private static DataSource dataSource = null;
-    private static String schemaName = null;
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineConfigurationTest.class);
     private static final int POOL_TIME_TO_WAIT = 50;
-
-    @Test
-    public void testCreateTaskanaEngine() throws SQLException {
-        DataSource ds = getDataSource();
-        TaskanaEngineConfiguration taskEngineConfiguration = new TaskanaEngineConfiguration(ds, false,
-            TaskanaEngineConfigurationTest.getSchemaName());
-
-        TaskanaEngine te = taskEngineConfiguration.buildTaskanaEngine();
-
-        Assert.assertNotNull(te);
-    }
+    private static DataSource dataSource = null;
+    private static String schemaName = null;
 
     /**
      * returns the Datasource used for Junit test. If the file {user.home}/taskanaUnitTest.properties is present, the
@@ -69,7 +58,7 @@ public class TaskanaEngineConfigurationTest {
     /**
      * create Default Datasource for in-memory database.
      *
-     * @return
+     * @return the default datasource.
      */
     private static DataSource createDefaultDataSource() {
         // JdbcDataSource ds = new JdbcDataSource();
@@ -81,10 +70,10 @@ public class TaskanaEngineConfigurationTest {
         String jdbcUrl = "jdbc:h2:mem:taskana;IGNORECASE=TRUE;LOCK_MODE=0";
         String dbUserName = "sa";
         String dbPassword = "sa";
-        DataSource ds = new PooledDataSource(Thread.currentThread().getContextClassLoader(), jdbcDriver,
+        PooledDataSource ds = new PooledDataSource(Thread.currentThread().getContextClassLoader(), jdbcDriver,
             jdbcUrl, dbUserName, dbPassword);
-        ((PooledDataSource) ds).setPoolTimeToWait(POOL_TIME_TO_WAIT);
-        ((PooledDataSource) ds).forceCloseAll();  // otherwise the MyBatis pool is not initialized correctly
+        ds.setPoolTimeToWait(POOL_TIME_TO_WAIT);
+        ds.forceCloseAll();  // otherwise the MyBatis pool is not initialized correctly
 
         return ds;
     }
@@ -116,11 +105,11 @@ public class TaskanaEngineConfigurationTest {
     /**
      * create data source from properties file.
      *
-     * @param propertiesFileName
-     * @return
+     * @param propertiesFileName the name of the property file
+     * @return the parsed datasource.
      */
     public static DataSource createDataSourceFromProperties(String propertiesFileName) {
-        DataSource ds = null;
+        DataSource ds;
         try (InputStream input = new FileInputStream(propertiesFileName)) {
             Properties prop = new Properties();
             prop.load(input);
@@ -157,10 +146,6 @@ public class TaskanaEngineConfigurationTest {
                 ds = createDefaultDataSource();
             }
 
-        } catch (FileNotFoundException e) {
-            LOGGER.warn("createDataSourceFromProperties caught Exception " + e);
-            LOGGER.warn("Using default Datasource for Test");
-            ds = createDefaultDataSource();
         } catch (IOException e) {
             LOGGER.warn("createDataSourceFromProperties caught Exception " + e);
             LOGGER.warn("Using default Datasource for Test");
@@ -198,6 +183,17 @@ public class TaskanaEngineConfigurationTest {
         }
 
         return schemaName;
+    }
+
+    @Test
+    public void testCreateTaskanaEngine() throws SQLException {
+        DataSource ds = getDataSource();
+        TaskanaEngineConfiguration taskEngineConfiguration = new TaskanaEngineConfiguration(ds, false,
+            TaskanaEngineConfigurationTest.getSchemaName());
+
+        TaskanaEngine te = taskEngineConfiguration.buildTaskanaEngine();
+
+        Assert.assertNotNull(te);
     }
 
 }

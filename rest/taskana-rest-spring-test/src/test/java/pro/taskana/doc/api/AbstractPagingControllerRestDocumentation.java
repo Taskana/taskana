@@ -1,5 +1,17 @@
 package pro.taskana.doc.api;
 
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+
+import java.util.HashMap;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -17,17 +29,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import pro.taskana.rest.RestConfiguration;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 
-import java.util.HashMap;
+import pro.taskana.rest.RestConfiguration;
 
 /**
  *  Generate Rest Docu for AbstractPagingController.
@@ -36,12 +39,10 @@ import java.util.HashMap;
 @SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 public class AbstractPagingControllerRestDocumentation {
 
-    @LocalServerPort
-    int port;
-
     @Rule
     public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
-
+    @LocalServerPort
+    int port;
     @Autowired
     private WebApplicationContext context;
 
@@ -54,16 +55,16 @@ public class AbstractPagingControllerRestDocumentation {
     @Before
     public void setUp() {
         document("{methodName}",
-                preprocessRequest(prettyPrint()),
-                preprocessResponse(prettyPrint()));
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint()));
 
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
-                .apply(springSecurity())
-                .apply(documentationConfiguration(this.restDocumentation)
-                        .operationPreprocessors()
-                        .withResponseDefaults(prettyPrint())
-                        .withRequestDefaults(prettyPrint()))
-                        .build();
+            .apply(springSecurity())
+            .apply(documentationConfiguration(this.restDocumentation)
+                .operationPreprocessors()
+                .withResponseDefaults(prettyPrint())
+                .withRequestDefaults(prettyPrint()))
+            .build();
 
         pagingFieldDescriptionsMap.put("page", "Contains metainfo if there are multiple pages, else it is null");
         pagingFieldDescriptionsMap.put("page.size", "Number of items per page");
@@ -76,30 +77,29 @@ public class AbstractPagingControllerRestDocumentation {
         pagingFieldDescriptionsMap.put("_links.next.href", "Link to next page");
 
         pagingFieldDescriptors = new FieldDescriptor[] {
-
-                subsectionWithPath("_embedded.classificationSummaryResourceList").ignored(),
-                fieldWithPath("_links").ignored(),
-                fieldWithPath("_links.self").ignored(),
-                fieldWithPath("_links.self.href").ignored(),
-                fieldWithPath("page").description(pagingFieldDescriptionsMap.get("page")),
-                fieldWithPath("page.size").description(pagingFieldDescriptionsMap.get("page.size")),
-                fieldWithPath("page.totalElements").description(pagingFieldDescriptionsMap.get("page.totalElements")),
-                fieldWithPath("page.totalPages").description(pagingFieldDescriptionsMap.get("page.totalPages")),
-                fieldWithPath("page.number").description(pagingFieldDescriptionsMap.get("page.number")),
-                fieldWithPath("_links.first.href").description(pagingFieldDescriptionsMap.get("_links.first.href")),
-                fieldWithPath("_links.last.href").description(pagingFieldDescriptionsMap.get("_links.last.href")),
-                fieldWithPath("_links.prev.href").description(pagingFieldDescriptionsMap.get("_links.prev.href")),
-                fieldWithPath("_links.next.href").description(pagingFieldDescriptionsMap.get("_links.next.href"))
+            subsectionWithPath("_embedded.classificationSummaryResourceList").ignored(),
+            fieldWithPath("_links").ignored(),
+            fieldWithPath("_links.self").ignored(),
+            fieldWithPath("_links.self.href").ignored(),
+            fieldWithPath("page").description(pagingFieldDescriptionsMap.get("page")),
+            fieldWithPath("page.size").description(pagingFieldDescriptionsMap.get("page.size")),
+            fieldWithPath("page.totalElements").description(pagingFieldDescriptionsMap.get("page.totalElements")),
+            fieldWithPath("page.totalPages").description(pagingFieldDescriptionsMap.get("page.totalPages")),
+            fieldWithPath("page.number").description(pagingFieldDescriptionsMap.get("page.number")),
+            fieldWithPath("_links.first.href").description(pagingFieldDescriptionsMap.get("_links.first.href")),
+            fieldWithPath("_links.last.href").description(pagingFieldDescriptionsMap.get("_links.last.href")),
+            fieldWithPath("_links.prev.href").description(pagingFieldDescriptionsMap.get("_links.prev.href")),
+            fieldWithPath("_links.next.href").description(pagingFieldDescriptionsMap.get("_links.next.href"))
         };
     }
 
     @Test
     public void commonSummaryResourceFieldsDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-                .get("http://127.0.0.1:" + port + "/v1/classifications?page=2&page-size=5")
-                .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
-        .andExpect(MockMvcResultMatchers.status().isOk())
-        .andDo(MockMvcRestDocumentation.document("CommonSummaryResourceFields",
+            .get("http://127.0.0.1:" + port + "/v1/classifications?page=2&page-size=5")
+            .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andDo(MockMvcRestDocumentation.document("CommonSummaryResourceFields",
                 responseFields(pagingFieldDescriptors)));
     }
 }
