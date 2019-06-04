@@ -28,6 +28,7 @@ public class DBCleaner {
     /**
      * Clears the db.
      *
+     * @param dataSource the datasource
      * @param dropTables
      *            if true drop tables, else clean tables
      */
@@ -51,7 +52,7 @@ public class DBCleaner {
         LOGGER.debug(outWriter.toString());
         String errorMsg = errorWriter.toString().trim();
 
-        if (!errorMsg.isEmpty() && errorMsg.indexOf("SQLCODE=-204, SQLSTATE=42704") == -1) {
+        if (!errorMsg.isEmpty() && !errorMsg.contains("SQLCODE=-204, SQLSTATE=42704")) {
             LOGGER.error(errorWriter.toString());
         }
     }

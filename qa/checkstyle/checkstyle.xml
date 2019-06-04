@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE module PUBLIC
-        "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
-        "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+	"-//Puppy Crawl//DTD Check Configuration 1.2//EN"
+	"http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
 
 <!--
 
@@ -19,116 +19,119 @@
 -->
 
 <module name="Checker">
-    <!-- Checks whether files end with a new line.                        -->
-    <!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
-    <module name="NewlineAtEndOfFile">
+	<!-- Checks whether files end with a new line.                        -->
+	<!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
+	<module name="NewlineAtEndOfFile">
 		<property name="lineSeparator" value="lf_cr_crlf"/>
 	</module>
 
-    <!-- Checks that property files contain the same keys.         -->
-    <!-- See http://checkstyle.sf.net/config_misc.html#Translation -->
-    <module name="Translation"/>
+	<!-- Checks that property files contain the same keys.         -->
+	<!-- See http://checkstyle.sf.net/config_misc.html#Translation -->
+	<module name="Translation"/>
 
-    <module name="FileLength"/>
+	<module name="FileLength"/>
 
-    <module name="FileTabCharacter">
-        <property name="eachLine" value="true"/>
-    </module>
+	<module name="FileTabCharacter">
+		<property name="eachLine" value="true"/>
+	</module>
 
-    <module name="RegexpSingleline">
-        <!-- \s matches whitespace character, $ matches end of line. -->
-        <property name="format" value="\s+$"/>
-        <property name="message" value="Line has trailing spaces."/>
-    </module>
+	<module name="RegexpSingleline">
+		<!-- \s matches whitespace character, $ matches end of line. -->
+		<property name="format" value="\s+$"/>
+		<property name="message" value="Line has trailing spaces."/>
+	</module>
 
-    <module name="TreeWalker">
+	<module name="TreeWalker">
 
-        <property name="cacheFile" value="${checkstyle.cache.file}"/>
+		<property name="cacheFile" value="${checkstyle.cache.file}"/>
+		<module name="AvoidStarImport"/>
 
-        <!-- required for SuppressWarningsFilter (and other Suppress* rules not used here) -->
-        <!-- see http://checkstyle.sourceforge.net/config_annotation.html#SuppressWarningsHolder -->
-        <module name="SuppressWarningsHolder"/>
+		<!-- required for SuppressWarningsFilter (and other Suppress* rules not used here) -->
+		<!-- see http://checkstyle.sourceforge.net/config_annotation.html#SuppressWarningsHolder -->
+		<module name="SuppressWarningsHolder"/>
 
-        <!-- Checks for Javadoc comments.                     -->
-        <!-- See http://checkstyle.sf.net/config_javadoc.html -->
-        <module name="JavadocType"/>
-        <module name="JavadocStyle"/>
+		<!-- Checks for Javadoc comments.                     -->
+		<!-- See http://checkstyle.sf.net/config_javadoc.html -->
+		<module name="JavadocMethod">
+			<property name="allowMissingJavadoc" value="true"/>
+		</module>
+		<module name="JavadocType"/>
+		<module name="JavadocStyle"/>
 
+		<!-- Checks for Naming Conventions.                  -->
+		<!-- See http://checkstyle.sf.net/config_naming.html -->
+		<module name="ConstantName"/>
+		<module name="LocalFinalVariableName"/>
+		<module name="LocalVariableName"/>
+		<module name="MemberName"/>
+		<!-- Removed because of _ not allowed in test method names -->
+		<!-- <module name="MethodName"/> -->
+		<module name="PackageName"/>
+		<module name="ParameterName"/>
+		<module name="StaticVariableName"/>
+		<module name="TypeName"/>
 
-        <!-- Checks for Naming Conventions.                  -->
-        <!-- See http://checkstyle.sf.net/config_naming.html -->
-        <module name="ConstantName"/>
-        <module name="LocalFinalVariableName"/>
-        <module name="LocalVariableName"/>
-        <module name="MemberName"/>
-        <!-- Removed because of _ not allowed in test method names -->
-        <!-- <module name="MethodName"/> -->
-        <module name="PackageName"/>
-        <module name="ParameterName"/>
-        <module name="StaticVariableName"/>
-        <module name="TypeName"/>
+		<!-- Checks for imports                              -->
+		<!-- See http://checkstyle.sf.net/config_import.html -->
+		<module name="IllegalImport"/> <!-- defaults to sun.* packages -->
+		<module name="RedundantImport"/>
+		<module name="UnusedImports"/>
 
-        <!-- Checks for imports                              -->
-        <!-- See http://checkstyle.sf.net/config_import.html -->
-        <module name="IllegalImport"/> <!-- defaults to sun.* packages -->
-        <module name="RedundantImport"/>
-        <module name="UnusedImports"/>
+		<!-- Checks for whitespace                               -->
+		<!-- See http://checkstyle.sf.net/config_whitespace.html -->
+		<module name="EmptyForIteratorPad"/>
+		<module name="MethodParamPad"/>
+		<module name="NoWhitespaceAfter"/>
+		<module name="NoWhitespaceBefore"/>
+		<module name="OperatorWrap"/>
+		<module name="ParenPad"/>
+		<module name="TypecastParenPad"/>
+		<module name="WhitespaceAfter"/>
+		<module name="WhitespaceAround"/>
 
-        <!-- Checks for whitespace                               -->
-        <!-- See http://checkstyle.sf.net/config_whitespace.html -->
-        <module name="EmptyForIteratorPad"/>
-        <module name="MethodParamPad"/>
-        <module name="NoWhitespaceAfter"/>
-        <module name="NoWhitespaceBefore"/>
-        <module name="OperatorWrap"/>
-        <module name="ParenPad"/>
-        <module name="TypecastParenPad"/>
-        <module name="WhitespaceAfter"/>
-        <module name="WhitespaceAround"/>
+		<!-- Modifier Checks                                    -->
+		<!-- See http://checkstyle.sf.net/config_modifiers.html -->
+		<module name="ModifierOrder"/>
+		<module name="RedundantModifier"/>
 
-        <!-- Modifier Checks                                    -->
-        <!-- See http://checkstyle.sf.net/config_modifiers.html -->
-        <module name="ModifierOrder"/>
-        <module name="RedundantModifier"/>
+		<!-- Checks for blocks. You know, those {}'s         -->
+		<!-- See http://checkstyle.sf.net/config_blocks.html -->
+		<module name="AvoidNestedBlocks"/>
+		<module name="EmptyBlock"/>
+		<module name="LeftCurly"/>
+		<module name="NeedBraces"/>
+		<module name="RightCurly"/>
 
-        <!-- Checks for blocks. You know, those {}'s         -->
-        <!-- See http://checkstyle.sf.net/config_blocks.html -->
-        <module name="AvoidNestedBlocks"/>
-        <module name="EmptyBlock"/>
-        <module name="LeftCurly"/>
-        <module name="NeedBraces"/>
-        <module name="RightCurly"/>
+		<!-- Checks for common coding problems               -->
+		<!-- See http://checkstyle.sf.net/config_coding.html -->
+		<module name="EmptyStatement"/>
+		<module name="EqualsHashCode"/>
+		<module name="IllegalInstantiation"/>
+		<module name="InnerAssignment"/>
+		<module name="MissingSwitchDefault"/>
+		<module name="SimplifyBooleanExpression"/>
+		<module name="SimplifyBooleanReturn"/>
 
-        <!-- Checks for common coding problems               -->
-        <!-- See http://checkstyle.sf.net/config_coding.html -->
-        <module name="EmptyStatement"/>
-        <module name="EqualsHashCode"/>
-        <module name="IllegalInstantiation"/>
-        <module name="InnerAssignment"/>
-        <module name="MissingSwitchDefault"/>
-        <module name="SimplifyBooleanExpression"/>
-        <module name="SimplifyBooleanReturn"/>
+		<!-- Checks for class design                         -->
+		<!-- See http://checkstyle.sf.net/config_design.html -->
+		<module name="FinalClass"/>
+		<module name="HideUtilityClassConstructor"/>
+		<module name="InterfaceIsType"/>
 
-        <!-- Checks for class design                         -->
-        <!-- See http://checkstyle.sf.net/config_design.html -->
-        <module name="FinalClass"/>
-        <module name="HideUtilityClassConstructor"/>
-        <module name="InterfaceIsType"/>
+		<!-- Miscellaneous other checks.                   -->
+		<!-- See http://checkstyle.sf.net/config_misc.html -->
+		<module name="ArrayTypeStyle"/>
+		<module name="TodoComment"/>
+		<module name="UpperEll"/>
 
-        <!-- Miscellaneous other checks.                   -->
-        <!-- See http://checkstyle.sf.net/config_misc.html -->
-        <module name="ArrayTypeStyle"/>
-        <module name="TodoComment"/>
-        <module name="UpperEll"/>
+	</module>
 
-    </module>
+	<!-- Support @SuppressWarnings (added in Checkstyle 5.7) -->
+	<!-- see http://checkstyle.sourceforge.net/config.html#SuppressWarningsFilter -->
+	<module name="SuppressWarningsFilter"/>
 
-    <!-- Support @SuppressWarnings (added in Checkstyle 5.7) -->
-    <!-- see http://checkstyle.sourceforge.net/config.html#SuppressWarningsFilter -->
-    <module name="SuppressWarningsFilter"/>
-
-    <!-- Checks properties file for a duplicated properties. -->
-    <!-- See http://checkstyle.sourceforge.net/config_misc.html#UniqueProperties -->
-    <module name="UniqueProperties"/>
+	<!-- Checks properties file for a duplicated properties. -->
+	<!-- See http://checkstyle.sourceforge.net/config_misc.html#UniqueProperties -->
+	<module name="UniqueProperties"/>
 
 </module>

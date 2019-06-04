@@ -53,6 +53,27 @@ public class ClassificationServiceImpl implements ClassificationService {
         this.taskMapper = taskMapper;
     }
 
+    private static void validateServiceLevel(String serviceLevel) throws InvalidArgumentException {
+        try {
+            Duration.parse(serviceLevel);
+
+        } catch (Exception e) {
+            throw new InvalidArgumentException("Invalid service level " + serviceLevel
+                + ". The formats accepted are based on the ISO-8601 duration format PnDTnHnMn.nS with days considered to be exactly 24 hours. "
+                + "For example: \"P2D\" represents a period of \"two days.\" ",
+                e.getCause());
+        }
+        // check that the duration is based on format PnD, i.e. it must start with a P, end with a D
+        String serviceLevelLower = serviceLevel.toLowerCase();
+        if (!('p' == serviceLevelLower.charAt(0))
+            || !('d' == serviceLevelLower.charAt(serviceLevel.length() - 1))) {
+
+            throw new InvalidArgumentException(
+                "Invalid service level " + serviceLevel + ". Taskana only supports service levels that"
+                    + " contain a number of whole days specified according to the format 'PnD' where n is the number of days");
+        }
+    }
+
     @Override
     public Classification createClassification(Classification classification)
         throws ClassificationAlreadyExistException, NotAuthorizedException,
@@ -196,7 +217,9 @@ public class ClassificationServiceImpl implements ClassificationService {
     /**
      * Fill missing values and validate classification before saving the classification.
      *
-     * @param classification
+     * @param classification the classification which will be verified.
+     *
+     * @throws InvalidArgumentException if the given classification has no key.
      */
     private void initDefaultClassificationValues(ClassificationImpl classification) throws InvalidArgumentException {
         Instant now = Instant.now();
@@ -250,27 +273,6 @@ public class ClassificationServiceImpl implements ClassificationService {
 
         if (classification.getDomain().isEmpty()) {
             classification.setIsValidInDomain(false);
-        }
-    }
-
-    private static void validateServiceLevel(String serviceLevel) throws InvalidArgumentException {
-        try {
-            Duration.parse(serviceLevel);
-
-        } catch (Exception e) {
-            throw new InvalidArgumentException("Invalid service level " + serviceLevel
-                + ". The formats accepted are based on the ISO-8601 duration format PnDTnHnMn.nS with days considered to be exactly 24 hours. "
-                + "For example: \"P2D\" represents a period of \"two days.\" ",
-                e.getCause());
-        }
-        // check that the duration is based on format PnD, i.e. it must start with a P, end with a D
-        String serviceLevelLower = serviceLevel.toLowerCase();
-        if (!('p' == serviceLevelLower.charAt(0))
-            || !('d' == serviceLevelLower.charAt(serviceLevel.length() - 1))) {
-
-            throw new InvalidArgumentException(
-                "Invalid service level " + serviceLevel + ". Taskana only supports service levels that"
-                    + " contain a number of whole days specified according to the format 'PnD' where n is the number of days");
         }
     }
 
@@ -343,8 +345,8 @@ public class ClassificationServiceImpl implements ClassificationService {
             }
         } catch (Exception ex) {
             LOGGER.warn(
-                "Classification-Service throwed Exception while calling mapper and searching for classification. EX={}",
-                ex);
+                "Classification-Service threw Exception while calling mapper and searching for classification. EX={}",
+                ex, ex);
         }
         return isExisting;
     }
@@ -433,6 +435,9 @@ public class ClassificationServiceImpl implements ClassificationService {
      *
      * @param classificationImpl the classification
      * @return the old classification
+     *
+     * @throws ConcurrencyException if the classification has been modified by some other process.
+     * @throws ClassificationNotFoundException if the given classification does not exist.
      */
     private Classification getExistingClassificationAndVerifyTimestampHasNotChanged(
         ClassificationImpl classificationImpl)
@@ -472,6 +477,8 @@ public class ClassificationServiceImpl implements ClassificationService {
      *
      * @param classificationImpl the new classification
      * @param oldClassification  the old classification
+     *
+     * @throws ClassificationNotFoundException if the given classification does not exist.
      */
     private void checkExistenceOfParentClassification(Classification oldClassification,
         ClassificationImpl classificationImpl)
