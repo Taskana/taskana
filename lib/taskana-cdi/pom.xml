@@ -56,14 +56,12 @@
 			<version>${version.h2}</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- Brought in via WildFly Swarm `bom` -->
 		<dependency>
 			<groupId>org.wildfly.swarm</groupId>
 			<artifactId>arquillian</artifactId>
 			<version>${version.wildfly.swarm}</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- Brought in via Arquillian BOM, see dependencyManagement section above -->
 		<dependency>
 			<groupId>org.jboss.arquillian.junit</groupId>
 			<artifactId>arquillian-junit-container</artifactId>
