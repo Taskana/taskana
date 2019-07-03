@@ -303,10 +303,10 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     @Override
     public void checkRoleMembership(TaskanaRole... roles) throws NotAuthorizedException {
         if (!isUserInRole(roles)) {
-            if (LOGGER.isErrorEnabled()) {
+            if (LOGGER.isDebugEnabled()) {
                 String accessIds = LoggerUtils.listToString(CurrentUserContext.getAccessIds());
                 String rolesAsString = Arrays.toString(roles);
-                LOGGER.error("Throwing NotAuthorizedException because accessIds {} are not member of roles {}",
+                LOGGER.debug("Throwing NotAuthorizedException because accessIds {} are not member of roles {}",
                     accessIds,
                     rolesAsString);
             }

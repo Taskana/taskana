@@ -33,19 +33,18 @@ public abstract class AbstractAccTest {
 
     protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
     protected static TaskanaEngine taskanaEngine;
+    private static DBCleaner cleaner = new DBCleaner();
+    protected static TestDataGenerator testDataGenerator = new TestDataGenerator();
 
     @BeforeClass
     public static void setupTest() throws Exception {
-        resetDb();
+        resetDb(false);
     }
 
-    public static void resetDb(boolean... dropTables) throws SQLException, IOException {
+    public static void resetDb(boolean dropTables) throws SQLException, IOException {
         DataSource dataSource = TaskanaEngineConfigurationTest.getDataSource();
-        DBCleaner cleaner = new DBCleaner();
-        if (dropTables == null || dropTables.length == 0) {
-            cleaner.clearDb(dataSource, true);
-        } else {
-            cleaner.clearDb(dataSource, dropTables[0]);
+        if (dropTables) {
+            cleaner.clearDb(dataSource, dropTables);
         }
         dataSource = TaskanaEngineConfigurationTest.getDataSource();
         taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false,
@@ -53,7 +52,6 @@ public abstract class AbstractAccTest {
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         taskanaEngine.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
         cleaner.clearDb(dataSource, false);
-        TestDataGenerator testDataGenerator = new TestDataGenerator();
         testDataGenerator.generateTestData(dataSource);
     }
 
