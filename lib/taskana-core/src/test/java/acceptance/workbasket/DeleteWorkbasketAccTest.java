@@ -159,12 +159,13 @@ public class DeleteWorkbasketAccTest extends AbstractAccTest {
         workbasket.setOrgLevel1("company");
         workbasket = workbasketService.createWorkbasket(workbasket);
 
+        boolean failed = false;
         try {
             workbasketService.deleteWorkbasket(workbasket.getId());
         } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            failed = true;
         }
+        assertTrue(failed);
     }
 
     @WithAccessId(userName = "teamlead_2", groupNames = {"businessadmin"})

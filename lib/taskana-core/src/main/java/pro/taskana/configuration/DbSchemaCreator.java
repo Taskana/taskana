@@ -88,12 +88,17 @@ public class DbSchemaCreator {
 
     private boolean isSchemaPreexisting(Connection connection) {
         ScriptRunner runner = getScriptRunnerInstance(connection);
+        StringWriter errorWriter = new StringWriter();
+        runner.setErrorLogWriter(new PrintWriter(errorWriter));
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(this.getClass()
                 .getResourceAsStream(selectDbSchemaDetectionScript(connection.getMetaData().getDatabaseProductName()))));
             runner.runScript(getSqlSchemaNameParsed(reader));
         } catch (Exception e) {
             LOGGER.debug("Schema does not exist.");
+            if (!errorWriter.toString().trim().isEmpty()) {
+                LOGGER.debug(errorWriter.toString());
+            }
             return false;
         }
         LOGGER.debug("Schema does exist.");
