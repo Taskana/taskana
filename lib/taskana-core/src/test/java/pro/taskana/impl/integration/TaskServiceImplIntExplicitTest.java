@@ -98,7 +98,6 @@ public class TaskServiceImplIntExplicitTest {
         taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.EXPLICIT);
         workbasketService = taskanaEngine.getWorkbasketService();
         cleaner = new DBCleaner();
-        cleaner.clearDb(dataSource, true);
         DbSchemaCreator creator = new DbSchemaCreator(dataSource, dataSource.getConnection().getSchema());
         creator.run();
     }
@@ -181,8 +180,6 @@ public class TaskServiceImplIntExplicitTest {
         TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException,
         WorkbasketAlreadyExistException, DomainNotFoundException {
         DataSource ds = TaskanaEngineConfiguration.createDefaultDataSource();
-        DBCleaner cleaner = new DBCleaner();
-        cleaner.clearDb(ds, false);
         TaskanaEngineConfiguration taskanaEngineConfiguration = new TaskanaEngineConfiguration(ds, false, false,
             null);
         TaskanaEngine te = taskanaEngineConfiguration.buildTaskanaEngine();

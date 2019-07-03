@@ -13,7 +13,6 @@ import javax.sql.DataSource;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -72,12 +71,6 @@ public class TaskServiceImplIntAutocommitTest {
     private ClassificationService classificationService;
     private WorkbasketService workbasketService;
 
-    @BeforeClass
-    public static void resetDb() {
-        DataSource ds = TaskanaEngineConfigurationTest.getDataSource();
-        DBCleaner cleaner = new DBCleaner();
-        cleaner.clearDb(ds, true);
-    }
 
     @Before
     public void setup() throws SQLException {
@@ -113,7 +106,6 @@ public class TaskServiceImplIntAutocommitTest {
         task.setClassificationKey(classification.getKey());
         task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
         task = taskServiceImpl.createTask(task);
-        // skanaEngineImpl.getSqlSession().commit(); // needed so that the change is visible in the other session
 
         TaskanaEngine te2 = taskanaEngineConfiguration.buildTaskanaEngine();
         TaskServiceImpl taskServiceImpl2 = (TaskServiceImpl) te2.getTaskService();
@@ -157,8 +149,6 @@ public class TaskServiceImplIntAutocommitTest {
         WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,
         TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException,
         WorkbasketAlreadyExistException, DomainNotFoundException {
-        DBCleaner cleaner = new DBCleaner();
-        cleaner.clearDb(TaskanaEngineConfiguration.createDefaultDataSource(), false);
         TaskanaEngineConfiguration taskanaEngineConfiguration = new TaskanaEngineConfiguration(null, false, false,
             null);
         TaskanaEngine te = taskanaEngineConfiguration.buildTaskanaEngine();

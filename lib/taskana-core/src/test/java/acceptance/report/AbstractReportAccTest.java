@@ -33,8 +33,6 @@ public class AbstractReportAccTest {
     private static void resetDb() throws SQLException, IOException {
         DataSource dataSource = TaskanaEngineConfigurationTest.getDataSource();
         DBCleaner cleaner = new DBCleaner();
-        cleaner.clearDb(dataSource, true);
-        dataSource = TaskanaEngineConfigurationTest.getDataSource();
         taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false,
             TaskanaEngineConfigurationTest.getSchemaName());
         taskanaEngineConfiguration.setGermanPublicHolidaysEnabled(false);
