@@ -19,14 +19,12 @@ import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketType;
-import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
-import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.exceptions.TaskNotFoundException;
-import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketInUseException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.TaskImpl;
@@ -146,12 +144,9 @@ public class DeleteWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "user_1_2",
         groupNames = {"businessadmin"})
-    @Test
-    public void testCreateAndDeleteWorkbasket()
-        throws NotAuthorizedException, InvalidWorkbasketException, WorkbasketAlreadyExistException,
-        DomainNotFoundException {
+    @Test(expected = NotAuthorizedToQueryWorkbasketException.class)
+    public void testCreateAndDeleteWorkbasket() throws Exception {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-        int before = workbasketService.createWorkbasketQuery().domainIn("DOMAIN_A").list().size();
 
         Workbasket workbasket = workbasketService.newWorkbasket("NT1234", "DOMAIN_A");
         workbasket.setName("TheUltimate");
@@ -159,13 +154,7 @@ public class DeleteWorkbasketAccTest extends AbstractAccTest {
         workbasket.setOrgLevel1("company");
         workbasket = workbasketService.createWorkbasket(workbasket);
 
-        boolean failed = false;
-        try {
-            workbasketService.deleteWorkbasket(workbasket.getId());
-        } catch (Exception e) {
-            failed = true;
-        }
-        assertTrue(failed);
+        workbasketService.deleteWorkbasket(workbasket.getId());
     }
 
     @WithAccessId(userName = "teamlead_2", groupNames = {"businessadmin"})
