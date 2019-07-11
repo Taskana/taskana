@@ -5,6 +5,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -78,17 +79,14 @@ public class TaskServiceImplIntExplicitTest {
     private static ClassificationService classificationService;
     private static WorkbasketService workbasketService;
 
-    @Before
-    public void resetDb() {
-        cleaner.clearDb(dataSource, false);
-    }
-
     @BeforeClass
     public static void setup() throws SQLException {
         String userHomeDirectroy = System.getProperty("user.home");
         String propertiesFileName = userHomeDirectroy + "/taskanaUnitTest.properties";
 
-        dataSource = TaskanaEngineConfigurationTest.createDataSourceFromProperties(propertiesFileName);
+        dataSource = new File(propertiesFileName).exists()
+            ? TaskanaEngineConfigurationTest.createDataSourceFromProperties(propertiesFileName)
+            : TaskanaEngineConfiguration.createDefaultDataSource();
         taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false,
             TaskanaEngineConfigurationTest.getSchemaName());
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
@@ -100,6 +98,11 @@ public class TaskServiceImplIntExplicitTest {
         cleaner = new DBCleaner();
         DbSchemaCreator creator = new DbSchemaCreator(dataSource, dataSource.getConnection().getSchema());
         creator.run();
+    }
+
+    @Before
+    public void resetDb() {
+        cleaner.clearDb(dataSource, false);
     }
 
     @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
