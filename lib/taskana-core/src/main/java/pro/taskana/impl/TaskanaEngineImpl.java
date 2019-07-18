@@ -63,12 +63,14 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     protected ConnectionManagementMode mode = ConnectionManagementMode.PARTICIPATE;
     protected java.sql.Connection connection = null;
     protected HistoryEventProducer historyEventProducer;
+    private Internal internal;
 
     protected TaskanaEngineImpl(TaskanaEngineConfiguration taskanaEngineConfiguration) {
         this.taskanaEngineConfiguration = taskanaEngineConfiguration;
         createTransactionFactory(taskanaEngineConfiguration.getUseManagedTransactions());
         this.sessionManager = createSqlSessionManager();
         this.historyEventProducer = HistoryEventProducer.getInstance(taskanaEngineConfiguration);
+        this.internal = new Internal();
     }
 
     public static TaskanaEngine createTaskanaEngine(TaskanaEngineConfiguration taskanaEngineConfiguration) {
@@ -130,21 +132,21 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     @Override
     public TaskService getTaskService() {
         SqlSession session = this.sessionManager;
-        return new TaskServiceImpl(this, session.getMapper(TaskMapper.class),
+        return new TaskServiceImpl(internal, session.getMapper(TaskMapper.class),
             session.getMapper(AttachmentMapper.class));
     }
 
     @Override
     public TaskMonitorService getTaskMonitorService() {
         SqlSession session = this.sessionManager;
-        return new TaskMonitorServiceImpl(this,
+        return new TaskMonitorServiceImpl(internal,
             session.getMapper(TaskMonitorMapper.class));
     }
 
     @Override
     public WorkbasketService getWorkbasketService() {
         SqlSession session = this.sessionManager;
-        return new WorkbasketServiceImpl(this,
+        return new WorkbasketServiceImpl(internal,
             session.getMapper(WorkbasketMapper.class),
             session.getMapper(DistributionTargetMapper.class),
             session.getMapper(WorkbasketAccessMapper.class));
@@ -153,14 +155,14 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     @Override
     public ClassificationService getClassificationService() {
         SqlSession session = this.sessionManager;
-        return new ClassificationServiceImpl(this, session.getMapper(ClassificationMapper.class),
+        return new ClassificationServiceImpl(internal, session.getMapper(ClassificationMapper.class),
             session.getMapper(TaskMapper.class));
     }
 
     @Override
     public JobService getJobService() {
         SqlSession session = this.sessionManager;
-        return new JobServiceImpl(this, session.getMapper(JobMapper.class));
+        return new JobServiceImpl(internal, session.getMapper(JobMapper.class));
     }
 
     @Override
@@ -168,8 +170,9 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         return this.taskanaEngineConfiguration;
     }
 
+    @Override
     public HistoryEventProducer getHistoryEventProducer() {
-        return this.historyEventProducer;
+        return historyEventProducer;
     }
 
     /**
@@ -231,65 +234,6 @@ public class TaskanaEngineImpl implements TaskanaEngine {
             }
             mode = ConnectionManagementMode.PARTICIPATE;
         }
-    }
-
-    /**
-     * Open the connection to the database. to be called at the begin of each Api call that accesses the database
-     */
-    void openConnection() {
-        initSqlSession();
-        try {
-            this.sessionManager.getConnection().setSchema(taskanaEngineConfiguration.getSchemaName());
-        } catch (SQLException e) {
-            throw new SystemException(
-                "Method openConnection() could not open a connection to the database. No schema has been created.",
-                e.getCause());
-        }
-        if (mode != ConnectionManagementMode.EXPLICIT) {
-            pushSessionToStack(this.sessionManager);
-        }
-    }
-
-    /**
-     * Initializes the SqlSessionManager.
-     */
-    void initSqlSession() {
-        if (mode == ConnectionManagementMode.EXPLICIT && this.connection == null) {
-            throw new ConnectionNotSetException();
-        } else if (mode != ConnectionManagementMode.EXPLICIT && !this.sessionManager.isManagedSessionStarted()) {
-            this.sessionManager.startManagedSession();
-        }
-    }
-
-    /**
-     * Returns the database connection into the pool. In the case of nested calls, simply pops the latest session from
-     * the session stack. Closes the connection if the session stack is empty. In mode AUTOCOMMIT commits before the
-     * connection is closed. To be called at the end of each Api call that accesses the database
-     */
-    void returnConnection() {
-        if (this.mode != ConnectionManagementMode.EXPLICIT) {
-            popSessionFromStack();
-            if (getSessionStack().isEmpty()
-                && this.sessionManager != null && this.sessionManager.isManagedSessionStarted()) {
-                if (this.mode == ConnectionManagementMode.AUTOCOMMIT) {
-                    try {
-                        this.sessionManager.commit();
-                    } catch (Exception e) {
-                        throw new AutocommitFailedException(e.getCause());
-                    }
-                }
-                this.sessionManager.close();
-            }
-        }
-    }
-
-    /**
-     * retrieve the SqlSession used by taskana.
-     *
-     * @return the myBatis SqlSession object used by taskana
-     */
-    SqlSession getSqlSession() {
-        return this.sessionManager;
     }
 
     /**
@@ -402,14 +346,66 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     }
 
     /**
-     * Returns true if the given domain does exist in the configuration.
-     *
-     * @param domain
-     *            the domain specified in the configuration
-     * @return <code>true</code> if the domain exists
+     * Internal Engine for internal operations.
      */
-    public boolean domainExists(String domain) {
-        return getConfiguration().getDomains().contains(domain);
-    }
+    private class Internal implements TaskanaEngine.Internal {
 
+        @Override
+        public void openConnection() {
+            initSqlSession();
+            try {
+                sessionManager.getConnection().setSchema(taskanaEngineConfiguration.getSchemaName());
+            } catch (SQLException e) {
+                throw new SystemException(
+                    "Method openConnection() could not open a connection to the database. No schema has been created.",
+                    e.getCause());
+            }
+            if (mode != ConnectionManagementMode.EXPLICIT) {
+                pushSessionToStack(sessionManager);
+            }
+        }
+
+        @Override
+        public void initSqlSession() {
+            if (mode == ConnectionManagementMode.EXPLICIT && connection == null) {
+                throw new ConnectionNotSetException();
+            } else if (mode != ConnectionManagementMode.EXPLICIT && !sessionManager.isManagedSessionStarted()) {
+                sessionManager.startManagedSession();
+            }
+        }
+
+        @Override
+        public void returnConnection() {
+            if (mode != ConnectionManagementMode.EXPLICIT) {
+                popSessionFromStack();
+                if (getSessionStack().isEmpty()
+                    && sessionManager != null && sessionManager.isManagedSessionStarted()) {
+                    if (mode == ConnectionManagementMode.AUTOCOMMIT) {
+                        try {
+                            sessionManager.commit();
+                        } catch (Exception e) {
+                            throw new AutocommitFailedException(e.getCause());
+                        }
+                    }
+                    sessionManager.close();
+                }
+            }
+        }
+
+        @Override
+        public boolean domainExists(String domain) {
+            return getConfiguration().getDomains().contains(domain);
+        }
+
+        @Override
+        public SqlSession getSqlSession() {
+            return sessionManager;
+        }
+
+        @Override
+        public TaskanaEngine getEngine() {
+            return TaskanaEngineImpl.this;
+        }
+
+    }
 }

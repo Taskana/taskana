@@ -24,7 +24,7 @@ public class CategoryReportBuilderImpl
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CategoryReport.Builder.class);
 
-    CategoryReportBuilderImpl(TaskanaEngine taskanaEngine, TaskMonitorMapper taskMonitorMapper) {
+    CategoryReportBuilderImpl(TaskanaEngine.Internal taskanaEngine, TaskMonitorMapper taskMonitorMapper) {
         super(taskanaEngine, taskMonitorMapper);
     }
 
@@ -41,7 +41,7 @@ public class CategoryReportBuilderImpl
     @Override
     public CategoryReport buildReport() throws InvalidArgumentException, NotAuthorizedException {
         LOGGER.debug("entry to buildReport(), this = {}", this);
-        this.taskanaEngine.checkRoleMembership(TaskanaRole.MONITOR);
+        this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR);
         try {
             this.taskanaEngine.openConnection();
             CategoryReport report = new CategoryReport(this.columnHeaders);

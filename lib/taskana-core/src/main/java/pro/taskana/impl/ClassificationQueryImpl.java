@@ -10,8 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.ClassificationQuery;
-import pro.taskana.ClassificationSummary;
 import pro.taskana.ClassificationQueryColumnName;
+import pro.taskana.ClassificationSummary;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TimeInterval;
 import pro.taskana.exceptions.InvalidArgumentException;
@@ -29,7 +29,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     private static final String LINK_TO_COUNTER = "pro.taskana.mappings.QueryMapper.countQueryClassifications";
     private static final String LINK_TO_VALUEMAPPER = "pro.taskana.mappings.QueryMapper.queryClassificationColumnValues";
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationQueryImpl.class);
-    private TaskanaEngineImpl taskanaEngine;
+    private TaskanaEngine.Internal taskanaEngine;
     private ClassificationQueryColumnName columnName;
     private String[] key;
     private String[] idIn;
@@ -68,8 +68,8 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     private List<String> orderBy;
     private List<String> orderColumns;
 
-    ClassificationQueryImpl(TaskanaEngine taskanaEngine) {
-        this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
+    ClassificationQueryImpl(TaskanaEngine.Internal taskanaEngine) {
+        this.taskanaEngine = taskanaEngine;
         this.orderBy = new ArrayList<>();
         this.orderColumns = new ArrayList<>();
     }
@@ -241,7 +241,8 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     }
 
     @Override
-    public ClassificationQuery customAttributeLike(String number, String... customLike) throws InvalidArgumentException {
+    public ClassificationQuery customAttributeLike(String number, String... customLike)
+        throws InvalidArgumentException {
         int num = 0;
         try {
             num = Integer.parseInt(number);
@@ -334,7 +335,8 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     }
 
     @Override
-    public ClassificationQuery orderByCustomAttribute(String number, SortDirection sortDirection) throws InvalidArgumentException {
+    public ClassificationQuery orderByCustomAttribute(String number, SortDirection sortDirection)
+        throws InvalidArgumentException {
         int num = 0;
         try {
             num = Integer.parseInt(number);

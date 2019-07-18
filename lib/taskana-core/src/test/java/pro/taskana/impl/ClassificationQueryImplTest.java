@@ -8,13 +8,14 @@ import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import pro.taskana.ClassificationSummary;
+import pro.taskana.TaskanaEngine;
 
 /**
  * Test for ClassificationQueryImpl.
@@ -24,22 +25,18 @@ import pro.taskana.ClassificationSummary;
 @RunWith(MockitoJUnitRunner.class)
 public class ClassificationQueryImplTest {
 
+    @InjectMocks
     private ClassificationQueryImpl classificationQueryImpl;
 
     @Mock
-    private TaskanaEngineImpl taskanaEngine;
+    private TaskanaEngine.Internal taskanaEngineInternal;
 
     @Mock
     private SqlSession sqlSession;
 
-    @Before
-    public void setup() {
-        classificationQueryImpl = new ClassificationQueryImpl(taskanaEngine);
-    }
-
     @Test
     public void should_ReturnList_when_BuilderIsUsed() {
-        when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
+        when(taskanaEngineInternal.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectList(any(), any())).thenReturn(new ArrayList<>());
 
         List<ClassificationSummary> result = classificationQueryImpl.nameIn("test", "asd", "blubber")
@@ -52,7 +49,7 @@ public class ClassificationQueryImplTest {
 
     @Test
     public void should_ReturnListWithOffset_when_BuilderIsUsed() {
-        when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
+        when(taskanaEngineInternal.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectList(any(), any(), any())).thenReturn(new ArrayList<>());
 
         List<ClassificationSummary> result = classificationQueryImpl.nameIn("test", "asd", "blubber")
@@ -65,7 +62,7 @@ public class ClassificationQueryImplTest {
 
     @Test
     public void should_ReturnOneItem_when_BuilderIsUsed() {
-        when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
+        when(taskanaEngineInternal.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectOne(any(), any())).thenReturn(new ClassificationSummaryImpl());
 
         ClassificationSummary result = classificationQueryImpl.nameIn("test", "asd", "blubber")

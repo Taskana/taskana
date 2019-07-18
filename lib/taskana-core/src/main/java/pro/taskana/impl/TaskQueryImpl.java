@@ -41,7 +41,7 @@ public class TaskQueryImpl implements TaskQuery {
     private static final String TIME_INTERVAL = "TimeInterval ";
     private static final String IS_INVALID = " is invalid.";
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskQueryImpl.class);
-    private TaskanaEngineImpl taskanaEngine;
+    private TaskanaEngine.Internal taskanaEngine;
     private TaskServiceImpl taskService;
     private TaskQueryColumnName columnName;
     private String[] nameIn;
@@ -146,9 +146,9 @@ public class TaskQueryImpl implements TaskQuery {
     private boolean addClassificationNameToSelectClauseForOrdering = false;
     private boolean addAttachmentClassificationNameToSelectClauseForOrdering = false;
 
-    TaskQueryImpl(TaskanaEngine taskanaEngine) {
-        this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
-        this.taskService = (TaskServiceImpl) taskanaEngine.getTaskService();
+    TaskQueryImpl(TaskanaEngine.Internal taskanaEngine) {
+        this.taskanaEngine = taskanaEngine;
+        this.taskService = (TaskServiceImpl) taskanaEngine.getEngine().getTaskService();
         this.orderBy = new ArrayList<>();
         this.orderColumns = new ArrayList<>();
         this.filterByAccessIdIn = true;
@@ -177,7 +177,6 @@ public class TaskQueryImpl implements TaskQuery {
         this.externalIdLike = toUpperCopy(externalIds);
         return this;
     }
-
 
     @Override
     public TaskQuery nameLike(String... names) {
@@ -698,23 +697,23 @@ public class TaskQueryImpl implements TaskQuery {
     public TaskQuery orderByClassificationName(SortDirection sortDirection) {
         joinWithClassifications = true;
         addClassificationNameToSelectClauseForOrdering = true;
-        return this.taskanaEngine.sessionManager.getConfiguration().getDatabaseId().equals("db2")
+        return this.taskanaEngine.getSqlSession().getConfiguration().getDatabaseId().equals("db2")
             ? addOrderCriteria("CNAME", sortDirection)
-                : addOrderCriteria("c.NAME", sortDirection);
+            : addOrderCriteria("c.NAME", sortDirection);
     }
 
     @Override
     public TaskQuery orderByAttachmentClassificationName(SortDirection sortDirection) {
         joinWithAttachments = true;
         addAttachmentClassificationNameToSelectClauseForOrdering = true;
-        return this.taskanaEngine.sessionManager.getConfiguration().getDatabaseId().equals("db2")
+        return this.taskanaEngine.getSqlSession().getConfiguration().getDatabaseId().equals("db2")
             ? addOrderCriteria("ACNAME", sortDirection)
-                : addOrderCriteria("ac.NAME", sortDirection);
+            : addOrderCriteria("ac.NAME", sortDirection);
     }
 
     @Override
     public TaskQuery orderByClassificationKey(SortDirection sortDirection) {
-        return this.taskanaEngine.sessionManager.getConfiguration().getDatabaseId().equals("db2")
+        return this.taskanaEngine.getSqlSession().getConfiguration().getDatabaseId().equals("db2")
             ? addOrderCriteria("TCLASSIFICATION_KEY", sortDirection)
             : addOrderCriteria("t.CLASSIFICATION_KEY", sortDirection);
     }
@@ -803,7 +802,7 @@ public class TaskQueryImpl implements TaskQuery {
     public TaskQuery orderByAttachmentClassificationKey(SortDirection sortDirection) {
         joinWithAttachments = true;
         addAttachmentColumnsToSelectClauseForOrdering = true;
-        return this.taskanaEngine.sessionManager.getConfiguration().getDatabaseId().equals("db2")
+        return this.taskanaEngine.getSqlSession().getConfiguration().getDatabaseId().equals("db2")
             ? addOrderCriteria("ACLASSIFICATION_KEY", sortDirection)
             : addOrderCriteria("a.CLASSIFICATION_KEY", sortDirection);
     }
@@ -812,7 +811,7 @@ public class TaskQueryImpl implements TaskQuery {
     public TaskQuery orderByAttachmentClassificationId(SortDirection sortDirection) {
         joinWithAttachments = true;
         addAttachmentColumnsToSelectClauseForOrdering = true;
-        return this.taskanaEngine.sessionManager.getConfiguration().getDatabaseId().equals("db2")
+        return this.taskanaEngine.getSqlSession().getConfiguration().getDatabaseId().equals("db2")
             ? addOrderCriteria("ACLASSIFICATION_ID", sortDirection)
             : addOrderCriteria("a.CLASSIFICATION_ID", sortDirection);
     }
@@ -976,19 +975,21 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     public String getLinkToMapperScript() {
-        return this.taskanaEngine.sessionManager.getConfiguration().getDatabaseId().equals("db2")
+        return this.taskanaEngine
+            .getSqlSession()
+            .getConfiguration().getDatabaseId().equals("db2")
             ? LINK_TO_MAPPER_DB2
             : LINK_TO_MAPPER;
     }
 
     public String getLinkToCounterTaskScript() {
-        return this.taskanaEngine.sessionManager.getConfiguration().getDatabaseId().equals("db2")
+        return this.taskanaEngine.getSqlSession().getConfiguration().getDatabaseId().equals("db2")
             ? LINK_TO_COUNTER_DB2
             : LINK_TO_COUNTER;
     }
 
     private void setupAccessIds() {
-        if (taskanaEngine.isUserInRole(TaskanaRole.ADMIN) || !filterByAccessIdIn) {
+        if (taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN) || !filterByAccessIdIn) {
             this.accessIdIn = null;
         } else if (this.accessIdIn == null) {
             String[] accessIds = new String[0];
@@ -1154,7 +1155,7 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     private void checkOpenAndReadPermissionForSpecifiedWorkbaskets() {
-        if (taskanaEngine.isUserInRole(TaskanaRole.ADMIN)) {
+        if (taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN)) {
             LOGGER.debug("Skipping permissions check since user is in role ADMIN.");
             return;
         }
@@ -1178,7 +1179,7 @@ public class TaskQueryImpl implements TaskQuery {
 
     private void checkOpenAndReadPermissionById(String workbasketId) throws NotAuthorizedException {
         try {
-            taskanaEngine.getWorkbasketService().checkAuthorization(workbasketId,
+            taskanaEngine.getEngine().getWorkbasketService().checkAuthorization(workbasketId,
                 WorkbasketPermission.OPEN, WorkbasketPermission.READ);
         } catch (WorkbasketNotFoundException e) {
             LOGGER.warn("The workbasket with the ID '" + workbasketId + "' does not exist.", e);
@@ -1187,16 +1188,12 @@ public class TaskQueryImpl implements TaskQuery {
 
     private void checkOpenAndReadPermissionByKeyDomain(KeyDomain keyDomain) throws NotAuthorizedException {
         try {
-            taskanaEngine.getWorkbasketService().checkAuthorization(keyDomain.getKey(),
+            taskanaEngine.getEngine().getWorkbasketService().checkAuthorization(keyDomain.getKey(),
                 keyDomain.getDomain(), WorkbasketPermission.OPEN, WorkbasketPermission.READ);
         } catch (WorkbasketNotFoundException e) {
             LOGGER.warn("The workbasket with the KEY '" + keyDomain.getKey() + "' and DOMAIN '"
                 + keyDomain.getDomain() + "'does not exist.", e);
         }
-    }
-
-    public TaskanaEngineImpl getTaskanaEngine() {
-        return taskanaEngine;
     }
 
     public String[] getTaskIds() {
@@ -1634,7 +1631,8 @@ public class TaskQueryImpl implements TaskQuery {
         return addClassificationNameToSelectClauseForOrdering;
     }
 
-    public void setAddClassificationNameToSelectClauseForOrdering(boolean addClassificationNameToSelectClauseForOrdering) {
+    public void setAddClassificationNameToSelectClauseForOrdering(
+        boolean addClassificationNameToSelectClauseForOrdering) {
         this.addClassificationNameToSelectClauseForOrdering = addClassificationNameToSelectClauseForOrdering;
     }
 

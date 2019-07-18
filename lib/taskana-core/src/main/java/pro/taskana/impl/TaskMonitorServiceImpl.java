@@ -2,6 +2,7 @@ package pro.taskana.impl;
 
 import pro.taskana.CustomField;
 import pro.taskana.TaskMonitorService;
+import pro.taskana.TaskanaEngine;
 import pro.taskana.mappings.TaskMonitorMapper;
 import pro.taskana.report.CategoryReport;
 import pro.taskana.report.ClassificationReport;
@@ -15,43 +16,43 @@ import pro.taskana.report.WorkbasketReport;
  */
 public class TaskMonitorServiceImpl implements TaskMonitorService {
 
-    private TaskanaEngineImpl taskanaEngineImpl;
+    private TaskanaEngine.Internal taskanaEngine;
     private TaskMonitorMapper taskMonitorMapper;
 
-    TaskMonitorServiceImpl(TaskanaEngineImpl taskanaEngine, TaskMonitorMapper taskMonitorMapper) {
+    TaskMonitorServiceImpl(TaskanaEngine.Internal taskanaEngine, TaskMonitorMapper taskMonitorMapper) {
         super();
-        this.taskanaEngineImpl = taskanaEngine;
+        this.taskanaEngine = taskanaEngine;
         this.taskMonitorMapper = taskMonitorMapper;
     }
 
     @Override
     public WorkbasketReport.Builder createWorkbasketReportBuilder() {
-        return new WorkbasketReportBuilderImpl(taskanaEngineImpl, taskMonitorMapper);
+        return new WorkbasketReportBuilderImpl(taskanaEngine, taskMonitorMapper);
     }
 
     @Override
     public CategoryReport.Builder createCategoryReportBuilder() {
-        return new CategoryReportBuilderImpl(taskanaEngineImpl, taskMonitorMapper);
+        return new CategoryReportBuilderImpl(taskanaEngine, taskMonitorMapper);
     }
 
     @Override
     public ClassificationReport.Builder createClassificationReportBuilder() {
-        return new ClassificationReportBuilderImpl(taskanaEngineImpl, taskMonitorMapper);
+        return new ClassificationReportBuilderImpl(taskanaEngine, taskMonitorMapper);
     }
 
     @Override
     public CustomFieldValueReport.Builder createCustomFieldValueReportBuilder(CustomField customField) {
-        return new CustomFieldValueReportBuilderImpl(taskanaEngineImpl, taskMonitorMapper, customField);
+        return new CustomFieldValueReportBuilderImpl(taskanaEngine, taskMonitorMapper, customField);
     }
 
     @Override
     public TaskStatusReport.Builder createTaskStatusReportBuilder() {
-        return new TaskStatusReportBuilderImpl(taskanaEngineImpl, taskMonitorMapper);
+        return new TaskStatusReportBuilderImpl(taskanaEngine, taskMonitorMapper);
     }
 
     @Override
     public TimestampReport.Builder createTimestampReportBuilder() {
-        return new TimestampReportBuilderImpl(taskanaEngineImpl, taskMonitorMapper);
+        return new TimestampReportBuilderImpl(taskanaEngine, taskMonitorMapper);
     }
 
 }

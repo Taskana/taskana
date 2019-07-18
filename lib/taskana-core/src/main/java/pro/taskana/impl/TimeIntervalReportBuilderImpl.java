@@ -33,7 +33,7 @@ abstract class TimeIntervalReportBuilderImpl<B extends TimeIntervalReportBuilder
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TimeIntervalReportBuilder.class);
 
-    protected TaskanaEngineImpl taskanaEngine;
+    protected TaskanaEngine.Internal taskanaEngine;
     protected TaskMonitorMapper taskMonitorMapper;
     protected List<H> columnHeaders;
     protected boolean inWorkingDays;
@@ -45,8 +45,8 @@ abstract class TimeIntervalReportBuilderImpl<B extends TimeIntervalReportBuilder
     protected List<String> excludedClassificationIds;
     protected Map<CustomField, String> customAttributeFilter;
 
-    TimeIntervalReportBuilderImpl(TaskanaEngine taskanaEngine, TaskMonitorMapper taskMonitorMapper) {
-        this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
+    TimeIntervalReportBuilderImpl(TaskanaEngine.Internal taskanaEngine, TaskMonitorMapper taskMonitorMapper) {
+        this.taskanaEngine = taskanaEngine;
         this.taskMonitorMapper = taskMonitorMapper;
         this.columnHeaders = Collections.emptyList();
         configureDaysToWorkingDaysConverter();
@@ -113,7 +113,7 @@ abstract class TimeIntervalReportBuilderImpl<B extends TimeIntervalReportBuilder
         throws NotAuthorizedException {
         LOGGER.debug("entry to listCustomAttributeValuesForCustomAttributeName(customField = {}), this = {}",
             customField, this);
-        this.taskanaEngine.checkRoleMembership(TaskanaRole.MONITOR);
+        this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR);
         try {
             this.taskanaEngine.openConnection();
             return taskMonitorMapper.getCustomAttributeValuesForReport(this.workbasketIds,
@@ -133,7 +133,7 @@ abstract class TimeIntervalReportBuilderImpl<B extends TimeIntervalReportBuilder
                 LoggerUtils.listToString(selectedItems), this);
         }
 
-        this.taskanaEngine.checkRoleMembership(TaskanaRole.MONITOR);
+        this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR);
         try {
             this.taskanaEngine.openConnection();
             if (this.columnHeaders == null) {
@@ -161,9 +161,10 @@ abstract class TimeIntervalReportBuilderImpl<B extends TimeIntervalReportBuilder
     protected abstract String determineGroupedBy();
 
     private void configureDaysToWorkingDaysConverter() {
-        DaysToWorkingDaysConverter.setCustomHolidays(this.taskanaEngine.getConfiguration().getCustomHolidays());
+        DaysToWorkingDaysConverter.setCustomHolidays(
+            this.taskanaEngine.getEngine().getConfiguration().getCustomHolidays());
         DaysToWorkingDaysConverter.setGermanPublicHolidaysEnabled(
-            this.taskanaEngine.getConfiguration().isGermanPublicHolidaysEnabled());
+            this.taskanaEngine.getEngine().getConfiguration().isGermanPublicHolidaysEnabled());
     }
 
     private List<SelectedItem> convertWorkingDaysToDays(List<SelectedItem> selectedItems,

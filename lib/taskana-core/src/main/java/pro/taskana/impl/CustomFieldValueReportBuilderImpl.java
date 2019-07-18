@@ -27,7 +27,7 @@ public class CustomFieldValueReportBuilderImpl
 
     private CustomField customField;
 
-    CustomFieldValueReportBuilderImpl(TaskanaEngine taskanaEngine, TaskMonitorMapper taskMonitorMapper,
+    CustomFieldValueReportBuilderImpl(TaskanaEngine.Internal taskanaEngine, TaskMonitorMapper taskMonitorMapper,
         CustomField customField) {
         super(taskanaEngine, taskMonitorMapper);
         this.customField = customField;
@@ -47,7 +47,7 @@ public class CustomFieldValueReportBuilderImpl
     public CustomFieldValueReport buildReport()
         throws InvalidArgumentException, NotAuthorizedException {
         LOGGER.debug("entry to buildReport(customField = {}), this = {}", this.customField, this);
-        this.taskanaEngine.checkRoleMembership(TaskanaRole.MONITOR);
+        this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR);
         try {
             this.taskanaEngine.openConnection();
             CustomFieldValueReport report = new CustomFieldValueReport(this.columnHeaders);

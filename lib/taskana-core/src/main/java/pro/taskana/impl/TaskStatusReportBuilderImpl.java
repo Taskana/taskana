@@ -19,13 +19,13 @@ import pro.taskana.report.TaskStatusReport;
 public class TaskStatusReportBuilderImpl implements TaskStatusReport.Builder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskStatusReportBuilderImpl.class);
-    private TaskanaEngineImpl taskanaEngine;
+    private TaskanaEngine.Internal taskanaEngine;
     private TaskMonitorMapper taskMonitorMapper;
     private List<String> domains;
     private List<TaskState> states;
 
-    TaskStatusReportBuilderImpl(TaskanaEngine taskanaEngine, TaskMonitorMapper taskMonitorMapper) {
-        this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
+    TaskStatusReportBuilderImpl(TaskanaEngine.Internal taskanaEngine, TaskMonitorMapper taskMonitorMapper) {
+        this.taskanaEngine =  taskanaEngine;
         this.taskMonitorMapper = taskMonitorMapper;
     }
 
@@ -44,7 +44,7 @@ public class TaskStatusReportBuilderImpl implements TaskStatusReport.Builder {
     @Override
     public TaskStatusReport buildReport() throws NotAuthorizedException {
         LOGGER.debug("entry to buildReport(), this = {}", this);
-        this.taskanaEngine.checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
+        this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
         try {
             this.taskanaEngine.openConnection();
             List<TaskQueryItem> tasks = this.taskMonitorMapper.getTasksCountByState(this.domains, this.states);

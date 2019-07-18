@@ -2,13 +2,9 @@ package pro.taskana.impl;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
-
-import org.apache.ibatis.session.SqlSession;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,14 +14,12 @@ import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import pro.taskana.Classification;
-import pro.taskana.JobService;
+import pro.taskana.TaskanaEngine;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.jobs.ScheduledJob;
 import pro.taskana.mappings.ClassificationMapper;
-import pro.taskana.mappings.JobMapper;
 
 /**
  * Unit Test for ClassificationServiceImpl.
@@ -41,24 +35,22 @@ public class ClassificationServiceImplTest {
     @Mock
     private ClassificationMapper classificationMapperMock;
     @Mock
-    private TaskanaEngineImpl taskanaEngineImplMock;
+    private TaskanaEngine taskanaEngineMock;
+    @Mock
+    private TaskanaEngine.Internal taskanaEngineInternalMock;
     @Mock
     private ClassificationQueryImpl classificationQueryImplMock;
-    @Mock
-    private SqlSession sqlSessionMock;
-    @Mock
-    private JobService jobServiceMock;
 
     @Before
     public void setup() {
-        doNothing().when(taskanaEngineImplMock).openConnection();
-        doNothing().when(taskanaEngineImplMock).returnConnection();
+        when(taskanaEngineInternalMock.getEngine()).thenReturn(taskanaEngineMock);
     }
 
     @Test
     public void testCreateClassificationQuery() {
         cutSpy.createClassificationQuery();
-        verifyNoMoreInteractions(classificationMapperMock, taskanaEngineImplMock, classificationQueryImplMock);
+        verifyNoMoreInteractions(classificationMapperMock, taskanaEngineInternalMock, taskanaEngineMock,
+            classificationQueryImplMock);
     }
 
     @Test(expected = InvalidArgumentException.class)
@@ -67,7 +59,7 @@ public class ClassificationServiceImplTest {
         NotAuthorizedException, ClassificationAlreadyExistException {
         try {
             Classification classification = createDummyClassification();
-            when(taskanaEngineImplMock.domainExists(any())).thenReturn(true);
+            when(taskanaEngineInternalMock.domainExists(any())).thenReturn(true);
             cutSpy.createClassification(classification);
         } catch (InvalidArgumentException e) {
             assertEquals(e.getMessage(), "ClassificationId should be null on creation");
@@ -93,29 +85,4 @@ public class ClassificationServiceImplTest {
         return classificationImpl;
     }
 
-    /**
-     * This is the mock of a jobRunner.
-     */
-    private class JobRunnerMock implements JobMapper {
-
-        @Override
-        public void insertJob(ScheduledJob job) {
-
-        }
-
-        @Override
-        public List<ScheduledJob> findJobsToRun() {
-            return null;
-        }
-
-        @Override
-        public void update(ScheduledJob job) {
-
-        }
-
-        @Override
-        public void delete(ScheduledJob job) {
-
-        }
-    }
 }
