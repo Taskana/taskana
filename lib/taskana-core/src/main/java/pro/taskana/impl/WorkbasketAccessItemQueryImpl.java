@@ -33,12 +33,12 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
     private String[] workbasketKeyLike;
     private String[] idIn;
 
-    private TaskanaEngineImpl taskanaEngine;
+    private TaskanaEngine.Internal taskanaEngine;
     private List<String> orderBy;
     private List<String> orderColumns;
 
-    WorkbasketAccessItemQueryImpl(TaskanaEngine taskanaEngine) {
-        this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
+    WorkbasketAccessItemQueryImpl(TaskanaEngine.Internal taskanaEngine) {
+        this.taskanaEngine = taskanaEngine;
         orderBy = new ArrayList<>();
         orderColumns = new ArrayList<>();
     }
@@ -197,7 +197,8 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
     }
 
     private WorkbasketAccessItemQuery addOrderCriteria(String colName, SortDirection sortDirection) {
-        String orderByDirection = " " + (sortDirection == null ? SortDirection.ASCENDING.toString() : sortDirection.toString());
+        String orderByDirection =
+            " " + (sortDirection == null ? SortDirection.ASCENDING.toString() : sortDirection.toString());
         orderBy.add(colName + orderByDirection);
         orderColumns.add(colName);
         return this;

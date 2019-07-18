@@ -11,9 +11,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import pro.taskana.TaskanaEngine;
 import pro.taskana.WorkbasketSummary;
 
 /**
@@ -24,22 +26,26 @@ import pro.taskana.WorkbasketSummary;
 @RunWith(MockitoJUnitRunner.class)
 public class WorkbasketQueryImplTest {
 
+    @InjectMocks
     private WorkbasketQueryImpl workbasketQueryImpl;
 
     @Mock
-    private TaskanaEngineImpl taskanaEngine;
+    private TaskanaEngine.Internal taskanaEngineInternal;
+
+    @Mock
+    private TaskanaEngine taskanaEngine;
 
     @Mock
     private SqlSession sqlSession;
 
     @Before
     public void setup() {
-        workbasketQueryImpl = new WorkbasketQueryImpl(taskanaEngine);
+        when(taskanaEngineInternal.getEngine()).thenReturn(taskanaEngine);
     }
 
     @Test
     public void should_ReturnList_when_BuilderIsUsed() {
-        when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
+        when(taskanaEngineInternal.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectList(any(), any())).thenReturn(new ArrayList<>());
 
         List<WorkbasketSummary> result = workbasketQueryImpl
@@ -51,7 +57,7 @@ public class WorkbasketQueryImplTest {
 
     @Test
     public void should_ReturnListWithOffset_when_BuilderIsUsed() {
-        when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
+        when(taskanaEngineInternal.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectList(any(), any(), any())).thenReturn(new ArrayList<>());
 
         List<WorkbasketSummary> result = workbasketQueryImpl
@@ -63,7 +69,7 @@ public class WorkbasketQueryImplTest {
 
     @Test
     public void should_ReturnOneItem_when_BuilderIsUsed() {
-        when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
+        when(taskanaEngineInternal.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectOne(any(), any())).thenReturn(new WorkbasketSummaryImpl());
 
         WorkbasketSummary result = workbasketQueryImpl

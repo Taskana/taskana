@@ -43,12 +43,11 @@ public class ClassificationServiceImpl implements ClassificationService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationServiceImpl.class);
     private ClassificationMapper classificationMapper;
     private TaskMapper taskMapper;
-    private TaskanaEngineImpl taskanaEngine;
+    private TaskanaEngine.Internal taskanaEngine;
 
-    ClassificationServiceImpl(TaskanaEngine taskanaEngine, ClassificationMapper classificationMapper,
+    ClassificationServiceImpl(TaskanaEngine.Internal taskanaEngine, ClassificationMapper classificationMapper,
         TaskMapper taskMapper) {
-        super();
-        this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
+        this.taskanaEngine = taskanaEngine;
         this.classificationMapper = classificationMapper;
         this.taskMapper = taskMapper;
     }
@@ -79,7 +78,7 @@ public class ClassificationServiceImpl implements ClassificationService {
         throws ClassificationAlreadyExistException, NotAuthorizedException,
         DomainNotFoundException, InvalidArgumentException {
         LOGGER.debug("entry to createClassification(classification = {})", classification);
-        taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
+        taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
         if (!taskanaEngine.domainExists(classification.getDomain()) && !"".equals(classification.getDomain())) {
             throw new DomainNotFoundException(classification.getDomain(),
                 "Domain " + classification.getDomain() + " does not exist in the configuration.");
@@ -183,7 +182,7 @@ public class ClassificationServiceImpl implements ClassificationService {
     public Classification updateClassification(Classification classification)
         throws NotAuthorizedException, ConcurrencyException, ClassificationNotFoundException, InvalidArgumentException {
         LOGGER.debug("entry to updateClassification(Classification = {})", classification);
-        taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
+        taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
         ClassificationImpl classificationImpl = null;
         try {
             taskanaEngine.openConnection();
@@ -256,13 +255,13 @@ public class ClassificationServiceImpl implements ClassificationService {
         }
 
         if (classification.getType() != null
-            && !taskanaEngine.getConfiguration().getClassificationTypes().contains(classification.getType())) {
+            && !taskanaEngine.getEngine().getConfiguration().getClassificationTypes().contains(classification.getType())) {
             throw new InvalidArgumentException("Given classification type " + classification.getType()
                 + " is not valid according to the configuration.");
         }
 
         if (classification.getCategory() != null
-            && !taskanaEngine.getConfiguration()
+            && !taskanaEngine.getEngine().getConfiguration()
             .getClassificationCategoriesByType(classification.getType())
             .contains(classification.getCategory())) {
             throw new InvalidArgumentException(
@@ -355,7 +354,7 @@ public class ClassificationServiceImpl implements ClassificationService {
     public void deleteClassification(String classificationKey, String domain)
         throws ClassificationInUseException, ClassificationNotFoundException, NotAuthorizedException {
         LOGGER.debug("entry to deleteClassification(key = {}, domain = {})", classificationKey, domain);
-        taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
+        taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
         try {
             taskanaEngine.openConnection();
             Classification classification = this.classificationMapper.findByKeyAndDomain(classificationKey, domain);
@@ -374,7 +373,7 @@ public class ClassificationServiceImpl implements ClassificationService {
     public void deleteClassification(String classificationId)
         throws ClassificationInUseException, ClassificationNotFoundException, NotAuthorizedException {
         LOGGER.debug("entry to deleteClassification(id = {})", classificationId);
-        taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
+        taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
         try {
             taskanaEngine.openConnection();
             Classification classification = this.classificationMapper.findById(classificationId);
@@ -460,7 +459,7 @@ public class ClassificationServiceImpl implements ClassificationService {
      */
     private void updateCategoryOnAssociatedTasks(ClassificationImpl classificationImpl,
         Classification oldClassification) {
-        List<TaskSummary> taskSummaries = taskanaEngine.getTaskService()
+        List<TaskSummary> taskSummaries = taskanaEngine.getEngine().getTaskService()
             .createTaskQuery()
             .classificationIdIn(oldClassification.getId())
             .list();
@@ -515,7 +514,7 @@ public class ClassificationServiceImpl implements ClassificationService {
             ScheduledJob job = new ScheduledJob();
             job.setArguments(args);
             job.setType(ScheduledJob.Type.CLASSIFICATIONCHANGEDJOB);
-            taskanaEngine.getJobService().createJob(job);
+            taskanaEngine.getEngine().getJobService().createJob(job);
         }
     }
 

@@ -5,7 +5,6 @@ import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.StringStartsWith.startsWith;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -17,20 +16,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.ibatis.session.SqlSession;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
 import pro.taskana.TaskSummary;
+import pro.taskana.TaskanaEngine;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketType;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
@@ -42,7 +40,6 @@ import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketInUseException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.mappings.DistributionTargetMapper;
-import pro.taskana.mappings.TaskMapper;
 import pro.taskana.mappings.WorkbasketAccessMapper;
 import pro.taskana.mappings.WorkbasketMapper;
 
@@ -62,12 +59,6 @@ public class WorkbasketServiceImplTest {
     private WorkbasketMapper workbasketMapperMock;
 
     @Mock
-    private TaskMapper taskMapperMock;
-
-    @Mock
-    private SqlSession sqlSessionMock;
-
-    @Mock
     private DistributionTargetMapper distributionTargetMapperMock;
 
     @Mock
@@ -80,14 +71,17 @@ public class WorkbasketServiceImplTest {
     private TaskQuery taskQueryMock;
 
     @Mock
-    private TaskanaEngineImpl taskanaEngineImplMock;
+    private TaskanaEngine taskanaEngine;
+
+    @Mock
+    private TaskanaEngine.Internal taskanaEngineInternalMock;
 
     @Mock
     private TaskanaEngineConfiguration taskanaEngineConfigurationMock;
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
+        when(taskanaEngineInternalMock.getEngine()).thenReturn(taskanaEngine);
     }
 
     @Test
@@ -96,26 +90,26 @@ public class WorkbasketServiceImplTest {
         WorkbasketAlreadyExistException, DomainNotFoundException {
         final int distTargetAmount = 2;
         WorkbasketImpl expectedWb = createTestWorkbasket(null, "Key-1");
-        doNothing().when(workbasketMapperMock).insert(expectedWb);
         doReturn(expectedWb).when(cutSpy).getWorkbasket(any());
-        when(taskanaEngineImplMock.domainExists(any())).thenReturn(true);
+        when(taskanaEngineInternalMock.domainExists(any())).thenReturn(true);
 
         Workbasket actualWb = cutSpy.createWorkbasket(expectedWb);
         cutSpy.setDistributionTargets(expectedWb.getId(), createTestDistributionTargets(distTargetAmount));
 
-        verify(taskanaEngineImplMock, times(4)).openConnection();
+        verify(taskanaEngineInternalMock, times(4)).openConnection();
         verify(workbasketMapperMock, times(3)).insert(any());
         verify(cutSpy, times(distTargetAmount + 1)).getWorkbasket(any());
         verify(distributionTargetMapperMock, times(1)).deleteAllDistributionTargetsBySourceId(any());
         verify(distributionTargetMapperMock, times(distTargetAmount)).insert(any(), any());
         verify(workbasketMapperMock, times(3)).findByKeyAndDomain(any(), any());
         verify(workbasketMapperMock, times(1)).update(any());
-        verify(taskanaEngineImplMock, times(4)).returnConnection();
-        verify(taskanaEngineImplMock, times(4)).checkRoleMembership(any());
-        verify(taskanaEngineImplMock, times(3)).domainExists(any());
+        verify(taskanaEngineInternalMock, times(4)).returnConnection();
+        verify(taskanaEngine, times(4)).checkRoleMembership(any());
+        verify(taskanaEngineInternalMock, times(4)).getEngine();
+        verify(taskanaEngineInternalMock, times(3)).domainExists(any());
         verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
             distributionTargetMapperMock,
-            taskanaEngineImplMock, taskanaEngineConfigurationMock);
+            taskanaEngineInternalMock, taskanaEngine, taskanaEngineConfigurationMock);
         assertThat(actualWb.getId(), not(equalTo(null)));
         assertThat(actualWb.getId(), startsWith("WBI"));
         assertThat(actualWb.getCreated(), not(equalTo(null)));
@@ -127,8 +121,7 @@ public class WorkbasketServiceImplTest {
         throws WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException,
         WorkbasketAlreadyExistException, DomainNotFoundException {
         WorkbasketImpl expectedWb = createTestWorkbasket("ID-1", "Key-1");
-        doNothing().when(workbasketMapperMock).insert(expectedWb);
-        when(taskanaEngineImplMock.domainExists(any())).thenReturn(true);
+        when(taskanaEngineInternalMock.domainExists(any())).thenReturn(true);
 
         try {
             cutSpy.createWorkbasket(expectedWb);
@@ -138,17 +131,18 @@ public class WorkbasketServiceImplTest {
             doThrow(WorkbasketNotFoundException.class).when(cutSpy).getDistributionTargets(expectedWb.getId()).get(0);
 
         } catch (WorkbasketNotFoundException e) {
-            verify(taskanaEngineImplMock, times(3)).openConnection();
+            verify(taskanaEngineInternalMock, times(3)).openConnection();
             verify(workbasketMapperMock, times(1)).insert(expectedWb);
             verify(workbasketMapperMock, times(1)).findById(any());
             verify(workbasketMapperMock, times(1)).findByKeyAndDomain(any(), any());
             verify(cutSpy, times(1)).getWorkbasket(any());
-            verify(taskanaEngineImplMock, times(3)).returnConnection();
-            verify(taskanaEngineImplMock, times(2)).checkRoleMembership(any());
-            verify(taskanaEngineImplMock, times(1)).domainExists(any());
+            verify(taskanaEngineInternalMock, times(3)).returnConnection();
+            verify(taskanaEngine, times(2)).checkRoleMembership(any());
+            verify(taskanaEngineInternalMock, times(2)).getEngine();
+            verify(taskanaEngineInternalMock, times(1)).domainExists(any());
             verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
                 distributionTargetMapperMock,
-                taskanaEngineImplMock, taskanaEngineConfigurationMock);
+                taskanaEngineInternalMock, taskanaEngine, taskanaEngineConfigurationMock);
             throw e;
         }
     }
@@ -159,19 +153,18 @@ public class WorkbasketServiceImplTest {
     public void testCreateWorkbasket_NotCreated()
         throws Exception {
         WorkbasketImpl expectedWb = createTestWorkbasket(null, "Key-1");
-        doNothing().when(workbasketMapperMock).insert(expectedWb);
         when(workbasketMapperMock.findById(any())).thenThrow(WorkbasketNotFoundException.class);
 
         try {
             cutSpy.createWorkbasket(expectedWb);
         } catch (Exception e) {
-            verify(taskanaEngineImplMock, times(1)).openConnection();
+            verify(taskanaEngineInternalMock, times(1)).openConnection();
             verify(workbasketMapperMock, times(1)).insert(expectedWb);
             verify(workbasketMapperMock, times(1)).findById(expectedWb.getId());
-            verify(taskanaEngineImplMock, times(1)).returnConnection();
+            verify(taskanaEngineInternalMock, times(1)).returnConnection();
             verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketMapperMock, workbasketAccessMapperMock,
                 distributionTargetMapperMock,
-                taskanaEngineImplMock, taskanaEngineConfigurationMock);
+                taskanaEngineInternalMock, taskanaEngineConfigurationMock);
             throw e;
         }
     }
@@ -185,13 +178,13 @@ public class WorkbasketServiceImplTest {
         try {
             cutSpy.deleteWorkbasket(wb.getId());
         } catch (WorkbasketNotFoundException e) {
-            verify(taskanaEngineImplMock, times(2)).openConnection();
+            verify(taskanaEngineInternalMock, times(2)).openConnection();
             verify(cutSpy, times(1)).getWorkbasket(wb.getId());
-            verify(taskanaEngineImplMock, times(0)).getTaskService();
+            verify(taskanaEngine, times(0)).getTaskService();
             verify(taskServiceMock, times(0)).createTaskQuery();
             verify(taskQueryMock, times(0)).workbasketIdIn(wb.getId());
             verify(taskQueryMock, times(0)).count();
-            verify(taskanaEngineImplMock, times(2)).returnConnection();
+            verify(taskanaEngineInternalMock, times(2)).returnConnection();
             verifyNoMoreInteractions(taskQueryMock, taskServiceMock, workbasketAccessMapperMock,
                 distributionTargetMapperMock, taskanaEngineConfigurationMock);
             throw e;

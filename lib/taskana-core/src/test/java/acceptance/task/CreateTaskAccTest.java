@@ -33,7 +33,6 @@ import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.DaysToWorkingDaysConverter;
-import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.TaskanaEngineProxyForTest;
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
 import pro.taskana.mappings.AttachmentMapper;
@@ -63,7 +62,8 @@ public class CreateTaskAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
         newTask.setClassificationKey("T2100");
-        ObjectReference objectReference = createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567");
+        ObjectReference objectReference = createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR",
+            "1234567");
         newTask.setPrimaryObjRef(objectReference);
         newTask.setOwner("user_1_1");
         Task createdTask = taskService.createTask(newTask);
@@ -90,7 +90,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_1_1",
-        groupNames = { "group_1" })
+        groupNames = {"group_1"})
     @Test
     public void testCreateTaskWithPlanned()
         throws NotAuthorizedException, InvalidArgumentException,
@@ -108,7 +108,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         assertNotNull(createdTask.getCreated());
         assertNotNull(createdTask.getPlanned());
         assertEquals(createdTask.getCreated().plus(2, ChronoUnit.HOURS).truncatedTo(ChronoUnit.SECONDS),
-                createdTask.getPlanned().truncatedTo(ChronoUnit.SECONDS));
+            createdTask.getPlanned().truncatedTo(ChronoUnit.SECONDS));
     }
 
     @WithAccessId(
@@ -157,7 +157,8 @@ public class CreateTaskAccTest extends AbstractAccTest {
     @Test
     public void testCreateSimpleTaskWithCustomAttributes()
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException {
+        WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException, NoSuchFieldException,
+        IllegalAccessException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
@@ -183,7 +184,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         assertEquals(false, createdTask.isRead());
         assertEquals(false, createdTask.isTransferred());
         // verify that the database content is as expected
-        TaskanaEngineProxyForTest engineProxy = new TaskanaEngineProxyForTest((TaskanaEngineImpl) taskanaEngine);
+        TaskanaEngineProxyForTest engineProxy = new TaskanaEngineProxyForTest(taskanaEngine);
         try {
             SqlSession session = engineProxy.getSqlSession();
             Configuration config = session.getConfiguration();
@@ -224,7 +225,8 @@ public class CreateTaskAccTest extends AbstractAccTest {
     @Test
     public void testCreateExternalTaskWithAttachment()
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException {
+        WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException, NoSuchFieldException,
+        IllegalAccessException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
@@ -240,7 +242,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         assertThat(createdTask.getCreator(), equalTo(CurrentUserContext.getUserid()));
 
         // verify that the database content is as expected
-        TaskanaEngineProxyForTest engineProxy = new TaskanaEngineProxyForTest((TaskanaEngineImpl) taskanaEngine);
+        TaskanaEngineProxyForTest engineProxy = new TaskanaEngineProxyForTest(taskanaEngine);
         try {
             SqlSession session = engineProxy.getSqlSession();
             AttachmentMapper mapper = session.getMapper(AttachmentMapper.class);

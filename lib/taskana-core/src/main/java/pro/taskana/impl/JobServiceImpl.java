@@ -21,11 +21,10 @@ public class JobServiceImpl implements JobService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JobServiceImpl.class);
     private JobMapper jobMapper;
-    private TaskanaEngineImpl taskanaEngineImpl;
+    private TaskanaEngine.Internal taskanaEngineImpl;
 
-    public JobServiceImpl(TaskanaEngine taskanaEngine, JobMapper jobMapper) {
-        super();
-        this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
+    public JobServiceImpl(TaskanaEngine.Internal taskanaEngine, JobMapper jobMapper) {
+        this.taskanaEngineImpl = taskanaEngine;
         this.jobMapper = jobMapper;
     }
 
@@ -94,7 +93,7 @@ public class JobServiceImpl implements JobService {
         if (job.getDue() == null) {
             job.setDue(Instant.now());
         }
-        job.setRetryCount(taskanaEngineImpl.getConfiguration().getMaxNumberOfJobRetries());
+        job.setRetryCount(taskanaEngineImpl.getEngine().getConfiguration().getMaxNumberOfJobRetries());
         LOGGER.debug("Job after initialization: {}", job);
         return job;
     }

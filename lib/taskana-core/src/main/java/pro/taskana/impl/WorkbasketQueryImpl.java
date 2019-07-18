@@ -70,7 +70,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     private String[] orgLevel4Like;
     private boolean markedForDeletion;
 
-    private TaskanaEngineImpl taskanaEngine;
+    private TaskanaEngine.Internal taskanaEngine;
     private List<String> orderBy;
     private List<String> orderColumns;
     private boolean joinWithAccessList;
@@ -78,8 +78,8 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     private boolean usedToAugmentTasks;
     private boolean callerRolesAndAccessIdsAlreadyHandled;
 
-    WorkbasketQueryImpl(TaskanaEngine taskanaEngine) {
-        this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
+    WorkbasketQueryImpl(TaskanaEngine.Internal taskanaEngine) {
+        this.taskanaEngine =  taskanaEngine;
         this.orderBy = new ArrayList<>();
         this.orderColumns = new ArrayList<>();
         this.callerRolesAndAccessIdsAlreadyHandled = false;
@@ -354,7 +354,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     @Override
     public WorkbasketQuery accessIdsHavePermission(WorkbasketPermission permission, String... accessIds)
         throws InvalidArgumentException, NotAuthorizedException {
-        taskanaEngine.checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN);
+        taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN);
         // Checking pre-conditions
         if (permission == null) {
             throw new InvalidArgumentException("Permission can´t be null.");
@@ -670,10 +670,10 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
             // (f,t) -> cannot happen, cannot be matched to meaningful query
             joinWithAccessList = true;
             checkReadPermission = true;
-            if (taskanaEngine.isUserInRole(TaskanaRole.ADMIN) && accessId == null) {
+            if (taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN) && accessId == null) {
                 checkReadPermission = false;
                 joinWithAccessList = false;
-            } else if (taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN) && !usedToAugmentTasks) {
+            } else if (taskanaEngine.getEngine().isUserInRole(TaskanaRole.BUSINESS_ADMIN) && !usedToAugmentTasks) {
                 checkReadPermission = false;
                 if (accessId == null && permission == null) {
                     joinWithAccessList = false;

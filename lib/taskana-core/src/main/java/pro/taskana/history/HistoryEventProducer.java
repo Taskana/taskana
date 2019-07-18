@@ -1,6 +1,5 @@
 package pro.taskana.history;
 
-import java.util.Iterator;
 import java.util.ServiceLoader;
 
 import org.slf4j.Logger;
@@ -16,11 +15,21 @@ import pro.taskana.history.api.TaskanaHistoryEvent;
 public final class HistoryEventProducer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HistoryEventProducer.class);
-
-    TaskanaEngineConfiguration taskanaEngineConfiguration;
     private static HistoryEventProducer emitterInstance;
     private ServiceLoader<TaskanaHistory> serviceLoader;
     private boolean enabled = false;
+
+    private HistoryEventProducer(TaskanaEngineConfiguration taskanaEngineConfiguration) {
+        serviceLoader = ServiceLoader.load(TaskanaHistory.class);
+        for (TaskanaHistory history : serviceLoader) {
+            history.initialize(taskanaEngineConfiguration);
+            LOGGER.info("Registered history provider: {}", history.getClass().getName());
+            enabled = true;
+        }
+        if (!enabled) {
+            LOGGER.info("No history provider found. Running without history.");
+        }
+    }
 
     public static synchronized HistoryEventProducer getInstance(TaskanaEngineConfiguration taskanaEngineConfiguration) {
         if (emitterInstance == null) {
@@ -39,23 +48,6 @@ public final class HistoryEventProducer {
 
     public void createEvent(TaskanaHistoryEvent event) {
         LOGGER.debug("Sending event to history service providers: {}", event);
-        serviceLoader.forEach(historyProvider -> {
-            historyProvider.create(event);
-        });
-    }
-
-    private HistoryEventProducer(TaskanaEngineConfiguration taskanaEngineConfiguration) {
-        this.taskanaEngineConfiguration = taskanaEngineConfiguration;
-        serviceLoader = ServiceLoader.load(TaskanaHistory.class);
-        Iterator<TaskanaHistory> serviceIterator = serviceLoader.iterator();
-        while (serviceIterator.hasNext()) {
-            TaskanaHistory history = serviceIterator.next();
-            history.initialize(taskanaEngineConfiguration);
-            LOGGER.info("Registered history provider: {}", history.getClass().getName());
-            enabled = true;
-        }
-        if (!enabled) {
-            LOGGER.info("No history provider found. Running without history.");
-        }
+        serviceLoader.forEach(historyProvider -> historyProvider.create(event));
     }
 }

@@ -5,13 +5,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-
+import static pro.taskana.TaskQueryColumnName.A_CHANNEL;
+import static pro.taskana.TaskQueryColumnName.A_CLASSIFICATION_ID;
+import static pro.taskana.TaskQueryColumnName.A_REF_VALUE;
+import static pro.taskana.TaskQueryColumnName.CLASSIFICATION_KEY;
 import static pro.taskana.TaskQueryColumnName.OWNER;
 import static pro.taskana.TaskQueryColumnName.STATE;
-import static pro.taskana.TaskQueryColumnName.A_CHANNEL;
-import static pro.taskana.TaskQueryColumnName.A_REF_VALUE;
-import static pro.taskana.TaskQueryColumnName.A_CLASSIFICATION_ID;
-import static pro.taskana.TaskQueryColumnName.CLASSIFICATION_KEY;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +42,6 @@ import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.TaskImpl;
-import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.TaskanaEngineProxyForTest;
 import pro.taskana.mappings.TaskTestMapper;
 import pro.taskana.security.JAASRunner;
@@ -63,8 +61,8 @@ public class QueryTasksAccTest extends AbstractAccTest {
     }
 
     @WithAccessId(
-            userName = "teamlead_1",
-            groupNames = {"admin"})
+        userName = "teamlead_1",
+        groupNames = {"admin"})
     @Test
     public void testQueryTaskValuesForEveryColumn() {
         TaskService taskService = taskanaEngine.getTaskService();
@@ -281,7 +279,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
             .count();
         long countAllIds = taskService.createTaskQuery().count();
         assertEquals(countAllIds, countAllExternalIds);
-        }
+    }
 
     @WithAccessId(
         userName = "teamlead_1",
@@ -824,7 +822,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @Test
     public void testQueryTaskByCustomAttributes()
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException {
+        WorkbasketNotFoundException, TaskAlreadyExistException, NoSuchFieldException, IllegalAccessException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
@@ -836,7 +834,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
 
         assertNotNull(createdTask);
         // query the task by custom attributes
-        TaskanaEngineProxyForTest engineProxy = new TaskanaEngineProxyForTest((TaskanaEngineImpl) taskanaEngine);
+        TaskanaEngineProxyForTest engineProxy = new TaskanaEngineProxyForTest(taskanaEngine);
         try {
             SqlSession session = engineProxy.getSqlSession();
             Configuration config = session.getConfiguration();
@@ -1525,6 +1523,5 @@ public class QueryTasksAccTest extends AbstractAccTest {
             .list();
         assertThat(result2.size(), equalTo(10));
     }
-
 
 }

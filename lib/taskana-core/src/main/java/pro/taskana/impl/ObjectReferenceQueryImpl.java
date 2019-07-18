@@ -27,7 +27,7 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
     private static final String LINK_TO_COUNTER = "pro.taskana.mappings.QueryMapper.countQueryObjectReferences";
     private static final String LINK_TO_VALUEMAPPER = "pro.taskana.mappings.QueryMapper.queryObjectReferenceColumnValues";
     private static final Logger LOGGER = LoggerFactory.getLogger(ObjectReferenceQueryImpl.class);
-    private TaskanaEngineImpl taskanaEngine;
+    private TaskanaEngine.Internal taskanaEngine;
     private ObjectReferenceQueryColumnName columnName;
     private String[] company;
     private String[] system;
@@ -36,8 +36,8 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
     private String[] value;
     private List<String> orderBy;
 
-    ObjectReferenceQueryImpl(TaskanaEngine taskanaEngine) {
-        this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
+    ObjectReferenceQueryImpl(TaskanaEngine.Internal taskanaEngine) {
+        this.taskanaEngine = taskanaEngine;
         this.orderBy = new ArrayList<>();
     }
 
