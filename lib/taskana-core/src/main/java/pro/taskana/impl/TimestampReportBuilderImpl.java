@@ -31,7 +31,7 @@ public class TimestampReportBuilderImpl extends
     private static final Logger LOGGER = LoggerFactory.getLogger(TimestampReport.Builder.class);
     private List<Timestamp> status = Arrays.asList(Timestamp.CREATED, Timestamp.COMPLETED);
 
-    TimestampReportBuilderImpl(TaskanaEngine taskanaEngine, TaskMonitorMapper taskMonitorMapper) {
+    TimestampReportBuilderImpl(TaskanaEngine.Internal taskanaEngine, TaskMonitorMapper taskMonitorMapper) {
         super(taskanaEngine, taskMonitorMapper);
     }
 
@@ -65,7 +65,7 @@ public class TimestampReportBuilderImpl extends
     @Override
     public TimestampReport buildReport() throws NotAuthorizedException, InvalidArgumentException {
         LOGGER.debug("entry to buildDetailedReport(), this = {}", this);
-        this.taskanaEngine.checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
+        this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
         try {
             this.taskanaEngine.openConnection();
             TimestampReport report = new TimestampReport(this.columnHeaders);

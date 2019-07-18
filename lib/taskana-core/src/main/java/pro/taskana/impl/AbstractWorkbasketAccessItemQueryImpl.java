@@ -33,12 +33,12 @@ abstract class AbstractWorkbasketAccessItemQueryImpl<Q extends AbstractWorkbaske
     private String[] workbasketIdIn;
     private String[] idIn;
 
-    private TaskanaEngineImpl taskanaEngine;
+    private TaskanaEngine.Internal taskanaEngine;
     private List<String> orderBy;
     private List<String> orderColumns;
 
-    AbstractWorkbasketAccessItemQueryImpl(TaskanaEngine taskanaEngine) {
-        this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
+    AbstractWorkbasketAccessItemQueryImpl(TaskanaEngine.Internal taskanaEngine) {
+        this.taskanaEngine = taskanaEngine;
         orderBy = new ArrayList<>();
         orderColumns = new ArrayList<>();
     }
@@ -96,7 +96,7 @@ abstract class AbstractWorkbasketAccessItemQueryImpl<Q extends AbstractWorkbaske
         } finally {
             taskanaEngine.returnConnection();
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("exit from list(). Returning {} resulting Objects: {} ",  result.size(),
+                LOGGER.debug("exit from list(). Returning {} resulting Objects: {} ", result.size(),
                     LoggerUtils.listToString(result));
             }
         }

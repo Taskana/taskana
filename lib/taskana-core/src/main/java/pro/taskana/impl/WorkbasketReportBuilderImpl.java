@@ -26,7 +26,7 @@ public class WorkbasketReportBuilderImpl
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketReportBuilderImpl.class);
     private List<CombinedClassificationFilter> combinedClassificationFilter;
 
-    WorkbasketReportBuilderImpl(TaskanaEngine taskanaEngine, TaskMonitorMapper taskMonitorMapper) {
+    WorkbasketReportBuilderImpl(TaskanaEngine.Internal taskanaEngine, TaskMonitorMapper taskMonitorMapper) {
         super(taskanaEngine, taskMonitorMapper);
     }
 
@@ -43,7 +43,7 @@ public class WorkbasketReportBuilderImpl
     @Override
     public WorkbasketReport buildReport() throws InvalidArgumentException, NotAuthorizedException {
         LOGGER.debug("entry to buildReport(), this = {}", this);
-        this.taskanaEngine.checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
+        this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
         try {
             this.taskanaEngine.openConnection();
             WorkbasketReport report = new WorkbasketReport(this.columnHeaders);
@@ -62,7 +62,7 @@ public class WorkbasketReportBuilderImpl
     @Override
     public WorkbasketReport buildPlannedDateBasedReport() throws NotAuthorizedException, InvalidArgumentException {
         LOGGER.debug("entry to buildPlannedDateReport(), this = {}", this);
-        this.taskanaEngine.checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
+        this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
         try {
             this.taskanaEngine.openConnection();
             WorkbasketReport report = new WorkbasketReport(this.columnHeaders);

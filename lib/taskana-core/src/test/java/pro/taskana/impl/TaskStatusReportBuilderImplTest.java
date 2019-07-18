@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 import java.util.Arrays;
@@ -17,12 +18,12 @@ import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import pro.taskana.TaskState;
-import pro.taskana.configuration.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaEngine;
+import pro.taskana.TaskanaRole;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.report.item.TaskQueryItem;
@@ -39,10 +40,10 @@ public class TaskStatusReportBuilderImplTest {
     private TaskMonitorServiceImpl cut;
 
     @Mock
-    private TaskanaEngineImpl taskanaEngineImplMock;
+    private TaskanaEngine.Internal taskanaEngineInternalMock;
 
     @Mock
-    private TaskanaEngineConfiguration taskanaEngineConfiguration;
+    private TaskanaEngine taskanaEngineMock;
 
     @Mock
     private TaskMonitorMapper taskMonitorMapperMock;
@@ -50,8 +51,7 @@ public class TaskStatusReportBuilderImplTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        Mockito.doNothing().when(taskanaEngineImplMock).openConnection();
-        Mockito.doNothing().when(taskanaEngineImplMock).returnConnection();
+        when(taskanaEngineInternalMock.getEngine()).thenReturn(taskanaEngineMock);
     }
 
     @Test
@@ -72,10 +72,14 @@ public class TaskStatusReportBuilderImplTest {
         TaskStatusReport report = cut.createTaskStatusReportBuilder().buildReport();
 
         // then
-        InOrder inOrder = inOrder(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineImplMock);
-        inOrder.verify(taskanaEngineImplMock).openConnection();
+        InOrder inOrder = inOrder(taskanaEngineMock, taskanaEngineInternalMock, taskMonitorMapperMock);
+        inOrder.verify(taskanaEngineInternalMock).getEngine();
+        inOrder.verify(taskanaEngineMock).checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
+        inOrder.verify(taskanaEngineInternalMock).openConnection();
         inOrder.verify(taskMonitorMapperMock).getTasksCountByState(eq(null), eq(null));
-        inOrder.verify(taskanaEngineImplMock).returnConnection();
+        inOrder.verify(taskanaEngineInternalMock).returnConnection();
+        inOrder.verifyNoMoreInteractions();
+        verifyNoMoreInteractions(taskanaEngineMock, taskanaEngineInternalMock, taskMonitorMapperMock);
 
         assertNotNull(report);
         assertEquals(1, report.rowSize());
@@ -103,10 +107,14 @@ public class TaskStatusReportBuilderImplTest {
         TaskStatusReport report = cut.createTaskStatusReportBuilder().stateIn(Collections.emptyList()).buildReport();
 
         // then
-        InOrder inOrder = inOrder(taskanaEngineImplMock, taskMonitorMapperMock, taskanaEngineImplMock);
-        inOrder.verify(taskanaEngineImplMock).openConnection();
+        InOrder inOrder = inOrder(taskanaEngineMock, taskMonitorMapperMock, taskanaEngineInternalMock);
+        inOrder.verify(taskanaEngineInternalMock).getEngine();
+        inOrder.verify(taskanaEngineMock).checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
+        inOrder.verify(taskanaEngineInternalMock).openConnection();
         inOrder.verify(taskMonitorMapperMock).getTasksCountByState(eq(null), eq(Collections.emptyList()));
-        inOrder.verify(taskanaEngineImplMock).returnConnection();
+        inOrder.verify(taskanaEngineInternalMock).returnConnection();
+        inOrder.verifyNoMoreInteractions();
+        verifyNoMoreInteractions(taskanaEngineMock, taskMonitorMapperMock, taskanaEngineInternalMock);
 
         assertNotNull(report);
         assertEquals(1, report.rowSize());

@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -15,11 +14,11 @@ import static org.mockito.Mockito.when;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+
 import org.apache.ibatis.session.SqlSession;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -27,12 +26,12 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import pro.taskana.Attachment;
 import pro.taskana.Classification;
 import pro.taskana.ObjectReference;
 import pro.taskana.Task;
 import pro.taskana.TaskState;
 import pro.taskana.TaskSummary;
+import pro.taskana.TaskanaEngine;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketPermission;
 import pro.taskana.WorkbasketService;
@@ -56,14 +55,16 @@ import pro.taskana.security.CurrentUserContext;
 @PowerMockIgnore("javax.management.*")
 public class TaskServiceImplTest {
 
-    @InjectMocks
     private TaskServiceImpl cut;
 
     @Mock
     private TaskanaEngineConfiguration taskanaEngineConfigurationMock;
 
     @Mock
-    private TaskanaEngineImpl taskanaEngineMock;
+    private TaskanaEngine.Internal taskanaEngineInternalMock;
+
+    @Mock
+    private TaskanaEngine taskanaEngineMock;
 
     @Mock
     private TaskMapper taskMapperMock;
@@ -84,23 +85,15 @@ public class TaskServiceImplTest {
     private ClassificationQueryImpl classificationQueryImplMock;
 
     @Mock
-    private WorkbasketQueryImpl workbasketQueryImplMock;
-
-    @Mock
     private SqlSession sqlSessionMock;
 
     @Before
-    public void setup() throws WorkbasketNotFoundException {
+    public void setup() {
         MockitoAnnotations.initMocks(this);
+        when(taskanaEngineInternalMock.getEngine()).thenReturn(taskanaEngineMock);
         when(taskanaEngineMock.getWorkbasketService()).thenReturn(workbasketServiceMock);
         when(taskanaEngineMock.getClassificationService()).thenReturn(classificationServiceImplMock);
-        try {
-            Mockito.doNothing().when(workbasketServiceMock).checkAuthorization(any(), any());
-        } catch (NotAuthorizedException e) {
-            e.printStackTrace();
-        }
-        Mockito.doNothing().when(taskanaEngineMock).openConnection();
-        Mockito.doNothing().when(taskanaEngineMock).returnConnection();
+        cut = new TaskServiceImpl(taskanaEngineInternalMock, taskMapperMock, attachmentMapperMock);
     }
 
     @Test
@@ -118,25 +111,24 @@ public class TaskServiceImplTest {
         when(taskanaEngineMock.getConfiguration()).thenReturn(taskanaEngineConfigurationMock);
         when(taskanaEngineConfigurationMock.isSecurityEnabled()).thenReturn(false);
         doReturn(task).when(cutSpy).getTask(task.getId());
-        doNothing().when(taskMapperMock).update(any());
-        doNothing().when(workbasketServiceMock).checkAuthorization(destinationWorkbasket.getId(),
-            WorkbasketPermission.APPEND);
-        doNothing().when(workbasketServiceMock).checkAuthorization(sourceWorkbasket.getId(),
-            WorkbasketPermission.TRANSFER);
 
         Task actualTask = cutSpy.transfer(task.getId(), destinationWorkbasket.getId());
 
-        verify(taskanaEngineMock, times(1)).openConnection();
+        verify(taskanaEngineInternalMock, times(1)).openConnection();
         verify(workbasketServiceMock, times(1)).checkAuthorization(destinationWorkbasket.getId(),
             WorkbasketPermission.APPEND);
         verify(workbasketServiceMock, times(1)).checkAuthorization(sourceWorkbasket.getId(),
             WorkbasketPermission.TRANSFER);
         verify(workbasketServiceMock, times(1)).getWorkbasket(destinationWorkbasket.getId());
         verify(taskMapperMock, times(1)).update(any());
-        verify(taskanaEngineMock, times(1)).returnConnection();
+        verify(taskanaEngineInternalMock, times(1)).returnConnection();
+        verify(taskanaEngineInternalMock, times(3)).getEngine();
+        verify(taskanaEngineMock).getHistoryEventProducer();
+        verify(taskanaEngineMock).getWorkbasketService();
+        verify(taskanaEngineMock).getClassificationService();
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
-            taskMapperMock, objectReferenceMapperMock, workbasketServiceMock, sqlSessionMock,
-            classificationQueryImplMock);
+            taskanaEngineInternalMock, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock,
+            sqlSessionMock, classificationQueryImplMock);
 
         assertThat(actualTask.isRead(), equalTo(false));
         assertThat(actualTask.getState(), equalTo(TaskState.READY));
@@ -148,7 +140,6 @@ public class TaskServiceImplTest {
     public void testTaskSummaryEqualsHashCode() throws InterruptedException {
         Classification classification = createDummyClassification();
         Workbasket wb = createWorkbasket("WB-ID", "WB-Key");
-        Attachment attachment = JunitHelper.createDefaultAttachment();
         ObjectReference objectReference = JunitHelper.createDefaultObjRef();
         TaskImpl taskBefore = createUnitTestTask("ID", "taskName", wb.getKey(), classification);
         taskBefore.setPrimaryObjRef(objectReference);

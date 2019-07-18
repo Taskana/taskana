@@ -8,17 +8,16 @@ import java.util.List;
 
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionManager;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import pro.taskana.TaskState;
 import pro.taskana.TaskSummary;
+import pro.taskana.TaskanaEngine;
 
 /**
  * Test for TaskQueryImpl.
@@ -29,33 +28,31 @@ import pro.taskana.TaskSummary;
 public class TaskQueryImplTest {
 
     @Mock
-    ClassificationServiceImpl classificationService;
-    @Mock
     TaskServiceImpl taskServiceMock;
-    @InjectMocks
+
     private TaskQueryImpl taskQueryImpl;
     @Mock
-    private TaskanaEngineImpl taskanaEngine;
+    private TaskanaEngine.Internal taskanaEngineInternal;
+    @Mock
+    private TaskanaEngine taskanaEngine;
     @Mock
     private SqlSession sqlSession;
-    @Mock
-    private SqlSessionManager sqlSessionManager;
 
     @Before
     public void setup() {
+        when(taskanaEngineInternal.getEngine()).thenReturn(taskanaEngine);
         when(taskanaEngine.getTaskService()).thenReturn(taskServiceMock);
 
         Configuration configuration = new org.apache.ibatis.session.Configuration();
         configuration.setDatabaseId("h2");
-        this.taskanaEngine.sessionManager = sqlSessionManager;
-        when(taskanaEngine.sessionManager.getConfiguration()).thenReturn(configuration);
+        when(taskanaEngineInternal.getSqlSession()).thenReturn(sqlSession);
+        when(sqlSession.getConfiguration()).thenReturn(configuration);
 
-        taskQueryImpl = new TaskQueryImpl(taskanaEngine);
+        taskQueryImpl = new TaskQueryImpl(taskanaEngineInternal);
     }
 
     @Test
     public void should_ReturnList_when_BuilderIsUsed() {
-        when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectList(any(), any())).thenReturn(new ArrayList<>());
         List<TaskSummary> intermediate = new ArrayList<>();
         intermediate.add(new TaskSummaryImpl());
@@ -70,7 +67,6 @@ public class TaskQueryImplTest {
 
     @Test
     public void should_ReturnListWithOffset_when_BuilderIsUsed() {
-        when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectList(any(), any(), any())).thenReturn(new ArrayList<>());
         List<TaskSummary> intermediate = new ArrayList<>();
         intermediate.add(new TaskSummaryImpl());
@@ -85,7 +81,6 @@ public class TaskQueryImplTest {
 
     @Test
     public void should_ReturnOneItem_when_BuilderIsUsed() {
-        when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectOne(any(), any())).thenReturn(new TaskSummaryImpl());
         List<TaskSummary> intermediate = new ArrayList<>();
         intermediate.add(new TaskSummaryImpl());

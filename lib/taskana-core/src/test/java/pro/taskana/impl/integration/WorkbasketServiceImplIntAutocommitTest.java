@@ -35,7 +35,6 @@ import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.TaskanaEngineProxyForTest;
 import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.configuration.DBCleaner;
@@ -54,12 +53,9 @@ import pro.taskana.security.WithAccessId;
 public class WorkbasketServiceImplIntAutocommitTest {
 
     private static final int SLEEP_TIME = 100;
-    private static final int THREE = 3;
-    static int counter = 0;
     private DataSource dataSource;
     private TaskanaEngineConfiguration taskanaEngineConfiguration;
     private TaskanaEngine taskanaEngine;
-    private TaskanaEngineImpl taskanaEngineImpl;
     private WorkbasketService workBasketService;
     private Instant now;
 
@@ -76,8 +72,7 @@ public class WorkbasketServiceImplIntAutocommitTest {
         taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false,
             TaskanaEngineConfigurationTest.getSchemaName());
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
-        taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
-        taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
+        taskanaEngine.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
         workBasketService = taskanaEngine.getWorkbasketService();
         DBCleaner cleaner = new DBCleaner();
         cleaner.clearDb(dataSource, false);
@@ -187,11 +182,11 @@ public class WorkbasketServiceImplIntAutocommitTest {
     }
 
     private void updateModifiedTimestamps(Workbasket basket2, Workbasket basket3, Workbasket basket4,
-        Workbasket basket1) {
+        Workbasket basket1) throws NoSuchFieldException, IllegalAccessException {
         // created and modified timestamps are set by WorkbasketServiceImpl to 'now' when the workbasket is created
         // in order to create timestamps distict from the current time, we must use the mapper directly to bypass
         // WorkbasketServiceImpl
-        TaskanaEngineProxyForTest engineProxy = new TaskanaEngineProxyForTest(taskanaEngineImpl);
+        TaskanaEngineProxyForTest engineProxy = new TaskanaEngineProxyForTest(taskanaEngine);
         SqlSession session = engineProxy.getSqlSession();
         WorkbasketMapper mapper = session.getMapper(WorkbasketMapper.class);
 
