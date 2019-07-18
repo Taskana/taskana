@@ -21,7 +21,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -89,7 +88,6 @@ public class TaskServiceImplTest {
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
         when(taskanaEngineInternalMock.getEngine()).thenReturn(taskanaEngineMock);
         when(taskanaEngineMock.getWorkbasketService()).thenReturn(workbasketServiceMock);
         when(taskanaEngineMock.getClassificationService()).thenReturn(classificationServiceImplMock);

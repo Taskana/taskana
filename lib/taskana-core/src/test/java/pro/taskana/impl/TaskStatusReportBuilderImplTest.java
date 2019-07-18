@@ -18,7 +18,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import pro.taskana.TaskState;
@@ -50,7 +49,6 @@ public class TaskStatusReportBuilderImplTest {
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
         when(taskanaEngineInternalMock.getEngine()).thenReturn(taskanaEngineMock);
     }
 

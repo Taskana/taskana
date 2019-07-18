@@ -21,7 +21,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import pro.taskana.CustomField;
@@ -60,7 +59,6 @@ public class WorkbasketReportBuilderImplTest {
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
         when(taskanaEngineInternalMock.getEngine()).thenReturn(taskanaEngineMock);
         when(taskanaEngineMock.getConfiguration()).thenReturn(taskanaEngineConfiguration);
         when(taskanaEngineConfiguration.isGermanPublicHolidaysEnabled()).thenReturn(true);

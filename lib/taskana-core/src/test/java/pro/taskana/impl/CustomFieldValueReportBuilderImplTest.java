@@ -20,7 +20,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import pro.taskana.CustomField;
@@ -57,7 +56,6 @@ public class CustomFieldValueReportBuilderImplTest {
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
         when(taskanaEngineInternalMock.getEngine()).thenReturn(taskanaEngineMock);
         when(taskanaEngineMock.getConfiguration()).thenReturn(taskanaEngineConfiguration);
         when(taskanaEngineConfiguration.isGermanPublicHolidaysEnabled()).thenReturn(true);
@@ -210,7 +208,8 @@ public class CustomFieldValueReportBuilderImplTest {
         verify(taskMonitorMapperMock, times(1))
             .getCustomAttributeValuesForReport(any(), any(), any(), any(), any(), any(), any(), any());
         verify(taskanaEngineInternalMock, times(1)).returnConnection();
-        verifyNoMoreInteractions(taskanaEngineInternalMock, taskanaEngineMock, taskMonitorMapperMock, taskanaEngineConfiguration);
+        verifyNoMoreInteractions(taskanaEngineInternalMock, taskanaEngineMock, taskMonitorMapperMock,
+            taskanaEngineConfiguration);
 
         assertNotNull(actualResult);
         assertEquals(expectedResult, actualResult);
