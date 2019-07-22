@@ -8,8 +8,10 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -53,15 +55,21 @@ import pro.taskana.rest.resource.ClassificationSummaryResource;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT, properties = {
-    "devMode=true"})
+    "devMode=true" })
 public class ClassificationDefinitionControllerIntTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationController.class);
+
     String server = "http://127.0.0.1:";
+
     RestTemplate template;
+
     HttpEntity<String> request;
+
     HttpHeaders headers = new HttpHeaders();
+
     ObjectMapper objMapper = new ObjectMapper();
+
     @LocalServerPort
     int port;
 
@@ -360,10 +368,12 @@ public class ClassificationDefinitionControllerIntTest {
         Thread.sleep(10);
         LOGGER.debug("Wait for 10 s to give the system a chance to update");
 
-        ClassificationSummaryResource childWithNewParent = this.getClassificationWithKeyAndDomain("L110105", "DOMAIN_A");
+        ClassificationSummaryResource childWithNewParent = this.getClassificationWithKeyAndDomain("L110105",
+            "DOMAIN_A");
         assertEquals(child1.parentKey, childWithNewParent.parentKey);
 
-        ClassificationSummaryResource childWithoutParent = this.getClassificationWithKeyAndDomain("L110107", "DOMAIN_A");
+        ClassificationSummaryResource childWithoutParent = this.getClassificationWithKeyAndDomain("L110107",
+            "DOMAIN_A");
         assertEquals(child2.parentId, childWithoutParent.parentId);
         assertEquals(child2.parentKey, childWithoutParent.parentKey);
     }
@@ -398,7 +408,7 @@ public class ClassificationDefinitionControllerIntTest {
     private ResponseEntity<String> importRequest(List<String> clList) throws IOException {
         LOGGER.debug("Start Import");
         File tmpFile = File.createTempFile("test", ".tmp");
-        FileWriter writer = new FileWriter(tmpFile);
+        OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(tmpFile), StandardCharsets.UTF_8);
         writer.write(clList.toString());
         writer.close();
 
