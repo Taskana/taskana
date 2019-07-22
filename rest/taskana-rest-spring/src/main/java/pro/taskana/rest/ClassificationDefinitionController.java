@@ -44,7 +44,7 @@ import pro.taskana.rest.resource.ClassificationResourceAssembler;
  * Controller for Importing / Exporting classifications.
  */
 @RestController
-@RequestMapping(path = "/v1/classification-definitions", produces = {MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(path = "/v1/classification-definitions", produces = { MediaType.APPLICATION_JSON_VALUE })
 public class ClassificationDefinitionController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationDefinitionController.class);
@@ -55,8 +55,7 @@ public class ClassificationDefinitionController {
 
     ClassificationDefinitionController(
         ClassificationService classificationService,
-        ClassificationResourceAssembler classificationResourceAssembler
-    ) {
+        ClassificationResourceAssembler classificationResourceAssembler) {
         this.classificationService = classificationService;
         this.classificationResourceAssembler = classificationResourceAssembler;
     }
@@ -65,8 +64,7 @@ public class ClassificationDefinitionController {
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<List<ClassificationResource>> exportClassifications(
         @RequestParam(required = false) String domain)
-        throws ClassificationNotFoundException, DomainNotFoundException, InvalidArgumentException,
-        NotAuthorizedException, ConcurrencyException, ClassificationAlreadyExistException {
+        throws ClassificationNotFoundException {
         LOGGER.debug("Entry to exportClassifications(domain= {})", domain);
         ClassificationQuery query = classificationService.createClassificationQuery();
 
@@ -115,7 +113,7 @@ public class ClassificationDefinitionController {
     }
 
     private List<ClassificationResource> extractClassificationResourcesFromFile(MultipartFile file)
-            throws IOException {
+        throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         List<ClassificationResource> classificationsDefinitions = mapper.readValue(file.getInputStream(),
@@ -125,7 +123,8 @@ public class ClassificationDefinitionController {
         return classificationsDefinitions;
     }
 
-    private Map<Classification, String> mapChildrenToParentKeys(List<ClassificationResource> classificationResources, Map<String, String> systemIds) {
+    private Map<Classification, String> mapChildrenToParentKeys(List<ClassificationResource> classificationResources,
+        Map<String, String> systemIds) {
         LOGGER.debug("Entry to mapChildrenToParentKeys()");
         Map<Classification, String> childrenInFile = new HashMap<>();
         Set<String> newKeysWithDomain = new HashSet<>();
@@ -180,14 +179,15 @@ public class ClassificationDefinitionController {
     }
 
     private void updateParentChildrenRelations(Map<Classification, String> childrenInFile)
-            throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
-            InvalidArgumentException {
+        throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
+        InvalidArgumentException {
         LOGGER.debug("Entry to updateParentChildrenRelations()");
         for (Classification childRes : childrenInFile.keySet()) {
             Classification child = classificationService
-                    .getClassification(childRes.getKey(), childRes.getDomain());
+                .getClassification(childRes.getKey(), childRes.getDomain());
             String parentKey = childrenInFile.get(childRes);
-            String parentId = (parentKey == null) ? "" : classificationService.getClassification(parentKey, childRes.getDomain()).getId();
+            String parentId = (parentKey == null) ? ""
+                : classificationService.getClassification(parentKey, childRes.getDomain()).getId();
             child.setParentKey(parentKey);
             child.setParentId(parentId);
             classificationService.updateClassification(child);
