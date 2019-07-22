@@ -50,21 +50,37 @@ public class ClassificationController extends AbstractPagingController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationController.class);
 
     private static final String LIKE = "%";
+
     private static final String NAME = "name";
+
     private static final String NAME_LIKE = "name-like";
+
     private static final String KEY = "key";
+
     private static final String DOMAIN = "domain";
+
     private static final String CATEGORY = "category";
+
     private static final String TYPE = "type";
+
     private static final String CUSTOM_1_LIKE = "custom-1-like";
+
     private static final String CUSTOM_2_LIKE = "custom-2-like";
+
     private static final String CUSTOM_3_LIKE = "custom-3-like";
+
     private static final String CUSTOM_4_LIKE = "custom-4-like";
+
     private static final String CUSTOM_5_LIKE = "custom-5-like";
+
     private static final String CUSTOM_6_LIKE = "custom-6-like";
+
     private static final String CUSTOM_7_LIKE = "custom-7-like";
+
     private static final String CUSTOM_8_LIKE = "custom-8-like";
+
     private static final String SORT_BY = "sort-by";
+
     private static final String SORT_DIRECTION = "order";
 
     private ClassificationService classificationService;
@@ -76,8 +92,7 @@ public class ClassificationController extends AbstractPagingController {
     ClassificationController(
         ClassificationService classificationService,
         ClassificationResourceAssembler classificationResourceAssembler,
-        ClassificationSummaryResourceAssembler classificationSummaryResourceAssembler
-    ) {
+        ClassificationSummaryResourceAssembler classificationSummaryResourceAssembler) {
         this.classificationService = classificationService;
         this.classificationResourceAssembler = classificationResourceAssembler;
         this.classificationSummaryResourceAssembler = classificationSummaryResourceAssembler;
@@ -101,7 +116,8 @@ public class ClassificationController extends AbstractPagingController {
         ResponseEntity<PagedResources<ClassificationSummaryResource>> response = new ResponseEntity<>(
             classificationSummaryResourceAssembler.toResources(
                 classificationSummaries,
-                pageMetadata), HttpStatus.OK);
+                pageMetadata),
+            HttpStatus.OK);
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from getClassifications(), returning {}",
                 new ResponseEntity<>(response, HttpStatus.OK));
@@ -133,8 +149,8 @@ public class ClassificationController extends AbstractPagingController {
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<ClassificationResource> createClassification(
         @RequestBody ClassificationResource resource)
-        throws NotAuthorizedException, ClassificationNotFoundException, ClassificationAlreadyExistException,
-        ConcurrencyException, DomainNotFoundException, InvalidArgumentException {
+        throws NotAuthorizedException, ClassificationAlreadyExistException,
+        DomainNotFoundException, InvalidArgumentException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Entry to createClassification(resource= {})", resource);
         }
@@ -155,7 +171,7 @@ public class ClassificationController extends AbstractPagingController {
     public ResponseEntity<ClassificationResource> updateClassification(
         @PathVariable(value = "classificationId") String classificationId, @RequestBody ClassificationResource resource)
         throws NotAuthorizedException, ClassificationNotFoundException, ConcurrencyException,
-        ClassificationAlreadyExistException, DomainNotFoundException, InvalidArgumentException {
+        InvalidArgumentException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Entry to updateClassification(classificationId= {}, resource= {})", classificationId,
                 resource);

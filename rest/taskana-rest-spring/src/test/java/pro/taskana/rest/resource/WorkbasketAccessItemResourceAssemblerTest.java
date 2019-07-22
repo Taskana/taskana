@@ -10,8 +10,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketService;
-import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.WorkbasketAccessItemImpl;
 import pro.taskana.rest.TestConfiguration;
 
@@ -19,18 +17,18 @@ import pro.taskana.rest.TestConfiguration;
  * Test for {@link WorkbasketAccessItemResourceAssembler}.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {TestConfiguration.class})
+@ContextConfiguration(classes = { TestConfiguration.class })
 @WebAppConfiguration
 public class WorkbasketAccessItemResourceAssemblerTest {
 
     @Autowired
     WorkbasketAccessItemResourceAssembler workbasketAccessItemResourceAssembler;
+
     @Autowired
     WorkbasketService workbasketService;
 
     @Test
-    public void workBasketAccessItemToResourcePropertiesEqual()
-        throws NotAuthorizedException, WorkbasketNotFoundException {
+    public void workBasketAccessItemToResourcePropertiesEqual() {
         // given
         WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem("1", "2");
         ((WorkbasketAccessItemImpl) accessItem).setWorkbasketKey("workbasketKey");
