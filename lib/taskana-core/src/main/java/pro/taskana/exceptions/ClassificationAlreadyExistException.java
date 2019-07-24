@@ -10,7 +10,7 @@ public class ClassificationAlreadyExistException extends TaskanaException {
     private static final long serialVersionUID = 4716611657569005013L;
 
     public ClassificationAlreadyExistException(Classification classification) {
-        super("ID='" + classification.getId() + "', KEY=' " + classification.getKey() + "', DOMAIN='"
+        super("ID='" + classification.getId() + "', KEY='" + classification.getKey() + "', DOMAIN='"
             + classification.getDomain() + "';");
     }
 }
