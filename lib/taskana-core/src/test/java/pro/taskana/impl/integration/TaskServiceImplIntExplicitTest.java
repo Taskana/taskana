@@ -47,13 +47,11 @@ import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.ClassificationImpl;
-import pro.taskana.impl.ClassificationServiceImpl;
 import pro.taskana.impl.JunitHelper;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.TaskServiceImpl;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.WorkbasketImpl;
-import pro.taskana.impl.WorkbasketServiceImpl;
 import pro.taskana.impl.WorkbasketSummaryImpl;
 import pro.taskana.impl.configuration.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
@@ -71,12 +69,19 @@ import pro.taskana.security.WithAccessId;
 public class TaskServiceImplIntExplicitTest {
 
     private static DataSource dataSource;
+
     private static DBCleaner cleaner;
+
     private static TaskServiceImpl taskServiceImpl;
+
     private static TaskanaEngineConfiguration taskanaEngineConfiguration;
+
     private static TaskanaEngine taskanaEngine;
+
     private static TaskanaEngineImpl taskanaEngineImpl;
+
     private static ClassificationService classificationService;
+
     private static WorkbasketService workbasketService;
 
     @BeforeClass
@@ -105,7 +110,7 @@ public class TaskServiceImplIntExplicitTest {
         cleaner.clearDb(dataSource, false);
     }
 
-    @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
+    @WithAccessId(userName = "Elena", groupNames = { "businessadmin" })
     @Test(expected = TaskNotFoundException.class)
     public void testStartTransactionFail()
         throws SQLException, TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException,
@@ -145,7 +150,7 @@ public class TaskServiceImplIntExplicitTest {
         connection.commit();
     }
 
-    @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
+    @WithAccessId(userName = "Elena", groupNames = { "businessadmin" })
     @Test
     public void testCreateTask()
         throws SQLException, TaskNotFoundException, NotAuthorizedException,
@@ -175,46 +180,7 @@ public class TaskServiceImplIntExplicitTest {
         connection.commit();
     }
 
-    @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
-    @Test
-    public void testCreateTaskInTaskanaWithDefaultDb()
-        throws SQLException, NotAuthorizedException,
-        WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,
-        TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException,
-        WorkbasketAlreadyExistException, DomainNotFoundException {
-        DataSource ds = TaskanaEngineConfiguration.createDefaultDataSource();
-        TaskanaEngineConfiguration taskanaEngineConfiguration = new TaskanaEngineConfiguration(ds, false, false,
-            null);
-        TaskanaEngine te = taskanaEngineConfiguration.buildTaskanaEngine();
-        Connection connection = ds.getConnection();
-        te.setConnection(connection);
-        TaskServiceImpl taskServiceImpl = (TaskServiceImpl) te.getTaskService();
-        WorkbasketServiceImpl workBasketServiceImpl = (WorkbasketServiceImpl) te.getWorkbasketService();
-        ClassificationServiceImpl classificationServiceImpl = (ClassificationServiceImpl) te.getClassificationService();
-
-        Workbasket workbasket = workbasketService.newWorkbasket("K99", "DOMAIN_A");
-        workbasket.setName("workbasket");
-
-        workbasket.setName("workbasket99");
-        workbasket.setType(WorkbasketType.GROUP);
-        workbasket = workBasketServiceImpl.createWorkbasket(workbasket);
-        Classification classification = classificationService.newClassification("TEST", "DOMAIN_A", "TASK");
-        classification = classificationServiceImpl.createClassification(classification);
-
-        Task task = taskServiceImpl.newTask(workbasket.getId());
-        task.setName("Unit Test Task");
-        task.setClassificationKey(classification.getKey());
-        task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
-        task.addAttachment(null);
-        task = taskServiceImpl.createTask(task);
-
-        Assert.assertNotNull(task);
-        Assert.assertNotNull(task.getId());
-        connection.commit();
-        te.setConnection(null);
-    }
-
-    @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
+    @WithAccessId(userName = "Elena", groupNames = { "businessadmin" })
     @Test(expected = WorkbasketNotFoundException.class)
     public void createTaskShouldThrowWorkbasketNotFoundException()
         throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, SQLException,
@@ -227,7 +193,7 @@ public class TaskServiceImplIntExplicitTest {
         taskServiceImpl.createTask(test);
     }
 
-    @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
+    @WithAccessId(userName = "Elena", groupNames = { "businessadmin" })
     @Test(expected = ClassificationNotFoundException.class)
     public void createManualTaskShouldThrowClassificationNotFoundException()
         throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException, SQLException,
@@ -253,7 +219,7 @@ public class TaskServiceImplIntExplicitTest {
         taskServiceImpl.createTask(task);
     }
 
-    @WithAccessId(userName = "Elena", groupNames = {"DummyGroup", "businessadmin"})
+    @WithAccessId(userName = "Elena", groupNames = { "DummyGroup", "businessadmin" })
     @Test
     public void should_ReturnList_when_BuilderIsUsed() throws SQLException, NotAuthorizedException,
         WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,
@@ -301,7 +267,7 @@ public class TaskServiceImplIntExplicitTest {
         connection.commit();
     }
 
-    @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
+    @WithAccessId(userName = "Elena", groupNames = { "businessadmin" })
     @Test
     public void shouldTransferTaskToOtherWorkbasket()
         throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -380,7 +346,7 @@ public class TaskServiceImplIntExplicitTest {
         taskServiceImpl.transfer(UUID.randomUUID() + "_X", "1");
     }
 
-    @WithAccessId(userName = "User", groupNames = {"businessadmin"})
+    @WithAccessId(userName = "User", groupNames = { "businessadmin" })
     @Test
     public void shouldNotTransferByFailingSecurity() throws WorkbasketNotFoundException,
         ClassificationNotFoundException, NotAuthorizedException, ClassificationAlreadyExistException, SQLException,

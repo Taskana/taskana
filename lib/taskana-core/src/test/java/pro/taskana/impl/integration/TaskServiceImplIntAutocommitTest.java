@@ -64,13 +64,18 @@ import pro.taskana.security.WithAccessId;
 public class TaskServiceImplIntAutocommitTest {
 
     private DataSource dataSource;
-    private TaskServiceImpl taskServiceImpl;
-    private TaskanaEngineConfiguration taskanaEngineConfiguration;
-    private TaskanaEngine taskanaEngine;
-    private TaskanaEngineImpl taskanaEngineImpl;
-    private ClassificationService classificationService;
-    private WorkbasketService workbasketService;
 
+    private TaskServiceImpl taskServiceImpl;
+
+    private TaskanaEngineConfiguration taskanaEngineConfiguration;
+
+    private TaskanaEngine taskanaEngine;
+
+    private TaskanaEngineImpl taskanaEngineImpl;
+
+    private ClassificationService classificationService;
+
+    private WorkbasketService workbasketService;
 
     @Before
     public void setup() throws SQLException {
@@ -93,10 +98,12 @@ public class TaskServiceImplIntAutocommitTest {
         WorkbasketNotFoundException, NotAuthorizedException, ClassificationNotFoundException,
         ClassificationAlreadyExistException, TaskAlreadyExistException, InvalidWorkbasketException,
         InvalidArgumentException, WorkbasketAlreadyExistException, DomainNotFoundException {
+
         Workbasket wb = workbasketService.newWorkbasket("workbasket", "DOMAIN_A");
         wb.setName("workbasket");
         wb.setType(WorkbasketType.GROUP);
         taskanaEngine.getWorkbasketService().createWorkbasket(wb);
+
         Classification classification = classificationService.newClassification("TEST", "DOMAIN_A", "TASK");
         taskanaEngine.getClassificationService().createClassification(classification);
 
@@ -119,6 +126,7 @@ public class TaskServiceImplIntAutocommitTest {
         WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,
         TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException,
         WorkbasketAlreadyExistException, DomainNotFoundException {
+
         Workbasket wb = workbasketService.newWorkbasket("wb1k1", "DOMAIN_A");
         wb.setName("sdf");
         wb.setType(WorkbasketType.GROUP);
@@ -127,9 +135,10 @@ public class TaskServiceImplIntAutocommitTest {
         Classification classification = classificationService.newClassification("TEST", "DOMAIN_A", "TASK");
         classification = taskanaEngine.getClassificationService()
             .createClassification(classification);
-        classification = taskanaEngine.getClassificationService().getClassification(
-            classification.getKey(),
-            classification.getDomain());
+        classification = taskanaEngine.getClassificationService()
+            .getClassification(
+                classification.getKey(),
+                classification.getDomain());
 
         TaskImpl task = (TaskImpl) taskServiceImpl.newTask(wb.getKey(), "DOMAIN_A");
         task.setName("Unit Test Task");
@@ -141,35 +150,6 @@ public class TaskServiceImplIntAutocommitTest {
         TaskanaEngineImpl te2 = (TaskanaEngineImpl) taskanaEngineConfiguration.buildTaskanaEngine();
         TaskServiceImpl taskServiceImpl2 = (TaskServiceImpl) te2.getTaskService();
         taskServiceImpl2.getTask(wb.getId());
-    }
-
-    @Test
-    public void testCreateTaskInTaskanaWithDefaultDb()
-        throws SQLException, NotAuthorizedException,
-        WorkbasketNotFoundException, ClassificationNotFoundException, ClassificationAlreadyExistException,
-        TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException,
-        WorkbasketAlreadyExistException, DomainNotFoundException {
-        TaskanaEngineConfiguration taskanaEngineConfiguration = new TaskanaEngineConfiguration(null, false, false,
-            null);
-        TaskanaEngine te = taskanaEngineConfiguration.buildTaskanaEngine();
-        ((TaskanaEngineImpl) te).setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
-        TaskServiceImpl taskServiceImpl = (TaskServiceImpl) te.getTaskService();
-
-        Workbasket wb = workbasketService.newWorkbasket("workbasket", "DOMAIN_A");
-        wb.setName("workbasket");
-        wb.setType(WorkbasketType.GROUP);
-        te.getWorkbasketService().createWorkbasket(wb);
-        Classification classification = te.getClassificationService().newClassification("TEST", "DOMAIN_A", "TASK");
-        te.getClassificationService().createClassification(classification);
-
-        Task task = taskServiceImpl.newTask(wb.getId());
-        task.setName("Unit Test Task");
-        task.setClassificationKey(classification.getKey());
-        task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
-        task = taskServiceImpl.createTask(task);
-
-        Assert.assertNotNull(task);
-        Assert.assertNotNull(task.getId());
     }
 
     @Test
@@ -274,7 +254,7 @@ public class TaskServiceImplIntAutocommitTest {
         taskServiceImpl.transfer(UUID.randomUUID() + "_X", "1");
     }
 
-    @WithAccessId(userName = "User", groupNames = {"businessadmin"})
+    @WithAccessId(userName = "User", groupNames = { "businessadmin" })
     @Test
     public void shouldNotTransferByFailingSecurity() throws WorkbasketNotFoundException,
         ClassificationNotFoundException, NotAuthorizedException, ClassificationAlreadyExistException, SQLException,
