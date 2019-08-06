@@ -80,6 +80,17 @@
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.wildfly.security</groupId>
+			<artifactId>wildfly-elytron</artifactId>
+			<version>${version.wildfly.security}</version>
+		</dependency>
 
 		<!-- TEST -->
 		<dependency>
@@ -87,16 +98,7 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>io.thorntail</groupId>
-			<artifactId>jaxrs</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.thorntail</groupId>
-			<artifactId>cdi</artifactId>
-			<scope>test</scope>
-		</dependency>
+
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-client</artifactId>
@@ -133,10 +135,10 @@
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
-			<!-- Reading properties from file and use then as data source properties
-				 is a pending improvement of Jboss development team check out -> https://issues.jboss.org/browse/WFMP-70
-				 That's why we are including postgres connection properties directly in this pom file.
-			-->
+			<!-- Reading properties from file and use then as data source properties 
+				is a pending improvement of Jboss development team check out -> https://issues.jboss.org/browse/WFMP-70 
+				That's why we are including postgres connection properties directly in this 
+				pom file. -->
 			<properties>
 				<driver-class>org.postgresql.Driver</driver-class>
 				<connection-url>jdbc:postgresql://localhost:50102/postgres</connection-url>
@@ -163,6 +165,22 @@
 				<version>${version.maven.wildfly}</version>
 				<configuration>
 					<version>11.0.0.Final</version>
+					<add-user>
+						<users>
+							<user>
+								<username>admin</username>
+								<password>admin</password>
+							</user>
+							<user>
+								<username>admin</username>
+								<password>admin</password>
+								<groups>
+									<group>testGroup</group>
+								</groups>
+								<applicationUser>true</applicationUser>
+							</user>
+						</users>
+					</add-user>
 				</configuration>
 				<executions>
 					<execution>
@@ -209,20 +227,45 @@
 							<goal>add-resource</goal>
 						</goals>
 					</execution>
+					<execution>
+						<id>edit-undertow</id>
+						<phase>install</phase>
+						<goals>
+							<goal>execute-commands</goal>
+						</goals>
+						<configuration>
+							<commands>
+								<command>/subsystem=undertow:write-attribute(name=default-server,value=default-server)</command>
+								<command>/subsystem=undertow:write-attribute(name=default-virtual-host,value=default-host)</command>
+								<command>/subsystem=undertow:write-attribute(name=default-servlet-container,value=default)</command>
+								<command>/subsystem=undertow:write-attribute(name=default-security-domain,value=ApplicationDomain)</command>
+							</commands>
+						</configuration>
+					</execution>
+					<execution>
+						<id>add-application-security-domain</id>
+						<phase>install</phase>
+						<goals>
+							<goal>add-resource</goal>
+						</goals>
+						<configuration>
+							<address>subsystem=undertow</address>
+							<resources>
+								<resource>
+									<address>application-security-domain=ApplicationDomain</address>
+									<properties>
+										<http-authentication-factory>application-http-authentication</http-authentication-factory>
+									</properties>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
 					<!-- Deploy the application on install -->
 					<execution>
 						<id>wildfly-deploy</id>
 						<phase>install</phase>
 						<goals>
 							<goal>deploy</goal>
-						</goals>
-					</execution>
-					<!-- undeploy the application on install -->
-					<execution>
-						<id>wildfly-undeploy</id>
-						<phase>install</phase>
-						<goals>
-							<goal>undeploy</goal>
 						</goals>
 					</execution>
 					<!-- shutdown the application on install -->
