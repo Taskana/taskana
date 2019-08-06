@@ -59,6 +59,7 @@
 		<!-- java ee dependencies -->
 		<version.resteasy>3.1.2.Final</version.resteasy>
 		<version.thorntail>2.3.0.Final</version.thorntail>
+		<version.wildfly.security>1.6.1.Final</version.wildfly.security>
 		<version.javaee-api>7.0</version.javaee-api>
 		<version.arquillian>1.1.10.Final</version.arquillian>
 

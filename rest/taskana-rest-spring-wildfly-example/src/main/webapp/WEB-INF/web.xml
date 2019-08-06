@@ -4,4 +4,12 @@
   http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
 
 	<display-name>TaskanaRestWildflySpring</display-name>
+
+	<login-config>
+		<auth-method>FORM</auth-method>
+		<form-login-config>
+			<form-login-page>/login</form-login-page>
+			<form-error-page>/loginerror</form-error-page>
+		</form-login-config>
+	</login-config>
 </web-app>
