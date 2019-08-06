@@ -41,18 +41,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/img/**")
             .permitAll()
             .and()
-            .csrf().disable()
+            .csrf()
+            .disable()
             .httpBasic()
             .and()
             .authenticationProvider(jaasAuthProvider())
             .authorizeRequests()
-            .antMatchers(HttpMethod.GET, "/docs/**").permitAll()
+            .antMatchers(HttpMethod.GET, "/docs/**")
+            .permitAll()
             .and()
             .addFilter(new JaasApiIntegrationFilter());
 
         if (devMode) {
-            http.headers().frameOptions().sameOrigin()
-                .and().authorizeRequests().antMatchers("/h2-console/**").permitAll();
+            http.headers()
+                .frameOptions()
+                .sameOrigin()
+                .and()
+                .authorizeRequests()
+                .antMatchers("/h2-console/**")
+                .permitAll();
         } else {
             AddLoginPageConfiguration(http);
         }
@@ -99,9 +106,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private void AddLoginPageConfiguration(HttpSecurity http) throws Exception {
         http
             .authorizeRequests()
-            .anyRequest().fullyAuthenticated()
+            .anyRequest()
+            .fullyAuthenticated()
             .and()
-            .formLogin().loginPage("/login").failureUrl("/login?error")
+            .formLogin()
+            .loginPage("/login")
+            .failureUrl("/login?error")
             .defaultSuccessUrl("/")
             .permitAll()
             .and()
