@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
@@ -120,6 +121,11 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
     @ExceptionHandler(DomainNotFoundException.class)
     protected ResponseEntity<Object> handleDomainNotFound(DomainNotFoundException ex, WebRequest req) {
         return buildResponse(ex, req, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    protected ResponseEntity<Object> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex, WebRequest req) {
+        return buildResponse(ex, req, HttpStatus.PAYLOAD_TOO_LARGE);
     }
 
     @ExceptionHandler(Exception.class)
