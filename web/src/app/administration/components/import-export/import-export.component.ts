@@ -58,7 +58,7 @@ export class ImportExportComponent implements OnInit {
     formdata.append('file', file);
     ajax.upload.addEventListener('progress', this.progressHandler.bind(this), false);
     ajax.addEventListener('load', this.resetProgress.bind(this), false);
-    ajax.addEventListener('error', this.errorHandler.bind(this), false);
+    ajax.addEventListener('error', this.onFailedResponse.bind(this, ajax), false);
     ajax.onreadystatechange = this.onReadyStateChangeHandler.bind(this, ajax);
     if (this.currentSelection === TaskanaType.WORKBASKETS) {
       ajax.open('POST', environment.taskanaRestUrl + '/v1/workbasket-definitions');
@@ -109,6 +109,8 @@ export class ImportExportComponent implements OnInit {
         title = 'Import was not successful, operation was not found.';
       } else if (event.status === 409) {
         title = 'Import was not successful, operation has some conflicts.';
+      } else if (event.status === 413) {
+        title = 'Import was not successful, maximum file size exceeded.'
       }
       this.errorHandler(title, JSON.parse(event.responseText).message);
 
@@ -117,6 +119,11 @@ export class ImportExportComponent implements OnInit {
       this.importExportService.setImportingFinished(true);
       this.resetProgress();
     }
+  }
+
+  private onFailedResponse(event) {
+    this.errorHandler('Upload failed', 'The upload didn\'t proceed sucessfully. \
+    \n Probably the uploaded file exceeded the maximum file size of 10 MB');
   }
 
   private errorHandler(title = 'Import was not successful', message) {
