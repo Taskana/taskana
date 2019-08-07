@@ -116,6 +116,24 @@ public class WorkbasketDefinitionControllerIntTest {
         assertEquals(HttpStatus.OK, responseImport.getStatusCode());
     }
 
+    @Test
+    public void testNoErrorWhenImportWithSameIdButDifferentKeyAndDomain()
+        throws IOException {
+        ResponseEntity<List<WorkbasketDefinitionResource>> response = template.exchange(
+            server + port + "/v1/workbasket-definitions?domain=DOMAIN_A",
+            HttpMethod.GET, request, new ParameterizedTypeReference<List<WorkbasketDefinitionResource>>() {
+
+            });
+
+        List<String> list = new ArrayList<>();
+        WorkbasketDefinitionResource wbDef = response.getBody().get(0);
+        list.add(objMapper.writeValueAsString(wbDef));
+        wbDef.getWorkbasket().setKey("new Key for this WB");
+        list.add(objMapper.writeValueAsString(wbDef));
+        ResponseEntity<String> responseImport = importRequest(list);
+        assertEquals(HttpStatus.OK, responseImport.getStatusCode());
+    }
+
     private ResponseEntity<String> importRequest(List<String> clList) throws IOException {
         File tmpFile = File.createTempFile("test", ".tmp");
         FileWriter writer = new FileWriter(tmpFile);

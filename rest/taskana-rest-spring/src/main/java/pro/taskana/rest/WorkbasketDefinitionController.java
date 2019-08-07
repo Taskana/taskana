@@ -38,6 +38,7 @@ import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.rest.resource.WorkbasketDefinitionResource;
 import pro.taskana.rest.resource.WorkbasketDefinitionResourceAssembler;
+import pro.taskana.rest.resource.WorkbasketResource;
 
 /**
  * Controller for all {@link WorkbasketDefinitionResource} related endpoints.
@@ -133,7 +134,8 @@ public class WorkbasketDefinitionController {
             if (systemIds.containsKey(logicalId(importedWb))) {
                 workbasket = workbasketService.updateWorkbasket(importedWb);
             } else {
-                workbasket = workbasketService.createWorkbasket(importedWb);
+                Workbasket wbWithoutId = removeId(importedWb);
+                workbasket = workbasketService.createWorkbasket(wbWithoutId);
             }
 
             // Since we would have a n² runtime when doing a lookup and updating the access items we decided to
@@ -169,6 +171,12 @@ public class WorkbasketDefinitionController {
         ResponseEntity<String> response = new ResponseEntity<>(HttpStatus.OK);
         LOGGER.debug("Exit from importWorkbaskets(), returning {}", response);
         return response;
+    }
+
+    private Workbasket removeId(Workbasket importedWb) {
+        WorkbasketResource wbRes = new WorkbasketResource(importedWb);
+        wbRes.setWorkbasketId(null);
+        return workbasketDefinitionAssembler.toModel(wbRes);
     }
 
     private String logicalId(WorkbasketSummary workbasket) {

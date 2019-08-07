@@ -160,6 +160,9 @@ public interface WorkbasketMapper {
     @Update("UPDATE WORKBASKET SET MODIFIED = #{workbasket.modified}, KEY = #{workbasket.key}, NAME = #{workbasket.name}, DOMAIN = #{workbasket.domain}, TYPE = #{workbasket.type}, DESCRIPTION = #{workbasket.description}, OWNER = #{workbasket.owner}, CUSTOM_1 = #{workbasket.custom1}, CUSTOM_2 = #{workbasket.custom2}, CUSTOM_3 = #{workbasket.custom3}, CUSTOM_4 = #{workbasket.custom4}, ORG_LEVEL_1 = #{workbasket.orgLevel1}, ORG_LEVEL_2 = #{workbasket.orgLevel2}, ORG_LEVEL_3 = #{workbasket.orgLevel3}, ORG_LEVEL_4 = #{workbasket.orgLevel4}, MARKED_FOR_DELETION = #{workbasket.markedForDeletion} WHERE id = #{workbasket.id}")
     void update(@Param("workbasket") WorkbasketImpl workbasket);
 
+    @Update("UPDATE WORKBASKET SET MODIFIED = #{workbasket.modified}, NAME = #{workbasket.name}, TYPE = #{workbasket.type}, DESCRIPTION = #{workbasket.description}, OWNER = #{workbasket.owner}, CUSTOM_1 = #{workbasket.custom1}, CUSTOM_2 = #{workbasket.custom2}, CUSTOM_3 = #{workbasket.custom3}, CUSTOM_4 = #{workbasket.custom4}, ORG_LEVEL_1 = #{workbasket.orgLevel1}, ORG_LEVEL_2 = #{workbasket.orgLevel2}, ORG_LEVEL_3 = #{workbasket.orgLevel3}, ORG_LEVEL_4 = #{workbasket.orgLevel4}, MARKED_FOR_DELETION = #{workbasket.markedForDeletion} WHERE KEY = #{workbasket.key} AND DOMAIN = #{workbasket.domain}")
+    void updateByKeyAndDomain(@Param("workbasket") WorkbasketImpl workbasket);
+
     @Delete("DELETE FROM WORKBASKET where id = #{id}")
     void delete(@Param("id") String id);
 }
