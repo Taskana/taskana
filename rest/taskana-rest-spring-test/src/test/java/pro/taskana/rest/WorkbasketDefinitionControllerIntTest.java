@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -35,6 +36,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -114,6 +116,25 @@ public class WorkbasketDefinitionControllerIntTest {
         list.add(objMapper.writeValueAsString(response.getBody().get(0)));
         ResponseEntity<String> responseImport = importRequest(list);
         assertEquals(HttpStatus.OK, responseImport.getStatusCode());
+    }
+
+    @Test
+    public void testFailOnImportDuplicates() throws IOException {
+        ResponseEntity<List<WorkbasketDefinitionResource>> response = template.exchange(
+            server + port + "/v1/workbasket-definitions?domain=DOMAIN_A",
+            HttpMethod.GET, request, new ParameterizedTypeReference<List<WorkbasketDefinitionResource>>() {
+
+            });
+
+        List<String> list = new ArrayList<>();
+        list.add(objMapper.writeValueAsString(response.getBody().get(0)));
+        list.add(objMapper.writeValueAsString(response.getBody().get(0)));
+        try {
+            importRequest(list);
+            fail("Expected http-Status 409");
+        } catch (HttpClientErrorException e) {
+            assertEquals(HttpStatus.CONFLICT, e.getStatusCode());
+        }
     }
 
     @Test
