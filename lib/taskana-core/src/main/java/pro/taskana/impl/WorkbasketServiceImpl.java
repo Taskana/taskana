@@ -104,7 +104,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     public Workbasket createWorkbasket(Workbasket newWorkbasket)
         throws InvalidWorkbasketException, NotAuthorizedException, WorkbasketAlreadyExistException,
         DomainNotFoundException {
-        LOGGER.debug("entry to createtWorkbasket(workbasket)", newWorkbasket);
+        LOGGER.debug("entry to createWorkbasket(workbasket)", newWorkbasket);
         taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
 
         WorkbasketImpl workbasket = (WorkbasketImpl) newWorkbasket;
@@ -143,7 +143,11 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         try {
             taskanaEngine.openConnection();
             workbasket.setModified(Instant.now());
-            workbasketMapper.update(workbasket);
+            if (workbasket.getId() == null || workbasket.getId().isEmpty()) {
+                workbasketMapper.updateByKeyAndDomain(workbasket);
+            } else {
+                workbasketMapper.update(workbasket);
+            }
             LOGGER.debug("Method updateWorkbasket() updated workbasket '{}'", workbasket.getId());
             return workbasket;
         } finally {
