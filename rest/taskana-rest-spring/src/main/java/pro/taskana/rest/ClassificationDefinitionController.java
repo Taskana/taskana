@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -95,6 +96,7 @@ public class ClassificationDefinitionController {
         LOGGER.debug("Entry to importClassifications()");
         Map<String, String> systemIds = getSystemIds();
         List<ClassificationResource> classificationsResources = extractClassificationResourcesFromFile(file);
+        checkForDuplicates(classificationsResources);
 
         Map<Classification, String> childrenInFile = mapChildrenToParentKeys(classificationsResources, systemIds);
         insertOrUpdateClassificationsWithoutParent(classificationsResources, systemIds);
@@ -121,6 +123,22 @@ public class ClassificationDefinitionController {
 
             });
         return classificationsDefinitions;
+    }
+
+    private void checkForDuplicates(List<ClassificationResource> classificationList) {
+        List<String> identifiers = new ArrayList<>();
+        Set<String> duplicates = new HashSet<>();
+        for (ClassificationResource classification : classificationList) {
+            String identifier = classification.key + "|" + classification.domain;
+            if (identifiers.contains(identifier)) {
+                duplicates.add(identifier);
+            } else {
+                identifiers.add(identifier);
+            }
+        }
+        if (!duplicates.isEmpty()) {
+            throw new DuplicateKeyException("The 'key|domain'-identifier is not unique for the value(s): " + duplicates.toString());
+        }
     }
 
     private Map<Classification, String> mapChildrenToParentKeys(List<ClassificationResource> classificationResources,

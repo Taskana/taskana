@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -366,7 +367,7 @@ public class ClassificationDefinitionControllerIntTest {
         ResponseEntity<String> response = importRequest(clList);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         Thread.sleep(10);
-        LOGGER.debug("Wait for 10 s to give the system a chance to update");
+        LOGGER.debug("Wait 10 ms to give the system a chance to update");
 
         ClassificationSummaryResource childWithNewParent = this.getClassificationWithKeyAndDomain("L110105",
             "DOMAIN_A");
@@ -376,6 +377,23 @@ public class ClassificationDefinitionControllerIntTest {
             "DOMAIN_A");
         assertEquals(child2.parentId, childWithoutParent.parentId);
         assertEquals(child2.parentKey, childWithoutParent.parentKey);
+    }
+
+    @Test
+    public void testFailOnImportDuplicates() throws IOException {
+        ClassificationSummaryResource classification = this.getClassificationWithKeyAndDomain("L110105", "DOMAIN_A");
+        String classificationString = objMapper.writeValueAsString(classification);
+
+        List<String> clList = new ArrayList<>();
+        clList.add(classificationString);
+        clList.add(classificationString);
+
+        try {
+            importRequest(clList);
+            fail("Expected http-Status 409");
+        } catch (HttpClientErrorException e) {
+            assertEquals(HttpStatus.CONFLICT, e.getStatusCode());
+        }
     }
 
     private ClassificationResource createClassification(String id, String key, String domain, String parentId,

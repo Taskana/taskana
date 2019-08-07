@@ -3,12 +3,15 @@ package pro.taskana.rest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -122,6 +125,7 @@ public class WorkbasketDefinitionController {
             .list()
             .stream()
             .collect(Collectors.toMap(this::logicalId, WorkbasketSummary::getId));
+        checkForDuplicates(definitions);
 
         // key: old system ID
         // value: system ID
@@ -177,6 +181,22 @@ public class WorkbasketDefinitionController {
         WorkbasketResource wbRes = new WorkbasketResource(importedWb);
         wbRes.setWorkbasketId(null);
         return workbasketDefinitionAssembler.toModel(wbRes);
+    }
+
+    private void checkForDuplicates(List<WorkbasketDefinitionResource> definitions) {
+        List<String> identifiers = new ArrayList<>();
+        Set<String> duplicates = new HashSet<>();
+        for (WorkbasketDefinitionResource definition : definitions) {
+            String identifier = logicalId(workbasketDefinitionAssembler.toModel(definition.getWorkbasket()));
+            if (identifiers.contains(identifier)) {
+                duplicates.add(identifier);
+            } else {
+                identifiers.add(identifier);
+            }
+        }
+        if (!duplicates.isEmpty()) {
+            throw new DuplicateKeyException("The 'key|domain'-identifier is not unique for the value(s): " + duplicates.toString());
+        }
     }
 
     private String logicalId(WorkbasketSummary workbasket) {
