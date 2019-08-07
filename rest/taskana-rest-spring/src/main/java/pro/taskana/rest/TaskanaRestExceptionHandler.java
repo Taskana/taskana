@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -83,6 +84,11 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
     @ExceptionHandler(ClassificationAlreadyExistException.class)
     protected ResponseEntity<Object> handleClassificationAlreadyExist(ClassificationAlreadyExistException ex,
         WebRequest req) {
+        return buildResponse(ex, req, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(DuplicateKeyException.class)
+    protected ResponseEntity<Object> handleDuplicateKey(DuplicateKeyException ex, WebRequest req) {
         return buildResponse(ex, req, HttpStatus.CONFLICT);
     }
 
