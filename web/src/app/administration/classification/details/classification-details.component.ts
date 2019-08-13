@@ -92,7 +92,8 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     });
     this.classificationSelectedSubscription = this.classificationsService.getSelectedClassification()
       .subscribe(classificationSelected => {
-        if (this.classification && this.classification.classificationId === classificationSelected.classificationId) { return; }
+        if (classificationSelected && this.classification &&
+            this.classification.classificationId === classificationSelected.classificationId) { return; }
         this.initProperties();
         if (classificationSelected) {
           this.fillClassificationInformation(classificationSelected);
