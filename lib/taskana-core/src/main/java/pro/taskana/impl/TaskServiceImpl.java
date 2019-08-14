@@ -669,15 +669,18 @@ public class TaskServiceImpl implements TaskService {
         try {
             taskanaEngine.openConnection();
             oldTaskImpl = (TaskImpl) getTask(newTaskImpl.getId());
+
             PrioDurationHolder prioDurationFromAttachments = handleAttachmentsOnTaskUpdate(oldTaskImpl, newTaskImpl);
-            standardUpdateActions(oldTaskImpl, newTaskImpl, prioDurationFromAttachments);
+            boolean recalculatePriority = oldTaskImpl.getAttachments().size() != newTaskImpl.getAttachments().size()
+                || prioDurationFromAttachments.getPrio() != Integer.MIN_VALUE;
+            standardUpdateActions(oldTaskImpl, newTaskImpl, prioDurationFromAttachments, recalculatePriority);
 
             taskMapper.update(newTaskImpl);
             LOGGER.debug("Method updateTask() updated task '{}' for user '{}'.", task.getId(), userId);
 
         } finally {
             taskanaEngine.returnConnection();
-            LOGGER.debug("exit from claim()");
+            LOGGER.debug("exit from updateTask()");
         }
         return task;
     }
@@ -747,7 +750,7 @@ public class TaskServiceImpl implements TaskService {
 
         }
 
-        if (task.getName() == null  && classification != null) {
+        if (task.getName() == null && classification != null) {
             task.setName(classification.getName());
         }
 
@@ -1305,7 +1308,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private void standardUpdateActions(TaskImpl oldTaskImpl, TaskImpl newTaskImpl,
-        PrioDurationHolder prioDurationFromAttachments)
+        PrioDurationHolder prioDurationFromAttachments, boolean recalculatePriority)
         throws InvalidArgumentException, ConcurrencyException, ClassificationNotFoundException {
         validateObjectReference(newTaskImpl.getPrimaryObjRef(), "primary ObjectReference", "Task");
         if (oldTaskImpl.getModified() != null && !oldTaskImpl.getModified().equals(newTaskImpl.getModified())
@@ -1332,13 +1335,14 @@ public class TaskServiceImpl implements TaskService {
             newTaskImpl.setBusinessProcessId(oldTaskImpl.getBusinessProcessId());
         }
 
-        updateClassificationRelatedProperties(oldTaskImpl, newTaskImpl, prioDurationFromAttachments);
+        updateClassificationRelatedProperties(oldTaskImpl, newTaskImpl, prioDurationFromAttachments,
+            recalculatePriority);
 
         newTaskImpl.setModified(Instant.now());
     }
 
     private void updateClassificationRelatedProperties(TaskImpl oldTaskImpl, TaskImpl newTaskImpl,
-        PrioDurationHolder prioDurationFromAttachments)
+        PrioDurationHolder prioDurationFromAttachments, boolean recalculatePriority)
         throws ClassificationNotFoundException {
         LOGGER.debug("entry to updateClassificationRelatedProperties()");
         // insert Classification specifications if Classification is given.
@@ -1351,17 +1355,18 @@ public class TaskServiceImpl implements TaskService {
         if (newClassificationSummary == null) { // newClassification is null -> take prio and duration from attachments
             updateTaskPrioDurationFromAttachments(newTaskImpl, prioDurationFromAttachments);
         } else {
-            updateTaskPrioDurationFromClassification(newTaskImpl, prioDurationFromAttachments, oldClassificationSummary,
-                newClassificationSummary);
+            updateTaskPrioDurationFromClassification(newTaskImpl, oldTaskImpl, prioDurationFromAttachments,
+                oldClassificationSummary, newClassificationSummary, recalculatePriority);
 
         }
 
         LOGGER.debug("exit from updateClassificationRelatedProperties()");
     }
 
-    private void updateTaskPrioDurationFromClassification(TaskImpl newTaskImpl,
+    private void updateTaskPrioDurationFromClassification(TaskImpl newTaskImpl, TaskImpl oldTaskImpl,
         PrioDurationHolder prioDurationFromAttachments, ClassificationSummary oldClassificationSummary,
-        ClassificationSummary newClassificationSummary) throws ClassificationNotFoundException {
+        ClassificationSummary newClassificationSummary, boolean recalculatePriority)
+        throws ClassificationNotFoundException {
         LOGGER.debug("entry to updateTaskPrioDurationFromClassification()");
         Classification newClassification = null;
         if (!oldClassificationSummary.getKey().equals(newClassificationSummary.getKey())) {
@@ -1397,7 +1402,19 @@ public class TaskServiceImpl implements TaskService {
             newTaskImpl.setDescription(newClassification.getDescription());
         }
 
-        int newPriority = Math.max(newClassificationSummary.getPriority(), prioDurationFromAttachments.getPrio());
+        boolean classificationPrioUnchanged = newClassificationSummary.getPriority() == oldClassificationSummary
+            .getPriority()
+            && newClassificationSummary.getKey().equals(oldClassificationSummary.getKey());
+        int newPriority;
+        if (oldTaskImpl.getPriority() != newTaskImpl.getPriority()
+            || (classificationPrioUnchanged
+                && !recalculatePriority)) {
+            // Prio in Classification and Attachments unchanged or manual change.
+            newPriority = newTaskImpl.getPriority();
+        } else {
+            newPriority = Math.max(newClassificationSummary.getPriority(), prioDurationFromAttachments.getPrio());
+        }
+
         newTaskImpl.setPriority(newPriority);
         LOGGER.debug("exit from updateTaskPrioDurationFromClassification()");
     }
@@ -1491,7 +1508,7 @@ public class TaskServiceImpl implements TaskService {
 
         ClassificationSummary classification = attachment.getClassificationSummary();
         if (classification != null) {
-            prioDuration  = getNewPrioDuration(prioDuration,
+            prioDuration = getNewPrioDuration(prioDuration,
                 classification.getPriority(), classification.getServiceLevel());
         }
 
@@ -1556,7 +1573,7 @@ public class TaskServiceImpl implements TaskService {
 
         LOGGER.debug("exit from handleAttachmentsOnClassificationUpdate(), returning {}", prioDuration);
         return prioDuration;
-     }
+    }
 
     private PrioDurationHolder getNewPrioDuration(PrioDurationHolder prioDurationHolder, int prioFromClassification,
         String serviceLevelFromClassification) {
@@ -1871,8 +1888,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private void createTasksCompletedEvents(List<TaskSummary> taskSummaries) {
-        taskSummaries.stream().forEach(task -> historyEventProducer.createEvent(new CompletedEvent(task))
-        );
+        taskSummaries.stream().forEach(task -> historyEventProducer.createEvent(new CompletedEvent(task)));
     }
 
     List<TaskSummary> augmentTaskSummariesByContainedSummaries(List<TaskSummaryImpl> taskSummaries) {
@@ -1909,6 +1925,7 @@ public class TaskServiceImpl implements TaskService {
      * @author bbr
      */
     static class PrioDurationHolder {
+
         private Duration duration;
 
         private int prio;

@@ -131,6 +131,14 @@ public interface Task {
     int getPriority();
 
     /**
+     * Sets the priority of the current task.
+     *
+     * @param priority
+     *            the priority of the task
+     */
+    void setPriority(int priority);
+
+    /**
      * Returns the current {@link TaskState} of the task.
      *
      * @return taskState

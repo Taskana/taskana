@@ -184,6 +184,25 @@ public class UpdateTaskAccTest extends AbstractAccTest {
     }
 
     @WithAccessId(
+        userName = "user_1_1",
+        groupNames = {"group_1"})
+    @Test
+    public void testUpdatePriorityOfTask()
+        throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
+        NotAuthorizedException, AttachmentPersistenceException {
+
+        TaskService taskService = taskanaEngine.getTaskService();
+        Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
+        int prio = task.getPriority();
+        task.setPriority(prio + 1);
+        Task updatedTask = taskService.updateTask(task);
+        updatedTask = taskService.getTask(updatedTask.getId());
+
+        assertNotNull(updatedTask);
+        assertEquals(task.getPriority(), prio + 1);
+    }
+
+    @WithAccessId(
         userName = "user_1_2",
         groupNames = {"group_1"})
     @Test
@@ -207,7 +226,8 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         try {
             taskService.setTaskRead("INVALID", true);
             fail("TaskNotFoundException should have been thrown.");
-        } catch (TaskNotFoundException e) { }
+        } catch (TaskNotFoundException e) {
+        }
     }
 
     @WithAccessId(
@@ -296,15 +316,14 @@ public class UpdateTaskAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "teamlead_1",
-        groupNames = {"group_1"}
-    )
+        groupNames = {"group_1"})
     @Test
     public void testUpdateTasksById()
         throws InvalidArgumentException, TaskNotFoundException, NotAuthorizedException {
         List<String> taskIds = Arrays.asList(
-                "TKI:000000000000000000000000000000000008",
-                "TKI:000000000000000000000000000000000009",
-                "TKI:000000000000000000000000000000000010");
+            "TKI:000000000000000000000000000000000008",
+            "TKI:000000000000000000000000000000000009",
+            "TKI:000000000000000000000000000000000010");
         Map<String, String> customProperties = new HashMap<>();
         customProperties.put("1", "This is modifiedValue 1");
         customProperties.put("5", "This is modifiedValue 5");

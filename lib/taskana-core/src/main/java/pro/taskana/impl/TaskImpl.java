@@ -192,6 +192,7 @@ public class TaskImpl implements Task {
         return priority;
     }
 
+    @Override
     public void setPriority(int priority) {
         this.priority = priority;
     }
