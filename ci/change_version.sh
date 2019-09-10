@@ -67,15 +67,6 @@ function main {
         shift # past argument
         shift # past value
         ;;
-      -swarm)
-        if [[ -z "$2" || "$2" == -* ]]; then
-          echo "missing parameter for argument '-swarm'" >&2
-          exit 1
-        fi
-        SWARM="$2"
-        shift # past argument
-        shift # past value
-        ;;
       *) # unknown option
         echo "unknown parameter $1" >&2
         exit 1
@@ -93,10 +84,6 @@ function main {
     for dir in ${MODULES[@]}; do
       change_version "$dir" "$version"
     done
-
-    if [[ -n "$SWARM" ]]; then
-      sed -i "s/pro.taskana:taskana-core.*-SNAPSHOT/pro.taskana:taskana-core:$version/" "$SWARM"
-    fi
   else
     echo "skipped version change because this is not a release build"
   fi

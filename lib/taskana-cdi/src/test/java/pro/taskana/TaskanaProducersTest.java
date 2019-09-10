@@ -15,8 +15,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.undertow.WARArchive;
 
 /**
@@ -33,17 +31,11 @@ public class TaskanaProducersTest {
         deployment.addAllDependencies();
         deployment.addDependency("org.mybatis:mybatis:3.4.2");
         deployment.addDependency("org.mybatis:mybatis-cdi:1.0.0");
-        deployment.addDependency("pro.taskana:taskana-core:1.1.4-SNAPSHOT");
+        deployment.addDependency("pro.taskana:taskana-core");
         deployment.addAsResource("META-INF/beans.xml");
         deployment.addAsResource("taskana.properties");
         deployment.addAsResource("project-defaults.yml");
         return deployment;
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        Swarm swarm = new Swarm();
-        return swarm;
     }
 
     @Test
