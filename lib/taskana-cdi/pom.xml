@@ -33,15 +33,15 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.wildfly.swarm</groupId>
+			<groupId>io.thorntail</groupId>
 			<artifactId>jaxrs</artifactId>
-			<version>${version.wildfly.swarm}</version>
+			<version>${version.thorntail}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.wildfly.swarm</groupId>
+			<groupId>io.thorntail</groupId>
 			<artifactId>cdi</artifactId>
-			<version>${version.wildfly.swarm}</version>
+			<version>${version.thorntail}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -57,9 +57,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.wildfly.swarm</groupId>
+			<groupId>io.thorntail</groupId>
 			<artifactId>arquillian</artifactId>
-			<version>${version.wildfly.swarm}</version>
+			<version>${version.thorntail}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -73,9 +73,9 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.wildfly.swarm</groupId>
-				<artifactId>wildfly-swarm-plugin</artifactId>
-				<version>${version.wildfly.swarm}</version>
+				<groupId>io.thorntail</groupId>
+				<artifactId>thorntail-maven-plugin</artifactId>
+				<version>${version.thorntail}</version>
 				<executions>
 					<execution>
 						<goals>

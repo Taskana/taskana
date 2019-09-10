@@ -58,7 +58,7 @@
 
 		<!-- java ee dependencies -->
 		<version.resteasy>3.1.2.Final</version.resteasy>
-		<version.wildfly.swarm>2017.4.0</version.wildfly.swarm>
+		<version.thorntail>2.3.0.Final</version.thorntail>
 		<version.javaee-api>7.0</version.javaee-api>
 		<version.arquillian>1.1.10.Final</version.arquillian>
 
