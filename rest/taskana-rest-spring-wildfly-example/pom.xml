@@ -28,9 +28,9 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>org.wildfly.swarm</groupId>
+				<groupId>io.thorntail</groupId>
 				<artifactId>bom</artifactId>
-				<version>${version.wildfly.swarm}</version>
+				<version>${version.thorntail}</version>
 				<scope>import</scope>
 				<type>pom</type>
 			</dependency>
@@ -88,12 +88,12 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.wildfly.swarm</groupId>
+			<groupId>io.thorntail</groupId>
 			<artifactId>jaxrs</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.wildfly.swarm</groupId>
+			<groupId>io.thorntail</groupId>
 			<artifactId>cdi</artifactId>
 			<scope>test</scope>
 		</dependency>
@@ -105,7 +105,7 @@
 		</dependency>
 		<!-- Brought in via WildFly Swarm bom -->
 		<dependency>
-			<groupId>org.wildfly.swarm</groupId>
+			<groupId>io.thorntail</groupId>
 			<artifactId>arquillian</artifactId>
 			<scope>test</scope>
 		</dependency>
