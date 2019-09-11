@@ -33,24 +33,24 @@ function main {
   eval "$REL/prepare_db.sh '$1'"
   if [[ "$1" == "H2" && "$2" == "REST" ]]; then
     (cd $REL/../web && npm run test)
-    mvn clean install -q -f $REL/../rest/ -B #reinstalling rest because rest-doc is built during tests.
-    mvn clean verify -q -f $REL/../rest/ -B -pl taskana-rest-spring-example -P history.plugin
+    (cd $REL/../rest/ && mvn clean install -q -B) #reinstalling rest because rest-doc is built during tests.
+    (cd $REL/../rest/ && mvn clean verify -q -B -pl taskana-rest-spring-example -P history.plugin)
   elif [[ "$1" == "H2" && "$2" == "LIB" ]]; then
-    mvn clean install -q -f $REL/.. -N -B
-    mvn clean install -q -f $REL/../lib/ -B -Dmaven.javadoc.skip
+    (cd $REL/.. && mvn clean install -q -N -B )
+    (cd $REL/../lib/ && mvn clean install -q -B -Dmaven.javadoc.skip)
   elif [[ "$1" == "POSTGRES_10_4" && "$2" == "CORE" ]]; then
-    mvn clean install -q -f $REL/.. -N -B
-    mvn clean install -q -f $REL/../lib -N -B
-    mvn clean verify -q -f $REL/../lib/taskana-core -B
+    (cd $REL/.. && mvn clean install -q -N -B)
+    (cd $REL/../lib && mvn clean install -q -N -B)
+    (cd $REL/../lib/taskana-core && mvn clean verify -q -B)
   elif [[ "$1" == "POSTGRES_10_4" && "$2" == "WILDFLY" ]]; then
     #installing dependencies for rest (since this tests runs in a different cache)
     mvn clean install -q -N
-    mvn clean install -q -f $REL/../lib/ -B -DskipTests -Dmaven.javadoc.skip
+    (cd $REL/../lib/ && mvn clean install -q -B -DskipTests -Dmaven.javadoc.skip)
     
-    mvn clean install -q -f $REL/../rest/ -B -DskipTests -pl !taskana-rest-spring-wildfly-example -Dmaven.javadoc.skip
-    mvn clean install -q -f $REL/../rest/ -B -pl taskana-rest-spring-wildfly-example -Dmaven.javadoc.skip -P postgres
+    (cd $REL/../rest/ && mvn clean install -q -B -DskipTests -pl !taskana-rest-spring-wildfly-example -Dmaven.javadoc.skip)
+    (cd $REL/../rest/ && mvn clean install -q -B -pl taskana-rest-spring-wildfly-example -Dmaven.javadoc.skip -P postgres)
   else
-    mvn clean verify -q -f $REL/../lib/taskana-core -B
+    (cd $REL/../lib/taskana-core && mvn clean verify -q -B)
   fi
 }
 
