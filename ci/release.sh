@@ -70,7 +70,7 @@ function change_version {
 
 function main {
   [[ $# -eq 0 || "$1" == '-h' || "$1" == '--help' ]] && helpAndExit 0
-  [[ "$2" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] && change_version "$1" "${2##v}"
+  [[ "$1" == '.' && "$2" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] && change_version "$1" "${2##v}"
   decodeAndImportKeys `dirname "$0"`
   release "$1" `[[ "$2" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] && echo "release" || echo "snapshot"` "`dirname "$0"`/mvnsettings.xml"
 }

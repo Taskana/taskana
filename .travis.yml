@@ -53,6 +53,8 @@ jobs:
       name: "Release stage"
       script:
         - ci/release.sh . $TRAVIS_TAG
+          && mvn install -q -DskipTests
+          && mvn prepare-package -q -f ./rest/taskana-rest-spring-test
           && ci/release.sh lib $TRAVIS_TAG
           && ci/release.sh lib/taskana-core $TRAVIS_TAG
           && ci/release.sh lib/taskana-spring $TRAVIS_TAG
