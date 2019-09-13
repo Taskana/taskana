@@ -30,6 +30,8 @@ env:
     - DB=POSTGRES_10_4 PROJECT=CORE
     - DB=POSTGRES_10_4 PROJECT=WILDFLY
 
+install: mvn dependency:resolve
+
 stage: Test
 script:
   - "export DISPLAY=:99.0"
