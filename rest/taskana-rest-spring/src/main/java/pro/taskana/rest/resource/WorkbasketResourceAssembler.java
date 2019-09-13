@@ -35,8 +35,12 @@ public class WorkbasketResourceAssembler {
         BeanUtils.copyProperties(wbResource, workbasket);
 
         workbasket.setId(wbResource.workbasketId);
-        workbasket.setModified(Instant.parse(wbResource.modified));
-        workbasket.setCreated(Instant.parse(wbResource.created));
+        if (wbResource.modified != null) {
+            workbasket.setModified(Instant.parse(wbResource.modified));
+        }
+        if (wbResource.created != null) {
+            workbasket.setCreated(Instant.parse(wbResource.created));
+        }
         return workbasket;
     }
 
