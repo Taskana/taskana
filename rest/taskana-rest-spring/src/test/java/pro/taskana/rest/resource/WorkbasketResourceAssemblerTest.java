@@ -57,6 +57,32 @@ public class WorkbasketResourceAssemblerTest {
     }
 
     @Test
+    public void resourceWithoutCreated() {
+        //given
+        WorkbasketResource resource = new WorkbasketResource();
+        resource.setWorkbasketId("1");
+        resource.setModified("2010-01-01T12:00:00Z");
+        resource.setType(WorkbasketType.PERSONAL);
+        //when
+        Workbasket workbasket = workbasketResourceAssembler.toModel(resource);
+        //then
+        testEquality(workbasket, resource);
+    }
+
+    @Test
+    public void resourceWithoutModified() {
+        //given
+        WorkbasketResource resource = new WorkbasketResource();
+        resource.setWorkbasketId("1");
+        resource.setCreated("2010-01-01T12:00:00Z");
+        resource.setType(WorkbasketType.PERSONAL);
+        //when
+        Workbasket workbasket = workbasketResourceAssembler.toModel(resource);
+        //then
+        testEquality(workbasket, resource);
+    }
+
+    @Test
     public void resourceToWorkbasket() {
         // given
         WorkbasketResource workbasketResource = new WorkbasketResource();
@@ -85,21 +111,23 @@ public class WorkbasketResourceAssemblerTest {
 
     private void testEquality(Workbasket workbasket, WorkbasketResource workbasketResource) {
         Assert.assertEquals(workbasket.getId(), workbasketResource.workbasketId);
+        Assert.assertEquals(workbasket.getKey(), workbasketResource.key);
+        Assert.assertEquals(workbasket.getCreated() == null ? null : workbasket.getCreated().toString(),
+            workbasketResource.created);
+        Assert.assertEquals(workbasket.getModified() == null ? null : workbasket.getModified().toString(),
+            workbasketResource.modified);
+        Assert.assertEquals(workbasket.getName(), workbasketResource.name);
+        Assert.assertEquals(workbasket.getDescription(), workbasketResource.description);
+        Assert.assertEquals(workbasket.getOwner(), workbasketResource.owner);
+        Assert.assertEquals(workbasket.getDomain(), workbasketResource.domain);
+        Assert.assertEquals(workbasket.getType(), workbasketResource.type);
         Assert.assertEquals(workbasket.getCustom1(), workbasketResource.custom1);
         Assert.assertEquals(workbasket.getCustom2(), workbasketResource.custom2);
         Assert.assertEquals(workbasket.getCustom3(), workbasketResource.custom3);
         Assert.assertEquals(workbasket.getCustom4(), workbasketResource.custom4);
-        Assert.assertEquals(workbasket.getDescription(), workbasketResource.description);
-        Assert.assertEquals(workbasket.getCreated().toString(), workbasketResource.created);
-        Assert.assertEquals(workbasket.getModified().toString(), workbasketResource.modified);
-        Assert.assertEquals(workbasket.getKey(), workbasketResource.key);
-        Assert.assertEquals(workbasket.getDomain(), workbasketResource.domain);
-        Assert.assertEquals(workbasket.getName(), workbasketResource.name);
         Assert.assertEquals(workbasket.getOrgLevel1(), workbasketResource.orgLevel1);
         Assert.assertEquals(workbasket.getOrgLevel2(), workbasketResource.orgLevel2);
         Assert.assertEquals(workbasket.getOrgLevel3(), workbasketResource.orgLevel3);
         Assert.assertEquals(workbasket.getOrgLevel4(), workbasketResource.orgLevel4);
-        Assert.assertEquals(workbasket.getOwner(), workbasketResource.owner);
-        Assert.assertEquals(workbasket.getType(), workbasketResource.type);
     }
 }
