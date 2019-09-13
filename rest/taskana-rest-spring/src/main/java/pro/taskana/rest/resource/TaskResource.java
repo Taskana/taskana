@@ -97,7 +97,7 @@ public class TaskResource extends ResourceSupport {
         attachments =
             task.getAttachments()
                 .stream()
-                .map(attachment -> new AttachmentResource(attachment))
+                .map(AttachmentResource::new)
                 .collect(Collectors.toList());
         custom1 = task.getCustomAttribute("1");
         custom2 = task.getCustomAttribute("2");
