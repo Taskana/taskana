@@ -17,7 +17,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.hal.Jackson2HalModule;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -34,11 +33,11 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import pro.taskana.rest.resource.WorkbasketAccessItemResource;
+import pro.taskana.rest.resource.WorkbasketAccessItemListResource;
+import pro.taskana.rest.resource.WorkbasketAccessItemPaginatedListResource;
 
 /**
  * Test WorkbasketAccessItemController.
- *
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(SpringRunner.class)
@@ -61,20 +60,18 @@ public class WorkbasketAccessItemControllerIntTest {
 
     @Test
     public void testGetAllWorkbasketAccessItems() {
-        ResponseEntity<PagedResources<WorkbasketAccessItemResource>> response = template.exchange(
-            url + port + "/v1/workbasket-access-items", HttpMethod.GET, request,
-            new ParameterizedTypeReference<PagedResources<WorkbasketAccessItemResource>>() {
-            });
+        ResponseEntity<WorkbasketAccessItemListResource> response = template.exchange(
+            url + port + "/api/v1/workbasket-access-items", HttpMethod.GET, request,
+            ParameterizedTypeReference.forType(WorkbasketAccessItemListResource.class));
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
     }
 
     @Test
     public void testGetWorkbasketAccessItemsKeepingFilters() {
-        String parameters = "/v1/workbasket-access-items?sort-by=workbasket-key&order=asc&page=1&page-size=9&access-ids=user_1_1";
-        ResponseEntity<PagedResources<WorkbasketAccessItemResource>> response = template.exchange(
+        String parameters = "/api/v1/workbasket-access-items?sort-by=workbasket-key&order=asc&page=1&page-size=9&access-ids=user_1_1";
+        ResponseEntity<WorkbasketAccessItemListResource> response = template.exchange(
             url + port + parameters, HttpMethod.GET, request,
-            new ParameterizedTypeReference<PagedResources<WorkbasketAccessItemResource>>() {
-            });
+            ParameterizedTypeReference.forType(WorkbasketAccessItemListResource.class));
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
         assertTrue(response.getBody()
             .getLink(Link.REL_SELF)
@@ -87,10 +84,9 @@ public class WorkbasketAccessItemControllerIntTest {
         try {
             template.exchange(
                 url + port
-                    + "/v1/workbasket-access-items/?sort-by=workbasket-key&order=asc&page=1&page-size=9&invalid=user_1_1",
+                    + "/api/v1/workbasket-access-items/?sort-by=workbasket-key&order=asc&page=1&page-size=9&invalid=user_1_1",
                 HttpMethod.GET, request,
-                new ParameterizedTypeReference<PagedResources<WorkbasketAccessItemResource>>() {
-                });
+                ParameterizedTypeReference.forType(WorkbasketAccessItemListResource.class));
             fail();
         } catch (HttpClientErrorException e) {
             assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
@@ -100,11 +96,10 @@ public class WorkbasketAccessItemControllerIntTest {
 
     @Test
     public void testGetSecondPageSortedByWorkbasketKey() {
-        String parameters = "/v1/workbasket-access-items?sort-by=workbasket-key&order=asc&page=2&page-size=9&access-ids=user_1_1";
-        ResponseEntity<PagedResources<WorkbasketAccessItemResource>> response = template.exchange(
+        String parameters = "/api/v1/workbasket-access-items?sort-by=workbasket-key&order=asc&page=2&page-size=9&access-ids=user_1_1";
+        ResponseEntity<WorkbasketAccessItemPaginatedListResource> response = template.exchange(
             url + port + parameters, HttpMethod.GET, request,
-            new ParameterizedTypeReference<PagedResources<WorkbasketAccessItemResource>>() {
-            });
+            ParameterizedTypeReference.forType(WorkbasketAccessItemPaginatedListResource.class));
         assertEquals(1, response.getBody().getContent().size());
         assertEquals("user_1_1", response.getBody().getContent().iterator().next().accessId);
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
@@ -123,23 +118,21 @@ public class WorkbasketAccessItemControllerIntTest {
     @Test
     public void testRemoveWorkbasketAccessItemsOfUser() {
 
-        String parameters = "/v1/workbasket-access-items/?access-id=user_1_1";
+        String parameters = "/api/v1/workbasket-access-items/?access-id=user_1_1";
         ResponseEntity<Void> response = template.exchange(
             url + port + parameters, HttpMethod.DELETE, request,
-            new ParameterizedTypeReference<Void>() {
-            });
+            ParameterizedTypeReference.forType(Void.class));
         assertNull(response.getBody());
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
 
     @Test
     public void testGetBadRequestIfTryingToDeleteAccessItemsForGroup() {
-        String parameters = "/v1/workbasket-access-items?access-id=cn=DevelopersGroup,ou=groups,o=TaskanaTest";
+        String parameters = "/api/v1/workbasket-access-items?access-id=cn=DevelopersGroup,ou=groups,o=TaskanaTest";
         try {
             ResponseEntity<Void> response = template.exchange(
                 url + port + parameters, HttpMethod.DELETE, request,
-                new ParameterizedTypeReference<Void>() {
-                });
+                ParameterizedTypeReference.forType(Void.class));
         } catch (HttpClientErrorException e) {
             assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
         }
@@ -159,7 +152,7 @@ public class WorkbasketAccessItemControllerIntTest {
         converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/hal+json"));
         converter.setObjectMapper(mapper);
 
-        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>>singletonList(converter));
+        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>> singletonList(converter));
         return template;
     }
 }

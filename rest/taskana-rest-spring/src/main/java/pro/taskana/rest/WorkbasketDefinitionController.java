@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,7 +46,7 @@ import pro.taskana.rest.resource.WorkbasketResource;
  * Controller for all {@link WorkbasketDefinitionResource} related endpoints.
  */
 @RestController
-@RequestMapping(path = "/v1/workbasket-definitions", produces = {MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(path = "/api/v1/workbasket-definitions", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class WorkbasketDefinitionController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketDefinitionController.class);
@@ -58,8 +57,7 @@ public class WorkbasketDefinitionController {
 
     WorkbasketDefinitionController(
         WorkbasketService workbasketService,
-        WorkbasketDefinitionResourceAssembler workbasketDefinitionAssembler
-    ) {
+        WorkbasketDefinitionResourceAssembler workbasketDefinitionAssembler) {
         this.workbasketService = workbasketService;
         this.workbasketDefinitionAssembler = workbasketDefinitionAssembler;
     }
@@ -80,8 +78,7 @@ public class WorkbasketDefinitionController {
             basketExports.add(workbasketDefinitionAssembler.toResource(workbasket));
         }
 
-        ResponseEntity<List<WorkbasketDefinitionResource>> response = new ResponseEntity<>(basketExports,
-            HttpStatus.OK);
+        ResponseEntity<List<WorkbasketDefinitionResource>> response = ResponseEntity.ok(basketExports);
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from exportWorkbaskets(), returning {}", response);
         }
@@ -90,24 +87,32 @@ public class WorkbasketDefinitionController {
     }
 
     /**
-     * This method imports a <b>list of {@link WorkbasketDefinitionResource}</b>. This does not exactly match the REST norm, but
-     * we want to have an option to import all settings at once. When a logical equal (key and domain are equal)
-     * workbasket already exists an update will be executed. Otherwise a new workbasket will be created.
+     * This method imports a <b>list of {@link WorkbasketDefinitionResource}</b>. This does not exactly match the REST
+     * norm, but we want to have an option to import all settings at once. When a logical equal (key and domain are
+     * equal) workbasket already exists an update will be executed. Otherwise a new workbasket will be created.
      *
-     * @param file the list of workbasket definitions which will be imported to the current system.
+     * @param file
+     *            the list of workbasket definitions which will be imported to the current system.
      * @return Return answer is determined by the status code: 200 - all good 400 - list state error (referring to non
-     * existing id's) 401 - not authorized
-     * @throws IOException if multipart file cannot be parsed.
-     * @throws NotAuthorizedException if the user is not authorized.
-     * @throws DomainNotFoundException if domain information is incorrect.
-     * @throws InvalidWorkbasketException if workbasket has invalid information.
-     * @throws WorkbasketAlreadyExistException if workbasket already exists when trying to create a new one.
-     * @throws WorkbasketNotFoundException if do not exists a workbasket in the system with the used id.
-     * @throws InvalidArgumentException if authorization information in workbaskets definitions is incorrect.
+     *         existing id's) 401 - not authorized
+     * @throws IOException
+     *             if multipart file cannot be parsed.
+     * @throws NotAuthorizedException
+     *             if the user is not authorized.
+     * @throws DomainNotFoundException
+     *             if domain information is incorrect.
+     * @throws InvalidWorkbasketException
+     *             if workbasket has invalid information.
+     * @throws WorkbasketAlreadyExistException
+     *             if workbasket already exists when trying to create a new one.
+     * @throws WorkbasketNotFoundException
+     *             if do not exists a workbasket in the system with the used id.
+     * @throws InvalidArgumentException
+     *             if authorization information in workbaskets definitions is incorrect.
      */
     @PostMapping
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<String> importWorkbaskets(@RequestParam("file") MultipartFile file)
+    public ResponseEntity<Void> importWorkbaskets(@RequestParam("file") MultipartFile file)
         throws IOException, NotAuthorizedException, DomainNotFoundException, InvalidWorkbasketException,
         WorkbasketAlreadyExistException, WorkbasketNotFoundException, InvalidArgumentException {
         LOGGER.debug("Entry to importWorkbaskets()");
@@ -172,7 +177,7 @@ public class WorkbasketDefinitionController {
                 // no verification necessary since the workbasket was already imported in step 1.
                 idConversion.get(definition.getWorkbasket().getWorkbasketId()), distributionTargets);
         }
-        ResponseEntity<String> response = new ResponseEntity<>(HttpStatus.OK);
+        ResponseEntity<Void> response = ResponseEntity.noContent().build();
         LOGGER.debug("Exit from importWorkbaskets(), returning {}", response);
         return response;
     }
@@ -195,7 +200,8 @@ public class WorkbasketDefinitionController {
             }
         }
         if (!duplicates.isEmpty()) {
-            throw new DuplicateKeyException("The 'key|domain'-identifier is not unique for the value(s): " + duplicates.toString());
+            throw new DuplicateKeyException(
+                "The 'key|domain'-identifier is not unique for the value(s): " + duplicates.toString());
         }
     }
 

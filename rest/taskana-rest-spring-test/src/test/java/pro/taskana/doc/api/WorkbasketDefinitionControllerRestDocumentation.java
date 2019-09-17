@@ -34,7 +34,6 @@ import pro.taskana.rest.RestConfiguration;
 
 /**
  * Generate Rest Documentation for Workbasket Definitions.
- *
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -75,7 +74,7 @@ public class WorkbasketDefinitionControllerRestDocumentation {
     @Test
     public void exportAllWorkbasketDefinitions() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .get("http://127.0.0.1:" + port + "/v1/workbasket-definitions")
+            .get("http://127.0.0.1:" + port + "/api/v1/workbasket-definitions")
             .accept("application/json")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -93,11 +92,11 @@ public class WorkbasketDefinitionControllerRestDocumentation {
             + "}"
             + "]";
 
-        this.mockMvc.perform(multipart("http://127.0.0.1:" + port + "/v1/workbasket-definitions")
+        this.mockMvc.perform(multipart("http://127.0.0.1:" + port + "/api/v1/workbasket-definitions")
             .file("file",
                 definitionString.getBytes())
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
-            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(MockMvcResultMatchers.status().isNoContent())
             .andDo(document("ImportWorkbasketDefinitions", requestParts(
                 partWithName("file").description("The file to upload"))));
     }

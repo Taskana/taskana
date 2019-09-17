@@ -32,10 +32,10 @@ import pro.taskana.rest.resource.TaskanaUserInfoResource;
 
 /**
  * Test TaskanaEngineController.
- *
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT, properties = {"devMode=true"})
+@SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT,
+    properties = {"devMode=true"})
 public class TaskanaEngineControllerIntTest {
 
     @LocalServerPort
@@ -48,9 +48,8 @@ public class TaskanaEngineControllerIntTest {
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
         HttpEntity<String> request = new HttpEntity<String>(headers);
         ResponseEntity<List<String>> response = template.exchange(
-            "http://127.0.0.1:" + port + "/v1/domains", HttpMethod.GET, request,
-            new ParameterizedTypeReference<List<String>>() {
-            });
+            "http://127.0.0.1:" + port + "/api/v1/domains", HttpMethod.GET, request,
+            ParameterizedTypeReference.forType(List.class));
         assertTrue(response.getBody().contains("DOMAIN_A"));
     }
 
@@ -61,9 +60,8 @@ public class TaskanaEngineControllerIntTest {
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
         HttpEntity<String> request = new HttpEntity<String>(headers);
         ResponseEntity<List<String>> response = template.exchange(
-            "http://127.0.0.1:" + port + "/v1/classification-types", HttpMethod.GET, request,
-            new ParameterizedTypeReference<List<String>>() {
-            });
+            "http://127.0.0.1:" + port + "/api/v1/classification-types", HttpMethod.GET, request,
+            ParameterizedTypeReference.forType(List.class));
         assertTrue(response.getBody().contains("TASK"));
         assertTrue(response.getBody().contains("DOCUMENT"));
         assertFalse(response.getBody().contains("UNKNOWN"));
@@ -76,9 +74,8 @@ public class TaskanaEngineControllerIntTest {
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
         HttpEntity<String> request = new HttpEntity<String>(headers);
         ResponseEntity<List<String>> response = template.exchange(
-                "http://127.0.0.1:" + port + "/v1/classification-categories/?type=TASK", HttpMethod.GET, request,
-            new ParameterizedTypeReference<List<String>>() {
-            });
+            "http://127.0.0.1:" + port + "/api/v1/classification-categories/?type=TASK", HttpMethod.GET, request,
+            ParameterizedTypeReference.forType(List.class));
         assertTrue(response.getBody().contains("MANUAL"));
         assertTrue(response.getBody().contains("EXTERNAL"));
         assertTrue(response.getBody().contains("AUTOMATIC"));
@@ -93,9 +90,8 @@ public class TaskanaEngineControllerIntTest {
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
         HttpEntity<String> request = new HttpEntity<String>(headers);
         ResponseEntity<TaskanaUserInfoResource> response = template.exchange(
-            "http://127.0.0.1:" + port + "/v1/current-user-info", HttpMethod.GET, request,
-            new ParameterizedTypeReference<TaskanaUserInfoResource>() {
-            });
+            "http://127.0.0.1:" + port + "/api/v1/current-user-info", HttpMethod.GET, request,
+            ParameterizedTypeReference.forType(TaskanaUserInfoResource.class));
         assertEquals("teamlead_1", response.getBody().getUserId());
         assertTrue(response.getBody().getGroupIds().contains("businessadmin"));
         assertTrue(response.getBody().getRoles().contains(TaskanaRole.BUSINESS_ADMIN));

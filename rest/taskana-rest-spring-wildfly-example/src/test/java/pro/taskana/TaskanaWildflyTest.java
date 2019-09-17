@@ -31,8 +31,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import pro.taskana.rest.resource.TaskanaUserInfoResource;
 
 /**
- * This test class is configured to run with postgres DB if you want to run it with h2 it is needed.
- * to change data source configuration at project-defaults.yml.
+ * This test class is configured to run with postgres DB if you want to run it with h2 it is needed. to change data
+ * source configuration at project-defaults.yml.
  */
 @RunWith(Arquillian.class)
 public class TaskanaWildflyTest {
@@ -43,7 +43,8 @@ public class TaskanaWildflyTest {
         File[] files = Maven.resolver()
             .loadPomFromFile("pom.xml")
             .importRuntimeDependencies()
-            .resolve().withTransitivity()
+            .resolve()
+            .withTransitivity()
             .asFile();
 
         return ShrinkWrap.create(WebArchive.class, "taskana.war")
@@ -61,10 +62,8 @@ public class TaskanaWildflyTest {
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> request = new HttpEntity<String>(headers);
         ResponseEntity<TaskanaUserInfoResource> response = getRestTemplate().exchange(
-            "http://127.0.0.1:" + "8090" + "/v1/current-user-info", HttpMethod.GET, request,
-            new ParameterizedTypeReference<TaskanaUserInfoResource>() {
-
-            });
+            "http://127.0.0.1:" + "8090" + "/api/v1/current-user-info", HttpMethod.GET, request,
+            ParameterizedTypeReference.forType(TaskanaUserInfoResource.class));
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
     }
@@ -77,7 +76,7 @@ public class TaskanaWildflyTest {
         converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/json"));
         converter.setObjectMapper(mapper);
 
-        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>>singletonList(converter));
+        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>> singletonList(converter));
         return template;
     }
 }

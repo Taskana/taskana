@@ -89,7 +89,7 @@ public class TaskanaEngineControllerRestDocumentation {
     @Test
     public void getAllDomainsDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .get("http://127.0.0.1:" + port + "/v1/domains")
+            .get("http://127.0.0.1:" + port + "/api/v1/domains")
             .accept("application/json")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -100,7 +100,7 @@ public class TaskanaEngineControllerRestDocumentation {
     @Test
     public void getAllClassificationCategoriesDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .get("http://127.0.0.1:" + port + "/v1/classification-categories")
+            .get("http://127.0.0.1:" + port + "/api/v1/classification-categories")
             .accept("application/json")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -111,7 +111,7 @@ public class TaskanaEngineControllerRestDocumentation {
     @Test
     public void getAllClassificationTypesDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .get("http://127.0.0.1:" + port + "/v1/classification-types")
+            .get("http://127.0.0.1:" + port + "/api/v1/classification-types")
             .accept("application/json")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -122,7 +122,7 @@ public class TaskanaEngineControllerRestDocumentation {
     @Test
     public void getCurrentUserInfo() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .get("http://127.0.0.1:" + port + "/v1/current-user-info")
+            .get("http://127.0.0.1:" + port + "/api/v1/current-user-info")
             .accept("application/json")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -133,7 +133,7 @@ public class TaskanaEngineControllerRestDocumentation {
     @Test
     public void getHistoryProviderIsEnabled() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .get("http://127.0.0.1:" + port + "/v1/history-provider-enabled")
+            .get("http://127.0.0.1:" + port + "/api/v1/history-provider-enabled")
             .accept("application/json")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())

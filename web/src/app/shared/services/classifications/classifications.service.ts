@@ -115,10 +115,10 @@ export class ClassificationsService {
       classificationRef,
       classificationTypes,
       (classification: any, classificationType) => {
-        if (!classification._embedded) {
+        if (!classification.classifications) {
           return [];
         }
-        return this.buildHierarchy(classification._embedded.classificationSummaryResourceList, classificationType);
+        return this.buildHierarchy(classification.classifications, classificationType);
       }
     )
   }

@@ -131,7 +131,7 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
       this.sortModel,
       true)
       .subscribe((accessItemsResource: AccessItemsWorkbasketResource) => {
-        this.setAccessItemsGroups(accessItemsResource._embedded ? accessItemsResource._embedded.accessItems : []);
+        this.setAccessItemsGroups(accessItemsResource ? accessItemsResource.accessItems : []);
         this.requestInProgressService.setRequestInProgress(false);
       },
         error => {

@@ -3,9 +3,7 @@ import { Links } from './links';
 
 export class ClassificationResource {
   constructor(
-    public _embedded: {
-      'classificationSummaryResourceList': Array<Classification>
-    } = { 'classificationSummaryResourceList': [] },
+    public classifications: Array<Classification> = [],
     public _links: Links = new Links(),
   ) {
   }

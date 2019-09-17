@@ -34,9 +34,9 @@ public class WorkbasketSummaryResourceAssembler
     }
 
     @PageLinks(WorkbasketController.class)
-    public PagedResources<WorkbasketSummaryResource> toResources(List<WorkbasketSummary> entities,
+    public WorkbasketSummaryListResource toResources(List<WorkbasketSummary> entities,
         PagedResources.PageMetadata pageMetadata) {
-        return new PagedResources<>(toResources(entities), pageMetadata);
+        return new WorkbasketSummaryListResource(toResources(entities), pageMetadata);
     }
 
     public WorkbasketSummary toModel(WorkbasketSummaryResource resource) {

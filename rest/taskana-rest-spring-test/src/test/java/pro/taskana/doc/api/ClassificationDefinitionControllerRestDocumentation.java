@@ -74,7 +74,7 @@ public class ClassificationDefinitionControllerRestDocumentation {
     @Test
     public void exportAllClassificationDefinitions() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .get("http://127.0.0.1:" + port + "/v1/classification-definitions")
+            .get("http://127.0.0.1:" + port + "/api/v1/classification-definitions")
             .accept("application/json")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -86,13 +86,12 @@ public class ClassificationDefinitionControllerRestDocumentation {
     public void importClassificationDefinitions() throws Exception {
         String definitionString = "[{\"key\":\"Key0815\", \"domain\":\"DOMAIN_B\"}]";
 
-        this.mockMvc.perform(multipart("http://127.0.0.1:" + port + "/v1/classification-definitions")
+        this.mockMvc.perform(multipart("http://127.0.0.1:" + port + "/api/v1/classification-definitions")
             .file("file",
                 definitionString.getBytes())
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
-            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(MockMvcResultMatchers.status().isNoContent())
             .andDo(document("ImportClassificationDefinitions", requestParts(
-                partWithName("file").description("The file to upload"))
-            ));
+                partWithName("file").description("The file to upload"))));
     }
 }

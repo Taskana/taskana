@@ -29,7 +29,6 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.hal.Jackson2HalModule;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -49,6 +48,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import pro.taskana.rest.resource.ClassificationResource;
+import pro.taskana.rest.resource.ClassificationSummaryListResource;
 import pro.taskana.rest.resource.ClassificationSummaryResource;
 
 /**
@@ -56,7 +56,7 @@ import pro.taskana.rest.resource.ClassificationSummaryResource;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT, properties = {
-    "devMode=true" })
+    "devMode=true"})
 public class ClassificationDefinitionControllerIntTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationController.class);
@@ -88,9 +88,8 @@ public class ClassificationDefinitionControllerIntTest {
     @Test
     public void testExportClassifications() {
         ResponseEntity<ClassificationResource[]> response = template.exchange(
-            server + port + "/v1/classification-definitions?domain=DOMAIN_B",
-            HttpMethod.GET, request, new ParameterizedTypeReference<ClassificationResource[]>() {
-            });
+            server + port + "/api/v1/classification-definitions?domain=DOMAIN_B",
+            HttpMethod.GET, request, ParameterizedTypeReference.forType(ClassificationResource[].class));
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.getBody().length >= 5);
         assertTrue(response.getBody().length <= 7);
@@ -100,9 +99,8 @@ public class ClassificationDefinitionControllerIntTest {
     @Test
     public void testExportClassificationsFromWrongDomain() {
         ResponseEntity<ClassificationResource[]> response = template.exchange(
-            server + port + "/v1/classification-definitions?domain=ADdfe",
-            HttpMethod.GET, request, new ParameterizedTypeReference<ClassificationResource[]>() {
-            });
+            server + port + "/api/v1/classification-definitions?domain=ADdfe",
+            HttpMethod.GET, request, ParameterizedTypeReference.forType(ClassificationResource[].class));
         assertEquals(0, response.getBody().length);
     }
 
@@ -136,8 +134,8 @@ public class ClassificationDefinitionControllerIntTest {
         List<String> clList = new ArrayList<>();
         clList.add(objMapper.writeValueAsString(classification));
 
-        ResponseEntity<String> response = importRequest(clList);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        ResponseEntity<Void> response = importRequest(clList);
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
 
     @Test
@@ -205,8 +203,8 @@ public class ClassificationDefinitionControllerIntTest {
         clList.add(c1);
         clList.add(c2);
 
-        ResponseEntity<String> response = importRequest(clList);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        ResponseEntity<Void> response = importRequest(clList);
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
 
     @Test
@@ -235,15 +233,15 @@ public class ClassificationDefinitionControllerIntTest {
         List<String> clList = new ArrayList<>();
         clList.add(objMapper.writeValueAsString(existingClassification));
 
-        ResponseEntity<String> response = importRequest(clList);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        ResponseEntity<Void> response = importRequest(clList);
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
 
         existingClassification.setName("second new Name");
         clList = new ArrayList<>();
         clList.add(objMapper.writeValueAsString(existingClassification));
 
         response = importRequest(clList);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
 
         ClassificationSummaryResource testClassification = this.getClassificationWithKeyAndDomain("L110107",
             "DOMAIN_A");
@@ -262,8 +260,8 @@ public class ClassificationDefinitionControllerIntTest {
         clList.add(objMapper.writeValueAsString(existingClassification));
         clList.add(objMapper.writeValueAsString(newClassification));
 
-        ResponseEntity<String> response = importRequest(clList);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        ResponseEntity<Void> response = importRequest(clList);
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
 
         ClassificationSummaryResource parentCl = getClassificationWithKeyAndDomain("L11010", "DOMAIN_A");
         ClassificationSummaryResource testNewCl = getClassificationWithKeyAndDomain("newClass", "DOMAIN_A");
@@ -301,8 +299,8 @@ public class ClassificationDefinitionControllerIntTest {
         clList.add(c22);
         clList.add(c1);
 
-        ResponseEntity<String> response = importRequest(clList);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        ResponseEntity<Void> response = importRequest(clList);
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
 
         ClassificationSummaryResource parentCl = getClassificationWithKeyAndDomain("ImportKey6", "DOMAIN_A");
         ClassificationSummaryResource childCl = getClassificationWithKeyAndDomain("ImportKey7", "DOMAIN_A");
@@ -332,8 +330,8 @@ public class ClassificationDefinitionControllerIntTest {
         clList.add(parent);
         clList.add(child);
 
-        ResponseEntity<String> response = importRequest(clList);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        ResponseEntity<Void> response = importRequest(clList);
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
 
         ClassificationSummaryResource rightParentCl = getClassificationWithKeyAndDomain("ImportKey11", "DOMAIN_A");
         ClassificationSummaryResource wrongParentCl = getClassificationWithKeyAndDomain("ImportKey11", "DOMAIN_B");
@@ -364,8 +362,8 @@ public class ClassificationDefinitionControllerIntTest {
         clList.add(withNewParent);
         clList.add(withoutParent);
 
-        ResponseEntity<String> response = importRequest(clList);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        ResponseEntity<Void> response = importRequest(clList);
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
         Thread.sleep(10);
         LOGGER.debug("Wait 10 ms to give the system a chance to update");
 
@@ -413,17 +411,15 @@ public class ClassificationDefinitionControllerIntTest {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
         HttpEntity<String> request = new HttpEntity<String>(headers);
-        ResponseEntity<PagedResources<ClassificationSummaryResource>> response = template.exchange(
-            "http://127.0.0.1:" + port + "/v1/classifications?key=" + key + "&domain=" + domain,
+        ResponseEntity<ClassificationSummaryListResource> response = template.exchange(
+            "http://127.0.0.1:" + port + "/api/v1/classifications?key=" + key + "&domain=" + domain,
             HttpMethod.GET,
             request,
-            new ParameterizedTypeReference<PagedResources<ClassificationSummaryResource>>() {
-
-            });
+            ParameterizedTypeReference.forType(ClassificationSummaryListResource.class));
         return response.getBody().getContent().toArray(new ClassificationSummaryResource[1])[0];
     }
 
-    private ResponseEntity<String> importRequest(List<String> clList) throws IOException {
+    private ResponseEntity<Void> importRequest(List<String> clList) throws IOException {
         LOGGER.debug("Start Import");
         File tmpFile = File.createTempFile("test", ".tmp");
         OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(tmpFile), StandardCharsets.UTF_8);
@@ -435,10 +431,10 @@ public class ClassificationDefinitionControllerIntTest {
         body.add("file", new FileSystemResource(tmpFile));
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-        String serverUrl = server + port + "/v1/classification-definitions";
+        String serverUrl = server + port + "/api/v1/classification-definitions";
         RestTemplate restTemplate = new RestTemplate();
 
-        return restTemplate.postForEntity(serverUrl, requestEntity, String.class);
+        return restTemplate.postForEntity(serverUrl, requestEntity, Void.class);
     }
 
     /**

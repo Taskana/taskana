@@ -113,7 +113,7 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
 		this.workbasketService.updateWorkBasketsDistributionTargets(
 			this.distributionTargetsSelectedResource._links.self.href, this.getSeletedIds()).subscribe(response => {
 				this.requestInProgressService.setRequestInProgress(false);
-				this.distributionTargetsSelected = response._embedded ? response._embedded.distributionTargets : [];
+				this.distributionTargetsSelected = response.distributionTargets;
 				this.distributionTargetsSelectedClone = Object.assign([], this.distributionTargetsSelected);
 				this.distributionTargetsClone = Object.assign([], this.distributionTargetsLeft);
 				this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS,
@@ -145,8 +145,8 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
       dualListFilter.filterBy.filterParams.owner,	dualListFilter.filterBy.filterParams.type, undefined,
       dualListFilter.filterBy.filterParams.key, undefined, true).subscribe(resultList => {
 				(dualListFilter.side === Side.RIGHT) ?
-					this.distributionTargetsRight = (resultList._embedded ? resultList._embedded.workbaskets : []) :
-					this.distributionTargetsLeft = (resultList._embedded ? resultList._embedded.workbaskets : []);
+					this.distributionTargetsRight = (resultList.workbaskets) :
+					this.distributionTargetsLeft = (resultList.workbaskets);
 				this.onRequest(dualListFilter.side, true);
 			});
   }
@@ -168,8 +168,7 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
 			this.workbasket._links.distributionTargets.href).subscribe(
 				(distributionTargetsSelectedResource: WorkbasketDistributionTargetsResource) => {
 					this.distributionTargetsSelectedResource = distributionTargetsSelectedResource;
-					this.distributionTargetsSelected = distributionTargetsSelectedResource._embedded ?
-						distributionTargetsSelectedResource._embedded.distributionTargets : [];
+					this.distributionTargetsSelected = distributionTargetsSelectedResource.distributionTargets;
           this.distributionTargetsSelectedClone = Object.assign([], this.distributionTargetsSelected);
           TaskanaQueryParameters.page = 1;
           this.calculateNumberItemsList();
@@ -223,13 +222,13 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
             this.page = distributionTargetsAvailable.page;
           }
           if (side === this.side.LEFT) {
-            this.distributionTargetsLeft.push(...distributionTargetsAvailable._embedded.workbaskets);
+            this.distributionTargetsLeft.push(...distributionTargetsAvailable.workbaskets);
           } else if (side === this.side.RIGHT) {
-            this.distributionTargetsRight = Object.assign([], distributionTargetsAvailable._embedded.workbaskets);
+            this.distributionTargetsRight = Object.assign([], distributionTargetsAvailable.workbaskets);
           } else {
-            this.distributionTargetsLeft.push(...distributionTargetsAvailable._embedded.workbaskets);
-            this.distributionTargetsRight = Object.assign([], distributionTargetsAvailable._embedded.workbaskets);
-            this.distributionTargetsClone = Object.assign([], distributionTargetsAvailable._embedded.workbaskets);
+            this.distributionTargetsLeft.push(...distributionTargetsAvailable.workbaskets);
+            this.distributionTargetsRight = Object.assign([], distributionTargetsAvailable.workbaskets);
+            this.distributionTargetsClone = Object.assign([], distributionTargetsAvailable.workbaskets);
           }
           this.onRequest(undefined, true);
         });

@@ -5,7 +5,6 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import java.util.List;
 
-import org.springframework.hateoas.Resources;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
@@ -29,9 +28,11 @@ public class DistributionTargetResourceAssembler extends
         return new DistributionTargetResource(summary);
     }
 
-    public Resources<DistributionTargetResource> toResources(String workbasketId,
+    public DistributionTargetListResource toResources(String workbasketId,
         List<WorkbasketSummary> distributionTargets) throws WorkbasketNotFoundException, NotAuthorizedException {
-        Resources<DistributionTargetResource> distributionTargetListResource = new Resources<>(super.toResources(distributionTargets));
+
+        DistributionTargetListResource distributionTargetListResource = new DistributionTargetListResource(
+            toResources(distributionTargets));
         distributionTargetListResource
             .add(linkTo(methodOn(WorkbasketController.class).getDistributionTargets(workbasketId))
                 .withSelfRel());

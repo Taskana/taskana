@@ -3,7 +3,7 @@ import { AccessItemWorkbasket } from './access-item-workbasket';
 
 export class AccessItemsWorkbasketResource {
     constructor(
-        public _embedded: { 'accessItems': Array<AccessItemWorkbasket> } = { 'accessItems': [] },
+        public accessItems: Array<AccessItemWorkbasket> = [],
         public _links: Links = undefined
     ) { }
 }

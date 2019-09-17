@@ -142,8 +142,8 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
         this.objectReference ? this.objectReference.value : undefined)
         .subscribe(tasks => {
           this.requestInProgress = false;
-          if (tasks._embedded) {
-            this.tasks = tasks._embedded.tasks;
+          if (tasks.tasks) {
+            this.tasks = tasks.tasks;
           } else {
             this.tasks = [];
             this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'The selected Workbasket is empty!'));

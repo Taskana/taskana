@@ -136,7 +136,7 @@ public class TaskControllerRestDocumentation {
 
         allTasksFieldDescriptors = new FieldDescriptor[] {
 
-            subsectionWithPath("_embedded.tasks").description("An Array of <<task-subset, Task-Subsets>>"),
+            subsectionWithPath("tasks").description("An Array of <<task-subset, Task-Subsets>>"),
             fieldWithPath("_links").ignored(),
             fieldWithPath("_links.self").ignored(),
             fieldWithPath("_links.self.href").ignored(),
@@ -333,7 +333,7 @@ public class TaskControllerRestDocumentation {
     @Test
     public void getAllTasksDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .get("http://127.0.0.1:" + port + "/v1/tasks?por.type=VNR&por.value=22334455")
+            .get("http://127.0.0.1:" + port + "/api/v1/tasks?por.type=VNR&por.value=22334455")
             .accept("application/hal+json")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -344,7 +344,7 @@ public class TaskControllerRestDocumentation {
     @Test
     public void getSpecificTaskDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .get("http://127.0.0.1:" + port + "/v1/tasks/TKI:100000000000000000000000000000000000")
+            .get("http://127.0.0.1:" + port + "/api/v1/tasks/TKI:100000000000000000000000000000000000")
             .accept("application/hal+json")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -355,7 +355,7 @@ public class TaskControllerRestDocumentation {
     @Test
     public void taskSubSetDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .get("http://127.0.0.1:" + port + "/v1/tasks/TKI:100000000000000000000000000000000000")
+            .get("http://127.0.0.1:" + port + "/api/v1/tasks/TKI:100000000000000000000000000000000000")
             .accept("application/hal+json")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -365,7 +365,7 @@ public class TaskControllerRestDocumentation {
 
     @Test
     public void updateTaskDocTest() throws Exception {
-        URL url = new URL("http://127.0.0.1:" + port + "/v1/tasks/TKI:100000000000000000000000000000000000");
+        URL url = new URL("http://127.0.0.1:" + port + "/api/v1/tasks/TKI:100000000000000000000000000000000000");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
         con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
@@ -383,7 +383,7 @@ public class TaskControllerRestDocumentation {
         String originalTask = content.toString();
 
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .put("http://127.0.0.1:" + port + "/v1/tasks/TKI:100000000000000000000000000000000000")
+            .put("http://127.0.0.1:" + port + "/api/v1/tasks/TKI:100000000000000000000000000000000000")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x")
             .contentType("application/json")
             .content(originalTask))
@@ -397,7 +397,7 @@ public class TaskControllerRestDocumentation {
     public void createAndDeleteTaskDocTest() throws Exception {
 
         MvcResult result = this.mockMvc.perform(RestDocumentationRequestBuilders
-            .post("http://127.0.0.1:" + port + "/v1/tasks")
+            .post("http://127.0.0.1:" + port + "/api/v1/tasks")
             .contentType("application/hal+json")
             .content("{\"classificationSummaryResource\":{\"key\":\"L11010\"},"
                 + "\"workbasketSummaryResource\":{\"workbasketId\":\"WBI:100000000000000000000000000000000004\"},"
@@ -413,7 +413,7 @@ public class TaskControllerRestDocumentation {
         String newId = content.substring(content.indexOf("TKI:"), content.indexOf("TKI:") + 40);
 
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .delete("http://127.0.0.1:" + port + "/v1/tasks/" + newId)
+            .delete("http://127.0.0.1:" + port + "/api/v1/tasks/" + newId)
             .header("Authorization", "Basic YWRtaW46YWRtaW4=")) // admin
             .andExpect(MockMvcResultMatchers.status().isNoContent())
             .andDo(MockMvcRestDocumentation.document("DeleteTaskDocTest"));
@@ -423,7 +423,7 @@ public class TaskControllerRestDocumentation {
     public void claimTaskDocTest() throws Exception {
 
         MvcResult result = this.mockMvc.perform(RestDocumentationRequestBuilders
-            .post("http://127.0.0.1:" + port + "/v1/tasks")
+            .post("http://127.0.0.1:" + port + "/api/v1/tasks")
             .contentType("application/hal+json")
             .content("{\"classificationSummaryResource\":{\"key\":\"L11010\"},"
                 + "\"workbasketSummaryResource\":{\"workbasketId\":\"WBI:100000000000000000000000000000000004\"},"
@@ -437,7 +437,7 @@ public class TaskControllerRestDocumentation {
         String newId = content.substring(content.indexOf("TKI:"), content.indexOf("TKI:") + 40);
 
         this.mockMvc.perform(RestDocumentationRequestBuilders
-             .post("http://127.0.0.1:" + port + "/v1/tasks/" + newId + "/claim")
+             .post("http://127.0.0.1:" + port + "/api/v1/tasks/" + newId + "/claim")
             .accept("application/hal+json")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x")
             .content("{}"))
@@ -446,7 +446,7 @@ public class TaskControllerRestDocumentation {
                 responseFields(taskFieldDescriptors)));
 
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .delete("http://127.0.0.1:" + port + "/v1/tasks/" + newId)
+            .delete("http://127.0.0.1:" + port + "/api/v1/tasks/" + newId)
             .header("Authorization", "Basic YWRtaW46YWRtaW4=")) // admin
             .andExpect(MockMvcResultMatchers.status().isNoContent())
             .andDo(MockMvcRestDocumentation.document("DeleteTaskDocTest"));
@@ -455,7 +455,7 @@ public class TaskControllerRestDocumentation {
     @Test
     public void completeTaskDocTest() throws Exception {
         MvcResult result = this.mockMvc.perform(RestDocumentationRequestBuilders
-            .post("http://127.0.0.1:" + port + "/v1/tasks")
+            .post("http://127.0.0.1:" + port + "/api/v1/tasks")
             .contentType("application/hal+json")
             .content("{\"classificationSummaryResource\":{\"key\":\"L11010\"},"
                 + "\"workbasketSummaryResource\":{\"workbasketId\":\"WBI:100000000000000000000000000000000004\"},"
@@ -469,7 +469,7 @@ public class TaskControllerRestDocumentation {
         String newId = content.substring(content.indexOf("TKI:"), content.indexOf("TKI:") + 40);
 
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .post("http://127.0.0.1:" + port + "/v1/tasks/" + newId + "/complete")
+            .post("http://127.0.0.1:" + port + "/api/v1/tasks/" + newId + "/complete")
             .accept("application/hal+json")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x")
             .content("{}"))
@@ -478,7 +478,7 @@ public class TaskControllerRestDocumentation {
                 responseFields(taskFieldDescriptors)));
 
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .delete("http://127.0.0.1:" + port + "/v1/tasks/" + newId)
+            .delete("http://127.0.0.1:" + port + "/api/v1/tasks/" + newId)
             .header("Authorization", "Basic YWRtaW46YWRtaW4=")) // admin
             .andExpect(MockMvcResultMatchers.status().isNoContent())
             .andDo(MockMvcRestDocumentation.document("DeleteTaskDocTest"));
@@ -487,7 +487,7 @@ public class TaskControllerRestDocumentation {
     @Test
     public void transferTaskDocTest() throws Exception {
         MvcResult result = this.mockMvc.perform(RestDocumentationRequestBuilders
-            .post("http://127.0.0.1:" + port + "/v1/tasks")
+            .post("http://127.0.0.1:" + port + "/api/v1/tasks")
             .contentType("application/hal+json")
             .content("{\"classificationSummaryResource\":{\"key\":\"L11010\"},"
                 + "\"workbasketSummaryResource\":{\"workbasketId\":\"WBI:100000000000000000000000000000000004\"},"
@@ -502,7 +502,7 @@ public class TaskControllerRestDocumentation {
         String newId = content.substring(content.indexOf("TKI:"), content.indexOf("TKI:") + 40);
 
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .post("http://127.0.0.1:" + port + "/v1/tasks/" + newId
+            .post("http://127.0.0.1:" + port + "/api/v1/tasks/" + newId
                 + "/transfer/WBI:100000000000000000000000000000000001")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -510,7 +510,7 @@ public class TaskControllerRestDocumentation {
                 responseFields(taskFieldDescriptors)));
 
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .delete("http://127.0.0.1:" + port + "/v1/tasks/" + newId)
+            .delete("http://127.0.0.1:" + port + "/api/v1/tasks/" + newId)
             .header("Authorization", "Basic YWRtaW46YWRtaW4=")) // admin
             .andExpect(MockMvcResultMatchers.status().isNoContent());
     }

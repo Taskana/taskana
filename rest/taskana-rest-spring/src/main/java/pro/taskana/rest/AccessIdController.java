@@ -1,6 +1,5 @@
 package pro.taskana.rest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -8,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +25,7 @@ import pro.taskana.rest.resource.AccessIdResource;
  */
 @RestController
 @EnableHypermediaSupport(type = HypermediaType.HAL)
-@RequestMapping(path = "/v1/access-ids", produces = "application/hal+json")
+@RequestMapping(path = "/api/v1/access-ids", produces = "application/hal+json")
 public class AccessIdController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccessIdController.class);
@@ -49,23 +47,22 @@ public class AccessIdController {
         ResponseEntity<List<AccessIdResource>> response;
         if (ldapClient.useLdap()) {
             List<AccessIdResource> accessIdUsers = ldapClient.searchUsersAndGroups(searchFor);
-            response = new ResponseEntity<>(accessIdUsers, HttpStatus.OK);
+            response = ResponseEntity.ok(accessIdUsers);
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Exit from validateAccessIds(), returning {}", response);
             }
 
             return response;
         } else if (ldapCache != null) {
-            response = new ResponseEntity<>(
-                ldapCache.findMatchingAccessId(searchFor, ldapClient.getMaxNumberOfReturnedAccessIds()),
-                HttpStatus.OK);
+            response = ResponseEntity.ok(
+                ldapCache.findMatchingAccessId(searchFor, ldapClient.getMaxNumberOfReturnedAccessIds()));
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Exit from validateAccessIds(), returning {}", response);
             }
 
             return response;
         } else {
-            response = new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
+            response = ResponseEntity.notFound().build();
             LOGGER.debug("Exit from validateAccessIds(), returning {}", response);
             return response;
         }
@@ -85,7 +82,7 @@ public class AccessIdController {
         if (ldapClient.useLdap()) {
             accessIdUsers = ldapClient.searchUsersAndGroups(accessId);
             accessIdUsers.addAll(ldapClient.searchGroupsofUsersIsMember(accessId));
-            response = new ResponseEntity<>(accessIdUsers, HttpStatus.OK);
+            response = ResponseEntity.ok(accessIdUsers);
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Exit from getGroupsByAccessId(), returning {}", response);
             }
@@ -93,14 +90,14 @@ public class AccessIdController {
             return response;
         } else if (ldapCache != null) {
             accessIdUsers = ldapCache.findGroupsOfUser(accessId, ldapClient.getMaxNumberOfReturnedAccessIds());
-            response = new ResponseEntity<>(accessIdUsers, HttpStatus.OK);
+            response = ResponseEntity.ok(accessIdUsers);
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Exit from getGroupsByAccessId(), returning {}", response);
             }
 
             return response;
         } else {
-            response = new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
+            response = ResponseEntity.notFound().build();
             LOGGER.debug("Exit from getGroupsByAccessId(), returning {}", response);
             return response;
         }

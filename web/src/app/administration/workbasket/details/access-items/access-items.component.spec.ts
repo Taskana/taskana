@@ -47,12 +47,11 @@ describe('AccessItemsComponent', () => {
 			workbasketService = TestBed.get(WorkbasketService);
 			alertService = TestBed.get(AlertService);
 			spyOn(workbasketService, 'getWorkBasketAccessItems').and.returnValue(of(new WorkbasketAccessItemsResource(
-				{
-					'accessItems': new Array<WorkbasketAccessItems>(
+					 new Array<WorkbasketAccessItems>(
 						new WorkbasketAccessItems('id1', '1', 'accessID1', '', false, false, false, false, false, false, false, false,
 							false, false, false, false, false, false, false, false, false),
 						new WorkbasketAccessItems('id2', '1', 'accessID2'))
-				}, new Links({ 'href': 'someurl' })
+				, new Links({ 'href': 'someurl' })
 			)));
 			spyOn(workbasketService, 'updateWorkBasketAccessItem').and.returnValue(of(true)),
 				spyOn(alertService, 'triggerAlert').and.returnValue(of(true)),
