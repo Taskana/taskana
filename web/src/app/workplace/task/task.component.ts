@@ -58,7 +58,7 @@ export class TaskComponent implements OnInit, OnDestroy {
     this.requestInProgress = true;
     this.workbasketService.getAllWorkBaskets().subscribe(workbaskets => {
       this.requestInProgress = false;
-      this.workbaskets = workbaskets._embedded ? workbaskets._embedded.workbaskets : [];
+      this.workbaskets = workbaskets.workbaskets;
 
       let index = -1;
       for (let i = 0; i < this.workbaskets.length; i++) {

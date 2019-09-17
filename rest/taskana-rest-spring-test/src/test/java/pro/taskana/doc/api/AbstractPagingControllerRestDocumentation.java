@@ -33,7 +33,7 @@ import org.springframework.web.context.WebApplicationContext;
 import pro.taskana.rest.RestConfiguration;
 
 /**
- *  Generate Rest Docu for AbstractPagingController.
+ * Generate Rest Docu for AbstractPagingController.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -77,7 +77,7 @@ public class AbstractPagingControllerRestDocumentation {
         pagingFieldDescriptionsMap.put("_links.next.href", "Link to next page");
 
         pagingFieldDescriptors = new FieldDescriptor[] {
-            subsectionWithPath("_embedded.classificationSummaryResourceList").ignored(),
+            subsectionWithPath("classifications").ignored(),
             fieldWithPath("_links").ignored(),
             fieldWithPath("_links.self").ignored(),
             fieldWithPath("_links.self.href").ignored(),
@@ -96,7 +96,7 @@ public class AbstractPagingControllerRestDocumentation {
     @Test
     public void commonSummaryResourceFieldsDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .get("http://127.0.0.1:" + port + "/v1/classifications?page=2&page-size=5")
+            .get("http://127.0.0.1:" + port + "/api/v1/classifications?page=2&page-size=5")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andDo(MockMvcRestDocumentation.document("CommonSummaryResourceFields",

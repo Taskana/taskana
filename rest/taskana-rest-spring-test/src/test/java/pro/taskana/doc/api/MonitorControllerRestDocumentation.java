@@ -84,7 +84,7 @@ public class MonitorControllerRestDocumentation {
     @Test
     public void getTaskStatusReport() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .get("http://127.0.0.1:" + port + "/v1/monitor/tasks-status-report")
+            .get("http://127.0.0.1:" + port + "/api/v1/monitor/tasks-status-report")
             .header("Authorization", "Basic YWRtaW46YWRtaW4="))
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andDo(MockMvcRestDocumentation.document("GetTaskStatusReportDocTest",
@@ -95,7 +95,7 @@ public class MonitorControllerRestDocumentation {
     public void tasksWorkbasketReport() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
             .get("http://127.0.0.1:" + port
-                + "/v1/monitor/tasks-workbasket-report?daysInPast=4&states=READY,CLAIMED,COMPLETED")
+                + "/api/v1/monitor/tasks-workbasket-report?daysInPast=4&states=READY,CLAIMED,COMPLETED")
             .accept("application/hal+json")
             .header("Authorization", "Basic YWRtaW46YWRtaW4="))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -106,7 +106,7 @@ public class MonitorControllerRestDocumentation {
     @Test
     public void tasksClassificationReport() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .get("http://127.0.0.1:" + port + "/v1/monitor/tasks-classification-report")
+            .get("http://127.0.0.1:" + port + "/api/v1/monitor/tasks-classification-report")
             .accept("application/hal+json")
             .header("Authorization", "Basic YWRtaW46YWRtaW4="))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -117,7 +117,7 @@ public class MonitorControllerRestDocumentation {
     @Test
     public void getTimestampReport() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .get("http://127.0.0.1:" + port + "/v1/monitor/timestamp-report")
+            .get("http://127.0.0.1:" + port + "/api/v1/monitor/timestamp-report")
             .accept("application/hal+json")
             .header("Authorization", "Basic YWRtaW46YWRtaW4="))
             .andExpect(MockMvcResultMatchers.status().isOk())

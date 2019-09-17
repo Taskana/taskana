@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,7 +24,7 @@ import pro.taskana.WorkbasketService;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.ldap.LdapClient;
-import pro.taskana.rest.resource.WorkbasketAccessItemResource;
+import pro.taskana.rest.resource.WorkbasketAccessItemPaginatedListResource;
 import pro.taskana.rest.resource.WorkbasketAccessItemResourceAssembler;
 
 /**
@@ -33,7 +32,7 @@ import pro.taskana.rest.resource.WorkbasketAccessItemResourceAssembler;
  */
 @RestController
 @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
-@RequestMapping(path = "/v1/workbasket-access-items", produces = "application/hal+json")
+@RequestMapping(path = "/api/v1/workbasket-access-items", produces = "application/hal+json")
 public class WorkbasketAccessItemController extends AbstractPagingController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketAccessItemController.class);
@@ -60,13 +59,16 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
     /**
      * This GET method return all workbasketAccessItems that correspond the given data.
      *
-     * @param params filter, order and access ids.
+     * @param params
+     *            filter, order and access ids.
      * @return all WorkbasketAccesItemResource.
-     * @throws NotAuthorizedException   if the user is not authorized.
-     * @throws InvalidArgumentException if some argument is invalid.
+     * @throws NotAuthorizedException
+     *             if the user is not authorized.
+     * @throws InvalidArgumentException
+     *             if some argument is invalid.
      */
     @GetMapping
-    public ResponseEntity<PagedResources<WorkbasketAccessItemResource>> getWorkbasketAccessItems(
+    public ResponseEntity<WorkbasketAccessItemPaginatedListResource> getWorkbasketAccessItems(
         @RequestParam MultiValueMap<String, String> params)
         throws NotAuthorizedException, InvalidArgumentException {
         if (LOGGER.isDebugEnabled()) {
@@ -81,13 +83,11 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
         PagedResources.PageMetadata pageMetadata = getPageMetadata(params, query);
         List<WorkbasketAccessItem> workbasketAccessItems = getQueryList(query, pageMetadata);
 
-        PagedResources<WorkbasketAccessItemResource> pagedResources = workbasketAccessItemResourceAssembler.toResources(
+        WorkbasketAccessItemPaginatedListResource pagedResources = workbasketAccessItemResourceAssembler.toResources(
             workbasketAccessItems,
-            pageMetadata
-        );
+            pageMetadata);
 
-        ResponseEntity<PagedResources<WorkbasketAccessItemResource>> response = new ResponseEntity<>(pagedResources,
-            HttpStatus.OK);
+        ResponseEntity<WorkbasketAccessItemPaginatedListResource> response = ResponseEntity.ok(pagedResources);
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from getWorkbasketAccessItems(), returning {}", response);
         }
@@ -98,10 +98,13 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
     /**
      * This DELETE method delete all workbasketAccessItems that correspond the given accessId.
      *
-     * @param accessId which need remove his workbasketAccessItems.
+     * @param accessId
+     *            which need remove his workbasketAccessItems.
      * @return ResponseEntity if the user is not authorized.
-     * @throws NotAuthorizedException if the user is not authorized.
-     * @throws InvalidArgumentException if some argument is invalid.
+     * @throws NotAuthorizedException
+     *             if the user is not authorized.
+     * @throws InvalidArgumentException
+     *             if some argument is invalid.
      */
     @DeleteMapping
     public ResponseEntity<Void> removeWorkbasketAccessItems(
@@ -121,7 +124,7 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
                 accessId + " corresponding to a group, not a user. You just can remove access items for a user");
         }
 
-        ResponseEntity<Void> response = new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        ResponseEntity<Void> response = ResponseEntity.noContent().build();
         LOGGER.debug("Exit from removeWorkbasketAccessItems(), returning {}", response);
         return response;
     }

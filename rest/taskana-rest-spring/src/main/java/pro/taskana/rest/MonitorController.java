@@ -28,7 +28,7 @@ import pro.taskana.rest.resource.ReportResourceAssembler;
  * Controller for all monitoring endpoints.
  */
 @RestController
-@RequestMapping(path = "/v1/monitor", produces = "application/hal+json")
+@RequestMapping(path = "/api/v1/monitor", produces = "application/hal+json")
 public class MonitorController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MonitorController.class);
@@ -48,9 +48,9 @@ public class MonitorController {
         @RequestParam(required = false) List<TaskState> states) throws NotAuthorizedException,
         InvalidArgumentException {
         LOGGER.debug("Entry to getTasksStatusReport()");
-        ResponseEntity<ReportResource> response = new ResponseEntity<>(reportResourceAssembler.toResource(
+        ResponseEntity<ReportResource> response = ResponseEntity.ok(reportResourceAssembler.toResource(
             taskMonitorService.createTaskStatusReportBuilder().stateIn(states).domainIn(domains).buildReport(),
-            domains, states), HttpStatus.OK);
+            domains, states));
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from getTasksStatusReport(), returning {}", response);
         }
@@ -68,7 +68,8 @@ public class MonitorController {
         ReportResource report = reportResourceAssembler.toResource(
             taskMonitorService.createWorkbasketReportBuilder()
                 .withColumnHeaders(getRangeTimeInterval())
-                .buildReport(), states);
+                .buildReport(),
+            states);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from getTasksWorkbasketReport(), returning {}", report);
@@ -90,7 +91,8 @@ public class MonitorController {
         ReportResource report = reportResourceAssembler.toResource(
             taskMonitorService.createWorkbasketReportBuilder()
                 .stateIn(states)
-                .withColumnHeaders(getDateTimeInterval(daysInPast)).buildPlannedDateBasedReport(),
+                .withColumnHeaders(getDateTimeInterval(daysInPast))
+                .buildPlannedDateBasedReport(),
             daysInPast, states);
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from getTasksWorkbasketPlannedDateReport(), returning {}", report);
@@ -100,7 +102,6 @@ public class MonitorController {
             .body(report);
 
     }
-
 
     @GetMapping(path = "/tasks-classification-report")
     @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -138,14 +139,11 @@ public class MonitorController {
     private List<TimeIntervalColumnHeader> getRangeTimeInterval() {
         return Stream.concat(Stream.concat(
             Stream.of(new TimeIntervalColumnHeader.Range(Integer.MIN_VALUE, -10),
-                new TimeIntervalColumnHeader.Range(-10, -5)
-            ),
+                new TimeIntervalColumnHeader.Range(-10, -5)),
             Stream.of(-4, -3, -2, -1, 0, 1, 2, 3, 4)
-                .map(TimeIntervalColumnHeader.Range::new)
-            ),
+                .map(TimeIntervalColumnHeader.Range::new)),
             Stream.of(new TimeIntervalColumnHeader.Range(5, 10),
-                new TimeIntervalColumnHeader.Range(10, Integer.MAX_VALUE)
-            ))
+                new TimeIntervalColumnHeader.Range(10, Integer.MAX_VALUE)))
             .collect(Collectors.toList());
     }
 

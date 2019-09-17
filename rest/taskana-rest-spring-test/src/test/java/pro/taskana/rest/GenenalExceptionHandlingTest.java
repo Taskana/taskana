@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.hal.Jackson2HalModule;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -36,16 +35,15 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
 import pro.taskana.ldap.LdapCacheTestImpl;
-import pro.taskana.rest.resource.AccessIdResource;
-import pro.taskana.rest.resource.ClassificationSummaryResource;
+import pro.taskana.rest.resource.ClassificationSummaryListResource;
 
 /**
  * Test general Exception Handling.
- *
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = RestConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
-    "devMode=true"})
+@SpringBootTest(classes = RestConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    properties = {
+        "devMode=true"})
 public class GenenalExceptionHandlingTest {
 
     String server = "http://127.0.0.1:";
@@ -69,8 +67,8 @@ public class GenenalExceptionHandlingTest {
         logger.addAppender(mockAppender);
     }
 
-    //Always have this teardown otherwise we can stuff up our expectations. Besides, it's
-    //good coding practise
+    // Always have this teardown otherwise we can stuff up our expectations. Besides, it's
+    // good coding practise
     @After
     public void teardown() {
         final Logger logger = (Logger) LoggerFactory.getLogger(TaskanaRestExceptionHandler.class);
@@ -83,10 +81,8 @@ public class GenenalExceptionHandlingTest {
 
             AccessIdController.setLdapCache(new LdapCacheTestImpl());
             template.exchange(
-                server + port + "/v1/access-ids?search-for=al", HttpMethod.GET, request,
-                new ParameterizedTypeReference<List<AccessIdResource>>() {
-
-                });
+                server + port + "/api/v1/access-ids?search-for=al", HttpMethod.GET, request,
+                ParameterizedTypeReference.forType(List.class));
         } catch (Exception ex) {
             verify(mockAppender).doAppend(captorLoggingEvent.capture());
             assertTrue(
@@ -98,10 +94,8 @@ public class GenenalExceptionHandlingTest {
     public void testDeleteNonExisitingClassificationExceptionIsLogged() {
         try {
             template.exchange(
-                server + port + "/v1/classifications/non-existing-id", HttpMethod.DELETE, request,
-                new ParameterizedTypeReference<PagedResources<ClassificationSummaryResource>>() {
-
-                });
+                server + port + "/api/v1/classifications/non-existing-id", HttpMethod.DELETE, request,
+                ParameterizedTypeReference.forType(ClassificationSummaryListResource.class));
         } catch (Exception ex) {
             verify(mockAppender).doAppend(captorLoggingEvent.capture());
             assertTrue(captorLoggingEvent.getValue()
@@ -125,7 +119,7 @@ public class GenenalExceptionHandlingTest {
         converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/hal+json"));
         converter.setObjectMapper(mapper);
 
-        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>>singletonList(converter));
+        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>> singletonList(converter));
         return template;
     }
 }

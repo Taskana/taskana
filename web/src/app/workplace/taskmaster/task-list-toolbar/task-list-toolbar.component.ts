@@ -56,7 +56,7 @@ export class TaskListToolbarComponent implements OnInit {
 
   ngOnInit() {
     this.workbasketService.getAllWorkBaskets().subscribe(workbaskets => {
-      this.workbaskets = workbaskets._embedded ? workbaskets._embedded.workbaskets : [];
+      this.workbaskets = workbaskets.workbaskets;
       this.workbaskets.forEach(workbasket => {
         this.workbasketNames.push(workbasket.name);
       });
