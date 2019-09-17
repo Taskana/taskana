@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.PagedResources.PageMetadata;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
@@ -36,7 +35,7 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.rest.resource.ClassificationResource;
 import pro.taskana.rest.resource.ClassificationResourceAssembler;
-import pro.taskana.rest.resource.ClassificationSummaryResource;
+import pro.taskana.rest.resource.ClassificationSummaryListResource;
 import pro.taskana.rest.resource.ClassificationSummaryResourceAssembler;
 
 /**
@@ -44,7 +43,7 @@ import pro.taskana.rest.resource.ClassificationSummaryResourceAssembler;
  */
 @RestController
 @EnableHypermediaSupport(type = HypermediaType.HAL)
-@RequestMapping(path = "/v1/classifications", produces = "application/hal+json")
+@RequestMapping(path = "/api/v1/classifications", produces = "application/hal+json")
 public class ClassificationController extends AbstractPagingController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationController.class);
@@ -100,7 +99,7 @@ public class ClassificationController extends AbstractPagingController {
 
     @GetMapping
     @Transactional(readOnly = true, rollbackFor = Exception.class)
-    public ResponseEntity<PagedResources<ClassificationSummaryResource>> getClassifications(
+    public ResponseEntity<ClassificationSummaryListResource> getClassifications(
         @RequestParam MultiValueMap<String, String> params) throws InvalidArgumentException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Entry to getClassifications(params= {})", params);
@@ -113,14 +112,12 @@ public class ClassificationController extends AbstractPagingController {
         PageMetadata pageMetadata = getPageMetadata(params, query);
         List<ClassificationSummary> classificationSummaries = getQueryList(query, pageMetadata);
 
-        ResponseEntity<PagedResources<ClassificationSummaryResource>> response = new ResponseEntity<>(
+        ResponseEntity<ClassificationSummaryListResource> response = ResponseEntity.ok(
             classificationSummaryResourceAssembler.toResources(
                 classificationSummaries,
-                pageMetadata),
-            HttpStatus.OK);
+                pageMetadata));
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Exit from getClassifications(), returning {}",
-                new ResponseEntity<>(response, HttpStatus.OK));
+            LOGGER.debug("Exit from getClassifications(), returning {}", response);
         }
 
         return response;
@@ -135,11 +132,10 @@ public class ClassificationController extends AbstractPagingController {
         }
 
         Classification classification = classificationService.getClassification(classificationId);
-        ResponseEntity<ClassificationResource> response = new ResponseEntity<>(
-            classificationResourceAssembler.toResource(classification), HttpStatus.OK);
+        ResponseEntity<ClassificationResource> response = ResponseEntity.ok(
+            classificationResourceAssembler.toResource(classification));
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Exit from getClassification(), returning {}",
-                ResponseEntity.status(HttpStatus.OK).body(classificationResourceAssembler.toResource(classification)));
+            LOGGER.debug("Exit from getClassification(), returning {}", response);
         }
 
         return response;
@@ -157,8 +153,8 @@ public class ClassificationController extends AbstractPagingController {
         Classification classification = classificationResourceAssembler.toModel(resource);
         classification = classificationService.createClassification(classification);
 
-        ResponseEntity<ClassificationResource> response = new ResponseEntity<>(
-            classificationResourceAssembler.toResource(classification), HttpStatus.CREATED);
+        ResponseEntity<ClassificationResource> response = ResponseEntity.status(HttpStatus.CREATED)
+            .body(classificationResourceAssembler.toResource(classification));
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from createClassification(), returning {}", response);
         }
@@ -181,7 +177,7 @@ public class ClassificationController extends AbstractPagingController {
         if (classificationId.equals(resource.classificationId)) {
             Classification classification = classificationResourceAssembler.toModel(resource);
             classification = classificationService.updateClassification(classification);
-            result = new ResponseEntity<>(classificationResourceAssembler.toResource(classification), HttpStatus.OK);
+            result = ResponseEntity.ok(classificationResourceAssembler.toResource(classification));
         } else {
             throw new InvalidArgumentException(
                 "ClassificationId ('" + classificationId
@@ -201,7 +197,7 @@ public class ClassificationController extends AbstractPagingController {
         throws ClassificationNotFoundException, ClassificationInUseException, NotAuthorizedException {
         LOGGER.debug("Entry to deleteClassification(classificationId= {})", classificationId);
         classificationService.deleteClassification(classificationId);
-        ResponseEntity<?> response = new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        ResponseEntity<?> response = ResponseEntity.noContent().build();
         LOGGER.debug("Exit from deleteClassification(), returning {}", response);
         return response;
     }

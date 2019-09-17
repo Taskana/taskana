@@ -44,8 +44,8 @@ public class ClassificationSummaryResourceAssembler
     }
 
     @PageLinks(ClassificationController.class)
-    public PagedResources<ClassificationSummaryResource> toResources(Collection<ClassificationSummary> entities,
+    public ClassificationSummaryListResource toResources(Collection<ClassificationSummary> entities,
         PagedResources.PageMetadata pageMetadata) {
-        return new PagedResources<>(toResources(entities), pageMetadata);
+        return new ClassificationSummaryListResource(toResources(entities), pageMetadata);
     }
 }

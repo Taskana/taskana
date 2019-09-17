@@ -109,7 +109,7 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
       this.filterBy.filterParams.type, undefined, this.filterBy.filterParams.key, undefined)
       .subscribe(resultList => {
         this.workbasketsResource = resultList;
-        this.workbaskets = resultList._embedded ? resultList._embedded.workbaskets : [];
+        this.workbaskets = resultList.workbaskets;
         this.requestInProgress = false;
       });
   }

@@ -35,9 +35,9 @@ public class TaskSummaryResourceAssembler
     }
 
     @PageLinks(TaskController.class)
-    public PagedResources<TaskSummaryResource> toResources(List<TaskSummary> taskSummaries,
+    public TaskSummaryListResource toResources(List<TaskSummary> taskSummaries,
         PagedResources.PageMetadata pageMetadata) {
-        return new PagedResources<>(toResources(taskSummaries), pageMetadata);
+        return new TaskSummaryListResource(toResources(taskSummaries), pageMetadata);
     }
 
 }

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 
@@ -49,7 +50,7 @@ public class CompleteTaskAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
 
         assertEquals(TaskState.CLAIMED,
-                taskService.getTask("TKI:000000000000000000000000000000000001").getState());
+            taskService.getTask("TKI:000000000000000000000000000000000001").getState());
 
         Task completedTask = taskService.completeTask("TKI:000000000000000000000000000000000001");
         assertNotNull(completedTask);
@@ -209,8 +210,8 @@ public class CompleteTaskAccTest extends AbstractAccTest {
         assertNotNull(createdTask);
         assertEquals(createdTask.getOwner(), "other_user");
 
-        waitAMillisecond();
         Instant beforeForceClaim = Instant.now();
+        waitAMillisecond();
         Task taskAfterClaim = taskService.forceClaim(createdTask.getId());
 
         assertEquals(CurrentUserContext.getUserid(), taskAfterClaim.getOwner());

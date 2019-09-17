@@ -108,39 +108,39 @@ public class WorkbasketControllerRestDocumentation {
         workbasketFieldDescriptionsMap.put("_links.accessItems.href", "The Access-Items of the workbasket");
         workbasketFieldDescriptionsMap.put("_links.allWorkbaskets.href", "Link to all workbaskets");
 
-        accessItemFieldDescriptionsMap.put("_embedded.accessItems.accessItemId", "Unique ID");
-        accessItemFieldDescriptionsMap.put("_embedded.accessItems.workbasketId", "The workbasket");
-        accessItemFieldDescriptionsMap.put("_embedded.accessItems.workbasketKey", "The workbasket key");
-        accessItemFieldDescriptionsMap.put("_embedded.accessItems.accessId",
+        accessItemFieldDescriptionsMap.put("accessItems.accessItemId", "Unique ID");
+        accessItemFieldDescriptionsMap.put("accessItems.workbasketId", "The workbasket");
+        accessItemFieldDescriptionsMap.put("accessItems.workbasketKey", "The workbasket key");
+        accessItemFieldDescriptionsMap.put("accessItems.accessId",
             "The access id, this ACL entry refers to. This could be either a userid or a full qualified group id (both lower case)");
-        accessItemFieldDescriptionsMap.put("_embedded.accessItems.accessName", "");
-        accessItemFieldDescriptionsMap.put("_embedded.accessItems.permRead",
+        accessItemFieldDescriptionsMap.put("accessItems.accessName", "");
+        accessItemFieldDescriptionsMap.put("accessItems.permRead",
             "The permission to read the information about the workbasket");
-        accessItemFieldDescriptionsMap.put("_embedded.accessItems.permOpen",
+        accessItemFieldDescriptionsMap.put("accessItems.permOpen",
             "The permission to view the content (the tasks) of a workbasket");
-        accessItemFieldDescriptionsMap.put("_embedded.accessItems.permAppend",
+        accessItemFieldDescriptionsMap.put("accessItems.permAppend",
             "The permission to add tasks to the workbasket (required for creation and transferring of tasks)");
-        accessItemFieldDescriptionsMap.put("_embedded.accessItems.permTransfer",
+        accessItemFieldDescriptionsMap.put("accessItems.permTransfer",
             "The permission to transfer tasks (out of the current workbasket)");
-        accessItemFieldDescriptionsMap.put("_embedded.accessItems.permDistribute",
+        accessItemFieldDescriptionsMap.put("accessItems.permDistribute",
             "The permission to distribute tasks from the workbasket");
-        accessItemFieldDescriptionsMap.put("_embedded.accessItems.permCustom1", "");
-        accessItemFieldDescriptionsMap.put("_embedded.accessItems.permCustom2", "");
-        accessItemFieldDescriptionsMap.put("_embedded.accessItems.permCustom3", "");
-        accessItemFieldDescriptionsMap.put("_embedded.accessItems.permCustom4", "");
-        accessItemFieldDescriptionsMap.put("_embedded.accessItems.permCustom5", "");
-        accessItemFieldDescriptionsMap.put("_embedded.accessItems.permCustom6", "");
-        accessItemFieldDescriptionsMap.put("_embedded.accessItems.permCustom7", "");
-        accessItemFieldDescriptionsMap.put("_embedded.accessItems.permCustom8", "");
-        accessItemFieldDescriptionsMap.put("_embedded.accessItems.permCustom9", "");
-        accessItemFieldDescriptionsMap.put("_embedded.accessItems.permCustom10", "");
-        accessItemFieldDescriptionsMap.put("_embedded.accessItems.permCustom11", "");
-        accessItemFieldDescriptionsMap.put("_embedded.accessItems.permCustom12", "");
-        accessItemFieldDescriptionsMap.put("_embedded.accessItems._links.workbasket.href", "Link to the workbasket");
+        accessItemFieldDescriptionsMap.put("accessItems.permCustom1", "");
+        accessItemFieldDescriptionsMap.put("accessItems.permCustom2", "");
+        accessItemFieldDescriptionsMap.put("accessItems.permCustom3", "");
+        accessItemFieldDescriptionsMap.put("accessItems.permCustom4", "");
+        accessItemFieldDescriptionsMap.put("accessItems.permCustom5", "");
+        accessItemFieldDescriptionsMap.put("accessItems.permCustom6", "");
+        accessItemFieldDescriptionsMap.put("accessItems.permCustom7", "");
+        accessItemFieldDescriptionsMap.put("accessItems.permCustom8", "");
+        accessItemFieldDescriptionsMap.put("accessItems.permCustom9", "");
+        accessItemFieldDescriptionsMap.put("accessItems.permCustom10", "");
+        accessItemFieldDescriptionsMap.put("accessItems.permCustom11", "");
+        accessItemFieldDescriptionsMap.put("accessItems.permCustom12", "");
+        accessItemFieldDescriptionsMap.put("accessItems._links.workbasket.href", "Link to the workbasket");
 
         allWorkbasketsFieldDescriptors = new FieldDescriptor[] {
 
-            subsectionWithPath("_embedded.workbaskets").description(
+            subsectionWithPath("workbaskets").description(
                 "An Array of <<workbasket-subset, Workbasket-Subsets>>"),
             fieldWithPath("_links.self.href").ignored(),
             fieldWithPath("page").ignored()
@@ -203,62 +203,62 @@ public class WorkbasketControllerRestDocumentation {
         };
 
         accessItemFieldDescriptors = new FieldDescriptor[] {
-            fieldWithPath("_embedded.accessItems[].accessItemId").description(
-                accessItemFieldDescriptionsMap.get("_embedded.accessItems.accessItemId")),
-            fieldWithPath("_embedded.accessItems[].workbasketId").description(
-                accessItemFieldDescriptionsMap.get("_embedded.accessItems.workbasketId")),
-            fieldWithPath("_embedded.accessItems[].workbasketKey").description(
-                accessItemFieldDescriptionsMap.get("_embedded.accessItems.workbasketKey")),
-            fieldWithPath("_embedded.accessItems[].accessId").description(
-                accessItemFieldDescriptionsMap.get("_embedded.accessItems.accessId")),
-            fieldWithPath("_embedded.accessItems[].accessName").description(
-                accessItemFieldDescriptionsMap.get("_embedded.accessItems.accessName")),
-            fieldWithPath("_embedded.accessItems[].permRead").description(
-                accessItemFieldDescriptionsMap.get("_embedded.accessItems.permRead")),
-            fieldWithPath("_embedded.accessItems[].permOpen").description(
-                accessItemFieldDescriptionsMap.get("_embedded.accessItems.permOpen")),
-            fieldWithPath("_embedded.accessItems[].permAppend").description(
-                accessItemFieldDescriptionsMap.get("_embedded.accessItems.permAppend")),
-            fieldWithPath("_embedded.accessItems[].permTransfer").description(
-                accessItemFieldDescriptionsMap.get("_embedded.accessItems.permTransfer")),
-            fieldWithPath("_embedded.accessItems[].permDistribute").description(
-                accessItemFieldDescriptionsMap.get("_embedded.accessItems.permDistribute")),
-            fieldWithPath("_embedded.accessItems[].permCustom1").description(
-                accessItemFieldDescriptionsMap.get("_embedded.accessItems.permCustom1")),
-            fieldWithPath("_embedded.accessItems[].permCustom2").description(
-                accessItemFieldDescriptionsMap.get("_embedded.accessItems.permCustom2")),
-            fieldWithPath("_embedded.accessItems[].permCustom3").description(
-                accessItemFieldDescriptionsMap.get("_embedded.accessItems.permCustom3")),
-            fieldWithPath("_embedded.accessItems[].permCustom4").description(
-                accessItemFieldDescriptionsMap.get("_embedded.accessItems.permCustom4")),
-            fieldWithPath("_embedded.accessItems[].permCustom5").description(
-                accessItemFieldDescriptionsMap.get("_embedded.accessItems.permCustom5")),
-            fieldWithPath("_embedded.accessItems[].permCustom6").description(
-                accessItemFieldDescriptionsMap.get("_embedded.accessItems.permCustom6")),
-            fieldWithPath("_embedded.accessItems[].permCustom7").description(
-                accessItemFieldDescriptionsMap.get("_embedded.accessItems.permCustom7")),
-            fieldWithPath("_embedded.accessItems[].permCustom8").description(
-                accessItemFieldDescriptionsMap.get("_embedded.accessItems.permCustom8")),
-            fieldWithPath("_embedded.accessItems[].permCustom9").description(
-                accessItemFieldDescriptionsMap.get("_embedded.accessItems.permCustom9")),
-            fieldWithPath("_embedded.accessItems[].permCustom10").description(
-                accessItemFieldDescriptionsMap.get("_embedded.accessItems.permCustom10")),
-            fieldWithPath("_embedded.accessItems[].permCustom11").description(
-                accessItemFieldDescriptionsMap.get("_embedded.accessItems.permCustom11")),
-            fieldWithPath("_embedded.accessItems[].permCustom12").description(
-                accessItemFieldDescriptionsMap.get("_embedded.accessItems.permCustom12")),
+            fieldWithPath("accessItems[].accessItemId").description(
+                accessItemFieldDescriptionsMap.get("accessItems.accessItemId")),
+            fieldWithPath("accessItems[].workbasketId").description(
+                accessItemFieldDescriptionsMap.get("accessItems.workbasketId")),
+            fieldWithPath("accessItems[].workbasketKey").description(
+                accessItemFieldDescriptionsMap.get("accessItems.workbasketKey")),
+            fieldWithPath("accessItems[].accessId").description(
+                accessItemFieldDescriptionsMap.get("accessItems.accessId")),
+            fieldWithPath("accessItems[].accessName").description(
+                accessItemFieldDescriptionsMap.get("accessItems.accessName")),
+            fieldWithPath("accessItems[].permRead").description(
+                accessItemFieldDescriptionsMap.get("accessItems.permRead")),
+            fieldWithPath("accessItems[].permOpen").description(
+                accessItemFieldDescriptionsMap.get("accessItems.permOpen")),
+            fieldWithPath("accessItems[].permAppend").description(
+                accessItemFieldDescriptionsMap.get("accessItems.permAppend")),
+            fieldWithPath("accessItems[].permTransfer").description(
+                accessItemFieldDescriptionsMap.get("accessItems.permTransfer")),
+            fieldWithPath("accessItems[].permDistribute").description(
+                accessItemFieldDescriptionsMap.get("accessItems.permDistribute")),
+            fieldWithPath("accessItems[].permCustom1").description(
+                accessItemFieldDescriptionsMap.get("accessItems.permCustom1")),
+            fieldWithPath("accessItems[].permCustom2").description(
+                accessItemFieldDescriptionsMap.get("accessItems.permCustom2")),
+            fieldWithPath("accessItems[].permCustom3").description(
+                accessItemFieldDescriptionsMap.get("accessItems.permCustom3")),
+            fieldWithPath("accessItems[].permCustom4").description(
+                accessItemFieldDescriptionsMap.get("accessItems.permCustom4")),
+            fieldWithPath("accessItems[].permCustom5").description(
+                accessItemFieldDescriptionsMap.get("accessItems.permCustom5")),
+            fieldWithPath("accessItems[].permCustom6").description(
+                accessItemFieldDescriptionsMap.get("accessItems.permCustom6")),
+            fieldWithPath("accessItems[].permCustom7").description(
+                accessItemFieldDescriptionsMap.get("accessItems.permCustom7")),
+            fieldWithPath("accessItems[].permCustom8").description(
+                accessItemFieldDescriptionsMap.get("accessItems.permCustom8")),
+            fieldWithPath("accessItems[].permCustom9").description(
+                accessItemFieldDescriptionsMap.get("accessItems.permCustom9")),
+            fieldWithPath("accessItems[].permCustom10").description(
+                accessItemFieldDescriptionsMap.get("accessItems.permCustom10")),
+            fieldWithPath("accessItems[].permCustom11").description(
+                accessItemFieldDescriptionsMap.get("accessItems.permCustom11")),
+            fieldWithPath("accessItems[].permCustom12").description(
+                accessItemFieldDescriptionsMap.get("accessItems.permCustom12")),
             fieldWithPath("_links.self.href").ignored(),
             fieldWithPath("_links.workbasket.href").ignored()
         };
 
         allWorkbasketAccessItemsFieldDescriptors = new FieldDescriptor[] {
-            subsectionWithPath("_embedded.accessItems").description("An array of <<access-item, Access Items>>"),
+            subsectionWithPath("accessItems").description("An array of <<access-item, Access Items>>"),
             fieldWithPath("_links.self.href").ignored(),
             fieldWithPath("_links.workbasket.href").ignored()
         };
 
         allDistributionTargetsFieldDescriptors = new FieldDescriptor[] {
-            subsectionWithPath("_embedded.distributionTargets").description(
+            subsectionWithPath("distributionTargets").description(
                 "An array of <<workbasket-subset, workbasket subsets>>"),
             fieldWithPath("_links.self.href").ignored(),
             fieldWithPath("_links.workbasket.href").ignored()
@@ -317,7 +317,7 @@ public class WorkbasketControllerRestDocumentation {
     @Test
     public void getAllWorkbasketsDocTest() throws Exception {
         this.mockMvc.perform(
-            RestDocumentationRequestBuilders.get("http://127.0.0.1:" + port + "/v1/workbaskets?type=PERSONAL")
+            RestDocumentationRequestBuilders.get("http://127.0.0.1:" + port + "/api/v1/workbaskets?type=PERSONAL")
                 .accept("application/hal+json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -328,7 +328,7 @@ public class WorkbasketControllerRestDocumentation {
     @Test
     public void getSpecificWorkbasketDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders.get(
-            "http://127.0.0.1:" + port + "/v1/workbaskets/WBI:100000000000000000000000000000000001")
+            "http://127.0.0.1:" + port + "/api/v1/workbaskets/WBI:100000000000000000000000000000000001")
             .accept("application/hal+json")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -339,7 +339,7 @@ public class WorkbasketControllerRestDocumentation {
     @Test
     public void getAllWorkbasketAccessItemsDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("http://127.0.0.1:" + port
-            + "/v1/workbaskets/WBI:100000000000000000000000000000000001/workbasketAccessItems")
+            + "/api/v1/workbaskets/WBI:100000000000000000000000000000000001/workbasketAccessItems")
             .accept("application/hal+json")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -350,7 +350,7 @@ public class WorkbasketControllerRestDocumentation {
     @Test
     public void workbasketSubsetDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders.get(
-            "http://127.0.0.1:" + port + "/v1/workbaskets/WBI:100000000000000000000000000000000001")
+            "http://127.0.0.1:" + port + "/api/v1/workbaskets/WBI:100000000000000000000000000000000001")
             .accept("application/hal+json")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -361,7 +361,7 @@ public class WorkbasketControllerRestDocumentation {
     @Test
     public void removeWorkbasketAsDistributionTargetDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders.delete("http://127.0.0.1:" + port
-            + "/v1/workbaskets/distribution-targets/WBI:100000000000000000000000000000000007")
+            + "/api/v1/workbaskets/distribution-targets/WBI:100000000000000000000000000000000007")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isNoContent())
             .andDo(MockMvcRestDocumentation.document("RemoveWorkbasketAsDistributionTargetDocTest"));
@@ -370,7 +370,7 @@ public class WorkbasketControllerRestDocumentation {
     @Test
     public void getAllWorkbasketDistributionTargets() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("http://127.0.0.1:" + port
-            + "/v1/workbaskets/WBI:100000000000000000000000000000000002/distribution-targets")
+            + "/api/v1/workbaskets/WBI:100000000000000000000000000000000002/distribution-targets")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andDo(MockMvcRestDocumentation.document("GetAllWorkbasketDistributionTargets",
@@ -379,7 +379,7 @@ public class WorkbasketControllerRestDocumentation {
 
     @Test
     public void createWorkbasketDocTest() throws Exception {
-        this.mockMvc.perform(RestDocumentationRequestBuilders.post("http://127.0.0.1:" + port + "/v1/workbaskets")
+        this.mockMvc.perform(RestDocumentationRequestBuilders.post("http://127.0.0.1:" + port + "/api/v1/workbaskets")
             .contentType("application/json")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x")
             .content(
@@ -395,7 +395,7 @@ public class WorkbasketControllerRestDocumentation {
 
     @Test
     public void updateWorkbasketDocTest() throws Exception {
-        URL url = new URL("http://127.0.0.1:" + port + "/v1/workbaskets/WBI:100000000000000000000000000000000002");
+        URL url = new URL("http://127.0.0.1:" + port + "/api/v1/workbaskets/WBI:100000000000000000000000000000000002");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
         con.setRequestProperty("Authorization", "Basic YWRtaW46YWRtaW4=");
@@ -414,7 +414,7 @@ public class WorkbasketControllerRestDocumentation {
         String modifiedWorkbasket = new String(originalWorkbasket.toString());
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.put(
-            "http://127.0.0.1:" + port + "/v1/workbaskets/WBI:100000000000000000000000000000000002")
+            "http://127.0.0.1:" + port + "/api/v1/workbaskets/WBI:100000000000000000000000000000000002")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x")
             .contentType("application/json")
             .content(modifiedWorkbasket))
@@ -427,7 +427,7 @@ public class WorkbasketControllerRestDocumentation {
     @Test
     public void markWorkbasketForDeletionDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders.delete(
-            "http://127.0.0.1:" + port + "/v1/workbaskets/" + "WBI:100000000000000000000000000000000005")
+            "http://127.0.0.1:" + port + "/api/v1/workbaskets/" + "WBI:100000000000000000000000000000000005")
             .header("Authorization", "Basic YWRtaW46YWRtaW4="))
             .andExpect(MockMvcResultMatchers.status().isAccepted())
             .andDo(MockMvcRestDocumentation.document("MarkWorkbasketForDeletionDocTest"));
@@ -436,7 +436,7 @@ public class WorkbasketControllerRestDocumentation {
     @Test
     public void accessItemDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("http://127.0.0.1:" + port
-            + "/v1/workbaskets/WBI:100000000000000000000000000000000001/workbasketAccessItems")
+            + "/api/v1/workbaskets/WBI:100000000000000000000000000000000001/workbasketAccessItems")
             .accept("application/hal+json")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())

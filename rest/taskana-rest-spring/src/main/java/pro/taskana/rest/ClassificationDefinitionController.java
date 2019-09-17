@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,7 +44,7 @@ import pro.taskana.rest.resource.ClassificationResourceAssembler;
  * Controller for Importing / Exporting classifications.
  */
 @RestController
-@RequestMapping(path = "/v1/classification-definitions", produces = { MediaType.APPLICATION_JSON_VALUE })
+@RequestMapping(path = "/api/v1/classification-definitions", produces = {MediaType.APPLICATION_JSON_VALUE})
 public class ClassificationDefinitionController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationDefinitionController.class);
@@ -79,7 +78,7 @@ public class ClassificationDefinitionController {
             export.add(classificationResourceAssembler.toDefinition(classification));
         }
 
-        ResponseEntity<List<ClassificationResource>> response = new ResponseEntity<>(export, HttpStatus.OK);
+        ResponseEntity<List<ClassificationResource>> response = ResponseEntity.ok(export);
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from exportClassifications(), returning {}", response);
         }
@@ -89,7 +88,7 @@ public class ClassificationDefinitionController {
 
     @PostMapping
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<String> importClassifications(
+    public ResponseEntity<Void> importClassifications(
         @RequestParam("file") MultipartFile file)
         throws InvalidArgumentException, NotAuthorizedException, ConcurrencyException, ClassificationNotFoundException,
         ClassificationAlreadyExistException, DomainNotFoundException, IOException {
@@ -101,7 +100,7 @@ public class ClassificationDefinitionController {
         Map<Classification, String> childrenInFile = mapChildrenToParentKeys(classificationsResources, systemIds);
         insertOrUpdateClassificationsWithoutParent(classificationsResources, systemIds);
         updateParentChildrenRelations(childrenInFile);
-        ResponseEntity<String> response = new ResponseEntity<>(HttpStatus.OK);
+        ResponseEntity<Void> response = ResponseEntity.noContent().build();
         LOGGER.debug("Exit from importClassifications(), returning {}", response);
         return response;
     }
@@ -137,7 +136,8 @@ public class ClassificationDefinitionController {
             }
         }
         if (!duplicates.isEmpty()) {
-            throw new DuplicateKeyException("The 'key|domain'-identifier is not unique for the value(s): " + duplicates.toString());
+            throw new DuplicateKeyException(
+                "The 'key|domain'-identifier is not unique for the value(s): " + duplicates.toString());
         }
     }
 

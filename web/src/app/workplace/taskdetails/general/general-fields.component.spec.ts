@@ -18,59 +18,58 @@ import { Classification } from 'app/models/classification';
 import { Links } from 'app/models/links';
 
 @Component({
-  selector: 'taskana-dummy-detail',
-  template: 'dummydetail'
+    selector: 'taskana-dummy-detail',
+    template: 'dummydetail'
 })
 export class DummyDetailComponent {
 }
 
 // TODO: test pending to test. Failing random
 xdescribe('GeneralComponent', () => {
-  let component: TaskdetailsGeneralFieldsComponent;
-  let fixture: ComponentFixture<TaskdetailsGeneralFieldsComponent>;
-  let classificationsService;
+    let component: TaskdetailsGeneralFieldsComponent;
+    let fixture: ComponentFixture<TaskdetailsGeneralFieldsComponent>;
+    let classificationsService;
 
-  const routes: Routes = [
-    {path: '*', component: DummyDetailComponent}
-  ];
+    const routes: Routes = [
+        { path: '*', component: DummyDetailComponent }
+    ];
 
-  beforeEach(done => {
-    const configure = (testBed: TestBed) => {
-      TestBed.configureTestingModule({
-        imports: [FormsModule, HttpClientModule, RouterTestingModule.withRoutes(routes)],
-        declarations: [TaskdetailsGeneralFieldsComponent, DummyDetailComponent],
-        providers: [HttpClient, ClassificationCategoriesService, CustomFieldsService,
-          DomainService, RequestInProgressService, SelectedRouteService, ClassificationsService]
-      })
-    };
-    configureTests(configure).then(testBed => {
-      classificationsService = TestBed.get(ClassificationsService);
-      spyOn(classificationsService, 'getClassificationsByDomain').and.returnValue(new ClassificationResource(
-        {
-          'classificationSummaryResourceList': new Array<Classification>(
-            new Classification('id1', '1', 'category', 'type', 'domain_a', 'classification1', 'parentId',
-              1, 'service', new Links({ 'href': 'someurl' })),
-            new Classification('id2', '2', 'category', 'type', 'domain_a', 'classification2', 'parentId2',
-              1, 'service', new Links({ 'href': 'someurl' })))
-        }, new Links({ 'href': 'someurl' })
-      ));
-      done();
+    beforeEach(done => {
+        const configure = (testBed: TestBed) => {
+            TestBed.configureTestingModule({
+                imports: [FormsModule, HttpClientModule, RouterTestingModule.withRoutes(routes)],
+                declarations: [TaskdetailsGeneralFieldsComponent, DummyDetailComponent],
+                providers: [HttpClient, ClassificationCategoriesService, CustomFieldsService,
+                    DomainService, RequestInProgressService, SelectedRouteService, ClassificationsService]
+            })
+        };
+        configureTests(configure).then(testBed => {
+            classificationsService = TestBed.get(ClassificationsService);
+            spyOn(classificationsService, 'getClassificationsByDomain').and.returnValue(new ClassificationResource(
+                new Array<Classification>(
+                    new Classification('id1', '1', 'category', 'type', 'domain_a', 'classification1', 'parentId',
+                        1, 'service', new Links({ 'href': 'someurl' })),
+                    new Classification('id2', '2', 'category', 'type', 'domain_a', 'classification2', 'parentId2',
+                        1, 'service', new Links({ 'href': 'someurl' })))
+                , new Links({ 'href': 'someurl' })
+            ));
+            done();
+        });
     });
-  });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(TaskdetailsGeneralFieldsComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(TaskdetailsGeneralFieldsComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 
-  it('should call to getClassificationsByDomain', done => {
-    component.ngOnInit();
-    expect(classificationsService.getClassificationsByDomain).toHaveBeenCalled();
-    done();
-  });
+    it('should call to getClassificationsByDomain', done => {
+        component.ngOnInit();
+        expect(classificationsService.getClassificationsByDomain).toHaveBeenCalled();
+        done();
+    });
 });

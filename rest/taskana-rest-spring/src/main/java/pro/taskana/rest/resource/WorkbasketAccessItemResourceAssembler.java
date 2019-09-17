@@ -8,7 +8,6 @@ import java.util.List;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.PagedResources;
-import org.springframework.hateoas.Resources;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
@@ -31,10 +30,10 @@ public class WorkbasketAccessItemResourceAssembler extends
 
     @Autowired
     private WorkbasketService workbasketService;
+
     public WorkbasketAccessItemResourceAssembler() {
         super(WorkbasketController.class, WorkbasketAccessItemResource.class);
     }
-
 
     public WorkbasketAccessItemResource toResource(WorkbasketAccessItem wbAccItem) {
         return new WorkbasketAccessItemResource(wbAccItem);
@@ -49,16 +48,18 @@ public class WorkbasketAccessItemResourceAssembler extends
         return wbAccItemModel;
     }
 
-
     @PageLinks(WorkbasketAccessItemController.class)
-    public PagedResources<WorkbasketAccessItemResource> toResources(List<WorkbasketAccessItem> entities,
+    public WorkbasketAccessItemPaginatedListResource toResources(
+        List<WorkbasketAccessItem> entities,
         PagedResources.PageMetadata pageMetadata) {
-        return new PagedResources<>(toResources(entities), pageMetadata);
+        return new WorkbasketAccessItemPaginatedListResource(toResources(entities), pageMetadata);
     }
 
-    public Resources<WorkbasketAccessItemResource> toResources(String workbasketId, List<WorkbasketAccessItem> entities)
+    public WorkbasketAccessItemListResource toResources(
+        String workbasketId, List<WorkbasketAccessItem> entities)
         throws NotAuthorizedException, WorkbasketNotFoundException {
-        Resources<WorkbasketAccessItemResource> accessItemListResource = new Resources<>(super.toResources(entities));
+        WorkbasketAccessItemListResource accessItemListResource = new WorkbasketAccessItemListResource(
+            super.toResources(entities));
         accessItemListResource
             .add(linkTo(methodOn(WorkbasketController.class).getWorkbasketAccessItems(workbasketId))
                 .withSelfRel());

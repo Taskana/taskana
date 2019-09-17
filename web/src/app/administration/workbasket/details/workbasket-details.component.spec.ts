@@ -34,76 +34,75 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
 
 @Component({
-	selector: 'taskana-dummy-detail',
-	template: 'dummydetail'
+    selector: 'taskana-dummy-detail',
+    template: 'dummydetail'
 })
 export class DummyDetailComponent {
 }
 
 describe('WorkbasketDetailsComponent', () => {
-	let component: WorkbasketDetailsComponent;
-	let fixture: ComponentFixture<WorkbasketDetailsComponent>;
-	let debugElement;
-	let masterAndDetailService;
-	let workbasketService;
-	let router;
-	const workbasket = new Workbasket('1', '', '', '', ICONTYPES.TOPIC, '', '', '', '', '', '', '', '', '', '', '', '',
-		new Links({ 'href': 'someurl' }, { 'href': 'someurl' }, { 'href': 'someurl' }));
+    let component: WorkbasketDetailsComponent;
+    let fixture: ComponentFixture<WorkbasketDetailsComponent>;
+    let debugElement;
+    let masterAndDetailService;
+    let workbasketService;
+    let router;
+    const workbasket = new Workbasket('1', '', '', '', ICONTYPES.TOPIC, '', '', '', '', '', '', '', '', '', '', '', '',
+        new Links({ 'href': 'someurl' }, { 'href': 'someurl' }, { 'href': 'someurl' }));
 
-	const routes: Routes = [
-		{ path: '*', component: DummyDetailComponent }
-	];
+    const routes: Routes = [
+        { path: '*', component: DummyDetailComponent }
+    ];
 
-	beforeEach(done => {
-		const configure = (testBed: TestBed) => {
-			testBed.configureTestingModule({
-				imports: [RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule, HttpClientModule, ReactiveFormsModule,
-					InfiniteScrollModule],
-				declarations: [WorkbasketDetailsComponent, WorkbasketInformationComponent,
-					AccessItemsComponent,
-					DistributionTargetsComponent, DualListComponent, DummyDetailComponent],
-				providers: [WorkbasketService, MasterAndDetailService, GeneralModalService, RequestInProgressService,
-					AlertService, SavingWorkbasketService, CustomFieldsService, ImportExportService]
-			})
-		};
-		configureTests(configure).then(testBed => {
-			fixture = TestBed.createComponent(WorkbasketDetailsComponent);
-			component = fixture.componentInstance;
-			debugElement = fixture.debugElement.nativeElement;
-			router = TestBed.get(Router)
-			fixture.detectChanges();
-			masterAndDetailService = TestBed.get(MasterAndDetailService);
-			workbasketService = TestBed.get(WorkbasketService);
-			spyOn(masterAndDetailService, 'getShowDetail').and.callFake(() => { return of(true) })
-			spyOn(workbasketService, 'getSelectedWorkBasket').and.callFake(() => { return of('id1') })
-			spyOn(workbasketService, 'getWorkBasketsSummary').and.callFake(() => {
-				return of(new WorkbasketSummaryResource(
-					{
-						'workbaskets': new Array<WorkbasketSummary>(
-							new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '',
-								false, new Links({ 'href': 'someurl' })))
-					}, new LinksWorkbasketSummary({ 'href': 'someurl' })))
-			})
+    beforeEach(done => {
+        const configure = (testBed: TestBed) => {
+            testBed.configureTestingModule({
+                imports: [RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule, HttpClientModule, ReactiveFormsModule,
+                    InfiniteScrollModule],
+                declarations: [WorkbasketDetailsComponent, WorkbasketInformationComponent,
+                    AccessItemsComponent,
+                    DistributionTargetsComponent, DualListComponent, DummyDetailComponent],
+                providers: [WorkbasketService, MasterAndDetailService, GeneralModalService, RequestInProgressService,
+                    AlertService, SavingWorkbasketService, CustomFieldsService, ImportExportService]
+            })
+        };
+        configureTests(configure).then(testBed => {
+            fixture = TestBed.createComponent(WorkbasketDetailsComponent);
+            component = fixture.componentInstance;
+            debugElement = fixture.debugElement.nativeElement;
+            router = TestBed.get(Router)
+            fixture.detectChanges();
+            masterAndDetailService = TestBed.get(MasterAndDetailService);
+            workbasketService = TestBed.get(WorkbasketService);
+            spyOn(masterAndDetailService, 'getShowDetail').and.callFake(() => { return of(true) })
+            spyOn(workbasketService, 'getSelectedWorkBasket').and.callFake(() => { return of('id1') })
+            spyOn(workbasketService, 'getWorkBasketsSummary').and.callFake(() => {
+                return of(new WorkbasketSummaryResource(
+                    new Array<WorkbasketSummary>(
+                        new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '',
+                            false, new Links({ 'href': 'someurl' })))
+                    , new LinksWorkbasketSummary({ 'href': 'someurl' })))
+            })
 
-			spyOn(workbasketService, 'getWorkBasket').and.callFake(() => { return of(workbasket) })
-			spyOn(workbasketService, 'getWorkBasketAccessItems').and.callFake(() => {
-				return of(new WorkbasketAccessItemsResource(
-					{ 'accessItems': new Array<WorkbasketAccessItems>() }, new Links({ 'href': 'url' })))
-			})
-			spyOn(workbasketService, 'getWorkBasketsDistributionTargets').and.callFake(() => {
-				return of(new WorkbasketSummaryResource(
-					{ 'workbaskets': new Array<WorkbasketSummary>() }, new LinksWorkbasketSummary({ 'href': 'url' })))
-			})
-			done();
-		});
-	});
+            spyOn(workbasketService, 'getWorkBasket').and.callFake(() => { return of(workbasket) })
+            spyOn(workbasketService, 'getWorkBasketAccessItems').and.callFake(() => {
+                return of(new WorkbasketAccessItemsResource(
+                    new Array<WorkbasketAccessItems>(), new Links({ 'href': 'url' })))
+            })
+            spyOn(workbasketService, 'getWorkBasketsDistributionTargets').and.callFake(() => {
+                return of(new WorkbasketSummaryResource(
+                    new Array<WorkbasketSummary>(), new LinksWorkbasketSummary({ 'href': 'url' })))
+            })
+            done();
+        });
+    });
 
-	afterEach(() => {
-		document.body.removeChild(debugElement);
-	});
+    afterEach(() => {
+        document.body.removeChild(debugElement);
+    });
 
-	it('should be created', () => {
-		expect(component).toBeTruthy();
-	});
+    it('should be created', () => {
+        expect(component).toBeTruthy();
+    });
 
 });

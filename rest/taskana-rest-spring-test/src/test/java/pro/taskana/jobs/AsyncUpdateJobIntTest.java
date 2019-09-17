@@ -92,12 +92,10 @@ public class AsyncUpdateJobIntTest {
         String updatedClassification;
 
         ResponseEntity<ClassificationResource> response = template.exchange(
-            "http://127.0.0.1:" + port + "/v1/classifications/CLI:100000000000000000000000000000000003",
+            "http://127.0.0.1:" + port + "/api/v1/classifications/CLI:100000000000000000000000000000000003",
             HttpMethod.GET,
             request,
-            new ParameterizedTypeReference<ClassificationResource>() {
-
-            });
+            ParameterizedTypeReference.forType(ClassificationResource.class));
 
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
         ClassificationResource classification = response.getBody();
@@ -109,7 +107,7 @@ public class AsyncUpdateJobIntTest {
 
         updatedClassification = mapper.writeValueAsString(classification);
 
-        URL url = new URL(server + port + "/v1/classifications/CLI:100000000000000000000000000000000003");
+        URL url = new URL(server + port + "/api/v1/classifications/CLI:100000000000000000000000000000000003");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("PUT");
         con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
@@ -131,12 +129,10 @@ public class AsyncUpdateJobIntTest {
 
         // verify the classification modified timestamp is after 'before'
         ResponseEntity<ClassificationResource> repeatedResponse = template.exchange(
-            "http://127.0.0.1:" + port + "/v1/classifications/CLI:100000000000000000000000000000000003",
+            "http://127.0.0.1:" + port + "/api/v1/classifications/CLI:100000000000000000000000000000000003",
             HttpMethod.GET,
             request,
-            new ParameterizedTypeReference<ClassificationResource>() {
-
-            });
+            ParameterizedTypeReference.forType(ClassificationResource.class));
 
         ClassificationResource modifiedClassificationResource = repeatedResponse.getBody();
         Classification modifiedClassification = classificationResourceAssembler.toModel(modifiedClassificationResource);
@@ -178,12 +174,10 @@ public class AsyncUpdateJobIntTest {
         HttpEntity<String> admRequest = new HttpEntity<String>(admHeaders);
 
         ResponseEntity<TaskResource> taskResponse = admTemplate.exchange(
-            "http://127.0.0.1:" + port + "/v1/tasks/" + taskId,
+            "http://127.0.0.1:" + port + "/api/v1/tasks/" + taskId,
             HttpMethod.GET,
             admRequest,
-            new ParameterizedTypeReference<TaskResource>() {
-
-            });
+            ParameterizedTypeReference.forType(TaskResource.class));
 
         TaskResource taskResource = taskResponse.getBody();
         Task task = taskResourceAssembler.toModel(taskResource);

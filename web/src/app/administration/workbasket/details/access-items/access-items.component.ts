@@ -106,9 +106,9 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 		this.accessItemsubscription = this.workbasketService.getWorkBasketAccessItems(this.workbasket._links.accessItems.href)
 			.subscribe((accessItemsResource: WorkbasketAccessItemsResource) => {
 				this.accessItemsResource = accessItemsResource;
-				this.setAccessItemsGroups(accessItemsResource._embedded ? accessItemsResource._embedded.accessItems : []);
-				this.accessItemsClone = this.cloneAccessItems(accessItemsResource._embedded ? accessItemsResource._embedded.accessItems : []);
-				this.accessItemsResetClone = this.cloneAccessItems(accessItemsResource._embedded ? accessItemsResource._embedded.accessItems : []);
+				this.setAccessItemsGroups(accessItemsResource.accessItems);
+				this.accessItemsClone = this.cloneAccessItems(accessItemsResource.accessItems);
+				this.accessItemsResetClone = this.cloneAccessItems(accessItemsResource.accessItems);
 				this.requestInProgress = false;
 			})
 		this.savingAccessItemsSubscription = this.savingWorkbaskets.triggeredAccessItemsSaving()

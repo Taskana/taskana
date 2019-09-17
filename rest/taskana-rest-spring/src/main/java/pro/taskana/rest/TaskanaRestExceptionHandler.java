@@ -130,7 +130,7 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
     private ResponseEntity<Object> buildResponse(Exception ex, WebRequest req, HttpStatus status) {
         TaskanaErrorData errorData = new TaskanaErrorData(status, ex, req);
         logError(ex, errorData);
-        return new ResponseEntity<>(errorData, status);
+        return ResponseEntity.status(status).body(errorData);
     }
 
     private void logError(Exception ex, TaskanaErrorData errorData) {
