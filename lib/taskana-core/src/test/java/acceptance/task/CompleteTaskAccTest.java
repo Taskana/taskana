@@ -89,6 +89,7 @@ public class CompleteTaskAccTest extends AbstractAccTest {
         newTaskImpl.setClaimed(Instant.now());
 
         Task createdTask = taskService.createTask(newTaskImpl);
+        waitAMillisecond();
         Task completedTask = taskService.forceCompleteTask(createdTask.getId());
 
         assertEquals(TaskState.COMPLETED, completedTask.getState());
@@ -115,6 +116,7 @@ public class CompleteTaskAccTest extends AbstractAccTest {
         newTaskImpl.setClaimed(Instant.now());
 
         Task createdTask = taskService.createTask(newTaskImpl);
+        waitAMillisecond();
         Task completedTask = taskService.forceCompleteTask(createdTask.getId());
 
         assertEquals(TaskState.COMPLETED, completedTask.getState());
@@ -174,12 +176,9 @@ public class CompleteTaskAccTest extends AbstractAccTest {
         assertNull(createdTask.getClaimed());
 
         Instant before = Instant.now();
+        waitAMillisecond();
         Task claimedTask = taskService.claim(createdTask.getId());
-        try {
-            TimeUnit.MILLISECONDS.sleep(1);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        waitAMillisecond();
         Instant after = Instant.now();
 
         assertNotNull(claimedTask.getOwner());
@@ -210,6 +209,7 @@ public class CompleteTaskAccTest extends AbstractAccTest {
         assertNotNull(createdTask);
         assertEquals(createdTask.getOwner(), "other_user");
 
+        waitAMillisecond();
         Instant beforeForceClaim = Instant.now();
         Task taskAfterClaim = taskService.forceClaim(createdTask.getId());
 
@@ -335,4 +335,11 @@ public class CompleteTaskAccTest extends AbstractAccTest {
         taskService.cancelClaim("TKI:000000000000000000000000000000000100");
     }
 
+    private void waitAMillisecond() {
+        try {
+            TimeUnit.MILLISECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }
