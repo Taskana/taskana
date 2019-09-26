@@ -1,11 +1,20 @@
 .btn-group > .dropdown > .btn:first-child:not(:last-child):not(.dropdown-toggle) {
-    border-bottom-right-radius: 0;
-    border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
 }
+
 .btn-group ul + .btn {
-    margin-left: -1px;
+  margin-left: -1px;
 }
 
 .btn-group > div.btn-group > .btn:first-child:not(:last-child):not(.dropdown-toggle) {
-    border-radius: 0;
+  border-radius: 0;
+}
+
+
+//shameful but needed. without the definition the svg-rendering will break.
+.dropdown {
+  svg-icon {
+    display: inline-block;
+  }
 }

@@ -1,16 +1,16 @@
-@import './src/assets/_colors';
+@import '~assets/_colors';
 
 .list-group-item {
-  padding: 5px 0px 2px 1px;
+  padding: 5px 0 2px 1px;
   border: none;
 }
 
 .tab-align {
-  padding: 8px 12px 8px 0px;
-  margin-bottom: 0px;
+  padding: 8px 12px 8px 0;
+  margin-bottom: 0;
 
   & > div {
-    margin: 6px 0px;
+    margin: 6px 0;
   }
 }
 
@@ -31,15 +31,27 @@ svg-icon {
   fill: $blue;
 }
 
+//ToDo: Why? See style above
 svg-icon.blue {
   fill: $blue;
 }
 
-@media screen and (min-width: 991px) and (max-width: 1115px) {
-  .reduced-width {
+//to avoid flex-growth this needs to be set hard. ToDo: Build a better flexgrid suiting for the nav!
+.dropdown-button {
+  width: 44px;
+  height: 36px;
+  > svg-icon {
+    height: 16px;
+    top: 0; left: -2px;
+  }
+  > .material-icons {
+    margin-left: -4px;
+  }
+}
+@media screen and (min-width: 991px) and (max-width: 1065px) {
+  .dropdown-button {
     width: 37px;
     padding-left: 5px;
-    padding-right: 5px;
   }
 }
 
@@ -55,10 +67,3 @@ div.input-group {
   margin-bottom: 1px;
 }
 
-button.btn.btn-primary {
-  height: 34px;
-}
-
-#task-list-action-toolbar svg-icon.blue {
-  position: initial;
-}

@@ -1,56 +1,67 @@
 <li id="task-list-action-toolbar" class="list-group-item tab-align">
   <div class="row">
     <div *ngIf="searched" class="col-xs-2">
-      <button (click)="createTask()" type="button" class="btn btn-default pull-left green-blue"  data-toggle="tooltip" title="Add Task to current Workbasket">
+      <button (click)="createTask()" type="button" class="btn btn-default pull-left green-blue" data-toggle="tooltip"
+              title="Add Task to current Workbasket">
         <span class="material-icons md-20 green-blue">add_circle_outline</span>
       </button>
     </div>
     <div [ngClass]="{'col-xs-8': !searched, 'col-xs-5': searched}">
       <input [(ngModel)]="resultName" *ngIf="searchSelected === search.byWorkbasket" [typeahead]="workbasketNames"
-        class="form-control" (typeaheadOnSelect)="searchBasket()" (typeaheadNoResults)="workbasketSelected = false"
-        placeholder="Search for Workbasket ..." />
+             class="form-control" (typeaheadOnSelect)="searchBasket()" (typeaheadNoResults)="workbasketSelected = false"
+             placeholder="Search for Workbasket ..."/>
       <div class="input-group" *ngIf="searchSelected === search.byTypeAndValue">
-        <input [(ngModel)]="resultType" class="form-control" (keyup.enter)="searchBasket()" placeholder="Search by type ..." />
-        <span _ngcontent-c10="" class="input-group-btn">
-          <button _ngcontent-c10="" class="btn btn-primary" type="button" (click)="searchBasket()">
+        <input [(ngModel)]="resultType" class="form-control" (keyup.enter)="searchBasket()"
+               placeholder="Search by type ..."/>
+        <span class="input-group-btn">
+          <button class="btn btn-primary" type="button" (click)="searchBasket()">
             <span class="material-icons md-20 white">search</span>
           </button>
         </span>
       </div>
-      <input [(ngModel)]="resultValue" *ngIf="searchSelected === search.byTypeAndValue" class="form-control" (keyup.enter)="searchBasket()"
-        placeholder="Search by value ..." />
+      <input [(ngModel)]="resultValue" *ngIf="searchSelected === search.byTypeAndValue" class="form-control"
+             (keyup.enter)="searchBasket()"
+             placeholder="Search by value ..."/>
     </div>
     <div *ngIf="searched" class="pull-right margin-right btn-group">
       <taskana-sort [sortingFields]="sortingFields" (performSorting)="sorting($event)" class="btn-group"></taskana-sort>
-      <button class="btn btn-default collapsed" type="button" id="collapsedMenufilterWb" aria-expanded="false" (click)="toolbarState=!toolbarState">
+      <button class="btn btn-default collapsed" type="button" id="collapsedMenufilterWb" aria-expanded="false"
+              (click)="toolbarState=!toolbarState">
         <span class="material-icons md-20 blue">search</span>
       </button>
     </div>
-      <div class="dropdown clearfix pull-right margin-right">
-        <button type="button" class="btn btn-default dropdown-button" [ngClass]="{'reduced-width': searched}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" title="{{searchSelected == search.byTypeAndValue ? 'Type and value' : 'Workbasket'}}">
-          <svg-icon *ngIf="searchSelected == search.byWorkbasket" class="blue small" src="./assets/icons/wb-empty.svg"></svg-icon>
-          <span *ngIf="searchSelected == search.byTypeAndValue" class="material-icons md-20 blue">title</span>
-          <span class="caret"></span>
-        </button>
-        <div class="dropdown-menu dropdown-menu" aria-labelledby="dropdownMenu">
-          <div class="dropdown">
-            <h5 class="bold-blue align-center">Search by</h5>
-          </div>
-          <div role="separator" class="divider"></div>
-          <ul>
-            <li data-toggle="tooltip" title="Workbasket">
-              <a class="dropdown-item" (click)="selectSearch(search.byWorkbasket)">
-                <label>
-                  <span class="material-icons md-20 blue margin-right" aria-hidden="true">{{ searchSelected === search.byWorkbasket ? 'check_box': 'check_box_outline_blank' }}</span>
-                  <svg-icon class="margin-right small" src="./assets/icons/wb-empty.svg"></svg-icon>
-                  <small class="margin-right blue-font">Workbasket</small>
-                </label>
-              </a>
-            </li>
+    <div class="dropdown clearfix pull-right margin-right">
+      <button type="button" class="btn btn-default dropdown-button"
+              data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"
+              title="{{searchSelected == search.byTypeAndValue ? 'Type and value' : 'Workbasket'}}">
+        <svg-icon *ngIf="searchSelected == search.byWorkbasket" class="blue small"
+                  src="./assets/icons/wb-empty.svg"></svg-icon>
+        <span *ngIf="searchSelected == search.byTypeAndValue" class="material-icons md-20 blue">title</span>
+        <span class="caret"></span>
+      </button>
+      <div class="dropdown-menu dropdown-menu" aria-labelledby="dropdownMenu">
+        <div class="dropdown">
+          <h5 class="bold-blue align-center">Search by</h5>
+        </div>
+        <div role="separator" class="divider"></div>
+        <ul>
+          <li data-toggle="tooltip" title="Workbasket">
+            <a class="dropdown-item" (click)="selectSearch(search.byWorkbasket)">
+              <label>
+                <span class="material-icons md-20 blue margin-right"
+                      aria-hidden="true">{{ searchSelected === search.byWorkbasket ? 'check_box' : 'check_box_outline_blank' }}</span>
+                <span class="inline-svg-wrap">
+                  <svg-icon class="small" src="./assets/icons/wb-empty.svg"></svg-icon>
+                </span>
+                <small class="margin-right blue-font">Workbasket</small>
+              </label>
+            </a>
+          </li>
           <li data-toggle="tooltip" title="Type and value">
             <a class="dropdown-item" (click)="selectSearch(search.byTypeAndValue)">
               <label>
-                <span class="material-icons md-20 blue" aria-hidden="true">{{ searchSelected === search.byTypeAndValue ? 'check_box': 'check_box_outline_blank' }}</span>
+                <span class="material-icons md-20 blue"
+                      aria-hidden="true">{{ searchSelected === search.byTypeAndValue ? 'check_box' : 'check_box_outline_blank' }}</span>
                 <span class="material-icons md-20 blue">title</span>
                 <small class="blue-font">Type and value</small>
               </label>
@@ -60,8 +71,10 @@
       </div>
     </div>
   </div>
+  <!-- ToDo: Fix Type mismatch -->
   <div [@toggleDown]="toolbarState" class="row no-overflow">
     <taskana-filter [filterParams]="filterParams" [filterType]="filterType" (performFilter)="filtering($event)">
     </taskana-filter>
   </div>
 </li>
+
