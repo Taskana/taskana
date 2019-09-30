@@ -19,7 +19,7 @@ stages:
 env:
   global:
     - FORCE_DEPLOY=false
-    - NODE_VERSION=8
+    - NODE_VERSION=12.10.0
     - DEPLOY_REPO=Taskana/taskana
     - VERSION=v`mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.6.0:exec -f ./lib`
   matrix:
