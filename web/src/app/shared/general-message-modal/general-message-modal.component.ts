@@ -17,7 +17,7 @@ export class GeneralMessageModalComponent implements OnChanges {
 	@Input()
 	type: string;
 
-	@ViewChild('generalModal')
+	@ViewChild('generalModal', { static: false })
 	private modal;
 
 	constructor() { }

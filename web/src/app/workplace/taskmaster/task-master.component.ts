@@ -41,7 +41,7 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
   objectReference: ObjectReference;
   selectedSearchType: Search = Search.byWorkbasket;
 
-  @ViewChild('wbToolbar')
+  @ViewChild('wbToolbar', { static: false })
   private toolbarElement: ElementRef;
   private taskChangeSubscription: Subscription;
   private taskDeletedSubscription: Subscription;

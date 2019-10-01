@@ -20,7 +20,7 @@ export class ImportExportComponent implements OnInit {
 
   @Input() currentSelection: TaskanaType;
 
-  @ViewChild('selectedFile')
+  @ViewChild('selectedFile', { static: false })
   selectedFileInput;
 
   domains: string[] = [];
@@ -94,7 +94,7 @@ export class ImportExportComponent implements OnInit {
   }
 
   private resetProgress() {
-    this.uploadservice.setCurrentProgressValue(0)
+    this.uploadservice.setCurrentProgressValue(0);
     this.uploadservice.isInUse = false;
     this.selectedFileInput.nativeElement.value = '';
   }
@@ -113,7 +113,7 @@ export class ImportExportComponent implements OnInit {
       this.errorHandler(title, JSON.parse(event.responseText).message);
 
     } else if (event.readyState === 4 && event.status === 200) {
-      this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, 'Import was successful'))
+      this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, 'Import was successful'));
       this.importExportService.setImportingFinished(true);
       this.resetProgress();
     }
