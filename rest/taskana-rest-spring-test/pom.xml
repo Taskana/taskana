@@ -56,7 +56,7 @@
 		<dependency>
 			<groupId>pro.taskana.simplehistory</groupId>
 			<artifactId>taskana-simplehistory-provider</artifactId>
-			<version>${version.taskana.history}</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<!-- Tests -->

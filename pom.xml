@@ -22,8 +22,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<version.taskana.history>0.0.9</version.taskana.history>
-
 		<version.mybatis>3.4.5</version.mybatis>
 		<version.slf4j>1.7.25</version.slf4j>
 		<version.json>20180130</version.json>
