@@ -124,8 +124,13 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
 
     this.categoriesSubscription = this.categoryService.getCategories().subscribe((categories: Array<string>) => {
       this.categories = categories;
+      // ToDo: Remove this line during refactoring. Atm checking why it was written takes too long
       if (categories.length > 0 && this.classification) {
-        this.classification.category = categories[0];
+        // TSK-891 fix: The property is already set and is crucial value
+        // Wrapped with an if to set a default if not already set.
+        if ( !this.classification.category ) {
+          this.classification.category = categories[0];
+        }
       }
     });
 
@@ -177,7 +182,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
           this.afterRequest();
         },
           error => {
-            this.generalModalService.triggerMessage(new MessageModal('There was an error creating a classification', error))
+            this.generalModalService.triggerMessage(new MessageModal('There was an error creating a classification', error));
             this.afterRequest();
           });
     } else {
@@ -189,7 +194,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
           new AlertModel(AlertType.SUCCESS, `Classification ${this.classification.key} was saved successfully`));
         this.cloneClassification(this.classification);
       } catch (error) {
-        this.generalModalService.triggerMessage(new MessageModal('There was error while saving your classification', error))
+        this.generalModalService.triggerMessage(new MessageModal('There was error while saving your classification', error));
         this.afterRequest();
       }
     }
@@ -197,7 +202,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
 
   onClear() {
     this.formsValidatorService.formSubmitAttempt = false;
-    this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'Reset edited fields'))
+    this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'Reset edited fields'));
     this.classification = { ...this.classificationClone };
   }
 
@@ -223,7 +228,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     }
     this.requestInProgress = true;
     const classification = await this.classificationsService.getClassification(id);
-    this.fillClassificationInformation(classification)
+    this.fillClassificationInformation(classification);
     this.classificationsService.selectClassification(classification);
     this.requestInProgress = false;
   }
@@ -288,7 +293,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         this.router.navigate(['taskana/administration/classifications']);
         this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Classification ${key} was removed successfully`))
       }, error => {
-        this.generalModalService.triggerMessage(new MessageModal('There was error while removing your classification', error))
+        this.generalModalService.triggerMessage(new MessageModal('There was error while removing your classification', error));
         this.afterRequest();
       })
   }
