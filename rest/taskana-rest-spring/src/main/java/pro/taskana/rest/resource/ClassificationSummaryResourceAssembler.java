@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +11,7 @@ import pro.taskana.ClassificationService;
 import pro.taskana.ClassificationSummary;
 import pro.taskana.impl.ClassificationImpl;
 import pro.taskana.rest.ClassificationController;
+import pro.taskana.rest.resource.PagedResources.PageMetadata;
 import pro.taskana.rest.resource.links.PageLinks;
 
 /**
@@ -45,7 +45,7 @@ public class ClassificationSummaryResourceAssembler
 
     @PageLinks(ClassificationController.class)
     public ClassificationSummaryListResource toResources(Collection<ClassificationSummary> entities,
-        PagedResources.PageMetadata pageMetadata) {
+        PageMetadata pageMetadata) {
         return new ClassificationSummaryListResource(toResources(entities), pageMetadata);
     }
 }

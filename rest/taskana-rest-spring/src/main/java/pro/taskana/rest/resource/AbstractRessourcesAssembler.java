@@ -5,15 +5,14 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.PagedResources;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
- * Abstract resources assembler for taskana REST controller with pageable resources.
- * This method is deprecated, it can be removed after fixing taskana-simple-history references
+ * Abstract resources assembler for taskana REST controller with pageable resources. This method is deprecated, it can
+ * be removed after fixing taskana-simple-history references
  */
 @Deprecated
 public abstract class AbstractRessourcesAssembler {
@@ -24,7 +23,8 @@ public abstract class AbstractRessourcesAssembler {
     }
 
     protected static UriComponentsBuilder getBuilderForOriginalUri() {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+            .getRequest();
         UriComponentsBuilder baseUri = ServletUriComponentsBuilder.fromServletMapping(request)
             .path(request.getRequestURI());
 
@@ -45,7 +45,7 @@ public abstract class AbstractRessourcesAssembler {
             (new Link(original.replaceQueryParam("page", 1).toUriString())).withRel("first"));
         pagedResources.add((new Link(
             original.replaceQueryParam("page", pageMetadata.getTotalPages()).toUriString())).withRel(
-            "last"));
+                "last"));
         if (pageMetadata.getNumber() > 1L) {
             pagedResources.add((new Link(
                 original.replaceQueryParam("page", pageMetadata.getNumber() - 1L)

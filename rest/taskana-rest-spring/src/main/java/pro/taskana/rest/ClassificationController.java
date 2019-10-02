@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.hateoas.PagedResources.PageMetadata;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
 import org.springframework.http.HttpStatus;
@@ -37,6 +36,7 @@ import pro.taskana.rest.resource.ClassificationResource;
 import pro.taskana.rest.resource.ClassificationResourceAssembler;
 import pro.taskana.rest.resource.ClassificationSummaryListResource;
 import pro.taskana.rest.resource.ClassificationSummaryResourceAssembler;
+import pro.taskana.rest.resource.PagedResources.PageMetadata;
 
 /**
  * Controller for all {@link Classification} related endpoints.

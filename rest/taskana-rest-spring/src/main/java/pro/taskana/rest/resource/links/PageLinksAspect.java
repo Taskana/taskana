@@ -1,23 +1,25 @@
 package pro.taskana.rest.resource.links;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
-
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import pro.taskana.rest.resource.PagedResources.PageMetadata;
 
 /**
  * Implementation of the PageLinks annotation to generate HATEOAS Links for paged list resources.
@@ -27,9 +29,10 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 public class PageLinksAspect {
 
     @Around("@annotation(pro.taskana.rest.resource.links.PageLinks) && args(data, page, ..)")
-    public ResourceSupport addLinksToPageResource(ProceedingJoinPoint joinPoint, List<?> data, PagedResources.PageMetadata page)
+    public ResourceSupport addLinksToPageResource(ProceedingJoinPoint joinPoint, List<?> data, PageMetadata page)
         throws Throwable {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+            .getRequest();
         Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
         PageLinks pageLinks = method.getAnnotation(PageLinks.class);
         Class<?> controller = pageLinks.value();
