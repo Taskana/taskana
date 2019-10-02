@@ -203,13 +203,13 @@ export class TaskQueryComponent implements OnInit {
       this.created ? this.created.toISOString().substring(0, 10) : undefined,
       false).subscribe(taskQueryResource => {
         this.requestInProgressService.setRequestInProgress(false);
-        if (!taskQueryResource._embedded) {
+        if (!taskQueryResource.taskHistoryEvents) {
           this.taskQuery = null;
           this.taskQueryResource = null;
           return null;
         }
         this.taskQueryResource = taskQueryResource;
-        this.taskQuery = taskQueryResource._embedded.taskHistoryEventResourceList;
+        this.taskQuery = taskQueryResource.taskHistoryEvents;
       })
   }
 

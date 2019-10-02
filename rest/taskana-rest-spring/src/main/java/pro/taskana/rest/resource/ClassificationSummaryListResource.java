@@ -3,7 +3,6 @@ package pro.taskana.rest.resource;
 import java.util.Collection;
 
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.PagedResources.PageMetadata;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

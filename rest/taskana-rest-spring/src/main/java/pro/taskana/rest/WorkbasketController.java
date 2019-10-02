@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.hateoas.PagedResources.PageMetadata;
 import org.springframework.hateoas.Resources;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
@@ -43,6 +42,7 @@ import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.rest.resource.DistributionTargetListResource;
 import pro.taskana.rest.resource.DistributionTargetResource;
 import pro.taskana.rest.resource.DistributionTargetResourceAssembler;
+import pro.taskana.rest.resource.PagedResources.PageMetadata;
 import pro.taskana.rest.resource.WorkbasketAccessItemListResource;
 import pro.taskana.rest.resource.WorkbasketAccessItemResource;
 import pro.taskana.rest.resource.WorkbasketAccessItemResourceAssembler;

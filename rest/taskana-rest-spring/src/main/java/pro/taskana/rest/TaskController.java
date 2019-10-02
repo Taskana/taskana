@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.hateoas.PagedResources.PageMetadata;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
 import org.springframework.http.HttpStatus;
@@ -39,6 +38,7 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
+import pro.taskana.rest.resource.PagedResources.PageMetadata;
 import pro.taskana.rest.resource.TaskResource;
 import pro.taskana.rest.resource.TaskResourceAssembler;
 import pro.taskana.rest.resource.TaskSummaryListResource;

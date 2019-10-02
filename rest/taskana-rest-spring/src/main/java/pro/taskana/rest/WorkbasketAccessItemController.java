@@ -7,7 +7,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
@@ -24,6 +23,7 @@ import pro.taskana.WorkbasketService;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.ldap.LdapClient;
+import pro.taskana.rest.resource.PagedResources.PageMetadata;
 import pro.taskana.rest.resource.WorkbasketAccessItemPaginatedListResource;
 import pro.taskana.rest.resource.WorkbasketAccessItemResourceAssembler;
 
@@ -80,7 +80,7 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
         query = applyFilterParams(query, params);
         query = applySortingParams(query, params);
 
-        PagedResources.PageMetadata pageMetadata = getPageMetadata(params, query);
+        PageMetadata pageMetadata = getPageMetadata(params, query);
         List<WorkbasketAccessItem> workbasketAccessItems = getQueryList(query, pageMetadata);
 
         WorkbasketAccessItemPaginatedListResource pagedResources = workbasketAccessItemResourceAssembler.toResources(

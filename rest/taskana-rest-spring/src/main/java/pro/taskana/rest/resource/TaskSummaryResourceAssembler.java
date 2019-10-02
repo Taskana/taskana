@@ -2,7 +2,6 @@ package pro.taskana.rest.resource;
 
 import java.util.List;
 
-import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
@@ -10,6 +9,7 @@ import pro.taskana.TaskSummary;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.SystemException;
 import pro.taskana.rest.TaskController;
+import pro.taskana.rest.resource.PagedResources.PageMetadata;
 import pro.taskana.rest.resource.links.PageLinks;
 
 /**
@@ -35,8 +35,7 @@ public class TaskSummaryResourceAssembler
     }
 
     @PageLinks(TaskController.class)
-    public TaskSummaryListResource toResources(List<TaskSummary> taskSummaries,
-        PagedResources.PageMetadata pageMetadata) {
+    public TaskSummaryListResource toResources(List<TaskSummary> taskSummaries, PageMetadata pageMetadata) {
         return new TaskSummaryListResource(toResources(taskSummaries), pageMetadata);
     }
 
