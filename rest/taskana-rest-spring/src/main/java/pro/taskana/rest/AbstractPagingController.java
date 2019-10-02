@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.springframework.hateoas.PagedResources.PageMetadata;
 import org.springframework.util.MultiValueMap;
 
 import pro.taskana.BaseQuery;
 import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.rest.resource.PagedResources.PageMetadata;
 
 /**
  * Abstract superclass for taskana REST controller with pageable resources.
@@ -76,7 +76,7 @@ public abstract class AbstractPagingController {
         return pageMetadata;
     }
 
-    //  This method is deprecated please remove it after updating taskana-simple-history reference to it.
+    // This method is deprecated please remove it after updating taskana-simple-history reference to it.
     @Deprecated
     protected PageMetadata initPageMetadata(String pagesizeParam, String pageParam, long totalElements)
         throws InvalidArgumentException {

@@ -3,7 +3,6 @@ package pro.taskana.rest.resource;
 import java.util.Collection;
 
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.PagedResources.PageMetadata;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -16,12 +15,14 @@ public class WorkbasketAccessItemPaginatedListResource extends PagedResources<Wo
         super();
     }
 
-    public WorkbasketAccessItemPaginatedListResource(Collection<WorkbasketAccessItemResource> content, PageMetadata metadata,
+    public WorkbasketAccessItemPaginatedListResource(Collection<WorkbasketAccessItemResource> content,
+        PageMetadata metadata,
         Link... links) {
         super(content, metadata, links);
     }
 
-    public WorkbasketAccessItemPaginatedListResource(Collection<WorkbasketAccessItemResource> content, PageMetadata metadata,
+    public WorkbasketAccessItemPaginatedListResource(Collection<WorkbasketAccessItemResource> content,
+        PageMetadata metadata,
         Iterable<Link> links) {
         super(content, metadata, links);
     }

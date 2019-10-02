@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +17,7 @@ import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.WorkbasketAccessItemImpl;
 import pro.taskana.rest.WorkbasketAccessItemController;
 import pro.taskana.rest.WorkbasketController;
+import pro.taskana.rest.resource.PagedResources.PageMetadata;
 import pro.taskana.rest.resource.links.PageLinks;
 
 /**
@@ -50,8 +50,7 @@ public class WorkbasketAccessItemResourceAssembler extends
 
     @PageLinks(WorkbasketAccessItemController.class)
     public WorkbasketAccessItemPaginatedListResource toResources(
-        List<WorkbasketAccessItem> entities,
-        PagedResources.PageMetadata pageMetadata) {
+        List<WorkbasketAccessItem> entities, PageMetadata pageMetadata) {
         return new WorkbasketAccessItemPaginatedListResource(toResources(entities), pageMetadata);
     }
 
