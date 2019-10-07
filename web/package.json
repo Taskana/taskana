@@ -5,8 +5,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": " npm run lint && ng build --env=dev ",
-    "build:prod": "npm run lint && ng build --configuration=production",
+    "build": "ng build",
+    "build:prod": "ng build --prod=true",
     "test": "ng test --karma-config karma.conf.js --watch=false --browsers Firefox",
     "test:watch": "ng test --karma-config karma.conf.js --browsers Chrome",
     "lint": "ng lint"
