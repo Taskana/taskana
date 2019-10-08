@@ -133,7 +133,7 @@
 				<version>${version.maven.resources}</version>
 				<executions>
 					<execution>
-						<id>copy-documentation-to-static-folder</id>
+						<id>copy-rest-documentation-to-static-folder</id>
 						<phase>prepare-package</phase>
 						<goals>
 							<goal>copy-resources</goal>
@@ -146,6 +146,63 @@
 								<resource>
 									<directory>
 										../taskana-rest-spring-test/target/generated-docs
+									</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-taskana-core-docs</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>
+								${project.build.outputDirectory}/static/docs/java/taskana-core
+							</outputDirectory>
+							<resources>
+								<resource>
+									<directory>
+										../../lib/taskana-core/target/apidocs
+									</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-taskana-cdi-docs</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>
+								${project.build.outputDirectory}/static/docs/java/taskana-cdi
+							</outputDirectory>
+				C			<resources>
+								<resource>
+									<directory>
+										../../lib/taskana-cdi/target/apidocs
+									</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-taskana-spring-docs</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>
+								${project.build.outputDirectory}/static/docs/java/taskana-spring
+							</outputDirectory>
+							<resources>
+								<resource>
+									<directory>
+										../../lib/taskana-spring/target/apidocs
 									</directory>
 								</resource>
 							</resources>
