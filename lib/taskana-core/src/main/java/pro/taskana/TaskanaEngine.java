@@ -56,16 +56,22 @@ public interface TaskanaEngine {
     TaskanaEngineConfiguration getConfiguration();
 
     /**
-     * The HistoryEventProducer events and emits them to the registered history service providers.
-     * @return The HistoryEventProducer
+     * Checks if the history plugin is enabled.
+     *
+     * @return true if the history is enabled. Otherwise false.
      */
-    HistoryEventProducer getHistoryEventProducer();
+    boolean isHistoryEnabled();
 
     /**
-     * sets the connection management mode for taskana.
+     * sets the connection management mode.
      *
      * @param mode
-     *            See ConnectionManagementMode
+     *            the connection management mode Valid values are:
+     *            <ul>
+     *            <li>PARTICIPATE - taskana participates in global transaction. This is the default mode.</li>
+     *            <li>AUTOCOMMIT - taskana commits each API call separately</li>
+     *            <li>EXPLICIT - commit processing is managed explicitly by the client</li>
+     *            </ul>
      */
     void setConnectionManagementMode(ConnectionManagementMode mode);
 
@@ -166,6 +172,13 @@ public interface TaskanaEngine {
          * @return The nested TaskanaEngine.
          */
         TaskanaEngine getEngine();
+
+        /**
+         * Retrieve HistoryEventProducer.
+         *
+         * @return the HistoryEventProducer instance.
+         */
+        HistoryEventProducer getHistoryEventProducer();
 
     }
 

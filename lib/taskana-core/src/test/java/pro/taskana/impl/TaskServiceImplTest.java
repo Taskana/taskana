@@ -120,8 +120,8 @@ public class TaskServiceImplTest {
         verify(workbasketServiceMock, times(1)).getWorkbasket(destinationWorkbasket.getId());
         verify(taskMapperMock, times(1)).update(any());
         verify(taskanaEngineInternalMock, times(1)).returnConnection();
-        verify(taskanaEngineInternalMock, times(3)).getEngine();
-        verify(taskanaEngineMock).getHistoryEventProducer();
+        verify(taskanaEngineInternalMock, times(2)).getEngine();
+        verify(taskanaEngineInternalMock).getHistoryEventProducer();
         verify(taskanaEngineMock).getWorkbasketService();
         verify(taskanaEngineMock).getClassificationService();
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
