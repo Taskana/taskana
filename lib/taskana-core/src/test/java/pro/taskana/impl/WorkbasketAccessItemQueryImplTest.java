@@ -14,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import pro.taskana.TaskanaEngine;
 import pro.taskana.WorkbasketAccessItem;
 
 /**
@@ -29,14 +28,14 @@ public class WorkbasketAccessItemQueryImplTest {
     private WorkbasketAccessItemQueryImpl workbasketAccessItemQueryImpl;
 
     @Mock
-    private TaskanaEngine.Internal taskanaEngineInternal;
+    private InternalTaskanaEngine internalTaskanaEngine;
 
     @Mock
     private SqlSession sqlSession;
 
     @Test
     public void should_ReturnList_when_BuilderIsUsed() {
-        when(taskanaEngineInternal.getSqlSession()).thenReturn(sqlSession);
+        when(internalTaskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectList(any(), any())).thenReturn(new ArrayList<>());
 
         List<WorkbasketAccessItem> result = workbasketAccessItemQueryImpl.accessIdIn("test", "asd")
@@ -46,7 +45,7 @@ public class WorkbasketAccessItemQueryImplTest {
 
     @Test
     public void should_ReturnListWithOffset_when_BuilderIsUsed() {
-        when(taskanaEngineInternal.getSqlSession()).thenReturn(sqlSession);
+        when(internalTaskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectList(any(), any(), any())).thenReturn(new ArrayList<>());
 
         List<WorkbasketAccessItem> result = workbasketAccessItemQueryImpl.accessIdIn("test", "asd")
@@ -56,7 +55,7 @@ public class WorkbasketAccessItemQueryImplTest {
 
     @Test
     public void should_ReturnOneItem_when_BuilderIsUsed() {
-        when(taskanaEngineInternal.getSqlSession()).thenReturn(sqlSession);
+        when(internalTaskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectOne(any(), any())).thenReturn(new WorkbasketAccessItemImpl());
 
         WorkbasketAccessItem result = workbasketAccessItemQueryImpl.accessIdIn("test", "asd")

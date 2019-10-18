@@ -2,7 +2,6 @@ package pro.taskana.impl;
 
 import pro.taskana.CustomField;
 import pro.taskana.TaskMonitorService;
-import pro.taskana.TaskanaEngine;
 import pro.taskana.mappings.TaskMonitorMapper;
 import pro.taskana.report.CategoryReport;
 import pro.taskana.report.ClassificationReport;
@@ -16,10 +15,10 @@ import pro.taskana.report.WorkbasketReport;
  */
 public class TaskMonitorServiceImpl implements TaskMonitorService {
 
-    private TaskanaEngine.Internal taskanaEngine;
+    private InternalTaskanaEngine taskanaEngine;
     private TaskMonitorMapper taskMonitorMapper;
 
-    TaskMonitorServiceImpl(TaskanaEngine.Internal taskanaEngine, TaskMonitorMapper taskMonitorMapper) {
+    TaskMonitorServiceImpl(InternalTaskanaEngine taskanaEngine, TaskMonitorMapper taskMonitorMapper) {
         super();
         this.taskanaEngine = taskanaEngine;
         this.taskMonitorMapper = taskMonitorMapper;

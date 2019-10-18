@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.CustomField;
-import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaRole;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
@@ -27,7 +26,7 @@ public class CustomFieldValueReportBuilderImpl
 
     private CustomField customField;
 
-    CustomFieldValueReportBuilderImpl(TaskanaEngine.Internal taskanaEngine, TaskMonitorMapper taskMonitorMapper,
+    CustomFieldValueReportBuilderImpl(InternalTaskanaEngine taskanaEngine, TaskMonitorMapper taskMonitorMapper,
         CustomField customField) {
         super(taskanaEngine, taskMonitorMapper);
         this.customField = customField;

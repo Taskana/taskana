@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.CustomField;
 import pro.taskana.TaskState;
-import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaRole;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
@@ -33,7 +32,7 @@ abstract class TimeIntervalReportBuilderImpl<B extends TimeIntervalReportBuilder
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TimeIntervalReportBuilder.class);
 
-    protected TaskanaEngine.Internal taskanaEngine;
+    protected InternalTaskanaEngine taskanaEngine;
     protected TaskMonitorMapper taskMonitorMapper;
     protected List<H> columnHeaders;
     protected boolean inWorkingDays;
@@ -45,7 +44,7 @@ abstract class TimeIntervalReportBuilderImpl<B extends TimeIntervalReportBuilder
     protected List<String> excludedClassificationIds;
     protected Map<CustomField, String> customAttributeFilter;
 
-    TimeIntervalReportBuilderImpl(TaskanaEngine.Internal taskanaEngine, TaskMonitorMapper taskMonitorMapper) {
+    TimeIntervalReportBuilderImpl(InternalTaskanaEngine taskanaEngine, TaskMonitorMapper taskMonitorMapper) {
         this.taskanaEngine = taskanaEngine;
         this.taskMonitorMapper = taskMonitorMapper;
         this.columnHeaders = Collections.emptyList();

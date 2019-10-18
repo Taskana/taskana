@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.BulkOperationResults;
 import pro.taskana.TaskState;
-import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaRole;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketAccessItem;
@@ -43,12 +42,12 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketServiceImpl.class);
     private static final String ID_PREFIX_WORKBASKET = "WBI";
     private static final String ID_PREFIX_WORKBASKET_AUTHORIZATION = "WAI";
-    private TaskanaEngine.Internal taskanaEngine;
+    private InternalTaskanaEngine taskanaEngine;
     private WorkbasketMapper workbasketMapper;
     private DistributionTargetMapper distributionTargetMapper;
     private WorkbasketAccessMapper workbasketAccessMapper;
 
-    WorkbasketServiceImpl(TaskanaEngine.Internal taskanaEngine, WorkbasketMapper workbasketMapper,
+    WorkbasketServiceImpl(InternalTaskanaEngine taskanaEngine, WorkbasketMapper workbasketMapper,
         DistributionTargetMapper distributionTargetMapper, WorkbasketAccessMapper workbasketAccessMapper) {
         this.taskanaEngine = taskanaEngine;
         this.workbasketMapper = workbasketMapper;

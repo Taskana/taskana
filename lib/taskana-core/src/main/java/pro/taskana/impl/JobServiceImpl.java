@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.JobService;
-import pro.taskana.TaskanaEngine;
 import pro.taskana.jobs.ScheduledJob;
 import pro.taskana.mappings.JobMapper;
 
@@ -21,9 +20,9 @@ public class JobServiceImpl implements JobService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JobServiceImpl.class);
     private JobMapper jobMapper;
-    private TaskanaEngine.Internal taskanaEngineImpl;
+    private InternalTaskanaEngine taskanaEngineImpl;
 
-    public JobServiceImpl(TaskanaEngine.Internal taskanaEngine, JobMapper jobMapper) {
+    public JobServiceImpl(InternalTaskanaEngine taskanaEngine, JobMapper jobMapper) {
         this.taskanaEngineImpl = taskanaEngine;
         this.jobMapper = jobMapper;
     }

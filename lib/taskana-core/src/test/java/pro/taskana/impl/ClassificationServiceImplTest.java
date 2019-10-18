@@ -37,19 +37,19 @@ public class ClassificationServiceImplTest {
     @Mock
     private TaskanaEngine taskanaEngineMock;
     @Mock
-    private TaskanaEngine.Internal taskanaEngineInternalMock;
+    private InternalTaskanaEngine internalTaskanaEngineMock;
     @Mock
     private ClassificationQueryImpl classificationQueryImplMock;
 
     @Before
     public void setup() {
-        when(taskanaEngineInternalMock.getEngine()).thenReturn(taskanaEngineMock);
+        when(internalTaskanaEngineMock.getEngine()).thenReturn(taskanaEngineMock);
     }
 
     @Test
     public void testCreateClassificationQuery() {
         cutSpy.createClassificationQuery();
-        verifyNoMoreInteractions(classificationMapperMock, taskanaEngineInternalMock, taskanaEngineMock,
+        verifyNoMoreInteractions(classificationMapperMock, internalTaskanaEngineMock, taskanaEngineMock,
             classificationQueryImplMock);
     }
 
@@ -59,7 +59,7 @@ public class ClassificationServiceImplTest {
         NotAuthorizedException, ClassificationAlreadyExistException {
         try {
             Classification classification = createDummyClassification();
-            when(taskanaEngineInternalMock.domainExists(any())).thenReturn(true);
+            when(internalTaskanaEngineMock.domainExists(any())).thenReturn(true);
             cutSpy.createClassification(classification);
         } catch (InvalidArgumentException e) {
             assertEquals(e.getMessage(), "ClassificationId should be null on creation");

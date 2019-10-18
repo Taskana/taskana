@@ -5,7 +5,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaRole;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
@@ -26,7 +25,7 @@ public class WorkbasketReportBuilderImpl
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketReportBuilderImpl.class);
     private List<CombinedClassificationFilter> combinedClassificationFilter;
 
-    WorkbasketReportBuilderImpl(TaskanaEngine.Internal taskanaEngine, TaskMonitorMapper taskMonitorMapper) {
+    WorkbasketReportBuilderImpl(InternalTaskanaEngine taskanaEngine, TaskMonitorMapper taskMonitorMapper) {
         super(taskanaEngine, taskMonitorMapper);
     }
 

@@ -15,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import pro.taskana.ObjectReference;
-import pro.taskana.TaskanaEngine;
 
 /**
  * Test for ObjectReferenceQueryImpl.
@@ -28,7 +27,7 @@ public class ObjectReferenceQueryImplTest {
     ObjectReferenceQueryImpl objectReferenceQueryImpl;
 
     @Mock
-    TaskanaEngine.Internal taskanaEngine;
+    InternalTaskanaEngine taskanaEngine;
 
     @Mock
     SqlSession sqlSession;

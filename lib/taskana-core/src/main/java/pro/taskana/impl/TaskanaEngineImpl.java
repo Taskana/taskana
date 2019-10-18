@@ -63,14 +63,14 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     protected ConnectionManagementMode mode = ConnectionManagementMode.PARTICIPATE;
     protected java.sql.Connection connection = null;
     private HistoryEventProducer historyEventProducer;
-    private Internal internal;
+    private InternalTaskanaEngineImpl internalTaskanaEngineImpl;
 
     protected TaskanaEngineImpl(TaskanaEngineConfiguration taskanaEngineConfiguration) {
         this.taskanaEngineConfiguration = taskanaEngineConfiguration;
         createTransactionFactory(taskanaEngineConfiguration.getUseManagedTransactions());
         this.sessionManager = createSqlSessionManager();
         historyEventProducer = HistoryEventProducer.getInstance(taskanaEngineConfiguration);
-        this.internal = new Internal();
+        this.internalTaskanaEngineImpl = new InternalTaskanaEngineImpl();
     }
 
     public static TaskanaEngine createTaskanaEngine(TaskanaEngineConfiguration taskanaEngineConfiguration) {
@@ -132,21 +132,21 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     @Override
     public TaskService getTaskService() {
         SqlSession session = this.sessionManager;
-        return new TaskServiceImpl(internal, session.getMapper(TaskMapper.class),
+        return new TaskServiceImpl(internalTaskanaEngineImpl, session.getMapper(TaskMapper.class),
             session.getMapper(AttachmentMapper.class));
     }
 
     @Override
     public TaskMonitorService getTaskMonitorService() {
         SqlSession session = this.sessionManager;
-        return new TaskMonitorServiceImpl(internal,
+        return new TaskMonitorServiceImpl(internalTaskanaEngineImpl,
             session.getMapper(TaskMonitorMapper.class));
     }
 
     @Override
     public WorkbasketService getWorkbasketService() {
         SqlSession session = this.sessionManager;
-        return new WorkbasketServiceImpl(internal,
+        return new WorkbasketServiceImpl(internalTaskanaEngineImpl,
             session.getMapper(WorkbasketMapper.class),
             session.getMapper(DistributionTargetMapper.class),
             session.getMapper(WorkbasketAccessMapper.class));
@@ -155,14 +155,14 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     @Override
     public ClassificationService getClassificationService() {
         SqlSession session = this.sessionManager;
-        return new ClassificationServiceImpl(internal, session.getMapper(ClassificationMapper.class),
+        return new ClassificationServiceImpl(internalTaskanaEngineImpl, session.getMapper(ClassificationMapper.class),
             session.getMapper(TaskMapper.class));
     }
 
     @Override
     public JobService getJobService() {
         SqlSession session = this.sessionManager;
-        return new JobServiceImpl(internal, session.getMapper(JobMapper.class));
+        return new JobServiceImpl(internalTaskanaEngineImpl, session.getMapper(JobMapper.class));
     }
 
     @Override
@@ -309,7 +309,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     /**
      * Internal Engine for internal operations.
      */
-    private class Internal implements TaskanaEngine.Internal {
+    private class InternalTaskanaEngineImpl implements InternalTaskanaEngine {
 
         @Override
         public void openConnection() {
