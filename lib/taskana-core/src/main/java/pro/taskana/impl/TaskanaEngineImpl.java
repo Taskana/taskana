@@ -56,20 +56,20 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
     private static final String DEFAULT = "default";
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineImpl.class);
-    protected static ThreadLocal<Deque<SqlSessionManager>> sessionStack = new ThreadLocal<>();
+    private static ThreadLocal<Deque<SqlSessionManager>> sessionStack = new ThreadLocal<>();
     protected TaskanaEngineConfiguration taskanaEngineConfiguration;
     protected TransactionFactory transactionFactory;
     protected SqlSessionManager sessionManager;
     protected ConnectionManagementMode mode = ConnectionManagementMode.PARTICIPATE;
     protected java.sql.Connection connection = null;
-    protected HistoryEventProducer historyEventProducer;
+    private HistoryEventProducer historyEventProducer;
     private Internal internal;
 
     protected TaskanaEngineImpl(TaskanaEngineConfiguration taskanaEngineConfiguration) {
         this.taskanaEngineConfiguration = taskanaEngineConfiguration;
         createTransactionFactory(taskanaEngineConfiguration.getUseManagedTransactions());
         this.sessionManager = createSqlSessionManager();
-        this.historyEventProducer = HistoryEventProducer.getInstance(taskanaEngineConfiguration);
+        historyEventProducer = HistoryEventProducer.getInstance(taskanaEngineConfiguration);
         this.internal = new Internal();
     }
 
@@ -89,7 +89,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
      *
      * @return Stack of SqlSessionManager
      */
-    protected static Deque<SqlSessionManager> getSessionStack() {
+    private static Deque<SqlSessionManager> getSessionStack() {
         Deque<SqlSessionManager> stack = sessionStack.get();
         if (stack == null) {
             stack = new ArrayDeque<>();
@@ -98,7 +98,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         return stack;
     }
 
-    protected static SqlSessionManager getSessionFromStack() {
+    private static SqlSessionManager getSessionFromStack() {
         Deque<SqlSessionManager> stack = getSessionStack();
         if (stack.isEmpty()) {
             return null;
@@ -106,11 +106,11 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         return stack.peek();
     }
 
-    protected static void pushSessionToStack(SqlSessionManager session) {
+    private static void pushSessionToStack(SqlSessionManager session) {
         getSessionStack().push(session);
     }
 
-    protected static void popSessionFromStack() {
+    private static void popSessionFromStack() {
         Deque<SqlSessionManager> stack = getSessionStack();
         if (!stack.isEmpty()) {
             stack.pop();
@@ -171,21 +171,10 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     }
 
     @Override
-    public HistoryEventProducer getHistoryEventProducer() {
-        return historyEventProducer;
+    public boolean isHistoryEnabled() {
+        return HistoryEventProducer.isHistoryEnabled();
     }
 
-    /**
-     * sets the connection management mode.
-     *
-     * @param mode
-     *            - the connection management mode Valid values are:
-     *            <ul>
-     *            <li>PARTICIPATE - taskana participates in global transaction. This is the default mode.</li>
-     *            <li>AUTOCOMMIT - taskana commits each API call separately</li>
-     *            <li>EXPLICIT - commit processing is managed explicitly by the client</li>
-     *            </ul>
-     */
     @Override
     public void setConnectionManagementMode(ConnectionManagementMode mode) {
         if (this.mode == ConnectionManagementMode.EXPLICIT && connection != null
@@ -198,15 +187,6 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         this.mode = mode;
     }
 
-    /**
-     * Set the database connection to be used by taskana. If this Api is called, taskana uses the connection passed by
-     * the client for database access in all subsequent API calls until the client resets this connection. Control over
-     * commit and rollback is the responsibility of the client. In order to close the connection, the client can call
-     * TaskanaEngine.closeConnection() or TaskanaEngine.setConnection(null). Both calls have the same effect.
-     *
-     * @param connection
-     *            The connection that passed into TaskanaEngine
-     */
     @Override
     public void setConnection(java.sql.Connection connection) throws SQLException {
         if (connection != null) {
@@ -221,10 +201,6 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         }
     }
 
-    /**
-     * closes the connection to the database in mode EXPLICIT. In mode EXPLICIT, closes the client's connection, sets it
-     * to null and switches to mode PARTICIPATE Has the same effect as setConnection(null)
-     */
     @Override
     public void closeConnection() {
         if (this.mode == ConnectionManagementMode.EXPLICIT) {
@@ -236,14 +212,6 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         }
     }
 
-    /**
-     * Checks whether current user is member of any of the specified roles.
-     *
-     * @param roles
-     *            The roles that are checked for membership of the current user
-     * @throws NotAuthorizedException
-     *             If the current user is not member of any specified role
-     */
     @Override
     public void checkRoleMembership(TaskanaRole... roles) throws NotAuthorizedException {
         if (!isUserInRole(roles)) {
@@ -258,13 +226,6 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         }
     }
 
-    /**
-     * check whether the current user is member of one of the roles specified.
-     *
-     * @param roles
-     *            The roles that are checked for membership of the current user
-     * @return true if the current user is a member of at least one of the specified groups
-     */
     @Override
     public boolean isUserInRole(TaskanaRole... roles) {
         if (!getConfiguration().isSecurityEnabled()) {
@@ -405,6 +366,11 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         @Override
         public TaskanaEngine getEngine() {
             return TaskanaEngineImpl.this;
+        }
+
+        @Override
+        public HistoryEventProducer getHistoryEventProducer() {
+            return historyEventProducer;
         }
 
     }

@@ -100,8 +100,7 @@ public class TaskanaEngineController {
 
     @GetMapping(path = "/history-provider-enabled")
     public ResponseEntity<Boolean> getIsHistoryProviderEnabled() {
-        ResponseEntity<Boolean> response = ResponseEntity.ok(
-            ((TaskanaEngineImpl) taskanaEngine).getHistoryEventProducer().isEnabled());
+        ResponseEntity<Boolean> response = ResponseEntity.ok(taskanaEngine.isHistoryEnabled());
         LOGGER.debug("Exit from getIsHistoryProviderEnabled(), returning {}", response);
         return response;
     }

@@ -15,9 +15,9 @@ import pro.taskana.history.api.TaskanaHistoryEvent;
 public final class HistoryEventProducer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HistoryEventProducer.class);
-    private static HistoryEventProducer emitterInstance;
+    private static HistoryEventProducer singleton;
+    private static boolean enabled = false;
     private ServiceLoader<TaskanaHistory> serviceLoader;
-    private boolean enabled = false;
 
     private HistoryEventProducer(TaskanaEngineConfiguration taskanaEngineConfiguration) {
         serviceLoader = ServiceLoader.load(TaskanaHistory.class);
@@ -32,17 +32,13 @@ public final class HistoryEventProducer {
     }
 
     public static synchronized HistoryEventProducer getInstance(TaskanaEngineConfiguration taskanaEngineConfiguration) {
-        if (emitterInstance == null) {
-            emitterInstance = new HistoryEventProducer(taskanaEngineConfiguration);
+        if (singleton == null) {
+            singleton = new HistoryEventProducer(taskanaEngineConfiguration);
         }
-        return emitterInstance;
+        return singleton;
     }
 
     public static boolean isHistoryEnabled() {
-        return getInstance(null).isEnabled();
-    }
-
-    public boolean isEnabled() {
         return enabled;
     }
 

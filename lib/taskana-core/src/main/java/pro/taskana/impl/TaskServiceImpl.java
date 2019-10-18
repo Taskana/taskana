@@ -105,7 +105,7 @@ public class TaskServiceImpl implements TaskService {
         this.workbasketService = taskanaEngine.getEngine().getWorkbasketService();
         this.attachmentMapper = attachmentMapper;
         this.classificationService = taskanaEngine.getEngine().getClassificationService();
-        this.historyEventProducer = taskanaEngine.getEngine().getHistoryEventProducer();
+        this.historyEventProducer = taskanaEngine.getHistoryEventProducer();
     }
 
     @Override
