@@ -180,7 +180,7 @@
 							<outputDirectory>
 								${project.build.outputDirectory}/static/docs/java/taskana-cdi
 							</outputDirectory>
-				C			<resources>
+							<resources>
 								<resource>
 									<directory>
 										../../lib/taskana-cdi/target/apidocs

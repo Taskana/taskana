@@ -60,7 +60,7 @@ public class TaskServiceImplTest {
     private TaskanaEngineConfiguration taskanaEngineConfigurationMock;
 
     @Mock
-    private TaskanaEngine.Internal taskanaEngineInternalMock;
+    private InternalTaskanaEngine internalTaskanaEngineMock;
 
     @Mock
     private TaskanaEngine taskanaEngineMock;
@@ -88,10 +88,10 @@ public class TaskServiceImplTest {
 
     @Before
     public void setup() {
-        when(taskanaEngineInternalMock.getEngine()).thenReturn(taskanaEngineMock);
+        when(internalTaskanaEngineMock.getEngine()).thenReturn(taskanaEngineMock);
         when(taskanaEngineMock.getWorkbasketService()).thenReturn(workbasketServiceMock);
         when(taskanaEngineMock.getClassificationService()).thenReturn(classificationServiceImplMock);
-        cut = new TaskServiceImpl(taskanaEngineInternalMock, taskMapperMock, attachmentMapperMock);
+        cut = new TaskServiceImpl(internalTaskanaEngineMock, taskMapperMock, attachmentMapperMock);
     }
 
     @Test
@@ -112,20 +112,20 @@ public class TaskServiceImplTest {
 
         Task actualTask = cutSpy.transfer(task.getId(), destinationWorkbasket.getId());
 
-        verify(taskanaEngineInternalMock, times(1)).openConnection();
+        verify(internalTaskanaEngineMock, times(1)).openConnection();
         verify(workbasketServiceMock, times(1)).checkAuthorization(destinationWorkbasket.getId(),
             WorkbasketPermission.APPEND);
         verify(workbasketServiceMock, times(1)).checkAuthorization(sourceWorkbasket.getId(),
             WorkbasketPermission.TRANSFER);
         verify(workbasketServiceMock, times(1)).getWorkbasket(destinationWorkbasket.getId());
         verify(taskMapperMock, times(1)).update(any());
-        verify(taskanaEngineInternalMock, times(1)).returnConnection();
-        verify(taskanaEngineInternalMock, times(2)).getEngine();
-        verify(taskanaEngineInternalMock).getHistoryEventProducer();
+        verify(internalTaskanaEngineMock, times(1)).returnConnection();
+        verify(internalTaskanaEngineMock, times(2)).getEngine();
+        verify(internalTaskanaEngineMock).getHistoryEventProducer();
         verify(taskanaEngineMock).getWorkbasketService();
         verify(taskanaEngineMock).getClassificationService();
         verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
-            taskanaEngineInternalMock, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock,
+            internalTaskanaEngineMock, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock,
             sqlSessionMock, classificationQueryImplMock);
 
         assertThat(actualTask.isRead(), equalTo(false));

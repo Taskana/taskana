@@ -9,7 +9,6 @@ import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaRole;
 import pro.taskana.TimeInterval;
 import pro.taskana.WorkbasketPermission;
@@ -70,7 +69,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     private String[] orgLevel4Like;
     private boolean markedForDeletion;
 
-    private TaskanaEngine.Internal taskanaEngine;
+    private InternalTaskanaEngine taskanaEngine;
     private List<String> orderBy;
     private List<String> orderColumns;
     private boolean joinWithAccessList;
@@ -78,7 +77,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     private boolean usedToAugmentTasks;
     private boolean callerRolesAndAccessIdsAlreadyHandled;
 
-    WorkbasketQueryImpl(TaskanaEngine.Internal taskanaEngine) {
+    WorkbasketQueryImpl(InternalTaskanaEngine taskanaEngine) {
         this.taskanaEngine =  taskanaEngine;
         this.orderBy = new ArrayList<>();
         this.orderColumns = new ArrayList<>();

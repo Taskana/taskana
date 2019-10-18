@@ -16,7 +16,6 @@ import pro.taskana.TaskQuery;
 import pro.taskana.TaskQueryColumnName;
 import pro.taskana.TaskState;
 import pro.taskana.TaskSummary;
-import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaRole;
 import pro.taskana.TimeInterval;
 import pro.taskana.WorkbasketPermission;
@@ -41,7 +40,7 @@ public class TaskQueryImpl implements TaskQuery {
     private static final String TIME_INTERVAL = "TimeInterval ";
     private static final String IS_INVALID = " is invalid.";
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskQueryImpl.class);
-    private TaskanaEngine.Internal taskanaEngine;
+    private InternalTaskanaEngine taskanaEngine;
     private TaskServiceImpl taskService;
     private TaskQueryColumnName columnName;
     private String[] nameIn;
@@ -146,7 +145,7 @@ public class TaskQueryImpl implements TaskQuery {
     private boolean addClassificationNameToSelectClauseForOrdering = false;
     private boolean addAttachmentClassificationNameToSelectClauseForOrdering = false;
 
-    TaskQueryImpl(TaskanaEngine.Internal taskanaEngine) {
+    TaskQueryImpl(InternalTaskanaEngine taskanaEngine) {
         this.taskanaEngine = taskanaEngine;
         this.taskService = (TaskServiceImpl) taskanaEngine.getEngine().getTaskService();
         this.orderBy = new ArrayList<>();

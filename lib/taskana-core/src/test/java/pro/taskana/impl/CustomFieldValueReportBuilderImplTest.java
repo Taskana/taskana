@@ -43,23 +43,23 @@ public class CustomFieldValueReportBuilderImplTest {
     private TaskMonitorServiceImpl cut;
 
     @Mock
-    private TaskanaEngine.Internal taskanaEngineInternalMock;
+    private InternalTaskanaEngine internalTaskanaEngineMock;
 
     @Mock
     private TaskanaEngine taskanaEngineMock;
 
     @Mock
-    private TaskanaEngineConfiguration taskanaEngineConfiguration;
+    private TaskanaEngineConfiguration taskanaEngineConfigurationMock;
 
     @Mock
     private TaskMonitorMapper taskMonitorMapperMock;
 
     @Before
     public void setup() {
-        when(taskanaEngineInternalMock.getEngine()).thenReturn(taskanaEngineMock);
-        when(taskanaEngineMock.getConfiguration()).thenReturn(taskanaEngineConfiguration);
-        when(taskanaEngineConfiguration.isGermanPublicHolidaysEnabled()).thenReturn(true);
-        when(taskanaEngineConfiguration.getCustomHolidays()).thenReturn(null);
+        when(internalTaskanaEngineMock.getEngine()).thenReturn(taskanaEngineMock);
+        when(taskanaEngineMock.getConfiguration()).thenReturn(taskanaEngineConfigurationMock);
+        when(taskanaEngineConfigurationMock.isGermanPublicHolidaysEnabled()).thenReturn(true);
+        when(taskanaEngineConfigurationMock.getCustomHolidays()).thenReturn(null);
     }
 
     @Test
@@ -92,18 +92,18 @@ public class CustomFieldValueReportBuilderImplTest {
             .customAttributeFilterIn(customAttributeFilter)
             .buildReport();
 
-        verify(taskanaEngineInternalMock, times(1)).openConnection();
+        verify(internalTaskanaEngineMock, times(1)).openConnection();
         verify(taskanaEngineMock, times(1)).checkRoleMembership(any());
         verify(taskanaEngineMock, times(2)).getConfiguration();
-        verify(taskanaEngineInternalMock, times(3)).getEngine();
-        verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
-        verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
+        verify(internalTaskanaEngineMock, times(3)).getEngine();
+        verify(taskanaEngineConfigurationMock, times(1)).isGermanPublicHolidaysEnabled();
+        verify(taskanaEngineConfigurationMock, times(1)).getCustomHolidays();
         verify(taskMonitorMapperMock, times(1)).getTaskCountOfCustomFieldValues(any(), any(), any(), any(), any(),
             any(), any(),
             any());
-        verify(taskanaEngineInternalMock, times(1)).returnConnection();
-        verifyNoMoreInteractions(taskanaEngineInternalMock, taskanaEngineMock, taskMonitorMapperMock,
-            taskanaEngineConfiguration);
+        verify(internalTaskanaEngineMock, times(1)).returnConnection();
+        verifyNoMoreInteractions(internalTaskanaEngineMock, taskanaEngineMock, taskMonitorMapperMock,
+            taskanaEngineConfigurationMock);
 
         assertNotNull(actualResult);
         assertEquals(actualResult.getRow("Geschaeftsstelle A").getTotalValue(), 1);
@@ -145,17 +145,17 @@ public class CustomFieldValueReportBuilderImplTest {
             .withColumnHeaders(columnHeaders)
             .buildReport();
 
-        verify(taskanaEngineInternalMock, times(1)).openConnection();
+        verify(internalTaskanaEngineMock, times(1)).openConnection();
         verify(taskanaEngineMock, times(1)).checkRoleMembership(any());
         verify(taskanaEngineMock, times(2)).getConfiguration();
-        verify(taskanaEngineInternalMock, times(3)).getEngine();
-        verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
-        verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
+        verify(internalTaskanaEngineMock, times(3)).getEngine();
+        verify(taskanaEngineConfigurationMock, times(1)).isGermanPublicHolidaysEnabled();
+        verify(taskanaEngineConfigurationMock, times(1)).getCustomHolidays();
         verify(taskMonitorMapperMock, times(1))
             .getTaskCountOfCustomFieldValues(any(), any(), any(), any(), any(), any(), any(), any());
-        verify(taskanaEngineInternalMock, times(1)).returnConnection();
-        verifyNoMoreInteractions(taskanaEngineInternalMock, taskanaEngineMock, taskMonitorMapperMock,
-            taskanaEngineConfiguration);
+        verify(internalTaskanaEngineMock, times(1)).returnConnection();
+        verifyNoMoreInteractions(internalTaskanaEngineMock, taskanaEngineMock, taskMonitorMapperMock,
+            taskanaEngineConfigurationMock);
 
         assertNotNull(actualResult);
         assertEquals(actualResult.getRow("Geschaeftsstelle A").getTotalValue(), 1);
@@ -199,17 +199,17 @@ public class CustomFieldValueReportBuilderImplTest {
             .withColumnHeaders(columnHeaders)
             .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_1);
 
-        verify(taskanaEngineInternalMock, times(1)).openConnection();
+        verify(internalTaskanaEngineMock, times(1)).openConnection();
         verify(taskanaEngineMock, times(1)).checkRoleMembership(any());
         verify(taskanaEngineMock, times(2)).getConfiguration();
-        verify(taskanaEngineInternalMock, times(3)).getEngine();
-        verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
-        verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
+        verify(internalTaskanaEngineMock, times(3)).getEngine();
+        verify(taskanaEngineConfigurationMock, times(1)).isGermanPublicHolidaysEnabled();
+        verify(taskanaEngineConfigurationMock, times(1)).getCustomHolidays();
         verify(taskMonitorMapperMock, times(1))
             .getCustomAttributeValuesForReport(any(), any(), any(), any(), any(), any(), any(), any());
-        verify(taskanaEngineInternalMock, times(1)).returnConnection();
-        verifyNoMoreInteractions(taskanaEngineInternalMock, taskanaEngineMock, taskMonitorMapperMock,
-            taskanaEngineConfiguration);
+        verify(internalTaskanaEngineMock, times(1)).returnConnection();
+        verifyNoMoreInteractions(internalTaskanaEngineMock, taskanaEngineMock, taskMonitorMapperMock,
+            taskanaEngineConfigurationMock);
 
         assertNotNull(actualResult);
         assertEquals(expectedResult, actualResult);

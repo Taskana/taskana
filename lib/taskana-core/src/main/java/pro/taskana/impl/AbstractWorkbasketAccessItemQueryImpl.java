@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.AbstractWorkbasketAccessItemQuery;
 import pro.taskana.AccessItemQueryColumnName;
-import pro.taskana.TaskanaEngine;
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.exceptions.TaskanaRuntimeException;
 import pro.taskana.impl.util.LoggerUtils;
@@ -33,11 +32,11 @@ abstract class AbstractWorkbasketAccessItemQueryImpl<Q extends AbstractWorkbaske
     private String[] workbasketIdIn;
     private String[] idIn;
 
-    private TaskanaEngine.Internal taskanaEngine;
+    private InternalTaskanaEngine taskanaEngine;
     private List<String> orderBy;
     private List<String> orderColumns;
 
-    AbstractWorkbasketAccessItemQueryImpl(TaskanaEngine.Internal taskanaEngine) {
+    AbstractWorkbasketAccessItemQueryImpl(InternalTaskanaEngine taskanaEngine) {
         this.taskanaEngine = taskanaEngine;
         orderBy = new ArrayList<>();
         orderColumns = new ArrayList<>();

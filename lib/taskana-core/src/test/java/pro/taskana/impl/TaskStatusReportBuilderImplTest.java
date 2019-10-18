@@ -39,7 +39,7 @@ public class TaskStatusReportBuilderImplTest {
     private TaskMonitorServiceImpl cut;
 
     @Mock
-    private TaskanaEngine.Internal taskanaEngineInternalMock;
+    private InternalTaskanaEngine internalTaskanaEngineMock;
 
     @Mock
     private TaskanaEngine taskanaEngineMock;
@@ -49,7 +49,7 @@ public class TaskStatusReportBuilderImplTest {
 
     @Before
     public void setup() {
-        when(taskanaEngineInternalMock.getEngine()).thenReturn(taskanaEngineMock);
+        when(internalTaskanaEngineMock.getEngine()).thenReturn(taskanaEngineMock);
     }
 
     @Test
@@ -70,14 +70,14 @@ public class TaskStatusReportBuilderImplTest {
         TaskStatusReport report = cut.createTaskStatusReportBuilder().buildReport();
 
         // then
-        InOrder inOrder = inOrder(taskanaEngineMock, taskanaEngineInternalMock, taskMonitorMapperMock);
-        inOrder.verify(taskanaEngineInternalMock).getEngine();
+        InOrder inOrder = inOrder(taskanaEngineMock, internalTaskanaEngineMock, taskMonitorMapperMock);
+        inOrder.verify(internalTaskanaEngineMock).getEngine();
         inOrder.verify(taskanaEngineMock).checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
-        inOrder.verify(taskanaEngineInternalMock).openConnection();
+        inOrder.verify(internalTaskanaEngineMock).openConnection();
         inOrder.verify(taskMonitorMapperMock).getTasksCountByState(eq(null), eq(null));
-        inOrder.verify(taskanaEngineInternalMock).returnConnection();
+        inOrder.verify(internalTaskanaEngineMock).returnConnection();
         inOrder.verifyNoMoreInteractions();
-        verifyNoMoreInteractions(taskanaEngineMock, taskanaEngineInternalMock, taskMonitorMapperMock);
+        verifyNoMoreInteractions(taskanaEngineMock, internalTaskanaEngineMock, taskMonitorMapperMock);
 
         assertNotNull(report);
         assertEquals(1, report.rowSize());
@@ -105,14 +105,14 @@ public class TaskStatusReportBuilderImplTest {
         TaskStatusReport report = cut.createTaskStatusReportBuilder().stateIn(Collections.emptyList()).buildReport();
 
         // then
-        InOrder inOrder = inOrder(taskanaEngineMock, taskMonitorMapperMock, taskanaEngineInternalMock);
-        inOrder.verify(taskanaEngineInternalMock).getEngine();
+        InOrder inOrder = inOrder(taskanaEngineMock, taskMonitorMapperMock, internalTaskanaEngineMock);
+        inOrder.verify(internalTaskanaEngineMock).getEngine();
         inOrder.verify(taskanaEngineMock).checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
-        inOrder.verify(taskanaEngineInternalMock).openConnection();
+        inOrder.verify(internalTaskanaEngineMock).openConnection();
         inOrder.verify(taskMonitorMapperMock).getTasksCountByState(eq(null), eq(Collections.emptyList()));
-        inOrder.verify(taskanaEngineInternalMock).returnConnection();
+        inOrder.verify(internalTaskanaEngineMock).returnConnection();
         inOrder.verifyNoMoreInteractions();
-        verifyNoMoreInteractions(taskanaEngineMock, taskMonitorMapperMock, taskanaEngineInternalMock);
+        verifyNoMoreInteractions(taskanaEngineMock, taskMonitorMapperMock, internalTaskanaEngineMock);
 
         assertNotNull(report);
         assertEquals(1, report.rowSize());

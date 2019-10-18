@@ -19,7 +19,6 @@ import pro.taskana.ClassificationQuery;
 import pro.taskana.ClassificationService;
 import pro.taskana.ClassificationSummary;
 import pro.taskana.TaskSummary;
-import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaRole;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationInUseException;
@@ -43,9 +42,9 @@ public class ClassificationServiceImpl implements ClassificationService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationServiceImpl.class);
     private ClassificationMapper classificationMapper;
     private TaskMapper taskMapper;
-    private TaskanaEngine.Internal taskanaEngine;
+    private InternalTaskanaEngine taskanaEngine;
 
-    ClassificationServiceImpl(TaskanaEngine.Internal taskanaEngine, ClassificationMapper classificationMapper,
+    ClassificationServiceImpl(InternalTaskanaEngine taskanaEngine, ClassificationMapper classificationMapper,
         TaskMapper taskMapper) {
         this.taskanaEngine = taskanaEngine;
         this.classificationMapper = classificationMapper;

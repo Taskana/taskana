@@ -13,12 +13,12 @@ import pro.taskana.TaskanaEngine;
  */
 public class TaskanaEngineProxyForTest {
 
-    TaskanaEngine.Internal engine;
+    private InternalTaskanaEngine engine;
 
     public TaskanaEngineProxyForTest(TaskanaEngine taskanaEngine) throws NoSuchFieldException, IllegalAccessException {
-        Field internal = TaskanaEngineImpl.class.getDeclaredField("internal");
+        Field internal = TaskanaEngineImpl.class.getDeclaredField("internalTaskanaEngineImpl");
         internal.setAccessible(true);
-        engine = (TaskanaEngine.Internal) internal.get(taskanaEngine);
+        engine = (InternalTaskanaEngine) internal.get(taskanaEngine);
     }
 
     public SqlSession getSqlSession() {
