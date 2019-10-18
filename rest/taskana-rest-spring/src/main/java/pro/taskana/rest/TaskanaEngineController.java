@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaRole;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
-import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.rest.resource.TaskanaUserInfoResource;
 import pro.taskana.rest.resource.VersionResource;
 import pro.taskana.security.CurrentUserContext;
@@ -28,19 +27,16 @@ public class TaskanaEngineController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineController.class);
 
-    TaskanaEngineConfiguration taskanaEngineConfiguration;
+    private TaskanaEngineConfiguration taskanaEngineConfiguration;
 
-    TaskanaEngine taskanaEngine;
-
-    TaskanaEngineController(
-        TaskanaEngineConfiguration taskanaEngineConfiguration, TaskanaEngine taskanaEngine) {
-        this.taskanaEngineConfiguration = taskanaEngineConfiguration;
-        this.taskanaEngine = taskanaEngine;
-
-    }
-
+    private TaskanaEngine taskanaEngine;
     @Value("${version:Local build}")
     private String version;
+
+    TaskanaEngineController(TaskanaEngineConfiguration taskanaEngineConfiguration, TaskanaEngine taskanaEngine) {
+        this.taskanaEngineConfiguration = taskanaEngineConfiguration;
+        this.taskanaEngine = taskanaEngine;
+    }
 
     @GetMapping(path = "/domains")
     public ResponseEntity<List<String>> getDomains() {

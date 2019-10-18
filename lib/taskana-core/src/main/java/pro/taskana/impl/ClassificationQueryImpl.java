@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.ClassificationQuery;
 import pro.taskana.ClassificationQueryColumnName;
 import pro.taskana.ClassificationSummary;
-import pro.taskana.TaskanaEngine;
 import pro.taskana.TimeInterval;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.TaskanaRuntimeException;
@@ -29,7 +28,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     private static final String LINK_TO_COUNTER = "pro.taskana.mappings.QueryMapper.countQueryClassifications";
     private static final String LINK_TO_VALUEMAPPER = "pro.taskana.mappings.QueryMapper.queryClassificationColumnValues";
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationQueryImpl.class);
-    private TaskanaEngine.Internal taskanaEngine;
+    private InternalTaskanaEngine taskanaEngine;
     private ClassificationQueryColumnName columnName;
     private String[] key;
     private String[] idIn;
@@ -68,7 +67,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     private List<String> orderBy;
     private List<String> orderColumns;
 
-    ClassificationQueryImpl(TaskanaEngine.Internal taskanaEngine) {
+    ClassificationQueryImpl(InternalTaskanaEngine taskanaEngine) {
         this.taskanaEngine = taskanaEngine;
         this.orderBy = new ArrayList<>();
         this.orderColumns = new ArrayList<>();

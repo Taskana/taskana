@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.AccessItemQueryColumnName;
-import pro.taskana.TaskanaEngine;
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketAccessItemQuery;
 import pro.taskana.exceptions.TaskanaRuntimeException;
@@ -33,11 +32,11 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
     private String[] workbasketKeyLike;
     private String[] idIn;
 
-    private TaskanaEngine.Internal taskanaEngine;
+    private InternalTaskanaEngine taskanaEngine;
     private List<String> orderBy;
     private List<String> orderColumns;
 
-    WorkbasketAccessItemQueryImpl(TaskanaEngine.Internal taskanaEngine) {
+    WorkbasketAccessItemQueryImpl(InternalTaskanaEngine taskanaEngine) {
         this.taskanaEngine = taskanaEngine;
         orderBy = new ArrayList<>();
         orderColumns = new ArrayList<>();

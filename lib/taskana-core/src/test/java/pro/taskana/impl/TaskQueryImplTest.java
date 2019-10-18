@@ -32,7 +32,7 @@ public class TaskQueryImplTest {
 
     private TaskQueryImpl taskQueryImpl;
     @Mock
-    private TaskanaEngine.Internal taskanaEngineInternal;
+    private InternalTaskanaEngine internalTaskanaEngine;
     @Mock
     private TaskanaEngine taskanaEngine;
     @Mock
@@ -40,15 +40,15 @@ public class TaskQueryImplTest {
 
     @Before
     public void setup() {
-        when(taskanaEngineInternal.getEngine()).thenReturn(taskanaEngine);
+        when(internalTaskanaEngine.getEngine()).thenReturn(taskanaEngine);
         when(taskanaEngine.getTaskService()).thenReturn(taskServiceMock);
 
         Configuration configuration = new org.apache.ibatis.session.Configuration();
         configuration.setDatabaseId("h2");
-        when(taskanaEngineInternal.getSqlSession()).thenReturn(sqlSession);
+        when(internalTaskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.getConfiguration()).thenReturn(configuration);
 
-        taskQueryImpl = new TaskQueryImpl(taskanaEngineInternal);
+        taskQueryImpl = new TaskQueryImpl(internalTaskanaEngine);
     }
 
     @Test

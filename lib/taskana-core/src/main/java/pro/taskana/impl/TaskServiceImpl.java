@@ -28,7 +28,6 @@ import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
 import pro.taskana.TaskState;
 import pro.taskana.TaskSummary;
-import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaRole;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketPermission;
@@ -84,14 +83,14 @@ public class TaskServiceImpl implements TaskService {
     private static final Set<String> ALLOWED_KEYS =
         IntStream.rangeClosed(1, 16).mapToObj(String::valueOf).collect(Collectors.toSet());
     private DaysToWorkingDaysConverter converter;
-    private TaskanaEngine.Internal taskanaEngine;
+    private InternalTaskanaEngine taskanaEngine;
     private WorkbasketService workbasketService;
     private ClassificationService classificationService;
     private TaskMapper taskMapper;
     private AttachmentMapper attachmentMapper;
     private HistoryEventProducer historyEventProducer;
 
-    TaskServiceImpl(TaskanaEngine.Internal taskanaEngine, TaskMapper taskMapper,
+    TaskServiceImpl(InternalTaskanaEngine taskanaEngine, TaskMapper taskMapper,
         AttachmentMapper attachmentMapper) {
         super();
         try {

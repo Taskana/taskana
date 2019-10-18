@@ -5,7 +5,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaRole;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
@@ -24,7 +23,7 @@ public class CategoryReportBuilderImpl
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CategoryReport.Builder.class);
 
-    CategoryReportBuilderImpl(TaskanaEngine.Internal taskanaEngine, TaskMonitorMapper taskMonitorMapper) {
+    CategoryReportBuilderImpl(InternalTaskanaEngine taskanaEngine, TaskMonitorMapper taskMonitorMapper) {
         super(taskanaEngine, taskMonitorMapper);
     }
 

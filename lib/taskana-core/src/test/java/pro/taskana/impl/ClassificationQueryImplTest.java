@@ -15,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import pro.taskana.ClassificationSummary;
-import pro.taskana.TaskanaEngine;
 
 /**
  * Test for ClassificationQueryImpl.
@@ -29,14 +28,14 @@ public class ClassificationQueryImplTest {
     private ClassificationQueryImpl classificationQueryImpl;
 
     @Mock
-    private TaskanaEngine.Internal taskanaEngineInternal;
+    private InternalTaskanaEngine internalTaskanaEngine;
 
     @Mock
     private SqlSession sqlSession;
 
     @Test
     public void should_ReturnList_when_BuilderIsUsed() {
-        when(taskanaEngineInternal.getSqlSession()).thenReturn(sqlSession);
+        when(internalTaskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectList(any(), any())).thenReturn(new ArrayList<>());
 
         List<ClassificationSummary> result = classificationQueryImpl.nameIn("test", "asd", "blubber")
@@ -49,7 +48,7 @@ public class ClassificationQueryImplTest {
 
     @Test
     public void should_ReturnListWithOffset_when_BuilderIsUsed() {
-        when(taskanaEngineInternal.getSqlSession()).thenReturn(sqlSession);
+        when(internalTaskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectList(any(), any(), any())).thenReturn(new ArrayList<>());
 
         List<ClassificationSummary> result = classificationQueryImpl.nameIn("test", "asd", "blubber")
@@ -62,7 +61,7 @@ public class ClassificationQueryImplTest {
 
     @Test
     public void should_ReturnOneItem_when_BuilderIsUsed() {
-        when(taskanaEngineInternal.getSqlSession()).thenReturn(sqlSession);
+        when(internalTaskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.selectOne(any(), any())).thenReturn(new ClassificationSummaryImpl());
 
         ClassificationSummary result = classificationQueryImpl.nameIn("test", "asd", "blubber")
