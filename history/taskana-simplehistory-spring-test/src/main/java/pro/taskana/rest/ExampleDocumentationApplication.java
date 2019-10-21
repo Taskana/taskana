@@ -26,7 +26,7 @@ import pro.taskana.rest.simplehistory.sampledata.SampleDataGenerator;
  */
 @SpringBootApplication
 @ComponentScan(basePackages = "pro.taskana.rest.simplehistory")
-@Import( {TaskHistoryRestConfiguration.class})
+@Import({TaskHistoryRestConfiguration.class})
 public class ExampleDocumentationApplication {
 
     @Value("${taskana.schemaName:TASKANA}")
