@@ -14,7 +14,7 @@ import org.springframework.web.util.UriComponentsBuilder;
  * Abstract resources assembler for taskana REST controller with pageable resources. This method is deprecated, it can
  * be removed after fixing taskana-simple-history references
  */
-@Deprecated
+//TODO: @Deprecated
 public abstract class AbstractRessourcesAssembler {
 
     UriComponentsBuilder original = getBuilderForOriginalUri();
