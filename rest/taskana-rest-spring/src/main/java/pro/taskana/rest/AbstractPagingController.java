@@ -77,7 +77,7 @@ public abstract class AbstractPagingController {
     }
 
     // This method is deprecated please remove it after updating taskana-simple-history reference to it.
-    @Deprecated
+    //TODO: @Deprecated
     protected PageMetadata initPageMetadata(String pagesizeParam, String pageParam, long totalElements)
         throws InvalidArgumentException {
         long pageSize;
