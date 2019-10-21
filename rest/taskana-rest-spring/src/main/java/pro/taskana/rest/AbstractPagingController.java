@@ -83,8 +83,8 @@ public abstract class AbstractPagingController {
         long pageSize;
         long page;
         try {
-            pageSize = Long.valueOf(pagesizeParam);
-            page = Long.valueOf(pageParam);
+            pageSize = Long.parseLong(pagesizeParam);
+            page = Long.parseLong(pageParam);
         } catch (NumberFormatException e) {
             throw new InvalidArgumentException("page and pageSize must be a integer value.", e.getCause());
         }
@@ -100,7 +100,7 @@ public abstract class AbstractPagingController {
         String param = params.getFirst(PAGING_PAGE);
         params.remove(PAGING_PAGE);
         try {
-            return Long.valueOf(param != null ? param : "1");
+            return Long.parseLong(param != null ? param : "1");
         } catch (NumberFormatException e) {
             throw new InvalidArgumentException("page must be a integer value.", e.getCause());
         }
