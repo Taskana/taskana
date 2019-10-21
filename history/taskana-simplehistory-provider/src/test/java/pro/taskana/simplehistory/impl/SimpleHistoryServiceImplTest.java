@@ -1,8 +1,8 @@
 package pro.taskana.simplehistory.impl;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
@@ -58,68 +58,65 @@ public class SimpleHistoryServiceImplTest {
     @Mock
     private SqlSessionManager sqlSessionManagerMock;
 
-    @Mock
-    private HistoryQueryImpl historyQueryMock;
-
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
     }
 
-    @Test
-    public void testInitializeSimpleHistoryService() throws SQLException {
+        @Test
+        public void testInitializeSimpleHistoryService() throws SQLException {
+            doReturn(historyEventMapperMock).when(sqlSessionManagerMock).getMapper(HistoryEventMapper.class);
+            doReturn(historyQueryMapperMock).when(sqlSessionManagerMock).getMapper(HistoryQueryMapper.class);
+            doReturn(sqlSessionManagerMock).when(taskanaHistoryEngineMock).getSqlSession();
+            PowerMockito.mockStatic(TaskanaHistoryEngineImpl.class);
+            Mockito.when(TaskanaHistoryEngineImpl.createTaskanaEngine(taskanaEngineConfiguration))
+                .thenReturn(taskanaHistoryEngineMock);
+            cutSpy.initialize(taskanaEngineConfiguration);
 
-        doReturn(historyEventMapperMock).when(sqlSessionManagerMock).getMapper(HistoryEventMapper.class);
-        doReturn(historyQueryMapperMock).when(sqlSessionManagerMock).getMapper(HistoryQueryMapper.class);
-        doReturn(sqlSessionManagerMock).when(taskanaHistoryEngineMock).getSqlSession();
-        PowerMockito.mockStatic(TaskanaHistoryEngineImpl.class);
-        Mockito.when(TaskanaHistoryEngineImpl.createTaskanaEngine(taskanaEngineConfiguration)).thenReturn(taskanaHistoryEngineMock);
-        cutSpy.initialize(taskanaEngineConfiguration);
+            verify(sqlSessionManagerMock, times(2)).getMapper(any());
+            verify(taskanaHistoryEngineMock, times(2)).getSqlSession();
+        }
 
-        verify(sqlSessionManagerMock, times(2)).getMapper(any());
-        verify(taskanaHistoryEngineMock, times(2)).getSqlSession();
-        PowerMockito.verifyStatic();
-    }
+        @Test
+        public void testInitializeSimpleHistoryServiceWithNonDefaultSchemaName() throws SQLException {
 
-    @Test
-    public void testInitializeSimpleHistoryServiceWithNonDefaultSchemaName() throws SQLException {
+            doReturn(historyEventMapperMock).when(sqlSessionManagerMock).getMapper(HistoryEventMapper.class);
+            doReturn(historyQueryMapperMock).when(sqlSessionManagerMock).getMapper(HistoryQueryMapper.class);
+            doReturn(sqlSessionManagerMock).when(taskanaHistoryEngineMock).getSqlSession();
+            PowerMockito.mockStatic(TaskanaHistoryEngineImpl.class);
+            Mockito.when(TaskanaHistoryEngineImpl.createTaskanaEngine(taskanaEngineConfiguration))
+                .thenReturn(taskanaHistoryEngineMock);
+            cutSpy.initialize(taskanaEngineConfiguration);
 
-        doReturn(historyEventMapperMock).when(sqlSessionManagerMock).getMapper(HistoryEventMapper.class);
-        doReturn(historyQueryMapperMock).when(sqlSessionManagerMock).getMapper(HistoryQueryMapper.class);
-        doReturn(sqlSessionManagerMock).when(taskanaHistoryEngineMock).getSqlSession();
-        PowerMockito.mockStatic(TaskanaHistoryEngineImpl.class);
-        Mockito.when(TaskanaHistoryEngineImpl.createTaskanaEngine(taskanaEngineConfiguration)).thenReturn(taskanaHistoryEngineMock);
-        cutSpy.initialize(taskanaEngineConfiguration);
+            verify(sqlSessionManagerMock, times(2)).getMapper(any());
+            verify(taskanaHistoryEngineMock, times(2)).getSqlSession();
+        }
 
-        verify(sqlSessionManagerMock, times(2)).getMapper(any());
-        verify(taskanaHistoryEngineMock, times(2)).getSqlSession();
-        PowerMockito.verifyStatic();
-    }
+        @Test
+        public void testCreateEvent() throws SQLException {
+            HistoryEventImpl expectedWb = AbstractAccTest.createHistoryEvent("wbKey1", "taskId1", "type1", "Some comment",
+                "wbKey2");
+            doNothing().when(historyEventMapperMock).insert(expectedWb);
 
-    @Test
-    public void testCreateEvent() throws SQLException {
-        HistoryEventImpl expectedWb = AbstractAccTest.createHistoryEvent("wbKey1", "taskId1", "type1", "Some comment", "wbKey2");
-        doNothing().when(historyEventMapperMock).insert(expectedWb);
+            cutSpy.create(expectedWb);
+            verify(taskanaHistoryEngineMock, times(1)).openConnection();
+            verify(historyEventMapperMock, times(1)).insert(expectedWb);
+            verify(taskanaHistoryEngineMock, times(1)).returnConnection();
+            assertNotNull(expectedWb.getCreated());
+        }
 
-        cutSpy.create(expectedWb);
-        verify(taskanaHistoryEngineMock, times(1)).openConnection();
-        verify(historyEventMapperMock, times(1)).insert(expectedWb);
-        verify(taskanaHistoryEngineMock, times(1)).returnConnection();
-        assertTrue(expectedWb.getCreated() != null);
-    }
+        @Test
+        public void testQueryEvent() throws SQLException {
+            List<HistoryEventImpl> returnList = new ArrayList<>();
+            returnList.add(AbstractAccTest.createHistoryEvent("wbKey1", "taskId1", "type1", "Some comment", "wbKey2"));
+            doReturn(returnList).when(historyQueryMapperMock).queryHistoryEvent(any());
 
-    @Test
-    public void testQueryEvent() throws SQLException {
-        List<HistoryEventImpl> returnList = new ArrayList<>();
-        returnList.add(AbstractAccTest.createHistoryEvent("wbKey1", "taskId1", "type1", "Some comment", "wbKey2"));
-        doReturn(returnList).when(historyQueryMapperMock).queryHistoryEvent(any());
+            List<HistoryEventImpl> result = cutSpy.createHistoryQuery().taskIdIn("taskId1").list();
 
-        List<HistoryEventImpl> result = cutSpy.createHistoryQuery().taskIdIn("taskId1").list();
-
-        verify(taskanaHistoryEngineMock, times(1)).openConnection();
-        verify(historyQueryMapperMock, times(1)).queryHistoryEvent(any());
-        verify(taskanaHistoryEngineMock, times(1)).returnConnection();
-        assertEquals(returnList.size(), result.size());
-        assertEquals(returnList.get(0).getWorkbasketKey(), result.get(0).getWorkbasketKey());
-    }
+            verify(taskanaHistoryEngineMock, times(1)).openConnection();
+            verify(historyQueryMapperMock, times(1)).queryHistoryEvent(any());
+            verify(taskanaHistoryEngineMock, times(1)).returnConnection();
+            assertEquals(returnList.size(), result.size());
+            assertEquals(returnList.get(0).getWorkbasketKey(), result.get(0).getWorkbasketKey());
+        }
 }
