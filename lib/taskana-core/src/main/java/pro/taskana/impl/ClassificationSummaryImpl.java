@@ -1,5 +1,7 @@
 package pro.taskana.impl;
 
+import java.util.Objects;
+
 import pro.taskana.ClassificationSummary;
 
 /**
@@ -7,24 +9,27 @@ import pro.taskana.ClassificationSummary;
  */
 public class ClassificationSummaryImpl implements ClassificationSummary {
 
-    private String id;
-    private String key;
-    private String category;
-    private String type;
-    private String domain;
-    private String name;
-    private String parentId;
-    private String parentKey;
-    private int priority;
-    private String serviceLevel; // PddDThhHmmM
-    private String custom1;
-    private String custom2;
-    private String custom3;
-    private String custom4;
-    private String custom5;
-    private String custom6;
-    private String custom7;
-    private String custom8;
+    protected String id;
+    protected String key;
+    protected String category;
+    protected String type;
+    protected String domain;
+    protected String name;
+    protected String parentId;
+    protected String parentKey;
+    protected int priority;
+    protected String serviceLevel; // PddDThhHmmM
+    protected String custom1;
+    protected String custom2;
+    protected String custom3;
+    protected String custom4;
+    protected String custom5;
+    protected String custom6;
+    protected String custom7;
+    protected String custom8;
+
+    ClassificationSummaryImpl() {
+    }
 
     @Override
     public int getPriority() {
@@ -42,9 +47,6 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
 
     public void setServiceLevel(String serviceLevel) {
         this.serviceLevel = serviceLevel;
-    }
-
-    ClassificationSummaryImpl() {
     }
 
     @Override
@@ -200,153 +202,38 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((category == null) ? 0 : category.hashCode());
-        result = prime * result + ((domain == null) ? 0 : domain.hashCode());
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((key == null) ? 0 : key.hashCode());
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((parentId == null) ? 0 : parentId.hashCode());
-        result = prime * result + ((parentKey == null) ? 0 : parentKey.hashCode());
-        result = prime * result + ((type == null) ? 0 : type.hashCode());
-        result = prime * result + ((custom1 == null) ? 0 : custom1.hashCode());
-        result = prime * result + ((custom2 == null) ? 0 : custom2.hashCode());
-        result = prime * result + ((custom3 == null) ? 0 : custom3.hashCode());
-        result = prime * result + ((custom4 == null) ? 0 : custom4.hashCode());
-        result = prime * result + ((custom5 == null) ? 0 : custom5.hashCode());
-        result = prime * result + ((custom6 == null) ? 0 : custom6.hashCode());
-        result = prime * result + ((custom7 == null) ? 0 : custom7.hashCode());
-        result = prime * result + ((custom8 == null) ? 0 : custom8.hashCode());
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ClassificationSummaryImpl that = (ClassificationSummaryImpl) o;
+        return priority == that.priority
+            && Objects.equals(id, that.id)
+            && Objects.equals(key, that.key)
+            && Objects.equals(category, that.category)
+            && Objects.equals(type, that.type)
+            && Objects.equals(domain, that.domain)
+            && Objects.equals(name, that.name)
+            && Objects.equals(parentId, that.parentId)
+            && Objects.equals(parentKey, that.parentKey)
+            && Objects.equals(serviceLevel, that.serviceLevel)
+            && Objects.equals(custom1, that.custom1)
+            && Objects.equals(custom2, that.custom2)
+            && Objects.equals(custom3, that.custom3)
+            && Objects.equals(custom4, that.custom4)
+            && Objects.equals(custom5, that.custom5)
+            && Objects.equals(custom6, that.custom6)
+            && Objects.equals(custom7, that.custom7)
+            && Objects.equals(custom8, that.custom8);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof ClassificationSummaryImpl)) {
-            return false;
-        }
-        ClassificationSummaryImpl other = (ClassificationSummaryImpl) obj;
-        if (category == null) {
-            if (other.category != null) {
-                return false;
-            }
-        } else if (!category.equals(other.category)) {
-            return false;
-        }
-        if (domain == null) {
-            if (other.domain != null) {
-                return false;
-            }
-        } else if (!domain.equals(other.domain)) {
-            return false;
-        }
-        if (id == null) {
-            if (other.id != null) {
-                return false;
-            }
-        } else if (!id.equals(other.id)) {
-            return false;
-        }
-        if (key == null) {
-            if (other.key != null) {
-                return false;
-            }
-        } else if (!key.equals(other.key)) {
-            return false;
-        }
-        if (name == null) {
-            if (other.name != null) {
-                return false;
-            }
-        } else if (!name.equals(other.name)) {
-            return false;
-        }
-        if (parentId == null) {
-            if (other.parentId != null) {
-                return false;
-            }
-        } else if (!parentId.equals(other.parentId)) {
-            return false;
-        }
-        if (parentKey == null) {
-            if (other.parentKey != null) {
-                return false;
-            }
-        } else if (!parentKey.equals(other.parentKey)) {
-            return false;
-        }
-        if (type == null) {
-            if (other.type != null) {
-                return false;
-            }
-        } else if (!type.equals(other.type)) {
-            return false;
-        }
-        if (custom1 == null) {
-            if (other.custom1 != null) {
-                return false;
-            }
-        } else if (!custom1.equals(other.custom1)) {
-            return false;
-        }
-        if (custom2 == null) {
-            if (other.custom2 != null) {
-                return false;
-            }
-        } else if (!custom2.equals(other.custom2)) {
-            return false;
-        }
-        if (custom3 == null) {
-            if (other.custom3 != null) {
-                return false;
-            }
-        } else if (!custom3.equals(other.custom3)) {
-            return false;
-        }
-        if (custom4 == null) {
-            if (other.custom4 != null) {
-                return false;
-            }
-        } else if (!custom4.equals(other.custom4)) {
-            return false;
-        }
-        if (custom5 == null) {
-            if (other.custom5 != null) {
-                return false;
-            }
-        } else if (!custom5.equals(other.custom5)) {
-            return false;
-        }
-        if (custom6 == null) {
-            if (other.custom6 != null) {
-                return false;
-            }
-        } else if (!custom6.equals(other.custom6)) {
-            return false;
-        }
-        if (custom7 == null) {
-            if (other.custom7 != null) {
-                return false;
-            }
-        } else if (!custom7.equals(other.custom7)) {
-            return false;
-        }
-        if (custom8 == null) {
-            if (other.custom8 != null) {
-                return false;
-            }
-        } else if (!custom8.equals(other.custom8)) {
-            return false;
-        }
-        return true;
+    public int hashCode() {
+        return Objects.hash(id, key, category, type, domain, name, parentId, parentKey, priority, serviceLevel, custom1,
+            custom2, custom3, custom4, custom5, custom6, custom7, custom8);
     }
 
     @Override
