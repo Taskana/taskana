@@ -28,7 +28,7 @@ import {ClassificationsService} from '../services/classifications/classification
 })
 export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy {
 
-  @ViewChild('tree')
+  @ViewChild('tree', { static: true })
   private tree: TreeComponent;
 
   @Input() treeNodes: Array<TreeNodeModel>;

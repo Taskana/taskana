@@ -22,7 +22,7 @@ export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges {
     saveToggleTriggered: boolean;
     @Output() formValid: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    @ViewChild('TaskForm')
+    @ViewChild('TaskForm', { static: false })
     taskForm: NgForm;
 
     toogleValidationMap = new Map<string, boolean>();

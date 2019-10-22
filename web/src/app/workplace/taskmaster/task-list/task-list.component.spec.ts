@@ -7,7 +7,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { Routes } from '@angular/router';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { WorkplaceService } from 'app/workplace/services/workplace.service';
-import { SvgIconComponent, SvgIconRegistryService } from 'angular-svg-icon';
 import {DateTimeZonePipe} from '../../../shared/pipes/date-time-zone/date-time-zone.pipe';
 
 
@@ -16,6 +15,13 @@ import {DateTimeZonePipe} from '../../../shared/pipes/date-time-zone/date-time-z
   template: 'dummydetail'
 })
 export class DummyDetailComponent {
+}
+
+@Component({
+  selector: 'svg-icon',
+  template: '<p>Mock Icon Component</p>'
+})
+export class MockSvgIconComponent {
 }
 
 describe('TaskListComponent', () => {
@@ -35,13 +41,12 @@ describe('TaskListComponent', () => {
       declarations: [
         TaskListComponent,
         DummyDetailComponent,
-        SvgIconComponent,
+        MockSvgIconComponent,
         DateTimeZonePipe
       ],
       providers: [
         WorkplaceService,
-        ChangeDetectorRef,
-        SvgIconRegistryService
+        ChangeDetectorRef
       ]
     })
       .compileComponents();
