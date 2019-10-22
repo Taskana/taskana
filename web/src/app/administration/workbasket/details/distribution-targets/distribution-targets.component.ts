@@ -62,7 +62,7 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
   selectAllLeft = false;
   selectAllRight = false;
 
-  @ViewChild('panelBody')
+  @ViewChild('panelBody', { static: false })
   private panelBody: ElementRef;
 
 	constructor(
@@ -92,7 +92,7 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
 		if (side === Side.LEFT) {
       const itemsLeft = this.distributionTargetsLeft.length;
       const itemsRight = this.distributionTargetsRight.length;
-			const itemsSelected = this.getSelectedItems(this.distributionTargetsLeft, this.distributionTargetsRight)
+			const itemsSelected = this.getSelectedItems(this.distributionTargetsLeft, this.distributionTargetsRight);
 			this.distributionTargetsSelected = this.distributionTargetsSelected.concat(itemsSelected);
       this.distributionTargetsRight = this.distributionTargetsRight.concat(itemsSelected);
       if (((itemsLeft - itemsSelected.length) <= TaskanaQueryParameters.pageSize) && ((itemsLeft + itemsRight) < this.page.totalElements)) {
@@ -121,17 +121,17 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
 				return true;
 			},
 				error => {
-					this.generalModalService.triggerMessage(new MessageModal(`There was error while saving your workbasket's distribution targets`, error))
+					this.generalModalService.triggerMessage(new MessageModal(`There was error while saving your workbasket's distribution targets`, error));
 					this.requestInProgressService.setRequestInProgress(false);
 					return false;
 				}
-			)
+			);
 		return false;
 
 	}
 
 	onClear() {
-		this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'Reset edited fields'))
+		this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'Reset edited fields'));
 		this.distributionTargetsLeft = Object.assign([], this.distributionTargetsClone);
 		this.distributionTargetsRight = Object.assign([], this.distributionTargetsSelectedClone);
 		this.distributionTargetsSelected = Object.assign([], this.distributionTargetsSelectedClone);
@@ -270,7 +270,7 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
 		const distributionTargetsSelelected: Array<string> = [];
 		this.distributionTargetsSelected.forEach(item => {
 			distributionTargetsSelelected.push(item.workbasketId);
-		})
+		});
 		return distributionTargetsSelelected;
   }
 

@@ -73,7 +73,7 @@ export class WorkbasketInformationComponent
 
   private workbasketSubscription: Subscription;
   private routeSubscription: Subscription;
-  @ViewChild('WorkbasketForm')
+  @ViewChild('WorkbasketForm', { static: false })
   workbasketForm: NgForm;
 
   constructor(

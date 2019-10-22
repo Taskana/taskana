@@ -50,7 +50,7 @@ export class SpinnerComponent implements OnDestroy {
     @Output()
     spinnerIsRunning = new EventEmitter<boolean>();
 
-    @ViewChild('spinnerModal')
+    @ViewChild('spinnerModal', { static: true })
     private modal;
 
     constructor(private generalModalService: GeneralModalService) {

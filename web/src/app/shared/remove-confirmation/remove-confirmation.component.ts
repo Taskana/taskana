@@ -13,7 +13,7 @@ export class RemoveConfirmationComponent implements OnInit {
   private confirmationCallback: Function;
   message: string;
 
-  @ViewChild('removeConfirmationModal')
+  @ViewChild('removeConfirmationModal', { static: true })
   private modal;
 
   constructor(private removeConfirmationService: RemoveConfirmationService) { }

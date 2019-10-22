@@ -47,7 +47,7 @@ export class TypeAheadComponent implements OnInit, ControlValueAccessor {
   @Output()
   onSelect = new EventEmitter<AccessIdDefinition>();
 
-  @ViewChild('inputTypeAhead')
+  @ViewChild('inputTypeAhead', { static: false })
   private inputTypeAhead;
 
   typeaheadLoading = false;
