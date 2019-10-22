@@ -48,6 +48,7 @@
     "@types/node": "9.3.0",
     "ajv": "^6.10.2",
     "codelyzer": "4.4.2",
+    "diff": "^3.5.0",
     "hoek": "5.0.3",
     "jasmine-core": "2.9.1",
     "jasmine-spec-reporter": "4.2.1",
