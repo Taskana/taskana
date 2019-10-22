@@ -6,7 +6,7 @@ set -e # fail fast
 #H
 #H prints this help and exits
 #H
-#H test.sh <database>
+#H test.sh <database|module>
 #H
 #H   tests the taskana application. See documentation for further testing details.
 #H
@@ -15,6 +15,8 @@ set -e # fail fast
 #H   - DB2_10_5
 #H   - DB2_11_1
 #H   - POSTGRES_10_4
+#H module:
+#H   - HISTORY
 # Arguments:
 #   $1: exit code
 function helpAndExit() {
@@ -25,22 +27,37 @@ function helpAndExit() {
 function main() {
   [[ $# -eq 0 || "$1" == '-h' || "$1" == '--help' ]] && helpAndExit 0
   REL=$(dirname "$0")
-  eval "$REL/prepare_db.sh '$1'"
   case "$1" in
   H2)
+    set -x
+    eval "$REL/prepare_db.sh '$1'"
+    # We can not use the fance '-f' maven option due to a bug in arquillian. See https://issues.jboss.org/browse/THORN-2049
     (cd $REL/.. && mvn -q install -B -T 4C -am -Dmaven.javadoc.skip -Dcheckstyle.skip)
     (cd $REL/../web && npm install --silent && npm run test)
     ;;
   DB2_10_5 | DB2_11_1)
-    (cd $REL/.. && mvn -q verify -B -am -Dmaven.javadoc.skip -Dcheckstyle.skip -pl :taskana-core)
+    set -x
+    eval "$REL/prepare_db.sh '$1'"
+    mvn -q verify -B -f $REL/.. -am -T 4C -Dmaven.javadoc.skip -Dcheckstyle.skip -pl :taskana-core
     ;;
   POSTGRES_10_4)
+    set -x
+    eval "$REL/prepare_db.sh '$1'"
     ### INSTALL ###
-    (cd $REL/.. && mvn -q install -B -DskipTests -Dmaven.javadoc.skip -Dcheckstyle.skip -P postgres -am -T 4C -pl :taskana-rest-spring-wildfly-example)
+    mvn -q install -B -f $REL/.. -P postgres -am -T 4C -pl :taskana-rest-spring-wildfly-example -DskipTests -Dmaven.javadoc.skip -Dcheckstyle.skip
 
     ### TEST ###
-    (cd $REL/.. && mvn -q verify -B -Dmaven.javadoc.skip -Dcheckstyle.skip -pl :taskana-core)
-    (cd $REL/../rest/taskana-rest-spring-wildfly-example && mvn -q verify -B -P postgres -Dmaven.javadoc.skip -Dcheckstyle.skip)
+    mvn -q verify -B -f $REL/.. -Dmaven.javadoc.skip -Dcheckstyle.skip -pl :taskana-core
+    # Same as above (H2) we can not use the fancy '-f' maven option
+    (cd $REL/.. && mvn -q verify -B -pl :taskana-rest-spring-wildfly-example -P postgres -Dmaven.javadoc.skip -Dcheckstyle.skip)
+    ;;
+  HISTORY)
+    set -x
+    ### INSTALL ###
+    mvn -q install -B -f $REL/.. -am -T 4C -pl :taskana-rest-spring -DskipTests -Dmaven.javadoc.skip -Dcheckstyle.skip
+
+    ### TEST ###
+    mvn -q verify -B -f $REL/../history -Dmaven.javadoc.skip -Dcheckstyle.skip
     ;;
   esac
 }
