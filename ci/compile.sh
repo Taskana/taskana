@@ -1,8 +1,7 @@
 #!/bin/bash
 set -e # fail fast
-
 #H Usage:
-#H compile.sh -h | test.sh --help
+#H compile.sh -h | compile.sh --help
 #H
 #H prints this help and exits
 #H
@@ -26,18 +25,24 @@ function main() {
   REL=$(dirname "$0")
   case "$1" in
   WEB)
+    set -x
     (cd $REL/../web && npm install --silent)
     (cd $REL/../web && npm run build)
     ;;
   LIB)
-    mvn -q install -N -Dcheckstyle.skip -f $REL/..
-    mvn -q compile -f $REL/../lib
+    set -x
+    mvn -q install -B -f $REL/.. -DskipTests -Dcheckstyle.skip -Dmaven.javadoc.skip -N
+    mvn -q compile -B -f $REL/../lib
     ;;
   REST)
-    mvn -q install -N -Dcheckstyle.skip
-    mvn -q install -f lib -N -Dcheckstyle.skip
-    mvn -q install -f lib/taskana-core -DskipTests -Dmaven.javadoc.skip
-    mvn -q install -f lib/taskana-spring -DskipTests -Dmaven.javadoc.skip
+    set -x
+    mvn -q install -B -f $REL/.. -pl :taskana-spring -am -DskipTests -Dcheckstyle.skip -Dmaven.javadoc.skip
+    mvn -q compile -B -f $REL/../rest
+    ;;
+  HISTORY)
+    set -x
+    mvn -q install -B -f $REL/.. -pl :taskana-rest-spring -am -DskipTests -Dcheckstyle.skip -Dmaven.javadoc.skip
+    mvn -q compile -B -f $REL/../history
     ;;
   esac
 }
