@@ -14,22 +14,22 @@ const appRoutes: Routes = [
       {
         canActivate: [BusinessAdminGuard],
         path: 'administration',
-        loadChildren: './administration/administration.module#AdministrationModule',
+        loadChildren: () => import('./administration/administration.module').then(m => m.AdministrationModule),
       },
       {
         canActivate: [MonitorGuard],
         path: 'monitor',
-        loadChildren: './monitor/monitor.module#MonitorModule',
+        loadChildren: () => import('./monitor/monitor.module').then(m => m.MonitorModule),
       },
       {
         canActivate: [UserGuard],
         path: 'workplace',
-        loadChildren: './workplace/workplace.module#WorkplaceModule'
+        loadChildren: () => import('./workplace/workplace.module').then(m => m.WorkplaceModule)
       },
       {
         canActivate: [HistoryGuard],
         path: 'history',
-        loadChildren: './history/history.module#HistoryModule'
+        loadChildren: () => import('./history/history.module').then(m => m.HistoryModule)
       },
       {
         path: 'no-role',

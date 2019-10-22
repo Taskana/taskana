@@ -33,7 +33,7 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   sort: SortingModel = new SortingModel();
   filterBy: FilterModel = new FilterModel({name: '', owner: '', type: '', description: '', key: ''});
 
-  @ViewChild('wbToolbar')
+  @ViewChild('wbToolbar', { static: true })
   private toolbarElement: ElementRef;
   private workBasketSummarySubscription: Subscription;
   private workbasketServiceSubscription: Subscription;

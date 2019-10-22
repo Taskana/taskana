@@ -67,7 +67,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   private domainSubscription: Subscription;
   private importingExportingSubscription: Subscription;
 
-  @ViewChild('ClassificationForm') classificationForm: NgForm;
+  @ViewChild('ClassificationForm', { static: false }) classificationForm: NgForm;
   toogleValidationMap = new Map<string, boolean>();
 
   constructor(private classificationsService: ClassificationsService,
