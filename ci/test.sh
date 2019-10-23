@@ -33,7 +33,6 @@ function main() {
     eval "$REL/prepare_db.sh '$1'"
     # We can not use the fance '-f' maven option due to a bug in arquillian. See https://issues.jboss.org/browse/THORN-2049
     (cd $REL/.. && mvn -q install -B -T 4C -am -Dmaven.javadoc.skip -Dcheckstyle.skip)
-    (cd $REL/../web && npm install --silent && npm run test)
     ;;
   DB2_10_5 | DB2_11_1)
     set -x
@@ -58,6 +57,10 @@ function main() {
 
     ### TEST ###
     mvn -q verify -B -f $REL/../history -Dmaven.javadoc.skip -Dcheckstyle.skip
+    ;;
+  WEB)
+    set -x
+    (cd $REL/../web && npm install --silent && npm run test)
     ;;
   esac
 }
