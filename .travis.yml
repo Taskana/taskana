@@ -32,7 +32,6 @@ env:
     - DB=DB2_11_1
     - DB=POSTGRES_10_4
     - DB=HISTORY
-    - DB=WEB
 
 stage: Test
 install: skip
@@ -41,6 +40,14 @@ before_cache: rm -rf $HOME/.m2/repository/pro/taskana
 
 matrix:
   include:
+    - stage: Test
+      language: node_js
+      node_js: 12.10.0
+      install: skip
+      env: DB=WEB
+      script: ci/test.sh $DB
+      before_cache: rm -rf $HOME/.m2/repository/pro/taskana
+
     # We are using the environment variable 'MODULE' to force travis into using a different cache for each build. 
     # See https://docs.travis-ci.com/user/caching/#caches-and-build-matrices for detailed information on
     # which characteristics determine the cache selection.
