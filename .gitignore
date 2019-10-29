@@ -1,1 +1,59 @@
-target
+# See https://github.com/github/gitignore for more about ignoring files.
+
+### GENERATED ###
+target/
+.apt_generated/
+.checkstyle
+bin/
+*.orig
+
+### IDEs ###
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.vscode/*
+.idea
+*.iws
+*.iml
+*.ipr
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+
+
+### WEB ###
+# compiled output
+tmp/
+out-tsc/
+
+# dependencies
+node_modules/
+
+
+# misc
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+npm-debug.log
+testem.log
+/typings
+
+# e2e
+e2e/*.js
+e2e/*.map
+
+# System Files
+.DS_Store
+Thumbs.db
