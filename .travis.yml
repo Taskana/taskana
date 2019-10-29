@@ -20,12 +20,10 @@ cache:
 stages:
   - name: Compile
   - name: Test
-  - name: "Release / Deploy"
-    if: repo = env(DEPLOY_REPO) AND (tag =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ OR branch = master) AND type != pull_request
+  - name: Release / Deploy
+    if: repo = 'Taskana/taskana' AND (tag =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ OR branch = master) AND type != pull_request
 
 env:
-  global:
-    - DEPLOY_REPO=Taskana/taskana
   matrix:
     - DB=H2
     - DB=DB2_10_5
@@ -81,7 +79,7 @@ matrix:
       script: ci/compile.sh $MODULE
       before_cache: rm -rf $HOME/.m2/repository/pro/taskana
 
-    - stage: "Release / Deploy"
+    - stage: Release / Deploy
       name: release / deploy / commit
       before_install: |
         openssl aes-256-cbc -K "$encrypted_21a5d40e43a3_key" -iv "$encrypted_21a5d40e43a3_iv" \
