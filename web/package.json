@@ -7,6 +7,7 @@
     "start": "ng serve",
     "build": "ng build",
     "build:prod": "ng build --prod=true",
+    "build:prod-silent": "ng build --prod=true --no-progress",
     "test": "ng test --karma-config karma.conf.js --watch=false --browsers Firefox",
     "test:watch": "ng test --karma-config karma.conf.js --browsers Chrome",
     "lint": "ng lint"
