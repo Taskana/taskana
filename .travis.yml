@@ -24,6 +24,8 @@ stages:
     if: repo = 'Taskana/taskana' AND (tag =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ OR branch = master) AND type != pull_request
 
 env:
+  global:
+    - NODE_VERSION=12.10.0
   matrix:
     - DB=H2
     - DB=DB2_10_5
@@ -40,7 +42,7 @@ matrix:
   include:
     - stage: Test
       language: node_js
-      node_js: 12.10.0
+      node_js: $NODE_VERSION
       install: skip
       env: DB=WEB
       script: ci/test.sh $DB
@@ -52,7 +54,7 @@ matrix:
     - stage: Compile
       name: taskana-web
       language: node_js
-      node_js: 12.10.0
+      node_js: $NODE_VERSION
       install: skip
       env: MODULE=WEB
       script: ci/compile.sh $MODULE
@@ -81,6 +83,8 @@ matrix:
 
     - stage: Release / Deploy
       name: release / deploy / commit
+      language: node_js
+      node_js: $NODE_VERSION
       before_install: |
         openssl aes-256-cbc -K "$encrypted_21a5d40e43a3_key" -iv "$encrypted_21a5d40e43a3_iv" \
         -in "ci/codesigning.asc.enc" -out "ci/codesigning.asc" -d && gpg --import "ci/codesigning.asc"
