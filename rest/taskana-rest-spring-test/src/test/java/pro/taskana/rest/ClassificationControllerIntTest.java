@@ -31,6 +31,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -129,6 +130,7 @@ public class ClassificationControllerIntTest {
     }
 
     @Test
+    @DirtiesContext
     public void testCreateClassification() throws IOException {
         String newClassification = "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS\",\"name\":\"new classification\",\"type\":\"TASK\"}";
         URL url = new URL(server + port + "/api/v1/classifications");
@@ -160,6 +162,7 @@ public class ClassificationControllerIntTest {
     }
 
     @Test
+    @DirtiesContext
     public void testCreateClassificationWithParentId() throws IOException {
         String newClassification = "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_B\",\"key\":\"NEW_CLASS_P1\",\"name\":\"new classification\",\"type\":\"TASK\",\"parentId\":\"CLI:200000000000000000000000000000000015\"}";
         URL url = new URL(server + port + "/api/v1/classifications");
@@ -177,6 +180,7 @@ public class ClassificationControllerIntTest {
     }
 
     @Test
+    @DirtiesContext
     public void testCreateClassificationWithParentKey() throws IOException {
         String newClassification = "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_B\",\"key\":\"NEW_CLASS_P2\",\"name\":\"new classification\",\"type\":\"TASK\",\"parentKey\":\"T2100\"}";
         URL url = new URL(server + port + "/api/v1/classifications");
@@ -194,6 +198,7 @@ public class ClassificationControllerIntTest {
     }
 
     @Test
+    @DirtiesContext
     public void testCreateClassificationWithParentKeyInDOMAIN_AShouldCreateAClassificationInRootDomain()
         throws IOException {
         String newClassification = "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS_P2\",\"name\":\"new classification\",\"type\":\"TASK\",\"parentKey\":\"T2100\"}";
@@ -228,6 +233,7 @@ public class ClassificationControllerIntTest {
     }
 
     @Test
+    @DirtiesContext
     public void testReturn400IfCreateClassificationWithIncompatibleParentIdAndKey() throws IOException {
         String newClassification = "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_B\",\"key\":\"NEW_CLASS_P3\",\"name\":\"new classification\",\"type\":\"TASK\",\"parentId\":\"CLI:200000000000000000000000000000000015\",\"parentKey\":\"T2000\"}";
         URL url = new URL(server + port + "/api/v1/classifications");
@@ -245,6 +251,7 @@ public class ClassificationControllerIntTest {
     }
 
     @Test
+    @DirtiesContext
     public void testCreateClassificationWithClassificationIdReturnsError400() throws IOException {
         String newClassification = "{\"classificationId\":\"someId\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS\",\"name\":\"new classification\",\"type\":\"TASK\"}";
         URL url = new URL("http://127.0.0.1:" + port + "/api/v1/classifications");
@@ -276,6 +283,7 @@ public class ClassificationControllerIntTest {
     }
 
     @Test(expected = HttpClientErrorException.class)
+    @DirtiesContext
     public void testDeleteClassification() {
         RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
