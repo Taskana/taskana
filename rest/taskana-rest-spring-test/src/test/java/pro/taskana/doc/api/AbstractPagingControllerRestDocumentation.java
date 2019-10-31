@@ -1,52 +1,22 @@
 package pro.taskana.doc.api;
 
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
 import java.util.HashMap;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.FieldDescriptor;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-
-import pro.taskana.rest.RestConfiguration;
 
 /**
  * Generate Rest Docu for AbstractPagingController.
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT)
-public class AbstractPagingControllerRestDocumentation {
-
-    @Rule
-    public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
-    @LocalServerPort
-    int port;
-    @Autowired
-    private WebApplicationContext context;
-
-    private MockMvc mockMvc;
+public class AbstractPagingControllerRestDocumentation extends BaseRestDocumentation {
 
     private HashMap<String, String> pagingFieldDescriptionsMap = new HashMap<String, String>();
 
@@ -54,17 +24,6 @@ public class AbstractPagingControllerRestDocumentation {
 
     @Before
     public void setUp() {
-        document("{methodName}",
-            preprocessRequest(prettyPrint()),
-            preprocessResponse(prettyPrint()));
-
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
-            .apply(springSecurity())
-            .apply(documentationConfiguration(this.restDocumentation)
-                .operationPreprocessors()
-                .withResponseDefaults(prettyPrint())
-                .withRequestDefaults(prettyPrint()))
-            .build();
 
         pagingFieldDescriptionsMap.put("page", "Contains metainfo if there are multiple pages, else it is null");
         pagingFieldDescriptionsMap.put("page.size", "Number of items per page");
