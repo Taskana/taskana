@@ -12,9 +12,11 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import java.util.HashMap;
 
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -35,6 +37,7 @@ import pro.taskana.rest.RestConfiguration;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RestConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class WorkbasketAccessItemControllerRestDocumentation {
 
     @LocalServerPort
@@ -147,11 +150,11 @@ public class WorkbasketAccessItemControllerRestDocumentation {
     }
 
     @Test
-    public void getWorkbasketAccessItemsDocTest() throws Exception {
+    public void test01_getWorkbasketAccessItemsDocTest() throws Exception {
         this.mockMvc
             .perform(RestDocumentationRequestBuilders
                 .get("http://127.0.0.1:" + port
-                    + "/api/v1/workbasket-access-items/?sort-by=workbasket-key&order=asc&access-ids=user_1_1")
+                    + "/api/v1/workbasket-access-items/?sort-by=workbasket-key&order=asc&access-ids=user_2_2")
                 .accept("application/hal+json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -160,10 +163,10 @@ public class WorkbasketAccessItemControllerRestDocumentation {
     }
 
     @Test
-    public void removeWorkbasketAccessItemsDocTest() throws Exception {
+    public void test02_removeWorkbasketAccessItemsDocTest() throws Exception {
         this.mockMvc
             .perform(RestDocumentationRequestBuilders
-                .delete("http://127.0.0.1:" + port + "/api/v1/workbasket-access-items/?access-id=user_1_1")
+                .delete("http://127.0.0.1:" + port + "/api/v1/workbasket-access-items/?access-id=user_2_2")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isNoContent())
             .andDo(MockMvcRestDocumentation.document("RemoveWorkbasketAccessItemsDocTest"));
