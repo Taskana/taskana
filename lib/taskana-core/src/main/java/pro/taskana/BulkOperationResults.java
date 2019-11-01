@@ -18,7 +18,7 @@ import pro.taskana.impl.util.LoggerUtils;
  * @param <V>
  *            type of the stored informations
  */
-public class BulkOperationResults<K, V> {
+public class BulkOperationResults<K, V extends Exception> {
 
     private Map<K, V> errorMap = new HashMap<>();
     private static final Logger LOGGER = LoggerFactory.getLogger(BulkOperationResults.class);
@@ -42,18 +42,10 @@ public class BulkOperationResults<K, V> {
      * @return status of adding the values.
      */
     public boolean addError(K objectId, V error) {
-        boolean status = false;
-        try {
-            if (objectId != null) {
-                this.errorMap.put(objectId, error);
-                status = true;
-            }
-        } catch (Exception e) {
-            LOGGER.warn(
-                "Can´t add bulkoperation-error, because of a map failure. ID={}, error={} and current failure={}",
-                objectId, error, e);
+        if (objectId != null) {
+            this.errorMap.put(objectId, error);
         }
-        return status;
+        return (objectId != null);
     }
 
     /**

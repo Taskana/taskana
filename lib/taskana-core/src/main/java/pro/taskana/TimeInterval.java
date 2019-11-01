@@ -1,6 +1,7 @@
 package pro.taskana;
 
 import java.time.Instant;
+import java.util.Objects;
 
 /**
  * Capture a time interval. A fixed interval has defined begin and end Instant. An open ended interval has either begin
@@ -77,21 +78,9 @@ public class TimeInterval {
             return false;
         }
         TimeInterval other = (TimeInterval) obj;
-        if (begin == null) {
-            if (other.begin != null) {
-                return false;
-            }
-        } else if (!begin.equals(other.begin)) {
-            return false;
-        }
-        if (end == null) {
-            if (other.end != null) {
-                return false;
-            }
-        } else if (!end.equals(other.end)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(begin, other.begin)
+            && Objects.equals(end, other.end);
+
     }
 
 }

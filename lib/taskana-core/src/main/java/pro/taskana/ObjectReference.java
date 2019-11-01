@@ -1,5 +1,7 @@
 package pro.taskana;
 
+import java.util.Objects;
+
 /**
  * ObjectReference entity.
  */
@@ -63,10 +65,10 @@ public class ObjectReference {
     @Override
     public String toString() {
         return "ObjectReference ["
-                + "id=" + this.id + ", company="
-                + this.company + ", system=" + this.system
-                + ", systemInstance=" + this.systemInstance
-                + ", type=" + this.type + ", value=" + this.value + "]";
+            + "id=" + this.id + ", company="
+            + this.company + ", system=" + this.system
+            + ", systemInstance=" + this.systemInstance
+            + ", type=" + this.type + ", value=" + this.value + "]";
     }
 
     @Override
@@ -95,42 +97,11 @@ public class ObjectReference {
         }
         ObjectReference o = (ObjectReference) other;
 
-        if (id == null && o.id != null) {
-            return false;
-        }
-        if (id != null && !(id.equals(o.id))) {
-            return false;
-        }
-        if (company == null && o.company != null) {
-            return false;
-        }
-        if (company != null && !(company.equals(o.company))) {
-            return false;
-        }
-        if (system == null && o.system != null) {
-            return false;
-        }
-        if (system != null && !(system.equals(o.system))) {
-            return false;
-        }
-        if (systemInstance == null && o.systemInstance != null) {
-            return false;
-        }
-        if (systemInstance != null && !(systemInstance.equals(o.systemInstance))) {
-            return false;
-        }
-        if (type == null && o.type != null) {
-            return false;
-        }
-        if (type != null && !(type.equals(o.type))) {
-            return false;
-        }
-        if (value == null && o.value != null) {
-            return false;
-        }
-        if (value != null && !(value.equals(o.value))) {
-            return false;
-        }
-        return true;
+        return Objects.equals(id, o.id)
+            && Objects.equals(company, o.company)
+            && Objects.equals(system, o.system)
+            && Objects.equals(systemInstance, o.systemInstance)
+            && Objects.equals(type, o.type)
+            && Objects.equals(value, o.value);
     }
 }
