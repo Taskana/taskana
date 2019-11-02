@@ -99,17 +99,23 @@ public class CreateTaskAccTest extends AbstractAccTest {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+        Instant instantPlanned = Instant.now().plus(2, ChronoUnit.HOURS);
         newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         newTask.setOwner("user_1_1");
-        newTask.setPlanned(Instant.now().plus(2, ChronoUnit.HOURS));
+        newTask.setPlanned(instantPlanned);
         Task createdTask = taskService.createTask(newTask);
 
         assertNotNull(createdTask);
         assertNotNull(createdTask.getCreated());
         assertNotNull(createdTask.getPlanned());
-        assertEquals(createdTask.getCreated().plus(2, ChronoUnit.HOURS).truncatedTo(ChronoUnit.SECONDS),
-            createdTask.getPlanned().truncatedTo(ChronoUnit.SECONDS));
+        assertEquals(instantPlanned, createdTask.getPlanned());
+        assertTrue(createdTask.getCreated().isBefore(createdTask.getPlanned()));
+
+        //verify that planned takes place 2 hours after creation (+- 5 seconds)
+        long difference = Duration.between(createdTask.getCreated(), createdTask.getPlanned()).abs().getSeconds();
+        //add some tolerance to ignore that "created" depends on execution speed
+        assertTrue(Math.abs(difference - 2 * 60 * 60) < 5);
     }
 
     @WithAccessId(
