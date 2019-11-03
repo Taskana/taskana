@@ -7,7 +7,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.time.Instant;
-import java.util.concurrent.TimeUnit;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
@@ -36,9 +35,9 @@ import pro.taskana.security.WithAccessId;
  */
 
 @ExtendWith(JAASExtension.class)
-public class CompleteTaskAccTest extends AbstractAccTest {
+class CompleteTaskAccTest extends AbstractAccTest {
 
-    public CompleteTaskAccTest() {
+    CompleteTaskAccTest() {
         super();
     }
 
@@ -46,7 +45,7 @@ public class CompleteTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testCompleteTask()
+    void testCompleteTask()
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException {
         TaskService taskService = taskanaEngine.getTaskService();
 
@@ -64,7 +63,7 @@ public class CompleteTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testCompleteTaskTwice()
+    void testCompleteTaskTwice()
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task completedTask = taskService.completeTask("TKI:000000000000000000000000000000000002");
@@ -76,7 +75,7 @@ public class CompleteTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testForceCompleteAlreadyClaimed()
+    void testForceCompleteAlreadyClaimed()
         throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException,
         InvalidOwnerException, InvalidStateException {
@@ -91,12 +90,11 @@ public class CompleteTaskAccTest extends AbstractAccTest {
         newTaskImpl.setClaimed(Instant.now());
 
         Task createdTask = taskService.createTask(newTaskImpl);
-        waitAMillisecond();
         Task completedTask = taskService.forceCompleteTask(createdTask.getId());
 
         assertEquals(TaskState.COMPLETED, completedTask.getState());
         assertNotNull(completedTask.getCompleted());
-        assertNotEquals(completedTask.getCreated(), completedTask.getModified());
+        assertTrue(isBeforeOrEqual(completedTask.getCreated(), completedTask.getModified()));
         assertEquals(completedTask.getModified(), completedTask.getCompleted());
     }
 
@@ -104,7 +102,7 @@ public class CompleteTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testForceCompleteNotClaimed()
+    void testForceCompleteNotClaimed()
         throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException,
         InvalidOwnerException, InvalidStateException {
@@ -118,12 +116,11 @@ public class CompleteTaskAccTest extends AbstractAccTest {
         newTaskImpl.setClaimed(Instant.now());
 
         Task createdTask = taskService.createTask(newTaskImpl);
-        waitAMillisecond();
         Task completedTask = taskService.forceCompleteTask(createdTask.getId());
 
         assertEquals(TaskState.COMPLETED, completedTask.getState());
         assertNotNull(completedTask.getCompleted());
-        assertNotEquals(completedTask.getCreated(), completedTask.getModified());
+        assertTrue(isBeforeOrEqual(completedTask.getCreated(), completedTask.getModified()));
         assertEquals(completedTask.getModified(), completedTask.getCompleted());
     }
 
@@ -131,7 +128,7 @@ public class CompleteTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testCompleteTaskThrowsErrors() {
+    void testCompleteTaskThrowsErrors() {
         TaskService taskService = taskanaEngine.getTaskService();
         try {
             taskService.completeTask("TKI:0000000000000000000000000000000000xx");
@@ -162,7 +159,7 @@ public class CompleteTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testClaimTaskWithDefaultFlag()
+    void testClaimTaskWithDefaultFlag()
         throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException, InvalidStateException,
         InvalidOwnerException {
@@ -177,26 +174,23 @@ public class CompleteTaskAccTest extends AbstractAccTest {
         assertNotNull(createdTask);
         assertNull(createdTask.getClaimed());
 
-        Instant before = Instant.now();
-        waitAMillisecond();
+        Instant before = createdTask.getCreated();
         Task claimedTask = taskService.claim(createdTask.getId());
-        waitAMillisecond();
-        Instant after = Instant.now();
 
         assertNotNull(claimedTask.getOwner());
         assertEquals(claimedTask.getOwner(), CurrentUserContext.getUserid());
         assertNotNull(claimedTask.getClaimed());
-        assertTrue(claimedTask.getClaimed().isAfter(before));
-        assertTrue(claimedTask.getClaimed().isBefore(after));
-        assertTrue(claimedTask.getModified().isAfter(before));
-        assertTrue(claimedTask.getModified().isBefore(after));
+        assertTrue(isBeforeOrEqual(before, claimedTask.getClaimed()));
+        assertTrue(isBeforeOrEqual(claimedTask.getCreated(), claimedTask.getClaimed()));
+        assertTrue(isBeforeOrEqual(claimedTask.getClaimed(), Instant.now()));
+        assertEquals(claimedTask.getClaimed(), claimedTask.getModified());
     }
 
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testForceClaimTaskFromOtherUser()
+    void testForceClaimTaskFromOtherUser()
         throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException,
         InvalidStateException, InvalidOwnerException {
@@ -212,14 +206,14 @@ public class CompleteTaskAccTest extends AbstractAccTest {
         assertEquals(createdTask.getOwner(), "other_user");
 
         Instant beforeForceClaim = Instant.now();
-        waitAMillisecond();
         Task taskAfterClaim = taskService.forceClaim(createdTask.getId());
 
         assertEquals(CurrentUserContext.getUserid(), taskAfterClaim.getOwner());
-        assertTrue(taskAfterClaim.getModified().isAfter(beforeForceClaim));
-        assertTrue(taskAfterClaim.getClaimed().isAfter(beforeForceClaim));
+        assertTrue(isBeforeOrEqual(beforeForceClaim, taskAfterClaim.getModified()));
+        assertTrue(isBeforeOrEqual(beforeForceClaim, taskAfterClaim.getClaimed()));
+        assertTrue(isBeforeOrEqual(taskAfterClaim.getCreated(), taskAfterClaim.getModified()));
+
         assertEquals(TaskState.CLAIMED, taskAfterClaim.getState());
-        assertNotEquals(createdTask.getCreated(), taskAfterClaim.getModified());
         assertTrue(taskAfterClaim.isRead());
     }
 
@@ -227,7 +221,7 @@ public class CompleteTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testClaimTaskNotExisting() {
+    void testClaimTaskNotExisting() {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Assertions.assertThrows(TaskNotFoundException.class, () -> taskService.claim("NOT_EXISTING"));
@@ -237,7 +231,7 @@ public class CompleteTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testClaimTaskWithInvalidState() {
+    void testClaimTaskWithInvalidState() {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Assertions.assertThrows(InvalidStateException.class, () ->
@@ -248,9 +242,7 @@ public class CompleteTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testClaimTaskWithInvalidOwner()
-        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
-        NotAuthorizedException {
+    void testClaimTaskWithInvalidOwner() {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Assertions.assertThrows(InvalidOwnerException.class, () ->
@@ -261,9 +253,7 @@ public class CompleteTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testCancelClaimForcedWithInvalidState()
-        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
-        NotAuthorizedException {
+    void testCancelClaimForcedWithInvalidState() {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Assertions.assertThrows(InvalidStateException.class, () ->
@@ -274,7 +264,7 @@ public class CompleteTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testCancelClaimDefaultFlag()
+    void testCancelClaimDefaultFlag()
         throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
         TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException,
         InvalidStateException, InvalidOwnerException {
@@ -298,7 +288,7 @@ public class CompleteTaskAccTest extends AbstractAccTest {
         userName = "admin",
         groupNames = {"admin"})
     @Test
-    public void testForceCancelClaimSuccessfull()
+    void testForceCancelClaimSuccessfull()
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
         NotAuthorizedException {
 
@@ -328,18 +318,14 @@ public class CompleteTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testCancelClaimWithInvalidOwner() {
+    void testCancelClaimWithInvalidOwner() {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Assertions.assertThrows(InvalidOwnerException.class, () ->
             taskService.cancelClaim("TKI:000000000000000000000000000000000100"));
     }
 
-    private void waitAMillisecond() {
-        try {
-            TimeUnit.MILLISECONDS.sleep(1);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    private boolean isBeforeOrEqual(Instant before, Instant after) {
+        return before.isBefore(after) || before.equals(after);
     }
 }
