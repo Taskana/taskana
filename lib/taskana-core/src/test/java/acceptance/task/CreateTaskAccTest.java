@@ -2,10 +2,11 @@ package acceptance.task;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -13,6 +14,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
@@ -21,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import acceptance.AbstractAccTest;
+import pro.taskana.Attachment;
 import pro.taskana.ObjectReference;
 import pro.taskana.Task;
 import pro.taskana.TaskService;
@@ -46,17 +49,13 @@ import pro.taskana.security.WithAccessId;
  * Acceptance test for all "create task" scenarios.
  */
 @ExtendWith(JAASExtension.class)
-public class CreateTaskAccTest extends AbstractAccTest {
-
-    public CreateTaskAccTest() {
-        super();
-    }
+class CreateTaskAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testCreateSimpleManualTask()
+    void testCreateSimpleManualTask()
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException {
 
@@ -78,22 +77,22 @@ public class CreateTaskAccTest extends AbstractAccTest {
         assertNotNull(createdTask.getCreated());
         assertNotNull(createdTask.getModified());
         assertNotNull(createdTask.getBusinessProcessId());
-        assertEquals(null, createdTask.getClaimed());
-        assertEquals(null, createdTask.getCompleted());
+        assertNull(createdTask.getClaimed());
+        assertNull(createdTask.getCompleted());
         assertEquals(createdTask.getCreated(), createdTask.getModified());
         assertEquals(createdTask.getCreated(), createdTask.getPlanned());
         assertEquals(TaskState.READY, createdTask.getState());
-        assertEquals(null, createdTask.getParentBusinessProcessId());
+        assertNull(createdTask.getParentBusinessProcessId());
         assertEquals(2, createdTask.getPriority());
-        assertEquals(false, createdTask.isRead());
-        assertEquals(false, createdTask.isTransferred());
+        assertFalse(createdTask.isRead());
+        assertFalse(createdTask.isTransferred());
     }
 
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testCreateTaskWithPlanned()
+    void testCreateTaskWithPlanned()
         throws NotAuthorizedException, InvalidArgumentException,
         ClassificationNotFoundException, WorkbasketNotFoundException, TaskAlreadyExistException {
 
@@ -113,16 +112,18 @@ public class CreateTaskAccTest extends AbstractAccTest {
         assertTrue(createdTask.getCreated().isBefore(createdTask.getPlanned()));
 
         //verify that planned takes place 2 hours after creation (+- 5 seconds)
-        long difference = Duration.between(createdTask.getCreated(), createdTask.getPlanned()).abs().getSeconds();
+        Instant plannedAdjusted = createdTask.getPlanned().minus(2, ChronoUnit.HOURS);
+        long difference = Duration.between(createdTask.getCreated(), plannedAdjusted).abs().getSeconds();
         //add some tolerance to ignore that "created" depends on execution speed
-        assertTrue(Math.abs(difference - 2 * 60 * 60) < 5);
+        long tolerance = 5;
+        assertTrue(Math.abs(difference) < tolerance);
     }
 
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testIdempotencyOfTaskCreation()
+    void testIdempotencyOfTaskCreation()
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException {
 
@@ -141,15 +142,15 @@ public class CreateTaskAccTest extends AbstractAccTest {
         assertNotNull(createdTask.getCreated());
         assertNotNull(createdTask.getModified());
         assertNotNull(createdTask.getBusinessProcessId());
-        assertEquals(null, createdTask.getClaimed());
-        assertEquals(null, createdTask.getCompleted());
+        assertNull(createdTask.getClaimed());
+        assertNull(createdTask.getCompleted());
         assertEquals(createdTask.getCreated(), createdTask.getModified());
         assertEquals(createdTask.getCreated(), createdTask.getPlanned());
         assertEquals(TaskState.READY, createdTask.getState());
-        assertEquals(null, createdTask.getParentBusinessProcessId());
+        assertNull(createdTask.getParentBusinessProcessId());
         assertEquals(2, createdTask.getPriority());
-        assertEquals(false, createdTask.isRead());
-        assertEquals(false, createdTask.isTransferred());
+        assertFalse(createdTask.isRead());
+        assertFalse(createdTask.isTransferred());
 
         Task newTask2 = taskService.newTask("USER_1_1", "DOMAIN_A");
         newTask2.setExternalId("MyExternalId");
@@ -164,7 +165,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testCreateSimpleTaskWithCustomAttributes()
+    void testCreateSimpleTaskWithCustomAttributes()
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException, NoSuchFieldException,
         IllegalAccessException {
@@ -183,15 +184,15 @@ public class CreateTaskAccTest extends AbstractAccTest {
         assertNotNull(createdTask.getCreated());
         assertNotNull(createdTask.getModified());
         assertNotNull(createdTask.getBusinessProcessId());
-        assertEquals(null, createdTask.getClaimed());
-        assertEquals(null, createdTask.getCompleted());
+        assertNull(createdTask.getClaimed());
+        assertNull(createdTask.getCompleted());
         assertEquals(createdTask.getCreated(), createdTask.getModified());
         assertEquals(createdTask.getCreated(), createdTask.getPlanned());
         assertEquals(TaskState.READY, createdTask.getState());
-        assertEquals(null, createdTask.getParentBusinessProcessId());
+        assertNull(createdTask.getParentBusinessProcessId());
         assertEquals(2, createdTask.getPriority());
-        assertEquals(false, createdTask.isRead());
-        assertEquals(false, createdTask.isTransferred());
+        assertFalse(createdTask.isRead());
+        assertFalse(createdTask.isTransferred());
         // verify that the database content is as expected
         TaskanaEngineProxyForTest engineProxy = new TaskanaEngineProxyForTest(taskanaEngine);
         try {
@@ -224,7 +225,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         Task retrievedTask = taskService.getTask(createdTask.getId());
         Map<String, String> customAttributesFromDb = retrievedTask.getCustomAttributes();
         assertNotNull(customAttributesFromDb);
-        assertTrue(customAttributesFromDb.equals(customAttributesForCreate));
+        assertEquals(customAttributesFromDb, customAttributesForCreate);
 
     }
 
@@ -232,7 +233,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testCreateExternalTaskWithAttachment()
+    void testCreateExternalTaskWithAttachment()
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException, NoSuchFieldException,
         IllegalAccessException {
@@ -291,14 +292,14 @@ public class CreateTaskAccTest extends AbstractAccTest {
         // verify that the map is correctly retrieved from the database
         Map<String, String> customAttributesFromDb = readTask.getAttachments().get(0).getCustomAttributes();
         assertNotNull(customAttributesFromDb);
-        assertTrue(customAttributesFromDb.equals(customAttributesForCreate));
+        assertEquals(customAttributesFromDb, customAttributesForCreate);
     }
 
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testCreateExternalTaskWithMultipleAttachments()
+    void testCreateExternalTaskWithMultipleAttachments()
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException {
 
@@ -335,7 +336,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testPrioDurationOfTaskFromAttachmentsAtCreate()
+    void testPrioDurationOfTaskFromAttachmentsAtCreate()
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException {
 
@@ -368,97 +369,65 @@ public class CreateTaskAccTest extends AbstractAccTest {
         // assertNotNull(readTask.getAttachments().get(0).getClassification());
         assertNotNull(readTask.getAttachments().get(0).getObjectReference());
 
-        assertTrue(readTask.getPriority() == 99);
+        assertEquals(99, readTask.getPriority());
 
         DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter
             .initialize(Collections.singletonList(new TimeIntervalColumnHeader(0)), Instant.now());
         long calendarDays = converter.convertWorkingDaysToDays(readTask.getPlanned(), 1);
 
-        assertTrue(readTask.getDue().equals(readTask.getPlanned().plus(Duration.ofDays(calendarDays))));
+        assertEquals(readTask.getDue(), readTask.getPlanned().plus(Duration.ofDays(calendarDays)));
     }
 
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testThrowsExceptionIfAttachmentIsInvalid()
-        throws NotAuthorizedException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException {
+    void testThrowsExceptionIfAttachmentIsInvalid()
+        throws ClassificationNotFoundException {
 
-        TaskService taskService = taskanaEngine.getTaskService();
-        Task newTask = makeNewTask(taskService);
-        newTask.addAttachment(createAttachment("DOCTYPE_DEFAULT",
+        Consumer<Attachment> testCreateTask = (Attachment invalidAttachment) -> {
+            TaskService taskService = taskanaEngine.getTaskService();
+            Task taskWithInvalidAttachment = makeNewTask(taskService);
+            taskWithInvalidAttachment.addAttachment(invalidAttachment);
+            Assertions.assertThrows(InvalidArgumentException.class, () ->
+                    taskService.createTask(taskWithInvalidAttachment),
+                "Should have thrown an InvalidArgumentException, because Attachment-ObjRef is null.");
+        };
+
+        testCreateTask.accept(createAttachment("DOCTYPE_DEFAULT",
             null,
             "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
-        try {
-            taskService.createTask(newTask);
-            fail("Should have thrown an InvalidArgumentException, becasue Attachment-ObjRef is null.");
-        } catch (InvalidArgumentException ex) {
-            // nothing to do
-        }
 
-        newTask = makeNewTask(taskService);
-        newTask.addAttachment(createAttachment("DOCTYPE_DEFAULT",
+        testCreateTask.accept(createAttachment("DOCTYPE_DEFAULT",
             createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchiveId", null),
             "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
-        try {
-            taskService.createTask(newTask);
-            fail("Should have thrown an InvalidArgumentException, becasue ObjRef-Value is null.");
-        } catch (InvalidArgumentException ex) {
-            // nothing to do
-        }
 
-        newTask = makeNewTask(taskService);
-        newTask.addAttachment(createAttachment("DOCTYPE_DEFAULT",
+        testCreateTask.accept(createAttachment("DOCTYPE_DEFAULT",
             createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", null,
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
-        try {
-            taskService.createTask(newTask);
-            fail("Should have thrown an InvalidArgumentException, becasue ObjRef-Type is null.");
-        } catch (InvalidArgumentException ex) {
-            // nothing to do
-        }
-        newTask = makeNewTask(taskService);
-        newTask.addAttachment(createAttachment("DOCTYPE_DEFAULT",
+
+        testCreateTask.accept(createAttachment("DOCTYPE_DEFAULT",
             createObjectReference("COMPANY_A", "SYSTEM_B", null, "ArchiveId",
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
-        try {
-            taskService.createTask(newTask);
-            fail("Should have thrown an InvalidArgumentException, becasue ObjRef-SystemInstance is null.");
-        } catch (InvalidArgumentException ex) {
-            // nothing to do
-        }
-        newTask = makeNewTask(taskService);
-        newTask.addAttachment(createAttachment("DOCTYPE_DEFAULT",
+
+        testCreateTask.accept(createAttachment("DOCTYPE_DEFAULT",
             createObjectReference("COMPANY_A", null, "INSTANCE_B", "ArchiveId",
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
-        try {
-            taskService.createTask(newTask);
-            fail("Should have thrown an InvalidArgumentException, becasue ObjRef-System is null.");
-        } catch (InvalidArgumentException ex) {
-            // nothing to do
-        }
-        newTask = makeNewTask(taskService);
-        newTask.addAttachment(createAttachment("DOCTYPE_DEFAULT",
+
+        testCreateTask.accept(createAttachment("DOCTYPE_DEFAULT",
             createObjectReference(null, "SYSTEM_B", "INSTANCE_B", "ArchiveId",
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
-        try {
-            taskService.createTask(newTask);
-            fail("Should have thrown an InvalidArgumentException, becasue ObjRef-Company is null.");
-        } catch (InvalidArgumentException ex) {
-            // nothing to do
-        }
     }
 
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testUseCustomNameIfSetForNewTask()
+    void testUseCustomNameIfSetForNewTask()
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException {
 
@@ -478,7 +447,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testUseClassificationMetadataFromCorrectDomainForNewTask()
+    void testUseClassificationMetadataFromCorrectDomainForNewTask()
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException {
 
@@ -498,7 +467,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testGetExceptionIfWorkbasketDoesNotExist() {
+    void testGetExceptionIfWorkbasketDoesNotExist() {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("UNKNOWN");
@@ -513,7 +482,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testGetExceptionIfAppendIsNotPermitted() {
+    void testGetExceptionIfAppendIsNotPermitted() {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("GPK_KSC", "DOMAIN_A");
@@ -528,81 +497,33 @@ public class CreateTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testThrowsExceptionIfMandatoryPrimaryObjectReferenceIsNotSetOrIncomplete()
-        throws NotAuthorizedException, ClassificationNotFoundException,
-        WorkbasketNotFoundException, TaskAlreadyExistException {
+    void testThrowsExceptionIfMandatoryPrimaryObjectReferenceIsNotSetOrIncomplete() {
 
-        TaskService taskService = taskanaEngine.getTaskService();
-        Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
-        newTask.setClassificationKey("T2100");
-        try {
-            taskService.createTask(newTask);
-            fail("Should have thrown an InvalidArgumentException, because ObjRef is null.");
-        } catch (InvalidArgumentException ex) {
-            // nothing to do
-        }
+        Consumer<ObjectReference> testCreateTask = (ObjectReference objectReference) -> {
+            TaskService taskService = taskanaEngine.getTaskService();
+            Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+            newTask.setClassificationKey("T2100");
+            if (objectReference != null) {
+                newTask.setPrimaryObjRef(objectReference);
+            }
+            Assertions.assertThrows(InvalidArgumentException.class, () ->
+                    taskService.createTask(newTask),
+                "Should have thrown an InvalidArgumentException, because ObjRef-ObjRef is null.");
+        };
 
-        // Exception
-        newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
-        newTask.setClassificationKey("T2100");
-        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", null));
-        try {
-            taskService.createTask(newTask);
-            fail("Should have thrown an InvalidArgumentException, becasue ObjRef-Value is null.");
-        } catch (InvalidArgumentException ex) {
-            // nothing to do
-        }
-
-        // Exception
-        newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
-        newTask.setClassificationKey("T2100");
-        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", null, "1234567"));
-        try {
-            taskService.createTask(newTask);
-            fail("Should have thrown an InvalidArgumentException, becasue ObjRef-Type is null.");
-        } catch (InvalidArgumentException ex) {
-            // nothing to do
-        }
-
-        // Exception
-        newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
-        newTask.setClassificationKey("T2100");
-        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", null, "VNR", "1234567"));
-        try {
-            taskService.createTask(newTask);
-            fail("Should have thrown an InvalidArgumentException, becasue ObjRef-SystemInstances is null.");
-        } catch (InvalidArgumentException ex) {
-            // nothing to do
-        }
-
-        // Exception
-        newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
-        newTask.setClassificationKey("T2100");
-        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", null, "INSTANCE_A", "VNR", "1234567"));
-        try {
-            taskService.createTask(newTask);
-            fail("Should have thrown an InvalidArgumentException, becasue ObjRef-System is null.");
-        } catch (InvalidArgumentException ex) {
-            // nothing to do
-        }
-
-        // Exception
-        newTask = taskService.newTask("WBI:100000000000000000000000000000000006");
-        newTask.setClassificationKey("T2100");
-        newTask.setPrimaryObjRef(createObjectReference(null, "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-        try {
-            taskService.createTask(newTask);
-            fail("Should have thrown an InvalidArgumentException, becasue ObjRef-Company is null.");
-        } catch (InvalidArgumentException ex) {
-            // nothing to do
-        }
+        testCreateTask.accept(null);
+        testCreateTask.accept(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", null));
+        testCreateTask.accept(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", null, "1234567"));
+        testCreateTask.accept(createObjectReference("COMPANY_A", "SYSTEM_A", null, "VNR", "1234567"));
+        testCreateTask.accept(createObjectReference("COMPANY_A", null, "INSTANCE_A", "VNR", "1234567"));
+        testCreateTask.accept(createObjectReference(null, "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
     }
 
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testSetDomainFromWorkbasket()
+    void testSetDomainFromWorkbasket()
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException {
 
@@ -626,7 +547,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testCreatedTaskObjectEqualsReadTaskObject()
+    void testCreatedTaskObjectEqualsReadTaskObject()
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException {
 
@@ -654,7 +575,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testCreateSimpleTaskWithCallbackInfo()
+    void testCreateSimpleTaskWithCallbackInfo()
         throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException {
 
@@ -675,15 +596,15 @@ public class CreateTaskAccTest extends AbstractAccTest {
         assertNotNull(createdTask.getCreated());
         assertNotNull(createdTask.getModified());
         assertNotNull(createdTask.getBusinessProcessId());
-        assertEquals(null, createdTask.getClaimed());
-        assertEquals(null, createdTask.getCompleted());
+        assertNull(createdTask.getClaimed());
+        assertNull(createdTask.getCompleted());
         assertEquals(createdTask.getCreated(), createdTask.getModified());
         assertEquals(createdTask.getCreated(), createdTask.getPlanned());
         assertEquals(TaskState.READY, createdTask.getState());
-        assertEquals(null, createdTask.getParentBusinessProcessId());
+        assertNull(createdTask.getParentBusinessProcessId());
         assertEquals(2, createdTask.getPriority());
-        assertEquals(false, createdTask.isRead());
-        assertEquals(false, createdTask.isTransferred());
+        assertFalse(createdTask.isRead());
+        assertFalse(createdTask.isTransferred());
 
         Task retrievedTask = taskService.getTask(createdTask.getId());
         assertEquals(callbackInfo, retrievedTask.getCallbackInfo());
@@ -691,9 +612,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testCreateTaskWithSecurityButNoUserId()
-        throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-        TaskAlreadyExistException, InvalidArgumentException {
+    void testCreateTaskWithSecurityButNoUserId() {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
@@ -708,9 +627,8 @@ public class CreateTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testCreateTaskAlreadyExisting()
-        throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-        TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException {
+    void testCreateTaskAlreadyExisting()
+        throws NotAuthorizedException, TaskNotFoundException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task existingTask = taskService.getTask("TKI:000000000000000000000000000000000000");
@@ -723,9 +641,7 @@ public class CreateTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testCreateTaskNotAuthorizedOnWorkbasket() throws WorkbasketNotFoundException,
-        ClassificationNotFoundException, NotAuthorizedException, TaskAlreadyExistException,
-        InvalidArgumentException {
+    void testCreateTaskNotAuthorizedOnWorkbasket() {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.newTask("TEAMLEAD_2", "DOMAIN_A");
