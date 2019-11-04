@@ -1,25 +1,17 @@
 package pro.taskana.jobs;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -33,13 +25,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import pro.taskana.Classification;
 import pro.taskana.Task;
@@ -58,86 +51,80 @@ import pro.taskana.rest.resource.TaskResourceAssembler;
     properties = {"devMode=true"})
 public class AsyncUpdateJobIntTest {
 
-    @Autowired
-    private ClassificationResourceAssembler classificationResourceAssembler;
+    private static final String CLASSIFICATION_ID = "CLI:100000000000000000000000000000000003";
 
     @Autowired
-    private TaskResourceAssembler taskResourceAssembler;
+    ClassificationResourceAssembler classificationResourceAssembler;
+
+    @Autowired
+    TaskResourceAssembler taskResourceAssembler;
+
+    @Autowired
+    JobScheduler jobScheduler;
 
     @Autowired
     Environment env;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AsyncUpdateJobIntTest.class);
-    String server = "http://127.0.0.1:";
-    RestTemplate template;
-    HttpEntity<String> request;
-    HttpHeaders headers = new HttpHeaders();
     @LocalServerPort
     int port;
+
+    private String server;
+
+    private RestTemplate template;
 
     @Before
     public void before() {
         template = getRestTemplate();
-        headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-        request = new HttpEntity<String>(headers);
+        server = "http://127.0.0.1:" + port;
     }
 
     @Test
     public void testUpdateClassificationPrioServiceLevel()
-        throws IOException, InterruptedException, InvalidArgumentException {
+        throws IOException, InvalidArgumentException {
 
         // 1st step: get old classification :
         Instant before = Instant.now();
         ObjectMapper mapper = new ObjectMapper();
-        String updatedClassification;
 
         ResponseEntity<ClassificationResource> response = template.exchange(
-            "http://127.0.0.1:" + port + "/api/v1/classifications/CLI:100000000000000000000000000000000003",
+            server + "/api/v1/classifications/{classificationId}",
             HttpMethod.GET,
-            request,
-            ParameterizedTypeReference.forType(ClassificationResource.class));
+            new HttpEntity<String>(getHeaders()),
+            ParameterizedTypeReference.forType(ClassificationResource.class),
+            CLASSIFICATION_ID);
 
-        assertNotNull(response.getBody().getLink(Link.REL_SELF));
+        assertNotNull(response.getBody());
         ClassificationResource classification = response.getBody();
+        assertNotNull(classification.getLink(Link.REL_SELF));
 
         // 2nd step: modify classification and trigger update
         classification.removeLinks();
         classification.setServiceLevel("P5D");
         classification.setPriority(1000);
 
-        updatedClassification = mapper.writeValueAsString(classification);
+        template.put(
+            server + "/api/v1/classifications/{classificationId}",
+            new HttpEntity<>(mapper.writeValueAsString(classification), getHeaders()),
+            CLASSIFICATION_ID);
 
-        URL url = new URL(server + port + "/api/v1/classifications/CLI:100000000000000000000000000000000003");
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("PUT");
-        con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-        con.setDoOutput(true);
-        con.setRequestProperty("Content-Type", "application/json");
-        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
-        out.write(updatedClassification);
-        out.flush();
-        out.close();
-        assertEquals(200, con.getResponseCode());
-        con.disconnect();
-
-        long delay = 16000;
-
-        LOGGER.info("About to sleep for {} seconds to give JobScheduler a chance to process the classification change",
-            delay / 1000);
-        Thread.sleep(delay);
-        LOGGER.info("Sleeping ended. Continuing .... ");
+        //trigger jobs twice to refresh all entries. first entry on the first call and follow up on the seconds call
+        jobScheduler.triggerJobs();
+        jobScheduler.triggerJobs();
 
         // verify the classification modified timestamp is after 'before'
         ResponseEntity<ClassificationResource> repeatedResponse = template.exchange(
-            "http://127.0.0.1:" + port + "/api/v1/classifications/CLI:100000000000000000000000000000000003",
+            server + "/api/v1/classifications/{classificationId}",
             HttpMethod.GET,
-            request,
-            ParameterizedTypeReference.forType(ClassificationResource.class));
+            new HttpEntity<String>(getHeaders()),
+            ParameterizedTypeReference.forType(ClassificationResource.class),
+            CLASSIFICATION_ID);
+
+        assertNotNull(repeatedResponse.getBody());
 
         ClassificationResource modifiedClassificationResource = repeatedResponse.getBody();
         Classification modifiedClassification = classificationResourceAssembler.toModel(modifiedClassificationResource);
 
-        assertTrue(!before.isAfter(modifiedClassification.getModified()));
+        assertFalse(before.isAfter(modifiedClassification.getModified()));
 
         List<String> affectedTasks = new ArrayList<>(
             Arrays.asList("TKI:000000000000000000000000000000000003", "TKI:000000000000000000000000000000000004",
@@ -171,18 +158,18 @@ public class AsyncUpdateJobIntTest {
         HttpHeaders admHeaders = new HttpHeaders();
         admHeaders.add("Authorization", "Basic YWRtaW46YWRtaW4=");  // admin:admin
 
-        HttpEntity<String> admRequest = new HttpEntity<String>(admHeaders);
+        HttpEntity<String> admRequest = new HttpEntity<>(admHeaders);
 
         ResponseEntity<TaskResource> taskResponse = admTemplate.exchange(
-            "http://127.0.0.1:" + port + "/api/v1/tasks/" + taskId,
+            server + "/api/v1/tasks/{taskId}",
             HttpMethod.GET,
             admRequest,
-            ParameterizedTypeReference.forType(TaskResource.class));
+            ParameterizedTypeReference.forType(TaskResource.class), taskId);
 
         TaskResource taskResource = taskResponse.getBody();
         Task task = taskResourceAssembler.toModel(taskResource);
 
-        assertTrue("Task " + task.getId() + " has not been refreshed.", !before.isAfter(task.getModified()));
+        assertFalse("Task " + task.getId() + " has not been refreshed.", before.isAfter(task.getModified()));
     }
 
     /**
@@ -193,14 +180,25 @@ public class AsyncUpdateJobIntTest {
     private RestTemplate getRestTemplate() {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         mapper.registerModule(new Jackson2HalModule());
 
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/hal+json"));
         converter.setObjectMapper(mapper);
 
-        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>> singletonList(converter));
+        RestTemplate template = new RestTemplate();
+        template.getMessageConverters().clear();
+        template.getMessageConverters().add(new StringHttpMessageConverter());
+        template.getMessageConverters().add(converter);
         return template;
+    }
+
+    private HttpHeaders getHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
+        headers.add("Content-Type", "application/hal+json");
+        return headers;
     }
 
 }
