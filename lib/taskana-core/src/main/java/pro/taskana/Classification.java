@@ -10,24 +10,7 @@ import pro.taskana.impl.ClassificationImpl;
  * Interface used to specify the Classification-Model.
  */
 @JsonDeserialize(as = ClassificationImpl.class)
-public interface Classification {
-
-    /**
-     * @return unique classification ID
-     */
-    String getId();
-
-    /**
-     * @return externally known key to the classification like a code or abbreviation.
-     */
-    String getKey();
-
-    /**
-     * Used to get the ID of the parent classification.
-     *
-     * @return unique ID or null if parent itself.
-     */
-    String getParentId();
+public interface Classification extends ClassificationSummary {
 
     /**
      * Set/Change a reference to the current parent classification via ID. EMPTY if there is no parent.
@@ -38,13 +21,6 @@ public interface Classification {
     void setParentId(String parentId);
 
     /**
-     * Used to get the key of the parent classification.
-     *
-     * @return key of the parent classification or null if there is no parent.
-     */
-    String getParentKey();
-
-    /**
      * Set/Change a reference to the current parent classification via key. EMPTY if there is no parent.
      *
      * @param parentKey
@@ -53,24 +29,12 @@ public interface Classification {
     void setParentKey(String parentKey);
 
     /**
-     * @return category of this classification.
-     */
-    String getCategory();
-
-    /**
      * Set/Change the category of this classification.
      *
      * @param category
      *            The category of the classification.
      */
     void setCategory(String category);
-
-    /**
-     * Get the type of the current classification.
-     *
-     * @return type
-     */
-    String getType();
 
     /**
      * Get the current domain-name of this classification.
@@ -109,13 +73,6 @@ public interface Classification {
     Instant getModified();
 
     /**
-     * Get the classification name.
-     *
-     * @return name
-     */
-    String getName();
-
-    /**
      * Set/Change the classification name.
      *
      * @param name
@@ -139,26 +96,12 @@ public interface Classification {
     void setDescription(String description);
 
     /**
-     * Get the current classification priority (numeric).
-     *
-     * @return priority
-     */
-    int getPriority();
-
-    /**
      * Set/Change the numeric priority of a classification.
      *
      * @param priority
      *            the Priority of the Classification
      */
     void setPriority(int priority);
-
-    /**
-     * Get the current service level.
-     *
-     * @return serviceLevel
-     */
-    String getServiceLevel();
 
     /**
      * Set/Change the service level.
@@ -185,26 +128,12 @@ public interface Classification {
     void setApplicationEntryPoint(String applicationEntryPoint);
 
     /**
-     * Get the 1. custom-attribute.
-     *
-     * @return custom1
-     */
-    String getCustom1();
-
-    /**
      * Set/Change the 1. custom-attribute.
      *
      * @param custom1
      *            the first custom attribute
      */
     void setCustom1(String custom1);
-
-    /**
-     * Get the 2. custom-attribute.
-     *
-     * @return custom2
-     */
-    String getCustom2();
 
     /**
      * Set/Change the 2. custom-attribute.
@@ -215,26 +144,12 @@ public interface Classification {
     void setCustom2(String custom2);
 
     /**
-     * Get the 3. custom-attribute.
-     *
-     * @return custom3
-     */
-    String getCustom3();
-
-    /**
      * Set/Change the 3. custom-attribute.
      *
      * @param custom3
      *            the third custom attribute
      */
     void setCustom3(String custom3);
-
-    /**
-     * Get the 4. custom-attribute.
-     *
-     * @return custom4
-     */
-    String getCustom4();
 
     /**
      * Set/Change the 4. custom-attribute.
@@ -245,26 +160,12 @@ public interface Classification {
     void setCustom4(String custom4);
 
     /**
-     * Get the 5. custom-attribute.
-     *
-     * @return custom5
-     */
-    String getCustom5();
-
-    /**
      * Set/Change the 5. custom-attribute.
      *
      * @param custom5
      *            the fifth custom attribute
      */
     void setCustom5(String custom5);
-
-    /**
-     * Get the 6. custom-attribute.
-     *
-     * @return custom6
-     */
-    String getCustom6();
 
     /**
      * Set/Change the 6. custom-attribute.
@@ -275,26 +176,12 @@ public interface Classification {
     void setCustom6(String custom6);
 
     /**
-     * Get the 7. custom-attribute.
-     *
-     * @return custom7
-     */
-    String getCustom7();
-
-    /**
      * Set/Change the 7. custom-attribute.
      *
      * @param custom7
      *            the seventh custom attribute
      */
     void setCustom7(String custom7);
-
-    /**
-     * Get the 8. custom-attribute.
-     *
-     * @return custom8
-     */
-    String getCustom8();
 
     /**
      * Set/Change the 8. custom-attribute.

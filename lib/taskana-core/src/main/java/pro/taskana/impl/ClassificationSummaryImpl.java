@@ -126,7 +126,6 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
         return custom1;
     }
 
-    @Override
     public void setCustom1(String custom1) {
         this.custom1 = custom1;
     }
@@ -136,7 +135,6 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
         return custom2;
     }
 
-    @Override
     public void setCustom2(String custom2) {
         this.custom2 = custom2;
     }
@@ -146,7 +144,6 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
         return custom3;
     }
 
-    @Override
     public void setCustom3(String custom3) {
         this.custom3 = custom3;
     }
@@ -156,7 +153,6 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
         return custom4;
     }
 
-    @Override
     public void setCustom4(String custom4) {
         this.custom4 = custom4;
     }
@@ -166,7 +162,6 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
         return custom5;
     }
 
-    @Override
     public void setCustom5(String custom5) {
         this.custom5 = custom5;
     }
@@ -176,7 +171,6 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
         return custom6;
     }
 
-    @Override
     public void setCustom6(String custom6) {
         this.custom6 = custom6;
     }
@@ -186,7 +180,6 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
         return custom7;
     }
 
-    @Override
     public void setCustom7(String custom7) {
         this.custom7 = custom7;
     }
@@ -196,7 +189,6 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
         return custom8;
     }
 
-    @Override
     public void setCustom8(String custom8) {
         this.custom8 = custom8;
     }

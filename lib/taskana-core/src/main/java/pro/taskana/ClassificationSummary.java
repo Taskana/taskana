@@ -85,27 +85,11 @@ public interface ClassificationSummary {
     String getCustom1();
 
     /**
-     * Set/Change the 1. custom-attribute.
-     *
-     * @param custom1
-     *            the first custom attribute
-     */
-    void setCustom1(String custom1);
-
-    /**
      * Get the 2. custom-attribute.
      *
      * @return custom2
      */
     String getCustom2();
-
-    /**
-     * Set/Change the 2. custom-attribute.
-     *
-     * @param custom2
-     *            the second custom attribute
-     */
-    void setCustom2(String custom2);
 
     /**
      * Get the 3. custom-attribute.
@@ -115,27 +99,11 @@ public interface ClassificationSummary {
     String getCustom3();
 
     /**
-     * Set/Change the 3. custom-attribute.
-     *
-     * @param custom3
-     *            the third custom attribute
-     */
-    void setCustom3(String custom3);
-
-    /**
      * Get the 4. custom-attribute.
      *
      * @return custom4
      */
     String getCustom4();
-
-    /**
-     * Set/Change the 4. custom-attribute.
-     *
-     * @param custom4
-     *            the fourth custom attribute
-     */
-    void setCustom4(String custom4);
 
     /**
      * Get the 5. custom-attribute.
@@ -145,29 +113,13 @@ public interface ClassificationSummary {
     String getCustom5();
 
     /**
-     * Set/Change the 5. custom-attribute.
-     *
-     * @param custom5
-     *            the fifth custom attribute
-     */
-    void setCustom5(String custom5);
-
-    /**
      * Get the 6. custom-attribute.
      *
      * @return custom6
      */
     String getCustom6();
 
-    /**
-     * Set/Change the 6. custom-attribute.
-     *
-     * @param custom6
-     *            the sixth custom attribute
-     */
-    void setCustom6(String custom6);
-
-    /**
+   /**
      * Get the 7. custom-attribute.
      *
      * @return custom7
@@ -175,26 +127,10 @@ public interface ClassificationSummary {
     String getCustom7();
 
     /**
-     * Set/Change the 7. custom-attribute.
-     *
-     * @param custom7
-     *            the seventh custom attribute
-     */
-    void setCustom7(String custom7);
-
-    /**
      * Get the 8. custom-attribute.
      *
      * @return custom8
      */
     String getCustom8();
-
-    /**
-     * Set/Change the 8. custom-attribute.
-     *
-     * @param custom8
-     *            the eight custom attribute
-     */
-    void setCustom8(String custom8);
 
 }
