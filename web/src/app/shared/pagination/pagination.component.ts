@@ -25,6 +25,7 @@ export class PaginationComponent implements OnChanges {
   changePage = new EventEmitter<number>();
   @Input()
   numberOfItems: number;
+  hasItems = true;
   previousPageSelected = 1;
   pageSelected = 1;
   maxPagesAvailable = 8;
@@ -35,6 +36,7 @@ export class PaginationComponent implements OnChanges {
     if (changes.page && changes.page.currentValue) {
       this.pageSelected = changes.page.currentValue.number;
     }
+    this.hasItems = this.numberOfItems > 0;
   }
 
   changeToPage(page) {
