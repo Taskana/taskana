@@ -364,15 +364,15 @@ A `GET` request is used to get all classification definitions.
 
 ==== Example Request
 
-include::../../../{snippets}/ExportClassificationdefinitionsDocTest/http-request.adoc[]
+include::../../../{snippets}/ExportClassificationDefinitionsDocTest/http-request.adoc[]
 
 ==== Example Response
 
-include::../../../{snippets}/ExportClassificationdefinitionsDocTest/http-response.adoc[]
+include::../../../{snippets}/ExportClassificationDefinitionsDocTest/http-response.adoc[]
 
 ==== Response Structure
 
-include::../../../{snippets}/ExportClassificationdefinitionsDocTest/response-fields.adoc[]
+include::../../../{snippets}/ExportClassificationDefinitionsDocTest/response-fields.adoc[]
 
 === Import new classification-definitions
 
@@ -752,7 +752,7 @@ include::../../../{snippets}/GetHistoryProviderIsEnabled/http-response.adoc[]
 
 ==== Response Structure
 
-include::../../../{snippets}/GetHistoryProviderIsEnabled/response-fields.adoc[]
+Returns Boolean which indicates if History Provider is enabled or not.
 
 [[resource-subsets]]
 == Resource-Subsets
