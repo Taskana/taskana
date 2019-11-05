@@ -68,7 +68,7 @@ public abstract class AbstractPagingController {
         long page = getPage(param);
 
         PageMetadata pageMetadata = new PageMetadata(pageSize, page,
-            totalElements != 0 ? totalElements : Integer.MAX_VALUE);
+            totalElements >= 0 ? totalElements : Integer.MAX_VALUE);
         if (pageMetadata.getNumber() > pageMetadata.getTotalPages()) {
             // unfortunately no setter for number
             pageMetadata = new PageMetadata(pageSize, pageMetadata.getTotalPages(), totalElements);
