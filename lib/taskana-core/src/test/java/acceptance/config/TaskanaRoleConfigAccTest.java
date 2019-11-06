@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.util.Set;
 
 import org.h2.store.fs.FileUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import pro.taskana.TaskanaRole;
 import pro.taskana.configuration.TaskanaEngineConfiguration;

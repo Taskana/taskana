@@ -19,12 +19,9 @@ import java.util.Collections;
 
 import javax.sql.DataSource;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.Link;
@@ -37,7 +34,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -45,6 +41,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.exceptions.SystemException;
 import pro.taskana.rest.resource.TaskResource;
 import pro.taskana.rest.resource.TaskSummaryListResource;
@@ -53,10 +50,9 @@ import pro.taskana.sampledata.SampleDataGenerator;
 /**
  * Test Task Controller.
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT,
-    properties = {"devMode=true"})
-public class TaskControllerIntTest {
+
+@TaskanaSpringBootTest
+class TaskControllerIntTest {
 
     @Value("${taskana.schemaName:TASKANA}")
     public String schemaName;
@@ -67,7 +63,7 @@ public class TaskControllerIntTest {
     @Autowired
     private DataSource dataSource;
 
-    public void resetDb() {
+    void resetDb() {
         SampleDataGenerator sampleDataGenerator;
         try {
             sampleDataGenerator = new SampleDataGenerator(dataSource);
@@ -78,7 +74,7 @@ public class TaskControllerIntTest {
     }
 
     @Test
-    public void testGetAllTasks() {
+    void testGetAllTasks() {
         RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
@@ -91,7 +87,7 @@ public class TaskControllerIntTest {
     }
 
     @Test
-    public void testGetAllTasksByWorkbasketId() {
+    void testGetAllTasksByWorkbasketId() {
         RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"); // teamlead_1
@@ -105,7 +101,7 @@ public class TaskControllerIntTest {
     }
 
     @Test
-    public void testGetAllTasksByWorkbasketKeyAndDomain() {
+    void testGetAllTasksByWorkbasketKeyAndDomain() {
         RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic dXNlcl8xXzI6dXNlcl8xXzI="); // user_1_2
@@ -119,7 +115,7 @@ public class TaskControllerIntTest {
     }
 
     @Test
-    public void testExceptionIfKeyIsSetButDomainIsMissing() {
+    void testExceptionIfKeyIsSetButDomainIsMissing() {
         RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic dXNlcl8xXzI6dXNlcl8xXzI="); // user_1_2
@@ -136,7 +132,7 @@ public class TaskControllerIntTest {
     }
 
     @Test
-    public void testGetAllTasksWithAdminRole() {
+    void testGetAllTasksWithAdminRole() {
         RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic YWRtaW46YWRtaW4="); // Role Admin
@@ -149,7 +145,7 @@ public class TaskControllerIntTest {
     }
 
     @Test
-    public void testGetAllTasksKeepingFilters() {
+    void testGetAllTasksKeepingFilters() {
         RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
@@ -166,7 +162,7 @@ public class TaskControllerIntTest {
     }
 
     @Test
-    public void testThrowsExceptionIfInvalidFilterIsUsed() {
+    void testThrowsExceptionIfInvalidFilterIsUsed() {
         RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
@@ -184,7 +180,7 @@ public class TaskControllerIntTest {
     }
 
     @Test
-    public void testGetLastPageSortedByPorValue() {
+    void testGetLastPageSortedByPorValue() {
         RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic YWRtaW46YWRtaW4="); // Role Admin
@@ -210,7 +206,7 @@ public class TaskControllerIntTest {
     }
 
     @Test
-    public void testGetLastPageSortedByDueWithHiddenTasksRemovedFromResult() {
+    void testGetLastPageSortedByDueWithHiddenTasksRemovedFromResult() {
         resetDb(); // required because ClassificationControllerIntTest.testGetQueryByPorSecondPageSortedByType changes
         // tasks and this test depends on the tasks as they are in sampledata
         RestTemplate template = getRestTemplate();
@@ -243,7 +239,7 @@ public class TaskControllerIntTest {
     }
 
     @Test
-    public void testGetQueryByPorSecondPageSortedByType() {
+    void testGetQueryByPorSecondPageSortedByType() {
         resetDb(); // required because ClassificationControllerIntTest.testGetQueryByPorSecondPageSortedByType changes
         // tasks and this test depends on the tasks as they are in sampledata
         RestTemplate template = getRestTemplate();
@@ -271,7 +267,7 @@ public class TaskControllerIntTest {
     }
 
     @Test
-    public void testGetTaskWithAttachments() throws IOException {
+    void testGetTaskWithAttachments() throws IOException {
         URL url = new URL("http://127.0.0.1:" + port + "/api/v1/tasks/TKI:000000000000000000000000000000000002");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
@@ -297,7 +293,7 @@ public class TaskControllerIntTest {
     }
 
     @Test
-    public void testGetAndUpdateTask() throws IOException {
+    void testGetAndUpdateTask() throws IOException {
         URL url = new URL("http://127.0.0.1:" + port + "/api/v1/tasks/TKI:100000000000000000000000000000000000");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
@@ -354,7 +350,7 @@ public class TaskControllerIntTest {
     }
 
     @Test
-    public void testCreateAndDeleteTask() throws IOException {
+    void testCreateAndDeleteTask() throws IOException {
         String taskToCreateJson = "{\"classificationSummaryResource\":{\"key\":\"L11010\"},"
             + "\"workbasketSummaryResource\":{\"workbasketId\":\"WBI:100000000000000000000000000000000004\"},"
             + "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}";
@@ -398,7 +394,7 @@ public class TaskControllerIntTest {
     }
 
     @Test
-    public void testCreateTaskWithInvalidParameter() throws IOException {
+    void testCreateTaskWithInvalidParameter() throws IOException {
         String taskToCreateJson = "{\"classificationKey\":\"L11010\","
             + "\"workbasketSummaryResource\":{\"workbasketId\":\"WBI:100000000000000000000000000000000004\"},"
             + "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}";
@@ -416,9 +412,10 @@ public class TaskControllerIntTest {
         assertEquals(400, con.getResponseCode());
         con.disconnect();
 
-        taskToCreateJson = "{\"classificationSummaryResource\":{\"classificationId\":\"CLI:100000000000000000000000000000000004\"},"
-            + "\"workbasketSummaryResource\":{\"workbasketId\":\"\"},"
-            + "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}";
+        taskToCreateJson =
+            "{\"classificationSummaryResource\":{\"classificationId\":\"CLI:100000000000000000000000000000000004\"},"
+                + "\"workbasketSummaryResource\":{\"workbasketId\":\"\"},"
+                + "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}";
 
         url = new URL("http://127.0.0.1:" + port + "/api/v1/tasks");
         con = (HttpURLConnection) url.openConnection();
@@ -450,7 +447,7 @@ public class TaskControllerIntTest {
         // converter.setSupportedMediaTypes(ImmutableList.of(MediaTypes.HAL_JSON));
         converter.setObjectMapper(mapper);
 
-        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>> singletonList(converter));
+        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>>singletonList(converter));
         return template;
     }
 

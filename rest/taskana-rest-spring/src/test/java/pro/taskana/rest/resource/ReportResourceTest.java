@@ -13,12 +13,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
@@ -31,10 +31,10 @@ import pro.taskana.rest.TestConfiguration;
 /**
  * Test for {@link ReportResourceAssembler}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {TestConfiguration.class})
 @WebAppConfiguration
-public class ReportResourceTest {
+class ReportResourceTest {
 
     @Autowired
     private ReportResourceAssembler reportResourceAssembler;
@@ -43,8 +43,8 @@ public class ReportResourceTest {
     private LocalDateTime now;
     private List<TimeIntervalColumnHeader> headers;
 
-    @Before
-    public void before() {
+    @BeforeEach
+    void before() {
         now = LocalDate.parse("2019-01-02").atStartOfDay();
         daysDiff = (int) LocalDateTime.now().until(now, ChronoUnit.DAYS);
         headers = IntStream.range(daysDiff - 5, daysDiff)
@@ -54,7 +54,7 @@ public class ReportResourceTest {
     }
 
     @Test
-    public void testEmptyReport() {
+    void testEmptyReport() {
         // given
         WorkbasketReport report = new WorkbasketReport(headers);
         // when
@@ -83,7 +83,7 @@ public class ReportResourceTest {
     }
 
     @Test
-    public void testOneSingleRow() {
+    void testOneSingleRow() {
         // given
         ClassificationReport report = new ClassificationReport(headers);
         MonitorQueryItem item = new MonitorQueryItem();
@@ -126,7 +126,7 @@ public class ReportResourceTest {
     }
 
     @Test
-    public void testMultipleSingleRows() {
+    void testMultipleSingleRows() {
         // given
         ClassificationReport report = new ClassificationReport(headers);
         MonitorQueryItem item = new MonitorQueryItem();
@@ -177,7 +177,7 @@ public class ReportResourceTest {
     }
 
     @Test
-    public void testOneFoldableRow() {
+    void testOneFoldableRow() {
         // given
         ClassificationReport.DetailedClassificationReport report = new ClassificationReport.DetailedClassificationReport(
             headers);
@@ -253,7 +253,7 @@ public class ReportResourceTest {
     }
 
     @Test
-    public void testMultipleFoldableRows() {
+    void testMultipleFoldableRows() {
         // given
         ClassificationReport.DetailedClassificationReport report = new ClassificationReport.DetailedClassificationReport(
             headers);

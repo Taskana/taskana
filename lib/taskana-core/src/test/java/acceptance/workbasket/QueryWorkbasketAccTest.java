@@ -3,15 +3,14 @@ package acceptance.workbasket;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
 import static pro.taskana.WorkbasketQueryColumnName.NAME;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.BaseQuery.SortDirection;
@@ -22,13 +21,13 @@ import pro.taskana.WorkbasketSummary;
 import pro.taskana.WorkbasketType;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "query workbasket by permission" scenarios.
  */
-@RunWith(JAASRunner.class)
+@ExtendWith(JAASExtension.class)
 public class QueryWorkbasketAccTest extends AbstractAccTest {
 
     private static SortDirection asc = SortDirection.ASCENDING;
@@ -432,14 +431,14 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     public void testQueryWorkbasketByDomainLike() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-                .domainLike("DOMAIN_%").orderByDomain(asc).list();
+            .domainLike("DOMAIN_%").orderByDomain(asc).list();
 
         ArrayList<String> expectedIds = new ArrayList<String>(
-                Arrays.asList("WBI:100000000000000000000000000000000001", "WBI:100000000000000000000000000000000002",
-                        "WBI:100000000000000000000000000000000004", "WBI:100000000000000000000000000000000005",
-                        "WBI:100000000000000000000000000000000006", "WBI:100000000000000000000000000000000007",
-                        "WBI:100000000000000000000000000000000008", "WBI:100000000000000000000000000000000009",
-                        "WBI:100000000000000000000000000000000010", "WBI:100000000000000000000000000000000012"));
+            Arrays.asList("WBI:100000000000000000000000000000000001", "WBI:100000000000000000000000000000000002",
+                "WBI:100000000000000000000000000000000004", "WBI:100000000000000000000000000000000005",
+                "WBI:100000000000000000000000000000000006", "WBI:100000000000000000000000000000000007",
+                "WBI:100000000000000000000000000000000008", "WBI:100000000000000000000000000000000009",
+                "WBI:100000000000000000000000000000000010", "WBI:100000000000000000000000000000000012"));
         assertEquals(10L, results.size());
         for (String id : expectedIds) {
             assertTrue(results.stream().anyMatch(wbSummary -> wbSummary.getId().equals(id)));
@@ -453,7 +452,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     public void testQueryWorkbasketByOwnerInOrderByDomainDesc() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-                .ownerIn("owner0815").orderByDomain(desc).list();
+            .ownerIn("owner0815").orderByDomain(desc).list();
 
         assertEquals(2L, results.size());
         assertEquals("WBI:100000000000000000000000000000000015", results.get(0).getId());
@@ -467,7 +466,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     public void testQueryForCustom1In() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-                .custom1In("ABCQVW").list();
+            .custom1In("ABCQVW").list();
 
         assertEquals(1, results.size());
         assertEquals("WBI:100000000000000000000000000000000001", results.get(0).getId());
@@ -479,8 +478,8 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     public void testQueryForCustom1Like() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-                .custom1Like("custo%")
-                .list();
+            .custom1Like("custo%")
+            .list();
         assertEquals(2, results.size());
     }
 
@@ -490,8 +489,8 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     public void testQueryForCustom2In() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-                .custom2In("cust2", "custom2")
-                .list();
+            .custom2In("cust2", "custom2")
+            .list();
         assertEquals(3, results.size());
     }
 
@@ -501,8 +500,8 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     public void testQueryForCustom2Like() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-                .custom2Like("cusTo%")
-                .list();
+            .custom2Like("cusTo%")
+            .list();
         assertEquals(3, results.size());
     }
 
@@ -512,8 +511,8 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     public void testQueryForCustom3In() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-                .custom3In("custom3")
-                .list();
+            .custom3In("custom3")
+            .list();
         assertEquals(2, results.size());
     }
 
@@ -523,8 +522,8 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     public void testQueryForCustom3Like() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-                .custom3Like("cu%")
-                .list();
+            .custom3Like("cu%")
+            .list();
         assertEquals(3, results.size());
     }
 
@@ -534,8 +533,8 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     public void testQueryForCustom4In() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-                .custom4In("custom4", "team")
-                .list();
+            .custom4In("custom4", "team")
+            .list();
         assertEquals(3, results.size());
     }
 
@@ -545,8 +544,8 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     public void testQueryForCustom4Like() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-                .custom4Like("%u%")
-                .list();
+            .custom4Like("%u%")
+            .list();
         assertEquals(5, results.size());
     }
 
@@ -556,8 +555,8 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     public void testQueryForOrgLevl1In() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-                .orgLevel1In("orgl1", "")
-                .list();
+            .orgLevel1In("orgl1", "")
+            .list();
         assertEquals(24, results.size());
     }
 
@@ -567,8 +566,8 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     public void testQueryForOrgLevel1Like() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-                .orgLevel1Like("%1")
-                .list();
+            .orgLevel1Like("%1")
+            .list();
         assertEquals(2, results.size());
     }
 
@@ -578,8 +577,8 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     public void testQueryForOrgLevel2In() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-                .orgLevel2In("abteilung")
-                .list();
+            .orgLevel2In("abteilung")
+            .list();
         assertEquals(1, results.size());
     }
 
@@ -589,8 +588,8 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     public void testQueryForOrgLevel2Like() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-                .orgLevel2Like("ab%")
-                .list();
+            .orgLevel2Like("ab%")
+            .list();
         assertEquals(1, results.size());
     }
 
@@ -600,8 +599,8 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     public void testQueryForOrgLevel3In() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-                .orgLevel3In("orgl3")
-                .list();
+            .orgLevel3In("orgl3")
+            .list();
         assertEquals(2, results.size());
     }
 
@@ -611,8 +610,8 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     public void testQueryForOrgLevel3Like() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-                .orgLevel3Like("org%")
-                .list();
+            .orgLevel3Like("org%")
+            .list();
         assertEquals(2, results.size());
     }
 
@@ -622,8 +621,8 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     public void testQueryForOrgLevel4In() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-                .orgLevel4In("team", "orgl4")
-                .list();
+            .orgLevel4In("team", "orgl4")
+            .list();
         assertEquals(2, results.size());
     }
 
@@ -633,8 +632,8 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     public void testQueryForOrgLevel4Like() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-                .orgLevel4Like("%")
-                .list();
+            .orgLevel4Like("%")
+            .list();
         assertEquals(25, results.size());
     }
 
@@ -644,8 +643,8 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     public void testQueryForOrderByOrgLevel1Desc() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-                .orderByOrgLevel1(desc)
-                .list();
+            .orderByOrgLevel1(desc)
+            .list();
         assertEquals("WBI:100000000000000000000000000000000007", results.get(0).getId());
     }
 
@@ -655,8 +654,8 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     public void testQueryForOrderByOrgLevel2Asc() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-                .orderByOrgLevel2(asc)
-                .list();
+            .orderByOrgLevel2(asc)
+            .list();
         assertEquals("WBI:100000000000000000000000000000000007", results.get(results.size() - 3).getId());
     }
 
@@ -666,8 +665,8 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     public void testQueryForOrderByOrgLevel3Desc() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-                .orderByOrgLevel3(desc)
-                .list();
+            .orderByOrgLevel3(desc)
+            .list();
         assertEquals("WBI:100000000000000000000000000000000007", results.get(0).getId());
     }
 
@@ -677,8 +676,8 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     public void testQueryForOrderByOrgLevel4Asc() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-                .orderByOrgLevel4(asc)
-                .list();
+            .orderByOrgLevel4(asc)
+            .list();
         assertEquals("WBI:100000000000000000000000000000000012", results.get(results.size() - 3).getId());
     }
 
@@ -688,8 +687,8 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     public void testQueryForOrderByCustom1Asc() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-                .orderByCustom1(asc)
-                .list();
+            .orderByCustom1(asc)
+            .list();
         assertEquals("WBI:100000000000000000000000000000000015", results.get(results.size() - 4).getId());
     }
 
@@ -699,8 +698,8 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     public void testQueryForOrderByCustom2Desc() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-                .orderByCustom2(desc)
-                .list();
+            .orderByCustom2(desc)
+            .list();
         assertEquals("WBI:100000000000000000000000000000000014", results.get(0).getId());
     }
 
@@ -710,8 +709,8 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     public void testQueryForOrderByCustom3Asc() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-                .orderByCustom3(asc)
-                .list();
+            .orderByCustom3(asc)
+            .list();
         assertEquals("WBI:100000000000000000000000000000000015", results.get(results.size() - 4).getId());
     }
 
@@ -721,8 +720,8 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     public void testQueryForOrderByCustom4Desc() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
-                .orderByCustom4(desc)
-                .list();
+            .orderByCustom4(desc)
+            .list();
         assertEquals("WBI:100000000000000000000000000000000006", results.get(0).getId());
     }
 

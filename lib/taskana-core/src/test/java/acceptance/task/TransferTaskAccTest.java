@@ -15,8 +15,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.BulkOperationResults;
@@ -31,13 +32,13 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.TaskanaException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "transfer task" scenarios.
  */
-@RunWith(JAASRunner.class)
+@ExtendWith(JAASExtension.class)
 public class TransferTaskAccTest extends AbstractAccTest {
 
     public TransferTaskAccTest() {
@@ -105,74 +106,79 @@ public class TransferTaskAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
-    @Test(expected = NotAuthorizedException.class)
+    @Test
     public void testThrowsExceptionIfTransferWithNoTransferAuthorization()
         throws NotAuthorizedException, WorkbasketNotFoundException, TaskNotFoundException, InvalidStateException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000001");
 
-        taskService.transfer(task.getId(), "WBI:100000000000000000000000000000000005");
+        Assertions.assertThrows(NotAuthorizedException.class, () ->
+            taskService.transfer(task.getId(), "WBI:100000000000000000000000000000000005"));
     }
 
     @WithAccessId(
         userName = "teamlead_1",
         groupNames = {"group_1"})
-    @Test(expected = WorkbasketNotFoundException.class)
+    @Test
     public void testTransferDestinationWorkbasketDoesNotExist()
-        throws NotAuthorizedException, WorkbasketNotFoundException, TaskNotFoundException, InvalidStateException,
+        throws NotAuthorizedException, TaskNotFoundException, InvalidStateException,
         InvalidOwnerException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000003");
         taskService.claim(task.getId());
         taskService.setTaskRead(task.getId(), true);
 
-        taskService.transfer(task.getId(), "INVALID");
+        Assertions.assertThrows(WorkbasketNotFoundException.class, () ->
+            taskService.transfer(task.getId(), "INVALID"));
     }
 
     @WithAccessId(
         userName = "teamlead_1",
         groupNames = {"group_1"})
-    @Test(expected = TaskNotFoundException.class)
-    public void testTransferTaskDoesNotExist()
-        throws NotAuthorizedException, WorkbasketNotFoundException, TaskNotFoundException, InvalidStateException {
+    @Test
+    public void testTransferTaskDoesNotExist() {
         TaskService taskService = taskanaEngine.getTaskService();
 
-        taskService.transfer("Invalid", "WBI:100000000000000000000000000000000006");
+        Assertions.assertThrows(TaskNotFoundException.class, () ->
+            taskService.transfer("Invalid", "WBI:100000000000000000000000000000000006"));
     }
 
     @WithAccessId(
         userName = "teamlead_1",
         groupNames = {"teamlead_1"})
-    @Test(expected = NotAuthorizedException.class)
-    public void testTransferNotAuthorizationOnWorkbasketTransfer()
-        throws NotAuthorizedException, WorkbasketNotFoundException, TaskNotFoundException, InvalidStateException {
+    @Test
+    public void testTransferNotAuthorizationOnWorkbasketTransfer() {
         TaskService taskService = taskanaEngine.getTaskService();
 
-        taskService.transfer("TKI:200000000000000000000000000000000007", "WBI:100000000000000000000000000000000006");
+        Assertions.assertThrows(NotAuthorizedException.class, () ->
+            taskService.transfer("TKI:200000000000000000000000000000000007",
+                "WBI:100000000000000000000000000000000006"));
     }
 
     @WithAccessId(
         userName = "teamlead_1",
         groupNames = {"group_1"})
-    @Test(expected = InvalidStateException.class)
+    @Test
     public void testThrowsExceptionIfTaskIsAlreadyCompleted()
-        throws NotAuthorizedException, WorkbasketNotFoundException, TaskNotFoundException, InvalidStateException {
+        throws NotAuthorizedException, TaskNotFoundException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:100000000000000000000000000000000006");
 
-        taskService.transfer(task.getId(), "WBI:100000000000000000000000000000000005");
+        Assertions.assertThrows(InvalidStateException.class, () ->
+            taskService.transfer(task.getId(), "WBI:100000000000000000000000000000000005"));
     }
 
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
-    @Test(expected = NotAuthorizedException.class)
+    @Test
     public void testThrowsExceptionIfTransferWithNoAppendAuthorization()
-        throws NotAuthorizedException, WorkbasketNotFoundException, TaskNotFoundException, InvalidStateException {
+        throws NotAuthorizedException, TaskNotFoundException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000002");
 
-        taskService.transfer(task.getId(), "WBI:100000000000000000000000000000000008");
+        Assertions.assertThrows(NotAuthorizedException.class, () ->
+            taskService.transfer(task.getId(), "WBI:100000000000000000000000000000000008"));
     }
 
     @WithAccessId(
@@ -271,21 +277,18 @@ public class TransferTaskAccTest extends AbstractAccTest {
     }
 
     @WithAccessId(userName = "teamlead_1")
-    @Test(expected = NotAuthorizedException.class)
-    public void testBulkTransferTaskWithoutAppendPermissionOnTarget()
-        throws InvalidArgumentException, WorkbasketNotFoundException, NotAuthorizedException {
+    @Test
+    public void testBulkTransferTaskWithoutAppendPermissionOnTarget() {
         TaskService taskService = taskanaEngine.getTaskService();
         ArrayList<String> taskIdList = new ArrayList<>();
         taskIdList.add("TKI:000000000000000000000000000000000006"); // working
         taskIdList.add("TKI:000000000000000000000000000000000041"); // NotAuthorized READ
 
-        try {
+        Throwable t = Assertions.assertThrows(NotAuthorizedException.class, () ->
             taskService
-                .transferTasks("WBI:100000000000000000000000000000000010", taskIdList);
-        } catch (NotAuthorizedException e) {
-            assertTrue(e.getMessage().contains("APPEND"));
-            throw e;
-        }
+                .transferTasks("WBI:100000000000000000000000000000000010", taskIdList));
+
+        assertTrue(t.getMessage().contains("APPEND"));
     }
 
     @WithAccessId(
@@ -326,12 +329,13 @@ public class TransferTaskAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "teamlead_1",
         groupNames = {"group_1"})
-    @Test(expected = InvalidArgumentException.class)
+    @Test
     public void testThrowsExceptionIfEmptyListIsSupplied()
         throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<String> taskIds = new ArrayList<>();
-        taskService.transferTasks("WBI:100000000000000000000000000000000006", taskIds);
+        Assertions.assertThrows(InvalidArgumentException.class, () ->
+            taskService.transferTasks("WBI:100000000000000000000000000000000006", taskIds));
     }
 
     @WithAccessId(

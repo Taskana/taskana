@@ -7,24 +7,25 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.TaskMonitorService;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.SelectedItem;
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "get task ids of workbasket report" scenarios.
  */
-@RunWith(JAASRunner.class)
+@ExtendWith(JAASExtension.class)
 public class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
 
-    @Test(expected = NotAuthorizedException.class)
+    @Test
     public void testRoleCheck() throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
@@ -32,7 +33,8 @@ public class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
 
         List<SelectedItem> selectedItems = new ArrayList<>();
 
-        taskMonitorService.createWorkbasketReportBuilder().listTaskIdsForSelectedItems(selectedItems);
+        Assertions.assertThrows(NotAuthorizedException.class, () ->
+            taskMonitorService.createWorkbasketReportBuilder().listTaskIdsForSelectedItems(selectedItems));
     }
 
     @WithAccessId(

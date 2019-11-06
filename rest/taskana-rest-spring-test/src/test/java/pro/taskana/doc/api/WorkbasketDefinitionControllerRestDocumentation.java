@@ -7,8 +7,8 @@ import static org.springframework.restdocs.request.RequestDocumentation.partWith
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.FieldDescriptor;
@@ -17,12 +17,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 /**
  * Generate Rest Documentation for Workbasket Definitions.
  */
-public class WorkbasketDefinitionControllerRestDocumentation extends BaseRestDocumentation {
+class WorkbasketDefinitionControllerRestDocumentation extends BaseRestDocumentation {
 
     private FieldDescriptor[] workbasketDefinitionsFieldDescriptors;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
 
         workbasketDefinitionsFieldDescriptors = new FieldDescriptor[] {
             subsectionWithPath("[]").description("An array of <<WorkbasketDefinitions, workbasketsDefinitions>>")
@@ -30,7 +30,7 @@ public class WorkbasketDefinitionControllerRestDocumentation extends BaseRestDoc
     }
 
     @Test
-    public void exportAllWorkbasketDefinitions() throws Exception {
+    void exportAllWorkbasketDefinitions() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
             .get("http://127.0.0.1:" + port + "/api/v1/workbasket-definitions")
             .accept("application/json")
@@ -41,7 +41,7 @@ public class WorkbasketDefinitionControllerRestDocumentation extends BaseRestDoc
     }
 
     @Test
-    public void importWorkbasketDefinition() throws Exception {
+    void importWorkbasketDefinition() throws Exception {
         String definitionString = "["
             + "{"
             + "\"distributionTargets\":[], "

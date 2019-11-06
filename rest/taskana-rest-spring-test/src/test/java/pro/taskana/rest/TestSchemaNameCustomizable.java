@@ -8,20 +8,18 @@ import java.util.Collections;
 import javax.sql.DataSource;
 
 import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.hateoas.hal.Jackson2HalModule;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.configuration.SpringTaskanaEngineConfiguration;
 import pro.taskana.exceptions.SystemException;
 import pro.taskana.sampledata.SampleDataGenerator;
@@ -30,9 +28,9 @@ import pro.taskana.sampledata.SampleDataGenerator;
  * Test that the schema name can be customized.
  *
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = RestConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class TestSchemaNameCustomizable {
+
+@TaskanaSpringBootTest
+class TestSchemaNameCustomizable {
 
     String schemaName = "CUSTOMSCHEMANAME";
     boolean isPostgres = false;
@@ -40,7 +38,7 @@ public class TestSchemaNameCustomizable {
     @Autowired
     private DataSource dataSource;
 
-    public void resetDb() {
+    void resetDb() {
         SampleDataGenerator sampleDataGenerator;
         try {
             if ("PostgreSQL".equals(dataSource.getConnection().getMetaData().getDatabaseProductName())) {
@@ -56,7 +54,7 @@ public class TestSchemaNameCustomizable {
     }
 
     @Test
-    public void chekCustomSchemaNameIsDefined() {
+    void chekCustomSchemaNameIsDefined() {
         resetDb();
         ResultSet rs;
         try {

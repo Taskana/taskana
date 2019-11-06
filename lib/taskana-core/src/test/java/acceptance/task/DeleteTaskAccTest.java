@@ -7,8 +7,9 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.BulkOperationResults;
@@ -19,13 +20,13 @@ import pro.taskana.exceptions.InvalidStateException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.TaskanaException;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "delete task" scenarios.
  */
-@RunWith(JAASRunner.class)
+@ExtendWith(JAASExtension.class)
 public class DeleteTaskAccTest extends AbstractAccTest {
 
     public DeleteTaskAccTest() {
@@ -35,19 +36,19 @@ public class DeleteTaskAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "user_1_2",
         groupNames = {"group_1"})
-    @Test(expected = NotAuthorizedException.class)
+    @Test
     public void testDeleteSingleTaskNotAuthorized()
         throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
 
         TaskService taskService = taskanaEngine.getTaskService();
-        taskService.deleteTask("TKI:000000000000000000000000000000000037");
-        fail("NotAuthorizedException should have been thrown");
+        Assertions.assertThrows(NotAuthorizedException.class, () ->
+            taskService.deleteTask("TKI:000000000000000000000000000000000037"));
     }
 
     @WithAccessId(
         userName = "user_1_2",
         groupNames = {"group_1", "admin"})
-    @Test(expected = TaskNotFoundException.class)
+    @Test
     public void testDeleteSingleTask()
         throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
 
@@ -56,25 +57,27 @@ public class DeleteTaskAccTest extends AbstractAccTest {
 
         taskService.deleteTask(task.getId());
 
-        taskService.getTask("TKI:000000000000000000000000000000000036");
+        Assertions.assertThrows(TaskNotFoundException.class, () ->
+            taskService.getTask("TKI:000000000000000000000000000000000036"));
     }
 
     @WithAccessId(
         userName = "user_1_2",
         groupNames = {"group_1", "admin"})
-    @Test(expected = InvalidStateException.class)
+    @Test
     public void testThrowsExceptionIfTaskIsNotCompleted()
         throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000029");
 
-        taskService.deleteTask(task.getId());
+        Assertions.assertThrows(InvalidStateException.class, () ->
+            taskService.deleteTask(task.getId()));
     }
 
     @WithAccessId(
         userName = "user_1_2",
         groupNames = {"group_1", "admin"})
-    @Test(expected = TaskNotFoundException.class)
+    @Test
     public void testForceDeleteTaskIfNotCompleted()
         throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
         TaskService taskService = taskanaEngine.getTaskService();
@@ -86,13 +89,14 @@ public class DeleteTaskAccTest extends AbstractAccTest {
             taskService.forceDeleteTask(task.getId());
         }
 
-        taskService.getTask("TKI:000000000000000000000000000000000027");
+        Assertions.assertThrows(TaskNotFoundException.class, () ->
+            taskService.getTask("TKI:000000000000000000000000000000000027"));
     }
 
     @WithAccessId(
         userName = "user_1_2",
         groupNames = {"group_1"})
-    @Test(expected = TaskNotFoundException.class)
+    @Test
     public void testBulkDeleteTask()
         throws TaskNotFoundException, InvalidArgumentException, NotAuthorizedException {
 
@@ -104,13 +108,14 @@ public class DeleteTaskAccTest extends AbstractAccTest {
         BulkOperationResults<String, TaskanaException> results = taskService.deleteTasks(taskIdList);
 
         assertFalse(results.containsErrors());
-        taskService.getTask("TKI:000000000000000000000000000000000038");
+        Assertions.assertThrows(TaskNotFoundException.class, () ->
+            taskService.getTask("TKI:000000000000000000000000000000000038"));
     }
 
     @WithAccessId(
         userName = "user_1_2",
         groupNames = {"group_1"})
-    @Test(expected = TaskNotFoundException.class)
+    @Test
     public void testBulkDeleteTasksWithException()
         throws TaskNotFoundException, InvalidArgumentException, NotAuthorizedException {
 
@@ -131,7 +136,8 @@ public class DeleteTaskAccTest extends AbstractAccTest {
 
         Task notDeletedTask = taskService.getTask("TKI:000000000000000000000000000000000028");
         assertTrue(notDeletedTask != null);
-        taskService.getTask("TKI:000000000000000000000000000000000040");
+        Assertions.assertThrows(TaskNotFoundException.class, () ->
+            taskService.getTask("TKI:000000000000000000000000000000000040"));
 
     }
 

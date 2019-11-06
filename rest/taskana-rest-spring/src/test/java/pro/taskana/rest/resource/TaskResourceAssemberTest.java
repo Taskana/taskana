@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import pro.taskana.Attachment;
@@ -23,10 +23,10 @@ import pro.taskana.rest.TestConfiguration;
 /**
  * Test for {@link TaskResourceAssembler}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {TestConfiguration.class})
 @WebAppConfiguration
-public class TaskResourceAssemberTest {
+class TaskResourceAssemberTest {
 
     @Autowired
     TaskService taskService;
@@ -34,7 +34,7 @@ public class TaskResourceAssemberTest {
     TaskResourceAssembler taskResourceAssembler;
 
     @Test
-    public void testSimpleResourceToModel() throws InvalidArgumentException {
+    void testSimpleResourceToModel() throws InvalidArgumentException {
         //given
         ObjectReference primaryObjRef = new ObjectReference();
         primaryObjRef.setId("abc");
@@ -94,7 +94,7 @@ public class TaskResourceAssemberTest {
         testEquality(task, resource);
     }
 
-    public void testEquality(Task task, TaskResource resource) throws InvalidArgumentException {
+    void testEquality(Task task, TaskResource resource) throws InvalidArgumentException {
         Assert.assertEquals(task.getId(), resource.getTaskId());
         Assert.assertEquals(task.getExternalId(), resource.getExternalId());
         Assert.assertEquals(task.getCreated() == null ? null : task.getCreated().toString(), resource.getCreated());
@@ -142,7 +142,7 @@ public class TaskResourceAssemberTest {
 
     }
 
-    public void testEqualityAttachements(List<Attachment> attachments, List<AttachmentResource> resources) {
+    void testEqualityAttachements(List<Attachment> attachments, List<AttachmentResource> resources) {
         Assert.assertEquals(attachments.size(), resources.size());
         for (int i = 0; i < resources.size(); i++) {
             AttachmentResource resource = resources.get(i);
@@ -152,7 +152,7 @@ public class TaskResourceAssemberTest {
         }
     }
 
-    public void testEquality(Map<String, String> customAttributes,
+    void testEquality(Map<String, String> customAttributes,
         List<TaskResource.CustomAttribute> resourceAttributes) {
         Assert.assertEquals(customAttributes.size(), resourceAttributes.size());
         resourceAttributes.forEach(

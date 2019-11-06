@@ -14,8 +14,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.Attachment;
@@ -36,13 +37,13 @@ import pro.taskana.impl.DaysToWorkingDaysConverter;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
 import pro.taskana.security.CurrentUserContext;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for the usecase of adding/removing an attachment of a task and update the result correctly.
  */
-@RunWith(JAASRunner.class)
+@ExtendWith(JAASExtension.class)
 public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
 
     private Task task;
@@ -125,7 +126,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
-    @Test(expected = AttachmentPersistenceException.class)
+    @Test
     public void testAddNewAttachmentTwiceWithoutTaskanaMethodWillThrowAttachmentPersistenceException()
         throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
         NotAuthorizedException,
@@ -142,7 +143,8 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         task.getAttachments().add(attachment);
         task.getAttachments().add(attachment);
         task.getAttachments().add(attachment);
-        task = taskService.updateTask(task);
+        Assertions.assertThrows(AttachmentPersistenceException.class, () ->
+            task = taskService.updateTask(task));
     }
 
     @WithAccessId(
@@ -529,7 +531,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         taskService.updateTask(task);
         Task updatedTask = taskService.getTask("TKI:000000000000000000000000000000000000");
         Attachment updatedAttachment = updatedTask.getAttachments().stream()
-                .filter(a -> attachment.getId().equals(a.getId())).findFirst().orElse(null);
+            .filter(a -> attachment.getId().equals(a.getId())).findFirst().orElse(null);
         assertNotNull(updatedAttachment);
         assertEquals("TEST_VALUE", updatedAttachment.getCustomAttributes().get("TEST_KEY"));
     }

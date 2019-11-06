@@ -10,27 +10,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.CustomField;
 import pro.taskana.TaskMonitorService;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "classification report" scenarios.
  */
-@RunWith(JAASRunner.class)
+@ExtendWith(JAASExtension.class)
 public class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
 
-    @Test(expected = NotAuthorizedException.class)
-    public void testRoleCheck() throws NotAuthorizedException {
+    @Test
+    public void testRoleCheck() {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        taskMonitorService.createWorkbasketReportBuilder()
-            .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_2);
+        Assertions.assertThrows(NotAuthorizedException.class, () ->
+            taskMonitorService.createWorkbasketReportBuilder()
+                .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_2));
 
     }
 

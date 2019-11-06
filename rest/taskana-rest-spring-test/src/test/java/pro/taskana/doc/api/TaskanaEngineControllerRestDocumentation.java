@@ -3,8 +3,8 @@ package pro.taskana.doc.api;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.FieldDescriptor;
@@ -14,15 +14,15 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
  * Generate REST Docu for the TaskanaEngineController.
  *
  */
-public class TaskanaEngineControllerRestDocumentation extends BaseRestDocumentation {
+class TaskanaEngineControllerRestDocumentation extends BaseRestDocumentation {
 
     private FieldDescriptor[] allDomainsFieldDescriptors;
     private FieldDescriptor[] allClassificationCategoriesFieldDescriptors;
     private FieldDescriptor[] allClassificationTypesFieldDescriptors;
     private FieldDescriptor[] currentUserInfoFieldDescriptors;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
 
         allDomainsFieldDescriptors = new FieldDescriptor[] {
             fieldWithPath("[]").description("An array with the domain-names as strings")
@@ -44,7 +44,7 @@ public class TaskanaEngineControllerRestDocumentation extends BaseRestDocumentat
     }
 
     @Test
-    public void getAllDomainsDocTest() throws Exception {
+    void getAllDomainsDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
             .get("http://127.0.0.1:" + port + "/api/v1/domains")
             .accept("application/json")
@@ -55,7 +55,7 @@ public class TaskanaEngineControllerRestDocumentation extends BaseRestDocumentat
     }
 
     @Test
-    public void getAllClassificationCategoriesDocTest() throws Exception {
+    void getAllClassificationCategoriesDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
             .get("http://127.0.0.1:" + port + "/api/v1/classification-categories")
             .accept("application/json")
@@ -66,7 +66,7 @@ public class TaskanaEngineControllerRestDocumentation extends BaseRestDocumentat
     }
 
     @Test
-    public void getAllClassificationTypesDocTest() throws Exception {
+    void getAllClassificationTypesDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
             .get("http://127.0.0.1:" + port + "/api/v1/classification-types")
             .accept("application/json")
@@ -77,7 +77,7 @@ public class TaskanaEngineControllerRestDocumentation extends BaseRestDocumentat
     }
 
     @Test
-    public void getCurrentUserInfo() throws Exception {
+    void getCurrentUserInfo() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
             .get("http://127.0.0.1:" + port + "/api/v1/current-user-info")
             .accept("application/json")
@@ -88,7 +88,7 @@ public class TaskanaEngineControllerRestDocumentation extends BaseRestDocumentat
     }
 
     @Test
-    public void getHistoryProviderIsEnabled() throws Exception {
+    void getHistoryProviderIsEnabled() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
             .get("http://127.0.0.1:" + port + "/api/v1/history-provider-enabled")
             .accept("application/json")

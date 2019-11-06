@@ -5,8 +5,8 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 
 import java.util.HashMap;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.FieldDescriptor;
@@ -16,14 +16,14 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
  * Generate common REST Documentation.
  *
  */
-public class CommonRestDocumentation extends BaseRestDocumentation {
+class CommonRestDocumentation extends BaseRestDocumentation {
 
     private HashMap<String, String> selfLinkFieldDescriptionsMap = new HashMap<String, String>();
 
     private FieldDescriptor[] selfLinkFieldDescriptors;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
 
         selfLinkFieldDescriptionsMap.put("_links", "Links section");
         selfLinkFieldDescriptionsMap.put("_links.self", "Link to self");
@@ -61,7 +61,7 @@ public class CommonRestDocumentation extends BaseRestDocumentation {
     }
 
     @Test
-    public void commonFieldsDocTest() throws Exception {
+    void commonFieldsDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
             .get("http://127.0.0.1:" + port + "/api/v1/classifications/CLI:100000000000000000000000000000000009")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))

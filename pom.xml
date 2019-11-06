@@ -63,7 +63,7 @@
 		<version.arquillian>1.1.10.Final</version.arquillian>
 
 		<!-- test dependencies -->
-		<version.junit>4.12</version.junit>
+		<version.junit.jupiter>5.5.2</version.junit.jupiter>
 		<version.log4j>2.8.1</version.log4j>
 		<version.mockito>2.8.47</version.mockito>
 		<version.powermock>1.7.1</version.powermock>
@@ -265,6 +265,12 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<!-- JUnit 5 requires Surefire version 2.22.0 or higher -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${version.maven.surefire}</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

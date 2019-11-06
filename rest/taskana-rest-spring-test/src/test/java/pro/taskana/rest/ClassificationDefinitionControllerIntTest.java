@@ -17,14 +17,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.env.Environment;
@@ -38,7 +35,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
@@ -47,6 +43,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.rest.resource.ClassificationResource;
 import pro.taskana.rest.resource.ClassificationSummaryListResource;
 import pro.taskana.rest.resource.ClassificationSummaryResource;
@@ -54,10 +51,9 @@ import pro.taskana.rest.resource.ClassificationSummaryResource;
 /**
  * Test classification definitions.
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT, properties = {
-    "devMode=true"})
-public class ClassificationDefinitionControllerIntTest {
+
+@TaskanaSpringBootTest
+class ClassificationDefinitionControllerIntTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationController.class);
 
@@ -77,8 +73,8 @@ public class ClassificationDefinitionControllerIntTest {
     @Autowired
     Environment env;
 
-    @Before
-    public void before() {
+    @BeforeEach
+    void before() {
         LOGGER.debug("before");
         template = getRestTemplate();
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
@@ -86,7 +82,7 @@ public class ClassificationDefinitionControllerIntTest {
     }
 
     @Test
-    public void testExportClassifications() {
+    void testExportClassifications() {
         ResponseEntity<ClassificationResource[]> response = template.exchange(
             server + port + "/api/v1/classification-definitions?domain=DOMAIN_B",
             HttpMethod.GET, request, ParameterizedTypeReference.forType(ClassificationResource[].class));
@@ -97,7 +93,7 @@ public class ClassificationDefinitionControllerIntTest {
     }
 
     @Test
-    public void testExportClassificationsFromWrongDomain() {
+    void testExportClassificationsFromWrongDomain() {
         ResponseEntity<ClassificationResource[]> response = template.exchange(
             server + port + "/api/v1/classification-definitions?domain=ADdfe",
             HttpMethod.GET, request, ParameterizedTypeReference.forType(ClassificationResource[].class));
@@ -105,7 +101,7 @@ public class ClassificationDefinitionControllerIntTest {
     }
 
     @Test
-    public void testImportFilledClassification() throws IOException {
+    void testImportFilledClassification() throws IOException {
         ClassificationResource classification = new ClassificationResource();
         classification.setClassificationId("classificationId_");
         classification.setKey("key drelf");
@@ -139,7 +135,7 @@ public class ClassificationDefinitionControllerIntTest {
     }
 
     @Test
-    public void testFailureWhenKeyIsMissing() throws IOException {
+    void testFailureWhenKeyIsMissing() throws IOException {
         ClassificationResource classification = new ClassificationResource();
         classification.setDomain("DOMAIN_A");
         List<String> clList = new ArrayList<>();
@@ -153,7 +149,7 @@ public class ClassificationDefinitionControllerIntTest {
     }
 
     @Test
-    public void testFailureWhenDomainIsMissing() throws IOException {
+    void testFailureWhenDomainIsMissing() throws IOException {
         ClassificationResource classification = new ClassificationResource();
         classification.setKey("one");
         List<String> clList = new ArrayList<>();
@@ -167,7 +163,7 @@ public class ClassificationDefinitionControllerIntTest {
     }
 
     @Test
-    public void testFailureWhenUpdatingTypeOfExistingClassification() throws IOException {
+    void testFailureWhenUpdatingTypeOfExistingClassification() throws IOException {
         ClassificationSummaryResource classification = this.getClassificationWithKeyAndDomain("T6310", "");
         classification.setType("DOCUMENT");
         List<String> clList = new ArrayList<>();
@@ -181,7 +177,7 @@ public class ClassificationDefinitionControllerIntTest {
     }
 
     @Test
-    public void testImportMultipleClassifications() throws IOException {
+    void testImportMultipleClassifications() throws IOException {
         ClassificationResource classification1 = this.createClassification("id1", "ImportKey1", "DOMAIN_A", null, null);
         String c1 = objMapper.writeValueAsString(classification1);
 
@@ -208,7 +204,7 @@ public class ClassificationDefinitionControllerIntTest {
     }
 
     @Test
-    public void testImportDuplicateClassification() throws IOException {
+    void testImportDuplicateClassification() throws IOException {
         ClassificationResource classification1 = new ClassificationResource();
         classification1.setClassificationId("id1");
         classification1.setKey("ImportKey3");
@@ -227,7 +223,7 @@ public class ClassificationDefinitionControllerIntTest {
     }
 
     @Test
-    public void testInsertExistingClassificationWithOlderTimestamp() throws IOException {
+    void testInsertExistingClassificationWithOlderTimestamp() throws IOException {
         ClassificationSummaryResource existingClassification = getClassificationWithKeyAndDomain("L110107", "DOMAIN_A");
         existingClassification.setName("first new Name");
         List<String> clList = new ArrayList<>();
@@ -249,7 +245,7 @@ public class ClassificationDefinitionControllerIntTest {
     }
 
     @Test
-    public void testHookExistingChildToNewParent() throws IOException {
+    void testHookExistingChildToNewParent() throws IOException {
         ClassificationResource newClassification = createClassification(
             "new Classification", "newClass", "DOMAIN_A", null, "L11010");
         ClassificationSummaryResource existingClassification = getClassificationWithKeyAndDomain("L110102", "DOMAIN_A");
@@ -275,7 +271,7 @@ public class ClassificationDefinitionControllerIntTest {
     }
 
     @Test
-    public void testImportParentAndChildClassification() throws IOException {
+    void testImportParentAndChildClassification() throws IOException {
         ClassificationResource classification1 = this.createClassification("parentId", "ImportKey6", "DOMAIN_A", null,
             null);
         String c1 = objMapper.writeValueAsString(classification1);
@@ -314,7 +310,7 @@ public class ClassificationDefinitionControllerIntTest {
     }
 
     @Test
-    public void testImportParentAndChildClassificationWithKey() throws IOException {
+    void testImportParentAndChildClassificationWithKey() throws IOException {
         ClassificationResource classification1 = createClassification("parent", "ImportKey11", "DOMAIN_A", null, null);
         classification1.setCustom1("parent is correct");
         String parent = objMapper.writeValueAsString(classification1);
@@ -345,7 +341,7 @@ public class ClassificationDefinitionControllerIntTest {
     }
 
     @Test
-    public void testChangeParentByImportingExistingClassification() throws IOException, InterruptedException {
+    void testChangeParentByImportingExistingClassification() throws IOException, InterruptedException {
         ClassificationSummaryResource child1 = this.getClassificationWithKeyAndDomain("L110105", "DOMAIN_A");
         assertEquals("L11010", child1.getParentKey());
         child1.setParentId("CLI:100000000000000000000000000000000002");
@@ -378,7 +374,7 @@ public class ClassificationDefinitionControllerIntTest {
     }
 
     @Test
-    public void testFailOnImportDuplicates() throws IOException {
+    void testFailOnImportDuplicates() throws IOException {
         ClassificationSummaryResource classification = this.getClassificationWithKeyAndDomain("L110105", "DOMAIN_A");
         String classificationString = objMapper.writeValueAsString(classification);
 
@@ -451,7 +447,7 @@ public class ClassificationDefinitionControllerIntTest {
         converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/haljson,*/*"));
         converter.setObjectMapper(mapper);
 
-        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>> singletonList(converter));
+        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>>singletonList(converter));
         return template;
     }
 }

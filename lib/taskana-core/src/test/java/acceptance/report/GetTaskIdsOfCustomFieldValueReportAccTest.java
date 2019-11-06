@@ -10,8 +10,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.CustomField;
 import pro.taskana.TaskMonitorService;
@@ -20,31 +21,32 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.SelectedItem;
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "get task ids of category report" scenarios.
  */
-@RunWith(JAASRunner.class)
-public class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAccTest {
+@ExtendWith(JAASExtension.class)
+class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAccTest {
 
-    @Test(expected = NotAuthorizedException.class)
-    public void testRoleCheck() throws InvalidArgumentException, NotAuthorizedException {
+    @Test
+    void testRoleCheck() {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
         List<SelectedItem> selectedItems = new ArrayList<>();
 
-        taskMonitorService.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
-            .listTaskIdsForSelectedItems(selectedItems);
+        Assertions.assertThrows(NotAuthorizedException.class, () ->
+            taskMonitorService.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
+                .listTaskIdsForSelectedItems(selectedItems));
     }
 
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testGetTaskIdsOfCustomFieldValueReport() throws InvalidArgumentException, NotAuthorizedException {
+    void testGetTaskIdsOfCustomFieldValueReport() throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
@@ -88,7 +90,7 @@ public class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAcc
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testGetTaskIdsOfCustomFieldValueReportWithWorkbasketFilter()
+    void testGetTaskIdsOfCustomFieldValueReportWithWorkbasketFilter()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
@@ -130,7 +132,7 @@ public class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAcc
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testGetTaskIdsOfCustomFieldValueReportWithStateFilter()
+    void testGetTaskIdsOfCustomFieldValueReportWithStateFilter()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
@@ -176,7 +178,7 @@ public class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAcc
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testGetTaskIdsOfCustomFieldValueReportWithCategoryFilter()
+    void testGetTaskIdsOfCustomFieldValueReportWithCategoryFilter()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
@@ -218,7 +220,7 @@ public class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAcc
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testGetTaskIdsOfCustomFieldValueReportWithDomainFilter()
+    void testGetTaskIdsOfCustomFieldValueReportWithDomainFilter()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
@@ -259,7 +261,7 @@ public class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAcc
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testGetTaskIdsOfCustomFieldValueReportWithCustomFieldValueFilter()
+    void testGetTaskIdsOfCustomFieldValueReportWithCustomFieldValueFilter()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
@@ -302,8 +304,8 @@ public class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAcc
 
     @WithAccessId(
         userName = "monitor")
-    @Test(expected = InvalidArgumentException.class)
-    public void testThrowsExceptionIfSubKeysAreUsed() throws InvalidArgumentException, NotAuthorizedException {
+    @Test
+    void testThrowsExceptionIfSubKeysAreUsed() {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
@@ -317,8 +319,11 @@ public class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAcc
         s1.setUpperAgeLimit(-2);
         selectedItems.add(s1);
 
-        taskMonitorService.createCategoryReportBuilder().withColumnHeaders(columnHeaders).listTaskIdsForSelectedItems(
-            selectedItems);
+        Assertions.assertThrows(InvalidArgumentException.class, () ->
+            taskMonitorService.createCategoryReportBuilder()
+                .withColumnHeaders(columnHeaders)
+                .listTaskIdsForSelectedItems(
+                    selectedItems));
     }
 
     private List<TimeIntervalColumnHeader> getListOfColumnHeaders() {

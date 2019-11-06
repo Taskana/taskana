@@ -6,23 +6,23 @@ import static org.junit.Assert.assertNotNull;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.AttachmentSummary;
-import pro.taskana.TaskQuery;
 import pro.taskana.BaseQuery.SortDirection;
+import pro.taskana.TaskQuery;
 import pro.taskana.TaskQueryColumnName;
 import pro.taskana.TaskService;
 import pro.taskana.TaskSummary;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for the usecase of adding/removing an attachment of a task and update the result correctly.
  */
-@RunWith(JAASRunner.class)
+@ExtendWith(JAASExtension.class)
 public class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
 
     private static SortDirection asc = SortDirection.ASCENDING;
@@ -178,8 +178,6 @@ public class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
         // the count returns only the number of tasks that have an attachment with the specified classification name.
         // therefore, task 001 is counted only once.
     }
-
-
 
 }
 

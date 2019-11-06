@@ -3,8 +3,9 @@ package acceptance.workbasket;
 import java.time.Instant;
 
 import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.Workbasket;
@@ -12,13 +13,13 @@ import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketType;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "update workbasket" scenarios.
  */
-@RunWith(JAASRunner.class)
+@ExtendWith(JAASExtension.class)
 public class UpdateWorkbasketAccTest extends AbstractAccTest {
 
     public UpdateWorkbasketAccTest() {
@@ -60,14 +61,16 @@ public class UpdateWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
-    @Test(expected = NotAuthorizedException.class)
+    @Test
     public void testCheckAuthorizationToUpdateWorkbasket()
         throws NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         Workbasket workbasket = workbasketService.getWorkbasket("USER_1_1", "DOMAIN_A");
 
         workbasket.setName("new name");
-        workbasketService.updateWorkbasket(workbasket);
+
+        Assertions.assertThrows(NotAuthorizedException.class, () ->
+            workbasketService.updateWorkbasket(workbasket));
     }
 
 }

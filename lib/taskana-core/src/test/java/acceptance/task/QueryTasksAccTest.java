@@ -21,8 +21,9 @@ import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.Attachment;
@@ -44,19 +45,19 @@ import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.TaskanaEngineProxyForTest;
 import pro.taskana.mappings.TaskTestMapper;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "query tasks with sorting" scenarios.
  */
-@RunWith(JAASRunner.class)
-public class QueryTasksAccTest extends AbstractAccTest {
+@ExtendWith(JAASExtension.class)
+class QueryTasksAccTest extends AbstractAccTest {
 
     private static SortDirection asc = SortDirection.ASCENDING;
     private static SortDirection desc = SortDirection.DESCENDING;
 
-    public QueryTasksAccTest() {
+    QueryTasksAccTest() {
         super();
     }
 
@@ -64,7 +65,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"admin"})
     @Test
-    public void testQueryTaskValuesForEveryColumn() {
+    void testQueryTaskValuesForEveryColumn() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<String> notWorkingColumns = new ArrayList<>();
         for (TaskQueryColumnName columnName : TaskQueryColumnName.values()) {
@@ -81,7 +82,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"admin"})
     @Test
-    public void testQueryTaskValuesForColumnName() {
+    void testQueryTaskValuesForColumnName() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<String> columnValueList = taskService.createTaskQuery()
             .ownerLike("%user%")
@@ -100,7 +101,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"admin"})
     @Test
-    public void testQueryTaskValuesForColumnNameOnAttachments() {
+    void testQueryTaskValuesForColumnNameOnAttachments() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<String> columnValueList = taskService.createTaskQuery()
             .attachmentReferenceValueIn("val4")
@@ -131,7 +132,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testQueryForOwnerLike() {
+    void testQueryForOwnerLike() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
@@ -153,7 +154,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testQueryForParentBusinessProcessId() {
+    void testQueryForParentBusinessProcessId() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
@@ -179,7 +180,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testQueryForName() {
+    void testQueryForName() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
@@ -202,7 +203,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testQueryForClassificationKey() {
+    void testQueryForClassificationKey() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
@@ -235,7 +236,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryForAttachmentInSummary()
+    void testQueryForAttachmentInSummary()
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         TaskNotFoundException, ConcurrencyException, AttachmentPersistenceException {
         TaskService taskService = taskanaEngine.getTaskService();
@@ -261,7 +262,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"admin"})
     @Test
-    public void testQueryForExternalId() {
+    void testQueryForExternalId() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
@@ -285,7 +286,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryForCustom1()
+    void testQueryForCustom1()
         throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
 
@@ -316,7 +317,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryForCustom2()
+    void testQueryForCustom2()
         throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
 
@@ -347,7 +348,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryForCustom3()
+    void testQueryForCustom3()
         throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
 
@@ -378,7 +379,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryForCustom4()
+    void testQueryForCustom4()
         throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
 
@@ -409,7 +410,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryForCustom5()
+    void testQueryForCustom5()
         throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
 
@@ -440,7 +441,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryForCustom6()
+    void testQueryForCustom6()
         throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
 
@@ -470,22 +471,23 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "teamlead_1",
         groupNames = {"group_1"})
-    @Test(expected = InvalidArgumentException.class)
-    public void testQueryForCustom7WithExceptionInLike()
-        throws InvalidArgumentException {
+    @Test
+    void testQueryForCustom7WithExceptionInLike() {
         TaskService taskService = taskanaEngine.getTaskService();
 
-        List<TaskSummary> results = taskService.createTaskQuery()
-            .customAttributeLike("7")
-            .list();
-        assertThat(results.size(), equalTo(0));
+        Assertions.assertThrows(InvalidArgumentException.class, () -> {
+            List<TaskSummary> results = taskService.createTaskQuery()
+                .customAttributeLike("7")
+                .list();
+            assertThat(results.size(), equalTo(0));
+        });
     }
 
     @WithAccessId(
         userName = "teamlead_1",
         groupNames = {"group_1"})
-    @Test(expected = InvalidArgumentException.class)
-    public void testQueryForCustom7WithExceptionInIn()
+    @Test
+    void testQueryForCustom7WithExceptionInIn()
         throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
 
@@ -506,17 +508,19 @@ public class QueryTasksAccTest extends AbstractAccTest {
             .collect(Collectors.toList())
             .toArray(new String[0]);
 
-        List<TaskSummary> result2 = taskService.createTaskQuery()
-            .customAttributeIn("7", ids)
-            .list();
-        assertThat(result2.size(), equalTo(0));
+        Assertions.assertThrows(InvalidArgumentException.class, () -> {
+            List<TaskSummary> result2 = taskService.createTaskQuery()
+                .customAttributeIn("7", ids)
+                .list();
+            assertThat(result2.size(), equalTo(0));
+        });
     }
 
     @WithAccessId(
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryForCustom7WithException()
+    void testQueryForCustom7WithException()
         throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
 
@@ -547,7 +551,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryForCustom8()
+    void testQueryForCustom8()
         throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
 
@@ -578,7 +582,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryForCustom9()
+    void testQueryForCustom9()
         throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
 
@@ -609,7 +613,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryForCustom10()
+    void testQueryForCustom10()
         throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
 
@@ -640,7 +644,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryForCustom11()
+    void testQueryForCustom11()
         throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
 
@@ -670,7 +674,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryForCustom12()
+    void testQueryForCustom12()
         throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
 
@@ -700,7 +704,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryForCustom13()
+    void testQueryForCustom13()
         throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
 
@@ -730,7 +734,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryForCustom14()
+    void testQueryForCustom14()
         throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
 
@@ -760,7 +764,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryForCustom15()
+    void testQueryForCustom15()
         throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
 
@@ -790,7 +794,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryForCustom16()
+    void testQueryForCustom16()
         throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
 
@@ -820,7 +824,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryTaskByCustomAttributes()
+    void testQueryTaskByCustomAttributes()
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException, NoSuchFieldException, IllegalAccessException {
 
@@ -865,7 +869,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryAndCountMatch() {
+    void testQueryAndCountMatch() {
         TaskService taskService = taskanaEngine.getTaskService();
         TaskQuery taskQuery = taskService.createTaskQuery();
         List<TaskSummary> tasks = taskQuery
@@ -882,7 +886,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"businessadmin"})
     @Test
-    public void testQueryAllPaged() {
+    void testQueryAllPaged() {
         TaskService taskService = taskanaEngine.getTaskService();
         TaskQuery taskQuery = taskService.createTaskQuery();
         long numberOfTasks = taskQuery.count();
@@ -904,7 +908,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForCreatorIn() {
+    void testQueryForCreatorIn() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .creatorIn("creator_user_id2", "creator_user_id3")
@@ -915,7 +919,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForCreatorLike() {
+    void testQueryForCreatorLike() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .creatorLike("ersTeLlEr%")
@@ -926,7 +930,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForNoteLike() {
+    void testQueryForNoteLike() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .noteLike("Some%")
@@ -937,7 +941,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForClassificationCategoryIn() {
+    void testQueryForClassificationCategoryIn() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .classificationCategoryIn("MANUAL", "AUTOMATIC")
@@ -948,7 +952,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForClassificationCategoryLike() {
+    void testQueryForClassificationCategoryLike() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .classificationCategoryLike("AUTO%")
@@ -959,7 +963,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForPrimaryObjectReferenceCompanyLike() {
+    void testQueryForPrimaryObjectReferenceCompanyLike() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .primaryObjectReferenceCompanyLike("My%")
@@ -970,7 +974,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForPrimaryObjectReferenceSystemLike() {
+    void testQueryForPrimaryObjectReferenceSystemLike() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .primaryObjectReferenceSystemLike("My%")
@@ -981,7 +985,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForPrimaryObjectReferenceSystemInstanceLike() {
+    void testQueryForPrimaryObjectReferenceSystemInstanceLike() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .primaryObjectReferenceSystemInstanceLike("My%")
@@ -992,7 +996,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForPrimaryObjectReferenceTypeLike() {
+    void testQueryForPrimaryObjectReferenceTypeLike() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .primaryObjectReferenceTypeLike("My%")
@@ -1003,7 +1007,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForReadEquals() {
+    void testQueryForReadEquals() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .readEquals(true)
@@ -1014,7 +1018,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForTransferredEquals() {
+    void testQueryForTransferredEquals() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .transferredEquals(true)
@@ -1025,7 +1029,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForBusinessProcessIdIn() {
+    void testQueryForBusinessProcessIdIn() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .businessProcessIdIn("PI_0000000000003", "BPI21")
@@ -1036,7 +1040,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForBusinessProcessIdLike() {
+    void testQueryForBusinessProcessIdLike() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .businessProcessIdLike("pI_%")
@@ -1047,7 +1051,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForAttachmentClassificationKeyIn() {
+    void testQueryForAttachmentClassificationKeyIn() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .attachmentClassificationKeyIn("L110102")
@@ -1060,7 +1064,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForAttachmentClassificationKeyLike() {
+    void testQueryForAttachmentClassificationKeyLike() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .attachmentClassificationKeyLike("%10102")
@@ -1073,7 +1077,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForAttachmentclassificationIdIn() {
+    void testQueryForAttachmentclassificationIdIn() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .attachmentClassificationIdIn("CLI:000000000000000000000000000000000002")
@@ -1086,7 +1090,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForAttachmentChannelLike() {
+    void testQueryForAttachmentChannelLike() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .attachmentChannelLike("%6")
@@ -1097,7 +1101,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForAttachmentReferenceIn() {
+    void testQueryForAttachmentReferenceIn() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .attachmentReferenceValueIn("val4")
@@ -1109,7 +1113,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForAttachmentReceivedIn() {
+    void testQueryForAttachmentReceivedIn() {
         TaskService taskService = taskanaEngine.getTaskService();
         TimeInterval interval = new TimeInterval(
             getInstant("2018-01-30T12:00:00"),
@@ -1126,7 +1130,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderByCreatorDesc() {
+    void testQueryForOrderByCreatorDesc() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .orderByCreator(desc)
@@ -1137,7 +1141,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderByWorkbasketIdDesc() {
+    void testQueryForOrderByWorkbasketIdDesc() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .orderByWorkbasketId(desc)
@@ -1149,7 +1153,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderByCustom1Asc() throws InvalidArgumentException {
+    void testQueryForOrderByCustom1Asc() throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .customAttributeLike("1", "%")
@@ -1161,7 +1165,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderByCustom2Desc() throws InvalidArgumentException {
+    void testQueryForOrderByCustom2Desc() throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .customAttributeLike("2", "%")
@@ -1173,7 +1177,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderByCustom3Asc() throws InvalidArgumentException {
+    void testQueryForOrderByCustom3Asc() throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .customAttributeLike("3", "%")
@@ -1185,7 +1189,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderByCustom4Desc() throws InvalidArgumentException {
+    void testQueryForOrderByCustom4Desc() throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .customAttributeLike("4", "%")
@@ -1199,7 +1203,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderByCustom5Asc() throws InvalidArgumentException {
+    void testQueryForOrderByCustom5Asc() throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .customAttributeLike("5", "%")
@@ -1211,7 +1215,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderByCustom6Desc() throws InvalidArgumentException {
+    void testQueryForOrderByCustom6Desc() throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .customAttributeLike("6", "%")
@@ -1223,7 +1227,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderByCustom7Asc() throws InvalidArgumentException {
+    void testQueryForOrderByCustom7Asc() throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .orderByCustomAttribute("7", asc)
@@ -1235,7 +1239,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderByCustom8Desc() throws InvalidArgumentException {
+    void testQueryForOrderByCustom8Desc() throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .orderByCustomAttribute("8", desc)
@@ -1247,7 +1251,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderByCustom9Asc() throws InvalidArgumentException {
+    void testQueryForOrderByCustom9Asc() throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .customAttributeLike("9", "%")
@@ -1259,7 +1263,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderByCustom10Desc() throws InvalidArgumentException {
+    void testQueryForOrderByCustom10Desc() throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .customAttributeLike("10", "%")
@@ -1271,7 +1275,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderByCustom11Desc() throws InvalidArgumentException {
+    void testQueryForOrderByCustom11Desc() throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .orderByCustomAttribute("11", desc)
@@ -1286,7 +1290,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderByCustom12Asc() throws InvalidArgumentException {
+    void testQueryForOrderByCustom12Asc() throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .customAttributeLike("12", "%")
@@ -1298,7 +1302,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderByCustom13Desc() throws InvalidArgumentException {
+    void testQueryForOrderByCustom13Desc() throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .customAttributeLike("13", "%")
@@ -1312,7 +1316,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderByCustom14Asc() throws InvalidArgumentException {
+    void testQueryForOrderByCustom14Asc() throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .customAttributeLike("14", "%")
@@ -1324,7 +1328,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderByCustom15Desc() throws InvalidArgumentException {
+    void testQueryForOrderByCustom15Desc() throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .customAttributeLike("15", "%")
@@ -1338,7 +1342,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderByCustom16Asc() throws InvalidArgumentException {
+    void testQueryForOrderByCustom16Asc() throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .customAttributeLike("16", "%")
@@ -1350,7 +1354,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderWithDirectionNull() {
+    void testQueryForOrderWithDirectionNull() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .orderByPrimaryObjectReferenceSystemInstance(null)
@@ -1361,7 +1365,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderByAttachmentClassificationIdAsc() {
+    void testQueryForOrderByAttachmentClassificationIdAsc() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .idIn("TKI:000000000000000000000000000000000010", "TKI:000000000000000000000000000000000011",
@@ -1375,7 +1379,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderByAttachmentClassificationIdDesc() {
+    void testQueryForOrderByAttachmentClassificationIdDesc() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .idIn("TKI:000000000000000000000000000000000010", "TKI:000000000000000000000000000000000011",
@@ -1389,7 +1393,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderByAttachmentClassificationKeyAsc() {
+    void testQueryForOrderByAttachmentClassificationKeyAsc() {
 
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
@@ -1405,7 +1409,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderByAttachmentClassificationKeyDesc() {
+    void testQueryForOrderByAttachmentClassificationKeyDesc() {
 
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
@@ -1421,7 +1425,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderByAttachmentRefValueDesc() {
+    void testQueryForOrderByAttachmentRefValueDesc() {
 
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
@@ -1437,7 +1441,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderByAttachmentChannelAscAndReferenceDesc() {
+    void testQueryForOrderByAttachmentChannelAscAndReferenceDesc() {
 
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
@@ -1454,7 +1458,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForAttachmentLikeCHAndOrderByClassificationKeyDescAndAsc() {
+    void testQueryForAttachmentLikeCHAndOrderByClassificationKeyDescAndAsc() {
 
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
@@ -1478,7 +1482,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testQueryForExternalIdIn() {
+    void testQueryForExternalIdIn() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
@@ -1505,7 +1509,7 @@ public class QueryTasksAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testQueryForExternalIdLike() {
+    void testQueryForExternalIdLike() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()

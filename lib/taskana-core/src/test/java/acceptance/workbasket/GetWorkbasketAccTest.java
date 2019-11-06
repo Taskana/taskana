@@ -5,8 +5,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.Workbasket;
@@ -16,13 +17,13 @@ import pro.taskana.WorkbasketSummary;
 import pro.taskana.WorkbasketType;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "get workbasket" scenarios.
  */
-@RunWith(JAASRunner.class)
+@ExtendWith(JAASExtension.class)
 public class GetWorkbasketAccTest extends AbstractAccTest {
 
     public GetWorkbasketAccTest() {
@@ -136,42 +137,43 @@ public class GetWorkbasketAccTest extends AbstractAccTest {
         assertEquals(false, workbasketSummary.isMarkedForDeletion());
     }
 
-    @Test(expected = WorkbasketNotFoundException.class)
-    public void testThrowsExceptionIfIdIsInvalid()
-        throws NotAuthorizedException, WorkbasketNotFoundException {
+    @Test
+    public void testThrowsExceptionIfIdIsInvalid() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-        workbasketService.getWorkbasket("INVALID_ID");
+        Assertions.assertThrows(WorkbasketNotFoundException.class, () ->
+            workbasketService.getWorkbasket("INVALID_ID"));
     }
 
-    @Test(expected = WorkbasketNotFoundException.class)
-    public void testThrowsExceptionIfKeyOrDomainIsInvalid()
-        throws NotAuthorizedException, WorkbasketNotFoundException {
+    @Test
+    public void testThrowsExceptionIfKeyOrDomainIsInvalid() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-        workbasketService.getWorkbasket("INVALID_KEY", "INVALID_DOMAIN");
+
+        Assertions.assertThrows(WorkbasketNotFoundException.class, () ->
+            workbasketService.getWorkbasket("INVALID_KEY", "INVALID_DOMAIN"));
     }
 
-    @Test(expected = NotAuthorizedException.class)
-    public void testGetByIdNotAuthorized()
-        throws NotAuthorizedException, WorkbasketNotFoundException {
+    @Test
+    public void testGetByIdNotAuthorized() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-        workbasketService.getWorkbasket("WBI:100000000000000000000000000000000001");
+        Assertions.assertThrows(NotAuthorizedException.class, () ->
+            workbasketService.getWorkbasket("WBI:100000000000000000000000000000000001"));
     }
 
-    @Test(expected = NotAuthorizedException.class)
-    public void testGetByKeyDomainNotAuthorized()
-        throws NotAuthorizedException, WorkbasketNotFoundException {
+    @Test
+    public void testGetByKeyDomainNotAuthorized() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-        workbasketService.getWorkbasket("GPK_KSC", "DOMAIN_A");
+        Assertions.assertThrows(NotAuthorizedException.class, () ->
+            workbasketService.getWorkbasket("GPK_KSC", "DOMAIN_A"));
     }
 
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
-    @Test(expected = WorkbasketNotFoundException.class)
-    public void testGetWorkbasketByIdNotExisting()
-        throws NotAuthorizedException, WorkbasketNotFoundException {
+    @Test
+    public void testGetWorkbasketByIdNotExisting() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-        workbasketService.getWorkbasket("NOT EXISTING ID");
+        Assertions.assertThrows(WorkbasketNotFoundException.class, () ->
+            workbasketService.getWorkbasket("NOT EXISTING ID"));
     }
 
 }

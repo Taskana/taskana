@@ -3,8 +3,8 @@ package acceptance.security;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.WorkbasketPermission;
@@ -12,13 +12,13 @@ import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for workbasket queries and authorization.
  */
-@RunWith(JAASRunner.class)
+@ExtendWith(JAASExtension.class)
 public class WorkbasketQueryAccTest extends AbstractAccTest {
 
     public WorkbasketQueryAccTest() {

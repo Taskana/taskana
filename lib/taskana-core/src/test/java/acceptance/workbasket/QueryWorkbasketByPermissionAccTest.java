@@ -1,14 +1,13 @@
 package acceptance.workbasket;
 
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.BaseQuery.SortDirection;
@@ -18,13 +17,13 @@ import pro.taskana.WorkbasketSummary;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.SystemException;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "query workbasket by permission" scenarios.
  */
-@RunWith(JAASRunner.class)
+@ExtendWith(JAASExtension.class)
 public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
 
     private static SortDirection asc = SortDirection.ASCENDING;
@@ -50,14 +49,14 @@ public class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "dummy")
-    @Test(expected = NotAuthorizedException.class)
-    public void testQueryAllTransferTargetsForUserNotAuthorized()
-        throws NotAuthorizedException, InvalidArgumentException {
+    @Test
+    public void testQueryAllTransferTargetsForUserNotAuthorized() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-        workbasketService.createWorkbasketQuery()
-            .accessIdsHavePermission(WorkbasketPermission.APPEND, "user_1_1")
-            .list();
-        fail("NotAuthorizedException was expected");
+
+        Assertions.assertThrows(NotAuthorizedException.class, () ->
+            workbasketService.createWorkbasketQuery()
+                .accessIdsHavePermission(WorkbasketPermission.APPEND, "user_1_1")
+                .list());
     }
 
     @WithAccessId(

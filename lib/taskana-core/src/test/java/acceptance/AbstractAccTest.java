@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 
 import pro.taskana.Attachment;
 import pro.taskana.ObjectReference;
@@ -36,6 +37,7 @@ public abstract class AbstractAccTest {
     private static DBCleaner cleaner = new DBCleaner();
     protected static TestDataGenerator testDataGenerator = new TestDataGenerator();
 
+    @BeforeAll
     @BeforeClass
     public static void setupTest() throws Exception {
         resetDb(false);

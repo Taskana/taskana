@@ -3,11 +3,11 @@ package pro.taskana.rest.resource;
 import java.time.Instant;
 
 import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import pro.taskana.Classification;
@@ -18,10 +18,10 @@ import pro.taskana.rest.TestConfiguration;
 /**
  * Test for {@link ClassificationResourceAssembler}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {TestConfiguration.class})
 @WebAppConfiguration
-public class ClassificationAssemblerTest {
+class ClassificationAssemblerTest {
 
     @Autowired
     private ClassificationResourceAssembler classificationResourceAssembler;
@@ -30,7 +30,7 @@ public class ClassificationAssemblerTest {
     private ClassificationService classificationService;
 
     @Test
-    public void classificationToResource() {
+    void classificationToResource() {
         // given
         ClassificationImpl classification = (ClassificationImpl) classificationService.newClassification("DOMAIN_A",
             "1", "A");
@@ -60,7 +60,7 @@ public class ClassificationAssemblerTest {
     }
 
     @Test
-    public void resourceToClassification() {
+    void resourceToClassification() {
         ClassificationImpl classification = (ClassificationImpl) classificationService.newClassification("12",
             "DOMAIN_B", "AB");
 

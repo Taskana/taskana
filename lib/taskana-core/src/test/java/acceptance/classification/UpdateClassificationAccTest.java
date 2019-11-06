@@ -5,7 +5,6 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -14,8 +13,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.Classification;
@@ -33,13 +33,13 @@ import pro.taskana.impl.DaysToWorkingDaysConverter;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
 import pro.taskana.jobs.JobRunner;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "update classification" scenarios.
  */
-@RunWith(JAASRunner.class)
+@ExtendWith(JAASExtension.class)
 public class UpdateClassificationAccTest extends AbstractAccTest {
 
     private ClassificationService classificationService;
@@ -91,9 +91,9 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         assertTrue(modifiedBefore.isBefore(updatedClassification.getModified()));
     }
 
-    @Test(expected = NotAuthorizedException.class)
+    @Test
     public void testUpdateClassificationFails()
-        throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
+        throws ClassificationNotFoundException, ConcurrencyException,
         InvalidArgumentException {
         String newName = "updated Name";
         String newEntryPoint = "updated EntryPoint";
@@ -116,7 +116,8 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         classification.setPriority(1000);
         classification.setServiceLevel("P2DT3H4M");
 
-        classificationService.updateClassification(classification);
+        Assertions.assertThrows(NotAuthorizedException.class, () ->
+            classificationService.updateClassification(classification));
     }
 
     @WithAccessId(
@@ -152,7 +153,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "teamlead_1",
         groupNames = {"group_1", "businessadmin"})
-    @Test(expected = ConcurrencyException.class)
+    @Test
     public void testUpdateClassificationNotLatestAnymore()
         throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException, InterruptedException,
         InvalidArgumentException {
@@ -168,32 +169,36 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
 
         classification.setName("NOW IT´S MY TURN");
         classification.setDescription("IT SHOULD BE TO LATE...");
-        classificationService.updateClassification(classification);
-        fail("The Classification should not be updated, because it was modified while editing.");
+        Assertions.assertThrows(ConcurrencyException.class, () ->
+                classificationService.updateClassification(classification),
+            "The Classification should not be updated, because it was modified while editing.");
     }
 
     @WithAccessId(
         userName = "teamlead_1",
         groupNames = {"group_1", "businessadmin"})
-    @Test(expected = ClassificationNotFoundException.class)
+    @Test
     public void testUpdateClassificationParentIdToInvalid()
         throws NotAuthorizedException, ClassificationNotFoundException,
         ConcurrencyException, InvalidArgumentException {
         Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
         classification.setParentId("ID WHICH CANT BE FOUND");
-        classification = classificationService.updateClassification(classification);
+        Assertions.assertThrows(ClassificationNotFoundException.class, () ->
+            classificationService.updateClassification(classification));
     }
 
     @WithAccessId(
         userName = "teamlead_1",
         groupNames = {"group_1", "businessadmin"})
-    @Test(expected = ClassificationNotFoundException.class)
+    @Test
     public void testUpdateClassificationParentKeyToInvalid()
         throws NotAuthorizedException, ClassificationNotFoundException,
         ConcurrencyException, InvalidArgumentException {
         Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
         classification.setParentKey("KEY WHICH CANT BE FOUND");
-        classification = classificationService.updateClassification(classification);
+
+        Assertions.assertThrows(ClassificationNotFoundException.class, () ->
+            classificationService.updateClassification(classification));
     }
 
     @WithAccessId(
@@ -232,23 +237,23 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter
             .initialize(Collections.singletonList(new TimeIntervalColumnHeader(0)), Instant.now());
 
-        List<String> tasksWithP1D  = new ArrayList<>(Arrays.asList(
+        List<String> tasksWithP1D = new ArrayList<>(Arrays.asList(
             "TKI:000000000000000000000000000000000054",
             "TKI:000000000000000000000000000000000055",
             "TKI:000000000000000000000000000000000000",
             "TKI:000000000000000000000000000000000011",
             "TKI:000000000000000000000000000000000053"
-            ));
+        ));
         validateNewTaskProperties(before, tasksWithP1D, taskService, converter, 1);
 
-        List<String> tasksWithP8D  = new ArrayList<>(Arrays.asList(
+        List<String> tasksWithP8D = new ArrayList<>(Arrays.asList(
             "TKI:000000000000000000000000000000000008"
-            ));
+        ));
         validateNewTaskProperties(before, tasksWithP8D, taskService, converter, 8);
 
-        List<String> tasksWithP14D  = new ArrayList<>(Arrays.asList(
+        List<String> tasksWithP14D = new ArrayList<>(Arrays.asList(
             "TKI:000000000000000000000000000000000010"
-            ));
+        ));
         validateNewTaskProperties(before, tasksWithP14D, taskService, converter, 14);
 
         List<String> tasksWithP15D = new ArrayList<>(
@@ -270,7 +275,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
                 "TKI:000000000000000000000000000000000035", "TKI:000000000000000000000000000000000100",
                 "TKI:000000000000000000000000000000000101", "TKI:000000000000000000000000000000000102",
                 "TKI:000000000000000000000000000000000103"
-                ));
+            ));
         validateNewTaskProperties(before, tasksWithP15D, taskService, converter, 15);
 
     }
@@ -278,14 +283,15 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "dummy",
         groupNames = {"businessadmin"})
-    @Test(expected = InvalidArgumentException.class)
+    @Test
     public void testUpdateClassificationWithSameKeyAndParentKey()
         throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException, InvalidArgumentException {
 
         Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
 
         classification.setParentKey(classification.getKey());
-        classificationService.updateClassification(classification);
+        Assertions.assertThrows(InvalidArgumentException.class, () ->
+            classificationService.updateClassification(classification));
     }
 
     @WithAccessId(
@@ -310,9 +316,10 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
             assertTrue(task.getPriority() == 1000);
             long calendarDays = converter.convertWorkingDaysToDays(task.getPlanned(), serviceLevel);
 
-            assertTrue("Task: " + taskId + ": Due Date " + task.getDue() + " does not match planned " + task.getPlanned()
-            + " + calendar days " + calendarDays,
-            task.getDue().equals(task.getPlanned().plus(Duration.ofDays(calendarDays))));
+            assertTrue(
+                "Task: " + taskId + ": Due Date " + task.getDue() + " does not match planned " + task.getPlanned()
+                    + " + calendar days " + calendarDays,
+                task.getDue().equals(task.getPlanned().plus(Duration.ofDays(calendarDays))));
         }
     }
 
