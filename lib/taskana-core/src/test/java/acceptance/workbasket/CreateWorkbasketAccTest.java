@@ -7,8 +7,9 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.Workbasket;
@@ -21,13 +22,13 @@ import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "create workbasket" scenarios.
  */
-@RunWith(JAASRunner.class)
+@ExtendWith(JAASExtension.class)
 public class CreateWorkbasketAccTest extends AbstractAccTest {
 
     public CreateWorkbasketAccTest() {
@@ -67,37 +68,33 @@ public class CreateWorkbasketAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "dummy")
-    @Test(expected = NotAuthorizedException.class)
-    public void testCreateWorkbasketNotAuthorized()
-        throws NotAuthorizedException, InvalidWorkbasketException, WorkbasketAlreadyExistException,
-        DomainNotFoundException {
+    @Test
+    public void testCreateWorkbasketNotAuthorized() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
         Workbasket workbasket = workbasketService.newWorkbasket("key3", "DOMAIN_A");
         workbasket.setName("Megabasket");
         workbasket.setType(WorkbasketType.GROUP);
         workbasket.setOrgLevel1("company");
-        workbasketService.createWorkbasket(workbasket);
 
-        fail("NotAuthorizedException should have been thrown");
+        Assertions.assertThrows(NotAuthorizedException.class, () ->
+            workbasketService.createWorkbasket(workbasket));
+
     }
 
     @WithAccessId(
         userName = "user_1_2",
         groupNames = {"businessadmin"})
-    @Test(expected = DomainNotFoundException.class)
-    public void testCreateWorkbasketWithInvalidDomain()
-        throws NotAuthorizedException, InvalidWorkbasketException, WorkbasketAlreadyExistException,
-        DomainNotFoundException {
+    @Test
+    public void testCreateWorkbasketWithInvalidDomain() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
         Workbasket workbasket = workbasketService.newWorkbasket("key3", "UNKNOWN_DOMAIN");
         workbasket.setName("Megabasket");
         workbasket.setType(WorkbasketType.GROUP);
         workbasket.setOrgLevel1("company");
-        workbasketService.createWorkbasket(workbasket);
-
-        fail("DomainNotFoundException should have been thrown");
+        Assertions.assertThrows(DomainNotFoundException.class, () ->
+            workbasketService.createWorkbasket(workbasket));
     }
 
     @WithAccessId(
@@ -171,7 +168,7 @@ public class CreateWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "user_1_2",
         groupNames = {"businessadmin"})
-    @Test(expected = WorkbasketAlreadyExistException.class)
+    @Test
     public void testThrowsExceptionIfWorkbasketWithCaseInsensitiveSameKeyDomainIsCreated()
         throws NotAuthorizedException, InvalidWorkbasketException, WorkbasketAlreadyExistException,
         DomainNotFoundException {
@@ -185,15 +182,18 @@ public class CreateWorkbasketAccTest extends AbstractAccTest {
         Workbasket duplicateWorkbasketWithSmallX = workbasketService.newWorkbasket("x123456", "DOMAIN_A");
         duplicateWorkbasketWithSmallX.setName("Personal Workbasket for UID X123456");
         duplicateWorkbasketWithSmallX.setType(WorkbasketType.PERSONAL);
-        duplicateWorkbasketWithSmallX = workbasketService.createWorkbasket(duplicateWorkbasketWithSmallX);
+
+        Assertions.assertThrows(WorkbasketAlreadyExistException.class, () ->
+            workbasketService.createWorkbasket(duplicateWorkbasketWithSmallX));
     }
 
     @WithAccessId(
         userName = "user_1_2",
         groupNames = {"businessadmin"})
-    @Test(expected = WorkbasketAlreadyExistException.class)
+    @Test
     public void testCreateWorkbasketWithAlreadyExistingKeyAndDomainAndEmptyIdUpdatesOlderWorkbasket()
-        throws DomainNotFoundException, InvalidWorkbasketException, NotAuthorizedException, WorkbasketAlreadyExistException {
+        throws DomainNotFoundException, InvalidWorkbasketException,
+        NotAuthorizedException, WorkbasketAlreadyExistException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         // First create a new Workbasket.
         Workbasket wb = workbasketService.newWorkbasket("newKey", "DOMAIN_A");
@@ -205,11 +205,9 @@ public class CreateWorkbasketAccTest extends AbstractAccTest {
         Workbasket sameKeyAndDomain = workbasketService.newWorkbasket("newKey", "DOMAIN_A");
         sameKeyAndDomain.setType(WorkbasketType.TOPIC);
         sameKeyAndDomain.setName("new name");
-        sameKeyAndDomain = workbasketService.createWorkbasket(sameKeyAndDomain);
 
-        assertEquals(wb.getId(), sameKeyAndDomain.getId());
-        assertEquals(WorkbasketType.TOPIC, sameKeyAndDomain.getType());
-        assertEquals("new name", sameKeyAndDomain.getName());
+        Assertions.assertThrows(WorkbasketAlreadyExistException.class, () ->
+            workbasketService.createWorkbasket(sameKeyAndDomain));
     }
 
     @WithAccessId(

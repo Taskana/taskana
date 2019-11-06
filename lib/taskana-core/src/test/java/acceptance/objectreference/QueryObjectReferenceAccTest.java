@@ -2,13 +2,12 @@ package acceptance.objectreference;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-
 import static pro.taskana.ObjectReferenceQueryColumnName.COMPANY;
 import static pro.taskana.ObjectReferenceQueryColumnName.SYSTEM;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.ObjectReference;

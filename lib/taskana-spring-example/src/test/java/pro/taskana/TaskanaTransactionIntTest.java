@@ -18,9 +18,9 @@ import java.util.Optional;
 
 import javax.sql.DataSource;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -32,7 +32,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
@@ -54,12 +54,12 @@ import pro.taskana.transaction.TaskanaTransactionProvider;
 /**
  *
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = TaskanaConfigTestApplication.class,
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles({"inmemorydb", "dev"})
 @Import({TransactionalJobsConfiguration.class})
-public class TaskanaTransactionIntTest {
+class TaskanaTransactionIntTest {
 
     private static final int POOL_TIME_TO_WAIT = 50;
     @Autowired
@@ -88,8 +88,8 @@ public class TaskanaTransactionIntTest {
         return objRef;
     }
 
-    @Before
-    public void before() {
+    @BeforeEach
+    void before() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         jdbcTemplate.execute("DELETE FROM TASK");
         jdbcTemplate.execute("DELETE FROM WORKBASKET");
@@ -97,13 +97,13 @@ public class TaskanaTransactionIntTest {
     }
 
     @Test
-    public void testTaskanaSchema() {
+    void testTaskanaSchema() {
         ResponseEntity<String> responseEntity = restTemplate.getForEntity("/schema", String.class);
         assertThat(responseEntity.getBody(), is("TASKANA"));
     }
 
     @Test
-    public void testTransaction() {
+    void testTransaction() {
         assertBefore(0, 0);
 
         ResponseEntity<String> responseEntity = restTemplate.getForEntity("/transaction", String.class);
@@ -114,7 +114,7 @@ public class TaskanaTransactionIntTest {
     }
 
     @Test
-    public void testTransactionRollback() {
+    void testTransactionRollback() {
         assertBefore(0, 0);
 
         ResponseEntity<String> responseEntity = restTemplate.getForEntity("/transaction?rollback={rollback}",
@@ -126,7 +126,7 @@ public class TaskanaTransactionIntTest {
     }
 
     @Test
-    public void testTransactionCombined() {
+    void testTransactionCombined() {
         assertBefore(0, 0);
 
         ResponseEntity<String> responseEntity = restTemplate.getForEntity("/transaction-many", String.class);
@@ -137,7 +137,7 @@ public class TaskanaTransactionIntTest {
     }
 
     @Test
-    public void testTransactionCombinedRollback() {
+    void testTransactionCombinedRollback() {
         assertBefore(0, 0);
 
         ResponseEntity<String> responseEntity = restTemplate.getForEntity("/transaction-many?rollback={rollback}",
@@ -149,7 +149,7 @@ public class TaskanaTransactionIntTest {
     }
 
     @Test
-    public void testTransactionCustomdb() {
+    void testTransactionCustomdb() {
         assertBefore(0, 0);
 
         ResponseEntity<String> responseEntity = restTemplate.getForEntity("/customdb", String.class);
@@ -162,7 +162,7 @@ public class TaskanaTransactionIntTest {
     }
 
     @Test
-    public void testTransactionCustomdbRollback() {
+    void testTransactionCustomdbRollback() {
         assertBefore(0, 0);
 
         ResponseEntity<String> responseEntity = restTemplate.getForEntity("/customdb?rollback={rollback}",
@@ -175,7 +175,7 @@ public class TaskanaTransactionIntTest {
     }
 
     @Test
-    public void testTransactionCustomDbWithSchemaSetToTaskana()
+    void testTransactionCustomDbWithSchemaSetToTaskana()
         throws SQLException, NotAuthorizedException, WorkbasketNotFoundException, DomainNotFoundException,
         InvalidWorkbasketException, WorkbasketAlreadyExistException {
 
@@ -196,7 +196,7 @@ public class TaskanaTransactionIntTest {
     }
 
     @Test
-    public void testWorkbasketCleanupJobTransaction() {
+    void testWorkbasketCleanupJobTransaction() {
         try {
             ch.qos.logback.classic.Logger logger = (ch.qos.logback.classic.Logger) LoggerFactory
                 .getLogger(WorkbasketCleanupJob.class);

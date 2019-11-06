@@ -2,7 +2,6 @@ package acceptance.workbasket;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -11,8 +10,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.Workbasket;
@@ -20,13 +20,13 @@ import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "get workbasket" scenarios.
  */
-@RunWith(JAASRunner.class)
+@ExtendWith(JAASExtension.class)
 public class DistributionTargetsAccTest extends AbstractAccTest {
 
     public DistributionTargetsAccTest() {
@@ -224,7 +224,7 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "user_2_2",
         groupNames = {"group_1", "group_2"})
-    @Test(expected = NotAuthorizedException.class)
+    @Test
     public void testAddDistributionTargetsFailsNotAuthorized()
         throws NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -235,8 +235,10 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
 
         // add a new distribution target
         Workbasket newTarget = workbasketService.getWorkbasket("GPK_B_KSC_2", "DOMAIN_B");
-        workbasketService.addDistributionTarget(workbasket.getId(), newTarget.getId());
-        fail("NotAuthorizedException should have been thrown");
+
+        Assertions.assertThrows(NotAuthorizedException.class, () ->
+            workbasketService.addDistributionTarget(workbasket.getId(), newTarget.getId()));
+
     }
 
     @WithAccessId(
@@ -315,29 +317,25 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "henry",
         groupNames = {"undefinedgroup"})
-    @Test(expected = NotAuthorizedException.class)
-    public void testQueryDistributionSourcesThrowsNotAuthorized()
-        throws NotAuthorizedException, WorkbasketNotFoundException {
+    @Test
+    public void testQueryDistributionSourcesThrowsNotAuthorized() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
-        List<WorkbasketSummary> distributionSources = workbasketService
-            .getDistributionSources("WBI:100000000000000000000000000000000004");
+        Assertions.assertThrows(NotAuthorizedException.class, () ->
+            workbasketService
+                .getDistributionSources("WBI:100000000000000000000000000000000004"));
 
-        assertEquals(2, distributionSources.size());
     }
 
     @WithAccessId(
         userName = "user_2_2",
         groupNames = {"group_1", "group_2"})
-    @Test(expected = WorkbasketNotFoundException.class)
-    public void testQueryDistributionSourcesThrowsWorkbasketNotFound()
-        throws NotAuthorizedException, WorkbasketNotFoundException {
+    @Test
+    public void testQueryDistributionSourcesThrowsWorkbasketNotFound() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
-        List<WorkbasketSummary> distributionSources = workbasketService
-            .getDistributionSources("WBI:10dasgibtsdochnicht00000000000000004");
-
-        assertEquals(2, distributionSources.size());
+        Assertions.assertThrows(WorkbasketNotFoundException.class, () -> workbasketService
+            .getDistributionSources("WBI:10dasgibtsdochnicht00000000000000004"));
     }
 
 }

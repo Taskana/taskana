@@ -12,8 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,23 +26,23 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.report.CombinedClassificationFilter;
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
 import pro.taskana.report.WorkbasketReport;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "workbasket level report" scenarios.
  */
-@RunWith(JAASRunner.class)
+@ExtendWith(JAASExtension.class)
 public class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProvideWorkbasketReportAccTest.class);
 
-    @Test(expected = NotAuthorizedException.class)
-    public void testRoleCheck()
-        throws InvalidArgumentException, NotAuthorizedException {
+    @Test
+    public void testRoleCheck() {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        taskMonitorService.createWorkbasketReportBuilder().buildReport();
+        Assertions.assertThrows(NotAuthorizedException.class, () ->
+            taskMonitorService.createWorkbasketReportBuilder().buildReport());
     }
 
     @WithAccessId(

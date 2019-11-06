@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.h2.store.fs.FileUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.impl.TaskanaEngineImpl;

@@ -8,8 +8,9 @@ import static org.junit.Assert.assertNotNull;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,21 +22,22 @@ import pro.taskana.impl.report.header.TaskStatusColumnHeader;
 import pro.taskana.impl.report.item.TaskQueryItem;
 import pro.taskana.impl.report.structure.Row;
 import pro.taskana.report.TaskStatusReport;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "task status report" scenarios.
  */
-@RunWith(JAASRunner.class)
+@ExtendWith(JAASExtension.class)
 public class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProvideWorkbasketReportAccTest.class);
 
-    @Test(expected = NotAuthorizedException.class)
-    public void testRoleCheck() throws NotAuthorizedException, InvalidArgumentException {
+    @Test
+    public void testRoleCheck() {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
-        taskMonitorService.createTaskStatusReportBuilder().buildReport();
+        Assertions.assertThrows(NotAuthorizedException.class, () ->
+            taskMonitorService.createTaskStatusReportBuilder().buildReport());
     }
 
     @WithAccessId(

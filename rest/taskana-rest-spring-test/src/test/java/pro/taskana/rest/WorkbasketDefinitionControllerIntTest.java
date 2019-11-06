@@ -14,13 +14,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.FileSystemResource;
@@ -33,7 +30,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
@@ -42,14 +38,15 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.rest.resource.WorkbasketDefinitionResource;
 
 /**
  * Integration tests for WorkbasketDefinitionController.
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT)
-public class WorkbasketDefinitionControllerIntTest {
+
+@TaskanaSpringBootTest
+class WorkbasketDefinitionControllerIntTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationController.class);
     private String server = "http://127.0.0.1:";
@@ -60,8 +57,8 @@ public class WorkbasketDefinitionControllerIntTest {
     @LocalServerPort
     private int port;
 
-    @Before
-    public void before() {
+    @BeforeEach
+    void before() {
         LOGGER.debug("before");
         template = getRestTemplate();
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
@@ -69,10 +66,11 @@ public class WorkbasketDefinitionControllerIntTest {
     }
 
     @Test
-    public void testExportWorkbasketFromDomain() {
+    void testExportWorkbasketFromDomain() {
         ResponseEntity<List<WorkbasketDefinitionResource>> response = template.exchange(
             server + port + "/api/v1/workbasket-definitions?domain=DOMAIN_A", HttpMethod.GET, request,
             new ParameterizedTypeReference<List<WorkbasketDefinitionResource>>() {
+
             });
         assertNotNull(response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -95,7 +93,7 @@ public class WorkbasketDefinitionControllerIntTest {
     }
 
     @Test
-    public void testExportWorkbasketsFromWrongDomain() {
+    void testExportWorkbasketsFromWrongDomain() {
         ResponseEntity<List<WorkbasketDefinitionResource>> response = template.exchange(
             server + port + "/api/v1/workbasket-definitions?domain=wrongDomain",
             HttpMethod.GET, request, ParameterizedTypeReference.forType(List.class));
@@ -103,7 +101,7 @@ public class WorkbasketDefinitionControllerIntTest {
     }
 
     @Test
-    public void testImportWorkbasket() throws IOException {
+    void testImportWorkbasket() throws IOException {
         ResponseEntity<List<WorkbasketDefinitionResource>> response = template.exchange(
             server + port + "/api/v1/workbasket-definitions?domain=DOMAIN_A",
             HttpMethod.GET, request, ParameterizedTypeReference.forType(List.class));
@@ -115,7 +113,7 @@ public class WorkbasketDefinitionControllerIntTest {
     }
 
     @Test
-    public void testFailOnImportDuplicates() throws IOException {
+    void testFailOnImportDuplicates() throws IOException {
         ResponseEntity<List<WorkbasketDefinitionResource>> response = template.exchange(
             server + port + "/api/v1/workbasket-definitions?domain=DOMAIN_A",
             HttpMethod.GET, request, new ParameterizedTypeReference<List<WorkbasketDefinitionResource>>() {
@@ -134,11 +132,12 @@ public class WorkbasketDefinitionControllerIntTest {
     }
 
     @Test
-    public void testNoErrorWhenImportWithSameIdButDifferentKeyAndDomain()
+    void testNoErrorWhenImportWithSameIdButDifferentKeyAndDomain()
         throws IOException {
         ResponseEntity<List<WorkbasketDefinitionResource>> response = template.exchange(
             server + port + "/api/v1/workbasket-definitions?domain=DOMAIN_A",
             HttpMethod.GET, request, new ParameterizedTypeReference<List<WorkbasketDefinitionResource>>() {
+
             });
 
         List<String> list = new ArrayList<>();
@@ -181,6 +180,6 @@ public class WorkbasketDefinitionControllerIntTest {
         converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/haljson,*/*"));
         converter.setObjectMapper(mapper);
 
-        return new RestTemplate(Collections.<HttpMessageConverter<?>> singletonList(converter));
+        return new RestTemplate(Collections.<HttpMessageConverter<?>>singletonList(converter));
     }
 }

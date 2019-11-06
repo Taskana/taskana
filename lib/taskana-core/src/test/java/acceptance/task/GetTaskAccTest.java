@@ -4,8 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.Task;
@@ -14,14 +15,14 @@ import pro.taskana.TaskState;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "get task" scenarios.
  */
 
-@RunWith(JAASRunner.class)
+@ExtendWith(JAASExtension.class)
 public class GetTaskAccTest extends AbstractAccTest {
 
     public GetTaskAccTest() {
@@ -84,12 +85,13 @@ public class GetTaskAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
-    @Test(expected = TaskNotFoundException.class)
+    @Test
     public void testGetTaskByIdNotExisting()
         throws TaskNotFoundException, NotAuthorizedException {
         TaskService taskService = taskanaEngine.getTaskService();
 
-        taskService.getTask("INVALID");
+        Assertions.assertThrows(TaskNotFoundException.class, () ->
+            taskService.getTask("INVALID"));
     }
 
 }

@@ -12,8 +12,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.FieldDescriptor;
@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 /**
  * Generate REST Documentation for the TaskController.
  */
-public class TaskControllerRestDocumentation extends BaseRestDocumentation {
+class TaskControllerRestDocumentation extends BaseRestDocumentation {
 
     private HashMap<String, String> taskFieldDescriptionsMap = new HashMap<String, String>();
 
@@ -32,8 +32,8 @@ public class TaskControllerRestDocumentation extends BaseRestDocumentation {
     private FieldDescriptor[] taskSubsetFieldDescriptors;
     private FieldDescriptor[] createTaskFieldDescriptors;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
 
         taskFieldDescriptionsMap.put("taskId", "Unique ID");
         taskFieldDescriptionsMap.put("externalId",
@@ -288,7 +288,7 @@ public class TaskControllerRestDocumentation extends BaseRestDocumentation {
     }
 
     @Test
-    public void getAllTasksDocTest() throws Exception {
+    void getAllTasksDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
             .get("http://127.0.0.1:" + port + "/api/v1/tasks?por.type=VNR&por.value=22334455")
             .accept("application/hal+json")
@@ -299,7 +299,7 @@ public class TaskControllerRestDocumentation extends BaseRestDocumentation {
     }
 
     @Test
-    public void getSpecificTaskDocTest() throws Exception {
+    void getSpecificTaskDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
             .get("http://127.0.0.1:" + port + "/api/v1/tasks/TKI:100000000000000000000000000000000000")
             .accept("application/hal+json")
@@ -310,7 +310,7 @@ public class TaskControllerRestDocumentation extends BaseRestDocumentation {
     }
 
     @Test
-    public void taskSubSetDocTest() throws Exception {
+    void taskSubSetDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
             .get("http://127.0.0.1:" + port + "/api/v1/tasks/TKI:100000000000000000000000000000000000")
             .accept("application/hal+json")
@@ -321,7 +321,7 @@ public class TaskControllerRestDocumentation extends BaseRestDocumentation {
     }
 
     @Test
-    public void updateTaskDocTest() throws Exception {
+    void updateTaskDocTest() throws Exception {
         URL url = new URL("http://127.0.0.1:" + port + "/api/v1/tasks/TKI:100000000000000000000000000000000000");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
@@ -351,7 +351,7 @@ public class TaskControllerRestDocumentation extends BaseRestDocumentation {
     }
 
     @Test
-    public void createAndDeleteTaskDocTest() throws Exception {
+    void createAndDeleteTaskDocTest() throws Exception {
 
         MvcResult result = this.mockMvc.perform(RestDocumentationRequestBuilders
             .post("http://127.0.0.1:" + port + "/api/v1/tasks")
@@ -377,7 +377,7 @@ public class TaskControllerRestDocumentation extends BaseRestDocumentation {
     }
 
     @Test
-    public void claimTaskDocTest() throws Exception {
+    void claimTaskDocTest() throws Exception {
 
         MvcResult result = this.mockMvc.perform(RestDocumentationRequestBuilders
             .post("http://127.0.0.1:" + port + "/api/v1/tasks")
@@ -410,7 +410,7 @@ public class TaskControllerRestDocumentation extends BaseRestDocumentation {
     }
 
     @Test
-    public void completeTaskDocTest() throws Exception {
+    void completeTaskDocTest() throws Exception {
         MvcResult result = this.mockMvc.perform(RestDocumentationRequestBuilders
             .post("http://127.0.0.1:" + port + "/api/v1/tasks")
             .contentType("application/hal+json")
@@ -442,7 +442,7 @@ public class TaskControllerRestDocumentation extends BaseRestDocumentation {
     }
 
     @Test
-    public void transferTaskDocTest() throws Exception {
+    void transferTaskDocTest() throws Exception {
         MvcResult result = this.mockMvc.perform(RestDocumentationRequestBuilders
             .post("http://127.0.0.1:" + port + "/api/v1/tasks")
             .contentType("application/hal+json")

@@ -12,8 +12,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.FieldDescriptor;
@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 /**
  * Generate REST Dokumentation for ClassificationController.
  */
-public class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
+class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
 
     private HashMap<String, String> classificationFieldDescriptionsMap = new HashMap<String, String>();
 
@@ -32,8 +32,8 @@ public class ClassificationControllerRestDocumentation extends BaseRestDocumenta
     private FieldDescriptor[] classificationSubsetFieldDescriptors;
     private FieldDescriptor[] createClassificationFieldDescriptors;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
 
         classificationFieldDescriptionsMap.put("classificationId", "Unique Id");
         classificationFieldDescriptionsMap.put("key",
@@ -198,7 +198,7 @@ public class ClassificationControllerRestDocumentation extends BaseRestDocumenta
     }
 
     @Test
-    public void getAllClassificationsDocTest() throws Exception {
+    void getAllClassificationsDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
             .get("http://127.0.0.1:" + port + "/api/v1/classifications?domain=DOMAIN_B")
             .accept("application/hal+json")
@@ -209,7 +209,7 @@ public class ClassificationControllerRestDocumentation extends BaseRestDocumenta
     }
 
     @Test
-    public void getSpecificClassificationDocTest() throws Exception {
+    void getSpecificClassificationDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
             .get("http://127.0.0.1:" + port + "/api/v1/classifications/CLI:100000000000000000000000000000000009")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
@@ -219,7 +219,7 @@ public class ClassificationControllerRestDocumentation extends BaseRestDocumenta
     }
 
     @Test
-    public void classificationSubsetDocTest() throws Exception {
+    void classificationSubsetDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
             .get("http://127.0.0.1:" + port + "/api/v1/classifications/CLI:100000000000000000000000000000000009")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
@@ -229,7 +229,7 @@ public class ClassificationControllerRestDocumentation extends BaseRestDocumenta
     }
 
     @Test
-    public void createAndDeleteClassificationDocTest() throws Exception {
+    void createAndDeleteClassificationDocTest() throws Exception {
         MvcResult result = this.mockMvc.perform(RestDocumentationRequestBuilders
             .post("http://127.0.0.1:" + port + "/api/v1/classifications")
             .contentType("application/hal+json")
@@ -252,7 +252,7 @@ public class ClassificationControllerRestDocumentation extends BaseRestDocumenta
     }
 
     @Test
-    public void updateClassificationDocTest() throws Exception {
+    void updateClassificationDocTest() throws Exception {
         URL url = new URL(
             "http://127.0.0.1:" + port + "/api/v1/classifications/CLI:100000000000000000000000000000000009");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();

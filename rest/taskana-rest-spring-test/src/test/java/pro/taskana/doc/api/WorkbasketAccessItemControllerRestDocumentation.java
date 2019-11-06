@@ -5,26 +5,24 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 
 import java.util.HashMap;
 
-import org.junit.Before;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.FieldDescriptor;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 /**
  * Generate REST Docu for the WorkbasketAccessItemController.
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class WorkbasketAccessItemControllerRestDocumentation extends BaseRestDocumentation {
+class WorkbasketAccessItemControllerRestDocumentation extends BaseRestDocumentation {
 
     private HashMap<String, String> accessItemFieldDescriptionsMap = new HashMap<String, String>();
     private FieldDescriptor[] accessItemFieldDescriptors;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
 
         accessItemFieldDescriptionsMap.put("accessItems.accessItemId", "Unique ID");
         accessItemFieldDescriptionsMap.put("accessItems.workbasketId", "The workbasket id");
@@ -108,7 +106,7 @@ public class WorkbasketAccessItemControllerRestDocumentation extends BaseRestDoc
     }
 
     @Test
-    public void test01_getWorkbasketAccessItemsDocTest() throws Exception {
+    void getWorkbasketAccessItemsDocTest() throws Exception {
         this.mockMvc
             .perform(RestDocumentationRequestBuilders
                 .get("http://127.0.0.1:" + port
@@ -121,7 +119,8 @@ public class WorkbasketAccessItemControllerRestDocumentation extends BaseRestDoc
     }
 
     @Test
-    public void test02_removeWorkbasketAccessItemsDocTest() throws Exception {
+    @DirtiesContext
+    void removeWorkbasketAccessItemsDocTest() throws Exception {
         this.mockMvc
             .perform(RestDocumentationRequestBuilders
                 .delete("http://127.0.0.1:" + port + "/api/v1/workbasket-access-items/?access-id=user_2_2")

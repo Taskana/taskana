@@ -5,10 +5,10 @@ import static org.junit.Assert.assertNotEquals;
 
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.BaseQuery;
@@ -19,25 +19,25 @@ import pro.taskana.WorkbasketSummary;
 import pro.taskana.exceptions.TaskanaException;
 import pro.taskana.jobs.TaskCleanupJob;
 import pro.taskana.jobs.WorkbasketCleanupJob;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "jobs workbasket runner" scenarios.
  */
-@RunWith(JAASRunner.class)
+@ExtendWith(JAASExtension.class)
 public class WorkbasketCleanupJobAccTest extends AbstractAccTest {
 
     WorkbasketService workbasketService;
     TaskService taskService;
 
-    @Before
+    @BeforeEach
     public void before() {
         workbasketService = taskanaEngine.getWorkbasketService();
         taskService = taskanaEngine.getTaskService();
     }
 
-    @After
+    @AfterEach
     public void after() throws Exception {
         resetDb(true);
     }

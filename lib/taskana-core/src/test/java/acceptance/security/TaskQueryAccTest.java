@@ -5,19 +5,19 @@ import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.TaskService;
 import pro.taskana.TaskSummary;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for task queries and authorization.
  */
-@RunWith(JAASRunner.class)
+@ExtendWith(JAASExtension.class)
 public class TaskQueryAccTest extends AbstractAccTest {
 
     public TaskQueryAccTest() {

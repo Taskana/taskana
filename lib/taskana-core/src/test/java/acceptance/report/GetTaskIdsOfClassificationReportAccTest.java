@@ -6,25 +6,26 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.TaskMonitorService;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.SelectedItem;
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "get task ids of classification report" scenarios.
  */
-@RunWith(JAASRunner.class)
-public class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
+@ExtendWith(JAASExtension.class)
+class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
 
-    @Test(expected = NotAuthorizedException.class)
-    public void testRoleCheck() throws InvalidArgumentException, NotAuthorizedException {
+    @Test
+    void testRoleCheck() {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<SelectedItem> selectedItems = new ArrayList<>();
@@ -47,13 +48,14 @@ public class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTe
         s3.setUpperAgeLimit(-11);
         selectedItems.add(s3);
 
-        taskMonitorService.createClassificationReportBuilder().listTaskIdsForSelectedItems(selectedItems);
+        Assertions.assertThrows(NotAuthorizedException.class, () ->
+            taskMonitorService.createClassificationReportBuilder().listTaskIdsForSelectedItems(selectedItems));
     }
 
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testGetTaskIdsOfClassificationReport() throws InvalidArgumentException, NotAuthorizedException {
+    void testGetTaskIdsOfClassificationReport() throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
@@ -95,7 +97,7 @@ public class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTe
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testGetTaskIdsOfClassificationReportWithAttachments()
+    void testGetTaskIdsOfClassificationReportWithAttachments()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
@@ -136,7 +138,7 @@ public class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTe
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testGetTaskIdsOfClassificationReportWithDomainFilter()
+    void testGetTaskIdsOfClassificationReportWithDomainFilter()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 

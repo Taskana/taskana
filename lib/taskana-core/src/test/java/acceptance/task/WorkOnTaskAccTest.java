@@ -14,8 +14,9 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.BulkOperationResults;
@@ -28,13 +29,13 @@ import pro.taskana.exceptions.InvalidStateException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.TaskanaException;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "work on task" scenarios. This includes claim, complete...
  */
-@RunWith(JAASRunner.class)
+@ExtendWith(JAASExtension.class)
 public class WorkOnTaskAccTest extends AbstractAccTest {
 
     public WorkOnTaskAccTest() {
@@ -66,14 +67,14 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "user_1_2",
         groupNames = {"group_1"})
-    @Test(expected = InvalidOwnerException.class)
+    @Test
     public void testThrowsExceptionIfTaskIsAlreadyClaimed()
-        throws NotAuthorizedException, TaskNotFoundException,
-        InvalidStateException, InvalidOwnerException {
+        throws NotAuthorizedException, TaskNotFoundException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000026");
 
-        taskService.claim(task.getId());
+        Assertions.assertThrows(InvalidOwnerException.class, () ->
+            taskService.claim(task.getId()));
     }
 
     @WithAccessId(
@@ -92,14 +93,14 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "user_1_2",
         groupNames = {"group_1"})
-    @Test(expected = InvalidOwnerException.class)
+    @Test
     public void testForceClaimTaskWhichIsAlreadyClaimedByAnotherUser()
-        throws NotAuthorizedException, TaskNotFoundException,
-        InvalidStateException, InvalidOwnerException {
+        throws NotAuthorizedException, TaskNotFoundException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000028");
 
-        taskService.claim(task.getId());
+        Assertions.assertThrows(InvalidOwnerException.class, () ->
+            taskService.claim(task.getId()));
     }
 
     @WithAccessId(
@@ -125,14 +126,14 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "user_1_2",
         groupNames = {"group_1"})
-    @Test(expected = InvalidOwnerException.class)
+    @Test
     public void testThrowsExceptionIfCancelClaimOfTaskFromAnotherUser()
-        throws NotAuthorizedException, TaskNotFoundException,
-        InvalidStateException, InvalidOwnerException {
+        throws NotAuthorizedException, TaskNotFoundException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task claimedTask = taskService.getTask("TKI:000000000000000000000000000000000030");
 
-        taskService.cancelClaim(claimedTask.getId());
+        Assertions.assertThrows(InvalidOwnerException.class, () ->
+            taskService.cancelClaim(claimedTask.getId()));
     }
 
     @WithAccessId(
@@ -203,14 +204,14 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "user_1_2",
         groupNames = {"group_1"})
-    @Test(expected = InvalidOwnerException.class)
+    @Test
     public void testThrowsExceptionIfCompletingClaimedTaskOfAnotherUser()
-        throws NotAuthorizedException, TaskNotFoundException,
-        InvalidStateException, InvalidOwnerException {
+        throws NotAuthorizedException, TaskNotFoundException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task claimedTask = taskService.getTask("TKI:000000000000000000000000000000000034");
 
-        taskService.completeTask(claimedTask.getId());
+        Assertions.assertThrows(InvalidOwnerException.class, () ->
+            taskService.completeTask(claimedTask.getId()));
     }
 
     @WithAccessId(

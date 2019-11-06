@@ -6,8 +6,8 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.subsecti
 
 import java.util.HashMap;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.FieldDescriptor;
@@ -16,14 +16,14 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 /**
  * Generate Rest Docu for AbstractPagingController.
  */
-public class AbstractPagingControllerRestDocumentation extends BaseRestDocumentation {
+class AbstractPagingControllerRestDocumentation extends BaseRestDocumentation {
 
     private HashMap<String, String> pagingFieldDescriptionsMap = new HashMap<String, String>();
 
     private FieldDescriptor[] pagingFieldDescriptors;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
 
         pagingFieldDescriptionsMap.put("page", "Contains metainfo if there are multiple pages, else it is null");
         pagingFieldDescriptionsMap.put("page.size", "Number of items per page");
@@ -53,7 +53,7 @@ public class AbstractPagingControllerRestDocumentation extends BaseRestDocumenta
     }
 
     @Test
-    public void commonSummaryResourceFieldsDocTest() throws Exception {
+    void commonSummaryResourceFieldsDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
             .get("http://127.0.0.1:" + port + "/api/v1/classifications?page=2&page-size=5")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))

@@ -7,8 +7,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.Attachment;
@@ -19,13 +19,13 @@ import pro.taskana.TaskSummary;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for the usecase of adding/removing an attachment of a task and update the result correctly.
  */
-@RunWith(JAASRunner.class)
+@ExtendWith(JAASExtension.class)
 public class QueryTaskWithAttachment extends AbstractAccTest {
 
     public QueryTaskWithAttachment() {

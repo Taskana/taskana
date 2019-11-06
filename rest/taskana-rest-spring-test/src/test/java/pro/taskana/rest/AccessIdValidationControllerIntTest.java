@@ -9,10 +9,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.hal.Jackson2HalModule;
@@ -24,29 +21,27 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.ldap.LdapCacheTestImpl;
 import pro.taskana.rest.resource.AccessIdResource;
 
 /**
  * Test AccessIdValidation.
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT, properties = {
-    "devMode=true"})
-public class AccessIdValidationControllerIntTest {
+@TaskanaSpringBootTest
+class AccessIdValidationControllerIntTest {
 
     @LocalServerPort
     int port;
 
     @Test
-    public void testGetMatches() {
+    void testGetMatches() {
         AccessIdController.setLdapCache(new LdapCacheTestImpl());
         RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -55,6 +50,7 @@ public class AccessIdValidationControllerIntTest {
         ResponseEntity<List<AccessIdResource>> response = template.exchange(
             "http://127.0.0.1:" + port + "/api/v1/access-ids?search-for=ali", HttpMethod.GET, request,
             new ParameterizedTypeReference<List<AccessIdResource>>() {
+
             });
         List<AccessIdResource> body = response.getBody();
         assertNotNull(body);
@@ -66,7 +62,7 @@ public class AccessIdValidationControllerIntTest {
     }
 
     @Test
-    public void testBadRequestWhenSearchForIsTooShort() {
+    void testBadRequestWhenSearchForIsTooShort() {
         AccessIdController.setLdapCache(new LdapCacheTestImpl());
         RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -97,7 +93,7 @@ public class AccessIdValidationControllerIntTest {
         converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/hal+json"));
         converter.setObjectMapper(mapper);
 
-        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>> singletonList(converter));
+        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>>singletonList(converter));
         return template;
     }
 

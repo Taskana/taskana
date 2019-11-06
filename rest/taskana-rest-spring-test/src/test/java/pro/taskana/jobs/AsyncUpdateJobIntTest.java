@@ -9,12 +9,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.env.Environment;
@@ -27,7 +24,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -36,8 +32,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 import pro.taskana.Classification;
 import pro.taskana.Task;
+import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.rest.RestConfiguration;
 import pro.taskana.rest.resource.ClassificationResource;
 import pro.taskana.rest.resource.ClassificationResourceAssembler;
 import pro.taskana.rest.resource.TaskResource;
@@ -46,10 +42,8 @@ import pro.taskana.rest.resource.TaskResourceAssembler;
 /**
  * Test async updates.
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT,
-    properties = {"devMode=true"})
-public class AsyncUpdateJobIntTest {
+@TaskanaSpringBootTest
+class AsyncUpdateJobIntTest {
 
     private static final String CLASSIFICATION_ID = "CLI:100000000000000000000000000000000003";
 
@@ -72,14 +66,14 @@ public class AsyncUpdateJobIntTest {
 
     private RestTemplate template;
 
-    @Before
-    public void before() {
+    @BeforeEach
+    void before() {
         template = getRestTemplate();
         server = "http://127.0.0.1:" + port;
     }
 
     @Test
-    public void testUpdateClassificationPrioServiceLevel()
+    void testUpdateClassificationPrioServiceLevel()
         throws IOException, InvalidArgumentException {
 
         // 1st step: get old classification :
