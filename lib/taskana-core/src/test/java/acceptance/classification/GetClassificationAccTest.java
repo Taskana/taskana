@@ -2,11 +2,12 @@ package acceptance.classification;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import acceptance.AbstractAccTest;
 import pro.taskana.Classification;
 import pro.taskana.ClassificationService;
@@ -96,22 +97,23 @@ public class GetClassificationAccTest extends AbstractAccTest {
         assertEquals("P2D", classification.getServiceLevel());
     }
 
-    @Test(expected = ClassificationNotFoundException.class)
-    public void testGetOneClassificationByIdFails() throws ClassificationNotFoundException {
-        classificationService.getClassification("CLI:100000000470000000000000000000000011");
-        fail("ClassificationNotFoundException was expected");
+    @Test
+    public void testGetOneClassificationByIdFails() {
+
+        Assertions.assertThrows(ClassificationNotFoundException.class, () ->
+            classificationService.getClassification("CLI:100000000470000000000000000000000011"));
     }
 
-    @Test(expected = ClassificationNotFoundException.class)
-    public void testGetClassificationByNullKeyFails() throws ClassificationNotFoundException {
-        classificationService.getClassification(null, "");
-        fail("ClassificationNotFoundException was expected");
+    @Test
+    public void testGetClassificationByNullKeyFails() {
+        Assertions.assertThrows(ClassificationNotFoundException.class, () ->
+            classificationService.getClassification(null, ""));
     }
 
-    @Test(expected = ClassificationNotFoundException.class)
-    public void testGetClassificationByInvalidKeyAndDomain() throws ClassificationNotFoundException {
-        classificationService.getClassification("Key0815", "NOT_EXISTING");
-        fail("ClassificationNotFoundException was expected");
+    @Test
+    public void testGetClassificationByInvalidKeyAndDomain() {
+        Assertions.assertThrows(ClassificationNotFoundException.class, () ->
+            classificationService.getClassification("Key0815", "NOT_EXISTING"));
     }
 
     @Test

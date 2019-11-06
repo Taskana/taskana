@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.TaskMonitorService;
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
@@ -19,13 +19,13 @@ import pro.taskana.impl.report.item.TimestampQueryItem;
 import pro.taskana.impl.report.row.SingleRow;
 import pro.taskana.impl.report.row.TimestampRow;
 import pro.taskana.report.TimestampReport;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Test class for {@link TimestampReport}.
  */
-@RunWith(JAASRunner.class)
+@ExtendWith(JAASExtension.class)
 public class ProvideTimestampReportAccTest extends AbstractReportAccTest {
 
     /**

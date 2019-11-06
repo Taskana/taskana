@@ -6,8 +6,8 @@ import static org.junit.Assert.assertThat;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.BaseQuery.SortDirection;
@@ -15,13 +15,13 @@ import pro.taskana.KeyDomain;
 import pro.taskana.TaskService;
 import pro.taskana.TaskState;
 import pro.taskana.TaskSummary;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "query tasks with sorting" scenarios.
  */
-@RunWith(JAASRunner.class)
+@ExtendWith(JAASExtension.class)
 public class QueryTasksWithSortingAccTest extends AbstractAccTest {
 
     private static SortDirection asc = SortDirection.ASCENDING;

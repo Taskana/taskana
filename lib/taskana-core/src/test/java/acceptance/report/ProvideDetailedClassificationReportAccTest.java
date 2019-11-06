@@ -11,8 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,25 +25,25 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
 import pro.taskana.impl.report.item.DetailedMonitorQueryItem;
 import pro.taskana.impl.report.row.FoldableRow;
-import pro.taskana.report.ClassificationReport.DetailedClassificationReport;
 import pro.taskana.impl.report.structure.Row;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.report.ClassificationReport.DetailedClassificationReport;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "detailed classification report" scenarios.
  */
-@RunWith(JAASRunner.class)
+@ExtendWith(JAASExtension.class)
 public class ProvideDetailedClassificationReportAccTest extends AbstractReportAccTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProvideDetailedClassificationReportAccTest.class);
 
-    @Test(expected = NotAuthorizedException.class)
-    public void testRoleCheck()
-        throws InvalidArgumentException, NotAuthorizedException {
+    @Test
+    public void testRoleCheck() {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-        taskMonitorService.createClassificationReportBuilder().buildDetailedReport();
+        Assertions.assertThrows(NotAuthorizedException.class, () ->
+            taskMonitorService.createClassificationReportBuilder().buildDetailedReport());
     }
 
     @WithAccessId(

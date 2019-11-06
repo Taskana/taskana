@@ -17,8 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.ClassificationSummary;
@@ -35,13 +36,13 @@ import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.TaskImpl;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "update task" scenarios.
  */
-@RunWith(JAASRunner.class)
+@ExtendWith(JAASExtension.class)
 public class UpdateTaskAccTest extends AbstractAccTest {
 
     public UpdateTaskAccTest() {
@@ -207,7 +208,8 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         try {
             taskService.setTaskRead("INVALID", true);
             fail("TaskNotFoundException should have been thrown.");
-        } catch (TaskNotFoundException e) { }
+        } catch (TaskNotFoundException e) {
+        }
     }
 
     @WithAccessId(
@@ -229,15 +231,17 @@ public class UpdateTaskAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
-    @Test(expected = InvalidArgumentException.class)
+    @Test
     public void testUpdateOfWorkbasketKeyWhatIsNotAllowed()
-        throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-        TaskNotFoundException, ConcurrencyException, AttachmentPersistenceException {
+        throws NotAuthorizedException,
+        TaskNotFoundException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
         ((TaskImpl) task).setWorkbasketKey("USER_2_2");
-        taskService.updateTask(task);
+
+        Assertions.assertThrows(InvalidArgumentException.class, () ->
+            taskService.updateTask(task));
     }
 
     @WithAccessId(
@@ -302,9 +306,9 @@ public class UpdateTaskAccTest extends AbstractAccTest {
     public void testUpdateTasksById()
         throws InvalidArgumentException, TaskNotFoundException, NotAuthorizedException {
         List<String> taskIds = Arrays.asList(
-                "TKI:000000000000000000000000000000000008",
-                "TKI:000000000000000000000000000000000009",
-                "TKI:000000000000000000000000000000000010");
+            "TKI:000000000000000000000000000000000008",
+            "TKI:000000000000000000000000000000000009",
+            "TKI:000000000000000000000000000000000010");
         Map<String, String> customProperties = new HashMap<>();
         customProperties.put("1", "This is modifiedValue 1");
         customProperties.put("5", "This is modifiedValue 5");

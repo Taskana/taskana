@@ -5,13 +5,13 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.ClassificationService;
 import pro.taskana.ClassificationSummary;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
@@ -19,7 +19,7 @@ import pro.taskana.security.WithAccessId;
  *
  * @author bbr
  */
-@RunWith(JAASRunner.class)
+@ExtendWith(JAASExtension.class)
 public class ClassificationQueryAccTest extends AbstractAccTest {
 
     public ClassificationQueryAccTest() {

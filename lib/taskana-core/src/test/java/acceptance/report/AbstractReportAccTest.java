@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 
 import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 
 import pro.taskana.TaskanaEngine;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
@@ -26,6 +27,7 @@ public class AbstractReportAccTest {
     }
 
     @BeforeClass
+    @BeforeAll
     public static void setupTest() throws Exception {
         resetDb();
     }

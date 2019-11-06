@@ -7,21 +7,22 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.KeyDomain;
 import pro.taskana.TaskService;
 import pro.taskana.TaskSummary;
 import pro.taskana.exceptions.NotAuthorizedToQueryWorkbasketException;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "query tasks by workbasket" scenarios.
  */
-@RunWith(JAASRunner.class)
+@ExtendWith(JAASExtension.class)
 public class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
 
     public QueryTasksByWorkbasketAccTest() {
@@ -56,23 +57,26 @@ public class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
-    @Test(expected = NotAuthorizedToQueryWorkbasketException.class)
+    @Test
     public void testThrowsExceptionIfNoOpenerPermissionOnQueriedWorkbasket() {
         TaskService taskService = taskanaEngine.getTaskService();
-        taskService.createTaskQuery()
-            .workbasketKeyDomainIn(new KeyDomain("USER_2_1", "DOMAIN_A"))
-            .list();
+
+        Assertions.assertThrows(NotAuthorizedToQueryWorkbasketException.class, () ->
+            taskService.createTaskQuery()
+                .workbasketKeyDomainIn(new KeyDomain("USER_2_1", "DOMAIN_A"))
+                .list());
     }
 
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
-    @Test(expected = NotAuthorizedToQueryWorkbasketException.class)
+    @Test
     public void testThrowsExceptionIfNoOpenerPermissionOnAtLeastOneQueriedWorkbasket() {
         TaskService taskService = taskanaEngine.getTaskService();
-        taskService.createTaskQuery()
-            .workbasketKeyDomainIn(new KeyDomain("USER_1_1", "DOMAIN_A"), new KeyDomain("USER_2_1", "DOMAIN_A"))
-            .list();
+        Assertions.assertThrows(NotAuthorizedToQueryWorkbasketException.class, () ->
+            taskService.createTaskQuery()
+                .workbasketKeyDomainIn(new KeyDomain("USER_1_1", "DOMAIN_A"), new KeyDomain("USER_2_1", "DOMAIN_A"))
+                .list());
     }
 
 }

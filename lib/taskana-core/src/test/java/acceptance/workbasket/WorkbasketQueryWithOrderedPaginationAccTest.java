@@ -5,20 +5,20 @@ import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.BaseQuery.SortDirection;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 
 /**
  * Acceptance test for all "query classifications with pagination" scenarios.
  */
-@RunWith(JAASRunner.class)
+@ExtendWith(JAASExtension.class)
 public class WorkbasketQueryWithOrderedPaginationAccTest extends AbstractAccTest {
 
     private static SortDirection asc = SortDirection.ASCENDING;
@@ -28,7 +28,7 @@ public class WorkbasketQueryWithOrderedPaginationAccTest extends AbstractAccTest
         super();
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void testGetFirstPageOfTaskQueryWithOffset() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -49,7 +49,7 @@ public class WorkbasketQueryWithOrderedPaginationAccTest extends AbstractAccTest
         assertThat(results.get(4).getKey(), equalTo("TEAMLEAD_2"));
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void testGetSecondPageOfTaskQueryWithOffset() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();

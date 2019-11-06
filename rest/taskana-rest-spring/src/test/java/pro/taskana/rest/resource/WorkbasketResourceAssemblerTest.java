@@ -3,11 +3,11 @@ package pro.taskana.rest.resource;
 import java.time.Instant;
 
 import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import pro.taskana.Workbasket;
@@ -21,10 +21,10 @@ import pro.taskana.rest.TestConfiguration;
 /**
  * Test for {@link WorkbasketResourceAssembler}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {TestConfiguration.class})
 @WebAppConfiguration
-public class WorkbasketResourceAssemblerTest {
+class WorkbasketResourceAssemblerTest {
 
     @Autowired
     WorkbasketService workbasketService;
@@ -32,7 +32,7 @@ public class WorkbasketResourceAssemblerTest {
     WorkbasketResourceAssembler workbasketResourceAssembler;
 
     @Test
-    public void workbasketToResource() throws NotAuthorizedException, WorkbasketNotFoundException {
+    void workbasketToResource() throws NotAuthorizedException, WorkbasketNotFoundException {
         // given
         Workbasket workbasket = workbasketService.newWorkbasket("1", "DOMAIN_A");
         ((WorkbasketImpl) workbasket).setId("ID");
@@ -57,7 +57,7 @@ public class WorkbasketResourceAssemblerTest {
     }
 
     @Test
-    public void resourceWithoutCreated() {
+    void resourceWithoutCreated() {
         //given
         WorkbasketResource resource = new WorkbasketResource();
         resource.setWorkbasketId("1");
@@ -70,7 +70,7 @@ public class WorkbasketResourceAssemblerTest {
     }
 
     @Test
-    public void resourceWithoutModified() {
+    void resourceWithoutModified() {
         //given
         WorkbasketResource resource = new WorkbasketResource();
         resource.setWorkbasketId("1");
@@ -83,7 +83,7 @@ public class WorkbasketResourceAssemblerTest {
     }
 
     @Test
-    public void resourceToWorkbasket() {
+    void resourceToWorkbasket() {
         // given
         WorkbasketResource workbasketResource = new WorkbasketResource();
         workbasketResource.setWorkbasketId("1");

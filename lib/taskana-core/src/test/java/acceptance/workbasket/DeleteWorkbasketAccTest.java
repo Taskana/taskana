@@ -9,9 +9,10 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.TaskService;
@@ -28,32 +29,28 @@ import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketInUseException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.TaskImpl;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test which does test the deletion of a workbasket and all wanted failures.
  */
-@RunWith(JAASRunner.class)
-public class DeleteWorkbasketAccTest extends AbstractAccTest {
+@ExtendWith(JAASExtension.class)
+class DeleteWorkbasketAccTest extends AbstractAccTest {
 
     private WorkbasketService workbasketService;
 
     private TaskService taskService;
 
-    public DeleteWorkbasketAccTest() {
-        super();
-    }
-
-    @Before
-    public void setUpMethod() {
+    @BeforeEach
+    void setUpMethod() {
         workbasketService = taskanaEngine.getWorkbasketService();
         taskService = taskanaEngine.getTaskService();
     }
 
     @WithAccessId(userName = "admin", groupNames = {"businessadmin"})
     @Test
-    public void testDeleteWorkbasket()
+    void testDeleteWorkbasket()
         throws WorkbasketNotFoundException, NotAuthorizedException, InvalidArgumentException {
         Workbasket wb = workbasketService.getWorkbasket("USER_2_2", "DOMAIN_A");
 
@@ -67,19 +64,27 @@ public class DeleteWorkbasketAccTest extends AbstractAccTest {
     }
 
     @WithAccessId(userName = "elena")
-    @Test(expected = NotAuthorizedException.class)
-    public void testDeleteWorkbasketNotAuthorized()
-        throws WorkbasketNotFoundException, NotAuthorizedException, WorkbasketInUseException, InvalidArgumentException {
-        Workbasket wb = workbasketService.getWorkbasket("TEAMLEAD_2", "DOMAIN_A");
-        workbasketService.deleteWorkbasket(wb.getId());
+    @Test
+    void testDeleteWorkbasketNotAuthorized() {
 
-        workbasketService.getWorkbasket("TEAMLEAD_2", "DOMAIN_A");
-        fail("NotAuthorizedException was expected.");
+        Assertions.assertThrows(NotAuthorizedException.class, () -> {
+            Workbasket wb = workbasketService.getWorkbasket("TEAMLEAD_2", "DOMAIN_A");
+            workbasketService.deleteWorkbasket(wb.getId());
+        });
+    }
+
+    @WithAccessId(userName = "elena")
+    @Test
+    void testGetWorkbasketNotAuthorized() {
+
+        Assertions.assertThrows(NotAuthorizedException.class, () ->
+            workbasketService.getWorkbasket("TEAMLEAD_2", "DOMAIN_A"));
+
     }
 
     @WithAccessId(userName = "user_1_1", groupNames = {"teamlead_1", "group_1", "businessadmin"})
     @Test
-    public void testDeleteWorkbasketAlsoAsDistributionTarget()
+    void testDeleteWorkbasketAlsoAsDistributionTarget()
         throws WorkbasketNotFoundException, NotAuthorizedException, InvalidArgumentException {
         Workbasket wb = workbasketService.getWorkbasket("GPK_KSC_1", "DOMAIN_A");
         int distTargets = workbasketService.getDistributionTargets("WBI:100000000000000000000000000000000001")
@@ -104,7 +109,7 @@ public class DeleteWorkbasketAccTest extends AbstractAccTest {
         userName = "dummy",
         groupNames = {"businessadmin"})
     @Test
-    public void testDeleteWorkbasketWithNullOrEmptyParam()
+    void testDeleteWorkbasketWithNullOrEmptyParam()
         throws WorkbasketNotFoundException, NotAuthorizedException, WorkbasketInUseException {
         // Test Null-Value
         try {
@@ -126,40 +131,41 @@ public class DeleteWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "dummy",
         groupNames = {"businessadmin"})
-    @Test(expected = WorkbasketNotFoundException.class)
-    public void testDeleteWorkbasketButNotExisting()
-        throws WorkbasketNotFoundException, NotAuthorizedException, WorkbasketInUseException, InvalidArgumentException {
-        workbasketService.deleteWorkbasket("SOME NOT EXISTING ID");
+    @Test
+    void testDeleteWorkbasketButNotExisting() {
+        Assertions.assertThrows(WorkbasketNotFoundException.class, () ->
+            workbasketService.deleteWorkbasket("SOME NOT EXISTING ID"));
     }
 
     @WithAccessId(userName = "user_1_2",
         groupNames = {"businessadmin"})
-    @Test(expected = WorkbasketInUseException.class)
-    public void testDeleteWorkbasketWhichIsUsed()
+    @Test
+    void testDeleteWorkbasketWhichIsUsed()
         throws WorkbasketNotFoundException, NotAuthorizedException, WorkbasketInUseException, InvalidArgumentException {
         Workbasket wb = workbasketService.getWorkbasket("USER_1_2", "DOMAIN_A");   // all rights, DOMAIN_A with Tasks
-        workbasketService.deleteWorkbasket(wb.getId());
+        Assertions.assertThrows(WorkbasketInUseException.class, () ->
+            workbasketService.deleteWorkbasket(wb.getId()));
     }
 
     @WithAccessId(
         userName = "user_1_2",
         groupNames = {"businessadmin"})
-    @Test(expected = NotAuthorizedToQueryWorkbasketException.class)
-    public void testCreateAndDeleteWorkbasket() throws Exception {
+    @Test
+    void testCreateAndDeleteWorkbasket() throws Exception {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
         Workbasket workbasket = workbasketService.newWorkbasket("NT1234", "DOMAIN_A");
         workbasket.setName("TheUltimate");
         workbasket.setType(WorkbasketType.GROUP);
         workbasket.setOrgLevel1("company");
-        workbasket = workbasketService.createWorkbasket(workbasket);
-
-        workbasketService.deleteWorkbasket(workbasket.getId());
+        Workbasket workbasket2 = workbasketService.createWorkbasket(workbasket);
+        Assertions.assertThrows(NotAuthorizedToQueryWorkbasketException.class, () ->
+            workbasketService.deleteWorkbasket(workbasket2.getId()));
     }
 
     @WithAccessId(userName = "teamlead_2", groupNames = {"businessadmin"})
     @Test
-    public void testCascadingDeleteOfAccessItems()
+    void testCascadingDeleteOfAccessItems()
         throws WorkbasketNotFoundException, NotAuthorizedException, InvalidArgumentException {
         Workbasket wb = workbasketService.getWorkbasket("WBI:100000000000000000000000000000000008");
         String wbId = wb.getId();
@@ -190,7 +196,7 @@ public class DeleteWorkbasketAccTest extends AbstractAccTest {
 
     @WithAccessId(userName = "admin", groupNames = {"businessadmin"})
     @Test
-    public void testMarkWorkbasketForDeletion()
+    void testMarkWorkbasketForDeletion()
         throws WorkbasketInUseException, NotAuthorizedException, WorkbasketNotFoundException, InvalidArgumentException,
         InvalidOwnerException, InvalidStateException, TaskNotFoundException {
         Workbasket wb = workbasketService.getWorkbasket("WBI:100000000000000000000000000000000006");

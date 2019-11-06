@@ -5,10 +5,11 @@ import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.ObjectReference;
@@ -16,12 +17,12 @@ import pro.taskana.ObjectReferenceQuery;
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
 import pro.taskana.exceptions.TaskanaRuntimeException;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 
 /**
  * Acceptance test for all "query classifications with pagination" scenarios.
  */
-@RunWith(JAASRunner.class)
+@ExtendWith(JAASExtension.class)
 public class QueryObjectreferencesWithPaginationAccTest extends AbstractAccTest {
 
     private TaskService taskService;
@@ -32,7 +33,7 @@ public class QueryObjectreferencesWithPaginationAccTest extends AbstractAccTest 
         super();
     }
 
-    @Before
+    @BeforeEach
     public void before() {
         taskService = taskanaEngine.getTaskService();
         taskQuery = taskService.createTaskQuery();
@@ -119,13 +120,14 @@ public class QueryObjectreferencesWithPaginationAccTest extends AbstractAccTest 
      * Testcase only for DB2 users, because H2 doesn´t throw a Exception when the offset is set to high.<br>
      * Using DB2 should throw a unchecked RuntimeException for a offset which is out of bounds.
      */
-    @Ignore
-    @Test(expected = TaskanaRuntimeException.class)
+    @Disabled
+    @Test
     public void testPaginationThrowingExceptionWhenPageOutOfBounds() {
         // entrypoint set outside result amount
         int pageNumber = 6;
         int pageSize = 10;
-        objRefQuery.listPage(pageNumber, pageSize);
+        Assertions.assertThrows(TaskanaRuntimeException.class, () ->
+            objRefQuery.listPage(pageNumber, pageSize));
     }
 
     @Test

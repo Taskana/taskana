@@ -12,8 +12,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.FieldDescriptor;
@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 /**
  * Generate REST Documentatioon for the WorkbasketController.
  */
-public class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
+class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
 
     // HashMaps to store the field descriptions centrally for multiple uses
     private HashMap<String, String> workbasketFieldDescriptionsMap = new HashMap<String, String>();
@@ -36,8 +36,8 @@ public class WorkbasketControllerRestDocumentation extends BaseRestDocumentation
     private FieldDescriptor[] allDistributionTargetsFieldDescriptors;
     private FieldDescriptor[] createWorkbasketFieldDescriptors;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
 
         workbasketFieldDescriptionsMap.put("workbasketId", "Unique ID");
         workbasketFieldDescriptionsMap.put("key", "");
@@ -272,7 +272,7 @@ public class WorkbasketControllerRestDocumentation extends BaseRestDocumentation
     }
 
     @Test
-    public void getAllWorkbasketsDocTest() throws Exception {
+    void getAllWorkbasketsDocTest() throws Exception {
         this.mockMvc.perform(
             RestDocumentationRequestBuilders.get("http://127.0.0.1:" + port + "/api/v1/workbaskets?type=PERSONAL")
                 .accept("application/hal+json")
@@ -283,7 +283,7 @@ public class WorkbasketControllerRestDocumentation extends BaseRestDocumentation
     }
 
     @Test
-    public void getSpecificWorkbasketDocTest() throws Exception {
+    void getSpecificWorkbasketDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders.get(
             "http://127.0.0.1:" + port + "/api/v1/workbaskets/WBI:100000000000000000000000000000000001")
             .accept("application/hal+json")
@@ -294,7 +294,7 @@ public class WorkbasketControllerRestDocumentation extends BaseRestDocumentation
     }
 
     @Test
-    public void getAllWorkbasketAccessItemsDocTest() throws Exception {
+    void getAllWorkbasketAccessItemsDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("http://127.0.0.1:" + port
             + "/api/v1/workbaskets/WBI:100000000000000000000000000000000001/workbasketAccessItems")
             .accept("application/hal+json")
@@ -305,7 +305,7 @@ public class WorkbasketControllerRestDocumentation extends BaseRestDocumentation
     }
 
     @Test
-    public void workbasketSubsetDocTest() throws Exception {
+    void workbasketSubsetDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders.get(
             "http://127.0.0.1:" + port + "/api/v1/workbaskets/WBI:100000000000000000000000000000000001")
             .accept("application/hal+json")
@@ -316,7 +316,7 @@ public class WorkbasketControllerRestDocumentation extends BaseRestDocumentation
     }
 
     @Test
-    public void removeWorkbasketAsDistributionTargetDocTest() throws Exception {
+    void removeWorkbasketAsDistributionTargetDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders.delete("http://127.0.0.1:" + port
             + "/api/v1/workbaskets/distribution-targets/WBI:100000000000000000000000000000000007")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
@@ -325,7 +325,7 @@ public class WorkbasketControllerRestDocumentation extends BaseRestDocumentation
     }
 
     @Test
-    public void getAllWorkbasketDistributionTargets() throws Exception {
+    void getAllWorkbasketDistributionTargets() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("http://127.0.0.1:" + port
             + "/api/v1/workbaskets/WBI:100000000000000000000000000000000002/distribution-targets")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
@@ -335,7 +335,7 @@ public class WorkbasketControllerRestDocumentation extends BaseRestDocumentation
     }
 
     @Test
-    public void createWorkbasketDocTest() throws Exception {
+    void createWorkbasketDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders.post("http://127.0.0.1:" + port + "/api/v1/workbaskets")
             .contentType("application/json")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x")
@@ -351,7 +351,7 @@ public class WorkbasketControllerRestDocumentation extends BaseRestDocumentation
     }
 
     @Test
-    public void updateWorkbasketDocTest() throws Exception {
+    void updateWorkbasketDocTest() throws Exception {
         URL url = new URL("http://127.0.0.1:" + port + "/api/v1/workbaskets/WBI:100000000000000000000000000000000002");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
@@ -382,7 +382,7 @@ public class WorkbasketControllerRestDocumentation extends BaseRestDocumentation
     }
 
     @Test
-    public void markWorkbasketForDeletionDocTest() throws Exception {
+    void markWorkbasketForDeletionDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders.delete(
             "http://127.0.0.1:" + port + "/api/v1/workbaskets/" + "WBI:100000000000000000000000000000000005")
             .header("Authorization", "Basic YWRtaW46YWRtaW4="))
@@ -391,7 +391,7 @@ public class WorkbasketControllerRestDocumentation extends BaseRestDocumentation
     }
 
     @Test
-    public void accessItemDocTest() throws Exception {
+    void accessItemDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders.get("http://127.0.0.1:" + port
             + "/api/v1/workbaskets/WBI:100000000000000000000000000000000001/workbasketAccessItems")
             .accept("application/hal+json")

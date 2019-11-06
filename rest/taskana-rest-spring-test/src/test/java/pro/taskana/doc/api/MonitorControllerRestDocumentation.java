@@ -4,8 +4,8 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.FieldDescriptor;
@@ -15,12 +15,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
  * Generate REST docu for the monitor controller.
  *
  */
-public class MonitorControllerRestDocumentation extends BaseRestDocumentation {
+class MonitorControllerRestDocumentation extends BaseRestDocumentation {
 
     private FieldDescriptor[] taskReportFieldDescriptors;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
 
         taskReportFieldDescriptors = new FieldDescriptor[] {
             fieldWithPath("meta").description("Object holding metainfo on the report"),
@@ -44,7 +44,7 @@ public class MonitorControllerRestDocumentation extends BaseRestDocumentation {
     }
 
     @Test
-    public void getTaskStatusReport() throws Exception {
+    void getTaskStatusReport() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
             .get("http://127.0.0.1:" + port + "/api/v1/monitor/tasks-status-report")
             .header("Authorization", "Basic YWRtaW46YWRtaW4="))
@@ -54,7 +54,7 @@ public class MonitorControllerRestDocumentation extends BaseRestDocumentation {
     }
 
     @Test
-    public void tasksWorkbasketReport() throws Exception {
+    void tasksWorkbasketReport() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
             .get("http://127.0.0.1:" + port
                 + "/api/v1/monitor/tasks-workbasket-report?daysInPast=4&states=READY,CLAIMED,COMPLETED")
@@ -66,7 +66,7 @@ public class MonitorControllerRestDocumentation extends BaseRestDocumentation {
     }
 
     @Test
-    public void tasksClassificationReport() throws Exception {
+    void tasksClassificationReport() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
             .get("http://127.0.0.1:" + port + "/api/v1/monitor/tasks-classification-report")
             .accept("application/hal+json")
@@ -77,7 +77,7 @@ public class MonitorControllerRestDocumentation extends BaseRestDocumentation {
     }
 
     @Test
-    public void getTimestampReport() throws Exception {
+    void getTimestampReport() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
             .get("http://127.0.0.1:" + port + "/api/v1/monitor/timestamp-report")
             .accept("application/hal+json")

@@ -10,8 +10,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.CustomField;
 import pro.taskana.TaskMonitorService;
@@ -20,24 +21,25 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.SelectedItem;
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "get task ids of category report" scenarios.
  */
-@RunWith(JAASRunner.class)
-public class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
+@ExtendWith(JAASExtension.class)
+class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
 
-    @Test(expected = NotAuthorizedException.class)
-    public void testRoleCheck() throws InvalidArgumentException, NotAuthorizedException {
+    @Test
+    void testRoleCheck() {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
         List<SelectedItem> selectedItems = new ArrayList<>();
 
-        taskMonitorService.createCategoryReportBuilder().listTaskIdsForSelectedItems(selectedItems);
+        Assertions.assertThrows(NotAuthorizedException.class, () ->
+            taskMonitorService.createCategoryReportBuilder().listTaskIdsForSelectedItems(selectedItems));
     }
 
     @WithAccessId(
@@ -306,8 +308,8 @@ public class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
 
     @WithAccessId(
         userName = "monitor")
-    @Test(expected = InvalidArgumentException.class)
-    public void testThrowsExceptionIfSubKeysAreUsed() throws InvalidArgumentException, NotAuthorizedException {
+    @Test
+    public void testThrowsExceptionIfSubKeysAreUsed() {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
@@ -321,8 +323,11 @@ public class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
         s1.setUpperAgeLimit(-2);
         selectedItems.add(s1);
 
-        taskMonitorService.createCategoryReportBuilder().withColumnHeaders(columnHeaders).listTaskIdsForSelectedItems(
-            selectedItems);
+        Assertions.assertThrows(InvalidArgumentException.class, () ->
+            taskMonitorService.createCategoryReportBuilder()
+                .withColumnHeaders(columnHeaders)
+                .listTaskIdsForSelectedItems(
+                    selectedItems));
     }
 
     private List<TimeIntervalColumnHeader> getListOfColumnHeaders() {

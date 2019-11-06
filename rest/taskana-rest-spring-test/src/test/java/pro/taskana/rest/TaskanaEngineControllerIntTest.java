@@ -7,10 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.hal.Jackson2HalModule;
@@ -21,28 +18,27 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import pro.taskana.TaskanaRole;
+import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.rest.resource.TaskanaUserInfoResource;
 
 /**
  * Test TaskanaEngineController.
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT,
-    properties = {"devMode=true"})
+
+@TaskanaSpringBootTest
 public class TaskanaEngineControllerIntTest {
 
     @LocalServerPort
     int port;
 
     @Test
-    public void testDomains() {
+    void testDomains() {
         RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
@@ -54,7 +50,7 @@ public class TaskanaEngineControllerIntTest {
     }
 
     @Test
-    public void testClassificationTypes() {
+    void testClassificationTypes() {
         RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
@@ -68,7 +64,7 @@ public class TaskanaEngineControllerIntTest {
     }
 
     @Test
-    public void testClassificationCategories() {
+    void testClassificationCategories() {
         RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
@@ -84,7 +80,7 @@ public class TaskanaEngineControllerIntTest {
     }
 
     @Test
-    public void testGetCurrentUserInfo() {
+    void testGetCurrentUserInfo() {
         RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
@@ -112,7 +108,7 @@ public class TaskanaEngineControllerIntTest {
         converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/hal+json, application/json"));
         converter.setObjectMapper(mapper);
 
-        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>> singletonList(converter));
+        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>>singletonList(converter));
         return template;
     }
 

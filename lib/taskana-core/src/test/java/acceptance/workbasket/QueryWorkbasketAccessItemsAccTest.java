@@ -3,18 +3,17 @@ package acceptance.workbasket;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import static pro.taskana.AccessItemQueryColumnName.WORKBASKET_ID;
 import static pro.taskana.AccessItemQueryColumnName.ACCESS_ID;
+import static pro.taskana.AccessItemQueryColumnName.WORKBASKET_ID;
 import static pro.taskana.AccessItemQueryColumnName.WORKBASKET_KEY;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.BaseQuery.SortDirection;
@@ -22,13 +21,13 @@ import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketAccessItemQuery;
 import pro.taskana.WorkbasketService;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for all "query access items for workbaskets" scenarios.
  */
-@RunWith(JAASRunner.class)
+@ExtendWith(JAASExtension.class)
 public class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
 
     public QueryWorkbasketAccessItemsAccTest() {
@@ -75,14 +74,15 @@ public class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
 
     @WithAccessId(
         userName = "dummy")
-    @Test(expected = NotAuthorizedException.class)
+    @Test
     public void testQueryAccessItemsForAccessIdsNotAuthorized()
         throws NotAuthorizedException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-        workbasketService.createWorkbasketAccessItemQuery()
-            .accessIdIn("user_1_1", "group_1")
-            .list();
-        fail("NotAuthorizedException was expected.");
+
+        Assertions.assertThrows(NotAuthorizedException.class, () ->
+            workbasketService.createWorkbasketAccessItemQuery()
+                .accessIdIn("user_1_1", "group_1")
+                .list());
     }
 
     @WithAccessId(

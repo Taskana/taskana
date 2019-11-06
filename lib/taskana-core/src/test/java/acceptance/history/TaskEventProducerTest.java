@@ -2,17 +2,17 @@ package acceptance.history;
 
 import static org.junit.Assert.assertFalse;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import acceptance.AbstractAccTest;
 
 /**
  * Acceptance test for historyEventProducer class.
  */
-public class TaskEventProducerTest extends AbstractAccTest {
+class TaskEventProducerTest extends AbstractAccTest {
 
     @Test
-    public void testHistoryEventProducerIsNotEnabled() {
+    void testHistoryEventProducerIsNotEnabled() {
         assertFalse(taskanaEngine.isHistoryEnabled());
     }
 }

@@ -10,8 +10,9 @@ import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.Task;
@@ -27,14 +28,14 @@ import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.security.CurrentUserContext;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance tests for all claim and complete scenarios.
  */
 
-@RunWith(JAASRunner.class)
+@ExtendWith(JAASExtension.class)
 public class CompleteTaskAccTest extends AbstractAccTest {
 
     public CompleteTaskAccTest() {
@@ -225,49 +226,48 @@ public class CompleteTaskAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
-    @Test(expected = TaskNotFoundException.class)
-    public void testClaimTaskNotExisting()
-        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
-        NotAuthorizedException {
+    @Test
+    public void testClaimTaskNotExisting() {
 
         TaskService taskService = taskanaEngine.getTaskService();
-        taskService.claim("NOT_EXISTING");
+        Assertions.assertThrows(TaskNotFoundException.class, () -> taskService.claim("NOT_EXISTING"));
     }
 
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
-    @Test(expected = InvalidStateException.class)
-    public void testClaimTaskWithInvalidState()
-        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
-        NotAuthorizedException {
+    @Test
+    public void testClaimTaskWithInvalidState() {
 
         TaskService taskService = taskanaEngine.getTaskService();
-        taskService.forceClaim("TKI:000000000000000000000000000000000036");
+        Assertions.assertThrows(InvalidStateException.class, () ->
+            taskService.forceClaim("TKI:000000000000000000000000000000000036"));
     }
 
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
-    @Test(expected = InvalidOwnerException.class)
+    @Test
     public void testClaimTaskWithInvalidOwner()
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
         NotAuthorizedException {
 
         TaskService taskService = taskanaEngine.getTaskService();
-        taskService.claim("TKI:000000000000000000000000000000000100");
+        Assertions.assertThrows(InvalidOwnerException.class, () ->
+            taskService.claim("TKI:000000000000000000000000000000000100"));
     }
 
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
-    @Test(expected = InvalidStateException.class)
+    @Test
     public void testCancelClaimForcedWithInvalidState()
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
         NotAuthorizedException {
 
         TaskService taskService = taskanaEngine.getTaskService();
-        taskService.forceCancelClaim("TKI:000000000000000000000000000000000036");
+        Assertions.assertThrows(InvalidStateException.class, () ->
+            taskService.forceCancelClaim("TKI:000000000000000000000000000000000036"));
     }
 
     @WithAccessId(
@@ -327,13 +327,12 @@ public class CompleteTaskAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
-    @Test(expected = InvalidOwnerException.class)
-    public void testCancelClaimWithInvalidOwner()
-        throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
-        NotAuthorizedException {
+    @Test
+    public void testCancelClaimWithInvalidOwner() {
 
         TaskService taskService = taskanaEngine.getTaskService();
-        taskService.cancelClaim("TKI:000000000000000000000000000000000100");
+        Assertions.assertThrows(InvalidOwnerException.class, () ->
+            taskService.cancelClaim("TKI:000000000000000000000000000000000100"));
     }
 
     private void waitAMillisecond() {

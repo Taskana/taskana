@@ -7,8 +7,8 @@ import static org.springframework.restdocs.request.RequestDocumentation.partWith
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.FieldDescriptor;
@@ -17,12 +17,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 /**
  * Test ClassificationDefinitionControlller.
  */
-public class ClassificationDefinitionControllerRestDocumentation extends BaseRestDocumentation {
+class ClassificationDefinitionControllerRestDocumentation extends BaseRestDocumentation {
 
     private FieldDescriptor[] classificationDefinitionsFieldDescriptors;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
 
         classificationDefinitionsFieldDescriptors = new FieldDescriptor[] {
             subsectionWithPath("[]").description("An array of <<ClassificationResource, classifications>>")
@@ -30,7 +30,7 @@ public class ClassificationDefinitionControllerRestDocumentation extends BaseRes
     }
 
     @Test
-    public void exportAllClassificationDefinitions() throws Exception {
+    void exportAllClassificationDefinitions() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
             .get("http://127.0.0.1:" + port + "/api/v1/classification-definitions")
             .accept("application/json")
@@ -41,7 +41,7 @@ public class ClassificationDefinitionControllerRestDocumentation extends BaseRes
     }
 
     @Test
-    public void importClassificationDefinitions() throws Exception {
+    void importClassificationDefinitions() throws Exception {
         String definitionString = "[{\"key\":\"Key0815\", \"domain\":\"DOMAIN_B\"}]";
 
         this.mockMvc.perform(multipart("http://127.0.0.1:" + port + "/api/v1/classification-definitions")

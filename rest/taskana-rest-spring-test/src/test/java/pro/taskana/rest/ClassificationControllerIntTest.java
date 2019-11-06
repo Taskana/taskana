@@ -3,6 +3,7 @@ package pro.taskana.rest;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -12,12 +13,9 @@ import java.net.URL;
 import java.time.Instant;
 import java.util.Collections;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.env.Environment;
@@ -32,7 +30,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -40,6 +37,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import pro.taskana.Task;
+import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.rest.resource.ClassificationSummaryListResource;
 import pro.taskana.rest.resource.ClassificationSummaryResource;
@@ -51,10 +49,8 @@ import pro.taskana.rest.resource.TaskResourceAssembler;
  *
  * @author bbr
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = RestConfiguration.class, webEnvironment = WebEnvironment.RANDOM_PORT,
-    properties = {"devMode=true"})
-public class ClassificationControllerIntTest {
+@TaskanaSpringBootTest
+class ClassificationControllerIntTest {
 
     @Autowired
     private TaskResourceAssembler taskResourceAssembler;
@@ -69,15 +65,15 @@ public class ClassificationControllerIntTest {
     @LocalServerPort
     int port;
 
-    @Before
-    public void before() {
+    @BeforeEach
+    void before() {
         template = getRestTemplate();
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
         request = new HttpEntity<String>(headers);
     }
 
     @Test
-    public void testGetAllClassifications() {
+    void testGetAllClassifications() {
         ResponseEntity<ClassificationSummaryListResource> response = template.exchange(
             server + port + "/api/v1/classifications", HttpMethod.GET, request,
             ParameterizedTypeReference.forType(ClassificationSummaryListResource.class));
@@ -85,7 +81,7 @@ public class ClassificationControllerIntTest {
     }
 
     @Test
-    public void testGetAllClassificationsFilterByCustomAttribute() {
+    void testGetAllClassificationsFilterByCustomAttribute() {
         ResponseEntity<ClassificationSummaryListResource> response = template.exchange(
             server + port + "/api/v1/classifications?domain=DOMAIN_A&custom-1-like=RVNR", HttpMethod.GET,
             request,
@@ -95,7 +91,7 @@ public class ClassificationControllerIntTest {
     }
 
     @Test
-    public void testGetAllClassificationsKeepingFilters() {
+    void testGetAllClassificationsKeepingFilters() {
         ResponseEntity<ClassificationSummaryListResource> response = template.exchange(
             server + port + "/api/v1/classifications?domain=DOMAIN_A&sort-by=key&order=asc", HttpMethod.GET,
             request,
@@ -110,7 +106,7 @@ public class ClassificationControllerIntTest {
     }
 
     @Test
-    public void testGetSecondPageSortedByKey() {
+    void testGetSecondPageSortedByKey() {
         ResponseEntity<ClassificationSummaryListResource> response = template.exchange(
             server + port + "/api/v1/classifications?domain=DOMAIN_A&sort-by=key&order=asc&page=2&page-size=5",
             HttpMethod.GET,
@@ -131,7 +127,7 @@ public class ClassificationControllerIntTest {
 
     @Test
     @DirtiesContext
-    public void testCreateClassification() throws IOException {
+    void testCreateClassification() throws IOException {
         String newClassification = "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS\",\"name\":\"new classification\",\"type\":\"TASK\"}";
         URL url = new URL(server + port + "/api/v1/classifications");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -163,7 +159,7 @@ public class ClassificationControllerIntTest {
 
     @Test
     @DirtiesContext
-    public void testCreateClassificationWithParentId() throws IOException {
+    void testCreateClassificationWithParentId() throws IOException {
         String newClassification = "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_B\",\"key\":\"NEW_CLASS_P1\",\"name\":\"new classification\",\"type\":\"TASK\",\"parentId\":\"CLI:200000000000000000000000000000000015\"}";
         URL url = new URL(server + port + "/api/v1/classifications");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -181,7 +177,7 @@ public class ClassificationControllerIntTest {
 
     @Test
     @DirtiesContext
-    public void testCreateClassificationWithParentKey() throws IOException {
+    void testCreateClassificationWithParentKey() throws IOException {
         String newClassification = "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_B\",\"key\":\"NEW_CLASS_P2\",\"name\":\"new classification\",\"type\":\"TASK\",\"parentKey\":\"T2100\"}";
         URL url = new URL(server + port + "/api/v1/classifications");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -199,7 +195,7 @@ public class ClassificationControllerIntTest {
 
     @Test
     @DirtiesContext
-    public void testCreateClassificationWithParentKeyInDOMAIN_AShouldCreateAClassificationInRootDomain()
+    void testCreateClassificationWithParentKeyInDOMAIN_AShouldCreateAClassificationInRootDomain()
         throws IOException {
         String newClassification = "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS_P2\",\"name\":\"new classification\",\"type\":\"TASK\",\"parentKey\":\"T2100\"}";
 
@@ -234,7 +230,7 @@ public class ClassificationControllerIntTest {
 
     @Test
     @DirtiesContext
-    public void testReturn400IfCreateClassificationWithIncompatibleParentIdAndKey() throws IOException {
+    void testReturn400IfCreateClassificationWithIncompatibleParentIdAndKey() throws IOException {
         String newClassification = "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_B\",\"key\":\"NEW_CLASS_P3\",\"name\":\"new classification\",\"type\":\"TASK\",\"parentId\":\"CLI:200000000000000000000000000000000015\",\"parentKey\":\"T2000\"}";
         URL url = new URL(server + port + "/api/v1/classifications");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -252,7 +248,7 @@ public class ClassificationControllerIntTest {
 
     @Test
     @DirtiesContext
-    public void testCreateClassificationWithClassificationIdReturnsError400() throws IOException {
+    void testCreateClassificationWithClassificationIdReturnsError400() throws IOException {
         String newClassification = "{\"classificationId\":\"someId\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS\",\"name\":\"new classification\",\"type\":\"TASK\"}";
         URL url = new URL("http://127.0.0.1:" + port + "/api/v1/classifications");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -269,7 +265,7 @@ public class ClassificationControllerIntTest {
     }
 
     @Test
-    public void testGetClassificationWithSpecialCharacter() {
+    void testGetClassificationWithSpecialCharacter() {
         RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
@@ -282,9 +278,9 @@ public class ClassificationControllerIntTest {
         assertEquals("Zustimmungserklärung", response.getBody().name);
     }
 
-    @Test(expected = HttpClientErrorException.class)
+    @Test
     @DirtiesContext
-    public void testDeleteClassification() {
+    void testDeleteClassification() {
         RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
@@ -297,11 +293,13 @@ public class ClassificationControllerIntTest {
             ParameterizedTypeReference.forType(ClassificationSummaryResource.class));
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
 
-        response = template.exchange(
-            "http://127.0.0.1:" + port + "/api/v1/classifications/CLI:200000000000000000000000000000000004",
-            HttpMethod.GET,
-            request,
-            ParameterizedTypeReference.forType(ClassificationSummaryResource.class));
+        assertThrows(HttpClientErrorException.class, () -> {
+            template.exchange(
+                "http://127.0.0.1:" + port + "/api/v1/classifications/CLI:200000000000000000000000000000000004",
+                HttpMethod.GET,
+                request,
+                ParameterizedTypeReference.forType(ClassificationSummaryResource.class));
+        });
     }
 
     private void verifyTaskIsModifiedAfter(String taskId, Instant before)
@@ -338,7 +336,7 @@ public class ClassificationControllerIntTest {
         converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/hal+json"));
         converter.setObjectMapper(mapper);
 
-        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>> singletonList(converter));
+        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>>singletonList(converter));
         return template;
     }
 
