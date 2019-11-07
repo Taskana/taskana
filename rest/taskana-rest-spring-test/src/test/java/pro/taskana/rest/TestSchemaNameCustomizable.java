@@ -3,21 +3,12 @@ package pro.taskana.rest;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Collections;
 
 import javax.sql.DataSource;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.hal.Jackson2HalModule;
-import org.springframework.http.MediaType;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.client.RestTemplate;
-
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.configuration.SpringTaskanaEngineConfiguration;
@@ -78,24 +69,4 @@ class TestSchemaNameCustomizable {
             e.printStackTrace();
         }
     }
-
-    /**
-     * Return a REST template which is capable of dealing with responses in HAL format.
-     *
-     * @return RestTemplate
-     */
-    private RestTemplate getRestTemplate() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        mapper.registerModule(new Jackson2HalModule());
-
-        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-        converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/hal+json"));
-        // converter.setSupportedMediaTypes(ImmutableList.of(MediaTypes.HAL_JSON));
-        converter.setObjectMapper(mapper);
-
-        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>>singletonList(converter));
-        return template;
-    }
-
 }

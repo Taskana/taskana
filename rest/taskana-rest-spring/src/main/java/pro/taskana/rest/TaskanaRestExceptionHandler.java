@@ -124,7 +124,8 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
-    protected ResponseEntity<Object> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex, WebRequest req) {
+    protected ResponseEntity<Object> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex,
+        WebRequest req) {
         return buildResponse(ex, req, HttpStatus.PAYLOAD_TOO_LARGE);
     }
 

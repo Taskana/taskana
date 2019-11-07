@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -54,9 +53,9 @@ import pro.taskana.rest.resource.WorkbasketSummaryResourceAssembler;
 /**
  * Controller for all {@link Workbasket} related endpoints.
  */
+
 @RestController
 @EnableHypermediaSupport(type = HypermediaType.HAL)
-@RequestMapping(path = "/api/v1/workbaskets", produces = "application/hal+json")
 public class WorkbasketController extends AbstractPagingController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketController.class);
@@ -99,7 +98,7 @@ public class WorkbasketController extends AbstractPagingController {
         this.workbasketAccessItemResourceAssembler = workbasketAccessItemResourceAssembler;
     }
 
-    @GetMapping
+    @GetMapping(path = Mapping.URL_WORKBASKET)
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<WorkbasketSummaryListResource> getWorkbaskets(
         @RequestParam MultiValueMap<String, String> params) throws InvalidArgumentException {
@@ -125,7 +124,7 @@ public class WorkbasketController extends AbstractPagingController {
         return response;
     }
 
-    @GetMapping(path = "/{workbasketId}")
+    @GetMapping(path = Mapping.URL_WORKBASKET_ID)
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<WorkbasketResource> getWorkbasket(@PathVariable(value = "workbasketId") String workbasketId)
         throws WorkbasketNotFoundException, NotAuthorizedException {
@@ -140,7 +139,7 @@ public class WorkbasketController extends AbstractPagingController {
         return result;
     }
 
-    @DeleteMapping(path = "/{workbasketId}")
+    @DeleteMapping(path = Mapping.URL_WORKBASKET_ID)
     @Transactional(rollbackFor = Exception.class, noRollbackFor = WorkbasketNotFoundException.class)
     public ResponseEntity<?> markWorkbasketForDeletion(@PathVariable(value = "workbasketId") String workbasketId)
         throws NotAuthorizedException, InvalidArgumentException,
@@ -152,7 +151,7 @@ public class WorkbasketController extends AbstractPagingController {
         return response;
     }
 
-    @PostMapping
+    @PostMapping(path = Mapping.URL_WORKBASKET)
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<WorkbasketResource> createWorkbasket(@RequestBody WorkbasketResource workbasketResource)
         throws InvalidWorkbasketException, NotAuthorizedException, WorkbasketAlreadyExistException,
@@ -172,7 +171,7 @@ public class WorkbasketController extends AbstractPagingController {
         return response;
     }
 
-    @PutMapping(path = "/{workbasketId}")
+    @PutMapping(path = Mapping.URL_WORKBASKET_ID)
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<WorkbasketResource> updateWorkbasket(
         @PathVariable(value = "workbasketId") String workbasketId,
@@ -198,7 +197,7 @@ public class WorkbasketController extends AbstractPagingController {
         return result;
     }
 
-    @GetMapping(path = "/{workbasketId}/workbasketAccessItems")
+    @GetMapping(path = Mapping.URL_WORKBASKET_ID_ACCESSITEMS)
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<WorkbasketAccessItemListResource> getWorkbasketAccessItems(
         @PathVariable(value = "workbasketId") String workbasketId)
@@ -215,7 +214,7 @@ public class WorkbasketController extends AbstractPagingController {
         return result;
     }
 
-    @PutMapping(value = "/{workbasketId}/workbasketAccessItems")
+    @PutMapping(path = Mapping.URL_WORKBASKET_ID_ACCESSITEMS)
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<WorkbasketAccessItemListResource> setWorkbasketAccessItems(
         @PathVariable(value = "workbasketId") String workbasketId,
@@ -241,7 +240,7 @@ public class WorkbasketController extends AbstractPagingController {
         return response;
     }
 
-    @GetMapping(path = "/{workbasketId}/distribution-targets")
+    @GetMapping(path = Mapping.URL_WORKBASKET_ID_DISTRIBUTION)
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<DistributionTargetListResource> getDistributionTargets(
         @PathVariable(value = "workbasketId") String workbasketId)
@@ -259,7 +258,7 @@ public class WorkbasketController extends AbstractPagingController {
         return result;
     }
 
-    @PutMapping(path = "/{workbasketId}/distribution-targets")
+    @PutMapping(path = Mapping.URL_WORKBASKET_ID_DISTRIBUTION)
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<DistributionTargetListResource> setDistributionTargetsForWorkbasketId(
         @PathVariable(value = "workbasketId") String sourceWorkbasketId,
@@ -282,7 +281,8 @@ public class WorkbasketController extends AbstractPagingController {
         return response;
     }
 
-    @DeleteMapping(path = "/distribution-targets/{workbasketId}")
+    // TODO - schema inconsistent with PUT and GET
+    @DeleteMapping(path = Mapping.URL_WORKBASKET_DISTRIBUTION_ID)
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<Resources<DistributionTargetResource>> removeDistributionTargetForWorkbasketId(
         @PathVariable(value = "workbasketId") String targetWorkbasketId)

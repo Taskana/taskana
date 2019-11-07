@@ -12,12 +12,11 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.http.MediaType;
+import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,8 +44,9 @@ import pro.taskana.rest.resource.WorkbasketResource;
 /**
  * Controller for all {@link WorkbasketDefinitionResource} related endpoints.
  */
+
 @RestController
-@RequestMapping(path = "/api/v1/workbasket-definitions", produces = {MediaType.APPLICATION_JSON_VALUE})
+@EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
 public class WorkbasketDefinitionController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketDefinitionController.class);
@@ -62,7 +62,7 @@ public class WorkbasketDefinitionController {
         this.workbasketDefinitionAssembler = workbasketDefinitionAssembler;
     }
 
-    @GetMapping
+    @GetMapping(path = Mapping.URL_WORKBASKETDEFIITIONS)
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<List<WorkbasketDefinitionResource>> exportWorkbaskets(
         @RequestParam(required = false) String domain)
@@ -110,7 +110,7 @@ public class WorkbasketDefinitionController {
      * @throws InvalidArgumentException
      *             if authorization information in workbaskets definitions is incorrect.
      */
-    @PostMapping
+    @PostMapping(path = Mapping.URL_WORKBASKETDEFIITIONS)
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<Void> importWorkbaskets(@RequestParam("file") MultipartFile file)
         throws IOException, NotAuthorizedException, DomainNotFoundException, InvalidWorkbasketException,
