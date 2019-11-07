@@ -1,0 +1,79 @@
+package pro.taskana;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.hateoas.hal.Jackson2HalModule;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.converter.support.AllEncompassingFormHttpMessageConverter;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
+/**
+ * Helps to simplify rest api testing.
+ */
+@Component
+public class RestHelper {
+
+    @Autowired
+    Environment environment;
+
+    private String server = "http://127.0.0.1";
+
+    public static RestTemplate template = getRestTemplate();
+
+    public String toUrl(String relativeUrl) {
+        return server + ":" + environment.getProperty("local.server.port") + relativeUrl;
+    }
+
+    public HttpEntity<String> defaultRequest() {
+        return new HttpEntity<>(getHeaders());
+    }
+
+    public HttpHeaders getHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
+        headers.add("Content-Type", "application/hal+json");
+        return headers;
+    }
+
+    public HttpHeaders getHeadersAdmin() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Basic YWRtaW46YWRtaW4=");  // admin:admin
+        headers.add("Content-Type", "application/hal+json");
+        return headers;
+    }
+
+    /**
+     * Return a REST template which is capable of dealing with responses in HAL format.
+     *
+     * @return RestTemplate
+     */
+    public static RestTemplate getRestTemplate() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        mapper.registerModule(new Jackson2HalModule());
+
+        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+        converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/hal+json"));
+        converter.setObjectMapper(mapper);
+
+        RestTemplate template = new RestTemplate();
+        template.getMessageConverters().clear();
+        //Parse Json Strings
+        template.getMessageConverters().add(new StringHttpMessageConverter());
+
+        //Parse Raw Files (Form upload)
+        template.getMessageConverters().add(new AllEncompassingFormHttpMessageConverter());
+        template.getMessageConverters().add(converter);
+        return template;
+    }
+}

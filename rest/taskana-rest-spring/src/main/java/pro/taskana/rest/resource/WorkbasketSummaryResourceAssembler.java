@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.impl.WorkbasketImpl;
+import pro.taskana.rest.Mapping;
 import pro.taskana.rest.WorkbasketController;
 import pro.taskana.rest.resource.PagedResources.PageMetadata;
 import pro.taskana.rest.resource.links.PageLinks;
@@ -33,7 +34,7 @@ public class WorkbasketSummaryResourceAssembler
         return new WorkbasketSummaryResource(workbasketSummary);
     }
 
-    @PageLinks(WorkbasketController.class)
+    @PageLinks(Mapping.URL_WORKBASKET)
     public WorkbasketSummaryListResource toResources(List<WorkbasketSummary> entities,
         PageMetadata pageMetadata) {
         return new WorkbasketSummaryListResource(toResources(entities), pageMetadata);

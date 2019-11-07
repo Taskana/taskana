@@ -15,25 +15,21 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.Collections;
 
 import javax.sql.DataSource;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.hal.Jackson2HalModule;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -41,6 +37,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import pro.taskana.RestHelper;
 import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.exceptions.SystemException;
 import pro.taskana.rest.resource.TaskResource;
@@ -57,8 +54,17 @@ class TaskControllerIntTest {
     @Value("${taskana.schemaName:TASKANA}")
     public String schemaName;
 
+    @Autowired RestHelper restHelper;
+
     @LocalServerPort
     int port;
+
+    private static RestTemplate template;
+
+    @BeforeAll
+    static void init() {
+        template = RestHelper.getRestTemplate();
+    }
 
     @Autowired
     private DataSource dataSource;
@@ -75,12 +81,8 @@ class TaskControllerIntTest {
 
     @Test
     void testGetAllTasks() {
-        RestTemplate template = getRestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-        HttpEntity<String> request = new HttpEntity<String>(headers);
         ResponseEntity<TaskSummaryListResource> response = template.exchange(
-            "http://127.0.0.1:" + port + "/api/v1/tasks", HttpMethod.GET, request,
+            restHelper.toUrl(Mapping.URL_TASKS), HttpMethod.GET, restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
         assertEquals(25, response.getBody().getContent().size());
@@ -88,13 +90,9 @@ class TaskControllerIntTest {
 
     @Test
     void testGetAllTasksByWorkbasketId() {
-        RestTemplate template = getRestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"); // teamlead_1
-        HttpEntity<String> request = new HttpEntity<String>(headers);
         ResponseEntity<TaskSummaryListResource> response = template.exchange(
-            "http://127.0.0.1:" + port + "/api/v1/tasks?workbasket-id=WBI:100000000000000000000000000000000001",
-            HttpMethod.GET, request,
+            restHelper.toUrl(Mapping.URL_TASKS) + "?workbasket-id=WBI:100000000000000000000000000000000001",
+            HttpMethod.GET, restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
         assertEquals(22, response.getBody().getContent().size());
@@ -102,12 +100,11 @@ class TaskControllerIntTest {
 
     @Test
     void testGetAllTasksByWorkbasketKeyAndDomain() {
-        RestTemplate template = getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic dXNlcl8xXzI6dXNlcl8xXzI="); // user_1_2
         HttpEntity<String> request = new HttpEntity<String>(headers);
         ResponseEntity<TaskSummaryListResource> response = template.exchange(
-            "http://127.0.0.1:" + port + "/api/v1/tasks?workbasket-key=USER_1_2&domain=DOMAIN_A",
+            restHelper.toUrl(Mapping.URL_TASKS) + "?workbasket-key=USER_1_2&domain=DOMAIN_A",
             HttpMethod.GET, request,
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
@@ -116,13 +113,13 @@ class TaskControllerIntTest {
 
     @Test
     void testExceptionIfKeyIsSetButDomainIsMissing() {
-        RestTemplate template = getRestTemplate();
+
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic dXNlcl8xXzI6dXNlcl8xXzI="); // user_1_2
         HttpEntity<String> request = new HttpEntity<String>(headers);
         try {
             ResponseEntity<TaskSummaryListResource> response = template.exchange(
-                "http://127.0.0.1:" + port + "/api/v1/tasks?workbasket-key=USER_1_2",
+                restHelper.toUrl(Mapping.URL_TASKS) + "?workbasket-key=USER_1_2",
                 HttpMethod.GET, request,
                 ParameterizedTypeReference.forType(TaskSummaryListResource.class));
             fail();
@@ -133,12 +130,8 @@ class TaskControllerIntTest {
 
     @Test
     void testGetAllTasksWithAdminRole() {
-        RestTemplate template = getRestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Basic YWRtaW46YWRtaW4="); // Role Admin
-        HttpEntity<String> request = new HttpEntity<String>(headers);
         ResponseEntity<TaskSummaryListResource> response = template.exchange(
-            "http://127.0.0.1:" + port + "/api/v1/tasks", HttpMethod.GET, request,
+            restHelper.toUrl(Mapping.URL_TASKS), HttpMethod.GET, new HttpEntity<>(restHelper.getHeadersAdmin()),
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
         assertEquals(73, response.getBody().getContent().size());
@@ -146,13 +139,9 @@ class TaskControllerIntTest {
 
     @Test
     void testGetAllTasksKeepingFilters() {
-        RestTemplate template = getRestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-        HttpEntity<String> request = new HttpEntity<String>(headers);
         ResponseEntity<TaskSummaryListResource> response = template.exchange(
-            "http://127.0.0.1:" + port + "/api/v1/tasks?por.type=VNR&por.value=22334455&sort-by=por.value&order=desc",
-            HttpMethod.GET, request,
+            restHelper.toUrl(Mapping.URL_TASKS) + "?por.type=VNR&por.value=22334455&sort-by=por.value&order=desc",
+            HttpMethod.GET, restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
         assertTrue(response.getBody()
@@ -163,14 +152,10 @@ class TaskControllerIntTest {
 
     @Test
     void testThrowsExceptionIfInvalidFilterIsUsed() {
-        RestTemplate template = getRestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-        HttpEntity<String> request = new HttpEntity<String>(headers);
         try {
             template.exchange(
-                "http://127.0.0.1:" + port + "/api/v1/tasks?invalid=VNR",
-                HttpMethod.GET, request,
+                restHelper.toUrl(Mapping.URL_TASKS) + "?invalid=VNR",
+                HttpMethod.GET, restHelper.defaultRequest(),
                 ParameterizedTypeReference.forType(TaskSummaryListResource.class));
             fail();
         } catch (HttpClientErrorException e) {
@@ -181,13 +166,11 @@ class TaskControllerIntTest {
 
     @Test
     void testGetLastPageSortedByPorValue() {
-        RestTemplate template = getRestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Basic YWRtaW46YWRtaW4="); // Role Admin
-        HttpEntity<String> request = new HttpEntity<String>(headers);
+
+        HttpEntity<String> request = new HttpEntity<String>(restHelper.getHeadersAdmin());
         ResponseEntity<TaskSummaryListResource> response = template.exchange(
-            "http://127.0.0.1:" + port
-                + "/api/v1/tasks?state=READY,CLAIMED&sort-by=por.value&order=desc&page=15&page-size=5",
+            restHelper.toUrl(Mapping.URL_TASKS)
+                + "?state=READY,CLAIMED&sort-by=por.value&order=desc&page=15&page-size=5",
             HttpMethod.GET,
             request,
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
@@ -209,19 +192,19 @@ class TaskControllerIntTest {
     void testGetLastPageSortedByDueWithHiddenTasksRemovedFromResult() {
         resetDb(); // required because ClassificationControllerIntTest.testGetQueryByPorSecondPageSortedByType changes
         // tasks and this test depends on the tasks as they are in sampledata
-        RestTemplate template = getRestTemplate();
+
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
         HttpEntity<String> request = new HttpEntity<String>(headers);
 
         ResponseEntity<TaskSummaryListResource> response = template.exchange(
-            "http://127.0.0.1:" + port + "/api/v1/tasks?sort-by=due&order=desc", HttpMethod.GET,
+            restHelper.toUrl(Mapping.URL_TASKS) + "?sort-by=due&order=desc", HttpMethod.GET,
             request,
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
         assertEquals(25, response.getBody().getContent().size());
 
         response = template.exchange(
-            "http://127.0.0.1:" + port + "/api/v1/tasks?sort-by=due&order=desc&page=5&page-size=5", HttpMethod.GET,
+            restHelper.toUrl(Mapping.URL_TASKS) + "?sort-by=due&order=desc&page=5&page-size=5", HttpMethod.GET,
             request,
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
         assertEquals(5, response.getBody().getContent().size());
@@ -242,13 +225,13 @@ class TaskControllerIntTest {
     void testGetQueryByPorSecondPageSortedByType() {
         resetDb(); // required because ClassificationControllerIntTest.testGetQueryByPorSecondPageSortedByType changes
         // tasks and this test depends on the tasks as they are in sampledata
-        RestTemplate template = getRestTemplate();
+
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
         HttpEntity<String> request = new HttpEntity<String>(headers);
         ResponseEntity<TaskSummaryListResource> response = template.exchange(
-            "http://127.0.0.1:" + port
-                + "/api/v1/tasks?por.company=00&por.system=PASystem&por.instance=00&por.type=VNR&por.value=22334455&sort-by=por.type&order=asc&page=2&page-size=5",
+            restHelper.toUrl(Mapping.URL_TASKS)
+                + "?por.company=00&por.system=PASystem&por.instance=00&por.type=VNR&por.value=22334455&sort-by=por.type&order=asc&page=2&page-size=5",
             HttpMethod.GET,
             request,
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
@@ -430,25 +413,6 @@ class TaskControllerIntTest {
         assertEquals(400, con.getResponseCode());
         con.disconnect();
 
-    }
-
-    /**
-     * Return a REST template which is capable of dealing with responses in HAL format.
-     *
-     * @return RestTemplate
-     */
-    private RestTemplate getRestTemplate() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        mapper.registerModule(new Jackson2HalModule());
-
-        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-        converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/hal+json"));
-        // converter.setSupportedMediaTypes(ImmutableList.of(MediaTypes.HAL_JSON));
-        converter.setObjectMapper(mapper);
-
-        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>>singletonList(converter));
-        return template;
     }
 
 }

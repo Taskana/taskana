@@ -5,10 +5,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
+import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.TaskanaEngine;
@@ -22,7 +21,7 @@ import pro.taskana.security.CurrentUserContext;
  * Controller for TaskanaEngine related tasks.
  */
 @RestController
-@RequestMapping(path = "/api/v1", produces = MediaType.APPLICATION_JSON_VALUE)
+@EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
 public class TaskanaEngineController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineController.class);
@@ -38,7 +37,7 @@ public class TaskanaEngineController {
         this.taskanaEngine = taskanaEngine;
     }
 
-    @GetMapping(path = "/domains")
+    @GetMapping(path = Mapping.URL_DOMAIN)
     public ResponseEntity<List<String>> getDomains() {
         ResponseEntity<List<String>> response = ResponseEntity.ok(taskanaEngineConfiguration.getDomains());
         if (LOGGER.isDebugEnabled()) {
@@ -47,7 +46,7 @@ public class TaskanaEngineController {
         return response;
     }
 
-    @GetMapping(path = "/classification-categories")
+    @GetMapping(path = Mapping.URL_CLASSIFICATIONCATEGORIES)
     public ResponseEntity<List<String>> getClassificationCategories(String type) {
         LOGGER.debug("Entry to getClassificationCategories(type = {})", type);
         ResponseEntity<List<String>> response;
@@ -65,7 +64,7 @@ public class TaskanaEngineController {
         return response;
     }
 
-    @GetMapping(path = "/classification-types")
+    @GetMapping(path = Mapping.URL_CLASSIFICATIONTYPES)
     public ResponseEntity<List<String>> getClassificationTypes() {
         ResponseEntity<List<String>> response = ResponseEntity.ok(
             taskanaEngineConfiguration.getClassificationTypes());
@@ -75,7 +74,7 @@ public class TaskanaEngineController {
         return response;
     }
 
-    @GetMapping(path = "/current-user-info")
+    @GetMapping(path = Mapping.URL_CURRENTUSER)
     public ResponseEntity<TaskanaUserInfoResource> getCurrentUserInfo() {
         LOGGER.debug("Entry to getCurrentUserInfo()");
         TaskanaUserInfoResource resource = new TaskanaUserInfoResource();
@@ -94,7 +93,7 @@ public class TaskanaEngineController {
         return response;
     }
 
-    @GetMapping(path = "/history-provider-enabled")
+    @GetMapping(path = Mapping.URL_HISTORYENABLED)
     public ResponseEntity<Boolean> getIsHistoryProviderEnabled() {
         ResponseEntity<Boolean> response = ResponseEntity.ok(taskanaEngine.isHistoryEnabled());
         LOGGER.debug("Exit from getIsHistoryProviderEnabled(), returning {}", response);
@@ -106,7 +105,7 @@ public class TaskanaEngineController {
      *
      * @return The current version.
      */
-    @GetMapping(path = "/version")
+    @GetMapping(path = Mapping.URL_VERSION)
     public ResponseEntity<VersionResource> currentVersion() {
         LOGGER.debug("Entry to currentVersion()");
         VersionResource resource = new VersionResource();

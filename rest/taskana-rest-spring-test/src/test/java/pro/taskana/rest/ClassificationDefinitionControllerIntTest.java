@@ -14,35 +14,29 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.core.env.Environment;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.hateoas.hal.Jackson2HalModule;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import pro.taskana.RestHelper;
 import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.rest.resource.ClassificationResource;
 import pro.taskana.rest.resource.ClassificationSummaryListResource;
@@ -57,35 +51,23 @@ class ClassificationDefinitionControllerIntTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationController.class);
 
-    String server = "http://127.0.0.1:";
+    private ObjectMapper objMapper = new ObjectMapper();
 
-    RestTemplate template;
+    @Autowired RestHelper restHelper;
 
-    HttpEntity<String> request;
+    private static RestTemplate template;
 
-    HttpHeaders headers = new HttpHeaders();
-
-    ObjectMapper objMapper = new ObjectMapper();
-
-    @LocalServerPort
-    int port;
-
-    @Autowired
-    Environment env;
-
-    @BeforeEach
-    void before() {
-        LOGGER.debug("before");
-        template = getRestTemplate();
-        headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-        request = new HttpEntity<String>(headers);
+    @BeforeAll
+    static void init() {
+        template = RestHelper.getRestTemplate();
     }
 
     @Test
     void testExportClassifications() {
         ResponseEntity<ClassificationResource[]> response = template.exchange(
-            server + port + "/api/v1/classification-definitions?domain=DOMAIN_B",
-            HttpMethod.GET, request, ParameterizedTypeReference.forType(ClassificationResource[].class));
+            restHelper.toUrl(Mapping.URL_CLASSIFICATIONDEFINITION) + "?domain=DOMAIN_B",
+            HttpMethod.GET, restHelper.defaultRequest(),
+            ParameterizedTypeReference.forType(ClassificationResource[].class));
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.getBody().length >= 5);
         assertTrue(response.getBody().length <= 7);
@@ -95,8 +77,9 @@ class ClassificationDefinitionControllerIntTest {
     @Test
     void testExportClassificationsFromWrongDomain() {
         ResponseEntity<ClassificationResource[]> response = template.exchange(
-            server + port + "/api/v1/classification-definitions?domain=ADdfe",
-            HttpMethod.GET, request, ParameterizedTypeReference.forType(ClassificationResource[].class));
+            restHelper.toUrl(Mapping.URL_CLASSIFICATIONDEFINITION) + "?domain=ADdfe",
+            HttpMethod.GET, restHelper.defaultRequest(),
+            ParameterizedTypeReference.forType(ClassificationResource[].class));
         assertEquals(0, response.getBody().length);
     }
 
@@ -403,12 +386,9 @@ class ClassificationDefinitionControllerIntTest {
 
     private ClassificationSummaryResource getClassificationWithKeyAndDomain(String key, String domain) {
         LOGGER.debug("Request classification with key={} in domain={}", key, domain);
-        RestTemplate template = getRestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-        HttpEntity<String> request = new HttpEntity<String>(headers);
+        HttpEntity<String> request = new HttpEntity<String>(restHelper.getHeaders());
         ResponseEntity<ClassificationSummaryListResource> response = template.exchange(
-            "http://127.0.0.1:" + port + "/api/v1/classifications?key=" + key + "&domain=" + domain,
+            restHelper.toUrl(Mapping.URL_CLASSIFICATIONS) + "?key=" + key + "&domain=" + domain,
             HttpMethod.GET,
             request,
             ParameterizedTypeReference.forType(ClassificationSummaryListResource.class));
@@ -423,31 +403,15 @@ class ClassificationDefinitionControllerIntTest {
         writer.close();
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+
+        HttpHeaders headers = restHelper.getHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         body.add("file", new FileSystemResource(tmpFile));
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-        String serverUrl = server + port + "/api/v1/classification-definitions";
-        RestTemplate restTemplate = new RestTemplate();
+        String serverUrl = restHelper.toUrl(Mapping.URL_CLASSIFICATIONDEFINITION);
 
-        return restTemplate.postForEntity(serverUrl, requestEntity, Void.class);
+        return template.postForEntity(serverUrl, requestEntity, Void.class);
     }
 
-    /**
-     * Return a REST template which is capable of dealing with responses in HAL format.
-     *
-     * @return RestTemplate
-     */
-    private RestTemplate getRestTemplate() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        mapper.registerModule(new Jackson2HalModule());
-
-        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-        converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/haljson,*/*"));
-        converter.setObjectMapper(mapper);
-
-        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>>singletonList(converter));
-        return template;
-    }
 }

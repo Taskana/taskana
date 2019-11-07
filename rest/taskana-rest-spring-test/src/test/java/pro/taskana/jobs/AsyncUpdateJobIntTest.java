@@ -3,37 +3,29 @@ package pro.taskana.jobs;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.core.env.Environment;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.hal.Jackson2HalModule;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 
 import pro.taskana.Classification;
+import pro.taskana.RestHelper;
 import pro.taskana.Task;
 import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.rest.Mapping;
 import pro.taskana.rest.resource.ClassificationResource;
 import pro.taskana.rest.resource.ClassificationResourceAssembler;
 import pro.taskana.rest.resource.TaskResource;
@@ -56,34 +48,27 @@ class AsyncUpdateJobIntTest {
     @Autowired
     JobScheduler jobScheduler;
 
-    @Autowired
-    Environment env;
+    @Autowired RestHelper restHelper;
 
-    @LocalServerPort
-    int port;
+    static RestTemplate template;
 
-    private String server;
-
-    private RestTemplate template;
-
-    @BeforeEach
-    void before() {
-        template = getRestTemplate();
-        server = "http://127.0.0.1:" + port;
+    @BeforeAll
+    static void init() {
+        template = RestHelper.getRestTemplate();
     }
 
     @Test
     void testUpdateClassificationPrioServiceLevel()
-        throws IOException, InvalidArgumentException {
+        throws Exception {
 
         // 1st step: get old classification :
         Instant before = Instant.now();
         ObjectMapper mapper = new ObjectMapper();
 
         ResponseEntity<ClassificationResource> response = template.exchange(
-            server + "/api/v1/classifications/{classificationId}",
+            restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID),
             HttpMethod.GET,
-            new HttpEntity<String>(getHeaders()),
+            new HttpEntity<String>(restHelper.getHeaders()),
             ParameterizedTypeReference.forType(ClassificationResource.class),
             CLASSIFICATION_ID);
 
@@ -97,8 +82,8 @@ class AsyncUpdateJobIntTest {
         classification.setPriority(1000);
 
         template.put(
-            server + "/api/v1/classifications/{classificationId}",
-            new HttpEntity<>(mapper.writeValueAsString(classification), getHeaders()),
+            restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID),
+            new HttpEntity<>(mapper.writeValueAsString(classification), restHelper.getHeaders()),
             CLASSIFICATION_ID);
 
         //trigger jobs twice to refresh all entries. first entry on the first call and follow up on the seconds call
@@ -107,9 +92,9 @@ class AsyncUpdateJobIntTest {
 
         // verify the classification modified timestamp is after 'before'
         ResponseEntity<ClassificationResource> repeatedResponse = template.exchange(
-            server + "/api/v1/classifications/{classificationId}",
+            restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID),
             HttpMethod.GET,
-            new HttpEntity<String>(getHeaders()),
+            new HttpEntity<String>(restHelper.getHeaders()),
             ParameterizedTypeReference.forType(ClassificationResource.class),
             CLASSIFICATION_ID);
 
@@ -148,51 +133,18 @@ class AsyncUpdateJobIntTest {
 
     private void verifyTaskIsModifiedAfter(String taskId, Instant before)
         throws InvalidArgumentException {
-        RestTemplate admTemplate = getRestTemplate();
-        HttpHeaders admHeaders = new HttpHeaders();
-        admHeaders.add("Authorization", "Basic YWRtaW46YWRtaW4=");  // admin:admin
-
-        HttpEntity<String> admRequest = new HttpEntity<>(admHeaders);
+        RestTemplate admTemplate = RestHelper.getRestTemplate();
 
         ResponseEntity<TaskResource> taskResponse = admTemplate.exchange(
-            server + "/api/v1/tasks/{taskId}",
+            restHelper.toUrl(Mapping.URL_TASKS_ID),
             HttpMethod.GET,
-            admRequest,
+            new HttpEntity<>(restHelper.getHeadersAdmin()),
             ParameterizedTypeReference.forType(TaskResource.class), taskId);
 
         TaskResource taskResource = taskResponse.getBody();
         Task task = taskResourceAssembler.toModel(taskResource);
 
         assertFalse("Task " + task.getId() + " has not been refreshed.", before.isAfter(task.getModified()));
-    }
-
-    /**
-     * Return a REST template which is capable of dealing with responses in HAL format.
-     *
-     * @return RestTemplate
-     */
-    private RestTemplate getRestTemplate() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        mapper.registerModule(new Jackson2HalModule());
-
-        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-        converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/hal+json"));
-        converter.setObjectMapper(mapper);
-
-        RestTemplate template = new RestTemplate();
-        template.getMessageConverters().clear();
-        template.getMessageConverters().add(new StringHttpMessageConverter());
-        template.getMessageConverters().add(converter);
-        return template;
-    }
-
-    private HttpHeaders getHeaders() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-        headers.add("Content-Type", "application/hal+json");
-        return headers;
     }
 
 }
