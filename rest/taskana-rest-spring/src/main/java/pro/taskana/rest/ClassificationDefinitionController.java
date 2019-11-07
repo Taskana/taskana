@@ -12,12 +12,11 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.http.MediaType;
+import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,7 +43,7 @@ import pro.taskana.rest.resource.ClassificationResourceAssembler;
  * Controller for Importing / Exporting classifications.
  */
 @RestController
-@RequestMapping(path = "/api/v1/classification-definitions", produces = {MediaType.APPLICATION_JSON_VALUE})
+@EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
 public class ClassificationDefinitionController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationDefinitionController.class);
@@ -60,7 +59,7 @@ public class ClassificationDefinitionController {
         this.classificationResourceAssembler = classificationResourceAssembler;
     }
 
-    @GetMapping
+    @GetMapping(path = Mapping.URL_CLASSIFICATIONDEFINITION)
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<List<ClassificationResource>> exportClassifications(
         @RequestParam(required = false) String domain)
@@ -86,7 +85,7 @@ public class ClassificationDefinitionController {
         return response;
     }
 
-    @PostMapping
+    @PostMapping(path = Mapping.URL_CLASSIFICATIONDEFINITION)
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<Void> importClassifications(
         @RequestParam("file") MultipartFile file)

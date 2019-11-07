@@ -11,6 +11,7 @@ import pro.taskana.ClassificationService;
 import pro.taskana.ClassificationSummary;
 import pro.taskana.impl.ClassificationImpl;
 import pro.taskana.rest.ClassificationController;
+import pro.taskana.rest.Mapping;
 import pro.taskana.rest.resource.PagedResources.PageMetadata;
 import pro.taskana.rest.resource.links.PageLinks;
 
@@ -43,7 +44,7 @@ public class ClassificationSummaryResourceAssembler
         return classification.asSummary();
     }
 
-    @PageLinks(ClassificationController.class)
+    @PageLinks(Mapping.URL_CLASSIFICATIONS)
     public ClassificationSummaryListResource toResources(Collection<ClassificationSummary> entities,
         PageMetadata pageMetadata) {
         return new ClassificationSummaryListResource(toResources(entities), pageMetadata);

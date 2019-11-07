@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,7 +31,6 @@ import pro.taskana.rest.resource.WorkbasketAccessItemResourceAssembler;
  */
 @RestController
 @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
-@RequestMapping(path = "/api/v1/workbasket-access-items", produces = "application/hal+json")
 public class WorkbasketAccessItemController extends AbstractPagingController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketAccessItemController.class);
@@ -67,7 +65,7 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
      * @throws InvalidArgumentException
      *             if some argument is invalid.
      */
-    @GetMapping
+    @GetMapping(path = Mapping.URL_WORKBASKETACCESSITEMS)
     public ResponseEntity<WorkbasketAccessItemPaginatedListResource> getWorkbasketAccessItems(
         @RequestParam MultiValueMap<String, String> params)
         throws NotAuthorizedException, InvalidArgumentException {
@@ -106,7 +104,7 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
      * @throws InvalidArgumentException
      *             if some argument is invalid.
      */
-    @DeleteMapping
+    @DeleteMapping(path = Mapping.URL_WORKBASKETACCESSITEMS)
     public ResponseEntity<Void> removeWorkbasketAccessItems(
         @RequestParam("access-id") String accessId)
         throws NotAuthorizedException, InvalidArgumentException {

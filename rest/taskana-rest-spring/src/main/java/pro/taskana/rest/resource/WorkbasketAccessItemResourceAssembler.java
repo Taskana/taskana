@@ -15,7 +15,7 @@ import pro.taskana.WorkbasketService;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.WorkbasketAccessItemImpl;
-import pro.taskana.rest.WorkbasketAccessItemController;
+import pro.taskana.rest.Mapping;
 import pro.taskana.rest.WorkbasketController;
 import pro.taskana.rest.resource.PagedResources.PageMetadata;
 import pro.taskana.rest.resource.links.PageLinks;
@@ -48,7 +48,7 @@ public class WorkbasketAccessItemResourceAssembler extends
         return wbAccItemModel;
     }
 
-    @PageLinks(WorkbasketAccessItemController.class)
+    @PageLinks(Mapping.URL_WORKBASKETACCESSITEMS)
     public WorkbasketAccessItemPaginatedListResource toResources(
         List<WorkbasketAccessItem> entities, PageMetadata pageMetadata) {
         return new WorkbasketAccessItemPaginatedListResource(toResources(entities), pageMetadata);
