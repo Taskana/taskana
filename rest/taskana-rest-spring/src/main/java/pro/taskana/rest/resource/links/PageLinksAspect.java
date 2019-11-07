@@ -19,6 +19,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import pro.taskana.rest.WorkbasketController;
 import pro.taskana.rest.resource.PagedResources.PageMetadata;
 
 /**
@@ -35,8 +36,8 @@ public class PageLinksAspect {
             .getRequest();
         Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
         PageLinks pageLinks = method.getAnnotation(PageLinks.class);
-        Class<?> controller = pageLinks.value();
-        UriComponentsBuilder original = originalUri(controller, request);
+        String relativeUrl = pageLinks.value();
+        UriComponentsBuilder original = originalUri(relativeUrl, request);
         ResourceSupport resourceSupport = (ResourceSupport) joinPoint.proceed();
         resourceSupport.add(new Link(original.toUriString()).withSelfRel());
         if (page != null) {
@@ -57,8 +58,10 @@ public class PageLinksAspect {
         return resourceSupport;
     }
 
-    private UriComponentsBuilder originalUri(Class<?> controller, HttpServletRequest request) {
-        UriComponentsBuilder baseUri = linkTo(controller).toUriComponentsBuilder();
+    private UriComponentsBuilder originalUri(String relativeUrl, HttpServletRequest request) {
+        //any controller with a "root" mapping will do
+        UriComponentsBuilder baseUri = linkTo(WorkbasketController.class).toUriComponentsBuilder();
+        baseUri.path(relativeUrl);
         for (Map.Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
             for (String value : entry.getValue()) {
                 baseUri.queryParam(entry.getKey(), value);

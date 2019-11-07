@@ -5,44 +5,27 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.time.Instant;
-import java.util.Collections;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.core.env.Environment;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.hal.Jackson2HalModule;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import pro.taskana.Task;
+import pro.taskana.RestHelper;
 import pro.taskana.TaskanaSpringBootTest;
-import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.rest.resource.ClassificationResource;
 import pro.taskana.rest.resource.ClassificationSummaryListResource;
 import pro.taskana.rest.resource.ClassificationSummaryResource;
-import pro.taskana.rest.resource.TaskResource;
-import pro.taskana.rest.resource.TaskResourceAssembler;
 
 /**
  * Test ClassificationController.
@@ -52,30 +35,19 @@ import pro.taskana.rest.resource.TaskResourceAssembler;
 @TaskanaSpringBootTest
 class ClassificationControllerIntTest {
 
-    @Autowired
-    private TaskResourceAssembler taskResourceAssembler;
+    @Autowired RestHelper restHelper;
 
-    @Autowired
-    Environment env;
+    static RestTemplate template;
 
-    String server = "http://127.0.0.1:";
-    RestTemplate template;
-    HttpEntity<String> request;
-    HttpHeaders headers = new HttpHeaders();
-    @LocalServerPort
-    int port;
-
-    @BeforeEach
-    void before() {
-        template = getRestTemplate();
-        headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-        request = new HttpEntity<String>(headers);
+    @BeforeAll
+    static void init() {
+        template = RestHelper.getRestTemplate();
     }
 
     @Test
     void testGetAllClassifications() {
         ResponseEntity<ClassificationSummaryListResource> response = template.exchange(
-            server + port + "/api/v1/classifications", HttpMethod.GET, request,
+            restHelper.toUrl(Mapping.URL_CLASSIFICATIONS), HttpMethod.GET, restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(ClassificationSummaryListResource.class));
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
     }
@@ -83,8 +55,8 @@ class ClassificationControllerIntTest {
     @Test
     void testGetAllClassificationsFilterByCustomAttribute() {
         ResponseEntity<ClassificationSummaryListResource> response = template.exchange(
-            server + port + "/api/v1/classifications?domain=DOMAIN_A&custom-1-like=RVNR", HttpMethod.GET,
-            request,
+            restHelper.toUrl(Mapping.URL_CLASSIFICATIONS) + "?domain=DOMAIN_A&custom-1-like=RVNR", HttpMethod.GET,
+            restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(ClassificationSummaryListResource.class));
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
         assertEquals(13, response.getBody().getContent().size());
@@ -93,8 +65,8 @@ class ClassificationControllerIntTest {
     @Test
     void testGetAllClassificationsKeepingFilters() {
         ResponseEntity<ClassificationSummaryListResource> response = template.exchange(
-            server + port + "/api/v1/classifications?domain=DOMAIN_A&sort-by=key&order=asc", HttpMethod.GET,
-            request,
+            restHelper.toUrl(Mapping.URL_CLASSIFICATIONS) + "?domain=DOMAIN_A&sort-by=key&order=asc", HttpMethod.GET,
+            restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(ClassificationSummaryListResource.class));
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
         assertTrue(response.getBody()
@@ -108,9 +80,9 @@ class ClassificationControllerIntTest {
     @Test
     void testGetSecondPageSortedByKey() {
         ResponseEntity<ClassificationSummaryListResource> response = template.exchange(
-            server + port + "/api/v1/classifications?domain=DOMAIN_A&sort-by=key&order=asc&page=2&page-size=5",
+            restHelper.toUrl(Mapping.URL_CLASSIFICATIONS) + "?domain=DOMAIN_A&sort-by=key&order=asc&page=2&page-size=5",
             HttpMethod.GET,
-            request,
+            restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(ClassificationSummaryListResource.class));
         assertEquals(5, response.getBody().getContent().size());
         assertEquals("L1050", response.getBody().getContent().iterator().next().key);
@@ -127,70 +99,61 @@ class ClassificationControllerIntTest {
 
     @Test
     @DirtiesContext
-    void testCreateClassification() throws IOException {
+    void testCreateClassification() {
         String newClassification = "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS\",\"name\":\"new classification\",\"type\":\"TASK\"}";
-        URL url = new URL(server + port + "/api/v1/classifications");
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("POST");
-        con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-        con.setDoOutput(true);
-        con.setRequestProperty("Content-Type", "application/json");
-        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
-        out.write(newClassification);
-        out.flush();
-        out.close();
-        assertEquals(201, con.getResponseCode());
-        con.disconnect();
+
+        ResponseEntity<ClassificationResource> responseEntity = template.exchange(
+            restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
+            HttpMethod.POST,
+            new HttpEntity<>(newClassification, restHelper.getHeaders()),
+            ParameterizedTypeReference.forType(ClassificationResource.class)
+        );
+
+        assertNotNull(responseEntity);
+        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
 
         newClassification = "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS_2\",\"name\":\"new classification\",\"type\":\"TASK\"}";
-        url = new URL(server + port + "/api/v1/classifications");
-        con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("POST");
-        con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-        con.setDoOutput(true);
-        con.setRequestProperty("Content-Type", "application/json");
-        out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
-        out.write(newClassification);
-        out.flush();
-        out.close();
-        assertEquals(201, con.getResponseCode());
-        con.disconnect();
+
+        responseEntity = template.exchange(restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
+            HttpMethod.POST,
+            new HttpEntity<>(newClassification, restHelper.getHeaders()),
+            ParameterizedTypeReference.forType(ClassificationResource.class)
+        );
+
+        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
     }
 
     @Test
     @DirtiesContext
-    void testCreateClassificationWithParentId() throws IOException {
+    void testCreateClassificationWithParentId() {
         String newClassification = "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_B\",\"key\":\"NEW_CLASS_P1\",\"name\":\"new classification\",\"type\":\"TASK\",\"parentId\":\"CLI:200000000000000000000000000000000015\"}";
-        URL url = new URL(server + port + "/api/v1/classifications");
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("POST");
-        con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-        con.setDoOutput(true);
-        con.setRequestProperty("Content-Type", "application/json");
-        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
-        out.write(newClassification);
-        out.flush();
-        out.close();
-        assertEquals(201, con.getResponseCode());
-        con.disconnect();
+
+        ResponseEntity<ClassificationResource> responseEntity = template.exchange(
+            restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
+            HttpMethod.POST,
+            new HttpEntity<>(newClassification, restHelper.getHeaders()),
+            ParameterizedTypeReference.forType(ClassificationResource.class)
+        );
+
+        assertNotNull(responseEntity);
+        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+
     }
 
     @Test
     @DirtiesContext
-    void testCreateClassificationWithParentKey() throws IOException {
+    void testCreateClassificationWithParentKey() {
         String newClassification = "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_B\",\"key\":\"NEW_CLASS_P2\",\"name\":\"new classification\",\"type\":\"TASK\",\"parentKey\":\"T2100\"}";
-        URL url = new URL(server + port + "/api/v1/classifications");
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("POST");
-        con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-        con.setDoOutput(true);
-        con.setRequestProperty("Content-Type", "application/json");
-        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
-        out.write(newClassification);
-        out.flush();
-        out.close();
-        assertEquals(201, con.getResponseCode());
-        con.disconnect();
+
+        ResponseEntity<ClassificationResource> responseEntity = template.exchange(
+            restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
+            HttpMethod.POST,
+            new HttpEntity<>(newClassification, restHelper.getHeaders()),
+            ParameterizedTypeReference.forType(ClassificationResource.class)
+        );
+
+        assertNotNull(responseEntity);
+        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
     }
 
     @Test
@@ -199,22 +162,19 @@ class ClassificationControllerIntTest {
         throws IOException {
         String newClassification = "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS_P2\",\"name\":\"new classification\",\"type\":\"TASK\",\"parentKey\":\"T2100\"}";
 
-        URL url = new URL(server + port + "/api/v1/classifications");
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("POST");
-        con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-        con.setDoOutput(true);
-        con.setRequestProperty("Content-Type", "application/json");
-        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
-        out.write(newClassification);
-        out.flush();
-        out.close();
-        assertEquals(201, con.getResponseCode());
-        con.disconnect();
+        ResponseEntity<ClassificationResource> responseEntity = template.exchange(
+            restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
+            HttpMethod.POST,
+            new HttpEntity<>(newClassification, restHelper.getHeaders()),
+            ParameterizedTypeReference.forType(ClassificationResource.class)
+        );
+
+        assertNotNull(responseEntity);
+        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
 
         ResponseEntity<ClassificationSummaryListResource> response = template.exchange(
-            server + port + "/api/v1/classifications", HttpMethod.GET,
-            request,
+            restHelper.toUrl(Mapping.URL_CLASSIFICATIONS), HttpMethod.GET,
+            restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(ClassificationSummaryListResource.class));
         assertNotNull(response.getBody().getLink(Link.REL_SELF));
         boolean foundClassificationCreated = false;
@@ -232,112 +192,67 @@ class ClassificationControllerIntTest {
     @DirtiesContext
     void testReturn400IfCreateClassificationWithIncompatibleParentIdAndKey() throws IOException {
         String newClassification = "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_B\",\"key\":\"NEW_CLASS_P3\",\"name\":\"new classification\",\"type\":\"TASK\",\"parentId\":\"CLI:200000000000000000000000000000000015\",\"parentKey\":\"T2000\"}";
-        URL url = new URL(server + port + "/api/v1/classifications");
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("POST");
-        con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-        con.setDoOutput(true);
-        con.setRequestProperty("Content-Type", "application/json");
-        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
-        out.write(newClassification);
-        out.flush();
-        out.close();
-        assertEquals(400, con.getResponseCode());
-        con.disconnect();
+
+        HttpClientErrorException e = Assertions.assertThrows(HttpClientErrorException.class, () -> template.exchange(
+            restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
+            HttpMethod.POST,
+            new HttpEntity<>(newClassification, restHelper.getHeaders()),
+            ParameterizedTypeReference.forType(ClassificationResource.class)
+        ));
+
+        assertNotNull(e);
+        assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
     }
 
     @Test
     @DirtiesContext
     void testCreateClassificationWithClassificationIdReturnsError400() throws IOException {
         String newClassification = "{\"classificationId\":\"someId\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS\",\"name\":\"new classification\",\"type\":\"TASK\"}";
-        URL url = new URL("http://127.0.0.1:" + port + "/api/v1/classifications");
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("POST");
-        con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-        con.setDoOutput(true);
-        con.setRequestProperty("Content-Type", "application/json");
-        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
-        out.write(newClassification);
-        out.flush();
-        out.close();
-        assertEquals(400, con.getResponseCode());
-        con.disconnect();
+
+        HttpClientErrorException e = Assertions.assertThrows(HttpClientErrorException.class, () -> template.exchange(
+            restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
+            HttpMethod.POST,
+            new HttpEntity<>(newClassification, restHelper.getHeaders()),
+            ParameterizedTypeReference.forType(ClassificationResource.class)
+        ));
+
+        assertNotNull(e);
+        assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
     }
 
     @Test
     void testGetClassificationWithSpecialCharacter() {
-        RestTemplate template = getRestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-        HttpEntity<String> request = new HttpEntity<String>(headers);
+
+        HttpEntity<String> request = new HttpEntity<String>(restHelper.getHeadersAdmin());
         ResponseEntity<ClassificationSummaryResource> response = template.exchange(
-            "http://127.0.0.1:" + port + "/api/v1/classifications/CLI:100000000000000000000000000000000009",
+            restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, "CLI:100000000000000000000000000000000009"),
             HttpMethod.GET,
             request,
-            ParameterizedTypeReference.forType(ClassificationSummaryResource.class));
+            ParameterizedTypeReference.forType(ClassificationSummaryResource.class)
+        );
         assertEquals("Zustimmungserklärung", response.getBody().name);
     }
 
     @Test
     @DirtiesContext
     void testDeleteClassification() {
-        RestTemplate template = getRestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-        HttpEntity<String> request = new HttpEntity<String>(headers);
+        HttpEntity<String> request = new HttpEntity<String>(restHelper.getHeaders());
 
         ResponseEntity<ClassificationSummaryResource> response = template.exchange(
-            "http://127.0.0.1:" + port + "/api/v1/classifications/CLI:200000000000000000000000000000000004",
+            restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, "CLI:200000000000000000000000000000000004"),
             HttpMethod.DELETE,
             request,
-            ParameterizedTypeReference.forType(ClassificationSummaryResource.class));
+            ParameterizedTypeReference.forType(ClassificationSummaryResource.class)
+        );
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
 
         assertThrows(HttpClientErrorException.class, () -> {
             template.exchange(
-                "http://127.0.0.1:" + port + "/api/v1/classifications/CLI:200000000000000000000000000000000004",
+                restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, "CLI:200000000000000000000000000000000004"),
                 HttpMethod.GET,
                 request,
-                ParameterizedTypeReference.forType(ClassificationSummaryResource.class));
+                ParameterizedTypeReference.forType(ClassificationSummaryResource.class)
+            );
         });
     }
-
-    private void verifyTaskIsModifiedAfter(String taskId, Instant before)
-        throws InvalidArgumentException {
-        RestTemplate admTemplate = getRestTemplate();
-        HttpHeaders admHeaders = new HttpHeaders();
-        admHeaders.add("Authorization", "Basic YWRtaW46YWRtaW4=");  // admin:admin
-
-        HttpEntity<String> admRequest = new HttpEntity<String>(admHeaders);
-
-        ResponseEntity<TaskResource> taskResponse = admTemplate.exchange(
-            "http://127.0.0.1:" + port + "/api/v1/tasks/" + taskId,
-            HttpMethod.GET,
-            admRequest,
-            ParameterizedTypeReference.forType(TaskResource.class));
-
-        TaskResource taskResource = taskResponse.getBody();
-        Task task = taskResourceAssembler.toModel(taskResource);
-
-        assertTrue(!before.isAfter(task.getModified()));
-    }
-
-    /**
-     * Return a REST template which is capable of dealing with responses in HAL format.
-     *
-     * @return RestTemplate
-     */
-    private RestTemplate getRestTemplate() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        mapper.registerModule(new Jackson2HalModule());
-
-        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-        converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/hal+json"));
-        converter.setObjectMapper(mapper);
-
-        RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>>singletonList(converter));
-        return template;
-    }
-
 }

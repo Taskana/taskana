@@ -8,11 +8,11 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,7 +28,7 @@ import pro.taskana.rest.resource.ReportResourceAssembler;
  * Controller for all monitoring endpoints.
  */
 @RestController
-@RequestMapping(path = "/api/v1/monitor", produces = "application/hal+json")
+@EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
 public class MonitorController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MonitorController.class);
@@ -42,7 +42,7 @@ public class MonitorController {
         this.reportResourceAssembler = reportResourceAssembler;
     }
 
-    @GetMapping(path = "/tasks-status-report")
+    @GetMapping(path = Mapping.URL_MONITOR_TASKSSTATUS)
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<ReportResource> getTasksStatusReport(@RequestParam(required = false) List<String> domains,
         @RequestParam(required = false) List<TaskState> states) throws NotAuthorizedException,
@@ -58,7 +58,7 @@ public class MonitorController {
         return response;
     }
 
-    @GetMapping(path = "/tasks-workbasket-report")
+    @GetMapping(path = Mapping.URL_MONITOR_TASKSWORKBASKET)
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<?> getTasksWorkbasketReport(
         @RequestParam(value = "states") List<TaskState> states)
@@ -80,7 +80,7 @@ public class MonitorController {
 
     }
 
-    @GetMapping(path = "/tasks-workbasket-planned-date-report")
+    @GetMapping(path = Mapping.URL_MONITOR_TASKSWORKBASKETPLANNED)
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<?> getTasksWorkbasketPlannedDateReport(
         @RequestParam(value = "daysInPast") int daysInPast,
@@ -103,7 +103,7 @@ public class MonitorController {
 
     }
 
-    @GetMapping(path = "/tasks-classification-report")
+    @GetMapping(path = Mapping.URL_MONITOR_TASKSCLASSIFICATION)
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<ReportResource> getTasksClassificationReport()
         throws NotAuthorizedException, InvalidArgumentException {
@@ -122,7 +122,7 @@ public class MonitorController {
             .body(report);
     }
 
-    @GetMapping(path = "/timestamp-report")
+    @GetMapping(path = Mapping.URL_MONITOR_TIMESTAMP)
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<ReportResource> getDailyEntryExitReport()
         throws NotAuthorizedException, InvalidArgumentException {

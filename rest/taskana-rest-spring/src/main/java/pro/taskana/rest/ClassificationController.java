@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -43,7 +42,6 @@ import pro.taskana.rest.resource.PagedResources.PageMetadata;
  */
 @RestController
 @EnableHypermediaSupport(type = HypermediaType.HAL)
-@RequestMapping(path = "/api/v1/classifications", produces = "application/hal+json")
 public class ClassificationController extends AbstractPagingController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationController.class);
@@ -97,7 +95,7 @@ public class ClassificationController extends AbstractPagingController {
         this.classificationSummaryResourceAssembler = classificationSummaryResourceAssembler;
     }
 
-    @GetMapping
+    @GetMapping(path = Mapping.URL_CLASSIFICATIONS)
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<ClassificationSummaryListResource> getClassifications(
         @RequestParam MultiValueMap<String, String> params) throws InvalidArgumentException {
@@ -123,7 +121,7 @@ public class ClassificationController extends AbstractPagingController {
         return response;
     }
 
-    @GetMapping(path = "/{classificationId}")
+    @GetMapping(path = Mapping.URL_CLASSIFICATIONS_ID)
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<ClassificationResource> getClassification(@PathVariable String classificationId)
         throws ClassificationNotFoundException {
@@ -141,7 +139,7 @@ public class ClassificationController extends AbstractPagingController {
         return response;
     }
 
-    @PostMapping
+    @PostMapping(path = Mapping.URL_CLASSIFICATIONS)
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<ClassificationResource> createClassification(
         @RequestBody ClassificationResource resource)
@@ -162,7 +160,7 @@ public class ClassificationController extends AbstractPagingController {
         return response;
     }
 
-    @PutMapping(path = "/{classificationId}")
+    @PutMapping(path = Mapping.URL_CLASSIFICATIONS_ID)
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<ClassificationResource> updateClassification(
         @PathVariable(value = "classificationId") String classificationId, @RequestBody ClassificationResource resource)
@@ -191,7 +189,7 @@ public class ClassificationController extends AbstractPagingController {
         return result;
     }
 
-    @DeleteMapping(path = "/{classificationId}")
+    @DeleteMapping(path = Mapping.URL_CLASSIFICATIONS_ID)
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<?> deleteClassification(@PathVariable String classificationId)
         throws ClassificationNotFoundException, ClassificationInUseException, NotAuthorizedException {

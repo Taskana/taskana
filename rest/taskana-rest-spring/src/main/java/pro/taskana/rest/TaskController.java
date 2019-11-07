@@ -11,13 +11,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -49,7 +49,6 @@ import pro.taskana.rest.resource.TaskSummaryResourceAssembler;
  */
 @RestController
 @EnableHypermediaSupport(type = HypermediaType.HAL)
-@RequestMapping(path = "/api/v1/tasks", produces = "application/hal+json")
 public class TaskController extends AbstractPagingController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskController.class);
@@ -94,7 +93,7 @@ public class TaskController extends AbstractPagingController {
         this.taskSummaryResourceAssembler = taskSummaryResourceAssembler;
     }
 
-    @GetMapping
+    @GetMapping(path = Mapping.URL_TASKS)
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<TaskSummaryListResource> getTasks(
         @RequestParam MultiValueMap<String, String> params) throws InvalidArgumentException {
@@ -119,7 +118,7 @@ public class TaskController extends AbstractPagingController {
         return response;
     }
 
-    @GetMapping(path = "/{taskId}")
+    @GetMapping(path = Mapping.URL_TASKS_ID)
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ResponseEntity<TaskResource> getTask(@PathVariable String taskId)
         throws TaskNotFoundException, NotAuthorizedException {
@@ -133,7 +132,7 @@ public class TaskController extends AbstractPagingController {
         return result;
     }
 
-    @PostMapping(path = "/{taskId}/claim")
+    @PostMapping(path = Mapping.URL_TASKS_ID_CLAIM)
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<TaskResource> claimTask(@PathVariable String taskId, @RequestBody String userName)
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException, NotAuthorizedException {
@@ -149,7 +148,7 @@ public class TaskController extends AbstractPagingController {
         return result;
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/{taskId}/complete")
+    @PostMapping(path = Mapping.URL_TASKS_ID_COMPLETE)
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<TaskResource> completeTask(@PathVariable String taskId)
         throws TaskNotFoundException, InvalidOwnerException, InvalidStateException, NotAuthorizedException {
@@ -164,7 +163,7 @@ public class TaskController extends AbstractPagingController {
         return result;
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, value = "/{taskId}")
+    @DeleteMapping(path = Mapping.URL_TASKS_ID)
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<TaskResource> deleteTask(@PathVariable String taskId)
         throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
@@ -175,7 +174,7 @@ public class TaskController extends AbstractPagingController {
         return result;
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping(path = Mapping.URL_TASKS)
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<TaskResource> createTask(@RequestBody TaskResource taskResource)
         throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -194,7 +193,7 @@ public class TaskController extends AbstractPagingController {
         return result;
     }
 
-    @RequestMapping(path = "/{taskId}/transfer/{workbasketId}")
+    @RequestMapping(path = Mapping.URL_TASKS_ID_TRANSFER_WORKBASKETID)
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<TaskResource> transferTask(@PathVariable String taskId, @PathVariable String workbasketId)
         throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidStateException {
@@ -208,7 +207,7 @@ public class TaskController extends AbstractPagingController {
         return result;
     }
 
-    @PutMapping(path = "/{taskId}")
+    @PutMapping(path = Mapping.URL_TASKS_ID)
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<TaskResource> updateTask(
         @PathVariable(value = "taskId") String taskId,

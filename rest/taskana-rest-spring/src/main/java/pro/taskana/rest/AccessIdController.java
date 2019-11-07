@@ -9,7 +9,6 @@ import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,7 +24,6 @@ import pro.taskana.rest.resource.AccessIdResource;
  */
 @RestController
 @EnableHypermediaSupport(type = HypermediaType.HAL)
-@RequestMapping(path = "/api/v1/access-ids", produces = "application/hal+json")
 public class AccessIdController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccessIdController.class);
@@ -35,7 +33,7 @@ public class AccessIdController {
 
     private static LdapCache ldapCache;
 
-    @GetMapping
+    @GetMapping(path = Mapping.URL_ACCESSID)
     public ResponseEntity<List<AccessIdResource>> validateAccessIds(
         @RequestParam("search-for") String searchFor) throws InvalidArgumentException {
         LOGGER.debug("Entry to validateAccessIds(search-for= {})", searchFor);
@@ -68,7 +66,7 @@ public class AccessIdController {
         }
     }
 
-    @GetMapping(path = "/groups")
+    @GetMapping(path = Mapping.URL_ACCESSID_GROUPS)
     public ResponseEntity<List<AccessIdResource>> getGroupsByAccessId(
         @RequestParam("access-id") String accessId) throws InvalidArgumentException {
         LOGGER.debug("Entry to getGroupsByAccessId(access-id= {})", accessId);
