@@ -180,73 +180,73 @@ public class TaskServiceImpl implements TaskService {
         TaskImpl task = (TaskImpl) taskToCreate;
         try {
             taskanaEngine.openConnection();
-            if (task.getId() != null && !"".equals(task.getId())) {
+
+            if (task.getId() != null && !task.getId().equals("")) {
                 throw new TaskAlreadyExistException(task.getId());
-            } else {
-                LOGGER.debug("Task {} cannot be be found, so it can be created.", task.getId());
-                Workbasket workbasket;
-
-                if (task.getWorkbasketSummary().getId() != null) {
-                    workbasket = workbasketService.getWorkbasket(task.getWorkbasketSummary().getId());
-                } else if (task.getWorkbasketKey() != null) {
-                    workbasket = workbasketService.getWorkbasket(task.getWorkbasketKey(), task.getDomain());
-                } else {
-                    throw new InvalidArgumentException("Cannot create a task outside a workbasket");
-                }
-
-                if (!workbasket.isMarkedForDeletion()) {
-                    task.setWorkbasketSummary(workbasket.asSummary());
-                } else {
-                    throw new WorkbasketNotFoundException(workbasket.getId(),
-                        THE_WORKBASKET + workbasket.getId() + WAS_MARKED_FOR_DELETION);
-                }
-
-                task.setDomain(workbasket.getDomain());
-
-                workbasketService.checkAuthorization(task.getWorkbasketSummary().getId(),
-                    WorkbasketPermission.APPEND);
-
-                // we do use the key and not the ID to make sure that we use the classification from the right domain.
-                // otherwise we would have to check the classification and its domain for validity.
-                String classificationKey = task.getClassificationKey();
-                if (classificationKey == null || classificationKey.length() == 0) {
-                    throw new InvalidArgumentException("classificationKey of task must not be empty");
-                }
-
-                Classification classification = this.classificationService.getClassification(classificationKey,
-                    workbasket.getDomain());
-                task.setClassificationSummary(classification.asSummary());
-                validateObjectReference(task.getPrimaryObjRef(), "primary ObjectReference", "Task");
-                PrioDurationHolder prioDurationFromAttachments = handleAttachments(task);
-                standardSettings(task, classification, prioDurationFromAttachments);
-                setCallbackStateOnTaskCreation(task);
-                try {
-                    this.taskMapper.insert(task);
-                    LOGGER.debug("Method createTask() created Task '{}'.", task.getId());
-                    if (HistoryEventProducer.isHistoryEnabled()) {
-                        historyEventProducer.createEvent(new CreatedEvent(task));
-                    }
-                } catch (PersistenceException e) {
-                    // Error messages:
-                    // Postgres: ERROR: duplicate key value violates unique constraint "uc_external_id"
-                    // DB/2: ### Error updating database.  Cause: com.ibm.db2.jcc.am.SqlIntegrityConstraintViolationException: DB2 SQL Error: SQLCODE=-803, SQLSTATE=23505, SQLERRMC=2;TASKANA.TASK, DRIVER=4.22.29
-                    //       ### The error may involve pro.taskana.mappings.TaskMapper.insert-Inline
-                    //       ### The error occurred while setting parameters
-                    //       ### SQL: INSERT INTO TASK(ID, EXTERNAL_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, CREATOR, DESCRIPTION, NOTE, PRIORITY, STATE,  CLASSIFICATION_CATEGORY, CLASSIFICATION_KEY, CLASSIFICATION_ID, WORKBASKET_ID, WORKBASKET_KEY, DOMAIN, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, POR_SYSTEM, POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CALLBACK_INFO, CUSTOM_ATTRIBUTES, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10, CUSTOM_11,  CUSTOM_12,  CUSTOM_13,  CUSTOM_14,  CUSTOM_15,  CUSTOM_16 ) VALUES(?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,  ?)
-                    //       ### Cause: com.ibm.db2.jcc.am.SqlIntegrityConstraintViolationException: DB2 SQL Error: SQLCODE=-803, SQLSTATE=23505, SQLERRMC=2;TASKANA.TASK, DRIVER=4.22.29
-                    // H2:   ### Error updating database.  Cause: org.h2.jdbc.JdbcSQLException: Unique index or primary key violation: "UC_EXTERNAL_ID_INDEX_2 ON TASKANA.TASK(EXTERNAL_ID) ...
-                    String msg = e.getMessage() != null ? e.getMessage().toLowerCase() : null;
-                    if (msg != null
-                        && (msg.contains("violation") || msg.contains("violates"))
-                        && msg.contains("external_id")) {
-                        throw new TaskAlreadyExistException(
-                            "Task with external id " + task.getExternalId() + " already exists");
-                    } else {
-                        throw e;
-                    }
-                }
-                return task;
             }
+
+            LOGGER.debug("Task {} cannot be found, so it can be created.", task.getId());
+            Workbasket workbasket;
+
+            if (task.getWorkbasketSummary().getId() != null) {
+                workbasket = workbasketService.getWorkbasket(task.getWorkbasketSummary().getId());
+            } else if (task.getWorkbasketKey() != null) {
+                workbasket = workbasketService.getWorkbasket(task.getWorkbasketKey(), task.getDomain());
+            } else {
+                throw new InvalidArgumentException("Cannot create a task outside a workbasket");
+            }
+
+            if (workbasket.isMarkedForDeletion()) {
+                throw new WorkbasketNotFoundException(workbasket.getId(),
+                    THE_WORKBASKET + workbasket.getId() + WAS_MARKED_FOR_DELETION);
+            }
+
+            task.setWorkbasketSummary(workbasket.asSummary());
+            task.setDomain(workbasket.getDomain());
+
+            workbasketService.checkAuthorization(task.getWorkbasketSummary().getId(),
+                WorkbasketPermission.APPEND);
+
+            // we do use the key and not the ID to make sure that we use the classification from the right domain.
+            // otherwise we would have to check the classification and its domain for validity.
+            String classificationKey = task.getClassificationKey();
+            if (classificationKey == null || classificationKey.length() == 0) {
+                throw new InvalidArgumentException("classificationKey of task must not be empty");
+            }
+
+            Classification classification = this.classificationService.getClassification(classificationKey,
+                workbasket.getDomain());
+            task.setClassificationSummary(classification.asSummary());
+            validateObjectReference(task.getPrimaryObjRef(), "primary ObjectReference", "Task");
+            PrioDurationHolder prioDurationFromAttachments = handleAttachments(task);
+            standardSettings(task, classification, prioDurationFromAttachments);
+            setCallbackStateOnTaskCreation(task);
+            try {
+                this.taskMapper.insert(task);
+                LOGGER.debug("Method createTask() created Task '{}'.", task.getId());
+                if (HistoryEventProducer.isHistoryEnabled()) {
+                    historyEventProducer.createEvent(new CreatedEvent(task));
+                }
+            } catch (PersistenceException e) {
+                // Error messages:
+                // Postgres: ERROR: duplicate key value violates unique constraint "uc_external_id"
+                // DB/2: ### Error updating database.  Cause: com.ibm.db2.jcc.am.SqlIntegrityConstraintViolationException: DB2 SQL Error: SQLCODE=-803, SQLSTATE=23505, SQLERRMC=2;TASKANA.TASK, DRIVER=4.22.29
+                //       ### The error may involve pro.taskana.mappings.TaskMapper.insert-Inline
+                //       ### The error occurred while setting parameters
+                //       ### SQL: INSERT INTO TASK(ID, EXTERNAL_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, CREATOR, DESCRIPTION, NOTE, PRIORITY, STATE,  CLASSIFICATION_CATEGORY, CLASSIFICATION_KEY, CLASSIFICATION_ID, WORKBASKET_ID, WORKBASKET_KEY, DOMAIN, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, POR_SYSTEM, POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CALLBACK_INFO, CUSTOM_ATTRIBUTES, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10, CUSTOM_11,  CUSTOM_12,  CUSTOM_13,  CUSTOM_14,  CUSTOM_15,  CUSTOM_16 ) VALUES(?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,  ?)
+                //       ### Cause: com.ibm.db2.jcc.am.SqlIntegrityConstraintViolationException: DB2 SQL Error: SQLCODE=-803, SQLSTATE=23505, SQLERRMC=2;TASKANA.TASK, DRIVER=4.22.29
+                // H2:   ### Error updating database.  Cause: org.h2.jdbc.JdbcSQLException: Unique index or primary key violation: "UC_EXTERNAL_ID_INDEX_2 ON TASKANA.TASK(EXTERNAL_ID) ...
+                String msg = e.getMessage() != null ? e.getMessage().toLowerCase() : null;
+                if (msg != null
+                    && (msg.contains("violation") || msg.contains("violates"))
+                    && msg.contains("external_id")) {
+                    throw new TaskAlreadyExistException(
+                        "Task with external id " + task.getExternalId() + " already exists");
+                } else {
+                    throw e;
+                }
+            }
+            return task;
         } finally {
             taskanaEngine.returnConnection();
             LOGGER.debug("exit from createTask(task = {})", task);
@@ -1208,16 +1208,8 @@ public class TaskServiceImpl implements TaskService {
             newTaskImpl.setClassificationSummary(newClassificationSummary);
         }
 
-        if (newClassificationSummary.getServiceLevel() != null) {
-            Duration durationFromClassification = Duration.parse(newClassificationSummary.getServiceLevel());
-            Duration minDuration = prioDurationFromAttachments.getDuration();
-            if (minDuration != null) {
-                if (minDuration.compareTo(durationFromClassification) > 0) {
-                    minDuration = durationFromClassification;
-                }
-            } else {
-                minDuration = durationFromClassification;
-            }
+        Duration minDuration = calculateDuration(prioDurationFromAttachments, newClassificationSummary);
+        if (minDuration != null) {
 
             long days = converter.convertWorkingDaysToDays(newTaskImpl.getPlanned(), minDuration.toDays());
             Instant due = newTaskImpl.getPlanned().plus(Duration.ofDays(days));
@@ -1236,6 +1228,23 @@ public class TaskServiceImpl implements TaskService {
         int newPriority = Math.max(newClassificationSummary.getPriority(), prioDurationFromAttachments.getPrio());
         newTaskImpl.setPriority(newPriority);
         LOGGER.debug("exit from updateTaskPrioDurationFromClassification()");
+    }
+
+    Duration calculateDuration(PrioDurationHolder prioDurationFromAttachments,
+        ClassificationSummary newClassificationSummary) {
+        if (newClassificationSummary.getServiceLevel() == null) {
+            return null;
+        }
+        Duration minDuration = prioDurationFromAttachments.getDuration();
+        Duration durationFromClassification = Duration.parse(newClassificationSummary.getServiceLevel());
+        if (minDuration != null) {
+            if (minDuration.compareTo(durationFromClassification) > 0) {
+                minDuration = durationFromClassification;
+            }
+        } else {
+            minDuration = durationFromClassification;
+        }
+        return minDuration;
     }
 
     private PrioDurationHolder handleAttachmentsOnTaskUpdate(TaskImpl oldTaskImpl, TaskImpl newTaskImpl)
@@ -1377,9 +1386,7 @@ public class TaskServiceImpl implements TaskService {
         PrioDurationHolder prioDuration = new PrioDurationHolder(MAX_DURATION, Integer.MIN_VALUE);
 
         // Iterator for removing invalid current values directly. OldAttachments can be ignored.
-        Iterator<Attachment> i = task.getAttachments().iterator();
-        while (i.hasNext()) {
-            Attachment attachment = i.next();
+        for (Attachment attachment : task.getAttachments()) {
             if (attachment != null) {
                 ClassificationSummary classification = attachment.getClassificationSummary();
                 if (classification != null) {
@@ -1521,17 +1528,9 @@ public class TaskServiceImpl implements TaskService {
     private void updateTaskPrioDurationFromClassificationAndAttachments(TaskImpl task,
         PrioDurationHolder prioDurationFromAttachments, ClassificationSummary classificationSummary) {
         LOGGER.debug("entry to updateTaskPrioDurationFromClassificationAndAttachments()");
-        if (classificationSummary.getServiceLevel() != null) {
-            Duration durationFromClassification = Duration.parse(classificationSummary.getServiceLevel());
-            Duration minDuration = prioDurationFromAttachments.getDuration();
-            if (minDuration != null) {
-                if (minDuration.compareTo(durationFromClassification) > 0) {
-                    minDuration = durationFromClassification;
-                }
-            } else {
-                minDuration = durationFromClassification;
-            }
 
+        Duration minDuration = calculateDuration(prioDurationFromAttachments, classificationSummary);
+        if (minDuration != null) {
             long days = converter.convertWorkingDaysToDays(task.getPlanned(), minDuration.toDays());
             Instant due = task.getPlanned().plus(Duration.ofDays(days));
 
