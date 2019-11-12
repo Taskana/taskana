@@ -1,13 +1,19 @@
 package pro.taskana.impl;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+
 import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,12 +33,12 @@ public final class DaysToWorkingDaysConverter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskMonitorServiceImpl.class);
     private static DaysToWorkingDaysConverter instance;
-    private static ArrayList<Integer> positiveDaysToWorkingDays;
-    private static ArrayList<Integer> negativeDaysToWorkingDays;
-    private static Instant dateCreated;
-    private static LocalDate easterSunday;
+    private ArrayList<Integer> positiveDaysToWorkingDays;
+    private ArrayList<Integer> negativeDaysToWorkingDays;
+    private Instant dateCreated;
+    private LocalDate easterSunday;
     private static boolean germanHolidaysEnabled;
-    private static List<LocalDate> customHolidays;
+    private static Set<LocalDate> customHolidays = new HashSet<>();
 
     private DaysToWorkingDaysConverter(List<? extends TimeIntervalColumnHeader> columnHeaders,
         Instant referenceDate) {
@@ -46,11 +52,9 @@ public final class DaysToWorkingDaysConverter {
      * Initializes the DaysToWorkingDaysConverter for a list of {@link TimeIntervalColumnHeader}s and the current day. A
      * new table is only created if there are bigger limits or the date has changed.
      *
-     * @param columnHeaders
-     *            a list of {@link TimeIntervalColumnHeader}s that determines the size of the table
+     * @param columnHeaders a list of {@link TimeIntervalColumnHeader}s that determines the size of the table
      * @return an instance of the DaysToWorkingDaysConverter
-     * @throws InvalidArgumentException
-     *             thrown if columnHeaders is null
+     * @throws InvalidArgumentException thrown if columnHeaders is null
      */
     public static DaysToWorkingDaysConverter initialize(List<? extends TimeIntervalColumnHeader> columnHeaders)
         throws InvalidArgumentException {
@@ -61,13 +65,10 @@ public final class DaysToWorkingDaysConverter {
      * Initializes the DaysToWorkingDaysConverter for a list of {@link TimeIntervalColumnHeader}s and a referenceDate. A
      * new table is only created if there are bigger limits or the date has changed.
      *
-     * @param columnHeaders
-     *            a list of {@link TimeIntervalColumnHeader}s that determines the size of the table
-     * @param referenceDate
-     *            a {@link Instant} that represents the current day of the table
+     * @param columnHeaders a list of {@link TimeIntervalColumnHeader}s that determines the size of the table
+     * @param referenceDate a {@link Instant} that represents the current day of the table
      * @return an instance of the DaysToWorkingDaysConverter
-     * @throws InvalidArgumentException
-     *             thrown if columnHeaders or referenceDate is null
+     * @throws InvalidArgumentException thrown if columnHeaders or referenceDate is null
      */
     public static DaysToWorkingDaysConverter initialize(List<? extends TimeIntervalColumnHeader> columnHeaders,
         Instant referenceDate) throws InvalidArgumentException {
@@ -81,38 +82,18 @@ public final class DaysToWorkingDaysConverter {
         if (referenceDate == null) {
             throw new InvalidArgumentException("ReferenceDate can´t be used as NULL-Parameter");
         }
-        int largesLowerLimit = getLargestLowerLimit(columnHeaders);
-        int smallestUpperLimit = getSmallestUpperLimit(columnHeaders);
+        int largesLowerLimit = TimeIntervalColumnHeader.getLargestLowerLimit(columnHeaders);
+        int smallestUpperLimit = TimeIntervalColumnHeader.getSmallestUpperLimit(columnHeaders);
         if (instance == null
-            || !positiveDaysToWorkingDays.contains(largesLowerLimit)
-            || !negativeDaysToWorkingDays.contains(smallestUpperLimit)
-            || !dateCreated.truncatedTo(ChronoUnit.DAYS).equals(referenceDate.truncatedTo(ChronoUnit.DAYS))) {
+            || !instance.positiveDaysToWorkingDays.contains(largesLowerLimit)
+            || !instance.negativeDaysToWorkingDays.contains(smallestUpperLimit)
+            || !instance.dateCreated.truncatedTo(DAYS).equals(referenceDate.truncatedTo(DAYS))) {
 
             instance = new DaysToWorkingDaysConverter(columnHeaders, referenceDate);
             LOGGER.debug("Create new converter for the values from {} until {} for the date: {}.", largesLowerLimit,
-                smallestUpperLimit, dateCreated);
+                smallestUpperLimit, instance.dateCreated);
         }
         return instance;
-    }
-
-    private static int getSmallestUpperLimit(List<? extends TimeIntervalColumnHeader> columnHeaders) {
-        int smallestUpperLimit = 0;
-        for (TimeIntervalColumnHeader columnHeader : columnHeaders) {
-            if (columnHeader.getUpperAgeLimit() < smallestUpperLimit) {
-                smallestUpperLimit = columnHeader.getUpperAgeLimit();
-            }
-        }
-        return smallestUpperLimit;
-    }
-
-    private static int getLargestLowerLimit(List<? extends TimeIntervalColumnHeader> columnHeaders) {
-        int greatestLowerLimit = 0;
-        for (TimeIntervalColumnHeader columnHeader : columnHeaders) {
-            if (columnHeader.getUpperAgeLimit() > greatestLowerLimit) {
-                greatestLowerLimit = columnHeader.getLowerAgeLimit();
-            }
-        }
-        return greatestLowerLimit;
     }
 
     public static void setGermanPublicHolidaysEnabled(boolean germanPublicHolidaysEnabled) {
@@ -124,8 +105,7 @@ public final class DaysToWorkingDaysConverter {
      * created by initialization. If the age in days is beyond the limits of the table, the integer will be returned
      * unchanged.
      *
-     * @param ageInDays
-     *            represents the age in days
+     * @param ageInDays represents the age in days
      * @return the age in working days
      */
     public int convertDaysToWorkingDays(int ageInDays) {
@@ -149,8 +129,7 @@ public final class DaysToWorkingDaysConverter {
      * value is a list of all days that match to the input parameter. If the age in working days is beyond the limits of
      * the table, the integer will be returned unchanged.
      *
-     * @param ageInWorkingDays
-     *            represents the age in working days
+     * @param ageInWorkingDays represents the age in working days
      * @return a list of age in days
      */
     public ArrayList<Integer> convertWorkingDaysToDays(int ageInWorkingDays) {
@@ -201,97 +180,85 @@ public final class DaysToWorkingDaysConverter {
         int days = 0;
         int workingDays = 0;
         while (workingDays < numberOfDays) {
-            if (isWorkingDay(days, startTime)) {
-                workingDays++;
-            }
-            days++;
-            while (!isWorkingDay(days, startTime)) {
-                days++;
-            }
+            workingDays += isWorkingDay(++days, startTime) ? 1 : 0;
         }
         return days;
     }
 
     private ArrayList<Integer> generateNegativeDaysToWorkingDays(
         List<? extends TimeIntervalColumnHeader> columnHeaders, Instant referenceDate) {
-        int minUpperLimit = getSmallestUpperLimit(columnHeaders);
+        int minUpperLimit = TimeIntervalColumnHeader.getSmallestUpperLimit(columnHeaders);
         ArrayList<Integer> daysToWorkingDays = new ArrayList<>();
         daysToWorkingDays.add(0);
         int day = -1;
         int workingDay = 0;
         while (workingDay > minUpperLimit) {
-            if (isWorkingDay(day, referenceDate)) {
-                workingDay--;
-            }
+            workingDay -= (isWorkingDay(day--, referenceDate)) ? 1 : 0;
             daysToWorkingDays.add(workingDay);
-            day--;
         }
         return daysToWorkingDays;
     }
 
     private ArrayList<Integer> generatePositiveDaysToWorkingDays(
         List<? extends TimeIntervalColumnHeader> columnHeaders, Instant referenceDate) {
-        int maxLowerLimit = getLargestLowerLimit(columnHeaders);
+        int maxLowerLimit = TimeIntervalColumnHeader.getLargestLowerLimit(columnHeaders);
         ArrayList<Integer> daysToWorkingDays = new ArrayList<>();
         daysToWorkingDays.add(0);
 
         int day = 1;
         int workingDay = 0;
         while (workingDay < maxLowerLimit) {
-            if (isWorkingDay(day, referenceDate)) {
-                workingDay++;
-            }
+            workingDay += (isWorkingDay(day++, referenceDate)) ? 1 : 0;
             daysToWorkingDays.add(workingDay);
-            day++;
         }
         return daysToWorkingDays;
     }
 
     private boolean isWorkingDay(int day, Instant referenceDate) {
-        LocalDateTime dateTime = LocalDateTime.ofInstant(referenceDate, ZoneId.systemDefault()).plusDays(day);
-        if (dateTime.getDayOfWeek().equals(DayOfWeek.SATURDAY)
-            || dateTime.getDayOfWeek().equals(DayOfWeek.SUNDAY)
-            || isHoliday(dateTime.toLocalDate())) {
-            return false;
-        }
-        return true;
+        LocalDateTime dateToCheck = LocalDateTime.ofInstant(referenceDate, ZoneId.systemDefault()).plusDays(day);
+
+        return !isWeekend(dateToCheck)
+            && !isHoliday(dateToCheck.toLocalDate());
+    }
+
+    private boolean isWeekend(LocalDateTime dateToCheck) {
+        return dateToCheck.getDayOfWeek().equals(DayOfWeek.SATURDAY)
+            || dateToCheck.getDayOfWeek().equals(DayOfWeek.SUNDAY);
     }
 
     private boolean isHoliday(LocalDate date) {
-        if (germanHolidaysEnabled) {
-            // Fix and movable holidays that are valid throughout Germany: New years day, Labour Day, Day of German
-            // Unity, Christmas, Good Friday, Easter Monday, Ascension Day, Whit Monday.
-            if (date.getDayOfMonth() == 1 && date.getMonthValue() == 1
-                || date.getDayOfMonth() == 1 && date.getMonthValue() == 5
-                || date.getDayOfMonth() == 3 && date.getMonthValue() == 10
-                || date.getDayOfMonth() == 25 && date.getMonthValue() == 12
-                || date.getDayOfMonth() == 26 && date.getMonthValue() == 12
-                || easterSunday.minusDays(2).equals(date)
-                || easterSunday.plusDays(1).equals(date)
-                || easterSunday.plusDays(39).equals(date)
-                || easterSunday.plusDays(50).equals(date)) {
-                return true;
-            }
+        if (germanHolidaysEnabled && isGermanHoliday(date)) {
+            return true;
         }
-        if (customHolidays != null) {
-            // Custom holidays that can be configured in the TaskanaEngineConfiguration
-            for (LocalDate customHoliday : customHolidays) {
-                if (date.equals(customHoliday)) {
-                    return true;
-                }
-            }
+        // Custom holidays that can be configured in the TaskanaEngineConfiguration
+        return customHolidays.contains(date);
+    }
+
+    private boolean isGermanHoliday(LocalDate date) {
+        // Fix and movable holidays that are valid throughout Germany: New years day, Labour Day, Day of German
+        // Unity, Christmas,
+        if (Stream.of(GermanFixHolidays.values()).anyMatch(day -> day.matches(date))) {
+            return true;
         }
-        return false;
+
+        // Easter holidays Good Friday, Easter Monday, Ascension Day, Whit Monday.
+        long diffFromEasterSunday = DAYS.between(easterSunday, date);
+        long goodFriday = -2;
+        long easterMonday = 1;
+        long ascensionDay = 39;
+        long whitMonday = 50;
+
+        return LongStream.of(goodFriday, easterMonday, ascensionDay, whitMonday)
+            .anyMatch(diff -> diff == diffFromEasterSunday);
     }
 
     /**
      * Computes the date of Easter Sunday for a given year.
      *
-     * @param year
-     *            for which the date of Easter Sunday should be calculated
+     * @param year for which the date of Easter Sunday should be calculated
      * @return the date of Easter Sunday for the given year
      */
-    public LocalDate getEasterSunday(int year) {
+    static LocalDate getEasterSunday(int year) {
         // Formula to compute Easter Sunday by Gauss.
         int a = year % 19;
         int b = year % 4;
@@ -314,16 +281,8 @@ public final class DaysToWorkingDaysConverter {
         return LocalDate.of(year, 3, 22).plusDays(d + e);
     }
 
-    public List<LocalDate> getCustomHolidays() {
-        return customHolidays;
-    }
-
     public static void setCustomHolidays(List<LocalDate> holidays) {
-        customHolidays = holidays;
-    }
-
-    public boolean isGermanPublicHolidayEnabled() {
-        return germanHolidaysEnabled;
+        customHolidays = new HashSet<>(holidays == null ? Collections.emptyList() : holidays);
     }
 
     @Override
@@ -333,6 +292,29 @@ public final class DaysToWorkingDaysConverter {
             + ", negativeDaysToWorkingDays= " + negativeDaysToWorkingDays
             + ", dateCreated= " + dateCreated + ", easterSunday= " + easterSunday
             + ", germanHolidaysEnabled= " + germanHolidaysEnabled
-            + ", customHolidays= " + LoggerUtils.listToString(customHolidays) + "]";
+            + ", customHolidays= " + LoggerUtils.setToString(customHolidays) + "]";
+    }
+
+    /**
+     * Enumeration of German holidays.
+     */
+    private enum GermanFixHolidays {
+        NEWYEAR(1, 1),
+        LABOURDAY(5, 1),
+        GERMANUNITY(10, 3),
+        CHRISTMAS1(12, 25),
+        CHRISTMAS2(12, 26);
+
+        private int month;
+        private int day;
+
+        GermanFixHolidays(int month, int day) {
+            this.month = month;
+            this.day = day;
+        }
+
+        public boolean matches(LocalDate date) {
+            return date.getDayOfMonth() == day && date.getMonthValue() == month;
+        }
     }
 }
