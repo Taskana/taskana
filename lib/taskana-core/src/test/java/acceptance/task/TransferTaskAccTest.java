@@ -309,21 +309,15 @@ public class TransferTaskAccTest extends AbstractAccTest {
     public void testTransferTasksWithInvalidTasksIdList() throws NotAuthorizedException, WorkbasketNotFoundException {
         TaskService taskService = taskanaEngine.getTaskService();
         // test with invalid list
-        try {
-            taskService.transferTasks("WBI:100000000000000000000000000000000006", null);
-            Assert.fail("exception was excepted to be thrown");
-        } catch (InvalidArgumentException e) {
-            Assert.assertEquals(e.getMessage(), "TaskIds must not be null.");
-        }
+
+        Throwable t = Assertions.assertThrows(InvalidArgumentException.class, () ->
+            taskService.transferTasks("WBI:100000000000000000000000000000000006", null));
+        Assert.assertEquals(t.getMessage(), "TaskIds must not be null.");
 
         // test with list containing only invalid arguments
-        try {
-            List<String> taskIds = Arrays.asList("", "", "", null);
-            taskService.transferTasks("WBI:100000000000000000000000000000000006", taskIds);
-            Assert.fail("exception was excepted to be thrown");
-        } catch (InvalidArgumentException e) {
-            Assert.assertEquals(e.getMessage(), "TaskIds must not contain only invalid arguments.");
-        }
+        Throwable t2 = Assertions.assertThrows(InvalidArgumentException.class, () ->
+            taskService.transferTasks("WBI:100000000000000000000000000000000006", Arrays.asList("", "", "", null)));
+        Assert.assertEquals(t2.getMessage(), "TaskIds must not contain only invalid arguments.");
     }
 
     @WithAccessId(

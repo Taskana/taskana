@@ -124,8 +124,6 @@ public class TaskanaConfigAccTest extends TaskanaEngineImpl {
                     writer.println("taskana.classification.categories.task= EXTERNAL, manual, autoMAtic, Process");
                     writer.println("taskana.classification.categories.document= EXTERNAL");
                 }
-            } catch (IOException e) {
-                throw e;
             }
         }
         return propertiesFileName;
