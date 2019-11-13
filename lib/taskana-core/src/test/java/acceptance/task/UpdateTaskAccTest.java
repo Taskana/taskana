@@ -9,7 +9,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.time.Instant;
 import java.util.Arrays;
@@ -89,49 +88,23 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
         task.setPrimaryObjRef(null);
-        try {
-            taskService.updateTask(task);
-            fail("update() should have thrown InvalidArgumentException.");
-        } catch (InvalidArgumentException ex) {
-            // nothing to do
-        }
+        Assertions.assertThrows(InvalidArgumentException.class, () -> taskService.updateTask(task));
 
         task.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", null));
-        try {
-            taskService.updateTask(task);
-            fail("update() should have thrown InvalidArgumentException.");
-        } catch (InvalidArgumentException ex) {
-            // nothing to do
-        }
+        Assertions.assertThrows(InvalidArgumentException.class, () -> taskService.updateTask(task));
 
         task.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", null, "1234567"));
-        try {
-            taskService.updateTask(task);
-            fail("update() should have thrown InvalidArgumentException.");
-        } catch (InvalidArgumentException ex) {
-            // nothing to do
-        }
+        Assertions.assertThrows(InvalidArgumentException.class, () -> taskService.updateTask(task));
+
         task.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", null, "VNR", "1234567"));
-        try {
-            taskService.updateTask(task);
-            fail("update() should have thrown InvalidArgumentException.");
-        } catch (InvalidArgumentException ex) {
-            // nothing to do
-        }
+        Assertions.assertThrows(InvalidArgumentException.class, () -> taskService.updateTask(task));
+
         task.setPrimaryObjRef(createObjectReference("COMPANY_A", null, "INSTANCE_A", "VNR", "1234567"));
-        try {
-            taskService.updateTask(task);
-            fail("update() should have thrown InvalidArgumentException.");
-        } catch (InvalidArgumentException ex) {
-            // nothing to do
-        }
+        Assertions.assertThrows(InvalidArgumentException.class, () -> taskService.updateTask(task));
+
         task.setPrimaryObjRef(createObjectReference(null, "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-        try {
-            taskService.updateTask(task);
-            fail("update() should have thrown InvalidArgumentException.");
-        } catch (InvalidArgumentException ex) {
-            // nothing to do
-        }
+        Assertions.assertThrows(InvalidArgumentException.class, () -> taskService.updateTask(task));
+
     }
 
     @WithAccessId(
@@ -152,11 +125,8 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         updatedTask = taskService.getTask(updatedTask.getId());
 
         task2.setCustomAttribute("2", "Walter");
-        try {
-            updatedTask = taskService.updateTask(task2);
-        } catch (ConcurrencyException ex) {
-            assertEquals("The task has already been updated by another user", ex.getMessage());
-        }
+        Assertions.assertThrows(ConcurrencyException.class, () -> taskService.updateTask(task2),
+            "The task has already been updated by another user");
 
     }
 
@@ -205,11 +175,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         assertFalse(updatedTask2.isRead());
         assertFalse(updatedTask2.getModified().isBefore(updatedTask.getModified()));
 
-        try {
-            taskService.setTaskRead("INVALID", true);
-            fail("TaskNotFoundException should have been thrown.");
-        } catch (TaskNotFoundException e) {
-        }
+        Assertions.assertThrows(TaskNotFoundException.class, () -> taskService.setTaskRead("INVALID", true));
     }
 
     @WithAccessId(

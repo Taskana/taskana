@@ -3,7 +3,6 @@ package acceptance.classification;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -80,14 +79,9 @@ public class DeleteClassificationAccTest extends AbstractAccTest {
         throws ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
 
         classificationService.deleteClassification("L3060", "");
-
-        boolean classificationNotFound = false;
-        try {
-            classificationService.getClassification("L3060", "DOMAIN_A");
-        } catch (ClassificationNotFoundException e) {
-            classificationNotFound = true;
-        }
-        assertTrue(classificationNotFound);
+        Assertions.assertThrows(ClassificationNotFoundException.class, () ->
+            classificationService.getClassification("L3060", "DOMAIN_A")
+        );
     }
 
     @WithAccessId(
@@ -104,26 +98,19 @@ public class DeleteClassificationAccTest extends AbstractAccTest {
         groupNames = {"group_1", "businessadmin"})
     @Test
     public void testThrowExceptionWhenChildClassificationIsInUseAndRollback()
-        throws NotAuthorizedException, ClassificationNotFoundException {
-        boolean classificationInUse = false;
-        try {
-            classificationService.deleteClassification("L11010", "DOMAIN_A");
-        } catch (ClassificationInUseException e) {
-            classificationInUse = true;
-        }
+        throws ClassificationNotFoundException {
+
+        Assertions.assertThrows(ClassificationInUseException.class, () ->
+            classificationService.deleteClassification("L11010", "DOMAIN_A"));
+
         Classification rollback = classificationService.getClassification("L11010", "DOMAIN_A");
-        assertTrue(classificationInUse);
         assertEquals("DOMAIN_A", rollback.getDomain());
 
-        classificationInUse = false;
-        try {
-            classificationService.deleteClassification("L11010", "");
-        } catch (ClassificationInUseException e) {
-            classificationInUse = true;
-        }
+        Assertions.assertThrows(ClassificationInUseException.class, () ->
+            classificationService.deleteClassification("L11010", ""));
+
         Classification rollbackMaster = classificationService.getClassification("L11010", "");
         Classification rollbackA = classificationService.getClassification("L11010", "DOMAIN_A");
-        assertTrue(classificationInUse);
         assertEquals(rollbackMaster.getKey(), rollbackA.getKey());
         assertNotEquals(rollbackMaster.getDomain(), rollbackA.getDomain());
     }

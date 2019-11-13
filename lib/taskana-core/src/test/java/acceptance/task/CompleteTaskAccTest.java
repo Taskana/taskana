@@ -8,7 +8,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.time.Instant;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -130,29 +129,18 @@ class CompleteTaskAccTest extends AbstractAccTest {
     @Test
     void testCompleteTaskThrowsErrors() {
         TaskService taskService = taskanaEngine.getTaskService();
-        try {
-            taskService.completeTask("TKI:0000000000000000000000000000000000xx");
-        } catch (Exception e) {
-            Assert.assertEquals(TaskNotFoundException.class, e.getClass());
-        }
 
-        try {
-            taskService.completeTask("TKI:000000000000000000000000000000000004");
-        } catch (Exception e) {
-            Assert.assertEquals(NotAuthorizedException.class, e.getClass());
-        }
+        Assertions.assertThrows(TaskNotFoundException.class, () ->
+            taskService.completeTask("TKI:0000000000000000000000000000000000xx"));
 
-        try {
-            taskService.completeTask("TKI:000000000000000000000000000000000025");
-        } catch (Exception e) {
-            Assert.assertEquals(InvalidStateException.class, e.getClass());
-        }
+        Assertions.assertThrows(NotAuthorizedException.class, () ->
+            taskService.completeTask("TKI:000000000000000000000000000000000004"));
 
-        try {
-            taskService.completeTask("TKI:000000000000000000000000000000000026");
-        } catch (Exception e) {
-            Assert.assertEquals(InvalidOwnerException.class, e.getClass());
-        }
+        Assertions.assertThrows(InvalidStateException.class, () ->
+            taskService.completeTask("TKI:000000000000000000000000000000000025"));
+
+        Assertions.assertThrows(InvalidOwnerException.class, () ->
+            taskService.completeTask("TKI:000000000000000000000000000000000027"));
     }
 
     @WithAccessId(
@@ -290,7 +278,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     @Test
     void testForceCancelClaimSuccessfull()
         throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
-        NotAuthorizedException {
+        NotAuthorizedException, InterruptedException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Task taskBefore = taskService.getTask("TKI:000000000000000000000000000000000043");
@@ -299,11 +287,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
         assertEquals(TaskState.CLAIMED, taskBefore.getState());
 
         Instant before = Instant.now();
-        try {
-            Thread.sleep(1);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        Thread.sleep(1);
         Task taskAfter = taskService.forceCancelClaim("TKI:000000000000000000000000000000000043");
 
         assertNotNull(taskAfter);
