@@ -2,7 +2,6 @@ package acceptance.task;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,12 +81,11 @@ public class DeleteTaskAccTest extends AbstractAccTest {
         throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000027");
-        try {
-            taskService.deleteTask(task.getId());
-            fail("Should not be possible to delete claimed task without force flag");
-        } catch (InvalidStateException ex) {
-            taskService.forceDeleteTask(task.getId());
-        }
+
+        Assertions.assertThrows(InvalidStateException.class, () ->
+            taskService.deleteTask(task.getId()), "Should not be possible to delete claimed task without force flag");
+
+        taskService.forceDeleteTask(task.getId());
 
         Assertions.assertThrows(TaskNotFoundException.class, () ->
             taskService.getTask("TKI:000000000000000000000000000000000027"));

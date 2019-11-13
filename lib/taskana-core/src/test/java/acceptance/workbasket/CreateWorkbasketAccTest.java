@@ -3,7 +3,6 @@ package acceptance.workbasket;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.List;
 
@@ -110,59 +109,45 @@ public class CreateWorkbasketAccTest extends AbstractAccTest {
         workbasket.setName("Megabasket");
         workbasket.setType(WorkbasketType.GROUP);
         workbasket.setOrgLevel1("company");
-        try { // missing key
-            workbasketService.createWorkbasket(workbasket);
-            fail("InvalidWorkbasketException was expected");
-        } catch (InvalidWorkbasketException e) {
-        }
+        // missing key
+        Assertions.assertThrows(InvalidWorkbasketException.class, () -> workbasketService.createWorkbasket(workbasket));
 
-        workbasket = workbasketService.newWorkbasket("key", "novatec");
-        workbasket.setType(WorkbasketType.GROUP);
-        workbasket.setOrgLevel1("company");
-        try {  // missing name
-            workbasketService.createWorkbasket(workbasket);
-            fail("InvalidWorkbasketException was expected");
-        } catch (InvalidWorkbasketException e) {
-        }
+        Workbasket workbasket2 = workbasketService.newWorkbasket("key", "novatec");
+        workbasket2.setType(WorkbasketType.GROUP);
+        workbasket2.setOrgLevel1("company");
+        // missing name
+        Assertions.assertThrows(InvalidWorkbasketException.class,
+            () -> workbasketService.createWorkbasket(workbasket2));
 
-        workbasket = workbasketService.newWorkbasket("key", "novatec");
-        workbasket.setName("Megabasket");
-        workbasket.setOrgLevel1("company");
-        try {  // missing type
-            workbasketService.createWorkbasket(workbasket);
-            fail("InvalidWorkbasketException was expected");
-        } catch (InvalidWorkbasketException e) {
-        }
+        Workbasket workbasket3 = workbasketService.newWorkbasket("key", "novatec");
+        workbasket3.setName("Megabasket");
+        workbasket3.setOrgLevel1("company");
+        // missing type
+        Assertions.assertThrows(InvalidWorkbasketException.class,
+            () -> workbasketService.createWorkbasket(workbasket3));
 
-        workbasket = workbasketService.newWorkbasket("key", null);
-        workbasket.setName("Megabasket");
-        workbasket.setType(WorkbasketType.GROUP);
-        workbasket.setOrgLevel1("company");
-        try {  // missing domain
-            workbasketService.createWorkbasket(workbasket);
-            fail("InvalidWorkbasketException was expected");
-        } catch (InvalidWorkbasketException e) {
-        }
+        Workbasket workbasket4 = workbasketService.newWorkbasket("key", null);
+        workbasket4.setName("Megabasket");
+        workbasket4.setType(WorkbasketType.GROUP);
+        workbasket4.setOrgLevel1("company");
+        // missing domain
+        Assertions.assertThrows(InvalidWorkbasketException.class,
+            () -> workbasketService.createWorkbasket(workbasket4));
 
-        workbasket = workbasketService.newWorkbasket("", "novatec");
-        workbasket.setName("Megabasket");
-        workbasket.setType(WorkbasketType.GROUP);
-        workbasket.setOrgLevel1("company");
-        try {  // empty key
-            workbasketService.createWorkbasket(workbasket);
-            fail("InvalidWorkbasketException was expected");
-        } catch (InvalidWorkbasketException e) {
-        }
+        Workbasket workbasket5 = workbasketService.newWorkbasket("", "novatec");
+        workbasket5.setName("Megabasket");
+        workbasket5.setType(WorkbasketType.GROUP);
+        workbasket5.setOrgLevel1("company");
+        // empty key
+        Assertions.assertThrows(InvalidWorkbasketException.class,
+            () -> workbasketService.createWorkbasket(workbasket5));
 
-        workbasket = workbasketService.newWorkbasket("key", "novatec");
-        workbasket.setName("");
-        workbasket.setType(WorkbasketType.GROUP);
-        workbasket.setOrgLevel1("company");
-        try {  // empty name
-            workbasketService.createWorkbasket(workbasket);
-            fail("InvalidWorkbasketException was expected");
-        } catch (InvalidWorkbasketException e) {
-        }
+        Workbasket workbasket6 = workbasketService.newWorkbasket("key", "novatec");
+        workbasket6.setName("");
+        workbasket6.setType(WorkbasketType.GROUP);
+        workbasket6.setOrgLevel1("company");
+        // empty name
+        Assertions.assertThrows(InvalidWorkbasketException.class, () -> workbasketService.createWorkbasket(workbasket));
     }
 
     @WithAccessId(

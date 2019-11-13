@@ -118,8 +118,6 @@ public class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
                 writer.println("taskana.roles.Admin =hOlGeR " + delimiter + "name=Stefan,Organisation=novatec");
                 writer.println("  taskana.roles.businessadmin  = name=ebe, ou = bpm " + delimiter + " konstantin ");
                 writer.println(" taskana.roles.user = ");
-            } catch (IOException e) {
-                throw e;
             }
         }
         return propertiesFileName;
@@ -142,8 +140,6 @@ public class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
                 writer.println("taskana.roles.Admin =hOlGeR|Stefan");
                 writer.println("  taskana.roles.businessadmin  = ebe  | konstantin ");
                 writer.println(" taskana.roles.user = nobody");
-            } catch (IOException e) {
-                throw e;
             }
         }
         return propertiesFileName;

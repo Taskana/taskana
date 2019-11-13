@@ -3,6 +3,7 @@ package acceptance.security;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -32,17 +33,11 @@ public class WorkbasketQueryAccTest extends AbstractAccTest {
             .nameLike("%")
             .list();
         Assert.assertEquals(0L, results.size());
-
-        try {
-            results = workbasketService.createWorkbasketQuery()
+        Assertions.assertThrows(NotAuthorizedException.class, () ->
+            workbasketService.createWorkbasketQuery()
                 .nameLike("%")
                 .accessIdsHavePermission(WorkbasketPermission.TRANSFER, "teamlead_1", "group_1", "group_2")
-                .list();
-            Assert.fail("NotAuthrorizedException was expected");
-        } catch (NotAuthorizedException ex) {
-
-        }
-
+                .list());
     }
 
     @WithAccessId(
@@ -55,16 +50,11 @@ public class WorkbasketQueryAccTest extends AbstractAccTest {
             .list();
         Assert.assertEquals(0L, results.size());
 
-        try {
-            results = workbasketService.createWorkbasketQuery()
+        Assertions.assertThrows(NotAuthorizedException.class, () ->
+            workbasketService.createWorkbasketQuery()
                 .nameLike("%")
                 .accessIdsHavePermission(WorkbasketPermission.TRANSFER, "teamlead_1", "group_1", "group_2")
-                .list();
-            Assert.fail("NotAuthrorizedException was expected");
-        } catch (NotAuthorizedException ex) {
-
-        }
-
+                .list());
     }
 
     @WithAccessId(

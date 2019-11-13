@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static pro.taskana.BaseQuery.SortDirection.ASCENDING;
+import static pro.taskana.BaseQuery.SortDirection.DESCENDING;
 import static pro.taskana.TaskQueryColumnName.A_CHANNEL;
 import static pro.taskana.TaskQueryColumnName.A_CLASSIFICATION_ID;
 import static pro.taskana.TaskQueryColumnName.A_REF_VALUE;
@@ -27,7 +29,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import acceptance.AbstractAccTest;
 import pro.taskana.Attachment;
-import pro.taskana.BaseQuery.SortDirection;
 import pro.taskana.Task;
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskQueryColumnName;
@@ -54,13 +55,6 @@ import pro.taskana.security.WithAccessId;
 @ExtendWith(JAASExtension.class)
 class QueryTasksAccTest extends AbstractAccTest {
 
-    private static SortDirection asc = SortDirection.ASCENDING;
-    private static SortDirection desc = SortDirection.DESCENDING;
-
-    QueryTasksAccTest() {
-        super();
-    }
-
     @WithAccessId(
         userName = "teamlead_1",
         groupNames = {"admin"})
@@ -70,7 +64,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         List<String> notWorkingColumns = new ArrayList<>();
         for (TaskQueryColumnName columnName : TaskQueryColumnName.values()) {
             try {
-                taskService.createTaskQuery().listValues(columnName, asc);
+                taskService.createTaskQuery().listValues(columnName, ASCENDING);
             } catch (PersistenceException p) {
                 notWorkingColumns.add(columnName.toString());
             }
@@ -86,7 +80,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         List<String> columnValueList = taskService.createTaskQuery()
             .ownerLike("%user%")
-            .orderByOwner(desc)
+            .orderByOwner(DESCENDING)
             .listValues(OWNER, null);
         assertNotNull(columnValueList);
         assertEquals(3, columnValueList.size());
@@ -116,13 +110,13 @@ class QueryTasksAccTest extends AbstractAccTest {
         assertEquals(6, columnValueList.size());
 
         columnValueList = taskService.createTaskQuery()
-            .orderByAttachmentClassificationId(desc)
+            .orderByAttachmentClassificationId(DESCENDING)
             .listValues(A_CLASSIFICATION_ID, null);
         assertNotNull(columnValueList);
         assertEquals(12, columnValueList.size());
 
         columnValueList = taskService.createTaskQuery()
-            .orderByClassificationKey(desc)
+            .orderByClassificationKey(DESCENDING)
             .listValues(CLASSIFICATION_KEY, null);
         assertNotNull(columnValueList);
         assertEquals(7, columnValueList.size());
@@ -137,7 +131,7 @@ class QueryTasksAccTest extends AbstractAccTest {
 
         List<TaskSummary> results = taskService.createTaskQuery()
             .ownerLike("%a%", "%u%")
-            .orderByCreated(asc)
+            .orderByCreated(ASCENDING)
             .list();
 
         assertThat(results.size(), equalTo(25));
@@ -167,8 +161,7 @@ class QueryTasksAccTest extends AbstractAccTest {
 
         String[] parentIds = results.stream()
             .map(TaskSummary::getParentBusinessProcessId)
-            .collect(Collectors.toList())
-            .toArray(new String[0]);
+            .toArray(String[]::new);
 
         List<TaskSummary> result2 = taskService.createTaskQuery()
             .parentBusinessProcessIdIn(parentIds)
@@ -272,7 +265,7 @@ class QueryTasksAccTest extends AbstractAccTest {
 
         List<String> resultValues = taskService.createTaskQuery()
             .externalIdLike("ETI:000000000000000000000000000000%")
-            .listValues(TaskQueryColumnName.EXTERNAL_ID, desc);
+            .listValues(TaskQueryColumnName.EXTERNAL_ID, DESCENDING);
         assertThat(resultValues.size(), equalTo(70));
 
         long countAllExternalIds = taskService.createTaskQuery()
@@ -892,15 +885,15 @@ class QueryTasksAccTest extends AbstractAccTest {
         long numberOfTasks = taskQuery.count();
         assertEquals(25, numberOfTasks);
         List<TaskSummary> tasks = taskQuery
-            .orderByDue(SortDirection.DESCENDING)
+            .orderByDue(DESCENDING)
             .list();
         assertEquals(25, tasks.size());
         List<TaskSummary> tasksp = taskQuery
-            .orderByDue(SortDirection.DESCENDING)
+            .orderByDue(DESCENDING)
             .listPage(4, 5);
         assertEquals(5, tasksp.size());
         tasksp = taskQuery
-            .orderByDue(SortDirection.DESCENDING)
+            .orderByDue(DESCENDING)
             .listPage(5, 5);
         assertEquals(5, tasksp.size());
     }
@@ -1120,7 +1113,7 @@ class QueryTasksAccTest extends AbstractAccTest {
             getInstant("2018-01-31T12:00:00"));
         List<TaskSummary> results = taskService.createTaskQuery()
             .attachmentReceivedWithin(interval)
-            .orderByWorkbasketId(desc)
+            .orderByWorkbasketId(DESCENDING)
             .list();
         assertEquals(2, results.size());
         assertEquals("TKI:000000000000000000000000000000000001", results.get(0).getTaskId());
@@ -1133,7 +1126,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     void testQueryForOrderByCreatorDesc() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
-            .orderByCreator(desc)
+            .orderByCreator(DESCENDING)
             .list();
         assertEquals("user_1_1", results.get(0).getCreator());
     }
@@ -1144,7 +1137,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     void testQueryForOrderByWorkbasketIdDesc() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
-            .orderByWorkbasketId(desc)
+            .orderByWorkbasketId(DESCENDING)
             .list();
         assertEquals("WBI:100000000000000000000000000000000015",
             results.get(0).getWorkbasketSummary().getId());
@@ -1157,7 +1150,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .customAttributeLike("1", "%")
-            .orderByCustomAttribute("1", asc)
+            .orderByCustomAttribute("1", ASCENDING)
             .list();
         assertEquals("custom1", results.get(0).getCustomAttribute("1"));
     }
@@ -1169,7 +1162,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .customAttributeLike("2", "%")
-            .orderByCustomAttribute("2", desc)
+            .orderByCustomAttribute("2", DESCENDING)
             .list();
         assertEquals("custom2", results.get(0).getCustomAttribute("2"));
     }
@@ -1181,7 +1174,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .customAttributeLike("3", "%")
-            .orderByCustomAttribute("3", asc)
+            .orderByCustomAttribute("3", ASCENDING)
             .list();
         assertEquals("custom3", results.get(0).getCustomAttribute("3"));
     }
@@ -1193,7 +1186,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .customAttributeLike("4", "%")
-            .orderByCustomAttribute("4", desc)
+            .orderByCustomAttribute("4", DESCENDING)
             .list();
 
         assertEquals("rty",
@@ -1207,7 +1200,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .customAttributeLike("5", "%")
-            .orderByCustomAttribute("5", asc)
+            .orderByCustomAttribute("5", ASCENDING)
             .list();
         assertEquals("al", results.get(0).getCustomAttribute("5"));
     }
@@ -1219,7 +1212,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .customAttributeLike("6", "%")
-            .orderByCustomAttribute("6", desc)
+            .orderByCustomAttribute("6", DESCENDING)
             .list();
         assertEquals("vvg", results.get(0).getCustomAttribute("6"));
     }
@@ -1230,7 +1223,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     void testQueryForOrderByCustom7Asc() throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
-            .orderByCustomAttribute("7", asc)
+            .orderByCustomAttribute("7", ASCENDING)
             .customAttributeLike("7", "%")
             .list();
         assertEquals("custom7", results.get(0).getCustomAttribute("7"));
@@ -1242,7 +1235,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     void testQueryForOrderByCustom8Desc() throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
-            .orderByCustomAttribute("8", desc)
+            .orderByCustomAttribute("8", DESCENDING)
             .customAttributeLike("8", "%")
             .list();
         assertEquals("lnp", results.get(0).getCustomAttribute("8"));
@@ -1255,7 +1248,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .customAttributeLike("9", "%")
-            .orderByCustomAttribute("9", asc)
+            .orderByCustomAttribute("9", ASCENDING)
             .list();
         assertEquals("bbq", results.get(0).getCustomAttribute("9"));
     }
@@ -1267,7 +1260,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .customAttributeLike("10", "%")
-            .orderByCustomAttribute("10", desc)
+            .orderByCustomAttribute("10", DESCENDING)
             .list();
         assertEquals("ert", results.get(0).getCustomAttribute("10"));
     }
@@ -1278,7 +1271,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     void testQueryForOrderByCustom11Desc() throws InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
-            .orderByCustomAttribute("11", desc)
+            .orderByCustomAttribute("11", DESCENDING)
             .customAttributeLike("11", "%")
             .list();
 
@@ -1294,7 +1287,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .customAttributeLike("12", "%")
-            .orderByCustomAttribute("12", asc)
+            .orderByCustomAttribute("12", ASCENDING)
             .list();
         assertEquals("custom12", results.get(0).getCustomAttribute("12"));
     }
@@ -1306,7 +1299,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .customAttributeLike("13", "%")
-            .orderByCustomAttribute("13", desc)
+            .orderByCustomAttribute("13", DESCENDING)
             .list();
 
         assertEquals("ert",
@@ -1320,7 +1313,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .customAttributeLike("14", "%")
-            .orderByCustomAttribute("14", asc)
+            .orderByCustomAttribute("14", ASCENDING)
             .list();
         assertEquals("abc", results.get(0).getCustomAttribute("14"));
     }
@@ -1332,7 +1325,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .customAttributeLike("15", "%")
-            .orderByCustomAttribute("15", desc)
+            .orderByCustomAttribute("15", DESCENDING)
             .list();
 
         assertEquals("ert",
@@ -1346,7 +1339,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .customAttributeLike("16", "%")
-            .orderByCustomAttribute("16", asc)
+            .orderByCustomAttribute("16", ASCENDING)
             .list();
         assertEquals("custom16", results.get(0).getCustomAttribute("16"));
     }
@@ -1370,7 +1363,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         List<TaskSummary> results = taskService.createTaskQuery()
             .idIn("TKI:000000000000000000000000000000000010", "TKI:000000000000000000000000000000000011",
                 "TKI:000000000000000000000000000000000012")
-            .orderByAttachmentClassificationId(asc)
+            .orderByAttachmentClassificationId(ASCENDING)
             .list();
         assertEquals("TKI:000000000000000000000000000000000011", results.get(0).getTaskId());
         assertEquals("TKI:000000000000000000000000000000000010", results.get(results.size() - 1).getTaskId());
@@ -1384,7 +1377,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         List<TaskSummary> results = taskService.createTaskQuery()
             .idIn("TKI:000000000000000000000000000000000010", "TKI:000000000000000000000000000000000011",
                 "TKI:000000000000000000000000000000000012")
-            .orderByAttachmentClassificationId(desc)
+            .orderByAttachmentClassificationId(DESCENDING)
             .list();
         assertEquals("TKI:000000000000000000000000000000000010", results.get(0).getTaskId());
         assertEquals("TKI:000000000000000000000000000000000011", results.get(results.size() - 1).getTaskId());
@@ -1399,7 +1392,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         List<TaskSummary> results = taskService.createTaskQuery()
             .idIn("TKI:000000000000000000000000000000000010", "TKI:000000000000000000000000000000000011",
                 "TKI:000000000000000000000000000000000012")
-            .orderByAttachmentClassificationKey(asc)
+            .orderByAttachmentClassificationKey(ASCENDING)
             .list();
 
         assertEquals("TKI:000000000000000000000000000000000010", results.get(0).getTaskId());
@@ -1415,7 +1408,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         List<TaskSummary> results = taskService.createTaskQuery()
             .idIn("TKI:000000000000000000000000000000000010", "TKI:000000000000000000000000000000000011",
                 "TKI:000000000000000000000000000000000012")
-            .orderByAttachmentClassificationKey(desc)
+            .orderByAttachmentClassificationKey(DESCENDING)
             .list();
 
         assertEquals("TKI:000000000000000000000000000000000012", results.get(0).getTaskId());
@@ -1431,7 +1424,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         List<TaskSummary> results = taskService.createTaskQuery()
             .idIn("TKI:000000000000000000000000000000000010", "TKI:000000000000000000000000000000000011",
                 "TKI:000000000000000000000000000000000012")
-            .orderByAttachmentReference(desc)
+            .orderByAttachmentReference(DESCENDING)
             .list();
 
         assertEquals("TKI:000000000000000000000000000000000012", results.get(0).getTaskId());
@@ -1447,8 +1440,8 @@ class QueryTasksAccTest extends AbstractAccTest {
         List<TaskSummary> results = taskService.createTaskQuery()
             .idIn("TKI:000000000000000000000000000000000010", "TKI:000000000000000000000000000000000011",
                 "TKI:000000000000000000000000000000000012")
-            .orderByAttachmentChannel(asc)
-            .orderByAttachmentReference(desc)
+            .orderByAttachmentChannel(ASCENDING)
+            .orderByAttachmentReference(DESCENDING)
             .list();
 
         assertEquals("TKI:000000000000000000000000000000000012", results.get(0).getTaskId());
@@ -1463,7 +1456,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .attachmentChannelLike("CH%")
-            .orderByClassificationKey(desc)
+            .orderByClassificationKey(DESCENDING)
             .list();
 
         assertEquals("T2000", results.get(0).getClassificationSummary().getKey());
@@ -1471,7 +1464,7 @@ class QueryTasksAccTest extends AbstractAccTest {
 
         results = taskService.createTaskQuery()
             .attachmentChannelLike("CH%")
-            .orderByClassificationKey(asc)
+            .orderByClassificationKey(ASCENDING)
             .list();
 
         assertEquals("L1050", results.get(0).getClassificationSummary().getKey());
