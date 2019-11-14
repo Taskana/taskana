@@ -25,6 +25,7 @@ public interface Task {
      * @return external Id
      */
     String getExternalId();
+
     /**
      * Sets the external Id. It can be used to correlate the task to a task in an external system.
      * The external Id is enforced to be unique. An attempt to create a task with
@@ -36,7 +37,7 @@ public interface Task {
      */
     void setExternalId(String externalId);
 
-   /**
+    /**
      * Gets the UserId of the task-creator.
      *
      * @return creator
@@ -92,6 +93,14 @@ public interface Task {
      * @return due as exact {@link Instant}
      */
     Instant getDue();
+
+    /**
+     * Sets the time when the work on this task should be finished.
+     *
+     * @param due
+     *            as exact {@link Instant}
+     */
+    void setDue(Instant due);
 
     /**
      * Return the name of the current task.

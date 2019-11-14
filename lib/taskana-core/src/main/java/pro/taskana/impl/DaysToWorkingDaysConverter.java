@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
@@ -96,6 +97,10 @@ public final class DaysToWorkingDaysConverter {
         return instance;
     }
 
+    public static Optional<DaysToWorkingDaysConverter> getLastCreatedInstance() {
+        return Optional.ofNullable(instance);
+    }
+
     public static void setGermanPublicHolidaysEnabled(boolean germanPublicHolidaysEnabled) {
         germanHolidaysEnabled = germanPublicHolidaysEnabled;
     }
@@ -179,8 +184,10 @@ public final class DaysToWorkingDaysConverter {
     public long convertWorkingDaysToDays(Instant startTime, long numberOfDays) {
         int days = 0;
         int workingDays = 0;
-        while (workingDays < numberOfDays) {
-            workingDays += isWorkingDay(++days, startTime) ? 1 : 0;
+        int direction = numberOfDays > 0 ? 1 : -1;
+        while (workingDays < numberOfDays * direction) {
+            days += direction;
+            workingDays += isWorkingDay(days, startTime) ? 1 : 0;
         }
         return days;
     }

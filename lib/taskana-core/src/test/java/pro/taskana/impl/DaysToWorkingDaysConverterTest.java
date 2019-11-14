@@ -49,7 +49,21 @@ class DaysToWorkingDaysConverterTest {
         Instant thursday0201 = Instant.parse("2018-02-01T07:00:00.000Z");
         DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize(reportItems, thursday0201);
 
-        long days = converter.convertWorkingDaysToDays(thursday0201, 0); // = thursday
+        long days = converter.convertWorkingDaysToDays(thursday0201, -7); // = tuesday (sat + sun)
+        assertEquals(-9, days);
+        days = converter.convertWorkingDaysToDays(thursday0201, -6); // = wednesday (sat + sun)
+        assertEquals(-8, days);
+        days = converter.convertWorkingDaysToDays(thursday0201, -5); // = thursday (sat + sun)
+        assertEquals(-7, days);
+        days = converter.convertWorkingDaysToDays(thursday0201, -4); // = friday
+        assertEquals(-6, days);
+        days = converter.convertWorkingDaysToDays(thursday0201, -3); // monday
+        assertEquals(-3, days);
+        days = converter.convertWorkingDaysToDays(thursday0201, -2); // tuesday
+        assertEquals(-2, days);
+        days = converter.convertWorkingDaysToDays(thursday0201, -1); // wednesday
+        assertEquals(-1, days);
+        days = converter.convertWorkingDaysToDays(thursday0201, 0); // = thursday
         assertEquals(0, days);
         days = converter.convertWorkingDaysToDays(thursday0201, 1); // fri
         assertEquals(1, days);
