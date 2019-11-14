@@ -362,4 +362,11 @@ public interface Task {
      * @return classificationCategory
      */
     String getClassificationCategory();
+
+    /**
+     * The key that is used to supply Callback_state within the CallbackInfo map.
+     * The Callback_state is used predominantly by the taskana adapter. It controls synchronization between taskana and the external system.
+     *
+     */
+    String CALLBACK_STATE = "callbackState";
 }

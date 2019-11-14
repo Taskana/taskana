@@ -1,5 +1,6 @@
 package pro.taskana.impl;
 
+import pro.taskana.CallbackState;
 import pro.taskana.TaskState;
 
 /**
@@ -10,6 +11,7 @@ public class MinimalTaskSummary {
     private String taskId;
     private String workbasketId;
     private TaskState taskState;
+    private CallbackState callbackState;
 
     MinimalTaskSummary() {
 
@@ -37,6 +39,14 @@ public class MinimalTaskSummary {
 
     public void setTaskState(TaskState taskState) {
         this.taskState = taskState;
+    }
+
+    public CallbackState getCallbackState() {
+        return callbackState;
+    }
+
+    public void setCallbackState(CallbackState callbackState) {
+        this.callbackState = callbackState;
     }
 
     @Override

@@ -405,4 +405,18 @@ public interface TaskService {
      */
     List<String> updateTasks(List<String> taskIds,
         Map<String, String> customFieldsToUpdate) throws InvalidArgumentException;
+
+    /**
+     * Sets the callback state on a list of tasks.
+     * Note: this method is primarily intended to be used by the TaskanaAdapter
+     *
+     * @param tasks  the ids of the tasks on which the callback state is set.
+     * @param state  the callback state that is to be set on the tasks
+     *
+     * @return the result of the operations with Id and Exception for each failed task deletion.
+     * @throws InvalidArgumentException
+     *             if the TaskIds parameter is NULL
+     */
+    BulkOperationResults<String, TaskanaException> setCallbackStateForTasks(List<String> tasks, CallbackState state) throws InvalidArgumentException;
+
 }

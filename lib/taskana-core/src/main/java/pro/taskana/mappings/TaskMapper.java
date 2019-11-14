@@ -12,6 +12,7 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import pro.taskana.CallbackState;
 import pro.taskana.impl.MinimalTaskSummary;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.TaskSummaryImpl;
@@ -22,7 +23,7 @@ import pro.taskana.impl.persistence.MapTypeHandler;
  */
 public interface TaskMapper {
 
-    @Select("<script>SELECT ID, EXTERNAL_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, CREATOR, DESCRIPTION, NOTE, PRIORITY, STATE, CLASSIFICATION_CATEGORY, CLASSIFICATION_KEY, CLASSIFICATION_ID, WORKBASKET_ID, WORKBASKET_KEY, DOMAIN, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, POR_SYSTEM, POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CALLBACK_INFO, CUSTOM_ATTRIBUTES, "
+    @Select("<script>SELECT ID, EXTERNAL_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, CREATOR, DESCRIPTION, NOTE, PRIORITY, STATE, CLASSIFICATION_CATEGORY, CLASSIFICATION_KEY, CLASSIFICATION_ID, WORKBASKET_ID, WORKBASKET_KEY, DOMAIN, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, POR_SYSTEM, POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CALLBACK_INFO, CALLBACK_STATE, CUSTOM_ATTRIBUTES, "
         + "CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10, CUSTOM_11, CUSTOM_12, CUSTOM_13, CUSTOM_14, CUSTOM_15, CUSTOM_16 "
         + "FROM TASK "
         + "WHERE ID = #{id} "
@@ -61,6 +62,7 @@ public interface TaskMapper {
         @Result(property = "isTransferred", column = "IS_TRANSFERRED"),
         @Result(property = "callbackInfo", column = "CALLBACK_INFO",
             javaType = Map.class, typeHandler = MapTypeHandler.class),
+        @Result(property = "callbackState", column = "CALLBACK_STATE"),
         @Result(property = "customAttributes", column = "CUSTOM_ATTRIBUTES",
             javaType = Map.class, typeHandler = MapTypeHandler.class),
         @Result(property = "custom1", column = "CUSTOM_1"),
@@ -83,12 +85,12 @@ public interface TaskMapper {
     TaskImpl findById(@Param("id") String id);
 
     @Insert("INSERT INTO TASK(ID, EXTERNAL_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, CREATOR, DESCRIPTION, NOTE, PRIORITY, STATE,  CLASSIFICATION_CATEGORY, CLASSIFICATION_KEY, CLASSIFICATION_ID, WORKBASKET_ID, WORKBASKET_KEY, DOMAIN, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, "
-        + "POR_SYSTEM, POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CALLBACK_INFO, CUSTOM_ATTRIBUTES, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, "
+        + "POR_SYSTEM, POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CALLBACK_INFO, CALLBACK_STATE, CUSTOM_ATTRIBUTES, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, "
         + "CUSTOM_9, CUSTOM_10, CUSTOM_11,  CUSTOM_12,  CUSTOM_13,  CUSTOM_14,  CUSTOM_15,  CUSTOM_16 ) "
         + "VALUES(#{id},#{externalId}, #{created}, #{claimed}, #{completed}, #{modified}, #{planned}, #{due}, #{name}, #{creator}, #{description}, #{note}, #{priority}, #{state}, #{classificationSummary.category}, "
         + "#{classificationSummary.key}, #{classificationSummary.id}, #{workbasketSummary.id}, #{workbasketSummary.key}, #{workbasketSummary.domain}, #{businessProcessId}, "
         + "#{parentBusinessProcessId}, #{owner}, #{primaryObjRef.company}, #{primaryObjRef.system}, #{primaryObjRef.systemInstance}, #{primaryObjRef.type}, #{primaryObjRef.value}, "
-        + "#{isRead}, #{isTransferred}, #{callbackInfo,jdbcType=CLOB,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler}, "
+        + "#{isRead}, #{isTransferred}, #{callbackInfo,jdbcType=CLOB,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler}, #{callbackState}, "
         + "#{customAttributes,jdbcType=CLOB,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler}, "
         + "#{custom1}, #{custom2}, #{custom3}, #{custom4}, #{custom5}, #{custom6}, #{custom7}, #{custom8}, #{custom9}, #{custom10}, "
         + "#{custom11}, #{custom12}, #{custom13}, #{custom14}, #{custom15},  #{custom16})")
@@ -112,6 +114,9 @@ public interface TaskMapper {
 
     @Delete("<script>DELETE FROM TASK WHERE ID IN(<foreach item='item' collection='ids' separator=',' >#{item}</foreach>)</script>")
     void deleteMultiple(@Param("ids") List<String> ids);
+
+    @Update("<script>UPDATE TASK SET CALLBACK_STATE = #{state} WHERE ID IN(<foreach item='item' collection='ids' separator=',' >#{item}</foreach>)</script>")
+     void setCallbackStateMultiple(@Param("ids") List<String> ids, @Param("state") CallbackState state);
 
     @Select("<script>SELECT ID, EXTERNAL_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, CREATOR, DESCRIPTION, PRIORITY, STATE, CLASSIFICATION_CATEGORY, CLASSIFICATION_KEY, CLASSIFICATION_ID, WORKBASKET_ID, WORKBASKET_KEY, DOMAIN, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, POR_SYSTEM, POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CUSTOM_ATTRIBUTES, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, "
         + "CUSTOM_8, CUSTOM_9, CUSTOM_10, CUSTOM_11, CUSTOM_12, CUSTOM_13, CUSTOM_14, CUSTOM_15, CUSTOM_16 "
@@ -184,14 +189,15 @@ public interface TaskMapper {
     void updateCompleted(@Param("taskIds") List<String> taskIds,
         @Param("referencetask") TaskSummaryImpl referencetask);
 
-    @Select("<script>SELECT ID, STATE, WORKBASKET_ID FROM TASK "
+    @Select("<script>SELECT ID, STATE, WORKBASKET_ID, CALLBACK_STATE FROM TASK "
         + "WHERE ID IN( <foreach item='item' collection='taskIds' separator=',' >#{item}</foreach> ) "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     @Results(value = {
         @Result(property = "taskId", column = "ID"),
         @Result(property = "workbasketId", column = "WORKBASKET_ID"),
-        @Result(property = "taskState", column = "STATE")})
+        @Result(property = "taskState", column = "STATE"),
+        @Result(property = "callbackState", column = "CALLBACK_STATE")})
     List<MinimalTaskSummary> findExistingTasks(@Param("taskIds") List<String> taskIds);
 
     @Update("<script>"
