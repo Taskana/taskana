@@ -146,6 +146,7 @@ public class TaskImpl implements Task {
         return due;
     }
 
+    @Override
     public void setDue(Instant due) {
         this.due = due;
     }
