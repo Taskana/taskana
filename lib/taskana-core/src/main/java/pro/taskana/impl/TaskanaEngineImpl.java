@@ -8,6 +8,7 @@ import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
@@ -350,6 +351,17 @@ public class TaskanaEngineImpl implements TaskanaEngine {
                     }
                     sessionManager.close();
                 }
+            }
+        }
+
+        @Override
+        public <T> T openAndReturnConnection(Supplier<T> supplier) {
+            try {
+                openConnection();
+                return supplier.get();
+            } finally {
+                // will be called before return & in case of exceptions
+                returnConnection();
             }
         }
 
