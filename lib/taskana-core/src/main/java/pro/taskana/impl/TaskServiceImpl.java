@@ -437,6 +437,9 @@ public class TaskServiceImpl implements TaskService {
         }
         try {
             taskanaEngine.openConnection();
+            if (taskIds == null) {
+                throw new InvalidArgumentException("List of TaskIds must not be null.");
+            }
 
             BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
 
@@ -691,6 +694,7 @@ public class TaskServiceImpl implements TaskService {
         LOGGER.debug("exit from processStandardSettingsForConfiguration()");
     }
 
+   
     private void setCallbackStateOnTaskCreation(TaskImpl task) throws InvalidArgumentException {
         Map<String, String> callbackInfo = task.getCallbackInfo();
         if (callbackInfo != null && callbackInfo.containsKey(Task.CALLBACK_STATE)) {
@@ -726,7 +730,6 @@ public class TaskServiceImpl implements TaskService {
         }
         LOGGER.debug("exit from removeNonExistingTasksFromTaskIdList()");
     }
-
 
     private void checkIfTasksMatchCompleteCriteria(List<String> taskIds, List<TaskSummary> taskSummaries,
         BulkOperationResults<String, TaskanaException> bulkLog) {

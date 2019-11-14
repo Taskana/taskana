@@ -78,7 +78,6 @@ public class TaskServiceImplTest {
         when(taskanaEngineMock.getClassificationService()).thenReturn(classificationServiceImplMock);
         cut = new TaskServiceImpl(internalTaskanaEngineMock, taskMapperMock, attachmentMapperMock);
     }
-
     @Test
     public void testTaskSummaryEqualsHashCode() throws InterruptedException {
         Classification classification = createDummyClassification();
