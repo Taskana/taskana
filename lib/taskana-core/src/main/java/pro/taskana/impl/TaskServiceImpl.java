@@ -637,18 +637,46 @@ public class TaskServiceImpl implements TaskService {
         }
         task.setCreator(creator);
 
-        if (task.getPlanned() == null) {
-            task.setPlanned(now);
-        }
-
         // if no business process id is provided, a unique id is created.
         if (task.getBusinessProcessId() == null) {
             task.setBusinessProcessId(IdGenerator.generateWithPrefix(ID_PREFIX_BUSINESS_PROCESS));
         }
 
         // insert Classification specifications if Classification is given.
+        if (classification == null) {
+            if (task.getPlanned() == null) {
+                task.setPlanned(now);
+            }
+        } else {
+            // get duration in days from planned to due
+            PrioDurationHolder finalPrioDuration = getNewPrioDuration(prioDurationFromAttachments,
+                classification.getPriority(), classification.getServiceLevel());
+            Duration finalDuration = finalPrioDuration.getDuration();
+            if (finalDuration != null && !MAX_DURATION.equals(finalDuration)) {
+                // if we have a due date we need to go x days backwards,
+                // else we take the planned date (or now as fallback) and add x Days
+                if (task.getDue() != null) {
+                    long days = converter.convertWorkingDaysToDays(task.getDue(), -finalDuration.toDays());
+                    //days < 0 -> so we ne need to add, not substract
+                    Instant planned = task.getDue().plus(Duration.ofDays(days));
+                    task.setPlanned(planned);
+                } else {
+                    task.setPlanned(task.getPlanned() == null ? now : task.getPlanned());
+                    long days = converter.convertWorkingDaysToDays(task.getPlanned(), finalDuration.toDays());
+                    Instant due = task.getPlanned().plus(Duration.ofDays(days));
+                    task.setDue(due);
+                }
+            }
+            task.setPriority(finalPrioDuration.getPrio());
+        }
 
-        processStandardSettingsForConfiguration(task, classification, prioDurationFromAttachments);
+        if (task.getName() == null && classification != null) {
+            task.setName(classification.getName());
+        }
+
+        if (task.getDescription() == null && classification != null) {
+            task.setDescription(classification.getDescription());
+        }
 
         // insert Attachments if needed
         List<Attachment> attachments = task.getAttachments();
@@ -663,32 +691,6 @@ public class TaskServiceImpl implements TaskService {
             }
         }
         LOGGER.debug("exit from standardSettings()");
-    }
-
-    private void processStandardSettingsForConfiguration(TaskImpl task, Classification classification,
-        PrioDurationHolder prioDurationFromAttachments) {
-        LOGGER.debug("entry to processStandardSettingsForConfiguration()");
-        if (classification != null) {
-            PrioDurationHolder finalPrioDuration = getNewPrioDuration(prioDurationFromAttachments,
-                classification.getPriority(), classification.getServiceLevel());
-            Duration finalDuration = finalPrioDuration.getDuration();
-            if (finalDuration != null && !MAX_DURATION.equals(finalDuration)) {
-                long days = converter.convertWorkingDaysToDays(task.getPlanned(), finalDuration.toDays());
-                Instant due = task.getPlanned().plus(Duration.ofDays(days));
-                task.setDue(due);
-            }
-            task.setPriority(finalPrioDuration.getPrio());
-
-        }
-
-        if (task.getName() == null && classification != null) {
-            task.setName(classification.getName());
-        }
-
-        if (task.getDescription() == null && classification != null) {
-            task.setDescription(classification.getDescription());
-        }
-        LOGGER.debug("exit from processStandardSettingsForConfiguration()");
     }
 
     private void setCallbackStateOnTaskCreation(TaskImpl task) throws InvalidArgumentException {
