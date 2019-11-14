@@ -1,5 +1,7 @@
 package pro.taskana.impl;
 
+import java.util.function.Supplier;
+
 import org.apache.ibatis.session.SqlSession;
 
 import pro.taskana.TaskanaEngine;
@@ -23,6 +25,15 @@ public interface InternalTaskanaEngine {
      * connection is closed. To be called at the end of each Api call that accesses the database
      */
     void returnConnection();
+
+    /**
+     *
+     * Executes the supplier after openConnection is called and then returns the connection.
+     * @param supplier a function that returns something of type T
+     * @param <T> any type
+     * @return the result of the supplier
+     */
+    <T> T openAndReturnConnection(Supplier<T> supplier);
 
     /**
      * Initializes the SqlSessionManager.

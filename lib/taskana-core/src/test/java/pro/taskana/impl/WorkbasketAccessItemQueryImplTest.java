@@ -35,8 +35,7 @@ public class WorkbasketAccessItemQueryImplTest {
 
     @Test
     public void should_ReturnList_when_BuilderIsUsed() {
-        when(internalTaskanaEngine.getSqlSession()).thenReturn(sqlSession);
-        when(sqlSession.selectList(any(), any())).thenReturn(new ArrayList<>());
+        when(internalTaskanaEngine.openAndReturnConnection(any())).thenReturn(new ArrayList<>());
 
         List<WorkbasketAccessItem> result = workbasketAccessItemQueryImpl.accessIdIn("test", "asd")
             .list();
