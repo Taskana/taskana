@@ -10,6 +10,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.CallbackState;
 import pro.taskana.KeyDomain;
 import pro.taskana.ObjectReferenceQuery;
 import pro.taskana.TaskQuery;
@@ -32,6 +33,8 @@ import pro.taskana.security.CurrentUserContext;
  */
 public class TaskQueryImpl implements TaskQuery {
 
+    private static final String ARGUMENT = "Argument '";
+    private static final String GET_CUSTOM_ATTRIBUTE_NOT_A_NUMBER_BETWEEN_1_AND_16 = "' to getCustomAttribute does not represent a number between 1 and 16";
     private static final String LINK_TO_MAPPER = "pro.taskana.mappings.QueryMapper.queryTaskSummaries";
     private static final String LINK_TO_MAPPER_DB2 = "pro.taskana.mappings.QueryMapper.queryTaskSummariesDb2";
     private static final String LINK_TO_COUNTER = "pro.taskana.mappings.QueryMapper.countQueryTasks";
@@ -83,6 +86,7 @@ public class TaskQueryImpl implements TaskQuery {
     private String[] parentBusinessProcessIdLike;
     private String[] businessProcessIdIn;
     private String[] businessProcessIdLike;
+    private CallbackState[] callbackStateIn;
     private String[] custom1In;
     private String[] custom1Like;
     private String[] custom2In;
@@ -444,11 +448,17 @@ public class TaskQueryImpl implements TaskQuery {
     @Override
     public TaskQuery stateNotIn(TaskState... states) {
         // No benefit in introducing a new variable
-        List<TaskState> stateIn = new LinkedList<TaskState>(Arrays.asList(TaskState.values()));
+        List<TaskState> stateIn = new LinkedList<>(Arrays.asList(TaskState.values()));
         for (TaskState state : states) {
             stateIn.remove(state);
         }
         this.stateIn = stateIn.toArray(new TaskState[0]);
+        return this;
+    }
+
+    @Override
+    public TaskQuery callbackStateIn(CallbackState... states) {
+        this.callbackStateIn = states;
         return this;
     }
 
@@ -459,7 +469,7 @@ public class TaskQueryImpl implements TaskQuery {
             num = Integer.parseInt(number);
         } catch (NumberFormatException e) {
             throw new InvalidArgumentException(
-                "Argument '" + number + "' to getCustomAttribute cannot be converted to a number between 1 and 16",
+                ARGUMENT + number + GET_CUSTOM_ATTRIBUTE_NOT_A_NUMBER_BETWEEN_1_AND_16,
                 e.getCause());
         }
         if (strings.length == 0) {
@@ -518,7 +528,7 @@ public class TaskQueryImpl implements TaskQuery {
                 break;
             default:
                 throw new InvalidArgumentException(
-                    "Argument '" + number + "' to getCustomAttribute does not represent a number between 1 and 16");
+                    ARGUMENT + number + GET_CUSTOM_ATTRIBUTE_NOT_A_NUMBER_BETWEEN_1_AND_16);
         }
 
         return this;
@@ -531,7 +541,7 @@ public class TaskQueryImpl implements TaskQuery {
             num = Integer.parseInt(number);
         } catch (NumberFormatException e) {
             throw new InvalidArgumentException(
-                "Argument '" + number + "' to getCustomAttribute cannot be converted to a number between 1 and 16",
+                ARGUMENT + number + "' to getCustomAttribute cannot be converted to a number between 1 and 16",
                 e.getCause());
         }
         if (strings.length == 0) {
@@ -590,7 +600,7 @@ public class TaskQueryImpl implements TaskQuery {
                 break;
             default:
                 throw new InvalidArgumentException(
-                    "Argument '" + number + "' to getCustomAttribute does not represent a number between 1 and 16");
+                    ARGUMENT + number + GET_CUSTOM_ATTRIBUTE_NOT_A_NUMBER_BETWEEN_1_AND_16);
         }
 
         return this;
@@ -698,7 +708,7 @@ public class TaskQueryImpl implements TaskQuery {
         addClassificationNameToSelectClauseForOrdering = true;
         return this.taskanaEngine.getSqlSession().getConfiguration().getDatabaseId().equals("db2")
             ? addOrderCriteria("CNAME", sortDirection)
-            : addOrderCriteria("c.NAME", sortDirection);
+                : addOrderCriteria("c.NAME", sortDirection);
     }
 
     @Override
@@ -707,14 +717,14 @@ public class TaskQueryImpl implements TaskQuery {
         addAttachmentClassificationNameToSelectClauseForOrdering = true;
         return this.taskanaEngine.getSqlSession().getConfiguration().getDatabaseId().equals("db2")
             ? addOrderCriteria("ACNAME", sortDirection)
-            : addOrderCriteria("ac.NAME", sortDirection);
+                : addOrderCriteria("ac.NAME", sortDirection);
     }
 
     @Override
     public TaskQuery orderByClassificationKey(SortDirection sortDirection) {
         return this.taskanaEngine.getSqlSession().getConfiguration().getDatabaseId().equals("db2")
             ? addOrderCriteria("TCLASSIFICATION_KEY", sortDirection)
-            : addOrderCriteria("t.CLASSIFICATION_KEY", sortDirection);
+                : addOrderCriteria("t.CLASSIFICATION_KEY", sortDirection);
     }
 
     @Override
@@ -803,7 +813,7 @@ public class TaskQueryImpl implements TaskQuery {
         addAttachmentColumnsToSelectClauseForOrdering = true;
         return this.taskanaEngine.getSqlSession().getConfiguration().getDatabaseId().equals("db2")
             ? addOrderCriteria("ACLASSIFICATION_KEY", sortDirection)
-            : addOrderCriteria("a.CLASSIFICATION_KEY", sortDirection);
+                : addOrderCriteria("a.CLASSIFICATION_KEY", sortDirection);
     }
 
     @Override
@@ -812,7 +822,7 @@ public class TaskQueryImpl implements TaskQuery {
         addAttachmentColumnsToSelectClauseForOrdering = true;
         return this.taskanaEngine.getSqlSession().getConfiguration().getDatabaseId().equals("db2")
             ? addOrderCriteria("ACLASSIFICATION_ID", sortDirection)
-            : addOrderCriteria("a.CLASSIFICATION_ID", sortDirection);
+                : addOrderCriteria("a.CLASSIFICATION_ID", sortDirection);
     }
 
     @Override
@@ -849,7 +859,7 @@ public class TaskQueryImpl implements TaskQuery {
             num = Integer.parseInt(number);
         } catch (NumberFormatException e) {
             throw new InvalidArgumentException(
-                "Argument '" + number + "' to getCustomAttribute cannot be converted to a number between 1 and 16",
+                ARGUMENT + number + "' to getCustomAttribute cannot be converted to a number between 1 and 16",
                 e.getCause());
         }
 
@@ -888,7 +898,7 @@ public class TaskQueryImpl implements TaskQuery {
                 return addOrderCriteria("CUSTOM_16", sortDirection);
             default:
                 throw new InvalidArgumentException(
-                    "Argument '" + number + "' to getCustomAttribute does not represent a number between 1 and 16");
+                    ARGUMENT + number + GET_CUSTOM_ATTRIBUTE_NOT_A_NUMBER_BETWEEN_1_AND_16);
         }
     }
 
@@ -978,13 +988,13 @@ public class TaskQueryImpl implements TaskQuery {
             .getSqlSession()
             .getConfiguration().getDatabaseId().equals("db2")
             ? LINK_TO_MAPPER_DB2
-            : LINK_TO_MAPPER;
+                : LINK_TO_MAPPER;
     }
 
     public String getLinkToCounterTaskScript() {
         return this.taskanaEngine.getSqlSession().getConfiguration().getDatabaseId().equals("db2")
             ? LINK_TO_COUNTER_DB2
-            : LINK_TO_COUNTER;
+                : LINK_TO_COUNTER;
     }
 
     private void setupAccessIds() {

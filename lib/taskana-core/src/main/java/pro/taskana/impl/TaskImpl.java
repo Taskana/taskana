@@ -12,6 +12,7 @@ import pro.taskana.Attachment;
 import pro.taskana.AttachmentSummary;
 import pro.taskana.ClassificationSummary;
 import pro.taskana.ObjectReference;
+import pro.taskana.CallbackState;
 import pro.taskana.Task;
 import pro.taskana.TaskState;
 import pro.taskana.TaskSummary;
@@ -49,6 +50,7 @@ public class TaskImpl implements Task {
     // All objects have to be serializable
     private Map<String, String> customAttributes = Collections.emptyMap();
     private Map<String, String> callbackInfo = Collections.emptyMap();
+    private CallbackState callbackState;
     private List<Attachment> attachments = new ArrayList<>();
     private String custom1;
     private String custom2;
@@ -346,6 +348,14 @@ public class TaskImpl implements Task {
     @Override
     public void setCallbackInfo(Map<String, String> callbackInfo) {
         this.callbackInfo = callbackInfo;
+    }
+
+    public CallbackState getCallbackState() {
+        return callbackState;
+    }
+
+    public void setCallbackState(CallbackState callbackState) {
+        this.callbackState = callbackState;
     }
 
     @Override
@@ -728,11 +738,12 @@ public class TaskImpl implements Task {
             + ", workbasketSummary=" + workbasketSummary + ", businessProcessId=" + businessProcessId
             + ", parentBusinessProcessId=" + parentBusinessProcessId + ", owner=" + owner + ", primaryObjRef="
             + primaryObjRef + ", isRead=" + isRead + ", isTransferred=" + isTransferred + ", customAttributes="
-            + customAttributes + ", callbackInfo=" + callbackInfo + ", attachments=" + attachments + ", custom1="
-            + custom1 + ", custom2=" + custom2 + ", custom3=" + custom3 + ", custom4=" + custom4 + ", custom5="
-            + custom5 + ", custom6=" + custom6 + ", custom7=" + custom7 + ", custom8=" + custom8 + ", custom9="
-            + custom9 + ", custom10=" + custom10 + ", custom11=" + custom11 + ", custom12=" + custom12 + ", custom13="
-            + custom13 + ", custom14=" + custom14 + ", custom15=" + custom15 + ", custom16=" + custom16 + "]";
+            + customAttributes + ", callbackInfo=" + callbackInfo +  ", callbackState=" + callbackState
+            + ", attachments=" + attachments + ", custom1=" + custom1 + ", custom2=" + custom2 + ", custom3="
+            + custom3 + ", custom4=" + custom4 + ", custom5=" + custom5 + ", custom6=" + custom6 + ", custom7="
+            + custom7 + ", custom8=" + custom8 + ", custom9=" + custom9 + ", custom10=" + custom10 + ", custom11="
+            + custom11 + ", custom12=" + custom12 + ", custom13=" + custom13 + ", custom14=" + custom14 + ", custom15="
+            + custom15 + ", custom16=" + custom16 + "]";
     }
 
     @Override
@@ -741,7 +752,7 @@ public class TaskImpl implements Task {
         int result = 1;
         Object[] myFields = {externalId, attachments, businessProcessId, claimed, classificationSummary, completed, created,
             creator, custom1, custom10, custom11, custom12, custom13, custom14, custom15, custom16, custom2,
-            custom3, custom4, custom5, custom6, custom7, custom8, custom9, customAttributes, callbackInfo,
+            custom3, custom4, custom5, custom6, custom7, custom8, custom9, customAttributes, callbackInfo, callbackState,
             description, due, id, modified, name, note, owner, parentBusinessProcessId, planned, primaryObjRef, state,
             workbasketSummary};
 
@@ -769,14 +780,14 @@ public class TaskImpl implements Task {
 
         Object[] myFields = {externalId, attachments, businessProcessId, claimed, classificationSummary, completed, created,
             creator, custom1, custom10, custom11, custom12, custom13, custom14, custom15, custom16, custom2,
-            custom3, custom4, custom5, custom6, custom7, custom8, custom9, customAttributes, callbackInfo,
+            custom3, custom4, custom5, custom6, custom7, custom8, custom9, customAttributes, callbackInfo, callbackState,
             description, due, id, modified, name, note, owner, parentBusinessProcessId, planned, primaryObjRef, state,
             workbasketSummary};
 
             Object[] otherFields = {other.externalId, other.attachments, other.businessProcessId, other.claimed, other.classificationSummary, other.completed,
             other.created, other.creator, other.custom1, other.custom10, other.custom11, other.custom12, other.custom13, other.custom14,
             other.custom15, other.custom16, other.custom2, other.custom3, other.custom4, other.custom5, other.custom6, other.custom7,
-            other.custom8, other.custom9, other.customAttributes, other.callbackInfo, other.description, other.due, other.id, other.modified,
+            other.custom8, other.custom9, other.customAttributes, other.callbackInfo, other.callbackState, other.description, other.due, other.id, other.modified,
             other.name, other.note, other.owner, other.parentBusinessProcessId, other.planned, other.primaryObjRef, other.state, other.workbasketSummary};
 
         if (myFields.length != otherFields.length) {
