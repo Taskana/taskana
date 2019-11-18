@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { MessageModal } from 'app/models/message-modal';
 
+import { errors as ERRORS } from './errors';
+
 @Injectable()
 export class GeneralModalService {
   private messageTriggered = new Subject<MessageModal>();

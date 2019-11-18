@@ -35,6 +35,8 @@ import { NoAccessComponent } from 'app/components/no-access/no-access.component'
 import { RemoveConfirmationService } from './services/remove-confirmation/remove-confirmation.service';
 import { FormsValidatorService } from './shared/services/forms/forms-validator.service';
 import { UploadService } from './shared/services/upload/upload.service';
+import { ErrorsService } from './shared/services/errors/errors.service';
+
 
 /**
  * Components
@@ -107,6 +109,7 @@ export function startupServiceFactory(startupService: StartupService): () => Pro
     RemoveConfirmationService,
     FormsValidatorService,
     UploadService,
+    ErrorsService,
   ],
   bootstrap: [AppComponent]
 })
