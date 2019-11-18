@@ -183,7 +183,9 @@ public class TaskController extends AbstractPagingController {
             LOGGER.debug("Entry to createTask(params= {})", taskResource);
         }
 
-        Task createdTask = taskService.createTask(taskResourceAssembler.toModel(taskResource));
+        Task fromResource = taskResourceAssembler.toModel(taskResource);
+        Task createdTask = taskService.createTask(fromResource);
+
         ResponseEntity<TaskResource> result = ResponseEntity.status(HttpStatus.CREATED)
             .body(taskResourceAssembler.toResource(createdTask));
         if (LOGGER.isDebugEnabled()) {

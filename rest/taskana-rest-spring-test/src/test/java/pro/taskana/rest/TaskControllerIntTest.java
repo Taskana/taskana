@@ -358,8 +358,9 @@ class TaskControllerIntTest {
     }
 
     /**
-     * TSK-926: If Planned and Due Date is provided to create a task throw an exception
-     * One is calculated by other other date + service level.
+     * TSK-926: If Planned and Due Date is provided to create a task
+     * and not matching to service level throw an exception
+     * One is calculated by other other date +- service level.
      */
     @Test
     void testCreateWithPlannedAndDueDate() {
@@ -401,7 +402,7 @@ class TaskControllerIntTest {
             + "\"workbasketSummaryResource\":{\"workbasketId\":\"WBI:100000000000000000000000000000000004\"},"
             + "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}";
 
-        URL url = new URL(restHelper.toUrl("/api/v1/tasks"));
+        URL url = new URL(restHelper.toUrl(Mapping.URL_TASKS));
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("POST");
         con.setDoOutput(true);
@@ -419,7 +420,7 @@ class TaskControllerIntTest {
                 + "\"workbasketSummaryResource\":{\"workbasketId\":\"\"},"
                 + "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}";
 
-        url = new URL(restHelper.toUrl("/api/v1/tasks"));
+        url = new URL(restHelper.toUrl(Mapping.URL_TASKS));
         con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("POST");
         con.setDoOutput(true);

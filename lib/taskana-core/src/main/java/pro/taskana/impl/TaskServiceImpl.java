@@ -617,7 +617,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private void standardSettings(TaskImpl task, Classification classification,
-        PrioDurationHolder prioDurationFromAttachments) {
+        PrioDurationHolder prioDurationFromAttachments) throws InvalidArgumentException {
         LOGGER.debug("entry to standardSettings()");
         Instant now = Instant.now();
         task.setId(IdGenerator.generateWithPrefix(ID_PREFIX_TASK));
@@ -642,12 +642,13 @@ public class TaskServiceImpl implements TaskService {
             task.setBusinessProcessId(IdGenerator.generateWithPrefix(ID_PREFIX_BUSINESS_PROCESS));
         }
 
-        // insert Classification specifications if Classification is given.
+        //null in case of manual tasks
         if (classification == null) {
             if (task.getPlanned() == null) {
                 task.setPlanned(now);
             }
         } else {
+            // do some Classification specific stuff (servicelevel).
             // get duration in days from planned to due
             PrioDurationHolder finalPrioDuration = getNewPrioDuration(prioDurationFromAttachments,
                 classification.getPriority(), classification.getServiceLevel());
@@ -659,6 +660,10 @@ public class TaskServiceImpl implements TaskService {
                     long days = converter.convertWorkingDaysToDays(task.getDue(), -finalDuration.toDays());
                     //days < 0 -> so we ne need to add, not substract
                     Instant planned = task.getDue().plus(Duration.ofDays(days));
+                    if (task.getPlanned() != null && !task.getPlanned().equals(planned)) {
+                        throw new InvalidArgumentException(
+                            "Cannot create a task with given planned and due date not matching the service level");
+                    }
                     task.setPlanned(planned);
                 } else {
                     task.setPlanned(task.getPlanned() == null ? now : task.getPlanned());
