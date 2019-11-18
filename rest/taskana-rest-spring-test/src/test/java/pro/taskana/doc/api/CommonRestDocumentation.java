@@ -12,6 +12,8 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import pro.taskana.rest.Mapping;
+
 /**
  * Generate common REST Documentation.
  *
@@ -63,7 +65,7 @@ class CommonRestDocumentation extends BaseRestDocumentation {
     @Test
     void commonFieldsDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .get("http://127.0.0.1:" + port + "/api/v1/classifications/CLI:100000000000000000000000000000000009")
+            .get(restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, "CLI:100000000000000000000000000000000009"))
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andDo(MockMvcRestDocumentation.document("CommonFields",

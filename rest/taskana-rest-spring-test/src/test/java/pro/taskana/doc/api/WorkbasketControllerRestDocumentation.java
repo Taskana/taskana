@@ -19,6 +19,8 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import pro.taskana.rest.Mapping;
+
 /**
  * Generate REST Documentatioon for the WorkbasketController.
  */
@@ -274,7 +276,7 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
     @Test
     void getAllWorkbasketsDocTest() throws Exception {
         this.mockMvc.perform(
-            RestDocumentationRequestBuilders.get("http://127.0.0.1:" + port + "/api/v1/workbaskets?type=PERSONAL")
+            RestDocumentationRequestBuilders.get(restHelper.toUrl(Mapping.URL_WORKBASKET) + "?type=PERSONAL")
                 .accept("application/hal+json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -285,7 +287,7 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
     @Test
     void getSpecificWorkbasketDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders.get(
-            "http://127.0.0.1:" + port + "/api/v1/workbaskets/WBI:100000000000000000000000000000000001")
+            restHelper.toUrl(Mapping.URL_WORKBASKET_ID, "WBI:100000000000000000000000000000000001"))
             .accept("application/hal+json")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -295,8 +297,8 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
 
     @Test
     void getAllWorkbasketAccessItemsDocTest() throws Exception {
-        this.mockMvc.perform(RestDocumentationRequestBuilders.get("http://127.0.0.1:" + port
-            + "/api/v1/workbaskets/WBI:100000000000000000000000000000000001/workbasketAccessItems")
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get(
+            restHelper.toUrl(Mapping.URL_WORKBASKET_ID_ACCESSITEMS, "WBI:100000000000000000000000000000000001"))
             .accept("application/hal+json")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -307,7 +309,7 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
     @Test
     void workbasketSubsetDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders.get(
-            "http://127.0.0.1:" + port + "/api/v1/workbaskets/WBI:100000000000000000000000000000000001")
+            restHelper.toUrl(Mapping.URL_WORKBASKET_ID, "WBI:100000000000000000000000000000000001"))
             .accept("application/hal+json")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -317,8 +319,8 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
 
     @Test
     void removeWorkbasketAsDistributionTargetDocTest() throws Exception {
-        this.mockMvc.perform(RestDocumentationRequestBuilders.delete("http://127.0.0.1:" + port
-            + "/api/v1/workbaskets/distribution-targets/WBI:100000000000000000000000000000000007")
+        this.mockMvc.perform(RestDocumentationRequestBuilders.delete(
+            restHelper.toUrl(Mapping.URL_WORKBASKET_DISTRIBUTION_ID, "WBI:100000000000000000000000000000000007"))
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isNoContent())
             .andDo(MockMvcRestDocumentation.document("RemoveWorkbasketAsDistributionTargetDocTest"));
@@ -326,8 +328,8 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
 
     @Test
     void getAllWorkbasketDistributionTargets() throws Exception {
-        this.mockMvc.perform(RestDocumentationRequestBuilders.get("http://127.0.0.1:" + port
-            + "/api/v1/workbaskets/WBI:100000000000000000000000000000000002/distribution-targets")
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get(
+            restHelper.toUrl(Mapping.URL_WORKBASKET_ID_DISTRIBUTION, "WBI:100000000000000000000000000000000002"))
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andDo(MockMvcRestDocumentation.document("GetAllWorkbasketDistributionTargets",
@@ -336,7 +338,7 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
 
     @Test
     void createWorkbasketDocTest() throws Exception {
-        this.mockMvc.perform(RestDocumentationRequestBuilders.post("http://127.0.0.1:" + port + "/api/v1/workbaskets")
+        this.mockMvc.perform(RestDocumentationRequestBuilders.post(restHelper.toUrl(Mapping.URL_WORKBASKET))
             .contentType("application/json")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x")
             .content(
@@ -352,7 +354,7 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
 
     @Test
     void updateWorkbasketDocTest() throws Exception {
-        URL url = new URL("http://127.0.0.1:" + port + "/api/v1/workbaskets/WBI:100000000000000000000000000000000002");
+        URL url = new URL(restHelper.toUrl(Mapping.URL_WORKBASKET_ID, "WBI:100000000000000000000000000000000002"));
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
         con.setRequestProperty("Authorization", "Basic YWRtaW46YWRtaW4=");
@@ -371,7 +373,7 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
         String modifiedWorkbasket = new String(originalWorkbasket.toString());
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.put(
-            "http://127.0.0.1:" + port + "/api/v1/workbaskets/WBI:100000000000000000000000000000000002")
+            restHelper.toUrl(Mapping.URL_WORKBASKET_ID, "WBI:100000000000000000000000000000000002"))
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x")
             .contentType("application/json")
             .content(modifiedWorkbasket))
@@ -384,7 +386,7 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
     @Test
     void markWorkbasketForDeletionDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders.delete(
-            "http://127.0.0.1:" + port + "/api/v1/workbaskets/" + "WBI:100000000000000000000000000000000005")
+            restHelper.toUrl(Mapping.URL_WORKBASKET_ID, "WBI:100000000000000000000000000000000005"))
             .header("Authorization", "Basic YWRtaW46YWRtaW4="))
             .andExpect(MockMvcResultMatchers.status().isAccepted())
             .andDo(MockMvcRestDocumentation.document("MarkWorkbasketForDeletionDocTest"));
@@ -392,8 +394,8 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
 
     @Test
     void accessItemDocTest() throws Exception {
-        this.mockMvc.perform(RestDocumentationRequestBuilders.get("http://127.0.0.1:" + port
-            + "/api/v1/workbaskets/WBI:100000000000000000000000000000000001/workbasketAccessItems")
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get(
+            restHelper.toUrl(Mapping.URL_WORKBASKET_ID_ACCESSITEMS, "WBI:100000000000000000000000000000000001"))
             .accept("application/hal+json")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())

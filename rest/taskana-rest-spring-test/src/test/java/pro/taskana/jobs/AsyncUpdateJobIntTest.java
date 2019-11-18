@@ -136,7 +136,7 @@ class AsyncUpdateJobIntTest {
         RestTemplate admTemplate = RestHelper.getRestTemplate();
 
         ResponseEntity<TaskResource> taskResponse = admTemplate.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS_ID,taskId),
+            restHelper.toUrl(Mapping.URL_TASKS_ID, taskId),
             HttpMethod.GET,
             new HttpEntity<>(restHelper.getHeadersAdmin()),
             ParameterizedTypeReference.forType(TaskResource.class));

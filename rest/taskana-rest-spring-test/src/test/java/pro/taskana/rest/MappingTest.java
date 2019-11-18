@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import pro.taskana.TaskanaSpringBootTest;
-
 /**
  * Test Mapping and Linkbuilder.
  */

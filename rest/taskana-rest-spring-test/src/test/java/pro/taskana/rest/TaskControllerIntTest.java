@@ -352,8 +352,7 @@ class TaskControllerIntTest {
             restHelper.toUrl(Mapping.URL_TASKS_ID, taskIdOfCreatedTask),
             HttpMethod.DELETE,
             new HttpEntity<>(restHelper.getHeadersAdmin()),
-            ParameterizedTypeReference.forType(Void.class)
-        );
+            ParameterizedTypeReference.forType(Void.class));
 
         assertEquals(HttpStatus.NO_CONTENT, responseDeleted.getStatusCode());
     }
