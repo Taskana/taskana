@@ -14,6 +14,8 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import pro.taskana.rest.Mapping;
+
 /**
  * Generate Rest Documentation for Workbasket Definitions.
  */
@@ -32,7 +34,7 @@ class WorkbasketDefinitionControllerRestDocumentation extends BaseRestDocumentat
     @Test
     void exportAllWorkbasketDefinitions() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .get("http://127.0.0.1:" + port + "/api/v1/workbasket-definitions")
+            .get(restHelper.toUrl(Mapping.URL_WORKBASKETDEFIITIONS))
             .accept("application/json")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -50,7 +52,7 @@ class WorkbasketDefinitionControllerRestDocumentation extends BaseRestDocumentat
             + "}"
             + "]";
 
-        this.mockMvc.perform(multipart("http://127.0.0.1:" + port + "/api/v1/workbasket-definitions")
+        this.mockMvc.perform(multipart(restHelper.toUrl(Mapping.URL_WORKBASKETDEFIITIONS))
             .file("file",
                 definitionString.getBytes())
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))

@@ -14,6 +14,8 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import pro.taskana.rest.Mapping;
+
 /**
  * Test ClassificationDefinitionControlller.
  */
@@ -32,7 +34,7 @@ class ClassificationDefinitionControllerRestDocumentation extends BaseRestDocume
     @Test
     void exportAllClassificationDefinitions() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .get("http://127.0.0.1:" + port + "/api/v1/classification-definitions")
+            .get(restHelper.toUrl(Mapping.URL_CLASSIFICATIONDEFINITION))
             .accept("application/json")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -44,7 +46,7 @@ class ClassificationDefinitionControllerRestDocumentation extends BaseRestDocume
     void importClassificationDefinitions() throws Exception {
         String definitionString = "[{\"key\":\"Key0815\", \"domain\":\"DOMAIN_B\"}]";
 
-        this.mockMvc.perform(multipart("http://127.0.0.1:" + port + "/api/v1/classification-definitions")
+        this.mockMvc.perform(multipart(restHelper.toUrl(Mapping.URL_CLASSIFICATIONDEFINITION))
             .file("file",
                 definitionString.getBytes())
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))

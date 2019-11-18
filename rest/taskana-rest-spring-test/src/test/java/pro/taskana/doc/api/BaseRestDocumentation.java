@@ -13,6 +13,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
+import pro.taskana.RestHelper;
 import pro.taskana.TaskanaSpringBootTest;
 
 /**
@@ -32,6 +33,8 @@ public abstract class BaseRestDocumentation {
 
     @Autowired
     protected MockMvc mockMvc;
+
+    @Autowired RestHelper restHelper;
 
     @BeforeEach
     public void setUpMockMvc() {
