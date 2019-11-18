@@ -34,7 +34,8 @@ public abstract class BaseRestDocumentation {
     @Autowired
     protected MockMvc mockMvc;
 
-    @Autowired RestHelper restHelper;
+    @Autowired
+    protected RestHelper restHelper;
 
     @BeforeEach
     public void setUpMockMvc() {

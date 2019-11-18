@@ -6,9 +6,7 @@ import org.springframework.hateoas.hal.Jackson2HalModule;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.http.converter.support.AllEncompassingFormHttpMessageConverter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -44,7 +42,7 @@ public class RestHelper {
     public HttpHeaders getHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-        headers.add("Content-Type", "application/hal+json");
+        headers.add("Content-Type", "application/json");
         return headers;
     }
 
@@ -71,13 +69,8 @@ public class RestHelper {
         converter.setObjectMapper(mapper);
 
         RestTemplate template = new RestTemplate();
-        template.getMessageConverters().clear();
-        //Parse Json Strings
-        template.getMessageConverters().add(new StringHttpMessageConverter());
-
-        //Parse Raw Files (Form upload)
-        template.getMessageConverters().add(new AllEncompassingFormHttpMessageConverter());
-        template.getMessageConverters().add(converter);
+        //important to add first to ensure priority
+        template.getMessageConverters().add(0, converter);
         return template;
     }
 }

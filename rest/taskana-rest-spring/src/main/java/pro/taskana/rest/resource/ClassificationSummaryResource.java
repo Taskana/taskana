@@ -27,7 +27,7 @@ public class ClassificationSummaryResource extends ResourceSupport {
     public String custom7;
     public String custom8;
 
-    ClassificationSummaryResource() {
+    public ClassificationSummaryResource() {
     }
 
     public ClassificationSummaryResource(ClassificationSummary classification) {
