@@ -20,6 +20,7 @@ import java.util.function.Consumer;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -54,6 +55,15 @@ import pro.taskana.security.WithAccessId;
 @ExtendWith(JAASExtension.class)
 class CreateTaskAccTest extends AbstractAccTest {
 
+    private TaskService taskService;
+    private ClassificationService classificationService;
+
+    @BeforeEach
+    void setup() {
+        taskService = taskanaEngine.getTaskService();
+        classificationService = taskanaEngine.getClassificationService();
+    }
+
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
@@ -62,7 +72,6 @@ class CreateTaskAccTest extends AbstractAccTest {
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException {
 
-        TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
         newTask.setClassificationKey("T2100");
         ObjectReference objectReference = createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR",
@@ -99,7 +108,6 @@ class CreateTaskAccTest extends AbstractAccTest {
         throws NotAuthorizedException, InvalidArgumentException,
         ClassificationNotFoundException, WorkbasketNotFoundException, TaskAlreadyExistException {
 
-        TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
         Instant instantPlanned = Instant.now().plus(2, ChronoUnit.HOURS);
         newTask.setClassificationKey("T2100");
@@ -126,11 +134,53 @@ class CreateTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
+    void testCreateTaskWithInvalidPlannedAndDue() {
+
+        Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+        Instant instantPlanned = Instant.now().plus(2, ChronoUnit.HOURS);
+        newTask.setClassificationKey("T2100");
+        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+        newTask.setOwner("user_1_1");
+
+        newTask.setPlanned(instantPlanned);
+        newTask.setDue(instantPlanned); //due date not according to service level
+        Assertions.assertThrows(InvalidArgumentException.class, () -> taskService.createTask(newTask));
+    }
+
+    @WithAccessId(
+        userName = "user_1_1",
+        groupNames = {"group_1"})
+    @Test
+    void testCreateTaskWithValidPlannedAndDue() throws ClassificationNotFoundException {
+
+        Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
+        long serviceLevelDays = Duration.parse(classification.getServiceLevel()).toDays();
+
+        Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+        Instant instantPlanned = Instant.now();
+        newTask.setClassificationKey(classification.getKey());
+        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+        newTask.setOwner("user_1_1");
+
+        newTask.setPlanned(instantPlanned);
+        //due date according to service level
+        Instant shouldBeDueDate = DaysToWorkingDaysConverter.getLastCreatedInstance()
+            .map(converter -> converter.convertWorkingDaysToDays(newTask.getPlanned(), serviceLevelDays))
+            .map(
+                calendarDays -> newTask.getPlanned().plus(Duration.ofDays(calendarDays))).orElseThrow(
+                RuntimeException::new);
+        newTask.setDue(shouldBeDueDate);
+        Assertions.assertDoesNotThrow(() -> taskService.createTask(newTask));
+    }
+
+    @WithAccessId(
+        userName = "user_1_1",
+        groupNames = {"group_1"})
+    @Test
     void testIdempotencyOfTaskCreation()
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException {
 
-        TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
         newTask.setExternalId("MyExternalId");
         newTask.setClassificationKey("T2100");
@@ -173,7 +223,6 @@ class CreateTaskAccTest extends AbstractAccTest {
         WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException, NoSuchFieldException,
         IllegalAccessException {
 
-        TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
         newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
@@ -241,7 +290,6 @@ class CreateTaskAccTest extends AbstractAccTest {
         WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException, NoSuchFieldException,
         IllegalAccessException {
 
-        TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
         newTask.setClassificationKey("L12010");
         Map<String, String> customAttributesForCreate = createSimpleCustomProperties(27);
@@ -306,7 +354,6 @@ class CreateTaskAccTest extends AbstractAccTest {
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException {
 
-        TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
         newTask.setClassificationKey("L12010");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
@@ -343,9 +390,6 @@ class CreateTaskAccTest extends AbstractAccTest {
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException {
 
-        TaskService taskService = taskanaEngine.getTaskService();
-        ClassificationService classificationService = taskanaEngine.getClassificationService();
-
         //SL P16D
         Classification classification = classificationService.getClassification("L110105", "DOMAIN_A");
         long serviceLevelDays = Duration.parse(classification.getServiceLevel()).toDays();
@@ -380,9 +424,6 @@ class CreateTaskAccTest extends AbstractAccTest {
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException {
 
-        TaskService taskService = taskanaEngine.getTaskService();
-        ClassificationService classificationService = taskanaEngine.getClassificationService();
-
         //SL P16D
         Classification classification = classificationService.getClassification("L110105", "DOMAIN_A");
         long serviceLevelDays = Duration.parse(classification.getServiceLevel()).toDays();
@@ -401,9 +442,8 @@ class CreateTaskAccTest extends AbstractAccTest {
         assertNotNull(readTask);
         assertEquals(due, readTask.getDue());
 
-
         Optional<Long> calendarDaysToSubstract = DaysToWorkingDaysConverter.getLastCreatedInstance()
-            .map(converter -> converter.convertWorkingDaysToDays(readTask.getPlanned(), -serviceLevelDays));
+            .map(converter -> converter.convertWorkingDaysToDays(due, -serviceLevelDays));
 
         assertTrue(calendarDaysToSubstract.isPresent());
         assertTrue(calendarDaysToSubstract.get() < 0);
@@ -421,7 +461,6 @@ class CreateTaskAccTest extends AbstractAccTest {
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException {
 
-        TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
         newTask.setClassificationKey("L12010"); // prio 8, SL P7D
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
@@ -467,7 +506,7 @@ class CreateTaskAccTest extends AbstractAccTest {
         throws ClassificationNotFoundException {
 
         Consumer<Attachment> testCreateTask = (Attachment invalidAttachment) -> {
-            TaskService taskService = taskanaEngine.getTaskService();
+
             Task taskWithInvalidAttachment = makeNewTask(taskService);
             taskWithInvalidAttachment.addAttachment(invalidAttachment);
             Assertions.assertThrows(InvalidArgumentException.class, () ->
@@ -512,7 +551,6 @@ class CreateTaskAccTest extends AbstractAccTest {
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException {
 
-        TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
         newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
@@ -532,7 +570,6 @@ class CreateTaskAccTest extends AbstractAccTest {
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException {
 
-        TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
         newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
@@ -550,7 +587,6 @@ class CreateTaskAccTest extends AbstractAccTest {
     @Test
     void testGetExceptionIfWorkbasketDoesNotExist() {
 
-        TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("UNKNOWN");
         newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
@@ -565,7 +601,6 @@ class CreateTaskAccTest extends AbstractAccTest {
     @Test
     void testGetExceptionIfAppendIsNotPermitted() {
 
-        TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("GPK_KSC", "DOMAIN_A");
         newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
@@ -581,7 +616,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     void testThrowsExceptionIfMandatoryPrimaryObjectReferenceIsNotSetOrIncomplete() {
 
         Consumer<ObjectReference> testCreateTask = (ObjectReference objectReference) -> {
-            TaskService taskService = taskanaEngine.getTaskService();
+
             Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
             newTask.setClassificationKey("T2100");
             if (objectReference != null) {
@@ -608,7 +643,6 @@ class CreateTaskAccTest extends AbstractAccTest {
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException {
 
-        TaskService taskService = taskanaEngine.getTaskService();
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
         Workbasket workbasket = workbasketService.getWorkbasket("USER_1_1", "DOMAIN_A");
@@ -632,7 +666,6 @@ class CreateTaskAccTest extends AbstractAccTest {
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException {
 
-        TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
         newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
@@ -660,7 +693,6 @@ class CreateTaskAccTest extends AbstractAccTest {
         throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException {
 
-        TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
         newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
@@ -695,7 +727,6 @@ class CreateTaskAccTest extends AbstractAccTest {
     @Test
     void testCreateTaskWithSecurityButNoUserId() {
 
-        TaskService taskService = taskanaEngine.getTaskService();
         Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
         newTask.setClassificationKey("T2100");
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_B", "SYSTEM_B", "INSTANCE_B", "VNR", "1234567"));
@@ -711,7 +742,6 @@ class CreateTaskAccTest extends AbstractAccTest {
     void testCreateTaskAlreadyExisting()
         throws NotAuthorizedException, TaskNotFoundException {
 
-        TaskService taskService = taskanaEngine.getTaskService();
         Task existingTask = taskService.getTask("TKI:000000000000000000000000000000000000");
 
         Assertions.assertThrows(TaskAlreadyExistException.class, () ->
@@ -724,7 +754,6 @@ class CreateTaskAccTest extends AbstractAccTest {
     @Test
     void testCreateTaskNotAuthorizedOnWorkbasket() {
 
-        TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.newTask("TEAMLEAD_2", "DOMAIN_A");
 
         Assertions.assertThrows(NotAuthorizedException.class, () ->

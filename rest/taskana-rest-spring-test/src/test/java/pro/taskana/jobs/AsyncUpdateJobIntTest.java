@@ -133,9 +133,8 @@ class AsyncUpdateJobIntTest {
 
     private void verifyTaskIsModifiedAfter(String taskId, Instant before)
         throws InvalidArgumentException {
-        RestTemplate admTemplate = RestHelper.getRestTemplate();
 
-        ResponseEntity<TaskResource> taskResponse = admTemplate.exchange(
+        ResponseEntity<TaskResource> taskResponse = template.exchange(
             restHelper.toUrl(Mapping.URL_TASKS_ID, taskId),
             HttpMethod.GET,
             new HttpEntity<>(restHelper.getHeadersAdmin()),

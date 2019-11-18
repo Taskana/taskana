@@ -19,7 +19,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import pro.taskana.rest.WorkbasketController;
 import pro.taskana.rest.resource.PagedResources.PageMetadata;
 
 /**
@@ -59,8 +58,8 @@ public class PageLinksAspect {
     }
 
     private UriComponentsBuilder originalUri(String relativeUrl, HttpServletRequest request) {
-        //any controller with a "root" mapping will do
-        UriComponentsBuilder baseUri = linkTo(WorkbasketController.class).toUriComponentsBuilder();
+        //argument to linkTo does not matter as we just want to have the default baseUrl
+        UriComponentsBuilder baseUri = linkTo(PageLinksAspect.class).toUriComponentsBuilder();
         baseUri.path(relativeUrl);
         for (Map.Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
             for (String value : entry.getValue()) {

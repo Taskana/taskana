@@ -34,8 +34,8 @@ public final class DaysToWorkingDaysConverter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskMonitorServiceImpl.class);
     private static DaysToWorkingDaysConverter instance;
-    private ArrayList<Integer> positiveDaysToWorkingDays;
-    private ArrayList<Integer> negativeDaysToWorkingDays;
+    private List<Integer> positiveDaysToWorkingDays;
+    private List<Integer> negativeDaysToWorkingDays;
     private Instant dateCreated;
     private LocalDate easterSunday;
     private static boolean germanHolidaysEnabled;
@@ -182,20 +182,19 @@ public final class DaysToWorkingDaysConverter {
     }
 
     public long convertWorkingDaysToDays(Instant startTime, long numberOfDays) {
-        int days = 0;
-        int workingDays = 0;
         int direction = numberOfDays > 0 ? 1 : -1;
-        while (workingDays < numberOfDays * direction) {
-            days += direction;
-            workingDays += isWorkingDay(days, startTime) ? 1 : 0;
-        }
-        return days;
+        long limit = Math.abs(numberOfDays);
+        return LongStream.iterate(0, i -> i + direction)
+            .filter(day -> isWorkingDay(day, startTime))
+            .skip(limit)
+            .findFirst().orElse(0);
     }
 
-    private ArrayList<Integer> generateNegativeDaysToWorkingDays(
+    private List<Integer> generateNegativeDaysToWorkingDays(
         List<? extends TimeIntervalColumnHeader> columnHeaders, Instant referenceDate) {
         int minUpperLimit = TimeIntervalColumnHeader.getSmallestUpperLimit(columnHeaders);
-        ArrayList<Integer> daysToWorkingDays = new ArrayList<>();
+
+        List<Integer> daysToWorkingDays = new ArrayList<>();
         daysToWorkingDays.add(0);
         int day = -1;
         int workingDay = 0;
@@ -206,7 +205,7 @@ public final class DaysToWorkingDaysConverter {
         return daysToWorkingDays;
     }
 
-    private ArrayList<Integer> generatePositiveDaysToWorkingDays(
+    private List<Integer> generatePositiveDaysToWorkingDays(
         List<? extends TimeIntervalColumnHeader> columnHeaders, Instant referenceDate) {
         int maxLowerLimit = TimeIntervalColumnHeader.getLargestLowerLimit(columnHeaders);
         ArrayList<Integer> daysToWorkingDays = new ArrayList<>();
@@ -221,7 +220,7 @@ public final class DaysToWorkingDaysConverter {
         return daysToWorkingDays;
     }
 
-    private boolean isWorkingDay(int day, Instant referenceDate) {
+    private boolean isWorkingDay(long day, Instant referenceDate) {
         LocalDateTime dateToCheck = LocalDateTime.ofInstant(referenceDate, ZoneId.systemDefault()).plusDays(day);
 
         return !isWeekend(dateToCheck)
