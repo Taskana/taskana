@@ -11,6 +11,8 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import pro.taskana.rest.Mapping;
+
 /**
  * Generate REST docu for the monitor controller.
  *
@@ -46,7 +48,7 @@ class MonitorControllerRestDocumentation extends BaseRestDocumentation {
     @Test
     void getTaskStatusReport() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .get("http://127.0.0.1:" + port + "/api/v1/monitor/tasks-status-report")
+            .get(restHelper.toUrl(Mapping.URL_MONITOR_TASKSSTATUS))
             .header("Authorization", "Basic YWRtaW46YWRtaW4="))
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andDo(MockMvcRestDocumentation.document("GetTaskStatusReportDocTest",
@@ -56,8 +58,7 @@ class MonitorControllerRestDocumentation extends BaseRestDocumentation {
     @Test
     void tasksWorkbasketReport() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .get("http://127.0.0.1:" + port
-                + "/api/v1/monitor/tasks-workbasket-report?daysInPast=4&states=READY,CLAIMED,COMPLETED")
+            .get(restHelper.toUrl(Mapping.URL_MONITOR_TASKSWORKBASKET) + "?daysInPast=4&states=READY,CLAIMED,COMPLETED")
             .accept("application/hal+json")
             .header("Authorization", "Basic YWRtaW46YWRtaW4="))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -68,7 +69,7 @@ class MonitorControllerRestDocumentation extends BaseRestDocumentation {
     @Test
     void tasksClassificationReport() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .get("http://127.0.0.1:" + port + "/api/v1/monitor/tasks-classification-report")
+            .get(restHelper.toUrl(Mapping.URL_MONITOR_TASKSCLASSIFICATION))
             .accept("application/hal+json")
             .header("Authorization", "Basic YWRtaW46YWRtaW4="))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -79,7 +80,7 @@ class MonitorControllerRestDocumentation extends BaseRestDocumentation {
     @Test
     void getTimestampReport() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .get("http://127.0.0.1:" + port + "/api/v1/monitor/timestamp-report")
+            .get(restHelper.toUrl(Mapping.URL_MONITOR_TIMESTAMP))
             .accept("application/hal+json")
             .header("Authorization", "Basic YWRtaW46YWRtaW4="))
             .andExpect(MockMvcResultMatchers.status().isOk())

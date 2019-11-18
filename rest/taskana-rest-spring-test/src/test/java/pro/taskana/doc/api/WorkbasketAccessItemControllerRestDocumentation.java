@@ -13,6 +13,8 @@ import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import pro.taskana.rest.Mapping;
+
 /**
  * Generate REST Docu for the WorkbasketAccessItemController.
  */
@@ -109,8 +111,8 @@ class WorkbasketAccessItemControllerRestDocumentation extends BaseRestDocumentat
     void getWorkbasketAccessItemsDocTest() throws Exception {
         this.mockMvc
             .perform(RestDocumentationRequestBuilders
-                .get("http://127.0.0.1:" + port
-                    + "/api/v1/workbasket-access-items/?sort-by=workbasket-key&order=asc&access-ids=user_2_2")
+                .get(restHelper.toUrl(Mapping.URL_WORKBASKETACCESSITEMS)
+                    + "?sort-by=workbasket-key&order=asc&access-ids=user_2_2")
                 .accept("application/hal+json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -123,7 +125,7 @@ class WorkbasketAccessItemControllerRestDocumentation extends BaseRestDocumentat
     void removeWorkbasketAccessItemsDocTest() throws Exception {
         this.mockMvc
             .perform(RestDocumentationRequestBuilders
-                .delete("http://127.0.0.1:" + port + "/api/v1/workbasket-access-items/?access-id=user_2_2")
+                .delete(restHelper.toUrl(Mapping.URL_WORKBASKETACCESSITEMS) + "?access-id=user_2_2")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isNoContent())
             .andDo(MockMvcRestDocumentation.document("RemoveWorkbasketAccessItemsDocTest"));

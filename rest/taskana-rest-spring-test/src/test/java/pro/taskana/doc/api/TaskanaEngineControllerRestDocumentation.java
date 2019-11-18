@@ -10,6 +10,8 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import pro.taskana.rest.Mapping;
+
 /**
  * Generate REST Docu for the TaskanaEngineController.
  *
@@ -46,7 +48,7 @@ class TaskanaEngineControllerRestDocumentation extends BaseRestDocumentation {
     @Test
     void getAllDomainsDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .get("http://127.0.0.1:" + port + "/api/v1/domains")
+            .get(restHelper.toUrl(Mapping.URL_DOMAIN))
             .accept("application/json")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -57,7 +59,7 @@ class TaskanaEngineControllerRestDocumentation extends BaseRestDocumentation {
     @Test
     void getAllClassificationCategoriesDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .get("http://127.0.0.1:" + port + "/api/v1/classification-categories")
+            .get(restHelper.toUrl(Mapping.URL_CLASSIFICATIONCATEGORIES))
             .accept("application/json")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -68,7 +70,7 @@ class TaskanaEngineControllerRestDocumentation extends BaseRestDocumentation {
     @Test
     void getAllClassificationTypesDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .get("http://127.0.0.1:" + port + "/api/v1/classification-types")
+            .get(restHelper.toUrl(Mapping.URL_CLASSIFICATIONTYPES))
             .accept("application/json")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -79,7 +81,7 @@ class TaskanaEngineControllerRestDocumentation extends BaseRestDocumentation {
     @Test
     void getCurrentUserInfo() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .get("http://127.0.0.1:" + port + "/api/v1/current-user-info")
+            .get(restHelper.toUrl(Mapping.URL_CURRENTUSER))
             .accept("application/json")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -90,7 +92,7 @@ class TaskanaEngineControllerRestDocumentation extends BaseRestDocumentation {
     @Test
     void getHistoryProviderIsEnabled() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .get("http://127.0.0.1:" + port + "/api/v1/history-provider-enabled")
+            .get(restHelper.toUrl(Mapping.URL_HISTORYENABLED))
             .accept("application/json")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())

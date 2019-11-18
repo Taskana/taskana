@@ -20,6 +20,8 @@ import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import pro.taskana.rest.Mapping;
+
 /**
  * Generate REST Dokumentation for ClassificationController.
  */
@@ -200,7 +202,7 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
     @Test
     void getAllClassificationsDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .get("http://127.0.0.1:" + port + "/api/v1/classifications?domain=DOMAIN_B")
+            .get(restHelper.toUrl(Mapping.URL_CLASSIFICATIONS) + "?domain=DOMAIN_B")
             .accept("application/hal+json")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -211,7 +213,7 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
     @Test
     void getSpecificClassificationDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .get("http://127.0.0.1:" + port + "/api/v1/classifications/CLI:100000000000000000000000000000000009")
+            .get(restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, "CLI:100000000000000000000000000000000009"))
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andDo(MockMvcRestDocumentation.document("GetSpecificClassificationDocTest",
@@ -221,7 +223,7 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
     @Test
     void classificationSubsetDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .get("http://127.0.0.1:" + port + "/api/v1/classifications/CLI:100000000000000000000000000000000009")
+            .get(restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, "CLI:100000000000000000000000000000000009"))
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andDo(MockMvcRestDocumentation.document("ClassificationSubset",
@@ -231,7 +233,7 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
     @Test
     void createAndDeleteClassificationDocTest() throws Exception {
         MvcResult result = this.mockMvc.perform(RestDocumentationRequestBuilders
-            .post("http://127.0.0.1:" + port + "/api/v1/classifications")
+            .post(restHelper.toUrl(Mapping.URL_CLASSIFICATIONS))
             .contentType("application/hal+json")
             .content("{\"key\":\"Key0815casdgdgh\", \"domain\":\"DOMAIN_B\"}")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
@@ -245,7 +247,7 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
         String newId = content.substring(content.indexOf("CLI:"), content.indexOf("CLI:") + 40);
 
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .delete("http://127.0.0.1:" + port + "/api/v1/classifications/" + newId)
+            .delete(restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, newId))
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isNoContent())
             .andDo(MockMvcRestDocumentation.document("DeleteClassificationDocTest"));
@@ -254,7 +256,7 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
     @Test
     void updateClassificationDocTest() throws Exception {
         URL url = new URL(
-            "http://127.0.0.1:" + port + "/api/v1/classifications/CLI:100000000000000000000000000000000009");
+            restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, "CLI:100000000000000000000000000000000009"));
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
         con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
@@ -273,7 +275,7 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
         String modifiedTask = new String(originalTask.toString());
 
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .put("http://127.0.0.1:" + port + "/api/v1/classifications/CLI:100000000000000000000000000000000009")
+            .put(restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, "CLI:100000000000000000000000000000000009"))
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x")
             .contentType("application/json")
             .content(modifiedTask))

@@ -13,6 +13,8 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import pro.taskana.rest.Mapping;
+
 /**
  * Generate Rest Docu for AbstractPagingController.
  */
@@ -55,7 +57,7 @@ class AbstractPagingControllerRestDocumentation extends BaseRestDocumentation {
     @Test
     void commonSummaryResourceFieldsDocTest() throws Exception {
         this.mockMvc.perform(RestDocumentationRequestBuilders
-            .get("http://127.0.0.1:" + port + "/api/v1/classifications?page=2&page-size=5")
+            .get(restHelper.toUrl(Mapping.URL_CLASSIFICATIONS) + "?page=2&page-size=5")
             .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andDo(MockMvcRestDocumentation.document("CommonSummaryResourceFields",
