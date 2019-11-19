@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.StringStartsWith.startsWith;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -22,6 +21,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 
 import pro.taskana.Classification;
 import pro.taskana.ClassificationService;
@@ -106,16 +106,18 @@ public class ClassificationServiceImplIntExplicitTest {
         assertThat(masterResult, not(equalTo(null)));
 
         // invalid serviceLevel
-        try {
-            expectedClassification = (ClassificationImpl) this.createNewClassificationWithUniqueKey("", "TASK");
-            expectedClassification.setDomain(domain);
-            expectedClassification.setKey("");
-            expectedClassification.setServiceLevel("ASAP");
-            classificationService.createClassification(expectedClassification);
-            connection.commit();
-            fail("Should have thrown IllegalArgumentException, because ServiceLevel is invalid.");
-        } catch (InvalidArgumentException e) {
-        }
+        ClassificationImpl expectedClassificationCreated = (ClassificationImpl) this.createNewClassificationWithUniqueKey(
+            "", "TASK");
+        expectedClassificationCreated.setDomain(domain);
+        expectedClassificationCreated.setKey("");
+        expectedClassificationCreated.setServiceLevel("ASAP");
+
+        Assertions.assertThrows(InvalidArgumentException.class, () -> {
+                classificationService.createClassification(expectedClassificationCreated);
+            },
+            "Should have thrown IllegalArgumentException, because ServiceLevel is invalid.");
+
+        connection.commit();
     }
 
     @Test

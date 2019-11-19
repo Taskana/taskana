@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.List;
 
@@ -54,13 +53,10 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
         throws WorkbasketNotFoundException, NotAuthorizedException, InvalidArgumentException {
         Workbasket wb = workbasketService.getWorkbasket("USER_2_2", "DOMAIN_A");
 
-        try {
+        Assertions.assertThrows(WorkbasketNotFoundException.class, () -> {
             workbasketService.deleteWorkbasket(wb.getId());
             workbasketService.getWorkbasket("USER_2_2", "DOMAIN_A");
-            fail("There should be no result for a deleted Workbasket.");
-        } catch (WorkbasketNotFoundException | WorkbasketInUseException e) {
-            // Workbasket is deleted
-        }
+        }, "There should be no result for a deleted Workbasket.");
     }
 
     @WithAccessId(userName = "elena")
@@ -90,14 +86,11 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
         int distTargets = workbasketService.getDistributionTargets("WBI:100000000000000000000000000000000001")
             .size();
 
-        try {
+        Assertions.assertThrows(WorkbasketNotFoundException.class, () -> {
             // WB deleted
             workbasketService.deleteWorkbasket(wb.getId());
             workbasketService.getWorkbasket("GPK_KSC_1", "DOMAIN_A");
-            fail("There should be no result for a deleted Workbasket.");
-        } catch (WorkbasketNotFoundException | WorkbasketInUseException e) {
-            // Workbasket is deleted
-        }
+        }, "There should be no result for a deleted Workbasket.");
 
         int newDistTargets = workbasketService.getDistributionTargets("WBI:100000000000000000000000000000000001")
             .size();
@@ -112,20 +105,15 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
     void testDeleteWorkbasketWithNullOrEmptyParam()
         throws WorkbasketNotFoundException, NotAuthorizedException, WorkbasketInUseException {
         // Test Null-Value
-        try {
-            workbasketService.deleteWorkbasket(null);
-            fail("delete() should have thrown an InvalidArgumentException, when the param ID is null.");
-        } catch (InvalidArgumentException e) {
-            // Nothing to do here
-        }
+        Assertions.assertThrows(InvalidArgumentException.class, () ->
+                workbasketService.deleteWorkbasket(null),
+            "delete() should have thrown an InvalidArgumentException, when the param ID is null.");
 
         // Test EMPTY-Value
-        try {
-            workbasketService.deleteWorkbasket("");
-            fail("delete() should have thrown an InvalidArgumentException, when the param ID is EMPTY-String.");
-        } catch (InvalidArgumentException e) {
-            // Nothing to do here
-        }
+
+        Assertions.assertThrows(InvalidArgumentException.class, () ->
+                workbasketService.deleteWorkbasket(""),
+            "delete() should have thrown an InvalidArgumentException, when the param ID is EMPTY-String.");
     }
 
     @WithAccessId(
@@ -182,13 +170,11 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
         workbasketService.createWorkbasketAccessItem(accessItem);
         List<WorkbasketAccessItem> accessItemsBefore = workbasketService.getWorkbasketAccessItems(wbId);
         assertEquals(5, accessItemsBefore.size());
-        try {
+
+        Assertions.assertThrows(WorkbasketNotFoundException.class, () -> {
             workbasketService.deleteWorkbasket(wbId);
             workbasketService.getWorkbasket("WBI:100000000000000000000000000000000008");
-            fail("There should be no result for a deleted Workbasket.");
-        } catch (WorkbasketNotFoundException | WorkbasketInUseException e) {
-            // Workbasket is deleted
-        }
+        }, "There should be no result for a deleted Workbasket.");
 
         List<WorkbasketAccessItem> accessItemsAfter = workbasketService.getWorkbasketAccessItems(wbId);
         assertEquals(0, accessItemsAfter.size());
