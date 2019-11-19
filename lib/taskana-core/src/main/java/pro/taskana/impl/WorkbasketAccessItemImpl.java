@@ -461,6 +461,8 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
         result = prime * result + (permRead ? 1231 : 1237);
         result = prime * result + (permTransfer ? 1231 : 1237);
         result = prime * result + ((workbasketId == null) ? 0 : workbasketId.hashCode());
+        result = prime * result + ((workbasketKey == null) ? 0 : workbasketKey.hashCode());
+        result = prime * result + ((accessName == null) ? 0 : accessName.hashCode());
         return result;
     }
 
@@ -472,7 +474,7 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (!getClass().isAssignableFrom(obj.getClass())) {
             return false;
         }
         WorkbasketAccessItemImpl other = (WorkbasketAccessItemImpl) obj;
@@ -546,6 +548,20 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
                 return false;
             }
         } else if (!workbasketId.equals(other.workbasketId)) {
+            return false;
+        }
+        if (workbasketKey == null) {
+            if (other.workbasketKey != null) {
+                return false;
+            }
+        } else if (!workbasketKey.equals(other.workbasketKey)) {
+            return false;
+        }
+        if (accessName == null) {
+            if (other.accessName != null) {
+                return false;
+            }
+        } else if (!accessName.equals(other.accessName)) {
             return false;
         }
         return true;

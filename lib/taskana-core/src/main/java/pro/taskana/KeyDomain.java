@@ -56,7 +56,7 @@ public class KeyDomain {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (!getClass().isAssignableFrom(obj.getClass())) {
             return false;
         }
         KeyDomain other = (KeyDomain) obj;

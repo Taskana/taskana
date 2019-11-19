@@ -102,6 +102,12 @@
 			<version>${version.log4j}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>nl.jqno.equalsverifier</groupId>
+			<artifactId>equalsverifier</artifactId>
+			<version>${version.equalsverifier}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<!-- this repository is needed to fetch com.ibm.db2.jcc -->

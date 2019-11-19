@@ -552,7 +552,7 @@ public class TaskSummaryImpl implements TaskSummary {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (!getClass().isAssignableFrom(obj.getClass())) {
             return false;
         }
         TaskSummaryImpl other = (TaskSummaryImpl) obj;
