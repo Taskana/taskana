@@ -132,6 +132,7 @@ class CallbackStateAccTest extends AbstractAccTest {
         assertEquals(TaskState.COMPLETED, createdTask3.getState());
 
         List<String> taskIds = new ArrayList<>(Arrays.asList(createdTask1.getId(), createdTask2.getId(), createdTask3.getId()));
+        List<String> externalIds =  new ArrayList<>(Arrays.asList(createdTask1.getExternalId(), createdTask2.getExternalId(), createdTask3.getExternalId()));
         // delete should fail because callback_state = CALLBACK_PROCESSING_REQUIRED
         BulkOperationResults<String, TaskanaException> bulkResult1 = taskService.deleteTasks(taskIds);
 
@@ -145,8 +146,7 @@ class CallbackStateAccTest extends AbstractAccTest {
         }
 
         // now enable deletion by setting callback state to CALLBACK_PROCESSING_COMPLETED
-        taskIds = new ArrayList<>(Arrays.asList(createdTask1.getId(), createdTask2.getId(), createdTask3.getId()));
-        BulkOperationResults<String, TaskanaException> bulkResult2 = taskService.setCallbackStateForTasks(taskIds, CallbackState.CALLBACK_PROCESSING_COMPLETED);
+        BulkOperationResults<String, TaskanaException> bulkResult2 = taskService.setCallbackStateForTasks(externalIds, CallbackState.CALLBACK_PROCESSING_COMPLETED);
         assertFalse(bulkResult2.containsErrors());
 
         taskIds = new ArrayList<>(Arrays.asList(createdTask1.getId(), createdTask2.getId(), createdTask3.getId()));
@@ -179,8 +179,8 @@ class CallbackStateAccTest extends AbstractAccTest {
             .stateIn(TaskState.COMPLETED)
             .list();
         long numberOfCompletedTasksAtStartOfTest = completedTasks.size();
-        List<String> taskIds = completedTasks.stream().map(TaskSummary::getTaskId).collect(Collectors.toList());
-        BulkOperationResults<String, TaskanaException> bulkResultCompleted = taskService.setCallbackStateForTasks(taskIds, CallbackState.CALLBACK_PROCESSING_REQUIRED);
+        List<String> externalIds = completedTasks.stream().map(TaskSummary::getExternalId).collect(Collectors.toList());
+        BulkOperationResults<String, TaskanaException> bulkResultCompleted = taskService.setCallbackStateForTasks(externalIds, CallbackState.CALLBACK_PROCESSING_REQUIRED);
         assertFalse(bulkResultCompleted.containsErrors());
 
         // now complete some additional tasks
@@ -195,8 +195,8 @@ class CallbackStateAccTest extends AbstractAccTest {
             .list();
         assertTrue(tasksToBeActedUpon.size() == numberOfCompletedTasksAtStartOfTest);
         // now we set callback state to callback_processing_completed
-        taskIds = tasksToBeActedUpon.stream().map(TaskSummary::getTaskId).collect(Collectors.toList());
-        BulkOperationResults<String, TaskanaException> bulkResult = taskService.setCallbackStateForTasks(taskIds, CallbackState.CALLBACK_PROCESSING_COMPLETED);
+        externalIds = tasksToBeActedUpon.stream().map(TaskSummary::getExternalId).collect(Collectors.toList());
+        BulkOperationResults<String, TaskanaException> bulkResult = taskService.setCallbackStateForTasks(externalIds, CallbackState.CALLBACK_PROCESSING_COMPLETED);
         assertFalse(bulkResult.containsErrors());
 
         long numOfTasksRemaining = taskService.createTaskQuery()
