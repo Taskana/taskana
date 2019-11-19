@@ -5,13 +5,14 @@ import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -37,9 +38,9 @@ import pro.taskana.security.WithAccessId;
  * Acceptance test for all "update workbasket" scenarios.
  */
 @ExtendWith(JAASExtension.class)
-public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
+class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
-    public UpdateWorkbasketAuthorizationsAccTest() {
+    UpdateWorkbasketAuthorizationsAccTest() {
         super();
     }
 
@@ -47,7 +48,7 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "businessadmin"})
     @Test
-    public void testUpdateWorkbasketAccessItemSucceeds()
+    void testUpdateWorkbasketAccessItemSucceeds()
         throws InvalidArgumentException, NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         WorkbasketAccessItem accessItem = workbasketService
@@ -70,19 +71,20 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
             .findFirst()
             .orElse(null);
 
+        assertNotNull(updatedItem);
         assertEquals("Rojas, Miguel", updatedItem.getAccessName());
-        assertEquals(false, updatedItem.isPermAppend());
-        assertEquals(true, updatedItem.isPermRead());
-        assertEquals(true, updatedItem.isPermCustom11());
-        assertEquals(true, updatedItem.isPermCustom1());
-        assertEquals(false, updatedItem.isPermCustom2());
+        assertFalse(updatedItem.isPermAppend());
+        assertTrue(updatedItem.isPermRead());
+        assertTrue(updatedItem.isPermCustom11());
+        assertTrue(updatedItem.isPermCustom1());
+        assertFalse(updatedItem.isPermCustom2());
     }
 
     @WithAccessId(
         userName = "teamlead_1",
         groupNames = {"group_1", "businessadmin"})
     @Test
-    public void testUpdateWorkbasketAccessItemRejected()
+    void testUpdateWorkbasketAccessItemRejected()
         throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         WorkbasketAccessItem accessItem = workbasketService
@@ -90,40 +92,36 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         accessItem.setPermAppend(true);
         accessItem.setPermCustom11(true);
         accessItem.setPermRead(true);
-        accessItem = workbasketService.createWorkbasketAccessItem(accessItem);
+        WorkbasketAccessItem accessItemCreated = workbasketService.createWorkbasketAccessItem(accessItem);
 
-        accessItem.setPermCustom1(true);
-        accessItem.setPermAppend(false);
-        ((WorkbasketAccessItemImpl) accessItem).setAccessId("willi");
-        try {
-            workbasketService.updateWorkbasketAccessItem(accessItem);
-            fail("InvalidArgumentException was expected because access id was changed");
-        } catch (InvalidArgumentException ex) {
-            // nothing to do
-        }
+        accessItemCreated.setPermCustom1(true);
+        accessItemCreated.setPermAppend(false);
+        ((WorkbasketAccessItemImpl) accessItemCreated).setAccessId("willi");
 
-        ((WorkbasketAccessItemImpl) accessItem).setAccessId("user1");
-        accessItem = workbasketService.updateWorkbasketAccessItem(accessItem);
-        assertEquals(false, accessItem.isPermAppend());
-        assertEquals(true, accessItem.isPermRead());
-        assertEquals(true, accessItem.isPermCustom11());
-        assertEquals(true, accessItem.isPermCustom1());
-        assertEquals(false, accessItem.isPermCustom2());
+        Assertions.assertThrows(InvalidArgumentException.class, () ->
+                workbasketService.updateWorkbasketAccessItem(accessItemCreated),
+            "InvalidArgumentException was expected because access id was changed");
 
-        ((WorkbasketAccessItemImpl) accessItem).setWorkbasketId("2");
-        try {
-            workbasketService.updateWorkbasketAccessItem(accessItem);
-            fail("InvalidArgumentException was expected because key was changed");
-        } catch (InvalidArgumentException ex) {
-            // nothing to do
-        }
+        ((WorkbasketAccessItemImpl) accessItemCreated).setAccessId("user1");
+        WorkbasketAccessItem accessItemUpdated = workbasketService.updateWorkbasketAccessItem(accessItemCreated);
+        assertFalse(accessItemUpdated.isPermAppend());
+        assertTrue(accessItemUpdated.isPermRead());
+        assertTrue(accessItemUpdated.isPermCustom11());
+        assertTrue(accessItemUpdated.isPermCustom1());
+        assertFalse(accessItemUpdated.isPermCustom2());
+
+        ((WorkbasketAccessItemImpl) accessItemUpdated).setWorkbasketId("2");
+
+        Assertions.assertThrows(InvalidArgumentException.class, () ->
+                workbasketService.updateWorkbasketAccessItem(accessItemUpdated),
+            "InvalidArgumentException was expected because key was changed");
     }
 
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_2", "businessadmin"})
     @Test
-    public void testUpdatedAccessItemLeadsToNotAuthorizedException()
+    void testUpdatedAccessItemLeadsToNotAuthorizedException()
         throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
         ClassificationNotFoundException, TaskAlreadyExistException {
         TaskService taskService = taskanaEngine.getTaskService();
@@ -150,25 +148,21 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
             .findFirst()
             .orElse(null);
 
-        assertTrue(theAccessItem != null);
+        assertNotNull(theAccessItem);
         theAccessItem.setPermOpen(false);
         workbasketService.updateWorkbasketAccessItem(theAccessItem);
 
-        try {
+        Assertions.assertThrows(NotAuthorizedToQueryWorkbasketException.class, () ->
             taskService.createTaskQuery()
                 .workbasketKeyDomainIn(new KeyDomain(wbKey, wbDomain))
-                .list();
-            fail("NotAuthorizedToQueryWorkbasketException was expected ");
-        } catch (NotAuthorizedToQueryWorkbasketException ignored) {
-            // nothing to do
-        }
+                .list());
     }
 
     @WithAccessId(
         userName = "teamlead_1",
         groupNames = {"group_1", "businessadmin"})
     @Test
-    public void testUpdatedAccessItemList() throws InvalidArgumentException, NotAuthorizedException {
+    void testUpdatedAccessItemList() throws InvalidArgumentException, NotAuthorizedException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         final String wbId = "WBI:100000000000000000000000000000000004";
         List<WorkbasketAccessItem> accessItems = workbasketService
@@ -209,7 +203,7 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "businessadmin"})
     @Test
-    public void testUpdatedAccessItemListToEmptyList() throws InvalidArgumentException, NotAuthorizedException {
+    void testUpdatedAccessItemListToEmptyList() throws InvalidArgumentException, NotAuthorizedException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         final String wbId = "WBI:100000000000000000000000000000000004";
         List<WorkbasketAccessItem> accessItems = workbasketService
@@ -229,7 +223,7 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "businessadmin"})
     @Test
-    public void testInsertAccessItemList() throws InvalidArgumentException, NotAuthorizedException {
+    void testInsertAccessItemList() throws InvalidArgumentException, NotAuthorizedException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         final String wbId = "WBI:100000000000000000000000000000000004";
         List<WorkbasketAccessItem> accessItems = workbasketService
@@ -254,7 +248,7 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         List<WorkbasketAccessItem> updatedAccessItems = workbasketService
             .getWorkbasketAccessItems(wbId);
         int countAfter = updatedAccessItems.size();
-        assertTrue((countBefore + 1) == countAfter);
+        assertEquals((countBefore + 1), countAfter);
 
         item0 = updatedAccessItems.stream().filter(i -> i.getId().equals(updateId0)).findFirst().get();
         assertFalse(item0.isPermAppend());
@@ -268,12 +262,12 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "businessadmin"})
     @Test
-    public void testDeleteAccessItemForAccessItemId() throws NotAuthorizedException, InvalidArgumentException {
+    void testDeleteAccessItemForAccessItemId() throws NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         final String wbId = "WBI:100000000000000000000000000000000001";
 
         List<WorkbasketAccessItem> originalList = workbasketService.getWorkbasketAccessItems(wbId);
-        List<String> originalIds = new ArrayList<String>();
+        List<String> originalIds = new ArrayList<>();
         for (WorkbasketAccessItem a : originalList) {
             originalIds.add(a.getId());
         }
@@ -300,7 +294,7 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"businessadmin"})
     @Test
-    public void testDeleteAccessItemsForAccessId() throws NotAuthorizedException {
+    void testDeleteAccessItemsForAccessId() throws NotAuthorizedException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         final String accessId = "group_1";
         final long accessIdCountBefore = workbasketService
@@ -321,7 +315,7 @@ public class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"businessadmin"})
     @Test
-    public void testDeleteAccessItemsForAccessIdWithUnusedValuesThrowingNoException() throws NotAuthorizedException {
+    void testDeleteAccessItemsForAccessIdWithUnusedValuesThrowingNoException() throws NotAuthorizedException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         workbasketService.deleteWorkbasketAccessItemsForAccessId("");
         workbasketService.deleteWorkbasketAccessItemsForAccessId(null);
