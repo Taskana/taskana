@@ -9,6 +9,7 @@ import pro.taskana.TaskState;
 public class MinimalTaskSummary {
 
     private String taskId;
+    private String externalId;
     private String workbasketId;
     private TaskState taskState;
     private CallbackState callbackState;
@@ -23,6 +24,14 @@ public class MinimalTaskSummary {
 
     public void setTaskId(String taskId) {
         this.taskId = taskId;
+    }
+
+    public String getExternalId() {
+        return externalId;
+    }
+
+    public void setExternalId(String externalId) {
+        this.externalId = externalId;
     }
 
     public String getWorkbasketId() {
