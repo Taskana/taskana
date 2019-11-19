@@ -198,10 +198,20 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (o == null) {
             return false;
         }
+
+        if (!getClass().isAssignableFrom(o.getClass())) {
+            return false;
+        }
+
         ClassificationSummaryImpl that = (ClassificationSummaryImpl) o;
+
+        if (!that.canEqual(this)) {
+            return false;
+        }
+
         return priority == that.priority
             && Objects.equals(id, that.id)
             && Objects.equals(key, that.key)
@@ -220,6 +230,10 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
             && Objects.equals(custom6, that.custom6)
             && Objects.equals(custom7, that.custom7)
             && Objects.equals(custom8, that.custom8);
+    }
+
+    protected boolean canEqual(Object other) {
+        return (other instanceof ClassificationSummaryImpl);
     }
 
     @Override

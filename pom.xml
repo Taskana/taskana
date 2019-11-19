@@ -68,6 +68,7 @@
 		<version.mockito>2.8.47</version.mockito>
 		<version.powermock>1.7.1</version.powermock>
 		<version.hamcrest>1.3</version.hamcrest>
+		<version.equalsverifier>3.1.10</version.equalsverifier>
 
 		<!-- database driver versions -->
 		<version.h2>1.4.197</version.h2>

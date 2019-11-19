@@ -774,7 +774,7 @@ public class TaskImpl implements Task {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (!getClass().isAssignableFrom(obj.getClass())) {
             return false;
         }
         TaskImpl other = (TaskImpl) obj;
