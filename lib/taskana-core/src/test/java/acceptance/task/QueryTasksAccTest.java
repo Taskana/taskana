@@ -1,10 +1,10 @@
 package acceptance.task;
 
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static pro.taskana.BaseQuery.SortDirection.ASCENDING;
 import static pro.taskana.BaseQuery.SortDirection.DESCENDING;
 import static pro.taskana.TaskQueryColumnName.A_CHANNEL;
@@ -14,12 +14,10 @@ import static pro.taskana.TaskQueryColumnName.CLASSIFICATION_KEY;
 import static pro.taskana.TaskQueryColumnName.OWNER;
 import static pro.taskana.TaskQueryColumnName.STATE;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.Assert;
@@ -61,15 +59,10 @@ class QueryTasksAccTest extends AbstractAccTest {
     @Test
     void testQueryTaskValuesForEveryColumn() {
         TaskService taskService = taskanaEngine.getTaskService();
-        List<String> notWorkingColumns = new ArrayList<>();
-        for (TaskQueryColumnName columnName : TaskQueryColumnName.values()) {
-            try {
-                taskService.createTaskQuery().listValues(columnName, ASCENDING);
-            } catch (PersistenceException p) {
-                notWorkingColumns.add(columnName.toString());
-            }
-        }
-        assertEquals(new ArrayList<>(), notWorkingColumns);
+        assertAll(() -> Arrays.stream(TaskQueryColumnName.values()).forEach(columnName ->
+            Assertions.assertDoesNotThrow(() -> taskService.createTaskQuery().listValues(columnName, ASCENDING),
+                "Column is not working " + columnName)
+        ));
     }
 
     @WithAccessId(
@@ -138,7 +131,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         TaskSummary previousSummary = null;
         for (TaskSummary taskSummary : results) {
             if (previousSummary != null) {
-                Assert.assertTrue(!previousSummary.getCreated().isAfter(taskSummary.getCreated()));
+                Assert.assertFalse(previousSummary.getCreated().isAfter(taskSummary.getCreated()));
             }
             previousSummary = taskSummary;
         }
@@ -183,8 +176,7 @@ class QueryTasksAccTest extends AbstractAccTest {
 
         String[] ids = results.stream()
             .map(TaskSummary::getName)
-            .collect(Collectors.toList())
-            .toArray(new String[0]);
+            .toArray(String[]::new);
 
         List<TaskSummary> result2 = taskService.createTaskQuery()
             .nameIn(ids)
@@ -206,8 +198,7 @@ class QueryTasksAccTest extends AbstractAccTest {
 
         String[] ids = results.stream()
             .map(t -> t.getClassificationSummary().getKey())
-            .collect(Collectors.toList())
-            .toArray(new String[0]);
+            .toArray(String[]::new);
 
         List<TaskSummary> result2 = taskService.createTaskQuery()
             .classificationKeyIn(ids)
@@ -296,9 +287,7 @@ class QueryTasksAccTest extends AbstractAccTest {
                     e.printStackTrace();
                     return "";
                 }
-            })
-            .collect(Collectors.toList())
-            .toArray(new String[0]);
+            }).toArray(String[]::new);
 
         List<TaskSummary> result2 = taskService.createTaskQuery()
             .customAttributeIn("1", ids)
@@ -327,9 +316,7 @@ class QueryTasksAccTest extends AbstractAccTest {
                     e.printStackTrace();
                     return "";
                 }
-            })
-            .collect(Collectors.toList())
-            .toArray(new String[0]);
+            }).toArray(String[]::new);
 
         List<TaskSummary> result2 = taskService.createTaskQuery()
             .customAttributeIn("2", ids)
@@ -358,9 +345,7 @@ class QueryTasksAccTest extends AbstractAccTest {
                     e.printStackTrace();
                     return "";
                 }
-            })
-            .collect(Collectors.toList())
-            .toArray(new String[0]);
+            }).toArray(String[]::new);
 
         List<TaskSummary> result2 = taskService.createTaskQuery()
             .customAttributeIn("3", ids)
@@ -389,9 +374,7 @@ class QueryTasksAccTest extends AbstractAccTest {
                     e.printStackTrace();
                     return "";
                 }
-            })
-            .collect(Collectors.toList())
-            .toArray(new String[0]);
+            }).toArray(String[]::new);
 
         List<TaskSummary> result2 = taskService.createTaskQuery()
             .customAttributeIn("4", ids)
@@ -420,9 +403,7 @@ class QueryTasksAccTest extends AbstractAccTest {
                     e.printStackTrace();
                     return "";
                 }
-            })
-            .collect(Collectors.toList())
-            .toArray(new String[0]);
+            }).toArray(String[]::new);
 
         List<TaskSummary> result2 = taskService.createTaskQuery()
             .customAttributeIn("5", ids)
@@ -451,9 +432,7 @@ class QueryTasksAccTest extends AbstractAccTest {
                     e.printStackTrace();
                     return "";
                 }
-            })
-            .collect(Collectors.toList())
-            .toArray(new String[0]);
+            }).toArray(String[]::new);
 
         List<TaskSummary> result2 = taskService.createTaskQuery()
             .customAttributeIn("6", ids)
@@ -497,9 +476,7 @@ class QueryTasksAccTest extends AbstractAccTest {
                     e.printStackTrace();
                     return "";
                 }
-            })
-            .collect(Collectors.toList())
-            .toArray(new String[0]);
+            }).toArray(String[]::new);
 
         Assertions.assertThrows(InvalidArgumentException.class, () -> {
             List<TaskSummary> result2 = taskService.createTaskQuery()
@@ -530,9 +507,7 @@ class QueryTasksAccTest extends AbstractAccTest {
                     e.printStackTrace();
                     return "";
                 }
-            })
-            .collect(Collectors.toList())
-            .toArray(new String[0]);
+            }).toArray(String[]::new);
 
         List<TaskSummary> result2 = taskService.createTaskQuery()
             .customAttributeIn("7", ids)
@@ -561,9 +536,7 @@ class QueryTasksAccTest extends AbstractAccTest {
                     e.printStackTrace();
                     return "";
                 }
-            })
-            .collect(Collectors.toList())
-            .toArray(new String[0]);
+            }).toArray(String[]::new);
 
         List<TaskSummary> result2 = taskService.createTaskQuery()
             .customAttributeIn("8", ids)
@@ -592,9 +565,7 @@ class QueryTasksAccTest extends AbstractAccTest {
                     e.printStackTrace();
                     return "";
                 }
-            })
-            .collect(Collectors.toList())
-            .toArray(new String[0]);
+            }).toArray(String[]::new);
 
         List<TaskSummary> result2 = taskService.createTaskQuery()
             .customAttributeIn("9", ids)
@@ -623,9 +594,7 @@ class QueryTasksAccTest extends AbstractAccTest {
                     e.printStackTrace();
                     return "";
                 }
-            })
-            .collect(Collectors.toList())
-            .toArray(new String[0]);
+            }).toArray(String[]::new);
 
         List<TaskSummary> result2 = taskService.createTaskQuery()
             .customAttributeIn("10", ids)
@@ -654,9 +623,7 @@ class QueryTasksAccTest extends AbstractAccTest {
                     e.printStackTrace();
                     return "";
                 }
-            })
-            .collect(Collectors.toList())
-            .toArray(new String[0]);
+            }).toArray(String[]::new);
         List<TaskSummary> results2 = taskService.createTaskQuery()
             .customAttributeIn("11", ids)
             .list();
@@ -684,9 +651,7 @@ class QueryTasksAccTest extends AbstractAccTest {
                     e.printStackTrace();
                     return "";
                 }
-            })
-            .collect(Collectors.toList())
-            .toArray(new String[0]);
+            }).toArray(String[]::new);
         List<TaskSummary> results2 = taskService.createTaskQuery()
             .customAttributeIn("12", ids)
             .list();
@@ -714,9 +679,7 @@ class QueryTasksAccTest extends AbstractAccTest {
                     e.printStackTrace();
                     return "";
                 }
-            })
-            .collect(Collectors.toList())
-            .toArray(new String[0]);
+            }).toArray(String[]::new);
         List<TaskSummary> results2 = taskService.createTaskQuery()
             .customAttributeIn("13", ids)
             .list();
@@ -744,9 +707,7 @@ class QueryTasksAccTest extends AbstractAccTest {
                     e.printStackTrace();
                     return "";
                 }
-            })
-            .collect(Collectors.toList())
-            .toArray(new String[0]);
+            }).toArray(String[]::new);
         List<TaskSummary> results2 = taskService.createTaskQuery()
             .customAttributeIn("14", ids)
             .list();
@@ -774,9 +735,7 @@ class QueryTasksAccTest extends AbstractAccTest {
                     e.printStackTrace();
                     return "";
                 }
-            })
-            .collect(Collectors.toList())
-            .toArray(new String[0]);
+            }).toArray(String[]::new);
         List<TaskSummary> results2 = taskService.createTaskQuery()
             .customAttributeIn("15", ids)
             .list();
@@ -804,9 +763,7 @@ class QueryTasksAccTest extends AbstractAccTest {
                     e.printStackTrace();
                     return "";
                 }
-            })
-            .collect(Collectors.toList())
-            .toArray(new String[0]);
+            }).toArray(String[]::new);
         List<TaskSummary> results2 = taskService.createTaskQuery()
             .customAttributeIn("16", ids)
             .list();
@@ -843,15 +800,15 @@ class QueryTasksAccTest extends AbstractAccTest {
             engineProxy.openConnection();
             List<TaskImpl> queryResult = mapper.selectTasksByCustomAttributeLike("%Property Value of Property_1339%");
 
-            assertTrue(queryResult.size() == 1);
+            assertEquals(1, queryResult.size());
             Task retrievedTask = queryResult.get(0);
 
-            assertTrue(createdTask.getId().equals(retrievedTask.getId()));
+            assertEquals(createdTask.getId(), retrievedTask.getId());
 
             // verify that the map is correctly retrieved from the database
             Map<String, String> customAttributesFromDb = retrievedTask.getCustomAttributes();
             assertNotNull(customAttributesFromDb);
-            assertTrue(customAttributesForCreate.equals(customAttributesFromDb));
+            assertEquals(customAttributesForCreate, customAttributesFromDb);
 
         } finally {
             engineProxy.returnConnection();
@@ -1487,10 +1444,7 @@ class QueryTasksAccTest extends AbstractAccTest {
             .list();
         assertThat(results.size(), equalTo(10));
 
-        String[] ids = results.stream()
-            .map(TaskSummary::getTaskId)
-            .collect(Collectors.toList())
-            .toArray(new String[0]);
+        String[] ids = results.stream().map(TaskSummary::getTaskId).toArray(String[]::new);
 
         List<TaskSummary> result2 = taskService.createTaskQuery()
             .idIn(ids)
@@ -1510,10 +1464,7 @@ class QueryTasksAccTest extends AbstractAccTest {
             .list();
         assertThat(results.size(), equalTo(10));
 
-        String[] ids = results.stream()
-            .map(TaskSummary::getTaskId)
-            .collect(Collectors.toList())
-            .toArray(new String[0]);
+        String[] ids = results.stream().map(TaskSummary::getTaskId).toArray(String[]::new);
 
         List<TaskSummary> result2 = taskService.createTaskQuery()
             .idIn(ids)

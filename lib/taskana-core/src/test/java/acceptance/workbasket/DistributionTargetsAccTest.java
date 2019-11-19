@@ -91,28 +91,15 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
         String existingWb = "WBI:100000000000000000000000000000000001";
         String nonExistingWb = "WBI:100000000000000000000000000000000xx1";
 
-        try {
-            workbasketService.getDistributionTargets("WBI:100000000000000000000000000000000xx1");
-            assertTrue("This line of code should not be reached", false);
-        } catch (WorkbasketNotFoundException ex) {
-            // nothing to do
-        }
+        Assertions.assertThrows(WorkbasketNotFoundException.class, () ->
+            workbasketService.getDistributionTargets("WBI:100000000000000000000000000000000xx1"));
 
-        try {
-            List<String> distributionTargets = new ArrayList<>(
-                Arrays.asList(nonExistingWb));
-            workbasketService.setDistributionTargets(existingWb, distributionTargets);
-            assertTrue("This line of code should not be reached", false);
-        } catch (WorkbasketNotFoundException ex) {
-            // nothing to do
-        }
+        Assertions.assertThrows(WorkbasketNotFoundException.class, () ->
+            workbasketService.setDistributionTargets(existingWb, new ArrayList<>(
+                Arrays.asList(nonExistingWb))));
 
-        try {
-            workbasketService.addDistributionTarget(existingWb, nonExistingWb);
-            assertTrue("This line of code should not be reached", false);
-        } catch (WorkbasketNotFoundException ex) {
-            // nothing to do
-        }
+        Assertions.assertThrows(WorkbasketNotFoundException.class, () ->
+            workbasketService.addDistributionTarget(existingWb, nonExistingWb));
 
         int beforeCount = workbasketService.getDistributionTargets(existingWb).size();
         workbasketService.removeDistributionTarget(existingWb, nonExistingWb);
@@ -130,37 +117,21 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         String existingWb = "WBI:100000000000000000000000000000000001";
 
-        try {
-            workbasketService.getDistributionTargets(existingWb);
-            assertTrue("This line of code should not be reached", false);
-        } catch (NotAuthorizedException ex) {
-            // nothing to do
-        }
 
-        try {
-            List<String> distributionTargets = new ArrayList<>(
-                Arrays.asList("WBI:100000000000000000000000000000000002"));
-            workbasketService.setDistributionTargets(existingWb, distributionTargets);
-            assertTrue("This line of code should not be reached", false);
-        } catch (NotAuthorizedException ex) {
-            // nothing to do
-        }
+        Assertions.assertThrows(NotAuthorizedException.class, () ->
+            workbasketService.getDistributionTargets(existingWb));
 
-        try {
+        Assertions.assertThrows(NotAuthorizedException.class, () ->
+            workbasketService.setDistributionTargets(existingWb, Arrays.asList("WBI:100000000000000000000000000000000002")));
+
+        Assertions.assertThrows(NotAuthorizedException.class, () ->
             workbasketService.addDistributionTarget(existingWb,
-                "WBI:100000000000000000000000000000000002");
-            assertTrue("This line of code should not be reached", false);
-        } catch (NotAuthorizedException ex) {
-            // nothing to do
-        }
+                "WBI:100000000000000000000000000000000002"));
 
-        try {
+
+        Assertions.assertThrows(NotAuthorizedException.class, () ->
             workbasketService.removeDistributionTarget(existingWb,
-                "WBI:100000000000000000000000000000000002");
-            assertTrue("This line of code should not be reached", false);
-        } catch (NotAuthorizedException ex) {
-            // nothing to do
-        }
+                "WBI:100000000000000000000000000000000002"));
 
     }
 
