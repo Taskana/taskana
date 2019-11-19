@@ -4,7 +4,6 @@ package acceptance.task;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -15,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -76,42 +76,33 @@ class CallbackStateAccTest extends AbstractAccTest {
         TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException, InvalidStateException, InvalidOwnerException {
         TaskService taskService = taskanaEngine.getTaskService();
 
-        TaskImpl createdTask = createTask(taskanaEngine.getTaskService(), CallbackState.CALLBACK_PROCESSING_REQUIRED);
+        final TaskImpl createdTask = createTask(taskanaEngine.getTaskService(), CallbackState.CALLBACK_PROCESSING_REQUIRED);
         assertEquals(CallbackState.CALLBACK_PROCESSING_REQUIRED, createdTask.getCallbackState());
 
         assertEquals(TaskState.READY, createdTask.getState());
-        try {
+        String endOfMessage = " cannot be deleted because its callback is not yet processed";
+
+
+        Throwable t = Assertions.assertThrows(InvalidStateException.class, () -> {
             taskService.forceDeleteTask(createdTask.getId());
-            fail();
-        } catch (InvalidStateException ex) {
-            String endOfMessage = " cannot be deleted because its callback is not yet processed";
-            assertTrue(ex.getMessage().endsWith(endOfMessage));
-            assertEquals(CallbackState.CALLBACK_PROCESSING_REQUIRED, createdTask.getCallbackState());
-        }
+        });
+        assertTrue(t.getMessage().endsWith(endOfMessage));
 
-        createdTask = (TaskImpl) taskService.claim(createdTask.getId());
+        final TaskImpl createdTask2 = (TaskImpl) taskService.claim(createdTask.getId());
 
-        assertEquals(TaskState.CLAIMED, createdTask.getState());
-        try {
-            taskService.forceDeleteTask(createdTask.getId());
-            fail();
-        } catch (InvalidStateException ex) {
-            String endOfMessage = " cannot be deleted because its callback is not yet processed";
-            assertTrue(ex.getMessage().endsWith(endOfMessage));
-            assertEquals(CallbackState.CALLBACK_PROCESSING_REQUIRED, createdTask.getCallbackState());
-        }
+        assertEquals(TaskState.CLAIMED, createdTask2.getState());
 
-        createdTask = (TaskImpl) taskService.completeTask(createdTask.getId());
+        Throwable t2 = Assertions.assertThrows(InvalidStateException.class, () -> {
+            taskService.forceDeleteTask(createdTask2.getId());
+        });
+        assertTrue(t2.getMessage().endsWith(endOfMessage));
 
-        assertEquals(TaskState.COMPLETED, createdTask.getState());
-        try {
-            taskService.forceDeleteTask(createdTask.getId());
-            fail();
-        } catch (InvalidStateException ex) {
-            String endOfMessage = " cannot be deleted because its callback is not yet processed";
-            assertTrue(ex.getMessage().endsWith(endOfMessage));
-            assertEquals(CallbackState.CALLBACK_PROCESSING_REQUIRED, createdTask.getCallbackState());
-        }
+        final TaskImpl createdTask3 = (TaskImpl) taskService.completeTask(createdTask.getId());
+
+        Throwable t3 = Assertions.assertThrows(InvalidStateException.class, () -> {
+            taskService.forceDeleteTask(createdTask3.getId());
+        });
+        assertTrue(t3.getMessage().endsWith(endOfMessage));
     }
 
     @WithAccessId(
@@ -137,8 +128,8 @@ class CallbackStateAccTest extends AbstractAccTest {
         createdTask3 = (TaskImpl) taskService.forceCompleteTask(createdTask3.getId());
 
         assertEquals(TaskState.COMPLETED, createdTask1.getState());
-        assertEquals(TaskState.COMPLETED, createdTask1.getState());
-        assertEquals(TaskState.COMPLETED, createdTask1.getState());
+        assertEquals(TaskState.COMPLETED, createdTask2.getState());
+        assertEquals(TaskState.COMPLETED, createdTask3.getState());
 
         List<String> taskIds = new ArrayList<>(Arrays.asList(createdTask1.getId(), createdTask2.getId(), createdTask3.getId()));
         // delete should fail because callback_state = CALLBACK_PROCESSING_REQUIRED
