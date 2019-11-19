@@ -525,6 +525,70 @@ public class TaskSummaryImpl implements TaskSummary {
         this.custom16 = custom16;
     }
 
+    public String getCustom1() {
+        return custom1;
+    }
+
+    public String getCustom2() {
+        return custom2;
+    }
+
+    public String getCustom3() {
+        return custom3;
+    }
+
+    public String getCustom4() {
+        return custom4;
+    }
+
+    public String getCustom5() {
+        return custom5;
+    }
+
+    public String getCustom6() {
+        return custom6;
+    }
+
+    public String getCustom7() {
+        return custom7;
+    }
+
+    public String getCustom8() {
+        return custom8;
+    }
+
+    public String getCustom9() {
+        return custom9;
+    }
+
+    public String getCustom10() {
+        return custom10;
+    }
+
+    public String getCustom11() {
+        return custom11;
+    }
+
+    public String getCustom12() {
+        return custom12;
+    }
+
+    public String getCustom13() {
+        return custom13;
+    }
+
+    public String getCustom14() {
+        return custom14;
+    }
+
+    public String getCustom15() {
+        return custom15;
+    }
+
+    public String getCustom16() {
+        return custom16;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
