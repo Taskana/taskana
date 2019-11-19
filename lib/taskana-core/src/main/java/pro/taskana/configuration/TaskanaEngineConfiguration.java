@@ -58,7 +58,7 @@ public class TaskanaEngineConfiguration {
     private static final String TASKANA_DOMAINS_PROPERTY = "taskana.domains";
     private static final String TASKANA_CLASSIFICATION_TYPES_PROPERTY = "taskana.classification.types";
     private static final String TASKANA_CLASSIFICATION_CATEGORIES_PROPERTY = "taskana.classification.categories";
-    protected static final String TASKANA_SCHEMA_VERSION = "1.0.8"; // must match the VERSION value in table
+    protected static final String TASKANA_SCHEMA_VERSION = "1.1.5"; // must match the VERSION value in table
     // TASKANA_SCHEMA_VERSION
     private static final String DEFAULT_SCHEMA_NAME = "TASKANA";
 
@@ -113,7 +113,7 @@ public class TaskanaEngineConfiguration {
 
     public TaskanaEngineConfiguration(DataSource dataSource, boolean useManagedTransactions,
         boolean securityEnabled, String propertiesFileName, String rolesSeparator, String schemaName)
-        throws SQLException {
+            throws SQLException {
         this.useManagedTransactions = useManagedTransactions;
         this.securityEnabled = securityEnabled;
 
@@ -359,7 +359,7 @@ public class TaskanaEngineConfiguration {
     private void ensureRoleMapIsFullyInitialized() {
         // make sure that roleMap does not return null for any role
         Arrays.stream(TaskanaRole.values())
-            .forEach(role -> roleMap.putIfAbsent(role, new HashSet<>()));
+        .forEach(role -> roleMap.putIfAbsent(role, new HashSet<>()));
     }
 
     public static DataSource createDefaultDataSource() {
