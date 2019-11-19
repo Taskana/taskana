@@ -79,12 +79,16 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
         return accessId;
     }
 
-    public void setAccessId(String accessId) {
+    public void setAccessIdWithSanitizing(String accessId) {
         if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
-            this.accessId = accessId != null ? accessId.toLowerCase() : null;
+            setAccessId(accessId != null ? accessId.toLowerCase() : null);
         } else {
-            this.accessId = accessId;
+            setAccessId(accessId);
         }
+    }
+
+    public void setAccessId(String accessId) {
+            this.accessId = accessId;
     }
 
     /*

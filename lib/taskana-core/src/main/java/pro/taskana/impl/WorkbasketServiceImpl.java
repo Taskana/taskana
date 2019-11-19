@@ -159,7 +159,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     public WorkbasketAccessItem newWorkbasketAccessItem(String workbasketId, String accessId) {
         WorkbasketAccessItemImpl accessItem = new WorkbasketAccessItemImpl();
         accessItem.setWorkbasketId(workbasketId);
-        accessItem.setAccessId(accessId);
+        accessItem.setAccessIdWithSanitizing(accessId);
         return accessItem;
     }
 
