@@ -12,6 +12,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -224,7 +225,7 @@ public class TaskanaEngineConfiguration {
         LOGGER.debug("CleanupJob configuration: first run at {}", cleanupJobFirstRun);
         LOGGER.debug("CleanupJob configuration: runs every {}", cleanupJobRunEvery);
         LOGGER.debug("CleanupJob configuration: minimum age of tasks to be cleanup up is {}",
-                cleanupJobMinimumAge);
+            cleanupJobMinimumAge);
         LOGGER.debug("TaskCleanupJob configuration: all completed task with the same parent business property id {}",
             taskCleanupJobAllCompletedSameParentBusiness);
     }
@@ -298,36 +299,27 @@ public class TaskanaEngineConfiguration {
     }
 
     private void initTaskanaRoles(Properties props, String rolesSeparator) {
-        List<String> validPropertyNames = Arrays.stream(TaskanaRole.values())
-            .map(TaskanaRole::getPropertyName)
-            .collect(Collectors.toList());
-        for (Object obj : props.keySet()) {
-            String propertyName = ((String) obj);
-            if (validPropertyNames.contains(propertyName.toLowerCase().trim())) {
-                String propertyValue = props.getProperty(propertyName);
-                Set<String> roleMemberSet = new HashSet<>();
-                StringTokenizer st = new StringTokenizer(propertyValue, rolesSeparator);
-                while (st.hasMoreTokens()) {
-                    String token = st.nextToken().toLowerCase().trim();
-                    roleMemberSet.add(token);
-                }
-                TaskanaRole key = TaskanaRole.fromPropertyName(propertyName);
-                if (key != null) {
-                    roleMap.put(key, roleMemberSet);
-                } else {
-                    LOGGER.error("Internal System error when processing role property {}.", propertyName);
-                    throw new SystemException(
-                        "Internal System error when processing role property " + propertyName);
-                }
-            }
-        }
+        List<String> validPropertyNames = TaskanaRole.getValidPropertyNames();
+
+        props.keySet()
+            .stream()
+            .map(String::valueOf)
+            .filter(propertyName -> validPropertyNames.contains(propertyName.toLowerCase().trim()))
+            .forEach(validPropertyName -> roleMap.put(TaskanaRole.fromPropertyName(validPropertyName),
+                getTokensWithCollection(props.getProperty(validPropertyName), rolesSeparator)));
+
         ensureRoleMapIsFullyInitialized();
 
         if (LOGGER.isDebugEnabled()) {
             roleMap.forEach(
                 (k, v) -> LOGGER.debug("Found Taskana RoleConfig {} : {} ", k, LoggerUtils.setToString(v)));
         }
+    }
 
+    private HashSet<String> getTokensWithCollection(String str, String rolesSeparator) {
+        return Collections.list(new StringTokenizer(str, rolesSeparator)).stream()
+            .map(token -> String.valueOf(token).toLowerCase().trim())
+            .collect(Collectors.toCollection(HashSet::new));
     }
 
     private Properties readPropertiesFromFile(String propertiesFile) {

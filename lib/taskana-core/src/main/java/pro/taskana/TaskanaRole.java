@@ -1,5 +1,11 @@
 package pro.taskana;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import pro.taskana.exceptions.SystemException;
+
 /**
  * This enum contains all roles that are known to taskana.
  */
@@ -16,17 +22,17 @@ public enum TaskanaRole {
     }
 
     public static TaskanaRole fromPropertyName(String name) {
-        if (USER.propertyName.equalsIgnoreCase(name)) {
-            return TaskanaRole.USER;
-        } else if (BUSINESS_ADMIN.propertyName.equalsIgnoreCase(name)) {
-            return TaskanaRole.BUSINESS_ADMIN;
-        } else if (ADMIN.propertyName.equalsIgnoreCase(name)) {
-            return TaskanaRole.ADMIN;
-        } else if (MONITOR.propertyName.equalsIgnoreCase(name)) {
-            return TaskanaRole.MONITOR;
-        } else {
-            return null;
-        }
+        return Arrays.stream(TaskanaRole.values())
+            .filter(x -> x.propertyName.equalsIgnoreCase(name))
+            .findFirst()
+            .orElseThrow(() -> new SystemException(
+                "Internal System error when processing role property " + name));
+    }
+
+    public static List<String> getValidPropertyNames() {
+        return Arrays.stream(values())
+            .map(TaskanaRole::getPropertyName)
+            .collect(Collectors.toList());
     }
 
     public String getPropertyName() {
