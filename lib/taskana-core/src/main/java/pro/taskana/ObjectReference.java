@@ -90,7 +90,7 @@ public class ObjectReference {
         if (other == null) {
             return false;
         }
-        if (other.getClass() != getClass()) {
+        if (!getClass().isAssignableFrom(other.getClass())) {
             return false;
         }
         ObjectReference o = (ObjectReference) other;

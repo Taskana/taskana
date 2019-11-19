@@ -134,18 +134,32 @@ public class ClassificationImpl extends ClassificationSummaryImpl implements Cla
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (o == null) {
             return false;
         }
+
+        if (!getClass().isAssignableFrom(o.getClass())) {
+            return false;
+        }
+
         if (!super.equals(o)) {
             return false;
         }
         ClassificationImpl that = (ClassificationImpl) o;
+
+        if (!that.canEqual(this)) {
+            return false;
+        }
+
         return Objects.equals(isValidInDomain, that.isValidInDomain)
             && Objects.equals(created, that.created)
             && Objects.equals(modified, that.modified)
             && Objects.equals(description, that.description)
             && Objects.equals(applicationEntryPoint, that.applicationEntryPoint);
+    }
+
+    protected boolean canEqual(Object other) {
+        return (other instanceof ClassificationImpl);
     }
 
     @Override

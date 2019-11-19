@@ -1,6 +1,7 @@
 package pro.taskana.impl;
 
 import java.time.Instant;
+
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.WorkbasketType;
@@ -262,7 +263,8 @@ public class WorkbasketImpl implements Workbasket {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+
+        if (!getClass().isAssignableFrom(obj.getClass())) {
             return false;
         }
         WorkbasketImpl other = (WorkbasketImpl) obj;

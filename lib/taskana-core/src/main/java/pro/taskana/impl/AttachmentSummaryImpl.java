@@ -161,7 +161,7 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof AttachmentSummaryImpl)) {
+        if (!getClass().isAssignableFrom(obj.getClass())) {
             return false;
         }
         AttachmentSummaryImpl other = (AttachmentSummaryImpl) obj;

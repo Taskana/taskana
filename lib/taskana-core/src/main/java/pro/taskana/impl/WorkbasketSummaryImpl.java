@@ -263,7 +263,7 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (!getClass().isAssignableFrom(obj.getClass())) {
             return false;
         }
         WorkbasketSummaryImpl other = (WorkbasketSummaryImpl) obj;
