@@ -61,10 +61,10 @@ public interface TaskMapper {
         @Result(property = "isRead", column = "IS_READ"),
         @Result(property = "isTransferred", column = "IS_TRANSFERRED"),
         @Result(property = "callbackInfo", column = "CALLBACK_INFO",
-            javaType = Map.class, typeHandler = MapTypeHandler.class),
+        javaType = Map.class, typeHandler = MapTypeHandler.class),
         @Result(property = "callbackState", column = "CALLBACK_STATE"),
         @Result(property = "customAttributes", column = "CUSTOM_ATTRIBUTES",
-            javaType = Map.class, typeHandler = MapTypeHandler.class),
+        javaType = Map.class, typeHandler = MapTypeHandler.class),
         @Result(property = "custom1", column = "CUSTOM_1"),
         @Result(property = "custom2", column = "CUSTOM_2"),
         @Result(property = "custom3", column = "CUSTOM_3"),
@@ -115,8 +115,8 @@ public interface TaskMapper {
     @Delete("<script>DELETE FROM TASK WHERE ID IN(<foreach item='item' collection='ids' separator=',' >#{item}</foreach>)</script>")
     void deleteMultiple(@Param("ids") List<String> ids);
 
-    @Update("<script>UPDATE TASK SET CALLBACK_STATE = #{state} WHERE ID IN(<foreach item='item' collection='ids' separator=',' >#{item}</foreach>)</script>")
-     void setCallbackStateMultiple(@Param("ids") List<String> ids, @Param("state") CallbackState state);
+    @Update("<script>UPDATE TASK SET CALLBACK_STATE = #{state} WHERE EXTERNAL_ID IN(<foreach item='item' collection='externalIds' separator=',' >#{item}</foreach>)</script>")
+    void setCallbackStateMultiple(@Param("externalIds") List<String> externalIds, @Param("state") CallbackState state);
 
     @Select("<script>SELECT ID, EXTERNAL_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, CREATOR, DESCRIPTION, PRIORITY, STATE, CLASSIFICATION_CATEGORY, CLASSIFICATION_KEY, CLASSIFICATION_ID, WORKBASKET_ID, WORKBASKET_KEY, DOMAIN, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, POR_SYSTEM, POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CUSTOM_ATTRIBUTES, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, "
         + "CUSTOM_8, CUSTOM_9, CUSTOM_10, CUSTOM_11, CUSTOM_12, CUSTOM_13, CUSTOM_14, CUSTOM_15, CUSTOM_16 "
@@ -189,16 +189,31 @@ public interface TaskMapper {
     void updateCompleted(@Param("taskIds") List<String> taskIds,
         @Param("referencetask") TaskSummaryImpl referencetask);
 
-    @Select("<script>SELECT ID, STATE, WORKBASKET_ID, CALLBACK_STATE FROM TASK "
+    @Select("<script>SELECT ID, EXTERNAL_ID, STATE, WORKBASKET_ID, CALLBACK_STATE FROM TASK "
         + "WHERE ID IN( <foreach item='item' collection='taskIds' separator=',' >#{item}</foreach> ) "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     @Results(value = {
         @Result(property = "taskId", column = "ID"),
+        @Result(property = "externalId", column = "EXTERNAL_ID"),
         @Result(property = "workbasketId", column = "WORKBASKET_ID"),
         @Result(property = "taskState", column = "STATE"),
         @Result(property = "callbackState", column = "CALLBACK_STATE")})
     List<MinimalTaskSummary> findExistingTasks(@Param("taskIds") List<String> taskIds);
+
+
+    @Select("<script>SELECT ID, EXTERNAL_ID, STATE, WORKBASKET_ID, CALLBACK_STATE FROM TASK "
+        + "WHERE EXTERNAL_ID IN( <foreach item='item' collection='externalIds' separator=',' >#{item}</foreach> ) "
+        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+        + "</script>")
+    @Results(value = {
+        @Result(property = "taskId", column = "ID"),
+        @Result(property = "externalId", column = "EXTERNAL_ID"),
+        @Result(property = "workbasketId", column = "WORKBASKET_ID"),
+        @Result(property = "taskState", column = "STATE"),
+        @Result(property = "callbackState", column = "CALLBACK_STATE")})
+    List<MinimalTaskSummary> findExistingTasksByExternalIds(@Param("externalIds") List<String> externalIds);
+
 
     @Update("<script>"
         + " UPDATE TASK SET CLASSIFICATION_CATEGORY = #{newCategory} "

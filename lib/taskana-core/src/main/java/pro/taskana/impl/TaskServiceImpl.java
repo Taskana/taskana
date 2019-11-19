@@ -219,7 +219,7 @@ public class TaskServiceImpl implements TaskService {
                 validateObjectReference(task.getPrimaryObjRef(), "primary ObjectReference", "Task");
                 PrioDurationHolder prioDurationFromAttachments = handleAttachments(task);
                 standardSettings(task, classification, prioDurationFromAttachments);
-                handleCallbackState(task);
+                setCallbackStateOnTaskCreation(task);
                 try {
                     this.taskMapper.insert(task);
                     LOGGER.debug("Method createTask() created Task '{}'.", task.getId());
@@ -418,7 +418,7 @@ public class TaskServiceImpl implements TaskService {
 
             Iterator<String> taskIdIterator = taskIds.iterator();
             while (taskIdIterator.hasNext()) {
-                removeSingleTask(bulkLog, taskSummaries, taskIdIterator, true);
+                removeSingleTaskForTaskDeletionById(bulkLog, taskSummaries, taskIdIterator);
             }
             if (!taskIds.isEmpty()) {
                 taskMapper.deleteMultiple(taskIds);
@@ -431,31 +431,27 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public BulkOperationResults<String, TaskanaException> setCallbackStateForTasks(List<String> taskIds,
-        CallbackState state) throws InvalidArgumentException {
+    public BulkOperationResults<String, TaskanaException> setCallbackStateForTasks(List<String> externalIds, CallbackState state) {
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("entry to deleteTasks(tasks = {})", LoggerUtils.listToString(taskIds));
+            LOGGER.debug("entry to deleteTasks(tasks = {})", LoggerUtils.listToString(externalIds));
         }
         try {
             taskanaEngine.openConnection();
-            if (taskIds == null) {
-                throw new InvalidArgumentException("List of TaskIds must not be null.");
-            }
 
             BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
 
-            if (taskIds.isEmpty()) {
+            if (externalIds == null || externalIds.isEmpty()) {
                 return bulkLog;
             }
 
-            List<MinimalTaskSummary> taskSummaries = taskMapper.findExistingTasks(taskIds);
+            List<MinimalTaskSummary> taskSummaries = taskMapper.findExistingTasksByExternalIds(externalIds);
 
-            Iterator<String> taskIdIterator = taskIds.iterator();
+            Iterator<String> taskIdIterator = externalIds.iterator();
             while (taskIdIterator.hasNext()) {
-                removeSingleTask(bulkLog, taskSummaries, taskIdIterator, false);
+                removeSingleTaskForCallbackStateByExternalId(bulkLog, taskSummaries, taskIdIterator);
             }
-            if (!taskIds.isEmpty()) {
-                taskMapper.setCallbackStateMultiple(taskIds, state);
+            if (!externalIds.isEmpty()) {
+                taskMapper.setCallbackStateMultiple(externalIds, state);
             }
             return bulkLog;
         } finally {
@@ -464,8 +460,8 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
-    private void removeSingleTask(BulkOperationResults<String, TaskanaException> bulkLog,
-        List<MinimalTaskSummary> taskSummaries, Iterator<String> taskIdIterator, boolean forTaskDeletion) {
+    private void removeSingleTaskForTaskDeletionById(BulkOperationResults<String, TaskanaException> bulkLog,
+        List<MinimalTaskSummary> taskSummaries, Iterator<String> taskIdIterator) {
         LOGGER.debug("entry to removeSingleTask()");
         String currentTaskId = taskIdIterator.next();
         if (currentTaskId == null || currentTaskId.equals("")) {
@@ -474,7 +470,7 @@ public class TaskServiceImpl implements TaskService {
             taskIdIterator.remove();
         } else {
             MinimalTaskSummary foundSummary = taskSummaries.stream()
-                .filter(taskState -> currentTaskId.equals(taskState.getTaskId()))
+                .filter(taskSummary -> currentTaskId.equals(taskSummary.getTaskId()))
                 .findFirst()
                 .orElse(null);
             if (foundSummary == null) {
@@ -485,11 +481,38 @@ public class TaskServiceImpl implements TaskService {
                 bulkLog.addError(currentTaskId, new InvalidStateException(currentTaskId));
                 taskIdIterator.remove();
             } else {
-                if (forTaskDeletion && CallbackState.CALLBACK_PROCESSING_REQUIRED.equals(foundSummary.getCallbackState())) {
+                if (CallbackState.CALLBACK_PROCESSING_REQUIRED.equals(foundSummary.getCallbackState())) {
                     bulkLog.addError(currentTaskId, new InvalidStateException("Task " + currentTaskId
                         + " cannot be deleted before callback is processed"));
                     taskIdIterator.remove();
                 }
+            }
+        }
+        LOGGER.debug("exit from removeSingleTask()");
+    }
+
+
+    private void removeSingleTaskForCallbackStateByExternalId(BulkOperationResults<String,
+        TaskanaException> bulkLog,
+        List<MinimalTaskSummary> taskSummaries, Iterator<String> externalIdIterator) {
+        LOGGER.debug("entry to removeSingleTask()");
+        String currentExternalId = externalIdIterator.next();
+        if (currentExternalId == null || currentExternalId.equals("")) {
+            bulkLog.addError("",
+                new InvalidArgumentException("IDs with EMPTY or NULL value are not allowed."));
+            externalIdIterator.remove();
+        } else {
+            MinimalTaskSummary foundSummary = taskSummaries.stream()
+                .filter(taskSummary -> currentExternalId.equals(taskSummary.getExternalId()))
+                .findFirst()
+                .orElse(null);
+            if (foundSummary == null) {
+                bulkLog.addError(currentExternalId, new TaskNotFoundException(currentExternalId,
+                    TASK_WITH_ID + currentExternalId + WAS_NOT_FOUND2));
+                externalIdIterator.remove();
+            } else if (!TaskState.COMPLETED.equals(foundSummary.getTaskState())) {
+                bulkLog.addError(currentExternalId, new InvalidStateException(currentExternalId));
+                externalIdIterator.remove();
             }
         }
         LOGGER.debug("exit from removeSingleTask()");
@@ -668,7 +691,7 @@ public class TaskServiceImpl implements TaskService {
         LOGGER.debug("exit from processStandardSettingsForConfiguration()");
     }
 
-    private void handleCallbackState(TaskImpl task) {
+    private void setCallbackStateOnTaskCreation(TaskImpl task) throws InvalidArgumentException {
         Map<String, String> callbackInfo = task.getCallbackInfo();
         if (callbackInfo != null && callbackInfo.containsKey(Task.CALLBACK_STATE)) {
             String value = callbackInfo.get(Task.CALLBACK_STATE);
@@ -678,6 +701,8 @@ public class TaskServiceImpl implements TaskService {
                     task.setCallbackState(state);
                 } catch (Exception e) {
                     LOGGER.warn("Attempted to determine callback state from {} and caught {}", value, e);
+                    throw new InvalidArgumentException("Attempted to set callback state for task "
+                        + task.getId(), e);
                 }
             }
         }
