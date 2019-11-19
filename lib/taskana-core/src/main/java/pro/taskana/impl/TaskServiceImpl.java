@@ -433,13 +433,10 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public BulkOperationResults<String, TaskanaException> setCallbackStateForTasks(List<String> externalIds, CallbackState state) {
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("entry to deleteTasks(tasks = {})", LoggerUtils.listToString(externalIds));
+            LOGGER.debug("entry to setCallbackStateForTasks(externalIds = {})", LoggerUtils.listToString(externalIds));
         }
         try {
             taskanaEngine.openConnection();
-            if (taskIds == null) {
-                throw new InvalidArgumentException("List of TaskIds must not be null.");
-            }
 
             BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
 
@@ -447,7 +444,7 @@ public class TaskServiceImpl implements TaskService {
                 return bulkLog;
             }
 
-            List<MinimalTaskSummary> taskSummaries = taskMapper.findExistingTasksByExternalIds(externalIds);
+            List<MinimalTaskSummary> taskSummaries = taskMapper.findExistingTasks(null, externalIds);
 
             Iterator<String> taskIdIterator = externalIds.iterator();
             while (taskIdIterator.hasNext()) {
@@ -458,7 +455,7 @@ public class TaskServiceImpl implements TaskService {
             }
             return bulkLog;
         } finally {
-            LOGGER.debug("exit from deleteTasks()");
+            LOGGER.debug("exit from setCallbckStateForTasks()");
             taskanaEngine.returnConnection();
         }
     }
