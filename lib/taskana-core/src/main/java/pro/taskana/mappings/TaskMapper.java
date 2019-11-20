@@ -190,7 +190,10 @@ public interface TaskMapper {
         @Param("referencetask") TaskSummaryImpl referencetask);
 
     @Select("<script>SELECT ID, EXTERNAL_ID, STATE, WORKBASKET_ID, CALLBACK_STATE FROM TASK "
-        + "WHERE ID IN( <foreach item='item' collection='taskIds' separator=',' >#{item}</foreach> ) "
+        + "<where> "
+        + "<if test='taskIds != null'>ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>)</if> "
+        + "<if test='externalIds != null'>EXTERNAL_ID IN(<foreach item='item' collection='externalIds' separator=',' >#{item}</foreach>)</if> "
+        + "</where> "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + "</script>")
     @Results(value = {
@@ -199,21 +202,8 @@ public interface TaskMapper {
         @Result(property = "workbasketId", column = "WORKBASKET_ID"),
         @Result(property = "taskState", column = "STATE"),
         @Result(property = "callbackState", column = "CALLBACK_STATE")})
-    List<MinimalTaskSummary> findExistingTasks(@Param("taskIds") List<String> taskIds);
-
-
-    @Select("<script>SELECT ID, EXTERNAL_ID, STATE, WORKBASKET_ID, CALLBACK_STATE FROM TASK "
-        + "WHERE EXTERNAL_ID IN( <foreach item='item' collection='externalIds' separator=',' >#{item}</foreach> ) "
-        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
-        + "</script>")
-    @Results(value = {
-        @Result(property = "taskId", column = "ID"),
-        @Result(property = "externalId", column = "EXTERNAL_ID"),
-        @Result(property = "workbasketId", column = "WORKBASKET_ID"),
-        @Result(property = "taskState", column = "STATE"),
-        @Result(property = "callbackState", column = "CALLBACK_STATE")})
-    List<MinimalTaskSummary> findExistingTasksByExternalIds(@Param("externalIds") List<String> externalIds);
-
+    List<MinimalTaskSummary> findExistingTasks(@Param("taskIds") List<String> taskIds,
+        @Param("externalIds") List<String> externalIds);
 
     @Update("<script>"
         + " UPDATE TASK SET CLASSIFICATION_CATEGORY = #{newCategory} "
