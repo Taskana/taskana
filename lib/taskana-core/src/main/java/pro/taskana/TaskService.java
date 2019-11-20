@@ -276,7 +276,7 @@ public interface TaskService {
      *             if an Attachment with ID will be added multiple times without using the task-methods.
      */
     Task updateTask(Task task) throws InvalidArgumentException, TaskNotFoundException, ConcurrencyException,
-        ClassificationNotFoundException, NotAuthorizedException, AttachmentPersistenceException;
+    ClassificationNotFoundException, NotAuthorizedException, AttachmentPersistenceException;
 
     /**
      * Transfers a list of tasks to an other workbasket. Exceptions will be thrown if the caller got no permissions on
@@ -317,7 +317,7 @@ public interface TaskService {
      */
     BulkOperationResults<String, TaskanaException> transferTasks(String destinationWorkbasketKey,
         String destinationWorkbasketDomain, List<String> taskIds)
-        throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException;
+            throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException;
 
     /**
      * Deletes the task with the given Id.
@@ -405,4 +405,16 @@ public interface TaskService {
      */
     List<String> updateTasks(List<String> taskIds,
         Map<String, String> customFieldsToUpdate) throws InvalidArgumentException;
+
+    /**
+     * Sets the callback state on a list of tasks.
+     * Note: this method is primarily intended to be used by the TaskanaAdapter
+     *
+     * @param externalIds  the EXTERNAL_IDs of the tasks on which the callback state is set.
+     * @param state  the callback state that is to be set on the tasks
+     *
+     * @return the result of the operations with Id and Exception for each failed task deletion.
+     */
+    BulkOperationResults<String, TaskanaException> setCallbackStateForTasks(List<String> externalIds, CallbackState state);
+
 }

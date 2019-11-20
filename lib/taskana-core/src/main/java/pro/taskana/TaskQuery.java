@@ -609,6 +609,15 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
     TaskQuery attachmentReceivedWithin(TimeInterval... receivedIn);
 
     /**
+     * Add your callbackState to your query.
+     *
+     * @param states
+     *            the callback states as {@link CallbackState}
+     * @return the query
+     */
+    TaskQuery callbackStateIn(CallbackState... states);
+
+    /**
      * This method provides a query builder for quering the database.
      *
      * @return a {@link ObjectReferenceQuery}
