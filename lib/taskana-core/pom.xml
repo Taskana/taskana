@@ -102,6 +102,18 @@
 			<version>${version.log4j}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.tngtech.archunit</groupId>
+			<artifactId>archunit-junit5-api</artifactId>
+			<version>${version.archunit}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.tngtech.archunit</groupId>
+			<artifactId>archunit-junit5-engine</artifactId>
+			<version>${version.archunit}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<!-- this repository is needed to fetch com.ibm.db2.jcc -->
