@@ -691,7 +691,6 @@ public class TaskServiceImpl implements TaskService {
         LOGGER.debug("exit from processStandardSettingsForConfiguration()");
     }
 
-   
     private void setCallbackStateOnTaskCreation(TaskImpl task) throws InvalidArgumentException {
         Map<String, String> callbackInfo = task.getCallbackInfo();
         if (callbackInfo != null && callbackInfo.containsKey(Task.CALLBACK_STATE)) {
