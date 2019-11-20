@@ -414,7 +414,7 @@ public class TaskServiceImpl implements TaskService {
                 return bulkLog;
             }
 
-            List<MinimalTaskSummary> taskSummaries = taskMapper.findExistingTasks(taskIds);
+            List<MinimalTaskSummary> taskSummaries = taskMapper.findExistingTasks(taskIds, null);
 
             Iterator<String> taskIdIterator = taskIds.iterator();
             while (taskIdIterator.hasNext()) {

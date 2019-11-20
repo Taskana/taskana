@@ -241,7 +241,7 @@ public class TaskTransferrer {
         if (taskIds.isEmpty()) {
             taskSummaries = new ArrayList<>();
         } else {
-            taskSummaries = taskMapper.findExistingTasks(taskIds);
+            taskSummaries = taskMapper.findExistingTasks(taskIds, null);
         }
         checkIfTransferConditionsAreFulfilled(taskIds, taskSummaries, bulkLog);
         updateTasksToBeTransferred(taskIds, taskSummaries, destinationWorkbasket);
