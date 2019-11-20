@@ -352,6 +352,7 @@ public class TaskServiceImpl implements TaskService {
         return taskTransferrer.transferTasks(destinationWorkbasketKey, destinationWorkbasketDomain, taskIds);
     }
 
+
     @Override
     public TaskQuery createTaskQuery() {
         return new TaskQueryImpl(taskanaEngine);
@@ -726,6 +727,7 @@ public class TaskServiceImpl implements TaskService {
         }
         LOGGER.debug("exit from removeNonExistingTasksFromTaskIdList()");
     }
+
 
     private void checkIfTasksMatchCompleteCriteria(List<String> taskIds, List<TaskSummary> taskSummaries,
         BulkOperationResults<String, TaskanaException> bulkLog) {
