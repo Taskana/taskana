@@ -101,7 +101,7 @@ export class TypeAheadComponent implements OnInit, ControlValueAccessor {
   }
 
   initializeDataSource() {
-    this.dataSource = Observable.create((observer: any) => {
+    this.dataSource = new Observable((observer: any) => {
       observer.next(this.value);
     }).pipe(mergeMap((token: string) => this.getUsersAsObservable(token)));
     this.accessIdsService.getAccessItemsInformation(this.value).subscribe(items => {

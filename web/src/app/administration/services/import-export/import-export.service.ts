@@ -6,14 +6,14 @@ export class ImportExportService {
 
     public importingFinished = new Subject<boolean>();
 
-	constructor() { }
+  constructor() { }
 
-	setImportingFinished(value: boolean) {
-		this.importingFinished.next(value);
-	}
+  setImportingFinished(value: boolean) {
+    this.importingFinished.next(value);
+  }
 
-	getImportingFinished(): Observable<boolean> {
-		return this.importingFinished.asObservable();
-	}
+  getImportingFinished(): Observable<boolean> {
+    return this.importingFinished.asObservable();
+  }
 
 }

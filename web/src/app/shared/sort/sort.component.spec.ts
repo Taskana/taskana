@@ -33,16 +33,16 @@ describe('SortComponent', () => {
   });
 
   it('should change order when click on order ', () => {
-  	expect(component.sort.sortDirection).toBe(Direction.ASC);
-  	debugElement.querySelector('#sort-by-direction-desc').click();
-  	expect(component.sort.sortDirection).toBe(Direction.DESC);
+    expect(component.sort.sortDirection).toBe(Direction.ASC);
+    debugElement.querySelector('#sort-by-direction-desc').click();
+    expect(component.sort.sortDirection).toBe(Direction.DESC);
   });
 
   it('should change sort by when click on sort by ', () => {
     component.sortingFields = new Map<string, string>([['name', 'Name']]);
     fixture.detectChanges();
-  	expect(component.sort.sortBy).toBe('key');
-  	debugElement.querySelector('#sort-by-name').click();
-  	expect(component.sort.sortBy).toBe('name');
+    expect(component.sort.sortBy).toBe('key');
+    debugElement.querySelector('#sort-by-name').click();
+    expect(component.sort.sortBy).toBe('name');
   });
 });
