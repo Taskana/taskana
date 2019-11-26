@@ -4,15 +4,15 @@ import { Subject ,  Observable } from 'rxjs';
 @Injectable()
 export class RequestInProgressService {
 
-	public requestInProgressTriggered = new Subject<boolean>();
+  public requestInProgressTriggered = new Subject<boolean>();
 
-	constructor() { }
+  constructor() { }
 
-	setRequestInProgress(value: boolean) {
-		setTimeout(() => this.requestInProgressTriggered.next(value), 0);
-	}
+  setRequestInProgress(value: boolean) {
+    setTimeout(() => this.requestInProgressTriggered.next(value), 0);
+  }
 
-	getRequestInProgress(): Observable<boolean> {
-		return this.requestInProgressTriggered.asObservable();
-	}
+  getRequestInProgress(): Observable<boolean> {
+    return this.requestInProgressTriggered.asObservable();
+  }
 }

@@ -6,69 +6,69 @@ import { AlertService } from 'app/services/alert/alert.service';
 import { AlertComponent } from './alert.component';
 
 describe('AlertComponent', () => {
-	let component: AlertComponent;
-	let fixture: ComponentFixture<AlertComponent>;
-	let debugElement,
-		alertService;
+  let component: AlertComponent;
+  let fixture: ComponentFixture<AlertComponent>;
+  let debugElement,
+    alertService;
 
-	beforeEach(async(() => {
-		TestBed.configureTestingModule({
-			imports: [BrowserAnimationsModule],
-			declarations: [AlertComponent],
-			providers: [AlertService]
-		})
-			.compileComponents();
-	}));
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      imports: [BrowserAnimationsModule],
+      declarations: [AlertComponent],
+      providers: [AlertService]
+    })
+      .compileComponents();
+  }));
 
-	beforeEach(() => {
-		alertService = TestBed.get(AlertService);
-		fixture = TestBed.createComponent(AlertComponent);
-		component = fixture.componentInstance;
-		debugElement = fixture.debugElement.nativeElement;
-		fixture.detectChanges();
-	});
+  beforeEach(() => {
+    alertService = TestBed.get(AlertService);
+    fixture = TestBed.createComponent(AlertComponent);
+    component = fixture.componentInstance;
+    debugElement = fixture.debugElement.nativeElement;
+    fixture.detectChanges();
+  });
 
-	afterEach(() => {
-		document.body.removeChild(debugElement);
-	})
+  afterEach(() => {
+    document.body.removeChild(debugElement);
+  })
 
-	it('should create', () => {
-		expect(component).toBeTruthy();
-	});
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 
-	it('should show alert message', () => {
-		alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, 'some custom text'));
-		fixture.detectChanges();
-		expect(debugElement.querySelector('#alert-icon').innerText).toBe('done');
-		expect(debugElement.querySelector('#alert-text').innerText).toBe('some custom text');
-	});
+  it('should show alert message', () => {
+    alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, 'some custom text'));
+    fixture.detectChanges();
+    expect(debugElement.querySelector('#alert-icon').innerText).toBe('done');
+    expect(debugElement.querySelector('#alert-text').innerText).toBe('some custom text');
+  });
 
-	it('should have differents alert types', () => {
-		alertService.triggerAlert(new AlertModel(AlertType.DANGER, 'some custom text'));
-		fixture.detectChanges();
-		expect(debugElement.querySelector('#alert-icon').innerText).toBe('error');
+  it('should have differents alert types', () => {
+    alertService.triggerAlert(new AlertModel(AlertType.DANGER, 'some custom text'));
+    fixture.detectChanges();
+    expect(debugElement.querySelector('#alert-icon').innerText).toBe('error');
 
-		alertService.triggerAlert(new AlertModel(AlertType.WARNING, 'some custom text'));
-		fixture.detectChanges();
-		expect(debugElement.querySelector('#alert-icon').innerText).toBe('warning');
-		expect(debugElement.querySelector('#alert-text').innerText).toBe('some custom text');
-	});
+    alertService.triggerAlert(new AlertModel(AlertType.WARNING, 'some custom text'));
+    fixture.detectChanges();
+    expect(debugElement.querySelector('#alert-icon').innerText).toBe('warning');
+    expect(debugElement.querySelector('#alert-text').innerText).toBe('some custom text');
+  });
 
-	it('should define a closing timeout if alert has autoclosing property', (done) => {
-		alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, 'some custom text', true, 5));
-		fixture.detectChanges();
-		expect(component.alert).toBeDefined();
-		setTimeout(() => {
-			fixture.detectChanges();
-			expect(component.alert).toBeUndefined();
-			done();
-		}, 6)
-	});
+  it('should define a closing timeout if alert has autoclosing property', (done) => {
+    alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, 'some custom text', true, 5));
+    fixture.detectChanges();
+    expect(component.alert).toBeDefined();
+    setTimeout(() => {
+      fixture.detectChanges();
+      expect(component.alert).toBeUndefined();
+      done();
+    }, 6)
+  });
 
-	it('should have defined a closing button if alert has no autoclosing property', () => {
-		alertService.triggerAlert(new AlertModel(AlertType.DANGER, 'some custom text', false));
-		fixture.detectChanges();
-		expect(debugElement.querySelector('.alert > button')).toBeDefined();
-	});
+  it('should have defined a closing button if alert has no autoclosing property', () => {
+    alertService.triggerAlert(new AlertModel(AlertType.DANGER, 'some custom text', false));
+    fixture.detectChanges();
+    expect(debugElement.querySelector('.alert > button')).toBeDefined();
+  });
 
 });

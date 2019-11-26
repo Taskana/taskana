@@ -5,34 +5,34 @@ import { Side } from '../distribution-targets.component';
 import { expandDown } from 'app/shared/animations/expand.animation';
 
 @Component({
-	selector: 'taskana-dual-list',
-	templateUrl: './dual-list.component.html',
-	styleUrls: ['./dual-list.component.scss'],
-	animations: [expandDown]
+  selector: 'taskana-dual-list',
+  templateUrl: './dual-list.component.html',
+  styleUrls: ['./dual-list.component.scss'],
+  animations: [expandDown]
 })
 export class DualListComponent implements OnInit {
 
-	@Input() distributionTargets: Array<WorkbasketSummary>;
-	@Input() distributionTargetsSelected: Array<WorkbasketSummary>;
-	@Output() performDualListFilter = new EventEmitter<{ filterBy: FilterModel, side: Side }>();
+  @Input() distributionTargets: Array<WorkbasketSummary>;
+  @Input() distributionTargetsSelected: Array<WorkbasketSummary>;
+  @Output() performDualListFilter = new EventEmitter<{ filterBy: FilterModel, side: Side }>();
   @Input() requestInProgress = false;
   @Input() loadingItems ? = false;
-	@Input() side: Side;
+  @Input() side: Side;
   @Input() header: string;
   @Output() scrolling = new EventEmitter<Side>();
   @Input() allSelected;
   @Output() allSelectedChange = new EventEmitter<boolean>();
 
-	sideNumber = 0;
+  sideNumber = 0;
   toolbarState = false;
 
-	ngOnInit() {
+  ngOnInit() {
     this.sideNumber = this.side === Side.LEFT ? 0 : 1;
-	}
+  }
 
-	selectAll(selected: boolean) {
-		this.distributionTargets.forEach((element: any) => {
-			element.selected = selected;
+  selectAll(selected: boolean) {
+    this.distributionTargets.forEach((element: any) => {
+      element.selected = selected;
     });
     this.allSelectedChange.emit(this.allSelected);
   }
@@ -41,7 +41,7 @@ export class DualListComponent implements OnInit {
     this.scrolling.emit(this.side);
   }
 
-	performAvailableFilter(filterModel: FilterModel) {
+  performAvailableFilter(filterModel: FilterModel) {
     this.performDualListFilter.emit({ filterBy: filterModel, side: this.side });
   }
 

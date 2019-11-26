@@ -68,8 +68,8 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
       this.refreshWorkbasketList();
     });
     this.importingExportingSubscription = this.importExportService.getImportingFinished().subscribe((value: Boolean) => {
-			this.refreshWorkbasketList();
-		})
+      this.refreshWorkbasketList();
+    })
 
   }
 

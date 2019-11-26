@@ -8,7 +8,7 @@ import { TreeNodeModel } from 'app/models/tree-node';
 
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
 import {
-	ClassificationCategoriesService
+  ClassificationCategoriesService
 } from 'app/shared/services/classifications/classification-categories.service';
 import { Pair } from 'app/models/pair';
 import { ClassificationDefinition } from '../../../../models/classification-definition';
@@ -17,116 +17,116 @@ import {AlertModel, AlertType} from '../../../../models/alert';
 import {AlertService} from '../../../../services/alert/alert.service';
 
 @Component({
-	selector: 'taskana-classification-list',
-	templateUrl: './classification-list.component.html',
-	styleUrls: ['./classification-list.component.scss']
+  selector: 'taskana-classification-list',
+  templateUrl: './classification-list.component.html',
+  styleUrls: ['./classification-list.component.scss']
 })
 export class ClassificationListComponent implements OnInit, OnDestroy {
 
 
-	selectedCategory = '';
-	selectedId: string;
-	selectionToImport = TaskanaType.CLASSIFICATIONS;
-	requestInProgress = false;
-	initialized = false;
-	inputValue: string;
-	categories: Array<string> = [];
-	classifications: Array<Classification> = [];
-	classificationsTypes: Array<string> = [];
-	classificationTypeSelected: string;
-	classificationServiceSubscription: Subscription;
-	classificationTypeServiceSubscription: Subscription;
-	classificationSelectedSubscription: Subscription;
-	classificationSavedSubscription: Subscription;
-	selectedClassificationSubscription: Subscription;
-	categoriesSubscription: Subscription;
-	importingExportingSubscription: Subscription;
+  selectedCategory = '';
+  selectedId: string;
+  selectionToImport = TaskanaType.CLASSIFICATIONS;
+  requestInProgress = false;
+  initialized = false;
+  inputValue: string;
+  categories: Array<string> = [];
+  classifications: Array<Classification> = [];
+  classificationsTypes: Array<string> = [];
+  classificationTypeSelected: string;
+  classificationServiceSubscription: Subscription;
+  classificationTypeServiceSubscription: Subscription;
+  classificationSelectedSubscription: Subscription;
+  classificationSavedSubscription: Subscription;
+  selectedClassificationSubscription: Subscription;
+  categoriesSubscription: Subscription;
+  importingExportingSubscription: Subscription;
 
-	constructor(
-		private classificationService: ClassificationsService,
-		private router: Router,
-		private route: ActivatedRoute,
-		private categoryService: ClassificationCategoriesService,
-		private importExportService: ImportExportService,
+  constructor(
+    private classificationService: ClassificationsService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private categoryService: ClassificationCategoriesService,
+    private importExportService: ImportExportService,
     private alertService: AlertService) {
-	}
+  }
 
-	ngOnInit() {
-		this.classificationSavedSubscription = this.classificationService
-			.classificationSavedTriggered()
-			.subscribe(value => {
-				this.performRequest(true);
-			});
-		this.selectedClassificationSubscription = this.categoryService.getSelectedClassificationType().subscribe(value => {
-			this.classificationTypeSelected = value;
-			this.performRequest();
-		});
+  ngOnInit() {
+    this.classificationSavedSubscription = this.classificationService
+      .classificationSavedTriggered()
+      .subscribe(value => {
+        this.performRequest(true);
+      });
+    this.selectedClassificationSubscription = this.categoryService.getSelectedClassificationType().subscribe(value => {
+      this.classificationTypeSelected = value;
+      this.performRequest();
+    });
 
-		this.categoriesSubscription =
-			this.categoryService.getCategories(this.classificationTypeSelected).subscribe((categories: Array<string>) => {
-				this.categories = categories;
-			});
-		this.importingExportingSubscription = this.importExportService.getImportingFinished().subscribe((value: Boolean) => {
-			this.performRequest(true);
-		})
-	}
+    this.categoriesSubscription =
+      this.categoryService.getCategories(this.classificationTypeSelected).subscribe((categories: Array<string>) => {
+        this.categories = categories;
+      });
+    this.importingExportingSubscription = this.importExportService.getImportingFinished().subscribe((value: Boolean) => {
+      this.performRequest(true);
+    })
+  }
 
-	selectClassificationType(classificationTypeSelected: string) {
-		this.classifications = [];
-		this.categoryService.selectClassificationType(classificationTypeSelected);
-		this.getClassifications();
-		this.selectClassification(undefined);
-	}
+  selectClassificationType(classificationTypeSelected: string) {
+    this.classifications = [];
+    this.categoryService.selectClassificationType(classificationTypeSelected);
+    this.getClassifications();
+    this.selectClassification(undefined);
+  }
 
-	selectClassification(id: string) {
-		this.selectedId = id;
-		if (!id) {
-			this.router.navigate(['taskana/administration/classifications']);
-			return;
-		}
-		this.router.navigate([{ outlets: { detail: [this.selectedId] } }], { relativeTo: this.route });
-	}
+  selectClassification(id: string) {
+    this.selectedId = id;
+    if (!id) {
+      this.router.navigate(['taskana/administration/classifications']);
+      return;
+    }
+    this.router.navigate([{ outlets: { detail: [this.selectedId] } }], { relativeTo: this.route });
+  }
 
-	addClassification() {
-		this.router.navigate([{ outlets: { detail: [`new-classification/${this.selectedId}`] } }], { relativeTo: this.route });
-	}
+  addClassification() {
+    this.router.navigate([{ outlets: { detail: [`new-classification/${this.selectedId}`] } }], { relativeTo: this.route });
+  }
 
-	selectCategory(category: string) {
-		this.selectedCategory = category;
-	}
+  selectCategory(category: string) {
+    this.selectedCategory = category;
+  }
 
-	getCategoryIcon(category: string): Pair {
-		return this.categoryService.getCategoryIcon(category);
-	}
+  getCategoryIcon(category: string): Pair {
+    return this.categoryService.getCategoryIcon(category);
+  }
 
-	private performRequest(forceRequest = false) {
-		if (this.initialized && !forceRequest) {
-			return;
-		}
+  private performRequest(forceRequest = false) {
+    if (this.initialized && !forceRequest) {
+      return;
+    }
 
-		this.requestInProgress = true;
-		this.classifications = [];
+    this.requestInProgress = true;
+    this.classifications = [];
 
-		if (this.classificationServiceSubscription) { this.classificationServiceSubscription.unsubscribe() }
-		if (this.classificationSelectedSubscription) { this.classificationSelectedSubscription.unsubscribe() }
+    if (this.classificationServiceSubscription) { this.classificationServiceSubscription.unsubscribe() }
+    if (this.classificationSelectedSubscription) { this.classificationSelectedSubscription.unsubscribe() }
 
-		this.classificationServiceSubscription = this.classificationService.getClassifications()
-			.subscribe((classifications: Array<TreeNodeModel>) => {
-				this.requestInProgress = false;
-				this.classifications = classifications;
-				this.classificationTypeServiceSubscription = this.categoryService.getClassificationTypes()
-					.subscribe((classificationsTypes: Array<string>) => {
-						this.classificationsTypes = classificationsTypes;
-					});
-			});
-		this.classificationSelectedSubscription = this.classificationService.getSelectedClassification()
-			.subscribe((classificationSelected: ClassificationDefinition) => {
-				this.selectedId = classificationSelected ? classificationSelected.classificationId : undefined;
-			});
+    this.classificationServiceSubscription = this.classificationService.getClassifications()
+      .subscribe((classifications: Array<TreeNodeModel>) => {
+        this.requestInProgress = false;
+        this.classifications = classifications;
+        this.classificationTypeServiceSubscription = this.categoryService.getClassificationTypes()
+          .subscribe((classificationsTypes: Array<string>) => {
+            this.classificationsTypes = classificationsTypes;
+          });
+      });
+    this.classificationSelectedSubscription = this.classificationService.getSelectedClassification()
+      .subscribe((classificationSelected: ClassificationDefinition) => {
+        this.selectedId = classificationSelected ? classificationSelected.classificationId : undefined;
+      });
 
-		this.initialized = true;
+    this.initialized = true;
 
-	}
+  }
 
   private getClassifications(key: string = undefined) {
     this.requestInProgress = true;
@@ -145,11 +145,11 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
     this.requestInProgress = $event;
   }
 
-	ngOnDestroy(): void {
-		if (this.classificationServiceSubscription) { this.classificationServiceSubscription.unsubscribe(); }
-		if (this.classificationTypeServiceSubscription) { this.classificationTypeServiceSubscription.unsubscribe(); }
-		if (this.classificationSelectedSubscription) { this.classificationSelectedSubscription.unsubscribe(); }
-		if (this.classificationSavedSubscription) { this.classificationSavedSubscription.unsubscribe(); }
-		if (this.importingExportingSubscription) { this.importingExportingSubscription.unsubscribe(); }
-	}
+  ngOnDestroy(): void {
+    if (this.classificationServiceSubscription) { this.classificationServiceSubscription.unsubscribe(); }
+    if (this.classificationTypeServiceSubscription) { this.classificationTypeServiceSubscription.unsubscribe(); }
+    if (this.classificationSelectedSubscription) { this.classificationSelectedSubscription.unsubscribe(); }
+    if (this.classificationSavedSubscription) { this.classificationSavedSubscription.unsubscribe(); }
+    if (this.importingExportingSubscription) { this.importingExportingSubscription.unsubscribe(); }
+  }
 }
