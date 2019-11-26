@@ -4,21 +4,21 @@ import { Subject ,  Observable } from 'rxjs';
 @Injectable()
 export class RemoveConfirmationService {
 
-	private removeConfirmationCallbackSubject = new Subject<{ callback: Function, message: string }>();
-	private removeConfirmationCallback: Function;
+  private removeConfirmationCallbackSubject = new Subject<{ callback: Function, message: string }>();
+  private removeConfirmationCallback: Function;
 
-	constructor() { }
+  constructor() { }
 
-	setRemoveConfirmation(callback: Function, message: string) {
-		this.removeConfirmationCallback = callback;
-		this.removeConfirmationCallbackSubject.next({ callback: callback, message: message });
-	}
+  setRemoveConfirmation(callback: Function, message: string) {
+    this.removeConfirmationCallback = callback;
+    this.removeConfirmationCallbackSubject.next({ callback: callback, message: message });
+  }
 
-	getRemoveConfirmation(): Observable<{ callback: Function, message: string }> {
-		return this.removeConfirmationCallbackSubject.asObservable();
-	}
+  getRemoveConfirmation(): Observable<{ callback: Function, message: string }> {
+    return this.removeConfirmationCallbackSubject.asObservable();
+  }
 
-	runCallbackFunction() {
-		this.removeConfirmationCallback();
-	}
+  runCallbackFunction() {
+    this.removeConfirmationCallback();
+  }
 }

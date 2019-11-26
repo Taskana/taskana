@@ -20,8 +20,8 @@ import { WorkplaceService } from 'app/workplace/services/workplace.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @Component({
-	selector: 'taskana-dummy-detail',
-	template: 'dummydetail'
+  selector: 'taskana-dummy-detail',
+  template: 'dummydetail'
 })
 export class DummyDetailComponent {
 }
@@ -32,8 +32,8 @@ xdescribe('TasklistToolbarComponent', () => {
   let fixture: ComponentFixture<TaskListToolbarComponent>;
 
   const routes: Routes = [
-		{ path: '*', component: DummyDetailComponent }
-	];
+    { path: '*', component: DummyDetailComponent }
+  ];
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

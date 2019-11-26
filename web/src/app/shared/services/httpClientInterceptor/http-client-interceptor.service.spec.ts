@@ -6,14 +6,14 @@ import { GeneralModalService } from 'app/services/general-modal/general-modal.se
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 
 describe('HttpExtensionService', () => {
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [HttpClientModule],
-			providers: [HttpClientInterceptor, GeneralModalService, RequestInProgressService]
-		});
-	});
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientModule],
+      providers: [HttpClientInterceptor, GeneralModalService, RequestInProgressService]
+    });
+  });
 
-	it('should be created', inject([HttpClientInterceptor], (service: HttpClientInterceptor) => {
-		expect(service).toBeTruthy();
-	}));
+  it('should be created', inject([HttpClientInterceptor], (service: HttpClientInterceptor) => {
+    expect(service).toBeTruthy();
+  }));
 });

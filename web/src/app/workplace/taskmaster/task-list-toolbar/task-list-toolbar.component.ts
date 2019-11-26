@@ -12,8 +12,8 @@ import { WorkplaceService } from 'app/workplace/services/workplace.service';
 import { ObjectReference } from 'app/workplace/models/object-reference';
 
 export enum Search {
-	byWorkbasket = 'workbasket',
-	byTypeAndValue = 'type-and-value'
+  byWorkbasket = 'workbasket',
+  byTypeAndValue = 'type-and-value'
 }
 @Component({
   selector: 'taskana-task-list-toolbar',

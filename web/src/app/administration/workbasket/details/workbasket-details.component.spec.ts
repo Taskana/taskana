@@ -74,8 +74,8 @@ describe('WorkbasketDetailsComponent', () => {
             fixture.detectChanges();
             masterAndDetailService = TestBed.get(MasterAndDetailService);
             workbasketService = TestBed.get(WorkbasketService);
-            spyOn(masterAndDetailService, 'getShowDetail').and.callFake(() => { return of(true) })
-            spyOn(workbasketService, 'getSelectedWorkBasket').and.callFake(() => { return of('id1') })
+            spyOn(masterAndDetailService, 'getShowDetail').and.callFake(() => of(true))
+            spyOn(workbasketService, 'getSelectedWorkBasket').and.callFake(() => of('id1'))
             spyOn(workbasketService, 'getWorkBasketsSummary').and.callFake(() => {
                 return of(new WorkbasketSummaryResource(
                     new Array<WorkbasketSummary>(
@@ -84,7 +84,7 @@ describe('WorkbasketDetailsComponent', () => {
                     , new LinksWorkbasketSummary({ 'href': 'someurl' })))
             })
 
-            spyOn(workbasketService, 'getWorkBasket').and.callFake(() => { return of(workbasket) })
+            spyOn(workbasketService, 'getWorkBasket').and.callFake(() => of(workbasket))
             spyOn(workbasketService, 'getWorkBasketAccessItems').and.callFake(() => {
                 return of(new WorkbasketAccessItemsResource(
                     new Array<WorkbasketAccessItems>(), new Links({ 'href': 'url' })))

@@ -5,15 +5,15 @@ import { AlertModel } from 'app/models/alert';
 @Injectable()
 export class AlertService {
 
-	public alertTriggered = new Subject<AlertModel>();
+  public alertTriggered = new Subject<AlertModel>();
 
-	constructor() { }
+  constructor() { }
 
-	triggerAlert(alert: AlertModel) {
-		this.alertTriggered.next(alert);
-	}
+  triggerAlert(alert: AlertModel) {
+    this.alertTriggered.next(alert);
+  }
 
-	getAlert(): Observable<AlertModel> {
-		return this.alertTriggered.asObservable();
-	}
+  getAlert(): Observable<AlertModel> {
+    return this.alertTriggered.asObservable();
+  }
 }
