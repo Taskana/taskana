@@ -43,12 +43,12 @@ function main() {
     set -x
     eval "$REL/prepare_db.sh '$1'"
     ### INSTALL ###
-    mvn -q install -B -f $REL/.. -P postgres -am -T 4C -pl :taskana-rest-spring-wildfly-example -DskipTests -Dmaven.javadoc.skip -Dcheckstyle.skip
+    mvn -q install -B -f $REL/.. -P postgres -am -T 4C -pl :taskana-rest-spring-example-wildfly -DskipTests -Dmaven.javadoc.skip -Dcheckstyle.skip
 
     ### TEST ###
     mvn -q verify -B -f $REL/.. -Dmaven.javadoc.skip -Dcheckstyle.skip -pl :taskana-core
     # Same as above (H2) we can not use the fancy '-f' maven option
-    (cd $REL/.. && mvn -q verify -B -pl :taskana-rest-spring-wildfly-example -P postgres -Dmaven.javadoc.skip -Dcheckstyle.skip)
+    (cd $REL/.. && mvn -q verify -B -pl :taskana-rest-spring-example-wildfly -P postgres -Dmaven.javadoc.skip -Dcheckstyle.skip)
     ;;
   HISTORY)
     set -x
