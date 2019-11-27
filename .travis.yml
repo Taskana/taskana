@@ -93,11 +93,11 @@ matrix:
         && mvn -q install -T 4C -am -DskipTests -Dcheckstyle.skip -pl :taskana-rest-spring-test
         && mvn -q prepare-package -pl :taskana-rest-spring-test
         && mvn -q install -f history -T 4C -am -DskipTests -Dmaven.javadoc.skip -Dcheckstyle.skip -pl :taskana-simplehistory-rest-spring-example
-        && mvn -q install -P history.plugin -DskipTests -Dcheckstyle.skip -pl :taskana-rest-spring-example
+        && mvn -q install -P history.plugin -DskipTests -Dcheckstyle.skip -pl :taskana-rest-spring-example-boot
       script: |
         mvn deploy -T 4C -P `[[ "$TRAVIS_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] && echo "release" || echo "snapshot"` \
         --settings ci/mvnsettings.xml -DskipTests -Dcheckstyle.skip -pl !:taskana-spring-example,!:taskana-cdi-example,\
-        !:taskana-rest-spring-example,!:taskana-rest-spring-test,!:taskana-rest-spring-wildfly-example,\
+        !:taskana-rest-spring-example-boot,!:taskana-rest-spring-test,!:taskana-rest-spring-example-wildfly,\
         !:taskana-simplehistory-spring-test,!:taskana-simplehistory-rest-spring-example
       before_cache: rm -rf $HOME/.m2/repository/pro/taskana
       after_success: ci/change_version.sh -i -m . && ci/commitPoms.sh

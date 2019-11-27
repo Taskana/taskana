@@ -50,7 +50,7 @@
 		</dependency>
 		<dependency>
 			<groupId>pro.taskana</groupId>
-			<artifactId>taskana-rest-spring-base</artifactId>
+			<artifactId>taskana-rest-spring-example-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
