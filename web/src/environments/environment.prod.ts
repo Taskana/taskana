@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  taskanaRestUrl: '/api',
-  taskanaLogoutUrl: '/logout'
+  taskanaRestUrl: '/taskana/api',
+  taskanaLogoutUrl: '/taskana/logout'
 };
