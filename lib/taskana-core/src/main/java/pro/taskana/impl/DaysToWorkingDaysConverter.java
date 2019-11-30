@@ -182,7 +182,7 @@ public final class DaysToWorkingDaysConverter {
     }
 
     public long convertWorkingDaysToDays(Instant startTime, long numberOfDays) {
-        int direction = numberOfDays > 0 ? 1 : -1;
+        int direction = numberOfDays >= 0 ? 1 : -1;
         long limit = Math.abs(numberOfDays);
         return LongStream.iterate(0, i -> i + direction)
             .filter(day -> isWorkingDay(day, startTime))
@@ -293,12 +293,12 @@ public final class DaysToWorkingDaysConverter {
 
     @Override
     public String toString() {
-        return "DaysToWorkingDaysConverter [instance= " + instance
-            + ", positiveDaysToWorkingDays= " + positiveDaysToWorkingDays
-            + ", negativeDaysToWorkingDays= " + negativeDaysToWorkingDays
-            + ", dateCreated= " + dateCreated + ", easterSunday= " + easterSunday
-            + ", germanHolidaysEnabled= " + germanHolidaysEnabled
-            + ", customHolidays= " + LoggerUtils.setToString(customHolidays) + "]";
+        return "DaysToWorkingDaysConverter{"
+            + "positiveDaysToWorkingDays=" + positiveDaysToWorkingDays
+            + ", negativeDaysToWorkingDays=" + negativeDaysToWorkingDays
+            + ", dateCreated=" + dateCreated
+            + ", easterSunday=" + easterSunday
+            + '}';
     }
 
     /**
