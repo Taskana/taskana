@@ -162,10 +162,13 @@ class CreateTaskAccTest extends AbstractAccTest {
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         newTask.setOwner("user_1_1");
 
-        newTask.setPlanned(instantPlanned);
+        Optional<DaysToWorkingDaysConverter> converter = DaysToWorkingDaysConverter.getLastCreatedInstance();
+        //TODO: this is a temporal bug fix because we did not define what happens when a task is planned on the weekend.
+        long i = converter.get().convertWorkingDaysToDays(instantPlanned, 0);
+        newTask.setPlanned(instantPlanned.plus(Duration.ofDays(i)));
         //due date according to service level
-        Instant shouldBeDueDate = DaysToWorkingDaysConverter.getLastCreatedInstance()
-            .map(converter -> converter.convertWorkingDaysToDays(newTask.getPlanned(), serviceLevelDays))
+        Instant shouldBeDueDate = converter
+            .map(c -> c.convertWorkingDaysToDays(newTask.getPlanned(), serviceLevelDays))
             .map(
                 calendarDays -> newTask.getPlanned().plus(Duration.ofDays(calendarDays))).orElseThrow(
                 RuntimeException::new);
