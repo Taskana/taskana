@@ -90,10 +90,10 @@ matrix:
       install: ci/change_version.sh -m .
         && ( cd web && npm install --silent )
         && ( cd web && npm run build:prod-silent )
-        && mvn -q install -T 4C -am -DskipTests -Dmaven.javadoc.skip -Dcheckstyle.skip -pl :taskana-rest-spring-test
+        && mvn -q install -T 4C -am -DskipTests -Dcheckstyle.skip -pl :taskana-rest-spring-test
         && mvn -q prepare-package -pl :taskana-rest-spring-test
-        && mvn -q install -DskipTests -Dmaven.javadoc.skip -Dcheckstyle.skip -pl :taskana-rest-spring-example
         && mvn -q install -f history -T 4C -am -DskipTests -Dmaven.javadoc.skip -Dcheckstyle.skip -pl :taskana-simplehistory-rest-spring-example
+        && mvn -q install -P history.plugin -DskipTests -Dcheckstyle.skip -pl :taskana-rest-spring-example
       script: |
         mvn deploy -T 4C -P `[[ "$TRAVIS_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] && echo "release" || echo "snapshot"` \
         --settings ci/mvnsettings.xml -DskipTests -Dcheckstyle.skip -pl !:taskana-spring-example,!:taskana-cdi-example,\
