@@ -13,7 +13,8 @@
 	<modules>
 		<module>lib</module>
 		<module>rest</module>
-		<!-- History is an optional module. Thus not a child of the taskana parent. -->
+		<!-- History is an optional module. -->
+		<module>history</module>
 	</modules>
 
 	<properties>
