@@ -9,8 +9,6 @@ import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -78,10 +76,8 @@ public class SampleDataGenerator {
         runner.setLogWriter(logWriter);
         runner.setErrorLogWriter(errorLogWriter);
 
-        String[] script = this.getScriptList();
-
         LocalDateTime now = LocalDateTime.now();
-        Stream.of(script)
+        getScriptList()
             .map(s -> SampleDataGenerator.parseAndReplace(now, s))
             .map(StringReader::new)
             .map(BufferedReader::new)
@@ -130,20 +126,20 @@ public class SampleDataGenerator {
      * Create a array with the necessary script.
      * @return a array with the corresponding scripts files
      */
-    private String[] getScriptList() {
-        ArrayList<String> scriptsList = getDefaultScripts();
+    private Stream<String> getScriptList() {
+        Stream<String> scriptsList = getDefaultScripts();
 
         try {
             runner.runScript(getScriptBufferedStream(CHECK_HISTORY_EVENT_EXIST));
             runner.runScript(getScriptBufferedStream(CLEAR_HISTORY_EVENTS));
-            scriptsList.add(HISTORY_EVENT);
+            return Stream.concat(scriptsList, Stream.of(HISTORY_EVENT));
         } catch (Exception e) {
             LOGGER.error("The HISTORY_EVENTS table is not created");
         }
-        return scriptsList.toArray(new String[0]);
+        return scriptsList;
     }
 
-    static String parseAndReplace(LocalDateTime now, String script) {
+    private static String parseAndReplace(LocalDateTime now, String script) {
         return replaceRelativeTimeFunction(now,
             getScriptBufferedStream(script).lines().collect(Collectors.joining(System.lineSeparator())));
     }
@@ -154,10 +150,9 @@ public class SampleDataGenerator {
                 new InputStreamReader(inputStream, StandardCharsets.UTF_8))).orElse(null);
     }
 
-    static ArrayList<String> getDefaultScripts() {
-        String[] script = {WORKBASKET, DISTRIBUTION_TARGETS, CLASSIFICATION, TASK, ATTACHMENT, WORKBASKET_ACCESS_LIST,
-            OBJECT_REFERENCE};
-        return new ArrayList<>(Arrays.asList(script));
+    static Stream<String> getDefaultScripts() {
+        return Stream.of(WORKBASKET, DISTRIBUTION_TARGETS, CLASSIFICATION, TASK, ATTACHMENT, WORKBASKET_ACCESS_LIST,
+            OBJECT_REFERENCE);
     }
 
     private static boolean isPostgreSQL(String databaseProductName) {

@@ -1,7 +1,5 @@
 package pro.taskana.sampledata;
 
-import java.util.ArrayList;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -11,18 +9,20 @@ import org.junit.jupiter.api.Test;
 class SampleDataGeneratorTest {
 
     @Test
+    void getScriptsNotNull() {
+        Assertions.assertNotNull(SampleDataGenerator.getDefaultScripts());
+    }
+
+    @Test
     void getScriptsNotEmpty() {
-        ArrayList<String> scripts = SampleDataGenerator.getDefaultScripts();
-        Assertions.assertNotNull(scripts);
-        Assertions.assertTrue(scripts.size() > 0);
+        Assertions.assertTrue(SampleDataGenerator.getDefaultScripts().count() > 0);
     }
 
     @Test
     void getScriptsFileExists() {
-        ArrayList<String> scripts = SampleDataGenerator.getDefaultScripts();
-        for (String script : scripts) {
-            Assertions.assertNotNull(SampleDataGenerator.getScriptBufferedStream(script));
-        }
-
+        SampleDataGenerator.getDefaultScripts()
+            .map(SampleDataGenerator::getScriptBufferedStream)
+            .forEach(Assertions::assertNotNull);
     }
+
 }
