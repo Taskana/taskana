@@ -3,8 +3,6 @@ package pro.taskana.rest;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
-import java.util.List;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +22,6 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
 import pro.taskana.RestHelper;
 import pro.taskana.TaskanaSpringBootTest;
-import pro.taskana.ldap.LdapCacheTestImpl;
 import pro.taskana.rest.resource.ClassificationSummaryListResource;
 
 /**
@@ -32,7 +29,7 @@ import pro.taskana.rest.resource.ClassificationSummaryListResource;
  */
 
 @TaskanaSpringBootTest
-class GenenalExceptionHandlingTest {
+class GeneralExceptionHandlingTest {
 
     @Mock
     private Appender<ILoggingEvent> mockAppender;
@@ -62,21 +59,6 @@ class GenenalExceptionHandlingTest {
     void teardown() {
         final Logger logger = (Logger) LoggerFactory.getLogger(TaskanaRestExceptionHandler.class);
         logger.detachAppender(mockAppender);
-    }
-
-    @Test
-    void testAccessIdValidationMinimunValueExceptionIsLogged() {
-        try {
-
-            AccessIdController.setLdapCache(new LdapCacheTestImpl());
-            template.exchange(
-                restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=al", HttpMethod.GET, restHelper.defaultRequest(),
-                ParameterizedTypeReference.forType(List.class));
-        } catch (Exception ex) {
-            verify(mockAppender).doAppend(captorLoggingEvent.capture());
-            assertTrue(
-                captorLoggingEvent.getValue().getMessage().contains("is too short. Minimum searchFor length = "));
-        }
     }
 
     @Test

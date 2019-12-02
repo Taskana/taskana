@@ -31,7 +31,13 @@
 	<dependencies>
 		<dependency>
 			<groupId>pro.taskana</groupId>
-			<artifactId>taskana-rest-spring-example-common</artifactId>
+			<artifactId>taskana-data</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>pro.taskana</groupId>
+			<artifactId>taskana-rest-spring</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
