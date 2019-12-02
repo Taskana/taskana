@@ -7,24 +7,16 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.verify;
-import static org.mockito.internal.verification.VerificationModeFactory.atLeastOnce;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 
 import javax.sql.DataSource;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -34,9 +26,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.core.Appender;
 import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
@@ -72,11 +61,6 @@ class TaskanaTransactionIntTest {
     private JdbcTemplate jdbcTemplate;
     @Autowired
     private TaskanaEngine taskanaEngine;
-    @Captor
-    private ArgumentCaptor<LoggingEvent> captorLoggingEvent;
-
-    @Mock
-    private Appender<ILoggingEvent> mockAppender;
 
     private static ObjectReference createDefaultObjRef() {
         ObjectReference objRef = new ObjectReference();
@@ -198,9 +182,6 @@ class TaskanaTransactionIntTest {
     @Test
     void testWorkbasketCleanupJobTransaction() {
         try {
-            ch.qos.logback.classic.Logger logger = (ch.qos.logback.classic.Logger) LoggerFactory
-                .getLogger(WorkbasketCleanupJob.class);
-            logger.addAppender(mockAppender);
 
             WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
             workbasketService.createWorkbasket(createWorkBasket("key1", "wb1"));
@@ -250,21 +231,9 @@ class TaskanaTransactionIntTest {
             WorkbasketCleanupJob job = new WorkbasketCleanupJob(taskanaEngine, springTransactionProvider, null);
             job.run();
 
-            verify(mockAppender, atLeastOnce()).doAppend(captorLoggingEvent.capture());
-
-            List<LoggingEvent> allValues = captorLoggingEvent.getAllValues();
-            Optional<LoggingEvent> result = allValues.stream().filter(event -> event.getLevel().equals(
-                ch.qos.logback.classic.Level.WARN)).findFirst();
-            assertTrue(result.isPresent());
-            assertTrue(result.get()
-                .getFormattedMessage()
-                .contains("Workbasket with id " + workbasketService.getWorkbasket("key3", "DOMAIN_A")
-                    .getId() + " could not be deleted. Reason: {}"));
-
             assertNull(workbasketService.getWorkbasket("key1", "DOMAIN_A"));
             assertNull(workbasketService.getWorkbasket("key2", "DOMAIN_A"));
 
-            logger.detachAppender(mockAppender);
         } catch (TaskanaException e) {
             e.printStackTrace();
         }

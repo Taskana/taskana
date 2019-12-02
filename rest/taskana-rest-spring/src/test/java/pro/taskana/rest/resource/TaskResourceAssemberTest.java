@@ -6,26 +6,21 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import pro.taskana.Attachment;
 import pro.taskana.ObjectReference;
 import pro.taskana.Task;
 import pro.taskana.TaskService;
 import pro.taskana.TaskState;
+import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.rest.TestConfiguration;
 
 /**
  * Test for {@link TaskResourceAssembler}.
  */
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {TestConfiguration.class})
-@WebAppConfiguration
+
+@TaskanaSpringBootTest
 class TaskResourceAssemberTest {
 
     @Autowired

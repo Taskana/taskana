@@ -4,26 +4,21 @@ import java.time.Instant;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
 
+import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketType;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.WorkbasketImpl;
-import pro.taskana.rest.TestConfiguration;
 
 /**
  * Test for {@link WorkbasketResourceAssembler}.
  */
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {TestConfiguration.class})
-@WebAppConfiguration
+
+@TaskanaSpringBootTest
 class WorkbasketResourceAssemblerTest {
 
     @Autowired

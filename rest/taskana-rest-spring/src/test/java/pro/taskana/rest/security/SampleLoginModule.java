@@ -18,7 +18,7 @@ import pro.taskana.security.GroupPrincipal;
 import pro.taskana.security.UserPrincipal;
 
 /**
- * TODO.
+ * This class will take care of Test API calls authentification. Also see {@link WebSecurityConfig}
  */
 public class SampleLoginModule extends UsernamePasswordAuthenticationFilter implements LoginModule {
 
