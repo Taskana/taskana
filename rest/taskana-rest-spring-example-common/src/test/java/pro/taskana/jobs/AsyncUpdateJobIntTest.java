@@ -10,12 +10,16 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,9 +27,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import pro.taskana.Classification;
 import pro.taskana.RestHelper;
 import pro.taskana.Task;
-import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.rest.Mapping;
+import pro.taskana.rest.RestConfiguration;
 import pro.taskana.rest.resource.ClassificationResource;
 import pro.taskana.rest.resource.ClassificationResourceAssembler;
 import pro.taskana.rest.resource.TaskResource;
@@ -34,7 +38,9 @@ import pro.taskana.rest.resource.TaskResourceAssembler;
 /**
  * Test async updates.
  */
-@TaskanaSpringBootTest
+@ActiveProfiles({"test"})
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(classes = RestConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class AsyncUpdateJobIntTest {
 
     private static final String CLASSIFICATION_ID = "CLI:100000000000000000000000000000000003";
