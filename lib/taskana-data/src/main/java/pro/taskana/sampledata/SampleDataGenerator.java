@@ -1,8 +1,6 @@
 package pro.taskana.sampledata;
 
 import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringReader;
@@ -13,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -23,8 +22,6 @@ import javax.sql.DataSource;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import pro.taskana.impl.TaskanaEngineImpl;
 
 /**
  * This class generates sample data for manual testing purposes.
@@ -72,8 +69,7 @@ public class SampleDataGenerator {
             runner.runScript(
                 selectSchemaScript(dataSource.getConnection().getMetaData().getDatabaseProductName(), schemaName));
             runner.setStopOnError(false);
-            runner.runScript(new BufferedReader(
-                new InputStreamReader(this.getClass().getResourceAsStream(CLEAR), StandardCharsets.UTF_8)));
+            runner.runScript(getScriptBufferedStream(CLEAR));
         } catch (Exception e) {
             LOGGER.error("caught Exception {}", e);
         }
@@ -86,7 +82,6 @@ public class SampleDataGenerator {
 
         LocalDateTime now = LocalDateTime.now();
         Stream.of(script)
-            .map(this.getClass()::getResourceAsStream)
             .map(s -> SampleDataGenerator.parseAndReplace(now, s))
             .map(StringReader::new)
             .map(BufferedReader::new)
@@ -125,18 +120,8 @@ public class SampleDataGenerator {
         return sb.toString();
     }
 
-    private static String parseAndReplace(LocalDateTime now, InputStream stream) {
-        try (
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))) {
-            return replaceRelativeTimeFunction(now,
-                bufferedReader.lines().collect(Collectors.joining(System.lineSeparator())));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     private StringReader selectSchemaScript(String dbProductName, String schemaName) {
-        return new StringReader(TaskanaEngineImpl.isPostgreSQL(dbProductName)
+        return new StringReader(isPostgreSQL(dbProductName)
             ? "SET search_path TO " + schemaName + ";"
             : "SET SCHEMA " + schemaName + ";");
     }
@@ -146,20 +131,36 @@ public class SampleDataGenerator {
      * @return a array with the corresponding scripts files
      */
     private String[] getScriptList() {
-        String[] script = {WORKBASKET, DISTRIBUTION_TARGETS, CLASSIFICATION, TASK, ATTACHMENT, WORKBASKET_ACCESS_LIST,
-            OBJECT_REFERENCE};
-        ArrayList<String> scriptsList = new ArrayList<>(Arrays.asList(script));
+        ArrayList<String> scriptsList = getDefaultScripts();
 
         try {
-            runner.runScript(new BufferedReader(
-                new InputStreamReader(this.getClass().getResourceAsStream(CHECK_HISTORY_EVENT_EXIST),
-                    StandardCharsets.UTF_8)));
-            runner.runScript(new BufferedReader(
-                new InputStreamReader(this.getClass().getResourceAsStream(CLEAR_HISTORY_EVENTS), StandardCharsets.UTF_8)));
+            runner.runScript(getScriptBufferedStream(CHECK_HISTORY_EVENT_EXIST));
+            runner.runScript(getScriptBufferedStream(CLEAR_HISTORY_EVENTS));
             scriptsList.add(HISTORY_EVENT);
         } catch (Exception e) {
             LOGGER.error("The HISTORY_EVENTS table is not created");
         }
         return scriptsList.toArray(new String[0]);
+    }
+
+    static String parseAndReplace(LocalDateTime now, String script) {
+        return replaceRelativeTimeFunction(now,
+            getScriptBufferedStream(script).lines().collect(Collectors.joining(System.lineSeparator())));
+    }
+
+    static BufferedReader getScriptBufferedStream(String script) {
+        return Optional.ofNullable(SampleDataGenerator.class.getResourceAsStream(script)).map(
+            inputStream -> new BufferedReader(
+                new InputStreamReader(inputStream, StandardCharsets.UTF_8))).orElse(null);
+    }
+
+    static ArrayList<String> getDefaultScripts() {
+        String[] script = {WORKBASKET, DISTRIBUTION_TARGETS, CLASSIFICATION, TASK, ATTACHMENT, WORKBASKET_ACCESS_LIST,
+            OBJECT_REFERENCE};
+        return new ArrayList<>(Arrays.asList(script));
+    }
+
+    private static boolean isPostgreSQL(String databaseProductName) {
+        return "PostgreSQL".equals(databaseProductName);
     }
 }
