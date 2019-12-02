@@ -4,23 +4,17 @@ import java.time.Instant;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import pro.taskana.Classification;
 import pro.taskana.ClassificationService;
+import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.impl.ClassificationImpl;
-import pro.taskana.rest.TestConfiguration;
 
 /**
  * Test for {@link ClassificationResourceAssembler}.
  */
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {TestConfiguration.class})
-@WebAppConfiguration
+@TaskanaSpringBootTest
 class ClassificationAssemblerTest {
 
     @Autowired

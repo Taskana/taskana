@@ -2,23 +2,18 @@ package pro.taskana.rest.resource;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
 
+import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketType;
 import pro.taskana.impl.WorkbasketSummaryImpl;
-import pro.taskana.rest.TestConfiguration;
 
 /**
  * Test for {@link WorkbasketSummaryResourceAssembler}.
  */
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {TestConfiguration.class})
-@WebAppConfiguration
+
+@TaskanaSpringBootTest
 class WorkbasketSummaryAssemblerTest {
 
     @Autowired
