@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {environment} from 'environments/environment';
 import {combineLatest, Observable, Subject} from 'rxjs';
-import {mergeMap, tap} from 'rxjs/operators';
+import {mergeMap, tap, map} from 'rxjs/operators';
 
 import {Classification} from 'app/models/classification';
 import {ClassificationDefinition} from 'app/models/classification-definition';
@@ -112,14 +112,14 @@ export class ClassificationsService {
   private getClassificationObservable(classificationRef: Observable<any>): Observable<Array<Classification>> {
     const classificationTypes = this.classificationCategoriesService.getSelectedClassificationType();
     return combineLatest(
-      classificationRef,
-      classificationTypes,
-      (classification: any, classificationType) => {
-        if (!classification.classifications) {
-          return [];
+      [classificationRef,
+        classificationTypes]
+    ).pipe(
+      map(
+        (classification: any, classificationType: any) => {
+          return classification.classifications ? this.buildHierarchy(classification.classifications, classificationType) : [];
         }
-        return this.buildHierarchy(classification.classifications, classificationType);
-      }
+      )
     )
   }
 
