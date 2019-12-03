@@ -45,7 +45,7 @@ export class TypeAheadComponent implements OnInit, ControlValueAccessor {
   isRequired = true;
 
   @Output()
-  onSelect = new EventEmitter<AccessIdDefinition>();
+  selectedItem = new EventEmitter<AccessIdDefinition>();
 
   @ViewChild('inputTypeAhead', { static: false })
   private inputTypeAhead;
@@ -119,7 +119,7 @@ export class TypeAheadComponent implements OnInit, ControlValueAccessor {
     if (event && event.item) {
       this.value = event.item.accessId;
       this.dataSource.selected = event.item;
-      this.onSelect.emit(this.dataSource.selected)
+      this.selectedItem.emit(this.dataSource.selected)
     }
     this.setTyping(false);
   }
