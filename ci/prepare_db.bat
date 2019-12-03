@@ -40,12 +40,12 @@ SET PROP_FILE=%HOMEPATH%\taskanaUnitTest.properties
     SET /P CONTAINER_EXISTS=< %TEMP%\temp
     del %TEMP%\temp
 
-    IF NOT DEFINED CONAINER_RUNNING IF DEFINED CONTAINER_EXISTS (
+    IF DEFINED CONTAINER_EXISTS (
         ECHO docker start taskana-db2_10_5
         docker start taskana-db2_10_5
     )
 
-    IF NOT DEFINED CONAINER_RUNNING IF NOT DEFINED CONTAINER_EXISTS (
+    IF NOT DEFINED CONTAINER_EXISTS (
         ECHO docker run -d -p 50100:50000 --name taskana-db2_10_5 taskana/db2:10.5 -d
         docker run -d -p 50100:50000 --name taskana-db2_10_5 taskana/db2:10.5 -d
     )
@@ -73,12 +73,12 @@ SET PROP_FILE=%HOMEPATH%\taskanaUnitTest.properties
     SET /P CONTAINER_EXISTS=< %TEMP%\temp
     del %TEMP%\temp
 
-    IF NOT DEFINED CONAINER_RUNNING IF DEFINED CONTAINER_EXISTS (
+    IF DEFINED CONTAINER_EXISTS (
         ECHO docker start taskana-db2_11_1
         docker start taskana-db2_11_1
     )
 
-    IF NOT DEFINED CONAINER_RUNNING IF NOT DEFINED CONTAINER_EXISTS (
+    IF NOT DEFINED CONTAINER_EXISTS (
         ECHO docker run -d -p 50101:50000 --name taskana-db2_11_1 taskana/db2:11.1 -d
         docker run -d -p 50101:50000 --name taskana-db2_11_1 taskana/db2:11.1 -d
     )
@@ -106,12 +106,12 @@ SET PROP_FILE=%HOMEPATH%\taskanaUnitTest.properties
     SET /P CONTAINER_EXISTS=< %TEMP%\temp
     del %TEMP%\temp
 
-    IF NOT DEFINED CONAINER_RUNNING IF DEFINED CONTAINER_EXISTS (
+    IF DEFINED CONTAINER_EXISTS (
         ECHO docker start taskana-postgres_10_4
         docker start taskana-postgres_10_4
     )
 
-    IF NOT DEFINED CONAINER_RUNNING IF NOT DEFINED CONTAINER_EXISTS (
+    IF NOT DEFINED CONTAINER_EXISTS (
         ECHO docker run -d -p 50102:5432 --name taskana-postgres_10_4 -e POSTGRES_PASSWORD=postgres postgres:10.4
         docker run -d -p 50102:5432 --name taskana-postgres_10_4 -e POSTGRES_PASSWORD=postgres postgres:10.4
     )

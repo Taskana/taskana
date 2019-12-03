@@ -56,7 +56,7 @@ function main() {
       echo "Branches detected: $branch"
       exit 1
     fi
-
+    set -x
     git config --global user.email $GH_EMAIL
     git config --global user.name $GH_USERNAME
 
