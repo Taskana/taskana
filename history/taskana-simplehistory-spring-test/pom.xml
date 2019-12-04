@@ -92,24 +92,6 @@
 
 	<build>
 		<plugins>
-			<!-- Required for generation of REST documentation -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>${version.maven.surefire}</version>
-				<configuration>
-					<!-- Required for skip plugin tests by default -->
-					<excludes>
-						<exclude>**/*Plugin*Test.java</exclude>
-					</excludes>
-					<includes>
-						<include>**/*Test.java</include>
-						<include>**/*Documentation.java</include>
-					</includes>
-					<!-- Travis build workaround to prevent error that VM is closed due to an error. -->
-					<argLine>-Xms1024m -Xmx2048m</argLine>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.asciidoctor</groupId>
 				<artifactId>asciidoctor-maven-plugin</artifactId>

@@ -1,0 +1,124 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <parent>
+    <groupId>pro.taskana</groupId>
+    <artifactId>taskana-parent</artifactId>
+    <version>1.2.1-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>taskana-coverage</artifactId>
+
+  <name>${project.groupId}:${project.artifactId}</name>
+  <url>http://maven.apache.org</url>
+
+  <dependencies>
+    <!--
+    <dependency>
+      <groupId>pro.taskana</groupId>
+      <artifactId>taskana-simplehistory-provider</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>pro.taskana</groupId>
+      <artifactId>taskana-simplehistory-rest-spring</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>pro.taskana</groupId>
+      <artifactId>taskana-simplehistory-rest-spring-example</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>pro.taskana</groupId>
+      <artifactId>taskana-simplehistory-spring-test</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    -->
+    <dependency>
+      <groupId>pro.taskana</groupId>
+      <artifactId>taskana-cdi</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <!--
+    <dependency>
+      <groupId>pro.taskana</groupId>
+      <artifactId>taskana-cdi-example</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    -->
+    <dependency>
+      <groupId>pro.taskana</groupId>
+      <artifactId>taskana-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>pro.taskana</groupId>
+      <artifactId>taskana-data</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>pro.taskana</groupId>
+      <artifactId>taskana-spring</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>pro.taskana</groupId>
+      <artifactId>taskana-spring-example</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>pro.taskana</groupId>
+      <artifactId>taskana-rest-spring</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>pro.taskana</groupId>
+      <artifactId>taskana-rest-spring-example-boot</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>pro.taskana</groupId>
+      <artifactId>taskana-rest-spring-example-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <!--
+    <dependency>
+      <groupId>pro.taskana</groupId>
+      <artifactId>taskana-rest-spring-example-wildfly</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    -->
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${version.jacoco}</version>
+        <executions>
+          <!--aggregated unit test coverage report -->
+          <execution>
+            <id>aggregate-reports-ut</id>
+            <phase>install</phase>
+            <goals>
+              <goal>report-aggregate</goal>
+            </goals>
+            <configuration>
+              <title>Maven Multimodule Coverage Demo: Coverage of Unit Tests</title>
+              <dataFileIncludes>**/jacoco.exec</dataFileIncludes>
+              <outputDirectory>${project.reporting.outputDirectory}/jacoco-aggregate</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+  </build>
+
+</project>
