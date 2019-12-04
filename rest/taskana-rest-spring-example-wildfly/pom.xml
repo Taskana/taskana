@@ -334,7 +334,7 @@
 							<resources>
 								<resource>
 									<directory>
-										../taskana-rest-spring-test/target/generated-docs
+										../taskana-rest-spring/target/generated-docs
 									</directory>
 								</resource>
 							</resources>
