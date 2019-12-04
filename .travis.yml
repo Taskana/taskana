@@ -5,8 +5,12 @@ language: java
 jdk:
   - openjdk8
 
+addons:
+  sonarcloud:
+    organization: "benjamineckstein" # the key of the org you chose at step #3
+
 git:
-  depth: 3
+  depth: false
 
 services:
   - docker
@@ -40,6 +44,7 @@ env:
 stage: Test
 install: skip
 script: ci/test.sh $DB
+
 before_cache: rm -rf $HOME/.m2/repository/pro/taskana
 
 matrix:
