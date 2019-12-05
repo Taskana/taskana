@@ -31,7 +31,7 @@ import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.TaskanaEngineImpl;
-import pro.taskana.impl.configuration.DBCleaner;
+import pro.taskana.sampledata.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 
 /**

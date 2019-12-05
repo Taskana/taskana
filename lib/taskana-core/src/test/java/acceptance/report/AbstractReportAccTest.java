@@ -11,7 +11,7 @@ import org.junit.jupiter.api.BeforeAll;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.database.TestDataGenerator;
-import pro.taskana.impl.configuration.DBCleaner;
+import pro.taskana.sampledata.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 
 /**
