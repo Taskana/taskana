@@ -31,7 +31,7 @@ import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.WorkbasketImpl;
-import pro.taskana.impl.configuration.DBCleaner;
+import pro.taskana.sampledata.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.security.JAASRunner;

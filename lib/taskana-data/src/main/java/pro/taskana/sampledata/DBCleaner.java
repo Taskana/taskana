@@ -1,4 +1,4 @@
-package pro.taskana.impl.configuration;
+package pro.taskana.sampledata;
 
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -17,8 +17,8 @@ import org.slf4j.LoggerFactory;
 public class DBCleaner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DBCleaner.class);
-    private static final String DB_CLEAR_SCRIPT = "/sql/clear-db.sql";
-    private static final String DB_DROP_TABLES_SCRIPT = "/sql/drop-tables.sql";
+    private static final String DB_CLEAR_SCRIPT = "/sql/clear/clear-db.sql";
+    private static final String DB_DROP_TABLES_SCRIPT = "/sql/clear/drop-tables.sql";
 
     private StringWriter outWriter = new StringWriter();
     private PrintWriter logWriter = new PrintWriter(outWriter);
