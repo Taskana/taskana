@@ -24,7 +24,7 @@ import pro.taskana.TimeInterval;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.database.TestDataGenerator;
 import pro.taskana.exceptions.ClassificationNotFoundException;
-import pro.taskana.impl.configuration.DBCleaner;
+import pro.taskana.sampledata.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 
 /**
