@@ -29,19 +29,18 @@ public class SampleDataGenerator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SampleDataGenerator.class);
 
-    private static final String SQL_SAMPLE_DATA = "/sql/sample-data";
+    private static final String CLEAR = "/sql/clear/clear-db.sql";
+    private static final String CLEAR_HISTORY_EVENTS = "/sql/clear/clear-history-events.sql";
 
-    private static final String CLEAR = SQL_SAMPLE_DATA + "/clear-db.sql";
-    private static final String CLEAR_HISTORY_EVENTS = SQL_SAMPLE_DATA + "/clear-history-events.sql";
-    private static final String TASK = SQL_SAMPLE_DATA + "/task.sql";
-    private static final String WORKBASKET = SQL_SAMPLE_DATA + "/workbasket.sql";
-    private static final String DISTRIBUTION_TARGETS = SQL_SAMPLE_DATA + "/distribution-targets.sql";
-    private static final String WORKBASKET_ACCESS_LIST = SQL_SAMPLE_DATA + "/workbasket-access-list.sql";
-    private static final String CLASSIFICATION = SQL_SAMPLE_DATA + "/classification.sql";
-    private static final String OBJECT_REFERENCE = SQL_SAMPLE_DATA + "/object-reference.sql";
-    private static final String ATTACHMENT = SQL_SAMPLE_DATA + "/attachment.sql";
-    private static final String HISTORY_EVENT = SQL_SAMPLE_DATA + "/history-event.sql";
-    private static final String CHECK_HISTORY_EVENT_EXIST = SQL_SAMPLE_DATA + "/check-history-event-exist.sql";
+    private static final String TASK = "/sql/sample-data/task.sql";
+    private static final String WORKBASKET = "/sql/sample-data/workbasket.sql";
+    private static final String DISTRIBUTION_TARGETS = "/sql/sample-data/distribution-targets.sql";
+    private static final String WORKBASKET_ACCESS_LIST = "/sql/sample-data/workbasket-access-list.sql";
+    private static final String CLASSIFICATION = "/sql/sample-data/classification.sql";
+    private static final String OBJECT_REFERENCE = "/sql/sample-data/object-reference.sql";
+    private static final String ATTACHMENT = "/sql/sample-data/attachment.sql";
+    private static final String HISTORY_EVENT = "/sql/sample-data/history-event.sql";
+    private static final String CHECK_HISTORY_EVENT_EXIST = "/sql/sample-data/check-history-event-exist.sql";
 
     static final String RELATIVE_DATE_REGEX = "RELATIVE_DATE\\((-?\\d+)\\)";
     static final Pattern RELATIVE_DATE_PATTERN = Pattern.compile(RELATIVE_DATE_REGEX);
@@ -134,16 +133,20 @@ public class SampleDataGenerator {
      *            sql statement which may contain the above declared custom function.
      * @return sql statement with the given function resolved, if the 'sql' parameter contained any.
      */
-    static String replaceRelativeTimeFunction(LocalDateTime now, String sql) {
+    static String replaceDatePlaceholder(LocalDateTime now, String sql) {
         Matcher m = RELATIVE_DATE_PATTERN.matcher(sql);
         StringBuffer sb = new StringBuffer(sql.length());
         while (m.find()) {
-            long days = Long.parseLong(m.group(1));
-            String daysAsStringDate = "'" + now.plusDays(days).format(DATE_TIME_FORMATTER) + "'";
+            long daysToShift = Long.parseLong(m.group(1));
+            String daysAsStringDate = formatToSqlDate(now, daysToShift);
             m.appendReplacement(sb, daysAsStringDate);
         }
         m.appendTail(sb);
         return sb.toString();
+    }
+
+    private static String formatToSqlDate(LocalDateTime now, long days) {
+        return "'" + now.plusDays(days).format(DATE_TIME_FORMATTER) + "'";
     }
 
     private StringReader selectSchemaScript(String dbProductName, String schemaName) {
@@ -153,7 +156,7 @@ public class SampleDataGenerator {
     }
 
     private static String parseAndReplace(LocalDateTime now, String script) {
-        return replaceRelativeTimeFunction(now,
+        return replaceDatePlaceholder(now,
             getScriptBufferedStream(script).lines().collect(Collectors.joining(System.lineSeparator())));
     }
 

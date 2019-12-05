@@ -35,7 +35,7 @@ class SampleDataGeneratorTest {
     void replaceRelativeTimeFunctionSameDate() {
         LocalDateTime now = LocalDateTime.now();
         String dateFormatted = now.format(SampleDataGenerator.DATE_TIME_FORMATTER);
-        String sqlStringReplaced = SampleDataGenerator.replaceRelativeTimeFunction(now,
+        String sqlStringReplaced = SampleDataGenerator.replaceDatePlaceholder(now,
             "... RELATIVE_DATE(0) ...");
         assertThat(sqlStringReplaced, CoreMatchers.containsString(dateFormatted));
     }
@@ -67,7 +67,7 @@ class SampleDataGeneratorTest {
     void replaceRelativeTimeFunctionPosDate() {
         LocalDateTime now = LocalDateTime.now();
         String dateFormatted = now.plusDays(5).format(SampleDataGenerator.DATE_TIME_FORMATTER);
-        String sqlStringReplaced = SampleDataGenerator.replaceRelativeTimeFunction(now,
+        String sqlStringReplaced = SampleDataGenerator.replaceDatePlaceholder(now,
             "... RELATIVE_DATE(5) ...");
         assertThat(sqlStringReplaced, CoreMatchers.containsString(dateFormatted));
     }
@@ -76,7 +76,7 @@ class SampleDataGeneratorTest {
     void replaceRelativeTimeFunctionNegDate() {
         LocalDateTime now = LocalDateTime.now();
         String dateFormatted = now.plusDays(-10).format(SampleDataGenerator.DATE_TIME_FORMATTER);
-        String sqlStringReplaced = SampleDataGenerator.replaceRelativeTimeFunction(now,
+        String sqlStringReplaced = SampleDataGenerator.replaceDatePlaceholder(now,
             "... RELATIVE_DATE(-10) ...");
         assertThat(sqlStringReplaced, CoreMatchers.containsString(dateFormatted));
     }
