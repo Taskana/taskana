@@ -82,6 +82,13 @@ public class GetClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
+    void testGetClassificationWithSpecialCharacter() throws ClassificationNotFoundException {
+        Classification classification = classificationService.getClassification(
+            "CLI:100000000000000000000000000000000009");
+        assertEquals("Zustimmungserklärung", classification.getName());
+    }
+
+    @Test
     public void testGetClassificationAsSummary() throws ClassificationNotFoundException {
         ClassificationSummary classification = classificationService
             .getClassification("CLI:100000000000000000000000000000000011").asSummary();

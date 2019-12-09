@@ -24,7 +24,6 @@ import pro.taskana.TimeInterval;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
-import pro.taskana.sampledata.DBCleaner;
 import pro.taskana.sampledata.SampleDataGenerator;
 
 /**
@@ -44,17 +43,17 @@ public abstract class AbstractAccTest {
     public static void resetDb(boolean dropTables) throws SQLException, IOException {
         DataSource dataSource = TaskanaEngineConfigurationTest.getDataSource();
         String schemaName = TaskanaEngineConfigurationTest.getSchemaName();
-        DBCleaner dbCleaner = new DBCleaner();
+        SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
         if (dropTables) {
-            dbCleaner.dropDb(dataSource, schemaName);
+            sampleDataGenerator.dropDb();
         }
         dataSource = TaskanaEngineConfigurationTest.getDataSource();
         taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false,
             schemaName);
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         taskanaEngine.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
-        dbCleaner.clearDb(dataSource, schemaName);
-        new SampleDataGenerator(dataSource, schemaName).generateTestData();
+        sampleDataGenerator.clearDb();
+        sampleDataGenerator.generateTestData();
     }
 
     protected ObjectReference createObjectReference(String company, String system, String systemInstance, String type,

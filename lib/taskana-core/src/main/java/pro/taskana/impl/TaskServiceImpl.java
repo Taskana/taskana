@@ -1198,6 +1198,8 @@ public class TaskServiceImpl implements TaskService {
         PrioDurationHolder prioDurationFromAttachments)
             throws InvalidArgumentException, ConcurrencyException, ClassificationNotFoundException {
         validateObjectReference(newTaskImpl.getPrimaryObjRef(), "primary ObjectReference", "Task");
+        //TODO: not safe to rely only on different timestamps.
+        // With fast execution below 1ms there will be no concurrencyException
         if (oldTaskImpl.getModified() != null && !oldTaskImpl.getModified().equals(newTaskImpl.getModified())
             || oldTaskImpl.getClaimed() != null && !oldTaskImpl.getClaimed().equals(newTaskImpl.getClaimed())
             || oldTaskImpl.getState() != null && !oldTaskImpl.getState().equals(newTaskImpl.getState())) {
