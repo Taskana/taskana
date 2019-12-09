@@ -11,7 +11,7 @@ export class TitlesService {
     this.titles = jsonFile[language];
   }
 
-  getTitle(id: number, fallBacktext: string, customPath: string = undefined) {
+  getTitle(id: number, fallBacktext: string, customPath?: string) {
 
     return this.titles[id] ? this.titles[id] : fallBacktext
   }

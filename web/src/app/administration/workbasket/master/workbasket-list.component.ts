@@ -104,9 +104,9 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
     this.requestInProgress = true;
     this.workbaskets = [];
     this.workbasketServiceSubscription = this.workbasketService.getWorkBasketsSummary(
-      true, this.sort.sortBy, this.sort.sortDirection, undefined,
-      this.filterBy.filterParams.name, this.filterBy.filterParams.description, undefined, this.filterBy.filterParams.owner,
-      this.filterBy.filterParams.type, undefined, this.filterBy.filterParams.key, undefined)
+      true, this.sort.sortBy, this.sort.sortDirection, '',
+      this.filterBy.filterParams.name, this.filterBy.filterParams.description, '', this.filterBy.filterParams.owner,
+      this.filterBy.filterParams.type, '', this.filterBy.filterParams.key, '')
       .subscribe(resultList => {
         this.workbasketsResource = resultList;
         this.workbaskets = resultList.workbaskets;

@@ -13,7 +13,7 @@ export class WorkplaceService {
   private objectReferenceSource = new Subject<ObjectReference>();
   objectReferenceSelectedStream = this.objectReferenceSource.asObservable();
 
-  selectWorkbasket(workbasket: Workbasket) {
+  selectWorkbasket(workbasket?: Workbasket) {
     this.currentWorkbasket = workbasket;
     this.workbasketSelectedSource.next(workbasket);
   }
@@ -22,11 +22,11 @@ export class WorkplaceService {
     return this.workbasketSelectedStream;
   }
 
-  selectObjectReference(objectReference: ObjectReference) {
+  selectObjectReference(objectReference?: ObjectReference) {
+    this.objectReference = new ObjectReference();
     if (objectReference) {
-      this.objectReference = new ObjectReference(undefined, undefined, undefined, undefined, objectReference.type, objectReference.value);
-    } else {
-      this.objectReference = new ObjectReference(undefined);
+      this.objectReference.type = objectReference.type;
+      this.objectReference.value = objectReference.value;
     }
     this.objectReferenceSource.next(objectReference);
   }

@@ -27,7 +27,7 @@ export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges {
 
     toogleValidationMap = new Map<string, boolean>();
     requestInProgress = false;
-    classifications: Classification[] = undefined;
+    classifications: Classification[];
 
     ownerField = this.customFieldsService.getCustomField(
         'Owner',

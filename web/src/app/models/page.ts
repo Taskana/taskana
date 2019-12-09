@@ -1,8 +1,8 @@
 export class Page {
     constructor(
-        public size: number = undefined,
-        public totalElements: number = undefined,
-        public totalPages: number = undefined,
-        public number: number = undefined
+        public size?: number,
+        public totalElements?: number,
+        public totalPages?: number,
+        public number?: number
     ) { }
 }

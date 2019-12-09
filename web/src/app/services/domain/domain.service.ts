@@ -46,7 +46,7 @@ export class DomainService {
           this.domainRestValue = domains;
           this.domainValue = domains;
           this.dataObs$.next(this.hasMasterDomain ? this.addEmptyDomain(domains) : domains);
-          if (this.domainSelectedValue === undefined && this.domainValue.length > 0) {
+          if (!this.domainSelectedValue && this.domainValue.length > 0) {
             this.selectDomain(this.domainValue[0]);
           }
         },

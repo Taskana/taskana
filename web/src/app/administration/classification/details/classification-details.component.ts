@@ -102,18 +102,18 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
 
     this.routeSubscription = this.route.params.subscribe(params => {
       let id = params['id'];
-      this.action = undefined;
+      delete this.action;
       if (id && id.indexOf('new-classification') !== -1) {
         this.action = ACTION.CREATE;
         this.badgeMessage = 'Creating new classification';
         id = id.replace('new-classification/', '');
         if (id === 'undefined') {
-          id = undefined;
+          id = '';
         }
         this.fillClassificationInformation(this.classification ? this.classification : new ClassificationDefinition())
       }
 
-      if (!this.classification || this.classification.classificationId !== id && id && id !== '') {
+      if (!this.classification || this.classification.classificationId !== id && id ) {
         this.selectClassification(id);
       }
     });
@@ -140,7 +140,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   }
 
   backClicked(): void {
-    this.classificationsService.selectClassification(undefined);
+    this.classificationsService.selectClassification();
     this.router.navigate(['./'], { relativeTo: this.route.parent });
   }
 
@@ -167,8 +167,8 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   }
 
   private initProperties() {
-    this.classification = undefined;
-    this.action = undefined
+    delete this.classification;
+    delete this.action;
   }
 
   private async onSave() {
@@ -287,9 +287,9 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
       .deleteClassification(this.classification._links.self.href)
       .subscribe(() => {
         const key = this.classification.key;
-        this.classification = undefined;
+        delete this.classification;
         this.afterRequest();
-        this.classificationsService.selectClassification(undefined);
+        this.classificationsService.selectClassification();
         this.router.navigate(['taskana/administration/classifications']);
         this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Classification ${key} was removed successfully`))
       }, error => {

@@ -23,12 +23,12 @@ import {MasterAndDetailService} from 'app/services/masterAndDetail/master-and-de
   styleUrls: ['./taskdetails.component.scss']
 })
 export class TaskdetailsComponent implements OnInit, OnDestroy {
-  task: Task = undefined;
-  taskClone: Task = undefined;
+  task: Task;
+  taskClone: Task;
   requestInProgress = false;
   tabSelected = 'general';
-  currentWorkbasket: Workbasket = undefined;
-  currentId: string = undefined;
+  currentWorkbasket: Workbasket;
+  currentId: string;
   showDetail = false;
 
   private routeSubscription: Subscription;
@@ -77,7 +77,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
     this.requestInProgress = true;
     if (this.currentId === 'new-task') {
       this.requestInProgress = false;
-      this.task = new Task(undefined, new ObjectReference(), this.currentWorkbasket);
+      this.task = new Task('', new ObjectReference(), this.currentWorkbasket);
     } else {
       this.taskService.getTask(this.currentId).subscribe(task => {
         this.requestInProgress = false;
@@ -124,7 +124,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   }
 
   backClicked(): void {
-    this.task = undefined;
+    delete this.task;
     this.taskService.selectTask(this.task);
     this.router.navigate(['./'], {relativeTo: this.route.parent});
   }

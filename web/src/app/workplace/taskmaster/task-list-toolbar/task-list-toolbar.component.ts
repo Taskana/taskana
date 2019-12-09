@@ -83,11 +83,13 @@ export class TaskListToolbarComponent implements OnInit {
     this.toolbarState = false;
     this.workbasketSelected = true;
     if (this.searchSelected === this.search.byTypeAndValue) {
-      this.workplaceService.selectObjectReference(
-        new ObjectReference(undefined, undefined, undefined, undefined, this.resultType, this.resultValue));
-        this.searched = true;
+      const objectReference = new ObjectReference();
+      objectReference.type = this.resultType;
+      objectReference.value = this.resultValue;
+      this.workplaceService.selectObjectReference(objectReference);
+      this.searched = true;
     } else {
-      this.workplaceService.selectObjectReference(undefined);
+      this.workplaceService.selectObjectReference();
       if (this.workbaskets) {
         this.workbaskets.forEach(workbasket => {
           if (workbasket.name === this.resultName) {
@@ -99,8 +101,8 @@ export class TaskListToolbarComponent implements OnInit {
         });
 
         if (!this.resultId) {
-          this.currentBasket = undefined;
-          this.workplaceService.selectWorkbasket(undefined);
+          delete this.currentBasket;
+          this.workplaceService.selectWorkbasket();
         }
       }
     }
@@ -118,14 +120,14 @@ export class TaskListToolbarComponent implements OnInit {
   }
 
   createTask() {
-    this.taskService.selectTask(undefined);
+    this.taskService.selectTask();
     this.router.navigate([{ outlets: { detail: 'taskdetail/new-task' } }], { relativeTo: this.route });
   }
 
   selectSearch(type: Search) {
     this.searched = false;
-    this.resultId = undefined;
-    this.currentBasket = undefined;
+    delete this.resultId;
+    delete this.currentBasket;
     this.selectSearchType.emit(type);
     this.searchSelected = type;
 

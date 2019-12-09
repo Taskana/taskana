@@ -87,7 +87,7 @@ export class ImportExportComponent implements OnInit {
         break;
       default:
         file.value = '';
-        this.generalModalService.triggerMessage(new MessageModal(undefined,
+        this.generalModalService.triggerMessage(new MessageModal('Wrong format',
           `This file format is not allowed! Please use a .json file.`));
     }
     return check;
@@ -133,7 +133,7 @@ export class ImportExportComponent implements OnInit {
         message
       )
     );
-    this.selectedFileInput.files = undefined;
+    delete this.selectedFileInput.files;
     this.resetProgress();
   }
 }

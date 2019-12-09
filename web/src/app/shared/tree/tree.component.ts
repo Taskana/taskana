@@ -106,7 +106,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
   }
 
   onDeactivate(treeNode: any) {
-    this.selectNodeIdChanged.emit(undefined);
+    this.selectNodeIdChanged.emit();
   }
 
   async onMoveNode($event) {
@@ -145,7 +145,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
 
   private unSelectActiveNode() {
     const activeNode = this.tree.treeModel.getActiveNode();
-    this.selectNodeId = undefined;
+    delete this.selectNodeId;
     activeNode.setIsActive(false);
     activeNode.blur();
   }

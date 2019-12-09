@@ -1,7 +1,7 @@
 export class MessageModal {
     constructor(
-        public title: string = undefined,
-        public message: any = undefined,
+        public title?: string,
+        public message?: any,
         public type = 'error'
     ) { }
 }

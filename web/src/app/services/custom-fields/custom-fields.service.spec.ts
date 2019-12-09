@@ -15,7 +15,7 @@ describe('CustomFieldsService', () => {
 
   it('should take default icon path', inject([CustomFieldsService], (service: CustomFieldsService) => {
     const categoriesData = {'DEFAULT': 'assets/icons/categories/default.svg'}
-    const returnedValue = service.getCustomObject(categoriesData, undefined);
+    const returnedValue = service.getCustomObject(categoriesData);
     expect(returnedValue).toBe(categoriesData);
     expect(service).toBeTruthy();
     }));

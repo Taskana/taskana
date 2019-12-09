@@ -1,7 +1,7 @@
 
 export class UserInfoModel {
     constructor(
-        public userId: string = undefined,
+        public userId: string = '',
         public groupIds: Array<string> = [],
         public roles: Array<string> = []) { };
 
