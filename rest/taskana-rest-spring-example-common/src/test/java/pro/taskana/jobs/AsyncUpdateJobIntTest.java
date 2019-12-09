@@ -132,12 +132,12 @@ class AsyncUpdateJobIntTest {
                 "TKI:000000000000000000000000000000000101", "TKI:000000000000000000000000000000000102",
                 "TKI:000000000000000000000000000000000103"));
         for (String taskId : affectedTasks) {
-            verifyTaskIsModifiedAfter(taskId, before);
+            verifyTaskIsModifiedAfterOrEquals(taskId, before);
         }
 
     }
 
-    private void verifyTaskIsModifiedAfter(String taskId, Instant before)
+    private void verifyTaskIsModifiedAfterOrEquals(String taskId, Instant before)
         throws InvalidArgumentException {
 
         ResponseEntity<TaskResource> taskResponse = template.exchange(
@@ -149,7 +149,9 @@ class AsyncUpdateJobIntTest {
         TaskResource taskResource = taskResponse.getBody();
         Task task = taskResourceAssembler.toModel(taskResource);
 
-        assertFalse("Task " + task.getId() + " has not been refreshed.", before.isAfter(task.getModified()));
+        Instant modified = task.getModified();
+        boolean isAfterOrEquals = before.isAfter(modified) || before.equals(modified);
+        assertFalse("Task " + task.getId() + " has not been refreshed.", isAfterOrEquals);
     }
 
 }
