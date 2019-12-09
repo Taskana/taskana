@@ -54,9 +54,9 @@ import pro.taskana.impl.TaskServiceImpl;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.WorkbasketSummaryImpl;
-import pro.taskana.sampledata.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.impl.util.IdGenerator;
+import pro.taskana.sampledata.DBCleaner;
 import pro.taskana.security.CurrentUserContext;
 import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
@@ -107,8 +107,9 @@ class TaskServiceImplIntExplicitTest {
     }
 
     @BeforeEach
-    void resetDb() {
-        cleaner.clearDb(dataSource, false);
+    void resetDb() throws SQLException {
+        String schemaName = TaskanaEngineConfigurationTest.getSchemaName();
+        cleaner.clearDb(dataSource, schemaName);
     }
 
     @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})

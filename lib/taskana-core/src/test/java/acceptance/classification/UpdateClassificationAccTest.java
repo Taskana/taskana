@@ -147,7 +147,9 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
             equalTo("PROCESS"));
 
         assertThat(classification.getCreated(), equalTo(createdBefore));
-        assertTrue(modifiedBefore.isBefore(classification.getModified()));
+        //isBeforeOrEquals in case of too fast execution
+        assertTrue(modifiedBefore.isBefore(classification.getModified()) || modifiedBefore.equals(
+            classification.getModified()));
     }
 
     @WithAccessId(
