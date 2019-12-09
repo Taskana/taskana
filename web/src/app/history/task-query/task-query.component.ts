@@ -25,7 +25,6 @@ export class TaskQueryComponent implements OnInit {
   orderBy = new SortingModel(TaskanaQueryParameters.parameters.CREATED);
   orientationSubscription: Subscription;
   taskQuerySubscription: Subscription;
-  created = undefined;
 
   taskQueryForm = new FormGroup({
   });
@@ -181,26 +180,7 @@ export class TaskQueryComponent implements OnInit {
     this.taskQuerySubscription = this.taskQueryService.queryTask(
       this.orderBy.sortBy.replace(/([A-Z])|([0-9])/g, (g) => `-${g[0].toLowerCase()}`),
       this.orderBy.sortDirection,
-      this.taskQueryForm.get('taskId') ? this.taskQueryForm.get('taskId').value : undefined,
-      this.taskQueryForm.get('parentBusinessProcessId') ? this.taskQueryForm.get('parentBusinessProcessId').value : undefined,
-      this.taskQueryForm.get('businessProcessId') ? this.taskQueryForm.get('businessProcessId').value : undefined,
-      this.taskQueryForm.get('eventType') ? this.taskQueryForm.get('eventType').value : undefined,
-      this.taskQueryForm.get('userId') ? this.taskQueryForm.get('userId').value : undefined,
-      this.taskQueryForm.get('domain') ? this.taskQueryForm.get('domain').value : undefined,
-      this.taskQueryForm.get('workbasketKey') ? this.taskQueryForm.get('workbasketKey').value : undefined,
-      this.taskQueryForm.get('porCompany') ? this.taskQueryForm.get('porCompany').value : undefined,
-      this.taskQueryForm.get('porSystem') ? this.taskQueryForm.get('porSystem').value : undefined,
-      this.taskQueryForm.get('porInstance') ? this.taskQueryForm.get('porInstance').value : undefined,
-      this.taskQueryForm.get('porType') ? this.taskQueryForm.get('porType').value : undefined,
-      this.taskQueryForm.get('porValue') ? this.taskQueryForm.get('porValue').value : undefined,
-      this.taskQueryForm.get('taskClassificationKey') ? this.taskQueryForm.get('taskClassificationKey').value : undefined,
-      this.taskQueryForm.get('taskClassificationCategory') ? this.taskQueryForm.get('taskClassificationCategory').value : undefined,
-      this.taskQueryForm.get('attachmentClassificationKey') ? this.taskQueryForm.get('attachmentClassificationKey').value : undefined,
-      this.taskQueryForm.get('custom1') ? this.taskQueryForm.get('custom1').value : undefined,
-      this.taskQueryForm.get('custom2') ? this.taskQueryForm.get('custom2').value : undefined,
-      this.taskQueryForm.get('custom3') ? this.taskQueryForm.get('custom3').value : undefined,
-      this.taskQueryForm.get('custom4') ? this.taskQueryForm.get('custom4').value : undefined,
-      this.created ? this.created.toISOString().substring(0, 10) : undefined,
+      new TaskHistoryEventData(this.taskQueryForm.value),
       false).subscribe(taskQueryResource => {
         this.requestInProgressService.setRequestInProgress(false);
         if (!taskQueryResource.taskHistoryEvents) {
@@ -231,7 +211,7 @@ export class TaskQueryComponent implements OnInit {
   }
 
   updateDate($event: string) {
-      this.created = new Date($event);
+      this.taskQueryForm.get('created').setValue($event.substring(0, 10));
       this.performRequest();
   }
 
