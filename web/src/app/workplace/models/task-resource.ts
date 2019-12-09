@@ -4,6 +4,6 @@ import { Page } from 'app/models/page';
 
 export class TaskResource {
   constructor(public tasks: Array<Task>,
-              public _links: Links = undefined,
+              public _links?: Links,
               public page: Page = new Page()) {}
 }

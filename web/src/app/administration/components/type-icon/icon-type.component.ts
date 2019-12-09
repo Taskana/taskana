@@ -19,7 +19,7 @@ export class IconTypeComponent implements OnInit {
   tooltip = false;
 
   @Input()
-  text: string = undefined;
+  text: string;
 
   public static get allTypes(): Map<string, string> {
     return new Map([['PERSONAL', 'Personal'], ['GROUP', 'Group'], ['CLEARANCE', 'Clearance'], ['TOPIC', 'Topic']])

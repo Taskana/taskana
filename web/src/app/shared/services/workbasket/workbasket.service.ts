@@ -33,15 +33,15 @@ export class WorkbasketService {
     getWorkBasketsSummary(forceRequest: boolean = false,
         sortBy: string = TaskanaQueryParameters.parameters.KEY,
         order: string = Direction.ASC,
-        name: string = undefined,
-        nameLike: string = undefined,
-        descLike: string = undefined,
-        owner: string = undefined,
-        ownerLike: string = undefined,
-        type: string = undefined,
-        key: string = undefined,
-        keyLike: string = undefined,
-        requiredPermission: string = undefined,
+        name?: string,
+        nameLike?: string,
+        descLike?: string,
+        owner?: string,
+        ownerLike?: string,
+        type?: string,
+        key?: string,
+        keyLike?: string,
+        requiredPermission?: string,
         allPages: boolean = false) {
 
         if (this.workbasketSummaryRef && !forceRequest) {
@@ -121,7 +121,7 @@ export class WorkbasketService {
 
     // #endregion
     // #region "Service extras"
-    selectWorkBasket(id: string) {
+    selectWorkBasket(id?: string) {
         this.workBasketSelected.next(id);
     }
 
@@ -158,17 +158,17 @@ export class WorkbasketService {
     private workbasketParameters(
         sortBy: string = TaskanaQueryParameters.parameters.KEY,
         order: string = Direction.ASC,
-        name: string = undefined,
-        nameLike: string = undefined,
-        descLike: string = undefined,
-        owner: string = undefined,
-        ownerLike: string = undefined,
-        type: string = undefined,
-        key: string = undefined,
-        keyLike: string = undefined,
-        requiredPermission: string = undefined,
-        allPages: boolean = false,
-        domain: string = ''): QueryParametersModel {
+        name?: string,
+        nameLike?: string,
+        descLike?: string,
+        owner?: string,
+        ownerLike?: string,
+        type?: string,
+        key?: string,
+        keyLike?: string,
+        requiredPermission?: string,
+        allPages?: boolean,
+        domain?: string): QueryParametersModel {
 
         const parameters = new QueryParametersModel();
         parameters.SORTBY = sortBy;
@@ -184,8 +184,8 @@ export class WorkbasketService {
         parameters.REQUIREDPERMISSION = requiredPermission;
         parameters.DOMAIN = domain;
         if (allPages) {
-            TaskanaQueryParameters.page = undefined;
-            TaskanaQueryParameters.pageSize = undefined;
+          delete TaskanaQueryParameters.page;
+          delete TaskanaQueryParameters.pageSize;
         }
         return parameters;
     }

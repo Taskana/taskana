@@ -45,7 +45,7 @@ export class SpinnerComponent implements OnDestroy {
     isModal = false;
 
     @Input()
-    positionClass: string = undefined;
+    positionClass: string;
 
     @Output()
     spinnerIsRunning = new EventEmitter<boolean>();
@@ -81,8 +81,8 @@ export class SpinnerComponent implements OnDestroy {
     private cancelTimeout(): void {
         clearTimeout(this.currentTimeout);
         clearTimeout(this.requestTimeout);
-        this.currentTimeout = undefined;
-        this.requestTimeout = undefined;
+        delete this.currentTimeout; // do we need this?
+        delete this.requestTimeout;
     }
 
     ngOnDestroy(): any {

@@ -173,10 +173,10 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
               </div>
               <div class="modal-body">
-                <ul *ngIf="belongingGroups !== undefined && belongingGroups.length > 0 " class="list-group">
+                <ul *ngIf="belongingGroups && belongingGroups.length > 0 " class="list-group">
                   <li *ngFor="let group of belongingGroups" class="list-group-item">{{group.name}}</li>
                 </ul>
-                <p *ngIf="belongingGroups === undefined || belongingGroups.length === 0">The user is not associated to
+                <p *ngIf="!belongingGroups">The user is not associated to
                   any groups</p>
               </div>
               <div class="modal-footer">

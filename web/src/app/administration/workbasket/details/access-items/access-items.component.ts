@@ -123,11 +123,13 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
   }
 
   addAccessItem() {
-    const newForm = this.formBuilder.group(
-      new WorkbasketAccessItems(undefined, this.workbasket.workbasketId, '', '', true));
+    const workbasketAccessItems = new WorkbasketAccessItems();
+    workbasketAccessItems.workbasketId = this.workbasket.workbasketId;
+    workbasketAccessItems.permRead = true;
+    const newForm = this.formBuilder.group(workbasketAccessItems);
     newForm.controls['accessId'].setValidators(Validators.required);
     this.accessItemsGroups.push(newForm);
-    this.accessItemsClone.push(new WorkbasketAccessItems(undefined, this.workbasket.workbasketId, '', '', true));
+    this.accessItemsClone.push(workbasketAccessItems);
   }
 
   clear() {
@@ -200,7 +202,7 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
   }
   private setWorkbasketIdForCopy(workbasketId: string) {
     this.accessItemsGroups.value.forEach(element => {
-      element.accessItemId = undefined;
+      delete element.accessItemId;
       element.workbasketId = workbasketId;
     });
   }

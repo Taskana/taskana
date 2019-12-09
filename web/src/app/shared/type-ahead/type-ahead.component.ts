@@ -56,7 +56,7 @@ export class TypeAheadComponent implements OnInit, ControlValueAccessor {
   typeaheadOptionsInScrollableView = 6;
 
   // The internal data model
-  private innerValue: any = undefined;
+  private innerValue: any;
 
   // Placeholders for the callbacks which are later provided
   // by the Control Value Accessor

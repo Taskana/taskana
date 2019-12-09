@@ -23,6 +23,6 @@ export class WorkbasketAccessItems {
         public permCustom10: boolean = false,
         public permCustom11: boolean = false,
         public permCustom12: boolean = false,
-        public _links: Links = undefined
+        public _links: Links = new Links()
     ) { }
 }

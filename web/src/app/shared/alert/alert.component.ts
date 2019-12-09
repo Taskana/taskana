@@ -26,7 +26,7 @@ export class AlertComponent implements OnInit {
 
   setTimeOutForClosing(time: number) {
     setTimeout(() => {
-      this.alert = undefined;
+      delete this.alert;
     }, time);
   }
 }

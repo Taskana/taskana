@@ -10,8 +10,8 @@ describe('TaskanaQueryParameters', () => {
     })
 
     it('should create a empty query', () => {
-        TaskanaQueryParameters.page = undefined;
-        TaskanaQueryParameters.pageSize = undefined;
+        delete TaskanaQueryParameters.page;
+        delete TaskanaQueryParameters.pageSize;
         expect(TaskanaQueryParameters.getQueryParameters(new QueryParametersModel())).toBe('?');
         TaskanaQueryParameters.page = 1;
         TaskanaQueryParameters.pageSize = 9;

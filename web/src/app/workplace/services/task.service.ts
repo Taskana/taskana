@@ -23,11 +23,11 @@ export class TaskService {
   constructor(private httpClient: HttpClient) {
   }
 
-  publishUpdatedTask(task: Task = undefined) {
+  publishUpdatedTask(task: Task = new Task('empty')) {
     this.taskChangedSource.next(task);
   }
 
-  selectTask(task: Task) {
+  selectTask(task?: Task) {
     this.taskSelectedSource.next(task);
   }
 
@@ -121,8 +121,8 @@ export class TaskService {
     parameters.TASK_PRIMARY_OBJ_REF_TYPE_LIKE = objRefTypeLike;
     parameters.TASK_PRIMARY_OBJ_REF_VALUE_LIKE = objRefValueLike;
     if (allPages) {
-      TaskanaQueryParameters.page = undefined;
-      TaskanaQueryParameters.pageSize = undefined;
+      delete TaskanaQueryParameters.page;
+      delete TaskanaQueryParameters.pageSize;
     }
 
     return parameters;

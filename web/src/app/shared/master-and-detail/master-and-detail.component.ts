@@ -35,7 +35,7 @@ export class MasterAndDetailComponent implements OnInit {
     }
 
     private showDetails(event?: RouterEvent): boolean {
-        if (event === undefined) {
+        if (!event) {
             return this.checkUrl(this.router.url);
         }
         return this.checkUrl(event.url)

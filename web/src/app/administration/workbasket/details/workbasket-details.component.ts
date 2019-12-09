@@ -20,7 +20,7 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 
   workbasket: Workbasket;
   workbasketCopy: Workbasket;
-  selectedId: string = undefined;
+  selectedId: string;
   showDetail = false;
   requestInProgress = false;
   action: string;
@@ -46,32 +46,30 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.workbasketSelectedSubscription = this.service.getSelectedWorkBasket().subscribe(workbasketIdSelected => {
-      this.workbasket = undefined;
+      delete this.workbasket;
       this.getWorkbasketInformation(workbasketIdSelected);
     });
 
     this.routeSubscription = this.route.params.subscribe(params => {
-      let id = params['id'];
-      this.action = undefined;
-      if (id && id.indexOf('new-workbasket') !== -1) {
-        this.tabSelected = 'information';
-        this.action = ACTION.CREATE;
-        id = undefined;
-        this.getWorkbasketInformation(id);
-      } else if (id && id.indexOf('copy-workbasket') !== -1) {
-        if (!this.selectedId) {
-          this.router.navigate(['./'], { relativeTo: this.route.parent });
-          return;
+      const id = params['id'];
+      delete this.action;
+      if (id) {
+        if (id.indexOf('new-workbasket') !== -1) {
+          this.tabSelected = 'information';
+          this.action = ACTION.CREATE;
+          this.getWorkbasketInformation();
+        } else if (id.indexOf('copy-workbasket') !== -1) {
+          if (!this.selectedId) {
+            this.router.navigate(['./'], { relativeTo: this.route.parent });
+            return;
+          }
+          this.action = ACTION.COPY;
+          delete this.workbasket.key;
+          this.workbasketCopy = this.workbasket;
+          this.getWorkbasketInformation();
+        } else {
+          this.selectWorkbasket(id);
         }
-        this.action = ACTION.COPY;
-        this.workbasket.key = undefined;
-        this.workbasketCopy = this.workbasket;
-        id = undefined;
-        this.getWorkbasketInformation(id, this.selectedId);
-      }
-
-      if (id && id !== '') {
-        this.selectWorkbasket(id);
       }
     });
 
@@ -79,13 +77,13 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
       this.showDetail = showDetail;
     });
 
-    this.importingExportingSubscription = this.importExportService.getImportingFinished().subscribe((value: Boolean) => {
+    this.importingExportingSubscription = this.importExportService.getImportingFinished().subscribe(() => {
       if (this.workbasket) { this.getWorkbasketInformation(this.workbasket.workbasketId); }
     })
   }
 
   backClicked(): void {
-    this.service.selectWorkBasket(undefined);
+    this.service.selectWorkBasket();
     this.router.navigate(['./'], { relativeTo: this.route.parent });
   }
 
@@ -98,18 +96,18 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
     this.service.selectWorkBasket(id);
   }
 
-  private getWorkbasketInformation(workbasketIdSelected: string, copyId: string = undefined) {
+  private getWorkbasketInformation(workbasketIdSelected?: string) {
     this.requestInProgress = true;
 
     if (!workbasketIdSelected && this.action === ACTION.CREATE) { // CREATE
-      this.workbasket = new Workbasket(undefined);
+      this.workbasket = new Workbasket();
       this.domainSubscription = this.domainService.getSelectedDomain().subscribe(domain => {
         this.workbasket.domain = domain;
       });
       this.requestInProgress = false;
     } else if (!workbasketIdSelected && this.action === ACTION.COPY) { // COPY
       this.workbasket = { ...this.workbasketCopy };
-      this.workbasket.workbasketId = undefined;
+      delete this.workbasket.workbasketId;
       this.requestInProgress = false;
     }
     if (workbasketIdSelected) {

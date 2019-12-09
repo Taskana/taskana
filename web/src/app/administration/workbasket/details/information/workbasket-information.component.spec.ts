@@ -101,7 +101,7 @@ describe('WorkbasketInformationComponent', () => {
   it('should create a copy of workbasket when workbasket is selected', () => {
     expect(component.workbasketClone).toBeUndefined();
     component.workbasket = new Workbasket('id', 'created', 'keyModified', 'domain', ICONTYPES.TOPIC, 'modified', 'name', 'description',
-      'owner', 'custom1', 'custom2', 'custom3', 'custom4', 'orgLevel1', 'orgLevel2', 'orgLevel3', 'orgLevel4', null);
+      'owner', 'custom1', 'custom2', 'custom3', 'custom4', 'orgLevel1', 'orgLevel2', 'orgLevel3', 'orgLevel4');
     component.ngOnChanges(
       undefined
     );
@@ -185,12 +185,14 @@ describe('WorkbasketInformationComponent', () => {
     }));
 
   it('should trigger requestInProgress service true before  and requestInProgress false after remove a workbasket', () => {
+    const links = new Links({ 'href': 'someUrl' });
+    links.removeDistributionTargets = { 'href': 'someUrl' };
     const workbasket = new Workbasket(undefined, 'created', 'keyModified', 'domain', ICONTYPES.TOPIC,
       'modified', 'name', 'description', 'owner', 'custom1', 'custom2',
       'custom3', 'custom4', 'orgLevel1', 'orgLevel2',
-      'orgLevel3', 'orgLevel4', new Links({ 'href': 'someUrl' }, undefined, undefined, undefined, { 'href': 'someUrl' }));
+      'orgLevel3', 'orgLevel4', links);
     component.workbasket = workbasket;
-    spyOn(workbasketService, 'removeDistributionTarget').and.returnValue(of(''));
+    spyOn(workbasketService, 'removeDistributionTarget').and.returnValue(of(undefined));
     const requestInProgressServiceSpy = spyOn(requestInProgressService, 'setRequestInProgress');
 
     component.removeDistributionTargets();
