@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "admin": {
+    "taskana-web": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -53,18 +53,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "admin:build"
+            "browserTarget": "taskana-web:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "admin:build:production"
+              "browserTarget": "taskana-web:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "admin:build"
+            "browserTarget": "taskana-web:build"
           }
         },
         "test": {
@@ -100,13 +100,13 @@
         }
       }
     },
-    "admin-e2e": {
+    "taskana-web-e2e": {
       "root": "",
       "sourceRoot": "e2e",
       "projectType": "application"
     }
   },
-  "defaultProject": "admin",
+  "defaultProject": "taskana-web",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",
