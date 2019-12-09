@@ -37,8 +37,8 @@ class TestSchemaNameCustomizable {
                 schemaName = schemaName.toLowerCase();
             }
             new SpringTaskanaEngineConfiguration(dataSource, true, true, schemaName);
-            sampleDataGenerator = new SampleDataGenerator(dataSource);
-            sampleDataGenerator.generateSampleData(schemaName);
+            sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
+            sampleDataGenerator.generateSampleData();
         } catch (SQLException e) {
             throw new SystemException("tried to reset DB and caught Exception " + e, e);
         }

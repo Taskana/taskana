@@ -58,7 +58,7 @@ public class ExampleRestApplication {
     @Bean
     @DependsOn("getTaskanaEngine") // generate sample data after schema was inserted
     public SampleDataGenerator generateSampleData(DataSource dataSource) {
-        sampleDataGenerator = new SampleDataGenerator(dataSource);
+        sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
         return sampleDataGenerator;
     }
 
@@ -68,7 +68,7 @@ public class ExampleRestApplication {
             AccessIdController.setLdapCache(ldapCacheTest);
         }
         if (generateSampleData) {
-            sampleDataGenerator.generateSampleData(schemaName);
+            sampleDataGenerator.generateSampleData();
         }
     }
 }
