@@ -1,19 +1,16 @@
 package pro.taskana.sampledata;
 
-import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Optional;
+import java.util.HashMap;
+import java.util.List;
 import java.util.function.Consumer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -32,10 +29,11 @@ public class SampleDataGenerator {
 
     private static final String DB_CLEAR_TABLES_SCRIPT = "/sql/clear/clear-db.sql";
     private static final String DB_DROP_TABLES_SCRIPT = "/sql/clear/drop-tables.sql";
-
-    static final String RELATIVE_DATE_REGEX = "RELATIVE_DATE\\((-?\\d+)\\)";
-    static final Pattern RELATIVE_DATE_PATTERN = Pattern.compile(RELATIVE_DATE_REGEX);
-    static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+    private static final String CHECK_HISTORY_EVENT_EXIST = "/sql/sample-data/check-history-event-exist.sql";
+    public static final String CACHED_TEST = "TEST";
+    public static final String CACHED_SAMPLE = "SAMPLE";
+    public static final String CACHED_EVENTSAMPLE = "EVENTSAMPLE";
+    public static final String CACHED_MONITOR = "MONITOR";
 
     private final DataSource dataSource;
     private final LocalDateTime now;
@@ -45,6 +43,8 @@ public class SampleDataGenerator {
      * because setting not yet existing schema will result into an SQL Exception.
      */
     private final String schema;
+
+    private static HashMap<String, List<String>> cachedScripts = new HashMap<String, List<String>>();
 
     public SampleDataGenerator(DataSource dataSource, String schema) {
         this(dataSource, schema, LocalDateTime.now());
@@ -56,9 +56,8 @@ public class SampleDataGenerator {
         this.now = now;
     }
 
-    public void runScripts(Consumer<ScriptRunner> consumer) throws SQLException {
+    public void runScripts(Consumer<ScriptRunner> consumer) {
         try (Connection connection = dataSource.getConnection()) {
-
             if (LOGGER.isTraceEnabled()) {
                 LOGGER.trace(connection.getMetaData().toString());
             }
@@ -77,33 +76,69 @@ public class SampleDataGenerator {
                     LOGGER.error(trimmedErrorString);
                 }
             }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to execute script.", e);
         }
     }
 
     public void generateSampleData() throws SQLException {
         runScripts((runner) -> {
             clearDb(runner);
-            executeScripts(runner, SampleDataProvider.getDataProvider(runner));
+            Stream<String> scripts;
+            String cacheKey;
+            try {
+                //TODO find a better method of testing if a table exists
+                runner.runScript(SQLReplacer.getScriptBufferedStream(CHECK_HISTORY_EVENT_EXIST));
+                scripts = SampleDataProvider.getScriptsWithEvents();
+                cacheKey = CACHED_SAMPLE;
+            } catch (Exception e) {
+                scripts = SampleDataProvider.getDefaultScripts();
+                cacheKey = CACHED_EVENTSAMPLE;
+            }
+            cacheAndExecute(scripts, cacheKey);
         });
     }
 
-    private void executeScripts(ScriptRunner runner, Stream<String> scriptsList) {
-        scriptsList
-            .map(s -> SampleDataGenerator.parseAndReplace(now, s))
-            .map(StringReader::new)
-            .map(BufferedReader::new)
-            .forEachOrdered(runner::runScript);
+    public List<String> parseScripts(Stream<String> scripts) {
+        try (Connection connection = dataSource.getConnection()) {
+            String dbProductName = connection.getMetaData().getDatabaseProductName();
+            return scripts.map(script -> SQLReplacer.getScriptAsSql(dbProductName, now, script))
+                .collect(Collectors.toList());
+        } catch (SQLException e) {
+            throw new RuntimeException("Connection to database failed.", e);
+        }
+    }
+
+    public void generateTestData() {
+        Stream<String> scripts = SampleDataProvider.getTestDataScripts();
+        cacheAndExecute(scripts, CACHED_TEST);
+    }
+
+    public void generateMonitorData() {
+        Stream<String> scripts = SampleDataProvider.getMonitorDataScripts();
+        cacheAndExecute(scripts, CACHED_MONITOR);
     }
 
     public void clearDb(ScriptRunner runner) {
         runner.setStopOnError(false);
-        runner.runScript(getScriptBufferedStream(DB_CLEAR_TABLES_SCRIPT));
+        runner.runScript(SQLReplacer.getScriptBufferedStream(DB_CLEAR_TABLES_SCRIPT));
         runner.setStopOnError(true);
+    }
+
+    private void cacheAndExecute(Stream<String> scripts, String cacheKey) {
+        if (!cachedScripts.containsKey(cacheKey)) {
+            cachedScripts.put(cacheKey, parseScripts(scripts));
+        }
+        runScripts(runner -> cachedScripts.get(cacheKey).stream()
+            .map(s -> s.getBytes(StandardCharsets.UTF_8))
+            .map(ByteArrayInputStream::new)
+            .map(InputStreamReader::new)
+            .forEach(runner::runScript));
     }
 
     public void dropDb(ScriptRunner runner) {
         runner.setStopOnError(false);
-        runner.runScript(getScriptBufferedStream(DB_DROP_TABLES_SCRIPT));
+        runner.runScript(SQLReplacer.getScriptBufferedStream(DB_DROP_TABLES_SCRIPT));
         runner.setStopOnError(true);
     }
 
@@ -115,55 +150,9 @@ public class SampleDataGenerator {
         ScriptRunner runner = new ScriptRunner(connection);
 
         connection.setSchema(schema);
-        String databaseProductName = connection.getMetaData().getDatabaseProductName();
-
         runner.setLogWriter(logWriter);
         runner.setErrorLogWriter(errorLogWriter);
         return runner;
     }
 
-    /**
-     * This method resolves the custom sql function defined through this regex: {@value RELATIVE_DATE_REGEX}. Its
-     * parameter is a digit representing the relative offset of a given starting point date.
-     * <p/>
-     * Yes, this can be done as an actual sql function, but that'd lead to a little more complexity (and thus we'd have
-     * to maintain the code for db compatibility ...) Since we're already replacing the boolean attributes of sql files
-     * this addition is not a huge computational cost.
-     *
-     * @param now
-     *            anchor for relative date conversion.
-     * @param sql
-     *            sql statement which may contain the above declared custom function.
-     * @return sql statement with the given function resolved, if the 'sql' parameter contained any.
-     */
-    static String replaceDatePlaceholder(LocalDateTime now, String sql) {
-        Matcher m = RELATIVE_DATE_PATTERN.matcher(sql);
-        StringBuffer sb = new StringBuffer(sql.length());
-        while (m.find()) {
-            long daysToShift = Long.parseLong(m.group(1));
-            String daysAsStringDate = formatToSqlDate(now, daysToShift);
-            m.appendReplacement(sb, daysAsStringDate);
-        }
-        m.appendTail(sb);
-        return sb.toString();
-    }
-
-    private static String formatToSqlDate(LocalDateTime now, long days) {
-        return "'" + now.plusDays(days).format(DATE_TIME_FORMATTER) + "'";
-    }
-
-    private static String parseAndReplace(LocalDateTime now, String script) {
-        return replaceDatePlaceholder(now,
-            getScriptBufferedStream(script).lines().collect(Collectors.joining(System.lineSeparator())));
-    }
-
-    static BufferedReader getScriptBufferedStream(String script) {
-        return Optional.ofNullable(SampleDataGenerator.class.getResourceAsStream(script)).map(
-            inputStream -> new BufferedReader(
-                new InputStreamReader(inputStream, StandardCharsets.UTF_8))).orElse(null);
-    }
-
-    private static boolean isPostgreSQL(String databaseProductName) {
-        return "PostgreSQL".equals(databaseProductName);
-    }
 }
