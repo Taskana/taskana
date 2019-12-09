@@ -56,7 +56,7 @@ import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.WorkbasketSummaryImpl;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.impl.util.IdGenerator;
-import pro.taskana.sampledata.DBCleaner;
+import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.security.CurrentUserContext;
 import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
@@ -70,8 +70,6 @@ import pro.taskana.security.WithAccessId;
 class TaskServiceImplIntExplicitTest {
 
     private static DataSource dataSource;
-
-    private static DBCleaner cleaner;
 
     private static TaskServiceImpl taskServiceImpl;
 
@@ -101,15 +99,15 @@ class TaskServiceImplIntExplicitTest {
         classificationService = taskanaEngine.getClassificationService();
         taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.EXPLICIT);
         workbasketService = taskanaEngine.getWorkbasketService();
-        cleaner = new DBCleaner();
         DbSchemaCreator creator = new DbSchemaCreator(dataSource, dataSource.getConnection().getSchema());
         creator.run();
     }
 
     @BeforeEach
-    void resetDb() throws SQLException {
+    void resetDb() {
         String schemaName = TaskanaEngineConfigurationTest.getSchemaName();
-        cleaner.clearDb(dataSource, schemaName);
+        SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
+        sampleDataGenerator.clearDb();
     }
 
     @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
@@ -195,7 +193,7 @@ class TaskServiceImplIntExplicitTest {
         ((WorkbasketSummaryImpl) (test.getWorkbasketSummary())).setId("2");
 
         Assertions.assertThrows(WorkbasketNotFoundException.class, () ->
-        taskServiceImpl.createTask(test));
+            taskServiceImpl.createTask(test));
     }
 
     @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
@@ -223,7 +221,7 @@ class TaskServiceImplIntExplicitTest {
         task.setClassificationKey(classification.getKey());
 
         Assertions.assertThrows(ClassificationNotFoundException.class, () ->
-        taskServiceImpl.createTask(task));
+            taskServiceImpl.createTask(task));
     }
 
     @WithAccessId(userName = "Elena", groupNames = {"DummyGroup", "businessadmin"})
@@ -351,7 +349,7 @@ class TaskServiceImplIntExplicitTest {
         taskanaEngineImpl.setConnection(connection);
 
         Assertions.assertThrows(TaskNotFoundException.class, () ->
-        taskServiceImpl.transfer(UUID.randomUUID() + "_X", "1"));
+            taskServiceImpl.transfer(UUID.randomUUID() + "_X", "1"));
     }
 
     @WithAccessId(userName = "User", groupNames = {"businessadmin"})

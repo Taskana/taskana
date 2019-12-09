@@ -17,6 +17,7 @@ import java.util.stream.Stream;
 import javax.sql.DataSource;
 
 import org.apache.ibatis.jdbc.ScriptRunner;
+import org.apache.ibatis.jdbc.SqlRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,13 +28,12 @@ public class SampleDataGenerator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SampleDataGenerator.class);
 
-    private static final String DB_CLEAR_TABLES_SCRIPT = "/sql/clear/clear-db.sql";
-    private static final String DB_DROP_TABLES_SCRIPT = "/sql/clear/drop-tables.sql";
-    private static final String CHECK_HISTORY_EVENT_EXIST = "/sql/sample-data/check-history-event-exist.sql";
-    public static final String CACHED_TEST = "TEST";
-    public static final String CACHED_SAMPLE = "SAMPLE";
-    public static final String CACHED_EVENTSAMPLE = "EVENTSAMPLE";
-    public static final String CACHED_MONITOR = "MONITOR";
+    private static final String CACHED_TEST = "TEST";
+    private static final String CACHED_SAMPLE = "SAMPLE";
+    private static final String CACHED_EVENTSAMPLE = "EVENTSAMPLE";
+    private static final String CACHED_MONITOR = "MONITOR";
+    private static final String CACHED_CLEARDB = "CLEARDB";
+    private static final String CACHED_DROPDB = "DROPDB";
 
     private final DataSource dataSource;
     private final LocalDateTime now;
@@ -44,7 +44,7 @@ public class SampleDataGenerator {
      */
     private final String schema;
 
-    private static HashMap<String, List<String>> cachedScripts = new HashMap<String, List<String>>();
+    private static HashMap<String, List<String>> cachedScripts = new HashMap<>();
 
     public SampleDataGenerator(DataSource dataSource, String schema) {
         this(dataSource, schema, LocalDateTime.now());
@@ -56,7 +56,67 @@ public class SampleDataGenerator {
         this.now = now;
     }
 
-    public void runScripts(Consumer<ScriptRunner> consumer) {
+    public void generateSampleData() {
+        runScripts((runner) -> {
+            clearDb();
+            Stream<String> scripts;
+            String cacheKey;
+            //dbtable constants?
+            if (tableExists("HISTORY_EVENTS")) {
+                scripts = SampleDataProvider.getDefaultScripts();
+                cacheKey = CACHED_EVENTSAMPLE;
+            } else {
+                scripts = SampleDataProvider.getScriptsWithEvents();
+                cacheKey = CACHED_SAMPLE;
+            }
+            executeAndCacheScripts(scripts, cacheKey);
+        });
+    }
+
+    public void generateTestData() {
+        Stream<String> scripts = SampleDataProvider.getTestDataScripts();
+        executeAndCacheScripts(scripts, CACHED_TEST);
+    }
+
+    public void generateMonitorData() {
+        Stream<String> scripts = SampleDataProvider.getMonitorDataScripts();
+        executeAndCacheScripts(scripts, CACHED_MONITOR);
+    }
+
+    public void clearDb() {
+        Stream<String> scripts = SampleDataProvider.getScriptsToClearDatabase();
+        executeAndCacheScripts(scripts, CACHED_CLEARDB);
+    }
+
+    public void dropDb() {
+        Stream<String> scripts = SampleDataProvider.getScriptsToDropDatabase();
+        executeAndCacheScripts(scripts, CACHED_DROPDB);
+    }
+
+    private List<String> parseScripts(Stream<String> scripts) {
+        try (Connection connection = dataSource.getConnection()) {
+            String dbProductName = connection.getMetaData().getDatabaseProductName();
+            return scripts.map(script -> SQLReplacer.getScriptAsSql(dbProductName, now, script))
+                .collect(Collectors.toList());
+        } catch (SQLException e) {
+            throw new RuntimeException("Connection to database failed.", e);
+        }
+    }
+
+    boolean tableExists(String table) {
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setSchema(schema);
+            SqlRunner runner = new SqlRunner(connection);
+            String tableSafe = SQLReplacer.getSanitizedTableName(table);
+            String query = "SELECT 1 FROM " + tableSafe + " LIMIT 1;";
+            runner.run(query);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private void runScripts(Consumer<ScriptRunner> consumer) {
         try (Connection connection = dataSource.getConnection()) {
             if (LOGGER.isTraceEnabled()) {
                 LOGGER.trace(connection.getMetaData().toString());
@@ -81,68 +141,15 @@ public class SampleDataGenerator {
         }
     }
 
-    public void generateSampleData() throws SQLException {
-        runScripts((runner) -> {
-            clearDb(runner);
-            Stream<String> scripts;
-            String cacheKey;
-            try {
-                //TODO find a better method of testing if a table exists
-                runner.runScript(SQLReplacer.getScriptBufferedStream(CHECK_HISTORY_EVENT_EXIST));
-                scripts = SampleDataProvider.getScriptsWithEvents();
-                cacheKey = CACHED_SAMPLE;
-            } catch (Exception e) {
-                scripts = SampleDataProvider.getDefaultScripts();
-                cacheKey = CACHED_EVENTSAMPLE;
-            }
-            cacheAndExecute(scripts, cacheKey);
-        });
-    }
-
-    public List<String> parseScripts(Stream<String> scripts) {
-        try (Connection connection = dataSource.getConnection()) {
-            String dbProductName = connection.getMetaData().getDatabaseProductName();
-            return scripts.map(script -> SQLReplacer.getScriptAsSql(dbProductName, now, script))
-                .collect(Collectors.toList());
-        } catch (SQLException e) {
-            throw new RuntimeException("Connection to database failed.", e);
-        }
-    }
-
-    public void generateTestData() {
-        Stream<String> scripts = SampleDataProvider.getTestDataScripts();
-        cacheAndExecute(scripts, CACHED_TEST);
-    }
-
-    public void generateMonitorData() {
-        Stream<String> scripts = SampleDataProvider.getMonitorDataScripts();
-        cacheAndExecute(scripts, CACHED_MONITOR);
-    }
-
-    public void clearDb(ScriptRunner runner) {
-        runner.setStopOnError(false);
-        runner.runScript(SQLReplacer.getScriptBufferedStream(DB_CLEAR_TABLES_SCRIPT));
-        runner.setStopOnError(true);
-    }
-
-    private void cacheAndExecute(Stream<String> scripts, String cacheKey) {
-        if (!cachedScripts.containsKey(cacheKey)) {
-            cachedScripts.put(cacheKey, parseScripts(scripts));
-        }
-        runScripts(runner -> cachedScripts.get(cacheKey).stream()
+    private void executeAndCacheScripts(Stream<String> scripts, String cacheKey) {
+        runScripts(runner -> cachedScripts.computeIfAbsent(cacheKey, key -> parseScripts(scripts)).stream()
             .map(s -> s.getBytes(StandardCharsets.UTF_8))
             .map(ByteArrayInputStream::new)
-            .map(InputStreamReader::new)
+            .map(s -> new InputStreamReader(s, StandardCharsets.UTF_8))
             .forEach(runner::runScript));
     }
 
-    public void dropDb(ScriptRunner runner) {
-        runner.setStopOnError(false);
-        runner.runScript(SQLReplacer.getScriptBufferedStream(DB_DROP_TABLES_SCRIPT));
-        runner.setStopOnError(true);
-    }
-
-    ScriptRunner getScriptRunner(Connection connection, StringWriter outWriter,
+    private ScriptRunner getScriptRunner(Connection connection, StringWriter outWriter,
         StringWriter errorWriter) throws SQLException {
 
         PrintWriter logWriter = new PrintWriter(outWriter);

@@ -33,7 +33,7 @@ import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.impl.util.IdGenerator;
-import pro.taskana.sampledata.DBCleaner;
+import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 
@@ -54,11 +54,10 @@ public class WorkbasketServiceImplIntExplicitTest {
     private WorkbasketService workBasketService;
 
     @BeforeClass
-    public static void resetDb() throws SQLException {
+    public static void resetDb() {
         DataSource ds = TaskanaEngineConfigurationTest.getDataSource();
-        DBCleaner cleaner = new DBCleaner();
         String schemaName = TaskanaEngineConfigurationTest.getSchemaName();
-        cleaner.dropDb(ds, schemaName);
+        new SampleDataGenerator(ds, schemaName).dropDb();
     }
 
     @Before
@@ -70,8 +69,8 @@ public class WorkbasketServiceImplIntExplicitTest {
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.EXPLICIT);
-        DBCleaner cleaner = new DBCleaner();
-        cleaner.clearDb(dataSource, schemaName);
+        SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
+        sampleDataGenerator.clearDb();
     }
 
     @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})

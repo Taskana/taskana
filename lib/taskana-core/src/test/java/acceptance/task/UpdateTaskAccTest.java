@@ -120,11 +120,11 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         Task task2 = taskService.getTask("TKI:000000000000000000000000000000000000");
 
         task.setCustomAttribute("1", "willi");
-        Task updatedTask = null;
-        updatedTask = taskService.updateTask(task);
-        updatedTask = taskService.getTask(updatedTask.getId());
+        Task updatedTask = taskService.updateTask(task);
+        taskService.getTask(updatedTask.getId());
 
         task2.setCustomAttribute("2", "Walter");
+        //TODO flaky test ... if speed is too high,
         Assertions.assertThrows(ConcurrencyException.class, () -> taskService.updateTask(task2),
             "The task has already been updated by another user");
 

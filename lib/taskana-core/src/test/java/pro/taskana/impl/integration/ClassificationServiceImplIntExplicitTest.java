@@ -39,7 +39,7 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.ClassificationImpl;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
-import pro.taskana.sampledata.DBCleaner;
+import pro.taskana.sampledata.SampleDataGenerator;
 
 /**
  * Integration Test for ClassificationServiceImpl with connection management mode EXPLICIT.
@@ -60,9 +60,8 @@ public class ClassificationServiceImplIntExplicitTest {
     @BeforeClass
     public static void resetDb() throws SQLException {
         DataSource ds = TaskanaEngineConfigurationTest.getDataSource();
-        DBCleaner cleaner = new DBCleaner();
         String schemaName = TaskanaEngineConfigurationTest.getSchemaName();
-        cleaner.dropDb(ds, schemaName);
+        new SampleDataGenerator(ds, schemaName).dropDb();
     }
 
     @Before
@@ -75,8 +74,8 @@ public class ClassificationServiceImplIntExplicitTest {
         classificationService = taskanaEngine.getClassificationService();
         taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.EXPLICIT);
-        DBCleaner cleaner = new DBCleaner();
-        cleaner.clearDb(dataSource, schemaName);
+        SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
+        sampleDataGenerator.clearDb();
     }
 
     @Test

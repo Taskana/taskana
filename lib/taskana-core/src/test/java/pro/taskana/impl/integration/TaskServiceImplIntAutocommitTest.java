@@ -50,7 +50,7 @@ import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.impl.util.IdGenerator;
-import pro.taskana.sampledata.DBCleaner;
+import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.security.CurrentUserContext;
 import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
@@ -90,8 +90,8 @@ class TaskServiceImplIntAutocommitTest {
         taskServiceImpl = (TaskServiceImpl) taskanaEngine.getTaskService();
         classificationService = taskanaEngine.getClassificationService();
         workbasketService = taskanaEngine.getWorkbasketService();
-        DBCleaner cleaner = new DBCleaner();
-        cleaner.clearDb(dataSource, schemaName);
+        SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
+        sampleDataGenerator.clearDb();
     }
 
     @Test
