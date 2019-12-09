@@ -48,9 +48,9 @@ import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.TaskServiceImpl;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.WorkbasketImpl;
-import pro.taskana.sampledata.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.impl.util.IdGenerator;
+import pro.taskana.sampledata.DBCleaner;
 import pro.taskana.security.CurrentUserContext;
 import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
@@ -80,8 +80,9 @@ class TaskServiceImplIntAutocommitTest {
     @BeforeEach
     void setup() throws SQLException {
         dataSource = TaskanaEngineConfigurationTest.getDataSource();
+        String schemaName = TaskanaEngineConfigurationTest.getSchemaName();
         taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, false,
-            TaskanaEngineConfigurationTest.getSchemaName());
+            schemaName);
 
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
@@ -90,7 +91,7 @@ class TaskServiceImplIntAutocommitTest {
         classificationService = taskanaEngine.getClassificationService();
         workbasketService = taskanaEngine.getWorkbasketService();
         DBCleaner cleaner = new DBCleaner();
-        cleaner.clearDb(dataSource, false);
+        cleaner.clearDb(dataSource, schemaName);
     }
 
     @Test

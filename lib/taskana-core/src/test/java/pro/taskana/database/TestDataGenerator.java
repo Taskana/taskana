@@ -23,7 +23,6 @@ import org.apache.ibatis.jdbc.ScriptRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.configuration.DbSchemaCreator;
 import pro.taskana.impl.TaskanaEngineImpl;
 
 /**
@@ -31,7 +30,7 @@ import pro.taskana.impl.TaskanaEngineImpl;
  */
 public class TestDataGenerator {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DbSchemaCreator.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestDataGenerator.class);
     private static final String SQL = "/sql";
     private static final String TASK = SQL + "/task.sql";
     private static final String WORKBASKET = SQL + "/workbasket.sql";
@@ -54,11 +53,12 @@ public class TestDataGenerator {
         this.errorLogWriter = new PrintWriter(this.errorWriter);
     }
 
-    public void generateTestData(DataSource dataSource) throws SQLException, IOException {
+    public void generateTestData(DataSource dataSource, String schema) throws SQLException, IOException {
         ScriptRunner runner = null;
         try {
             Connection connection = dataSource.getConnection();
             LOGGER.debug(connection.getMetaData().toString());
+            connection.setSchema(schema);
             runner = new ScriptRunner(connection);
             runner.setStopOnError(true);
             runner.setLogWriter(this.logWriter);

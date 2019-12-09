@@ -64,13 +64,13 @@ public class ExampleDocumentationApp {
     @Bean
     @DependsOn("getTaskanaEngine") // generate sample data after schema was inserted
     public SampleDataGenerator generateSampleData(DataSource dataSource) {
-        sampleDataGenerator = new SampleDataGenerator(dataSource);
+        sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
         return sampleDataGenerator;
     }
 
     @PostConstruct
     private void init() throws SQLException {
         AccessIdController.setLdapCache(new LdapCacheTestImpl());
-        sampleDataGenerator.generateSampleData(schemaName);
+        sampleDataGenerator.generateSampleData();
     }
 }

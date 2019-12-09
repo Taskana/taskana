@@ -24,8 +24,8 @@ import pro.taskana.TimeInterval;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.database.TestDataGenerator;
 import pro.taskana.exceptions.ClassificationNotFoundException;
-import pro.taskana.sampledata.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
+import pro.taskana.sampledata.DBCleaner;
 
 /**
  * Base class for all acceptance tests.
@@ -34,7 +34,6 @@ public abstract class AbstractAccTest {
 
     protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
     protected static TaskanaEngine taskanaEngine;
-    private static DBCleaner cleaner = new DBCleaner();
     protected static TestDataGenerator testDataGenerator = new TestDataGenerator();
 
     @BeforeAll
@@ -45,16 +44,18 @@ public abstract class AbstractAccTest {
 
     public static void resetDb(boolean dropTables) throws SQLException, IOException {
         DataSource dataSource = TaskanaEngineConfigurationTest.getDataSource();
+        String schemaName = TaskanaEngineConfigurationTest.getSchemaName();
+        DBCleaner dbCleaner = new DBCleaner();
         if (dropTables) {
-            cleaner.clearDb(dataSource, dropTables);
+            dbCleaner.dropDb(dataSource, schemaName);
         }
         dataSource = TaskanaEngineConfigurationTest.getDataSource();
         taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false,
-            TaskanaEngineConfigurationTest.getSchemaName());
+            schemaName);
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         taskanaEngine.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
-        cleaner.clearDb(dataSource, false);
-        testDataGenerator.generateTestData(dataSource);
+        dbCleaner.clearDb(dataSource, schemaName);
+        testDataGenerator.generateTestData(dataSource, schemaName);
     }
 
     protected ObjectReference createObjectReference(String company, String system, String systemInstance, String type,
