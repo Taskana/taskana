@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeAll;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
-import pro.taskana.sampledata.DBCleaner;
 import pro.taskana.sampledata.SampleDataGenerator;
 
 /**
@@ -35,13 +34,13 @@ public class AbstractReportAccTest {
     private static void resetDb() throws SQLException, IOException {
         DataSource dataSource = TaskanaEngineConfigurationTest.getDataSource();
         String schemaName = TaskanaEngineConfigurationTest.getSchemaName();
-        DBCleaner cleaner = new DBCleaner();
+        SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
         taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false,
             schemaName);
         taskanaEngineConfiguration.setGermanPublicHolidaysEnabled(false);
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         taskanaEngine.setConnectionManagementMode(TaskanaEngine.ConnectionManagementMode.AUTOCOMMIT);
-        cleaner.clearDb(dataSource, schemaName);
-        new SampleDataGenerator(dataSource, schemaName).generateMonitorData();
+        sampleDataGenerator.clearDb();
+        sampleDataGenerator.generateMonitorData();
     }
 }

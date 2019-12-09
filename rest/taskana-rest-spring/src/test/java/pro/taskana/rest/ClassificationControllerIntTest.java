@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.io.IOException;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -37,12 +36,7 @@ class ClassificationControllerIntTest {
 
     @Autowired RestHelper restHelper;
 
-    static RestTemplate template;
-
-    @BeforeAll
-    static void init() {
-        template = RestHelper.getRestTemplate();
-    }
+    static RestTemplate template = RestHelper.getRestTemplate();
 
     @Test
     void testGetAllClassifications() {

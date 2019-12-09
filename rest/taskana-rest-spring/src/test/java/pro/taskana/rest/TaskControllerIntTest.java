@@ -14,7 +14,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.sql.SQLException;
 import java.time.Instant;
 
 import javax.sql.DataSource;
@@ -41,7 +40,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import pro.taskana.ObjectReference;
 import pro.taskana.RestHelper;
 import pro.taskana.TaskanaSpringBootTest;
-import pro.taskana.exceptions.SystemException;
 import pro.taskana.rest.resource.ClassificationSummaryResource;
 import pro.taskana.rest.resource.TaskResource;
 import pro.taskana.rest.resource.TaskSummaryListResource;
@@ -71,13 +69,8 @@ class TaskControllerIntTest {
     private DataSource dataSource;
 
     void resetDb() {
-        SampleDataGenerator sampleDataGenerator;
-        try {
-            sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
-            sampleDataGenerator.generateSampleData();
-        } catch (SQLException e) {
-            throw new SystemException("tried to reset DB and caught Exception " + e, e);
-        }
+        SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
+        sampleDataGenerator.generateSampleData();
     }
 
     @Test
