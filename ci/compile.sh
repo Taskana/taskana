@@ -27,6 +27,7 @@ function main() {
   WEB)
     set -x
     (cd $REL/../web && npm install --silent)
+    (cd $REL/../web && npm run lint)
     (cd $REL/../web && npm run build)
     ;;
   LIB)
