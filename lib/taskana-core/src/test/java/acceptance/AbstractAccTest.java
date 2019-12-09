@@ -22,10 +22,10 @@ import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.TimeInterval;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
-import pro.taskana.database.TestDataGenerator;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.sampledata.DBCleaner;
+import pro.taskana.sampledata.SampleDataGenerator;
 
 /**
  * Base class for all acceptance tests.
@@ -34,7 +34,6 @@ public abstract class AbstractAccTest {
 
     protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
     protected static TaskanaEngine taskanaEngine;
-    protected static TestDataGenerator testDataGenerator = new TestDataGenerator();
 
     @BeforeAll
     @BeforeClass
@@ -55,7 +54,7 @@ public abstract class AbstractAccTest {
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         taskanaEngine.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
         dbCleaner.clearDb(dataSource, schemaName);
-        testDataGenerator.generateTestData(dataSource, schemaName);
+        new SampleDataGenerator(dataSource, schemaName).generateTestData();
     }
 
     protected ObjectReference createObjectReference(String company, String system, String systemInstance, String type,

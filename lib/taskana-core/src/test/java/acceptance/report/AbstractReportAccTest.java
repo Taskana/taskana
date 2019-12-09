@@ -10,9 +10,9 @@ import org.junit.jupiter.api.BeforeAll;
 
 import pro.taskana.TaskanaEngine;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
-import pro.taskana.database.TestDataGenerator;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.sampledata.DBCleaner;
+import pro.taskana.sampledata.SampleDataGenerator;
 
 /**
  * Abstract test class for all report building tests.
@@ -42,7 +42,6 @@ public class AbstractReportAccTest {
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         taskanaEngine.setConnectionManagementMode(TaskanaEngine.ConnectionManagementMode.AUTOCOMMIT);
         cleaner.clearDb(dataSource, schemaName);
-        TestDataGenerator testDataGenerator = new TestDataGenerator();
-        testDataGenerator.generateMonitoringTestData(dataSource);
+        new SampleDataGenerator(dataSource, schemaName).generateMonitorData();
     }
 }

@@ -1,8 +1,8 @@
 package pro.taskana.sampledata;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static pro.taskana.sampledata.SampleDataGenerator.DATE_TIME_FORMATTER;
-import static pro.taskana.sampledata.SampleDataGenerator.RELATIVE_DATE_PATTERN;
+import static pro.taskana.sampledata.SQLReplacer.DATE_TIME_FORMATTER;
+import static pro.taskana.sampledata.SQLReplacer.RELATIVE_DATE_PATTERN;
 
 import java.time.LocalDateTime;
 import java.util.regex.Matcher;
@@ -18,20 +18,20 @@ class SampleDataGeneratorTest {
 
     @Test
     void getScriptsNotNull() {
-        Assertions.assertNotNull(SampleDataProvider.getScripts());
+        Assertions.assertNotNull(SampleDataProvider.getDefaultScripts());
         Assertions.assertNotNull(SampleDataProvider.getScriptsWithEvents());
     }
 
     @Test
     void getScriptsNotEmpty() {
-        Assertions.assertTrue(SampleDataProvider.getScripts().count() > 0);
+        Assertions.assertTrue(SampleDataProvider.getDefaultScripts().count() > 0);
         Assertions.assertTrue(SampleDataProvider.getScriptsWithEvents().count() > 0);
     }
 
     @Test
     void getScriptsFileExists() {
-        SampleDataProvider.getScripts()
-            .map(SampleDataGenerator::getScriptBufferedStream)
+        SampleDataProvider.getDefaultScripts()
+            .map(SQLReplacer::getScriptBufferedStream)
             .forEach(Assertions::assertNotNull);
     }
 
@@ -39,7 +39,7 @@ class SampleDataGeneratorTest {
     void replaceRelativeTimeFunctionSameDate() {
         LocalDateTime now = LocalDateTime.now();
         String dateFormatted = now.format(DATE_TIME_FORMATTER);
-        String sqlStringReplaced = SampleDataGenerator.replaceDatePlaceholder(now,
+        String sqlStringReplaced = SQLReplacer.replaceDatePlaceholder(now,
             "... RELATIVE_DATE(0) ...");
         assertThat(sqlStringReplaced, CoreMatchers.containsString(dateFormatted));
     }
@@ -70,7 +70,7 @@ class SampleDataGeneratorTest {
     void replaceRelativeTimeFunctionPosDate() {
         LocalDateTime now = LocalDateTime.now();
         String dateFormatted = now.plusDays(5).format(DATE_TIME_FORMATTER);
-        String sqlStringReplaced = SampleDataGenerator.replaceDatePlaceholder(now,
+        String sqlStringReplaced = SQLReplacer.replaceDatePlaceholder(now,
             "... RELATIVE_DATE(5) ...");
         assertThat(sqlStringReplaced, CoreMatchers.containsString(dateFormatted));
     }
@@ -79,7 +79,7 @@ class SampleDataGeneratorTest {
     void replaceRelativeTimeFunctionNegDate() {
         LocalDateTime now = LocalDateTime.now();
         String dateFormatted = now.plusDays(-10).format(DATE_TIME_FORMATTER);
-        String sqlStringReplaced = SampleDataGenerator.replaceDatePlaceholder(now,
+        String sqlStringReplaced = SQLReplacer.replaceDatePlaceholder(now,
             "... RELATIVE_DATE(-10) ...");
         assertThat(sqlStringReplaced, CoreMatchers.containsString(dateFormatted));
     }
