@@ -28,4 +28,8 @@ export class TaskHistoryEventData {
     oldData = '';
     newData = '';
     page = new Page();
+
+    public constructor(init?: Partial<TaskHistoryEventData>) {
+      Object.assign(this, init);
+    }
 }
