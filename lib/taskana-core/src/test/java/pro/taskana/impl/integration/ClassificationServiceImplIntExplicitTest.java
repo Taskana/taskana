@@ -38,8 +38,8 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.ClassificationImpl;
 import pro.taskana.impl.TaskanaEngineImpl;
-import pro.taskana.sampledata.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
+import pro.taskana.sampledata.DBCleaner;
 
 /**
  * Integration Test for ClassificationServiceImpl with connection management mode EXPLICIT.
@@ -58,23 +58,25 @@ public class ClassificationServiceImplIntExplicitTest {
     private TaskanaEngineImpl taskanaEngineImpl;
 
     @BeforeClass
-    public static void resetDb() {
+    public static void resetDb() throws SQLException {
         DataSource ds = TaskanaEngineConfigurationTest.getDataSource();
         DBCleaner cleaner = new DBCleaner();
-        cleaner.clearDb(ds, true);
+        String schemaName = TaskanaEngineConfigurationTest.getSchemaName();
+        cleaner.dropDb(ds, schemaName);
     }
 
     @Before
     public void setup() throws SQLException {
         dataSource = TaskanaEngineConfigurationTest.getDataSource();
+        String schemaName = TaskanaEngineConfigurationTest.getSchemaName();
         taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, false,
-            TaskanaEngineConfigurationTest.getSchemaName());
+            schemaName);
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         classificationService = taskanaEngine.getClassificationService();
         taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.EXPLICIT);
         DBCleaner cleaner = new DBCleaner();
-        cleaner.clearDb(dataSource, false);
+        cleaner.clearDb(dataSource, schemaName);
     }
 
     @Test

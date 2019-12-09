@@ -31,9 +31,9 @@ import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.WorkbasketImpl;
-import pro.taskana.sampledata.DBCleaner;
 import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
 import pro.taskana.impl.util.IdGenerator;
+import pro.taskana.sampledata.DBCleaner;
 import pro.taskana.security.JAASRunner;
 import pro.taskana.security.WithAccessId;
 
@@ -54,22 +54,24 @@ public class WorkbasketServiceImplIntExplicitTest {
     private WorkbasketService workBasketService;
 
     @BeforeClass
-    public static void resetDb() {
+    public static void resetDb() throws SQLException {
         DataSource ds = TaskanaEngineConfigurationTest.getDataSource();
         DBCleaner cleaner = new DBCleaner();
-        cleaner.clearDb(ds, true);
+        String schemaName = TaskanaEngineConfigurationTest.getSchemaName();
+        cleaner.dropDb(ds, schemaName);
     }
 
     @Before
     public void setup() throws SQLException {
         dataSource = TaskanaEngineConfigurationTest.getDataSource();
+        String schemaName = TaskanaEngineConfigurationTest.getSchemaName();
         taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false,
-            TaskanaEngineConfigurationTest.getSchemaName());
+            schemaName);
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.EXPLICIT);
         DBCleaner cleaner = new DBCleaner();
-        cleaner.clearDb(dataSource, false);
+        cleaner.clearDb(dataSource, schemaName);
     }
 
     @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})

@@ -16,7 +16,7 @@ class SampleDataGeneratorTest {
         PooledDataSource pooledDataSource = new PooledDataSource("org.h2.Driver",
             "jdbc:h2:mem:taskana;IGNORECASE=TRUE;LOCK_MODE=0;INIT=CREATE SCHEMA IF NOT EXISTS TASKANA", "sa", "sa");
         Assertions.assertDoesNotThrow(() -> new DbSchemaCreator(pooledDataSource, "TASKANA").run());
-        Assertions.assertDoesNotThrow(() -> new SampleDataGenerator(pooledDataSource).generateSampleData("TASKANA"));
+        Assertions.assertDoesNotThrow(() -> new SampleDataGenerator(pooledDataSource, "TASKANA").generateSampleData());
         pooledDataSource.forceCloseAll();
     }
 
