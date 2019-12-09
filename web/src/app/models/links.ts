@@ -1,9 +1,9 @@
 export class Links {
     constructor(
-        public self: { 'href': string } = undefined,
-        public distributionTargets: { 'href': string } = undefined,
-        public accessItems: { 'href': string } = undefined,
-        public allWorkbasketUrl: { 'href': string } = undefined,
-        public removeDistributionTargets: {'href': string} = undefined
+        public self?: { 'href': string },
+        public distributionTargets?: { 'href': string },
+        public accessItems?: { 'href': string },
+        public allWorkbasketUrl?: { 'href': string },
+        public removeDistributionTargets?: {'href': string}
     ) { }
 }

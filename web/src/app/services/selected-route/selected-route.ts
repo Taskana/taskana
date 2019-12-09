@@ -21,7 +21,7 @@ export class SelectedRouteService {
     }
 
     private getRoute(event): string {
-        if (event === undefined) {
+        if (!event) {
             return this.checkUrl(this.router.url);
         }
         return this.checkUrl(event.url)

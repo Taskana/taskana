@@ -42,8 +42,11 @@ describe('AccessItemsComponent', () => {
     configureTests(configure).then(testBed => {
       fixture = TestBed.createComponent(AccessItemsComponent);
       component = fixture.componentInstance;
-      component.workbasket = new Workbasket('1', '', '', '', ICONTYPES.TOPIC, '', '', '', '', '', '', '', '', '', '', '', '',
-        new Links(undefined, undefined, { 'href': 'someurl' }));
+      component.workbasket = new Workbasket('1');
+      component.workbasket.type = ICONTYPES.TOPIC;
+      component.workbasket._links = new Links()
+      component.workbasket._links.accessItems = { 'href': 'someurl' };
+
       workbasketService = TestBed.get(WorkbasketService);
       alertService = TestBed.get(AlertService);
       spyOn(workbasketService, 'getWorkBasketAccessItems').and.returnValue(of(new WorkbasketAccessItemsResource(

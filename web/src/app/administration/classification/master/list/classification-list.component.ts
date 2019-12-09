@@ -75,10 +75,10 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
     this.classifications = [];
     this.categoryService.selectClassificationType(classificationTypeSelected);
     this.getClassifications();
-    this.selectClassification(undefined);
+    this.selectClassification();
   }
 
-  selectClassification(id: string) {
+  selectClassification(id?: string) {
     this.selectedId = id;
     if (!id) {
       this.router.navigate(['taskana/administration/classifications']);
@@ -128,7 +128,7 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 
   }
 
-  private getClassifications(key: string = undefined) {
+  private getClassifications(key?: string) {
     this.requestInProgress = true;
     this.classificationService.getClassifications()
       .subscribe((classifications: Array<TreeNodeModel>) => {

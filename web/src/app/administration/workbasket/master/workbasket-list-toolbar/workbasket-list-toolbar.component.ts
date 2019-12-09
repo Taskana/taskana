@@ -49,7 +49,7 @@ export class WorkbasketListToolbarComponent implements OnInit {
   }
 
   addWorkbasket() {
-    this.workbasketService.selectWorkBasket(undefined);
+    this.workbasketService.selectWorkBasket();
     this.router.navigate([{ outlets: { detail: ['new-workbasket'] } }], { relativeTo: this.route });
   }
 

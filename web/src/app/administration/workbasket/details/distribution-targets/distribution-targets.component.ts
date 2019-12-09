@@ -140,16 +140,16 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
   }
 
   performFilter(dualListFilter: any) {
-    dualListFilter.side === Side.RIGHT ? this.distributionTargetsRight = undefined : this.distributionTargetsLeft = undefined;
-    this.onRequest(dualListFilter.side, false);
-    this.workbasketFilterSubscription = this.workbasketService.getWorkBasketsSummary(true, undefined, undefined, undefined,
-      dualListFilter.filterBy.filterParams.name, dualListFilter.filterBy.filterParams.description, undefined,
-      dualListFilter.filterBy.filterParams.owner,	dualListFilter.filterBy.filterParams.type, undefined,
-      dualListFilter.filterBy.filterParams.key, undefined, true).subscribe(resultList => {
+    dualListFilter.side === Side.RIGHT ? delete this.distributionTargetsRight : delete this.distributionTargetsLeft;
+    this.onRequest(false, dualListFilter.side);
+    this.workbasketFilterSubscription = this.workbasketService.getWorkBasketsSummary(true, '', '', '',
+      dualListFilter.filterBy.filterParams.name, dualListFilter.filterBy.filterParams.description, '',
+      dualListFilter.filterBy.filterParams.owner,	dualListFilter.filterBy.filterParams.type, '',
+      dualListFilter.filterBy.filterParams.key, '', true).subscribe(resultList => {
         (dualListFilter.side === Side.RIGHT) ?
           this.distributionTargetsRight = (resultList.workbaskets) :
           this.distributionTargetsLeft = (resultList.workbaskets);
-        this.onRequest(dualListFilter.side, true);
+        this.onRequest(true, dualListFilter.side);
       });
   }
 
@@ -162,7 +162,7 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
   }
 
   private init() {
-    this.onRequest(undefined);
+    this.onRequest();
     if (!this.workbasket._links.distributionTargets) {
       return;
     }
@@ -215,9 +215,8 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
       TaskanaQueryParameters.pageSize = this.cards + this.distributionTargetsSelected.length;
     }
 
-    this.workbasketSubscription = this.workbasketService.getWorkBasketsSummary(true,
-      undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined,
-      undefined, undefined, undefined, false).subscribe(
+    this.workbasketSubscription = this.workbasketService.getWorkBasketsSummary(true)
+      .subscribe(
         (distributionTargetsAvailable: WorkbasketSummaryResource) => {
           if (TaskanaQueryParameters.page === 1) {
             this.distributionTargetsLeft = [];
@@ -232,7 +231,7 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
             this.distributionTargetsRight = Object.assign([], distributionTargetsAvailable.workbaskets);
             this.distributionTargetsClone = Object.assign([], distributionTargetsAvailable.workbaskets);
           }
-          this.onRequest(undefined, true);
+          this.onRequest(true);
         });
   }
 
@@ -255,16 +254,16 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
     return originList;
   }
 
-  private onRequest(side: Side = undefined, finished: boolean = false) {
+  private onRequest(finished: boolean = false, side?: Side) {
     if (this.loadingItems) {
       this.loadingItems = false;
     }
     if (finished) {
-      side === undefined ? (this.requestInProgressLeft = false, this.requestInProgressRight = false) :
+      typeof side === 'undefined' ? (this.requestInProgressLeft = false, this.requestInProgressRight = false) :
         side === Side.LEFT ? this.requestInProgressLeft = false : this.requestInProgressRight = false;
       return;
     }
-    side === undefined ? (this.requestInProgressLeft = true, this.requestInProgressRight = true) :
+    typeof side === 'undefined' ? (this.requestInProgressLeft = true, this.requestInProgressRight = true) :
       side === Side.LEFT ? this.requestInProgressLeft = true : this.requestInProgressRight = true;
   }
 

@@ -31,8 +31,8 @@ export class AccessIdsService {
 
   getAccessItemsPermissions(
     accessIds: Array<AccessIdDefinition>,
-    accessIdLike: string = undefined,
-    workbasketKeyLike: string = undefined,
+    accessIdLike?: string,
+    workbasketKeyLike?: string,
     sortModel: SortingModel = new SortingModel('workbasket-key'),
     forceRequest: boolean = false): Observable<AccessItemsWorkbasketResource> {
 
@@ -55,8 +55,8 @@ export class AccessIdsService {
   private accessIdsParameters(
     sortModel: SortingModel,
     accessIds: Array<AccessIdDefinition>,
-    accessIdLike: string = undefined,
-    workbasketKeyLike: string = undefined): QueryParametersModel {
+    accessIdLike?: string,
+    workbasketKeyLike?: string ): QueryParametersModel {
 
     const parameters = new QueryParametersModel();
     parameters.SORTBY = sortModel.sortBy;
@@ -66,8 +66,8 @@ export class AccessIdsService {
     }).join('|');
     parameters.ACCESSIDLIKE = accessIdLike;
     parameters.WORKBASKETKEYLIKE = workbasketKeyLike;
-    TaskanaQueryParameters.page = undefined;
-    TaskanaQueryParameters.pageSize = undefined;
+    delete TaskanaQueryParameters.page;
+    delete TaskanaQueryParameters.pageSize;
     return parameters;
   }
 }

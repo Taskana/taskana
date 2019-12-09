@@ -2,11 +2,11 @@ import { Links } from './links';
 
 export class LinksClassification extends Links {
     constructor(
-        self = undefined,
-        distributionTargets = undefined,
-        accessItems = undefined,
-        public getAllClassifications: { 'href': string } = undefined,
-        public createClassification: { 'href': string } = undefined,
-        public updateClassification: { 'href': string } = undefined,
+        self?,
+        distributionTargets?,
+        accessItems?,
+        public getAllClassifications?: { 'href': string },
+        public createClassification?: { 'href': string },
+        public updateClassification?: { 'href': string },
     ) { super(self, distributionTargets, accessItems) }
 }

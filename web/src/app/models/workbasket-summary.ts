@@ -4,20 +4,20 @@ import { Links } from './links';
 
 export class WorkbasketSummary {
     constructor(
-        public workbasketId: string = undefined,
-        public key: string = undefined,
-        public name: string = undefined,
-        public description: string = undefined,
-        public owner: string = undefined,
-        public modified: string = undefined,
-        public domain: string = undefined,
+        public workbasketId?: string,
+        public key?: string,
+        public name?: string,
+        public description?: string,
+        public owner?: string,
+        public modified?: string,
+        public domain?: string,
         public type: string = ICONTYPES.PERSONAL,
-        public orgLevel1: string = undefined,
-        public orgLevel2: string = undefined,
-        public orgLevel3: string = undefined,
-        public orgLevel4: string = undefined,
+        public orgLevel1?: string,
+        public orgLevel2?: string,
+        public orgLevel3?: string,
+        public orgLevel4?: string,
         public markedForDeletion: boolean = false,
-        public _links: Links = undefined,
-        public page: Page = undefined) {
+        public _links?: Links,
+        public page?: Page ) {
     }
 }

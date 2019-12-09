@@ -4,7 +4,7 @@ import { Links } from './links';
 export class ClassificationResource {
   constructor(
     public classifications: Array<Classification> = [],
-    public _links: Links = new Links(),
+    public _links?: Links
   ) {
   }
 }

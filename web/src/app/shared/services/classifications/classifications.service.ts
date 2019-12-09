@@ -79,7 +79,7 @@ export class ClassificationsService {
   }
 
   // #region "Service extras"
-  selectClassification(classification: ClassificationDefinition) {
+  selectClassification(classification?: ClassificationDefinition) {
     this.classificationSelected.next(classification);
   }
 
@@ -103,8 +103,8 @@ export class ClassificationsService {
     parameters.SORTBY = TaskanaQueryParameters.parameters.KEY;
     parameters.SORTDIRECTION = Direction.ASC;
     parameters.DOMAIN = domain;
-    TaskanaQueryParameters.page = undefined;
-    TaskanaQueryParameters.pageSize = undefined;
+    delete TaskanaQueryParameters.page;
+    delete TaskanaQueryParameters.pageSize;
 
     return parameters;
   }

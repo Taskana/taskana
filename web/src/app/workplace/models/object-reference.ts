@@ -1,9 +1,9 @@
 export class ObjectReference {
-  constructor(public id: string = undefined,
-              public company: string = undefined,
-              public system: string = undefined,
-              public systemInstance: string = undefined,
-              public type: string = undefined,
-              public value: string = undefined) {
+  constructor(public id?: string,
+              public company?: string,
+              public system?: string,
+              public systemInstance?: string,
+              public type?: string,
+              public value?: string) {
   }
 }

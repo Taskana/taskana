@@ -36,5 +36,5 @@
     </div>
   </ng-template>
 </div>
-<taskana-pagination [(page)]="workbasketsResource !== undefined ? workbasketsResource.page : workbasketsResource"
+<taskana-pagination [(page)]="workbasketsResource ? workbasketsResource.page : workbasketsResource"
   [type]="type" [numberOfItems]="workbaskets.length" (changePage)="changePage($event)"></taskana-pagination>

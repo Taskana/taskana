@@ -7,7 +7,7 @@ import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 export class OrientationService {
 
   private lock = false;
-  private currentOrientation = undefined;
+  private currentOrientation;
   public orientation = new BehaviorSubject<Orientation>(this.currentOrientation);
 
   constructor() { }

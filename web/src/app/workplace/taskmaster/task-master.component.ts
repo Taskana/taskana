@@ -56,7 +56,7 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
     private orientationService: OrientationService) {
     this.taskChangeSubscription = this.taskService.taskChangedStream.subscribe(task => {
       this.getTasks();
-      this.selectedId = task ? task.taskId : undefined;
+      this.selectedId = task ? task.taskId : '';
     });
 
     this.workbasketChangeSubscription = this.workplaceService.workbasketSelectedStream.subscribe(workbasket => {
@@ -68,7 +68,7 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
 
     this.objectReferenceSubscription = this.workplaceService.objectReferenceSelectedStream.subscribe(objectReference => {
       this.objectReference = objectReference;
-      this.currentBasket = undefined;
+      delete this.currentBasket;
       if (objectReference) {
         this.getTasks();
       }
@@ -83,7 +83,7 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
           this.currentBasket = task.workbasketSummaryResource;
         }
         if (!task) {
-          this.selectedId = undefined;
+          this.selectedId = '';
         }
       });
     this.orientationSubscription = this.orientationService.getOrientation().subscribe((orientation: Orientation) => {
@@ -131,15 +131,15 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
 
   private getTasks(): void {
     this.requestInProgress = true;
-    if (this.currentBasket === undefined && !this.objectReference) {
+    if (!this.currentBasket && !this.objectReference) {
       this.requestInProgress = false;
       this.tasks = [];
     } else {
       this.calculateHeightCard();
-      this.taskService.findTasksWithWorkbasket(this.currentBasket ? this.currentBasket.workbasketId : undefined,
+      this.taskService.findTasksWithWorkbasket(this.currentBasket ? this.currentBasket.workbasketId : '',
         this.sort.sortBy, this.sort.sortDirection, this.filterBy.filterParams.name, this.filterBy.filterParams.owner,
-        this.filterBy.filterParams.priority, this.filterBy.filterParams.state, this.objectReference ? this.objectReference.type : undefined,
-        this.objectReference ? this.objectReference.value : undefined)
+        this.filterBy.filterParams.priority, this.filterBy.filterParams.state, this.objectReference ? this.objectReference.type : '',
+        this.objectReference ? this.objectReference.value : '')
         .subscribe(tasks => {
           this.requestInProgress = false;
           if (tasks.tasks) {

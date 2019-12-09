@@ -67,9 +67,8 @@ describe('ClassificationDetailsComponent', () => {
       spyOn(classificationCategoriesService, 'getCategories').and.returnValue(of(['firstCategory', 'secondCategory']));
       spyOn(classificationsService, 'deleteClassification').and.returnValue(of(true));
       spyOn(classificationCategoriesService, 'getCategoryIcon').and.returnValue(new Pair('assets/icons/categories/external.svg'));
-      component.classification = new ClassificationDefinition('id1', undefined, undefined, undefined, undefined, undefined, undefined,
-        undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined,
-        undefined, undefined, undefined, undefined, new LinksClassification({ 'self': '' }));
+      component.classification = new ClassificationDefinition('id1');
+      component.classification._links = new LinksClassification({ 'self': '' });
       treeService = TestBed.get(TreeService);
       fixture.detectChanges();
       done();

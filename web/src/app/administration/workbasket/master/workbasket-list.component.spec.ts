@@ -53,7 +53,7 @@ const workbasketSummaryResource: WorkbasketSummaryResource = new WorkbasketSumma
 describe('WorkbasketListComponent', () => {
     let component: WorkbasketListComponent;
     let fixture: ComponentFixture<WorkbasketListComponent>;
-    let debugElement: any = undefined;
+    let debugElement: any;
     let workbasketService: WorkbasketService;
     let workbasketSummarySpy;
 
@@ -167,7 +167,7 @@ describe('WorkbasketListComponent', () => {
         component.performFilter(filter);
 
         expect(workbasketSummarySpy.calls.all()[1].args).toEqual([true, 'key', 'asc',
-            undefined, 'someName', 'someDescription', undefined, 'someOwner', 'PERSONAL', undefined, 'someKey', undefined]);
+            '', 'someName', 'someDescription', '', 'someOwner', 'PERSONAL', '', 'someKey', '']);
 
     }));
 

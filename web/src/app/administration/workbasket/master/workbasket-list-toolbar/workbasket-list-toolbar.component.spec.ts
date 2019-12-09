@@ -65,8 +65,9 @@ describe('WorkbasketListToolbarComponent', () => {
       debugElement = fixture.debugElement.nativeElement;
       component = fixture.componentInstance;
       component.workbaskets = new Array<WorkbasketSummary>(
-        new WorkbasketSummary('1', 'key1', 'NAME1', 'description 1', 'owner 1',
-          undefined, undefined, undefined, undefined, undefined, undefined, undefined, false, new Links({ 'href': 'selfLink' })));
+        new WorkbasketSummary('1', 'key1', 'NAME1', 'description 1', 'owner 1'));
+      component.workbaskets[0].markedForDeletion = false;
+      component.workbaskets[0]._links = new Links({ 'href': 'selfLink' });
 
       fixture.detectChanges();
       done();

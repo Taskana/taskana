@@ -2,9 +2,9 @@ import { Links } from './links';
 
 export class AccessItemWorkbasket {
     constructor(
-        public accessItemId: string = '',
-        public workbasketKey: string = '',
-        public accessId: string = '',
+        public accessItemId: string,
+        public workbasketKey: string,
+        public accessId: string,
         public permRead: boolean = false,
         public permOpen: boolean = false,
         public permAppend: boolean = false,
@@ -22,6 +22,6 @@ export class AccessItemWorkbasket {
         public permCustom10: boolean = false,
         public permCustom11: boolean = false,
         public permCustom12: boolean = false,
-        public _links: Links = undefined
+        public _links?: Links
     ) { }
 }

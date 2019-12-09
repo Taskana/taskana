@@ -100,7 +100,7 @@ export class TaskQueryService {
         parameters.CUSTOM_4_LIKE = custom4;
         parameters.CREATED = created;
 
-        if (allPages) { TaskanaQueryParameters.page = undefined; TaskanaQueryParameters.pageSize = undefined; }
+        if (allPages) { delete TaskanaQueryParameters.page; delete TaskanaQueryParameters.pageSize; }
 
         return TaskanaQueryParameters.getQueryParameters(parameters);
     }

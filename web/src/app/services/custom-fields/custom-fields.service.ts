@@ -10,14 +10,14 @@ export class CustomFieldsService {
     this.customizedFields = jsonFile[language];
   }
 
-  getCustomField(fallbacktext: string, customPath: string = undefined): CustomField {
+  getCustomField(fallbacktext: string, customPath?: string): CustomField {
     if (!customPath) {
       return new CustomField(true, fallbacktext)
     }
     return this.jsonPath(customPath, fallbacktext);
   }
 
-  getCustomObject(fallbackObject: Object, customPath: string = undefined): Object {
+  getCustomObject(fallbackObject: Object, customPath?: string): Object {
     if (!customPath) {
       return fallbackObject;
     }
