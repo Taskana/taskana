@@ -129,13 +129,13 @@ public class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         // find Task with attachment classification names
         List<TaskSummary> tasks = taskService.createTaskQuery()
-            .attachmentClassificationNameIn("Widerruf", "Beratungsprotokoll", "Dynamikaenderung")
+            .attachmentClassificationNameIn("Widerruf", "Beratungsprotokoll", "Dynamikänderung")
             .orderByAttachmentClassificationName(SortDirection.ASCENDING)
             .list();
         assertEquals(4, tasks.size());
         // make sure that unordered query returns the same number of objects
         tasks = taskService.createTaskQuery()
-            .attachmentClassificationNameIn("Widerruf", "Beratungsprotokoll", "Dynamikaenderung")
+            .attachmentClassificationNameIn("Widerruf", "Beratungsprotokoll", "Dynamikänderung")
             .list();
         assertEquals(4, tasks.size());
 
@@ -149,10 +149,10 @@ public class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         TaskQuery taskQuery = taskService.createTaskQuery();
         List<TaskSummary> tasks = taskQuery
-            .classificationNameIn("Widerruf", "Beratungsprotokoll", "Dynamikaenderung")
+            .classificationNameIn("Widerruf", "Beratungsprotokoll", "Dynamikänderung")
             .list();
         long numberOfTasks = taskQuery
-            .classificationNameIn("Widerruf", "Beratungsprotokoll", "Dynamikaenderung")
+            .classificationNameIn("Widerruf", "Beratungsprotokoll", "Dynamikänderung")
             .count();
         Assert.assertEquals(numberOfTasks, tasks.size());
 
@@ -166,13 +166,13 @@ public class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
         TaskService taskService = taskanaEngine.getTaskService();
         TaskQuery taskQuery = taskService.createTaskQuery();
         List<TaskSummary> tasks = taskQuery
-            .attachmentClassificationNameIn("Widerruf", "Beratungsprotokoll", "Dynamikaenderung")
+            .attachmentClassificationNameIn("Widerruf", "Beratungsprotokoll", "Dynamikänderung")
             .list();
         // we expect 4 result objects in this case, because task TKI:000000000000000000000000000000000001  has 2 attachments with different Classifications
         // therefore task TKI:000000000000000000000000000000000001 occurs twice in the result set
         Assert.assertEquals(4, tasks.size());
         long numberOfTasks = taskQuery
-            .attachmentClassificationNameIn("Widerruf", "Beratungsprotokoll", "Dynamikaenderung")
+            .attachmentClassificationNameIn("Widerruf", "Beratungsprotokoll", "Dynamikänderung")
             .count();
         Assert.assertEquals(3, numberOfTasks);
         // the count returns only the number of tasks that have an attachment with the specified classification name.
