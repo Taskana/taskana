@@ -193,7 +193,13 @@ public class TaskServiceImpl implements TaskService {
             } else if (task.getWorkbasketKey() != null) {
                 workbasket = workbasketService.getWorkbasket(task.getWorkbasketKey(), task.getDomain());
             } else {
-                throw new InvalidArgumentException("Cannot create a task outside a workbasket");
+                String workbasketId = taskanaEngine.getTaskRoutingProducer().routeToWorkbasketId(task);
+                if (workbasketId != null) {
+                    workbasket = workbasketService.getWorkbasket(workbasketId);
+                    task.setWorkbasketSummary(workbasket.asSummary());
+                } else {
+                    throw new InvalidArgumentException("Cannot create a task outside a workbasket");
+                }
             }
 
             if (workbasket.isMarkedForDeletion()) {
@@ -355,6 +361,13 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskQuery createTaskQuery() {
         return new TaskQueryImpl(taskanaEngine);
+    }
+
+    @Override
+    public Task newTask() {
+        TaskImpl task = new TaskImpl();
+        task.setCallbackState(CallbackState.NONE);
+        return task;
     }
 
     @Override
