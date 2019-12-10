@@ -1,7 +1,7 @@
 package acceptance.classification;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
@@ -20,14 +20,14 @@ import pro.taskana.security.JAASExtension;
  * Acceptance test for all "query classifications with pagination" scenarios.
  */
 @ExtendWith(JAASExtension.class)
-public class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
+class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
 
-    public QueryClassificationWithPaginationAccTest() {
+    QueryClassificationWithPaginationAccTest() {
         super();
     }
 
     @Test
-    public void testGetFirstPageOfClassificationQueryWithOffset() {
+    void testGetFirstPageOfClassificationQueryWithOffset() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .domainIn("DOMAIN_A")
@@ -36,7 +36,7 @@ public class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testGetSecondPageOfClassificationQueryWithOffset() {
+    void testGetSecondPageOfClassificationQueryWithOffset() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .domainIn("DOMAIN_A")
@@ -45,7 +45,7 @@ public class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testListOffsetAndLimitOutOfBounds() {
+    void testListOffsetAndLimitOutOfBounds() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
 
         // both will be 0, working
@@ -68,7 +68,7 @@ public class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testPaginationWithPages() {
+    void testPaginationWithPages() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
 
         // Getting full page
@@ -105,7 +105,7 @@ public class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testPaginationNullAndNegativeLimitsIgnoring() {
+    void testPaginationNullAndNegativeLimitsIgnoring() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
 
         // 0 limit/size = 0 results
@@ -139,7 +139,7 @@ public class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
      */
     @Disabled
     @Test
-    public void testPaginationThrowingExceptionWhenPageOutOfBounds() {
+    void testPaginationThrowingExceptionWhenPageOutOfBounds() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
 
         // entrypoint set outside result amount
@@ -153,7 +153,7 @@ public class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testCountOfClassificationsQuery() {
+    void testCountOfClassificationsQuery() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         long count = classificationService.createClassificationQuery()
             .domainIn("DOMAIN_A")

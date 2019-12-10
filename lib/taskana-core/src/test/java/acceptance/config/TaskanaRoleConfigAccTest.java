@@ -1,6 +1,6 @@
 package acceptance.config;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,24 +12,24 @@ import org.h2.store.fs.FileUtils;
 import org.junit.jupiter.api.Test;
 
 import pro.taskana.TaskanaRole;
-import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.impl.TaskanaEngineImpl;
-import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
+import pro.taskana.impl.configuration.TaskanaEngineTestConfiguration;
 
 /**
  * Test taskana's role configuration.
  *
  * @author bbr
  */
-public class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
+class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
 
-    public TaskanaRoleConfigAccTest() throws SQLException {
-        super(new TaskanaEngineConfiguration(TaskanaEngineConfigurationTest.getDataSource(), true,
-            TaskanaEngineConfigurationTest.getSchemaName()));
+    TaskanaRoleConfigAccTest() throws SQLException {
+        super(new pro.taskana.configuration.TaskanaEngineConfiguration(TaskanaEngineTestConfiguration.getDataSource(),
+            true,
+            TaskanaEngineTestConfiguration.getSchemaName()));
     }
 
     @Test
-    public void testStandardConfig() {
+    void testStandardConfig() {
         Set<TaskanaRole> rolesConfigured = getConfiguration().getRoleMap().keySet();
         assertTrue(rolesConfigured.contains(TaskanaRole.ADMIN));
         assertTrue(rolesConfigured.contains(TaskanaRole.BUSINESS_ADMIN));
@@ -55,7 +55,7 @@ public class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
     }
 
     @Test
-    public void testOtherConfigFileSameDelimiter() throws IOException {
+    void testOtherConfigFileSameDelimiter() throws IOException {
         String propertiesFileName = createNewConfigFileWithSameDelimiter("/dummyTestConfig.properties");
         try {
             getConfiguration().initTaskanaProperties(propertiesFileName, "|");
@@ -82,7 +82,7 @@ public class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
     }
 
     @Test
-    public void testOtherConfigFileDifferentDelimiter() throws IOException {
+    void testOtherConfigFileDifferentDelimiter() throws IOException {
         String delimiter = ";";
         String propertiesFileName = createNewConfigFileWithDifferentDelimiter("/dummyTestConfig.properties", delimiter);
         try {

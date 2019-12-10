@@ -1,8 +1,10 @@
 package acceptance.workbasket;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
 import java.time.Instant;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -51,11 +53,11 @@ public class UpdateWorkbasketAccTest extends AbstractAccTest {
         workbasketService.updateWorkbasket(workbasket);
 
         Workbasket updatedWorkbasket = workbasketService.getWorkbasket("GPK_KSC", "DOMAIN_A");
-        Assert.assertEquals(workbasket.getId(), updatedWorkbasket.getId());
-        Assert.assertEquals(workbasket.getCreated(), updatedWorkbasket.getCreated());
-        Assert.assertNotEquals(modified, updatedWorkbasket.getModified());
-        Assert.assertEquals("new name", updatedWorkbasket.getName());
-        Assert.assertEquals(WorkbasketType.TOPIC, updatedWorkbasket.getType());
+        assertEquals(workbasket.getId(), updatedWorkbasket.getId());
+        assertEquals(workbasket.getCreated(), updatedWorkbasket.getCreated());
+        assertNotEquals(modified, updatedWorkbasket.getModified());
+        assertEquals("new name", updatedWorkbasket.getName());
+        assertEquals(WorkbasketType.TOPIC, updatedWorkbasket.getType());
     }
 
     @WithAccessId(

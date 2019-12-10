@@ -1,7 +1,7 @@
 package acceptance.report;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,7 +26,7 @@ import pro.taskana.security.WithAccessId;
  * Test class for {@link TimestampReport}.
  */
 @ExtendWith(JAASExtension.class)
-public class ProvideTimestampReportAccTest extends AbstractReportAccTest {
+class ProvideTimestampReportAccTest extends AbstractReportAccTest {
 
     /**
      * This test covers every insert operation of the TimestampReport.
@@ -39,7 +39,7 @@ public class ProvideTimestampReportAccTest extends AbstractReportAccTest {
      */
     @WithAccessId(userName = "monitor")
     @Test
-    public void testProperInsertionOfQueryItems() throws Exception {
+    void testProperInsertionOfQueryItems() throws Exception {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         //last 14 days. Today excluded.

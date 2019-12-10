@@ -15,6 +15,10 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
+	<properties>
+		<version.mockito>2.8.47</version.mockito>
+	</properties>
+
 	<modules>
 		<module>taskana-simplehistory-provider</module>
 		<module>taskana-simplehistory-rest-spring</module>

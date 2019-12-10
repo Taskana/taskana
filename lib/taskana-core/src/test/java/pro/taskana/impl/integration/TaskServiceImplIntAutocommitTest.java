@@ -1,8 +1,10 @@
 package pro.taskana.impl.integration;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNot.not;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -10,7 +12,6 @@ import java.util.UUID;
 
 import javax.sql.DataSource;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,6 @@ import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketType;
-import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.DomainNotFoundException;
@@ -48,7 +48,7 @@ import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.TaskServiceImpl;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.WorkbasketImpl;
-import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
+import pro.taskana.impl.configuration.TaskanaEngineTestConfiguration;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.security.CurrentUserContext;
@@ -67,7 +67,7 @@ class TaskServiceImplIntAutocommitTest {
 
     private TaskServiceImpl taskServiceImpl;
 
-    private TaskanaEngineConfiguration taskanaEngineConfiguration;
+    private pro.taskana.configuration.TaskanaEngineConfiguration taskanaEngineConfiguration;
 
     private TaskanaEngine taskanaEngine;
 
@@ -79,9 +79,9 @@ class TaskServiceImplIntAutocommitTest {
 
     @BeforeEach
     void setup() throws SQLException {
-        dataSource = TaskanaEngineConfigurationTest.getDataSource();
-        String schemaName = TaskanaEngineConfigurationTest.getSchemaName();
-        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, false,
+        dataSource = TaskanaEngineTestConfiguration.getDataSource();
+        String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
+        taskanaEngineConfiguration = new pro.taskana.configuration.TaskanaEngineConfiguration(dataSource, false, false,
             schemaName);
 
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
@@ -118,7 +118,7 @@ class TaskServiceImplIntAutocommitTest {
         TaskanaEngine te2 = taskanaEngineConfiguration.buildTaskanaEngine();
         TaskServiceImpl taskServiceImpl2 = (TaskServiceImpl) te2.getTaskService();
         Task resultTask = taskServiceImpl2.getTask(task.getId());
-        Assert.assertNotNull(resultTask);
+        assertNotNull(resultTask);
     }
 
     @Test
@@ -188,7 +188,7 @@ class TaskServiceImplIntAutocommitTest {
             .primaryObjectReferenceValueIn("val1", "val2", "val3")
             .list();
 
-        Assert.assertEquals(0, results.size());
+        assertEquals(0, results.size());
     }
 
     @Test
@@ -266,9 +266,9 @@ class TaskServiceImplIntAutocommitTest {
         final String user = CurrentUserContext.getUserid();
 
         // Set up Security for this Test
-        dataSource = TaskanaEngineConfigurationTest.getDataSource();
-        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, true,
-            TaskanaEngineConfigurationTest.getSchemaName());
+        dataSource = TaskanaEngineTestConfiguration.getDataSource();
+        taskanaEngineConfiguration = new pro.taskana.configuration.TaskanaEngineConfiguration(dataSource, false, true,
+            TaskanaEngineTestConfiguration.getSchemaName());
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
@@ -375,7 +375,7 @@ class TaskServiceImplIntAutocommitTest {
         Task task2 = taskServiceImpl.getTask(task.getId());
         // skanaEngineImpl.getSqlSession().commit(); // needed so that the change is visible in the other session
 
-        Assert.assertNotNull(task2);
+        assertNotNull(task2);
     }
 
     private void createWorkbasketWithSecurity(Workbasket wb, String accessId, boolean permOpen,

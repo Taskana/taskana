@@ -1,7 +1,7 @@
 package acceptance.report;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,10 +23,10 @@ import pro.taskana.security.WithAccessId;
  * Acceptance test for all "get task ids of workbasket report" scenarios.
  */
 @ExtendWith(JAASExtension.class)
-public class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
+class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
 
     @Test
-    public void testRoleCheck() throws InvalidArgumentException, NotAuthorizedException {
+    void testRoleCheck() {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
@@ -40,7 +40,7 @@ public class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testGetTaskIdsOfWorkbasketReport() throws InvalidArgumentException, NotAuthorizedException {
+    void testGetTaskIdsOfWorkbasketReport() throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
@@ -83,7 +83,7 @@ public class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testGetTaskIdsOfWorkbasketReportWithExcludedClassifications()
+    void testGetTaskIdsOfWorkbasketReportWithExcludedClassifications()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 

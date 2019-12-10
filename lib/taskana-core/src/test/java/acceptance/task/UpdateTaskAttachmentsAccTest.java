@@ -1,12 +1,12 @@
 package acceptance.task;
 
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -44,13 +44,13 @@ import pro.taskana.security.WithAccessId;
  * Acceptance test for the usecase of adding/removing an attachment of a task and update the result correctly.
  */
 @ExtendWith(JAASExtension.class)
-public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
+class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
 
     private Task task;
     private Attachment attachment;
     private TaskService taskService;
 
-    public UpdateTaskAttachmentsAccTest() {
+    UpdateTaskAttachmentsAccTest() {
         super();
     }
 
@@ -76,13 +76,13 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testAddNewAttachment()
+    void testAddNewAttachment()
         throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException {
         setUpMethod();
         int attachmentCount = task.getAttachments().size();
-        assertTrue(task.getPriority() == 1);
-        assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(1))));
+        assertEquals(1, task.getPriority());
+        assertEquals(task.getDue(), task.getPlanned().plus(Duration.ofDays(1)));
         task.addAttachment(attachment);
 
         task = taskService.updateTask(task);
@@ -96,15 +96,15 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         assertThat(task.getAttachments().get(0).getObjectReference().getType(), equalTo("ArchiveId"));
         assertThat(task.getAttachments().get(0).getObjectReference().getValue(),
             equalTo("12345678901234567890123456789012345678901234567890"));
-        assertTrue(task.getPriority() == 99);
-        assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(1))));
+        assertEquals(99, task.getPriority());
+        assertEquals(task.getDue(), task.getPlanned().plus(Duration.ofDays(1)));
     }
 
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testAddValidAttachmentTwice()
+    void testAddValidAttachmentTwice()
         throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
         NotAuthorizedException,
         AttachmentPersistenceException {
@@ -127,7 +127,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testAddNewAttachmentTwiceWithoutTaskanaMethodWillThrowAttachmentPersistenceException()
+    void testAddNewAttachmentTwiceWithoutTaskanaMethodWillThrowAttachmentPersistenceException()
         throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
         NotAuthorizedException,
         AttachmentPersistenceException {
@@ -151,7 +151,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testAddExistingAttachmentAgainWillUpdateWhenNotEqual()
+    void testAddExistingAttachmentAgainWillUpdateWhenNotEqual()
         throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException {
         setUpMethod();
@@ -176,19 +176,19 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         task = taskService.getTask(task.getId());
         assertThat(task.getAttachments().size(), equalTo(attachmentCount));
         assertThat(task.getAttachments().get(0).getChannel(), equalTo(newChannel));
-        assertTrue(task.getPriority() == 999);
+        assertEquals(999, task.getPriority());
 
         DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter
             .initialize(Collections.singletonList(new TimeIntervalColumnHeader(0)), Instant.now());
         long calendarDays = converter.convertWorkingDaysToDays(task.getDue(), 1);
-        assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(calendarDays))));
+        assertEquals(task.getDue(), task.getPlanned().plus(Duration.ofDays(calendarDays)));
     }
 
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testAddExistingAttachmentAgainWillDoNothingWhenEqual()
+    void testAddExistingAttachmentAgainWillDoNothingWhenEqual()
         throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException {
         setUpMethod();
@@ -214,7 +214,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testAddAttachmentAsNullValueWillBeIgnored()
+    void testAddAttachmentAsNullValueWillBeIgnored()
         throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
         NotAuthorizedException, AttachmentPersistenceException {
         setUpMethod();
@@ -242,22 +242,22 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         assertThat(task.getAttachments().size(), equalTo(attachmentCount)); // locally, not persisted
         task = taskService.getTask(task.getId());
         assertThat(task.getAttachments().size(), equalTo(attachmentCount)); // persisted values not changed
-        assertTrue(task.getPriority() == 1);
-        assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(1))));
+        assertEquals(1, task.getPriority());
+        assertEquals(task.getDue(), task.getPlanned().plus(Duration.ofDays(1)));
     }
 
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testRemoveAttachment()
+    void testRemoveAttachment()
         throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
         NotAuthorizedException, AttachmentPersistenceException {
         setUpMethod();
         task.addAttachment(attachment);
         task = taskService.updateTask(task);
-        assertTrue(task.getPriority() == 99);
-        assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(1))));
+        assertEquals(99, task.getPriority());
+        assertEquals(task.getDue(), task.getPlanned().plus(Duration.ofDays(1)));
         int attachmentCount = task.getAttachments().size();
         Attachment attachmentToRemove = task.getAttachments().get(0);
         task.removeAttachment(attachmentToRemove.getId());
@@ -265,15 +265,15 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         assertThat(task.getAttachments().size(), equalTo(attachmentCount - 1)); // locally, removed and not persisted
         task = taskService.getTask(task.getId());
         assertThat(task.getAttachments().size(), equalTo(attachmentCount - 1)); // persisted, values removed
-        assertTrue(task.getPriority() == 1);
-        assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(1))));
+        assertEquals(1, task.getPriority());
+        assertEquals(task.getDue(), task.getPlanned().plus(Duration.ofDays(1)));
     }
 
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testRemoveAttachmentWithNullAndNotAddedId()
+    void testRemoveAttachmentWithNullAndNotAddedId()
         throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
         NotAuthorizedException, AttachmentPersistenceException {
         setUpMethod();
@@ -298,20 +298,20 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testUpdateAttachment()
+    void testUpdateAttachment()
         throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
         NotAuthorizedException, AttachmentPersistenceException {
         setUpMethod();
         ((TaskImpl) task).setAttachments(new ArrayList<>());
         task = taskService.updateTask(task);
-        assertTrue(task.getPriority() == 1);
-        assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(1))));
+        assertEquals(1, task.getPriority());
+        assertEquals(task.getDue(), task.getPlanned().plus(Duration.ofDays(1)));
 
         Attachment attachment = this.attachment;
         task.addAttachment(attachment);
         task = taskService.updateTask(task);
-        assertTrue(task.getPriority() == 99);
-        assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(1))));
+        assertEquals(99, task.getPriority());
+        assertEquals(task.getDue(), task.getPlanned().plus(Duration.ofDays(1)));
 
         int attachmentCount = task.getAttachments().size();
 
@@ -324,20 +324,20 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         task = taskService.getTask(task.getId());
         assertThat(task.getAttachments().size(), equalTo(attachmentCount));
         assertThat(task.getAttachments().get(0).getChannel(), equalTo(newChannel));
-        assertTrue(task.getPriority() == 999);
+        assertEquals(999, task.getPriority());
 
         DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter
             .initialize(Collections.singletonList(new TimeIntervalColumnHeader(0)), Instant.now());
         long calendarDays = converter.convertWorkingDaysToDays(task.getDue(), 1);
 
-        assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(calendarDays))));
+        assertEquals(task.getDue(), task.getPlanned().plus(Duration.ofDays(calendarDays)));
     }
 
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void modifyExistingAttachment()
+    void modifyExistingAttachment()
         throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException {
         setUpMethod();
@@ -352,12 +352,12 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         task.addAttachment(attachment2);
         task = taskService.updateTask(task);
         task = taskService.getTask(task.getId());
-        assertTrue(task.getPriority() == 101);
+        assertEquals(101, task.getPriority());
         DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter
             .initialize(Collections.singletonList(new TimeIntervalColumnHeader(0)), Instant.now());
         long calendarDays = converter.convertWorkingDaysToDays(task.getDue(), 1);
 
-        assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(calendarDays))));
+        assertEquals(task.getDue(), task.getPlanned().plus(Duration.ofDays(calendarDays)));
 
         assertThat(task.getAttachments().size(), equalTo(2));
         List<Attachment> attachments = task.getAttachments();
@@ -392,11 +392,11 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         task.setClassificationKey("DOCTYPE_DEFAULT");  // Prio 99, SL P2000D
         task = taskService.updateTask(task);
         task = taskService.getTask(task.getId());
-        assertTrue(task.getPriority() == 99);
+        assertEquals(99, task.getPriority());
 
         calendarDays = converter.convertWorkingDaysToDays(task.getDue(), 16);
 
-        assertTrue(task.getDue().equals(task.getPlanned().plus(Duration.ofDays(calendarDays))));
+        assertEquals(task.getDue(), task.getPlanned().plus(Duration.ofDays(calendarDays)));
 
         rohrpostFound = false;
         boolean faxFound = false;
@@ -422,7 +422,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void replaceExistingAttachments()
+    void replaceExistingAttachments()
         throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException {
         setUpMethod();
@@ -468,7 +468,7 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testPrioDurationOfTaskFromAttachmentsAtUpdate()
+    void testPrioDurationOfTaskFromAttachmentsAtUpdate()
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException, ConcurrencyException,
         AttachmentPersistenceException {
@@ -503,20 +503,20 @@ public class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         // assertNotNull(readTask.getAttachments().get(0).getClassification());
         assertNotNull(readTask.getAttachments().get(0).getObjectReference());
 
-        assertTrue(readTask.getPriority() == 99);
+        assertEquals(99, readTask.getPriority());
 
         DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize(
             Collections.singletonList(new TimeIntervalColumnHeader(0)), Instant.now());
         long calendarDays = converter.convertWorkingDaysToDays(readTask.getPlanned(), 1);
 
-        assertTrue(readTask.getDue().equals(readTask.getPlanned().plus(Duration.ofDays(calendarDays))));
+        assertEquals(readTask.getDue(), readTask.getPlanned().plus(Duration.ofDays(calendarDays)));
     }
 
     @WithAccessId(
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testAddCustomAttributeToAttachment()
+    void testAddCustomAttributeToAttachment()
         throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException {
 

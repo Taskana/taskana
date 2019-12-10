@@ -1,10 +1,11 @@
 package acceptance.task;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static pro.taskana.BaseQuery.SortDirection.ASCENDING;
 import static pro.taskana.BaseQuery.SortDirection.DESCENDING;
 import static pro.taskana.TaskQueryColumnName.A_CHANNEL;
@@ -20,7 +21,6 @@ import java.util.Map;
 
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -131,7 +131,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         TaskSummary previousSummary = null;
         for (TaskSummary taskSummary : results) {
             if (previousSummary != null) {
-                Assert.assertFalse(previousSummary.getCreated().isAfter(taskSummary.getCreated()));
+                assertFalse(previousSummary.getCreated().isAfter(taskSummary.getCreated()));
             }
             previousSummary = taskSummary;
         }
@@ -828,7 +828,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         long numberOfTasks = taskQuery
             .nameIn("Task99", "Task01", "Widerruf")
             .count();
-        Assert.assertEquals(numberOfTasks, tasks.size());
+        assertEquals(numberOfTasks, tasks.size());
 
     }
 

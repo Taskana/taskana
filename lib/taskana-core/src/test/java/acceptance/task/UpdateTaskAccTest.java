@@ -1,14 +1,14 @@
 package acceptance.task;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Instant;
 import java.util.Arrays;
@@ -42,9 +42,9 @@ import pro.taskana.security.WithAccessId;
  * Acceptance test for all "update task" scenarios.
  */
 @ExtendWith(JAASExtension.class)
-public class UpdateTaskAccTest extends AbstractAccTest {
+class UpdateTaskAccTest extends AbstractAccTest {
 
-    public UpdateTaskAccTest() {
+    UpdateTaskAccTest() {
         super();
     }
 
@@ -52,7 +52,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testUpdatePrimaryObjectReferenceOfTask()
+    void testUpdatePrimaryObjectReferenceOfTask()
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException, TaskNotFoundException,
         ConcurrencyException, AttachmentPersistenceException {
 
@@ -81,7 +81,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testThrowsExceptionIfMandatoryPrimaryObjectReferenceIsNotSetOrIncomplete()
+    void testThrowsExceptionIfMandatoryPrimaryObjectReferenceIsNotSetOrIncomplete()
         throws NotAuthorizedException, ClassificationNotFoundException, TaskNotFoundException, ConcurrencyException,
         AttachmentPersistenceException {
 
@@ -111,7 +111,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testThrowsExceptionIfTaskHasAlreadyBeenUpdated()
+    void testThrowsExceptionIfTaskHasAlreadyBeenUpdated()
         throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
         TaskNotFoundException, ConcurrencyException, AttachmentPersistenceException {
 
@@ -134,7 +134,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testUpdateClassificationOfTask()
+    void testUpdateClassificationOfTask()
         throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
         NotAuthorizedException, AttachmentPersistenceException {
 
@@ -158,7 +158,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         userName = "user_1_2",
         groupNames = {"group_1"})
     @Test
-    public void testUpdateReadFlagOfTask()
+    void testUpdateReadFlagOfTask()
         throws TaskNotFoundException, NotAuthorizedException {
 
         TaskService taskService = taskanaEngine.getTaskService();
@@ -182,7 +182,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testCustomPropertiesOfTask()
+    void testCustomPropertiesOfTask()
         throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
         NotAuthorizedException, AttachmentPersistenceException {
         TaskService taskService = taskanaEngine.getTaskService();
@@ -198,7 +198,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testUpdateOfWorkbasketKeyWhatIsNotAllowed()
+    void testUpdateOfWorkbasketKeyWhatIsNotAllowed()
         throws NotAuthorizedException,
         TaskNotFoundException {
 
@@ -214,7 +214,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testUpdateTasksByPorForUser1() throws InvalidArgumentException {
+    void testUpdateTasksByPorForUser1() throws InvalidArgumentException {
         ObjectReference por = new ObjectReference();
         por.setCompany("00");
         por.setSystem("PASystem");
@@ -237,7 +237,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testUpdateTasksByPor()
+    void testUpdateTasksByPor()
         throws InvalidArgumentException, TaskNotFoundException, NotAuthorizedException {
         ObjectReference por = new ObjectReference();
         por.setCompany("00");
@@ -269,7 +269,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         groupNames = {"group_1"}
     )
     @Test
-    public void testUpdateTasksById()
+    void testUpdateTasksById()
         throws InvalidArgumentException, TaskNotFoundException, NotAuthorizedException {
         List<String> taskIds = Arrays.asList(
             "TKI:000000000000000000000000000000000008",
@@ -299,7 +299,7 @@ public class UpdateTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testUpdateCallbackInfoOfSimpleTask()
+    void testUpdateCallbackInfoOfSimpleTask()
         throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException, ConcurrencyException,
         AttachmentPersistenceException {

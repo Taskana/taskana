@@ -5,31 +5,28 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.SQLException;
 import java.util.Properties;
 
 import javax.sql.DataSource;
 
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
-import org.junit.Assert;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import pro.taskana.TaskanaEngine;
-import pro.taskana.configuration.TaskanaEngineConfiguration;
 
 /**
  * Integration Test for TaskanaEngineConfiguration.
  *
  * @author EH
  */
-public class TaskanaEngineConfigurationTest {
+public final class TaskanaEngineTestConfiguration {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineConfigurationTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineTestConfiguration.class);
     private static final int POOL_TIME_TO_WAIT = 50;
     private static DataSource dataSource = null;
     private static String schemaName = null;
+
+    private TaskanaEngineTestConfiguration() {
+    }
 
     /**
      * returns the Datasource used for Junit test. If the file {user.home}/taskanaUnitTest.properties is present, the
@@ -183,17 +180,6 @@ public class TaskanaEngineConfigurationTest {
         }
 
         return schemaName;
-    }
-
-    @Test
-    public void testCreateTaskanaEngine() throws SQLException {
-        DataSource ds = getDataSource();
-        TaskanaEngineConfiguration taskEngineConfiguration = new TaskanaEngineConfiguration(ds, false,
-            TaskanaEngineConfigurationTest.getSchemaName());
-
-        TaskanaEngine te = taskEngineConfiguration.buildTaskanaEngine();
-
-        Assert.assertNotNull(te);
     }
 
 }

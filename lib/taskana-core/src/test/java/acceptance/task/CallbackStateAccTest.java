@@ -1,8 +1,14 @@
 package acceptance.task;
 
+<<<<<<< master
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+=======
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+>>>>>>> TSK-983: Remove junit 4 from taskana-core
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -87,25 +93,22 @@ class CallbackStateAccTest extends AbstractAccTest {
         assertEquals(TaskState.READY, createdTask.getState());
         String endOfMessage = " cannot be deleted because its callback is not yet processed";
 
-        Throwable t = Assertions.assertThrows(InvalidStateException.class, () -> {
-            taskService.forceDeleteTask(createdTask.getId());
-        });
+        Throwable t = Assertions.assertThrows(InvalidStateException.class,
+            () -> taskService.forceDeleteTask(createdTask.getId()));
         assertTrue(t.getMessage().endsWith(endOfMessage));
 
         final TaskImpl createdTask2 = (TaskImpl) taskService.claim(createdTask.getId());
 
         assertEquals(TaskState.CLAIMED, createdTask2.getState());
 
-        Throwable t2 = Assertions.assertThrows(InvalidStateException.class, () -> {
-            taskService.forceDeleteTask(createdTask2.getId());
-        });
+        Throwable t2 = Assertions.assertThrows(InvalidStateException.class,
+            () -> taskService.forceDeleteTask(createdTask2.getId()));
         assertTrue(t2.getMessage().endsWith(endOfMessage));
 
         final TaskImpl createdTask3 = (TaskImpl) taskService.completeTask(createdTask.getId());
 
-        Throwable t3 = Assertions.assertThrows(InvalidStateException.class, () -> {
-            taskService.forceDeleteTask(createdTask3.getId());
-        });
+        Throwable t3 = Assertions.assertThrows(InvalidStateException.class,
+            () -> taskService.forceDeleteTask(createdTask3.getId()));
         assertTrue(t3.getMessage().endsWith(endOfMessage));
     }
 
@@ -146,7 +149,7 @@ class CallbackStateAccTest extends AbstractAccTest {
         assertTrue(bulkResult1.containsErrors());
         List<String> failedTaskIds = bulkResult1.getFailedIds();
 
-        assertTrue(failedTaskIds.size() == 3);
+        assertEquals(3, failedTaskIds.size());
         for (String taskId : failedTaskIds) {
             TaskanaException excpt = bulkResult1.getErrorForId(taskId);
             assertEquals("pro.taskana.exceptions.InvalidStateException", excpt.getClass().getName());
@@ -309,8 +312,13 @@ class CallbackStateAccTest extends AbstractAccTest {
         groupNames = {"group_1"})
     @Test
     void testQueriesWithCallbackState()
+<<<<<<< master
         throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException, InvalidStateException,
+=======
+        throws NotAuthorizedException,
+        TaskNotFoundException, InvalidStateException,
+>>>>>>> TSK-983: Remove junit 4 from taskana-core
         InvalidOwnerException, SQLException, IOException {
         resetDb(false);
         TaskService taskService = taskanaEngine.getTaskService();
@@ -344,7 +352,7 @@ class CallbackStateAccTest extends AbstractAccTest {
             .stateIn(TaskState.COMPLETED)
             .callbackStateIn(CallbackState.CALLBACK_PROCESSING_REQUIRED)
             .list();
-        assertTrue(tasksToBeActedUpon.size() == numberOfCompletedTasksAtStartOfTest);
+        assertEquals(tasksToBeActedUpon.size(), numberOfCompletedTasksAtStartOfTest);
         // now we set callback state to callback_processing_completed
         externalIds = tasksToBeActedUpon.stream().map(TaskSummary::getExternalId).collect(Collectors.toList());
         BulkOperationResults<String, TaskanaException> bulkResult = taskService.setCallbackStateForTasks(externalIds,
@@ -355,7 +363,7 @@ class CallbackStateAccTest extends AbstractAccTest {
             .stateIn(TaskState.COMPLETED)
             .callbackStateIn(CallbackState.CALLBACK_PROCESSING_REQUIRED)
             .count();
-        assertTrue(numOfTasksRemaining == 0);
+        assertEquals(0, numOfTasksRemaining);
 
     }
 
@@ -371,8 +379,7 @@ class CallbackStateAccTest extends AbstractAccTest {
         newTask.setCallbackInfo(callbackInfo);
         augmentCallbackInfo(newTask);
 
-        TaskImpl createdTask = (TaskImpl) taskService.createTask(newTask);
-        return createdTask;
+        return (TaskImpl) taskService.createTask(newTask);
     }
 
     private void augmentCallbackInfo(Task task) {
