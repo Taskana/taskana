@@ -1,8 +1,9 @@
 package acceptance.task;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -17,9 +18,9 @@ import pro.taskana.security.WithAccessId;
  * Acceptance test for all "query tasks by object reference" scenarios.
  */
 @ExtendWith(JAASExtension.class)
-public class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
+class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
 
-    public QueryTasksByObjectReferenceAccTest() {
+    QueryTasksByObjectReferenceAccTest() {
         super();
     }
 
@@ -27,40 +28,40 @@ public class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testQueryTasksByExcactValueOfObjectReference()
+    void testQueryTasksByExcactValueOfObjectReference()
         throws SystemException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .primaryObjectReferenceValueIn("11223344", "22334455")
             .list();
-        Assert.assertEquals(33L, results.size());
+        assertEquals(33L, results.size());
     }
 
     @WithAccessId(
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testQueryTasksByExcactValueAndTypeOfObjectReference()
+    void testQueryTasksByExcactValueAndTypeOfObjectReference()
         throws SystemException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .primaryObjectReferenceTypeIn("SDNR")
             .primaryObjectReferenceValueIn("11223344")
             .list();
-        Assert.assertEquals(10L, results.size());
+        assertEquals(10L, results.size());
     }
 
     @WithAccessId(
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testQueryTasksByValueLikeOfObjectReference()
+    void testQueryTasksByValueLikeOfObjectReference()
         throws SystemException {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .primaryObjectReferenceValueLike("%567%")
             .list();
-        Assert.assertEquals(10L, results.size());
+        assertEquals(10L, results.size());
     }
 
 }

@@ -1,11 +1,10 @@
 package acceptance.task;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -23,12 +22,12 @@ import pro.taskana.security.WithAccessId;
  * Acceptance test for the usecase of adding/removing an attachment of a task and update the result correctly.
  */
 @ExtendWith(JAASExtension.class)
-public class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
+class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
 
     private static SortDirection asc = SortDirection.ASCENDING;
     private static SortDirection desc = SortDirection.DESCENDING;
 
-    public QueryTaskByClassificationNameAccTest() {
+    QueryTaskByClassificationNameAccTest() {
         super();
     }
 
@@ -36,7 +35,7 @@ public class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"admin"})
     @Test
-    public void testQueryTaskValuesForAttachmentClassificationName() {
+    void testQueryTaskValuesForAttachmentClassificationName() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<String> columnValueList = taskService.createTaskQuery()
             .ownerLike("%user%")
@@ -50,7 +49,7 @@ public class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"admin"})
     @Test
-    public void testQueryTaskValuesForClassificationName() {
+    void testQueryTaskValuesForClassificationName() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<String> columnValueList = taskService.createTaskQuery()
             .ownerLike("%user%")
@@ -64,7 +63,7 @@ public class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryByClassificationNameIn() {
+    void testQueryByClassificationNameIn() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> tasks = taskService.createTaskQuery()
             .classificationNameIn("Dynamik-Ablehnung")
@@ -86,7 +85,7 @@ public class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryByClassificationNameLike() {
+    void testQueryByClassificationNameLike() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> tasks = taskService.createTaskQuery()
             .classificationNameLike("Dynamik%", "Widerruf")
@@ -105,7 +104,7 @@ public class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testSelectByAttachmentClassificationNameLike() {
+    void testSelectByAttachmentClassificationNameLike() {
         TaskService taskService = taskanaEngine.getTaskService();
         // find Task with attachment classification names
         List<TaskSummary> tasks = taskService.createTaskQuery()
@@ -125,7 +124,7 @@ public class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testSelectByAttachmentClassificationNameIn() {
+    void testSelectByAttachmentClassificationNameIn() {
         TaskService taskService = taskanaEngine.getTaskService();
         // find Task with attachment classification names
         List<TaskSummary> tasks = taskService.createTaskQuery()
@@ -145,7 +144,7 @@ public class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryAndCountMatchForClassificationName() {
+    void testQueryAndCountMatchForClassificationName() {
         TaskService taskService = taskanaEngine.getTaskService();
         TaskQuery taskQuery = taskService.createTaskQuery();
         List<TaskSummary> tasks = taskQuery
@@ -154,7 +153,7 @@ public class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
         long numberOfTasks = taskQuery
             .classificationNameIn("Widerruf", "Beratungsprotokoll", "Dynamikänderung")
             .count();
-        Assert.assertEquals(numberOfTasks, tasks.size());
+        assertEquals(numberOfTasks, tasks.size());
 
     }
 
@@ -162,7 +161,7 @@ public class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryAndCountForAttachmentClassificationName() {
+    void testQueryAndCountForAttachmentClassificationName() {
         TaskService taskService = taskanaEngine.getTaskService();
         TaskQuery taskQuery = taskService.createTaskQuery();
         List<TaskSummary> tasks = taskQuery
@@ -170,11 +169,11 @@ public class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
             .list();
         // we expect 4 result objects in this case, because task TKI:000000000000000000000000000000000001  has 2 attachments with different Classifications
         // therefore task TKI:000000000000000000000000000000000001 occurs twice in the result set
-        Assert.assertEquals(4, tasks.size());
+        assertEquals(4, tasks.size());
         long numberOfTasks = taskQuery
             .attachmentClassificationNameIn("Widerruf", "Beratungsprotokoll", "Dynamikänderung")
             .count();
-        Assert.assertEquals(3, numberOfTasks);
+        assertEquals(3, numberOfTasks);
         // the count returns only the number of tasks that have an attachment with the specified classification name.
         // therefore, task 001 is counted only once.
     }

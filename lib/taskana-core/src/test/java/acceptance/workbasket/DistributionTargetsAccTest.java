@@ -1,7 +1,7 @@
 package acceptance.workbasket;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -27,9 +27,9 @@ import pro.taskana.security.WithAccessId;
  * Acceptance test for all "get workbasket" scenarios.
  */
 @ExtendWith(JAASExtension.class)
-public class DistributionTargetsAccTest extends AbstractAccTest {
+class DistributionTargetsAccTest extends AbstractAccTest {
 
-    public DistributionTargetsAccTest() {
+    DistributionTargetsAccTest() {
         super();
     }
 
@@ -37,7 +37,7 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"teamlead_1"})
     @Test
-    public void testGetDistributionTargetsSucceedsById() throws NotAuthorizedException, WorkbasketNotFoundException {
+    void testGetDistributionTargetsSucceedsById() throws NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         WorkbasketSummary workbasketSummary = workbasketService.createWorkbasketQuery()
             .keyIn("GPK_KSC")
@@ -61,7 +61,7 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"teamlead_1"})
     @Test
-    public void testGetDistributionTargetsSucceeds() throws NotAuthorizedException, WorkbasketNotFoundException {
+    void testGetDistributionTargetsSucceeds() throws NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         WorkbasketSummary workbasketSummary = workbasketService.createWorkbasketQuery()
             .keyIn("GPK_KSC")
@@ -85,7 +85,7 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"teamlead_1", "group_1", "group_2", "businessadmin"})
     @Test
-    public void testDistributionTargetCallsWithNonExistingWorkbaskets()
+    void testDistributionTargetCallsWithNonExistingWorkbaskets()
         throws NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         String existingWb = "WBI:100000000000000000000000000000000001";
@@ -112,22 +112,20 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "user_3_1", groupNames = {"group_1"})
     @Test
-    public void testDistributionTargetCallsFailWithNotAuthorizedException()
-        throws WorkbasketNotFoundException {
+    void testDistributionTargetCallsFailWithNotAuthorizedException() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         String existingWb = "WBI:100000000000000000000000000000000001";
-
 
         Assertions.assertThrows(NotAuthorizedException.class, () ->
             workbasketService.getDistributionTargets(existingWb));
 
         Assertions.assertThrows(NotAuthorizedException.class, () ->
-            workbasketService.setDistributionTargets(existingWb, Arrays.asList("WBI:100000000000000000000000000000000002")));
+            workbasketService.setDistributionTargets(existingWb,
+                Arrays.asList("WBI:100000000000000000000000000000000002")));
 
         Assertions.assertThrows(NotAuthorizedException.class, () ->
             workbasketService.addDistributionTarget(existingWb,
                 "WBI:100000000000000000000000000000000002"));
-
 
         Assertions.assertThrows(NotAuthorizedException.class, () ->
             workbasketService.removeDistributionTarget(existingWb,
@@ -139,7 +137,7 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
         userName = "user_2_2",
         groupNames = {"group_1", "group_2", "businessadmin"})
     @Test
-    public void testAddAndRemoveDistributionTargets()
+    void testAddAndRemoveDistributionTargets()
         throws NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         Workbasket workbasket = workbasketService.getWorkbasket("GPK_KSC_1", "DOMAIN_A");
@@ -170,7 +168,7 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
         userName = "user_2_2",
         groupNames = {"businessadmin"})
     @Test
-    public void testAddAndRemoveDistributionTargetsOnWorkbasketWithoutReadPermission()
+    void testAddAndRemoveDistributionTargetsOnWorkbasketWithoutReadPermission()
         throws NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         Workbasket workbasket = workbasketService.getWorkbasket("GPK_B_KSC_2", "DOMAIN_B");
@@ -196,7 +194,7 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
         userName = "user_2_2",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testAddDistributionTargetsFailsNotAuthorized()
+    void testAddDistributionTargetsFailsNotAuthorized()
         throws NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         Workbasket workbasket = workbasketService.getWorkbasket("GPK_KSC_1", "DOMAIN_A");
@@ -216,7 +214,7 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
         userName = "user_2_2",
         groupNames = {"group_1", "group_2", "businessadmin"})
     @Test
-    public void testSetDistributionTargets()
+    void testSetDistributionTargets()
         throws NotAuthorizedException, WorkbasketNotFoundException, SQLException, IOException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
@@ -248,7 +246,7 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
         userName = "user_2_2",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testGetDistributionSourcesById()
+    void testGetDistributionSourcesById()
         throws NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
@@ -269,7 +267,7 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
         userName = "user_2_2",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testGetDistributionSourcesByKeyDomain()
+    void testGetDistributionSourcesByKeyDomain()
         throws NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
@@ -289,7 +287,7 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
         userName = "henry",
         groupNames = {"undefinedgroup"})
     @Test
-    public void testQueryDistributionSourcesThrowsNotAuthorized() {
+    void testQueryDistributionSourcesThrowsNotAuthorized() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
         Assertions.assertThrows(NotAuthorizedException.class, () ->
@@ -302,7 +300,7 @@ public class DistributionTargetsAccTest extends AbstractAccTest {
         userName = "user_2_2",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testQueryDistributionSourcesThrowsWorkbasketNotFound() {
+    void testQueryDistributionSourcesThrowsWorkbasketNotFound() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
         Assertions.assertThrows(WorkbasketNotFoundException.class, () -> workbasketService

@@ -1,7 +1,7 @@
 package pro.taskana.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -16,12 +16,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import pro.taskana.CustomField;
 import pro.taskana.TaskState;
@@ -40,8 +40,8 @@ import pro.taskana.report.ClassificationReport.DetailedClassificationReport;
 /**
  * Unit Test for ClassificationReportBuilderImpl.
  */
-@RunWith(MockitoJUnitRunner.class)
-public class ClassificationReportBuilderImplTest {
+@ExtendWith(MockitoExtension.class)
+class ClassificationReportBuilderImplTest {
 
     @InjectMocks
     private TaskMonitorServiceImpl cut;
@@ -58,8 +58,8 @@ public class ClassificationReportBuilderImplTest {
     @Mock
     private TaskMonitorMapper taskMonitorMapperMock;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         when(internalTaskanaEngineMock.getEngine()).thenReturn(taskanaEngineMock);
         when(taskanaEngineMock.getConfiguration()).thenReturn(taskanaEngineConfiguration);
         when(taskanaEngineConfiguration.isGermanPublicHolidaysEnabled()).thenReturn(true);
@@ -67,7 +67,7 @@ public class ClassificationReportBuilderImplTest {
     }
 
     @Test
-    public void testGetTotalNumbersOfClassificationReport() throws InvalidArgumentException, NotAuthorizedException {
+    void testGetTotalNumbersOfClassificationReport() throws InvalidArgumentException, NotAuthorizedException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Collections.singletonList("EXTERN");
@@ -114,7 +114,7 @@ public class ClassificationReportBuilderImplTest {
     }
 
     @Test
-    public void testGetClassificationReportWithReportLineItemDefinitions()
+    void testGetClassificationReportWithReportLineItemDefinitions()
         throws InvalidArgumentException, NotAuthorizedException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
@@ -169,7 +169,7 @@ public class ClassificationReportBuilderImplTest {
     }
 
     @Test
-    public void testGetTotalNumbersOfDetailedClassificationReport()
+    void testGetTotalNumbersOfDetailedClassificationReport()
         throws InvalidArgumentException, NotAuthorizedException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
@@ -220,7 +220,7 @@ public class ClassificationReportBuilderImplTest {
     }
 
     @Test
-    public void testGetDetailedClassificationReportWithReportLineItemDefinitions()
+    void testGetDetailedClassificationReportWithReportLineItemDefinitions()
         throws InvalidArgumentException, NotAuthorizedException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
@@ -278,7 +278,7 @@ public class ClassificationReportBuilderImplTest {
     }
 
     @Test
-    public void testGetTaskIdsForSelectedItems() throws InvalidArgumentException, NotAuthorizedException {
+    void testGetTaskIdsForSelectedItems() throws InvalidArgumentException, NotAuthorizedException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Collections.singletonList("EXTERN");
@@ -329,7 +329,7 @@ public class ClassificationReportBuilderImplTest {
     }
 
     @Test
-    public void testGetTaskIdsForSelectedItemsIsEmptyResult() throws NotAuthorizedException, InvalidArgumentException {
+    void testGetTaskIdsForSelectedItemsIsEmptyResult() throws NotAuthorizedException, InvalidArgumentException {
         SelectedItem selectedItem = new SelectedItem();
         selectedItem.setKey("GIBTSNED");
         List<SelectedItem> selectedItems = Collections.singletonList(selectedItem);
@@ -340,7 +340,7 @@ public class ClassificationReportBuilderImplTest {
     }
 
     @Test
-    public void testListCustomAttributeValuesForCustomAttributeName()
+    void testListCustomAttributeValuesForCustomAttributeName()
         throws NotAuthorizedException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
@@ -392,7 +392,7 @@ public class ClassificationReportBuilderImplTest {
     }
 
     @Test
-    public void testListCustomAttributeValuesForCustomAttributeNameIsEmptyResult()
+    void testListCustomAttributeValuesForCustomAttributeNameIsEmptyResult()
         throws NotAuthorizedException {
         List<String> result = cut.createClassificationReportBuilder()
             .workbasketIdIn(Collections.singletonList("DieGibtsGarantiertNed"))

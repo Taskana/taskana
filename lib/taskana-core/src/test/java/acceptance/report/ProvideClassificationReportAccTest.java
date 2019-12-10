@@ -1,8 +1,8 @@
 package acceptance.report;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,12 +32,12 @@ import pro.taskana.security.WithAccessId;
  * Acceptance test for all "classification report" scenarios.
  */
 @ExtendWith(JAASExtension.class)
-public class ProvideClassificationReportAccTest extends AbstractReportAccTest {
+class ProvideClassificationReportAccTest extends AbstractReportAccTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProvideClassificationReportAccTest.class);
 
     @Test
-    public void testRoleCheck()
+    void testRoleCheck()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
@@ -48,7 +48,7 @@ public class ProvideClassificationReportAccTest extends AbstractReportAccTest {
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testGetTotalNumbersOfTasksOfClassificationReport()
+    void testGetTotalNumbersOfTasksOfClassificationReport()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
@@ -77,7 +77,7 @@ public class ProvideClassificationReportAccTest extends AbstractReportAccTest {
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testGetClassificationReportWithReportLineItemDefinitions()
+    void testGetClassificationReportWithReportLineItemDefinitions()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
@@ -119,7 +119,7 @@ public class ProvideClassificationReportAccTest extends AbstractReportAccTest {
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testEachItemOfClassificationReport() throws InvalidArgumentException, NotAuthorizedException {
+    void testEachItemOfClassificationReport() throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
@@ -155,7 +155,7 @@ public class ProvideClassificationReportAccTest extends AbstractReportAccTest {
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testEachItemOfClassificationReportNotInWorkingDays()
+    void testEachItemOfClassificationReportNotInWorkingDays()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
@@ -191,7 +191,7 @@ public class ProvideClassificationReportAccTest extends AbstractReportAccTest {
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testEachItemOfClassificationReportWithWorkbasketFilter()
+    void testEachItemOfClassificationReportWithWorkbasketFilter()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
@@ -230,7 +230,7 @@ public class ProvideClassificationReportAccTest extends AbstractReportAccTest {
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testEachItemOfClassificationReportWithStateFilter()
+    void testEachItemOfClassificationReportWithStateFilter()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
@@ -269,7 +269,7 @@ public class ProvideClassificationReportAccTest extends AbstractReportAccTest {
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testEachItemOfClassificationReportWithCategoryFilter()
+    void testEachItemOfClassificationReportWithCategoryFilter()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
@@ -300,7 +300,7 @@ public class ProvideClassificationReportAccTest extends AbstractReportAccTest {
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testEachItemOfClassificationReportWithDomainFilter()
+    void testEachItemOfClassificationReportWithDomainFilter()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
@@ -339,7 +339,7 @@ public class ProvideClassificationReportAccTest extends AbstractReportAccTest {
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testEachItemOfClassificationReportWithCustomFieldValueFilter()
+    void testEachItemOfClassificationReportWithCustomFieldValueFilter()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 

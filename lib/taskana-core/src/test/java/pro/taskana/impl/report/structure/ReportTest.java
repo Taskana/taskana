@@ -1,7 +1,7 @@
 package pro.taskana.impl.report.structure;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
 import pro.taskana.impl.report.item.MonitorQueryItem;
@@ -19,7 +19,7 @@ import pro.taskana.impl.report.item.MonitorQueryItem;
 /**
  * Tests for {@link Report}.
  */
-public class ReportTest {
+class ReportTest {
 
     private static final List<TimeIntervalColumnHeader> HEADERS = IntStream.range(0, 4)
         .mapToObj(TimeIntervalColumnHeader::new)
@@ -27,8 +27,8 @@ public class ReportTest {
     private Report<MonitorQueryItem, TimeIntervalColumnHeader> report;
     private MonitorQueryItem item;
 
-    @Before
-    public void before() {
+    @BeforeEach
+    void before() {
         this.report = new Report<MonitorQueryItem, TimeIntervalColumnHeader>(HEADERS, new String[] {"rowDesc"}) {
 
         };
@@ -40,7 +40,7 @@ public class ReportTest {
     }
 
     @Test
-    public void testEmptyReport() {
+    void testEmptyReport() {
         //then
         assertEquals(0, report.getRows().size());
         Row<MonitorQueryItem> sumRow = report.getSumRow();
@@ -49,7 +49,7 @@ public class ReportTest {
     }
 
     @Test
-    public void testInsertSingleItem() {
+    void testInsertSingleItem() {
         //when
         report.addItem(item);
 
@@ -62,7 +62,7 @@ public class ReportTest {
     }
 
     @Test
-    public void testInsertSameItemMultipleTimes() {
+    void testInsertSameItemMultipleTimes() {
         //when
         report.addItem(item);
         report.addItem(item);
@@ -76,7 +76,7 @@ public class ReportTest {
     }
 
     @Test
-    public void testInsertSameItemMultipleTimes2() {
+    void testInsertSameItemMultipleTimes2() {
         //given
         MonitorQueryItem item = new MonitorQueryItem();
         item.setKey("key");
@@ -95,7 +95,7 @@ public class ReportTest {
     }
 
     @Test
-    public void testInsertSameItemMultipleTimesWithPreProcessor() {
+    void testInsertSameItemMultipleTimesWithPreProcessor() {
         //given
         int overrideValue = 5;
         QueryItemPreprocessor<MonitorQueryItem> preprocessor = (item) -> {
@@ -114,7 +114,7 @@ public class ReportTest {
     }
 
     @Test
-    public void testInsertItemWithNoColumnHeaders() {
+    void testInsertItemWithNoColumnHeaders() {
         //given
         report = new Report<MonitorQueryItem, TimeIntervalColumnHeader>(Collections.emptyList(),
             new String[] {"rowDesc"}) {
@@ -131,7 +131,7 @@ public class ReportTest {
     }
 
     @Test
-    public void testInsertItemWhichIsNotInHeaderScopes() {
+    void testInsertItemWhichIsNotInHeaderScopes() {
         //given
         item.setAgeInDays(-2);
         //when
@@ -145,7 +145,7 @@ public class ReportTest {
     }
 
     @Test
-    public void testInsertItemWhichIsInMultipleHeaderScopes() {
+    void testInsertItemWhichIsInMultipleHeaderScopes() {
         //given
         List<TimeIntervalColumnHeader> headers = new ArrayList<>(HEADERS);
         headers.add(new TimeIntervalColumnHeader(0, 3));
@@ -171,7 +171,7 @@ public class ReportTest {
     }
 
     @Test
-    public void testInsertItemWithPreProcessor() {
+    void testInsertItemWithPreProcessor() {
         //given
         int overrideValue = 5;
         QueryItemPreprocessor<MonitorQueryItem> preprocessor = item -> {

@@ -1,10 +1,7 @@
 package pro.taskana.impl;
 
-
-
-
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
@@ -13,14 +10,11 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import org.apache.ibatis.session.SqlSession;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import pro.taskana.Classification;
 import pro.taskana.Task;
@@ -37,17 +31,14 @@ import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.mappings.AttachmentMapper;
 import pro.taskana.mappings.ObjectReferenceMapper;
 import pro.taskana.mappings.TaskMapper;
-import pro.taskana.security.CurrentUserContext;
 
 /**
  * Unit Test for TaskServiceImpl.
  *
  * @author EH
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(CurrentUserContext.class)
-@PowerMockIgnore("javax.management.*")
-public class TaskTransferrerTest {
+@ExtendWith(MockitoExtension.class)
+class TaskTransferrerTest {
 
     private TaskTransferrer cut;
     @Mock
@@ -83,17 +74,14 @@ public class TaskTransferrerTest {
     @Mock
     private SqlSession sqlSessionMock;
 
-    @Before
-    public void setup() {
+    @Test
+    void testTransferTaskToDestinationWorkbasketWithoutSecurity()
+        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidStateException {
+
         when(internalTaskanaEngineMock.getEngine()).thenReturn(taskanaEngineMock);
         when(taskanaEngineMock.getWorkbasketService()).thenReturn(workbasketServiceMock);
-        when(taskanaEngineMock.getClassificationService()).thenReturn(classificationServiceImplMock);
         cut = new TaskTransferrer(internalTaskanaEngineMock, taskMapperMock, taskServiceImplMock);
-    }
 
-    @Test
-    public void testTransferTaskToDestinationWorkbasketWithoutSecurity()
-        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidStateException {
         TaskTransferrer cutSpy = Mockito.spy(cut);
         Workbasket destinationWorkbasket = TaskServiceImplTest.createWorkbasket("2", "k1");
         Workbasket sourceWorkbasket = TaskServiceImplTest.createWorkbasket("47", "key47");
@@ -102,9 +90,6 @@ public class TaskTransferrerTest {
         task.setWorkbasketSummary(sourceWorkbasket.asSummary());
         task.setRead(true);
         when(workbasketServiceMock.getWorkbasket(destinationWorkbasket.getId())).thenReturn(destinationWorkbasket);
-        when(workbasketServiceMock.getWorkbasket(sourceWorkbasket.getId())).thenReturn(sourceWorkbasket);
-        when(taskanaEngineMock.getConfiguration()).thenReturn(taskanaEngineConfigurationMock);
-        when(taskanaEngineConfigurationMock.isSecurityEnabled()).thenReturn(false);
         doReturn(task).when(taskServiceImplMock).getTask(task.getId());
 
         Task actualTask = cutSpy.transfer(task.getId(), destinationWorkbasket.getId());

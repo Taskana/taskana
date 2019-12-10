@@ -1,7 +1,7 @@
 package acceptance.workbasket;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
@@ -19,18 +19,18 @@ import pro.taskana.security.JAASExtension;
  * Acceptance test for all "query classifications with pagination" scenarios.
  */
 @ExtendWith(JAASExtension.class)
-public class WorkbasketQueryWithOrderedPaginationAccTest extends AbstractAccTest {
+class WorkbasketQueryWithOrderedPaginationAccTest extends AbstractAccTest {
 
     private static SortDirection asc = SortDirection.ASCENDING;
     private static SortDirection desc = SortDirection.DESCENDING;
 
-    public WorkbasketQueryWithOrderedPaginationAccTest() {
+    WorkbasketQueryWithOrderedPaginationAccTest() {
         super();
     }
 
     @Disabled
     @Test
-    public void testGetFirstPageOfTaskQueryWithOffset() {
+    void testGetFirstPageOfTaskQueryWithOffset() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")
@@ -51,7 +51,7 @@ public class WorkbasketQueryWithOrderedPaginationAccTest extends AbstractAccTest
 
     @Disabled
     @Test
-    public void testGetSecondPageOfTaskQueryWithOffset() {
+    void testGetSecondPageOfTaskQueryWithOffset() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")

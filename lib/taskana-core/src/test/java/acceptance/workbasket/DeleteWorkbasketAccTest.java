@@ -1,10 +1,10 @@
 package acceptance.workbasket;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
@@ -50,7 +50,7 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(userName = "admin", groupNames = {"businessadmin"})
     @Test
     void testDeleteWorkbasket()
-        throws WorkbasketNotFoundException, NotAuthorizedException, InvalidArgumentException {
+        throws WorkbasketNotFoundException, NotAuthorizedException {
         Workbasket wb = workbasketService.getWorkbasket("USER_2_2", "DOMAIN_A");
 
         Assertions.assertThrows(WorkbasketNotFoundException.class, () -> {
@@ -81,7 +81,7 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(userName = "user_1_1", groupNames = {"teamlead_1", "group_1", "businessadmin"})
     @Test
     void testDeleteWorkbasketAlsoAsDistributionTarget()
-        throws WorkbasketNotFoundException, NotAuthorizedException, InvalidArgumentException {
+        throws WorkbasketNotFoundException, NotAuthorizedException {
         Workbasket wb = workbasketService.getWorkbasket("GPK_KSC_1", "DOMAIN_A");
         int distTargets = workbasketService.getDistributionTargets("WBI:100000000000000000000000000000000001")
             .size();
@@ -102,8 +102,7 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
         userName = "dummy",
         groupNames = {"businessadmin"})
     @Test
-    void testDeleteWorkbasketWithNullOrEmptyParam()
-        throws WorkbasketNotFoundException, NotAuthorizedException, WorkbasketInUseException {
+    void testDeleteWorkbasketWithNullOrEmptyParam() {
         // Test Null-Value
         Assertions.assertThrows(InvalidArgumentException.class, () ->
                 workbasketService.deleteWorkbasket(null),
@@ -129,7 +128,7 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
         groupNames = {"businessadmin"})
     @Test
     void testDeleteWorkbasketWhichIsUsed()
-        throws WorkbasketNotFoundException, NotAuthorizedException, WorkbasketInUseException, InvalidArgumentException {
+        throws WorkbasketNotFoundException, NotAuthorizedException {
         Workbasket wb = workbasketService.getWorkbasket("USER_1_2", "DOMAIN_A");   // all rights, DOMAIN_A with Tasks
         Assertions.assertThrows(WorkbasketInUseException.class, () ->
             workbasketService.deleteWorkbasket(wb.getId()));

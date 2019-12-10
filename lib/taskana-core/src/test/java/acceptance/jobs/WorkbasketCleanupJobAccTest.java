@@ -1,7 +1,7 @@
 package acceptance.jobs;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.util.List;
 
@@ -26,25 +26,25 @@ import pro.taskana.security.WithAccessId;
  * Acceptance test for all "jobs workbasket runner" scenarios.
  */
 @ExtendWith(JAASExtension.class)
-public class WorkbasketCleanupJobAccTest extends AbstractAccTest {
+class WorkbasketCleanupJobAccTest extends AbstractAccTest {
 
     WorkbasketService workbasketService;
     TaskService taskService;
 
     @BeforeEach
-    public void before() {
+    void before() {
         workbasketService = taskanaEngine.getWorkbasketService();
         taskService = taskanaEngine.getTaskService();
     }
 
     @AfterEach
-    public void after() throws Exception {
+    void after() throws Exception {
         resetDb(true);
     }
 
     @WithAccessId(userName = "admin")
     @Test
-    public void shouldCleanWorkbasketMarkedForDeletionWithoutTasks() throws TaskanaException {
+    void shouldCleanWorkbasketMarkedForDeletionWithoutTasks() throws TaskanaException {
         long totalWorkbasketCount = workbasketService.createWorkbasketQuery().count();
         assertEquals(25, totalWorkbasketCount);
         List<WorkbasketSummary> workbaskets = workbasketService.createWorkbasketQuery()
@@ -74,7 +74,7 @@ public class WorkbasketCleanupJobAccTest extends AbstractAccTest {
 
     @WithAccessId(userName = "admin")
     @Test
-    public void shouldNotCleanWorkbasketMarkedForDeletionIfWorkbasketHasTasks() throws Exception {
+    void shouldNotCleanWorkbasketMarkedForDeletionIfWorkbasketHasTasks() throws Exception {
         long totalWorkbasketCount = workbasketService.createWorkbasketQuery().count();
         assertEquals(25, totalWorkbasketCount);
         List<WorkbasketSummary> workbaskets = workbasketService.createWorkbasketQuery()

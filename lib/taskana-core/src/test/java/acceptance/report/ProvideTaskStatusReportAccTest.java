@@ -1,9 +1,9 @@
 package acceptance.report;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,12 +29,12 @@ import pro.taskana.security.WithAccessId;
  * Acceptance test for all "task status report" scenarios.
  */
 @ExtendWith(JAASExtension.class)
-public class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
+class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProvideWorkbasketReportAccTest.class);
 
     @Test
-    public void testRoleCheck() {
+    void testRoleCheck() {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
         Assertions.assertThrows(NotAuthorizedException.class, () ->
             taskMonitorService.createTaskStatusReportBuilder().buildReport());
@@ -43,7 +43,7 @@ public class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testCompleteTaskStatusReport() throws NotAuthorizedException, InvalidArgumentException {
+    void testCompleteTaskStatusReport() throws NotAuthorizedException, InvalidArgumentException {
         // given
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
         // when
@@ -75,7 +75,7 @@ public class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testCompleteTaskStatusReportAsAdmin() throws NotAuthorizedException, InvalidArgumentException {
+    void testCompleteTaskStatusReportAsAdmin() throws NotAuthorizedException, InvalidArgumentException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
         taskMonitorService.createTaskStatusReportBuilder().buildReport();
     }
@@ -83,7 +83,7 @@ public class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testCompleteTaskStatusReportWithDomainFilter() throws NotAuthorizedException, InvalidArgumentException {
+    void testCompleteTaskStatusReportWithDomainFilter() throws NotAuthorizedException, InvalidArgumentException {
         // given
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
         // when
@@ -114,7 +114,7 @@ public class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testCompleteTaskStatusReportWithStateFilter() throws NotAuthorizedException, InvalidArgumentException {
+    void testCompleteTaskStatusReportWithStateFilter() throws NotAuthorizedException, InvalidArgumentException {
         // given
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
         // when

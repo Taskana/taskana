@@ -1,12 +1,13 @@
 package acceptance.task;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Instant;
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -22,12 +23,11 @@ import pro.taskana.security.WithAccessId;
  * Acceptance test for all "query tasks with sorting" scenarios.
  */
 @ExtendWith(JAASExtension.class)
-public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
+class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
 
     private static SortDirection asc = SortDirection.ASCENDING;
-    private static SortDirection desc = SortDirection.DESCENDING;
 
-    public QueryTasksByTimeIntervalsAccTest() {
+    QueryTasksByTimeIntervalsAccTest() {
         super();
     }
 
@@ -35,7 +35,7 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testCreatedWithin2Intervals() {
+    void testCreatedWithin2Intervals() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         TimeInterval interval1 = new TimeInterval(
@@ -54,10 +54,10 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
         TaskSummary previousSummary = null;
         for (TaskSummary taskSummary : results) {
             Instant cr = taskSummary.getCreated();
-            Assert.assertTrue(interval1.contains(cr) || interval2.contains(cr));
+            assertTrue(interval1.contains(cr) || interval2.contains(cr));
 
             if (previousSummary != null) {
-                Assert.assertTrue(!previousSummary.getCreated().isAfter(taskSummary.getCreated()));
+                assertFalse(previousSummary.getCreated().isAfter(taskSummary.getCreated()));
             }
             previousSummary = taskSummary;
         }
@@ -67,7 +67,7 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testCreatedBefore() {
+    void testCreatedBefore() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         TimeInterval interval1 = new TimeInterval(
@@ -83,10 +83,10 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
         TaskSummary previousSummary = null;
         for (TaskSummary taskSummary : results) {
             Instant cr = taskSummary.getCreated();
-            Assert.assertTrue(interval1.contains(cr));
+            assertTrue(interval1.contains(cr));
 
             if (previousSummary != null) {
-                Assert.assertTrue(!previousSummary.getCreated().isAfter(taskSummary.getCreated()));
+                assertFalse(previousSummary.getCreated().isAfter(taskSummary.getCreated()));
             }
             previousSummary = taskSummary;
         }
@@ -96,7 +96,7 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testCreatedAfter() {
+    void testCreatedAfter() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         TimeInterval interval1 = new TimeInterval(
@@ -111,10 +111,10 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
         TaskSummary previousSummary = null;
         for (TaskSummary taskSummary : results) {
             Instant cr = taskSummary.getCreated();
-            Assert.assertTrue(interval1.contains(cr));
+            assertTrue(interval1.contains(cr));
 
             if (previousSummary != null) {
-                Assert.assertTrue(!previousSummary.getCreated().isAfter(taskSummary.getCreated()));
+                assertFalse(previousSummary.getCreated().isAfter(taskSummary.getCreated()));
             }
             previousSummary = taskSummary;
         }
@@ -124,7 +124,7 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testClaimedWithin2Intervals() {
+    void testClaimedWithin2Intervals() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         TimeInterval interval1 = new TimeInterval(
@@ -143,10 +143,10 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
         TaskSummary previousSummary = null;
         for (TaskSummary taskSummary : results) {
             Instant cr = taskSummary.getClaimed();
-            Assert.assertTrue(interval1.contains(cr) || interval2.contains(cr));
+            assertTrue(interval1.contains(cr) || interval2.contains(cr));
 
             if (previousSummary != null) {
-                Assert.assertTrue(!previousSummary.getClaimed().isAfter(taskSummary.getClaimed()));
+                assertFalse(previousSummary.getClaimed().isAfter(taskSummary.getClaimed()));
             }
             previousSummary = taskSummary;
         }
@@ -156,7 +156,7 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testCompletedWithin() {
+    void testCompletedWithin() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         TimeInterval interval = new TimeInterval(
@@ -171,10 +171,10 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
         TaskSummary previousSummary = null;
         for (TaskSummary taskSummary : results) {
             Instant cr = taskSummary.getCompleted();
-            Assert.assertTrue(interval.contains(cr));
+            assertTrue(interval.contains(cr));
 
             if (previousSummary != null) {
-                Assert.assertTrue(!previousSummary.getCompleted().isAfter(taskSummary.getCompleted()));
+                assertFalse(previousSummary.getCompleted().isAfter(taskSummary.getCompleted()));
             }
             previousSummary = taskSummary;
         }
@@ -184,7 +184,7 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testModifiedWithin() {
+    void testModifiedWithin() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         TimeInterval interval = new TimeInterval(
@@ -199,10 +199,10 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
         TaskSummary previousSummary = null;
         for (TaskSummary taskSummary : results) {
             Instant cr = taskSummary.getModified();
-            Assert.assertTrue(interval.contains(cr));
+            assertTrue(interval.contains(cr));
 
             if (previousSummary != null) {
-                Assert.assertTrue(!previousSummary.getModified().isAfter(taskSummary.getModified()));
+                assertFalse(previousSummary.getModified().isAfter(taskSummary.getModified()));
             }
             previousSummary = taskSummary;
         }
@@ -212,7 +212,7 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testPlannedWithin() {
+    void testPlannedWithin() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         TimeInterval interval = new TimeInterval(
@@ -227,10 +227,10 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
         TaskSummary previousSummary = null;
         for (TaskSummary taskSummary : results) {
             Instant cr = taskSummary.getPlanned();
-            Assert.assertTrue(interval.contains(cr));
+            assertTrue(interval.contains(cr));
 
             if (previousSummary != null) {
-                Assert.assertTrue(!previousSummary.getPlanned().isAfter(taskSummary.getPlanned()));
+                assertFalse(previousSummary.getPlanned().isAfter(taskSummary.getPlanned()));
             }
             previousSummary = taskSummary;
         }
@@ -240,7 +240,7 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "group_2"})
     @Test
-    public void testDueWithin() {
+    void testDueWithin() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         TimeInterval interval = new TimeInterval(
@@ -255,10 +255,10 @@ public class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
         TaskSummary previousSummary = null;
         for (TaskSummary taskSummary : results) {
             Instant cr = taskSummary.getDue();
-            Assert.assertTrue(interval.contains(cr));
+            assertTrue(interval.contains(cr));
 
             if (previousSummary != null) {
-                Assert.assertTrue(!previousSummary.getPlanned().isAfter(taskSummary.getPlanned()));
+                assertFalse(previousSummary.getPlanned().isAfter(taskSummary.getPlanned()));
             }
             previousSummary = taskSummary;
         }

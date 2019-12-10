@@ -1,7 +1,7 @@
 package pro.taskana.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -16,12 +16,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import pro.taskana.CustomField;
 import pro.taskana.TaskState;
@@ -37,8 +37,8 @@ import pro.taskana.report.CategoryReport;
 /**
  * Unit Test for CategoryBuilderImpl.
  */
-@RunWith(MockitoJUnitRunner.class)
-public class CategoryReportBuilderImplTest {
+@ExtendWith(MockitoExtension.class)
+class CategoryReportBuilderImplTest {
 
     @InjectMocks
     private TaskMonitorServiceImpl cut;
@@ -55,8 +55,8 @@ public class CategoryReportBuilderImplTest {
     @Mock
     private TaskMonitorMapper taskMonitorMapperMock;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         when(taskanaEngineMock.getConfiguration()).thenReturn(taskanaEngineConfiguration);
         when(internalTaskanaEngineMock.getEngine()).thenReturn(taskanaEngineMock);
         when(taskanaEngineConfiguration.isGermanPublicHolidaysEnabled()).thenReturn(true);
@@ -64,7 +64,7 @@ public class CategoryReportBuilderImplTest {
     }
 
     @Test
-    public void testGetTotalNumbersOfCatgoryReport() throws InvalidArgumentException, NotAuthorizedException {
+    void testGetTotalNumbersOfCatgoryReport() throws InvalidArgumentException, NotAuthorizedException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Collections.singletonList("EXTERN");
@@ -110,7 +110,7 @@ public class CategoryReportBuilderImplTest {
     }
 
     @Test
-    public void testGetCategoryReportWithReportLineItemDefinitions()
+    void testGetCategoryReportWithReportLineItemDefinitions()
         throws InvalidArgumentException, NotAuthorizedException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
@@ -163,7 +163,7 @@ public class CategoryReportBuilderImplTest {
     }
 
     @Test
-    public void testListTaskIdsOfCategoryReportForSelectedItems()
+    void testListTaskIdsOfCategoryReportForSelectedItems()
         throws InvalidArgumentException, NotAuthorizedException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
@@ -215,7 +215,7 @@ public class CategoryReportBuilderImplTest {
     }
 
     @Test
-    public void testListTaskIdsForSelectedItemsIsEmptyResult() throws NotAuthorizedException, InvalidArgumentException {
+    void testListTaskIdsForSelectedItemsIsEmptyResult() throws NotAuthorizedException, InvalidArgumentException {
         SelectedItem selectedItem = new SelectedItem();
         List<SelectedItem> selectedItems = Collections.singletonList(selectedItem);
         List<String> result = cut.createCategoryReportBuilder()
@@ -224,7 +224,7 @@ public class CategoryReportBuilderImplTest {
     }
 
     @Test
-    public void testListCustomAttributeValuesForCustomAttributeName()
+    void testListCustomAttributeValuesForCustomAttributeName()
         throws NotAuthorizedException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
@@ -276,7 +276,7 @@ public class CategoryReportBuilderImplTest {
     }
 
     @Test
-    public void testListCustomAttributeValuesForCustomAttributeNameIsEmptyResult() throws NotAuthorizedException {
+    void testListCustomAttributeValuesForCustomAttributeNameIsEmptyResult() throws NotAuthorizedException {
         List<String> result = cut.createCategoryReportBuilder()
             .workbasketIdIn(Arrays.asList("DieGibtsSicherNed"))
             .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_1);

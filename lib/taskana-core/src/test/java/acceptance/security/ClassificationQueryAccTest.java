@@ -1,7 +1,7 @@
 package acceptance.security;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.List;
 
@@ -20,14 +20,14 @@ import pro.taskana.security.WithAccessId;
  * @author bbr
  */
 @ExtendWith(JAASExtension.class)
-public class ClassificationQueryAccTest extends AbstractAccTest {
+class ClassificationQueryAccTest extends AbstractAccTest {
 
-    public ClassificationQueryAccTest() {
+    ClassificationQueryAccTest() {
         super();
     }
 
     @Test
-    public void testFindClassificationsByDomainUnauthenticated() {
+    void testFindClassificationsByDomainUnauthenticated() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classificationSummaryList = classificationService.createClassificationQuery()
             .domainIn("DOMAIN_A")
@@ -39,7 +39,7 @@ public class ClassificationQueryAccTest extends AbstractAccTest {
 
     @WithAccessId(userName = "businessadmin")
     @Test
-    public void testFindClassificationsByDomainBusinessAdmin() {
+    void testFindClassificationsByDomainBusinessAdmin() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classificationSummaryList = classificationService.createClassificationQuery()
             .domainIn("DOMAIN_A")
@@ -51,7 +51,7 @@ public class ClassificationQueryAccTest extends AbstractAccTest {
 
     @WithAccessId(userName = "admin")
     @Test
-    public void testFindClassificationsByDomainAdmin() {
+    void testFindClassificationsByDomainAdmin() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classificationSummaryList = classificationService.createClassificationQuery()
             .domainIn("DOMAIN_A")

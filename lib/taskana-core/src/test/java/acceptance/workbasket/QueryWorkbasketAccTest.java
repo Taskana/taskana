@@ -1,8 +1,8 @@
 package acceptance.workbasket;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static pro.taskana.WorkbasketQueryColumnName.NAME;
 
 import java.util.ArrayList;
@@ -28,12 +28,12 @@ import pro.taskana.security.WithAccessId;
  * Acceptance test for all "query workbasket by permission" scenarios.
  */
 @ExtendWith(JAASExtension.class)
-public class QueryWorkbasketAccTest extends AbstractAccTest {
+class QueryWorkbasketAccTest extends AbstractAccTest {
 
     private static SortDirection asc = SortDirection.ASCENDING;
     private static SortDirection desc = SortDirection.DESCENDING;
 
-    public QueryWorkbasketAccTest() {
+    QueryWorkbasketAccTest() {
         super();
     }
 
@@ -41,7 +41,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1_1"})
     @Test
-    public void testQueryAllForUserMultipleTimes() {
+    void testQueryAllForUserMultipleTimes() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         WorkbasketQuery query = workbasketService.createWorkbasketQuery();
         long count = query.count();
@@ -58,11 +58,11 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"businessadmin"})
     @Test
-    public void testQueryAllForBusinessAdminMultipleTimes() {
+    void testQueryAllForBusinessAdminMultipleTimes() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         WorkbasketQuery query = workbasketService.createWorkbasketQuery();
         long count = query.count();
-        assertTrue(count == 25);
+        assertEquals(25, count);
         List<WorkbasketSummary> workbaskets = query.list();
         assertNotNull(workbaskets);
         assertEquals(count, workbaskets.size());
@@ -75,11 +75,11 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"admin"})
     @Test
-    public void testQueryAllForAdminMultipleTimes() {
+    void testQueryAllForAdminMultipleTimes() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         WorkbasketQuery query = workbasketService.createWorkbasketQuery();
         long count = query.count();
-        assertTrue(count == 25);
+        assertEquals(25, count);
         List<WorkbasketSummary> workbaskets = query.list();
         assertNotNull(workbaskets);
         assertEquals(count, workbaskets.size());
@@ -92,7 +92,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketValuesForColumnName() {
+    void testQueryWorkbasketValuesForColumnName() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<String> columnValueList = workbasketService.createWorkbasketQuery()
             .listValues(NAME, null);
@@ -111,7 +111,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByDomain() {
+    void testQueryWorkbasketByDomain() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_B")
@@ -123,7 +123,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByDomainAndType() {
+    void testQueryWorkbasketByDomainAndType() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")
@@ -136,7 +136,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByName() {
+    void testQueryWorkbasketByName() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameIn("Gruppenpostkorb KSC")
@@ -149,7 +149,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByNameStartsWith() {
+    void testQueryWorkbasketByNameStartsWith() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("%Gruppenpostkorb KSC%")
@@ -161,7 +161,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByNameContains() {
+    void testQueryWorkbasketByNameContains() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("%Teamlead%", "%Gruppenpostkorb KSC%")
@@ -173,7 +173,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByNameContainsCaseInsensitive() {
+    void testQueryWorkbasketByNameContainsCaseInsensitive() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("%TEAMLEAD%")
@@ -185,7 +185,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByDescription() {
+    void testQueryWorkbasketByDescription() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .descriptionLike("%ppk%", "%gruppen%")
@@ -199,7 +199,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByOwnerLike() {
+    void testQueryWorkbasketByOwnerLike() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .ownerLike("%an%", "%te%")
@@ -212,7 +212,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByKey() {
+    void testQueryWorkbasketByKey() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .keyIn("GPK_KSC")
@@ -224,7 +224,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByMultipleKeys() {
+    void testQueryWorkbasketByMultipleKeys() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .keyIn("GPK_KSC_1", "GPK_KSC")
@@ -236,7 +236,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByMultipleKeysWithUnknownKey() {
+    void testQueryWorkbasketByMultipleKeysWithUnknownKey() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .keyIn("GPK_KSC_1", "GPK_Ksc", "GPK_KSC_3")
@@ -248,7 +248,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByKeyContains() {
+    void testQueryWorkbasketByKeyContains() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .keyLike("%KSC%")
@@ -260,7 +260,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByKeyContainsIgnoreCase() {
+    void testQueryWorkbasketByKeyContainsIgnoreCase() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .keyLike("%kSc%")
@@ -272,7 +272,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByKeyOrNameContainsIgnoreCase() {
+    void testQueryWorkbasketByKeyOrNameContainsIgnoreCase() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .keyOrNameLike("%kSc%")
@@ -284,7 +284,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByNameStartsWithSortedByNameAscending() {
+    void testQueryWorkbasketByNameStartsWithSortedByNameAscending() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("%Gruppenpostkorb KSC%")
@@ -308,7 +308,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "max")
     @Test
-    public void testQueryWorkbasketByNameStartsWithSortedByNameDescending() {
+    void testQueryWorkbasketByNameStartsWithSortedByNameDescending() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("basxet%")
@@ -329,7 +329,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "max")
     @Test
-    public void testQueryWorkbasketByNameStartsWithSortedByKeyAscending() {
+    void testQueryWorkbasketByNameStartsWithSortedByKeyAscending() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("basxet%")
@@ -350,7 +350,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "max")
     @Test
-    public void testQueryWorkbasketByNameStartsWithSortedByKeyDescending() {
+    void testQueryWorkbasketByNameStartsWithSortedByKeyDescending() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("basxet%")
@@ -372,7 +372,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByCreated() {
+    void testQueryWorkbasketByCreated() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .createdWithin(todaysInterval())
@@ -384,7 +384,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryWorkbasketByModified() {
+    void testQueryWorkbasketByModified() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .modifiedWithin(todaysInterval())
@@ -396,7 +396,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "unknown",
         groupNames = "admin")
     @Test
-    public void testQueryWorkbasketByAdmin()
+    void testQueryWorkbasketByAdmin()
         throws NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
@@ -428,12 +428,12 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = "group_1")
     @Test
-    public void testQueryWorkbasketByDomainLike() {
+    void testQueryWorkbasketByDomainLike() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .domainLike("DOMAIN_%").orderByDomain(asc).list();
 
-        ArrayList<String> expectedIds = new ArrayList<String>(
+        ArrayList<String> expectedIds = new ArrayList<>(
             Arrays.asList("WBI:100000000000000000000000000000000001", "WBI:100000000000000000000000000000000002",
                 "WBI:100000000000000000000000000000000004", "WBI:100000000000000000000000000000000005",
                 "WBI:100000000000000000000000000000000006", "WBI:100000000000000000000000000000000007",
@@ -449,7 +449,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "admin",
         groupNames = "group_1")
     @Test
-    public void testQueryWorkbasketByOwnerInOrderByDomainDesc() {
+    void testQueryWorkbasketByOwnerInOrderByDomainDesc() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .ownerIn("owner0815").orderByDomain(desc).list();
@@ -463,7 +463,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryForCustom1In() {
+    void testQueryForCustom1In() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .custom1In("ABCQVW").list();
@@ -475,7 +475,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForCustom1Like() {
+    void testQueryForCustom1Like() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .custom1Like("custo%")
@@ -486,7 +486,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForCustom2In() {
+    void testQueryForCustom2In() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .custom2In("cust2", "custom2")
@@ -497,7 +497,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForCustom2Like() {
+    void testQueryForCustom2Like() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .custom2Like("cusTo%")
@@ -508,7 +508,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForCustom3In() {
+    void testQueryForCustom3In() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .custom3In("custom3")
@@ -519,7 +519,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForCustom3Like() {
+    void testQueryForCustom3Like() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .custom3Like("cu%")
@@ -530,7 +530,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForCustom4In() {
+    void testQueryForCustom4In() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .custom4In("custom4", "team")
@@ -541,7 +541,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForCustom4Like() {
+    void testQueryForCustom4Like() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .custom4Like("%u%")
@@ -552,7 +552,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrgLevl1In() {
+    void testQueryForOrgLevl1In() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .orgLevel1In("orgl1", "")
@@ -563,7 +563,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrgLevel1Like() {
+    void testQueryForOrgLevel1Like() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .orgLevel1Like("%1")
@@ -574,7 +574,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrgLevel2In() {
+    void testQueryForOrgLevel2In() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .orgLevel2In("abteilung")
@@ -585,7 +585,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrgLevel2Like() {
+    void testQueryForOrgLevel2Like() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .orgLevel2Like("ab%")
@@ -596,7 +596,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrgLevel3In() {
+    void testQueryForOrgLevel3In() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .orgLevel3In("orgl3")
@@ -607,7 +607,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrgLevel3Like() {
+    void testQueryForOrgLevel3Like() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .orgLevel3Like("org%")
@@ -618,7 +618,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrgLevel4In() {
+    void testQueryForOrgLevel4In() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .orgLevel4In("team", "orgl4")
@@ -629,7 +629,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrgLevel4Like() {
+    void testQueryForOrgLevel4Like() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .orgLevel4Like("%")
@@ -640,7 +640,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderByOrgLevel1Desc() {
+    void testQueryForOrderByOrgLevel1Desc() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .orderByOrgLevel1(desc)
@@ -651,7 +651,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderByOrgLevel2Asc() {
+    void testQueryForOrderByOrgLevel2Asc() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .orderByOrgLevel2(asc)
@@ -662,7 +662,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderByOrgLevel3Desc() {
+    void testQueryForOrderByOrgLevel3Desc() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .orderByOrgLevel3(desc)
@@ -673,7 +673,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderByOrgLevel4Asc() {
+    void testQueryForOrderByOrgLevel4Asc() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .orderByOrgLevel4(asc)
@@ -684,7 +684,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderByCustom1Asc() {
+    void testQueryForOrderByCustom1Asc() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .orderByCustom1(asc)
@@ -695,7 +695,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderByCustom2Desc() {
+    void testQueryForOrderByCustom2Desc() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .orderByCustom2(desc)
@@ -706,7 +706,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderByCustom3Asc() {
+    void testQueryForOrderByCustom3Asc() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .orderByCustom3(asc)
@@ -717,7 +717,7 @@ public class QueryWorkbasketAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "admin")
     @Test
-    public void testQueryForOrderByCustom4Desc() {
+    void testQueryForOrderByCustom4Desc() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .orderByCustom4(desc)

@@ -1,13 +1,13 @@
 package acceptance.task;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -36,9 +36,9 @@ import pro.taskana.security.WithAccessId;
  * Acceptance test for all "work on task" scenarios. This includes claim, complete...
  */
 @ExtendWith(JAASExtension.class)
-public class WorkOnTaskAccTest extends AbstractAccTest {
+class WorkOnTaskAccTest extends AbstractAccTest {
 
-    public WorkOnTaskAccTest() {
+    WorkOnTaskAccTest() {
         super();
     }
 
@@ -46,7 +46,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         userName = "user_1_2",
         groupNames = {"group_1"})
     @Test
-    public void testClaimTask()
+    void testClaimTask()
         throws NotAuthorizedException, TaskNotFoundException,
         InvalidStateException, InvalidOwnerException {
         TaskService taskService = taskanaEngine.getTaskService();
@@ -68,7 +68,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         userName = "user_1_2",
         groupNames = {"group_1"})
     @Test
-    public void testThrowsExceptionIfTaskIsAlreadyClaimed()
+    void testThrowsExceptionIfTaskIsAlreadyClaimed()
         throws NotAuthorizedException, TaskNotFoundException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000026");
@@ -81,7 +81,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         userName = "user_1_2",
         groupNames = {"group_1"})
     @Test
-    public void testClaimAlreadyClaimedByCallerTask()
+    void testClaimAlreadyClaimedByCallerTask()
         throws NotAuthorizedException, TaskNotFoundException,
         InvalidStateException, InvalidOwnerException {
         TaskService taskService = taskanaEngine.getTaskService();
@@ -94,7 +94,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         userName = "user_1_2",
         groupNames = {"group_1"})
     @Test
-    public void testForceClaimTaskWhichIsAlreadyClaimedByAnotherUser()
+    void testForceClaimTaskWhichIsAlreadyClaimedByAnotherUser()
         throws NotAuthorizedException, TaskNotFoundException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000028");
@@ -107,7 +107,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         userName = "user_1_2",
         groupNames = {"group_1"})
     @Test
-    public void testCancelClaimTask()
+    void testCancelClaimTask()
         throws NotAuthorizedException, TaskNotFoundException,
         InvalidStateException, InvalidOwnerException {
         TaskService taskService = taskanaEngine.getTaskService();
@@ -127,7 +127,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         userName = "user_1_2",
         groupNames = {"group_1"})
     @Test
-    public void testThrowsExceptionIfCancelClaimOfTaskFromAnotherUser()
+    void testThrowsExceptionIfCancelClaimOfTaskFromAnotherUser()
         throws NotAuthorizedException, TaskNotFoundException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task claimedTask = taskService.getTask("TKI:000000000000000000000000000000000030");
@@ -140,7 +140,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         userName = "user_1_2",
         groupNames = {"group_1"})
     @Test
-    public void testForceCancelClaimOfTaskFromAnotherUser()
+    void testForceCancelClaimOfTaskFromAnotherUser()
         throws NotAuthorizedException, TaskNotFoundException,
         InvalidStateException, InvalidOwnerException {
         TaskService taskService = taskanaEngine.getTaskService();
@@ -160,7 +160,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         userName = "user_1_2",
         groupNames = {"group_1"})
     @Test
-    public void testCompleteTask()
+    void testCompleteTask()
         throws NotAuthorizedException, TaskNotFoundException,
         InvalidStateException, InvalidOwnerException {
         Instant before = Instant.now().minus(Duration.ofSeconds(3L));
@@ -184,7 +184,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         userName = "user_1_2",
         groupNames = {"group_1"})
     @Test
-    public void testForceCompleteUnclaimedTask()
+    void testForceCompleteUnclaimedTask()
         throws NotAuthorizedException, TaskNotFoundException,
         InvalidStateException, InvalidOwnerException {
         TaskService taskService = taskanaEngine.getTaskService();
@@ -205,7 +205,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         userName = "user_1_2",
         groupNames = {"group_1"})
     @Test
-    public void testThrowsExceptionIfCompletingClaimedTaskOfAnotherUser()
+    void testThrowsExceptionIfCompletingClaimedTaskOfAnotherUser()
         throws NotAuthorizedException, TaskNotFoundException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task claimedTask = taskService.getTask("TKI:000000000000000000000000000000000034");
@@ -218,7 +218,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         userName = "user_1_2",
         groupNames = {"group_1"})
     @Test
-    public void testForceCompleteClaimedTaskOfAnotherUser()
+    void testForceCompleteClaimedTaskOfAnotherUser()
         throws NotAuthorizedException, TaskNotFoundException,
         InvalidStateException, InvalidOwnerException {
         TaskService taskService = taskanaEngine.getTaskService();
@@ -239,7 +239,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         userName = "user_1_2",
         groupNames = {"group_1"})
     @Test
-    public void testBulkCompleteTasks()
+    void testBulkCompleteTasks()
         throws NotAuthorizedException, InvalidArgumentException, TaskNotFoundException {
 
         TaskService taskService = taskanaEngine.getTaskService();
@@ -262,7 +262,7 @@ public class WorkOnTaskAccTest extends AbstractAccTest {
         userName = "user_1_2",
         groupNames = {"group_1"})
     @Test
-    public void testBulkDeleteTasksWithException()
+    void testBulkDeleteTasksWithException()
         throws InvalidArgumentException {
 
         TaskService taskService = taskanaEngine.getTaskService();

@@ -1,9 +1,9 @@
 package acceptance.task;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
@@ -26,9 +26,9 @@ import pro.taskana.security.WithAccessId;
  * Acceptance test for the usecase of adding/removing an attachment of a task and update the result correctly.
  */
 @ExtendWith(JAASExtension.class)
-public class QueryTaskWithAttachment extends AbstractAccTest {
+class QueryTaskWithAttachment extends AbstractAccTest {
 
-    public QueryTaskWithAttachment() {
+    QueryTaskWithAttachment() {
         super();
     }
 
@@ -36,7 +36,7 @@ public class QueryTaskWithAttachment extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testGetAttachmentSummariesFromTask() {
+    void testGetAttachmentSummariesFromTask() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> tasks = taskService.createTaskQuery()
             .classificationKeyIn("L110102")
@@ -51,7 +51,7 @@ public class QueryTaskWithAttachment extends AbstractAccTest {
     @WithAccessId(
         userName = "user_1_2")
     @Test
-    public void testGetNoAttachmentSummaryFromTask() {
+    void testGetNoAttachmentSummaryFromTask() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> tasks = taskService.createTaskQuery()
             .list();
@@ -66,7 +66,7 @@ public class QueryTaskWithAttachment extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testIfNewTaskHasEmptyAttachmentList() {
+    void testIfNewTaskHasEmptyAttachmentList() {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.newTask("WBI:100000000000000000000000000000000006");
         assertNotNull(task.getAttachments());
@@ -77,7 +77,7 @@ public class QueryTaskWithAttachment extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testIfAttachmentSummariesAreCorrectUsingTaskQueryAndGetTaskById()
+    void testIfAttachmentSummariesAreCorrectUsingTaskQueryAndGetTaskById()
         throws TaskNotFoundException, NotAuthorizedException {
         TaskService taskService = taskanaEngine.getTaskService();
         // find Task with ID TKI:00...00
@@ -117,7 +117,7 @@ public class QueryTaskWithAttachment extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testIfAttachmentSummariesAreCorrect()
+    void testIfAttachmentSummariesAreCorrect()
         throws InvalidArgumentException, TaskNotFoundException, NotAuthorizedException {
         TaskService taskService = taskanaEngine.getTaskService();
         // find Task with ID TKI:00...00

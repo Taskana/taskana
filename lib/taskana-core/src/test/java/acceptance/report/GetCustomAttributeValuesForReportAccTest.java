@@ -1,8 +1,8 @@
 package acceptance.report;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,10 +24,10 @@ import pro.taskana.security.WithAccessId;
  * Acceptance test for all "classification report" scenarios.
  */
 @ExtendWith(JAASExtension.class)
-public class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
+class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
 
     @Test
-    public void testRoleCheck() {
+    void testRoleCheck() {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         Assertions.assertThrows(NotAuthorizedException.class, () ->
@@ -39,7 +39,7 @@ public class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccT
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testGetCustomAttributeValuesForOneWorkbasket() throws NotAuthorizedException {
+    void testGetCustomAttributeValuesForOneWorkbasket() throws NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> values = taskMonitorService.createWorkbasketReportBuilder()
@@ -55,7 +55,7 @@ public class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccT
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testGetCustomAttributeValuesForOneDomain() throws NotAuthorizedException {
+    void testGetCustomAttributeValuesForOneDomain() throws NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<String> values = taskMonitorService.createWorkbasketReportBuilder()
@@ -68,7 +68,7 @@ public class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccT
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testGetCustomAttributeValuesForCustomAttribute()
+    void testGetCustomAttributeValuesForCustomAttribute()
         throws NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
@@ -87,7 +87,7 @@ public class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccT
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testGetCustomAttributeValuesForExcludedClassifications()
+    void testGetCustomAttributeValuesForExcludedClassifications()
         throws NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 

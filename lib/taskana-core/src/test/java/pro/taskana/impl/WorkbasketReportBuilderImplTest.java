@@ -1,7 +1,7 @@
 package pro.taskana.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -16,12 +16,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import pro.taskana.CustomField;
 import pro.taskana.TaskState;
@@ -39,8 +40,8 @@ import pro.taskana.report.WorkbasketReport;
 /**
  * Unit Test for WorkbasketReportBuilderImpl.
  */
-@RunWith(MockitoJUnitRunner.class)
-public class WorkbasketReportBuilderImplTest {
+@ExtendWith(MockitoExtension.class)
+class WorkbasketReportBuilderImplTest {
 
     @InjectMocks
     private TaskMonitorServiceImpl cut;
@@ -57,8 +58,8 @@ public class WorkbasketReportBuilderImplTest {
     @Mock
     private TaskMonitorMapper taskMonitorMapperMock;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         when(internalTaskanaEngineMock.getEngine()).thenReturn(taskanaEngineMock);
         when(taskanaEngineMock.getConfiguration()).thenReturn(taskanaEngineConfiguration);
         when(taskanaEngineConfiguration.isGermanPublicHolidaysEnabled()).thenReturn(true);
@@ -66,7 +67,7 @@ public class WorkbasketReportBuilderImplTest {
     }
 
     @Test
-    public void testGetTotalNumbersOfWorkbasketReportBasedOnDueDate()
+    void testGetTotalNumbersOfWorkbasketReportBasedOnDueDate()
         throws InvalidArgumentException, NotAuthorizedException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
@@ -120,7 +121,7 @@ public class WorkbasketReportBuilderImplTest {
     }
 
     @Test
-    public void testGetWorkbasketReportWithReportLineItemDefinitions()
+    void testGetWorkbasketReportWithReportLineItemDefinitions()
         throws InvalidArgumentException, NotAuthorizedException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
@@ -178,7 +179,7 @@ public class WorkbasketReportBuilderImplTest {
     }
 
     @Test
-    public void testGetTaskIdsOfCategoryReportForSelectedItems()
+    void testGetTaskIdsOfCategoryReportForSelectedItems()
         throws InvalidArgumentException, NotAuthorizedException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
@@ -229,18 +230,19 @@ public class WorkbasketReportBuilderImplTest {
         assertEquals(expectedResult, actualResult);
     }
 
-    @Test(expected = InvalidArgumentException.class)
-    public void testListTaskIdsForSelectedItemsIsEmptyResult()
-        throws NotAuthorizedException, InvalidArgumentException {
+    @Test
+    void testListTaskIdsForSelectedItemsIsEmptyResult() {
         List<SelectedItem> selectedItems = new ArrayList<>();
-        List<String> result = cut.createWorkbasketReportBuilder()
-            .workbasketIdIn(Arrays.asList("DieGibtsGarantiertNed"))
-            .listTaskIdsForSelectedItems(selectedItems);
-        assertNotNull(result);
+        Assertions.assertThrows(InvalidArgumentException.class, () -> {
+            List<String> result = cut.createWorkbasketReportBuilder()
+                .workbasketIdIn(Arrays.asList("DieGibtsGarantiertNed"))
+                .listTaskIdsForSelectedItems(selectedItems);
+            assertNotNull(result);
+        });
     }
 
     @Test
-    public void testListCustomAttributeValuesForCustomAttributeName()
+    void testListCustomAttributeValuesForCustomAttributeName()
         throws NotAuthorizedException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
@@ -292,7 +294,7 @@ public class WorkbasketReportBuilderImplTest {
     }
 
     @Test
-    public void testListCustomAttributeValuesForCustomAttributeNameIsEmptyResult()
+    void testListCustomAttributeValuesForCustomAttributeNameIsEmptyResult()
         throws NotAuthorizedException {
         List<String> result = cut.createWorkbasketReportBuilder()
             .workbasketIdIn(Arrays.asList("GibtsSicherNed"))
@@ -301,7 +303,7 @@ public class WorkbasketReportBuilderImplTest {
     }
 
     @Test
-    public void testGetTotalNumbersOfWorkbasketReportBasedOnCreatedDate()
+    void testGetTotalNumbersOfWorkbasketReportBasedOnCreatedDate()
         throws InvalidArgumentException, NotAuthorizedException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);

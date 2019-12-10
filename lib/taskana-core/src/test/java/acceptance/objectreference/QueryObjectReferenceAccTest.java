@@ -1,7 +1,7 @@
 package acceptance.objectreference;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static pro.taskana.ObjectReferenceQueryColumnName.COMPANY;
 import static pro.taskana.ObjectReferenceQueryColumnName.SYSTEM;
 
@@ -16,14 +16,14 @@ import pro.taskana.TaskQuery;
 /**
  * Acceptance test for all "get classification" scenarios.
  */
-public class QueryObjectReferenceAccTest extends AbstractAccTest {
+class QueryObjectReferenceAccTest extends AbstractAccTest {
 
-    public QueryObjectReferenceAccTest() {
+    QueryObjectReferenceAccTest() {
         super();
     }
 
     @Test
-    public void testQueryObjectReferenceValuesForColumnName() {
+    void testQueryObjectReferenceValuesForColumnName() {
         TaskQuery taskQuery = taskanaEngine.getTaskService().createTaskQuery();
         List<String> columnValues = taskQuery.createObjectReferenceQuery()
             .listValues(COMPANY, null);
@@ -40,7 +40,7 @@ public class QueryObjectReferenceAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testFindObjectReferenceByCompany() {
+    void testFindObjectReferenceByCompany() {
         TaskQuery taskQuery = taskanaEngine.getTaskService().createTaskQuery();
 
         List<ObjectReference> objectReferenceList = taskQuery.createObjectReferenceQuery()
@@ -52,7 +52,7 @@ public class QueryObjectReferenceAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testFindObjectReferenceBySystem() {
+    void testFindObjectReferenceBySystem() {
         TaskQuery taskQuery = taskanaEngine.getTaskService().createTaskQuery();
 
         List<ObjectReference> objectReferenceList = taskQuery.createObjectReferenceQuery()
@@ -65,7 +65,7 @@ public class QueryObjectReferenceAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testFindObjectReferenceBySystemInstance() {
+    void testFindObjectReferenceBySystemInstance() {
         TaskQuery taskQuery = taskanaEngine.getTaskService().createTaskQuery();
 
         List<ObjectReference> objectReferenceList = taskQuery.createObjectReferenceQuery()
@@ -78,7 +78,7 @@ public class QueryObjectReferenceAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testFindObjectReferenceByType() {
+    void testFindObjectReferenceByType() {
         TaskQuery taskQuery = taskanaEngine.getTaskService().createTaskQuery();
 
         List<ObjectReference> objectReferenceList = taskQuery.createObjectReferenceQuery()
@@ -90,7 +90,7 @@ public class QueryObjectReferenceAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testFindObjectReferenceByValue() {
+    void testFindObjectReferenceByValue() {
         TaskQuery taskQuery = taskanaEngine.getTaskService().createTaskQuery();
 
         List<ObjectReference> objectReferenceList = taskQuery.createObjectReferenceQuery()

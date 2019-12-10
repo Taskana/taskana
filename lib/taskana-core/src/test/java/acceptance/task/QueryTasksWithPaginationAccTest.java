@@ -1,7 +1,7 @@
 package acceptance.task;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
@@ -22,9 +22,9 @@ import pro.taskana.security.WithAccessId;
  * Acceptance test for all "query tasks by workbasket with pagination" scenarios.
  */
 @ExtendWith(JAASExtension.class)
-public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
+class QueryTasksWithPaginationAccTest extends AbstractAccTest {
 
-    public QueryTasksWithPaginationAccTest() {
+    QueryTasksWithPaginationAccTest() {
         super();
     }
 
@@ -32,7 +32,7 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testGetFirstPageOfTaskQueryWithOffset() {
+    void testGetFirstPageOfTaskQueryWithOffset() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
@@ -44,7 +44,7 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testSecondPageOfTaskQueryWithOffset() {
+    void testSecondPageOfTaskQueryWithOffset() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
@@ -56,7 +56,7 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testListOffsetAndLimitOutOfBounds() {
+    void testListOffsetAndLimitOutOfBounds() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         // both will be 0, working
@@ -82,7 +82,7 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testPaginationWithPages() {
+    void testPaginationWithPages() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         // Getting full page
@@ -122,7 +122,7 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testPaginationNullAndNegativeLimitsIgnoring() {
+    void testPaginationNullAndNegativeLimitsIgnoring() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         // 0 limit/size = 0 results
@@ -159,7 +159,7 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testPaginationThrowingExceptionWhenPageOutOfBounds() {
+    void testPaginationThrowingExceptionWhenPageOutOfBounds() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         // entrypoint set outside result amount
@@ -176,7 +176,7 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testCountOfTaskQuery() {
+    void testCountOfTaskQuery() {
         TaskService taskService = taskanaEngine.getTaskService();
         long count = taskService.createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
@@ -188,7 +188,7 @@ public class QueryTasksWithPaginationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testCountOfTaskQueryWithAttachmentChannelFilter() {
+    void testCountOfTaskQueryWithAttachmentChannelFilter() {
         TaskService taskService = taskanaEngine.getTaskService();
         long count = taskService.createTaskQuery()
             .attachmentChannelIn("ch6")

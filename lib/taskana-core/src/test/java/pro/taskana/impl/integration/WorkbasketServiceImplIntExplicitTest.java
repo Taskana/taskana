@@ -1,5 +1,8 @@
 package pro.taskana.impl.integration;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -8,12 +11,11 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
@@ -22,7 +24,6 @@ import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.WorkbasketType;
-import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
@@ -31,10 +32,10 @@ import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.WorkbasketImpl;
-import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
+import pro.taskana.impl.configuration.TaskanaEngineTestConfiguration;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.sampledata.SampleDataGenerator;
-import pro.taskana.security.JAASRunner;
+import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
@@ -42,29 +43,29 @@ import pro.taskana.security.WithAccessId;
  *
  * @author bbr
  */
-@RunWith(JAASRunner.class)
-public class WorkbasketServiceImplIntExplicitTest {
+@ExtendWith(JAASExtension.class)
+class WorkbasketServiceImplIntExplicitTest {
 
     private static final int SLEEP_TIME = 100;
     static int counter = 0;
     private DataSource dataSource;
-    private TaskanaEngineConfiguration taskanaEngineConfiguration;
+    private pro.taskana.configuration.TaskanaEngineConfiguration taskanaEngineConfiguration;
     private TaskanaEngine taskanaEngine;
     private TaskanaEngineImpl taskanaEngineImpl;
     private WorkbasketService workBasketService;
 
-    @BeforeClass
-    public static void resetDb() {
-        DataSource ds = TaskanaEngineConfigurationTest.getDataSource();
-        String schemaName = TaskanaEngineConfigurationTest.getSchemaName();
+    @BeforeAll
+    static void resetDb() {
+        DataSource ds = TaskanaEngineTestConfiguration.getDataSource();
+        String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
         new SampleDataGenerator(ds, schemaName).dropDb();
     }
 
-    @Before
-    public void setup() throws SQLException {
-        dataSource = TaskanaEngineConfigurationTest.getDataSource();
-        String schemaName = TaskanaEngineConfigurationTest.getSchemaName();
-        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false,
+    @BeforeEach
+    void setup() throws SQLException {
+        dataSource = TaskanaEngineTestConfiguration.getDataSource();
+        String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
+        taskanaEngineConfiguration = new pro.taskana.configuration.TaskanaEngineConfiguration(dataSource, false,
             schemaName);
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
@@ -75,7 +76,7 @@ public class WorkbasketServiceImplIntExplicitTest {
 
     @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
     @Test
-    public void testUpdateWorkbasket() throws Exception {
+    void testUpdateWorkbasket() throws Exception {
         Connection connection = dataSource.getConnection();
         taskanaEngineImpl.setConnection(connection);
         workBasketService = taskanaEngine.getWorkbasketService();
@@ -111,20 +112,20 @@ public class WorkbasketServiceImplIntExplicitTest {
         Workbasket foundBasket = workBasketService.getWorkbasket(workbasket2.getId());
 
         List<WorkbasketSummary> distributionTargets = workBasketService.getDistributionTargets(foundBasket.getId());
-        Assert.assertEquals(1, distributionTargets.size());
-        Assert.assertEquals(workbasket3.getId(), distributionTargets.get(0).getId());
-        Assert.assertNotEquals(workBasketService.getWorkbasket(id2).getCreated(),
+        assertEquals(1, distributionTargets.size());
+        assertEquals(workbasket3.getId(), distributionTargets.get(0).getId());
+        assertNotEquals(workBasketService.getWorkbasket(id2).getCreated(),
             workBasketService.getWorkbasket(id2).getModified());
-        Assert.assertEquals(workBasketService.getWorkbasket(id1).getCreated(),
+        assertEquals(workBasketService.getWorkbasket(id1).getCreated(),
             workBasketService.getWorkbasket(id1).getModified());
-        Assert.assertEquals(workBasketService.getWorkbasket(id3).getCreated(),
+        assertEquals(workBasketService.getWorkbasket(id3).getCreated(),
             workBasketService.getWorkbasket(id3).getModified());
         connection.commit();
     }
 
     @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
     @Test
-    public void testInsertWorkbasketAccessUser()
+    void testInsertWorkbasketAccessUser()
         throws NotAuthorizedException, SQLException, InvalidArgumentException, WorkbasketNotFoundException,
         DomainNotFoundException, InvalidWorkbasketException, WorkbasketAlreadyExistException {
         Connection connection = dataSource.getConnection();
@@ -139,13 +140,13 @@ public class WorkbasketServiceImplIntExplicitTest {
         accessItem.setPermRead(true);
         workBasketService.createWorkbasketAccessItem(accessItem);
 
-        Assert.assertEquals(1, workBasketService.getWorkbasketAccessItems("id1").size());
+        assertEquals(1, workBasketService.getWorkbasketAccessItems("id1").size());
         connection.commit();
     }
 
     @WithAccessId(userName = "Elena", groupNames = {"businessadmin"})
     @Test
-    public void testUpdateWorkbasketAccessUser()
+    void testUpdateWorkbasketAccessUser()
         throws NotAuthorizedException, SQLException, InvalidArgumentException, WorkbasketNotFoundException,
         DomainNotFoundException, InvalidWorkbasketException, WorkbasketAlreadyExistException {
         Connection connection = dataSource.getConnection();
@@ -161,8 +162,8 @@ public class WorkbasketServiceImplIntExplicitTest {
         accessItem.setPermRead(true);
         workBasketService.createWorkbasketAccessItem(accessItem);
 
-        Assert.assertEquals(1, workBasketService.getWorkbasketAccessItems("key2").size());
-        Assert.assertEquals("zaphod beeblebrox", accessItem.getAccessId());
+        assertEquals(1, workBasketService.getWorkbasketAccessItems("key2").size());
+        assertEquals("zaphod beeblebrox", accessItem.getAccessId());
         connection.commit();
     }
 
@@ -187,8 +188,8 @@ public class WorkbasketServiceImplIntExplicitTest {
         return wb;
     }
 
-    @After
-    public void cleanUp() throws SQLException {
+    @AfterEach
+    void cleanUp() throws SQLException {
         taskanaEngineImpl.setConnection(null);
     }
 

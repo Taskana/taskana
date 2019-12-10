@@ -1,10 +1,10 @@
 package acceptance.classification;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -154,8 +154,7 @@ class CreateClassificationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1", "businessadmin"})
     @Test
-    void testCreateClassificationWithInvalidValues()
-        throws ClassificationAlreadyExistException, NotAuthorizedException, DomainNotFoundException {
+    void testCreateClassificationWithInvalidValues() {
         classificationService.createClassificationQuery().count();
 
         // Check key NULL

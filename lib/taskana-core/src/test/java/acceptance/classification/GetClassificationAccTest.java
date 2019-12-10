@@ -1,7 +1,7 @@
 package acceptance.classification;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.List;
 
@@ -17,24 +17,24 @@ import pro.taskana.exceptions.ClassificationNotFoundException;
 /**
  * Acceptance test for all "get classification" scenarios.
  */
-public class GetClassificationAccTest extends AbstractAccTest {
+class GetClassificationAccTest extends AbstractAccTest {
 
     private ClassificationService classificationService;
 
-    public GetClassificationAccTest() {
+    GetClassificationAccTest() {
         super();
         classificationService = taskanaEngine.getClassificationService();
     }
 
     @Test
-    public void testFindAllClassifications() {
+    void testFindAllClassifications() {
         List<ClassificationSummary> classificationSummaryList = classificationService.createClassificationQuery()
             .list();
         assertNotNull(classificationSummaryList);
     }
 
     @Test
-    public void testGetOneClassificationByKeyAndDomain() throws ClassificationNotFoundException {
+    void testGetOneClassificationByKeyAndDomain() throws ClassificationNotFoundException {
         Classification classification = classificationService.getClassification("T6310", "DOMAIN_A");
         assertNotNull(classification);
         assertEquals("CLI:100000000000000000000000000000000011", classification.getId());
@@ -57,7 +57,7 @@ public class GetClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testGetOneClassificationById() throws ClassificationNotFoundException {
+    void testGetOneClassificationById() throws ClassificationNotFoundException {
         Classification classification = classificationService
             .getClassification("CLI:100000000000000000000000000000000011");
         assertNotNull(classification);
@@ -89,7 +89,7 @@ public class GetClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testGetClassificationAsSummary() throws ClassificationNotFoundException {
+    void testGetClassificationAsSummary() throws ClassificationNotFoundException {
         ClassificationSummary classification = classificationService
             .getClassification("CLI:100000000000000000000000000000000011").asSummary();
         assertNotNull(classification);
@@ -105,26 +105,26 @@ public class GetClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testGetOneClassificationByIdFails() {
+    void testGetOneClassificationByIdFails() {
 
         Assertions.assertThrows(ClassificationNotFoundException.class, () ->
             classificationService.getClassification("CLI:100000000470000000000000000000000011"));
     }
 
     @Test
-    public void testGetClassificationByNullKeyFails() {
+    void testGetClassificationByNullKeyFails() {
         Assertions.assertThrows(ClassificationNotFoundException.class, () ->
             classificationService.getClassification(null, ""));
     }
 
     @Test
-    public void testGetClassificationByInvalidKeyAndDomain() {
+    void testGetClassificationByInvalidKeyAndDomain() {
         Assertions.assertThrows(ClassificationNotFoundException.class, () ->
             classificationService.getClassification("Key0815", "NOT_EXISTING"));
     }
 
     @Test
-    public void testGetOneClassificationForDomainAndGetClassificationFromMasterDomain()
+    void testGetOneClassificationForDomainAndGetClassificationFromMasterDomain()
         throws ClassificationNotFoundException {
         Classification classification = classificationService.getClassification("L10000", "DOMAIN_B");
         assertNotNull(classification);
@@ -133,7 +133,7 @@ public class GetClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testGetOneClassificationForMasterDomain() throws ClassificationNotFoundException {
+    void testGetOneClassificationForMasterDomain() throws ClassificationNotFoundException {
         Classification classification = classificationService.getClassification("L10000", "");
         assertNotNull(classification);
         assertEquals("", classification.getDomain());

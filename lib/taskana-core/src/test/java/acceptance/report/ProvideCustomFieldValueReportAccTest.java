@@ -1,8 +1,8 @@
 package acceptance.report;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,12 +31,12 @@ import pro.taskana.security.WithAccessId;
  * Acceptance test for all "classification report" scenarios.
  */
 @ExtendWith(JAASExtension.class)
-public class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
+class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProvideCustomFieldValueReportAccTest.class);
 
     @Test
-    public void testRoleCheck() {
+    void testRoleCheck() {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         Assertions.assertThrows(NotAuthorizedException.class, () ->
@@ -46,7 +46,7 @@ public class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest 
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testGetTotalNumbersOfTasksOfCustomFieldValueReportForCustom1()
+    void testGetTotalNumbersOfTasksOfCustomFieldValueReportForCustom1()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
@@ -73,7 +73,7 @@ public class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest 
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testGetTotalNumbersOfTasksOfCustomFieldValueReportForCustom2()
+    void testGetTotalNumbersOfTasksOfCustomFieldValueReportForCustom2()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
@@ -99,7 +99,7 @@ public class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest 
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testGetCustomFieldValueReportWithReportLineItemDefinitions()
+    void testGetCustomFieldValueReportWithReportLineItemDefinitions()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
@@ -130,7 +130,7 @@ public class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest 
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testEachItemOfCustomFieldValueReport() throws InvalidArgumentException, NotAuthorizedException {
+    void testEachItemOfCustomFieldValueReport() throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
         List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
@@ -160,7 +160,7 @@ public class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest 
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testEachItemOfCustomFieldValueReportNotInWorkingDays()
+    void testEachItemOfCustomFieldValueReportNotInWorkingDays()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
@@ -190,7 +190,7 @@ public class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest 
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testEachItemOfCustomFieldValueReportWithWorkbasketFilter()
+    void testEachItemOfCustomFieldValueReportWithWorkbasketFilter()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
@@ -223,7 +223,7 @@ public class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest 
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testEachItemOfCustomFieldValueReportWithStateFilter()
+    void testEachItemOfCustomFieldValueReportWithStateFilter()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
@@ -256,7 +256,7 @@ public class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest 
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testEachItemOfCustomFieldValueReportWithCategoryFilter()
+    void testEachItemOfCustomFieldValueReportWithCategoryFilter()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
@@ -289,7 +289,7 @@ public class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest 
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testEachItemOfCustomFieldValueReportWithDomainFilter()
+    void testEachItemOfCustomFieldValueReportWithDomainFilter()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
@@ -322,7 +322,7 @@ public class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest 
     @WithAccessId(
         userName = "monitor")
     @Test
-    public void testEachItemOfCustomFieldValueReportWithCustomFieldValueFilter()
+    void testEachItemOfCustomFieldValueReportWithCustomFieldValueFilter()
         throws InvalidArgumentException, NotAuthorizedException {
         TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
