@@ -49,6 +49,7 @@ import pro.taskana.mappings.TaskMonitorMapper;
 import pro.taskana.mappings.WorkbasketAccessMapper;
 import pro.taskana.mappings.WorkbasketMapper;
 import pro.taskana.security.CurrentUserContext;
+import pro.taskana.taskrouting.TaskRoutingProducer;
 
 /**
  * This is the implementation of TaskanaEngine.
@@ -64,6 +65,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     protected ConnectionManagementMode mode = ConnectionManagementMode.PARTICIPATE;
     protected java.sql.Connection connection = null;
     private HistoryEventProducer historyEventProducer;
+    private TaskRoutingProducer taskRoutingProducer;
     private InternalTaskanaEngineImpl internalTaskanaEngineImpl;
 
     protected TaskanaEngineImpl(TaskanaEngineConfiguration taskanaEngineConfiguration) {
@@ -71,6 +73,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         createTransactionFactory(taskanaEngineConfiguration.getUseManagedTransactions());
         this.sessionManager = createSqlSessionManager();
         historyEventProducer = HistoryEventProducer.getInstance(taskanaEngineConfiguration);
+        taskRoutingProducer = TaskRoutingProducer.getInstance(this);
         this.internalTaskanaEngineImpl = new InternalTaskanaEngineImpl();
     }
 
@@ -383,6 +386,11 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         @Override
         public HistoryEventProducer getHistoryEventProducer() {
             return historyEventProducer;
+        }
+
+        @Override
+        public TaskRoutingProducer getTaskRoutingProducer() {
+           return taskRoutingProducer;
         }
 
     }

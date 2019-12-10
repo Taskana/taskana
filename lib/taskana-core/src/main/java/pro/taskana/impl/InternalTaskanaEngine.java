@@ -6,6 +6,7 @@ import org.apache.ibatis.session.SqlSession;
 
 import pro.taskana.TaskanaEngine;
 import pro.taskana.history.HistoryEventProducer;
+import pro.taskana.taskrouting.TaskRoutingProducer;
 
 /**
  * FOR INTERNAL USE ONLY.
@@ -68,5 +69,12 @@ public interface InternalTaskanaEngine {
      * @return the HistoryEventProducer instance.
      */
     HistoryEventProducer getHistoryEventProducer();
+
+    /**
+     * Retrieve TaskRoutingProducer.
+     *
+     * @return the TaskRoutingProducer instance.
+     */
+    TaskRoutingProducer getTaskRoutingProducer();
 
 }
