@@ -1,7 +1,7 @@
 package pro.taskana.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.Mockito.when;
 
 import java.time.Duration;
@@ -9,13 +9,11 @@ import java.time.Instant;
 import java.util.ArrayList;
 
 import org.apache.ibatis.session.SqlSession;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import pro.taskana.Classification;
 import pro.taskana.ObjectReference;
@@ -27,17 +25,14 @@ import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.mappings.AttachmentMapper;
 import pro.taskana.mappings.ObjectReferenceMapper;
 import pro.taskana.mappings.TaskMapper;
-import pro.taskana.security.CurrentUserContext;
 
 /**
  * Unit Test for TaskServiceImpl.
  *
  * @author EH
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(CurrentUserContext.class)
-@PowerMockIgnore("javax.management.*")
-public class TaskServiceImplTest {
+@ExtendWith(MockitoExtension.class)
+class TaskServiceImplTest {
 
     private TaskServiceImpl cut;
 
@@ -71,8 +66,8 @@ public class TaskServiceImplTest {
     @Mock
     private SqlSession sqlSessionMock;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         when(internalTaskanaEngineMock.getEngine()).thenReturn(taskanaEngineMock);
         when(taskanaEngineMock.getWorkbasketService()).thenReturn(workbasketServiceMock);
         when(taskanaEngineMock.getClassificationService()).thenReturn(classificationServiceImplMock);
@@ -80,7 +75,7 @@ public class TaskServiceImplTest {
     }
 
     @Test
-    public void testTaskSummaryEqualsHashCode() throws InterruptedException {
+    void testTaskSummaryEqualsHashCode() throws InterruptedException {
         Classification classification = createDummyClassification();
         Workbasket wb = createWorkbasket("WB-ID", "WB-Key");
         ObjectReference objectReference = JunitHelper.createDefaultObjRef();

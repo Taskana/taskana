@@ -1,7 +1,7 @@
 package acceptance.security;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
@@ -18,13 +18,14 @@ import pro.taskana.security.WithAccessId;
  * Acceptance test for task queries and authorization.
  */
 @ExtendWith(JAASExtension.class)
-public class TaskQueryAccTest extends AbstractAccTest {
+class TaskQueryAccTest extends AbstractAccTest {
 
-    public TaskQueryAccTest() {
+    TaskQueryAccTest() {
         super();
     }
 
-    public void testTaskQueryUnauthenticated() {
+    @Test
+    void testTaskQueryUnauthenticated() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
@@ -38,7 +39,7 @@ public class TaskQueryAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "user_1_1") // , groupNames = {"businessadmin"})
     @Test
-    public void testTaskQueryUser_1_1() {
+    void testTaskQueryUser_1_1() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
@@ -52,7 +53,7 @@ public class TaskQueryAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "user_1_1", groupNames = {"businessadmin"})
     @Test
-    public void testTaskQueryUser_1_1BusinessAdm() {
+    void testTaskQueryUser_1_1BusinessAdm() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()
@@ -66,7 +67,7 @@ public class TaskQueryAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "user_1_1", groupNames = {"admin"})
     @Test
-    public void testTaskQueryUser_1_1Admin() {
+    void testTaskQueryUser_1_1Admin() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         List<TaskSummary> results = taskService.createTaskQuery()

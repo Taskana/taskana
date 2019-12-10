@@ -1,7 +1,7 @@
 package pro.taskana.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -15,12 +15,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import pro.taskana.CustomField;
 import pro.taskana.TaskState;
@@ -36,8 +36,8 @@ import pro.taskana.report.CustomFieldValueReport;
 /**
  * Unit Test for CustomFieldValueReportBuilderImpl.
  */
-@RunWith(MockitoJUnitRunner.class)
-public class CustomFieldValueReportBuilderImplTest {
+@ExtendWith(MockitoExtension.class)
+class CustomFieldValueReportBuilderImplTest {
 
     @InjectMocks
     private TaskMonitorServiceImpl cut;
@@ -54,8 +54,8 @@ public class CustomFieldValueReportBuilderImplTest {
     @Mock
     private TaskMonitorMapper taskMonitorMapperMock;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         when(internalTaskanaEngineMock.getEngine()).thenReturn(taskanaEngineMock);
         when(taskanaEngineMock.getConfiguration()).thenReturn(taskanaEngineConfigurationMock);
         when(taskanaEngineConfigurationMock.isGermanPublicHolidaysEnabled()).thenReturn(true);
@@ -63,7 +63,7 @@ public class CustomFieldValueReportBuilderImplTest {
     }
 
     @Test
-    public void testGetTotalNumbersOfCustomFieldValueReport() throws InvalidArgumentException, NotAuthorizedException {
+    void testGetTotalNumbersOfCustomFieldValueReport() throws InvalidArgumentException, NotAuthorizedException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
         List<String> categories = Collections.singletonList("EXTERN");
@@ -111,7 +111,7 @@ public class CustomFieldValueReportBuilderImplTest {
     }
 
     @Test
-    public void testGetCustomFieldValueReportWithReportLineItemDefinitions()
+    void testGetCustomFieldValueReportWithReportLineItemDefinitions()
         throws InvalidArgumentException, NotAuthorizedException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
@@ -164,7 +164,7 @@ public class CustomFieldValueReportBuilderImplTest {
     }
 
     @Test
-    public void testListCustomAttributeValuesForCustomAttributeName()
+    void testListCustomAttributeValuesForCustomAttributeName()
         throws NotAuthorizedException {
         List<String> workbasketIds = Collections.singletonList("WBI:000000000000000000000000000000000001");
         List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);

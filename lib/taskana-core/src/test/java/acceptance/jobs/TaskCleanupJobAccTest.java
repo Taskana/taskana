@@ -1,7 +1,7 @@
 package acceptance.jobs;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,18 +30,18 @@ import pro.taskana.security.WithAccessId;
  * Acceptance test for all "jobs tasks runner" scenarios.
  */
 @ExtendWith(JAASExtension.class)
-public class TaskCleanupJobAccTest extends AbstractAccTest {
+class TaskCleanupJobAccTest extends AbstractAccTest {
 
     TaskService taskService;
 
     @BeforeEach
-    public void before() {
+    void before() {
         taskService = taskanaEngine.getTaskService();
     }
 
     @WithAccessId(userName = "admin")
     @Test
-    public void shouldCleanCompletedTasksUntilDate() throws Exception {
+    void shouldCleanCompletedTasksUntilDate() throws Exception {
         long totalTasksCount = taskService.createTaskQuery().count();
         assertEquals(73, totalTasksCount);
 
@@ -56,7 +56,7 @@ public class TaskCleanupJobAccTest extends AbstractAccTest {
 
     @WithAccessId(userName = "admin")
     @Test
-    public void shouldCleanCompletedTasksUntilDateWithSameParentBussiness() throws Exception {
+    void shouldCleanCompletedTasksUntilDateWithSameParentBussiness() throws Exception {
         long totalTasksCount = taskService.createTaskQuery().count();
         assertEquals(68, totalTasksCount);
 
@@ -82,7 +82,7 @@ public class TaskCleanupJobAccTest extends AbstractAccTest {
 
     @WithAccessId(userName = "admin")
     @Test
-    public void shouldNotCleanCompleteTasksAfterDefinedDay() throws Exception {
+    void shouldNotCleanCompleteTasksAfterDefinedDay() throws Exception {
         Task createdTask = createAndCompleteTask();
 
         TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null, null);

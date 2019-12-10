@@ -1,9 +1,9 @@
 package pro.taskana.impl.integration;
 
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.StringStartsWith.startsWith;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -16,12 +16,12 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.hamcrest.core.IsEqual;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import pro.taskana.Classification;
 import pro.taskana.ClassificationService;
@@ -29,7 +29,6 @@ import pro.taskana.ClassificationSummary;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.TimeInterval;
-import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.ConcurrencyException;
@@ -38,7 +37,7 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.ClassificationImpl;
 import pro.taskana.impl.TaskanaEngineImpl;
-import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
+import pro.taskana.impl.configuration.TaskanaEngineTestConfiguration;
 import pro.taskana.sampledata.SampleDataGenerator;
 
 /**
@@ -53,22 +52,22 @@ public class ClassificationServiceImplIntExplicitTest {
     static int counter = 0;
     private DataSource dataSource;
     private ClassificationService classificationService;
-    private TaskanaEngineConfiguration taskanaEngineConfiguration;
+    private pro.taskana.configuration.TaskanaEngineConfiguration taskanaEngineConfiguration;
     private TaskanaEngine taskanaEngine;
     private TaskanaEngineImpl taskanaEngineImpl;
 
-    @BeforeClass
+    @BeforeAll
     public static void resetDb() throws SQLException {
-        DataSource ds = TaskanaEngineConfigurationTest.getDataSource();
-        String schemaName = TaskanaEngineConfigurationTest.getSchemaName();
+        DataSource ds = TaskanaEngineTestConfiguration.getDataSource();
+        String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
         new SampleDataGenerator(ds, schemaName).dropDb();
     }
 
-    @Before
+    @BeforeEach
     public void setup() throws SQLException {
-        dataSource = TaskanaEngineConfigurationTest.getDataSource();
-        String schemaName = TaskanaEngineConfigurationTest.getSchemaName();
-        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, false,
+        dataSource = TaskanaEngineTestConfiguration.getDataSource();
+        String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
+        taskanaEngineConfiguration = new pro.taskana.configuration.TaskanaEngineConfiguration(dataSource, false, false,
             schemaName);
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         classificationService = taskanaEngine.getClassificationService();
@@ -76,6 +75,11 @@ public class ClassificationServiceImplIntExplicitTest {
         taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.EXPLICIT);
         SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
         sampleDataGenerator.clearDb();
+    }
+
+    @AfterEach
+    public void cleanUp() throws SQLException {
+        taskanaEngineImpl.setConnection(null);
     }
 
     @Test
@@ -97,14 +101,14 @@ public class ClassificationServiceImplIntExplicitTest {
         classificationService.createClassification(expectedClassification);
         connection.commit();
         actualClassification = classificationService.getClassification(key, "DOMAIN_B");
-        assertThat(actualClassification, not(equalTo(null)));
-        assertThat(actualClassification.getCreated(), not(equalTo(null)));
-        assertThat(actualClassification.getId(), not(equalTo(null)));
-        assertThat(actualClassification.getKey(), equalTo(key));
-        assertThat(actualClassification.getDomain(), equalTo("DOMAIN_B"));
+        assertThat(actualClassification, not(IsEqual.equalTo(null)));
+        assertThat(actualClassification.getCreated(), not(IsEqual.equalTo(null)));
+        assertThat(actualClassification.getId(), not(IsEqual.equalTo(null)));
+        assertThat(actualClassification.getKey(), IsEqual.equalTo(key));
+        assertThat(actualClassification.getDomain(), IsEqual.equalTo("DOMAIN_B"));
         assertThat(actualClassification.getId(), startsWith(ID_PREFIX_CLASSIFICATION));
         Classification masterResult = classificationService.getClassification(key, "");
-        assertThat(masterResult, not(equalTo(null)));
+        assertThat(masterResult, not(IsEqual.equalTo(null)));
 
         // invalid serviceLevel
         ClassificationImpl expectedClassificationCreated = (ClassificationImpl) this.createNewClassificationWithUniqueKey(
@@ -135,7 +139,7 @@ public class ClassificationServiceImplIntExplicitTest {
         classification2.setParentId(classification0.getId());
         classificationService.createClassification(classification2);
 
-        Assert.assertEquals(2 + 1, classificationService.createClassificationQuery().list().size());
+        assertEquals(2 + 1, classificationService.createClassificationQuery().list().size());
         connection.commit();
     }
 
@@ -156,7 +160,7 @@ public class ClassificationServiceImplIntExplicitTest {
         connection.commit();
 
         classification = classificationService.getClassification(classification.getKey(), classification.getDomain());
-        assertThat(classification.getDescription(), equalTo(updatedDescription));
+        assertThat(classification.getDescription(), IsEqual.equalTo(updatedDescription));
     }
 
     @Test
@@ -171,7 +175,7 @@ public class ClassificationServiceImplIntExplicitTest {
             .validInDomainEquals(Boolean.TRUE)
             .createdWithin(today())
             .list();
-        Assert.assertEquals(1, list.size());
+        assertEquals(1, list.size());
     }
 
     @Test
@@ -188,19 +192,19 @@ public class ClassificationServiceImplIntExplicitTest {
 
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
             .list();
-        Assert.assertEquals(2, list.size());
+        assertEquals(2, list.size());
         list = classificationService.createClassificationQuery().validInDomainEquals(true).list();
-        Assert.assertEquals(1, list.size());
+        assertEquals(1, list.size());
         classification = classificationService.getClassification(classification.getKey(), classification.getDomain());
-        assertThat(classification.getDescription(), equalTo("description"));
+        assertThat(classification.getDescription(), IsEqual.equalTo("description"));
 
         classification = classificationService.updateClassification(classification);
         list = classificationService.createClassificationQuery()
             .list();
-        Assert.assertEquals(2, list.size());
+        assertEquals(2, list.size());
 
         List<ClassificationSummary> allClassifications = classificationService.createClassificationQuery().list();
-        Assert.assertEquals(2, allClassifications.size());
+        assertEquals(2, allClassifications.size());
         connection.commit();
     }
 
@@ -221,34 +225,29 @@ public class ClassificationServiceImplIntExplicitTest {
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
             .parentIdIn("")
             .list();
-        Assert.assertEquals(3, list.size());
+        assertEquals(3, list.size());
         list = classificationService.createClassificationQuery()
             .list();
-        Assert.assertEquals(4, list.size());
+        assertEquals(4, list.size());
         connection.commit();
 
         list = classificationService.createClassificationQuery().validInDomainEquals(true).list();
-        Assert.assertEquals(2, list.size());
+        assertEquals(2, list.size());
         list = classificationService.createClassificationQuery().createdWithin(today()).list();
-        Assert.assertEquals(4, list.size());
+        assertEquals(4, list.size());
         list = classificationService.createClassificationQuery().domainIn("DOMAIN_C").validInDomainEquals(false).list();
-        Assert.assertEquals(0, list.size());
+        assertEquals(0, list.size());
         list = classificationService.createClassificationQuery()
             .keyIn(classification1.getKey())
             .list();
-        Assert.assertEquals(2, list.size());
+        assertEquals(2, list.size());
 
         list = classificationService.createClassificationQuery()
             .parentIdIn(classification.getId())
             .list();
-        Assert.assertEquals(1, list.size());
-        assertThat(list.get(0).getKey(), equalTo(classification1.getKey()));
+        assertEquals(1, list.size());
+        assertThat(list.get(0).getKey(), IsEqual.equalTo(classification1.getKey()));
         connection.commit();
-    }
-
-    @After
-    public void cleanUp() throws SQLException {
-        taskanaEngineImpl.setConnection(null);
     }
 
     private Classification createNewClassificationWithUniqueKey(String domain, String type) {

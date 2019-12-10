@@ -1,8 +1,8 @@
 package pro.taskana.impl;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -12,13 +12,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import pro.taskana.TaskState;
 import pro.taskana.TaskanaEngine;
@@ -32,8 +32,8 @@ import pro.taskana.report.TaskStatusReport;
 /**
  * Unit Test for TaskStatusReportBuilderImpl.
  */
-@RunWith(MockitoJUnitRunner.class)
-public class TaskStatusReportBuilderImplTest {
+@ExtendWith(MockitoExtension.class)
+class TaskStatusReportBuilderImplTest {
 
     @InjectMocks
     private TaskMonitorServiceImpl cut;
@@ -47,13 +47,13 @@ public class TaskStatusReportBuilderImplTest {
     @Mock
     private TaskMonitorMapper taskMonitorMapperMock;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         when(internalTaskanaEngineMock.getEngine()).thenReturn(taskanaEngineMock);
     }
 
     @Test
-    public void testGetTaskStateReportWithoutFilters() throws NotAuthorizedException, InvalidArgumentException {
+    void testGetTaskStateReportWithoutFilters() throws NotAuthorizedException, InvalidArgumentException {
         // given
         TaskQueryItem queryItem1 = new TaskQueryItem();
         queryItem1.setCount(50);
@@ -88,7 +88,7 @@ public class TaskStatusReportBuilderImplTest {
     }
 
     @Test
-    public void testGetTotalNumberOfTaskStateReport() throws NotAuthorizedException, InvalidArgumentException {
+    void testGetTotalNumberOfTaskStateReport() throws NotAuthorizedException, InvalidArgumentException {
         // given
         TaskQueryItem queryItem1 = new TaskQueryItem();
         queryItem1.setCount(50);

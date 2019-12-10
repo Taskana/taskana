@@ -1,9 +1,9 @@
 package acceptance.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,29 +11,28 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import org.h2.store.fs.FileUtils;
 import org.junit.jupiter.api.Test;
 
-import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.impl.TaskanaEngineImpl;
-import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
+import pro.taskana.impl.configuration.TaskanaEngineTestConfiguration;
 
 /**
  * Test taskana configuration without roles.
  *
  * @author bbr
  */
-public class TaskanaConfigAccTest extends TaskanaEngineImpl {
+class TaskanaConfigAccTest extends TaskanaEngineImpl {
 
-    public TaskanaConfigAccTest() throws SQLException {
-        super(new TaskanaEngineConfiguration(TaskanaEngineConfigurationTest.getDataSource(), true,
-            TaskanaEngineConfigurationTest.getSchemaName()));
+    TaskanaConfigAccTest() throws SQLException {
+        super(new pro.taskana.configuration.TaskanaEngineConfiguration(TaskanaEngineTestConfiguration.getDataSource(),
+            true,
+            TaskanaEngineTestConfiguration.getSchemaName()));
     }
 
     @Test
-    public void testDomains() {
+    void testDomains() {
         assertEquals(2, getConfiguration().getDomains().size());
         assertTrue(getConfiguration().getDomains().contains("DOMAIN_A"));
         assertTrue(getConfiguration().getDomains().contains("DOMAIN_B"));
@@ -41,7 +40,7 @@ public class TaskanaConfigAccTest extends TaskanaEngineImpl {
     }
 
     @Test
-    public void testClassificationTypes() {
+    void testClassificationTypes() {
         assertEquals(2, getConfiguration().getClassificationTypes().size());
         assertTrue(getConfiguration().getClassificationTypes().contains("TASK"));
         assertTrue(getConfiguration().getClassificationTypes().contains("DOCUMENT"));
@@ -49,7 +48,7 @@ public class TaskanaConfigAccTest extends TaskanaEngineImpl {
     }
 
     @Test
-    public void testClassificationCategories() {
+    void testClassificationCategories() {
         assertEquals(4, getConfiguration().getClassificationCategoriesByType("TASK").size());
         assertTrue(getConfiguration().getClassificationCategoriesByType("TASK").contains("EXTERNAL"));
         assertTrue(getConfiguration().getClassificationCategoriesByType("TASK").contains("MANUAL"));
@@ -59,7 +58,7 @@ public class TaskanaConfigAccTest extends TaskanaEngineImpl {
     }
 
     @Test
-    public void testDoesNotExistPropertyClassificationTypeOrItIsEmpty() throws IOException {
+    void testDoesNotExistPropertyClassificationTypeOrItIsEmpty() throws IOException {
         taskanaEngineConfiguration.setClassificationTypes(new ArrayList<>());
         String propertiesFileName = createNewConfigFile("/dummyTestConfig.properties", false, true);
         String delimiter = ";";
@@ -72,7 +71,7 @@ public class TaskanaConfigAccTest extends TaskanaEngineImpl {
     }
 
     @Test
-    public void testDoesNotExistPropertyClassificatioCategoryOrItIsEmpty() throws IOException {
+    void testDoesNotExistPropertyClassificatioCategoryOrItIsEmpty() throws IOException {
         taskanaEngineConfiguration.setClassificationTypes(new ArrayList<>());
         taskanaEngineConfiguration.setClassificationCategoriesByType(new HashMap<>());
         String propertiesFileName = createNewConfigFile("/dummyTestConfig.properties", true, false);
@@ -87,9 +86,9 @@ public class TaskanaConfigAccTest extends TaskanaEngineImpl {
     }
 
     @Test
-    public void testWithCategoriesAndClassificationFilled() throws IOException {
-        taskanaEngineConfiguration.setClassificationTypes(new ArrayList<String>());
-        taskanaEngineConfiguration.setClassificationCategoriesByType(new HashMap<String, List<String>>());
+    void testWithCategoriesAndClassificationFilled() throws IOException {
+        taskanaEngineConfiguration.setClassificationTypes(new ArrayList<>());
+        taskanaEngineConfiguration.setClassificationCategoriesByType(new HashMap<>());
         String propertiesFileName = createNewConfigFile("/dummyTestConfig.properties", true, true);
         String delimiter = ";";
         try {

@@ -1,6 +1,8 @@
 package pro.taskana.impl.integration;
 
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.sql.SQLException;
 import java.time.Instant;
@@ -12,10 +14,9 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import pro.taskana.Classification;
 import pro.taskana.ClassificationService;
@@ -23,7 +24,6 @@ import pro.taskana.ClassificationSummary;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.TimeInterval;
-import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.ConcurrencyException;
@@ -31,7 +31,7 @@ import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.TaskanaEngineImpl;
-import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
+import pro.taskana.impl.configuration.TaskanaEngineTestConfiguration;
 import pro.taskana.sampledata.SampleDataGenerator;
 
 /**
@@ -39,27 +39,27 @@ import pro.taskana.sampledata.SampleDataGenerator;
  *
  * @author EH
  */
-public class ClassificationServiceImplIntAutoCommitTest {
+class ClassificationServiceImplIntAutoCommitTest {
 
     static int counter = 0;
     private DataSource dataSource;
     private ClassificationService classificationService;
-    private TaskanaEngineConfiguration taskanaEngineConfiguration;
+    private pro.taskana.configuration.TaskanaEngineConfiguration taskanaEngineConfiguration;
     private TaskanaEngine taskanaEngine;
     private TaskanaEngineImpl taskanaEngineImpl;
 
-    @BeforeClass
-    public static void resetDb() {
-        DataSource ds = TaskanaEngineConfigurationTest.getDataSource();
-        String schemaName = TaskanaEngineConfigurationTest.getSchemaName();
+    @BeforeAll
+    static void resetDb() {
+        DataSource ds = TaskanaEngineTestConfiguration.getDataSource();
+        String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
         new SampleDataGenerator(ds, schemaName).dropDb();
     }
 
-    @Before
-    public void setup() throws SQLException {
-        dataSource = TaskanaEngineConfigurationTest.getDataSource();
-        String schemaName = TaskanaEngineConfigurationTest.getSchemaName();
-        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, false,
+    @BeforeEach
+    void setup() throws SQLException {
+        dataSource = TaskanaEngineTestConfiguration.getDataSource();
+        String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
+        taskanaEngineConfiguration = new pro.taskana.configuration.TaskanaEngineConfiguration(dataSource, false, false,
             schemaName);
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         classificationService = taskanaEngine.getClassificationService();
@@ -70,7 +70,7 @@ public class ClassificationServiceImplIntAutoCommitTest {
     }
 
     @Test
-    public void testFindAllClassifications()
+    void testFindAllClassifications()
         throws ClassificationAlreadyExistException, NotAuthorizedException, DomainNotFoundException,
         InvalidArgumentException {
         Classification classification0 = this.createDummyClassificationWithUniqueKey("", "TASK");
@@ -81,11 +81,11 @@ public class ClassificationServiceImplIntAutoCommitTest {
         classification2.setParentId(classification0.getId());
         classificationService.createClassification(classification2);
 
-        Assert.assertEquals(2 + 1, classificationService.createClassificationQuery().list().size());
+        assertEquals(2 + 1, classificationService.createClassificationQuery().list().size());
     }
 
     @Test
-    public void testModifiedClassification()
+    void testModifiedClassification()
         throws ClassificationAlreadyExistException, ClassificationNotFoundException, NotAuthorizedException,
         ConcurrencyException, DomainNotFoundException, InvalidArgumentException {
         String description = "TEST SOMETHING";
@@ -96,11 +96,11 @@ public class ClassificationServiceImplIntAutoCommitTest {
         classificationService.updateClassification(classification);
 
         classification = classificationService.getClassification(classification.getKey(), classification.getDomain());
-        Assert.assertThat(description, equalTo(classification.getDescription()));
+        assertThat(description, equalTo(classification.getDescription()));
     }
 
     @Test
-    public void testInsertClassification()
+    void testInsertClassification()
         throws NotAuthorizedException, ClassificationAlreadyExistException, InvalidArgumentException,
         DomainNotFoundException {
         Classification classification = this.createDummyClassificationWithUniqueKey("DOMAIN_A", "TASK");
@@ -111,11 +111,11 @@ public class ClassificationServiceImplIntAutoCommitTest {
             .createdWithin(today())
             .list();
 
-        Assert.assertEquals(1, list.size());
+        assertEquals(1, list.size());
     }
 
     @Test
-    public void testUpdateClassification()
+    void testUpdateClassification()
         throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException,
         ConcurrencyException, DomainNotFoundException, InvalidArgumentException {
         Classification classification = this.createDummyClassificationWithUniqueKey("DOMAIN_A", "TASK");
@@ -126,19 +126,19 @@ public class ClassificationServiceImplIntAutoCommitTest {
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
             .validInDomainEquals(true)
             .list();
-        Assert.assertEquals(1, list.size());
+        assertEquals(1, list.size());
 
         classification = classificationService.updateClassification(classification);
         list = classificationService.createClassificationQuery()
             .list();
-        Assert.assertEquals(2, list.size());
+        assertEquals(2, list.size());
 
         List<ClassificationSummary> allClassifications = classificationService.createClassificationQuery().list();
-        Assert.assertEquals(2, allClassifications.size());
+        assertEquals(2, allClassifications.size());
     }
 
     @Test
-    public void testDefaultSettings()
+    void testDefaultSettings()
         throws NotAuthorizedException, ClassificationAlreadyExistException, ClassificationNotFoundException,
         ConcurrencyException, DomainNotFoundException, InvalidArgumentException {
         Classification classification = this.createDummyClassificationWithUniqueKey("DOMAIN_A", "TASK");
@@ -153,27 +153,27 @@ public class ClassificationServiceImplIntAutoCommitTest {
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
             .parentIdIn("")
             .list();
-        Assert.assertEquals(3, list.size());
+        assertEquals(3, list.size());
         list = classificationService.createClassificationQuery()
             .list();
-        Assert.assertEquals(4, list.size());
+        assertEquals(4, list.size());
 
         List<ClassificationSummary> listAll = classificationService.createClassificationQuery().list();
         list = classificationService.createClassificationQuery().list();
-        Assert.assertEquals(listAll.size(), list.size());
+        assertEquals(listAll.size(), list.size());
 
         list = classificationService.createClassificationQuery().validInDomainEquals(true).list();
-        Assert.assertEquals(2, list.size());
+        assertEquals(2, list.size());
 
         list = classificationService.createClassificationQuery().createdWithin(today()).list();
-        Assert.assertEquals(4, list.size());
+        assertEquals(4, list.size());
 
         list = classificationService.createClassificationQuery().domainIn("DOMAIN_C").validInDomainEquals(false).list();
-        Assert.assertEquals(0, list.size());
+        assertEquals(0, list.size());
 
         list = classificationService.createClassificationQuery()
             .list();
-        Assert.assertEquals(4, list.size());
+        assertEquals(4, list.size());
     }
 
     private TimeInterval today() {

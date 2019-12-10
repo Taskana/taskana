@@ -1,7 +1,7 @@
 package acceptance.workbasket;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
@@ -21,9 +21,9 @@ import pro.taskana.security.WithAccessId;
  * Acceptance test for all "query classifications with pagination" scenarios.
  */
 @ExtendWith(JAASExtension.class)
-public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
+class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
 
-    public QueryWorkbasketsWithPaginationAccTest() {
+    QueryWorkbasketsWithPaginationAccTest() {
         super();
     }
 
@@ -31,7 +31,7 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testGetFirstPageOfWorkbasketQueryWithOffset() {
+    void testGetFirstPageOfWorkbasketQueryWithOffset() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")
@@ -43,7 +43,7 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testGetSecondPageOfWorkbasketQueryWithOffset() {
+    void testGetSecondPageOfWorkbasketQueryWithOffset() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")
@@ -55,7 +55,7 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testListOffsetAndLimitOutOfBounds() {
+    void testListOffsetAndLimitOutOfBounds() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
         // both will be 0, working
@@ -81,7 +81,7 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testPaginationWithPages() {
+    void testPaginationWithPages() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
         // Getting full page
@@ -121,7 +121,7 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testPaginationNullAndNegativeLimitsIgnoring() {
+    void testPaginationNullAndNegativeLimitsIgnoring() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
         // 0 limit/size = 0 results
@@ -155,7 +155,7 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
      */
     @Disabled
     @Test
-    public void testPaginationThrowingExceptionWhenPageOutOfBounds() {
+    void testPaginationThrowingExceptionWhenPageOutOfBounds() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
         // entrypoint set outside result amount
@@ -172,7 +172,7 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testCountOfWorkbasketQuery() {
+    void testCountOfWorkbasketQuery() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         long count = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")
@@ -184,7 +184,7 @@ public class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testWorkbasketQueryDomA() {
+    void testWorkbasketQueryDomA() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> result = workbasketService.createWorkbasketQuery()
             .domainIn("DOMAIN_A")

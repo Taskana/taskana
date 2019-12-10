@@ -1,10 +1,11 @@
 package acceptance.classification;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNot.not;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -314,14 +315,14 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         DaysToWorkingDaysConverter converter, int serviceLevel) throws TaskNotFoundException, NotAuthorizedException {
         for (String taskId : tasksWithP15D) {
             Task task = taskService.getTask(taskId);
-            assertTrue("Task " + task.getId() + " has not been refreshed.", task.getModified().isAfter(before));
-            assertTrue(task.getPriority() == 1000);
+            assertTrue(task.getModified().isAfter(before), "Task " + task.getId() + " has not been refreshed.");
+            assertEquals(1000, task.getPriority());
             long calendarDays = converter.convertWorkingDaysToDays(task.getPlanned(), serviceLevel);
 
-            assertTrue(
+            String msg =
                 "Task: " + taskId + ": Due Date " + task.getDue() + " does not match planned " + task.getPlanned()
-                    + " + calendar days " + calendarDays,
-                task.getDue().equals(task.getPlanned().plus(Duration.ofDays(calendarDays))));
+                    + " + calendar days " + calendarDays;
+            assertEquals(task.getDue(), task.getPlanned().plus(Duration.ofDays(calendarDays)), msg);
         }
     }
 

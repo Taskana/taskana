@@ -1,7 +1,7 @@
 package acceptance.workbasket;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
@@ -24,9 +24,9 @@ import pro.taskana.security.WithAccessId;
  * Acceptance test for all "get workbasket" scenarios.
  */
 @ExtendWith(JAASExtension.class)
-public class GetWorkbasketAccTest extends AbstractAccTest {
+class GetWorkbasketAccTest extends AbstractAccTest {
 
-    public GetWorkbasketAccTest() {
+    GetWorkbasketAccTest() {
         super();
     }
 
@@ -34,7 +34,7 @@ public class GetWorkbasketAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testGetWorkbasketById()
+    void testGetWorkbasketById()
         throws NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
@@ -60,7 +60,7 @@ public class GetWorkbasketAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testGetWorkbasketByKeyAndDomain()
+    void testGetWorkbasketByKeyAndDomain()
         throws NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
@@ -85,7 +85,7 @@ public class GetWorkbasketAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testGetWorkbasketPermissions() {
+    void testGetWorkbasketPermissions() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketPermission> permissions = workbasketService
             .getPermissionsForWorkbasket("WBI:100000000000000000000000000000000007");
@@ -101,7 +101,7 @@ public class GetWorkbasketAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testGetWorkbasketPermissionsForInvalidWorkbasketId() {
+    void testGetWorkbasketPermissionsForInvalidWorkbasketId() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketPermission> permissions = workbasketService
             .getPermissionsForWorkbasket("WBI:invalid");
@@ -113,7 +113,7 @@ public class GetWorkbasketAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testGetWorkbasketAsSummary()
+    void testGetWorkbasketAsSummary()
         throws NotAuthorizedException, WorkbasketNotFoundException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
@@ -138,14 +138,14 @@ public class GetWorkbasketAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testThrowsExceptionIfIdIsInvalid() {
+    void testThrowsExceptionIfIdIsInvalid() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         Assertions.assertThrows(WorkbasketNotFoundException.class, () ->
             workbasketService.getWorkbasket("INVALID_ID"));
     }
 
     @Test
-    public void testThrowsExceptionIfKeyOrDomainIsInvalid() {
+    void testThrowsExceptionIfKeyOrDomainIsInvalid() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
         Assertions.assertThrows(WorkbasketNotFoundException.class, () ->
@@ -153,14 +153,14 @@ public class GetWorkbasketAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testGetByIdNotAuthorized() {
+    void testGetByIdNotAuthorized() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         Assertions.assertThrows(NotAuthorizedException.class, () ->
             workbasketService.getWorkbasket("WBI:100000000000000000000000000000000001"));
     }
 
     @Test
-    public void testGetByKeyDomainNotAuthorized() {
+    void testGetByKeyDomainNotAuthorized() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         Assertions.assertThrows(NotAuthorizedException.class, () ->
             workbasketService.getWorkbasket("GPK_KSC", "DOMAIN_A"));
@@ -170,7 +170,7 @@ public class GetWorkbasketAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testGetWorkbasketByIdNotExisting() {
+    void testGetWorkbasketByIdNotExisting() {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         Assertions.assertThrows(WorkbasketNotFoundException.class, () ->
             workbasketService.getWorkbasket("NOT EXISTING ID"));
