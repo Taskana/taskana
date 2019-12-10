@@ -42,7 +42,7 @@ public class JAASExtension implements InvocationInterceptor {
 
             try {
                 invocation.proceed();
-            } catch (Exception e) {
+            } catch (Exception | Error e) {
                 throw e;
             } catch (Throwable e) {
                 throw new Exception(e);
