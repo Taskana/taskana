@@ -1,8 +1,8 @@
 package pro.taskana.impl;
 
 import static java.util.Collections.singletonList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static pro.taskana.impl.DaysToWorkingDaysConverter.getEasterSunday;
 
 import java.time.Instant;

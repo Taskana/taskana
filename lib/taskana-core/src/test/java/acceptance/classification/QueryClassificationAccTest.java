@@ -1,7 +1,7 @@
 package acceptance.classification;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static pro.taskana.ClassificationQueryColumnName.CREATED;
 import static pro.taskana.ClassificationQueryColumnName.NAME;
 import static pro.taskana.ClassificationQueryColumnName.TYPE;
@@ -30,17 +30,17 @@ import pro.taskana.security.WithAccessId;
  * Acceptance test for all "get classification" scenarios.
  */
 @ExtendWith(JAASExtension.class)
-public class QueryClassificationAccTest extends AbstractAccTest {
+class QueryClassificationAccTest extends AbstractAccTest {
 
     private static SortDirection asc = SortDirection.ASCENDING;
     private static SortDirection desc = SortDirection.DESCENDING;
 
-    public QueryClassificationAccTest() {
+    QueryClassificationAccTest() {
         super();
     }
 
     @Test
-    public void testQueryClassificationValuesForColumnName() {
+    void testQueryClassificationValuesForColumnName() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<String> columnValueList = classificationService.createClassificationQuery()
             .listValues(NAME, null);
@@ -72,7 +72,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testFindClassificationsByCategoryAndDomain() {
+    void testFindClassificationsByCategoryAndDomain() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classificationSummaryList = classificationService.createClassificationQuery()
             .categoryIn("MANUAL")
@@ -84,7 +84,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testGetOneClassificationForMultipleDomains() {
+    void testGetOneClassificationForMultipleDomains() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
             .keyIn("L10000")
@@ -96,7 +96,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testGetClassificationsForTypeAndParent() {
+    void testGetClassificationsForTypeAndParent() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
             .typeIn("TASK", "DOCUMENT")
@@ -120,7 +120,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testGetClassificationsForKeyAndCategories() {
+    void testGetClassificationsForKeyAndCategories() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
             .keyIn("T2100", "L10000")
@@ -144,7 +144,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testGetClassificationsWithParentId() {
+    void testGetClassificationsWithParentId() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
             .keyIn("A12", "A13")
@@ -167,7 +167,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testGetClassificationsWithParentKey() {
+    void testGetClassificationsWithParentKey() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
             .keyIn("A12", "A13")
@@ -189,7 +189,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testGetClassificationsWithCustom1() throws InvalidArgumentException {
+    void testGetClassificationsWithCustom1() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
             .customAttributeIn("1", "VNR,RVNR,KOLVNR", "VNR")
@@ -200,7 +200,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testGetClassificationsWithCustom1Like() throws InvalidArgumentException {
+    void testGetClassificationsWithCustom1Like() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
             .customAttributeLike("1", "%RVNR%")
@@ -212,7 +212,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testGetClassificationsWithParentAndCustom2() throws InvalidArgumentException {
+    void testGetClassificationsWithParentAndCustom2() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classifications = classificationService.createClassificationQuery()
             .parentIdIn("CLI:100000000000000000000000000000000004")
@@ -224,7 +224,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testFindClassificationsByCreatedTimestamp() {
+    void testFindClassificationsByCreatedTimestamp() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> classificationSummaryList = classificationService.createClassificationQuery()
             .domainIn("DOMAIN_A")
@@ -236,7 +236,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testFindClassificationsByPriorityAndValidInDomain() {
+    void testFindClassificationsByPriorityAndValidInDomain() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> list = classificationService.createClassificationQuery()
             .validInDomainEquals(Boolean.TRUE)
@@ -249,7 +249,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "businessadmin")
     @Test
-    public void testFindClassificationByModifiedWithin()
+    void testFindClassificationByModifiedWithin()
         throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException, InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         String clId = "CLI:200000000000000000000000000000000015";
@@ -264,7 +264,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForNameLike() {
+    void testQueryForNameLike() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .nameLike("Dynamik%")
@@ -273,7 +273,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForNameIn() {
+    void testQueryForNameIn() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .nameIn("Widerruf", "OLD-Leistungsfall")
@@ -282,7 +282,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForDescriptionLike() {
+    void testQueryForDescriptionLike() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .descriptionLike("Widerruf%")
@@ -291,7 +291,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForServiceLevelIn() {
+    void testQueryForServiceLevelIn() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .serviceLevelIn("P2D")
@@ -300,7 +300,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForServiceLevelLike() {
+    void testQueryForServiceLevelLike() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .serviceLevelLike("PT%")
@@ -309,7 +309,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForApplicationEntryPointIn() {
+    void testQueryForApplicationEntryPointIn() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .applicationEntryPointIn("specialPoint", "point0815")
@@ -318,7 +318,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForApplicationEntryPointLike() {
+    void testQueryForApplicationEntryPointLike() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .applicationEntryPointLike("point%")
@@ -327,7 +327,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForCustom1In() throws InvalidArgumentException {
+    void testQueryForCustom1In() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .customAttributeIn("1", "VNR,RVNR,KOLVNR, ANR", "VNR")
@@ -336,7 +336,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForCustom2In() throws InvalidArgumentException {
+    void testQueryForCustom2In() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .customAttributeIn("2", "CUSTOM2", "custom2")
@@ -345,7 +345,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForCustom3In() throws InvalidArgumentException {
+    void testQueryForCustom3In() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .customAttributeIn("3", "Custom3", "custom3")
@@ -354,7 +354,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForCustom4In() throws InvalidArgumentException {
+    void testQueryForCustom4In() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .customAttributeIn("4", "custom4")
@@ -363,7 +363,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForCustom5In() throws InvalidArgumentException {
+    void testQueryForCustom5In() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .customAttributeIn("5", "custom5")
@@ -372,7 +372,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForCustom6In() throws InvalidArgumentException {
+    void testQueryForCustom6In() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .customAttributeIn("6", "custom6")
@@ -381,7 +381,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForCustom7In() throws InvalidArgumentException {
+    void testQueryForCustom7In() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .customAttributeIn("7", "custom7", "custom_7")
@@ -390,7 +390,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForCustom8In() throws InvalidArgumentException {
+    void testQueryForCustom8In() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .customAttributeIn("8", "custom_8", "custom8")
@@ -399,7 +399,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForCustom2Like() throws InvalidArgumentException {
+    void testQueryForCustom2Like() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .customAttributeLike("2", "cus%")
@@ -408,7 +408,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForCustom3Like() throws InvalidArgumentException {
+    void testQueryForCustom3Like() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .customAttributeLike("3", "cus%")
@@ -417,7 +417,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForCustom4Like() throws InvalidArgumentException {
+    void testQueryForCustom4Like() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .customAttributeLike("4", "cus%")
@@ -426,7 +426,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForCustom5Like() throws InvalidArgumentException {
+    void testQueryForCustom5Like() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .customAttributeLike("5", "cus%")
@@ -435,7 +435,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForCustom6Like() throws InvalidArgumentException {
+    void testQueryForCustom6Like() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .customAttributeLike("6", "cus%")
@@ -444,7 +444,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForCustom7Like() throws InvalidArgumentException {
+    void testQueryForCustom7Like() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .customAttributeLike("7", "cus%")
@@ -453,7 +453,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForCustom8Like() throws InvalidArgumentException {
+    void testQueryForCustom8Like() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .customAttributeLike("8", "cus%")
@@ -462,7 +462,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForOrderByKeyAsc() {
+    void testQueryForOrderByKeyAsc() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .orderByKey(asc)
@@ -471,7 +471,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForOrderByParentIdDesc() {
+    void testQueryForOrderByParentIdDesc() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .orderByDomain(asc)
@@ -481,7 +481,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForOrderByParentKeyDesc() {
+    void testQueryForOrderByParentKeyDesc() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .orderByParentKey(desc)
@@ -490,7 +490,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForOrderByCategoryDesc() {
+    void testQueryForOrderByCategoryDesc() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .orderByCategory(desc)
@@ -499,7 +499,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForOrderByDomainAsc() {
+    void testQueryForOrderByDomainAsc() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .orderByDomain(asc)
@@ -508,7 +508,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForOrderByPriorityDesc() {
+    void testQueryForOrderByPriorityDesc() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .orderByPriority(desc)
@@ -517,7 +517,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForOrderByNameAsc() {
+    void testQueryForOrderByNameAsc() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .orderByName(asc)
@@ -526,7 +526,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForOrderByServiceLevelDesc() {
+    void testQueryForOrderByServiceLevelDesc() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .orderByServiceLevel(desc)
@@ -535,7 +535,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForOrderByApplicationEntryPointAsc() {
+    void testQueryForOrderByApplicationEntryPointAsc() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .orderByApplicationEntryPoint(asc)
@@ -545,7 +545,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForOrderByParentKeyAsc() {
+    void testQueryForOrderByParentKeyAsc() {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .orderByParentKey(asc)
@@ -555,7 +555,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForOrderByCustom1Desc() throws InvalidArgumentException {
+    void testQueryForOrderByCustom1Desc() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .orderByCustomAttribute("1", desc)
@@ -566,7 +566,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForOrderByCustom2Asc() throws InvalidArgumentException {
+    void testQueryForOrderByCustom2Asc() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .orderByCustomAttribute("2", asc)
@@ -578,7 +578,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForOrderByCustom3Desc() throws InvalidArgumentException {
+    void testQueryForOrderByCustom3Desc() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .orderByCustomAttribute("3", desc)
@@ -588,7 +588,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForOrderByCustom4Asc() throws InvalidArgumentException {
+    void testQueryForOrderByCustom4Asc() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .orderByCustomAttribute("4", asc)
@@ -598,7 +598,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForOrderByCustom5Desc() throws InvalidArgumentException {
+    void testQueryForOrderByCustom5Desc() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .orderByCustomAttribute("5", desc)
@@ -608,7 +608,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForOrderByCustom6Asc() throws InvalidArgumentException {
+    void testQueryForOrderByCustom6Asc() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .orderByCustomAttribute("6", asc)
@@ -618,7 +618,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForOrderByCustom7Desc() throws InvalidArgumentException {
+    void testQueryForOrderByCustom7Desc() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .orderByCustomAttribute("7", desc)
@@ -628,7 +628,7 @@ public class QueryClassificationAccTest extends AbstractAccTest {
     }
 
     @Test
-    public void testQueryForOrderByCustom8Asc() throws InvalidArgumentException {
+    void testQueryForOrderByCustom8Asc() throws InvalidArgumentException {
         ClassificationService classificationService = taskanaEngine.getClassificationService();
         List<ClassificationSummary> results = classificationService.createClassificationQuery()
             .orderByCustomAttribute("8", asc)

@@ -1,7 +1,7 @@
 package acceptance.security;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -17,14 +17,14 @@ import pro.taskana.security.WithAccessId;
  * Acceptance test for task queries and authorization.
  */
 @ExtendWith(JAASExtension.class)
-public class TaskEngineAccTest extends AbstractAccTest {
+class TaskEngineAccTest extends AbstractAccTest {
 
-    public TaskEngineAccTest() {
+    TaskEngineAccTest() {
         super();
     }
 
     @Test
-    public void testUnauthenticated() {
+    void testUnauthenticated() {
         assertFalse(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN));
         assertFalse(taskanaEngine.isUserInRole(TaskanaRole.ADMIN));
         Assertions.assertThrows(NotAuthorizedException.class, () ->
@@ -34,7 +34,7 @@ public class TaskEngineAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "user_1_1") // , groupNames = {"businessadmin"})
     @Test
-    public void testUser() throws NotAuthorizedException {
+    void testUser() throws NotAuthorizedException {
         assertFalse(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN));
         assertFalse(taskanaEngine.isUserInRole(TaskanaRole.ADMIN));
         Assertions.assertThrows(NotAuthorizedException.class, () ->
@@ -44,7 +44,7 @@ public class TaskEngineAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "user_1_1", groupNames = {"businessadmin"})
     @Test
-    public void testBusinessAdmin() throws NotAuthorizedException {
+    void testBusinessAdmin() throws NotAuthorizedException {
         assertTrue(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN));
         assertFalse(taskanaEngine.isUserInRole(TaskanaRole.ADMIN));
         taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN);
@@ -53,7 +53,7 @@ public class TaskEngineAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "user_1_1", groupNames = {"admin"})
     @Test
-    public void testAdmin() throws NotAuthorizedException {
+    void testAdmin() throws NotAuthorizedException {
         assertFalse(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN));
         assertTrue(taskanaEngine.isUserInRole(TaskanaRole.ADMIN));
         taskanaEngine.checkRoleMembership(TaskanaRole.ADMIN);

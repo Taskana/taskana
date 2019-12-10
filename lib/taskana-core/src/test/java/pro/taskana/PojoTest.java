@@ -52,6 +52,7 @@ class PojoTest {
             ))
             .collect(Collectors.toList());
     }
+
     @TestFactory
     Collection<DynamicTest> validateSetters() {
         return getPojoClasses()
@@ -69,8 +70,6 @@ class PojoTest {
             ))
             .collect(Collectors.toList());
     }
-
-
 
     @TestFactory
     Collection<DynamicTest> validateNoStaticExceptFinalFields() {
@@ -90,14 +89,13 @@ class PojoTest {
             .collect(Collectors.toList());
     }
 
-
-
     private void validateWithRules(Class<?> cl, Rule... rules) {
         ValidatorBuilder.create()
             .with(rules)
             .build()
             .validate(PojoClassFactory.getPojoClass(cl));
     }
+
     private void validateWithTester(Class<?> cl, Tester... testers) {
         ValidatorBuilder.create()
             .with(testers)

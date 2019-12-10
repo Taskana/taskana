@@ -1,6 +1,9 @@
 package acceptance.task;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
 
@@ -23,9 +26,9 @@ import pro.taskana.security.WithAccessId;
  */
 
 @ExtendWith(JAASExtension.class)
-public class GetTaskAccTest extends AbstractAccTest {
+class GetTaskAccTest extends AbstractAccTest {
 
-    public GetTaskAccTest() {
+    GetTaskAccTest() {
         super();
     }
 
@@ -33,13 +36,13 @@ public class GetTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testGetTaskById()
+    void testGetTaskById()
         throws TaskNotFoundException, NotAuthorizedException, InvalidArgumentException {
         TaskService taskService = taskanaEngine.getTaskService();
 
         Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
 
-        assertEquals(null, task.getCompleted());
+        assertNull(task.getCompleted());
         assertEquals("Task99", task.getName());
         assertEquals("creator_user_id", task.getCreator());
         assertEquals("Lorem ipsum was n Quatsch dolor sit amet.", task.getDescription());
@@ -60,8 +63,8 @@ public class GetTaskAccTest extends AbstractAccTest {
         assertEquals("MyInstance1", task.getPrimaryObjRef().getSystemInstance());
         assertEquals("MyType1", task.getPrimaryObjRef().getType());
         assertEquals("MyValue1", task.getPrimaryObjRef().getValue());
-        assertEquals(true, task.isRead());
-        assertEquals(false, task.isTransferred());
+        assertTrue(task.isRead());
+        assertFalse(task.isTransferred());
         assertEquals(new HashMap<String, String>(), task.getCallbackInfo());
         assertEquals(new HashMap<String, String>(), task.getCustomAttributes());
         assertEquals("custom1", task.getCustomAttribute("1"));
@@ -86,8 +89,7 @@ public class GetTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testGetTaskByIdNotExisting()
-        throws TaskNotFoundException, NotAuthorizedException {
+    void testGetTaskByIdNotExisting() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         Assertions.assertThrows(TaskNotFoundException.class, () ->

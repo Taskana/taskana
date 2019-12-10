@@ -1,7 +1,7 @@
 package acceptance.objectreference;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
@@ -23,38 +23,38 @@ import pro.taskana.security.JAASExtension;
  * Acceptance test for all "query classifications with pagination" scenarios.
  */
 @ExtendWith(JAASExtension.class)
-public class QueryObjectreferencesWithPaginationAccTest extends AbstractAccTest {
+class QueryObjectreferencesWithPaginationAccTest extends AbstractAccTest {
 
     private TaskService taskService;
     private TaskQuery taskQuery;
     private ObjectReferenceQuery objRefQuery;
 
-    public QueryObjectreferencesWithPaginationAccTest() {
+    QueryObjectreferencesWithPaginationAccTest() {
         super();
     }
 
     @BeforeEach
-    public void before() {
+    void before() {
         taskService = taskanaEngine.getTaskService();
         taskQuery = taskService.createTaskQuery();
         objRefQuery = taskQuery.createObjectReferenceQuery();
     }
 
     @Test
-    public void testGetFirstPageOfObjectRefQueryWithOffset() {
+    void testGetFirstPageOfObjectRefQueryWithOffset() {
 
         List<ObjectReference> results = objRefQuery.list(0, 5);
         assertThat(results.size(), equalTo(3));
     }
 
     @Test
-    public void testGetSecondPageOfObjectRefQueryWithOffset() {
+    void testGetSecondPageOfObjectRefQueryWithOffset() {
         List<ObjectReference> results = objRefQuery.list(2, 5);
         assertThat(results.size(), equalTo(1));
     }
 
     @Test
-    public void testListOffsetAndLimitOutOfBounds() {
+    void testListOffsetAndLimitOutOfBounds() {
         // both will be 0, working
         List<ObjectReference> results = objRefQuery.list(-1, -3);
         assertThat(results.size(), equalTo(0));
@@ -69,7 +69,7 @@ public class QueryObjectreferencesWithPaginationAccTest extends AbstractAccTest 
     }
 
     @Test
-    public void testPaginationWithPages() {
+    void testPaginationWithPages() {
         // Getting full page
         int pageNumber = 1;
         int pageSize = 10;
@@ -96,7 +96,7 @@ public class QueryObjectreferencesWithPaginationAccTest extends AbstractAccTest 
     }
 
     @Test
-    public void testPaginationNullAndNegativeLimitsIgnoring() {
+    void testPaginationNullAndNegativeLimitsIgnoring() {
         // 0 limit/size = 0 results
         int pageNumber = 2;
         int pageSize = 0;
@@ -122,7 +122,7 @@ public class QueryObjectreferencesWithPaginationAccTest extends AbstractAccTest 
      */
     @Disabled
     @Test
-    public void testPaginationThrowingExceptionWhenPageOutOfBounds() {
+    void testPaginationThrowingExceptionWhenPageOutOfBounds() {
         // entrypoint set outside result amount
         int pageNumber = 6;
         int pageSize = 10;
@@ -131,7 +131,7 @@ public class QueryObjectreferencesWithPaginationAccTest extends AbstractAccTest 
     }
 
     @Test
-    public void testCountOfClassificationsQuery() {
+    void testCountOfClassificationsQuery() {
         long count = objRefQuery.count();
         assertThat(count, equalTo(3L));
     }

@@ -1,18 +1,18 @@
 package pro.taskana.impl;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import pro.taskana.Attachment;
 import pro.taskana.AttachmentSummary;
@@ -22,14 +22,14 @@ import pro.taskana.ObjectReference;
  * Unit Test for methods needed fot attachment at TaskImpl.<br>
  * This test should test every interaction with Attachments, which means adding, removing, nulling them.
  */
-@RunWith(MockitoJUnitRunner.class)
-public class TaskAttachmentTest {
+@ExtendWith(MockitoExtension.class)
+class TaskAttachmentTest {
 
     @InjectMocks
     private TaskImpl cut;
 
     @Test
-    public void testAddAttachmentWithValidValue() {
+    void testAddAttachmentWithValidValue() {
         Attachment attachment1 = createAttachment("ID1", "taskId1");
         Attachment attachment2 = createAttachment("ID2", "taskId1");
         Attachment attachment3 = createAttachment("ID3", "taskId1");
@@ -42,7 +42,7 @@ public class TaskAttachmentTest {
     }
 
     @Test
-    public void testAddNullValue() {
+    void testAddNullValue() {
         Attachment attachment1 = createAttachment("ID1", "taskId1");
         Attachment attachment2 = null;
 
@@ -53,7 +53,7 @@ public class TaskAttachmentTest {
     }
 
     @Test
-    public void testAddSameTwice() {
+    void testAddSameTwice() {
         // Same values, not same REF. Important.
         Attachment attachment1 = createAttachment("ID1", "taskId1");
         Attachment attachment2 = createAttachment("ID1", "taskId1");
@@ -72,7 +72,7 @@ public class TaskAttachmentTest {
     }
 
     @Test
-    public void testRemoveAttachment() {
+    void testRemoveAttachment() {
         // Testing normal way
         Attachment attachment1 = createAttachment("ID1", "taskId1");
         Attachment attachment2 = createAttachment("ID2", "taskId1");
@@ -86,7 +86,7 @@ public class TaskAttachmentTest {
     }
 
     @Test
-    public void testRemoveLoopStopsAtResult() {
+    void testRemoveLoopStopsAtResult() {
         Attachment attachment1 = createAttachment("ID2", "taskId1");
         // adding same uncommon way to test that the loop will stop.
         cut.getAttachments().add(attachment1);
@@ -101,12 +101,12 @@ public class TaskAttachmentTest {
     }
 
     @Test
-    public void testGetAttachmentSummaries() {
+    void testGetAttachmentSummaries() {
         ObjectReference objRef = new ObjectReference();
         objRef.setId("ObjRefId");
         objRef.setCompany("company");
 
-        Map<String, String> customAttr = new HashMap<String, String>();
+        Map<String, String> customAttr = new HashMap<>();
         customAttr.put("key", "value");
 
         Attachment attachment1 = createAttachment("ID1", "taskId1");

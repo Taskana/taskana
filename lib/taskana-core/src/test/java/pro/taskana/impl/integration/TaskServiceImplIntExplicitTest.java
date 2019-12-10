@@ -1,8 +1,10 @@
 package pro.taskana.impl.integration;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNot.not;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -13,7 +15,6 @@ import java.util.UUID;
 
 import javax.sql.DataSource;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -34,7 +35,6 @@ import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketType;
 import pro.taskana.configuration.DbSchemaCreator;
-import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.DomainNotFoundException;
@@ -54,7 +54,7 @@ import pro.taskana.impl.TaskServiceImpl;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.WorkbasketSummaryImpl;
-import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
+import pro.taskana.impl.configuration.TaskanaEngineTestConfiguration;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.security.CurrentUserContext;
@@ -73,7 +73,7 @@ class TaskServiceImplIntExplicitTest {
 
     private static TaskServiceImpl taskServiceImpl;
 
-    private static TaskanaEngineConfiguration taskanaEngineConfiguration;
+    private static pro.taskana.configuration.TaskanaEngineConfiguration taskanaEngineConfiguration;
 
     private static TaskanaEngine taskanaEngine;
 
@@ -89,10 +89,10 @@ class TaskServiceImplIntExplicitTest {
         String propertiesFileName = userHomeDirectory + "/taskanaUnitTest.properties";
 
         dataSource = new File(propertiesFileName).exists()
-            ? TaskanaEngineConfigurationTest.createDataSourceFromProperties(propertiesFileName)
-            : TaskanaEngineConfiguration.createDefaultDataSource();
-        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false,
-            TaskanaEngineConfigurationTest.getSchemaName());
+            ? TaskanaEngineTestConfiguration.createDataSourceFromProperties(propertiesFileName)
+            : pro.taskana.configuration.TaskanaEngineConfiguration.createDefaultDataSource();
+        taskanaEngineConfiguration = new pro.taskana.configuration.TaskanaEngineConfiguration(dataSource, false,
+            TaskanaEngineTestConfiguration.getSchemaName());
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         taskServiceImpl = (TaskServiceImpl) taskanaEngine.getTaskService();
         taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
@@ -105,7 +105,7 @@ class TaskServiceImplIntExplicitTest {
 
     @BeforeEach
     void resetDb() {
-        String schemaName = TaskanaEngineConfigurationTest.getSchemaName();
+        String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
         SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
         sampleDataGenerator.clearDb();
     }
@@ -177,7 +177,7 @@ class TaskServiceImplIntExplicitTest {
         TaskanaEngine te2 = taskanaEngineConfiguration.buildTaskanaEngine();
         TaskServiceImpl taskServiceImpl2 = (TaskServiceImpl) te2.getTaskService();
         Task resultTask = taskServiceImpl2.getTask(task.getId());
-        Assert.assertNotNull(resultTask);
+        assertNotNull(resultTask);
         connection.commit();
     }
 
@@ -268,7 +268,7 @@ class TaskServiceImplIntExplicitTest {
             .primaryObjectReferenceValueIn("val1", "val2", "val3")
             .list();
 
-        Assert.assertEquals(0, results.size());
+        assertEquals(0, results.size());
         connection.commit();
     }
 
@@ -361,9 +361,9 @@ class TaskServiceImplIntExplicitTest {
         final String user = "User";
 
         // Set up Security for this Test
-        dataSource = TaskanaEngineConfigurationTest.getDataSource();
-        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, true,
-            TaskanaEngineConfigurationTest.getSchemaName());
+        dataSource = TaskanaEngineTestConfiguration.getDataSource();
+        taskanaEngineConfiguration = new pro.taskana.configuration.TaskanaEngineConfiguration(dataSource, false, true,
+            TaskanaEngineTestConfiguration.getSchemaName());
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);

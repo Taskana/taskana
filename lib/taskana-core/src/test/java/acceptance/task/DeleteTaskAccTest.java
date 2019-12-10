@@ -1,7 +1,10 @@
 package acceptance.task;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,9 +29,9 @@ import pro.taskana.security.WithAccessId;
  * Acceptance test for all "delete task" scenarios.
  */
 @ExtendWith(JAASExtension.class)
-public class DeleteTaskAccTest extends AbstractAccTest {
+class DeleteTaskAccTest extends AbstractAccTest {
 
-    public DeleteTaskAccTest() {
+    DeleteTaskAccTest() {
         super();
     }
 
@@ -36,8 +39,7 @@ public class DeleteTaskAccTest extends AbstractAccTest {
         userName = "user_1_2",
         groupNames = {"group_1"})
     @Test
-    public void testDeleteSingleTaskNotAuthorized()
-        throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
+    void testDeleteSingleTaskNotAuthorized() {
 
         TaskService taskService = taskanaEngine.getTaskService();
         Assertions.assertThrows(NotAuthorizedException.class, () ->
@@ -48,7 +50,7 @@ public class DeleteTaskAccTest extends AbstractAccTest {
         userName = "user_1_2",
         groupNames = {"group_1", "admin"})
     @Test
-    public void testDeleteSingleTask()
+    void testDeleteSingleTask()
         throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
 
         TaskService taskService = taskanaEngine.getTaskService();
@@ -64,8 +66,8 @@ public class DeleteTaskAccTest extends AbstractAccTest {
         userName = "user_1_2",
         groupNames = {"group_1", "admin"})
     @Test
-    public void testThrowsExceptionIfTaskIsNotCompleted()
-        throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
+    void testThrowsExceptionIfTaskIsNotCompleted()
+        throws TaskNotFoundException, NotAuthorizedException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000029");
 
@@ -77,7 +79,7 @@ public class DeleteTaskAccTest extends AbstractAccTest {
         userName = "user_1_2",
         groupNames = {"group_1", "admin"})
     @Test
-    public void testForceDeleteTaskIfNotCompleted()
+    void testForceDeleteTaskIfNotCompleted()
         throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
         TaskService taskService = taskanaEngine.getTaskService();
         Task task = taskService.getTask("TKI:000000000000000000000000000000000027");
@@ -95,8 +97,8 @@ public class DeleteTaskAccTest extends AbstractAccTest {
         userName = "user_1_2",
         groupNames = {"group_1"})
     @Test
-    public void testBulkDeleteTask()
-        throws TaskNotFoundException, InvalidArgumentException, NotAuthorizedException {
+    void testBulkDeleteTask()
+        throws InvalidArgumentException {
 
         TaskService taskService = taskanaEngine.getTaskService();
         ArrayList<String> taskIdList = new ArrayList<>();
@@ -114,7 +116,7 @@ public class DeleteTaskAccTest extends AbstractAccTest {
         userName = "user_1_2",
         groupNames = {"group_1"})
     @Test
-    public void testBulkDeleteTasksWithException()
+    void testBulkDeleteTasksWithException()
         throws TaskNotFoundException, InvalidArgumentException, NotAuthorizedException {
 
         TaskService taskService = taskanaEngine.getTaskService();
@@ -128,12 +130,12 @@ public class DeleteTaskAccTest extends AbstractAccTest {
         String expectedFailedId = "TKI:000000000000000000000000000000000028";
         assertTrue(results.containsErrors());
         List<String> failedTaskIds = results.getFailedIds();
-        assertTrue(failedTaskIds.size() == 1);
-        assertTrue(expectedFailedId.equals(failedTaskIds.get(0)));
-        assertTrue(results.getErrorMap().get(expectedFailedId).getClass() == InvalidStateException.class);
+        assertEquals(1, failedTaskIds.size());
+        assertEquals(expectedFailedId, failedTaskIds.get(0));
+        assertSame(results.getErrorMap().get(expectedFailedId).getClass(), InvalidStateException.class);
 
         Task notDeletedTask = taskService.getTask("TKI:000000000000000000000000000000000028");
-        assertTrue(notDeletedTask != null);
+        assertNotNull(notDeletedTask);
         Assertions.assertThrows(TaskNotFoundException.class, () ->
             taskService.getTask("TKI:000000000000000000000000000000000040"));
 

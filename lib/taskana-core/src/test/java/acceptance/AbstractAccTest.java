@@ -13,7 +13,6 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.junit.BeforeClass;
 import org.junit.jupiter.api.BeforeAll;
 
 import pro.taskana.Attachment;
@@ -21,9 +20,8 @@ import pro.taskana.ObjectReference;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.TimeInterval;
-import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.ClassificationNotFoundException;
-import pro.taskana.impl.configuration.TaskanaEngineConfigurationTest;
+import pro.taskana.impl.configuration.TaskanaEngineTestConfiguration;
 import pro.taskana.sampledata.SampleDataGenerator;
 
 /**
@@ -31,24 +29,23 @@ import pro.taskana.sampledata.SampleDataGenerator;
  */
 public abstract class AbstractAccTest {
 
-    protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
+    protected static pro.taskana.configuration.TaskanaEngineConfiguration taskanaEngineConfiguration;
     protected static TaskanaEngine taskanaEngine;
 
     @BeforeAll
-    @BeforeClass
     public static void setupTest() throws Exception {
         resetDb(false);
     }
 
     public static void resetDb(boolean dropTables) throws SQLException, IOException {
-        DataSource dataSource = TaskanaEngineConfigurationTest.getDataSource();
-        String schemaName = TaskanaEngineConfigurationTest.getSchemaName();
+        DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
+        String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
         SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
         if (dropTables) {
             sampleDataGenerator.dropDb();
         }
-        dataSource = TaskanaEngineConfigurationTest.getDataSource();
-        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false,
+        dataSource = TaskanaEngineTestConfiguration.getDataSource();
+        taskanaEngineConfiguration = new pro.taskana.configuration.TaskanaEngineConfiguration(dataSource, false,
             schemaName);
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         taskanaEngine.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);

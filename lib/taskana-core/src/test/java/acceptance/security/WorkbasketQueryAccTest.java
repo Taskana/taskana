@@ -1,8 +1,9 @@
 package acceptance.security;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,19 +21,19 @@ import pro.taskana.security.WithAccessId;
  * Acceptance test for workbasket queries and authorization.
  */
 @ExtendWith(JAASExtension.class)
-public class WorkbasketQueryAccTest extends AbstractAccTest {
+class WorkbasketQueryAccTest extends AbstractAccTest {
 
-    public WorkbasketQueryAccTest() {
+    WorkbasketQueryAccTest() {
         super();
     }
 
     @Test
-    public void testQueryWorkbasketByUnauthenticated() throws InvalidArgumentException {
+    void testQueryWorkbasketByUnauthenticated() throws InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("%")
             .list();
-        Assert.assertEquals(0L, results.size());
+        assertEquals(0L, results.size());
         Assertions.assertThrows(NotAuthorizedException.class, () ->
             workbasketService.createWorkbasketQuery()
                 .nameLike("%")
@@ -43,12 +44,12 @@ public class WorkbasketQueryAccTest extends AbstractAccTest {
     @WithAccessId(
         userName = "unknown")
     @Test
-    public void testQueryWorkbasketByUnknownUser() throws InvalidArgumentException {
+    void testQueryWorkbasketByUnknownUser() throws InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("%")
             .list();
-        Assert.assertEquals(0L, results.size());
+        assertEquals(0L, results.size());
 
         Assertions.assertThrows(NotAuthorizedException.class, () ->
             workbasketService.createWorkbasketQuery()
@@ -61,19 +62,19 @@ public class WorkbasketQueryAccTest extends AbstractAccTest {
         userName = "unknown",
         groupNames = "businessadmin")
     @Test
-    public void testQueryWorkbasketByBusinessAdmin() throws NotAuthorizedException, InvalidArgumentException {
+    void testQueryWorkbasketByBusinessAdmin() throws NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("%")
             .list();
-        Assert.assertEquals(25L, results.size());
+        assertEquals(25L, results.size());
 
         results = workbasketService.createWorkbasketQuery()
             .nameLike("%")
             .accessIdsHavePermission(WorkbasketPermission.TRANSFER, "teamlead_1", "group_1", "group_2")
             .list();
 
-        Assert.assertEquals(13L, results.size());
+        assertEquals(13L, results.size());
 
     }
 
@@ -81,18 +82,18 @@ public class WorkbasketQueryAccTest extends AbstractAccTest {
         userName = "unknown",
         groupNames = "admin")
     @Test
-    public void testQueryWorkbasketByAdmin() throws NotAuthorizedException, InvalidArgumentException {
+    void testQueryWorkbasketByAdmin() throws NotAuthorizedException, InvalidArgumentException {
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         List<WorkbasketSummary> results = workbasketService.createWorkbasketQuery()
             .nameLike("%")
             .list();
-        Assert.assertEquals(25L, results.size());
+        assertEquals(25L, results.size());
 
         results = workbasketService.createWorkbasketQuery()
             .nameLike("%")
             .accessIdsHavePermission(WorkbasketPermission.TRANSFER, "teamlead_1", "group_1", "group_2")
             .list();
 
-        Assert.assertEquals(13L, results.size());
+        assertEquals(13L, results.size());
     }
 }

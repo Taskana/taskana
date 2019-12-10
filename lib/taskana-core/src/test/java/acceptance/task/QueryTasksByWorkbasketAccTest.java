@@ -1,7 +1,7 @@
 package acceptance.task;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,9 +23,9 @@ import pro.taskana.security.WithAccessId;
  * Acceptance test for all "query tasks by workbasket" scenarios.
  */
 @ExtendWith(JAASExtension.class)
-public class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
+class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
 
-    public QueryTasksByWorkbasketAccTest() {
+    QueryTasksByWorkbasketAccTest() {
         super();
     }
 
@@ -33,7 +33,7 @@ public class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
         userName = "teamlead_1",
         groupNames = {"group_1"})
     @Test
-    public void testQueryForWorkbasketKeyDomain() {
+    void testQueryForWorkbasketKeyDomain() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<KeyDomain> workbasketIdentifiers = Arrays.asList(new KeyDomain("GPK_KSC", "DOMAIN_A"),
             new KeyDomain("USER_1_2", "DOMAIN_A"));
@@ -58,7 +58,7 @@ public class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testThrowsExceptionIfNoOpenerPermissionOnQueriedWorkbasket() {
+    void testThrowsExceptionIfNoOpenerPermissionOnQueriedWorkbasket() {
         TaskService taskService = taskanaEngine.getTaskService();
 
         Assertions.assertThrows(NotAuthorizedToQueryWorkbasketException.class, () ->
@@ -71,7 +71,7 @@ public class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    public void testThrowsExceptionIfNoOpenerPermissionOnAtLeastOneQueriedWorkbasket() {
+    void testThrowsExceptionIfNoOpenerPermissionOnAtLeastOneQueriedWorkbasket() {
         TaskService taskService = taskanaEngine.getTaskService();
         Assertions.assertThrows(NotAuthorizedToQueryWorkbasketException.class, () ->
             taskService.createTaskQuery()
