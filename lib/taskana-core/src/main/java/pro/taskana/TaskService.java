@@ -231,6 +231,18 @@ public interface TaskService {
 
     /**
      * Returns a not persisted instance of {@link Task}.
+     * The returned task has no workbasket Id set. When createTask() is
+     * invoked for this task, TaskService will call the TaskRouting SPI to
+     * determine a workbasket for the task. If the TaskRouting API is not active,
+     * e.g. because no TaskRouter is registered, or the TaskRouter(s) don't find a workbasket,
+     * the task will not be persisted.
+     *
+     * @return an empty new Task
+     */
+    Task newTask();
+
+    /**
+     * Returns a not persisted instance of {@link Task}.
      *
      * @param workbasketId
      *            the id of the workbasket to which the task belongs

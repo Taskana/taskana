@@ -103,7 +103,7 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
     public List<WorkbasketAccessItem> list() {
         LOGGER.debug("entry to list(), this = {}", this);
         List<WorkbasketAccessItem> result = taskanaEngine.openAndReturnConnection(
-            () -> new ArrayList<>(taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this)));
+            () -> new ArrayList<WorkbasketAccessItem>(taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this)));
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("exit from list(). Returning {} resulting Objects: {} ", result.size(),
                 LoggerUtils.listToString(result));
