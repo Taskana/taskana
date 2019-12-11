@@ -34,11 +34,7 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
 
     protected TransactionFactory transactionFactory;
 
-    protected java.sql.Connection connection = null;
-
-    protected DbSchemaCreator dbSchemaCreator;
-
-    protected static ThreadLocal<Deque<SqlSessionManager>> sessionStack = new ThreadLocal<>();
+    protected static final ThreadLocal<Deque<SqlSessionManager>> SESSION_STACK = new ThreadLocal<>();
 
     protected TaskanaHistory taskanaHistoryService;
 
@@ -47,9 +43,9 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
 
         createTransactionFactory(this.taskanaEngineConfiguration.getUseManagedTransactions());
         this.sessionManager = createSqlSessionManager();
-        dbSchemaCreator = new DbSchemaCreator(taskanaEngineConfiguration.getDatasource(),
-            taskanaEngineConfiguration.getSchemaName());
-
+        new DbSchemaCreator(taskanaEngineConfiguration.getDatasource(),
+            taskanaEngineConfiguration.getSchemaName()).
+            run();
     }
 
     public static TaskanaHistoryEngineImpl createTaskanaEngine(
@@ -161,10 +157,10 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
      * @return Stack of SqlSessionManager
      */
     protected static Deque<SqlSessionManager> getSessionStack() {
-        Deque<SqlSessionManager> stack = sessionStack.get();
+        Deque<SqlSessionManager> stack = SESSION_STACK.get();
         if (stack == null) {
             stack = new ArrayDeque<>();
-            sessionStack.set(stack);
+            SESSION_STACK.set(stack);
         }
         return stack;
     }

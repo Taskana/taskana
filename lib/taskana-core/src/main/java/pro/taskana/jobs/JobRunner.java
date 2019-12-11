@@ -24,13 +24,10 @@ public class JobRunner {
     private TaskanaEngineImpl taskanaEngine;
     private JobServiceImpl jobService;
     private TaskanaTransactionProvider<Object> txProvider;
-    private int maxRetryCount;
-    private int attempt = 0;
 
     public JobRunner(TaskanaEngine taskanaEngine) {
         this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
         jobService = (JobServiceImpl) taskanaEngine.getJobService();
-        maxRetryCount = taskanaEngine.getConfiguration().getMaxNumberOfJobRetries();
     }
 
     public void registerTransactionProvider(

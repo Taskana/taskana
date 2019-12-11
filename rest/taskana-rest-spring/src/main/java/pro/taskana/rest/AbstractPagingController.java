@@ -110,7 +110,7 @@ public abstract class AbstractPagingController {
         String param = params.getFirst(PAGING_PAGE_SIZE);
         params.remove(PAGING_PAGE_SIZE);
         try {
-            return param != null ? Long.valueOf(param) : Integer.MAX_VALUE;
+            return param != null ? Long.parseLong(param) : Integer.MAX_VALUE;
         } catch (NumberFormatException e) {
             throw new InvalidArgumentException("page-size must be a integer value.", e.getCause());
         }

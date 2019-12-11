@@ -390,7 +390,7 @@ public class TaskController extends AbstractPagingController {
 
         int[] priorities = new int[prioritiesInString.length];
         for (int i = 0; i < prioritiesInString.length; i++) {
-            priorities[i] = Integer.valueOf(prioritiesInString[i]);
+            priorities[i] = Integer.parseInt(prioritiesInString[i]);
         }
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Exit from extractPriorities(), returning {}", priorities);

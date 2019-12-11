@@ -2,6 +2,8 @@ package pro.taskana;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.Properties;
 
@@ -46,7 +48,10 @@ public class TaskanaProducers {
             ctx = new InitialContext();
             properties.load(propertyStream);
             dataSource = (DataSource) ctx.lookup(properties.getProperty("datasource.jndi"));
-            LOGGER.debug("---------------> " + dataSource.getConnection().getMetaData());
+            try (Connection connection = dataSource.getConnection()) {
+                DatabaseMetaData metaData = connection.getMetaData();
+                LOGGER.debug("---------------> " + metaData);
+            }
             this.taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, true, false, "TASKANA");
         } catch (NamingException | SQLException | IOException e) {
             LOGGER.error("Could not start Taskana: ", e);
