@@ -199,14 +199,20 @@ public class ClassificationDefinitionController {
         throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
         InvalidArgumentException {
         LOGGER.debug("Entry to updateParentChildrenRelations()");
-        for (Classification childRes : childrenInFile.keySet()) {
-            Classification child = classificationService
-                .getClassification(childRes.getKey(), childRes.getDomain());
-            String parentKey = childrenInFile.get(childRes);
+
+        for (Map.Entry<Classification, String> entry : childrenInFile.entrySet()) {
+            Classification childRes = entry.getKey();
+            String parentKey = entry.getValue();
+            String classificationKey = childRes.getKey();
+            String classificationDomain = childRes.getDomain();
+
+            Classification child = classificationService.getClassification(classificationKey, classificationDomain);
             String parentId = (parentKey == null) ? ""
-                : classificationService.getClassification(parentKey, childRes.getDomain()).getId();
+                : classificationService.getClassification(parentKey, classificationDomain).getId();
+
             child.setParentKey(parentKey);
             child.setParentId(parentId);
+
             classificationService.updateClassification(child);
         }
         LOGGER.debug("Exit from updateParentChildrenRelations()");

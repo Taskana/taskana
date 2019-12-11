@@ -196,7 +196,7 @@ public class ClassificationServiceImpl implements ClassificationService {
             classificationImpl.setModified(Instant.now());
             this.initDefaultClassificationValues(classificationImpl);
 
-            if (oldClassification.getCategory() != classificationImpl.getCategory()) {
+            if (!Objects.equals(oldClassification.getCategory(), classificationImpl.getCategory())) {
                 this.updateCategoryOnAssociatedTasks(classificationImpl, oldClassification);
             }
 
@@ -277,8 +277,8 @@ public class ClassificationServiceImpl implements ClassificationService {
     @Override
     public Classification getClassification(String id) throws ClassificationNotFoundException {
         if (id == null) {
-            throw new ClassificationNotFoundException(id,
-                "Classification for id " + id + " was not found.");
+            throw new ClassificationNotFoundException(null,
+                "Classification for null id is invalid.");
         }
         LOGGER.debug("entry to getClassification(id = {})", id);
         Classification result = null;
@@ -299,7 +299,7 @@ public class ClassificationServiceImpl implements ClassificationService {
     public Classification getClassification(String key, String domain) throws ClassificationNotFoundException {
         LOGGER.debug("entry to getClassification(key = {}, domain = {})", key, domain);
         if (key == null) {
-            throw new ClassificationNotFoundException(key, domain,
+            throw new ClassificationNotFoundException(null, domain,
                 "Classification for null key and domain " + domain + " was not found.");
         }
 

@@ -73,15 +73,15 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
     private int deleteWorkbasketsTransactionally(List<String> workbasketsToBeDeleted) {
         int deletedWorkbasketsCount = 0;
         if (txProvider != null) {
-            Integer count = (Integer) txProvider.executeInTransaction(() -> {
+            int count = (Integer) txProvider.executeInTransaction(() -> {
                 try {
-                    return new Integer(deleteWorkbaskets(workbasketsToBeDeleted));
+                    return deleteWorkbaskets(workbasketsToBeDeleted);
                 } catch (Exception e) {
                     LOGGER.warn("Could not delete workbaskets.", e);
-                    return new Integer(0);
+                    return 0;
                 }
             });
-            return count.intValue();
+            return count;
         } else {
             try {
                 deletedWorkbasketsCount = deleteWorkbaskets(workbasketsToBeDeleted);
