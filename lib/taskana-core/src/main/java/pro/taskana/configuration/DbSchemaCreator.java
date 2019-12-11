@@ -2,10 +2,12 @@ package pro.taskana.configuration;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
@@ -61,12 +63,16 @@ public class DbSchemaCreator {
      */
     public void run() throws SQLException {
         Connection connection = dataSource.getConnection();
-        LOGGER.debug("Using database of type {} with url '{}'", connection.getMetaData().getDatabaseProductName(), connection.getMetaData().getURL());
+        LOGGER.debug("Using database of type {} with url '{}'", connection.getMetaData().getDatabaseProductName(),
+            connection.getMetaData().getURL());
         ScriptRunner runner = getScriptRunnerInstance(connection);
         try {
             if (!isSchemaPreexisting(connection)) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(this.getClass()
-                    .getResourceAsStream(selectDbScriptFileName(connection.getMetaData().getDatabaseProductName()))));
+                String scriptPath = selectDbScriptFileName(connection.getMetaData().getDatabaseProductName());
+                InputStream resourceAsStream = this.getClass()
+                    .getResourceAsStream(scriptPath);
+                BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(resourceAsStream, StandardCharsets.UTF_8));
                 runner.runScript(getSqlSchemaNameParsed(reader));
             }
         } finally {
@@ -84,15 +90,17 @@ public class DbSchemaCreator {
         runner.setLogWriter(logWriter);
         runner.setErrorLogWriter(errorLogWriter);
         return runner;
-        }
+    }
 
     private boolean isSchemaPreexisting(Connection connection) {
         ScriptRunner runner = getScriptRunnerInstance(connection);
         StringWriter errorWriter = new StringWriter();
         runner.setErrorLogWriter(new PrintWriter(errorWriter));
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(this.getClass()
-                .getResourceAsStream(selectDbSchemaDetectionScript(connection.getMetaData().getDatabaseProductName()))));
+            String scriptPath = selectDbSchemaDetectionScript(connection.getMetaData().getDatabaseProductName());
+            InputStream resourceAsStream = this.getClass()
+                .getResourceAsStream(scriptPath);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream, StandardCharsets.UTF_8));
             runner.runScript(getSqlSchemaNameParsed(reader));
         } catch (Exception e) {
             LOGGER.debug("Schema does not exist.");

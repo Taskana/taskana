@@ -65,8 +65,8 @@ public class ClassificationChangedJob extends AbstractTaskanaJob {
             if (!taskIdBatch.isEmpty()) {
                 String taskIds = String.join(",", affectedTaskIds);
                 args.put(TASK_IDS, taskIds);
-                args.put(PRIORITY_CHANGED, new Boolean(priorityChanged).toString());
-                args.put(SERVICE_LEVEL_CHANGED, new Boolean(serviceLevelChanged).toString());
+                args.put(PRIORITY_CHANGED, Boolean.valueOf(priorityChanged).toString());
+                args.put(SERVICE_LEVEL_CHANGED, Boolean.valueOf(serviceLevelChanged).toString());
                 ScheduledJob job = new ScheduledJob();
                 job.setType(ScheduledJob.Type.UPDATETASKSJOB);
                 job.setArguments(args);

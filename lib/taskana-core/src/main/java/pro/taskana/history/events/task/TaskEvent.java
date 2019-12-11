@@ -9,20 +9,6 @@ import pro.taskana.history.api.TaskanaHistoryEvent;
  */
 public class TaskEvent extends TaskanaHistoryEvent {
 
-    protected String taskId;
-    protected String businessProcessId;
-    protected String parentBusinessProcessId;
-    protected String domain;
-    protected String workbasketKey;
-    protected String taskClassificationCategory;
-    protected String taskClassificationKey;
-    protected String attachmentClassificationKey;
-    protected String porCompany;
-    protected String porSystem;
-    protected String porInstance;
-    protected String porType;
-    protected String porValue;
-
     public TaskEvent(Task task) {
         super();
         taskId = task.getId();

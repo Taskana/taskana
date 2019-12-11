@@ -89,10 +89,10 @@ public final class CurrentUserContext {
             try {
                 Class.forName(WSSUBJECT_CLASSNAME);
                 LOGGER.debug("WSSubject detected. Assuming that Taskana runs on IBM WebSphere.");
-                runningOnWebSphere = new Boolean(true);
+                runningOnWebSphere = Boolean.TRUE;
             } catch (ClassNotFoundException e) {
                 LOGGER.debug("No WSSubject detected. Using JAAS subject further on.");
-                runningOnWebSphere = new Boolean(false);
+                runningOnWebSphere = Boolean.FALSE;
             }
         }
         return runningOnWebSphere;

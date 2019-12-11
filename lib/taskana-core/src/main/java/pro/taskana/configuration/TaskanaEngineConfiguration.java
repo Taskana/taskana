@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.Duration;
@@ -332,7 +333,7 @@ public class TaskanaEngineConfiguration {
                     LOGGER.error("taskana properties file {} was not found on classpath.",
                         propertiesFile);
                 } else {
-                    props.load(new InputStreamReader(inputStream));
+                    props.load(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
                     LOGGER.debug("Role properties were loaded from file {} from classpath.", propertiesFile);
                 }
             } else {

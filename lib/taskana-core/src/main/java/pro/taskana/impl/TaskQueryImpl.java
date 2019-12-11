@@ -945,9 +945,8 @@ public class TaskQueryImpl implements TaskQuery {
             taskanaEngine.openConnection();
             checkOpenAndReadPermissionForSpecifiedWorkbaskets();
             setupJoinAndOrderParameters();
-            List<TaskSummaryImpl> tasks = new ArrayList<>();
             setupAccessIds();
-            tasks = taskanaEngine.getSqlSession().selectList(getLinkToMapperScript(), this);
+            List<TaskSummaryImpl> tasks = taskanaEngine.getSqlSession().selectList(getLinkToMapperScript(), this);
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("mapper returned {} resulting Objects: {} ", tasks.size(),
                     LoggerUtils.listToString(tasks));
