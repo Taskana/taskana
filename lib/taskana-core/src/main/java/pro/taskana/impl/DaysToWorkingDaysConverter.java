@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
@@ -33,13 +33,12 @@ import pro.taskana.impl.util.LoggerUtils;
 public final class DaysToWorkingDaysConverter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskMonitorServiceImpl.class);
-    private static DaysToWorkingDaysConverter instance;
+    private static boolean germanHolidaysEnabled;
+    private static Set<LocalDate> customHolidays = new HashSet<>();
     private List<Integer> positiveDaysToWorkingDays;
     private List<Integer> negativeDaysToWorkingDays;
     private Instant dateCreated;
     private LocalDate easterSunday;
-    private static boolean germanHolidaysEnabled;
-    private static Set<LocalDate> customHolidays = new HashSet<>();
 
     private DaysToWorkingDaysConverter(List<? extends TimeIntervalColumnHeader> columnHeaders,
         Instant referenceDate) {
@@ -47,6 +46,11 @@ public final class DaysToWorkingDaysConverter {
         dateCreated = referenceDate;
         positiveDaysToWorkingDays = generatePositiveDaysToWorkingDays(columnHeaders, referenceDate);
         negativeDaysToWorkingDays = generateNegativeDaysToWorkingDays(columnHeaders, referenceDate);
+    }
+
+    public static DaysToWorkingDaysConverter initialize()
+        throws InvalidArgumentException {
+        return initialize(Collections.singletonList(new TimeIntervalColumnHeader(0)), Instant.now());
     }
 
     /**
@@ -83,22 +87,8 @@ public final class DaysToWorkingDaysConverter {
         if (referenceDate == null) {
             throw new InvalidArgumentException("ReferenceDate can´t be used as NULL-Parameter");
         }
-        int largesLowerLimit = TimeIntervalColumnHeader.getLargestLowerLimit(columnHeaders);
-        int smallestUpperLimit = TimeIntervalColumnHeader.getSmallestUpperLimit(columnHeaders);
-        if (instance == null
-            || !instance.positiveDaysToWorkingDays.contains(largesLowerLimit)
-            || !instance.negativeDaysToWorkingDays.contains(smallestUpperLimit)
-            || !instance.dateCreated.truncatedTo(DAYS).equals(referenceDate.truncatedTo(DAYS))) {
 
-            instance = new DaysToWorkingDaysConverter(columnHeaders, referenceDate);
-            LOGGER.debug("Create new converter for the values from {} until {} for the date: {}.", largesLowerLimit,
-                smallestUpperLimit, instance.dateCreated);
-        }
-        return instance;
-    }
-
-    public static Optional<DaysToWorkingDaysConverter> getLastCreatedInstance() {
-        return Optional.ofNullable(instance);
+        return new DaysToWorkingDaysConverter(columnHeaders, referenceDate);
     }
 
     public static void setGermanPublicHolidaysEnabled(boolean germanPublicHolidaysEnabled) {
@@ -322,5 +312,24 @@ public final class DaysToWorkingDaysConverter {
         public boolean matches(LocalDate date) {
             return date.getDayOfMonth() == day && date.getMonthValue() == month;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        DaysToWorkingDaysConverter that = (DaysToWorkingDaysConverter) o;
+        return positiveDaysToWorkingDays.equals(that.positiveDaysToWorkingDays)
+            && negativeDaysToWorkingDays.equals(that.negativeDaysToWorkingDays)
+            && dateCreated.equals(that.dateCreated);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(positiveDaysToWorkingDays, negativeDaysToWorkingDays, dateCreated);
     }
 }

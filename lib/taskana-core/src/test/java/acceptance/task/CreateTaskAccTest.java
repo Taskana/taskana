@@ -14,7 +14,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.apache.ibatis.session.Configuration;
@@ -151,7 +150,7 @@ class CreateTaskAccTest extends AbstractAccTest {
         userName = "user_1_1",
         groupNames = {"group_1"})
     @Test
-    void testCreateTaskWithValidPlannedAndDue() throws ClassificationNotFoundException {
+    void testCreateTaskWithValidPlannedAndDue() throws ClassificationNotFoundException, InvalidArgumentException {
 
         Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
         long serviceLevelDays = Duration.parse(classification.getServiceLevel()).toDays();
@@ -162,16 +161,14 @@ class CreateTaskAccTest extends AbstractAccTest {
         newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
         newTask.setOwner("user_1_1");
 
-        Optional<DaysToWorkingDaysConverter> converter = DaysToWorkingDaysConverter.getLastCreatedInstance();
+        DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize();
         //TODO: this is a temporal bug fix because we did not define what happens when a task is planned on the weekend.
-        long i = converter.get().convertWorkingDaysToDays(instantPlanned, 0);
+        long i = converter.convertWorkingDaysToDays(instantPlanned, 0);
         newTask.setPlanned(instantPlanned.plus(Duration.ofDays(i)));
         //due date according to service level
-        Instant shouldBeDueDate = converter
-            .map(c -> c.convertWorkingDaysToDays(newTask.getPlanned(), serviceLevelDays))
-            .map(
-                calendarDays -> newTask.getPlanned().plus(Duration.ofDays(calendarDays))).orElseThrow(
-                RuntimeException::new);
+        long calendarDays = converter.convertWorkingDaysToDays(newTask.getPlanned(), serviceLevelDays);
+        Instant shouldBeDueDate = newTask.getPlanned().plus(Duration.ofDays(calendarDays));
+
         newTask.setDue(shouldBeDueDate);
         Assertions.assertDoesNotThrow(() -> taskService.createTask(newTask));
     }
@@ -411,12 +408,11 @@ class CreateTaskAccTest extends AbstractAccTest {
         assertNotNull(readTask);
         assertEquals(planned, readTask.getPlanned());
 
-        Optional<Instant> shouldBeDueDate = DaysToWorkingDaysConverter.getLastCreatedInstance()
-            .map(converter -> converter.convertWorkingDaysToDays(readTask.getPlanned(), serviceLevelDays))
-            .map(
-                calendarDays -> readTask.getPlanned().plus(Duration.ofDays(calendarDays)));
-        assertTrue(shouldBeDueDate.isPresent());
-        assertEquals(readTask.getDue(), shouldBeDueDate.get());
+        long calendarDays = DaysToWorkingDaysConverter.initialize()
+            .convertWorkingDaysToDays(readTask.getPlanned(), serviceLevelDays);
+
+        Instant shouldBeDueDate = readTask.getPlanned().plus(Duration.ofDays(calendarDays));
+        assertEquals(readTask.getDue(), shouldBeDueDate);
     }
 
     @WithAccessId(
@@ -445,14 +441,13 @@ class CreateTaskAccTest extends AbstractAccTest {
         assertNotNull(readTask);
         assertEquals(due, readTask.getDue());
 
-        Optional<Long> calendarDaysToSubstract = DaysToWorkingDaysConverter.getLastCreatedInstance()
-            .map(converter -> converter.convertWorkingDaysToDays(due, -serviceLevelDays));
+        long calendarDaysToSubstract = DaysToWorkingDaysConverter.initialize()
+            .convertWorkingDaysToDays(due, -serviceLevelDays);
 
-        assertTrue(calendarDaysToSubstract.isPresent());
-        assertTrue(calendarDaysToSubstract.get() < 0);
-        assertTrue(calendarDaysToSubstract.get() <= -serviceLevelDays);
+        assertTrue(calendarDaysToSubstract < 0);
+        assertTrue(calendarDaysToSubstract <= -serviceLevelDays);
 
-        Instant shouldBePlannedDate = due.plus(Duration.ofDays(calendarDaysToSubstract.get()));
+        Instant shouldBePlannedDate = due.plus(Duration.ofDays(calendarDaysToSubstract));
         assertEquals(readTask.getPlanned(), shouldBePlannedDate);
     }
 
