@@ -29,12 +29,12 @@ import pro.taskana.TaskService;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaRole;
 import pro.taskana.WorkbasketService;
+import pro.taskana.configuration.DB;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.AutocommitFailedException;
 import pro.taskana.exceptions.ConnectionNotSetException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.SystemException;
-import pro.taskana.exceptions.UnsupportedDatabaseException;
 import pro.taskana.history.HistoryEventProducer;
 import pro.taskana.impl.persistence.MapTypeHandler;
 import pro.taskana.impl.util.LoggerUtils;
@@ -58,7 +58,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
     private static final String DEFAULT = "default";
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineImpl.class);
-    private static ThreadLocal<Deque<SqlSessionManager>> sessionStack = new ThreadLocal<>();
+    private static SessionStack sessionStack = new SessionStack();
     protected TaskanaEngineConfiguration taskanaEngineConfiguration;
     protected TransactionFactory transactionFactory;
     protected SqlSessionManager sessionManager;
@@ -79,58 +79,6 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
     public static TaskanaEngine createTaskanaEngine(TaskanaEngineConfiguration taskanaEngineConfiguration) {
         return new TaskanaEngineImpl(taskanaEngineConfiguration);
-    }
-
-    /**
-     * With sessionStack, we maintain a Stack of SqlSessionManager objects on a per thread basis. SqlSessionManager is
-     * the MyBatis object that wraps database connections. The purpose of this stack is to keep track of nested calls.
-     * Each external API call is wrapped into taskanaEngineImpl.openConnection(); .....
-     * taskanaEngineImpl.returnConnection(); calls. In order to avoid duplicate opening / closing of connections, we use
-     * the sessionStack in the following way: Each time, an openConnection call is received, we push the current
-     * sessionManager onto the stack. On the first call to openConnection, we call sessionManager.startManagedSession()
-     * to open a database connection. On each call to returnConnection() we pop one instance of sessionManager from the
-     * stack. When the stack becomes empty, we close the database connection by calling sessionManager.close()
-     *
-     * @return Stack of SqlSessionManager
-     */
-    private static Deque<SqlSessionManager> getSessionStack() {
-        Deque<SqlSessionManager> stack = sessionStack.get();
-        if (stack == null) {
-            stack = new ArrayDeque<>();
-            sessionStack.set(stack);
-        }
-        return stack;
-    }
-
-    private static SqlSessionManager getSessionFromStack() {
-        Deque<SqlSessionManager> stack = getSessionStack();
-        if (stack.isEmpty()) {
-            return null;
-        }
-        return stack.peek();
-    }
-
-    private static void pushSessionToStack(SqlSessionManager session) {
-        getSessionStack().push(session);
-    }
-
-    private static void popSessionFromStack() {
-        Deque<SqlSessionManager> stack = getSessionStack();
-        if (!stack.isEmpty()) {
-            stack.pop();
-        }
-    }
-
-    public static boolean isDb2(String dbProductName) {
-        return dbProductName.contains("DB2");
-    }
-
-    public static boolean isH2(String databaseProductName) {
-        return databaseProductName.contains("H2");
-    }
-
-    public static boolean isPostgreSQL(String databaseProductName) {
-        return "PostgreSQL".equals(databaseProductName);
     }
 
     @Override
@@ -226,7 +174,8 @@ public class TaskanaEngineImpl implements TaskanaEngine {
                     accessIds,
                     rolesAsString);
             }
-            throw new NotAuthorizedException("current user is not member of role(s) " + Arrays.toString(roles));
+            throw new NotAuthorizedException("current user is not member of role(s) " + Arrays.toString(roles),
+                CurrentUserContext.getUserid());
         }
     }
 
@@ -265,15 +214,8 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         String databaseProductName;
         try (Connection con = taskanaEngineConfiguration.getDatasource().getConnection()) {
             databaseProductName = con.getMetaData().getDatabaseProductName();
-            if (isDb2(databaseProductName)) {
-                configuration.setDatabaseId("db2");
-            } else if (isH2(databaseProductName)) {
-                configuration.setDatabaseId("h2");
-            } else if (isPostgreSQL(databaseProductName)) {
-                configuration.setDatabaseId("postgres");
-            } else {
-                throw new UnsupportedDatabaseException(databaseProductName);
-            }
+            String databaseProductId = DB.getDatabaseProductId(databaseProductName);
+            configuration.setDatabaseId(databaseProductId);
 
         } catch (SQLException e) {
             throw new SystemException(
@@ -326,7 +268,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
                     e.getCause());
             }
             if (mode != ConnectionManagementMode.EXPLICIT) {
-                pushSessionToStack(sessionManager);
+                sessionStack.pushSessionToStack(sessionManager);
             }
         }
 
@@ -342,8 +284,8 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         @Override
         public void returnConnection() {
             if (mode != ConnectionManagementMode.EXPLICIT) {
-                popSessionFromStack();
-                if (getSessionStack().isEmpty()
+                sessionStack.popSessionFromStack();
+                if (sessionStack.getSessionStack().isEmpty()
                     && sessionManager != null && sessionManager.isManagedSessionStarted()) {
                     if (mode == ConnectionManagementMode.AUTOCOMMIT) {
                         try {
@@ -393,5 +335,52 @@ public class TaskanaEngineImpl implements TaskanaEngine {
            return taskRoutingManager;
         }
 
+    }
+
+    /**
+     * With sessionStack, we maintain a Stack of SqlSessionManager objects on a per thread basis. SqlSessionManager is
+     * the MyBatis object that wraps database connections. The purpose of this stack is to keep track of nested calls.
+     * Each external API call is wrapped into taskanaEngineImpl.openConnection(); .....
+     * taskanaEngineImpl.returnConnection(); calls. In order to avoid duplicate opening / closing of connections, we use
+     * the sessionStack in the following way: Each time, an openConnection call is received, we push the current
+     * sessionManager onto the stack. On the first call to openConnection, we call sessionManager.startManagedSession()
+     * to open a database connection. On each call to returnConnection() we pop one instance of sessionManager from the
+     * stack. When the stack becomes empty, we close the database connection by calling sessionManager.close().
+     */
+    private static class SessionStack {
+
+        private ThreadLocal<Deque<SqlSessionManager>> sessionStack = new ThreadLocal<>();
+
+        /**
+         *
+         * @return Stack of SqlSessionManager
+         */
+        private Deque<SqlSessionManager> getSessionStack() {
+            Deque<SqlSessionManager> stack = sessionStack.get();
+            if (stack == null) {
+                stack = new ArrayDeque<>();
+                sessionStack.set(stack);
+            }
+            return stack;
+        }
+
+        private SqlSessionManager getSessionFromStack() {
+            Deque<SqlSessionManager> stack = getSessionStack();
+            if (stack.isEmpty()) {
+                return null;
+            }
+            return stack.peek();
+        }
+
+        private void pushSessionToStack(SqlSessionManager session) {
+            getSessionStack().push(session);
+        }
+
+        private void popSessionFromStack() {
+            Deque<SqlSessionManager> stack = getSessionStack();
+            if (!stack.isEmpty()) {
+                stack.pop();
+            }
+        }
     }
 }

@@ -28,11 +28,13 @@ import pro.taskana.history.HistoryEventProducer;
 import pro.taskana.history.events.task.TransferredEvent;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.mappings.TaskMapper;
+import pro.taskana.security.CurrentUserContext;
 
 /**
  * This class is responsible for the transfer of tasks.
  */
 public class TaskTransferrer {
+
     private static final String WAS_NOT_FOUND2 = " was not found.";
     private static final String CANNOT_BE_TRANSFERRED = " cannot be transferred.";
     private static final String COMPLETED_TASK_WITH_ID = "Completed task with id ";
@@ -160,7 +162,7 @@ public class TaskTransferrer {
 
     BulkOperationResults<String, TaskanaException> transferTasks(String destinationWorkbasketKey,
         String destinationWorkbasketDomain, List<String> taskIds)
-            throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
+        throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
         try {
             taskanaEngine.openConnection();
             if (LOGGER.isDebugEnabled()) {
@@ -218,7 +220,7 @@ public class TaskTransferrer {
 
     private BulkOperationResults<String, TaskanaException> transferTasks(List<String> taskIdsToBeTransferred,
         Workbasket destinationWorkbasket)
-            throws InvalidArgumentException, WorkbasketNotFoundException, NotAuthorizedException {
+        throws InvalidArgumentException, WorkbasketNotFoundException, NotAuthorizedException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to transferTasks(taskIdsToBeTransferred = {}, destinationWorkbasket = {})",
                 LoggerUtils.listToString(taskIdsToBeTransferred), destinationWorkbasket);
@@ -305,7 +307,8 @@ public class TaskTransferrer {
                 .noneMatch(wb -> taskSummary.getWorkbasketId().equals(wb.getId()))) {
                 bulkLog.addError(currentTaskId,
                     new NotAuthorizedException(
-                        "The workbasket of this task got not TRANSFER permissions. TaskId=" + currentTaskId));
+                        "The workbasket of this task got not TRANSFER permissions. TaskId=" + currentTaskId,
+                        CurrentUserContext.getUserid()));
                 taskIdIterator.remove();
             }
         }

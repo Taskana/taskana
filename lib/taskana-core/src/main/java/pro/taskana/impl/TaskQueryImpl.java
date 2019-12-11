@@ -20,6 +20,7 @@ import pro.taskana.TaskSummary;
 import pro.taskana.TaskanaRole;
 import pro.taskana.TimeInterval;
 import pro.taskana.WorkbasketPermission;
+import pro.taskana.configuration.DB;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.NotAuthorizedToQueryWorkbasketException;
@@ -706,23 +707,27 @@ public class TaskQueryImpl implements TaskQuery {
     public TaskQuery orderByClassificationName(SortDirection sortDirection) {
         joinWithClassifications = true;
         addClassificationNameToSelectClauseForOrdering = true;
-        return this.taskanaEngine.getSqlSession().getConfiguration().getDatabaseId().equals("db2")
+        return DB.DB2.dbProductId.equals(getDatabaseId())
             ? addOrderCriteria("CNAME", sortDirection)
                 : addOrderCriteria("c.NAME", sortDirection);
+    }
+
+    private String getDatabaseId() {
+        return this.taskanaEngine.getSqlSession().getConfiguration().getDatabaseId();
     }
 
     @Override
     public TaskQuery orderByAttachmentClassificationName(SortDirection sortDirection) {
         joinWithAttachments = true;
         addAttachmentClassificationNameToSelectClauseForOrdering = true;
-        return this.taskanaEngine.getSqlSession().getConfiguration().getDatabaseId().equals("db2")
+        return DB.DB2.dbProductId.equals(getDatabaseId())
             ? addOrderCriteria("ACNAME", sortDirection)
                 : addOrderCriteria("ac.NAME", sortDirection);
     }
 
     @Override
     public TaskQuery orderByClassificationKey(SortDirection sortDirection) {
-        return this.taskanaEngine.getSqlSession().getConfiguration().getDatabaseId().equals("db2")
+        return DB.DB2.dbProductId.equals(getDatabaseId())
             ? addOrderCriteria("TCLASSIFICATION_KEY", sortDirection)
                 : addOrderCriteria("t.CLASSIFICATION_KEY", sortDirection);
     }
@@ -811,7 +816,7 @@ public class TaskQueryImpl implements TaskQuery {
     public TaskQuery orderByAttachmentClassificationKey(SortDirection sortDirection) {
         joinWithAttachments = true;
         addAttachmentColumnsToSelectClauseForOrdering = true;
-        return this.taskanaEngine.getSqlSession().getConfiguration().getDatabaseId().equals("db2")
+        return DB.DB2.dbProductId.equals(getDatabaseId())
             ? addOrderCriteria("ACLASSIFICATION_KEY", sortDirection)
                 : addOrderCriteria("a.CLASSIFICATION_KEY", sortDirection);
     }
@@ -820,7 +825,7 @@ public class TaskQueryImpl implements TaskQuery {
     public TaskQuery orderByAttachmentClassificationId(SortDirection sortDirection) {
         joinWithAttachments = true;
         addAttachmentColumnsToSelectClauseForOrdering = true;
-        return this.taskanaEngine.getSqlSession().getConfiguration().getDatabaseId().equals("db2")
+        return DB.DB2.dbProductId.equals(getDatabaseId())
             ? addOrderCriteria("ACLASSIFICATION_ID", sortDirection)
                 : addOrderCriteria("a.CLASSIFICATION_ID", sortDirection);
     }
@@ -984,15 +989,13 @@ public class TaskQueryImpl implements TaskQuery {
     }
 
     public String getLinkToMapperScript() {
-        return this.taskanaEngine
-            .getSqlSession()
-            .getConfiguration().getDatabaseId().equals("db2")
+        return DB.DB2.dbProductId.equals(getDatabaseId())
             ? LINK_TO_MAPPER_DB2
                 : LINK_TO_MAPPER;
     }
 
     public String getLinkToCounterTaskScript() {
-        return this.taskanaEngine.getSqlSession().getConfiguration().getDatabaseId().equals("db2")
+        return DB.DB2.dbProductId.equals(getDatabaseId())
             ? LINK_TO_COUNTER_DB2
                 : LINK_TO_COUNTER;
     }
