@@ -1,14 +1,19 @@
 package pro.taskana.exceptions;
 
-import pro.taskana.security.CurrentUserContext;
-
 /**
  * This exception is used to communicate a not authorized user.
  */
 public class NotAuthorizedException extends TaskanaException {
 
-    public NotAuthorizedException(String msg) {
-        super(msg + " - [CURRENT USER: {'" + CurrentUserContext.getUserid() + "'}]");
+    private final String currentUserId;
+
+    public NotAuthorizedException(String msg, String currentUserId) {
+        super(msg + " - [CURRENT USER: {'" + currentUserId + "'}]");
+        this.currentUserId = currentUserId;
+    }
+
+    public String getCurrentUserId() {
+        return currentUserId;
     }
 
     private static final long serialVersionUID = 21235L;
