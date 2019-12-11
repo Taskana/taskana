@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import pro.taskana.TaskanaSpringBootTest;
+import pro.taskana.configuration.DB;
 import pro.taskana.configuration.SpringTaskanaEngineConfiguration;
 import pro.taskana.exceptions.SystemException;
 import pro.taskana.sampledata.SampleDataGenerator;
@@ -32,7 +33,7 @@ class TestSchemaNameCustomizable {
     void resetDb() {
         SampleDataGenerator sampleDataGenerator;
         try {
-            if ("PostgreSQL".equals(dataSource.getConnection().getMetaData().getDatabaseProductName())) {
+            if (DB.POSTGRESS.dbProductname.equals(dataSource.getConnection().getMetaData().getDatabaseProductName())) {
                 isPostgres = true;
                 schemaName = schemaName.toLowerCase();
             }

@@ -286,7 +286,7 @@ public class TaskanaEngineConfiguration {
 
         try (Connection connection = dataSource.getConnection()) {
             String databaseProductName = connection.getMetaData().getDatabaseProductName();
-            if (TaskanaEngineImpl.isPostgreSQL(databaseProductName)) {
+            if (DB.isPostgreSQL(databaseProductName)) {
                 this.schemaName = this.schemaName.toLowerCase();
             } else {
                 this.schemaName = this.schemaName.toUpperCase();

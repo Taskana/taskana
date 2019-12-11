@@ -277,7 +277,8 @@ public class TaskServiceImpl implements TaskService {
                 if (workbaskets.isEmpty()) {
                     String currentUser = CurrentUserContext.getUserid();
                     throw new NotAuthorizedException(
-                        "The current user " + currentUser + " has no read permission for workbasket " + workbasketId);
+                        "The current user " + currentUser + " has no read permission for workbasket " + workbasketId,
+                        CurrentUserContext.getUserid());
                 } else {
                     resultTask.setWorkbasketSummary(workbaskets.get(0));
                 }
@@ -354,7 +355,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public BulkOperationResults<String, TaskanaException> transferTasks(String destinationWorkbasketKey,
         String destinationWorkbasketDomain, List<String> taskIds)
-            throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
+        throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
         return taskTransferrer.transferTasks(destinationWorkbasketKey, destinationWorkbasketDomain, taskIds);
     }
 
@@ -442,7 +443,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public BulkOperationResults<String, TaskanaException> setCallbackStateForTasks(List<String> externalIds, CallbackState state) {
+    public BulkOperationResults<String, TaskanaException> setCallbackStateForTasks(List<String> externalIds,
+        CallbackState state) {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("entry to setCallbackStateForTasks(externalIds = {})", LoggerUtils.listToString(externalIds));
         }
@@ -501,7 +503,6 @@ public class TaskServiceImpl implements TaskService {
         }
         LOGGER.debug("exit from removeSingleTask()");
     }
-
 
     private void removeSingleTaskForCallbackStateByExternalId(BulkOperationResults<String,
         TaskanaException> bulkLog,
@@ -1196,7 +1197,7 @@ public class TaskServiceImpl implements TaskService {
 
     private void standardUpdateActions(TaskImpl oldTaskImpl, TaskImpl newTaskImpl,
         PrioDurationHolder prioDurationFromAttachments)
-            throws InvalidArgumentException, ConcurrencyException, ClassificationNotFoundException {
+        throws InvalidArgumentException, ConcurrencyException, ClassificationNotFoundException {
         validateObjectReference(newTaskImpl.getPrimaryObjRef(), "primary ObjectReference", "Task");
         //TODO: not safe to rely only on different timestamps.
         // With fast execution below 1ms there will be no concurrencyException
@@ -1231,7 +1232,7 @@ public class TaskServiceImpl implements TaskService {
 
     private void updateClassificationRelatedProperties(TaskImpl oldTaskImpl, TaskImpl newTaskImpl,
         PrioDurationHolder prioDurationFromAttachments)
-            throws ClassificationNotFoundException {
+        throws ClassificationNotFoundException {
         LOGGER.debug("entry to updateClassificationRelatedProperties()");
         // insert Classification specifications if Classification is given.
         ClassificationSummary oldClassificationSummary = oldTaskImpl.getClassificationSummary();
@@ -1428,7 +1429,7 @@ public class TaskServiceImpl implements TaskService {
             throw new AttachmentPersistenceException(
                 "Cannot insert the Attachement " + attachmentImpl.getId() + " for Task "
                     + newTaskImpl.getId() + " because it already exists.",
-                    e.getCause());
+                e.getCause());
         }
         LOGGER.debug("exit from handleNewAttachmentOnTaskUpdate(), returning {}", prioDuration);
         return prioDuration;
@@ -1713,7 +1714,7 @@ public class TaskServiceImpl implements TaskService {
                 String id = att.getClassificationSummary().getId();
                 bulkLog.addError(att.getClassificationSummary().getId(), new ClassificationNotFoundException(id,
                     "When processing task updates due to change of classification, the classification with id " + id
-                    + WAS_NOT_FOUND2));
+                        + WAS_NOT_FOUND2));
             } else {
                 att.setClassificationSummary(classificationSummary);
                 result.add(att);
@@ -1737,7 +1738,8 @@ public class TaskServiceImpl implements TaskService {
                 throw new InvalidStateException("Cannot delete Task " + taskId + " because it is not completed.");
             }
             if (CallbackState.CALLBACK_PROCESSING_REQUIRED.equals(task.getCallbackState())) {
-                throw new InvalidStateException("Task " + taskId + " cannot be deleted because its callback is not yet processed");
+                throw new InvalidStateException(
+                    "Task " + taskId + " cannot be deleted because its callback is not yet processed");
             }
 
             taskMapper.delete(taskId);
@@ -1750,7 +1752,7 @@ public class TaskServiceImpl implements TaskService {
 
     private void createTasksCompletedEvents(List<TaskSummary> taskSummaries) {
         taskSummaries.stream().forEach(task -> historyEventProducer.createEvent(new CompletedEvent(task))
-            );
+        );
     }
 
     List<TaskSummary> augmentTaskSummariesByContainedSummaries(List<TaskSummaryImpl> taskSummaries) {

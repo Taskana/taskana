@@ -37,6 +37,14 @@ class ArchitectureTest {
     }
 
     @Test
+    void onlyExceptionsShouldResideInExceptionPackage() {
+        ArchRule myRule = classes()
+            .that().resideInAPackage("..exceptions")
+            .should().beAssignableTo(Throwable.class);
+        myRule.check(importedClasses);
+    }
+
+    @Test
     @Disabled
     void noClassShouldThrowGenericException() {
         NO_CLASSES_SHOULD_THROW_GENERIC_EXCEPTIONS.check(importedClasses);

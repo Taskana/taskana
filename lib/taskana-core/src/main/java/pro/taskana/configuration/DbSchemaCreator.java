@@ -44,13 +44,13 @@ public class DbSchemaCreator {
     }
 
     private static String selectDbScriptFileName(String dbProductName) {
-        return "PostgreSQL".equals(dbProductName)
+        return DB.isPostgreSQL(dbProductName)
             ? DB_SCHEMA_POSTGRES
-            : "H2".equals(dbProductName) ? DB_SCHEMA : DB_SCHEMA_DB2;
+            : DB.isH2(dbProductName) ? DB_SCHEMA : DB_SCHEMA_DB2;
     }
 
     private static String selectDbSchemaDetectionScript(String dbProductName) {
-        return "PostgreSQL".equals(dbProductName) ? DB_SCHEMA_DETECTION_POSTGRES : DB_SCHEMA_DETECTION;
+        return DB.isPostgreSQL(dbProductName) ? DB_SCHEMA_DETECTION_POSTGRES : DB_SCHEMA_DETECTION;
     }
 
     /**

@@ -286,7 +286,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                 throw new NotAuthorizedException(
                     "Not authorized. Permission '" + Arrays.toString(requestedPermissions) + "' on workbasket '"
                         + workbasketId
-                        + "' is needed.");
+                        + "' is needed.", CurrentUserContext.getUserid());
             }
 
             List<WorkbasketPermission> grantedPermissions = this.getPermissionsFromWorkbasketAccessItem(wbAcc);
@@ -296,7 +296,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                     isAuthorized = false;
                     throw new NotAuthorizedException(
                         "Not authorized. Permission '" + perm.name() + "' on workbasket '" + workbasketId
-                            + "' is needed.");
+                            + "' is needed.", CurrentUserContext.getUserid());
                 }
             }
         } finally {
@@ -328,7 +328,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                     "Not authorized. Permission '" + Arrays.toString(requestedPermissions)
                         + "' on workbasket with key '"
                         + workbasketKey
-                        + "' and domain '" + domain + "' is needed.");
+                        + "' and domain '" + domain + "' is needed.", CurrentUserContext.getUserid());
             }
             List<WorkbasketPermission> grantedPermissions = this.getPermissionsFromWorkbasketAccessItem(wbAcc);
 
@@ -337,7 +337,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                     isAuthorized = false;
                     throw new NotAuthorizedException(
                         "Not authorized. Permission '" + perm.name() + "' on workbasket with key '" + workbasketKey
-                            + "' and domain '" + domain + "' is needed.");
+                            + "' and domain '" + domain + "' is needed.", CurrentUserContext.getUserid());
                 }
             }
         } finally {

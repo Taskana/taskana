@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import pro.taskana.TaskState;
 import pro.taskana.TaskSummary;
 import pro.taskana.TaskanaEngine;
+import pro.taskana.configuration.DB;
 
 /**
  * Test for TaskQueryImpl.
@@ -44,7 +45,7 @@ class TaskQueryImplTest {
         when(taskanaEngine.getTaskService()).thenReturn(taskServiceMock);
 
         Configuration configuration = new org.apache.ibatis.session.Configuration();
-        configuration.setDatabaseId("h2");
+        configuration.setDatabaseId(DB.H2.dbProductId);
         when(internalTaskanaEngine.getSqlSession()).thenReturn(sqlSession);
         when(sqlSession.getConfiguration()).thenReturn(configuration);
 
