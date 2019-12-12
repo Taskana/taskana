@@ -459,7 +459,7 @@ public class TaskServiceImpl implements TaskService {
 
             Iterator<String> taskIdIterator = externalIds.iterator();
             while (taskIdIterator.hasNext()) {
-                removeSingleTaskForCallbackStateByExternalId(bulkLog, taskSummaries, taskIdIterator);
+                removeSingleTaskForCallbackStateByExternalId(bulkLog, taskSummaries, taskIdIterator, state);
             }
             if (!externalIds.isEmpty()) {
                 taskMapper.setCallbackStateMultiple(externalIds, state);
@@ -505,7 +505,7 @@ public class TaskServiceImpl implements TaskService {
 
     private void removeSingleTaskForCallbackStateByExternalId(BulkOperationResults<String,
         TaskanaException> bulkLog,
-        List<MinimalTaskSummary> taskSummaries, Iterator<String> externalIdIterator) {
+        List<MinimalTaskSummary> taskSummaries, Iterator<String> externalIdIterator, CallbackState desiredCallbackState) {
         LOGGER.debug("entry to removeSingleTask()");
         String currentExternalId = externalIdIterator.next();
         if (currentExternalId == null || currentExternalId.equals("")) {
@@ -521,12 +521,48 @@ public class TaskServiceImpl implements TaskService {
                 bulkLog.addError(currentExternalId, new TaskNotFoundException(currentExternalId,
                     TASK_WITH_ID + currentExternalId + WAS_NOT_FOUND2));
                 externalIdIterator.remove();
-            } else if (!TaskState.COMPLETED.equals(foundSummary.getTaskState())) {
+            } else if (!desiredCallbackStateCanBeSetForFoundSummary(foundSummary, desiredCallbackState)) {
                 bulkLog.addError(currentExternalId, new InvalidStateException(currentExternalId));
                 externalIdIterator.remove();
             }
+
         }
         LOGGER.debug("exit from removeSingleTask()");
+    }
+
+    private boolean desiredCallbackStateCanBeSetForFoundSummary(MinimalTaskSummary foundSummary, CallbackState desiredCallbackState) {
+
+        CallbackState currentTaskCallbackState = foundSummary.getCallbackState();
+        TaskState currentTaskState = foundSummary.getTaskState();
+
+        switch (desiredCallbackState) {
+
+            case CALLBACK_PROCESSING_COMPLETED:
+                if (!(currentTaskState.equals(TaskState.COMPLETED))) {
+                    return false;
+                }
+                return true;
+
+            case CLAIMED:
+                if (!currentTaskState.equals(TaskState.CLAIMED)) {
+                    return false;
+                } else if (!currentTaskCallbackState.equals(CallbackState.CALLBACK_PROCESSING_REQUIRED)) {
+                    return false;
+                }
+                return true;
+
+            case CALLBACK_PROCESSING_REQUIRED:
+                if (currentTaskCallbackState.equals(CallbackState.CALLBACK_PROCESSING_COMPLETED)) {
+                    return false;
+                }
+                return true;
+            case NONE:
+                return false;
+
+            default:
+                return false;
+        }
+
     }
 
     @Override
