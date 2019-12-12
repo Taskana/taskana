@@ -168,8 +168,7 @@ public class DbSchemaCreator {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
-            LOGGER.error("SchemaName sql parsing failed for schemaName {}", schemaName);
+            LOGGER.error("SchemaName sql parsing failed for schemaName {}", schemaName, e);
         }
         return new StringReader(content.toString());
     }

@@ -45,13 +45,11 @@ class ArchitectureTest {
     }
 
     @Test
-    @Disabled
     void noClassShouldThrowGenericException() {
         NO_CLASSES_SHOULD_THROW_GENERIC_EXCEPTIONS.check(importedClasses);
     }
 
     @Test
-    @Disabled
     void noClassShouldAccessStandardStreams() {
         NO_CLASSES_SHOULD_ACCESS_STANDARD_STREAMS.check(importedClasses);
     }
