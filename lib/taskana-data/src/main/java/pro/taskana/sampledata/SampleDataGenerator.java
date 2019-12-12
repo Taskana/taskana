@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 
 import javax.sql.DataSource;
 
+import org.apache.ibatis.jdbc.RuntimeSqlException;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.jdbc.SqlRunner;
 import org.slf4j.Logger;
@@ -99,7 +100,7 @@ public class SampleDataGenerator {
             return scripts.map(script -> SQLReplacer.getScriptAsSql(dbProductName, now, script))
                 .collect(Collectors.toList());
         } catch (SQLException e) {
-            throw new RuntimeException("Connection to database failed.", e);
+            throw new RuntimeSqlException("Connection to database failed.", e);
         }
     }
 
@@ -137,7 +138,7 @@ public class SampleDataGenerator {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to execute script.", e);
+            throw new RuntimeSqlException("Failed to execute script.", e);
         }
     }
 

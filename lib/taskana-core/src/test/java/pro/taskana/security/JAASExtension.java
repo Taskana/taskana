@@ -11,6 +11,7 @@ import javax.security.auth.Subject;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.InvocationInterceptor;
 import org.junit.jupiter.api.extension.ReflectiveInvocationContext;
+import org.junit.platform.commons.JUnitException;
 
 /**
  * Runner for integration tests that enables JAAS subject.
@@ -45,7 +46,7 @@ public class JAASExtension implements InvocationInterceptor {
             } catch (Exception | Error e) {
                 throw e;
             } catch (Throwable e) {
-                throw new Exception(e);
+                throw new JUnitException("Execution of test failed: " + invocationContext.getExecutable().getName(), e);
             }
             return null;
         });
