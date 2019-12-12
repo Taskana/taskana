@@ -15,6 +15,7 @@ import static pro.taskana.TaskQueryColumnName.CLASSIFICATION_KEY;
 import static pro.taskana.TaskQueryColumnName.OWNER;
 import static pro.taskana.TaskQueryColumnName.STATE;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ import java.util.Map;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -52,6 +54,13 @@ import pro.taskana.security.WithAccessId;
  */
 @ExtendWith(JAASExtension.class)
 class QueryTasksAccTest extends AbstractAccTest {
+
+    @BeforeEach
+    void before() throws SQLException {
+        //required if single tests modify database
+        //TODO split test class into readOnly & modifying tests to improve performance
+        resetDb(false);
+    }
 
     @WithAccessId(
         userName = "teamlead_1",
@@ -112,7 +121,7 @@ class QueryTasksAccTest extends AbstractAccTest {
             .orderByClassificationKey(DESCENDING)
             .listValues(CLASSIFICATION_KEY, null);
         assertNotNull(columnValueList);
-        assertEquals(7, columnValueList.size());
+        assertEquals(6, columnValueList.size());
     }
 
     @WithAccessId(
@@ -896,7 +905,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         List<TaskSummary> results = taskService.createTaskQuery()
             .classificationCategoryIn("MANUAL", "AUTOMATIC")
             .list();
-        assertEquals(4, results.size());
+        assertEquals(3, results.size());
     }
 
     @WithAccessId(
@@ -1085,7 +1094,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         List<TaskSummary> results = taskService.createTaskQuery()
             .orderByCreator(DESCENDING)
             .list();
-        assertEquals("user_1_1", results.get(0).getCreator());
+        assertEquals("erstellerSpezial", results.get(0).getCreator());
     }
 
     @WithAccessId(

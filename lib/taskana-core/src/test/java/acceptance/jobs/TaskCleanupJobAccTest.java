@@ -3,6 +3,7 @@ package acceptance.jobs;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,15 +36,21 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
     TaskService taskService;
 
     @BeforeEach
-    void before() {
+    void before() throws SQLException {
+        //required if single tests modify database
+        //TODO split test class into readOnly & modifying tests to improve performance
+        resetDb(false);
+        resetDb(false);
         taskService = taskanaEngine.getTaskService();
     }
 
     @WithAccessId(userName = "admin")
     @Test
     void shouldCleanCompletedTasksUntilDate() throws Exception {
+
+        createAndCompleteTask();
         long totalTasksCount = taskService.createTaskQuery().count();
-        assertEquals(73, totalTasksCount);
+        assertEquals(74, totalTasksCount);
 
         taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(false);
 
@@ -51,14 +58,14 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
         job.run();
 
         totalTasksCount = taskService.createTaskQuery().count();
-        assertEquals(67, totalTasksCount);
+        assertEquals(68, totalTasksCount);
     }
 
     @WithAccessId(userName = "admin")
     @Test
     void shouldCleanCompletedTasksUntilDateWithSameParentBussiness() throws Exception {
         long totalTasksCount = taskService.createTaskQuery().count();
-        assertEquals(68, totalTasksCount);
+        assertEquals(73, totalTasksCount);
 
         taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(true);
 
@@ -77,7 +84,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
         job.run();
 
         totalTasksCount = taskService.createTaskQuery().count();
-        assertEquals(67, totalTasksCount);
+        assertEquals(66, totalTasksCount);
     }
 
     @WithAccessId(userName = "admin")
