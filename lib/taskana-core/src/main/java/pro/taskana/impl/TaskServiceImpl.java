@@ -365,9 +365,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task newTask() {
-        TaskImpl task = new TaskImpl();
-        task.setCallbackState(CallbackState.NONE);
-        return task;
+        return newTask(null);
     }
 
     @Override

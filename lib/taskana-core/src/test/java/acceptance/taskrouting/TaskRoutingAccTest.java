@@ -1,6 +1,6 @@
 package acceptance.taskrouting;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -24,6 +24,25 @@ import pro.taskana.security.WithAccessId;
  */
 @ExtendWith(JAASExtension.class)
 class TaskRoutingAccTest extends AbstractAccTest {
+
+    @WithAccessId(userName = "admin", groupNames = {"group_1"})
+    @Test
+    void testCreateTaskWithoutWorkbasketAndVoidNewTaskMethod()
+        throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
+        TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException {
+        TaskService taskService = taskanaEngine.getTaskService();
+
+        Task newTask = taskService.newTask();
+        newTask.setClassificationKey("L10303");
+        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+        final Task taskToCreate = newTask;
+        Assertions.assertThrows(InvalidArgumentException.class, () -> taskService.createTask(taskToCreate));
+        ((TaskImpl) taskToCreate).setDomain("DOMAIN_C");
+        Assertions.assertThrows(InvalidArgumentException.class, () -> taskService.createTask(taskToCreate));
+        ((TaskImpl) taskToCreate).setDomain("DOMAIN_B");
+        Task createdTask = taskService.createTask(taskToCreate);
+        assertEquals("WBI:100000000000000000000000000000000011", createdTask.getWorkbasketSummary().getId());
+    }
 
     @WithAccessId(userName = "admin", groupNames = {"group_1"})
     @Test

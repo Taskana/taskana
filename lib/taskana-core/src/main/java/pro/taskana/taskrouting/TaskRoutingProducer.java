@@ -71,7 +71,7 @@ public final class TaskRoutingProducer {
                  if (workbasketIds.isEmpty()) {
                      LOGGER.error("No TaskRouter determined a workbasket for task {}.", task);
                  } else if (workbasketIds.size() > 1) {
-                     LOGGER.error("The TaskRouters determined more than one workbasket for task{}", task);
+                     LOGGER.error("The TaskRouters determined more than one workbasket for task {}", task);
                  } else {
                      workbasketId = workbasketIds.stream().findFirst().orElse(null);
                  }
