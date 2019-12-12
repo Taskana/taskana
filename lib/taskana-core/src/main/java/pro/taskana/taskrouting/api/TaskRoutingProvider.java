@@ -4,15 +4,15 @@ import pro.taskana.Task;
 import pro.taskana.TaskanaEngine;
 
 /**
- * Interface for TASKANA TaskRouter SPI.
+ * Interface for TASKANA TaskRoutingProvider SPI.
  */
-public interface TaskRouter {
+public interface TaskRoutingProvider {
 
     /**
-     * Initialize TaskRouter service.
+     * Initialize TaskRoutingProvider service.
      *
      * @param  taskanaEngine
-     *            {@link TaskanaEngine} The Taskana engine for needed initialization.
+     *            {@link TaskanaEngine} The Taskana engine needed for initialization.
      */
     void initialize(TaskanaEngine taskanaEngine);
 
@@ -23,6 +23,6 @@ public interface TaskRouter {
      *            {@link Task} The task for which a workbasket must be determined.
      * @return the id of the workbasket in which the task is to be created.
      */
-    String routeToWorkbasketId(Task task);
+    String determineWorkbasketId(Task task);
 
 }

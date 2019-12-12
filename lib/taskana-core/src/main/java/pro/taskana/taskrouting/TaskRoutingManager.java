@@ -12,37 +12,37 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.Task;
 import pro.taskana.TaskanaEngine;
-import pro.taskana.taskrouting.api.TaskRouter;
+import pro.taskana.taskrouting.api.TaskRoutingProvider;
 
 /**
- * Loads TaskRouter SPI implementation(s) and passes requests route tasks to workbaskets to the router(s).
+ * Loads TaskRoutingProvider SPI implementation(s) and passes requests to determine workbasketids to them.
  */
-public final class TaskRoutingProducer {
+public final class TaskRoutingManager {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TaskRoutingProducer.class);
-    private static TaskRoutingProducer singleton;
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaskRoutingManager.class);
+    private static TaskRoutingManager singleton;
     private static boolean enabled = false;
-    private ServiceLoader<TaskRouter> serviceLoader;
-    private static List<TaskRouter> theTaskRouters = new ArrayList<>();
+    private ServiceLoader<TaskRoutingProvider> serviceLoader;
+    private static List<TaskRoutingProvider> theTaskRoutingProviders = new ArrayList<>();
 
-    private TaskRoutingProducer(TaskanaEngine taskanaEngine) {
-        serviceLoader = ServiceLoader.load(TaskRouter.class);
-        for (TaskRouter router : serviceLoader) {
+    private TaskRoutingManager(TaskanaEngine taskanaEngine) {
+        serviceLoader = ServiceLoader.load(TaskRoutingProvider.class);
+        for (TaskRoutingProvider router : serviceLoader) {
             router.initialize(taskanaEngine);
-            theTaskRouters.add(router);
+            theTaskRoutingProviders.add(router);
             LOGGER.info("Registered TaskRouter provider: {}", router.getClass().getName());
         }
 
-        if (theTaskRouters.isEmpty()) {
+        if (theTaskRoutingProviders.isEmpty()) {
             LOGGER.info("No TaskRouter provider found. Running without Task Routing.");
         } else {
             enabled = true;
         }
     }
 
-    public static synchronized TaskRoutingProducer getInstance(TaskanaEngine taskanaEngine) {
+    public static synchronized TaskRoutingManager getInstance(TaskanaEngine taskanaEngine) {
         if (singleton == null) {
-            singleton = new TaskRoutingProducer(taskanaEngine);
+            singleton = new TaskRoutingManager(taskanaEngine);
         }
         return singleton;
     }
@@ -52,20 +52,22 @@ public final class TaskRoutingProducer {
     }
 
     /**
-     * routes tasks to Workbaskets.
-     * The task that is to be routed is passed to all registered TaskRouters. If they return no or more than one
-     * workbasketId, null is returned, otherwise we return the workbasketId that was returned from the TaskRouters.
+     * Determines a workbasket id for a given task.
+     * Algorithm: The task that needs a workbasket id is passed to all registered TaskRoutingProviders.
+     * If they return no or more than one workbasketId, null is returned, otherwise we return
+     * the workbasketId that was returned from the TaskRoutingProviders.
+     *
      * @param task  the task for which a workbasketId is to be determined.
      * @return the id of the workbasket in which the task is to be created.
      */
-    public String routeToWorkbasketId(Task task) {
+    public String determineWorkbasketId(Task task) {
              LOGGER.debug("entry to routeToWorkbasket. TaskRouterr is enabled {}, task = {}", isTaskRoutingEnabled(), task);
              String workbasketId = null;
              if (isTaskRoutingEnabled()) {
-                 // route to all task routers
+                 // route to all TaskRoutingProviders
                  // collect in a set to see whether different workbasket ids are returned
-                 Set<String> workbasketIds = theTaskRouters.stream()
-                               .map(rtr -> rtr.routeToWorkbasketId(task))
+                 Set<String> workbasketIds = theTaskRoutingProviders.stream()
+                               .map(rtr -> rtr.determineWorkbasketId(task))
                                .filter(Objects::nonNull)
                                .collect(Collectors.toSet());
                  if (workbasketIds.isEmpty()) {
