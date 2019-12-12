@@ -2,12 +2,12 @@ package acceptance.taskrouting;
 
 import pro.taskana.Task;
 import pro.taskana.TaskanaEngine;
-import pro.taskana.taskrouting.api.TaskRouter;
+import pro.taskana.taskrouting.api.TaskRoutingProvider;
 
 /**
  * This is a sample implementation of TaskRouter.
  */
-public class TestTaskRouterForDomainA implements TaskRouter {
+public class TestTaskRoutingProviderForDomainB implements TaskRoutingProvider {
 
     TaskanaEngine theEngine;
 
@@ -17,9 +17,9 @@ public class TestTaskRouterForDomainA implements TaskRouter {
     }
 
     @Override
-    public String routeToWorkbasketId(Task task) {
-        if ("DOMAIN_A".equals(task.getDomain())) {
-            return "WBI:100000000000000000000000000000000001";
+    public String determineWorkbasketId(Task task) {
+        if ("DOMAIN_B".equals(task.getDomain())) {
+            return "WBI:100000000000000000000000000000000011";
         } else {
             return null;
         }

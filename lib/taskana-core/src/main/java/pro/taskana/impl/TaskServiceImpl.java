@@ -193,7 +193,7 @@ public class TaskServiceImpl implements TaskService {
             } else if (task.getWorkbasketKey() != null) {
                 workbasket = workbasketService.getWorkbasket(task.getWorkbasketKey(), task.getDomain());
             } else {
-                String workbasketId = taskanaEngine.getTaskRoutingProducer().routeToWorkbasketId(task);
+                String workbasketId = taskanaEngine.getTaskRoutingManager().determineWorkbasketId(task);
                 if (workbasketId != null) {
                     workbasket = workbasketService.getWorkbasket(workbasketId);
                     task.setWorkbasketSummary(workbasket.asSummary());
