@@ -129,6 +129,7 @@ export class TaskQueryComponent implements OnInit {
     return false;
   }
 
+  // TODO: but why?
   search() {
     this.performRequest();
   }
@@ -142,6 +143,7 @@ export class TaskQueryComponent implements OnInit {
     }
   }
 
+  // TODO: Global?
   openDetails(key: string, val: string) {
     this.generalModalService.triggerMessage(
       new MessageModal(
