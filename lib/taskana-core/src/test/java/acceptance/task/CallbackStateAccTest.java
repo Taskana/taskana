@@ -63,6 +63,11 @@ class CallbackStateAccTest extends AbstractAccTest {
         createdTask = createTask(taskService, CallbackState.CALLBACK_PROCESSING_COMPLETED);
         createdTask = (TaskImpl) taskService.getTask(createdTask.getId());
         assertEquals(CallbackState.CALLBACK_PROCESSING_COMPLETED, createdTask.getCallbackState());
+
+        createdTask = createTask(taskService,CallbackState.CLAIMED);
+        createdTask = (TaskImpl)taskService.getTask(createdTask.getId());
+        assertEquals(CallbackState.CLAIMED,createdTask.getCallbackState());
+
     }
 
     @WithAccessId(
@@ -162,7 +167,76 @@ class CallbackStateAccTest extends AbstractAccTest {
         userName = "admin",
         groupNames = {"group_1"})
     @Test
-    void testInvalidUpdatesOfCallbackState()
+    void testInvalidUpdateOfCallbackStateToNone()
+        throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
+        TaskAlreadyExistException, InvalidArgumentException{
+
+        TaskService taskService = taskanaEngine.getTaskService();
+
+        TaskImpl createdTask1 = createTask(taskService, CallbackState.CALLBACK_PROCESSING_REQUIRED);
+        assertEquals(CallbackState.CALLBACK_PROCESSING_REQUIRED, createdTask1.getCallbackState());
+
+        TaskImpl createdTask2 = createTask(taskService, CallbackState.CLAIMED);
+        assertEquals(CallbackState.CLAIMED, createdTask2.getCallbackState());
+
+        TaskImpl createdTask3 = createTask(taskService, CallbackState.CALLBACK_PROCESSING_COMPLETED);
+        assertEquals(CallbackState.CALLBACK_PROCESSING_COMPLETED, createdTask3.getCallbackState());
+
+        List<String> externalIds = new ArrayList<>(
+            Arrays.asList(createdTask1.getExternalId(), createdTask2.getExternalId(), createdTask3.getExternalId()));
+
+        //try to set CallbackState to NONE
+        BulkOperationResults<String, TaskanaException> bulkResult = taskService.setCallbackStateForTasks(externalIds,
+            CallbackState.NONE);
+
+        //It's never allowed to set CallbackState to NONE over public API
+        assertTrue(bulkResult.containsErrors());
+        List<String> failedTaskIds = bulkResult.getFailedIds();
+        assertTrue(failedTaskIds.size() == 3);
+
+    }
+
+    @WithAccessId(
+        userName = "admin",
+        groupNames = {"group_1"})
+    @Test
+    void testInvalidUpdateOfCallbackStateToComplete()
+        throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
+        TaskAlreadyExistException, InvalidArgumentException, InvalidOwnerException, InvalidStateException,
+        TaskNotFoundException {
+
+        TaskService taskService = taskanaEngine.getTaskService();
+
+        TaskImpl createdTask1 = createTask(taskService, CallbackState.CALLBACK_PROCESSING_REQUIRED);
+        assertEquals(CallbackState.CALLBACK_PROCESSING_REQUIRED, createdTask1.getCallbackState());
+
+        TaskImpl createdTask2 = createTask(taskService, CallbackState.CLAIMED);
+        assertEquals(CallbackState.CLAIMED, createdTask2.getCallbackState());
+
+        TaskImpl createdTask3 = createTask(taskService, CallbackState.CALLBACK_PROCESSING_COMPLETED);
+        assertEquals(CallbackState.CALLBACK_PROCESSING_COMPLETED, createdTask3.getCallbackState());
+
+        List<String> externalIds = new ArrayList<>(
+            Arrays.asList(createdTask1.getExternalId(), createdTask2.getExternalId(), createdTask3.getExternalId()));
+
+
+        //complete a task
+        createdTask3 = (TaskImpl) taskService.forceCompleteTask(createdTask3.getId());
+
+        //It's only allowed to set CallbackState to COMPLETE, if TaskState equals COMPLETE, therefore 2 tasks should not get updated
+        BulkOperationResults<String, TaskanaException> bulkResult = taskService.setCallbackStateForTasks(externalIds,
+            CallbackState.CALLBACK_PROCESSING_COMPLETED);
+        assertTrue(bulkResult.containsErrors());
+        List<String> failedTaskIds = bulkResult.getFailedIds();
+        assertTrue(failedTaskIds.size() == 2 && !failedTaskIds.contains(createdTask3.getExternalId()));
+
+    }
+
+    @WithAccessId(
+        userName = "admin",
+        groupNames = {"group_1"})
+    @Test
+    void testInvalidUpdateOfCallbackStateToClaimed()
         throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException, InvalidStateException,
         InvalidOwnerException {
@@ -181,27 +255,6 @@ class CallbackStateAccTest extends AbstractAccTest {
         List<String> externalIds = new ArrayList<>(
             Arrays.asList(createdTask1.getExternalId(), createdTask2.getExternalId(), createdTask3.getExternalId()));
 
-        //try to set CallbackState to NONE
-        BulkOperationResults<String, TaskanaException> bulkResult1 = taskService.setCallbackStateForTasks(externalIds,
-            CallbackState.NONE);
-
-        //It's never allowed to set CallbackState to NONE over public API
-        assertTrue(bulkResult1.containsErrors());
-        List<String> failedTaskIds = bulkResult1.getFailedIds();
-        assertTrue(failedTaskIds.size() == 3);
-        //add removed externalIds again
-        failedTaskIds.forEach(externalId -> externalIds.add(externalId));
-
-        //complete a task
-        createdTask3 = (TaskImpl) taskService.forceCompleteTask(createdTask3.getId());
-
-        //It's only allowed to set CallbackState to COMPLETE, if TaskState equals COMPLETE, therefore 2 tasks should not get updated
-        BulkOperationResults<String, TaskanaException> bulkResult2 = taskService.setCallbackStateForTasks(externalIds,
-            CallbackState.CALLBACK_PROCESSING_COMPLETED);
-        assertTrue(bulkResult2.containsErrors());
-        List<String> failedTaskIds2 = bulkResult2.getFailedIds();
-        assertTrue(failedTaskIds2.size() == 2);
-        failedTaskIds2.forEach(externalId -> externalIds.add(externalId));
 
         //claim two tasks
         createdTask1 = (TaskImpl) taskService.forceClaim(createdTask1.getId());
@@ -209,20 +262,45 @@ class CallbackStateAccTest extends AbstractAccTest {
 
         //It's only allowed to claim a task if the TaskState equals CLAIMED and the CallbackState equals REQUIRED
         //Therefore 2 tasks should not get updated
-        BulkOperationResults<String, TaskanaException> bulkResult3 = taskService.setCallbackStateForTasks(externalIds,
+        BulkOperationResults<String, TaskanaException> bulkResult = taskService.setCallbackStateForTasks(externalIds,
             CallbackState.CLAIMED);
-        assertTrue(bulkResult1.containsErrors());
-        List<String> failedTaskIds3 = bulkResult3.getFailedIds();
-        assertTrue(failedTaskIds3.size() == 2);
-        failedTaskIds3.forEach(externalId -> externalIds.add(externalId));
+        assertTrue(bulkResult.containsErrors());
+        List<String> failedTaskIds = bulkResult.getFailedIds();
+        assertTrue(failedTaskIds.size() == 2 && !failedTaskIds.contains(createdTask1.getExternalId()));
+
+    }
+
+    @WithAccessId(
+        userName = "admin",
+        groupNames = {"group_1"})
+    @Test
+    void testInvalidUpdateOfCallbackStateToRequired()
+        throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
+        TaskAlreadyExistException, InvalidArgumentException {
+
+
+        TaskService taskService = taskanaEngine.getTaskService();
+
+        TaskImpl createdTask1 = createTask(taskService, CallbackState.CALLBACK_PROCESSING_REQUIRED);
+        assertEquals(CallbackState.CALLBACK_PROCESSING_REQUIRED, createdTask1.getCallbackState());
+
+        TaskImpl createdTask2 = createTask(taskService, CallbackState.CLAIMED);
+        assertEquals(CallbackState.CLAIMED, createdTask2.getCallbackState());
+
+        TaskImpl createdTask3 = createTask(taskService, CallbackState.CALLBACK_PROCESSING_COMPLETED);
+        assertEquals(CallbackState.CALLBACK_PROCESSING_COMPLETED, createdTask3.getCallbackState());
+
+        List<String> externalIds = new ArrayList<>(
+            Arrays.asList(createdTask1.getExternalId(), createdTask2.getExternalId(), createdTask3.getExternalId()));
+
 
         //It's only allowed to set the CallbackState to REQUIRED if the TaskState doesn't equal COMPLETE
         //Therefore 1 task should not get updated
-        BulkOperationResults<String, TaskanaException> bulkResult4 = taskService.setCallbackStateForTasks(externalIds,
+        BulkOperationResults<String, TaskanaException> bulkResult = taskService.setCallbackStateForTasks(externalIds,
             CallbackState.CALLBACK_PROCESSING_REQUIRED);
-        assertTrue(bulkResult4.containsErrors());
-        List<String> failedTaskIds4 = bulkResult4.getFailedIds();
-        assertTrue(failedTaskIds4.size() == 1);
+        assertTrue(bulkResult.containsErrors());
+        List<String> failedTaskIds = bulkResult.getFailedIds();
+        assertTrue(failedTaskIds.size() == 1 &&failedTaskIds.contains(createdTask3.getExternalId()));
 
     }
 
