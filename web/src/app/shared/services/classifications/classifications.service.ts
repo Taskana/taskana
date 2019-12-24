@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {environment} from 'environments/environment';
 import {combineLatest, Observable, Subject} from 'rxjs';
-import {mergeMap, tap, map} from 'rxjs/operators';
+import {map, mergeMap, tap} from 'rxjs/operators';
 
 import {Classification} from 'app/models/classification';
 import {ClassificationDefinition} from 'app/models/classification-definition';
@@ -29,12 +29,23 @@ export class ClassificationsService {
     private domainService: DomainService) {
   }
 
+  private static classificationParameters(domain: string): QueryParametersModel {
+    const parameters = new QueryParametersModel();
+    parameters.SORTBY = TaskanaQueryParameters.parameters.KEY;
+    parameters.SORTDIRECTION = Direction.ASC;
+    parameters.DOMAIN = domain;
+    delete TaskanaQueryParameters.page;
+    delete TaskanaQueryParameters.pageSize;
+
+    return parameters;
+  }
+
   // GET
   getClassifications(): Observable<Array<Classification>> {
     return this.domainService.getSelectedDomain().pipe(
       mergeMap(domain => {
         return this.getClassificationObservable(this.httpClient.get<ClassificationResource>(
-          `${this.url}${TaskanaQueryParameters.getQueryParameters(this.classificationParameters(domain))}`));
+          `${this.url}${TaskanaQueryParameters.getQueryParameters(ClassificationsService.classificationParameters(domain))}`));
 
       }),
       tap(() => {
@@ -48,7 +59,7 @@ export class ClassificationsService {
     if (this.lastDomain !== domain || !this.classificationResourcePromise || forceRefresh) {
       this.lastDomain = domain;
       this.classificationResourcePromise = this.httpClient.get<ClassificationResource>(
-        `${this.url}${TaskanaQueryParameters.getQueryParameters(this.classificationParameters(domain))}`).toPromise();
+        `${this.url}${TaskanaQueryParameters.getQueryParameters(ClassificationsService.classificationParameters(domain))}`).toPromise();
     }
     return this.classificationResourcePromise;
   }
@@ -97,27 +108,15 @@ export class ClassificationsService {
 
   // #endregion
 
-  private classificationParameters(domain: string): QueryParametersModel {
-
-    const parameters = new QueryParametersModel();
-    parameters.SORTBY = TaskanaQueryParameters.parameters.KEY;
-    parameters.SORTDIRECTION = Direction.ASC;
-    parameters.DOMAIN = domain;
-    delete TaskanaQueryParameters.page;
-    delete TaskanaQueryParameters.pageSize;
-
-    return parameters;
-  }
-
   private getClassificationObservable(classificationRef: Observable<any>): Observable<Array<Classification>> {
-    const classificationTypes = this.classificationCategoriesService.getSelectedClassificationType();
+    const classificationTypes: Observable<string> = this.classificationCategoriesService.getSelectedClassificationType();
     return combineLatest(
       [classificationRef,
         classificationTypes]
     ).pipe(
       map(
-        (classification: any, classificationType: any) => {
-          return classification.classifications ? this.buildHierarchy(classification.classifications, classificationType) : [];
+        (classification: any[]) => {
+          return classification[0].classifications ? this.buildHierarchy(classification[0].classifications, classification[1]) : [];
         }
       )
     )
