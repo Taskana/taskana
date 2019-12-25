@@ -64,10 +64,10 @@ public class SampleDataGenerator {
             String cacheKey;
             //dbtable constants?
             if (tableExists("HISTORY_EVENTS")) {
-                scripts = SampleDataProvider.getDefaultScripts();
+                scripts = SampleDataProvider.getScriptsWithEvents();
                 cacheKey = CACHED_EVENTSAMPLE;
             } else {
-                scripts = SampleDataProvider.getScriptsWithEvents();
+                scripts = SampleDataProvider.getDefaultScripts();
                 cacheKey = CACHED_SAMPLE;
             }
             executeAndCacheScripts(scripts, cacheKey);

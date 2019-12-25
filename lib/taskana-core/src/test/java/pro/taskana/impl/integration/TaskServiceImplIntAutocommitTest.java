@@ -30,6 +30,7 @@ import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketType;
+import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.DomainNotFoundException;
@@ -67,7 +68,7 @@ class TaskServiceImplIntAutocommitTest {
 
     private TaskServiceImpl taskServiceImpl;
 
-    private pro.taskana.configuration.TaskanaEngineConfiguration taskanaEngineConfiguration;
+    private TaskanaEngineConfiguration taskanaEngineConfiguration;
 
     private TaskanaEngine taskanaEngine;
 
@@ -81,7 +82,7 @@ class TaskServiceImplIntAutocommitTest {
     void setup() throws SQLException {
         dataSource = TaskanaEngineTestConfiguration.getDataSource();
         String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
-        taskanaEngineConfiguration = new pro.taskana.configuration.TaskanaEngineConfiguration(dataSource, false, false,
+        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, false,
             schemaName);
 
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
@@ -267,7 +268,7 @@ class TaskServiceImplIntAutocommitTest {
 
         // Set up Security for this Test
         dataSource = TaskanaEngineTestConfiguration.getDataSource();
-        taskanaEngineConfiguration = new pro.taskana.configuration.TaskanaEngineConfiguration(dataSource, false, true,
+        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, true,
             TaskanaEngineTestConfiguration.getSchemaName());
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;

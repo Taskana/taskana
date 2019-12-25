@@ -19,6 +19,7 @@ import pro.taskana.ObjectReference;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.TimeInterval;
+import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.impl.configuration.TaskanaEngineTestConfiguration;
 import pro.taskana.sampledata.SampleDataGenerator;
@@ -28,7 +29,7 @@ import pro.taskana.sampledata.SampleDataGenerator;
  */
 public abstract class AbstractAccTest {
 
-    protected static pro.taskana.configuration.TaskanaEngineConfiguration taskanaEngineConfiguration;
+    protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
     protected static TaskanaEngine taskanaEngine;
 
     @BeforeAll
@@ -44,7 +45,7 @@ public abstract class AbstractAccTest {
             sampleDataGenerator.dropDb();
         }
         dataSource = TaskanaEngineTestConfiguration.getDataSource();
-        taskanaEngineConfiguration = new pro.taskana.configuration.TaskanaEngineConfiguration(dataSource, false,
+        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false,
             schemaName);
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         taskanaEngine.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);

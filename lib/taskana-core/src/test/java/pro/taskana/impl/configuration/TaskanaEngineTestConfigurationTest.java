@@ -9,6 +9,7 @@ import javax.sql.DataSource;
 import org.junit.jupiter.api.Test;
 
 import pro.taskana.TaskanaEngine;
+import pro.taskana.configuration.TaskanaEngineConfiguration;
 
 /**
  * Test of configuration.
@@ -18,8 +19,7 @@ class TaskanaEngineTestConfigurationTest {
     @Test
     void testCreateTaskanaEngine() throws SQLException {
         DataSource ds = TaskanaEngineTestConfiguration.getDataSource();
-        pro.taskana.configuration.TaskanaEngineConfiguration taskEngineConfiguration = new pro.taskana.configuration.TaskanaEngineConfiguration(
-            ds, false,
+        TaskanaEngineConfiguration taskEngineConfiguration = new TaskanaEngineConfiguration(ds, false,
             TaskanaEngineTestConfiguration.getSchemaName());
 
         TaskanaEngine te = taskEngineConfiguration.buildTaskanaEngine();

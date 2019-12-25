@@ -35,6 +35,7 @@ import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketType;
 import pro.taskana.configuration.DbSchemaCreator;
+import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.DomainNotFoundException;
@@ -73,7 +74,7 @@ class TaskServiceImplIntExplicitTest {
 
     private static TaskServiceImpl taskServiceImpl;
 
-    private static pro.taskana.configuration.TaskanaEngineConfiguration taskanaEngineConfiguration;
+    private static TaskanaEngineConfiguration taskanaEngineConfiguration;
 
     private static TaskanaEngine taskanaEngine;
 
@@ -90,8 +91,8 @@ class TaskServiceImplIntExplicitTest {
 
         dataSource = new File(propertiesFileName).exists()
             ? TaskanaEngineTestConfiguration.createDataSourceFromProperties(propertiesFileName)
-            : pro.taskana.configuration.TaskanaEngineConfiguration.createDefaultDataSource();
-        taskanaEngineConfiguration = new pro.taskana.configuration.TaskanaEngineConfiguration(dataSource, false,
+            : TaskanaEngineConfiguration.createDefaultDataSource();
+        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false,
             TaskanaEngineTestConfiguration.getSchemaName());
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         taskServiceImpl = (TaskServiceImpl) taskanaEngine.getTaskService();
@@ -362,7 +363,7 @@ class TaskServiceImplIntExplicitTest {
 
         // Set up Security for this Test
         dataSource = TaskanaEngineTestConfiguration.getDataSource();
-        taskanaEngineConfiguration = new pro.taskana.configuration.TaskanaEngineConfiguration(dataSource, false, true,
+        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, true,
             TaskanaEngineTestConfiguration.getSchemaName());
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;

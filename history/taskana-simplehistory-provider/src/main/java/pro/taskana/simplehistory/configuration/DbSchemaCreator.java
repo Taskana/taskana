@@ -50,8 +50,7 @@ public class DbSchemaCreator {
         runner.setLogWriter(logWriter);
         runner.setErrorLogWriter(errorLogWriter);
         try {
-            InputStream resourceAsStream = this.getClass()
-                .getResourceAsStream(DB_SCHEMA);
+            InputStream resourceAsStream = this.getClass().getResourceAsStream(DB_SCHEMA);
             BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream, StandardCharsets.UTF_8));
             runner.runScript(getSqlWithSchemaNameParsed(reader));
         } finally {
@@ -64,13 +63,13 @@ public class DbSchemaCreator {
     }
 
     private StringReader getSqlWithSchemaNameParsed(BufferedReader reader) {
-        StringBuffer content = new StringBuffer();
+        StringBuilder content = new StringBuilder();
         try {
             String line = "";
             while (line != null) {
                 line = reader.readLine();
                 if (line != null) {
-                    content.append(line.replaceAll("%schemaName%", schemaName) + System.lineSeparator());
+                    content.append(line.replaceAll("%schemaName%", schemaName)).append(System.lineSeparator());
                 }
             }
         } catch (IOException e) {

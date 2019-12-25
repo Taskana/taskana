@@ -31,6 +31,7 @@ import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.WorkbasketType;
+import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
@@ -70,7 +71,7 @@ class WorkbasketServiceImplIntAutocommitTest {
     void setup() throws SQLException {
         DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
         String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
-        pro.taskana.configuration.TaskanaEngineConfiguration taskanaEngineConfiguration = new pro.taskana.configuration.TaskanaEngineConfiguration(
+        TaskanaEngineConfiguration taskanaEngineConfiguration = new TaskanaEngineConfiguration(
             dataSource, false,
             schemaName);
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
@@ -176,7 +177,7 @@ class WorkbasketServiceImplIntAutocommitTest {
         accessItem.setPermAppend(true);
         workBasketService.updateWorkbasketAccessItem(accessItem);
 
-        if (pro.taskana.configuration.TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
+        if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
             assertEquals("zaphod beeblebrox", accessItem.getAccessId());
         } else {
             assertEquals("Zaphod Beeblebrox", accessItem.getAccessId());

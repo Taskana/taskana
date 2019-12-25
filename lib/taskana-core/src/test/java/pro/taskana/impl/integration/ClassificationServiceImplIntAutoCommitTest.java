@@ -24,6 +24,7 @@ import pro.taskana.ClassificationSummary;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.TimeInterval;
+import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.ConcurrencyException;
@@ -44,7 +45,7 @@ class ClassificationServiceImplIntAutoCommitTest {
     static int counter = 0;
     private DataSource dataSource;
     private ClassificationService classificationService;
-    private pro.taskana.configuration.TaskanaEngineConfiguration taskanaEngineConfiguration;
+    private TaskanaEngineConfiguration taskanaEngineConfiguration;
     private TaskanaEngine taskanaEngine;
     private TaskanaEngineImpl taskanaEngineImpl;
 
@@ -59,14 +60,13 @@ class ClassificationServiceImplIntAutoCommitTest {
     void setup() throws SQLException {
         dataSource = TaskanaEngineTestConfiguration.getDataSource();
         String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
-        taskanaEngineConfiguration = new pro.taskana.configuration.TaskanaEngineConfiguration(dataSource, false, false,
+        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, false,
             schemaName);
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         classificationService = taskanaEngine.getClassificationService();
         taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
         taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
-        SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
-        sampleDataGenerator.clearDb();
+        new SampleDataGenerator(dataSource, schemaName).clearDb();
     }
 
     @Test

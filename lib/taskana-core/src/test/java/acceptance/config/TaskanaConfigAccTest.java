@@ -15,6 +15,7 @@ import java.util.HashMap;
 import org.h2.store.fs.FileUtils;
 import org.junit.jupiter.api.Test;
 
+import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.impl.TaskanaEngineImpl;
 import pro.taskana.impl.configuration.TaskanaEngineTestConfiguration;
 
@@ -26,7 +27,7 @@ import pro.taskana.impl.configuration.TaskanaEngineTestConfiguration;
 class TaskanaConfigAccTest extends TaskanaEngineImpl {
 
     TaskanaConfigAccTest() throws SQLException {
-        super(new pro.taskana.configuration.TaskanaEngineConfiguration(TaskanaEngineTestConfiguration.getDataSource(),
+        super(new TaskanaEngineConfiguration(TaskanaEngineTestConfiguration.getDataSource(),
             true,
             TaskanaEngineTestConfiguration.getSchemaName()));
     }
