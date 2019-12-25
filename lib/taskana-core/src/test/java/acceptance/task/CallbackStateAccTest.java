@@ -1,17 +1,9 @@
 package acceptance.task;
 
-<<<<<<< master
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-=======
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
->>>>>>> TSK-983: Remove junit 4 from taskana-core
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -222,7 +214,6 @@ class CallbackStateAccTest extends AbstractAccTest {
         List<String> externalIds = new ArrayList<>(
             Arrays.asList(createdTask1.getExternalId(), createdTask2.getExternalId(), createdTask3.getExternalId()));
 
-
         //complete a task
         createdTask3 = (TaskImpl) taskService.forceCompleteTask(createdTask3.getId());
 
@@ -258,7 +249,6 @@ class CallbackStateAccTest extends AbstractAccTest {
         List<String> externalIds = new ArrayList<>(
             Arrays.asList(createdTask1.getExternalId(), createdTask2.getExternalId(), createdTask3.getExternalId()));
 
-
         //claim two tasks
         createdTask1 = (TaskImpl) taskService.forceClaim(createdTask1.getId());
         createdTask2 = (TaskImpl) taskService.forceClaim(createdTask2.getId());
@@ -281,7 +271,6 @@ class CallbackStateAccTest extends AbstractAccTest {
         throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
         TaskAlreadyExistException, InvalidArgumentException {
 
-
         TaskService taskService = taskanaEngine.getTaskService();
 
         TaskImpl createdTask1 = createTask(taskService, CallbackState.CALLBACK_PROCESSING_REQUIRED);
@@ -295,7 +284,6 @@ class CallbackStateAccTest extends AbstractAccTest {
 
         List<String> externalIds = new ArrayList<>(
             Arrays.asList(createdTask1.getExternalId(), createdTask2.getExternalId(), createdTask3.getExternalId()));
-
 
         //It's only allowed to set the CallbackState to REQUIRED if the TaskState doesn't equal COMPLETE
         //Therefore 1 task should not get updated
@@ -311,15 +299,7 @@ class CallbackStateAccTest extends AbstractAccTest {
         userName = "admin",
         groupNames = {"group_1"})
     @Test
-    void testQueriesWithCallbackState()
-<<<<<<< master
-        throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-        TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException, InvalidStateException,
-=======
-        throws NotAuthorizedException,
-        TaskNotFoundException, InvalidStateException,
->>>>>>> TSK-983: Remove junit 4 from taskana-core
-        InvalidOwnerException, SQLException, IOException {
+    void testQueriesWithCallbackState() throws Exception {
         resetDb(false);
         TaskService taskService = taskanaEngine.getTaskService();
 

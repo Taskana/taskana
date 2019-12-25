@@ -48,8 +48,7 @@ public final class DaysToWorkingDaysConverter {
         negativeDaysToWorkingDays = generateNegativeDaysToWorkingDays(columnHeaders, referenceDate);
     }
 
-    public static DaysToWorkingDaysConverter initialize()
-        throws InvalidArgumentException {
+    public static DaysToWorkingDaysConverter initialize() throws InvalidArgumentException {
         return initialize(Collections.singletonList(new TimeIntervalColumnHeader(0)), Instant.now());
     }
 
@@ -93,6 +92,39 @@ public final class DaysToWorkingDaysConverter {
 
     public static void setGermanPublicHolidaysEnabled(boolean germanPublicHolidaysEnabled) {
         germanHolidaysEnabled = germanPublicHolidaysEnabled;
+    }
+
+    /**
+     * Computes the date of Easter Sunday for a given year.
+     *
+     * @param year for which the date of Easter Sunday should be calculated
+     * @return the date of Easter Sunday for the given year
+     */
+    static LocalDate getEasterSunday(int year) {
+        // Formula to compute Easter Sunday by Gauss.
+        int a = year % 19;
+        int b = year % 4;
+        int c = year % 7;
+        int k = year / 100;
+        int p = (13 + 8 * k) / 25;
+        int q = k / 4;
+        int m = (15 - p + k - q) % 30;
+        int n = (4 + k - q) % 7;
+        int d = (19 * a + m) % 30;
+
+        int e = (2 * b + 4 * c + 6 * d + n) % 7;
+
+        if (d == 29 && e == 6) {
+            return LocalDate.of(year, 3, 15).plusDays(d + e);
+        }
+        if (d == 28 && e == 6 && (11 * m + 11) % 30 < 19) {
+            return LocalDate.of(year, 3, 15).plusDays(d + e);
+        }
+        return LocalDate.of(year, 3, 22).plusDays(d + e);
+    }
+
+    public static void setCustomHolidays(List<LocalDate> holidays) {
+        customHolidays = new HashSet<>(holidays == null ? Collections.emptyList() : holidays);
     }
 
     /**
@@ -248,39 +280,6 @@ public final class DaysToWorkingDaysConverter {
             .anyMatch(diff -> diff == diffFromEasterSunday);
     }
 
-    /**
-     * Computes the date of Easter Sunday for a given year.
-     *
-     * @param year for which the date of Easter Sunday should be calculated
-     * @return the date of Easter Sunday for the given year
-     */
-    static LocalDate getEasterSunday(int year) {
-        // Formula to compute Easter Sunday by Gauss.
-        int a = year % 19;
-        int b = year % 4;
-        int c = year % 7;
-        int k = year / 100;
-        int p = (13 + 8 * k) / 25;
-        int q = k / 4;
-        int m = (15 - p + k - q) % 30;
-        int n = (4 + k - q) % 7;
-        int d = (19 * a + m) % 30;
-
-        int e = (2 * b + 4 * c + 6 * d + n) % 7;
-
-        if (d == 29 && e == 6) {
-            return LocalDate.of(year, 3, 15).plusDays(d + e);
-        }
-        if (d == 28 && e == 6 && (11 * m + 11) % 30 < 19) {
-            return LocalDate.of(year, 3, 15).plusDays(d + e);
-        }
-        return LocalDate.of(year, 3, 22).plusDays(d + e);
-    }
-
-    public static void setCustomHolidays(List<LocalDate> holidays) {
-        customHolidays = new HashSet<>(holidays == null ? Collections.emptyList() : holidays);
-    }
-
     @Override
     public String toString() {
         return "DaysToWorkingDaysConverter{"
@@ -289,6 +288,25 @@ public final class DaysToWorkingDaysConverter {
             + ", dateCreated=" + dateCreated
             + ", easterSunday=" + easterSunday
             + '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        DaysToWorkingDaysConverter that = (DaysToWorkingDaysConverter) o;
+        return positiveDaysToWorkingDays.equals(that.positiveDaysToWorkingDays)
+            && negativeDaysToWorkingDays.equals(that.negativeDaysToWorkingDays)
+            && dateCreated.equals(that.dateCreated);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(positiveDaysToWorkingDays, negativeDaysToWorkingDays, dateCreated);
     }
 
     /**
@@ -312,24 +330,5 @@ public final class DaysToWorkingDaysConverter {
         public boolean matches(LocalDate date) {
             return date.getDayOfMonth() == day && date.getMonthValue() == month;
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        DaysToWorkingDaysConverter that = (DaysToWorkingDaysConverter) o;
-        return positiveDaysToWorkingDays.equals(that.positiveDaysToWorkingDays)
-            && negativeDaysToWorkingDays.equals(that.negativeDaysToWorkingDays)
-            && dateCreated.equals(that.dateCreated);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(positiveDaysToWorkingDays, negativeDaysToWorkingDays, dateCreated);
     }
 }

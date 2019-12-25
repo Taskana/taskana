@@ -44,7 +44,7 @@ final class SQLReplacer {
     }
 
     static boolean isDb2(String dbProductName) {
-        return dbProductName.contains("DB2");
+        return dbProductName != null && dbProductName.contains("DB2");
     }
 
     /**

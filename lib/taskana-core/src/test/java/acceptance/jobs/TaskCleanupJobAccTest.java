@@ -40,7 +40,6 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
         //required if single tests modify database
         //TODO split test class into readOnly & modifying tests to improve performance
         resetDb(false);
-        resetDb(false);
         taskService = taskanaEngine.getTaskService();
     }
 
