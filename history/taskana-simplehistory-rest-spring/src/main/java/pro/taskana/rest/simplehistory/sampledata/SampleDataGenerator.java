@@ -15,6 +15,8 @@ import org.apache.ibatis.jdbc.ScriptRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.configuration.DB;
+
 /**
  * This class generates sample data for manual testing purposes.
  */
@@ -54,7 +56,7 @@ public class SampleDataGenerator {
             runner.runScript(new BufferedReader(
                 new InputStreamReader(this.getClass().getResourceAsStream(CLEAR), StandardCharsets.UTF_8)));
         } catch (Exception e) {
-            LOGGER.error("caught Exception {}", e);
+            LOGGER.error("caught Exception {}", e, e);
         }
 
         runner.setStopOnError(true);
@@ -73,7 +75,7 @@ public class SampleDataGenerator {
     }
 
     private StringReader selectSchemaScript(String dbProductName, String schemaName) {
-        return new StringReader("PostgreSQL".equals(dbProductName)
+        return new StringReader(DB.isPostgreSQL(dbProductName)
             ? "SET search_path TO " + schemaName + ";"
             : "SET SCHEMA " + schemaName + ";");
     }

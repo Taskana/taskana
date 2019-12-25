@@ -20,27 +20,27 @@ public enum DB {
     }
 
     public static boolean isDb2(String dbProductName) {
-        return dbProductName.contains(DB2.dbProductname);
+        return dbProductName != null && dbProductName.contains(DB2.dbProductname);
     }
 
-    public static boolean isH2(String databaseProductName) {
-        return databaseProductName.contains(H2.dbProductname);
+    public static boolean isH2(String dbProductName) {
+        return dbProductName != null && dbProductName.contains(H2.dbProductname);
     }
 
-    public static boolean isPostgreSQL(String databaseProductName) {
-        return POSTGRESS.dbProductname.equals(databaseProductName);
+    public static boolean isPostgreSQL(String dbProductName) {
+        return POSTGRESS.dbProductname.equals(dbProductName);
     }
 
-    public static String getDatabaseProductId(String databaseProductName) {
+    public static String getDatabaseProductId(String dbProductName) {
 
-        if (isDb2(databaseProductName)) {
+        if (isDb2(dbProductName)) {
             return DB2.dbProductId;
-        } else if (isH2(databaseProductName)) {
+        } else if (isH2(dbProductName)) {
             return H2.dbProductId;
-        } else if (isPostgreSQL(databaseProductName)) {
+        } else if (isPostgreSQL(dbProductName)) {
             return POSTGRESS.dbProductId;
         } else {
-            throw new UnsupportedDatabaseException(databaseProductName);
+            throw new UnsupportedDatabaseException(dbProductName);
         }
     }
 }

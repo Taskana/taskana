@@ -24,6 +24,7 @@ import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.WorkbasketType;
+import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
@@ -49,7 +50,7 @@ class WorkbasketServiceImplIntExplicitTest {
     private static final int SLEEP_TIME = 100;
     static int counter = 0;
     private DataSource dataSource;
-    private pro.taskana.configuration.TaskanaEngineConfiguration taskanaEngineConfiguration;
+    private TaskanaEngineConfiguration taskanaEngineConfiguration;
     private TaskanaEngine taskanaEngine;
     private TaskanaEngineImpl taskanaEngineImpl;
     private WorkbasketService workBasketService;
@@ -65,7 +66,7 @@ class WorkbasketServiceImplIntExplicitTest {
     void setup() throws SQLException {
         dataSource = TaskanaEngineTestConfiguration.getDataSource();
         String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
-        taskanaEngineConfiguration = new pro.taskana.configuration.TaskanaEngineConfiguration(dataSource, false,
+        taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false,
             schemaName);
         taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
         taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;

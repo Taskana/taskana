@@ -120,8 +120,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
         Task task2 = taskService.getTask("TKI:000000000000000000000000000000000000");
 
         task.setCustomAttribute("1", "willi");
-        Task updatedTask = taskService.updateTask(task);
-        taskService.getTask(updatedTask.getId());
+        taskService.updateTask(task);
 
         task2.setCustomAttribute("2", "Walter");
         //TODO flaky test ... if speed is too high,
