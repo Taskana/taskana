@@ -75,7 +75,7 @@ class TaskControllerIntTest {
         try {
             sampleDataGenerator = new SampleDataGenerator(dataSource);
             sampleDataGenerator.generateSampleData(schemaName);
-        } catch (SQLException e) {
+        } catch (SQLException | IOException e) {
             throw new SystemException("tried to reset DB and caught Exception " + e, e);
         }
     }

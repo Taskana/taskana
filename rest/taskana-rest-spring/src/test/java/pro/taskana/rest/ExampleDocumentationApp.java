@@ -1,5 +1,6 @@
 package pro.taskana.rest;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.annotation.PostConstruct;
@@ -69,7 +70,7 @@ public class ExampleDocumentationApp {
     }
 
     @PostConstruct
-    private void init() {
+    private void init() throws IOException, SQLException {
         AccessIdController.setLdapCache(new LdapCacheTestImpl());
         sampleDataGenerator.generateSampleData(schemaName);
     }

@@ -1,5 +1,6 @@
 package pro.taskana.rest;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.annotation.PostConstruct;
@@ -63,7 +64,7 @@ public class ExampleRestApplication {
     }
 
     @PostConstruct
-    private void init() {
+    private void init() throws IOException, SQLException {
         if (!ldapClient.useLdap()) {
             AccessIdController.setLdapCache(ldapCacheTest);
         }

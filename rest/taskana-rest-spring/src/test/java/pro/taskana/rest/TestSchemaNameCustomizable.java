@@ -1,5 +1,6 @@
 package pro.taskana.rest;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -39,7 +40,7 @@ class TestSchemaNameCustomizable {
             new SpringTaskanaEngineConfiguration(dataSource, true, true, schemaName);
             sampleDataGenerator = new SampleDataGenerator(dataSource);
             sampleDataGenerator.generateSampleData(schemaName);
-        } catch (SQLException e) {
+        } catch (SQLException | IOException e) {
             throw new SystemException("tried to reset DB and caught Exception " + e, e);
         }
     }

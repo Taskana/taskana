@@ -1,11 +1,13 @@
 package pro.taskana.sampledata;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -46,7 +48,6 @@ public class SampleDataGenerator {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 
     private DataSource dataSource;
-    private ScriptRunner runner;
 
     public SampleDataGenerator(DataSource dataSource) throws SQLException {
         if (LOGGER.isTraceEnabled()) {
@@ -54,41 +55,6 @@ public class SampleDataGenerator {
         }
         this.dataSource = dataSource;
 
-        runner = new ScriptRunner(dataSource.getConnection());
-    }
-
-    public void generateSampleData(String schemaName) {
-        StringWriter outWriter = new StringWriter();
-        PrintWriter logWriter = new PrintWriter(outWriter);
-
-        StringWriter errorWriter = new StringWriter();
-        PrintWriter errorLogWriter = new PrintWriter(errorWriter);
-        try {
-            runner.runScript(
-                selectSchemaScript(dataSource.getConnection().getMetaData().getDatabaseProductName(), schemaName));
-            runner.setStopOnError(false);
-            runner.runScript(getScriptBufferedStream(CLEAR));
-        } catch (Exception e) {
-            LOGGER.error("caught Exception {}", e);
-        }
-
-        runner.setStopOnError(true);
-        runner.setLogWriter(logWriter);
-        runner.setErrorLogWriter(errorLogWriter);
-
-        LocalDateTime now = LocalDateTime.now();
-        getScriptList()
-            .map(s -> SampleDataGenerator.parseAndReplace(now, s))
-            .map(StringReader::new)
-            .map(BufferedReader::new)
-            .forEachOrdered(runner::runScript);
-
-        runner.closeConnection();
-
-        LOGGER.trace(outWriter.toString());
-        if (!errorWriter.toString().trim().isEmpty()) {
-            LOGGER.error(errorWriter.toString());
-        }
     }
 
     /**
@@ -116,29 +82,6 @@ public class SampleDataGenerator {
         return sb.toString();
     }
 
-    private StringReader selectSchemaScript(String dbProductName, String schemaName) {
-        return new StringReader(isPostgreSQL(dbProductName)
-            ? "SET search_path TO " + schemaName + ";"
-            : "SET SCHEMA " + schemaName + ";");
-    }
-
-    /**
-     * Create a array with the necessary script.
-     * @return a array with the corresponding scripts files
-     */
-    private Stream<String> getScriptList() {
-        Stream<String> scriptsList = getDefaultScripts();
-
-        try {
-            runner.runScript(getScriptBufferedStream(CHECK_HISTORY_EVENT_EXIST));
-            runner.runScript(getScriptBufferedStream(CLEAR_HISTORY_EVENTS));
-            return Stream.concat(scriptsList, Stream.of(HISTORY_EVENT));
-        } catch (Exception e) {
-            LOGGER.error("The HISTORY_EVENTS table is not created");
-        }
-        return scriptsList;
-    }
-
     private static String parseAndReplace(LocalDateTime now, String script) {
         return replaceRelativeTimeFunction(now,
             getScriptBufferedStream(script).lines().collect(Collectors.joining(System.lineSeparator())));
@@ -157,5 +100,64 @@ public class SampleDataGenerator {
 
     private static boolean isPostgreSQL(String databaseProductName) {
         return "PostgreSQL".equals(databaseProductName);
+    }
+
+    public void generateSampleData(String schemaName) throws IOException, SQLException {
+        try (StringWriter outWriter = new StringWriter();
+            PrintWriter logWriter = new PrintWriter(outWriter);
+
+            StringWriter errorWriter = new StringWriter();
+            PrintWriter errorLogWriter = new PrintWriter(errorWriter);
+            Connection connection = dataSource.getConnection()) {
+            ScriptRunner runner = new ScriptRunner(connection);
+            try {
+                runner.runScript(
+                    selectSchemaScript(connection.getMetaData().getDatabaseProductName(), schemaName));
+                runner.setStopOnError(false);
+                runner.runScript(getScriptBufferedStream(CLEAR));
+            } catch (Exception e) {
+                LOGGER.error("caught Exception {}", e, e);
+            }
+
+            runner.setStopOnError(true);
+            runner.setLogWriter(logWriter);
+            runner.setErrorLogWriter(errorLogWriter);
+
+            LocalDateTime now = LocalDateTime.now();
+            getScriptList(runner)
+                .map(s -> SampleDataGenerator.parseAndReplace(now, s))
+                .map(StringReader::new)
+                .map(BufferedReader::new)
+                .forEachOrdered(runner::runScript);
+
+            LOGGER.trace(outWriter.toString());
+            if (!errorWriter.toString().trim().isEmpty()) {
+                LOGGER.error(errorWriter.toString());
+            }
+        }
+    }
+
+    private StringReader selectSchemaScript(String dbProductName, String schemaName) {
+        return new StringReader(isPostgreSQL(dbProductName)
+            ? "SET search_path TO " + schemaName + ";"
+            : "SET SCHEMA " + schemaName + ";");
+    }
+
+    /**
+     * Create a array with the necessary script.
+     * @param runner to identify if history events should be appended aswell
+     * @return a array with the corresponding scripts files
+     */
+    private Stream<String> getScriptList(ScriptRunner runner) {
+        Stream<String> scriptsList = getDefaultScripts();
+
+        try {
+            runner.runScript(getScriptBufferedStream(CHECK_HISTORY_EVENT_EXIST));
+            runner.runScript(getScriptBufferedStream(CLEAR_HISTORY_EVENTS));
+            return Stream.concat(scriptsList, Stream.of(HISTORY_EVENT));
+        } catch (Exception e) {
+            LOGGER.error("The HISTORY_EVENTS table is not created");
+        }
+        return scriptsList;
     }
 }
