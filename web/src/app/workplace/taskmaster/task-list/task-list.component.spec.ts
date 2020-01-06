@@ -1,12 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TaskListComponent } from './task-list.component';
 import { FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { Routes } from '@angular/router';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { WorkplaceService } from 'app/workplace/services/workplace.service';
+import { TaskListComponent } from './task-list.component';
 import {DateTimeZonePipe} from '../../../shared/pipes/date-time-zone/date-time-zone.pipe';
 
 
@@ -18,7 +18,6 @@ export class DummyDetailComponent {
 }
 
 @Component({
-  // tslint:disable-next-line: component-selector
   selector: 'svg-icon',
   template: '<p>Mock Icon Component</p>'
 })

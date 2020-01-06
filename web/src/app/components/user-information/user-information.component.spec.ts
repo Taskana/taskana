@@ -2,9 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
 
+import { configureTests } from 'app/app.test.configuration';
 import { UserInformationComponent } from './user-information.component';
 
-import { configureTests } from 'app/app.test.configuration';
 
 describe('UserInformationComponent', () => {
   let component: UserInformationComponent;

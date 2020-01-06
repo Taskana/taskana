@@ -27,7 +27,7 @@ export class CustomFieldsService {
   private jsonPath(path: string, fallbacktext: string): CustomField {
     if (!this.customizedFields) {
       return new CustomField(true, fallbacktext);
-    };
+    }
     const paths = path.split('.');
     let value = this.customizedFields;
     paths.every(element => {
@@ -46,7 +46,7 @@ export class CustomFieldsService {
   private jsonPathObject(path: string, fallbackObject: Object): Object {
     if (!this.customizedFields) {
       return fallbackObject;
-    };
+    }
     const paths = path.split('.');
     let value = this.customizedFields;
     paths.every(element => {
@@ -60,23 +60,23 @@ export class CustomFieldsService {
 
     value = this.mergeKeys(value, fallbackObject);
 
-  return value;
-}
-
-private mergeKeys(defaultObject: Object, newObject: Object) {
-  const value = new Object();
-
-  for (const item of Object.keys(defaultObject)) {
-    if (!value[item]) {
-      value[item] = defaultObject[item];
-    }
+    return value;
   }
 
-  for (const item of Object.keys(newObject)) {
-    if (!value[item]) {
-      value[item] = newObject[item];
+  private mergeKeys(defaultObject: Object, newObject: Object) {
+    const value = new Object();
+
+    for (const item of Object.keys(defaultObject)) {
+      if (!value[item]) {
+        value[item] = defaultObject[item];
+      }
     }
-  }
+
+    for (const item of Object.keys(newObject)) {
+      if (!value[item]) {
+        value[item] = newObject[item];
+      }
+    }
 
     return value;
   }

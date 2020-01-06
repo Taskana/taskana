@@ -1,12 +1,14 @@
-// tslint:enable:max-line-length
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {AngularSvgIconModule} from 'angular-svg-icon';
 import {AlertModule, TypeaheadModule} from 'ngx-bootstrap';
 import {SharedModule} from 'app/shared/shared.module';
-import {AdministrationRoutingModule} from './administration-routing.module';
 import {InfiniteScrollModule} from 'ngx-infinite-scroll';
+import {ClassificationTypesSelectorComponent} from 'app/shared/classification-types-selector/classification-types-selector.component';
+import {ClassificationCategoriesService} from 'app/shared/services/classifications/classification-categories.service';
+import {AccessItemsManagementComponent} from 'app/administration/access-items-management/access-items-management.component';
+import {AdministrationRoutingModule} from './administration-routing.module';
 /**
  * Components
  */
@@ -20,16 +22,13 @@ import {AccessItemsComponent} from './workbasket/details/access-items/access-ite
 import {ClassificationListComponent} from './classification/master/list/classification-list.component';
 import {ClassificationDetailsComponent} from './classification/details/classification-details.component';
 import {ImportExportComponent} from './components/import-export/import-export.component';
-import {ClassificationTypesSelectorComponent} from 'app/shared/classification-types-selector/classification-types-selector.component';
 /**
  * Services
  */
 import {SavingWorkbasketService} from './services/saving-workbaskets/saving-workbaskets.service';
 import {ClassificationDefinitionService} from './services/classification-definition/classification-definition.service';
 import {WorkbasketDefinitionService} from './services/workbasket-definition/workbasket-definition.service';
-import {ClassificationCategoriesService} from 'app/shared/services/classifications/classification-categories.service';
 import {ImportExportService} from './services/import-export/import-export.service';
-import {AccessItemsManagementComponent} from 'app/administration/access-items-management/access-items-management.component';
 
 const MODULES = [
   CommonModule,
@@ -71,5 +70,3 @@ const DECLARATIONS = [
 })
 export class AdministrationModule {
 }
-
-// tslint:enable:max-line-length

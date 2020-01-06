@@ -15,7 +15,6 @@ import { Links } from 'app/models/links';
 import { FilterModel } from 'app/models/filter';
 import { SortingModel } from 'app/models/sorting';
 
-import { WorkbasketListToolbarComponent } from './workbasket-list-toolbar.component';
 import { ImportExportComponent } from 'app/administration/components/import-export/import-export.component';
 
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
@@ -23,6 +22,7 @@ import { ClassificationDefinitionService } from 'app/administration/services/cla
 import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition/workbasket-definition.service';
 import { configureTests } from 'app/app.test.configuration';
 import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
+import { WorkbasketListToolbarComponent } from './workbasket-list-toolbar.component';
 
 @Component({
   selector: 'taskana-dummy-detail',
@@ -35,7 +35,8 @@ export class DummyDetailComponent {
 describe('WorkbasketListToolbarComponent', () => {
   let component: WorkbasketListToolbarComponent;
   let fixture: ComponentFixture<WorkbasketListToolbarComponent>;
-  let debugElement, workbasketService, router;
+  let debugElement; let workbasketService; let
+    router;
 
   const routes: Routes = [
     { path: ':id', component: DummyDetailComponent, outlet: 'detail' }
@@ -65,9 +66,10 @@ describe('WorkbasketListToolbarComponent', () => {
       debugElement = fixture.debugElement.nativeElement;
       component = fixture.componentInstance;
       component.workbaskets = new Array<WorkbasketSummary>(
-        new WorkbasketSummary('1', 'key1', 'NAME1', 'description 1', 'owner 1'));
+        new WorkbasketSummary('1', 'key1', 'NAME1', 'description 1', 'owner 1')
+      );
       component.workbaskets[0].markedForDeletion = false;
-      component.workbaskets[0]._links = new Links({ 'href': 'selfLink' });
+      component.workbaskets[0]._links = new Links({ href: 'selfLink' });
 
       fixture.detectChanges();
       done();

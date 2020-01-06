@@ -37,7 +37,7 @@ export class TaskComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.routeSubscription = this.route.params.subscribe(params => {
-      const id = params['id'];
+      const {id} = params;
       this.getTask(id);
     });
   }
@@ -45,8 +45,7 @@ export class TaskComponent implements OnInit, OnDestroy {
   async getTask(id: string) {
     this.requestInProgress = true;
     this.task = await this.taskService.getTask(id).toPromise();
-    const classification = await this.classificationService.getClassification
-      (this.task.classificationSummaryResource.classificationId);
+    const classification = await this.classificationService.getClassification(this.task.classificationSummaryResource.classificationId);
     this.address = this.extractUrl(classification.applicationEntryPoint) || `${this.address}/?q=${this.task.name}`;
     this.link = this.sanitizer.bypassSecurityTrustResourceUrl(this.address);
     this.getWorkbaskets();
@@ -78,7 +77,8 @@ export class TaskComponent implements OnInit, OnDestroy {
       task => {
         this.requestInProgress = false;
         this.task = task
-      });
+      }
+    );
     this.navigateBack();
   }
 
@@ -90,7 +90,8 @@ export class TaskComponent implements OnInit, OnDestroy {
         this.task = task;
         this.taskService.publishUpdatedTask(task);
         this.navigateBack();
-      });
+      }
+    );
   }
 
   navigateBack() {

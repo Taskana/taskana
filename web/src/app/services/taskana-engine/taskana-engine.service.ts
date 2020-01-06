@@ -21,7 +21,8 @@ export class TaskanaEngineService {
     return this.httpClient.get<any>(`${environment.taskanaRestUrl}/v1/current-user-info`).pipe(map(
       data => {
         this.currentUserInfo = data
-      })).toPromise();
+      }
+    )).toPromise();
   }
 
   hasRole(roles2Find: Array<string>): boolean {
@@ -49,12 +50,10 @@ export class TaskanaEngineService {
   }
 
   private findRole(roles2Find: Array<string>) {
-    return this.currentUserInfo.roles.find(role => {
-      return roles2Find.some(roleLookingFor => {
-        if (role === roleLookingFor) {
-          return true;
-        }
-      });
-    });
+    return this.currentUserInfo.roles.find(role => roles2Find.some(roleLookingFor => {
+      if (role === roleLookingFor) {
+        return true;
+      }
+    }));
   }
 }

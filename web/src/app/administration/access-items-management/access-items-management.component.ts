@@ -5,17 +5,17 @@ import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.se
 import { Subscription } from 'rxjs';
 
 import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
-import { AccessIdDefinition } from '../../models/access-id';
 import { AccessItemsWorkbasketResource } from 'app/models/access-item-workbasket-resource';
 import { AccessItemWorkbasket } from 'app/models/access-item-workbasket';
-import { AccessIdsService } from '../../shared/services/access-ids/access-ids.service';
 import { SortingModel } from 'app/models/sorting';
-import { RequestInProgressService } from '../../services/requestInProgress/request-in-progress.service';
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { MessageModal } from 'app/models/message-modal';
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
 import { AlertModel, AlertType } from 'app/models/alert';
 import { AlertService } from 'app/services/alert/alert.service';
+import { RequestInProgressService } from '../../services/requestInProgress/request-in-progress.service';
+import { AccessIdsService } from '../../shared/services/access-ids/access-ids.service';
+import { AccessIdDefinition } from '../../models/access-id';
 
 @Component({
   selector: 'taskana-access-items-management',
@@ -55,7 +55,7 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
   setAccessItemsGroups(accessItems: Array<AccessItemWorkbasket>) {
     const AccessItemsFormGroups = accessItems.map(accessItem => this.formBuilder.group(accessItem));
     AccessItemsFormGroups.map(accessItemGroup => {
-      accessItemGroup.controls['accessId'].setValidators(Validators.required);
+      accessItemGroup.controls.accessId.setValidators(Validators.required);
       for (const key of Object.keys(accessItemGroup.controls)) {
         accessItemGroup.controls[key].disable();
       }
@@ -63,13 +63,13 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
     const AccessItemsFormArray = this.formBuilder.array(AccessItemsFormGroups);
     if (!this.AccessItemsForm) { this.AccessItemsForm = this.formBuilder.group({}); }
     this.AccessItemsForm.setControl('accessItemsGroups', AccessItemsFormArray);
-    if (!this.AccessItemsForm.value['workbasketKeyFilter']) { this.AccessItemsForm.addControl('workbasketKeyFilter', new FormControl()) }
-    if (!this.AccessItemsForm.value['accessIdFilter']) { this.AccessItemsForm.addControl('accessIdFilter', new FormControl()) }
-  };
+    if (!this.AccessItemsForm.value.workbasketKeyFilter) { this.AccessItemsForm.addControl('workbasketKeyFilter', new FormControl()) }
+    if (!this.AccessItemsForm.value.accessIdFilter) { this.AccessItemsForm.addControl('accessIdFilter', new FormControl()) }
+  }
 
   get accessItemsGroups(): FormArray {
     return this.AccessItemsForm ? this.AccessItemsForm.get('accessItemsGroups') as FormArray : null;
-  };
+  }
 
   constructor(private formBuilder: FormBuilder,
     private customFieldsService: CustomFieldsService,
@@ -99,16 +99,15 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
           this.belongingGroups = accessIdsWithGroups.filter(item => item.accessId.includes(this.groupsKey));
           this.searchForAccessItemsWorkbaskets();
         },
-          error => {
-            this.requestInProgressService.setRequestInProgress(false);
-            this.generalModalService.triggerMessage(
-              new MessageModal(
-                'There was error while retrieving your access ids with groups',
-                error
-              )
+        error => {
+          this.requestInProgressService.setRequestInProgress(false);
+          this.generalModalService.triggerMessage(
+            new MessageModal(
+              'There was error while retrieving your access ids with groups',
+              error
             )
-          }
-        )
+          )
+        })
     }
   }
 
@@ -129,20 +128,21 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
       this.AccessItemsForm ? this.AccessItemsForm.value.accessIdFilter : undefined,
       this.AccessItemsForm ? this.AccessItemsForm.value.workbasketKeyFilter : undefined,
       this.sortModel,
-      true)
+      true
+    )
       .subscribe((accessItemsResource: AccessItemsWorkbasketResource) => {
         this.setAccessItemsGroups(accessItemsResource ? accessItemsResource.accessItems : []);
         this.requestInProgressService.setRequestInProgress(false);
       },
-        error => {
-          this.requestInProgressService.setRequestInProgress(false);
-          this.generalModalService.triggerMessage(
-            new MessageModal(
-              'There was error while retrieving your access items',
-              error
-            )
-          );
-        })
+      error => {
+        this.requestInProgressService.setRequestInProgress(false);
+        this.generalModalService.triggerMessage(
+          new MessageModal(
+            'There was error while retrieving your access items',
+            error
+          )
+        );
+      })
 
   }
 
@@ -158,27 +158,28 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
   private onRemoveConfirmed() {
     this.requestInProgressService.setRequestInProgress(true);
     this.accessIdsService.removeAccessItemsPermissions(this.accessIdSelected)
-    .subscribe(
-      response => {
-        this.requestInProgressService.setRequestInProgress(false);
-        this.alertService.triggerAlert(
-          new AlertModel(
-            AlertType.SUCCESS,
-            `${this.accessIdSelected
-            } was removed successfully`
-          )
-        );
-        this.searchForAccessItemsWorkbaskets();
-    },
-    error => {
-      this.requestInProgressService.setRequestInProgress(false);
-      this.generalModalService.triggerMessage(
-        new MessageModal(
-          `You can't delete a group`,
-          error
-        )
+      .subscribe(
+        response => {
+          this.requestInProgressService.setRequestInProgress(false);
+          this.alertService.triggerAlert(
+            new AlertModel(
+              AlertType.SUCCESS,
+              `${this.accessIdSelected
+              } was removed successfully`
+            )
+          );
+          this.searchForAccessItemsWorkbaskets();
+        },
+        error => {
+          this.requestInProgressService.setRequestInProgress(false);
+          this.generalModalService.triggerMessage(
+            new MessageModal(
+              'You can\'t delete a group',
+              error
+            )
+          );
+        }
       );
-    });
   }
 
   private unSubscribe(subscription: Subscription): void {

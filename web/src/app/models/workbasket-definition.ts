@@ -3,7 +3,7 @@ import {Workbasket} from './workbasket';
 
 export class WorkbasketDefinition {
   constructor(distributionTargets: string[],
-              workbasketAccessItems: WorkbasketAccessItems[],
-              workbasket: Workbasket) {
+    workbasketAccessItems: WorkbasketAccessItems[],
+    workbasket: Workbasket) {
   }
 }

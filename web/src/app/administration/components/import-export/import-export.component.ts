@@ -33,7 +33,8 @@ export class ImportExportComponent implements OnInit {
     private generalModalService: GeneralModalService,
     private alertService: AlertService,
     public uploadservice: UploadService,
-    private importExportService: ImportExportService) {
+    private importExportService: ImportExportService
+  ) {
   }
 
   ngOnInit() {
@@ -51,9 +52,9 @@ export class ImportExportComponent implements OnInit {
   }
 
   uploadFile() {
-    const file = this.selectedFileInput.nativeElement.files[0],
-      formdata = new FormData(),
-      ajax = new XMLHttpRequest();
+    const file = this.selectedFileInput.nativeElement.files[0];
+    const formdata = new FormData();
+    const ajax = new XMLHttpRequest();
     if (!this.checkFormatFile(file)) { return false }
     formdata.append('file', file);
     ajax.upload.addEventListener('progress', this.progressHandler.bind(this), false);
@@ -61,12 +62,12 @@ export class ImportExportComponent implements OnInit {
     ajax.addEventListener('error', this.onFailedResponse.bind(this, ajax), false);
     ajax.onreadystatechange = this.onReadyStateChangeHandler.bind(this, ajax);
     if (this.currentSelection === TaskanaType.WORKBASKETS) {
-      ajax.open('POST', environment.taskanaRestUrl + '/v1/workbasket-definitions');
+      ajax.open('POST', `${environment.taskanaRestUrl}/v1/workbasket-definitions`);
     } else {
-      ajax.open('POST', environment.taskanaRestUrl + '/v1/classification-definitions');
+      ajax.open('POST', `${environment.taskanaRestUrl}/v1/classification-definitions`);
     }
     if (!environment.production) {
-        ajax.setRequestHeader('Authorization', 'Basic YWRtaW46YWRtaW4=');
+      ajax.setRequestHeader('Authorization', 'Basic YWRtaW46YWRtaW4=');
     }
     ajax.send(formdata);
     this.uploadservice.isInUse = true;
@@ -88,7 +89,7 @@ export class ImportExportComponent implements OnInit {
       default:
         file.value = '';
         this.generalModalService.triggerMessage(new MessageModal('Wrong format',
-          `This file format is not allowed! Please use a .json file.`));
+          'This file format is not allowed! Please use a .json file.'));
     }
     return check;
   }

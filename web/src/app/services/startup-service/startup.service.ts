@@ -15,7 +15,8 @@ export class StartupService {
     private customFieldsService: CustomFieldsService,
     private taskanaEngineService: TaskanaEngineService,
     private injector: Injector,
-    private window: WindowRefService) {
+    private window: WindowRefService
+  ) {
   }
 
   load(): Promise<any> {
@@ -28,27 +29,25 @@ export class StartupService {
     ).then(
       () => this.taskanaEngineService.getUserInformation()
     ).catch(error => {
-      this.window.nativeWindow.location.href = environment.taskanaRestUrl + '/login';
+      this.window.nativeWindow.location.href = `${environment.taskanaRestUrl}/login`;
     });
   }
 
   getEnvironmentFilePromise() {
     return this.httpClient.get<any>('environments/data-sources/environment-information.json').pipe(map(jsonFile => {
       if (jsonFile && environment.taskanaRestUrl === '') {
-        environment.taskanaRestUrl = jsonFile.taskanaRestUrl === '' ?
-          window.location.protocol + '//' + window.location.host : jsonFile.taskanaRestUrl;
+        environment.taskanaRestUrl = jsonFile.taskanaRestUrl === ''
+          ? `${window.location.protocol}//${window.location.host}` : jsonFile.taskanaRestUrl;
       }
 
       if (jsonFile && environment.taskanaLogoutUrl === '') {
-        environment.taskanaLogoutUrl = jsonFile.taskanaLogoutUrl === '' ?
-          environment.taskanaRestUrl + '/logout' : jsonFile.taskanaLogoutUrl;
+        environment.taskanaLogoutUrl = jsonFile.taskanaLogoutUrl === ''
+          ? `${environment.taskanaRestUrl}/logout` : jsonFile.taskanaLogoutUrl;
 
       }
       this.customFieldsService.initCustomFields('EN', jsonFile);
     })).toPromise()
-      .catch(() => {
-        return of(true)
-      });
+      .catch(() => of(true));
   }
 
   geCustomizedFieldsFilePromise() {
@@ -57,9 +56,7 @@ export class StartupService {
         this.customFieldsService.initCustomFields('EN', jsonFile);
       }
     })).toPromise()
-      .catch(() => {
-        return of(true)
-      });
+      .catch(() => of(true));
   }
 
   public get router(): Router {

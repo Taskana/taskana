@@ -55,7 +55,8 @@ export class TaskService {
       state,
       objRefTypeLike,
       objRefValueLike,
-      allPages))}`;
+      allPages
+    ))}`;
     return this.httpClient.get<TaskResource>(url);
   }
 
@@ -108,7 +109,8 @@ export class TaskService {
     state: string,
     objRefTypeLike: string,
     objRefValueLike: string,
-    allPages: boolean = false): QueryParametersModel {
+    allPages: boolean = false
+  ): QueryParametersModel {
 
     const parameters = new QueryParametersModel();
     parameters.WORKBASKET_ID = basketId;

@@ -16,14 +16,16 @@ export class TaskListComponent implements OnInit {
 
   @Input()
   tasks: Array<Task>;
+
   @Input()
   selectedId: string;
+
   @Output()
   selectedIdChange = new EventEmitter<string>();
 
   constructor(private router: Router,
-              private route: ActivatedRoute,
-              private workplaceService: WorkplaceService) {
+    private route: ActivatedRoute,
+    private workplaceService: WorkplaceService) {
   }
 
   ngOnInit() {

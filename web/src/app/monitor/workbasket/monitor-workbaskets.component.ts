@@ -28,9 +28,9 @@ export class MonitorWorkbasketsComponent implements OnInit {
   }
 
   getTitle(): string {
-    return this.showMonitorQueryPlannedDate ?
-      'Tasks grouped by workbasket, querying by planned date' :
-      'Tasks grouped by workbasket, querying by due date';
+    return this.showMonitorQueryPlannedDate
+      ? 'Tasks grouped by workbasket, querying by planned date'
+      : 'Tasks grouped by workbasket, querying by due date';
   }
 
   private switchGraphicShowed(monitorQueryType: MonitorQueryType) {

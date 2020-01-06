@@ -2,21 +2,21 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
 export class UploadService {
 
-    private currentProgressValue = new Subject<number>();
-    public isInUse = false;
+  private currentProgressValue = new Subject<number>();
+  public isInUse = false;
 
-    constructor() { }
+  constructor() { }
 
-    setCurrentProgressValue(value: number) {
-        this.currentProgressValue.next(value);
-    }
+  setCurrentProgressValue(value: number) {
+    this.currentProgressValue.next(value);
+  }
 
-    getCurrentProgressValue() {
-        return this.currentProgressValue.asObservable();
-    }
+  getCurrentProgressValue() {
+    return this.currentProgressValue.asObservable();
+  }
 
 }

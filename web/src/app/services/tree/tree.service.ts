@@ -4,16 +4,16 @@ import { Subject } from 'rxjs';
 @Injectable()
 export class TreeService {
 
-    public removedNodeId = new Subject<string>();
+  public removedNodeId = new Subject<string>();
 
-    constructor() { }
+  constructor() { }
 
-    setRemovedNodeId(value: string) {
-        this.removedNodeId.next(value);
-    }
+  setRemovedNodeId(value: string) {
+    this.removedNodeId.next(value);
+  }
 
-    getRemovedNodeId() {
-        return this.removedNodeId.asObservable();
-    }
+  getRemovedNodeId() {
+    return this.removedNodeId.asObservable();
+  }
 
 }

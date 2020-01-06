@@ -37,14 +37,14 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   private deleteTaskSubscription: Subscription;
 
   constructor(private route: ActivatedRoute,
-              private taskService: TaskService,
-              private workplaceService: WorkplaceService,
-              private router: Router,
-              private removeConfirmationService: RemoveConfirmationService,
-              private requestInProgressService: RequestInProgressService,
-              private alertService: AlertService,
-              private generalModalService: GeneralModalService,
-              private masterAndDetailService: MasterAndDetailService) {
+    private taskService: TaskService,
+    private workplaceService: WorkplaceService,
+    private router: Router,
+    private removeConfirmationService: RemoveConfirmationService,
+    private requestInProgressService: RequestInProgressService,
+    private alertService: AlertService,
+    private generalModalService: GeneralModalService,
+    private masterAndDetailService: MasterAndDetailService) {
   }
 
   ngOnInit() {
@@ -53,7 +53,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
       this.currentWorkbasket = workbasket;
     });
     this.routeSubscription = this.route.params.subscribe(params => {
-      this.currentId = params['id'];
+      this.currentId = params.id;
       // redirect if user enters through a deep-link
       if (!this.currentWorkbasket && this.currentId === 'new-task') {
         this.router.navigate(['']);
@@ -86,7 +86,8 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
         this.taskService.selectTask(task);
       }, err => {
         this.generalModalService.triggerMessage(
-          new MessageModal('An error occurred while fetching the task', err));
+          new MessageModal('An error occurred while fetching the task', err)
+        );
       });
     }
   }
@@ -112,10 +113,11 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
     this.deleteTaskSubscription = this.taskService.deleteTask(this.task).subscribe(() => {
       this.taskService.publishUpdatedTask();
       this.task = null;
-      this.router.navigate([`taskana/workplace/tasks`]);
+      this.router.navigate(['taskana/workplace/tasks']);
     }, err => {
       this.generalModalService.triggerMessage(
-        new MessageModal('An error occurred while deleting the task ', err));
+        new MessageModal('An error occurred while deleting the task ', err)
+      );
     });
   }
 
@@ -156,7 +158,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
       this.task = task;
       this.taskService.selectTask(this.task);
       this.taskService.publishUpdatedTask(task);
-      this.router.navigate(['../' + task.taskId], {relativeTo: this.route});
+      this.router.navigate([`../${task.taskId}`], {relativeTo: this.route});
     }, err => {
       this.requestInProgressService.setRequestInProgress(false);
       this.alertService.triggerAlert(new AlertModel(AlertType.DANGER, 'There was an error while creating a new task.'))

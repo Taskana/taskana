@@ -4,7 +4,7 @@ import { Subject, Observable } from 'rxjs';
 @Injectable()
 export class ImportExportService {
 
-    public importingFinished = new Subject<boolean>();
+  public importingFinished = new Subject<boolean>();
 
   constructor() { }
 

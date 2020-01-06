@@ -8,8 +8,10 @@ export class ProgressBarComponent implements OnInit, OnChanges {
 
   @Input()
   currentValue = 0;
+
   @Input()
   min = 0;
+
   @Input()
   max = 100;
 

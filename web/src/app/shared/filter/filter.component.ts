@@ -11,10 +11,10 @@ import { TaskanaType } from 'app/models/taskana-type';
 export class FilterComponent implements OnInit {
 
   @Input() allTypes: Map<string, string> = new Map([['ALL', 'All'], ['PERSONAL', 'Personal'], ['GROUP', 'Group'],
-  ['CLEARANCE', 'Clearance'], ['TOPIC', 'Topic']]);
+    ['CLEARANCE', 'Clearance'], ['TOPIC', 'Topic']]);
 
   @Input() allStates: Map<string, string> = new Map([['ALL', 'All'], ['READY', 'Ready'], ['CLAIMED', 'Claimed'],
-  ['COMPLETED', 'Completed']]);
+    ['COMPLETED', 'Completed']]);
 
   @Input() filterParams = { name: '', key: '', type: '', description: '', owner: '' };
 

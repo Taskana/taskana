@@ -26,7 +26,6 @@ import {
 } from './workbasket/monitor-workbasket-query-switcher/monitor-workbasket-query-switcher.component';
 
 
-
 const MODULES = [
   CommonModule,
   MonitorRoutingModule,

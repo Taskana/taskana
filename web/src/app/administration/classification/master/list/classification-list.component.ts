@@ -11,8 +11,8 @@ import {
   ClassificationCategoriesService
 } from 'app/shared/services/classifications/classification-categories.service';
 import { Pair } from 'app/models/pair';
-import { ClassificationDefinition } from '../../../../models/classification-definition';
 import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
+import { ClassificationDefinition } from '../../../../models/classification-definition';
 import {AlertModel, AlertType} from '../../../../models/alert';
 import {AlertService} from '../../../../services/alert/alert.service';
 
@@ -48,7 +48,8 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private categoryService: ClassificationCategoriesService,
     private importExportService: ImportExportService,
-    private alertService: AlertService) {
+    private alertService: AlertService
+  ) {
   }
 
   ngOnInit() {
@@ -62,10 +63,8 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
       this.performRequest();
     });
 
-    this.categoriesSubscription =
-      this.categoryService.getCategories(this.classificationTypeSelected).subscribe((categories: Array<string>) => {
-        this.categories = categories;
-      });
+    this.categoriesSubscription = this.categoryService.getCategories(this.classificationTypeSelected)
+      .subscribe((categories: Array<string>) => { this.categories = categories; });
     this.importingExportingSubscription = this.importExportService.getImportingFinished().subscribe((value: Boolean) => {
       this.performRequest(true);
     })

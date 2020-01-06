@@ -1,9 +1,9 @@
 import { TestBed, inject } from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
 
-import { HttpClientInterceptor } from './http-client-interceptor.service';
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
+import { HttpClientInterceptor } from './http-client-interceptor.service';
 
 describe('HttpExtensionService', () => {
   beforeEach(() => {

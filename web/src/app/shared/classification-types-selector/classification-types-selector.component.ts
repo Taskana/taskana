@@ -9,10 +9,13 @@ export class ClassificationTypesSelectorComponent implements OnInit {
 
   @Input()
   classificationTypes: Array<string> = [];
+
   @Input()
   classificationTypeSelected: string;
+
   @Output()
   classificationTypeSelectedChange = new EventEmitter<string>();
+
   @Output()
   classificationTypeChanged = new EventEmitter<string>();
 

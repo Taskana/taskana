@@ -26,11 +26,13 @@ export class MonitorWorkbasketDueDateComponent implements OnInit {
   lineChartOptions: any = {
     responsive: true
   };
+
   lineChartColors = ChartColorsDefinition.getColors();
 
   constructor(
     private restConnectorService: RestConnectorService,
-    private requestInProgressService: RequestInProgressService) {
+    private requestInProgressService: RequestInProgressService
+  ) {
   }
 
 

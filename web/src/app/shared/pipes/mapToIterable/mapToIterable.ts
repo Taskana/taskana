@@ -8,7 +8,7 @@ export class MapToIterable implements PipeTransform {
     const result = [];
     for (const key in dict) {
       if (dict.hasOwnProperty(key)) {
-        result.push({key: key, val: dict[key]});
+        result.push({key, val: dict[key]});
       }
     }
     return result;

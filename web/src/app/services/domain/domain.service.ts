@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable,  ReplaySubject } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { Observable, ReplaySubject } from 'rxjs';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 import { RequestInProgressService } from '../requestInProgress/request-in-progress.service';
 import { SelectedRouteService } from '../selected-route/selected-route';
 
 @Injectable()
 export class DomainService {
 
-  url = environment.taskanaRestUrl + '/v1/domains';
+  url = `${environment.taskanaRestUrl}/v1/domains`;
 
   private domainRestValue: Array<string> = new Array<string>();
   private domainValue: Array<string> = new Array<string>();
@@ -22,7 +22,8 @@ export class DomainService {
     private httpClient: HttpClient,
     private router: Router,
     private requestInProgressService: RequestInProgressService,
-    private selectedRouteService: SelectedRouteService) {
+    private selectedRouteService: SelectedRouteService
+  ) {
     this.selectedRouteService.getSelectedRoute().subscribe((value: string) => {
       if (value.indexOf('workbaskets') === 0) {
         this.hasMasterDomain = false
@@ -73,7 +74,7 @@ export class DomainService {
   /*
     This function should be called after getSelectedDomain inner subscriptions have been finished
    */
-   domainChangedComplete() {
+  domainChangedComplete() {
     this.requestInProgressService.setRequestInProgress(false);
   }
 
@@ -108,7 +109,7 @@ export class DomainService {
   private getNavigationUrl(): string {
     if (this.router.url.indexOf('workbaskets') !== -1) {
       return 'taskana/administration/workbaskets';
-    } else if (this.router.url.indexOf('classifications') !== -1) {
+    } if (this.router.url.indexOf('classifications') !== -1) {
       return 'taskana/administration/classifications';
     }
   }

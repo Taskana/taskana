@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {RestConnectorService} from '../services/restConnector/rest-connector.service';
 import {ReportData} from 'app/monitor/models/report-data';
+import {RestConnectorService} from '../services/restConnector/rest-connector.service';
 import {RequestInProgressService} from '../../services/requestInProgress/request-in-progress.service';
 
 @Component({
@@ -18,7 +18,8 @@ export class TasksComponent implements OnInit {
 
   constructor(
     private restConnectorService: RestConnectorService,
-    private requestInProgressService: RequestInProgressService) {
+    private requestInProgressService: RequestInProgressService
+  ) {
   }
 
   async ngOnInit() {

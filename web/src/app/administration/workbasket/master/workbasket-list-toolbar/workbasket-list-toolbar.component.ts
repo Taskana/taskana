@@ -27,6 +27,7 @@ export class WorkbasketListToolbarComponent implements OnInit {
   sortingFields = new Map([['name', 'Name'], ['key', 'Key'], ['description', 'Description'], ['owner', 'Owner'], ['type', 'Type']]);
   filteringTypes = new Map([['ALL', 'All'], ['PERSONAL', 'Personal'], ['GROUP', 'Group'],
     ['CLEARANCE', 'Clearance'], ['TOPIC', 'Topic']]);
+
   filterParams = {name: '', key: '', type: '', description: '', owner: ''};
   toolbarState = false;
   filterType = TaskanaType.WORKBASKETS;
@@ -34,7 +35,8 @@ export class WorkbasketListToolbarComponent implements OnInit {
   constructor(
     private workbasketService: WorkbasketService,
     private route: ActivatedRoute,
-    private router: Router) {
+    private router: Router
+  ) {
   }
 
   ngOnInit() {

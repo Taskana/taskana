@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {RestConnectorService} from 'app/monitor/services/restConnector/rest-connector.service';
-import {ReportData} from '../models/report-data';
 import {ChartData} from 'app/monitor/models/chart-data';
+import {ReportData} from '../models/report-data';
 import {ChartColorsDefinition} from '../models/chart-colors';
 import {RequestInProgressService} from '../../services/requestInProgress/request-in-progress.service';
 
@@ -21,11 +21,13 @@ export class ClassificationTasksComponent implements OnInit {
   lineChartOptions: any = {
     responsive: true
   };
+
   lineChartColors = ChartColorsDefinition.getColors();
 
   constructor(
     private restConnectorService: RestConnectorService,
-    private requestInProgressService: RequestInProgressService) {
+    private requestInProgressService: RequestInProgressService
+  ) {
   }
 
   async ngOnInit() {

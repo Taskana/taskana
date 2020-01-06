@@ -27,11 +27,13 @@ export class MonitorWorkbasketPlannedDateComponent implements OnInit {
     responsive: true,
     scales: {xAxes: [{}], yAxes: [{}]},
   };
+
   lineChartColors = ChartColorsDefinition.getColors();
 
   constructor(
     private restConnectorService: RestConnectorService,
-    private requestInProgressService: RequestInProgressService) {
+    private requestInProgressService: RequestInProgressService
+  ) {
   }
 
   async ngOnInit() {

@@ -8,8 +8,8 @@ import { AlertComponent } from './alert.component';
 describe('AlertComponent', () => {
   let component: AlertComponent;
   let fixture: ComponentFixture<AlertComponent>;
-  let debugElement,
-    alertService;
+  let debugElement;
+  let alertService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

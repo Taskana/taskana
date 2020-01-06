@@ -1,23 +1,24 @@
 import {TestBed, inject, getTestBed} from '@angular/core/testing';
 
-import {StartupService} from './startup.service'
 import {HttpClient, HttpClientModule} from '@angular/common/http';
+import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import {StartupService} from './startup.service'
 import {CustomFieldsService} from '../custom-fields/custom-fields.service';
 import {TaskanaEngineService} from '../taskana-engine/taskana-engine.service';
 import {WindowRefService} from '../window/window.service';
 import {environment} from '../../../environments/environment';
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 
 describe('StartupService', () => {
   const environmentFile = 'environments/data-sources/environment-information.json';
   const someRestUrl = 'someRestUrl';
   const someLogoutUrl = 'someLogoutUrl';
   const dummyEnvironmentInformation = {
-    'taskanaRestUrl': someRestUrl,
-    'taskanaLogoutUrl': someLogoutUrl
+    taskanaRestUrl: someRestUrl,
+    taskanaLogoutUrl: someLogoutUrl
   };
 
-  let httpMock, service;
+  let httpMock; let
+    service;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

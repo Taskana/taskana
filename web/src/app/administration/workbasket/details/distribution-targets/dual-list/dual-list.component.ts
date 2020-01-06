@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { WorkbasketSummary } from 'app/models/workbasket-summary';
 import { FilterModel } from 'app/models/filter';
-import { Side } from '../distribution-targets.component';
 import { expandDown } from 'app/shared/animations/expand.animation';
+import { Side } from '../distribution-targets.component';
 
 @Component({
   selector: 'taskana-dual-list',

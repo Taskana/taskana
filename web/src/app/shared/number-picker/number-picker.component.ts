@@ -26,7 +26,7 @@ export class NumberPickerComponent implements OnInit, ControlValueAccessor {
   // get accessor
   get value(): any {
     return this.innerValue;
-  };
+  }
 
   // set accessor including call the onchange callback
   set value(v: any) {
@@ -62,6 +62,7 @@ export class NumberPickerComponent implements OnInit, ControlValueAccessor {
   increase() {
     this.value++;
   }
+
   decrease() {
     this.value--;
   }

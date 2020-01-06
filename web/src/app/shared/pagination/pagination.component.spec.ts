@@ -3,9 +3,9 @@ import { SimpleChange } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from 'app/shared/shared.module';
 
-import { PaginationComponent } from './pagination.component';
 import { Page } from 'app/models/page';
 import { configureTests } from 'app/app.test.configuration';
+import { PaginationComponent } from './pagination.component';
 
 describe('PaginationComponent', () => {
   let component: PaginationComponent;

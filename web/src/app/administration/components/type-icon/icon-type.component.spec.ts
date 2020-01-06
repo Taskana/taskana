@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
-import { IconTypeComponent } from './icon-type.component';
 import { configureTests } from 'app/app.test.configuration';
+import { IconTypeComponent } from './icon-type.component';
 
 describe('IconTypeComponent', () => {
   let component: IconTypeComponent;

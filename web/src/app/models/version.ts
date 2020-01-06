@@ -1,6 +1,6 @@
 
 export class VersionModel {
-    constructor(
-        public version: string = ''
-    ) { };
+  constructor(
+    public version: string = ''
+  ) { }
 }

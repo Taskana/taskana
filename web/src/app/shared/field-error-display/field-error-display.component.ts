@@ -11,8 +11,10 @@ export class FieldErrorDisplayComponent implements OnInit {
 
   @Input()
   displayError: boolean;
+
   @Input()
   errorMessage: string;
+
   @Input()
   validationTrigger: boolean;
 

@@ -36,9 +36,10 @@ import { FormsValidatorService } from 'app/shared/services/forms/forms-validator
   styleUrls: ['./workbasket-information.component.scss']
 })
 export class WorkbasketInformationComponent
-  implements OnInit, OnChanges, OnDestroy {
+implements OnInit, OnChanges, OnDestroy {
   @Input()
   workbasket: Workbasket;
+
   workbasketClone: Workbasket;
   workbasketErrors;
   @Input()
@@ -52,18 +53,22 @@ export class WorkbasketInformationComponent
     'Owner',
     'workbaskets.information.owner'
   );
+
   custom1Field = this.customFieldsService.getCustomField(
     'Custom 1',
     'workbaskets.information.custom1'
   );
+
   custom2Field = this.customFieldsService.getCustomField(
     'Custom 2',
     'workbaskets.information.custom2'
   );
+
   custom3Field = this.customFieldsService.getCustomField(
     'Custom 3',
     'workbaskets.information.custom3'
   );
+
   custom4Field = this.customFieldsService.getCustomField(
     'Custom 4',
     'workbaskets.information.custom4'
@@ -138,7 +143,7 @@ export class WorkbasketInformationComponent
     this.removeConfirmationService.setRemoveConfirmation(
       this.onRemoveConfirmed.bind(this),
       `You are going to delete workbasket: ${
-      this.workbasket.key
+        this.workbasket.key
       }. Can you confirm this action?`
     );
   }
@@ -162,7 +167,7 @@ export class WorkbasketInformationComponent
             new AlertModel(
               AlertType.SUCCESS,
               `DistributionTarget for workbasketID: ${
-              this.workbasket.workbasketId
+                this.workbasket.workbasketId
               } was removed successfully`
             )
           );
@@ -171,7 +176,7 @@ export class WorkbasketInformationComponent
           this.generalModalService.triggerMessage(
             new MessageModal(
               `There was an error removing distribution target for ${
-              this.workbasket.workbasketId
+                this.workbasket.workbasketId
               }.`,
               error
             )
@@ -237,7 +242,7 @@ export class WorkbasketInformationComponent
         this.afterRequest();
         this.workbasketService.triggerWorkBasketSaved();
         this.workbasketService.selectWorkBasket(this.workbasket.workbasketId);
-        this.router.navigate(['../' + this.workbasket.workbasketId], {
+        this.router.navigate([`../${this.workbasket.workbasketId}`], {
           relativeTo: this.route
         });
         if (this.action === ACTION.COPY) {
@@ -285,7 +290,7 @@ export class WorkbasketInformationComponent
             );
           } else {
             this.alertService.triggerAlert(
-              new AlertModel(AlertType.SUCCESS, 'The Workbasket ' + this.workbasket.workbasketId + ' has been marked for deletion')
+              new AlertModel(AlertType.SUCCESS, `The Workbasket ${this.workbasket.workbasketId} has been marked for deletion`)
             );
           }
           this.router.navigate(['taskana/administration/workbaskets']);

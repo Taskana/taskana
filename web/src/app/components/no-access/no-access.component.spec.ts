@@ -1,10 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NoAccessComponent } from './no-access.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
 import { configureTests } from 'app/app.test.configuration';
+import { NoAccessComponent } from './no-access.component';
 
 describe('NoAccessComponent', () => {
   let component: NoAccessComponent;

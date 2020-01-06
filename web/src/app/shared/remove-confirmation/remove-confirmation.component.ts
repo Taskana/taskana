@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
-declare var $: any;
+
+declare let $: any;
 
 @Component({
   selector: 'taskana-remove-confirmation',

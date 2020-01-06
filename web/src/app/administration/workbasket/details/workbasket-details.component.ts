@@ -4,13 +4,13 @@ import { Subscription } from 'rxjs';
 
 import { Workbasket } from 'app/models/workbasket';
 import { ACTION } from 'app/models/action';
-import { MessageModal } from '../../../models/message-modal';
 
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service'
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service'
 import { DomainService } from 'app/services/domain/domain.service';
-import { GeneralModalService } from '../../../services/general-modal/general-modal.service';
 import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
+import { GeneralModalService } from '../../../services/general-modal/general-modal.service';
+import { MessageModal } from '../../../models/message-modal';
 
 @Component({
   selector: 'taskana-workbasket-details',
@@ -43,7 +43,6 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
     private importExportService: ImportExportService) { }
 
 
-
   ngOnInit() {
     this.workbasketSelectedSubscription = this.service.getSelectedWorkBasket().subscribe(workbasketIdSelected => {
       delete this.workbasket;
@@ -51,7 +50,7 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
     });
 
     this.routeSubscription = this.route.params.subscribe(params => {
-      const id = params['id'];
+      const {id} = params;
       delete this.action;
       if (id) {
         if (id.indexOf('new-workbasket') !== -1) {
@@ -117,7 +116,8 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
         this.checkDomainAndRedirect();
       }, err => {
         this.generalModalService.triggerMessage(
-          new MessageModal('An error occurred while fetching the workbasket', err));
+          new MessageModal('An error occurred while fetching the workbasket', err)
+        );
       });
     }
   }

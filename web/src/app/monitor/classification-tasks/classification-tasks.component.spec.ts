@@ -8,9 +8,9 @@ describe('ClassificationTasksComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ClassificationTasksComponent ]
+      declarations: [ClassificationTasksComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

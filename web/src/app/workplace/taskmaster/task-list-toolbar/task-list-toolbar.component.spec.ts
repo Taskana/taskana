@@ -1,4 +1,3 @@
-import { TaskListToolbarComponent } from './task-list-toolbar.component';
 import { ComponentFixture, async, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { TypeaheadModule, ComponentLoaderFactory, PositioningService } from 'ngx-bootstrap';
@@ -18,6 +17,7 @@ import { RequestInProgressService } from 'app/services/requestInProgress/request
 import { SelectedRouteService } from 'app/services/selected-route/selected-route';
 import { WorkplaceService } from 'app/workplace/services/workplace.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TaskListToolbarComponent } from './task-list-toolbar.component';
 
 @Component({
   selector: 'taskana-dummy-detail',
@@ -44,7 +44,7 @@ xdescribe('TasklistToolbarComponent', () => {
       providers: [TaskService, HttpClient, WorkbasketService, DomainService, RequestInProgressService,
         SelectedRouteService, WorkplaceService, ComponentLoaderFactory, PositioningService]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

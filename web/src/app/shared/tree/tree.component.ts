@@ -13,10 +13,10 @@ import {
 import {TreeNodeModel} from 'app/models/tree-node';
 
 import {ITreeOptions, KEYS, TreeComponent, TreeNode} from 'angular-tree-component';
-import {TreeService} from '../../services/tree/tree.service';
 import {ClassificationCategoriesService} from 'app/shared/services/classifications/classification-categories.service';
 import {Pair} from 'app/models/pair';
 import {Subscription} from 'rxjs';
+import {TreeService} from '../../services/tree/tree.service';
 import {Classification} from '../../models/classification';
 import {ClassificationDefinition} from '../../models/classification-definition';
 import {ClassificationsService} from '../services/classifications/classifications.service';
@@ -73,7 +73,8 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
     private treeService: TreeService,
     private categoryService: ClassificationCategoriesService,
     private elementRef: ElementRef,
-    private classificationsService: ClassificationsService) {
+    private classificationsService: ClassificationsService
+  ) {
   }
 
   ngOnInit() {
@@ -92,8 +93,8 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
       this.unSelectActiveNode();
     }
 
-    if (this.filterTextOld !== this.filterText ||
-      this.filterIconOld !== this.filterIcon) {
+    if (this.filterTextOld !== this.filterText
+      || this.filterIconOld !== this.filterIcon) {
       this.filterIconOld = this.filterIcon;
       this.filterTextOld = this.filterText;
       this.filterNodes(this.filterText ? this.filterText : '', this.filterIcon);
@@ -102,7 +103,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
   }
 
   onActivate(treeNode: any) {
-    this.selectNodeIdChanged.emit(treeNode.node.data.classificationId + '');
+    this.selectNodeIdChanged.emit(`${treeNode.node.data.classificationId}`);
   }
 
   onDeactivate(treeNode: any) {
@@ -163,10 +164,8 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
   }
 
   private filterNodes(text, iconText) {
-    this.tree.treeModel.filterNodes((node) => {
-      return this.checkNameAndKey(node, text) &&
-        this.checkIcon(node, iconText);
-    });
+    this.tree.treeModel.filterNodes((node) => this.checkNameAndKey(node, text)
+        && this.checkIcon(node, iconText));
   }
 
   private checkNameAndKey(node: any, text: string): boolean {
@@ -186,11 +185,11 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
   }
 
   private checkValidElements(event): boolean {
-    return (this.elementRef.nativeElement.contains(event.target) ||
-      this.elementRef.nativeElement === event.target) &&
-      (event.target.localName === 'tree-viewport' ||
-        event.target.localName === 'tree-viewport' ||
-        event.target.localName === 'taskana-tree')
+    return (this.elementRef.nativeElement.contains(event.target)
+      || this.elementRef.nativeElement === event.target)
+      && (event.target.localName === 'tree-viewport'
+        || event.target.localName === 'tree-viewport'
+        || event.target.localName === 'taskana-tree')
   }
 
   private getClassification(classificationId: string): Promise<ClassificationDefinition> {

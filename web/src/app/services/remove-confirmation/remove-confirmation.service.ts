@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject ,  Observable } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 
 @Injectable()
 export class RemoveConfirmationService {
@@ -11,7 +11,7 @@ export class RemoveConfirmationService {
 
   setRemoveConfirmation(callback: Function, message: string) {
     this.removeConfirmationCallback = callback;
-    this.removeConfirmationCallbackSubject.next({ callback: callback, message: message });
+    this.removeConfirmationCallbackSubject.next({ callback, message });
   }
 
   getRemoveConfirmation(): Observable<{ callback: Function, message: string }> {

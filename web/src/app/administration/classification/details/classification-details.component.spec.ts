@@ -9,14 +9,11 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { configureTests } from 'app/app.test.configuration';
 
 
-import { ClassificationDetailsComponent } from './classification-details.component';
 import { ClassificationDefinition } from 'app/models/classification-definition';
 import { LinksClassification } from 'app/models/links-classfication';
 import { Pair } from 'app/models/pair';
 
-// tslint:disable:max-line-length
 import { ClassificationCategoriesService } from 'app/shared/services/classifications/classification-categories.service';
-// tslint:enable:max-line-length
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
@@ -27,6 +24,7 @@ import { TreeService } from 'app/services/tree/tree.service';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
 import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
+import { ClassificationDetailsComponent } from './classification-details.component';
 
 @Component({
   selector: 'taskana-dummy-detail',
@@ -44,8 +42,9 @@ describe('ClassificationDetailsComponent', () => {
   let fixture: ComponentFixture<ClassificationDetailsComponent>;
   const treeNodes: Array<TreeNodeModel> = new Array(new TreeNodeModel());
 
-  let classificationsService, classificationCategoriesService,
-    treeService, removeConfirmationService;
+  let classificationsService; let classificationCategoriesService;
+  let treeService; let
+    removeConfirmationService;
 
   beforeEach(done => {
     const configure = (testBed: TestBed) => {
@@ -68,7 +67,7 @@ describe('ClassificationDetailsComponent', () => {
       spyOn(classificationsService, 'deleteClassification').and.returnValue(of(true));
       spyOn(classificationCategoriesService, 'getCategoryIcon').and.returnValue(new Pair('assets/icons/categories/external.svg'));
       component.classification = new ClassificationDefinition('id1');
-      component.classification._links = new LinksClassification({ 'self': '' });
+      component.classification._links = new LinksClassification({ self: '' });
       treeService = TestBed.get(TreeService);
       fixture.detectChanges();
       done();

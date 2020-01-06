@@ -7,8 +7,8 @@ import { BusinessAdminGuard } from 'app/guards/business-admin.guard';
 import { MonitorGuard } from 'app/guards/monitor.guard';
 import { WindowRefService } from 'app/services/window/window.service';
 import { UserGuard } from 'app/guards/user.guard';
-import { TaskanaEngineService } from '../../services/taskana-engine/taskana-engine.service';
 import { expandRight } from 'app/shared/animations/expand.animation';
+import { TaskanaEngineService } from '../../services/taskana-engine/taskana-engine.service';
 @Component({
   selector: 'taskana-nav-bar',
   templateUrl: './nav-bar.component.html',
@@ -50,7 +50,8 @@ export class NavBarComponent implements OnInit, OnDestroy {
     private selectedRouteService: SelectedRouteService,
     private domainService: DomainService,
     private taskanaEngineService: TaskanaEngineService,
-    private window: WindowRefService) { }
+    private window: WindowRefService
+  ) { }
 
   ngOnInit() {
     this.selectedRouteSubscription = this.selectedRouteService.getSelectedRoute().subscribe((value: string) => {

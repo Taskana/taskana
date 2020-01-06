@@ -10,6 +10,7 @@ export class MonitorWorkbasketQuerySwitcherComponent implements OnInit {
 
   @Output()
   queryChanged = new EventEmitter<MonitorQueryType>();
+
   selectedChartType: MonitorQueryType;
   monitorQueryPlannedDateType = MonitorQueryType.PlannedDate;
   monitorQueryDueDateType = MonitorQueryType.DueDate;

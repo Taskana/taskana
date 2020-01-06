@@ -29,10 +29,13 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 
   @Input()
   workbasket: Workbasket;
+
   @Input()
   action: string;
+
   @Input()
   active: string;
+
   badgeMessage = '';
 
   accessIdField = this.customFieldsService.getCustomField('Owner', 'workbaskets.access-items.accessId');
@@ -61,21 +64,22 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
     accessItemsGroups: this.formBuilder.array([
     ])
   });
+
   toogleValidationAccessIdMap = new Map<number, boolean>();
   private initialized = false;
 
   setAccessItemsGroups(accessItems: Array<WorkbasketAccessItems>) {
     const AccessItemsFormGroups = accessItems.map(accessItem => this.formBuilder.group(accessItem));
     AccessItemsFormGroups.map(accessItemGroup => {
-      accessItemGroup.controls['accessId'].setValidators(Validators.required);
+      accessItemGroup.controls.accessId.setValidators(Validators.required);
     });
     const AccessItemsFormArray = this.formBuilder.array(AccessItemsFormGroups);
     this.AccessItemsForm.setControl('accessItemsGroups', AccessItemsFormArray);
-  };
+  }
 
   get accessItemsGroups(): FormArray {
     return this.AccessItemsForm.get('accessItemsGroups') as FormArray;
-  };
+  }
 
   constructor(
     private workbasketService: WorkbasketService,
@@ -85,7 +89,8 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
     private requestInProgressService: RequestInProgressService,
     private customFieldsService: CustomFieldsService,
     private formBuilder: FormBuilder,
-    private formsValidatorService: FormsValidatorService) {
+    private formsValidatorService: FormsValidatorService
+  ) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -127,7 +132,7 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
     workbasketAccessItems.workbasketId = this.workbasket.workbasketId;
     workbasketAccessItems.permRead = true;
     const newForm = this.formBuilder.group(workbasketAccessItems);
-    newForm.controls['accessId'].setValidators(Validators.required);
+    newForm.controls.accessId.setValidators(Validators.required);
     this.accessItemsGroups.push(newForm);
     this.accessItemsClone.push(workbasketAccessItems);
   }
@@ -176,15 +181,17 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
   private onSave() {
     this.requestInProgressService.setRequestInProgress(true);
     this.workbasketService.updateWorkBasketAccessItem(
-      this.accessItemsResource._links.self.href, this.AccessItemsForm.value.accessItemsGroups)
+      this.accessItemsResource._links.self.href, this.AccessItemsForm.value.accessItemsGroups
+    )
       .subscribe(response => {
         this.accessItemsClone = this.cloneAccessItems(this.AccessItemsForm.value.accessItemsGroups);
         this.accessItemsResetClone = this.cloneAccessItems(this.AccessItemsForm.value.accessItemsGroups);
         this.alertService.triggerAlert(new AlertModel(
-          AlertType.SUCCESS, `Workbasket  ${this.workbasket.name} Access items were saved successfully`));
+          AlertType.SUCCESS, `Workbasket  ${this.workbasket.name} Access items were saved successfully`
+        ));
         this.requestInProgressService.setRequestInProgress(false);
       }, error => {
-        this.generalModalService.triggerMessage(new MessageModal(`There was error while saving your workbasket's access items`, error))
+        this.generalModalService.triggerMessage(new MessageModal('There was error while saving your workbasket\'s access items', error))
         this.requestInProgressService.setRequestInProgress(false);
       })
   }
@@ -197,9 +204,10 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 
   private cloneAccessItems(inputaccessItem): Array<WorkbasketAccessItems> {
     return this.AccessItemsForm.value.accessItemsGroups.map(
-      (accessItems: WorkbasketAccessItems) => Object.assign({}, accessItems)
+      (accessItems: WorkbasketAccessItems) => ({ ...accessItems})
     );
   }
+
   private setWorkbasketIdForCopy(workbasketId: string) {
     this.accessItemsGroups.value.forEach(element => {
       delete element.accessItemId;

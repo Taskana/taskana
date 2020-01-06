@@ -12,7 +12,8 @@ export class FormsValidatorService {
 
   constructor(
     private alertService: AlertService,
-    private accessIdsService: AccessIdsService) {
+    private accessIdsService: AccessIdsService
+  ) {
   }
 
   public async validateFormInformation(form: NgForm, toogleValidationMap: Map<any, boolean>): Promise<any> {
@@ -36,16 +37,16 @@ export class FormsValidatorService {
       if (form.form.controls[this.workbasketOwner]) {
         this.accessIdsService.getAccessItemsInformation(form.form.controls[this.workbasketOwner].value).subscribe(items => {
           const validationState = toogleValidationMap.get(this.workbasketOwner);
-          validationState ? toogleValidationMap.set(this.workbasketOwner, !validationState) :
-            toogleValidationMap.set(this.workbasketOwner, true);
-          items.find(item => item.accessId === form.form.controls[this.workbasketOwner].value) ?
-            resolve(new ResponseOwner({ valid: true, field: ownerString })) :
-            resolve(new ResponseOwner({ valid: false, field: ownerString }));
+          validationState ? toogleValidationMap.set(this.workbasketOwner, !validationState)
+            : toogleValidationMap.set(this.workbasketOwner, true);
+          items.find(item => item.accessId === form.form.controls[this.workbasketOwner].value)
+            ? resolve(new ResponseOwner({ valid: true, field: ownerString }))
+            : resolve(new ResponseOwner({ valid: false, field: ownerString }));
         });
       } else {
         const validationState = toogleValidationMap.get(form.form.controls[this.workbasketOwner]);
-        validationState ? toogleValidationMap.set(this.workbasketOwner, !validationState) :
-          toogleValidationMap.set(this.workbasketOwner, true);
+        validationState ? toogleValidationMap.set(this.workbasketOwner, !validationState)
+          : toogleValidationMap.set(this.workbasketOwner, true);
         resolve(new ResponseOwner({ valid: true, field: ownerString }));
       }
     });
@@ -54,7 +55,7 @@ export class FormsValidatorService {
     const responseOwner = new ResponseOwner(values[1]);
     if (!(values[0] && responseOwner.valid)) {
       if (!responseOwner.valid) {
-        this.alertService.triggerAlert(new AlertModel(AlertType.WARNING, 'The ' + responseOwner.field + ' introduced is not valid.'));
+        this.alertService.triggerAlert(new AlertModel(AlertType.WARNING, `The ${responseOwner.field} introduced is not valid.`));
       } else {
         this.alertService.triggerAlert(new AlertModel(AlertType.WARNING, 'There are some empty fields which are required.'));
       }
@@ -68,12 +69,12 @@ export class FormsValidatorService {
     for (let i = 0; i < form.length; i++) {
       ownerPromise.push(new Promise((resolve, reject) => {
         const validationState = toogleValidationAccessIdMap.get(i);
-        validationState ? toogleValidationAccessIdMap.set(i, !validationState) :
-          toogleValidationAccessIdMap.set(i, true);
-        this.accessIdsService.getAccessItemsInformation(form.controls[i].value['accessId']).subscribe(items => {
-          items.length > 0 ?
-            resolve(new ResponseOwner({ valid: true, field: 'access id' })) :
-            resolve(new ResponseOwner({ valid: false, field: 'access id' }));
+        validationState ? toogleValidationAccessIdMap.set(i, !validationState)
+          : toogleValidationAccessIdMap.set(i, true);
+        this.accessIdsService.getAccessItemsInformation(form.controls[i].value.accessId).subscribe(items => {
+          items.length > 0
+            ? resolve(new ResponseOwner({ valid: true, field: 'access id' }))
+            : resolve(new ResponseOwner({ valid: false, field: 'access id' }));
         })
       }));
     }
@@ -86,7 +87,7 @@ export class FormsValidatorService {
       result = result && responseOwner.valid;
     }
     if (!result) {
-      this.alertService.triggerAlert(new AlertModel(AlertType.WARNING, 'The ' + responseOwner.field + ' introduced is not valid.'));
+      this.alertService.triggerAlert(new AlertModel(AlertType.WARNING, `The ${responseOwner.field} introduced is not valid.`));
     }
     return result;
   }
@@ -98,8 +99,8 @@ export class FormsValidatorService {
     if (!this.formSubmitAttempt) {
       return true;
     }
-    return (this.formSubmitAttempt && ngForm.form.controls[field].valid) ||
-      (ngForm.form.controls[field].touched && ngForm.form.controls[field].valid);
+    return (this.formSubmitAttempt && ngForm.form.controls[field].valid)
+      || (ngForm.form.controls[field].touched && ngForm.form.controls[field].valid);
   }
 }
 

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RemoveConfirmationComponent } from './remove-confirmation.component';
 import { configureTests } from 'app/app.test.configuration';
+import { RemoveConfirmationComponent } from './remove-confirmation.component';
 import { RemoveConfirmationService } from '../../services/remove-confirmation/remove-confirmation.service';
 
 describe('RemoveConfirmationComponent', () => {

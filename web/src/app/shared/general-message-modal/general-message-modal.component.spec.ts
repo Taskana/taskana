@@ -8,9 +8,9 @@ describe('GeneralMessageModalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GeneralMessageModalComponent ]
+      declarations: [GeneralMessageModalComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
