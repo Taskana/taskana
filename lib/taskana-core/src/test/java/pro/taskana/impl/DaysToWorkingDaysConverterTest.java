@@ -31,19 +31,6 @@ class DaysToWorkingDaysConverterTest {
     }
 
     @Test
-    void testInitializeForDifferentReportLineItemDefinitions() throws InvalidArgumentException {
-        DaysToWorkingDaysConverter instance1 = DaysToWorkingDaysConverter
-            .initialize(getShortListOfColumnHeaders(), Instant.parse("2018-02-03T00:00:00.000Z"));
-        DaysToWorkingDaysConverter instance2 = DaysToWorkingDaysConverter
-            .initialize(getShortListOfColumnHeaders(), Instant.parse("2018-02-03T00:00:00.000Z"));
-        DaysToWorkingDaysConverter instance3 = DaysToWorkingDaysConverter
-            .initialize(getLargeListOfColumnHeaders(), Instant.parse("2018-02-03T00:00:00.000Z"));
-
-        assertEquals(instance1, instance2);
-        assertNotEquals(instance1, instance3);
-    }
-
-    @Test
     void testConvertWorkingDaysToDaysForTasks() throws InvalidArgumentException {
         List<TimeIntervalColumnHeader> reportItems = singletonList(new TimeIntervalColumnHeader(0));
         Instant thursday0201 = Instant.parse("2018-02-01T07:00:00.000Z");

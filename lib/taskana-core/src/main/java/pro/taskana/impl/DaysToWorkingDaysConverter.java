@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
@@ -288,25 +287,6 @@ public final class DaysToWorkingDaysConverter {
             + ", dateCreated=" + dateCreated
             + ", easterSunday=" + easterSunday
             + '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        DaysToWorkingDaysConverter that = (DaysToWorkingDaysConverter) o;
-        return positiveDaysToWorkingDays.equals(that.positiveDaysToWorkingDays)
-            && negativeDaysToWorkingDays.equals(that.negativeDaysToWorkingDays)
-            && dateCreated.equals(that.dateCreated);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(positiveDaysToWorkingDays, negativeDaysToWorkingDays, dateCreated);
     }
 
     /**
