@@ -2,11 +2,11 @@ package acceptance.taskrouting;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import acceptance.AbstractAccTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import acceptance.AbstractAccTest;
 import pro.taskana.Task;
 import pro.taskana.TaskService;
 import pro.taskana.exceptions.ClassificationNotFoundException;
@@ -19,54 +19,62 @@ import pro.taskana.impl.TaskImpl;
 import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
-/**
- * Acceptance test for all "create task" scenarios.
- */
+/** Acceptance test for all "create task" scenarios. */
 @ExtendWith(JAASExtension.class)
 class TaskRoutingAccTest extends AbstractAccTest {
 
-    @WithAccessId(userName = "admin", groupNames = {"group_1"})
-    @Test
-    void testCreateTaskWithoutWorkbasketAndVoidNewTaskMethod()
-        throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-        TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException {
-        TaskService taskService = taskanaEngine.getTaskService();
+  @WithAccessId(
+      userName = "admin",
+      groupNames = {"group_1"})
+  @Test
+  void testCreateTaskWithoutWorkbasketAndVoidNewTaskMethod()
+      throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
+          TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException {
+    TaskService taskService = taskanaEngine.getTaskService();
 
-        Task newTask = taskService.newTask();
-        newTask.setClassificationKey("L10303");
-        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-        final Task taskToCreate = newTask;
-        Assertions.assertThrows(InvalidArgumentException.class, () -> taskService.createTask(taskToCreate));
-        ((TaskImpl) taskToCreate).setDomain("DOMAIN_C");
-        Assertions.assertThrows(InvalidArgumentException.class, () -> taskService.createTask(taskToCreate));
-        ((TaskImpl) taskToCreate).setDomain("DOMAIN_B");
-        Task createdTask = taskService.createTask(taskToCreate);
-        assertEquals("WBI:100000000000000000000000000000000011", createdTask.getWorkbasketSummary().getId());
-    }
+    Task newTask = taskService.newTask();
+    newTask.setClassificationKey("L10303");
+    newTask.setPrimaryObjRef(
+        createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+    final Task taskToCreate = newTask;
+    Assertions.assertThrows(
+        InvalidArgumentException.class, () -> taskService.createTask(taskToCreate));
+    ((TaskImpl) taskToCreate).setDomain("DOMAIN_C");
+    Assertions.assertThrows(
+        InvalidArgumentException.class, () -> taskService.createTask(taskToCreate));
+    ((TaskImpl) taskToCreate).setDomain("DOMAIN_B");
+    Task createdTask = taskService.createTask(taskToCreate);
+    assertEquals(
+        "WBI:100000000000000000000000000000000011", createdTask.getWorkbasketSummary().getId());
+  }
 
-    @WithAccessId(userName = "admin", groupNames = {"group_1"})
-    @Test
-    void testCreateTaskWithNullWorkbasket()
-        throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-        TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException {
-        TaskImpl createdTaskA = createTask("DOMAIN_A", "L12010");
-        assertEquals("WBI:100000000000000000000000000000000001", createdTaskA.getWorkbasketSummary().getId());
-        TaskImpl createdTaskB = createTask("DOMAIN_B", "T21001");
-        assertEquals("WBI:100000000000000000000000000000000011", createdTaskB.getWorkbasketSummary().getId());
-        Assertions.assertThrows(InvalidArgumentException.class, () -> createTask(null, "L12010"));
-    }
+  @WithAccessId(
+      userName = "admin",
+      groupNames = {"group_1"})
+  @Test
+  void testCreateTaskWithNullWorkbasket()
+      throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
+          TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException {
+    TaskImpl createdTaskA = createTask("DOMAIN_A", "L12010");
+    assertEquals(
+        "WBI:100000000000000000000000000000000001", createdTaskA.getWorkbasketSummary().getId());
+    TaskImpl createdTaskB = createTask("DOMAIN_B", "T21001");
+    assertEquals(
+        "WBI:100000000000000000000000000000000011", createdTaskB.getWorkbasketSummary().getId());
+    Assertions.assertThrows(InvalidArgumentException.class, () -> createTask(null, "L12010"));
+  }
 
-    private TaskImpl createTask(String domain, String classificationKey)
-        throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-        TaskAlreadyExistException, InvalidArgumentException {
-        TaskService taskService = taskanaEngine.getTaskService();
+  private TaskImpl createTask(String domain, String classificationKey)
+      throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
+          TaskAlreadyExistException, InvalidArgumentException {
+    TaskService taskService = taskanaEngine.getTaskService();
 
-        Task newTask = taskService.newTask(null, domain);
-        newTask.setClassificationKey(classificationKey);
+    Task newTask = taskService.newTask(null, domain);
+    newTask.setClassificationKey(classificationKey);
 
-        newTask.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-        TaskImpl createdTask = (TaskImpl) taskService.createTask(newTask);
-        return createdTask;
-    }
-
+    newTask.setPrimaryObjRef(
+        createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+    TaskImpl createdTask = (TaskImpl) taskService.createTask(newTask);
+    return createdTask;
+  }
 }

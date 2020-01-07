@@ -16,42 +16,49 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import pro.taskana.rest.Mapping;
 
-/**
- * Test ClassificationDefinitionControlller.
- */
+/** Test ClassificationDefinitionControlller. */
 class ClassificationDefinitionControllerRestDocumentation extends BaseRestDocumentation {
 
-    private FieldDescriptor[] classificationDefinitionsFieldDescriptors;
+  private FieldDescriptor[] classificationDefinitionsFieldDescriptors;
 
-    @BeforeEach
-    void setUp() {
+  @BeforeEach
+  void setUp() {
 
-        classificationDefinitionsFieldDescriptors = new FieldDescriptor[] {
-            subsectionWithPath("[]").description("An array of <<ClassificationResource, classifications>>")
+    classificationDefinitionsFieldDescriptors =
+        new FieldDescriptor[] {
+          subsectionWithPath("[]")
+              .description("An array of <<ClassificationResource, classifications>>")
         };
-    }
+  }
 
-    @Test
-    void exportAllClassificationDefinitions() throws Exception {
-        this.mockMvc.perform(RestDocumentationRequestBuilders
-            .get(restHelper.toUrl(Mapping.URL_CLASSIFICATIONDEFINITION))
-            .accept("application/json")
-            .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
-            .andExpect(MockMvcResultMatchers.status().isOk())
-            .andDo(MockMvcRestDocumentation.document("ExportClassificationDefinitionsDocTest",
+  @Test
+  void exportAllClassificationDefinitions() throws Exception {
+    this.mockMvc
+        .perform(
+            RestDocumentationRequestBuilders.get(
+                    restHelper.toUrl(Mapping.URL_CLASSIFICATIONDEFINITION))
+                .accept("application/json")
+                .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
+        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andDo(
+            MockMvcRestDocumentation.document(
+                "ExportClassificationDefinitionsDocTest",
                 responseFields(classificationDefinitionsFieldDescriptors)));
-    }
+  }
 
-    @Test
-    void importClassificationDefinitions() throws Exception {
-        String definitionString = "[{\"key\":\"Key0815\", \"domain\":\"DOMAIN_B\"}]";
+  @Test
+  void importClassificationDefinitions() throws Exception {
+    String definitionString = "[{\"key\":\"Key0815\", \"domain\":\"DOMAIN_B\"}]";
 
-        this.mockMvc.perform(multipart(restHelper.toUrl(Mapping.URL_CLASSIFICATIONDEFINITION))
-            .file("file",
-                definitionString.getBytes())
-            .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
-            .andExpect(MockMvcResultMatchers.status().isNoContent())
-            .andDo(document("ImportClassificationDefinitions", requestParts(
-                partWithName("file").description("The file to upload"))));
-    }
+    this.mockMvc
+        .perform(
+            multipart(restHelper.toUrl(Mapping.URL_CLASSIFICATIONDEFINITION))
+                .file("file", definitionString.getBytes())
+                .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
+        .andExpect(MockMvcResultMatchers.status().isNoContent())
+        .andDo(
+            document(
+                "ImportClassificationDefinitions",
+                requestParts(partWithName("file").description("The file to upload"))));
+  }
 }

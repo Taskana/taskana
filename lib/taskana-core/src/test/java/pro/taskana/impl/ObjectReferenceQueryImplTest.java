@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,55 +23,59 @@ import pro.taskana.ObjectReference;
 @ExtendWith(MockitoExtension.class)
 class ObjectReferenceQueryImplTest {
 
-    ObjectReferenceQueryImpl objectReferenceQueryImpl;
+  ObjectReferenceQueryImpl objectReferenceQueryImpl;
 
-    @Mock
-    InternalTaskanaEngine taskanaEngine;
+  @Mock InternalTaskanaEngine taskanaEngine;
 
-    @Mock
-    SqlSession sqlSession;
+  @Mock SqlSession sqlSession;
 
-    @BeforeEach
-    void setup() {
-        objectReferenceQueryImpl = new ObjectReferenceQueryImpl(taskanaEngine);
-    }
+  @BeforeEach
+  void setup() {
+    objectReferenceQueryImpl = new ObjectReferenceQueryImpl(taskanaEngine);
+  }
 
-    @Test
-    void should_ReturnList_when_BuilderIsUsed() {
-        when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
-        when(sqlSession.selectList(any(), any())).thenReturn(new ArrayList<>());
+  @Test
+  void should_ReturnList_when_BuilderIsUsed() {
+    when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
+    when(sqlSession.selectList(any(), any())).thenReturn(new ArrayList<>());
 
-        List<ObjectReference> result = objectReferenceQueryImpl.valueIn("test", "asd", "blubber")
+    List<ObjectReference> result =
+        objectReferenceQueryImpl
+            .valueIn("test", "asd", "blubber")
             .typeIn("cool", "bla")
             .systemInstanceIn("1", "2")
             .systemIn("superId")
             .list();
-        assertNotNull(result);
-    }
+    assertNotNull(result);
+  }
 
-    @Test
-    void should_ReturnListWithOffset_when_BuilderIsUsed() {
-        when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
-        when(sqlSession.selectList(any(), any(), any())).thenReturn(new ArrayList<>());
+  @Test
+  void should_ReturnListWithOffset_when_BuilderIsUsed() {
+    when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
+    when(sqlSession.selectList(any(), any(), any())).thenReturn(new ArrayList<>());
 
-        List<ObjectReference> result = objectReferenceQueryImpl.valueIn("test", "asd", "blubber")
+    List<ObjectReference> result =
+        objectReferenceQueryImpl
+            .valueIn("test", "asd", "blubber")
             .typeIn("cool", "bla")
             .systemInstanceIn("1", "2")
             .systemIn("superId")
             .list(1, 1);
-        assertNotNull(result);
-    }
+    assertNotNull(result);
+  }
 
-    @Test
-    void should_ReturnOneItem_when_BuilderIsUsed() {
-        when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
-        when(sqlSession.selectOne(any(), any())).thenReturn(new ObjectReference());
+  @Test
+  void should_ReturnOneItem_when_BuilderIsUsed() {
+    when(taskanaEngine.getSqlSession()).thenReturn(sqlSession);
+    when(sqlSession.selectOne(any(), any())).thenReturn(new ObjectReference());
 
-        ObjectReference result = objectReferenceQueryImpl.valueIn("test", "asd", "blubber")
+    ObjectReference result =
+        objectReferenceQueryImpl
+            .valueIn("test", "asd", "blubber")
             .typeIn("cool", "bla")
             .systemInstanceIn("1", "2")
             .systemIn("superId")
             .single();
-        assertNotNull(result);
-    }
+    assertNotNull(result);
+  }
 }

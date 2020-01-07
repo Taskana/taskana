@@ -5,7 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,63 +20,71 @@ import pro.taskana.TaskanaRole;
 import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.rest.resource.TaskanaUserInfoResource;
 
-/**
- * Test TaskanaEngineController.
- */
-
+/** Test TaskanaEngineController. */
 @TaskanaSpringBootTest
 class TaskanaEngineControllerIntTest {
 
-    @Autowired RestHelper restHelper;
+  private static RestTemplate template;
+  @Autowired RestHelper restHelper;
 
-    private static RestTemplate template;
+  @BeforeAll
+  static void init() {
+    template = RestHelper.getRestTemplate();
+  }
 
-    @BeforeAll
-    static void init() {
-        template = RestHelper.getRestTemplate();
-    }
-
-    @Test
-    void testDomains() {
-        ResponseEntity<List<String>> response = template.exchange(
-            restHelper.toUrl(Mapping.URL_DOMAIN), HttpMethod.GET, restHelper.defaultRequest(),
+  @Test
+  void testDomains() {
+    ResponseEntity<List<String>> response =
+        template.exchange(
+            restHelper.toUrl(Mapping.URL_DOMAIN),
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(List.class));
-        assertTrue(response.getBody().contains("DOMAIN_A"));
-    }
+    assertTrue(response.getBody().contains("DOMAIN_A"));
+  }
 
-    @Test
-    void testClassificationTypes() {
-        ResponseEntity<List<String>> response = template.exchange(
-            restHelper.toUrl(Mapping.URL_CLASSIFICATIONTYPES), HttpMethod.GET, restHelper.defaultRequest(),
+  @Test
+  void testClassificationTypes() {
+    ResponseEntity<List<String>> response =
+        template.exchange(
+            restHelper.toUrl(Mapping.URL_CLASSIFICATIONTYPES),
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(List.class));
-        assertTrue(response.getBody().contains("TASK"));
-        assertTrue(response.getBody().contains("DOCUMENT"));
-        assertFalse(response.getBody().contains("UNKNOWN"));
-    }
+    assertTrue(response.getBody().contains("TASK"));
+    assertTrue(response.getBody().contains("DOCUMENT"));
+    assertFalse(response.getBody().contains("UNKNOWN"));
+  }
 
-    @Test
-    void testClassificationCategories() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-        HttpEntity<String> request = new HttpEntity<String>(headers);
-        ResponseEntity<List<String>> response = template.exchange(
-            restHelper.toUrl(Mapping.URL_CLASSIFICATIONCATEGORIES), HttpMethod.GET, restHelper.defaultRequest(),
+  @Test
+  void testClassificationCategories() {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
+    HttpEntity<String> request = new HttpEntity<String>(headers);
+    ResponseEntity<List<String>> response =
+        template.exchange(
+            restHelper.toUrl(Mapping.URL_CLASSIFICATIONCATEGORIES),
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(List.class));
-        assertTrue(response.getBody().contains("MANUAL"));
-        assertTrue(response.getBody().contains("EXTERNAL"));
-        assertTrue(response.getBody().contains("AUTOMATIC"));
-        assertTrue(response.getBody().contains("PROCESS"));
-        assertFalse(response.getBody().contains("UNKNOWN"));
-    }
+    assertTrue(response.getBody().contains("MANUAL"));
+    assertTrue(response.getBody().contains("EXTERNAL"));
+    assertTrue(response.getBody().contains("AUTOMATIC"));
+    assertTrue(response.getBody().contains("PROCESS"));
+    assertFalse(response.getBody().contains("UNKNOWN"));
+  }
 
-    @Test
-    void testGetCurrentUserInfo() {
-        ResponseEntity<TaskanaUserInfoResource> response = template.exchange(
-            restHelper.toUrl(Mapping.URL_CURRENTUSER), HttpMethod.GET, restHelper.defaultRequest(),
+  @Test
+  void testGetCurrentUserInfo() {
+    ResponseEntity<TaskanaUserInfoResource> response =
+        template.exchange(
+            restHelper.toUrl(Mapping.URL_CURRENTUSER),
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(TaskanaUserInfoResource.class));
-        assertEquals("teamlead_1", response.getBody().getUserId());
-        assertTrue(response.getBody().getGroupIds().contains("businessadmin"));
-        assertTrue(response.getBody().getRoles().contains(TaskanaRole.BUSINESS_ADMIN));
-        assertFalse(response.getBody().getRoles().contains(TaskanaRole.ADMIN));
-    }
+    assertEquals("teamlead_1", response.getBody().getUserId());
+    assertTrue(response.getBody().getGroupIds().contains("businessadmin"));
+    assertTrue(response.getBody().getRoles().contains(TaskanaRole.BUSINESS_ADMIN));
+    assertFalse(response.getBody().getRoles().contains(TaskanaRole.ADMIN));
+  }
 }

@@ -40,79 +40,78 @@ import pro.taskana.mappings.TaskMapper;
 @ExtendWith(MockitoExtension.class)
 class TaskTransferrerTest {
 
-    private TaskTransferrer cut;
-    @Mock
-    private TaskServiceImpl taskServiceImplMock;
+  private TaskTransferrer cut;
+  @Mock private TaskServiceImpl taskServiceImplMock;
 
-    @Mock
-    private TaskanaEngineConfiguration taskanaEngineConfigurationMock;
+  @Mock private TaskanaEngineConfiguration taskanaEngineConfigurationMock;
 
-    @Mock
-    private InternalTaskanaEngine internalTaskanaEngineMock;
+  @Mock private InternalTaskanaEngine internalTaskanaEngineMock;
 
-    @Mock
-    private TaskanaEngine taskanaEngineMock;
+  @Mock private TaskanaEngine taskanaEngineMock;
 
-    @Mock
-    private TaskMapper taskMapperMock;
+  @Mock private TaskMapper taskMapperMock;
 
-    @Mock
-    private ObjectReferenceMapper objectReferenceMapperMock;
+  @Mock private ObjectReferenceMapper objectReferenceMapperMock;
 
-    @Mock
-    private WorkbasketService workbasketServiceMock;
+  @Mock private WorkbasketService workbasketServiceMock;
 
-    @Mock
-    private ClassificationServiceImpl classificationServiceImplMock;
+  @Mock private ClassificationServiceImpl classificationServiceImplMock;
 
-    @Mock
-    private AttachmentMapper attachmentMapperMock;
+  @Mock private AttachmentMapper attachmentMapperMock;
 
-    @Mock
-    private ClassificationQueryImpl classificationQueryImplMock;
+  @Mock private ClassificationQueryImpl classificationQueryImplMock;
 
-    @Mock
-    private SqlSession sqlSessionMock;
+  @Mock private SqlSession sqlSessionMock;
 
-    @Test
-    void testTransferTaskToDestinationWorkbasketWithoutSecurity()
-        throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException, InvalidStateException {
+  @Test
+  void testTransferTaskToDestinationWorkbasketWithoutSecurity()
+      throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
+          InvalidStateException {
 
-        when(internalTaskanaEngineMock.getEngine()).thenReturn(taskanaEngineMock);
-        when(taskanaEngineMock.getWorkbasketService()).thenReturn(workbasketServiceMock);
-        cut = new TaskTransferrer(internalTaskanaEngineMock, taskMapperMock, taskServiceImplMock);
+    when(internalTaskanaEngineMock.getEngine()).thenReturn(taskanaEngineMock);
+    when(taskanaEngineMock.getWorkbasketService()).thenReturn(workbasketServiceMock);
+    cut = new TaskTransferrer(internalTaskanaEngineMock, taskMapperMock, taskServiceImplMock);
 
-        TaskTransferrer cutSpy = Mockito.spy(cut);
-        Workbasket destinationWorkbasket = TaskServiceImplTest.createWorkbasket("2", "k1");
-        Workbasket sourceWorkbasket = TaskServiceImplTest.createWorkbasket("47", "key47");
-        Classification dummyClassification = TaskServiceImplTest.createDummyClassification();
-        TaskImpl task = TaskServiceImplTest.createUnitTestTask("1", "Unit Test Task 1", "key47", dummyClassification);
-        task.setWorkbasketSummary(sourceWorkbasket.asSummary());
-        task.setRead(true);
-        when(workbasketServiceMock.getWorkbasket(destinationWorkbasket.getId())).thenReturn(destinationWorkbasket);
-        doReturn(task).when(taskServiceImplMock).getTask(task.getId());
+    TaskTransferrer cutSpy = Mockito.spy(cut);
+    Workbasket destinationWorkbasket = TaskServiceImplTest.createWorkbasket("2", "k1");
+    Workbasket sourceWorkbasket = TaskServiceImplTest.createWorkbasket("47", "key47");
+    Classification dummyClassification = TaskServiceImplTest.createDummyClassification();
+    TaskImpl task =
+        TaskServiceImplTest.createUnitTestTask(
+            "1", "Unit Test Task 1", "key47", dummyClassification);
+    task.setWorkbasketSummary(sourceWorkbasket.asSummary());
+    task.setRead(true);
+    when(workbasketServiceMock.getWorkbasket(destinationWorkbasket.getId()))
+        .thenReturn(destinationWorkbasket);
+    doReturn(task).when(taskServiceImplMock).getTask(task.getId());
 
-        Task actualTask = cutSpy.transfer(task.getId(), destinationWorkbasket.getId());
+    Task actualTask = cutSpy.transfer(task.getId(), destinationWorkbasket.getId());
 
-        verify(internalTaskanaEngineMock, times(1)).openConnection();
-        verify(workbasketServiceMock, times(1)).checkAuthorization(destinationWorkbasket.getId(),
-            WorkbasketPermission.APPEND);
-        verify(workbasketServiceMock, times(1)).checkAuthorization(sourceWorkbasket.getId(),
-            WorkbasketPermission.TRANSFER);
-        verify(workbasketServiceMock, times(1)).getWorkbasket(destinationWorkbasket.getId());
-        verify(taskMapperMock, times(1)).update(any());
-        verify(internalTaskanaEngineMock, times(1)).returnConnection();
-        verify(internalTaskanaEngineMock, times(1)).getEngine();
-        verify(internalTaskanaEngineMock).getHistoryEventProducer();
-        verify(taskanaEngineMock).getWorkbasketService();
-        verifyNoMoreInteractions(attachmentMapperMock, taskanaEngineConfigurationMock, taskanaEngineMock,
-            internalTaskanaEngineMock, taskMapperMock, objectReferenceMapperMock, workbasketServiceMock,
-            sqlSessionMock, classificationQueryImplMock);
+    verify(internalTaskanaEngineMock, times(1)).openConnection();
+    verify(workbasketServiceMock, times(1))
+        .checkAuthorization(destinationWorkbasket.getId(), WorkbasketPermission.APPEND);
+    verify(workbasketServiceMock, times(1))
+        .checkAuthorization(sourceWorkbasket.getId(), WorkbasketPermission.TRANSFER);
+    verify(workbasketServiceMock, times(1)).getWorkbasket(destinationWorkbasket.getId());
+    verify(taskMapperMock, times(1)).update(any());
+    verify(internalTaskanaEngineMock, times(1)).returnConnection();
+    verify(internalTaskanaEngineMock, times(1)).getEngine();
+    verify(internalTaskanaEngineMock).getHistoryEventProducer();
+    verify(taskanaEngineMock).getWorkbasketService();
+    verifyNoMoreInteractions(
+        attachmentMapperMock,
+        taskanaEngineConfigurationMock,
+        taskanaEngineMock,
+        internalTaskanaEngineMock,
+        taskMapperMock,
+        objectReferenceMapperMock,
+        workbasketServiceMock,
+        sqlSessionMock,
+        classificationQueryImplMock);
 
-        assertThat(actualTask.isRead(), equalTo(false));
-        assertThat(actualTask.getState(), equalTo(TaskState.READY));
-        assertThat(actualTask.isTransferred(), equalTo(true));
-        assertThat(actualTask.getWorkbasketKey(), equalTo(destinationWorkbasket.getKey()));
-    }
+    assertThat(actualTask.isRead(), equalTo(false));
+    assertThat(actualTask.getState(), equalTo(TaskState.READY));
+    assertThat(actualTask.isTransferred(), equalTo(true));
+    assertThat(actualTask.getWorkbasketKey(), equalTo(destinationWorkbasket.getKey()));
+  }
 }
-

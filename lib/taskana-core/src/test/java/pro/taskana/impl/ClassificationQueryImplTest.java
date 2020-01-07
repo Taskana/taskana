@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,55 +20,57 @@ import pro.taskana.ClassificationSummary;
  *
  * @author EH
  */
-
 @ExtendWith(MockitoExtension.class)
 class ClassificationQueryImplTest {
 
-    @InjectMocks
-    private ClassificationQueryImpl classificationQueryImpl;
+  @InjectMocks private ClassificationQueryImpl classificationQueryImpl;
 
-    @Mock
-    private InternalTaskanaEngine internalTaskanaEngine;
+  @Mock private InternalTaskanaEngine internalTaskanaEngine;
 
-    @Mock
-    private SqlSession sqlSession;
+  @Mock private SqlSession sqlSession;
 
-    @Test
-    void should_ReturnList_when_BuilderIsUsed() {
-        when(internalTaskanaEngine.getSqlSession()).thenReturn(sqlSession);
-        when(sqlSession.selectList(any(), any())).thenReturn(new ArrayList<>());
+  @Test
+  void should_ReturnList_when_BuilderIsUsed() {
+    when(internalTaskanaEngine.getSqlSession()).thenReturn(sqlSession);
+    when(sqlSession.selectList(any(), any())).thenReturn(new ArrayList<>());
 
-        List<ClassificationSummary> result = classificationQueryImpl.nameIn("test", "asd", "blubber")
+    List<ClassificationSummary> result =
+        classificationQueryImpl
+            .nameIn("test", "asd", "blubber")
             .typeIn("cool", "bla")
             .priorityIn(1, 2)
             .parentIdIn("superId")
             .list();
-        assertNotNull(result);
-    }
+    assertNotNull(result);
+  }
 
-    @Test
-    void should_ReturnListWithOffset_when_BuilderIsUsed() {
-        when(internalTaskanaEngine.getSqlSession()).thenReturn(sqlSession);
-        when(sqlSession.selectList(any(), any(), any())).thenReturn(new ArrayList<>());
+  @Test
+  void should_ReturnListWithOffset_when_BuilderIsUsed() {
+    when(internalTaskanaEngine.getSqlSession()).thenReturn(sqlSession);
+    when(sqlSession.selectList(any(), any(), any())).thenReturn(new ArrayList<>());
 
-        List<ClassificationSummary> result = classificationQueryImpl.nameIn("test", "asd", "blubber")
+    List<ClassificationSummary> result =
+        classificationQueryImpl
+            .nameIn("test", "asd", "blubber")
             .typeIn("cool", "bla")
             .priorityIn(1, 2)
             .parentIdIn("superId")
             .list(1, 1);
-        assertNotNull(result);
-    }
+    assertNotNull(result);
+  }
 
-    @Test
-    void should_ReturnOneItem_when_BuilderIsUsed() {
-        when(internalTaskanaEngine.getSqlSession()).thenReturn(sqlSession);
-        when(sqlSession.selectOne(any(), any())).thenReturn(new ClassificationSummaryImpl());
+  @Test
+  void should_ReturnOneItem_when_BuilderIsUsed() {
+    when(internalTaskanaEngine.getSqlSession()).thenReturn(sqlSession);
+    when(sqlSession.selectOne(any(), any())).thenReturn(new ClassificationSummaryImpl());
 
-        ClassificationSummary result = classificationQueryImpl.nameIn("test", "asd", "blubber")
+    ClassificationSummary result =
+        classificationQueryImpl
+            .nameIn("test", "asd", "blubber")
             .typeIn("cool", "bla")
             .priorityIn(1, 2)
             .parentIdIn("superId")
             .single();
-        assertNotNull(result);
-    }
+    assertNotNull(result);
+  }
 }

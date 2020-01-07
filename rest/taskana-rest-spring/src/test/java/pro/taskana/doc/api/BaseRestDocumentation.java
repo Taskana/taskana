@@ -16,33 +16,22 @@ import org.springframework.web.context.WebApplicationContext;
 import pro.taskana.RestHelper;
 import pro.taskana.TaskanaSpringBootTest;
 
-/**
- * Base class for Rest Documentation tests.
- */
-
+/** Base class for Rest Documentation tests. */
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 @TaskanaSpringBootTest
 public abstract class BaseRestDocumentation {
 
-    @LocalServerPort
-    protected int port;
+  @LocalServerPort protected int port;
 
-    @Autowired
-    protected WebApplicationContext context;
+  @Autowired protected WebApplicationContext context;
 
-    @Autowired
-    protected MockMvc mockMvc;
+  @Autowired protected MockMvc mockMvc;
 
-    @Autowired
-    protected RestHelper restHelper;
+  @Autowired protected RestHelper restHelper;
 
-    @BeforeEach
-    public void setUpMockMvc() {
-        document("{methodName}",
-            preprocessRequest(prettyPrint()),
-            preprocessResponse(prettyPrint()));
-
-    }
-
+  @BeforeEach
+  public void setUpMockMvc() {
+    document("{methodName}", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()));
+  }
 }

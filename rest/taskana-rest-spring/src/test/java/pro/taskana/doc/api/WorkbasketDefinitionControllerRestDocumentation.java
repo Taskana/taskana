@@ -16,35 +16,39 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import pro.taskana.rest.Mapping;
 
-/**
- * Generate Rest Documentation for Workbasket Definitions.
- */
+/** Generate Rest Documentation for Workbasket Definitions. */
 class WorkbasketDefinitionControllerRestDocumentation extends BaseRestDocumentation {
 
-    private FieldDescriptor[] workbasketDefinitionsFieldDescriptors;
+  private FieldDescriptor[] workbasketDefinitionsFieldDescriptors;
 
-    @BeforeEach
-    void setUp() {
+  @BeforeEach
+  void setUp() {
 
-        workbasketDefinitionsFieldDescriptors = new FieldDescriptor[] {
-            subsectionWithPath("[]").description("An array of <<WorkbasketDefinitions, workbasketsDefinitions>>")
+    workbasketDefinitionsFieldDescriptors =
+        new FieldDescriptor[] {
+          subsectionWithPath("[]")
+              .description("An array of <<WorkbasketDefinitions, workbasketsDefinitions>>")
         };
-    }
+  }
 
-    @Test
-    void exportAllWorkbasketDefinitions() throws Exception {
-        this.mockMvc.perform(RestDocumentationRequestBuilders
-            .get(restHelper.toUrl(Mapping.URL_WORKBASKETDEFIITIONS))
-            .accept("application/json")
-            .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
-            .andExpect(MockMvcResultMatchers.status().isOk())
-            .andDo(MockMvcRestDocumentation.document("ExportWorkbasketdefinitionsDocTest",
+  @Test
+  void exportAllWorkbasketDefinitions() throws Exception {
+    this.mockMvc
+        .perform(
+            RestDocumentationRequestBuilders.get(restHelper.toUrl(Mapping.URL_WORKBASKETDEFIITIONS))
+                .accept("application/json")
+                .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
+        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andDo(
+            MockMvcRestDocumentation.document(
+                "ExportWorkbasketdefinitionsDocTest",
                 responseFields(workbasketDefinitionsFieldDescriptors)));
-    }
+  }
 
-    @Test
-    void importWorkbasketDefinition() throws Exception {
-        String definitionString = "["
+  @Test
+  void importWorkbasketDefinition() throws Exception {
+    String definitionString =
+        "["
             + "{"
             + "\"distributionTargets\":[], "
             + "\"authorizations\":[], "
@@ -52,12 +56,15 @@ class WorkbasketDefinitionControllerRestDocumentation extends BaseRestDocumentat
             + "}"
             + "]";
 
-        this.mockMvc.perform(multipart(restHelper.toUrl(Mapping.URL_WORKBASKETDEFIITIONS))
-            .file("file",
-                definitionString.getBytes())
-            .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
-            .andExpect(MockMvcResultMatchers.status().isNoContent())
-            .andDo(document("ImportWorkbasketDefinitions", requestParts(
-                partWithName("file").description("The file to upload"))));
-    }
+    this.mockMvc
+        .perform(
+            multipart(restHelper.toUrl(Mapping.URL_WORKBASKETDEFIITIONS))
+                .file("file", definitionString.getBytes())
+                .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
+        .andExpect(MockMvcResultMatchers.status().isNoContent())
+        .andDo(
+            document(
+                "ImportWorkbasketDefinitions",
+                requestParts(partWithName("file").description("The file to upload"))));
+  }
 }

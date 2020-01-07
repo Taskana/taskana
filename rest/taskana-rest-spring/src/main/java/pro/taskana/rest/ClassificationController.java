@@ -1,7 +1,6 @@
 package pro.taskana.rest;
 
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
@@ -37,283 +36,289 @@ import pro.taskana.rest.resource.ClassificationSummaryListResource;
 import pro.taskana.rest.resource.ClassificationSummaryResourceAssembler;
 import pro.taskana.rest.resource.PagedResources.PageMetadata;
 
-/**
- * Controller for all {@link Classification} related endpoints.
- */
+/** Controller for all {@link Classification} related endpoints. */
 @RestController
 @EnableHypermediaSupport(type = HypermediaType.HAL)
 public class ClassificationController extends AbstractPagingController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationController.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationController.class);
 
-    private static final String LIKE = "%";
+  private static final String LIKE = "%";
 
-    private static final String NAME = "name";
+  private static final String NAME = "name";
 
-    private static final String NAME_LIKE = "name-like";
+  private static final String NAME_LIKE = "name-like";
 
-    private static final String KEY = "key";
+  private static final String KEY = "key";
 
-    private static final String DOMAIN = "domain";
+  private static final String DOMAIN = "domain";
 
-    private static final String CATEGORY = "category";
+  private static final String CATEGORY = "category";
 
-    private static final String TYPE = "type";
+  private static final String TYPE = "type";
 
-    private static final String CUSTOM_1_LIKE = "custom-1-like";
+  private static final String CUSTOM_1_LIKE = "custom-1-like";
 
-    private static final String CUSTOM_2_LIKE = "custom-2-like";
+  private static final String CUSTOM_2_LIKE = "custom-2-like";
 
-    private static final String CUSTOM_3_LIKE = "custom-3-like";
+  private static final String CUSTOM_3_LIKE = "custom-3-like";
 
-    private static final String CUSTOM_4_LIKE = "custom-4-like";
+  private static final String CUSTOM_4_LIKE = "custom-4-like";
 
-    private static final String CUSTOM_5_LIKE = "custom-5-like";
+  private static final String CUSTOM_5_LIKE = "custom-5-like";
 
-    private static final String CUSTOM_6_LIKE = "custom-6-like";
+  private static final String CUSTOM_6_LIKE = "custom-6-like";
 
-    private static final String CUSTOM_7_LIKE = "custom-7-like";
+  private static final String CUSTOM_7_LIKE = "custom-7-like";
 
-    private static final String CUSTOM_8_LIKE = "custom-8-like";
+  private static final String CUSTOM_8_LIKE = "custom-8-like";
 
-    private static final String SORT_BY = "sort-by";
+  private static final String SORT_BY = "sort-by";
 
-    private static final String SORT_DIRECTION = "order";
+  private static final String SORT_DIRECTION = "order";
 
-    private ClassificationService classificationService;
+  private ClassificationService classificationService;
 
-    private ClassificationResourceAssembler classificationResourceAssembler;
+  private ClassificationResourceAssembler classificationResourceAssembler;
 
-    private ClassificationSummaryResourceAssembler classificationSummaryResourceAssembler;
+  private ClassificationSummaryResourceAssembler classificationSummaryResourceAssembler;
 
-    ClassificationController(
-        ClassificationService classificationService,
-        ClassificationResourceAssembler classificationResourceAssembler,
-        ClassificationSummaryResourceAssembler classificationSummaryResourceAssembler) {
-        this.classificationService = classificationService;
-        this.classificationResourceAssembler = classificationResourceAssembler;
-        this.classificationSummaryResourceAssembler = classificationSummaryResourceAssembler;
+  ClassificationController(
+      ClassificationService classificationService,
+      ClassificationResourceAssembler classificationResourceAssembler,
+      ClassificationSummaryResourceAssembler classificationSummaryResourceAssembler) {
+    this.classificationService = classificationService;
+    this.classificationResourceAssembler = classificationResourceAssembler;
+    this.classificationSummaryResourceAssembler = classificationSummaryResourceAssembler;
+  }
+
+  @GetMapping(path = Mapping.URL_CLASSIFICATIONS)
+  @Transactional(readOnly = true, rollbackFor = Exception.class)
+  public ResponseEntity<ClassificationSummaryListResource> getClassifications(
+      @RequestParam MultiValueMap<String, String> params) throws InvalidArgumentException {
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Entry to getClassifications(params= {})", params);
     }
 
-    @GetMapping(path = Mapping.URL_CLASSIFICATIONS)
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
-    public ResponseEntity<ClassificationSummaryListResource> getClassifications(
-        @RequestParam MultiValueMap<String, String> params) throws InvalidArgumentException {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Entry to getClassifications(params= {})", params);
-        }
+    ClassificationQuery query = classificationService.createClassificationQuery();
+    query = applySortingParams(query, params);
+    query = applyFilterParams(query, params);
 
-        ClassificationQuery query = classificationService.createClassificationQuery();
-        query = applySortingParams(query, params);
-        query = applyFilterParams(query, params);
+    PageMetadata pageMetadata = getPageMetadata(params, query);
+    List<ClassificationSummary> classificationSummaries = getQueryList(query, pageMetadata);
 
-        PageMetadata pageMetadata = getPageMetadata(params, query);
-        List<ClassificationSummary> classificationSummaries = getQueryList(query, pageMetadata);
-
-        ResponseEntity<ClassificationSummaryListResource> response = ResponseEntity.ok(
+    ResponseEntity<ClassificationSummaryListResource> response =
+        ResponseEntity.ok(
             classificationSummaryResourceAssembler.toResources(
-                classificationSummaries,
-                pageMetadata));
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Exit from getClassifications(), returning {}", response);
-        }
-
-        return response;
+                classificationSummaries, pageMetadata));
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Exit from getClassifications(), returning {}", response);
     }
 
-    @GetMapping(path = Mapping.URL_CLASSIFICATIONS_ID)
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
-    public ResponseEntity<ClassificationResource> getClassification(@PathVariable String classificationId)
-        throws ClassificationNotFoundException {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Entry to getClassification(classificationId= {})", classificationId);
-        }
+    return response;
+  }
 
-        Classification classification = classificationService.getClassification(classificationId);
-        ResponseEntity<ClassificationResource> response = ResponseEntity.ok(
-            classificationResourceAssembler.toResource(classification));
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Exit from getClassification(), returning {}", response);
-        }
-
-        return response;
+  @GetMapping(path = Mapping.URL_CLASSIFICATIONS_ID)
+  @Transactional(readOnly = true, rollbackFor = Exception.class)
+  public ResponseEntity<ClassificationResource> getClassification(
+      @PathVariable String classificationId) throws ClassificationNotFoundException {
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Entry to getClassification(classificationId= {})", classificationId);
     }
 
-    @PostMapping(path = Mapping.URL_CLASSIFICATIONS)
-    @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<ClassificationResource> createClassification(
-        @RequestBody ClassificationResource resource)
-        throws NotAuthorizedException, ClassificationAlreadyExistException,
-        DomainNotFoundException, InvalidArgumentException {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Entry to createClassification(resource= {})", resource);
-        }
-        Classification classification = classificationResourceAssembler.toModel(resource);
-        classification = classificationService.createClassification(classification);
+    Classification classification = classificationService.getClassification(classificationId);
+    ResponseEntity<ClassificationResource> response =
+        ResponseEntity.ok(classificationResourceAssembler.toResource(classification));
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Exit from getClassification(), returning {}", response);
+    }
 
-        ResponseEntity<ClassificationResource> response = ResponseEntity.status(HttpStatus.CREATED)
+    return response;
+  }
+
+  @PostMapping(path = Mapping.URL_CLASSIFICATIONS)
+  @Transactional(rollbackFor = Exception.class)
+  public ResponseEntity<ClassificationResource> createClassification(
+      @RequestBody ClassificationResource resource)
+      throws NotAuthorizedException, ClassificationAlreadyExistException, DomainNotFoundException,
+          InvalidArgumentException {
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Entry to createClassification(resource= {})", resource);
+    }
+    Classification classification = classificationResourceAssembler.toModel(resource);
+    classification = classificationService.createClassification(classification);
+
+    ResponseEntity<ClassificationResource> response =
+        ResponseEntity.status(HttpStatus.CREATED)
             .body(classificationResourceAssembler.toResource(classification));
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Exit from createClassification(), returning {}", response);
-        }
-
-        return response;
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Exit from createClassification(), returning {}", response);
     }
 
-    @PutMapping(path = Mapping.URL_CLASSIFICATIONS_ID)
-    @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<ClassificationResource> updateClassification(
-        @PathVariable(value = "classificationId") String classificationId, @RequestBody ClassificationResource resource)
-        throws NotAuthorizedException, ClassificationNotFoundException, ConcurrencyException,
-        InvalidArgumentException {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Entry to updateClassification(classificationId= {}, resource= {})", classificationId,
-                resource);
-        }
+    return response;
+  }
 
-        ResponseEntity<ClassificationResource> result;
-        if (classificationId.equals(resource.classificationId)) {
-            Classification classification = classificationResourceAssembler.toModel(resource);
-            classification = classificationService.updateClassification(classification);
-            result = ResponseEntity.ok(classificationResourceAssembler.toResource(classification));
-        } else {
-            throw new InvalidArgumentException(
-                "ClassificationId ('" + classificationId
-                    + "') of the URI is not identical with the classificationId ('"
-                    + resource.getClassificationId() + "') of the object in the payload.");
-        }
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Exit from updateClassification(), returning {}", result);
-        }
-
-        return result;
+  @PutMapping(path = Mapping.URL_CLASSIFICATIONS_ID)
+  @Transactional(rollbackFor = Exception.class)
+  public ResponseEntity<ClassificationResource> updateClassification(
+      @PathVariable(value = "classificationId") String classificationId,
+      @RequestBody ClassificationResource resource)
+      throws NotAuthorizedException, ClassificationNotFoundException, ConcurrencyException,
+          InvalidArgumentException {
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug(
+          "Entry to updateClassification(classificationId= {}, resource= {})",
+          classificationId,
+          resource);
     }
 
-    @DeleteMapping(path = Mapping.URL_CLASSIFICATIONS_ID)
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
-    public ResponseEntity<?> deleteClassification(@PathVariable String classificationId)
-        throws ClassificationNotFoundException, ClassificationInUseException, NotAuthorizedException {
-        LOGGER.debug("Entry to deleteClassification(classificationId= {})", classificationId);
-        classificationService.deleteClassification(classificationId);
-        ResponseEntity<?> response = ResponseEntity.noContent().build();
-        LOGGER.debug("Exit from deleteClassification(), returning {}", response);
-        return response;
+    ResponseEntity<ClassificationResource> result;
+    if (classificationId.equals(resource.classificationId)) {
+      Classification classification = classificationResourceAssembler.toModel(resource);
+      classification = classificationService.updateClassification(classification);
+      result = ResponseEntity.ok(classificationResourceAssembler.toResource(classification));
+    } else {
+      throw new InvalidArgumentException(
+          "ClassificationId ('"
+              + classificationId
+              + "') of the URI is not identical with the classificationId ('"
+              + resource.getClassificationId()
+              + "') of the object in the payload.");
+    }
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Exit from updateClassification(), returning {}", result);
     }
 
-    private ClassificationQuery applySortingParams(ClassificationQuery query, MultiValueMap<String, String> params)
-        throws IllegalArgumentException {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Entry to applySortingParams(query= {}, params= {})", query, params);
-        }
+    return result;
+  }
 
-        // sorting
-        String sortBy = params.getFirst(SORT_BY);
-        if (sortBy != null) {
-            SortDirection sortDirection;
-            if (params.getFirst(SORT_DIRECTION) != null && "desc".equals(params.getFirst(SORT_DIRECTION))) {
-                sortDirection = SortDirection.DESCENDING;
-            } else {
-                sortDirection = SortDirection.ASCENDING;
-            }
-            switch (sortBy) {
-                case (CATEGORY):
-                    query = query.orderByCategory(sortDirection);
-                    break;
-                case (DOMAIN):
-                    query = query.orderByDomain(sortDirection);
-                    break;
-                case (KEY):
-                    query = query.orderByKey(sortDirection);
-                    break;
-                case (NAME):
-                    query = query.orderByName(sortDirection);
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unknown order '" + sortBy + "'");
-            }
-        }
-        params.remove(SORT_BY);
-        params.remove(SORT_DIRECTION);
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Exit from applySortingParams(), returning {}", query);
-        }
+  @DeleteMapping(path = Mapping.URL_CLASSIFICATIONS_ID)
+  @Transactional(readOnly = true, rollbackFor = Exception.class)
+  public ResponseEntity<?> deleteClassification(@PathVariable String classificationId)
+      throws ClassificationNotFoundException, ClassificationInUseException, NotAuthorizedException {
+    LOGGER.debug("Entry to deleteClassification(classificationId= {})", classificationId);
+    classificationService.deleteClassification(classificationId);
+    ResponseEntity<?> response = ResponseEntity.noContent().build();
+    LOGGER.debug("Exit from deleteClassification(), returning {}", response);
+    return response;
+  }
 
-        return query;
+  private ClassificationQuery applySortingParams(
+      ClassificationQuery query, MultiValueMap<String, String> params)
+      throws IllegalArgumentException {
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Entry to applySortingParams(query= {}, params= {})", query, params);
     }
 
-    private ClassificationQuery applyFilterParams(ClassificationQuery query,
-        MultiValueMap<String, String> params) throws InvalidArgumentException {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Entry to applyFilterParams(query= {}, params= {})", query, params);
-        }
-
-        if (params.containsKey(NAME)) {
-            String[] names = extractCommaSeparatedFields(params.get(NAME));
-            query.nameIn(names);
-            params.remove(NAME);
-        }
-        if (params.containsKey(NAME_LIKE)) {
-            query.nameLike(LIKE + params.get(NAME_LIKE).get(0) + LIKE);
-            params.remove(NAME_LIKE);
-        }
-        if (params.containsKey(KEY)) {
-            String[] names = extractCommaSeparatedFields(params.get(KEY));
-            query.keyIn(names);
-            params.remove(KEY);
-        }
-        if (params.containsKey(CATEGORY)) {
-            String[] names = extractCommaSeparatedFields(params.get(CATEGORY));
-            query.categoryIn(names);
-            params.remove(CATEGORY);
-        }
-        if (params.containsKey(DOMAIN)) {
-            String[] names = extractCommaSeparatedFields(params.get(DOMAIN));
-            query.domainIn(names);
-            params.remove(DOMAIN);
-        }
-        if (params.containsKey(TYPE)) {
-            String[] names = extractCommaSeparatedFields(params.get(TYPE));
-            query.typeIn(names);
-            params.remove(TYPE);
-        }
-        if (params.containsKey(CUSTOM_1_LIKE)) {
-            query.customAttributeLike("1", LIKE + params.get(CUSTOM_1_LIKE).get(0) + LIKE);
-            params.remove(CUSTOM_1_LIKE);
-        }
-        if (params.containsKey(CUSTOM_2_LIKE)) {
-            query.customAttributeLike("2", LIKE + params.get(CUSTOM_2_LIKE).get(0) + LIKE);
-            params.remove(CUSTOM_2_LIKE);
-        }
-        if (params.containsKey(CUSTOM_3_LIKE)) {
-            query.customAttributeLike("3", LIKE + params.get(CUSTOM_3_LIKE).get(0) + LIKE);
-            params.remove(CUSTOM_3_LIKE);
-        }
-        if (params.containsKey(CUSTOM_4_LIKE)) {
-            query.customAttributeLike("4", LIKE + params.get(CUSTOM_4_LIKE).get(0) + LIKE);
-            params.remove(CUSTOM_4_LIKE);
-        }
-        if (params.containsKey(CUSTOM_5_LIKE)) {
-            query.customAttributeLike("5", LIKE + params.get(CUSTOM_5_LIKE).get(0) + LIKE);
-            params.remove(CUSTOM_5_LIKE);
-        }
-        if (params.containsKey(CUSTOM_6_LIKE)) {
-            query.customAttributeLike("6", LIKE + params.get(CUSTOM_6_LIKE).get(0) + LIKE);
-            params.remove(CUSTOM_6_LIKE);
-        }
-        if (params.containsKey(CUSTOM_7_LIKE)) {
-            query.customAttributeLike("7", LIKE + params.get(CUSTOM_7_LIKE).get(0) + LIKE);
-            params.remove(CUSTOM_7_LIKE);
-        }
-        if (params.containsKey(CUSTOM_8_LIKE)) {
-            query.customAttributeLike("8", LIKE + params.get(CUSTOM_8_LIKE).get(0) + LIKE);
-            params.remove(CUSTOM_8_LIKE);
-        }
-
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Exit from applyFilterParams(), returning {}", query);
-        }
-
-        return query;
+    // sorting
+    String sortBy = params.getFirst(SORT_BY);
+    if (sortBy != null) {
+      SortDirection sortDirection;
+      if (params.getFirst(SORT_DIRECTION) != null
+          && "desc".equals(params.getFirst(SORT_DIRECTION))) {
+        sortDirection = SortDirection.DESCENDING;
+      } else {
+        sortDirection = SortDirection.ASCENDING;
+      }
+      switch (sortBy) {
+        case (CATEGORY):
+          query = query.orderByCategory(sortDirection);
+          break;
+        case (DOMAIN):
+          query = query.orderByDomain(sortDirection);
+          break;
+        case (KEY):
+          query = query.orderByKey(sortDirection);
+          break;
+        case (NAME):
+          query = query.orderByName(sortDirection);
+          break;
+        default:
+          throw new IllegalArgumentException("Unknown order '" + sortBy + "'");
+      }
+    }
+    params.remove(SORT_BY);
+    params.remove(SORT_DIRECTION);
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Exit from applySortingParams(), returning {}", query);
     }
 
+    return query;
+  }
+
+  private ClassificationQuery applyFilterParams(
+      ClassificationQuery query, MultiValueMap<String, String> params)
+      throws InvalidArgumentException {
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Entry to applyFilterParams(query= {}, params= {})", query, params);
+    }
+
+    if (params.containsKey(NAME)) {
+      String[] names = extractCommaSeparatedFields(params.get(NAME));
+      query.nameIn(names);
+      params.remove(NAME);
+    }
+    if (params.containsKey(NAME_LIKE)) {
+      query.nameLike(LIKE + params.get(NAME_LIKE).get(0) + LIKE);
+      params.remove(NAME_LIKE);
+    }
+    if (params.containsKey(KEY)) {
+      String[] names = extractCommaSeparatedFields(params.get(KEY));
+      query.keyIn(names);
+      params.remove(KEY);
+    }
+    if (params.containsKey(CATEGORY)) {
+      String[] names = extractCommaSeparatedFields(params.get(CATEGORY));
+      query.categoryIn(names);
+      params.remove(CATEGORY);
+    }
+    if (params.containsKey(DOMAIN)) {
+      String[] names = extractCommaSeparatedFields(params.get(DOMAIN));
+      query.domainIn(names);
+      params.remove(DOMAIN);
+    }
+    if (params.containsKey(TYPE)) {
+      String[] names = extractCommaSeparatedFields(params.get(TYPE));
+      query.typeIn(names);
+      params.remove(TYPE);
+    }
+    if (params.containsKey(CUSTOM_1_LIKE)) {
+      query.customAttributeLike("1", LIKE + params.get(CUSTOM_1_LIKE).get(0) + LIKE);
+      params.remove(CUSTOM_1_LIKE);
+    }
+    if (params.containsKey(CUSTOM_2_LIKE)) {
+      query.customAttributeLike("2", LIKE + params.get(CUSTOM_2_LIKE).get(0) + LIKE);
+      params.remove(CUSTOM_2_LIKE);
+    }
+    if (params.containsKey(CUSTOM_3_LIKE)) {
+      query.customAttributeLike("3", LIKE + params.get(CUSTOM_3_LIKE).get(0) + LIKE);
+      params.remove(CUSTOM_3_LIKE);
+    }
+    if (params.containsKey(CUSTOM_4_LIKE)) {
+      query.customAttributeLike("4", LIKE + params.get(CUSTOM_4_LIKE).get(0) + LIKE);
+      params.remove(CUSTOM_4_LIKE);
+    }
+    if (params.containsKey(CUSTOM_5_LIKE)) {
+      query.customAttributeLike("5", LIKE + params.get(CUSTOM_5_LIKE).get(0) + LIKE);
+      params.remove(CUSTOM_5_LIKE);
+    }
+    if (params.containsKey(CUSTOM_6_LIKE)) {
+      query.customAttributeLike("6", LIKE + params.get(CUSTOM_6_LIKE).get(0) + LIKE);
+      params.remove(CUSTOM_6_LIKE);
+    }
+    if (params.containsKey(CUSTOM_7_LIKE)) {
+      query.customAttributeLike("7", LIKE + params.get(CUSTOM_7_LIKE).get(0) + LIKE);
+      params.remove(CUSTOM_7_LIKE);
+    }
+    if (params.containsKey(CUSTOM_8_LIKE)) {
+      query.customAttributeLike("8", LIKE + params.get(CUSTOM_8_LIKE).get(0) + LIKE);
+      params.remove(CUSTOM_8_LIKE);
+    }
+
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Exit from applyFilterParams(), returning {}", query);
+    }
+
+    return query;
+  }
 }

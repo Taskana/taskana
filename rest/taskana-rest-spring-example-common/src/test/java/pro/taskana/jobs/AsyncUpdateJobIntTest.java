@@ -3,11 +3,11 @@ package pro.taskana.jobs;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,8 +22,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import pro.taskana.Classification;
 import pro.taskana.RestHelper;
 import pro.taskana.Task;
@@ -35,123 +33,134 @@ import pro.taskana.rest.resource.ClassificationResourceAssembler;
 import pro.taskana.rest.resource.TaskResource;
 import pro.taskana.rest.resource.TaskResourceAssembler;
 
-/**
- * Test async updates.
- */
+/** Test async updates. */
 @ActiveProfiles({"test"})
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = RestConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(
+    classes = RestConfiguration.class,
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class AsyncUpdateJobIntTest {
 
-    private static final String CLASSIFICATION_ID = "CLI:100000000000000000000000000000000003";
+  private static final String CLASSIFICATION_ID = "CLI:100000000000000000000000000000000003";
+  static RestTemplate template;
+  @Autowired ClassificationResourceAssembler classificationResourceAssembler;
+  @Autowired TaskResourceAssembler taskResourceAssembler;
+  @Autowired JobScheduler jobScheduler;
+  @Autowired RestHelper restHelper;
 
-    @Autowired
-    ClassificationResourceAssembler classificationResourceAssembler;
+  @BeforeAll
+  static void init() {
+    template = RestHelper.getRestTemplate();
+  }
 
-    @Autowired
-    TaskResourceAssembler taskResourceAssembler;
+  @Test
+  void testUpdateClassificationPrioServiceLevel() throws Exception {
 
-    @Autowired
-    JobScheduler jobScheduler;
+    // 1st step: get old classification :
+    Instant before = Instant.now();
+    ObjectMapper mapper = new ObjectMapper();
 
-    @Autowired RestHelper restHelper;
-
-    static RestTemplate template;
-
-    @BeforeAll
-    static void init() {
-        template = RestHelper.getRestTemplate();
-    }
-
-    @Test
-    void testUpdateClassificationPrioServiceLevel()
-        throws Exception {
-
-        // 1st step: get old classification :
-        Instant before = Instant.now();
-        ObjectMapper mapper = new ObjectMapper();
-
-        ResponseEntity<ClassificationResource> response = template.exchange(
+    ResponseEntity<ClassificationResource> response =
+        template.exchange(
             restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, CLASSIFICATION_ID),
             HttpMethod.GET,
             new HttpEntity<String>(restHelper.getHeaders()),
-            ParameterizedTypeReference.forType(ClassificationResource.class)
-        );
+            ParameterizedTypeReference.forType(ClassificationResource.class));
 
-        assertNotNull(response.getBody());
-        ClassificationResource classification = response.getBody();
-        assertNotNull(classification.getLink(Link.REL_SELF));
+    assertNotNull(response.getBody());
+    ClassificationResource classification = response.getBody();
+    assertNotNull(classification.getLink(Link.REL_SELF));
 
-        // 2nd step: modify classification and trigger update
-        classification.removeLinks();
-        classification.setServiceLevel("P5D");
-        classification.setPriority(1000);
+    // 2nd step: modify classification and trigger update
+    classification.removeLinks();
+    classification.setServiceLevel("P5D");
+    classification.setPriority(1000);
 
-        template.put(
-            restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, CLASSIFICATION_ID),
-            new HttpEntity<>(mapper.writeValueAsString(classification), restHelper.getHeaders())
-        );
+    template.put(
+        restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, CLASSIFICATION_ID),
+        new HttpEntity<>(mapper.writeValueAsString(classification), restHelper.getHeaders()));
 
-        //trigger jobs twice to refresh all entries. first entry on the first call and follow up on the seconds call
-        jobScheduler.triggerJobs();
-        jobScheduler.triggerJobs();
+    // trigger jobs twice to refresh all entries. first entry on the first call and follow up on the
+    // seconds call
+    jobScheduler.triggerJobs();
+    jobScheduler.triggerJobs();
 
-        // verify the classification modified timestamp is after 'before'
-        ResponseEntity<ClassificationResource> repeatedResponse = template.exchange(
+    // verify the classification modified timestamp is after 'before'
+    ResponseEntity<ClassificationResource> repeatedResponse =
+        template.exchange(
             restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, CLASSIFICATION_ID),
             HttpMethod.GET,
             new HttpEntity<String>(restHelper.getHeaders()),
-            ParameterizedTypeReference.forType(ClassificationResource.class)
-        );
+            ParameterizedTypeReference.forType(ClassificationResource.class));
 
-        assertNotNull(repeatedResponse.getBody());
+    assertNotNull(repeatedResponse.getBody());
 
-        ClassificationResource modifiedClassificationResource = repeatedResponse.getBody();
-        Classification modifiedClassification = classificationResourceAssembler.toModel(modifiedClassificationResource);
+    ClassificationResource modifiedClassificationResource = repeatedResponse.getBody();
+    Classification modifiedClassification =
+        classificationResourceAssembler.toModel(modifiedClassificationResource);
 
-        assertFalse(before.isAfter(modifiedClassification.getModified()));
+    assertFalse(before.isAfter(modifiedClassification.getModified()));
 
-        List<String> affectedTasks = new ArrayList<>(
-            Arrays.asList("TKI:000000000000000000000000000000000003", "TKI:000000000000000000000000000000000004",
-                "TKI:000000000000000000000000000000000005", "TKI:000000000000000000000000000000000006",
-                "TKI:000000000000000000000000000000000007", "TKI:000000000000000000000000000000000008",
-                "TKI:000000000000000000000000000000000009", "TKI:000000000000000000000000000000000010",
-                "TKI:000000000000000000000000000000000011", "TKI:000000000000000000000000000000000012",
-                "TKI:000000000000000000000000000000000013", "TKI:000000000000000000000000000000000014",
-                "TKI:000000000000000000000000000000000015", "TKI:000000000000000000000000000000000016",
-                "TKI:000000000000000000000000000000000017", "TKI:000000000000000000000000000000000018",
-                "TKI:000000000000000000000000000000000019", "TKI:000000000000000000000000000000000020",
-                "TKI:000000000000000000000000000000000021", "TKI:000000000000000000000000000000000022",
-                "TKI:000000000000000000000000000000000023", "TKI:000000000000000000000000000000000024",
-                "TKI:000000000000000000000000000000000025", "TKI:000000000000000000000000000000000026",
-                "TKI:000000000000000000000000000000000027", "TKI:000000000000000000000000000000000028",
-                "TKI:000000000000000000000000000000000029", "TKI:000000000000000000000000000000000030",
-                "TKI:000000000000000000000000000000000031", "TKI:000000000000000000000000000000000032",
-                "TKI:000000000000000000000000000000000033", "TKI:000000000000000000000000000000000034",
-                "TKI:000000000000000000000000000000000035", "TKI:000000000000000000000000000000000100",
-                "TKI:000000000000000000000000000000000101", "TKI:000000000000000000000000000000000102",
+    List<String> affectedTasks =
+        new ArrayList<>(
+            Arrays.asList(
+                "TKI:000000000000000000000000000000000003",
+                "TKI:000000000000000000000000000000000004",
+                "TKI:000000000000000000000000000000000005",
+                "TKI:000000000000000000000000000000000006",
+                "TKI:000000000000000000000000000000000007",
+                "TKI:000000000000000000000000000000000008",
+                "TKI:000000000000000000000000000000000009",
+                "TKI:000000000000000000000000000000000010",
+                "TKI:000000000000000000000000000000000011",
+                "TKI:000000000000000000000000000000000012",
+                "TKI:000000000000000000000000000000000013",
+                "TKI:000000000000000000000000000000000014",
+                "TKI:000000000000000000000000000000000015",
+                "TKI:000000000000000000000000000000000016",
+                "TKI:000000000000000000000000000000000017",
+                "TKI:000000000000000000000000000000000018",
+                "TKI:000000000000000000000000000000000019",
+                "TKI:000000000000000000000000000000000020",
+                "TKI:000000000000000000000000000000000021",
+                "TKI:000000000000000000000000000000000022",
+                "TKI:000000000000000000000000000000000023",
+                "TKI:000000000000000000000000000000000024",
+                "TKI:000000000000000000000000000000000025",
+                "TKI:000000000000000000000000000000000026",
+                "TKI:000000000000000000000000000000000027",
+                "TKI:000000000000000000000000000000000028",
+                "TKI:000000000000000000000000000000000029",
+                "TKI:000000000000000000000000000000000030",
+                "TKI:000000000000000000000000000000000031",
+                "TKI:000000000000000000000000000000000032",
+                "TKI:000000000000000000000000000000000033",
+                "TKI:000000000000000000000000000000000034",
+                "TKI:000000000000000000000000000000000035",
+                "TKI:000000000000000000000000000000000100",
+                "TKI:000000000000000000000000000000000101",
+                "TKI:000000000000000000000000000000000102",
                 "TKI:000000000000000000000000000000000103"));
-        for (String taskId : affectedTasks) {
-            verifyTaskIsModifiedAfterOrEquals(taskId, before);
-        }
-
+    for (String taskId : affectedTasks) {
+      verifyTaskIsModifiedAfterOrEquals(taskId, before);
     }
+  }
 
-    private void verifyTaskIsModifiedAfterOrEquals(String taskId, Instant before)
-        throws InvalidArgumentException {
+  private void verifyTaskIsModifiedAfterOrEquals(String taskId, Instant before)
+      throws InvalidArgumentException {
 
-        ResponseEntity<TaskResource> taskResponse = template.exchange(
+    ResponseEntity<TaskResource> taskResponse =
+        template.exchange(
             restHelper.toUrl(Mapping.URL_TASKS_ID, taskId),
             HttpMethod.GET,
             new HttpEntity<>(restHelper.getHeadersAdmin()),
             ParameterizedTypeReference.forType(TaskResource.class));
 
-        TaskResource taskResource = taskResponse.getBody();
-        Task task = taskResourceAssembler.toModel(taskResource);
+    TaskResource taskResource = taskResponse.getBody();
+    Task task = taskResourceAssembler.toModel(taskResource);
 
-        Instant modified = task.getModified();
-        boolean isAfterOrEquals = before.isAfter(modified) || before.equals(modified);
-        assertFalse("Task " + task.getId() + " has not been refreshed.", isAfterOrEquals);
-    }
-
+    Instant modified = task.getModified();
+    boolean isAfterOrEquals = before.isAfter(modified) || before.equals(modified);
+    assertFalse("Task " + task.getId() + " has not been refreshed.", isAfterOrEquals);
+  }
 }
