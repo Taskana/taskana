@@ -1,12 +1,12 @@
-import { of } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { environment } from 'app/../environments/environment';
-import { Injectable, Injector } from '@angular/core';
-import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
-import { TaskanaEngineService } from 'app/services/taskana-engine/taskana-engine.service';
-import { map } from 'rxjs/operators';
-import { WindowRefService } from 'app/services/window/window.service';
+import {of} from 'rxjs';
+import {HttpClient} from '@angular/common/http';
+import {Router} from '@angular/router';
+import {environment} from 'app/../environments/environment';
+import {Injectable, Injector} from '@angular/core';
+import {CustomFieldsService} from 'app/services/custom-fields/custom-fields.service';
+import {TaskanaEngineService} from 'app/services/taskana-engine/taskana-engine.service';
+import {map} from 'rxjs/operators';
+import {WindowRefService} from 'app/services/window/window.service';
 
 @Injectable()
 export class StartupService {
@@ -18,37 +18,28 @@ export class StartupService {
     private window: WindowRefService) {
   }
 
+  public get router(): Router {
+    return this.injector.get(Router);
+  }
+
   load(): Promise<any> {
     return this.loadEnvironment();
   }
 
-  private loadEnvironment() {
-    return this.getEnvironmentFilePromise().then(
-      () => this.geCustomizedFieldsFilePromise()
-    ).then(
-      () => this.taskanaEngineService.getUserInformation()
-    ).catch(error => {
-      this.window.nativeWindow.location.href = environment.taskanaRestUrl + '/login';
-    });
-  }
-
   getEnvironmentFilePromise() {
     return this.httpClient.get<any>('environments/data-sources/environment-information.json').pipe(map(jsonFile => {
-      if (jsonFile && environment.taskanaRestUrl === '') {
-        environment.taskanaRestUrl = jsonFile.taskanaRestUrl === '' ?
-          window.location.protocol + '//' + window.location.host : jsonFile.taskanaRestUrl;
+      if (jsonFile && jsonFile.taskanaRestUrl) {
+        environment.taskanaRestUrl = jsonFile.taskanaRestUrl;
       }
 
-      if (jsonFile && environment.taskanaLogoutUrl === '') {
-        environment.taskanaLogoutUrl = jsonFile.taskanaLogoutUrl === '' ?
-          environment.taskanaRestUrl + '/logout' : jsonFile.taskanaLogoutUrl;
-
+      if (jsonFile && jsonFile.taskanaLogoutUrl) {
+        environment.taskanaLogoutUrl = jsonFile.taskanaLogoutUrl;
       }
       this.customFieldsService.initCustomFields('EN', jsonFile);
     })).toPromise()
-      .catch(() => {
-        return of(true)
-      });
+    .catch(() => {
+      return of(true)
+    });
   }
 
   geCustomizedFieldsFilePromise() {
@@ -57,12 +48,19 @@ export class StartupService {
         this.customFieldsService.initCustomFields('EN', jsonFile);
       }
     })).toPromise()
-      .catch(() => {
-        return of(true)
-      });
+    .catch(() => {
+      return of(true)
+    });
   }
 
-  public get router(): Router {
-    return this.injector.get(Router);
+  private loadEnvironment() {
+    return this.getEnvironmentFilePromise().then(
+      () => this.geCustomizedFieldsFilePromise()
+    ).then(
+      () => this.taskanaEngineService.getUserInformation()
+    ).catch(error => {
+      console.log(error);
+      //this.window.nativeWindow.location.href = environment.taskanaRestUrl + '/login';
+    });
   }
 }
