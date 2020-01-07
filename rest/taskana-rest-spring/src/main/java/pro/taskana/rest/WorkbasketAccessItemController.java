@@ -1,6 +1,5 @@
 package pro.taskana.rest;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -108,9 +107,8 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
       }
     } else {
       throw new InvalidArgumentException(
-          MessageFormat
-              .format(
-                  "{0} corresponding to a group, not a user. "
+          String.format(
+                  "%s corresponding to a group, not a user. "
                       + "You just can remove access items for a user",
                   accessId));
     }
