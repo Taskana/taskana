@@ -1,5 +1,7 @@
 package pro.taskana;
 
+import java.util.Objects;
+
 /**
  * This class encapsulates key - domain pairs for identification of workbaskets.
  *
@@ -33,11 +35,7 @@ public class KeyDomain {
 
   @Override
   public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((domain == null) ? 0 : domain.hashCode());
-    result = prime * result + ((key == null) ? 0 : key.hashCode());
-    return result;
+    return Objects.hash(key, domain);
   }
 
   @Override
@@ -48,29 +46,15 @@ public class KeyDomain {
     if (obj == null) {
       return false;
     }
-    if (!getClass().isAssignableFrom(obj.getClass())) {
+    if (getClass() != obj.getClass()) {
       return false;
     }
     KeyDomain other = (KeyDomain) obj;
-    if (domain == null) {
-      if (other.domain != null) {
-        return false;
-      }
-    } else if (!domain.equals(other.domain)) {
-      return false;
-    }
-    if (key == null) {
-      if (other.key != null) {
-        return false;
-      }
-    } else if (!key.equals(other.key)) {
-      return false;
-    }
-    return true;
+    return Objects.equals(key, other.key) && Objects.equals(domain, other.domain);
   }
 
   @Override
   public String toString() {
-    return "KeyDomain [" + "key=" + this.key + ", domain=" + this.domain + "]";
+    return "KeyDomain [key=" + key + ", domain=" + domain + "]";
   }
 }

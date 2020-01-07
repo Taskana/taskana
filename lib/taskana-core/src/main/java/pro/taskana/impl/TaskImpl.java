@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import pro.taskana.Attachment;
 import pro.taskana.AttachmentSummary;
@@ -18,7 +19,6 @@ import pro.taskana.TaskState;
 import pro.taskana.TaskSummary;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.SystemException;
 
 /** Task entity. */
 public class TaskImpl implements Task {
@@ -722,57 +722,49 @@ public class TaskImpl implements Task {
 
   @Override
   public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    Object[] myFields = {
-      externalId,
-      attachments,
-      businessProcessId,
-      claimed,
-      classificationSummary,
-      completed,
-      created,
-      creator,
-      custom1,
-      custom10,
-      custom11,
-      custom12,
-      custom13,
-      custom14,
-      custom15,
-      custom16,
-      custom2,
-      custom3,
-      custom4,
-      custom5,
-      custom6,
-      custom7,
-      custom8,
-      custom9,
-      customAttributes,
-      callbackInfo,
-      callbackState,
-      description,
-      due,
-      id,
-      modified,
-      name,
-      note,
-      owner,
-      parentBusinessProcessId,
-      planned,
-      primaryObjRef,
-      state,
-      workbasketSummary
-    };
-
-    for (Object property : myFields) {
-      result = prime * result + (property == null ? 0 : property.hashCode());
-    }
-    result = prime * result + (isRead ? 1231 : 1237);
-    result = prime * result + (isTransferred ? 1231 : 1237);
-    result = prime * result + priority;
-    return result;
+    return Objects.hash(
+        id,
+        externalId,
+        created,
+        claimed,
+        completed,
+        modified,
+        planned,
+        due,
+        name,
+        creator,
+        description,
+        note,
+        priority,
+        state,
+        classificationSummary,
+        workbasketSummary,
+        businessProcessId,
+        parentBusinessProcessId,
+        owner,
+        primaryObjRef,
+        isRead,
+        isTransferred,
+        customAttributes,
+        callbackInfo,
+        callbackState,
+        attachments,
+        custom1,
+        custom2,
+        custom3,
+        custom4,
+        custom5,
+        custom6,
+        custom7,
+        custom8,
+        custom9,
+        custom10,
+        custom11,
+        custom12,
+        custom13,
+        custom14,
+        custom15,
+        custom16);
   }
 
   @Override
@@ -783,112 +775,52 @@ public class TaskImpl implements Task {
     if (obj == null) {
       return false;
     }
-    if (!getClass().isAssignableFrom(obj.getClass())) {
+    if (getClass() != obj.getClass()) {
       return false;
     }
     TaskImpl other = (TaskImpl) obj;
-
-    Object[] myFields = {
-      externalId,
-      attachments,
-      businessProcessId,
-      claimed,
-      classificationSummary,
-      completed,
-      created,
-      creator,
-      custom1,
-      custom10,
-      custom11,
-      custom12,
-      custom13,
-      custom14,
-      custom15,
-      custom16,
-      custom2,
-      custom3,
-      custom4,
-      custom5,
-      custom6,
-      custom7,
-      custom8,
-      custom9,
-      customAttributes,
-      callbackInfo,
-      callbackState,
-      description,
-      due,
-      id,
-      modified,
-      name,
-      note,
-      owner,
-      parentBusinessProcessId,
-      planned,
-      primaryObjRef,
-      state,
-      workbasketSummary
-    };
-
-    Object[] otherFields = {
-      other.externalId,
-      other.attachments,
-      other.businessProcessId,
-      other.claimed,
-      other.classificationSummary,
-      other.completed,
-      other.created,
-      other.creator,
-      other.custom1,
-      other.custom10,
-      other.custom11,
-      other.custom12,
-      other.custom13,
-      other.custom14,
-      other.custom15,
-      other.custom16,
-      other.custom2,
-      other.custom3,
-      other.custom4,
-      other.custom5,
-      other.custom6,
-      other.custom7,
-      other.custom8,
-      other.custom9,
-      other.customAttributes,
-      other.callbackInfo,
-      other.callbackState,
-      other.description,
-      other.due,
-      other.id,
-      other.modified,
-      other.name,
-      other.note,
-      other.owner,
-      other.parentBusinessProcessId,
-      other.planned,
-      other.primaryObjRef,
-      other.state,
-      other.workbasketSummary
-    };
-
-    if (myFields.length != otherFields.length) {
-      throw new SystemException("TaskSummaryImpl: length mismatch between internal arrays");
-    }
-    for (int i = 0; i < myFields.length; i++) {
-      if ((myFields[i] == null && otherFields[i] != null)
-          || (myFields[i] != null && !myFields[i].equals(otherFields[i]))) {
-        return false;
-      }
-    }
-    if (isRead != other.isRead) {
-      return false;
-    }
-    if (isTransferred != other.isTransferred) {
-      return false;
-    }
-
-    return (priority == other.priority);
+    return priority == other.priority
+        && isRead == other.isRead
+        && isTransferred == other.isTransferred
+        && Objects.equals(id, other.id)
+        && Objects.equals(externalId, other.externalId)
+        && Objects.equals(created, other.created)
+        && Objects.equals(claimed, other.claimed)
+        && Objects.equals(completed, other.completed)
+        && Objects.equals(modified, other.modified)
+        && Objects.equals(planned, other.planned)
+        && Objects.equals(due, other.due)
+        && Objects.equals(name, other.name)
+        && Objects.equals(creator, other.creator)
+        && Objects.equals(description, other.description)
+        && Objects.equals(note, other.note)
+        && state == other.state
+        && Objects.equals(classificationSummary, other.classificationSummary)
+        && Objects.equals(workbasketSummary, other.workbasketSummary)
+        && Objects.equals(businessProcessId, other.businessProcessId)
+        && Objects.equals(parentBusinessProcessId, other.parentBusinessProcessId)
+        && Objects.equals(owner, other.owner)
+        && Objects.equals(primaryObjRef, other.primaryObjRef)
+        && Objects.equals(customAttributes, other.customAttributes)
+        && Objects.equals(callbackInfo, other.callbackInfo)
+        && callbackState == other.callbackState
+        && Objects.equals(attachments, other.attachments)
+        && Objects.equals(custom1, other.custom1)
+        && Objects.equals(custom2, other.custom2)
+        && Objects.equals(custom3, other.custom3)
+        && Objects.equals(custom4, other.custom4)
+        && Objects.equals(custom5, other.custom5)
+        && Objects.equals(custom6, other.custom6)
+        && Objects.equals(custom7, other.custom7)
+        && Objects.equals(custom8, other.custom8)
+        && Objects.equals(custom9, other.custom9)
+        && Objects.equals(custom10, other.custom10)
+        && Objects.equals(custom11, other.custom11)
+        && Objects.equals(custom12, other.custom12)
+        && Objects.equals(custom13, other.custom13)
+        && Objects.equals(custom14, other.custom14)
+        && Objects.equals(custom15, other.custom15)
+        && Objects.equals(custom16, other.custom16);
   }
 
   @Override
