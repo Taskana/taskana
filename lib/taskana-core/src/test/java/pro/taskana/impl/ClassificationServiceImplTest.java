@@ -26,55 +26,53 @@ import pro.taskana.mappings.ClassificationMapper;
 @ExtendWith(MockitoExtension.class)
 class ClassificationServiceImplTest {
 
-    @Spy
-    @InjectMocks
-    private ClassificationServiceImpl cutSpy;
-    @Mock
-    private ClassificationMapper classificationMapperMock;
-    @Mock
-    private TaskanaEngine taskanaEngineMock;
-    @Mock
-    private InternalTaskanaEngine internalTaskanaEngineMock;
-    @Mock
-    private ClassificationQueryImpl classificationQueryImplMock;
+  @Spy @InjectMocks private ClassificationServiceImpl cutSpy;
+  @Mock private ClassificationMapper classificationMapperMock;
+  @Mock private TaskanaEngine taskanaEngineMock;
+  @Mock private InternalTaskanaEngine internalTaskanaEngineMock;
+  @Mock private ClassificationQueryImpl classificationQueryImplMock;
 
-    @Test
-    void testCreateClassificationQuery() {
-        cutSpy.createClassificationQuery();
-        verifyNoMoreInteractions(classificationMapperMock, internalTaskanaEngineMock, taskanaEngineMock,
-            classificationQueryImplMock);
-    }
+  @Test
+  void testCreateClassificationQuery() {
+    cutSpy.createClassificationQuery();
+    verifyNoMoreInteractions(
+        classificationMapperMock,
+        internalTaskanaEngineMock,
+        taskanaEngineMock,
+        classificationQueryImplMock);
+  }
 
-    @Test
-    void testThrowExceptionIdIfClassificationIsCreatedWithAnExplicitId() {
-        when(internalTaskanaEngineMock.getEngine()).thenReturn(taskanaEngineMock);
-        InvalidArgumentException invalidArgumentException = Assertions.assertThrows(InvalidArgumentException.class,
+  @Test
+  void testThrowExceptionIdIfClassificationIsCreatedWithAnExplicitId() {
+    when(internalTaskanaEngineMock.getEngine()).thenReturn(taskanaEngineMock);
+    InvalidArgumentException invalidArgumentException =
+        Assertions.assertThrows(
+            InvalidArgumentException.class,
             () -> {
-
-                Classification classification = createDummyClassification();
-                when(internalTaskanaEngineMock.domainExists(any())).thenReturn(true);
-                cutSpy.createClassification(classification);
+              Classification classification = createDummyClassification();
+              when(internalTaskanaEngineMock.domainExists(any())).thenReturn(true);
+              cutSpy.createClassification(classification);
             });
 
-        assertEquals(invalidArgumentException.getMessage(), "ClassificationId should be null on creation");
-    }
+    assertEquals(
+        invalidArgumentException.getMessage(), "ClassificationId should be null on creation");
+  }
 
-    private Classification createDummyClassification() {
-        return this.createDummyClassification("ID: 1");
-    }
+  private Classification createDummyClassification() {
+    return this.createDummyClassification("ID: 1");
+  }
 
-    private Classification createDummyClassification(String id) {
+  private Classification createDummyClassification(String id) {
 
-        ClassificationImpl classificationImpl = new ClassificationImpl();
-        classificationImpl.setDescription("A DUMMY FOR TESTING A SERVICE");
-        classificationImpl.setName("SERVICE-DUMMY");
-        classificationImpl.setDomain("DOMAIN_A");
-        classificationImpl.setServiceLevel("P2D");
-        classificationImpl.setId(id);
-        classificationImpl.setKey("ABC111");
-        classificationImpl.setParentId("");
-        classificationImpl.setParentKey("");
-        return classificationImpl;
-    }
-
+    ClassificationImpl classificationImpl = new ClassificationImpl();
+    classificationImpl.setDescription("A DUMMY FOR TESTING A SERVICE");
+    classificationImpl.setName("SERVICE-DUMMY");
+    classificationImpl.setDomain("DOMAIN_A");
+    classificationImpl.setServiceLevel("P2D");
+    classificationImpl.setId(id);
+    classificationImpl.setKey("ABC111");
+    classificationImpl.setParentId("");
+    classificationImpl.setParentKey("");
+    return classificationImpl;
+  }
 }

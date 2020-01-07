@@ -5,12 +5,11 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import acceptance.AbstractAccTest;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import acceptance.AbstractAccTest;
 import pro.taskana.BaseQuery.SortDirection;
 import pro.taskana.KeyDomain;
 import pro.taskana.TaskService;
@@ -19,79 +18,84 @@ import pro.taskana.TaskSummary;
 import pro.taskana.security.JAASExtension;
 import pro.taskana.security.WithAccessId;
 
-/**
- * Acceptance test for all "query tasks with sorting" scenarios.
- */
+/** Acceptance test for all "query tasks with sorting" scenarios. */
 @ExtendWith(JAASExtension.class)
 class QueryTasksWithSortingAccTest extends AbstractAccTest {
 
-    private static SortDirection asc = SortDirection.ASCENDING;
-    private static SortDirection desc = SortDirection.DESCENDING;
+  private static SortDirection asc = SortDirection.ASCENDING;
+  private static SortDirection desc = SortDirection.DESCENDING;
 
-    QueryTasksWithSortingAccTest() {
-        super();
-    }
+  QueryTasksWithSortingAccTest() {
+    super();
+  }
 
-    @WithAccessId(
-        userName = "teamlead_1",
-        groupNames = {"group_1", "group_2"})
-    @Test
-    void testSortByModifiedAndDomain() {
-        TaskService taskService = taskanaEngine.getTaskService();
-        List<TaskSummary> results = taskService.createTaskQuery()
+  @WithAccessId(
+      userName = "teamlead_1",
+      groupNames = {"group_1", "group_2"})
+  @Test
+  void testSortByModifiedAndDomain() {
+    TaskService taskService = taskanaEngine.getTaskService();
+    List<TaskSummary> results =
+        taskService
+            .createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("USER_3_2", "DOMAIN_B"))
             .orderByModified(desc)
             .orderByDomain(null)
             .list();
 
-        assertThat(results.size(), equalTo(25));
-        TaskSummary previousSummary = null;
-        for (TaskSummary taskSummary : results) {
-            if (previousSummary != null) {
-                assertFalse(previousSummary.getModified().isBefore(taskSummary.getModified()));
-            }
-            previousSummary = taskSummary;
-        }
+    assertThat(results.size(), equalTo(25));
+    TaskSummary previousSummary = null;
+    for (TaskSummary taskSummary : results) {
+      if (previousSummary != null) {
+        assertFalse(previousSummary.getModified().isBefore(taskSummary.getModified()));
+      }
+      previousSummary = taskSummary;
     }
+  }
 
-    @WithAccessId(
-        userName = "teamlead_1",
-        groupNames = {"group_1", "group_2"})
-    @Test
-    void testSortByDomainNameAndCreated() {
-        TaskService taskService = taskanaEngine.getTaskService();
-        List<TaskSummary> results = taskService.createTaskQuery()
+  @WithAccessId(
+      userName = "teamlead_1",
+      groupNames = {"group_1", "group_2"})
+  @Test
+  void testSortByDomainNameAndCreated() {
+    TaskService taskService = taskanaEngine.getTaskService();
+    List<TaskSummary> results =
+        taskService
+            .createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("USER_3_2", "DOMAIN_B"))
             .orderByDomain(asc)
             .orderByName(asc)
             .orderByCreated(null)
             .list();
 
-        assertThat(results.size(), equalTo(25));
-        TaskSummary previousSummary = null;
-        for (TaskSummary taskSummary : results) {
-            // System.out.println("domain: " + taskSummary.getDomain() + ", name: " + taskSummary.getName() + ",
-            // created: " + taskSummary.getCreated());
-            if (previousSummary != null) {
-                assertTrue(taskSummary.getDomain().compareToIgnoreCase(previousSummary.getDomain()) >= 0);
-                if (taskSummary.getDomain().equals(previousSummary.getDomain())) {
-                    assertTrue(taskSummary.getName().compareToIgnoreCase(previousSummary.getName()) >= 0);
-                    if (taskSummary.getName().equals(previousSummary.getName())) {
-                        assertFalse(taskSummary.getCreated().isBefore(previousSummary.getCreated()));
-                    }
-                }
-            }
-            previousSummary = taskSummary;
+    assertThat(results.size(), equalTo(25));
+    TaskSummary previousSummary = null;
+    for (TaskSummary taskSummary : results) {
+      // System.out.println("domain: " + taskSummary.getDomain() + ", name: " +
+      // taskSummary.getName() + ",
+      // created: " + taskSummary.getCreated());
+      if (previousSummary != null) {
+        assertTrue(taskSummary.getDomain().compareToIgnoreCase(previousSummary.getDomain()) >= 0);
+        if (taskSummary.getDomain().equals(previousSummary.getDomain())) {
+          assertTrue(taskSummary.getName().compareToIgnoreCase(previousSummary.getName()) >= 0);
+          if (taskSummary.getName().equals(previousSummary.getName())) {
+            assertFalse(taskSummary.getCreated().isBefore(previousSummary.getCreated()));
+          }
         }
+      }
+      previousSummary = taskSummary;
     }
+  }
 
-    @WithAccessId(
-        userName = "teamlead_1",
-        groupNames = {"group_1", "group_2"})
-    @Test
-    void testSortByPorSystemNoteDueAndOwner() {
-        TaskService taskService = taskanaEngine.getTaskService();
-        List<TaskSummary> results = taskService.createTaskQuery()
+  @WithAccessId(
+      userName = "teamlead_1",
+      groupNames = {"group_1", "group_2"})
+  @Test
+  void testSortByPorSystemNoteDueAndOwner() {
+    TaskService taskService = taskanaEngine.getTaskService();
+    List<TaskSummary> results =
+        taskService
+            .createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("USER_3_2", "DOMAIN_B"))
             .orderByPrimaryObjectReferenceSystem(SortDirection.DESCENDING)
             .orderByNote(null)
@@ -99,24 +103,30 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
             .orderByOwner(asc)
             .list();
 
-        assertThat(results.size(), equalTo(25));
-        TaskSummary previousSummary = null;
-        for (TaskSummary taskSummary : results) {
-            if (previousSummary != null) {
-                assertTrue(taskSummary.getPrimaryObjRef().getSystem().compareToIgnoreCase(
-                    previousSummary.getPrimaryObjRef().getSystem()) <= 0);
-            }
-            previousSummary = taskSummary;
-        }
+    assertThat(results.size(), equalTo(25));
+    TaskSummary previousSummary = null;
+    for (TaskSummary taskSummary : results) {
+      if (previousSummary != null) {
+        assertTrue(
+            taskSummary
+                    .getPrimaryObjRef()
+                    .getSystem()
+                    .compareToIgnoreCase(previousSummary.getPrimaryObjRef().getSystem())
+                <= 0);
+      }
+      previousSummary = taskSummary;
     }
+  }
 
-    @WithAccessId(
-        userName = "teamlead_1",
-        groupNames = {"group_1", "group_2"})
-    @Test
-    void testSortByPorSystemInstanceParentProcPlannedAndState() {
-        TaskService taskService = taskanaEngine.getTaskService();
-        List<TaskSummary> results = taskService.createTaskQuery()
+  @WithAccessId(
+      userName = "teamlead_1",
+      groupNames = {"group_1", "group_2"})
+  @Test
+  void testSortByPorSystemInstanceParentProcPlannedAndState() {
+    TaskService taskService = taskanaEngine.getTaskService();
+    List<TaskSummary> results =
+        taskService
+            .createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("USER_3_2", "DOMAIN_B"))
             .orderByPrimaryObjectReferenceSystemInstance(desc)
             .orderByParentBusinessProcessId(asc)
@@ -124,49 +134,62 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
             .orderByState(asc)
             .list();
 
-        assertThat(results.size(), equalTo(25));
-        TaskSummary previousSummary = null;
-        for (TaskSummary taskSummary : results) {
-            if (previousSummary != null) {
-                assertTrue(taskSummary.getPrimaryObjRef().getSystemInstance().compareToIgnoreCase(
-                    previousSummary.getPrimaryObjRef().getSystemInstance()) <= 0);
-            }
-            previousSummary = taskSummary;
-        }
+    assertThat(results.size(), equalTo(25));
+    TaskSummary previousSummary = null;
+    for (TaskSummary taskSummary : results) {
+      if (previousSummary != null) {
+        assertTrue(
+            taskSummary
+                    .getPrimaryObjRef()
+                    .getSystemInstance()
+                    .compareToIgnoreCase(previousSummary.getPrimaryObjRef().getSystemInstance())
+                <= 0);
+      }
+      previousSummary = taskSummary;
     }
+  }
 
-    @WithAccessId(
-        userName = "teamlead_1",
-        groupNames = {"group_1", "group_2"})
-    @Test
-    void testSortByPorCompanyAndClaimed() {
-        TaskService taskService = taskanaEngine.getTaskService();
-        List<TaskSummary> results = taskService.createTaskQuery()
+  @WithAccessId(
+      userName = "teamlead_1",
+      groupNames = {"group_1", "group_2"})
+  @Test
+  void testSortByPorCompanyAndClaimed() {
+    TaskService taskService = taskanaEngine.getTaskService();
+    List<TaskSummary> results =
+        taskService
+            .createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("USER_3_2", "DOMAIN_B"))
             .orderByPrimaryObjectReferenceCompany(desc)
             .orderByClaimed(asc)
             .list();
 
-        assertThat(results.size(), equalTo(25));
-        TaskSummary previousSummary = null;
-        for (TaskSummary taskSummary : results) {
-            // System.out.println("porCompany: " + taskSummary.getPrimaryObjRef().getCompany() + ", claimed: "
-            // + taskSummary.getClaimed());
-            if (previousSummary != null) {
-                assertTrue(taskSummary.getPrimaryObjRef().getCompany().compareToIgnoreCase(
-                    previousSummary.getPrimaryObjRef().getCompany()) <= 0);
-            }
-            previousSummary = taskSummary;
-        }
+    assertThat(results.size(), equalTo(25));
+    TaskSummary previousSummary = null;
+    for (TaskSummary taskSummary : results) {
+      // System.out.println("porCompany: " + taskSummary.getPrimaryObjRef().getCompany() + ",
+      // claimed: "
+      // + taskSummary.getClaimed());
+      if (previousSummary != null) {
+        assertTrue(
+            taskSummary
+                    .getPrimaryObjRef()
+                    .getCompany()
+                    .compareToIgnoreCase(previousSummary.getPrimaryObjRef().getCompany())
+                <= 0);
+      }
+      previousSummary = taskSummary;
     }
+  }
 
-    @WithAccessId(
-        userName = "teamlead_1",
-        groupNames = {"group_1", "group_2"})
-    @Test
-    void testSortByWbKeyPrioPorValueAndCompleted() {
-        TaskService taskService = taskanaEngine.getTaskService();
-        List<TaskSummary> results = taskService.createTaskQuery()
+  @WithAccessId(
+      userName = "teamlead_1",
+      groupNames = {"group_1", "group_2"})
+  @Test
+  void testSortByWbKeyPrioPorValueAndCompleted() {
+    TaskService taskService = taskanaEngine.getTaskService();
+    List<TaskSummary> results =
+        taskService
+            .createTaskQuery()
             .stateIn(TaskState.READY)
             .orderByWorkbasketKey(null)
             .workbasketIdIn("WBI:100000000000000000000000000000000015")
@@ -175,24 +198,30 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
             .orderByCompleted(desc)
             .list();
 
-        assertThat(results.size(), equalTo(22));
-        TaskSummary previousSummary = null;
-        for (TaskSummary taskSummary : results) {
-            if (previousSummary != null) {
-                assertTrue(taskSummary.getWorkbasketSummary().getKey().compareToIgnoreCase(
-                    previousSummary.getWorkbasketSummary().getKey()) >= 0);
-            }
-            previousSummary = taskSummary;
-        }
+    assertThat(results.size(), equalTo(22));
+    TaskSummary previousSummary = null;
+    for (TaskSummary taskSummary : results) {
+      if (previousSummary != null) {
+        assertTrue(
+            taskSummary
+                    .getWorkbasketSummary()
+                    .getKey()
+                    .compareToIgnoreCase(previousSummary.getWorkbasketSummary().getKey())
+                >= 0);
+      }
+      previousSummary = taskSummary;
     }
+  }
 
-    @WithAccessId(
-        userName = "teamlead_1",
-        groupNames = {"group_1", "group_2"})
-    @Test
-    void testSortBpIdClassificationIdDescriptionAndPorType() {
-        TaskService taskService = taskanaEngine.getTaskService();
-        List<TaskSummary> results = taskService.createTaskQuery()
+  @WithAccessId(
+      userName = "teamlead_1",
+      groupNames = {"group_1", "group_2"})
+  @Test
+  void testSortBpIdClassificationIdDescriptionAndPorType() {
+    TaskService taskService = taskanaEngine.getTaskService();
+    List<TaskSummary> results =
+        taskService
+            .createTaskQuery()
             .stateIn(TaskState.READY)
             .workbasketIdIn("WBI:100000000000000000000000000000000015")
             .orderByBusinessProcessId(asc)
@@ -200,15 +229,17 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
             .orderByPrimaryObjectReferenceType(SortDirection.DESCENDING)
             .list();
 
-        assertThat(results.size(), equalTo(22));
-        TaskSummary previousSummary = null;
-        for (TaskSummary taskSummary : results) {
-            if (previousSummary != null) {
-                assertTrue(taskSummary.getBusinessProcessId().compareToIgnoreCase(
-                    previousSummary.getBusinessProcessId()) >= 0);
-            }
-            previousSummary = taskSummary;
-        }
+    assertThat(results.size(), equalTo(22));
+    TaskSummary previousSummary = null;
+    for (TaskSummary taskSummary : results) {
+      if (previousSummary != null) {
+        assertTrue(
+            taskSummary
+                    .getBusinessProcessId()
+                    .compareToIgnoreCase(previousSummary.getBusinessProcessId())
+                >= 0);
+      }
+      previousSummary = taskSummary;
     }
-
+  }
 }

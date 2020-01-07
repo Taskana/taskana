@@ -11,59 +11,54 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.LdapContextSource;
 
-/**
- * Configuration for Ldap access.
- */
+/** Configuration for Ldap access. */
 @Configuration
 public class LdapConfiguration {
 
-    @Autowired
-    private Environment env;
+  @Autowired private Environment env;
 
-    @Bean
-    public LdapContextSource contextSource() {
+  @Bean
+  public LdapContextSource contextSource() {
 
-        LdapContextSource contextSource = new LdapContextSource();
-        boolean useLdap;
-        String useLdapConfigValue = env.getProperty("taskana.ldap.useLdap");
-        if (useLdapConfigValue == null || useLdapConfigValue.isEmpty()) {
-            useLdap = false;
-        } else {
-            useLdap = Boolean.parseBoolean(useLdapConfigValue);
-        }
-        if (useLdap) {
-            contextSource.setUrl(env.getRequiredProperty("taskana.ldap.serverUrl"));
-            contextSource.setBase(env.getRequiredProperty("taskana.ldap.baseDn"));
-            contextSource.setUserDn(env.getRequiredProperty("taskana.ldap.bindDn"));
-            contextSource.setPassword(env.getRequiredProperty("taskana.ldap.bindPassword"));
-        } else {
-            contextSource.setUrl("ldap://localhost:9999");
-            contextSource.setBase("o=taskana");
-            contextSource.setUserDn("user");
-            contextSource.setPassword("secret");
-        }
-        return contextSource;
+    LdapContextSource contextSource = new LdapContextSource();
+    boolean useLdap;
+    String useLdapConfigValue = env.getProperty("taskana.ldap.useLdap");
+    if (useLdapConfigValue == null || useLdapConfigValue.isEmpty()) {
+      useLdap = false;
+    } else {
+      useLdap = Boolean.parseBoolean(useLdapConfigValue);
     }
-
-    @Bean(name = "ldapTemplate")
-    @Conditional(WithLdapCondition.class)
-    public LdapTemplate getActiveLdapTemplate() {
-        return new LdapTemplate(contextSource());
+    if (useLdap) {
+      contextSource.setUrl(env.getRequiredProperty("taskana.ldap.serverUrl"));
+      contextSource.setBase(env.getRequiredProperty("taskana.ldap.baseDn"));
+      contextSource.setUserDn(env.getRequiredProperty("taskana.ldap.bindDn"));
+      contextSource.setPassword(env.getRequiredProperty("taskana.ldap.bindPassword"));
+    } else {
+      contextSource.setUrl("ldap://localhost:9999");
+      contextSource.setBase("o=taskana");
+      contextSource.setUserDn("user");
+      contextSource.setPassword("secret");
     }
+    return contextSource;
+  }
 
-    /**
-     * Helper class to control conditional provision of LdapTemplate.
-     */
-    public static class WithLdapCondition implements Condition {
+  @Bean(name = "ldapTemplate")
+  @Conditional(WithLdapCondition.class)
+  public LdapTemplate getActiveLdapTemplate() {
+    return new LdapTemplate(contextSource());
+  }
 
-        @Override
-        public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-            String useLdap = context.getEnvironment().getProperty(LdapClient.TASKANA_USE_LDAP_PROP_NAME);
-            if (useLdap == null || useLdap.isEmpty()) {
-                return false;
-            } else {
-                return Boolean.parseBoolean(useLdap);
-            }
-        }
+  /** Helper class to control conditional provision of LdapTemplate. */
+  public static class WithLdapCondition implements Condition {
+
+    @Override
+    public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
+      String useLdap = context.getEnvironment().getProperty(LdapClient.TASKANA_USE_LDAP_PROP_NAME);
+      if (useLdap == null || useLdap.isEmpty()) {
+        return false;
+      } else {
+        return Boolean.parseBoolean(useLdap);
+      }
     }
+  }
 }

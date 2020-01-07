@@ -7,13 +7,13 @@ package pro.taskana.exceptions;
  */
 public class InvalidArgumentException extends TaskanaException {
 
-    public InvalidArgumentException(String msg) {
-        super(msg);
-    }
+  private static final long serialVersionUID = 1L;
 
-    public InvalidArgumentException(String msg, Throwable cause) {
-        super(msg, cause);
-    }
+  public InvalidArgumentException(String msg) {
+    super(msg);
+  }
 
-    private static final long serialVersionUID = 1L;
+  public InvalidArgumentException(String msg, Throwable cause) {
+    super(msg, cause);
+  }
 }

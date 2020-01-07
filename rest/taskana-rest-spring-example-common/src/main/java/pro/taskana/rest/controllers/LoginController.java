@@ -7,18 +7,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-/**
- * The login controller.
- */
+/** The login controller. */
 @Controller
 public class LoginController implements WebMvcConfigurer {
-    private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
 
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        LOGGER.debug("Entry to addViewControllers()");
-        registry.addViewController("/login").setViewName("login");
-        registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
-        LOGGER.debug("Exit from addViewControllers()");
-    }
+  @Override
+  public void addViewControllers(ViewControllerRegistry registry) {
+    LOGGER.debug("Entry to addViewControllers()");
+    registry.addViewController("/login").setViewName("login");
+    registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
+    LOGGER.debug("Exit from addViewControllers()");
+  }
 }

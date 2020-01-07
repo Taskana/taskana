@@ -8,39 +8,45 @@ import pro.taskana.impl.report.structure.QueryItem;
  */
 public class TaskQueryItem implements QueryItem {
 
-    private String domain;
-    private TaskState state;
-    private int count;
+  private String domain;
+  private TaskState state;
+  private int count;
 
-    public void setDomain(String domain) {
-        this.domain = domain;
-    }
+  public void setDomain(String domain) {
+    this.domain = domain;
+  }
 
-    public void setCount(int count) {
-        this.count = count;
-    }
+  public void setCount(int count) {
+    this.count = count;
+  }
 
-    public TaskState getState() {
-        return state;
-    }
+  public TaskState getState() {
+    return state;
+  }
 
-    public void setState(TaskState state) {
-        this.state = state;
-    }
+  public void setState(TaskState state) {
+    this.state = state;
+  }
 
-    @Override
-    public String getKey() {
-        return domain;
-    }
+  @Override
+  public String getKey() {
+    return domain;
+  }
 
-    @Override
-    public int getValue() {
-        return count;
-    }
+  @Override
+  public int getValue() {
+    return count;
+  }
 
-    @Override
-    public String toString() {
-        return "TaskQueryItem [" + "domain= " + this.domain + ", state= " + this.state.name()
-            + ", count= " + this.count + "]";
-    }
+  @Override
+  public String toString() {
+    return "TaskQueryItem ["
+        + "domain= "
+        + this.domain
+        + ", state= "
+        + this.state.name()
+        + ", count= "
+        + this.count
+        + "]";
+  }
 }

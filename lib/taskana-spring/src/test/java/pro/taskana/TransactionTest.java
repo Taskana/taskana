@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -21,9 +20,7 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-/**
- * TODO.
- */
+/** TODO. */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ContextConfiguration("classpath:test-applicationContext.xml")
@@ -31,59 +28,56 @@ import org.springframework.test.context.junit4.SpringRunner;
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class TransactionTest {
 
-    @Autowired
-    TaskService taskService;
+  @Autowired TaskService taskService;
+  @LocalServerPort int port;
+  @Autowired private TestRestTemplate restTemplate;
 
-    @Autowired
-    private TestRestTemplate restTemplate;
+  @Before
+  public void init() throws SQLException, ClassNotFoundException {
+    Class.forName("org.h2.Driver");
+    try (Connection conn =
+        DriverManager.getConnection(
+            "jdbc:h2:mem:task-engine;IGNORECASE=TRUE;LOCK_MODE=0", "SA", "SA")) {
+      conn.createStatement().executeUpdate("DELETE FROM TASK WHERE 1=1");
+      conn.commit();
+    }
+  }
 
-    @LocalServerPort
-    int port;
+  @Test
+  @Ignore
+  public void testCommit() throws SQLException {
+    restTemplate.getForEntity("http://127.0.0.1:" + port + "/test", String.class);
 
-    @Before
-    public void init() throws SQLException, ClassNotFoundException {
-        Class.forName("org.h2.Driver");
-        try (Connection conn = DriverManager.getConnection("jdbc:h2:mem:task-engine;IGNORECASE=TRUE;LOCK_MODE=0", "SA",
-            "SA")) {
-            conn.createStatement().executeUpdate("DELETE FROM TASK WHERE 1=1");
-            conn.commit();
-        }
+    int resultCount = 0;
+    try (Connection conn =
+        DriverManager.getConnection(
+            "jdbc:h2:mem:task-engine;IGNORECASE=TRUE;LOCK_MODE=0", "SA", "SA")) {
+      ResultSet rs = conn.createStatement().executeQuery("SELECT ID FROM TASK");
+
+      while (rs.next()) {
+        resultCount++;
+      }
     }
 
-    @Test
-    @Ignore
-    public void testCommit() throws SQLException {
-        restTemplate.getForEntity("http://127.0.0.1:" + port + "/test", String.class);
+    Assert.assertEquals(1, resultCount);
+  }
 
-        int resultCount = 0;
-        try (Connection conn = DriverManager.getConnection("jdbc:h2:mem:task-engine;IGNORECASE=TRUE;LOCK_MODE=0", "SA",
-            "SA")) {
-            ResultSet rs = conn.createStatement().executeQuery("SELECT ID FROM TASK");
+  @Test
+  @Ignore
+  public void testRollback() throws SQLException {
+    restTemplate.postForEntity("http://127.0.0.1:" + port + "/test", null, String.class);
 
-            while (rs.next()) {
-                resultCount++;
-            }
-        }
+    int resultCount = 0;
+    try (Connection conn =
+        DriverManager.getConnection(
+            "jdbc:h2:mem:task-engine;IGNORECASE=TRUE;LOCK_MODE=0", "SA", "SA")) {
+      ResultSet rs = conn.createStatement().executeQuery("SELECT ID FROM TASK");
 
-        Assert.assertEquals(1, resultCount);
+      while (rs.next()) {
+        resultCount++;
+      }
     }
 
-    @Test
-    @Ignore
-    public void testRollback() throws SQLException {
-        restTemplate.postForEntity("http://127.0.0.1:" + port + "/test", null, String.class);
-
-        int resultCount = 0;
-        try (Connection conn = DriverManager.getConnection("jdbc:h2:mem:task-engine;IGNORECASE=TRUE;LOCK_MODE=0", "SA",
-            "SA")) {
-            ResultSet rs = conn.createStatement().executeQuery("SELECT ID FROM TASK");
-
-            while (rs.next()) {
-                resultCount++;
-            }
-        }
-
-        Assert.assertEquals(0, resultCount);
-    }
-
+    Assert.assertEquals(0, resultCount);
+  }
 }

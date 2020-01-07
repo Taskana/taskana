@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,70 +27,72 @@ import pro.taskana.configuration.DB;
 @ExtendWith(MockitoExtension.class)
 class TaskQueryImplTest {
 
-    @Mock
-    TaskServiceImpl taskServiceMock;
+  @Mock TaskServiceImpl taskServiceMock;
 
-    private TaskQueryImpl taskQueryImpl;
-    @Mock
-    private InternalTaskanaEngine internalTaskanaEngine;
-    @Mock
-    private TaskanaEngine taskanaEngine;
-    @Mock
-    private SqlSession sqlSession;
+  private TaskQueryImpl taskQueryImpl;
+  @Mock private InternalTaskanaEngine internalTaskanaEngine;
+  @Mock private TaskanaEngine taskanaEngine;
+  @Mock private SqlSession sqlSession;
 
-    @BeforeEach
-    void setup() {
-        when(internalTaskanaEngine.getEngine()).thenReturn(taskanaEngine);
-        when(taskanaEngine.getTaskService()).thenReturn(taskServiceMock);
+  @BeforeEach
+  void setup() {
+    when(internalTaskanaEngine.getEngine()).thenReturn(taskanaEngine);
+    when(taskanaEngine.getTaskService()).thenReturn(taskServiceMock);
 
-        Configuration configuration = new org.apache.ibatis.session.Configuration();
-        configuration.setDatabaseId(DB.H2.dbProductId);
-        when(internalTaskanaEngine.getSqlSession()).thenReturn(sqlSession);
-        when(sqlSession.getConfiguration()).thenReturn(configuration);
+    Configuration configuration = new org.apache.ibatis.session.Configuration();
+    configuration.setDatabaseId(DB.H2.dbProductId);
+    when(internalTaskanaEngine.getSqlSession()).thenReturn(sqlSession);
+    when(sqlSession.getConfiguration()).thenReturn(configuration);
 
-        taskQueryImpl = new TaskQueryImpl(internalTaskanaEngine);
-    }
+    taskQueryImpl = new TaskQueryImpl(internalTaskanaEngine);
+  }
 
-    @Test
-    void should_ReturnList_when_BuilderIsUsed() {
-        when(sqlSession.selectList(any(), any())).thenReturn(new ArrayList<>());
-        List<TaskSummary> intermediate = new ArrayList<>();
-        intermediate.add(new TaskSummaryImpl());
-        when(taskServiceMock.augmentTaskSummariesByContainedSummaries(any())).thenReturn(intermediate);
+  @Test
+  void should_ReturnList_when_BuilderIsUsed() {
+    when(sqlSession.selectList(any(), any())).thenReturn(new ArrayList<>());
+    List<TaskSummary> intermediate = new ArrayList<>();
+    intermediate.add(new TaskSummaryImpl());
+    when(taskServiceMock.augmentTaskSummariesByContainedSummaries(any())).thenReturn(intermediate);
 
-        List<TaskSummary> result = taskQueryImpl.nameIn("test", "asd", "blubber")
+    List<TaskSummary> result =
+        taskQueryImpl
+            .nameIn("test", "asd", "blubber")
             .priorityIn(1, 2)
             .stateIn(TaskState.CLAIMED, TaskState.COMPLETED)
             .list();
-        assertNotNull(result);
-    }
+    assertNotNull(result);
+  }
 
-    @Test
-    void should_ReturnListWithOffset_when_BuilderIsUsed() {
-        when(sqlSession.selectList(any(), any(), any())).thenReturn(new ArrayList<>());
-        List<TaskSummary> intermediate = new ArrayList<>();
-        intermediate.add(new TaskSummaryImpl());
-        when(taskServiceMock.augmentTaskSummariesByContainedSummaries(any())).thenReturn(intermediate);
+  @Test
+  void should_ReturnListWithOffset_when_BuilderIsUsed() {
+    when(sqlSession.selectList(any(), any(), any())).thenReturn(new ArrayList<>());
+    List<TaskSummary> intermediate = new ArrayList<>();
+    intermediate.add(new TaskSummaryImpl());
+    when(taskServiceMock.augmentTaskSummariesByContainedSummaries(any())).thenReturn(intermediate);
 
-        List<TaskSummary> result = taskQueryImpl.nameIn("test", "asd", "blubber")
+    List<TaskSummary> result =
+        taskQueryImpl
+            .nameIn("test", "asd", "blubber")
             .priorityIn(1, 2)
             .stateIn(TaskState.CLAIMED, TaskState.COMPLETED)
             .list(1, 1);
-        assertNotNull(result);
-    }
+    assertNotNull(result);
+  }
 
-    @Test
-    void should_ReturnOneItem_when_BuilderIsUsed() {
-        when(sqlSession.selectOne(any(), any())).thenReturn(new TaskSummaryImpl());
-        List<TaskSummary> intermediate = new ArrayList<>();
-        intermediate.add(new TaskSummaryImpl());
+  @Test
+  void should_ReturnOneItem_when_BuilderIsUsed() {
+    when(sqlSession.selectOne(any(), any())).thenReturn(new TaskSummaryImpl());
+    List<TaskSummary> intermediate = new ArrayList<>();
+    intermediate.add(new TaskSummaryImpl());
 
-        when(taskServiceMock.augmentTaskSummariesByContainedSummaries(any())).thenReturn(intermediate);
+    when(taskServiceMock.augmentTaskSummariesByContainedSummaries(any())).thenReturn(intermediate);
 
-        TaskSummary result = taskQueryImpl.nameIn("test", "asd", "blubber")
+    TaskSummary result =
+        taskQueryImpl
+            .nameIn("test", "asd", "blubber")
             .priorityIn(1, 2)
             .stateIn(TaskState.CLAIMED, TaskState.COMPLETED)
             .single();
-        assertNotNull(result);
-    }
+    assertNotNull(result);
+  }
 }

@@ -10,24 +10,27 @@ import pro.taskana.impl.report.structure.QueryItemPreprocessor;
 
 /**
  * Uses {@link DaysToWorkingDaysConverter} to convert an &lt;I&gt;s age to working days.
+ *
  * @param <I> QueryItem which is being processed
  */
-public class DaysToWorkingDaysPreProcessor<I extends AgeQueryItem> implements QueryItemPreprocessor<I> {
+public class DaysToWorkingDaysPreProcessor<I extends AgeQueryItem>
+    implements QueryItemPreprocessor<I> {
 
-    private DaysToWorkingDaysConverter instance;
+  private DaysToWorkingDaysConverter instance;
 
-    public DaysToWorkingDaysPreProcessor(List<? extends TimeIntervalColumnHeader> columnHeaders, boolean activate)
-        throws InvalidArgumentException {
-        if (activate) {
-            instance = DaysToWorkingDaysConverter.initialize(columnHeaders);
-        }
+  public DaysToWorkingDaysPreProcessor(
+      List<? extends TimeIntervalColumnHeader> columnHeaders, boolean activate)
+      throws InvalidArgumentException {
+    if (activate) {
+      instance = DaysToWorkingDaysConverter.initialize(columnHeaders);
     }
+  }
 
-    @Override
-    public I apply(I item) {
-        if (instance != null) {
-            item.setAgeInDays(instance.convertDaysToWorkingDays(item.getAgeInDays()));
-        }
-        return item;
+  @Override
+  public I apply(I item) {
+    if (instance != null) {
+      item.setAgeInDays(instance.convertDaysToWorkingDays(item.getAgeInDays()));
     }
+    return item;
+  }
 }

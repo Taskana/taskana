@@ -10,34 +10,31 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 
-/**
- * TODO.
- */
+/** TODO. */
 @Component
 @Transactional
 public class TaskanaComponent {
 
-    @Autowired
-    TaskService taskService;
+  @Autowired TaskService taskService;
 
-    public TaskService getTaskService() {
-        return taskService;
-    }
+  public TaskService getTaskService() {
+    return taskService;
+  }
 
-    public void triggerRollback() throws NotAuthorizedException, WorkbasketNotFoundException,
-        ClassificationNotFoundException, TaskAlreadyExistException, InvalidArgumentException {
-        Task task = taskService.newTask("1");
-        task.setName("Unit Test Task");
-        ObjectReference objRef = new ObjectReference();
-        objRef.setCompany("aCompany");
-        objRef.setSystem("aSystem");
-        objRef.setSystemInstance("anInstance");
-        objRef.setType("aType");
-        objRef.setValue("aValue");
-        task.setPrimaryObjRef(objRef);
+  public void triggerRollback()
+      throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
+          TaskAlreadyExistException, InvalidArgumentException {
+    Task task = taskService.newTask("1");
+    task.setName("Unit Test Task");
+    ObjectReference objRef = new ObjectReference();
+    objRef.setCompany("aCompany");
+    objRef.setSystem("aSystem");
+    objRef.setSystemInstance("anInstance");
+    objRef.setType("aType");
+    objRef.setValue("aValue");
+    task.setPrimaryObjRef(objRef);
 
-        task = taskService.createTask(task);
-        throw new RuntimeException();
-    }
-
+    task = taskService.createTask(task);
+    throw new RuntimeException();
+  }
 }

@@ -1,10 +1,8 @@
 package pro.taskana.rest;
 
 import java.sql.SQLException;
-
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -23,52 +21,53 @@ import pro.taskana.ldap.LdapClient;
 import pro.taskana.ldap.LdapConfiguration;
 import pro.taskana.sampledata.SampleDataGenerator;
 
-/**
- * Example Application showing the implementation of taskana-rest-spring.
- */
+/** Example Application showing the implementation of taskana-rest-spring. */
 @SpringBootApplication
 @EnableScheduling
 @ComponentScan(basePackages = "pro.taskana")
-@Import({TransactionalJobsConfiguration.class, LdapConfiguration.class, RestConfiguration.class, WebMvcConfig.class})
+@Import({
+  TransactionalJobsConfiguration.class,
+  LdapConfiguration.class,
+  RestConfiguration.class,
+  WebMvcConfig.class
+})
 public class ExampleRestApplication {
 
-    @Value("${taskana.schemaName:TASKANA}")
-    public String schemaName;
+  @Value("${taskana.schemaName:TASKANA}")
+  public String schemaName;
 
-    @Value("${generateSampleData:true}")
-    public boolean generateSampleData;
+  @Value("${generateSampleData:true}")
+  public boolean generateSampleData;
 
-    @Autowired
-    private SampleDataGenerator sampleDataGenerator;
+  @Autowired private SampleDataGenerator sampleDataGenerator;
 
-    @Autowired
-    private LdapClient ldapClient;
+  @Autowired private LdapClient ldapClient;
 
-    @Autowired private LdapCacheTestImpl ldapCacheTest;
+  @Autowired private LdapCacheTestImpl ldapCacheTest;
 
-    public static void main(String[] args) {
-        SpringApplication.run(ExampleRestApplication.class, args);
+  public static void main(String[] args) {
+    SpringApplication.run(ExampleRestApplication.class, args);
+  }
+
+  @Bean
+  public PlatformTransactionManager txManager(DataSource dataSource) {
+    return new DataSourceTransactionManager(dataSource);
+  }
+
+  @Bean
+  @DependsOn("getTaskanaEngine") // generate sample data after schema was inserted
+  public SampleDataGenerator generateSampleData(DataSource dataSource) {
+    sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
+    return sampleDataGenerator;
+  }
+
+  @PostConstruct
+  private void init() throws SQLException {
+    if (!ldapClient.useLdap()) {
+      AccessIdController.setLdapCache(ldapCacheTest);
     }
-
-    @Bean
-    public PlatformTransactionManager txManager(DataSource dataSource) {
-        return new DataSourceTransactionManager(dataSource);
+    if (generateSampleData) {
+      sampleDataGenerator.generateSampleData();
     }
-
-    @Bean
-    @DependsOn("getTaskanaEngine") // generate sample data after schema was inserted
-    public SampleDataGenerator generateSampleData(DataSource dataSource) {
-        sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
-        return sampleDataGenerator;
-    }
-
-    @PostConstruct
-    private void init() throws SQLException {
-        if (!ldapClient.useLdap()) {
-            AccessIdController.setLdapCache(ldapCacheTest);
-        }
-        if (generateSampleData) {
-            sampleDataGenerator.generateSampleData();
-        }
-    }
+  }
 }

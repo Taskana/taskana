@@ -15,37 +15,33 @@ import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 
-/**
- * Example Bootstrap Application.
- */
+/** Example Bootstrap Application. */
 @ApplicationScoped
 public class ExampleBootstrap {
 
-    @EJB
-    private TaskanaEjb taskanaEjb;
+  @EJB private TaskanaEjb taskanaEjb;
 
-    @PostConstruct
-    public void init(@Observes @Initialized(ApplicationScoped.class) Object init)
-        throws TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException,
-        ClassificationNotFoundException, InvalidStateException, InvalidOwnerException, TaskAlreadyExistException,
-        InvalidArgumentException {
-        System.out.println("---------------------------> Start App");
-        Task task = taskanaEjb.getTaskService().newTask(null);
-        ObjectReference objRef = new ObjectReference();
-        objRef.setCompany("aCompany");
-        objRef.setSystem("aSystem");
-        objRef.setSystemInstance("anInstance");
-        objRef.setType("aType");
-        objRef.setValue("aValue");
-        task.setPrimaryObjRef(objRef);
-        task = taskanaEjb.getTaskService().createTask(task);
-        System.out.println("---------------------------> Task started: " + task.getId());
-        taskanaEjb.getTaskService().claim(task.getId());
-        System.out.println(
-            "---------------------------> Task claimed: "
-                + taskanaEjb.getTaskService().getTask(task.getId()).getOwner());
-        taskanaEjb.getTaskService().completeTask(task.getId());
-        System.out.println("---------------------------> Task completed");
-    }
-
+  @PostConstruct
+  public void init(@Observes @Initialized(ApplicationScoped.class) Object init)
+      throws TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException,
+          ClassificationNotFoundException, InvalidStateException, InvalidOwnerException,
+          TaskAlreadyExistException, InvalidArgumentException {
+    System.out.println("---------------------------> Start App");
+    Task task = taskanaEjb.getTaskService().newTask(null);
+    ObjectReference objRef = new ObjectReference();
+    objRef.setCompany("aCompany");
+    objRef.setSystem("aSystem");
+    objRef.setSystemInstance("anInstance");
+    objRef.setType("aType");
+    objRef.setValue("aValue");
+    task.setPrimaryObjRef(objRef);
+    task = taskanaEjb.getTaskService().createTask(task);
+    System.out.println("---------------------------> Task started: " + task.getId());
+    taskanaEjb.getTaskService().claim(task.getId());
+    System.out.println(
+        "---------------------------> Task claimed: "
+            + taskanaEjb.getTaskService().getTask(task.getId()).getOwner());
+    taskanaEjb.getTaskService().completeTask(task.getId());
+    System.out.println("---------------------------> Task completed");
+  }
 }

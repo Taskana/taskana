@@ -22,105 +22,101 @@ import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-/**
- * Default basic configuration for taskana web example.
- */
+/** Default basic configuration for taskana web example. */
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Value("${devMode:false}")
-    private boolean devMode;
+  @Value("${devMode:false}")
+  private boolean devMode;
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+  @Bean
+  public JaasAuthenticationProvider jaasAuthProvider() {
+    JaasAuthenticationProvider authenticationProvider = new JaasAuthenticationProvider();
+    authenticationProvider.setAuthorityGranters(new AuthorityGranter[] {new SampleRoleGranter()});
+    authenticationProvider.setCallbackHandlers(
+        new JaasAuthenticationCallbackHandler[] {
+          new JaasNameCallbackHandler(), new JaasPasswordCallbackHandler()
+        });
+    authenticationProvider.setLoginContextName("taskana");
+    authenticationProvider.setLoginConfig(new ClassPathResource("pss_jaas.config"));
+    return authenticationProvider;
+  }
 
-        http.authorizeRequests()
-            .antMatchers(
-                "/css/**",
-                "/img/**")
-            .permitAll()
-            .and()
-            .csrf()
-            .disable()
-            .httpBasic()
-            .and()
-            .authenticationProvider(jaasAuthProvider())
-            .authorizeRequests()
-            .antMatchers(HttpMethod.GET, "/docs/**")
-            .permitAll()
-            .and()
-            .addFilter(new JaasApiIntegrationFilter());
+  @Bean
+  public WebMvcConfigurer corsConfigurer() {
+    return new WebMvcConfigurer() {
 
-        if (devMode) {
-            http.headers()
-                .frameOptions()
-                .sameOrigin()
-                .and()
-                .authorizeRequests()
-                .antMatchers("/h2-console/**")
-                .permitAll();
-        } else {
-            AddLoginPageConfiguration(http);
-        }
+      @Override
+      public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**").allowedOrigins("*");
+      }
+    };
+  }
 
+  @Bean
+  public FilterRegistrationBean<CorsFilter> corsFilter() {
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    CorsConfiguration config = new CorsConfiguration();
+    config.setAllowCredentials(true);
+    config.addAllowedOrigin("*");
+    config.addAllowedHeader("*");
+    config.addAllowedMethod("*");
+    config.addAllowedMethod("POST");
+    source.registerCorsConfiguration("/**", config);
+    FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(source));
+    bean.setOrder(0);
+    return bean;
+  }
+
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+
+    http.authorizeRequests()
+        .antMatchers("/css/**", "/img/**")
+        .permitAll()
+        .and()
+        .csrf()
+        .disable()
+        .httpBasic()
+        .and()
+        .authenticationProvider(jaasAuthProvider())
+        .authorizeRequests()
+        .antMatchers(HttpMethod.GET, "/docs/**")
+        .permitAll()
+        .and()
+        .addFilter(new JaasApiIntegrationFilter());
+
+    if (devMode) {
+      http.headers()
+          .frameOptions()
+          .sameOrigin()
+          .and()
+          .authorizeRequests()
+          .antMatchers("/h2-console/**")
+          .permitAll();
+    } else {
+      AddLoginPageConfiguration(http);
     }
+  }
 
-    @Bean
-    public JaasAuthenticationProvider jaasAuthProvider() {
-        JaasAuthenticationProvider authenticationProvider = new JaasAuthenticationProvider();
-        authenticationProvider.setAuthorityGranters(new AuthorityGranter[] {new SampleRoleGranter()});
-        authenticationProvider.setCallbackHandlers(new JaasAuthenticationCallbackHandler[] {
-            new JaasNameCallbackHandler(), new JaasPasswordCallbackHandler()});
-        authenticationProvider.setLoginContextName("taskana");
-        authenticationProvider.setLoginConfig(new ClassPathResource("pss_jaas.config"));
-        return authenticationProvider;
-    }
-
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("*");
-            }
-        };
-    }
-
-    @Bean
-    public FilterRegistrationBean<CorsFilter> corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.addAllowedOrigin("*");
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
-        config.addAllowedMethod("POST");
-        source.registerCorsConfiguration("/**", config);
-        FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(source));
-        bean.setOrder(0);
-        return bean;
-    }
-
-    private void AddLoginPageConfiguration(HttpSecurity http) throws Exception {
-        http
-            .authorizeRequests()
-            .anyRequest()
-            .fullyAuthenticated()
-            .and()
-            .formLogin()
-            .loginPage("/login")
-            .failureUrl("/login?error")
-            .defaultSuccessUrl("/")
-            .permitAll()
-            .and()
-            .logout()
-            .invalidateHttpSession(true)
-            .clearAuthentication(true)
-            .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-            .logoutSuccessUrl("/login?logout")
-            .deleteCookies("JSESSIONID")
-            .permitAll();
-    }
+  private void AddLoginPageConfiguration(HttpSecurity http) throws Exception {
+    http.authorizeRequests()
+        .anyRequest()
+        .fullyAuthenticated()
+        .and()
+        .formLogin()
+        .loginPage("/login")
+        .failureUrl("/login?error")
+        .defaultSuccessUrl("/")
+        .permitAll()
+        .and()
+        .logout()
+        .invalidateHttpSession(true)
+        .clearAuthentication(true)
+        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+        .logoutSuccessUrl("/login?logout")
+        .deleteCookies("JSESSIONID")
+        .permitAll();
+  }
 }

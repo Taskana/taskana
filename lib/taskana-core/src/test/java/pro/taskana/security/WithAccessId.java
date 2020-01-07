@@ -7,14 +7,14 @@ import java.lang.annotation.Target;
 
 /**
  * Specify user id for JUnit JAASRunner.
- * @author bbr
  *
+ * @author bbr
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
 public @interface WithAccessId {
 
-    String userName();
+  String userName();
 
-    String[] groupNames() default {};
+  String[] groupNames() default {};
 }
