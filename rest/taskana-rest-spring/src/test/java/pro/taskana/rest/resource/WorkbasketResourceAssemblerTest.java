@@ -12,6 +12,7 @@ import pro.taskana.WorkbasketType;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.WorkbasketImpl;
+import pro.taskana.rest.Mapping;
 
 /** Test for {@link WorkbasketResourceAssembler}. */
 @TaskanaSpringBootTest
@@ -40,9 +41,10 @@ class WorkbasketResourceAssemblerTest {
     ((WorkbasketImpl) workbasket).setCreated(Instant.parse("2010-01-01T12:00:00Z"));
     ((WorkbasketImpl) workbasket).setModified(Instant.parse("2010-01-01T12:00:00Z"));
     // when
-    WorkbasketResource workbasketResource = workbasketResourceAssembler.toResource(workbasket);
+    WorkbasketResource resource = workbasketResourceAssembler.toResource(workbasket);
     // then
-    testEquality(workbasket, workbasketResource);
+    testEquality(workbasket, resource);
+    verifyLinks(resource);
   }
 
   @Test
@@ -96,6 +98,20 @@ class WorkbasketResourceAssemblerTest {
     Workbasket workbasket = workbasketResourceAssembler.toModel(workbasketResource);
     // then
     testEquality(workbasket, workbasketResource);
+  }
+
+  private void verifyLinks(WorkbasketResource workbasket) {
+    Assert.assertEquals(5, workbasket.getLinks().size());
+    Assert.assertEquals(
+        Mapping.URL_WORKBASKET_ID.replaceAll("\\{.*}", workbasket.getWorkbasketId()),
+        workbasket.getLink("self").getHref());
+    Assert.assertEquals(
+        Mapping.URL_WORKBASKET_ID_DISTRIBUTION.replaceAll("\\{.*}", workbasket.getWorkbasketId()),
+        workbasket.getLink("distributionTargets").getHref());
+    Assert.assertEquals(Mapping.URL_WORKBASKET, workbasket.getLink("allWorkbaskets").getHref());
+    Assert.assertEquals(
+        Mapping.URL_WORKBASKET_DISTRIBUTION_ID.replaceAll("\\{.*}", workbasket.getWorkbasketId()),
+        workbasket.getLink("removeDistributionTargets").getHref());
   }
 
   private void testEquality(Workbasket workbasket, WorkbasketResource workbasketResource) {

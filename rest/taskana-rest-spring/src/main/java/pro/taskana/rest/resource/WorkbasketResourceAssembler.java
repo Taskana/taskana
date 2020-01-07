@@ -6,11 +6,15 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 import java.time.Instant;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
 
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketService;
+import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.SystemException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.rest.WorkbasketController;
@@ -20,14 +24,24 @@ import pro.taskana.rest.WorkbasketController;
  * versa.
  */
 @Component
-public class WorkbasketResourceAssembler {
+public class WorkbasketResourceAssembler
+    extends ResourceAssemblerSupport<Workbasket, WorkbasketResource> {
 
-  @Autowired private WorkbasketService workbasketService;
+  private final WorkbasketService workbasketService;
 
-  public WorkbasketResource toResource(Workbasket wb)
-      throws NotAuthorizedException, WorkbasketNotFoundException {
-    WorkbasketResource resource = new WorkbasketResource(wb);
-    return addLinks(resource, wb);
+  @Autowired
+  public WorkbasketResourceAssembler(WorkbasketService workbasketService) {
+    super(WorkbasketController.class, WorkbasketResource.class);
+    this.workbasketService = workbasketService;
+  }
+
+  public WorkbasketResource toResource(Workbasket wb) {
+    try {
+      WorkbasketResource resource = new WorkbasketResource(wb);
+      return addLinks(resource, wb);
+    } catch (Exception e) {
+      throw new SystemException("caught unexpected Exception.", e.getCause());
+    }
   }
 
   public Workbasket toModel(WorkbasketResource wbResource) {
@@ -46,7 +60,7 @@ public class WorkbasketResourceAssembler {
   }
 
   private WorkbasketResource addLinks(WorkbasketResource resource, Workbasket wb)
-      throws NotAuthorizedException, WorkbasketNotFoundException {
+      throws NotAuthorizedException, WorkbasketNotFoundException, InvalidArgumentException {
     resource.add(
         linkTo(methodOn(WorkbasketController.class).getWorkbasket(wb.getId())).withSelfRel());
     resource.add(
@@ -55,7 +69,9 @@ public class WorkbasketResourceAssembler {
     resource.add(
         linkTo(methodOn(WorkbasketController.class).getWorkbasketAccessItems(wb.getId()))
             .withRel("accessItems"));
-    resource.add(linkTo(WorkbasketController.class).withRel("allWorkbaskets"));
+    resource.add(
+        linkTo(methodOn(WorkbasketController.class).getWorkbaskets(new LinkedMultiValueMap<>()))
+            .withRel("allWorkbaskets"));
     resource.add(
         linkTo(
                 methodOn(WorkbasketController.class)
