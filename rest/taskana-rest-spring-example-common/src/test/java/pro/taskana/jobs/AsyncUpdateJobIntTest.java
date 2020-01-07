@@ -41,8 +41,8 @@ import pro.taskana.rest.resource.TaskResourceAssembler;
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class AsyncUpdateJobIntTest {
 
-  private static final String CLASSIFICATION_ID = "CLI:100000000000000000000000000000000003";
   static RestTemplate template;
+  private static final String CLASSIFICATION_ID = "CLI:100000000000000000000000000000000003";
   @Autowired ClassificationResourceAssembler classificationResourceAssembler;
   @Autowired TaskResourceAssembler taskResourceAssembler;
   @Autowired JobScheduler jobScheduler;
@@ -57,8 +57,8 @@ class AsyncUpdateJobIntTest {
   void testUpdateClassificationPrioServiceLevel() throws Exception {
 
     // 1st step: get old classification :
-    Instant before = Instant.now();
-    ObjectMapper mapper = new ObjectMapper();
+    final Instant before = Instant.now();
+    final ObjectMapper mapper = new ObjectMapper();
 
     ResponseEntity<ClassificationResource> response =
         template.exchange(

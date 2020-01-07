@@ -20,7 +20,7 @@ public class LdapCacheTestImpl implements LdapCache {
 
   /**
    * Dictionary is a {@link Map} collection that contains {@link AccessIdResource} as key (user) and
-   * {@link List<AccessIdResource>} as value (groups of which the user is a member) .
+   * {@link List} as value (groups of which the user is a member) .
    */
   private static Map<AccessIdResource, List<AccessIdResource>> users;
 
@@ -355,10 +355,10 @@ public class LdapCacheTestImpl implements LdapCache {
         });
 
     int groupNumber = 0;
-    List<AccessIdResource> group0 = new ArrayList<>(),
-        group1 = new ArrayList<>(),
-        group2 = new ArrayList<>(),
-        group3 = new ArrayList<>();
+    List<AccessIdResource> group0 = new ArrayList<>();
+    List<AccessIdResource> group1 = new ArrayList<>();
+    List<AccessIdResource> group2 = new ArrayList<>();
+    List<AccessIdResource> group3 = new ArrayList<>();
 
     for (AccessIdResource group : groups) {
       switch (groupNumber) {

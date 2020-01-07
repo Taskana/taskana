@@ -18,7 +18,7 @@ import pro.taskana.impl.report.item.TimestampQueryItem;
 import pro.taskana.report.Timestamp;
 
 /** This class is the mybatis mapping of task monitoring. */
-@SuppressWarnings({"checkstyle:LineLength", "checkstyle:indentation"})
+@SuppressWarnings({"checkstyle:LineLength", "checkstyle:Indentation"})
 public interface TaskMonitorMapper {
 
   @Select(
