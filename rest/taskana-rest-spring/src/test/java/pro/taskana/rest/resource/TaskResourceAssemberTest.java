@@ -1,5 +1,6 @@
 package pro.taskana.rest.resource;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -8,18 +9,27 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import pro.taskana.Attachment;
+import pro.taskana.Classification;
+import pro.taskana.ClassificationService;
 import pro.taskana.ObjectReference;
 import pro.taskana.Task;
 import pro.taskana.TaskService;
 import pro.taskana.TaskState;
 import pro.taskana.TaskanaSpringBootTest;
+import pro.taskana.Workbasket;
+import pro.taskana.WorkbasketService;
 import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.impl.AttachmentImpl;
+import pro.taskana.impl.TaskImpl;
+import pro.taskana.rest.Mapping;
 
 /** Test for {@link TaskResourceAssembler}. */
 @TaskanaSpringBootTest
 class TaskResourceAssemberTest {
 
   @Autowired TaskService taskService;
+  @Autowired WorkbasketService workbasketService;
+  @Autowired ClassificationService classificationService;
   @Autowired TaskResourceAssembler taskResourceAssembler;
 
   @Test
@@ -85,6 +95,65 @@ class TaskResourceAssemberTest {
     testEquality(task, resource);
   }
 
+  @Test
+  void testModelToResource() throws InvalidArgumentException {
+    // given
+    ObjectReference primaryObjRef = new ObjectReference();
+    primaryObjRef.setId("abc");
+    Workbasket workbasket = workbasketService.newWorkbasket("key", "domain");
+    Classification classification =
+        classificationService.newClassification("ckey", "cdomain", "MANUAL");
+    AttachmentImpl attachment = (AttachmentImpl) taskService.newAttachment();
+    attachment.setClassificationSummary(classification.asSummary());
+    attachment.setId("attachmentId");
+    TaskImpl task = (TaskImpl) taskService.newTask();
+    task.setId("taskId");
+    task.setExternalId("externalId");
+    task.setCreated(Instant.parse("2019-09-13T08:44:17.588Z"));
+    task.setClaimed(Instant.parse("2019-09-13T08:44:17.588Z"));
+    task.setCompleted(Instant.parse("2019-09-13T08:44:17.588Z"));
+    task.setModified(Instant.parse("2019-09-13T08:44:17.588Z"));
+    task.setPlanned(Instant.parse("2019-09-13T08:44:17.588Z"));
+    task.setDue(Instant.parse("2019-09-13T08:44:17.588Z"));
+    task.setName("name");
+    task.setCreator("creator");
+    task.setDescription("desc");
+    task.setNote("note");
+    task.setPriority(123);
+    task.setState(TaskState.READY);
+    task.setClassificationSummary(classification);
+    task.setWorkbasketSummary(workbasket.asSummary());
+    task.setBusinessProcessId("businessProcessId");
+    task.setParentBusinessProcessId("parentBusinessProcessId");
+    task.setOwner("owner");
+    task.setPrimaryObjRef(primaryObjRef);
+    task.setRead(true);
+    task.setTransferred(true);
+    task.setCustomAttributes(Collections.singletonMap("abc", "def"));
+    task.setCallbackInfo(Collections.singletonMap("ghi", "jkl"));
+    task.setAttachments(Collections.singletonList(attachment));
+    task.setCustom1("custom1");
+    task.setCustom2("custom2");
+    task.setCustom3("custom3");
+    task.setCustom4("custom4");
+    task.setCustom5("custom5");
+    task.setCustom6("custom6");
+    task.setCustom7("custom7");
+    task.setCustom8("custom8");
+    task.setCustom9("custom9");
+    task.setCustom10("custom10");
+    task.setCustom11("custom11");
+    task.setCustom12("custom12");
+    task.setCustom13("custom13");
+    task.setCustom14("custom14");
+    task.setCustom15("custom15");
+    // when
+    TaskResource resource = taskResourceAssembler.toResource(task);
+    // then
+    testEquality(task, resource);
+    testLinks(resource);
+  }
+
   void testEquality(Task task, TaskResource resource) throws InvalidArgumentException {
     Assert.assertEquals(task.getId(), resource.getTaskId());
     Assert.assertEquals(task.getExternalId(), resource.getExternalId());
@@ -139,7 +208,7 @@ class TaskResourceAssemberTest {
     Assert.assertEquals(task.getCustomAttribute("16"), resource.getCustom16());
   }
 
-  void testEquality(
+  private void testEquality(
       Map<String, String> customAttributes, List<TaskResource.CustomAttribute> resourceAttributes) {
     Assert.assertEquals(customAttributes.size(), resourceAttributes.size());
     resourceAttributes.forEach(
@@ -147,7 +216,8 @@ class TaskResourceAssemberTest {
             Assert.assertEquals(customAttributes.get(attribute.getKey()), attribute.getValue()));
   }
 
-  void testEqualityAttachements(List<Attachment> attachments, List<AttachmentResource> resources) {
+  private void testEqualityAttachements(
+      List<Attachment> attachments, List<AttachmentResource> resources) {
     Assert.assertEquals(attachments.size(), resources.size());
     for (int i = 0; i < resources.size(); i++) {
       AttachmentResource resource = resources.get(i);
@@ -155,5 +225,12 @@ class TaskResourceAssemberTest {
       // Anything else shoulde be tested in AttachementResourceAssemblerTest
       Assert.assertEquals(attachment.getId(), resource.getAttachmentId());
     }
+  }
+
+  private void testLinks(TaskResource resource) {
+    Assert.assertEquals(1, resource.getLinks().size());
+    Assert.assertEquals(
+        Mapping.URL_TASKS_ID.replaceAll("\\{.*}", resource.getTaskId()),
+        resource.getLink("self").getHref());
   }
 }
