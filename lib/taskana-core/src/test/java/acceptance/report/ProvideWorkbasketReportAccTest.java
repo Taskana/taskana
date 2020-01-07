@@ -85,7 +85,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
       LOGGER.debug(reportToString(report, columnHeaders));
     }
 
-    int sumLineCount = IntStream.of(report.getSumRow().getCells()).sum();
+    final int sumLineCount = IntStream.of(report.getSumRow().getCells()).sum();
 
     assertNotNull(report);
     assertEquals(3, report.rowSize());
@@ -438,8 +438,8 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
       WorkbasketReport report, List<TimeIntervalColumnHeader> reportLineItemDefinitions) {
     String formatColumWidth = "| %-7s ";
     String formatFirstColumn = "| %-36s  %-4s ";
-    String formatFirstColumnFirstLine = "| %-29s %12s ";
-    String formatFirstColumnSumLine = "| %-36s  %-5s";
+    final String formatFirstColumnFirstLine = "| %-29s %12s ";
+    final String formatFirstColumnSumLine = "| %-36s  %-5s";
     int reportWidth =
         reportLineItemDefinitions == null ? 46 : reportLineItemDefinitions.size() * 10 + 46;
 

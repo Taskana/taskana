@@ -61,7 +61,7 @@ class TaskStatusReportBuilderImplTest {
     when(taskMonitorMapperMock.getTasksCountByState(null, null)).thenReturn(queryItems);
 
     // when
-    TaskStatusReport report = cut.createTaskStatusReportBuilder().buildReport();
+    final TaskStatusReport report = cut.createTaskStatusReportBuilder().buildReport();
 
     // then
     InOrder inOrder = inOrder(taskanaEngineMock, internalTaskanaEngineMock, taskMonitorMapperMock);
@@ -98,7 +98,7 @@ class TaskStatusReportBuilderImplTest {
         .thenReturn(queryItems);
 
     // when
-    TaskStatusReport report =
+    final TaskStatusReport report =
         cut.createTaskStatusReportBuilder().stateIn(Collections.emptyList()).buildReport();
 
     // then

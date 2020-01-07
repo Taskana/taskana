@@ -38,7 +38,9 @@ import pro.taskana.jobs.TaskCleanupJob;
 import pro.taskana.jobs.WorkbasketCleanupJob;
 import pro.taskana.transaction.TaskanaTransactionProvider;
 
-/** */
+/**
+ * Test for internal transaction management.
+ */
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
     classes = TaskanaConfigTestApplication.class,
@@ -145,7 +147,7 @@ class TaskanaTransactionIntTest {
       throws SQLException, NotAuthorizedException, WorkbasketNotFoundException,
           DomainNotFoundException, InvalidWorkbasketException, WorkbasketAlreadyExistException {
 
-    TaskanaEngineImpl taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
+    final TaskanaEngineImpl taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
     Connection connection = dataSource.getConnection();
 
     assertNotEquals(connection.getSchema(), "PUBLIC");

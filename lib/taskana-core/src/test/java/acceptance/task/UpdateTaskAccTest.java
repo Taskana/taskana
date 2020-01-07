@@ -55,7 +55,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
 
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
-    Instant modifiedOriginal = task.getModified();
+    final Instant modifiedOriginal = task.getModified();
     task.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "7654321"));
     task.setBusinessProcessId("MY_PROCESS_ID");
@@ -139,7 +139,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
 
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
-    ClassificationSummary classificationSummary = task.getClassificationSummary();
+    final ClassificationSummary classificationSummary = task.getClassificationSummary();
     task.setClassificationKey("T2100");
     Task updatedTask = taskService.updateTask(task);
     updatedTask = taskService.getTask(updatedTask.getId());

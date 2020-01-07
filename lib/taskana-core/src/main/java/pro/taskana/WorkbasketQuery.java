@@ -154,8 +154,8 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
    * Add condition to query if the caller (one of the accessIds of the caller) has the given
    * permission on the workbasket.
    *
-   * @return the updated query.
    * @param permission the permission for the query condition.
+   * @return the updated query.
    */
   WorkbasketQuery callerHasPermission(WorkbasketPermission permission);
 

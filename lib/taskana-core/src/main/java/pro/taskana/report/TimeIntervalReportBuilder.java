@@ -109,8 +109,8 @@ public interface TimeIntervalReportBuilder<
    *
    * @param selectedItems a list of selectedItems
    * @throws InvalidArgumentException if the column headers are not initialized
-   * @throws NotAuthorizedException if the user has no rights to access the monitor
    * @return the list of all taskIds
+   * @throws NotAuthorizedException if the user has no rights to access the monitor
    */
   List<String> listTaskIdsForSelectedItems(List<SelectedItem> selectedItems)
       throws NotAuthorizedException, InvalidArgumentException;
@@ -119,8 +119,8 @@ public interface TimeIntervalReportBuilder<
    * Returns a list of all values of an entered custom field that are in the report.
    *
    * @param customField the customField whose values should appear in the list
-   * @throws NotAuthorizedException if the user has no rights to access the monitor
    * @return the list of all custom attribute values
+   * @throws NotAuthorizedException if the user has no rights to access the monitor
    */
   List<String> listCustomAttributeValuesForCustomAttributeName(CustomField customField)
       throws NotAuthorizedException;

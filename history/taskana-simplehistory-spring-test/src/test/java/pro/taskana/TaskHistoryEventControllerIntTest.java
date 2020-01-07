@@ -8,6 +8,7 @@ import static org.junit.Assert.fail;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import javax.sql.DataSource;
@@ -105,9 +106,11 @@ public class TaskHistoryEventControllerIntTest {
   public void testGetSpecificTaskHistoryEvent() {
     ResponseEntity<TaskHistoryEventListResource> response =
         template.exchange(
-            server
-                + port
-                + "/api/v1/task-history-event?business-process-id=BPI:01&sort-by=business-process-id&order=asc&page-size=6&page=1",
+            MessageFormat.format(
+                "{0}{1}/api/v1/task-history-event?"
+                    + "business-process-id=BPI:01&sort-by=business-process-id&"
+                    + "order=asc&page-size=6&page=1",
+                server, port),
             HttpMethod.GET,
             request,
             new ParameterizedTypeReference<TaskHistoryEventListResource>() {});

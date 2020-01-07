@@ -61,17 +61,17 @@ class ClassificationReportBuilderImplTest {
   @Test
   void testGetTotalNumbersOfClassificationReport()
       throws InvalidArgumentException, NotAuthorizedException {
-    List<String> workbasketIds =
+    final List<String> workbasketIds =
         Collections.singletonList("WBI:000000000000000000000000000000000001");
-    List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
-    List<String> categories = Collections.singletonList("EXTERN");
-    List<String> domains = Collections.singletonList("DOMAIN_A");
-    List<String> classificationIds = Collections.singletonList("L10000");
-    List<String> excludedClassificationIds = Collections.singletonList("L20000");
+    final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
+    final List<String> categories = Collections.singletonList("EXTERN");
+    final List<String> domains = Collections.singletonList("DOMAIN_A");
+    final List<String> classificationIds = Collections.singletonList("L10000");
+    final List<String> excludedClassificationIds = Collections.singletonList("L20000");
     Map<CustomField, String> customAttributeFilter = new HashMap<>();
     customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
 
-    List<MonitorQueryItem> expectedResult = new ArrayList<>();
+    final List<MonitorQueryItem> expectedResult = new ArrayList<>();
     MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
     monitorQueryItem.setKey("CLI:000000000000000000000000000000000001");
     monitorQueryItem.setNumberOfTasks(1);
@@ -86,7 +86,7 @@ class ClassificationReportBuilderImplTest {
             customAttributeFilter))
         .thenReturn(expectedResult);
 
-    ClassificationReport actualResult =
+    final ClassificationReport actualResult =
         cut.createClassificationReportBuilder()
             .workbasketIdIn(workbasketIds)
             .stateIn(states)
@@ -121,20 +121,20 @@ class ClassificationReportBuilderImplTest {
   @Test
   void testGetClassificationReportWithReportLineItemDefinitions()
       throws InvalidArgumentException, NotAuthorizedException {
-    List<String> workbasketIds =
+    final List<String> workbasketIds =
         Collections.singletonList("WBI:000000000000000000000000000000000001");
-    List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
-    List<String> categories = Collections.singletonList("EXTERN");
-    List<String> domains = Collections.singletonList("DOMAIN_A");
-    List<String> classificationIds = Collections.singletonList("L10000");
-    List<String> excludedClassificationIds = Collections.singletonList("L20000");
+    final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
+    final List<String> categories = Collections.singletonList("EXTERN");
+    final List<String> domains = Collections.singletonList("DOMAIN_A");
+    final List<String> classificationIds = Collections.singletonList("L10000");
+    final List<String> excludedClassificationIds = Collections.singletonList("L20000");
     Map<CustomField, String> customAttributeFilter = new HashMap<>();
     customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
 
-    List<TimeIntervalColumnHeader> columnHeaders =
+    final List<TimeIntervalColumnHeader> columnHeaders =
         Collections.singletonList(new TimeIntervalColumnHeader(0, 0));
 
-    List<MonitorQueryItem> expectedResult = new ArrayList<>();
+    final List<MonitorQueryItem> expectedResult = new ArrayList<>();
     MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
     monitorQueryItem.setKey("CLI:000000000000000000000000000000000001");
     monitorQueryItem.setAgeInDays(0);
@@ -150,7 +150,7 @@ class ClassificationReportBuilderImplTest {
             customAttributeFilter))
         .thenReturn(expectedResult);
 
-    ClassificationReport actualResult =
+    final ClassificationReport actualResult =
         cut.createClassificationReportBuilder()
             .workbasketIdIn(workbasketIds)
             .stateIn(states)
@@ -188,17 +188,17 @@ class ClassificationReportBuilderImplTest {
   @Test
   void testGetTotalNumbersOfDetailedClassificationReport()
       throws InvalidArgumentException, NotAuthorizedException {
-    List<String> workbasketIds =
+    final List<String> workbasketIds =
         Collections.singletonList("WBI:000000000000000000000000000000000001");
-    List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
-    List<String> categories = Collections.singletonList("EXTERN");
-    List<String> domains = Collections.singletonList("DOMAIN_A");
-    List<String> classificationIds = Collections.singletonList("L10000");
-    List<String> excludedClassificationIds = Collections.singletonList("L20000");
+    final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
+    final List<String> categories = Collections.singletonList("EXTERN");
+    final List<String> domains = Collections.singletonList("DOMAIN_A");
+    final List<String> classificationIds = Collections.singletonList("L10000");
+    final List<String> excludedClassificationIds = Collections.singletonList("L20000");
     Map<CustomField, String> customAttributeFilter = new HashMap<>();
     customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
 
-    List<DetailedMonitorQueryItem> expectedResult = new ArrayList<>();
+    final List<DetailedMonitorQueryItem> expectedResult = new ArrayList<>();
     DetailedMonitorQueryItem detailedMonitorQueryItem = new DetailedMonitorQueryItem();
     detailedMonitorQueryItem.setKey("CLI:000000000000000000000000000000000001");
     detailedMonitorQueryItem.setAttachmentKey("CLI:000000000000000000000000000000000006");
@@ -214,7 +214,7 @@ class ClassificationReportBuilderImplTest {
             customAttributeFilter))
         .thenReturn(expectedResult);
 
-    DetailedClassificationReport actualResult =
+    final DetailedClassificationReport actualResult =
         cut.createClassificationReportBuilder()
             .workbasketIdIn(workbasketIds)
             .stateIn(states)
@@ -252,19 +252,19 @@ class ClassificationReportBuilderImplTest {
   @Test
   void testGetDetailedClassificationReportWithReportLineItemDefinitions()
       throws InvalidArgumentException, NotAuthorizedException {
-    List<String> workbasketIds =
+    final List<String> workbasketIds =
         Collections.singletonList("WBI:000000000000000000000000000000000001");
-    List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
-    List<String> categories = Collections.singletonList("EXTERN");
-    List<String> domains = Collections.singletonList("DOMAIN_A");
-    List<String> classificationIds = Collections.singletonList("L10000");
-    List<String> excludedClassificationIds = Collections.singletonList("L20000");
+    final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
+    final List<String> categories = Collections.singletonList("EXTERN");
+    final List<String> domains = Collections.singletonList("DOMAIN_A");
+    final List<String> classificationIds = Collections.singletonList("L10000");
+    final List<String> excludedClassificationIds = Collections.singletonList("L20000");
     Map<CustomField, String> customAttributeFilter = new HashMap<>();
     customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
-    List<TimeIntervalColumnHeader> columnHeaders =
+    final List<TimeIntervalColumnHeader> columnHeaders =
         Collections.singletonList(new TimeIntervalColumnHeader(0, 0));
 
-    List<DetailedMonitorQueryItem> expectedResult = new ArrayList<>();
+    final List<DetailedMonitorQueryItem> expectedResult = new ArrayList<>();
     DetailedMonitorQueryItem detailedMonitorQueryItem = new DetailedMonitorQueryItem();
     detailedMonitorQueryItem.setKey("CLI:000000000000000000000000000000000001");
     detailedMonitorQueryItem.setAttachmentKey("CLI:000000000000000000000000000000000006");
@@ -281,7 +281,7 @@ class ClassificationReportBuilderImplTest {
             customAttributeFilter))
         .thenReturn(expectedResult);
 
-    DetailedClassificationReport actualResult =
+    final DetailedClassificationReport actualResult =
         cut.createClassificationReportBuilder()
             .workbasketIdIn(workbasketIds)
             .stateIn(states)
@@ -322,25 +322,25 @@ class ClassificationReportBuilderImplTest {
 
   @Test
   void testGetTaskIdsForSelectedItems() throws InvalidArgumentException, NotAuthorizedException {
-    List<String> workbasketIds =
+    final List<String> workbasketIds =
         Collections.singletonList("WBI:000000000000000000000000000000000001");
-    List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
-    List<String> categories = Collections.singletonList("EXTERN");
-    List<String> domains = Collections.singletonList("DOMAIN_A");
-    List<String> classificationIds = Collections.singletonList("L10000");
-    List<String> excludedClassificationIds = Collections.singletonList("L20000");
+    final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
+    final List<String> categories = Collections.singletonList("EXTERN");
+    final List<String> domains = Collections.singletonList("DOMAIN_A");
+    final List<String> classificationIds = Collections.singletonList("L10000");
+    final List<String> excludedClassificationIds = Collections.singletonList("L20000");
     Map<CustomField, String> customAttributeFilter = new HashMap<>();
     customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
-    List<TimeIntervalColumnHeader> columnHeaders =
+    final List<TimeIntervalColumnHeader> columnHeaders =
         Collections.singletonList(new TimeIntervalColumnHeader(0, 0));
 
     SelectedItem selectedItem = new SelectedItem();
     selectedItem.setKey("EXTERN");
     selectedItem.setLowerAgeLimit(1);
     selectedItem.setUpperAgeLimit(5);
-    List<SelectedItem> selectedItems = Collections.singletonList(selectedItem);
+    final List<SelectedItem> selectedItems = Collections.singletonList(selectedItem);
 
-    List<String> expectedResult =
+    final List<String> expectedResult =
         Collections.singletonList("TKI:000000000000000000000000000000000001");
     when(taskMonitorMapperMock.getTaskIdsForSelectedItems(
             workbasketIds,
@@ -355,7 +355,7 @@ class ClassificationReportBuilderImplTest {
             false))
         .thenReturn(expectedResult);
 
-    List<String> actualResult =
+    final List<String> actualResult =
         cut.createClassificationReportBuilder()
             .workbasketIdIn(workbasketIds)
             .stateIn(states)
@@ -402,25 +402,25 @@ class ClassificationReportBuilderImplTest {
 
   @Test
   void testListCustomAttributeValuesForCustomAttributeName() throws NotAuthorizedException {
-    List<String> workbasketIds =
+    final List<String> workbasketIds =
         Collections.singletonList("WBI:000000000000000000000000000000000001");
-    List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
-    List<String> categories = Collections.singletonList("EXTERN");
-    List<String> domains = Collections.singletonList("DOMAIN_A");
-    List<String> classificationIds = Collections.singletonList("L10000");
-    List<String> excludedClassificationIds = Collections.singletonList("L20000");
+    final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
+    final List<String> categories = Collections.singletonList("EXTERN");
+    final List<String> domains = Collections.singletonList("DOMAIN_A");
+    final List<String> classificationIds = Collections.singletonList("L10000");
+    final List<String> excludedClassificationIds = Collections.singletonList("L20000");
     Map<CustomField, String> customAttributeFilter = new HashMap<>();
     customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
-    List<TimeIntervalColumnHeader> columnHeaders =
+    final List<TimeIntervalColumnHeader> columnHeaders =
         Collections.singletonList(new TimeIntervalColumnHeader(0, 0));
 
     SelectedItem selectedItem = new SelectedItem();
     selectedItem.setKey("EXTERN");
     selectedItem.setLowerAgeLimit(1);
     selectedItem.setUpperAgeLimit(5);
-    List<SelectedItem> selectedItems = Collections.singletonList(selectedItem);
+    final List<SelectedItem> selectedItems = Collections.singletonList(selectedItem);
 
-    List<String> expectedResult = Collections.singletonList("Geschaeftsstelle A");
+    final List<String> expectedResult = Collections.singletonList("Geschaeftsstelle A");
     when(taskMonitorMapperMock.getCustomAttributeValuesForReport(
             workbasketIds,
             states,
@@ -432,7 +432,7 @@ class ClassificationReportBuilderImplTest {
             CustomField.CUSTOM_1))
         .thenReturn(expectedResult);
 
-    List<String> actualResult =
+    final List<String> actualResult =
         cut.createClassificationReportBuilder()
             .workbasketIdIn(workbasketIds)
             .stateIn(states)

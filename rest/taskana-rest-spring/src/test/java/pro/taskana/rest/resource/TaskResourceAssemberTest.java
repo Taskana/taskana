@@ -139,6 +139,14 @@ class TaskResourceAssemberTest {
     Assert.assertEquals(task.getCustomAttribute("16"), resource.getCustom16());
   }
 
+  void testEquality(
+      Map<String, String> customAttributes, List<TaskResource.CustomAttribute> resourceAttributes) {
+    Assert.assertEquals(customAttributes.size(), resourceAttributes.size());
+    resourceAttributes.forEach(
+        attribute ->
+            Assert.assertEquals(customAttributes.get(attribute.getKey()), attribute.getValue()));
+  }
+
   void testEqualityAttachements(List<Attachment> attachments, List<AttachmentResource> resources) {
     Assert.assertEquals(attachments.size(), resources.size());
     for (int i = 0; i < resources.size(); i++) {
@@ -147,13 +155,5 @@ class TaskResourceAssemberTest {
       // Anything else shoulde be tested in AttachementResourceAssemblerTest
       Assert.assertEquals(attachment.getId(), resource.getAttachmentId());
     }
-  }
-
-  void testEquality(
-      Map<String, String> customAttributes, List<TaskResource.CustomAttribute> resourceAttributes) {
-    Assert.assertEquals(customAttributes.size(), resourceAttributes.size());
-    resourceAttributes.forEach(
-        attribute ->
-            Assert.assertEquals(customAttributes.get(attribute.getKey()), attribute.getValue()));
   }
 }

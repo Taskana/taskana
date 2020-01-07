@@ -55,7 +55,8 @@ public class ClassificationChangedJob extends AbstractTaskanaJob {
     int batchSize = taskanaEngineImpl.getConfiguration().getMaxNumberOfUpdatesPerTransaction();
     List<List<String>> affectedTaskBatches = partition(affectedTaskIds, batchSize);
     LOGGER.debug(
-        "Creating {} TaskRefreshJobs out of {} affected tasks with a maximum number of {} tasks each. ",
+        "Creating {} TaskRefreshJobs out of {} affected tasks "
+            + "with a maximum number of {} tasks each. ",
         affectedTaskBatches.size(),
         affectedTaskIds.size(),
         batchSize);

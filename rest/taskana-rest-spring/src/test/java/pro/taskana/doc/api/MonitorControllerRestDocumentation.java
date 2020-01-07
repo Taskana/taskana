@@ -35,7 +35,8 @@ class MonitorControllerRestDocumentation extends BaseRestDocumentation {
           fieldWithPath("rows[].total").description("Sum of all values of the given row"),
           fieldWithPath("rows[].depth")
               .description(
-                  "Depth of the row. If the depth is > 0, then this row is a sub-row of a prior row"),
+              "Depth of the row. If the depth is > 0, "
+                  + "then this row is a sub-row of a prior row"),
           fieldWithPath("rows[].desc").description("Array containing description of the row."),
           fieldWithPath("rows[].display")
               .description(

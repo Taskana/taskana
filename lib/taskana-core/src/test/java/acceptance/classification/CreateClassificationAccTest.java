@@ -68,7 +68,8 @@ class CreateClassificationAccTest extends AbstractAccTest {
   void testCreateClassificationWithMasterCopy()
       throws ClassificationAlreadyExistException, ClassificationNotFoundException,
           NotAuthorizedException, DomainNotFoundException, InvalidArgumentException {
-    long amountOfClassificationsBefore = classificationService.createClassificationQuery().count();
+    final long countClassificationsBefore =
+        classificationService.createClassificationQuery().count();
     Classification classification =
         classificationService.newClassification("Key1", "DOMAIN_A", "TASK");
     classification.setIsValidInDomain(true);
@@ -86,7 +87,7 @@ class CreateClassificationAccTest extends AbstractAccTest {
 
     // Check 2 new created
     long amountOfClassificationsAfter = classificationService.createClassificationQuery().count();
-    assertThat(amountOfClassificationsAfter, equalTo(amountOfClassificationsBefore + 2));
+    assertThat(amountOfClassificationsAfter, equalTo(countClassificationsBefore + 2));
 
     // Check main
     classification = classificationService.getClassification(classification.getId());

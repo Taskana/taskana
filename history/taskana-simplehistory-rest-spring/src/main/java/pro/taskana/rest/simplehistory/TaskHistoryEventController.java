@@ -151,8 +151,8 @@ public class TaskHistoryEventController extends AbstractPagingController {
 
     PageMetadata pageMetadata = null;
     List<HistoryEventImpl> historyEvents = null;
-    String page = params.getFirst(PAGING_PAGE);
-    String pageSize = params.getFirst(PAGING_PAGE_SIZE);
+    final String page = params.getFirst(PAGING_PAGE);
+    final String pageSize = params.getFirst(PAGING_PAGE_SIZE);
     params.remove(PAGING_PAGE);
     params.remove(PAGING_PAGE_SIZE);
     validateNoInvalidParameterIsLeft(params);

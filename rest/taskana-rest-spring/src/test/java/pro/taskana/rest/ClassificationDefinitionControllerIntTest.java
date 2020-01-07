@@ -160,7 +160,7 @@ class ClassificationDefinitionControllerIntTest {
   void testImportMultipleClassifications() throws IOException {
     ClassificationResource classification1 =
         this.createClassification("id1", "ImportKey1", "DOMAIN_A", null, null);
-    String c1 = objMapper.writeValueAsString(classification1);
+    final String c1 = objMapper.writeValueAsString(classification1);
 
     ClassificationResource classification2 =
         this.createClassification(
@@ -229,7 +229,7 @@ class ClassificationDefinitionControllerIntTest {
 
   @Test
   void testHookExistingChildToNewParent() throws IOException {
-    ClassificationResource newClassification =
+    final ClassificationResource newClassification =
         createClassification("new Classification", "newClass", "DOMAIN_A", null, "L11010");
     ClassificationSummaryResource existingClassification =
         getClassificationWithKeyAndDomain("L110102", "DOMAIN_A");
@@ -261,22 +261,22 @@ class ClassificationDefinitionControllerIntTest {
   void testImportParentAndChildClassification() throws IOException {
     ClassificationResource classification1 =
         this.createClassification("parentId", "ImportKey6", "DOMAIN_A", null, null);
-    String c1 = objMapper.writeValueAsString(classification1);
+    final String c1 = objMapper.writeValueAsString(classification1);
 
     ClassificationResource classification2 =
         this.createClassification("childId1", "ImportKey7", "DOMAIN_A", null, "ImportKey6");
-    String c21 = objMapper.writeValueAsString(classification2);
+    final String c21 = objMapper.writeValueAsString(classification2);
     classification2 =
         this.createClassification("childId2", "ImportKey8", "DOMAIN_A", "parentId", null);
-    String c22 = objMapper.writeValueAsString(classification2);
+    final String c22 = objMapper.writeValueAsString(classification2);
 
     ClassificationResource classification3 =
         this.createClassification(
             "grandchildId1", "ImportKey9", "DOMAIN_A", "childId1", "ImportKey7");
-    String c31 = objMapper.writeValueAsString(classification3);
+    final String c31 = objMapper.writeValueAsString(classification3);
     classification3 =
         this.createClassification("grandchild2", "ImportKey10", "DOMAIN_A", null, "ImportKey7");
-    String c32 = objMapper.writeValueAsString(classification3);
+    final String c32 = objMapper.writeValueAsString(classification3);
 
     List<String> clList = new ArrayList<>();
     clList.add(c31);
@@ -345,7 +345,7 @@ class ClassificationDefinitionControllerIntTest {
     assertEquals("L11010", child1.getParentKey());
     child1.setParentId("CLI:100000000000000000000000000000000002");
     child1.setParentKey("L10303");
-    String withNewParent = objMapper.writeValueAsString(child1);
+    final String withNewParent = objMapper.writeValueAsString(child1);
 
     ClassificationSummaryResource child2 =
         this.getClassificationWithKeyAndDomain("L110107", "DOMAIN_A");

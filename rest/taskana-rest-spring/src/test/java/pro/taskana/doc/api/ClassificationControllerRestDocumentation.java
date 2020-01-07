@@ -38,13 +38,16 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
     classificationFieldDescriptionsMap.put("classificationId", "Unique Id");
     classificationFieldDescriptionsMap.put(
         "key",
-        "The key of the classification. This is typically an externally known code or abbreviation of the classification");
+        "The key of the classification. This is typically an externally "
+            + "known code or abbreviation of the classification");
     classificationFieldDescriptionsMap.put(
         "parentId",
-        "The id of the parent classification. Empty string (\"\") if this is a root classification.");
+        "The id of the parent classification. Empty string (\"\") "
+            + "if this is a root classification.");
     classificationFieldDescriptionsMap.put(
         "parentKey",
-        "The key of the parent classification. Empty string (\"\") if this is a root classification.");
+        "The key of the parent classification. Empty string (\"\") "
+            + "if this is a root classification.");
     classificationFieldDescriptionsMap.put(
         "category", "The category of the classification (MANUAL, EXTERNAL, AUTOMATIC, PROCESS)");
     classificationFieldDescriptionsMap.put("type", "The type of classification (TASK, DOCUMENT)");
@@ -64,7 +67,8 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
         "The service level of the classification. This is stated according to ISO 8601");
     classificationFieldDescriptionsMap.put(
         "applicationEntryPoint",
-        "The logical name of the entry point, the task list application should redirect to work on a task of this classification");
+        "The logical name of the entry point, the task list application "
+            + "should redirect to work on a task of this classification");
     classificationFieldDescriptionsMap.put("custom1", "A custom property with name \"1\"");
     classificationFieldDescriptionsMap.put("custom2", "A custom property with name \"2\"");
     classificationFieldDescriptionsMap.put("custom3", "A custom property with name \"3\"");
@@ -161,7 +165,8 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
               .description("The domain for which this classification is specified"),
           fieldWithPath("key")
               .description(
-                  "The key of the classification. This is typically an externally known code or abbreviation of the classification"),
+              "The key of the classification. This is typically an externally "
+                  + "known code or abbreviation of the classification"),
           fieldWithPath("name")
               .type("String")
               .description("The name of the classification")

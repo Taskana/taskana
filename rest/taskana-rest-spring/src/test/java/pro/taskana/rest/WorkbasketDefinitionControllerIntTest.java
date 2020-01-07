@@ -62,7 +62,8 @@ class WorkbasketDefinitionControllerIntTest {
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertThat(response.getBody().get(0), instanceOf(WorkbasketDefinitionResource.class));
 
-    boolean allAuthorizationsAreEmpty = true, allDistributionTargetsAreEmpty = true;
+    boolean allAuthorizationsAreEmpty = true;
+    boolean allDistributionTargetsAreEmpty = true;
     for (WorkbasketDefinitionResource workbasketDefinition : response.getBody()) {
       if (allAuthorizationsAreEmpty && !workbasketDefinition.getAuthorizations().isEmpty()) {
         allAuthorizationsAreEmpty = false;

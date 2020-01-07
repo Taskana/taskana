@@ -87,7 +87,8 @@ public class DbSchemaCreator {
       Map<String, Object> queryResult = runner.selectOne(query, expectedVersion);
       if (queryResult == null || queryResult.isEmpty()) {
         LOGGER.error(
-            "Schema version not valid. The VERSION property in table TASKANA_SCHEMA_VERSION has not the expected value {}",
+            "Schema version not valid. The VERSION property in table TASKANA_SCHEMA_VERSION "
+                + "has not the expected value {}",
             expectedVersion);
         return false;
       } else {
@@ -97,7 +98,8 @@ public class DbSchemaCreator {
 
     } catch (Exception e) {
       LOGGER.error(
-          "Schema version not valid. The VERSION property in table TASKANA_SCHEMA_VERSION has not the expected value {}",
+          "Schema version not valid. The VERSION property in table TASKANA_SCHEMA_VERSION "
+              + "has not the expected value {}",
           expectedVersion);
       return false;
     } finally {

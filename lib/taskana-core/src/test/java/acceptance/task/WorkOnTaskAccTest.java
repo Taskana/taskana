@@ -158,7 +158,7 @@ class WorkOnTaskAccTest extends AbstractAccTest {
   void testCompleteTask()
       throws NotAuthorizedException, TaskNotFoundException, InvalidStateException,
           InvalidOwnerException {
-    Instant before = Instant.now().minus(Duration.ofSeconds(3L));
+    final Instant before = Instant.now().minus(Duration.ofSeconds(3L));
     TaskService taskService = taskanaEngine.getTaskService();
     Task claimedTask = taskService.getTask("TKI:000000000000000000000000000000000032");
 

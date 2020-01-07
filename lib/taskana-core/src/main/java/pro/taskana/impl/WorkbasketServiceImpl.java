@@ -1,5 +1,6 @@
 package pro.taskana.impl;
 
+import java.text.MessageFormat;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -178,16 +179,18 @@ public class WorkbasketServiceImpl implements WorkbasketService {
           || workbasketAccessItem.getAccessId() == null
           || workbasketAccessItem.getWorkbasketId() == null) {
         throw new InvalidArgumentException(
-            "Checking the preconditions of the current WorkbasketAccessItem failed. WorkbasketAccessItem="
-                + workbasketAccessItem.toString());
+            MessageFormat.format(
+                "Checking the preconditions of the current "
+                    + "WorkbasketAccessItem failed. WorkbasketAccessItem={0}",
+                workbasketAccessItem.toString()));
       }
       WorkbasketImpl wb = workbasketMapper.findById(workbasketAccessItem.getWorkbasketId());
       if (wb == null) {
         throw new WorkbasketNotFoundException(
             workbasketAccessItem.getWorkbasketId(),
-            "WorkbasketAccessItem "
-                + workbasketAccessItem
-                + " refers to a not existing workbasket");
+            MessageFormat
+                .format("WorkbasketAccessItem {0} refers to a not existing workbasket",
+                    workbasketAccessItem));
       }
       workbasketAccessMapper.insert(accessItem);
       LOGGER.debug(
@@ -218,14 +221,16 @@ public class WorkbasketServiceImpl implements WorkbasketService {
               (WorkbasketAccessItemImpl) workbasketAccessItem;
           if (wbAccessItemImpl.getWorkbasketId() == null) {
             throw new InvalidArgumentException(
-                "Checking the preconditions of the current WorkbasketAccessItem failed - WBID is NULL. WorkbasketAccessItem="
-                    + workbasketAccessItem.toString());
+                MessageFormat.format(
+                    "Checking the preconditions of the current WorkbasketAccessItem failed "
+                        + "- WBID is NULL. WorkbasketAccessItem={0}",
+                    workbasketAccessItem.toString()));
           } else if (!wbAccessItemImpl.getWorkbasketId().equals(workbasketId)) {
             throw new InvalidArgumentException(
-                "Checking the preconditions of the current WorkbasketAccessItem failed - the WBID does not match. Target-WBID='"
-                    + workbasketId
-                    + "' WorkbasketAccessItem="
-                    + workbasketAccessItem.toString());
+                MessageFormat.format(
+                    "Checking the preconditions of the current WorkbasketAccessItem failed "
+                        + "- the WBID does not match. Target-WBID=''{0}'' WorkbasketAccessItem={1}",
+                    workbasketId, workbasketAccessItem.toString()));
           }
           if (wbAccessItemImpl.getId() == null || wbAccessItemImpl.getId().isEmpty()) {
             wbAccessItemImpl.setId(
@@ -598,7 +603,8 @@ public class WorkbasketServiceImpl implements WorkbasketService {
           getWorkbasket(targetId);
           distributionTargetMapper.insert(sourceWorkbasketId, targetId);
           LOGGER.debug(
-              "Method setDistributionTargets() created distributiontarget for source '{}' and target {}",
+              "Method setDistributionTargets() created distribution target "
+                  + "for source '{}' and target {}",
               sourceWorkbasketId,
               targetId);
         }
@@ -634,7 +640,8 @@ public class WorkbasketServiceImpl implements WorkbasketService {
               sourceWorkbasketId, targetWorkbasketId);
       if (numOfDistTargets > 0) {
         LOGGER.debug(
-            "addDistributionTarget detected that the specified distribution target exists already. Doing nothing...");
+            "addDistributionTarget detected that the specified "
+                + "distribution target exists already. Doing nothing.");
       } else {
         distributionTargetMapper.insert(sourceWorkbasketId, targetWorkbasketId);
         LOGGER.debug(
@@ -680,13 +687,15 @@ public class WorkbasketServiceImpl implements WorkbasketService {
           workbasketMapper.update(sourceWorkbasket);
         } catch (WorkbasketNotFoundException e) {
           LOGGER.debug(
-              "removeDistributionTarget found that the source workbasket {} doesn't exist. Ignoring the request... ",
+              "removeDistributionTarget found that the source workbasket {} "
+                  + "doesn't exist. Ignoring the request... ",
               sourceWorkbasketId);
         }
 
       } else {
         LOGGER.debug(
-            "removeDistributionTarget detected that the specified distribution target doesn't exist. Doing nothing...");
+            "removeDistributionTarget detected that the specified distribution "
+                + "target doesn't exist. Doing nothing...");
       }
     } finally {
       taskanaEngine.returnConnection();

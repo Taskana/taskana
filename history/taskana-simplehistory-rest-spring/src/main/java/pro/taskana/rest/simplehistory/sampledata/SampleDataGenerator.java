@@ -40,11 +40,11 @@ public class SampleDataGenerator {
   }
 
   public void generateSampleData(String schemaName) {
-    StringWriter outWriter = new StringWriter();
-    PrintWriter logWriter = new PrintWriter(outWriter);
+    final StringWriter outWriter = new StringWriter();
+    final PrintWriter logWriter = new PrintWriter(outWriter);
 
-    StringWriter errorWriter = new StringWriter();
-    PrintWriter errorLogWriter = new PrintWriter(errorWriter);
+    final StringWriter errorWriter = new StringWriter();
+    final PrintWriter errorLogWriter = new PrintWriter(errorWriter);
     try {
       runner.runScript(selectSchemaScript(dbProductName, schemaName));
       runner.setStopOnError(false);

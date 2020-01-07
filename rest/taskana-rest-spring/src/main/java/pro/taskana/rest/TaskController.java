@@ -229,11 +229,10 @@ public class TaskController extends AbstractPagingController {
       result = ResponseEntity.ok(taskResourceAssembler.toResource(task));
     } else {
       throw new InvalidArgumentException(
-          "TaskId ('"
-              + taskId
-              + "') is not identical with the taskId of to object in the payload which should be updated. ID=('"
-              + taskResource.getTaskId()
-              + "')");
+          String.format(
+              "TaskId ('%s') is not identical with the taskId of to "
+                  + "object in the payload which should be updated. ID=('%s')",
+              taskId, taskResource.getTaskId()));
     }
 
     if (LOGGER.isDebugEnabled()) {

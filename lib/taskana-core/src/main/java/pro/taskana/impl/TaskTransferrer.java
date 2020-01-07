@@ -199,7 +199,8 @@ public class TaskTransferrer {
     } finally {
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug(
-            "exit from transferTasks(targetWbKey = {}, targetWbDomain = {}, destination taskIds = {})",
+            "exit from transferTasks(targetWbKey = {}, targetWbDomain = {}, "
+                + "destination taskIds = {})",
             destinationWorkbasketKey,
             destinationWorkbasketDomain,
             LoggerUtils.listToString(taskIds));
@@ -285,7 +286,8 @@ public class TaskTransferrer {
       BulkOperationResults<String, TaskanaException> bulkLog) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
-          "entry to checkIfTransferConditionsAreFulfilled(taskIds = {}, taskSummaries = {}, bulkLog = {})",
+          "entry to checkIfTransferConditionsAreFulfilled(taskIds = {}, "
+              + "taskSummaries = {}, bulkLog = {})",
           LoggerUtils.listToString(taskIds),
           LoggerUtils.listToString(taskSummaries),
           bulkLog);
@@ -316,7 +318,8 @@ public class TaskTransferrer {
       BulkOperationResults<String, TaskanaException> bulkLog) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
-          "entry to checkIfTasksMatchTransferCriteria(taskIds = {}, taskSummaries = {}, sourceWorkbaskets = {}, bulkLog = {})",
+          "entry to checkIfTasksMatchTransferCriteria(taskIds = {}, taskSummaries = {}, "
+              + "sourceWorkbaskets = {}, bulkLog = {})",
           LoggerUtils.listToString(taskIds),
           LoggerUtils.listToString(taskSummaries),
           LoggerUtils.listToString(sourceWorkbaskets),

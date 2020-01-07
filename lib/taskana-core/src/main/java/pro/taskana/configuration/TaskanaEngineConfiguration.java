@@ -399,7 +399,8 @@ public class TaskanaEngineConfiguration {
             Boolean.parseBoolean(taskCleanupJobAllCompletedSameParentBusinessProperty);
       } catch (Exception e) {
         LOGGER.warn(
-            "Could not parse taskCleanupJobAllCompletedSameParentBusinessProperty ({}). Using default. Exception: {} ",
+            "Could not parse taskCleanupJobAllCompletedSameParentBusinessProperty "
+                + "({}). Using default. Exception: {} ",
             taskCleanupJobAllCompletedSameParentBusinessProperty,
             e.getMessage());
       }
@@ -414,7 +415,8 @@ public class TaskanaEngineConfiguration {
         "CleanupJob configuration: minimum age of tasks to be cleanup up is {}",
         cleanupJobMinimumAge);
     LOGGER.debug(
-        "TaskCleanupJob configuration: all completed task with the same parent business property id {}",
+        "TaskCleanupJob configuration: all completed task with the "
+            + "same parent business property id {}",
         taskCleanupJobAllCompletedSameParentBusiness);
   }
 

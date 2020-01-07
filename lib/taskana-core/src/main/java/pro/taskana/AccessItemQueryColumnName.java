@@ -1,8 +1,8 @@
 package pro.taskana;
 
 /**
- * Enum containing the column names for @see
- * pro.taskana.mappings.QueryMapper#queryWorkbasketAccessItemColumnValues(WorkbasketAccessItemQuery).
+ * Enum containing the column names for {@see
+ * pro.taskana.mappings.QueryMapper#queryWorkbasketAccessItemColumnValues}.
  *
  * @author jsa
  */

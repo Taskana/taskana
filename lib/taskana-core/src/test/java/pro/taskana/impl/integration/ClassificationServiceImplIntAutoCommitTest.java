@@ -87,7 +87,7 @@ class ClassificationServiceImplIntAutoCommitTest {
       throws ClassificationAlreadyExistException, ClassificationNotFoundException,
           NotAuthorizedException, ConcurrencyException, DomainNotFoundException,
           InvalidArgumentException {
-    String description = "TEST SOMETHING";
+    final String description = "TEST SOMETHING";
     Classification classification = this.createDummyClassificationWithUniqueKey("DOMAIN_A", "TASK");
     classification.setDescription("");
     classification = classificationService.createClassification(classification);
