@@ -9,6 +9,7 @@ import pro.taskana.Classification;
 import pro.taskana.ClassificationService;
 import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.impl.ClassificationImpl;
+import pro.taskana.rest.Mapping;
 
 /** Test for {@link ClassificationResourceAssembler}. */
 @TaskanaSpringBootTest
@@ -47,6 +48,7 @@ class ClassificationAssemblerTest {
         classificationResourceAssembler.toResource(classification);
     // then
     testEquality(classification, classificationResource);
+    testLinks(classificationResource);
   }
 
   @Test
@@ -85,6 +87,13 @@ class ClassificationAssemblerTest {
         (ClassificationImpl) classificationResourceAssembler.toModel(classificationResource);
     // then
     testEquality(classification, classificationResource);
+  }
+
+  private void testLinks(ClassificationResource resource) {
+    Assert.assertEquals(1, resource.getLinks().size());
+    Assert.assertEquals(
+        Mapping.URL_CLASSIFICATIONS_ID.replaceAll("\\{.*}", resource.getClassificationId()),
+        resource.getLink("self").getHref());
   }
 
   private void testEquality(

@@ -1,6 +1,7 @@
 package pro.taskana.rest.resource;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import java.time.Instant;
 import java.util.Objects;
@@ -21,16 +22,25 @@ import pro.taskana.rest.TaskController;
 @Component
 public class TaskResourceAssembler extends ResourceAssemblerSupport<Task, TaskResource> {
 
-  @Autowired private TaskService taskService;
+  private final TaskService taskService;
 
-  @Autowired private ClassificationSummaryResourceAssembler classificationAssembler;
+  private final ClassificationSummaryResourceAssembler classificationAssembler;
 
-  @Autowired private WorkbasketSummaryResourceAssembler workbasketAssembler;
+  private final WorkbasketSummaryResourceAssembler workbasketAssembler;
 
-  @Autowired private AttachmentResourceAssembler attachmentAssembler;
+  private final AttachmentResourceAssembler attachmentAssembler;
 
-  public TaskResourceAssembler() {
+  @Autowired
+  public TaskResourceAssembler(
+      TaskService taskService,
+      ClassificationSummaryResourceAssembler classificationAssembler,
+      WorkbasketSummaryResourceAssembler workbasketAssembler,
+      AttachmentResourceAssembler attachmentAssembler) {
     super(TaskController.class, TaskResource.class);
+    this.taskService = taskService;
+    this.classificationAssembler = classificationAssembler;
+    this.workbasketAssembler = workbasketAssembler;
+    this.attachmentAssembler = attachmentAssembler;
   }
 
   @Override
@@ -38,8 +48,8 @@ public class TaskResourceAssembler extends ResourceAssemblerSupport<Task, TaskRe
     TaskResource resource;
     try {
       resource = new TaskResource(task);
-      resource.add(linkTo(TaskController.class).slash(task.getId()).withSelfRel());
-    } catch (InvalidArgumentException e) {
+      resource.add(linkTo(methodOn(TaskController.class).getTask(task.getId())).withSelfRel());
+    } catch (Exception e) {
       throw new SystemException("caught unexpected Exception.", e.getCause());
     }
     return resource;

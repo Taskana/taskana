@@ -1,6 +1,7 @@
 package pro.taskana.rest.resource;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import java.time.Instant;
 import org.springframework.beans.BeanUtils;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Component;
 
 import pro.taskana.Classification;
 import pro.taskana.ClassificationService;
+import pro.taskana.exceptions.ClassificationNotFoundException;
+import pro.taskana.exceptions.SystemException;
 import pro.taskana.impl.ClassificationImpl;
 import pro.taskana.rest.ClassificationController;
 
@@ -21,16 +24,23 @@ import pro.taskana.rest.ClassificationController;
 public class ClassificationResourceAssembler
     extends ResourceAssemblerSupport<Classification, ClassificationResource> {
 
-  @Autowired ClassificationService classificationService;
+  final ClassificationService classificationService;
 
-  public ClassificationResourceAssembler() {
+  @Autowired
+  public ClassificationResourceAssembler(ClassificationService classificationService) {
     super(ClassificationController.class, ClassificationResource.class);
+    this.classificationService = classificationService;
   }
 
   public ClassificationResource toResource(Classification classification) {
     ClassificationResource resource = new ClassificationResource(classification);
-    resource.add(
-        linkTo(ClassificationController.class).slash(classification.getId()).withSelfRel());
+    try {
+      resource.add(
+          linkTo(methodOn(ClassificationController.class).getClassification(classification.getId()))
+              .withSelfRel());
+    } catch (ClassificationNotFoundException e) {
+      throw new SystemException("caught unexpected Exception.", e.getCause());
+    }
     return resource;
   }
 
