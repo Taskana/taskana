@@ -1,6 +1,7 @@
 package pro.taskana.impl;
 
 import java.time.Instant;
+import java.util.Objects;
 
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketSummary;
@@ -229,27 +230,25 @@ public class WorkbasketImpl implements Workbasket {
 
   @Override
   public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((created == null) ? 0 : created.hashCode());
-    result = prime * result + ((custom1 == null) ? 0 : custom1.hashCode());
-    result = prime * result + ((custom2 == null) ? 0 : custom2.hashCode());
-    result = prime * result + ((custom3 == null) ? 0 : custom3.hashCode());
-    result = prime * result + ((custom4 == null) ? 0 : custom4.hashCode());
-    result = prime * result + ((description == null) ? 0 : description.hashCode());
-    result = prime * result + ((domain == null) ? 0 : domain.hashCode());
-    result = prime * result + ((id == null) ? 0 : id.hashCode());
-    result = prime * result + ((key == null) ? 0 : key.hashCode());
-    result = prime * result + (markedForDeletion ? 1231 : 1237);
-    result = prime * result + ((modified == null) ? 0 : modified.hashCode());
-    result = prime * result + ((name == null) ? 0 : name.hashCode());
-    result = prime * result + ((orgLevel1 == null) ? 0 : orgLevel1.hashCode());
-    result = prime * result + ((orgLevel2 == null) ? 0 : orgLevel2.hashCode());
-    result = prime * result + ((orgLevel3 == null) ? 0 : orgLevel3.hashCode());
-    result = prime * result + ((orgLevel4 == null) ? 0 : orgLevel4.hashCode());
-    result = prime * result + ((owner == null) ? 0 : owner.hashCode());
-    result = prime * result + ((type == null) ? 0 : type.hashCode());
-    return result;
+    return Objects.hash(
+        id,
+        key,
+        created,
+        modified,
+        name,
+        description,
+        owner,
+        domain,
+        type,
+        custom1,
+        custom2,
+        custom3,
+        custom4,
+        orgLevel1,
+        orgLevel2,
+        orgLevel3,
+        orgLevel4,
+        markedForDeletion);
   }
 
   @Override
@@ -260,130 +259,28 @@ public class WorkbasketImpl implements Workbasket {
     if (obj == null) {
       return false;
     }
-
-    if (!getClass().isAssignableFrom(obj.getClass())) {
+    if (getClass() != obj.getClass()) {
       return false;
     }
     WorkbasketImpl other = (WorkbasketImpl) obj;
-    if (created == null) {
-      if (other.created != null) {
-        return false;
-      }
-    } else if (!created.equals(other.created)) {
-      return false;
-    }
-    if (custom1 == null) {
-      if (other.custom1 != null) {
-        return false;
-      }
-    } else if (!custom1.equals(other.custom1)) {
-      return false;
-    }
-    if (custom2 == null) {
-      if (other.custom2 != null) {
-        return false;
-      }
-    } else if (!custom2.equals(other.custom2)) {
-      return false;
-    }
-    if (custom3 == null) {
-      if (other.custom3 != null) {
-        return false;
-      }
-    } else if (!custom3.equals(other.custom3)) {
-      return false;
-    }
-    if (custom4 == null) {
-      if (other.custom4 != null) {
-        return false;
-      }
-    } else if (!custom4.equals(other.custom4)) {
-      return false;
-    }
-    if (description == null) {
-      if (other.description != null) {
-        return false;
-      }
-    } else if (!description.equals(other.description)) {
-      return false;
-    }
-    if (domain == null) {
-      if (other.domain != null) {
-        return false;
-      }
-    } else if (!domain.equals(other.domain)) {
-      return false;
-    }
-    if (id == null) {
-      if (other.id != null) {
-        return false;
-      }
-    } else if (!id.equals(other.id)) {
-      return false;
-    }
-    if (key == null) {
-      if (other.key != null) {
-        return false;
-      }
-    } else if (!key.equals(other.key)) {
-      return false;
-    }
-    if (markedForDeletion != other.markedForDeletion) {
-      return false;
-    }
-    if (modified == null) {
-      if (other.modified != null) {
-        return false;
-      }
-    } else if (!modified.equals(other.modified)) {
-      return false;
-    }
-    if (name == null) {
-      if (other.name != null) {
-        return false;
-      }
-    } else if (!name.equals(other.name)) {
-      return false;
-    }
-    if (orgLevel1 == null) {
-      if (other.orgLevel1 != null) {
-        return false;
-      }
-    } else if (!orgLevel1.equals(other.orgLevel1)) {
-      return false;
-    }
-    if (orgLevel2 == null) {
-      if (other.orgLevel2 != null) {
-        return false;
-      }
-    } else if (!orgLevel2.equals(other.orgLevel2)) {
-      return false;
-    }
-    if (orgLevel3 == null) {
-      if (other.orgLevel3 != null) {
-        return false;
-      }
-    } else if (!orgLevel3.equals(other.orgLevel3)) {
-      return false;
-    }
-    if (orgLevel4 == null) {
-      if (other.orgLevel4 != null) {
-        return false;
-      }
-    } else if (!orgLevel4.equals(other.orgLevel4)) {
-      return false;
-    }
-    if (owner == null) {
-      if (other.owner != null) {
-        return false;
-      }
-    } else if (!owner.equals(other.owner)) {
-      return false;
-    }
-    if (type != other.type) {
-      return false;
-    }
-    return true;
+    return markedForDeletion == other.markedForDeletion
+        && Objects.equals(id, other.id)
+        && Objects.equals(key, other.key)
+        && Objects.equals(created, other.created)
+        && Objects.equals(modified, other.modified)
+        && Objects.equals(name, other.name)
+        && Objects.equals(description, other.description)
+        && Objects.equals(owner, other.owner)
+        && Objects.equals(domain, other.domain)
+        && type == other.type
+        && Objects.equals(custom1, other.custom1)
+        && Objects.equals(custom2, other.custom2)
+        && Objects.equals(custom3, other.custom3)
+        && Objects.equals(custom4, other.custom4)
+        && Objects.equals(orgLevel1, other.orgLevel1)
+        && Objects.equals(orgLevel2, other.orgLevel2)
+        && Objects.equals(orgLevel3, other.orgLevel3)
+        && Objects.equals(orgLevel4, other.orgLevel4);
   }
 
   @Override

@@ -1,6 +1,7 @@
 package pro.taskana;
 
 import java.time.Instant;
+import java.util.Objects;
 
 /**
  * Capture a time interval. A fixed interval has defined begin and end Instant. An open ended
@@ -22,8 +23,8 @@ public class TimeInterval {
     if (i == null) {
       return false;
     }
-    boolean isAfterBegin = begin == null ? true : !i.isBefore(begin);
-    boolean isBeforeEnd = end == null ? true : !i.isAfter(end);
+    boolean isAfterBegin = begin == null || !i.isBefore(begin);
+    boolean isBeforeEnd = end == null || !i.isAfter(end);
     return (isAfterBegin && isBeforeEnd);
   }
 
@@ -53,11 +54,7 @@ public class TimeInterval {
 
   @Override
   public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((begin == null) ? 0 : begin.hashCode());
-    result = prime * result + ((end == null) ? 0 : end.hashCode());
-    return result;
+    return Objects.hash(begin, end);
   }
 
   @Override
@@ -68,25 +65,11 @@ public class TimeInterval {
     if (obj == null) {
       return false;
     }
-    if (!getClass().isAssignableFrom(obj.getClass())) {
+    if (getClass() != obj.getClass()) {
       return false;
     }
     TimeInterval other = (TimeInterval) obj;
-    if (begin == null) {
-      if (other.begin != null) {
-        return false;
-      }
-    } else if (!begin.equals(other.begin)) {
-      return false;
-    }
-    if (end == null) {
-      if (other.end != null) {
-        return false;
-      }
-    } else if (!end.equals(other.end)) {
-      return false;
-    }
-    return true;
+    return Objects.equals(begin, other.begin) && Objects.equals(end, other.end);
   }
 
   @Override
