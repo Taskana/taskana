@@ -36,14 +36,14 @@ import pro.taskana.impl.DaysToWorkingDaysConverter;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
 import pro.taskana.security.CurrentUserContext;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for the usecase of adding/removing an attachment of a task and update the result
  * correctly.
  */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
 
   private Task task;

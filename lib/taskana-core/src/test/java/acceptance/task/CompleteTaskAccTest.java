@@ -25,11 +25,11 @@ import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.security.CurrentUserContext;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /** Acceptance tests for all claim and complete scenarios. */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class CompleteTaskAccTest extends AbstractAccTest {
 
   CompleteTaskAccTest() {

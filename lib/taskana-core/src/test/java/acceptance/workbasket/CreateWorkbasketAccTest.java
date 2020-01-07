@@ -20,11 +20,11 @@ import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /** Acceptance test for all "create workbasket" scenarios. */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class CreateWorkbasketAccTest extends AbstractAccTest {
 
   CreateWorkbasketAccTest() {

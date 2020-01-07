@@ -20,11 +20,11 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskanaException;
 import pro.taskana.impl.ClassificationImpl;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /** Acceptance test for all "create classification" scenarios. */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class CreateClassificationAccTest extends AbstractAccTest {
 
   private static final String ID_PREFIX_CLASSIFICATION = "CLI";

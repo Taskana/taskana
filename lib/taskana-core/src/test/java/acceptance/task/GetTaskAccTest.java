@@ -17,11 +17,11 @@ import pro.taskana.TaskState;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /** Acceptance test for all "get task" scenarios. */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class GetTaskAccTest extends AbstractAccTest {
 
   GetTaskAccTest() {

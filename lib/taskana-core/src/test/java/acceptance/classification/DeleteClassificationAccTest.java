@@ -14,11 +14,11 @@ import pro.taskana.ClassificationService;
 import pro.taskana.exceptions.ClassificationInUseException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /** Acceptance test for all "delete classification" scenarios. */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class DeleteClassificationAccTest extends AbstractAccTest {
 
   private ClassificationService classificationService;

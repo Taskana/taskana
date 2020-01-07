@@ -34,7 +34,7 @@ import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.configuration.TaskanaEngineTestConfiguration;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.sampledata.SampleDataGenerator;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
@@ -42,7 +42,7 @@ import pro.taskana.security.WithAccessId;
  *
  * @author bbr
  */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class WorkbasketServiceImplIntExplicitTest {
 
   static int counter = 0;

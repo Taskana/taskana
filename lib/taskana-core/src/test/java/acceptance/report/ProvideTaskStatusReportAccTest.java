@@ -21,11 +21,11 @@ import pro.taskana.impl.report.header.TaskStatusColumnHeader;
 import pro.taskana.impl.report.item.TaskQueryItem;
 import pro.taskana.impl.report.structure.Row;
 import pro.taskana.report.TaskStatusReport;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /** Acceptance test for all "task status report" scenarios. */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
 
   private static final Logger LOGGER =

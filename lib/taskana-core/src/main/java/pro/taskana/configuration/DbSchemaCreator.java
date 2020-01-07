@@ -118,13 +118,13 @@ public class DbSchemaCreator {
   }
 
   private static String selectDbScriptFileName(String dbProductName) {
-    return DB.isPostgreSQL(dbProductName)
+    return DB.isPostgreSql(dbProductName)
         ? DB_SCHEMA_POSTGRES
         : DB.isH2(dbProductName) ? DB_SCHEMA : DB_SCHEMA_DB2;
   }
 
   private static String selectDbSchemaDetectionScript(String dbProductName) {
-    return DB.isPostgreSQL(dbProductName) ? DB_SCHEMA_DETECTION_POSTGRES : DB_SCHEMA_DETECTION;
+    return DB.isPostgreSql(dbProductName) ? DB_SCHEMA_DETECTION_POSTGRES : DB_SCHEMA_DETECTION;
   }
 
   private ScriptRunner getScriptRunnerInstance(Connection connection) {

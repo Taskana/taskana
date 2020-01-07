@@ -22,11 +22,11 @@ import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.ConcurrencyException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /** Acceptance test for all "get classification" scenarios. */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class QueryClassificationAccTest extends AbstractAccTest {
 
   private static SortDirection asc = SortDirection.ASCENDING;

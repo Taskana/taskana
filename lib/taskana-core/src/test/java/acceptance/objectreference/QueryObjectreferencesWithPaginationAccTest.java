@@ -16,10 +16,10 @@ import pro.taskana.ObjectReferenceQuery;
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
 import pro.taskana.exceptions.TaskanaRuntimeException;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 
 /** Acceptance test for all "query classifications with pagination" scenarios. */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class QueryObjectreferencesWithPaginationAccTest extends AbstractAccTest {
 
   private TaskService taskService;

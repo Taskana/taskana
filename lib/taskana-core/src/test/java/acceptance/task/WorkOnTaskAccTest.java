@@ -28,11 +28,11 @@ import pro.taskana.exceptions.InvalidStateException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.TaskanaException;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /** Acceptance test for all "work on task" scenarios. This includes claim, complete... */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class WorkOnTaskAccTest extends AbstractAccTest {
 
   WorkOnTaskAccTest() {

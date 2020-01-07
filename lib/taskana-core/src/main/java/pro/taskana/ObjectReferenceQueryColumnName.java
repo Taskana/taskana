@@ -2,7 +2,8 @@ package pro.taskana;
 
 /**
  * Enum containing the column names for @see {@link
- * pro.taskana.mappings.QueryMapper#queryObjectReferenceColumnValues(pro.taskana.impl.ObjectReferenceQueryImpl)}.
+ * pro.taskana.mappings.QueryMapper#queryObjectReferenceColumnValues
+ * (pro.taskana.impl.ObjectReferenceQueryImpl)}.
  *
  * @author jsa
  */

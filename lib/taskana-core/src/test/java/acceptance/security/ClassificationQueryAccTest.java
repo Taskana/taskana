@@ -10,7 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.ClassificationService;
 import pro.taskana.ClassificationSummary;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
@@ -18,7 +18,7 @@ import pro.taskana.security.WithAccessId;
  *
  * @author bbr
  */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class ClassificationQueryAccTest extends AbstractAccTest {
 
   ClassificationQueryAccTest() {

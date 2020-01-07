@@ -10,11 +10,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import pro.taskana.TaskService;
 import pro.taskana.TaskSummary;
 import pro.taskana.exceptions.SystemException;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /** Acceptance test for all "query tasks by object reference" scenarios. */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
 
   QueryTasksByObjectReferenceAccTest() {

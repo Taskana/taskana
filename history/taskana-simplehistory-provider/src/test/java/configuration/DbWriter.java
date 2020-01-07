@@ -12,16 +12,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** Set up the database's writer and generates data for tests. */
-public class DBWriter {
+public class DbWriter {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(DBWriter.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(DbWriter.class);
   private static final String INSERTVALUES = "/sql/history-events.sql";
   private StringWriter outWriter = new StringWriter();
   private PrintWriter logWriter;
   private StringWriter errorWriter;
   private PrintWriter errorLogWriter;
 
-  public DBWriter() {
+  public DbWriter() {
     this.logWriter = new PrintWriter(this.outWriter);
     this.errorWriter = new StringWriter();
     this.errorLogWriter = new PrintWriter(this.errorWriter);

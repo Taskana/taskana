@@ -13,11 +13,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.exceptions.TaskanaRuntimeException;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /** Acceptance test for all "query classifications with pagination" scenarios. */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
 
   QueryWorkbasketsWithPaginationAccTest() {
