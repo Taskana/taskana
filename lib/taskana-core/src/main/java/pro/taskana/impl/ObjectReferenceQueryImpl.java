@@ -159,6 +159,20 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
     }
   }
 
+  @Override
+  public long count() {
+    LOGGER.debug("entry to count(), this = {}", this);
+    Long rowCount = null;
+    try {
+      taskanaEngine.openConnection();
+      rowCount = taskanaEngine.getSqlSession().selectOne(LINK_TO_COUNTER, this);
+      return (rowCount == null) ? 0L : rowCount;
+    } finally {
+      taskanaEngine.returnConnection();
+      LOGGER.debug("exit from count(). Returning result {} ", rowCount);
+    }
+  }
+
   public String[] getCompany() {
     return company;
   }
@@ -201,20 +215,6 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
 
   public ObjectReferenceQueryColumnName getColumnName() {
     return columnName;
-  }
-
-  @Override
-  public long count() {
-    LOGGER.debug("entry to count(), this = {}", this);
-    Long rowCount = null;
-    try {
-      taskanaEngine.openConnection();
-      rowCount = taskanaEngine.getSqlSession().selectOne(LINK_TO_COUNTER, this);
-      return (rowCount == null) ? 0L : rowCount;
-    } finally {
-      taskanaEngine.returnConnection();
-      LOGGER.debug("exit from count(). Returning result {} ", rowCount);
-    }
   }
 
   private ObjectReferenceQuery addOrderCriteria(String colName, SortDirection sortDirection) {

@@ -94,6 +94,11 @@ public class TaskImpl implements Task {
   }
 
   @Override
+  public String getCreator() {
+    return creator;
+  }
+
+  @Override
   public Instant getCreated() {
     return created;
   }
@@ -160,15 +165,6 @@ public class TaskImpl implements Task {
   }
 
   @Override
-  public String getCreator() {
-    return creator;
-  }
-
-  public void setCreator(String creator) {
-    this.creator = creator;
-  }
-
-  @Override
   public String getDescription() {
     return description;
   }
@@ -176,16 +172,6 @@ public class TaskImpl implements Task {
   @Override
   public void setDescription(String description) {
     this.description = description;
-  }
-
-  @Override
-  public String getNote() {
-    return note;
-  }
-
-  @Override
-  public void setNote(String note) {
-    this.note = note;
   }
 
   @Override
@@ -215,16 +201,29 @@ public class TaskImpl implements Task {
     this.classificationSummary = classificationSummary;
   }
 
-  @Override
-  public String getClassificationCategory() {
-    return this.classificationSummary == null ? null : this.classificationSummary.getCategory();
+  public void setCreator(String creator) {
+    this.creator = creator;
   }
 
-  public void setClassificationCategory(String classificationCategory) {
+  public CallbackState getCallbackState() {
+    return callbackState;
+  }
+
+  public void setCallbackState(CallbackState callbackState) {
+    this.callbackState = callbackState;
+  }
+
+  public String getClassificationKey() {
+    return classificationSummary == null ? null : classificationSummary.getKey();
+  }
+
+  @Override
+  public void setClassificationKey(String classificationKey) {
     if (this.classificationSummary == null) {
       this.classificationSummary = new ClassificationSummaryImpl();
     }
-    ((ClassificationSummaryImpl) this.classificationSummary).setCategory(classificationCategory);
+
+    ((ClassificationSummaryImpl) this.classificationSummary).setKey(classificationKey);
   }
 
   @Override
@@ -342,14 +341,6 @@ public class TaskImpl implements Task {
   @Override
   public void setCallbackInfo(Map<String, String> callbackInfo) {
     this.callbackInfo = callbackInfo;
-  }
-
-  public CallbackState getCallbackState() {
-    return callbackState;
-  }
-
-  public void setCallbackState(CallbackState callbackState) {
-    this.callbackState = callbackState;
   }
 
   @Override
@@ -491,12 +482,14 @@ public class TaskImpl implements Task {
     return attachments;
   }
 
-  public void setAttachments(List<Attachment> attachments) {
-    if (attachments != null) {
-      this.attachments = attachments;
-    } else if (this.attachments == null) {
-      this.attachments = new ArrayList<>();
-    }
+  @Override
+  public String getNote() {
+    return note;
+  }
+
+  @Override
+  public void setNote(String note) {
+    this.note = note;
   }
 
   @Override
@@ -549,17 +542,38 @@ public class TaskImpl implements Task {
     return taskSummary;
   }
 
-  public String getClassificationKey() {
-    return classificationSummary == null ? null : classificationSummary.getKey();
+  @Override
+  public Attachment removeAttachment(String attachmentId) {
+    Attachment result = null;
+    Iterator<Attachment> i = attachments.iterator();
+    while (i.hasNext()) {
+      Attachment attachment = i.next();
+      if (attachment.getId().equals(attachmentId) && attachments.remove(attachment)) {
+        result = attachment;
+        break;
+      }
+    }
+    return result;
   }
 
   @Override
-  public void setClassificationKey(String classificationKey) {
+  public String getClassificationCategory() {
+    return this.classificationSummary == null ? null : this.classificationSummary.getCategory();
+  }
+
+  public void setClassificationCategory(String classificationCategory) {
     if (this.classificationSummary == null) {
       this.classificationSummary = new ClassificationSummaryImpl();
     }
+    ((ClassificationSummaryImpl) this.classificationSummary).setCategory(classificationCategory);
+  }
 
-    ((ClassificationSummaryImpl) this.classificationSummary).setKey(classificationKey);
+  public void setAttachments(List<Attachment> attachments) {
+    if (attachments != null) {
+      this.attachments = attachments;
+    } else if (this.attachments == null) {
+      this.attachments = new ArrayList<>();
+    }
   }
 
   public ClassificationSummaryImpl getClassificationSummaryImpl() {
@@ -707,17 +721,50 @@ public class TaskImpl implements Task {
   }
 
   @Override
-  public Attachment removeAttachment(String attachmentId) {
-    Attachment result = null;
-    Iterator<Attachment> i = attachments.iterator();
-    while (i.hasNext()) {
-      Attachment attachment = i.next();
-      if (attachment.getId().equals(attachmentId) && attachments.remove(attachment)) {
-        result = attachment;
-        break;
-      }
-    }
-    return result;
+  public int hashCode() {
+    return Objects.hash(
+        id,
+        externalId,
+        created,
+        claimed,
+        completed,
+        modified,
+        planned,
+        due,
+        name,
+        creator,
+        description,
+        note,
+        priority,
+        state,
+        classificationSummary,
+        workbasketSummary,
+        businessProcessId,
+        parentBusinessProcessId,
+        owner,
+        primaryObjRef,
+        isRead,
+        isTransferred,
+        customAttributes,
+        callbackInfo,
+        callbackState,
+        attachments,
+        custom1,
+        custom2,
+        custom3,
+        custom4,
+        custom5,
+        custom6,
+        custom7,
+        custom8,
+        custom9,
+        custom10,
+        custom11,
+        custom12,
+        custom13,
+        custom14,
+        custom15,
+        custom16);
   }
 
   @Override
@@ -771,53 +818,6 @@ public class TaskImpl implements Task {
         && Objects.equals(custom14, other.custom14)
         && Objects.equals(custom15, other.custom15)
         && Objects.equals(custom16, other.custom16);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-        id,
-        externalId,
-        created,
-        claimed,
-        completed,
-        modified,
-        planned,
-        due,
-        name,
-        creator,
-        description,
-        note,
-        priority,
-        state,
-        classificationSummary,
-        workbasketSummary,
-        businessProcessId,
-        parentBusinessProcessId,
-        owner,
-        primaryObjRef,
-        isRead,
-        isTransferred,
-        customAttributes,
-        callbackInfo,
-        callbackState,
-        attachments,
-        custom1,
-        custom2,
-        custom3,
-        custom4,
-        custom5,
-        custom6,
-        custom7,
-        custom8,
-        custom9,
-        custom10,
-        custom11,
-        custom12,
-        custom13,
-        custom14,
-        custom15,
-        custom16);
   }
 
   @Override

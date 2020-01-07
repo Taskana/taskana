@@ -59,6 +59,7 @@ import pro.taskana.mappings.TaskMapper;
 import pro.taskana.security.CurrentUserContext;
 
 /** This is the implementation of TaskService. */
+@SuppressWarnings("checkstyle:OverloadMethodsDeclarationOrder")
 public class TaskServiceImpl implements TaskService {
 
   private static final String IS_ALREADY_CLAIMED_BY = " is already claimed by ";
@@ -115,42 +116,6 @@ public class TaskServiceImpl implements TaskService {
     return claim(taskId, false);
   }
 
-  private Task claim(String taskId, boolean forceClaim)
-      throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
-      NotAuthorizedException {
-    String userId = CurrentUserContext.getUserid();
-    LOGGER.debug(
-        "entry to claim(id = {}, userId = {}, forceClaim = {})", taskId, userId, forceClaim);
-    TaskImpl task = null;
-    try {
-      taskanaEngine.openConnection();
-      task = (TaskImpl) getTask(taskId);
-      TaskState state = task.getState();
-      if (state == TaskState.COMPLETED) {
-        throw new InvalidStateException(TASK_WITH_ID + taskId + IS_ALREADY_COMPLETED);
-      }
-      if (state == TaskState.CLAIMED && !forceClaim && !task.getOwner().equals(userId)) {
-        throw new InvalidOwnerException(
-            TASK_WITH_ID + taskId + IS_ALREADY_CLAIMED_BY + task.getOwner() + ".");
-      }
-      Instant now = Instant.now();
-      task.setOwner(userId);
-      task.setModified(now);
-      task.setClaimed(now);
-      task.setRead(true);
-      task.setState(TaskState.CLAIMED);
-      taskMapper.update(task);
-      LOGGER.debug("Task '{}' claimed by user '{}'.", taskId, userId);
-      if (HistoryEventProducer.isHistoryEnabled()) {
-        historyEventProducer.createEvent(new ClaimedEvent(task));
-      }
-    } finally {
-      taskanaEngine.returnConnection();
-      LOGGER.debug("exit from claim()");
-    }
-    return task;
-  }
-
   @Override
   public Task forceClaim(String taskId)
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
@@ -163,45 +128,6 @@ public class TaskServiceImpl implements TaskService {
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
           NotAuthorizedException {
     return this.cancelClaim(taskId, false);
-  }
-
-  private Task cancelClaim(String taskId, boolean forceUnclaim)
-      throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
-      NotAuthorizedException {
-    String userId = CurrentUserContext.getUserid();
-    LOGGER.debug(
-        "entry to cancelClaim(taskId = {}), userId = {}, forceUnclaim = {})",
-        taskId,
-        userId,
-        forceUnclaim);
-    TaskImpl task = null;
-    try {
-      taskanaEngine.openConnection();
-      task = (TaskImpl) getTask(taskId);
-      TaskState state = task.getState();
-      if (state == TaskState.COMPLETED) {
-        throw new InvalidStateException(TASK_WITH_ID + taskId + IS_ALREADY_COMPLETED);
-      }
-      if (state == TaskState.CLAIMED && !forceUnclaim && !userId.equals(task.getOwner())) {
-        throw new InvalidOwnerException(
-            TASK_WITH_ID + taskId + IS_ALREADY_CLAIMED_BY + task.getOwner() + ".");
-      }
-      Instant now = Instant.now();
-      task.setOwner(null);
-      task.setModified(now);
-      task.setClaimed(null);
-      task.setRead(true);
-      task.setState(TaskState.READY);
-      taskMapper.update(task);
-      LOGGER.debug("Task '{}' unclaimed by user '{}'.", taskId, userId);
-      if (HistoryEventProducer.isHistoryEnabled()) {
-        historyEventProducer.createEvent(new ClaimCancelledEvent(task));
-      }
-    } finally {
-      taskanaEngine.returnConnection();
-      LOGGER.debug("exit from cancelClaim()");
-    }
-    return task;
   }
 
   @Override
@@ -218,91 +144,11 @@ public class TaskServiceImpl implements TaskService {
     return completeTask(taskId, false);
   }
 
-  private Task completeTask(String taskId, boolean isForced)
-      throws TaskNotFoundException, InvalidOwnerException, InvalidStateException,
-      NotAuthorizedException {
-    String userId = CurrentUserContext.getUserid();
-    LOGGER.debug(
-        "entry to completeTask(id = {}, userId = {}, isForced = {})", taskId, userId, isForced);
-    TaskImpl task = null;
-    try {
-      taskanaEngine.openConnection();
-      task = (TaskImpl) this.getTask(taskId);
-
-      if (task.getState() == TaskState.COMPLETED) {
-        return task;
-      }
-
-      // check pre-conditions for non-forced invocation
-      if (!isForced) {
-        if (task.getClaimed() == null || task.getState() != TaskState.CLAIMED) {
-          throw new InvalidStateException(TASK_WITH_ID + taskId + " has to be claimed before.");
-        } else if (!CurrentUserContext.getAccessIds().contains(task.getOwner())) {
-          throw new InvalidOwnerException(
-              "Owner of task "
-                  + taskId
-                  + " is "
-                  + task.getOwner()
-                  + ", but current User is "
-                  + userId);
-        }
-      } else {
-        // CLAIM-forced, if task was not already claimed before.
-        if (task.getClaimed() == null || task.getState() != TaskState.CLAIMED) {
-          task = (TaskImpl) this.forceClaim(taskId);
-        }
-      }
-      Instant now = Instant.now();
-      task.setCompleted(now);
-      task.setModified(now);
-      task.setState(TaskState.COMPLETED);
-      task.setOwner(userId);
-      taskMapper.update(task);
-      LOGGER.debug("Task '{}' completed by user '{}'.", taskId, userId);
-      if (HistoryEventProducer.isHistoryEnabled()) {
-        historyEventProducer.createEvent(new CompletedEvent(task));
-      }
-    } finally {
-      taskanaEngine.returnConnection();
-      LOGGER.debug("exit from completeTask()");
-    }
-    return task;
-  }
-
   @Override
   public Task forceCompleteTask(String taskId)
       throws TaskNotFoundException, InvalidOwnerException, InvalidStateException,
           NotAuthorizedException {
     return completeTask(taskId, true);
-  }
-
-  @Override
-  public BulkOperationResults<String, TaskanaException> completeTasks(
-      List<String> taskIdsToBeCompleted) throws InvalidArgumentException {
-    try {
-      LOGGER.debug("entry to completeTasks(taskIds = {})", taskIdsToBeCompleted);
-      taskanaEngine.openConnection();
-
-      if (taskIdsToBeCompleted == null || taskIdsToBeCompleted.isEmpty()) {
-        throw new InvalidArgumentException("TaskIds can´t be used as NULL-Parameter.");
-      }
-
-      BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
-      List<String> taskIds = new ArrayList<>(taskIdsToBeCompleted);
-      removeNonExistingTasksFromTaskIdList(taskIds, bulkLog);
-
-      List<TaskSummary> taskSummaries =
-          this.createTaskQuery().idIn(taskIds.toArray(new String[0])).list();
-
-      checkIfTasksMatchCompleteCriteria(taskIds, taskSummaries, bulkLog);
-
-      updateTasksToBeCompleted(taskIds, taskSummaries);
-
-      return bulkLog;
-    } finally {
-      taskanaEngine.returnConnection();
-      LOGGER.debug("exit from to completeTasks(taskIds = {})", taskIdsToBeCompleted);
-    }
   }
 
   @Override
@@ -466,6 +312,20 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
+  public Task transfer(String taskId, String destinationWorkbasketId)
+      throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
+          InvalidStateException {
+    return taskTransferrer.transfer(taskId, destinationWorkbasketId);
+  }
+
+  @Override
+  public Task transfer(String taskId, String workbasketKey, String domain)
+      throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
+          InvalidStateException {
+    return taskTransferrer.transfer(taskId, workbasketKey, domain);
+  }
+
+  @Override
   public Task setTaskRead(String taskId, boolean isRead)
       throws TaskNotFoundException, NotAuthorizedException {
     LOGGER.debug("entry to setTaskRead(taskId = {}, isRead = {})", taskId, isRead);
@@ -482,35 +342,6 @@ public class TaskServiceImpl implements TaskService {
       taskanaEngine.returnConnection();
       LOGGER.debug("exit from setTaskRead(taskId, isRead). Returning result {} ", task);
     }
-  }
-
-  @Override
-  public Task transfer(String taskId, String destinationWorkbasketId)
-      throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
-          InvalidStateException {
-    return taskTransferrer.transfer(taskId, destinationWorkbasketId);
-  }
-
-  @Override
-  public Task transfer(String taskId, String workbasketKey, String domain)
-      throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
-          InvalidStateException {
-    return taskTransferrer.transfer(taskId, workbasketKey, domain);
-  }
-
-  @Override
-  public BulkOperationResults<String, TaskanaException> transferTasks(
-      String destinationWorkbasketId, List<String> taskIds)
-      throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
-    return taskTransferrer.transferTasks(destinationWorkbasketId, taskIds);
-  }
-
-  @Override
-  public BulkOperationResults<String, TaskanaException> transferTasks(
-      String destinationWorkbasketKey, String destinationWorkbasketDomain, List<String> taskIds)
-      throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
-    return taskTransferrer.transferTasks(
-        destinationWorkbasketKey, destinationWorkbasketDomain, taskIds);
   }
 
   @Override
@@ -551,35 +382,49 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
+  public Task updateTask(Task task)
+      throws InvalidArgumentException, TaskNotFoundException, ConcurrencyException,
+          ClassificationNotFoundException, NotAuthorizedException, AttachmentPersistenceException {
+    String userId = CurrentUserContext.getUserid();
+    LOGGER.debug("entry to updateTask(task = {}, userId = {})", task, userId);
+    TaskImpl newTaskImpl = (TaskImpl) task;
+    TaskImpl oldTaskImpl = null;
+    try {
+      taskanaEngine.openConnection();
+      oldTaskImpl = (TaskImpl) getTask(newTaskImpl.getId());
+      PrioDurationHolder prioDurationFromAttachments =
+          handleAttachmentsOnTaskUpdate(oldTaskImpl, newTaskImpl);
+      standardUpdateActions(oldTaskImpl, newTaskImpl, prioDurationFromAttachments);
+
+      taskMapper.update(newTaskImpl);
+      LOGGER.debug("Method updateTask() updated task '{}' for user '{}'.", task.getId(), userId);
+
+    } finally {
+      taskanaEngine.returnConnection();
+      LOGGER.debug("exit from claim()");
+    }
+    return task;
+  }
+
+  @Override
+  public BulkOperationResults<String, TaskanaException> transferTasks(
+      String destinationWorkbasketId, List<String> taskIds)
+      throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
+    return taskTransferrer.transferTasks(destinationWorkbasketId, taskIds);
+  }
+
+  @Override
+  public BulkOperationResults<String, TaskanaException> transferTasks(
+      String destinationWorkbasketKey, String destinationWorkbasketDomain, List<String> taskIds)
+      throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
+    return taskTransferrer.transferTasks(
+        destinationWorkbasketKey, destinationWorkbasketDomain, taskIds);
+  }
+
+  @Override
   public void deleteTask(String taskId)
       throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
     deleteTask(taskId, false);
-  }
-
-  private void deleteTask(String taskId, boolean forceDelete)
-      throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
-    LOGGER.debug("entry to deleteTask(taskId = {} , forceDelete = {})", taskId, forceDelete);
-    taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.ADMIN);
-    TaskImpl task = null;
-    try {
-      taskanaEngine.openConnection();
-      task = (TaskImpl) getTask(taskId);
-
-      if (!TaskState.COMPLETED.equals(task.getState()) && !forceDelete) {
-        throw new InvalidStateException(
-            "Cannot delete Task " + taskId + " because it is not completed.");
-      }
-      if (CallbackState.CALLBACK_PROCESSING_REQUIRED.equals(task.getCallbackState())) {
-        throw new InvalidStateException(
-            "Task " + taskId + " cannot be deleted because its callback is not yet processed");
-      }
-
-      taskMapper.delete(taskId);
-      LOGGER.debug("Task {} deleted.", taskId);
-    } finally {
-      taskanaEngine.returnConnection();
-      LOGGER.debug("exit from deleteTask().");
-    }
   }
 
   @Override
@@ -623,35 +468,31 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
-  public BulkOperationResults<String, TaskanaException> setCallbackStateForTasks(
-      List<String> externalIds, CallbackState state) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "entry to setCallbackStateForTasks(externalIds = {})",
-          LoggerUtils.listToString(externalIds));
-    }
+  public BulkOperationResults<String, TaskanaException> completeTasks(
+      List<String> taskIdsToBeCompleted) throws InvalidArgumentException {
     try {
+      LOGGER.debug("entry to completeTasks(taskIds = {})", taskIdsToBeCompleted);
       taskanaEngine.openConnection();
 
+      if (taskIdsToBeCompleted == null || taskIdsToBeCompleted.isEmpty()) {
+        throw new InvalidArgumentException("TaskIds can´t be used as NULL-Parameter.");
+      }
+
       BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
+      List<String> taskIds = new ArrayList<>(taskIdsToBeCompleted);
+      removeNonExistingTasksFromTaskIdList(taskIds, bulkLog);
 
-      if (externalIds == null || externalIds.isEmpty()) {
-        return bulkLog;
-      }
+      List<TaskSummary> taskSummaries =
+          this.createTaskQuery().idIn(taskIds.toArray(new String[0])).list();
 
-      List<MinimalTaskSummary> taskSummaries = taskMapper.findExistingTasks(null, externalIds);
+      checkIfTasksMatchCompleteCriteria(taskIds, taskSummaries, bulkLog);
 
-      Iterator<String> taskIdIterator = externalIds.iterator();
-      while (taskIdIterator.hasNext()) {
-        removeSingleTaskForCallbackStateByExternalId(bulkLog, taskSummaries, taskIdIterator, state);
-      }
-      if (!externalIds.isEmpty()) {
-        taskMapper.setCallbackStateMultiple(externalIds, state);
-      }
+      updateTasksToBeCompleted(taskIds, taskSummaries);
+
       return bulkLog;
     } finally {
-      LOGGER.debug("exit from setCallbckStateForTasks()");
       taskanaEngine.returnConnection();
+      LOGGER.debug("exit from to completeTasks(taskIds = {})", taskIdsToBeCompleted);
     }
   }
 
@@ -739,28 +580,36 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
-  public Task updateTask(Task task)
-      throws InvalidArgumentException, TaskNotFoundException, ConcurrencyException,
-          ClassificationNotFoundException, NotAuthorizedException, AttachmentPersistenceException {
-    String userId = CurrentUserContext.getUserid();
-    LOGGER.debug("entry to updateTask(task = {}, userId = {})", task, userId);
-    TaskImpl newTaskImpl = (TaskImpl) task;
-    TaskImpl oldTaskImpl = null;
+  public BulkOperationResults<String, TaskanaException> setCallbackStateForTasks(
+      List<String> externalIds, CallbackState state) {
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug(
+          "entry to setCallbackStateForTasks(externalIds = {})",
+          LoggerUtils.listToString(externalIds));
+    }
     try {
       taskanaEngine.openConnection();
-      oldTaskImpl = (TaskImpl) getTask(newTaskImpl.getId());
-      PrioDurationHolder prioDurationFromAttachments =
-          handleAttachmentsOnTaskUpdate(oldTaskImpl, newTaskImpl);
-      standardUpdateActions(oldTaskImpl, newTaskImpl, prioDurationFromAttachments);
 
-      taskMapper.update(newTaskImpl);
-      LOGGER.debug("Method updateTask() updated task '{}' for user '{}'.", task.getId(), userId);
+      BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
 
+      if (externalIds == null || externalIds.isEmpty()) {
+        return bulkLog;
+      }
+
+      List<MinimalTaskSummary> taskSummaries = taskMapper.findExistingTasks(null, externalIds);
+
+      Iterator<String> taskIdIterator = externalIds.iterator();
+      while (taskIdIterator.hasNext()) {
+        removeSingleTaskForCallbackStateByExternalId(bulkLog, taskSummaries, taskIdIterator, state);
+      }
+      if (!externalIds.isEmpty()) {
+        taskMapper.setCallbackStateMultiple(externalIds, state);
+      }
+      return bulkLog;
     } finally {
+      LOGGER.debug("exit from setCallbckStateForTasks()");
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from claim()");
     }
-    return task;
   }
 
   public Set<String> findTasksIdsAffectedByClassificationChange(String classificationId) {
@@ -902,6 +751,158 @@ public class TaskServiceImpl implements TaskService {
     result.addAll(taskSummaries);
     LOGGER.debug("exit from to augmentTaskSummariesByContainedSummaries()");
     return result;
+  }
+
+  private Task claim(String taskId, boolean forceClaim)
+      throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
+          NotAuthorizedException {
+    String userId = CurrentUserContext.getUserid();
+    LOGGER.debug(
+        "entry to claim(id = {}, userId = {}, forceClaim = {})", taskId, userId, forceClaim);
+    TaskImpl task = null;
+    try {
+      taskanaEngine.openConnection();
+      task = (TaskImpl) getTask(taskId);
+      TaskState state = task.getState();
+      if (state == TaskState.COMPLETED) {
+        throw new InvalidStateException(TASK_WITH_ID + taskId + IS_ALREADY_COMPLETED);
+      }
+      if (state == TaskState.CLAIMED && !forceClaim && !task.getOwner().equals(userId)) {
+        throw new InvalidOwnerException(
+            TASK_WITH_ID + taskId + IS_ALREADY_CLAIMED_BY + task.getOwner() + ".");
+      }
+      Instant now = Instant.now();
+      task.setOwner(userId);
+      task.setModified(now);
+      task.setClaimed(now);
+      task.setRead(true);
+      task.setState(TaskState.CLAIMED);
+      taskMapper.update(task);
+      LOGGER.debug("Task '{}' claimed by user '{}'.", taskId, userId);
+      if (HistoryEventProducer.isHistoryEnabled()) {
+        historyEventProducer.createEvent(new ClaimedEvent(task));
+      }
+    } finally {
+      taskanaEngine.returnConnection();
+      LOGGER.debug("exit from claim()");
+    }
+    return task;
+  }
+
+  private Task cancelClaim(String taskId, boolean forceUnclaim)
+      throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
+          NotAuthorizedException {
+    String userId = CurrentUserContext.getUserid();
+    LOGGER.debug(
+        "entry to cancelClaim(taskId = {}), userId = {}, forceUnclaim = {})",
+        taskId,
+        userId,
+        forceUnclaim);
+    TaskImpl task = null;
+    try {
+      taskanaEngine.openConnection();
+      task = (TaskImpl) getTask(taskId);
+      TaskState state = task.getState();
+      if (state == TaskState.COMPLETED) {
+        throw new InvalidStateException(TASK_WITH_ID + taskId + IS_ALREADY_COMPLETED);
+      }
+      if (state == TaskState.CLAIMED && !forceUnclaim && !userId.equals(task.getOwner())) {
+        throw new InvalidOwnerException(
+            TASK_WITH_ID + taskId + IS_ALREADY_CLAIMED_BY + task.getOwner() + ".");
+      }
+      Instant now = Instant.now();
+      task.setOwner(null);
+      task.setModified(now);
+      task.setClaimed(null);
+      task.setRead(true);
+      task.setState(TaskState.READY);
+      taskMapper.update(task);
+      LOGGER.debug("Task '{}' unclaimed by user '{}'.", taskId, userId);
+      if (HistoryEventProducer.isHistoryEnabled()) {
+        historyEventProducer.createEvent(new ClaimCancelledEvent(task));
+      }
+    } finally {
+      taskanaEngine.returnConnection();
+      LOGGER.debug("exit from cancelClaim()");
+    }
+    return task;
+  }
+
+  private Task completeTask(String taskId, boolean isForced)
+      throws TaskNotFoundException, InvalidOwnerException, InvalidStateException,
+          NotAuthorizedException {
+    String userId = CurrentUserContext.getUserid();
+    LOGGER.debug(
+        "entry to completeTask(id = {}, userId = {}, isForced = {})", taskId, userId, isForced);
+    TaskImpl task = null;
+    try {
+      taskanaEngine.openConnection();
+      task = (TaskImpl) this.getTask(taskId);
+
+      if (task.getState() == TaskState.COMPLETED) {
+        return task;
+      }
+
+      // check pre-conditions for non-forced invocation
+      if (!isForced) {
+        if (task.getClaimed() == null || task.getState() != TaskState.CLAIMED) {
+          throw new InvalidStateException(TASK_WITH_ID + taskId + " has to be claimed before.");
+        } else if (!CurrentUserContext.getAccessIds().contains(task.getOwner())) {
+          throw new InvalidOwnerException(
+              "Owner of task "
+                  + taskId
+                  + " is "
+                  + task.getOwner()
+                  + ", but current User is "
+                  + userId);
+        }
+      } else {
+        // CLAIM-forced, if task was not already claimed before.
+        if (task.getClaimed() == null || task.getState() != TaskState.CLAIMED) {
+          task = (TaskImpl) this.forceClaim(taskId);
+        }
+      }
+      Instant now = Instant.now();
+      task.setCompleted(now);
+      task.setModified(now);
+      task.setState(TaskState.COMPLETED);
+      task.setOwner(userId);
+      taskMapper.update(task);
+      LOGGER.debug("Task '{}' completed by user '{}'.", taskId, userId);
+      if (HistoryEventProducer.isHistoryEnabled()) {
+        historyEventProducer.createEvent(new CompletedEvent(task));
+      }
+    } finally {
+      taskanaEngine.returnConnection();
+      LOGGER.debug("exit from completeTask()");
+    }
+    return task;
+  }
+
+  private void deleteTask(String taskId, boolean forceDelete)
+      throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
+    LOGGER.debug("entry to deleteTask(taskId = {} , forceDelete = {})", taskId, forceDelete);
+    taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.ADMIN);
+    TaskImpl task = null;
+    try {
+      taskanaEngine.openConnection();
+      task = (TaskImpl) getTask(taskId);
+
+      if (!TaskState.COMPLETED.equals(task.getState()) && !forceDelete) {
+        throw new InvalidStateException(
+            "Cannot delete Task " + taskId + " because it is not completed.");
+      }
+      if (CallbackState.CALLBACK_PROCESSING_REQUIRED.equals(task.getCallbackState())) {
+        throw new InvalidStateException(
+            "Task " + taskId + " cannot be deleted because its callback is not yet processed");
+      }
+
+      taskMapper.delete(taskId);
+      LOGGER.debug("Task {} deleted.", taskId);
+    } finally {
+      taskanaEngine.returnConnection();
+      LOGGER.debug("exit from deleteTask().");
+    }
   }
 
   private void removeSingleTaskForTaskDeletionById(

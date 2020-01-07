@@ -108,9 +108,9 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
     } else {
       throw new InvalidArgumentException(
           String.format(
-                  "%s corresponding to a group, not a user. "
-                      + "You just can remove access items for a user",
-                  accessId));
+              "%s corresponding to a group, not a user. "
+                  + "You just can remove access items for a user",
+              accessId));
     }
 
     ResponseEntity<Void> response = ResponseEntity.noContent().build();

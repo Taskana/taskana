@@ -110,31 +110,6 @@ abstract class TimeIntervalReportBuilderImpl<
   }
 
   @Override
-  public List<String> listCustomAttributeValuesForCustomAttributeName(CustomField customField)
-      throws NotAuthorizedException {
-    LOGGER.debug(
-        "entry to listCustomAttributeValuesForCustomAttributeName(customField = {}), this = {}",
-        customField,
-        this);
-    this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR);
-    try {
-      this.taskanaEngine.openConnection();
-      return taskMonitorMapper.getCustomAttributeValuesForReport(
-          this.workbasketIds,
-          this.states,
-          this.categories,
-          this.domains,
-          this.classificationIds,
-          this.excludedClassificationIds,
-          this.customAttributeFilter,
-          customField);
-    } finally {
-      this.taskanaEngine.returnConnection();
-      LOGGER.debug("exit from listCustomAttributeValuesForCustomAttributeName().");
-    }
-  }
-
-  @Override
   public List<String> listTaskIdsForSelectedItems(List<SelectedItem> selectedItems)
       throws NotAuthorizedException, InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
@@ -174,6 +149,31 @@ abstract class TimeIntervalReportBuilderImpl<
     } finally {
       this.taskanaEngine.returnConnection();
       LOGGER.debug("exit from listTaskIdsForSelectedItems().");
+    }
+  }
+
+  @Override
+  public List<String> listCustomAttributeValuesForCustomAttributeName(CustomField customField)
+      throws NotAuthorizedException {
+    LOGGER.debug(
+        "entry to listCustomAttributeValuesForCustomAttributeName(customField = {}), this = {}",
+        customField,
+        this);
+    this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR);
+    try {
+      this.taskanaEngine.openConnection();
+      return taskMonitorMapper.getCustomAttributeValuesForReport(
+          this.workbasketIds,
+          this.states,
+          this.categories,
+          this.domains,
+          this.classificationIds,
+          this.excludedClassificationIds,
+          this.customAttributeFilter,
+          customField);
+    } finally {
+      this.taskanaEngine.returnConnection();
+      LOGGER.debug("exit from listCustomAttributeValuesForCustomAttributeName().");
     }
   }
 

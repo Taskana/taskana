@@ -1,8 +1,8 @@
 package pro.taskana;
 
 /**
- * Enum containing the column names for
- * {@link pro.taskana.mappings.QueryMapper#queryClassificationColumnValues}.
+ * Enum containing the column names for {@link
+ * pro.taskana.mappings.QueryMapper#queryClassificationColumnValues}.
  *
  * @author jsa
  */

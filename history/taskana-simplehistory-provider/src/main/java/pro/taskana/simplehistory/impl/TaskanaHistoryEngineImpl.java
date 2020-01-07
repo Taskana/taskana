@@ -29,7 +29,6 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
   protected SqlSessionManager sessionManager;
   protected TransactionFactory transactionFactory;
   protected TaskanaHistory taskanaHistoryService;
-
   TaskanaEngineConfiguration taskanaEngineConfiguration;
 
   protected TaskanaHistoryEngineImpl(TaskanaEngineConfiguration taskanaEngineConfiguration)
@@ -56,51 +55,6 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
       this.taskanaHistoryService = historyService;
     }
     return this.taskanaHistoryService;
-  }
-
-  /**
-   * Open the connection to the database. to be called at the begin of each Api call that accesses
-   * the database
-   *
-   * @throws SQLException thrown if the connection could not be opened.
-   */
-  void openConnection() throws SQLException {
-    initSqlSession();
-    this.sessionManager.getConnection().setSchema(taskanaEngineConfiguration.getSchemaName());
-  }
-
-  /**
-   * Returns the database connection into the pool. In the case of nested calls, simply pops the
-   * latest session from the session stack. Closes the connection if the session stack is empty. In
-   * mode AUTOCOMMIT commits before the connection is closed. To be called at the end of each Api
-   * call that accesses the database
-   */
-  void returnConnection() {
-    popSessionFromStack();
-    if (getSessionStack().isEmpty()
-        && this.sessionManager != null
-        && this.sessionManager.isManagedSessionStarted()) {
-      try {
-        this.sessionManager.commit();
-      } catch (Exception e) {
-        //ignore
-      }
-      this.sessionManager.close();
-    }
-  }
-
-  /** Initializes the SqlSessionManager. */
-  void initSqlSession() {
-    this.sessionManager.startManagedSession();
-  }
-
-  /**
-   * retrieve the SqlSession used by taskana.
-   *
-   * @return the myBatis SqlSession object used by taskana
-   */
-  SqlSession getSqlSession() {
-    return this.sessionManager;
   }
 
   protected SqlSessionManager createSqlSessionManager() {
@@ -156,6 +110,51 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
       return null;
     }
     return stack.peek();
+  }
+
+  /**
+   * Open the connection to the database. to be called at the begin of each Api call that accesses
+   * the database
+   *
+   * @throws SQLException thrown if the connection could not be opened.
+   */
+  void openConnection() throws SQLException {
+    initSqlSession();
+    this.sessionManager.getConnection().setSchema(taskanaEngineConfiguration.getSchemaName());
+  }
+
+  /**
+   * Returns the database connection into the pool. In the case of nested calls, simply pops the
+   * latest session from the session stack. Closes the connection if the session stack is empty. In
+   * mode AUTOCOMMIT commits before the connection is closed. To be called at the end of each Api
+   * call that accesses the database
+   */
+  void returnConnection() {
+    popSessionFromStack();
+    if (getSessionStack().isEmpty()
+        && this.sessionManager != null
+        && this.sessionManager.isManagedSessionStarted()) {
+      try {
+        this.sessionManager.commit();
+      } catch (Exception e) {
+        // ignore
+      }
+      this.sessionManager.close();
+    }
+  }
+
+  /** Initializes the SqlSessionManager. */
+  void initSqlSession() {
+    this.sessionManager.startManagedSession();
+  }
+
+  /**
+   * retrieve the SqlSession used by taskana.
+   *
+   * @return the myBatis SqlSession object used by taskana
+   */
+  SqlSession getSqlSession() {
+    return this.sessionManager;
   }
 
   /**

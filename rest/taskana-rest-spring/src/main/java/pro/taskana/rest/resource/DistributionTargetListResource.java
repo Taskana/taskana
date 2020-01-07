@@ -18,14 +18,14 @@ public class DistributionTargetListResource extends PagedResources<DistributionT
   }
 
   @Override
-  @JsonProperty("distributionTargets")
-  public Collection<DistributionTargetResource> getContent() {
-    return super.getContent();
-  }
-
-  @Override
   @JsonIgnore
   public PageMetadata getMetadata() {
     return super.getMetadata();
+  }
+
+  @Override
+  @JsonProperty("distributionTargets")
+  public Collection<DistributionTargetResource> getContent() {
+    return super.getContent();
   }
 }

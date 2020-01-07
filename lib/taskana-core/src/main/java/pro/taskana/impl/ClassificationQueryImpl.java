@@ -325,11 +325,6 @@ public class ClassificationQueryImpl implements ClassificationQuery {
   }
 
   @Override
-  public ClassificationQuery orderByPriority(SortDirection sortDirection) {
-    return addOrderCriteria("PRIORITY", sortDirection);
-  }
-
-  @Override
   public ClassificationQuery orderByName(SortDirection sortDirection) {
     return addOrderCriteria("NAME", sortDirection);
   }
@@ -337,6 +332,11 @@ public class ClassificationQueryImpl implements ClassificationQuery {
   @Override
   public ClassificationQuery orderByServiceLevel(SortDirection sortDirection) {
     return addOrderCriteria("SERVICE_LEVEL", sortDirection);
+  }
+
+  @Override
+  public ClassificationQuery orderByPriority(SortDirection sortDirection) {
+    return addOrderCriteria("PRIORITY", sortDirection);
   }
 
   @Override

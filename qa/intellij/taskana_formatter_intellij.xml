@@ -146,8 +146,45 @@
       <option name="INDENT_SIZE" value="2" />
       <option name="CONTINUATION_INDENT_SIZE" value="4" />
       <option name="TAB_SIZE" value="2" />
+      <option name="USE_RELATIVE_INDENTS" value="true" />
     </indentOptions>
     <arrangement>
+      <tokens>
+        <token id="visibility" name="visibility">
+          <rules>
+            <rule>
+              <match>
+                <PUBLIC>true</PUBLIC>
+              </match>
+            </rule>
+            <rule>
+              <match>
+                <PROTECTED>true</PROTECTED>
+              </match>
+            </rule>
+            <rule>
+              <match>
+                <PACKAGE_PRIVATE>true</PACKAGE_PRIVATE>
+              </match>
+            </rule>
+            <rule>
+              <match>
+                <PRIVATE>true</PRIVATE>
+              </match>
+            </rule>
+          </rules>
+        </token>
+      </tokens>
+      <groups>
+        <group>
+          <type>GETTERS_AND_SETTERS</type>
+          <order>KEEP</order>
+        </group>
+        <group>
+          <type>OVERRIDDEN_METHODS</type>
+          <order>KEEP</order>
+        </group>
+      </groups>
       <rules>
         <section>
           <rule>

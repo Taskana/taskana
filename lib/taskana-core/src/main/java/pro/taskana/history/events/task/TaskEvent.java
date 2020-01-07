@@ -57,14 +57,6 @@ public class TaskEvent extends TaskanaHistoryEvent {
     }
   }
 
-  public String getTaskId() {
-    return taskId;
-  }
-
-  public void setTaskId(String taskId) {
-    this.taskId = taskId;
-  }
-
   public String getBusinessProcessId() {
     return businessProcessId;
   }
@@ -81,6 +73,14 @@ public class TaskEvent extends TaskanaHistoryEvent {
     this.parentBusinessProcessId = parentBusinessProcessId;
   }
 
+  public String getTaskId() {
+    return taskId;
+  }
+
+  public void setTaskId(String taskId) {
+    this.taskId = taskId;
+  }
+
   public String getDomain() {
     return domain;
   }
@@ -95,30 +95,6 @@ public class TaskEvent extends TaskanaHistoryEvent {
 
   public void setWorkbasketKey(String workbasketKey) {
     this.workbasketKey = workbasketKey;
-  }
-
-  public String getTaskClassificationCategory() {
-    return taskClassificationCategory;
-  }
-
-  public void setTaskClassificationCategory(String taskClassificationCategory) {
-    this.taskClassificationCategory = taskClassificationCategory;
-  }
-
-  public String getTaskClassificationKey() {
-    return taskClassificationKey;
-  }
-
-  public void setTaskClassificationKey(String taskClassificationKey) {
-    this.taskClassificationKey = taskClassificationKey;
-  }
-
-  public String getAttachmentClassificationKey() {
-    return attachmentClassificationKey;
-  }
-
-  public void setAttachmentClassificationKey(String attachmentClassificationKey) {
-    this.attachmentClassificationKey = attachmentClassificationKey;
   }
 
   public String getPorCompany() {
@@ -159,6 +135,30 @@ public class TaskEvent extends TaskanaHistoryEvent {
 
   public void setPorValue(String porValue) {
     this.porValue = porValue;
+  }
+
+  public String getTaskClassificationKey() {
+    return taskClassificationKey;
+  }
+
+  public void setTaskClassificationKey(String taskClassificationKey) {
+    this.taskClassificationKey = taskClassificationKey;
+  }
+
+  public String getTaskClassificationCategory() {
+    return taskClassificationCategory;
+  }
+
+  public void setTaskClassificationCategory(String taskClassificationCategory) {
+    this.taskClassificationCategory = taskClassificationCategory;
+  }
+
+  public String getAttachmentClassificationKey() {
+    return attachmentClassificationKey;
+  }
+
+  public void setAttachmentClassificationKey(String attachmentClassificationKey) {
+    this.attachmentClassificationKey = attachmentClassificationKey;
   }
 
   @Override
