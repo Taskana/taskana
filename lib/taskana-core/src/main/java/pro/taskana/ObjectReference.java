@@ -1,5 +1,7 @@
 package pro.taskana;
 
+import java.util.Objects;
+
 /** ObjectReference entity. */
 public class ObjectReference {
 
@@ -60,67 +62,27 @@ public class ObjectReference {
 
   @Override
   public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((id == null) ? 0 : id.hashCode());
-    result = prime * result + ((company == null) ? 0 : company.hashCode());
-    result = prime * result + ((system == null) ? 0 : system.hashCode());
-    result = prime * result + ((systemInstance == null) ? 0 : systemInstance.hashCode());
-    result = prime * result + ((type == null) ? 0 : type.hashCode());
-    result = prime * result + ((value == null) ? 0 : value.hashCode());
-    return result;
+    return Objects.hash(id, company, system, systemInstance, type, value);
   }
 
   @Override
-  public boolean equals(Object other) {
-    if (this == other) {
+  public boolean equals(Object obj) {
+    if (this == obj) {
       return true;
     }
-    if (other == null) {
+    if (obj == null) {
       return false;
     }
-    if (!getClass().isAssignableFrom(other.getClass())) {
+    if (getClass() != obj.getClass()) {
       return false;
     }
-    ObjectReference o = (ObjectReference) other;
-
-    if (id == null && o.id != null) {
-      return false;
-    }
-    if (id != null && !(id.equals(o.id))) {
-      return false;
-    }
-    if (company == null && o.company != null) {
-      return false;
-    }
-    if (company != null && !(company.equals(o.company))) {
-      return false;
-    }
-    if (system == null && o.system != null) {
-      return false;
-    }
-    if (system != null && !(system.equals(o.system))) {
-      return false;
-    }
-    if (systemInstance == null && o.systemInstance != null) {
-      return false;
-    }
-    if (systemInstance != null && !(systemInstance.equals(o.systemInstance))) {
-      return false;
-    }
-    if (type == null && o.type != null) {
-      return false;
-    }
-    if (type != null && !(type.equals(o.type))) {
-      return false;
-    }
-    if (value == null && o.value != null) {
-      return false;
-    }
-    if (value != null && !(value.equals(o.value))) {
-      return false;
-    }
-    return true;
+    ObjectReference other = (ObjectReference) obj;
+    return Objects.equals(id, other.id)
+        && Objects.equals(company, other.company)
+        && Objects.equals(system, other.system)
+        && Objects.equals(systemInstance, other.systemInstance)
+        && Objects.equals(type, other.type)
+        && Objects.equals(value, other.value);
   }
 
   @Override

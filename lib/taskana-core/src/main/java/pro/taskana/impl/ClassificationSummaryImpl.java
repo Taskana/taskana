@@ -218,42 +218,35 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) {
+  public boolean equals(Object obj) {
+    if (this == obj) {
       return true;
     }
-    if (o == null) {
+    if (obj == null) {
       return false;
     }
-
-    if (!getClass().isAssignableFrom(o.getClass())) {
+    if (getClass() != obj.getClass()) {
       return false;
     }
-
-    ClassificationSummaryImpl that = (ClassificationSummaryImpl) o;
-
-    if (!that.canEqual(this)) {
-      return false;
-    }
-
-    return priority == that.priority
-        && Objects.equals(id, that.id)
-        && Objects.equals(key, that.key)
-        && Objects.equals(category, that.category)
-        && Objects.equals(type, that.type)
-        && Objects.equals(domain, that.domain)
-        && Objects.equals(name, that.name)
-        && Objects.equals(parentId, that.parentId)
-        && Objects.equals(parentKey, that.parentKey)
-        && Objects.equals(serviceLevel, that.serviceLevel)
-        && Objects.equals(custom1, that.custom1)
-        && Objects.equals(custom2, that.custom2)
-        && Objects.equals(custom3, that.custom3)
-        && Objects.equals(custom4, that.custom4)
-        && Objects.equals(custom5, that.custom5)
-        && Objects.equals(custom6, that.custom6)
-        && Objects.equals(custom7, that.custom7)
-        && Objects.equals(custom8, that.custom8);
+    ClassificationSummaryImpl other = (ClassificationSummaryImpl) obj;
+    return priority == other.priority
+        && Objects.equals(id, other.id)
+        && Objects.equals(key, other.key)
+        && Objects.equals(category, other.category)
+        && Objects.equals(type, other.type)
+        && Objects.equals(domain, other.domain)
+        && Objects.equals(name, other.name)
+        && Objects.equals(parentId, other.parentId)
+        && Objects.equals(parentKey, other.parentKey)
+        && Objects.equals(serviceLevel, other.serviceLevel)
+        && Objects.equals(custom1, other.custom1)
+        && Objects.equals(custom2, other.custom2)
+        && Objects.equals(custom3, other.custom3)
+        && Objects.equals(custom4, other.custom4)
+        && Objects.equals(custom5, other.custom5)
+        && Objects.equals(custom6, other.custom6)
+        && Objects.equals(custom7, other.custom7)
+        && Objects.equals(custom8, other.custom8);
   }
 
   @Override
