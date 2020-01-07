@@ -40,7 +40,7 @@ describe('StartupService', () => {
     httpMock = injector.get(HttpTestingController);
     // UserService provided to the TestBed
     service = TestBed.get(StartupService);
-  })
+  });
 
   it('should be created', inject([StartupService], () => {
     expect(service).toBeTruthy();
@@ -53,7 +53,21 @@ describe('StartupService', () => {
       expect(environment.taskanaRestUrl).toBe(someRestUrl);
       expect(environment.taskanaLogoutUrl).toBe(someLogoutUrl);
       done();
-    })
+    });
+    const req = httpMock.expectOne(environmentFile);
+    expect(req.request.method).toBe('GET');
+    req.flush(dummyEnvironmentInformation);
+    httpMock.verify();
+  });
+
+  it('should initialize rest and logout url from external file and override previous config', (done) => {
+    environment.taskanaRestUrl = 'oldRestUrl';
+    environment.taskanaLogoutUrl = 'oldLogoutUrl';
+    service.getEnvironmentFilePromise().then((res) => {
+      expect(environment.taskanaRestUrl).toBe(someRestUrl);
+      expect(environment.taskanaLogoutUrl).toBe(someLogoutUrl);
+      done();
+    });
     const req = httpMock.expectOne(environmentFile);
     expect(req.request.method).toBe('GET');
     req.flush(dummyEnvironmentInformation);
