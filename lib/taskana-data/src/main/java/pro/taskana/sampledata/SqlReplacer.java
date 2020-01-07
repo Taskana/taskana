@@ -11,20 +11,21 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /** This class replaces boolean values with int values if the database is db2. */
-final class SQLReplacer {
+final class SqlReplacer {
 
   static final String RELATIVE_DATE_REGEX = "RELATIVE_DATE\\((-?\\d+)\\)";
   static final Pattern RELATIVE_DATE_PATTERN = Pattern.compile(RELATIVE_DATE_REGEX);
   static final DateTimeFormatter DATE_TIME_FORMATTER =
       DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 
-  private SQLReplacer() {}
+  private SqlReplacer() {
+  }
 
   static String getScriptAsSql(String dbProductName, LocalDateTime now, String scriptPath) {
     return parseAndReplace(getScriptBufferedStream(scriptPath), now, dbProductName);
   }
 
-  static boolean isPostgreSQL(String databaseProductName) {
+  static boolean isPostgreSql(String databaseProductName) {
     return "PostgreSQL".equals(databaseProductName);
   }
 

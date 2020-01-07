@@ -721,61 +721,11 @@ public class TaskImpl implements Task {
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hash(
-        id,
-        externalId,
-        created,
-        claimed,
-        completed,
-        modified,
-        planned,
-        due,
-        name,
-        creator,
-        description,
-        note,
-        priority,
-        state,
-        classificationSummary,
-        workbasketSummary,
-        businessProcessId,
-        parentBusinessProcessId,
-        owner,
-        primaryObjRef,
-        isRead,
-        isTransferred,
-        customAttributes,
-        callbackInfo,
-        callbackState,
-        attachments,
-        custom1,
-        custom2,
-        custom3,
-        custom4,
-        custom5,
-        custom6,
-        custom7,
-        custom8,
-        custom9,
-        custom10,
-        custom11,
-        custom12,
-        custom13,
-        custom14,
-        custom15,
-        custom16);
-  }
-
-  @Override
   public boolean equals(Object obj) {
     if (this == obj) {
       return true;
     }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if (!(obj instanceof TaskImpl)) {
       return false;
     }
     TaskImpl other = (TaskImpl) obj;
@@ -821,6 +771,53 @@ public class TaskImpl implements Task {
         && Objects.equals(custom14, other.custom14)
         && Objects.equals(custom15, other.custom15)
         && Objects.equals(custom16, other.custom16);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        id,
+        externalId,
+        created,
+        claimed,
+        completed,
+        modified,
+        planned,
+        due,
+        name,
+        creator,
+        description,
+        note,
+        priority,
+        state,
+        classificationSummary,
+        workbasketSummary,
+        businessProcessId,
+        parentBusinessProcessId,
+        owner,
+        primaryObjRef,
+        isRead,
+        isTransferred,
+        customAttributes,
+        callbackInfo,
+        callbackState,
+        attachments,
+        custom1,
+        custom2,
+        custom3,
+        custom4,
+        custom5,
+        custom6,
+        custom7,
+        custom8,
+        custom9,
+        custom10,
+        custom11,
+        custom12,
+        custom13,
+        custom14,
+        custom15,
+        custom16);
   }
 
   @Override

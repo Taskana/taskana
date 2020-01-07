@@ -1,8 +1,8 @@
 package pro.taskana.sampledata;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static pro.taskana.sampledata.SQLReplacer.DATE_TIME_FORMATTER;
-import static pro.taskana.sampledata.SQLReplacer.RELATIVE_DATE_PATTERN;
+import static pro.taskana.sampledata.SqlReplacer.DATE_TIME_FORMATTER;
+import static pro.taskana.sampledata.SqlReplacer.RELATIVE_DATE_PATTERN;
 
 import java.time.LocalDateTime;
 import java.util.regex.Matcher;
@@ -11,13 +11,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /** Test SampleDataGenerator. */
-class SQLReplacerTest {
+class SqlReplacerTest {
 
   @Test
   void replaceRelativeTimeFunctionSameDate() {
     LocalDateTime now = LocalDateTime.now();
     String dateFormatted = now.format(DATE_TIME_FORMATTER);
-    String sqlStringReplaced = SQLReplacer.replaceDatePlaceholder(now, "... RELATIVE_DATE(0) ...");
+    String sqlStringReplaced = SqlReplacer.replaceDatePlaceholder(now, "... RELATIVE_DATE(0) ...");
     assertThat(sqlStringReplaced, CoreMatchers.containsString(dateFormatted));
   }
 
@@ -47,7 +47,7 @@ class SQLReplacerTest {
   void replaceRelativeTimeFunctionPosDate() {
     LocalDateTime now = LocalDateTime.now();
     String dateFormatted = now.plusDays(5).format(DATE_TIME_FORMATTER);
-    String sqlStringReplaced = SQLReplacer.replaceDatePlaceholder(now, "... RELATIVE_DATE(5) ...");
+    String sqlStringReplaced = SqlReplacer.replaceDatePlaceholder(now, "... RELATIVE_DATE(5) ...");
     assertThat(sqlStringReplaced, CoreMatchers.containsString(dateFormatted));
   }
 
@@ -56,7 +56,7 @@ class SQLReplacerTest {
     LocalDateTime now = LocalDateTime.now();
     String dateFormatted = now.plusDays(-10).format(DATE_TIME_FORMATTER);
     String sqlStringReplaced =
-        SQLReplacer.replaceDatePlaceholder(now, "... RELATIVE_DATE(-10) ...");
+        SqlReplacer.replaceDatePlaceholder(now, "... RELATIVE_DATE(-10) ...");
     assertThat(sqlStringReplaced, CoreMatchers.containsString(dateFormatted));
   }
 }

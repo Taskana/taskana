@@ -21,7 +21,7 @@ class SampleDataProviderTest {
   @Test
   void getScriptsFileExists() {
     SampleDataProvider.getDefaultScripts()
-        .map(SQLReplacer::getScriptBufferedStream)
+        .map(SqlReplacer::getScriptBufferedStream)
         .forEach(Assertions::assertNotNull);
   }
 }
