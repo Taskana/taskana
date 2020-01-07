@@ -34,23 +34,20 @@ public class KeyDomain {
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hash(key, domain);
-  }
-
-  @Override
   public boolean equals(Object obj) {
     if (this == obj) {
       return true;
     }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if (!(obj instanceof KeyDomain)) {
       return false;
     }
     KeyDomain other = (KeyDomain) obj;
     return Objects.equals(key, other.key) && Objects.equals(domain, other.domain);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(key, domain);
   }
 
   @Override

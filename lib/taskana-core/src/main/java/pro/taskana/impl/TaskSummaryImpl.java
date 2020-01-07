@@ -589,57 +589,11 @@ public class TaskSummaryImpl implements TaskSummary {
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hash(
-        taskId,
-        externalId,
-        created,
-        claimed,
-        completed,
-        modified,
-        planned,
-        due,
-        name,
-        creator,
-        note,
-        priority,
-        state,
-        classificationSummary,
-        workbasketSummary,
-        businessProcessId,
-        parentBusinessProcessId,
-        owner,
-        primaryObjRef,
-        isRead,
-        isTransferred,
-        attachmentSummaries,
-        custom1,
-        custom2,
-        custom3,
-        custom4,
-        custom5,
-        custom6,
-        custom7,
-        custom8,
-        custom9,
-        custom10,
-        custom11,
-        custom12,
-        custom13,
-        custom14,
-        custom15,
-        custom16);
-  }
-
-  @Override
   public boolean equals(Object obj) {
     if (this == obj) {
       return true;
     }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if (!(obj instanceof TaskSummaryImpl)) {
       return false;
     }
     TaskSummaryImpl other = (TaskSummaryImpl) obj;
@@ -681,6 +635,49 @@ public class TaskSummaryImpl implements TaskSummary {
         && Objects.equals(custom14, other.custom14)
         && Objects.equals(custom15, other.custom15)
         && Objects.equals(custom16, other.custom16);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        taskId,
+        externalId,
+        created,
+        claimed,
+        completed,
+        modified,
+        planned,
+        due,
+        name,
+        creator,
+        note,
+        priority,
+        state,
+        classificationSummary,
+        workbasketSummary,
+        businessProcessId,
+        parentBusinessProcessId,
+        owner,
+        primaryObjRef,
+        isRead,
+        isTransferred,
+        attachmentSummaries,
+        custom1,
+        custom2,
+        custom3,
+        custom4,
+        custom5,
+        custom6,
+        custom7,
+        custom8,
+        custom9,
+        custom10,
+        custom11,
+        custom12,
+        custom13,
+        custom14,
+        custom15,
+        custom16);
   }
 
   @Override

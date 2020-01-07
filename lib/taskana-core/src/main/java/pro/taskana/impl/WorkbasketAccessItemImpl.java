@@ -416,41 +416,11 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hash(
-        id,
-        workbasketId,
-        workbasketKey,
-        accessId,
-        accessName,
-        permRead,
-        permOpen,
-        permAppend,
-        permTransfer,
-        permDistribute,
-        permCustom1,
-        permCustom2,
-        permCustom3,
-        permCustom4,
-        permCustom5,
-        permCustom6,
-        permCustom7,
-        permCustom8,
-        permCustom9,
-        permCustom10,
-        permCustom11,
-        permCustom12);
-  }
-
-  @Override
   public boolean equals(Object obj) {
     if (this == obj) {
       return true;
     }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if (!(obj instanceof WorkbasketAccessItemImpl)) {
       return false;
     }
     WorkbasketAccessItemImpl other = (WorkbasketAccessItemImpl) obj;
@@ -476,6 +446,33 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
         && Objects.equals(workbasketKey, other.workbasketKey)
         && Objects.equals(accessId, other.accessId)
         && Objects.equals(accessName, other.accessName);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        id,
+        workbasketId,
+        workbasketKey,
+        accessId,
+        accessName,
+        permRead,
+        permOpen,
+        permAppend,
+        permTransfer,
+        permDistribute,
+        permCustom1,
+        permCustom2,
+        permCustom3,
+        permCustom4,
+        permCustom5,
+        permCustom6,
+        permCustom7,
+        permCustom8,
+        permCustom9,
+        permCustom10,
+        permCustom11,
+        permCustom12);
   }
 
   @Override

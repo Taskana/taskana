@@ -122,34 +122,12 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
     this.classificationSummary = classificationSummary;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.impl.AttachmentSummary#getReceived()
-   */
-  @Override
-  public Instant getReceived() {
-    return received;
-  }
-
-  public void setReceived(Instant received) {
-    this.received = received;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-        id, taskId, created, modified, classificationSummary, objectReference, channel, received);
-  }
-
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
       return true;
     }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if (!(obj instanceof AttachmentSummaryImpl)) {
       return false;
     }
     AttachmentSummaryImpl other = (AttachmentSummaryImpl) obj;
@@ -161,6 +139,25 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
         && Objects.equals(objectReference, other.objectReference)
         && Objects.equals(channel, other.channel)
         && Objects.equals(received, other.received);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        id, taskId, created, modified, classificationSummary, objectReference, channel, received);
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see pro.taskana.impl.AttachmentSummary#getReceived()
+   */
+  @Override
+  public Instant getReceived() {
+    return received;
+  }
+
+  public void setReceived(Instant received) {
+    this.received = received;
   }
 
   @Override

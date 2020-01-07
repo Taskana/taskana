@@ -92,7 +92,7 @@ public class SampleDataGenerator {
     try (Connection connection = dataSource.getConnection()) {
       connection.setSchema(schema);
       SqlRunner runner = new SqlRunner(connection);
-      String tableSafe = SQLReplacer.getSanitizedTableName(table);
+      String tableSafe = SqlReplacer.getSanitizedTableName(table);
       String query = "SELECT 1 FROM " + tableSafe + " LIMIT 1;";
       runner.run(query);
       return true;
@@ -105,7 +105,7 @@ public class SampleDataGenerator {
     try (Connection connection = dataSource.getConnection()) {
       String dbProductName = connection.getMetaData().getDatabaseProductName();
       return scripts
-          .map(script -> SQLReplacer.getScriptAsSql(dbProductName, now, script))
+          .map(script -> SqlReplacer.getScriptAsSql(dbProductName, now, script))
           .collect(Collectors.toList());
     } catch (SQLException e) {
       throw new RuntimeSqlException("Connection to database failed.", e);
