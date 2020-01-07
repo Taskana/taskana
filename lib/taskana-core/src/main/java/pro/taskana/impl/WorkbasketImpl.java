@@ -41,6 +41,11 @@ public class WorkbasketImpl implements Workbasket {
   }
 
   @Override
+  public Instant getCreated() {
+    return created;
+  }
+
+  @Override
   public String getKey() {
     return key;
   }
@@ -50,12 +55,22 @@ public class WorkbasketImpl implements Workbasket {
   }
 
   @Override
-  public Instant getCreated() {
-    return created;
+  public String getDomain() {
+    return domain;
   }
 
-  public void setCreated(Instant created) {
-    this.created = created;
+  public void setDomain(String domain) {
+    this.domain = domain;
+  }
+
+  @Override
+  public WorkbasketType getType() {
+    return type;
+  }
+
+  @Override
+  public void setType(WorkbasketType type) {
+    this.type = type;
   }
 
   @Override
@@ -95,25 +110,6 @@ public class WorkbasketImpl implements Workbasket {
   @Override
   public void setOwner(String owner) {
     this.owner = owner;
-  }
-
-  @Override
-  public String getDomain() {
-    return domain;
-  }
-
-  public void setDomain(String domain) {
-    this.domain = domain;
-  }
-
-  @Override
-  public WorkbasketType getType() {
-    return type;
-  }
-
-  @Override
-  public void setType(WorkbasketType type) {
-    this.type = type;
   }
 
   @Override
@@ -228,6 +224,33 @@ public class WorkbasketImpl implements Workbasket {
     return result;
   }
 
+  public void setCreated(Instant created) {
+    this.created = created;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        id,
+        key,
+        created,
+        modified,
+        name,
+        description,
+        owner,
+        domain,
+        type,
+        custom1,
+        custom2,
+        custom3,
+        custom4,
+        orgLevel1,
+        orgLevel2,
+        orgLevel3,
+        orgLevel4,
+        markedForDeletion);
+  }
+
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
@@ -255,29 +278,6 @@ public class WorkbasketImpl implements Workbasket {
         && Objects.equals(orgLevel2, other.orgLevel2)
         && Objects.equals(orgLevel3, other.orgLevel3)
         && Objects.equals(orgLevel4, other.orgLevel4);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-        id,
-        key,
-        created,
-        modified,
-        name,
-        description,
-        owner,
-        domain,
-        type,
-        custom1,
-        custom2,
-        custom3,
-        custom4,
-        orgLevel1,
-        orgLevel2,
-        orgLevel3,
-        orgLevel4,
-        markedForDeletion);
   }
 
   @Override

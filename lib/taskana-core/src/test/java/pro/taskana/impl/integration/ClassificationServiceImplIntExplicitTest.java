@@ -46,8 +46,9 @@ import pro.taskana.sampledata.SampleDataGenerator;
  */
 public class ClassificationServiceImplIntExplicitTest {
 
-  static int counter = 0;
   private static final String ID_PREFIX_CLASSIFICATION = "CLI";
+  @SuppressWarnings("checkstyle:DeclarationOrder")
+  static int counter = 0;
   private DataSource dataSource;
   private ClassificationService classificationService;
   private TaskanaEngineConfiguration taskanaEngineConfiguration;

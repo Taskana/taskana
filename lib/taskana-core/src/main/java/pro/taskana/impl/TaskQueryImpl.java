@@ -161,14 +161,14 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
-  public TaskQuery idIn(String... taskIds) {
-    this.taskIds = taskIds;
+  public TaskQuery nameIn(String... names) {
+    this.nameIn = names;
     return this;
   }
 
   @Override
-  public TaskQuery nameIn(String... names) {
-    this.nameIn = names;
+  public TaskQuery nameLike(String... names) {
+    this.nameLike = toUpperCopy(names);
     return this;
   }
 
@@ -185,12 +185,6 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
-  public TaskQuery nameLike(String... names) {
-    this.nameLike = toUpperCopy(names);
-    return this;
-  }
-
-  @Override
   public TaskQuery creatorIn(String... creators) {
     this.creatorIn = creators;
     return this;
@@ -199,6 +193,175 @@ public class TaskQueryImpl implements TaskQuery {
   @Override
   public TaskQuery creatorLike(String... creators) {
     this.creatorLike = toUpperCopy(creators);
+    return this;
+  }
+
+  @Override
+  public TaskQuery descriptionLike(String... description) {
+    this.description = toUpperCopy(description);
+    return this;
+  }
+
+  @Override
+  public TaskQuery noteLike(String... note) {
+    this.noteLike = toUpperCopy(note);
+    return this;
+  }
+
+  @Override
+  public TaskQuery priorityIn(int... priorities) {
+    this.priority = priorities;
+    return this;
+  }
+
+  @Override
+  public TaskQuery stateIn(TaskState... states) {
+    this.stateIn = states;
+    return this;
+  }
+
+  @Override
+  public TaskQuery stateNotIn(TaskState... states) {
+    // No benefit in introducing a new variable
+    List<TaskState> stateIn = new LinkedList<>(Arrays.asList(TaskState.values()));
+    for (TaskState state : states) {
+      stateIn.remove(state);
+    }
+    this.stateIn = stateIn.toArray(new TaskState[0]);
+    return this;
+  }
+
+  @Override
+  public TaskQuery classificationKeyIn(String... classificationKey) {
+    this.classificationKeyIn = classificationKey;
+    return this;
+  }
+
+  @Override
+  public TaskQuery classificationKeyNotIn(String... classificationKeys) {
+    this.classificationKeyNotIn = classificationKeys;
+    return this;
+  }
+
+  @Override
+  public TaskQuery classificationKeyLike(String... classificationKeys) {
+    this.classificationKeyLike = toUpperCopy(classificationKeys);
+    return this;
+  }
+
+  @Override
+  public TaskQuery classificationIdIn(String... classificationId) {
+    this.classificationIdIn = classificationId;
+    return this;
+  }
+
+  @Override
+  public TaskQuery classificationCategoryIn(String... classificationCategories) {
+    this.classificationCategoryIn = classificationCategories;
+    return this;
+  }
+
+  @Override
+  public TaskQuery classificationCategoryLike(String... classificationCategories) {
+    this.classificationCategoryLike = toUpperCopy(classificationCategories);
+    return this;
+  }
+
+  @Override
+  public TaskQuery classificationNameIn(String... classificationNames) {
+    joinWithClassifications = true;
+    this.classificationNameIn = classificationNames;
+    return this;
+  }
+
+  @Override
+  public TaskQuery classificationNameLike(String... classificationNames) {
+    joinWithClassifications = true;
+    this.classificationNameLike = toUpperCopy(classificationNames);
+    return this;
+  }
+
+  @Override
+  public TaskQuery workbasketKeyDomainIn(KeyDomain... workbasketIdentifiers) {
+    this.workbasketKeyDomainIn = workbasketIdentifiers;
+    return this;
+  }
+
+  @Override
+  public TaskQuery workbasketIdIn(String... workbasketIds) {
+    this.workbasketIdIn = workbasketIds;
+    return this;
+  }
+
+  @Override
+  public TaskQuery ownerIn(String... owners) {
+    this.ownerIn = owners;
+    return this;
+  }
+
+  @Override
+  public TaskQuery ownerLike(String... owners) {
+    this.ownerLike = toUpperCopy(owners);
+    return this;
+  }
+
+  @Override
+  public TaskQuery primaryObjectReferenceCompanyIn(String... companies) {
+    this.porCompanyIn = companies;
+    return this;
+  }
+
+  @Override
+  public TaskQuery primaryObjectReferenceCompanyLike(String... company) {
+    this.porCompanyLike = toUpperCopy(company);
+    return this;
+  }
+
+  @Override
+  public TaskQuery primaryObjectReferenceSystemIn(String... systems) {
+    this.porSystemIn = systems;
+    return this;
+  }
+
+  @Override
+  public TaskQuery primaryObjectReferenceSystemLike(String... system) {
+    this.porSystemLike = toUpperCopy(system);
+    return this;
+  }
+
+  @Override
+  public TaskQuery primaryObjectReferenceSystemInstanceIn(String... systemInstances) {
+    this.porSystemInstanceIn = systemInstances;
+    return this;
+  }
+
+  @Override
+  public TaskQuery primaryObjectReferenceSystemInstanceLike(String... systemInstance) {
+    this.porSystemInstanceLike = toUpperCopy(systemInstance);
+    return this;
+  }
+
+  @Override
+  public TaskQuery primaryObjectReferenceTypeIn(String... types) {
+    this.porTypeIn = types;
+    return this;
+  }
+
+  @Override
+  public TaskQuery primaryObjectReferenceTypeLike(String... type) {
+    this.porTypeLike = toUpperCopy(type);
+    return this;
+  }
+
+  @Override
+  public TaskQuery primaryObjectReferenceValueLike(String... value) {
+    this.porValueLike = toUpperCopy(value);
+    return this;
+  }
+
+  @Override
+  public TaskQuery primaryObjectReferenceValueIn(String... values) {
+    this.porValueIn = values;
     return this;
   }
 
@@ -269,144 +432,6 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
-  public TaskQuery descriptionLike(String... description) {
-    this.description = toUpperCopy(description);
-    return this;
-  }
-
-  @Override
-  public TaskQuery noteLike(String... note) {
-    this.noteLike = toUpperCopy(note);
-    return this;
-  }
-
-  @Override
-  public TaskQuery priorityIn(int... priorities) {
-    this.priority = priorities;
-    return this;
-  }
-
-  @Override
-  public TaskQuery workbasketKeyDomainIn(KeyDomain... workbasketIdentifiers) {
-    this.workbasketKeyDomainIn = workbasketIdentifiers;
-    return this;
-  }
-
-  @Override
-  public TaskQuery workbasketIdIn(String... workbasketIds) {
-    this.workbasketIdIn = workbasketIds;
-    return this;
-  }
-
-  @Override
-  public TaskQuery classificationKeyIn(String... classificationKey) {
-    this.classificationKeyIn = classificationKey;
-    return this;
-  }
-
-  @Override
-  public TaskQuery classificationKeyNotIn(String... classificationKeys) {
-    this.classificationKeyNotIn = classificationKeys;
-    return this;
-  }
-
-  @Override
-  public TaskQuery classificationKeyLike(String... classificationKeys) {
-    this.classificationKeyLike = toUpperCopy(classificationKeys);
-    return this;
-  }
-
-  @Override
-  public TaskQuery classificationIdIn(String... classificationId) {
-    this.classificationIdIn = classificationId;
-    return this;
-  }
-
-  @Override
-  public TaskQuery classificationCategoryIn(String... classificationCategories) {
-    this.classificationCategoryIn = classificationCategories;
-    return this;
-  }
-
-  @Override
-  public TaskQuery classificationCategoryLike(String... classificationCategories) {
-    this.classificationCategoryLike = toUpperCopy(classificationCategories);
-    return this;
-  }
-
-  @Override
-  public TaskQuery ownerIn(String... owners) {
-    this.ownerIn = owners;
-    return this;
-  }
-
-  @Override
-  public TaskQuery ownerLike(String... owners) {
-    this.ownerLike = toUpperCopy(owners);
-    return this;
-  }
-
-  @Override
-  public TaskQuery primaryObjectReferenceCompanyIn(String... companies) {
-    this.porCompanyIn = companies;
-    return this;
-  }
-
-  @Override
-  public TaskQuery primaryObjectReferenceCompanyLike(String... company) {
-    this.porCompanyLike = toUpperCopy(company);
-    return this;
-  }
-
-  @Override
-  public TaskQuery primaryObjectReferenceSystemIn(String... systems) {
-    this.porSystemIn = systems;
-    return this;
-  }
-
-  @Override
-  public TaskQuery primaryObjectReferenceSystemLike(String... system) {
-    this.porSystemLike = toUpperCopy(system);
-    return this;
-  }
-
-  @Override
-  public TaskQuery primaryObjectReferenceSystemInstanceIn(String... systemInstances) {
-    this.porSystemInstanceIn = systemInstances;
-    return this;
-  }
-
-  @Override
-  public TaskQuery primaryObjectReferenceSystemInstanceLike(String... systemInstance) {
-    this.porSystemInstanceLike = toUpperCopy(systemInstance);
-    return this;
-  }
-
-  @Override
-  public TaskQuery primaryObjectReferenceTypeIn(String... types) {
-    this.porTypeIn = types;
-    return this;
-  }
-
-  @Override
-  public TaskQuery primaryObjectReferenceTypeLike(String... type) {
-    this.porTypeLike = toUpperCopy(type);
-    return this;
-  }
-
-  @Override
-  public TaskQuery primaryObjectReferenceValueIn(String... values) {
-    this.porValueIn = values;
-    return this;
-  }
-
-  @Override
-  public TaskQuery primaryObjectReferenceValueLike(String... value) {
-    this.porValueLike = toUpperCopy(value);
-    return this;
-  }
-
-  @Override
   public TaskQuery readEquals(Boolean isRead) {
     this.isRead = isRead;
     return this;
@@ -439,29 +464,6 @@ public class TaskQueryImpl implements TaskQuery {
   @Override
   public TaskQuery businessProcessIdLike(String... businessProcessIds) {
     this.businessProcessIdLike = toUpperCopy(businessProcessIds);
-    return this;
-  }
-
-  @Override
-  public TaskQuery stateIn(TaskState... states) {
-    this.stateIn = states;
-    return this;
-  }
-
-  @Override
-  public TaskQuery stateNotIn(TaskState... states) {
-    // No benefit in introducing a new variable
-    List<TaskState> stateIn = new LinkedList<>(Arrays.asList(TaskState.values()));
-    for (TaskState state : states) {
-      stateIn.remove(state);
-    }
-    this.stateIn = stateIn.toArray(new TaskState[0]);
-    return this;
-  }
-
-  @Override
-  public TaskQuery callbackStateIn(CallbackState... states) {
-    this.callbackStateIn = states;
     return this;
   }
 
@@ -641,6 +643,20 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
+  public TaskQuery attachmentClassificationNameIn(String... attachmentClassificationName) {
+    joinWithAttachmentClassifications = true;
+    this.attachmentClassificationNameIn = attachmentClassificationName;
+    return this;
+  }
+
+  @Override
+  public TaskQuery attachmentClassificationNameLike(String... attachmentClassificationName) {
+    joinWithAttachmentClassifications = true;
+    this.attachmentClassificationNameLike = toUpperCopy(attachmentClassificationName);
+    return this;
+  }
+
+  @Override
   public TaskQuery attachmentChannelIn(String... attachmentChannel) {
     joinWithAttachments = true;
     this.attachmentChannelIn = attachmentChannel;
@@ -681,31 +697,31 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
-  public TaskQuery classificationNameIn(String... classificationNames) {
-    joinWithClassifications = true;
-    this.classificationNameIn = classificationNames;
+  public TaskQuery callbackStateIn(CallbackState... states) {
+    this.callbackStateIn = states;
     return this;
   }
 
   @Override
-  public TaskQuery classificationNameLike(String... classificationNames) {
-    joinWithClassifications = true;
-    this.classificationNameLike = toUpperCopy(classificationNames);
-    return this;
+  public ObjectReferenceQuery createObjectReferenceQuery() {
+    return new ObjectReferenceQueryImpl(taskanaEngine);
   }
 
   @Override
-  public TaskQuery attachmentClassificationNameIn(String... attachmentClassificationName) {
-    joinWithAttachmentClassifications = true;
-    this.attachmentClassificationNameIn = attachmentClassificationName;
-    return this;
+  public TaskQuery orderByBusinessProcessId(SortDirection sortDirection) {
+    return addOrderCriteria("BUSINESS_PROCESS_ID", sortDirection);
   }
 
   @Override
-  public TaskQuery attachmentClassificationNameLike(String... attachmentClassificationName) {
-    joinWithAttachmentClassifications = true;
-    this.attachmentClassificationNameLike = toUpperCopy(attachmentClassificationName);
-    return this;
+  public TaskQuery orderByClaimed(SortDirection sortDirection) {
+    return addOrderCriteria("CLAIMED", sortDirection);
+  }
+
+  @Override
+  public TaskQuery orderByClassificationKey(SortDirection sortDirection) {
+    return DB.DB2.dbProductId.equals(getDatabaseId())
+        ? addOrderCriteria("TCLASSIFICATION_KEY", sortDirection)
+        : addOrderCriteria("t.CLASSIFICATION_KEY", sortDirection);
   }
 
   @Override
@@ -718,29 +734,18 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
-  public TaskQuery orderByAttachmentClassificationName(SortDirection sortDirection) {
-    joinWithAttachments = true;
-    addAttachmentClassificationNameToSelectClauseForOrdering = true;
-    return DB.DB2.dbProductId.equals(getDatabaseId())
-        ? addOrderCriteria("ACNAME", sortDirection)
-        : addOrderCriteria("ac.NAME", sortDirection);
+  public TaskQuery orderByCompleted(SortDirection sortDirection) {
+    return addOrderCriteria("COMPLETED", sortDirection);
   }
 
   @Override
-  public TaskQuery orderByClassificationKey(SortDirection sortDirection) {
-    return DB.DB2.dbProductId.equals(getDatabaseId())
-        ? addOrderCriteria("TCLASSIFICATION_KEY", sortDirection)
-        : addOrderCriteria("t.CLASSIFICATION_KEY", sortDirection);
+  public TaskQuery orderByCreated(SortDirection sortDirection) {
+    return addOrderCriteria("CREATED", sortDirection);
   }
 
   @Override
   public TaskQuery orderByDomain(SortDirection sortDirection) {
     return addOrderCriteria("DOMAIN", sortDirection);
-  }
-
-  @Override
-  public TaskQuery orderByPlanned(SortDirection sortDirection) {
-    return addOrderCriteria("PLANNED", sortDirection);
   }
 
   @Override
@@ -764,8 +769,23 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
+  public TaskQuery orderByNote(SortDirection sortDirection) {
+    return addOrderCriteria("NOTE", sortDirection);
+  }
+
+  @Override
   public TaskQuery orderByOwner(SortDirection sortDirection) {
     return addOrderCriteria("OWNER", sortDirection);
+  }
+
+  @Override
+  public TaskQuery orderByParentBusinessProcessId(SortDirection sortDirection) {
+    return addOrderCriteria("PARENT_BUSINESS_PROCESS_ID", sortDirection);
+  }
+
+  @Override
+  public TaskQuery orderByPlanned(SortDirection sortDirection) {
+    return addOrderCriteria("PLANNED", sortDirection);
   }
 
   @Override
@@ -806,55 +826,6 @@ public class TaskQueryImpl implements TaskQuery {
   @Override
   public TaskQuery orderByWorkbasketKey(SortDirection sortDirection) {
     return addOrderCriteria("WORKBASKET_KEY", sortDirection);
-  }
-
-  @Override
-  public TaskQuery orderByWorkbasketId(SortDirection sortDirection) {
-    return addOrderCriteria("WORKBASKET_ID", sortDirection);
-  }
-
-  @Override
-  public TaskQuery orderByAttachmentClassificationKey(SortDirection sortDirection) {
-    joinWithAttachments = true;
-    addAttachmentColumnsToSelectClauseForOrdering = true;
-    return DB.DB2.dbProductId.equals(getDatabaseId())
-        ? addOrderCriteria("ACLASSIFICATION_KEY", sortDirection)
-        : addOrderCriteria("a.CLASSIFICATION_KEY", sortDirection);
-  }
-
-  @Override
-  public TaskQuery orderByAttachmentClassificationId(SortDirection sortDirection) {
-    joinWithAttachments = true;
-    addAttachmentColumnsToSelectClauseForOrdering = true;
-    return DB.DB2.dbProductId.equals(getDatabaseId())
-        ? addOrderCriteria("ACLASSIFICATION_ID", sortDirection)
-        : addOrderCriteria("a.CLASSIFICATION_ID", sortDirection);
-  }
-
-  @Override
-  public TaskQuery orderByAttachmentChannel(SortDirection sortDirection) {
-    joinWithAttachments = true;
-    addAttachmentColumnsToSelectClauseForOrdering = true;
-    return addOrderCriteria("CHANNEL", sortDirection);
-  }
-
-  @Override
-  public TaskQuery orderByAttachmentReference(SortDirection sortDirection) {
-    joinWithAttachments = true;
-    addAttachmentColumnsToSelectClauseForOrdering = true;
-    return addOrderCriteria("REF_VALUE", sortDirection);
-  }
-
-  @Override
-  public TaskQuery orderByAttachmentReceived(SortDirection sortDirection) {
-    joinWithAttachments = true;
-    addAttachmentColumnsToSelectClauseForOrdering = true;
-    return addOrderCriteria("RECEIVED", sortDirection);
-  }
-
-  @Override
-  public TaskQuery orderByNote(SortDirection sortDirection) {
-    return addOrderCriteria("NOTE", sortDirection);
   }
 
   @Override
@@ -911,33 +882,62 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
-  public TaskQuery orderByBusinessProcessId(SortDirection sortDirection) {
-    return addOrderCriteria("BUSINESS_PROCESS_ID", sortDirection);
+  public TaskQuery idIn(String... taskIds) {
+    this.taskIds = taskIds;
+    return this;
   }
 
   @Override
-  public TaskQuery orderByClaimed(SortDirection sortDirection) {
-    return addOrderCriteria("CLAIMED", sortDirection);
+  public TaskQuery orderByWorkbasketId(SortDirection sortDirection) {
+    return addOrderCriteria("WORKBASKET_ID", sortDirection);
   }
 
   @Override
-  public TaskQuery orderByCompleted(SortDirection sortDirection) {
-    return addOrderCriteria("COMPLETED", sortDirection);
+  public TaskQuery orderByAttachmentClassificationKey(SortDirection sortDirection) {
+    joinWithAttachments = true;
+    addAttachmentColumnsToSelectClauseForOrdering = true;
+    return DB.DB2.dbProductId.equals(getDatabaseId())
+        ? addOrderCriteria("ACLASSIFICATION_KEY", sortDirection)
+        : addOrderCriteria("a.CLASSIFICATION_KEY", sortDirection);
   }
 
   @Override
-  public TaskQuery orderByCreated(SortDirection sortDirection) {
-    return addOrderCriteria("CREATED", sortDirection);
+  public TaskQuery orderByAttachmentClassificationName(SortDirection sortDirection) {
+    joinWithAttachments = true;
+    addAttachmentClassificationNameToSelectClauseForOrdering = true;
+    return DB.DB2.dbProductId.equals(getDatabaseId())
+        ? addOrderCriteria("ACNAME", sortDirection)
+        : addOrderCriteria("ac.NAME", sortDirection);
   }
 
   @Override
-  public TaskQuery orderByParentBusinessProcessId(SortDirection sortDirection) {
-    return addOrderCriteria("PARENT_BUSINESS_PROCESS_ID", sortDirection);
+  public TaskQuery orderByAttachmentClassificationId(SortDirection sortDirection) {
+    joinWithAttachments = true;
+    addAttachmentColumnsToSelectClauseForOrdering = true;
+    return DB.DB2.dbProductId.equals(getDatabaseId())
+        ? addOrderCriteria("ACLASSIFICATION_ID", sortDirection)
+        : addOrderCriteria("a.CLASSIFICATION_ID", sortDirection);
   }
 
   @Override
-  public ObjectReferenceQuery createObjectReferenceQuery() {
-    return new ObjectReferenceQueryImpl(taskanaEngine);
+  public TaskQuery orderByAttachmentChannel(SortDirection sortDirection) {
+    joinWithAttachments = true;
+    addAttachmentColumnsToSelectClauseForOrdering = true;
+    return addOrderCriteria("CHANNEL", sortDirection);
+  }
+
+  @Override
+  public TaskQuery orderByAttachmentReference(SortDirection sortDirection) {
+    joinWithAttachments = true;
+    addAttachmentColumnsToSelectClauseForOrdering = true;
+    return addOrderCriteria("REF_VALUE", sortDirection);
+  }
+
+  @Override
+  public TaskQuery orderByAttachmentReceived(SortDirection sortDirection) {
+    joinWithAttachments = true;
+    addAttachmentColumnsToSelectClauseForOrdering = true;
+    return addOrderCriteria("RECEIVED", sortDirection);
   }
 
   @Override
@@ -1002,14 +1002,6 @@ public class TaskQueryImpl implements TaskQuery {
             LoggerUtils.listToString(result));
       }
     }
-  }
-
-  public String getLinkToMapperScript() {
-    return DB.DB2.dbProductId.equals(getDatabaseId()) ? LINK_TO_MAPPER_DB2 : LINK_TO_MAPPER;
-  }
-
-  public String getLinkToCounterTaskScript() {
-    return DB.DB2.dbProductId.equals(getDatabaseId()) ? LINK_TO_COUNTER_DB2 : LINK_TO_COUNTER;
   }
 
   @Override
@@ -1091,6 +1083,14 @@ public class TaskQueryImpl implements TaskQuery {
       taskanaEngine.returnConnection();
       LOGGER.debug("exit from count(). Returning result {} ", rowCount);
     }
+  }
+
+  public String getLinkToMapperScript() {
+    return DB.DB2.dbProductId.equals(getDatabaseId()) ? LINK_TO_MAPPER_DB2 : LINK_TO_MAPPER;
+  }
+
+  public String getLinkToCounterTaskScript() {
+    return DB.DB2.dbProductId.equals(getDatabaseId()) ? LINK_TO_COUNTER_DB2 : LINK_TO_COUNTER;
   }
 
   public boolean isUseDistinctKeyword() {

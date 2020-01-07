@@ -20,6 +20,11 @@ public class MonitorQueryItem implements AgeQueryItem {
   }
 
   @Override
+  public int getValue() {
+    return numberOfTasks;
+  }
+
+  @Override
   public int getAgeInDays() {
     return ageInDays;
   }
@@ -27,11 +32,6 @@ public class MonitorQueryItem implements AgeQueryItem {
   @Override
   public void setAgeInDays(int ageInDays) {
     this.ageInDays = ageInDays;
-  }
-
-  @Override
-  public int getValue() {
-    return numberOfTasks;
   }
 
   public void setNumberOfTasks(int numberOfTasks) {

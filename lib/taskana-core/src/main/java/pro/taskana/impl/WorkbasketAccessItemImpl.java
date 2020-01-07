@@ -83,14 +83,6 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
     this.accessId = accessId;
   }
 
-  public void setAccessIdWithSanitizing(String accessId) {
-    if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
-      setAccessId(accessId != null ? accessId.toLowerCase() : null);
-    } else {
-      setAccessId(accessId);
-    }
-  }
-
   /*
    * (non-Javadoc)
    * @see pro.taskana.impl.WorkbasketAccessItem#getAccessName()
@@ -415,6 +407,41 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
     this.permCustom12 = permCustom12;
   }
 
+  public void setAccessIdWithSanitizing(String accessId) {
+    if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
+      setAccessId(accessId != null ? accessId.toLowerCase() : null);
+    } else {
+      setAccessId(accessId);
+    }
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        id,
+        workbasketId,
+        workbasketKey,
+        accessId,
+        accessName,
+        permRead,
+        permOpen,
+        permAppend,
+        permTransfer,
+        permDistribute,
+        permCustom1,
+        permCustom2,
+        permCustom3,
+        permCustom4,
+        permCustom5,
+        permCustom6,
+        permCustom7,
+        permCustom8,
+        permCustom9,
+        permCustom10,
+        permCustom11,
+        permCustom12);
+  }
+
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
@@ -446,33 +473,6 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
         && Objects.equals(workbasketKey, other.workbasketKey)
         && Objects.equals(accessId, other.accessId)
         && Objects.equals(accessName, other.accessName);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-        id,
-        workbasketId,
-        workbasketKey,
-        accessId,
-        accessName,
-        permRead,
-        permOpen,
-        permAppend,
-        permTransfer,
-        permDistribute,
-        permCustom1,
-        permCustom2,
-        permCustom3,
-        permCustom4,
-        permCustom5,
-        permCustom6,
-        permCustom7,
-        permCustom8,
-        permCustom9,
-        permCustom10,
-        permCustom11,
-        permCustom12);
   }
 
   @Override

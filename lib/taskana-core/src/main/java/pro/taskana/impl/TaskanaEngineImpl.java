@@ -170,23 +170,6 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   }
 
   @Override
-  public void checkRoleMembership(TaskanaRole... roles) throws NotAuthorizedException {
-    if (!isUserInRole(roles)) {
-      if (LOGGER.isDebugEnabled()) {
-        String accessIds = LoggerUtils.listToString(CurrentUserContext.getAccessIds());
-        String rolesAsString = Arrays.toString(roles);
-        LOGGER.debug(
-            "Throwing NotAuthorizedException because accessIds {} are not member of roles {}",
-            accessIds,
-            rolesAsString);
-      }
-      throw new NotAuthorizedException(
-          "current user is not member of role(s) " + Arrays.toString(roles),
-          CurrentUserContext.getUserid());
-    }
-  }
-
-  @Override
   public boolean isUserInRole(TaskanaRole... roles) {
     if (!getConfiguration().isSecurityEnabled()) {
       return true;
@@ -204,6 +187,23 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     }
 
     return false;
+  }
+
+  @Override
+  public void checkRoleMembership(TaskanaRole... roles) throws NotAuthorizedException {
+    if (!isUserInRole(roles)) {
+      if (LOGGER.isDebugEnabled()) {
+        String accessIds = LoggerUtils.listToString(CurrentUserContext.getAccessIds());
+        String rolesAsString = Arrays.toString(roles);
+        LOGGER.debug(
+            "Throwing NotAuthorizedException because accessIds {} are not member of roles {}",
+            accessIds,
+            rolesAsString);
+      }
+      throw new NotAuthorizedException(
+          "current user is not member of role(s) " + Arrays.toString(roles),
+          CurrentUserContext.getUserid());
+    }
   }
 
   /**
@@ -331,16 +331,6 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     }
 
     @Override
-    public void initSqlSession() {
-      if (mode == ConnectionManagementMode.EXPLICIT && connection == null) {
-        throw new ConnectionNotSetException();
-      } else if (mode != ConnectionManagementMode.EXPLICIT
-          && !sessionManager.isManagedSessionStarted()) {
-        sessionManager.startManagedSession();
-      }
-    }
-
-    @Override
     public void returnConnection() {
       if (mode != ConnectionManagementMode.EXPLICIT) {
         sessionStack.popSessionFromStack();
@@ -367,6 +357,16 @@ public class TaskanaEngineImpl implements TaskanaEngine {
       } finally {
         // will be called before return & in case of exceptions
         returnConnection();
+      }
+    }
+
+    @Override
+    public void initSqlSession() {
+      if (mode == ConnectionManagementMode.EXPLICIT && connection == null) {
+        throw new ConnectionNotSetException();
+      } else if (mode != ConnectionManagementMode.EXPLICIT
+          && !sessionManager.isManagedSessionStarted()) {
+        sessionManager.startManagedSession();
       }
     }
 

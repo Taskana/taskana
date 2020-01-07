@@ -129,12 +129,6 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
   }
 
   @Override
-  public WorkbasketQuery domainLike(String... domain) {
-    this.domainLike = domain;
-    return this;
-  }
-
-  @Override
   public WorkbasketQuery typeIn(WorkbasketType... type) {
     this.type = type;
     return this;
@@ -178,6 +172,109 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
   public WorkbasketQuery ownerLike(String... owners) {
     this.ownerLike = toUpperCopy(owners);
     return this;
+  }
+
+  @Override
+  public WorkbasketQuery accessIdsHavePermission(
+      WorkbasketPermission permission, String... accessIds)
+      throws InvalidArgumentException, NotAuthorizedException {
+    taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN);
+    // Checking pre-conditions
+    if (permission == null) {
+      throw new InvalidArgumentException("Permission can´t be null.");
+    }
+    if (accessIds == null || accessIds.length == 0) {
+      throw new InvalidArgumentException("accessIds can´t be NULL or empty.");
+    }
+
+    // set up permissions and ids
+    this.permission = permission;
+    this.accessId = accessIds;
+    lowercaseAccessIds(this.accessId);
+
+    return this;
+  }
+
+  @Override
+  public WorkbasketQuery callerHasPermission(WorkbasketPermission permission) {
+    this.permission = permission;
+    return this;
+  }
+
+  @Override
+  public WorkbasketQuery orderByName(SortDirection sortDirection) {
+    return addOrderCriteria("NAME", sortDirection);
+  }
+
+  @Override
+  public WorkbasketQuery orderByKey(SortDirection sortDirection) {
+    return addOrderCriteria("KEY", sortDirection);
+  }
+
+  @Override
+  public WorkbasketQuery orderByDescription(SortDirection sortDirection) {
+    return addOrderCriteria("DESCRIPTION", sortDirection);
+  }
+
+  @Override
+  public WorkbasketQuery orderByOwner(SortDirection sortDirection) {
+    return addOrderCriteria("OWNER", sortDirection);
+  }
+
+  @Override
+  public WorkbasketQuery orderByType(SortDirection sortDirection) {
+    return addOrderCriteria("TYPE", sortDirection);
+  }
+
+  @Override
+  public WorkbasketQuery orderByDomain(SortDirection sortDirection) {
+    return addOrderCriteria("DOMAIN", sortDirection);
+  }
+
+  @Override
+  public WorkbasketQuery domainLike(String... domain) {
+    this.domainLike = domain;
+    return this;
+  }
+
+  @Override
+  public WorkbasketQuery orderByCustom1(SortDirection sortDirection) {
+    return addOrderCriteria("CUSTOM_1", sortDirection);
+  }
+
+  @Override
+  public WorkbasketQuery orderByCustom2(SortDirection sortDirection) {
+    return addOrderCriteria("CUSTOM_2", sortDirection);
+  }
+
+  @Override
+  public WorkbasketQuery orderByCustom3(SortDirection sortDirection) {
+    return addOrderCriteria("CUSTOM_3", sortDirection);
+  }
+
+  @Override
+  public WorkbasketQuery orderByCustom4(SortDirection sortDirection) {
+    return addOrderCriteria("CUSTOM_4", sortDirection);
+  }
+
+  @Override
+  public WorkbasketQuery orderByOrgLevel1(SortDirection sortDirection) {
+    return addOrderCriteria("ORG_LEVEL_1", sortDirection);
+  }
+
+  @Override
+  public WorkbasketQuery orderByOrgLevel2(SortDirection sortDirection) {
+    return addOrderCriteria("ORG_LEVEL_2", sortDirection);
+  }
+
+  @Override
+  public WorkbasketQuery orderByOrgLevel3(SortDirection sortDirection) {
+    return addOrderCriteria("ORG_LEVEL_3", sortDirection);
+  }
+
+  @Override
+  public WorkbasketQuery orderByOrgLevel4(SortDirection sortDirection) {
+    return addOrderCriteria("ORG_LEVEL_4", sortDirection);
   }
 
   @Override
@@ -279,103 +376,6 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
   @Override
   public WorkbasketQuery markedForDeletion(boolean markedForDeletion) {
     this.markedForDeletion = markedForDeletion;
-    return this;
-  }
-
-  @Override
-  public WorkbasketQuery orderByName(SortDirection sortDirection) {
-    return addOrderCriteria("NAME", sortDirection);
-  }
-
-  @Override
-  public WorkbasketQuery orderByKey(SortDirection sortDirection) {
-    return addOrderCriteria("KEY", sortDirection);
-  }
-
-  @Override
-  public WorkbasketQuery orderByDomain(SortDirection sortDirection) {
-    return addOrderCriteria("DOMAIN", sortDirection);
-  }
-
-  @Override
-  public WorkbasketQuery orderByDescription(SortDirection sortDirection) {
-    return addOrderCriteria("DESCRIPTION", sortDirection);
-  }
-
-  @Override
-  public WorkbasketQuery orderByOwner(SortDirection sortDirection) {
-    return addOrderCriteria("OWNER", sortDirection);
-  }
-
-  @Override
-  public WorkbasketQuery orderByType(SortDirection sortDirection) {
-    return addOrderCriteria("TYPE", sortDirection);
-  }
-
-  @Override
-  public WorkbasketQuery orderByCustom1(SortDirection sortDirection) {
-    return addOrderCriteria("CUSTOM_1", sortDirection);
-  }
-
-  @Override
-  public WorkbasketQuery orderByCustom2(SortDirection sortDirection) {
-    return addOrderCriteria("CUSTOM_2", sortDirection);
-  }
-
-  @Override
-  public WorkbasketQuery orderByCustom3(SortDirection sortDirection) {
-    return addOrderCriteria("CUSTOM_3", sortDirection);
-  }
-
-  @Override
-  public WorkbasketQuery orderByCustom4(SortDirection sortDirection) {
-    return addOrderCriteria("CUSTOM_4", sortDirection);
-  }
-
-  @Override
-  public WorkbasketQuery orderByOrgLevel1(SortDirection sortDirection) {
-    return addOrderCriteria("ORG_LEVEL_1", sortDirection);
-  }
-
-  @Override
-  public WorkbasketQuery orderByOrgLevel2(SortDirection sortDirection) {
-    return addOrderCriteria("ORG_LEVEL_2", sortDirection);
-  }
-
-  @Override
-  public WorkbasketQuery orderByOrgLevel3(SortDirection sortDirection) {
-    return addOrderCriteria("ORG_LEVEL_3", sortDirection);
-  }
-
-  @Override
-  public WorkbasketQuery orderByOrgLevel4(SortDirection sortDirection) {
-    return addOrderCriteria("ORG_LEVEL_4", sortDirection);
-  }
-
-  @Override
-  public WorkbasketQuery accessIdsHavePermission(
-      WorkbasketPermission permission, String... accessIds)
-      throws InvalidArgumentException, NotAuthorizedException {
-    taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN);
-    // Checking pre-conditions
-    if (permission == null) {
-      throw new InvalidArgumentException("Permission can´t be null.");
-    }
-    if (accessIds == null || accessIds.length == 0) {
-      throw new InvalidArgumentException("accessIds can´t be NULL or empty.");
-    }
-
-    // set up permissions and ids
-    this.permission = permission;
-    this.accessId = accessIds;
-    lowercaseAccessIds(this.accessId);
-
-    return this;
-  }
-
-  @Override
-  public WorkbasketQuery callerHasPermission(WorkbasketPermission permission) {
-    this.permission = permission;
     return this;
   }
 

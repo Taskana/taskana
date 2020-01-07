@@ -41,8 +41,9 @@ import pro.taskana.rest.resource.TaskResourceAssembler;
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class AsyncUpdateJobIntTest {
 
-  static RestTemplate template;
   private static final String CLASSIFICATION_ID = "CLI:100000000000000000000000000000000003";
+  @SuppressWarnings("checkstyle:DeclarationOrder")
+  static RestTemplate template;
   @Autowired ClassificationResourceAssembler classificationResourceAssembler;
   @Autowired TaskResourceAssembler taskResourceAssembler;
   @Autowired JobScheduler jobScheduler;

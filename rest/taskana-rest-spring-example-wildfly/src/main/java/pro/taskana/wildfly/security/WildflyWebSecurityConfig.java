@@ -81,12 +81,28 @@ public class WildflyWebSecurityConfig extends WebSecurityConfig {
           private static final long serialVersionUID = 1L;
 
           @Override
-          public boolean isEnabled() {
-            return true;
+          public Collection<? extends GrantedAuthority> getAuthorities() {
+            List<GrantedAuthority> authorities = new ArrayList<>();
+            SecurityIdentity securityIdentity = getSecurityIdentity();
+            if (securityIdentity != null) {
+              Roles roles = securityIdentity.getRoles();
+              roles.forEach(role -> authorities.add(new SimpleGrantedAuthority(role)));
+            }
+            return authorities;
           }
 
           @Override
-          public boolean isCredentialsNonExpired() {
+          public String getPassword() {
+            return (String) token.getCredentials();
+          }
+
+          @Override
+          public String getUsername() {
+            return token.getName();
+          }
+
+          @Override
+          public boolean isAccountNonExpired() {
             return true;
           }
 
@@ -96,29 +112,13 @@ public class WildflyWebSecurityConfig extends WebSecurityConfig {
           }
 
           @Override
-          public boolean isAccountNonExpired() {
+          public boolean isCredentialsNonExpired() {
             return true;
           }
 
           @Override
-          public String getUsername() {
-            return token.getName();
-          }
-
-          @Override
-          public String getPassword() {
-            return (String) token.getCredentials();
-          }
-
-          @Override
-          public Collection<? extends GrantedAuthority> getAuthorities() {
-            List<GrantedAuthority> authorities = new ArrayList<>();
-            SecurityIdentity securityIdentity = getSecurityIdentity();
-            if (securityIdentity != null) {
-              Roles roles = securityIdentity.getRoles();
-              roles.forEach(role -> authorities.add(new SimpleGrantedAuthority(role)));
-            }
-            return authorities;
+          public boolean isEnabled() {
+            return true;
           }
 
           private SecurityIdentity getSecurityIdentity() {

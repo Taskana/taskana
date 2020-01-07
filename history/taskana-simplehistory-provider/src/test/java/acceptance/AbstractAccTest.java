@@ -21,12 +21,17 @@ import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
 /** Set up database for tests. */
 public class AbstractAccTest {
 
-  public static SimpleHistoryServiceImpl historyService;
-  protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
-  private static DataSource dataSource = null;
-  private static String schemaName = null;
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAccTest.class);
   private static final int POOL_TIME_TO_WAIT = 50;
+
+  @SuppressWarnings("checkstyle:DeclarationOrder")
+  public static SimpleHistoryServiceImpl historyService;
+
+  @SuppressWarnings("checkstyle:DeclarationOrder")
+  protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
+
+  private static DataSource dataSource = null;
+  private static String schemaName = null;
 
   protected AbstractAccTest() {
     // not called

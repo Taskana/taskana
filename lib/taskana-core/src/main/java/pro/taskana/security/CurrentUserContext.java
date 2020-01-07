@@ -95,7 +95,8 @@ public final class CurrentUserContext {
         LOGGER.debug("Public credentials of caller: {}", publicCredentials);
         for (Object credential : publicCredentials) {
           Object o =
-              credential.getClass()
+              credential
+                  .getClass()
                   .getMethod(GET_UNIQUE_SECURITY_NAME_METHOD, (Class<?>[]) null)
                   .invoke(credential, (Object[]) null);
           LOGGER.debug("Returning the unique security name of first public credential: {}", o);

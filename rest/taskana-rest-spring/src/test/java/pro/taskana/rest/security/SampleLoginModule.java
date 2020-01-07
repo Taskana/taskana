@@ -27,18 +27,6 @@ public class SampleLoginModule extends UsernamePasswordAuthenticationFilter impl
   private Subject subject;
 
   @Override
-  public boolean abort() {
-    return true;
-  }
-
-  @Override
-  public boolean commit() {
-    addUserPrincipalToSubject();
-    addGroupSubjectsDerivedFromUsername();
-    return true;
-  }
-
-  @Override
   public void initialize(
       Subject subject,
       CallbackHandler callbackHandler,
@@ -60,6 +48,18 @@ public class SampleLoginModule extends UsernamePasswordAuthenticationFilter impl
   @Override
   public boolean login() {
     return nameCallback.getName().equals(new String(passwordCallback.getPassword()));
+  }
+
+  @Override
+  public boolean commit() {
+    addUserPrincipalToSubject();
+    addGroupSubjectsDerivedFromUsername();
+    return true;
+  }
+
+  @Override
+  public boolean abort() {
+    return true;
   }
 
   @Override

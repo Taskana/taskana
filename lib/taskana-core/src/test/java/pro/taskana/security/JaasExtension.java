@@ -37,18 +37,21 @@ public class JaasExtension implements InvocationInterceptor {
       }
     }
     subject.getPrincipals().addAll(principalList);
-    Subject.doAs(
-        subject,
-        (PrivilegedExceptionAction<Object>) () -> {
-          try {
-            invocation.proceed();
-          } catch (Exception | Error e) {
-            throw e;
-          } catch (Throwable e) {
-            throw new JUnitException(
-                "Execution of test failed: " + invocationContext.getExecutable().getName(), e);
-          }
-          return null;
-        });
+    Subject.doAs(subject, getObjectPrivilegedExceptionAction(invocation, invocationContext));
+  }
+
+  private PrivilegedExceptionAction<Object> getObjectPrivilegedExceptionAction(
+      Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext) {
+    return () -> {
+      try {
+        invocation.proceed();
+      } catch (Exception | Error e) {
+        throw e;
+      } catch (Throwable e) {
+        throw new JUnitException(
+            "Execution of test failed: " + invocationContext.getExecutable().getName(), e);
+      }
+      return null;
+    };
   }
 }

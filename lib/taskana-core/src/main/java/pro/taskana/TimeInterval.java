@@ -53,6 +53,11 @@ public class TimeInterval {
   }
 
   @Override
+  public int hashCode() {
+    return Objects.hash(begin, end);
+  }
+
+  @Override
   public boolean equals(Object obj) {
     if (this == obj) {
       return true;
@@ -62,11 +67,6 @@ public class TimeInterval {
     }
     TimeInterval other = (TimeInterval) obj;
     return Objects.equals(begin, other.begin) && Objects.equals(end, other.end);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(begin, end);
   }
 
   @Override

@@ -80,11 +80,6 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
   }
 
   @Override
-  public WorkbasketAccessItemQuery orderById(SortDirection sortDirection) {
-    return addOrderCriteria("ID", sortDirection);
-  }
-
-  @Override
   public WorkbasketAccessItemQuery orderByWorkbasketId(SortDirection sortDirection) {
     return addOrderCriteria("WORKBASKET_ID", sortDirection);
   }
@@ -97,6 +92,11 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
   @Override
   public WorkbasketAccessItemQuery orderByAccessId(SortDirection sortDirection) {
     return addOrderCriteria("ACCESS_ID", sortDirection);
+  }
+
+  @Override
+  public WorkbasketAccessItemQuery orderById(SortDirection sortDirection) {
+    return addOrderCriteria("ID", sortDirection);
   }
 
   @Override

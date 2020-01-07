@@ -22,9 +22,7 @@ public class CategoryReport extends Report<MonitorQueryItem, TimeIntervalColumnH
     super(timeIntervalColumnHeaders, new String[] {"CLASSIFICATION CATEGORIES"});
   }
 
-  /**
-   * Builder for {@link CategoryReport}.
-   */
+  /** Builder for {@link CategoryReport}. */
   public interface Builder
       extends TimeIntervalReportBuilder<Builder, MonitorQueryItem, TimeIntervalColumnHeader> {
 

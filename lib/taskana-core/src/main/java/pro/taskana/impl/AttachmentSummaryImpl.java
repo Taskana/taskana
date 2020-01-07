@@ -75,19 +75,6 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
 
   /*
    * (non-Javadoc)
-   * @see pro.taskana.impl.AttachmentSummary#getClassification()
-   */
-  @Override
-  public ClassificationSummary getClassificationSummary() {
-    return classificationSummary;
-  }
-
-  public void setClassificationSummary(ClassificationSummary classificationSummary) {
-    this.classificationSummary = classificationSummary;
-  }
-
-  /*
-   * (non-Javadoc)
    * @see pro.taskana.AttachmentSummary#getObjectReference()
    */
   @Override
@@ -108,6 +95,32 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
     return channel;
   }
 
+  /*
+   * (non-Javadoc)
+   * @see pro.taskana.impl.AttachmentSummary#getClassification()
+   */
+  @Override
+  public ClassificationSummary getClassificationSummary() {
+    return classificationSummary;
+  }
+
+  public void setClassificationSummary(ClassificationSummary classificationSummary) {
+    this.classificationSummary = classificationSummary;
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see pro.taskana.impl.AttachmentSummary#getReceived()
+   */
+  @Override
+  public Instant getReceived() {
+    return received;
+  }
+
+  public void setReceived(Instant received) {
+    this.received = received;
+  }
+
   public void setChannel(String channel) {
     this.channel = channel;
   }
@@ -120,6 +133,12 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
   // auxiliary method to enable MyBatis access to classificationSummary
   public void setClassificationSummaryImpl(ClassificationSummaryImpl classificationSummary) {
     this.classificationSummary = classificationSummary;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        id, taskId, created, modified, classificationSummary, objectReference, channel, received);
   }
 
   @Override
@@ -139,25 +158,6 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
         && Objects.equals(objectReference, other.objectReference)
         && Objects.equals(channel, other.channel)
         && Objects.equals(received, other.received);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-        id, taskId, created, modified, classificationSummary, objectReference, channel, received);
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.impl.AttachmentSummary#getReceived()
-   */
-  @Override
-  public Instant getReceived() {
-    return received;
-  }
-
-  public void setReceived(Instant received) {
-    this.received = received;
   }
 
   @Override

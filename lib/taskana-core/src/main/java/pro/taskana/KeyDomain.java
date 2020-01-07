@@ -34,6 +34,11 @@ public class KeyDomain {
   }
 
   @Override
+  public int hashCode() {
+    return Objects.hash(key, domain);
+  }
+
+  @Override
   public boolean equals(Object obj) {
     if (this == obj) {
       return true;
@@ -43,11 +48,6 @@ public class KeyDomain {
     }
     KeyDomain other = (KeyDomain) obj;
     return Objects.equals(key, other.key) && Objects.equals(domain, other.domain);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(key, domain);
   }
 
   @Override

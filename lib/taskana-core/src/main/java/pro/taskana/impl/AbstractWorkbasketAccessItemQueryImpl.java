@@ -64,11 +64,6 @@ abstract class AbstractWorkbasketAccessItemQueryImpl<
   }
 
   @Override
-  public Q orderById(SortDirection sortDirection) {
-    return addOrderCriteria("ID", sortDirection);
-  }
-
-  @Override
   public Q orderByWorkbasketId(SortDirection sortDirection) {
     return addOrderCriteria("WORKBASKET_ID", sortDirection);
   }
@@ -76,6 +71,11 @@ abstract class AbstractWorkbasketAccessItemQueryImpl<
   @Override
   public Q orderByAccessId(SortDirection sortDirection) {
     return addOrderCriteria("ACCESS_ID", sortDirection);
+  }
+
+  @Override
+  public Q orderById(SortDirection sortDirection) {
+    return addOrderCriteria("ID", sortDirection);
   }
 
   @Override

@@ -86,6 +86,15 @@ public class TaskSummaryImpl implements TaskSummary {
 
   /*
    * (non-Javadoc)
+   * @see pro.taskana.TaskSummary#getCreator()
+   */
+  @Override
+  public String getCreator() {
+    return creator;
+  }
+
+  /*
+   * (non-Javadoc)
    * @see pro.taskana.TaskSummary#getCreated()
    */
   @Override
@@ -177,19 +186,6 @@ public class TaskSummaryImpl implements TaskSummary {
 
   /*
    * (non-Javadoc)
-   * @see pro.taskana.TaskSummary#getCreator()
-   */
-  @Override
-  public String getCreator() {
-    return creator;
-  }
-
-  public void setCreator(String creator) {
-    this.creator = creator;
-  }
-
-  /*
-   * (non-Javadoc)
    * @see pro.taskana.TaskSummary#getNote()
    */
   @Override
@@ -253,14 +249,12 @@ public class TaskSummaryImpl implements TaskSummary {
     this.workbasketSummary = workbasketSummary;
   }
 
-  // utility method to allow mybatis access to workbasketSummary
-  public WorkbasketSummaryImpl getWorkbasketSummaryImpl() {
-    return (WorkbasketSummaryImpl) workbasketSummary;
-  }
-
-  // utility method to allow mybatis access to workbasketSummary
-  public void setWorkbasketSummaryImpl(WorkbasketSummaryImpl workbasketSummary) {
-    setWorkbasketSummary(workbasketSummary);
+  @Override
+  public List<AttachmentSummary> getAttachmentSummaries() {
+    if (attachmentSummaries == null) {
+      attachmentSummaries = new ArrayList<>();
+    }
+    return attachmentSummaries;
   }
 
   /*
@@ -357,25 +351,6 @@ public class TaskSummaryImpl implements TaskSummary {
     this.isTransferred = isTransferred;
   }
 
-  @Override
-  public List<AttachmentSummary> getAttachmentSummaries() {
-    if (attachmentSummaries == null) {
-      attachmentSummaries = new ArrayList<>();
-    }
-    return attachmentSummaries;
-  }
-
-  public void setAttachmentSummaries(List<AttachmentSummary> attachmentSummaries) {
-    this.attachmentSummaries = attachmentSummaries;
-  }
-
-  public void addAttachmentSummary(AttachmentSummary attachmentSummary) {
-    if (this.attachmentSummaries == null) {
-      this.attachmentSummaries = new ArrayList<>();
-    }
-    this.attachmentSummaries.add(attachmentSummary);
-  }
-
   /*
    * (non-Javadoc)
    * @see pro.taskana.TaskSummary#getCustomAttribute(String number)
@@ -432,6 +407,31 @@ public class TaskSummaryImpl implements TaskSummary {
                 + number
                 + "' to getCustomAttribute does not represent a number between 1 and 16");
     }
+  }
+
+  public void setAttachmentSummaries(List<AttachmentSummary> attachmentSummaries) {
+    this.attachmentSummaries = attachmentSummaries;
+  }
+
+  public void setCreator(String creator) {
+    this.creator = creator;
+  }
+
+  // utility method to allow mybatis access to workbasketSummary
+  public WorkbasketSummaryImpl getWorkbasketSummaryImpl() {
+    return (WorkbasketSummaryImpl) workbasketSummary;
+  }
+
+  // utility method to allow mybatis access to workbasketSummary
+  public void setWorkbasketSummaryImpl(WorkbasketSummaryImpl workbasketSummary) {
+    setWorkbasketSummary(workbasketSummary);
+  }
+
+  public void addAttachmentSummary(AttachmentSummary attachmentSummary) {
+    if (this.attachmentSummaries == null) {
+      this.attachmentSummaries = new ArrayList<>();
+    }
+    this.attachmentSummaries.add(attachmentSummary);
   }
 
   // auxiliary Method to enable Mybatis to access classificationSummary
@@ -589,6 +589,49 @@ public class TaskSummaryImpl implements TaskSummary {
   }
 
   @Override
+  public int hashCode() {
+    return Objects.hash(
+        taskId,
+        externalId,
+        created,
+        claimed,
+        completed,
+        modified,
+        planned,
+        due,
+        name,
+        creator,
+        note,
+        priority,
+        state,
+        classificationSummary,
+        workbasketSummary,
+        businessProcessId,
+        parentBusinessProcessId,
+        owner,
+        primaryObjRef,
+        isRead,
+        isTransferred,
+        attachmentSummaries,
+        custom1,
+        custom2,
+        custom3,
+        custom4,
+        custom5,
+        custom6,
+        custom7,
+        custom8,
+        custom9,
+        custom10,
+        custom11,
+        custom12,
+        custom13,
+        custom14,
+        custom15,
+        custom16);
+  }
+
+  @Override
   public boolean equals(Object obj) {
     if (this == obj) {
       return true;
@@ -635,49 +678,6 @@ public class TaskSummaryImpl implements TaskSummary {
         && Objects.equals(custom14, other.custom14)
         && Objects.equals(custom15, other.custom15)
         && Objects.equals(custom16, other.custom16);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-        taskId,
-        externalId,
-        created,
-        claimed,
-        completed,
-        modified,
-        planned,
-        due,
-        name,
-        creator,
-        note,
-        priority,
-        state,
-        classificationSummary,
-        workbasketSummary,
-        businessProcessId,
-        parentBusinessProcessId,
-        owner,
-        primaryObjRef,
-        isRead,
-        isTransferred,
-        attachmentSummaries,
-        custom1,
-        custom2,
-        custom3,
-        custom4,
-        custom5,
-        custom6,
-        custom7,
-        custom8,
-        custom9,
-        custom10,
-        custom11,
-        custom12,
-        custom13,
-        custom14,
-        custom15,
-        custom16);
   }
 
   @Override

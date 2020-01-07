@@ -75,16 +75,6 @@ public class AttachmentImpl implements Attachment {
     this.classificationSummary = classificationSummary;
   }
 
-  // auxiliary method to enable MyBatis access to classificationSummary
-  public ClassificationSummaryImpl getClassificationSummaryImpl() {
-    return (ClassificationSummaryImpl) classificationSummary;
-  }
-
-  // auxiliary method to enable MyBatis access to classificationSummary
-  public void setClassificationSummaryImpl(ClassificationSummaryImpl classificationSummary) {
-    this.classificationSummary = classificationSummary;
-  }
-
   @Override
   public ObjectReference getObjectReference() {
     return objectReference;
@@ -140,6 +130,16 @@ public class AttachmentImpl implements Attachment {
     summary.setChannel(this.channel);
     summary.setObjectReference(this.objectReference);
     return summary;
+  }
+
+  // auxiliary method to enable MyBatis access to classificationSummary
+  public ClassificationSummaryImpl getClassificationSummaryImpl() {
+    return (ClassificationSummaryImpl) classificationSummary;
+  }
+
+  // auxiliary method to enable MyBatis access to classificationSummary
+  public void setClassificationSummaryImpl(ClassificationSummaryImpl classificationSummary) {
+    this.classificationSummary = classificationSummary;
   }
 
   @Override
