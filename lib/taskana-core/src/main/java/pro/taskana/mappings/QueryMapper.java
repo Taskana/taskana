@@ -17,6 +17,7 @@ import pro.taskana.impl.WorkbasketQueryImpl;
 import pro.taskana.impl.WorkbasketSummaryImpl;
 
 /** This class provides a mapper for all queries. */
+@SuppressWarnings("checkstyle:LineLength")
 public interface QueryMapper {
 
   String OBJECTREFERENCEMAPPER_FINDBYID = "pro.taskana.mappings.ObjectReferenceMapper.findById";

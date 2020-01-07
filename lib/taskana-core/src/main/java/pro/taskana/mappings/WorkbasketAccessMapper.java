@@ -13,6 +13,7 @@ import org.apache.ibatis.annotations.Update;
 import pro.taskana.impl.WorkbasketAccessItemImpl;
 
 /** This class is the mybatis mapping of workbasket access items. */
+@SuppressWarnings("checkstyle:LineLength")
 public interface WorkbasketAccessMapper {
 
   @Select(

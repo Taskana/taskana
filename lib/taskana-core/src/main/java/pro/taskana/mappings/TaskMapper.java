@@ -18,6 +18,7 @@ import pro.taskana.impl.TaskSummaryImpl;
 import pro.taskana.impl.persistence.MapTypeHandler;
 
 /** This class is the mybatis mapping of task. */
+@SuppressWarnings("checkstyle:LineLength")
 public interface TaskMapper {
 
   @Select(

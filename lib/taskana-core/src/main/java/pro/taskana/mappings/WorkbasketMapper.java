@@ -14,6 +14,7 @@ import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.WorkbasketSummaryImpl;
 
 /** This class is the mybatis mapping of workbaskets. */
+@SuppressWarnings("checkstyle:LineLength")
 public interface WorkbasketMapper {
 
   @Select(

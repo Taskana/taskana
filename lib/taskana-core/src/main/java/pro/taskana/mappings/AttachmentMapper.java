@@ -16,6 +16,7 @@ import pro.taskana.impl.AttachmentSummaryImpl;
 import pro.taskana.impl.persistence.MapTypeHandler;
 
 /** This class is the mybatis mapping of Attachment. */
+@SuppressWarnings("checkstyle:LineLength")
 public interface AttachmentMapper {
 
   @Insert(
