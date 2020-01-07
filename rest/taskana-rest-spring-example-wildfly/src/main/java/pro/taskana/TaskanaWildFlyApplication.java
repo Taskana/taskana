@@ -39,6 +39,7 @@ import pro.taskana.sampledata.SampleDataGenerator;
  */
 @SpringBootApplication
 @EnableScheduling
+@SuppressWarnings("checkstyle:Indentation")
 @Import({
   TransactionalJobsConfiguration.class,
   LdapConfiguration.class,
@@ -90,7 +91,8 @@ public class TaskanaWildFlyApplication extends SpringBootServletInitializer {
       return dataSource;
     } catch (Exception e) {
       LOGGER.error(
-          "Caught exception {} when attempting to start Taskana with Datasource from Jndi. Using default H2 datasource. ",
+          "Caught exception {} when attempting to start Taskana with Datasource "
+              + "from Jndi. Using default H2 datasource. ",
           e);
       return dsProperties.initializeDataSourceBuilder().build();
     }

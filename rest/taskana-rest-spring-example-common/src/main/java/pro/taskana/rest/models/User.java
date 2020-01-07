@@ -1,4 +1,5 @@
 package pro.taskana.rest.models;
+
 /** model for a user. */
 public class User {
 

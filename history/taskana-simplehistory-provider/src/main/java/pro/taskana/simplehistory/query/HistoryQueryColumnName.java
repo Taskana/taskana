@@ -3,8 +3,8 @@ package pro.taskana.simplehistory.query;
 import pro.taskana.QueryColumnName;
 
 /**
- * Enum containing the column names for {@see
- * pro.taskana.simplehistory.impl.mappings.HistoryQueryMapper#queryHistoryColumnValues}.
+ * Enum containing the column names for
+ * {@link pro.taskana.simplehistory.impl.mappings.HistoryQueryMapper#queryHistoryColumnValues}.
  *
  * @author bv
  */
