@@ -45,11 +45,11 @@ import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.TaskanaEngineProxyForTest;
 import pro.taskana.mappings.TaskTestMapper;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /** Acceptance test for all "query tasks with sorting" scenarios. */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class QueryTasksAccTest extends AbstractAccTest {
 
   @BeforeEach
@@ -1377,7 +1377,7 @@ class QueryTasksAccTest extends AbstractAccTest {
 
   @WithAccessId(userName = "admin")
   @Test
-  void testQueryForAttachmentLikeCHAndOrderByClassificationKeyDescAndAsc() {
+  void testQueryForAttachmentChannelLikeAndOrdering() {
 
     TaskService taskService = taskanaEngine.getTaskService();
     List<TaskSummary> results =

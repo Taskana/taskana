@@ -10,11 +10,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.TaskanaRole;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /** Acceptance test for task queries and authorization. */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class TaskEngineAccTest extends AbstractAccTest {
 
   TaskEngineAccTest() {

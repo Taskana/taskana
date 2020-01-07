@@ -2,7 +2,8 @@ package pro.taskana;
 
 /**
  * Enum containing the column names for @see {@link
- * pro.taskana.mappings.QueryMapper#queryWorkbasketColumnValues(pro.taskana.impl.WorkbasketQueryImpl)}.
+ * pro.taskana.mappings.QueryMapper#queryWorkbasketColumnValues
+ * (pro.taskana.impl.WorkbasketQueryImpl)}.
  *
  * @author jsa
  */

@@ -23,11 +23,11 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
 import pro.taskana.report.CustomFieldValueReport;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /** Acceptance test for all "classification report" scenarios. */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
 
   private static final Logger LOGGER =

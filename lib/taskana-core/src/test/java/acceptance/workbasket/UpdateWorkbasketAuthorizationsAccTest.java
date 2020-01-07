@@ -30,11 +30,11 @@ import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.WorkbasketAccessItemImpl;
 import pro.taskana.security.CurrentUserContext;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /** Acceptance test for all "update workbasket" scenarios. */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
   UpdateWorkbasketAuthorizationsAccTest() {

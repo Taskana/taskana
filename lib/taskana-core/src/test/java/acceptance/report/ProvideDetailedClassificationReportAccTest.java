@@ -26,11 +26,11 @@ import pro.taskana.impl.report.item.DetailedMonitorQueryItem;
 import pro.taskana.impl.report.row.FoldableRow;
 import pro.taskana.impl.report.structure.Row;
 import pro.taskana.report.ClassificationReport.DetailedClassificationReport;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /** Acceptance test for all "detailed classification report" scenarios. */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class ProvideDetailedClassificationReportAccTest extends AbstractReportAccTest {
 
   private static final Logger LOGGER =

@@ -33,11 +33,11 @@ import pro.taskana.impl.DaysToWorkingDaysConverter;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
 import pro.taskana.jobs.JobRunner;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /** Acceptance test for all "update classification" scenarios. */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 public class UpdateClassificationAccTest extends AbstractAccTest {
 
   private ClassificationService classificationService;

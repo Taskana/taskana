@@ -75,7 +75,7 @@ public class SampleDataGenerator {
 
   private StringReader selectSchemaScript(String dbProductName, String schemaName) {
     return new StringReader(
-        DB.isPostgreSQL(dbProductName)
+        DB.isPostgreSql(dbProductName)
             ? "SET search_path TO " + schemaName + ";"
             : "SET SCHEMA " + schemaName + ";");
   }

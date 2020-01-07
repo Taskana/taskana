@@ -44,11 +44,11 @@ import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
 import pro.taskana.mappings.AttachmentMapper;
 import pro.taskana.mappings.TaskTestMapper;
 import pro.taskana.security.CurrentUserContext;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /** Acceptance test for all "create task" scenarios. */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class CreateTaskAccTest extends AbstractAccTest {
 
   private TaskService taskService;

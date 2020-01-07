@@ -15,11 +15,11 @@ import pro.taskana.KeyDomain;
 import pro.taskana.TaskService;
 import pro.taskana.TaskSummary;
 import pro.taskana.exceptions.NotAuthorizedToQueryWorkbasketException;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /** Acceptance test for all "query tasks by workbasket" scenarios. */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
 
   QueryTasksByWorkbasketAccTest() {

@@ -1,6 +1,6 @@
 package acceptance;
 
-import configuration.DBWriter;
+import configuration.DbWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -47,7 +47,7 @@ public class AbstractAccTest {
     historyService = new SimpleHistoryServiceImpl();
     historyService.initialize(taskanaEngineConfiguration);
 
-    DBWriter writer = new DBWriter();
+    DbWriter writer = new DbWriter();
     writer.clearDB(dataSource);
     writer.generateTestData(dataSource);
   }

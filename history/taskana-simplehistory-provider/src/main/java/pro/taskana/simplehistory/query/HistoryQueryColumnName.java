@@ -4,7 +4,8 @@ import pro.taskana.QueryColumnName;
 
 /**
  * Enum containing the column names for @see
- * pro.taskana.simplehistory.mappings.HistoryQueryMapper#queryHistoryColumnValues(pro.taskana.simplehistory.impl.HistoryQueryImpl).
+ * pro.taskana.simplehistory.mappings.HistoryQueryMapper#queryHistoryColumnValues
+ * (pro.taskana.simplehistory.impl.HistoryQueryImpl).
  *
  * @author bv
  */

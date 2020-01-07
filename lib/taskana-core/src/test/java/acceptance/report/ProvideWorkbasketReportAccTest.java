@@ -25,11 +25,11 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.report.CombinedClassificationFilter;
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
 import pro.taskana.report.WorkbasketReport;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /** Acceptance test for all "workbasket level report" scenarios. */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
 
   private static final Logger LOGGER =

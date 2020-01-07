@@ -18,11 +18,11 @@ import pro.taskana.WorkbasketSummary;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.SystemException;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /** Acceptance test for all "query workbasket by permission" scenarios. */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
 
   private static SortDirection asc = SortDirection.ASCENDING;

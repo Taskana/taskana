@@ -14,14 +14,14 @@ import pro.taskana.TaskQuery;
 import pro.taskana.TaskQueryColumnName;
 import pro.taskana.TaskService;
 import pro.taskana.TaskSummary;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /**
  * Acceptance test for the usecase of adding/removing an attachment of a task and update the result
  * correctly.
  */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
 
   private static SortDirection asc = SortDirection.ASCENDING;

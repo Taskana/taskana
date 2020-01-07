@@ -24,7 +24,7 @@ public enum DB {
     return dbProductName != null && dbProductName.contains(H2.dbProductname);
   }
 
-  public static boolean isPostgreSQL(String dbProductName) {
+  public static boolean isPostgreSql(String dbProductName) {
     return POSTGRESS.dbProductname.equals(dbProductName);
   }
 
@@ -34,7 +34,7 @@ public enum DB {
       return DB2.dbProductId;
     } else if (isH2(dbProductName)) {
       return H2.dbProductId;
-    } else if (isPostgreSQL(dbProductName)) {
+    } else if (isPostgreSql(dbProductName)) {
       return POSTGRESS.dbProductId;
     } else {
       throw new UnsupportedDatabaseException(dbProductName);

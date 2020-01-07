@@ -19,11 +19,11 @@ import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketAccessItemQuery;
 import pro.taskana.WorkbasketService;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /** Acceptance test for all "query access items for workbaskets" scenarios. */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
 
   QueryWorkbasketAccessItemsAccTest() {

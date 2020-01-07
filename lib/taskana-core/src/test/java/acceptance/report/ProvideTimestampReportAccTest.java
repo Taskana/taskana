@@ -18,11 +18,11 @@ import pro.taskana.impl.report.item.TimestampQueryItem;
 import pro.taskana.impl.report.row.SingleRow;
 import pro.taskana.impl.report.row.TimestampRow;
 import pro.taskana.report.TimestampReport;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /** Test class for {@link TimestampReport}. */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class ProvideTimestampReportAccTest extends AbstractReportAccTest {
 
   /**
