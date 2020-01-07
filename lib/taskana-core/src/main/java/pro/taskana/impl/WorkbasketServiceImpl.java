@@ -1,6 +1,5 @@
 package pro.taskana.impl;
 
-import java.text.MessageFormat;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -179,18 +178,18 @@ public class WorkbasketServiceImpl implements WorkbasketService {
           || workbasketAccessItem.getAccessId() == null
           || workbasketAccessItem.getWorkbasketId() == null) {
         throw new InvalidArgumentException(
-            MessageFormat.format(
+            String.format(
                 "Checking the preconditions of the current "
-                    + "WorkbasketAccessItem failed. WorkbasketAccessItem={0}",
-                workbasketAccessItem.toString()));
+                    + "WorkbasketAccessItem failed. WorkbasketAccessItem=%s",
+                workbasketAccessItem));
       }
       WorkbasketImpl wb = workbasketMapper.findById(workbasketAccessItem.getWorkbasketId());
       if (wb == null) {
         throw new WorkbasketNotFoundException(
             workbasketAccessItem.getWorkbasketId(),
-            MessageFormat
-                .format("WorkbasketAccessItem {0} refers to a not existing workbasket",
-                    workbasketAccessItem));
+            String.format(
+                "WorkbasketAccessItem %s refers to a not existing workbasket",
+                workbasketAccessItem));
       }
       workbasketAccessMapper.insert(accessItem);
       LOGGER.debug(
@@ -221,16 +220,16 @@ public class WorkbasketServiceImpl implements WorkbasketService {
               (WorkbasketAccessItemImpl) workbasketAccessItem;
           if (wbAccessItemImpl.getWorkbasketId() == null) {
             throw new InvalidArgumentException(
-                MessageFormat.format(
+                String.format(
                     "Checking the preconditions of the current WorkbasketAccessItem failed "
-                        + "- WBID is NULL. WorkbasketAccessItem={0}",
-                    workbasketAccessItem.toString()));
+                        + "- WBID is NULL. WorkbasketAccessItem=%s",
+                    workbasketAccessItem));
           } else if (!wbAccessItemImpl.getWorkbasketId().equals(workbasketId)) {
             throw new InvalidArgumentException(
-                MessageFormat.format(
+                String.format(
                     "Checking the preconditions of the current WorkbasketAccessItem failed "
-                        + "- the WBID does not match. Target-WBID=''{0}'' WorkbasketAccessItem={1}",
-                    workbasketId, workbasketAccessItem.toString()));
+                        + "- the WBID does not match. Target-WBID=''%s'' WorkbasketAccessItem=%s",
+                    workbasketId, workbasketAccessItem));
           }
           if (wbAccessItemImpl.getId() == null || wbAccessItemImpl.getId().isEmpty()) {
             wbAccessItemImpl.setId(

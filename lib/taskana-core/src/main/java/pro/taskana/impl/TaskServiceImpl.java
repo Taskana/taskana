@@ -1,6 +1,5 @@
 package pro.taskana.impl;
 
-import java.text.MessageFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -1949,9 +1948,9 @@ public class TaskServiceImpl implements TaskService {
             att.getClassificationSummary().getId(),
             new ClassificationNotFoundException(
                 id,
-                MessageFormat.format(
+                String.format(
                     "When processing task updates due to change "
-                        + "of classification, the classification with id {0}{1}",
+                        + "of classification, the classification with id %s%s",
                     id, WAS_NOT_FOUND2)));
       } else {
         att.setClassificationSummary(classificationSummary);
