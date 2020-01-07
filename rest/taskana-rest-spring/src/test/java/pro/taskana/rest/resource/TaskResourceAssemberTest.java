@@ -100,7 +100,7 @@ class TaskResourceAssemberTest {
     // given
     ObjectReference primaryObjRef = new ObjectReference();
     primaryObjRef.setId("abc");
-    Workbasket workbasket = workbasketService.newWorkbasket("key", "domain");
+    final Workbasket workbasket = workbasketService.newWorkbasket("key", "domain");
     Classification classification =
         classificationService.newClassification("ckey", "cdomain", "MANUAL");
     AttachmentImpl attachment = (AttachmentImpl) taskService.newAttachment();

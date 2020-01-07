@@ -33,17 +33,17 @@ function main() {
   LIB)
     set -x
     mvn -q install -B -f $REL/.. -DskipTests -Dcheckstyle.skip -Dmaven.javadoc.skip -N
-    mvn -q compile -B -f $REL/../lib
+    mvn -q test-compile -B -f $REL/../lib
     ;;
   REST)
     set -x
     mvn -q install -B -f $REL/.. -pl :taskana-spring -am -DskipTests -Dcheckstyle.skip -Dmaven.javadoc.skip
-    mvn -q compile -B -f $REL/../rest
+    mvn -q test-compile -B -f $REL/../rest
     ;;
   HISTORY)
     set -x
     mvn -q install -B -f $REL/.. -pl :taskana-rest-spring -am -DskipTests -Dcheckstyle.skip -Dmaven.javadoc.skip
-    mvn -q compile -B -f $REL/../history
+    mvn -q test-compile -B -f $REL/../history
     ;;
   esac
 }
