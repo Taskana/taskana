@@ -14,6 +14,7 @@ import pro.taskana.impl.persistence.MapTypeHandler;
 import pro.taskana.jobs.ScheduledJob;
 
 /** This class is the mybatis mapping of the JOB table. */
+@SuppressWarnings("checkstyle:LineLength")
 public interface JobMapper {
 
   @Insert(

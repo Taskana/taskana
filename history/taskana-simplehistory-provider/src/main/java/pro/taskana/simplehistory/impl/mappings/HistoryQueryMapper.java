@@ -9,6 +9,7 @@ import pro.taskana.simplehistory.impl.HistoryEventImpl;
 import pro.taskana.simplehistory.impl.HistoryQueryImpl;
 
 /** This class is the mybatis mapping of historyQueries. */
+@SuppressWarnings("checkstyle:LineLength")
 public interface HistoryQueryMapper {
 
   @Select(
