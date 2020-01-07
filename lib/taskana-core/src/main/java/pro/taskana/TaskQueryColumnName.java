@@ -1,8 +1,8 @@
 package pro.taskana;
 
 /**
- * Enum containing the column names for @see
- * pro.taskana.mappings.QueryMapper#queryTaskColumnValues(pro.taskana.impl.TaskQueryImpl).
+ * Enum containing the column names for
+ * {@link pro.taskana.mappings.QueryMapper#queryTaskColumnValues(pro.taskana.impl.TaskQueryImpl)}.
  *
  * @author jsa
  */

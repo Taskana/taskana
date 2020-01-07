@@ -3,6 +3,7 @@ package pro.taskana.rest;
 /** Collection of Url to Controller mappings. */
 public final class Mapping {
 
+  private static final String PRE = "/api/v1/";
   public static final String URL_ACCESSID = PRE + "access-ids";
   public static final String URL_ACCESSID_GROUPS = URL_ACCESSID + "/groups";
   public static final String URL_CLASSIFICATIONS = PRE + "classifications";
@@ -39,7 +40,6 @@ public final class Mapping {
   public static final String URL_WORKBASKET_DISTRIBUTION_ID =
       URL_WORKBASKET + "/distribution-targets/{workbasketId}";
   public static final String URL_WORKBASKETDEFIITIONS = PRE + "workbasket-definitions";
-  private static final String PRE = "/api/v1/";
 
   private Mapping() {}
 }

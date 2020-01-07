@@ -190,8 +190,38 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
     this.custom8 = custom8;
   }
 
-  protected boolean canEqual(Object other) {
-    return (other instanceof ClassificationSummaryImpl);
+  @Override
+  public boolean equals(Object obj) {
+
+    if (this == obj) {
+      return true;
+    }
+    if (!(obj instanceof ClassificationSummaryImpl)) {
+      return false;
+    }
+    ClassificationSummaryImpl other = (ClassificationSummaryImpl) obj;
+
+    if (!other.canEqual(this)) {
+      return false;
+    }
+    return priority == other.priority
+        && Objects.equals(id, other.id)
+        && Objects.equals(key, other.key)
+        && Objects.equals(category, other.category)
+        && Objects.equals(type, other.type)
+        && Objects.equals(domain, other.domain)
+        && Objects.equals(name, other.name)
+        && Objects.equals(parentId, other.parentId)
+        && Objects.equals(parentKey, other.parentKey)
+        && Objects.equals(serviceLevel, other.serviceLevel)
+        && Objects.equals(custom1, other.custom1)
+        && Objects.equals(custom2, other.custom2)
+        && Objects.equals(custom3, other.custom3)
+        && Objects.equals(custom4, other.custom4)
+        && Objects.equals(custom5, other.custom5)
+        && Objects.equals(custom6, other.custom6)
+        && Objects.equals(custom7, other.custom7)
+        && Objects.equals(custom8, other.custom8);
   }
 
   @Override
@@ -217,36 +247,8 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
         custom8);
   }
 
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
-    ClassificationSummaryImpl other = (ClassificationSummaryImpl) obj;
-    return priority == other.priority
-        && Objects.equals(id, other.id)
-        && Objects.equals(key, other.key)
-        && Objects.equals(category, other.category)
-        && Objects.equals(type, other.type)
-        && Objects.equals(domain, other.domain)
-        && Objects.equals(name, other.name)
-        && Objects.equals(parentId, other.parentId)
-        && Objects.equals(parentKey, other.parentKey)
-        && Objects.equals(serviceLevel, other.serviceLevel)
-        && Objects.equals(custom1, other.custom1)
-        && Objects.equals(custom2, other.custom2)
-        && Objects.equals(custom3, other.custom3)
-        && Objects.equals(custom4, other.custom4)
-        && Objects.equals(custom5, other.custom5)
-        && Objects.equals(custom6, other.custom6)
-        && Objects.equals(custom7, other.custom7)
-        && Objects.equals(custom8, other.custom8);
+  protected boolean canEqual(Object other) {
+    return (other instanceof ClassificationSummaryImpl);
   }
 
   @Override
