@@ -56,7 +56,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Bean
   public FilterRegistrationBean<CorsFilter> corsFilter() {
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     CorsConfiguration config = new CorsConfiguration();
     config.setAllowCredentials(true);
     config.addAllowedOrigin("*");
@@ -96,11 +96,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
           .antMatchers("/h2-console/**")
           .permitAll();
     } else {
-      AddLoginPageConfiguration(http);
+      addLoginPageConfiguration(http);
     }
   }
 
-  private void AddLoginPageConfiguration(HttpSecurity http) throws Exception {
+  private void addLoginPageConfiguration(HttpSecurity http) throws Exception {
     http.authorizeRequests()
         .anyRequest()
         .fullyAuthenticated()

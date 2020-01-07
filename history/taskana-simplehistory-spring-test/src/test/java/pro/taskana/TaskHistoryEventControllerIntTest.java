@@ -8,7 +8,6 @@ import static org.junit.Assert.fail;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.sql.SQLException;
-import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import javax.sql.DataSource;
@@ -51,8 +50,10 @@ public class TaskHistoryEventControllerIntTest {
 
   private static final Logger LOGGER =
       LoggerFactory.getLogger(TaskHistoryEventControllerIntTest.class);
+
   @Value("${taskana.schemaName:TASKANA}")
   public String schemaName;
+
   String server = "http://127.0.0.1:";
 
   RestTemplate template;
@@ -106,11 +107,10 @@ public class TaskHistoryEventControllerIntTest {
   public void testGetSpecificTaskHistoryEvent() {
     ResponseEntity<TaskHistoryEventListResource> response =
         template.exchange(
-            MessageFormat.format(
-                "{0}{1}/api/v1/task-history-event?"
-                    + "business-process-id=BPI:01&sort-by=business-process-id&"
-                    + "order=asc&page-size=6&page=1",
-                server, port),
+            server
+                + port
+                + "/api/v1/task-history-event?business-process-id=BPI:01"
+                + "&sort-by=business-process-id&order=asc&page-size=6&page=1",
             HttpMethod.GET,
             request,
             new ParameterizedTypeReference<TaskHistoryEventListResource>() {});

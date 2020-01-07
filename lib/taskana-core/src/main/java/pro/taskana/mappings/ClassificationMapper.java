@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Update;
 import pro.taskana.impl.ClassificationImpl;
 
 /** This class is the mybatis mapping of classifications. */
-@SuppressWarnings({"checkstyle:LineLength", "checkstyle:indentation"})
+@SuppressWarnings({"checkstyle:LineLength", "checkstyle:Indentation"})
 public interface ClassificationMapper {
 
   @Select(

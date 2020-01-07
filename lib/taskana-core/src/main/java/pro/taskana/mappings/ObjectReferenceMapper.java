@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Update;
 import pro.taskana.ObjectReference;
 
 /** This class is the mybatis mapping of ObjectReference. */
-@SuppressWarnings({"checkstyle:LineLength", "checkstyle:indentation"})
+@SuppressWarnings({"checkstyle:LineLength", "checkstyle:Indentation"})
 public interface ObjectReferenceMapper {
 
   @Select(

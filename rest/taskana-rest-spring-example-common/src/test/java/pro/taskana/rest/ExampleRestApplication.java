@@ -25,6 +25,7 @@ import pro.taskana.sampledata.SampleDataGenerator;
 @SpringBootApplication
 @EnableScheduling
 @ComponentScan(basePackages = "pro.taskana")
+@SuppressWarnings("checkstyle:Indentation")
 @Import({
   TransactionalJobsConfiguration.class,
   LdapConfiguration.class,
