@@ -27,11 +27,11 @@ import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketInUseException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.TaskImpl;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /** Acceptance test which does test the deletion of a workbasket and all wanted failures. */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class DeleteWorkbasketAccTest extends AbstractAccTest {
 
   private WorkbasketService workbasketService;

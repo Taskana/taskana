@@ -16,11 +16,11 @@ import pro.taskana.WorkbasketSummary;
 import pro.taskana.WorkbasketType;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /** Acceptance test for all "get workbasket" scenarios. */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class GetWorkbasketAccTest extends AbstractAccTest {
 
   GetWorkbasketAccTest() {

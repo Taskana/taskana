@@ -38,9 +38,9 @@ public final class CurrentUserContext {
    */
   public static String getUserid() {
     if (runningOnWebSphere()) {
-      return getUseridFromWSSubject();
+      return getUseridFromWsSubject();
     } else {
-      return getUseridFromJAASSubject();
+      return getUseridFromJaasSubject();
     }
   }
 
@@ -83,7 +83,7 @@ public final class CurrentUserContext {
    *
    * @return the userid of the caller. If the userid could not be obtained, null is returned.
    */
-  private static String getUseridFromWSSubject() {
+  private static String getUseridFromWsSubject() {
     try {
       Class<?> wsSubjectClass = Class.forName(WSSUBJECT_CLASSNAME);
       Method getCallerSubjectMethod =
@@ -93,11 +93,11 @@ public final class CurrentUserContext {
       if (callerSubject != null) {
         Set<Object> publicCredentials = callerSubject.getPublicCredentials();
         LOGGER.debug("Public credentials of caller: {}", publicCredentials);
-        for (Object pC : publicCredentials) {
+        for (Object credential : publicCredentials) {
           Object o =
-              pC.getClass()
+              credential.getClass()
                   .getMethod(GET_UNIQUE_SECURITY_NAME_METHOD, (Class<?>[]) null)
-                  .invoke(pC, (Object[]) null);
+                  .invoke(credential, (Object[]) null);
           LOGGER.debug("Returning the unique security name of first public credential: {}", o);
           String userIdFound = o.toString();
           String userIdUsed = userIdFound;
@@ -133,7 +133,7 @@ public final class CurrentUserContext {
     return runningOnWebSphere;
   }
 
-  private static String getUseridFromJAASSubject() {
+  private static String getUseridFromJaasSubject() {
     Subject subject = Subject.getSubject(AccessController.getContext());
     LOGGER.trace("Subject of caller: {}", subject);
     if (subject != null) {

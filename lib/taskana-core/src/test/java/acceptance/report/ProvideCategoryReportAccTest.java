@@ -24,11 +24,11 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
 import pro.taskana.report.CategoryReport;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /** Acceptance test for all "category report" scenarios. */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class ProvideCategoryReportAccTest extends AbstractReportAccTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProvideCategoryReportAccTest.class);

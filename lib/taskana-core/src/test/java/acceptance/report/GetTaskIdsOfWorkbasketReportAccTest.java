@@ -15,11 +15,11 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.SelectedItem;
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /** Acceptance test for all "get task ids of workbasket report" scenarios. */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
 
   @Test

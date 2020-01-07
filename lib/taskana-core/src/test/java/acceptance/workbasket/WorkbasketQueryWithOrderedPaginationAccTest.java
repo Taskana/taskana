@@ -12,10 +12,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import pro.taskana.BaseQuery.SortDirection;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 
 /** Acceptance test for all "query classifications with pagination" scenarios. */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class WorkbasketQueryWithOrderedPaginationAccTest extends AbstractAccTest {
 
   private static SortDirection asc = SortDirection.ASCENDING;

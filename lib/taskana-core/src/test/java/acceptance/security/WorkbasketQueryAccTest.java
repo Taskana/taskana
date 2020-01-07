@@ -13,11 +13,11 @@ import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /** Acceptance test for workbasket queries and authorization. */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class WorkbasketQueryAccTest extends AbstractAccTest {
 
   WorkbasketQueryAccTest() {

@@ -16,11 +16,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import pro.taskana.CustomField;
 import pro.taskana.TaskMonitorService;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /** Acceptance test for all "classification report" scenarios. */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
 
   @Test

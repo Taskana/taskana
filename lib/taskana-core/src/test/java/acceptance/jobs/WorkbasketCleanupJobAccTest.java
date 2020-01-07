@@ -18,11 +18,11 @@ import pro.taskana.WorkbasketSummary;
 import pro.taskana.exceptions.TaskanaException;
 import pro.taskana.jobs.TaskCleanupJob;
 import pro.taskana.jobs.WorkbasketCleanupJob;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
 /** Acceptance test for all "jobs workbasket runner" scenarios. */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class WorkbasketCleanupJobAccTest extends AbstractAccTest {
 
   WorkbasketService workbasketService;

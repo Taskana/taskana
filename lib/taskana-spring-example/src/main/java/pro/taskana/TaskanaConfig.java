@@ -86,5 +86,5 @@ public class TaskanaConfig {
   @Profile("inmemorydb")
   @Configuration
   @PropertySource("classpath:customdb.properties")
-  static class InmemoryDBProperties {}
+  static class InmemoryDbProperties {}
 }

@@ -13,10 +13,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import pro.taskana.ClassificationService;
 import pro.taskana.ClassificationSummary;
 import pro.taskana.exceptions.TaskanaRuntimeException;
-import pro.taskana.security.JAASExtension;
+import pro.taskana.security.JaasExtension;
 
 /** Acceptance test for all "query classifications with pagination" scenarios. */
-@ExtendWith(JAASExtension.class)
+@ExtendWith(JaasExtension.class)
 class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
 
   QueryClassificationWithPaginationAccTest() {
