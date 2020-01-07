@@ -177,6 +177,7 @@ abstract class TimeIntervalReportBuilderImpl<
     }
   }
 
+  @SuppressWarnings("checkstyle:MethodName")
   protected abstract B _this();
 
   protected abstract String determineGroupedBy();

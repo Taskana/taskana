@@ -2,6 +2,7 @@ package pro.taskana.impl;
 
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.text.MessageFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -251,13 +252,11 @@ public class ClassificationServiceImpl implements ClassificationService {
       } catch (PersistenceException e) {
         if (isReferentialIntegrityConstraintViolation(e)) {
           throw new ClassificationInUseException(
-              "The classification id = \""
-                  + classificationId
-                  + "\" and key = \""
-                  + classification.getKey()
-                  + "\" in domain = \""
-                  + classification.getDomain()
-                  + "\" is in use and cannot be deleted. There are either tasks or attachments associated with the classification.",
+              MessageFormat.format(
+                  "The classification id = \"{0}\" and key = \"{1}\" in domain = \"{2}\" "
+                      + "is in use and cannot be deleted. There are either tasks or "
+                      + "attachments associated with the classification.",
+                  classificationId, classification.getKey(), classification.getDomain()),
               e.getCause());
         }
       }
@@ -273,10 +272,12 @@ public class ClassificationServiceImpl implements ClassificationService {
 
     } catch (Exception e) {
       throw new InvalidArgumentException(
-          "Invalid service level "
-              + serviceLevel
-              + ". The formats accepted are based on the ISO-8601 duration format PnDTnHnMn.nS with days considered to be exactly 24 hours. "
-              + "For example: \"P2D\" represents a period of \"two days.\" ",
+          MessageFormat.format(
+              "Invalid service level {0}. "
+                  + "The formats accepted are based on the ISO-8601 duration format "
+                  + "PnDTnHnMn.nS with days considered to be exactly 24 hours. "
+                  + "For example: \"P2D\" represents a period of \"two days.\" ",
+              serviceLevel),
           e.getCause());
     }
     // check that the duration is based on format PnD, i.e. it must start with a P, end with a D
@@ -285,10 +286,11 @@ public class ClassificationServiceImpl implements ClassificationService {
         || !('d' == serviceLevelLower.charAt(serviceLevel.length() - 1))) {
 
       throw new InvalidArgumentException(
-          "Invalid service level "
-              + serviceLevel
-              + ". Taskana only supports service levels that"
-              + " contain a number of whole days specified according to the format 'PnD' where n is the number of days");
+          MessageFormat.format(
+              "Invalid service level {0}. Taskana only supports service "
+                  + "levels that contain a number of whole days "
+                  + "specified according to the format ''PnD'' where n is the number of days",
+              serviceLevel));
     }
   }
 
@@ -348,17 +350,20 @@ public class ClassificationServiceImpl implements ClassificationService {
       } catch (ClassificationNotFoundException e) {
         doesExist = false;
         LOGGER.debug(
-            "Method createClassification: Classification does not exist in master domain. Classification {}.",
+            "Method createClassification: Classification does not "
+                + "exist in master domain. Classification {}.",
             masterClassification);
       } catch (ClassificationAlreadyExistException ex) {
         LOGGER.warn(
-            "Method createClassification: Classification does already exist in master domain. Classification {}.",
+            "Method createClassification: Classification does already exist "
+                + "in master domain. Classification {}.",
             masterClassification);
       } finally {
         if (!doesExist) {
           classificationMapper.insert(masterClassification);
           LOGGER.debug(
-              "Method createClassification: Classification created in master-domain, too. Classification {}.",
+              "Method createClassification: Classification created in "
+                  + "master-domain, too. Classification {}.",
               masterClassification);
         }
       }
@@ -445,7 +450,8 @@ public class ClassificationServiceImpl implements ClassificationService {
       }
     } catch (Exception ex) {
       LOGGER.warn(
-          "Classification-Service threw Exception while calling mapper and searching for classification. EX={}",
+          "Classification-Service threw Exception while calling "
+              + "mapper and searching for classification. EX={}",
           ex,
           ex);
     }
@@ -481,7 +487,8 @@ public class ClassificationServiceImpl implements ClassificationService {
         this.getClassification(classificationImpl.getKey(), classificationImpl.getDomain());
     if (!oldClassification.getModified().equals(classificationImpl.getModified())) {
       throw new ConcurrencyException(
-          "The current Classification has been modified while editing. The values can not be updated. Classification "
+          "The current Classification has been modified while editing. "
+              + "The values can not be updated. Classification "
               + classificationImpl.toString());
     }
     return oldClassification;

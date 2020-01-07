@@ -389,8 +389,8 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
       CustomFieldValueReport report, List<TimeIntervalColumnHeader> columnHeaders) {
     String formatColumWidth = "| %-7s ";
     String formatFirstColumn = "| %-36s  %-4s ";
-    String formatFirstColumnFirstLine = "| %-29s %12s ";
-    String formatFirstColumnSumLine = "| %-36s  %-5s";
+    final String formatFirstColumnFirstLine = "| %-29s %12s ";
+    final String formatFirstColumnSumLine = "| %-36s  %-5s";
     int reportWidth = columnHeaders == null ? 46 : columnHeaders.size() * 10 + 46;
 
     StringBuilder builder = new StringBuilder();

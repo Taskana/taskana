@@ -192,7 +192,7 @@ class TransferTaskAccTest extends AbstractAccTest {
   void testBulkTransferTaskToWorkbasketById()
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
           TaskNotFoundException {
-    Instant before = Instant.now();
+    final Instant before = Instant.now();
     TaskService taskService = taskanaEngine.getTaskService();
     ArrayList<String> taskIdList = new ArrayList<>();
     taskIdList.add("TKI:000000000000000000000000000000000004");
@@ -202,7 +202,8 @@ class TransferTaskAccTest extends AbstractAccTest {
         taskService.transferTasks("WBI:100000000000000000000000000000000006", taskIdList);
     assertFalse(results.containsErrors());
 
-    Workbasket wb = taskanaEngine.getWorkbasketService().getWorkbasket("USER_1_1", "DOMAIN_A");
+    final Workbasket wb =
+        taskanaEngine.getWorkbasketService().getWorkbasket("USER_1_1", "DOMAIN_A");
     Task transferredTask = taskService.getTask("TKI:000000000000000000000000000000000004");
     assertNotNull(transferredTask);
     assertTrue(transferredTask.isTransferred());
@@ -231,8 +232,9 @@ class TransferTaskAccTest extends AbstractAccTest {
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
           TaskNotFoundException {
     TaskService taskService = taskanaEngine.getTaskService();
-    Workbasket wb = taskanaEngine.getWorkbasketService().getWorkbasket("USER_1_1", "DOMAIN_A");
-    Instant before = Instant.now();
+    final Workbasket wb =
+        taskanaEngine.getWorkbasketService().getWorkbasket("USER_1_1", "DOMAIN_A");
+    final Instant before = Instant.now();
     ArrayList<String> taskIdList = new ArrayList<>();
     taskIdList.add("TKI:000000000000000000000000000000000006"); // working
     taskIdList.add("TKI:000000000000000000000000000000000041"); // NotAuthorized READ
@@ -359,7 +361,7 @@ class TransferTaskAccTest extends AbstractAccTest {
   void testBulkTransferByWorkbasketAndDomainByKey()
       throws WorkbasketNotFoundException, NotAuthorizedException, InvalidArgumentException,
           TaskNotFoundException {
-    Instant before = Instant.now();
+    final Instant before = Instant.now();
     TaskService taskService = taskanaEngine.getTaskService();
     List<String> taskIdList = new ArrayList<>();
 
@@ -370,7 +372,8 @@ class TransferTaskAccTest extends AbstractAccTest {
         taskService.transferTasks("GPK_B_KSC_1", "DOMAIN_B", taskIdList);
     assertFalse(results.containsErrors());
 
-    Workbasket wb = taskanaEngine.getWorkbasketService().getWorkbasket("GPK_B_KSC_1", "DOMAIN_B");
+    final Workbasket wb =
+        taskanaEngine.getWorkbasketService().getWorkbasket("GPK_B_KSC_1", "DOMAIN_B");
     Task transferredTask = taskService.getTask("TKI:000000000000000000000000000000000023");
     assertNotNull(transferredTask);
     assertTrue(transferredTask.isTransferred());

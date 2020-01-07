@@ -77,7 +77,7 @@ class ReportResourceTest {
   @Test
   void testOneSingleRow() {
     // given
-    ClassificationReport report = new ClassificationReport(headers);
+    final ClassificationReport report = new ClassificationReport(headers);
     MonitorQueryItem item = new MonitorQueryItem();
     item.setAgeInDays(daysDiff - 1);
     item.setNumberOfTasks(2);
@@ -121,7 +121,7 @@ class ReportResourceTest {
   @Test
   void testMultipleSingleRows() {
     // given
-    ClassificationReport report = new ClassificationReport(headers);
+    final ClassificationReport report = new ClassificationReport(headers);
     MonitorQueryItem item = new MonitorQueryItem();
     item.setAgeInDays(daysDiff - 1);
     item.setNumberOfTasks(2);
@@ -174,7 +174,7 @@ class ReportResourceTest {
   @Test
   void testOneFoldableRow() {
     // given
-    ClassificationReport.DetailedClassificationReport report =
+    final ClassificationReport.DetailedClassificationReport report =
         new ClassificationReport.DetailedClassificationReport(headers);
     DetailedMonitorQueryItem item = new DetailedMonitorQueryItem();
     item.setAgeInDays(daysDiff - 1);
@@ -252,7 +252,7 @@ class ReportResourceTest {
   @Test
   void testMultipleFoldableRows() {
     // given
-    ClassificationReport.DetailedClassificationReport report =
+    final ClassificationReport.DetailedClassificationReport report =
         new ClassificationReport.DetailedClassificationReport(headers);
     DetailedMonitorQueryItem item = new DetailedMonitorQueryItem();
     item.setAgeInDays(daysDiff - 1);

@@ -46,11 +46,11 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
   @WithAccessId(userName = "monitor")
   @Test
   void testGetTaskIdsOfCategoryReport() throws InvalidArgumentException, NotAuthorizedException {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-    List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+    final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    List<SelectedItem> selectedItems = new ArrayList<>();
+    final List<SelectedItem> selectedItems = new ArrayList<>();
 
     SelectedItem s1 = new SelectedItem();
     s1.setKey("EXTERN");
@@ -95,13 +95,13 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfCategoryReportWithWorkbasketFilter()
       throws InvalidArgumentException, NotAuthorizedException {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-    List<String> workbasketIds =
+    final List<String> workbasketIds =
         Collections.singletonList("WBI:000000000000000000000000000000000001");
-    List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+    final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    List<SelectedItem> selectedItems = new ArrayList<>();
+    final List<SelectedItem> selectedItems = new ArrayList<>();
 
     SelectedItem s1 = new SelectedItem();
     s1.setKey("EXTERN");
@@ -140,12 +140,12 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfCategoryReportWithStateFilter()
       throws InvalidArgumentException, NotAuthorizedException {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-    List<TaskState> states = Collections.singletonList(TaskState.READY);
-    List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+    final List<TaskState> states = Collections.singletonList(TaskState.READY);
+    final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    List<SelectedItem> selectedItems = new ArrayList<>();
+    final List<SelectedItem> selectedItems = new ArrayList<>();
 
     SelectedItem s1 = new SelectedItem();
     s1.setKey("EXTERN");
@@ -191,12 +191,12 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfCategoryReportWithCategoryFilter()
       throws InvalidArgumentException, NotAuthorizedException {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-    List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
-    List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+    final List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
+    final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    List<SelectedItem> selectedItems = new ArrayList<>();
+    final List<SelectedItem> selectedItems = new ArrayList<>();
 
     SelectedItem s1 = new SelectedItem();
     s1.setKey("AUTOMATIC");
@@ -228,12 +228,12 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfCategoryReportWithDomainFilter()
       throws InvalidArgumentException, NotAuthorizedException {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-    List<String> domains = Collections.singletonList("DOMAIN_A");
-    List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+    final List<String> domains = Collections.singletonList("DOMAIN_A");
+    final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    List<SelectedItem> selectedItems = new ArrayList<>();
+    final List<SelectedItem> selectedItems = new ArrayList<>();
 
     SelectedItem s1 = new SelectedItem();
     s1.setKey("EXTERN");
@@ -272,13 +272,13 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfCategoryReportWithCustomFieldValueFilter()
       throws InvalidArgumentException, NotAuthorizedException {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
     Map<CustomField, String> customAttributeFilter = new HashMap<>();
     customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
-    List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+    final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    List<SelectedItem> selectedItems = new ArrayList<>();
+    final List<SelectedItem> selectedItems = new ArrayList<>();
 
     SelectedItem s1 = new SelectedItem();
     s1.setKey("EXTERN");
@@ -317,11 +317,11 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
   @WithAccessId(userName = "monitor")
   @Test
   void testThrowsExceptionIfSubKeysAreUsed() {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-    List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+    final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    List<SelectedItem> selectedItems = new ArrayList<>();
+    final List<SelectedItem> selectedItems = new ArrayList<>();
 
     SelectedItem s1 = new SelectedItem();
     s1.setKey("EXTERN");

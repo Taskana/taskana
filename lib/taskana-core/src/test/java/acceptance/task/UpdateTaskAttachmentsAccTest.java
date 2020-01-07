@@ -62,7 +62,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
       throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
           InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException {
     setUpMethod();
-    int attachmentCount = task.getAttachments().size();
+    final int attachmentCount = task.getAttachments().size();
     assertEquals(1, task.getPriority());
     assertEquals(task.getDue(), task.getPlanned().plus(Duration.ofDays(1)));
     task.addAttachment(attachment);
@@ -118,7 +118,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
           ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException {
     setUpMethod();
-    int attachmentCount = 0;
+    final int attachmentCount = 0;
     task.getAttachments().clear();
     task = taskService.updateTask(task);
     task = taskService.getTask(task.getId());
@@ -143,7 +143,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     setUpMethod();
     // Add attachment before
     task = taskService.getTask(task.getId());
-    int attachmentCount = task.getAttachments().size();
+    final int attachmentCount = task.getAttachments().size();
     task.addAttachment(attachment);
     task = taskService.updateTask(task);
     task = taskService.getTask(task.getId());
@@ -151,7 +151,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
 
     // Change sth. and add same (id) again - override/update
     String newChannel = "UPDATED EXTERNAL SINCE LAST ADD";
-    attachmentCount = task.getAttachments().size();
+    final int attachmentCount2 = task.getAttachments().size();
     Attachment updatedAttachment = task.getAttachments().get(0);
     updatedAttachment.setChannel(newChannel);
     Classification newClassification =
@@ -162,7 +162,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     task.addAttachment(updatedAttachment);
     task = taskService.updateTask(task);
     task = taskService.getTask(task.getId());
-    assertThat(task.getAttachments().size(), equalTo(attachmentCount));
+    assertThat(task.getAttachments().size(), equalTo(attachmentCount2));
     assertThat(task.getAttachments().get(0).getChannel(), equalTo(newChannel));
     assertEquals(999, task.getPriority());
 
@@ -182,7 +182,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
           InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException {
     setUpMethod();
     // Add Attachment before
-    int attachmentCount = task.getAttachments().size();
+    final int attachmentCount = task.getAttachments().size();
     ((AttachmentImpl) attachment).setId("TAI:0001");
     task.addAttachment(attachment);
     task.addAttachment(attachment); // overwrite, same id
@@ -192,11 +192,11 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     assertThat(task.getAttachments().size(), equalTo(attachmentCount + 1));
 
     // Add same again - ignored
-    attachmentCount = task.getAttachments().size();
+    final int attachmentCount2 = task.getAttachments().size();
     Attachment redundantAttachment = task.getAttachments().get(0);
     task.addAttachment(redundantAttachment);
     task = taskService.updateTask(task);
-    assertThat(task.getAttachments().size(), equalTo(attachmentCount));
+    assertThat(task.getAttachments().size(), equalTo(attachmentCount2));
   }
 
   @WithAccessId(
@@ -208,7 +208,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
           ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException {
     setUpMethod();
     // Try to add a single NULL-Element
-    int attachmentCount = task.getAttachments().size();
+    final int attachmentCount = task.getAttachments().size();
     task.addAttachment(null);
     task = taskService.updateTask(task);
     task = taskService.getTask(task.getId());
@@ -224,15 +224,15 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
 
     // Test no NullPointer on NULL-Value and removing it on current data.
     // New loading can do this, but returned value should got this "function", too.
-    attachmentCount = task.getAttachments().size();
+    final int attachmentCount2 = task.getAttachments().size();
     task.getAttachments().add(null);
     task.getAttachments().add(null);
     task.getAttachments().add(null);
     task = taskService.updateTask(task);
-    assertThat(task.getAttachments().size(), equalTo(attachmentCount)); // locally, not persisted
+    assertThat(task.getAttachments().size(), equalTo(attachmentCount2)); // locally, not persisted
     task = taskService.getTask(task.getId());
     assertThat(
-        task.getAttachments().size(), equalTo(attachmentCount)); // persisted values not changed
+        task.getAttachments().size(), equalTo(attachmentCount2)); // persisted values not changed
     assertEquals(1, task.getPriority());
     assertEquals(task.getDue(), task.getPlanned().plus(Duration.ofDays(1)));
   }
@@ -307,7 +307,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     assertEquals(99, task.getPriority());
     assertEquals(task.getDue(), task.getPlanned().plus(Duration.ofDays(1)));
 
-    int attachmentCount = task.getAttachments().size();
+    final int attachmentCount = task.getAttachments().size();
 
     String newChannel = attachment.getChannel() + "-X";
     task.getAttachments().get(0).setChannel(newChannel);

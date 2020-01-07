@@ -111,7 +111,6 @@ class CallbackStateAccTest extends AbstractAccTest {
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
           TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException,
           InvalidStateException, InvalidOwnerException {
-    TaskService taskService = taskanaEngine.getTaskService();
 
     TaskImpl createdTask1 =
         createTask(taskanaEngine.getTaskService(), CallbackState.CALLBACK_PROCESSING_REQUIRED);
@@ -125,6 +124,7 @@ class CallbackStateAccTest extends AbstractAccTest {
         createTask(taskanaEngine.getTaskService(), CallbackState.CALLBACK_PROCESSING_REQUIRED);
     assertEquals(CallbackState.CALLBACK_PROCESSING_REQUIRED, createdTask3.getCallbackState());
 
+    TaskService taskService = taskanaEngine.getTaskService();
     createdTask1 = (TaskImpl) taskService.forceCompleteTask(createdTask1.getId());
     createdTask2 = (TaskImpl) taskService.forceCompleteTask(createdTask2.getId());
     createdTask3 = (TaskImpl) taskService.forceCompleteTask(createdTask3.getId());
@@ -136,12 +136,6 @@ class CallbackStateAccTest extends AbstractAccTest {
     List<String> taskIds =
         new ArrayList<>(
             Arrays.asList(createdTask1.getId(), createdTask2.getId(), createdTask3.getId()));
-    List<String> externalIds =
-        new ArrayList<>(
-            Arrays.asList(
-                createdTask1.getExternalId(),
-                createdTask2.getExternalId(),
-                createdTask3.getExternalId()));
     // delete should fail because callback_state = CALLBACK_PROCESSING_REQUIRED
     BulkOperationResults<String, TaskanaException> bulkResult1 = taskService.deleteTasks(taskIds);
 
@@ -153,6 +147,12 @@ class CallbackStateAccTest extends AbstractAccTest {
       TaskanaException excpt = bulkResult1.getErrorForId(taskId);
       assertEquals("pro.taskana.exceptions.InvalidStateException", excpt.getClass().getName());
     }
+    List<String> externalIds =
+        new ArrayList<>(
+            Arrays.asList(
+                createdTask1.getExternalId(),
+                createdTask2.getExternalId(),
+                createdTask3.getExternalId()));
 
     // now enable deletion by setting callback state to CALLBACK_PROCESSING_COMPLETED
     BulkOperationResults<String, TaskanaException> bulkResult2 =
@@ -341,7 +341,6 @@ class CallbackStateAccTest extends AbstractAccTest {
     // let's set it to CALLBACK_PROCESSING_REQUIRED
     List<TaskSummary> completedTasks =
         taskService.createTaskQuery().stateIn(TaskState.COMPLETED).list();
-    long numberOfCompletedTasksAtStartOfTest = completedTasks.size();
     List<String> externalIds =
         completedTasks.stream().map(TaskSummary::getExternalId).collect(Collectors.toList());
     BulkOperationResults<String, TaskanaException> bulkResultCompleted =
@@ -354,6 +353,7 @@ class CallbackStateAccTest extends AbstractAccTest {
     taskService.forceCompleteTask(claimedTasks.get(4).getTaskId());
     taskService.forceCompleteTask(claimedTasks.get(5).getTaskId());
 
+    long numberOfCompletedTasksAtStartOfTest = completedTasks.size();
     // now lets retrieve those completed tasks that have callback_processing_required
     List<TaskSummary> tasksToBeActedUpon =
         taskService

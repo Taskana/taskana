@@ -970,6 +970,40 @@ public class TaskQueryImpl implements TaskQuery {
     }
   }
 
+  @Override
+  public List<TaskSummary> list(int offset, int limit) {
+    LOGGER.debug("entry to list(offset = {}, limit = {}), this = {}", offset, limit, this);
+    List<TaskSummary> result = new ArrayList<>();
+    try {
+      taskanaEngine.openConnection();
+      checkOpenAndReadPermissionForSpecifiedWorkbaskets();
+      setupAccessIds();
+      setupJoinAndOrderParameters();
+      RowBounds rowBounds = new RowBounds(offset, limit);
+      List<TaskSummaryImpl> tasks =
+          taskanaEngine.getSqlSession().selectList(getLinkToMapperScript(), this, rowBounds);
+      result = taskService.augmentTaskSummariesByContainedSummaries(tasks);
+      return result;
+    } catch (PersistenceException e) {
+      if (e.getMessage().contains("ERRORCODE=-4470")) {
+        TaskanaRuntimeException ex =
+            new TaskanaRuntimeException(
+                "The offset beginning was set over the amount of result-rows.", e.getCause());
+        ex.setStackTrace(e.getStackTrace());
+        throw ex;
+      }
+      throw e;
+    } finally {
+      taskanaEngine.returnConnection();
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug(
+            "exit from list(offset,limit). Returning {} resulting Objects: {} ",
+            result.size(),
+            LoggerUtils.listToString(result));
+      }
+    }
+  }
+
   public String getLinkToMapperScript() {
     return DB.DB2.dbProductId.equals(getDatabaseId()) ? LINK_TO_MAPPER_DB2 : LINK_TO_MAPPER;
   }
@@ -1010,40 +1044,6 @@ public class TaskQueryImpl implements TaskQuery {
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug(
             "Exit from listValues. Returning {} resulting Objects: {} ",
-            result.size(),
-            LoggerUtils.listToString(result));
-      }
-    }
-  }
-
-  @Override
-  public List<TaskSummary> list(int offset, int limit) {
-    LOGGER.debug("entry to list(offset = {}, limit = {}), this = {}", offset, limit, this);
-    List<TaskSummary> result = new ArrayList<>();
-    try {
-      taskanaEngine.openConnection();
-      checkOpenAndReadPermissionForSpecifiedWorkbaskets();
-      setupAccessIds();
-      setupJoinAndOrderParameters();
-      RowBounds rowBounds = new RowBounds(offset, limit);
-      List<TaskSummaryImpl> tasks =
-          taskanaEngine.getSqlSession().selectList(getLinkToMapperScript(), this, rowBounds);
-      result = taskService.augmentTaskSummariesByContainedSummaries(tasks);
-      return result;
-    } catch (PersistenceException e) {
-      if (e.getMessage().contains("ERRORCODE=-4470")) {
-        TaskanaRuntimeException ex =
-            new TaskanaRuntimeException(
-                "The offset beginning was set over the amount of result-rows.", e.getCause());
-        ex.setStackTrace(e.getStackTrace());
-        throw ex;
-      }
-      throw e;
-    } finally {
-      taskanaEngine.returnConnection();
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "exit from list(offset,limit). Returning {} resulting Objects: {} ",
             result.size(),
             LoggerUtils.listToString(result));
       }

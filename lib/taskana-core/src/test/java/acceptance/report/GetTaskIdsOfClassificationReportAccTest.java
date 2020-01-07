@@ -23,9 +23,9 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
 
   @Test
   void testRoleCheck() {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-    List<SelectedItem> selectedItems = new ArrayList<>();
+    final List<SelectedItem> selectedItems = new ArrayList<>();
 
     SelectedItem s1 = new SelectedItem();
     s1.setKey("L10000");
@@ -57,11 +57,11 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfClassificationReport()
       throws InvalidArgumentException, NotAuthorizedException {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-    List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+    final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    List<SelectedItem> selectedItems = new ArrayList<>();
+    final List<SelectedItem> selectedItems = new ArrayList<>();
 
     SelectedItem s1 = new SelectedItem();
     s1.setKey("L10000");
@@ -101,11 +101,11 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfClassificationReportWithAttachments()
       throws InvalidArgumentException, NotAuthorizedException {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-    List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+    final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    List<SelectedItem> selectedItems = new ArrayList<>();
+    final List<SelectedItem> selectedItems = new ArrayList<>();
 
     SelectedItem s1 = new SelectedItem();
     s1.setKey("L10000");
@@ -143,11 +143,11 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfClassificationReportWithDomainFilter()
       throws InvalidArgumentException, NotAuthorizedException {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-    List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+    final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    List<SelectedItem> selectedItems = new ArrayList<>();
+    final List<SelectedItem> selectedItems = new ArrayList<>();
 
     SelectedItem s1 = new SelectedItem();
     s1.setKey("L10000");

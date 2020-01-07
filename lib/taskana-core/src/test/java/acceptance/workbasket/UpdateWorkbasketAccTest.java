@@ -32,7 +32,7 @@ public class UpdateWorkbasketAccTest extends AbstractAccTest {
   public void testUpdateWorkbasket() throws NotAuthorizedException, WorkbasketNotFoundException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     Workbasket workbasket = workbasketService.getWorkbasket("GPK_KSC", "DOMAIN_A");
-    Instant modified = workbasket.getModified();
+    final Instant modified = workbasket.getModified();
 
     workbasket.setName("new name");
     workbasket.setDescription("new description");

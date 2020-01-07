@@ -39,7 +39,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
           InvalidWorkbasketException, WorkbasketAlreadyExistException, DomainNotFoundException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-    int before = workbasketService.createWorkbasketQuery().domainIn("DOMAIN_A").list().size();
+    final int before = workbasketService.createWorkbasketQuery().domainIn("DOMAIN_A").list().size();
 
     Workbasket workbasket = workbasketService.newWorkbasket("NT1234", "DOMAIN_A");
     workbasket.setName("Megabasket");

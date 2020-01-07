@@ -48,8 +48,10 @@ import pro.taskana.sampledata.SampleDataGenerator;
 class TaskControllerIntTest {
 
   private static RestTemplate template;
+
   @Value("${taskana.schemaName:TASKANA}")
   public String schemaName;
+
   @Autowired RestHelper restHelper;
   @Autowired private DataSource dataSource;
 
@@ -191,7 +193,8 @@ class TaskControllerIntTest {
             .getLink(Link.REL_SELF)
             .getHref()
             .endsWith(
-                "/api/v1/tasks?state=READY,CLAIMED&sort-by=por.value&order=desc&page=15&page-size=5"));
+                "/api/v1/tasks?"
+                    + "state=READY,CLAIMED&sort-by=por.value&order=desc&page=15&page-size=5"));
     assertNotNull(response.getBody().getLink(Link.REL_FIRST));
     assertNotNull(response.getBody().getLink(Link.REL_LAST));
     assertNotNull(response.getBody().getLink(Link.REL_PREVIOUS));
@@ -199,8 +202,9 @@ class TaskControllerIntTest {
 
   @Test
   void testGetLastPageSortedByDueWithHiddenTasksRemovedFromResult() {
-    resetDb(); // required because
-               // ClassificationControllerIntTest.testGetQueryByPorSecondPageSortedByType changes
+    resetDb();
+    // required because
+    // ClassificationControllerIntTest.testGetQueryByPorSecondPageSortedByType changes
     // tasks and this test depends on the tasks as they are in sampledata
 
     HttpHeaders headers = new HttpHeaders();
@@ -241,7 +245,7 @@ class TaskControllerIntTest {
   @Test
   void testGetQueryByPorSecondPageSortedByType() {
     resetDb(); // required because
-               // ClassificationControllerIntTest.testGetQueryByPorSecondPageSortedByType changes
+    // ClassificationControllerIntTest.testGetQueryByPorSecondPageSortedByType changes
     // tasks and this test depends on the tasks as they are in sampledata
 
     HttpHeaders headers = new HttpHeaders();
@@ -250,7 +254,9 @@ class TaskControllerIntTest {
     ResponseEntity<TaskSummaryListResource> response =
         template.exchange(
             restHelper.toUrl(Mapping.URL_TASKS)
-                + "?por.company=00&por.system=PASystem&por.instance=00&por.type=VNR&por.value=22334455&sort-by=por.type&order=asc&page=2&page-size=5",
+                + "?por.company=00&por.system=PASystem&por.instance=00&"
+                + "por.type=VNR&por.value=22334455&sort-by=por.type&"
+                + "order=asc&page=2&page-size=5",
             HttpMethod.GET,
             request,
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
@@ -265,7 +271,9 @@ class TaskControllerIntTest {
             .getLink(Link.REL_SELF)
             .getHref()
             .endsWith(
-                "/api/v1/tasks?por.company=00&por.system=PASystem&por.instance=00&por.type=VNR&por.value=22334455&sort-by=por.type&order=asc&page=2&page-size=5"));
+                "/api/v1/tasks?por.company=00&por.system=PASystem&por.instance=00&"
+                    + "por.type=VNR&por.value=22334455&sort-by=por.type&order=asc&"
+                    + "page=2&page-size=5"));
     assertNotNull(response.getBody().getLink(Link.REL_FIRST));
     assertNotNull(response.getBody().getLink(Link.REL_LAST));
     assertNotNull(response.getBody().getLink(Link.REL_PREVIOUS));
@@ -273,12 +281,13 @@ class TaskControllerIntTest {
 
   @Test
   void testGetTaskWithAttachments() throws IOException {
-    URL url = new URL(restHelper.toUrl("/api/v1/tasks/TKI:000000000000000000000000000000000002"));
+    final URL url = new URL(restHelper.toUrl("/api/v1/tasks/"
+        + "TKI:000000000000000000000000000000000002"));
     HttpURLConnection con = (HttpURLConnection) url.openConnection();
     con.setRequestMethod("GET");
     con.setRequestProperty("Authorization", "Basic YWRtaW46YWRtaW4=");
     assertEquals(200, con.getResponseCode());
-    ObjectMapper objectMapper = new ObjectMapper();
+    final ObjectMapper objectMapper = new ObjectMapper();
 
     BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
     String inputLine;
@@ -311,7 +320,7 @@ class TaskControllerIntTest {
     }
     in.close();
     con.disconnect();
-    String originalTask = content.toString();
+    final String originalTask = content.toString();
 
     con = (HttpURLConnection) url.openConnection();
     con.setRequestMethod("PUT");
@@ -398,10 +407,12 @@ class TaskControllerIntTest {
 
   @Test
   void testCreateTaskWithInvalidParameter() throws IOException {
-    String taskToCreateJson =
+    final String taskToCreateJson =
         "{\"classificationKey\":\"L11010\","
-            + "\"workbasketSummaryResource\":{\"workbasketId\":\"WBI:100000000000000000000000000000000004\"},"
-            + "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}";
+            + "\"workbasketSummaryResource\":"
+            + "{\"workbasketId\":\"WBI:100000000000000000000000000000000004\"},"
+            + "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\","
+            + "\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}";
 
     URL url = new URL(restHelper.toUrl(Mapping.URL_TASKS));
     HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -416,10 +427,12 @@ class TaskControllerIntTest {
     assertEquals(400, con.getResponseCode());
     con.disconnect();
 
-    taskToCreateJson =
-        "{\"classificationSummaryResource\":{\"classificationId\":\"CLI:100000000000000000000000000000000004\"},"
+    final String taskToCreateJson2 =
+        "{\"classificationSummaryResource\":"
+            + "{\"classificationId\":\"CLI:100000000000000000000000000000000004\"},"
             + "\"workbasketSummaryResource\":{\"workbasketId\":\"\"},"
-            + "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}";
+            + "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\","
+            + "\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}";
 
     url = new URL(restHelper.toUrl(Mapping.URL_TASKS));
     con = (HttpURLConnection) url.openConnection();
@@ -428,7 +441,7 @@ class TaskControllerIntTest {
     con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
     con.setRequestProperty("Content-Type", "application/json");
     out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
-    out.write(taskToCreateJson);
+    out.write(taskToCreateJson2);
     out.flush();
     out.close();
     assertEquals(400, con.getResponseCode());

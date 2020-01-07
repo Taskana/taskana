@@ -227,7 +227,8 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
     } catch (SQLException e) {
       throw new SystemException(
-          "Method createSqlSessionManager() could not open a connection to the database. No databaseId has been set.",
+          "Method createSqlSessionManager() could not open a connection "
+              + "to the database. No databaseId has been set.",
           e.getCause());
     }
 
@@ -276,7 +277,11 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
     private ThreadLocal<Deque<SqlSessionManager>> sessionStack = new ThreadLocal<>();
 
-    /** @return Stack of SqlSessionManager */
+    /**
+     * Get latest SqlSession from session stack.
+     *
+     * @return Stack of SqlSessionManager
+     */
     private Deque<SqlSessionManager> getSessionStack() {
       Deque<SqlSessionManager> stack = sessionStack.get();
       if (stack == null) {
@@ -316,7 +321,8 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         sessionManager.getConnection().setSchema(taskanaEngineConfiguration.getSchemaName());
       } catch (SQLException e) {
         throw new SystemException(
-            "Method openConnection() could not open a connection to the database. No schema has been created.",
+            "Method openConnection() could not open a connection "
+                + "to the database. No schema has been created.",
             e.getCause());
       }
       if (mode != ConnectionManagementMode.EXPLICIT) {

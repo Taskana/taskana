@@ -24,11 +24,13 @@ import pro.taskana.simplehistory.impl.mappings.HistoryQueryMapper;
 public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
 
   protected static final ThreadLocal<Deque<SqlSessionManager>> SESSION_STACK = new ThreadLocal<>();
+
   private static final String DEFAULT = "default";
-  TaskanaEngineConfiguration taskanaEngineConfiguration;
   protected SqlSessionManager sessionManager;
   protected TransactionFactory transactionFactory;
   protected TaskanaHistory taskanaHistoryService;
+
+  TaskanaEngineConfiguration taskanaEngineConfiguration;
 
   protected TaskanaHistoryEngineImpl(TaskanaEngineConfiguration taskanaEngineConfiguration)
       throws SQLException {
@@ -81,6 +83,7 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
       try {
         this.sessionManager.commit();
       } catch (Exception e) {
+        //ignore
       }
       this.sessionManager.close();
     }

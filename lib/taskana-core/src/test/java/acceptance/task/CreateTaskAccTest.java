@@ -746,7 +746,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
-    Workbasket workbasket = workbasketService.getWorkbasket("USER_1_1", "DOMAIN_A");
+    final Workbasket workbasket = workbasketService.getWorkbasket("USER_1_1", "DOMAIN_A");
 
     Task newTask = taskService.newTask("WBI:100000000000000000000000000000000006");
     newTask.setClassificationKey("T2100");

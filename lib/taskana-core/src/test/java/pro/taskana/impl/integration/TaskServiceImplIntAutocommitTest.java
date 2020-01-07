@@ -204,21 +204,15 @@ class TaskServiceImplIntAutocommitTest {
           ClassificationAlreadyExistException, TaskNotFoundException, InterruptedException,
           TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException,
           WorkbasketAlreadyExistException, DomainNotFoundException, InvalidStateException {
-    Workbasket sourceWB;
-    Workbasket destinationWB;
-    WorkbasketImpl wb;
-    ClassificationImpl classification;
-    TaskImpl task;
-    Task resultTask;
     final int sleepTime = 100;
 
     // Source Workbasket
-    wb = (WorkbasketImpl) workbasketService.newWorkbasket("key1", "DOMAIN_A");
+    WorkbasketImpl wb = (WorkbasketImpl) workbasketService.newWorkbasket("key1", "DOMAIN_A");
     wb.setName("Basic-Workbasket");
     wb.setDescription("Just used as base WB for Task here");
     wb.setType(WorkbasketType.GROUP);
     wb.setOwner("The Tester ID");
-    sourceWB = workbasketService.createWorkbasket(wb);
+    final Workbasket sourceWB = workbasketService.createWorkbasket(wb);
 
     // Destination Workbasket
     wb = (WorkbasketImpl) workbasketService.newWorkbasket("k1", "DOMAIN_A");
@@ -227,17 +221,17 @@ class TaskServiceImplIntAutocommitTest {
     wb.setType(WorkbasketType.CLEARANCE);
     wb.setDescription("Destination WB where Task should be transfered to");
     wb.setOwner("The Tester ID");
-    destinationWB = workbasketService.createWorkbasket(wb);
+    final Workbasket destinationWB = workbasketService.createWorkbasket(wb);
 
     // Classification required for Task
-    classification =
-        (ClassificationImpl) classificationService.newClassification("KEY", "DOMAIN_A", "TASK");
+    ClassificationImpl classification = (ClassificationImpl) classificationService
+        .newClassification("KEY", "DOMAIN_A", "TASK");
     classification.setCategory("EXTERNAL");
     classification.setName("Transfert-Task Classification");
     classificationService.createClassification(classification);
 
     // Task which should be transfered
-    task = (TaskImpl) taskServiceImpl.newTask(sourceWB.getId());
+    TaskImpl task = (TaskImpl) taskServiceImpl.newTask(sourceWB.getId());
     task.setName("Task Name");
     task.setDescription("Task used for transfer Test");
     task.setRead(true);
@@ -248,7 +242,7 @@ class TaskServiceImplIntAutocommitTest {
     task = (TaskImpl) taskServiceImpl.createTask(task);
     Thread.sleep(sleepTime); // Sleep for modification-timestamp
 
-    resultTask = taskServiceImpl.transfer(task.getId(), destinationWB.getId());
+    Task resultTask = taskServiceImpl.transfer(task.getId(), destinationWB.getId());
     assertThat(resultTask.isRead(), equalTo(false));
     assertThat(resultTask.isTransferred(), equalTo(true));
     assertThat(resultTask.getWorkbasketSummary().getId(), equalTo(destinationWB.getId()));

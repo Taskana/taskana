@@ -57,8 +57,8 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
     String newName = "updated Name";
     String newEntryPoint = "updated EntryPoint";
     Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
-    Instant createdBefore = classification.getCreated();
-    Instant modifiedBefore = classification.getModified();
+    final Instant createdBefore = classification.getCreated();
+    final Instant modifiedBefore = classification.getModified();
 
     classification.setApplicationEntryPoint(newEntryPoint);
     classification.setCategory("PROCESS");
@@ -133,8 +133,8 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         classificationService.getClassification(
             beforeTask.getClassificationSummary().getKey(), beforeTask.getDomain());
     classification.setCategory("PROCESS");
-    Instant createdBefore = classification.getCreated();
-    Instant modifiedBefore = classification.getModified();
+    final Instant createdBefore = classification.getCreated();
+    final Instant modifiedBefore = classification.getModified();
     classification = taskanaEngine.getClassificationService().updateClassification(classification);
 
     TaskImpl updatedTask =
@@ -164,7 +164,8 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
       throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
           InterruptedException, InvalidArgumentException {
     Classification base = classificationService.getClassification("T2100", "DOMAIN_A");
-    Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
+    final Classification classification =
+        classificationService.getClassification("T2100", "DOMAIN_A");
 
     // UPDATE BASE
     base.setApplicationEntryPoint("SOME CHANGED POINT");
@@ -218,11 +219,11 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
       throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
           InterruptedException, TaskNotFoundException, InvalidArgumentException {
     String newEntryPoint = "updated EntryPoint";
-    Instant before = Instant.now();
+    final Instant before = Instant.now();
     Classification classification =
         classificationService.getClassification("CLI:100000000000000000000000000000000003");
     Instant createdBefore = classification.getCreated();
-    Instant modifiedBefore = classification.getModified();
+    final Instant modifiedBefore = classification.getModified();
     classification.setPriority(1000);
     classification.setServiceLevel("P15D");
 

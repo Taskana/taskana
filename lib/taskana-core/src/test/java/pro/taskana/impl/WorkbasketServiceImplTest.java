@@ -82,7 +82,7 @@ class WorkbasketServiceImplTest {
     doReturn(expectedWb).when(workbasketServiceSpy).getWorkbasket(any());
     when(internalTaskanaEngineMock.domainExists(any())).thenReturn(true);
 
-    Workbasket actualWb = workbasketServiceSpy.createWorkbasket(expectedWb);
+    final Workbasket actualWb = workbasketServiceSpy.createWorkbasket(expectedWb);
     workbasketServiceSpy.setDistributionTargets(
         expectedWb.getId(), createTestDistributionTargets(distTargetAmount));
 

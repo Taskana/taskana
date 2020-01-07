@@ -47,11 +47,11 @@ class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfCustomFieldValueReport()
       throws InvalidArgumentException, NotAuthorizedException {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-    List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+    final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    List<SelectedItem> selectedItems = new ArrayList<>();
+    final List<SelectedItem> selectedItems = new ArrayList<>();
 
     SelectedItem s1 = new SelectedItem();
     s1.setKey("Geschaeftsstelle A");
@@ -93,13 +93,13 @@ class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfCustomFieldValueReportWithWorkbasketFilter()
       throws InvalidArgumentException, NotAuthorizedException {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-    List<String> workbasketIds =
+    final List<String> workbasketIds =
         Collections.singletonList("WBI:000000000000000000000000000000000001");
-    List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+    final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    List<SelectedItem> selectedItems = new ArrayList<>();
+    final List<SelectedItem> selectedItems = new ArrayList<>();
 
     SelectedItem s1 = new SelectedItem();
     s1.setKey("Geschaeftsstelle A");
@@ -137,11 +137,11 @@ class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfCustomFieldValueReportWithStateFilter()
       throws InvalidArgumentException, NotAuthorizedException {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-    List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+    final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    List<SelectedItem> selectedItems = new ArrayList<>();
+    final List<SelectedItem> selectedItems = new ArrayList<>();
 
     SelectedItem s1 = new SelectedItem();
     s1.setKey("Geschaeftsstelle A");
@@ -184,12 +184,12 @@ class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfCustomFieldValueReportWithCategoryFilter()
       throws InvalidArgumentException, NotAuthorizedException {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-    List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
-    List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+    final List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
+    final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    List<SelectedItem> selectedItems = new ArrayList<>();
+    final List<SelectedItem> selectedItems = new ArrayList<>();
 
     SelectedItem s1 = new SelectedItem();
     s1.setKey("Geschaeftsstelle A");
@@ -227,11 +227,11 @@ class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfCustomFieldValueReportWithDomainFilter()
       throws InvalidArgumentException, NotAuthorizedException {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-    List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+    final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    List<SelectedItem> selectedItems = new ArrayList<>();
+    final List<SelectedItem> selectedItems = new ArrayList<>();
 
     SelectedItem s1 = new SelectedItem();
     s1.setKey("Geschaeftsstelle A");
@@ -269,13 +269,13 @@ class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfCustomFieldValueReportWithCustomFieldValueFilter()
       throws InvalidArgumentException, NotAuthorizedException {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-    Map<CustomField, String> customAttributeFilter = new HashMap<>();
+    final Map<CustomField, String> customAttributeFilter = new HashMap<>();
     customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
-    List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+    final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    List<SelectedItem> selectedItems = new ArrayList<>();
+    final List<SelectedItem> selectedItems = new ArrayList<>();
 
     SelectedItem s1 = new SelectedItem();
     s1.setKey("Geschaeftsstelle A");
@@ -313,11 +313,11 @@ class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAccTest {
   @WithAccessId(userName = "monitor")
   @Test
   void testThrowsExceptionIfSubKeysAreUsed() {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-    List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+    final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    List<SelectedItem> selectedItems = new ArrayList<>();
+    final List<SelectedItem> selectedItems = new ArrayList<>();
 
     SelectedItem s1 = new SelectedItem();
     s1.setKey("Geschaeftsstelle A");

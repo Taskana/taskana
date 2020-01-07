@@ -1,6 +1,7 @@
 package pro.taskana.history.events.task;
 
 import pro.taskana.Task;
+
 /** Event fired if a task is created. */
 public class CreatedEvent extends TaskEvent {
 
