@@ -232,6 +232,27 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
   }
 
   @Override
+  public int hashCode() {
+    return Objects.hash(
+        id,
+        key,
+        name,
+        description,
+        owner,
+        domain,
+        type,
+        custom1,
+        custom2,
+        custom3,
+        custom4,
+        orgLevel1,
+        orgLevel2,
+        orgLevel3,
+        orgLevel4,
+        markedForDeletion);
+  }
+
+  @Override
   public boolean equals(Object obj) {
     if (this == obj) {
       return true;
@@ -256,27 +277,6 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
         && Objects.equals(orgLevel2, other.orgLevel2)
         && Objects.equals(orgLevel3, other.orgLevel3)
         && Objects.equals(orgLevel4, other.orgLevel4);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-        id,
-        key,
-        name,
-        description,
-        owner,
-        domain,
-        type,
-        custom1,
-        custom2,
-        custom3,
-        custom4,
-        orgLevel1,
-        orgLevel2,
-        orgLevel3,
-        orgLevel4,
-        markedForDeletion);
   }
 
   @Override

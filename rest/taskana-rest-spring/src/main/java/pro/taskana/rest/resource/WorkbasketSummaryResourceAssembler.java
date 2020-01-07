@@ -14,10 +14,7 @@ import pro.taskana.rest.WorkbasketController;
 import pro.taskana.rest.resource.PagedResources.PageMetadata;
 import pro.taskana.rest.resource.links.PageLinks;
 
-
-/**
- * Resource assembler for {@link WorkbasketSummaryResource}.
- */
+/** Resource assembler for {@link WorkbasketSummaryResource}. */
 @Component
 public class WorkbasketSummaryResourceAssembler
     extends ResourceAssemblerSupport<WorkbasketSummary, WorkbasketSummaryResource> {

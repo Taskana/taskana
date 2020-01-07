@@ -27,18 +27,6 @@ public class TaskStatusReportBuilderImpl implements TaskStatusReport.Builder {
   }
 
   @Override
-  public TaskStatusReportBuilderImpl stateIn(List<TaskState> states) {
-    this.states = states;
-    return this;
-  }
-
-  @Override
-  public TaskStatusReportBuilderImpl domainIn(List<String> domains) {
-    this.domains = domains;
-    return this;
-  }
-
-  @Override
   public TaskStatusReport buildReport() throws NotAuthorizedException {
     LOGGER.debug("entry to buildReport(), this = {}", this);
     this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
@@ -53,5 +41,17 @@ public class TaskStatusReportBuilderImpl implements TaskStatusReport.Builder {
       this.taskanaEngine.returnConnection();
       LOGGER.debug("exit from buildReport().");
     }
+  }
+
+  @Override
+  public TaskStatusReportBuilderImpl stateIn(List<TaskState> states) {
+    this.states = states;
+    return this;
+  }
+
+  @Override
+  public TaskStatusReportBuilderImpl domainIn(List<String> domains) {
+    this.domains = domains;
+    return this;
   }
 }

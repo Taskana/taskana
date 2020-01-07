@@ -18,8 +18,7 @@ final class SqlReplacer {
   static final DateTimeFormatter DATE_TIME_FORMATTER =
       DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 
-  private SqlReplacer() {
-  }
+  private SqlReplacer() {}
 
   static String getScriptAsSql(String dbProductName, LocalDateTime now, String scriptPath) {
     return parseAndReplace(getScriptBufferedStream(scriptPath), now, dbProductName);

@@ -281,8 +281,8 @@ class TaskControllerIntTest {
 
   @Test
   void testGetTaskWithAttachments() throws IOException {
-    final URL url = new URL(restHelper.toUrl("/api/v1/tasks/"
-        + "TKI:000000000000000000000000000000000002"));
+    final URL url =
+        new URL(restHelper.toUrl("/api/v1/tasks/" + "TKI:000000000000000000000000000000000002"));
     HttpURLConnection con = (HttpURLConnection) url.openConnection();
     con.setRequestMethod("GET");
     con.setRequestProperty("Authorization", "Basic YWRtaW46YWRtaW4=");

@@ -38,9 +38,7 @@ import pro.taskana.jobs.TaskCleanupJob;
 import pro.taskana.jobs.WorkbasketCleanupJob;
 import pro.taskana.transaction.TaskanaTransactionProvider;
 
-/**
- * Test for internal transaction management.
- */
+/** Test for internal transaction management. */
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
     classes = TaskanaConfigTestApplication.class,

@@ -68,6 +68,11 @@ public class TestClassificationQuery implements ClassificationQuery {
   }
 
   @Override
+  public ClassificationQuery modifiedWithin(TimeInterval... modifiedIn) {
+    return this;
+  }
+
+  @Override
   public ClassificationQuery nameIn(String... name) {
     return this;
   }
@@ -115,28 +120,6 @@ public class TestClassificationQuery implements ClassificationQuery {
   @Override
   public ClassificationQuery customAttributeLike(String num, String... custom1Like) {
     return this;
-  }
-
-  @Override
-  public List<ClassificationSummary> list() {
-    List<ClassificationSummary> returnedClassifications = new ArrayList<>();
-    returnedClassifications.addAll(classifications);
-    return returnedClassifications;
-  }
-
-  @Override
-  public List<ClassificationSummary> list(int offset, int limit) {
-    return new ArrayList<>();
-  }
-
-  @Override
-  public ClassificationSummary single() {
-    return null;
-  }
-
-  @Override
-  public long count() {
-    return 0;
   }
 
   @Override
@@ -190,13 +173,30 @@ public class TestClassificationQuery implements ClassificationQuery {
   }
 
   @Override
-  public ClassificationQuery modifiedWithin(TimeInterval... modifiedIn) {
-    return this;
+  public List<ClassificationSummary> list() {
+    List<ClassificationSummary> returnedClassifications = new ArrayList<>();
+    returnedClassifications.addAll(classifications);
+    return returnedClassifications;
+  }
+
+  @Override
+  public List<ClassificationSummary> list(int offset, int limit) {
+    return new ArrayList<>();
   }
 
   @Override
   public List<String> listValues(
       ClassificationQueryColumnName dbColumnName, SortDirection sortDirection) {
     return new ArrayList<>();
+  }
+
+  @Override
+  public ClassificationSummary single() {
+    return null;
+  }
+
+  @Override
+  public long count() {
+    return 0;
   }
 }

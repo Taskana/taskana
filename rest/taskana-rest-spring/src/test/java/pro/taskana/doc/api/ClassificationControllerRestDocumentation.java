@@ -165,8 +165,8 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
               .description("The domain for which this classification is specified"),
           fieldWithPath("key")
               .description(
-              "The key of the classification. This is typically an externally "
-                  + "known code or abbreviation of the classification"),
+                  "The key of the classification. This is typically an externally "
+                      + "known code or abbreviation of the classification"),
           fieldWithPath("name")
               .type("String")
               .description("The name of the classification")

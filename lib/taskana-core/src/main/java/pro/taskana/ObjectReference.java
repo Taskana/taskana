@@ -61,6 +61,11 @@ public class ObjectReference {
   }
 
   @Override
+  public int hashCode() {
+    return Objects.hash(id, company, system, systemInstance, type, value);
+  }
+
+  @Override
   public boolean equals(Object obj) {
     if (this == obj) {
       return true;
@@ -75,11 +80,6 @@ public class ObjectReference {
         && Objects.equals(systemInstance, other.systemInstance)
         && Objects.equals(type, other.type)
         && Objects.equals(value, other.value);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, company, system, systemInstance, type, value);
   }
 
   @Override

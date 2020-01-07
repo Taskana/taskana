@@ -38,19 +38,19 @@ public abstract class FoldableRow<I extends QueryItem> extends SingleRow<I> {
   }
 
   @Override
-  public void updateTotalValue(I item) {
-    super.updateTotalValue(item);
-    foldableRows
-        .computeIfAbsent(calcFoldableRowKey.apply(item), (s) -> buildRow(columnSize))
-        .updateTotalValue(item);
-  }
-
-  @Override
   public void addItem(I item, int index) throws IndexOutOfBoundsException {
     super.addItem(item, index);
     foldableRows
         .computeIfAbsent(calcFoldableRowKey.apply(item), (s) -> buildRow(columnSize))
         .addItem(item, index);
+  }
+
+  @Override
+  public void updateTotalValue(I item) {
+    super.updateTotalValue(item);
+    foldableRows
+        .computeIfAbsent(calcFoldableRowKey.apply(item), (s) -> buildRow(columnSize))
+        .updateTotalValue(item);
   }
 
   public Row<I> getFoldableRow(String key) {

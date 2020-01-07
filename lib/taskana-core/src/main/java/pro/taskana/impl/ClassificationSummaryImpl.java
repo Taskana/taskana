@@ -29,24 +29,6 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
   ClassificationSummaryImpl() {}
 
   @Override
-  public int getPriority() {
-    return priority;
-  }
-
-  public void setPriority(int priority) {
-    this.priority = priority;
-  }
-
-  @Override
-  public String getServiceLevel() {
-    return serviceLevel;
-  }
-
-  public void setServiceLevel(String serviceLevel) {
-    this.serviceLevel = serviceLevel;
-  }
-
-  @Override
   public String getId() {
     return id;
   }
@@ -114,8 +96,18 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
     return parentKey;
   }
 
-  public void setParentKey(String parentKey) {
-    this.parentKey = parentKey;
+  @Override
+  public String getServiceLevel() {
+    return serviceLevel;
+  }
+
+  @Override
+  public int getPriority() {
+    return priority;
+  }
+
+  public void setPriority(int priority) {
+    this.priority = priority;
   }
 
   @Override
@@ -190,6 +182,41 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
     this.custom8 = custom8;
   }
 
+  public void setServiceLevel(String serviceLevel) {
+    this.serviceLevel = serviceLevel;
+  }
+
+  public void setParentKey(String parentKey) {
+    this.parentKey = parentKey;
+  }
+
+  protected boolean canEqual(Object other) {
+    return (other instanceof ClassificationSummaryImpl);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        id,
+        key,
+        category,
+        type,
+        domain,
+        name,
+        parentId,
+        parentKey,
+        priority,
+        serviceLevel,
+        custom1,
+        custom2,
+        custom3,
+        custom4,
+        custom5,
+        custom6,
+        custom7,
+        custom8);
+  }
+
   @Override
   public boolean equals(Object obj) {
 
@@ -222,33 +249,6 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
         && Objects.equals(custom6, other.custom6)
         && Objects.equals(custom7, other.custom7)
         && Objects.equals(custom8, other.custom8);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-        id,
-        key,
-        category,
-        type,
-        domain,
-        name,
-        parentId,
-        parentKey,
-        priority,
-        serviceLevel,
-        custom1,
-        custom2,
-        custom3,
-        custom4,
-        custom5,
-        custom6,
-        custom7,
-        custom8);
-  }
-
-  protected boolean canEqual(Object other) {
-    return (other instanceof ClassificationSummaryImpl);
   }
 
   @Override

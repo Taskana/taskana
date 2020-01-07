@@ -328,8 +328,8 @@ class TaskServiceImplIntExplicitTest {
     createWorkbasketWithSecurity(destinationWB, destinationWB.getOwner(), false, true, true, true);
 
     // Classification required for Task
-    ClassificationImpl classification = (ClassificationImpl) classificationService
-        .newClassification("KEY", "DOMAIN_A", "TASK");
+    ClassificationImpl classification =
+        (ClassificationImpl) classificationService.newClassification("KEY", "DOMAIN_A", "TASK");
     classification.setCategory("EXTERNAL");
     classification.setName("Transfert-Task Classification");
     classificationService.createClassification(classification);
