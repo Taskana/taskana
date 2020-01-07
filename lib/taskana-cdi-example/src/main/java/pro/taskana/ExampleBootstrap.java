@@ -27,13 +27,13 @@ public class ExampleBootstrap {
           ClassificationNotFoundException, InvalidStateException, InvalidOwnerException,
           TaskAlreadyExistException, InvalidArgumentException {
     System.out.println("---------------------------> Start App");
-    Task task = taskanaEjb.getTaskService().newTask(null);
     ObjectReference objRef = new ObjectReference();
     objRef.setCompany("aCompany");
     objRef.setSystem("aSystem");
     objRef.setSystemInstance("anInstance");
     objRef.setType("aType");
     objRef.setValue("aValue");
+    Task task = taskanaEjb.getTaskService().newTask(null);
     task.setPrimaryObjRef(objRef);
     task = taskanaEjb.getTaskService().createTask(task);
     System.out.println("---------------------------> Task started: " + task.getId());

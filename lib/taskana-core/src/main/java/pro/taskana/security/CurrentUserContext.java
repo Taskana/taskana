@@ -139,9 +139,9 @@ public final class CurrentUserContext {
     if (subject != null) {
       Set<Principal> principals = subject.getPrincipals();
       LOGGER.trace("Public principals of caller: {}", principals);
-      for (Principal pC : principals) {
-        if (!(pC instanceof Group)) {
-          String userIdFound = pC.getName();
+      for (Principal principal : principals) {
+        if (!(principal instanceof Group)) {
+          String userIdFound = principal.getName();
           String userIdUsed = userIdFound;
           if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds() && userIdFound != null) {
             userIdUsed = userIdFound.toLowerCase();

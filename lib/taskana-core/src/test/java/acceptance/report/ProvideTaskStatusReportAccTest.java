@@ -150,8 +150,8 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     List<TaskStatusColumnHeader> columnHeaders = report.getColumnHeaders();
     String formatColumnWidth = "| %-7s ";
     String formatFirstColumn = "| %-36s  %-4s ";
-    String formatFirstColumnFirstLine = "| %-29s %12s ";
-    String formatFirstColumnSumLine = "| %-36s  %-5s";
+    final String formatFirstColumnFirstLine = "| %-29s %12s ";
+    final String formatFirstColumnSumLine = "| %-36s  %-5s";
     int reportWidth = columnHeaders.size() * 10 + 46;
 
     StringBuilder builder = new StringBuilder();

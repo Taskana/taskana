@@ -97,7 +97,8 @@ class ClassificationControllerIntTest {
             .getLink(Link.REL_SELF)
             .getHref()
             .endsWith(
-                "/api/v1/classifications?domain=DOMAIN_A&sort-by=key&order=asc&page=2&page-size=5"));
+                "/api/v1/classifications?"
+                    + "domain=DOMAIN_A&sort-by=key&order=asc&page=2&page-size=5"));
     assertNotNull(response.getBody().getLink(Link.REL_FIRST));
     assertNotNull(response.getBody().getLink(Link.REL_LAST));
     assertNotNull(response.getBody().getLink(Link.REL_NEXT));
@@ -108,7 +109,9 @@ class ClassificationControllerIntTest {
   @DirtiesContext
   void testCreateClassification() {
     String newClassification =
-        "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS\",\"name\":\"new classification\",\"type\":\"TASK\"}";
+        "{\"classificationId\":\"\",\"category\":\"MANUAL\","
+            + "\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS\","
+            + "\"name\":\"new classification\",\"type\":\"TASK\"}";
 
     ResponseEntity<ClassificationResource> responseEntity =
         template.exchange(
@@ -121,7 +124,9 @@ class ClassificationControllerIntTest {
     assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
 
     newClassification =
-        "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS_2\",\"name\":\"new classification\",\"type\":\"TASK\"}";
+        "{\"classificationId\":\"\",\"category\":\"MANUAL\","
+            + "\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS_2\","
+            + "\"name\":\"new classification\",\"type\":\"TASK\"}";
 
     responseEntity =
         template.exchange(
@@ -137,7 +142,10 @@ class ClassificationControllerIntTest {
   @DirtiesContext
   void testCreateClassificationWithParentId() {
     String newClassification =
-        "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_B\",\"key\":\"NEW_CLASS_P1\",\"name\":\"new classification\",\"type\":\"TASK\",\"parentId\":\"CLI:200000000000000000000000000000000015\"}";
+        "{\"classificationId\":\"\",\"category\":\"MANUAL\","
+            + "\"domain\":\"DOMAIN_B\",\"key\":\"NEW_CLASS_P1\","
+            + "\"name\":\"new classification\",\"type\":\"TASK\","
+            + "\"parentId\":\"CLI:200000000000000000000000000000000015\"}";
 
     ResponseEntity<ClassificationResource> responseEntity =
         template.exchange(
@@ -152,9 +160,12 @@ class ClassificationControllerIntTest {
 
   @Test
   @DirtiesContext
+  @SuppressWarnings("checkstyle:LineLength")
   void testCreateClassificationWithParentKey() {
     String newClassification =
-        "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_B\",\"key\":\"NEW_CLASS_P2\",\"name\":\"new classification\",\"type\":\"TASK\",\"parentKey\":\"T2100\"}";
+        "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_B\","
+            + "\"key\":\"NEW_CLASS_P2\",\"name\":\"new classification\","
+            + "\"type\":\"TASK\",\"parentKey\":\"T2100\"}";
 
     ResponseEntity<ClassificationResource> responseEntity =
         template.exchange(
@@ -169,10 +180,12 @@ class ClassificationControllerIntTest {
 
   @Test
   @DirtiesContext
-  void testCreateClassificationWithParentKeyInDOMAIN_AShouldCreateAClassificationInRootDomain()
+  void testCreateClassificationWithParentKeyInDomain_aShouldCreateAClassificationInRootDomain()
       throws IOException {
     String newClassification =
-        "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS_P2\",\"name\":\"new classification\",\"type\":\"TASK\",\"parentKey\":\"T2100\"}";
+        "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\","
+            + "\"key\":\"NEW_CLASS_P2\",\"name\":\"new classification\","
+            + "\"type\":\"TASK\",\"parentKey\":\"T2100\"}";
 
     ResponseEntity<ClassificationResource> responseEntity =
         template.exchange(
@@ -207,7 +220,10 @@ class ClassificationControllerIntTest {
   @DirtiesContext
   void testReturn400IfCreateClassificationWithIncompatibleParentIdAndKey() throws IOException {
     String newClassification =
-        "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_B\",\"key\":\"NEW_CLASS_P3\",\"name\":\"new classification\",\"type\":\"TASK\",\"parentId\":\"CLI:200000000000000000000000000000000015\",\"parentKey\":\"T2000\"}";
+        "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_B\","
+            + "\"key\":\"NEW_CLASS_P3\",\"name\":\"new classification\","
+            + "\"type\":\"TASK\",\"parentId\":\"CLI:200000000000000000000000000000000015\","
+            + "\"parentKey\":\"T2000\"}";
 
     HttpClientErrorException e =
         Assertions.assertThrows(
@@ -227,7 +243,9 @@ class ClassificationControllerIntTest {
   @DirtiesContext
   void testCreateClassificationWithClassificationIdReturnsError400() throws IOException {
     String newClassification =
-        "{\"classificationId\":\"someId\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS\",\"name\":\"new classification\",\"type\":\"TASK\"}";
+        "{\"classificationId\":\"someId\",\"category\":\"MANUAL\","
+            + "\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS\","
+            + "\"name\":\"new classification\",\"type\":\"TASK\"}";
 
     HttpClientErrorException e =
         Assertions.assertThrows(

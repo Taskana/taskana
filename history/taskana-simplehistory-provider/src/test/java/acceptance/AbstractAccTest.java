@@ -21,12 +21,12 @@ import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
 /** Set up database for tests. */
 public class AbstractAccTest {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAccTest.class);
-  private static final int POOL_TIME_TO_WAIT = 50;
   public static SimpleHistoryServiceImpl historyService;
   protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
   private static DataSource dataSource = null;
   private static String schemaName = null;
+  private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAccTest.class);
+  private static final int POOL_TIME_TO_WAIT = 50;
 
   protected AbstractAccTest() {
     // not called
@@ -39,7 +39,6 @@ public class AbstractAccTest {
 
   public static void resetDb(String schemaName) throws SQLException {
     DataSource dataSource = getDataSource();
-    DBWriter writer = new DBWriter();
     taskanaEngineConfiguration =
         new TaskanaEngineConfiguration(
             dataSource,
@@ -48,6 +47,7 @@ public class AbstractAccTest {
     historyService = new SimpleHistoryServiceImpl();
     historyService.initialize(taskanaEngineConfiguration);
 
+    DBWriter writer = new DBWriter();
     writer.clearDB(dataSource);
     writer.generateTestData(dataSource);
   }

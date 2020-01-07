@@ -115,14 +115,15 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
     Assertions.assertThrows(
         InvalidArgumentException.class,
         () -> workbasketService.deleteWorkbasket(null),
-        "delete() should have thrown an InvalidArgumentException, when the param ID is null.");
+        "delete() should have thrown an InvalidArgumentException, " + "when the param ID is null.");
 
     // Test EMPTY-Value
 
     Assertions.assertThrows(
         InvalidArgumentException.class,
         () -> workbasketService.deleteWorkbasket(""),
-        "delete() should have thrown an InvalidArgumentException, when the param ID is EMPTY-String.");
+        "delete() should have thrown an InvalidArgumentException, "
+            + "when the param ID is EMPTY-String.");
   }
 
   @WithAccessId(
@@ -206,8 +207,8 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
       throws WorkbasketInUseException, NotAuthorizedException, WorkbasketNotFoundException,
           InvalidArgumentException, InvalidOwnerException, InvalidStateException,
           TaskNotFoundException {
-    Workbasket wb = workbasketService.getWorkbasket("WBI:100000000000000000000000000000000006");
-    boolean markedForDeletion;
+    final Workbasket wb =
+        workbasketService.getWorkbasket("WBI:100000000000000000000000000000000006");
 
     TaskImpl task = (TaskImpl) taskService.getTask("TKI:000000000000000000000000000000000000");
     taskService.forceCompleteTask(task.getId());
@@ -216,10 +217,10 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
     task = (TaskImpl) taskService.getTask("TKI:000000000000000000000000000000000002");
     taskService.forceCompleteTask(task.getId());
 
-    markedForDeletion = workbasketService.deleteWorkbasket(wb.getId());
+    boolean markedForDeletion = workbasketService.deleteWorkbasket(wb.getId());
     assertFalse(markedForDeletion);
 
-    wb = workbasketService.getWorkbasket(wb.getId());
-    assertTrue(wb.isMarkedForDeletion());
+    Workbasket wb2 = workbasketService.getWorkbasket(wb.getId());
+    assertTrue(wb2.isMarkedForDeletion());
   }
 }

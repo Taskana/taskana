@@ -92,29 +92,6 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
   }
 
   @Override
-  public List<String> listValues(
-      ObjectReferenceQueryColumnName columnName, SortDirection sortDirection) {
-    LOGGER.debug("Entry to listValues(dbColumnName={}) this = {}", columnName, this);
-    List<String> result = new ArrayList<>();
-    try {
-      taskanaEngine.openConnection();
-      this.columnName = columnName;
-      this.orderBy.clear();
-      this.addOrderCriteria(columnName.toString(), sortDirection);
-      result = taskanaEngine.getSqlSession().selectList(LINK_TO_VALUEMAPPER, this);
-      return result;
-    } finally {
-      taskanaEngine.returnConnection();
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "Exit from listValues. Returning {} resulting Objects: {} ",
-            result.size(),
-            LoggerUtils.listToString(result));
-      }
-    }
-  }
-
-  @Override
   public List<ObjectReference> list(int offset, int limit) {
     LOGGER.debug("entry to list(offset = {}, limit = {}), this = {}", offset, limit, this);
     List<ObjectReference> result = new ArrayList<>();
@@ -139,6 +116,29 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug(
             "exit from list(offset,limit). Returning {} resulting Objects: {} ",
+            result.size(),
+            LoggerUtils.listToString(result));
+      }
+    }
+  }
+
+  @Override
+  public List<String> listValues(
+      ObjectReferenceQueryColumnName columnName, SortDirection sortDirection) {
+    LOGGER.debug("Entry to listValues(dbColumnName={}) this = {}", columnName, this);
+    List<String> result = new ArrayList<>();
+    try {
+      taskanaEngine.openConnection();
+      this.columnName = columnName;
+      this.orderBy.clear();
+      this.addOrderCriteria(columnName.toString(), sortDirection);
+      result = taskanaEngine.getSqlSession().selectList(LINK_TO_VALUEMAPPER, this);
+      return result;
+    } finally {
+      taskanaEngine.returnConnection();
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug(
+            "Exit from listValues. Returning {} resulting Objects: {} ",
             result.size(),
             LoggerUtils.listToString(result));
       }

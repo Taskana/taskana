@@ -71,7 +71,7 @@ public class PagedResources<T> extends ResourceSupport {
   @JsonProperty("content")
   public Collection<T> getContent() {
     return Collections.unmodifiableCollection(content);
-  };
+  }
 
   /** Class for Page Metadata. */
   public static class PageMetadata {

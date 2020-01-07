@@ -45,8 +45,9 @@ import pro.taskana.security.WithAccessId;
 @ExtendWith(JAASExtension.class)
 class WorkbasketServiceImplIntExplicitTest {
 
-  private static final int SLEEP_TIME = 100;
   static int counter = 0;
+
+  private static final int SLEEP_TIME = 100;
   private DataSource dataSource;
   private TaskanaEngineConfiguration taskanaEngineConfiguration;
   private TaskanaEngine taskanaEngine;

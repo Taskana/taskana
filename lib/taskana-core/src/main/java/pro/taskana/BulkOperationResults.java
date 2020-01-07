@@ -47,7 +47,8 @@ public class BulkOperationResults<K, V> {
       }
     } catch (Exception e) {
       LOGGER.warn(
-          "Can´t add bulkoperation-error, because of a map failure. ID={}, error={} and current failure={}",
+          "Can´t add bulkoperation-error, because of a map failure. "
+              + "ID={}, error={} and current failure={}",
           objectId,
           error,
           e);

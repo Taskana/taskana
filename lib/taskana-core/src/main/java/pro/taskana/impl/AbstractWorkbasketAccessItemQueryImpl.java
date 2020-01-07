@@ -100,30 +100,6 @@ abstract class AbstractWorkbasketAccessItemQueryImpl<
   }
 
   @Override
-  public List<String> listValues(
-      AccessItemQueryColumnName columnName, SortDirection sortDirection) {
-    LOGGER.debug("Entry to listValues(dbColumnName={}) this = {}", columnName, _this());
-    List<String> result = null;
-    try {
-      taskanaEngine.openConnection();
-      this.columnName = columnName;
-      this.orderBy.clear();
-      this.addOrderCriteria(columnName.toString(), sortDirection);
-      result = taskanaEngine.getSqlSession().selectList(getLinkToValueMapper(), _this());
-      return result;
-    } finally {
-      taskanaEngine.returnConnection();
-      if (LOGGER.isDebugEnabled()) {
-        int numberOfResultObjects = result == null ? 0 : result.size();
-        LOGGER.debug(
-            "Exit from listValues. Returning {} resulting Objects: {} ",
-            numberOfResultObjects,
-            LoggerUtils.listToString(result));
-      }
-    }
-  }
-
-  @Override
   public List<T> list(int offset, int limit) {
     LOGGER.debug("entry to list(offset = {}, limit = {}), this = {}", offset, limit, _this());
     List<T> result = new ArrayList<>();
@@ -149,6 +125,30 @@ abstract class AbstractWorkbasketAccessItemQueryImpl<
         LOGGER.debug(
             "exit from list(offset,limit). Returning {} resulting Objects: {} ",
             result.size(),
+            LoggerUtils.listToString(result));
+      }
+    }
+  }
+
+  @Override
+  public List<String> listValues(
+      AccessItemQueryColumnName columnName, SortDirection sortDirection) {
+    LOGGER.debug("Entry to listValues(dbColumnName={}) this = {}", columnName, _this());
+    List<String> result = null;
+    try {
+      taskanaEngine.openConnection();
+      this.columnName = columnName;
+      this.orderBy.clear();
+      this.addOrderCriteria(columnName.toString(), sortDirection);
+      result = taskanaEngine.getSqlSession().selectList(getLinkToValueMapper(), _this());
+      return result;
+    } finally {
+      taskanaEngine.returnConnection();
+      if (LOGGER.isDebugEnabled()) {
+        int numberOfResultObjects = result == null ? 0 : result.size();
+        LOGGER.debug(
+            "Exit from listValues. Returning {} resulting Objects: {} ",
+            numberOfResultObjects,
             LoggerUtils.listToString(result));
       }
     }
@@ -206,6 +206,7 @@ abstract class AbstractWorkbasketAccessItemQueryImpl<
     return columnName;
   }
 
+  @SuppressWarnings("checkstyle:MethodName")
   abstract Q _this();
 
   abstract String getLinkToMapper();

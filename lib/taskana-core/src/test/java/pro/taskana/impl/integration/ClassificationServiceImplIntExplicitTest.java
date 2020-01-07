@@ -46,8 +46,8 @@ import pro.taskana.sampledata.SampleDataGenerator;
  */
 public class ClassificationServiceImplIntExplicitTest {
 
-  private static final String ID_PREFIX_CLASSIFICATION = "CLI";
   static int counter = 0;
+  private static final String ID_PREFIX_CLASSIFICATION = "CLI";
   private DataSource dataSource;
   private ClassificationService classificationService;
   private TaskanaEngineConfiguration taskanaEngineConfiguration;
@@ -90,7 +90,6 @@ public class ClassificationServiceImplIntExplicitTest {
     final String domain = "DOMAIN_A";
     final String key = "dummy-key";
     ClassificationImpl expectedClassification;
-    Classification actualClassification;
 
     // new classification but master existing
     expectedClassification =
@@ -99,7 +98,7 @@ public class ClassificationServiceImplIntExplicitTest {
     expectedClassification.setDomain("DOMAIN_B");
     classificationService.createClassification(expectedClassification);
     connection.commit();
-    actualClassification = classificationService.getClassification(key, "DOMAIN_B");
+    Classification actualClassification = classificationService.getClassification(key, "DOMAIN_B");
     assertThat(actualClassification, not(IsEqual.equalTo(null)));
     assertThat(actualClassification.getCreated(), not(IsEqual.equalTo(null)));
     assertThat(actualClassification.getId(), not(IsEqual.equalTo(null)));

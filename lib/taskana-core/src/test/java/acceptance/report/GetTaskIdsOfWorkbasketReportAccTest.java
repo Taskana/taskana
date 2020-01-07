@@ -41,11 +41,11 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
   @WithAccessId(userName = "monitor")
   @Test
   void testGetTaskIdsOfWorkbasketReport() throws InvalidArgumentException, NotAuthorizedException {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-    List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+    final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    List<SelectedItem> selectedItems = new ArrayList<>();
+    final List<SelectedItem> selectedItems = new ArrayList<>();
 
     SelectedItem s1 = new SelectedItem();
     s1.setKey("USER_1_1");
@@ -86,11 +86,11 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfWorkbasketReportWithExcludedClassifications()
       throws InvalidArgumentException, NotAuthorizedException {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-    List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+    final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    List<SelectedItem> selectedItems = new ArrayList<>();
+    final List<SelectedItem> selectedItems = new ArrayList<>();
 
     SelectedItem s1 = new SelectedItem();
     s1.setKey("USER_1_1");

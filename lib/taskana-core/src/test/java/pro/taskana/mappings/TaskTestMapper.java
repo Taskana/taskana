@@ -12,6 +12,7 @@ import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.persistence.MapTypeHandler;
 
 /** This class contains specific mybatis mappings for task tests. */
+@SuppressWarnings({"checkstyle:LineLength"})
 public interface TaskTestMapper {
 
   @Select("select CUSTOM_ATTRIBUTES from TASK where id = #{taskId}")

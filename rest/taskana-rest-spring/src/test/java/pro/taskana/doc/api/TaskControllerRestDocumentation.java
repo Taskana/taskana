@@ -37,7 +37,8 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
     taskFieldDescriptionsMap.put("taskId", "Unique ID");
     taskFieldDescriptionsMap.put(
         "externalId",
-        "External ID. Can be used to enforce idempotency at task creation. Can identify an external task.");
+        "External ID. Can be used to enforce idempotence at task creation. "
+            + "Can identify an external task.");
     taskFieldDescriptionsMap.put("created", "The creation timestamp of the task in the system.");
     taskFieldDescriptionsMap.put(
         "claimed", "The timestamp of the last claim-operation on the task");
@@ -45,10 +46,12 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
     taskFieldDescriptionsMap.put("modified", "Timestamp of the last modification of the task");
     taskFieldDescriptionsMap.put(
         "planned",
-        "Planned start of the task. The actual completion of the task should be between PLANNED and DUE.");
+        "Planned start of the task. The actual completion of the task "
+            + "should be between PLANNED and DUE.");
     taskFieldDescriptionsMap.put(
         "due",
-        "Timestamp when the task is due. The actual completion of the task should be between PLANNED and DUE.");
+        "Timestamp when the task is due. The actual completion of the task "
+            + "should be between PLANNED and DUE.");
     taskFieldDescriptionsMap.put("name", "The name of the task");
     taskFieldDescriptionsMap.put("creator", "");
     taskFieldDescriptionsMap.put("description", "The description of the task");
@@ -547,8 +550,11 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
                     .contentType("application/hal+json")
                     .content(
                         "{\"classificationSummaryResource\":{\"key\":\"L11010\"},"
-                            + "\"workbasketSummaryResource\":{\"workbasketId\":\"WBI:100000000000000000000000000000000004\"},"
-                            + "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}")
+                            + "\"workbasketSummaryResource\":"
+                            + "{\"workbasketId\":\"WBI:100000000000000000000000000000000004\"},"
+                            + "\"primaryObjRef\":{\"company\":\"MyCompany1\","
+                            + "\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\","
+                            + "\"type\":\"MyType1\",\"value\":\"00000001\"}}")
                     .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isCreated())
             .andDo(
@@ -579,8 +585,11 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
                     .contentType("application/hal+json")
                     .content(
                         "{\"classificationSummaryResource\":{\"key\":\"L11010\"},"
-                            + "\"workbasketSummaryResource\":{\"workbasketId\":\"WBI:100000000000000000000000000000000004\"},"
-                            + "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}")
+                            + "\"workbasketSummaryResource\":"
+                            + "{\"workbasketId\":\"WBI:100000000000000000000000000000000004\"},"
+                            + "\"primaryObjRef\":{\"company\":\"MyCompany1\","
+                            + "\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\","
+                            + "\"type\":\"MyType1\",\"value\":\"00000001\"}}")
                     .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isCreated())
             .andDo(MockMvcRestDocumentation.document("temp"))
@@ -618,8 +627,11 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
                     .contentType("application/hal+json")
                     .content(
                         "{\"classificationSummaryResource\":{\"key\":\"L11010\"},"
-                            + "\"workbasketSummaryResource\":{\"workbasketId\":\"WBI:100000000000000000000000000000000004\"},"
-                            + "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}")
+                            + "\"workbasketSummaryResource\":"
+                            + "{\"workbasketId\":\"WBI:100000000000000000000000000000000004\"},"
+                            + "\"primaryObjRef\":{\"company\":\"MyCompany1\","
+                            + "\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\","
+                            + "\"type\":\"MyType1\",\"value\":\"00000001\"}}")
                     .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isCreated())
             .andDo(MockMvcRestDocumentation.document("temp"))
@@ -657,8 +669,11 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
                     .contentType("application/hal+json")
                     .content(
                         "{\"classificationSummaryResource\":{\"key\":\"L11010\"},"
-                            + "\"workbasketSummaryResource\":{\"workbasketId\":\"WBI:100000000000000000000000000000000004\"},"
-                            + "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}")
+                            + "\"workbasketSummaryResource\":"
+                            + "{\"workbasketId\":\"WBI:100000000000000000000000000000000004\"},"
+                            + "\"primaryObjRef\":{\"company\":\"MyCompany1\","
+                            + "\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\","
+                            + "\"type\":\"MyType1\",\"value\":\"00000001\"}}")
                     .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
             .andExpect(MockMvcResultMatchers.status().isCreated())
             .andDo(

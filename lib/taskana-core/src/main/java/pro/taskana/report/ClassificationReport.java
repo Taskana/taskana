@@ -34,9 +34,9 @@ public class ClassificationReport extends Report<MonitorQueryItem, TimeIntervalC
      * pro.taskana.impl.report.structure.Row}s for the classifications of the attachments of the
      * tasks.
      *
+     * @return the DetailedClassificationReport
      * @throws InvalidArgumentException if the column headers are not initialized
      * @throws NotAuthorizedException if the user has no rights to access the monitor
-     * @return the DetailedClassificationReport
      */
     DetailedClassificationReport buildDetailedReport()
         throws InvalidArgumentException, NotAuthorizedException;

@@ -46,10 +46,14 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
     workbasketFieldDescriptionsMap.put("description", "The description of the workbasket");
     workbasketFieldDescriptionsMap.put(
         "owner",
-        "The owner of the workbasket. The owner is responsible for the on-time completion of all tasks in the workbasket.");
+        "The owner of the workbasket. The owner is responsible for the on-time completion "
+            + "of all tasks in the workbasket.");
     workbasketFieldDescriptionsMap.put(
         "orgLevel1",
-        "The first Org Level (the top one)\nThe Org Level is an association with an org hierarchie level in the organization. The values are used for monitoring and statistical purposes and should reflect the responsibility of the tasks in the workbasket.");
+        "The first Org Level (the top one)\nThe Org Level is an association with an org "
+            + "hierarchie level in the organization. The values are used for monitoring "
+            + "and statistical purposes and should reflect the responsibility of the "
+            + "tasks in the workbasket.");
     workbasketFieldDescriptionsMap.put("orgLevel2", "The second Org Level");
     workbasketFieldDescriptionsMap.put("orgLevel3", "The third Org Level");
     workbasketFieldDescriptionsMap.put("orgLevel4", "The fourth Org Level (the lowest one).");
@@ -75,7 +79,8 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
     accessItemFieldDescriptionsMap.put("accessItems.workbasketKey", "The workbasket key");
     accessItemFieldDescriptionsMap.put(
         "accessItems.accessId",
-        "The access id, this ACL entry refers to. This could be either a userid or a full qualified group id (both lower case)");
+        "The access id, this ACL entry refers to. This could be either a userid or a "
+            + "full qualified group id (both lower case)");
     accessItemFieldDescriptionsMap.put("accessItems.accessName", "");
     accessItemFieldDescriptionsMap.put(
         "accessItems.permRead", "The permission to read the information about the workbasket");
@@ -83,7 +88,8 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
         "accessItems.permOpen", "The permission to view the content (the tasks) of a workbasket");
     accessItemFieldDescriptionsMap.put(
         "accessItems.permAppend",
-        "The permission to add tasks to the workbasket (required for creation and transferring of tasks)");
+        "The permission to add tasks to the workbasket (required for creation "
+            + "and transferring of tasks)");
     accessItemFieldDescriptionsMap.put(
         "accessItems.permTransfer",
         "The permission to transfer tasks (out of the current workbasket)");
@@ -411,7 +417,9 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
                 .contentType("application/json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x")
                 .content(
-                    "{\"key\" : \"asdasdasd\", \"name\" : \"Gruppenpostkorb KSC\", \"domain\" : \"DOMAIN_A\", \"type\" : \"GROUP\",   \"created\" : \"2018-02-01T11:00:00Z\",\r\n"
+                    "{\"key\" : \"asdasdasd\", \"name\" : \"Gruppenpostkorb KSC\", "
+                        + "\"domain\" : \"DOMAIN_A\", \"type\" : \"GROUP\",   "
+                        + "\"created\" : \"2018-02-01T11:00:00Z\",\r\n"
                         + "  \"modified\" : \"2018-02-01T11:00:00Z\"}"))
         .andExpect(MockMvcResultMatchers.status().isCreated())
         .andDo(

@@ -400,28 +400,6 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     }
   }
 
-  public List<String> listValues(
-      WorkbasketQueryColumnName columnName, SortDirection sortDirection) {
-    LOGGER.debug("Entry to listValues(dbColumnName={}) this = {}", columnName, this);
-    List<String> result = new ArrayList<>();
-    try {
-      taskanaEngine.openConnection();
-      this.columnName = columnName;
-      handleCallerRolesAndAccessIds();
-      this.orderBy.clear();
-      result = taskanaEngine.getSqlSession().selectList(LINK_TO_VALUEMAPPER, this);
-      return result;
-    } finally {
-      taskanaEngine.returnConnection();
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "Exit from listValues. Returning {} resulting Objects: {} ",
-            result.size(),
-            LoggerUtils.listToString(result));
-      }
-    }
-  }
-
   @Override
   public List<WorkbasketSummary> list(int offset, int limit) {
     LOGGER.debug("entry to list(offset = {}, limit = {}), this = {}", offset, limit, this);
@@ -448,6 +426,28 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
             "exit from list(offset,limit). Returning {} resulting Objects: {} ",
             workbaskets.size(),
             LoggerUtils.listToString(workbaskets));
+      }
+    }
+  }
+
+  public List<String> listValues(
+      WorkbasketQueryColumnName columnName, SortDirection sortDirection) {
+    LOGGER.debug("Entry to listValues(dbColumnName={}) this = {}", columnName, this);
+    List<String> result = new ArrayList<>();
+    try {
+      taskanaEngine.openConnection();
+      this.columnName = columnName;
+      handleCallerRolesAndAccessIds();
+      this.orderBy.clear();
+      result = taskanaEngine.getSqlSession().selectList(LINK_TO_VALUEMAPPER, this);
+      return result;
+    } finally {
+      taskanaEngine.returnConnection();
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug(
+            "Exit from listValues. Returning {} resulting Objects: {} ",
+            result.size(),
+            LoggerUtils.listToString(result));
       }
     }
   }

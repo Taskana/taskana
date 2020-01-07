@@ -115,30 +115,6 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
   }
 
   @Override
-  public List<String> listValues(
-      AccessItemQueryColumnName columnName, SortDirection sortDirection) {
-    LOGGER.debug("Entry to listValues(dbColumnName={}) this = {}", columnName, this);
-    List<String> result = null;
-    try {
-      taskanaEngine.openConnection();
-      this.columnName = columnName;
-      this.orderBy.clear();
-      this.addOrderCriteria(columnName.toString(), sortDirection);
-      result = taskanaEngine.getSqlSession().selectList(LINK_TO_VALUEMAPPER, this);
-      return result;
-    } finally {
-      taskanaEngine.returnConnection();
-      if (LOGGER.isDebugEnabled()) {
-        int numberOfResultObjects = result == null ? 0 : result.size();
-        LOGGER.debug(
-            "Exit from listValues. Returning {} resulting Objects: {} ",
-            numberOfResultObjects,
-            LoggerUtils.listToString(result));
-      }
-    }
-  }
-
-  @Override
   public List<WorkbasketAccessItem> list(int offset, int limit) {
     LOGGER.debug("entry to list(offset = {}, limit = {}), this = {}", offset, limit, this);
     List<WorkbasketAccessItem> result = new ArrayList<>();
@@ -164,6 +140,30 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
         LOGGER.debug(
             "exit from list(offset,limit). Returning {} resulting Objects: {} ",
             result.size(),
+            LoggerUtils.listToString(result));
+      }
+    }
+  }
+
+  @Override
+  public List<String> listValues(
+      AccessItemQueryColumnName columnName, SortDirection sortDirection) {
+    LOGGER.debug("Entry to listValues(dbColumnName={}) this = {}", columnName, this);
+    List<String> result = null;
+    try {
+      taskanaEngine.openConnection();
+      this.columnName = columnName;
+      this.orderBy.clear();
+      this.addOrderCriteria(columnName.toString(), sortDirection);
+      result = taskanaEngine.getSqlSession().selectList(LINK_TO_VALUEMAPPER, this);
+      return result;
+    } finally {
+      taskanaEngine.returnConnection();
+      if (LOGGER.isDebugEnabled()) {
+        int numberOfResultObjects = result == null ? 0 : result.size();
+        LOGGER.debug(
+            "Exit from listValues. Returning {} resulting Objects: {} ",
+            numberOfResultObjects,
             LoggerUtils.listToString(result));
       }
     }

@@ -70,6 +70,7 @@ public class JobRunner {
     try {
       hostAddress = InetAddress.getLocalHost().getHostAddress();
     } catch (UnknownHostException e) {
+      //ignore
     }
     job.setLockedBy(hostAddress + " - " + Thread.currentThread().getName());
     String owner = hostAddress + " - " + Thread.currentThread().getName();

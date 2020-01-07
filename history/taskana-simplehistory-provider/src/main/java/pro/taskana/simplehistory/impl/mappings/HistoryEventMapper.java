@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import pro.taskana.history.api.TaskanaHistoryEvent;
 
 /** This class is the mybatis mapping of workbaskets. */
+@SuppressWarnings("checkstyle:LineLength")
 public interface HistoryEventMapper {
 
   @Insert(

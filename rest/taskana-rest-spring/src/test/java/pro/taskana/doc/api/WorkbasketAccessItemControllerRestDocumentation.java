@@ -36,7 +36,8 @@ class WorkbasketAccessItemControllerRestDocumentation extends BaseRestDocumentat
         "accessItems.permOpen", "The permission to view the content (the tasks) of a workbasket");
     accessItemFieldDescriptionsMap.put(
         "accessItems.permAppend",
-        "The permission to add tasks to the workbasket (required for creation and tranferring of tasks)");
+        "The permission to add tasks to the workbasket "
+            + "(required for creation and tranferring of tasks)");
     accessItemFieldDescriptionsMap.put(
         "accessItems.permTransfer",
         "The permission to transfer tasks (out of the current workbasket)");

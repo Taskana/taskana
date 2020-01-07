@@ -49,7 +49,8 @@ public class DistributionTargetDeserializer extends StdDeserializer<List<Workbas
         LOGGER.error("The workbasket with the id ' {} ' is not found in database.", id);
       } catch (NotAuthorizedException e) {
         LOGGER.error(
-            "The user misses some required permissions for the workbasket with ID ' {} '. Exception = {}.",
+            "The user misses some required permissions for "
+                + "the workbasket with ID ' {} '. Exception = {}.",
             id,
             e);
       }

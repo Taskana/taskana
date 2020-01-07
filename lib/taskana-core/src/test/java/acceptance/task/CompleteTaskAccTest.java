@@ -168,7 +168,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertNotNull(createdTask);
     assertNull(createdTask.getClaimed());
 
-    Instant before = createdTask.getCreated();
+    final Instant before = createdTask.getCreated();
     Task claimedTask = taskService.claim(createdTask.getId());
 
     assertNotNull(claimedTask.getOwner());
@@ -297,7 +297,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertNotNull(taskBefore);
     assertEquals(TaskState.CLAIMED, taskBefore.getState());
 
-    Instant before = Instant.now();
+    final Instant before = Instant.now();
     Thread.sleep(1);
     Task taskAfter = taskService.forceCancelClaim("TKI:000000000000000000000000000000000043");
 

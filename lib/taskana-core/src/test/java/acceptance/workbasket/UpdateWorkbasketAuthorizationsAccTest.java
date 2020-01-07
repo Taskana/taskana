@@ -56,7 +56,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     accessItem.setPermRead(true);
     accessItem = workbasketService.createWorkbasketAccessItem(accessItem);
 
-    WorkbasketAccessItem newItem = accessItem;
+    final WorkbasketAccessItem newItem = accessItem;
     accessItem.setPermCustom1(true);
     accessItem.setPermAppend(false);
     accessItem.setAccessName("Rojas, Miguel");
@@ -126,11 +126,11 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
           ClassificationNotFoundException, TaskAlreadyExistException {
     TaskService taskService = taskanaEngine.getTaskService();
-    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+    final WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
     String wbKey = "USER_2_1";
     String wbDomain = "DOMAIN_A";
-    String groupName = "group_2";
+    final String groupName = "group_2";
 
     Task newTask = taskService.newTask(wbKey, wbDomain);
     newTask.setClassificationKey("T2100");
@@ -171,7 +171,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     final String wbId = "WBI:100000000000000000000000000000000004";
     List<WorkbasketAccessItem> accessItems = workbasketService.getWorkbasketAccessItems(wbId);
-    int countBefore = accessItems.size();
+    final int countBefore = accessItems.size();
 
     // update some values
     WorkbasketAccessItem item0 = accessItems.get(0);
@@ -231,7 +231,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     final String wbId = "WBI:100000000000000000000000000000000004";
     List<WorkbasketAccessItem> accessItems = workbasketService.getWorkbasketAccessItems(wbId);
-    int countBefore = accessItems.size();
+    final int countBefore = accessItems.size();
 
     // update some values
     WorkbasketAccessItem item0 = accessItems.get(0);

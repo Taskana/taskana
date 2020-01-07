@@ -52,7 +52,9 @@ class WorkbasketDefinitionControllerRestDocumentation extends BaseRestDocumentat
             + "{"
             + "\"distributionTargets\":[], "
             + "\"authorizations\":[], "
-            + "\"workbasket\": {\"name\":\"wbblabla\", \"key\":\"neuerKeyXy\", \"domain\": \"DOMAIN_A\", \"type\":\"GROUP\" , \"workbasketId\":\"gibtsNed\"}"
+            + "\"workbasket\": {\"name\":\"wbblabla\", \"key\":\"neuerKeyXy\", "
+            + "\"domain\": \"DOMAIN_A\", \"type\":\"GROUP\" , "
+            + "\"workbasketId\":\"gibtsNed\"}"
             + "}"
             + "]";
 

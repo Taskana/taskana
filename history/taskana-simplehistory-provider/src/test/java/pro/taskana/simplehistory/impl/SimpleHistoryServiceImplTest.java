@@ -113,7 +113,7 @@ public class SimpleHistoryServiceImplTest {
         AbstractAccTest.createHistoryEvent("wbKey1", "taskId1", "type1", "Some comment", "wbKey2"));
     doReturn(returnList).when(historyQueryMapperMock).queryHistoryEvent(any());
 
-    List<HistoryEventImpl> result = cutSpy.createHistoryQuery().taskIdIn("taskId1").list();
+    final List<HistoryEventImpl> result = cutSpy.createHistoryQuery().taskIdIn("taskId1").list();
 
     verify(taskanaHistoryEngineMock, times(1)).openConnection();
     verify(historyQueryMapperMock, times(1)).queryHistoryEvent(any());

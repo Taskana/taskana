@@ -221,9 +221,9 @@ class WorkbasketServiceImplIntAutocommitTest {
     WorkbasketMapper mapper = session.getMapper(WorkbasketMapper.class);
 
     WorkbasketImpl wb1 = (WorkbasketImpl) basket1;
-    WorkbasketImpl wb2 = (WorkbasketImpl) basket2;
-    WorkbasketImpl wb3 = (WorkbasketImpl) basket3;
-    WorkbasketImpl wb4 = (WorkbasketImpl) basket4;
+    final WorkbasketImpl wb2 = (WorkbasketImpl) basket2;
+    final WorkbasketImpl wb3 = (WorkbasketImpl) basket3;
+    final WorkbasketImpl wb4 = (WorkbasketImpl) basket4;
 
     engineProxy.openConnection();
     wb1.setModified(now.minus(Duration.ofDays(10L)));
