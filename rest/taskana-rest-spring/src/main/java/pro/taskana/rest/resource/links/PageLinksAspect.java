@@ -5,9 +5,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -28,44 +26,46 @@ import pro.taskana.rest.resource.PagedResources.PageMetadata;
 @Aspect
 public class PageLinksAspect {
 
-    @Around("@annotation(pro.taskana.rest.resource.links.PageLinks) && args(data, page, ..)")
-    public ResourceSupport addLinksToPageResource(ProceedingJoinPoint joinPoint, List<?> data, PageMetadata page)
-        throws Throwable {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-            .getRequest();
-        Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
-        PageLinks pageLinks = method.getAnnotation(PageLinks.class);
-        String relativeUrl = pageLinks.value();
-        UriComponentsBuilder original = originalUri(relativeUrl, request);
-        ResourceSupport resourceSupport = (ResourceSupport) joinPoint.proceed();
-        resourceSupport.add(new Link(original.toUriString()).withSelfRel());
-        if (page != null) {
-            resourceSupport.add(new Link(original.replaceQueryParam("page", 1).toUriString()).withRel(Link.REL_FIRST));
-            resourceSupport.add(new Link(original.replaceQueryParam("page", page.getTotalPages()).toUriString())
-                .withRel(Link.REL_LAST));
-            if (page.getNumber() > 1) {
-                resourceSupport
-                    .add(new Link(original.replaceQueryParam("page", page.getNumber() - 1).toUriString())
-                        .withRel(Link.REL_PREVIOUS));
-            }
-            if (page.getNumber() < page.getTotalPages()) {
-                resourceSupport
-                    .add(new Link(original.replaceQueryParam("page", page.getNumber() + 1).toUriString())
-                        .withRel(Link.REL_NEXT));
-            }
-        }
-        return resourceSupport;
+  @Around("@annotation(pro.taskana.rest.resource.links.PageLinks) && args(data, page, ..)")
+  public ResourceSupport addLinksToPageResource(
+      ProceedingJoinPoint joinPoint, List<?> data, PageMetadata page) throws Throwable {
+    HttpServletRequest request =
+        ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+    Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
+    PageLinks pageLinks = method.getAnnotation(PageLinks.class);
+    String relativeUrl = pageLinks.value();
+    UriComponentsBuilder original = originalUri(relativeUrl, request);
+    ResourceSupport resourceSupport = (ResourceSupport) joinPoint.proceed();
+    resourceSupport.add(new Link(original.toUriString()).withSelfRel());
+    if (page != null) {
+      resourceSupport.add(
+          new Link(original.replaceQueryParam("page", 1).toUriString()).withRel(Link.REL_FIRST));
+      resourceSupport.add(
+          new Link(original.replaceQueryParam("page", page.getTotalPages()).toUriString())
+              .withRel(Link.REL_LAST));
+      if (page.getNumber() > 1) {
+        resourceSupport.add(
+            new Link(original.replaceQueryParam("page", page.getNumber() - 1).toUriString())
+                .withRel(Link.REL_PREVIOUS));
+      }
+      if (page.getNumber() < page.getTotalPages()) {
+        resourceSupport.add(
+            new Link(original.replaceQueryParam("page", page.getNumber() + 1).toUriString())
+                .withRel(Link.REL_NEXT));
+      }
     }
+    return resourceSupport;
+  }
 
-    private UriComponentsBuilder originalUri(String relativeUrl, HttpServletRequest request) {
-        //argument to linkTo does not matter as we just want to have the default baseUrl
-        UriComponentsBuilder baseUri = linkTo(PageLinksAspect.class).toUriComponentsBuilder();
-        baseUri.path(relativeUrl);
-        for (Map.Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
-            for (String value : entry.getValue()) {
-                baseUri.queryParam(entry.getKey(), value);
-            }
-        }
-        return baseUri;
+  private UriComponentsBuilder originalUri(String relativeUrl, HttpServletRequest request) {
+    // argument to linkTo does not matter as we just want to have the default baseUrl
+    UriComponentsBuilder baseUri = linkTo(PageLinksAspect.class).toUriComponentsBuilder();
+    baseUri.path(relativeUrl);
+    for (Map.Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
+      for (String value : entry.getValue()) {
+        baseUri.queryParam(entry.getKey(), value);
+      }
     }
+    return baseUri;
+  }
 }

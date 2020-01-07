@@ -10,127 +10,143 @@ import java.util.Map;
  */
 public class ScheduledJob {
 
-    private Integer jobId;
-    private Integer priority;
-    private Instant created;
-    private Instant due;
-    private State state;
-    private String lockedBy;
-    private Instant lockExpires;
-    private Type type;
-    private int retryCount;
-    Map<String, String> arguments;
+  Map<String, String> arguments;
+  private Integer jobId;
+  private Integer priority;
+  private Instant created;
+  private Instant due;
+  private State state;
+  private String lockedBy;
+  private Instant lockExpires;
+  private Type type;
+  private int retryCount;
 
-    public ScheduledJob() {
-        created = Instant.now();
-        state = State.READY;
-        retryCount = 0;
-    }
+  public ScheduledJob() {
+    created = Instant.now();
+    state = State.READY;
+    retryCount = 0;
+  }
 
-    public Integer getJobId() {
-        return jobId;
-    }
+  public Integer getJobId() {
+    return jobId;
+  }
 
-    public void setJobId(Integer jobId) {
-        this.jobId = jobId;
-    }
+  public void setJobId(Integer jobId) {
+    this.jobId = jobId;
+  }
 
-    public Integer getPriority() {
-        return priority;
-    }
+  public Integer getPriority() {
+    return priority;
+  }
 
-    public void setPriority(Integer priority) {
-        this.priority = priority;
-    }
+  public void setPriority(Integer priority) {
+    this.priority = priority;
+  }
 
-    public Instant getCreated() {
-        return created;
-    }
+  public Instant getCreated() {
+    return created;
+  }
 
-    public void setCreated(Instant created) {
-        this.created = created;
-    }
+  public void setCreated(Instant created) {
+    this.created = created;
+  }
 
-    public Instant getDue() {
-        return due;
-    }
+  public Instant getDue() {
+    return due;
+  }
 
-    public void setDue(Instant due) {
-        this.due = due;
-    }
+  public void setDue(Instant due) {
+    this.due = due;
+  }
 
-    public State getState() {
-        return state;
-    }
+  public State getState() {
+    return state;
+  }
 
-    public void setState(State state) {
-        this.state = state;
-    }
+  public void setState(State state) {
+    this.state = state;
+  }
 
-    public String getLockedBy() {
-        return lockedBy;
-    }
+  public String getLockedBy() {
+    return lockedBy;
+  }
 
-    public void setLockedBy(String lockedBy) {
-        this.lockedBy = lockedBy;
-    }
+  public void setLockedBy(String lockedBy) {
+    this.lockedBy = lockedBy;
+  }
 
-    public Instant getLockExpires() {
-        return lockExpires;
-    }
+  public Instant getLockExpires() {
+    return lockExpires;
+  }
 
-    public void setLockExpires(Instant lockExpires) {
-        this.lockExpires = lockExpires;
-    }
+  public void setLockExpires(Instant lockExpires) {
+    this.lockExpires = lockExpires;
+  }
 
-    public Map<String, String> getArguments() {
-        return arguments;
-    }
+  public Map<String, String> getArguments() {
+    return arguments;
+  }
 
-    public void setArguments(Map<String, String> arguments) {
-        this.arguments = arguments;
-    }
+  public void setArguments(Map<String, String> arguments) {
+    this.arguments = arguments;
+  }
 
-    public Type getType() {
-        return type;
-    }
+  public Type getType() {
+    return type;
+  }
 
-    public void setType(Type type) {
-        this.type = type;
-    }
+  public void setType(Type type) {
+    this.type = type;
+  }
 
-    public int getRetryCount() {
-        return retryCount;
-    }
+  public int getRetryCount() {
+    return retryCount;
+  }
 
-    public void setRetryCount(int retryCount) {
-        this.retryCount = retryCount;
-    }
+  public void setRetryCount(int retryCount) {
+    this.retryCount = retryCount;
+  }
 
-    @Override
-    public String toString() {
-        return "ScheduledJob [jobId=" + jobId + ", priority=" + priority + ", created=" + created + ", due=" + due
-            + ", state=" + state + ", lockedBy=" + lockedBy + ", lockExpires=" + lockExpires + ", type=" + type
-            + ", retryCount=" + retryCount + ", arguments=" + arguments + "]";
-    }
+  @Override
+  public String toString() {
+    return "ScheduledJob [jobId="
+        + jobId
+        + ", priority="
+        + priority
+        + ", created="
+        + created
+        + ", due="
+        + due
+        + ", state="
+        + state
+        + ", lockedBy="
+        + lockedBy
+        + ", lockExpires="
+        + lockExpires
+        + ", type="
+        + type
+        + ", retryCount="
+        + retryCount
+        + ", arguments="
+        + arguments
+        + "]";
+  }
 
-    /**
-     * This enum tracks the state of a job.
-     *
-     * @author bbr
-     */
-    public enum State {
-        READY,
-        FAILED
-    }
+  /**
+   * This enum tracks the state of a job.
+   *
+   * @author bbr
+   */
+  public enum State {
+    READY,
+    FAILED
+  }
 
-    /**
-     * This enum controls the type of a job.
-     */
-    public enum Type {
-        CLASSIFICATIONCHANGEDJOB,
-        UPDATETASKSJOB,
-        TASKCLEANUPJOB,
-        WORKBASKETCLEANUPJOB;
-    }
+  /** This enum controls the type of a job. */
+  public enum Type {
+    CLASSIFICATIONCHANGEDJOB,
+    UPDATETASKSJOB,
+    TASKCLEANUPJOB,
+    WORKBASKETCLEANUPJOB;
+  }
 }

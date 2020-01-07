@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,41 +23,37 @@ import pro.taskana.WorkbasketAccessItem;
 @ExtendWith(MockitoExtension.class)
 class WorkbasketAccessItemQueryImplTest {
 
-    @InjectMocks
-    private WorkbasketAccessItemQueryImpl workbasketAccessItemQueryImpl;
+  @InjectMocks private WorkbasketAccessItemQueryImpl workbasketAccessItemQueryImpl;
 
-    @Mock
-    private InternalTaskanaEngine internalTaskanaEngine;
+  @Mock private InternalTaskanaEngine internalTaskanaEngine;
 
-    @Mock
-    private SqlSession sqlSession;
+  @Mock private SqlSession sqlSession;
 
-    @Test
-    void should_ReturnList_when_BuilderIsUsed() {
-        when(internalTaskanaEngine.openAndReturnConnection(any())).thenReturn(new ArrayList<>());
+  @Test
+  void should_ReturnList_when_BuilderIsUsed() {
+    when(internalTaskanaEngine.openAndReturnConnection(any())).thenReturn(new ArrayList<>());
 
-        List<WorkbasketAccessItem> result = workbasketAccessItemQueryImpl.accessIdIn("test", "asd")
-            .list();
-        assertNotNull(result);
-    }
+    List<WorkbasketAccessItem> result =
+        workbasketAccessItemQueryImpl.accessIdIn("test", "asd").list();
+    assertNotNull(result);
+  }
 
-    @Test
-    void should_ReturnListWithOffset_when_BuilderIsUsed() {
-        when(internalTaskanaEngine.getSqlSession()).thenReturn(sqlSession);
-        when(sqlSession.selectList(any(), any(), any())).thenReturn(new ArrayList<>());
+  @Test
+  void should_ReturnListWithOffset_when_BuilderIsUsed() {
+    when(internalTaskanaEngine.getSqlSession()).thenReturn(sqlSession);
+    when(sqlSession.selectList(any(), any(), any())).thenReturn(new ArrayList<>());
 
-        List<WorkbasketAccessItem> result = workbasketAccessItemQueryImpl.accessIdIn("test", "asd")
-            .list(1, 1);
-        assertNotNull(result);
-    }
+    List<WorkbasketAccessItem> result =
+        workbasketAccessItemQueryImpl.accessIdIn("test", "asd").list(1, 1);
+    assertNotNull(result);
+  }
 
-    @Test
-    void should_ReturnOneItem_when_BuilderIsUsed() {
-        when(internalTaskanaEngine.getSqlSession()).thenReturn(sqlSession);
-        when(sqlSession.selectOne(any(), any())).thenReturn(new WorkbasketAccessItemImpl());
+  @Test
+  void should_ReturnOneItem_when_BuilderIsUsed() {
+    when(internalTaskanaEngine.getSqlSession()).thenReturn(sqlSession);
+    when(sqlSession.selectOne(any(), any())).thenReturn(new WorkbasketAccessItemImpl());
 
-        WorkbasketAccessItem result = workbasketAccessItemQueryImpl.accessIdIn("test", "asd")
-            .single();
-        assertNotNull(result);
-    }
+    WorkbasketAccessItem result = workbasketAccessItemQueryImpl.accessIdIn("test", "asd").single();
+    assertNotNull(result);
+  }
 }

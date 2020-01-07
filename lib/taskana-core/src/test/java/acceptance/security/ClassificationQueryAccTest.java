@@ -3,12 +3,11 @@ package acceptance.security;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import acceptance.AbstractAccTest;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import acceptance.AbstractAccTest;
 import pro.taskana.ClassificationService;
 import pro.taskana.ClassificationSummary;
 import pro.taskana.security.JAASExtension;
@@ -22,43 +21,39 @@ import pro.taskana.security.WithAccessId;
 @ExtendWith(JAASExtension.class)
 class ClassificationQueryAccTest extends AbstractAccTest {
 
-    ClassificationQueryAccTest() {
-        super();
-    }
+  ClassificationQueryAccTest() {
+    super();
+  }
 
-    @Test
-    void testFindClassificationsByDomainUnauthenticated() {
-        ClassificationService classificationService = taskanaEngine.getClassificationService();
-        List<ClassificationSummary> classificationSummaryList = classificationService.createClassificationQuery()
-            .domainIn("DOMAIN_A")
-            .list();
+  @Test
+  void testFindClassificationsByDomainUnauthenticated() {
+    ClassificationService classificationService = taskanaEngine.getClassificationService();
+    List<ClassificationSummary> classificationSummaryList =
+        classificationService.createClassificationQuery().domainIn("DOMAIN_A").list();
 
-        assertNotNull(classificationSummaryList);
-        assertEquals(17, classificationSummaryList.size());
-    }
+    assertNotNull(classificationSummaryList);
+    assertEquals(17, classificationSummaryList.size());
+  }
 
-    @WithAccessId(userName = "businessadmin")
-    @Test
-    void testFindClassificationsByDomainBusinessAdmin() {
-        ClassificationService classificationService = taskanaEngine.getClassificationService();
-        List<ClassificationSummary> classificationSummaryList = classificationService.createClassificationQuery()
-            .domainIn("DOMAIN_A")
-            .list();
+  @WithAccessId(userName = "businessadmin")
+  @Test
+  void testFindClassificationsByDomainBusinessAdmin() {
+    ClassificationService classificationService = taskanaEngine.getClassificationService();
+    List<ClassificationSummary> classificationSummaryList =
+        classificationService.createClassificationQuery().domainIn("DOMAIN_A").list();
 
-        assertNotNull(classificationSummaryList);
-        assertEquals(17, classificationSummaryList.size());
-    }
+    assertNotNull(classificationSummaryList);
+    assertEquals(17, classificationSummaryList.size());
+  }
 
-    @WithAccessId(userName = "admin")
-    @Test
-    void testFindClassificationsByDomainAdmin() {
-        ClassificationService classificationService = taskanaEngine.getClassificationService();
-        List<ClassificationSummary> classificationSummaryList = classificationService.createClassificationQuery()
-            .domainIn("DOMAIN_A")
-            .list();
+  @WithAccessId(userName = "admin")
+  @Test
+  void testFindClassificationsByDomainAdmin() {
+    ClassificationService classificationService = taskanaEngine.getClassificationService();
+    List<ClassificationSummary> classificationSummaryList =
+        classificationService.createClassificationQuery().domainIn("DOMAIN_A").list();
 
-        assertNotNull(classificationSummaryList);
-        assertEquals(17, classificationSummaryList.size());
-    }
-
+    assertNotNull(classificationSummaryList);
+    assertEquals(17, classificationSummaryList.size());
+  }
 }

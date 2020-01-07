@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
-
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
@@ -51,336 +50,343 @@ import pro.taskana.mappings.WorkbasketMapper;
 import pro.taskana.security.CurrentUserContext;
 import pro.taskana.taskrouting.TaskRoutingManager;
 
-/**
- * This is the implementation of TaskanaEngine.
- */
+/** This is the implementation of TaskanaEngine. */
 public class TaskanaEngineImpl implements TaskanaEngine {
 
-    private static final String DEFAULT = "default";
-    private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineImpl.class);
-    private static SessionStack sessionStack = new SessionStack();
-    protected TaskanaEngineConfiguration taskanaEngineConfiguration;
-    protected TransactionFactory transactionFactory;
-    protected SqlSessionManager sessionManager;
-    protected ConnectionManagementMode mode = ConnectionManagementMode.PARTICIPATE;
-    protected java.sql.Connection connection = null;
-    private HistoryEventProducer historyEventProducer;
-    private TaskRoutingManager taskRoutingManager;
-    private InternalTaskanaEngineImpl internalTaskanaEngineImpl;
+  private static final String DEFAULT = "default";
+  private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineImpl.class);
+  private static SessionStack sessionStack = new SessionStack();
+  protected TaskanaEngineConfiguration taskanaEngineConfiguration;
+  protected TransactionFactory transactionFactory;
+  protected SqlSessionManager sessionManager;
+  protected ConnectionManagementMode mode = ConnectionManagementMode.PARTICIPATE;
+  protected java.sql.Connection connection = null;
+  private HistoryEventProducer historyEventProducer;
+  private TaskRoutingManager taskRoutingManager;
+  private InternalTaskanaEngineImpl internalTaskanaEngineImpl;
 
-    protected TaskanaEngineImpl(TaskanaEngineConfiguration taskanaEngineConfiguration) {
-        this.taskanaEngineConfiguration = taskanaEngineConfiguration;
-        createTransactionFactory(taskanaEngineConfiguration.getUseManagedTransactions());
-        this.sessionManager = createSqlSessionManager();
-        historyEventProducer = HistoryEventProducer.getInstance(taskanaEngineConfiguration);
-        taskRoutingManager = TaskRoutingManager.getInstance(this);
-        this.internalTaskanaEngineImpl = new InternalTaskanaEngineImpl();
+  protected TaskanaEngineImpl(TaskanaEngineConfiguration taskanaEngineConfiguration) {
+    this.taskanaEngineConfiguration = taskanaEngineConfiguration;
+    createTransactionFactory(taskanaEngineConfiguration.getUseManagedTransactions());
+    this.sessionManager = createSqlSessionManager();
+    historyEventProducer = HistoryEventProducer.getInstance(taskanaEngineConfiguration);
+    taskRoutingManager = TaskRoutingManager.getInstance(this);
+    this.internalTaskanaEngineImpl = new InternalTaskanaEngineImpl();
+  }
+
+  public static TaskanaEngine createTaskanaEngine(
+      TaskanaEngineConfiguration taskanaEngineConfiguration) {
+    return new TaskanaEngineImpl(taskanaEngineConfiguration);
+  }
+
+  @Override
+  public TaskService getTaskService() {
+    SqlSession session = this.sessionManager;
+    return new TaskServiceImpl(
+        internalTaskanaEngineImpl,
+        session.getMapper(TaskMapper.class),
+        session.getMapper(AttachmentMapper.class));
+  }
+
+  @Override
+  public TaskMonitorService getTaskMonitorService() {
+    SqlSession session = this.sessionManager;
+    return new TaskMonitorServiceImpl(
+        internalTaskanaEngineImpl, session.getMapper(TaskMonitorMapper.class));
+  }
+
+  @Override
+  public WorkbasketService getWorkbasketService() {
+    SqlSession session = this.sessionManager;
+    return new WorkbasketServiceImpl(
+        internalTaskanaEngineImpl,
+        session.getMapper(WorkbasketMapper.class),
+        session.getMapper(DistributionTargetMapper.class),
+        session.getMapper(WorkbasketAccessMapper.class));
+  }
+
+  @Override
+  public ClassificationService getClassificationService() {
+    SqlSession session = this.sessionManager;
+    return new ClassificationServiceImpl(
+        internalTaskanaEngineImpl,
+        session.getMapper(ClassificationMapper.class),
+        session.getMapper(TaskMapper.class));
+  }
+
+  @Override
+  public JobService getJobService() {
+    SqlSession session = this.sessionManager;
+    return new JobServiceImpl(internalTaskanaEngineImpl, session.getMapper(JobMapper.class));
+  }
+
+  @Override
+  public TaskanaEngineConfiguration getConfiguration() {
+    return this.taskanaEngineConfiguration;
+  }
+
+  @Override
+  public boolean isHistoryEnabled() {
+    return HistoryEventProducer.isHistoryEnabled();
+  }
+
+  @Override
+  public void setConnectionManagementMode(ConnectionManagementMode mode) {
+    if (this.mode == ConnectionManagementMode.EXPLICIT
+        && connection != null
+        && mode != ConnectionManagementMode.EXPLICIT) {
+      if (sessionManager.isManagedSessionStarted()) {
+        sessionManager.close();
+      }
+      connection = null;
+    }
+    this.mode = mode;
+  }
+
+  @Override
+  public void setConnection(java.sql.Connection connection) throws SQLException {
+    if (connection != null) {
+      this.connection = connection;
+      // disabling auto commit for passed connection in order to gain full control over the
+      // connection management
+      connection.setAutoCommit(false);
+      connection.setSchema(taskanaEngineConfiguration.getSchemaName());
+      mode = ConnectionManagementMode.EXPLICIT;
+      sessionManager.startManagedSession(connection);
+    } else if (this.connection != null) {
+      closeConnection();
+    }
+  }
+
+  @Override
+  public void closeConnection() {
+    if (this.mode == ConnectionManagementMode.EXPLICIT) {
+      this.connection = null;
+      if (sessionManager.isManagedSessionStarted()) {
+        sessionManager.close();
+      }
+      mode = ConnectionManagementMode.PARTICIPATE;
+    }
+  }
+
+  @Override
+  public void checkRoleMembership(TaskanaRole... roles) throws NotAuthorizedException {
+    if (!isUserInRole(roles)) {
+      if (LOGGER.isDebugEnabled()) {
+        String accessIds = LoggerUtils.listToString(CurrentUserContext.getAccessIds());
+        String rolesAsString = Arrays.toString(roles);
+        LOGGER.debug(
+            "Throwing NotAuthorizedException because accessIds {} are not member of roles {}",
+            accessIds,
+            rolesAsString);
+      }
+      throw new NotAuthorizedException(
+          "current user is not member of role(s) " + Arrays.toString(roles),
+          CurrentUserContext.getUserid());
+    }
+  }
+
+  @Override
+  public boolean isUserInRole(TaskanaRole... roles) {
+    if (!getConfiguration().isSecurityEnabled()) {
+      return true;
     }
 
-    public static TaskanaEngine createTaskanaEngine(TaskanaEngineConfiguration taskanaEngineConfiguration) {
-        return new TaskanaEngineImpl(taskanaEngineConfiguration);
+    List<String> accessIds = CurrentUserContext.getAccessIds();
+    Set<String> rolesMembers = new HashSet<>();
+    for (TaskanaRole role : roles) {
+      rolesMembers.addAll(getConfiguration().getRoleMap().get(role));
+    }
+    for (String accessId : accessIds) {
+      if (rolesMembers.contains(accessId)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * This method creates the sqlSessionManager of myBatis. It integrates all the SQL mappers and
+   * sets the databaseId attribute.
+   *
+   * @return a {@link SqlSessionFactory}
+   */
+  protected SqlSessionManager createSqlSessionManager() {
+    Environment environment =
+        new Environment(
+            DEFAULT, this.transactionFactory, taskanaEngineConfiguration.getDatasource());
+    Configuration configuration = new Configuration(environment);
+
+    // set databaseId
+    String databaseProductName;
+    try (Connection con = taskanaEngineConfiguration.getDatasource().getConnection()) {
+      databaseProductName = con.getMetaData().getDatabaseProductName();
+      String databaseProductId = DB.getDatabaseProductId(databaseProductName);
+      configuration.setDatabaseId(databaseProductId);
+
+    } catch (SQLException e) {
+      throw new SystemException(
+          "Method createSqlSessionManager() could not open a connection to the database. No databaseId has been set.",
+          e.getCause());
+    }
+
+    // add mappers
+    configuration.addMapper(TaskMapper.class);
+    configuration.addMapper(TaskMonitorMapper.class);
+    configuration.addMapper(WorkbasketMapper.class);
+    configuration.addMapper(DistributionTargetMapper.class);
+    configuration.addMapper(ClassificationMapper.class);
+    configuration.addMapper(WorkbasketAccessMapper.class);
+    configuration.addMapper(ObjectReferenceMapper.class);
+    configuration.addMapper(QueryMapper.class);
+    configuration.addMapper(AttachmentMapper.class);
+    configuration.addMapper(JobMapper.class);
+    configuration.getTypeHandlerRegistry().register(MapTypeHandler.class);
+    SqlSessionFactory localSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
+    return SqlSessionManager.newInstance(localSessionFactory);
+  }
+
+  /**
+   * creates the MyBatis transaction factory.
+   *
+   * @param useManagedTransactions true, if managed transations should be used. Otherwise false.
+   */
+  private void createTransactionFactory(boolean useManagedTransactions) {
+    if (useManagedTransactions) {
+      this.transactionFactory = new ManagedTransactionFactory();
+    } else {
+      this.transactionFactory = new JdbcTransactionFactory();
+    }
+  }
+
+  /**
+   * With sessionStack, we maintain a Stack of SqlSessionManager objects on a per thread basis.
+   * SqlSessionManager is the MyBatis object that wraps database connections. The purpose of this
+   * stack is to keep track of nested calls. Each external API call is wrapped into
+   * taskanaEngineImpl.openConnection(); ..... taskanaEngineImpl.returnConnection(); calls. In order
+   * to avoid duplicate opening / closing of connections, we use the sessionStack in the following
+   * way: Each time, an openConnection call is received, we push the current sessionManager onto the
+   * stack. On the first call to openConnection, we call sessionManager.startManagedSession() to
+   * open a database connection. On each call to returnConnection() we pop one instance of
+   * sessionManager from the stack. When the stack becomes empty, we close the database connection
+   * by calling sessionManager.close().
+   */
+  private static class SessionStack {
+
+    private ThreadLocal<Deque<SqlSessionManager>> sessionStack = new ThreadLocal<>();
+
+    /** @return Stack of SqlSessionManager */
+    private Deque<SqlSessionManager> getSessionStack() {
+      Deque<SqlSessionManager> stack = sessionStack.get();
+      if (stack == null) {
+        stack = new ArrayDeque<>();
+        sessionStack.set(stack);
+      }
+      return stack;
+    }
+
+    private SqlSessionManager getSessionFromStack() {
+      Deque<SqlSessionManager> stack = getSessionStack();
+      if (stack.isEmpty()) {
+        return null;
+      }
+      return stack.peek();
+    }
+
+    private void pushSessionToStack(SqlSessionManager session) {
+      getSessionStack().push(session);
+    }
+
+    private void popSessionFromStack() {
+      Deque<SqlSessionManager> stack = getSessionStack();
+      if (!stack.isEmpty()) {
+        stack.pop();
+      }
+    }
+  }
+
+  /** Internal Engine for internal operations. */
+  private class InternalTaskanaEngineImpl implements InternalTaskanaEngine {
+
+    @Override
+    public void openConnection() {
+      initSqlSession();
+      try {
+        sessionManager.getConnection().setSchema(taskanaEngineConfiguration.getSchemaName());
+      } catch (SQLException e) {
+        throw new SystemException(
+            "Method openConnection() could not open a connection to the database. No schema has been created.",
+            e.getCause());
+      }
+      if (mode != ConnectionManagementMode.EXPLICIT) {
+        sessionStack.pushSessionToStack(sessionManager);
+      }
     }
 
     @Override
-    public TaskService getTaskService() {
-        SqlSession session = this.sessionManager;
-        return new TaskServiceImpl(internalTaskanaEngineImpl, session.getMapper(TaskMapper.class),
-            session.getMapper(AttachmentMapper.class));
+    public void initSqlSession() {
+      if (mode == ConnectionManagementMode.EXPLICIT && connection == null) {
+        throw new ConnectionNotSetException();
+      } else if (mode != ConnectionManagementMode.EXPLICIT
+          && !sessionManager.isManagedSessionStarted()) {
+        sessionManager.startManagedSession();
+      }
     }
 
     @Override
-    public TaskMonitorService getTaskMonitorService() {
-        SqlSession session = this.sessionManager;
-        return new TaskMonitorServiceImpl(internalTaskanaEngineImpl,
-            session.getMapper(TaskMonitorMapper.class));
-    }
-
-    @Override
-    public WorkbasketService getWorkbasketService() {
-        SqlSession session = this.sessionManager;
-        return new WorkbasketServiceImpl(internalTaskanaEngineImpl,
-            session.getMapper(WorkbasketMapper.class),
-            session.getMapper(DistributionTargetMapper.class),
-            session.getMapper(WorkbasketAccessMapper.class));
-    }
-
-    @Override
-    public ClassificationService getClassificationService() {
-        SqlSession session = this.sessionManager;
-        return new ClassificationServiceImpl(internalTaskanaEngineImpl, session.getMapper(ClassificationMapper.class),
-            session.getMapper(TaskMapper.class));
-    }
-
-    @Override
-    public JobService getJobService() {
-        SqlSession session = this.sessionManager;
-        return new JobServiceImpl(internalTaskanaEngineImpl, session.getMapper(JobMapper.class));
-    }
-
-    @Override
-    public TaskanaEngineConfiguration getConfiguration() {
-        return this.taskanaEngineConfiguration;
-    }
-
-    @Override
-    public boolean isHistoryEnabled() {
-        return HistoryEventProducer.isHistoryEnabled();
-    }
-
-    @Override
-    public void setConnectionManagementMode(ConnectionManagementMode mode) {
-        if (this.mode == ConnectionManagementMode.EXPLICIT && connection != null
-            && mode != ConnectionManagementMode.EXPLICIT) {
-            if (sessionManager.isManagedSessionStarted()) {
-                sessionManager.close();
-            }
-            connection = null;
-        }
-        this.mode = mode;
-    }
-
-    @Override
-    public void setConnection(java.sql.Connection connection) throws SQLException {
-        if (connection != null) {
-            this.connection = connection;
-            // disabling auto commit for passed connection in order to gain full control over the connection management
-            connection.setAutoCommit(false);
-            connection.setSchema(taskanaEngineConfiguration.getSchemaName());
-            mode = ConnectionManagementMode.EXPLICIT;
-            sessionManager.startManagedSession(connection);
-        } else if (this.connection != null) {
-            closeConnection();
-        }
-    }
-
-    @Override
-    public void closeConnection() {
-        if (this.mode == ConnectionManagementMode.EXPLICIT) {
-            this.connection = null;
-            if (sessionManager.isManagedSessionStarted()) {
-                sessionManager.close();
-            }
-            mode = ConnectionManagementMode.PARTICIPATE;
-        }
-    }
-
-    @Override
-    public void checkRoleMembership(TaskanaRole... roles) throws NotAuthorizedException {
-        if (!isUserInRole(roles)) {
-            if (LOGGER.isDebugEnabled()) {
-                String accessIds = LoggerUtils.listToString(CurrentUserContext.getAccessIds());
-                String rolesAsString = Arrays.toString(roles);
-                LOGGER.debug("Throwing NotAuthorizedException because accessIds {} are not member of roles {}",
-                    accessIds,
-                    rolesAsString);
-            }
-            throw new NotAuthorizedException("current user is not member of role(s) " + Arrays.toString(roles),
-                CurrentUserContext.getUserid());
-        }
-    }
-
-    @Override
-    public boolean isUserInRole(TaskanaRole... roles) {
-        if (!getConfiguration().isSecurityEnabled()) {
-            return true;
-        }
-
-        List<String> accessIds = CurrentUserContext.getAccessIds();
-        Set<String> rolesMembers = new HashSet<>();
-        for (TaskanaRole role : roles) {
-            rolesMembers.addAll(getConfiguration().getRoleMap().get(role));
-        }
-        for (String accessId : accessIds) {
-            if (rolesMembers.contains(accessId)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * This method creates the sqlSessionManager of myBatis. It integrates all the SQL mappers and sets the databaseId
-     * attribute.
-     *
-     * @return a {@link SqlSessionFactory}
-     */
-    protected SqlSessionManager createSqlSessionManager() {
-        Environment environment = new Environment(DEFAULT, this.transactionFactory,
-            taskanaEngineConfiguration.getDatasource());
-        Configuration configuration = new Configuration(environment);
-
-        // set databaseId
-        String databaseProductName;
-        try (Connection con = taskanaEngineConfiguration.getDatasource().getConnection()) {
-            databaseProductName = con.getMetaData().getDatabaseProductName();
-            String databaseProductId = DB.getDatabaseProductId(databaseProductName);
-            configuration.setDatabaseId(databaseProductId);
-
-        } catch (SQLException e) {
-            throw new SystemException(
-                "Method createSqlSessionManager() could not open a connection to the database. No databaseId has been set.",
-                e.getCause());
-        }
-
-        // add mappers
-        configuration.addMapper(TaskMapper.class);
-        configuration.addMapper(TaskMonitorMapper.class);
-        configuration.addMapper(WorkbasketMapper.class);
-        configuration.addMapper(DistributionTargetMapper.class);
-        configuration.addMapper(ClassificationMapper.class);
-        configuration.addMapper(WorkbasketAccessMapper.class);
-        configuration.addMapper(ObjectReferenceMapper.class);
-        configuration.addMapper(QueryMapper.class);
-        configuration.addMapper(AttachmentMapper.class);
-        configuration.addMapper(JobMapper.class);
-        configuration.getTypeHandlerRegistry().register(MapTypeHandler.class);
-        SqlSessionFactory localSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
-        return SqlSessionManager.newInstance(localSessionFactory);
-    }
-
-    /**
-     * creates the MyBatis transaction factory.
-     *
-     * @param useManagedTransactions true, if managed transations should be used. Otherwise false.
-     */
-    private void createTransactionFactory(boolean useManagedTransactions) {
-        if (useManagedTransactions) {
-            this.transactionFactory = new ManagedTransactionFactory();
-        } else {
-            this.transactionFactory = new JdbcTransactionFactory();
-        }
-    }
-
-    /**
-     * Internal Engine for internal operations.
-     */
-    private class InternalTaskanaEngineImpl implements InternalTaskanaEngine {
-
-        @Override
-        public void openConnection() {
-            initSqlSession();
+    public void returnConnection() {
+      if (mode != ConnectionManagementMode.EXPLICIT) {
+        sessionStack.popSessionFromStack();
+        if (sessionStack.getSessionStack().isEmpty()
+            && sessionManager != null
+            && sessionManager.isManagedSessionStarted()) {
+          if (mode == ConnectionManagementMode.AUTOCOMMIT) {
             try {
-                sessionManager.getConnection().setSchema(taskanaEngineConfiguration.getSchemaName());
-            } catch (SQLException e) {
-                throw new SystemException(
-                    "Method openConnection() could not open a connection to the database. No schema has been created.",
-                    e.getCause());
+              sessionManager.commit();
+            } catch (Exception e) {
+              throw new AutocommitFailedException(e.getCause());
             }
-            if (mode != ConnectionManagementMode.EXPLICIT) {
-                sessionStack.pushSessionToStack(sessionManager);
-            }
+          }
+          sessionManager.close();
         }
-
-        @Override
-        public void initSqlSession() {
-            if (mode == ConnectionManagementMode.EXPLICIT && connection == null) {
-                throw new ConnectionNotSetException();
-            } else if (mode != ConnectionManagementMode.EXPLICIT && !sessionManager.isManagedSessionStarted()) {
-                sessionManager.startManagedSession();
-            }
-        }
-
-        @Override
-        public void returnConnection() {
-            if (mode != ConnectionManagementMode.EXPLICIT) {
-                sessionStack.popSessionFromStack();
-                if (sessionStack.getSessionStack().isEmpty()
-                    && sessionManager != null && sessionManager.isManagedSessionStarted()) {
-                    if (mode == ConnectionManagementMode.AUTOCOMMIT) {
-                        try {
-                            sessionManager.commit();
-                        } catch (Exception e) {
-                            throw new AutocommitFailedException(e.getCause());
-                        }
-                    }
-                    sessionManager.close();
-                }
-            }
-        }
-
-        @Override
-        public <T> T openAndReturnConnection(Supplier<T> supplier) {
-            try {
-                openConnection();
-                return supplier.get();
-            } finally {
-                // will be called before return & in case of exceptions
-                returnConnection();
-            }
-        }
-
-        @Override
-        public boolean domainExists(String domain) {
-            return getConfiguration().getDomains().contains(domain);
-        }
-
-        @Override
-        public SqlSession getSqlSession() {
-            return sessionManager;
-        }
-
-        @Override
-        public TaskanaEngine getEngine() {
-            return TaskanaEngineImpl.this;
-        }
-
-        @Override
-        public HistoryEventProducer getHistoryEventProducer() {
-            return historyEventProducer;
-        }
-
-        @Override
-        public TaskRoutingManager getTaskRoutingManager() {
-           return taskRoutingManager;
-        }
-
+      }
     }
 
-    /**
-     * With sessionStack, we maintain a Stack of SqlSessionManager objects on a per thread basis. SqlSessionManager is
-     * the MyBatis object that wraps database connections. The purpose of this stack is to keep track of nested calls.
-     * Each external API call is wrapped into taskanaEngineImpl.openConnection(); .....
-     * taskanaEngineImpl.returnConnection(); calls. In order to avoid duplicate opening / closing of connections, we use
-     * the sessionStack in the following way: Each time, an openConnection call is received, we push the current
-     * sessionManager onto the stack. On the first call to openConnection, we call sessionManager.startManagedSession()
-     * to open a database connection. On each call to returnConnection() we pop one instance of sessionManager from the
-     * stack. When the stack becomes empty, we close the database connection by calling sessionManager.close().
-     */
-    private static class SessionStack {
-
-        private ThreadLocal<Deque<SqlSessionManager>> sessionStack = new ThreadLocal<>();
-
-        /**
-         *
-         * @return Stack of SqlSessionManager
-         */
-        private Deque<SqlSessionManager> getSessionStack() {
-            Deque<SqlSessionManager> stack = sessionStack.get();
-            if (stack == null) {
-                stack = new ArrayDeque<>();
-                sessionStack.set(stack);
-            }
-            return stack;
-        }
-
-        private SqlSessionManager getSessionFromStack() {
-            Deque<SqlSessionManager> stack = getSessionStack();
-            if (stack.isEmpty()) {
-                return null;
-            }
-            return stack.peek();
-        }
-
-        private void pushSessionToStack(SqlSessionManager session) {
-            getSessionStack().push(session);
-        }
-
-        private void popSessionFromStack() {
-            Deque<SqlSessionManager> stack = getSessionStack();
-            if (!stack.isEmpty()) {
-                stack.pop();
-            }
-        }
+    @Override
+    public <T> T openAndReturnConnection(Supplier<T> supplier) {
+      try {
+        openConnection();
+        return supplier.get();
+      } finally {
+        // will be called before return & in case of exceptions
+        returnConnection();
+      }
     }
+
+    @Override
+    public boolean domainExists(String domain) {
+      return getConfiguration().getDomains().contains(domain);
+    }
+
+    @Override
+    public SqlSession getSqlSession() {
+      return sessionManager;
+    }
+
+    @Override
+    public TaskanaEngine getEngine() {
+      return TaskanaEngineImpl.this;
+    }
+
+    @Override
+    public HistoryEventProducer getHistoryEventProducer() {
+      return historyEventProducer;
+    }
+
+    @Override
+    public TaskRoutingManager getTaskRoutingManager() {
+      return taskRoutingManager;
+    }
+  }
 }

@@ -1,7 +1,6 @@
 package pro.taskana.impl;
 
 import java.lang.reflect.Field;
-
 import org.apache.ibatis.session.SqlSession;
 
 import pro.taskana.TaskanaEngine;
@@ -13,24 +12,24 @@ import pro.taskana.TaskanaEngine;
  */
 public class TaskanaEngineProxyForTest {
 
-    private InternalTaskanaEngine engine;
+  private InternalTaskanaEngine engine;
 
-    public TaskanaEngineProxyForTest(TaskanaEngine taskanaEngine) throws NoSuchFieldException, IllegalAccessException {
-        Field internal = TaskanaEngineImpl.class.getDeclaredField("internalTaskanaEngineImpl");
-        internal.setAccessible(true);
-        engine = (InternalTaskanaEngine) internal.get(taskanaEngine);
-    }
+  public TaskanaEngineProxyForTest(TaskanaEngine taskanaEngine)
+      throws NoSuchFieldException, IllegalAccessException {
+    Field internal = TaskanaEngineImpl.class.getDeclaredField("internalTaskanaEngineImpl");
+    internal.setAccessible(true);
+    engine = (InternalTaskanaEngine) internal.get(taskanaEngine);
+  }
 
-    public SqlSession getSqlSession() {
-        return engine.getSqlSession();
-    }
+  public SqlSession getSqlSession() {
+    return engine.getSqlSession();
+  }
 
-    public void openConnection() {
-        engine.openConnection();
-    }
+  public void openConnection() {
+    engine.openConnection();
+  }
 
-    public void returnConnection() {
-        engine.returnConnection();
-    }
-
+  public void returnConnection() {
+    engine.returnConnection();
+  }
 }

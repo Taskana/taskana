@@ -13,33 +13,30 @@ import pro.taskana.RestHelper;
 import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.rest.resource.ClassificationSummaryListResource;
 
-/**
- * Test general Exception Handling.
- */
-
+/** Test general Exception Handling. */
 @TaskanaSpringBootTest
 class GeneralExceptionHandlingTest {
 
-    @Autowired RestHelper restHelper;
+  private static RestTemplate template;
+  @Autowired RestHelper restHelper;
 
-    private static RestTemplate template;
+  @BeforeAll
+  static void init() {
+    template = RestHelper.getRestTemplate();
+  }
 
-    @BeforeAll
-    static void init() {
-        template = RestHelper.getRestTemplate();
-    }
+  @Test
+  void testDeleteNonExisitingClassificationExceptionIsLogged() {
 
-    @Test
-    void testDeleteNonExisitingClassificationExceptionIsLogged() {
-
-        HttpClientErrorException ex = Assertions.assertThrows(HttpClientErrorException.class,
+    HttpClientErrorException ex =
+        Assertions.assertThrows(
+            HttpClientErrorException.class,
             () ->
                 template.exchange(
-                    restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, "non-existing-id"), HttpMethod.DELETE,
+                    restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, "non-existing-id"),
+                    HttpMethod.DELETE,
                     restHelper.defaultRequest(),
-                    ParameterizedTypeReference.forType(ClassificationSummaryListResource.class)
-                ));
-        Assertions.assertTrue(
-            ex.getResponseBodyAsString().contains("non-existing-id"));
-    }
+                    ParameterizedTypeReference.forType(ClassificationSummaryListResource.class)));
+    Assertions.assertTrue(ex.getResponseBodyAsString().contains("non-existing-id"));
+  }
 }

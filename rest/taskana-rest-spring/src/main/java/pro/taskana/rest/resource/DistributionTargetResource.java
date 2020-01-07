@@ -4,16 +4,13 @@ import org.springframework.hateoas.core.Relation;
 
 import pro.taskana.WorkbasketSummary;
 
-/**
- * Resource class for a distribution target based on {@link pro.taskana.WorkbasketSummary}.
- */
+/** Resource class for a distribution target based on {@link pro.taskana.WorkbasketSummary}. */
 @Relation(collectionRelation = "distributionTargets")
 public class DistributionTargetResource extends WorkbasketSummaryResource {
 
-    DistributionTargetResource() {
-    }
+  DistributionTargetResource() {}
 
-    DistributionTargetResource(WorkbasketSummary workbasketSummary) {
-        super(workbasketSummary);
-    }
+  DistributionTargetResource(WorkbasketSummary workbasketSummary) {
+    super(workbasketSummary);
+  }
 }

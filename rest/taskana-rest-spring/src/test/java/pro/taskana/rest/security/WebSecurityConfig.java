@@ -1,7 +1,6 @@
 package pro.taskana.rest.security;
 
 import java.util.Collections;
-
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,65 +20,66 @@ import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-/**
- * Default basic configuration for taskana web example.
- */
+/** Default basic configuration for taskana web example. */
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+  @Bean
+  public JaasAuthenticationProvider jaasAuthProvider() {
+    JaasAuthenticationProvider authenticationProvider = new JaasAuthenticationProvider();
+    authenticationProvider.setAuthorityGranters(
+        new AuthorityGranter[] {p -> Collections.singleton(p.getName())});
+    authenticationProvider.setCallbackHandlers(
+        new JaasAuthenticationCallbackHandler[] {
+          new JaasNameCallbackHandler(), new JaasPasswordCallbackHandler()
+        });
+    authenticationProvider.setLoginContextName("taskana");
+    authenticationProvider.setLoginConfig(new ClassPathResource("pss_jaas.config"));
+    return authenticationProvider;
+  }
 
-        http.authorizeRequests()
-            .and()
-            .csrf()
-            .disable()
-            .httpBasic()
-            .and()
-            .authenticationProvider(jaasAuthProvider())
-            .authorizeRequests()
-            .and()
-            .addFilter(new JaasApiIntegrationFilter())
-            .authorizeRequests()
-            .anyRequest()
-            .fullyAuthenticated();
-    }
+  @Bean
+  public WebMvcConfigurer corsConfigurer() {
+    return new WebMvcConfigurer() {
 
-    @Bean
-    public JaasAuthenticationProvider jaasAuthProvider() {
-        JaasAuthenticationProvider authenticationProvider = new JaasAuthenticationProvider();
-        authenticationProvider.setAuthorityGranters(new AuthorityGranter[] {p -> Collections.singleton(p.getName())});
-        authenticationProvider.setCallbackHandlers(new JaasAuthenticationCallbackHandler[] {
-            new JaasNameCallbackHandler(), new JaasPasswordCallbackHandler()});
-        authenticationProvider.setLoginContextName("taskana");
-        authenticationProvider.setLoginConfig(new ClassPathResource("pss_jaas.config"));
-        return authenticationProvider;
-    }
+      @Override
+      public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**").allowedOrigins("*");
+      }
+    };
+  }
 
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
+  @Bean
+  public FilterRegistrationBean<CorsFilter> corsFilter() {
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    CorsConfiguration config = new CorsConfiguration();
+    config.setAllowCredentials(true);
+    config.addAllowedOrigin("*");
+    config.addAllowedHeader("*");
+    config.addAllowedMethod("*");
+    config.addAllowedMethod("POST");
+    source.registerCorsConfiguration("/**", config);
+    FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(source));
+    bean.setOrder(0);
+    return bean;
+  }
 
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("*");
-            }
-        };
-    }
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
 
-    @Bean
-    public FilterRegistrationBean<CorsFilter> corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.addAllowedOrigin("*");
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
-        config.addAllowedMethod("POST");
-        source.registerCorsConfiguration("/**", config);
-        FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(source));
-        bean.setOrder(0);
-        return bean;
-    }
+    http.authorizeRequests()
+        .and()
+        .csrf()
+        .disable()
+        .httpBasic()
+        .and()
+        .authenticationProvider(jaasAuthProvider())
+        .authorizeRequests()
+        .and()
+        .addFilter(new JaasApiIntegrationFilter())
+        .authorizeRequests()
+        .anyRequest()
+        .fullyAuthenticated();
+  }
 }

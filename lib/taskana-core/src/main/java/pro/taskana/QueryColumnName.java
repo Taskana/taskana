@@ -5,5 +5,4 @@ package pro.taskana;
  *
  * @author jsa
  */
-public interface QueryColumnName {
-}
+public interface QueryColumnName {}

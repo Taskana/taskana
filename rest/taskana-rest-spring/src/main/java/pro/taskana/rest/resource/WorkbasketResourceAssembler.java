@@ -4,7 +4,6 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import java.time.Instant;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,43 +16,51 @@ import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.rest.WorkbasketController;
 
 /**
- * Transforms {@link Workbasket} to its resource counterpart {@link WorkbasketResource} and vice versa.
+ * Transforms {@link Workbasket} to its resource counterpart {@link WorkbasketResource} and vice
+ * versa.
  */
 @Component
 public class WorkbasketResourceAssembler {
 
-    @Autowired
-    private WorkbasketService workbasketService;
+  @Autowired private WorkbasketService workbasketService;
 
-    public WorkbasketResource toResource(Workbasket wb) throws NotAuthorizedException, WorkbasketNotFoundException {
-        WorkbasketResource resource = new WorkbasketResource(wb);
-        return addLinks(resource, wb);
+  public WorkbasketResource toResource(Workbasket wb)
+      throws NotAuthorizedException, WorkbasketNotFoundException {
+    WorkbasketResource resource = new WorkbasketResource(wb);
+    return addLinks(resource, wb);
+  }
+
+  public Workbasket toModel(WorkbasketResource wbResource) {
+    WorkbasketImpl workbasket =
+        (WorkbasketImpl) workbasketService.newWorkbasket(wbResource.key, wbResource.domain);
+    BeanUtils.copyProperties(wbResource, workbasket);
+
+    workbasket.setId(wbResource.workbasketId);
+    if (wbResource.modified != null) {
+      workbasket.setModified(Instant.parse(wbResource.modified));
     }
-
-    public Workbasket toModel(WorkbasketResource wbResource) {
-        WorkbasketImpl workbasket = (WorkbasketImpl) workbasketService.newWorkbasket(wbResource.key, wbResource.domain);
-        BeanUtils.copyProperties(wbResource, workbasket);
-
-        workbasket.setId(wbResource.workbasketId);
-        if (wbResource.modified != null) {
-            workbasket.setModified(Instant.parse(wbResource.modified));
-        }
-        if (wbResource.created != null) {
-            workbasket.setCreated(Instant.parse(wbResource.created));
-        }
-        return workbasket;
+    if (wbResource.created != null) {
+      workbasket.setCreated(Instant.parse(wbResource.created));
     }
+    return workbasket;
+  }
 
-    private WorkbasketResource addLinks(WorkbasketResource resource, Workbasket wb)
-        throws NotAuthorizedException, WorkbasketNotFoundException {
-        resource.add(linkTo(methodOn(WorkbasketController.class).getWorkbasket(wb.getId())).withSelfRel());
-        resource.add(linkTo(methodOn(WorkbasketController.class).getDistributionTargets(wb.getId()))
+  private WorkbasketResource addLinks(WorkbasketResource resource, Workbasket wb)
+      throws NotAuthorizedException, WorkbasketNotFoundException {
+    resource.add(
+        linkTo(methodOn(WorkbasketController.class).getWorkbasket(wb.getId())).withSelfRel());
+    resource.add(
+        linkTo(methodOn(WorkbasketController.class).getDistributionTargets(wb.getId()))
             .withRel("distributionTargets"));
-        resource.add(linkTo(methodOn(WorkbasketController.class).getWorkbasketAccessItems(wb.getId()))
+    resource.add(
+        linkTo(methodOn(WorkbasketController.class).getWorkbasketAccessItems(wb.getId()))
             .withRel("accessItems"));
-        resource.add(linkTo(WorkbasketController.class).withRel("allWorkbaskets"));
-        resource.add(linkTo(methodOn(WorkbasketController.class).removeDistributionTargetForWorkbasketId(wb.getId()))
+    resource.add(linkTo(WorkbasketController.class).withRel("allWorkbaskets"));
+    resource.add(
+        linkTo(
+                methodOn(WorkbasketController.class)
+                    .removeDistributionTargetForWorkbasketId(wb.getId()))
             .withRel("removeDistributionTargets"));
-        return resource;
-    }
+    return resource;
+  }
 }

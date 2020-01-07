@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Iterator;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,105 +24,112 @@ import pro.taskana.rest.resource.DistributionTargetListResource;
 import pro.taskana.rest.resource.DistributionTargetResource;
 import pro.taskana.rest.resource.WorkbasketSummaryListResource;
 
-/**
- * Test WorkbasketController.
- */
-
+/** Test WorkbasketController. */
 @TaskanaSpringBootTest
 class WorkbasketControllerIntTest {
 
-    @Autowired RestHelper restHelper;
+  private static RestTemplate template;
+  @Autowired RestHelper restHelper;
 
-    private static RestTemplate template;
+  @BeforeAll
+  static void init() {
+    template = RestHelper.getRestTemplate();
+  }
 
-    @BeforeAll
-    static void init() {
-        template = RestHelper.getRestTemplate();
-    }
-
-    @Test
-    void testGetAllWorkbaskets() {
-        ResponseEntity<WorkbasketSummaryListResource> response = template.exchange(
-            restHelper.toUrl(Mapping.URL_WORKBASKET), HttpMethod.GET, restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(WorkbasketSummaryListResource.class));
-        assertNotNull(response.getBody().getLink(Link.REL_SELF));
-    }
-
-    @Test
-    void testGetAllWorkbasketsBusinessAdminHasOpenPermission() {
-        ResponseEntity<WorkbasketSummaryListResource> response = template.exchange(
-            restHelper.toUrl(Mapping.URL_WORKBASKET) + "?required-permission=OPEN", HttpMethod.GET,
+  @Test
+  void testGetAllWorkbaskets() {
+    ResponseEntity<WorkbasketSummaryListResource> response =
+        template.exchange(
+            restHelper.toUrl(Mapping.URL_WORKBASKET),
+            HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(WorkbasketSummaryListResource.class));
-        assertNotNull(response.getBody().getLink(Link.REL_SELF));
-        assertEquals(3, response.getBody().getContent().size());
-    }
+    assertNotNull(response.getBody().getLink(Link.REL_SELF));
+  }
 
-    @Test
-    void testGetAllWorkbasketsKeepingFilters() {
-        String parameters = "?type=PERSONAL&sort-by=key&order=desc";
-        ResponseEntity<WorkbasketSummaryListResource> response = template.exchange(
-            restHelper.toUrl(Mapping.URL_WORKBASKET) + parameters, HttpMethod.GET, restHelper.defaultRequest(),
+  @Test
+  void testGetAllWorkbasketsBusinessAdminHasOpenPermission() {
+    ResponseEntity<WorkbasketSummaryListResource> response =
+        template.exchange(
+            restHelper.toUrl(Mapping.URL_WORKBASKET) + "?required-permission=OPEN",
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(WorkbasketSummaryListResource.class));
-        assertNotNull(response.getBody().getLink(Link.REL_SELF));
-        assertTrue(response.getBody()
-            .getLink(Link.REL_SELF)
-            .getHref()
-            .endsWith(parameters));
-    }
+    assertNotNull(response.getBody().getLink(Link.REL_SELF));
+    assertEquals(3, response.getBody().getContent().size());
+  }
 
-    @Test
-    void testThrowsExceptionIfInvalidFilterIsUsed() {
-        try {
-            template.exchange(
-                restHelper.toUrl(Mapping.URL_WORKBASKET) + "?invalid=PERSONAL", HttpMethod.GET,
-                restHelper.defaultRequest(),
-                ParameterizedTypeReference.forType(WorkbasketSummaryListResource.class));
-            fail();
-        } catch (HttpClientErrorException e) {
-            assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
-            assertTrue(e.getResponseBodyAsString().contains("[invalid]"));
-        }
-    }
-
-    @Test
-    void testGetSecondPageSortedByKey() {
-
-        String parameters = "?sort-by=key&order=desc&page=2&page-size=5";
-        ResponseEntity<WorkbasketSummaryListResource> response = template.exchange(
-            restHelper.toUrl(Mapping.URL_WORKBASKET) + parameters, HttpMethod.GET, restHelper.defaultRequest(),
+  @Test
+  void testGetAllWorkbasketsKeepingFilters() {
+    String parameters = "?type=PERSONAL&sort-by=key&order=desc";
+    ResponseEntity<WorkbasketSummaryListResource> response =
+        template.exchange(
+            restHelper.toUrl(Mapping.URL_WORKBASKET) + parameters,
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(WorkbasketSummaryListResource.class));
-        assertEquals(5, response.getBody().getContent().size());
-        assertEquals("USER_1_1", response.getBody().getContent().iterator().next().getKey());
-        assertNotNull(response.getBody().getLink(Link.REL_SELF));
-        assertTrue(response.getBody()
-            .getLink(Link.REL_SELF)
-            .getHref()
-            .endsWith(parameters));
-        assertNotNull(response.getBody().getLink(Link.REL_FIRST));
-        assertNotNull(response.getBody().getLink(Link.REL_LAST));
-        assertNotNull(response.getBody().getLink(Link.REL_NEXT));
-        assertNotNull(response.getBody().getLink(Link.REL_PREVIOUS));
-    }
+    assertNotNull(response.getBody().getLink(Link.REL_SELF));
+    assertTrue(response.getBody().getLink(Link.REL_SELF).getHref().endsWith(parameters));
+  }
 
-    @Test
-    void testRemoveWorkbasketAsDistributionTarget() {
-        ResponseEntity<?> response = template.exchange(
-            restHelper.toUrl(Mapping.URL_WORKBASKET_DISTRIBUTION_ID, "WBI:100000000000000000000000000000000007"),
-            HttpMethod.DELETE, restHelper.defaultRequest(),
-            Void.class
-        );
-        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-
-        ResponseEntity<DistributionTargetListResource> response2 = template.exchange(
-            restHelper.toUrl(Mapping.URL_WORKBASKET_ID_DISTRIBUTION, "WBI:100000000000000000000000000000000002"),
-            HttpMethod.GET, restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(DistributionTargetListResource.class)
-        );
-        assertEquals(HttpStatus.OK, response2.getStatusCode());
-        Iterator<DistributionTargetResource> iterator = response2.getBody().getContent().iterator();
-        while (iterator.hasNext()) {
-            assertNotEquals("WBI:100000000000000000000000000000000007", iterator.next().getWorkbasketId());
-        }
+  @Test
+  void testThrowsExceptionIfInvalidFilterIsUsed() {
+    try {
+      template.exchange(
+          restHelper.toUrl(Mapping.URL_WORKBASKET) + "?invalid=PERSONAL",
+          HttpMethod.GET,
+          restHelper.defaultRequest(),
+          ParameterizedTypeReference.forType(WorkbasketSummaryListResource.class));
+      fail();
+    } catch (HttpClientErrorException e) {
+      assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+      assertTrue(e.getResponseBodyAsString().contains("[invalid]"));
     }
+  }
+
+  @Test
+  void testGetSecondPageSortedByKey() {
+
+    String parameters = "?sort-by=key&order=desc&page=2&page-size=5";
+    ResponseEntity<WorkbasketSummaryListResource> response =
+        template.exchange(
+            restHelper.toUrl(Mapping.URL_WORKBASKET) + parameters,
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
+            ParameterizedTypeReference.forType(WorkbasketSummaryListResource.class));
+    assertEquals(5, response.getBody().getContent().size());
+    assertEquals("USER_1_1", response.getBody().getContent().iterator().next().getKey());
+    assertNotNull(response.getBody().getLink(Link.REL_SELF));
+    assertTrue(response.getBody().getLink(Link.REL_SELF).getHref().endsWith(parameters));
+    assertNotNull(response.getBody().getLink(Link.REL_FIRST));
+    assertNotNull(response.getBody().getLink(Link.REL_LAST));
+    assertNotNull(response.getBody().getLink(Link.REL_NEXT));
+    assertNotNull(response.getBody().getLink(Link.REL_PREVIOUS));
+  }
+
+  @Test
+  void testRemoveWorkbasketAsDistributionTarget() {
+    ResponseEntity<?> response =
+        template.exchange(
+            restHelper.toUrl(
+                Mapping.URL_WORKBASKET_DISTRIBUTION_ID, "WBI:100000000000000000000000000000000007"),
+            HttpMethod.DELETE,
+            restHelper.defaultRequest(),
+            Void.class);
+    assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+
+    ResponseEntity<DistributionTargetListResource> response2 =
+        template.exchange(
+            restHelper.toUrl(
+                Mapping.URL_WORKBASKET_ID_DISTRIBUTION, "WBI:100000000000000000000000000000000002"),
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
+            ParameterizedTypeReference.forType(DistributionTargetListResource.class));
+    assertEquals(HttpStatus.OK, response2.getStatusCode());
+    Iterator<DistributionTargetResource> iterator = response2.getBody().getContent().iterator();
+    while (iterator.hasNext()) {
+      assertNotEquals(
+          "WBI:100000000000000000000000000000000007", iterator.next().getWorkbasketId());
+    }
+  }
 }
