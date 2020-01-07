@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 /** This class is the mybatis mapping of distribution targets. */
+@SuppressWarnings("checkstyle:LineLength")
 public interface DistributionTargetMapper {
 
   @Insert(

@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.Update;
 
 import pro.taskana.ObjectReference;
 /** This class is the mybatis mapping of ObjectReference. */
+@SuppressWarnings("checkstyle:LineLength")
 public interface ObjectReferenceMapper {
 
   @Select(
