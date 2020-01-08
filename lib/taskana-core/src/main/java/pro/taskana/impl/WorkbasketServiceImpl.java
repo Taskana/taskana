@@ -18,6 +18,7 @@ import pro.taskana.WorkbasketPermission;
 import pro.taskana.WorkbasketQuery;
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
+import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
@@ -160,7 +161,11 @@ public class WorkbasketServiceImpl implements WorkbasketService {
   public WorkbasketAccessItem newWorkbasketAccessItem(String workbasketId, String accessId) {
     WorkbasketAccessItemImpl accessItem = new WorkbasketAccessItemImpl();
     accessItem.setWorkbasketId(workbasketId);
-    accessItem.setAccessIdWithSanitizing(accessId);
+    if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
+      accessItem.setAccessId(accessId != null ? accessId.toLowerCase() : null);
+    } else {
+      accessItem.setAccessId(accessId);
+    }
     return accessItem;
   }
 
