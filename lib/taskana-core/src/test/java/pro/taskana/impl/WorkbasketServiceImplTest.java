@@ -18,7 +18,6 @@ import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -150,31 +149,6 @@ class WorkbasketServiceImplTest {
         distributionTargetMapperMock,
         internalTaskanaEngineMock,
         taskanaEngine,
-        taskanaEngineConfigurationMock);
-  }
-
-  // TODO Add stored-check. Not getWorkbasket() because permissions are not set with this action
-  // here.
-  @Disabled
-  @Test
-  void testCreateWorkbasket_NotCreated() {
-    WorkbasketImpl expectedWb = createTestWorkbasket(null, "Key-1");
-    when(workbasketMapperMock.findById(any())).thenThrow(WorkbasketNotFoundException.class);
-
-    Assertions.assertThrows(
-        WorkbasketNotFoundException.class, () -> workbasketServiceSpy.createWorkbasket(expectedWb));
-
-    verify(internalTaskanaEngineMock, times(1)).openConnection();
-    verify(workbasketMapperMock, times(1)).insert(expectedWb);
-    verify(workbasketMapperMock, times(1)).findById(expectedWb.getId());
-    verify(internalTaskanaEngineMock, times(1)).returnConnection();
-    verifyNoMoreInteractions(
-        taskQueryMock,
-        taskServiceMock,
-        workbasketMapperMock,
-        workbasketAccessMapperMock,
-        distributionTargetMapperMock,
-        internalTaskanaEngineMock,
         taskanaEngineConfigurationMock);
   }
 
