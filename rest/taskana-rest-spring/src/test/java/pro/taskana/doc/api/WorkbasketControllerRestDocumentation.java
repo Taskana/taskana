@@ -109,6 +109,10 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
     accessItemFieldDescriptionsMap.put("accessItems.permCustom12", "");
     accessItemFieldDescriptionsMap.put(
         "accessItems._links.workbasket.href", "Link to the workbasket");
+    accessItemFieldDescriptionsMap.put("page.size", "The page size");
+    accessItemFieldDescriptionsMap.put("page.number", "Zero-indexed current page");
+    accessItemFieldDescriptionsMap.put("page.totalElements", "The total number of elements");
+    accessItemFieldDescriptionsMap.put("page.totalPages", "Total amount of pages");
 
     allWorkbasketsFieldDescriptors =
         new FieldDescriptor[] {
@@ -225,6 +229,13 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
               .description(accessItemFieldDescriptionsMap.get("accessItems.permCustom11")),
           fieldWithPath("accessItems[].permCustom12")
               .description(accessItemFieldDescriptionsMap.get("accessItems.permCustom12")),
+            fieldWithPath("page.size").description(accessItemFieldDescriptionsMap.get("page.size")),
+            fieldWithPath("page.number")
+                .description(accessItemFieldDescriptionsMap.get("page.number")),
+            fieldWithPath("page.totalElements")
+                .description(accessItemFieldDescriptionsMap.get("page.totalElements")),
+            fieldWithPath("page.totalPages")
+                .description(accessItemFieldDescriptionsMap.get("page.totalPages")),
           fieldWithPath("_links.self.href").ignored(),
           fieldWithPath("_links.workbasket.href").ignored()
         };
@@ -233,6 +244,7 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
         new FieldDescriptor[] {
           subsectionWithPath("accessItems")
               .description("An array of <<access-item, Access Items>>"),
+            subsectionWithPath("page").description("Number of page"),
           fieldWithPath("_links.self.href").ignored(),
           fieldWithPath("_links.workbasket.href").ignored()
         };
