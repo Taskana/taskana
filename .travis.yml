@@ -90,7 +90,7 @@ matrix:
       install: ci/change_version.sh -m .
         && ( cd web && npm install --silent )
         && ( cd web && npm run build:prod-silent )
-        && mvn -q install -T 4C -am -DskipTests -Dcheckstyle.skip -pl :taskana-rest-spring,:taskana-cdi
+        && mvn -q install -T 4C -am -DskipTests -Dcheckstyle.skip -pl :taskana-rest-spring-example-boot,:taskana-cdi
         && mvn -q prepare-package -pl :taskana-rest-spring
         && mvn -q install -f history -T 4C -am -DskipTests -Dmaven.javadoc.skip -Dcheckstyle.skip -pl :taskana-simplehistory-rest-spring-example
         && mvn -q install -P history.plugin -DskipTests -Dcheckstyle.skip -pl :taskana-rest-spring-example-boot
