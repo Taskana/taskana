@@ -115,6 +115,16 @@ public class ClassificationImpl extends ClassificationSummaryImpl implements Cla
     return summary;
   }
 
+  protected boolean canEqual(Object other) {
+    return (other instanceof ClassificationImpl);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        super.hashCode(), isValidInDomain, created, modified, description, applicationEntryPoint);
+  }
+
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
@@ -132,16 +142,6 @@ public class ClassificationImpl extends ClassificationSummaryImpl implements Cla
         && Objects.equals(modified, other.modified)
         && Objects.equals(description, other.description)
         && Objects.equals(applicationEntryPoint, other.applicationEntryPoint);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-        super.hashCode(), isValidInDomain, created, modified, description, applicationEntryPoint);
-  }
-
-  protected boolean canEqual(Object other) {
-    return (other instanceof ClassificationImpl);
   }
 
   @Override

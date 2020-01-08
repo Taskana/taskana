@@ -206,13 +206,6 @@ abstract class AbstractWorkbasketAccessItemQueryImpl<
     return columnName;
   }
 
-  @SuppressWarnings("checkstyle:MethodName")
-  abstract Q _this();
-
-  abstract String getLinkToMapper();
-
-  abstract String getLinkToValueMapper();
-
   protected Q addOrderCriteria(String colName, SortDirection sortDirection) {
     String orderByDirection =
         " " + (sortDirection == null ? SortDirection.ASCENDING : sortDirection);
@@ -220,6 +213,13 @@ abstract class AbstractWorkbasketAccessItemQueryImpl<
     orderColumns.add(colName);
     return _this();
   }
+
+  @SuppressWarnings("checkstyle:MethodName")
+  abstract Q _this();
+
+  abstract String getLinkToMapper();
+
+  abstract String getLinkToValueMapper();
 
   @Override
   public String toString() {
