@@ -407,14 +407,6 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
     this.permCustom12 = permCustom12;
   }
 
-  public void setAccessIdWithSanitizing(String accessId) {
-    if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
-      setAccessId(accessId != null ? accessId.toLowerCase() : null);
-    } else {
-      setAccessId(accessId);
-    }
-  }
-
   @Override
   public int hashCode() {
     return Objects.hash(
