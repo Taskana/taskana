@@ -59,7 +59,7 @@
 		<version.spring.hateos>0.24.0.RELEASE</version.spring.hateos>
 
 		<!-- java ee dependencies -->
-		<version.resteasy>3.1.2.Final</version.resteasy>
+		<version.resteasy>4.4.2.Final</version.resteasy>
 		<version.thorntail>2.6.0.Final</version.thorntail>
 		<version.wildfly.security>1.6.1.Final</version.wildfly.security>
 		<version.javaee-api>7.0</version.javaee-api>
