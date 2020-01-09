@@ -28,7 +28,7 @@
 		<version.slf4j>1.7.25</version.slf4j>
 		<version.json>20190722</version.json>
 		<version.jackson>2.9.8</version.jackson>
-		<version.aspectjweaver>1.9.2</version.aspectjweaver>
+		<version.aspectjweaver>1.9.5</version.aspectjweaver>
 
 		<version.javax.validation>2.0.1.Final</version.javax.validation>
 		<version.javax.servlet>4.0.1</version.javax.servlet>
