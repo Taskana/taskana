@@ -3,7 +3,6 @@ package pro.taskana.impl;
 import java.util.Objects;
 
 import pro.taskana.WorkbasketAccessItem;
-import pro.taskana.configuration.TaskanaEngineConfiguration;
 
 /** WorkbasketAccessItemImpl Entity. */
 public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
