@@ -39,11 +39,12 @@
       value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
   </module>
   <module name="NewlineAtEndOfFile"/>
-	<module name="SuppressWarningsFilter"/>
+  <module name="SuppressWarningsFilter"/>
   <!-- https://checkstyle.org/config_filters.html#SuppressionFilter -->
   <module name="TreeWalker">
+    <module name="UnusedImports"/>
     <module name="OuterTypeFilename"/>
-	  <module name="SuppressWarningsHolder"/>
+    <module name="SuppressWarningsHolder"/>
     <module name="IllegalTokenText">
       <property name="tokens" value="STRING_LITERAL, CHAR_LITERAL"/>
       <property name="format"
@@ -51,9 +52,9 @@
       <property name="message"
         value="Consider using special escape sequence instead of octal value or Unicode escaped value."/>
     </module>
-	  <module name="SuppressWarnings">
-		  <property name="id" value="checkstyle:suppresswarnings"/>
-	  </module>
+    <module name="SuppressWarnings">
+      <property name="id" value="checkstyle:suppresswarnings"/>
+    </module>
     <module name="AvoidEscapedUnicodeCharacters">
       <property name="allowEscapesForControlCharacters" value="true"/>
       <property name="allowByTailComment" value="true"/>
@@ -210,7 +211,9 @@
     <module name="CustomImportOrder">
       <property name="sortImportsInGroupAlphabetically" value="true"/>
       <property name="separateLineBetweenGroups" value="true"/>
-      <property name="customImportOrderRules" value="STATIC###THIRD_PARTY_PACKAGE"/>
+      <property name="specialImportsRegExp" value="^pro\.taskana\."/>
+      <property name="customImportOrderRules"
+        value="STATIC###THIRD_PARTY_PACKAGE###SPECIAL_IMPORTS"/>
     </module>
     <module name="MethodParamPad"/>
     <module name="NoWhitespaceBefore">
