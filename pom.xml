@@ -46,7 +46,7 @@
 		<version.maven.wildfly>2.0.2.Final</version.maven.wildfly>
 
 		<!-- release dependencies -->
-		<version.maven.gpg>1.5</version.maven.gpg>
+		<version.maven.gpg>1.6</version.maven.gpg>
 		<version.sonatype>1.6.8</version.sonatype>
 
 		<!-- spring dependencies -->
