@@ -17,6 +17,10 @@ cache:
     - $HOME/.m2
     - web/node_modules
 
+branches:
+  except:
+    - /dependabot.*/
+
 stages:
   - name: Compile
   - name: Test
