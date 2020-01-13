@@ -9,9 +9,11 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.type.JdbcType;
 
 import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.WorkbasketSummaryImpl;
+import pro.taskana.impl.persistence.InstantTypeHandler;
 
 /** This class is the mybatis mapping of workbaskets. */
 @SuppressWarnings("checkstyle:LineLength")
@@ -25,8 +27,8 @@ public interface WorkbasketMapper {
       value = {
         @Result(property = "id", column = "ID"),
         @Result(property = "key", column = "KEY"),
-        @Result(property = "created", column = "CREATED"),
-        @Result(property = "modified", column = "MODIFIED"),
+        @Result(property = "created", column = "CREATED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
+        @Result(property = "modified", column = "MODIFIED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
         @Result(property = "name", column = "NAME"),
         @Result(property = "domain", column = "DOMAIN"),
         @Result(property = "type", column = "TYPE"),
@@ -52,8 +54,8 @@ public interface WorkbasketMapper {
       value = {
         @Result(property = "id", column = "ID"),
         @Result(property = "key", column = "KEY"),
-        @Result(property = "created", column = "CREATED"),
-        @Result(property = "modified", column = "MODIFIED"),
+        @Result(property = "created", column = "CREATED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
+        @Result(property = "modified", column = "MODIFIED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
         @Result(property = "name", column = "NAME"),
         @Result(property = "domain", column = "DOMAIN"),
         @Result(property = "type", column = "TYPE"),
@@ -169,17 +171,17 @@ public interface WorkbasketMapper {
   List<WorkbasketSummaryImpl> findAll();
 
   @Insert(
-      "<script>INSERT INTO WORKBASKET (ID, KEY, CREATED, MODIFIED, NAME, DOMAIN, TYPE, DESCRIPTION, OWNER, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, ORG_LEVEL_1, ORG_LEVEL_2, ORG_LEVEL_3, ORG_LEVEL_4, MARKED_FOR_DELETION) VALUES (#{workbasket.id}, #{workbasket.key}, #{workbasket.created}, #{workbasket.modified}, #{workbasket.name}, #{workbasket.domain}, #{workbasket.type}, #{workbasket.description}, #{workbasket.owner}, #{workbasket.custom1}, #{workbasket.custom2}, #{workbasket.custom3}, #{workbasket.custom4}, #{workbasket.orgLevel1}, #{workbasket.orgLevel2}, #{workbasket.orgLevel3}, #{workbasket.orgLevel4}, #{workbasket.markedForDeletion}) "
+      "<script>INSERT INTO WORKBASKET (ID, KEY, CREATED, MODIFIED, NAME, DOMAIN, TYPE, DESCRIPTION, OWNER, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, ORG_LEVEL_1, ORG_LEVEL_2, ORG_LEVEL_3, ORG_LEVEL_4, MARKED_FOR_DELETION) VALUES (#{workbasket.id}, #{workbasket.key}, #{workbasket.created, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, #{workbasket.modified, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, #{workbasket.name}, #{workbasket.domain}, #{workbasket.type}, #{workbasket.description}, #{workbasket.owner}, #{workbasket.custom1}, #{workbasket.custom2}, #{workbasket.custom3}, #{workbasket.custom4}, #{workbasket.orgLevel1}, #{workbasket.orgLevel2}, #{workbasket.orgLevel3}, #{workbasket.orgLevel4}, #{workbasket.markedForDeletion}) "
           + "</script>")
   @Options(keyProperty = "id", keyColumn = "ID")
   void insert(@Param("workbasket") WorkbasketImpl workbasket);
 
   @Update(
-      "UPDATE WORKBASKET SET MODIFIED = #{workbasket.modified}, KEY = #{workbasket.key}, NAME = #{workbasket.name}, DOMAIN = #{workbasket.domain}, TYPE = #{workbasket.type}, DESCRIPTION = #{workbasket.description}, OWNER = #{workbasket.owner}, CUSTOM_1 = #{workbasket.custom1}, CUSTOM_2 = #{workbasket.custom2}, CUSTOM_3 = #{workbasket.custom3}, CUSTOM_4 = #{workbasket.custom4}, ORG_LEVEL_1 = #{workbasket.orgLevel1}, ORG_LEVEL_2 = #{workbasket.orgLevel2}, ORG_LEVEL_3 = #{workbasket.orgLevel3}, ORG_LEVEL_4 = #{workbasket.orgLevel4}, MARKED_FOR_DELETION = #{workbasket.markedForDeletion} WHERE id = #{workbasket.id}")
+      "UPDATE WORKBASKET SET MODIFIED = #{workbasket.modified, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, KEY = #{workbasket.key}, NAME = #{workbasket.name}, DOMAIN = #{workbasket.domain}, TYPE = #{workbasket.type}, DESCRIPTION = #{workbasket.description}, OWNER = #{workbasket.owner}, CUSTOM_1 = #{workbasket.custom1}, CUSTOM_2 = #{workbasket.custom2}, CUSTOM_3 = #{workbasket.custom3}, CUSTOM_4 = #{workbasket.custom4}, ORG_LEVEL_1 = #{workbasket.orgLevel1}, ORG_LEVEL_2 = #{workbasket.orgLevel2}, ORG_LEVEL_3 = #{workbasket.orgLevel3}, ORG_LEVEL_4 = #{workbasket.orgLevel4}, MARKED_FOR_DELETION = #{workbasket.markedForDeletion} WHERE id = #{workbasket.id}")
   void update(@Param("workbasket") WorkbasketImpl workbasket);
 
   @Update(
-      "UPDATE WORKBASKET SET MODIFIED = #{workbasket.modified}, NAME = #{workbasket.name}, TYPE = #{workbasket.type}, DESCRIPTION = #{workbasket.description}, OWNER = #{workbasket.owner}, CUSTOM_1 = #{workbasket.custom1}, CUSTOM_2 = #{workbasket.custom2}, CUSTOM_3 = #{workbasket.custom3}, CUSTOM_4 = #{workbasket.custom4}, ORG_LEVEL_1 = #{workbasket.orgLevel1}, ORG_LEVEL_2 = #{workbasket.orgLevel2}, ORG_LEVEL_3 = #{workbasket.orgLevel3}, ORG_LEVEL_4 = #{workbasket.orgLevel4}, MARKED_FOR_DELETION = #{workbasket.markedForDeletion} WHERE KEY = #{workbasket.key} AND DOMAIN = #{workbasket.domain}")
+      "UPDATE WORKBASKET SET MODIFIED = #{workbasket.modified, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, NAME = #{workbasket.name}, TYPE = #{workbasket.type}, DESCRIPTION = #{workbasket.description}, OWNER = #{workbasket.owner}, CUSTOM_1 = #{workbasket.custom1}, CUSTOM_2 = #{workbasket.custom2}, CUSTOM_3 = #{workbasket.custom3}, CUSTOM_4 = #{workbasket.custom4}, ORG_LEVEL_1 = #{workbasket.orgLevel1}, ORG_LEVEL_2 = #{workbasket.orgLevel2}, ORG_LEVEL_3 = #{workbasket.orgLevel3}, ORG_LEVEL_4 = #{workbasket.orgLevel4}, MARKED_FOR_DELETION = #{workbasket.markedForDeletion} WHERE KEY = #{workbasket.key} AND DOMAIN = #{workbasket.domain}")
   void updateByKeyAndDomain(@Param("workbasket") WorkbasketImpl workbasket);
 
   @Delete("DELETE FROM WORKBASKET where id = #{id}")

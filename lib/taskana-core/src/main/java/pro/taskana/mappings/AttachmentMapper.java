@@ -10,9 +10,11 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.type.ClobTypeHandler;
+import org.apache.ibatis.type.JdbcType;
 
 import pro.taskana.impl.AttachmentImpl;
 import pro.taskana.impl.AttachmentSummaryImpl;
+import pro.taskana.impl.persistence.InstantTypeHandler;
 import pro.taskana.impl.persistence.MapTypeHandler;
 
 /** This class is the mybatis mapping of Attachment. */
@@ -21,8 +23,8 @@ public interface AttachmentMapper {
 
   @Insert(
       "INSERT INTO ATTACHMENT (ID, TASK_ID, CREATED, MODIFIED, CLASSIFICATION_KEY, CLASSIFICATION_ID, REF_COMPANY, REF_SYSTEM, REF_INSTANCE, REF_TYPE, REF_VALUE, CHANNEL, RECEIVED, CUSTOM_ATTRIBUTES) "
-          + "VALUES (#{att.id}, #{att.taskId}, #{att.created}, #{att.modified}, #{att.classificationSummary.key}, #{att.classificationSummary.id}, #{att.objectReference.company}, #{att.objectReference.system}, #{att.objectReference.systemInstance}, "
-          + " #{att.objectReference.type}, #{att.objectReference.value}, #{att.channel}, #{att.received}, #{att.customAttributes,jdbcType=CLOB,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler} )")
+          + "VALUES (#{att.id}, #{att.taskId}, #{att.created, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, #{att.modified, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, #{att.classificationSummary.key}, #{att.classificationSummary.id}, #{att.objectReference.company}, #{att.objectReference.system}, #{att.objectReference.systemInstance}, "
+          + " #{att.objectReference.type}, #{att.objectReference.value}, #{att.channel}, #{att.received, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, #{att.customAttributes,jdbcType=CLOB,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler} )")
   void insert(@Param("att") AttachmentImpl att);
 
   @Select(
@@ -35,8 +37,8 @@ public interface AttachmentMapper {
       value = {
         @Result(property = "id", column = "ID"),
         @Result(property = "taskId", column = "TASK_ID"),
-        @Result(property = "created", column = "CREATED"),
-        @Result(property = "modified", column = "MODIFIED"),
+        @Result(property = "created", column = "CREATED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
+        @Result(property = "modified", column = "MODIFIED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
         @Result(property = "classificationSummaryImpl.key", column = "CLASSIFICATION_KEY"),
         @Result(property = "classificationSummaryImpl.id", column = "CLASSIFICATION_ID"),
         @Result(property = "objectReference.company", column = "REF_COMPANY"),
@@ -45,7 +47,7 @@ public interface AttachmentMapper {
         @Result(property = "objectReference.type", column = "REF_TYPE"),
         @Result(property = "objectReference.value", column = "REF_VALUE"),
         @Result(property = "channel", column = "CHANNEL"),
-        @Result(property = "received", column = "RECEIVED"),
+        @Result(property = "received", column = "RECEIVED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
         @Result(
             property = "customAttributes",
             column = "CUSTOM_ATTRIBUTES",
@@ -64,8 +66,8 @@ public interface AttachmentMapper {
       value = {
         @Result(property = "id", column = "ID"),
         @Result(property = "taskId", column = "TASK_ID"),
-        @Result(property = "created", column = "CREATED"),
-        @Result(property = "modified", column = "MODIFIED"),
+        @Result(property = "created", column = "CREATED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
+        @Result(property = "modified", column = "MODIFIED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
         @Result(property = "classificationSummaryImpl.key", column = "CLASSIFICATION_KEY"),
         @Result(property = "classificationSummaryImpl.id", column = "CLASSIFICATION_ID"),
         @Result(property = "objectReference.company", column = "REF_COMPANY"),
@@ -74,7 +76,7 @@ public interface AttachmentMapper {
         @Result(property = "objectReference.type", column = "REF_TYPE"),
         @Result(property = "objectReference.value", column = "REF_VALUE"),
         @Result(property = "channel", column = "CHANNEL"),
-        @Result(property = "received", column = "RECEIVED"),
+        @Result(property = "received", column = "RECEIVED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
         @Result(
             property = "customAttributes",
             column = "CUSTOM_ATTRIBUTES",
@@ -95,8 +97,8 @@ public interface AttachmentMapper {
       value = {
         @Result(property = "id", column = "ID"),
         @Result(property = "taskId", column = "TASK_ID"),
-        @Result(property = "created", column = "CREATED"),
-        @Result(property = "modified", column = "MODIFIED"),
+        @Result(property = "created", column = "CREATED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
+        @Result(property = "modified", column = "MODIFIED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
         @Result(property = "classificationSummaryImpl.key", column = "CLASSIFICATION_KEY"),
         @Result(property = "classificationSummaryImpl.id", column = "CLASSIFICATION_ID"),
         @Result(property = "objectReference.company", column = "REF_COMPANY"),
@@ -105,7 +107,7 @@ public interface AttachmentMapper {
         @Result(property = "objectReference.type", column = "REF_TYPE"),
         @Result(property = "objectReference.value", column = "REF_VALUE"),
         @Result(property = "channel", column = "CHANNEL"),
-        @Result(property = "received", column = "RECEIVED")
+        @Result(property = "received", column = "RECEIVED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class)
       })
   List<AttachmentSummaryImpl> findAttachmentSummariesByTaskIds(@Param("taskIds") String[] taskIds);
 
@@ -113,10 +115,10 @@ public interface AttachmentMapper {
   void deleteAttachment(@Param("attachmentId") String attachmentId);
 
   @Update(
-      "UPDATE ATTACHMENT SET TASK_ID = #{taskId}, CREATED = #{created}, MODIFIED = #{modified},"
+      "UPDATE ATTACHMENT SET TASK_ID = #{taskId}, CREATED = #{created, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, MODIFIED = #{modified, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler},"
           + " CLASSIFICATION_KEY = #{classificationSummary.key}, CLASSIFICATION_ID = #{classificationSummary.id}, REF_COMPANY = #{objectReference.company}, REF_SYSTEM = #{objectReference.system},"
           + " REF_INSTANCE = #{objectReference.systemInstance}, REF_TYPE = #{objectReference.type}, REF_VALUE = #{objectReference.value},"
-          + " CHANNEL = #{channel}, RECEIVED = #{received}, CUSTOM_ATTRIBUTES = #{customAttributes,jdbcType=CLOB,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler}"
+          + " CHANNEL = #{channel}, RECEIVED = #{received, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, CUSTOM_ATTRIBUTES = #{customAttributes,jdbcType=CLOB,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler}"
           + " WHERE ID = #{id}")
   void update(AttachmentImpl attachment);
 

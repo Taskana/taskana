@@ -10,11 +10,13 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.type.JdbcType;
 
 import pro.taskana.CallbackState;
 import pro.taskana.impl.MinimalTaskSummary;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.impl.TaskSummaryImpl;
+import pro.taskana.impl.persistence.InstantTypeHandler;
 import pro.taskana.impl.persistence.MapTypeHandler;
 
 /** This class is the mybatis mapping of task. */
@@ -32,12 +34,12 @@ public interface TaskMapper {
       value = {
         @Result(property = "id", column = "ID"),
         @Result(property = "externalId", column = "EXTERNAL_ID"),
-        @Result(property = "created", column = "CREATED"),
-        @Result(property = "claimed", column = "CLAIMED"),
-        @Result(property = "completed", column = "COMPLETED"),
-        @Result(property = "modified", column = "MODIFIED"),
-        @Result(property = "planned", column = "PLANNED"),
-        @Result(property = "due", column = "DUE"),
+        @Result(property = "created", column = "CREATED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
+        @Result(property = "claimed", column = "CLAIMED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
+        @Result(property = "completed", column = "COMPLETED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
+        @Result(property = "modified", column = "MODIFIED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
+        @Result(property = "planned", column = "PLANNED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
+        @Result(property = "due", column = "DUE", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
         @Result(property = "name", column = "NAME"),
         @Result(property = "creator", column = "CREATOR"),
         @Result(property = "description", column = "DESCRIPTION"),
@@ -96,7 +98,7 @@ public interface TaskMapper {
       "INSERT INTO TASK(ID, EXTERNAL_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, CREATOR, DESCRIPTION, NOTE, PRIORITY, STATE,  CLASSIFICATION_CATEGORY, CLASSIFICATION_KEY, CLASSIFICATION_ID, WORKBASKET_ID, WORKBASKET_KEY, DOMAIN, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, "
           + "POR_SYSTEM, POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CALLBACK_INFO, CALLBACK_STATE, CUSTOM_ATTRIBUTES, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, "
           + "CUSTOM_9, CUSTOM_10, CUSTOM_11,  CUSTOM_12,  CUSTOM_13,  CUSTOM_14,  CUSTOM_15,  CUSTOM_16 ) "
-          + "VALUES(#{id},#{externalId}, #{created}, #{claimed}, #{completed}, #{modified}, #{planned}, #{due}, #{name}, #{creator}, #{description}, #{note}, #{priority}, #{state}, #{classificationSummary.category}, "
+          + "VALUES(#{id},#{externalId}, #{created, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, #{claimed, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, #{completed, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, #{modified, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, #{planned, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, #{due, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, #{name}, #{creator}, #{description}, #{note}, #{priority}, #{state}, #{classificationSummary.category}, "
           + "#{classificationSummary.key}, #{classificationSummary.id}, #{workbasketSummary.id}, #{workbasketSummary.key}, #{workbasketSummary.domain}, #{businessProcessId}, "
           + "#{parentBusinessProcessId}, #{owner}, #{primaryObjRef.company}, #{primaryObjRef.system}, #{primaryObjRef.systemInstance}, #{primaryObjRef.type}, #{primaryObjRef.value}, "
           + "#{isRead}, #{isTransferred}, #{callbackInfo,jdbcType=CLOB,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler}, #{callbackState}, "
@@ -107,7 +109,7 @@ public interface TaskMapper {
   void insert(TaskImpl task);
 
   @Update(
-      "UPDATE TASK SET CLAIMED = #{claimed}, COMPLETED = #{completed}, MODIFIED = #{modified}, PLANNED = #{planned}, DUE = #{due}, NAME = #{name}, DESCRIPTION = #{description}, NOTE = #{note}, "
+      "UPDATE TASK SET CLAIMED = #{claimed, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, COMPLETED = #{completed, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, MODIFIED = #{modified, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, PLANNED = #{planned, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, DUE = #{due, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, NAME = #{name}, DESCRIPTION = #{description}, NOTE = #{note}, "
           + " PRIORITY = #{priority}, STATE = #{state}, CLASSIFICATION_CATEGORY = #{classificationSummary.category}, CLASSIFICATION_KEY = #{classificationSummary.key}, CLASSIFICATION_ID = #{classificationSummary.id}, "
           + "WORKBASKET_ID = #{workbasketSummary.id}, WORKBASKET_KEY = #{workbasketSummary.key}, DOMAIN = #{workbasketSummary.domain}, "
           + "BUSINESS_PROCESS_ID = #{businessProcessId}, PARENT_BUSINESS_PROCESS_ID = #{parentBusinessProcessId}, OWNER = #{owner}, POR_COMPANY = #{primaryObjRef.company}, POR_SYSTEM = #{primaryObjRef.system}, "
@@ -143,12 +145,12 @@ public interface TaskMapper {
       value = {
         @Result(property = "taskId", column = "ID"),
         @Result(property = "externalId", column = "EXTERNAL_ID"),
-        @Result(property = "created", column = "CREATED"),
-        @Result(property = "claimed", column = "CLAIMED"),
-        @Result(property = "completed", column = "COMPLETED"),
-        @Result(property = "modified", column = "MODIFIED"),
-        @Result(property = "planned", column = "PLANNED"),
-        @Result(property = "due", column = "DUE"),
+        @Result(property = "created", column = "CREATED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
+        @Result(property = "claimed", column = "CLAIMED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
+        @Result(property = "completed", column = "COMPLETED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
+        @Result(property = "modified", column = "MODIFIED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
+        @Result(property = "planned", column = "PLANNED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
+        @Result(property = "due", column = "DUE", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
         @Result(property = "name", column = "NAME"),
         @Result(property = "creator", column = "CREATOR"),
         @Result(property = "note", column = "NOTE"),
@@ -205,7 +207,7 @@ public interface TaskMapper {
 
   @Update(
       "<script>"
-          + " UPDATE TASK SET COMPLETED = #{referencetask.completed}, MODIFIED = #{referencetask.modified}, STATE = #{referencetask.state}"
+          + " UPDATE TASK SET COMPLETED = #{referencetask.completed, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, MODIFIED = #{referencetask.modified, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, STATE = #{referencetask.state}"
           + " WHERE ID IN <foreach item='taskId' index='index' separator=',' open='(' close=')' collection='taskIds'>#{taskId}</foreach>"
           + "</script>")
   void updateCompleted(
