@@ -185,7 +185,6 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
     return (this.elementRef.nativeElement.contains(event.target)
       || this.elementRef.nativeElement === event.target)
       && (event.target.localName === 'tree-viewport'
-        || event.target.localName === 'tree-viewport'
         || event.target.localName === 'taskana-tree');
   }
 

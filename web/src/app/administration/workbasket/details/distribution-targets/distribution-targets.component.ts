@@ -261,16 +261,17 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
   }
 
   private onRequest(finished: boolean = false, side?: Side) {
-    if (this.loadingItems) {
-      this.loadingItems = false;
+    this.loadingItems = false;
+    const inProgress = !finished;
+    switch (side) {
+      case Side.LEFT: this.requestInProgressLeft = inProgress;
+        break;
+      case Side.RIGHT: this.requestInProgressRight = inProgress;
+        break;
+      default:
+        this.requestInProgressLeft = inProgress;
+        this.requestInProgressRight = inProgress;
     }
-    if (finished) {
-      typeof side === 'undefined' ? (this.requestInProgressLeft = false, this.requestInProgressRight = false)
-        : side === Side.LEFT ? this.requestInProgressLeft = false : this.requestInProgressRight = false;
-      return;
-    }
-    typeof side === 'undefined' ? (this.requestInProgressLeft = true, this.requestInProgressRight = true)
-      : side === Side.LEFT ? this.requestInProgressLeft = true : this.requestInProgressRight = true;
   }
 
   private getSeletedIds(): Array<string> {
