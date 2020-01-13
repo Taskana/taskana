@@ -14,7 +14,6 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   ]
 })
 export class NumberPickerComponent implements OnInit, ControlValueAccessor {
-
   // The internal data model
   private innerValue: any = 0;
 
@@ -26,7 +25,7 @@ export class NumberPickerComponent implements OnInit, ControlValueAccessor {
   // get accessor
   get value(): any {
     return this.innerValue;
-  };
+  }
 
   // set accessor including call the onchange callback
   set value(v: any) {
@@ -62,6 +61,7 @@ export class NumberPickerComponent implements OnInit, ControlValueAccessor {
   increase() {
     this.value++;
   }
+
   decrease() {
     this.value--;
   }

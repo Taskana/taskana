@@ -15,11 +15,10 @@ import { ClassificationsService } from 'app/shared/services/classifications/clas
   styleUrls: ['./task.component.scss']
 })
 export class TaskComponent implements OnInit, OnDestroy {
-
   routeSubscription: Subscription;
   requestInProgress = false;
 
-  regex = /\${(.*?)}/g
+  regex = /\${(.*?)}/g;
   address = 'https://bing.com/';
   link: SafeResourceUrl;
 
@@ -37,7 +36,7 @@ export class TaskComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.routeSubscription = this.route.params.subscribe(params => {
-      const id = params['id'];
+      const { id } = params;
       this.getTask(id);
     });
   }
@@ -45,13 +44,11 @@ export class TaskComponent implements OnInit, OnDestroy {
   async getTask(id: string) {
     this.requestInProgress = true;
     this.task = await this.taskService.getTask(id).toPromise();
-    const classification = await this.classificationService.getClassification
-      (this.task.classificationSummaryResource.classificationId);
+    const classification = await this.classificationService.getClassification(this.task.classificationSummaryResource.classificationId);
     this.address = this.extractUrl(classification.applicationEntryPoint) || `${this.address}/?q=${this.task.name}`;
     this.link = this.sanitizer.bypassSecurityTrustResourceUrl(this.address);
     this.getWorkbaskets();
     this.requestInProgress = false;
-
   }
 
   getWorkbaskets() {
@@ -77,8 +74,9 @@ export class TaskComponent implements OnInit, OnDestroy {
     this.taskService.transferTask(this.task.taskId, workbasket.workbasketId).subscribe(
       task => {
         this.requestInProgress = false;
-        this.task = task
-      });
+        this.task = task;
+      }
+);
     this.navigateBack();
   }
 
@@ -90,7 +88,8 @@ export class TaskComponent implements OnInit, OnDestroy {
         this.task = task;
         this.taskService.publishUpdatedTask(task);
         this.navigateBack();
-      });
+      }
+);
   }
 
   navigateBack() {
@@ -106,14 +105,14 @@ export class TaskComponent implements OnInit, OnDestroy {
       let objectValue: any = me;
       parameter.split('.').forEach(property => {
         objectValue = this.getReflectiveProperty(objectValue, property);
-      })
+      });
       url = url.replace(expression, objectValue);
-    })
+    });
     return url;
   }
 
   private getReflectiveProperty(scope: any, property: string) {
-    return Reflect.get(scope, property)
+    return Reflect.get(scope, property);
   }
 
   ngOnDestroy(): void {

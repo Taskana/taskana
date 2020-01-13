@@ -1,12 +1,12 @@
-import {of} from 'rxjs';
-import {HttpClient} from '@angular/common/http';
-import {Router} from '@angular/router';
-import {environment} from 'app/../environments/environment';
-import {Injectable, Injector} from '@angular/core';
-import {CustomFieldsService} from 'app/services/custom-fields/custom-fields.service';
-import {TaskanaEngineService} from 'app/services/taskana-engine/taskana-engine.service';
-import {map} from 'rxjs/operators';
-import {WindowRefService} from 'app/services/window/window.service';
+import { of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { environment } from 'app/../environments/environment';
+import { Injectable, Injector } from '@angular/core';
+import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
+import { TaskanaEngineService } from 'app/services/taskana-engine/taskana-engine.service';
+import { map } from 'rxjs/operators';
+import { WindowRefService } from 'app/services/window/window.service';
 
 @Injectable()
 export class StartupService {
@@ -15,7 +15,8 @@ export class StartupService {
     private customFieldsService: CustomFieldsService,
     private taskanaEngineService: TaskanaEngineService,
     private injector: Injector,
-    private window: WindowRefService) {
+    private window: WindowRefService
+) {
   }
 
   public get router(): Router {
@@ -37,9 +38,7 @@ export class StartupService {
       }
       this.customFieldsService.initCustomFields('EN', jsonFile);
     })).toPromise()
-    .catch(() => {
-      return of(true)
-    });
+    .catch(() => of(true));
   }
 
   geCustomizedFieldsFilePromise() {
@@ -48,9 +47,7 @@ export class StartupService {
         this.customFieldsService.initCustomFields('EN', jsonFile);
       }
     })).toPromise()
-    .catch(() => {
-      return of(true)
-    });
+    .catch(() => of(true));
   }
 
   private loadEnvironment() {
@@ -60,7 +57,7 @@ export class StartupService {
       () => this.taskanaEngineService.getUserInformation()
     ).catch(error => {
       console.log(error);
-      //this.window.nativeWindow.location.href = environment.taskanaRestUrl + '/login';
+      // this.window.nativeWindow.location.href = environment.taskanaRestUrl + '/login';
     });
   }
 }

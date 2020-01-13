@@ -5,17 +5,17 @@ import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.se
 import { Subscription } from 'rxjs';
 
 import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
-import { AccessIdDefinition } from '../../models/access-id';
 import { AccessItemsWorkbasketResource } from 'app/models/access-item-workbasket-resource';
 import { AccessItemWorkbasket } from 'app/models/access-item-workbasket';
-import { AccessIdsService } from '../../shared/services/access-ids/access-ids.service';
 import { SortingModel } from 'app/models/sorting';
-import { RequestInProgressService } from '../../services/requestInProgress/request-in-progress.service';
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { MessageModal } from 'app/models/message-modal';
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
 import { AlertModel, AlertType } from 'app/models/alert';
 import { AlertService } from 'app/services/alert/alert.service';
+import { RequestInProgressService } from '../../services/requestInProgress/request-in-progress.service';
+import { AccessIdsService } from '../../shared/services/access-ids/access-ids.service';
+import { AccessIdDefinition } from '../../models/access-id';
 
 @Component({
   selector: 'taskana-access-items-management',
@@ -23,7 +23,6 @@ import { AlertService } from 'app/services/alert/alert.service';
   styleUrls: ['./access-items-management.component.scss']
 })
 export class AccessItemsManagementComponent implements OnInit, OnDestroy {
-
   accessIdSelected;
   accessIdPrevious;
 
@@ -55,7 +54,7 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
   setAccessItemsGroups(accessItems: Array<AccessItemWorkbasket>) {
     const AccessItemsFormGroups = accessItems.map(accessItem => this.formBuilder.group(accessItem));
     AccessItemsFormGroups.map(accessItemGroup => {
-      accessItemGroup.controls['accessId'].setValidators(Validators.required);
+      accessItemGroup.controls.accessId.setValidators(Validators.required);
       for (const key of Object.keys(accessItemGroup.controls)) {
         accessItemGroup.controls[key].disable();
       }
@@ -63,13 +62,13 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
     const AccessItemsFormArray = this.formBuilder.array(AccessItemsFormGroups);
     if (!this.AccessItemsForm) { this.AccessItemsForm = this.formBuilder.group({}); }
     this.AccessItemsForm.setControl('accessItemsGroups', AccessItemsFormArray);
-    if (!this.AccessItemsForm.value['workbasketKeyFilter']) { this.AccessItemsForm.addControl('workbasketKeyFilter', new FormControl()) }
-    if (!this.AccessItemsForm.value['accessIdFilter']) { this.AccessItemsForm.addControl('accessIdFilter', new FormControl()) }
-  };
+    if (!this.AccessItemsForm.value.workbasketKeyFilter) { this.AccessItemsForm.addControl('workbasketKeyFilter', new FormControl()); }
+    if (!this.AccessItemsForm.value.accessIdFilter) { this.AccessItemsForm.addControl('accessIdFilter', new FormControl()); }
+  }
 
   get accessItemsGroups(): FormArray {
     return this.AccessItemsForm ? this.AccessItemsForm.get('accessItemsGroups') as FormArray : null;
-  };
+  }
 
   constructor(private formBuilder: FormBuilder,
     private customFieldsService: CustomFieldsService,
@@ -89,10 +88,10 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
       return;
     }
     if (!this.AccessItemsForm || this.accessIdPrevious !== selected.accessId) {
-      this.accessIdPrevious = selected.accessId
+      this.accessIdPrevious = selected.accessId;
       this.isGroup = selected.accessId.includes(this.groupsKey);
 
-      this.unSubscribe(this.accessItemInformationsubscription)
+      this.unSubscribe(this.accessItemInformationsubscription);
       this.accessItemInformationsubscription = this.accessIdsService.getAccessItemsInformation(selected.accessId, true)
         .subscribe((accessIdsWithGroups: Array<AccessIdDefinition>) => {
           this.accessIdsWithGroups = accessIdsWithGroups;
@@ -106,9 +105,8 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
                 'There was error while retrieving your access ids with groups',
                 error
               )
-            )
-          }
-        )
+            );
+          });
     }
   }
 
@@ -123,13 +121,14 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
 
   searchForAccessItemsWorkbaskets() {
     this.requestInProgressService.setRequestInProgress(true);
-    this.unSubscribe(this.accessItemPermissionsSubscription)
+    this.unSubscribe(this.accessItemPermissionsSubscription);
     this.accessItemPermissionsSubscription = this.accessIdsService.getAccessItemsPermissions(
       this.accessIdsWithGroups,
       this.AccessItemsForm ? this.AccessItemsForm.value.accessIdFilter : undefined,
       this.AccessItemsForm ? this.AccessItemsForm.value.workbasketKeyFilter : undefined,
       this.sortModel,
-      true)
+      true
+)
       .subscribe((accessItemsResource: AccessItemsWorkbasketResource) => {
         this.setAccessItemsGroups(accessItemsResource ? accessItemsResource.accessItems : []);
         this.requestInProgressService.setRequestInProgress(false);
@@ -142,8 +141,7 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
               error
             )
           );
-        })
-
+        });
   }
 
   revokeAccess() {
@@ -174,11 +172,12 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
       this.requestInProgressService.setRequestInProgress(false);
       this.generalModalService.triggerMessage(
         new MessageModal(
-          `You can't delete a group`,
+          'You can\'t delete a group',
           error
         )
       );
-    });
+    }
+);
   }
 
   private unSubscribe(subscription: Subscription): void {
@@ -186,7 +185,7 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.unSubscribe(this.accessItemPermissionsSubscription)
-    this.unSubscribe(this.accessItemInformationsubscription)
+    this.unSubscribe(this.accessItemPermissionsSubscription);
+    this.unSubscribe(this.accessItemInformationsubscription);
   }
 }

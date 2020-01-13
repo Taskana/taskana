@@ -1,10 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TaskMasterComponent } from './task-master.component';
-import { TaskListToolbarComponent } from './task-list-toolbar/task-list-toolbar.component';
 import { SvgIconComponent, SvgIconRegistryService } from 'angular-svg-icon';
 import { PaginationComponent } from 'app/shared/pagination/pagination.component';
-import { CodeComponent } from '../components/code/code.component';
 import { FormsModule } from '@angular/forms';
 import { TypeaheadModule, ComponentLoaderFactory, PositioningService } from 'ngx-bootstrap';
 import { SortComponent } from 'app/shared/sort/sort.component';
@@ -13,9 +10,7 @@ import { SpreadNumberPipe } from 'app/shared/pipes/spreadNumber/spread-number';
 import { MapValuesPipe } from 'app/shared/pipes/mapValues/map-values.pipe';
 import { IconTypeComponent } from 'app/administration/components/type-icon/icon-type.component';
 import { Component } from '@angular/core';
-import { TaskService } from '../services/task.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { WorkplaceService } from '../services/workplace.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { OrientationService } from 'app/services/orientation/orientation.service';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
@@ -23,6 +18,11 @@ import { DomainService } from 'app/services/domain/domain.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { SelectedRouteService } from 'app/services/selected-route/selected-route';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { WorkplaceService } from '../services/workplace.service';
+import { TaskService } from '../services/task.service';
+import { CodeComponent } from '../components/code/code.component';
+import { TaskListToolbarComponent } from './task-list-toolbar/task-list-toolbar.component';
+import { TaskMasterComponent } from './task-master.component';
 
 @Component({
   selector: 'taskana-dummy-detail',

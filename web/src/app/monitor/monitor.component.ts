@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 
 
 @Component({
@@ -7,7 +7,6 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
   styleUrls: ['./monitor.component.scss']
 })
 export class MonitorComponent implements OnInit, OnDestroy {
-
   tabSelected = 'tasks';
 
   ngOnInit(): void {

@@ -29,13 +29,15 @@ export enum Side {
   styleUrls: ['./distribution-targets.component.scss']
 })
 export class DistributionTargetsComponent implements OnChanges, OnDestroy {
-
   @Input()
   workbasket: Workbasket;
+
   @Input()
   action: string;
+
   @Input()
   active: string;
+
   badgeMessage = '';
 
   distributionTargetsSubscription: Subscription;
@@ -71,7 +73,8 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
     private savingWorkbaskets: SavingWorkbasketService,
     private generalModalService: GeneralModalService,
     private requestInProgressService: RequestInProgressService,
-    private orientationService: OrientationService) { }
+    private orientationService: OrientationService
+) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (!this.initialized && changes.active && changes.active.currentValue === 'distributionTargets') {
@@ -81,6 +84,7 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
       this.setBadge();
     }
   }
+
   onScroll(side: Side) {
     if (side === this.side.LEFT && this.page.totalPages > TaskanaQueryParameters.page) {
       this.loadingItems = true;
@@ -111,7 +115,8 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
   onSave() {
     this.requestInProgressService.setRequestInProgress(true);
     this.workbasketService.updateWorkBasketsDistributionTargets(
-      this.distributionTargetsSelectedResource._links.self.href, this.getSeletedIds()).subscribe(response => {
+      this.distributionTargetsSelectedResource._links.self.href, this.getSeletedIds()
+).subscribe(response => {
         this.requestInProgressService.setRequestInProgress(false);
         this.distributionTargetsSelected = response.distributionTargets;
         this.distributionTargetsSelectedClone = Object.assign([], this.distributionTargetsSelected);
@@ -122,14 +127,12 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
       },
         error => {
           this.generalModalService.triggerMessage(
-            new MessageModal(`There was error while saving your workbasket's distribution targets`, error)
+            new MessageModal('There was error while saving your workbasket\'s distribution targets', error)
           );
           this.requestInProgressService.setRequestInProgress(false);
           return false;
-        }
-      );
+        });
     return false;
-
   }
 
   onClear() {
@@ -146,9 +149,9 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
       dualListFilter.filterBy.filterParams.name, dualListFilter.filterBy.filterParams.description, '',
       dualListFilter.filterBy.filterParams.owner,	dualListFilter.filterBy.filterParams.type, '',
       dualListFilter.filterBy.filterParams.key, '', true).subscribe(resultList => {
-        (dualListFilter.side === Side.RIGHT) ?
-          this.distributionTargetsRight = (resultList.workbaskets) :
-          this.distributionTargetsLeft = (resultList.workbaskets);
+        (dualListFilter.side === Side.RIGHT)
+          ? this.distributionTargetsRight = (resultList.workbaskets)
+          : this.distributionTargetsLeft = (resultList.workbaskets);
         this.onRequest(true, dualListFilter.side);
       });
   }
@@ -167,7 +170,8 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
       return;
     }
     this.distributionTargetsSubscription = this.workbasketService.getWorkBasketsDistributionTargets(
-      this.workbasket._links.distributionTargets.href).subscribe(
+      this.workbasket._links.distributionTargets.href
+).subscribe(
         (distributionTargetsSelectedResource: WorkbasketDistributionTargetsResource) => {
           this.distributionTargetsSelectedResource = distributionTargetsSelectedResource;
           this.distributionTargetsSelected = distributionTargetsSelectedResource.distributionTargets;
@@ -175,7 +179,8 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
           TaskanaQueryParameters.page = 1;
           this.calculateNumberItemsList();
           this.getWorkbaskets();
-        });
+        }
+);
 
     this.savingDistributionTargetsSubscription = this.savingWorkbaskets.triggeredDistributionTargetsSaving()
       .subscribe((savingInformation: SavingInformation) => {
@@ -199,7 +204,7 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
   }
 
   private getNextPage(side: Side) {
-    TaskanaQueryParameters.page = TaskanaQueryParameters.page + 1;
+    TaskanaQueryParameters.page += 1;
     this.getWorkbaskets(side);
   }
 
@@ -232,7 +237,8 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
             this.distributionTargetsClone = Object.assign([], distributionTargetsAvailable.workbaskets);
           }
           this.onRequest(true);
-        });
+        }
+);
   }
 
   private setBadge() {
@@ -259,12 +265,12 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
       this.loadingItems = false;
     }
     if (finished) {
-      typeof side === 'undefined' ? (this.requestInProgressLeft = false, this.requestInProgressRight = false) :
-        side === Side.LEFT ? this.requestInProgressLeft = false : this.requestInProgressRight = false;
+      typeof side === 'undefined' ? (this.requestInProgressLeft = false, this.requestInProgressRight = false)
+        : side === Side.LEFT ? this.requestInProgressLeft = false : this.requestInProgressRight = false;
       return;
     }
-    typeof side === 'undefined' ? (this.requestInProgressLeft = true, this.requestInProgressRight = true) :
-      side === Side.LEFT ? this.requestInProgressLeft = true : this.requestInProgressRight = true;
+    typeof side === 'undefined' ? (this.requestInProgressLeft = true, this.requestInProgressRight = true)
+      : side === Side.LEFT ? this.requestInProgressLeft = true : this.requestInProgressRight = true;
   }
 
   private getSeletedIds(): Array<string> {

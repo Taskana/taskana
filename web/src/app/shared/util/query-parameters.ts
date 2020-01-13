@@ -52,7 +52,7 @@ export class TaskanaQueryParameters {
     CUSTOM_3_LIKE: 'custom-3-like',
     CUSTOM_4_LIKE: 'custom-4-like',
     COMMENT_LIKE: 'comment-like'
-  }
+  };
 
   static page = 1;
   static pageSize = 9;
@@ -60,7 +60,7 @@ export class TaskanaQueryParameters {
   public static getQueryParameters(queryParametersModel: QueryParametersModel): string {
     let query = '?';
 
-    Object.keys(queryParametersModel).forEach(function (key) {
+    Object.keys(queryParametersModel).forEach(key => {
       const value = queryParametersModel[key];
       query += value ? `${TaskanaQueryParameters.parameters[key]}=${value}&` : '';
     });
@@ -76,6 +76,6 @@ export class TaskanaQueryParameters {
     if (query.lastIndexOf('&') === query.length - 1) {
       query = query.slice(0, query.lastIndexOf('&'));
     }
-    return query
+    return query;
   }
 }

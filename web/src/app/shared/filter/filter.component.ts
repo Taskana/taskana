@@ -9,7 +9,6 @@ import { TaskanaType } from 'app/models/taskana-type';
   styleUrls: ['./filter.component.scss']
 })
 export class FilterComponent implements OnInit {
-
   @Input() allTypes: Map<string, string> = new Map([['ALL', 'All'], ['PERSONAL', 'Personal'], ['GROUP', 'Group'],
   ['CLEARANCE', 'Clearance'], ['TOPIC', 'Topic']]);
 

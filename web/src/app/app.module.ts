@@ -6,7 +6,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { AppRoutingModule } from './app-routing.module';
 import { AlertModule } from 'ngx-bootstrap';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { TabsModule } from 'ngx-bootstrap/tabs';
@@ -31,6 +30,9 @@ import { TitlesService } from 'app/services/titles/titles.service';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { WindowRefService } from 'app/services/window/window.service';
 import { TaskanaEngineService } from 'app/services/taskana-engine/taskana-engine.service';
+import { NavBarComponent } from 'app/components/nav-bar/nav-bar.component';
+import { UserInformationComponent } from 'app/components/user-information/user-information.component';
+import { NoAccessComponent } from 'app/components/no-access/no-access.component';
 import { RemoveConfirmationService } from './services/remove-confirmation/remove-confirmation.service';
 import { FormsValidatorService } from './shared/services/forms/forms-validator.service';
 import { UploadService } from './shared/services/upload/upload.service';
@@ -39,9 +41,7 @@ import { UploadService } from './shared/services/upload/upload.service';
  * Components
  */
 import { AppComponent } from './app.component';
-import { NavBarComponent } from 'app/components/nav-bar/nav-bar.component';
-import { UserInformationComponent } from 'app/components/user-information/user-information.component';
-import { NoAccessComponent } from 'app/components/no-access/no-access.component';
+import { AppRoutingModule } from './app-routing.module';
 
 /**
  * Guards
@@ -74,9 +74,7 @@ const DECLARATIONS = [
 ];
 
 export function startupServiceFactory(startupService: StartupService): () => Promise<any> {
-  return (): Promise<any> => {
-    return startupService.load()
-  };
+  return (): Promise<any> => startupService.load();
 }
 
 

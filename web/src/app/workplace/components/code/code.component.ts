@@ -8,7 +8,6 @@ import { opacity } from 'app/shared/animations/expand.animation';
   animations: [opacity]
 })
 export class CodeComponent implements OnInit {
-
   code = 'ArrowUpArrowUpArrowDownArrowDownArrowLeftArrowRightArrowLeftArrowRightKeyBKeyA';
   bufferKeys = '';
   showCode = false;
@@ -23,12 +22,10 @@ export class CodeComponent implements OnInit {
       this.showCode = true;
       setTimeout(() => this.showCode = false, 5000);
     }
-
   }
 
   constructor() { }
 
   ngOnInit() {
   }
-
 }

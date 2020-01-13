@@ -3,7 +3,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 @Pipe({ name: 'spreadNumber' })
 export class SpreadNumberPipe implements PipeTransform {
     transform(maxPageNumber: number, currentIndex: number, maxArrayElements: number): number[] {
-        const returnArray = new Array();
+        const returnArray = [];
         if (maxPageNumber <= 5) {
             for (let i = 0; i < maxPageNumber; i++) {
                 returnArray.push(i);

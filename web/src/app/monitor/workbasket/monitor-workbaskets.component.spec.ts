@@ -8,7 +8,7 @@ describe('MonitorWorkbasketsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MonitorWorkbasketsComponent ]
+      declarations: [MonitorWorkbasketsComponent]
     })
     .compileComponents();
   }));

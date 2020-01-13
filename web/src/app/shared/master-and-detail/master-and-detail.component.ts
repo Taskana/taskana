@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, NavigationStart, RouterEvent } from '@angular/router';
-import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service'
+import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
 
 @Component({
     selector: 'taskana-master-and-detail',
@@ -38,7 +38,7 @@ export class MasterAndDetailComponent implements OnInit {
         if (!event) {
             return this.checkUrl(this.router.url);
         }
-        return this.checkUrl(event.url)
+        return this.checkUrl(event.url);
     }
 
     private checkUrl(url: string): boolean {

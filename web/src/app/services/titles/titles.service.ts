@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class TitlesService {
-
   titles = new Map<number, string>();
   customizedTitles: any = {};
   constructor() { }
@@ -12,7 +11,6 @@ export class TitlesService {
   }
 
   getTitle(id: number, fallBacktext: string, customPath?: string) {
-
-    return this.titles[id] ? this.titles[id] : fallBacktext
+    return this.titles[id] ? this.titles[id] : fallBacktext;
   }
 }

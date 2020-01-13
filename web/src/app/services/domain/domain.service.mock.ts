@@ -3,8 +3,6 @@ import { Observable, BehaviorSubject, of } from 'rxjs';
 
 @Injectable()
 export class DomainServiceMock {
-
-
   private domainSelectedValue;
   private domainSelected = new BehaviorSubject<string>('DOMAIN_A');
 
@@ -38,6 +36,6 @@ export class DomainServiceMock {
   }
 
   switchDomain(value: string) {
-    this.selectDomain(value)
+    this.selectDomain(value);
   }
 }

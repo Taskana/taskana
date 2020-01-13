@@ -7,7 +7,7 @@ import { ObjectReference } from '../models/object-reference';
 export class WorkplaceService {
   // necessary because the TaskdetailsComponent is not always initialized when the first workbasket was selected.
   currentWorkbasket: Workbasket;
-  objectReference: ObjectReference
+  objectReference: ObjectReference;
   private workbasketSelectedSource = new Subject<Workbasket>();
   workbasketSelectedStream = this.workbasketSelectedSource.asObservable();
   private objectReferenceSource = new Subject<ObjectReference>();

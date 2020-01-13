@@ -4,7 +4,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class RemoveNoneTypePipe implements PipeTransform {
     transform(value: any): Object[] {
         const returnArray = [];
-        value.forEach((entry) => {
+        value.forEach(entry => {
             if (entry.key !== '') {
                 returnArray.push({
                     key: entry.key,

@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { TaskQueryService } from '../services/task-query/task-query.service';
-import { TaskHistoryEventData } from '../../models/task-history-event';
 import { SortingModel, Direction } from 'app/models/sorting';
 import { OrientationService } from 'app/services/orientation/orientation.service';
 import { Subscription } from 'rxjs';
@@ -11,6 +9,8 @@ import { MessageModal } from 'app/models/message-modal';
 import { FormGroup, FormControl } from '@angular/forms';
 import { TaskHistoryEventResourceData } from 'app/models/task-history-event-resource';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
+import { TaskHistoryEventData } from '../../models/task-history-event';
+import { TaskQueryService } from '../services/task-query/task-query.service';
 
 @Component({
   selector: 'taskana-task-query',
@@ -18,9 +18,8 @@ import { RequestInProgressService } from 'app/services/requestInProgress/request
   styleUrls: ['./task-query.component.scss']
 })
 export class TaskQueryComponent implements OnInit {
-
   taskQueryResource: TaskHistoryEventResourceData;
-  taskQuery: Array<TaskHistoryEventData>
+  taskQuery: Array<TaskHistoryEventData>;
   taskQueryHeader = new TaskHistoryEventData();
   orderBy = new SortingModel(TaskanaQueryParameters.parameters.CREATED);
   orientationSubscription: Subscription;
@@ -33,7 +32,8 @@ export class TaskQueryComponent implements OnInit {
     private taskQueryService: TaskQueryService,
     private orientationService: OrientationService,
     private generalModalService: GeneralModalService,
-    private requestInProgressService: RequestInProgressService, ) { }
+    private requestInProgressService: RequestInProgressService
+) { }
 
   ngOnInit() {
     this.orientationSubscription = this.orientationService.getOrientation().subscribe((orientation: Orientation) => {
@@ -101,7 +101,7 @@ export class TaskQueryComponent implements OnInit {
   }
 
   isDate(fieldName: string): boolean {
-      return (fieldName === 'created')
+      return (fieldName === 'created');
   }
 
   filterFieldsToAllowQuerying(fieldName: string): boolean {
@@ -150,7 +150,7 @@ export class TaskQueryComponent implements OnInit {
         val,
         'code'
       )
-    )
+    );
   }
 
   getTaskValue(key: string, task: TaskHistoryEventData): string {
@@ -171,17 +171,18 @@ export class TaskQueryComponent implements OnInit {
     if (sortDirection === Direction.ASC) {
       return Direction.DESC;
     }
-    return Direction.ASC
+    return Direction.ASC;
   }
 
   private performRequest() {
     this.requestInProgressService.setRequestInProgress(true);
     this.calculateQueryPages();
     this.taskQuerySubscription = this.taskQueryService.queryTask(
-      this.orderBy.sortBy.replace(/([A-Z])|([0-9])/g, (g) => `-${g[0].toLowerCase()}`),
+      this.orderBy.sortBy.replace(/([A-Z])|([0-9])/g, g => `-${g[0].toLowerCase()}`),
       this.orderBy.sortDirection,
       new TaskHistoryEventData(this.taskQueryForm.value),
-      false).subscribe(taskQueryResource => {
+      false
+).subscribe(taskQueryResource => {
         this.requestInProgressService.setRequestInProgress(false);
         if (!taskQueryResource.taskHistoryEvents) {
           this.taskQuery = null;
@@ -190,18 +191,17 @@ export class TaskQueryComponent implements OnInit {
         }
         this.taskQueryResource = taskQueryResource;
         this.taskQuery = taskQueryResource.taskHistoryEvents;
-      })
+      });
   }
 
   private initTaskQueryForm() {
     const me = this;
-    Object.keys(new TaskHistoryEventData()).forEach(function (key) {
+    Object.keys(new TaskHistoryEventData()).forEach(key => {
       me.taskQueryForm.addControl(key, new FormControl());
     });
   }
 
   private calculateQueryPages() {
-
     const rowHeight = 34;
     const unusedHeight = 300;
     const totalHeight = window.innerHeight;
@@ -219,5 +219,4 @@ export class TaskQueryComponent implements OnInit {
     if (this.orientationSubscription) { this.orientationSubscription.unsubscribe(); }
     if (this.taskQuerySubscription) { this.taskQuerySubscription.unsubscribe(); }
   }
-
 }

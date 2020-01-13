@@ -5,11 +5,12 @@ import { Component, OnInit, Input, SimpleChanges, OnChanges } from '@angular/cor
   styleUrls: ['./progress-bar.component.scss']
 })
 export class ProgressBarComponent implements OnInit, OnChanges {
-
   @Input()
   currentValue = 0;
+
   @Input()
   min = 0;
+
   @Input()
   max = 100;
 
@@ -28,5 +29,4 @@ export class ProgressBarComponent implements OnInit, OnChanges {
       this.inProgress = false;
     }
   }
-
 }

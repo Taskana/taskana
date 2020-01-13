@@ -6,7 +6,7 @@ export class TaskanaDate {
     const dateLocale = 'en-US';
     const datePipe = new DatePipe(dateLocale);
 
-    return datePipe.transform(Date.now(), this.dateFormat) + 'Z';
+    return `${datePipe.transform(Date.now(), this.dateFormat)}Z`;
   }
 
   public static convertSimpleDate(date: Date): string {

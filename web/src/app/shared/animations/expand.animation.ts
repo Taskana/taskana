@@ -1,7 +1,6 @@
 import { trigger, style, transition, animate, keyframes, state } from '@angular/animations';
 
-export const expandDown =
-    trigger('toggleDown', [
+export const expandDown = trigger('toggleDown', [
         state('true', style({ opacity: '1', display: 'initial' })),
         state('false', style({ opacity: '0', display: 'none' })),
         transition('false => true', animate('300ms ease-in', keyframes([
@@ -34,7 +33,7 @@ export const expandTop = trigger('toggleTop', [
     transition('* => void', [
         animate(100, style({ transform: 'translateY(100%)', overflow: 'hidden' }))
     ])
-])
+]);
 
 export const opacity = trigger('toggleOpacity', [
     state('*', style({ opacity: '1' })),
@@ -47,4 +46,4 @@ export const opacity = trigger('toggleOpacity', [
         style({ opacity: 1 }),
         style({ opacity: 0.5 }),
         style({ opacity: 0 })])))
-])
+]);

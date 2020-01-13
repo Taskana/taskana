@@ -3,13 +3,13 @@ import { FormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
 
-import { FilterComponent } from './filter.component';
 import { configureTests } from 'app/app.test.configuration';
+import { FilterComponent } from './filter.component';
 
 describe('FilterComponent', () => {
-  let component: FilterComponent,
-    fixture: ComponentFixture<FilterComponent>,
-    debugElement: any;
+  let component: FilterComponent;
+    let fixture: ComponentFixture<FilterComponent>;
+    let debugElement: any;
 
 
   beforeEach(done => {
@@ -17,14 +17,17 @@ describe('FilterComponent', () => {
       testBed.configureTestingModule({
         declarations: [],
         imports: [AngularSvgIconModule, FormsModule, HttpClientModule]
-      })
+      });
     };
     configureTests(configure).then(testBed => {
       fixture = TestBed.createComponent(FilterComponent);
       component = fixture.componentInstance;
       component.filterParams = {
-        name: 'someName', owner: 'someOwner', description: 'someDescription',
-        key: 'someKey', type: 'PERSONAL'
+        name: 'someName',
+owner: 'someOwner',
+description: 'someDescription',
+        key: 'someKey',
+type: 'PERSONAL'
       };
       debugElement = fixture.debugElement.nativeElement;
       fixture.detectChanges();
@@ -56,8 +59,11 @@ describe('FilterComponent', () => {
 
   it('should be able to clear all fields after pressing clear button', () => {
     component.filterParams = {
-      name: 'someName', owner: 'someOwner', description: 'someDescription',
-      key: 'someKey', type: 'PERSONAL'
+      name: 'someName',
+owner: 'someOwner',
+description: 'someDescription',
+      key: 'someKey',
+type: 'PERSONAL'
     };
     fixture.detectChanges();
     debugElement.querySelector('[title="Clear"]').click();
@@ -67,5 +73,4 @@ describe('FilterComponent', () => {
     expect(component.filter.filterParams.type).toBe('');
     expect(component.filter.filterParams.key).toBe('');
   });
-
 });

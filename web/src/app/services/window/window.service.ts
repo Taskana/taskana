@@ -6,13 +6,13 @@ export interface IWindowService extends Window {
     __custom_global_stuff: string;
 }
 
-function getWindow (): any {
+function getWindow(): any {
     return window;
 }
 
 @Injectable()
 export class WindowRefService {
-    get nativeWindow (): IWindowService {
+    get nativeWindow(): IWindowService {
         return getWindow();
     }
 }

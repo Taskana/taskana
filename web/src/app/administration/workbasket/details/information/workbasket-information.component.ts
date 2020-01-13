@@ -1,12 +1,10 @@
-import {
-  Component,
+import { Component,
   OnInit,
   Input,
   OnDestroy,
   OnChanges,
   SimpleChanges,
-  ViewChild
-} from '@angular/core';
+  ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { NgForm } from '@angular/forms';
@@ -20,10 +18,8 @@ import { TaskanaDate } from 'app/shared/util/taskana.date';
 
 import { AlertService } from 'app/services/alert/alert.service';
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
-import {
-  SavingWorkbasketService,
-  SavingInformation
-} from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
+import { SavingWorkbasketService,
+  SavingInformation } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
@@ -39,6 +35,7 @@ export class WorkbasketInformationComponent
   implements OnInit, OnChanges, OnDestroy {
   @Input()
   workbasket: Workbasket;
+
   workbasketClone: Workbasket;
   workbasketErrors;
   @Input()
@@ -52,18 +49,22 @@ export class WorkbasketInformationComponent
     'Owner',
     'workbaskets.information.owner'
   );
+
   custom1Field = this.customFieldsService.getCustomField(
     'Custom 1',
     'workbaskets.information.custom1'
   );
+
   custom2Field = this.customFieldsService.getCustomField(
     'Custom 2',
     'workbaskets.information.custom2'
   );
+
   custom3Field = this.customFieldsService.getCustomField(
     'Custom 3',
     'workbaskets.information.custom3'
   );
+
   custom4Field = this.customFieldsService.getCustomField(
     'Custom 4',
     'workbaskets.information.custom4'
@@ -237,7 +238,7 @@ export class WorkbasketInformationComponent
         this.afterRequest();
         this.workbasketService.triggerWorkBasketSaved();
         this.workbasketService.selectWorkBasket(this.workbasket.workbasketId);
-        this.router.navigate(['../' + this.workbasket.workbasketId], {
+        this.router.navigate([`../${this.workbasket.workbasketId}`], {
           relativeTo: this.route
         });
         if (this.action === ACTION.COPY) {
@@ -285,7 +286,7 @@ export class WorkbasketInformationComponent
             );
           } else {
             this.alertService.triggerAlert(
-              new AlertModel(AlertType.SUCCESS, 'The Workbasket ' + this.workbasket.workbasketId + ' has been marked for deletion')
+              new AlertModel(AlertType.SUCCESS, `The Workbasket ${this.workbasket.workbasketId} has been marked for deletion`)
             );
           }
           this.router.navigate(['taskana/administration/workbaskets']);

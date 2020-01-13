@@ -12,13 +12,12 @@ export class DomainGuard implements CanActivate {
 
     canActivate() {
         return this.domainService.getDomains().pipe(
-            map(domain => {
-                return true;
-            }),
+            map(domain => true),
             catchError(() => {
                 this.generalModalService.triggerMessage(new MessageModal(
-                    'There was an error, please contact with your administrator', 'There was an error getting Domains'));
-                return of(false)
+                    'There was an error, please contact with your administrator', 'There was an error getting Domains'
+));
+                return of(false);
             })
         );
     }

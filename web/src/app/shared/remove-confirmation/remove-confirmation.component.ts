@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
-declare var $: any;
+
+declare let $: any;
 
 @Component({
   selector: 'taskana-remove-confirmation',
@@ -8,8 +9,6 @@ declare var $: any;
   styleUrls: ['./remove-confirmation.component.scss']
 })
 export class RemoveConfirmationComponent implements OnInit {
-
-
   private confirmationCallback: Function;
   message: string;
 
@@ -23,12 +22,10 @@ export class RemoveConfirmationComponent implements OnInit {
       this.confirmationCallback = callback;
       this.message = message;
       $(this.modal.nativeElement).modal('toggle');
-    })
+    });
   }
 
   confirmAction() {
     this.confirmationCallback();
   }
-
-
 }

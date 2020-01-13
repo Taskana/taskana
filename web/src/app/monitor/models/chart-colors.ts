@@ -65,7 +65,6 @@ export class ChartColorsDefinition {
                 pointHoverBackgroundColor: '#fff',
                 pointHoverBorderColor: 'rgba(180, 137, 255, 0.8)'
             }
-        ]
+        ];
     }
-
 }
