@@ -9,7 +9,9 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.type.JdbcType;
 
+import pro.taskana.impl.persistence.InstantTypeHandler;
 import pro.taskana.impl.persistence.MapTypeHandler;
 import pro.taskana.jobs.ScheduledJob;
 
@@ -29,7 +31,7 @@ public interface JobMapper {
           + "nextval('SCHEDULED_JOB_SEQ')"
           + "</otherwise>"
           + "</choose>"
-          + ", #{job.priority}, #{job.created}, #{job.due}, #{job.state}, #{job.lockedBy}, #{job.lockExpires}, #{job.type}, #{job.retryCount}, #{job.arguments,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler} )"
+          + ", #{job.priority}, #{job.created, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, #{job.due, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, #{job.state}, #{job.lockedBy}, #{job.lockExpires, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, #{job.type}, #{job.retryCount}, #{job.arguments,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler} )"
           + "</script>")
   void insertJob(@Param("job") ScheduledJob job);
 
@@ -44,11 +46,11 @@ public interface JobMapper {
       value = {
         @Result(property = "jobId", column = "JOB_ID"),
         @Result(property = "priority", column = "PRIORITY"),
-        @Result(property = "created", column = "CREATED"),
-        @Result(property = "due", column = "DUE"),
+        @Result(property = "created", column = "CREATED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
+        @Result(property = "due", column = "DUE", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
         @Result(property = "state", column = "STATE"),
         @Result(property = "lockedBy", column = "LOCKED_BY"),
-        @Result(property = "lockExpires", column = "LOCK_EXPIRES"),
+        @Result(property = "lockExpires", column = "LOCK_EXPIRES", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
         @Result(property = "type", column = "TYPE"),
         @Result(property = "retryCount", column = "RETRY_COUNT"),
         @Result(
@@ -61,7 +63,7 @@ public interface JobMapper {
 
   @Update(
       value =
-          "UPDATE SCHEDULED_JOB SET CREATED = #{created}, PRIORITY = #{priority}, DUE = #{due}, STATE = #{state}, "
+          "UPDATE SCHEDULED_JOB SET CREATED = #{created, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, PRIORITY = #{priority}, DUE = #{due, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, STATE = #{state}, "
               + "LOCKED_BY = #{lockedBy}, LOCK_EXPIRES = #{lockExpires}, TYPE = #{type}, RETRY_COUNT = #{retryCount}, "
               + "ARGUMENTS = #{arguments,jdbcType=CLOB ,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler} "
               + "where JOB_ID = #{jobId}")

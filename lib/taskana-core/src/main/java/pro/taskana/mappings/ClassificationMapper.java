@@ -7,8 +7,10 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.type.JdbcType;
 
 import pro.taskana.impl.ClassificationImpl;
+import pro.taskana.impl.persistence.InstantTypeHandler;
 
 /** This class is the mybatis mapping of classifications. */
 @SuppressWarnings({"checkstyle:LineLength", "checkstyle:Indentation"})
@@ -30,8 +32,8 @@ public interface ClassificationMapper {
     @Result(property = "type", column = "TYPE"),
     @Result(property = "domain", column = "DOMAIN"),
     @Result(property = "isValidInDomain", column = "VALID_IN_DOMAIN"),
-    @Result(property = "created", column = "CREATED"),
-    @Result(property = "modified", column = "MODIFIED"),
+    @Result(property = "created", column = "CREATED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
+    @Result(property = "modified", column = "MODIFIED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
     @Result(property = "name", column = "NAME"),
     @Result(property = "description", column = "DESCRIPTION"),
     @Result(property = "priority", column = "PRIORITY"),
@@ -63,8 +65,8 @@ public interface ClassificationMapper {
     @Result(property = "type", column = "TYPE"),
     @Result(property = "domain", column = "DOMAIN"),
     @Result(property = "isValidInDomain", column = "VALID_IN_DOMAIN"),
-    @Result(property = "created", column = "CREATED"),
-    @Result(property = "modified", column = "MODIFIED"),
+    @Result(property = "created", column = "CREATED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
+    @Result(property = "modified", column = "MODIFIED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
     @Result(property = "name", column = "NAME"),
     @Result(property = "description", column = "DESCRIPTION"),
     @Result(property = "priority", column = "PRIORITY"),
@@ -82,12 +84,12 @@ public interface ClassificationMapper {
   ClassificationImpl findById(@Param("id") String id);
 
   @Insert(
-      "INSERT INTO CLASSIFICATION (ID, KEY, PARENT_ID, PARENT_KEY, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, MODIFIED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, APPLICATION_ENTRY_POINT, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8) VALUES (#{classification.id}, #{classification.key}, #{classification.parentId}, #{classification.parentKey}, #{classification.category}, #{classification.type}, #{classification.domain}, #{classification.isValidInDomain}, #{classification.created}, #{classification.modified}, #{classification.name}, #{classification.description}, #{classification.priority}, #{classification.serviceLevel}, #{classification.applicationEntryPoint}, #{classification.custom1}, #{classification.custom2}, #{classification.custom3}, #{classification.custom4}, #{classification.custom5}, #{classification.custom6}, #{classification.custom7}, #{classification.custom8})")
+      "INSERT INTO CLASSIFICATION (ID, KEY, PARENT_ID, PARENT_KEY, CATEGORY, TYPE, DOMAIN, VALID_IN_DOMAIN, CREATED, MODIFIED, NAME, DESCRIPTION, PRIORITY, SERVICE_LEVEL, APPLICATION_ENTRY_POINT, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8) VALUES (#{classification.id}, #{classification.key}, #{classification.parentId}, #{classification.parentKey}, #{classification.category}, #{classification.type}, #{classification.domain}, #{classification.isValidInDomain}, #{classification.created, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, #{classification.modified, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, #{classification.name}, #{classification.description}, #{classification.priority}, #{classification.serviceLevel}, #{classification.applicationEntryPoint}, #{classification.custom1}, #{classification.custom2}, #{classification.custom3}, #{classification.custom4}, #{classification.custom5}, #{classification.custom6}, #{classification.custom7}, #{classification.custom8})")
   void insert(@Param("classification") ClassificationImpl classification);
 
   @Update(
       value =
-          "UPDATE CLASSIFICATION SET KEY = #{classification.key}, PARENT_ID = #{classification.parentId}, PARENT_KEY = #{classification.parentKey}, CATEGORY = #{classification.category}, TYPE = #{classification.type}, MODIFIED = #{classification.modified}, NAME = #{classification.name}, DESCRIPTION = #{classification.description}, PRIORITY = #{classification.priority}, SERVICE_LEVEL = #{classification.serviceLevel}, DOMAIN = #{classification.domain}, VALID_IN_DOMAIN = #{classification.isValidInDomain}, APPLICATION_ENTRY_POINT = #{classification.applicationEntryPoint}, CUSTOM_1 = #{classification.custom1}, CUSTOM_2 = #{classification.custom2}, CUSTOM_3 = #{classification.custom3}, CUSTOM_4 = #{classification.custom4}, CUSTOM_5 = #{classification.custom5}, CUSTOM_6 = #{classification.custom6}, CUSTOM_7 = #{classification.custom7}, CUSTOM_8 = #{classification.custom8} WHERE ID = #{classification.id}")
+          "UPDATE CLASSIFICATION SET KEY = #{classification.key}, PARENT_ID = #{classification.parentId}, PARENT_KEY = #{classification.parentKey}, CATEGORY = #{classification.category}, TYPE = #{classification.type}, MODIFIED = #{classification.modified, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, NAME = #{classification.name}, DESCRIPTION = #{classification.description}, PRIORITY = #{classification.priority}, SERVICE_LEVEL = #{classification.serviceLevel}, DOMAIN = #{classification.domain}, VALID_IN_DOMAIN = #{classification.isValidInDomain}, APPLICATION_ENTRY_POINT = #{classification.applicationEntryPoint}, CUSTOM_1 = #{classification.custom1}, CUSTOM_2 = #{classification.custom2}, CUSTOM_3 = #{classification.custom3}, CUSTOM_4 = #{classification.custom4}, CUSTOM_5 = #{classification.custom5}, CUSTOM_6 = #{classification.custom6}, CUSTOM_7 = #{classification.custom7}, CUSTOM_8 = #{classification.custom8} WHERE ID = #{classification.id}")
   void update(@Param("classification") ClassificationImpl classification);
 
   @Delete("DELETE FROM CLASSIFICATION " + "WHERE ID = #{classificationId}")
