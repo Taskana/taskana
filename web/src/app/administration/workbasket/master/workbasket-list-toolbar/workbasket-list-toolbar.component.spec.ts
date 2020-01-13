@@ -35,8 +35,9 @@ export class DummyDetailComponent {
 describe('WorkbasketListToolbarComponent', () => {
   let component: WorkbasketListToolbarComponent;
   let fixture: ComponentFixture<WorkbasketListToolbarComponent>;
-  let debugElement; let workbasketService; let
-router;
+  let debugElement;
+  let workbasketService;
+  let router;
 
   const routes: Routes = [
     { path: ':id', component: DummyDetailComponent, outlet: 'detail' }
@@ -67,7 +68,7 @@ router;
       component = fixture.componentInstance;
       component.workbaskets = new Array<WorkbasketSummary>(
         new WorkbasketSummary('1', 'key1', 'NAME1', 'description 1', 'owner 1')
-);
+      );
       component.workbaskets[0].markedForDeletion = false;
       component.workbaskets[0]._links = new Links({ href: 'selfLink' });
 

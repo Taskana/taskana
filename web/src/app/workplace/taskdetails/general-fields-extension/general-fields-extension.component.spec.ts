@@ -10,7 +10,7 @@ xdescribe('GeneralFieldsExtensionComponent', () => {
     TestBed.configureTestingModule({
       declarations: [GeneralFieldsExtensionComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

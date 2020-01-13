@@ -60,23 +60,23 @@ export class CustomFieldsService {
 
     value = this.mergeKeys(value, fallbackObject);
 
-  return value;
-}
-
-private mergeKeys(defaultObject: Object, newObject: Object) {
-  const value = new Object();
-
-  for (const item of Object.keys(defaultObject)) {
-    if (!value[item]) {
-      value[item] = defaultObject[item];
-    }
+    return value;
   }
 
-  for (const item of Object.keys(newObject)) {
-    if (!value[item]) {
-      value[item] = newObject[item];
+  private mergeKeys(defaultObject: Object, newObject: Object) {
+    const value = new Object();
+
+    for (const item of Object.keys(defaultObject)) {
+      if (!value[item]) {
+        value[item] = defaultObject[item];
+      }
     }
-  }
+
+    for (const item of Object.keys(newObject)) {
+      if (!value[item]) {
+        value[item] = newObject[item];
+      }
+    }
 
     return value;
   }

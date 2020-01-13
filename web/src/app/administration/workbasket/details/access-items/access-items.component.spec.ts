@@ -27,8 +27,11 @@ import { AccessItemsComponent } from './access-items.component';
 describe('AccessItemsComponent', () => {
   let component: AccessItemsComponent;
   let fixture: ComponentFixture<AccessItemsComponent>;
-  let workbasketService; let debugElement; let alertService; let accessIdsService; let
-formsValidatorService;
+  let workbasketService;
+  let debugElement;
+  let alertService;
+  let accessIdsService;
+  let formsValidatorService;
 
 
   beforeEach(done => {
@@ -51,16 +54,16 @@ formsValidatorService;
       workbasketService = TestBed.get(WorkbasketService);
       alertService = TestBed.get(AlertService);
       spyOn(workbasketService, 'getWorkBasketAccessItems').and.returnValue(of(new WorkbasketAccessItemsResource(
-           new Array<WorkbasketAccessItems>(
-            new WorkbasketAccessItems('id1', '1', 'accessID1', '', false, false, false, false, false, false, false, false,
-              false, false, false, false, false, false, false, false, false),
-            new WorkbasketAccessItems('id2', '1', 'accessID2')
-),
-         new Links({ href: 'someurl' })
+        new Array<WorkbasketAccessItems>(
+          new WorkbasketAccessItems('id1', '1', 'accessID1', '', false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false),
+          new WorkbasketAccessItems('id2', '1', 'accessID2')
+        ),
+        new Links({ href: 'someurl' })
       )));
       spyOn(workbasketService, 'updateWorkBasketAccessItem').and.returnValue(of(true)),
-        spyOn(alertService, 'triggerAlert').and.returnValue(of(true)),
-        debugElement = fixture.debugElement.nativeElement;
+      spyOn(alertService, 'triggerAlert').and.returnValue(of(true)),
+      debugElement = fixture.debugElement.nativeElement;
       accessIdsService = TestBed.get(AccessIdsService);
       spyOn(accessIdsService, 'getAccessItemsInformation').and.returnValue(of(new Array<string>(
         'accessID1', 'accessID2'
@@ -103,7 +106,7 @@ formsValidatorService;
       fixture.detectChanges();
       expect(alertService.triggerAlert).toHaveBeenCalledWith(
         new AlertModel(AlertType.SUCCESS, `Workbasket  ${component.workbasket.key} Access items were saved successfully`)
-);
+      );
     });
     fixture.detectChanges();
   }));

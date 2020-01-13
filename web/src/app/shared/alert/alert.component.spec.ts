@@ -9,7 +9,7 @@ describe('AlertComponent', () => {
   let component: AlertComponent;
   let fixture: ComponentFixture<AlertComponent>;
   let debugElement;
-    let alertService;
+  let alertService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

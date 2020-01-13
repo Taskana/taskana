@@ -1,9 +1,9 @@
 
 import { getTestBed,
-    TestBed } from '@angular/core/testing';
+  TestBed } from '@angular/core/testing';
 
 import { BrowserDynamicTestingModule,
-    platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
+  platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
 
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
@@ -24,22 +24,22 @@ import { FormsValidatorService } from './shared/services/forms/forms-validator.s
 import { SharedModule } from './shared/shared.module';
 
 export const configureTests = (configure: (testBed: TestBed) => void) => {
-    const testBed = getTestBed();
+  const testBed = getTestBed();
 
-    if (testBed.platform == null) {
-        testBed.initTestEnvironment(
-            BrowserDynamicTestingModule,
-            platformBrowserDynamicTesting()
-);
-    }
+  if (testBed.platform == null) {
+    testBed.initTestEnvironment(
+      BrowserDynamicTestingModule,
+      platformBrowserDynamicTesting()
+    );
+  }
 
-    configure(testBed);
-    testBed.configureTestingModule({
-        imports: [BrowserAnimationsModule, SharedModule, FormsModule, ReactiveFormsModule, HttpClientModule, AngularSvgIconModule],
-        providers: [{ provide: TaskanaEngineService, useClass: TaskanaEngineServiceMock },
-        { provide: DomainService, useClass: DomainServiceMock }, CustomFieldsService, RemoveConfirmationService,
-            AlertService, GeneralModalService, RequestInProgressService, OrientationService, SelectedRouteService, FormsValidatorService]
-    });
+  configure(testBed);
+  testBed.configureTestingModule({
+    imports: [BrowserAnimationsModule, SharedModule, FormsModule, ReactiveFormsModule, HttpClientModule, AngularSvgIconModule],
+    providers: [{ provide: TaskanaEngineService, useClass: TaskanaEngineServiceMock },
+      { provide: DomainService, useClass: DomainServiceMock }, CustomFieldsService, RemoveConfirmationService,
+      AlertService, GeneralModalService, RequestInProgressService, OrientationService, SelectedRouteService, FormsValidatorService]
+  });
 
-    return testBed.compileComponents().then(() => testBed);
+  return testBed.compileComponents().then(() => testBed);
 };

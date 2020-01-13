@@ -17,8 +17,8 @@ describe('StartupService', () => {
     taskanaLogoutUrl: someLogoutUrl
   };
 
-  let httpMock; let
-service;
+  let httpMock;
+  let service;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

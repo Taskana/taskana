@@ -5,13 +5,13 @@ const MODULES = [
 ];
 
 const DECLARATIONS = [
-    TaskanaTypeAheadMockComponent
+  TaskanaTypeAheadMockComponent
 ];
 
 @NgModule({
-    declarations: DECLARATIONS,
-    imports: MODULES,
-    providers: []
+  declarations: DECLARATIONS,
+  imports: MODULES,
+  providers: []
 })
 export class AppTestModule {
 }

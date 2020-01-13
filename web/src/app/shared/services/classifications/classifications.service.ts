@@ -26,7 +26,7 @@ export class ClassificationsService {
     private httpClient: HttpClient,
     private classificationCategoriesService: ClassificationCategoriesService,
     private domainService: DomainService
-) {
+  ) {
   }
 
   private static classificationParameters(domain: string): QueryParametersModel {
@@ -44,8 +44,8 @@ export class ClassificationsService {
   getClassifications(): Observable<Array<Classification>> {
     return this.domainService.getSelectedDomain().pipe(
       mergeMap(domain => this.getClassificationObservable(this.httpClient.get<ClassificationResource>(
-          `${this.url}${TaskanaQueryParameters.getQueryParameters(ClassificationsService.classificationParameters(domain))}`
-))),
+        `${this.url}${TaskanaQueryParameters.getQueryParameters(ClassificationsService.classificationParameters(domain))}`
+      ))),
       tap(() => {
         this.domainService.domainChangedComplete();
       })
@@ -58,7 +58,7 @@ export class ClassificationsService {
       this.lastDomain = domain;
       this.classificationResourcePromise = this.httpClient.get<ClassificationResource>(
         `${this.url}${TaskanaQueryParameters.getQueryParameters(ClassificationsService.classificationParameters(domain))}`
-).toPromise();
+      ).toPromise();
     }
     return this.classificationResourcePromise;
   }
@@ -127,7 +127,7 @@ export class ClassificationsService {
       const item = classifications[index];
       if (item.type === type) {
         const parent = item.parentId;
-          const target = !parent ? roots : (children[parent] || (children[parent] = []));
+        const target = !parent ? roots : (children[parent] || (children[parent] = []));
 
         target.push(item);
       }

@@ -14,7 +14,7 @@ export class RestConnectorService {
 
   getTaskStatusReport(): Observable<ReportData> {
     return this.httpClient.get<ReportData>(`${environment.taskanaRestUrl + monitorUrl
-       }tasks-status-report?states=READY,CLAIMED,COMPLETED`);
+    }tasks-status-report?states=READY,CLAIMED,COMPLETED`);
   }
 
   getWorkbasketStatisticsQueryingByDueDate(): Observable<ReportData> {
@@ -24,7 +24,7 @@ export class RestConnectorService {
 
   getWorkbasketStatisticsQueryingByPlannedDate(): Observable<ReportData> {
     return this.httpClient.get<ReportData>(`${environment.taskanaRestUrl
-       }/v1/monitor/tasks-workbasket-planned-date-report?daysInPast=7&states=READY,CLAIMED,COMPLETED`);
+    }/v1/monitor/tasks-workbasket-planned-date-report?daysInPast=7&states=READY,CLAIMED,COMPLETED`);
   }
 
   getClassificationTasksReport(): Observable<ReportData> {

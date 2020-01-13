@@ -10,7 +10,7 @@ describe('MonitorWorkbasketsComponent', () => {
     TestBed.configureTestingModule({
       declarations: [MonitorWorkbasketsComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

@@ -8,8 +8,8 @@ import { FilterComponent } from './filter.component';
 
 describe('FilterComponent', () => {
   let component: FilterComponent;
-    let fixture: ComponentFixture<FilterComponent>;
-    let debugElement: any;
+  let fixture: ComponentFixture<FilterComponent>;
+  let debugElement: any;
 
 
   beforeEach(done => {
@@ -24,10 +24,10 @@ describe('FilterComponent', () => {
       component = fixture.componentInstance;
       component.filterParams = {
         name: 'someName',
-owner: 'someOwner',
-description: 'someDescription',
+        owner: 'someOwner',
+        description: 'someDescription',
         key: 'someKey',
-type: 'PERSONAL'
+        type: 'PERSONAL'
       };
       debugElement = fixture.debugElement.nativeElement;
       fixture.detectChanges();
@@ -60,10 +60,10 @@ type: 'PERSONAL'
   it('should be able to clear all fields after pressing clear button', () => {
     component.filterParams = {
       name: 'someName',
-owner: 'someOwner',
-description: 'someDescription',
+      owner: 'someOwner',
+      description: 'someDescription',
       key: 'someKey',
-type: 'PERSONAL'
+      type: 'PERSONAL'
     };
     fixture.detectChanges();
     debugElement.querySelector('[title="Clear"]').click();

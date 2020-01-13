@@ -16,7 +16,7 @@ export class StartupService {
     private taskanaEngineService: TaskanaEngineService,
     private injector: Injector,
     private window: WindowRefService
-) {
+  ) {
   }
 
   public get router(): Router {
@@ -38,7 +38,7 @@ export class StartupService {
       }
       this.customFieldsService.initCustomFields('EN', jsonFile);
     })).toPromise()
-    .catch(() => of(true));
+      .catch(() => of(true));
   }
 
   geCustomizedFieldsFilePromise() {
@@ -47,7 +47,7 @@ export class StartupService {
         this.customFieldsService.initCustomFields('EN', jsonFile);
       }
     })).toPromise()
-    .catch(() => of(true));
+      .catch(() => of(true));
   }
 
   private loadEnvironment() {

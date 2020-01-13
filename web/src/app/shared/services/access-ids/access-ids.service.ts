@@ -16,7 +16,7 @@ export class AccessIdsService {
   private accessItemsRef: Observable<AccessItemsWorkbasketResource> = new Observable();
   constructor(
     private httpClient: HttpClient
-) { }
+  ) { }
 
   getAccessItemsInformation(token: string, searchInGroups = false): Observable<Array<AccessIdDefinition>> {
     if (!token || token.length < 3) {
@@ -25,7 +25,7 @@ export class AccessIdsService {
     if (searchInGroups) {
       return this.httpClient.get<Array<AccessIdDefinition>>(`${this.url}/groups?access-id=${token}`);
     }
-      return this.httpClient.get<Array<AccessIdDefinition>>(`${this.url}?search-for=${token}`);
+    return this.httpClient.get<Array<AccessIdDefinition>>(`${this.url}?search-for=${token}`);
   }
 
   getAccessItemsPermissions(
@@ -34,7 +34,7 @@ export class AccessIdsService {
     workbasketKeyLike?: string,
     sortModel: SortingModel = new SortingModel('workbasket-key'),
     forceRequest: boolean = false
-): Observable<AccessItemsWorkbasketResource> {
+  ): Observable<AccessItemsWorkbasketResource> {
     if (this.accessItemsRef && !forceRequest) {
       return this.accessItemsRef;
     }
@@ -44,8 +44,8 @@ export class AccessIdsService {
         this.accessIdsParameters(sortModel,
           accessIds,
           accessIdLike, workbasketKeyLike)
-)}`
-));
+      )}`
+    ));
   }
 
   removeAccessItemsPermissions(accessId: string) {
@@ -58,7 +58,7 @@ export class AccessIdsService {
     accessIds: Array<AccessIdDefinition>,
     accessIdLike?: string,
     workbasketKeyLike?: string
-): QueryParametersModel {
+  ): QueryParametersModel {
     const parameters = new QueryParametersModel();
     parameters.SORTBY = sortModel.sortBy;
     parameters.SORTDIRECTION = sortModel.sortDirection;

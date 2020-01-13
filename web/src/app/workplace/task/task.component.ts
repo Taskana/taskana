@@ -76,7 +76,7 @@ export class TaskComponent implements OnInit, OnDestroy {
         this.requestInProgress = false;
         this.task = task;
       }
-);
+    );
     this.navigateBack();
   }
 
@@ -89,7 +89,7 @@ export class TaskComponent implements OnInit, OnDestroy {
         this.taskService.publishUpdatedTask(task);
         this.navigateBack();
       }
-);
+    );
   }
 
   navigateBack() {
