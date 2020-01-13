@@ -4,6 +4,7 @@ import { Links } from './links';
 export class WorkbasketDistributionTargetsResource {
     constructor(
         public distributionTargets: Array<WorkbasketSummary> = [],
-        public _links: Links = null) {
+        public _links: Links = null
+) {
     }
 }

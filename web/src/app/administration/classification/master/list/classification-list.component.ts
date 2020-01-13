@@ -7,14 +7,12 @@ import { Classification } from 'app/models/classification';
 import { TreeNodeModel } from 'app/models/tree-node';
 
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
-import {
-  ClassificationCategoriesService
-} from 'app/shared/services/classifications/classification-categories.service';
+import { ClassificationCategoriesService } from 'app/shared/services/classifications/classification-categories.service';
 import { Pair } from 'app/models/pair';
-import { ClassificationDefinition } from '../../../../models/classification-definition';
 import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
-import {AlertModel, AlertType} from '../../../../models/alert';
-import {AlertService} from '../../../../services/alert/alert.service';
+import { ClassificationDefinition } from '../../../../models/classification-definition';
+import { AlertModel, AlertType } from '../../../../models/alert';
+import { AlertService } from '../../../../services/alert/alert.service';
 
 @Component({
   selector: 'taskana-classification-list',
@@ -22,8 +20,6 @@ import {AlertService} from '../../../../services/alert/alert.service';
   styleUrls: ['./classification-list.component.scss']
 })
 export class ClassificationListComponent implements OnInit, OnDestroy {
-
-
   selectedCategory = '';
   selectedId: string;
   selectionToImport = TaskanaType.CLASSIFICATIONS;
@@ -48,7 +44,8 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private categoryService: ClassificationCategoriesService,
     private importExportService: ImportExportService,
-    private alertService: AlertService) {
+    private alertService: AlertService
+) {
   }
 
   ngOnInit() {
@@ -62,13 +59,12 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
       this.performRequest();
     });
 
-    this.categoriesSubscription =
-      this.categoryService.getCategories(this.classificationTypeSelected).subscribe((categories: Array<string>) => {
+    this.categoriesSubscription = this.categoryService.getCategories(this.classificationTypeSelected).subscribe((categories: Array<string>) => {
         this.categories = categories;
       });
     this.importingExportingSubscription = this.importExportService.getImportingFinished().subscribe((value: Boolean) => {
       this.performRequest(true);
-    })
+    });
   }
 
   selectClassificationType(classificationTypeSelected: string) {
@@ -107,8 +103,8 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
     this.requestInProgress = true;
     this.classifications = [];
 
-    if (this.classificationServiceSubscription) { this.classificationServiceSubscription.unsubscribe() }
-    if (this.classificationSelectedSubscription) { this.classificationSelectedSubscription.unsubscribe() }
+    if (this.classificationServiceSubscription) { this.classificationServiceSubscription.unsubscribe(); }
+    if (this.classificationSelectedSubscription) { this.classificationSelectedSubscription.unsubscribe(); }
 
     this.classificationServiceSubscription = this.classificationService.getClassifications()
       .subscribe((classifications: Array<TreeNodeModel>) => {
@@ -125,7 +121,6 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
       });
 
     this.initialized = true;
-
   }
 
   private getClassifications(key?: string) {

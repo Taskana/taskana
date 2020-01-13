@@ -1,7 +1,7 @@
 import { TestBed, inject } from '@angular/core/testing';
 
-import { AccessIdsService } from './access-ids.service';
 import { HttpClientModule } from '@angular/common/http';
+import { AccessIdsService } from './access-ids.service';
 
 describe('ValidateAccessItemsService', () => {
   beforeEach(() => {

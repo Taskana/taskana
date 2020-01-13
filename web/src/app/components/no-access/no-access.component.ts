@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { TaskanaEngineService } from '../../services/taskana-engine/taskana-engine.service';
 import { BusinessAdminGuard } from 'app/guards/business-admin.guard';
 import { MonitorGuard } from 'app/guards/monitor.guard';
 import { UserGuard } from 'app/guards/user.guard';
 import { Router } from '@angular/router';
+import { TaskanaEngineService } from '../../services/taskana-engine/taskana-engine.service';
 
 @Component({
   selector: 'taskana-no-access',
@@ -11,7 +11,6 @@ import { Router } from '@angular/router';
   styleUrls: ['./no-access.component.scss']
 })
 export class NoAccessComponent implements OnInit {
-
   showNoAccess = false;
   constructor(private taskanaEngineService: TaskanaEngineService, public router: Router) { }
 

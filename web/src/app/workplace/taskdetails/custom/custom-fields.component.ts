@@ -6,7 +6,6 @@ import { Task } from 'app/workplace/models/task';
   templateUrl: './custom-fields.component.html'
 })
 export class TaskdetailsCustomFieldsComponent implements OnInit {
-
   @Input() task: Task;
   @Output() taskChange: EventEmitter<Task> = new EventEmitter<Task>();
 
@@ -15,5 +14,4 @@ export class TaskdetailsCustomFieldsComponent implements OnInit {
 
   ngOnInit() {
   }
-
 }

@@ -12,7 +12,7 @@ export class CustomFieldsService {
 
   getCustomField(fallbacktext: string, customPath?: string): CustomField {
     if (!customPath) {
-      return new CustomField(true, fallbacktext)
+      return new CustomField(true, fallbacktext);
     }
     return this.jsonPath(customPath, fallbacktext);
   }
@@ -27,7 +27,7 @@ export class CustomFieldsService {
   private jsonPath(path: string, fallbacktext: string): CustomField {
     if (!this.customizedFields) {
       return new CustomField(true, fallbacktext);
-    };
+    }
     const paths = path.split('.');
     let value = this.customizedFields;
     paths.every(element => {
@@ -46,13 +46,13 @@ export class CustomFieldsService {
   private jsonPathObject(path: string, fallbackObject: Object): Object {
     if (!this.customizedFields) {
       return fallbackObject;
-    };
+    }
     const paths = path.split('.');
     let value = this.customizedFields;
     paths.every(element => {
       value = value[element];
       if (!value) {
-        value = fallbackObject
+        value = fallbackObject;
         return false;
       }
       return true;
@@ -80,5 +80,4 @@ private mergeKeys(defaultObject: Object, newObject: Object) {
 
     return value;
   }
-
 }

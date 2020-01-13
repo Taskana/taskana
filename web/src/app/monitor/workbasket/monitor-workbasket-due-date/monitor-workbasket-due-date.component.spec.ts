@@ -1,6 +1,6 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {MonitorWorkbasketDueDateComponent} from './monitor-workbasket-due-date.component';
+import { MonitorWorkbasketDueDateComponent } from './monitor-workbasket-due-date.component';
 
 describe('MonitorWorkbasketDueDateComponent', () => {
   let component: MonitorWorkbasketDueDateComponent;

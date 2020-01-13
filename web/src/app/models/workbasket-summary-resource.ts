@@ -1,5 +1,5 @@
-import { WorkbasketSummary } from './workbasket-summary';
 import { Page } from 'app/models/page';
+import { WorkbasketSummary } from './workbasket-summary';
 import { LinksWorkbasketSummary } from './links-workbasket-summary';
 
 export class WorkbasketSummaryResource {

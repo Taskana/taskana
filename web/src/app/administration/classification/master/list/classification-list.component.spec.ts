@@ -9,7 +9,6 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 
 import { TreeNodeModel } from 'app/models/tree-node';
 
-import { ClassificationListComponent } from './classification-list.component';
 import { ImportExportComponent } from 'app/administration/components/import-export/import-export.component';
 import { ClassificationTypesSelectorComponent } from 'app/shared/classification-types-selector/classification-types-selector.component';
 
@@ -21,12 +20,11 @@ import { DomainService } from 'app/services/domain/domain.service';
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { configureTests } from 'app/app.test.configuration';
-import {
-  ClassificationCategoriesService
-} from 'app/shared/services/classifications/classification-categories.service';
+import { ClassificationCategoriesService } from 'app/shared/services/classifications/classification-categories.service';
 import { Pair } from 'app/models/pair';
 import { TreeService } from 'app/services/tree/tree.service';
 import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
+import { ClassificationListComponent } from './classification-list.component';
 
 @Component({
   selector: 'taskana-dummy-detail',
@@ -45,7 +43,8 @@ describe('ClassificationListComponent', () => {
   let fixture: ComponentFixture<ClassificationListComponent>;
   const treeNodes: Array<TreeNodeModel> = new Array(new TreeNodeModel());
   const classificationTypes: Array<string> = new Array<string>('type1', 'type2');
-  let classificationsService, classificationCategoriesService;
+  let classificationsService; let
+classificationCategoriesService;
 
   beforeEach(done => {
     const configure = (testBed: TestBed) => {
@@ -57,7 +56,7 @@ describe('ClassificationListComponent', () => {
           HttpClient, WorkbasketDefinitionService, AlertService, ClassificationsService, DomainService, ClassificationDefinitionService,
           GeneralModalService, RequestInProgressService, ClassificationCategoriesService, TreeService, ImportExportService
         ]
-      })
+      });
     };
     configureTests(configure).then(testBed => {
       fixture = testBed.createComponent(ClassificationListComponent);

@@ -1,12 +1,10 @@
-import {
-  Component,
+import { Component,
   OnInit,
   Input,
   Output,
   EventEmitter,
   OnChanges,
-  SimpleChanges
-} from '@angular/core';
+  SimpleChanges } from '@angular/core';
 import { Page } from 'app/models/page';
 
 @Component({
@@ -17,14 +15,19 @@ import { Page } from 'app/models/page';
 export class PaginationComponent implements OnChanges {
   @Input()
   page: Page;
+
   @Input()
   type: String;
+
   @Output()
   workbasketsResourceChange = new EventEmitter<Page>();
+
   @Output()
   changePage = new EventEmitter<number>();
+
   @Input()
   numberOfItems: number;
+
   hasItems = true;
   previousPageSelected = 1;
   pageSelected = 1;
@@ -58,7 +61,7 @@ export class PaginationComponent implements OnChanges {
     if (!this.page) {
       return '';
     }
-    const text = this.numberOfItems + '';
+    const text = `${this.numberOfItems}`;
     return `${text} of ${this.page.totalElements} ${this.type}`;
   }
 }

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ComponentFixture, TestBed, } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -25,13 +25,13 @@ import { RequestInProgressService } from 'app/services/requestInProgress/request
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { configureTests } from 'app/app.test.configuration';
 
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
 import { WorkbasketDetailsComponent } from './workbasket-details.component';
 import { WorkbasketInformationComponent } from './information/workbasket-information.component';
 import { AccessItemsComponent } from './access-items/access-items.component';
 import { DistributionTargetsComponent } from './distribution-targets/distribution-targets.component';
-import { DualListComponent } from './distribution-targets//dual-list/dual-list.component';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
+import { DualListComponent } from './distribution-targets/dual-list/dual-list.component';
 
 @Component({
     selector: 'taskana-dummy-detail',
@@ -48,7 +48,7 @@ describe('WorkbasketDetailsComponent', () => {
     let workbasketService;
     let router;
     const workbasket = new Workbasket('1', '', '', '', ICONTYPES.TOPIC, '', '', '', '', '', '', '', '', '', '', '', '',
-        new Links({ 'href': 'someurl' }, { 'href': 'someurl' }, { 'href': 'someurl' }));
+        new Links({ href: 'someurl' }, { href: 'someurl' }, { href: 'someurl' }));
 
     const routes: Routes = [
         { path: '*', component: DummyDetailComponent }
@@ -64,35 +64,33 @@ describe('WorkbasketDetailsComponent', () => {
                     DistributionTargetsComponent, DualListComponent, DummyDetailComponent],
                 providers: [WorkbasketService, MasterAndDetailService, GeneralModalService, RequestInProgressService,
                     AlertService, SavingWorkbasketService, CustomFieldsService, ImportExportService]
-            })
+            });
         };
         configureTests(configure).then(testBed => {
             fixture = TestBed.createComponent(WorkbasketDetailsComponent);
             component = fixture.componentInstance;
             debugElement = fixture.debugElement.nativeElement;
-            router = TestBed.get(Router)
+            router = TestBed.get(Router);
             fixture.detectChanges();
             masterAndDetailService = TestBed.get(MasterAndDetailService);
             workbasketService = TestBed.get(WorkbasketService);
-            spyOn(masterAndDetailService, 'getShowDetail').and.callFake(() => of(true))
-            spyOn(workbasketService, 'getSelectedWorkBasket').and.callFake(() => of('id1'))
-            spyOn(workbasketService, 'getWorkBasketsSummary').and.callFake(() => {
-                return of(new WorkbasketSummaryResource(
+            spyOn(masterAndDetailService, 'getShowDetail').and.callFake(() => of(true));
+            spyOn(workbasketService, 'getSelectedWorkBasket').and.callFake(() => of('id1'));
+            spyOn(workbasketService, 'getWorkBasketsSummary').and.callFake(() => of(new WorkbasketSummaryResource(
                     new Array<WorkbasketSummary>(
                         new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '',
-                            false, new Links({ 'href': 'someurl' })))
-                    , new LinksWorkbasketSummary({ 'href': 'someurl' })))
-            })
+                            false, new Links({ href: 'someurl' }))
+),
+                     new LinksWorkbasketSummary({ href: 'someurl' })
+)));
 
-            spyOn(workbasketService, 'getWorkBasket').and.callFake(() => of(workbasket))
-            spyOn(workbasketService, 'getWorkBasketAccessItems').and.callFake(() => {
-                return of(new WorkbasketAccessItemsResource(
-                    new Array<WorkbasketAccessItems>(), new Links({ 'href': 'url' })))
-            })
-            spyOn(workbasketService, 'getWorkBasketsDistributionTargets').and.callFake(() => {
-                return of(new WorkbasketSummaryResource(
-                    new Array<WorkbasketSummary>(), new LinksWorkbasketSummary({ 'href': 'url' })))
-            })
+            spyOn(workbasketService, 'getWorkBasket').and.callFake(() => of(workbasket));
+            spyOn(workbasketService, 'getWorkBasketAccessItems').and.callFake(() => of(new WorkbasketAccessItemsResource(
+                    new Array<WorkbasketAccessItems>(), new Links({ href: 'url' })
+)));
+            spyOn(workbasketService, 'getWorkBasketsDistributionTargets').and.callFake(() => of(new WorkbasketSummaryResource(
+                    new Array<WorkbasketSummary>(), new LinksWorkbasketSummary({ href: 'url' })
+)));
             done();
         });
     });
@@ -104,5 +102,4 @@ describe('WorkbasketDetailsComponent', () => {
     it('should be created', () => {
         expect(component).toBeTruthy();
     });
-
 });

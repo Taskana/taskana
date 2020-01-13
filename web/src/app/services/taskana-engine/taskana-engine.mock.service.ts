@@ -5,7 +5,6 @@ import { VersionModel } from '../../models/version';
 
 @Injectable()
 export class TaskanaEngineServiceMock {
-
   currentUserInfo: UserInfoModel;
 
   constructor(
@@ -39,12 +38,10 @@ export class TaskanaEngineServiceMock {
   }
 
   private findRole(roles2Find: Array<string>) {
-    return this.currentUserInfo.roles.find(role => {
-      return roles2Find.some(roleLookingFor => {
+    return this.currentUserInfo.roles.find(role => roles2Find.some(roleLookingFor => {
         if (role === roleLookingFor) {
           return true;
         }
-      });
-    });
+      }));
   }
 }

@@ -5,7 +5,6 @@ import { Subject } from 'rxjs';
     providedIn: 'root',
 })
 export class UploadService {
-
     private currentProgressValue = new Subject<number>();
     public isInUse = false;
 
@@ -18,5 +17,4 @@ export class UploadService {
     getCurrentProgressValue() {
         return this.currentProgressValue.asObservable();
     }
-
 }

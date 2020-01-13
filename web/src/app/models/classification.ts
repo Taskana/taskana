@@ -1,4 +1,4 @@
-import {Links} from 'app/models/links';
+import { Links } from 'app/models/links';
 
 export class Classification {
   constructor(public classificationId?: string, // newly created classifications don't have an id yet.
@@ -10,6 +10,6 @@ export class Classification {
               public parentId?: string,
               public priority?: number,
               public serviceLevel?: string,
-              public _links?: Links ) {
+              public _links?: Links) {
   }
 }

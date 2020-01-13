@@ -12,7 +12,6 @@ import { QueryParametersModel } from 'app/models/query-parameters';
 
 @Injectable()
 export class TaskService {
-
   url = `${environment.taskanaRestUrl}/v1/tasks`;
 
   taskChangedSource = new Subject<Task>();
@@ -55,7 +54,8 @@ export class TaskService {
       state,
       objRefTypeLike,
       objRefValueLike,
-      allPages))}`;
+      allPages
+))}`;
     return this.httpClient.get<TaskResource>(url);
   }
 
@@ -108,13 +108,13 @@ export class TaskService {
     state: string,
     objRefTypeLike: string,
     objRefValueLike: string,
-    allPages: boolean = false): QueryParametersModel {
-
+    allPages: boolean = false
+): QueryParametersModel {
     const parameters = new QueryParametersModel();
     parameters.WORKBASKET_ID = basketId;
     parameters.SORTBY = sortBy;
     parameters.SORTDIRECTION = sortDirection;
-    parameters.NAMELIKE = nameLike
+    parameters.NAMELIKE = nameLike;
     parameters.OWNERLIKE = ownerLike;
     parameters.PRIORITY = priority;
     parameters.STATE = state;

@@ -22,7 +22,6 @@ export enum Search {
   styleUrls: ['./task-list-toolbar.component.scss']
 })
 export class TaskListToolbarComponent implements OnInit {
-
   @Output() performSorting = new EventEmitter<SortingModel>();
   @Output() performFilter = new EventEmitter<FilterModel>();
   @Output() selectSearchType = new EventEmitter();

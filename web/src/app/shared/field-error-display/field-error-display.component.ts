@@ -8,11 +8,12 @@ import { highlight } from 'app/shared/animations/validation.animation';
   styleUrls: ['./field-error-display.component.scss']
 })
 export class FieldErrorDisplayComponent implements OnInit {
-
   @Input()
   displayError: boolean;
+
   @Input()
   errorMessage: string;
+
   @Input()
   validationTrigger: boolean;
 
@@ -20,5 +21,4 @@ export class FieldErrorDisplayComponent implements OnInit {
 
   ngOnInit() {
   }
-
 }

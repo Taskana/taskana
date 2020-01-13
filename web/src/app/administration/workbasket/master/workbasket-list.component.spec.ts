@@ -12,8 +12,6 @@ import { WorkbasketSummaryResource } from 'app/models/workbasket-summary-resourc
 import { FilterModel } from 'app/models/filter';
 import { LinksWorkbasketSummary } from 'app/models/links-workbasket-summary';
 
-import { WorkbasketListComponent } from './workbasket-list.component';
-import { WorkbasketListToolbarComponent } from './workbasket-list-toolbar/workbasket-list-toolbar.component';
 import { ImportExportComponent } from 'app/administration/components/import-export/import-export.component';
 
 import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition/workbasket-definition.service';
@@ -23,6 +21,8 @@ import { OrientationService } from 'app/services/orientation/orientation.service
 import { configureTests } from 'app/app.test.configuration';
 import { Page } from 'app/models/page';
 import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
+import { WorkbasketListToolbarComponent } from './workbasket-list-toolbar/workbasket-list-toolbar.component';
+import { WorkbasketListComponent } from './workbasket-list.component';
 
 @Component({
     selector: 'taskana-dummy-detail',
@@ -38,16 +38,20 @@ class DummyDetailComponent {
 class PaginationComponent {
     @Input()
     page: Page;
+
     @Output()
     workbasketsResourceChange = new EventEmitter<any>();
+
     @Output() changePage = new EventEmitter<any>();
 }
 
 const workbasketSummaryResource: WorkbasketSummaryResource = new WorkbasketSummaryResource(
     new Array<WorkbasketSummary>(
         new WorkbasketSummary('1', 'key1', 'NAME1', 'description 1', 'owner 1', '', '', 'PERSONAL', '', '', '', ''),
-        new WorkbasketSummary('2', 'key2', 'NAME2', 'description 2', 'owner 2', '', '', 'GROUP', '', '', '', ''))
-    , new LinksWorkbasketSummary({ 'href': 'url' }));
+        new WorkbasketSummary('2', 'key2', 'NAME2', 'description 2', 'owner 2', '', '', 'GROUP', '', '', '', '')
+),
+     new LinksWorkbasketSummary({ href: 'url' })
+);
 
 
 describe('WorkbasketListComponent', () => {
@@ -99,7 +103,6 @@ describe('WorkbasketListComponent', () => {
             fixture.detectChanges();
             done();
         });
-
     });
 
     afterEach(() => {
@@ -116,11 +119,11 @@ describe('WorkbasketListComponent', () => {
         expect(workbasketService.getWorkBasketsSummary).toHaveBeenCalled();
         workbasketService.getWorkBasketsSummary().subscribe(value => {
             expect(value).toBe(workbasketSummaryResource);
-        })
+        });
     });
 
-    it('should have wb-action-toolbar, wb-search-bar, wb-list-container, wb-pagination,' +
-        ' collapsedMenufilterWb and taskana-filter created in the html', () => {
+    it('should have wb-action-toolbar, wb-search-bar, wb-list-container, wb-pagination,'
+        + ' collapsedMenufilterWb and taskana-filter created in the html', () => {
             expect(debugElement.querySelector('#wb-action-toolbar')).toBeDefined();
             expect(debugElement.querySelector('#wb-search-bar')).toBeDefined();
             expect(debugElement.querySelector('#wb-pagination')).toBeDefined();
@@ -156,19 +159,19 @@ describe('WorkbasketListComponent', () => {
         expect(debugElement.querySelector('#sort-by-description')).toBeDefined();
         expect(debugElement.querySelector('#sort-by-owner')).toBeDefined();
         expect(debugElement.querySelector('#sort-by-type')).toBeDefined();
-
     });
 
     it('should have performRequest with forced = true after performFilter is triggered', (() => {
         const filter = new FilterModel({
-            name: 'someName', owner: 'someOwner', description: 'someDescription',
-            key: 'someKey', type: 'PERSONAL'
+            name: 'someName',
+owner: 'someOwner',
+description: 'someDescription',
+            key: 'someKey',
+type: 'PERSONAL'
         });
         component.performFilter(filter);
 
         expect(workbasketSummarySpy.calls.all()[1].args).toEqual([true, 'key', 'asc',
             '', 'someName', 'someDescription', '', 'someOwner', 'PERSONAL', '', 'someKey', '']);
-
     }));
-
 });

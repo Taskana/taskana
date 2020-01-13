@@ -21,7 +21,6 @@ import { Search } from './task-list-toolbar/task-list-toolbar.component';
   styleUrls: ['./task-master.component.scss']
 })
 export class TaskMasterComponent implements OnInit, OnDestroy {
-
   tasks: Task[];
   tasksPageInformation: Page;
   type = 'tasks';
@@ -37,12 +36,14 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
     workbasketId: '',
     workbasketKey: ''
   });
+
   requestInProgress = false;
   objectReference: ObjectReference;
   selectedSearchType: Search = Search.byWorkbasket;
 
   @ViewChild('wbToolbar', { static: true })
   private toolbarElement: ElementRef;
+
   private taskChangeSubscription: Subscription;
   private taskDeletedSubscription: Subscription;
   private taskAddedSubscription: Subscription;
@@ -53,7 +54,8 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
     private taskService: TaskService,
     private workplaceService: WorkplaceService,
     private alertService: AlertService,
-    private orientationService: OrientationService) {
+    private orientationService: OrientationService
+) {
     this.taskChangeSubscription = this.taskService.taskChangedStream.subscribe(task => {
       this.getTasks();
       this.selectedId = task ? task.taskId : '';
@@ -85,10 +87,11 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
         if (!task) {
           this.selectedId = '';
         }
-      });
+      }
+);
     this.orientationSubscription = this.orientationService.getOrientation().subscribe((orientation: Orientation) => {
       this.refreshWorkbasketList();
-    })
+    });
   }
 
 

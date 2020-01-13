@@ -3,9 +3,9 @@ import { SimpleChange } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from 'app/shared/shared.module';
 
-import { PaginationComponent } from './pagination.component';
 import { Page } from 'app/models/page';
 import { configureTests } from 'app/app.test.configuration';
+import { PaginationComponent } from './pagination.component';
 
 describe('PaginationComponent', () => {
   let component: PaginationComponent;
@@ -17,7 +17,7 @@ describe('PaginationComponent', () => {
     const configure = (testBed: TestBed) => {
       testBed.configureTestingModule({
         imports: [FormsModule, SharedModule]
-      })
+      });
     };
     configureTests(configure).then(testBed => {
       fixture = TestBed.createComponent(PaginationComponent);
@@ -29,9 +29,9 @@ describe('PaginationComponent', () => {
   });
 
   afterEach(() => {
-    fixture.detectChanges()
+    fixture.detectChanges();
     document.body.removeChild(debugElement);
-  })
+  });
 
   it('should create', () => {
     expect(component).toBeTruthy();
@@ -49,8 +49,8 @@ describe('PaginationComponent', () => {
     component.previousPageSelected = 2;
     fixture.detectChanges();
     component.changePage.subscribe(value => {
-      expect(value).toBe(1)
-    })
+      expect(value).toBe(1);
+    });
     component.changeToPage(1);
   });
 
@@ -59,8 +59,8 @@ describe('PaginationComponent', () => {
     component.previousPageSelected = 2;
     fixture.detectChanges();
     component.changePage.subscribe(value => {
-      expect(false).toBe(true)
-    })
+      expect(false).toBe(true);
+    });
     component.changeToPage(2);
   });
 
@@ -69,8 +69,8 @@ describe('PaginationComponent', () => {
     component.previousPageSelected = 2;
     fixture.detectChanges();
     component.changePage.subscribe(value => {
-      expect(value).toBe(3)
-    })
+      expect(value).toBe(3);
+    });
     component.changeToPage(100);
   });
 
@@ -79,8 +79,8 @@ describe('PaginationComponent', () => {
     component.previousPageSelected = 2;
     fixture.detectChanges();
     component.changePage.subscribe(value => {
-      expect(value).toBe(1)
-    })
+      expect(value).toBe(1);
+    });
     component.changeToPage(0);
   });
 
@@ -91,7 +91,6 @@ describe('PaginationComponent', () => {
     });
     fixture.detectChanges();
     expect(component.pageSelected).toBe(2);
-
   });
 
   it('should getPagesTextToShow return 7 of 13 with size < totalElements', () => {
@@ -114,5 +113,4 @@ describe('PaginationComponent', () => {
     component.numberOfItems = 0;
     expect(component.getPagesTextToShow()).toBe(component.numberOfItems.toString().concat(' of 0 workbaskets'));
   });
-
 });

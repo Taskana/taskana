@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TaskdetailsAttributeComponent } from './attribute.component';
 import { FormsModule } from '@angular/forms';
+import { TaskdetailsAttributeComponent } from './attribute.component';
 
 // TODO: test pending to test. Failing random
 xdescribe('AttributeComponent', () => {
@@ -11,7 +11,7 @@ xdescribe('AttributeComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [FormsModule],
-      declarations: [ TaskdetailsAttributeComponent ]
+      declarations: [TaskdetailsAttributeComponent]
     })
     .compileComponents();
   }));

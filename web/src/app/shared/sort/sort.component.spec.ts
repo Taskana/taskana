@@ -1,8 +1,8 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {SortComponent} from './sort.component';
-import {configureTests} from 'app/app.test.configuration';
-import {Direction} from 'app/models/sorting';
+import { configureTests } from 'app/app.test.configuration';
+import { Direction } from 'app/models/sorting';
+import { SortComponent } from './sort.component';
 
 describe('SortComponent', () => {
   let component: SortComponent;

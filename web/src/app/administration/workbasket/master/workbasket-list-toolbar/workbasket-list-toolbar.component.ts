@@ -17,8 +17,6 @@ import { expandDown } from 'app/shared/animations/expand.animation';
   styleUrls: ['./workbasket-list-toolbar.component.scss']
 })
 export class WorkbasketListToolbarComponent implements OnInit {
-
-
   @Input() workbaskets: Array<WorkbasketSummary>;
   @Output() performSorting = new EventEmitter<SortingModel>();
   @Output() performFilter = new EventEmitter<FilterModel>();
@@ -27,14 +25,16 @@ export class WorkbasketListToolbarComponent implements OnInit {
   sortingFields = new Map([['name', 'Name'], ['key', 'Key'], ['description', 'Description'], ['owner', 'Owner'], ['type', 'Type']]);
   filteringTypes = new Map([['ALL', 'All'], ['PERSONAL', 'Personal'], ['GROUP', 'Group'],
     ['CLEARANCE', 'Clearance'], ['TOPIC', 'Topic']]);
-  filterParams = {name: '', key: '', type: '', description: '', owner: ''};
+
+  filterParams = { name: '', key: '', type: '', description: '', owner: '' };
   toolbarState = false;
   filterType = TaskanaType.WORKBASKETS;
 
   constructor(
     private workbasketService: WorkbasketService,
     private route: ActivatedRoute,
-    private router: Router) {
+    private router: Router
+) {
   }
 
   ngOnInit() {
@@ -52,5 +52,4 @@ export class WorkbasketListToolbarComponent implements OnInit {
     this.workbasketService.selectWorkBasket();
     this.router.navigate([{ outlets: { detail: ['new-workbasket'] } }], { relativeTo: this.route });
   }
-
 }

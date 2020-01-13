@@ -10,7 +10,6 @@ import { expandDown } from '../../shared/animations/expand.animation';
   animations: [expandDown],
 })
 export class UserInformationComponent implements OnInit {
-
   userInformation: UserInfoModel;
   roles = '';
   showRoles = false;
@@ -19,7 +18,7 @@ export class UserInformationComponent implements OnInit {
   ngOnInit() {
     this.userInformation = this.taskanaEngineService.currentUserInfo;
     if (this.userInformation) {
-      this.roles = '[' + this.userInformation.roles.join(',') + ']';
+      this.roles = `[${this.userInformation.roles.join(',')}]`;
     }
   }
 

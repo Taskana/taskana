@@ -6,5 +6,5 @@ export class LinksWorkbasketSummary extends Links {
         distributionTargets?,
         accessItems?,
         public allWorkbaskets?: { 'href': string }
-    ) { super(self, distributionTargets, accessItems) }
+    ) { super(self, distributionTargets, accessItems); }
 }

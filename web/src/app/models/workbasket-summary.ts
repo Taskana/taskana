@@ -18,6 +18,7 @@ export class WorkbasketSummary {
         public orgLevel4?: string,
         public markedForDeletion: boolean = false,
         public _links?: Links,
-        public page?: Page ) {
+        public page?: Page
+) {
     }
 }

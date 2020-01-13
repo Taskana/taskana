@@ -10,12 +10,8 @@ export class SelectWorkBasketPipe implements PipeTransform {
         }
 
         for (let index = originArray.length - 1; index >= 0; index--) {
-            if ((arg1 && !selectionArray.some(elementToRemove => {
-                return originArray[index].workbasketId === elementToRemove.workbasketId
-            })) ||
-                !arg1 && selectionArray.some(elementToRemove => {
-                    return originArray[index].workbasketId === elementToRemove.workbasketId
-                })) {
+            if ((arg1 && !selectionArray.some(elementToRemove => originArray[index].workbasketId === elementToRemove.workbasketId))
+                || !arg1 && selectionArray.some(elementToRemove => originArray[index].workbasketId === elementToRemove.workbasketId)) {
                 originArray.splice(index, 1);
             }
         }

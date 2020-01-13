@@ -22,7 +22,6 @@ import { AccessIdDefinition } from 'app/models/access-id';
   ]
 })
 export class TypeAheadComponent implements OnInit, ControlValueAccessor {
-
   dataSource: any;
   typing = false;
 
@@ -66,7 +65,7 @@ export class TypeAheadComponent implements OnInit, ControlValueAccessor {
   // get accessor
   get value(): any {
     return this.innerValue;
-  };
+  }
 
   // set accessor including call the onchange callback
   set value(v: any) {
@@ -119,7 +118,7 @@ export class TypeAheadComponent implements OnInit, ControlValueAccessor {
     if (event && event.item) {
       this.value = event.item.accessId;
       this.dataSource.selected = event.item;
-      this.selectedItem.emit(this.dataSource.selected)
+      this.selectedItem.emit(this.dataSource.selected);
     }
     this.setTyping(false);
   }
@@ -129,8 +128,7 @@ export class TypeAheadComponent implements OnInit, ControlValueAccessor {
     if (value) {
       setTimeout(() => {
         this.inputTypeAhead.nativeElement.focus();
-      }, 1)
-
+      }, 1);
     }
     this.typing = value;
   }
