@@ -33,7 +33,7 @@ export class TaskQueryComponent implements OnInit {
     private orientationService: OrientationService,
     private generalModalService: GeneralModalService,
     private requestInProgressService: RequestInProgressService
-) { }
+  ) { }
 
   ngOnInit() {
     this.orientationSubscription = this.orientationService.getOrientation().subscribe((orientation: Orientation) => {
@@ -101,7 +101,7 @@ export class TaskQueryComponent implements OnInit {
   }
 
   isDate(fieldName: string): boolean {
-      return (fieldName === 'created');
+    return (fieldName === 'created');
   }
 
   filterFieldsToAllowQuerying(fieldName: string): boolean {
@@ -182,16 +182,16 @@ export class TaskQueryComponent implements OnInit {
       this.orderBy.sortDirection,
       new TaskHistoryEventData(this.taskQueryForm.value),
       false
-).subscribe(taskQueryResource => {
-        this.requestInProgressService.setRequestInProgress(false);
-        if (!taskQueryResource.taskHistoryEvents) {
-          this.taskQuery = null;
-          this.taskQueryResource = null;
-          return null;
-        }
-        this.taskQueryResource = taskQueryResource;
-        this.taskQuery = taskQueryResource.taskHistoryEvents;
-      });
+    ).subscribe(taskQueryResource => {
+      this.requestInProgressService.setRequestInProgress(false);
+      if (!taskQueryResource.taskHistoryEvents) {
+        this.taskQuery = null;
+        this.taskQueryResource = null;
+        return null;
+      }
+      this.taskQueryResource = taskQueryResource;
+      this.taskQuery = taskQueryResource.taskHistoryEvents;
+    });
   }
 
   private initTaskQueryForm() {
@@ -211,8 +211,8 @@ export class TaskQueryComponent implements OnInit {
   }
 
   updateDate($event: string) {
-      this.taskQueryForm.get('created').setValue($event.substring(0, 10));
-      this.performRequest();
+    this.taskQueryForm.get('created').setValue($event.substring(0, 10));
+    this.performRequest();
   }
 
   onDestroy() {

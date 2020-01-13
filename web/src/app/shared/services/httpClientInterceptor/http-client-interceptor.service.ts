@@ -14,7 +14,7 @@ export class HttpClientInterceptor implements HttpInterceptor {
   constructor(
     private generalModalService: GeneralModalService,
     private requestInProgressService: RequestInProgressService
-) {
+  ) {
 
   }
 
@@ -28,13 +28,13 @@ export class HttpClientInterceptor implements HttpInterceptor {
       if (error instanceof HttpErrorResponse && (error.status === 401 || error.status === 403)) {
         this.generalModalService.triggerMessage(
           new MessageModal('You have no access to this resource ', error)
-);
+        );
       } else if (error instanceof HttpErrorResponse && (error.status === 404) && error.url.indexOf('environment-information.json')) {
         // ignore this error message
       } else {
         this.generalModalService.triggerMessage(
           new MessageModal('There was error, please contact with your administrator ', error)
-);
+        );
       }
     }));
   }

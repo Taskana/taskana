@@ -180,19 +180,19 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
           this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Classification ${classification.key} was saved successfully`));
           this.afterRequest();
         },
-          error => {
-            this.generalModalService.triggerMessage(new MessageModal('There was an error creating a classification', error));
-            this.afterRequest();
-          });
+        error => {
+          this.generalModalService.triggerMessage(new MessageModal('There was an error creating a classification', error));
+          this.afterRequest();
+        });
     } else {
       try {
         this.classification = (<ClassificationDefinition> await this.classificationsService.putClassification(
           this.classification._links.self.href, this.classification
-));
+        ));
         this.afterRequest();
         this.alertService.triggerAlert(
           new AlertModel(AlertType.SUCCESS, `Classification ${this.classification.key} was saved successfully`)
-);
+        );
         this.cloneClassification(this.classification);
       } catch (error) {
         this.generalModalService.triggerMessage(new MessageModal('There was error while saving your classification', error));
@@ -279,7 +279,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     if (!this.classification || !this.classification.classificationId) {
       this.generalModalService.triggerMessage(
         new MessageModal('There is no classification selected', 'Please check if you are creating a classification')
-);
+      );
       return false;
     }
     this.requestInProgressService.setRequestInProgress(true);

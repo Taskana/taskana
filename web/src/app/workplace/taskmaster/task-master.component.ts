@@ -55,7 +55,7 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
     private workplaceService: WorkplaceService,
     private alertService: AlertService,
     private orientationService: OrientationService
-) {
+  ) {
     this.taskChangeSubscription = this.taskService.taskChangedStream.subscribe(task => {
       this.getTasks();
       this.selectedId = task ? task.taskId : '';
@@ -88,7 +88,7 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
           this.selectedId = '';
         }
       }
-);
+    );
     this.orientationSubscription = this.orientationService.getOrientation().subscribe((orientation: Orientation) => {
       this.refreshWorkbasketList();
     });

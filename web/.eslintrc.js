@@ -16,7 +16,7 @@ module.exports = {
   ],
   "rules": {
     "arrow-parens": ["error", "as-needed"],
-    "@typescript-eslint/indent": ['off', 2],
+    "@typescript-eslint/indent": ['error', 2],
     "max-len": ["off", { "code": 140, "ignorePattern": "import *" }], // smaller than 140?
     "object-curly-newline": ["error", { "ImportDeclaration": "never" }],
     "quote-props": ["error", "as-needed"],

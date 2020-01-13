@@ -10,7 +10,7 @@ describe('MonitorWorkbasketQuerySwitcherComponent', () => {
     TestBed.configureTestingModule({
       declarations: [MonitorWorkbasketQuerySwitcherComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

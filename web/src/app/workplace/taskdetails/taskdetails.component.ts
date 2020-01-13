@@ -37,14 +37,14 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   private deleteTaskSubscription: Subscription;
 
   constructor(private route: ActivatedRoute,
-              private taskService: TaskService,
-              private workplaceService: WorkplaceService,
-              private router: Router,
-              private removeConfirmationService: RemoveConfirmationService,
-              private requestInProgressService: RequestInProgressService,
-              private alertService: AlertService,
-              private generalModalService: GeneralModalService,
-              private masterAndDetailService: MasterAndDetailService) {
+    private taskService: TaskService,
+    private workplaceService: WorkplaceService,
+    private router: Router,
+    private removeConfirmationService: RemoveConfirmationService,
+    private requestInProgressService: RequestInProgressService,
+    private alertService: AlertService,
+    private generalModalService: GeneralModalService,
+    private masterAndDetailService: MasterAndDetailService) {
   }
 
   ngOnInit() {
@@ -87,7 +87,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
       }, err => {
         this.generalModalService.triggerMessage(
           new MessageModal('An error occurred while fetching the task', err)
-);
+        );
       });
     }
   }
@@ -117,7 +117,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
     }, err => {
       this.generalModalService.triggerMessage(
         new MessageModal('An error occurred while deleting the task ', err)
-);
+      );
     });
   }
 

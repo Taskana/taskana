@@ -71,7 +71,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
     private categoryService: ClassificationCategoriesService,
     private elementRef: ElementRef,
     private classificationsService: ClassificationsService
-) {
+  ) {
   }
 
   ngOnInit() {

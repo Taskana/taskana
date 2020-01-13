@@ -1,5 +1,5 @@
 
 export enum ACTION {
-    CREATE = 'CREATE',
-    COPY = 'COPY'
+  CREATE = 'CREATE',
+  COPY = 'COPY'
 }

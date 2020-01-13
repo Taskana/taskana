@@ -50,7 +50,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
     private domainService: DomainService,
     private taskanaEngineService: TaskanaEngineService,
     private window: WindowRefService
-) { }
+  ) { }
 
   ngOnInit() {
     this.selectedRouteSubscription = this.selectedRouteService.getSelectedRoute().subscribe((value: string) => {

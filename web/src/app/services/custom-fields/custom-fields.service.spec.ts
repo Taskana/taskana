@@ -18,9 +18,9 @@ describe('CustomFieldsService', () => {
     const returnedValue = service.getCustomObject(categoriesData);
     expect(returnedValue).toBe(categoriesData);
     expect(service).toBeTruthy();
-    }));
+  }));
 
-    it('should take default icon path in merge', inject([CustomFieldsService], (service: CustomFieldsService) => {
+  it('should take default icon path in merge', inject([CustomFieldsService], (service: CustomFieldsService) => {
     const json = require('./taskana-customization-test.json');
     service.initCustomFields('EN', json);
     const categoriesDefault = json.EN.classifications.categories;
@@ -33,9 +33,9 @@ describe('CustomFieldsService', () => {
     const returnedValue = service.getCustomObject(categoriesData, 'classifications.categories');
     expect(returnedValue).toEqual(categoriesDefault);
     expect(service).toBeTruthy();
-    }));
+  }));
 
-    it('should take merge icon path', inject([CustomFieldsService], (service: CustomFieldsService) => {
+  it('should take merge icon path', inject([CustomFieldsService], (service: CustomFieldsService) => {
     const json = require('./taskana-customization-test.json');
     service.initCustomFields('EN', json);
     const categoriesData = { DEFAULT: 'assets/icons/categories/default.svg' };
@@ -49,5 +49,5 @@ describe('CustomFieldsService', () => {
     const returnedValue = service.getCustomObject(categoriesData, 'classifications.categories');
     expect(returnedValue).toEqual(result);
     expect(service).toBeTruthy();
-    }));
+  }));
 });

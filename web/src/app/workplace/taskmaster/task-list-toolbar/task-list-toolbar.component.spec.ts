@@ -44,7 +44,7 @@ xdescribe('TasklistToolbarComponent', () => {
       providers: [TaskService, HttpClient, WorkbasketService, DomainService, RequestInProgressService,
         SelectedRouteService, WorkplaceService, ComponentLoaderFactory, PositioningService]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

@@ -20,8 +20,8 @@ import { NavBarComponent } from './nav-bar.component';
 describe('NavBarComponent', () => {
   let component: NavBarComponent;
   let fixture: ComponentFixture<NavBarComponent>;
-  let debugElement; let
-navBar;
+  let debugElement;
+  let navBar;
 
   const routes: Routes = [
     { path: 'classifications', component: NavBarComponent }

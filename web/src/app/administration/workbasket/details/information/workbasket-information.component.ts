@@ -32,7 +32,7 @@ import { FormsValidatorService } from 'app/shared/services/forms/forms-validator
   styleUrls: ['./workbasket-information.component.scss']
 })
 export class WorkbasketInformationComponent
-  implements OnInit, OnChanges, OnDestroy {
+implements OnInit, OnChanges, OnDestroy {
   @Input()
   workbasket: Workbasket;
 
@@ -139,7 +139,7 @@ export class WorkbasketInformationComponent
     this.removeConfirmationService.setRemoveConfirmation(
       this.onRemoveConfirmed.bind(this),
       `You are going to delete workbasket: ${
-      this.workbasket.key
+        this.workbasket.key
       }. Can you confirm this action?`
     );
   }
@@ -163,7 +163,7 @@ export class WorkbasketInformationComponent
             new AlertModel(
               AlertType.SUCCESS,
               `DistributionTarget for workbasketID: ${
-              this.workbasket.workbasketId
+                this.workbasket.workbasketId
               } was removed successfully`
             )
           );
@@ -172,7 +172,7 @@ export class WorkbasketInformationComponent
           this.generalModalService.triggerMessage(
             new MessageModal(
               `There was an error removing distribution target for ${
-              this.workbasket.workbasketId
+                this.workbasket.workbasketId
               }.`,
               error
             )

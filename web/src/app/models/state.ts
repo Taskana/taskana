@@ -1,4 +1,4 @@
 export class State {
-    state: string;
-    counter: number;
+  state: string;
+  counter: number;
 }

@@ -34,7 +34,7 @@ export class WorkbasketListToolbarComponent implements OnInit {
     private workbasketService: WorkbasketService,
     private route: ActivatedRoute,
     private router: Router
-) {
+  ) {
   }
 
   ngOnInit() {

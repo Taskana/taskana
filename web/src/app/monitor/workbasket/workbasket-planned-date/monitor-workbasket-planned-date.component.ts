@@ -32,7 +32,7 @@ export class MonitorWorkbasketPlannedDateComponent implements OnInit {
   constructor(
     private restConnectorService: RestConnectorService,
     private requestInProgressService: RequestInProgressService
-) {
+  ) {
   }
 
   async ngOnInit() {

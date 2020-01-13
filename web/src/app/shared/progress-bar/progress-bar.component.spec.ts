@@ -10,7 +10,7 @@ describe('ProgressBarComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ProgressBarComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

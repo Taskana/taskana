@@ -116,7 +116,7 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
       }, err => {
         this.generalModalService.triggerMessage(
           new MessageModal('An error occurred while fetching the workbasket', err)
-);
+        );
       });
     }
   }

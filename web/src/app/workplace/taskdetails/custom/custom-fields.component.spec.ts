@@ -13,7 +13,7 @@ xdescribe('CustomComponent', () => {
       imports: [FormsModule],
       declarations: [TaskdetailsCustomFieldsComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

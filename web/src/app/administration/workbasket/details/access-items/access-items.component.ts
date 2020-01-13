@@ -89,7 +89,7 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
     private customFieldsService: CustomFieldsService,
     private formBuilder: FormBuilder,
     private formsValidatorService: FormsValidatorService
-) {
+  ) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -180,13 +180,13 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
     this.requestInProgressService.setRequestInProgress(true);
     this.workbasketService.updateWorkBasketAccessItem(
       this.accessItemsResource._links.self.href, this.AccessItemsForm.value.accessItemsGroups
-)
+    )
       .subscribe(response => {
         this.accessItemsClone = this.cloneAccessItems(this.AccessItemsForm.value.accessItemsGroups);
         this.accessItemsResetClone = this.cloneAccessItems(this.AccessItemsForm.value.accessItemsGroups);
         this.alertService.triggerAlert(new AlertModel(
           AlertType.SUCCESS, `Workbasket  ${this.workbasket.name} Access items were saved successfully`
-));
+        ));
         this.requestInProgressService.setRequestInProgress(false);
       }, error => {
         this.generalModalService.triggerMessage(new MessageModal('There was error while saving your workbasket\'s access items', error));
