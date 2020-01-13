@@ -11,6 +11,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import acceptance.AbstractAccTest;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.HashMap;
@@ -778,6 +780,11 @@ class CreateTaskAccTest extends AbstractAccTest {
     newTask.setCustomAttributes(createSimpleCustomProperties(5));
     newTask.setDescription("Description of test task");
     newTask.setNote("My note");
+    
+    Instant planned = LocalDateTime.parse("2020-01-20T16:55:23").atZone(ZoneId.systemDefault())
+        .toInstant();
+    newTask.setPlanned(planned);
+    
     newTask.addAttachment(
         createAttachment(
             "DOCTYPE_DEFAULT",

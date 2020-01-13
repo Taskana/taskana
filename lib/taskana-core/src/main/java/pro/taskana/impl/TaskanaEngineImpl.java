@@ -35,6 +35,7 @@ import pro.taskana.exceptions.ConnectionNotSetException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.SystemException;
 import pro.taskana.history.HistoryEventProducer;
+import pro.taskana.impl.persistence.InstantTypeHandler;
 import pro.taskana.impl.persistence.MapTypeHandler;
 import pro.taskana.impl.util.LoggerUtils;
 import pro.taskana.mappings.AttachmentMapper;
@@ -244,6 +245,13 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     configuration.addMapper(AttachmentMapper.class);
     configuration.addMapper(JobMapper.class);
     configuration.getTypeHandlerRegistry().register(MapTypeHandler.class);
+    configuration.getTypeHandlerRegistry().register(InstantTypeHandler.class);
+
+    //    configuration.getTypeHandlerRegistry().register(Instant.class,JdbcType.TIMESTAMP,
+    //        InstantTypeHandler.class);
+    //    configuration.getTypeHandlerRegistry().register(Instant.class,null,
+    //        InstantTypeHandler.class);
+
     SqlSessionFactory localSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
     return SqlSessionManager.newInstance(localSessionFactory);
   }
