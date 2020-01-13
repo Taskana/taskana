@@ -10,7 +10,7 @@ describe('FieldErrorDisplayComponent', () => {
     TestBed.configureTestingModule({
       declarations: [FieldErrorDisplayComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

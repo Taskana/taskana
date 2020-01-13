@@ -9,8 +9,9 @@ import { AppComponent } from './app.component';
 import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 
 describe('AppComponent', () => {
-  let app; let fixture; let
-debugElement;
+  let app;
+  let fixture;
+  let debugElement;
 
   const routes: Routes = [
     { path: 'classifications', component: AppComponent }

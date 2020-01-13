@@ -37,8 +37,12 @@ const routes: Routes = [
 describe('WorkbasketInformationComponent', () => {
   let component: WorkbasketInformationComponent;
   let fixture: ComponentFixture<WorkbasketInformationComponent>;
-  let debugElement; let workbasketService; let alertService; let savingWorkbasketService; let requestInProgressService; let
-formsValidatorService;
+  let debugElement;
+  let workbasketService;
+  let alertService;
+  let savingWorkbasketService;
+  let requestInProgressService;
+  let formsValidatorService;
 
   beforeEach(done => {
     const configure = (testBed: TestBed) => {
@@ -145,7 +149,7 @@ formsValidatorService;
       new Workbasket('someNewId', 'created', 'keyModified', 'domain', ICONTYPES.TOPIC, 'modified', 'name', 'description',
         'owner', 'custom1', 'custom2', 'custom3', 'custom4', 'orgLevel1', 'orgLevel2',
         'orgLevel3', 'orgLevel4', new Links({ href: 'someUrl' }))
-));
+    ));
     fixture.detectChanges();
     spyOn(formsValidatorService, 'validateFormAccess').and.returnValue(Promise.resolve(true));
     component.onSubmit();
@@ -158,32 +162,32 @@ formsValidatorService;
 
   it('should post a new workbasket, new distribution targets and new access '
     + 'items when no workbasketId is defined and action is copy', async(() => {
-      const workbasket = new Workbasket(undefined, 'created', 'keyModified', 'domain', ICONTYPES.TOPIC,
-        'modified', 'name', 'description', 'owner', 'custom1', 'custom2',
-        'custom3', 'custom4', 'orgLevel1', 'orgLevel2',
-        'orgLevel3', 'orgLevel4', new Links({ href: 'someUrl' }));
-      component.workbasket = workbasket;
-      component.action = ACTION.COPY;
+    const workbasket = new Workbasket(undefined, 'created', 'keyModified', 'domain', ICONTYPES.TOPIC,
+      'modified', 'name', 'description', 'owner', 'custom1', 'custom2',
+      'custom3', 'custom4', 'orgLevel1', 'orgLevel2',
+      'orgLevel3', 'orgLevel4', new Links({ href: 'someUrl' }));
+    component.workbasket = workbasket;
+    component.action = ACTION.COPY;
 
-      spyOn(workbasketService, 'createWorkbasket').and.returnValue(of(
-        new Workbasket('someNewId', 'created', 'keyModified', 'domain', ICONTYPES.TOPIC, 'modified', 'name', 'description',
-          'owner', 'custom1', 'custom2', 'custom3', 'custom4', 'orgLevel1', 'orgLevel2',
-          'orgLevel3', 'orgLevel4', new Links({ href: 'someUrl' }, { href: 'someUrl' }, { href: 'someUrl' }))
-));
+    spyOn(workbasketService, 'createWorkbasket').and.returnValue(of(
+      new Workbasket('someNewId', 'created', 'keyModified', 'domain', ICONTYPES.TOPIC, 'modified', 'name', 'description',
+        'owner', 'custom1', 'custom2', 'custom3', 'custom4', 'orgLevel1', 'orgLevel2',
+        'orgLevel3', 'orgLevel4', new Links({ href: 'someUrl' }, { href: 'someUrl' }, { href: 'someUrl' }))
+    ));
 
-      spyOn(savingWorkbasketService, 'triggerDistributionTargetSaving');
-      spyOn(savingWorkbasketService, 'triggerAccessItemsSaving');
+    spyOn(savingWorkbasketService, 'triggerDistributionTargetSaving');
+    spyOn(savingWorkbasketService, 'triggerAccessItemsSaving');
+    fixture.detectChanges();
+    spyOn(formsValidatorService, 'validateFormAccess').and.returnValue(Promise.resolve(true));
+    component.onSubmit();
+    fixture.whenStable().then(() => {
       fixture.detectChanges();
-      spyOn(formsValidatorService, 'validateFormAccess').and.returnValue(Promise.resolve(true));
-      component.onSubmit();
-      fixture.whenStable().then(() => {
-        fixture.detectChanges();
-        expect(alertService.triggerAlert).toHaveBeenCalled();
-        expect(component.workbasket.workbasketId).toBe('someNewId');
-        expect(savingWorkbasketService.triggerDistributionTargetSaving).toHaveBeenCalled();
-        expect(savingWorkbasketService.triggerAccessItemsSaving).toHaveBeenCalled();
-      });
-    }));
+      expect(alertService.triggerAlert).toHaveBeenCalled();
+      expect(component.workbasket.workbasketId).toBe('someNewId');
+      expect(savingWorkbasketService.triggerDistributionTargetSaving).toHaveBeenCalled();
+      expect(savingWorkbasketService.triggerAccessItemsSaving).toHaveBeenCalled();
+    });
+  }));
 
   it('should trigger requestInProgress service true before  and requestInProgress false after remove a workbasket', () => {
     const links = new Links({ href: 'someUrl' });

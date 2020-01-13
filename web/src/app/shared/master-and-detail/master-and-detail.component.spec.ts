@@ -26,8 +26,10 @@ export class DummyDetailComponent {
 }
 
 describe('MasterAndDetailComponent ', () => {
-  let component; let fixture; let debugElement; let
-router;
+  let component;
+  let fixture;
+  let debugElement;
+  let router;
 
   const routes: Routes = [
     {

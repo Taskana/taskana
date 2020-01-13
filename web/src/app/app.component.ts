@@ -46,7 +46,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private selectedRouteService: SelectedRouteService,
     private formsValidatorService: FormsValidatorService,
     public uploadService: UploadService
-) {
+  ) {
   }
 
   ngOnInit() {

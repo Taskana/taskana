@@ -74,7 +74,7 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
     private generalModalService: GeneralModalService,
     private requestInProgressService: RequestInProgressService,
     private orientationService: OrientationService
-) { }
+  ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (!this.initialized && changes.active && changes.active.currentValue === 'distributionTargets') {
@@ -116,22 +116,22 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
     this.requestInProgressService.setRequestInProgress(true);
     this.workbasketService.updateWorkBasketsDistributionTargets(
       this.distributionTargetsSelectedResource._links.self.href, this.getSeletedIds()
-).subscribe(response => {
-        this.requestInProgressService.setRequestInProgress(false);
-        this.distributionTargetsSelected = response.distributionTargets;
-        this.distributionTargetsSelectedClone = Object.assign([], this.distributionTargetsSelected);
-        this.distributionTargetsClone = Object.assign([], this.distributionTargetsLeft);
-        this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS,
-          `Workbasket  ${this.workbasket.name} : Distribution targets were saved successfully`));
-        return true;
-      },
-        error => {
-          this.generalModalService.triggerMessage(
-            new MessageModal('There was error while saving your workbasket\'s distribution targets', error)
-          );
-          this.requestInProgressService.setRequestInProgress(false);
-          return false;
-        });
+    ).subscribe(response => {
+      this.requestInProgressService.setRequestInProgress(false);
+      this.distributionTargetsSelected = response.distributionTargets;
+      this.distributionTargetsSelectedClone = Object.assign([], this.distributionTargetsSelected);
+      this.distributionTargetsClone = Object.assign([], this.distributionTargetsLeft);
+      this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS,
+        `Workbasket  ${this.workbasket.name} : Distribution targets were saved successfully`));
+      return true;
+    },
+    error => {
+      this.generalModalService.triggerMessage(
+        new MessageModal('There was error while saving your workbasket\'s distribution targets', error)
+      );
+      this.requestInProgressService.setRequestInProgress(false);
+      return false;
+    });
     return false;
   }
 
@@ -149,11 +149,11 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
       dualListFilter.filterBy.filterParams.name, dualListFilter.filterBy.filterParams.description, '',
       dualListFilter.filterBy.filterParams.owner,	dualListFilter.filterBy.filterParams.type, '',
       dualListFilter.filterBy.filterParams.key, '', true).subscribe(resultList => {
-        (dualListFilter.side === Side.RIGHT)
-          ? this.distributionTargetsRight = (resultList.workbaskets)
-          : this.distributionTargetsLeft = (resultList.workbaskets);
-        this.onRequest(true, dualListFilter.side);
-      });
+      (dualListFilter.side === Side.RIGHT)
+        ? this.distributionTargetsRight = (resultList.workbaskets)
+        : this.distributionTargetsLeft = (resultList.workbaskets);
+      this.onRequest(true, dualListFilter.side);
+    });
   }
 
   ngOnDestroy(): void {
@@ -171,16 +171,16 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
     }
     this.distributionTargetsSubscription = this.workbasketService.getWorkBasketsDistributionTargets(
       this.workbasket._links.distributionTargets.href
-).subscribe(
-        (distributionTargetsSelectedResource: WorkbasketDistributionTargetsResource) => {
-          this.distributionTargetsSelectedResource = distributionTargetsSelectedResource;
-          this.distributionTargetsSelected = distributionTargetsSelectedResource.distributionTargets;
-          this.distributionTargetsSelectedClone = Object.assign([], this.distributionTargetsSelected);
-          TaskanaQueryParameters.page = 1;
-          this.calculateNumberItemsList();
-          this.getWorkbaskets();
-        }
-);
+    ).subscribe(
+      (distributionTargetsSelectedResource: WorkbasketDistributionTargetsResource) => {
+        this.distributionTargetsSelectedResource = distributionTargetsSelectedResource;
+        this.distributionTargetsSelected = distributionTargetsSelectedResource.distributionTargets;
+        this.distributionTargetsSelectedClone = Object.assign([], this.distributionTargetsSelected);
+        TaskanaQueryParameters.page = 1;
+        this.calculateNumberItemsList();
+        this.getWorkbaskets();
+      }
+    );
 
     this.savingDistributionTargetsSubscription = this.savingWorkbaskets.triggeredDistributionTargetsSaving()
       .subscribe((savingInformation: SavingInformation) => {
@@ -238,7 +238,7 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
           }
           this.onRequest(true);
         }
-);
+      );
   }
 
   private setBadge() {

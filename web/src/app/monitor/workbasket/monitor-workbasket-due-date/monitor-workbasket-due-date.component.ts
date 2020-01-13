@@ -31,7 +31,7 @@ export class MonitorWorkbasketDueDateComponent implements OnInit {
   constructor(
     private restConnectorService: RestConnectorService,
     private requestInProgressService: RequestInProgressService
-) {
+  ) {
   }
 
 

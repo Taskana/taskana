@@ -102,7 +102,7 @@ describe('TaskanaTreeComponent', () => {
     spyOn(classificationsService, 'getClassification').and.returnValue(new ClassificationDefinition('id4',
       'key4', '', '', 'MANUAL', 'DOMAIN_A', 'TASK', true, '019-04-10T10:23:34.985Z', '2019-04-10T10:23:34.985Z',
       'classification4', 'description', 1, 'level', '', '', '', '', '', '',
-       '', '', '', new LinksClassification({ href: '' }, '', '', { href: '' }, { href: '' }, { href: '' })));
+      '', '', '', new LinksClassification({ href: '' }, '', '', { href: '' }, { href: '' }, { href: '' })));
     spyOn(component, 'switchTaskanaSpinner');
     const classification = classificationsService.getClassification();
     expect(classification.parentId).toEqual('');
@@ -121,7 +121,7 @@ describe('TaskanaTreeComponent', () => {
     spyOn(classificationsService, 'getClassification').and.returnValue(new ClassificationDefinition('id3',
       'key3', 'id1', 'key1', 'MANUAL', 'DOMAIN_A', 'TASK', true, '019-04-10T10:23:34.985Z', '2019-04-10T10:23:34.985Z',
       'classification3', 'description', 1, 'level', '', '', '', '', '', '',
-       '', '', '', new LinksClassification({ href: '' }, '', '', { href: '' }, { href: '' }, { href: '' })));
+      '', '', '', new LinksClassification({ href: '' }, '', '', { href: '' }, { href: '' }, { href: '' })));
     spyOn(component, 'switchTaskanaSpinner');
     const classification = classificationsService.getClassification();
     expect(classification.parentId).toEqual('id1');

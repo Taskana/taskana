@@ -2,19 +2,19 @@ import { Component, forwardRef, Input } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 @Component({
-    selector: 'taskana-type-ahead',
-    template: 'dummydetail',
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            multi: true,
-            useExisting: forwardRef(() => TaskanaTypeAheadMockComponent),
-        }
-    ]
+  selector: 'taskana-type-ahead',
+  template: 'dummydetail',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      multi: true,
+      useExisting: forwardRef(() => TaskanaTypeAheadMockComponent),
+    }
+  ]
 })
 export class TaskanaTypeAheadMockComponent implements ControlValueAccessor {
     @Input()
-    placeHolderMessage;
+  placeHolderMessage;
 
     @Input()
     validationValue;

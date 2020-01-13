@@ -10,7 +10,7 @@ describe('ClassificationTasksComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ClassificationTasksComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

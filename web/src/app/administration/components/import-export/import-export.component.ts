@@ -33,7 +33,7 @@ export class ImportExportComponent implements OnInit {
     private alertService: AlertService,
     public uploadservice: UploadService,
     private importExportService: ImportExportService
-) {
+  ) {
   }
 
   ngOnInit() {
@@ -52,8 +52,8 @@ export class ImportExportComponent implements OnInit {
 
   uploadFile() {
     const file = this.selectedFileInput.nativeElement.files[0];
-      const formdata = new FormData();
-      const ajax = new XMLHttpRequest();
+    const formdata = new FormData();
+    const ajax = new XMLHttpRequest();
     if (!this.checkFormatFile(file)) { return false; }
     formdata.append('file', file);
     ajax.upload.addEventListener('progress', this.progressHandler.bind(this), false);
@@ -66,7 +66,7 @@ export class ImportExportComponent implements OnInit {
       ajax.open('POST', `${environment.taskanaRestUrl}/v1/classification-definitions`);
     }
     if (!environment.production) {
-        ajax.setRequestHeader('Authorization', 'Basic YWRtaW46YWRtaW4=');
+      ajax.setRequestHeader('Authorization', 'Basic YWRtaW46YWRtaW4=');
     }
     ajax.send(formdata);
     this.uploadservice.isInUse = true;

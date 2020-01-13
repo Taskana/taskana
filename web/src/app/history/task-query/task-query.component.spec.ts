@@ -10,7 +10,7 @@ describe('TaskQueryComponent', () => {
     TestBed.configureTestingModule({
       declarations: [TaskQueryComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

@@ -12,7 +12,7 @@ export class FormsValidatorService {
   constructor(
     private alertService: AlertService,
     private accessIdsService: AccessIdsService
-) {
+  ) {
   }
 
   public async validateFormInformation(form: NgForm, toogleValidationMap: Map<any, boolean>): Promise<any> {

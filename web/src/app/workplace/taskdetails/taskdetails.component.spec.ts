@@ -42,7 +42,7 @@ xdescribe('TaskdetailsComponent', () => {
       providers: [TaskService, HttpClient, WorkplaceService, RemoveConfirmationService,
         RequestInProgressService, AlertService, GeneralModalService]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

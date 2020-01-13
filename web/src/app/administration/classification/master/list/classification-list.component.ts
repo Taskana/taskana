@@ -45,7 +45,7 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
     private categoryService: ClassificationCategoriesService,
     private importExportService: ImportExportService,
     private alertService: AlertService
-) {
+  ) {
   }
 
   ngOnInit() {
@@ -60,8 +60,8 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
     });
 
     this.categoriesSubscription = this.categoryService.getCategories(this.classificationTypeSelected).subscribe((categories: Array<string>) => {
-        this.categories = categories;
-      });
+      this.categories = categories;
+    });
     this.importingExportingSubscription = this.importExportService.getImportingFinished().subscribe((value: Boolean) => {
       this.performRequest(true);
     });

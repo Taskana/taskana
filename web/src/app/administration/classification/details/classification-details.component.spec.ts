@@ -44,9 +44,10 @@ describe('ClassificationDetailsComponent', () => {
   let fixture: ComponentFixture<ClassificationDetailsComponent>;
   const treeNodes: Array<TreeNodeModel> = new Array(new TreeNodeModel());
 
-  let classificationsService; let classificationCategoriesService;
-    let treeService; let
-removeConfirmationService;
+  let classificationsService;
+  let classificationCategoriesService;
+  let treeService;
+  let removeConfirmationService;
 
   beforeEach(done => {
     const configure = (testBed: TestBed) => {

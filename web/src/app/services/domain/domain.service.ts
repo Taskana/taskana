@@ -22,7 +22,7 @@ export class DomainService {
     private router: Router,
     private requestInProgressService: RequestInProgressService,
     private selectedRouteService: SelectedRouteService
-) {
+  ) {
     this.selectedRouteService.getSelectedRoute().subscribe((value: string) => {
       if (value.indexOf('workbaskets') === 0) {
         this.hasMasterDomain = false;
@@ -72,7 +72,7 @@ export class DomainService {
   /*
     This function should be called after getSelectedDomain inner subscriptions have been finished
    */
-   domainChangedComplete() {
+  domainChangedComplete() {
     this.requestInProgressService.setRequestInProgress(false);
   }
 

@@ -27,7 +27,7 @@ export class ClassificationCategoriesService {
   constructor(
     private httpClient: HttpClient,
     private customFieldsService: CustomFieldsService
-) { }
+  ) { }
 
   getCategories(type?: string): Observable<Array<string>> {
     if (!this.dataObsCategories$.observers.length || type !== this.type) {
@@ -52,7 +52,7 @@ export class ClassificationCategoriesService {
   private getCustomCategoriesObject(categories: Array<string>): Object {
     return this.customFieldsService.getCustomObject(
       this.getDefaultCategoryMap(categories), 'classifications.categories'
-);
+    );
   }
 
   private getDefaultCategoryMap(categoryList: Array<string>): Object {
@@ -76,13 +76,13 @@ export class ClassificationCategoriesService {
     return this.dataObsType$;
   }
 
-    selectClassificationType(id: string) {
-      this.getCategories(id);
-      this.classificationTypeSelectedValue = id;
-      this.classificationTypeSelected.next(id);
-    }
+  selectClassificationType(id: string) {
+    this.getCategories(id);
+    this.classificationTypeSelectedValue = id;
+    this.classificationTypeSelected.next(id);
+  }
 
-    getSelectedClassificationType(): Observable<string> {
-      return this.classificationTypeSelected.asObservable();
-    }
+  getSelectedClassificationType(): Observable<string> {
+    return this.classificationTypeSelected.asObservable();
+  }
 }

@@ -13,7 +13,7 @@ xdescribe('AttributeComponent', () => {
       imports: [FormsModule],
       declarations: [TaskdetailsAttributeComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
