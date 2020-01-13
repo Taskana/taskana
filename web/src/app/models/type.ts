@@ -1,5 +1,4 @@
 
-
 export enum ICONTYPES {
   ALL = 'ALL',
   PERSONAL = 'PERSONAL',

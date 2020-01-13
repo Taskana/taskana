@@ -11,14 +11,13 @@ import { WorkbasketDistributionTargetsResource } from 'app/models/workbasket-dis
 import { Direction } from 'app/models/sorting';
 
 import { DomainService } from 'app/services/domain/domain.service';
-import { WorkbasketResource } from '../../../models/workbasket-resource';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { mergeMap, tap, catchError } from 'rxjs/operators';
 import { QueryParametersModel } from 'app/models/query-parameters';
+import { WorkbasketResource } from '../../../models/workbasket-resource';
 
 @Injectable()
 export class WorkbasketService {
-
     public workBasketSelected = new Subject<string>();
     public workBasketSaved = new Subject<number>();
     private workbasketSummaryRef: Observable<WorkbasketSummaryResource> = new Observable();
@@ -43,25 +42,21 @@ export class WorkbasketService {
         keyLike?: string,
         requiredPermission?: string,
         allPages: boolean = false) {
-
         if (this.workbasketSummaryRef && !forceRequest) {
             return this.workbasketSummaryRef;
         }
 
 
-        return this.domainService.getSelectedDomain().pipe(mergeMap(domain => {
-            return this.workbasketSummaryRef = this.httpClient.get<WorkbasketSummaryResource>(
+        return this.domainService.getSelectedDomain().pipe(mergeMap(domain => this.workbasketSummaryRef = this.httpClient.get<WorkbasketSummaryResource>(
                 `${environment.taskanaRestUrl}/v1/workbaskets/${TaskanaQueryParameters
                     .getQueryParameters(this.workbasketParameters(sortBy, order, name, nameLike, descLike, owner, ownerLike,
-                        type, key, keyLike, requiredPermission, allPages, domain))}`)
-                .pipe(tap((workbaskets => {
-                    return workbaskets;
-                })))
-        }), tap(() => {
+                        type, key, keyLike, requiredPermission, allPages, domain))}`
+)
+                .pipe(tap((workbaskets => workbaskets)))), tap(() => {
             this.domainService.domainChangedComplete();
         }));
-
     }
+
     // GET
     getWorkBasket(id: string): Observable<Workbasket> {
         return this.httpClient.get<Workbasket>(`${environment.taskanaRestUrl}/v1/workbaskets/${id}`);
@@ -76,8 +71,8 @@ export class WorkbasketService {
     createWorkbasket(workbasket: Workbasket): Observable<Workbasket> {
         return this.httpClient
             .post<Workbasket>(`${environment.taskanaRestUrl}/v1/workbaskets`, workbasket);
-
     }
+
     // PUT
     updateWorkbasket(url: string, workbasket: Workbasket): Observable<Workbasket> {
         return this.httpClient
@@ -85,24 +80,29 @@ export class WorkbasketService {
                 catchError(this.handleError)
             );
     }
+
     // delete
     markWorkbasketForDeletion(url: string): Observable<any> {
         return this.httpClient
             .delete<any>(url);
     }
+
     // GET
     getWorkBasketAccessItems(url: string): Observable<WorkbasketAccessItemsResource> {
         return this.httpClient.get<WorkbasketAccessItemsResource>(url);
     }
+
     // POST
     createWorkBasketAccessItem(url: string, workbasketAccessItem: WorkbasketAccessItems): Observable<WorkbasketAccessItems> {
         return this.httpClient.post<WorkbasketAccessItems>(url, workbasketAccessItem);
     }
+
     // PUT
     updateWorkBasketAccessItem(url: string, workbasketAccessItem: Array<WorkbasketAccessItems>): Observable<string> {
         return this.httpClient.put<string>(url,
             workbasketAccessItem);
     }
+
     // GET
     getWorkBasketsDistributionTargets(url: string): Observable<WorkbasketDistributionTargetsResource> {
         return this.httpClient.get<WorkbasketDistributionTargetsResource>(url);
@@ -113,6 +113,7 @@ export class WorkbasketService {
         Observable<WorkbasketDistributionTargetsResource> {
         return this.httpClient.put<WorkbasketDistributionTargetsResource>(url, distributionTargetsIds);
     }
+
     // DELETE
     removeDistributionTarget(url: string) {
         return this.httpClient.delete<string>(url);
@@ -168,8 +169,8 @@ export class WorkbasketService {
         keyLike?: string,
         requiredPermission?: string,
         allPages?: boolean,
-        domain?: string): QueryParametersModel {
-
+        domain?: string
+): QueryParametersModel {
         const parameters = new QueryParametersModel();
         parameters.SORTBY = sortBy;
         parameters.SORTDIRECTION = order;

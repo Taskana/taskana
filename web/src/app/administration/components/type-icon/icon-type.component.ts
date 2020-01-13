@@ -7,8 +7,6 @@ import { ICONTYPES } from 'app/models/type';
   styleUrls: ['./icon-type.component.scss']
 })
 export class IconTypeComponent implements OnInit {
-
-
   @Input()
   type: ICONTYPES = ICONTYPES.ALL;
 
@@ -22,8 +20,8 @@ export class IconTypeComponent implements OnInit {
   text: string;
 
   public static get allTypes(): Map<string, string> {
-    return new Map([['PERSONAL', 'Personal'], ['GROUP', 'Group'], ['CLEARANCE', 'Clearance'], ['TOPIC', 'Topic']])
-  };
+    return new Map([['PERSONAL', 'Personal'], ['GROUP', 'Group'], ['CLEARANCE', 'Clearance'], ['TOPIC', 'Topic']]);
+  }
 
   constructor() { }
 
@@ -32,10 +30,9 @@ export class IconTypeComponent implements OnInit {
   }
 
   getIconPath(type: string) {
-    return type === 'PERSONAL' ? 'user.svg' :
-      type === 'GROUP' ? 'users.svg' :
-        type === 'TOPIC' ? 'topic.svg' :
-          type === 'CLEARANCE' ? 'clearance.svg' : 'asterisk.svg';
-
+    return type === 'PERSONAL' ? 'user.svg'
+      : type === 'GROUP' ? 'users.svg'
+        : type === 'TOPIC' ? 'topic.svg'
+          : type === 'CLEARANCE' ? 'clearance.svg' : 'asterisk.svg';
   }
 }

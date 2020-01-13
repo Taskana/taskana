@@ -6,7 +6,6 @@ import { environment } from 'environments/environment';
 
 @Injectable()
 export class CustomHttpClientInterceptor implements HttpInterceptor {
-
   constructor() {
   }
 

@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { WorkbasketSummary } from 'app/models/workbasket-summary';
 import { FilterModel } from 'app/models/filter';
-import { Side } from '../distribution-targets.component';
 import { expandDown } from 'app/shared/animations/expand.animation';
+import { Side } from '../distribution-targets.component';
 
 @Component({
   selector: 'taskana-dual-list',
@@ -11,7 +11,6 @@ import { expandDown } from 'app/shared/animations/expand.animation';
   animations: [expandDown]
 })
 export class DualListComponent implements OnInit {
-
   @Input() distributionTargets: Array<WorkbasketSummary>;
   @Input() distributionTargetsSelected: Array<WorkbasketSummary>;
   @Output() performDualListFilter = new EventEmitter<{ filterBy: FilterModel, side: Side }>();
@@ -48,5 +47,4 @@ export class DualListComponent implements OnInit {
   changeToolbarState(state: boolean) {
     this.toolbarState = state;
   }
-
 }

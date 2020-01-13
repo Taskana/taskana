@@ -1,6 +1,6 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {SortingModel} from '../../models/sorting';
-import {Classification} from '../../models/classification';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { SortingModel } from '../../models/sorting';
+import { Classification } from '../../models/classification';
 
 @Component({
   selector: 'taskana-dropdown',
@@ -8,7 +8,6 @@ import {Classification} from '../../models/classification';
   styleUrls: ['./dropdown.component.scss']
 })
 export class DropdownComponent implements OnInit {
-
   @Input() itemSelected: any;
   @Input() list: Array<any>;
   @Output() performClassification = new EventEmitter<any>();

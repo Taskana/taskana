@@ -1,10 +1,9 @@
 import { Injectable, OnInit } from '@angular/core';
-import { Subject ,  Observable } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 import { Router, ActivatedRoute, NavigationStart } from '@angular/router';
 
 @Injectable()
 export class SelectedRouteService {
-
     public selectedRouteTriggered = new Subject<string>();
 
     private detailRoutes: Array<string> = ['workbaskets', 'classifications', 'monitor', 'workplace', 'access-items-management', 'history'];
@@ -24,7 +23,7 @@ export class SelectedRouteService {
         if (!event) {
             return this.checkUrl(this.router.url);
         }
-        return this.checkUrl(event.url)
+        return this.checkUrl(event.url);
     }
 
     private checkUrl(url: string): string {

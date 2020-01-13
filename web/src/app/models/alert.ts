@@ -6,7 +6,6 @@ export enum AlertType {
 }
 
 export class AlertModel {
-
   constructor(public type: string = AlertType.SUCCESS,
     public text: string = 'Success',
     public autoClosing: boolean = true,

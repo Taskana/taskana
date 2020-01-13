@@ -1,7 +1,7 @@
 import { Links } from './links';
 import { ICONTYPES } from './type';
-export class Workbasket {
 
+export class Workbasket {
     public static equals(org: Workbasket, comp: Workbasket): boolean {
         if (org.workbasketId !== comp.workbasketId) { return false; }
         if (org.created !== comp.created) { return false; }
@@ -42,6 +42,7 @@ export class Workbasket {
         public orgLevel2?: string,
         public orgLevel3?: string,
         public orgLevel4?: string,
-        public _links: Links = new Links()) {
+        public _links: Links = new Links()
+) {
     }
 }

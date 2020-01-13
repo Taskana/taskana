@@ -13,7 +13,6 @@ import { WorkbasketAccessItems } from 'app/models/workbasket-access-items';
 import { WorkbasketAccessItemsResource } from 'app/models/workbasket-access-items-resource';
 import { ICONTYPES } from 'app/models/type';
 
-import { AccessItemsComponent } from './access-items.component';
 
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { SavingWorkbasketService } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
@@ -23,11 +22,13 @@ import { RequestInProgressService } from 'app/services/requestInProgress/request
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { AccessIdsService } from 'app/shared/services/access-ids/access-ids.service';
 import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
+import { AccessItemsComponent } from './access-items.component';
 
 describe('AccessItemsComponent', () => {
   let component: AccessItemsComponent;
   let fixture: ComponentFixture<AccessItemsComponent>;
-  let workbasketService, debugElement, alertService, accessIdsService, formsValidatorService;
+  let workbasketService; let debugElement; let alertService; let accessIdsService; let
+formsValidatorService;
 
 
   beforeEach(done => {
@@ -37,15 +38,15 @@ describe('AccessItemsComponent', () => {
         imports: [FormsModule, AngularSvgIconModule, HttpClientModule, ReactiveFormsModule],
         providers: [WorkbasketService, AlertService, GeneralModalService, SavingWorkbasketService, RequestInProgressService,
           CustomFieldsService, AccessIdsService, FormsValidatorService]
-      })
+      });
     };
     configureTests(configure).then(testBed => {
       fixture = TestBed.createComponent(AccessItemsComponent);
       component = fixture.componentInstance;
       component.workbasket = new Workbasket('1');
       component.workbasket.type = ICONTYPES.TOPIC;
-      component.workbasket._links = new Links()
-      component.workbasket._links.accessItems = { 'href': 'someurl' };
+      component.workbasket._links = new Links();
+      component.workbasket._links.accessItems = { href: 'someurl' };
 
       workbasketService = TestBed.get(WorkbasketService);
       alertService = TestBed.get(AlertService);
@@ -53,8 +54,9 @@ describe('AccessItemsComponent', () => {
            new Array<WorkbasketAccessItems>(
             new WorkbasketAccessItems('id1', '1', 'accessID1', '', false, false, false, false, false, false, false, false,
               false, false, false, false, false, false, false, false, false),
-            new WorkbasketAccessItems('id2', '1', 'accessID2'))
-        , new Links({ 'href': 'someurl' })
+            new WorkbasketAccessItems('id2', '1', 'accessID2')
+),
+         new Links({ href: 'someurl' })
       )));
       spyOn(workbasketService, 'updateWorkBasketAccessItem').and.returnValue(of(true)),
         spyOn(alertService, 'triggerAlert').and.returnValue(of(true)),
@@ -83,7 +85,6 @@ describe('AccessItemsComponent', () => {
 
   it('should show two access items if server returns two entries', () => {
     expect(debugElement.querySelectorAll('#table-access-items > tbody > tr').length).toBe(2);
-
   });
 
   it('should remove an access item if remove button is clicked', () => {
@@ -101,8 +102,9 @@ describe('AccessItemsComponent', () => {
     fixture.whenStable().then(() => {
       fixture.detectChanges();
       expect(alertService.triggerAlert).toHaveBeenCalledWith(
-        new AlertModel(AlertType.SUCCESS, `Workbasket  ${component.workbasket.key} Access items were saved successfully`));
-    })
+        new AlertModel(AlertType.SUCCESS, `Workbasket  ${component.workbasket.key} Access items were saved successfully`)
+);
+    });
     fixture.detectChanges();
   }));
 
@@ -112,7 +114,5 @@ describe('AccessItemsComponent', () => {
     expect(component.accessItemsClone.length).toBe(1);
     component.clear();
     expect(component.accessItemsClone.length).toBe(2);
-
   });
-
 });

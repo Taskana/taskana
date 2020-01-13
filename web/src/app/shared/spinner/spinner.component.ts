@@ -1,10 +1,11 @@
-import { Component, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { ViewChild } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnDestroy, ViewChild } from '@angular/core';
+
 
 import { MessageModal } from 'app/models/message-modal';
 
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
-declare var $: any;
+
+declare let $: any;
 
 @Component({
     selector: 'taskana-spinner',
@@ -18,8 +19,9 @@ export class SpinnerComponent implements OnDestroy {
 
     set isDelayedRunning(value: boolean) {
         this.showSpinner = value;
-        this.spinnerIsRunning.next(value)
+        this.spinnerIsRunning.next(value);
     }
+
     showSpinner: boolean;
 
     @Input()
@@ -38,7 +40,6 @@ export class SpinnerComponent implements OnDestroy {
             return;
         }
         this.runSpinner(value);
-
     }
 
     @Input()
@@ -65,12 +66,14 @@ export class SpinnerComponent implements OnDestroy {
             this.requestTimeout = setTimeout(() => {
                 this.generalModalService.triggerMessage(
                     new MessageModal('There was an error with your request, please make sure you have internet connection',
-                        'Request time execeed'));
+                        'Request time execeed')
+);
                 this.cancelTimeout();
                 this.isRunning = false;
             }, this.maxRequestTimeout);
         }, this.delay);
     }
+
     private closeModal() {
         if (this.showSpinner) {
             $(this.modal.nativeElement).modal('hide');

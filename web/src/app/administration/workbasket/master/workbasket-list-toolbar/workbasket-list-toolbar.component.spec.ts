@@ -15,7 +15,6 @@ import { Links } from 'app/models/links';
 import { FilterModel } from 'app/models/filter';
 import { SortingModel } from 'app/models/sorting';
 
-import { WorkbasketListToolbarComponent } from './workbasket-list-toolbar.component';
 import { ImportExportComponent } from 'app/administration/components/import-export/import-export.component';
 
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
@@ -23,6 +22,7 @@ import { ClassificationDefinitionService } from 'app/administration/services/cla
 import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition/workbasket-definition.service';
 import { configureTests } from 'app/app.test.configuration';
 import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
+import { WorkbasketListToolbarComponent } from './workbasket-list-toolbar.component';
 
 @Component({
   selector: 'taskana-dummy-detail',
@@ -35,7 +35,8 @@ export class DummyDetailComponent {
 describe('WorkbasketListToolbarComponent', () => {
   let component: WorkbasketListToolbarComponent;
   let fixture: ComponentFixture<WorkbasketListToolbarComponent>;
-  let debugElement, workbasketService, router;
+  let debugElement; let workbasketService; let
+router;
 
   const routes: Routes = [
     { path: ':id', component: DummyDetailComponent, outlet: 'detail' }
@@ -53,7 +54,7 @@ describe('WorkbasketListToolbarComponent', () => {
           WorkbasketDefinitionService,
           ImportExportService
         ]
-      })
+      });
     };
     configureTests(configure).then(testBed => {
       fixture = TestBed.createComponent(WorkbasketListToolbarComponent);
@@ -65,9 +66,10 @@ describe('WorkbasketListToolbarComponent', () => {
       debugElement = fixture.debugElement.nativeElement;
       component = fixture.componentInstance;
       component.workbaskets = new Array<WorkbasketSummary>(
-        new WorkbasketSummary('1', 'key1', 'NAME1', 'description 1', 'owner 1'));
+        new WorkbasketSummary('1', 'key1', 'NAME1', 'description 1', 'owner 1')
+);
       component.workbaskets[0].markedForDeletion = false;
-      component.workbaskets[0]._links = new Links({ 'href': 'selfLink' });
+      component.workbaskets[0]._links = new Links({ href: 'selfLink' });
 
       fixture.detectChanges();
       done();
@@ -93,19 +95,17 @@ describe('WorkbasketListToolbarComponent', () => {
     let sort: SortingModel;
     const compareSort = new SortingModel();
 
-    component.performSorting.subscribe((value) => { sort = value })
+    component.performSorting.subscribe(value => { sort = value; });
     component.sorting(compareSort);
     expect(sort).toBe(compareSort);
-
   });
 
   it('should emit performFilter when filter is triggered', () => {
     let filter: FilterModel;
     const compareFilter = new FilterModel();
 
-    component.performFilter.subscribe((value) => { filter = value })
+    component.performFilter.subscribe(value => { filter = value; });
     component.filtering(compareFilter);
     expect(filter).toBe(compareFilter);
   });
-
 });

@@ -22,7 +22,6 @@ export class TaskQueryService {
         searchForValues: TaskHistoryEventData,
         allPages: boolean = false
     ): Observable<TaskHistoryEventResourceData> {
-
         return this.httpClient.get<TaskHistoryEventResourceData>(`${this.url}/v1/task-history-event${this.getQueryParameters(
             orderBy,
             sortDirection,
@@ -48,7 +47,6 @@ export class TaskQueryService {
             searchForValues.created,
             allPages
         )}`);
-
     }
 
     private getQueryParameters(
@@ -74,10 +72,10 @@ export class TaskQueryService {
         custom3: string,
         custom4: string,
         created: string,
-        allPages: boolean = false): string {
-
+        allPages: boolean = false
+): string {
         const parameters = new QueryParametersModel();
-        parameters.SORTBY = orderBy
+        parameters.SORTBY = orderBy;
         parameters.SORTDIRECTION = sortDirection;
         parameters.TASK_ID_LIKE = taskId;
         parameters.PARENT_BUSINESS_PROCESS_ID_LIKE = parentBPI;
@@ -105,5 +103,3 @@ export class TaskQueryService {
         return TaskanaQueryParameters.getQueryParameters(parameters);
     }
 }
-
-

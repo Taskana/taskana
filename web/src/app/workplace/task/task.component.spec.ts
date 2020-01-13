@@ -1,11 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Routes } from '@angular/router';
 
-import { TaskComponent } from './task.component';
 import { SpinnerComponent } from 'app/shared/spinner/spinner.component';
 import { FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { TaskService } from '../services/task.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { Component } from '@angular/core';
@@ -14,6 +12,8 @@ import { RequestInProgressService } from 'app/services/requestInProgress/request
 import { SelectedRouteService } from 'app/services/selected-route/selected-route';
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
+import { TaskService } from '../services/task.service';
+import { TaskComponent } from './task.component';
 
 @Component({
   selector: 'taskana-dummy-detail',

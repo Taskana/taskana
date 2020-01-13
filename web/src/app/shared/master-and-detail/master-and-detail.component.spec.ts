@@ -4,7 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Router, Routes } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
-import { MasterAndDetailService } from '../../services/masterAndDetail/master-and-detail.service'
+import { MasterAndDetailService } from '../../services/masterAndDetail/master-and-detail.service';
 
 import { MasterAndDetailComponent } from './master-and-detail.component';
 
@@ -26,8 +26,8 @@ export class DummyDetailComponent {
 }
 
 describe('MasterAndDetailComponent ', () => {
-
-  let component, fixture, debugElement, router;
+  let component; let fixture; let debugElement; let
+router;
 
   const routes: Routes = [
     {
@@ -68,7 +68,6 @@ describe('MasterAndDetailComponent ', () => {
     debugElement = fixture.debugElement.nativeElement;
     router = TestBed.get(Router);
     router.initialNavigation();
-
   }));
 
   afterEach(async(() => {
@@ -80,32 +79,25 @@ describe('MasterAndDetailComponent ', () => {
   });
 
   it('should call Router.navigateByUrl("/wokbaskets") and showDetail property should be false', async(() => {
-
     expect(component.showDetail).toBe(false);
     fixture.detectChanges();
     router.navigateByUrl('/workbaskets');
     expect(component.showDetail).toBe(false);
-
   }));
 
   it('should call Router.navigateByUrl("/wokbaskets/(detail:Id)") and showDetail property should be true', async(() => {
-
     expect(component.showDetail).toBe(false);
     fixture.detectChanges();
     router.navigateByUrl('/workbaskets/(detail:2)');
     expect(component.showDetail).toBe(true);
-
   }));
 
   it('should navigate to parent state when backIsClicked', async(() => {
-
     const spy = spyOn(router, 'navigateByUrl');
     router.navigateByUrl('/workbaskets/(detail:2)');
     fixture.detectChanges();
     expect(spy.calls.first().args[0]).toBe('/workbaskets/(detail:2)');
     component.backClicked();
     expect(spy.calls.mostRecent().args.length).toBe(2);
-
   }));
-
 });

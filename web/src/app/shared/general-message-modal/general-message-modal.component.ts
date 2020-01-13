@@ -1,5 +1,6 @@
 import { Component, Input, ViewChild, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
-declare var $: any; // jquery
+
+declare let $: any; // jquery
 
 @Component({
   selector: 'taskana-general-message-modal',
@@ -7,7 +8,6 @@ declare var $: any; // jquery
   styleUrls: ['./general-message-modal.component.scss']
 })
 export class GeneralMessageModalComponent implements OnChanges {
-
   @Input() message: string;
   @Output() messageChange = new EventEmitter<string>();
 
@@ -32,5 +32,4 @@ export class GeneralMessageModalComponent implements OnChanges {
     this.message = '';
     this.messageChange.emit(this.message);
   }
-
 }

@@ -3,7 +3,6 @@ import { Subject } from 'rxjs';
 
 @Injectable()
 export class TreeService {
-
     public removedNodeId = new Subject<string>();
 
     constructor() { }
@@ -15,5 +14,4 @@ export class TreeService {
     getRemovedNodeId() {
         return this.removedNodeId.asObservable();
     }
-
 }

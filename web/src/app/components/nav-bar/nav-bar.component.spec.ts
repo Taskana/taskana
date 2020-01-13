@@ -5,7 +5,6 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
 import { SharedModule } from 'app/shared/shared.module';
 
-import { NavBarComponent } from './nav-bar.component';
 import { UserInformationComponent } from 'app/components/user-information/user-information.component';
 
 import { SelectedRouteService } from 'app/services/selected-route/selected-route';
@@ -16,11 +15,13 @@ import { GeneralModalService } from 'app/services/general-modal/general-modal.se
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 
 import { configureTests } from 'app/app.test.configuration';
+import { NavBarComponent } from './nav-bar.component';
 
 describe('NavBarComponent', () => {
   let component: NavBarComponent;
   let fixture: ComponentFixture<NavBarComponent>;
-  let debugElement, navBar;
+  let debugElement; let
+navBar;
 
   const routes: Routes = [
     { path: 'classifications', component: NavBarComponent }
@@ -43,7 +44,7 @@ describe('NavBarComponent', () => {
           WindowRefService,
           GeneralModalService,
           RequestInProgressService]
-      })
+      });
     };
     configureTests(configure).then(testBed => {
       fixture = TestBed.createComponent(NavBarComponent);
@@ -53,11 +54,10 @@ describe('NavBarComponent', () => {
       fixture.detectChanges();
       done();
     });
-
   });
 
   afterEach(() => {
-    fixture.detectChanges()
+    fixture.detectChanges();
     document.body.removeChild(debugElement);
   });
 
@@ -65,8 +65,7 @@ describe('NavBarComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it(`should have as title ''`, (() => {
+  it('should have as title \'\'', (() => {
     expect(navBar.title).toEqual('');
   }));
-
 });

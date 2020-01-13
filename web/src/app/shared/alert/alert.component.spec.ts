@@ -8,8 +8,8 @@ import { AlertComponent } from './alert.component';
 describe('AlertComponent', () => {
   let component: AlertComponent;
   let fixture: ComponentFixture<AlertComponent>;
-  let debugElement,
-    alertService;
+  let debugElement;
+    let alertService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -30,7 +30,7 @@ describe('AlertComponent', () => {
 
   afterEach(() => {
     document.body.removeChild(debugElement);
-  })
+  });
 
   it('should create', () => {
     expect(component).toBeTruthy();
@@ -54,7 +54,7 @@ describe('AlertComponent', () => {
     expect(debugElement.querySelector('#alert-text').innerText).toBe('some custom text');
   });
 
-  it('should define a closing timeout if alert has autoclosing property', (done) => {
+  it('should define a closing timeout if alert has autoclosing property', done => {
     alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, 'some custom text', true, 5));
     fixture.detectChanges();
     expect(component.alert).toBeDefined();
@@ -62,7 +62,7 @@ describe('AlertComponent', () => {
       fixture.detectChanges();
       expect(component.alert).toBeUndefined();
       done();
-    }, 6)
+    }, 6);
   });
 
   it('should have defined a closing button if alert has no autoclosing property', () => {
@@ -70,5 +70,4 @@ describe('AlertComponent', () => {
     fixture.detectChanges();
     expect(debugElement.querySelector('.alert > button')).toBeDefined();
   });
-
 });

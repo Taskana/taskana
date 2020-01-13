@@ -8,7 +8,7 @@ describe('MonitorWorkbasketQuerySwitcherComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MonitorWorkbasketQuerySwitcherComponent ]
+      declarations: [MonitorWorkbasketQuerySwitcherComponent]
     })
     .compileComponents();
   }));

@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Orientation } from 'app/models/orientation';
-import { BehaviorSubject ,  Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 
 @Injectable()
 export class OrientationService {
-
   private lock = false;
   private currentOrientation;
   public orientation = new BehaviorSubject<Orientation>(this.currentOrientation);

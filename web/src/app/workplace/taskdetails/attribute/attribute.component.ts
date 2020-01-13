@@ -7,7 +7,6 @@ import { CustomAttribute } from 'app/workplace/models/task';
   styleUrls: ['./attribute.component.scss']
 })
 export class TaskdetailsAttributeComponent implements OnInit {
-
   @Input() callbackInfo = false;
   @Input() attributes: CustomAttribute[] = [];
   @Output() attributesChange: EventEmitter<CustomAttribute[]> = new EventEmitter<CustomAttribute[]>();
@@ -26,5 +25,4 @@ export class TaskdetailsAttributeComponent implements OnInit {
   removeAttribute(idx: number): void {
     this.attributes.splice(idx, 1);
   }
-
 }

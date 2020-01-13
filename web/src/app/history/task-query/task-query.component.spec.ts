@@ -8,7 +8,7 @@ describe('TaskQueryComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TaskQueryComponent ]
+      declarations: [TaskQueryComponent]
     })
     .compileComponents();
   }));

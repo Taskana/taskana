@@ -1,5 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {ReportData} from 'app/monitor/models/report-data';
+import { Component, Input, OnInit } from '@angular/core';
+import { ReportData } from 'app/monitor/models/report-data';
 
 @Component({
   selector: 'taskana-report',
@@ -7,8 +7,6 @@ import {ReportData} from 'app/monitor/models/report-data';
   styleUrls: ['./report.component.scss']
 })
 export class ReportComponent implements OnInit {
-
-
   currentExpHeaders = 0;
 
   @Input()

@@ -7,8 +7,8 @@ import { BusinessAdminGuard } from 'app/guards/business-admin.guard';
 import { MonitorGuard } from 'app/guards/monitor.guard';
 import { WindowRefService } from 'app/services/window/window.service';
 import { UserGuard } from 'app/guards/user.guard';
-import { TaskanaEngineService } from '../../services/taskana-engine/taskana-engine.service';
 import { expandRight } from 'app/shared/animations/expand.animation';
+import { TaskanaEngineService } from '../../services/taskana-engine/taskana-engine.service';
 @Component({
   selector: 'taskana-nav-bar',
   templateUrl: './nav-bar.component.html',
@@ -16,7 +16,6 @@ import { expandRight } from 'app/shared/animations/expand.animation';
   animations: [expandRight],
 })
 export class NavBarComponent implements OnInit, OnDestroy {
-
   selectedRoute = '';
   route: string;
   title = '';
@@ -50,7 +49,8 @@ export class NavBarComponent implements OnInit, OnDestroy {
     private selectedRouteService: SelectedRouteService,
     private domainService: DomainService,
     private taskanaEngineService: TaskanaEngineService,
-    private window: WindowRefService) { }
+    private window: WindowRefService
+) { }
 
   ngOnInit() {
     this.selectedRouteSubscription = this.selectedRouteService.getSelectedRoute().subscribe((value: string) => {
@@ -75,8 +75,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
     this.taskanaEngineService.isHistoryProviderEnabled().subscribe(value => {
       this.historyAccess = value;
-    })
-
+    });
   }
 
   switchDomain(domain) {
@@ -90,14 +89,14 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
   logout() {
     this.taskanaEngineService.logout().subscribe(() => {
-    })
+    });
     this.window.nativeWindow.location.href = environment.taskanaLogoutUrl;
   }
 
   showDomainSelector(): boolean {
     return this.selectedRoute.indexOf('administration') !== -1
       || this.selectedRoute.indexOf('workbaskets') !== -1
-      || this.selectedRoute.indexOf('classifications') !== -1
+      || this.selectedRoute.indexOf('classifications') !== -1;
   }
 
   private setTitle(value: string = 'workbaskets') {

@@ -1,6 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TaskdetailsGeneralFieldsComponent } from './general-fields.component';
 import { FormsModule } from '@angular/forms';
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -16,6 +15,7 @@ import { configureTests } from 'app/app.test.configuration';
 import { ClassificationResource } from 'app/models/classification-resource';
 import { Classification } from 'app/models/classification';
 import { Links } from 'app/models/links';
+import { TaskdetailsGeneralFieldsComponent } from './general-fields.component';
 
 @Component({
     selector: 'taskana-dummy-detail',
@@ -41,17 +41,18 @@ xdescribe('GeneralComponent', () => {
                 declarations: [TaskdetailsGeneralFieldsComponent, DummyDetailComponent],
                 providers: [HttpClient, ClassificationCategoriesService, CustomFieldsService,
                     DomainService, RequestInProgressService, SelectedRouteService, ClassificationsService]
-            })
+            });
         };
         configureTests(configure).then(testBed => {
             classificationsService = TestBed.get(ClassificationsService);
             spyOn(classificationsService, 'getClassificationsByDomain').and.returnValue(new ClassificationResource(
                 new Array<Classification>(
                     new Classification('id1', '1', 'category', 'type', 'domain_a', 'classification1', 'parentId',
-                        1, 'service', new Links({ 'href': 'someurl' })),
+                        1, 'service', new Links({ href: 'someurl' })),
                     new Classification('id2', '2', 'category', 'type', 'domain_a', 'classification2', 'parentId2',
-                        1, 'service', new Links({ 'href': 'someurl' })))
-                , new Links({ 'href': 'someurl' })
+                        1, 'service', new Links({ href: 'someurl' }))
+),
+                 new Links({ href: 'someurl' })
             ));
             done();
         });

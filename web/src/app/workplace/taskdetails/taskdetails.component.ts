@@ -1,21 +1,21 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Subscription} from 'rxjs';
-import {ActivatedRoute, Router} from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import {TaskService} from 'app/workplace/services/task.service';
-import {RemoveConfirmationService} from 'app/services/remove-confirmation/remove-confirmation.service';
+import { TaskService } from 'app/workplace/services/task.service';
+import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
 
-import {Task} from 'app/workplace/models/task';
-import {MessageModal} from 'app/models/message-modal';
-import {GeneralModalService} from 'app/services/general-modal/general-modal.service';
-import {RequestInProgressService} from 'app/services/requestInProgress/request-in-progress.service';
-import {AlertService} from 'app/services/alert/alert.service';
-import {AlertModel, AlertType} from 'app/models/alert';
-import {TaskanaDate} from 'app/shared/util/taskana.date';
-import {ObjectReference} from 'app/workplace/models/object-reference';
-import {Workbasket} from 'app/models/workbasket';
-import {WorkplaceService} from 'app/workplace/services/workplace.service';
-import {MasterAndDetailService} from 'app/services/masterAndDetail/master-and-detail.service';
+import { Task } from 'app/workplace/models/task';
+import { MessageModal } from 'app/models/message-modal';
+import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
+import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
+import { AlertService } from 'app/services/alert/alert.service';
+import { AlertModel, AlertType } from 'app/models/alert';
+import { TaskanaDate } from 'app/shared/util/taskana.date';
+import { ObjectReference } from 'app/workplace/models/object-reference';
+import { Workbasket } from 'app/models/workbasket';
+import { WorkplaceService } from 'app/workplace/services/workplace.service';
+import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
 
 @Component({
   selector: 'taskana-task-details',
@@ -53,7 +53,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
       this.currentWorkbasket = workbasket;
     });
     this.routeSubscription = this.route.params.subscribe(params => {
-      this.currentId = params['id'];
+      this.currentId = params.id;
       // redirect if user enters through a deep-link
       if (!this.currentWorkbasket && this.currentId === 'new-task') {
         this.router.navigate(['']);
@@ -66,10 +66,10 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   }
 
   resetTask(): void {
-    this.task = {...this.taskClone};
+    this.task = { ...this.taskClone };
     this.task.customAttributes = this.taskClone.customAttributes.slice(0);
     this.task.callbackInfo = this.taskClone.callbackInfo.slice(0);
-    this.task.primaryObjRef = {...this.taskClone.primaryObjRef};
+    this.task.primaryObjRef = { ...this.taskClone.primaryObjRef };
     this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'Reset edited fields'));
   }
 
@@ -86,7 +86,8 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
         this.taskService.selectTask(task);
       }, err => {
         this.generalModalService.triggerMessage(
-          new MessageModal('An error occurred while fetching the task', err));
+          new MessageModal('An error occurred while fetching the task', err)
+);
       });
     }
   }
@@ -96,7 +97,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   }
 
   openTask() {
-    this.router.navigate([{outlets: {detail: `task/${this.currentId}`}}], {relativeTo: this.route.parent});
+    this.router.navigate([{ outlets: { detail: `task/${this.currentId}` } }], { relativeTo: this.route.parent });
   }
 
   workOnTaskDisabled(): boolean {
@@ -112,10 +113,11 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
     this.deleteTaskSubscription = this.taskService.deleteTask(this.task).subscribe(() => {
       this.taskService.publishUpdatedTask();
       this.task = null;
-      this.router.navigate([`taskana/workplace/tasks`]);
+      this.router.navigate(['taskana/workplace/tasks']);
     }, err => {
       this.generalModalService.triggerMessage(
-        new MessageModal('An error occurred while deleting the task ', err));
+        new MessageModal('An error occurred while deleting the task ', err)
+);
     });
   }
 
@@ -126,7 +128,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   backClicked(): void {
     delete this.task;
     this.taskService.selectTask(this.task);
-    this.router.navigate(['./'], {relativeTo: this.route.parent});
+    this.router.navigate(['./'], { relativeTo: this.route.parent });
   }
 
   private onSave() {
@@ -140,10 +142,10 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
       this.task = task;
       this.cloneTask();
       this.taskService.publishUpdatedTask(task);
-      this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, 'Updating was successful.'))
+      this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, 'Updating was successful.'));
     }, err => {
       this.requestInProgressService.setRequestInProgress(false);
-      this.alertService.triggerAlert(new AlertModel(AlertType.DANGER, 'There was an error while updating.'))
+      this.alertService.triggerAlert(new AlertModel(AlertType.DANGER, 'There was an error while updating.'));
     });
   }
 
@@ -156,10 +158,10 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
       this.task = task;
       this.taskService.selectTask(this.task);
       this.taskService.publishUpdatedTask(task);
-      this.router.navigate(['../' + task.taskId], {relativeTo: this.route});
+      this.router.navigate([`../${task.taskId}`], { relativeTo: this.route });
     }, err => {
       this.requestInProgressService.setRequestInProgress(false);
-      this.alertService.triggerAlert(new AlertModel(AlertType.DANGER, 'There was an error while creating a new task.'))
+      this.alertService.triggerAlert(new AlertModel(AlertType.DANGER, 'There was an error while creating a new task.'));
     });
   }
 
@@ -170,10 +172,10 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   }
 
   private cloneTask() {
-    this.taskClone = {...this.task};
+    this.taskClone = { ...this.task };
     this.taskClone.customAttributes = this.task.customAttributes.slice(0);
     this.taskClone.callbackInfo = this.task.callbackInfo.slice(0);
-    this.taskClone.primaryObjRef = {...this.task.primaryObjRef};
+    this.taskClone.primaryObjRef = { ...this.task.primaryObjRef };
   }
 
   ngOnDestroy(): void {

@@ -1,16 +1,16 @@
-import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Subscription} from 'rxjs';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
-import {WorkbasketSummaryResource} from 'app/models/workbasket-summary-resource';
-import {WorkbasketSummary} from 'app/models/workbasket-summary';
-import {FilterModel} from 'app/models/filter'
-import {SortingModel} from 'app/models/sorting';
-import {Orientation} from 'app/models/orientation';
+import { WorkbasketSummaryResource } from 'app/models/workbasket-summary-resource';
+import { WorkbasketSummary } from 'app/models/workbasket-summary';
+import { FilterModel } from 'app/models/filter';
+import { SortingModel } from 'app/models/sorting';
+import { Orientation } from 'app/models/orientation';
 
-import {WorkbasketService} from 'app/shared/services/workbasket/workbasket.service'
-import {OrientationService} from 'app/services/orientation/orientation.service';
-import {TaskanaQueryParameters} from 'app/shared/util/query-parameters';
+import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
+import { OrientationService } from 'app/services/orientation/orientation.service';
+import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
 
 @Component({
@@ -19,7 +19,6 @@ import { ImportExportService } from 'app/administration/services/import-export/i
   styleUrls: ['./workbasket-list.component.scss']
 })
 export class WorkbasketListComponent implements OnInit, OnDestroy {
-
   selectedId = '';
   workbasketsResource: WorkbasketSummaryResource;
   workbaskets: Array<WorkbasketSummary> = [];
@@ -31,10 +30,11 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   cards: number = this.pageSize;
 
   sort: SortingModel = new SortingModel();
-  filterBy: FilterModel = new FilterModel({name: '', owner: '', type: '', description: '', key: ''});
+  filterBy: FilterModel = new FilterModel({ name: '', owner: '', type: '', description: '', key: '' });
 
   @ViewChild('wbToolbar', { static: true })
   private toolbarElement: ElementRef;
+
   private workBasketSummarySubscription: Subscription;
   private workbasketServiceSubscription: Subscription;
   private workbasketServiceSavedSubscription: Subscription;
@@ -46,7 +46,8 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private orientationService: OrientationService,
-    private importExportService: ImportExportService) {
+    private importExportService: ImportExportService
+) {
   }
 
   ngOnInit() {
@@ -69,13 +70,12 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
     });
     this.importingExportingSubscription = this.importExportService.getImportingFinished().subscribe((value: Boolean) => {
       this.refreshWorkbasketList();
-    })
-
+    });
   }
 
   selectWorkbasket(id: string) {
     this.selectedId = id;
-    this.router.navigate([{outlets: {detail: [this.selectedId]}}], {relativeTo: this.route});
+    this.router.navigate([{ outlets: { detail: [this.selectedId] } }], { relativeTo: this.route });
   }
 
   performSorting(sort: SortingModel) {
@@ -95,7 +95,8 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
 
   refreshWorkbasketList() {
     this.cards = this.orientationService.calculateNumberItemsList(
-      window.innerHeight, 72, 170 + this.toolbarElement.nativeElement.offsetHeight, false);
+      window.innerHeight, 72, 170 + this.toolbarElement.nativeElement.offsetHeight, false
+);
     this.performRequest();
   }
 
@@ -106,7 +107,8 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
     this.workbasketServiceSubscription = this.workbasketService.getWorkBasketsSummary(
       true, this.sort.sortBy, this.sort.sortDirection, '',
       this.filterBy.filterParams.name, this.filterBy.filterParams.description, '', this.filterBy.filterParams.owner,
-      this.filterBy.filterParams.type, '', this.filterBy.filterParams.key, '')
+      this.filterBy.filterParams.type, '', this.filterBy.filterParams.key, ''
+)
       .subscribe(resultList => {
         this.workbasketsResource = resultList;
         this.workbaskets = resultList.workbaskets;

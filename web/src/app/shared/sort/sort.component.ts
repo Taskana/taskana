@@ -1,5 +1,5 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Direction, SortingModel} from 'app/models/sorting';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Direction, SortingModel } from 'app/models/sorting';
 
 @Component({
   selector: 'taskana-sort',
@@ -35,5 +35,4 @@ export class SortComponent implements OnInit {
   private search() {
     this.performSorting.emit(this.sort);
   }
-
 }

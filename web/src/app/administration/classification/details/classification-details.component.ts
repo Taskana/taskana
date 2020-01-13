@@ -22,11 +22,11 @@ import { RemoveConfirmationService } from 'app/services/remove-confirmation/remo
 import { ClassificationCategoriesService } from 'app/shared/services/classifications/classification-categories.service';
 // tslint:enable:max-line-length
 import { DomainService } from 'app/services/domain/domain.service';
-import { CustomFieldsService } from '../../../services/custom-fields/custom-fields.service';
 import { Pair } from 'app/models/pair';
 import { NgForm } from '@angular/forms';
 import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
 import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
+import { CustomFieldsService } from '../../../services/custom-fields/custom-fields.service';
 
 @Component({
   selector: 'taskana-classification-details',
@@ -35,7 +35,6 @@ import { ImportExportService } from 'app/administration/services/import-export/i
   styleUrls: ['./classification-details.component.scss']
 })
 export class ClassificationDetailsComponent implements OnInit, OnDestroy {
-
   classification: ClassificationDefinition;
   classificationClone: ClassificationDefinition;
   showDetail = false;
@@ -92,8 +91,8 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     });
     this.classificationSelectedSubscription = this.classificationsService.getSelectedClassification()
       .subscribe(classificationSelected => {
-        if (classificationSelected && this.classification &&
-            this.classification.classificationId === classificationSelected.classificationId) { return; }
+        if (classificationSelected && this.classification
+            && this.classification.classificationId === classificationSelected.classificationId) { return; }
         this.initProperties();
         if (classificationSelected) {
           this.fillClassificationInformation(classificationSelected);
@@ -101,7 +100,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
       });
 
     this.routeSubscription = this.route.params.subscribe(params => {
-      let id = params['id'];
+      let { id } = params;
       delete this.action;
       if (id && id.indexOf('new-classification') !== -1) {
         this.action = ACTION.CREATE;
@@ -110,10 +109,10 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         if (id === 'undefined') {
           id = '';
         }
-        this.fillClassificationInformation(this.classification ? this.classification : new ClassificationDefinition())
+        this.fillClassificationInformation(this.classification ? this.classification : new ClassificationDefinition());
       }
 
-      if (!this.classification || this.classification.classificationId !== id && id ) {
+      if (!this.classification || this.classification.classificationId !== id && id) {
         this.selectClassification(id);
       }
     });
@@ -128,7 +127,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
       if (categories.length > 0 && this.classification) {
         // TSK-891 fix: The property is already set and is crucial value
         // Wrapped with an if to set a default if not already set.
-        if ( !this.classification.category ) {
+        if (!this.classification.category) {
           this.classification.category = categories[0];
         }
       }
@@ -136,7 +135,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
 
     this.importingExportingSubscription = this.importExportService.getImportingFinished().subscribe((value: Boolean) => {
       if (this.classification.classificationId) { this.selectClassification(this.classification.classificationId); }
-    })
+    });
   }
 
   backClicked(): void {
@@ -188,10 +187,12 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     } else {
       try {
         this.classification = (<ClassificationDefinition> await this.classificationsService.putClassification(
-          this.classification._links.self.href, this.classification));
+          this.classification._links.self.href, this.classification
+));
         this.afterRequest();
         this.alertService.triggerAlert(
-          new AlertModel(AlertType.SUCCESS, `Classification ${this.classification.key} was saved successfully`));
+          new AlertModel(AlertType.SUCCESS, `Classification ${this.classification.key} was saved successfully`)
+);
         this.cloneClassification(this.classification);
       } catch (error) {
         this.generalModalService.triggerMessage(new MessageModal('There was error while saving your classification', error));
@@ -234,7 +235,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   }
 
   private classificationIsAlreadySelected(): boolean {
-    if (this.action === ACTION.CREATE && this.classification) { return true }
+    if (this.action === ACTION.CREATE && this.classification) { return true; }
   }
 
   private fillClassificationInformation(classificationSelected: ClassificationDefinition) {
@@ -277,7 +278,8 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   private removeClassificationConfirmation() {
     if (!this.classification || !this.classification.classificationId) {
       this.generalModalService.triggerMessage(
-        new MessageModal('There is no classification selected', 'Please check if you are creating a classification'));
+        new MessageModal('There is no classification selected', 'Please check if you are creating a classification')
+);
       return false;
     }
     this.requestInProgressService.setRequestInProgress(true);
@@ -286,16 +288,16 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     this.classificationRemoveSubscription = this.classificationsService
       .deleteClassification(this.classification._links.self.href)
       .subscribe(() => {
-        const key = this.classification.key;
+        const { key } = this.classification;
         delete this.classification;
         this.afterRequest();
         this.classificationsService.selectClassification();
         this.router.navigate(['taskana/administration/classifications']);
-        this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Classification ${key} was removed successfully`))
+        this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Classification ${key} was removed successfully`));
       }, error => {
         this.generalModalService.triggerMessage(new MessageModal('There was error while removing your classification', error));
         this.afterRequest();
-      })
+      });
   }
 
   private cloneClassification(classification: ClassificationDefinition) {
@@ -311,7 +313,6 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-
     if (this.masterAndDetailSubscription) { this.masterAndDetailSubscription.unsubscribe(); }
     if (this.routeSubscription) { this.routeSubscription.unsubscribe(); }
     if (this.classificationSelectedSubscription) { this.classificationSelectedSubscription.unsubscribe(); }

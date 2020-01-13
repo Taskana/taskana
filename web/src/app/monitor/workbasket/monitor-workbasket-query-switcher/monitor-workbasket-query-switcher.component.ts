@@ -1,5 +1,5 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {MonitorQueryType} from '../../models/monitor-query-type';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { MonitorQueryType } from '../../models/monitor-query-type';
 
 @Component({
   selector: 'taskana-monitor-workbasket-query-switcher',
@@ -7,9 +7,9 @@ import {MonitorQueryType} from '../../models/monitor-query-type';
   styleUrls: ['./monitor-workbasket-query-switcher.component.scss']
 })
 export class MonitorWorkbasketQuerySwitcherComponent implements OnInit {
-
   @Output()
   queryChanged = new EventEmitter<MonitorQueryType>();
+
   selectedChartType: MonitorQueryType;
   monitorQueryPlannedDateType = MonitorQueryType.PlannedDate;
   monitorQueryDueDateType = MonitorQueryType.DueDate;
@@ -26,5 +26,4 @@ export class MonitorWorkbasketQuerySwitcherComponent implements OnInit {
     this.selectedChartType = queryType;
     this.queryChanged.emit(queryType);
   }
-
 }

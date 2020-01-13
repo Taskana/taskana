@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild, SimpleChanges, OnChanges, HostListener } from '@angular/core';
 import { Task } from 'app/workplace/models/task';
-import { Classification } from '../../../models/classification';
-import { ClassificationsService } from '../../../shared/services/classifications/classifications.service';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
 import { NgForm } from '@angular/forms';
 import { DomainService } from 'app/services/domain/domain.service';
+import { ClassificationsService } from '../../../shared/services/classifications/classifications.service';
+import { Classification } from '../../../models/classification';
 
 @Component({
     selector: 'taskana-task-details-general-fields',
@@ -13,13 +13,14 @@ import { DomainService } from 'app/services/domain/domain.service';
     styleUrls: ['./general-fields.component.scss']
 })
 export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges {
-
     @Input()
     task: Task;
+
     @Output() taskChange: EventEmitter<Task> = new EventEmitter<Task>();
 
     @Input()
     saveToggleTriggered: boolean;
+
     @Output() formValid: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     @ViewChild('TaskForm', { static: false })
@@ -38,7 +39,8 @@ export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges {
         private classificationService: ClassificationsService,
         private customFieldsService: CustomFieldsService,
         private formsValidatorService: FormsValidatorService,
-        private domainService: DomainService) {
+        private domainService: DomainService
+) {
     }
 
     ngOnInit() {

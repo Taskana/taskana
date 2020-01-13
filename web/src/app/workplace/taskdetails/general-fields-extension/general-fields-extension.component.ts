@@ -7,7 +7,6 @@ import { Task } from 'app/workplace/models/task';
   styleUrls: ['./general-fields-extension.component.scss']
 })
 export class GeneralFieldsExtensionComponent implements OnInit {
-
   @Input() task: Task;
   @Output() taskChange: EventEmitter<Task> = new EventEmitter<Task>();
 
@@ -15,5 +14,4 @@ export class GeneralFieldsExtensionComponent implements OnInit {
 
   ngOnInit() {
   }
-
 }
