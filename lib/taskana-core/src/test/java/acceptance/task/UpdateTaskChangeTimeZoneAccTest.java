@@ -1,7 +1,6 @@
 package acceptance.task;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import acceptance.AbstractAccTest;
 import java.util.TimeZone;
@@ -26,9 +25,9 @@ public class UpdateTaskChangeTimeZoneAccTest extends AbstractAccTest {
   UpdateTaskChangeTimeZoneAccTest() {
     super();
   }
-  
-  
-  
+
+
+
   @WithAccessId(
       userName = "admin",
       groupNames = {"group_1"})
@@ -42,10 +41,8 @@ public class UpdateTaskChangeTimeZoneAccTest extends AbstractAccTest {
     TimeZone originalZone = TimeZone.getDefault();
     Task updatedTask = taskService.updateTask(task);
     TimeZone.setDefault(TimeZone.getTimeZone("EST"));
-    
     Task retrievedTask = taskService.getTask(updatedTask.getId());
     TimeZone.setDefault(originalZone);
     assertEquals(updatedTask,retrievedTask);
-    assertNotNull(updatedTask);
   }
 }
