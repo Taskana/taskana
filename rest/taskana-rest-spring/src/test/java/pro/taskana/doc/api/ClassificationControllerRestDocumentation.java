@@ -86,7 +86,11 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
           subsectionWithPath("classifications")
               .description("An Array of <<classification-subset, Classification-Subsets>>"),
           fieldWithPath("_links.self.href").ignored(),
-          fieldWithPath("page").ignored()
+            fieldWithPath("page").ignored(),
+            fieldWithPath("page.size").ignored(),
+            fieldWithPath("page.totalElements").ignored(),
+            fieldWithPath("page.totalPages").ignored(),
+            fieldWithPath("page.number").ignored()
         };
 
     classificationFieldDescriptors =
@@ -339,7 +343,7 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
     in.close();
     con.disconnect();
     String originalTask = content.toString();
-    String modifiedTask = new String(originalTask.toString());
+    String modifiedTask = originalTask;
 
     this.mockMvc
         .perform(

@@ -56,10 +56,6 @@ class WorkbasketAccessItemControllerRestDocumentation extends BaseRestDocumentat
     accessItemFieldDescriptionsMap.put("accessItems.permCustom11", "");
     accessItemFieldDescriptionsMap.put("accessItems.permCustom12", "");
     accessItemFieldDescriptionsMap.put("_links.self.href", "Link to self");
-    accessItemFieldDescriptionsMap.put("page.size", "The page size");
-    accessItemFieldDescriptionsMap.put("page.number", "Zero-indexed current page");
-    accessItemFieldDescriptionsMap.put("page.totalElements", "The total number of elements");
-    accessItemFieldDescriptionsMap.put("page.totalPages", "Total amount of pages");
 
     accessItemFieldDescriptors =
         new FieldDescriptor[] {
@@ -109,13 +105,10 @@ class WorkbasketAccessItemControllerRestDocumentation extends BaseRestDocumentat
               .description(accessItemFieldDescriptionsMap.get("accessItems.permCustom12")),
           fieldWithPath("_links.self.href")
               .description(accessItemFieldDescriptionsMap.get("_links.self.href")),
-            fieldWithPath("page.size").description(accessItemFieldDescriptionsMap.get("page.size")),
-            fieldWithPath("page.number")
-                .description(accessItemFieldDescriptionsMap.get("page.number")),
-            fieldWithPath("page.totalElements")
-                .description(accessItemFieldDescriptionsMap.get("page.totalElements")),
-            fieldWithPath("page.totalPages")
-                .description(accessItemFieldDescriptionsMap.get("page.totalPages")),
+            fieldWithPath("page.size").ignored(),
+            fieldWithPath("page.totalElements").ignored(),
+            fieldWithPath("page.totalPages").ignored(),
+            fieldWithPath("page.number").ignored()
         };
   }
 
