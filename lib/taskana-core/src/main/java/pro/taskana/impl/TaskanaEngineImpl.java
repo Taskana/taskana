@@ -247,14 +247,6 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     configuration.getTypeHandlerRegistry().register(MapTypeHandler.class);
     configuration.getTypeHandlerRegistry().register(InstantTypeHandler.class);
 
-<<<<<<< HEAD
-=======
-    //    configuration.getTypeHandlerRegistry().register(Instant.class,JdbcType.TIMESTAMP,
-    //        InstantTypeHandler.class);
-    //    configuration.getTypeHandlerRegistry().register(Instant.class,null,
-    //        InstantTypeHandler.class);
-
->>>>>>> TSK-1021 Introduce InstantTypeHandler for timestamps in UTC
     SqlSessionFactory localSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
     return SqlSessionManager.newInstance(localSessionFactory);
   }
