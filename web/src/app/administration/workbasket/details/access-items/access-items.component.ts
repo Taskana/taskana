@@ -69,7 +69,7 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 
   setAccessItemsGroups(accessItems: Array<WorkbasketAccessItems>) {
     const AccessItemsFormGroups = accessItems.map(accessItem => this.formBuilder.group(accessItem));
-    AccessItemsFormGroups.map(accessItemGroup => {
+    AccessItemsFormGroups.forEach(accessItemGroup => {
       accessItemGroup.controls.accessId.setValidators(Validators.required);
     });
     const AccessItemsFormArray = this.formBuilder.array(AccessItemsFormGroups);

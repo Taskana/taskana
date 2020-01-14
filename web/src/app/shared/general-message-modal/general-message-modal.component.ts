@@ -20,8 +20,6 @@ export class GeneralMessageModalComponent implements OnChanges {
   @ViewChild('generalModal', { static: true })
   private modal;
 
-  constructor() { }
-
   ngOnChanges(changes: SimpleChanges) {
     if (this.message) {
       $(this.modal.nativeElement).modal('toggle');

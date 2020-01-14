@@ -5,8 +5,6 @@ import { Subject, Observable } from 'rxjs';
 export class RequestInProgressService {
   public requestInProgressTriggered = new Subject<boolean>();
 
-  constructor() { }
-
   setRequestInProgress(value: boolean) {
     setTimeout(() => this.requestInProgressTriggered.next(value), 0);
   }

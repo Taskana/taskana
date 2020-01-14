@@ -14,9 +14,6 @@ export class MonitorWorkbasketQuerySwitcherComponent implements OnInit {
   monitorQueryPlannedDateType = MonitorQueryType.PlannedDate;
   monitorQueryDueDateType = MonitorQueryType.DueDate;
 
-  constructor() {
-  }
-
   ngOnInit() {
     this.selectedChartType = MonitorQueryType.DueDate;
     this.queryChanged.emit(MonitorQueryType.DueDate);

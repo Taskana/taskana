@@ -12,9 +12,6 @@ export class MonitorWorkbasketsComponent implements OnInit {
   showMonitorQueryPlannedDate: Boolean;
   showMonitorQueryDueDate: Boolean;
 
-  constructor() {
-  }
-
   ngOnInit() {
   }
 

@@ -5,9 +5,6 @@ import { Observable, BehaviorSubject } from 'rxjs';
 export class MasterAndDetailService {
   public showDetail = new BehaviorSubject<boolean>(false);
 
-
-  constructor() { }
-
   setShowDetail(newValue: boolean) {
     this.showDetail.next(newValue);
   }

@@ -15,16 +15,14 @@ export class CodeComponent implements OnInit {
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent) {
     if (this.bufferKeys === '') {
-      setTimeout(() => this.bufferKeys = '', 5000);
+      setTimeout(() => { this.bufferKeys = ''; }, 5000);
     }
     this.bufferKeys += event.code;
     if (this.code === this.bufferKeys) {
       this.showCode = true;
-      setTimeout(() => this.showCode = false, 5000);
+      setTimeout(() => { this.showCode = false; }, 5000);
     }
   }
-
-  constructor() { }
 
   ngOnInit() {
   }

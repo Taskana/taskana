@@ -38,7 +38,7 @@ export class ImportExportComponent implements OnInit {
 
   ngOnInit() {
     this.domainService.getDomains().subscribe(
-      data => this.domains = data
+      data => { this.domains = data; }
     );
   }
 
@@ -54,23 +54,24 @@ export class ImportExportComponent implements OnInit {
     const file = this.selectedFileInput.nativeElement.files[0];
     const formdata = new FormData();
     const ajax = new XMLHttpRequest();
-    if (!this.checkFormatFile(file)) { return false; }
-    formdata.append('file', file);
-    ajax.upload.addEventListener('progress', this.progressHandler.bind(this), false);
-    ajax.addEventListener('load', this.resetProgress.bind(this), false);
-    ajax.addEventListener('error', this.onFailedResponse.bind(this, ajax), false);
-    ajax.onreadystatechange = this.onReadyStateChangeHandler.bind(this, ajax);
-    if (this.currentSelection === TaskanaType.WORKBASKETS) {
-      ajax.open('POST', `${environment.taskanaRestUrl}/v1/workbasket-definitions`);
-    } else {
-      ajax.open('POST', `${environment.taskanaRestUrl}/v1/classification-definitions`);
+    if (this.checkFormatFile(file)) {
+      formdata.append('file', file);
+      ajax.upload.addEventListener('progress', this.progressHandler.bind(this), false);
+      ajax.addEventListener('load', this.resetProgress.bind(this), false);
+      ajax.addEventListener('error', this.onFailedResponse.bind(this, ajax), false);
+      ajax.onreadystatechange = this.onReadyStateChangeHandler.bind(this, ajax);
+      if (this.currentSelection === TaskanaType.WORKBASKETS) {
+        ajax.open('POST', `${environment.taskanaRestUrl}/v1/workbasket-definitions`);
+      } else {
+        ajax.open('POST', `${environment.taskanaRestUrl}/v1/classification-definitions`);
+      }
+      if (!environment.production) {
+        ajax.setRequestHeader('Authorization', 'Basic YWRtaW46YWRtaW4=');
+      }
+      ajax.send(formdata);
+      this.uploadservice.isInUse = true;
+      this.uploadservice.setCurrentProgressValue(1);
     }
-    if (!environment.production) {
-      ajax.setRequestHeader('Authorization', 'Basic YWRtaW46YWRtaW4=');
-    }
-    ajax.send(formdata);
-    this.uploadservice.isInUse = true;
-    this.uploadservice.setCurrentProgressValue(1);
   }
 
   progressHandler(event) {
@@ -79,7 +80,7 @@ export class ImportExportComponent implements OnInit {
   }
 
   private checkFormatFile(file): boolean {
-    const ending = file.name.match(/\.([^\.]+)$/)[1];
+    const ending = file.name.match(/\.([^.]+)$/)[1];
     let check = false;
     switch (ending) {
       case 'json':
@@ -120,8 +121,8 @@ export class ImportExportComponent implements OnInit {
   }
 
   private onFailedResponse(event) {
-    this.errorHandler('Upload failed', 'The upload didn\'t proceed sucessfully. \
-    \n Probably the uploaded file exceeded the maximum file size of 10 MB');
+    this.errorHandler('Upload failed', 'The upload didn\'t proceed sucessfully. \n'
+    + 'Probably the uploaded file exceeded the maximum file size of 10 MB');
   }
 
   private errorHandler(title = 'Import was not successful', message) {

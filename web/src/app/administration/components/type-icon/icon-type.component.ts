@@ -23,16 +23,17 @@ export class IconTypeComponent implements OnInit {
     return new Map([['PERSONAL', 'Personal'], ['GROUP', 'Group'], ['CLEARANCE', 'Clearance'], ['TOPIC', 'Topic']]);
   }
 
-  constructor() { }
-
   ngOnInit() {
 
   }
 
   getIconPath(type: string) {
-    return type === 'PERSONAL' ? 'user.svg'
-      : type === 'GROUP' ? 'users.svg'
-        : type === 'TOPIC' ? 'topic.svg'
-          : type === 'CLEARANCE' ? 'clearance.svg' : 'asterisk.svg';
+    switch (type) {
+      case 'PERSONAL': return 'user.svg';
+      case 'GROUP': return 'users.svg';
+      case 'TOPIC': return 'topic.svg';
+      case 'CLEARANCE': return 'clearance.svg';
+      default: return 'asterisk.svg';
+    }
   }
 }

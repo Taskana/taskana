@@ -53,7 +53,7 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
 
   setAccessItemsGroups(accessItems: Array<AccessItemWorkbasket>) {
     const AccessItemsFormGroups = accessItems.map(accessItem => this.formBuilder.group(accessItem));
-    AccessItemsFormGroups.map(accessItemGroup => {
+    AccessItemsFormGroups.forEach(accessItemGroup => {
       accessItemGroup.controls.accessId.setValidators(Validators.required);
       for (const key of Object.keys(accessItemGroup.controls)) {
         accessItemGroup.controls[key].disable();

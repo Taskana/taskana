@@ -13,7 +13,6 @@ import { LinksClassification } from '../../models/links-classfication';
 import { ClassificationCategoriesService } from '../services/classifications/classification-categories.service';
 import { ClassificationsService } from '../services/classifications/classifications.service';
 
-// tslint:disable:component-selector
 @Component({
   selector: 'tree-root',
   template: ''
@@ -27,8 +26,6 @@ class TreeVendorComponent {
     }
   };
 }
-
-// tslint:enable:component-selector
 
 describe('TaskanaTreeComponent', () => {
   let component: TaskanaTreeComponent;

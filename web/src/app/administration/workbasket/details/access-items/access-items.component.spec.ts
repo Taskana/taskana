@@ -61,8 +61,8 @@ describe('AccessItemsComponent', () => {
         ),
         new Links({ href: 'someurl' })
       )));
-      spyOn(workbasketService, 'updateWorkBasketAccessItem').and.returnValue(of(true)),
-      spyOn(alertService, 'triggerAlert').and.returnValue(of(true)),
+      spyOn(workbasketService, 'updateWorkBasketAccessItem').and.returnValue(of(true));
+      spyOn(alertService, 'triggerAlert').and.returnValue(of(true));
       debugElement = fixture.debugElement.nativeElement;
       accessIdsService = TestBed.get(AccessIdsService);
       spyOn(accessIdsService, 'getAccessItemsInformation').and.returnValue(of(new Array<string>(

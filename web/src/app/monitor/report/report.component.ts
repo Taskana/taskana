@@ -12,9 +12,6 @@ export class ReportComponent implements OnInit {
   @Input()
   reportData: ReportData;
 
-  constructor() {
-  }
-
   ngOnInit(): void {
   }
 

@@ -11,10 +11,6 @@ export class TaskdetailsAttributeComponent implements OnInit {
   @Input() attributes: CustomAttribute[] = [];
   @Output() attributesChange: EventEmitter<CustomAttribute[]> = new EventEmitter<CustomAttribute[]>();
 
-
-  constructor() {
-  }
-
   ngOnInit() {
   }
 

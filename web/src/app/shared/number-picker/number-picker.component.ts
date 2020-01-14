@@ -52,9 +52,6 @@ export class NumberPickerComponent implements OnInit, ControlValueAccessor {
     this.onTouchedCallback = fn;
   }
 
-  constructor() {
-  }
-
   ngOnInit() {
   }
 

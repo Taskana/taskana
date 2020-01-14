@@ -1,4 +1,3 @@
-// tslint:disable:max-line-length
 /**
  * Modules
  */
@@ -113,5 +112,3 @@ export function startupServiceFactory(startupService: StartupService): () => Pro
 })
 export class AppModule {
 }
-
-// tslint:enable:max-line-length

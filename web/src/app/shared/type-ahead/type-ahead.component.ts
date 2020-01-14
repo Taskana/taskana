@@ -124,7 +124,7 @@ export class TypeAheadComponent implements OnInit, ControlValueAccessor {
   }
 
   setTyping(value) {
-    if (this.disable) { return true; }
+    if (this.disable) { return; }
     if (value) {
       setTimeout(() => {
         this.inputTypeAhead.nativeElement.focus();

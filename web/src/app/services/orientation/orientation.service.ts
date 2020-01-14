@@ -9,8 +9,6 @@ export class OrientationService {
   private currentOrientation;
   public orientation = new BehaviorSubject<Orientation>(this.currentOrientation);
 
-  constructor() { }
-
   onResize() {
     const orientation = this.detectOrientation();
     if (orientation !== this.currentOrientation) {
@@ -36,7 +34,7 @@ export class OrientationService {
   calculateNumberItemsList(heightContainer: number, cardHeight: number, unusedHeight: number, doubleList = false): number {
     let cards = Math.round((heightContainer - unusedHeight) / cardHeight);
     if (doubleList && window.innerWidth < 992) { cards = Math.floor(cards / 2); }
-    cards > 0 ? TaskanaQueryParameters.pageSize = cards : TaskanaQueryParameters.pageSize = 1;
+    TaskanaQueryParameters.pageSize = cards > 0 ? cards : 1;
     return cards;
   }
 
