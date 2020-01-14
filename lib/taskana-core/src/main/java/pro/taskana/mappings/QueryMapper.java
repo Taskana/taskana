@@ -4,6 +4,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.type.JdbcType;
 
 import pro.taskana.ObjectReference;
 import pro.taskana.WorkbasketAccessItemQuery;
@@ -15,6 +16,7 @@ import pro.taskana.impl.TaskSummaryImpl;
 import pro.taskana.impl.WorkbasketAccessItemImpl;
 import pro.taskana.impl.WorkbasketQueryImpl;
 import pro.taskana.impl.WorkbasketSummaryImpl;
+import pro.taskana.impl.persistence.InstantTypeHandler;
 
 /** This class provides a mapper for all queries. */
 @SuppressWarnings({"checkstyle:LineLength", "checkstyle:Indentation"})
@@ -61,9 +63,9 @@ public interface QueryMapper {
           + "<if test='taskIds != null'>AND t.ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>)</if> "
           + "<if test='externalIdIn != null'>AND t.EXTERNAL_ID IN(<foreach item='item' collection='externalIdIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='externalIdLike != null'>AND (<foreach item='item' collection='externalIdLike' separator=' OR '>UPPER(t.EXTERNAL_ID) LIKE #{item}</foreach>)</if> "
-          + "<if test='createdIn !=null'> AND ( <foreach item='item' collection='createdIn' separator=' OR ' > ( <if test='item.begin!=null'> t.CREATED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.CREATED &lt;=#{item.end} </if>)</foreach>)</if> "
+          + "<if test='createdIn !=null'> AND ( <foreach item='item' collection='createdIn' separator=' OR ' > ( <if test='item.begin!=null'> t.CREATED &gt;= #{item.begin, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.CREATED &lt;=#{item.end, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler} </if>)</foreach>)</if> "
           + "<if test='claimedIn !=null'> AND ( <foreach item='item' collection='claimedIn' separator=' OR ' > ( <if test='item.begin!=null'> t.CLAIMED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.CLAIMED &lt;=#{item.end} </if>)</foreach>)</if> "
-          + "<if test='completedIn !=null'> AND ( <foreach item='item' collection='completedIn' separator=' OR ' > ( <if test='item.begin!=null'> t.COMPLETED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.COMPLETED &lt;=#{item.end} </if>)</foreach>)</if> "
+          + "<if test='completedIn !=null'> AND ( <foreach item='item' collection='completedIn' separator=' OR ' > ( <if test='item.begin!=null'> t.COMPLETED &gt;= #{item.begin, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.COMPLETED &lt;=#{item.end, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler} </if>)</foreach>)</if> "
           + "<if test='modifiedIn !=null'> AND ( <foreach item='item' collection='modifiedIn' separator=' OR ' > ( <if test='item.begin!=null'> t.MODIFIED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.MODIFIED &lt;=#{item.end} </if>)</foreach>)</if> "
           + "<if test='plannedIn !=null'> AND ( <foreach item='item' collection='plannedIn' separator=' OR ' > ( <if test='item.begin!=null'> t.PLANNED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.PLANNED &lt;=#{item.end} </if>)</foreach>)</if> "
           + "<if test='dueIn !=null'> AND ( <foreach item='item' collection='dueIn' separator=' OR ' > ( <if test='item.begin!=null'> t.DUE &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.DUE &lt;=#{item.end} </if>)</foreach>)</if> "
@@ -154,11 +156,11 @@ public interface QueryMapper {
       value = {
         @Result(property = "taskId", column = "ID"),
         @Result(property = "externalId", column = "EXTERNAL_ID"),
-        @Result(property = "created", column = "CREATED"),
-        @Result(property = "claimed", column = "CLAIMED"),
-        @Result(property = "completed", column = "COMPLETED"),
-        @Result(property = "modified", column = "MODIFIED"),
-        @Result(property = "planned", column = "PLANNED"),
+        @Result(property = "created", column = "CREATED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
+        @Result(property = "claimed", column = "CLAIMED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
+        @Result(property = "completed", column = "COMPLETED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
+        @Result(property = "modified", column = "MODIFIED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
+        @Result(property = "planned", column = "PLANNED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
         @Result(property = "due", column = "DUE"),
         @Result(property = "name", column = "NAME"),
         @Result(property = "creator", column = "CREATOR"),
@@ -246,9 +248,9 @@ public interface QueryMapper {
           + "<if test='taskIds != null'>AND t.ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>)</if> "
           + "<if test='externalIdIn != null'>AND t.EXTERNAL_ID IN(<foreach item='item' collection='externalIdIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='externalIdLike != null'>AND (<foreach item='item' collection='externalIdLike' separator=' OR '>UPPER(t.EXTERNAL_ID) LIKE #{item}</foreach>)</if> "
-          + "<if test='createdIn !=null'> AND ( <foreach item='item' collection='createdIn' separator=' OR ' > ( <if test='item.begin!=null'> t.CREATED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.CREATED &lt;=#{item.end} </if>)</foreach>)</if> "
+          + "<if test='createdIn !=null'> AND ( <foreach item='item' collection='createdIn' separator=' OR ' > ( <if test='item.begin!=null'> t.CREATED &gt;= #{item.begin, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.CREATED &lt;=#{item.end, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler} </if>)</foreach>)</if> "
           + "<if test='claimedIn !=null'> AND ( <foreach item='item' collection='claimedIn' separator=' OR ' > ( <if test='item.begin!=null'> t.CLAIMED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.CLAIMED &lt;=#{item.end} </if>)</foreach>)</if> "
-          + "<if test='completedIn !=null'> AND ( <foreach item='item' collection='completedIn' separator=' OR ' > ( <if test='item.begin!=null'> t.COMPLETED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.COMPLETED &lt;=#{item.end} </if>)</foreach>)</if> "
+          + "<if test='completedIn !=null'> AND ( <foreach item='item' collection='completedIn' separator=' OR ' > ( <if test='item.begin!=null'> t.COMPLETED &gt;= #{item.begin, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.COMPLETED &lt;=#{item.end, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler} </if>)</foreach>)</if> "
           + "<if test='modifiedIn !=null'> AND ( <foreach item='item' collection='modifiedIn' separator=' OR ' > ( <if test='item.begin!=null'> t.MODIFIED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.MODIFIED &lt;=#{item.end} </if>)</foreach>)</if> "
           + "<if test='plannedIn !=null'> AND ( <foreach item='item' collection='plannedIn' separator=' OR ' > ( <if test='item.begin!=null'> t.PLANNED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.PLANNED &lt;=#{item.end} </if>)</foreach>)</if> "
           + "<if test='dueIn !=null'> AND ( <foreach item='item' collection='dueIn' separator=' OR ' > ( <if test='item.begin!=null'> t.DUE &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> t.DUE &lt;=#{item.end} </if>)</foreach>)</if> "
@@ -393,12 +395,12 @@ public interface QueryMapper {
       value = {
         @Result(property = "taskId", column = "ID"),
         @Result(property = "externalId", column = "EXTERNAL_ID"),
-        @Result(property = "created", column = "CREATED"),
-        @Result(property = "claimed", column = "CLAIMED"),
-        @Result(property = "completed", column = "COMPLETED"),
-        @Result(property = "modified", column = "MODIFIED"),
-        @Result(property = "planned", column = "PLANNED"),
-        @Result(property = "due", column = "DUE"),
+        @Result(property = "created", column = "CREATED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
+        @Result(property = "claimed", column = "CLAIMED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
+        @Result(property = "completed", column = "COMPLETED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
+        @Result(property = "modified", column = "MODIFIED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
+        @Result(property = "planned", column = "PLANNED", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
+        @Result(property = "due", column = "DUE", jdbcType = JdbcType.TIMESTAMP, javaType = java.time.Instant.class, typeHandler = InstantTypeHandler.class),
         @Result(property = "name", column = "NAME"),
         @Result(property = "creator", column = "CREATOR"),
         @Result(property = "note", column = "NOTE"),
