@@ -18,9 +18,7 @@ import { AlertService } from 'app/services/alert/alert.service';
 import { TreeService } from 'app/services/tree/tree.service';
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
 
-// tslint:disable:max-line-length
 import { ClassificationCategoriesService } from 'app/shared/services/classifications/classification-categories.service';
-// tslint:enable:max-line-length
 import { DomainService } from 'app/services/domain/domain.service';
 import { Pair } from 'app/models/pair';
 import { NgForm } from '@angular/forms';
@@ -112,7 +110,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         this.fillClassificationInformation(this.classification ? this.classification : new ClassificationDefinition());
       }
 
-      if (!this.classification || this.classification.classificationId !== id && id) {
+      if (!this.classification || (this.classification.classificationId !== id && id)) {
         this.selectClassification(id);
       }
     });
@@ -128,7 +126,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         // TSK-891 fix: The property is already set and is crucial value
         // Wrapped with an if to set a default if not already set.
         if (!this.classification.category) {
-          this.classification.category = categories[0];
+          [this.classification.category] = categories;
         }
       }
     });
@@ -224,18 +222,17 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   }
 
   private async selectClassification(id: string) {
-    if (this.classificationIsAlreadySelected()) {
-      return true;
+    if (!this.classificationIsAlreadySelected()) {
+      this.requestInProgress = true;
+      const classification = await this.classificationsService.getClassification(id);
+      this.fillClassificationInformation(classification);
+      this.classificationsService.selectClassification(classification);
+      this.requestInProgress = false;
     }
-    this.requestInProgress = true;
-    const classification = await this.classificationsService.getClassification(id);
-    this.fillClassificationInformation(classification);
-    this.classificationsService.selectClassification(classification);
-    this.requestInProgress = false;
   }
 
   private classificationIsAlreadySelected(): boolean {
-    if (this.action === ACTION.CREATE && this.classification) { return true; }
+    return this.action === ACTION.CREATE && !!this.classification;
   }
 
   private fillClassificationInformation(classificationSelected: ClassificationDefinition) {
@@ -280,7 +277,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
       this.generalModalService.triggerMessage(
         new MessageModal('There is no classification selected', 'Please check if you are creating a classification')
       );
-      return false;
+      return;
     }
     this.requestInProgressService.setRequestInProgress(true);
     this.treeService.setRemovedNodeId(this.classification.classificationId);

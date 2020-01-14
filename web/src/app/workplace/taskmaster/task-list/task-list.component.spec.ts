@@ -18,7 +18,6 @@ export class DummyDetailComponent {
 }
 
 @Component({
-  // tslint:disable-next-line: component-selector
   selector: 'svg-icon',
   template: '<p>Mock Icon Component</p>'
 })

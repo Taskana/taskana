@@ -5,8 +5,6 @@ import { Subject } from 'rxjs';
 export class TreeService {
   public removedNodeId = new Subject<string>();
 
-  constructor() { }
-
   setRemovedNodeId(value: string) {
     this.removedNodeId.next(value);
   }

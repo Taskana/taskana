@@ -40,7 +40,7 @@ export class RestConnectorService {
   getChartData(source: ReportData): Array<ChartData> {
     return source.rows.map(row => {
       const rowData = new ChartData();
-      rowData.label = row.desc[0];
+      [rowData.label] = row.desc;
       rowData.data = row.cells;
       return rowData;
     });

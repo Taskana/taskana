@@ -4,7 +4,6 @@ import { Injectable } from '@angular/core';
 export class TitlesService {
   titles = new Map<number, string>();
   customizedTitles: any = {};
-  constructor() { }
 
   initTitles(language: string = 'EN', jsonFile: any) {
     this.titles = jsonFile[language];

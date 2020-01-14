@@ -18,7 +18,7 @@ export class FormsValidatorService {
   public async validateFormInformation(form: NgForm, toogleValidationMap: Map<any, boolean>): Promise<any> {
     let validSync = true;
     if (!form) {
-      return;
+      return false;
     }
     const forFieldsPromise = new Promise((resolve, reject) => {
       for (const control in form.form.controls) {

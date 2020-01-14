@@ -6,8 +6,6 @@ import { MessageModal } from 'app/models/message-modal';
 export class GeneralModalService {
   private messageTriggered = new Subject<MessageModal>();
 
-  constructor() { }
-
   triggerMessage(message: MessageModal) {
     this.messageTriggered.next(message);
   }

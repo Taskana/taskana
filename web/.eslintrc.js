@@ -31,31 +31,14 @@ module.exports = {
     "import/no-unresolved": "off",
     "import/prefer-default-export": "off",
     "max-classes-per-file": "off",
-    "no-useless-escape": "off",
     "@typescript-eslint/no-unused-vars": "off",
-    "@typescript-eslint/no-unused-expressions": "off",
 
     // all following rules MUST be removed (mostly autofix)
     "linebreak-style": ["off", "unix"], // own PR
     "no-restricted-syntax": "off",
-    "consistent-return": "off",
-    "no-return-assign": "off",
-    "prefer-destructuring": "off",
-    "@typescript-eslint/no-empty-function": "off",
-    "@typescript-eslint/no-useless-constructor": "off",
     "@typescript-eslint/no-use-before-define": "off",
     "@typescript-eslint/camelcase": "off",
-    "no-multi-assign": "off",
-    "no-new-object": "off",
     "no-plusplus": "off",
-    "array-callback-return": "off",
-    "no-mixed-operators": "off",
-    "no-multi-str": "off",
-    "no-nested-ternary": "off",
-    "no-sequences": "off",
-    "no-tabs": "off",
-    "no-self-assign": "off",
-    "global-require": "off",
     "no-prototype-builtins": "off",
   }
 };

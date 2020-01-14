@@ -6,8 +6,6 @@ export class RemoveConfirmationService {
   private removeConfirmationCallbackSubject = new Subject<{ callback: Function, message: string }>();
   private removeConfirmationCallback: Function;
 
-  constructor() { }
-
   setRemoveConfirmation(callback: Function, message: string) {
     this.removeConfirmationCallback = callback;
     this.removeConfirmationCallbackSubject.next({ callback, message });
