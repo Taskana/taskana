@@ -247,11 +247,6 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     configuration.getTypeHandlerRegistry().register(MapTypeHandler.class);
     configuration.getTypeHandlerRegistry().register(InstantTypeHandler.class);
 
-    //    configuration.getTypeHandlerRegistry().register(Instant.class,JdbcType.TIMESTAMP,
-    //        InstantTypeHandler.class);
-    //    configuration.getTypeHandlerRegistry().register(Instant.class,null,
-    //        InstantTypeHandler.class);
-
     SqlSessionFactory localSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
     return SqlSessionManager.newInstance(localSessionFactory);
   }
