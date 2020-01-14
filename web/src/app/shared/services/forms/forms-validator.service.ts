@@ -21,13 +21,13 @@ export class FormsValidatorService {
       return false;
     }
     const forFieldsPromise = new Promise((resolve, reject) => {
-      for (const control in form.form.controls) {
+      Object.keys(form.form.controls).forEach(control => {
         if (control.indexOf('owner') === -1 && form.form.controls[control].invalid) {
           const validationState = toogleValidationMap.get(control);
-          validationState ? toogleValidationMap.set(control, !validationState) : toogleValidationMap.set(control, true);
+          toogleValidationMap.set(this.workbasketOwner, !validationState);
           validSync = false;
         }
-      }
+      });
       resolve(validSync);
     });
 
@@ -36,16 +36,13 @@ export class FormsValidatorService {
       if (form.form.controls[this.workbasketOwner]) {
         this.accessIdsService.getAccessItemsInformation(form.form.controls[this.workbasketOwner].value).subscribe(items => {
           const validationState = toogleValidationMap.get(this.workbasketOwner);
-          validationState ? toogleValidationMap.set(this.workbasketOwner, !validationState)
-            : toogleValidationMap.set(this.workbasketOwner, true);
-          items.find(item => item.accessId === form.form.controls[this.workbasketOwner].value)
-            ? resolve(new ResponseOwner({ valid: true, field: ownerString }))
-            : resolve(new ResponseOwner({ valid: false, field: ownerString }));
+          toogleValidationMap.set(this.workbasketOwner, !validationState);
+          const valid = items.find(item => item.accessId === form.form.controls[this.workbasketOwner].value);
+          resolve(new ResponseOwner({ valid, field: ownerString }));
         });
       } else {
         const validationState = toogleValidationMap.get(form.form.controls[this.workbasketOwner]);
-        validationState ? toogleValidationMap.set(this.workbasketOwner, !validationState)
-          : toogleValidationMap.set(this.workbasketOwner, true);
+        toogleValidationMap.set(this.workbasketOwner, !validationState);
         resolve(new ResponseOwner({ valid: true, field: ownerString }));
       }
     });
@@ -68,12 +65,9 @@ export class FormsValidatorService {
     for (let i = 0; i < form.length; i++) {
       ownerPromise.push(new Promise((resolve, reject) => {
         const validationState = toogleValidationAccessIdMap.get(i);
-        validationState ? toogleValidationAccessIdMap.set(i, !validationState)
-          : toogleValidationAccessIdMap.set(i, true);
+        toogleValidationAccessIdMap.set(i, !validationState);
         this.accessIdsService.getAccessItemsInformation(form.controls[i].value.accessId).subscribe(items => {
-          items.length > 0
-            ? resolve(new ResponseOwner({ valid: true, field: 'access id' }))
-            : resolve(new ResponseOwner({ valid: false, field: 'access id' }));
+          resolve(new ResponseOwner({ valid: items.length > 0, field: 'access id' }));
         });
       }));
     }
@@ -81,10 +75,10 @@ export class FormsValidatorService {
     let result = true;
     const values = await Promise.all(ownerPromise);
     let responseOwner;
-    for (let i_1 = 0; i_1 < values.length; i_1++) {
-      responseOwner = new ResponseOwner(values[i_1]);
+    values.forEach(owner => {
+      responseOwner = new ResponseOwner(owner);
       result = result && responseOwner.valid;
-    }
+    });
     if (!result) {
       this.alertService.triggerAlert(new AlertModel(AlertType.WARNING, `The ${responseOwner.field} introduced is not valid.`));
     }

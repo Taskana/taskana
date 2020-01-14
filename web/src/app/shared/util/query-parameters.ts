@@ -74,7 +74,7 @@ export class TaskanaQueryParameters {
 
   private static removeLastChar(query: string): string {
     if (query.lastIndexOf('&') === query.length - 1) {
-      query = query.slice(0, query.lastIndexOf('&'));
+      return query.slice(0, query.lastIndexOf('&'));
     }
     return query;
   }

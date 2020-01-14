@@ -1,10 +1,4 @@
-import { Component,
-  OnInit,
-  Input,
-  Output,
-  EventEmitter,
-  OnChanges,
-  SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { Page } from 'app/models/page';
 
 @Component({
@@ -40,7 +34,8 @@ export class PaginationComponent implements OnChanges {
     this.hasItems = this.numberOfItems > 0;
   }
 
-  changeToPage(page) {
+  changeToPage(p) {
+    let page = p;
     if (page < 1) {
       this.pageSelected = 1;
       page = this.pageSelected;

@@ -12,8 +12,8 @@ export class ClassificationDefinitionService {
 
   // GET
   async exportClassifications(domain: string) {
-    domain = (domain === '' ? '' : `?domain=${domain}`);
-    const classificationDefinitions = await this.httpClient.get<ClassificationDefinition[]>(this.url + domain).toPromise();
+    const domainRequest = (domain ? '' : `?domain=${domain}`);
+    const classificationDefinitions = await this.httpClient.get<ClassificationDefinition[]>(this.url + domainRequest).toPromise();
     BlobGenerator.saveFile(classificationDefinitions, `Classifications_${TaskanaDate.getDate()}.json`);
   }
 }

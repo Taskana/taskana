@@ -56,7 +56,6 @@ export class StartupService {
     ).then(
       () => this.taskanaEngineService.getUserInformation()
     ).catch(error => {
-      console.log(error);
       // this.window.nativeWindow.location.href = environment.taskanaRestUrl + '/login';
     });
   }

@@ -18,8 +18,8 @@ export class HttpClientInterceptor implements HttpInterceptor {
 
   }
 
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    req = req.clone({ headers: req.headers.set('Content-Type', 'application/hal+json') });
+  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    let req = request.clone({ headers: request.headers.set('Content-Type', 'application/hal+json') });
     if (!environment.production) {
       req = req.clone({ headers: req.headers.set('Authorization', 'Basic YWRtaW46YWRtaW4=') });
     }

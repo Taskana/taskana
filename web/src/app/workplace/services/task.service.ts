@@ -76,8 +76,8 @@ export class TaskService {
   }
 
   updateTask(task: Task): Observable<Task> {
-    task = this.convertTasksDatesToGMT(task);
-    return this.httpClient.put<Task>(`${this.url}/${task.taskId}`, task);
+    const taskConv = this.convertTasksDatesToGMT(task);
+    return this.httpClient.put<Task>(`${this.url}/${task.taskId}`, taskConv);
   }
 
   deleteTask(task: Task): Observable<Task> {
