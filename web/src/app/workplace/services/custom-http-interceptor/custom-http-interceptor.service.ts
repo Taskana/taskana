@@ -7,9 +7,10 @@ import { environment } from 'environments/environment';
 @Injectable()
 export class CustomHttpClientInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    let request = req;
     if (!environment.production) {
-      req = req.clone({ headers: req.headers.set('Authorization', 'Basic YWRtaW46YWRtaW4=') });
+      request = req.clone({ headers: req.headers.set('Authorization', 'Basic YWRtaW46YWRtaW4=') });
     }
-    return next.handle(req);
+    return next.handle(request);
   }
 }

@@ -47,14 +47,19 @@ export class WorkbasketService {
     }
 
 
-    return this.domainService.getSelectedDomain().pipe(mergeMap(domain => this.workbasketSummaryRef = this.httpClient.get<WorkbasketSummaryResource>(
-      `${environment.taskanaRestUrl}/v1/workbaskets/${TaskanaQueryParameters
-        .getQueryParameters(this.workbasketParameters(sortBy, order, name, nameLike, descLike, owner, ownerLike,
-          type, key, keyLike, requiredPermission, allPages, domain))}`
-    )
-      .pipe(tap((workbaskets => workbaskets)))), tap(() => {
-      this.domainService.domainChangedComplete();
-    }));
+    return this.domainService.getSelectedDomain()
+      .pipe(mergeMap(domain => {
+        this.workbasketSummaryRef = this.httpClient.get<WorkbasketSummaryResource>(
+          `${environment.taskanaRestUrl}/v1/workbaskets/${TaskanaQueryParameters
+            .getQueryParameters(this.workbasketParameters(sortBy, order, name, nameLike, descLike, owner, ownerLike,
+              type, key, keyLike, requiredPermission, allPages, domain))}`
+        );
+        this.workbasketSummaryRef.pipe(tap((workbaskets => workbaskets)));
+        return this.workbasketSummaryRef;
+      }),
+      tap(() => {
+        this.domainService.domainChangedComplete();
+      }));
   }
 
   // GET
@@ -151,7 +156,6 @@ export class WorkbasketService {
     } else {
       errMsg = error.message ? error.message : error.toString();
     }
-    console.error(errMsg);
     return observableThrowError(errMsg);
   }
 

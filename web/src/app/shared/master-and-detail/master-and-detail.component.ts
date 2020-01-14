@@ -43,12 +43,7 @@ export class MasterAndDetailComponent implements OnInit {
 
   private checkUrl(url: string): boolean {
     this.checkRoute(url);
-    for (const routeDetail of this.detailRoutes) {
-      if (url.indexOf(routeDetail) !== -1) {
-        return true;
-      }
-    }
-    return false;
+    return this.detailRoutes.some(routeDetail => url.indexOf(routeDetail) !== -1);
   }
 
   private checkRoute(url: string) {

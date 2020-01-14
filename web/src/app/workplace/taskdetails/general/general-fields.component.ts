@@ -13,79 +13,79 @@ import { Classification } from '../../../models/classification';
   styleUrls: ['./general-fields.component.scss']
 })
 export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges {
-    @Input()
+  @Input()
   task: Task;
 
-    @Output() taskChange: EventEmitter<Task> = new EventEmitter<Task>();
+  @Output() taskChange: EventEmitter<Task> = new EventEmitter<Task>();
 
-    @Input()
-    saveToggleTriggered: boolean;
+  @Input()
+  saveToggleTriggered: boolean;
 
-    @Output() formValid: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() formValid: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    @ViewChild('TaskForm', { static: false })
-    taskForm: NgForm;
+  @ViewChild('TaskForm', { static: false })
+  taskForm: NgForm;
 
-    toogleValidationMap = new Map<string, boolean>();
-    requestInProgress = false;
-    classifications: Classification[];
+  toogleValidationMap = new Map<string, boolean>();
+  requestInProgress = false;
+  classifications: Classification[];
 
-    ownerField = this.customFieldsService.getCustomField(
-      'Owner',
-      'tasks.information.owner'
-    );
+  ownerField = this.customFieldsService.getCustomField(
+    'Owner',
+    'tasks.information.owner'
+  );
 
-    constructor(
-      private classificationService: ClassificationsService,
-      private customFieldsService: CustomFieldsService,
-      private formsValidatorService: FormsValidatorService,
-      private domainService: DomainService
-    ) {
+  constructor(
+    private classificationService: ClassificationsService,
+    private customFieldsService: CustomFieldsService,
+    private formsValidatorService: FormsValidatorService,
+    private domainService: DomainService
+  ) {
+  }
+
+  ngOnInit() {
+    this.getClassificationByDomain();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.saveToggleTriggered && changes.saveToggleTriggered.currentValue !== changes.saveToggleTriggered.previousValue) {
+      this.validate();
     }
+  }
 
-    ngOnInit() {
-      this.getClassificationByDomain();
-    }
+  selectClassification(classification: Classification) {
+    this.task.classificationSummaryResource = classification;
+  }
 
-    ngOnChanges(changes: SimpleChanges): void {
-      if (changes.saveToggleTriggered && changes.saveToggleTriggered.currentValue !== changes.saveToggleTriggered.previousValue) {
-        this.validate();
-      }
-    }
+  isFieldValid(field: string): boolean {
+    return this.formsValidatorService.isFieldValid(this.taskForm, field);
+  }
 
-    selectClassification(classification: Classification) {
-      this.task.classificationSummaryResource = classification;
+  updateDate($event) {
+    if (new Date(this.task.due).toISOString() !== $event) {
+      this.task.due = $event;
     }
+  }
 
-    isFieldValid(field: string): boolean {
-      return this.formsValidatorService.isFieldValid(this.taskForm, field);
-    }
+  private validate() {
+    this.formsValidatorService.formSubmitAttempt = true;
+    this.formsValidatorService
+      .validateFormInformation(this.taskForm, this.toogleValidationMap)
+      .then(value => {
+        if (value) {
+          this.formValid.emit(true);
+        }
+      });
+  }
 
-    updateDate($event) {
-      if (new Date(this.task.due).toISOString() !== $event) {
-        this.task.due = $event;
-      }
-    }
+  private changedClassification(itemSelected: any) {
+    this.task.classificationSummaryResource = itemSelected;
+  }
 
-    private validate() {
-      this.formsValidatorService.formSubmitAttempt = true;
-      this.formsValidatorService
-        .validateFormInformation(this.taskForm, this.toogleValidationMap)
-        .then(value => {
-          if (value) {
-            this.formValid.emit(true);
-          }
-        });
-    }
-
-    private changedClassification(itemSelected: any) {
-      this.task.classificationSummaryResource = itemSelected;
-    }
-
-    private async getClassificationByDomain() {
-      this.requestInProgress = true;
-      this.classifications = (await this.classificationService.getClassificationsByDomain(this.domainService.getSelectedDomainValue()))
-        .classifications;
-      this.requestInProgress = false;
-    }
+  private async getClassificationByDomain() {
+    this.requestInProgress = true;
+    this.classifications = (await this.classificationService.getClassificationsByDomain(this.domainService.getSelectedDomainValue()))
+      .classifications;
+    this.requestInProgress = false;
+  }
 }

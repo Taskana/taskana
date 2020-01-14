@@ -164,11 +164,11 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
   checkAll(row: number, value: any) {
     const checkAll = value.target.checked;
     const workbasketAccessItemsObj = new WorkbasketAccessItems();
-    for (const property in workbasketAccessItemsObj) {
+    Object.keys(workbasketAccessItemsObj).forEach(property => {
       if (property !== 'accessId' && property !== '_links' && property !== 'workbasketId' && property !== 'accessItemId') {
         this.accessItemsGroups.controls[row].get(property).setValue(checkAll);
       }
-    }
+    });
   }
 
   accessItemSelected(accessItem: AccessIdDefinition, row: number) {

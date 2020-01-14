@@ -17,13 +17,16 @@ module.exports = {
   "rules": {
     "arrow-parens": ["error", "as-needed"],
     "@typescript-eslint/indent": ['error', 2],
-    "max-len": ["off", { "code": 140, "ignorePattern": "import *" }], // smaller than 140?
+    "max-len": ["error", { "code": 140, "ignorePattern": "import *" }], // smaller than 140?
     "object-curly-newline": ["error", { "ImportDeclaration": "never" }],
     "quote-props": ["error", "as-needed"],
     "lines-between-class-members":  ["error", "always", { "exceptAfterSingleLine": true }],
     "comma-dangle": ["error", "only-multiline"],
-    "no-underscore-dangle": ["off", { "allow": ["_links", "__karma__"] }],
-    "no-param-reassign": ["off", { "props": false }],
+    "no-underscore-dangle": ["error", { "allow": ["_links", "__karma__"] }],
+    "no-param-reassign": ["error", { "props": false }],
+    "no-plusplus" : ["error", { "allowForLoopAfterthoughts": true }],
+    "@typescript-eslint/no-use-before-define": ["error", { "functions": false, "classes": false }],
+    "@typescript-eslint/no-unused-expressions": ["error", { "allowTernary": true }],
 
     // all following rules SHOULD be removed
     "class-methods-use-this": "off",
@@ -35,10 +38,5 @@ module.exports = {
 
     // all following rules MUST be removed (mostly autofix)
     "linebreak-style": ["off", "unix"], // own PR
-    "no-restricted-syntax": "off",
-    "@typescript-eslint/no-use-before-define": "off",
-    "@typescript-eslint/camelcase": "off",
-    "no-plusplus": "off",
-    "no-prototype-builtins": "off",
   }
 };

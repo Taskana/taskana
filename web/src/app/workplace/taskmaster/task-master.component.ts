@@ -128,7 +128,7 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
       const totalHeight = window.innerHeight;
       const cards = Math.round((totalHeight - (unusedHeight + toolbarSize)) / cardHeight);
       TaskanaQueryParameters.page = TaskanaQueryParameters.page ? TaskanaQueryParameters.page : 1;
-      cards > 0 ? TaskanaQueryParameters.pageSize = cards : TaskanaQueryParameters.pageSize = 1;
+      TaskanaQueryParameters.pageSize = cards > 0 ? cards : 1;
     }
   }
 

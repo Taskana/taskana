@@ -10,13 +10,13 @@ export class OrderTasksByPipe implements PipeTransform {
     if (value === null) { return null; }
     value.sort((a, b) => {
       if (typeof a[column] === 'string') {
-        return _compareString(a[column], b[column]);
+        return compareString(a[column], b[column]);
       }
-      return _compareNumber(a[column], b[column]);
+      return compareNumber(a[column], b[column]);
     });
     return value;
 
-    function _compareString(a: string, b: string): number {
+    function compareString(a: string, b: string): number {
       if (a.toLowerCase() < b.toLowerCase()) {
         return -1;
       } if (a.toLowerCase() > b.toLowerCase()) {
@@ -25,8 +25,8 @@ export class OrderTasksByPipe implements PipeTransform {
       return 0;
     }
 
-    function _compareNumber(a: number, b: number): number {
-      return _compareString(a.toString(), b.toString());
+    function compareNumber(a: number, b: number): number {
+      return compareString(a.toString(), b.toString());
     }
   }
 }

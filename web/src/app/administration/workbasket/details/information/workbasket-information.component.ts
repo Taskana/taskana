@@ -1,10 +1,4 @@
-import { Component,
-  OnInit,
-  Input,
-  OnDestroy,
-  OnChanges,
-  SimpleChanges,
-  ViewChild } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { NgForm } from '@angular/forms';
@@ -18,8 +12,7 @@ import { TaskanaDate } from 'app/shared/util/taskana.date';
 
 import { AlertService } from 'app/services/alert/alert.service';
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
-import { SavingWorkbasketService,
-  SavingInformation } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
+import { SavingWorkbasketService, SavingInformation } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
