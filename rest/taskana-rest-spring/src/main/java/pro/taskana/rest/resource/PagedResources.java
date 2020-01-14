@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlAttribute;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
@@ -60,6 +61,10 @@ public class PagedResources<T> extends ResourceSupport {
    */
   @JsonProperty("page")
   public PageMetadata getMetadata() {
+    if (Objects.isNull(metadata)) {
+      Collection<T> content = getContent();
+      return new PageMetadata(content.size(), 0, content.size());
+    }
     return metadata;
   }
 

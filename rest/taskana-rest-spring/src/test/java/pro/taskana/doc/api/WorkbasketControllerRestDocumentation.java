@@ -109,17 +109,17 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
     accessItemFieldDescriptionsMap.put("accessItems.permCustom12", "");
     accessItemFieldDescriptionsMap.put(
         "accessItems._links.workbasket.href", "Link to the workbasket");
-    accessItemFieldDescriptionsMap.put("page.size", "The page size");
-    accessItemFieldDescriptionsMap.put("page.number", "Zero-indexed current page");
-    accessItemFieldDescriptionsMap.put("page.totalElements", "The total number of elements");
-    accessItemFieldDescriptionsMap.put("page.totalPages", "Total amount of pages");
 
     allWorkbasketsFieldDescriptors =
         new FieldDescriptor[] {
           subsectionWithPath("workbaskets")
               .description("An Array of <<workbasket-subset, Workbasket-Subsets>>"),
           fieldWithPath("_links.self.href").ignored(),
-          fieldWithPath("page").ignored()
+          fieldWithPath("page").ignored(),
+          fieldWithPath("page.size").ignored(),
+          fieldWithPath("page.totalElements").ignored(),
+          fieldWithPath("page.totalPages").ignored(),
+          fieldWithPath("page.number").ignored()
         };
 
     workbasketFieldDescriptors =
@@ -229,13 +229,10 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
               .description(accessItemFieldDescriptionsMap.get("accessItems.permCustom11")),
           fieldWithPath("accessItems[].permCustom12")
               .description(accessItemFieldDescriptionsMap.get("accessItems.permCustom12")),
-            fieldWithPath("page.size").description(accessItemFieldDescriptionsMap.get("page.size")),
-            fieldWithPath("page.number")
-                .description(accessItemFieldDescriptionsMap.get("page.number")),
-            fieldWithPath("page.totalElements")
-                .description(accessItemFieldDescriptionsMap.get("page.totalElements")),
-            fieldWithPath("page.totalPages")
-                .description(accessItemFieldDescriptionsMap.get("page.totalPages")),
+          fieldWithPath("page.size").ignored(),
+          fieldWithPath("page.totalElements").ignored(),
+          fieldWithPath("page.totalPages").ignored(),
+          fieldWithPath("page.number").ignored(),
           fieldWithPath("_links.self.href").ignored(),
           fieldWithPath("_links.workbasket.href").ignored()
         };
@@ -244,7 +241,11 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
         new FieldDescriptor[] {
           subsectionWithPath("accessItems")
               .description("An array of <<access-item, Access Items>>"),
-            subsectionWithPath("page").description("Number of page"),
+          fieldWithPath("page").ignored(),
+          fieldWithPath("page.size").ignored(),
+          fieldWithPath("page.totalElements").ignored(),
+          fieldWithPath("page.totalPages").ignored(),
+          fieldWithPath("page.number").ignored(),
           fieldWithPath("_links.self.href").ignored(),
           fieldWithPath("_links.workbasket.href").ignored()
         };
@@ -462,7 +463,7 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
     in.close();
     con.disconnect();
     String originalWorkbasket = content.toString();
-    String modifiedWorkbasket = new String(originalWorkbasket.toString());
+    String modifiedWorkbasket = originalWorkbasket;
 
     this.mockMvc
         .perform(

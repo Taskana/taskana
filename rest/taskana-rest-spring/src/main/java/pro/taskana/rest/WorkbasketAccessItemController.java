@@ -22,7 +22,7 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.ldap.LdapClient;
 import pro.taskana.rest.resource.PagedResources.PageMetadata;
-import pro.taskana.rest.resource.WorkbasketAccessItemPaginatedListResource;
+import pro.taskana.rest.resource.WorkbasketAccessItemListResource;
 import pro.taskana.rest.resource.WorkbasketAccessItemResourceAssembler;
 
 /** Controller for Workbasket access. */
@@ -58,7 +58,7 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
    * @throws InvalidArgumentException if some argument is invalid.
    */
   @GetMapping(path = Mapping.URL_WORKBASKETACCESSITEMS)
-  public ResponseEntity<WorkbasketAccessItemPaginatedListResource> getWorkbasketAccessItems(
+  public ResponseEntity<WorkbasketAccessItemListResource> getWorkbasketAccessItems(
       @RequestParam MultiValueMap<String, String> params)
       throws NotAuthorizedException, InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
@@ -73,11 +73,10 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
     PageMetadata pageMetadata = getPageMetadata(params, query);
     List<WorkbasketAccessItem> workbasketAccessItems = getQueryList(query, pageMetadata);
 
-    WorkbasketAccessItemPaginatedListResource pagedResources =
+    WorkbasketAccessItemListResource pagedResources =
         workbasketAccessItemResourceAssembler.toResources(workbasketAccessItems, pageMetadata);
 
-    ResponseEntity<WorkbasketAccessItemPaginatedListResource> response =
-        ResponseEntity.ok(pagedResources);
+    ResponseEntity<WorkbasketAccessItemListResource> response = ResponseEntity.ok(pagedResources);
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from getWorkbasketAccessItems(), returning {}", response);
     }

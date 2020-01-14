@@ -1,7 +1,6 @@
 package pro.taskana.rest;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +40,7 @@ import pro.taskana.rest.resource.DistributionTargetListResource;
 import pro.taskana.rest.resource.DistributionTargetResource;
 import pro.taskana.rest.resource.DistributionTargetResourceAssembler;
 import pro.taskana.rest.resource.PagedResources.PageMetadata;
-import pro.taskana.rest.resource.WorkbasketAccessItemPaginatedListResource;
+import pro.taskana.rest.resource.WorkbasketAccessItemListResource;
 import pro.taskana.rest.resource.WorkbasketAccessItemResource;
 import pro.taskana.rest.resource.WorkbasketAccessItemResourceAssembler;
 import pro.taskana.rest.resource.WorkbasketResource;
@@ -201,11 +200,11 @@ public class WorkbasketController extends AbstractPagingController {
 
   @GetMapping(path = Mapping.URL_WORKBASKET_ID_ACCESSITEMS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<WorkbasketAccessItemPaginatedListResource> getWorkbasketAccessItems(
+  public ResponseEntity<WorkbasketAccessItemListResource> getWorkbasketAccessItems(
       @PathVariable(value = "workbasketId") String workbasketId)
       throws NotAuthorizedException, WorkbasketNotFoundException {
     LOGGER.debug("Entry to getWorkbasketAccessItems(workbasketId= {})", workbasketId);
-    ResponseEntity<WorkbasketAccessItemPaginatedListResource> result;
+    ResponseEntity<WorkbasketAccessItemListResource> result;
 
     List<WorkbasketAccessItem> accessItems =
         workbasketService.getWorkbasketAccessItems(workbasketId);
@@ -221,7 +220,7 @@ public class WorkbasketController extends AbstractPagingController {
 
   @PutMapping(path = Mapping.URL_WORKBASKET_ID_ACCESSITEMS)
   @Transactional(rollbackFor = Exception.class)
-  public ResponseEntity<WorkbasketAccessItemPaginatedListResource> setWorkbasketAccessItems(
+  public ResponseEntity<WorkbasketAccessItemListResource> setWorkbasketAccessItems(
       @PathVariable(value = "workbasketId") String workbasketId,
       @RequestBody List<WorkbasketAccessItemResource> workbasketAccessResourceItems)
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
@@ -237,7 +236,7 @@ public class WorkbasketController extends AbstractPagingController {
     List<WorkbasketAccessItem> updatedWbAccessItems =
         workbasketService.getWorkbasketAccessItems(workbasketId);
 
-    ResponseEntity<WorkbasketAccessItemPaginatedListResource> response =
+    ResponseEntity<WorkbasketAccessItemListResource> response =
         ResponseEntity.ok(
             workbasketAccessItemResourceAssembler.toResources(workbasketId, updatedWbAccessItems));
     if (LOGGER.isDebugEnabled()) {
@@ -423,7 +422,7 @@ public class WorkbasketController extends AbstractPagingController {
       params.remove(TYPE);
     }
     if (params.containsKey(REQUIRED_PERMISSION)) {
-      for (String authorization : Arrays.asList(params.getFirst(REQUIRED_PERMISSION).split(","))) {
+      for (String authorization : params.getFirst(REQUIRED_PERMISSION).split(",")) {
         switch (authorization.trim()) {
           case "READ":
             query.callerHasPermission(WorkbasketPermission.READ);
