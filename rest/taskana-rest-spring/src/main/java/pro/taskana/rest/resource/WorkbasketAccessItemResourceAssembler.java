@@ -49,16 +49,16 @@ public class WorkbasketAccessItemResourceAssembler
   }
 
   @PageLinks(Mapping.URL_WORKBASKETACCESSITEMS)
-  public WorkbasketAccessItemPaginatedListResource toResources(
+  public WorkbasketAccessItemListResource toResources(
       List<WorkbasketAccessItem> entities, PageMetadata pageMetadata) {
-    return new WorkbasketAccessItemPaginatedListResource(toResources(entities), pageMetadata);
+    return new WorkbasketAccessItemListResource(toResources(entities), pageMetadata);
   }
 
-  public WorkbasketAccessItemPaginatedListResource toResources(
+  public WorkbasketAccessItemListResource toResources(
       String workbasketId, List<WorkbasketAccessItem> entities)
       throws NotAuthorizedException, WorkbasketNotFoundException {
-    WorkbasketAccessItemPaginatedListResource accessItemListResource =
-        new WorkbasketAccessItemPaginatedListResource(super.toResources(entities), null);
+    WorkbasketAccessItemListResource accessItemListResource =
+        new WorkbasketAccessItemListResource(super.toResources(entities), null);
     accessItemListResource.add(
         linkTo(methodOn(WorkbasketController.class).getWorkbasketAccessItems(workbasketId))
             .withSelfRel());

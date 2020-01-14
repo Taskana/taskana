@@ -111,7 +111,11 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
           fieldWithPath("_links").ignored(),
           fieldWithPath("_links.self").ignored(),
           fieldWithPath("_links.self.href").ignored(),
-          fieldWithPath("page").ignored()
+            fieldWithPath("page").ignored(),
+            fieldWithPath("page.size").ignored(),
+            fieldWithPath("page.totalElements").ignored(),
+            fieldWithPath("page.totalPages").ignored(),
+            fieldWithPath("page.number").ignored()
         };
 
     taskFieldDescriptors =
