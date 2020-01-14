@@ -57,12 +57,7 @@ export class TaskComponent implements OnInit, OnDestroy {
       this.requestInProgress = false;
       this.workbaskets = workbaskets.workbaskets;
 
-      let index = -1;
-      for (let i = 0; i < this.workbaskets.length; i++) {
-        if (this.workbaskets[i].name === this.task.workbasketSummaryResource.name) {
-          index = i;
-        }
-      }
+      const index = this.workbaskets.findIndex(workbasket => workbasket.name === this.task.workbasketSummaryResource.name);
       if (index !== -1) {
         this.workbaskets.splice(index, 1);
       }
@@ -100,15 +95,16 @@ export class TaskComponent implements OnInit, OnDestroy {
     const me = this;
     const extractedExpressions = url.match(this.regex);
     if (!extractedExpressions) { return url; }
+    let extractedUrl = url;
     extractedExpressions.forEach(expression => {
       const parameter = expression.substring(2, expression.length - 1);
       let objectValue: any = me;
       parameter.split('.').forEach(property => {
         objectValue = this.getReflectiveProperty(objectValue, property);
       });
-      url = url.replace(expression, objectValue);
+      extractedUrl = extractedUrl.replace(expression, objectValue);
     });
-    return url;
+    return extractedUrl;
   }
 
   private getReflectiveProperty(scope: any, property: string) {

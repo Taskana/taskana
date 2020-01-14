@@ -114,7 +114,9 @@ export class ClassificationsService {
         classificationTypes]
     ).pipe(
       map(
-        (classification: any[]) => (classification[0].classifications ? this.buildHierarchy(classification[0].classifications, classification[1]) : [])
+        (classification: any[]) => (
+          classification[0].classifications ? this.buildHierarchy(classification[0].classifications, classification[1]) : []
+        )
       )
     );
   }
@@ -123,27 +125,21 @@ export class ClassificationsService {
     const roots = [];
     const children = [];
 
-    for (let index = 0, len = classifications.length; index < len; ++index) {
-      const item = classifications[index];
+    classifications.forEach(item => {
       if (item.type === type) {
         const parent = item.parentId;
         const target = !parent ? roots : (children[parent] || (children[parent] = []));
-
         target.push(item);
       }
-    }
-    for (let index = 0, len = roots.length; index < len; ++index) {
-      this.findChildren(roots[index], children);
-    }
+    });
+    roots.forEach(parent => this.findChildren(parent, children));
     return roots;
   }
 
   private findChildren(parent: any, children: Array<any>) {
     if (children[parent.classificationId]) {
       parent.children = children[parent.classificationId];
-      for (let index = 0, len = parent.children.length; index < len; ++index) {
-        this.findChildren(parent.children[index], children);
-      }
+      parent.children.forEach(child => this.findChildren(child, children));
     }
   }
 }

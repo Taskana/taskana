@@ -13,8 +13,8 @@ export class WorkbasketDefinitionService {
 
   // GET
   async exportWorkbaskets(domain: string) {
-    domain = (domain === '' ? domain : `?domain=${domain}`);
-    const workbasketDefinitions = await this.httpClient.get<WorkbasketDefinition[]>(this.url + domain).toPromise();
+    const domainRequest = (domain === '' ? domain : `?domain=${domain}`);
+    const workbasketDefinitions = await this.httpClient.get<WorkbasketDefinition[]>(this.url + domainRequest).toPromise();
     BlobGenerator.saveFile(workbasketDefinitions, `Workbaskets_${TaskanaDate.getDate()}.json`);
   }
 }

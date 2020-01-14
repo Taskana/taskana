@@ -15,21 +15,18 @@ export class ReportComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  toggleFold(index: number, sumRow: boolean = false) {
-    const rows = sumRow ? this.reportData.sumRow : this.reportData.rows;
-    const toggleRow = rows[index++];
+  toggleFold(indexNumber: number, sumRow: boolean = false) {
+    let rows = sumRow ? this.reportData.sumRow : this.reportData.rows;
+    let index = indexNumber;
+    const toggleRow = rows[index += 1];
     if (toggleRow.depth < this.reportData.meta.rowDesc.length - 1) {
-      const firstChildRow = rows[index++];
+      const firstChildRow = rows[index += 1];
       firstChildRow.display = !firstChildRow.display;
 
-      let end = false;
-      for (let i = index; i < rows.length && !end; i++) {
-        const row = rows[i];
-        end = row.depth <= toggleRow.depth;
-        if (!end) {
-          row.display = firstChildRow.display && row.depth === firstChildRow.depth;
-        }
-      }
+      const endIndex = rows.findIndex(row => row.depth <= toggleRow.depth);
+      rows = endIndex >= 0 ? rows.slice(0, endIndex) : rows;
+      rows.forEach(row => { row.display = firstChildRow.display && row.depth === firstChildRow.depth; });
+
       this.currentExpHeaders = Math.max(
         ...this.reportData.rows.filter(r => r.display).map(r => r.depth),
         ...this.reportData.sumRow.filter(r => r.display).map(r => r.depth)

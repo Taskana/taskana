@@ -56,10 +56,10 @@ export class NumberPickerComponent implements OnInit, ControlValueAccessor {
   }
 
   increase() {
-    this.value++;
+    this.value += 1;
   }
 
   decrease() {
-    this.value--;
+    this.value -= 1;
   }
 }

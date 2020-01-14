@@ -43,9 +43,7 @@ export class FilterComponent implements OnInit {
   }
 
   clear() {
-    for (const key of Object.keys(this.filterParams)) {
-      this.filterParams[key] = '';
-    }
+    Object.keys(this.filterParams).forEach(key => { this.filterParams[key] = ''; });
     this.initializeFilterModel();
   }
 
@@ -70,12 +68,6 @@ export class FilterComponent implements OnInit {
    * @returns {string[]}
    */
   getUnusedKeys(): string[] {
-    const unusedKeys = [];
-    for (const key of this.filterParamKeys) {
-      if (['name', 'key', 'type'].indexOf(key) < 0) {
-        unusedKeys.push(key);
-      }
-    }
-    return unusedKeys;
+    return Object.keys(this.filterParamKeys).filter(key => ['name', 'key', 'type'].indexOf(key) < 0);
   }
 }

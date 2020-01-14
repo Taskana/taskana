@@ -59,9 +59,8 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
       this.performRequest();
     });
 
-    this.categoriesSubscription = this.categoryService.getCategories(this.classificationTypeSelected).subscribe((categories: Array<string>) => {
-      this.categories = categories;
-    });
+    this.categoriesSubscription = this.categoryService.getCategories(this.classificationTypeSelected)
+      .subscribe((categories: Array<string>) => { this.categories = categories; });
     this.importingExportingSubscription = this.importExportService.getImportingFinished().subscribe((value: Boolean) => {
       this.performRequest(true);
     });

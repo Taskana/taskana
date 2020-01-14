@@ -5,7 +5,7 @@ export class SpreadNumberPipe implements PipeTransform {
   transform(maxPageNumber: number, currentIndex: number, maxArrayElements: number): number[] {
     const returnArray = [];
     if (maxPageNumber <= 5) {
-      for (let i = 0; i < maxPageNumber; i++) {
+      for (let i = 0; i < maxPageNumber; i += 1) {
         returnArray.push(i);
       }
       return returnArray;
@@ -25,7 +25,7 @@ export class SpreadNumberPipe implements PipeTransform {
     const minIndex = (minArrayValue - rightDifference) <= 0 ? 0 : minArrayValue - rightDifference;
     const maxIndex = (maxArrayValue + leftDifference) > maxPageNumber ? maxPageNumber : maxArrayValue + leftDifference;
 
-    for (let i = minIndex; i < maxIndex; i++) {
+    for (let i = minIndex; i < maxIndex; i += 1) {
       returnArray.push(i);
     }
     return returnArray;

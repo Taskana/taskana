@@ -104,8 +104,8 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
       }
     } else {
       const itemsSelected = this.getSelectedItems(this.distributionTargetsRight);
-      this.distributionTargetsSelected = this.removeSeletedItems(this.distributionTargetsSelected, itemsSelected);
-      this.distributionTargetsRight = this.removeSeletedItems(this.distributionTargetsRight, itemsSelected);
+      this.distributionTargetsSelected = this.removeSelectedItems(this.distributionTargetsSelected, itemsSelected);
+      this.distributionTargetsRight = this.removeSelectedItems(this.distributionTargetsRight, itemsSelected);
       this.distributionTargetsLeft = this.distributionTargetsLeft.concat(itemsSelected);
     }
 
@@ -143,17 +143,16 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
   }
 
   performFilter(dualListFilter: any) {
-    dualListFilter.side === Side.RIGHT ? delete this.distributionTargetsRight : delete this.distributionTargetsLeft;
+    this.fillDistributionTargets(dualListFilter.side, undefined);
     this.onRequest(false, dualListFilter.side);
     this.workbasketFilterSubscription = this.workbasketService.getWorkBasketsSummary(true, '', '', '',
       dualListFilter.filterBy.filterParams.name, dualListFilter.filterBy.filterParams.description, '',
       dualListFilter.filterBy.filterParams.owner, dualListFilter.filterBy.filterParams.type, '',
-      dualListFilter.filterBy.filterParams.key, '', true).subscribe(resultList => {
-      (dualListFilter.side === Side.RIGHT)
-        ? this.distributionTargetsRight = (resultList.workbaskets)
-        : this.distributionTargetsLeft = (resultList.workbaskets);
-      this.onRequest(true, dualListFilter.side);
-    });
+      dualListFilter.filterBy.filterParams.key, '', true)
+      .subscribe(resultList => {
+        this.fillDistributionTargets(dualListFilter.side, (resultList.workbaskets));
+        this.onRequest(true, dualListFilter.side);
+      });
   }
 
   ngOnDestroy(): void {
@@ -201,6 +200,11 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
       const cardHeight = 72;
       this.cards = this.orientationService.calculateNumberItemsList(this.panelBody.nativeElement.offsetHeight, cardHeight, 100, true) + 1;
     }
+  }
+
+  private fillDistributionTargets(side: Side, workbaskets: WorkbasketSummary[]) {
+    this.distributionTargetsLeft = side === Side.LEFT ? workbaskets : this.distributionTargetsLeft;
+    this.distributionTargetsRight = side === Side.RIGHT ? workbaskets : this.distributionTargetsRight;
   }
 
   private getNextPage(side: Side) {
@@ -251,7 +255,7 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
     return originList.filter((item: any) => (item.selected === true));
   }
 
-  private removeSeletedItems(originList: any, selectedItemList) {
+  private removeSelectedItems(originList: any, selectedItemList) {
     for (let index = originList.length - 1; index >= 0; index--) {
       if (selectedItemList.some(itemToRemove => (originList[index].workbasketId === itemToRemove.workbasketId))) {
         originList.splice(index, 1);

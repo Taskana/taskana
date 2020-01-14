@@ -27,11 +27,6 @@ export class SelectedRouteService {
   }
 
   private checkUrl(url: string): string {
-    for (const routeDetail of this.detailRoutes) {
-      if (url.indexOf(routeDetail) !== -1) {
-        return routeDetail;
-      }
-    }
-    return '';
+    return this.detailRoutes.find(routeDetail => url.indexOf(routeDetail) !== -1) || '';
   }
 }

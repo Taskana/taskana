@@ -35,17 +35,16 @@ export class AccessIdsService {
     sortModel: SortingModel = new SortingModel('workbasket-key'),
     forceRequest: boolean = false
   ): Observable<AccessItemsWorkbasketResource> {
-    if (this.accessItemsRef && !forceRequest) {
-      return this.accessItemsRef;
+    if (forceRequest || !this.accessItemsRef) {
+      this.accessItemsRef = this.httpClient.get<AccessItemsWorkbasketResource>(encodeURI(
+        `${environment.taskanaRestUrl}/v1/workbasket-access-items/${TaskanaQueryParameters.getQueryParameters(
+          this.accessIdsParameters(sortModel,
+            accessIds,
+            accessIdLike,
+            workbasketKeyLike)
+        )}`
+      ));
     }
-
-    this.accessItemsRef = this.httpClient.get<AccessItemsWorkbasketResource>(encodeURI(
-      `${environment.taskanaRestUrl}/v1/workbasket-access-items/${TaskanaQueryParameters.getQueryParameters(
-        this.accessIdsParameters(sortModel,
-          accessIds,
-          accessIdLike, workbasketKeyLike)
-      )}`
-    ));
     return this.accessItemsRef;
   }
 

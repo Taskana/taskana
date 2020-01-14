@@ -65,17 +65,13 @@ export class CustomFieldsService {
   private mergeKeys(defaultObject: Object, newObject: Object) {
     const value = {};
 
-    for (const item of Object.keys(defaultObject)) {
-      if (!value[item]) {
-        value[item] = defaultObject[item];
-      }
-    }
+    Object.keys(defaultObject).forEach(item => {
+      value[item] = value[item] ? value[item] : defaultObject[item];
+    });
 
-    for (const item of Object.keys(newObject)) {
-      if (!value[item]) {
-        value[item] = newObject[item];
-      }
-    }
+    Object.keys(newObject).forEach(item => {
+      value[item] = value[item] ? value[item] : newObject[item];
+    });
 
     return value;
   }

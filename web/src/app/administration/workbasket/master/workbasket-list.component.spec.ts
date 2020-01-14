@@ -36,13 +36,13 @@ class DummyDetailComponent {
   template: 'dummydetail'
 })
 class PaginationComponent {
-    @Input()
+  @Input()
   page: Page;
 
-    @Output()
-    workbasketsResourceChange = new EventEmitter<any>();
+  @Output()
+  workbasketsResourceChange = new EventEmitter<any>();
 
-    @Output() changePage = new EventEmitter<any>();
+  @Output() changePage = new EventEmitter<any>();
 }
 
 const workbasketSummaryResource: WorkbasketSummaryResource = new WorkbasketSummaryResource(
