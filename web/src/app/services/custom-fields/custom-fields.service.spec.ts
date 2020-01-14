@@ -2,6 +2,8 @@ import { TestBed, inject } from '@angular/core/testing';
 
 import { CustomFieldsService } from './custom-fields.service';
 
+const json = require('./taskana-customization-test.json');
+
 describe('CustomFieldsService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -21,7 +23,6 @@ describe('CustomFieldsService', () => {
   }));
 
   it('should take default icon path in merge', inject([CustomFieldsService], (service: CustomFieldsService) => {
-    const json = require('./taskana-customization-test.json');
     service.initCustomFields('EN', json);
     const categoriesDefault = json.EN.classifications.categories;
     const categoriesData = {
@@ -36,7 +37,6 @@ describe('CustomFieldsService', () => {
   }));
 
   it('should take merge icon path', inject([CustomFieldsService], (service: CustomFieldsService) => {
-    const json = require('./taskana-customization-test.json');
     service.initCustomFields('EN', json);
     const categoriesData = { DEFAULT: 'assets/icons/categories/default.svg' };
     const result = {

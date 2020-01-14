@@ -134,15 +134,15 @@ describe('WorkbasketListComponent', () => {
   });
 
   // it('should have two workbasketsummary rows created with the second one selected.', fakeAsync(() => {
-  // 	tick(0);
-  // 	fixture.detectChanges();
-  // 	fixture.whenStable().then(() => {
-  // 		expect(debugElement.querySelectorAll('#wb-list-container > li').length).toBe(3);
-  // 		expect(debugElement.querySelectorAll('#wb-list-container > li')[1].getAttribute('class'))
-  // 			.toBe('list-group-item ng-star-inserted');
-  // 		expect(debugElement.querySelectorAll('#wb-list-container > li')[2].getAttribute('class'))
-  // 			.toBe('list-group-item ng-star-inserted active');
-  // 	})
+  //   tick(0);
+  //   fixture.detectChanges();
+  //   fixture.whenStable().then(() => {
+  //     expect(debugElement.querySelectorAll('#wb-list-container > li').length).toBe(3);
+  //     expect(debugElement.querySelectorAll('#wb-list-container > li')[1].getAttribute('class'))
+  //       .toBe('list-group-item ng-star-inserted');
+  //     expect(debugElement.querySelectorAll('#wb-list-container > li')[2].getAttribute('class'))
+  //       .toBe('list-group-item ng-star-inserted active');
+  //   })
   //
   // }));
 

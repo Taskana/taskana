@@ -33,8 +33,6 @@ export class PaginationComponent implements OnChanges {
   pageSelected = 1;
   maxPagesAvailable = 8;
 
-  constructor() {}
-
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.page && changes.page.currentValue) {
       this.pageSelected = changes.page.currentValue.number;
@@ -44,7 +42,8 @@ export class PaginationComponent implements OnChanges {
 
   changeToPage(page) {
     if (page < 1) {
-      page = this.pageSelected = 1;
+      this.pageSelected = 1;
+      page = this.pageSelected;
     }
     if (page > this.page.totalPages) {
       page = this.page.totalPages;

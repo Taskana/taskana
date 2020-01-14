@@ -39,13 +39,14 @@ export class AccessIdsService {
       return this.accessItemsRef;
     }
 
-    return this.accessItemsRef = this.httpClient.get<AccessItemsWorkbasketResource>(encodeURI(
+    this.accessItemsRef = this.httpClient.get<AccessItemsWorkbasketResource>(encodeURI(
       `${environment.taskanaRestUrl}/v1/workbasket-access-items/${TaskanaQueryParameters.getQueryParameters(
         this.accessIdsParameters(sortModel,
           accessIds,
           accessIdLike, workbasketKeyLike)
       )}`
     ));
+    return this.accessItemsRef;
   }
 
   removeAccessItemsPermissions(accessId: string) {

@@ -134,13 +134,12 @@ export class TaskQueryComponent implements OnInit {
   }
 
   changeOrderBy(key: string) {
-    if (!this.filterFieldsToAllowQuerying(key)) {
-      return null;
+    if (this.filterFieldsToAllowQuerying(key)) {
+      if (this.orderBy.sortBy === key) {
+        this.orderBy.sortDirection = this.toggleSortDirection(this.orderBy.sortDirection);
+      }
+      this.orderBy.sortBy = key;
     }
-    if (this.orderBy.sortBy === key) {
-      this.orderBy.sortDirection = this.toggleSortDirection(this.orderBy.sortDirection);
-    }
-    this.orderBy.sortBy = key;
   }
 
   openDetails(key: string, val: string) {
@@ -184,13 +183,8 @@ export class TaskQueryComponent implements OnInit {
       false
     ).subscribe(taskQueryResource => {
       this.requestInProgressService.setRequestInProgress(false);
-      if (!taskQueryResource.taskHistoryEvents) {
-        this.taskQuery = null;
-        this.taskQueryResource = null;
-        return null;
-      }
-      this.taskQueryResource = taskQueryResource;
-      this.taskQuery = taskQueryResource.taskHistoryEvents;
+      this.taskQueryResource = taskQueryResource.taskHistoryEvents ? taskQueryResource : null;
+      this.taskQuery = taskQueryResource.taskHistoryEvents ? taskQueryResource.taskHistoryEvents : null;
     });
   }
 
@@ -206,8 +200,8 @@ export class TaskQueryComponent implements OnInit {
     const unusedHeight = 300;
     const totalHeight = window.innerHeight;
     const cards = Math.round((totalHeight - (unusedHeight)) / rowHeight);
-    TaskanaQueryParameters.page ? TaskanaQueryParameters.page = TaskanaQueryParameters.page : TaskanaQueryParameters.page = 1;
-    cards > 0 ? TaskanaQueryParameters.pageSize = cards : TaskanaQueryParameters.pageSize = 1;
+    TaskanaQueryParameters.page = TaskanaQueryParameters.page ? TaskanaQueryParameters.page : 1;
+    TaskanaQueryParameters.pageSize = cards > 0 ? cards : 1;
   }
 
   updateDate($event: string) {

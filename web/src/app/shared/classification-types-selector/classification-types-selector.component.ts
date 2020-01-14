@@ -18,8 +18,6 @@ export class ClassificationTypesSelectorComponent implements OnInit {
   @Output()
   classificationTypeChanged = new EventEmitter<string>();
 
-  constructor() { }
-
   ngOnInit() {
   }
 

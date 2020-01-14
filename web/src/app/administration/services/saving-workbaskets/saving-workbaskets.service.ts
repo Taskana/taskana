@@ -13,8 +13,6 @@ export class SavingWorkbasketService {
   public distributionTargetsSavingInformation = new Subject<SavingInformation>();
   public accessItemsSavingInformation = new Subject<SavingInformation>();
 
-  constructor() { }
-
   triggerDistributionTargetSaving(distributionTargetInformation: SavingInformation) {
     this.distributionTargetsSavingInformation.next(distributionTargetInformation);
   }

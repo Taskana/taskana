@@ -14,7 +14,7 @@ export class ClassificationCategoriesService {
   private urlCategories = `${this.mainUrl}/v1/classification-categories`;
   private param = '/?type=';
   private dataObsCategories$ = new ReplaySubject<Array<string>>(1);
-  private categoriesObject = new Object();
+  private categoriesObject = {};
   private missingIcon = 'assets/icons/categories/missing-icon.svg';
   private type = 'UNKNOW';
 
@@ -56,7 +56,7 @@ export class ClassificationCategoriesService {
   }
 
   private getDefaultCategoryMap(categoryList: Array<string>): Object {
-    const defaultCategoryMap = new Object();
+    const defaultCategoryMap = {};
     categoryList.forEach(element => {
       defaultCategoryMap[element] = `assets/icons/categories/${element.toLowerCase()}.svg`;
     });

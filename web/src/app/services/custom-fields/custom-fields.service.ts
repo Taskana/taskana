@@ -4,7 +4,6 @@ import { CustomField } from '../../models/customField';
 @Injectable()
 export class CustomFieldsService {
   private customizedFields: any = {};
-  constructor() { }
 
   initCustomFields(language: string = 'EN', jsonFile: any) {
     this.customizedFields = jsonFile[language];
@@ -64,7 +63,7 @@ export class CustomFieldsService {
   }
 
   private mergeKeys(defaultObject: Object, newObject: Object) {
-    const value = new Object();
+    const value = {};
 
     for (const item of Object.keys(defaultObject)) {
       if (!value[item]) {

@@ -6,9 +6,6 @@ export class DomainServiceMock {
   private domainSelectedValue;
   private domainSelected = new BehaviorSubject<string>('DOMAIN_A');
 
-  constructor() {
-  }
-
   // GET
   getDomains(): Observable<string[]> {
     return of<string[]>([]);

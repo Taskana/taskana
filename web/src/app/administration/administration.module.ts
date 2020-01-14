@@ -1,4 +1,3 @@
-// tslint:enable:max-line-length
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -71,5 +70,3 @@ const DECLARATIONS = [
 })
 export class AdministrationModule {
 }
-
-// tslint:enable:max-line-length

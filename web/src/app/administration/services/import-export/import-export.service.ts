@@ -5,8 +5,6 @@ import { Subject, Observable } from 'rxjs';
 export class ImportExportService {
   public importingFinished = new Subject<boolean>();
 
-  constructor() { }
-
   setImportingFinished(value: boolean) {
     this.importingFinished.next(value);
   }

@@ -186,7 +186,7 @@ implements OnInit, OnChanges, OnDestroy {
     this.beforeRequest();
     if (!this.workbasket.workbasketId) {
       this.postNewWorkbasket();
-      return true;
+      return;
     }
 
     this.workbasketSubscription = this.workbasketService

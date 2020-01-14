@@ -147,7 +147,7 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
     this.onRequest(false, dualListFilter.side);
     this.workbasketFilterSubscription = this.workbasketService.getWorkBasketsSummary(true, '', '', '',
       dualListFilter.filterBy.filterParams.name, dualListFilter.filterBy.filterParams.description, '',
-      dualListFilter.filterBy.filterParams.owner,	dualListFilter.filterBy.filterParams.type, '',
+      dualListFilter.filterBy.filterParams.owner, dualListFilter.filterBy.filterParams.type, '',
       dualListFilter.filterBy.filterParams.key, '', true).subscribe(resultList => {
       (dualListFilter.side === Side.RIGHT)
         ? this.distributionTargetsRight = (resultList.workbaskets)

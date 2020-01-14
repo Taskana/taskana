@@ -110,5 +110,6 @@ export class DomainService {
     } if (this.router.url.indexOf('classifications') !== -1) {
       return 'taskana/administration/classifications';
     }
+    return '';
   }
 }

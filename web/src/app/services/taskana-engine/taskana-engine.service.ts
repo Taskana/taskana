@@ -48,10 +48,6 @@ export class TaskanaEngineService {
   }
 
   private findRole(roles2Find: Array<string>) {
-    return this.currentUserInfo.roles.find(role => roles2Find.some(roleLookingFor => {
-      if (role === roleLookingFor) {
-        return true;
-      }
-    }));
+    return this.currentUserInfo.roles.find(role => roles2Find.some(roleLookingFor => role === roleLookingFor));
   }
 }

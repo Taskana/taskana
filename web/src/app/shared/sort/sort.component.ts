@@ -15,9 +15,6 @@ export class SortComponent implements OnInit {
 
   sort: SortingModel = new SortingModel();
 
-  constructor() {
-  }
-
   ngOnInit() {
     this.sort.sortBy = this.defaultSortBy;
   }

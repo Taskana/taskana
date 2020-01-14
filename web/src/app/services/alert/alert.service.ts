@@ -6,8 +6,6 @@ import { AlertModel } from 'app/models/alert';
 export class AlertService {
   public alertTriggered = new Subject<AlertModel>();
 
-  constructor() { }
-
   triggerAlert(alert: AlertModel) {
     this.alertTriggered.next(alert);
   }
