@@ -209,7 +209,7 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
       userName = "user_1_2",
       groupNames = {"businessadmin"})
   @Test
-  void testTimestampsOnCreateScheduledJobt()
+  void testTimestampsOnCreateScheduledJob()
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
           InvalidWorkbasketException, WorkbasketAlreadyExistException, DomainNotFoundException,
           SQLException {
