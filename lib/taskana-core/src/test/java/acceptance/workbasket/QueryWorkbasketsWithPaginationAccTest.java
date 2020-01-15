@@ -150,23 +150,6 @@ class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
     assertThat(results.size(), equalTo(9));
   }
 
-<<<<<<< HEAD
-=======
-  @Test
-  void testPaginationWhenPageOutOfBounds() throws SQLException {
-    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-    int pageNumber = 6;
-    int pageSize = 10;
-
-    List<WorkbasketSummary> results =
-        workbasketService
-            .createWorkbasketQuery()
-            .domainIn("DOMAIN_A")
-            .listPage(pageNumber, pageSize);
-    assertThat(results.size(), equalTo(0));
-  }
-
->>>>>>> TSK-1021 Fix Build error and add Junit test for timestamps
   @WithAccessId(
       userName = "teamlead_1",
       groupNames = {"group_1"})
