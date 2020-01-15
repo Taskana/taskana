@@ -33,7 +33,10 @@ public interface JobMapper {
           + "</choose>"
           + ", #{job.priority}, #{job.created, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, #{job.due, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, #{job.state}, #{job.lockedBy}, #{job.lockExpires, jdbcType = TIMESTAMP, javaType = java.time.Instant, typeHandler = pro.taskana.impl.persistence.InstantTypeHandler}, #{job.type}, #{job.retryCount}, #{job.arguments,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler} )"
           + "</script>")
-  void insertJob(@Param("job") ScheduledJob job);
+  @Results(
+      value = {
+        @Result(property = "jobId", column = "JOB_ID")})
+  Integer insertJob(@Param("job") ScheduledJob job);
 
   @Select(
       "<script> SELECT   JOB_ID, PRIORITY, CREATED, DUE, STATE, LOCKED_BY, LOCK_EXPIRES, TYPE, RETRY_COUNT, ARGUMENTS "

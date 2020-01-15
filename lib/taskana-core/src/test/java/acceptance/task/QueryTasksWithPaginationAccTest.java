@@ -172,6 +172,28 @@ class QueryTasksWithPaginationAccTest extends AbstractAccTest {
       userName = "teamlead_1",
       groupNames = {"group_1"})
   @Test
+<<<<<<< HEAD
+=======
+  void testPaginationOutOfBounds() throws SQLException {
+
+    TaskService taskService = taskanaEngine.getTaskService();
+
+    // entrypoint set outside result amount
+    int pageNumber = 6;
+    int pageSize = 10;
+
+    List<TaskSummary> tasks = taskService
+        .createTaskQuery()
+        .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
+        .listPage(pageNumber, pageSize);
+    assertThat(tasks.size(),equalTo(0));
+  }
+
+  @WithAccessId(
+      userName = "teamlead_1",
+      groupNames = {"group_1"})
+  @Test
+>>>>>>> TSK-1021 Fix Build error and add Junit test for timestamps
   void testCountOfTaskQuery() {
     TaskService taskService = taskanaEngine.getTaskService();
     long count =

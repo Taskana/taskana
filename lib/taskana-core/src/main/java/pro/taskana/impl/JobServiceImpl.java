@@ -30,7 +30,8 @@ public class JobServiceImpl implements JobService {
     try {
       taskanaEngineImpl.openConnection();
       job = initializeJobDefault(job);
-      jobMapper.insertJob(job);
+      Integer jobId = jobMapper.insertJob(job);
+      job.setJobId(jobId);
       LOGGER.debug("Created job {}", job);
     } finally {
       taskanaEngineImpl.returnConnection();

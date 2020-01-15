@@ -2,6 +2,7 @@ package pro.taskana.jobs;
 
 import java.time.Instant;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * This class holds all data that go into the Job table.
@@ -149,4 +150,32 @@ public class ScheduledJob {
     TASKCLEANUPJOB,
     WORKBASKETCLEANUPJOB;
   }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        arguments, created, due, jobId, lockExpires, lockedBy, priority, retryCount, state, type);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (!(obj instanceof ScheduledJob)) {
+      return false;
+    }
+    ScheduledJob other = (ScheduledJob) obj;
+    return Objects.equals(arguments, other.arguments)
+        && Objects.equals(created, other.created)
+        && Objects.equals(due, other.due)
+        && Objects.equals(jobId, other.jobId)
+        && Objects.equals(lockExpires, other.lockExpires)
+        && Objects.equals(lockedBy, other.lockedBy)
+        && Objects.equals(priority, other.priority)
+        && retryCount == other.retryCount
+        && state == other.state
+        && type == other.type;
+  }
+  
 }
