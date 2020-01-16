@@ -56,7 +56,7 @@
 		<version.spring.restdocs>2.0.2.RELEASE</version.spring.restdocs>
 		<version.spring.mybatis>2.0.3</version.spring.mybatis>
 		<version.spring.ldap>2.3.2.RELEASE</version.spring.ldap>
-		<version.spring.hateos>0.24.0.RELEASE</version.spring.hateos>
+		<version.spring.hateos>1.0.3.RELEASE</version.spring.hateos>
 
 		<!-- java ee dependencies -->
 		<version.resteasy>4.4.2.Final</version.resteasy>
