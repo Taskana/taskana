@@ -7,9 +7,10 @@ jdk:
 
 addons:
   sonarcloud:
-    organization: "benjamineckstein" # the key of the org you chose at step #3
+    organization: $SONAR_ORGANIZATION
 
 git:
+  #depth false needed by sonarcloud for deep comparison
   depth: false
 
 services:
