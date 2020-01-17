@@ -1,3 +1,4 @@
+os: linux
 dist: xenial
 
 language: java
@@ -30,19 +31,17 @@ stages:
 env:
   global:
     - NODE_VERSION=12.10.0
-  matrix:
+  jobs:
     - DB=H2
     - DB=DB2_10_5
     - DB=DB2_11_1
     - DB=POSTGRES_10_4
-    - DB=HISTORY
 
-stage: Test
 install: skip
 script: ci/test.sh $DB
 before_cache: rm -rf $HOME/.m2/repository/pro/taskana
 
-matrix:
+jobs:
   include:
     - stage: Test
       language: node_js
