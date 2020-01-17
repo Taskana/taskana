@@ -4,10 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 import acceptance.AbstractAccTest;
-import java.sql.SQLException;
 import java.util.List;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,8 +13,6 @@ import pro.taskana.ObjectReference;
 import pro.taskana.ObjectReferenceQuery;
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
-import pro.taskana.configuration.DB;
-import pro.taskana.exceptions.TaskanaRuntimeException;
 import pro.taskana.security.JaasExtension;
 
 /** Acceptance test for all "query classifications with pagination" scenarios. */
@@ -113,20 +108,6 @@ class QueryObjectreferencesWithPaginationAccTest extends AbstractAccTest {
     pageSize = 10;
     results = objRefQuery.listPage(pageNumber, pageSize);
     assertThat(results.size(), equalTo(3));
-  }
-
-  @Test
-  void testPaginationThrowingExceptionWhenPageOutOfBounds() throws SQLException {
-
-    Assumptions.assumeTrue(DB.isDb2(getDatabaseProductId()), "Only test with DB2");
-
-    // entrypoint set outside result amount
-    int pageNumber = 6;
-    int pageSize = 10;
-    Assertions.assertThrows(
-        TaskanaRuntimeException.class,
-        () -> objRefQuery.listPage(pageNumber, pageSize),
-        "Using DB2 should throw a unchecked RuntimeException for a offset which is out of bounds.");
   }
 
   @Test

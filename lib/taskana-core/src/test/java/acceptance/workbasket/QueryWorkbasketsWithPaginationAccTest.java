@@ -4,17 +4,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 import acceptance.AbstractAccTest;
-import java.sql.SQLException;
 import java.util.List;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.WorkbasketService;
 import pro.taskana.WorkbasketSummary;
-import pro.taskana.configuration.DB;
-import pro.taskana.exceptions.TaskanaRuntimeException;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
@@ -153,26 +148,6 @@ class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
             .domainIn("DOMAIN_A")
             .listPage(pageNumber, pageSize);
     assertThat(results.size(), equalTo(9));
-  }
-
-  @Test
-  void testPaginationThrowingExceptionWhenPageOutOfBounds() throws SQLException {
-
-    Assumptions.assumeTrue(DB.isDb2(getDatabaseProductId()), "Only test with DB2");
-    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-
-    // entrypoint set outside result amount
-    int pageNumber = 6;
-    int pageSize = 10;
-
-    Assertions.assertThrows(
-        TaskanaRuntimeException.class,
-        () ->
-            workbasketService
-                .createWorkbasketQuery()
-                .domainIn("DOMAIN_A")
-                .listPage(pageNumber, pageSize),
-        "Using DB2 should throw a unchecked RuntimeException for a offset which is out of bounds");
   }
 
   @WithAccessId(
