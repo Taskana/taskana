@@ -4,18 +4,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 import acceptance.AbstractAccTest;
-import java.sql.SQLException;
 import java.util.List;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.ClassificationService;
 import pro.taskana.ClassificationSummary;
-import pro.taskana.configuration.DB;
-import pro.taskana.exceptions.TaskanaRuntimeException;
 import pro.taskana.security.JaasExtension;
 
 /** Acceptance test for all "query classifications with pagination" scenarios. */
@@ -138,32 +132,6 @@ class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
             .domainIn("DOMAIN_A")
             .listPage(pageNumber, pageSize);
     assertThat(results.size(), equalTo(10));
-  }
-
-  /**
-   * Testcase only for DB2 users, because H2 doesn´t throw a Exception when the offset is set to
-   * high.<br>
-   * Using DB2 should throw a unchecked RuntimeException for a offset which is out of bounds.
-   */
-  @Disabled
-  @Test
-  void testPaginationThrowingExceptionWhenPageOutOfBounds() throws SQLException {
-
-    Assumptions.assumeTrue(DB.isDb2(getDatabaseProductId()), "Only test with DB2");
-
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
-    // entrypoint set outside result amount
-    int pageNumber = 5;
-    int pageSize = 10;
-
-    Assertions.assertThrows(
-        TaskanaRuntimeException.class,
-        () ->
-            classificationService
-                .createClassificationQuery()
-                .domainIn("DOMAIN_A")
-                .listPage(pageNumber, pageSize),
-        "Using DB2 should throw a unchecked RuntimeException for a offset which is out of bounds.");
   }
 
   @Test
