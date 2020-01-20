@@ -77,7 +77,7 @@
 		<version.openpojo>0.8.13</version.openpojo>
 
 		<!-- database driver versions -->
-		<version.h2>1.4.197</version.h2>
+		<version.h2>1.4.200</version.h2>
 		<version.db2>11.1.1.1</version.db2>
 		<version.postgres>42.2.9</version.postgres>
 	</properties>
