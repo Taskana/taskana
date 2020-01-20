@@ -17,12 +17,10 @@ import pro.taskana.TaskService;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketService;
-import pro.taskana.WorkbasketType;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.exceptions.WorkbasketInUseException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
@@ -146,23 +144,6 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
         workbasketService.getWorkbasket("USER_1_2", "DOMAIN_A"); // all rights, DOMAIN_A with Tasks
     Assertions.assertThrows(
         WorkbasketInUseException.class, () -> workbasketService.deleteWorkbasket(wb.getId()));
-  }
-
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"businessadmin"})
-  @Test
-  void testCreateAndDeleteWorkbasket() throws Exception {
-    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-
-    Workbasket workbasket = workbasketService.newWorkbasket("NT1234", "DOMAIN_A");
-    workbasket.setName("TheUltimate");
-    workbasket.setType(WorkbasketType.GROUP);
-    workbasket.setOrgLevel1("company");
-    Workbasket workbasket2 = workbasketService.createWorkbasket(workbasket);
-    Assertions.assertThrows(
-        NotAuthorizedToQueryWorkbasketException.class,
-        () -> workbasketService.deleteWorkbasket(workbasket2.getId()));
   }
 
   @WithAccessId(

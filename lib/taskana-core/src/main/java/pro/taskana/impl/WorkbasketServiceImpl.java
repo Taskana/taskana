@@ -1,5 +1,7 @@
 package pro.taskana.impl;
 
+import static pro.taskana.security.CurrentUserContext.runAsAdmin;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -660,13 +662,15 @@ public class WorkbasketServiceImpl implements WorkbasketService {
       this.getWorkbasket(workbasketId);
 
       long numTasksNotCompletedInWorkbasket =
-          taskanaEngine
-              .getEngine()
-              .getTaskService()
-              .createTaskQuery()
-              .workbasketIdIn(workbasketId)
-              .stateNotIn(TaskState.COMPLETED)
-              .count();
+          runAsAdmin(
+              () ->
+                  taskanaEngine
+                      .getEngine()
+                      .getTaskService()
+                      .createTaskQuery()
+                      .workbasketIdIn(workbasketId)
+                      .stateNotIn(TaskState.COMPLETED)
+                      .count());
 
       if (numTasksNotCompletedInWorkbasket > 0) {
         throw new WorkbasketInUseException(
@@ -676,12 +680,14 @@ public class WorkbasketServiceImpl implements WorkbasketService {
       }
 
       long numTasksInWorkbasket =
-          taskanaEngine
-              .getEngine()
-              .getTaskService()
-              .createTaskQuery()
-              .workbasketIdIn(workbasketId)
-              .count();
+          runAsAdmin(
+              () ->
+                  taskanaEngine
+                      .getEngine()
+                      .getTaskService()
+                      .createTaskQuery()
+                      .workbasketIdIn(workbasketId)
+                      .count());
 
       if (numTasksInWorkbasket == 0) {
         workbasketMapper.delete(workbasketId);

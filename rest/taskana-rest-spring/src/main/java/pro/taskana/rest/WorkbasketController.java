@@ -142,6 +142,7 @@ public class WorkbasketController extends AbstractPagingController {
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
           WorkbasketInUseException {
     LOGGER.debug("Entry to markWorkbasketForDeletion(workbasketId= {})", workbasketId);
+    //http status code accepted because workbaskets will not be deleted immediately
     ResponseEntity<?> response =
         ResponseEntity.accepted().body(workbasketService.deleteWorkbasket(workbasketId));
     LOGGER.debug("Exit from markWorkbasketForDeletion(), returning {}", response);

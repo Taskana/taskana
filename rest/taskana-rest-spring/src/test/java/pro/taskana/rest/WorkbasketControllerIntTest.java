@@ -109,13 +109,12 @@ class WorkbasketControllerIntTest {
   }
 
   /**
-   * Bug Ticket TSK-1029
-   *
-   * <p>Businessadmin is allowed to delete any workbasket ticket without user related access
-   * restrictions
+   * Bug Ticket TSK-1029.
+   * Businessadmin is allowed to delete any workbasket ticket without user related access
+   * restrictions.
    */
   @Test
-  void testWorkbasketDeletePermission() {
+  void testDeleteWorkbasketPermissionWithBusinessAdmin() {
 
     String workbasketID = "WBI:100000000000000000000000000000000005";
 
@@ -125,7 +124,7 @@ class WorkbasketControllerIntTest {
             HttpMethod.DELETE,
             new HttpEntity<>(restHelper.getHeadersBusinessAdmin()),
             Void.class);
-    assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
   }
 
   @Test
