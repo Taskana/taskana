@@ -35,7 +35,7 @@ function main() {
     eval "$REL/prepare_db.sh '$1'"
     # We can not use the fance '-f' maven option due to a bug in arquillian. See https://issues.jboss.org/browse/THORN-2049
     #-Pcoverage to activate jacoco and test coverage reports
-    # #send test coverage and build information to sonarcloud
+    # send test coverage and build information to sonarcloud
     (cd $REL/.. \
     && mvn -q install -B -T 4C -am -Pcoverage -Dmaven.javadoc.skip -Dcheckstyle.skip \
     && mvn sonar:sonar -Pcoverage -Dsonar.projectKey="$SONAR_PROJECT_KEY"
