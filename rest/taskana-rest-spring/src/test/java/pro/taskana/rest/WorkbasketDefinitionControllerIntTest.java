@@ -13,11 +13,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
@@ -34,19 +35,30 @@ import org.springframework.web.client.RestTemplate;
 import pro.taskana.RestHelper;
 import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.rest.resource.WorkbasketDefinitionResource;
+import pro.taskana.sampledata.SampleDataGenerator;
 
 /** Integration tests for WorkbasketDefinitionController. */
 @TaskanaSpringBootTest
 class WorkbasketDefinitionControllerIntTest {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationController.class);
   private static RestTemplate template;
+
+  @Value("${taskana.schemaName:TASKANA}")
+  String schemaName;
+
   @Autowired RestHelper restHelper;
-  private ObjectMapper objMapper = new ObjectMapper();
+
+  @Autowired private DataSource dataSource;
 
   @BeforeAll
   static void init() {
     template = RestHelper.getRestTemplate();
+  }
+
+  @BeforeEach
+  void resetDb() {
+    SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
+    sampleDataGenerator.generateSampleData();
   }
 
   @Test
@@ -101,6 +113,7 @@ class WorkbasketDefinitionControllerIntTest {
             ParameterizedTypeReference.forType(List.class));
 
     List<String> list = new ArrayList<>();
+    ObjectMapper objMapper = new ObjectMapper();
     list.add(objMapper.writeValueAsString(response.getBody().get(0)));
     ResponseEntity<Void> responseImport = importRequest(list);
     assertEquals(HttpStatus.NO_CONTENT, responseImport.getStatusCode());
@@ -116,6 +129,7 @@ class WorkbasketDefinitionControllerIntTest {
             new ParameterizedTypeReference<List<WorkbasketDefinitionResource>>() {});
 
     List<String> list = new ArrayList<>();
+    ObjectMapper objMapper = new ObjectMapper();
     list.add(objMapper.writeValueAsString(response.getBody().get(0)));
     list.add(objMapper.writeValueAsString(response.getBody().get(0)));
     try {
@@ -136,6 +150,7 @@ class WorkbasketDefinitionControllerIntTest {
             new ParameterizedTypeReference<List<WorkbasketDefinitionResource>>() {});
 
     List<String> list = new ArrayList<>();
+    ObjectMapper objMapper = new ObjectMapper();
     WorkbasketDefinitionResource wbDef = response.getBody().get(0);
     list.add(objMapper.writeValueAsString(wbDef));
     wbDef.getWorkbasket().setKey("new Key for this WB");
