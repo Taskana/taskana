@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.Link;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -105,6 +106,26 @@ class WorkbasketControllerIntTest {
     assertNotNull(response.getBody().getLink(Link.REL_LAST));
     assertNotNull(response.getBody().getLink(Link.REL_NEXT));
     assertNotNull(response.getBody().getLink(Link.REL_PREVIOUS));
+  }
+
+  /**
+   * Bug Ticket TSK-1029
+   *
+   * <p>Businessadmin is allowed to delete any workbasket ticket without user related access
+   * restrictions
+   */
+  @Test
+  void testWorkbasketDeletePermission() {
+
+    String workbasketID = "WBI:100000000000000000000000000000000005";
+
+    ResponseEntity<?> response =
+        template.exchange(
+            restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketID),
+            HttpMethod.DELETE,
+            new HttpEntity<>(restHelper.getHeadersBusinessAdmin()),
+            Void.class);
+    assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
   }
 
   @Test
