@@ -63,7 +63,7 @@
 		<version.thorntail>2.6.0.Final</version.thorntail>
 		<version.wildfly.security>1.11.0.Final</version.wildfly.security>
 		<version.javaee-api>8.0.1</version.javaee-api>
-		<version.arquillian>1.5.0.Final</version.arquillian>
+		<version.arquillian>1.6.0.Final</version.arquillian>
 
 		<!-- test dependencies -->
 		<version.junit.jupiter>5.5.2</version.junit.jupiter>
