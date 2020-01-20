@@ -45,7 +45,6 @@ env:
 stage: Test
 install: skip
 script: ci/test.sh $DB
-
 before_cache: rm -rf $HOME/.m2/repository/pro/taskana
 
 matrix:
