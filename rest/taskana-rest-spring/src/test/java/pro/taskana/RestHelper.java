@@ -48,6 +48,14 @@ public class RestHelper {
     return headers;
   }
 
+  public HttpHeaders getHeadersBusinessAdmin() {
+    HttpHeaders headers = new HttpHeaders();
+    // businessadmin:businessadmin
+    headers.add("Authorization", "Basic YnVzaW5lc3NhZG1pbjpidXNpbmVzc2FkbWlu");
+    headers.add("Content-Type", "application/hal+json");
+    return headers;
+  }
+
   /**
    * Return a REST template which is capable of dealing with responses in HAL format.
    *
