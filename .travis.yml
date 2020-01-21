@@ -44,8 +44,8 @@ env:
 
 stage: Test
 install: skip
-script: ci/test.sh $DB
-before_cache: rm -rf $HOME/.m2/repository/pro/taskana
+script: ci/test.sh "$DB" "$([ "false" = "$TRAVIS_PULL_REQUEST" ] && echo "$SONAR_PROJECT_KEY")"
+before_cache: rm -rf "$HOME/.m2/repository/pro/taskana"
 
 matrix:
   include:
@@ -54,8 +54,8 @@ matrix:
       node_js: $NODE_VERSION
       install: skip
       env: DB=WEB
-      script: ci/test.sh $DB
-      before_cache: rm -rf $HOME/.m2/repository/pro/taskana
+      script: ci/test.sh "$DB"
+      before_cache: rm -rf "$HOME/.m2/repository/pro/taskana"
 
     # We are using the environment variable 'MODULE' to force travis into using a different cache for each build. 
     # See https://docs.travis-ci.com/user/caching/#caches-and-build-matrices for detailed information on
@@ -66,38 +66,38 @@ matrix:
       node_js: $NODE_VERSION
       install: skip
       env: MODULE=WEB
-      script: ci/compile.sh $MODULE
-      before_cache: rm -rf $HOME/.m2/repository/pro/taskana
+      script: ci/compile.sh "$MODULE"
+      before_cache: rm -rf "$HOME/.m2/repository/pro/taskana"
 
     - stage: Compile
       name: taskana-lib
       install: skip
       env: MODULE=LIB
-      script: ci/compile.sh $MODULE
-      before_cache: rm -rf $HOME/.m2/repository/pro/taskana
+      script: ci/compile.sh "$MODULE"
+      before_cache: rm -rf "$HOME/.m2/repository/pro/taskana"
 
     - stage: Compile
       name: taskana-rest
       install: skip
       env: MODULE=REST
-      script: ci/compile.sh $MODULE
-      before_cache: rm -rf $HOME/.m2/repository/pro/taskana
+      script: ci/compile.sh "$MODULE"
+      before_cache: rm -rf "$HOME/.m2/repository/pro/taskana"
 
     - stage: Compile
       name: taskana-simplehistory
       install: skip
       env: MODULE=HISTORY
-      script: ci/compile.sh $MODULE
-      before_cache: rm -rf $HOME/.m2/repository/pro/taskana
+      script: ci/compile.sh "$MODULE"
+      before_cache: rm -rf "$HOME/.m2/repository/pro/taskana"
 
     - stage: Release / Deploy
       name: release / deploy / commit
       before_install: |
         openssl aes-256-cbc -K "$encrypted_21a5d40e43a3_key" -iv "$encrypted_21a5d40e43a3_iv" \
         -in "ci/codesigning.asc.enc" -out "ci/codesigning.asc" -d && gpg --import "ci/codesigning.asc" \
-        && nvm install $NODE_VERSION
+        && nvm install "$NODE_VERSION"
       install: ci/change_version.sh -m .
-        && ( cd web && npm install --silent )
+        && ( cd web && npm install )
         && ( cd web && npm run build:prod-silent )
         && mvn -q install -T 4C -am -DskipTests -Dcheckstyle.skip -pl :taskana-rest-spring-example-boot,:taskana-cdi
         && mvn -q prepare-package -pl :taskana-rest-spring
@@ -109,7 +109,7 @@ matrix:
         --settings ci/mvnsettings.xml -DskipTests -Dcheckstyle.skip -pl !:taskana-spring-example,!:taskana-cdi-example,\
         !:taskana-rest-spring-example-boot,!:taskana-rest-spring-example-wildfly,\
         !:taskana-simplehistory-spring-test,!:taskana-simplehistory-rest-spring-example
-      before_cache: rm -rf $HOME/.m2/repository/pro/taskana
+      before_cache: rm -rf "$HOME/.m2/repository/pro/taskana"
       after_success: ci/change_version.sh -i -m . && ci/commitPoms.sh
       deploy:
         provider: cloudfoundry
