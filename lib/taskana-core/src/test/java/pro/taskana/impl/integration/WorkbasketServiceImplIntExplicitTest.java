@@ -27,6 +27,7 @@ import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.TaskanaEngineImpl;
@@ -143,7 +144,7 @@ class WorkbasketServiceImplIntExplicitTest {
   void testInsertWorkbasketAccessUser()
       throws NotAuthorizedException, SQLException, InvalidArgumentException,
           WorkbasketNotFoundException, DomainNotFoundException, InvalidWorkbasketException,
-          WorkbasketAlreadyExistException {
+          WorkbasketAlreadyExistException, WorkbasketAccessItemAlreadyExistException {
     try (Connection connection = dataSource.getConnection()) {
       taskanaEngineImpl.setConnection(connection);
       workBasketService = taskanaEngine.getWorkbasketService();
@@ -168,7 +169,7 @@ class WorkbasketServiceImplIntExplicitTest {
   void testUpdateWorkbasketAccessUser()
       throws NotAuthorizedException, SQLException, InvalidArgumentException,
           WorkbasketNotFoundException, DomainNotFoundException, InvalidWorkbasketException,
-          WorkbasketAlreadyExistException {
+          WorkbasketAlreadyExistException, WorkbasketAccessItemAlreadyExistException {
     try (Connection connection = dataSource.getConnection()) {
       taskanaEngineImpl.setConnection(connection);
       workBasketService = taskanaEngine.getWorkbasketService();
@@ -200,7 +201,8 @@ class WorkbasketServiceImplIntExplicitTest {
       boolean permRead,
       boolean permAppend,
       boolean permTransfer)
-      throws InvalidArgumentException, NotAuthorizedException, WorkbasketNotFoundException {
+      throws InvalidArgumentException, NotAuthorizedException, WorkbasketNotFoundException,
+          WorkbasketAccessItemAlreadyExistException {
     WorkbasketAccessItem accessItem =
         workBasketService.newWorkbasketAccessItem(wb.getId(), accessId);
     accessItem.setPermOpen(permOpen);

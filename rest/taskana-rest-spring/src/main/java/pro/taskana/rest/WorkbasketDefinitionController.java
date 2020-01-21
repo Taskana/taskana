@@ -33,6 +33,7 @@ import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.rest.resource.WorkbasketDefinitionResource;
@@ -100,13 +101,15 @@ public class WorkbasketDefinitionController {
    *     id.
    * @throws InvalidArgumentException if authorization information in workbaskets definitions is
    *     incorrect.
+   * @throws WorkbasketAccessItemAlreadyExistException if a WorkbasketAccessItem for the same
+   *     workbasket and access_id already exists.
    */
   @PostMapping(path = Mapping.URL_WORKBASKETDEFIITIONS)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<Void> importWorkbaskets(@RequestParam("file") MultipartFile file)
       throws IOException, NotAuthorizedException, DomainNotFoundException,
           InvalidWorkbasketException, WorkbasketAlreadyExistException, WorkbasketNotFoundException,
-          InvalidArgumentException {
+          InvalidArgumentException, WorkbasketAccessItemAlreadyExistException {
     LOGGER.debug("Entry to importWorkbaskets()");
     ObjectMapper mapper = new ObjectMapper();
     mapper.enable(SerializationFeature.INDENT_OUTPUT);
