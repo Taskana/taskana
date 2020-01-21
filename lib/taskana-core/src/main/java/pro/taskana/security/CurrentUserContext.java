@@ -8,6 +8,7 @@ import java.security.Principal;
 import java.security.PrivilegedAction;
 import java.security.acl.Group;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -94,12 +95,14 @@ public final class CurrentUserContext {
       // dont add authorisation if none is available.
       return supplier.get();
     }
-    Set<Principal> principals = subject.getPrincipals();
-    Set<Object> privateCredentials = subject.getPrivateCredentials();
-    Set<Object> publicCredentials = subject.getPublicCredentials();
 
-    principals.add(new GroupPrincipal("admin"));
-    Subject subject1 = new Subject(true, principals, privateCredentials, publicCredentials);
+    Set<Principal> principalsCopy = new HashSet<>(subject.getPrincipals());
+    Set<Object> privateCredentialsCopy = new HashSet<>(subject.getPrivateCredentials());
+    Set<Object> publicCredentialsCopy = new HashSet<>(subject.getPublicCredentials());
+
+    principalsCopy.add(new GroupPrincipal("admin"));
+    Subject subject1 =
+        new Subject(true, principalsCopy, privateCredentialsCopy, publicCredentialsCopy);
 
     return Subject.doAs(subject1, (PrivilegedAction<T>) supplier::get);
   }
