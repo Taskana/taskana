@@ -6,7 +6,7 @@ set -e # fail fast
 #H
 #H prints this help and exits
 #H
-#H test.sh <database|module> [sonar project key]
+#H test.sh <database|module>
 #H
 #H   tests the taskana application. See documentation for further testing details.
 #H
@@ -17,9 +17,8 @@ set -e # fail fast
 #H   - POSTGRES_10_4
 #H module:
 #H   - HISTORY
-#H sonar project key:
-#H   the key of the sonarqube project where the coverage will be sent to.
-#H   If empty nothing will be sent
+#H Optional:
+#H   SONAR_PROJECT_KEY - configured in travis env
 # Arguments:
 #   $1: exit code
 function helpAndExit() {
@@ -35,14 +34,12 @@ function main() {
     set -x
     eval "$REL/prepare_db.sh '$1'"
     # We can not use the fance '-f' maven option due to a bug in arquillian. See https://issues.jboss.org/browse/THORN-2049
-    (cd $REL/.. && mvn -q install -B -T 4C -am -Pcoverage -Dmaven.javadoc.skip -Dcheckstyle.skip)
-    
-    # disabling sonarqube for PRs because it's not supported yet. See https://jira.sonarsource.com/browse/MMF-1371
-    if [ -n "$2" ]; then
-      #-Pcoverage to activate jacoco and test coverage reports
-      # send test coverage and build information to sonarcloud
-      mvn sonar:sonar -f $REL/.. -Pcoverage -Dsonar.projectKey="$2"
-    fi
+    #-Pcoverage to activate jacoco and test coverage reports
+    # send test coverage and build information to sonarcloud
+    (cd $REL/.. \
+    && mvn -q install -B -T 4C -am -Pcoverage -Dmaven.javadoc.skip -Dcheckstyle.skip \
+    && mvn sonar:sonar -Pcoverage -Dsonar.projectKey="$SONAR_PROJECT_KEY"
+    )
     ;;
   DB2_10_5 | DB2_11_1)
     set -x
