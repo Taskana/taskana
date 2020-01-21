@@ -52,7 +52,7 @@
 		<!-- spring dependencies -->
 		<version.spring>5.0.5.RELEASE</version.spring>
 		<version.spring.core>2.0.0.RELEASE</version.spring.core>
-		<version.spring.boot>2.0.2.RELEASE</version.spring.boot>
+		<version.spring.boot>2.2.4.RELEASE</version.spring.boot>
 		<version.spring.restdocs>2.0.2.RELEASE</version.spring.restdocs>
 		<version.spring.mybatis>2.0.3</version.spring.mybatis>
 		<version.spring.ldap>2.3.2.RELEASE</version.spring.ldap>
