@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.TaskanaRole;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.security.CurrentUserContext;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
@@ -28,6 +29,20 @@ class TaskEngineAccTest extends AbstractAccTest {
     Assertions.assertThrows(
         NotAuthorizedException.class,
         () -> taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN));
+  }
+
+  @WithAccessId(
+      userName = "user_1_1",
+      groupNames = {"businessadmin"})
+  @Test
+  void testRunAsAdminIsOnlyTemporary() {
+    assertTrue(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN));
+    assertFalse(taskanaEngine.isUserInRole(TaskanaRole.ADMIN));
+    CurrentUserContext.runAsAdmin(() -> {
+      assertTrue(taskanaEngine.isUserInRole(TaskanaRole.ADMIN));
+      return true;
+    });
+    assertFalse(taskanaEngine.isUserInRole(TaskanaRole.ADMIN));
   }
 
   @WithAccessId(userName = "user_1_1") // , groupNames = {"businessadmin"})
