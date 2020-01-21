@@ -29,13 +29,10 @@ public class DbWriter {
 
   public void generateTestData(DataSource dataSource) throws SQLException {
     ScriptRunner runner = null;
-    try {
-      runner = configScriptRunner(dataSource);
+    try (Connection connection = dataSource.getConnection()) {
+      runner = configScriptRunner(connection);
       runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(INSERTVALUES)));
     } finally {
-      if (runner != null) {
-        runner.closeConnection();
-      }
       LOGGER.debug(outWriter.toString());
       if (!errorWriter.toString().trim().isEmpty()) {
         LOGGER.error(errorWriter.toString());
@@ -45,13 +42,10 @@ public class DbWriter {
 
   public void clearDB(DataSource dataSource) throws SQLException {
     ScriptRunner runner = null;
-    try {
-      runner = configScriptRunner(dataSource);
+    try (Connection connection = dataSource.getConnection()) {
+      runner = configScriptRunner(connection);
       runner.runScript(new StringReader("DELETE FROM HISTORY_EVENTS;"));
     } finally {
-      if (runner != null) {
-        runner.closeConnection();
-      }
       LOGGER.debug(outWriter.toString());
       if (!errorWriter.toString().trim().isEmpty()) {
         LOGGER.error(errorWriter.toString());
@@ -59,8 +53,7 @@ public class DbWriter {
     }
   }
 
-  private ScriptRunner configScriptRunner(DataSource dataSource) throws SQLException {
-    Connection connection = dataSource.getConnection();
+  private ScriptRunner configScriptRunner(Connection connection) throws SQLException {
     LOGGER.debug(connection.getMetaData().toString());
     ScriptRunner runner = new ScriptRunner(connection);
     runner.setStopOnError(true);

@@ -122,39 +122,41 @@ class TaskServiceImplIntExplicitTest {
           ClassificationAlreadyExistException, TaskAlreadyExistException,
           InvalidWorkbasketException, InvalidArgumentException, WorkbasketAlreadyExistException,
           DomainNotFoundException {
-    Connection connection = dataSource.getConnection();
-    taskanaEngineImpl.setConnection(connection);
+    try (Connection connection = dataSource.getConnection()) {
+      taskanaEngineImpl.setConnection(connection);
 
-    WorkbasketImpl workbasket = (WorkbasketImpl) workbasketService.newWorkbasket("k1", "DOMAIN_A");
-    workbasket.setName("workbasket");
-    workbasket.setId("1"); // set id manually for authorization tests
+      WorkbasketImpl workbasket =
+          (WorkbasketImpl) workbasketService.newWorkbasket("k1", "DOMAIN_A");
+      workbasket.setName("workbasket");
+      workbasket.setId("1"); // set id manually for authorization tests
 
-    workbasket.setType(WorkbasketType.GROUP);
-    final Classification classification =
-        classificationService.newClassification("TEST", "DOMAIN_A", "TASK");
-    taskanaEngineImpl.getWorkbasketService().createWorkbasket(workbasket);
+      workbasket.setType(WorkbasketType.GROUP);
+      final Classification classification =
+          classificationService.newClassification("TEST", "DOMAIN_A", "TASK");
+      taskanaEngineImpl.getWorkbasketService().createWorkbasket(workbasket);
 
-    WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem("1", "Elena");
-    accessItem.setPermAppend(true);
-    accessItem.setPermRead(true);
-    accessItem.setPermOpen(true);
-    workbasketService.createWorkbasketAccessItem(accessItem);
+      WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem("1", "Elena");
+      accessItem.setPermAppend(true);
+      accessItem.setPermRead(true);
+      accessItem.setPermOpen(true);
+      workbasketService.createWorkbasketAccessItem(accessItem);
 
-    taskanaEngineImpl.getClassificationService().createClassification(classification);
-    connection.commit();
-    Task task = taskServiceImpl.newTask(workbasket.getId());
-    task.setName("Unit Test Task");
-    task.setClassificationKey(classification.getKey());
-    task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
-    task = taskServiceImpl.createTask(task);
-    connection.commit();
-    taskServiceImpl.getTask(task.getId());
+      taskanaEngineImpl.getClassificationService().createClassification(classification);
+      connection.commit();
+      Task task = taskServiceImpl.newTask(workbasket.getId());
+      task.setName("Unit Test Task");
+      task.setClassificationKey(classification.getKey());
+      task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
+      task = taskServiceImpl.createTask(task);
+      connection.commit();
+      taskServiceImpl.getTask(task.getId());
 
-    TaskanaEngineImpl te2 = (TaskanaEngineImpl) taskanaEngineConfiguration.buildTaskanaEngine();
-    TaskServiceImpl taskServiceImpl2 = (TaskServiceImpl) te2.getTaskService();
-    Assertions.assertThrows(
-        TaskNotFoundException.class, () -> taskServiceImpl2.getTask(workbasket.getId()));
-    connection.commit();
+      TaskanaEngineImpl te2 = (TaskanaEngineImpl) taskanaEngineConfiguration.buildTaskanaEngine();
+      TaskServiceImpl taskServiceImpl2 = (TaskServiceImpl) te2.getTaskService();
+      Assertions.assertThrows(
+          TaskNotFoundException.class, () -> taskServiceImpl2.getTask(workbasket.getId()));
+      connection.commit();
+    }
   }
 
   @WithAccessId(
@@ -167,27 +169,28 @@ class TaskServiceImplIntExplicitTest {
           ClassificationAlreadyExistException, TaskAlreadyExistException,
           InvalidWorkbasketException, InvalidArgumentException, WorkbasketAlreadyExistException,
           DomainNotFoundException {
-    Connection connection = dataSource.getConnection();
-    taskanaEngineImpl.setConnection(connection);
+    try (Connection connection = dataSource.getConnection()) {
+      taskanaEngineImpl.setConnection(connection);
 
-    final Task task = this.generateDummyTask();
-    connection.commit();
+      final Task task = this.generateDummyTask();
+      connection.commit();
 
-    WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem("1", "Elena");
-    accessItem.setPermAppend(true);
-    accessItem.setPermRead(true);
-    accessItem.setPermOpen(true);
-    workbasketService.createWorkbasketAccessItem(accessItem);
+      WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem("1", "Elena");
+      accessItem.setPermAppend(true);
+      accessItem.setPermRead(true);
+      accessItem.setPermOpen(true);
+      workbasketService.createWorkbasketAccessItem(accessItem);
 
-    task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
-    final Task task2 = taskServiceImpl.createTask(task);
-    connection.commit(); // needed so that the change is visible in the other session
+      task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
+      final Task task2 = taskServiceImpl.createTask(task);
+      connection.commit(); // needed so that the change is visible in the other session
 
-    TaskanaEngine te2 = taskanaEngineConfiguration.buildTaskanaEngine();
-    TaskServiceImpl taskServiceImpl2 = (TaskServiceImpl) te2.getTaskService();
-    Task resultTask = taskServiceImpl2.getTask(task2.getId());
-    assertNotNull(resultTask);
-    connection.commit();
+      TaskanaEngine te2 = taskanaEngineConfiguration.buildTaskanaEngine();
+      TaskServiceImpl taskServiceImpl2 = (TaskServiceImpl) te2.getTaskService();
+      Task resultTask = taskServiceImpl2.getTask(task2.getId());
+      assertNotNull(resultTask);
+      connection.commit();
+    }
   }
 
   @WithAccessId(
@@ -198,13 +201,14 @@ class TaskServiceImplIntExplicitTest {
       throws NotAuthorizedException, SQLException, ClassificationAlreadyExistException,
           InvalidWorkbasketException, InvalidArgumentException, WorkbasketAlreadyExistException,
           DomainNotFoundException {
-    Connection connection = dataSource.getConnection();
-    taskanaEngineImpl.setConnection(connection);
-    Task test = this.generateDummyTask();
-    ((WorkbasketSummaryImpl) (test.getWorkbasketSummary())).setId("2");
+    try (Connection connection = dataSource.getConnection()) {
+      taskanaEngineImpl.setConnection(connection);
+      Task test = this.generateDummyTask();
+      ((WorkbasketSummaryImpl) (test.getWorkbasketSummary())).setId("2");
 
-    Assertions.assertThrows(
-        WorkbasketNotFoundException.class, () -> taskServiceImpl.createTask(test));
+      Assertions.assertThrows(
+          WorkbasketNotFoundException.class, () -> taskServiceImpl.createTask(test));
+    }
   }
 
   @WithAccessId(
@@ -215,26 +219,28 @@ class TaskServiceImplIntExplicitTest {
       throws NotAuthorizedException, WorkbasketNotFoundException, SQLException,
           ClassificationAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException,
           WorkbasketAlreadyExistException, DomainNotFoundException {
-    Connection connection = dataSource.getConnection();
-    taskanaEngineImpl.setConnection(connection);
+    try (Connection connection = dataSource.getConnection()) {
+      taskanaEngineImpl.setConnection(connection);
 
-    Workbasket wb = workbasketService.newWorkbasket("WB NR.1", "DOMAIN_A");
-    wb.setName("dummy-WB");
-    wb.setType(WorkbasketType.PERSONAL);
-    wb = workbasketService.createWorkbasket(wb);
-    this.createWorkbasketWithSecurity(wb, CurrentUserContext.getUserid(), true, true, true, false);
-    Classification classification =
-        classificationService.newClassification(
-            UUID.randomUUID().toString(), wb.getDomain(), "t1"); // not persisted,
-    // not found.
-    classification.setName("not persisted - so not found.");
+      Workbasket wb = workbasketService.newWorkbasket("WB NR.1", "DOMAIN_A");
+      wb.setName("dummy-WB");
+      wb.setType(WorkbasketType.PERSONAL);
+      wb = workbasketService.createWorkbasket(wb);
+      this.createWorkbasketWithSecurity(
+          wb, CurrentUserContext.getUserid(), true, true, true, false);
+      Classification classification =
+          classificationService.newClassification(
+              UUID.randomUUID().toString(), wb.getDomain(), "t1"); // not persisted,
+      // not found.
+      classification.setName("not persisted - so not found.");
 
-    Task task = this.generateDummyTask();
-    ((TaskImpl) task).setWorkbasketSummary(wb.asSummary());
-    task.setClassificationKey(classification.getKey());
+      Task task = this.generateDummyTask();
+      ((TaskImpl) task).setWorkbasketSummary(wb.asSummary());
+      task.setClassificationKey(classification.getKey());
 
-    Assertions.assertThrows(
-        ClassificationNotFoundException.class, () -> taskServiceImpl.createTask(task));
+      Assertions.assertThrows(
+          ClassificationNotFoundException.class, () -> taskServiceImpl.createTask(task));
+    }
   }
 
   @WithAccessId(
@@ -246,49 +252,51 @@ class TaskServiceImplIntExplicitTest {
           ClassificationNotFoundException, ClassificationAlreadyExistException,
           TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException,
           SystemException, WorkbasketAlreadyExistException, DomainNotFoundException {
-    Connection connection = dataSource.getConnection();
-    taskanaEngineImpl.setConnection(connection);
-    WorkbasketImpl workbasket = (WorkbasketImpl) workbasketService.newWorkbasket("k1", "DOMAIN_A");
-    workbasket.setName("workbasket");
-    Classification classification =
-        classificationService.newClassification("TEST", "DOMAIN_A", "TASK");
-    classificationService.createClassification(classification);
-    workbasket.setId("1"); // set id manually for authorization tests
-    workbasket.setType(WorkbasketType.GROUP);
-    workbasket = (WorkbasketImpl) workbasketService.createWorkbasket(workbasket);
+    try (Connection connection = dataSource.getConnection()) {
+      taskanaEngineImpl.setConnection(connection);
+      WorkbasketImpl workbasket =
+          (WorkbasketImpl) workbasketService.newWorkbasket("k1", "DOMAIN_A");
+      workbasket.setName("workbasket");
+      Classification classification =
+          classificationService.newClassification("TEST", "DOMAIN_A", "TASK");
+      classificationService.createClassification(classification);
+      workbasket.setId("1"); // set id manually for authorization tests
+      workbasket.setType(WorkbasketType.GROUP);
+      workbasket = (WorkbasketImpl) workbasketService.createWorkbasket(workbasket);
 
-    WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem("1", "Elena");
-    accessItem.setPermAppend(true);
-    accessItem.setPermRead(true);
-    accessItem.setPermOpen(true);
-    workbasketService.createWorkbasketAccessItem(accessItem);
+      WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem("1", "Elena");
+      accessItem.setPermAppend(true);
+      accessItem.setPermRead(true);
+      accessItem.setPermOpen(true);
+      workbasketService.createWorkbasketAccessItem(accessItem);
 
-    Task task = taskServiceImpl.newTask(workbasket.getId());
-    task.setName("Unit Test Task");
-    task.setClassificationKey(classification.getKey());
-    task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
-    taskServiceImpl.createTask(task);
+      Task task = taskServiceImpl.newTask(workbasket.getId());
+      task.setName("Unit Test Task");
+      task.setClassificationKey(classification.getKey());
+      task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
+      taskServiceImpl.createTask(task);
 
-    List<TaskSummary> results =
-        taskServiceImpl
-            .createTaskQuery()
-            .nameIn("bla", "test")
-            .descriptionLike("test")
-            .priorityIn(1, 2, 2)
-            .stateIn(TaskState.CLAIMED)
-            .workbasketKeyDomainIn(new KeyDomain("k1", "DOMAIN_A"))
-            .ownerIn("test", "test2", "bla")
-            .customAttributeLike("13", "test")
-            .classificationKeyIn("pId1", "pId2")
-            .primaryObjectReferenceCompanyIn("first comp", "sonstwo gmbh")
-            .primaryObjectReferenceSystemIn("sys")
-            .primaryObjectReferenceTypeIn("type1", "type2")
-            .primaryObjectReferenceSystemInstanceIn("sysInst1", "sysInst2")
-            .primaryObjectReferenceValueIn("val1", "val2", "val3")
-            .list();
+      List<TaskSummary> results =
+          taskServiceImpl
+              .createTaskQuery()
+              .nameIn("bla", "test")
+              .descriptionLike("test")
+              .priorityIn(1, 2, 2)
+              .stateIn(TaskState.CLAIMED)
+              .workbasketKeyDomainIn(new KeyDomain("k1", "DOMAIN_A"))
+              .ownerIn("test", "test2", "bla")
+              .customAttributeLike("13", "test")
+              .classificationKeyIn("pId1", "pId2")
+              .primaryObjectReferenceCompanyIn("first comp", "sonstwo gmbh")
+              .primaryObjectReferenceSystemIn("sys")
+              .primaryObjectReferenceTypeIn("type1", "type2")
+              .primaryObjectReferenceSystemInstanceIn("sysInst1", "sysInst2")
+              .primaryObjectReferenceValueIn("val1", "val2", "val3")
+              .list();
 
-    assertEquals(0, results.size());
-    connection.commit();
+      assertEquals(0, results.size());
+      connection.commit();
+    }
   }
 
   @WithAccessId(
@@ -303,69 +311,74 @@ class TaskServiceImplIntExplicitTest {
           InvalidStateException {
     final int sleepTime = 100;
     final String user = CurrentUserContext.getUserid();
-    Connection connection = dataSource.getConnection();
-    taskanaEngineImpl.setConnection(connection);
+    try (Connection connection = dataSource.getConnection()) {
+      taskanaEngineImpl.setConnection(connection);
 
-    // Source Workbasket
-    WorkbasketImpl wb = (WorkbasketImpl) workbasketService.newWorkbasket("sourceWbKey", "DOMAIN_A");
-    wb.setName("Basic-Workbasket");
-    wb.setDescription("Just used as base WB for Task here");
-    wb.setOwner(user);
-    wb.setType(WorkbasketType.PERSONAL);
-    Workbasket sourceWB = workbasketService.createWorkbasket(wb);
+      // Source Workbasket
+      WorkbasketImpl wb =
+          (WorkbasketImpl) workbasketService.newWorkbasket("sourceWbKey", "DOMAIN_A");
+      wb.setName("Basic-Workbasket");
+      wb.setDescription("Just used as base WB for Task here");
+      wb.setOwner(user);
+      wb.setType(WorkbasketType.PERSONAL);
+      Workbasket sourceWB = workbasketService.createWorkbasket(wb);
 
-    createWorkbasketWithSecurity(wb, wb.getOwner(), false, false, false, false);
-    createWorkbasketWithSecurity(sourceWB, sourceWB.getOwner(), true, true, true, true);
+      createWorkbasketWithSecurity(wb, wb.getOwner(), false, false, false, false);
+      createWorkbasketWithSecurity(sourceWB, sourceWB.getOwner(), true, true, true, true);
 
-    // Destination Workbasket
-    wb = (WorkbasketImpl) workbasketService.newWorkbasket("wb2Key", "DOMAIN_A");
-    wb.setName("Desination-WorkBasket");
-    wb.setDescription("Destination WB where Task should be transfered to");
-    wb.setOwner(user);
-    wb.setType(WorkbasketType.TOPIC);
+      // Destination Workbasket
+      wb = (WorkbasketImpl) workbasketService.newWorkbasket("wb2Key", "DOMAIN_A");
+      wb.setName("Desination-WorkBasket");
+      wb.setDescription("Destination WB where Task should be transfered to");
+      wb.setOwner(user);
+      wb.setType(WorkbasketType.TOPIC);
 
-    Workbasket destinationWB = workbasketService.createWorkbasket(wb);
-    createWorkbasketWithSecurity(destinationWB, destinationWB.getOwner(), false, true, true, true);
+      Workbasket destinationWB = workbasketService.createWorkbasket(wb);
+      createWorkbasketWithSecurity(
+          destinationWB, destinationWB.getOwner(), false, true, true, true);
 
-    // Classification required for Task
-    ClassificationImpl classification =
-        (ClassificationImpl) classificationService.newClassification("KEY", "DOMAIN_A", "TASK");
-    classification.setCategory("EXTERNAL");
-    classification.setName("Transfert-Task Classification");
-    classificationService.createClassification(classification);
+      // Classification required for Task
+      ClassificationImpl classification =
+          (ClassificationImpl) classificationService.newClassification("KEY", "DOMAIN_A", "TASK");
+      classification.setCategory("EXTERNAL");
+      classification.setName("Transfert-Task Classification");
+      classificationService.createClassification(classification);
 
-    // Task which should be transfered
-    TaskImpl task = (TaskImpl) taskServiceImpl.newTask(sourceWB.getId());
-    task.setName("Task Name");
-    task.setDescription("Task used for transfer Test");
-    task.setRead(true);
-    task.setTransferred(false);
-    task.setModified(null);
-    task.setClassificationKey("KEY");
-    task.setOwner(user);
-    task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
-    task = (TaskImpl) taskServiceImpl.createTask(task);
-    Thread.sleep(sleepTime); // Sleep for modification-timestamp
-    connection.commit();
+      // Task which should be transfered
+      TaskImpl task = (TaskImpl) taskServiceImpl.newTask(sourceWB.getId());
+      task.setName("Task Name");
+      task.setDescription("Task used for transfer Test");
+      task.setRead(true);
+      task.setTransferred(false);
+      task.setModified(null);
+      task.setClassificationKey("KEY");
+      task.setOwner(user);
+      task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
+      task = (TaskImpl) taskServiceImpl.createTask(task);
+      Thread.sleep(sleepTime); // Sleep for modification-timestamp
+      connection.commit();
 
-    Task resultTask = taskServiceImpl.transfer(task.getId(), destinationWB.getId());
-    connection.commit();
-    assertThat(resultTask.isRead(), equalTo(false));
-    assertThat(resultTask.isTransferred(), equalTo(true));
-    assertThat(resultTask.getWorkbasketKey(), equalTo(destinationWB.getKey()));
-    assertThat(resultTask.getModified(), not(equalTo(null)));
-    assertThat(resultTask.getModified(), not(equalTo(task.getModified())));
-    assertThat(resultTask.getCreated(), not(equalTo(null)));
-    assertThat(resultTask.getCreated(), equalTo(task.getCreated()));
+      Task resultTask = taskServiceImpl.transfer(task.getId(), destinationWB.getId());
+      connection.commit();
+      assertThat(resultTask.isRead(), equalTo(false));
+      assertThat(resultTask.isTransferred(), equalTo(true));
+      assertThat(resultTask.getWorkbasketKey(), equalTo(destinationWB.getKey()));
+      assertThat(resultTask.getModified(), not(equalTo(null)));
+      assertThat(resultTask.getModified(), not(equalTo(task.getModified())));
+      assertThat(resultTask.getCreated(), not(equalTo(null)));
+      assertThat(resultTask.getCreated(), equalTo(task.getCreated()));
+    }
   }
 
   @Test
   void shouldNotTransferAnyTask() throws SQLException {
-    Connection connection = dataSource.getConnection();
-    taskanaEngineImpl.setConnection(connection);
+    try (Connection connection = dataSource.getConnection()) {
+      taskanaEngineImpl.setConnection(connection);
 
-    Assertions.assertThrows(
-        TaskNotFoundException.class, () -> taskServiceImpl.transfer(UUID.randomUUID() + "_X", "1"));
+      Assertions.assertThrows(
+          TaskNotFoundException.class,
+          () -> taskServiceImpl.transfer(UUID.randomUUID() + "_X", "1"));
+    }
   }
 
   @WithAccessId(

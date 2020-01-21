@@ -1,5 +1,6 @@
 package pro.taskana.rest;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -43,8 +44,8 @@ class TestSchemaNameCustomizable {
   void chekCustomSchemaNameIsDefined() {
     resetDb();
     ResultSet rs;
-    try {
-      Statement stmt = dataSource.getConnection().createStatement();
+    try (Connection connection = dataSource.getConnection()) {
+      Statement stmt = connection.createStatement();
       if (isPostgres) {
         rs =
             stmt.executeQuery(
