@@ -22,6 +22,7 @@ import pro.taskana.exceptions.InvalidOwnerException;
 import pro.taskana.exceptions.InvalidStateException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskNotFoundException;
+import pro.taskana.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketInUseException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.TaskImpl;
@@ -151,7 +152,8 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
       groupNames = {"businessadmin"})
   @Test
   void testCascadingDeleteOfAccessItems()
-      throws WorkbasketNotFoundException, NotAuthorizedException, InvalidArgumentException {
+      throws WorkbasketNotFoundException, NotAuthorizedException, InvalidArgumentException,
+          WorkbasketAccessItemAlreadyExistException {
     Workbasket wb = workbasketService.getWorkbasket("WBI:100000000000000000000000000000000008");
     String wbId = wb.getId();
     // create 2 access Items

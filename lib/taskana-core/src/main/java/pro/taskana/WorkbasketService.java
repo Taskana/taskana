@@ -7,6 +7,7 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskanaException;
+import pro.taskana.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketInUseException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
@@ -82,10 +83,13 @@ public interface WorkbasketService {
    * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
    *     ADMIN
    * @throws WorkbasketNotFoundException if the workbasketAccessItem refers to a not existing
-   *     workbasket
+   *     workbasket *
+   * @throws WorkbasketAccessItemAlreadyExistException if there exists already a
+   *     WorkbasketAccessItem for the same access id and workbasket
    */
   WorkbasketAccessItem createWorkbasketAccessItem(WorkbasketAccessItem workbasketAccessItem)
-      throws InvalidArgumentException, NotAuthorizedException, WorkbasketNotFoundException;
+      throws InvalidArgumentException, NotAuthorizedException, WorkbasketNotFoundException,
+          WorkbasketAccessItemAlreadyExistException;
 
   /**
    * This method updates a {@link WorkbasketAccessItem}.

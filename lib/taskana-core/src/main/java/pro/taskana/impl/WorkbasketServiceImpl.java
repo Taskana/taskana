@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +25,7 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskanaException;
+import pro.taskana.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketInUseException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
@@ -171,7 +173,8 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
   @Override
   public WorkbasketAccessItem createWorkbasketAccessItem(WorkbasketAccessItem workbasketAccessItem)
-      throws InvalidArgumentException, NotAuthorizedException, WorkbasketNotFoundException {
+      throws InvalidArgumentException, NotAuthorizedException, WorkbasketNotFoundException,
+          WorkbasketAccessItemAlreadyExistException {
     LOGGER.debug(
         "entry to createWorkbasketAccessItemn(workbasketAccessItem = {})", workbasketAccessItem);
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
@@ -196,9 +199,15 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                 "WorkbasketAccessItem %s refers to a not existing workbasket",
                 workbasketAccessItem));
       }
-      workbasketAccessMapper.insert(accessItem);
-      LOGGER.debug(
-          "Method createWorkbasketAccessItem() created workbaskteAccessItem {}", accessItem);
+      try {
+        workbasketAccessMapper.insert(accessItem);
+        LOGGER.debug(
+            "Method createWorkbasketAccessItem() created workbaskteAccessItem {}", accessItem);
+      } catch (PersistenceException e) {
+        LOGGER.warn(
+            "when trying to insert WorkbasketAccessItem {} caught exception {}", accessItem, e);
+        throw new WorkbasketAccessItemAlreadyExistException(accessItem);
+      }
       return accessItem;
     } finally {
       taskanaEngine.returnConnection();

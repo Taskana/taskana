@@ -39,6 +39,7 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.SystemException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
+import pro.taskana.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.ClassificationImpl;
@@ -267,7 +268,7 @@ class TaskServiceImplIntAutocommitTest {
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
           ClassificationAlreadyExistException, SQLException, TaskAlreadyExistException,
           InvalidWorkbasketException, InvalidArgumentException, WorkbasketAlreadyExistException,
-          DomainNotFoundException {
+          DomainNotFoundException, WorkbasketAccessItemAlreadyExistException {
     final String user = CurrentUserContext.getUserid();
 
     // Set up Security for this Test
@@ -404,7 +405,8 @@ class TaskServiceImplIntAutocommitTest {
       boolean permRead,
       boolean permAppend,
       boolean permTransfer)
-      throws InvalidArgumentException, NotAuthorizedException, WorkbasketNotFoundException {
+      throws InvalidArgumentException, NotAuthorizedException, WorkbasketNotFoundException,
+          WorkbasketAccessItemAlreadyExistException {
     WorkbasketAccessItem accessItem =
         workbasketService.newWorkbasketAccessItem(wb.getId(), accessId);
     accessItem.setPermOpen(permOpen);
