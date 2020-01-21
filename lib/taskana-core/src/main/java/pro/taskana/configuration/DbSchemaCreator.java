@@ -47,13 +47,13 @@ public class DbSchemaCreator {
    * @throws SQLException will be thrown if there will be some incorrect SQL statements invoked.
    */
   public void run() throws SQLException {
-    Connection connection = dataSource.getConnection();
-    LOGGER.debug(
-        "Using database of type {} with url '{}'",
-        connection.getMetaData().getDatabaseProductName(),
-        connection.getMetaData().getURL());
-    ScriptRunner runner = getScriptRunnerInstance(connection);
-    try {
+    try (Connection connection = dataSource.getConnection()) {
+      LOGGER.debug(
+          "Using database of type {} with url '{}'",
+          connection.getMetaData().getDatabaseProductName(),
+          connection.getMetaData().getURL());
+      ScriptRunner runner = getScriptRunnerInstance(connection);
+
       if (!isSchemaPreexisting(connection)) {
         String scriptPath =
             selectDbScriptFileName(connection.getMetaData().getDatabaseProductName());
@@ -62,8 +62,6 @@ public class DbSchemaCreator {
             new BufferedReader(new InputStreamReader(resourceAsStream, StandardCharsets.UTF_8));
         runner.runScript(getSqlSchemaNameParsed(reader));
       }
-    } finally {
-      runner.closeConnection();
     }
     LOGGER.debug(outWriter.toString());
     if (!errorWriter.toString().trim().isEmpty()) {
@@ -73,8 +71,7 @@ public class DbSchemaCreator {
 
   public boolean isValidSchemaVersion(String expectedVersion) {
     SqlRunner runner = null;
-    try {
-      Connection connection = dataSource.getConnection();
+    try (Connection connection = dataSource.getConnection()) {
       connection.setSchema(this.schemaName);
       runner = new SqlRunner(connection);
       LOGGER.debug(connection.getMetaData().toString());
@@ -102,10 +99,6 @@ public class DbSchemaCreator {
               + "has not the expected value {}",
           expectedVersion);
       return false;
-    } finally {
-      if (runner != null) {
-        runner.closeConnection();
-      }
     }
   }
 
