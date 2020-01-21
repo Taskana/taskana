@@ -114,7 +114,7 @@ class WorkbasketControllerIntTest {
    * restrictions.
    */
   @Test
-  void testDeleteWorkbasketPermissionWithBusinessAdmin() {
+  void testDeleteWorkbasketAsBusinessAdminWithoutExplicitReadPermission() {
 
     String workbasketID = "WBI:100000000000000000000000000000000005";
 
