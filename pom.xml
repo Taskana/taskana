@@ -66,7 +66,7 @@
 		<version.arquillian>1.6.0.Final</version.arquillian>
 
 		<!-- test dependencies -->
-		<version.junit.jupiter>5.5.2</version.junit.jupiter>
+		<version.junit.jupiter>5.6.0</version.junit.jupiter>
 		<version.log4j>2.13.0</version.log4j>
 		<version.archunit>0.13.0</version.archunit>
 		<version.mockito>3.2.4</version.mockito>
