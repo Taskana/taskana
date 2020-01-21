@@ -17,8 +17,6 @@ set -e # fail fast
 #H   - POSTGRES_10_4
 #H module:
 #H   - HISTORY
-#H Optional:
-#H   SONAR_PROJECT_KEY - configured in travis env
 # Arguments:
 #   $1: exit code
 function helpAndExit() {
@@ -34,12 +32,8 @@ function main() {
     set -x
     eval "$REL/prepare_db.sh '$1'"
     # We can not use the fance '-f' maven option due to a bug in arquillian. See https://issues.jboss.org/browse/THORN-2049
-    #-Pcoverage to activate jacoco and test coverage reports
-    # #send test coverage and build information to sonarcloud
-    (cd $REL/.. \
-    && mvn -q install -B -T 4C -am -Pcoverage -Dmaven.javadoc.skip -Dcheckstyle.skip \
-    && mvn sonar:sonar -Pcoverage -Dsonar.projectKey="$SONAR_PROJECT_KEY"
-    )
+    (cd $REL/.. && mvn -q install -B -T 4C -am -Dmaven.javadoc.skip -Dcheckstyle.skip)
+    mvn sonar:sonar -Dsonar.projectKey=benjamineckstein_taskana
     ;;
   DB2_10_5 | DB2_11_1)
     set -x
