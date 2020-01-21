@@ -27,6 +27,7 @@ import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.WorkbasketImpl;
@@ -138,7 +139,8 @@ class WorkbasketServiceImplIntAutocommitTest {
   @Test
   void testInsertWorkbasketAccessUser()
       throws NotAuthorizedException, InvalidArgumentException, DomainNotFoundException,
-          InvalidWorkbasketException, WorkbasketAlreadyExistException, WorkbasketNotFoundException {
+          InvalidWorkbasketException, WorkbasketAlreadyExistException, WorkbasketNotFoundException,
+          WorkbasketAccessItemAlreadyExistException {
 
     Workbasket wb =
         createTestWorkbasket(
@@ -168,7 +170,8 @@ class WorkbasketServiceImplIntAutocommitTest {
   @Test
   void testUpdateWorkbasketAccessUser()
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-          DomainNotFoundException, InvalidWorkbasketException, WorkbasketAlreadyExistException {
+          DomainNotFoundException, InvalidWorkbasketException, WorkbasketAlreadyExistException,
+          WorkbasketAccessItemAlreadyExistException {
     WorkbasketImpl wb = (WorkbasketImpl) workBasketService.newWorkbasket("key", "DOMAIN_A");
     wb.setId("k200000000000000000000000000000000000000");
     wb.setName("name");
@@ -206,7 +209,8 @@ class WorkbasketServiceImplIntAutocommitTest {
       boolean permRead,
       boolean permAppend,
       boolean permTransfer)
-      throws InvalidArgumentException, NotAuthorizedException, WorkbasketNotFoundException {
+      throws InvalidArgumentException, NotAuthorizedException, WorkbasketNotFoundException,
+          WorkbasketAccessItemAlreadyExistException {
     WorkbasketAccessItem accessItem =
         workBasketService.newWorkbasketAccessItem(wb.getId(), accessId);
     accessItem.setPermOpen(permOpen);

@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import acceptance.AbstractAccTest;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -27,9 +28,9 @@ import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
+import pro.taskana.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.WorkbasketAccessItemImpl;
-import pro.taskana.security.CurrentUserContext;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
@@ -46,7 +47,8 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
       groupNames = {"group_1", "businessadmin"})
   @Test
   void testUpdateWorkbasketAccessItemSucceeds()
-      throws InvalidArgumentException, NotAuthorizedException, WorkbasketNotFoundException {
+      throws InvalidArgumentException, NotAuthorizedException, WorkbasketNotFoundException,
+          WorkbasketAccessItemAlreadyExistException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     WorkbasketAccessItem accessItem =
         workbasketService.newWorkbasketAccessItem(
@@ -81,7 +83,8 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
       groupNames = {"group_1", "businessadmin"})
   @Test
   void testUpdateWorkbasketAccessItemRejected()
-      throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
+      throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
+          WorkbasketAccessItemAlreadyExistException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     WorkbasketAccessItem accessItem =
         workbasketService.newWorkbasketAccessItem(
@@ -207,26 +210,6 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
       userName = "teamlead_1",
       groupNames = {"group_1", "businessadmin"})
   @Test
-  void testUpdatedAccessItemListToEmptyList()
-      throws InvalidArgumentException, NotAuthorizedException {
-    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-    final String wbId = "WBI:100000000000000000000000000000000004";
-    List<WorkbasketAccessItem> accessItems = workbasketService.getWorkbasketAccessItems(wbId);
-    int countBefore = accessItems.size();
-    assertThat(3, equalTo(countBefore));
-
-    workbasketService.setWorkbasketAccessItems(wbId, new ArrayList<>());
-
-    List<WorkbasketAccessItem> updatedAccessItems =
-        workbasketService.getWorkbasketAccessItems(wbId);
-    int countAfter = updatedAccessItems.size();
-    assertThat(0, equalTo(countAfter));
-  }
-
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1", "businessadmin"})
-  @Test
   void testInsertAccessItemList() throws InvalidArgumentException, NotAuthorizedException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     final String wbId = "WBI:100000000000000000000000000000000004";
@@ -240,8 +223,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     item0.setPermTransfer(false);
     final String updateId0 = item0.getId();
     // insert new entry
-    WorkbasketAccessItem newItem =
-        workbasketService.newWorkbasketAccessItem(wbId, CurrentUserContext.getUserid());
+    WorkbasketAccessItem newItem = workbasketService.newWorkbasketAccessItem(wbId, "dummyUser1");
     newItem.setPermRead(true);
     newItem.setPermOpen(true);
     newItem.setPermCustom12(true);
@@ -292,7 +274,11 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     }
     List<WorkbasketAccessItem> listEqualToOriginal =
         new ArrayList<>(workbasketService.getWorkbasketAccessItems(wbId));
-    assertEquals(originalList, listEqualToOriginal);
+    
+    // with DB2 V 11, the lists are sorted differently...
+    assertEquals(
+        new HashSet<WorkbasketAccessItem>(originalList),
+        new HashSet<WorkbasketAccessItem>(listEqualToOriginal));
   }
 
   @WithAccessId(

@@ -33,6 +33,7 @@ import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
+import pro.taskana.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.impl.JobServiceImpl;
@@ -181,7 +182,8 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
   @Test
   void testTimestampsOnCreateWorkbasket()
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-          InvalidWorkbasketException, WorkbasketAlreadyExistException, DomainNotFoundException {
+          InvalidWorkbasketException, WorkbasketAlreadyExistException, DomainNotFoundException,
+          WorkbasketAccessItemAlreadyExistException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     final int before = workbasketService.createWorkbasketQuery().domainIn("DOMAIN_A").list().size();
 

@@ -18,6 +18,7 @@ import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.security.JaasExtension;
@@ -37,7 +38,8 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
   @Test
   void testCreateWorkbasket()
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-          InvalidWorkbasketException, WorkbasketAlreadyExistException, DomainNotFoundException {
+          InvalidWorkbasketException, WorkbasketAlreadyExistException, DomainNotFoundException,
+          WorkbasketAccessItemAlreadyExistException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     final int before = workbasketService.createWorkbasketQuery().domainIn("DOMAIN_A").list().size();
 
@@ -201,7 +203,8 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
   @Test
   void testWorkbasketAccessItemSetName()
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-          InvalidWorkbasketException, WorkbasketAlreadyExistException, DomainNotFoundException {
+          InvalidWorkbasketException, WorkbasketAlreadyExistException, DomainNotFoundException,
+          WorkbasketAccessItemAlreadyExistException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     int before = workbasketService.createWorkbasketQuery().domainIn("DOMAIN_A").list().size();
 
@@ -225,5 +228,31 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     WorkbasketAccessItem item =
         accessItems.stream().filter(t -> wbai.getId().equals(t.getId())).findFirst().orElse(null);
     assertEquals("Karl Napf", item.getAccessName());
+  }
+
+  @WithAccessId(
+      userName = "user_1_2",
+      groupNames = {"businessadmin"})
+  @Test
+  void testCreateDuplicateWorkbasketAccessListFails()
+      throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
+          InvalidWorkbasketException, WorkbasketAlreadyExistException, DomainNotFoundException,
+          WorkbasketAccessItemAlreadyExistException {
+    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+    final int before = workbasketService.createWorkbasketQuery().domainIn("DOMAIN_A").list().size();
+
+    Workbasket workbasket = workbasketService.newWorkbasket("NT4321", "DOMAIN_A");
+    workbasket.setName("Terabasket");
+    workbasket.setType(WorkbasketType.GROUP);
+    workbasket.setOrgLevel1("company");
+    workbasket = workbasketService.createWorkbasket(workbasket);
+    WorkbasketAccessItem wbai =
+        workbasketService.newWorkbasketAccessItem(workbasket.getId(), "user_3_2");
+    wbai.setPermRead(true);
+    workbasketService.createWorkbasketAccessItem(wbai);
+
+    Assertions.assertThrows(
+        WorkbasketAccessItemAlreadyExistException.class,
+        () -> workbasketService.createWorkbasketAccessItem(wbai));
   }
 }
