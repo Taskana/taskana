@@ -15,7 +15,6 @@
 		<module>rest</module>
 		<!-- History is an optional module. -->
 		<module>history</module>
-		<module>coverage</module>
 	</modules>
 
 	<properties>
@@ -77,6 +76,7 @@
 		<version.equalsverifier>3.1.11</version.equalsverifier>
 		<version.openpojo>0.8.13</version.openpojo>
 		<version.jacoco>0.8.3</version.jacoco>
+		<jacoco.reportPath>${project.basedir}/../../target/jacoco.exec</jacoco.reportPath>
 
 		<!-- database driver versions -->
 		<version.h2>1.4.197</version.h2>
@@ -244,8 +244,35 @@
 					<execution>
 						<goals>
 							<goal>prepare-agent</goal>
+						</goals>
+						<configuration>
+							<append>true</append>
+							<destFile>${jacoco.reportPath}</destFile>
+						</configuration>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>prepare-package</phase>
+						<goals>
 							<goal>report</goal>
 						</goals>
+					</execution>
+					<execution>
+						<id>jacoco-check</id>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<rule>
+									<limits>
+										<limit>
+											<minimum>0.0</minimum>
+										</limit>
+									</limits>
+								</rule>
+							</rules>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
