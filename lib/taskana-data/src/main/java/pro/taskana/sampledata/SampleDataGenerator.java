@@ -125,7 +125,6 @@ public class SampleDataGenerator {
 
       ScriptRunner runner = getScriptRunner(connection, outWriter, errorWriter);
       consumer.accept(runner);
-      runner.closeConnection();
 
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(outWriter.toString());

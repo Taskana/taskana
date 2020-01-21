@@ -24,7 +24,6 @@ public class SampleDataGenerator {
   private static final String HISTORY_EVENT = TEST_DATA + "/history-event.sql";
   DataSource dataSource;
   String dbProductName;
-  private ScriptRunner runner;
 
   public SampleDataGenerator(DataSource dataSource) throws SQLException {
     try (Connection connection = dataSource.getConnection()) {
@@ -35,8 +34,6 @@ public class SampleDataGenerator {
       }
     }
     this.dataSource = dataSource;
-
-    runner = new ScriptRunner(dataSource.getConnection());
   }
 
   public void generateSampleData(String schemaName) {
@@ -45,27 +42,27 @@ public class SampleDataGenerator {
 
     final StringWriter errorWriter = new StringWriter();
     final PrintWriter errorLogWriter = new PrintWriter(errorWriter);
-    try {
+    try (Connection connection = dataSource.getConnection()) {
+      ScriptRunner runner = new ScriptRunner(connection);
       runner.runScript(selectSchemaScript(dbProductName, schemaName));
       runner.setStopOnError(false);
       runner.runScript(
           new BufferedReader(
               new InputStreamReader(
                   this.getClass().getResourceAsStream(CLEAR), StandardCharsets.UTF_8)));
+
+      runner.setStopOnError(true);
+      runner.setLogWriter(logWriter);
+      runner.setErrorLogWriter(errorLogWriter);
+
+      runner.runScript(
+          new BufferedReader(
+              new InputStreamReader(
+                  this.getClass().getResourceAsStream(HISTORY_EVENT), StandardCharsets.UTF_8)));
+
     } catch (Exception e) {
       LOGGER.error("caught Exception {}", e, e);
     }
-
-    runner.setStopOnError(true);
-    runner.setLogWriter(logWriter);
-    runner.setErrorLogWriter(errorLogWriter);
-
-    runner.runScript(
-        new BufferedReader(
-            new InputStreamReader(
-                this.getClass().getResourceAsStream(HISTORY_EVENT), StandardCharsets.UTF_8)));
-
-    runner.closeConnection();
 
     LOGGER.trace(outWriter.toString());
     if (!errorWriter.toString().trim().isEmpty()) {
