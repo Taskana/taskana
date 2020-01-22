@@ -26,13 +26,13 @@ public class QueryHistoryAccTest extends AbstractAccTest {
   @Test
   public void testListValuesAscendingAndDescending() {
     List<String> defaultList =
-        historyService.createHistoryQuery().listValues(HistoryQueryColumnName.COMMENT, null);
+        getHistoryService().createHistoryQuery().listValues(HistoryQueryColumnName.COMMENT, null);
     List<String> ascendingList =
-        historyService
+        getHistoryService()
             .createHistoryQuery()
             .listValues(HistoryQueryColumnName.COMMENT, SortDirection.ASCENDING);
     List<String> descendingList =
-        historyService
+        getHistoryService()
             .createHistoryQuery()
             .listValues(HistoryQueryColumnName.COMMENT, SortDirection.DESCENDING);
 
@@ -44,7 +44,7 @@ public class QueryHistoryAccTest extends AbstractAccTest {
   @Test
   public void testComplexQuery() {
     HistoryQuery query =
-        historyService
+        getHistoryService()
             .createHistoryQuery()
             .businessProcessIdLike("just some string", "BPI:%")
             .domainLike("%A")
@@ -64,8 +64,8 @@ public class QueryHistoryAccTest extends AbstractAccTest {
 
   @Test
   public void testQueryListOffset() {
-    List<HistoryEventImpl> result = historyService.createHistoryQuery().list(1, 2);
-    List<HistoryEventImpl> wrongList = historyService.createHistoryQuery().list();
+    List<HistoryEventImpl> result = getHistoryService().createHistoryQuery().list(1, 2);
+    List<HistoryEventImpl> wrongList = getHistoryService().createHistoryQuery().list();
 
     assertEquals(2, result.size());
 
@@ -75,275 +75,292 @@ public class QueryHistoryAccTest extends AbstractAccTest {
 
   @Test
   public void testCorrectResultWithWrongConstraints() {
-    List<HistoryEventImpl> result = historyService.createHistoryQuery().list(1, 1000);
+    List<HistoryEventImpl> result = getHistoryService().createHistoryQuery().list(1, 1000);
     assertEquals(2, result.size());
     assertEquals("created by Peter", result.get(0).getComment());
 
-    result = historyService.createHistoryQuery().list(100, 1000);
+    result = getHistoryService().createHistoryQuery().list(100, 1000);
     assertTrue(result.isEmpty());
   }
 
   @Test
   public void testSingle() {
-    HistoryEventImpl single = historyService.createHistoryQuery().userIdIn("peter").single();
+    HistoryEventImpl single = getHistoryService().createHistoryQuery().userIdIn("peter").single();
     assertEquals("CREATE", single.getEventType());
 
-    single = historyService.createHistoryQuery().eventTypeIn("CREATE", "xy").single();
+    single = getHistoryService().createHistoryQuery().eventTypeIn("CREATE", "xy").single();
     assertEquals("admin", single.getUserId());
   }
 
   @Test
   public void testCount() {
-    long count = historyService.createHistoryQuery().userIdIn("peter").count();
+    long count = getHistoryService().createHistoryQuery().userIdIn("peter").count();
     assertEquals(1, count);
 
-    count = historyService.createHistoryQuery().count();
+    count = getHistoryService().createHistoryQuery().count();
     assertEquals(3, count);
 
-    count = historyService.createHistoryQuery().userIdIn("klaus", "arnold", "benni").count();
+    count = getHistoryService().createHistoryQuery().userIdIn("klaus", "arnold", "benni").count();
     assertEquals(0, count);
   }
 
   @Test
   public void testQueryAttributesIn() {
     List<HistoryEventImpl> returnValues =
-        historyService.createHistoryQuery().businessProcessIdIn("BPI:01", "BPI:02").list();
+        getHistoryService().createHistoryQuery().businessProcessIdIn("BPI:01", "BPI:02").list();
     assertEquals(2, returnValues.size());
 
-    returnValues = historyService.createHistoryQuery().parentBusinessProcessIdIn("BPI:01").list();
+    returnValues =
+        getHistoryService().createHistoryQuery().parentBusinessProcessIdIn("BPI:01").list();
     assertEquals(1, returnValues.size());
 
     returnValues =
-        historyService
+        getHistoryService()
             .createHistoryQuery()
             .taskIdIn("TKI:000000000000000000000000000000000000")
             .list();
     assertEquals(2, returnValues.size());
 
-    returnValues = historyService.createHistoryQuery().eventTypeIn("CREATE").list();
+    returnValues = getHistoryService().createHistoryQuery().eventTypeIn("CREATE").list();
     assertEquals(3, returnValues.size());
 
     TimeInterval timeInterval = new TimeInterval(Instant.now().minusSeconds(10), Instant.now());
-    returnValues = historyService.createHistoryQuery().createdWithin(timeInterval).list();
+    returnValues = getHistoryService().createHistoryQuery().createdWithin(timeInterval).list();
     assertEquals(2, returnValues.size());
 
-    returnValues = historyService.createHistoryQuery().userIdIn("admin").list();
+    returnValues = getHistoryService().createHistoryQuery().userIdIn("admin").list();
     assertEquals(2, returnValues.size());
 
-    returnValues = historyService.createHistoryQuery().domainIn("DOMAIN_A").list();
+    returnValues = getHistoryService().createHistoryQuery().domainIn("DOMAIN_A").list();
     assertEquals(2, returnValues.size());
 
     returnValues =
-        historyService
+        getHistoryService()
             .createHistoryQuery()
             .workbasketKeyIn("WBI:100000000000000000000000000000000001")
             .list();
     assertEquals(2, returnValues.size());
 
-    returnValues = historyService.createHistoryQuery().porCompanyIn("00").list();
+    returnValues = getHistoryService().createHistoryQuery().porCompanyIn("00").list();
     assertEquals(2, returnValues.size());
 
-    returnValues = historyService.createHistoryQuery().porSystemIn("PASystem").list();
+    returnValues = getHistoryService().createHistoryQuery().porSystemIn("PASystem").list();
     assertEquals(2, returnValues.size());
 
-    returnValues = historyService.createHistoryQuery().porInstanceIn("22").list();
+    returnValues = getHistoryService().createHistoryQuery().porInstanceIn("22").list();
     assertEquals(1, returnValues.size());
 
-    returnValues = historyService.createHistoryQuery().porTypeIn("VN").list();
+    returnValues = getHistoryService().createHistoryQuery().porTypeIn("VN").list();
     assertEquals(0, returnValues.size());
 
-    returnValues = historyService.createHistoryQuery().porValueIn("11223344").list();
-    assertEquals(2, returnValues.size());
-
-    returnValues = historyService.createHistoryQuery().taskClassificationKeyIn("L140101").list();
-    assertEquals(2, returnValues.size());
-
-    returnValues = historyService.createHistoryQuery().taskClassificationCategoryIn("TASK").list();
+    returnValues = getHistoryService().createHistoryQuery().porValueIn("11223344").list();
     assertEquals(2, returnValues.size());
 
     returnValues =
-        historyService.createHistoryQuery().attachmentClassificationKeyIn("DOCTYPE_DEFAULT").list();
-    assertEquals(1, returnValues.size());
-
-    returnValues = historyService.createHistoryQuery().custom1In("custom1").list();
-    assertEquals(3, returnValues.size());
-
-    returnValues = historyService.createHistoryQuery().custom2In("custom2").list();
-    assertEquals(1, returnValues.size());
-
-    returnValues = historyService.createHistoryQuery().custom3In("custom3").list();
+        getHistoryService().createHistoryQuery().taskClassificationKeyIn("L140101").list();
     assertEquals(2, returnValues.size());
 
-    returnValues = historyService.createHistoryQuery().custom4In("custom4").list();
-    assertEquals(1, returnValues.size());
-
-    returnValues = historyService.createHistoryQuery().commentIn("created a bug").list();
-    assertEquals(1, returnValues.size());
-
-    returnValues = historyService.createHistoryQuery().oldValueIn("old_val").list();
-    assertEquals(1, returnValues.size());
-
-    returnValues = historyService.createHistoryQuery().newValueIn("new_val").list();
-    assertEquals(1, returnValues.size());
-
-    returnValues = historyService.createHistoryQuery().oldDataIn("123").list();
+    returnValues =
+        getHistoryService().createHistoryQuery().taskClassificationCategoryIn("TASK").list();
     assertEquals(2, returnValues.size());
 
-    returnValues = historyService.createHistoryQuery().newDataIn("456").list();
-    assertEquals(3, returnValues.size());
-    returnValues = historyService.createHistoryQuery().oldValueLike("old%").list();
+    returnValues =
+        getHistoryService()
+            .createHistoryQuery()
+            .attachmentClassificationKeyIn("DOCTYPE_DEFAULT")
+            .list();
     assertEquals(1, returnValues.size());
 
-    returnValues = historyService.createHistoryQuery().newValueLike("new_%").list();
-    assertEquals(2, returnValues.size());
-
-    returnValues = historyService.createHistoryQuery().oldDataLike("%23%").list();
+    returnValues = getHistoryService().createHistoryQuery().custom1In("custom1").list();
     assertEquals(3, returnValues.size());
 
-    returnValues = historyService.createHistoryQuery().newDataLike("456%").list();
+    returnValues = getHistoryService().createHistoryQuery().custom2In("custom2").list();
+    assertEquals(1, returnValues.size());
+
+    returnValues = getHistoryService().createHistoryQuery().custom3In("custom3").list();
+    assertEquals(2, returnValues.size());
+
+    returnValues = getHistoryService().createHistoryQuery().custom4In("custom4").list();
+    assertEquals(1, returnValues.size());
+
+    returnValues = getHistoryService().createHistoryQuery().commentIn("created a bug").list();
+    assertEquals(1, returnValues.size());
+
+    returnValues = getHistoryService().createHistoryQuery().oldValueIn("old_val").list();
+    assertEquals(1, returnValues.size());
+
+    returnValues = getHistoryService().createHistoryQuery().newValueIn("new_val").list();
+    assertEquals(1, returnValues.size());
+
+    returnValues = getHistoryService().createHistoryQuery().oldDataIn("123").list();
+    assertEquals(2, returnValues.size());
+
+    returnValues = getHistoryService().createHistoryQuery().newDataIn("456").list();
+    assertEquals(3, returnValues.size());
+    returnValues = getHistoryService().createHistoryQuery().oldValueLike("old%").list();
+    assertEquals(1, returnValues.size());
+
+    returnValues = getHistoryService().createHistoryQuery().newValueLike("new_%").list();
+    assertEquals(2, returnValues.size());
+
+    returnValues = getHistoryService().createHistoryQuery().oldDataLike("%23%").list();
+    assertEquals(3, returnValues.size());
+
+    returnValues = getHistoryService().createHistoryQuery().newDataLike("456%").list();
     assertEquals(3, returnValues.size());
   }
 
   @Test
   public void testSomeLikeMethods() {
     List<HistoryEventImpl> returnValues =
-        historyService.createHistoryQuery().businessProcessIdLike("BPI:0%").list();
+        getHistoryService().createHistoryQuery().businessProcessIdLike("BPI:0%").list();
     assertEquals(3, returnValues.size());
 
     returnValues =
-        historyService.createHistoryQuery().parentBusinessProcessIdLike("BPI:01", " %").list();
+        getHistoryService().createHistoryQuery().parentBusinessProcessIdLike("BPI:01", " %").list();
     assertEquals(1, returnValues.size());
 
-    returnValues = historyService.createHistoryQuery().taskIdLike("TKI:000000000000000%").list();
+    returnValues =
+        getHistoryService().createHistoryQuery().taskIdLike("TKI:000000000000000%").list();
     assertEquals(3, returnValues.size());
 
-    returnValues = historyService.createHistoryQuery().oldValueLike("old%").list();
+    returnValues = getHistoryService().createHistoryQuery().oldValueLike("old%").list();
     assertEquals(1, returnValues.size());
 
-    returnValues = historyService.createHistoryQuery().newValueLike("new_%").list();
+    returnValues = getHistoryService().createHistoryQuery().newValueLike("new_%").list();
     assertEquals(2, returnValues.size());
 
-    returnValues = historyService.createHistoryQuery().oldDataLike("%23%").list();
+    returnValues = getHistoryService().createHistoryQuery().oldDataLike("%23%").list();
     assertEquals(3, returnValues.size());
 
-    returnValues = historyService.createHistoryQuery().newDataLike("456%").list();
+    returnValues = getHistoryService().createHistoryQuery().newDataLike("456%").list();
     assertEquals(3, returnValues.size());
   }
 
   @Test
   public void testListValues() {
     List<String> returnedList =
-        historyService.createHistoryQuery().listValues(HistoryQueryColumnName.ID, null);
+        getHistoryService().createHistoryQuery().listValues(HistoryQueryColumnName.ID, null);
     assertEquals(3, returnedList.size());
 
     returnedList =
-        historyService
+        getHistoryService()
             .createHistoryQuery()
             .listValues(HistoryQueryColumnName.BUSINESS_PROCESS_ID, null);
     assertEquals(3, returnedList.size());
 
     returnedList =
-        historyService
+        getHistoryService()
             .createHistoryQuery()
             .listValues(HistoryQueryColumnName.PARENT_BUSINESS_PROCESS_ID, null);
     assertEquals(2, returnedList.size());
 
     returnedList =
-        historyService.createHistoryQuery().listValues(HistoryQueryColumnName.TASK_ID, null);
+        getHistoryService().createHistoryQuery().listValues(HistoryQueryColumnName.TASK_ID, null);
     assertEquals(2, returnedList.size());
 
     returnedList =
-        historyService.createHistoryQuery().listValues(HistoryQueryColumnName.EVENT_TYPE, null);
+        getHistoryService()
+            .createHistoryQuery()
+            .listValues(HistoryQueryColumnName.EVENT_TYPE, null);
     assertEquals(1, returnedList.size());
 
     returnedList =
-        historyService.createHistoryQuery().listValues(HistoryQueryColumnName.CREATED, null);
+        getHistoryService().createHistoryQuery().listValues(HistoryQueryColumnName.CREATED, null);
     assertEquals(2, returnedList.size());
 
     returnedList =
-        historyService.createHistoryQuery().listValues(HistoryQueryColumnName.USER_ID, null);
+        getHistoryService().createHistoryQuery().listValues(HistoryQueryColumnName.USER_ID, null);
     assertEquals(2, returnedList.size());
 
     returnedList =
-        historyService.createHistoryQuery().listValues(HistoryQueryColumnName.DOMAIN, null);
+        getHistoryService().createHistoryQuery().listValues(HistoryQueryColumnName.DOMAIN, null);
     assertEquals(2, returnedList.size());
 
     returnedList =
-        historyService.createHistoryQuery().listValues(HistoryQueryColumnName.WORKBASKET_KEY, null);
+        getHistoryService()
+            .createHistoryQuery()
+            .listValues(HistoryQueryColumnName.WORKBASKET_KEY, null);
     assertEquals(2, returnedList.size());
 
     returnedList =
-        historyService.createHistoryQuery().listValues(HistoryQueryColumnName.POR_COMPANY, null);
+        getHistoryService()
+            .createHistoryQuery()
+            .listValues(HistoryQueryColumnName.POR_COMPANY, null);
     assertEquals(2, returnedList.size());
 
     returnedList =
-        historyService.createHistoryQuery().listValues(HistoryQueryColumnName.POR_SYSTEM, null);
+        getHistoryService()
+            .createHistoryQuery()
+            .listValues(HistoryQueryColumnName.POR_SYSTEM, null);
     assertEquals(2, returnedList.size());
 
     returnedList =
-        historyService.createHistoryQuery().listValues(HistoryQueryColumnName.POR_INSTANCE, null);
+        getHistoryService()
+            .createHistoryQuery()
+            .listValues(HistoryQueryColumnName.POR_INSTANCE, null);
     assertEquals(2, returnedList.size());
 
     returnedList =
-        historyService.createHistoryQuery().listValues(HistoryQueryColumnName.POR_TYPE, null);
+        getHistoryService().createHistoryQuery().listValues(HistoryQueryColumnName.POR_TYPE, null);
     assertEquals(2, returnedList.size());
 
     returnedList =
-        historyService.createHistoryQuery().listValues(HistoryQueryColumnName.POR_VALUE, null);
+        getHistoryService().createHistoryQuery().listValues(HistoryQueryColumnName.POR_VALUE, null);
     assertEquals(2, returnedList.size());
 
     returnedList =
-        historyService
+        getHistoryService()
             .createHistoryQuery()
             .listValues(HistoryQueryColumnName.TASK_CLASSIFICATION_KEY, null);
     assertEquals(2, returnedList.size());
 
     returnedList =
-        historyService
+        getHistoryService()
             .createHistoryQuery()
             .listValues(HistoryQueryColumnName.TASK_CLASSIFICATION_CATEGORY, null);
     assertEquals(2, returnedList.size());
 
     returnedList =
-        historyService
+        getHistoryService()
             .createHistoryQuery()
             .listValues(HistoryQueryColumnName.ATTACHMENT_CLASSIFICATION_KEY, null);
     assertEquals(2, returnedList.size());
 
     returnedList =
-        historyService.createHistoryQuery().listValues(HistoryQueryColumnName.COMMENT, null);
+        getHistoryService().createHistoryQuery().listValues(HistoryQueryColumnName.COMMENT, null);
     assertEquals(3, returnedList.size());
 
     returnedList =
-        historyService.createHistoryQuery().listValues(HistoryQueryColumnName.OLD_VALUE, null);
+        getHistoryService().createHistoryQuery().listValues(HistoryQueryColumnName.OLD_VALUE, null);
     assertEquals(3, returnedList.size());
 
     returnedList =
-        historyService.createHistoryQuery().listValues(HistoryQueryColumnName.NEW_VALUE, null);
+        getHistoryService().createHistoryQuery().listValues(HistoryQueryColumnName.NEW_VALUE, null);
     assertEquals(3, returnedList.size());
 
     returnedList =
-        historyService.createHistoryQuery().listValues(HistoryQueryColumnName.CUSTOM_1, null);
+        getHistoryService().createHistoryQuery().listValues(HistoryQueryColumnName.CUSTOM_1, null);
     assertEquals(1, returnedList.size());
 
     returnedList =
-        historyService.createHistoryQuery().listValues(HistoryQueryColumnName.CUSTOM_2, null);
+        getHistoryService().createHistoryQuery().listValues(HistoryQueryColumnName.CUSTOM_2, null);
     assertEquals(2, returnedList.size());
 
     returnedList =
-        historyService.createHistoryQuery().listValues(HistoryQueryColumnName.CUSTOM_3, null);
+        getHistoryService().createHistoryQuery().listValues(HistoryQueryColumnName.CUSTOM_3, null);
     assertEquals(2, returnedList.size());
 
     returnedList =
-        historyService.createHistoryQuery().listValues(HistoryQueryColumnName.CUSTOM_4, null);
+        getHistoryService().createHistoryQuery().listValues(HistoryQueryColumnName.CUSTOM_4, null);
     assertEquals(2, returnedList.size());
 
     returnedList =
-        historyService.createHistoryQuery().listValues(HistoryQueryColumnName.OLD_DATA, null);
+        getHistoryService().createHistoryQuery().listValues(HistoryQueryColumnName.OLD_DATA, null);
     assertEquals(2, returnedList.size());
 
     returnedList =
-        historyService.createHistoryQuery().listValues(HistoryQueryColumnName.NEW_DATA, null);
+        getHistoryService().createHistoryQuery().listValues(HistoryQueryColumnName.NEW_DATA, null);
     assertEquals(1, returnedList.size());
   }
 }

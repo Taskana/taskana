@@ -521,7 +521,8 @@ public class TaskanaEngineConfiguration {
     boolean loadFromClasspath = loadFromClasspath(propertiesFile);
     try {
       if (loadFromClasspath) {
-        InputStream inputStream = this.getClass().getResourceAsStream(propertiesFile);
+        InputStream inputStream =
+            TaskanaEngineConfiguration.class.getResourceAsStream(propertiesFile);
         if (inputStream == null) {
           LOGGER.error("taskana properties file {} was not found on classpath.", propertiesFile);
         } else {

@@ -100,9 +100,9 @@ class TaskServiceImplIntExplicitTest {
     classificationService = taskanaEngine.getClassificationService();
     taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.EXPLICIT);
     workbasketService = taskanaEngine.getWorkbasketService();
-    DbSchemaCreator creator =
-        new DbSchemaCreator(dataSource, dataSource.getConnection().getSchema());
-    creator.run();
+    try (Connection connection = dataSource.getConnection()) {
+      new DbSchemaCreator(dataSource, connection.getSchema()).run();
+    }
   }
 
   @BeforeEach

@@ -295,14 +295,6 @@ public class TaskanaEngineImpl implements TaskanaEngine {
       return stack;
     }
 
-    private SqlSessionManager getSessionFromStack() {
-      Deque<SqlSessionManager> stack = getSessionStack();
-      if (stack.isEmpty()) {
-        return null;
-      }
-      return stack.peek();
-    }
-
     private void pushSessionToStack(SqlSessionManager session) {
       getSessionStack().push(session);
     }

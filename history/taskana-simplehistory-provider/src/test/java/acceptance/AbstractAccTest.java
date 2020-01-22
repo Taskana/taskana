@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.Properties;
 import javax.sql.DataSource;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
@@ -25,12 +26,9 @@ public class AbstractAccTest {
   private static final int POOL_TIME_TO_WAIT = 50;
 
   @SuppressWarnings("checkstyle:DeclarationOrder")
-  public static SimpleHistoryServiceImpl historyService;
+  private static SimpleHistoryServiceImpl historyService;
 
-  @SuppressWarnings("checkstyle:DeclarationOrder")
-  protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
-
-  private static DataSource dataSource = null;
+  private static DataSource dataSource;
   private static String schemaName = null;
 
   protected AbstractAccTest() {
@@ -44,7 +42,8 @@ public class AbstractAccTest {
 
   public static void resetDb(String schemaName) throws SQLException {
     DataSource dataSource = getDataSource();
-    taskanaEngineConfiguration =
+
+    TaskanaEngineConfiguration taskanaEngineConfiguration =
         new TaskanaEngineConfiguration(
             dataSource,
             false,
@@ -57,27 +56,20 @@ public class AbstractAccTest {
     writer.generateTestData(dataSource);
   }
 
-  /**
-   * returns the DataSource used for Junit test. If the file {user.home}/taskanaUnitTest.properties
-   * is present, the Datasource is created according to the properties jdbcDriver, jdbcUrl,
-   * dbUserName and dbPassword. Assuming, the database has the name tskdb, a sample properties file
-   * for DB2 looks as follows: jdbcDriver=com.ibm.db2.jcc.DB2Driver
-   * jdbcUrl=jdbc:db2://localhost:50000/tskdb dbUserName=db2user dbPassword=db2password If any of
-   * these properties is missing, or the file doesn't exist, the default Datasource for h2 in-memory
-   * db is created.
-   *
-   * @return dataSource for unit test
-   */
+  static {
+    String userHomeDirectroy = System.getProperty("user.home");
+    String propertiesFileName = userHomeDirectroy + "/taskanaUnitTest.properties";
+    File f = new File(propertiesFileName);
+    if (f.exists() && !f.isDirectory()) {
+      dataSource = createDataSourceFromProperties(propertiesFileName);
+    } else {
+      dataSource = createDefaultDataSource();
+    }
+  }
+
   public static DataSource getDataSource() {
     if (dataSource == null) {
-      String userHomeDirectroy = System.getProperty("user.home");
-      String propertiesFileName = userHomeDirectroy + "/taskanaUnitTest.properties";
-      File f = new File(propertiesFileName);
-      if (f.exists() && !f.isDirectory()) {
-        dataSource = createDataSourceFromProperties(propertiesFileName);
-      } else {
-        dataSource = createDefaultDataSource();
-      }
+      throw new RuntimeException("Datasource should be already initialized");
     }
     return dataSource;
   }
@@ -131,6 +123,10 @@ public class AbstractAccTest {
     return historyEvent;
   }
 
+  public static SimpleHistoryServiceImpl getHistoryService() {
+    return historyService;
+  }
+
   /**
    * create Default DataSource for in-memory database.
    *
@@ -142,16 +138,15 @@ public class AbstractAccTest {
     String jdbcUrl = "jdbc:h2:mem:taskana;IGNORECASE=TRUE;LOCK_MODE=0";
     String dbUserName = "sa";
     String dbPassword = "sa";
-    DataSource ds =
+    PooledDataSource ds =
         new PooledDataSource(
             Thread.currentThread().getContextClassLoader(),
             jdbcDriver,
             jdbcUrl,
             dbUserName,
             dbPassword);
-    ((PooledDataSource) ds).setPoolTimeToWait(POOL_TIME_TO_WAIT);
-    ((PooledDataSource) ds)
-        .forceCloseAll(); // otherwise the MyBatis pool is not initialized correctly
+    ds.setPoolTimeToWait(POOL_TIME_TO_WAIT);
+    ds.forceCloseAll(); // otherwise the MyBatis pool is not initialized correctly
 
     return ds;
   }
@@ -203,19 +198,15 @@ public class AbstractAccTest {
       } else {
         LOGGER.warn("propertiesFile " + propertiesFileName + " is incomplete" + warningMessage);
         LOGGER.warn("Using default Datasource for Test");
-        ds = createDefaultDataSource();
       }
 
-    } catch (FileNotFoundException e) {
-      LOGGER.warn("createDataSourceFromProperties caught Exception " + e);
-      LOGGER.warn("Using default Datasource for Test");
-      ds = createDefaultDataSource();
     } catch (IOException e) {
       LOGGER.warn("createDataSourceFromProperties caught Exception " + e);
       LOGGER.warn("Using default Datasource for Test");
+    }
+    if (Objects.isNull(ds)) {
       ds = createDefaultDataSource();
     }
-
     return ds;
   }
 
