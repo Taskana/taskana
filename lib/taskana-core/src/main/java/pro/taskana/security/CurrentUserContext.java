@@ -5,13 +5,10 @@ import static pro.taskana.configuration.TaskanaEngineConfiguration.shouldUseLowe
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.Principal;
-import java.security.PrivilegedAction;
 import java.security.acl.Group;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Supplier;
 import javax.security.auth.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,33 +75,6 @@ public final class CurrentUserContext {
       accessIds.addAll(groupIds);
     }
     return accessIds;
-  }
-
-  /**
-   * This method is supposed to skip further permission checks if we are already in a secured
-   * environment. With great power comes great responsibility.
-   *
-   * @param supplier will be executed with admin privileges
-   * @param <T> defined with the supplier return value
-   * @return output from supplier
-   */
-  public static <T> T runAsAdmin(Supplier<T> supplier) {
-
-    Subject subject = Subject.getSubject(AccessController.getContext());
-    if (subject == null) {
-      // dont add authorisation if none is available.
-      return supplier.get();
-    }
-
-    Set<Principal> principalsCopy = new HashSet<>(subject.getPrincipals());
-    Set<Object> privateCredentialsCopy = new HashSet<>(subject.getPrivateCredentials());
-    Set<Object> publicCredentialsCopy = new HashSet<>(subject.getPublicCredentials());
-
-    principalsCopy.add(new GroupPrincipal("admin"));
-    Subject subject1 =
-        new Subject(true, principalsCopy, privateCredentialsCopy, publicCredentialsCopy);
-
-    return Subject.doAs(subject1, (PrivilegedAction<T>) supplier::get);
   }
 
   /**
