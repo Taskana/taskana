@@ -235,8 +235,8 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     }
 
     // register type handlers
-    configuration.getTypeHandlerRegistry().register(MapTypeHandler.class);
-    configuration.getTypeHandlerRegistry().register(Instant.class, InstantTypeHandler.class);
+    configuration.getTypeHandlerRegistry().register(new MapTypeHandler());
+    configuration.getTypeHandlerRegistry().register(Instant.class, new InstantTypeHandler());
     // add mappers
     configuration.addMapper(TaskMapper.class);
     configuration.addMapper(TaskMonitorMapper.class);
