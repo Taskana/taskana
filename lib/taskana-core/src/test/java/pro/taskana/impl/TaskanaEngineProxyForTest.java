@@ -21,6 +21,10 @@ public class TaskanaEngineProxyForTest {
     engine = (InternalTaskanaEngine) internal.get(taskanaEngine);
   }
 
+  public InternalTaskanaEngine getEngine() {
+    return engine;
+  }
+
   public SqlSession getSqlSession() {
     return engine.getSqlSession();
   }
