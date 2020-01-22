@@ -35,8 +35,8 @@ function main() {
     set -x
     eval "$REL/prepare_db.sh '$1'"
     # We can not use the fance '-f' maven option due to a bug in arquillian. See https://issues.jboss.org/browse/THORN-2049
-    (cd $REL/.. && mvn -q install -B -T 4C -am -Pcoverage -Dmaven.javadoc.skip -Dcheckstyle.skip)
-    
+    (cd $REL/.. && mvn -q install -B -T 4C -am -Pcoverage -Dcheckstyle.skip)
+    eval "$REL/verify_docs_jar.sh"
     # disabling sonarqube for PRs because it's not supported yet. See https://jira.sonarsource.com/browse/MMF-1371
     if [ -n "$2" ]; then
       #-Pcoverage to activate jacoco and test coverage reports
@@ -53,7 +53,7 @@ function main() {
     set -x
     eval "$REL/prepare_db.sh '$1'"
     ### INSTALL ###
-    mvn -q install -B -f $REL/.. -P postgres -am -T 4C -pl :taskana-rest-spring-example-wildfly -DskipTests -Dmaven.javadoc.skip -Dcheckstyle.skip
+    mvn -q install -B -f $REL/.. -P postgres -am -T 4C -pl :taskana-rest-spring-example-wildfly -Dasciidoctor.skip -DskipTests -Dmaven.javadoc.skip -Dcheckstyle.skip
 
     ### TEST ###
     mvn -q verify -B -f $REL/.. -Dmaven.javadoc.skip -Dcheckstyle.skip -pl :taskana-core
@@ -63,7 +63,7 @@ function main() {
   HISTORY)
     set -x
     ### INSTALL ###
-    mvn -q install -B -f $REL/.. -am -T 4C -pl :taskana-rest-spring -DskipTests -Dmaven.javadoc.skip -Dcheckstyle.skip
+    mvn -q install -B -f $REL/.. -am -T 4C -pl :taskana-rest-spring -Dasciidoctor.skip -DskipTests -Dmaven.javadoc.skip -Dcheckstyle.skip
 
     ### TEST ###
     mvn -q verify -B -f $REL/../history -Dmaven.javadoc.skip -Dcheckstyle.skip
