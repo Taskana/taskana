@@ -635,8 +635,8 @@ public class ClassificationQueryImpl implements ClassificationQuery {
   private ClassificationQuery addOrderCriteria(String columnName, SortDirection sortDirection) {
     String orderByDirection =
         " " + (sortDirection == null ? SortDirection.ASCENDING : sortDirection);
-    orderBy.add(columnName.toString() + orderByDirection);
-    orderColumns.add(columnName.toString());
+    orderBy.add(columnName + orderByDirection);
+    orderColumns.add(columnName);
     return this;
   }
 

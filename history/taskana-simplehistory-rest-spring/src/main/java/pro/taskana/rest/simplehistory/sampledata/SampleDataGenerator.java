@@ -49,7 +49,7 @@ public class SampleDataGenerator {
       runner.runScript(
           new BufferedReader(
               new InputStreamReader(
-                  this.getClass().getResourceAsStream(CLEAR), StandardCharsets.UTF_8)));
+                  SampleDataGenerator.class.getResourceAsStream(CLEAR), StandardCharsets.UTF_8)));
 
       runner.setStopOnError(true);
       runner.setLogWriter(logWriter);
@@ -58,7 +58,8 @@ public class SampleDataGenerator {
       runner.runScript(
           new BufferedReader(
               new InputStreamReader(
-                  this.getClass().getResourceAsStream(HISTORY_EVENT), StandardCharsets.UTF_8)));
+                  SampleDataGenerator.class.getResourceAsStream(HISTORY_EVENT),
+                  StandardCharsets.UTF_8)));
 
     } catch (Exception e) {
       LOGGER.error("caught Exception {}", e, e);

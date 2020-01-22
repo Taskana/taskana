@@ -31,7 +31,7 @@ public class DbWriter {
     ScriptRunner runner = null;
     try (Connection connection = dataSource.getConnection()) {
       runner = configScriptRunner(connection);
-      runner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(INSERTVALUES)));
+      runner.runScript(new InputStreamReader(DbWriter.class.getResourceAsStream(INSERTVALUES)));
     } finally {
       LOGGER.debug(outWriter.toString());
       if (!errorWriter.toString().trim().isEmpty()) {

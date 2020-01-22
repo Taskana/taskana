@@ -1,5 +1,7 @@
 package pro.taskana.security;
 
+import static pro.taskana.configuration.TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds;
+
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.Principal;
@@ -10,8 +12,6 @@ import java.util.Set;
 import javax.security.auth.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import pro.taskana.configuration.TaskanaEngineConfiguration;
 
 /**
  * Provides the context information about the current (calling) user. The context is gathered from
@@ -54,7 +54,7 @@ public final class CurrentUserContext {
       for (Principal group : groups) {
         String groupNameFound = group.getName();
         String groupNameReturned = groupNameFound;
-        if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds() && groupNameFound != null) {
+        if (shouldUseLowerCaseForAccessIds() && groupNameFound != null) {
           groupNameReturned = groupNameFound.toLowerCase();
         }
         LOGGER.trace(
@@ -102,7 +102,7 @@ public final class CurrentUserContext {
           LOGGER.debug("Returning the unique security name of first public credential: {}", o);
           String userIdFound = o.toString();
           String userIdUsed = userIdFound;
-          if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds() && userIdFound != null) {
+          if (shouldUseLowerCaseForAccessIds() && userIdFound != null) {
             userIdUsed = userIdFound.toLowerCase();
           }
           LOGGER.trace("Found User id {}. Returning User id {} ", userIdFound, userIdUsed);
@@ -144,7 +144,7 @@ public final class CurrentUserContext {
         if (!(principal instanceof Group)) {
           String userIdFound = principal.getName();
           String userIdUsed = userIdFound;
-          if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds() && userIdFound != null) {
+          if (shouldUseLowerCaseForAccessIds() && userIdFound != null) {
             userIdUsed = userIdFound.toLowerCase();
           }
           LOGGER.trace("Found User id {}. Returning User id {} ", userIdFound, userIdUsed);

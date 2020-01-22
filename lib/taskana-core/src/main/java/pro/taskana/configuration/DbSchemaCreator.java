@@ -57,7 +57,7 @@ public class DbSchemaCreator {
       if (!isSchemaPreexisting(connection)) {
         String scriptPath =
             selectDbScriptFileName(connection.getMetaData().getDatabaseProductName());
-        InputStream resourceAsStream = this.getClass().getResourceAsStream(scriptPath);
+        InputStream resourceAsStream = DbSchemaCreator.class.getResourceAsStream(scriptPath);
         BufferedReader reader =
             new BufferedReader(new InputStreamReader(resourceAsStream, StandardCharsets.UTF_8));
         runner.runScript(getSqlSchemaNameParsed(reader));
@@ -135,7 +135,7 @@ public class DbSchemaCreator {
     try {
       String scriptPath =
           selectDbSchemaDetectionScript(connection.getMetaData().getDatabaseProductName());
-      InputStream resourceAsStream = this.getClass().getResourceAsStream(scriptPath);
+      InputStream resourceAsStream = DbSchemaCreator.class.getResourceAsStream(scriptPath);
       BufferedReader reader =
           new BufferedReader(new InputStreamReader(resourceAsStream, StandardCharsets.UTF_8));
       runner.runScript(getSqlSchemaNameParsed(reader));

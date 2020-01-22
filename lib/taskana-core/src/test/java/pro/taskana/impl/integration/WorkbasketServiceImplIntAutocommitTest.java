@@ -4,17 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.sql.SQLException;
-import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.sql.DataSource;
-import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +17,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.TaskanaEngine;
 import pro.taskana.TaskanaEngine.ConnectionManagementMode;
-import pro.taskana.TimeInterval;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketService;
@@ -36,11 +29,9 @@ import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.impl.TaskanaEngineProxyForTest;
 import pro.taskana.impl.WorkbasketImpl;
 import pro.taskana.impl.configuration.TaskanaEngineTestConfiguration;
 import pro.taskana.impl.util.IdGenerator;
-import pro.taskana.mappings.WorkbasketMapper;
 import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
@@ -208,35 +199,6 @@ class WorkbasketServiceImplIntAutocommitTest {
     }
   }
 
-  private void updateModifiedTimestamps(
-      Workbasket basket2, Workbasket basket3, Workbasket basket4, Workbasket basket1)
-      throws NoSuchFieldException, IllegalAccessException {
-    // created and modified timestamps are set by WorkbasketServiceImpl to 'now' when the workbasket
-    // is created
-    // in order to create timestamps distict from the current time, we must use the mapper directly
-    // to bypass
-    // WorkbasketServiceImpl
-    TaskanaEngineProxyForTest engineProxy = new TaskanaEngineProxyForTest(taskanaEngine);
-    SqlSession session = engineProxy.getSqlSession();
-    WorkbasketMapper mapper = session.getMapper(WorkbasketMapper.class);
-
-    WorkbasketImpl wb1 = (WorkbasketImpl) basket1;
-    final WorkbasketImpl wb2 = (WorkbasketImpl) basket2;
-    final WorkbasketImpl wb3 = (WorkbasketImpl) basket3;
-    final WorkbasketImpl wb4 = (WorkbasketImpl) basket4;
-
-    engineProxy.openConnection();
-    wb1.setModified(now.minus(Duration.ofDays(10L)));
-    mapper.update(wb1);
-    wb2.setModified(now.minus(Duration.ofDays(15L)));
-    mapper.update(wb2);
-    wb3.setModified(now.minus(Duration.ofDays(20L)));
-    mapper.update(wb3);
-    wb4.setModified(now.minus(Duration.ofDays(30L)));
-    mapper.update(wb4);
-    engineProxy.returnConnection();
-  }
-
   private void createWorkbasketWithSecurity(
       Workbasket wb,
       String accessId,
@@ -262,13 +224,5 @@ class WorkbasketServiceImplIntAutocommitTest {
     wb.setDescription("Description of a Workbasket...");
     wb.setType(type);
     return wb;
-  }
-
-  private TimeInterval today() {
-    Instant begin =
-        LocalDateTime.of(LocalDate.now(), LocalTime.MIN).atZone(ZoneId.systemDefault()).toInstant();
-    Instant end =
-        LocalDateTime.of(LocalDate.now(), LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant();
-    return new TimeInterval(begin, end);
   }
 }
