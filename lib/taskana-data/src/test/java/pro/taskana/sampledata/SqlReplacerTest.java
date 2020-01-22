@@ -4,7 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static pro.taskana.sampledata.SqlReplacer.DATE_TIME_FORMATTER;
 import static pro.taskana.sampledata.SqlReplacer.RELATIVE_DATE_PATTERN;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.regex.Matcher;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Assertions;
@@ -15,7 +15,7 @@ class SqlReplacerTest {
 
   @Test
   void replaceRelativeTimeFunctionSameDate() {
-    LocalDateTime now = LocalDateTime.now();
+    ZonedDateTime now = ZonedDateTime.now();
     String dateFormatted = now.format(DATE_TIME_FORMATTER);
     String sqlStringReplaced = SqlReplacer.replaceDatePlaceholder(now, "... RELATIVE_DATE(0) ...");
     assertThat(sqlStringReplaced, CoreMatchers.containsString(dateFormatted));
@@ -45,7 +45,7 @@ class SqlReplacerTest {
 
   @Test
   void replaceRelativeTimeFunctionPosDate() {
-    LocalDateTime now = LocalDateTime.now();
+    ZonedDateTime now = ZonedDateTime.now();
     String dateFormatted = now.plusDays(5).format(DATE_TIME_FORMATTER);
     String sqlStringReplaced = SqlReplacer.replaceDatePlaceholder(now, "... RELATIVE_DATE(5) ...");
     assertThat(sqlStringReplaced, CoreMatchers.containsString(dateFormatted));
@@ -53,7 +53,7 @@ class SqlReplacerTest {
 
   @Test
   void replaceRelativeTimeFunctionNegDate() {
-    LocalDateTime now = LocalDateTime.now();
+    ZonedDateTime now = ZonedDateTime.now();
     String dateFormatted = now.plusDays(-10).format(DATE_TIME_FORMATTER);
     String sqlStringReplaced =
         SqlReplacer.replaceDatePlaceholder(now, "... RELATIVE_DATE(-10) ...");

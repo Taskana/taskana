@@ -3,7 +3,7 @@ package pro.taskana.sampledata;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -20,7 +20,7 @@ final class SqlReplacer {
 
   private SqlReplacer() {}
 
-  static String getScriptAsSql(String dbProductName, LocalDateTime now, String scriptPath) {
+  static String getScriptAsSql(String dbProductName, ZonedDateTime now, String scriptPath) {
     return parseAndReplace(getScriptBufferedStream(scriptPath), now, dbProductName);
   }
 
@@ -45,7 +45,7 @@ final class SqlReplacer {
    * @param sql sql statement which may contain the above declared custom function.
    * @return sql statement with the given function resolved, if the 'sql' parameter contained any.
    */
-  static String replaceDatePlaceholder(LocalDateTime now, String sql) {
+  static String replaceDatePlaceholder(ZonedDateTime now, String sql) {
     Matcher m = RELATIVE_DATE_PATTERN.matcher(sql);
     StringBuffer sb = new StringBuffer(sql.length());
     while (m.find()) {
@@ -74,7 +74,7 @@ final class SqlReplacer {
   }
 
   private static String parseAndReplace(
-      BufferedReader bufferedReader, LocalDateTime now, String dbProductname) {
+      BufferedReader bufferedReader, ZonedDateTime now, String dbProductname) {
     boolean isDb2 = isDb2(dbProductname);
     String sql = bufferedReader.lines().collect(Collectors.joining(System.lineSeparator()));
     if (isDb2) {
@@ -83,7 +83,7 @@ final class SqlReplacer {
     return replaceDatePlaceholder(now, sql);
   }
 
-  private static String formatToSqlDate(LocalDateTime now, long days) {
+  private static String formatToSqlDate(ZonedDateTime now, long days) {
     return "'" + now.plusDays(days).format(DATE_TIME_FORMATTER) + "'";
   }
 }
