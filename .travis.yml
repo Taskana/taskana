@@ -43,6 +43,7 @@ env:
     - DB=POSTGRES_10_4
 
 install: skip
+# include SONAR_PROJECT_KEY as a second parameter if this is not a pull request
 script: ci/test.sh "$DB" "$([ "false" = "$TRAVIS_PULL_REQUEST" ] && echo "$SONAR_PROJECT_KEY")"
 before_cache: rm -rf "$HOME/.m2/repository/pro/taskana"
 

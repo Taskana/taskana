@@ -180,6 +180,12 @@
 								<snippets>${basedir}/target/generated-snippets</snippets>
 								<docinfo>shared</docinfo>
 							</attributes>
+							<logHandler>
+								<outputToConsole>false</outputToConsole>
+								<failIf>
+									<severity>ERROR</severity>
+								</failIf>
+							</logHandler>
 						</configuration>
 					</execution>
 				</executions>

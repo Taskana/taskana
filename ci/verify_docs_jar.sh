@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e #fail fast
 
+#check that first dir has same amount of files as second dir
 function verifyDocs() {
   test -d "$1"
   test $(find "$1" | wc -l) -eq $(grep "$2" <<<"$JAR_CONTENT" | wc -l)
