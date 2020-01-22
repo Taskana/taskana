@@ -1,5 +1,8 @@
 package pro.taskana.impl;
 
+import java.security.AccessController;
+import java.security.Principal;
+import java.security.PrivilegedAction;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.Instant;
@@ -10,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
+import javax.security.auth.Subject;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
@@ -35,6 +39,7 @@ import pro.taskana.exceptions.AutocommitFailedException;
 import pro.taskana.exceptions.ConnectionNotSetException;
 import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.SystemException;
+import pro.taskana.exceptions.TaskanaRuntimeException;
 import pro.taskana.history.HistoryEventProducer;
 import pro.taskana.impl.persistence.InstantTypeHandler;
 import pro.taskana.impl.persistence.MapTypeHandler;
@@ -50,6 +55,7 @@ import pro.taskana.mappings.TaskMonitorMapper;
 import pro.taskana.mappings.WorkbasketAccessMapper;
 import pro.taskana.mappings.WorkbasketMapper;
 import pro.taskana.security.CurrentUserContext;
+import pro.taskana.security.GroupPrincipal;
 import pro.taskana.taskrouting.TaskRoutingManager;
 
 /** This is the implementation of TaskanaEngine. */
@@ -324,6 +330,31 @@ public class TaskanaEngineImpl implements TaskanaEngine {
       if (mode != ConnectionManagementMode.EXPLICIT) {
         sessionStack.pushSessionToStack(sessionManager);
       }
+    }
+
+    @Override
+    public <T> T runAsAdmin(Supplier<T> supplier) {
+
+      Subject subject = Subject.getSubject(AccessController.getContext());
+      if (subject == null) {
+        // dont add authorisation if none is available.
+        return supplier.get();
+      }
+
+      Set<Principal> principalsCopy = new HashSet<>(subject.getPrincipals());
+      Set<Object> privateCredentialsCopy = new HashSet<>(subject.getPrivateCredentials());
+      Set<Object> publicCredentialsCopy = new HashSet<>(subject.getPublicCredentials());
+
+      String adminName =
+          this.getEngine().getConfiguration().getRoleMap().get(TaskanaRole.ADMIN).stream()
+              .findFirst()
+              .orElseThrow(() -> new TaskanaRuntimeException("There is no admin configured"));
+
+      principalsCopy.add(new GroupPrincipal(adminName));
+      Subject subject1 =
+          new Subject(true, principalsCopy, privateCredentialsCopy, publicCredentialsCopy);
+
+      return Subject.doAs(subject1, (PrivilegedAction<T>) supplier::get);
     }
 
     @Override

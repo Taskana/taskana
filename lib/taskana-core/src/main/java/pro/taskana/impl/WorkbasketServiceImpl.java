@@ -1,7 +1,5 @@
 package pro.taskana.impl;
 
-import static pro.taskana.security.CurrentUserContext.runAsAdmin;
-
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -651,56 +649,76 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     LOGGER.debug("entry to deleteWorkbasket(workbasketId = {})", workbasketId);
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
 
+    validateWorkbasketId(workbasketId);
+
     try {
       taskanaEngine.openConnection();
-      if (workbasketId == null || workbasketId.isEmpty()) {
-        throw new InvalidArgumentException(
-            "The WorkbasketId can´t be NULL or EMPTY for deleteWorkbasket()");
+
+      try {
+        this.getWorkbasket(workbasketId);
+      } catch (WorkbasketNotFoundException ex) {
+        LOGGER.debug("Workbasket with workbasketId = {} is already deleted?", workbasketId);
+        throw ex;
       }
 
-      // check if the workbasket does exist and is empty (Task)
-      this.getWorkbasket(workbasketId);
+      long countTasksNotCompletedInWorkbasket =
+          taskanaEngine.runAsAdmin(() -> getCountTasksNotCompletedByWorkbasketId(workbasketId));
 
-      long numTasksNotCompletedInWorkbasket =
-          runAsAdmin(
-              () ->
-                  taskanaEngine
-                      .getEngine()
-                      .getTaskService()
-                      .createTaskQuery()
-                      .workbasketIdIn(workbasketId)
-                      .stateNotIn(TaskState.COMPLETED)
-                      .count());
-
-      if (numTasksNotCompletedInWorkbasket > 0) {
-        throw new WorkbasketInUseException(
-            "Workbasket "
-                + workbasketId
-                + " contains non-completed tasks and can´t be marked for deletion.");
+      if (countTasksNotCompletedInWorkbasket > 0) {
+        String errorMessage =
+            String.format(
+                "Workbasket %s contains %s non-completed tasks and can´t be marked for deletion.",
+                workbasketId, countTasksNotCompletedInWorkbasket);
+        throw new WorkbasketInUseException(errorMessage);
       }
 
-      long numTasksInWorkbasket =
-          runAsAdmin(
-              () ->
-                  taskanaEngine
-                      .getEngine()
-                      .getTaskService()
-                      .createTaskQuery()
-                      .workbasketIdIn(workbasketId)
-                      .count());
+      long countTasksInWorkbasket =
+          taskanaEngine.runAsAdmin(() -> getCountTasksByWorkbasketId(workbasketId));
 
-      if (numTasksInWorkbasket == 0) {
+      boolean canBeDeletedNow = countTasksInWorkbasket == 0;
+
+      if (canBeDeletedNow) {
         workbasketMapper.delete(workbasketId);
         deleteReferencesToWorkbasket(workbasketId);
-        return true;
       } else {
         markWorkbasketForDeletion(workbasketId);
-        return false;
       }
+      return canBeDeletedNow;
     } finally {
       taskanaEngine.returnConnection();
       LOGGER.debug("exit from deleteWorkbasket(workbasketId = {})", workbasketId);
     }
+  }
+
+  private void validateWorkbasketId(String workbasketId) throws InvalidArgumentException {
+    if (workbasketId == null) {
+      throw new InvalidArgumentException(
+          "The WorkbasketId can´t be NULL");
+    }
+
+    if (workbasketId.isEmpty()) {
+      throw new InvalidArgumentException(
+          "The WorkbasketId can´t be EMPTY for deleteWorkbasket()");
+    }
+  }
+
+  private long getCountTasksByWorkbasketId(String workbasketId) {
+    return taskanaEngine
+        .getEngine()
+        .getTaskService()
+        .createTaskQuery()
+        .workbasketIdIn(workbasketId)
+        .count();
+  }
+
+  private long getCountTasksNotCompletedByWorkbasketId(String workbasketId) {
+    return taskanaEngine
+        .getEngine()
+        .getTaskService()
+        .createTaskQuery()
+        .workbasketIdIn(workbasketId)
+        .stateNotIn(TaskState.COMPLETED)
+        .count();
   }
 
   public BulkOperationResults<String, TaskanaException> deleteWorkbaskets(
@@ -933,11 +951,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
     try {
       taskanaEngine.openConnection();
-
-      if (workbasketId == null || workbasketId.isEmpty()) {
-        throw new InvalidArgumentException(
-            "The WorkbasketId can´t be NULL or EMPTY for markWorkbasketForDeletion()");
-      }
+      validateWorkbasketId(workbasketId);
       WorkbasketImpl workbasket = workbasketMapper.findById(workbasketId);
       workbasket.setMarkedForDeletion(true);
       workbasketMapper.update(workbasket);

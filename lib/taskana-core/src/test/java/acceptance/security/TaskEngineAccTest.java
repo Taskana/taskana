@@ -10,7 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.TaskanaRole;
 import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.security.CurrentUserContext;
+import pro.taskana.impl.TaskanaEngineProxyForTest;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
@@ -35,13 +35,17 @@ class TaskEngineAccTest extends AbstractAccTest {
       userName = "user_1_1",
       groupNames = {"businessadmin"})
   @Test
-  void testRunAsAdminIsOnlyTemporary() {
+  void testRunAsAdminIsOnlyTemporary() throws NoSuchFieldException, IllegalAccessException {
     assertTrue(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN));
     assertFalse(taskanaEngine.isUserInRole(TaskanaRole.ADMIN));
-    CurrentUserContext.runAsAdmin(() -> {
-      assertTrue(taskanaEngine.isUserInRole(TaskanaRole.ADMIN));
-      return true;
-    });
+
+    new TaskanaEngineProxyForTest(taskanaEngine)
+        .getEngine()
+        .runAsAdmin(
+            () -> {
+              assertTrue(taskanaEngine.isUserInRole(TaskanaRole.ADMIN));
+              return true;
+            });
     assertFalse(taskanaEngine.isUserInRole(TaskanaRole.ADMIN));
   }
 
