@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -222,7 +223,6 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
     final Instant before = Instant.now();
     Classification classification =
         classificationService.getClassification("CLI:100000000000000000000000000000000003");
-    Instant createdBefore = classification.getCreated();
     final Instant modifiedBefore = classification.getModified();
     classification.setPriority(1000);
     classification.setServiceLevel("P15D");
@@ -240,7 +240,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         classificationService.getClassification("CLI:100000000000000000000000000000000003");
     assertNotNull(updatedClassification);
 
-    assertTrue(!modifiedBefore.isAfter(updatedClassification.getModified()));
+    assertFalse(modifiedBefore.isAfter(updatedClassification.getModified()));
     // TODO - resume old behaviour after attachment query is possible.
     TaskService taskService = taskanaEngine.getTaskService();
 

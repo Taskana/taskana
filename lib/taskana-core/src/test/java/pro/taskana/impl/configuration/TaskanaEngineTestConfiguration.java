@@ -21,10 +21,21 @@ public final class TaskanaEngineTestConfiguration {
   private static final Logger LOGGER =
       LoggerFactory.getLogger(TaskanaEngineTestConfiguration.class);
   private static final int POOL_TIME_TO_WAIT = 50;
-  private static DataSource dataSource = null;
+  private static DataSource dataSource;
   private static String schemaName = null;
 
   private TaskanaEngineTestConfiguration() {}
+
+  static {
+    String userHomeDirectroy = System.getProperty("user.home");
+    String propertiesFileName = userHomeDirectroy + "/taskanaUnitTest.properties";
+    File f = new File(propertiesFileName);
+    if (f.exists() && !f.isDirectory()) {
+      dataSource = createDataSourceFromProperties(propertiesFileName);
+    } else {
+      dataSource = createDefaultDataSource();
+    }
+  }
 
   /**
    * returns the Datasource used for Junit test. If the file {user.home}/taskanaUnitTest.properties
@@ -38,16 +49,6 @@ public final class TaskanaEngineTestConfiguration {
    * @return dataSource for unit test
    */
   public static DataSource getDataSource() {
-    if (dataSource == null) {
-      String userHomeDirectroy = System.getProperty("user.home");
-      String propertiesFileName = userHomeDirectroy + "/taskanaUnitTest.properties";
-      File f = new File(propertiesFileName);
-      if (f.exists() && !f.isDirectory()) {
-        dataSource = createDataSourceFromProperties(propertiesFileName);
-      } else {
-        dataSource = createDefaultDataSource();
-      }
-    }
     return dataSource;
   }
 

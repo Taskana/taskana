@@ -1,18 +1,19 @@
 package pro.taskana.rest;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.Locale;
 import javax.sql.DataSource;
-import org.junit.Assert;
+import org.junit.Assume;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.configuration.DB;
 import pro.taskana.configuration.SpringTaskanaEngineConfiguration;
-import pro.taskana.exceptions.SystemException;
 import pro.taskana.sampledata.SampleDataGenerator;
 
 /** Test that the schema name can be customized. */
@@ -24,51 +25,61 @@ class TestSchemaNameCustomizable {
 
   @Autowired private DataSource dataSource;
 
-  void resetDb() {
+  void resetDb() throws SQLException {
     SampleDataGenerator sampleDataGenerator;
-    try {
-      if (DB.POSTGRESS.dbProductname.equals(
-          dataSource.getConnection().getMetaData().getDatabaseProductName())) {
-        isPostgres = true;
-        schemaName = schemaName.toLowerCase();
+    try (Connection connection = dataSource.getConnection()) {
+      String databaseProductName = connection.getMetaData().getDatabaseProductName();
+      isPostgres = DB.POSTGRESS.dbProductname.equals(databaseProductName);
+
+      if (isPostgres) {
+        schemaName = schemaName.toLowerCase(Locale.ENGLISH);
       }
-      new SpringTaskanaEngineConfiguration(dataSource, true, true, schemaName);
-      sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
-      sampleDataGenerator.generateSampleData();
-    } catch (SQLException e) {
-      throw new SystemException("tried to reset DB and caught Exception " + e, e);
+    }
+    new SpringTaskanaEngineConfiguration(dataSource, true, true, schemaName);
+    sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
+    sampleDataGenerator.generateSampleData();
+  }
+
+  @Test
+  void checkCustomSchemaNameIsDefined_Postgres() throws SQLException {
+    resetDb();
+    Assume.assumeTrue("Test only executed with Postgres database", isPostgres);
+    try (Connection connection = dataSource.getConnection()) {
+
+      try (PreparedStatement preparedStatement =
+          connection.prepareStatement(
+              "SELECT tablename FROM pg_catalog.pg_tables where schemaname = ?")) {
+        preparedStatement.setString(1, schemaName);
+        ResultSet rs = preparedStatement.executeQuery();
+
+        boolean tablefound = false;
+        while (rs.next() && !tablefound) {
+          String tableName = rs.getString("tablename");
+          tablefound = tableName.equals("workbasket");
+        }
+        Assertions.assertTrue(tablefound, "Table workbasket should be there ...");
+      }
     }
   }
 
   @Test
-  void chekCustomSchemaNameIsDefined() {
+  void checkCustomSchemaNameIsDefined_OtherDb() throws SQLException {
     resetDb();
-    ResultSet rs;
+    Assume.assumeFalse("Test only executed if NOT Postgres", isPostgres);
     try (Connection connection = dataSource.getConnection()) {
-      Statement stmt = connection.createStatement();
-      if (isPostgres) {
-        rs =
-            stmt.executeQuery(
-                "SELECT * FROM pg_catalog.pg_tables where schemaname = '"
-                    + schemaName.toLowerCase()
-                    + "'");
 
-      } else {
-        rs =
-            stmt.executeQuery(
-                "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '"
-                    + schemaName
-                    + "'");
-      }
-      while (rs.next()) {
-        String tableName = rs.getString(isPostgres ? "tablename" : "TABLE_NAME");
-        if (tableName.equals(isPostgres ? "workbasket" : "WORKBASKET")) {
-          Assert.assertEquals(tableName, isPostgres ? "workbasket" : "WORKBASKET");
+      try (PreparedStatement preparedStatement =
+          connection.prepareStatement(
+              "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = ?")) {
+        preparedStatement.setString(1, schemaName);
+        ResultSet rs = preparedStatement.executeQuery();
+        boolean tablefound = false;
+        while (rs.next() && !tablefound) {
+          String tableName = rs.getString("TABLE_NAME");
+          tablefound = tableName.equals("WORKBASKET");
         }
+        Assertions.assertTrue(tablefound, "Table WORKBASKET should be there ...");
       }
-
-    } catch (SQLException e) {
-      e.printStackTrace();
     }
   }
 }

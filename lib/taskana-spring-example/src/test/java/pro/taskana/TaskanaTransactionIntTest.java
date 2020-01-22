@@ -146,21 +146,22 @@ class TaskanaTransactionIntTest {
           DomainNotFoundException, InvalidWorkbasketException, WorkbasketAlreadyExistException {
 
     final TaskanaEngineImpl taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
-    Connection connection = dataSource.getConnection();
+    try (Connection connection = dataSource.getConnection()) {
 
-    assertNotEquals(connection.getSchema(), "PUBLIC");
-    jdbcTemplate.execute("INSERT INTO CUSTOMDB.TEST VALUES ('1', 'test')");
-    jdbcTemplate.execute("INSERT INTO CUSTOMDB.TEST VALUES ('2', 'test2')");
-    int result = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM CUSTOMDB.TEST", Integer.class);
-    assertEquals(2, result);
-    Workbasket wbCreated =
-        taskanaEngine
-            .getWorkbasketService()
-            .createWorkbasket(createWorkBasket("key1", "workbasket1"));
-    Workbasket wb = taskanaEngineImpl.getWorkbasketService().getWorkbasket(wbCreated.getId());
-    assertNotNull(wb);
-    result = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM CUSTOMDB.TEST", Integer.class);
-    assertEquals(2, result);
+      assertNotEquals(connection.getSchema(), "PUBLIC");
+      jdbcTemplate.execute("INSERT INTO CUSTOMDB.TEST VALUES ('1', 'test')");
+      jdbcTemplate.execute("INSERT INTO CUSTOMDB.TEST VALUES ('2', 'test2')");
+      int result = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM CUSTOMDB.TEST", Integer.class);
+      assertEquals(2, result);
+      Workbasket wbCreated =
+          taskanaEngine
+              .getWorkbasketService()
+              .createWorkbasket(createWorkBasket("key1", "workbasket1"));
+      Workbasket wb = taskanaEngineImpl.getWorkbasketService().getWorkbasket(wbCreated.getId());
+      assertNotNull(wb);
+      result = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM CUSTOMDB.TEST", Integer.class);
+      assertEquals(2, result);
+    }
   }
 
   @Test

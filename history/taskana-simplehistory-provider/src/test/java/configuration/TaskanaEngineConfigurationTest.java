@@ -32,11 +32,11 @@ public class TaskanaEngineConfigurationTest extends AbstractAccTest {
   @Test
   public void testCreateTaskanaHistoryEventWithNonDefaultSchemaName() throws SQLException {
     resetDb("SOMECUSTOMSCHEMANAME");
-    long count = historyService.createHistoryQuery().workbasketKeyIn("wbKey1").count();
+    long count = getHistoryService().createHistoryQuery().workbasketKeyIn("wbKey1").count();
     assertEquals(0, count);
-    historyService.create(
+    getHistoryService().create(
         AbstractAccTest.createHistoryEvent("wbKey1", "taskId1", "type1", "Some comment", "wbKey2"));
-    count = historyService.createHistoryQuery().workbasketKeyIn("wbKey1").count();
+    count = getHistoryService().createHistoryQuery().workbasketKeyIn("wbKey1").count();
     assertEquals(1, count);
   }
 }

@@ -44,12 +44,12 @@ public class DbSchemaCreator {
       runner.setStopOnError(true);
       runner.setLogWriter(logWriter);
       runner.setErrorLogWriter(errorLogWriter);
-      
-      InputStream resourceAsStream = this.getClass().getResourceAsStream(DB_SCHEMA);
+
+      InputStream resourceAsStream = DbSchemaCreator.class.getResourceAsStream(DB_SCHEMA);
       BufferedReader reader =
           new BufferedReader(new InputStreamReader(resourceAsStream, StandardCharsets.UTF_8));
       runner.runScript(getSqlWithSchemaNameParsed(reader));
-    } 
+    }
     LOGGER.debug(outWriter.toString());
     if (!errorWriter.toString().trim().isEmpty()) {
       LOGGER.error(errorWriter.toString());
