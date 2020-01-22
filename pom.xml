@@ -303,6 +303,11 @@
 				<version>${version.maven.surefire}</version>
 				<configuration>
 					<argLine>${argLine}</argLine>
+					<!-- Required for generation of REST documentation -->
+					<includes>
+						<include>**/*Test.java</include>
+						<include>**/*Documentation.java</include>
+					</includes>
 				</configuration>
 			</plugin>
 			<plugin>
