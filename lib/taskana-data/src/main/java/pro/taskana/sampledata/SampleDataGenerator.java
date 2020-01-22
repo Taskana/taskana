@@ -7,7 +7,9 @@ import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
@@ -33,7 +35,7 @@ public class SampleDataGenerator {
   private static final String CACHED_DROPDB = "DROPDB";
   private static HashMap<String, List<String>> cachedScripts = new HashMap<>();
   private final DataSource dataSource;
-  private final LocalDateTime now;
+  private final ZonedDateTime now;
   /**
    * This value cannot be automatically obtained by connection.getSchema(), because setting not yet
    * existing schema will result into an SQL Exception.
@@ -41,10 +43,10 @@ public class SampleDataGenerator {
   private final String schema;
 
   public SampleDataGenerator(DataSource dataSource, String schema) {
-    this(dataSource, schema, LocalDateTime.now());
+    this(dataSource, schema, Instant.now().atZone(ZoneId.of("UTC")));
   }
 
-  public SampleDataGenerator(DataSource dataSource, String schema, LocalDateTime now) {
+  public SampleDataGenerator(DataSource dataSource, String schema, ZonedDateTime now) {
     this.dataSource = dataSource;
     this.schema = schema;
     this.now = now;
