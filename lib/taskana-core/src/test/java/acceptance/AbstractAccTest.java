@@ -108,13 +108,13 @@ public abstract class AbstractAccTest {
 
   protected TimeInterval todaysInterval() {
     Instant begin =
-        LocalDateTime.of(LocalDate.now(), LocalTime.MIN).atZone(ZoneId.systemDefault()).toInstant();
+        LocalDateTime.of(LocalDate.now(), LocalTime.MIN).atZone(ZoneId.of("UTC")).toInstant();
     Instant end =
-        LocalDateTime.of(LocalDate.now(), LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant();
+        LocalDateTime.of(LocalDate.now(), LocalTime.MAX).atZone(ZoneId.of("UTC")).toInstant();
     return new TimeInterval(begin, end);
   }
 
   protected Instant getInstant(String datetime) {
-    return LocalDateTime.parse(datetime).atZone(ZoneId.systemDefault()).toInstant();
+    return LocalDateTime.parse(datetime).atZone(ZoneId.of("UTC")).toInstant();
   }
 }
