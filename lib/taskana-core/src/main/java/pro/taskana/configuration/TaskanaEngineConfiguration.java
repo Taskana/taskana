@@ -41,7 +41,7 @@ import pro.taskana.impl.util.LoggerUtils;
 public class TaskanaEngineConfiguration {
 
   protected static final String TASKANA_SCHEMA_VERSION =
-      "1.1.5"; // must match the VERSION value in table
+      "1.2.1"; // must match the VERSION value in table
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineConfiguration.class);
   private static final String USER_NAME = "sa";
   private static final String USER_PASSWORD = "sa";
