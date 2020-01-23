@@ -16,6 +16,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,6 +37,7 @@ import org.springframework.web.client.RestTemplate;
 
 import pro.taskana.RestHelper;
 import pro.taskana.TaskanaSpringBootTest;
+import pro.taskana.impl.WorkbasketAccessItemImpl;
 import pro.taskana.rest.resource.WorkbasketDefinitionResource;
 import pro.taskana.sampledata.SampleDataGenerator;
 
@@ -155,10 +157,32 @@ class WorkbasketDefinitionControllerIntTest {
     ObjectMapper objMapper = new ObjectMapper();
     WorkbasketDefinitionResource wbDef = response.getBody().get(0);
     list.add(objMapper.writeValueAsString(wbDef));
+    int i = 1;
+    for (WorkbasketAccessItemImpl wbai : wbDef.getAuthorizations()) {
+      wbai.setAccessId("user_" + i++);
+    }
     wbDef.getWorkbasket().setKey("new Key for this WB");
     list.add(objMapper.writeValueAsString(wbDef));
     ResponseEntity<Void> responseImport = importRequest(list);
     assertEquals(HttpStatus.NO_CONTENT, responseImport.getStatusCode());
+  }
+
+  @Test
+  void testErrorWhenImportWithSameAccessIdAndWorkbasket() throws IOException {
+    ResponseEntity<List<WorkbasketDefinitionResource>> response =
+        template.exchange(
+            restHelper.toUrl(Mapping.URL_WORKBASKETDEFIITIONS) + "?domain=DOMAIN_A",
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
+            new ParameterizedTypeReference<List<WorkbasketDefinitionResource>>() {});
+
+    List<String> list = new ArrayList<>();
+    ObjectMapper objMapper = new ObjectMapper();
+    WorkbasketDefinitionResource wbDef = response.getBody().get(0);
+    list.add(objMapper.writeValueAsString(wbDef));
+    wbDef.getWorkbasket().setKey("new Key for this WB");
+    list.add(objMapper.writeValueAsString(wbDef));
+    Assertions.assertThrows(HttpClientErrorException.class, () -> importRequest(list));
   }
 
   private ResponseEntity<Void> importRequest(List<String> clList) throws IOException {

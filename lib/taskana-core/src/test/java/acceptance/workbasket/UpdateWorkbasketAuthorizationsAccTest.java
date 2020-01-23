@@ -274,7 +274,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     }
     List<WorkbasketAccessItem> listEqualToOriginal =
         new ArrayList<>(workbasketService.getWorkbasketAccessItems(wbId));
-    
+
     // with DB2 V 11, the lists are sorted differently...
     assertEquals(
         new HashSet<WorkbasketAccessItem>(originalList),
