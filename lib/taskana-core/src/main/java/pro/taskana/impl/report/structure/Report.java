@@ -11,7 +11,7 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.impl.report.row.SingleRow;
 
 /**
- * A Report represents a an abstract table that consists of {@link Row}s and a list of
+ * A Report represents an abstract table that consists of {@link Row}s and a list of
  * &lt;ColumnHeader&gt;s. Since a report does not specify &lt;Item&gt; and &lt;ColumnHeader&gt; it
  * does not contain functional logic. Due to readability implicit definition of functional logic is
  * prevented and thus prevent initialization of an abstract Report. In order to create a specific

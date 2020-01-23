@@ -71,66 +71,7 @@ public class WildflyWebSecurityConfig extends WebSecurityConfig {
   @Bean
   public AuthenticationUserDetailsService<PreAuthenticatedAuthenticationToken>
       authenticationUserDetailsService() {
-    return new AuthenticationUserDetailsService<PreAuthenticatedAuthenticationToken>() {
-
-      @Override
-      public UserDetails loadUserDetails(PreAuthenticatedAuthenticationToken token)
-          throws UsernameNotFoundException {
-        return new UserDetails() {
-
-          private static final long serialVersionUID = 1L;
-
-          @Override
-          public Collection<? extends GrantedAuthority> getAuthorities() {
-            List<GrantedAuthority> authorities = new ArrayList<>();
-            SecurityIdentity securityIdentity = getSecurityIdentity();
-            if (securityIdentity != null) {
-              Roles roles = securityIdentity.getRoles();
-              roles.forEach(role -> authorities.add(new SimpleGrantedAuthority(role)));
-            }
-            return authorities;
-          }
-
-          @Override
-          public String getPassword() {
-            return (String) token.getCredentials();
-          }
-
-          @Override
-          public String getUsername() {
-            return token.getName();
-          }
-
-          @Override
-          public boolean isAccountNonExpired() {
-            return true;
-          }
-
-          @Override
-          public boolean isAccountNonLocked() {
-            return true;
-          }
-
-          @Override
-          public boolean isCredentialsNonExpired() {
-            return true;
-          }
-
-          @Override
-          public boolean isEnabled() {
-            return true;
-          }
-
-          private SecurityIdentity getSecurityIdentity() {
-            SecurityDomain current = SecurityDomain.getCurrent();
-            if (current != null) {
-              return current.getCurrentSecurityIdentity();
-            }
-            return null;
-          }
-        };
-      }
-    };
+    return new PreAuthenticatedAuthenticationTokenAuthenticationUserDetailsService();
   }
 
   @Override
@@ -189,5 +130,74 @@ public class WildflyWebSecurityConfig extends WebSecurityConfig {
         .logoutSuccessUrl("/login?logout")
         .deleteCookies("JSESSIONID")
         .permitAll();
+  }
+
+  private static class PreAuthenticatedAuthenticationTokenAuthenticationUserDetailsService
+      implements AuthenticationUserDetailsService<PreAuthenticatedAuthenticationToken> {
+
+    @Override
+    public UserDetails loadUserDetails(PreAuthenticatedAuthenticationToken token)
+        throws UsernameNotFoundException {
+      return new MyUserDetails(token);
+    }
+
+    private static class MyUserDetails implements UserDetails {
+
+      private static final long serialVersionUID = 1L;
+      private final PreAuthenticatedAuthenticationToken token;
+
+      public MyUserDetails(PreAuthenticatedAuthenticationToken token) {
+        this.token = token;
+      }
+
+      @Override
+      public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        SecurityIdentity securityIdentity = getSecurityIdentity();
+        if (securityIdentity != null) {
+          Roles roles = securityIdentity.getRoles();
+          roles.forEach(role -> authorities.add(new SimpleGrantedAuthority(role)));
+        }
+        return authorities;
+      }
+
+      @Override
+      public String getPassword() {
+        return (String) token.getCredentials();
+      }
+
+      @Override
+      public String getUsername() {
+        return token.getName();
+      }
+
+      @Override
+      public boolean isAccountNonExpired() {
+        return true;
+      }
+
+      @Override
+      public boolean isAccountNonLocked() {
+        return true;
+      }
+
+      @Override
+      public boolean isCredentialsNonExpired() {
+        return true;
+      }
+
+      @Override
+      public boolean isEnabled() {
+        return true;
+      }
+
+      private SecurityIdentity getSecurityIdentity() {
+        SecurityDomain current = SecurityDomain.getCurrent();
+        if (current != null) {
+          return current.getCurrentSecurityIdentity();
+        }
+        return null;
+      }
+    }
   }
 }

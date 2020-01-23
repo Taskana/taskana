@@ -83,7 +83,7 @@ public class TaskHistoryEventControllerIntTest {
             server + port + "/api/v1/task-history-event",
             HttpMethod.GET,
             request,
-            new ParameterizedTypeReference<TaskHistoryEventListResource>() {});
+            ParameterizedTypeReference.forType(TaskHistoryEventListResource.class));
     assertNotNull(response.getBody().getLink(Link.REL_SELF));
     assertEquals(50, response.getBody().getContent().size());
   }
@@ -97,7 +97,7 @@ public class TaskHistoryEventControllerIntTest {
             server + port + parameters,
             HttpMethod.GET,
             request,
-            new ParameterizedTypeReference<TaskHistoryEventListResource>() {});
+            ParameterizedTypeReference.forType(TaskHistoryEventListResource.class));
     assertNotNull(response.getBody().getLink(Link.REL_SELF));
     assertEquals(3, response.getBody().getContent().size());
     assertTrue(response.getBody().getLink(Link.REL_SELF).getHref().endsWith(parameters));
@@ -113,7 +113,7 @@ public class TaskHistoryEventControllerIntTest {
                 + "&sort-by=business-process-id&order=asc&page-size=6&page=1",
             HttpMethod.GET,
             request,
-            new ParameterizedTypeReference<TaskHistoryEventListResource>() {});
+            ParameterizedTypeReference.forType(TaskHistoryEventListResource.class));
 
     assertNotNull(response.getBody().getLink(Link.REL_SELF));
     assertNotNull(response.getBody().getLinks());
@@ -128,7 +128,7 @@ public class TaskHistoryEventControllerIntTest {
           server + port + "/api/v1/task-history-event?invalid=BPI:01",
           HttpMethod.GET,
           request,
-          new ParameterizedTypeReference<TaskHistoryEventListResource>() {});
+          ParameterizedTypeReference.forType(TaskHistoryEventListResource.class));
       fail();
     } catch (HttpClientErrorException e) {
       assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
@@ -145,7 +145,7 @@ public class TaskHistoryEventControllerIntTest {
           server + port + "/api/v1/task-history-event?created=" + currentTime,
           HttpMethod.GET,
           request,
-          new ParameterizedTypeReference<TaskHistoryEventListResource>() {});
+          ParameterizedTypeReference.forType(TaskHistoryEventListResource.class));
       fail();
     } catch (HttpClientErrorException e) {
       assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
@@ -159,7 +159,7 @@ public class TaskHistoryEventControllerIntTest {
             server + port + "/api/v1/task-history-event?created=" + currentTime,
             HttpMethod.GET,
             request,
-            new ParameterizedTypeReference<TaskHistoryEventListResource>() {});
+            ParameterizedTypeReference.forType(TaskHistoryEventListResource.class));
     assertNotNull(response.getBody().getLink(Link.REL_SELF));
     assertEquals(25, response.getBody().getContent().size());
   }
@@ -173,7 +173,7 @@ public class TaskHistoryEventControllerIntTest {
             server + port + parameters,
             HttpMethod.GET,
             request,
-            new ParameterizedTypeReference<TaskHistoryEventListResource>() {});
+            ParameterizedTypeReference.forType(TaskHistoryEventListResource.class));
 
     assertEquals(2, response.getBody().getContent().size());
     assertEquals(
