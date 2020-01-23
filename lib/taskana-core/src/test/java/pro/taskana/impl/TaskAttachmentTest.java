@@ -43,10 +43,9 @@ class TaskAttachmentTest {
   @Test
   void testAddNullValue() {
     Attachment attachment1 = createAttachment("ID1", "taskId1");
-    Attachment attachment2 = null;
 
     cut.addAttachment(attachment1);
-    cut.addAttachment(attachment2);
+    cut.addAttachment(null);
 
     assertThat(cut.getAttachments().size(), equalTo(1));
   }
