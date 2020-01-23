@@ -1,5 +1,6 @@
 package pro.taskana.history;
 
+import java.util.Objects;
 import java.util.ServiceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +14,7 @@ public final class HistoryEventProducer {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HistoryEventProducer.class);
   private static HistoryEventProducer singleton;
-  private static boolean enabled = false;
+  private boolean enabled = false;
   private ServiceLoader<TaskanaHistory> serviceLoader;
 
   private HistoryEventProducer(TaskanaEngineConfiguration taskanaEngineConfiguration) {
@@ -37,7 +38,7 @@ public final class HistoryEventProducer {
   }
 
   public static boolean isHistoryEnabled() {
-    return enabled;
+    return Objects.nonNull(singleton) && singleton.enabled;
   }
 
   public void createEvent(TaskanaHistoryEvent event) {

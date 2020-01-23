@@ -20,9 +20,9 @@ public class LdapCacheTestImpl implements LdapCache {
    * Dictionary is a {@link Map} collection that contains {@link AccessIdResource} as key (user) and
    * {@link List} as value (groups of which the user is a member) .
    */
-  private static Map<AccessIdResource, List<AccessIdResource>> users;
+  private Map<AccessIdResource, List<AccessIdResource>> users;
 
-  private static List<AccessIdResource> accessIds =
+  private List<AccessIdResource> accessIds =
       new ArrayList<>(
           Arrays.asList(
               new AccessIdResource("Martin, Rojas Miguel Angel", "user_1_1"),
