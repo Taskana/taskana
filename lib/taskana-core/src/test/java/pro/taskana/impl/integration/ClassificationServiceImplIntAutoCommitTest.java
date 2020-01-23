@@ -12,7 +12,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
 import javax.sql.DataSource;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -40,42 +40,38 @@ import pro.taskana.sampledata.SampleDataGenerator;
  */
 class ClassificationServiceImplIntAutoCommitTest {
 
-  static int counter = 0;
-  private DataSource dataSource;
   private ClassificationService classificationService;
-  private TaskanaEngineConfiguration taskanaEngineConfiguration;
-  private TaskanaEngine taskanaEngine;
-  private TaskanaEngineImpl taskanaEngineImpl;
-
-  @BeforeAll
-  static void resetDb() {
-    DataSource ds = TaskanaEngineTestConfiguration.getDataSource();
-    String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
-    new SampleDataGenerator(ds, schemaName).dropDb();
-  }
 
   @BeforeEach
   void setup() throws SQLException {
-    dataSource = TaskanaEngineTestConfiguration.getDataSource();
+
+    DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
     String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
-    taskanaEngineConfiguration =
+    TaskanaEngineConfiguration taskanaEngineConfiguration =
         new TaskanaEngineConfiguration(dataSource, false, false, schemaName);
-    taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
+    TaskanaEngine taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
     classificationService = taskanaEngine.getClassificationService();
-    taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
+    TaskanaEngineImpl taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
     taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
     new SampleDataGenerator(dataSource, schemaName).clearDb();
+  }
+
+  @AfterEach
+  void teardown() {
+    DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
+    String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
+    new SampleDataGenerator(dataSource, schemaName).dropDb();
   }
 
   @Test
   void testFindAllClassifications()
       throws ClassificationAlreadyExistException, NotAuthorizedException, DomainNotFoundException,
           InvalidArgumentException {
-    Classification classification0 = this.createDummyClassificationWithUniqueKey("", "TASK");
+    Classification classification0 = classificationService.newClassification("TEST1", "", "TASK");
     classificationService.createClassification(classification0);
-    Classification classification1 = this.createDummyClassificationWithUniqueKey("", "TASK");
+    Classification classification1 = classificationService.newClassification("TEST2", "", "TASK");
     classificationService.createClassification(classification1);
-    Classification classification2 = this.createDummyClassificationWithUniqueKey("", "TASK");
+    Classification classification2 = classificationService.newClassification("TEST3", "", "TASK");
     classification2.setParentId(classification0.getId());
     classificationService.createClassification(classification2);
 
@@ -88,7 +84,8 @@ class ClassificationServiceImplIntAutoCommitTest {
           NotAuthorizedException, ConcurrencyException, DomainNotFoundException,
           InvalidArgumentException {
     final String description = "TEST SOMETHING";
-    Classification classification = this.createDummyClassificationWithUniqueKey("DOMAIN_A", "TASK");
+    Classification classification =
+        classificationService.newClassification("TEST434", "DOMAIN_A", "TASK");
     classification.setDescription("");
     classification = classificationService.createClassification(classification);
     classification.setDescription("TEST SOMETHING");
@@ -104,7 +101,8 @@ class ClassificationServiceImplIntAutoCommitTest {
   void testInsertClassification()
       throws NotAuthorizedException, ClassificationAlreadyExistException, InvalidArgumentException,
           DomainNotFoundException {
-    Classification classification = this.createDummyClassificationWithUniqueKey("DOMAIN_A", "TASK");
+    Classification classification =
+        classificationService.newClassification("TEST1333", "DOMAIN_A", "TASK");
     classificationService.createClassification(classification);
 
     List<ClassificationSummary> list =
@@ -122,7 +120,8 @@ class ClassificationServiceImplIntAutoCommitTest {
       throws NotAuthorizedException, ClassificationAlreadyExistException,
           ClassificationNotFoundException, ConcurrencyException, DomainNotFoundException,
           InvalidArgumentException {
-    Classification classification = this.createDummyClassificationWithUniqueKey("DOMAIN_A", "TASK");
+    Classification classification =
+        classificationService.newClassification("TEST32451", "DOMAIN_A", "TASK");
     classification = classificationService.createClassification(classification);
     classification.setDescription("description");
     classification = classificationService.updateClassification(classification);
@@ -145,11 +144,12 @@ class ClassificationServiceImplIntAutoCommitTest {
       throws NotAuthorizedException, ClassificationAlreadyExistException,
           ClassificationNotFoundException, ConcurrencyException, DomainNotFoundException,
           InvalidArgumentException {
-    Classification classification = this.createDummyClassificationWithUniqueKey("DOMAIN_A", "TASK");
+    Classification classification =
+        classificationService.newClassification("TEST7771", "DOMAIN_A", "TASK");
     classification = classificationService.createClassification(classification);
 
     Classification classification1 =
-        this.createDummyClassificationWithUniqueKey("DOMAIN_A", "TASK");
+        classificationService.newClassification("TEST1865", "DOMAIN_A", "TASK");
     classification1 = classificationService.createClassification(classification1);
 
     classification1.setParentId(classification.getId());
@@ -189,12 +189,5 @@ class ClassificationServiceImplIntAutoCommitTest {
     Instant end =
         LocalDateTime.of(LocalDate.now(), LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant();
     return new TimeInterval(begin, end);
-  }
-
-  private Classification createDummyClassificationWithUniqueKey(String domain, String type) {
-    Classification classification =
-        classificationService.newClassification("TEST" + counter, domain, type);
-    counter++;
-    return classification;
   }
 }

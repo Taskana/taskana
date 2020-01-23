@@ -22,9 +22,9 @@ public class LdapCacheTestImpl implements LdapCache {
    * Dictionary is a {@link Map} collection that contains {@link AccessIdResource} as key (user) and
    * {@link List} as value (groups of which the user is a member) .
    */
-  private static Map<AccessIdResource, List<AccessIdResource>> users;
+  private Map<AccessIdResource, List<AccessIdResource>> users;
 
-  private static List<AccessIdResource> accessIds =
+  private List<AccessIdResource> accessIds =
       new ArrayList<>(
           Arrays.asList(
               new AccessIdResource("Martin, Rojas Miguel Angel", "user_1_1"),
@@ -298,7 +298,7 @@ public class LdapCacheTestImpl implements LdapCache {
   public List<AccessIdResource> findGroupsOfUser(
       String searchFor, int maxNumberOfReturnedAccessIds) {
     if (users == null) {
-      addUsersToGroups();
+      users = addUsersToGroups();
     }
     return findAcessIdResource(searchFor, maxNumberOfReturnedAccessIds, true);
   }
@@ -341,9 +341,9 @@ public class LdapCacheTestImpl implements LdapCache {
     return result;
   }
 
-  private void addUsersToGroups() {
+  private Map<AccessIdResource, List<AccessIdResource>> addUsersToGroups() {
     List<AccessIdResource> groups = new ArrayList<>();
-    users = new HashMap<>();
+    Map<AccessIdResource, List<AccessIdResource>> users = new HashMap<>();
 
     accessIds.forEach(
         item -> {
@@ -402,5 +402,6 @@ public class LdapCacheTestImpl implements LdapCache {
       }
       countUser = (countUser + 1) % 4;
     }
+    return users;
   }
 }
