@@ -30,27 +30,44 @@ import pro.taskana.rest.resource.AccessIdResource;
 public class LdapClient {
 
   public static final String TASKANA_USE_LDAP_PROP_NAME = "taskana.ldap.useLdap";
+
   private static final Logger LOGGER = LoggerFactory.getLogger(LdapClient.class);
+
   private static final String CN = "cn";
+
   private boolean active = false;
+
   @Autowired private Environment env;
 
   @Autowired(required = false)
   private LdapTemplate ldapTemplate;
 
   private String userSearchBase;
+
   private String userSearchFilterName;
+
   private String userSearchFilterValue;
+
   private String userFirstnameAttribute;
+
   private String userLastnameAttribute;
+
   private String userIdAttribute;
+
   private String groupSearchBase;
+
   private String groupSearchFilterName;
+
   private String groupSearchFilterValue;
+
   private String groupNameAttribute;
+
   private String groupsOfUser;
+
   private int minSearchForLength;
+
   private int maxNumberOfReturnedAccessIds;
+
   private String message;
 
   public List<AccessIdResource> searchUsersAndGroups(final String name)
@@ -62,19 +79,25 @@ public class LdapClient {
     }
     testMinSearchForLength(name);
 
-    List<AccessIdResource> users = searchUsersByName(name);
-    users.addAll(searchGroupsByName(name));
-    users.sort(
+    List<AccessIdResource> accessIds = searchUsersByName(name);
+    accessIds.addAll(searchGroupsByName(name));
+    // TODO: remove try/catch as once the fix is verified
+    try {
+      accessIds.add(searchGroupByDn(name));
+    } catch (Throwable t) {
+      t.printStackTrace();
+    }
+    accessIds.sort(
         (AccessIdResource a, AccessIdResource b) -> {
           return a.getAccessId().compareToIgnoreCase(b.getAccessId());
         });
 
     List<AccessIdResource> result =
-        users.subList(0, Math.min(users.size(), maxNumberOfReturnedAccessIds));
+        accessIds.subList(0, Math.min(accessIds.size(), maxNumberOfReturnedAccessIds));
     LOGGER.debug(
         "exit from searchUsersAndGroups(name = {}). Returning {} users and groups: {}",
         name,
-        users.size(),
+        accessIds.size(),
         LoggerUtils.listToString(result));
 
     return result;
@@ -151,6 +174,26 @@ public class LdapClient {
         "Exit from searchGroupsByName. Retrieved the following groups: {}",
         LoggerUtils.listToString(accessIds));
     return accessIds;
+  }
+
+  public AccessIdResource searchGroupByDn(final String name) {
+    LOGGER.debug("entry to searchGroupByDn(name = {}).", name);
+    if (!active) {
+      throw new SystemException(
+          "LdapClient was called but is not active due to missing configuration: " + message);
+    }
+
+    String[] groupAttributesToReturn;
+    if (CN.equals(groupNameAttribute)) {
+      groupAttributesToReturn = new String[] {CN};
+    } else {
+      groupAttributesToReturn = new String[] {getGroupNameAttribute(), CN};
+    }
+
+    final AccessIdResource accessId =
+        ldapTemplate.lookup(name, groupAttributesToReturn, new GroupContextMapper());
+    LOGGER.debug("Exit from searchGroupByDn. Retrieved the following group: {}", accessId);
+    return accessId;
   }
 
   public List<AccessIdResource> searchGroupsofUsersIsMember(final String name)
