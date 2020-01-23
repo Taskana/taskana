@@ -13,7 +13,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
@@ -27,7 +26,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
-import pro.taskana.TaskSummary;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.Workbasket;
 import pro.taskana.WorkbasketType;
@@ -155,12 +153,9 @@ class WorkbasketServiceImplTest {
   @Test
   void testDeleteWorkbasketIsUsed() throws NotAuthorizedException, WorkbasketNotFoundException {
     Workbasket wb = createTestWorkbasket("WBI:0", "wb-key");
-    List<TaskSummary> usages = Arrays.asList(new TaskSummaryImpl(), new TaskSummaryImpl());
 
-    WorkbasketNotFoundException e =
-        Assertions.assertThrows(
-            WorkbasketNotFoundException.class,
-            () -> workbasketServiceSpy.deleteWorkbasket(wb.getId()));
+    Assertions.assertThrows(
+        WorkbasketNotFoundException.class, () -> workbasketServiceSpy.deleteWorkbasket(wb.getId()));
 
     verify(internalTaskanaEngineMock, times(2)).openConnection();
     verify(workbasketServiceSpy, times(1)).getWorkbasket(wb.getId());

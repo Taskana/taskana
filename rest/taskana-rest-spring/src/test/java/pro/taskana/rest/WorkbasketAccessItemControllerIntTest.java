@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -114,15 +115,17 @@ class WorkbasketAccessItemControllerIntTest {
   @Test
   void testGetBadRequestIfTryingToDeleteAccessItemsForGroup() {
     String parameters = "?access-id=cn=DevelopersGroup,ou=groups,o=TaskanaTest";
-    try {
-      ResponseEntity<Void> response =
-          template.exchange(
-              restHelper.toUrl(Mapping.URL_WORKBASKETACCESSITEMS) + parameters,
-              HttpMethod.DELETE,
-              restHelper.defaultRequest(),
-              ParameterizedTypeReference.forType(Void.class));
-    } catch (HttpClientErrorException e) {
-      assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
-    }
+
+    HttpClientErrorException e =
+        Assertions.assertThrows(
+            HttpClientErrorException.class,
+            () ->
+                template.exchange(
+                    restHelper.toUrl(Mapping.URL_WORKBASKETACCESSITEMS) + parameters,
+                    HttpMethod.DELETE,
+                    restHelper.defaultRequest(),
+                    ParameterizedTypeReference.forType(Void.class)));
+
+    assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
   }
 }

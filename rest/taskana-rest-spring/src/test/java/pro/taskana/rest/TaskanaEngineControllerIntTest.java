@@ -9,8 +9,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -58,9 +56,6 @@ class TaskanaEngineControllerIntTest {
 
   @Test
   void testClassificationCategories() {
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-    HttpEntity<String> request = new HttpEntity<String>(headers);
     ResponseEntity<List<String>> response =
         template.exchange(
             restHelper.toUrl(Mapping.URL_CLASSIFICATIONCATEGORIES),

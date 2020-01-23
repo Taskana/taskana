@@ -112,17 +112,19 @@ class TaskControllerIntTest {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Authorization", "Basic dXNlcl8xXzI6dXNlcl8xXzI="); // user_1_2
     HttpEntity<String> request = new HttpEntity<String>(headers);
-    try {
-      ResponseEntity<TaskSummaryListResource> response =
-          template.exchange(
-              restHelper.toUrl(Mapping.URL_TASKS) + "?workbasket-key=USER_1_2",
-              HttpMethod.GET,
-              request,
-              ParameterizedTypeReference.forType(TaskSummaryListResource.class));
-      fail();
-    } catch (HttpClientErrorException e) {
-      assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
-    }
+
+    HttpClientErrorException e =
+        Assertions.assertThrows(
+            HttpClientErrorException.class,
+            () -> {
+              ResponseEntity<TaskSummaryListResource> response =
+                  template.exchange(
+                      restHelper.toUrl(Mapping.URL_TASKS) + "?workbasket-key=USER_1_2",
+                      HttpMethod.GET,
+                      request,
+                      ParameterizedTypeReference.forType(TaskSummaryListResource.class));
+            });
+    assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
   }
 
   @Test
@@ -395,15 +397,14 @@ class TaskControllerIntTest {
     taskResource.setPlanned(now.toString());
     taskResource.setDue(now.toString());
 
-    HttpClientErrorException ex =
-        Assertions.assertThrows(
-            HttpClientErrorException.class,
-            () ->
-                template.exchange(
-                    restHelper.toUrl(Mapping.URL_TASKS),
-                    HttpMethod.POST,
-                    new HttpEntity<>(taskResource, restHelper.getHeaders()),
-                    ParameterizedTypeReference.forType(TaskResource.class)));
+    Assertions.assertThrows(
+        HttpClientErrorException.class,
+        () ->
+            template.exchange(
+                restHelper.toUrl(Mapping.URL_TASKS),
+                HttpMethod.POST,
+                new HttpEntity<>(taskResource, restHelper.getHeaders()),
+                ParameterizedTypeReference.forType(TaskResource.class)));
   }
 
   @Test
