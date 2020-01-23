@@ -75,7 +75,7 @@
 		<version.hamcrest>2.2</version.hamcrest>
 		<version.equalsverifier>3.1.11</version.equalsverifier>
 		<version.openpojo>0.8.13</version.openpojo>
-		<version.jacoco>0.8.3</version.jacoco>
+		<version.jacoco>0.8.5</version.jacoco>
 
 		<!-- database driver versions -->
 		<version.h2>1.4.197</version.h2>
