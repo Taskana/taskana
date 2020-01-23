@@ -14,7 +14,9 @@ import org.springframework.stereotype.Component;
 import pro.taskana.Task;
 import pro.taskana.TaskService;
 import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.SystemException;
+import pro.taskana.exceptions.TaskNotFoundException;
 import pro.taskana.impl.TaskImpl;
 import pro.taskana.rest.TaskController;
 
@@ -49,7 +51,7 @@ public class TaskResourceAssembler extends ResourceAssemblerSupport<Task, TaskRe
     try {
       resource = new TaskResource(task);
       resource.add(linkTo(methodOn(TaskController.class).getTask(task.getId())).withSelfRel());
-    } catch (Exception e) {
+    } catch (InvalidArgumentException | TaskNotFoundException | NotAuthorizedException e) {
       throw new SystemException("caught unexpected Exception.", e.getCause());
     }
     return resource;
