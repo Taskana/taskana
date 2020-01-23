@@ -26,8 +26,7 @@ class ReportTest {
   @BeforeEach
   void before() {
     this.report =
-        new Report<MonitorQueryItem, TimeIntervalColumnHeader>(
-            HEADERS, new String[] {"rowDesc"}) {};
+        new MonitorQueryItemTimeIntervalColumnHeaderReport(HEADERS, new String[] {"rowDesc"});
 
     item = new MonitorQueryItem();
     item.setKey("key");
@@ -109,9 +108,9 @@ class ReportTest {
   @Test
   void testInsertItemWithNoColumnHeaders() {
     // given
+    List<TimeIntervalColumnHeader> headerList = Collections.emptyList();
     report =
-        new Report<MonitorQueryItem, TimeIntervalColumnHeader>(
-            Collections.emptyList(), new String[] {"rowDesc"}) {};
+        new MonitorQueryItemTimeIntervalColumnHeaderReport(headerList, new String[] {"rowDesc"});
 
     // when
     report.addItem(item);
@@ -141,9 +140,7 @@ class ReportTest {
     // given
     List<TimeIntervalColumnHeader> headers = new ArrayList<>(HEADERS);
     headers.add(new TimeIntervalColumnHeader(0, 3));
-    report =
-        new Report<MonitorQueryItem, TimeIntervalColumnHeader>(
-            headers, new String[] {"rowDesc"}) {};
+    report = new MonitorQueryItemTimeIntervalColumnHeaderReport(headers, new String[] {"rowDesc"});
 
     item.setAgeInDays(2);
 
@@ -186,5 +183,14 @@ class ReportTest {
     Row<MonitorQueryItem> sumRow = report.getSumRow();
     assertArrayEquals(new int[] {0, overrideValue, 0, 0}, sumRow.getCells());
     assertEquals(overrideValue, sumRow.getTotalValue());
+  }
+
+  private static class MonitorQueryItemTimeIntervalColumnHeaderReport
+      extends Report<MonitorQueryItem, TimeIntervalColumnHeader> {
+
+    public MonitorQueryItemTimeIntervalColumnHeaderReport(
+        List<TimeIntervalColumnHeader> headerList, String[] rowDesc) {
+      super(headerList, rowDesc);
+    }
   }
 }

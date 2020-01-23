@@ -51,11 +51,11 @@ class AccessIdValidationControllerIntTest {
             restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=ali",
             HttpMethod.GET,
             request,
-            new ParameterizedTypeReference<List<AccessIdResource>>() {});
+            ParameterizedTypeReference.forType(AccessIdListResource.class));
 
     List<AccessIdResource> body = response.getBody();
     assertNotNull(body);
-    assertTrue(3 == body.size());
+    assertEquals(3, body.size());
     List<String> expectedIds =
         new ArrayList<>(Arrays.asList("Tralisch, Thea", "Bert, Ali", "Mente, Ali"));
     for (AccessIdResource accessId : body) {
@@ -77,5 +77,10 @@ class AccessIdValidationControllerIntTest {
       assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
       assertTrue(e.getResponseBodyAsString().contains("Minimum searchFor length ="));
     }
+  }
+
+  static class AccessIdListResource extends ArrayList<AccessIdResource> {
+
+    private static final long serialVersionUID = 1L;
   }
 }
