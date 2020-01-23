@@ -31,8 +31,6 @@ class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAccTest {
   void testRoleCheck() {
     TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
 
-    List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
-
     List<SelectedItem> selectedItems = new ArrayList<>();
 
     Assertions.assertThrows(

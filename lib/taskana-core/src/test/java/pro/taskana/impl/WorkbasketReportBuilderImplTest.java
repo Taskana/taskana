@@ -297,7 +297,6 @@ class WorkbasketReportBuilderImplTest {
     selectedItem.setKey("EXTERN");
     selectedItem.setLowerAgeLimit(1);
     selectedItem.setUpperAgeLimit(5);
-    List<SelectedItem> selectedItems = Collections.singletonList(selectedItem);
 
     List<String> expectedResult = Collections.singletonList("Geschaeftsstelle A");
     when(taskMonitorMapperMock.getCustomAttributeValuesForReport(
