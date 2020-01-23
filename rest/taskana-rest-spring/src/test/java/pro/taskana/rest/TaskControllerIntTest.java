@@ -1,5 +1,6 @@
 package pro.taskana.rest;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -289,7 +290,7 @@ class TaskControllerIntTest {
     assertEquals(200, con.getResponseCode());
     final ObjectMapper objectMapper = new ObjectMapper();
 
-    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), UTF_8));
     String inputLine;
     StringBuffer content = new StringBuffer();
     while ((inputLine = in.readLine()) != null) {
@@ -312,7 +313,7 @@ class TaskControllerIntTest {
     con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
     assertEquals(200, con.getResponseCode());
 
-    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), UTF_8));
     String inputLine;
     StringBuffer content = new StringBuffer();
     while ((inputLine = in.readLine()) != null) {
@@ -327,7 +328,7 @@ class TaskControllerIntTest {
     con.setDoOutput(true);
     con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
     con.setRequestProperty("Content-Type", "application/json");
-    BufferedWriter out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
+    BufferedWriter out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream(), UTF_8));
     out.write(content.toString());
     out.flush();
     out.close();
@@ -340,7 +341,7 @@ class TaskControllerIntTest {
     con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
     assertEquals(200, con.getResponseCode());
 
-    in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+    in = new BufferedReader(new InputStreamReader(con.getInputStream(), UTF_8));
     content = new StringBuffer();
     while ((inputLine = in.readLine()) != null) {
       content.append(inputLine);
@@ -420,7 +421,7 @@ class TaskControllerIntTest {
     con.setDoOutput(true);
     con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
     con.setRequestProperty("Content-Type", "application/json");
-    BufferedWriter out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
+    BufferedWriter out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream(), UTF_8));
     out.write(taskToCreateJson);
     out.flush();
     out.close();
@@ -440,7 +441,7 @@ class TaskControllerIntTest {
     con.setDoOutput(true);
     con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
     con.setRequestProperty("Content-Type", "application/json");
-    out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
+    out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream(), UTF_8));
     out.write(taskToCreateJson2);
     out.flush();
     out.close();

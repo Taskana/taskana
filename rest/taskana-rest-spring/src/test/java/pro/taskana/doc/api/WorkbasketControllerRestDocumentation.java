@@ -1,5 +1,6 @@
 package pro.taskana.doc.api;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
@@ -454,7 +455,7 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
     con.setRequestProperty("Authorization", "Basic YWRtaW46YWRtaW4=");
     assertEquals(200, con.getResponseCode());
 
-    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), UTF_8));
     String inputLine;
     StringBuffer content = new StringBuffer();
     while ((inputLine = in.readLine()) != null) {
