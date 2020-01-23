@@ -2,6 +2,7 @@ package pro.taskana.security;
 
 import static pro.taskana.configuration.TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.Principal;
@@ -109,7 +110,11 @@ public final class CurrentUserContext {
           return userIdUsed;
         }
       }
-    } catch (Exception e) {
+    } catch (RuntimeException
+        | ClassNotFoundException
+        | IllegalAccessException
+        | InvocationTargetException
+        | NoSuchMethodException e) {
       LOGGER.warn("Could not get user from WSSubject. Going ahead unauthorized.");
     }
     return null;

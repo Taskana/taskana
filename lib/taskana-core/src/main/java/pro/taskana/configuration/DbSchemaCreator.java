@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
 import javax.sql.DataSource;
+import org.apache.ibatis.jdbc.RuntimeSqlException;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.jdbc.SqlRunner;
 import org.slf4j.Logger;
@@ -93,7 +94,7 @@ public class DbSchemaCreator {
         return true;
       }
 
-    } catch (Exception e) {
+    } catch (RuntimeSqlException | SQLException e) {
       LOGGER.error(
           "Schema version not valid. The VERSION property in table TASKANA_SCHEMA_VERSION "
               + "has not the expected value {}",
@@ -139,7 +140,7 @@ public class DbSchemaCreator {
       BufferedReader reader =
           new BufferedReader(new InputStreamReader(resourceAsStream, StandardCharsets.UTF_8));
       runner.runScript(getSqlSchemaNameParsed(reader));
-    } catch (Exception e) {
+    } catch (RuntimeSqlException | SQLException e) {
       LOGGER.debug("Schema does not exist.");
       if (!errorWriter.toString().trim().isEmpty()) {
         LOGGER.debug(errorWriter.toString());

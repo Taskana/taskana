@@ -98,7 +98,7 @@ public class SampleDataGenerator {
       String query = "SELECT 1 FROM " + tableSafe + " LIMIT 1;";
       runner.run(query);
       return true;
-    } catch (Exception e) {
+    } catch (RuntimeSqlException | SQLException e) {
       return false;
     }
   }
