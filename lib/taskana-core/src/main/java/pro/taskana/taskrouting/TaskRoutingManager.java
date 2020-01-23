@@ -21,8 +21,8 @@ public final class TaskRoutingManager {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskRoutingManager.class);
   private static TaskRoutingManager singleton;
-  private static boolean enabled = false;
-  private static List<TaskRoutingProvider> theTaskRoutingProviders = new ArrayList<>();
+  private boolean enabled = false;
+  private List<TaskRoutingProvider> theTaskRoutingProviders = new ArrayList<>();
   private ServiceLoader<TaskRoutingProvider> serviceLoader;
 
   private TaskRoutingManager(TaskanaEngine taskanaEngine) {
@@ -48,7 +48,7 @@ public final class TaskRoutingManager {
   }
 
   public static boolean isTaskRoutingEnabled() {
-    return enabled;
+    return Objects.nonNull(singleton) && singleton.enabled;
   }
 
   /**

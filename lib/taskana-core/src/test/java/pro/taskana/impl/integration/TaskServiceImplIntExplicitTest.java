@@ -15,7 +15,6 @@ import java.util.UUID;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -69,22 +68,22 @@ import pro.taskana.security.WithAccessId;
 @ExtendWith(JaasExtension.class)
 class TaskServiceImplIntExplicitTest {
 
-  private static DataSource dataSource;
+  private DataSource dataSource;
 
-  private static TaskServiceImpl taskServiceImpl;
+  private TaskServiceImpl taskServiceImpl;
 
-  private static TaskanaEngineConfiguration taskanaEngineConfiguration;
+  private TaskanaEngineConfiguration taskanaEngineConfiguration;
 
-  private static TaskanaEngine taskanaEngine;
+  private TaskanaEngine taskanaEngine;
 
-  private static TaskanaEngineImpl taskanaEngineImpl;
+  private TaskanaEngineImpl taskanaEngineImpl;
 
-  private static ClassificationService classificationService;
+  private ClassificationService classificationService;
 
-  private static WorkbasketService workbasketService;
+  private WorkbasketService workbasketService;
 
-  @BeforeAll
-  static void setup() throws SQLException {
+  @BeforeEach
+  void setup() throws SQLException {
     String userHomeDirectory = System.getProperty("user.home");
     String propertiesFileName = userHomeDirectory + "/taskanaUnitTest.properties";
 
@@ -108,10 +107,7 @@ class TaskServiceImplIntExplicitTest {
       DbSchemaCreator creator = new DbSchemaCreator(dataSource, connection.getSchema());
       creator.run();
     }
-  }
 
-  @BeforeEach
-  void resetDb() {
     String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
     SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
     sampleDataGenerator.clearDb();
@@ -232,8 +228,9 @@ class TaskServiceImplIntExplicitTest {
       wb.setName("dummy-WB");
       wb.setType(WorkbasketType.PERSONAL);
       wb = workbasketService.createWorkbasket(wb);
-      this.createWorkbasketWithSecurity(
-          wb, CurrentUserContext.getUserid(), true, true, true, false);
+      workbasketService.createWorkbasketAccessItem(
+          this.createWorkbasketWithSecurity(
+              wb, CurrentUserContext.getUserid(), true, true, true, false));
       Classification classification =
           classificationService.newClassification(
               UUID.randomUUID().toString(), wb.getDomain(), "t1"); // not persisted,
@@ -330,13 +327,15 @@ class TaskServiceImplIntExplicitTest {
       wb.setType(WorkbasketType.PERSONAL);
       Workbasket sourceWB = workbasketService.createWorkbasket(wb);
 
-      createWorkbasketWithSecurity(wb, wb.getOwner(), true, true, true, true);
+      workbasketService.createWorkbasketAccessItem(
+          createWorkbasketWithSecurity(wb, wb.getOwner(), true, true, true, true));
       connection.commit();
       Assertions.assertThrows(
           WorkbasketAccessItemAlreadyExistException.class,
           () ->
-              createWorkbasketWithSecurity(
-                  sourceWB, sourceWB.getOwner(), false, false, false, false));
+              workbasketService.createWorkbasketAccessItem(
+                  createWorkbasketWithSecurity(
+                      sourceWB, sourceWB.getOwner(), false, false, false, false)));
       connection.rollback();
 
       // Destination Workbasket
@@ -347,8 +346,9 @@ class TaskServiceImplIntExplicitTest {
       wb.setType(WorkbasketType.TOPIC);
 
       Workbasket destinationWB = workbasketService.createWorkbasket(wb);
-      createWorkbasketWithSecurity(
-          destinationWB, destinationWB.getOwner(), false, true, true, true);
+      workbasketService.createWorkbasketAccessItem(
+          createWorkbasketWithSecurity(
+              destinationWB, destinationWB.getOwner(), false, true, true, true));
 
       // Classification required for Task
       ClassificationImpl classification =
@@ -406,16 +406,16 @@ class TaskServiceImplIntExplicitTest {
     final String user = "User";
 
     // Set up Security for this Test
-    dataSource = TaskanaEngineTestConfiguration.getDataSource();
-    taskanaEngineConfiguration =
+    final DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
+    final TaskanaEngineConfiguration taskanaEngineConfiguration =
         new TaskanaEngineConfiguration(
             dataSource, false, true, TaskanaEngineTestConfiguration.getSchemaName());
-    taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
-    taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
+    final TaskanaEngine taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
+    final TaskanaEngineImpl taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
     taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
-    taskServiceImpl = (TaskServiceImpl) taskanaEngine.getTaskService();
-    classificationService = taskanaEngine.getClassificationService();
-    workbasketService = taskanaEngine.getWorkbasketService();
+    final TaskServiceImpl taskServiceImpl = (TaskServiceImpl) taskanaEngine.getTaskService();
+    final ClassificationService classificationService = taskanaEngine.getClassificationService();
+    final WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
     ClassificationImpl classification =
         (ClassificationImpl) classificationService.newClassification("KEY", "DOMAIN_A", "TASK");
@@ -429,7 +429,8 @@ class TaskServiceImplIntExplicitTest {
     wb.setOwner(user);
     wb.setType(WorkbasketType.GROUP);
     WorkbasketImpl wbCreated = (WorkbasketImpl) workbasketService.createWorkbasket(wb);
-    createWorkbasketWithSecurity(wbCreated, wbCreated.getOwner(), true, true, true, true);
+    workbasketService.createWorkbasketAccessItem(
+        createWorkbasketWithSecurity(wbCreated, wbCreated.getOwner(), true, true, true, true));
 
     WorkbasketImpl wbNoAppend =
         (WorkbasketImpl) workbasketService.newWorkbasket("keyNoAppend", "DOMAIN_B");
@@ -440,8 +441,9 @@ class TaskServiceImplIntExplicitTest {
     wbNoAppend.setType(WorkbasketType.CLEARANCE);
     WorkbasketImpl wbNoAppendCreated =
         (WorkbasketImpl) workbasketService.createWorkbasket(wbNoAppend);
-    createWorkbasketWithSecurity(
-        wbNoAppendCreated, wbNoAppendCreated.getOwner(), true, true, false, true);
+    workbasketService.createWorkbasketAccessItem(
+        createWorkbasketWithSecurity(
+            wbNoAppendCreated, wbNoAppendCreated.getOwner(), true, true, false, true));
 
     WorkbasketImpl wbNoTransfer =
         (WorkbasketImpl) workbasketService.newWorkbasket("keyNoTransfer", "DOMAIN_A");
@@ -450,7 +452,9 @@ class TaskServiceImplIntExplicitTest {
     wbNoTransfer.setOwner(user);
     wbNoTransfer.setType(WorkbasketType.GROUP);
     wbNoTransfer = (WorkbasketImpl) workbasketService.createWorkbasket(wbNoTransfer);
-    createWorkbasketWithSecurity(wbNoTransfer, wbNoTransfer.getOwner(), true, true, true, false);
+    workbasketService.createWorkbasketAccessItem(
+        createWorkbasketWithSecurity(
+            wbNoTransfer, wbNoTransfer.getOwner(), true, true, true, false));
 
     TaskImpl task = (TaskImpl) taskServiceImpl.newTask(wbCreated.getId());
     task.setName("Task Name");
@@ -520,21 +524,19 @@ class TaskServiceImplIntExplicitTest {
     return task;
   }
 
-  private void createWorkbasketWithSecurity(
+  private WorkbasketAccessItem createWorkbasketWithSecurity(
       Workbasket wb,
       String accessId,
       boolean permOpen,
       boolean permRead,
       boolean permAppend,
-      boolean permTransfer)
-      throws InvalidArgumentException, NotAuthorizedException, WorkbasketNotFoundException,
-          WorkbasketAccessItemAlreadyExistException {
+      boolean permTransfer) {
     WorkbasketAccessItem accessItem =
         workbasketService.newWorkbasketAccessItem(wb.getId(), accessId);
     accessItem.setPermOpen(permOpen);
     accessItem.setPermRead(permRead);
     accessItem.setPermAppend(permAppend);
     accessItem.setPermTransfer(permTransfer);
-    workbasketService.createWorkbasketAccessItem(accessItem);
+    return accessItem;
   }
 }
