@@ -41,13 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Bean
   public WebMvcConfigurer corsConfigurer() {
-    return new WebMvcConfigurer() {
-
-      @Override
-      public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins("*");
-      }
-    };
+    return new CorsWebMvcConfigurer();
   }
 
   @Bean
@@ -81,5 +75,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .authorizeRequests()
         .anyRequest()
         .fullyAuthenticated();
+  }
+
+  private static class CorsWebMvcConfigurer implements WebMvcConfigurer {
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+      registry.addMapping("/**").allowedOrigins("*");
+    }
   }
 }

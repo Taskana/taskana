@@ -72,7 +72,7 @@ class WorkbasketDefinitionControllerIntTest {
             restHelper.toUrl(Mapping.URL_WORKBASKETDEFIITIONS) + "?domain=DOMAIN_A",
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            new ParameterizedTypeReference<List<WorkbasketDefinitionResource>>() {});
+            ParameterizedTypeReference.forType(WorkbasketDefinitionListResource.class));
 
     assertNotNull(response.getBody());
     assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -130,7 +130,7 @@ class WorkbasketDefinitionControllerIntTest {
             restHelper.toUrl(Mapping.URL_WORKBASKETDEFIITIONS) + "?domain=DOMAIN_A",
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            new ParameterizedTypeReference<List<WorkbasketDefinitionResource>>() {});
+            ParameterizedTypeReference.forType(WorkbasketDefinitionListResource.class));
 
     List<String> list = new ArrayList<>();
     ObjectMapper objMapper = new ObjectMapper();
@@ -151,7 +151,7 @@ class WorkbasketDefinitionControllerIntTest {
             restHelper.toUrl(Mapping.URL_WORKBASKETDEFIITIONS) + "?domain=DOMAIN_A",
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            new ParameterizedTypeReference<List<WorkbasketDefinitionResource>>() {});
+            ParameterizedTypeReference.forType(WorkbasketDefinitionListResource.class));
 
     List<String> list = new ArrayList<>();
     ObjectMapper objMapper = new ObjectMapper();
@@ -200,5 +200,10 @@ class WorkbasketDefinitionControllerIntTest {
     String serverUrl = restHelper.toUrl(Mapping.URL_WORKBASKETDEFIITIONS);
 
     return template.postForEntity(serverUrl, requestEntity, Void.class);
+  }
+
+  static class WorkbasketDefinitionListResource extends ArrayList<WorkbasketDefinitionResource> {
+
+    private static final long serialVersionUID = 1L;
   }
 }
