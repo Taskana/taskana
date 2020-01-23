@@ -161,7 +161,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     Workbasket workbasket = workbasketService.newWorkbasket("X123456", "DOMAIN_A");
     workbasket.setName("Personal Workbasket for UID X123456");
     workbasket.setType(WorkbasketType.PERSONAL);
-    workbasket = workbasketService.createWorkbasket(workbasket);
+    workbasketService.createWorkbasket(workbasket);
 
     Workbasket duplicateWorkbasketWithSmallX =
         workbasketService.newWorkbasket("x123456", "DOMAIN_A");
@@ -185,7 +185,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     Workbasket wb = workbasketService.newWorkbasket("newKey", "DOMAIN_A");
     wb.setType(WorkbasketType.GROUP);
     wb.setName("this name");
-    wb = workbasketService.createWorkbasket(wb);
+    workbasketService.createWorkbasket(wb);
 
     // Second create a new Workbasket with same Key and Domain.
     Workbasket sameKeyAndDomain = workbasketService.newWorkbasket("newKey", "DOMAIN_A");
@@ -206,7 +206,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
           InvalidWorkbasketException, WorkbasketAlreadyExistException, DomainNotFoundException,
           WorkbasketAccessItemAlreadyExistException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-    int before = workbasketService.createWorkbasketQuery().domainIn("DOMAIN_A").list().size();
+    workbasketService.createWorkbasketQuery().domainIn("DOMAIN_A").list().size();
 
     Workbasket workbasket = workbasketService.newWorkbasket("WBAIT1234", "DOMAIN_A");
     workbasket.setName("MyNewBasket");

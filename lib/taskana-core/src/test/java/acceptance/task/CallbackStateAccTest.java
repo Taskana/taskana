@@ -273,7 +273,7 @@ class CallbackStateAccTest extends AbstractAccTest {
 
     // claim two tasks
     createdTask1 = (TaskImpl) taskService.forceClaim(createdTask1.getId());
-    createdTask2 = (TaskImpl) taskService.forceClaim(createdTask2.getId());
+    taskService.forceClaim(createdTask2.getId());
 
     // It's only allowed to claim a task if the TaskState equals CLAIMED and the CallbackState
     // equals REQUIRED

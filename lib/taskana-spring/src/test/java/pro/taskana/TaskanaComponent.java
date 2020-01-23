@@ -34,7 +34,7 @@ public class TaskanaComponent {
     objRef.setValue("aValue");
     task.setPrimaryObjRef(objRef);
 
-    task = taskService.createTask(task);
+    taskService.createTask(task);
     throw new RuntimeException();
   }
 }

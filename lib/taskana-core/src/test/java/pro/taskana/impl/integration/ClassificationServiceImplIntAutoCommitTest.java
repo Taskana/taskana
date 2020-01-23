@@ -105,7 +105,7 @@ class ClassificationServiceImplIntAutoCommitTest {
       throws NotAuthorizedException, ClassificationAlreadyExistException, InvalidArgumentException,
           DomainNotFoundException {
     Classification classification = this.createDummyClassificationWithUniqueKey("DOMAIN_A", "TASK");
-    classification = classificationService.createClassification(classification);
+    classificationService.createClassification(classification);
 
     List<ClassificationSummary> list =
         classificationService
@@ -131,7 +131,7 @@ class ClassificationServiceImplIntAutoCommitTest {
         classificationService.createClassificationQuery().validInDomainEquals(true).list();
     assertEquals(1, list.size());
 
-    classification = classificationService.updateClassification(classification);
+    classificationService.updateClassification(classification);
     list = classificationService.createClassificationQuery().list();
     assertEquals(2, list.size());
 
@@ -153,7 +153,7 @@ class ClassificationServiceImplIntAutoCommitTest {
     classification1 = classificationService.createClassification(classification1);
 
     classification1.setParentId(classification.getId());
-    classification1 = classificationService.updateClassification(classification1);
+    classificationService.updateClassification(classification1);
 
     List<ClassificationSummary> list =
         classificationService.createClassificationQuery().parentIdIn("").list();

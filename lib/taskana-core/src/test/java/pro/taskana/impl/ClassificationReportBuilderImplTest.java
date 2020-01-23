@@ -418,7 +418,6 @@ class ClassificationReportBuilderImplTest {
     selectedItem.setKey("EXTERN");
     selectedItem.setLowerAgeLimit(1);
     selectedItem.setUpperAgeLimit(5);
-    final List<SelectedItem> selectedItems = Collections.singletonList(selectedItem);
 
     final List<String> expectedResult = Collections.singletonList("Geschaeftsstelle A");
     when(taskMonitorMapperMock.getCustomAttributeValuesForReport(
