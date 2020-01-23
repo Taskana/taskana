@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.SQLException;
 import javax.sql.DataSource;
@@ -31,7 +32,9 @@ public class DbWriter {
     ScriptRunner runner = null;
     try (Connection connection = dataSource.getConnection()) {
       runner = configScriptRunner(connection);
-      runner.runScript(new InputStreamReader(DbWriter.class.getResourceAsStream(INSERTVALUES)));
+      runner.runScript(
+          new InputStreamReader(
+              DbWriter.class.getResourceAsStream(INSERTVALUES), StandardCharsets.UTF_8));
     } finally {
       LOGGER.debug(outWriter.toString());
       if (!errorWriter.toString().trim().isEmpty()) {

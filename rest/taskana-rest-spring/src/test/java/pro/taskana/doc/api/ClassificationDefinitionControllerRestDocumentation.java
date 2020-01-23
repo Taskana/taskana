@@ -1,5 +1,6 @@
 package pro.taskana.doc.api;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
@@ -53,7 +54,7 @@ class ClassificationDefinitionControllerRestDocumentation extends BaseRestDocume
     this.mockMvc
         .perform(
             multipart(restHelper.toUrl(Mapping.URL_CLASSIFICATIONDEFINITION))
-                .file("file", definitionString.getBytes())
+                .file("file", definitionString.getBytes(UTF_8))
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isNoContent())
         .andDo(

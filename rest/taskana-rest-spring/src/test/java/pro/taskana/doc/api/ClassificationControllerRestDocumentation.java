@@ -1,5 +1,6 @@
 package pro.taskana.doc.api;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
@@ -86,11 +87,11 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
           subsectionWithPath("classifications")
               .description("An Array of <<classification-subset, Classification-Subsets>>"),
           fieldWithPath("_links.self.href").ignored(),
-            fieldWithPath("page").ignored(),
-            fieldWithPath("page.size").ignored(),
-            fieldWithPath("page.totalElements").ignored(),
-            fieldWithPath("page.totalPages").ignored(),
-            fieldWithPath("page.number").ignored()
+          fieldWithPath("page").ignored(),
+          fieldWithPath("page.size").ignored(),
+          fieldWithPath("page.totalElements").ignored(),
+          fieldWithPath("page.totalPages").ignored(),
+          fieldWithPath("page.number").ignored()
         };
 
     classificationFieldDescriptors =
@@ -334,7 +335,7 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
     con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
     assertEquals(200, con.getResponseCode());
 
-    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), UTF_8));
     String inputLine;
     StringBuffer content = new StringBuffer();
     while ((inputLine = in.readLine()) != null) {

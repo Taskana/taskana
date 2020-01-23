@@ -1,5 +1,6 @@
 package pro.taskana.rest;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -9,8 +10,9 @@ import static org.junit.Assert.fail;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
@@ -161,7 +163,7 @@ class WorkbasketDefinitionControllerIntTest {
 
   private ResponseEntity<Void> importRequest(List<String> clList) throws IOException {
     File tmpFile = File.createTempFile("test", ".tmp");
-    FileWriter writer = new FileWriter(tmpFile);
+    OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(tmpFile), UTF_8);
     writer.write(clList.toString());
     writer.close();
 
