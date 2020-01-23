@@ -132,25 +132,26 @@ public class WorkbasketDefinitionController {
     // STEP 1: update or create workbaskets from the import
     for (WorkbasketDefinitionResource definition : definitions) {
       Workbasket importedWb = workbasketDefinitionAssembler.toModel(definition.getWorkbasket());
-      Workbasket workbasket;
+      String newId;
+      Workbasket wbWithoutId = removeId(importedWb);
       if (systemIds.containsKey(logicalId(importedWb))) {
-        workbasket = workbasketService.updateWorkbasket(importedWb);
+        workbasketService.updateWorkbasket(wbWithoutId);
+        newId = systemIds.get(logicalId(importedWb));
       } else {
-        Workbasket wbWithoutId = removeId(importedWb);
-        workbasket = workbasketService.createWorkbasket(wbWithoutId);
+        newId = workbasketService.createWorkbasket(wbWithoutId).getId();
       }
 
       // Since we would have a n² runtime when doing a lookup and updating the access items we
       // decided to
       // simply delete all existing accessItems and create new ones.
       for (WorkbasketAccessItem accessItem :
-          workbasketService.getWorkbasketAccessItems(workbasket.getId())) {
+          workbasketService.getWorkbasketAccessItems(newId)) {
         workbasketService.deleteWorkbasketAccessItem(accessItem.getId());
       }
       for (WorkbasketAccessItem authorization : definition.getAuthorizations()) {
         workbasketService.createWorkbasketAccessItem(authorization);
       }
-      idConversion.put(importedWb.getId(), workbasket.getId());
+      idConversion.put(importedWb.getId(), newId);
     }
 
     // STEP 2: update distribution targets
@@ -160,6 +161,8 @@ public class WorkbasketDefinitionController {
       for (String oldId : definition.getDistributionTargets()) {
         if (idConversion.containsKey(oldId)) {
           distributionTargets.add(idConversion.get(oldId));
+        } else if (systemIds.containsValue(oldId)) {
+          distributionTargets.add(oldId);
         } else {
           throw new InvalidWorkbasketException(
               String.format(
