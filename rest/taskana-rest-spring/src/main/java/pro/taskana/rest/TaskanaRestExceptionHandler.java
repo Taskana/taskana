@@ -25,6 +25,7 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.exceptions.TaskAlreadyExistException;
 import pro.taskana.exceptions.TaskNotFoundException;
+import pro.taskana.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketInUseException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
@@ -110,6 +111,12 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
   @ExceptionHandler(WorkbasketAlreadyExistException.class)
   protected ResponseEntity<Object> handleWorkbasketAlreadyExist(
       WorkbasketAlreadyExistException ex, WebRequest req) {
+    return buildResponse(ex, req, HttpStatus.CONFLICT);
+  }
+  
+  @ExceptionHandler(WorkbasketAccessItemAlreadyExistException.class)
+  protected ResponseEntity<Object> handleWorkbasketAccessItemAlreadyExist(
+      WorkbasketAccessItemAlreadyExistException ex, WebRequest req) {
     return buildResponse(ex, req, HttpStatus.CONFLICT);
   }
 
