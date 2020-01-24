@@ -61,9 +61,7 @@ function main() {
     git config --global user.name $GH_USERNAME
 
     #commit all poms
-    git checkout -b "$branch"
-    #to compensate new updates
-    git pull
+    git checkout "$branch"
     git add "./*pom.xml"
     for file in "$@"; do
       [[ -n "$file" ]] && git add "$file"
