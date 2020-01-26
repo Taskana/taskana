@@ -24,8 +24,6 @@ public final class TaskanaEngineTestConfiguration {
   private static DataSource dataSource;
   private static String schemaName = null;
 
-  private TaskanaEngineTestConfiguration() {}
-
   static {
     String userHomeDirectroy = System.getProperty("user.home");
     String propertiesFileName = userHomeDirectroy + "/taskanaUnitTest.properties";
@@ -36,6 +34,8 @@ public final class TaskanaEngineTestConfiguration {
       dataSource = createDefaultDataSource();
     }
   }
+
+  private TaskanaEngineTestConfiguration() {}
 
   /**
    * returns the Datasource used for Junit test. If the file {user.home}/taskanaUnitTest.properties

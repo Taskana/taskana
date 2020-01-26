@@ -109,9 +109,8 @@ class WorkbasketControllerIntTest {
   }
 
   /**
-   * Bug Ticket TSK-1029.
-   * Businessadmin is allowed to delete any workbasket ticket without user related access
-   * restrictions.
+   * Bug Ticket TSK-1029. Businessadmin is allowed to delete any workbasket ticket without user
+   * related access restrictions.
    */
   @Test
   void testDeleteWorkbasketAsBusinessAdminWithoutExplicitReadPermission() {

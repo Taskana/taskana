@@ -113,7 +113,7 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
       WorkbasketAlreadyExistException ex, WebRequest req) {
     return buildResponse(ex, req, HttpStatus.CONFLICT);
   }
-  
+
   @ExceptionHandler(WorkbasketAccessItemAlreadyExistException.class)
   protected ResponseEntity<Object> handleWorkbasketAccessItemAlreadyExist(
       WorkbasketAccessItemAlreadyExistException ex, WebRequest req) {

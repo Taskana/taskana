@@ -31,6 +31,17 @@ public class AbstractAccTest {
   private static DataSource dataSource;
   private static String schemaName = null;
 
+  static {
+    String userHomeDirectroy = System.getProperty("user.home");
+    String propertiesFileName = userHomeDirectroy + "/taskanaUnitTest.properties";
+    File f = new File(propertiesFileName);
+    if (f.exists() && !f.isDirectory()) {
+      dataSource = createDataSourceFromProperties(propertiesFileName);
+    } else {
+      dataSource = createDefaultDataSource();
+    }
+  }
+
   protected AbstractAccTest() {
     // not called
   }
@@ -54,17 +65,6 @@ public class AbstractAccTest {
     DbWriter writer = new DbWriter();
     writer.clearDB(dataSource);
     writer.generateTestData(dataSource);
-  }
-
-  static {
-    String userHomeDirectroy = System.getProperty("user.home");
-    String propertiesFileName = userHomeDirectroy + "/taskanaUnitTest.properties";
-    File f = new File(propertiesFileName);
-    if (f.exists() && !f.isDirectory()) {
-      dataSource = createDataSourceFromProperties(propertiesFileName);
-    } else {
-      dataSource = createDefaultDataSource();
-    }
   }
 
   public static DataSource getDataSource() {

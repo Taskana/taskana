@@ -34,8 +34,10 @@ public class TaskanaEngineConfigurationTest extends AbstractAccTest {
     resetDb("SOMECUSTOMSCHEMANAME");
     long count = getHistoryService().createHistoryQuery().workbasketKeyIn("wbKey1").count();
     assertEquals(0, count);
-    getHistoryService().create(
-        AbstractAccTest.createHistoryEvent("wbKey1", "taskId1", "type1", "Some comment", "wbKey2"));
+    getHistoryService()
+        .create(
+            AbstractAccTest.createHistoryEvent(
+                "wbKey1", "taskId1", "type1", "Some comment", "wbKey2"));
     count = getHistoryService().createHistoryQuery().workbasketKeyIn("wbKey1").count();
     assertEquals(1, count);
   }
