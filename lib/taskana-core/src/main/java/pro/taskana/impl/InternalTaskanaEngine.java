@@ -76,7 +76,6 @@ public interface InternalTaskanaEngine {
    */
   TaskRoutingManager getTaskRoutingManager();
 
-
   /**
    * This method is supposed to skip further permission checks if we are already in a secured
    * environment. With great power comes great responsibility.

@@ -108,24 +108,6 @@ public class ScheduledJob {
     this.retryCount = retryCount;
   }
 
-  /**
-   * This enum tracks the state of a job.
-   *
-   * @author bbr
-   */
-  public enum State {
-    READY,
-    FAILED
-  }
-
-  /** This enum controls the type of a job. */
-  public enum Type {
-    CLASSIFICATIONCHANGEDJOB,
-    UPDATETASKSJOB,
-    TASKCLEANUPJOB,
-    WORKBASKETCLEANUPJOB;
-  }
-
   @Override
   public int hashCode() {
     return Objects.hash(
@@ -176,5 +158,23 @@ public class ScheduledJob {
         + ", arguments="
         + arguments
         + "]";
+  }
+
+  /**
+   * This enum tracks the state of a job.
+   *
+   * @author bbr
+   */
+  public enum State {
+    READY,
+    FAILED
+  }
+
+  /** This enum controls the type of a job. */
+  public enum Type {
+    CLASSIFICATIONCHANGEDJOB,
+    UPDATETASKSJOB,
+    TASKCLEANUPJOB,
+    WORKBASKETCLEANUPJOB;
   }
 }
