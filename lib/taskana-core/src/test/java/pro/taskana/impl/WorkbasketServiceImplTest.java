@@ -1,5 +1,6 @@
 package pro.taskana.impl;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.startsWith;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -15,6 +16,8 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,11 +31,13 @@ import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
 import pro.taskana.TaskanaEngine;
 import pro.taskana.Workbasket;
+import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketType;
 import pro.taskana.configuration.TaskanaEngineConfiguration;
 import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
 import pro.taskana.mappings.DistributionTargetMapper;
@@ -172,6 +177,20 @@ class WorkbasketServiceImplTest {
         taskanaEngineConfigurationMock);
   }
 
+  @Test
+  void testSetWorkbasketAccessItemsWithMultipleAccessIds() throws Exception {
+
+    String wid = "workbasketId";
+    List<WorkbasketAccessItem> accessItems =
+        IntStream.rangeClosed(0, 10)
+            .mapToObj(i -> createWorkbasketAccessItem("id" + i, "access" + i, wid))
+            .collect(Collectors.toList());
+    accessItems.add(createWorkbasketAccessItem("id5", "access5", wid));
+
+    assertThatThrownBy(() -> workbasketServiceSpy.setWorkbasketAccessItems(wid, accessItems))
+        .isInstanceOf(WorkbasketAccessItemAlreadyExistException.class);
+  }
+
   private WorkbasketImpl createTestWorkbasket(String id, String key) {
     WorkbasketImpl workbasket = new WorkbasketImpl();
     workbasket.setId(id);
@@ -194,5 +213,14 @@ class WorkbasketServiceImplTest {
       distributionsTargets.add(wb.getId());
     }
     return distributionsTargets;
+  }
+
+  private WorkbasketAccessItem createWorkbasketAccessItem(
+      String id, String accessId, String workbasketId) {
+    WorkbasketAccessItemImpl workbasketAccessItem = new WorkbasketAccessItemImpl();
+    workbasketAccessItem.setId(id);
+    workbasketAccessItem.setAccessId(accessId);
+    workbasketAccessItem.setWorkbasketId(workbasketId);
+    return workbasketAccessItem;
   }
 }

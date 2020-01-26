@@ -5,14 +5,11 @@ import pro.taskana.WorkbasketAccessItem;
 public class WorkbasketAccessItemAlreadyExistException extends TaskanaException {
   private static final long serialVersionUID = 4716611657569005013L;
 
-  public WorkbasketAccessItemAlreadyExistException(WorkbasketAccessItem workbasketAccessItem) {
+  public WorkbasketAccessItemAlreadyExistException(WorkbasketAccessItem accessItem) {
     super(
-        "WorkbasketAccessItem for accessId "
-            + workbasketAccessItem.getAccessId()
-            + " and WorkbasketId "
-            + workbasketAccessItem.getWorkbasketId()
-            + ", WorkbasketKey "
-            + workbasketAccessItem.getWorkbasketKey()
-            + " exists already.");
+        String.format(
+            "WorkbasketAccessItem for accessId '%s' "
+                + "and WorkbasketId '%s', WorkbasketKey '%s' exists already.",
+            accessItem.getAccessId(), accessItem.getWorkbasketId(), accessItem.getWorkbasketKey()));
   }
 }
