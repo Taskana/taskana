@@ -156,15 +156,26 @@ public interface WorkbasketService {
    * Setting up the new WorkbasketAccessItems for a Workbasket. Already stored values will be
    * completely replaced by the current ones.
    *
+   * <p>Preconditions for each {@link WorkbasketAccessItem} in {@code wbAccessItems}:
+   *
+   * <ul>
+   *   <li>{@link WorkbasketAccessItem#getWorkbasketId()} is not null
+   *   <li>{@link WorkbasketAccessItem#getWorkbasketId()} is equal to {@code workbasketId}
+   *   <li>{@link WorkbasketAccessItem#getAccessId()} is unique
+   * </ul>
+   *
    * @param workbasketId ID of the access-target workbasket.
    * @param wbAccessItems List of WorkbasketAccessItems which does replace all current stored ones.
-   * @throws InvalidArgumentException will be thrown when the parameter is NULL or member doesn´t
-   *     match the preconditions
+   * @throws InvalidArgumentException will be thrown when the parameter {@code wbAccessItems} is
+   *     NULL or member doesn't match the preconditions
    * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
    *     ADMIN
+   * @throws WorkbasketAccessItemAlreadyExistException if {@code wbAccessItems} contains multiple
+   *     accessItems with the same accessId.
    */
   void setWorkbasketAccessItems(String workbasketId, List<WorkbasketAccessItem> wbAccessItems)
-      throws InvalidArgumentException, NotAuthorizedException;
+      throws InvalidArgumentException, NotAuthorizedException,
+          WorkbasketAccessItemAlreadyExistException;
 
   /**
    * This method provides a query builder for querying the database.

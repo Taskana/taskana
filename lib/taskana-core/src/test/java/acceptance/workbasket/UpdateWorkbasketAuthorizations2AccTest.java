@@ -11,8 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.WorkbasketAccessItem;
 import pro.taskana.WorkbasketService;
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
@@ -28,8 +26,7 @@ public class UpdateWorkbasketAuthorizations2AccTest extends AbstractAccTest {
       userName = "teamlead_1",
       groupNames = {"group_1", "businessadmin"})
   @Test
-  void testUpdatedAccessItemListToEmptyList()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testUpdatedAccessItemListToEmptyList() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     final String wbId = "WBI:100000000000000000000000000000000004";
     List<WorkbasketAccessItem> accessItems = workbasketService.getWorkbasketAccessItems(wbId);

@@ -3,9 +3,10 @@ package pro.taskana.impl;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import org.apache.ibatis.exceptions.PersistenceException;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -199,15 +200,16 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                 "WorkbasketAccessItem %s refers to a not existing workbasket",
                 workbasketAccessItem));
       }
-      try {
-        workbasketAccessMapper.insert(accessItem);
-        LOGGER.debug(
-            "Method createWorkbasketAccessItem() created workbaskteAccessItem {}", accessItem);
-      } catch (PersistenceException e) {
-        LOGGER.warn(
-            "when trying to insert WorkbasketAccessItem {} caught exception {}", accessItem, e);
+      boolean accessIdAlreadyExists =
+          getWorkbasketAccessItems(workbasketAccessItem.getWorkbasketId()).stream()
+              .map(WorkbasketAccessItem::getAccessId)
+              .anyMatch(i -> i.equals(workbasketAccessItem.getAccessId()));
+      if (accessIdAlreadyExists) {
         throw new WorkbasketAccessItemAlreadyExistException(accessItem);
       }
+      workbasketAccessMapper.insert(accessItem);
+      LOGGER.debug(
+          "Method createWorkbasketAccessItem() created workbaskteAccessItem {}", accessItem);
       return accessItem;
     } finally {
       taskanaEngine.returnConnection();
@@ -394,51 +396,47 @@ public class WorkbasketServiceImpl implements WorkbasketService {
   @Override
   public void setWorkbasketAccessItems(
       String workbasketId, List<WorkbasketAccessItem> wbAccessItems)
-      throws InvalidArgumentException, NotAuthorizedException {
+      throws InvalidArgumentException, NotAuthorizedException,
+          WorkbasketAccessItemAlreadyExistException {
     LOGGER.debug(
         "entry to setWorkbasketAccessItems(workbasketAccessItems = {})", wbAccessItems.toString());
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
-    List<WorkbasketAccessItemImpl> newItems = new ArrayList<>();
     try {
       taskanaEngine.openConnection();
-      // Check pre-conditions and set ID
-      if (!wbAccessItems.isEmpty()) {
-        for (WorkbasketAccessItem workbasketAccessItem : wbAccessItems) {
-          WorkbasketAccessItemImpl wbAccessItemImpl =
-              (WorkbasketAccessItemImpl) workbasketAccessItem;
-          if (wbAccessItemImpl.getWorkbasketId() == null) {
-            throw new InvalidArgumentException(
-                String.format(
-                    "Checking the preconditions of the current WorkbasketAccessItem failed "
-                        + "- WBID is NULL. WorkbasketAccessItem=%s",
-                    workbasketAccessItem));
-          } else if (!wbAccessItemImpl.getWorkbasketId().equals(workbasketId)) {
-            throw new InvalidArgumentException(
-                String.format(
-                    "Checking the preconditions of the current WorkbasketAccessItem failed "
-                        + "- the WBID does not match. Target-WBID=''%s'' WorkbasketAccessItem=%s",
-                    workbasketId, workbasketAccessItem));
-          }
-          if (wbAccessItemImpl.getId() == null || wbAccessItemImpl.getId().isEmpty()) {
-            wbAccessItemImpl.setId(
-                IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET_AUTHORIZATION));
-          }
-          newItems.add(wbAccessItemImpl);
-        }
-      }
-
       // delete all current ones
       workbasketAccessMapper.deleteAllAccessItemsForWorkbasketId(workbasketId);
 
-      // add all
-      if (!newItems.isEmpty()) {
-        newItems.forEach(item -> workbasketAccessMapper.insert(item));
+      Set<String> ids = new HashSet<>();
+      for (WorkbasketAccessItem workbasketAccessItem : wbAccessItems) {
+        WorkbasketAccessItemImpl wbAccessItemImpl = (WorkbasketAccessItemImpl) workbasketAccessItem;
+        // Check pre-conditions and set ID
+        if (wbAccessItemImpl.getWorkbasketId() == null) {
+          throw new InvalidArgumentException(
+              String.format(
+                  "Checking the preconditions of the current WorkbasketAccessItem failed "
+                      + "- WBID is NULL. WorkbasketAccessItem=%s",
+                  workbasketAccessItem));
+        } else if (!wbAccessItemImpl.getWorkbasketId().equals(workbasketId)) {
+          throw new InvalidArgumentException(
+              String.format(
+                  "Checking the preconditions of the current WorkbasketAccessItem failed "
+                      + "- the WBID does not match. Target-WBID=''%s'' WorkbasketAccessItem=%s",
+                  workbasketId, workbasketAccessItem));
+        }
+        if (wbAccessItemImpl.getId() == null || wbAccessItemImpl.getId().isEmpty()) {
+          wbAccessItemImpl.setId(
+              IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET_AUTHORIZATION));
+        }
+        if (ids.contains(wbAccessItemImpl.getAccessId())) {
+          throw new WorkbasketAccessItemAlreadyExistException(wbAccessItemImpl);
+        }
+        ids.add(wbAccessItemImpl.getAccessId());
+        workbasketAccessMapper.insert(wbAccessItemImpl);
       }
+
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug(
-          "exit from setWorkbasketAccessItems(workbasketAccessItems = {})",
-          wbAccessItems.toString());
+      LOGGER.debug("exit from setWorkbasketAccessItems(workbasketAccessItems = {})", wbAccessItems);
     }
   }
 
@@ -699,37 +697,6 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     }
   }
 
-  private void validateWorkbasketId(String workbasketId) throws InvalidArgumentException {
-    if (workbasketId == null) {
-      throw new InvalidArgumentException(
-          "The WorkbasketId can´t be NULL");
-    }
-
-    if (workbasketId.isEmpty()) {
-      throw new InvalidArgumentException(
-          "The WorkbasketId can´t be EMPTY for deleteWorkbasket()");
-    }
-  }
-
-  private long getCountTasksByWorkbasketId(String workbasketId) {
-    return taskanaEngine
-        .getEngine()
-        .getTaskService()
-        .createTaskQuery()
-        .workbasketIdIn(workbasketId)
-        .count();
-  }
-
-  private long getCountTasksNotCompletedByWorkbasketId(String workbasketId) {
-    return taskanaEngine
-        .getEngine()
-        .getTaskService()
-        .createTaskQuery()
-        .workbasketIdIn(workbasketId)
-        .stateNotIn(TaskState.COMPLETED)
-        .count();
-  }
-
   public BulkOperationResults<String, TaskanaException> deleteWorkbaskets(
       List<String> workbasketsIds) throws NotAuthorizedException, InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
@@ -852,6 +819,35 @@ public class WorkbasketServiceImpl implements WorkbasketService {
       taskanaEngine.returnConnection();
       LOGGER.debug("exit from deleteWorkbasketAccessItemsForAccessId(accessId={}).", accessId);
     }
+  }
+
+  private void validateWorkbasketId(String workbasketId) throws InvalidArgumentException {
+    if (workbasketId == null) {
+      throw new InvalidArgumentException("The WorkbasketId can´t be NULL");
+    }
+
+    if (workbasketId.isEmpty()) {
+      throw new InvalidArgumentException("The WorkbasketId can´t be EMPTY for deleteWorkbasket()");
+    }
+  }
+
+  private long getCountTasksByWorkbasketId(String workbasketId) {
+    return taskanaEngine
+        .getEngine()
+        .getTaskService()
+        .createTaskQuery()
+        .workbasketIdIn(workbasketId)
+        .count();
+  }
+
+  private long getCountTasksNotCompletedByWorkbasketId(String workbasketId) {
+    return taskanaEngine
+        .getEngine()
+        .getTaskService()
+        .createTaskQuery()
+        .workbasketIdIn(workbasketId)
+        .stateNotIn(TaskState.COMPLETED)
+        .count();
   }
 
   private boolean skipAuthorizationCheck() {

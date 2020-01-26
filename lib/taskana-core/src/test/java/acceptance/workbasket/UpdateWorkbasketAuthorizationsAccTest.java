@@ -170,7 +170,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
       userName = "teamlead_1",
       groupNames = {"group_1", "businessadmin"})
   @Test
-  void testUpdatedAccessItemList() throws InvalidArgumentException, NotAuthorizedException {
+  void testUpdatedAccessItemList() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     final String wbId = "WBI:100000000000000000000000000000000004";
     List<WorkbasketAccessItem> accessItems = workbasketService.getWorkbasketAccessItems(wbId);
@@ -210,7 +210,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
       userName = "teamlead_1",
       groupNames = {"group_1", "businessadmin"})
   @Test
-  void testInsertAccessItemList() throws InvalidArgumentException, NotAuthorizedException {
+  void testInsertAccessItemList() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     final String wbId = "WBI:100000000000000000000000000000000004";
     List<WorkbasketAccessItem> accessItems = workbasketService.getWorkbasketAccessItems(wbId);
@@ -248,8 +248,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
       userName = "teamlead_1",
       groupNames = {"group_1", "businessadmin"})
   @Test
-  void testDeleteAccessItemForAccessItemId()
-      throws NotAuthorizedException, InvalidArgumentException {
+  void testDeleteAccessItemForAccessItemId() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     final String wbId = "WBI:100000000000000000000000000000000001";
 
@@ -276,9 +275,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         new ArrayList<>(workbasketService.getWorkbasketAccessItems(wbId));
 
     // with DB2 V 11, the lists are sorted differently...
-    assertEquals(
-        new HashSet<WorkbasketAccessItem>(originalList),
-        new HashSet<WorkbasketAccessItem>(listEqualToOriginal));
+    assertEquals(new HashSet<>(originalList), new HashSet<>(listEqualToOriginal));
   }
 
   @WithAccessId(

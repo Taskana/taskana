@@ -32,6 +32,7 @@ import pro.taskana.exceptions.DomainNotFoundException;
 import pro.taskana.exceptions.InvalidArgumentException;
 import pro.taskana.exceptions.InvalidWorkbasketException;
 import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketInUseException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
@@ -142,7 +143,7 @@ public class WorkbasketController extends AbstractPagingController {
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
           WorkbasketInUseException {
     LOGGER.debug("Entry to markWorkbasketForDeletion(workbasketId= {})", workbasketId);
-    //http status code accepted because workbaskets will not be deleted immediately
+    // http status code accepted because workbaskets will not be deleted immediately
     ResponseEntity<?> response =
         ResponseEntity.accepted().body(workbasketService.deleteWorkbasket(workbasketId));
     LOGGER.debug("Exit from markWorkbasketForDeletion(), returning {}", response);
@@ -224,7 +225,8 @@ public class WorkbasketController extends AbstractPagingController {
   public ResponseEntity<WorkbasketAccessItemListResource> setWorkbasketAccessItems(
       @PathVariable(value = "workbasketId") String workbasketId,
       @RequestBody List<WorkbasketAccessItemResource> workbasketAccessResourceItems)
-      throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
+      throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
+          WorkbasketAccessItemAlreadyExistException {
     LOGGER.debug("Entry to setWorkbasketAccessItems(workbasketId= {})", workbasketId);
     if (workbasketAccessResourceItems == null) {
       throw new InvalidArgumentException("Can´t create something with NULL body-value.");
