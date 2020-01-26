@@ -1,6 +1,6 @@
 package pro.taskana.sampledata;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static pro.taskana.sampledata.SqlReplacer.DATE_TIME_FORMATTER;
 import static pro.taskana.sampledata.SqlReplacer.RELATIVE_DATE_PATTERN;
 
@@ -8,8 +8,6 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.regex.Matcher;
-import org.hamcrest.CoreMatchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /** Test SampleDataGenerator. */
@@ -20,29 +18,29 @@ class SqlReplacerTest {
     ZonedDateTime now = Instant.now().atZone(ZoneId.of("UTC"));
     String dateFormatted = now.format(DATE_TIME_FORMATTER);
     String sqlStringReplaced = SqlReplacer.replaceDatePlaceholder(now, "... RELATIVE_DATE(0) ...");
-    assertThat(sqlStringReplaced, CoreMatchers.containsString(dateFormatted));
+    assertThat(sqlStringReplaced).contains(dateFormatted);
   }
 
   @Test
   void testDateRegex() {
 
-    Assertions.assertTrue(RELATIVE_DATE_PATTERN.matcher("RELATIVE_DATE(123)").matches());
+    assertThat(RELATIVE_DATE_PATTERN.matcher("RELATIVE_DATE(123)").matches()).isTrue();
 
-    Assertions.assertTrue(RELATIVE_DATE_PATTERN.matcher("... RELATIVE_DATE(5) ...").find());
-    Assertions.assertTrue(RELATIVE_DATE_PATTERN.matcher("... RELATIVE_DATE(0) ...").find());
-    Assertions.assertTrue(RELATIVE_DATE_PATTERN.matcher("... RELATIVE_DATE(-123) ...").find());
+    assertThat(RELATIVE_DATE_PATTERN.matcher("... RELATIVE_DATE(5) ...").find()).isTrue();
+    assertThat(RELATIVE_DATE_PATTERN.matcher("... RELATIVE_DATE(0) ...").find()).isTrue();
+    assertThat(RELATIVE_DATE_PATTERN.matcher("... RELATIVE_DATE(-123) ...").find()).isTrue();
 
-    Assertions.assertFalse(RELATIVE_DATE_PATTERN.matcher("... RELATIVE_DATE() ...").find());
-    Assertions.assertFalse(RELATIVE_DATE_PATTERN.matcher("... RELATIVE_DATE(ABCDE) ...").find());
-    Assertions.assertFalse(RELATIVE_DATE_PATTERN.matcher("... RELATIVE_NO(5) ...").find());
-    Assertions.assertFalse(RELATIVE_DATE_PATTERN.matcher("...").find());
+    assertThat(RELATIVE_DATE_PATTERN.matcher("... RELATIVE_DATE() ...").find()).isFalse();
+    assertThat(RELATIVE_DATE_PATTERN.matcher("... RELATIVE_DATE(ABCDE) ...").find()).isFalse();
+    assertThat(RELATIVE_DATE_PATTERN.matcher("... RELATIVE_NO(5) ...").find()).isFalse();
+    assertThat(RELATIVE_DATE_PATTERN.matcher("...").find()).isFalse();
   }
 
   @Test
   void testDateRegexExtractGroup() {
     Matcher matcher = RELATIVE_DATE_PATTERN.matcher("RELATIVE_DATE(123)");
-    Assertions.assertTrue(matcher.find());
-    Assertions.assertEquals("123", matcher.group(1));
+    assertThat(matcher.find()).isTrue();
+    assertThat(matcher.group(1)).isEqualTo("123");
   }
 
   @Test
@@ -50,7 +48,8 @@ class SqlReplacerTest {
     ZonedDateTime now = Instant.now().atZone(ZoneId.of("UTC"));
     String dateFormatted = now.plusDays(5).format(DATE_TIME_FORMATTER);
     String sqlStringReplaced = SqlReplacer.replaceDatePlaceholder(now, "... RELATIVE_DATE(5) ...");
-    assertThat(sqlStringReplaced, CoreMatchers.containsString(dateFormatted));
+
+    assertThat(sqlStringReplaced).contains(dateFormatted);
   }
 
   @Test
@@ -59,6 +58,6 @@ class SqlReplacerTest {
     String dateFormatted = now.plusDays(-10).format(DATE_TIME_FORMATTER);
     String sqlStringReplaced =
         SqlReplacer.replaceDatePlaceholder(now, "... RELATIVE_DATE(-10) ...");
-    assertThat(sqlStringReplaced, CoreMatchers.containsString(dateFormatted));
+    assertThat(sqlStringReplaced).contains(dateFormatted);
   }
 }

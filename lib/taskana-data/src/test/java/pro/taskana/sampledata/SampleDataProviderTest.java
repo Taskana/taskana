@@ -1,5 +1,7 @@
 package pro.taskana.sampledata;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -8,14 +10,14 @@ class SampleDataProviderTest {
 
   @Test
   void getScriptsNotNull() {
-    Assertions.assertNotNull(SampleDataProvider.getDefaultScripts());
-    Assertions.assertNotNull(SampleDataProvider.getScriptsWithEvents());
+    assertThat(SampleDataProvider.getDefaultScripts()).isNotNull();
+    assertThat(SampleDataProvider.getScriptsWithEvents()).isNotNull();
   }
 
   @Test
   void getScriptsNotEmpty() {
-    Assertions.assertTrue(SampleDataProvider.getDefaultScripts().count() > 0);
-    Assertions.assertTrue(SampleDataProvider.getScriptsWithEvents().count() > 0);
+    assertThat(SampleDataProvider.getDefaultScripts().count() > 0).isTrue();
+    assertThat(SampleDataProvider.getScriptsWithEvents().count() > 0).isTrue();
   }
 
   @Test
