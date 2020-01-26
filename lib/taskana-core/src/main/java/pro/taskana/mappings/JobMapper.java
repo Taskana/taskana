@@ -31,9 +31,7 @@ public interface JobMapper {
           + "</choose>"
           + ", #{job.priority}, #{job.created}, #{job.due}, #{job.state}, #{job.lockedBy}, #{job.lockExpires}, #{job.type}, #{job.retryCount}, #{job.arguments,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler} )"
           + "</script>")
-  @Results(
-      value = {
-        @Result(property = "jobId", column = "JOB_ID")})
+  @Results(value = {@Result(property = "jobId", column = "JOB_ID")})
   Integer insertJob(@Param("job") ScheduledJob job);
 
   @Select(

@@ -333,31 +333,6 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     }
 
     @Override
-    public <T> T runAsAdmin(Supplier<T> supplier) {
-
-      Subject subject = Subject.getSubject(AccessController.getContext());
-      if (subject == null) {
-        // dont add authorisation if none is available.
-        return supplier.get();
-      }
-
-      Set<Principal> principalsCopy = new HashSet<>(subject.getPrincipals());
-      Set<Object> privateCredentialsCopy = new HashSet<>(subject.getPrivateCredentials());
-      Set<Object> publicCredentialsCopy = new HashSet<>(subject.getPublicCredentials());
-
-      String adminName =
-          this.getEngine().getConfiguration().getRoleMap().get(TaskanaRole.ADMIN).stream()
-              .findFirst()
-              .orElseThrow(() -> new TaskanaRuntimeException("There is no admin configured"));
-
-      principalsCopy.add(new GroupPrincipal(adminName));
-      Subject subject1 =
-          new Subject(true, principalsCopy, privateCredentialsCopy, publicCredentialsCopy);
-
-      return Subject.doAs(subject1, (PrivilegedAction<T>) supplier::get);
-    }
-
-    @Override
     public void returnConnection() {
       if (mode != ConnectionManagementMode.EXPLICIT) {
         sessionStack.popSessionFromStack();
@@ -420,6 +395,31 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     @Override
     public TaskRoutingManager getTaskRoutingManager() {
       return taskRoutingManager;
+    }
+
+    @Override
+    public <T> T runAsAdmin(Supplier<T> supplier) {
+
+      Subject subject = Subject.getSubject(AccessController.getContext());
+      if (subject == null) {
+        // dont add authorisation if none is available.
+        return supplier.get();
+      }
+
+      Set<Principal> principalsCopy = new HashSet<>(subject.getPrincipals());
+      Set<Object> privateCredentialsCopy = new HashSet<>(subject.getPrivateCredentials());
+      Set<Object> publicCredentialsCopy = new HashSet<>(subject.getPublicCredentials());
+
+      String adminName =
+          this.getEngine().getConfiguration().getRoleMap().get(TaskanaRole.ADMIN).stream()
+              .findFirst()
+              .orElseThrow(() -> new TaskanaRuntimeException("There is no admin configured"));
+
+      principalsCopy.add(new GroupPrincipal(adminName));
+      Subject subject1 =
+          new Subject(true, principalsCopy, privateCredentialsCopy, publicCredentialsCopy);
+
+      return Subject.doAs(subject1, (PrivilegedAction<T>) supplier::get);
     }
   }
 }
