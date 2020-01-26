@@ -36,7 +36,7 @@
 			<version>${version.spring.mybatis}</version>
 		</dependency>
 
-		<!-- Tests -->
+		<!-- test dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -53,6 +53,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<version>${version.spring.boot}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<version>${version.assertj}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
