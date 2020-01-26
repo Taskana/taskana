@@ -1,13 +1,9 @@
 package acceptance.classification;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -50,15 +46,16 @@ class CreateClassificationAccTest extends AbstractAccTest {
 
     // check only 1 created
     long amountOfClassificationsAfter = classificationService.createClassificationQuery().count();
-    assertThat(amountOfClassificationsAfter, equalTo(amountOfClassificationsBefore + 1));
+    assertThat(amountOfClassificationsAfter).isEqualTo(amountOfClassificationsBefore + 1);
 
     classification = classificationService.getClassification(classification.getId());
-    assertNotNull(classification);
-    assertNotNull(classification.getCreated());
-    assertNotNull(classification.getModified());
-    assertNotNull(classification.getId());
-    assertThat(classification.getIsValidInDomain(), equalTo(false));
-    assertTrue(classification.getId().startsWith(ID_PREFIX_CLASSIFICATION));
+    assertThat(classification).isNotNull();
+
+    assertThat(classification.getCreated()).isNotNull();
+    assertThat(classification.getModified()).isNotNull();
+    assertThat(classification.getId()).isNotNull();
+    assertThat(classification.getIsValidInDomain()).isFalse();
+    assertThat(classification.getId()).startsWith(ID_PREFIX_CLASSIFICATION);
   }
 
   @WithAccessId(
@@ -78,34 +75,36 @@ class CreateClassificationAccTest extends AbstractAccTest {
     // Check returning one is the "original"
     Classification createdClassification =
         classificationService.getClassification(classification.getId());
-    assertNotNull(createdClassification.getId());
-    assertNotNull(createdClassification.getCreated());
-    assertNotNull(createdClassification.getModified());
-    assertThat(createdClassification.getIsValidInDomain(), equalTo(true));
-    assertThat(createdClassification.getDomain(), equalTo("DOMAIN_A"));
-    assertEquals(createdClassification.getKey(), "Key1");
+    assertThat(classification).isNotNull();
+    assertThat(classification.getCreated()).isNotNull();
+    assertThat(classification.getModified()).isNotNull();
+    assertThat(classification.getId()).isNotNull();
+    assertThat(classification.getIsValidInDomain()).isTrue();
+    assertThat(classification.getId()).startsWith(ID_PREFIX_CLASSIFICATION);
+    assertThat(createdClassification.getDomain()).isEqualTo("DOMAIN_A");
+    assertThat(createdClassification.getKey()).isEqualTo("Key1");
 
     // Check 2 new created
     long amountOfClassificationsAfter = classificationService.createClassificationQuery().count();
-    assertThat(amountOfClassificationsAfter, equalTo(countClassificationsBefore + 2));
+    assertThat(amountOfClassificationsAfter).isEqualTo(countClassificationsBefore + 2);
 
     // Check main
     classification = classificationService.getClassification(classification.getId());
-    assertNotNull(classification);
-    assertNotNull(classification.getCreated());
-    assertNotNull(classification.getModified());
-    assertNotNull(classification.getId());
-    assertThat(classification.getIsValidInDomain(), equalTo(true));
-    assertTrue(classification.getId().startsWith(ID_PREFIX_CLASSIFICATION));
+    assertThat(classification).isNotNull();
+    assertThat(classification.getCreated()).isNotNull();
+    assertThat(classification.getModified()).isNotNull();
+    assertThat(classification.getId()).isNotNull();
+    assertThat(classification.getIsValidInDomain()).isTrue();
+    assertThat(classification.getId()).startsWith(ID_PREFIX_CLASSIFICATION);
 
     // Check master-copy
     classification = classificationService.getClassification(classification.getKey(), "");
-    assertNotNull(classification);
-    assertNotNull(classification.getCreated());
-    assertNotNull(classification.getModified());
-    assertNotNull(classification.getId());
-    assertThat(classification.getIsValidInDomain(), equalTo(false));
-    assertTrue(classification.getId().startsWith(ID_PREFIX_CLASSIFICATION));
+    assertThat(classification).isNotNull();
+    assertThat(classification.getCreated()).isNotNull();
+    assertThat(classification.getModified()).isNotNull();
+    assertThat(classification.getId()).isNotNull();
+    assertThat(classification.getIsValidInDomain()).isFalse();
+    assertThat(classification.getId()).startsWith(ID_PREFIX_CLASSIFICATION);
   }
 
   @WithAccessId(
@@ -125,10 +124,10 @@ class CreateClassificationAccTest extends AbstractAccTest {
     Classification actual = classificationService.createClassification(expected);
     long amountOfClassificationsAfter = classificationService.createClassificationQuery().count();
 
-    assertEquals(amountOfClassificationsBefore + 1, amountOfClassificationsAfter);
-    assertNotNull(actual);
-    assertEquals(actual, expected);
-    assertTrue(actual.getIsValidInDomain());
+    assertThat(amountOfClassificationsAfter).isEqualTo(amountOfClassificationsBefore + 1);
+    assertThat(actual).isNotNull();
+    assertThat(actual).isSameAs(expected);
+    assertThat(actual.getIsValidInDomain()).isTrue();
   }
 
   @WithAccessId(
@@ -138,7 +137,7 @@ class CreateClassificationAccTest extends AbstractAccTest {
   void testCreateChildInDomainAndCopyInMaster() throws TaskanaException {
     Classification parent = classificationService.newClassification("Key0816", "DOMAIN_A", "TASK");
     Classification actualParent = classificationService.createClassification(parent);
-    assertNotNull(actualParent);
+    assertThat(actualParent).isNotNull();
 
     long amountOfClassificationsBefore = classificationService.createClassificationQuery().count();
     Classification child = classificationService.newClassification("Key0817", "DOMAIN_A", "TASK");
@@ -147,8 +146,8 @@ class CreateClassificationAccTest extends AbstractAccTest {
     Classification actualChild = classificationService.createClassification(child);
     long amountOfClassificationsAfter = classificationService.createClassificationQuery().count();
 
-    assertEquals(amountOfClassificationsBefore + 2, amountOfClassificationsAfter);
-    assertNotNull(actualChild);
+    assertThat(amountOfClassificationsAfter).isEqualTo(amountOfClassificationsBefore + 2);
+    assertThat(actualChild).isNotNull();
   }
 
   @WithAccessId(
@@ -161,18 +160,16 @@ class CreateClassificationAccTest extends AbstractAccTest {
     // Check key NULL
     Classification classification =
         classificationService.newClassification(null, "DOMAIN_A", "TASK");
-    Assertions.assertThrows(
-        InvalidArgumentException.class,
-        () -> classificationService.createClassification(classification));
+    assertThatThrownBy(() -> classificationService.createClassification(classification))
+        .isInstanceOf(InvalidArgumentException.class);
 
     // Check invalid ServiceLevel
 
     Classification classification2 =
         classificationService.newClassification("Key2", "DOMAIN_B", "TASK");
     classification2.setServiceLevel("abc");
-    Assertions.assertThrows(
-        InvalidArgumentException.class,
-        () -> classificationService.createClassification(classification2));
+    assertThatThrownBy(() -> classificationService.createClassification(classification2))
+        .isInstanceOf(InvalidArgumentException.class);
   }
 
   @WithAccessId(
@@ -183,9 +180,8 @@ class CreateClassificationAccTest extends AbstractAccTest {
     Classification classification = classificationService.newClassification("Key3", "", "TASK");
     Classification classificationCreated =
         classificationService.createClassification(classification);
-    Assertions.assertThrows(
-        ClassificationAlreadyExistException.class,
-        () -> classificationService.createClassification(classificationCreated));
+    assertThatThrownBy(() -> classificationService.createClassification(classificationCreated))
+        .isInstanceOf(ClassificationAlreadyExistException.class);
   }
 
   @WithAccessId(
@@ -195,9 +191,8 @@ class CreateClassificationAccTest extends AbstractAccTest {
   void testCreateClassificationInUnknownDomain() {
     Classification classification =
         classificationService.newClassification("Key3", "UNKNOWN_DOMAIN", "TASK");
-    Assertions.assertThrows(
-        DomainNotFoundException.class,
-        () -> classificationService.createClassification(classification));
+    assertThatThrownBy(() -> classificationService.createClassification(classification))
+        .isInstanceOf(DomainNotFoundException.class);
   }
 
   @WithAccessId(
@@ -207,9 +202,8 @@ class CreateClassificationAccTest extends AbstractAccTest {
   void testCreateClassificationOfUnknownType() {
     Classification classification =
         classificationService.newClassification("Key3", "DOMAIN_A", "UNKNOWN_TYPE");
-    Assertions.assertThrows(
-        InvalidArgumentException.class,
-        () -> classificationService.createClassification(classification));
+    assertThatThrownBy(() -> classificationService.createClassification(classification))
+        .isInstanceOf(InvalidArgumentException.class);
   }
 
   @WithAccessId(
@@ -220,9 +214,8 @@ class CreateClassificationAccTest extends AbstractAccTest {
     Classification classification =
         classificationService.newClassification("Key4", "DOMAIN_A", "TASK");
     classification.setCategory("UNKNOWN_CATEGORY");
-    Assertions.assertThrows(
-        InvalidArgumentException.class,
-        () -> classificationService.createClassification(classification));
+    assertThatThrownBy(() -> classificationService.createClassification(classification))
+        .isInstanceOf(InvalidArgumentException.class);
   }
 
   @WithAccessId(
@@ -232,9 +225,8 @@ class CreateClassificationAccTest extends AbstractAccTest {
   void testCreateClassificationWithInvalidParentId() {
     Classification classification = classificationService.newClassification("Key5", "", "TASK");
     classification.setParentId("ID WHICH CANT BE FOUND");
-    Assertions.assertThrows(
-        InvalidArgumentException.class,
-        () -> classificationService.createClassification(classification));
+    assertThatThrownBy(() -> classificationService.createClassification(classification))
+        .isInstanceOf(InvalidArgumentException.class);
   }
 
   @WithAccessId(
@@ -244,9 +236,8 @@ class CreateClassificationAccTest extends AbstractAccTest {
   void testCreateClassificationWithInvalidParentKey() {
     Classification classification = classificationService.newClassification("Key5", "", "TASK");
     classification.setParentKey("KEY WHICH CANT BE FOUND");
-    Assertions.assertThrows(
-        InvalidArgumentException.class,
-        () -> classificationService.createClassification(classification));
+    assertThatThrownBy(() -> classificationService.createClassification(classification))
+        .isInstanceOf(InvalidArgumentException.class);
   }
 
   @WithAccessId(
@@ -257,8 +248,7 @@ class CreateClassificationAccTest extends AbstractAccTest {
     ClassificationImpl classification =
         (ClassificationImpl) classificationService.newClassification("Key0818", "", "TASK");
     classification.setId("EXPLICIT ID");
-    Assertions.assertThrows(
-        InvalidArgumentException.class,
-        () -> classificationService.createClassification(classification));
+    assertThatThrownBy(() -> classificationService.createClassification(classification))
+        .isInstanceOf(InvalidArgumentException.class);
   }
 }
