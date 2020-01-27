@@ -36,6 +36,7 @@ import pro.taskana.exceptions.NotAuthorizedException;
 import pro.taskana.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.exceptions.WorkbasketNotFoundException;
+import pro.taskana.impl.WorkbasketAccessItemImpl;
 import pro.taskana.rest.resource.WorkbasketDefinitionResource;
 import pro.taskana.rest.resource.WorkbasketDefinitionResourceAssembler;
 import pro.taskana.rest.resource.WorkbasketResource;
@@ -144,11 +145,22 @@ public class WorkbasketDefinitionController {
       // Since we would have a n² runtime when doing a lookup and updating the access items we
       // decided to
       // simply delete all existing accessItems and create new ones.
+      boolean noWrongAuth = definition.getAuthorizations().stream().noneMatch(access -> {
+        return (!access.getWorkbasketId().equals(importedWb.getId()))
+            || (!access.getWorkbasketKey().equals(importedWb.getKey()));
+      });
+      if (!noWrongAuth) {
+        throw new InvalidWorkbasketException(
+            "The given Authentications for Workbasket " + importedWb.getId()
+                + " doesn't match in WorkbasketId and/or WorkbasketKey. "
+                + "Please provide consistent WorkbasketDefinitions");
+      }
       for (WorkbasketAccessItem accessItem :
           workbasketService.getWorkbasketAccessItems(newId)) {
         workbasketService.deleteWorkbasketAccessItem(accessItem.getId());
       }
-      for (WorkbasketAccessItem authorization : definition.getAuthorizations()) {
+      for (WorkbasketAccessItemImpl authorization : definition.getAuthorizations()) {
+        authorization.setWorkbasketId(newId);
         workbasketService.createWorkbasketAccessItem(authorization);
       }
       idConversion.put(importedWb.getId(), newId);
