@@ -1,12 +1,7 @@
 package pro.taskana.rest;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -19,7 +14,9 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import javax.sql.DataSource;
+import org.assertj.core.api.Fail;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -54,6 +51,7 @@ class TaskControllerIntTest {
   public String schemaName;
 
   @Autowired RestHelper restHelper;
+
   @Autowired private DataSource dataSource;
 
   @BeforeAll
@@ -74,8 +72,8 @@ class TaskControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
-    assertNotNull(response.getBody().getLink(Link.REL_SELF));
-    assertEquals(25, response.getBody().getContent().size());
+    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getContent()).hasSize(25);
   }
 
   @Test
@@ -87,8 +85,188 @@ class TaskControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
-    assertNotNull(response.getBody().getLink(Link.REL_SELF));
-    assertEquals(22, response.getBody().getContent().size());
+    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getContent()).hasSize(22);
+  }
+
+  @Test
+  void testGetAllTasksByWorkbasketIdWithinMultiplePlannedTimeIntervals() {
+
+    Instant firstInstant = Instant.now().minus(7, ChronoUnit.DAYS);
+    Instant secondInstant = Instant.now().minus(10, ChronoUnit.DAYS);
+    Instant thirdInstant = Instant.now().minus(10, ChronoUnit.DAYS);
+    Instant fourthInstant = Instant.now().minus(11, ChronoUnit.DAYS);
+
+    ResponseEntity<TaskSummaryListResource> response =
+        template.exchange(
+            restHelper.toUrl(Mapping.URL_TASKS)
+                + "?workbasket-id=WBI:100000000000000000000000000000000001"
+                + "&planned="
+                + firstInstant
+                + ",,"
+                + secondInstant
+                + ","
+                + thirdInstant
+                + ","
+                + ","
+                + fourthInstant
+                + "&sort-by=planned",
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
+            ParameterizedTypeReference.forType(TaskSummaryListResource.class));
+    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getContent()).hasSize(6);
+  }
+
+  @Test
+  void testGetAllTasksByWorkbasketIdWithinSinglePlannedTimeInterval() {
+
+    Instant plannedFromInstant = Instant.now().minus(6, ChronoUnit.DAYS);
+    Instant plannedToInstant = Instant.now().minus(3, ChronoUnit.DAYS);
+
+    ResponseEntity<TaskSummaryListResource> response =
+        template.exchange(
+            restHelper.toUrl(Mapping.URL_TASKS)
+                + "?workbasket-id=WBI:100000000000000000000000000000000001"
+                + "&planned-from="
+                + plannedFromInstant
+                + "&planned-until="
+                + plannedToInstant
+                + "&sort-by=planned",
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
+            ParameterizedTypeReference.forType(TaskSummaryListResource.class));
+    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getContent()).hasSize(3);
+  }
+
+  @Test
+  void testGetAllTasksByWorkbasketIdWithinSingleIndefinitePlannedTimeInterval() {
+
+    Instant plannedFromInstant = Instant.now().minus(6, ChronoUnit.DAYS);
+
+    ResponseEntity<TaskSummaryListResource> response =
+        template.exchange(
+            restHelper.toUrl(Mapping.URL_TASKS)
+                + "?workbasket-id=WBI:100000000000000000000000000000000001"
+                + "&planned-from="
+                + plannedFromInstant
+                + "&sort-by=planned",
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
+            ParameterizedTypeReference.forType(TaskSummaryListResource.class));
+    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getContent()).hasSize(4);
+  }
+
+  @Test
+  void testGetAllTasksByWorkbasketIdWithInvalidPlannedParamsCombination() {
+    HttpClientErrorException e =
+        Assertions.assertThrows(
+            HttpClientErrorException.class,
+            () ->
+                template.exchange(
+                    restHelper.toUrl(Mapping.URL_TASKS)
+                        + "?workbasket-id=WBI:100000000000000000000000000000000001"
+                        + "&planned=2020-01-22T09:44:47.453Z,,"
+                        + "2020-01-19T07:44:47.453Z,2020-01-19T19:44:47.453Z,"
+                        + ",2020-01-18T09:44:47.453Z"
+                        + "&planned-from=2020-01-19T07:44:47.453Z"
+                        + "&sort-by=planned",
+                    HttpMethod.GET,
+                    restHelper.defaultRequest(),
+                    ParameterizedTypeReference.forType(TaskSummaryListResource.class)));
+    assertThat(HttpStatus.BAD_REQUEST).isEqualTo(e.getStatusCode());
+  }
+
+  @Test
+  void testGetAllTasksByWorkbasketIdWithinMultipleDueTimeIntervals() {
+
+    Instant firstInstant = Instant.now().minus(7, ChronoUnit.DAYS);
+    Instant secondInstant = Instant.now().minus(10, ChronoUnit.DAYS);
+    Instant thirdInstant = Instant.now().minus(10, ChronoUnit.DAYS);
+    Instant fourthInstant = Instant.now().minus(11, ChronoUnit.DAYS);
+
+    ResponseEntity<TaskSummaryListResource> response =
+        template.exchange(
+            restHelper.toUrl(Mapping.URL_TASKS)
+                + "?workbasket-id=WBI:100000000000000000000000000000000001"
+                + "&due="
+                + firstInstant
+                + ",,"
+                + secondInstant
+                + ","
+                + thirdInstant
+                + ","
+                + ","
+                + fourthInstant
+                + "&sort-by=due",
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
+            ParameterizedTypeReference.forType(TaskSummaryListResource.class));
+    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getContent()).hasSize(6);
+  }
+
+  @Test
+  void testGetAllTasksByWorkbasketIdWithinSingleDueTimeInterval() {
+
+    Instant dueFromInstant = Instant.now().minus(8, ChronoUnit.DAYS);
+    Instant dueToInstant = Instant.now().minus(3, ChronoUnit.DAYS);
+
+    ResponseEntity<TaskSummaryListResource> response =
+        template.exchange(
+            restHelper.toUrl(Mapping.URL_TASKS)
+                + "?workbasket-id=WBI:100000000000000000000000000000000001"
+                + "&due-from="
+                + dueFromInstant
+                + "&due-until="
+                + dueToInstant
+                + "&sort-by=due",
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
+            ParameterizedTypeReference.forType(TaskSummaryListResource.class));
+    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getContent()).hasSize(9);
+  }
+
+  @Test
+  void testGetAllTasksByWorkbasketIdWithinSingleIndefiniteDueTimeInterval() {
+
+    Instant dueToInstant = Instant.now().minus(1, ChronoUnit.DAYS);
+
+    ResponseEntity<TaskSummaryListResource> response =
+        template.exchange(
+            restHelper.toUrl(Mapping.URL_TASKS)
+                + "?workbasket-id=WBI:100000000000000000000000000000000001"
+                + "&due-until="
+                + dueToInstant
+                + "&sort-by=due",
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
+            ParameterizedTypeReference.forType(TaskSummaryListResource.class));
+    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getContent()).hasSize(6);
+  }
+
+  @Test
+  void testGetAllTasksByWorkbasketIdWithInvalidDueParamsCombination() {
+    HttpClientErrorException e =
+        Assertions.assertThrows(
+            HttpClientErrorException.class,
+            () ->
+                template.exchange(
+                    restHelper.toUrl(Mapping.URL_TASKS)
+                        + "?workbasket-id=WBI:100000000000000000000000000000000001"
+                        + "&due=2020-01-22T09:44:47.453Z,,"
+                        + "2020-01-19T07:44:47.453Z,2020-01-19T19:44:47.453Z,"
+                        + ",2020-01-18T09:44:47.453Z"
+                        + "&due-from=2020-01-19T07:44:47.453Z"
+                        + "&sort-by=planned",
+                    HttpMethod.GET,
+                    restHelper.defaultRequest(),
+                    ParameterizedTypeReference.forType(TaskSummaryListResource.class)));
+    assertThat(HttpStatus.BAD_REQUEST).isEqualTo(e.getStatusCode());
   }
 
   @Test
@@ -102,8 +280,8 @@ class TaskControllerIntTest {
             HttpMethod.GET,
             request,
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
-    assertNotNull(response.getBody().getLink(Link.REL_SELF));
-    assertEquals(20, response.getBody().getContent().size());
+    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getContent()).hasSize(20);
   }
 
   @Test
@@ -124,7 +302,7 @@ class TaskControllerIntTest {
                       request,
                       ParameterizedTypeReference.forType(TaskSummaryListResource.class));
             });
-    assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+    assertThat(HttpStatus.BAD_REQUEST).isEqualTo(e.getStatusCode());
   }
 
   @Test
@@ -135,8 +313,8 @@ class TaskControllerIntTest {
             HttpMethod.GET,
             new HttpEntity<>(restHelper.getHeadersAdmin()),
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
-    assertNotNull(response.getBody().getLink(Link.REL_SELF));
-    assertEquals(73, response.getBody().getContent().size());
+    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getContent()).hasSize(73);
   }
 
   @Test
@@ -148,14 +326,15 @@ class TaskControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
-    assertNotNull(response.getBody().getLink(Link.REL_SELF));
-    assertTrue(
-        response
-            .getBody()
-            .getLink(Link.REL_SELF)
-            .getHref()
-            .endsWith(
-                "/api/v1/tasks?por.type=VNR&por.value=22334455&sort-by=por.value&order=desc"));
+    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(
+            response
+                .getBody()
+                .getLink(Link.REL_SELF)
+                .getHref()
+                .endsWith(
+                    "/api/v1/tasks?por.type=VNR&por.value=22334455&sort-by=por.value&order=desc"))
+        .isTrue();
   }
 
   @Test
@@ -166,10 +345,10 @@ class TaskControllerIntTest {
           HttpMethod.GET,
           restHelper.defaultRequest(),
           ParameterizedTypeReference.forType(TaskSummaryListResource.class));
-      fail();
+      Fail.fail("");
     } catch (HttpClientErrorException e) {
-      assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
-      assertTrue(e.getResponseBodyAsString().contains("[invalid]"));
+      assertThat(e.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+      assertThat(e.getResponseBodyAsString().contains("[invalid]")).isTrue();
     }
   }
 
@@ -184,23 +363,25 @@ class TaskControllerIntTest {
             HttpMethod.GET,
             request,
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
-    assertEquals(1, response.getBody().getContent().size());
-    assertTrue(response.getBody().getLink(Link.REL_LAST).getHref().contains("page=14"));
-    assertEquals(
-        "TKI:100000000000000000000000000000000000",
-        response.getBody().getContent().iterator().next().getTaskId());
-    assertNotNull(response.getBody().getLink(Link.REL_SELF));
-    assertTrue(
-        response
-            .getBody()
-            .getLink(Link.REL_SELF)
-            .getHref()
-            .endsWith(
-                "/api/v1/tasks?"
-                    + "state=READY,CLAIMED&sort-by=por.value&order=desc&page=15&page-size=5"));
-    assertNotNull(response.getBody().getLink(Link.REL_FIRST));
-    assertNotNull(response.getBody().getLink(Link.REL_LAST));
-    assertNotNull(response.getBody().getLink(Link.REL_PREVIOUS));
+    assertThat(response.getBody().getContent()).hasSize(1);
+    assertThat(response.getBody().getLink(Link.REL_LAST).getHref().contains("page=14")).isTrue();
+    assertThat("TKI:100000000000000000000000000000000000")
+        .isEqualTo(response.getBody().getContent().iterator().next().getTaskId());
+
+    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(
+            response
+                .getBody()
+                .getLink(Link.REL_SELF)
+                .getHref()
+                .endsWith(
+                    "/api/v1/tasks?"
+                        + "state=READY,CLAIMED&sort-by=por.value&order=desc&page=15&page-size=5"))
+        .isTrue();
+
+    assertThat(response.getBody().getLink(Link.REL_FIRST)).isNotNull();
+    assertThat(response.getBody().getLink(Link.REL_LAST)).isNotNull();
+    assertThat(response.getBody().getLink(Link.REL_PREVIOUS)).isNotNull();
   }
 
   @Test
@@ -220,7 +401,7 @@ class TaskControllerIntTest {
             HttpMethod.GET,
             request,
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
-    assertEquals(25, response.getBody().getContent().size());
+    assertThat(response.getBody().getContent()).hasSize(25);
 
     response =
         template.exchange(
@@ -228,21 +409,23 @@ class TaskControllerIntTest {
             HttpMethod.GET,
             request,
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
-    assertEquals(5, response.getBody().getContent().size());
-    assertTrue(response.getBody().getLink(Link.REL_LAST).getHref().contains("page=5"));
-    assertEquals(
-        "TKI:000000000000000000000000000000000023",
-        response.getBody().getContent().iterator().next().getTaskId());
-    assertNotNull(response.getBody().getLink(Link.REL_SELF));
-    assertTrue(
-        response
-            .getBody()
-            .getLink(Link.REL_SELF)
-            .getHref()
-            .endsWith("/api/v1/tasks?sort-by=due&order=desc&page=5&page-size=5"));
-    assertNotNull(response.getBody().getLink(Link.REL_FIRST));
-    assertNotNull(response.getBody().getLink(Link.REL_LAST));
-    assertNotNull(response.getBody().getLink(Link.REL_PREVIOUS));
+    assertThat(response.getBody().getContent()).hasSize(5);
+    assertThat(response.getBody().getLink(Link.REL_LAST).getHref().contains("page=5")).isTrue();
+    assertThat("TKI:000000000000000000000000000000000023")
+        .isEqualTo(response.getBody().getContent().iterator().next().getTaskId());
+
+    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(
+            response
+                .getBody()
+                .getLink(Link.REL_SELF)
+                .getHref()
+                .endsWith("/api/v1/tasks?sort-by=due&order=desc&page=5&page-size=5"))
+        .isTrue();
+
+    assertThat(response.getBody().getLink(Link.REL_FIRST)).isNotNull();
+    assertThat(response.getBody().getLink(Link.REL_LAST)).isNotNull();
+    assertThat(response.getBody().getLink(Link.REL_PREVIOUS)).isNotNull();
   }
 
   @Test
@@ -263,23 +446,26 @@ class TaskControllerIntTest {
             HttpMethod.GET,
             request,
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
-    assertEquals(1, response.getBody().getContent().size());
-    assertEquals(
-        "TKI:000000000000000000000000000000000013",
-        response.getBody().getContent().iterator().next().getTaskId());
-    assertNotNull(response.getBody().getLink(Link.REL_SELF));
-    assertTrue(
-        response
-            .getBody()
-            .getLink(Link.REL_SELF)
-            .getHref()
-            .endsWith(
-                "/api/v1/tasks?por.company=00&por.system=PASystem&por.instance=00&"
-                    + "por.type=VNR&por.value=22334455&sort-by=por.type&order=asc&"
-                    + "page=2&page-size=5"));
-    assertNotNull(response.getBody().getLink(Link.REL_FIRST));
-    assertNotNull(response.getBody().getLink(Link.REL_LAST));
-    assertNotNull(response.getBody().getLink(Link.REL_PREVIOUS));
+    assertThat(response.getBody().getContent()).hasSize(1);
+    assertThat("TKI:000000000000000000000000000000000013")
+        .isEqualTo(response.getBody().getContent().iterator().next().getTaskId());
+
+    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+
+    assertThat(
+            response
+                .getBody()
+                .getLink(Link.REL_SELF)
+                .getHref()
+                .endsWith(
+                    "/api/v1/tasks?por.company=00&por.system=PASystem&por.instance=00&"
+                        + "por.type=VNR&por.value=22334455&sort-by=por.type&order=asc&"
+                        + "page=2&page-size=5"))
+        .isTrue();
+
+    assertThat(response.getBody().getLink(Link.REL_FIRST)).isNotNull();
+    assertThat(response.getBody().getLink(Link.REL_LAST)).isNotNull();
+    assertThat(response.getBody().getLink(Link.REL_PREVIOUS)).isNotNull();
   }
 
   @Test
@@ -289,7 +475,7 @@ class TaskControllerIntTest {
     HttpURLConnection con = (HttpURLConnection) url.openConnection();
     con.setRequestMethod("GET");
     con.setRequestProperty("Authorization", "Basic YWRtaW46YWRtaW4=");
-    assertEquals(200, con.getResponseCode());
+    assertThat(con.getResponseCode()).isEqualTo(200);
     final ObjectMapper objectMapper = new ObjectMapper();
 
     BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), UTF_8));
@@ -303,8 +489,8 @@ class TaskControllerIntTest {
     String response = content.toString();
     JsonNode jsonNode = objectMapper.readTree(response);
     String created = jsonNode.get("created").asText();
-    assertFalse(response.contains("\"attachments\":[]"));
-    assertTrue(created.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z"));
+    assertThat(response.contains("\"attachments\":[]")).isFalse();
+    assertThat(created.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z")).isTrue();
   }
 
   @Test
@@ -313,7 +499,7 @@ class TaskControllerIntTest {
     HttpURLConnection con = (HttpURLConnection) url.openConnection();
     con.setRequestMethod("GET");
     con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-    assertEquals(200, con.getResponseCode());
+    assertThat(con.getResponseCode()).isEqualTo(200);
 
     BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), UTF_8));
     String inputLine;
@@ -334,14 +520,15 @@ class TaskControllerIntTest {
     out.write(content.toString());
     out.flush();
     out.close();
-    assertEquals(200, con.getResponseCode());
+    assertThat(con.getResponseCode()).isEqualTo(200);
+
     con.disconnect();
 
     url = new URL(restHelper.toUrl("/api/v1/tasks/TKI:100000000000000000000000000000000000"));
     con = (HttpURLConnection) url.openConnection();
     con.setRequestMethod("GET");
     con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-    assertEquals(200, con.getResponseCode());
+    assertThat(con.getResponseCode()).isEqualTo(200);
 
     in = new BufferedReader(new InputStreamReader(con.getInputStream(), UTF_8));
     content = new StringBuffer();
@@ -356,7 +543,7 @@ class TaskControllerIntTest {
     TaskResource originalTaskObject = mapper.readValue(originalTask, TaskResource.class);
     TaskResource updatedTaskObject = mapper.readValue(updatedTask, TaskResource.class);
 
-    assertNotEquals(originalTaskObject.getModified(), updatedTaskObject.getModified());
+    assertThat(updatedTaskObject.getModified()).isNotEqualTo(originalTaskObject.getModified());
   }
 
   @Test
@@ -369,12 +556,13 @@ class TaskControllerIntTest {
             HttpMethod.POST,
             new HttpEntity<>(taskResource, restHelper.getHeaders()),
             ParameterizedTypeReference.forType(TaskResource.class));
-    assertEquals(responseCreate.getStatusCode(), HttpStatus.CREATED);
-    assertNotNull(responseCreate.getBody());
+    assertThat(HttpStatus.CREATED).isEqualTo(responseCreate.getStatusCode());
+    assertThat(responseCreate.getBody()).isNotNull();
 
     String taskIdOfCreatedTask = responseCreate.getBody().getTaskId();
-    assertNotNull(taskIdOfCreatedTask);
-    assertTrue(taskIdOfCreatedTask.startsWith("TKI:"));
+
+    assertThat(taskIdOfCreatedTask).isNotNull();
+    assertThat(taskIdOfCreatedTask.startsWith("TKI:")).isTrue();
 
     ResponseEntity<TaskResource> responseDeleted =
         template.exchange(
@@ -383,7 +571,7 @@ class TaskControllerIntTest {
             new HttpEntity<>(restHelper.getHeadersAdmin()),
             ParameterizedTypeReference.forType(Void.class));
 
-    assertEquals(HttpStatus.NO_CONTENT, responseDeleted.getStatusCode());
+    assertThat(responseDeleted.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
   }
 
   /**
@@ -426,7 +614,8 @@ class TaskControllerIntTest {
     out.write(taskToCreateJson);
     out.flush();
     out.close();
-    assertEquals(400, con.getResponseCode());
+    assertThat(con.getResponseCode()).isEqualTo(400);
+
     con.disconnect();
 
     final String taskToCreateJson2 =
@@ -446,7 +635,8 @@ class TaskControllerIntTest {
     out.write(taskToCreateJson2);
     out.flush();
     out.close();
-    assertEquals(400, con.getResponseCode());
+    assertThat(con.getResponseCode()).isEqualTo(400);
+
     con.disconnect();
   }
 
