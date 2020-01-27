@@ -401,39 +401,39 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     LOGGER.debug(
         "entry to setWorkbasketAccessItems(workbasketAccessItems = {})", wbAccessItems.toString());
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
+
+    Set<String> ids = new HashSet<>();
+    Set<WorkbasketAccessItemImpl> accessItems = new HashSet<>();
+    for (WorkbasketAccessItem workbasketAccessItem : wbAccessItems) {
+      WorkbasketAccessItemImpl wbAccessItemImpl = (WorkbasketAccessItemImpl) workbasketAccessItem;
+      // Check pre-conditions and set ID
+      if (wbAccessItemImpl.getWorkbasketId() == null) {
+        throw new InvalidArgumentException(
+            String.format(
+                "Checking the preconditions of the current WorkbasketAccessItem failed "
+                    + "- WBID is NULL. WorkbasketAccessItem=%s",
+                workbasketAccessItem));
+      } else if (!wbAccessItemImpl.getWorkbasketId().equals(workbasketId)) {
+        throw new InvalidArgumentException(
+            String.format(
+                "Checking the preconditions of the current WorkbasketAccessItem failed "
+                    + "- the WBID does not match. Target-WBID=''%s'' WorkbasketAccessItem=%s",
+                workbasketId, workbasketAccessItem));
+      }
+      if (wbAccessItemImpl.getId() == null || wbAccessItemImpl.getId().isEmpty()) {
+        wbAccessItemImpl.setId(IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET_AUTHORIZATION));
+      }
+      if (ids.contains(wbAccessItemImpl.getAccessId())) {
+        throw new WorkbasketAccessItemAlreadyExistException(wbAccessItemImpl);
+      }
+      ids.add(wbAccessItemImpl.getAccessId());
+      accessItems.add(wbAccessItemImpl);
+    }
     try {
       taskanaEngine.openConnection();
       // delete all current ones
       workbasketAccessMapper.deleteAllAccessItemsForWorkbasketId(workbasketId);
-
-      Set<String> ids = new HashSet<>();
-      for (WorkbasketAccessItem workbasketAccessItem : wbAccessItems) {
-        WorkbasketAccessItemImpl wbAccessItemImpl = (WorkbasketAccessItemImpl) workbasketAccessItem;
-        // Check pre-conditions and set ID
-        if (wbAccessItemImpl.getWorkbasketId() == null) {
-          throw new InvalidArgumentException(
-              String.format(
-                  "Checking the preconditions of the current WorkbasketAccessItem failed "
-                      + "- WBID is NULL. WorkbasketAccessItem=%s",
-                  workbasketAccessItem));
-        } else if (!wbAccessItemImpl.getWorkbasketId().equals(workbasketId)) {
-          throw new InvalidArgumentException(
-              String.format(
-                  "Checking the preconditions of the current WorkbasketAccessItem failed "
-                      + "- the WBID does not match. Target-WBID=''%s'' WorkbasketAccessItem=%s",
-                  workbasketId, workbasketAccessItem));
-        }
-        if (wbAccessItemImpl.getId() == null || wbAccessItemImpl.getId().isEmpty()) {
-          wbAccessItemImpl.setId(
-              IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET_AUTHORIZATION));
-        }
-        if (ids.contains(wbAccessItemImpl.getAccessId())) {
-          throw new WorkbasketAccessItemAlreadyExistException(wbAccessItemImpl);
-        }
-        ids.add(wbAccessItemImpl.getAccessId());
-        workbasketAccessMapper.insert(wbAccessItemImpl);
-      }
-
+      accessItems.forEach(workbasketAccessMapper::insert);
     } finally {
       taskanaEngine.returnConnection();
       LOGGER.debug("exit from setWorkbasketAccessItems(workbasketAccessItems = {})", wbAccessItems);
