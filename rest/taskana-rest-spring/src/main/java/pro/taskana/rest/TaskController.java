@@ -1,5 +1,6 @@
 package pro.taskana.rest;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -27,6 +28,7 @@ import pro.taskana.TaskQuery;
 import pro.taskana.TaskService;
 import pro.taskana.TaskState;
 import pro.taskana.TaskSummary;
+import pro.taskana.TimeInterval;
 import pro.taskana.exceptions.AttachmentPersistenceException;
 import pro.taskana.exceptions.ClassificationNotFoundException;
 import pro.taskana.exceptions.ConcurrencyException;
@@ -70,10 +72,16 @@ public class TaskController extends AbstractPagingController {
   private static final String POR_SYSTEM = "por.system";
   private static final String POR_COMPANY = "por.company";
   private static final String DUE = "due";
+  private static final String DUE_TO = "due-until";
+  private static final String DUE_FROM = "due-from";
   private static final String PLANNED = "planned";
+  private static final String PLANNED_TO = "planned-until";
+  private static final String PLANNED_FROM = "planned-from";
 
   private static final String SORT_BY = "sort-by";
   private static final String SORT_DIRECTION = "order";
+
+  private static final String INDEFINITE = "";
 
   private TaskService taskService;
 
@@ -248,6 +256,8 @@ public class TaskController extends AbstractPagingController {
       LOGGER.debug("Entry to applyFilterParams(taskQuery= {}, params= {})", taskQuery, params);
     }
 
+    checkForIllegalParamCombinations(params);
+
     // apply filters
     if (params.containsKey(NAME)) {
       String[] names = extractCommaSeparatedFields(params.get(NAME));
@@ -280,22 +290,7 @@ public class TaskController extends AbstractPagingController {
       params.remove(WORKBASKET_ID);
     }
     if (params.containsKey(WORKBASKET_KEY)) {
-      String[] domains = null;
-      if (params.get(DOMAIN) != null) {
-        domains = extractCommaSeparatedFields(params.get(DOMAIN));
-      }
-      if (domains == null || domains.length != 1) {
-        throw new InvalidArgumentException(
-            "workbasket-key requires excactly one domain as second parameter.");
-      }
-      String[] workbasketKeys = extractCommaSeparatedFields(params.get(WORKBASKET_KEY));
-      KeyDomain[] keyDomains = new KeyDomain[workbasketKeys.length];
-      for (int i = 0; i < workbasketKeys.length; i++) {
-        keyDomains[i] = new KeyDomain(workbasketKeys[i], domains[0]);
-      }
-      taskQuery.workbasketKeyDomainIn(keyDomains);
-      params.remove(WORKBASKET_KEY);
-      params.remove(DOMAIN);
+      updateTaskQueryWithWorkbasketKey(taskQuery,params);
     }
     if (params.containsKey(OWNER)) {
       String[] owners = extractCommaSeparatedFields(params.get(OWNER));
@@ -330,11 +325,193 @@ public class TaskController extends AbstractPagingController {
       params.remove(POR_VALUE);
     }
 
+    if (params.containsKey(PLANNED)) {
+      updateTaskQueryWithPlannedOrDueTimeIntervals(taskQuery, params, PLANNED);
+    }
+
+    if (params.containsKey(DUE)) {
+      updateTaskQueryWithPlannedOrDueTimeIntervals(taskQuery, params, DUE);
+    }
+
+    if (params.containsKey(PLANNED_FROM) && params.containsKey(PLANNED_TO)) {
+      updateTaskQueryWithPlannedOrDueTimeInterval(taskQuery, params, PLANNED_FROM, PLANNED_TO);
+
+    } else if (params.containsKey(PLANNED_FROM) && !params.containsKey(PLANNED_TO)) {
+
+      TimeInterval timeInterval = createIndefiniteTimeIntervalFromParam(params, PLANNED_FROM);
+      updateTaskQueryWithIndefiniteTimeInterval(taskQuery, params, PLANNED_FROM, timeInterval);
+
+    } else if (!params.containsKey(PLANNED_FROM) && params.containsKey(PLANNED_TO)) {
+
+      TimeInterval timeInterval = createIndefiniteTimeIntervalFromParam(params, PLANNED_TO);
+      updateTaskQueryWithIndefiniteTimeInterval(taskQuery, params, PLANNED_TO, timeInterval);
+    }
+
+    if (params.containsKey(DUE_FROM) && params.containsKey(DUE_TO)) {
+      updateTaskQueryWithPlannedOrDueTimeInterval(taskQuery, params, DUE_FROM, DUE_TO);
+
+    } else if (params.containsKey(DUE_FROM) && !params.containsKey(DUE_TO)) {
+
+      TimeInterval indefiniteTimeInterval = createIndefiniteTimeIntervalFromParam(params, DUE_FROM);
+      updateTaskQueryWithIndefiniteTimeInterval(
+          taskQuery, params, DUE_FROM, indefiniteTimeInterval);
+
+    } else if (!params.containsKey(DUE_FROM) && params.containsKey(DUE_TO)) {
+
+      TimeInterval timeInterval = createIndefiniteTimeIntervalFromParam(params, DUE_TO);
+      updateTaskQueryWithIndefiniteTimeInterval(taskQuery, params, DUE_TO, timeInterval);
+    }
+
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from applyFilterParams(), returning {}", taskQuery);
     }
 
     return taskQuery;
+  }
+
+  private void updateTaskQueryWithWorkbasketKey(TaskQuery taskQuery,
+      MultiValueMap<String, String> params)
+      throws InvalidArgumentException {
+
+    String[] domains = null;
+    if (params.get(DOMAIN) != null) {
+      domains = extractCommaSeparatedFields(params.get(DOMAIN));
+    }
+    if (domains == null || domains.length != 1) {
+      throw new InvalidArgumentException(
+          "workbasket-key requires excactly one domain as second parameter.");
+    }
+    String[] workbasketKeys = extractCommaSeparatedFields(params.get(WORKBASKET_KEY));
+    KeyDomain[] keyDomains = new KeyDomain[workbasketKeys.length];
+    for (int i = 0; i < workbasketKeys.length; i++) {
+      keyDomains[i] = new KeyDomain(workbasketKeys[i], domains[0]);
+    }
+    taskQuery.workbasketKeyDomainIn(keyDomains);
+    params.remove(WORKBASKET_KEY);
+    params.remove(DOMAIN);
+
+  }
+
+  private void checkForIllegalParamCombinations(MultiValueMap<String, String> params) {
+
+    if (params.containsKey(PLANNED)
+            && (params.containsKey(PLANNED_FROM) || params.containsKey(PLANNED_TO))) {
+
+      throw new IllegalArgumentException(
+          "It is prohibited to use the param \""
+              + PLANNED
+              + "\" in combination with the params \""
+              + PLANNED_FROM
+              + "\" and / or \""
+              + PLANNED_TO
+              + "\"");
+    }
+
+    if (params.containsKey(DUE) && (params.containsKey(DUE_FROM) || params.containsKey(DUE_TO))) {
+
+      throw new IllegalArgumentException(
+          "It is prohibited to use the param \""
+              + DUE
+              + "\" in combination with the params \""
+              + PLANNED_FROM
+              + "\" and / or \""
+              + PLANNED_TO
+              + "\"");
+    }
+  }
+
+  private void updateTaskQueryWithIndefiniteTimeInterval(
+      TaskQuery taskQuery,
+      MultiValueMap<String, String> params,
+      String param,
+      TimeInterval timeInterval) {
+
+    if (param.equals(PLANNED_FROM) || param.equals(PLANNED_TO)) {
+      taskQuery.plannedWithin(timeInterval);
+
+    } else {
+      taskQuery.dueWithin(timeInterval);
+    }
+    params.remove(param);
+  }
+
+  private TimeInterval createIndefiniteTimeIntervalFromParam(
+      MultiValueMap<String, String> params, String param) {
+
+    if (param.equals(PLANNED_FROM) || param.equals(DUE_FROM)) {
+
+      return new TimeInterval(Instant.parse(params.get(param).get(0)), null);
+
+    } else {
+
+      return new TimeInterval(null, Instant.parse(params.get(param).get(0)));
+    }
+  }
+
+  private void updateTaskQueryWithPlannedOrDueTimeInterval(
+      TaskQuery taskQuery,
+      MultiValueMap<String, String> params,
+      String plannedFromOrDueFrom,
+      String plannedToOrDueTo) {
+
+    TimeInterval timeInterval =
+        new TimeInterval(
+            Instant.parse(params.get(plannedFromOrDueFrom).get(0)),
+            Instant.parse(params.get(plannedToOrDueTo).get(0)));
+
+    taskQuery.plannedWithin(timeInterval);
+
+    params.remove(plannedToOrDueTo);
+    params.remove(plannedFromOrDueFrom);
+  }
+
+  private void updateTaskQueryWithPlannedOrDueTimeIntervals(
+      TaskQuery taskQuery, MultiValueMap<String, String> params, String plannedOrDue) {
+
+    String[] instants = extractCommaSeparatedFields(params.get(plannedOrDue));
+
+    TimeInterval[] timeIntervals = extractTimeIntervals(instants);
+
+    taskQuery.plannedWithin(timeIntervals);
+
+    params.remove(plannedOrDue);
+  }
+
+  private TimeInterval[] extractTimeIntervals(String[] instants) {
+
+    List<TimeInterval> timeIntervalsList = new ArrayList<>();
+
+    for (int i = 0; i < instants.length - 1; i += 2) {
+
+      TimeInterval timeInterval = determineTimeInterval(instants, i);
+
+      if (timeInterval != null) {
+
+        timeIntervalsList.add(timeInterval);
+      }
+    }
+
+    TimeInterval[] timeIntervalArray = new TimeInterval[timeIntervalsList.size()];
+
+    return timeIntervalsList.toArray(timeIntervalArray);
+  }
+
+  private TimeInterval determineTimeInterval(String[] instants, int i) {
+
+    if (!instants[i].equals(INDEFINITE) && !instants[i + 1].equals(INDEFINITE)) {
+
+      return new TimeInterval(Instant.parse(instants[i]), Instant.parse(instants[i + 1]));
+
+    } else if (instants[i].equals(INDEFINITE) && !instants[i + 1].equals(INDEFINITE)) {
+
+      return new TimeInterval(null, Instant.parse(instants[i + 1]));
+
+    } else if (!instants[i].equals(INDEFINITE) && instants[i + 1].equals(INDEFINITE)) {
+
+      return new TimeInterval(Instant.parse(instants[i]), null);
+    }
+
+    return null;
   }
 
   private TaskQuery applySortingParams(TaskQuery taskQuery, MultiValueMap<String, String> params)

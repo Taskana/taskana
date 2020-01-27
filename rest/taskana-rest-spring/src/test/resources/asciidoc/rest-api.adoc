@@ -115,6 +115,26 @@ include::{snippets}/GetAllTasksDocTest/response-fields.adoc[]
 The list generated in the response can be filtered using following parameters in the uri: +
 name | priority | state | classification.key | workbasket-id | {workbasket-key , domain} | +
 owner | por.company | por.system | por.instance | por.type | por.value +
+planned | planned-from | planned-until | due | due-from | due-until +
+
+If it is sufficient to filter the list with a single time interval, use the parameters +
+planned-from/due-from and planned-until/due-until. +
+Leave one of them out of the request, if you want to have an open interval. +
+
+If it is required to filter the list with multiple planned or due time intervals, the parameters +
+ planned / due can be used as follows instead: +
+
+ - provide a string with an even number of instants separated by a ",". Time intervals will be +
+ determined in pairs of those instants. +
+
+ - in case of a required open interval, just give one of the arguments of the pair an empty string +
+ like this: +
+
+ planned = {Instant1},{Instant2},,{Instant3} this will create two intervals, one between Instant1 +
+ and Instant2 as well as an open interval between the beginning of time and Instant3 +
+
+ Note that it is prohibited to use the planned / due parameter in combination with the +
+ planned-from/due-from and/or planned-until/due-until parameters +
 
 It can also be sorted by using this set of parameters: +
 sortBy = { classification.key | por.type | por.value | state | name| due | planned | priority } | order={ desc | asc }
