@@ -75,7 +75,7 @@
 		<version.archunit>0.13.0</version.archunit>
 		<version.mockito>3.2.4</version.mockito>
 		<version.junit.mockito>3.2.4</version.junit.mockito>
-		<version.powermock>2.0.4</version.powermock>
+		<version.powermock>2.0.5</version.powermock>
 		<version.hamcrest>2.2</version.hamcrest>
 		<version.equalsverifier>3.1.11</version.equalsverifier>
 		<version.openpojo>0.8.13</version.openpojo>
