@@ -160,6 +160,8 @@ public class WorkbasketDefinitionController {
       for (String oldId : definition.getDistributionTargets()) {
         if (idConversion.containsKey(oldId)) {
           distributionTargets.add(idConversion.get(oldId));
+        } else if (systemIds.containsValue(oldId)) {
+          distributionTargets.add(oldId);
         } else {
           throw new InvalidWorkbasketException(
               String.format(

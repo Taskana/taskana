@@ -14,6 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.Assertions;
@@ -41,7 +42,9 @@ import pro.taskana.impl.WorkbasketAccessItemImpl;
 import pro.taskana.rest.resource.WorkbasketDefinitionResource;
 import pro.taskana.sampledata.SampleDataGenerator;
 
-/** Integration tests for WorkbasketDefinitionController. */
+/**
+ * Integration tests for WorkbasketDefinitionController.
+ */
 @TaskanaSpringBootTest
 class WorkbasketDefinitionControllerIntTest {
 
@@ -50,9 +53,13 @@ class WorkbasketDefinitionControllerIntTest {
   @Value("${taskana.schemaName:TASKANA}")
   String schemaName;
 
-  @Autowired RestHelper restHelper;
+  @Autowired
+  RestHelper restHelper;
 
-  @Autowired private DataSource dataSource;
+  @Autowired
+  private DataSource dataSource;
+
+  private ObjectMapper objMapper = new ObjectMapper();
 
   @BeforeAll
   static void init() {
@@ -85,7 +92,7 @@ class WorkbasketDefinitionControllerIntTest {
         allAuthorizationsAreEmpty = false;
       }
       if (allDistributionTargetsAreEmpty
-          && !workbasketDefinition.getDistributionTargets().isEmpty()) {
+              && !workbasketDefinition.getDistributionTargets().isEmpty()) {
         allDistributionTargetsAreEmpty = false;
       }
       if (!allAuthorizationsAreEmpty && !allDistributionTargetsAreEmpty) {
@@ -114,13 +121,13 @@ class WorkbasketDefinitionControllerIntTest {
             restHelper.toUrl(Mapping.URL_WORKBASKETDEFIITIONS) + "?domain=DOMAIN_A",
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(List.class));
+            ParameterizedTypeReference.forType(WorkbasketDefinitionListResource.class));
 
-    List<String> list = new ArrayList<>();
-    ObjectMapper objMapper = new ObjectMapper();
-    list.add(objMapper.writeValueAsString(response.getBody().get(0)));
-    ResponseEntity<Void> responseImport = importRequest(list);
-    assertEquals(HttpStatus.NO_CONTENT, responseImport.getStatusCode());
+    for (WorkbasketDefinitionResource w : response.getBody()) {
+      ResponseEntity<Void> responseImport = importRequest(
+          Collections.singletonList(objMapper.writeValueAsString(w)));
+      assertEquals(HttpStatus.NO_CONTENT, responseImport.getStatusCode());
+    }
   }
 
   @Test
@@ -133,7 +140,6 @@ class WorkbasketDefinitionControllerIntTest {
             ParameterizedTypeReference.forType(WorkbasketDefinitionListResource.class));
 
     List<String> list = new ArrayList<>();
-    ObjectMapper objMapper = new ObjectMapper();
     list.add(objMapper.writeValueAsString(response.getBody().get(0)));
     list.add(objMapper.writeValueAsString(response.getBody().get(0)));
     try {
@@ -154,7 +160,6 @@ class WorkbasketDefinitionControllerIntTest {
             ParameterizedTypeReference.forType(WorkbasketDefinitionListResource.class));
 
     List<String> list = new ArrayList<>();
-    ObjectMapper objMapper = new ObjectMapper();
     WorkbasketDefinitionResource wbDef = response.getBody().get(0);
     list.add(objMapper.writeValueAsString(wbDef));
     int i = 1;
@@ -174,10 +179,10 @@ class WorkbasketDefinitionControllerIntTest {
             restHelper.toUrl(Mapping.URL_WORKBASKETDEFIITIONS) + "?domain=DOMAIN_A",
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            new ParameterizedTypeReference<List<WorkbasketDefinitionResource>>() {});
+            new ParameterizedTypeReference<List<WorkbasketDefinitionResource>>() {
+            });
 
     List<String> list = new ArrayList<>();
-    ObjectMapper objMapper = new ObjectMapper();
     WorkbasketDefinitionResource wbDef = response.getBody().get(0);
     list.add(objMapper.writeValueAsString(wbDef));
     wbDef.getWorkbasket().setKey("new Key for this WB");
