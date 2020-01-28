@@ -367,4 +367,20 @@ public interface TaskService {
    */
   BulkOperationResults<String, TaskanaException> setCallbackStateForTasks(
       List<String> externalIds, CallbackState state);
+
+  /**
+   * Set the owner of existing task if it is in state READY. The owner is considered as a hint to
+   * indicate which user is supposed to claim the task. Setting an owner of a ready task does not
+   * change the behavior of the task.
+   *
+   * @param taskId the id of the task
+   * @param ownerId the accessId of the owner
+   * @return the Task
+   * @throws TaskNotFoundException if the task with taskId was not found
+   * @throws InvalidStateException if the state of the task with taskId is not READY
+   * @throws NotAuthorizedException if the current user has no read permission for the workbasket
+   *     the task is in
+   */
+  Task setOwner(String taskId, String ownerId)
+      throws TaskNotFoundException, InvalidStateException, NotAuthorizedException;
 }

@@ -64,6 +64,7 @@ public class TaskServiceImpl implements TaskService {
 
   private static final String IS_ALREADY_CLAIMED_BY = " is already claimed by ";
   private static final String IS_ALREADY_COMPLETED = " is already completed.";
+  private static final String IS_NOT_READY = " is not in state ready.";
   private static final String WAS_NOT_FOUND2 = " was not found.";
   private static final String WAS_NOT_FOUND = " was not found";
   private static final String TASK_WITH_ID = "Task with id ";
@@ -610,6 +611,33 @@ public class TaskServiceImpl implements TaskService {
       LOGGER.debug("exit from setCallbckStateForTasks()");
       taskanaEngine.returnConnection();
     }
+  }
+
+  @Override
+  public Task setOwner(String taskId, String ownerId)
+      throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
+
+    LOGGER.debug("entry to setOwner(taskId = {}, ownerId = {})", taskId, ownerId);
+    TaskImpl task = null;
+    try {
+      taskanaEngine.openConnection();
+      task = (TaskImpl) getTask(taskId);
+      TaskState state = task.getState();
+      if (state != TaskState.READY) {
+        throw new InvalidStateException(TASK_WITH_ID + taskId + IS_NOT_READY);
+      }
+      Instant now = Instant.now();
+      task.setOwner(ownerId);
+      task.setModified(now);
+      task.setRead(true);
+
+      taskMapper.update(task);
+      LOGGER.debug("Set owner '{}' on Task '{}'", ownerId, taskId);
+    } finally {
+      taskanaEngine.returnConnection();
+      LOGGER.debug("exit from setOwner()");
+    }
+    return task;
   }
 
   public Set<String> findTasksIdsAffectedByClassificationChange(String classificationId) {
