@@ -234,10 +234,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
       userName = "user_1_2",
       groupNames = {"businessadmin"})
   @Test
-  void testCreateDuplicateWorkbasketAccessListFails()
-      throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-          InvalidWorkbasketException, WorkbasketAlreadyExistException, DomainNotFoundException,
-          WorkbasketAccessItemAlreadyExistException {
+  void testCreateDuplicateWorkbasketAccessListFails() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     final int before = workbasketService.createWorkbasketQuery().domainIn("DOMAIN_A").list().size();
 
