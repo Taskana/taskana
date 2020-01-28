@@ -644,6 +644,15 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
   TaskQuery orderByDue(SortDirection sortDirection);
 
   /**
+   * This method sorts the query result according to the primary task id.
+   *
+   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order
+   * @return the query
+   */
+  TaskQuery orderByTaskId(SortDirection sortDirection);
+
+  /**
    * This method sorts the query result according to the modified timestamp.
    *
    * @param sortDirection Determines whether the result is sorted in ascending or descending order.

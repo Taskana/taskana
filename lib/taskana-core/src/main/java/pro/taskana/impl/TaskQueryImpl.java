@@ -754,6 +754,11 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
+  public TaskQuery orderByTaskId(SortDirection sortDirection) {
+    return addOrderCriteria("ID", sortDirection);
+  }
+
+  @Override
   public TaskQuery orderByModified(SortDirection sortDirection) {
     return addOrderCriteria("MODIFIED", sortDirection);
   }
