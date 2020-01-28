@@ -2,11 +2,15 @@ package acceptance.task;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import acceptance.AbstractAccTest;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -50,6 +54,57 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
         assertFalse(previousSummary.getModified().isBefore(taskSummary.getModified()));
       }
       previousSummary = taskSummary;
+    }
+  }
+
+  @WithAccessId(
+      userName = "teamlead_1",
+      groupNames = {"group_1", "group_2"})
+  @Test
+  void testSortByTaskIdDesc() {
+    TaskService taskService = taskanaEngine.getTaskService();
+    List<TaskSummary> results =
+        taskService
+            .createTaskQuery()
+            .workbasketKeyDomainIn(new KeyDomain("USER_3_2", "DOMAIN_B"))
+            .orderByTaskId(desc)
+            .list();
+
+    // test is only valid with at least 2 results
+    Assertions.assertTrue(results.size() > 2);
+
+    List<String> idsDesc =
+        results.stream()
+            .map(TaskSummary::getTaskId)
+            .sorted(Comparator.reverseOrder())
+            .collect(Collectors.toList());
+
+    for (int i = 0; i < results.size(); i++) {
+      assertEquals(idsDesc.get(i), results.get(i).getTaskId());
+    }
+  }
+
+  @WithAccessId(
+      userName = "teamlead_1",
+      groupNames = {"group_1", "group_2"})
+  @Test
+  void testSortByTaskIdAsc() {
+    TaskService taskService = taskanaEngine.getTaskService();
+    List<TaskSummary> results =
+        taskService
+            .createTaskQuery()
+            .workbasketKeyDomainIn(new KeyDomain("USER_3_2", "DOMAIN_B"))
+            .orderByTaskId(null)
+            .list();
+
+    // test is only valid with at least 2 results
+    Assertions.assertTrue(results.size() > 2);
+
+    List<String> idsAsc =
+        results.stream().map(TaskSummary::getTaskId).sorted().collect(Collectors.toList());
+
+    for (int i = 0; i < results.size(); i++) {
+      assertEquals(idsAsc.get(i), results.get(i).getTaskId());
     }
   }
 
