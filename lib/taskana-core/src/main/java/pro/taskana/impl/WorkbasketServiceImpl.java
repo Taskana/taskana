@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -206,13 +207,15 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         LOGGER.debug(
             "Method createWorkbasketAccessItem() created workbaskteAccessItem {}", accessItem);
       } catch (PersistenceException e) {
-        List<String> accessItemExistsIdentifier =
-            Arrays.asList(
+        LOGGER.debug(
+            "when trying to insert WorkbasketAccessItem {} caught exception {}", accessItem, e);
+        Stream<String> accessItemExistsIdentifier =
+            Stream.of(
                 "SQLCODE=-803", // DB2
                 "uc_accessid_wbid", // POSTGRES
                 "UC_ACCESSID_WBID_INDEX_E" // H2
                 );
-        if (accessItemExistsIdentifier.stream().anyMatch(e.getMessage()::contains)) {
+        if (accessItemExistsIdentifier.anyMatch(e.getMessage()::contains)) {
           throw new WorkbasketAccessItemAlreadyExistException(accessItem);
         }
         throw e;
