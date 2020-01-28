@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -200,16 +201,22 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                 "WorkbasketAccessItem %s refers to a not existing workbasket",
                 workbasketAccessItem));
       }
-      boolean accessIdAlreadyExists =
-          getWorkbasketAccessItems(workbasketAccessItem.getWorkbasketId()).stream()
-              .map(WorkbasketAccessItem::getAccessId)
-              .anyMatch(i -> i.equals(workbasketAccessItem.getAccessId()));
-      if (accessIdAlreadyExists) {
-        throw new WorkbasketAccessItemAlreadyExistException(accessItem);
+      try {
+        workbasketAccessMapper.insert(accessItem);
+        LOGGER.debug(
+            "Method createWorkbasketAccessItem() created workbaskteAccessItem {}", accessItem);
+      } catch (PersistenceException e) {
+        List<String> accessItemExistsIdentifier =
+            Arrays.asList(
+                "SQLCODE=-803", // DB2
+                "uc_accessid_wbid", // POSTGRES
+                "UC_ACCESSID_WBID_INDEX_E" // H2
+                );
+        if (accessItemExistsIdentifier.stream().anyMatch(e.getMessage()::contains)) {
+          throw new WorkbasketAccessItemAlreadyExistException(accessItem);
+        }
+        throw e;
       }
-      workbasketAccessMapper.insert(accessItem);
-      LOGGER.debug(
-          "Method createWorkbasketAccessItem() created workbaskteAccessItem {}", accessItem);
       return accessItem;
     } finally {
       taskanaEngine.returnConnection();
