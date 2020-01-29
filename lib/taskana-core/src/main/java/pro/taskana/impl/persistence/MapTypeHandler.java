@@ -17,16 +17,16 @@ import org.slf4j.LoggerFactory;
  *
  * @author EH
  */
-@SuppressWarnings("rawtypes")
-public class MapTypeHandler extends BaseTypeHandler<Map> {
+public class MapTypeHandler extends BaseTypeHandler<Map<String, Object>> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MapTypeHandler.class);
 
   @Override
-  public void setNonNullParameter(PreparedStatement ps, int i, Map parameter, JdbcType jdbcType)
+  public void setNonNullParameter(
+      PreparedStatement ps, int i, Map<String, Object> parameter, JdbcType jdbcType)
       throws SQLException {
     if (parameter != null && parameter.size() > 0) {
-      LOGGER.debug("Input-Map before serializing: ", parameter);
+      LOGGER.debug("Input-Map before serializing: {}", parameter);
       // Convert Map to JSON string
       JSONObject jsonObj = new JSONObject(parameter);
       ps.setString(i, jsonObj.toString());
@@ -36,7 +36,8 @@ public class MapTypeHandler extends BaseTypeHandler<Map> {
   }
 
   @Override
-  public Map getNullableResult(ResultSet rs, String columnName) throws SQLException {
+  public Map<String, Object> getNullableResult(ResultSet rs, String columnName)
+      throws SQLException {
     String fieldValue = rs.getString(columnName);
     if (fieldValue != null) {
       return convertToMap(fieldValue);
@@ -45,7 +46,7 @@ public class MapTypeHandler extends BaseTypeHandler<Map> {
   }
 
   @Override
-  public Map getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
+  public Map<String, Object> getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
     String fieldValue = rs.getString(columnIndex);
     if (fieldValue != null) {
       return convertToMap(fieldValue);
@@ -54,7 +55,8 @@ public class MapTypeHandler extends BaseTypeHandler<Map> {
   }
 
   @Override
-  public Map getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
+  public Map<String, Object> getNullableResult(CallableStatement cs, int columnIndex)
+      throws SQLException {
     String fieldValue = cs.getString(columnIndex);
     if (fieldValue != null) {
       return convertToMap(fieldValue);
@@ -62,7 +64,7 @@ public class MapTypeHandler extends BaseTypeHandler<Map> {
     return null;
   }
 
-  private Map convertToMap(String fieldValue) {
+  private Map<String, Object> convertToMap(String fieldValue) {
     JSONObject jsonObj = new JSONObject(fieldValue);
     return jsonObj.toMap();
   }
