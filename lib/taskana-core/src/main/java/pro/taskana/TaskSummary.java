@@ -89,6 +89,13 @@ public interface TaskSummary {
   String getNote();
 
   /**
+   * Gets the description of the task.
+   *
+   * @return the task's description
+   */
+  String getDescription();
+
+  /**
    * Gets the priority of the task.
    *
    * @return the task's priority
