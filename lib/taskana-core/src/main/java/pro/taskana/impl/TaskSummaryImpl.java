@@ -27,6 +27,7 @@ public class TaskSummaryImpl implements TaskSummary {
   private String name;
   private String creator;
   private String note;
+  private String description;
   private int priority;
   private TaskState state;
   private ClassificationSummary classificationSummary;
@@ -195,6 +196,19 @@ public class TaskSummaryImpl implements TaskSummary {
 
   public void setNote(String note) {
     this.note = note;
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see pro.taskana.TaskSummary#getDescription()
+   */
+  @Override
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
   }
 
   /*
@@ -602,6 +616,7 @@ public class TaskSummaryImpl implements TaskSummary {
         name,
         creator,
         note,
+        description,
         priority,
         state,
         classificationSummary,
@@ -654,6 +669,7 @@ public class TaskSummaryImpl implements TaskSummary {
         && Objects.equals(name, other.name)
         && Objects.equals(creator, other.creator)
         && Objects.equals(note, other.note)
+        && Objects.equals(description, other.description)
         && state == other.state
         && Objects.equals(classificationSummary, other.classificationSummary)
         && Objects.equals(workbasketSummary, other.workbasketSummary)

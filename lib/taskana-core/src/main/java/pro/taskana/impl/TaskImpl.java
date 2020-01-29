@@ -530,6 +530,7 @@ public class TaskImpl implements Task {
     taskSummary.setName(name);
     taskSummary.setCreator(creator);
     taskSummary.setNote(note);
+    taskSummary.setDescription(description);
     taskSummary.setOwner(owner);
     taskSummary.setParentBusinessProcessId(parentBusinessProcessId);
     taskSummary.setPlanned(planned);
