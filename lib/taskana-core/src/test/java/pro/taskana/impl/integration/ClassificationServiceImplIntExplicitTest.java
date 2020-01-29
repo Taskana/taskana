@@ -48,7 +48,6 @@ public class ClassificationServiceImplIntExplicitTest {
 
   private static final String ID_PREFIX_CLASSIFICATION = "CLI";
 
-  @SuppressWarnings("checkstyle:DeclarationOrder")
   static int counter = 0;
 
   private DataSource dataSource;
