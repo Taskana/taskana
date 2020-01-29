@@ -26,6 +26,7 @@ public class TaskSummaryResource extends ResourceSupport {
   private String name;
   private String creator;
   private String note;
+  private String description;
   private int priority;
   private TaskState state;
   private ClassificationSummaryResource classificationSummaryResource;
@@ -68,6 +69,7 @@ public class TaskSummaryResource extends ResourceSupport {
     this.name = taskSummary.getName();
     this.creator = taskSummary.getCreator();
     this.note = taskSummary.getNote();
+    this.description = taskSummary.getDescription();
     this.priority = taskSummary.getPriority();
     this.state = taskSummary.getState();
     this.classificationSummaryResource =
@@ -188,6 +190,14 @@ public class TaskSummaryResource extends ResourceSupport {
 
   public void setNote(String note) {
     this.note = note;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
   }
 
   public int getPriority() {
