@@ -47,7 +47,6 @@ class WorkbasketServiceImplIntExplicitTest {
 
   private static final int SLEEP_TIME = 100;
 
-  @SuppressWarnings("checkstyle:DeclarationOrder")
   static int counter = 0;
 
   private DataSource dataSource;
