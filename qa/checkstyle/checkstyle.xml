@@ -177,7 +177,6 @@
         value="Method type name ''{0}'' must match pattern ''{1}''."/>
       <property name="format" value="(^[A-Z][0-9]?)$|([A-Z][a-zA-Z0-9]*[T]$)"/>
     </module>
-    <module name="DeclarationOrderCheck"/>
     <module name="InterfaceTypeParameterName">
       <message key="name.invalidPattern"
         value="Interface type name ''{0}'' must match pattern ''{1}''."/>

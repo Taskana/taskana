@@ -43,7 +43,6 @@ class AsyncUpdateJobIntTest {
 
   private static final String CLASSIFICATION_ID = "CLI:100000000000000000000000000000000003";
 
-  @SuppressWarnings("checkstyle:DeclarationOrder")
   static RestTemplate template;
 
   @Autowired ClassificationResourceAssembler classificationResourceAssembler;

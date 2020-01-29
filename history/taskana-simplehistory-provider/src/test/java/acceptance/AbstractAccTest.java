@@ -25,7 +25,6 @@ public class AbstractAccTest {
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAccTest.class);
   private static final int POOL_TIME_TO_WAIT = 50;
 
-  @SuppressWarnings("checkstyle:DeclarationOrder")
   private static SimpleHistoryServiceImpl historyService;
 
   private static DataSource dataSource;
