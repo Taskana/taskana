@@ -1,6 +1,7 @@
 package pro.taskana.ldap;
 
 import java.util.List;
+import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 import javax.naming.directory.SearchControls;
 import org.slf4j.Logger;
@@ -63,6 +64,8 @@ public class LdapClient {
   private String groupNameAttribute;
 
   private String groupsOfUser;
+
+  private String baseDn;
 
   private int minSearchForLength;
 
@@ -182,16 +185,22 @@ public class LdapClient {
       throw new SystemException(
           "LdapClient was called but is not active due to missing configuration: " + message);
     }
-
+    // Obviously Spring LdapTemplate does have a inconsistency and always adds the base name to the
+    // given DN.
+    // https://stackoverflow.com/questions/55285743/spring-ldaptemplate-how-to-lookup-fully-qualified-dn-with-configured-base-dn
+    // Therefore we have to remove the base name from the dn before performing the lookup
+    // (?i) --> case insensitive replacement
+    String nameWithoutBaseDn = name.replaceAll("(?i)" + Pattern.quote("," + baseDn), "");
+    LOGGER.debug(
+        "Removes baseDN {} from given DN. New DN to be used: {}", baseDn, nameWithoutBaseDn);
     String[] groupAttributesToReturn;
     if (CN.equals(groupNameAttribute)) {
       groupAttributesToReturn = new String[] {CN};
     } else {
       groupAttributesToReturn = new String[] {getGroupNameAttribute(), CN};
     }
-
     final AccessIdResource accessId =
-        ldapTemplate.lookup(name, groupAttributesToReturn, new GroupContextMapper());
+        ldapTemplate.lookup(nameWithoutBaseDn, groupAttributesToReturn, new GroupContextMapper());
     LOGGER.debug("Exit from searchGroupByDn. Retrieved the following group: {}", accessId);
     return accessId;
   }
@@ -261,6 +270,10 @@ public class LdapClient {
     return env.getProperty("taskana.ldap.groupSearchBase");
   }
 
+  public String getBaseDn() {
+    return env.getProperty("taskana.ldap.baseDn");
+  }
+
   public String getGroupSearchFilterName() {
     return env.getProperty("taskana.ldap.groupSearchFilterName");
   }
@@ -298,7 +311,7 @@ public class LdapClient {
   }
 
   @PostConstruct
-  private void init() {
+  void init() {
     LOGGER.debug("Entry to init()");
     String strMinSearchForLength = getMinSearchForLengthAsString();
     if (strMinSearchForLength == null || strMinSearchForLength.isEmpty()) {
@@ -326,6 +339,7 @@ public class LdapClient {
       groupSearchFilterValue = getGroupSearchFilterValue();
       groupNameAttribute = getGroupNameAttribute();
       groupsOfUser = getGroupsOfUser();
+      baseDn = getBaseDn();
 
       ldapTemplate.setDefaultCountLimit(maxNumberOfReturnedAccessIds);
 
@@ -364,6 +378,9 @@ public class LdapClient {
       if (groupsOfUser == null) {
         message += " taskana.ldap.groupsOfUser is not configured.";
       }
+      if (baseDn == null) {
+        message += " taskana.ldap.baseDn is not configured.";
+      }
       if (!message.equals(emptyMessage)) {
         throw new SystemException(message);
       }
@@ -383,7 +400,7 @@ public class LdapClient {
   }
 
   /** Context Mapper for user entries. */
-  private class UserContextMapper extends AbstractContextMapper<AccessIdResource> {
+  class UserContextMapper extends AbstractContextMapper<AccessIdResource> {
 
     @Override
     public AccessIdResource doMapFromContext(final DirContextOperations context) {
@@ -397,7 +414,7 @@ public class LdapClient {
   }
 
   /** Context Mapper for user entries. */
-  private class GroupContextMapper extends AbstractContextMapper<AccessIdResource> {
+  class GroupContextMapper extends AbstractContextMapper<AccessIdResource> {
 
     @Override
     public AccessIdResource doMapFromContext(final DirContextOperations context) {
