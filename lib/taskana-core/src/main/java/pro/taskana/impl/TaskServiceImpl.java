@@ -3,7 +3,6 @@ package pro.taskana.impl;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -388,7 +387,7 @@ public class TaskServiceImpl implements TaskService {
     String userId = CurrentUserContext.getUserid();
     LOGGER.debug("entry to updateTask(task = {}, userId = {})", task, userId);
     TaskImpl newTaskImpl = (TaskImpl) task;
-    TaskImpl oldTaskImpl = null;
+    TaskImpl oldTaskImpl;
     try {
       taskanaEngine.openConnection();
       oldTaskImpl = (TaskImpl) getTask(newTaskImpl.getId());
@@ -648,7 +647,7 @@ public class TaskServiceImpl implements TaskService {
 
   public void refreshPriorityAndDueDate(String taskId) throws ClassificationNotFoundException {
     LOGGER.debug("entry to refreshPriorityAndDueDate(taskId = {})", taskId);
-    TaskImpl task = null;
+    TaskImpl task;
     BulkOperationResults<String, Exception> bulkLog = new BulkOperationResults<>();
     try {
       taskanaEngine.openConnection();
@@ -733,9 +732,8 @@ public class TaskServiceImpl implements TaskService {
       return result;
     }
 
-    Set<String> taskIdSet =
-        taskSummaries.stream().map(TaskSummaryImpl::getTaskId).collect(Collectors.toSet());
-    String[] taskIdArray = taskIdSet.toArray(new String[0]);
+    String[] taskIdArray =
+        taskSummaries.stream().map(TaskSummaryImpl::getTaskId).distinct().toArray(String[]::new);
 
     LOGGER.debug(
         "augmentTaskSummariesByContainedSummaries() about to query for attachmentSummaries ");
@@ -759,7 +757,7 @@ public class TaskServiceImpl implements TaskService {
     String userId = CurrentUserContext.getUserid();
     LOGGER.debug(
         "entry to claim(id = {}, userId = {}, forceClaim = {})", taskId, userId, forceClaim);
-    TaskImpl task = null;
+    TaskImpl task;
     try {
       taskanaEngine.openConnection();
       task = (TaskImpl) getTask(taskId);
@@ -798,7 +796,7 @@ public class TaskServiceImpl implements TaskService {
         taskId,
         userId,
         forceUnclaim);
-    TaskImpl task = null;
+    TaskImpl task;
     try {
       taskanaEngine.openConnection();
       task = (TaskImpl) getTask(taskId);
@@ -834,7 +832,7 @@ public class TaskServiceImpl implements TaskService {
     String userId = CurrentUserContext.getUserid();
     LOGGER.debug(
         "entry to completeTask(id = {}, userId = {}, isForced = {})", taskId, userId, isForced);
-    TaskImpl task = null;
+    TaskImpl task;
     try {
       taskanaEngine.openConnection();
       task = (TaskImpl) this.getTask(taskId);
@@ -883,7 +881,7 @@ public class TaskServiceImpl implements TaskService {
       throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
     LOGGER.debug("entry to deleteTask(taskId = {} , forceDelete = {})", taskId, forceDelete);
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.ADMIN);
-    TaskImpl task = null;
+    TaskImpl task;
     try {
       taskanaEngine.openConnection();
       task = (TaskImpl) getTask(taskId);
@@ -982,26 +980,17 @@ public class TaskServiceImpl implements TaskService {
 
     switch (desiredCallbackState) {
       case CALLBACK_PROCESSING_COMPLETED:
-        if (!(currentTaskState.equals(TaskState.COMPLETED))) {
-          return false;
-        }
-        return true;
+        return currentTaskState.equals(TaskState.COMPLETED);
 
       case CLAIMED:
         if (!currentTaskState.equals(TaskState.CLAIMED)) {
           return false;
-        } else if (!currentTaskCallbackState.equals(CallbackState.CALLBACK_PROCESSING_REQUIRED)) {
-          return false;
+        } else {
+          return currentTaskCallbackState.equals(CallbackState.CALLBACK_PROCESSING_REQUIRED);
         }
-        return true;
 
       case CALLBACK_PROCESSING_REQUIRED:
-        if (currentTaskCallbackState.equals(CallbackState.CALLBACK_PROCESSING_COMPLETED)) {
-          return false;
-        }
-        return true;
-      case NONE:
-        return false;
+        return !currentTaskCallbackState.equals(CallbackState.CALLBACK_PROCESSING_COMPLETED);
 
       default:
         return false;
@@ -1239,7 +1228,7 @@ public class TaskServiceImpl implements TaskService {
       TaskImpl task, List<AttachmentImpl> attachmentImpls) {
     LOGGER.debug("entry to transferBulk()");
     Set<String> classificationIdSet =
-        new HashSet<>(Arrays.asList(task.getClassificationSummary().getId()));
+        new HashSet<>(Collections.singletonList(task.getClassificationSummary().getId()));
     if (attachmentImpls != null && !attachmentImpls.isEmpty()) {
       for (AttachmentImpl att : attachmentImpls) {
         classificationIdSet.add(att.getClassificationSummary().getId());
@@ -1269,11 +1258,11 @@ public class TaskServiceImpl implements TaskService {
       return;
     }
     // calculate parameters for workbasket query: workbasket keys
-    Set<String> workbasketIdSet =
+    String[] workbasketIdArray =
         taskSummaries.stream()
             .map(t -> t.getWorkbasketSummary().getId())
-            .collect(Collectors.toSet());
-    String[] workbasketIdArray = workbasketIdSet.toArray(new String[0]);
+            .distinct()
+            .toArray(String[]::new);
     LOGGER.debug("addWorkbasketSummariesToTaskSummaries() about to query workbaskets");
     WorkbasketQueryImpl query = (WorkbasketQueryImpl) workbasketService.createWorkbasketQuery();
     query.setUsedToAugmentTasks(true);
@@ -1429,7 +1418,7 @@ public class TaskServiceImpl implements TaskService {
       throws InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
-          "entry to validateCustomFields(customFieldsToUpdate = {}, taskIds = {})",
+          "entry to validateCustomFields(customFieldsToUpdate = {})",
           LoggerUtils.mapToString(customFieldsToUpdate));
     }
 
@@ -1449,7 +1438,7 @@ public class TaskServiceImpl implements TaskService {
   }
 
   private List<TaskSummary> getTasksToChange(List<String> taskIds) {
-    return createTaskQuery().idIn(taskIds.toArray(new String[taskIds.size()])).list();
+    return createTaskQuery().idIn(taskIds.toArray(new String[0])).list();
   }
 
   private List<TaskSummary> getTasksToChange(ObjectReference selectionCriteria) {
@@ -1928,14 +1917,14 @@ public class TaskServiceImpl implements TaskService {
     if (attachmentImpls == null || attachmentImpls.isEmpty()) {
       return result;
     }
-    Set<String> classificationIds =
-        attachmentImpls.stream()
-            .map(t -> t.getClassificationSummary().getId())
-            .collect(Collectors.toSet());
     List<ClassificationSummary> classifications =
         classificationService
             .createClassificationQuery()
-            .idIn(classificationIds.toArray(new String[0]))
+            .idIn(
+                attachmentImpls.stream()
+                    .map(t -> t.getClassificationSummary().getId())
+                    .distinct()
+                    .toArray(String[]::new))
             .list();
     for (AttachmentImpl att : attachmentImpls) {
       ClassificationSummary classificationSummary =
@@ -1964,8 +1953,7 @@ public class TaskServiceImpl implements TaskService {
   }
 
   private void createTasksCompletedEvents(List<TaskSummary> taskSummaries) {
-    taskSummaries.stream()
-        .forEach(task -> historyEventProducer.createEvent(new CompletedEvent(task)));
+    taskSummaries.forEach(task -> historyEventProducer.createEvent(new CompletedEvent(task)));
   }
 
   /**
@@ -1980,7 +1968,6 @@ public class TaskServiceImpl implements TaskService {
     private int prio;
 
     PrioDurationHolder(Duration duration, int prio) {
-      super();
       this.duration = duration;
       this.prio = prio;
     }
@@ -1995,10 +1982,6 @@ public class TaskServiceImpl implements TaskService {
 
     public int getPrio() {
       return prio;
-    }
-
-    public void setPrio(int prio) {
-      this.prio = prio;
     }
 
     @Override
