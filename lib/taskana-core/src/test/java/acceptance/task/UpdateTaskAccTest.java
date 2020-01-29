@@ -347,9 +347,10 @@ class UpdateTaskAccTest extends AbstractAccTest {
     Task taskReady = taskService.getTask(taskReadyId);
     assertThat(taskReady.getState()).isEqualTo(TaskState.READY);
     assertThat(taskReady.getOwner()).isNull();
-    Task modifiedTaskReady = taskService.setOwner(taskReadyId, "Holger");
+    String anyUserName = "Holger";
+    Task modifiedTaskReady = taskService.setOwner(taskReadyId, anyUserName);
     assertThat(modifiedTaskReady.getState()).isEqualTo(TaskState.READY);
-    assertThat(modifiedTaskReady.getOwner()).isEqualTo("Holger");
+    assertThat(modifiedTaskReady.getOwner()).isEqualTo(anyUserName);
     Task taskClaimed = taskService.claim(taskReadyId);
     assertThat(taskClaimed.getState()).isEqualTo(TaskState.CLAIMED);
     assertThat(taskClaimed.getOwner()).isEqualTo("user_1_2");
@@ -365,9 +366,11 @@ class UpdateTaskAccTest extends AbstractAccTest {
 
     TaskService taskService = taskanaEngine.getTaskService();
     String taskReadyId = "TKI:000000000000000000000000000000000024";
+    String anyUserName = "Benjamin";
+
     assertThatThrownBy(() -> taskService.getTask(taskReadyId))
         .isInstanceOf(NotAuthorizedException.class);
-    assertThatThrownBy(() -> taskService.setOwner(taskReadyId, "Holger"))
+    assertThatThrownBy(() -> taskService.setOwner(taskReadyId, anyUserName))
         .isInstanceOf(NotAuthorizedException.class);
   }
 
@@ -381,10 +384,11 @@ class UpdateTaskAccTest extends AbstractAccTest {
 
     TaskService taskService = taskanaEngine.getTaskService();
     String taskClaimedId = "TKI:000000000000000000000000000000000026";
+    String anyUserName = "Mustapha";
     Task taskClaimed = taskService.getTask(taskClaimedId);
     assertThat(taskClaimed.getState()).isEqualTo(TaskState.CLAIMED);
     assertThat(taskClaimed.getOwner()).isEqualTo("user_1_1");
-    assertThatThrownBy(() -> taskService.setOwner(taskClaimedId, "Holger"))
+    assertThatThrownBy(() -> taskService.setOwner(taskClaimedId, anyUserName))
         .isInstanceOf(InvalidStateException.class);
   }
 }

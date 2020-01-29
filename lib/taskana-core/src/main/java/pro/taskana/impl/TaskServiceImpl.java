@@ -64,7 +64,7 @@ public class TaskServiceImpl implements TaskService {
 
   private static final String IS_ALREADY_CLAIMED_BY = " is already claimed by ";
   private static final String IS_ALREADY_COMPLETED = " is already completed.";
-  private static final String IS_NOT_READY = " is not in state ready.";
+  private static final String TASK_WITH_ID_IS_NOT_READY = "Task with id %s is not in state ready.";
   private static final String WAS_NOT_FOUND2 = " was not found.";
   private static final String WAS_NOT_FOUND = " was not found";
   private static final String TASK_WITH_ID = "Task with id ";
@@ -624,7 +624,7 @@ public class TaskServiceImpl implements TaskService {
       task = (TaskImpl) getTask(taskId);
       TaskState state = task.getState();
       if (state != TaskState.READY) {
-        throw new InvalidStateException(TASK_WITH_ID + taskId + IS_NOT_READY);
+        throw new InvalidStateException(String.format(TASK_WITH_ID_IS_NOT_READY, taskId));
       }
       Instant now = Instant.now();
       task.setOwner(ownerId);
