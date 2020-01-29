@@ -400,7 +400,19 @@ public class LdapClient {
   }
 
   /** Context Mapper for user entries. */
-  class UserContextMapper extends AbstractContextMapper<AccessIdResource> {
+  class GroupContextMapper extends AbstractContextMapper<AccessIdResource> {
+
+    @Override
+    public AccessIdResource doMapFromContext(final DirContextOperations context) {
+      final AccessIdResource accessId = new AccessIdResource();
+      accessId.setAccessId(context.getNameInNamespace()); // fully qualified dn
+      accessId.setName(context.getStringAttribute(getGroupNameAttribute()));
+      return accessId;
+    }
+  }
+
+  /** Context Mapper for user entries. */
+  private class UserContextMapper extends AbstractContextMapper<AccessIdResource> {
 
     @Override
     public AccessIdResource doMapFromContext(final DirContextOperations context) {
@@ -409,18 +421,6 @@ public class LdapClient {
       String firstName = context.getStringAttribute(getUserFirstnameAttribute());
       String lastName = context.getStringAttribute(getUserLastnameAttribute());
       accessId.setName(lastName + ", " + firstName);
-      return accessId;
-    }
-  }
-
-  /** Context Mapper for user entries. */
-  class GroupContextMapper extends AbstractContextMapper<AccessIdResource> {
-
-    @Override
-    public AccessIdResource doMapFromContext(final DirContextOperations context) {
-      final AccessIdResource accessId = new AccessIdResource();
-      accessId.setAccessId(context.getNameInNamespace()); // fully qualified dn
-      accessId.setName(context.getStringAttribute(getGroupNameAttribute()));
       return accessId;
     }
   }

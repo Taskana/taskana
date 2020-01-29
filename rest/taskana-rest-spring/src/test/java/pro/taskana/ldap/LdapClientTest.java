@@ -2,18 +2,19 @@ package pro.taskana.ldap;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.env.Environment;
 import org.springframework.ldap.core.LdapTemplate;
 
-@MockitoSettings
+@ExtendWith(MockitoExtension.class)
 class LdapClientTest {
 
   @Mock Environment environment;
@@ -36,8 +37,11 @@ class LdapClientTest {
   }
 
   private void setUpEnvMock() {
+
     Stream.of(
             new String[][] {
+              {"taskana.ldap.minSearchForLength", "3"},
+              {"taskana.ldap.maxNumberOfReturnedAccessIds", "50"},
               {"taskana.ldap.useLdap", "true"},
               {"taskana.ldap.baseDn", "o=TaskanaTest"},
               {"taskana.ldap.userSearchBase", "ou=people"},
@@ -51,13 +55,8 @@ class LdapClientTest {
               {"taskana.ldap.userLastnameAttribute", "sn"},
               {"taskana.ldap.userFirstnameAttribute", "givenName"},
               {"taskana.ldap.userFirstnameAttribute", "givenName"},
-              {"taskana.ldap.userSearchFilterValue", "person"},
-              {"taskana.ldap.bindDn", "uid=admin,ou=system"},
-              {"taskana.ldap.bindPassword", "secret"},
-              {"taskana.ldap.serverUrl", "ldap://localhost:10389"},
+              {"taskana.ldap.userSearchFilterValue", "person"}
             })
-        .forEach(
-            strings ->
-                lenient().when(this.environment.getProperty(strings[0])).thenReturn(strings[1]));
+        .forEach(strings -> when(this.environment.getProperty(strings[0])).thenReturn(strings[1]));
   }
 }
