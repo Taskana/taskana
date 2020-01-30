@@ -53,7 +53,8 @@ public class LdapConfiguration {
 
     @Override
     public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-      String useLdap = context.getEnvironment().getProperty(LdapClient.TASKANA_USE_LDAP_PROP_NAME);
+      String useLdap =
+          context.getEnvironment().getProperty(LdapSettings.TASKANA_LDAP_USE_LDAP.getKey());
       if (useLdap == null || useLdap.isEmpty()) {
         return false;
       } else {
