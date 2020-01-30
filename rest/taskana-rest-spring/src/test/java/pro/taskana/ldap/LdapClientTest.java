@@ -1,5 +1,6 @@
 package pro.taskana.ldap;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -24,7 +25,7 @@ class LdapClientTest {
   @InjectMocks LdapClient cut;
 
   @Test
-  void testLdap() {
+  void testLdap_searchGroupByDn() {
 
     setUpEnvMock();
     cut.init();
@@ -34,6 +35,15 @@ class LdapClientTest {
     verify(ldapTemplate)
         .lookup(
             eq("cn=developersgroup,ou=groups"), any(), any(LdapClient.GroupContextMapper.class));
+  }
+
+  @Test
+  void testLdap_getNameWithoutBaseDn() {
+
+    setUpEnvMock();
+    cut.init();
+    assertThat(cut.getNameWithoutBaseDn("cn=developersgroup,ou=groups,o=taskanatest"))
+        .isEqualTo("cn=developersgroup,ou=groups");
   }
 
   private void setUpEnvMock() {
