@@ -73,6 +73,14 @@ public class LdapClient {
 
   private String message;
 
+  /**
+   * Search LDAP for matching users or groups.
+   *
+   * @param name lookup string for names or groups
+   * @return a list of AccessIdResources sorted by AccessId and limited to
+   *     maxNumberOfReturnedAccessIds
+   * @throws InvalidArgumentException if input is shorter than minSearchForLength
+   */
   public List<AccessIdResource> searchUsersAndGroups(final String name)
       throws InvalidArgumentException {
     LOGGER.debug("entry to searchUsersAndGroups(name = {})", name);
@@ -159,19 +167,12 @@ public class LdapClient {
     }
     andFilter.and(orFilter);
 
-    String[] groupAttributesToReturn;
-    if (CN.equals(groupNameAttribute)) {
-      groupAttributesToReturn = new String[] {CN};
-    } else {
-      groupAttributesToReturn = new String[] {getGroupNameAttribute(), CN};
-    }
-
     final List<AccessIdResource> accessIds =
         ldapTemplate.search(
             getGroupSearchBase(),
             andFilter.encode(),
             SearchControls.SUBTREE_SCOPE,
-            groupAttributesToReturn,
+            getLookUpGoupAttributesToReturn(),
             new GroupContextMapper());
     LOGGER.debug(
         "Exit from searchGroupsByName. Retrieved the following groups: {}",
@@ -189,20 +190,27 @@ public class LdapClient {
     // given DN.
     // https://stackoverflow.com/questions/55285743/spring-ldaptemplate-how-to-lookup-fully-qualified-dn-with-configured-base-dn
     // Therefore we have to remove the base name from the dn before performing the lookup
-    // (?i) --> case insensitive replacement
-    String nameWithoutBaseDn = name.replaceAll("(?i)" + Pattern.quote("," + baseDn), "");
+    String nameWithoutBaseDn = getNameWithoutBaseDn(name);
     LOGGER.debug(
         "Removes baseDN {} from given DN. New DN to be used: {}", baseDn, nameWithoutBaseDn);
-    String[] groupAttributesToReturn;
-    if (CN.equals(groupNameAttribute)) {
-      groupAttributesToReturn = new String[] {CN};
-    } else {
-      groupAttributesToReturn = new String[] {getGroupNameAttribute(), CN};
-    }
     final AccessIdResource accessId =
-        ldapTemplate.lookup(nameWithoutBaseDn, groupAttributesToReturn, new GroupContextMapper());
+        ldapTemplate.lookup(
+            nameWithoutBaseDn, getLookUpGoupAttributesToReturn(), new GroupContextMapper());
     LOGGER.debug("Exit from searchGroupByDn. Retrieved the following group: {}", accessId);
     return accessId;
+  }
+
+  String getNameWithoutBaseDn(String name) {
+    // (?i) --> case insensitive replacement
+    return name.replaceAll("(?i)" + Pattern.quote("," + baseDn), "");
+  }
+
+  String[] getLookUpGoupAttributesToReturn() {
+    if (CN.equals(groupNameAttribute)) {
+      return new String[] {CN};
+    } else {
+      return new String[] {getGroupNameAttribute(), CN};
+    }
   }
 
   public List<AccessIdResource> searchGroupsofUsersIsMember(final String name)
