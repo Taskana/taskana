@@ -52,6 +52,7 @@ import pro.taskana.history.events.task.CreatedEvent;
 import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
 import pro.taskana.impl.util.IdGenerator;
 import pro.taskana.impl.util.LoggerUtils;
+import pro.taskana.impl.util.Pair;
 import pro.taskana.mappings.AttachmentMapper;
 import pro.taskana.mappings.CustomPropertySelector;
 import pro.taskana.mappings.TaskMapper;
@@ -707,7 +708,7 @@ public class TaskServiceImpl implements TaskService {
     if (newClassificationSummary.getServiceLevel() == null) {
       return null;
     }
-    Duration minDuration = prioDurationFromAttachments.getDuration();
+    Duration minDuration = prioDurationFromAttachments.getLeft();
     Duration durationFromClassification =
         Duration.parse(newClassificationSummary.getServiceLevel());
     if (minDuration != null) {
@@ -998,7 +999,9 @@ public class TaskServiceImpl implements TaskService {
   }
 
   private void standardSettings(
-      TaskImpl task, Classification classification, PrioDurationHolder prioDurationFromAttachments)
+      TaskImpl task,
+      Classification classification,
+      PrioDurationHolder prioDurationFromAttachments)
       throws InvalidArgumentException {
     LOGGER.debug("entry to standardSettings()");
     final Instant now = Instant.now();
@@ -1037,7 +1040,7 @@ public class TaskServiceImpl implements TaskService {
               prioDurationFromAttachments,
               classification.getPriority(),
               classification.getServiceLevel());
-      Duration finalDuration = finalPrioDuration.getDuration();
+      Duration finalDuration = finalPrioDuration.getLeft();
       if (finalDuration != null && !MAX_DURATION.equals(finalDuration)) {
         // if we have a due date we need to go x days backwards,
         // else we take the planned date (or now as fallback) and add x Days
@@ -1058,7 +1061,7 @@ public class TaskServiceImpl implements TaskService {
           task.setDue(due);
         }
       }
-      task.setPriority(finalPrioDuration.getPrio());
+      task.setPriority(finalPrioDuration.getRight());
     }
 
     if (task.getName() == null && classification != null) {
@@ -1497,8 +1500,8 @@ public class TaskServiceImpl implements TaskService {
         actualPrioDuration = handleNonNullAttachment(actualPrioDuration, attachment);
       }
     }
-    if (MAX_DURATION.equals(actualPrioDuration.getDuration())) {
-      actualPrioDuration.setDuration(null);
+    if (MAX_DURATION.equals(actualPrioDuration.getLeft())) {
+      actualPrioDuration = new PrioDurationHolder(null, actualPrioDuration.getRight());
     }
 
     LOGGER.debug("exit from handleAttachments(), returning {}", actualPrioDuration);
@@ -1527,7 +1530,9 @@ public class TaskServiceImpl implements TaskService {
   }
 
   private void standardUpdateActions(
-      TaskImpl oldTaskImpl, TaskImpl newTaskImpl, PrioDurationHolder prioDurationFromAttachments)
+      TaskImpl oldTaskImpl,
+      TaskImpl newTaskImpl,
+      PrioDurationHolder prioDurationFromAttachments)
       throws InvalidArgumentException, ConcurrencyException, ClassificationNotFoundException {
     validateObjectReference(newTaskImpl.getPrimaryObjRef(), "primary ObjectReference", "Task");
     // TODO: not safe to rely only on different timestamps.
@@ -1568,7 +1573,9 @@ public class TaskServiceImpl implements TaskService {
   }
 
   private void updateClassificationRelatedProperties(
-      TaskImpl oldTaskImpl, TaskImpl newTaskImpl, PrioDurationHolder prioDurationFromAttachments)
+      TaskImpl oldTaskImpl,
+      TaskImpl newTaskImpl,
+      PrioDurationHolder prioDurationFromAttachments)
       throws ClassificationNotFoundException {
     LOGGER.debug("entry to updateClassificationRelatedProperties()");
     // insert Classification specifications if Classification is given.
@@ -1627,7 +1634,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     int newPriority =
-        Math.max(newClassificationSummary.getPriority(), prioDurationFromAttachments.getPrio());
+        Math.max(newClassificationSummary.getPriority(), prioDurationFromAttachments.getRight());
     newTaskImpl.setPriority(newPriority);
     LOGGER.debug("exit from updateTaskPrioDurationFromClassification()");
   }
@@ -1658,8 +1665,8 @@ public class TaskServiceImpl implements TaskService {
 
     // DELETE, when an Attachment was only represented before
     deleteAttachmentOnTaskUpdate(oldTaskImpl, newTaskImpl);
-    if (MAX_DURATION.equals(prioDuration.getDuration())) {
-      prioDuration.setDuration(null);
+    if (MAX_DURATION.equals(prioDuration.getLeft())) {
+      prioDuration = new PrioDurationHolder(null, prioDuration.getRight());
     }
 
     LOGGER.debug("exit from handleAttachmentsOnTaskUpdate()");
@@ -1800,8 +1807,8 @@ public class TaskServiceImpl implements TaskService {
         }
       }
     }
-    if (MAX_DURATION.equals(prioDuration.getDuration())) {
-      prioDuration.setDuration(null);
+    if (MAX_DURATION.equals(prioDuration.getLeft())) {
+      prioDuration = new PrioDurationHolder(null, prioDuration.getRight());
     }
 
     LOGGER.debug("exit from handleAttachmentsOnClassificationUpdate(), returning {}", prioDuration);
@@ -1818,13 +1825,13 @@ public class TaskServiceImpl implements TaskService {
         prioDurationHolder,
         prioFromClassification,
         serviceLevelFromClassification);
-    Duration minDuration = prioDurationHolder.getDuration();
-    int maxPrio = prioDurationHolder.getPrio();
+    Duration minDuration = prioDurationHolder.getLeft();
+    int maxPrio = prioDurationHolder.getRight();
 
     if (serviceLevelFromClassification != null) {
       Duration currentDuration = Duration.parse(serviceLevelFromClassification);
-      if (prioDurationHolder.getDuration() != null) {
-        if (prioDurationHolder.getDuration().compareTo(currentDuration) > 0) {
+      if (prioDurationHolder.getLeft() != null) {
+        if (prioDurationHolder.getLeft().compareTo(currentDuration) > 0) {
           minDuration = currentDuration;
         }
       } else {
@@ -1835,10 +1842,9 @@ public class TaskServiceImpl implements TaskService {
       maxPrio = prioFromClassification;
     }
 
-    LOGGER.debug(
-        "exit from getNewPrioDuration(), returning {}",
-        new PrioDurationHolder(minDuration, maxPrio));
-    return new PrioDurationHolder(minDuration, maxPrio);
+    PrioDurationHolder pair = new PrioDurationHolder(minDuration, maxPrio);
+    LOGGER.debug("exit from getNewPrioDuration(), returning {}", pair);
+    return pair;
   }
 
   private void initAttachment(AttachmentImpl attachment, Task newTask) {
@@ -1889,7 +1895,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     int newPriority =
-        Math.max(classificationSummary.getPriority(), prioDurationFromAttachments.getPrio());
+        Math.max(classificationSummary.getPriority(), prioDurationFromAttachments.getRight());
     task.setPriority(newPriority);
     LOGGER.debug("exit from updateTaskPrioDurationFromClassificationAndAttachments()");
   }
@@ -1897,15 +1903,15 @@ public class TaskServiceImpl implements TaskService {
   private void updateTaskPrioDurationFromAttachments(
       TaskImpl task, PrioDurationHolder prioDurationFromAttachments) {
     LOGGER.debug("entry to updateTaskPrioDurationFromAttachments()");
-    if (prioDurationFromAttachments.getDuration() != null) {
+    if (prioDurationFromAttachments.getLeft() != null) {
       long days =
           converter.convertWorkingDaysToDays(
-              task.getPlanned(), prioDurationFromAttachments.getDuration().toDays());
+              task.getPlanned(), prioDurationFromAttachments.getLeft().toDays());
       Instant due = task.getPlanned().plus(Duration.ofDays(days));
       task.setDue(due);
     }
-    if (prioDurationFromAttachments.getPrio() > Integer.MIN_VALUE) {
-      task.setPriority(prioDurationFromAttachments.getPrio());
+    if (prioDurationFromAttachments.getRight() > Integer.MIN_VALUE) {
+      task.setPriority(prioDurationFromAttachments.getRight());
     }
     LOGGER.debug("exit from updateTaskPrioDurationFromAttachments()");
   }
@@ -1956,37 +1962,10 @@ public class TaskServiceImpl implements TaskService {
     taskSummaries.forEach(task -> historyEventProducer.createEvent(new CompletedEvent(task)));
   }
 
-  /**
-   * hold a pair of priority and Duration.
-   *
-   * @author bbr
-   */
-  static class PrioDurationHolder {
+  private static class PrioDurationHolder extends Pair<Duration, Integer> {
 
-    private Duration duration;
-
-    private int prio;
-
-    PrioDurationHolder(Duration duration, int prio) {
-      this.duration = duration;
-      this.prio = prio;
-    }
-
-    public Duration getDuration() {
-      return duration;
-    }
-
-    public void setDuration(Duration duration) {
-      this.duration = duration;
-    }
-
-    public int getPrio() {
-      return prio;
-    }
-
-    @Override
-    public String toString() {
-      return "PrioDurationHolder [duration=" + duration + ", prio=" + prio + "]";
+    public PrioDurationHolder(Duration left, Integer right) {
+      super(left, right);
     }
   }
 }
