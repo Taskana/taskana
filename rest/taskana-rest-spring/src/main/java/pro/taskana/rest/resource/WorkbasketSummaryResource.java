@@ -4,10 +4,10 @@ import javax.validation.constraints.NotNull;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.hateoas.core.Relation;
 
-import pro.taskana.WorkbasketSummary;
-import pro.taskana.WorkbasketType;
+import pro.taskana.workbasket.api.WorkbasketSummary;
+import pro.taskana.workbasket.api.WorkbasketType;
 
-/** Resource class for {@link pro.taskana.WorkbasketSummary}. */
+/** Resource class for {@link WorkbasketSummary}. */
 @Relation(collectionRelation = "workbaskets")
 public class WorkbasketSummaryResource extends ResourceSupport {
 

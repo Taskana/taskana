@@ -4,9 +4,9 @@ import javax.validation.constraints.NotNull;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.hateoas.core.Relation;
 
-import pro.taskana.WorkbasketAccessItem;
+import pro.taskana.workbasket.api.WorkbasketAccessItem;
 
-/** Resource class for {@link pro.taskana.WorkbasketAccessItem}. */
+/** Resource class for {@link WorkbasketAccessItem}. */
 @Relation(collectionRelation = "accessItems")
 public class WorkbasketAccessItemResource extends ResourceSupport {
 

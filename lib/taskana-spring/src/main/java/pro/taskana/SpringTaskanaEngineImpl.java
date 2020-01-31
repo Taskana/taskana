@@ -4,7 +4,7 @@ import javax.annotation.PostConstruct;
 import org.mybatis.spring.transaction.SpringManagedTransactionFactory;
 
 import pro.taskana.configuration.SpringTaskanaEngineConfiguration;
-import pro.taskana.impl.TaskanaEngineImpl;
+import pro.taskana.common.internal.TaskanaEngineImpl;
 
 /** This class configures the TaskanaEngine for spring. */
 public class SpringTaskanaEngineImpl extends TaskanaEngineImpl {

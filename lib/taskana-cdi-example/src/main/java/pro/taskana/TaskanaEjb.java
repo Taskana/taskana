@@ -3,6 +3,8 @@ package pro.taskana;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import pro.taskana.task.api.TaskService;
+
 /** example Taskana EJB. */
 @Stateless
 public class TaskanaEjb {

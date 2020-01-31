@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 import org.springframework.hateoas.ResourceSupport;
 
-import pro.taskana.Attachment;
-import pro.taskana.ObjectReference;
+import pro.taskana.task.api.Attachment;
+import pro.taskana.task.api.ObjectReference;
 
-/** Resource class for {@link pro.taskana.Attachment}. */
+/** Resource class for {@link Attachment}. */
 public class AttachmentResource extends ResourceSupport {
 
   private String attachmentId;

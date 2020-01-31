@@ -3,7 +3,7 @@ package acceptance.workbasket;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static pro.taskana.WorkbasketQueryColumnName.NAME;
+import static pro.taskana.workbasket.api.WorkbasketQueryColumnName.NAME;
 
 import acceptance.AbstractAccTest;
 import java.util.ArrayList;
@@ -12,16 +12,16 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.BaseQuery.SortDirection;
-import pro.taskana.WorkbasketPermission;
-import pro.taskana.WorkbasketQuery;
-import pro.taskana.WorkbasketService;
-import pro.taskana.WorkbasketSummary;
-import pro.taskana.WorkbasketType;
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.BaseQuery.SortDirection;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
+import pro.taskana.workbasket.api.WorkbasketPermission;
+import pro.taskana.workbasket.api.WorkbasketQuery;
+import pro.taskana.workbasket.api.WorkbasketService;
+import pro.taskana.workbasket.api.WorkbasketSummary;
+import pro.taskana.workbasket.api.WorkbasketType;
 
 /** Acceptance test for all "query workbasket by permission" scenarios. */
 @ExtendWith(JaasExtension.class)

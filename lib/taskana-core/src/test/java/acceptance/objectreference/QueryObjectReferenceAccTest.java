@@ -2,15 +2,15 @@ package acceptance.objectreference;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static pro.taskana.ObjectReferenceQueryColumnName.COMPANY;
-import static pro.taskana.ObjectReferenceQueryColumnName.SYSTEM;
+import static pro.taskana.task.api.ObjectReferenceQueryColumnName.COMPANY;
+import static pro.taskana.task.api.ObjectReferenceQueryColumnName.SYSTEM;
 
 import acceptance.AbstractAccTest;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
-import pro.taskana.ObjectReference;
-import pro.taskana.TaskQuery;
+import pro.taskana.task.api.ObjectReference;
+import pro.taskana.task.api.TaskQuery;
 
 /** Acceptance test for all "get classification" scenarios. */
 class QueryObjectReferenceAccTest extends AbstractAccTest {

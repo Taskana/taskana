@@ -10,19 +10,19 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.Workbasket;
-import pro.taskana.WorkbasketAccessItem;
-import pro.taskana.WorkbasketService;
-import pro.taskana.WorkbasketType;
-import pro.taskana.exceptions.DomainNotFoundException;
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.InvalidWorkbasketException;
-import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.exceptions.WorkbasketAccessItemAlreadyExistException;
-import pro.taskana.exceptions.WorkbasketAlreadyExistException;
-import pro.taskana.exceptions.WorkbasketNotFoundException;
+import pro.taskana.common.api.exceptions.DomainNotFoundException;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
+import pro.taskana.workbasket.api.Workbasket;
+import pro.taskana.workbasket.api.WorkbasketAccessItem;
+import pro.taskana.workbasket.api.WorkbasketService;
+import pro.taskana.workbasket.api.WorkbasketType;
+import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
+import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
+import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
+import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
 /** Acceptance test for all "create workbasket" scenarios. */
 @ExtendWith(JaasExtension.class)

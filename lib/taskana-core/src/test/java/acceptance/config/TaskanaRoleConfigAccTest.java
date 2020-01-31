@@ -10,10 +10,10 @@ import java.util.Set;
 import org.h2.store.fs.FileUtils;
 import org.junit.jupiter.api.Test;
 
-import pro.taskana.TaskanaRole;
-import pro.taskana.configuration.TaskanaEngineConfiguration;
-import pro.taskana.impl.TaskanaEngineImpl;
-import pro.taskana.impl.configuration.TaskanaEngineTestConfiguration;
+import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.common.internal.TaskanaEngineImpl;
+import pro.taskana.common.internal.TaskanaEngineTestConfiguration;
+import pro.taskana.task.api.TaskanaRole;
 
 /**
  * Test taskana's role configuration.

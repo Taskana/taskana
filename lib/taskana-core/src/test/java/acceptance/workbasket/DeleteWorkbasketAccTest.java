@@ -13,21 +13,21 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.TaskService;
-import pro.taskana.Workbasket;
-import pro.taskana.WorkbasketAccessItem;
-import pro.taskana.WorkbasketService;
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.InvalidOwnerException;
-import pro.taskana.exceptions.InvalidStateException;
-import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.exceptions.TaskNotFoundException;
-import pro.taskana.exceptions.WorkbasketAccessItemAlreadyExistException;
-import pro.taskana.exceptions.WorkbasketInUseException;
-import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.impl.TaskImpl;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.InvalidOwnerException;
+import pro.taskana.common.api.exceptions.InvalidStateException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
+import pro.taskana.task.api.TaskService;
+import pro.taskana.task.api.exceptions.TaskNotFoundException;
+import pro.taskana.task.internal.TaskImpl;
+import pro.taskana.workbasket.api.Workbasket;
+import pro.taskana.workbasket.api.WorkbasketAccessItem;
+import pro.taskana.workbasket.api.WorkbasketService;
+import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
+import pro.taskana.workbasket.api.exceptions.WorkbasketInUseException;
+import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
 /** Acceptance test which does test the deletion of a workbasket and all wanted failures. */
 @ExtendWith(JaasExtension.class)

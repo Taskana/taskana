@@ -3,8 +3,8 @@ package pro.taskana.rest.resource;
 import java.util.List;
 import java.util.Set;
 
-import pro.taskana.impl.WorkbasketAccessItemImpl;
-import pro.taskana.impl.util.LoggerUtils;
+import pro.taskana.workbasket.internal.WorkbasketAccessItemImpl;
+import pro.taskana.common.internal.util.LoggerUtils;
 
 /** this class represents a workbasket including its distro targets and authorisations. */
 public class WorkbasketDefinitionResource {

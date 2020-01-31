@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.hateoas.ResourceSupport;
 
-import pro.taskana.ObjectReference;
-import pro.taskana.Task;
-import pro.taskana.TaskState;
-import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.task.api.ObjectReference;
+import pro.taskana.task.api.Task;
+import pro.taskana.task.api.TaskState;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
 
-/** Resource class for {@link pro.taskana.Task}. */
+/** Resource class for {@link Task}. */
 public class TaskResource extends ResourceSupport {
 
   private String taskId;
@@ -476,8 +476,8 @@ public class TaskResource extends ResourceSupport {
 
   /**
    * A CustomAttribute is a user customized attribute which is saved as a Map and can be retreived
-   * from either {@link pro.taskana.Task#getCustomAttributes()} or {@link
-   * pro.taskana.Task#getCallbackInfo()}.
+   * from either {@link Task#getCustomAttributes()} or {@link
+   * Task#getCallbackInfo()}.
    */
   public static class CustomAttribute {
 

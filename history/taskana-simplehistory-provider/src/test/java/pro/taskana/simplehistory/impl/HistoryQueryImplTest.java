@@ -15,7 +15,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import pro.taskana.TimeInterval;
+import pro.taskana.common.api.TimeInterval;
 import pro.taskana.simplehistory.impl.mappings.HistoryQueryMapper;
 
 /**

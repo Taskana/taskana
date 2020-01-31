@@ -7,9 +7,9 @@ import java.util.List;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import pro.taskana.WorkbasketSummary;
-import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.exceptions.WorkbasketNotFoundException;
+import pro.taskana.workbasket.api.WorkbasketSummary;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.rest.WorkbasketController;
 
 /**

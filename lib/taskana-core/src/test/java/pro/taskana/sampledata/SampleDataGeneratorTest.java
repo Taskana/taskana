@@ -4,7 +4,7 @@ import org.apache.ibatis.datasource.pooled.PooledDataSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import pro.taskana.configuration.DbSchemaCreator;
+import pro.taskana.common.internal.configuration.DbSchemaCreator;
 
 /** Test SampleDataGenerator. */
 class SampleDataGeneratorTest {
