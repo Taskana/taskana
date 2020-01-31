@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import pro.taskana.report.api.TaskMonitorService;
-import pro.taskana.task.api.TaskState;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.report.api.TaskMonitorService;
 import pro.taskana.report.internal.header.TimeIntervalColumnHeader;
 import pro.taskana.rest.resource.ReportResource;
 import pro.taskana.rest.resource.ReportResourceAssembler;
+import pro.taskana.task.api.TaskState;
 
 /** Controller for all monitoring endpoints. */
 @RestController

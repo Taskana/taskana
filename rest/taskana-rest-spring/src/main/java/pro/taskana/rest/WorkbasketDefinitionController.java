@@ -24,22 +24,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import pro.taskana.common.api.exceptions.DomainNotFoundException;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.rest.resource.WorkbasketDefinitionResource;
+import pro.taskana.rest.resource.WorkbasketDefinitionResourceAssembler;
+import pro.taskana.rest.resource.WorkbasketResource;
 import pro.taskana.workbasket.api.Workbasket;
 import pro.taskana.workbasket.api.WorkbasketAccessItem;
 import pro.taskana.workbasket.api.WorkbasketQuery;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketSummary;
-import pro.taskana.common.api.exceptions.DomainNotFoundException;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.internal.WorkbasketAccessItemImpl;
-import pro.taskana.rest.resource.WorkbasketDefinitionResource;
-import pro.taskana.rest.resource.WorkbasketDefinitionResourceAssembler;
-import pro.taskana.rest.resource.WorkbasketResource;
 
 /** Controller for all {@link WorkbasketDefinitionResource} related endpoints. */
 @RestController
@@ -145,18 +145,21 @@ public class WorkbasketDefinitionController {
       // Since we would have a n² runtime when doing a lookup and updating the access items we
       // decided to
       // simply delete all existing accessItems and create new ones.
-      boolean noWrongAuth = definition.getAuthorizations().stream().noneMatch(access -> {
-        return (!access.getWorkbasketId().equals(importedWb.getId()))
-            || (!access.getWorkbasketKey().equals(importedWb.getKey()));
-      });
+      boolean noWrongAuth =
+          definition.getAuthorizations().stream()
+              .noneMatch(
+                  access -> {
+                    return (!access.getWorkbasketId().equals(importedWb.getId()))
+                        || (!access.getWorkbasketKey().equals(importedWb.getKey()));
+                  });
       if (!noWrongAuth) {
         throw new InvalidWorkbasketException(
-            "The given Authentications for Workbasket " + importedWb.getId()
+            "The given Authentications for Workbasket "
+                + importedWb.getId()
                 + " doesn't match in WorkbasketId and/or WorkbasketKey. "
                 + "Please provide consistent WorkbasketDefinitions");
       }
-      for (WorkbasketAccessItem accessItem :
-          workbasketService.getWorkbasketAccessItems(newId)) {
+      for (WorkbasketAccessItem accessItem : workbasketService.getWorkbasketAccessItems(newId)) {
         workbasketService.deleteWorkbasketAccessItem(accessItem.getId());
       }
       for (WorkbasketAccessItemImpl authorization : definition.getAuthorizations()) {

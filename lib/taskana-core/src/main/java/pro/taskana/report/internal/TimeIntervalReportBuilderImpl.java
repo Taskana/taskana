@@ -8,7 +8,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.common.api.CustomField;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
@@ -17,6 +16,7 @@ import pro.taskana.report.api.ClassificationReport;
 import pro.taskana.report.api.TimeIntervalReportBuilder;
 import pro.taskana.report.internal.header.TimeIntervalColumnHeader;
 import pro.taskana.report.internal.item.AgeQueryItem;
+import pro.taskana.task.api.CustomField;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.TaskanaRole;
 

@@ -9,12 +9,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.task.api.TaskanaRole;
 import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.rest.resource.TaskanaUserInfoResource;
 import pro.taskana.rest.resource.VersionResource;
-import pro.taskana.common.internal.security.CurrentUserContext;
+import pro.taskana.task.api.TaskanaRole;
 
 /** Controller for TaskanaEngine related tasks. */
 @RestController

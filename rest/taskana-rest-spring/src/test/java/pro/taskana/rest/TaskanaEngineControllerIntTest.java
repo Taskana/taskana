@@ -14,9 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import pro.taskana.RestHelper;
-import pro.taskana.task.api.TaskanaRole;
 import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.rest.resource.TaskanaUserInfoResource;
+import pro.taskana.task.api.TaskanaRole;
 
 /** Test TaskanaEngineController. */
 @TaskanaSpringBootTest

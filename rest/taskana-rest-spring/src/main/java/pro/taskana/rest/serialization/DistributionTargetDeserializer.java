@@ -13,9 +13,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.workbasket.api.Workbasket;
 import pro.taskana.workbasket.api.WorkbasketService;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
 /** This class deserializes the string list to real workbaskets. */

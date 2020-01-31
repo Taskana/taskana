@@ -3,8 +3,8 @@ package pro.taskana;
 import javax.annotation.PostConstruct;
 import org.mybatis.spring.transaction.SpringManagedTransactionFactory;
 
-import pro.taskana.configuration.SpringTaskanaEngineConfiguration;
 import pro.taskana.common.internal.TaskanaEngineImpl;
+import pro.taskana.configuration.SpringTaskanaEngineConfiguration;
 
 /** This class configures the TaskanaEngine for spring. */
 public class SpringTaskanaEngineImpl extends TaskanaEngineImpl {

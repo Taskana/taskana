@@ -7,18 +7,18 @@ import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import pro.taskana.task.api.AttachmentSummary;
+import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.classification.api.Classification;
 import pro.taskana.classification.api.ClassificationService;
+import pro.taskana.task.api.AttachmentSummary;
 import pro.taskana.task.api.ObjectReference;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
-import pro.taskana.TaskanaSpringBootTest;
-import pro.taskana.workbasket.api.Workbasket;
-import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.task.internal.AttachmentImpl;
 import pro.taskana.task.internal.TaskImpl;
 import pro.taskana.task.internal.TaskSummaryImpl;
+import pro.taskana.workbasket.api.Workbasket;
+import pro.taskana.workbasket.api.WorkbasketService;
 
 @TaskanaSpringBootTest
 class TaskSummaryAssemblerTest {
