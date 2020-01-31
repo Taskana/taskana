@@ -10,8 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.impl.util.LoggerUtils;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.internal.util.LoggerUtils;
 import pro.taskana.rest.RestConfiguration;
 import pro.taskana.rest.resource.AccessIdResource;
 

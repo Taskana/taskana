@@ -17,22 +17,22 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.KeyDomain;
-import pro.taskana.Task;
-import pro.taskana.TaskService;
-import pro.taskana.TaskSummary;
-import pro.taskana.WorkbasketAccessItem;
-import pro.taskana.WorkbasketService;
-import pro.taskana.exceptions.ClassificationNotFoundException;
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.exceptions.NotAuthorizedToQueryWorkbasketException;
-import pro.taskana.exceptions.TaskAlreadyExistException;
-import pro.taskana.exceptions.WorkbasketAccessItemAlreadyExistException;
-import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.impl.WorkbasketAccessItemImpl;
+import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
+import pro.taskana.common.api.KeyDomain;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
+import pro.taskana.task.api.Task;
+import pro.taskana.task.api.TaskService;
+import pro.taskana.task.api.TaskSummary;
+import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
+import pro.taskana.workbasket.api.WorkbasketAccessItem;
+import pro.taskana.workbasket.api.WorkbasketService;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedToQueryWorkbasketException;
+import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
+import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
+import pro.taskana.workbasket.internal.WorkbasketAccessItemImpl;
 
 /** Acceptance test for all "update workbasket" scenarios. */
 @ExtendWith(JaasExtension.class)

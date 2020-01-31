@@ -24,8 +24,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.env.Environment;
 import org.springframework.ldap.core.LdapTemplate;
 
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.SystemException;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.rest.resource.AccessIdResource;
 
 @ExtendWith(MockitoExtension.class)

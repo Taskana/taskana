@@ -8,8 +8,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.ClassificationService;
-import pro.taskana.ClassificationSummary;
+import pro.taskana.classification.api.ClassificationService;
+import pro.taskana.classification.api.ClassificationSummary;
 import pro.taskana.security.JaasExtension;
 
 /** Acceptance test for all "query classifications with pagination" scenarios. */

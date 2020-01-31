@@ -7,15 +7,15 @@ import acceptance.AbstractAccTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.Classification;
-import pro.taskana.ClassificationService;
-import pro.taskana.exceptions.ClassificationAlreadyExistException;
-import pro.taskana.exceptions.ClassificationNotFoundException;
-import pro.taskana.exceptions.DomainNotFoundException;
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.exceptions.TaskanaException;
-import pro.taskana.impl.ClassificationImpl;
+import pro.taskana.classification.api.Classification;
+import pro.taskana.classification.api.ClassificationService;
+import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistException;
+import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
+import pro.taskana.classification.internal.ClassificationImpl;
+import pro.taskana.common.api.exceptions.DomainNotFoundException;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 

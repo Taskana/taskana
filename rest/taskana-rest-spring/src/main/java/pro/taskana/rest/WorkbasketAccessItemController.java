@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import pro.taskana.BaseQuery;
-import pro.taskana.WorkbasketAccessItem;
-import pro.taskana.WorkbasketAccessItemQuery;
-import pro.taskana.WorkbasketService;
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.BaseQuery;
+import pro.taskana.workbasket.api.WorkbasketAccessItem;
+import pro.taskana.workbasket.api.WorkbasketAccessItemQuery;
+import pro.taskana.workbasket.api.WorkbasketService;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.ldap.LdapClient;
 import pro.taskana.rest.resource.PagedResources.PageMetadata;
 import pro.taskana.rest.resource.WorkbasketAccessItemListResource;

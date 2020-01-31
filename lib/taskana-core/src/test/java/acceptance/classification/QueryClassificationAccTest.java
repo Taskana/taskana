@@ -2,10 +2,10 @@ package acceptance.classification;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static pro.taskana.ClassificationQueryColumnName.CREATED;
-import static pro.taskana.ClassificationQueryColumnName.NAME;
-import static pro.taskana.ClassificationQueryColumnName.TYPE;
-import static pro.taskana.ClassificationQueryColumnName.VALID_IN_DOMAIN;
+import static pro.taskana.classification.api.ClassificationQueryColumnName.CREATED;
+import static pro.taskana.classification.api.ClassificationQueryColumnName.NAME;
+import static pro.taskana.classification.api.ClassificationQueryColumnName.TYPE;
+import static pro.taskana.classification.api.ClassificationQueryColumnName.VALID_IN_DOMAIN;
 
 import acceptance.AbstractAccTest;
 import java.time.Instant;
@@ -14,14 +14,14 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.BaseQuery.SortDirection;
-import pro.taskana.ClassificationService;
-import pro.taskana.ClassificationSummary;
-import pro.taskana.TimeInterval;
-import pro.taskana.exceptions.ClassificationNotFoundException;
-import pro.taskana.exceptions.ConcurrencyException;
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.NotAuthorizedException;
+import pro.taskana.classification.api.ClassificationService;
+import pro.taskana.classification.api.ClassificationSummary;
+import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
+import pro.taskana.common.api.BaseQuery.SortDirection;
+import pro.taskana.common.api.TimeInterval;
+import pro.taskana.common.api.exceptions.ConcurrencyException;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 

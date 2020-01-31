@@ -13,22 +13,22 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import pro.taskana.exceptions.ClassificationAlreadyExistException;
-import pro.taskana.exceptions.ClassificationNotFoundException;
-import pro.taskana.exceptions.ConcurrencyException;
-import pro.taskana.exceptions.DomainNotFoundException;
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.InvalidOwnerException;
-import pro.taskana.exceptions.InvalidStateException;
-import pro.taskana.exceptions.InvalidWorkbasketException;
-import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.exceptions.NotAuthorizedToQueryWorkbasketException;
-import pro.taskana.exceptions.TaskAlreadyExistException;
-import pro.taskana.exceptions.TaskNotFoundException;
-import pro.taskana.exceptions.WorkbasketAccessItemAlreadyExistException;
-import pro.taskana.exceptions.WorkbasketAlreadyExistException;
-import pro.taskana.exceptions.WorkbasketInUseException;
-import pro.taskana.exceptions.WorkbasketNotFoundException;
+import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistException;
+import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
+import pro.taskana.common.api.exceptions.ConcurrencyException;
+import pro.taskana.common.api.exceptions.DomainNotFoundException;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.InvalidOwnerException;
+import pro.taskana.common.api.exceptions.InvalidStateException;
+import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedToQueryWorkbasketException;
+import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
+import pro.taskana.task.api.exceptions.TaskNotFoundException;
+import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
+import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
+import pro.taskana.workbasket.api.exceptions.WorkbasketInUseException;
+import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
 /**
  * This class handles taskana exceptions.

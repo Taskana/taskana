@@ -22,6 +22,8 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import pro.taskana.task.api.TaskService;
+
 /** TODO. */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -30,7 +32,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class TransactionTest {
 
-  @Autowired TaskService taskService;
+  @Autowired
+  TaskService taskService;
   @LocalServerPort int port;
   @Autowired private TestRestTemplate restTemplate;
 

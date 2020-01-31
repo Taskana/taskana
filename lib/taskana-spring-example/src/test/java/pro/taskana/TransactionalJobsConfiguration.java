@@ -3,7 +3,7 @@ package pro.taskana;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import pro.taskana.transaction.TaskanaTransactionProvider;
+import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 
 /** Configuration class for Spring sample application. */
 @Configuration

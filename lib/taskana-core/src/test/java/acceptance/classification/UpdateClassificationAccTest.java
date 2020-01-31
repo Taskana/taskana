@@ -19,23 +19,23 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.Classification;
-import pro.taskana.ClassificationService;
-import pro.taskana.Task;
-import pro.taskana.TaskService;
-import pro.taskana.exceptions.ClassificationAlreadyExistException;
-import pro.taskana.exceptions.ClassificationNotFoundException;
-import pro.taskana.exceptions.ConcurrencyException;
-import pro.taskana.exceptions.DomainNotFoundException;
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.exceptions.TaskNotFoundException;
-import pro.taskana.impl.DaysToWorkingDaysConverter;
-import pro.taskana.impl.TaskImpl;
-import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
-import pro.taskana.jobs.JobRunner;
+import pro.taskana.classification.api.Classification;
+import pro.taskana.classification.api.ClassificationService;
+import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistException;
+import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
+import pro.taskana.common.api.exceptions.ConcurrencyException;
+import pro.taskana.common.api.exceptions.DomainNotFoundException;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.internal.jobs.JobRunner;
+import pro.taskana.report.internal.DaysToWorkingDaysConverter;
+import pro.taskana.report.internal.header.TimeIntervalColumnHeader;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
+import pro.taskana.task.api.Task;
+import pro.taskana.task.api.TaskService;
+import pro.taskana.task.api.exceptions.TaskNotFoundException;
+import pro.taskana.task.internal.TaskImpl;
 
 /** Acceptance test for all "update classification" scenarios. */
 @ExtendWith(JaasExtension.class)

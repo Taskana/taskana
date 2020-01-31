@@ -18,26 +18,26 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.Attachment;
-import pro.taskana.Classification;
-import pro.taskana.ClassificationSummary;
-import pro.taskana.Task;
-import pro.taskana.TaskService;
-import pro.taskana.exceptions.AttachmentPersistenceException;
-import pro.taskana.exceptions.ClassificationNotFoundException;
-import pro.taskana.exceptions.ConcurrencyException;
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.exceptions.TaskAlreadyExistException;
-import pro.taskana.exceptions.TaskNotFoundException;
-import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.impl.AttachmentImpl;
-import pro.taskana.impl.DaysToWorkingDaysConverter;
-import pro.taskana.impl.TaskImpl;
-import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
-import pro.taskana.security.CurrentUserContext;
+import pro.taskana.classification.api.Classification;
+import pro.taskana.classification.api.ClassificationSummary;
+import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
+import pro.taskana.common.api.exceptions.AttachmentPersistenceException;
+import pro.taskana.common.api.exceptions.ConcurrencyException;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.internal.security.CurrentUserContext;
+import pro.taskana.report.internal.DaysToWorkingDaysConverter;
+import pro.taskana.report.internal.header.TimeIntervalColumnHeader;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
+import pro.taskana.task.api.Attachment;
+import pro.taskana.task.api.Task;
+import pro.taskana.task.api.TaskService;
+import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
+import pro.taskana.task.api.exceptions.TaskNotFoundException;
+import pro.taskana.task.internal.AttachmentImpl;
+import pro.taskana.task.internal.TaskImpl;
+import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
 /**
  * Acceptance test for the usecase of adding/removing an attachment of a task and update the result

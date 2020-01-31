@@ -11,13 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import pro.taskana.Task;
-import pro.taskana.TaskService;
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.exceptions.SystemException;
-import pro.taskana.exceptions.TaskNotFoundException;
-import pro.taskana.impl.TaskImpl;
+import pro.taskana.task.api.Task;
+import pro.taskana.task.api.TaskService;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.SystemException;
+import pro.taskana.task.api.exceptions.TaskNotFoundException;
+import pro.taskana.task.internal.TaskImpl;
 import pro.taskana.rest.TaskController;
 
 /** Resource assembler for {@link TaskResource}. */

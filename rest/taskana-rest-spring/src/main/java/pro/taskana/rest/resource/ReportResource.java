@@ -4,7 +4,10 @@ import java.util.Arrays;
 import java.util.List;
 import org.springframework.hateoas.ResourceSupport;
 
-/** Resource class for {@link pro.taskana.impl.report.structure.Report}. */
+import pro.taskana.report.internal.row.SingleRow;
+import pro.taskana.report.internal.structure.Report;
+
+/** Resource class for {@link Report}. */
 public class ReportResource extends ResourceSupport {
 
   private MetaInformation meta;
@@ -31,7 +34,7 @@ public class ReportResource extends ResourceSupport {
     return sumRow;
   }
 
-  /** Resource class for {@link pro.taskana.impl.report.row.SingleRow}. */
+  /** Resource class for {@link SingleRow}. */
   public static class RowResource {
 
     private int[] cells;

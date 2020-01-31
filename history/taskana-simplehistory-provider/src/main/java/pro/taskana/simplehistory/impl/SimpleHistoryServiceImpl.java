@@ -5,7 +5,7 @@ import java.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.configuration.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.history.api.TaskanaHistory;
 import pro.taskana.history.api.TaskanaHistoryEvent;
 import pro.taskana.simplehistory.impl.mappings.HistoryEventMapper;

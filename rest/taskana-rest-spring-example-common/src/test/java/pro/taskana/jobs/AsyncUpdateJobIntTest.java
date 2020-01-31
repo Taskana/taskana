@@ -22,10 +22,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestTemplate;
 
-import pro.taskana.Classification;
+import pro.taskana.classification.api.Classification;
 import pro.taskana.RestHelper;
-import pro.taskana.Task;
-import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.task.api.Task;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.rest.Mapping;
 import pro.taskana.rest.RestConfiguration;
 import pro.taskana.rest.resource.ClassificationResource;

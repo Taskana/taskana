@@ -9,11 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import pro.taskana.WorkbasketAccessItem;
-import pro.taskana.WorkbasketService;
-import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.impl.WorkbasketAccessItemImpl;
+import pro.taskana.workbasket.api.WorkbasketAccessItem;
+import pro.taskana.workbasket.api.WorkbasketService;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
+import pro.taskana.workbasket.internal.WorkbasketAccessItemImpl;
 import pro.taskana.rest.Mapping;
 import pro.taskana.rest.WorkbasketController;
 import pro.taskana.rest.resource.PagedResources.PageMetadata;

@@ -10,8 +10,8 @@ import java.time.Instant;
 import java.util.List;
 import org.junit.Test;
 
-import pro.taskana.BaseQuery.SortDirection;
-import pro.taskana.TimeInterval;
+import pro.taskana.common.api.BaseQuery.SortDirection;
+import pro.taskana.common.api.TimeInterval;
 import pro.taskana.simplehistory.impl.HistoryEventImpl;
 import pro.taskana.simplehistory.query.HistoryQuery;
 import pro.taskana.simplehistory.query.HistoryQueryColumnName;

@@ -8,11 +8,11 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.KeyDomain;
-import pro.taskana.TaskService;
-import pro.taskana.TaskSummary;
+import pro.taskana.common.api.KeyDomain;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
+import pro.taskana.task.api.TaskService;
+import pro.taskana.task.api.TaskSummary;
 
 /** Acceptance test for all "query tasks by workbasket with pagination" scenarios. */
 @ExtendWith(JaasExtension.class)

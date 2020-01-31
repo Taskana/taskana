@@ -1,6 +1,6 @@
 package pro.taskana.history.api;
 
-import pro.taskana.configuration.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaEngineConfiguration;
 
 /** Interface for TASKANA History Service Provider. */
 public interface TaskanaHistory {

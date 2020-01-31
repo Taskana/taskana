@@ -6,8 +6,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.TimeInterval;
-import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.TimeInterval;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.simplehistory.impl.mappings.HistoryQueryMapper;
 import pro.taskana.simplehistory.query.HistoryQuery;
 import pro.taskana.simplehistory.query.HistoryQueryColumnName;

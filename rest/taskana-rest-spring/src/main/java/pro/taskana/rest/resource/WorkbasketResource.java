@@ -3,10 +3,10 @@ package pro.taskana.rest.resource;
 import javax.validation.constraints.NotNull;
 import org.springframework.hateoas.ResourceSupport;
 
-import pro.taskana.Workbasket;
-import pro.taskana.WorkbasketType;
+import pro.taskana.workbasket.api.Workbasket;
+import pro.taskana.workbasket.api.WorkbasketType;
 
-/** Resource class for {@link pro.taskana.Workbasket}. */
+/** Resource class for {@link Workbasket}. */
 public class WorkbasketResource extends ResourceSupport {
 
   public String workbasketId;

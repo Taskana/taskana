@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import pro.taskana.TaskanaSpringBootTest;
-import pro.taskana.configuration.DB;
+import pro.taskana.common.internal.configuration.DB;
 import pro.taskana.configuration.SpringTaskanaEngineConfiguration;
 import pro.taskana.sampledata.SampleDataGenerator;
 

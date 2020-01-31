@@ -1,4 +1,6 @@
 package pro.taskana.rest;
 
-/** Controller for all {@link pro.taskana.Attachment} related endpoints. */
+import pro.taskana.task.api.Attachment;
+
+/** Controller for all {@link Attachment} related endpoints. */
 public class AttachmentController {}

@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import pro.taskana.Attachment;
-import pro.taskana.TaskService;
-import pro.taskana.impl.AttachmentImpl;
+import pro.taskana.task.api.Attachment;
+import pro.taskana.task.api.TaskService;
+import pro.taskana.task.internal.AttachmentImpl;
 import pro.taskana.rest.AttachmentController;
 
 /** Resource assembler for {@link AttachmentResource}. */

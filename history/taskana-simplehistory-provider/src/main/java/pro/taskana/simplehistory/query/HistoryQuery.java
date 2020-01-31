@@ -1,8 +1,8 @@
 package pro.taskana.simplehistory.query;
 
-import pro.taskana.BaseQuery;
-import pro.taskana.TimeInterval;
-import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.BaseQuery;
+import pro.taskana.common.api.TimeInterval;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.simplehistory.impl.HistoryEventImpl;
 
 /** HistoryQuery for generating dynamic sql. */

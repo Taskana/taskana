@@ -4,7 +4,8 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 
 import pro.taskana.SpringTaskanaEngineImpl;
-import pro.taskana.TaskanaEngine;
+import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.common.api.TaskanaEngine;
 
 /** This class configures the TaskanaEngineConfiguration for spring. */
 public class SpringTaskanaEngineConfiguration extends TaskanaEngineConfiguration {

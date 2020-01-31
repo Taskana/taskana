@@ -6,14 +6,16 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Observes;
 
-import pro.taskana.exceptions.ClassificationNotFoundException;
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.InvalidOwnerException;
-import pro.taskana.exceptions.InvalidStateException;
-import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.exceptions.TaskAlreadyExistException;
-import pro.taskana.exceptions.TaskNotFoundException;
-import pro.taskana.exceptions.WorkbasketNotFoundException;
+import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.InvalidOwnerException;
+import pro.taskana.common.api.exceptions.InvalidStateException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
+import pro.taskana.task.api.exceptions.TaskNotFoundException;
+import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
+import pro.taskana.task.api.ObjectReference;
+import pro.taskana.task.api.Task;
 
 /** Example Bootstrap Application. */
 @ApplicationScoped

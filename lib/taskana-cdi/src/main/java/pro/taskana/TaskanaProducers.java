@@ -17,7 +17,10 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.configuration.TaskanaEngineConfiguration;
+import pro.taskana.classification.api.ClassificationService;
+import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.task.api.TaskService;
+import pro.taskana.workbasket.api.WorkbasketService;
 
 /** TODO. */
 @ApplicationScoped
