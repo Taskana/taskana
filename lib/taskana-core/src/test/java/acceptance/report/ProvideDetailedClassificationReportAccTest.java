@@ -16,18 +16,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.CustomField;
-import pro.taskana.TaskMonitorService;
-import pro.taskana.TaskState;
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
-import pro.taskana.impl.report.item.DetailedMonitorQueryItem;
-import pro.taskana.impl.report.row.FoldableRow;
-import pro.taskana.impl.report.structure.Row;
-import pro.taskana.report.ClassificationReport.DetailedClassificationReport;
+import pro.taskana.common.api.CustomField;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.report.api.ClassificationReport.DetailedClassificationReport;
+import pro.taskana.report.api.TaskMonitorService;
+import pro.taskana.report.internal.header.TimeIntervalColumnHeader;
+import pro.taskana.report.internal.item.DetailedMonitorQueryItem;
+import pro.taskana.report.internal.row.FoldableRow;
+import pro.taskana.report.internal.structure.Row;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
+import pro.taskana.task.api.TaskState;
 
 /** Acceptance test for all "detailed classification report" scenarios. */
 @ExtendWith(JaasExtension.class)

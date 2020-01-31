@@ -24,19 +24,29 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import pro.taskana.exceptions.DomainNotFoundException;
-import pro.taskana.exceptions.InvalidWorkbasketException;
-import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.exceptions.TaskanaException;
-import pro.taskana.exceptions.WorkbasketAlreadyExistException;
-import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.impl.TaskImpl;
-import pro.taskana.impl.TaskanaEngineImpl;
-import pro.taskana.impl.WorkbasketImpl;
-import pro.taskana.impl.util.IdGenerator;
-import pro.taskana.jobs.TaskCleanupJob;
-import pro.taskana.jobs.WorkbasketCleanupJob;
-import pro.taskana.transaction.TaskanaTransactionProvider;
+import pro.taskana.classification.api.ClassificationService;
+import pro.taskana.common.api.KeyDomain;
+import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.api.exceptions.DomainNotFoundException;
+import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.TaskanaException;
+import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
+import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
+import pro.taskana.task.internal.TaskImpl;
+import pro.taskana.common.internal.TaskanaEngineImpl;
+import pro.taskana.workbasket.internal.WorkbasketImpl;
+import pro.taskana.common.internal.util.IdGenerator;
+import pro.taskana.common.internal.jobs.TaskCleanupJob;
+import pro.taskana.common.internal.jobs.WorkbasketCleanupJob;
+import pro.taskana.task.api.ObjectReference;
+import pro.taskana.task.api.Task;
+import pro.taskana.task.api.TaskService;
+import pro.taskana.task.api.TaskSummary;
+import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
+import pro.taskana.workbasket.api.Workbasket;
+import pro.taskana.workbasket.api.WorkbasketService;
+import pro.taskana.workbasket.api.WorkbasketType;
 
 /** Test for internal transaction management. */
 @ExtendWith(SpringExtension.class)

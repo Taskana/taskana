@@ -6,12 +6,13 @@ import java.util.stream.Collectors;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.hateoas.core.Relation;
 
-import pro.taskana.ObjectReference;
-import pro.taskana.TaskState;
-import pro.taskana.TaskSummary;
-import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.task.api.ObjectReference;
+import pro.taskana.task.api.TaskState;
+import pro.taskana.task.api.TaskSummary;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.workbasket.api.WorkbasketSummary;
 
-/** Resource class for {@link pro.taskana.WorkbasketSummary}. */
+/** Resource class for {@link WorkbasketSummary}. */
 @Relation(collectionRelation = "tasks")
 public class TaskSummaryResource extends ResourceSupport {
 

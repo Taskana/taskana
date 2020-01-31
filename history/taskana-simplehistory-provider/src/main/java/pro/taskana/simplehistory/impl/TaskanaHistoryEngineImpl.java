@@ -13,7 +13,7 @@ import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 
-import pro.taskana.configuration.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.history.api.TaskanaHistory;
 import pro.taskana.simplehistory.TaskanaHistoryEngine;
 import pro.taskana.simplehistory.configuration.DbSchemaCreator;

@@ -5,10 +5,10 @@ import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import pro.taskana.Classification;
-import pro.taskana.ClassificationService;
+import pro.taskana.classification.api.Classification;
+import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.TaskanaSpringBootTest;
-import pro.taskana.impl.ClassificationImpl;
+import pro.taskana.classification.internal.ClassificationImpl;
 import pro.taskana.rest.Mapping;
 
 /** Test for {@link ClassificationResourceAssembler}. */

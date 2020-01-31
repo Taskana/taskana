@@ -8,10 +8,10 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.WorkbasketService;
-import pro.taskana.WorkbasketSummary;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
+import pro.taskana.workbasket.api.WorkbasketService;
+import pro.taskana.workbasket.api.WorkbasketSummary;
 
 /** Acceptance test for all "query classifications with pagination" scenarios. */
 @ExtendWith(JaasExtension.class)

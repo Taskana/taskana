@@ -2,7 +2,7 @@ package pro.taskana.history.api;
 
 import java.time.Instant;
 
-import pro.taskana.security.CurrentUserContext;
+import pro.taskana.common.internal.security.CurrentUserContext;
 
 /** Super class for all specific events from the TASKANA engine. */
 public class TaskanaHistoryEvent {

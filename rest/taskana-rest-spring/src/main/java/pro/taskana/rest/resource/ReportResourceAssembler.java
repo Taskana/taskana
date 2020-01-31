@@ -12,19 +12,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
-import pro.taskana.TaskState;
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.report.row.FoldableRow;
-import pro.taskana.impl.report.row.SingleRow;
-import pro.taskana.impl.report.structure.ColumnHeader;
-import pro.taskana.impl.report.structure.QueryItem;
-import pro.taskana.impl.report.structure.Report;
-import pro.taskana.impl.report.structure.Row;
-import pro.taskana.report.ClassificationReport;
-import pro.taskana.report.TaskStatusReport;
-import pro.taskana.report.TimestampReport;
-import pro.taskana.report.WorkbasketReport;
+import pro.taskana.task.api.TaskState;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.report.internal.row.FoldableRow;
+import pro.taskana.report.internal.row.SingleRow;
+import pro.taskana.report.internal.structure.ColumnHeader;
+import pro.taskana.report.internal.structure.QueryItem;
+import pro.taskana.report.internal.structure.Report;
+import pro.taskana.report.internal.structure.Row;
+import pro.taskana.report.api.ClassificationReport;
+import pro.taskana.report.api.TaskStatusReport;
+import pro.taskana.report.api.TimestampReport;
+import pro.taskana.report.api.WorkbasketReport;
 import pro.taskana.rest.MonitorController;
 
 /** Transforms any {@link Report} into its {@link ReportResource}. */

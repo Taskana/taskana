@@ -14,13 +14,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.BaseQuery.SortDirection;
-import pro.taskana.KeyDomain;
-import pro.taskana.TaskService;
-import pro.taskana.TaskState;
-import pro.taskana.TaskSummary;
+import pro.taskana.common.api.BaseQuery.SortDirection;
+import pro.taskana.common.api.KeyDomain;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
+import pro.taskana.task.api.TaskService;
+import pro.taskana.task.api.TaskState;
+import pro.taskana.task.api.TaskSummary;
 
 /** Acceptance test for all "query tasks with sorting" scenarios. */
 @ExtendWith(JaasExtension.class)

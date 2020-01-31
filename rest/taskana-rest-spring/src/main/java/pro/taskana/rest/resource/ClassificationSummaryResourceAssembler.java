@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import pro.taskana.ClassificationService;
-import pro.taskana.ClassificationSummary;
-import pro.taskana.impl.ClassificationImpl;
+import pro.taskana.classification.api.ClassificationService;
+import pro.taskana.classification.api.ClassificationSummary;
+import pro.taskana.classification.internal.ClassificationImpl;
 import pro.taskana.rest.ClassificationController;
 import pro.taskana.rest.Mapping;
 import pro.taskana.rest.resource.PagedResources.PageMetadata;

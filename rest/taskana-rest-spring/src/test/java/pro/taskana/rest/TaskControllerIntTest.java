@@ -32,7 +32,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import pro.taskana.ObjectReference;
+import pro.taskana.task.api.ObjectReference;
 import pro.taskana.RestHelper;
 import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.rest.resource.ClassificationSummaryResource;

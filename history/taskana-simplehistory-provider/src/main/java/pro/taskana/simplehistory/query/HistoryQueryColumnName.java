@@ -1,6 +1,6 @@
 package pro.taskana.simplehistory.query;
 
-import pro.taskana.QueryColumnName;
+import pro.taskana.common.api.QueryColumnName;
 
 /**
  * Enum containing the column names for {@link

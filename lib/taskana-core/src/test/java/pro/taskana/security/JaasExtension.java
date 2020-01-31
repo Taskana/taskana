@@ -11,6 +11,9 @@ import org.junit.jupiter.api.extension.InvocationInterceptor;
 import org.junit.jupiter.api.extension.ReflectiveInvocationContext;
 import org.junit.platform.commons.JUnitException;
 
+import pro.taskana.common.internal.security.GroupPrincipal;
+import pro.taskana.common.internal.security.UserPrincipal;
+
 /** Runner for integration tests that enables JAAS subject. */
 public class JaasExtension implements InvocationInterceptor {
 

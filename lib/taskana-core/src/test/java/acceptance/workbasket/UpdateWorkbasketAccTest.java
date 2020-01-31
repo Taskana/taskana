@@ -9,13 +9,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.Workbasket;
-import pro.taskana.WorkbasketService;
-import pro.taskana.WorkbasketType;
-import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.exceptions.WorkbasketNotFoundException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
+import pro.taskana.workbasket.api.Workbasket;
+import pro.taskana.workbasket.api.WorkbasketService;
+import pro.taskana.workbasket.api.WorkbasketType;
+import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
 /** Acceptance test for all "update workbasket" scenarios. */
 @ExtendWith(JaasExtension.class)

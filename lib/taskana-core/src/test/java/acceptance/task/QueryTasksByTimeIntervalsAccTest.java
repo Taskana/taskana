@@ -11,12 +11,12 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.BaseQuery.SortDirection;
-import pro.taskana.TaskService;
-import pro.taskana.TaskSummary;
-import pro.taskana.TimeInterval;
+import pro.taskana.common.api.BaseQuery.SortDirection;
+import pro.taskana.common.api.TimeInterval;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
+import pro.taskana.task.api.TaskService;
+import pro.taskana.task.api.TaskSummary;
 
 /** Acceptance test for all "query tasks with sorting" scenarios. */
 @ExtendWith(JaasExtension.class)

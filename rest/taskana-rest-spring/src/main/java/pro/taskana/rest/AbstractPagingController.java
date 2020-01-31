@@ -5,8 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import org.springframework.util.MultiValueMap;
 
-import pro.taskana.BaseQuery;
-import pro.taskana.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.BaseQuery;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.rest.resource.PagedResources.PageMetadata;
 
 /** Abstract superclass for taskana REST controller with pageable resources. */

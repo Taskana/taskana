@@ -9,11 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import pro.taskana.Classification;
-import pro.taskana.ClassificationService;
-import pro.taskana.exceptions.ClassificationNotFoundException;
-import pro.taskana.exceptions.SystemException;
-import pro.taskana.impl.ClassificationImpl;
+import pro.taskana.classification.api.Classification;
+import pro.taskana.classification.api.ClassificationService;
+import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
+import pro.taskana.common.api.exceptions.SystemException;
+import pro.taskana.classification.internal.ClassificationImpl;
 import pro.taskana.rest.ClassificationController;
 
 /**

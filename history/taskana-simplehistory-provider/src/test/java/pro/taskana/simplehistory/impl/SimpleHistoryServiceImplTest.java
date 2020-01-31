@@ -25,7 +25,7 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import pro.taskana.configuration.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.simplehistory.impl.mappings.HistoryEventMapper;
 import pro.taskana.simplehistory.impl.mappings.HistoryQueryMapper;
 

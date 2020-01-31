@@ -9,14 +9,14 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import pro.taskana.Workbasket;
-import pro.taskana.WorkbasketAccessItem;
-import pro.taskana.WorkbasketService;
-import pro.taskana.WorkbasketSummary;
-import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.impl.WorkbasketAccessItemImpl;
-import pro.taskana.impl.WorkbasketImpl;
+import pro.taskana.workbasket.api.Workbasket;
+import pro.taskana.workbasket.api.WorkbasketAccessItem;
+import pro.taskana.workbasket.api.WorkbasketService;
+import pro.taskana.workbasket.api.WorkbasketSummary;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
+import pro.taskana.workbasket.internal.WorkbasketAccessItemImpl;
+import pro.taskana.workbasket.internal.WorkbasketImpl;
 
 /**
  * Transforms {@link Workbasket} into a {@link WorkbasketDefinitionResource} containing all

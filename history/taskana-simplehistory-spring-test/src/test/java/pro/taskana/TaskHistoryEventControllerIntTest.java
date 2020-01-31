@@ -35,7 +35,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import pro.taskana.exceptions.SystemException;
+import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.rest.resource.TaskHistoryEventListResource;
 import pro.taskana.rest.simplehistory.TaskHistoryRestConfiguration;
 import pro.taskana.rest.simplehistory.sampledata.SampleDataGenerator;

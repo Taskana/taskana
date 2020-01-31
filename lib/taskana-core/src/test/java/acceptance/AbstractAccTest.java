@@ -13,15 +13,15 @@ import java.util.Map;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeAll;
 
-import pro.taskana.Attachment;
-import pro.taskana.ObjectReference;
-import pro.taskana.TaskanaEngine;
-import pro.taskana.TaskanaEngine.ConnectionManagementMode;
-import pro.taskana.TimeInterval;
-import pro.taskana.configuration.TaskanaEngineConfiguration;
-import pro.taskana.exceptions.ClassificationNotFoundException;
-import pro.taskana.impl.configuration.TaskanaEngineTestConfiguration;
+import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
+import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
+import pro.taskana.common.api.TimeInterval;
+import pro.taskana.common.internal.TaskanaEngineTestConfiguration;
 import pro.taskana.sampledata.SampleDataGenerator;
+import pro.taskana.task.api.Attachment;
+import pro.taskana.task.api.ObjectReference;
 
 /** Base class for all acceptance tests. */
 public abstract class AbstractAccTest {

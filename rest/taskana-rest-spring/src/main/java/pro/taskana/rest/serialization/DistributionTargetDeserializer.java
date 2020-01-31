@@ -13,10 +13,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import pro.taskana.Workbasket;
-import pro.taskana.WorkbasketService;
-import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.exceptions.WorkbasketNotFoundException;
+import pro.taskana.workbasket.api.Workbasket;
+import pro.taskana.workbasket.api.WorkbasketService;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
 /** This class deserializes the string list to real workbaskets. */
 public class DistributionTargetDeserializer extends StdDeserializer<List<Workbasket>> {

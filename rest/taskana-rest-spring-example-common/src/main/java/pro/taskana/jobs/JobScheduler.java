@@ -13,10 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import pro.taskana.TaskanaEngine;
-import pro.taskana.TaskanaRole;
-import pro.taskana.security.UserPrincipal;
-import pro.taskana.transaction.TaskanaTransactionProvider;
+import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.internal.jobs.JobRunner;
+import pro.taskana.common.internal.jobs.TaskCleanupJob;
+import pro.taskana.common.internal.jobs.WorkbasketCleanupJob;
+import pro.taskana.task.api.TaskanaRole;
+import pro.taskana.common.internal.security.UserPrincipal;
+import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 
 /** This class invokes the JobRunner periodically to schedule long running jobs. */
 @Component

@@ -23,17 +23,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import pro.taskana.Classification;
-import pro.taskana.ClassificationQuery;
-import pro.taskana.ClassificationService;
-import pro.taskana.ClassificationSummary;
-import pro.taskana.exceptions.ClassificationAlreadyExistException;
-import pro.taskana.exceptions.ClassificationNotFoundException;
-import pro.taskana.exceptions.ConcurrencyException;
-import pro.taskana.exceptions.DomainNotFoundException;
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.util.LoggerUtils;
+import pro.taskana.classification.api.Classification;
+import pro.taskana.classification.api.ClassificationQuery;
+import pro.taskana.classification.api.ClassificationService;
+import pro.taskana.classification.api.ClassificationSummary;
+import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistException;
+import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
+import pro.taskana.common.api.exceptions.ConcurrencyException;
+import pro.taskana.common.api.exceptions.DomainNotFoundException;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.internal.util.LoggerUtils;
 import pro.taskana.rest.resource.ClassificationResource;
 import pro.taskana.rest.resource.ClassificationResourceAssembler;
 

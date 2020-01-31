@@ -4,9 +4,9 @@ import java.util.List;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import pro.taskana.TaskSummary;
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.SystemException;
+import pro.taskana.task.api.TaskSummary;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.rest.Mapping;
 import pro.taskana.rest.TaskController;
 import pro.taskana.rest.resource.PagedResources.PageMetadata;

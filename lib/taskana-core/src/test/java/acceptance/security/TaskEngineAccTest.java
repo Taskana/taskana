@@ -8,11 +8,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.TaskanaRole;
-import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.impl.TaskanaEngineProxyForTest;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.internal.TaskanaEngineProxyForTest;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
+import pro.taskana.task.api.TaskanaRole;
 
 /** Acceptance test for task queries and authorization. */
 @ExtendWith(JaasExtension.class)

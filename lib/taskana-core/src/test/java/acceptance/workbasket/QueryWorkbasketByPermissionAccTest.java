@@ -11,15 +11,15 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.BaseQuery.SortDirection;
-import pro.taskana.WorkbasketPermission;
-import pro.taskana.WorkbasketService;
-import pro.taskana.WorkbasketSummary;
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.exceptions.SystemException;
+import pro.taskana.common.api.BaseQuery.SortDirection;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
+import pro.taskana.workbasket.api.WorkbasketPermission;
+import pro.taskana.workbasket.api.WorkbasketService;
+import pro.taskana.workbasket.api.WorkbasketSummary;
 
 /** Acceptance test for all "query workbasket by permission" scenarios. */
 @ExtendWith(JaasExtension.class)

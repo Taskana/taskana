@@ -11,20 +11,20 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.Task;
-import pro.taskana.TaskService;
-import pro.taskana.TaskSummary;
-import pro.taskana.exceptions.ClassificationNotFoundException;
-import pro.taskana.exceptions.InvalidArgumentException;
-import pro.taskana.exceptions.InvalidOwnerException;
-import pro.taskana.exceptions.InvalidStateException;
-import pro.taskana.exceptions.NotAuthorizedException;
-import pro.taskana.exceptions.TaskAlreadyExistException;
-import pro.taskana.exceptions.TaskNotFoundException;
-import pro.taskana.exceptions.WorkbasketNotFoundException;
-import pro.taskana.jobs.TaskCleanupJob;
+import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.InvalidOwnerException;
+import pro.taskana.common.api.exceptions.InvalidStateException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.internal.jobs.TaskCleanupJob;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
+import pro.taskana.task.api.Task;
+import pro.taskana.task.api.TaskService;
+import pro.taskana.task.api.TaskSummary;
+import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
+import pro.taskana.task.api.exceptions.TaskNotFoundException;
+import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
 /** Acceptance test for all "jobs tasks runner" scenarios. */
 @ExtendWith(JaasExtension.class)

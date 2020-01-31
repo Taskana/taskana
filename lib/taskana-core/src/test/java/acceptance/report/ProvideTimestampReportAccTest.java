@@ -12,12 +12,12 @@ import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.TaskMonitorService;
-import pro.taskana.impl.report.header.TimeIntervalColumnHeader;
-import pro.taskana.impl.report.item.TimestampQueryItem;
-import pro.taskana.impl.report.row.SingleRow;
-import pro.taskana.impl.report.row.TimestampRow;
-import pro.taskana.report.TimestampReport;
+import pro.taskana.report.api.TaskMonitorService;
+import pro.taskana.report.api.TimestampReport;
+import pro.taskana.report.internal.header.TimeIntervalColumnHeader;
+import pro.taskana.report.internal.item.TimestampQueryItem;
+import pro.taskana.report.internal.row.SingleRow;
+import pro.taskana.report.internal.row.TimestampRow;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
