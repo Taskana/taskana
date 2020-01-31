@@ -26,7 +26,7 @@ abstract class AbstractWorkbasketAccessItemQueryImpl<
     implements AbstractWorkbasketAccessItemQuery<Q, T> {
 
   private static final String LINK_TO_COUNTER =
-      "pro.taskana.mappings.QueryMapper.countQueryWorkbasketAccessItems";
+      "pro.taskana.workbasket.internal.WorkbasketQueryMapper.countQueryWorkbasketAccessItems";
 
   private static final Logger LOGGER =
       LoggerFactory.getLogger(AbstractWorkbasketAccessItemQueryImpl.class);
