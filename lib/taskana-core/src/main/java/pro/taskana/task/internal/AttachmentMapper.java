@@ -20,7 +20,7 @@ public interface AttachmentMapper {
   @Insert(
       "INSERT INTO ATTACHMENT (ID, TASK_ID, CREATED, MODIFIED, CLASSIFICATION_KEY, CLASSIFICATION_ID, REF_COMPANY, REF_SYSTEM, REF_INSTANCE, REF_TYPE, REF_VALUE, CHANNEL, RECEIVED, CUSTOM_ATTRIBUTES) "
           + "VALUES (#{att.id}, #{att.taskId}, #{att.created}, #{att.modified}, #{att.classificationSummary.key}, #{att.classificationSummary.id}, #{att.objectReference.company}, #{att.objectReference.system}, #{att.objectReference.systemInstance}, "
-          + " #{att.objectReference.type}, #{att.objectReference.value}, #{att.channel}, #{att.received}, #{att.customAttributes,jdbcType=CLOB,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler} )")
+          + " #{att.objectReference.type}, #{att.objectReference.value}, #{att.channel}, #{att.received}, #{att.customAttributes,jdbcType=CLOB,javaType=java.util.Map,typeHandler=pro.taskana.common.internal.persistence.MapTypeHandler} )")
   void insert(@Param("att") AttachmentImpl att);
 
   @Select(
@@ -114,7 +114,7 @@ public interface AttachmentMapper {
       "UPDATE ATTACHMENT SET TASK_ID = #{taskId}, CREATED = #{created}, MODIFIED = #{modified},"
           + " CLASSIFICATION_KEY = #{classificationSummary.key}, CLASSIFICATION_ID = #{classificationSummary.id}, REF_COMPANY = #{objectReference.company}, REF_SYSTEM = #{objectReference.system},"
           + " REF_INSTANCE = #{objectReference.systemInstance}, REF_TYPE = #{objectReference.type}, REF_VALUE = #{objectReference.value},"
-          + " CHANNEL = #{channel}, RECEIVED = #{received}, CUSTOM_ATTRIBUTES = #{customAttributes,jdbcType=CLOB,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler}"
+          + " CHANNEL = #{channel}, RECEIVED = #{received}, CUSTOM_ATTRIBUTES = #{customAttributes,jdbcType=CLOB,javaType=java.util.Map,typeHandler=pro.taskana.common.internal.persistence.MapTypeHandler}"
           + " WHERE ID = #{id}")
   void update(AttachmentImpl attachment);
 

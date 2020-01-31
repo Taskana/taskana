@@ -23,11 +23,11 @@ import pro.taskana.task.api.ObjectReferenceQueryColumnName;
 public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
 
   private static final String LINK_TO_MAPPER =
-      "pro.taskana.mappings.QueryMapper.queryObjectReferences";
+      "pro.taskana.task.internal.TaskQueryMapper.queryObjectReferences";
   private static final String LINK_TO_COUNTER =
-      "pro.taskana.mappings.QueryMapper.countQueryObjectReferences";
+      "pro.taskana.task.internal.TaskQueryMapper.countQueryObjectReferences";
   private static final String LINK_TO_VALUEMAPPER =
-      "pro.taskana.mappings.QueryMapper.queryObjectReferenceColumnValues";
+      "pro.taskana.task.internal.TaskQueryMapper.queryObjectReferenceColumnValues";
   private static final Logger LOGGER = LoggerFactory.getLogger(ObjectReferenceQueryImpl.class);
   private InternalTaskanaEngine taskanaEngine;
   private ObjectReferenceQueryColumnName columnName;
