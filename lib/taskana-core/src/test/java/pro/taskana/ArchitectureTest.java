@@ -5,12 +5,9 @@ import static com.tngtech.archunit.library.GeneralCodingRules.NO_CLASSES_SHOULD_
 import static com.tngtech.archunit.library.GeneralCodingRules.NO_CLASSES_SHOULD_THROW_GENERIC_EXCEPTIONS;
 import static com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices;
 
-import com.tngtech.archunit.base.DescribedPredicate;
-import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.lang.ArchRule;
-import java.util.Arrays;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -19,25 +16,8 @@ import org.junit.jupiter.api.Test;
  * Test architecture of classes in taskana. For more info and examples see
  * https://www.archunit.org/userguide/html/000_Index.html
  */
-@SuppressWarnings({"checkstyle:EmptyLineSeparator"})
 class ArchitectureTest {
   private static JavaClasses importedClasses;
-
-  DescribedPredicate<JavaClass> doNotContain(String... namesToBeExcluded) {
-    return new DescribedPredicate<JavaClass>("should not be checked") {
-      @Override
-      public boolean apply(JavaClass input) {
-        String matchingClassName =
-            Arrays.asList(namesToBeExcluded).stream()
-                .filter(name -> input.getName().contains(name))
-                .findFirst()
-                .orElse(null);
-
-        return (matchingClassName == null);
-
-      };
-    };
-  }
 
   @BeforeAll
   static void init() throws ClassNotFoundException {
@@ -63,12 +43,15 @@ class ArchitectureTest {
     ArchRule myRule =
         classes()
             .that()
+            .haveSimpleNameNotEndingWith("TaskanaHistoryEvent")
+            .and()
+            .haveSimpleNameNotEndingWith("BulkOperationResults")
+            .and()
             .resideInAPackage("..api")
             .should()
             .onlyDependOnClassesThat()
             .resideOutsideOfPackage("..internal..");
-    myRule.check(importedClasses.that(doNotContain("TaskanaHistory",
-        "BulkOperationResults")));
+    myRule.check(importedClasses);
   }
 
   @Test
@@ -117,7 +100,4 @@ class ArchitectureTest {
     myRule.check(importedClasses);
   }
 
-  private boolean containsName(JavaClass input, String name) {
-    return !input.getName().contains(name);
-  }
 }
