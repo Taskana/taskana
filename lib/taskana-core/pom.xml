@@ -29,12 +29,6 @@
 			<artifactId>json</artifactId>
 			<version>${version.json}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>${version.jackson}</version>
-		</dependency>
-		
 		<!-- test dependencies -->
 		<dependency>
 			<groupId>pro.taskana</groupId>
