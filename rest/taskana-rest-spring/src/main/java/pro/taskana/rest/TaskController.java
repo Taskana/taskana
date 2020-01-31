@@ -21,29 +21,29 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.KeyDomain;
-import pro.taskana.task.api.Task;
-import pro.taskana.task.api.TaskQuery;
-import pro.taskana.task.api.TaskService;
-import pro.taskana.task.api.TaskState;
-import pro.taskana.task.api.TaskSummary;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.AttachmentPersistenceException;
-import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.InvalidOwnerException;
 import pro.taskana.common.api.exceptions.InvalidStateException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
-import pro.taskana.task.api.exceptions.TaskNotFoundException;
-import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.rest.resource.PagedResources.PageMetadata;
 import pro.taskana.rest.resource.TaskResource;
 import pro.taskana.rest.resource.TaskResourceAssembler;
 import pro.taskana.rest.resource.TaskSummaryListResource;
 import pro.taskana.rest.resource.TaskSummaryResourceAssembler;
+import pro.taskana.task.api.Task;
+import pro.taskana.task.api.TaskQuery;
+import pro.taskana.task.api.TaskService;
+import pro.taskana.task.api.TaskState;
+import pro.taskana.task.api.TaskSummary;
+import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
+import pro.taskana.task.api.exceptions.TaskNotFoundException;
+import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
 /** Controller for all {@link Task} related endpoints. */
 @RestController
@@ -290,7 +290,7 @@ public class TaskController extends AbstractPagingController {
       params.remove(WORKBASKET_ID);
     }
     if (params.containsKey(WORKBASKET_KEY)) {
-      updateTaskQueryWithWorkbasketKey(taskQuery,params);
+      updateTaskQueryWithWorkbasketKey(taskQuery, params);
     }
     if (params.containsKey(OWNER)) {
       String[] owners = extractCommaSeparatedFields(params.get(OWNER));
@@ -369,9 +369,8 @@ public class TaskController extends AbstractPagingController {
     return taskQuery;
   }
 
-  private void updateTaskQueryWithWorkbasketKey(TaskQuery taskQuery,
-      MultiValueMap<String, String> params)
-      throws InvalidArgumentException {
+  private void updateTaskQueryWithWorkbasketKey(
+      TaskQuery taskQuery, MultiValueMap<String, String> params) throws InvalidArgumentException {
 
     String[] domains = null;
     if (params.get(DOMAIN) != null) {
@@ -389,13 +388,12 @@ public class TaskController extends AbstractPagingController {
     taskQuery.workbasketKeyDomainIn(keyDomains);
     params.remove(WORKBASKET_KEY);
     params.remove(DOMAIN);
-
   }
 
   private void checkForIllegalParamCombinations(MultiValueMap<String, String> params) {
 
     if (params.containsKey(PLANNED)
-            && (params.containsKey(PLANNED_FROM) || params.containsKey(PLANNED_TO))) {
+        && (params.containsKey(PLANNED_FROM) || params.containsKey(PLANNED_TO))) {
 
       throw new IllegalArgumentException(
           "It is prohibited to use the param \""

@@ -7,12 +7,12 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 
-import pro.taskana.common.api.CustomField;
 import pro.taskana.report.api.Timestamp;
 import pro.taskana.report.internal.item.DetailedMonitorQueryItem;
 import pro.taskana.report.internal.item.MonitorQueryItem;
 import pro.taskana.report.internal.item.TaskQueryItem;
 import pro.taskana.report.internal.item.TimestampQueryItem;
+import pro.taskana.task.api.CustomField;
 import pro.taskana.task.api.TaskState;
 
 /** This class is the mybatis mapping of task monitoring. */

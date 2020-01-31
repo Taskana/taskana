@@ -1,4 +1,4 @@
-package pro.taskana.common.api;
+package pro.taskana.task.api;
 
 /** This enum contains the fields CUSTOM_1 - CUSTOM_10 for the task entity. */
 public enum CustomField {

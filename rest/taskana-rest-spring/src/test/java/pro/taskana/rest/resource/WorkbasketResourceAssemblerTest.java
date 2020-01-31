@@ -6,13 +6,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import pro.taskana.TaskanaSpringBootTest;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.rest.Mapping;
 import pro.taskana.workbasket.api.Workbasket;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.internal.WorkbasketImpl;
-import pro.taskana.rest.Mapping;
 
 /** Test for {@link WorkbasketResourceAssembler}. */
 @TaskanaSpringBootTest

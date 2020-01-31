@@ -32,8 +32,7 @@ import pro.taskana.task.api.TaskService;
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class TransactionTest {
 
-  @Autowired
-  TaskService taskService;
+  @Autowired TaskService taskService;
   @LocalServerPort int port;
   @Autowired private TestRestTemplate restTemplate;
 

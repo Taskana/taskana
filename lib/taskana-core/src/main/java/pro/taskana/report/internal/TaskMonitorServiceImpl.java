@@ -1,6 +1,5 @@
 package pro.taskana.report.internal;
 
-import pro.taskana.common.api.CustomField;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.report.api.CategoryReport;
 import pro.taskana.report.api.ClassificationReport;
@@ -9,6 +8,7 @@ import pro.taskana.report.api.TaskMonitorService;
 import pro.taskana.report.api.TaskStatusReport;
 import pro.taskana.report.api.TimestampReport;
 import pro.taskana.report.api.WorkbasketReport;
+import pro.taskana.task.api.CustomField;
 
 /** This is the implementation of TaskMonitorService. */
 public class TaskMonitorServiceImpl implements TaskMonitorService {

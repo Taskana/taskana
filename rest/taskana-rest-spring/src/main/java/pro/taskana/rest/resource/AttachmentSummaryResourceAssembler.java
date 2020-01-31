@@ -4,8 +4,8 @@ import java.util.List;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import pro.taskana.task.api.AttachmentSummary;
 import pro.taskana.rest.AttachmentController;
+import pro.taskana.task.api.AttachmentSummary;
 
 /** Resource assembler for {@link AttachmentSummaryResource}. */
 @Component

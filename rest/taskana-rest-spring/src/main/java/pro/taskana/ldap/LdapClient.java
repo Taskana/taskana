@@ -43,8 +43,7 @@ public class LdapClient {
 
   private boolean active = false;
 
-  @Autowired
-  private Environment env;
+  @Autowired private Environment env;
 
   @Autowired(required = false)
   private LdapTemplate ldapTemplate;
@@ -169,10 +168,6 @@ public class LdapClient {
     return accessId;
   }
 
-  List<AccessIdResource> getFirstPageOfaResultList(List<AccessIdResource> accessIds) {
-    return accessIds.subList(0, Math.min(accessIds.size(), maxNumberOfReturnedAccessIds));
-  }
-
   public List<AccessIdResource> searchGroupsofUsersIsMember(final String name)
       throws InvalidArgumentException {
     LOGGER.debug("entry to searchGroupsofUsersIsMember(name = {}).", name);
@@ -196,31 +191,6 @@ public class LdapClient {
         "exit from searchGroupsofUsersIsMember. Retrieved the following users: {}.",
         LoggerUtils.listToString(accessIds));
     return accessIds;
-  }
-
-  void isInitOrFail() {
-    if (!active) {
-      throw new SystemException(String.format(MISSING_CONFIGURATION_S, message));
-    }
-  }
-
-  void sortListOfAccessIdResources(List<AccessIdResource> accessIds) {
-    accessIds.sort(
-        (AccessIdResource a, AccessIdResource b) ->
-            a.getAccessId().compareToIgnoreCase(b.getAccessId()));
-  }
-
-  String getNameWithoutBaseDn(String name) {
-    // (?i) --> case insensitive replacement
-    return name.replaceAll("(?i)" + Pattern.quote("," + getBaseDn()), "");
-  }
-
-  String[] getLookUpGoupAttributesToReturn() {
-    if (CN.equals(getGroupNameAttribute())) {
-      return new String[]{CN};
-    } else {
-      return new String[]{getGroupNameAttribute(), CN};
-    }
   }
 
   public boolean useLdap() {
@@ -305,6 +275,35 @@ public class LdapClient {
     return accessId.contains(getGroupSearchBase());
   }
 
+  List<AccessIdResource> getFirstPageOfaResultList(List<AccessIdResource> accessIds) {
+    return accessIds.subList(0, Math.min(accessIds.size(), maxNumberOfReturnedAccessIds));
+  }
+
+  void isInitOrFail() {
+    if (!active) {
+      throw new SystemException(String.format(MISSING_CONFIGURATION_S, message));
+    }
+  }
+
+  void sortListOfAccessIdResources(List<AccessIdResource> accessIds) {
+    accessIds.sort(
+        (AccessIdResource a, AccessIdResource b) ->
+            a.getAccessId().compareToIgnoreCase(b.getAccessId()));
+  }
+
+  String getNameWithoutBaseDn(String name) {
+    // (?i) --> case insensitive replacement
+    return name.replaceAll("(?i)" + Pattern.quote("," + getBaseDn()), "");
+  }
+
+  String[] getLookUpGoupAttributesToReturn() {
+    if (CN.equals(getGroupNameAttribute())) {
+      return new String[] {CN};
+    } else {
+      return new String[] {getGroupNameAttribute(), CN};
+    }
+  }
+
   @PostConstruct
   void init() {
     LOGGER.debug("Entry to init()");
@@ -330,11 +329,11 @@ public class LdapClient {
 
   List<LdapSettings> checkForMissingConfigurations() {
     return Arrays.stream(LdapSettings.values())
-               // optional settings
-               .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_MAX_NUMBER_OF_RETURNED_ACCESS_IDS))
-               .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_MIN_SEARCH_FOR_LENGTH))
-               .filter(p -> Objects.isNull(p.getValueFromEnv(env)))
-               .collect(Collectors.toList());
+        // optional settings
+        .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_MAX_NUMBER_OF_RETURNED_ACCESS_IDS))
+        .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_MIN_SEARCH_FOR_LENGTH))
+        .filter(p -> Objects.isNull(p.getValueFromEnv(env)))
+        .collect(Collectors.toList());
   }
 
   void testMinSearchForLength(final String name) throws InvalidArgumentException {
@@ -346,9 +345,7 @@ public class LdapClient {
     }
   }
 
-  /**
-   * Context Mapper for user entries.
-   */
+  /** Context Mapper for user entries. */
   class GroupContextMapper extends AbstractContextMapper<AccessIdResource> {
 
     @Override
@@ -360,9 +357,7 @@ public class LdapClient {
     }
   }
 
-  /**
-   * Context Mapper for user entries.
-   */
+  /** Context Mapper for user entries. */
   class UserContextMapper extends AbstractContextMapper<AccessIdResource> {
 
     @Override

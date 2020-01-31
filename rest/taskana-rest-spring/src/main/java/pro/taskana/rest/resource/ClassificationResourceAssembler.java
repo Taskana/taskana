@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 import pro.taskana.classification.api.Classification;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
-import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.classification.internal.ClassificationImpl;
+import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.rest.ClassificationController;
 
 /**

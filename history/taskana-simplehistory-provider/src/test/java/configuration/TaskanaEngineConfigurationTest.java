@@ -8,8 +8,8 @@ import javax.sql.DataSource;
 import org.junit.Assert;
 import org.junit.Test;
 
-import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.common.api.TaskanaEngine;
 
 /**
  * Unit Test for TaskanaEngineConfigurationTest.
