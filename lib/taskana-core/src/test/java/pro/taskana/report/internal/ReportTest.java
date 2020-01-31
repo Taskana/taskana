@@ -12,11 +12,11 @@ import java.util.stream.IntStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import pro.taskana.report.api.structure.QueryItemPreprocessor;
+import pro.taskana.report.api.structure.Report;
+import pro.taskana.report.api.structure.Row;
 import pro.taskana.report.internal.header.TimeIntervalColumnHeader;
 import pro.taskana.report.internal.item.MonitorQueryItem;
-import pro.taskana.report.internal.structure.QueryItemPreprocessor;
-import pro.taskana.report.internal.structure.Report;
-import pro.taskana.report.internal.structure.Row;
 
 /** Tests for {@link Report}. */
 class ReportTest {

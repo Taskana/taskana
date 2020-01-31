@@ -14,10 +14,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.report.api.TaskMonitorService;
 import pro.taskana.report.api.TimestampReport;
+import pro.taskana.report.api.row.SingleRow;
+import pro.taskana.report.api.row.TimestampRow;
 import pro.taskana.report.internal.header.TimeIntervalColumnHeader;
 import pro.taskana.report.internal.item.TimestampQueryItem;
-import pro.taskana.report.internal.row.SingleRow;
-import pro.taskana.report.internal.row.TimestampRow;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 

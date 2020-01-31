@@ -1,4 +1,4 @@
-package pro.taskana.report.internal.structure;
+package pro.taskana.report.api.structure;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -8,7 +8,7 @@ import java.util.Set;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.report.internal.row.SingleRow;
+import pro.taskana.report.api.row.SingleRow;
 
 /**
  * A Report represents an abstract table that consists of {@link Row}s and a list of

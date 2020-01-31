@@ -1,4 +1,4 @@
-package pro.taskana.report.internal.structure;
+package pro.taskana.report.api.structure;
 
 /**
  * A ColumnHeader is an element of a {@link Report}. It determines weather a given &lt;Item&gt;

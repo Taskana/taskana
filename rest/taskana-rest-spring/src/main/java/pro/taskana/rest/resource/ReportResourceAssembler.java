@@ -18,12 +18,12 @@ import pro.taskana.report.api.ClassificationReport;
 import pro.taskana.report.api.TaskStatusReport;
 import pro.taskana.report.api.TimestampReport;
 import pro.taskana.report.api.WorkbasketReport;
-import pro.taskana.report.internal.row.FoldableRow;
-import pro.taskana.report.internal.row.SingleRow;
-import pro.taskana.report.internal.structure.ColumnHeader;
-import pro.taskana.report.internal.structure.QueryItem;
-import pro.taskana.report.internal.structure.Report;
-import pro.taskana.report.internal.structure.Row;
+import pro.taskana.report.api.row.FoldableRow;
+import pro.taskana.report.api.row.SingleRow;
+import pro.taskana.report.api.structure.ColumnHeader;
+import pro.taskana.report.api.structure.QueryItem;
+import pro.taskana.report.api.structure.Report;
+import pro.taskana.report.api.structure.Row;
 import pro.taskana.rest.MonitorController;
 import pro.taskana.task.api.TaskState;
 
