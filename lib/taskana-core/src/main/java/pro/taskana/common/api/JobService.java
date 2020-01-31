@@ -1,7 +1,5 @@
 package pro.taskana.common.api;
 
-import pro.taskana.common.internal.jobs.ScheduledJob;
-
 /** Service to manage the TASKANA jobs. */
 public interface JobService {
 

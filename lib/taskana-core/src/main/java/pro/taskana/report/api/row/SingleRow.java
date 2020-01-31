@@ -1,9 +1,9 @@
-package pro.taskana.report.internal.row;
+package pro.taskana.report.api.row;
 
-import pro.taskana.report.internal.structure.ColumnHeader;
-import pro.taskana.report.internal.structure.QueryItem;
-import pro.taskana.report.internal.structure.Report;
-import pro.taskana.report.internal.structure.Row;
+import pro.taskana.report.api.structure.ColumnHeader;
+import pro.taskana.report.api.structure.QueryItem;
+import pro.taskana.report.api.structure.Report;
+import pro.taskana.report.api.structure.Row;
 
 /**
  * A SingleRow represents a single row in a {@link Report}. It contains an array of cells whose

@@ -1,7 +1,7 @@
 package pro.taskana.report.internal.header;
 
+import pro.taskana.report.api.structure.ColumnHeader;
 import pro.taskana.report.internal.item.TaskQueryItem;
-import pro.taskana.report.internal.structure.ColumnHeader;
 import pro.taskana.task.api.TaskState;
 
 /** The TaskStatusColumnHeader represents a column for each {@link TaskState}. */

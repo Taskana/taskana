@@ -1,12 +1,9 @@
 package pro.taskana.classification.api;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.time.Instant;
 
-import pro.taskana.classification.internal.ClassificationImpl;
-
 /** Interface used to specify the Classification-Model. */
-@JsonDeserialize(as = ClassificationImpl.class)
+// @JsonDeserialize(as = ClassificationImpl.class)
 public interface Classification extends ClassificationSummary {
 
   /**

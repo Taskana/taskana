@@ -1,4 +1,4 @@
-package pro.taskana.report.internal.structure;
+package pro.taskana.report.api.structure;
 
 /**
  * Representation of a row in a {@link Report}. It contains an array of cells whose index
