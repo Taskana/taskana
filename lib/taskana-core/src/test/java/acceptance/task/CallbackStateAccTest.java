@@ -145,7 +145,8 @@ class CallbackStateAccTest extends AbstractAccTest {
     assertEquals(3, failedTaskIds.size());
     for (String taskId : failedTaskIds) {
       TaskanaException excpt = bulkResult1.getErrorForId(taskId);
-      assertEquals("pro.taskana.exceptions.InvalidStateException", excpt.getClass().getName());
+      assertEquals(
+          "pro.taskana.common.api.exceptions.InvalidStateException", excpt.getClass().getName());
     }
     List<String> externalIds =
         new ArrayList<>(

@@ -37,14 +37,15 @@ public class TaskQueryImpl implements TaskQuery {
   private static final String GET_CUSTOM_ATTRIBUTE_NOT_A_NUMBER_BETWEEN_1_AND_16 =
       "' to getCustomAttribute does not represent a number between 1 and 16";
   private static final String LINK_TO_MAPPER =
-      "pro.taskana.mappings.QueryMapper.queryTaskSummaries";
+      "pro.taskana.task.internal.TaskQueryMapper.queryTaskSummaries";
   private static final String LINK_TO_MAPPER_DB2 =
-      "pro.taskana.mappings.QueryMapper.queryTaskSummariesDb2";
-  private static final String LINK_TO_COUNTER = "pro.taskana.mappings.QueryMapper.countQueryTasks";
+      "pro.taskana.task.internal.TaskQueryMapper.queryTaskSummariesDb2";
+  private static final String LINK_TO_COUNTER =
+      "pro.taskana.task.internal.TaskQueryMapper.countQueryTasks";
   private static final String LINK_TO_COUNTER_DB2 =
-      "pro.taskana.mappings.QueryMapper.countQueryTasksDb2";
+      "pro.taskana.task.internal.TaskQueryMapper.countQueryTasksDb2";
   private static final String LINK_TO_VALUEMAPPER =
-      "pro.taskana.mappings.QueryMapper.queryTaskColumnValues";
+      "pro.taskana.task.internal.TaskQueryMapper.queryTaskColumnValues";
   private static final String TIME_INTERVAL = "TimeInterval ";
   private static final String IS_INVALID = " is invalid.";
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskQueryImpl.class);

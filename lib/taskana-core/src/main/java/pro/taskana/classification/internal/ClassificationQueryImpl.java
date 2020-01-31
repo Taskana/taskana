@@ -25,11 +25,12 @@ import pro.taskana.common.internal.util.LoggerUtils;
 public class ClassificationQueryImpl implements ClassificationQuery {
 
   private static final String LINK_TO_SUMMARYMAPPER =
-      "pro.taskana.mappings.QueryMapper.queryClassificationSummaries";
+      "pro.taskana.classification.internal.ClassificationQueryMapper.queryClassificationSummaries";
   private static final String LINK_TO_COUNTER =
-      "pro.taskana.mappings.QueryMapper.countQueryClassifications";
+      "pro.taskana.classification.internal.ClassificationQueryMapper.countQueryClassifications";
   private static final String LINK_TO_VALUEMAPPER =
-      "pro.taskana.mappings.QueryMapper.queryClassificationColumnValues";
+      "pro.taskana.classification.internal.ClassificationQueryMapper."
+          + "queryClassificationColumnValues";
   private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationQueryImpl.class);
   private InternalTaskanaEngine taskanaEngine;
   private ClassificationQueryColumnName columnName;

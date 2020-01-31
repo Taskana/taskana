@@ -19,11 +19,11 @@ import pro.taskana.workbasket.api.WorkbasketAccessItemQuery;
 public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery {
 
   private static final String LINK_TO_MAPPER =
-      "pro.taskana.mappings.QueryMapper.queryWorkbasketAccessItems";
+      "pro.taskana.workbasket.internal.WorkbasketQueryMapper.queryWorkbasketAccessItems";
   private static final String LINK_TO_COUNTER =
-      "pro.taskana.mappings.QueryMapper.countQueryWorkbasketAccessItems";
+      "pro.taskana.workbasket.internal.WorkbasketQueryMapper.countQueryWorkbasketAccessItems";
   private static final String LINK_TO_VALUEMAPPER =
-      "pro.taskana.mappings.QueryMapper.queryWorkbasketAccessItemColumnValues";
+      "pro.taskana.workbasket.internal.WorkbasketQueryMapper.queryWorkbasketAccessItemColumnValues";
   private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketQueryImpl.class);
   private AccessItemQueryColumnName columnName;
   private String[] accessIdIn;

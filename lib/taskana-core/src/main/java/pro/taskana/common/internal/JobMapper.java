@@ -29,7 +29,7 @@ public interface JobMapper {
           + "nextval('SCHEDULED_JOB_SEQ')"
           + "</otherwise>"
           + "</choose>"
-          + ", #{job.priority}, #{job.created}, #{job.due}, #{job.state}, #{job.lockedBy}, #{job.lockExpires}, #{job.type}, #{job.retryCount}, #{job.arguments,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler} )"
+          + ", #{job.priority}, #{job.created}, #{job.due}, #{job.state}, #{job.lockedBy}, #{job.lockExpires}, #{job.type}, #{job.retryCount}, #{job.arguments,javaType=java.util.Map,typeHandler=pro.taskana.common.internal.persistence.MapTypeHandler} )"
           + "</script>")
   @Results(value = {@Result(property = "jobId", column = "JOB_ID")})
   Integer insertJob(@Param("job") ScheduledJob job);
@@ -64,7 +64,7 @@ public interface JobMapper {
       value =
           "UPDATE SCHEDULED_JOB SET CREATED = #{created}, PRIORITY = #{priority}, DUE = #{due}, STATE = #{state}, "
               + "LOCKED_BY = #{lockedBy}, LOCK_EXPIRES = #{lockExpires}, TYPE = #{type}, RETRY_COUNT = #{retryCount}, "
-              + "ARGUMENTS = #{arguments,jdbcType=CLOB ,javaType=java.util.Map,typeHandler=pro.taskana.impl.persistence.MapTypeHandler} "
+              + "ARGUMENTS = #{arguments,jdbcType=CLOB ,javaType=java.util.Map,typeHandler=pro.taskana.common.internal.persistence.MapTypeHandler} "
               + "where JOB_ID = #{jobId}")
   void update(ScheduledJob job);
 

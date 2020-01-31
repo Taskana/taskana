@@ -31,11 +31,11 @@ import pro.taskana.workbasket.api.WorkbasketType;
 public class WorkbasketQueryImpl implements WorkbasketQuery {
 
   private static final String LINK_TO_MAPPER =
-      "pro.taskana.mappings.QueryMapper.queryWorkbasketSummaries";
+      "pro.taskana.workbasket.internal.WorkbasketQueryMapper.queryWorkbasketSummaries";
   private static final String LINK_TO_COUNTER =
-      "pro.taskana.mappings.QueryMapper.countQueryWorkbaskets";
+      "pro.taskana.workbasket.internal.WorkbasketQueryMapper.countQueryWorkbaskets";
   private static final String LINK_TO_VALUEMAPPER =
-      "pro.taskana.mappings.QueryMapper.queryWorkbasketColumnValues";
+      "pro.taskana.workbasket.internal.WorkbasketQueryMapper.queryWorkbasketColumnValues";
   private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketQueryImpl.class);
   private WorkbasketQueryColumnName columnName;
   private String[] accessId;
