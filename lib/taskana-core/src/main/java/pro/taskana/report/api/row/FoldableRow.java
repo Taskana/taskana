@@ -1,4 +1,4 @@
-package pro.taskana.report.internal.row;
+package pro.taskana.report.api.row;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -6,9 +6,9 @@ import java.util.Set;
 import java.util.function.Function;
 
 import pro.taskana.common.internal.util.LoggerUtils;
-import pro.taskana.report.internal.structure.QueryItem;
-import pro.taskana.report.internal.structure.Report;
-import pro.taskana.report.internal.structure.Row;
+import pro.taskana.report.api.structure.QueryItem;
+import pro.taskana.report.api.structure.Report;
+import pro.taskana.report.api.structure.Row;
 
 /**
  * The FoldableRow extends the {@link SingleRow}. In contrast to the {@link SingleRow} the

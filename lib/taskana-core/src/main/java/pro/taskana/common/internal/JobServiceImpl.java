@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.JobService;
-import pro.taskana.common.internal.jobs.ScheduledJob;
+import pro.taskana.common.api.ScheduledJob;
 
 /** Controls all job activities. */
 public class JobServiceImpl implements JobService {

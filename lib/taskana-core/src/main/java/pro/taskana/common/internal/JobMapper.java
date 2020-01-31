@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
-import pro.taskana.common.internal.jobs.ScheduledJob;
+import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.internal.persistence.MapTypeHandler;
 
 /** This class is the mybatis mapping of the JOB table. */

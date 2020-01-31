@@ -1,6 +1,6 @@
 package pro.taskana.report.internal.item;
 
-import pro.taskana.report.internal.structure.QueryItem;
+import pro.taskana.report.api.structure.QueryItem;
 import pro.taskana.task.api.TaskState;
 
 /**

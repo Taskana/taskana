@@ -4,13 +4,13 @@ import java.util.List;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.report.api.row.DetailedClassificationRow;
+import pro.taskana.report.api.row.FoldableRow;
+import pro.taskana.report.api.structure.Report;
+import pro.taskana.report.api.structure.Row;
 import pro.taskana.report.internal.header.TimeIntervalColumnHeader;
 import pro.taskana.report.internal.item.DetailedMonitorQueryItem;
 import pro.taskana.report.internal.item.MonitorQueryItem;
-import pro.taskana.report.internal.row.DetailedClassificationRow;
-import pro.taskana.report.internal.row.FoldableRow;
-import pro.taskana.report.internal.structure.Report;
-import pro.taskana.report.internal.structure.Row;
 
 /**
  * The ClassificationReport extends the Report. The {@link Row}s of the ClassificationReport are

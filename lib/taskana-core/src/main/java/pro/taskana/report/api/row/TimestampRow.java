@@ -1,8 +1,8 @@
-package pro.taskana.report.internal.row;
+package pro.taskana.report.api.row;
 
 import pro.taskana.report.api.TimestampReport;
+import pro.taskana.report.api.structure.Row;
 import pro.taskana.report.internal.item.TimestampQueryItem;
-import pro.taskana.report.internal.structure.Row;
 
 /**
  * A single Row inside the {@link TimestampReport}. It contains 4 sub-rows for each org level

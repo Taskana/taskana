@@ -6,9 +6,9 @@ import java.util.stream.Stream;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.report.api.structure.Report;
 import pro.taskana.report.internal.header.TaskStatusColumnHeader;
 import pro.taskana.report.internal.item.TaskQueryItem;
-import pro.taskana.report.internal.structure.Report;
 import pro.taskana.task.api.TaskState;
 
 /**
