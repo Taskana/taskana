@@ -22,7 +22,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import pro.taskana.TaskanaEngineConfiguration;
-import pro.taskana.common.api.CustomField;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
@@ -30,6 +29,7 @@ import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.report.api.CustomFieldValueReport;
 import pro.taskana.report.internal.header.TimeIntervalColumnHeader;
 import pro.taskana.report.internal.item.MonitorQueryItem;
+import pro.taskana.task.api.CustomField;
 import pro.taskana.task.api.TaskState;
 
 /** Unit Test for CustomFieldValueReportBuilderImpl. */

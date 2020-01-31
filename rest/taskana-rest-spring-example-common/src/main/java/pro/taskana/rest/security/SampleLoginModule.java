@@ -10,10 +10,10 @@ import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.spi.LoginModule;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import pro.taskana.ldap.LdapCacheTestImpl;
-import pro.taskana.rest.resource.AccessIdResource;
 import pro.taskana.common.internal.security.GroupPrincipal;
 import pro.taskana.common.internal.security.UserPrincipal;
+import pro.taskana.ldap.LdapCacheTestImpl;
+import pro.taskana.rest.resource.AccessIdResource;
 
 /** TODO. */
 public class SampleLoginModule extends UsernamePasswordAuthenticationFilter implements LoginModule {

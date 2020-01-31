@@ -1,6 +1,6 @@
 package pro.taskana.report.api;
 
-import pro.taskana.common.api.CustomField;
+import pro.taskana.task.api.CustomField;
 
 /** The Task Monitor Service manages operations on tasks regarding the monitoring. */
 public interface TaskMonitorService {

@@ -16,7 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.common.api.CustomField;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.report.api.ClassificationReport.DetailedClassificationReport;
@@ -27,6 +26,7 @@ import pro.taskana.report.internal.row.FoldableRow;
 import pro.taskana.report.internal.structure.Row;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
+import pro.taskana.task.api.CustomField;
 import pro.taskana.task.api.TaskState;
 
 /** Acceptance test for all "detailed classification report" scenarios. */

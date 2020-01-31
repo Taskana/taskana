@@ -13,14 +13,14 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.http.converter.json.SpringHandlerInstantiator;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.classification.api.ClassificationService;
+import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.configuration.SpringTaskanaEngineConfiguration;
+import pro.taskana.ldap.LdapClient;
 import pro.taskana.report.api.TaskMonitorService;
 import pro.taskana.task.api.TaskService;
-import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.workbasket.api.WorkbasketService;
-import pro.taskana.configuration.SpringTaskanaEngineConfiguration;
-import pro.taskana.TaskanaEngineConfiguration;
-import pro.taskana.ldap.LdapClient;
 
 /** Configuration for REST service. */
 @Configuration
