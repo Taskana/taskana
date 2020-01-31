@@ -4,8 +4,7 @@ import pro.taskana.common.api.QueryColumnName;
 import pro.taskana.workbasket.internal.WorkbasketQueryMapper;
 
 /**
- * Enum containing the column names for {@link WorkbasketQueryMapper#queryWorkbasketColumnValues
- * (pro.taskana.impl.WorkbasketQueryImpl)}.
+ * Enum containing the column names for {@link WorkbasketQueryMapper#queryWorkbasketColumnValues}.
  *
  * @author jsa
  */
