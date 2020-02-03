@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.history.api.TaskanaHistory;
-import pro.taskana.history.api.TaskanaHistoryEvent;
+import pro.taskana.history.api.events.TaskanaHistoryEvent;
 import pro.taskana.simplehistory.impl.mappings.HistoryEventMapper;
 import pro.taskana.simplehistory.impl.mappings.HistoryQueryMapper;
 import pro.taskana.simplehistory.query.HistoryQuery;
