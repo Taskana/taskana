@@ -23,6 +23,7 @@ import pro.taskana.classification.api.exceptions.ClassificationNotFoundException
 import pro.taskana.common.api.exceptions.AttachmentPersistenceException;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.InvalidStateException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.common.internal.util.DaysToWorkingDaysConverter;
@@ -58,7 +59,8 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
   @Test
   void testAddNewAttachment()
       throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException {
+          InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException,
+          InvalidStateException {
     setUpMethod();
     final int attachmentCount = task.getAttachments().size();
     assertEquals(1, task.getPriority());
@@ -73,8 +75,10 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         task.getAttachments().get(0).getClassificationSummary().getKey(),
         equalTo("DOCTYPE_DEFAULT"));
     assertThat(
-        task.getAttachments().get(0).getObjectReference().getCompany(), equalTo("COMPANY_A"));
-    assertThat(task.getAttachments().get(0).getObjectReference().getSystem(), equalTo("SYSTEM_B"));
+        task.getAttachments().get(0).getObjectReference().getCompany(),
+        equalTo("COMPANY_A"));
+    assertThat(task.getAttachments().get(0).getObjectReference().getSystem(),
+        equalTo("SYSTEM_B"));
     assertThat(
         task.getAttachments().get(0).getObjectReference().getSystemInstance(),
         equalTo("INSTANCE_B"));
@@ -92,7 +96,8 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
   @Test
   void testAddValidAttachmentTwice()
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
-          ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException {
+          ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
+          InvalidStateException {
     setUpMethod();
     task.getAttachments().clear();
     task = taskService.updateTask(task);
@@ -114,7 +119,8 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
   @Test
   void testAddNewAttachmentTwiceWithoutTaskanaMethodWillThrowAttachmentPersistenceException()
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
-          ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException {
+          ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
+          InvalidStateException {
     setUpMethod();
     final int attachmentCount = 0;
     task.getAttachments().clear();
@@ -137,7 +143,8 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
   @Test
   void testAddExistingAttachmentAgainWillUpdateWhenNotEqual()
       throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException {
+          InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException,
+          InvalidStateException {
     setUpMethod();
     // Add attachment before
     task = taskService.getTask(task.getId());
@@ -175,7 +182,8 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
   @Test
   void testAddExistingAttachmentAgainWillDoNothingWhenEqual()
       throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException {
+          InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException,
+          InvalidStateException {
     setUpMethod();
     // Add Attachment before
     final int attachmentCount = task.getAttachments().size();
@@ -201,7 +209,8 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
   @Test
   void testAddAttachmentAsNullValueWillBeIgnored()
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
-          ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException {
+          ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
+          InvalidStateException {
     setUpMethod();
     // Try to add a single NULL-Element
     final int attachmentCount = task.getAttachments().size();
@@ -239,7 +248,8 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
   @Test
   void testRemoveAttachment()
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
-          ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException {
+          ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
+          InvalidStateException {
     setUpMethod();
     task.addAttachment(attachment);
     task = taskService.updateTask(task);
@@ -265,7 +275,8 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
   @Test
   void testRemoveAttachmentWithNullAndNotAddedId()
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
-          ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException {
+          ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
+          InvalidStateException {
     setUpMethod();
     task.addAttachment(attachment);
     task = taskService.updateTask(task);
@@ -290,7 +301,8 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
   @Test
   void testUpdateAttachment()
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
-          ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException {
+          ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
+          InvalidStateException {
     setUpMethod();
     ((TaskImpl) task).setAttachments(new ArrayList<>());
     task = taskService.updateTask(task);
@@ -330,7 +342,8 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
   @Test
   void modifyExistingAttachment()
       throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException {
+          InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException,
+          InvalidStateException {
     setUpMethod();
     // setup test
     assertThat(task.getAttachments().size(), equalTo(0));
@@ -426,7 +439,8 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
   @Test
   void replaceExistingAttachments()
       throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException {
+          InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException,
+          InvalidStateException {
     setUpMethod();
     // setup test
     assertThat(task.getAttachments().size(), equalTo(0));
@@ -491,7 +505,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
   void testPrioDurationOfTaskFromAttachmentsAtUpdate()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
           WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException,
-          ConcurrencyException, AttachmentPersistenceException {
+          ConcurrencyException, AttachmentPersistenceException, InvalidStateException {
 
     setUpMethod();
     TaskService taskService = taskanaEngine.getTaskService();
@@ -556,7 +570,8 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
   @Test
   void testAddCustomAttributeToAttachment()
       throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException {
+          InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException,
+          InvalidStateException {
 
     TaskService taskService = taskanaEngine.getTaskService();
     task =
@@ -593,7 +608,8 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
   // the begin of each testcase....
   private void setUpMethod()
       throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException {
+          InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException,
+          InvalidStateException {
     taskService = taskanaEngine.getTaskService();
     task =
         taskService.getTask(

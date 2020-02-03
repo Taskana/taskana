@@ -24,6 +24,7 @@ import pro.taskana.common.api.exceptions.AttachmentPersistenceException;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.InvalidStateException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.security.JaasExtension;
@@ -52,7 +53,8 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
   @Test
   void testTimestampsOnTaskUpdate()
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
-          ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException {
+          ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
+          InvalidStateException {
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
     TaskImpl ti = (TaskImpl) task;

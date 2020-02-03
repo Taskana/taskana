@@ -228,7 +228,8 @@ public class TaskController extends AbstractPagingController {
   public ResponseEntity<TaskResource> updateTask(
       @PathVariable(value = "taskId") String taskId, @RequestBody TaskResource taskResource)
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
-          ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException {
+          ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
+          InvalidStateException {
     LOGGER.debug("Entry to updateTask(taskId= {}, taskResource= {})", taskId, taskResource);
     ResponseEntity<TaskResource> result;
     if (taskId.equals(taskResource.getTaskId())) {

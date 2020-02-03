@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -64,6 +65,7 @@ public class TaskServiceImpl implements TaskService {
 
   private static final String IS_ALREADY_CLAIMED_BY = " is already claimed by ";
   private static final String IS_ALREADY_COMPLETED = " is already completed.";
+  private static final String TASK_WITH_ID_IS_NOT_READY = "Task with id %s is not in state ready.";
   private static final String WAS_NOT_FOUND2 = " was not found.";
   private static final String WAS_NOT_FOUND = " was not found";
   private static final String TASK_WITH_ID = "Task with id ";
@@ -382,7 +384,8 @@ public class TaskServiceImpl implements TaskService {
   @Override
   public Task updateTask(Task task)
       throws InvalidArgumentException, TaskNotFoundException, ConcurrencyException,
-          ClassificationNotFoundException, NotAuthorizedException, AttachmentPersistenceException {
+          ClassificationNotFoundException, NotAuthorizedException, AttachmentPersistenceException,
+          InvalidStateException {
     String userId = CurrentUserContext.getUserid();
     LOGGER.debug("entry to updateTask(task = {}, userId = {})", task, userId);
     TaskImpl newTaskImpl = (TaskImpl) task;
@@ -1537,7 +1540,8 @@ public class TaskServiceImpl implements TaskService {
 
   private void standardUpdateActions(
       TaskImpl oldTaskImpl, TaskImpl newTaskImpl, PrioDurationHolder prioDurationFromAttachments)
-      throws InvalidArgumentException, ConcurrencyException, ClassificationNotFoundException {
+      throws InvalidArgumentException, ConcurrencyException, ClassificationNotFoundException,
+          InvalidStateException {
     validateObjectReference(newTaskImpl.getPrimaryObjRef(), "primary ObjectReference", "Task");
     // TODO: not safe to rely only on different timestamps.
     // With fast execution below 1ms there will be no concurrencyException
@@ -1569,6 +1573,13 @@ public class TaskServiceImpl implements TaskService {
     // if no business process id is provided, use the id of the old task.
     if (newTaskImpl.getBusinessProcessId() == null) {
       newTaskImpl.setBusinessProcessId(oldTaskImpl.getBusinessProcessId());
+    }
+
+    // owner can only be changed if task is in state ready
+    boolean isOwnerChanged = !Objects.equals(newTaskImpl.getOwner(), oldTaskImpl.getOwner());
+    if (isOwnerChanged && oldTaskImpl.getState() != TaskState.READY) {
+      throw new InvalidStateException(
+          String.format(TASK_WITH_ID_IS_NOT_READY, oldTaskImpl.getId()));
     }
 
     updateClassificationRelatedProperties(oldTaskImpl, newTaskImpl, prioDurationFromAttachments);
