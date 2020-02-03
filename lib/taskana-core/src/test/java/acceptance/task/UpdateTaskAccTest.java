@@ -1,14 +1,7 @@
 package acceptance.task;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.time.Instant;
@@ -16,7 +9,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -25,6 +17,8 @@ import pro.taskana.classification.api.exceptions.ClassificationNotFoundException
 import pro.taskana.common.api.exceptions.AttachmentPersistenceException;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.InvalidOwnerException;
+import pro.taskana.common.api.exceptions.InvalidStateException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
@@ -51,7 +45,8 @@ class UpdateTaskAccTest extends AbstractAccTest {
   @Test
   void testUpdatePrimaryObjectReferenceOfTask()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-          TaskNotFoundException, ConcurrencyException, AttachmentPersistenceException {
+          TaskNotFoundException, ConcurrencyException, AttachmentPersistenceException,
+          InvalidStateException {
 
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
@@ -63,16 +58,16 @@ class UpdateTaskAccTest extends AbstractAccTest {
     Task updatedTask = taskService.updateTask(task);
     updatedTask = taskService.getTask(updatedTask.getId());
 
-    assertNotNull(updatedTask);
-    assertEquals("7654321", updatedTask.getPrimaryObjRef().getValue());
-    assertNotNull(updatedTask.getCreated());
-    assertNotNull(updatedTask.getModified());
-    assertFalse(modifiedOriginal.isAfter(updatedTask.getModified()));
-    assertNotEquals(updatedTask.getCreated(), updatedTask.getModified());
-    assertEquals(task.getCreated(), updatedTask.getCreated());
-    assertEquals(task.isRead(), updatedTask.isRead());
-    assertEquals("MY_PROCESS_ID", updatedTask.getBusinessProcessId());
-    assertEquals("MY_PARENT_PROCESS_ID", updatedTask.getParentBusinessProcessId());
+    assertThat(updatedTask).isNotNull();
+    assertThat(updatedTask.getPrimaryObjRef().getValue()).isEqualTo("7654321");
+    assertThat(updatedTask.getCreated()).isNotNull();
+    assertThat(updatedTask.getModified()).isNotNull();
+    assertThat(modifiedOriginal.isAfter(updatedTask.getModified())).isFalse();
+    assertThat(updatedTask.getModified()).isNotEqualTo(updatedTask.getCreated());
+    assertThat(updatedTask.getCreated()).isEqualTo(task.getCreated());
+    assertThat(updatedTask.isRead()).isEqualTo(task.isRead());
+    assertThat(updatedTask.getBusinessProcessId()).isEqualTo("MY_PROCESS_ID");
+    assertThat(updatedTask.getParentBusinessProcessId()).isEqualTo("MY_PARENT_PROCESS_ID");
   }
 
   @WithAccessId(
@@ -86,24 +81,30 @@ class UpdateTaskAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
     task.setPrimaryObjRef(null);
-    Assertions.assertThrows(InvalidArgumentException.class, () -> taskService.updateTask(task));
+    assertThatThrownBy(() -> taskService.updateTask(task))
+        .isInstanceOf(InvalidArgumentException.class);
 
     task.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", null));
-    Assertions.assertThrows(InvalidArgumentException.class, () -> taskService.updateTask(task));
+    assertThatThrownBy(() -> taskService.updateTask(task))
+        .isInstanceOf(InvalidArgumentException.class);
 
     task.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", null, "1234567"));
-    Assertions.assertThrows(InvalidArgumentException.class, () -> taskService.updateTask(task));
+    assertThatThrownBy(() -> taskService.updateTask(task))
+        .isInstanceOf(InvalidArgumentException.class);
 
     task.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", null, "VNR", "1234567"));
-    Assertions.assertThrows(InvalidArgumentException.class, () -> taskService.updateTask(task));
+    assertThatThrownBy(() -> taskService.updateTask(task))
+        .isInstanceOf(InvalidArgumentException.class);
 
     task.setPrimaryObjRef(createObjectReference("COMPANY_A", null, "INSTANCE_A", "VNR", "1234567"));
-    Assertions.assertThrows(InvalidArgumentException.class, () -> taskService.updateTask(task));
+    assertThatThrownBy(() -> taskService.updateTask(task))
+        .isInstanceOf(InvalidArgumentException.class);
 
     task.setPrimaryObjRef(createObjectReference(null, "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-    Assertions.assertThrows(InvalidArgumentException.class, () -> taskService.updateTask(task));
+    assertThatThrownBy(() -> taskService.updateTask(task))
+        .isInstanceOf(InvalidArgumentException.class);
   }
 
   @WithAccessId(
@@ -112,7 +113,8 @@ class UpdateTaskAccTest extends AbstractAccTest {
   @Test
   void testThrowsExceptionIfTaskHasAlreadyBeenUpdated()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-          TaskNotFoundException, ConcurrencyException, AttachmentPersistenceException {
+          TaskNotFoundException, ConcurrencyException, AttachmentPersistenceException,
+          InvalidStateException {
 
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
@@ -123,10 +125,9 @@ class UpdateTaskAccTest extends AbstractAccTest {
 
     task2.setCustomAttribute("2", "Walter");
     // TODO flaky test ... if speed is too high,
-    Assertions.assertThrows(
-        ConcurrencyException.class,
-        () -> taskService.updateTask(task2),
-        "The task has already been updated by another user");
+    assertThatThrownBy(() -> taskService.updateTask(task2))
+        .isInstanceOf(ConcurrencyException.class)
+        .withFailMessage("The task has already been updated by another user");
   }
 
   @WithAccessId(
@@ -135,7 +136,8 @@ class UpdateTaskAccTest extends AbstractAccTest {
   @Test
   void testUpdateClassificationOfTask()
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
-          ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException {
+          ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
+          InvalidStateException {
 
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
@@ -144,13 +146,13 @@ class UpdateTaskAccTest extends AbstractAccTest {
     Task updatedTask = taskService.updateTask(task);
     updatedTask = taskService.getTask(updatedTask.getId());
 
-    assertNotNull(updatedTask);
-    assertEquals("T2100", updatedTask.getClassificationSummary().getKey());
-    assertThat(updatedTask.getClassificationSummary(), not(equalTo(classificationSummary)));
-    assertNotEquals(updatedTask.getCreated(), updatedTask.getModified());
-    assertEquals(task.getPlanned(), updatedTask.getPlanned());
-    assertEquals(task.getName(), updatedTask.getName());
-    assertEquals(task.getDescription(), updatedTask.getDescription());
+    assertThat(updatedTask).isNotNull();
+    assertThat(updatedTask.getClassificationSummary().getKey()).isEqualTo("T2100");
+    assertThat(updatedTask.getClassificationSummary()).isNotEqualTo(classificationSummary);
+    assertThat(updatedTask.getCreated()).isNotEqualTo(updatedTask.getModified());
+    assertThat(task.getPlanned()).isEqualTo(updatedTask.getPlanned());
+    assertThat(task.getName()).isEqualTo(updatedTask.getName());
+    assertThat(task.getDescription()).isEqualTo(updatedTask.getDescription());
   }
 
   @WithAccessId(
@@ -163,18 +165,18 @@ class UpdateTaskAccTest extends AbstractAccTest {
 
     taskService.setTaskRead("TKI:000000000000000000000000000000000030", true);
     Task updatedTask = taskService.getTask("TKI:000000000000000000000000000000000030");
-    assertNotNull(updatedTask);
-    assertTrue(updatedTask.isRead());
-    assertFalse(updatedTask.getCreated().equals(updatedTask.getModified()));
+    assertThat(updatedTask).isNotNull();
+    assertThat(updatedTask.isRead()).isTrue();
+    assertThat(updatedTask.getCreated()).isNotEqualTo(updatedTask.getModified());
 
     taskService.setTaskRead("TKI:000000000000000000000000000000000030", false);
     Task updatedTask2 = taskService.getTask("TKI:000000000000000000000000000000000030");
-    assertNotNull(updatedTask2);
-    assertFalse(updatedTask2.isRead());
-    assertFalse(updatedTask2.getModified().isBefore(updatedTask.getModified()));
+    assertThat(updatedTask2).isNotNull();
+    assertThat(updatedTask2.isRead()).isFalse();
+    assertThat(updatedTask2.getModified().isBefore(updatedTask.getModified())).isFalse();
 
-    Assertions.assertThrows(
-        TaskNotFoundException.class, () -> taskService.setTaskRead("INVALID", true));
+    assertThatThrownBy(() -> taskService.setTaskRead("INVALID", true))
+        .isInstanceOf(TaskNotFoundException.class);
   }
 
   @WithAccessId(
@@ -183,14 +185,15 @@ class UpdateTaskAccTest extends AbstractAccTest {
   @Test
   void testCustomPropertiesOfTask()
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
-          ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException {
+          ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
+          InvalidStateException {
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
     task.setCustomAttribute("1", "T2100");
     Task updatedTask = taskService.updateTask(task);
     updatedTask = taskService.getTask(updatedTask.getId());
 
-    assertNotNull(updatedTask);
+    assertThat(updatedTask).isNotNull();
   }
 
   @WithAccessId(
@@ -204,7 +207,8 @@ class UpdateTaskAccTest extends AbstractAccTest {
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
     ((TaskImpl) task).setWorkbasketKey("USER_2_2");
 
-    Assertions.assertThrows(InvalidArgumentException.class, () -> taskService.updateTask(task));
+    assertThatThrownBy(() -> taskService.updateTask(task))
+        .isInstanceOf(InvalidArgumentException.class);
   }
 
   @WithAccessId(
@@ -226,7 +230,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
 
     List<String> taskIds = taskService.updateTasks(por, customProperties);
-    assertEquals(0, taskIds.size());
+    assertThat(taskIds).isEmpty();
   }
 
   @WithAccessId(
@@ -249,13 +253,13 @@ class UpdateTaskAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
 
     List<String> taskIds = taskService.updateTasks(por, customProperties);
-    assertEquals(6, taskIds.size());
+    assertThat(taskIds).hasSize(6);
     for (String taskId : taskIds) {
       Task task = taskService.getTask(taskId);
-      assertEquals("This is modifiedValue 3", task.getCustomAttribute("3"));
-      assertEquals("This is modifiedValue 7", task.getCustomAttribute("7"));
-      assertEquals("This is modifiedValue 16", task.getCustomAttribute("16"));
-      assertNull(task.getCustomAttribute("14"));
+      assertThat(task.getCustomAttribute("3")).isEqualTo("This is modifiedValue 3");
+      assertThat(task.getCustomAttribute("7")).isEqualTo("This is modifiedValue 7");
+      assertThat(task.getCustomAttribute("16")).isEqualTo("This is modifiedValue 16");
+      assertThat(task.getCustomAttribute("14")).isNull();
     }
   }
 
@@ -278,14 +282,14 @@ class UpdateTaskAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
 
     List<String> changedTasks = taskService.updateTasks(taskIds, customProperties);
-    assertEquals(3, changedTasks.size());
+    assertThat(changedTasks).hasSize(3);
     for (String taskId : changedTasks) {
       Task task = taskService.getTask(taskId);
-      assertEquals("This is modifiedValue 1", task.getCustomAttribute("1"));
-      assertEquals("This is modifiedValue 5", task.getCustomAttribute("5"));
-      assertEquals("This is modifiedValue 10", task.getCustomAttribute("10"));
-      assertEquals("This is modifiedValue 12", task.getCustomAttribute("12"));
-      assertNull(task.getCustomAttribute("2"));
+      assertThat(task.getCustomAttribute("1")).isEqualTo("This is modifiedValue 1");
+      assertThat(task.getCustomAttribute("5")).isEqualTo("This is modifiedValue 5");
+      assertThat(task.getCustomAttribute("10")).isEqualTo("This is modifiedValue 10");
+      assertThat(task.getCustomAttribute("12")).isEqualTo("This is modifiedValue 12");
+      assertThat(task.getCustomAttribute("2")).isNull();
     }
   }
 
@@ -296,7 +300,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
   void testUpdateCallbackInfoOfSimpleTask()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
           TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException,
-          ConcurrencyException, AttachmentPersistenceException {
+          ConcurrencyException, AttachmentPersistenceException, InvalidStateException {
 
     TaskService taskService = taskanaEngine.getTaskService();
     Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
@@ -305,20 +309,20 @@ class UpdateTaskAccTest extends AbstractAccTest {
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
     Task createdTask = taskService.createTask(newTask);
 
-    assertNotNull(createdTask);
-    assertEquals("1234567", createdTask.getPrimaryObjRef().getValue());
-    assertNotNull(createdTask.getCreated());
-    assertNotNull(createdTask.getModified());
-    assertNotNull(createdTask.getBusinessProcessId());
-    assertEquals(null, createdTask.getClaimed());
-    assertEquals(null, createdTask.getCompleted());
-    assertEquals(createdTask.getCreated(), createdTask.getModified());
-    assertEquals(createdTask.getCreated(), createdTask.getPlanned());
-    assertEquals(TaskState.READY, createdTask.getState());
-    assertEquals(null, createdTask.getParentBusinessProcessId());
-    assertEquals(2, createdTask.getPriority());
-    assertEquals(false, createdTask.isRead());
-    assertEquals(false, createdTask.isTransferred());
+    assertThat(createdTask).isNotNull();
+    assertThat(createdTask.getPrimaryObjRef().getValue()).isEqualTo("1234567");
+    assertThat(createdTask.getCreated()).isNotNull();
+    assertThat(createdTask.getModified()).isNotNull();
+    assertThat(createdTask.getBusinessProcessId()).isNotNull();
+    assertThat(createdTask.getClaimed()).isNull();
+    assertThat(createdTask.getCompleted()).isNull();
+    assertThat(createdTask.getModified()).isEqualTo(createdTask.getCreated());
+    assertThat(createdTask.getPlanned()).isEqualTo(createdTask.getCreated());
+    assertThat(createdTask.getState()).isEqualTo(TaskState.READY);
+    assertThat(createdTask.getParentBusinessProcessId()).isNull();
+    assertThat(createdTask.getPriority()).isEqualTo(2);
+    assertThat(createdTask.isRead()).isEqualTo(false);
+    assertThat(createdTask.isTransferred()).isEqualTo(false);
 
     Task retrievedTask = taskService.getTask(createdTask.getId());
 
@@ -331,6 +335,77 @@ class UpdateTaskAccTest extends AbstractAccTest {
 
     Task retrievedUpdatedTask = taskService.getTask(createdTask.getId());
 
-    assertEquals(callbackInfo, retrievedUpdatedTask.getCallbackInfo());
+    assertThat(retrievedUpdatedTask.getCallbackInfo()).isEqualTo(callbackInfo);
+  }
+
+  @WithAccessId(
+      userName = "user_1_2",
+      groupNames = {"group_1"})
+  @Test
+  void testSetOwnerAndSubsequentClaimSucceeds()
+      throws TaskNotFoundException, NotAuthorizedException, InvalidStateException,
+          InvalidOwnerException, ClassificationNotFoundException, InvalidArgumentException,
+          ConcurrencyException, AttachmentPersistenceException {
+
+    TaskService taskService = taskanaEngine.getTaskService();
+    String taskReadyId = "TKI:000000000000000000000000000000000025";
+    Task taskReady = taskService.getTask(taskReadyId);
+    assertThat(taskReady.getState()).isEqualTo(TaskState.READY);
+    assertThat(taskReady.getOwner()).isNull();
+    String anyUserName = "Holger";
+    Task modifiedTaskReady = setOwner(taskReadyId, anyUserName);
+
+    assertThat(modifiedTaskReady.getState()).isEqualTo(TaskState.READY);
+    assertThat(modifiedTaskReady.getOwner()).isEqualTo(anyUserName);
+    Task taskClaimed = taskService.claim(taskReadyId);
+    assertThat(taskClaimed.getState()).isEqualTo(TaskState.CLAIMED);
+    assertThat(taskClaimed.getOwner()).isEqualTo("user_1_2");
+  }
+
+  @WithAccessId(
+      userName = "user_1_2",
+      groupNames = {"group_1"})
+  @Test
+  void testSetOwnerNotAuthorized()
+      throws TaskNotFoundException, NotAuthorizedException, InvalidStateException,
+          InvalidOwnerException {
+
+    TaskService taskService = taskanaEngine.getTaskService();
+    String taskReadyId = "TKI:000000000000000000000000000000000024";
+    String anyUserName = "Benjamin";
+
+    assertThatThrownBy(() -> taskService.getTask(taskReadyId))
+        .isInstanceOf(NotAuthorizedException.class);
+    assertThatThrownBy(() -> setOwner(taskReadyId, anyUserName))
+        .isInstanceOf(NotAuthorizedException.class);
+  }
+
+  @WithAccessId(
+      userName = "user_1_2",
+      groupNames = {"group_1"})
+  @Test
+  void testSetOwnerOfClaimedTaskFails()
+      throws TaskNotFoundException, NotAuthorizedException, InvalidStateException,
+                 InvalidOwnerException {
+
+    TaskService taskService = taskanaEngine.getTaskService();
+    String taskClaimedId = "TKI:000000000000000000000000000000000026";
+    String anyUserName = "Mustapha";
+    Task taskClaimed = taskService.getTask(taskClaimedId);
+    assertThat(taskClaimed.getState()).isEqualTo(TaskState.CLAIMED);
+    assertThat(taskClaimed.getOwner()).isEqualTo("user_1_1");
+    assertThatThrownBy(() -> setOwner(taskClaimedId, anyUserName))
+        .isInstanceOf(InvalidStateException.class);
+  }
+
+  private Task setOwner(String taskReadyId, String anyUserName)
+      throws TaskNotFoundException, NotAuthorizedException, ClassificationNotFoundException,
+          InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException,
+          InvalidStateException {
+    TaskService taskService = taskanaEngine.getTaskService();
+    Task task = taskService.getTask(taskReadyId);
+    task.setOwner(anyUserName);
+    task = taskService.updateTask(task);
+    return task;
   }
 }
