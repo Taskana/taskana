@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.history.api.TaskanaHistory;
-import pro.taskana.history.api.TaskanaHistoryEvent;
+import pro.taskana.history.api.events.TaskanaHistoryEvent;
 
 /** Creates events and emits them to the registered history service providers. */
 public final class HistoryEventProducer {

@@ -3,7 +3,7 @@ package pro.taskana.simplehistory.impl.mappings;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 
-import pro.taskana.history.api.TaskanaHistoryEvent;
+import pro.taskana.history.api.events.TaskanaHistoryEvent;
 
 /** This class is the mybatis mapping of workbaskets. */
 @SuppressWarnings("checkstyle:LineLength")
