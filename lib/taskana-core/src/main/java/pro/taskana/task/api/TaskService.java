@@ -250,7 +250,8 @@ public interface TaskService {
    */
   Task updateTask(Task task)
       throws InvalidArgumentException, TaskNotFoundException, ConcurrencyException,
-          ClassificationNotFoundException, NotAuthorizedException, AttachmentPersistenceException;
+          ClassificationNotFoundException, NotAuthorizedException, AttachmentPersistenceException,
+          InvalidStateException;
 
   /**
    * Transfers a list of tasks to an other workbasket. Exceptions will be thrown if the caller got

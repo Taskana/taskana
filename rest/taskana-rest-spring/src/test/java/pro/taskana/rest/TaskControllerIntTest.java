@@ -2,10 +2,12 @@ package pro.taskana.rest;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -17,7 +19,6 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import javax.sql.DataSource;
 import org.assertj.core.api.Fail;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,9 @@ import pro.taskana.rest.resource.TaskSummaryListResource;
 import pro.taskana.rest.resource.WorkbasketSummaryResource;
 import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.task.api.ObjectReference;
+import pro.taskana.task.api.TaskState;
+
+// import org.junit.jupiter.api.Assertions;
 
 /** Test Task Controller. */
 @TaskanaSpringBootTest
@@ -161,22 +165,21 @@ class TaskControllerIntTest {
 
   @Test
   void testGetAllTasksByWorkbasketIdWithInvalidPlannedParamsCombination() {
-    HttpClientErrorException e =
-        Assertions.assertThrows(
-            HttpClientErrorException.class,
-            () ->
-                template.exchange(
-                    restHelper.toUrl(Mapping.URL_TASKS)
-                        + "?workbasket-id=WBI:100000000000000000000000000000000001"
-                        + "&planned=2020-01-22T09:44:47.453Z,,"
-                        + "2020-01-19T07:44:47.453Z,2020-01-19T19:44:47.453Z,"
-                        + ",2020-01-18T09:44:47.453Z"
-                        + "&planned-from=2020-01-19T07:44:47.453Z"
-                        + "&sort-by=planned",
-                    HttpMethod.GET,
-                    restHelper.defaultRequest(),
-                    ParameterizedTypeReference.forType(TaskSummaryListResource.class)));
-    assertThat(HttpStatus.BAD_REQUEST).isEqualTo(e.getStatusCode());
+    assertThatThrownBy(
+      () ->
+        template.exchange(
+            restHelper.toUrl(Mapping.URL_TASKS)
+                + "?workbasket-id=WBI:100000000000000000000000000000000001"
+                + "&planned=2020-01-22T09:44:47.453Z,,"
+                + "2020-01-19T07:44:47.453Z,2020-01-19T19:44:47.453Z,"
+                + ",2020-01-18T09:44:47.453Z"
+                + "&planned-from=2020-01-19T07:44:47.453Z"
+                + "&sort-by=planned",
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
+            ParameterizedTypeReference.forType(TaskSummaryListResource.class)))
+        .isInstanceOf(HttpClientErrorException.class)
+        .hasMessageContaining("400");
   }
 
   @Test
@@ -251,22 +254,21 @@ class TaskControllerIntTest {
 
   @Test
   void testGetAllTasksByWorkbasketIdWithInvalidDueParamsCombination() {
-    HttpClientErrorException e =
-        Assertions.assertThrows(
-            HttpClientErrorException.class,
-            () ->
-                template.exchange(
-                    restHelper.toUrl(Mapping.URL_TASKS)
-                        + "?workbasket-id=WBI:100000000000000000000000000000000001"
-                        + "&due=2020-01-22T09:44:47.453Z,,"
-                        + "2020-01-19T07:44:47.453Z,2020-01-19T19:44:47.453Z,"
-                        + ",2020-01-18T09:44:47.453Z"
-                        + "&due-from=2020-01-19T07:44:47.453Z"
-                        + "&sort-by=planned",
-                    HttpMethod.GET,
-                    restHelper.defaultRequest(),
-                    ParameterizedTypeReference.forType(TaskSummaryListResource.class)));
-    assertThat(HttpStatus.BAD_REQUEST).isEqualTo(e.getStatusCode());
+    assertThatThrownBy(
+        () ->
+          template.exchange(
+            restHelper.toUrl(Mapping.URL_TASKS)
+                + "?workbasket-id=WBI:100000000000000000000000000000000001"
+                + "&due=2020-01-22T09:44:47.453Z,,"
+                + "2020-01-19T07:44:47.453Z,2020-01-19T19:44:47.453Z,"
+                + ",2020-01-18T09:44:47.453Z"
+                + "&due-from=2020-01-19T07:44:47.453Z"
+                + "&sort-by=planned",
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
+            ParameterizedTypeReference.forType(TaskSummaryListResource.class)))
+        .isInstanceOf(HttpClientErrorException.class)
+        .hasMessageContaining("400");
   }
 
   @Test
@@ -291,18 +293,17 @@ class TaskControllerIntTest {
     headers.add("Authorization", "Basic dXNlcl8xXzI6dXNlcl8xXzI="); // user_1_2
     HttpEntity<String> request = new HttpEntity<String>(headers);
 
-    HttpClientErrorException e =
-        Assertions.assertThrows(
-            HttpClientErrorException.class,
-            () -> {
-              ResponseEntity<TaskSummaryListResource> response =
-                  template.exchange(
-                      restHelper.toUrl(Mapping.URL_TASKS) + "?workbasket-key=USER_1_2",
-                      HttpMethod.GET,
-                      request,
-                      ParameterizedTypeReference.forType(TaskSummaryListResource.class));
-            });
-    assertThat(HttpStatus.BAD_REQUEST).isEqualTo(e.getStatusCode());
+    assertThatThrownBy(
+      () -> {
+        ResponseEntity<TaskSummaryListResource> response =
+            template.exchange(
+                restHelper.toUrl(Mapping.URL_TASKS) + "?workbasket-key=USER_1_2",
+                HttpMethod.GET,
+                request,
+                ParameterizedTypeReference.forType(TaskSummaryListResource.class));
+      })
+        .isInstanceOf(HttpClientErrorException.class)
+        .hasMessageContaining("400");
   }
 
   @Test
@@ -585,14 +586,14 @@ class TaskControllerIntTest {
     taskResource.setPlanned(now.toString());
     taskResource.setDue(now.toString());
 
-    Assertions.assertThrows(
-        HttpClientErrorException.class,
-        () ->
-            template.exchange(
-                restHelper.toUrl(Mapping.URL_TASKS),
-                HttpMethod.POST,
-                new HttpEntity<>(taskResource, restHelper.getHeaders()),
-                ParameterizedTypeReference.forType(TaskResource.class)));
+    assertThatThrownBy(
+      () ->
+          template.exchange(
+              restHelper.toUrl(Mapping.URL_TASKS),
+              HttpMethod.POST,
+              new HttpEntity<>(taskResource, restHelper.getHeaders()),
+              ParameterizedTypeReference.forType(TaskResource.class)))
+        .isInstanceOf(HttpClientErrorException.class);
   }
 
   @Test
@@ -617,7 +618,6 @@ class TaskControllerIntTest {
     assertThat(con.getResponseCode()).isEqualTo(400);
 
     con.disconnect();
-
     final String taskToCreateJson2 =
         "{\"classificationSummaryResource\":"
             + "{\"classificationId\":\"CLI:100000000000000000000000000000000004\"},"
@@ -637,6 +637,113 @@ class TaskControllerIntTest {
     out.close();
     assertThat(con.getResponseCode()).isEqualTo(400);
 
+    con.disconnect();
+  }
+
+  @Test
+  void testUpdateTaskOwnerOfReadyTaskSucceeds() throws IOException {
+    URL url = new URL(restHelper.toUrl("/api/v1/tasks/TKI:000000000000000000000000000000000025"));
+    // retrieve task from Rest Api
+    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+    con.setRequestMethod("GET");
+    con.setRequestProperty("Authorization", "Basic dXNlcl8xXzI6dXNlcl8xXzI="); // user_1_2
+    assertThat(con.getResponseCode()).isEqualTo(200);
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
+    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), UTF_8));
+    String inputLine;
+    StringBuffer content = new StringBuffer();
+    while ((inputLine = in.readLine()) != null) {
+      content.append(inputLine);
+    }
+    in.close();
+    con.disconnect();
+    final String originalTaskJson = content.toString();
+    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    TaskResource originalTaskObject = mapper.readValue(originalTaskJson, TaskResource.class);
+
+    String originalOwner = originalTaskObject.getOwner();
+    assertThat(originalOwner == null);
+
+    // set owner and call updateTask on Rest Api
+    final String anyUserName = "Benjamin";
+    TaskResource taskObjectWithUpdatedOwner = originalTaskObject;
+    taskObjectWithUpdatedOwner.setOwner(anyUserName);
+    con = (HttpURLConnection) url.openConnection();
+    con.setRequestMethod("PUT");
+    con.setDoOutput(true);
+    con.setRequestProperty("Authorization", "Basic dXNlcl8xXzI6dXNlcl8xXzI=");
+    con.setRequestProperty("Content-Type", "application/json");
+    BufferedWriter out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream(), UTF_8));
+    final String taskWithUpdatedOwnerJson = mapper.writeValueAsString(taskObjectWithUpdatedOwner);
+    out.write(taskWithUpdatedOwnerJson);
+    out.flush();
+    out.close();
+    assertThat(con.getResponseCode()).isEqualTo(200);
+    con.disconnect();
+
+    // retrieve task once again from Rest Api.
+    con = (HttpURLConnection) url.openConnection();
+    con.setRequestMethod("GET");
+    con.setRequestProperty("Authorization", "Basic dXNlcl8xXzI6dXNlcl8xXzI=");
+    assertThat(con.getResponseCode()).isEqualTo(200);
+    in = new BufferedReader(new InputStreamReader(con.getInputStream(), UTF_8));
+    content = new StringBuffer();
+    while ((inputLine = in.readLine()) != null) {
+      content.append(inputLine);
+    }
+    in.close();
+    con.disconnect();
+    final String retrievedTaskJson = content.toString();
+    TaskResource retrievedTaskObject = mapper.readValue(retrievedTaskJson, TaskResource.class);
+    assertThat(retrievedTaskObject.getOwner()).isEqualTo(anyUserName);
+  }
+
+  @Test
+  void testUpdateTaskOwnerOfClaimedTaskFails() throws IOException {
+    URL url = new URL(restHelper.toUrl("/api/v1/tasks/TKI:000000000000000000000000000000000026"));
+    // retrieve task from Rest Api
+    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+    con.setRequestMethod("GET");
+    con.setRequestProperty("Authorization", "Basic dXNlcl8xXzI6dXNlcl8xXzI="); // user_1_2
+    assertThat(con.getResponseCode()).isEqualTo(200);
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
+    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), UTF_8));
+    String inputLine;
+    StringBuffer content = new StringBuffer();
+    while ((inputLine = in.readLine()) != null) {
+      content.append(inputLine);
+    }
+    in.close();
+    con.disconnect();
+    final String originalTaskJson = content.toString();
+    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    TaskResource originalTaskObject = mapper.readValue(originalTaskJson, TaskResource.class);
+
+    String originalOwner = originalTaskObject.getOwner();
+    assertThat(originalTaskObject.getOwner()).isEqualTo("user_1_1");
+    assertThat(originalTaskObject.getState()).isEqualTo(TaskState.CLAIMED);
+
+    // set owner and call updateTask on Rest Api
+    final String anyUserName = "Mustapha";
+    TaskResource taskObjectWithUpdatedOwner = originalTaskObject;
+    taskObjectWithUpdatedOwner.setOwner(anyUserName);
+    con = (HttpURLConnection) url.openConnection();
+    con.setRequestMethod("PUT");
+    con.setDoOutput(true);
+    con.setRequestProperty("Authorization", "Basic dXNlcl8xXzI6dXNlcl8xXzI=");
+    con.setRequestProperty("Content-Type", "application/json");
+    BufferedWriter out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream(), UTF_8));
+    final String taskWithUpdatedOwnerJson = mapper.writeValueAsString(taskObjectWithUpdatedOwner);
+    out.write(taskWithUpdatedOwnerJson);
+    out.flush();
+    out.close();
+    assertThat(con.getResponseCode()).isEqualTo(409);
     con.disconnect();
   }
 

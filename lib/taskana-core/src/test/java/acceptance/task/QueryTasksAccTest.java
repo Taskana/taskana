@@ -32,6 +32,7 @@ import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.AttachmentPersistenceException;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.InvalidStateException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.TaskanaEngineProxyForTest;
 import pro.taskana.security.JaasExtension;
@@ -223,7 +224,8 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void testQueryForAttachmentInSummary()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-          TaskNotFoundException, ConcurrencyException, AttachmentPersistenceException {
+          TaskNotFoundException, ConcurrencyException, AttachmentPersistenceException,
+          InvalidStateException {
     TaskService taskService = taskanaEngine.getTaskService();
 
     Attachment attachment =
