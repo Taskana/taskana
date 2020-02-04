@@ -7,7 +7,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -642,109 +641,80 @@ class TaskControllerIntTest {
 
   @Test
   void testUpdateTaskOwnerOfReadyTaskSucceeds() throws IOException {
-    URL url = new URL(restHelper.toUrl("/api/v1/tasks/TKI:000000000000000000000000000000000025"));
+    // setup
+    final String taskUrlString =
+        restHelper.toUrl("/api/v1/tasks/TKI:000000000000000000000000000000000025");
+
     // retrieve task from Rest Api
-    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-    con.setRequestMethod("GET");
-    con.setRequestProperty("Authorization", "Basic dXNlcl8xXzI6dXNlcl8xXzI="); // user_1_2
-    assertThat(con.getResponseCode()).isEqualTo(200);
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+    ResponseEntity<TaskResource> responseGet =
+        template.exchange(
+          taskUrlString,
+          HttpMethod.GET,
+          new HttpEntity<>(getHeadersForUser_1_2()),
+          ParameterizedTypeReference.forType(TaskResource.class));
 
-    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), UTF_8));
-    String inputLine;
-    StringBuffer content = new StringBuffer();
-    while ((inputLine = in.readLine()) != null) {
-      content.append(inputLine);
-    }
-    in.close();
-    con.disconnect();
-    final String originalTaskJson = content.toString();
-    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    TaskResource originalTaskObject = mapper.readValue(originalTaskJson, TaskResource.class);
+    assertThat(responseGet.getBody()).isNotNull();
+    TaskResource theTaskResource = responseGet.getBody();
+    assertThat(theTaskResource.getState()).isEqualTo(TaskState.READY);
+    assertThat(theTaskResource.getOwner() == null);
 
-    String originalOwner = originalTaskObject.getOwner();
-    assertThat(originalOwner == null);
+    // set Owner and update Task
 
-    // set owner and call updateTask on Rest Api
-    final String anyUserName = "Benjamin";
-    TaskResource taskObjectWithUpdatedOwner = originalTaskObject;
-    taskObjectWithUpdatedOwner.setOwner(anyUserName);
-    con = (HttpURLConnection) url.openConnection();
-    con.setRequestMethod("PUT");
-    con.setDoOutput(true);
-    con.setRequestProperty("Authorization", "Basic dXNlcl8xXzI6dXNlcl8xXzI=");
-    con.setRequestProperty("Content-Type", "application/json");
-    BufferedWriter out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream(), UTF_8));
-    final String taskWithUpdatedOwnerJson = mapper.writeValueAsString(taskObjectWithUpdatedOwner);
-    out.write(taskWithUpdatedOwnerJson);
-    out.flush();
-    out.close();
-    assertThat(con.getResponseCode()).isEqualTo(200);
-    con.disconnect();
+    final String anyUserName = "dummyUser";
+    theTaskResource.setOwner(anyUserName);
+    ResponseEntity<TaskResource> responseUpdate =
+        template.exchange(
+          taskUrlString,
+          HttpMethod.PUT,
+          new HttpEntity<>(theTaskResource, getHeadersForUser_1_2()),
+          ParameterizedTypeReference.forType(TaskResource.class));
 
-    // retrieve task once again from Rest Api.
-    con = (HttpURLConnection) url.openConnection();
-    con.setRequestMethod("GET");
-    con.setRequestProperty("Authorization", "Basic dXNlcl8xXzI6dXNlcl8xXzI=");
-    assertThat(con.getResponseCode()).isEqualTo(200);
-    in = new BufferedReader(new InputStreamReader(con.getInputStream(), UTF_8));
-    content = new StringBuffer();
-    while ((inputLine = in.readLine()) != null) {
-      content.append(inputLine);
-    }
-    in.close();
-    con.disconnect();
-    final String retrievedTaskJson = content.toString();
-    TaskResource retrievedTaskObject = mapper.readValue(retrievedTaskJson, TaskResource.class);
-    assertThat(retrievedTaskObject.getOwner()).isEqualTo(anyUserName);
+    assertThat(responseUpdate.getBody()).isNotNull();
+    TaskResource theUpdatedTaskResource = responseUpdate.getBody();
+    assertThat(theUpdatedTaskResource.getState()).isEqualTo(TaskState.READY);
+    assertThat(theUpdatedTaskResource.getOwner()).isEqualTo(anyUserName);
   }
 
   @Test
   void testUpdateTaskOwnerOfClaimedTaskFails() throws IOException {
-    URL url = new URL(restHelper.toUrl("/api/v1/tasks/TKI:000000000000000000000000000000000026"));
+    // setup
+    final String taskUrlString =
+        restHelper.toUrl("/api/v1/tasks/TKI:000000000000000000000000000000000026");
+
     // retrieve task from Rest Api
-    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-    con.setRequestMethod("GET");
-    con.setRequestProperty("Authorization", "Basic dXNlcl8xXzI6dXNlcl8xXzI="); // user_1_2
-    assertThat(con.getResponseCode()).isEqualTo(200);
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+    ResponseEntity<TaskResource> responseGet =
+        template.exchange(
+          taskUrlString,
+          HttpMethod.GET,
+          new HttpEntity<>(getHeadersForUser_1_2()),
+          ParameterizedTypeReference.forType(TaskResource.class));
 
-    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), UTF_8));
-    String inputLine;
-    StringBuffer content = new StringBuffer();
-    while ((inputLine = in.readLine()) != null) {
-      content.append(inputLine);
-    }
-    in.close();
-    con.disconnect();
-    final String originalTaskJson = content.toString();
-    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    TaskResource originalTaskObject = mapper.readValue(originalTaskJson, TaskResource.class);
+    assertThat(responseGet.getBody()).isNotNull();
+    TaskResource theTaskResource = responseGet.getBody();
+    assertThat(theTaskResource.getState()).isEqualTo(TaskState.CLAIMED);
+    assertThat(theTaskResource.getOwner()).isEqualTo("user_1_1");
 
-    String originalOwner = originalTaskObject.getOwner();
-    assertThat(originalTaskObject.getOwner()).isEqualTo("user_1_1");
-    assertThat(originalTaskObject.getState()).isEqualTo(TaskState.CLAIMED);
+    // set Owner and update Task
 
-    // set owner and call updateTask on Rest Api
-    final String anyUserName = "Mustapha";
-    TaskResource taskObjectWithUpdatedOwner = originalTaskObject;
-    taskObjectWithUpdatedOwner.setOwner(anyUserName);
-    con = (HttpURLConnection) url.openConnection();
-    con.setRequestMethod("PUT");
-    con.setDoOutput(true);
-    con.setRequestProperty("Authorization", "Basic dXNlcl8xXzI6dXNlcl8xXzI=");
-    con.setRequestProperty("Content-Type", "application/json");
-    BufferedWriter out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream(), UTF_8));
-    final String taskWithUpdatedOwnerJson = mapper.writeValueAsString(taskObjectWithUpdatedOwner);
-    out.write(taskWithUpdatedOwnerJson);
-    out.flush();
-    out.close();
-    assertThat(con.getResponseCode()).isEqualTo(409);
-    con.disconnect();
+    final String anyUserName = "dummyuser";
+    theTaskResource.setOwner(anyUserName);
+
+    assertThatThrownBy(
+      () ->
+        template.exchange(
+          taskUrlString,
+          HttpMethod.PUT,
+          new HttpEntity<>(theTaskResource, getHeadersForUser_1_2()),
+          ParameterizedTypeReference.forType(TaskResource.class)))
+        .isInstanceOf(HttpClientErrorException.class)
+        .hasMessageContaining("409");
+  }
+
+  private HttpHeaders getHeadersForUser_1_2() {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Authorization", "Basic dXNlcl8xXzI6dXNlcl8xXzI=");
+    headers.add("Content-Type", "application/json");
+    return headers;
   }
 
   private TaskResource getTaskResourceSample() {
