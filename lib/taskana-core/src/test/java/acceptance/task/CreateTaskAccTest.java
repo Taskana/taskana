@@ -12,7 +12,6 @@ import acceptance.AbstractAccTest;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -30,8 +29,7 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.TaskanaEngineProxyForTest;
 import pro.taskana.common.internal.security.CurrentUserContext;
-import pro.taskana.report.internal.DaysToWorkingDaysConverter;
-import pro.taskana.report.internal.header.TimeIntervalColumnHeader;
+import pro.taskana.common.internal.util.DaysToWorkingDaysConverter;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 import pro.taskana.task.api.Attachment;
@@ -548,9 +546,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
     assertEquals(99, readTask.getPriority());
 
-    DaysToWorkingDaysConverter converter =
-        DaysToWorkingDaysConverter.initialize(
-            Collections.singletonList(new TimeIntervalColumnHeader(0)), Instant.now());
+    DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize(Instant.now());
     long calendarDays = converter.convertWorkingDaysToDays(readTask.getPlanned(), 1);
 
     assertEquals(readTask.getDue(), readTask.getPlanned().plus(Duration.ofDays(calendarDays)));
