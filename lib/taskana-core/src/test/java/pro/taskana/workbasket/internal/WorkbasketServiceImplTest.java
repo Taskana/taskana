@@ -1,5 +1,7 @@
 package pro.taskana.workbasket.internal;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.startsWith;
@@ -8,11 +10,14 @@ import static org.hamcrest.core.IsNot.not;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,6 +34,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
@@ -70,7 +76,7 @@ class WorkbasketServiceImplTest {
 
   @BeforeEach
   void setup() {
-    when(internalTaskanaEngineMock.getEngine()).thenReturn(taskanaEngine);
+    lenient().when(internalTaskanaEngineMock.getEngine()).thenReturn(taskanaEngine);
   }
 
   @Test
@@ -187,6 +193,27 @@ class WorkbasketServiceImplTest {
 
     assertThatThrownBy(() -> workbasketServiceSpy.setWorkbasketAccessItems(wid, accessItems))
         .isInstanceOf(WorkbasketAccessItemAlreadyExistException.class);
+  }
+
+  @Test
+  void testCheckModifiedHasNotChanged() throws Exception {
+
+    Instant expectedModifiedTimestamp = Instant.now();
+
+    WorkbasketImpl oldWb = createTestWorkbasket(null, "Key-1");
+    WorkbasketImpl workbasketImplToUpdate = createTestWorkbasket(null, "Key-2");
+    oldWb.setModified(expectedModifiedTimestamp);
+    workbasketImplToUpdate.setModified(expectedModifiedTimestamp);
+
+    assertThatCode(
+        () -> workbasketServiceSpy.checkModifiedHasNotChanged(oldWb, workbasketImplToUpdate))
+        .doesNotThrowAnyException();
+
+    workbasketImplToUpdate.setModified(expectedModifiedTimestamp.minus(1, ChronoUnit.HOURS));
+
+    assertThatExceptionOfType(ConcurrencyException.class)
+        .isThrownBy(
+            () -> workbasketServiceSpy.checkModifiedHasNotChanged(oldWb, workbasketImplToUpdate));
   }
 
   private WorkbasketImpl createTestWorkbasket(String id, String key) {

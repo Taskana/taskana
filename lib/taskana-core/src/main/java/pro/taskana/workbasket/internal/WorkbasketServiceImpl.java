@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.LoggerUtils;
+import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
@@ -139,24 +140,46 @@ public class WorkbasketServiceImpl implements WorkbasketService {
   }
 
   @Override
-  public Workbasket updateWorkbasket(Workbasket workbasketToUpdate) throws NotAuthorizedException {
-    LOGGER.debug("entry to updateWorkbasket(workbasket)", workbasketToUpdate);
+  public Workbasket updateWorkbasket(Workbasket workbasketToUpdate)
+      throws NotAuthorizedException, WorkbasketNotFoundException, ConcurrencyException {
+
+    LOGGER.debug("entry to updateWorkbasket(Workbasket = {})", workbasketToUpdate);
+
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
 
-    WorkbasketImpl workbasket = (WorkbasketImpl) workbasketToUpdate;
+    WorkbasketImpl workbasketImplToUpdate = null;
+
     try {
+
       taskanaEngine.openConnection();
-      workbasket.setModified(Instant.now());
-      if (workbasket.getId() == null || workbasket.getId().isEmpty()) {
-        workbasketMapper.updateByKeyAndDomain(workbasket);
+
+      workbasketImplToUpdate = (WorkbasketImpl) workbasketToUpdate;
+
+      Workbasket oldWorkbasket =
+          this.getWorkbasket(workbasketImplToUpdate.getKey(), workbasketImplToUpdate.getDomain());
+
+      checkModifiedHasNotChanged(oldWorkbasket, workbasketImplToUpdate);
+
+      workbasketImplToUpdate.setModified(Instant.now());
+
+      if (workbasketImplToUpdate.getId() == null || workbasketImplToUpdate.getId().isEmpty()) {
+
+        workbasketMapper.updateByKeyAndDomain(workbasketImplToUpdate);
+
       } else {
-        workbasketMapper.update(workbasket);
+
+        workbasketMapper.update(workbasketImplToUpdate);
       }
-      LOGGER.debug("Method updateWorkbasket() updated workbasket '{}'", workbasket.getId());
-      return workbasket;
+      LOGGER.debug(
+          "Method updateWorkbasket() updated workbasket '{}'", workbasketImplToUpdate.getId());
+
+      return workbasketImplToUpdate;
+
     } finally {
+
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from updateWorkbasket(). Returning result {} ", workbasket);
+
+      LOGGER.debug("exit from updateWorkbasket(). Returning result {} ", workbasketImplToUpdate);
     }
   }
 
@@ -826,6 +849,26 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     } finally {
       taskanaEngine.returnConnection();
       LOGGER.debug("exit from deleteWorkbasketAccessItemsForAccessId(accessId={}).", accessId);
+    }
+  }
+
+  /**
+   * Check if current workbasket is based on the newest (by modified).
+   *
+   * @param oldWorkbasket the old workbasket in the system
+   * @param workbasketImplToUpdate the workbasket to update
+   * @throws ConcurrencyException if the workbasket has been modified by some other process.
+   * @throws WorkbasketNotFoundException if the given workbasket does not exist.
+   */
+  void checkModifiedHasNotChanged(Workbasket oldWorkbasket, WorkbasketImpl workbasketImplToUpdate)
+      throws ConcurrencyException {
+
+    if (!oldWorkbasket.getModified().equals(workbasketImplToUpdate.getModified())) {
+
+      throw new ConcurrencyException(
+          "The current Workbasket has been modified while editing. "
+              + "The values can not be updated. Workbasket "
+              + workbasketImplToUpdate.toString());
     }
   }
 

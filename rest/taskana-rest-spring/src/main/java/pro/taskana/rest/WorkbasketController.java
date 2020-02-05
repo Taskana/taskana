@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.LoggerUtils;
+import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
@@ -177,7 +178,8 @@ public class WorkbasketController extends AbstractPagingController {
   public ResponseEntity<WorkbasketResource> updateWorkbasket(
       @PathVariable(value = "workbasketId") String workbasketId,
       @RequestBody WorkbasketResource workbasketResource)
-      throws InvalidWorkbasketException, WorkbasketNotFoundException, NotAuthorizedException {
+      throws InvalidWorkbasketException, WorkbasketNotFoundException,
+                 NotAuthorizedException, ConcurrencyException {
     LOGGER.debug("Entry to updateWorkbasket(workbasketId= {})", workbasketId);
     ResponseEntity<WorkbasketResource> result;
     if (workbasketId.equals(workbasketResource.workbasketId)) {
