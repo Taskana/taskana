@@ -156,7 +156,7 @@ public class WorkbasketController extends AbstractPagingController {
   public ResponseEntity<WorkbasketResource> createWorkbasket(
       @RequestBody WorkbasketResource workbasketResource)
       throws InvalidWorkbasketException, NotAuthorizedException, WorkbasketAlreadyExistException,
-          WorkbasketNotFoundException, DomainNotFoundException {
+          DomainNotFoundException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to createWorkbasket(workbasketResource= {})", workbasketResource);
     }
@@ -178,8 +178,8 @@ public class WorkbasketController extends AbstractPagingController {
   public ResponseEntity<WorkbasketResource> updateWorkbasket(
       @PathVariable(value = "workbasketId") String workbasketId,
       @RequestBody WorkbasketResource workbasketResource)
-      throws InvalidWorkbasketException, WorkbasketNotFoundException,
-                 NotAuthorizedException, ConcurrencyException {
+      throws InvalidWorkbasketException, WorkbasketNotFoundException, NotAuthorizedException,
+          ConcurrencyException {
     LOGGER.debug("Entry to updateWorkbasket(workbasketId= {})", workbasketId);
     ResponseEntity<WorkbasketResource> result;
     if (workbasketId.equals(workbasketResource.workbasketId)) {

@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.io.IOException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -180,8 +179,7 @@ class ClassificationControllerIntTest {
 
   @Test
   @DirtiesContext
-  void testCreateClassificationWithParentKeyInDomain_aShouldCreateAClassificationInRootDomain()
-      throws IOException {
+  void testCreateClassificationWithParentKeyInDomain_aShouldCreateAClassificationInRootDomain() {
     String newClassification =
         "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\","
             + "\"key\":\"NEW_CLASS_P2\",\"name\":\"new classification\","
@@ -218,7 +216,7 @@ class ClassificationControllerIntTest {
 
   @Test
   @DirtiesContext
-  void testReturn400IfCreateClassificationWithIncompatibleParentIdAndKey() throws IOException {
+  void testReturn400IfCreateClassificationWithIncompatibleParentIdAndKey() {
     String newClassification =
         "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_B\","
             + "\"key\":\"NEW_CLASS_P3\",\"name\":\"new classification\","
@@ -241,7 +239,7 @@ class ClassificationControllerIntTest {
 
   @Test
   @DirtiesContext
-  void testCreateClassificationWithClassificationIdReturnsError400() throws IOException {
+  void testCreateClassificationWithClassificationIdReturnsError400() {
     String newClassification =
         "{\"classificationId\":\"someId\",\"category\":\"MANUAL\","
             + "\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS\","

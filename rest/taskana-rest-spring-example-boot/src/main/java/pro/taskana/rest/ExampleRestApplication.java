@@ -1,6 +1,5 @@
 package pro.taskana.rest;
 
-import java.sql.SQLException;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +62,7 @@ public class ExampleRestApplication {
   }
 
   @PostConstruct
-  private void init() throws SQLException {
+  private void init() {
     if (!ldapClient.useLdap()) {
       AccessIdController.setLdapCache(ldapCacheTest);
     }

@@ -209,7 +209,7 @@ class WorkbasketDefinitionControllerIntTest {
   }
 
   @Test
-  void testErrorWhenImportWithSameAccessIdAndWorkbasket() throws IOException {
+  void testErrorWhenImportWithSameAccessIdAndWorkbasket() {
     WorkbasketDefinitionResource w = executeExportRequestForDomain("DOMAIN_A").getBody().get(0);
 
     String w1String = workbasketToString(w);

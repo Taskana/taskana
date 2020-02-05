@@ -1,7 +1,6 @@
 package pro.taskana;
 
 import java.io.InputStream;
-import java.sql.SQLException;
 import java.util.Properties;
 import javax.annotation.PostConstruct;
 import javax.naming.Context;
@@ -111,7 +110,7 @@ public class TaskanaWildFlyApplication extends SpringBootServletInitializer {
   }
 
   @PostConstruct
-  private void init() throws SQLException {
+  private void init() {
     if (!ldapClient.useLdap()) {
       AccessIdController.setLdapCache(ldapCacheTest);
     }
