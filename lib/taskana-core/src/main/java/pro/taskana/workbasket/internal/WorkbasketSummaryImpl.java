@@ -8,22 +8,22 @@ import pro.taskana.workbasket.api.WorkbasketType;
 /** This entity contains the most important information about a workbasket. */
 public class WorkbasketSummaryImpl implements WorkbasketSummary {
 
-  private String id;
-  private String key;
-  private String name;
-  private String description;
-  private String owner;
-  private String domain;
-  private WorkbasketType type;
-  private String custom1;
-  private String custom2;
-  private String custom3;
-  private String custom4;
-  private String orgLevel1;
-  private String orgLevel2;
-  private String orgLevel3;
-  private String orgLevel4;
-  private boolean markedForDeletion;
+  protected String id;
+  protected String key;
+  protected String name;
+  protected String description;
+  protected String owner;
+  protected String domain;
+  protected WorkbasketType type;
+  protected String custom1;
+  protected String custom2;
+  protected String custom3;
+  protected String custom4;
+  protected String orgLevel1;
+  protected String orgLevel2;
+  protected String orgLevel3;
+  protected String orgLevel4;
+  protected boolean markedForDeletion;
 
   public WorkbasketSummaryImpl() {}
 
@@ -231,6 +231,10 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
     this.markedForDeletion = markedForDeletion;
   }
 
+  protected boolean canEqual(Object other) {
+    return (other instanceof WorkbasketSummaryImpl);
+  }
+
   @Override
   public int hashCode() {
     return Objects.hash(
@@ -261,6 +265,9 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
       return false;
     }
     WorkbasketSummaryImpl other = (WorkbasketSummaryImpl) obj;
+    if (!other.canEqual(this)) {
+      return false;
+    }
     return markedForDeletion == other.markedForDeletion
         && Objects.equals(id, other.id)
         && Objects.equals(key, other.key)
