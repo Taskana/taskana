@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
+import pro.taskana.common.internal.util.DaysToWorkingDaysConverter;
 import pro.taskana.common.internal.util.LoggerUtils;
 import pro.taskana.report.api.ClassificationReport;
 import pro.taskana.report.api.TimeIntervalReportBuilder;
@@ -191,7 +192,8 @@ abstract class TimeIntervalReportBuilderImpl<
 
   private List<SelectedItem> convertWorkingDaysToDays(
       List<SelectedItem> selectedItems, List<H> columnHeaders) throws InvalidArgumentException {
-    DaysToWorkingDaysConverter instance = DaysToWorkingDaysConverter.initialize(columnHeaders);
+    DaysToWorkingDaysReportConverter instance =
+        DaysToWorkingDaysReportConverter.initialize(columnHeaders);
     for (SelectedItem selectedItem : selectedItems) {
       selectedItem.setLowerAgeLimit(
           Collections.min(instance.convertWorkingDaysToDays(selectedItem.getLowerAgeLimit())));

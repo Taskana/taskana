@@ -146,8 +146,7 @@ class ArchitectureTest {
         Stream.of(
             "..workbasket..",
             "..history..",
-            // tasks are to be fixed ...
-            // "..task..",
+            "..task..",
             "..classification..");
     return packagesToTest
         .map(

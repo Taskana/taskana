@@ -13,7 +13,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -28,8 +27,7 @@ import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.jobs.JobRunner;
-import pro.taskana.report.internal.DaysToWorkingDaysConverter;
-import pro.taskana.report.internal.header.TimeIntervalColumnHeader;
+import pro.taskana.common.internal.util.DaysToWorkingDaysConverter;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 import pro.taskana.task.api.Task;
@@ -244,9 +242,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
     // TODO - resume old behaviour after attachment query is possible.
     TaskService taskService = taskanaEngine.getTaskService();
 
-    DaysToWorkingDaysConverter converter =
-        DaysToWorkingDaysConverter.initialize(
-            Collections.singletonList(new TimeIntervalColumnHeader(0)), Instant.now());
+    DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize(Instant.now());
 
     List<String> tasksWithP1D =
         new ArrayList<>(

@@ -4,7 +4,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -32,6 +31,7 @@ import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.CustomPropertySelector;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.security.CurrentUserContext;
+import pro.taskana.common.internal.util.DaysToWorkingDaysConverter;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.common.internal.util.LoggerUtils;
 import pro.taskana.history.api.events.task.ClaimCancelledEvent;
@@ -39,8 +39,6 @@ import pro.taskana.history.api.events.task.ClaimedEvent;
 import pro.taskana.history.api.events.task.CompletedEvent;
 import pro.taskana.history.api.events.task.CreatedEvent;
 import pro.taskana.history.internal.HistoryEventProducer;
-import pro.taskana.report.internal.DaysToWorkingDaysConverter;
-import pro.taskana.report.internal.header.TimeIntervalColumnHeader;
 import pro.taskana.task.api.Attachment;
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.ObjectReference;
@@ -95,9 +93,7 @@ public class TaskServiceImpl implements TaskService {
       AttachmentMapper attachmentMapper) {
     super();
     try {
-      this.converter =
-          DaysToWorkingDaysConverter.initialize(
-              Collections.singletonList(new TimeIntervalColumnHeader(0)), Instant.now());
+      this.converter = DaysToWorkingDaysConverter.initialize();
     } catch (InvalidArgumentException e) {
       throw new SystemException(
           "Internal error. Cannot initialize DaysToWorkingDaysConverter", e.getCause());
