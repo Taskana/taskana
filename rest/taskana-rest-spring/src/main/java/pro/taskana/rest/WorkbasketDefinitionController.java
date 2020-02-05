@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
@@ -40,6 +41,7 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistExc
 import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.internal.WorkbasketAccessItemImpl;
+import pro.taskana.workbasket.internal.WorkbasketImpl;
 
 /** Controller for all {@link WorkbasketDefinitionResource} related endpoints. */
 @RestController
@@ -110,7 +112,8 @@ public class WorkbasketDefinitionController {
   public ResponseEntity<Void> importWorkbaskets(@RequestParam("file") MultipartFile file)
       throws IOException, NotAuthorizedException, DomainNotFoundException,
           InvalidWorkbasketException, WorkbasketAlreadyExistException, WorkbasketNotFoundException,
-          InvalidArgumentException, WorkbasketAccessItemAlreadyExistException {
+          InvalidArgumentException, WorkbasketAccessItemAlreadyExistException,
+          ConcurrencyException {
     LOGGER.debug("Entry to importWorkbaskets()");
     ObjectMapper mapper = new ObjectMapper();
     mapper.enable(SerializationFeature.INDENT_OUTPUT);
@@ -134,9 +137,13 @@ public class WorkbasketDefinitionController {
     for (WorkbasketDefinitionResource definition : definitions) {
       Workbasket importedWb = workbasketDefinitionAssembler.toModel(definition.getWorkbasket());
       String newId;
-      Workbasket wbWithoutId = removeId(importedWb);
+      WorkbasketImpl wbWithoutId = (WorkbasketImpl) removeId(importedWb);
       if (systemIds.containsKey(logicalId(importedWb))) {
+        Workbasket modifiedWb =
+            workbasketService.getWorkbasket(importedWb.getKey(), importedWb.getDomain());
+        wbWithoutId.setModified(modifiedWb.getModified());
         workbasketService.updateWorkbasket(wbWithoutId);
+
         newId = systemIds.get(logicalId(importedWb));
       } else {
         newId = workbasketService.createWorkbasket(wbWithoutId).getId();
