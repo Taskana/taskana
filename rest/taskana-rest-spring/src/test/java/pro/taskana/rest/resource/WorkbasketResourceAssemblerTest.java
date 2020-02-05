@@ -6,12 +6,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import pro.taskana.TaskanaSpringBootTest;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.rest.Mapping;
 import pro.taskana.workbasket.api.Workbasket;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
-import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.internal.WorkbasketImpl;
 
 /** Test for {@link WorkbasketResourceAssembler}. */
@@ -22,7 +20,7 @@ class WorkbasketResourceAssemblerTest {
   @Autowired WorkbasketResourceAssembler workbasketResourceAssembler;
 
   @Test
-  void workbasketToResource() throws NotAuthorizedException, WorkbasketNotFoundException {
+  void workbasketToResource() {
     // given
     Workbasket workbasket = workbasketService.newWorkbasket("1", "DOMAIN_A");
     ((WorkbasketImpl) workbasket).setId("ID");

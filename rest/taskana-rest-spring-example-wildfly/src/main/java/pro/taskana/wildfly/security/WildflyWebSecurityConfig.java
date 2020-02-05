@@ -42,7 +42,7 @@ public class WildflyWebSecurityConfig extends WebSecurityConfig {
   private boolean devMode;
 
   @Bean
-  public J2eePreAuthenticatedProcessingFilter preAuthFilter() throws Exception {
+  public J2eePreAuthenticatedProcessingFilter preAuthFilter() {
     J2eePreAuthenticatedProcessingFilter filter = new J2eePreAuthenticatedProcessingFilter();
     filter.setAuthenticationManager(preAuthManager());
     return filter;

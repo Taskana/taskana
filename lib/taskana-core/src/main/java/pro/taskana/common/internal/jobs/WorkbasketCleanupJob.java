@@ -15,8 +15,6 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 import pro.taskana.workbasket.api.WorkbasketQueryColumnName;
-import pro.taskana.workbasket.api.exceptions.WorkbasketInUseException;
-import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
 /**
  * Job to cleanup completed workbaskets after a period of time if there are no pending tasks
@@ -113,8 +111,7 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
   }
 
   private int deleteWorkbaskets(List<String> workbasketsToBeDeleted)
-      throws InvalidArgumentException, NotAuthorizedException, WorkbasketNotFoundException,
-          WorkbasketInUseException {
+      throws InvalidArgumentException, NotAuthorizedException {
 
     BulkOperationResults<String, TaskanaException> results =
         taskanaEngineImpl.getWorkbasketService().deleteWorkbaskets(workbasketsToBeDeleted);
