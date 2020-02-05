@@ -1,14 +1,16 @@
 package acceptance.workbasket;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.time.Instant;
-import org.junit.jupiter.api.Assertions;
+import java.time.temporal.ChronoUnit;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
@@ -16,6 +18,7 @@ import pro.taskana.workbasket.api.Workbasket;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
+import pro.taskana.workbasket.internal.WorkbasketImpl;
 
 /** Acceptance test for all "update workbasket" scenarios. */
 @ExtendWith(JaasExtension.class)
@@ -29,9 +32,11 @@ public class UpdateWorkbasketAccTest extends AbstractAccTest {
       userName = "teamlead_1",
       groupNames = {"group_1", "businessadmin"})
   @Test
-  public void testUpdateWorkbasket() throws NotAuthorizedException, WorkbasketNotFoundException {
+  public void testUpdateWorkbasket()
+      throws NotAuthorizedException, WorkbasketNotFoundException, ConcurrencyException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     Workbasket workbasket = workbasketService.getWorkbasket("GPK_KSC", "DOMAIN_A");
+
     final Instant modified = workbasket.getModified();
 
     workbasket.setName("new name");
@@ -49,11 +54,49 @@ public class UpdateWorkbasketAccTest extends AbstractAccTest {
     workbasketService.updateWorkbasket(workbasket);
 
     Workbasket updatedWorkbasket = workbasketService.getWorkbasket("GPK_KSC", "DOMAIN_A");
-    assertEquals(workbasket.getId(), updatedWorkbasket.getId());
-    assertEquals(workbasket.getCreated(), updatedWorkbasket.getCreated());
-    assertNotEquals(modified, updatedWorkbasket.getModified());
-    assertEquals("new name", updatedWorkbasket.getName());
-    assertEquals(WorkbasketType.TOPIC, updatedWorkbasket.getType());
+
+    assertThat(updatedWorkbasket.getId()).isEqualTo(workbasket.getId());
+    assertThat(updatedWorkbasket.getCreated()).isEqualTo(workbasket.getCreated());
+    assertThat(updatedWorkbasket.getName()).isEqualTo("new name");
+    assertThat(updatedWorkbasket.getType()).isEqualTo(WorkbasketType.TOPIC);
+    assertThat(updatedWorkbasket.getModified()).isNotEqualTo(modified);
+  }
+
+  @WithAccessId(
+      userName = "teamlead_1",
+      groupNames = {"group_1", "businessadmin"})
+  @Test
+  public void testUpdateWorkbasketWithConcurrentModificationShouldThrowException()
+      throws NotAuthorizedException, WorkbasketNotFoundException, ConcurrencyException {
+
+    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+
+    WorkbasketImpl workbasket =
+        (WorkbasketImpl) workbasketService.getWorkbasket("GPK_KSC", "DOMAIN_A");
+
+    workbasket.setModified(workbasket.getModified().minus(1, ChronoUnit.SECONDS));
+
+    assertThatExceptionOfType(ConcurrencyException.class)
+        .isThrownBy(() -> workbasketService.updateWorkbasket(workbasket));
+  }
+
+  @WithAccessId(
+      userName = "teamlead_1",
+      groupNames = {"group_1", "businessadmin"})
+  @Test
+  public void testUpdateWorkbasketOfNonExistingWorkbasketShouldThrowException()
+      throws NotAuthorizedException, WorkbasketNotFoundException, ConcurrencyException {
+
+    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+
+    WorkbasketImpl workbasket =
+        (WorkbasketImpl) workbasketService.getWorkbasket("GPK_KSC", "DOMAIN_A");
+
+    workbasket.setDomain("InvalidDomain");
+    workbasket.setKey("InvalidKey");
+
+    assertThatExceptionOfType(WorkbasketNotFoundException.class)
+        .isThrownBy(() -> workbasketService.updateWorkbasket(workbasket));
   }
 
   @WithAccessId(
@@ -67,7 +110,7 @@ public class UpdateWorkbasketAccTest extends AbstractAccTest {
 
     workbasket.setName("new name");
 
-    Assertions.assertThrows(
-        NotAuthorizedException.class, () -> workbasketService.updateWorkbasket(workbasket));
+    assertThatThrownBy(() -> workbasketService.updateWorkbasket(workbasket))
+        .isInstanceOf(NotAuthorizedException.class);
   }
 }

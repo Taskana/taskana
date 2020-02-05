@@ -3,6 +3,7 @@ package pro.taskana.workbasket.api;
 import java.util.List;
 
 import pro.taskana.common.api.BulkOperationResults;
+import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
@@ -63,7 +64,8 @@ public interface WorkbasketService {
    * @return the updated Workbasket
    * @throws NotAuthorizedException if the current user is not authorized to update the work basket
    */
-  Workbasket updateWorkbasket(Workbasket workbasket) throws NotAuthorizedException;
+  Workbasket updateWorkbasket(Workbasket workbasket)
+      throws NotAuthorizedException, WorkbasketNotFoundException, ConcurrencyException;
 
   /**
    * Returns a new WorkbasketAccessItem which is not persisted.

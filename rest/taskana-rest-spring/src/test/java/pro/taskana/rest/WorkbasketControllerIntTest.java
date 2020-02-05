@@ -1,11 +1,11 @@
 package pro.taskana.rest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.fail;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.Instant;
 import java.util.Iterator;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,9 @@ import pro.taskana.RestHelper;
 import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.rest.resource.DistributionTargetListResource;
 import pro.taskana.rest.resource.DistributionTargetResource;
+import pro.taskana.rest.resource.WorkbasketResource;
 import pro.taskana.rest.resource.WorkbasketSummaryListResource;
+import pro.taskana.workbasket.api.WorkbasketType;
 
 /** Test WorkbasketController. */
 @TaskanaSpringBootTest
@@ -45,7 +47,7 @@ class WorkbasketControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(WorkbasketSummaryListResource.class));
-    assertNotNull(response.getBody().getLink(Link.REL_SELF));
+    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
   }
 
   @Test
@@ -56,8 +58,8 @@ class WorkbasketControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(WorkbasketSummaryListResource.class));
-    assertNotNull(response.getBody().getLink(Link.REL_SELF));
-    assertEquals(3, response.getBody().getContent().size());
+    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getContent()).hasSize(3);
   }
 
   @Test
@@ -69,8 +71,8 @@ class WorkbasketControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(WorkbasketSummaryListResource.class));
-    assertNotNull(response.getBody().getLink(Link.REL_SELF));
-    assertTrue(response.getBody().getLink(Link.REL_SELF).getHref().endsWith(parameters));
+    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(Link.REL_SELF).getHref().endsWith(parameters)).isTrue();
   }
 
   @Test
@@ -83,9 +85,61 @@ class WorkbasketControllerIntTest {
           ParameterizedTypeReference.forType(WorkbasketSummaryListResource.class));
       fail();
     } catch (HttpClientErrorException e) {
-      assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
-      assertTrue(e.getResponseBodyAsString().contains("[invalid]"));
+      assertThat(e.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+      assertThat(e.getResponseBodyAsString().contains("[invalid]")).isTrue();
     }
+  }
+
+  @Test
+  void testUpdateWorkbasketWithConcurrentModificationShouldThrowException() {
+
+    String workbasketId = "WBI:100000000000000000000000000000000001";
+
+    final ObjectMapper mapper = new ObjectMapper();
+
+    ResponseEntity<WorkbasketResource> initialWorkbasketResourceRequestResponse =
+        template.exchange(
+            restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketId),
+            HttpMethod.GET,
+            new HttpEntity<String>(restHelper.getHeaders()),
+            ParameterizedTypeReference.forType(WorkbasketResource.class));
+
+    WorkbasketResource workbasketResource = initialWorkbasketResourceRequestResponse.getBody();
+
+    workbasketResource.setKey("GPK_KSC");
+    workbasketResource.setDomain("DOMAIN_A");
+    workbasketResource.setType(WorkbasketType.PERSONAL);
+    workbasketResource.setName("was auch immer");
+    workbasketResource.setOwner("Joerg");
+    workbasketResource.setModified(String.valueOf(Instant.now()));
+
+    assertThatThrownBy(
+        () ->
+                template.exchange(
+                    restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketId),
+                    HttpMethod.PUT,
+                    new HttpEntity<>(
+                        mapper.writeValueAsString(workbasketResource), restHelper.getHeaders()),
+                    ParameterizedTypeReference.forType(WorkbasketResource.class)))
+        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.CONFLICT);
+  }
+
+  @Test
+  void testUpdateWorkbasketOfNonExistingWorkbasketShouldThrowException() {
+
+    String workbasketId = "WBI:100004857400039500000999999999999999";
+
+    assertThatThrownBy(
+        () ->
+                template.exchange(
+                    restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketId),
+                    HttpMethod.GET,
+                    new HttpEntity<String>(restHelper.getHeaders()),
+                    ParameterizedTypeReference.forType(WorkbasketResource.class)))
+        .isInstanceOf(HttpClientErrorException.class)
+        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.NOT_FOUND);
   }
 
   @Test
@@ -98,14 +152,14 @@ class WorkbasketControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(WorkbasketSummaryListResource.class));
-    assertEquals(5, response.getBody().getContent().size());
-    assertEquals("USER_1_1", response.getBody().getContent().iterator().next().getKey());
-    assertNotNull(response.getBody().getLink(Link.REL_SELF));
-    assertTrue(response.getBody().getLink(Link.REL_SELF).getHref().endsWith(parameters));
-    assertNotNull(response.getBody().getLink(Link.REL_FIRST));
-    assertNotNull(response.getBody().getLink(Link.REL_LAST));
-    assertNotNull(response.getBody().getLink(Link.REL_NEXT));
-    assertNotNull(response.getBody().getLink(Link.REL_PREVIOUS));
+    assertThat(response.getBody().getContent()).hasSize(5);
+    assertThat(response.getBody().getContent().iterator().next().getKey()).isEqualTo("USER_1_1");
+    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(Link.REL_FIRST)).isNotNull();
+    assertThat(response.getBody().getLink(Link.REL_LAST)).isNotNull();
+    assertThat(response.getBody().getLink(Link.REL_NEXT)).isNotNull();
+    assertThat(response.getBody().getLink(Link.REL_PREVIOUS)).isNotNull();
+    assertThat(response.getBody().getLink(Link.REL_SELF).getHref().endsWith(parameters)).isTrue();
   }
 
   /**
@@ -123,7 +177,7 @@ class WorkbasketControllerIntTest {
             HttpMethod.DELETE,
             new HttpEntity<>(restHelper.getHeadersBusinessAdmin()),
             Void.class);
-    assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
   }
 
   @Test
@@ -135,7 +189,7 @@ class WorkbasketControllerIntTest {
             HttpMethod.DELETE,
             restHelper.defaultRequest(),
             Void.class);
-    assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
     ResponseEntity<DistributionTargetListResource> response2 =
         template.exchange(
@@ -144,11 +198,11 @@ class WorkbasketControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(DistributionTargetListResource.class));
-    assertEquals(HttpStatus.OK, response2.getStatusCode());
+    assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.OK);
     Iterator<DistributionTargetResource> iterator = response2.getBody().getContent().iterator();
     while (iterator.hasNext()) {
-      assertNotEquals(
-          "WBI:100000000000000000000000000000000007", iterator.next().getWorkbasketId());
+      assertThat(iterator.next().getWorkbasketId())
+          .isNotEqualTo("WBI:100000000000000000000000000000000007");
     }
   }
 }

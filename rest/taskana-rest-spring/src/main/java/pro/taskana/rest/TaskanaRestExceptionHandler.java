@@ -99,7 +99,7 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
   @ExceptionHandler(ConcurrencyException.class)
   protected ResponseEntity<Object> handleConcurrencyException(
       ConcurrencyException ex, WebRequest req) {
-    return buildResponse(ex, req, HttpStatus.LOCKED);
+    return buildResponse(ex, req, HttpStatus.CONFLICT);
   }
 
   @ExceptionHandler(WorkbasketInUseException.class)
