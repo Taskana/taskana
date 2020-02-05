@@ -12,7 +12,6 @@ import acceptance.AbstractAccTest;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -26,8 +25,7 @@ import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.CurrentUserContext;
-import pro.taskana.report.internal.DaysToWorkingDaysConverter;
-import pro.taskana.report.internal.header.TimeIntervalColumnHeader;
+import pro.taskana.common.internal.util.DaysToWorkingDaysConverter;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 import pro.taskana.task.api.Attachment;
@@ -166,9 +164,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     assertThat(task.getAttachments().get(0).getChannel(), equalTo(newChannel));
     assertEquals(999, task.getPriority());
 
-    DaysToWorkingDaysConverter converter =
-        DaysToWorkingDaysConverter.initialize(
-            Collections.singletonList(new TimeIntervalColumnHeader(0)), Instant.now());
+    DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize(Instant.now());
     long calendarDays = converter.convertWorkingDaysToDays(task.getDue(), 1);
     assertEquals(task.getDue(), task.getPlanned().plus(Duration.ofDays(calendarDays)));
   }
@@ -322,9 +318,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     assertThat(task.getAttachments().get(0).getChannel(), equalTo(newChannel));
     assertEquals(999, task.getPriority());
 
-    DaysToWorkingDaysConverter converter =
-        DaysToWorkingDaysConverter.initialize(
-            Collections.singletonList(new TimeIntervalColumnHeader(0)), Instant.now());
+    DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize(Instant.now());
     long calendarDays = converter.convertWorkingDaysToDays(task.getDue(), 1);
 
     assertEquals(task.getDue(), task.getPlanned().plus(Duration.ofDays(calendarDays)));
@@ -358,9 +352,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     task = taskService.updateTask(task);
     task = taskService.getTask(task.getId());
     assertEquals(101, task.getPriority());
-    DaysToWorkingDaysConverter converter =
-        DaysToWorkingDaysConverter.initialize(
-            Collections.singletonList(new TimeIntervalColumnHeader(0)), Instant.now());
+    DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize(Instant.now());
     long calendarDays = converter.convertWorkingDaysToDays(task.getDue(), 1);
 
     assertEquals(task.getDue(), task.getPlanned().plus(Duration.ofDays(calendarDays)));
@@ -552,9 +544,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
 
     assertEquals(99, readTask.getPriority());
 
-    DaysToWorkingDaysConverter converter =
-        DaysToWorkingDaysConverter.initialize(
-            Collections.singletonList(new TimeIntervalColumnHeader(0)), Instant.now());
+    DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize(Instant.now());
     long calendarDays = converter.convertWorkingDaysToDays(readTask.getPlanned(), 1);
 
     assertEquals(readTask.getDue(), readTask.getPlanned().plus(Duration.ofDays(calendarDays)));
