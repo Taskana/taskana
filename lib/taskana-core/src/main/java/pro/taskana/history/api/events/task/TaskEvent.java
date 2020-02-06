@@ -33,7 +33,7 @@ public class TaskEvent extends TaskanaHistoryEvent {
 
   public TaskEvent(TaskSummary task) {
     super();
-    taskId = task.getTaskId();
+    taskId = task.getId();
     businessProcessId = task.getBusinessProcessId();
     parentBusinessProcessId = task.getParentBusinessProcessId();
     domain = task.getDomain();

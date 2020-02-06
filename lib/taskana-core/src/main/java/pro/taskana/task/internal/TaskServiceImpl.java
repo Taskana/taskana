@@ -521,7 +521,7 @@ public class TaskServiceImpl implements TaskService {
       List<String> changedTasks = new ArrayList<>();
       if (!taskSummaries.isEmpty()) {
         changedTasks =
-            taskSummaries.stream().map(TaskSummary::getTaskId).collect(Collectors.toList());
+            taskSummaries.stream().map(TaskSummary::getId).collect(Collectors.toList());
         taskMapper.updateTasks(changedTasks, updated, fieldSelector);
         if (LOGGER.isDebugEnabled()) {
           LOGGER.debug(
@@ -562,7 +562,7 @@ public class TaskServiceImpl implements TaskService {
       List<String> changedTasks = new ArrayList<>();
       if (!taskSummaries.isEmpty()) {
         changedTasks =
-            taskSummaries.stream().map(TaskSummary::getTaskId).collect(Collectors.toList());
+            taskSummaries.stream().map(TaskSummary::getId).collect(Collectors.toList());
         taskMapper.updateTasks(changedTasks, updatedTask, fieldSelector);
         if (LOGGER.isDebugEnabled()) {
           LOGGER.debug(
@@ -635,7 +635,7 @@ public class TaskServiceImpl implements TaskService {
 
     Set<String> affectedTaskIds = new HashSet<>(filteredTaskIdsFromAttachments);
     for (TaskSummary task : tasks) {
-      affectedTaskIds.add(task.getTaskId());
+      affectedTaskIds.add(task.getId());
     }
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
@@ -735,7 +735,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     Set<String> taskIdSet =
-        taskSummaries.stream().map(TaskSummaryImpl::getTaskId).collect(Collectors.toSet());
+        taskSummaries.stream().map(TaskSummaryImpl::getId).collect(Collectors.toSet());
     String[] taskIdArray = taskIdSet.toArray(new String[0]);
 
     LOGGER.debug(
@@ -1133,7 +1133,7 @@ public class TaskServiceImpl implements TaskService {
       TaskSummaryImpl taskSummary =
           (TaskSummaryImpl)
               taskSummaries.stream()
-                  .filter(ts -> currentTaskId.equals(ts.getTaskId()))
+                  .filter(ts -> currentTaskId.equals(ts.getId()))
                   .findFirst()
                   .orElse(null);
       if (taskSummary == null) {
@@ -1204,7 +1204,7 @@ public class TaskServiceImpl implements TaskService {
       if (classificationSummary == null) {
         throw new SystemException(
             "Did not find a Classification for task (Id="
-                + task.getTaskId()
+                + task.getId()
                 + ",classification="
                 + task.getClassificationSummary().getId()
                 + ")");
@@ -1291,7 +1291,7 @@ public class TaskServiceImpl implements TaskService {
               .findFirst()
               .orElse(null);
       if (workbasketSummary == null) {
-        LOGGER.warn("Could not find a Workbasket for task {}.", task.getTaskId());
+        LOGGER.warn("Could not find a Workbasket for task {}.", task.getId());
         taskIterator.remove();
         continue;
       }
@@ -1327,7 +1327,7 @@ public class TaskServiceImpl implements TaskService {
     // assign attachment summaries to task summaries
     for (TaskSummaryImpl task : taskSummaries) {
       for (AttachmentSummaryImpl attachment : attachmentSummaries) {
-        if (attachment.getTaskId() != null && attachment.getTaskId().equals(task.getTaskId())) {
+        if (attachment.getTaskId() != null && attachment.getTaskId().equals(task.getId())) {
           task.addAttachmentSummary(attachment);
         }
       }

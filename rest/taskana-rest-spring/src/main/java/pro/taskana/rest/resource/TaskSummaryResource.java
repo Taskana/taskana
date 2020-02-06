@@ -59,7 +59,7 @@ public class TaskSummaryResource extends ResourceSupport {
   TaskSummaryResource() {}
 
   public TaskSummaryResource(TaskSummary taskSummary) throws InvalidArgumentException {
-    this.taskId = taskSummary.getTaskId();
+    this.taskId = taskSummary.getId();
     this.externalId = taskSummary.getExternalId();
     created = taskSummary.getCreated() != null ? taskSummary.getCreated().toString() : null;
     claimed = taskSummary.getClaimed() != null ? taskSummary.getClaimed().toString() : null;

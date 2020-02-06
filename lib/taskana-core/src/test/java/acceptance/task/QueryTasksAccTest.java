@@ -960,7 +960,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     List<TaskSummary> results =
         taskService.createTaskQuery().attachmentClassificationKeyIn("L110102").list();
     assertEquals(1, results.size());
-    assertEquals("TKI:000000000000000000000000000000000002", results.get(0).getTaskId());
+    assertEquals("TKI:000000000000000000000000000000000002", results.get(0).getId());
   }
 
   @WithAccessId(userName = "admin")
@@ -970,7 +970,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     List<TaskSummary> results =
         taskService.createTaskQuery().attachmentClassificationKeyLike("%10102").list();
     assertEquals(1, results.size());
-    assertEquals("TKI:000000000000000000000000000000000002", results.get(0).getTaskId());
+    assertEquals("TKI:000000000000000000000000000000000002", results.get(0).getId());
   }
 
   @WithAccessId(userName = "admin")
@@ -983,7 +983,7 @@ class QueryTasksAccTest extends AbstractAccTest {
             .attachmentClassificationIdIn("CLI:000000000000000000000000000000000002")
             .list();
     assertEquals(1, results.size());
-    assertEquals("TKI:000000000000000000000000000000000001", results.get(0).getTaskId());
+    assertEquals("TKI:000000000000000000000000000000000001", results.get(0).getId());
   }
 
   @WithAccessId(userName = "admin")
@@ -1017,8 +1017,8 @@ class QueryTasksAccTest extends AbstractAccTest {
             .orderByWorkbasketId(DESCENDING)
             .list();
     assertEquals(2, results.size());
-    assertEquals("TKI:000000000000000000000000000000000001", results.get(0).getTaskId());
-    assertEquals("TKI:000000000000000000000000000000000011", results.get(1).getTaskId());
+    assertEquals("TKI:000000000000000000000000000000000001", results.get(0).getId());
+    assertEquals("TKI:000000000000000000000000000000000011", results.get(1).getId());
   }
 
   @WithAccessId(userName = "admin")
@@ -1273,9 +1273,9 @@ class QueryTasksAccTest extends AbstractAccTest {
                 "TKI:000000000000000000000000000000000012")
             .orderByAttachmentClassificationId(ASCENDING)
             .list();
-    assertEquals("TKI:000000000000000000000000000000000011", results.get(0).getTaskId());
+    assertEquals("TKI:000000000000000000000000000000000011", results.get(0).getId());
     assertEquals(
-        "TKI:000000000000000000000000000000000010", results.get(results.size() - 1).getTaskId());
+        "TKI:000000000000000000000000000000000010", results.get(results.size() - 1).getId());
   }
 
   @WithAccessId(userName = "admin")
@@ -1291,9 +1291,9 @@ class QueryTasksAccTest extends AbstractAccTest {
                 "TKI:000000000000000000000000000000000012")
             .orderByAttachmentClassificationId(DESCENDING)
             .list();
-    assertEquals("TKI:000000000000000000000000000000000010", results.get(0).getTaskId());
+    assertEquals("TKI:000000000000000000000000000000000010", results.get(0).getId());
     assertEquals(
-        "TKI:000000000000000000000000000000000011", results.get(results.size() - 1).getTaskId());
+        "TKI:000000000000000000000000000000000011", results.get(results.size() - 1).getId());
   }
 
   @WithAccessId(userName = "admin")
@@ -1311,9 +1311,9 @@ class QueryTasksAccTest extends AbstractAccTest {
             .orderByAttachmentClassificationKey(ASCENDING)
             .list();
 
-    assertEquals("TKI:000000000000000000000000000000000010", results.get(0).getTaskId());
+    assertEquals("TKI:000000000000000000000000000000000010", results.get(0).getId());
     assertEquals(
-        "TKI:000000000000000000000000000000000012", results.get(results.size() - 1).getTaskId());
+        "TKI:000000000000000000000000000000000012", results.get(results.size() - 1).getId());
   }
 
   @WithAccessId(userName = "admin")
@@ -1331,9 +1331,9 @@ class QueryTasksAccTest extends AbstractAccTest {
             .orderByAttachmentClassificationKey(DESCENDING)
             .list();
 
-    assertEquals("TKI:000000000000000000000000000000000012", results.get(0).getTaskId());
+    assertEquals("TKI:000000000000000000000000000000000012", results.get(0).getId());
     assertEquals(
-        "TKI:000000000000000000000000000000000010", results.get(results.size() - 1).getTaskId());
+        "TKI:000000000000000000000000000000000010", results.get(results.size() - 1).getId());
   }
 
   @WithAccessId(userName = "admin")
@@ -1351,9 +1351,9 @@ class QueryTasksAccTest extends AbstractAccTest {
             .orderByAttachmentReference(DESCENDING)
             .list();
 
-    assertEquals("TKI:000000000000000000000000000000000012", results.get(0).getTaskId());
+    assertEquals("TKI:000000000000000000000000000000000012", results.get(0).getId());
     assertEquals(
-        "TKI:000000000000000000000000000000000010", results.get(results.size() - 1).getTaskId());
+        "TKI:000000000000000000000000000000000010", results.get(results.size() - 1).getId());
   }
 
   @WithAccessId(userName = "admin")
@@ -1372,9 +1372,9 @@ class QueryTasksAccTest extends AbstractAccTest {
             .orderByAttachmentReference(DESCENDING)
             .list();
 
-    assertEquals("TKI:000000000000000000000000000000000012", results.get(0).getTaskId());
+    assertEquals("TKI:000000000000000000000000000000000012", results.get(0).getId());
     assertEquals(
-        "TKI:000000000000000000000000000000000010", results.get(results.size() - 1).getTaskId());
+        "TKI:000000000000000000000000000000000010", results.get(results.size() - 1).getId());
   }
 
   @WithAccessId(userName = "admin")
@@ -1427,7 +1427,7 @@ class QueryTasksAccTest extends AbstractAccTest {
             .list();
     assertThat(results.size(), equalTo(10));
 
-    String[] ids = results.stream().map(TaskSummary::getTaskId).toArray(String[]::new);
+    String[] ids = results.stream().map(TaskSummary::getId).toArray(String[]::new);
 
     List<TaskSummary> result2 = taskService.createTaskQuery().idIn(ids).list();
     assertThat(result2.size(), equalTo(10));
@@ -1447,7 +1447,7 @@ class QueryTasksAccTest extends AbstractAccTest {
             .list();
     assertThat(results.size(), equalTo(10));
 
-    String[] ids = results.stream().map(TaskSummary::getTaskId).toArray(String[]::new);
+    String[] ids = results.stream().map(TaskSummary::getId).toArray(String[]::new);
 
     List<TaskSummary> result2 = taskService.createTaskQuery().idIn(ids).list();
     assertThat(result2.size(), equalTo(10));

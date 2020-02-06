@@ -334,9 +334,9 @@ class CallbackStateAccTest extends AbstractAccTest {
     List<TaskSummary> claimedTasks =
         taskService.createTaskQuery().stateIn(TaskState.CLAIMED).list();
     assertTrue(claimedTasks.size() > 10);
-    taskService.forceCompleteTask(claimedTasks.get(0).getTaskId());
-    taskService.forceCompleteTask(claimedTasks.get(1).getTaskId());
-    taskService.forceCompleteTask(claimedTasks.get(2).getTaskId());
+    taskService.forceCompleteTask(claimedTasks.get(0).getId());
+    taskService.forceCompleteTask(claimedTasks.get(1).getId());
+    taskService.forceCompleteTask(claimedTasks.get(2).getId());
 
     // now we should have several completed tasks with callback state NONE.
     // let's set it to CALLBACK_PROCESSING_REQUIRED
@@ -350,9 +350,9 @@ class CallbackStateAccTest extends AbstractAccTest {
     assertFalse(bulkResultCompleted.containsErrors());
 
     // now complete some additional tasks
-    taskService.forceCompleteTask(claimedTasks.get(3).getTaskId());
-    taskService.forceCompleteTask(claimedTasks.get(4).getTaskId());
-    taskService.forceCompleteTask(claimedTasks.get(5).getTaskId());
+    taskService.forceCompleteTask(claimedTasks.get(3).getId());
+    taskService.forceCompleteTask(claimedTasks.get(4).getId());
+    taskService.forceCompleteTask(claimedTasks.get(5).getId());
 
     long numberOfCompletedTasksAtStartOfTest = completedTasks.size();
     // now lets retrieve those completed tasks that have callback_processing_required
