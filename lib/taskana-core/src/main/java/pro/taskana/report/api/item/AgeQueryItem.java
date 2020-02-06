@@ -1,4 +1,4 @@
-package pro.taskana.report.internal.item;
+package pro.taskana.report.api.item;
 
 import pro.taskana.report.api.structure.QueryItem;
 

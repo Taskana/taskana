@@ -11,11 +11,11 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.classification.api.ClassificationQuery;
 import pro.taskana.classification.api.ClassificationQueryColumnName;
 import pro.taskana.classification.api.ClassificationSummary;
+import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
-import pro.taskana.common.internal.util.LoggerUtils;
 
 /**
  * Implementation of ClassificationQuery interface.

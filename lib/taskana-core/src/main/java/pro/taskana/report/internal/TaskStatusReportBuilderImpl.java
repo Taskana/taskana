@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.report.api.TaskStatusReport;
-import pro.taskana.report.internal.item.TaskQueryItem;
+import pro.taskana.report.api.item.TaskQueryItem;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.TaskanaRole;
 

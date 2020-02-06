@@ -1,12 +1,12 @@
-package pro.taskana.report.internal.header;
+package pro.taskana.report.api.header;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
+import pro.taskana.report.api.item.AgeQueryItem;
 import pro.taskana.report.api.structure.ColumnHeader;
-import pro.taskana.report.internal.item.AgeQueryItem;
 
 /**
  * A TimeIntervalColumnHeader has a lower and an upper age limit which subdivide the count of tasks

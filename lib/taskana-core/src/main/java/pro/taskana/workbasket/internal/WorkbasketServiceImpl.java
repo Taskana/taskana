@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.BulkOperationResults;
+import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
@@ -21,7 +22,6 @@ import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.common.internal.util.IdGenerator;
-import pro.taskana.common.internal.util.LoggerUtils;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.TaskanaRole;
 import pro.taskana.workbasket.api.Workbasket;

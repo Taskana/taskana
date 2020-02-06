@@ -7,7 +7,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 
-import pro.taskana.common.internal.util.LoggerUtils;
+import pro.taskana.common.api.LoggerUtils;
 
 /** Represents a group with a name and a set of members. */
 public class GroupPrincipal implements Group {

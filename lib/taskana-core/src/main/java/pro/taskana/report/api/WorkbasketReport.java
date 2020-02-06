@@ -4,10 +4,10 @@ import java.util.List;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.report.api.header.TimeIntervalColumnHeader;
+import pro.taskana.report.api.item.MonitorQueryItem;
 import pro.taskana.report.api.structure.Report;
 import pro.taskana.report.internal.CombinedClassificationFilter;
-import pro.taskana.report.internal.header.TimeIntervalColumnHeader;
-import pro.taskana.report.internal.item.MonitorQueryItem;
 
 /**
  * A WorkbasketReport contains the total numbers of tasks of the respective workbasket as well as
