@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-import pro.taskana.common.internal.util.LoggerUtils;
+import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.report.api.structure.QueryItem;
 import pro.taskana.report.api.structure.Report;
 import pro.taskana.report.api.structure.Row;

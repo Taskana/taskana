@@ -29,10 +29,10 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.report.api.ClassificationReport;
 import pro.taskana.report.api.ClassificationReport.DetailedClassificationReport;
+import pro.taskana.report.api.header.TimeIntervalColumnHeader;
+import pro.taskana.report.api.item.DetailedMonitorQueryItem;
+import pro.taskana.report.api.item.MonitorQueryItem;
 import pro.taskana.report.api.row.FoldableRow;
-import pro.taskana.report.internal.header.TimeIntervalColumnHeader;
-import pro.taskana.report.internal.item.DetailedMonitorQueryItem;
-import pro.taskana.report.internal.item.MonitorQueryItem;
 import pro.taskana.task.api.CustomField;
 import pro.taskana.task.api.TaskState;
 

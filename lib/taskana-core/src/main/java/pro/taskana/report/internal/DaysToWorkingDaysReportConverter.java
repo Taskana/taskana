@@ -6,10 +6,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.internal.util.DaysToWorkingDaysConverter;
-import pro.taskana.common.internal.util.LoggerUtils;
-import pro.taskana.report.internal.header.TimeIntervalColumnHeader;
+import pro.taskana.report.api.header.TimeIntervalColumnHeader;
 
 /**
  * The DaysToWorkingDaysReportConverter provides a method to convert an age in days into an age in

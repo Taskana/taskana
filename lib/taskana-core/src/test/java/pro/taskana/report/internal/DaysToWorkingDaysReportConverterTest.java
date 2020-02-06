@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.internal.util.DaysToWorkingDaysConverter;
-import pro.taskana.report.internal.header.TimeIntervalColumnHeader;
+import pro.taskana.report.api.header.TimeIntervalColumnHeader;
 
 /** Test for the DaysToWorkingDaysReportConverter. */
 class DaysToWorkingDaysReportConverterTest {

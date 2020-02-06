@@ -4,10 +4,10 @@ import java.util.List;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.report.api.header.TimeIntervalColumnHeader;
+import pro.taskana.report.api.item.TimestampQueryItem;
 import pro.taskana.report.api.row.TimestampRow;
 import pro.taskana.report.api.structure.Report;
-import pro.taskana.report.internal.header.TimeIntervalColumnHeader;
-import pro.taskana.report.internal.item.TimestampQueryItem;
 
 /** A {@link TimestampReport} displays created and competed tasks for a specific dates. */
 public class TimestampReport extends Report<TimestampQueryItem, TimeIntervalColumnHeader> {

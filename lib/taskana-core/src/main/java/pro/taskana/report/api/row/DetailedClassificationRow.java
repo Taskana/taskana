@@ -1,8 +1,8 @@
 package pro.taskana.report.api.row;
 
 import pro.taskana.report.api.ClassificationReport;
+import pro.taskana.report.api.item.DetailedMonitorQueryItem;
 import pro.taskana.report.api.structure.Row;
-import pro.taskana.report.internal.item.DetailedMonitorQueryItem;
 
 /**
  * Represents a single Row inside {@link ClassificationReport.DetailedClassificationReport}. The

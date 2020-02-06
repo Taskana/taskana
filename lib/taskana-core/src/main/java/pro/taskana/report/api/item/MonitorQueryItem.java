@@ -1,4 +1,4 @@
-package pro.taskana.report.internal.item;
+package pro.taskana.report.api.item;
 
 /**
  * The MonitorQueryItem entity contains the number of tasks for a key (e.g. workbasketKey) and age

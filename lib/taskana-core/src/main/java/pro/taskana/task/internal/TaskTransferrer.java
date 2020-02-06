@@ -11,13 +11,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.BulkOperationResults;
+import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.InvalidStateException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.security.CurrentUserContext;
-import pro.taskana.common.internal.util.LoggerUtils;
 import pro.taskana.history.api.events.task.TransferredEvent;
 import pro.taskana.history.internal.HistoryEventProducer;
 import pro.taskana.task.api.Task;
