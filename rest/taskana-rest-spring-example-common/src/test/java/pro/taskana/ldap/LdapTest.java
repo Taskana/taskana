@@ -1,6 +1,6 @@
 package pro.taskana.ldap;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,8 @@ import pro.taskana.rest.resource.AccessIdResource;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
     classes = RestConfiguration.class,
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    properties = "spring.main.allow-bean-definition-overriding=true")
 class LdapTest {
 
   @Autowired private LdapClient ldapClient;
@@ -30,7 +31,7 @@ class LdapTest {
     if (ldapClient.useLdap()) {
       List<AccessIdResource> usersAndGroups = ldapClient.searchUsersAndGroups("ser0");
       System.out.println("#### found " + LoggerUtils.listToString(usersAndGroups));
-      assertEquals(50, usersAndGroups.size());
+      assertThat(usersAndGroups.size()).isEqualTo(50);
     }
   }
 }

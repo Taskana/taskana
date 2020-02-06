@@ -1,7 +1,6 @@
 package pro.taskana.jobs;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Instant;
@@ -38,11 +37,13 @@ import pro.taskana.task.api.Task;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
     classes = RestConfiguration.class,
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    properties = "spring.main.allow-bean-definition-overriding=true")
 class AsyncUpdateJobIntTest {
 
   private static final String CLASSIFICATION_ID = "CLI:100000000000000000000000000000000003";
 
+  @SuppressWarnings("checkstyle:DeclarationOrder")
   static RestTemplate template;
 
   @Autowired ClassificationResourceAssembler classificationResourceAssembler;
@@ -69,9 +70,9 @@ class AsyncUpdateJobIntTest {
             new HttpEntity<String>(restHelper.getHeaders()),
             ParameterizedTypeReference.forType(ClassificationResource.class));
 
-    assertNotNull(response.getBody());
+    assertThat(response.getBody()).isNotNull();
     ClassificationResource classification = response.getBody();
-    assertNotNull(classification.getLink(Link.REL_SELF));
+    assertThat(classification.getLink(Link.REL_SELF)).isNotNull();
 
     // 2nd step: modify classification and trigger update
     classification.removeLinks();
@@ -95,13 +96,13 @@ class AsyncUpdateJobIntTest {
             new HttpEntity<String>(restHelper.getHeaders()),
             ParameterizedTypeReference.forType(ClassificationResource.class));
 
-    assertNotNull(repeatedResponse.getBody());
+    assertThat(repeatedResponse.getBody()).isNotNull();
 
     ClassificationResource modifiedClassificationResource = repeatedResponse.getBody();
     Classification modifiedClassification =
         classificationResourceAssembler.toModel(modifiedClassificationResource);
 
-    assertFalse(before.isAfter(modifiedClassification.getModified()));
+    assertThat(before).isBefore(modifiedClassification.getModified());
 
     List<String> affectedTasks =
         new ArrayList<>(
@@ -162,7 +163,6 @@ class AsyncUpdateJobIntTest {
     Task task = taskResourceAssembler.toModel(taskResource);
 
     Instant modified = task.getModified();
-    boolean isAfterOrEquals = before.isAfter(modified) || before.equals(modified);
-    assertFalse("Task " + task.getId() + " has not been refreshed.", isAfterOrEquals);
+    assertThat(before).as("Task " + task.getId() + " has not been refreshed.").isBefore(modified);
   }
 }

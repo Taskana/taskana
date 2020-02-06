@@ -20,5 +20,6 @@ import pro.taskana.rest.RestConfiguration;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
     classes = RestConfiguration.class,
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    properties = "spring.main.allow-bean-definition-overriding=true")
 public @interface TaskanaSpringBootTest {}
