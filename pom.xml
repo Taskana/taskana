@@ -50,13 +50,14 @@
 		<version.sonatype>1.6.8</version.sonatype>
 
 		<!-- spring dependencies -->
-		<version.spring>5.0.5.RELEASE</version.spring>
+		<version.spring>5.2.3.RELEASE</version.spring>
+        <version.spring.security>5.2.1.RELEASE</version.spring.security>
 		<version.spring.core>2.0.0.RELEASE</version.spring.core>
-		<version.spring.boot>2.0.2.RELEASE</version.spring.boot>
+		<version.spring.boot>2.2.4.RELEASE</version.spring.boot>
 		<version.spring.restdocs>2.0.2.RELEASE</version.spring.restdocs>
 		<version.spring.mybatis>2.0.3</version.spring.mybatis>
-		<version.spring.ldap>2.3.2.RELEASE</version.spring.ldap>
 		<version.spring.hateos>0.24.0.RELEASE</version.spring.hateos>
+        <version.spring.ldap>2.3.2.RELEASE</version.spring.ldap>
 
 		<!-- wildfly dependencies -->
 		<version.wildfly>11.0.0.Final</version.wildfly>
@@ -72,7 +73,7 @@
 		<version.assertj>3.15.0</version.assertj>
 		<version.junit.jupiter>5.6.0</version.junit.jupiter>
 		<version.log4j>2.13.0</version.log4j>
-		<version.archunit>0.13.1</version.archunit>
+		<version.archunit>0.13.0</version.archunit>
 		<version.mockito>3.2.4</version.mockito>
 		<version.junit.mockito>3.2.4</version.junit.mockito>
     <!-- byte buddy 1.9.7+ is needed to solve dependency errors with spring mock tests see LdapClientTest -->
@@ -87,7 +88,7 @@
 		<!-- database driver versions -->
 		<version.h2>1.4.200</version.h2>
 		<version.db2>11.1.1.1</version.db2>
-		<version.postgres>42.2.10</version.postgres>
+		<version.postgres>42.2.9</version.postgres>
 		<!-- used by jacoco to collect coverage -->
 		<argLine></argLine>
 	</properties>

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.Resources;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
@@ -121,7 +122,7 @@ public class WorkbasketController extends AbstractPagingController {
     return response;
   }
 
-  @GetMapping(path = Mapping.URL_WORKBASKET_ID)
+  @GetMapping(path = Mapping.URL_WORKBASKET_ID, produces = MediaTypes.HAL_JSON_UTF8_VALUE)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<WorkbasketResource> getWorkbasket(
       @PathVariable(value = "workbasketId") String workbasketId)
@@ -308,6 +309,7 @@ public class WorkbasketController extends AbstractPagingController {
           throws WorkbasketNotFoundException, NotAuthorizedException {
     LOGGER.debug(
         "Entry to removeDistributionTargetForWorkbasketId(workbasketId= {})", targetWorkbasketId);
+
     List<WorkbasketSummary> sourceWorkbaskets =
         workbasketService.getDistributionSources(targetWorkbasketId);
     for (WorkbasketSummary source : sourceWorkbaskets) {

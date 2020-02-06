@@ -74,4 +74,5 @@ public class RestConfiguration {
   public HandlerInstantiator handlerInstantiator(ApplicationContext context) {
     return new SpringHandlerInstantiator(context.getAutowireCapableBeanFactory());
   }
+
 }

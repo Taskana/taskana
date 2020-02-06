@@ -1,12 +1,7 @@
 package pro.taskana;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -45,6 +40,7 @@ import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
+import pro.taskana.workbasket.api.exceptions.WorkbasketInUseException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.internal.WorkbasketImpl;
 
@@ -52,12 +48,12 @@ import pro.taskana.workbasket.internal.WorkbasketImpl;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
     classes = TaskanaConfigTestApplication.class,
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    properties = "spring.main.allow-bean-definition-overriding=true")
 @ActiveProfiles({"inmemorydb", "dev"})
 @Import({TransactionalJobsConfiguration.class})
 class TaskanaTransactionIntTest {
 
-  private static final int POOL_TIME_TO_WAIT = 50;
   @Autowired TaskanaTransactionProvider<Object> springTransactionProvider;
   @Autowired private TestRestTemplate restTemplate;
   @Autowired private DataSource dataSource;
@@ -75,7 +71,7 @@ class TaskanaTransactionIntTest {
   @Test
   void testTaskanaSchema() {
     ResponseEntity<String> responseEntity = restTemplate.getForEntity("/schema", String.class);
-    assertThat(responseEntity.getBody(), is("TASKANA"));
+    assertThat(responseEntity.getBody()).isEqualTo("TASKANA");
   }
 
   @Test
@@ -84,7 +80,7 @@ class TaskanaTransactionIntTest {
 
     ResponseEntity<String> responseEntity = restTemplate.getForEntity("/transaction", String.class);
     System.err.println("response: " + responseEntity.getBody());
-    assertThat(responseEntity.getBody(), containsString("workbaskets: 1"));
+    assertThat(responseEntity.getBody()).containsSequence("workbaskets: 1");
 
     assertAfter(1, 0);
   }
@@ -96,7 +92,7 @@ class TaskanaTransactionIntTest {
     ResponseEntity<String> responseEntity =
         restTemplate.getForEntity("/transaction?rollback={rollback}", String.class, "true");
     System.err.println("result: " + responseEntity.getBody());
-    assertThat(responseEntity.getBody(), containsString("workbaskets: 1"));
+    assertThat(responseEntity.getBody()).containsSequence("workbaskets: 1");
 
     assertAfter(0, 0);
   }
@@ -108,7 +104,7 @@ class TaskanaTransactionIntTest {
     ResponseEntity<String> responseEntity =
         restTemplate.getForEntity("/transaction-many", String.class);
     System.err.println("response: " + responseEntity.getBody());
-    assertThat(responseEntity.getBody(), containsString("workbaskets: 3"));
+    assertThat(responseEntity.getBody()).containsSequence("workbaskets: 3");
 
     assertAfter(3, 0);
   }
@@ -120,7 +116,7 @@ class TaskanaTransactionIntTest {
     ResponseEntity<String> responseEntity =
         restTemplate.getForEntity("/transaction-many?rollback={rollback}", String.class, "true");
     System.err.println("result: " + responseEntity.getBody());
-    assertThat(responseEntity.getBody(), containsString("workbaskets: 3"));
+    assertThat(responseEntity.getBody()).containsSequence("workbaskets: 3");
 
     assertAfter(0, 0);
   }
@@ -131,8 +127,8 @@ class TaskanaTransactionIntTest {
 
     ResponseEntity<String> responseEntity = restTemplate.getForEntity("/customdb", String.class);
     System.err.println("response: " + responseEntity.getBody());
-    assertThat(responseEntity.getBody(), containsString("workbaskets: 2"));
-    assertThat(responseEntity.getBody(), containsString("tests: 2"));
+    assertThat(responseEntity.getBody()).containsSequence("workbaskets: 2");
+    assertThat(responseEntity.getBody()).containsSequence("tests: 2");
 
     assertAfter(2, 2);
   }
@@ -144,8 +140,8 @@ class TaskanaTransactionIntTest {
     ResponseEntity<String> responseEntity =
         restTemplate.getForEntity("/customdb?rollback={rollback}", String.class, "true");
     System.err.println("response: " + responseEntity.getBody());
-    assertThat(responseEntity.getBody(), containsString("workbaskets: 2"));
-    assertThat(responseEntity.getBody(), containsString("tests: 2"));
+    assertThat(responseEntity.getBody()).containsSequence("workbaskets: 2");
+    assertThat(responseEntity.getBody()).containsSequence("tests: 2");
 
     assertAfter(0, 0);
   }
@@ -158,19 +154,19 @@ class TaskanaTransactionIntTest {
     final TaskanaEngineImpl taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
     try (Connection connection = dataSource.getConnection()) {
 
-      assertNotEquals(connection.getSchema(), "PUBLIC");
+      assertThat(connection.getSchema()).isNotEqualTo("PUBLIC");
       jdbcTemplate.execute("INSERT INTO CUSTOMDB.TEST VALUES ('1', 'test')");
       jdbcTemplate.execute("INSERT INTO CUSTOMDB.TEST VALUES ('2', 'test2')");
       int result = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM CUSTOMDB.TEST", Integer.class);
-      assertEquals(2, result);
+      assertThat(result).isEqualTo(2);
       Workbasket wbCreated =
           taskanaEngine
               .getWorkbasketService()
               .createWorkbasket(createWorkBasket("key1", "workbasket1"));
       Workbasket wb = taskanaEngineImpl.getWorkbasketService().getWorkbasket(wbCreated.getId());
-      assertNotNull(wb);
+      assertThat(wb).isNotNull();
       result = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM CUSTOMDB.TEST", Integer.class);
-      assertEquals(2, result);
+      assertThat(result).isEqualTo(2);
     }
   }
 
@@ -189,8 +185,8 @@ class TaskanaTransactionIntTest {
       taskService.createTask(createTask("key2", "TEST"));
       taskService.createTask(createTask("key3", "TEST"));
 
-      assertEquals(workbasketService.createWorkbasketQuery().count(), 3);
-      assertEquals(taskService.createTaskQuery().count(), 3);
+      assertThat(workbasketService.createWorkbasketQuery().count()).isEqualTo(3);
+      assertThat(taskService.createTaskQuery().count()).isEqualTo(3);
 
       List<TaskSummary> tasks =
           taskService
@@ -216,27 +212,19 @@ class TaskanaTransactionIntTest {
           new TaskCleanupJob(taskanaEngine, springTransactionProvider, null);
       taskCleanupJob.run();
 
-      tasks =
-          taskService
-              .createTaskQuery()
-              .workbasketKeyDomainIn(new KeyDomain("key3", "DOMAIN_A"))
-              .list();
-      taskService.claim(tasks.get(0).getId());
-      taskService.completeTask(tasks.get(0).getId());
-
-      try {
+      assertThatThrownBy(() ->
         workbasketService.deleteWorkbasket(
-            workbasketService.getWorkbasket("key3", "DOMAIN_A").getId());
-      } catch (TaskanaException ex) {
-        assertEquals(ex.getMessage().contains("contains non-completed tasks"), true);
-      }
+          workbasketService.getWorkbasket("key3", "DOMAIN_A").getId()))
+          .isInstanceOf(WorkbasketInUseException.class)
+          .hasMessageContaining("contains 1 non-completed tasks");
 
       WorkbasketCleanupJob job =
           new WorkbasketCleanupJob(taskanaEngine, springTransactionProvider, null);
       job.run();
 
-      assertNull(workbasketService.getWorkbasket("key1", "DOMAIN_A"));
-      assertNull(workbasketService.getWorkbasket("key2", "DOMAIN_A"));
+      assertThat(workbasketService.getWorkbasket("key1", "DOMAIN_A")).isNull();
+      assertThat(workbasketService.getWorkbasket("key2", "DOMAIN_A")).isNull();
+      assertThat(workbasketService.getWorkbasket("key3", "DOMAIN_A")).isNotNull();
 
     } catch (TaskanaException e) {
       e.printStackTrace();
@@ -265,14 +253,12 @@ class TaskanaTransactionIntTest {
 
   private void assertWorkbaskets(String assertion, int value) {
     int workbaskets = getWorkbaskets();
-    System.err.println(assertion + " workbaskets: " + workbaskets);
-    assertThat(workbaskets, is(value));
+    assertThat(workbaskets).isEqualTo(value);
   }
 
   private void assertCustomdbTests(String assertion, int value) {
     int tests = getCustomdbTests();
-    System.err.println(assertion + " tests: " + tests);
-    assertThat(tests, is(value));
+    assertThat(tests).isEqualTo(value);
   }
 
   private int getWorkbaskets() {
