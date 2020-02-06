@@ -178,7 +178,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
     }
 
     List<String> tasksIdsToBeDeleted =
-        tasksToBeDeleted.stream().map(task -> task.getTaskId()).collect(Collectors.toList());
+        tasksToBeDeleted.stream().map(task -> task.getId()).collect(Collectors.toList());
     BulkOperationResults<String, TaskanaException> results =
         taskanaEngineImpl.getTaskService().deleteTasks(tasksIdsToBeDeleted);
     LOGGER.debug("{} tasks deleted.", tasksIdsToBeDeleted.size() - results.getFailedIds().size());

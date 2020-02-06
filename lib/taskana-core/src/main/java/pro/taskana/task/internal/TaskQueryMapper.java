@@ -137,7 +137,7 @@ public interface TaskQueryMapper {
           + "</script>")
   @Results(
       value = {
-        @Result(property = "taskId", column = "ID"),
+        @Result(property = "id", column = "ID"),
         @Result(property = "externalId", column = "EXTERNAL_ID"),
         @Result(property = "created", column = "CREATED"),
         @Result(property = "claimed", column = "CLAIMED"),
@@ -377,7 +377,7 @@ public interface TaskQueryMapper {
           + "</script>")
   @Results(
       value = {
-        @Result(property = "taskId", column = "ID"),
+        @Result(property = "id", column = "ID"),
         @Result(property = "externalId", column = "EXTERNAL_ID"),
         @Result(property = "created", column = "CREATED"),
         @Result(property = "claimed", column = "CLAIMED"),

@@ -1,6 +1,5 @@
 package pro.taskana.task.internal;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,203 +8,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import pro.taskana.classification.api.ClassificationSummary;
 import pro.taskana.classification.internal.ClassificationSummaryImpl;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.task.api.Attachment;
 import pro.taskana.task.api.AttachmentSummary;
 import pro.taskana.task.api.CallbackState;
-import pro.taskana.task.api.ObjectReference;
 import pro.taskana.task.api.Task;
-import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.TaskSummary;
-import pro.taskana.workbasket.api.WorkbasketSummary;
 import pro.taskana.workbasket.internal.WorkbasketSummaryImpl;
 
 /** Task entity. */
-public class TaskImpl implements Task {
+public class TaskImpl extends TaskSummaryImpl implements Task {
 
-  private static final String ARGUMENT_STR = "Argument '";
-  private static final String NOT_A_VALID_NUMBER_GET =
-      "' of getCustomAttribute() cannot be converted to a number between 1 and 16";
   private static final String NOT_A_VALID_NUMBER_SET =
-      "' of setCustomAttribute() cannot be converted to a number between 1 and 16";
-  private String id;
-  private String externalId;
-  private Instant created;
-  private Instant claimed;
-  private Instant completed;
-  private Instant modified;
-  private Instant planned;
-  private Instant due;
-  private String name;
-  private String creator;
-  private String description;
-  private String note;
-  private int priority;
-  private TaskState state;
-  private ClassificationSummary classificationSummary;
-  private WorkbasketSummary workbasketSummary;
-  private String businessProcessId;
-  private String parentBusinessProcessId;
-  private String owner;
-  private ObjectReference primaryObjRef;
-  private boolean isRead;
-  private boolean isTransferred;
+      "Argument '%s' of setCustomAttribute() cannot be converted to a number between 1 and 16";
   // All objects have to be serializable
   private Map<String, String> customAttributes = Collections.emptyMap();
   private Map<String, String> callbackInfo = Collections.emptyMap();
   private CallbackState callbackState;
   private List<Attachment> attachments = new ArrayList<>();
-  private String custom1;
-  private String custom2;
-  private String custom3;
-  private String custom4;
-  private String custom5;
-  private String custom6;
-  private String custom7;
-  private String custom8;
-  private String custom9;
-  private String custom10;
-  private String custom11;
-  private String custom12;
-  private String custom13;
-  private String custom14;
-  private String custom15;
-  private String custom16;
 
   TaskImpl() {}
-
-  @Override
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  @Override
-  public String getExternalId() {
-    return externalId;
-  }
-
-  @Override
-  public void setExternalId(String externalId) {
-    this.externalId = externalId;
-  }
-
-  @Override
-  public String getCreator() {
-    return creator;
-  }
-
-  @Override
-  public Instant getCreated() {
-    return created;
-  }
-
-  public void setCreated(Instant created) {
-    this.created = created;
-  }
-
-  @Override
-  public Instant getClaimed() {
-    return claimed;
-  }
-
-  public void setClaimed(Instant claimed) {
-    this.claimed = claimed;
-  }
-
-  @Override
-  public Instant getCompleted() {
-    return completed;
-  }
-
-  public void setCompleted(Instant completed) {
-    this.completed = completed;
-  }
-
-  @Override
-  public Instant getModified() {
-    return modified;
-  }
-
-  public void setModified(Instant modified) {
-    this.modified = modified;
-  }
-
-  @Override
-  public Instant getPlanned() {
-    return planned;
-  }
-
-  @Override
-  public void setPlanned(Instant planned) {
-    this.planned = planned;
-  }
-
-  @Override
-  public Instant getDue() {
-    return due;
-  }
-
-  @Override
-  public void setDue(Instant due) {
-    this.due = due;
-  }
-
-  @Override
-  public String getName() {
-    return name;
-  }
-
-  @Override
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  @Override
-  public String getDescription() {
-    return description;
-  }
-
-  @Override
-  public void setDescription(String description) {
-    this.description = description;
-  }
-
-  @Override
-  public int getPriority() {
-    return priority;
-  }
-
-  public void setPriority(int priority) {
-    this.priority = priority;
-  }
-
-  @Override
-  public TaskState getState() {
-    return state;
-  }
-
-  public void setState(TaskState state) {
-    this.state = state;
-  }
-
-  @Override
-  public ClassificationSummary getClassificationSummary() {
-    return classificationSummary;
-  }
-
-  public void setClassificationSummary(ClassificationSummary classificationSummary) {
-    this.classificationSummary = classificationSummary;
-  }
-
-  public void setCreator(String creator) {
-    this.creator = creator;
-  }
 
   public CallbackState getCallbackState() {
     return callbackState;
@@ -241,85 +64,6 @@ public class TaskImpl implements Task {
   }
 
   @Override
-  public WorkbasketSummary getWorkbasketSummary() {
-    return workbasketSummary;
-  }
-
-  public void setWorkbasketSummary(WorkbasketSummary workbasket) {
-    this.workbasketSummary = workbasket;
-  }
-
-  @Override
-  public String getDomain() {
-    return workbasketSummary == null ? null : workbasketSummary.getDomain();
-  }
-
-  public void setDomain(String domain) {
-    if (workbasketSummary == null) {
-      workbasketSummary = new WorkbasketSummaryImpl();
-    }
-    ((WorkbasketSummaryImpl) this.workbasketSummary).setDomain(domain);
-  }
-
-  @Override
-  public String getBusinessProcessId() {
-    return businessProcessId;
-  }
-
-  @Override
-  public void setBusinessProcessId(String businessProcessId) {
-    this.businessProcessId = businessProcessId;
-  }
-
-  @Override
-  public String getParentBusinessProcessId() {
-    return parentBusinessProcessId;
-  }
-
-  @Override
-  public void setParentBusinessProcessId(String parentBusinessProcessId) {
-    this.parentBusinessProcessId = parentBusinessProcessId;
-  }
-
-  @Override
-  public String getOwner() {
-    return owner;
-  }
-
-  @Override
-  public void setOwner(String owner) {
-    this.owner = owner;
-  }
-
-  @Override
-  public ObjectReference getPrimaryObjRef() {
-    return primaryObjRef;
-  }
-
-  @Override
-  public void setPrimaryObjRef(ObjectReference primaryObjRef) {
-    this.primaryObjRef = primaryObjRef;
-  }
-
-  @Override
-  public boolean isRead() {
-    return isRead;
-  }
-
-  public void setRead(boolean isRead) {
-    this.isRead = isRead;
-  }
-
-  @Override
-  public boolean isTransferred() {
-    return isTransferred;
-  }
-
-  public void setTransferred(boolean isTransferred) {
-    this.isTransferred = isTransferred;
-  }
-
-  @Override
   public Map<String, String> getCustomAttributes() {
     if (customAttributes == null) {
       customAttributes = new HashMap<>();
@@ -346,61 +90,13 @@ public class TaskImpl implements Task {
   }
 
   @Override
-  public String getCustomAttribute(String number) throws InvalidArgumentException {
-    int num = 0;
-    try {
-      num = Integer.parseInt(number);
-    } catch (NumberFormatException e) {
-      throw new InvalidArgumentException(
-          ARGUMENT_STR + number + NOT_A_VALID_NUMBER_GET, e.getCause());
-    }
-
-    switch (num) {
-      case 1:
-        return custom1;
-      case 2:
-        return custom2;
-      case 3:
-        return custom3;
-      case 4:
-        return custom4;
-      case 5:
-        return custom5;
-      case 6:
-        return custom6;
-      case 7:
-        return custom7;
-      case 8:
-        return custom8;
-      case 9:
-        return custom9;
-      case 10:
-        return custom10;
-      case 11:
-        return custom11;
-      case 12:
-        return custom12;
-      case 13:
-        return custom13;
-      case 14:
-        return custom14;
-      case 15:
-        return custom15;
-      case 16:
-        return custom16;
-      default:
-        throw new InvalidArgumentException(ARGUMENT_STR + number + NOT_A_VALID_NUMBER_GET);
-    }
-  }
-
-  @Override
   public void setCustomAttribute(String number, String value) throws InvalidArgumentException {
     int num = 0;
     try {
       num = Integer.parseInt(number);
     } catch (NumberFormatException e) {
       throw new InvalidArgumentException(
-          ARGUMENT_STR + number + NOT_A_VALID_NUMBER_SET, e.getCause());
+          String.format(NOT_A_VALID_NUMBER_SET, number), e.getCause());
     }
 
     switch (num) {
@@ -453,7 +149,7 @@ public class TaskImpl implements Task {
         custom16 = value;
         break;
       default:
-        throw new InvalidArgumentException(ARGUMENT_STR + number + NOT_A_VALID_NUMBER_SET);
+        throw new InvalidArgumentException(String.format(NOT_A_VALID_NUMBER_SET, number));
     }
   }
 
@@ -482,16 +178,6 @@ public class TaskImpl implements Task {
       attachments = new ArrayList<>();
     }
     return attachments;
-  }
-
-  @Override
-  public String getNote() {
-    return note;
-  }
-
-  @Override
-  public void setNote(String note) {
-    this.note = note;
   }
 
   @Override
@@ -527,7 +213,7 @@ public class TaskImpl implements Task {
     taskSummary.setCustom15(custom15);
     taskSummary.setCustom16(custom16);
     taskSummary.setDue(due);
-    taskSummary.setTaskId(id);
+    taskSummary.setId(id);
     taskSummary.setModified(modified);
     taskSummary.setName(name);
     taskSummary.setCreator(creator);
@@ -579,195 +265,14 @@ public class TaskImpl implements Task {
     }
   }
 
-  public ClassificationSummaryImpl getClassificationSummaryImpl() {
-    return (ClassificationSummaryImpl) classificationSummary;
-  }
-
-  public void setClassificationSummaryImpl(ClassificationSummaryImpl classificationSummary) {
-    setClassificationSummary(classificationSummary);
-  }
-
-  public WorkbasketSummaryImpl getWorkbasketSummaryImpl() {
-    return (WorkbasketSummaryImpl) workbasketSummary;
-  }
-
-  public void setWorkbasketSummaryImpl(WorkbasketSummaryImpl workbasketSummary) {
-    this.workbasketSummary = workbasketSummary;
-  }
-
-  public String getCustom1() {
-    return custom1;
-  }
-
-  public void setCustom1(String custom1) {
-    this.custom1 = custom1;
-  }
-
-  public String getCustom2() {
-    return custom2;
-  }
-
-  public void setCustom2(String custom2) {
-    this.custom2 = custom2;
-  }
-
-  public String getCustom3() {
-    return custom3;
-  }
-
-  public void setCustom3(String custom3) {
-    this.custom3 = custom3;
-  }
-
-  public String getCustom4() {
-    return custom4;
-  }
-
-  public void setCustom4(String custom4) {
-    this.custom4 = custom4;
-  }
-
-  public String getCustom5() {
-    return custom5;
-  }
-
-  public void setCustom5(String custom5) {
-    this.custom5 = custom5;
-  }
-
-  public String getCustom6() {
-    return custom6;
-  }
-
-  public void setCustom6(String custom6) {
-    this.custom6 = custom6;
-  }
-
-  public String getCustom7() {
-    return custom7;
-  }
-
-  public void setCustom7(String custom7) {
-    this.custom7 = custom7;
-  }
-
-  public String getCustom8() {
-    return custom8;
-  }
-
-  public void setCustom8(String custom8) {
-    this.custom8 = custom8;
-  }
-
-  public String getCustom9() {
-    return custom9;
-  }
-
-  public void setCustom9(String custom9) {
-    this.custom9 = custom9;
-  }
-
-  public String getCustom10() {
-    return custom10;
-  }
-
-  public void setCustom10(String custom10) {
-    this.custom10 = custom10;
-  }
-
-  public String getCustom11() {
-    return custom11;
-  }
-
-  public void setCustom11(String custom11) {
-    this.custom11 = custom11;
-  }
-
-  public String getCustom12() {
-    return custom12;
-  }
-
-  public void setCustom12(String custom12) {
-    this.custom12 = custom12;
-  }
-
-  public String getCustom13() {
-    return custom13;
-  }
-
-  public void setCustom13(String custom13) {
-    this.custom13 = custom13;
-  }
-
-  public String getCustom14() {
-    return custom14;
-  }
-
-  public void setCustom14(String custom14) {
-    this.custom14 = custom14;
-  }
-
-  public String getCustom15() {
-    return custom15;
-  }
-
-  public void setCustom15(String custom15) {
-    this.custom15 = custom15;
-  }
-
-  public String getCustom16() {
-    return custom16;
-  }
-
-  public void setCustom16(String custom16) {
-    this.custom16 = custom16;
+  protected boolean canEqual(Object other) {
+    return (other instanceof TaskImpl);
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(
-        id,
-        externalId,
-        created,
-        claimed,
-        completed,
-        modified,
-        planned,
-        due,
-        name,
-        creator,
-        description,
-        note,
-        priority,
-        state,
-        classificationSummary,
-        workbasketSummary,
-        businessProcessId,
-        parentBusinessProcessId,
-        owner,
-        primaryObjRef,
-        isRead,
-        isTransferred,
-        customAttributes,
-        callbackInfo,
-        callbackState,
-        attachments,
-        custom1,
-        custom2,
-        custom3,
-        custom4,
-        custom5,
-        custom6,
-        custom7,
-        custom8,
-        custom9,
-        custom10,
-        custom11,
-        custom12,
-        custom13,
-        custom14,
-        custom15,
-        custom16);
+        super.hashCode(), id, customAttributes, callbackInfo, callbackState, attachments);
   }
 
   @Override
@@ -778,49 +283,18 @@ public class TaskImpl implements Task {
     if (!(obj instanceof TaskImpl)) {
       return false;
     }
+    if (!super.equals(obj)) {
+      return false;
+    }
     TaskImpl other = (TaskImpl) obj;
-    return priority == other.priority
-        && isRead == other.isRead
-        && isTransferred == other.isTransferred
-        && Objects.equals(id, other.id)
-        && Objects.equals(externalId, other.externalId)
-        && Objects.equals(created, other.created)
-        && Objects.equals(claimed, other.claimed)
-        && Objects.equals(completed, other.completed)
-        && Objects.equals(modified, other.modified)
-        && Objects.equals(planned, other.planned)
-        && Objects.equals(due, other.due)
-        && Objects.equals(name, other.name)
-        && Objects.equals(creator, other.creator)
-        && Objects.equals(description, other.description)
-        && Objects.equals(note, other.note)
-        && state == other.state
-        && Objects.equals(classificationSummary, other.classificationSummary)
-        && Objects.equals(workbasketSummary, other.workbasketSummary)
-        && Objects.equals(businessProcessId, other.businessProcessId)
-        && Objects.equals(parentBusinessProcessId, other.parentBusinessProcessId)
-        && Objects.equals(owner, other.owner)
-        && Objects.equals(primaryObjRef, other.primaryObjRef)
+    if (!other.canEqual(this)) {
+      return false;
+    }
+    return Objects.equals(id, other.id)
         && Objects.equals(customAttributes, other.customAttributes)
         && Objects.equals(callbackInfo, other.callbackInfo)
         && callbackState == other.callbackState
-        && Objects.equals(attachments, other.attachments)
-        && Objects.equals(custom1, other.custom1)
-        && Objects.equals(custom2, other.custom2)
-        && Objects.equals(custom3, other.custom3)
-        && Objects.equals(custom4, other.custom4)
-        && Objects.equals(custom5, other.custom5)
-        && Objects.equals(custom6, other.custom6)
-        && Objects.equals(custom7, other.custom7)
-        && Objects.equals(custom8, other.custom8)
-        && Objects.equals(custom9, other.custom9)
-        && Objects.equals(custom10, other.custom10)
-        && Objects.equals(custom11, other.custom11)
-        && Objects.equals(custom12, other.custom12)
-        && Objects.equals(custom13, other.custom13)
-        && Objects.equals(custom14, other.custom14)
-        && Objects.equals(custom15, other.custom15)
-        && Objects.equals(custom16, other.custom16);
+        && Objects.equals(attachments, other.attachments);
   }
 
   @Override

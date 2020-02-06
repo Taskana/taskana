@@ -85,7 +85,7 @@ class TaskSummaryAssemblerTest {
   }
 
   void testEquality(TaskSummaryImpl taskSummary, TaskSummaryResource resource) {
-    Assert.assertEquals(taskSummary.getTaskId(), resource.getTaskId());
+    Assert.assertEquals(taskSummary.getId(), resource.getTaskId());
     Assert.assertEquals(taskSummary.getExternalId(), resource.getExternalId());
     Assert.assertEquals(
         taskSummary.getCreated() == null ? null : taskSummary.getCreated().toString(),

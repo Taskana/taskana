@@ -511,7 +511,7 @@ public class ClassificationServiceImpl implements ClassificationService {
 
     if (!taskSummaries.isEmpty()) {
       List<String> taskIds = new ArrayList<>();
-      taskSummaries.forEach(ts -> taskIds.add(ts.getTaskId()));
+      taskSummaries.forEach(ts -> taskIds.add(ts.getId()));
       taskMapper.updateClassificationCategoryOnChange(taskIds, classificationImpl.getCategory());
     }
   }

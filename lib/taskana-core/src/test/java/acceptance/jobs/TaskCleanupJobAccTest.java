@@ -71,7 +71,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
     tasks.forEach(
         item -> {
           if (item.getCompleted() == null) {
-            ids.add(item.getTaskId());
+            ids.add(item.getId());
           }
         });
     taskService.deleteTasks(ids);
