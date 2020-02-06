@@ -11,9 +11,7 @@ import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption.DoNotIncludeTests;
 import com.tngtech.archunit.lang.ArchRule;
-import java.util.Collection;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
@@ -99,7 +97,7 @@ class ArchitectureTest {
    * https://www.archunit.org/userguide/html/000_Index.html#_cycle_checks
    */
   @TestFactory
-  Collection<DynamicTest> freeOfCycles_subpackages() {
+  Stream<DynamicTest> freeOfCycles_subpackages() {
 
     Stream<String> packagesToTest =
         Stream.of(
@@ -116,54 +114,56 @@ class ArchitectureTest {
             "pro.taskana.task.internal.(*)..",
             "pro.taskana.workbasket.api.(*)..",
             "pro.taskana.workbasket.internal.(*)..");
-    return packagesToTest
-        .map(
-            p ->
-                dynamicTest(
-                    p.replaceAll(Pattern.quote("pro.taskana."), "") + " is free of cycles",
-                    () -> slices().matching(p).should().beFreeOfCycles().check(importedClasses)))
-        .collect(Collectors.toList());
+    return packagesToTest.map(
+        p ->
+            dynamicTest(
+                p.replaceAll(Pattern.quote("pro.taskana."), "") + " is free of cycles",
+                () -> slices().matching(p).should().beFreeOfCycles().check(importedClasses)));
   }
 
   @Disabled("TBD")
-  @Test
-  void commonClassesShouldNotDependOnOtherDomainClasses() {
-    ArchRule myRule =
-        noClasses()
-            .that()
-            .resideInAPackage("..common..")
-            .should()
-            .dependOnClassesThat()
-            .resideInAnyPackage(
-                "..classification..", "..history..", "..report..", "..task..", "..workbasket..");
-    myRule.check(importedClasses);
+  @TestFactory
+  Stream<DynamicTest> commonClassesShouldNotDependOnOtherDomainClasses() {
+
+    Stream<String> packagesToTest =
+        Stream.of("..workbasket..", "..report..", "..history..", "..task..", "..classification..");
+    return packagesToTest.map(
+        p ->
+            dynamicTest(
+                p.replaceAll(Pattern.quote("."), "") + " should not be used by common",
+                () ->
+                    noClasses()
+                        .that()
+                        .resideInAPackage("..common..")
+                        .should()
+                        .dependOnClassesThat()
+                        .resideInAPackage(p)
+                        .check(importedClasses)));
   }
 
   @TestFactory
-  Collection<DynamicTest> classesShouldNotDependOnReportDomainClasses() {
+  Stream<DynamicTest> classesShouldNotDependOnReportDomainClasses() {
 
     Stream<String> packagesToTest =
         Stream.of(
             "..workbasket..",
             "..history..",
             "..task..",
+            // TBD
+            // "..common..",
             "..classification..");
-    return packagesToTest
-        .map(
-            p ->
-                dynamicTest(
-                    "Domain "
-                        + p.replaceAll(Pattern.quote("."), "")
-                        + " should not depend on reports",
-                    () ->
-                        noClasses()
-                            .that()
-                            .resideInAPackage(p)
-                            .should()
-                            .dependOnClassesThat()
-                            .resideInAnyPackage("..report..")
-                            .check(importedClasses)))
-        .collect(Collectors.toList());
+    return packagesToTest.map(
+        p ->
+            dynamicTest(
+                "Domain " + p.replaceAll(Pattern.quote("."), "") + " should not depend on reports",
+                () ->
+                    noClasses()
+                        .that()
+                        .resideInAPackage(p)
+                        .should()
+                        .dependOnClassesThat()
+                        .resideInAnyPackage("..report..")
+                        .check(importedClasses)));
   }
 
   @Disabled
