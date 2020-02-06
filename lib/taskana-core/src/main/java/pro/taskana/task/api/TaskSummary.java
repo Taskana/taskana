@@ -18,7 +18,7 @@ public interface TaskSummary {
    *
    * @return taskId
    */
-  String getTaskId();
+  String getId();
 
   /**
    * Gets the external id of the task.

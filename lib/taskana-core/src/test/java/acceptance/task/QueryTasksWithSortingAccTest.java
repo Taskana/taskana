@@ -75,12 +75,12 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
 
     List<String> idsDesc =
         results.stream()
-            .map(TaskSummary::getTaskId)
+            .map(TaskSummary::getId)
             .sorted(Comparator.reverseOrder())
             .collect(Collectors.toList());
 
     for (int i = 0; i < results.size(); i++) {
-      assertEquals(idsDesc.get(i), results.get(i).getTaskId());
+      assertEquals(idsDesc.get(i), results.get(i).getId());
     }
   }
 
@@ -101,10 +101,10 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
     Assertions.assertTrue(results.size() > 2);
 
     List<String> idsAsc =
-        results.stream().map(TaskSummary::getTaskId).sorted().collect(Collectors.toList());
+        results.stream().map(TaskSummary::getId).sorted().collect(Collectors.toList());
 
     for (int i = 0; i < results.size(); i++) {
-      assertEquals(idsAsc.get(i), results.get(i).getTaskId());
+      assertEquals(idsAsc.get(i), results.get(i).getId());
     }
   }
 

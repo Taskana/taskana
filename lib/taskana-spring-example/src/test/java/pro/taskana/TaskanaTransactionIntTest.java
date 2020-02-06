@@ -197,15 +197,15 @@ class TaskanaTransactionIntTest {
               .createTaskQuery()
               .workbasketKeyDomainIn(new KeyDomain("key1", "DOMAIN_A"))
               .list();
-      taskService.claim(tasks.get(0).getTaskId());
-      taskService.completeTask(tasks.get(0).getTaskId());
+      taskService.claim(tasks.get(0).getId());
+      taskService.completeTask(tasks.get(0).getId());
       tasks =
           taskService
               .createTaskQuery()
               .workbasketKeyDomainIn(new KeyDomain("key2", "DOMAIN_A"))
               .list();
-      taskService.claim(tasks.get(0).getTaskId());
-      taskService.completeTask(tasks.get(0).getTaskId());
+      taskService.claim(tasks.get(0).getId());
+      taskService.completeTask(tasks.get(0).getId());
       workbasketService.deleteWorkbasket(
           workbasketService.getWorkbasket("key1", "DOMAIN_A").getId());
       workbasketService.deleteWorkbasket(
@@ -221,8 +221,8 @@ class TaskanaTransactionIntTest {
               .createTaskQuery()
               .workbasketKeyDomainIn(new KeyDomain("key3", "DOMAIN_A"))
               .list();
-      taskService.claim(tasks.get(0).getTaskId());
-      taskService.completeTask(tasks.get(0).getTaskId());
+      taskService.claim(tasks.get(0).getId());
+      taskService.completeTask(tasks.get(0).getId());
 
       try {
         workbasketService.deleteWorkbasket(

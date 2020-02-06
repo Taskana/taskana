@@ -18,46 +18,49 @@ import pro.taskana.workbasket.internal.WorkbasketSummaryImpl;
 /** Entity which contains the most important informations about a Task. */
 public class TaskSummaryImpl implements TaskSummary {
 
-  private String taskId;
-  private String externalId;
-  private Instant created;
-  private Instant claimed;
-  private Instant completed;
-  private Instant modified;
-  private Instant planned;
-  private Instant due;
-  private String name;
-  private String creator;
-  private String note;
-  private String description;
-  private int priority;
-  private TaskState state;
-  private ClassificationSummary classificationSummary;
-  private WorkbasketSummary workbasketSummary;
-  private String businessProcessId;
-  private String parentBusinessProcessId;
-  private String owner;
-  private ObjectReference primaryObjRef;
-  private boolean isRead;
-  private boolean isTransferred;
+  private static final String NOT_A_VALID_NUMBER_GET =
+      "Argument '%s' of getCustomAttribute() cannot be converted to a number between 1 and 16";
+
+  protected String id;
+  protected String externalId;
+  protected Instant created;
+  protected Instant claimed;
+  protected Instant completed;
+  protected Instant modified;
+  protected Instant planned;
+  protected Instant due;
+  protected String name;
+  protected String creator;
+  protected String note;
+  protected String description;
+  protected int priority;
+  protected TaskState state;
+  protected ClassificationSummary classificationSummary;
+  protected WorkbasketSummary workbasketSummary;
+  protected String businessProcessId;
+  protected String parentBusinessProcessId;
+  protected String owner;
+  protected ObjectReference primaryObjRef;
+  protected boolean isRead;
+  protected boolean isTransferred;
   // All objects have to be serializable
-  private List<AttachmentSummary> attachmentSummaries = new ArrayList<>();
-  private String custom1;
-  private String custom2;
-  private String custom3;
-  private String custom4;
-  private String custom5;
-  private String custom6;
-  private String custom7;
-  private String custom8;
-  private String custom9;
-  private String custom10;
-  private String custom11;
-  private String custom12;
-  private String custom13;
-  private String custom14;
-  private String custom15;
-  private String custom16;
+  protected List<AttachmentSummary> attachmentSummaries = new ArrayList<>();
+  protected String custom1;
+  protected String custom2;
+  protected String custom3;
+  protected String custom4;
+  protected String custom5;
+  protected String custom6;
+  protected String custom7;
+  protected String custom8;
+  protected String custom9;
+  protected String custom10;
+  protected String custom11;
+  protected String custom12;
+  protected String custom13;
+  protected String custom14;
+  protected String custom15;
+  protected String custom16;
 
   TaskSummaryImpl() {}
 
@@ -66,12 +69,12 @@ public class TaskSummaryImpl implements TaskSummary {
    * @see pro.taskana.TaskSummary#getTaskId()
    */
   @Override
-  public String getTaskId() {
-    return taskId;
+  public String getId() {
+    return id;
   }
 
-  public void setTaskId(String id) {
-    this.taskId = id;
+  public void setId(String id) {
+    this.id = id;
   }
 
   /*
@@ -378,10 +381,7 @@ public class TaskSummaryImpl implements TaskSummary {
       num = Integer.parseInt(number);
     } catch (NumberFormatException e) {
       throw new InvalidArgumentException(
-          "Argument '"
-              + number
-              + "' to getCustomAttribute cannot be converted to a number between 1 and 16",
-          e.getCause());
+          String.format(NOT_A_VALID_NUMBER_GET, number), e.getCause());
     }
 
     switch (num) {
@@ -418,10 +418,7 @@ public class TaskSummaryImpl implements TaskSummary {
       case 16:
         return custom16;
       default:
-        throw new InvalidArgumentException(
-            "Argument '"
-                + number
-                + "' to getCustomAttribute does not represent a number between 1 and 16");
+        throw new InvalidArgumentException(String.format(NOT_A_VALID_NUMBER_GET, number));
     }
   }
 
@@ -604,10 +601,14 @@ public class TaskSummaryImpl implements TaskSummary {
     this.custom16 = custom16;
   }
 
+  protected boolean canEqual(Object other) {
+    return (other instanceof TaskSummaryImpl);
+  }
+
   @Override
   public int hashCode() {
     return Objects.hash(
-        taskId,
+        id,
         externalId,
         created,
         claimed,
@@ -657,10 +658,13 @@ public class TaskSummaryImpl implements TaskSummary {
       return false;
     }
     TaskSummaryImpl other = (TaskSummaryImpl) obj;
+    if (!other.canEqual(this)) {
+      return false;
+    }
     return priority == other.priority
         && isRead == other.isRead
         && isTransferred == other.isTransferred
-        && Objects.equals(taskId, other.taskId)
+        && Objects.equals(id, other.id)
         && Objects.equals(externalId, other.externalId)
         && Objects.equals(created, other.created)
         && Objects.equals(claimed, other.claimed)
@@ -701,7 +705,7 @@ public class TaskSummaryImpl implements TaskSummary {
   @Override
   public String toString() {
     return "TaskSummaryImpl [taskId="
-        + taskId
+        + id
         + ", externalId="
         + externalId
         + ", created="
