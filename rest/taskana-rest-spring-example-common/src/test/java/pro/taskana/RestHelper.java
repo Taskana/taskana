@@ -18,6 +18,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Component
 public class RestHelper {
 
+  public static final RestTemplate template = getRestTemplate();
   @Autowired Environment environment;
 
   public String toUrl(String relativeUrl, Object... uriVariables) {
@@ -25,7 +26,8 @@ public class RestHelper {
         .scheme("http")
         .host("127.0.0.1")
         .port(environment.getProperty("local.server.port"))
-        .build(uriVariables)
+        .build(false)
+        .expand(uriVariables)
         .toString();
   }
 
@@ -43,6 +45,14 @@ public class RestHelper {
   public HttpHeaders getHeadersAdmin() {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Authorization", "Basic YWRtaW46YWRtaW4="); // admin:admin
+    headers.add("Content-Type", "application/hal+json");
+    return headers;
+  }
+
+  public HttpHeaders getHeadersBusinessAdmin() {
+    HttpHeaders headers = new HttpHeaders();
+    // businessadmin:businessadmin
+    headers.add("Authorization", "Basic YnVzaW5lc3NhZG1pbjpidXNpbmVzc2FkbWlu");
     headers.add("Content-Type", "application/hal+json");
     return headers;
   }

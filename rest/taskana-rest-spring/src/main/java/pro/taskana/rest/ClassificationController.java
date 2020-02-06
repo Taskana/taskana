@@ -322,3 +322,4 @@ public class ClassificationController extends AbstractPagingController {
     return query;
   }
 }
+

@@ -26,7 +26,8 @@ public class RestHelper {
         .scheme("http")
         .host("127.0.0.1")
         .port(environment.getProperty("local.server.port"))
-        .build(uriVariables)
+        .build(false)
+        .expand(uriVariables)
         .toString();
   }
 

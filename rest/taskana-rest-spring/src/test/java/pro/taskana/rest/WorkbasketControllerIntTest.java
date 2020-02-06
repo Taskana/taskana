@@ -114,7 +114,7 @@ class WorkbasketControllerIntTest {
     workbasketResource.setModified(String.valueOf(Instant.now()));
 
     assertThatThrownBy(
-        () ->
+            () ->
                 template.exchange(
                     restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketId),
                     HttpMethod.PUT,
@@ -131,7 +131,7 @@ class WorkbasketControllerIntTest {
     String workbasketId = "WBI:100004857400039500000999999999999999";
 
     assertThatThrownBy(
-        () ->
+            () ->
                 template.exchange(
                     restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketId),
                     HttpMethod.GET,
