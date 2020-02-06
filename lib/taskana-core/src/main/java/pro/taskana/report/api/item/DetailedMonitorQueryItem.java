@@ -1,4 +1,4 @@
-package pro.taskana.report.internal.item;
+package pro.taskana.report.api.item;
 
 /**
  * The DetailedMonitorQueryItem extends the {@link MonitorQueryItem}. The additional attachment key

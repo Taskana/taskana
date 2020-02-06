@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.BaseQuery;
+import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.internal.util.LoggerUtils;
 import pro.taskana.rest.AbstractPagingController;
 import pro.taskana.rest.resource.PagedResources.PageMetadata;
 import pro.taskana.rest.resource.TaskHistoryEventListAssembler;

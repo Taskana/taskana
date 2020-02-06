@@ -21,9 +21,9 @@ import org.springframework.ldap.filter.OrFilter;
 import org.springframework.ldap.filter.WhitespaceWildcardsFilter;
 import org.springframework.stereotype.Component;
 
+import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.SystemException;
-import pro.taskana.common.internal.util.LoggerUtils;
 import pro.taskana.rest.resource.AccessIdResource;
 
 /**

@@ -21,7 +21,7 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.report.api.ClassificationReport;
 import pro.taskana.report.api.TaskMonitorService;
-import pro.taskana.report.internal.header.TimeIntervalColumnHeader;
+import pro.taskana.report.api.header.TimeIntervalColumnHeader;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 import pro.taskana.task.api.CustomField;

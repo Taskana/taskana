@@ -19,9 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.report.api.ClassificationReport;
 import pro.taskana.report.api.WorkbasketReport;
-import pro.taskana.report.internal.header.TimeIntervalColumnHeader;
-import pro.taskana.report.internal.item.DetailedMonitorQueryItem;
-import pro.taskana.report.internal.item.MonitorQueryItem;
+import pro.taskana.report.api.header.TimeIntervalColumnHeader;
+import pro.taskana.report.api.item.DetailedMonitorQueryItem;
+import pro.taskana.report.api.item.MonitorQueryItem;
 
 /** Test for {@link ReportResourceAssembler}. */
 @TaskanaSpringBootTest

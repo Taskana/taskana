@@ -13,8 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.report.api.TaskMonitorService;
+import pro.taskana.report.api.header.TimeIntervalColumnHeader;
 import pro.taskana.report.internal.SelectedItem;
-import pro.taskana.report.internal.header.TimeIntervalColumnHeader;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 

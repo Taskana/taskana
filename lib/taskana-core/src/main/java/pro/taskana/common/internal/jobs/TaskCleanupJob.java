@@ -12,13 +12,13 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.BulkOperationResults;
+import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
-import pro.taskana.common.internal.util.LoggerUtils;
 import pro.taskana.task.api.TaskSummary;
 
 /** Job to cleanup completed tasks after a period of time. */

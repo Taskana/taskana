@@ -37,15 +37,12 @@ class ArchitectureTest {
             .importPackages("pro.taskana");
   }
 
-  @Disabled
   @Test
   void apiClassesShouldNotDependOnInternalClasses() {
     ArchRule myRule =
         classes()
             .that()
             .haveSimpleNameNotEndingWith("TaskanaHistoryEvent")
-            .and()
-            .haveSimpleNameNotEndingWith("BulkOperationResults")
             .and()
             .resideInAPackage("..api..")
             .should()
