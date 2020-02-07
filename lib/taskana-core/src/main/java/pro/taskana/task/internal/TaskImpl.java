@@ -3,7 +3,6 @@ package pro.taskana.task.internal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -65,9 +64,6 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
 
   @Override
   public Map<String, String> getCustomAttributes() {
-    if (customAttributes == null) {
-      customAttributes = new HashMap<>();
-    }
     return customAttributes;
   }
 
@@ -91,7 +87,7 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
 
   @Override
   public void setCustomAttribute(String number, String value) throws InvalidArgumentException {
-    int num = 0;
+    int num;
     try {
       num = Integer.parseInt(number);
     } catch (NumberFormatException e) {
@@ -160,13 +156,7 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
     }
     if (attachmentToAdd != null) {
       if (attachmentToAdd.getId() != null) {
-        Iterator<Attachment> i = attachments.iterator();
-        while (i.hasNext()) {
-          Attachment attachment = i.next();
-          if (attachmentToAdd.getId().equals(attachment.getId())) {
-            i.remove();
-          }
-        }
+        attachments.removeIf(attachment -> attachmentToAdd.getId().equals(attachment.getId()));
       }
       attachments.add(attachmentToAdd);
     }
@@ -234,9 +224,7 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
   @Override
   public Attachment removeAttachment(String attachmentId) {
     Attachment result = null;
-    Iterator<Attachment> i = attachments.iterator();
-    while (i.hasNext()) {
-      Attachment attachment = i.next();
+    for (Attachment attachment : attachments) {
       if (attachment.getId().equals(attachmentId) && attachments.remove(attachment)) {
         result = attachment;
         break;
@@ -250,6 +238,7 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
     return this.classificationSummary == null ? null : this.classificationSummary.getCategory();
   }
 
+  @SuppressWarnings("unused")
   public void setClassificationCategory(String classificationCategory) {
     if (this.classificationSummary == null) {
       this.classificationSummary = new ClassificationSummaryImpl();
