@@ -1,110 +1,22 @@
 package pro.taskana.task.internal;
 
-import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import pro.taskana.classification.api.ClassificationSummary;
-import pro.taskana.classification.internal.ClassificationSummaryImpl;
 import pro.taskana.task.api.Attachment;
 import pro.taskana.task.api.AttachmentSummary;
-import pro.taskana.task.api.ObjectReference;
 
 /**
  * Attachment entity.
  *
  * @author bbr
  */
-public class AttachmentImpl implements Attachment {
+public class AttachmentImpl extends AttachmentSummaryImpl implements Attachment {
 
-  private String id;
-  private String taskId;
-  private Instant created;
-  private Instant modified;
-  private ClassificationSummary classificationSummary;
-  private ObjectReference objectReference;
-  private String channel;
-  private Instant received;
-  private Map<String, String> customAttributes = new HashMap<String, String>();
+  private Map<String, String> customAttributes = new HashMap<>();
 
   public AttachmentImpl() {}
-
-  @Override
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  @Override
-  public String getTaskId() {
-    return taskId;
-  }
-
-  public void setTaskId(String taskId) {
-    this.taskId = taskId;
-  }
-
-  @Override
-  public Instant getCreated() {
-    return created;
-  }
-
-  public void setCreated(Instant created) {
-    this.created = created;
-  }
-
-  @Override
-  public Instant getModified() {
-    return modified;
-  }
-
-  public void setModified(Instant modified) {
-    this.modified = modified;
-  }
-
-  @Override
-  public ClassificationSummary getClassificationSummary() {
-    return classificationSummary;
-  }
-
-  @Override
-  public void setClassificationSummary(ClassificationSummary classificationSummary) {
-    this.classificationSummary = classificationSummary;
-  }
-
-  @Override
-  public ObjectReference getObjectReference() {
-    return objectReference;
-  }
-
-  @Override
-  public void setObjectReference(ObjectReference objectReference) {
-    this.objectReference = objectReference;
-  }
-
-  @Override
-  public String getChannel() {
-    return channel;
-  }
-
-  @Override
-  public void setChannel(String channel) {
-    this.channel = channel;
-  }
-
-  @Override
-  public Instant getReceived() {
-    return received;
-  }
-
-  @Override
-  public void setReceived(Instant received) {
-    this.received = received;
-  }
 
   @Override
   public Map<String, String> getCustomAttributes() {
@@ -133,28 +45,13 @@ public class AttachmentImpl implements Attachment {
     return summary;
   }
 
-  // auxiliary method to enable MyBatis access to classificationSummary
-  public ClassificationSummaryImpl getClassificationSummaryImpl() {
-    return (ClassificationSummaryImpl) classificationSummary;
-  }
-
-  // auxiliary method to enable MyBatis access to classificationSummary
-  public void setClassificationSummaryImpl(ClassificationSummaryImpl classificationSummary) {
-    this.classificationSummary = classificationSummary;
+  protected boolean canEqual(Object other) {
+    return (!(other instanceof AttachmentImpl));
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        id,
-        taskId,
-        created,
-        modified,
-        classificationSummary,
-        objectReference,
-        channel,
-        received,
-        customAttributes);
+    return Objects.hash(super.hashCode(), customAttributes);
   }
 
   @Override
@@ -165,16 +62,14 @@ public class AttachmentImpl implements Attachment {
     if (!(obj instanceof AttachmentImpl)) {
       return false;
     }
+    if (!super.equals(obj)) {
+      return false;
+    }
     AttachmentImpl other = (AttachmentImpl) obj;
-    return Objects.equals(id, other.id)
-        && Objects.equals(taskId, other.taskId)
-        && Objects.equals(created, other.created)
-        && Objects.equals(modified, other.modified)
-        && Objects.equals(classificationSummary, other.classificationSummary)
-        && Objects.equals(objectReference, other.objectReference)
-        && Objects.equals(channel, other.channel)
-        && Objects.equals(received, other.received)
-        && Objects.equals(customAttributes, other.customAttributes);
+    if (other.canEqual(this)) {
+      return false;
+    }
+    return Objects.equals(customAttributes, other.customAttributes);
   }
 
   @Override
