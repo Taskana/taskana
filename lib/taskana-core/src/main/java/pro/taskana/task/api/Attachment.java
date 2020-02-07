@@ -6,56 +6,7 @@ import java.util.Map;
 import pro.taskana.classification.api.ClassificationSummary;
 
 /** Attachment-Interface to specify Attachment Attributes. */
-public interface Attachment {
-
-  /**
-   * Returns the current id of the attachment.
-   *
-   * @return ID of attachment
-   */
-  String getId();
-
-  /**
-   * Returns the id of the associated task.
-   *
-   * @return taskId
-   */
-  String getTaskId();
-
-  /**
-   * Returns the time when the attachment was created.
-   *
-   * @return the created time as {@link Instant}
-   */
-  Instant getCreated();
-
-  /**
-   * Returns the time when the attachment was last modified.
-   *
-   * @return modified {@link Instant} of the attachment
-   */
-  Instant getModified();
-
-  /**
-   * Returns the classification summary of the attachment.
-   *
-   * @return the {@link ClassificationSummary} of this attachment
-   */
-  ClassificationSummary getClassificationSummary();
-
-  /**
-   * Set the classification summary for this attachment.
-   *
-   * @param classificationSummary the {@link ClassificationSummary} for this attachment
-   */
-  void setClassificationSummary(ClassificationSummary classificationSummary);
-
-  /**
-   * Returns the {@link ObjectReference primaryObjectReference} of the attachment.
-   *
-   * @return {@link ObjectReference primaryObjectReference} of the attachment
-   */
-  ObjectReference getObjectReference();
+public interface Attachment extends AttachmentSummary {
 
   /**
    * Sets the {@link ObjectReference primaryObjectReference} of the attachment.
@@ -65,25 +16,11 @@ public interface Attachment {
   void setObjectReference(ObjectReference objectReference);
 
   /**
-   * Returns the Channel on which the attachment was received.
+   * Set the classification summary for this attachment.
    *
-   * @return the Channel on which the attachment was received.
+   * @param classificationSummary the {@link ClassificationSummary} for this attachment
    */
-  String getChannel();
-
-  /**
-   * Sets the Channel on which the attachment was received.
-   *
-   * @param channel the channel on which the attachment was received
-   */
-  void setChannel(String channel);
-
-  /**
-   * Returns the time when this attachment was received.
-   *
-   * @return received time as exact {@link Instant}
-   */
-  Instant getReceived();
+  void setClassificationSummary(ClassificationSummary classificationSummary);
 
   /**
    * Sets the time when the attachment was received.
@@ -91,6 +28,13 @@ public interface Attachment {
    * @param received the time as {@link Instant} when the attachment was received
    */
   void setReceived(Instant received);
+
+  /**
+   * Sets the Channel on which the attachment was received.
+   *
+   * @param channel the channel on which the attachment was received
+   */
+  void setChannel(String channel);
 
   /**
    * Returns the custom attributes of this attachment.

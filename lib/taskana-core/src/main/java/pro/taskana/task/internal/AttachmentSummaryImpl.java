@@ -11,14 +11,14 @@ import pro.taskana.task.api.ObjectReference;
 /** The most important fields of the Attachment entity. */
 public class AttachmentSummaryImpl implements AttachmentSummary {
 
-  private String id;
-  private String taskId;
-  private Instant created;
-  private Instant modified;
-  private ClassificationSummary classificationSummary;
-  private ObjectReference objectReference;
-  private String channel;
-  private Instant received;
+  protected String id;
+  protected String taskId;
+  protected Instant created;
+  protected Instant modified;
+  protected ClassificationSummary classificationSummary;
+  protected ObjectReference objectReference;
+  protected String channel;
+  protected Instant received;
 
   AttachmentSummaryImpl() {}
 
@@ -127,13 +127,19 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
   }
 
   // auxiliary method to enable MyBatis access to classificationSummary
+  @SuppressWarnings("unused")
   public ClassificationSummaryImpl getClassificationSummaryImpl() {
     return (ClassificationSummaryImpl) classificationSummary;
   }
 
   // auxiliary method to enable MyBatis access to classificationSummary
+  @SuppressWarnings("unused")
   public void setClassificationSummaryImpl(ClassificationSummaryImpl classificationSummary) {
     this.classificationSummary = classificationSummary;
+  }
+
+  protected boolean canEqual(Object other) {
+    return (!(other instanceof AttachmentSummaryImpl));
   }
 
   @Override
@@ -151,6 +157,9 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
       return false;
     }
     AttachmentSummaryImpl other = (AttachmentSummaryImpl) obj;
+    if (other.canEqual(this)) {
+      return false;
+    }
     return Objects.equals(id, other.id)
         && Objects.equals(taskId, other.taskId)
         && Objects.equals(created, other.created)
