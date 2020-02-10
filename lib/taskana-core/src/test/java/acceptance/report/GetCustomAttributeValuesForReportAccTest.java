@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.report.api.TaskMonitorService;
+import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 import pro.taskana.task.api.CustomField;
@@ -25,12 +25,12 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
 
   @Test
   void testRoleCheck() {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
 
     Assertions.assertThrows(
         NotAuthorizedException.class,
         () ->
-            taskMonitorService
+            monitorService
                 .createWorkbasketReportBuilder()
                 .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_2));
   }
@@ -38,10 +38,10 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
   @WithAccessId(userName = "monitor")
   @Test
   void testGetCustomAttributeValuesForOneWorkbasket() throws NotAuthorizedException {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
 
     List<String> values =
-        taskMonitorService
+        monitorService
             .createWorkbasketReportBuilder()
             .workbasketIdIn(Collections.singletonList("WBI:000000000000000000000000000000000001"))
             .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_2);
@@ -55,10 +55,10 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
   @WithAccessId(userName = "monitor")
   @Test
   void testGetCustomAttributeValuesForOneDomain() throws NotAuthorizedException {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
 
     List<String> values =
-        taskMonitorService
+        monitorService
             .createWorkbasketReportBuilder()
             .domainIn(Collections.singletonList("DOMAIN_A"))
             .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_16);
@@ -69,14 +69,14 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
   @WithAccessId(userName = "monitor")
   @Test
   void testGetCustomAttributeValuesForCustomAttribute() throws NotAuthorizedException {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
 
     Map<CustomField, String> customAttributeFilter = new HashMap<>();
     customAttributeFilter.put(CustomField.CUSTOM_2, "Vollkasko");
     customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
 
     List<String> values =
-        taskMonitorService
+        monitorService
             .createCategoryReportBuilder()
             .customAttributeFilterIn(customAttributeFilter)
             .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_16);
@@ -88,7 +88,7 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
   @WithAccessId(userName = "monitor")
   @Test
   void testGetCustomAttributeValuesForExcludedClassifications() throws NotAuthorizedException {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
 
     List<String> domains = new ArrayList<>();
     domains.add("DOMAIN_A");
@@ -96,7 +96,7 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
     domains.add("DOMAIN_C");
 
     List<String> values =
-        taskMonitorService
+        monitorService
             .createCategoryReportBuilder()
             .domainIn(domains)
             .excludedClassificationIdIn(

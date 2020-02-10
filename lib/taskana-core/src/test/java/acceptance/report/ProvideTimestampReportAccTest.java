@@ -12,12 +12,12 @@ import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.report.api.TaskMonitorService;
-import pro.taskana.report.api.TimestampReport;
-import pro.taskana.report.api.header.TimeIntervalColumnHeader;
-import pro.taskana.report.api.item.TimestampQueryItem;
-import pro.taskana.report.api.row.SingleRow;
-import pro.taskana.report.api.row.TimestampRow;
+import pro.taskana.monitor.api.MonitorService;
+import pro.taskana.monitor.api.reports.TimestampReport;
+import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
+import pro.taskana.monitor.api.reports.item.TimestampQueryItem;
+import pro.taskana.monitor.api.reports.row.SingleRow;
+import pro.taskana.monitor.api.reports.row.TimestampRow;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
@@ -36,7 +36,7 @@ class ProvideTimestampReportAccTest extends AbstractReportAccTest {
   @WithAccessId(userName = "monitor")
   @Test
   void testProperInsertionOfQueryItems() throws Exception {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
 
     // last 14 days. Today excluded.
     List<TimeIntervalColumnHeader> headers =
@@ -44,7 +44,10 @@ class ProvideTimestampReportAccTest extends AbstractReportAccTest {
             .mapToObj(TimeIntervalColumnHeader.Date::new)
             .collect(Collectors.toList());
     TimestampReport timestampReport =
-        taskMonitorService.createTimestampReportBuilder().withColumnHeaders(headers).buildReport();
+        monitorService
+            .createTimestampReportBuilder()
+            .withColumnHeaders(headers)
+            .buildReport();
     final HashSet<String> org1Set = new HashSet<>(Arrays.asList("N/A", "org1"));
     final HashSet<String> allOtherOrgLevelSet = new HashSet<>(Collections.singletonList("N/A"));
 

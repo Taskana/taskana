@@ -12,9 +12,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.report.api.TaskMonitorService;
-import pro.taskana.report.api.header.TimeIntervalColumnHeader;
-import pro.taskana.report.internal.SelectedItem;
+import pro.taskana.monitor.api.MonitorService;
+import pro.taskana.monitor.api.SelectedItem;
+import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
@@ -24,14 +24,14 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
 
   @Test
   void testRoleCheck() {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
 
     List<SelectedItem> selectedItems = new ArrayList<>();
 
     Assertions.assertThrows(
         NotAuthorizedException.class,
         () ->
-            taskMonitorService
+            monitorService
                 .createWorkbasketReportBuilder()
                 .listTaskIdsForSelectedItems(selectedItems));
   }
@@ -39,7 +39,7 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
   @WithAccessId(userName = "monitor")
   @Test
   void testGetTaskIdsOfWorkbasketReport() throws InvalidArgumentException, NotAuthorizedException {
-    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final MonitorService monitorService = taskanaEngine.getTaskMonitorService();
 
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
@@ -64,7 +64,7 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
     selectedItems.add(s3);
 
     List<String> ids =
-        taskMonitorService
+        monitorService
             .createWorkbasketReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
@@ -84,7 +84,7 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfWorkbasketReportWithExcludedClassifications()
       throws InvalidArgumentException, NotAuthorizedException {
-    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final MonitorService monitorService = taskanaEngine.getTaskMonitorService();
 
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
@@ -109,7 +109,7 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
     selectedItems.add(s3);
 
     List<String> ids =
-        taskMonitorService
+        monitorService
             .createWorkbasketReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()

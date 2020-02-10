@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.report.api.TaskMonitorService;
+import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskanaRole;
 import pro.taskana.workbasket.api.WorkbasketService;
@@ -25,7 +25,7 @@ public interface TaskanaEngine {
    *
    * @return the TaskMonitorService
    */
-  TaskMonitorService getTaskMonitorService();
+  MonitorService getTaskMonitorService();
 
   /**
    * The WorkbasketService can be used for operations on all Workbaskets.

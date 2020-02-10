@@ -28,13 +28,13 @@ import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
-import pro.taskana.report.api.WorkbasketReport;
-import pro.taskana.report.api.header.TimeIntervalColumnHeader;
-import pro.taskana.report.api.item.MonitorQueryItem;
-import pro.taskana.report.internal.CombinedClassificationFilter;
-import pro.taskana.report.internal.SelectedItem;
-import pro.taskana.report.internal.TaskMonitorMapper;
-import pro.taskana.report.internal.TaskMonitorServiceImpl;
+import pro.taskana.monitor.api.CombinedClassificationFilter;
+import pro.taskana.monitor.api.SelectedItem;
+import pro.taskana.monitor.api.reports.WorkbasketReport;
+import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
+import pro.taskana.monitor.api.reports.item.MonitorQueryItem;
+import pro.taskana.monitor.internal.MonitorMapper;
+import pro.taskana.monitor.internal.MonitorServiceImpl;
 import pro.taskana.task.api.CustomField;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.TaskanaRole;
@@ -43,7 +43,7 @@ import pro.taskana.task.api.TaskanaRole;
 @ExtendWith(MockitoExtension.class)
 class WorkbasketReportBuilderImplTest {
 
-  @InjectMocks private TaskMonitorServiceImpl cut;
+  @InjectMocks private MonitorServiceImpl cut;
 
   @Mock private InternalTaskanaEngine internalTaskanaEngineMock;
 
@@ -51,7 +51,7 @@ class WorkbasketReportBuilderImplTest {
 
   @Mock private TaskanaEngineConfiguration taskanaEngineConfiguration;
 
-  @Mock private TaskMonitorMapper taskMonitorMapperMock;
+  @Mock private MonitorMapper monitorMapperMock;
 
   @BeforeEach
   void setup() {
@@ -84,7 +84,7 @@ class WorkbasketReportBuilderImplTest {
     monitorQueryItem.setKey("WBI:000000000000000000000000000000000001");
     monitorQueryItem.setNumberOfTasks(1);
     expectedResult.add(monitorQueryItem);
-    when(taskMonitorMapperMock.getTaskCountOfWorkbaskets(
+    when(monitorMapperMock.getTaskCountOfWorkbaskets(
             workbasketIds,
             states,
             categories,
@@ -113,13 +113,13 @@ class WorkbasketReportBuilderImplTest {
     verify(internalTaskanaEngineMock, times(3)).getEngine();
     verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
     verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
-    verify(taskMonitorMapperMock, times(1))
+    verify(monitorMapperMock, times(1))
         .getTaskCountOfWorkbaskets(any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock, times(1)).returnConnection();
     verifyNoMoreInteractions(
         internalTaskanaEngineMock,
         taskanaEngineMock,
-        taskMonitorMapperMock,
+        monitorMapperMock,
         taskanaEngineConfiguration);
 
     assertNotNull(actualResult);
@@ -154,7 +154,7 @@ class WorkbasketReportBuilderImplTest {
     monitorQueryItem.setAgeInDays(0);
     monitorQueryItem.setNumberOfTasks(1);
     expectedResult.add(monitorQueryItem);
-    when(taskMonitorMapperMock.getTaskCountOfWorkbaskets(
+    when(monitorMapperMock.getTaskCountOfWorkbaskets(
             workbasketIds,
             states,
             categories,
@@ -184,13 +184,13 @@ class WorkbasketReportBuilderImplTest {
     verify(internalTaskanaEngineMock, times(3)).getEngine();
     verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
     verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
-    verify(taskMonitorMapperMock, times(1))
+    verify(monitorMapperMock, times(1))
         .getTaskCountOfWorkbaskets(any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock, times(1)).returnConnection();
     verifyNoMoreInteractions(
         internalTaskanaEngineMock,
         taskanaEngineMock,
-        taskMonitorMapperMock,
+        monitorMapperMock,
         taskanaEngineConfiguration);
 
     assertNotNull(actualResult);
@@ -223,7 +223,7 @@ class WorkbasketReportBuilderImplTest {
 
     List<String> expectedResult =
         Collections.singletonList("TKI:000000000000000000000000000000000001");
-    when(taskMonitorMapperMock.getTaskIdsForSelectedItems(
+    when(monitorMapperMock.getTaskIdsForSelectedItems(
             workbasketIds,
             states,
             categories,
@@ -254,14 +254,14 @@ class WorkbasketReportBuilderImplTest {
     verify(internalTaskanaEngineMock, times(3)).getEngine();
     verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
     verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
-    verify(taskMonitorMapperMock, times(1))
+    verify(monitorMapperMock, times(1))
         .getTaskIdsForSelectedItems(
             any(), any(), any(), any(), any(), any(), any(), any(), any(), eq(false));
     verify(internalTaskanaEngineMock, times(1)).returnConnection();
     verifyNoMoreInteractions(
         internalTaskanaEngineMock,
         taskanaEngineMock,
-        taskMonitorMapperMock,
+        monitorMapperMock,
         taskanaEngineConfiguration);
 
     assertNotNull(actualResult);
@@ -302,7 +302,7 @@ class WorkbasketReportBuilderImplTest {
     selectedItem.setUpperAgeLimit(5);
 
     List<String> expectedResult = Collections.singletonList("Geschaeftsstelle A");
-    when(taskMonitorMapperMock.getCustomAttributeValuesForReport(
+    when(monitorMapperMock.getCustomAttributeValuesForReport(
             workbasketIds,
             states,
             categories,
@@ -331,13 +331,13 @@ class WorkbasketReportBuilderImplTest {
     verify(internalTaskanaEngineMock, times(3)).getEngine();
     verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
     verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
-    verify(taskMonitorMapperMock, times(1))
+    verify(monitorMapperMock, times(1))
         .getCustomAttributeValuesForReport(any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock, times(1)).returnConnection();
     verifyNoMoreInteractions(
         internalTaskanaEngineMock,
         taskanaEngineMock,
-        taskMonitorMapperMock,
+        monitorMapperMock,
         taskanaEngineConfiguration);
 
     assertNotNull(actualResult);
@@ -377,7 +377,7 @@ class WorkbasketReportBuilderImplTest {
     monitorQueryItem.setKey("WBI:000000000000000000000000000000000001");
     monitorQueryItem.setNumberOfTasks(1);
     expectedResult.add(monitorQueryItem);
-    when(taskMonitorMapperMock.getTaskCountOfWorkbasketsBasedOnPlannedDate(
+    when(monitorMapperMock.getTaskCountOfWorkbasketsBasedOnPlannedDate(
             workbasketIds,
             states,
             categories,
@@ -406,7 +406,7 @@ class WorkbasketReportBuilderImplTest {
     verify(internalTaskanaEngineMock, times(3)).getEngine();
     verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
     verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
-    verify(taskMonitorMapperMock, times(1))
+    verify(monitorMapperMock, times(1))
         .getTaskCountOfWorkbasketsBasedOnPlannedDate(
             workbasketIds,
             states,
@@ -420,7 +420,7 @@ class WorkbasketReportBuilderImplTest {
     verifyNoMoreInteractions(
         internalTaskanaEngineMock,
         taskanaEngineMock,
-        taskMonitorMapperMock,
+        monitorMapperMock,
         taskanaEngineConfiguration);
 
     assertNotNull(actualResult);
