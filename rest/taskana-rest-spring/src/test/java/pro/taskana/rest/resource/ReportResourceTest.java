@@ -17,11 +17,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import pro.taskana.TaskanaSpringBootTest;
-import pro.taskana.report.api.ClassificationReport;
-import pro.taskana.report.api.WorkbasketReport;
-import pro.taskana.report.api.header.TimeIntervalColumnHeader;
-import pro.taskana.report.api.item.DetailedMonitorQueryItem;
-import pro.taskana.report.api.item.MonitorQueryItem;
+import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
+import pro.taskana.monitor.api.reports.item.DetailedMonitorQueryItem;
+import pro.taskana.monitor.api.reports.item.MonitorQueryItem;
+import pro.taskana.monitor.api.reports.ClassificationReport;
+import pro.taskana.monitor.api.reports.WorkbasketReport;
 
 /** Test for {@link ReportResourceAssembler}. */
 @TaskanaSpringBootTest

@@ -44,9 +44,9 @@ import pro.taskana.common.internal.persistence.InstantTypeHandler;
 import pro.taskana.common.internal.persistence.MapTypeHandler;
 import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.common.internal.security.GroupPrincipal;
-import pro.taskana.report.api.TaskMonitorService;
-import pro.taskana.report.internal.TaskMonitorMapper;
-import pro.taskana.report.internal.TaskMonitorServiceImpl;
+import pro.taskana.monitor.api.MonitorService;
+import pro.taskana.monitor.internal.MonitorMapper;
+import pro.taskana.monitor.internal.MonitorServiceImpl;
 import pro.taskana.spi.history.internal.HistoryEventProducer;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskanaRole;
@@ -102,10 +102,10 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   }
 
   @Override
-  public TaskMonitorService getTaskMonitorService() {
+  public MonitorService getTaskMonitorService() {
     SqlSession session = this.sessionManager;
-    return new TaskMonitorServiceImpl(
-        internalTaskanaEngineImpl, session.getMapper(TaskMonitorMapper.class));
+    return new MonitorServiceImpl(
+        internalTaskanaEngineImpl, session.getMapper(MonitorMapper.class));
   }
 
   @Override
@@ -250,7 +250,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     configuration.getTypeHandlerRegistry().register(Instant.class, new InstantTypeHandler());
     // add mappers
     configuration.addMapper(TaskMapper.class);
-    configuration.addMapper(TaskMonitorMapper.class);
+    configuration.addMapper(MonitorMapper.class);
     configuration.addMapper(WorkbasketMapper.class);
     configuration.addMapper(DistributionTargetMapper.class);
     configuration.addMapper(ClassificationMapper.class);

@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.report.api.TaskMonitorService;
-import pro.taskana.report.api.header.TimeIntervalColumnHeader;
+import pro.taskana.monitor.api.MonitorService;
+import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.rest.resource.ReportResource;
 import pro.taskana.rest.resource.ReportResourceAssembler;
 import pro.taskana.task.api.TaskState;
@@ -30,13 +30,13 @@ public class MonitorController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MonitorController.class);
 
-  private TaskMonitorService taskMonitorService;
+  private MonitorService monitorService;
 
   private ReportResourceAssembler reportResourceAssembler;
 
   MonitorController(
-      TaskMonitorService taskMonitorService, ReportResourceAssembler reportResourceAssembler) {
-    this.taskMonitorService = taskMonitorService;
+      MonitorService monitorService, ReportResourceAssembler reportResourceAssembler) {
+    this.monitorService = monitorService;
     this.reportResourceAssembler = reportResourceAssembler;
   }
 
@@ -50,7 +50,7 @@ public class MonitorController {
     ResponseEntity<ReportResource> response =
         ResponseEntity.ok(
             reportResourceAssembler.toResource(
-                taskMonitorService
+                monitorService
                     .createTaskStatusReportBuilder()
                     .stateIn(states)
                     .domainIn(domains)
@@ -73,7 +73,7 @@ public class MonitorController {
 
     ReportResource report =
         reportResourceAssembler.toResource(
-            taskMonitorService
+            monitorService
                 .createWorkbasketReportBuilder()
                 .withColumnHeaders(getRangeTimeInterval())
                 .buildReport(),
@@ -96,7 +96,7 @@ public class MonitorController {
 
     ReportResource report =
         reportResourceAssembler.toResource(
-            taskMonitorService
+            monitorService
                 .createWorkbasketReportBuilder()
                 .stateIn(states)
                 .withColumnHeaders(getDateTimeInterval(daysInPast))
@@ -118,7 +118,7 @@ public class MonitorController {
 
     ReportResource report =
         reportResourceAssembler.toResource(
-            taskMonitorService
+            monitorService
                 .createClassificationReportBuilder()
                 .withColumnHeaders(getRangeTimeInterval())
                 .buildReport());
@@ -141,7 +141,7 @@ public class MonitorController {
     return ResponseEntity.status(HttpStatus.OK)
         .body(
             reportResourceAssembler.toResource(
-                taskMonitorService
+                monitorService
                     .createTimestampReportBuilder()
                     .withColumnHeaders(columnHeaders)
                     .buildReport()));

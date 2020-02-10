@@ -18,7 +18,7 @@ import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.configuration.SpringTaskanaEngineConfiguration;
 import pro.taskana.ldap.LdapClient;
-import pro.taskana.report.api.TaskMonitorService;
+import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.workbasket.api.WorkbasketService;
 
@@ -42,7 +42,7 @@ public class RestConfiguration {
   }
 
   @Bean
-  public TaskMonitorService getTaskMonitorService(TaskanaEngine taskanaEngine) {
+  public MonitorService getTaskMonitorService(TaskanaEngine taskanaEngine) {
     return taskanaEngine.getTaskMonitorService();
   }
 
