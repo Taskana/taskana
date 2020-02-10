@@ -3,8 +3,8 @@ package pro.taskana.rest.resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 
-import pro.taskana.history.api.events.TaskanaHistoryEvent;
 import pro.taskana.simplehistory.impl.HistoryEventImpl;
+import pro.taskana.spi.history.api.events.TaskanaHistoryEvent;
 
 /** Transforms any {@link HistoryEventImpl} into its {@link TaskHistoryEventResource}. */
 public class TaskHistoryEventAssembler

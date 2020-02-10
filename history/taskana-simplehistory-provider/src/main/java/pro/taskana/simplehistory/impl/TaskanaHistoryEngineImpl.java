@@ -14,11 +14,11 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 
 import pro.taskana.TaskanaEngineConfiguration;
-import pro.taskana.history.api.TaskanaHistory;
 import pro.taskana.simplehistory.TaskanaHistoryEngine;
 import pro.taskana.simplehistory.configuration.DbSchemaCreator;
 import pro.taskana.simplehistory.impl.mappings.HistoryEventMapper;
 import pro.taskana.simplehistory.impl.mappings.HistoryQueryMapper;
+import pro.taskana.spi.history.api.TaskanaHistory;
 
 /** This is the implementation of TaskanaHistoryEngine. */
 public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
