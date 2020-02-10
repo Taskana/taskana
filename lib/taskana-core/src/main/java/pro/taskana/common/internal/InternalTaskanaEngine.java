@@ -4,7 +4,7 @@ import java.util.function.Supplier;
 import org.apache.ibatis.session.SqlSession;
 
 import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.history.internal.HistoryEventProducer;
+import pro.taskana.spi.history.internal.HistoryEventProducer;
 import pro.taskana.task.internal.TaskRoutingManager;
 
 /**

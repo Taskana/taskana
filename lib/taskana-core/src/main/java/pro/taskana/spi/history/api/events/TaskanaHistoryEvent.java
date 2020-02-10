@@ -1,4 +1,4 @@
-package pro.taskana.history.api.events;
+package pro.taskana.spi.history.api.events;
 
 import java.time.Instant;
 

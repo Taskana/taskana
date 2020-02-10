@@ -1,4 +1,4 @@
-package pro.taskana.history.internal;
+package pro.taskana.spi.history.internal;
 
 import java.util.Objects;
 import java.util.ServiceLoader;
@@ -6,8 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.TaskanaEngineConfiguration;
-import pro.taskana.history.api.TaskanaHistory;
-import pro.taskana.history.api.events.TaskanaHistoryEvent;
+import pro.taskana.spi.history.api.TaskanaHistory;
+import pro.taskana.spi.history.api.events.TaskanaHistoryEvent;
 
 /** Creates events and emits them to the registered history service providers. */
 public final class HistoryEventProducer {

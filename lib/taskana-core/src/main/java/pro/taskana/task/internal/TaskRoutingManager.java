@@ -10,8 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.spi.routing.api.TaskRoutingProvider;
 import pro.taskana.task.api.Task;
-import pro.taskana.task.api.TaskRoutingProvider;
 
 /**
  * Loads TaskRoutingProvider SPI implementation(s) and passes requests to determine workbasketids to
