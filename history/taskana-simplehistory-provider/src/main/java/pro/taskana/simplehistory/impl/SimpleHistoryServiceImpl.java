@@ -32,7 +32,6 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
       }
     } catch (SQLException e) {
       LOGGER.error("There was an error creating Taskana history engine", e);
-      e.printStackTrace();
     }
     this.historyEventMapper =
         this.taskanaHistoryEngine.getSqlSession().getMapper(HistoryEventMapper.class);
@@ -50,10 +49,10 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
       }
       historyEventMapper.insert(event);
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.error("Error while inserting history event into historyEventMapper", e);
     } finally {
       taskanaHistoryEngine.returnConnection();
-      LOGGER.debug("exit from create(TaskanaHistoryEvent event). Returning object = {}.", event);
+      LOGGER.debug("Exit from create(TaskanaHistoryEvent event). Returning object = {}.", event);
     }
   }
 
