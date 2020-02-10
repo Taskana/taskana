@@ -27,7 +27,7 @@ public class DbSchemaCreator {
   private StringWriter errorWriter = new StringWriter();
   private PrintWriter errorLogWriter = new PrintWriter(errorWriter);
 
-  public DbSchemaCreator(DataSource dataSource, String schema) throws SQLException {
+  public DbSchemaCreator(DataSource dataSource, String schema) {
     this.dataSource = dataSource;
     this.schemaName = schema;
   }
@@ -69,8 +69,7 @@ public class DbSchemaCreator {
         }
       }
     } catch (IOException e) {
-      e.printStackTrace();
-      LOGGER.error("SchemaName sql parsing failed for schemaName {}", schemaName);
+      LOGGER.error("SchemaName SQL parsing failed for schemaName {}", schemaName, e);
     }
     return new StringReader(content.toString());
   }
