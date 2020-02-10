@@ -19,10 +19,10 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.report.api.TaskMonitorService;
-import pro.taskana.report.api.WorkbasketReport;
-import pro.taskana.report.api.header.TimeIntervalColumnHeader;
-import pro.taskana.report.internal.CombinedClassificationFilter;
+import pro.taskana.monitor.api.CombinedClassificationFilter;
+import pro.taskana.monitor.api.MonitorService;
+import pro.taskana.monitor.api.reports.WorkbasketReport;
+import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 import pro.taskana.task.api.CustomField;
@@ -37,20 +37,20 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
 
   @Test
   void testRoleCheck() {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
 
     Assertions.assertThrows(
         NotAuthorizedException.class,
-        () -> taskMonitorService.createWorkbasketReportBuilder().buildReport());
+        () -> monitorService.createWorkbasketReportBuilder().buildReport());
   }
 
   @WithAccessId(userName = "monitor")
   @Test
   void testGetTotalNumbersOfTasksOfWorkbasketReportBasedOnDueDate()
       throws InvalidArgumentException, NotAuthorizedException {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
 
-    WorkbasketReport report = taskMonitorService.createWorkbasketReportBuilder().buildReport();
+    WorkbasketReport report = monitorService.createWorkbasketReportBuilder().buildReport();
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(reportToString(report));
@@ -70,12 +70,12 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetWorkbasketReportWithReportLineItemDefinitions()
       throws InvalidArgumentException, NotAuthorizedException {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
 
     List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
     WorkbasketReport report =
-        taskMonitorService
+        monitorService
             .createWorkbasketReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
@@ -104,12 +104,12 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
   @WithAccessId(userName = "monitor")
   @Test
   void testEachItemOfWorkbasketReport() throws InvalidArgumentException, NotAuthorizedException {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
 
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     WorkbasketReport report =
-        taskMonitorService
+        monitorService
             .createWorkbasketReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
@@ -136,12 +136,12 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
   @Test
   void testEachItemOfWorkbasketReportNotInWorkingDays()
       throws InvalidArgumentException, NotAuthorizedException {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
 
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     WorkbasketReport report =
-        taskMonitorService
+        monitorService
             .createWorkbasketReportBuilder()
             .withColumnHeaders(columnHeaders)
             .buildReport();
@@ -167,14 +167,14 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
   @Test
   void testEachItemOfWorkbasketReportWithWorkbasketFilter()
       throws InvalidArgumentException, NotAuthorizedException {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
 
     List<String> workbasketIds =
         Collections.singletonList("WBI:000000000000000000000000000000000001");
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     WorkbasketReport report =
-        taskMonitorService
+        monitorService
             .createWorkbasketReportBuilder()
             .withColumnHeaders(columnHeaders)
             .workbasketIdIn(workbasketIds)
@@ -196,13 +196,13 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
   @Test
   void testEachItemOfWorkbasketReportWithStateFilter()
       throws InvalidArgumentException, NotAuthorizedException {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
 
     List<TaskState> states = Collections.singletonList(TaskState.READY);
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     WorkbasketReport report =
-        taskMonitorService
+        monitorService
             .createWorkbasketReportBuilder()
             .withColumnHeaders(columnHeaders)
             .stateIn(states)
@@ -230,13 +230,13 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
   @Test
   void testEachItemOfWorkbasketReportWithCategoryFilter()
       throws InvalidArgumentException, NotAuthorizedException {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
 
     List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     WorkbasketReport report =
-        taskMonitorService
+        monitorService
             .createWorkbasketReportBuilder()
             .withColumnHeaders(columnHeaders)
             .categoryIn(categories)
@@ -264,13 +264,13 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
   @Test
   void testEachItemOfWorkbasketReportWithDomainFilter()
       throws InvalidArgumentException, NotAuthorizedException {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
 
     List<String> domains = Collections.singletonList("DOMAIN_A");
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     WorkbasketReport report =
-        taskMonitorService
+        monitorService
             .createWorkbasketReportBuilder()
             .withColumnHeaders(columnHeaders)
             .domainIn(domains)
@@ -298,14 +298,14 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
   @Test
   void testEachItemOfWorkbasketReportWithCustomFieldValueFilter()
       throws InvalidArgumentException, NotAuthorizedException {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
 
     Map<CustomField, String> customAttributeFilter = new HashMap<>();
     customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     WorkbasketReport report =
-        taskMonitorService
+        monitorService
             .createWorkbasketReportBuilder()
             .withColumnHeaders(columnHeaders)
             .customAttributeFilterIn(customAttributeFilter)
@@ -333,7 +333,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
   @Test
   void testEachItemOfWorkbasketReportForSelectedClassifications()
       throws InvalidArgumentException, NotAuthorizedException {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
 
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
     List<CombinedClassificationFilter> combinedClassificationFilter = new ArrayList<>();
@@ -353,7 +353,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
         new CombinedClassificationFilter("CLI:000000000000000000000000000000000005"));
 
     WorkbasketReport report =
-        taskMonitorService
+        monitorService
             .createWorkbasketReportBuilder()
             .withColumnHeaders(columnHeaders)
             .combinedClassificationFilterIn(combinedClassificationFilter)
@@ -381,11 +381,11 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTotalNumbersOfTasksOfWorkbasketReportBasedOnPlannedDateWithReportLineItemDefinitions()
       throws InvalidArgumentException, NotAuthorizedException {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
     List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
     WorkbasketReport report =
-        taskMonitorService
+        monitorService
             .createWorkbasketReportBuilder()
             .withColumnHeaders(columnHeaders)
             .buildPlannedDateBasedReport();

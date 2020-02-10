@@ -15,9 +15,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.report.api.TaskMonitorService;
-import pro.taskana.report.api.header.TimeIntervalColumnHeader;
-import pro.taskana.report.internal.SelectedItem;
+import pro.taskana.monitor.api.MonitorService;
+import pro.taskana.monitor.api.SelectedItem;
+import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 import pro.taskana.task.api.CustomField;
@@ -29,14 +29,14 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
 
   @Test
   void testRoleCheck() {
-    TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
 
     List<SelectedItem> selectedItems = new ArrayList<>();
 
     Assertions.assertThrows(
         NotAuthorizedException.class,
         () ->
-            taskMonitorService
+            monitorService
                 .createCategoryReportBuilder()
                 .listTaskIdsForSelectedItems(selectedItems));
   }
@@ -44,7 +44,7 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
   @WithAccessId(userName = "monitor")
   @Test
   void testGetTaskIdsOfCategoryReport() throws InvalidArgumentException, NotAuthorizedException {
-    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final MonitorService monitorService = taskanaEngine.getTaskMonitorService();
 
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
@@ -69,7 +69,7 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
     selectedItems.add(s3);
 
     List<String> ids =
-        taskMonitorService
+        monitorService
             .createCategoryReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
@@ -93,7 +93,7 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfCategoryReportWithWorkbasketFilter()
       throws InvalidArgumentException, NotAuthorizedException {
-    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final MonitorService monitorService = taskanaEngine.getTaskMonitorService();
 
     final List<String> workbasketIds =
         Collections.singletonList("WBI:000000000000000000000000000000000001");
@@ -120,7 +120,7 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
     selectedItems.add(s3);
 
     List<String> ids =
-        taskMonitorService
+        monitorService
             .createCategoryReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
@@ -138,7 +138,7 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfCategoryReportWithStateFilter()
       throws InvalidArgumentException, NotAuthorizedException {
-    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final MonitorService monitorService = taskanaEngine.getTaskMonitorService();
 
     final List<TaskState> states = Collections.singletonList(TaskState.READY);
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
@@ -164,7 +164,7 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
     selectedItems.add(s3);
 
     List<String> ids =
-        taskMonitorService
+        monitorService
             .createCategoryReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
@@ -189,7 +189,7 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfCategoryReportWithCategoryFilter()
       throws InvalidArgumentException, NotAuthorizedException {
-    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final MonitorService monitorService = taskanaEngine.getTaskMonitorService();
 
     final List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
@@ -209,7 +209,7 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
     selectedItems.add(s2);
 
     List<String> ids =
-        taskMonitorService
+        monitorService
             .createCategoryReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
@@ -226,7 +226,7 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfCategoryReportWithDomainFilter()
       throws InvalidArgumentException, NotAuthorizedException {
-    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final MonitorService monitorService = taskanaEngine.getTaskMonitorService();
 
     final List<String> domains = Collections.singletonList("DOMAIN_A");
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
@@ -252,7 +252,7 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
     selectedItems.add(s3);
 
     List<String> ids =
-        taskMonitorService
+        monitorService
             .createCategoryReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
@@ -270,7 +270,7 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfCategoryReportWithCustomFieldValueFilter()
       throws InvalidArgumentException, NotAuthorizedException {
-    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final MonitorService monitorService = taskanaEngine.getTaskMonitorService();
 
     Map<CustomField, String> customAttributeFilter = new HashMap<>();
     customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
@@ -297,7 +297,7 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
     selectedItems.add(s3);
 
     List<String> ids =
-        taskMonitorService
+        monitorService
             .createCategoryReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
@@ -315,7 +315,7 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
   @WithAccessId(userName = "monitor")
   @Test
   void testThrowsExceptionIfSubKeysAreUsed() {
-    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final MonitorService monitorService = taskanaEngine.getTaskMonitorService();
 
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
@@ -331,7 +331,7 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
     Assertions.assertThrows(
         InvalidArgumentException.class,
         () ->
-            taskMonitorService
+            monitorService
                 .createCategoryReportBuilder()
                 .withColumnHeaders(columnHeaders)
                 .listTaskIdsForSelectedItems(selectedItems));

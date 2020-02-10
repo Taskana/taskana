@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import org.springframework.hateoas.ResourceSupport;
 
-import pro.taskana.report.api.row.SingleRow;
-import pro.taskana.report.api.structure.Report;
+import pro.taskana.monitor.api.reports.Report;
+import pro.taskana.monitor.api.reports.row.SingleRow;
 
 /** Resource class for {@link Report}. */
 public class ReportResource extends ResourceSupport {

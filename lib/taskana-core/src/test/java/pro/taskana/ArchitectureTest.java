@@ -104,8 +104,7 @@ class ArchitectureTest {
             "pro.taskana.classification.internal.(*)..",
             "pro.taskana.history.api.(*)..",
             "pro.taskana.history.internal.(*)..",
-            // to be fixed soon
-            // "pro.taskana.report.api.(*)..",
+            "pro.taskana.report.api.(*)..",
             "pro.taskana.report.internal.(*)..",
             "pro.taskana.task.api.(*)..",
             "pro.taskana.task.internal.(*)..",

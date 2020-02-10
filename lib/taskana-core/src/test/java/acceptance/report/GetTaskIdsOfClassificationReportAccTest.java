@@ -11,9 +11,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.report.api.TaskMonitorService;
-import pro.taskana.report.api.header.TimeIntervalColumnHeader;
-import pro.taskana.report.internal.SelectedItem;
+import pro.taskana.monitor.api.MonitorService;
+import pro.taskana.monitor.api.SelectedItem;
+import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 
@@ -23,7 +23,7 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
 
   @Test
   void testRoleCheck() {
-    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final MonitorService monitorService = taskanaEngine.getTaskMonitorService();
 
     final List<SelectedItem> selectedItems = new ArrayList<>();
 
@@ -48,7 +48,7 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
     Assertions.assertThrows(
         NotAuthorizedException.class,
         () ->
-            taskMonitorService
+            monitorService
                 .createClassificationReportBuilder()
                 .listTaskIdsForSelectedItems(selectedItems));
   }
@@ -57,7 +57,7 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfClassificationReport()
       throws InvalidArgumentException, NotAuthorizedException {
-    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final MonitorService monitorService = taskanaEngine.getTaskMonitorService();
 
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
@@ -82,7 +82,7 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
     selectedItems.add(s3);
 
     List<String> ids =
-        taskMonitorService
+        monitorService
             .createClassificationReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
@@ -101,7 +101,7 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfClassificationReportWithAttachments()
       throws InvalidArgumentException, NotAuthorizedException {
-    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final MonitorService monitorService = taskanaEngine.getTaskMonitorService();
 
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
@@ -128,7 +128,7 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
     selectedItems.add(s3);
 
     List<String> ids =
-        taskMonitorService
+        monitorService
             .createClassificationReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
@@ -143,7 +143,7 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfClassificationReportWithDomainFilter()
       throws InvalidArgumentException, NotAuthorizedException {
-    final TaskMonitorService taskMonitorService = taskanaEngine.getTaskMonitorService();
+    final MonitorService monitorService = taskanaEngine.getTaskMonitorService();
 
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
@@ -172,7 +172,7 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
     domains.add("DOMAIN_C");
 
     List<String> ids =
-        taskMonitorService
+        monitorService
             .createClassificationReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
