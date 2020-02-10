@@ -3,7 +3,7 @@ package pro.taskana.rest.resource;
 import javax.validation.constraints.NotNull;
 import org.springframework.hateoas.ResourceSupport;
 
-import pro.taskana.history.api.events.TaskanaHistoryEvent;
+import pro.taskana.spi.history.api.events.TaskanaHistoryEvent;
 
 /** Resource class for {@link TaskanaHistoryEvent}. */
 public class TaskHistoryEventResource extends ResourceSupport {

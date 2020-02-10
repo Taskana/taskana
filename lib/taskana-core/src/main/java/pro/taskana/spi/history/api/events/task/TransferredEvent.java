@@ -1,4 +1,4 @@
-package pro.taskana.history.api.events.task;
+package pro.taskana.spi.history.api.events.task;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

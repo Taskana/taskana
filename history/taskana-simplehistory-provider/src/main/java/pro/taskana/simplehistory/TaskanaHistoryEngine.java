@@ -1,6 +1,6 @@
 package pro.taskana.simplehistory;
 
-import pro.taskana.history.api.TaskanaHistory;
+import pro.taskana.spi.history.api.TaskanaHistory;
 
 /** The TaskanaHistoryEngine represents an overall set of all needed services. */
 public interface TaskanaHistoryEngine {
