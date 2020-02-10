@@ -47,6 +47,9 @@ install: skip
 script: ci/test.sh "$DB" "$([ "false" = "$TRAVIS_PULL_REQUEST" ] && echo "$SONAR_PROJECT_KEY")"
 before_cache: rm -rf "$HOME/.m2/repository/pro/taskana"
 
+after_failure:
+  - cat /home/travis/build/Taskana/taskana/rest/taskana-rest-spring-example-wildfly/target/surefire-reports/*.txt
+
 jobs:
   include:
     - stage: Test
