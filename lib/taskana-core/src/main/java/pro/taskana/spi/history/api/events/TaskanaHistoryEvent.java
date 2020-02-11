@@ -2,8 +2,6 @@ package pro.taskana.spi.history.api.events;
 
 import java.time.Instant;
 
-import pro.taskana.common.internal.security.CurrentUserContext;
-
 /** Super class for all specific events from the TASKANA engine. */
 public class TaskanaHistoryEvent {
 
@@ -34,8 +32,8 @@ public class TaskanaHistoryEvent {
   protected String oldData;
   protected String newData;
 
-  public TaskanaHistoryEvent() {
-    userId = CurrentUserContext.getUserid();
+  public TaskanaHistoryEvent(String userId) {
+    this.userId = userId;
   }
 
   public long getId() {

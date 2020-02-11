@@ -68,11 +68,10 @@ public class HistoryQueryImplTest {
       String userId,
       String comment,
       Instant created) {
-    HistoryEventImpl he = new HistoryEventImpl();
+    HistoryEventImpl he = new HistoryEventImpl(userId);
     he.setTaskId(taskId);
     he.setWorkbasketKey(workbasketKey);
     he.setEventType(type);
-    he.setUserId(userId);
     he.setComment(comment);
     he.setCreated(created);
     return he;

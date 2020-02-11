@@ -363,7 +363,8 @@ public class TaskTransferrer {
   private void createTaskTransferredEvent(
       Task task, WorkbasketSummary oldWorkbasketSummary, WorkbasketSummary newWorkbasketSummary) {
     historyEventProducer.createEvent(
-        new TransferredEvent(task, oldWorkbasketSummary, newWorkbasketSummary));
+        new TransferredEvent(
+            task, oldWorkbasketSummary, newWorkbasketSummary, CurrentUserContext.getUserid()));
   }
 
   private void updateTasksToBeTransferred(
