@@ -96,7 +96,8 @@ public class SimpleHistoryServiceImplTest {
   @Test
   public void testCreateEvent() throws SQLException {
     HistoryEventImpl expectedWb =
-        AbstractAccTest.createHistoryEvent("wbKey1", "taskId1", "type1", "Some comment", "wbKey2");
+        AbstractAccTest.createHistoryEvent(
+            "wbKey1", "taskId1", "type1", "Some comment", "wbKey2", "someUserId");
     doNothing().when(historyEventMapperMock).insert(expectedWb);
 
     cutSpy.create(expectedWb);
@@ -110,7 +111,8 @@ public class SimpleHistoryServiceImplTest {
   public void testQueryEvent() throws SQLException {
     List<HistoryEventImpl> returnList = new ArrayList<>();
     returnList.add(
-        AbstractAccTest.createHistoryEvent("wbKey1", "taskId1", "type1", "Some comment", "wbKey2"));
+        AbstractAccTest.createHistoryEvent(
+            "wbKey1", "taskId1", "type1", "Some comment", "wbKey2", "someUserId"));
     doReturn(returnList).when(historyQueryMapperMock).queryHistoryEvent(any());
 
     final List<HistoryEventImpl> result = cutSpy.createHistoryQuery().taskIdIn("taskId1").list();

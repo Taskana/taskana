@@ -7,8 +7,8 @@ import pro.taskana.task.api.TaskSummary;
 /** Super class for all task related events. */
 public class TaskEvent extends TaskanaHistoryEvent {
 
-  public TaskEvent(Task task) {
-    super();
+  public TaskEvent(Task task, String userId) {
+    super(userId);
     taskId = task.getId();
     businessProcessId = task.getBusinessProcessId();
     parentBusinessProcessId = task.getParentBusinessProcessId();
@@ -31,8 +31,8 @@ public class TaskEvent extends TaskanaHistoryEvent {
     }
   }
 
-  public TaskEvent(TaskSummary task) {
-    super();
+  public TaskEvent(TaskSummary task, String userId) {
+    super(userId);
     taskId = task.getId();
     businessProcessId = task.getBusinessProcessId();
     parentBusinessProcessId = task.getParentBusinessProcessId();

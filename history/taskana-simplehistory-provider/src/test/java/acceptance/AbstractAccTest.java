@@ -112,8 +112,9 @@ public class AbstractAccTest {
       String taskId,
       String type,
       String comment,
-      String previousWorkbasketId) {
-    HistoryEventImpl historyEvent = new HistoryEventImpl();
+      String previousWorkbasketId,
+      String userid) {
+    HistoryEventImpl historyEvent = new HistoryEventImpl(userid);
     historyEvent.setWorkbasketKey(workbasketKey);
     historyEvent.setTaskId(taskId);
     historyEvent.setEventType(type);

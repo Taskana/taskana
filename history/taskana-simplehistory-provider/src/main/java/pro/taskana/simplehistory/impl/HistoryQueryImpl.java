@@ -596,7 +596,7 @@ public class HistoryQueryImpl implements HistoryQuery {
   @Override
   public HistoryEventImpl single() {
     LOGGER.debug("entry to list(), this = {}", this);
-    HistoryEventImpl result = new HistoryEventImpl();
+    HistoryEventImpl result = null;
     try {
       taskanaHistoryEngine.openConnection();
       this.maxRows = 1;
