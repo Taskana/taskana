@@ -37,8 +37,7 @@ import pro.taskana.task.api.Task;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
     classes = RestConfiguration.class,
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    properties = "spring.main.allow-bean-definition-overriding=true")
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class AsyncUpdateJobIntTest {
 
   private static final String CLASSIFICATION_ID = "CLI:100000000000000000000000000000000003";

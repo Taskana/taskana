@@ -64,7 +64,7 @@ class ClassificationControllerIntTest {
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(ClassificationSummaryListResource.class));
     assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
-    assertThat(response.getBody().getContent().size()).isEqualTo(13);
+    assertThat(response.getBody().getContent()).hasSize(13);
   }
 
   @Test
@@ -79,7 +79,7 @@ class ClassificationControllerIntTest {
     assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
     assertThat(response.getBody().getLink(Link.REL_SELF).getHref())
         .endsWith("/api/v1/classifications?domain=DOMAIN_A&sort-by=key&order=asc");
-    assertThat(response.getBody().getContent().size()).isEqualTo(17);
+    assertThat(response.getBody().getContent()).hasSize(17);
     assertThat(response.getBody().getContent().iterator().next().key).isEqualTo("A12");
   }
 
@@ -92,7 +92,7 @@ class ClassificationControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(ClassificationSummaryListResource.class));
-    assertThat(response.getBody().getContent().size()).isEqualTo(5);
+    assertThat(response.getBody().getContent()).hasSize(5);
     assertThat(response.getBody().getContent().iterator().next().key).isEqualTo("L1050");
     assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
     assertThat(response.getBody().getLink(Link.REL_SELF).getHref())
@@ -232,7 +232,8 @@ class ClassificationControllerIntTest {
             new HttpEntity<>(newClassification, restHelper.getHeaders()),
             ParameterizedTypeReference.forType(ClassificationResource.class)))
         .isInstanceOf(HttpClientErrorException.class)
-        .hasFieldOrPropertyWithValue("statusCode", HttpStatus.BAD_REQUEST);
+        .extracting(ex -> ((HttpClientErrorException)ex).getStatusCode())
+          .isEqualTo(HttpStatus.BAD_REQUEST);;
   }
 
   @Test

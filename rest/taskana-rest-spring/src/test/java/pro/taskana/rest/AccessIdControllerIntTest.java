@@ -1,6 +1,7 @@
 package pro.taskana.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,7 @@ class AccessIdControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(List.class));
-    assertThat(response.getBody().size()).isEqualTo(1);
+    assertThat(response.getBody()).hasSize(1);
   }
 
   @Test
@@ -50,7 +51,7 @@ class AccessIdControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(List.class));
-    assertThat(response.getBody().size()).isEqualTo(1);
+    assertThat(response.getBody()).hasSize(1);
   }
 
   @Test
@@ -64,7 +65,7 @@ class AccessIdControllerIntTest {
 
     List<AccessIdResource> body = response.getBody();
     assertThat(body).isNotNull();
-    assertThat(body.size()).isEqualTo(3);
+    assertThat(body).hasSize(3);
     assertThat(body)
         .extracting(AccessIdResource::getName)
         .containsExactlyInAnyOrder("Tralisch, Thea", "Bert, Ali", "Mente, Ali");
@@ -72,16 +73,17 @@ class AccessIdControllerIntTest {
 
   @Test
   void testBadRequestWhenSearchForIsTooShort() {
-    try {
-      template.exchange(
-          restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=al",
-          HttpMethod.GET,
-          restHelper.defaultRequest(),
-          ParameterizedTypeReference.forType(List.class));
-    } catch (HttpClientErrorException e) {
-      assertThat(HttpStatus.BAD_REQUEST).isEqualTo(e.getStatusCode());
-      assertThat(e.getResponseBodyAsString()).containsSequence("Minimum searchFor length =");
-    }
+    assertThatThrownBy(
+        () ->
+        template.exchange(
+            restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=al",
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
+            ParameterizedTypeReference.forType(List.class)))
+        .isInstanceOf(HttpClientErrorException.class)
+        .hasMessageContaining("Minimum searchFor length =")
+        .extracting(ex -> ((HttpClientErrorException)ex).getStatusCode())
+          .isEqualTo(HttpStatus.BAD_REQUEST);
   }
   
   static class AccessIdListResource extends ArrayList<AccessIdResource> {
