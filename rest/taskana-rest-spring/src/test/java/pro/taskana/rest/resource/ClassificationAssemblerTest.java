@@ -1,7 +1,8 @@
 package pro.taskana.rest.resource;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.time.Instant;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,9 +16,9 @@ import pro.taskana.rest.Mapping;
 @TaskanaSpringBootTest
 class ClassificationAssemblerTest {
 
-  @Autowired private ClassificationResourceAssembler classificationResourceAssembler;
+  @Autowired ClassificationResourceAssembler classificationResourceAssembler;
 
-  @Autowired private ClassificationService classificationService;
+  @Autowired ClassificationService classificationService;
 
   @Test
   void classificationToResource() {
@@ -90,35 +91,35 @@ class ClassificationAssemblerTest {
   }
 
   private void testLinks(ClassificationResource resource) {
-    Assert.assertEquals(1, resource.getLinks().size());
-    Assert.assertEquals(
-        Mapping.URL_CLASSIFICATIONS_ID.replaceAll("\\{.*}", resource.getClassificationId()),
-        resource.getLink("self").getHref());
+    assertThat(resource.getLinks()).hasSize(1);
+    assertThat(Mapping.URL_CLASSIFICATIONS_ID.replaceAll("\\{.*}", resource.getClassificationId()))
+        .isEqualTo(resource.getLink("self").getHref());
   }
 
   private void testEquality(
       Classification classification, ClassificationResource classificationResource) {
-    Assert.assertEquals(
-        classification.getApplicationEntryPoint(), classificationResource.applicationEntryPoint);
-    Assert.assertEquals(classification.getKey(), classificationResource.key);
-    Assert.assertEquals(classification.getDomain(), classificationResource.domain);
-    Assert.assertEquals(classification.getId(), classificationResource.classificationId);
-    Assert.assertEquals(classification.getDescription(), classificationResource.description);
-    Assert.assertEquals(classification.getName(), classificationResource.name);
-    Assert.assertEquals(classification.getServiceLevel(), classificationResource.serviceLevel);
-    Assert.assertEquals(classification.getCategory(), classificationResource.category);
-    Assert.assertEquals(classification.getCustom1(), classificationResource.custom1);
-    Assert.assertEquals(classification.getCustom2(), classificationResource.custom2);
-    Assert.assertEquals(classification.getCustom3(), classificationResource.custom3);
-    Assert.assertEquals(classification.getCustom4(), classificationResource.custom4);
-    Assert.assertEquals(classification.getCustom5(), classificationResource.custom5);
-    Assert.assertEquals(classification.getCustom6(), classificationResource.custom6);
-    Assert.assertEquals(classification.getCustom7(), classificationResource.custom7);
-    Assert.assertEquals(classification.getCustom8(), classificationResource.custom8);
-    Assert.assertEquals(classification.getParentId(), classificationResource.parentId);
-    Assert.assertEquals(classification.getType(), classificationResource.type);
-    Assert.assertEquals(classification.getPriority(), classificationResource.priority);
-    Assert.assertEquals(
-        classification.getIsValidInDomain(), classificationResource.isValidInDomain);
+    assertThat(classification.getApplicationEntryPoint())
+        .isEqualTo(classificationResource.getApplicationEntryPoint());
+    assertThat(classification.getKey()).isEqualTo(classificationResource.getKey());
+    assertThat(classification.getDomain()).isEqualTo(classificationResource.getDomain());
+    assertThat(classification.getId()).isEqualTo(classificationResource.getClassificationId());
+    assertThat(classification.getDescription()).isEqualTo(classificationResource.getDescription());
+    assertThat(classification.getName()).isEqualTo(classificationResource.getName());
+    assertThat(classification.getServiceLevel())
+        .isEqualTo(classificationResource.getServiceLevel());
+    assertThat(classification.getCategory()).isEqualTo(classificationResource.getCategory());
+    assertThat(classification.getCustom1()).isEqualTo(classificationResource.getCustom1());
+    assertThat(classification.getCustom2()).isEqualTo(classificationResource.getCustom2());
+    assertThat(classification.getCustom3()).isEqualTo(classificationResource.getCustom3());
+    assertThat(classification.getCustom4()).isEqualTo(classificationResource.getCustom4());
+    assertThat(classification.getCustom5()).isEqualTo(classificationResource.getCustom5());
+    assertThat(classification.getCustom6()).isEqualTo(classificationResource.getCustom6());
+    assertThat(classification.getCustom7()).isEqualTo(classificationResource.getCustom7());
+    assertThat(classification.getCustom8()).isEqualTo(classificationResource.getCustom8());
+    assertThat(classification.getParentId()).isEqualTo(classificationResource.getParentId());
+    assertThat(classification.getType()).isEqualTo(classificationResource.getType());
+    assertThat(classification.getPriority()).isEqualTo(classificationResource.getPriority());
+    assertThat(classification.getIsValidInDomain())
+        .isEqualTo(classificationResource.getIsValidInDomain());
   }
 }

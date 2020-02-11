@@ -173,7 +173,7 @@ public class ClassificationController extends AbstractPagingController {
     }
 
     ResponseEntity<ClassificationResource> result;
-    if (classificationId.equals(resource.classificationId)) {
+    if (classificationId.equals(resource.getClassificationId())) {
       Classification classification = classificationResourceAssembler.toModel(resource);
       classification = classificationService.updateClassification(classification);
       result = ResponseEntity.ok(classificationResourceAssembler.toResource(classification));
