@@ -212,7 +212,7 @@ public class TaskServiceImpl implements TaskService {
         this.taskMapper.insert(task);
         LOGGER.debug("Method createTask() created Task '{}'.", task.getId());
         if (HistoryEventProducer.isHistoryEnabled()) {
-          historyEventProducer.createEvent(new CreatedEvent(task));
+          historyEventProducer.createEvent(new CreatedEvent(task, CurrentUserContext.getUserid()));
         }
       } catch (PersistenceException e) {
         // Error messages:
@@ -521,8 +521,7 @@ public class TaskServiceImpl implements TaskService {
 
       List<String> changedTasks = new ArrayList<>();
       if (!taskSummaries.isEmpty()) {
-        changedTasks =
-            taskSummaries.stream().map(TaskSummary::getId).collect(Collectors.toList());
+        changedTasks = taskSummaries.stream().map(TaskSummary::getId).collect(Collectors.toList());
         taskMapper.updateTasks(changedTasks, updated, fieldSelector);
         if (LOGGER.isDebugEnabled()) {
           LOGGER.debug(
@@ -562,8 +561,7 @@ public class TaskServiceImpl implements TaskService {
 
       List<String> changedTasks = new ArrayList<>();
       if (!taskSummaries.isEmpty()) {
-        changedTasks =
-            taskSummaries.stream().map(TaskSummary::getId).collect(Collectors.toList());
+        changedTasks = taskSummaries.stream().map(TaskSummary::getId).collect(Collectors.toList());
         taskMapper.updateTasks(changedTasks, updatedTask, fieldSelector);
         if (LOGGER.isDebugEnabled()) {
           LOGGER.debug(
@@ -781,7 +779,7 @@ public class TaskServiceImpl implements TaskService {
       taskMapper.update(task);
       LOGGER.debug("Task '{}' claimed by user '{}'.", taskId, userId);
       if (HistoryEventProducer.isHistoryEnabled()) {
-        historyEventProducer.createEvent(new ClaimedEvent(task));
+        historyEventProducer.createEvent(new ClaimedEvent(task, CurrentUserContext.getUserid()));
       }
     } finally {
       taskanaEngine.returnConnection();
@@ -820,7 +818,8 @@ public class TaskServiceImpl implements TaskService {
       taskMapper.update(task);
       LOGGER.debug("Task '{}' unclaimed by user '{}'.", taskId, userId);
       if (HistoryEventProducer.isHistoryEnabled()) {
-        historyEventProducer.createEvent(new ClaimCancelledEvent(task));
+        historyEventProducer.createEvent(
+            new ClaimCancelledEvent(task, CurrentUserContext.getUserid()));
       }
     } finally {
       taskanaEngine.returnConnection();
@@ -871,7 +870,7 @@ public class TaskServiceImpl implements TaskService {
       taskMapper.update(task);
       LOGGER.debug("Task '{}' completed by user '{}'.", taskId, userId);
       if (HistoryEventProducer.isHistoryEnabled()) {
-        historyEventProducer.createEvent(new CompletedEvent(task));
+        historyEventProducer.createEvent(new CompletedEvent(task, CurrentUserContext.getUserid()));
       }
     } finally {
       taskanaEngine.returnConnection();
@@ -1001,9 +1000,7 @@ public class TaskServiceImpl implements TaskService {
   }
 
   private void standardSettings(
-      TaskImpl task,
-      Classification classification,
-      PrioDurationHolder prioDurationFromAttachments)
+      TaskImpl task, Classification classification, PrioDurationHolder prioDurationFromAttachments)
       throws InvalidArgumentException {
     LOGGER.debug("entry to standardSettings()");
     final Instant now = Instant.now();
@@ -1581,9 +1578,7 @@ public class TaskServiceImpl implements TaskService {
   }
 
   private void updateClassificationRelatedProperties(
-      TaskImpl oldTaskImpl,
-      TaskImpl newTaskImpl,
-      PrioDurationHolder prioDurationFromAttachments)
+      TaskImpl oldTaskImpl, TaskImpl newTaskImpl, PrioDurationHolder prioDurationFromAttachments)
       throws ClassificationNotFoundException {
     LOGGER.debug("entry to updateClassificationRelatedProperties()");
     // insert Classification specifications if Classification is given.
@@ -1967,7 +1962,10 @@ public class TaskServiceImpl implements TaskService {
   }
 
   private void createTasksCompletedEvents(List<TaskSummary> taskSummaries) {
-    taskSummaries.forEach(task -> historyEventProducer.createEvent(new CompletedEvent(task)));
+    taskSummaries.forEach(
+        task ->
+            historyEventProducer.createEvent(
+                new CompletedEvent(task, CurrentUserContext.getUserid())));
   }
 
   private static class PrioDurationHolder extends Pair<Duration, Integer> {
