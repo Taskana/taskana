@@ -20,8 +20,7 @@ import pro.taskana.rest.resource.AccessIdResource;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
     classes = RestConfiguration.class,
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    properties = "spring.main.allow-bean-definition-overriding=true")
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class LdapTest {
 
   @Autowired private LdapClient ldapClient;
@@ -31,7 +30,7 @@ class LdapTest {
     if (ldapClient.useLdap()) {
       List<AccessIdResource> usersAndGroups = ldapClient.searchUsersAndGroups("ser0");
       System.out.println("#### found " + LoggerUtils.listToString(usersAndGroups));
-      assertThat(usersAndGroups.size()).isEqualTo(50);
+      assertThat(usersAndGroups).hasSize(50);
     }
   }
 }

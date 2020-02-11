@@ -48,8 +48,7 @@ import pro.taskana.workbasket.internal.WorkbasketImpl;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
     classes = TaskanaConfigTestApplication.class,
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    properties = "spring.main.allow-bean-definition-overriding=true")
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles({"inmemorydb", "dev"})
 @Import({TransactionalJobsConfiguration.class})
 class TaskanaTransactionIntTest {
