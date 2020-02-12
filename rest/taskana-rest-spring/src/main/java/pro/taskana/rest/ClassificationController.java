@@ -3,6 +3,7 @@ package pro.taskana.rest;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
 import org.springframework.http.HttpStatus;
@@ -118,7 +119,7 @@ public class ClassificationController extends AbstractPagingController {
     return response;
   }
 
-  @GetMapping(path = Mapping.URL_CLASSIFICATIONS_ID)
+  @GetMapping(path = Mapping.URL_CLASSIFICATIONS_ID, produces = MediaTypes.HAL_JSON_UTF8_VALUE)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ClassificationResource> getClassification(
       @PathVariable String classificationId) throws ClassificationNotFoundException {
