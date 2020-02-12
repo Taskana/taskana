@@ -1,12 +1,7 @@
 package pro.taskana.rest;
 
-import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
@@ -62,10 +57,10 @@ class ClassificationDefinitionControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(ClassificationResource[].class));
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertTrue(response.getBody().length >= 5);
-    assertTrue(response.getBody().length <= 7);
-    assertThat(response.getBody()[0], instanceOf(ClassificationResource.class));
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(response.getBody().length >= 5).isTrue();
+    assertThat(response.getBody().length <= 7).isTrue();
+    assertThat(response.getBody()[0]).isInstanceOf(ClassificationResource.class);
   }
 
   @Test
@@ -76,7 +71,7 @@ class ClassificationDefinitionControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(ClassificationResource[].class));
-    assertEquals(0, response.getBody().length);
+    assertThat(response.getBody()).isEmpty();
   }
 
   @Test
@@ -110,7 +105,7 @@ class ClassificationDefinitionControllerIntTest {
     clList.add(objMapper.writeValueAsString(classification));
 
     ResponseEntity<Void> response = importRequest(clList);
-    assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
   }
 
   @Test
@@ -123,7 +118,7 @@ class ClassificationDefinitionControllerIntTest {
     try {
       importRequest(clList);
     } catch (HttpClientErrorException e) {
-      assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+      assertThat(e.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -137,7 +132,7 @@ class ClassificationDefinitionControllerIntTest {
     try {
       importRequest(clList);
     } catch (HttpClientErrorException e) {
-      assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+      assertThat(e.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -152,7 +147,7 @@ class ClassificationDefinitionControllerIntTest {
     try {
       importRequest(clList);
     } catch (HttpClientErrorException e) {
-      assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+      assertThat(e.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -182,7 +177,7 @@ class ClassificationDefinitionControllerIntTest {
     clList.add(c2);
 
     ResponseEntity<Void> response = importRequest(clList);
-    assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
   }
 
   @Test
@@ -200,7 +195,7 @@ class ClassificationDefinitionControllerIntTest {
     try {
       importRequest(clList);
     } catch (HttpClientErrorException e) {
-      assertEquals(HttpStatus.CONFLICT, e.getStatusCode());
+      assertThat(e.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
     }
   }
 
@@ -213,18 +208,18 @@ class ClassificationDefinitionControllerIntTest {
     clList.add(objMapper.writeValueAsString(existingClassification));
 
     ResponseEntity<Void> response = importRequest(clList);
-    assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
     existingClassification.setName("second new Name");
     clList = new ArrayList<>();
     clList.add(objMapper.writeValueAsString(existingClassification));
 
     response = importRequest(clList);
-    assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
     ClassificationSummaryResource testClassification =
         this.getClassificationWithKeyAndDomain("L110107", "DOMAIN_A");
-    assertEquals("second new Name", testClassification.getName());
+    assertThat(testClassification.getName()).isEqualTo("second new Name");
   }
 
   @Test
@@ -241,7 +236,7 @@ class ClassificationDefinitionControllerIntTest {
     clList.add(objMapper.writeValueAsString(newClassification));
 
     ResponseEntity<Void> response = importRequest(clList);
-    assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
     ClassificationSummaryResource parentCl =
         getClassificationWithKeyAndDomain("L11010", "DOMAIN_A");
@@ -250,11 +245,11 @@ class ClassificationDefinitionControllerIntTest {
     ClassificationSummaryResource testExistingCl =
         getClassificationWithKeyAndDomain("L110102", "DOMAIN_A");
 
-    assertNotNull(parentCl);
-    assertNotNull(testNewCl);
-    assertNotNull(testExistingCl);
-    assertEquals(testNewCl.getClassificationId(), testExistingCl.getParentId());
-    assertEquals(parentCl.getClassificationId(), testNewCl.getParentId());
+    assertThat(parentCl).isNotNull();
+    assertThat(testNewCl).isNotNull();
+    assertThat(testExistingCl).isNotNull();
+    assertThat(testExistingCl.getParentId()).isEqualTo(testNewCl.getClassificationId());
+    assertThat(testNewCl.getParentId()).isEqualTo(parentCl.getClassificationId());
   }
 
   @Test
@@ -286,7 +281,7 @@ class ClassificationDefinitionControllerIntTest {
     clList.add(c1);
 
     ResponseEntity<Void> response = importRequest(clList);
-    assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
     ClassificationSummaryResource parentCl =
         getClassificationWithKeyAndDomain("ImportKey6", "DOMAIN_A");
@@ -295,11 +290,11 @@ class ClassificationDefinitionControllerIntTest {
     ClassificationSummaryResource grandchildCl =
         getClassificationWithKeyAndDomain("ImportKey9", "DOMAIN_A");
 
-    assertNotNull(parentCl);
-    assertNotNull(childCl);
-    assertNotNull(grandchildCl);
-    assertEquals(childCl.getClassificationId(), grandchildCl.getParentId());
-    assertEquals(parentCl.getClassificationId(), childCl.getParentId());
+    assertThat(parentCl).isNotNull();
+    assertThat(childCl).isNotNull();
+    assertThat(grandchildCl).isNotNull();
+    assertThat(grandchildCl.getParentId()).isEqualTo(childCl.getClassificationId());
+    assertThat(childCl.getParentId()).isEqualTo(parentCl.getClassificationId());
   }
 
   @Test
@@ -321,7 +316,7 @@ class ClassificationDefinitionControllerIntTest {
     clList.add(child);
 
     ResponseEntity<Void> response = importRequest(clList);
-    assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
     ClassificationSummaryResource rightParentCl =
         getClassificationWithKeyAndDomain("ImportKey11", "DOMAIN_A");
@@ -330,11 +325,11 @@ class ClassificationDefinitionControllerIntTest {
     ClassificationSummaryResource childCl =
         getClassificationWithKeyAndDomain("ImportKey13", "DOMAIN_A");
 
-    assertNotNull(rightParentCl);
-    assertNotNull(wrongParentCl);
-    assertNotNull(childCl);
-    assertEquals(rightParentCl.getClassificationId(), childCl.getParentId());
-    assertNotEquals(wrongParentCl.getClassificationId(), childCl.getParentId());
+    assertThat(rightParentCl).isNotNull();
+    assertThat(wrongParentCl).isNotNull();
+    assertThat(childCl).isNotNull();
+    assertThat(childCl.getParentId()).isEqualTo(rightParentCl.getClassificationId());
+    assertThat(childCl.getParentId()).isNotEqualTo(wrongParentCl.getClassificationId());
   }
 
   @Test
@@ -342,14 +337,14 @@ class ClassificationDefinitionControllerIntTest {
       throws IOException, InterruptedException {
     ClassificationSummaryResource child1 =
         this.getClassificationWithKeyAndDomain("L110105", "DOMAIN_A");
-    assertEquals("L11010", child1.getParentKey());
+    assertThat(child1.getParentKey()).isEqualTo("L11010");
     child1.setParentId("CLI:100000000000000000000000000000000002");
     child1.setParentKey("L10303");
     final String withNewParent = objMapper.writeValueAsString(child1);
 
     ClassificationSummaryResource child2 =
         this.getClassificationWithKeyAndDomain("L110107", "DOMAIN_A");
-    assertEquals("L11010", child2.getParentKey());
+    assertThat(child2.getParentKey()).isEqualTo("L11010");
     child2.setParentId("");
     child2.setParentKey("");
     String withoutParent = objMapper.writeValueAsString(child2);
@@ -359,18 +354,18 @@ class ClassificationDefinitionControllerIntTest {
     clList.add(withoutParent);
 
     ResponseEntity<Void> response = importRequest(clList);
-    assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     Thread.sleep(10);
     LOGGER.debug("Wait 10 ms to give the system a chance to update");
 
     ClassificationSummaryResource childWithNewParent =
         this.getClassificationWithKeyAndDomain("L110105", "DOMAIN_A");
-    assertEquals(child1.parentKey, childWithNewParent.parentKey);
+    assertThat(childWithNewParent.getParentKey()).isEqualTo(child1.getParentKey());
 
     ClassificationSummaryResource childWithoutParent =
         this.getClassificationWithKeyAndDomain("L110107", "DOMAIN_A");
-    assertEquals(child2.parentId, childWithoutParent.parentId);
-    assertEquals(child2.parentKey, childWithoutParent.parentKey);
+    assertThat(childWithoutParent.getParentId()).isEqualTo(child2.getParentId());
+    assertThat(childWithoutParent.getParentKey()).isEqualTo(child2.getParentKey());
   }
 
   @Test
@@ -387,7 +382,7 @@ class ClassificationDefinitionControllerIntTest {
       importRequest(clList);
       fail("Expected http-Status 409");
     } catch (HttpClientErrorException e) {
-      assertEquals(HttpStatus.CONFLICT, e.getStatusCode());
+      assertThat(e.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
     }
   }
 
@@ -405,7 +400,7 @@ class ClassificationDefinitionControllerIntTest {
   private ClassificationSummaryResource getClassificationWithKeyAndDomain(
       String key, String domain) {
     LOGGER.debug("Request classification with key={} in domain={}", key, domain);
-    HttpEntity<String> request = new HttpEntity<String>(restHelper.getHeaders());
+    HttpEntity<String> request = new HttpEntity<>(restHelper.getHeaders());
     ResponseEntity<ClassificationSummaryListResource> response =
         template.exchange(
             restHelper.toUrl(Mapping.URL_CLASSIFICATIONS) + "?key=" + key + "&domain=" + domain,

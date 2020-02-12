@@ -77,10 +77,15 @@ class ClassificationControllerIntTest {
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(ClassificationSummaryListResource.class));
     assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
-    assertThat(response.getBody().getLink(Link.REL_SELF).getHref())
-        .endsWith("/api/v1/classifications?domain=DOMAIN_A&sort-by=key&order=asc");
+    assertThat(
+            response
+                .getBody()
+                .getLink(Link.REL_SELF)
+                .getHref()
+                .endsWith("/api/v1/classifications?domain=DOMAIN_A&sort-by=key&order=asc"))
+        .isTrue();
     assertThat(response.getBody().getContent()).hasSize(17);
-    assertThat(response.getBody().getContent().iterator().next().key).isEqualTo("A12");
+    assertThat(response.getBody().getContent().iterator().next().getKey()).isEqualTo("A12");
   }
 
   @Test
@@ -93,12 +98,17 @@ class ClassificationControllerIntTest {
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(ClassificationSummaryListResource.class));
     assertThat(response.getBody().getContent()).hasSize(5);
-    assertThat(response.getBody().getContent().iterator().next().key).isEqualTo("L1050");
+    assertThat(response.getBody().getContent().iterator().next().getKey()).isEqualTo("L1050");
     assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
-    assertThat(response.getBody().getLink(Link.REL_SELF).getHref())
-        .endsWith(
-            "/api/v1/classifications?"
-                + "domain=DOMAIN_A&sort-by=key&order=asc&page=2&page-size=5");
+    assertThat(
+            response
+                .getBody()
+                .getLink(Link.REL_SELF)
+                .getHref()
+                .endsWith(
+                    "/api/v1/classifications?"
+                        + "domain=DOMAIN_A&sort-by=key&order=asc&page=2&page-size=5"))
+        .isTrue();
     assertThat(response.getBody().getLink(Link.REL_FIRST)).isNotNull();
     assertThat(response.getBody().getLink(Link.REL_LAST)).isNotNull();
     assertThat(response.getBody().getLink(Link.REL_NEXT)).isNotNull();
@@ -121,7 +131,7 @@ class ClassificationControllerIntTest {
             ParameterizedTypeReference.forType(ClassificationResource.class));
 
     assertThat(responseEntity).isNotNull();
-    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    assertThat(HttpStatus.CREATED).isEqualTo(responseEntity.getStatusCode());
 
     newClassification =
         "{\"classificationId\":\"\",\"category\":\"MANUAL\","
@@ -135,7 +145,7 @@ class ClassificationControllerIntTest {
             new HttpEntity<>(newClassification, restHelper.getHeaders()),
             ParameterizedTypeReference.forType(ClassificationResource.class));
 
-    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    assertThat(HttpStatus.CREATED).isEqualTo(responseEntity.getStatusCode());
   }
 
   @Test
@@ -155,7 +165,7 @@ class ClassificationControllerIntTest {
             ParameterizedTypeReference.forType(ClassificationResource.class));
 
     assertThat(responseEntity).isNotNull();
-    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    assertThat(HttpStatus.CREATED).isEqualTo(responseEntity.getStatusCode());
   }
 
   @Test
@@ -175,7 +185,7 @@ class ClassificationControllerIntTest {
             ParameterizedTypeReference.forType(ClassificationResource.class));
 
     assertThat(responseEntity).isNotNull();
-    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    assertThat(HttpStatus.CREATED).isEqualTo(responseEntity.getStatusCode());
   }
 
   @Test
@@ -194,7 +204,7 @@ class ClassificationControllerIntTest {
             ParameterizedTypeReference.forType(ClassificationResource.class));
 
     assertThat(responseEntity).isNotNull();
-    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    assertThat(HttpStatus.CREATED).isEqualTo(responseEntity.getStatusCode());
 
     ResponseEntity<ClassificationSummaryListResource> response =
         template.exchange(
@@ -209,6 +219,7 @@ class ClassificationControllerIntTest {
           && "".equals(classification.getDomain())
           && "T2100".equals(classification.getParentKey())) {
         foundClassificationCreated = true;
+        break;
       }
     }
 
@@ -223,17 +234,17 @@ class ClassificationControllerIntTest {
             + "\"key\":\"NEW_CLASS_P3\",\"name\":\"new classification\","
             + "\"type\":\"TASK\",\"parentId\":\"CLI:200000000000000000000000000000000015\","
             + "\"parentKey\":\"T2000\"}";
-    
+
     assertThatThrownBy(
-        () ->
-        template.exchange(
-            restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
-            HttpMethod.POST,
-            new HttpEntity<>(newClassification, restHelper.getHeaders()),
-            ParameterizedTypeReference.forType(ClassificationResource.class)))
+      () ->
+          template.exchange(
+              restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
+              HttpMethod.POST,
+              new HttpEntity<>(newClassification, restHelper.getHeaders()),
+              ParameterizedTypeReference.forType(ClassificationResource.class)))
         .isInstanceOf(HttpClientErrorException.class)
-        .extracting(ex -> ((HttpClientErrorException)ex).getStatusCode())
-          .isEqualTo(HttpStatus.BAD_REQUEST);;
+        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
   @Test
@@ -244,21 +255,22 @@ class ClassificationControllerIntTest {
             + "\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS\","
             + "\"name\":\"new classification\",\"type\":\"TASK\"}";
 
-    assertThatThrownBy(() ->
-      template.exchange(
-          restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
-          HttpMethod.POST,
-          new HttpEntity<>(newClassification, restHelper.getHeaders()),
-          ParameterizedTypeReference.forType(ClassificationResource.class)))
+    assertThatThrownBy(
+      () ->
+          template.exchange(
+              restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
+              HttpMethod.POST,
+              new HttpEntity<>(newClassification, restHelper.getHeaders()),
+              ParameterizedTypeReference.forType(ClassificationResource.class)))
         .isInstanceOf(HttpClientErrorException.class)
-        .extracting(ex -> ((HttpClientErrorException)ex).getStatusCode())
-          .isEqualTo(HttpStatus.BAD_REQUEST);
+        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
   @Test
   void testGetClassificationWithSpecialCharacter() {
 
-    HttpEntity<String> request = new HttpEntity<String>(restHelper.getHeadersAdmin());
+    HttpEntity<String> request = new HttpEntity<>(restHelper.getHeadersAdmin());
     ResponseEntity<ClassificationSummaryResource> response =
         template.exchange(
             restHelper.toUrl(
@@ -266,13 +278,13 @@ class ClassificationControllerIntTest {
             HttpMethod.GET,
             request,
             ParameterizedTypeReference.forType(ClassificationSummaryResource.class));
-    assertThat(response.getBody().name).isEqualTo("Zustimmungserklärung");
+    assertThat(response.getBody().getName()).isEqualTo("Zustimmungserklärung");
   }
 
   @Test
   @DirtiesContext
   void testDeleteClassification() {
-    HttpEntity<String> request = new HttpEntity<String>(restHelper.getHeaders());
+    HttpEntity<String> request = new HttpEntity<>(restHelper.getHeaders());
 
     ResponseEntity<ClassificationSummaryResource> response =
         template.exchange(
@@ -281,15 +293,17 @@ class ClassificationControllerIntTest {
             HttpMethod.DELETE,
             request,
             ParameterizedTypeReference.forType(ClassificationSummaryResource.class));
+    assertThat(HttpStatus.NO_CONTENT).isEqualTo(response.getStatusCode());
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
-    assertThatThrownBy(() ->
-      template.exchange(
-        restHelper.toUrl(
-            Mapping.URL_CLASSIFICATIONS_ID, "CLI:200000000000000000000000000000000004"),
-            HttpMethod.GET,
-            request,
-            ParameterizedTypeReference.forType(ClassificationSummaryResource.class)))
-          .isInstanceOf(HttpClientErrorException.class);
+    assertThatThrownBy(
+      () ->
+          template.exchange(
+              restHelper.toUrl(
+                  Mapping.URL_CLASSIFICATIONS_ID, "CLI:200000000000000000000000000000000004"),
+              HttpMethod.GET,
+              request,
+              ParameterizedTypeReference.forType(ClassificationSummaryResource.class)))
+        .isInstanceOf(HttpClientErrorException.class);
   }
 }
