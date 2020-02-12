@@ -1,7 +1,8 @@
 package pro.taskana.rest.resource;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.time.Instant;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -99,40 +100,39 @@ class WorkbasketResourceAssemblerTest {
   }
 
   private void verifyLinks(WorkbasketResource workbasket) {
-    Assert.assertEquals(5, workbasket.getLinks().size());
-    Assert.assertEquals(
-        Mapping.URL_WORKBASKET_ID.replaceAll("\\{.*}", workbasket.getWorkbasketId()),
-        workbasket.getLink("self").getHref());
-    Assert.assertEquals(
-        Mapping.URL_WORKBASKET_ID_DISTRIBUTION.replaceAll("\\{.*}", workbasket.getWorkbasketId()),
-        workbasket.getLink("distributionTargets").getHref());
-    Assert.assertEquals(Mapping.URL_WORKBASKET, workbasket.getLink("allWorkbaskets").getHref());
-    Assert.assertEquals(
-        Mapping.URL_WORKBASKET_DISTRIBUTION_ID.replaceAll("\\{.*}", workbasket.getWorkbasketId()),
-        workbasket.getLink("removeDistributionTargets").getHref());
+    assertThat(workbasket.getLinks()).hasSize(5);
+    assertThat(workbasket.getLink("self").getHref())
+        .isEqualTo(Mapping.URL_WORKBASKET_ID.replaceAll("\\{.*}", workbasket.getWorkbasketId()));
+    assertThat(workbasket.getLink("distributionTargets").getHref())
+        .isEqualTo(
+            Mapping.URL_WORKBASKET_ID_DISTRIBUTION.replaceAll(
+                "\\{.*}", workbasket.getWorkbasketId()));
+    assertThat(workbasket.getLink("allWorkbaskets").getHref()).isEqualTo(Mapping.URL_WORKBASKET);
+    assertThat(workbasket.getLink("removeDistributionTargets").getHref())
+        .isEqualTo(
+            Mapping.URL_WORKBASKET_DISTRIBUTION_ID.replaceAll(
+                "\\{.*}", workbasket.getWorkbasketId()));
   }
 
   private void testEquality(Workbasket workbasket, WorkbasketResource workbasketResource) {
-    Assert.assertEquals(workbasket.getId(), workbasketResource.workbasketId);
-    Assert.assertEquals(workbasket.getKey(), workbasketResource.key);
-    Assert.assertEquals(
-        workbasket.getCreated() == null ? null : workbasket.getCreated().toString(),
-        workbasketResource.created);
-    Assert.assertEquals(
-        workbasket.getModified() == null ? null : workbasket.getModified().toString(),
-        workbasketResource.modified);
-    Assert.assertEquals(workbasket.getName(), workbasketResource.name);
-    Assert.assertEquals(workbasket.getDescription(), workbasketResource.description);
-    Assert.assertEquals(workbasket.getOwner(), workbasketResource.owner);
-    Assert.assertEquals(workbasket.getDomain(), workbasketResource.domain);
-    Assert.assertEquals(workbasket.getType(), workbasketResource.type);
-    Assert.assertEquals(workbasket.getCustom1(), workbasketResource.custom1);
-    Assert.assertEquals(workbasket.getCustom2(), workbasketResource.custom2);
-    Assert.assertEquals(workbasket.getCustom3(), workbasketResource.custom3);
-    Assert.assertEquals(workbasket.getCustom4(), workbasketResource.custom4);
-    Assert.assertEquals(workbasket.getOrgLevel1(), workbasketResource.orgLevel1);
-    Assert.assertEquals(workbasket.getOrgLevel2(), workbasketResource.orgLevel2);
-    Assert.assertEquals(workbasket.getOrgLevel3(), workbasketResource.orgLevel3);
-    Assert.assertEquals(workbasket.getOrgLevel4(), workbasketResource.orgLevel4);
+    assertThat(workbasketResource.getWorkbasketId()).isEqualTo(workbasket.getId());
+    assertThat(workbasketResource.getKey()).isEqualTo(workbasket.getKey());
+    assertThat(workbasketResource.getCreated())
+        .isEqualTo(workbasket.getCreated() == null ? null : workbasket.getCreated().toString());
+    assertThat(workbasketResource.getModified())
+        .isEqualTo(workbasket.getModified() == null ? null : workbasket.getModified().toString());
+    assertThat(workbasketResource.getName()).isEqualTo(workbasket.getName());
+    assertThat(workbasketResource.getDescription()).isEqualTo(workbasket.getDescription());
+    assertThat(workbasketResource.getOwner()).isEqualTo(workbasket.getOwner());
+    assertThat(workbasketResource.getDomain()).isEqualTo(workbasket.getDomain());
+    assertThat(workbasketResource.getType()).isEqualTo(workbasket.getType());
+    assertThat(workbasketResource.getCustom1()).isEqualTo(workbasket.getCustom1());
+    assertThat(workbasketResource.getCustom2()).isEqualTo(workbasket.getCustom2());
+    assertThat(workbasketResource.getCustom3()).isEqualTo(workbasket.getCustom3());
+    assertThat(workbasketResource.getCustom4()).isEqualTo(workbasket.getCustom4());
+    assertThat(workbasketResource.getOrgLevel1()).isEqualTo(workbasket.getOrgLevel1());
+    assertThat(workbasketResource.getOrgLevel2()).isEqualTo(workbasket.getOrgLevel2());
+    assertThat(workbasketResource.getOrgLevel3()).isEqualTo(workbasket.getOrgLevel3());
+    assertThat(workbasketResource.getOrgLevel4()).isEqualTo(workbasket.getOrgLevel4());
   }
 }
