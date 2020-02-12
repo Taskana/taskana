@@ -23,7 +23,7 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
 
   @Test
   void testRoleCheck() {
-    final MonitorService monitorService = taskanaEngine.getTaskMonitorService();
+    final MonitorService monitorService = taskanaEngine.getMonitorService();
 
     final List<SelectedItem> selectedItems = new ArrayList<>();
 
@@ -57,7 +57,7 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfClassificationReport()
       throws InvalidArgumentException, NotAuthorizedException {
-    final MonitorService monitorService = taskanaEngine.getTaskMonitorService();
+    final MonitorService monitorService = taskanaEngine.getMonitorService();
 
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
@@ -101,7 +101,7 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfClassificationReportWithAttachments()
       throws InvalidArgumentException, NotAuthorizedException {
-    final MonitorService monitorService = taskanaEngine.getTaskMonitorService();
+    final MonitorService monitorService = taskanaEngine.getMonitorService();
 
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
@@ -143,7 +143,7 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfClassificationReportWithDomainFilter()
       throws InvalidArgumentException, NotAuthorizedException {
-    final MonitorService monitorService = taskanaEngine.getTaskMonitorService();
+    final MonitorService monitorService = taskanaEngine.getMonitorService();
 
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 

@@ -42,8 +42,8 @@ public class RestConfiguration {
   }
 
   @Bean
-  public MonitorService getTaskMonitorService(TaskanaEngine taskanaEngine) {
-    return taskanaEngine.getTaskMonitorService();
+  public MonitorService getMonitorService(TaskanaEngine taskanaEngine) {
+    return taskanaEngine.getMonitorService();
   }
 
   @Bean

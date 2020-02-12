@@ -102,7 +102,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   }
 
   @Override
-  public MonitorService getTaskMonitorService() {
+  public MonitorService getMonitorService() {
     SqlSession session = this.sessionManager;
     return new MonitorServiceImpl(
         internalTaskanaEngineImpl, session.getMapper(MonitorMapper.class));

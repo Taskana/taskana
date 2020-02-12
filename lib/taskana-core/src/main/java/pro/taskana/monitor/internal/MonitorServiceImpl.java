@@ -17,7 +17,7 @@ import pro.taskana.monitor.internal.reports.TimestampReportBuilderImpl;
 import pro.taskana.monitor.internal.reports.WorkbasketReportBuilderImpl;
 import pro.taskana.task.api.CustomField;
 
-/** This is the implementation of TaskMonitorService. */
+/** This is the implementation of MonitorService. */
 public class MonitorServiceImpl implements MonitorService {
 
   private InternalTaskanaEngine taskanaEngine;

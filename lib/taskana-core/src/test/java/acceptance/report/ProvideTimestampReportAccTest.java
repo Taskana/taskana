@@ -36,7 +36,7 @@ class ProvideTimestampReportAccTest extends AbstractReportAccTest {
   @WithAccessId(userName = "monitor")
   @Test
   void testProperInsertionOfQueryItems() throws Exception {
-    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getMonitorService();
 
     // last 14 days. Today excluded.
     List<TimeIntervalColumnHeader> headers =

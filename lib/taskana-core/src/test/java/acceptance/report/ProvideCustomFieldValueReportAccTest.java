@@ -35,7 +35,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
 
   @Test
   void testRoleCheck() {
-    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getMonitorService();
 
     Assertions.assertThrows(
         NotAuthorizedException.class,
@@ -49,7 +49,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTotalNumbersOfTasksOfCustomFieldValueReportForCustom1()
       throws InvalidArgumentException, NotAuthorizedException {
-    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getMonitorService();
 
     CustomFieldValueReport report =
         monitorService
@@ -77,7 +77,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTotalNumbersOfTasksOfCustomFieldValueReportForCustom2()
       throws InvalidArgumentException, NotAuthorizedException {
-    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getMonitorService();
 
     CustomFieldValueReport report =
         monitorService
@@ -104,7 +104,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetCustomFieldValueReportWithReportLineItemDefinitions()
       throws InvalidArgumentException, NotAuthorizedException {
-    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getMonitorService();
 
     CustomField customField = CustomField.CUSTOM_1;
     List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
@@ -136,7 +136,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
   @Test
   void testEachItemOfCustomFieldValueReport()
       throws InvalidArgumentException, NotAuthorizedException {
-    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getMonitorService();
 
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
@@ -168,7 +168,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
   @Test
   void testEachItemOfCustomFieldValueReportNotInWorkingDays()
       throws InvalidArgumentException, NotAuthorizedException {
-    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getMonitorService();
 
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
@@ -199,7 +199,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
   @Test
   void testEachItemOfCustomFieldValueReportWithWorkbasketFilter()
       throws InvalidArgumentException, NotAuthorizedException {
-    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getMonitorService();
 
     List<String> workbasketIds =
         Collections.singletonList("WBI:000000000000000000000000000000000001");
@@ -234,7 +234,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
   @Test
   void testEachItemOfCustomFieldValueReportWithStateFilter()
       throws InvalidArgumentException, NotAuthorizedException {
-    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getMonitorService();
 
     List<TaskState> states = Collections.singletonList(TaskState.READY);
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
@@ -268,7 +268,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
   @Test
   void testEachItemOfCustomFieldValueReportWithCategoryFilter()
       throws InvalidArgumentException, NotAuthorizedException {
-    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getMonitorService();
 
     List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
@@ -302,7 +302,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
   @Test
   void testEachItemOfCustomFieldValueReportWithDomainFilter()
       throws InvalidArgumentException, NotAuthorizedException {
-    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getMonitorService();
 
     List<String> domains = Collections.singletonList("DOMAIN_A");
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
@@ -336,7 +336,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
   @Test
   void testEachItemOfCustomFieldValueReportWithCustomFieldValueFilter()
       throws InvalidArgumentException, NotAuthorizedException {
-    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getMonitorService();
 
     Map<CustomField, String> customAttributeFilter = new HashMap<>();
     customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");

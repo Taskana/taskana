@@ -14,13 +14,13 @@ import org.springframework.stereotype.Component;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.monitor.api.reports.header.ColumnHeader;
-import pro.taskana.monitor.api.reports.item.QueryItem;
 import pro.taskana.monitor.api.reports.ClassificationReport;
 import pro.taskana.monitor.api.reports.Report;
 import pro.taskana.monitor.api.reports.TaskStatusReport;
 import pro.taskana.monitor.api.reports.TimestampReport;
 import pro.taskana.monitor.api.reports.WorkbasketReport;
+import pro.taskana.monitor.api.reports.header.ColumnHeader;
+import pro.taskana.monitor.api.reports.item.QueryItem;
 import pro.taskana.monitor.api.reports.row.FoldableRow;
 import pro.taskana.monitor.api.reports.row.Row;
 import pro.taskana.monitor.api.reports.row.SingleRow;
