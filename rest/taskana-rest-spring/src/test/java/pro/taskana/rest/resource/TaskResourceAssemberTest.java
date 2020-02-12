@@ -1,10 +1,11 @@
 package pro.taskana.rest.resource;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -40,9 +41,9 @@ class TaskResourceAssemberTest {
     WorkbasketSummaryResource workbasketResource = new WorkbasketSummaryResource();
     workbasketResource.setWorkbasketId("workbasketId");
     ClassificationSummaryResource classificationResource = new ClassificationSummaryResource();
-    classificationResource.key = "keyabc";
-    classificationResource.domain = "DOMAIN_A";
-    classificationResource.type = "MANUAL";
+    classificationResource.setKey("keyabc");
+    classificationResource.setDomain("DOMAIN_A");
+    classificationResource.setType("MANUAL");
     AttachmentResource attachement = new AttachmentResource();
     attachement.setClassificationSummary(classificationResource);
     attachement.setAttachmentId("attachementId");
@@ -155,82 +156,79 @@ class TaskResourceAssemberTest {
   }
 
   void testEquality(Task task, TaskResource resource) throws InvalidArgumentException {
-    Assert.assertEquals(task.getId(), resource.getTaskId());
-    Assert.assertEquals(task.getExternalId(), resource.getExternalId());
-    Assert.assertEquals(
-        task.getCreated() == null ? null : task.getCreated().toString(), resource.getCreated());
-    Assert.assertEquals(
-        task.getClaimed() == null ? null : task.getClaimed().toString(), resource.getClaimed());
-    Assert.assertEquals(
-        task.getCompleted() == null ? null : task.getCompleted().toString(),
-        resource.getCompleted());
-    Assert.assertEquals(
-        task.getModified() == null ? null : task.getModified().toString(), resource.getModified());
-    Assert.assertEquals(
-        task.getPlanned() == null ? null : task.getPlanned().toString(), resource.getPlanned());
-    Assert.assertEquals(task.getDue() == null ? null : task.getDue().toString(), resource.getDue());
-    Assert.assertEquals(task.getName(), resource.getName());
-    Assert.assertEquals(task.getCreator(), resource.getCreator());
-    Assert.assertEquals(task.getDescription(), resource.getDescription());
-    Assert.assertEquals(task.getNote(), resource.getNote());
-    Assert.assertEquals(task.getPriority(), resource.getPriority());
-    Assert.assertEquals(task.getState(), resource.getState());
-    Assert.assertEquals(
-        task.getClassificationSummary().getId(),
-        resource.getClassificationSummaryResource().getClassificationId());
-    Assert.assertEquals(
-        task.getWorkbasketSummary().getId(),
-        resource.getWorkbasketSummaryResource().getWorkbasketId());
-    Assert.assertEquals(task.getBusinessProcessId(), resource.getBusinessProcessId());
-    Assert.assertEquals(task.getParentBusinessProcessId(), resource.getParentBusinessProcessId());
-    Assert.assertEquals(task.getOwner(), resource.getOwner());
-    Assert.assertEquals(task.getPrimaryObjRef(), resource.getPrimaryObjRef());
-    Assert.assertEquals(task.isRead(), resource.isRead());
-    Assert.assertEquals(task.isTransferred(), resource.isTransferred());
+    assertThat(resource.getTaskId()).isEqualTo(task.getId());
+    assertThat(resource.getExternalId()).isEqualTo(task.getExternalId());
+    assertThat(resource.getCreated())
+        .isEqualTo(task.getCreated() == null ? null : task.getCreated().toString());
+    assertThat(resource.getClaimed())
+        .isEqualTo(task.getClaimed() == null ? null : task.getClaimed().toString());
+    assertThat(resource.getCompleted())
+        .isEqualTo(task.getCompleted() == null ? null : task.getCompleted().toString());
+    assertThat(resource.getModified())
+        .isEqualTo(task.getModified() == null ? null : task.getModified().toString());
+    assertThat(resource.getPlanned())
+        .isEqualTo(task.getPlanned() == null ? null : task.getPlanned().toString());
+    assertThat(resource.getDue())
+        .isEqualTo(task.getDue() == null ? null : task.getDue().toString());
+    assertThat(resource.getName()).isEqualTo(task.getName());
+    assertThat(resource.getCreator()).isEqualTo(task.getCreator());
+    assertThat(resource.getDescription()).isEqualTo(task.getDescription());
+    assertThat(resource.getNote()).isEqualTo(task.getNote());
+    assertThat(resource.getPriority()).isEqualTo(task.getPriority());
+    assertThat(resource.getState()).isEqualTo(task.getState());
+    assertThat(resource.getClassificationSummaryResource().getClassificationId())
+        .isEqualTo(task.getClassificationSummary().getId());
+    assertThat(resource.getWorkbasketSummaryResource().getWorkbasketId())
+        .isEqualTo(task.getWorkbasketSummary().getId());
+    assertThat(resource.getBusinessProcessId()).isEqualTo(task.getBusinessProcessId());
+    assertThat(resource.getParentBusinessProcessId()).isEqualTo(task.getParentBusinessProcessId());
+    assertThat(resource.getOwner()).isEqualTo(task.getOwner());
+    assertThat(resource.getPrimaryObjRef()).isEqualTo(task.getPrimaryObjRef());
+    assertThat(resource.isRead()).isEqualTo(task.isRead());
+    assertThat(resource.isTransferred()).isEqualTo(task.isTransferred());
     testEquality(task.getCustomAttributes(), resource.getCustomAttributes());
     testEquality(task.getCallbackInfo(), resource.getCallbackInfo());
     testEqualityAttachements(task.getAttachments(), resource.getAttachments());
-    Assert.assertEquals(task.getCustomAttribute("1"), resource.getCustom1());
-    Assert.assertEquals(task.getCustomAttribute("2"), resource.getCustom2());
-    Assert.assertEquals(task.getCustomAttribute("3"), resource.getCustom3());
-    Assert.assertEquals(task.getCustomAttribute("4"), resource.getCustom4());
-    Assert.assertEquals(task.getCustomAttribute("5"), resource.getCustom5());
-    Assert.assertEquals(task.getCustomAttribute("6"), resource.getCustom6());
-    Assert.assertEquals(task.getCustomAttribute("7"), resource.getCustom7());
-    Assert.assertEquals(task.getCustomAttribute("8"), resource.getCustom8());
-    Assert.assertEquals(task.getCustomAttribute("9"), resource.getCustom9());
-    Assert.assertEquals(task.getCustomAttribute("10"), resource.getCustom10());
-    Assert.assertEquals(task.getCustomAttribute("11"), resource.getCustom11());
-    Assert.assertEquals(task.getCustomAttribute("12"), resource.getCustom12());
-    Assert.assertEquals(task.getCustomAttribute("13"), resource.getCustom13());
-    Assert.assertEquals(task.getCustomAttribute("14"), resource.getCustom14());
-    Assert.assertEquals(task.getCustomAttribute("15"), resource.getCustom15());
-    Assert.assertEquals(task.getCustomAttribute("16"), resource.getCustom16());
+    assertThat(resource.getCustom1()).isEqualTo(task.getCustomAttribute("1"));
+    assertThat(resource.getCustom2()).isEqualTo(task.getCustomAttribute("2"));
+    assertThat(resource.getCustom3()).isEqualTo(task.getCustomAttribute("3"));
+    assertThat(resource.getCustom4()).isEqualTo(task.getCustomAttribute("4"));
+    assertThat(resource.getCustom5()).isEqualTo(task.getCustomAttribute("5"));
+    assertThat(resource.getCustom6()).isEqualTo(task.getCustomAttribute("6"));
+    assertThat(resource.getCustom7()).isEqualTo(task.getCustomAttribute("7"));
+    assertThat(resource.getCustom8()).isEqualTo(task.getCustomAttribute("8"));
+    assertThat(resource.getCustom9()).isEqualTo(task.getCustomAttribute("9"));
+    assertThat(resource.getCustom10()).isEqualTo(task.getCustomAttribute("10"));
+    assertThat(resource.getCustom11()).isEqualTo(task.getCustomAttribute("11"));
+    assertThat(resource.getCustom12()).isEqualTo(task.getCustomAttribute("12"));
+    assertThat(resource.getCustom13()).isEqualTo(task.getCustomAttribute("13"));
+    assertThat(resource.getCustom14()).isEqualTo(task.getCustomAttribute("14"));
+    assertThat(resource.getCustom15()).isEqualTo(task.getCustomAttribute("15"));
+    assertThat(resource.getCustom16()).isEqualTo(task.getCustomAttribute("16"));
   }
 
   private void testEquality(
       Map<String, String> customAttributes, List<TaskResource.CustomAttribute> resourceAttributes) {
-    Assert.assertEquals(customAttributes.size(), resourceAttributes.size());
+    assertThat(resourceAttributes).hasSize(customAttributes.size());
     resourceAttributes.forEach(
         attribute ->
-            Assert.assertEquals(customAttributes.get(attribute.getKey()), attribute.getValue()));
+            assertThat(attribute.getValue()).isEqualTo(customAttributes.get(attribute.getKey())));
   }
 
   private void testEqualityAttachements(
       List<Attachment> attachments, List<AttachmentResource> resources) {
-    Assert.assertEquals(attachments.size(), resources.size());
+    assertThat(resources).hasSize(attachments.size());
     for (int i = 0; i < resources.size(); i++) {
       AttachmentResource resource = resources.get(i);
       Attachment attachment = attachments.get(i);
-      // Anything else shoulde be tested in AttachementResourceAssemblerTest
-      Assert.assertEquals(attachment.getId(), resource.getAttachmentId());
+      // Anything else should be be tested in AttachementResourceAssemblerTest
+      assertThat(resource.getAttachmentId()).isEqualTo(attachment.getId());
     }
   }
 
   private void testLinks(TaskResource resource) {
-    Assert.assertEquals(1, resource.getLinks().size());
-    Assert.assertEquals(
-        Mapping.URL_TASKS_ID.replaceAll("\\{.*}", resource.getTaskId()),
-        resource.getLink("self").getHref());
+    assertThat(resource.getLinks()).hasSize(1);
+    assertThat(resource.getLink("self").getHref())
+        .isEqualTo(Mapping.URL_TASKS_ID.replaceAll("\\{.*}", resource.getTaskId()));
   }
 }

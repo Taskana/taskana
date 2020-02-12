@@ -165,18 +165,18 @@ class TaskControllerIntTest {
   @Test
   void testGetAllTasksByWorkbasketIdWithInvalidPlannedParamsCombination() {
     assertThatThrownBy(
-      () ->
-        template.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS)
-                + "?workbasket-id=WBI:100000000000000000000000000000000001"
-                + "&planned=2020-01-22T09:44:47.453Z,,"
-                + "2020-01-19T07:44:47.453Z,2020-01-19T19:44:47.453Z,"
-                + ",2020-01-18T09:44:47.453Z"
-                + "&planned-from=2020-01-19T07:44:47.453Z"
-                + "&sort-by=planned",
-            HttpMethod.GET,
-            restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(TaskSummaryListResource.class)))
+        () ->
+            template.exchange(
+                restHelper.toUrl(Mapping.URL_TASKS)
+                    + "?workbasket-id=WBI:100000000000000000000000000000000001"
+                    + "&planned=2020-01-22T09:44:47.453Z,,"
+                    + "2020-01-19T07:44:47.453Z,2020-01-19T19:44:47.453Z,"
+                    + ",2020-01-18T09:44:47.453Z"
+                    + "&planned-from=2020-01-19T07:44:47.453Z"
+                    + "&sort-by=planned",
+                HttpMethod.GET,
+                restHelper.defaultRequest(),
+                ParameterizedTypeReference.forType(TaskSummaryListResource.class)))
         .isInstanceOf(HttpClientErrorException.class)
         .hasMessageContaining("400");
   }
@@ -255,17 +255,17 @@ class TaskControllerIntTest {
   void testGetAllTasksByWorkbasketIdWithInvalidDueParamsCombination() {
     assertThatThrownBy(
         () ->
-          template.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS)
-                + "?workbasket-id=WBI:100000000000000000000000000000000001"
-                + "&due=2020-01-22T09:44:47.453Z,,"
-                + "2020-01-19T07:44:47.453Z,2020-01-19T19:44:47.453Z,"
-                + ",2020-01-18T09:44:47.453Z"
-                + "&due-from=2020-01-19T07:44:47.453Z"
-                + "&sort-by=planned",
-            HttpMethod.GET,
-            restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(TaskSummaryListResource.class)))
+            template.exchange(
+                restHelper.toUrl(Mapping.URL_TASKS)
+                    + "?workbasket-id=WBI:100000000000000000000000000000000001"
+                    + "&due=2020-01-22T09:44:47.453Z,,"
+                    + "2020-01-19T07:44:47.453Z,2020-01-19T19:44:47.453Z,"
+                    + ",2020-01-18T09:44:47.453Z"
+                    + "&due-from=2020-01-19T07:44:47.453Z"
+                    + "&sort-by=planned",
+                HttpMethod.GET,
+                restHelper.defaultRequest(),
+                ParameterizedTypeReference.forType(TaskSummaryListResource.class)))
         .isInstanceOf(HttpClientErrorException.class)
         .hasMessageContaining("400");
   }
@@ -274,7 +274,7 @@ class TaskControllerIntTest {
   void testGetAllTasksByWorkbasketKeyAndDomain() {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Authorization", "Basic dXNlcl8xXzI6dXNlcl8xXzI="); // user_1_2
-    HttpEntity<String> request = new HttpEntity<String>(headers);
+    HttpEntity<String> request = new HttpEntity<>(headers);
     ResponseEntity<TaskSummaryListResource> response =
         template.exchange(
             restHelper.toUrl(Mapping.URL_TASKS) + "?workbasket-key=USER_1_2&domain=DOMAIN_A",
@@ -290,17 +290,17 @@ class TaskControllerIntTest {
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Authorization", "Basic dXNlcl8xXzI6dXNlcl8xXzI="); // user_1_2
-    HttpEntity<String> request = new HttpEntity<String>(headers);
+    HttpEntity<String> request = new HttpEntity<>(headers);
 
     assertThatThrownBy(
-      () -> {
-        ResponseEntity<TaskSummaryListResource> response =
-            template.exchange(
-                restHelper.toUrl(Mapping.URL_TASKS) + "?workbasket-key=USER_1_2",
-                HttpMethod.GET,
-                request,
-                ParameterizedTypeReference.forType(TaskSummaryListResource.class));
-      })
+        () -> {
+          ResponseEntity<TaskSummaryListResource> response =
+              template.exchange(
+                  restHelper.toUrl(Mapping.URL_TASKS) + "?workbasket-key=USER_1_2",
+                  HttpMethod.GET,
+                  request,
+                  ParameterizedTypeReference.forType(TaskSummaryListResource.class));
+        })
         .isInstanceOf(HttpClientErrorException.class)
         .hasMessageContaining("400");
   }
@@ -355,7 +355,7 @@ class TaskControllerIntTest {
   @Test
   void testGetLastPageSortedByPorValue() {
 
-    HttpEntity<String> request = new HttpEntity<String>(restHelper.getHeadersAdmin());
+    HttpEntity<String> request = new HttpEntity<>(restHelper.getHeadersAdmin());
     ResponseEntity<TaskSummaryListResource> response =
         template.exchange(
             restHelper.toUrl(Mapping.URL_TASKS)
@@ -393,7 +393,7 @@ class TaskControllerIntTest {
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-    HttpEntity<String> request = new HttpEntity<String>(headers);
+    HttpEntity<String> request = new HttpEntity<>(headers);
 
     ResponseEntity<TaskSummaryListResource> response =
         template.exchange(
@@ -436,7 +436,7 @@ class TaskControllerIntTest {
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-    HttpEntity<String> request = new HttpEntity<String>(headers);
+    HttpEntity<String> request = new HttpEntity<>(headers);
     ResponseEntity<TaskSummaryListResource> response =
         template.exchange(
             restHelper.toUrl(Mapping.URL_TASKS)
@@ -586,12 +586,12 @@ class TaskControllerIntTest {
     taskResource.setDue(now.toString());
 
     assertThatThrownBy(
-      () ->
-          template.exchange(
-              restHelper.toUrl(Mapping.URL_TASKS),
-              HttpMethod.POST,
-              new HttpEntity<>(taskResource, restHelper.getHeaders()),
-              ParameterizedTypeReference.forType(TaskResource.class)))
+        () ->
+            template.exchange(
+                restHelper.toUrl(Mapping.URL_TASKS),
+                HttpMethod.POST,
+                new HttpEntity<>(taskResource, restHelper.getHeaders()),
+                ParameterizedTypeReference.forType(TaskResource.class)))
         .isInstanceOf(HttpClientErrorException.class);
   }
 
@@ -640,7 +640,7 @@ class TaskControllerIntTest {
   }
 
   @Test
-  void testUpdateTaskOwnerOfReadyTaskSucceeds() throws IOException {
+  void testUpdateTaskOwnerOfReadyTaskSucceeds() {
     // setup
     final String taskUrlString =
         restHelper.toUrl("/api/v1/tasks/TKI:000000000000000000000000000000000025");
@@ -648,10 +648,10 @@ class TaskControllerIntTest {
     // retrieve task from Rest Api
     ResponseEntity<TaskResource> responseGet =
         template.exchange(
-          taskUrlString,
-          HttpMethod.GET,
-          new HttpEntity<>(getHeadersForUser_1_2()),
-          ParameterizedTypeReference.forType(TaskResource.class));
+            taskUrlString,
+            HttpMethod.GET,
+            new HttpEntity<>(getHeadersForUser_1_2()),
+            ParameterizedTypeReference.forType(TaskResource.class));
 
     assertThat(responseGet.getBody()).isNotNull();
     TaskResource theTaskResource = responseGet.getBody();
@@ -664,10 +664,10 @@ class TaskControllerIntTest {
     theTaskResource.setOwner(anyUserName);
     ResponseEntity<TaskResource> responseUpdate =
         template.exchange(
-          taskUrlString,
-          HttpMethod.PUT,
-          new HttpEntity<>(theTaskResource, getHeadersForUser_1_2()),
-          ParameterizedTypeReference.forType(TaskResource.class));
+            taskUrlString,
+            HttpMethod.PUT,
+            new HttpEntity<>(theTaskResource, getHeadersForUser_1_2()),
+            ParameterizedTypeReference.forType(TaskResource.class));
 
     assertThat(responseUpdate.getBody()).isNotNull();
     TaskResource theUpdatedTaskResource = responseUpdate.getBody();
@@ -676,7 +676,7 @@ class TaskControllerIntTest {
   }
 
   @Test
-  void testUpdateTaskOwnerOfClaimedTaskFails() throws IOException {
+  void testUpdateTaskOwnerOfClaimedTaskFails() {
     // setup
     final String taskUrlString =
         restHelper.toUrl("/api/v1/tasks/TKI:000000000000000000000000000000000026");
@@ -684,10 +684,10 @@ class TaskControllerIntTest {
     // retrieve task from Rest Api
     ResponseEntity<TaskResource> responseGet =
         template.exchange(
-          taskUrlString,
-          HttpMethod.GET,
-          new HttpEntity<>(getHeadersForUser_1_2()),
-          ParameterizedTypeReference.forType(TaskResource.class));
+            taskUrlString,
+            HttpMethod.GET,
+            new HttpEntity<>(getHeadersForUser_1_2()),
+            ParameterizedTypeReference.forType(TaskResource.class));
 
     assertThat(responseGet.getBody()).isNotNull();
     TaskResource theTaskResource = responseGet.getBody();
@@ -700,12 +700,12 @@ class TaskControllerIntTest {
     theTaskResource.setOwner(anyUserName);
 
     assertThatThrownBy(
-      () ->
-        template.exchange(
-          taskUrlString,
-          HttpMethod.PUT,
-          new HttpEntity<>(theTaskResource, getHeadersForUser_1_2()),
-          ParameterizedTypeReference.forType(TaskResource.class)))
+        () ->
+            template.exchange(
+                taskUrlString,
+                HttpMethod.PUT,
+                new HttpEntity<>(theTaskResource, getHeadersForUser_1_2()),
+                ParameterizedTypeReference.forType(TaskResource.class)))
         .isInstanceOf(HttpClientErrorException.class)
         .hasMessageContaining("409");
   }
@@ -719,7 +719,7 @@ class TaskControllerIntTest {
 
   private TaskResource getTaskResourceSample() {
     ClassificationSummaryResource classificationResource = new ClassificationSummaryResource();
-    classificationResource.key = "L11010";
+    classificationResource.setKey("L11010");
     WorkbasketSummaryResource workbasketSummaryResource = new WorkbasketSummaryResource();
     workbasketSummaryResource.setWorkbasketId("WBI:100000000000000000000000000000000004");
 

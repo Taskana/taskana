@@ -7,23 +7,23 @@ import pro.taskana.classification.api.ClassificationSummary;
 /** Resource class for {@link ClassificationSummary}. */
 public class ClassificationSummaryResource extends ResourceSupport {
 
-  public String classificationId;
-  public String key;
-  public String parentId;
-  public String parentKey;
-  public String category;
-  public String type;
-  public String domain;
-  public String name;
-  public int priority;
-  public String custom1;
-  public String custom2;
-  public String custom3;
-  public String custom4;
-  public String custom5;
-  public String custom6;
-  public String custom7;
-  public String custom8;
+  private String classificationId;
+  private String key;
+  private String parentId;
+  private String parentKey;
+  private String category;
+  private String type;
+  private String domain;
+  private String name;
+  private int priority;
+  private String custom1;
+  private String custom2;
+  private String custom3;
+  private String custom4;
+  private String custom5;
+  private String custom6;
+  private String custom7;
+  private String custom8;
 
   public ClassificationSummaryResource() {}
 
