@@ -33,7 +33,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
 
   @Test
   void testRoleCheck() {
-    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getMonitorService();
     Assertions.assertThrows(
         NotAuthorizedException.class,
         () -> monitorService.createTaskStatusReportBuilder().buildReport());
@@ -43,7 +43,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
   @Test
   void testCompleteTaskStatusReport() throws NotAuthorizedException, InvalidArgumentException {
     // given
-    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getMonitorService();
     // when
     TaskStatusReport report = monitorService.createTaskStatusReportBuilder().buildReport();
     // then
@@ -74,7 +74,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
   @Test
   void testCompleteTaskStatusReportAsAdmin()
       throws NotAuthorizedException, InvalidArgumentException {
-    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getMonitorService();
     monitorService.createTaskStatusReportBuilder().buildReport();
   }
 
@@ -83,7 +83,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
   void testCompleteTaskStatusReportWithDomainFilter()
       throws NotAuthorizedException, InvalidArgumentException {
     // given
-    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getMonitorService();
     // when
     TaskStatusReport report =
         monitorService
@@ -115,7 +115,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
   void testCompleteTaskStatusReportWithStateFilter()
       throws NotAuthorizedException, InvalidArgumentException {
     // given
-    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getMonitorService();
     // when
     TaskStatusReport report =
         monitorService

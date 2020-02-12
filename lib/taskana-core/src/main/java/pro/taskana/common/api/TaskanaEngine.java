@@ -21,23 +21,23 @@ public interface TaskanaEngine {
   TaskService getTaskService();
 
   /**
-   * The TaskMonitorService can be used for monitoring Tasks.
+   * The MonitorService can be used for monitoring Tasks.
    *
-   * @return the TaskMonitorService
+   * @return the MonitorService
    */
-  MonitorService getTaskMonitorService();
+  MonitorService getMonitorService();
 
   /**
    * The WorkbasketService can be used for operations on all Workbaskets.
    *
-   * @return the TaskService
+   * @return the WorbasketService
    */
   WorkbasketService getWorkbasketService();
 
   /**
    * The ClassificationService can be used for operations on all Categories.
    *
-   * @return the TaskService
+   * @return the ClassificationService
    */
   ClassificationService getClassificationService();
 
