@@ -1,6 +1,7 @@
 package pro.taskana.rest.resource;
 
-import org.junit.Assert;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -79,26 +80,26 @@ class WorkbasketAccessItemResourceAssemblerTest {
 
   private void testEquality(
       WorkbasketAccessItem accessItem, WorkbasketAccessItemResource resource) {
-    Assert.assertEquals(accessItem.getAccessId(), resource.accessId);
-    Assert.assertEquals(accessItem.getWorkbasketKey(), resource.workbasketKey);
-    Assert.assertEquals(accessItem.getId(), resource.accessItemId);
-    Assert.assertEquals(accessItem.getWorkbasketId(), resource.workbasketId);
-    Assert.assertEquals(accessItem.isPermAppend(), resource.permAppend);
-    Assert.assertEquals(accessItem.isPermCustom1(), resource.permCustom1);
-    Assert.assertEquals(accessItem.isPermCustom2(), resource.permCustom2);
-    Assert.assertEquals(accessItem.isPermCustom3(), resource.permCustom3);
-    Assert.assertEquals(accessItem.isPermCustom4(), resource.permCustom4);
-    Assert.assertEquals(accessItem.isPermCustom5(), resource.permCustom5);
-    Assert.assertEquals(accessItem.isPermCustom6(), resource.permCustom6);
-    Assert.assertEquals(accessItem.isPermCustom7(), resource.permCustom7);
-    Assert.assertEquals(accessItem.isPermCustom8(), resource.permCustom8);
-    Assert.assertEquals(accessItem.isPermCustom9(), resource.permCustom9);
-    Assert.assertEquals(accessItem.isPermCustom10(), resource.permCustom10);
-    Assert.assertEquals(accessItem.isPermCustom11(), resource.permCustom11);
-    Assert.assertEquals(accessItem.isPermCustom12(), resource.permCustom12);
-    Assert.assertEquals(accessItem.isPermDistribute(), resource.permDistribute);
-    Assert.assertEquals(accessItem.isPermRead(), resource.permRead);
-    Assert.assertEquals(accessItem.isPermOpen(), resource.permOpen);
-    Assert.assertEquals(accessItem.isPermTransfer(), resource.permTransfer);
+    assertThat(resource.getAccessId()).isEqualTo(accessItem.getAccessId());
+    assertThat(resource.getWorkbasketKey()).isEqualTo(accessItem.getWorkbasketKey());
+    assertThat(resource.getAccessItemId()).isEqualTo(accessItem.getId());
+    assertThat(resource.getWorkbasketId()).isEqualTo(accessItem.getWorkbasketId());
+    assertThat(resource.isPermAppend()).isEqualTo(accessItem.isPermAppend());
+    assertThat(resource.isPermCustom1()).isEqualTo(accessItem.isPermCustom1());
+    assertThat(resource.isPermCustom2()).isEqualTo(accessItem.isPermCustom2());
+    assertThat(resource.isPermCustom3()).isEqualTo(accessItem.isPermCustom3());
+    assertThat(resource.isPermCustom4()).isEqualTo(accessItem.isPermCustom4());
+    assertThat(resource.isPermCustom5()).isEqualTo(accessItem.isPermCustom5());
+    assertThat(resource.isPermCustom6()).isEqualTo(accessItem.isPermCustom6());
+    assertThat(resource.isPermCustom7()).isEqualTo(accessItem.isPermCustom7());
+    assertThat(resource.isPermCustom8()).isEqualTo(accessItem.isPermCustom8());
+    assertThat(resource.isPermCustom9()).isEqualTo(accessItem.isPermCustom9());
+    assertThat(resource.isPermCustom10()).isEqualTo(accessItem.isPermCustom10());
+    assertThat(resource.isPermCustom11()).isEqualTo(accessItem.isPermCustom11());
+    assertThat(resource.isPermCustom12()).isEqualTo(accessItem.isPermCustom12());
+    assertThat(resource.isPermDistribute()).isEqualTo(accessItem.isPermDistribute());
+    assertThat(resource.isPermRead()).isEqualTo(accessItem.isPermRead());
+    assertThat(resource.isPermOpen()).isEqualTo(accessItem.isPermOpen());
+    assertThat(resource.isPermTransfer()).isEqualTo(accessItem.isPermTransfer());
   }
 }
