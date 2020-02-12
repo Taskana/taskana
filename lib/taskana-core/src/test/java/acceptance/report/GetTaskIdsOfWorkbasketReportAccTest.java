@@ -24,7 +24,7 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
 
   @Test
   void testRoleCheck() {
-    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getMonitorService();
 
     List<SelectedItem> selectedItems = new ArrayList<>();
 
@@ -39,7 +39,7 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
   @WithAccessId(userName = "monitor")
   @Test
   void testGetTaskIdsOfWorkbasketReport() throws InvalidArgumentException, NotAuthorizedException {
-    final MonitorService monitorService = taskanaEngine.getTaskMonitorService();
+    final MonitorService monitorService = taskanaEngine.getMonitorService();
 
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
@@ -84,7 +84,7 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfWorkbasketReportWithExcludedClassifications()
       throws InvalidArgumentException, NotAuthorizedException {
-    final MonitorService monitorService = taskanaEngine.getTaskMonitorService();
+    final MonitorService monitorService = taskanaEngine.getMonitorService();
 
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 

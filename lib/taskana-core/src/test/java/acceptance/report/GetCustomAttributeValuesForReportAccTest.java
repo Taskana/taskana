@@ -25,7 +25,7 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
 
   @Test
   void testRoleCheck() {
-    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getMonitorService();
 
     Assertions.assertThrows(
         NotAuthorizedException.class,
@@ -38,7 +38,7 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
   @WithAccessId(userName = "monitor")
   @Test
   void testGetCustomAttributeValuesForOneWorkbasket() throws NotAuthorizedException {
-    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getMonitorService();
 
     List<String> values =
         monitorService
@@ -55,7 +55,7 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
   @WithAccessId(userName = "monitor")
   @Test
   void testGetCustomAttributeValuesForOneDomain() throws NotAuthorizedException {
-    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getMonitorService();
 
     List<String> values =
         monitorService
@@ -69,7 +69,7 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
   @WithAccessId(userName = "monitor")
   @Test
   void testGetCustomAttributeValuesForCustomAttribute() throws NotAuthorizedException {
-    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getMonitorService();
 
     Map<CustomField, String> customAttributeFilter = new HashMap<>();
     customAttributeFilter.put(CustomField.CUSTOM_2, "Vollkasko");
@@ -88,7 +88,7 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
   @WithAccessId(userName = "monitor")
   @Test
   void testGetCustomAttributeValuesForExcludedClassifications() throws NotAuthorizedException {
-    MonitorService monitorService = taskanaEngine.getTaskMonitorService();
+    MonitorService monitorService = taskanaEngine.getMonitorService();
 
     List<String> domains = new ArrayList<>();
     domains.add("DOMAIN_A");
