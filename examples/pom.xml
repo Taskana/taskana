@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>taskana-examples-parent</artifactId>
+  <packaging>pom</packaging>
+
+  <name>${project.groupId}:${project.artifactId}</name>
+  <description>This pom is parent to all taskana example modules and serves the common build.</description>
+
+  <parent>
+    <artifactId>taskana-parent</artifactId>
+    <groupId>pro.taskana</groupId>
+    <version>1.2.3-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <modules>
+    <module>taskana-cdi-example</module>
+    <module>taskana-rest-spring-example-boot</module>
+    <module>taskana-rest-spring-example-common</module>
+    <module>taskana-rest-spring-example-wildfly</module>
+    <module>taskana-simplehistory-rest-spring-example</module>
+    <module>taskana-spring-example</module>
+  </modules>
+
+
+</project>

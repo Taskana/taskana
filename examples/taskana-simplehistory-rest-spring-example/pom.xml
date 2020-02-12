@@ -9,10 +9,10 @@
     <description>Demo project for taskana-simplehistory-rest-spring</description>
 
     <parent>
-        <groupId>pro.taskana.simplehistory</groupId>
-        <artifactId>taskana-simplehistory-parent</artifactId>
+        <groupId>pro.taskana</groupId>
+        <artifactId>taskana-examples-parent</artifactId>
         <version>1.2.3-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+        <relativePath>../../examples/pom.xml</relativePath>
     </parent>
 
     <dependencyManagement>

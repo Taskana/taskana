@@ -14,6 +14,8 @@
     <modules>
         <module>lib</module>
         <module>rest</module>
+        <module>examples</module>
+
         <!-- History is an optional module. -->
         <module>history</module>
     </modules>

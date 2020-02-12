@@ -8,7 +8,7 @@ function verifyDocs() {
 }
 
 REL=$(dirname "$0")
-JAR_FILE_LOCATION="$REL/../rest/taskana-rest-spring-example-boot/target/taskana-rest-spring-example-boot.jar"
+JAR_FILE_LOCATION="$REL/../examples/taskana-rest-spring-example-boot/target/taskana-rest-spring-example-boot.jar"
 set -x
 test -e "$JAR_FILE_LOCATION"
 set +x

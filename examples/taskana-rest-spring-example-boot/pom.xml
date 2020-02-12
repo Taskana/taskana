@@ -10,9 +10,9 @@
 
     <parent>
         <groupId>pro.taskana</groupId>
-        <artifactId>taskana-rest-parent</artifactId>
+        <artifactId>taskana-examples-parent</artifactId>
         <version>1.2.3-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+        <relativePath>../../examples/pom.xml</relativePath>
     </parent>
 
     <dependencyManagement>
@@ -129,7 +129,7 @@
                         </goals>
                         <configuration>
                             <outputDirectory>
-                                ${project.build.outputDirectory}/static/docs/rest
+                              target/classes/static/docs/rest
                             </outputDirectory>
                             <resources>
                                 <resource>
@@ -148,7 +148,7 @@
                         </goals>
                         <configuration>
                             <outputDirectory>
-                                ${project.build.outputDirectory}/static/docs/java/taskana-core
+                              target/classes/static/docs/java/taskana-core
                             </outputDirectory>
                             <resources>
                                 <resource>
@@ -167,7 +167,7 @@
                         </goals>
                         <configuration>
                             <outputDirectory>
-                                ${project.build.outputDirectory}/static/docs/java/taskana-cdi
+                              target/classes/static/docs/java/taskana-cdi
                             </outputDirectory>
                             <resources>
                                 <resource>
@@ -186,7 +186,7 @@
                         </goals>
                         <configuration>
                             <outputDirectory>
-                                ${project.build.outputDirectory}/static/docs/java/taskana-spring
+                              target/classes/static/docs/java/taskana-spring
                             </outputDirectory>
                             <resources>
                                 <resource>
