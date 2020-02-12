@@ -52,7 +52,7 @@
 
         <!-- spring dependencies -->
         <version.spring>5.2.3.RELEASE</version.spring>
-        <version.spring.security>5.2.1.RELEASE</version.spring.security>
+        <version.spring.security>5.2.2.RELEASE</version.spring.security>
         <version.spring.core>2.0.0.RELEASE</version.spring.core>
         <version.spring.boot>2.2.4.RELEASE</version.spring.boot>
         <version.spring.restdocs>2.0.2.RELEASE</version.spring.restdocs>
