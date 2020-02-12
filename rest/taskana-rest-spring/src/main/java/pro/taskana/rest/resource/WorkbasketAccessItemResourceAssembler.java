@@ -41,10 +41,9 @@ public class WorkbasketAccessItemResourceAssembler
     WorkbasketAccessItemImpl wbAccItemModel =
         (WorkbasketAccessItemImpl)
             workbasketService.newWorkbasketAccessItem(
-                wbAccItemResource.workbasketId, wbAccItemResource.accessId);
+                wbAccItemResource.getWorkbasketId(), wbAccItemResource.getAccessId());
     BeanUtils.copyProperties(wbAccItemResource, wbAccItemModel);
-
-    wbAccItemModel.setId(wbAccItemResource.accessItemId);
+    wbAccItemModel.setId(wbAccItemResource.getAccessItemId());
     return wbAccItemModel;
   }
 
