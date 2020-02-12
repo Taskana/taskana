@@ -9,23 +9,23 @@ import pro.taskana.workbasket.api.WorkbasketType;
 /** Resource class for {@link Workbasket}. */
 public class WorkbasketResource extends ResourceSupport {
 
-  public String workbasketId;
-  @NotNull public String key;
-  @NotNull public String name;
-  @NotNull public String domain;
-  @NotNull public WorkbasketType type;
-  public String created; // ISO-8601
-  public String modified; // ISO-8601
-  public String description;
-  public String owner;
-  public String custom1;
-  public String custom2;
-  public String custom3;
-  public String custom4;
-  public String orgLevel1;
-  public String orgLevel2;
-  public String orgLevel3;
-  public String orgLevel4;
+  private String workbasketId;
+  @NotNull private String key;
+  @NotNull private String name;
+  @NotNull private String domain;
+  @NotNull private WorkbasketType type;
+  private String created; // ISO-8601
+  private String modified; // ISO-8601
+  private String description;
+  private String owner;
+  private String custom1;
+  private String custom2;
+  private String custom3;
+  private String custom4;
+  private String orgLevel1;
+  private String orgLevel2;
+  private String orgLevel3;
+  private String orgLevel4;
 
   public WorkbasketResource() {}
 

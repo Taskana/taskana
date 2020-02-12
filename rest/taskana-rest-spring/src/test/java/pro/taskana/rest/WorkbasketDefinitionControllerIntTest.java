@@ -1,12 +1,9 @@
 package pro.taskana.rest;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.fail;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,7 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.sql.DataSource;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -75,9 +71,9 @@ class WorkbasketDefinitionControllerIntTest {
     ResponseEntity<List<WorkbasketDefinitionResource>> response =
         executeExportRequestForDomain("DOMAIN_A");
 
-    assertNotNull(response.getBody());
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertThat(response.getBody().get(0), instanceOf(WorkbasketDefinitionResource.class));
+    assertThat(response.getBody()).isNotNull();
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(response.getBody().get(0)).isInstanceOf(WorkbasketDefinitionResource.class);
 
     boolean allAuthorizationsAreEmpty = true;
     boolean allDistributionTargetsAreEmpty = true;
@@ -93,15 +89,15 @@ class WorkbasketDefinitionControllerIntTest {
         break;
       }
     }
-    assertFalse(allDistributionTargetsAreEmpty);
-    assertFalse(allAuthorizationsAreEmpty);
+    assertThat(allDistributionTargetsAreEmpty).isFalse();
+    assertThat(allAuthorizationsAreEmpty).isFalse();
   }
 
   @Test
   void testExportWorkbasketsFromWrongDomain() {
     ResponseEntity<List<WorkbasketDefinitionResource>> response =
         executeExportRequestForDomain("wrongDomain");
-    assertEquals(0, response.getBody().size());
+    assertThat(response.getBody()).isEmpty();
   }
 
   @Test
@@ -130,7 +126,7 @@ class WorkbasketDefinitionControllerIntTest {
 
     WorkbasketDefinitionResource w = wbList.get(0);
     w.setDistributionTargets(new HashSet<>());
-    String letMeBeYourDistributionTarget = w.getWorkbasket().workbasketId;
+    String letMeBeYourDistributionTarget = w.getWorkbasket().getWorkbasketId();
     WorkbasketDefinitionResource w2 = wbList.get(1);
     w2.setDistributionTargets(Collections.singleton(letMeBeYourDistributionTarget));
     expectStatusWhenExecutingImportRequestOfWorkbaskets(HttpStatus.NO_CONTENT, w, w2);
@@ -168,7 +164,7 @@ class WorkbasketDefinitionControllerIntTest {
       expectStatusWhenExecutingImportRequestOfWorkbaskets(HttpStatus.BAD_REQUEST, w);
       fail("Expected http-Status 400");
     } catch (HttpClientErrorException e) {
-      assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+      assertThat(e.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     w.getWorkbasket().setKey("anotherNewKey");
@@ -176,7 +172,7 @@ class WorkbasketDefinitionControllerIntTest {
       expectStatusWhenExecutingImportRequestOfWorkbaskets(HttpStatus.BAD_REQUEST, w);
       fail("Expected http-Status 400");
     } catch (HttpClientErrorException e) {
-      assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+      assertThat(e.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -187,7 +183,7 @@ class WorkbasketDefinitionControllerIntTest {
       expectStatusWhenExecutingImportRequestOfWorkbaskets(HttpStatus.CONFLICT, w, w);
       fail("Expected http-Status 409");
     } catch (HttpClientErrorException e) {
-      assertEquals(HttpStatus.CONFLICT, e.getStatusCode());
+      assertThat(e.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
     }
   }
 
@@ -202,7 +198,7 @@ class WorkbasketDefinitionControllerIntTest {
     // breaks the logic but not the script- should we really allow this case?
     WorkbasketDefinitionResource theDestroyer = wbList.get(2);
     theDestroyer.setDistributionTargets(
-        Collections.singleton(differentLogicalId.getWorkbasket().workbasketId));
+        Collections.singleton(differentLogicalId.getWorkbasket().getWorkbasketId()));
 
     expectStatusWhenExecutingImportRequestOfWorkbaskets(
         HttpStatus.NO_CONTENT, w, differentLogicalId, theDestroyer);
@@ -215,11 +211,11 @@ class WorkbasketDefinitionControllerIntTest {
     String w1String = workbasketToString(w);
     w.getWorkbasket().setKey("new Key for this WB");
     String w2String = workbasketToString(w);
-    Assertions.assertThrows(
-        HttpClientErrorException.class,
+    assertThatThrownBy(
         () ->
             expectStatusWhenExecutingImportRequestOfWorkbaskets(
-                HttpStatus.CONFLICT, Arrays.asList(w1String, w2String)));
+                    HttpStatus.CONFLICT, Arrays.asList(w1String, w2String)))
+        .isInstanceOf(HttpClientErrorException.class);
   }
 
   private void changeWorkbasketIdOrKey(
@@ -246,7 +242,7 @@ class WorkbasketDefinitionControllerIntTest {
   private void expectStatusWhenExecutingImportRequestOfWorkbaskets(
       HttpStatus expectedStatus, WorkbasketDefinitionResource... workbaskets) throws IOException {
     List<String> workbasketStrings =
-        Arrays.stream(workbaskets).map(wb -> workbasketToString(wb)).collect(Collectors.toList());
+        Arrays.stream(workbaskets).map(this::workbasketToString).collect(Collectors.toList());
     expectStatusWhenExecutingImportRequestOfWorkbaskets(expectedStatus, workbasketStrings);
   }
 
@@ -267,7 +263,7 @@ class WorkbasketDefinitionControllerIntTest {
 
     ResponseEntity<Void> responseImport =
         template.postForEntity(serverUrl, requestEntity, Void.class);
-    assertEquals(expectedStatus, responseImport.getStatusCode());
+    assertThat(responseImport.getStatusCode()).isEqualTo(expectedStatus);
   }
 
   private String workbasketToString(WorkbasketDefinitionResource workbasketDefinitionResource) {
