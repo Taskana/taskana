@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,20 @@ class WorkbasketControllerIntTest {
     template = RestHelper.getRestTemplate();
   }
 
+  @Test
+  void testGetWorkbasket() {
+    ResponseEntity<WorkbasketResource> response =
+        template.exchange(
+            restHelper.toUrl(
+                Mapping.URL_WORKBASKET_ID, "WBI:100000000000000000000000000000000006"),
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
+            ParameterizedTypeReference.forType(WorkbasketResource.class));
+    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getHeaders().getContentType().toString())
+        .isEqualTo(MediaTypes.HAL_JSON_UTF8_VALUE);
+  }
+  
   @Test
   void testGetAllWorkbaskets() {
     ResponseEntity<WorkbasketSummaryListResource> response =

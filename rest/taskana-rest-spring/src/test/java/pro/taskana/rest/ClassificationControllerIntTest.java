@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -42,6 +43,8 @@ class ClassificationControllerIntTest {
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(ClassificationResource.class));
     assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getHeaders().getContentType().toString())
+        .isEqualTo(MediaTypes.HAL_JSON_UTF8_VALUE);
   }
 
   @Test
