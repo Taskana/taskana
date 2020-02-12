@@ -1,12 +1,9 @@
 package pro.taskana.rest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.fail;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -45,7 +42,7 @@ class WorkbasketAccessItemControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(WorkbasketAccessItemListResource.class));
-    assertNotNull(response.getBody().getLink(Link.REL_SELF));
+    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
   }
 
   @Test
@@ -57,8 +54,8 @@ class WorkbasketAccessItemControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(WorkbasketAccessItemListResource.class));
-    assertNotNull(response.getBody().getLink(Link.REL_SELF));
-    assertTrue(response.getBody().getLink(Link.REL_SELF).getHref().endsWith(parameters));
+    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(Link.REL_SELF).getHref().endsWith(parameters)).isTrue();
   }
 
   @Test
@@ -70,10 +67,10 @@ class WorkbasketAccessItemControllerIntTest {
           HttpMethod.GET,
           restHelper.defaultRequest(),
           ParameterizedTypeReference.forType(WorkbasketAccessItemListResource.class));
-      fail();
+      fail("Invalid filter is used");
     } catch (HttpClientErrorException e) {
-      assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
-      assertTrue(e.getResponseBodyAsString().contains("[invalid]"));
+      assertThat(e.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+      assertThat(e.getResponseBodyAsString().contains("[invalid]")).isTrue();
     }
   }
 
@@ -86,16 +83,17 @@ class WorkbasketAccessItemControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(WorkbasketAccessItemListResource.class));
-    assertEquals(1, response.getBody().getContent().size());
-    assertEquals("user_1_1", response.getBody().getContent().iterator().next().accessId);
-    assertNotNull(response.getBody().getLink(Link.REL_SELF));
-    assertTrue(response.getBody().getLink(Link.REL_SELF).getHref().endsWith(parameters));
-    assertNotNull(response.getBody().getLink(Link.REL_FIRST));
-    assertNotNull(response.getBody().getLink(Link.REL_LAST));
-    assertEquals(9, response.getBody().getMetadata().getSize());
-    assertEquals(1, response.getBody().getMetadata().getTotalElements());
-    assertEquals(1, response.getBody().getMetadata().getTotalPages());
-    assertEquals(1, response.getBody().getMetadata().getNumber());
+    assertThat(response.getBody().getContent()).hasSize(1);
+    assertThat(response.getBody().getContent().iterator().next().getAccessId())
+        .isEqualTo("user_1_1");
+    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(Link.REL_SELF).getHref().endsWith(parameters)).isTrue();
+    assertThat(response.getBody().getLink(Link.REL_FIRST)).isNotNull();
+    assertThat(response.getBody().getLink(Link.REL_LAST)).isNotNull();
+    assertThat(response.getBody().getMetadata().getSize()).isEqualTo(9);
+    assertThat(response.getBody().getMetadata().getTotalElements()).isEqualTo(1);
+    assertThat(response.getBody().getMetadata().getTotalPages()).isEqualTo(1);
+    assertThat(response.getBody().getMetadata().getNumber()).isEqualTo(1);
   }
 
   @Test
@@ -108,24 +106,22 @@ class WorkbasketAccessItemControllerIntTest {
             HttpMethod.DELETE,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(Void.class));
-    assertNull(response.getBody());
-    assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    assertThat(response.getBody()).isNull();
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
   }
 
   @Test
   void testGetBadRequestIfTryingToDeleteAccessItemsForGroup() {
     String parameters = "?access-id=cn=DevelopersGroup,ou=groups,o=TaskanaTest";
-
-    HttpClientErrorException e =
-        Assertions.assertThrows(
-            HttpClientErrorException.class,
-            () ->
-                template.exchange(
-                    restHelper.toUrl(Mapping.URL_WORKBASKETACCESSITEMS) + parameters,
-                    HttpMethod.DELETE,
-                    restHelper.defaultRequest(),
-                    ParameterizedTypeReference.forType(Void.class)));
-
-    assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+    assertThatThrownBy(
+        () ->
+            template.exchange(
+                restHelper.toUrl(Mapping.URL_WORKBASKETACCESSITEMS) + parameters,
+                HttpMethod.DELETE,
+                restHelper.defaultRequest(),
+                ParameterizedTypeReference.forType(Void.class)))
+        .isInstanceOf(HttpClientErrorException.class)
+        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 }

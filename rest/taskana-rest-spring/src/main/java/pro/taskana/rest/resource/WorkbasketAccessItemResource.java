@@ -10,33 +10,33 @@ import pro.taskana.workbasket.api.WorkbasketAccessItem;
 @Relation(collectionRelation = "accessItems")
 public class WorkbasketAccessItemResource extends ResourceSupport {
 
-  public String accessItemId;
+  private String accessItemId;
 
-  @NotNull public String workbasketId;
+  @NotNull private String workbasketId;
 
-  @NotNull public String workbasketKey;
+  @NotNull private String workbasketKey;
 
-  @NotNull public String accessId;
+  @NotNull private String accessId;
 
-  public String accessName;
+  private String accessName;
 
-  public boolean permRead;
-  public boolean permOpen;
-  public boolean permAppend;
-  public boolean permTransfer;
-  public boolean permDistribute;
-  public boolean permCustom1;
-  public boolean permCustom2;
-  public boolean permCustom3;
-  public boolean permCustom4;
-  public boolean permCustom5;
-  public boolean permCustom6;
-  public boolean permCustom7;
-  public boolean permCustom8;
-  public boolean permCustom9;
-  public boolean permCustom10;
-  public boolean permCustom11;
-  public boolean permCustom12;
+  private boolean permRead;
+  private boolean permOpen;
+  private boolean permAppend;
+  private boolean permTransfer;
+  private boolean permDistribute;
+  private boolean permCustom1;
+  private boolean permCustom2;
+  private boolean permCustom3;
+  private boolean permCustom4;
+  private boolean permCustom5;
+  private boolean permCustom6;
+  private boolean permCustom7;
+  private boolean permCustom8;
+  private boolean permCustom9;
+  private boolean permCustom10;
+  private boolean permCustom11;
+  private boolean permCustom12;
 
   public WorkbasketAccessItemResource() {}
 
