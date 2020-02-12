@@ -183,7 +183,7 @@ public class WorkbasketController extends AbstractPagingController {
           ConcurrencyException {
     LOGGER.debug("Entry to updateWorkbasket(workbasketId= {})", workbasketId);
     ResponseEntity<WorkbasketResource> result;
-    if (workbasketId.equals(workbasketResource.workbasketId)) {
+    if (workbasketId.equals(workbasketResource.getWorkbasketId())) {
       Workbasket workbasket = workbasketResourceAssembler.toModel(workbasketResource);
       workbasket = workbasketService.updateWorkbasket(workbasket);
       result = ResponseEntity.ok(workbasketResourceAssembler.toResource(workbasket));

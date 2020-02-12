@@ -45,16 +45,17 @@ public class WorkbasketResourceAssembler
   }
 
   public Workbasket toModel(WorkbasketResource wbResource) {
-    WorkbasketImpl workbasket =
-        (WorkbasketImpl) workbasketService.newWorkbasket(wbResource.key, wbResource.domain);
+    String wbKey = wbResource.getKey();
+    String wbDomain = wbResource.getDomain();
+    WorkbasketImpl workbasket = (WorkbasketImpl) workbasketService.newWorkbasket(wbKey, wbDomain);
     BeanUtils.copyProperties(wbResource, workbasket);
 
-    workbasket.setId(wbResource.workbasketId);
-    if (wbResource.modified != null) {
-      workbasket.setModified(Instant.parse(wbResource.modified));
+    workbasket.setId(wbResource.getWorkbasketId());
+    if (wbResource.getModified() != null) {
+      workbasket.setModified(Instant.parse(wbResource.getModified()));
     }
-    if (wbResource.created != null) {
-      workbasket.setCreated(Instant.parse(wbResource.created));
+    if (wbResource.getCreated() != null) {
+      workbasket.setCreated(Instant.parse(wbResource.getCreated()));
     }
     return workbasket;
   }
