@@ -21,13 +21,13 @@ import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
-import pro.taskana.task.internal.TaskImpl;
-import pro.taskana.workbasket.api.Workbasket;
-import pro.taskana.workbasket.api.WorkbasketAccessItem;
+import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketInUseException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
+import pro.taskana.workbasket.api.models.Workbasket;
+import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 
 /** Acceptance test which does test the deletion of a workbasket and all wanted failures. */
 @ExtendWith(JaasExtension.class)

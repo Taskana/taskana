@@ -1,12 +1,12 @@
-package pro.taskana.task.internal;
+package pro.taskana.task.internal.models;
 
 import java.time.Instant;
 import java.util.Objects;
 
-import pro.taskana.classification.api.ClassificationSummary;
-import pro.taskana.classification.internal.ClassificationSummaryImpl;
-import pro.taskana.task.api.AttachmentSummary;
-import pro.taskana.task.api.ObjectReference;
+import pro.taskana.classification.api.models.ClassificationSummary;
+import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
+import pro.taskana.task.api.models.AttachmentSummary;
+import pro.taskana.task.api.models.ObjectReference;
 
 /** The most important fields of the Attachment entity. */
 public class AttachmentSummaryImpl implements AttachmentSummary {

@@ -18,7 +18,8 @@ import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.configuration.DB;
 import pro.taskana.task.api.TaskState;
-import pro.taskana.task.api.TaskSummary;
+import pro.taskana.task.api.models.TaskSummary;
+import pro.taskana.task.internal.models.TaskSummaryImpl;
 
 /**
  * Test for TaskQueryImpl.

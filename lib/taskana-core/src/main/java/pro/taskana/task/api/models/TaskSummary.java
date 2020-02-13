@@ -1,11 +1,12 @@
-package pro.taskana.task.api;
+package pro.taskana.task.api.models;
 
 import java.time.Instant;
 import java.util.List;
 
-import pro.taskana.classification.api.ClassificationSummary;
+import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.workbasket.api.WorkbasketSummary;
+import pro.taskana.task.api.TaskState;
+import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
 /**
  * Interface for TaskSummary. This is a specific short model-object which only contains the most

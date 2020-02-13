@@ -10,6 +10,8 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
+
 /** This class is the mybatis mapping of workbasket access items. */
 @SuppressWarnings("checkstyle:LineLength")
 public interface WorkbasketAccessMapper {

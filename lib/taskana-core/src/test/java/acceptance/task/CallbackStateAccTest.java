@@ -25,13 +25,13 @@ import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 import pro.taskana.task.api.CallbackState;
-import pro.taskana.task.api.Task;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
-import pro.taskana.task.api.TaskSummary;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
-import pro.taskana.task.internal.TaskImpl;
+import pro.taskana.task.api.models.Task;
+import pro.taskana.task.api.models.TaskSummary;
+import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
 /** Acceptance test for all "create task" scenarios. */

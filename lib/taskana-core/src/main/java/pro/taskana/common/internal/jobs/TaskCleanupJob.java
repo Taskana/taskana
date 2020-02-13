@@ -19,7 +19,7 @@ import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
-import pro.taskana.task.api.TaskSummary;
+import pro.taskana.task.api.models.TaskSummary;
 
 /** Job to cleanup completed tasks after a period of time. */
 public class TaskCleanupJob extends AbstractTaskanaJob {

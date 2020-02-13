@@ -1,8 +1,8 @@
 package pro.taskana.common.internal;
 
-import pro.taskana.task.api.Attachment;
-import pro.taskana.task.api.ObjectReference;
-import pro.taskana.task.internal.AttachmentImpl;
+import pro.taskana.task.api.models.Attachment;
+import pro.taskana.task.api.models.ObjectReference;
+import pro.taskana.task.internal.models.AttachmentImpl;
 
 /**
  * This class contains helper methods for Junit Tests.

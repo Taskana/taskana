@@ -31,8 +31,7 @@ class DaysToWorkingDaysConverterTest {
   @Test
   void testConvertWorkingDaysToDaysForTasks() throws InvalidArgumentException {
     Instant thursday0201 = Instant.parse("2018-02-01T07:00:00.000Z");
-    DaysToWorkingDaysConverter converter =
-        DaysToWorkingDaysConverter.initialize(thursday0201);
+    DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize(thursday0201);
 
     long days = converter.convertWorkingDaysToDays(thursday0201, -7); // = tuesday (sat + sun)
     assertEquals(-9, days);
@@ -77,8 +76,7 @@ class DaysToWorkingDaysConverterTest {
   @Test
   void testConvertWorkingDaysToDaysForKarFreitag() throws InvalidArgumentException {
     Instant thursday0201 = Instant.parse("2018-02-01T07:00:00.000Z");
-    DaysToWorkingDaysConverter converter =
-        DaysToWorkingDaysConverter.initialize(thursday0201);
+    DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize(thursday0201);
     Instant gruenDonnerstag2018 = Instant.parse("2018-03-29T01:00:00.000Z");
     long days = converter.convertWorkingDaysToDays(gruenDonnerstag2018, 0);
     assertEquals(0, days);
@@ -92,8 +90,7 @@ class DaysToWorkingDaysConverterTest {
   void testConvertWorkingDaysToDaysForHolidays() throws InvalidArgumentException {
     List<TimeIntervalColumnHeader> reportItems = singletonList(new TimeIntervalColumnHeader(0));
     Instant thursday0201 = Instant.parse("2018-02-01T07:00:00.000Z");
-    DaysToWorkingDaysConverter converter =
-        DaysToWorkingDaysConverter.initialize(thursday0201);
+    DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize(thursday0201);
 
     Instant freitag0427 = Instant.parse("2018-04-27T19:00:00.000Z");
     long days = converter.convertWorkingDaysToDays(freitag0427, 0);

@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.hateoas.ResourceSupport;
 
 import pro.taskana.common.api.LoggerUtils;
-import pro.taskana.task.api.TaskanaRole;
+import pro.taskana.common.api.TaskanaRole;
 
 /** Resource class for user information. */
 public class TaskanaUserInfoResource extends ResourceSupport {

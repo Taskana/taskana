@@ -29,11 +29,11 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.configuration.DB;
 import pro.taskana.common.internal.configuration.DbSchemaCreator;
-import pro.taskana.task.api.TaskanaRole;
 
 /**
  * This central class creates the TaskanaEngine and holds all the information about DB and Security.

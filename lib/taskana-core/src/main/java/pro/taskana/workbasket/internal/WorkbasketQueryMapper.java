@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 
 import pro.taskana.workbasket.api.WorkbasketAccessItemQuery;
+import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
+import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 
 /** This class provides a mapper for all queries. */
 @SuppressWarnings({"checkstyle:LineLength", "checkstyle:Indentation"})

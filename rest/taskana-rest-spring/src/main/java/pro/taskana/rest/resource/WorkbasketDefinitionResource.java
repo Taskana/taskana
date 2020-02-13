@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import pro.taskana.common.api.LoggerUtils;
-import pro.taskana.workbasket.internal.WorkbasketAccessItemImpl;
+import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
 
 /** this class represents a workbasket including its distro targets and authorisations. */
 public class WorkbasketDefinitionResource {

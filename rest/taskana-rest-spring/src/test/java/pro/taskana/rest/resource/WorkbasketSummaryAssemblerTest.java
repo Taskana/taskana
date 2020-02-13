@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
-import pro.taskana.workbasket.internal.WorkbasketSummaryImpl;
+import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 
 /** Test for {@link WorkbasketSummaryResourceAssembler}. */
 @TaskanaSpringBootTest

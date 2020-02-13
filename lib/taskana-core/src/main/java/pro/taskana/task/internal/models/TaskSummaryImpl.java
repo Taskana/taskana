@@ -1,19 +1,19 @@
-package pro.taskana.task.internal;
+package pro.taskana.task.internal.models;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import pro.taskana.classification.api.ClassificationSummary;
-import pro.taskana.classification.internal.ClassificationSummaryImpl;
+import pro.taskana.classification.api.models.ClassificationSummary;
+import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.task.api.AttachmentSummary;
-import pro.taskana.task.api.ObjectReference;
 import pro.taskana.task.api.TaskState;
-import pro.taskana.task.api.TaskSummary;
-import pro.taskana.workbasket.api.WorkbasketSummary;
-import pro.taskana.workbasket.internal.WorkbasketSummaryImpl;
+import pro.taskana.task.api.models.AttachmentSummary;
+import pro.taskana.task.api.models.ObjectReference;
+import pro.taskana.task.api.models.TaskSummary;
+import pro.taskana.workbasket.api.models.WorkbasketSummary;
+import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 
 /** Entity which contains the most important informations about a Task. */
 public class TaskSummaryImpl implements TaskSummary {
@@ -62,7 +62,7 @@ public class TaskSummaryImpl implements TaskSummary {
   protected String custom15;
   protected String custom16;
 
-  TaskSummaryImpl() {}
+  public TaskSummaryImpl() {}
 
   /*
    * (non-Javadoc)

@@ -8,10 +8,10 @@ import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import pro.taskana.classification.api.Classification;
 import pro.taskana.classification.api.ClassificationService;
-import pro.taskana.classification.api.ClassificationSummary;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
+import pro.taskana.classification.api.models.Classification;
+import pro.taskana.classification.api.models.ClassificationSummary;
 
 /** Acceptance test for all "get classification" scenarios. */
 class GetClassificationAccTest extends AbstractAccTest {

@@ -19,7 +19,7 @@ import pro.taskana.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.workbasket.api.WorkbasketService;
-import pro.taskana.workbasket.api.WorkbasketSummary;
+import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
 /** Acceptance test for all "jobs workbasket runner" scenarios. */
 @ExtendWith(JaasExtension.class)

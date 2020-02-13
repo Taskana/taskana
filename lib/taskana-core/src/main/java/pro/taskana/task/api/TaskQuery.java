@@ -4,6 +4,7 @@ import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.KeyDomain;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.task.api.models.TaskSummary;
 
 /** TaskQuery for generating dynamic sql. */
 public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {

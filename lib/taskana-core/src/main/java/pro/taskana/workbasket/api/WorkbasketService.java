@@ -13,6 +13,9 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistExc
 import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketInUseException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
+import pro.taskana.workbasket.api.models.Workbasket;
+import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
+import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
 /** This service manages Workbaskets. */
 public interface WorkbasketService {

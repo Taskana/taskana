@@ -7,9 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import pro.taskana.TaskanaSpringBootTest;
-import pro.taskana.classification.api.Classification;
 import pro.taskana.classification.api.ClassificationService;
-import pro.taskana.classification.internal.ClassificationImpl;
+import pro.taskana.classification.api.models.Classification;
+import pro.taskana.classification.internal.models.ClassificationImpl;
 import pro.taskana.rest.Mapping;
 
 /** Test for {@link ClassificationResourceAssembler}. */

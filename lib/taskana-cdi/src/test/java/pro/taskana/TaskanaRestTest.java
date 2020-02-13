@@ -11,24 +11,24 @@ import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.classification.api.Classification;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
+import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.InvalidOwnerException;
 import pro.taskana.common.api.exceptions.InvalidStateException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.task.api.ObjectReference;
-import pro.taskana.task.api.Task;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
-import pro.taskana.workbasket.api.Workbasket;
+import pro.taskana.task.api.models.ObjectReference;
+import pro.taskana.task.api.models.Task;
 import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
+import pro.taskana.workbasket.api.models.Workbasket;
 
 /** TODO. */
 @Path("/test")

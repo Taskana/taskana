@@ -20,8 +20,8 @@ import pro.taskana.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketQuery;
 import pro.taskana.workbasket.api.WorkbasketService;
-import pro.taskana.workbasket.api.WorkbasketSummary;
 import pro.taskana.workbasket.api.WorkbasketType;
+import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
 /** Acceptance test for all "query workbasket by permission" scenarios. */
 @ExtendWith(JaasExtension.class)

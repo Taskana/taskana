@@ -11,9 +11,9 @@ import org.h2.store.fs.FileUtils;
 import org.junit.jupiter.api.Test;
 
 import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.TaskanaEngineTestConfiguration;
-import pro.taskana.task.api.TaskanaRole;
 
 /**
  * Test taskana's role configuration.

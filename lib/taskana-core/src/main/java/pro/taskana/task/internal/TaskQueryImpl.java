@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.KeyDomain;
 import pro.taskana.common.api.LoggerUtils;
+import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
@@ -23,8 +24,8 @@ import pro.taskana.task.api.ObjectReferenceQuery;
 import pro.taskana.task.api.TaskQuery;
 import pro.taskana.task.api.TaskQueryColumnName;
 import pro.taskana.task.api.TaskState;
-import pro.taskana.task.api.TaskSummary;
-import pro.taskana.task.api.TaskanaRole;
+import pro.taskana.task.api.models.TaskSummary;
+import pro.taskana.task.internal.models.TaskSummaryImpl;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;

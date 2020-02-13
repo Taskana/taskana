@@ -5,6 +5,8 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 
+import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
+
 /** This class provides a mapper for all classification queries. */
 @SuppressWarnings({"checkstyle:LineLength", "checkstyle:Indentation"})
 public interface ClassificationQueryMapper {

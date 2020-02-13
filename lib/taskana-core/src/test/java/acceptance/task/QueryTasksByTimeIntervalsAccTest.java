@@ -16,7 +16,7 @@ import pro.taskana.common.api.TimeInterval;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
-import pro.taskana.task.api.TaskSummary;
+import pro.taskana.task.api.models.TaskSummary;
 
 /** Acceptance test for all "query tasks with sorting" scenarios. */
 @ExtendWith(JaasExtension.class)

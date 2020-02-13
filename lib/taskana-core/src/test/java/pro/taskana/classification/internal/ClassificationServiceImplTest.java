@@ -13,7 +13,8 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import pro.taskana.classification.api.Classification;
+import pro.taskana.classification.api.models.Classification;
+import pro.taskana.classification.internal.models.ClassificationImpl;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.internal.InternalTaskanaEngine;

@@ -12,8 +12,8 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.classification.api.ClassificationSummary;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
+import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.exceptions.AttachmentPersistenceException;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -22,13 +22,13 @@ import pro.taskana.common.api.exceptions.InvalidStateException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
-import pro.taskana.task.api.ObjectReference;
-import pro.taskana.task.api.Task;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
-import pro.taskana.task.internal.TaskImpl;
+import pro.taskana.task.api.models.ObjectReference;
+import pro.taskana.task.api.models.Task;
+import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
 /** Acceptance test for all "update task" scenarios. */
@@ -386,7 +386,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
   @Test
   void testSetOwnerOfClaimedTaskFails()
       throws TaskNotFoundException, NotAuthorizedException, InvalidStateException,
-                 InvalidOwnerException {
+          InvalidOwnerException {
 
     TaskService taskService = taskanaEngine.getTaskService();
     String taskClaimedId = "TKI:000000000000000000000000000000000026";

@@ -7,10 +7,10 @@ import org.springframework.hateoas.ResourceSupport;
 import org.springframework.hateoas.core.Relation;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.task.api.ObjectReference;
 import pro.taskana.task.api.TaskState;
-import pro.taskana.task.api.TaskSummary;
-import pro.taskana.workbasket.api.WorkbasketSummary;
+import pro.taskana.task.api.models.ObjectReference;
+import pro.taskana.task.api.models.TaskSummary;
+import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
 /** Resource class for {@link WorkbasketSummary}. */
 @Relation(collectionRelation = "tasks")

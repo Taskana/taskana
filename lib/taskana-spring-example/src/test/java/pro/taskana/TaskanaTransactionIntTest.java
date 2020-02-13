@@ -30,19 +30,19 @@ import pro.taskana.common.internal.jobs.TaskCleanupJob;
 import pro.taskana.common.internal.jobs.WorkbasketCleanupJob;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 import pro.taskana.common.internal.util.IdGenerator;
-import pro.taskana.task.api.ObjectReference;
-import pro.taskana.task.api.Task;
 import pro.taskana.task.api.TaskService;
-import pro.taskana.task.api.TaskSummary;
-import pro.taskana.task.internal.TaskImpl;
-import pro.taskana.workbasket.api.Workbasket;
+import pro.taskana.task.api.models.ObjectReference;
+import pro.taskana.task.api.models.Task;
+import pro.taskana.task.api.models.TaskSummary;
+import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketInUseException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
-import pro.taskana.workbasket.internal.WorkbasketImpl;
+import pro.taskana.workbasket.api.models.Workbasket;
+import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 
 /** Test for internal transaction management. */
 @ExtendWith(SpringExtension.class)
@@ -211,9 +211,10 @@ class TaskanaTransactionIntTest {
           new TaskCleanupJob(taskanaEngine, springTransactionProvider, null);
       taskCleanupJob.run();
 
-      assertThatThrownBy(() ->
-        workbasketService.deleteWorkbasket(
-          workbasketService.getWorkbasket("key3", "DOMAIN_A").getId()))
+      assertThatThrownBy(
+          () ->
+                  workbasketService.deleteWorkbasket(
+                      workbasketService.getWorkbasket("key3", "DOMAIN_A").getId()))
           .isInstanceOf(WorkbasketInUseException.class)
           .hasMessageContaining("contains 1 non-completed tasks");
 

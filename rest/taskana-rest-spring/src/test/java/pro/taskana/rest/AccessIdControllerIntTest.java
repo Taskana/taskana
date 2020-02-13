@@ -75,19 +75,18 @@ class AccessIdControllerIntTest {
   void testBadRequestWhenSearchForIsTooShort() {
     assertThatThrownBy(
         () ->
-        template.exchange(
-            restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=al",
-            HttpMethod.GET,
-            restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(List.class)))
+                template.exchange(
+                    restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=al",
+                    HttpMethod.GET,
+                    restHelper.defaultRequest(),
+                    ParameterizedTypeReference.forType(List.class)))
         .isInstanceOf(HttpClientErrorException.class)
         .hasMessageContaining("Minimum searchFor length =")
-        .extracting(ex -> ((HttpClientErrorException)ex).getStatusCode())
-          .isEqualTo(HttpStatus.BAD_REQUEST);
+        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.BAD_REQUEST);
   }
-  
+
   static class AccessIdListResource extends ArrayList<AccessIdResource> {
     private static final long serialVersionUID = 1L;
   }
-  
 }

@@ -140,10 +140,7 @@ class ProvideCategoryReportAccTest extends AbstractReportAccTest {
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     CategoryReport report =
-        monitorService
-            .createCategoryReportBuilder()
-            .withColumnHeaders(columnHeaders)
-            .buildReport();
+        monitorService.createCategoryReportBuilder().withColumnHeaders(columnHeaders).buildReport();
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(reportToString(report, columnHeaders));

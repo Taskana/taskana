@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.classification.api.ClassificationQuery;
 import pro.taskana.classification.api.ClassificationQueryColumnName;
-import pro.taskana.classification.api.ClassificationSummary;
+import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;

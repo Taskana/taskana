@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.spi.routing.api.TaskRoutingProvider;
-import pro.taskana.task.api.Task;
+import pro.taskana.task.api.models.Task;
 
 /**
  * Loads TaskRoutingProvider SPI implementation(s) and passes requests to determine workbasketids to

@@ -13,7 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import pro.taskana.classification.api.ClassificationSummary;
+import pro.taskana.classification.api.models.ClassificationSummary;
+import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 
 /**

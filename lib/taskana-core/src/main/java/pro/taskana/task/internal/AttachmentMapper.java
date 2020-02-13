@@ -12,6 +12,8 @@ import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.type.ClobTypeHandler;
 
 import pro.taskana.common.internal.persistence.MapTypeHandler;
+import pro.taskana.task.internal.models.AttachmentImpl;
+import pro.taskana.task.internal.models.AttachmentSummaryImpl;
 
 /** This class is the mybatis mapping of Attachment. */
 @SuppressWarnings("checkstyle:LineLength")

@@ -15,10 +15,10 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
-import pro.taskana.task.api.Task;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
+import pro.taskana.task.api.models.Task;
 
 /** Acceptance test for all "get task" scenarios. */
 @ExtendWith(JaasExtension.class)

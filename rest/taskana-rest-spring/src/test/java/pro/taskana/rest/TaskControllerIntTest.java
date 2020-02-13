@@ -39,8 +39,8 @@ import pro.taskana.rest.resource.TaskResource;
 import pro.taskana.rest.resource.TaskSummaryListResource;
 import pro.taskana.rest.resource.WorkbasketSummaryResource;
 import pro.taskana.sampledata.SampleDataGenerator;
-import pro.taskana.task.api.ObjectReference;
 import pro.taskana.task.api.TaskState;
+import pro.taskana.task.api.models.ObjectReference;
 
 // import org.junit.jupiter.api.Assertions;
 
@@ -166,17 +166,17 @@ class TaskControllerIntTest {
   void testGetAllTasksByWorkbasketIdWithInvalidPlannedParamsCombination() {
     assertThatThrownBy(
         () ->
-            template.exchange(
-                restHelper.toUrl(Mapping.URL_TASKS)
-                    + "?workbasket-id=WBI:100000000000000000000000000000000001"
-                    + "&planned=2020-01-22T09:44:47.453Z,,"
-                    + "2020-01-19T07:44:47.453Z,2020-01-19T19:44:47.453Z,"
-                    + ",2020-01-18T09:44:47.453Z"
-                    + "&planned-from=2020-01-19T07:44:47.453Z"
-                    + "&sort-by=planned",
-                HttpMethod.GET,
-                restHelper.defaultRequest(),
-                ParameterizedTypeReference.forType(TaskSummaryListResource.class)))
+                template.exchange(
+                    restHelper.toUrl(Mapping.URL_TASKS)
+                        + "?workbasket-id=WBI:100000000000000000000000000000000001"
+                        + "&planned=2020-01-22T09:44:47.453Z,,"
+                        + "2020-01-19T07:44:47.453Z,2020-01-19T19:44:47.453Z,"
+                        + ",2020-01-18T09:44:47.453Z"
+                        + "&planned-from=2020-01-19T07:44:47.453Z"
+                        + "&sort-by=planned",
+                    HttpMethod.GET,
+                    restHelper.defaultRequest(),
+                    ParameterizedTypeReference.forType(TaskSummaryListResource.class)))
         .isInstanceOf(HttpClientErrorException.class)
         .hasMessageContaining("400");
   }
@@ -255,17 +255,17 @@ class TaskControllerIntTest {
   void testGetAllTasksByWorkbasketIdWithInvalidDueParamsCombination() {
     assertThatThrownBy(
         () ->
-            template.exchange(
-                restHelper.toUrl(Mapping.URL_TASKS)
-                    + "?workbasket-id=WBI:100000000000000000000000000000000001"
-                    + "&due=2020-01-22T09:44:47.453Z,,"
-                    + "2020-01-19T07:44:47.453Z,2020-01-19T19:44:47.453Z,"
-                    + ",2020-01-18T09:44:47.453Z"
-                    + "&due-from=2020-01-19T07:44:47.453Z"
-                    + "&sort-by=planned",
-                HttpMethod.GET,
-                restHelper.defaultRequest(),
-                ParameterizedTypeReference.forType(TaskSummaryListResource.class)))
+                template.exchange(
+                    restHelper.toUrl(Mapping.URL_TASKS)
+                        + "?workbasket-id=WBI:100000000000000000000000000000000001"
+                        + "&due=2020-01-22T09:44:47.453Z,,"
+                        + "2020-01-19T07:44:47.453Z,2020-01-19T19:44:47.453Z,"
+                        + ",2020-01-18T09:44:47.453Z"
+                        + "&due-from=2020-01-19T07:44:47.453Z"
+                        + "&sort-by=planned",
+                    HttpMethod.GET,
+                    restHelper.defaultRequest(),
+                    ParameterizedTypeReference.forType(TaskSummaryListResource.class)))
         .isInstanceOf(HttpClientErrorException.class)
         .hasMessageContaining("400");
   }
@@ -295,11 +295,11 @@ class TaskControllerIntTest {
     assertThatThrownBy(
         () -> {
           ResponseEntity<TaskSummaryListResource> response =
-              template.exchange(
-                  restHelper.toUrl(Mapping.URL_TASKS) + "?workbasket-key=USER_1_2",
-                  HttpMethod.GET,
-                  request,
-                  ParameterizedTypeReference.forType(TaskSummaryListResource.class));
+                  template.exchange(
+                      restHelper.toUrl(Mapping.URL_TASKS) + "?workbasket-key=USER_1_2",
+                      HttpMethod.GET,
+                      request,
+                      ParameterizedTypeReference.forType(TaskSummaryListResource.class));
         })
         .isInstanceOf(HttpClientErrorException.class)
         .hasMessageContaining("400");
@@ -587,11 +587,11 @@ class TaskControllerIntTest {
 
     assertThatThrownBy(
         () ->
-            template.exchange(
-                restHelper.toUrl(Mapping.URL_TASKS),
-                HttpMethod.POST,
-                new HttpEntity<>(taskResource, restHelper.getHeaders()),
-                ParameterizedTypeReference.forType(TaskResource.class)))
+                template.exchange(
+                    restHelper.toUrl(Mapping.URL_TASKS),
+                    HttpMethod.POST,
+                    new HttpEntity<>(taskResource, restHelper.getHeaders()),
+                    ParameterizedTypeReference.forType(TaskResource.class)))
         .isInstanceOf(HttpClientErrorException.class);
   }
 
@@ -701,11 +701,11 @@ class TaskControllerIntTest {
 
     assertThatThrownBy(
         () ->
-            template.exchange(
-                taskUrlString,
-                HttpMethod.PUT,
-                new HttpEntity<>(theTaskResource, getHeadersForUser_1_2()),
-                ParameterizedTypeReference.forType(TaskResource.class)))
+                template.exchange(
+                    taskUrlString,
+                    HttpMethod.PUT,
+                    new HttpEntity<>(theTaskResource, getHeadersForUser_1_2()),
+                    ParameterizedTypeReference.forType(TaskResource.class)))
         .isInstanceOf(HttpClientErrorException.class)
         .hasMessageContaining("409");
   }

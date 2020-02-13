@@ -17,9 +17,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.classification.api.Classification;
-import pro.taskana.classification.api.ClassificationSummary;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
+import pro.taskana.classification.api.models.Classification;
+import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.exceptions.AttachmentPersistenceException;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -29,13 +29,13 @@ import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.common.internal.util.DaysToWorkingDaysConverter;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
-import pro.taskana.task.api.Attachment;
-import pro.taskana.task.api.Task;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
-import pro.taskana.task.internal.AttachmentImpl;
-import pro.taskana.task.internal.TaskImpl;
+import pro.taskana.task.api.models.Attachment;
+import pro.taskana.task.api.models.Task;
+import pro.taskana.task.internal.models.AttachmentImpl;
+import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
 /**
@@ -75,10 +75,8 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         task.getAttachments().get(0).getClassificationSummary().getKey(),
         equalTo("DOCTYPE_DEFAULT"));
     assertThat(
-        task.getAttachments().get(0).getObjectReference().getCompany(),
-        equalTo("COMPANY_A"));
-    assertThat(task.getAttachments().get(0).getObjectReference().getSystem(),
-        equalTo("SYSTEM_B"));
+        task.getAttachments().get(0).getObjectReference().getCompany(), equalTo("COMPANY_A"));
+    assertThat(task.getAttachments().get(0).getObjectReference().getSystem(), equalTo("SYSTEM_B"));
     assertThat(
         task.getAttachments().get(0).getObjectReference().getSystemInstance(),
         equalTo("INSTANCE_B"));

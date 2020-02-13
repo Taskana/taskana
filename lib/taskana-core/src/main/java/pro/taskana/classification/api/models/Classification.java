@@ -1,4 +1,4 @@
-package pro.taskana.classification.api;
+package pro.taskana.classification.api.models;
 
 import java.time.Instant;
 

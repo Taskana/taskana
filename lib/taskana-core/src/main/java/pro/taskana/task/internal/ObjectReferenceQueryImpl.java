@@ -11,9 +11,9 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
-import pro.taskana.task.api.ObjectReference;
 import pro.taskana.task.api.ObjectReferenceQuery;
 import pro.taskana.task.api.ObjectReferenceQueryColumnName;
+import pro.taskana.task.api.models.ObjectReference;
 
 /**
  * Implementation of ObjectReferenceQuery interface.

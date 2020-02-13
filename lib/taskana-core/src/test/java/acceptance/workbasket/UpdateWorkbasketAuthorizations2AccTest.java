@@ -11,8 +11,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
-import pro.taskana.workbasket.api.WorkbasketAccessItem;
 import pro.taskana.workbasket.api.WorkbasketService;
+import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 
 /** Acceptance test for all "update workbasket" scenarios that need a fresh database. */
 @ExtendWith(JaasExtension.class)

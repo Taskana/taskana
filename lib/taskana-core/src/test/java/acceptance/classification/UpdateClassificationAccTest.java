@@ -18,10 +18,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.classification.api.Classification;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
+import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -30,10 +30,10 @@ import pro.taskana.common.internal.jobs.JobRunner;
 import pro.taskana.common.internal.util.DaysToWorkingDaysConverter;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
-import pro.taskana.task.api.Task;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
-import pro.taskana.task.internal.TaskImpl;
+import pro.taskana.task.api.models.Task;
+import pro.taskana.task.internal.models.TaskImpl;
 
 /** Acceptance test for all "update classification" scenarios. */
 @ExtendWith(JaasExtension.class)
