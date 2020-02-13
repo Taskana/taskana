@@ -203,7 +203,8 @@ public class WorkbasketController extends AbstractPagingController {
     return result;
   }
 
-  @GetMapping(path = Mapping.URL_WORKBASKET_ID_ACCESSITEMS)
+  @GetMapping(path = Mapping.URL_WORKBASKET_ID_ACCESSITEMS, 
+      produces = MediaTypes.HAL_JSON_UTF8_VALUE)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<WorkbasketAccessItemListResource> getWorkbasketAccessItems(
       @PathVariable(value = "workbasketId") String workbasketId)
