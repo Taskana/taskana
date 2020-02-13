@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.classification.api.ClassificationService;
-import pro.taskana.classification.api.ClassificationSummary;
-import pro.taskana.classification.internal.ClassificationImpl;
+import pro.taskana.classification.api.models.ClassificationSummary;
+import pro.taskana.classification.internal.models.ClassificationImpl;
 
 /** Test for {@link ClassificationSummaryResourceAssembler}. */
 @TaskanaSpringBootTest

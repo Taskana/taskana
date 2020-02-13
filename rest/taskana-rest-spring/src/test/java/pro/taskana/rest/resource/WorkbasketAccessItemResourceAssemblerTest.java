@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import pro.taskana.TaskanaSpringBootTest;
-import pro.taskana.workbasket.api.WorkbasketAccessItem;
 import pro.taskana.workbasket.api.WorkbasketService;
-import pro.taskana.workbasket.internal.WorkbasketAccessItemImpl;
+import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
+import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
 
 /** Test for {@link WorkbasketAccessItemResourceAssembler}. */
 @TaskanaSpringBootTest

@@ -31,17 +31,17 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.rest.resource.WorkbasketDefinitionResource;
 import pro.taskana.rest.resource.WorkbasketDefinitionResourceAssembler;
 import pro.taskana.rest.resource.WorkbasketResource;
-import pro.taskana.workbasket.api.Workbasket;
-import pro.taskana.workbasket.api.WorkbasketAccessItem;
 import pro.taskana.workbasket.api.WorkbasketQuery;
 import pro.taskana.workbasket.api.WorkbasketService;
-import pro.taskana.workbasket.api.WorkbasketSummary;
 import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
-import pro.taskana.workbasket.internal.WorkbasketAccessItemImpl;
-import pro.taskana.workbasket.internal.WorkbasketImpl;
+import pro.taskana.workbasket.api.models.Workbasket;
+import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
+import pro.taskana.workbasket.api.models.WorkbasketSummary;
+import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
+import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 
 /** Controller for all {@link WorkbasketDefinitionResource} related endpoints. */
 @RestController

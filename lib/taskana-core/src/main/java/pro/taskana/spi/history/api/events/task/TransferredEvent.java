@@ -3,8 +3,8 @@ package pro.taskana.spi.history.api.events.task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.task.api.Task;
-import pro.taskana.workbasket.api.WorkbasketSummary;
+import pro.taskana.task.api.models.Task;
+import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
 /** Event fired if a task is transferred. */
 public class TransferredEvent extends TaskEvent {

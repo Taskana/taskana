@@ -1,7 +1,7 @@
 package pro.taskana.spi.routing.api;
 
 import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.task.api.Task;
+import pro.taskana.task.api.models.Task;
 
 /** Interface for TASKANA TaskRoutingProvider SPI. */
 public interface TaskRoutingProvider {

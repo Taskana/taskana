@@ -8,6 +8,8 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import pro.taskana.classification.internal.models.ClassificationImpl;
+
 /** This class is the mybatis mapping of classifications. */
 @SuppressWarnings({"checkstyle:LineLength", "checkstyle:Indentation"})
 public interface ClassificationMapper {

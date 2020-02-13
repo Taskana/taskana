@@ -1,4 +1,4 @@
-package pro.taskana.workbasket.api;
+package pro.taskana.workbasket.api.models;
 
 /**
  * Interface for WorkbasketAccessItem. This interface is used to control access of users to

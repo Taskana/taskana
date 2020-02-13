@@ -40,9 +40,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
     Assertions.assertThrows(
         NotAuthorizedException.class,
         () ->
-            monitorService
-                .createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
-                .buildReport());
+            monitorService.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1).buildReport());
   }
 
   @WithAccessId(userName = "monitor")
@@ -52,9 +50,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
     MonitorService monitorService = taskanaEngine.getMonitorService();
 
     CustomFieldValueReport report =
-        monitorService
-            .createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
-            .buildReport();
+        monitorService.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1).buildReport();
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(reportToString(report));
@@ -80,9 +76,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
     MonitorService monitorService = taskanaEngine.getMonitorService();
 
     CustomFieldValueReport report =
-        monitorService
-            .createCustomFieldValueReportBuilder(CustomField.CUSTOM_2)
-            .buildReport();
+        monitorService.createCustomFieldValueReportBuilder(CustomField.CUSTOM_2).buildReport();
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(reportToString(report));

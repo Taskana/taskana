@@ -10,19 +10,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import pro.taskana.TaskanaSpringBootTest;
-import pro.taskana.classification.api.Classification;
 import pro.taskana.classification.api.ClassificationService;
+import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.rest.Mapping;
-import pro.taskana.task.api.Attachment;
-import pro.taskana.task.api.ObjectReference;
-import pro.taskana.task.api.Task;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
-import pro.taskana.task.internal.AttachmentImpl;
-import pro.taskana.task.internal.TaskImpl;
-import pro.taskana.workbasket.api.Workbasket;
+import pro.taskana.task.api.models.Attachment;
+import pro.taskana.task.api.models.ObjectReference;
+import pro.taskana.task.api.models.Task;
+import pro.taskana.task.internal.models.AttachmentImpl;
+import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.WorkbasketService;
+import pro.taskana.workbasket.api.models.Workbasket;
 
 /** Test for {@link TaskResourceAssembler}. */
 @TaskanaSpringBootTest

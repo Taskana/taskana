@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.type.ClobTypeHandler;
 
 import pro.taskana.common.internal.persistence.MapTypeHandler;
+import pro.taskana.task.internal.models.TaskImpl;
 
 /** This class contains specific mybatis mappings for task tests. */
 @SuppressWarnings({"checkstyle:LineLength"})

@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import pro.taskana.workbasket.api.Workbasket;
+import pro.taskana.workbasket.api.models.Workbasket;
 
 /** This class serializes the distribution targets to an string array with ids. */
 public class DistributionTargetSerializer extends StdSerializer<List<Workbasket>> {

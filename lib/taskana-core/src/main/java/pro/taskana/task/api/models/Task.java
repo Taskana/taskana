@@ -1,11 +1,12 @@
-package pro.taskana.task.api;
+package pro.taskana.task.api.models;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
-import pro.taskana.classification.api.Classification;
+import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.task.api.TaskService;
 
 /** task-Interface to specify attribute interactions. */
 public interface Task extends TaskSummary {

@@ -3,7 +3,7 @@ package pro.taskana.rest.resource;
 import javax.validation.constraints.NotNull;
 import org.springframework.hateoas.ResourceSupport;
 
-import pro.taskana.classification.api.Classification;
+import pro.taskana.classification.api.models.Classification;
 
 /** Resource class for {@link Classification}. */
 public class ClassificationResource extends ResourceSupport {

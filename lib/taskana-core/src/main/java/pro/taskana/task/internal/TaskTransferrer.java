@@ -20,14 +20,17 @@ import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.spi.history.api.events.task.TransferredEvent;
 import pro.taskana.spi.history.internal.HistoryEventProducer;
-import pro.taskana.task.api.Task;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
-import pro.taskana.workbasket.api.Workbasket;
+import pro.taskana.task.api.models.Task;
+import pro.taskana.task.internal.models.MinimalTaskSummary;
+import pro.taskana.task.internal.models.TaskImpl;
+import pro.taskana.task.internal.models.TaskSummaryImpl;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
-import pro.taskana.workbasket.api.WorkbasketSummary;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
+import pro.taskana.workbasket.api.models.Workbasket;
+import pro.taskana.workbasket.api.models.WorkbasketSummary;
 import pro.taskana.workbasket.internal.WorkbasketQueryImpl;
 
 /** This class is responsible for the transfer of tasks. */

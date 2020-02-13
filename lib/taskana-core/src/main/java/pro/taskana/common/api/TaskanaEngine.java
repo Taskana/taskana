@@ -7,7 +7,6 @@ import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.task.api.TaskService;
-import pro.taskana.task.api.TaskanaRole;
 import pro.taskana.workbasket.api.WorkbasketService;
 
 /** The TaskanaEngine represents an overall set of all needed services. */

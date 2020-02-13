@@ -11,7 +11,7 @@ import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
-import pro.taskana.task.api.TaskSummary;
+import pro.taskana.task.api.models.TaskSummary;
 
 /** Acceptance test for all "query tasks by object reference" scenarios. */
 @ExtendWith(JaasExtension.class)

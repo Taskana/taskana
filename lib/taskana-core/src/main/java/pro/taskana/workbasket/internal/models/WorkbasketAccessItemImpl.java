@@ -1,8 +1,8 @@
-package pro.taskana.workbasket.internal;
+package pro.taskana.workbasket.internal.models;
 
 import java.util.Objects;
 
-import pro.taskana.workbasket.api.WorkbasketAccessItem;
+import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 
 /** WorkbasketAccessItemImpl Entity. */
 public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
@@ -30,7 +30,7 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
   private boolean permCustom11;
   private boolean permCustom12;
 
-  WorkbasketAccessItemImpl() {
+  public WorkbasketAccessItemImpl() {
     super();
   }
 

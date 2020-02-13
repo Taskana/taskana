@@ -2,8 +2,8 @@ package pro.taskana.rest.resource;
 
 import org.springframework.hateoas.ResourceSupport;
 
-import pro.taskana.task.api.AttachmentSummary;
-import pro.taskana.task.api.ObjectReference;
+import pro.taskana.task.api.models.AttachmentSummary;
+import pro.taskana.task.api.models.ObjectReference;
 
 /** Resource class for {@link AttachmentSummary}. */
 public class AttachmentSummaryResource extends ResourceSupport {

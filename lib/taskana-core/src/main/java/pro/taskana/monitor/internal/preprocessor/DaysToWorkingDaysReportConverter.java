@@ -77,36 +77,6 @@ public class DaysToWorkingDaysReportConverter {
     return new DaysToWorkingDaysReportConverter(columnHeaders, daysToWorkingDaysConverter);
   }
 
-  protected List<Integer> generateNegativeDaysToWorkingDays(
-      List<? extends TimeIntervalColumnHeader> columnHeaders, Instant referenceDate) {
-    int minUpperLimit = TimeIntervalColumnHeader.getSmallestUpperLimit(columnHeaders);
-
-    List<Integer> daysToWorkingDays = new ArrayList<>();
-    daysToWorkingDays.add(0);
-    int day = -1;
-    int workingDay = 0;
-    while (workingDay > minUpperLimit) {
-      workingDay -= (daysToWorkingDaysConverter.isWorkingDay(day--, referenceDate)) ? 1 : 0;
-      daysToWorkingDays.add(workingDay);
-    }
-    return daysToWorkingDays;
-  }
-
-  protected List<Integer> generatePositiveDaysToWorkingDays(
-      List<? extends TimeIntervalColumnHeader> columnHeaders, Instant referenceDate) {
-    int maxLowerLimit = TimeIntervalColumnHeader.getLargestLowerLimit(columnHeaders);
-    ArrayList<Integer> daysToWorkingDays = new ArrayList<>();
-    daysToWorkingDays.add(0);
-
-    int day = 1;
-    int workingDay = 0;
-    while (workingDay < maxLowerLimit) {
-      workingDay += (daysToWorkingDaysConverter.isWorkingDay(day++, referenceDate)) ? 1 : 0;
-      daysToWorkingDays.add(workingDay);
-    }
-    return daysToWorkingDays;
-  }
-
   /**
    * Converts an integer, that represents the age in days, to the age in working days by using the
    * table that was created by initialization. If the age in days is beyond the limits of the table,
@@ -182,6 +152,36 @@ public class DaysToWorkingDaysReportConverter {
     // If ageInWorkingDays is beyond the limits of the table, the value is returned unchanged.
     list.add(ageInWorkingDays);
     return list;
+  }
+
+  protected List<Integer> generateNegativeDaysToWorkingDays(
+      List<? extends TimeIntervalColumnHeader> columnHeaders, Instant referenceDate) {
+    int minUpperLimit = TimeIntervalColumnHeader.getSmallestUpperLimit(columnHeaders);
+
+    List<Integer> daysToWorkingDays = new ArrayList<>();
+    daysToWorkingDays.add(0);
+    int day = -1;
+    int workingDay = 0;
+    while (workingDay > minUpperLimit) {
+      workingDay -= (daysToWorkingDaysConverter.isWorkingDay(day--, referenceDate)) ? 1 : 0;
+      daysToWorkingDays.add(workingDay);
+    }
+    return daysToWorkingDays;
+  }
+
+  protected List<Integer> generatePositiveDaysToWorkingDays(
+      List<? extends TimeIntervalColumnHeader> columnHeaders, Instant referenceDate) {
+    int maxLowerLimit = TimeIntervalColumnHeader.getLargestLowerLimit(columnHeaders);
+    ArrayList<Integer> daysToWorkingDays = new ArrayList<>();
+    daysToWorkingDays.add(0);
+
+    int day = 1;
+    int workingDay = 0;
+    while (workingDay < maxLowerLimit) {
+      workingDay += (daysToWorkingDaysConverter.isWorkingDay(day++, referenceDate)) ? 1 : 0;
+      daysToWorkingDays.add(workingDay);
+    }
+    return daysToWorkingDays;
   }
 
   @Override

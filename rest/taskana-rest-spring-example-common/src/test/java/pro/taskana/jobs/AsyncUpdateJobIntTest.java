@@ -22,7 +22,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestTemplate;
 
 import pro.taskana.RestHelper;
-import pro.taskana.classification.api.Classification;
+import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.rest.Mapping;
 import pro.taskana.rest.RestConfiguration;
@@ -30,7 +30,7 @@ import pro.taskana.rest.resource.ClassificationResource;
 import pro.taskana.rest.resource.ClassificationResourceAssembler;
 import pro.taskana.rest.resource.TaskResource;
 import pro.taskana.rest.resource.TaskResourceAssembler;
-import pro.taskana.task.api.Task;
+import pro.taskana.task.api.models.Task;
 
 /** Test async updates. */
 @ActiveProfiles({"test"})

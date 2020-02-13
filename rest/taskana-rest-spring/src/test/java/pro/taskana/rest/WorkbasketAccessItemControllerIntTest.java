@@ -115,11 +115,11 @@ class WorkbasketAccessItemControllerIntTest {
     String parameters = "?access-id=cn=DevelopersGroup,ou=groups,o=TaskanaTest";
     assertThatThrownBy(
         () ->
-            template.exchange(
-                restHelper.toUrl(Mapping.URL_WORKBASKETACCESSITEMS) + parameters,
-                HttpMethod.DELETE,
-                restHelper.defaultRequest(),
-                ParameterizedTypeReference.forType(Void.class)))
+                template.exchange(
+                    restHelper.toUrl(Mapping.URL_WORKBASKETACCESSITEMS) + parameters,
+                    HttpMethod.DELETE,
+                    restHelper.defaultRequest(),
+                    ParameterizedTypeReference.forType(Void.class)))
         .isInstanceOf(HttpClientErrorException.class)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
         .isEqualTo(HttpStatus.BAD_REQUEST);

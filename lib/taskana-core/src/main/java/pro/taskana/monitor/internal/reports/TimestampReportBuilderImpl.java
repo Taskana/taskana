@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
@@ -19,13 +20,11 @@ import pro.taskana.monitor.api.reports.item.TimestampQueryItem;
 import pro.taskana.monitor.internal.MonitorMapper;
 import pro.taskana.monitor.internal.preprocessor.DaysToWorkingDaysReportPreProcessor;
 import pro.taskana.task.api.TaskState;
-import pro.taskana.task.api.TaskanaRole;
 import pro.taskana.task.api.Timestamp;
 
 /** The implementation of {@link TimestampReport.Builder}. */
 public class TimestampReportBuilderImpl
-    extends TimeIntervalReportBuilderImpl<
-            Builder, TimestampQueryItem, TimeIntervalColumnHeader>
+    extends TimeIntervalReportBuilderImpl<Builder, TimestampQueryItem, TimeIntervalColumnHeader>
     implements TimestampReport.Builder {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TimestampReport.Builder.class);

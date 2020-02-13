@@ -1,6 +1,7 @@
 package pro.taskana.workbasket.api;
 
 import pro.taskana.common.api.BaseQuery;
+import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 
 /** WorkbasketAccessItemQuery for generating dynamic SQL. */
 public interface WorkbasketAccessItemQuery

@@ -15,7 +15,7 @@ import pro.taskana.common.api.KeyDomain;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
-import pro.taskana.task.api.TaskSummary;
+import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.workbasket.api.exceptions.NotAuthorizedToQueryWorkbasketException;
 
 /** Acceptance test for all "query tasks by workbasket" scenarios. */

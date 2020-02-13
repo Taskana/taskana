@@ -4,6 +4,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
@@ -14,12 +15,10 @@ import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.MonitorQueryItem;
 import pro.taskana.monitor.internal.MonitorMapper;
 import pro.taskana.monitor.internal.preprocessor.DaysToWorkingDaysReportPreProcessor;
-import pro.taskana.task.api.TaskanaRole;
 
 /** The implementation of WorkbasketReportBuilder. */
 public class WorkbasketReportBuilderImpl
-    extends TimeIntervalReportBuilderImpl<
-            Builder, MonitorQueryItem, TimeIntervalColumnHeader>
+    extends TimeIntervalReportBuilderImpl<Builder, MonitorQueryItem, TimeIntervalColumnHeader>
     implements WorkbasketReport.Builder {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketReportBuilderImpl.class);

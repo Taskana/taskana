@@ -5,7 +5,7 @@ import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
 import pro.taskana.rest.AttachmentController;
-import pro.taskana.task.api.AttachmentSummary;
+import pro.taskana.task.api.models.AttachmentSummary;
 
 /** Resource assembler for {@link AttachmentSummaryResource}. */
 @Component

@@ -1,4 +1,4 @@
-package pro.taskana.task.api;
+package pro.taskana.task.api.models;
 
 import java.util.Objects;
 

@@ -1,10 +1,10 @@
-package pro.taskana.workbasket.internal;
+package pro.taskana.workbasket.internal.models;
 
 import java.time.Instant;
 import java.util.Objects;
 
-import pro.taskana.workbasket.api.Workbasket;
-import pro.taskana.workbasket.api.WorkbasketSummary;
+import pro.taskana.workbasket.api.models.Workbasket;
+import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
 /** Workbasket entity. */
 public class WorkbasketImpl extends WorkbasketSummaryImpl implements Workbasket {
