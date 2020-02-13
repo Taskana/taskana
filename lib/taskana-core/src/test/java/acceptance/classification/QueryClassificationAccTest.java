@@ -15,8 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.classification.api.ClassificationService;
-import pro.taskana.classification.api.ClassificationSummary;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
+import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.ConcurrencyException;

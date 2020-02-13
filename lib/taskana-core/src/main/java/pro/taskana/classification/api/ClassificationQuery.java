@@ -1,5 +1,6 @@
 package pro.taskana.classification.api;
 
+import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;

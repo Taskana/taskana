@@ -1,4 +1,4 @@
-package pro.taskana.task.api;
+package pro.taskana.common.api;
 
 import java.util.Arrays;
 import java.util.List;

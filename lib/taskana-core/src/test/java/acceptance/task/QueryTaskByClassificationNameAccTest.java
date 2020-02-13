@@ -11,11 +11,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
-import pro.taskana.task.api.AttachmentSummary;
 import pro.taskana.task.api.TaskQuery;
 import pro.taskana.task.api.TaskQueryColumnName;
 import pro.taskana.task.api.TaskService;
-import pro.taskana.task.api.TaskSummary;
+import pro.taskana.task.api.models.AttachmentSummary;
+import pro.taskana.task.api.models.TaskSummary;
 
 /**
  * Acceptance test for the usecase of adding/removing an attachment of a task and update the result

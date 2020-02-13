@@ -15,10 +15,10 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.rest.TaskController;
-import pro.taskana.task.api.Task;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
-import pro.taskana.task.internal.TaskImpl;
+import pro.taskana.task.api.models.Task;
+import pro.taskana.task.internal.models.TaskImpl;
 
 /** Resource assembler for {@link TaskResource}. */
 @Component

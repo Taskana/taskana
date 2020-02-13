@@ -1,4 +1,4 @@
-package pro.taskana.task.internal;
+package pro.taskana.task.internal.models;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,14 +7,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import pro.taskana.classification.internal.ClassificationSummaryImpl;
+import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.task.api.Attachment;
-import pro.taskana.task.api.AttachmentSummary;
 import pro.taskana.task.api.CallbackState;
-import pro.taskana.task.api.Task;
-import pro.taskana.task.api.TaskSummary;
-import pro.taskana.workbasket.internal.WorkbasketSummaryImpl;
+import pro.taskana.task.api.models.Attachment;
+import pro.taskana.task.api.models.AttachmentSummary;
+import pro.taskana.task.api.models.Task;
+import pro.taskana.task.api.models.TaskSummary;
+import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 
 /** Task entity. */
 public class TaskImpl extends TaskSummaryImpl implements Task {
@@ -27,7 +27,7 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
   private CallbackState callbackState;
   private List<Attachment> attachments = new ArrayList<>();
 
-  TaskImpl() {}
+  public TaskImpl() {}
 
   public CallbackState getCallbackState() {
     return callbackState;

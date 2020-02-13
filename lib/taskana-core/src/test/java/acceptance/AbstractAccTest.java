@@ -20,8 +20,8 @@ import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.internal.TaskanaEngineTestConfiguration;
 import pro.taskana.sampledata.SampleDataGenerator;
-import pro.taskana.task.api.Attachment;
-import pro.taskana.task.api.ObjectReference;
+import pro.taskana.task.api.models.Attachment;
+import pro.taskana.task.api.models.ObjectReference;
 
 /** Base class for all acceptance tests. */
 public abstract class AbstractAccTest {

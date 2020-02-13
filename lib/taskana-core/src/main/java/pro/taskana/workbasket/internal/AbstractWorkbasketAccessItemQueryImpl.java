@@ -13,7 +13,7 @@ import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.workbasket.api.AbstractWorkbasketAccessItemQuery;
 import pro.taskana.workbasket.api.AccessItemQueryColumnName;
-import pro.taskana.workbasket.api.WorkbasketAccessItem;
+import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 
 /**
  * AbstractWorkbasketAccessItemQueryImpl for generating dynamic SQL.

@@ -15,14 +15,14 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
-import pro.taskana.workbasket.api.Workbasket;
-import pro.taskana.workbasket.api.WorkbasketAccessItem;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
+import pro.taskana.workbasket.api.models.Workbasket;
+import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 
 /** Acceptance test for all "create workbasket" scenarios. */
 @ExtendWith(JaasExtension.class)

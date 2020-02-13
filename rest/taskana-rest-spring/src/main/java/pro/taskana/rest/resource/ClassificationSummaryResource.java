@@ -2,7 +2,7 @@ package pro.taskana.rest.resource;
 
 import org.springframework.hateoas.ResourceSupport;
 
-import pro.taskana.classification.api.ClassificationSummary;
+import pro.taskana.classification.api.models.ClassificationSummary;
 
 /** Resource class for {@link ClassificationSummary}. */
 public class ClassificationSummaryResource extends ResourceSupport {

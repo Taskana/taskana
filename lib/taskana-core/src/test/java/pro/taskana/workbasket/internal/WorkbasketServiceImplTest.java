@@ -40,13 +40,15 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.task.api.TaskQuery;
 import pro.taskana.task.api.TaskService;
-import pro.taskana.workbasket.api.Workbasket;
-import pro.taskana.workbasket.api.WorkbasketAccessItem;
 import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
+import pro.taskana.workbasket.api.models.Workbasket;
+import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
+import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
+import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 
 /**
  * Unit Test for workbasketServiceImpl.

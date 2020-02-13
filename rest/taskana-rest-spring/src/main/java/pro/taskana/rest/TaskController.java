@@ -36,13 +36,13 @@ import pro.taskana.rest.resource.TaskResource;
 import pro.taskana.rest.resource.TaskResourceAssembler;
 import pro.taskana.rest.resource.TaskSummaryListResource;
 import pro.taskana.rest.resource.TaskSummaryResourceAssembler;
-import pro.taskana.task.api.Task;
 import pro.taskana.task.api.TaskQuery;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
-import pro.taskana.task.api.TaskSummary;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
+import pro.taskana.task.api.models.Task;
+import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
 /** Controller for all {@link Task} related endpoints. */

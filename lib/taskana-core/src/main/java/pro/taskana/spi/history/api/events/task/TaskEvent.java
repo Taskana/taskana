@@ -1,8 +1,8 @@
 package pro.taskana.spi.history.api.events.task;
 
 import pro.taskana.spi.history.api.events.TaskanaHistoryEvent;
-import pro.taskana.task.api.Task;
-import pro.taskana.task.api.TaskSummary;
+import pro.taskana.task.api.models.Task;
+import pro.taskana.task.api.models.TaskSummary;
 
 /** Super class for all task related events. */
 public class TaskEvent extends TaskanaHistoryEvent {

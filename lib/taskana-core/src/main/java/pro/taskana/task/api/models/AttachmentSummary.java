@@ -1,8 +1,8 @@
-package pro.taskana.task.api;
+package pro.taskana.task.api.models;
 
 import java.time.Instant;
 
-import pro.taskana.classification.api.ClassificationSummary;
+import pro.taskana.classification.api.models.ClassificationSummary;
 
 /**
  * Interface for AttachmentSummaries. This is a specific short model-object which only contains the

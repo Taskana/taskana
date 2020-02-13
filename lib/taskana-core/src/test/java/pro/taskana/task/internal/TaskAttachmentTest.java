@@ -13,10 +13,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import pro.taskana.classification.internal.ClassificationImpl;
-import pro.taskana.task.api.Attachment;
-import pro.taskana.task.api.AttachmentSummary;
-import pro.taskana.task.api.ObjectReference;
+import pro.taskana.classification.internal.models.ClassificationImpl;
+import pro.taskana.task.api.models.Attachment;
+import pro.taskana.task.api.models.AttachmentSummary;
+import pro.taskana.task.api.models.ObjectReference;
+import pro.taskana.task.internal.models.AttachmentImpl;
+import pro.taskana.task.internal.models.TaskImpl;
 
 /**
  * Unit Test for methods needed fot attachment at TaskImpl.<br>

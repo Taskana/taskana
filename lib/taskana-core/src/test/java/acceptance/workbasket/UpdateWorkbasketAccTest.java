@@ -14,11 +14,11 @@ import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
-import pro.taskana.workbasket.api.Workbasket;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
-import pro.taskana.workbasket.internal.WorkbasketImpl;
+import pro.taskana.workbasket.api.models.Workbasket;
+import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 
 /** Acceptance test for all "update workbasket" scenarios. */
 @ExtendWith(JaasExtension.class)

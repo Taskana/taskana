@@ -13,14 +13,16 @@ import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.classification.api.Classification;
 import pro.taskana.classification.api.ClassificationQuery;
 import pro.taskana.classification.api.ClassificationService;
-import pro.taskana.classification.api.ClassificationSummary;
 import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.classification.api.exceptions.ClassificationInUseException;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
+import pro.taskana.classification.api.models.Classification;
+import pro.taskana.classification.api.models.ClassificationSummary;
+import pro.taskana.classification.internal.models.ClassificationImpl;
 import pro.taskana.common.api.ScheduledJob;
+import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -28,8 +30,7 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.jobs.ClassificationChangedJob;
 import pro.taskana.common.internal.util.IdGenerator;
-import pro.taskana.task.api.TaskSummary;
-import pro.taskana.task.api.TaskanaRole;
+import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.TaskMapper;
 
 /** This is the implementation of ClassificationService. */

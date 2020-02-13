@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import org.springframework.hateoas.ResourceSupport;
 
-import pro.taskana.task.api.Attachment;
-import pro.taskana.task.api.ObjectReference;
+import pro.taskana.task.api.models.Attachment;
+import pro.taskana.task.api.models.ObjectReference;
 
 /** Resource class for {@link Attachment}. */
 public class AttachmentResource extends ResourceSupport {

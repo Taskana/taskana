@@ -14,6 +14,9 @@ import org.apache.ibatis.annotations.Update;
 import pro.taskana.common.internal.CustomPropertySelector;
 import pro.taskana.common.internal.persistence.MapTypeHandler;
 import pro.taskana.task.api.CallbackState;
+import pro.taskana.task.internal.models.MinimalTaskSummary;
+import pro.taskana.task.internal.models.TaskImpl;
+import pro.taskana.task.internal.models.TaskSummaryImpl;
 
 /** This class is the mybatis mapping of task. */
 @SuppressWarnings("checkstyle:LineLength")

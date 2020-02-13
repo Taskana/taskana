@@ -1,8 +1,8 @@
-package pro.taskana.classification.internal;
+package pro.taskana.classification.internal.models;
 
 import java.util.Objects;
 
-import pro.taskana.classification.api.ClassificationSummary;
+import pro.taskana.classification.api.models.ClassificationSummary;
 
 /** Implementation for the short summaries of a classification entity. */
 public class ClassificationSummaryImpl implements ClassificationSummary {

@@ -11,10 +11,10 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.InvalidOwnerException;
 import pro.taskana.common.api.exceptions.InvalidStateException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.task.api.ObjectReference;
-import pro.taskana.task.api.Task;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
+import pro.taskana.task.api.models.ObjectReference;
+import pro.taskana.task.api.models.Task;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
 /** Example Bootstrap Application. */

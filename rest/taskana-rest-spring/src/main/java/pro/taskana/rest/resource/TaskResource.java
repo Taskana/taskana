@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 import org.springframework.hateoas.ResourceSupport;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.task.api.ObjectReference;
-import pro.taskana.task.api.Task;
 import pro.taskana.task.api.TaskState;
+import pro.taskana.task.api.models.ObjectReference;
+import pro.taskana.task.api.models.Task;
 
 /** Resource class for {@link Task}. */
 public class TaskResource extends ResourceSupport {

@@ -1,7 +1,7 @@
 package pro.taskana.spi.history.api.events.task;
 
-import pro.taskana.task.api.Task;
-import pro.taskana.task.api.TaskSummary;
+import pro.taskana.task.api.models.Task;
+import pro.taskana.task.api.models.TaskSummary;
 
 /** Event fired if a task is completed. */
 public class CompletedEvent extends TaskEvent {

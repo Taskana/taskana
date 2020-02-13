@@ -3,8 +3,8 @@ package pro.taskana.task.api;
 import java.util.List;
 import java.util.Map;
 
-import pro.taskana.classification.api.Classification;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
+import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.exceptions.AttachmentPersistenceException;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
@@ -15,6 +15,9 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
+import pro.taskana.task.api.models.Attachment;
+import pro.taskana.task.api.models.ObjectReference;
+import pro.taskana.task.api.models.Task;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
 /** The Task Service manages all operations on tasks. */

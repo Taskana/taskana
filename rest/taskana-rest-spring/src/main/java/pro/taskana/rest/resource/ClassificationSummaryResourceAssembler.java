@@ -7,8 +7,8 @@ import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
 import pro.taskana.classification.api.ClassificationService;
-import pro.taskana.classification.api.ClassificationSummary;
-import pro.taskana.classification.internal.ClassificationImpl;
+import pro.taskana.classification.api.models.ClassificationSummary;
+import pro.taskana.classification.internal.models.ClassificationImpl;
 import pro.taskana.rest.ClassificationController;
 import pro.taskana.rest.Mapping;
 import pro.taskana.rest.resource.PagedResources.PageMetadata;

@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
-import pro.taskana.task.api.ObjectReference;
+import pro.taskana.task.api.models.ObjectReference;
 
 /** This class is the mybatis mapping of ObjectReference. */
 @SuppressWarnings({"checkstyle:LineLength", "checkstyle:Indentation"})

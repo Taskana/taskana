@@ -44,8 +44,7 @@ class WorkbasketControllerIntTest {
   void testGetWorkbasket() {
     ResponseEntity<WorkbasketResource> response =
         template.exchange(
-            restHelper.toUrl(
-                Mapping.URL_WORKBASKET_ID, "WBI:100000000000000000000000000000000006"),
+            restHelper.toUrl(Mapping.URL_WORKBASKET_ID, "WBI:100000000000000000000000000000000006"),
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(WorkbasketResource.class));
@@ -53,7 +52,7 @@ class WorkbasketControllerIntTest {
     assertThat(response.getHeaders().getContentType().toString())
         .isEqualTo(MediaTypes.HAL_JSON_UTF8_VALUE);
   }
-  
+
   @Test
   void testGetAllWorkbaskets() {
     ResponseEntity<WorkbasketSummaryListResource> response =
@@ -128,13 +127,14 @@ class WorkbasketControllerIntTest {
     workbasketResource.setOwner("Joerg");
     workbasketResource.setModified(String.valueOf(Instant.now()));
 
-    assertThatThrownBy(() ->
-      template.exchange(
-        restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketId),
-          HttpMethod.PUT,
-          new HttpEntity<>(
-            mapper.writeValueAsString(workbasketResource), restHelper.getHeaders()),
-            ParameterizedTypeReference.forType(WorkbasketResource.class)))
+    assertThatThrownBy(
+        () ->
+                template.exchange(
+                    restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketId),
+                    HttpMethod.PUT,
+                    new HttpEntity<>(
+                        mapper.writeValueAsString(workbasketResource), restHelper.getHeaders()),
+                    ParameterizedTypeReference.forType(WorkbasketResource.class)))
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
         .isEqualTo(HttpStatus.CONFLICT);
   }
@@ -144,12 +144,13 @@ class WorkbasketControllerIntTest {
 
     String workbasketId = "WBI:100004857400039500000999999999999999";
 
-    assertThatThrownBy(() ->
-      template.exchange(
-        restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketId),
-          HttpMethod.GET,
-            new HttpEntity<String>(restHelper.getHeaders()),
-            ParameterizedTypeReference.forType(WorkbasketResource.class)))
+    assertThatThrownBy(
+        () ->
+                template.exchange(
+                    restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketId),
+                    HttpMethod.GET,
+                    new HttpEntity<String>(restHelper.getHeaders()),
+                    ParameterizedTypeReference.forType(WorkbasketResource.class)))
         .isInstanceOf(HttpClientErrorException.class)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
         .isEqualTo(HttpStatus.NOT_FOUND);

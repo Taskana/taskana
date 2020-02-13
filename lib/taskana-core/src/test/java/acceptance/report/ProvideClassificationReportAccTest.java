@@ -49,8 +49,7 @@ class ProvideClassificationReportAccTest extends AbstractReportAccTest {
       throws InvalidArgumentException, NotAuthorizedException {
     MonitorService monitorService = taskanaEngine.getMonitorService();
 
-    ClassificationReport report =
-        monitorService.createClassificationReportBuilder().buildReport();
+    ClassificationReport report = monitorService.createClassificationReportBuilder().buildReport();
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(reportToString(report));

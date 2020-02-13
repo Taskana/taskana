@@ -1,9 +1,11 @@
-package pro.taskana.workbasket.api;
+package pro.taskana.workbasket.api.models;
 
 import java.time.Instant;
 
+import pro.taskana.workbasket.api.WorkbasketType;
+
 /** Workbasket entity interface. */
-//@JsonDeserialize(as = WorkbasketImpl.class)
+// @JsonDeserialize(as = WorkbasketImpl.class)
 public interface Workbasket extends WorkbasketSummary {
 
   /**

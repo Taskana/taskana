@@ -5,7 +5,8 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 
-import pro.taskana.task.api.ObjectReference;
+import pro.taskana.task.api.models.ObjectReference;
+import pro.taskana.task.internal.models.TaskSummaryImpl;
 
 /** This class provides a mapper for all task queries. */
 @SuppressWarnings({"checkstyle:LineLength", "checkstyle:Indentation"})

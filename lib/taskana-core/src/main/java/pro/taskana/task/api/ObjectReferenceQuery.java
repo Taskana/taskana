@@ -1,6 +1,7 @@
 package pro.taskana.task.api;
 
 import pro.taskana.common.api.BaseQuery;
+import pro.taskana.task.api.models.ObjectReference;
 
 /** ObjectReferenceQuery for generating dynamic sql. */
 public interface ObjectReferenceQuery

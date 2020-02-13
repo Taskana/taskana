@@ -5,7 +5,8 @@ import java.util.List;
 
 import pro.taskana.classification.api.ClassificationQuery;
 import pro.taskana.classification.api.ClassificationQueryColumnName;
-import pro.taskana.classification.api.ClassificationSummary;
+import pro.taskana.classification.api.models.ClassificationSummary;
+import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
 import pro.taskana.common.api.TimeInterval;
 
 /** Created by BV on 26.10.2017. */

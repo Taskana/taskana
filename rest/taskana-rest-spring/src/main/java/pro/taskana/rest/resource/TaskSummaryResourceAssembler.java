@@ -10,7 +10,7 @@ import pro.taskana.rest.Mapping;
 import pro.taskana.rest.TaskController;
 import pro.taskana.rest.resource.PagedResources.PageMetadata;
 import pro.taskana.rest.resource.links.PageLinks;
-import pro.taskana.task.api.TaskSummary;
+import pro.taskana.task.api.models.TaskSummary;
 
 /** Resource assembler for {@link TaskSummaryResource}. */
 @Component

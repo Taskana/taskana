@@ -8,7 +8,6 @@ import pro.taskana.monitor.api.reports.CustomFieldValueReport;
 import pro.taskana.monitor.api.reports.TaskStatusReport;
 import pro.taskana.monitor.api.reports.TimestampReport;
 import pro.taskana.monitor.api.reports.WorkbasketReport;
-import pro.taskana.monitor.internal.MonitorMapper;
 import pro.taskana.monitor.internal.reports.CategoryReportBuilderImpl;
 import pro.taskana.monitor.internal.reports.ClassificationReportBuilderImpl;
 import pro.taskana.monitor.internal.reports.CustomFieldValueReportBuilderImpl;
@@ -23,8 +22,7 @@ public class MonitorServiceImpl implements MonitorService {
   private InternalTaskanaEngine taskanaEngine;
   private MonitorMapper monitorMapper;
 
-  public MonitorServiceImpl(
-      InternalTaskanaEngine taskanaEngine, MonitorMapper monitorMapper) {
+  public MonitorServiceImpl(InternalTaskanaEngine taskanaEngine, MonitorMapper monitorMapper) {
     super();
     this.taskanaEngine = taskanaEngine;
     this.monitorMapper = monitorMapper;

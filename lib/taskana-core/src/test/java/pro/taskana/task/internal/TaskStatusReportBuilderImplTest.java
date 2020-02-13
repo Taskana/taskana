@@ -20,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
@@ -28,7 +29,6 @@ import pro.taskana.monitor.api.reports.item.TaskQueryItem;
 import pro.taskana.monitor.internal.MonitorMapper;
 import pro.taskana.monitor.internal.MonitorServiceImpl;
 import pro.taskana.task.api.TaskState;
-import pro.taskana.task.api.TaskanaRole;
 
 /** Unit Test for TaskStatusReportBuilderImpl. */
 @ExtendWith(MockitoExtension.class)
@@ -66,8 +66,7 @@ class TaskStatusReportBuilderImplTest {
     final TaskStatusReport report = cut.createTaskStatusReportBuilder().buildReport();
 
     // then
-    InOrder inOrder =
-        inOrder(taskanaEngineMock, internalTaskanaEngineMock, monitorMapperMock);
+    InOrder inOrder = inOrder(taskanaEngineMock, internalTaskanaEngineMock, monitorMapperMock);
     inOrder.verify(internalTaskanaEngineMock).getEngine();
     inOrder.verify(taskanaEngineMock).checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
     inOrder.verify(internalTaskanaEngineMock).openConnection();
@@ -105,14 +104,11 @@ class TaskStatusReportBuilderImplTest {
         cut.createTaskStatusReportBuilder().stateIn(Collections.emptyList()).buildReport();
 
     // then
-    InOrder inOrder =
-        inOrder(taskanaEngineMock, monitorMapperMock, internalTaskanaEngineMock);
+    InOrder inOrder = inOrder(taskanaEngineMock, monitorMapperMock, internalTaskanaEngineMock);
     inOrder.verify(internalTaskanaEngineMock).getEngine();
     inOrder.verify(taskanaEngineMock).checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
     inOrder.verify(internalTaskanaEngineMock).openConnection();
-    inOrder
-        .verify(monitorMapperMock)
-        .getTasksCountByState(eq(null), eq(Collections.emptyList()));
+    inOrder.verify(monitorMapperMock).getTasksCountByState(eq(null), eq(Collections.emptyList()));
     inOrder.verify(internalTaskanaEngineMock).returnConnection();
     inOrder.verifyNoMoreInteractions();
     verifyNoMoreInteractions(taskanaEngineMock, monitorMapperMock, internalTaskanaEngineMock);

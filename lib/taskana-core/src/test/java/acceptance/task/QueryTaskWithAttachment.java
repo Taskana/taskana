@@ -14,12 +14,12 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
-import pro.taskana.task.api.Attachment;
-import pro.taskana.task.api.AttachmentSummary;
-import pro.taskana.task.api.Task;
 import pro.taskana.task.api.TaskService;
-import pro.taskana.task.api.TaskSummary;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
+import pro.taskana.task.api.models.Attachment;
+import pro.taskana.task.api.models.AttachmentSummary;
+import pro.taskana.task.api.models.Task;
+import pro.taskana.task.api.models.TaskSummary;
 
 /**
  * Acceptance test for the usecase of adding/removing an attachment of a task and update the result

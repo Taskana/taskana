@@ -14,10 +14,10 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.rest.WorkbasketController;
-import pro.taskana.workbasket.api.Workbasket;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
-import pro.taskana.workbasket.internal.WorkbasketImpl;
+import pro.taskana.workbasket.api.models.Workbasket;
+import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 
 /**
  * Transforms {@link Workbasket} to its resource counterpart {@link WorkbasketResource} and vice

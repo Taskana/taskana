@@ -23,16 +23,16 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
-import pro.taskana.task.api.Task;
 import pro.taskana.task.api.TaskService;
-import pro.taskana.task.api.TaskSummary;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
-import pro.taskana.workbasket.api.WorkbasketAccessItem;
+import pro.taskana.task.api.models.Task;
+import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
-import pro.taskana.workbasket.internal.WorkbasketAccessItemImpl;
+import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
+import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
 
 /** Acceptance test for all "update workbasket" scenarios. */
 @ExtendWith(JaasExtension.class)

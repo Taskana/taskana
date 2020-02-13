@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.rest.WorkbasketController;
-import pro.taskana.workbasket.api.WorkbasketSummary;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
+import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
 /**
  * Transforms WorkbasketSummary to its resource counterpart DistributionTargerResource and vice

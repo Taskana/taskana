@@ -1,4 +1,6 @@
-package pro.taskana.workbasket.api;
+package pro.taskana.workbasket.api.models;
+
+import pro.taskana.workbasket.api.WorkbasketType;
 
 /**
  * Interface for WorkbasketSummary. This is a specific short model-object which only contains the

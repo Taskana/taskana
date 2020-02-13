@@ -1,10 +1,10 @@
-package pro.taskana.classification.internal;
+package pro.taskana.classification.internal.models;
 
 import java.time.Instant;
 import java.util.Objects;
 
-import pro.taskana.classification.api.Classification;
-import pro.taskana.classification.api.ClassificationSummary;
+import pro.taskana.classification.api.models.Classification;
+import pro.taskana.classification.api.models.ClassificationSummary;
 
 /** Classification entity. */
 public class ClassificationImpl extends ClassificationSummaryImpl implements Classification {
@@ -17,7 +17,7 @@ public class ClassificationImpl extends ClassificationSummaryImpl implements Cla
 
   public ClassificationImpl() {}
 
-  ClassificationImpl(ClassificationImpl classification) {
+  public ClassificationImpl(ClassificationImpl classification) {
     this.id = classification.getId();
     this.key = classification.getKey();
     this.parentId = classification.getParentId();

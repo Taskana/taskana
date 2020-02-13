@@ -44,10 +44,7 @@ class ProvideTimestampReportAccTest extends AbstractReportAccTest {
             .mapToObj(TimeIntervalColumnHeader.Date::new)
             .collect(Collectors.toList());
     TimestampReport timestampReport =
-        monitorService
-            .createTimestampReportBuilder()
-            .withColumnHeaders(headers)
-            .buildReport();
+        monitorService.createTimestampReportBuilder().withColumnHeaders(headers).buildReport();
     final HashSet<String> org1Set = new HashSet<>(Arrays.asList("N/A", "org1"));
     final HashSet<String> allOtherOrgLevelSet = new HashSet<>(Collections.singletonList("N/A"));
 

@@ -239,12 +239,12 @@ class ClassificationControllerIntTest {
             + "\"parentKey\":\"T2000\"}";
 
     assertThatThrownBy(
-      () ->
-          template.exchange(
-              restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
-              HttpMethod.POST,
-              new HttpEntity<>(newClassification, restHelper.getHeaders()),
-              ParameterizedTypeReference.forType(ClassificationResource.class)))
+        () ->
+                template.exchange(
+                    restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
+                    HttpMethod.POST,
+                    new HttpEntity<>(newClassification, restHelper.getHeaders()),
+                    ParameterizedTypeReference.forType(ClassificationResource.class)))
         .isInstanceOf(HttpClientErrorException.class)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
         .isEqualTo(HttpStatus.BAD_REQUEST);
@@ -259,12 +259,12 @@ class ClassificationControllerIntTest {
             + "\"name\":\"new classification\",\"type\":\"TASK\"}";
 
     assertThatThrownBy(
-      () ->
-          template.exchange(
-              restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
-              HttpMethod.POST,
-              new HttpEntity<>(newClassification, restHelper.getHeaders()),
-              ParameterizedTypeReference.forType(ClassificationResource.class)))
+        () ->
+                template.exchange(
+                    restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
+                    HttpMethod.POST,
+                    new HttpEntity<>(newClassification, restHelper.getHeaders()),
+                    ParameterizedTypeReference.forType(ClassificationResource.class)))
         .isInstanceOf(HttpClientErrorException.class)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
         .isEqualTo(HttpStatus.BAD_REQUEST);
@@ -300,13 +300,13 @@ class ClassificationControllerIntTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
     assertThatThrownBy(
-      () ->
-          template.exchange(
-              restHelper.toUrl(
-                  Mapping.URL_CLASSIFICATIONS_ID, "CLI:200000000000000000000000000000000004"),
-              HttpMethod.GET,
-              request,
-              ParameterizedTypeReference.forType(ClassificationSummaryResource.class)))
+        () ->
+                template.exchange(
+                    restHelper.toUrl(
+                        Mapping.URL_CLASSIFICATIONS_ID, "CLI:200000000000000000000000000000000004"),
+                    HttpMethod.GET,
+                    request,
+                    ParameterizedTypeReference.forType(ClassificationSummaryResource.class)))
         .isInstanceOf(HttpClientErrorException.class);
   }
 }

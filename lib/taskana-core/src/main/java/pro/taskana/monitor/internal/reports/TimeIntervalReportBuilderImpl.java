@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.LoggerUtils;
+import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
@@ -22,7 +23,6 @@ import pro.taskana.monitor.internal.MonitorMapper;
 import pro.taskana.monitor.internal.preprocessor.DaysToWorkingDaysReportConverter;
 import pro.taskana.task.api.CustomField;
 import pro.taskana.task.api.TaskState;
-import pro.taskana.task.api.TaskanaRole;
 
 /**
  * Implementation of {@link TimeIntervalReportBuilder}.
@@ -51,8 +51,7 @@ abstract class TimeIntervalReportBuilderImpl<
   protected List<String> excludedClassificationIds;
   protected Map<CustomField, String> customAttributeFilter;
 
-  TimeIntervalReportBuilderImpl(
-      InternalTaskanaEngine taskanaEngine, MonitorMapper monitorMapper) {
+  TimeIntervalReportBuilderImpl(InternalTaskanaEngine taskanaEngine, MonitorMapper monitorMapper) {
     this.taskanaEngine = taskanaEngine;
     this.monitorMapper = monitorMapper;
     this.columnHeaders = Collections.emptyList();

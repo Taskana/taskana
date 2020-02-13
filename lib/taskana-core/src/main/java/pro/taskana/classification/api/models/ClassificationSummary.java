@@ -1,4 +1,4 @@
-package pro.taskana.classification.api;
+package pro.taskana.classification.api.models;
 
 /**
  * Interface for ClassificationSummaries. This is a specific short model-object which only requieres

@@ -15,18 +15,19 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import pro.taskana.TaskanaEngineConfiguration;
-import pro.taskana.classification.api.Classification;
-import pro.taskana.classification.internal.ClassificationImpl;
+import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.internal.ClassificationQueryImpl;
 import pro.taskana.classification.internal.ClassificationServiceImpl;
+import pro.taskana.classification.internal.models.ClassificationImpl;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.JunitHelper;
-import pro.taskana.task.api.ObjectReference;
-import pro.taskana.task.api.TaskSummary;
-import pro.taskana.workbasket.api.Workbasket;
+import pro.taskana.task.api.models.ObjectReference;
+import pro.taskana.task.api.models.TaskSummary;
+import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.WorkbasketService;
-import pro.taskana.workbasket.internal.WorkbasketImpl;
+import pro.taskana.workbasket.api.models.Workbasket;
+import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 
 /**
  * Unit Test for TaskServiceImpl.

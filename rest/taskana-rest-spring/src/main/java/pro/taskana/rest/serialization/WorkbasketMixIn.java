@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.List;
 
-import pro.taskana.workbasket.api.Workbasket;
+import pro.taskana.workbasket.api.models.Workbasket;
 
 /**
  * This class is used to override the distributiontargets with non standard serialization classes.

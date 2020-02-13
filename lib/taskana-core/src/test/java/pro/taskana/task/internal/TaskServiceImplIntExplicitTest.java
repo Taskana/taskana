@@ -20,11 +20,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.TaskanaEngineConfiguration;
-import pro.taskana.classification.api.Classification;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
-import pro.taskana.classification.internal.ClassificationImpl;
+import pro.taskana.classification.api.models.Classification;
+import pro.taskana.classification.internal.models.ClassificationImpl;
 import pro.taskana.common.api.KeyDomain;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
@@ -42,21 +42,22 @@ import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
-import pro.taskana.task.api.Task;
 import pro.taskana.task.api.TaskState;
-import pro.taskana.task.api.TaskSummary;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
-import pro.taskana.workbasket.api.Workbasket;
-import pro.taskana.workbasket.api.WorkbasketAccessItem;
+import pro.taskana.task.api.models.Task;
+import pro.taskana.task.api.models.TaskSummary;
+import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
-import pro.taskana.workbasket.internal.WorkbasketImpl;
-import pro.taskana.workbasket.internal.WorkbasketSummaryImpl;
+import pro.taskana.workbasket.api.models.Workbasket;
+import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
+import pro.taskana.workbasket.internal.models.WorkbasketImpl;
+import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 
 /**
  * Integration Test for TaskServiceImpl transactions with connection management mode EXPLICIT.
