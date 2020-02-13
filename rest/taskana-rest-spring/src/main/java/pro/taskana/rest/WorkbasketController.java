@@ -253,7 +253,8 @@ public class WorkbasketController extends AbstractPagingController {
     return response;
   }
 
-  @GetMapping(path = Mapping.URL_WORKBASKET_ID_DISTRIBUTION)
+  @GetMapping(path = Mapping.URL_WORKBASKET_ID_DISTRIBUTION, 
+      produces = MediaTypes.HAL_JSON_UTF8_VALUE)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<DistributionTargetListResource> getDistributionTargets(
       @PathVariable(value = "workbasketId") String workbasketId)
