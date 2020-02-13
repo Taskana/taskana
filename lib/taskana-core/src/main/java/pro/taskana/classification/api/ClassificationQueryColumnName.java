@@ -1,11 +1,10 @@
 package pro.taskana.classification.api;
 
-import pro.taskana.classification.internal.ClassificationQueryMapper;
 import pro.taskana.common.api.QueryColumnName;
 
 /**
  * Enum containing the column names for {@link
- * ClassificationQueryMapper#queryClassificationColumnValues}.
+ * pro.taskana.classification.internal.ClassificationQueryMapper#queryClassificationColumnValues}.
  *
  * @author jsa
  */

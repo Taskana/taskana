@@ -13,10 +13,10 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.http.converter.json.SpringHandlerInstantiator;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import pro.taskana.SpringTaskanaEngineConfiguration;
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.configuration.SpringTaskanaEngineConfiguration;
 import pro.taskana.ldap.LdapClient;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.task.api.TaskService;

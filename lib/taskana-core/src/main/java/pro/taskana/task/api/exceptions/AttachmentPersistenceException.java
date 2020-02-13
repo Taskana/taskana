@@ -1,4 +1,6 @@
-package pro.taskana.common.api.exceptions;
+package pro.taskana.task.api.exceptions;
+
+import pro.taskana.common.api.exceptions.TaskanaException;
 
 /**
  * Thrown, when an attachment should be inserted to the DB, but it does already exist.<br>
