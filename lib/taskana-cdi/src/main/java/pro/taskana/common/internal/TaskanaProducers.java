@@ -1,4 +1,4 @@
-package pro.taskana;
+package pro.taskana.common.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,6 +17,7 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.task.api.TaskService;

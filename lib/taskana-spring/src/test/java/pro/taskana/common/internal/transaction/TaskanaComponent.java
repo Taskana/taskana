@@ -1,4 +1,4 @@
-package pro.taskana;
+package pro.taskana.common.internal.transaction;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

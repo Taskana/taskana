@@ -1,4 +1,4 @@
-package pro.taskana;
+package pro.taskana.common.internal;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,6 +15,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.undertow.WARArchive;
+
+import pro.taskana.common.internal.TaskanaProducers;
 
 /** TODO. */
 @RunWith(Arquillian.class)

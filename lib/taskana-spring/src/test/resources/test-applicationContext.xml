@@ -31,5 +31,5 @@
         <bean id="taskEngine" factory-bean="taskEngineConfiguration" factory-method="createTaskEngineConfiguration" />
         <bean id="taskService" factory-bean="taskEngine" factory-method="getTaskService" />
 
-        <bean class="pro.taskana.TaskanaComponent" />
+        <bean class="pro.taskana.common.internal.transaction.TaskanaComponent" />
 </beans>

@@ -1,4 +1,4 @@
-package pro.taskana;
+package pro.taskana.common.internal.transaction;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
