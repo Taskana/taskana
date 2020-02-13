@@ -24,6 +24,7 @@ import pro.taskana.RestHelper;
 import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.rest.resource.DistributionTargetListResource;
 import pro.taskana.rest.resource.DistributionTargetResource;
+import pro.taskana.rest.resource.WorkbasketAccessItemListResource;
 import pro.taskana.rest.resource.WorkbasketResource;
 import pro.taskana.rest.resource.WorkbasketSummaryListResource;
 import pro.taskana.workbasket.api.WorkbasketType;
@@ -217,5 +218,20 @@ class WorkbasketControllerIntTest {
       assertThat(iterator.next().getWorkbasketId())
           .isNotEqualTo("WBI:100000000000000000000000000000000007");
     }
+  }
+
+  @Test
+  void testGetWorkbasketAccessItems() {
+    ResponseEntity<WorkbasketAccessItemListResource> response =
+        template.exchange(
+            restHelper.toUrl(
+                Mapping.URL_WORKBASKET_ID_ACCESSITEMS, "WBI:100000000000000000000000000000000005"),
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
+            ParameterizedTypeReference.forType(WorkbasketAccessItemListResource.class));
+    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getHeaders().getContentType().toString())
+        .isEqualTo(MediaTypes.HAL_JSON_UTF8_VALUE);
+    assertThat(response.getBody().getContent()).hasSize(3);
   }
 }
