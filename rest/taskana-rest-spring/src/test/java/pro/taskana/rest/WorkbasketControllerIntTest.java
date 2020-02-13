@@ -235,4 +235,20 @@ class WorkbasketControllerIntTest {
         .isEqualTo(MediaTypes.HAL_JSON_UTF8_VALUE);
     assertThat(response.getBody().getContent()).hasSize(3);
   }
+  
+  @Test
+  void testGetWorkbasketDistributionTargets() {
+    ResponseEntity<DistributionTargetListResource> response =
+        template.exchange(
+            restHelper.toUrl(
+                Mapping.URL_WORKBASKET_ID_DISTRIBUTION, "WBI:100000000000000000000000000000000001"),
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
+            ParameterizedTypeReference.forType(DistributionTargetListResource.class));
+    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getHeaders().getContentType().toString())
+        .isEqualTo(MediaTypes.HAL_JSON_UTF8_VALUE);
+    assertThat(response.getBody().getContent()).hasSize(4);
+  }
+
 }
