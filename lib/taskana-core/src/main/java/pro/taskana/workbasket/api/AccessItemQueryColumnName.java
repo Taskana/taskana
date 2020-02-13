@@ -1,11 +1,10 @@
 package pro.taskana.workbasket.api;
 
 import pro.taskana.common.api.QueryColumnName;
-import pro.taskana.workbasket.internal.WorkbasketQueryMapper;
 
 /**
  * Enum containing the column names for {@link
- * WorkbasketQueryMapper#queryWorkbasketAccessItemColumnValues}.
+ * pro.taskana.workbasket.internal.WorkbasketQueryMapper#queryWorkbasketAccessItemColumnValues}.
  *
  * @author jsa
  */

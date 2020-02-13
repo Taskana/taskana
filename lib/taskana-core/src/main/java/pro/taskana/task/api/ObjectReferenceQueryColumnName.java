@@ -1,10 +1,10 @@
 package pro.taskana.task.api;
 
 import pro.taskana.common.api.QueryColumnName;
-import pro.taskana.task.internal.TaskQueryMapper;
 
 /**
- * Enum containing the column names for {@link TaskQueryMapper#queryObjectReferenceColumnValues}.
+ * Enum containing the column names for {@link
+ * pro.taskana.task.internal.TaskQueryMapper#queryObjectReferenceColumnValues}.
  *
  * @author jsa
  */

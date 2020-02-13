@@ -1,4 +1,4 @@
-package pro.taskana.transaction;
+package pro.taskana.common.internal.transaction;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
