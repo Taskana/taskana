@@ -3,7 +3,8 @@ package pro.taskana;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,7 +28,7 @@ public class TaskanaTestController {
   @Autowired private TaskanaEngine taskanaEngine;
 
   @Transactional(rollbackFor = Exception.class)
-  @RequestMapping("/schema")
+  @GetMapping(path = "/schema")
   public @ResponseBody String schema() {
     String schema = jdbcTemplate.queryForObject("SELECT SCHEMA()", String.class);
     System.err.println("current schema: " + schema);
@@ -35,19 +36,19 @@ public class TaskanaTestController {
   }
 
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  @RequestMapping("/workbaskets")
+  @GetMapping(path = "/workbaskets")
   public @ResponseBody Integer workbaskets() {
     return getWorkbaskets();
   }
 
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  @RequestMapping("/customdb-tests")
+  @GetMapping(path = "/customdb-tests")
   public @ResponseBody Integer customdbTests() {
     return getCustomdbTests();
   }
 
   @Transactional(rollbackFor = Exception.class)
-  @RequestMapping("/transaction")
+  @GetMapping(path = "/transaction")
   public @ResponseBody String transaction(
       @RequestParam(value = "rollback", defaultValue = "false") String rollback)
       throws InvalidWorkbasketException, NotAuthorizedException, WorkbasketAlreadyExistException,
@@ -55,7 +56,7 @@ public class TaskanaTestController {
     taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key", "workbasket"));
 
     int workbaskets = getWorkbaskets();
-    if (Boolean.valueOf(rollback)) {
+    if (Boolean.parseBoolean(rollback)) {
       throw new RuntimeException("workbaskets: " + workbaskets);
     } else {
       return "workbaskets: " + workbaskets;
@@ -63,7 +64,7 @@ public class TaskanaTestController {
   }
 
   @Transactional(rollbackFor = Exception.class)
-  @RequestMapping("/transaction-many")
+  @GetMapping(path = "/transaction-many")
   public @ResponseBody String transactionMany(
       @RequestParam(value = "rollback", defaultValue = "false") String rollback)
       throws InvalidWorkbasketException, NotAuthorizedException, WorkbasketAlreadyExistException,
@@ -72,7 +73,7 @@ public class TaskanaTestController {
     taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key2", "workbasket2"));
     taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key3", "workbasket3"));
 
-    if (Boolean.valueOf(rollback)) {
+    if (Boolean.parseBoolean(rollback)) {
       throw new RuntimeException("workbaskets: " + getWorkbaskets());
     } else {
       return "workbaskets: " + getWorkbaskets();
@@ -80,7 +81,7 @@ public class TaskanaTestController {
   }
 
   @Transactional(rollbackFor = Exception.class)
-  @RequestMapping("/customdb")
+  @GetMapping(path = "/customdb")
   public @ResponseBody String transactionCustomdb(
       @RequestParam(value = "rollback", defaultValue = "false") String rollback)
       throws InvalidWorkbasketException, NotAuthorizedException, WorkbasketAlreadyExistException,
@@ -91,7 +92,7 @@ public class TaskanaTestController {
     jdbcTemplate.execute("INSERT INTO CUSTOMDB.TEST VALUES ('1', 'test')");
     jdbcTemplate.execute("INSERT INTO CUSTOMDB.TEST VALUES ('2', 'test2')");
 
-    if (Boolean.valueOf(rollback)) {
+    if (Boolean.parseBoolean(rollback)) {
       throw new RuntimeException(
           "workbaskets: " + getWorkbaskets() + ", tests: " + getCustomdbTests());
     } else {
@@ -100,7 +101,7 @@ public class TaskanaTestController {
   }
 
   @Transactional(rollbackFor = Exception.class)
-  @RequestMapping("/cleanup")
+  @DeleteMapping(path = "/cleanup")
   public @ResponseBody String cleanup() {
     jdbcTemplate.execute("DELETE FROM WORKBASKET");
     jdbcTemplate.execute("DELETE FROM CUSTOMDB.TEST");
