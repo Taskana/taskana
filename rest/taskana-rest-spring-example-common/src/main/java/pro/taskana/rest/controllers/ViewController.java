@@ -1,13 +1,13 @@
 package pro.taskana.rest.controllers;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 
 /** The view controller. */
 @Controller
 public class ViewController {
 
-  @RequestMapping({"", "taskana/**"})
+  @GetMapping(path = {"", "taskana/**"})
   public String index() {
     return "forward:/index.html";
   }
