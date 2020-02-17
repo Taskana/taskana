@@ -80,7 +80,7 @@
         <version.junit.mockito>3.2.4</version.junit.mockito>
         <!-- byte buddy 1.9.7+ is needed to solve dependency errors with 
             spring mock tests see LdapClientTest -->
-        <version.byte-buddy>1.10.7</version.byte-buddy>
+        <version.byte-buddy>1.10.8</version.byte-buddy>
         <version.byte-buddy-agent>1.10.8</version.byte-buddy-agent>
         <version.powermock>2.0.5</version.powermock>
         <version.hamcrest>2.2</version.hamcrest>
