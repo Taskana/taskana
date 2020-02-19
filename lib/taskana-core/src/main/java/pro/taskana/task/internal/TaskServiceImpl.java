@@ -16,6 +16,7 @@ import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.api.models.Classification;
@@ -48,6 +49,7 @@ import pro.taskana.task.api.exceptions.InvalidOwnerException;
 import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
+import pro.taskana.task.api.exceptions.UpdateFailedException;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
@@ -617,6 +619,55 @@ public class TaskServiceImpl implements TaskService {
     }
   }
 
+  @Override
+  public BulkOperationResults<String, TaskanaException> setOwnerOfTasks(
+      String owner, List<String> argTaskIds) {
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug(
+          "entry to setOwnerOfTasks(owner = {}, tasks = {})",
+          owner,
+          LoggerUtils.listToString(argTaskIds));
+    }
+    try {
+      taskanaEngine.openConnection();
+      BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
+      if (argTaskIds == null || argTaskIds.isEmpty()) {
+        return bulkLog;
+      }
+      // remove duplicates
+      List<String> taskIds = argTaskIds.stream().sorted().distinct().collect(Collectors.toList());
+      final int requestSize = taskIds.size();
+      // use only elements we are authorized for
+      taskIds = filterForAuthorized(taskIds, bulkLog);
+      // set the Owner of these tasks we are authorized for
+      if (taskIds.isEmpty()) {
+        return bulkLog;
+      } else {
+        final int numberOfAffectedTasks = taskMapper.setOwnerOfTasks(owner, taskIds, Instant.now());
+        // check the outcome
+        List<MinimalTaskSummary> existingMinimalTaskSummaries =
+            taskMapper.findExistingTasks(taskIds, null);
+        // check for tasks that don't exist
+        handleNonExistingTasks(taskIds, existingMinimalTaskSummaries, bulkLog);
+        // add all errors that occured to bulkLog
+        addErrorsToResultObject(owner, bulkLog, existingMinimalTaskSummaries);
+        LOGGER.debug(
+            "Received the Request to set owner on "
+                + requestSize
+                + " tasks, "
+                + "actually modified tasks = "
+                + numberOfAffectedTasks
+                + ", could not set owner on "
+                + bulkLog.getFailedIds().size()
+                + " tasks.");
+        return bulkLog;
+      }
+    } finally {
+      LOGGER.debug("exit from setOwnerOfTasks()");
+      taskanaEngine.returnConnection();
+    }
+  }
+
   public Set<String> findTasksIdsAffectedByClassificationChange(String classificationId) {
     LOGGER.debug(
         "entry to findTasksIdsAffectedByClassificationChange(classificationId = {})",
@@ -755,6 +806,77 @@ public class TaskServiceImpl implements TaskService {
     result.addAll(taskSummaries);
     LOGGER.debug("exit from to augmentTaskSummariesByContainedSummaries()");
     return result;
+  }
+
+  private void addErrorsToResultObject(
+      String owner,
+      BulkOperationResults<String, TaskanaException> bulkLog,
+      List<MinimalTaskSummary> existingMinimalTaskSummaries) {
+    for (MinimalTaskSummary taskSummary : existingMinimalTaskSummaries) {
+      if (!owner.equals(taskSummary.getOwner())) { // owner was not set
+        if (!taskSummary.getTaskState().equals(TaskState.READY)) { // due to invalid state
+          bulkLog.addError(
+              taskSummary.getTaskId(),
+              new InvalidStateException(
+                  "Task "
+                      + taskSummary.getTaskId()
+                      + " is in state "
+                      + taskSummary.getTaskState()));
+        } else { // due to unknown reason
+          bulkLog.addError(
+              taskSummary.getTaskId(),
+              new UpdateFailedException(
+                  "Could not set owner of Task " + taskSummary.getTaskId() + "."));
+        }
+      }
+    }
+  }
+
+  private void handleNonExistingTasks(
+      List<String> taskIds,
+      List<MinimalTaskSummary> existingMinimalTaskSummaries,
+      BulkOperationResults<String, TaskanaException> bulkLog) {
+    List<String> nonExistingTaskIds = new ArrayList<>(taskIds);
+    List<String> existingTaskIds =
+        existingMinimalTaskSummaries.stream()
+            .map(MinimalTaskSummary::getTaskId)
+            .collect(Collectors.toList());
+    nonExistingTaskIds.removeAll(existingTaskIds);
+    for (String taskId : nonExistingTaskIds) {
+      bulkLog.addError(taskId, new TaskNotFoundException(taskId, "Task was not found"));
+    }
+  }
+
+  private List<String> filterForAuthorized(
+      List<String> taskIds, BulkOperationResults<String, TaskanaException> bulkLog) {
+    List<String> accessIds = getAccessIds();
+    List<String> tasksAuthorizedFor = new ArrayList<>(taskIds);
+    if (accessIds != null) {
+      List<String> tasksNotAuthorizedFor =
+          taskMapper.filterTaskIdsNotAuthorizedFor(taskIds, accessIds);
+      tasksAuthorizedFor.removeAll(tasksNotAuthorizedFor);
+      String currentUserId = CurrentUserContext.getUserid();
+      for (String taskId : tasksNotAuthorizedFor) {
+        bulkLog.addError(
+            taskId,
+            new NotAuthorizedException(
+                "Current user not authorized for task " + taskId, currentUserId));
+      }
+    }
+    return tasksAuthorizedFor;
+  }
+
+  private List<String> getAccessIds() {
+    List<String> accessIds;
+    if (taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN)) {
+      accessIds = null;
+    } else {
+      accessIds = CurrentUserContext.getAccessIds();
+      if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
+        accessIds = accessIds.stream().map(String::toLowerCase).collect(Collectors.toList());
+      }
+    }
+    return accessIds;
   }
 
   private Task claim(String taskId, boolean forceClaim)

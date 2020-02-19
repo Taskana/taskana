@@ -22,7 +22,6 @@ import pro.taskana.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
-import pro.taskana.task.api.exceptions.InvalidOwnerException;
 import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
@@ -336,76 +335,5 @@ class UpdateTaskAccTest extends AbstractAccTest {
     Task retrievedUpdatedTask = taskService.getTask(createdTask.getId());
 
     assertThat(retrievedUpdatedTask.getCallbackInfo()).isEqualTo(callbackInfo);
-  }
-
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
-  @Test
-  void testSetOwnerAndSubsequentClaimSucceeds()
-      throws TaskNotFoundException, NotAuthorizedException, InvalidStateException,
-          InvalidOwnerException, ClassificationNotFoundException, InvalidArgumentException,
-          ConcurrencyException, AttachmentPersistenceException {
-
-    TaskService taskService = taskanaEngine.getTaskService();
-    String taskReadyId = "TKI:000000000000000000000000000000000025";
-    Task taskReady = taskService.getTask(taskReadyId);
-    assertThat(taskReady.getState()).isEqualTo(TaskState.READY);
-    assertThat(taskReady.getOwner()).isNull();
-    String anyUserName = "Holger";
-    Task modifiedTaskReady = setOwner(taskReadyId, anyUserName);
-
-    assertThat(modifiedTaskReady.getState()).isEqualTo(TaskState.READY);
-    assertThat(modifiedTaskReady.getOwner()).isEqualTo(anyUserName);
-    Task taskClaimed = taskService.claim(taskReadyId);
-    assertThat(taskClaimed.getState()).isEqualTo(TaskState.CLAIMED);
-    assertThat(taskClaimed.getOwner()).isEqualTo("user_1_2");
-  }
-
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
-  @Test
-  void testSetOwnerNotAuthorized()
-      throws TaskNotFoundException, NotAuthorizedException, InvalidStateException,
-          InvalidOwnerException {
-
-    TaskService taskService = taskanaEngine.getTaskService();
-    String taskReadyId = "TKI:000000000000000000000000000000000024";
-    String anyUserName = "Benjamin";
-
-    assertThatThrownBy(() -> taskService.getTask(taskReadyId))
-        .isInstanceOf(NotAuthorizedException.class);
-    assertThatThrownBy(() -> setOwner(taskReadyId, anyUserName))
-        .isInstanceOf(NotAuthorizedException.class);
-  }
-
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
-  @Test
-  void testSetOwnerOfClaimedTaskFails()
-      throws TaskNotFoundException, NotAuthorizedException, InvalidStateException,
-          InvalidOwnerException {
-
-    TaskService taskService = taskanaEngine.getTaskService();
-    String taskClaimedId = "TKI:000000000000000000000000000000000026";
-    String anyUserName = "Mustapha";
-    Task taskClaimed = taskService.getTask(taskClaimedId);
-    assertThat(taskClaimed.getState()).isEqualTo(TaskState.CLAIMED);
-    assertThat(taskClaimed.getOwner()).isEqualTo("user_1_1");
-    assertThatThrownBy(() -> setOwner(taskClaimedId, anyUserName))
-        .isInstanceOf(InvalidStateException.class);
-  }
-
-  private Task setOwner(String taskReadyId, String anyUserName)
-      throws TaskNotFoundException, NotAuthorizedException, ClassificationNotFoundException,
-          InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException,
-          InvalidStateException {
-    TaskService taskService = taskanaEngine.getTaskService();
-    Task task = taskService.getTask(taskReadyId);
-    task.setOwner(anyUserName);
-    task = taskService.updateTask(task);
-    return task;
   }
 }

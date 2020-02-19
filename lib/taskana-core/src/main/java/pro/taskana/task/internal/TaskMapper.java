@@ -1,5 +1,6 @@
 package pro.taskana.task.internal;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Delete;
@@ -132,6 +133,16 @@ public interface TaskMapper {
   void setCallbackStateMultiple(
       @Param("externalIds") List<String> externalIds, @Param("state") CallbackState state);
 
+  @Update(
+      "<script>UPDATE TASK SET OWNER = #{owner}, MODIFIED = #{modified} "
+          + "WHERE STATE = 'READY' "
+          + "AND ID IN <foreach item='taskId' index='index' separator=',' open='(' close=')' collection='taskIds'>#{taskId}</foreach> "
+          + "</script>")
+  int setOwnerOfTasks(
+      @Param("owner") String owner,
+      @Param("taskIds") List<String> taskIds,
+      @Param("modified") Instant modified);
+
   @Select(
       "<script>SELECT ID, EXTERNAL_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, CREATOR, DESCRIPTION, PRIORITY, STATE, CLASSIFICATION_CATEGORY, CLASSIFICATION_KEY, CLASSIFICATION_ID, WORKBASKET_ID, WORKBASKET_KEY, DOMAIN, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, POR_SYSTEM, POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CUSTOM_ATTRIBUTES, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, "
           + "CUSTOM_8, CUSTOM_9, CUSTOM_10, CUSTOM_11, CUSTOM_12, CUSTOM_13, CUSTOM_14, CUSTOM_15, CUSTOM_16 "
@@ -214,7 +225,7 @@ public interface TaskMapper {
       @Param("referencetask") TaskSummaryImpl referencetask);
 
   @Select(
-      "<script>SELECT ID, EXTERNAL_ID, STATE, WORKBASKET_ID, CALLBACK_STATE FROM TASK "
+      "<script>SELECT ID, EXTERNAL_ID, STATE, WORKBASKET_ID, OWNER, CALLBACK_STATE FROM TASK "
           + "<where> "
           + "<if test='taskIds != null'>ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>)</if> "
           + "<if test='externalIds != null'>EXTERNAL_ID IN(<foreach item='item' collection='externalIds' separator=',' >#{item}</foreach>)</if> "
@@ -226,6 +237,7 @@ public interface TaskMapper {
         @Result(property = "taskId", column = "ID"),
         @Result(property = "externalId", column = "EXTERNAL_ID"),
         @Result(property = "workbasketId", column = "WORKBASKET_ID"),
+        @Result(property = "owner", column = "OWNER"),
         @Result(property = "taskState", column = "STATE"),
         @Result(property = "callbackState", column = "CALLBACK_STATE")
       })
@@ -274,4 +286,25 @@ public interface TaskMapper {
           + "</script>")
   @Results(value = {@Result(property = "taskId", column = "ID")})
   List<String> filterTaskIdsForNotCompleted(@Param("taskIds") List<String> taskIds);
+
+  @Select(
+      "<script> "
+          + "SELECT t.ID FROM TASK t WHERE t.ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>)"
+          + "<if test='accessIds != null'> "
+          + "AND NOT (t.WORKBASKET_ID IN ( "
+          + "<choose>"
+          + "<when test=\"_databaseId == 'db2'\">"
+          + "SELECT WID from (SELECT WORKBASKET_ID as WID, MAX(PERM_READ) as MAX_READ FROM WORKBASKET_ACCESS_LIST AS s where "
+          + "</when>"
+          + "<otherwise>"
+          + "SELECT WID from (SELECT WORKBASKET_ID as WID, MAX(PERM_READ::int) as MAX_READ FROM WORKBASKET_ACCESS_LIST AS s where "
+          + "</otherwise>"
+          + "</choose>"
+          + "ACCESS_ID IN (<foreach item='item' collection='accessIds' separator=',' >#{item}</foreach>) "
+          + "group by WORKBASKET_ID ) AS f where max_read = 1 ))"
+          + "</if> "
+          + "</script>")
+  @Results(value = {@Result(property = "id", column = "ID")})
+  List<String> filterTaskIdsNotAuthorizedFor(
+      @Param("taskIds") List<String> taskIds, @Param("accessIds") List<String> accessIds);
 }
