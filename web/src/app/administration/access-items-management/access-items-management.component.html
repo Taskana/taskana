@@ -5,7 +5,7 @@
   <div class="panel-body">
     <div class="col-md-6 col-md-offset-3 margin">
       <taskana-type-ahead #accesId="ngModel" name="accessIdSelected" [(ngModel)]="accessIdSelected" placeHolderMessage="Search for access id..."
-        (onSelect)="onSelectAccessId($event)" displayError=true></taskana-type-ahead>
+        (selectedItem)="onSelectAccessId($event)" displayError=true></taskana-type-ahead>
     </div>
     <div *ngIf="!AccessItemsForm" class="center-block no-detail col-xs-12">
       <h3 class="grey">Select an access id</h3>
