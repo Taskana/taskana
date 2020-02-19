@@ -624,6 +624,49 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
   }
 
   @Test
+  void cancelClaimTaskDocTest() throws Exception {
+
+    MvcResult result =
+        this.mockMvc
+            .perform(
+                RestDocumentationRequestBuilders.post(restHelper.toUrl(Mapping.URL_TASKS))
+                    .contentType("application/hal+json")
+                    .content(
+                        "{\"classificationSummaryResource\":{\"key\":\"L11010\"},"
+                            + "\"workbasketSummaryResource\":"
+                            + "{\"workbasketId\":\"WBI:100000000000000000000000000000000004\"},"
+                            + "\"primaryObjRef\":{\"company\":\"MyCompany1\","
+                            + "\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\","
+                            + "\"type\":\"MyType1\",\"value\":\"00000001\"}}")
+                    .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
+            .andExpect(MockMvcResultMatchers.status().isCreated())
+            .andDo(MockMvcRestDocumentation.document("temp"))
+            .andReturn();
+
+    String content = result.getResponse().getContentAsString();
+    String newId = content.substring(content.indexOf("TKI:"), content.indexOf("TKI:") + 40);
+
+    this.mockMvc
+        .perform(
+            RestDocumentationRequestBuilders.delete(
+                restHelper.toUrl(Mapping.URL_TASKS_ID_CLAIM, newId))
+                .accept("application/hal+json")
+                .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x")
+                .content("{}"))
+        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andDo(
+            MockMvcRestDocumentation.document(
+                "CancelClaimTaskDocTest", responseFields(taskFieldDescriptors)));
+
+    this.mockMvc
+        .perform(
+            RestDocumentationRequestBuilders.delete(restHelper.toUrl(Mapping.URL_TASKS_ID, newId))
+                .header("Authorization", "Basic YWRtaW46YWRtaW4=")) // admin
+        .andExpect(MockMvcResultMatchers.status().isNoContent())
+        .andDo(MockMvcRestDocumentation.document("DeleteTaskDocTest"));
+  }
+
+  @Test
   void completeTaskDocTest() throws Exception {
     MvcResult result =
         this.mockMvc

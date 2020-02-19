@@ -650,7 +650,7 @@ class TaskControllerIntTest {
         template.exchange(
             taskUrlString,
             HttpMethod.GET,
-            new HttpEntity<>(getHeadersForUser_1_2()),
+            new HttpEntity<>(restHelper.getHeadersUser_1_2()),
             ParameterizedTypeReference.forType(TaskResource.class));
 
     assertThat(responseGet.getBody()).isNotNull();
@@ -666,13 +666,81 @@ class TaskControllerIntTest {
         template.exchange(
             taskUrlString,
             HttpMethod.PUT,
-            new HttpEntity<>(theTaskResource, getHeadersForUser_1_2()),
+            new HttpEntity<>(theTaskResource, restHelper.getHeadersUser_1_2()),
             ParameterizedTypeReference.forType(TaskResource.class));
 
     assertThat(responseUpdate.getBody()).isNotNull();
     TaskResource theUpdatedTaskResource = responseUpdate.getBody();
     assertThat(theUpdatedTaskResource.getState()).isEqualTo(TaskState.READY);
     assertThat(theUpdatedTaskResource.getOwner()).isEqualTo(anyUserName);
+  }
+
+  @Test
+  void testCancelClaimTask() {
+
+    final String claimed_task_id = "TKI:000000000000000000000000000000000027";
+    final String user_id_of_claimed_task = "user_1_2";
+
+    // retrieve task from Rest Api
+    ResponseEntity<TaskResource> getTaskResponse =
+        template.exchange(
+            restHelper.toUrl(Mapping.URL_TASKS_ID, claimed_task_id),
+            HttpMethod.GET,
+            new HttpEntity<>(restHelper.getHeadersUser_1_2()),
+            ParameterizedTypeReference.forType(TaskResource.class));
+
+    assertThat(getTaskResponse.getBody()).isNotNull();
+
+    TaskResource claimedTaskResource = getTaskResponse.getBody();
+    assertThat(claimedTaskResource.getState()).isEqualTo(TaskState.CLAIMED);
+    assertThat(claimedTaskResource.getOwner()).isEqualTo(user_id_of_claimed_task);
+
+    //cancel claim
+    ResponseEntity<TaskResource> cancelClaimResponse =
+        template.exchange(
+            restHelper.toUrl(Mapping.URL_TASKS_ID_CLAIM, claimed_task_id),
+            HttpMethod.DELETE,
+            new HttpEntity<>(restHelper.getHeadersUser_1_2()),
+            ParameterizedTypeReference.forType(TaskResource.class));
+
+    assertThat(cancelClaimResponse.getBody()).isNotNull();
+    assertThat(cancelClaimResponse.getStatusCode().is2xxSuccessful());
+
+    TaskResource cancelClaimedtaskResource = cancelClaimResponse.getBody();
+    assertThat(cancelClaimedtaskResource.getOwner()).isNull();
+    assertThat(cancelClaimedtaskResource.getClaimed()).isNull();
+    assertThat(cancelClaimedtaskResource.getState()).isEqualTo(TaskState.READY);
+  }
+
+  @Test
+  void testCancelClaimOfClaimedTaskByAnotherUserShouldThrowException() {
+
+    final String claimed_task_id = "TKI:000000000000000000000000000000000026";
+    final String user_id_of_claimed_task = "user_1_1";
+
+    // retrieve task from Rest Api
+    ResponseEntity<TaskResource> responseGet =
+        template.exchange(
+            restHelper.toUrl(Mapping.URL_TASKS_ID, claimed_task_id),
+            HttpMethod.GET,
+            new HttpEntity<>(restHelper.getHeadersUser_1_2()),
+            ParameterizedTypeReference.forType(TaskResource.class));
+
+    assertThat(responseGet.getBody()).isNotNull();
+    TaskResource theTaskResource = responseGet.getBody();
+    assertThat(theTaskResource.getState()).isEqualTo(TaskState.CLAIMED);
+    assertThat(theTaskResource.getOwner()).isEqualTo(user_id_of_claimed_task);
+
+    //try to cancel claim
+    assertThatThrownBy(
+        () ->
+                template.exchange(
+                    restHelper.toUrl(Mapping.URL_TASKS_ID_CLAIM, claimed_task_id),
+                    HttpMethod.DELETE,
+                    new HttpEntity<>(restHelper.getHeadersUser_1_2()),
+                    ParameterizedTypeReference.forType(TaskResource.class)))
+        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.CONFLICT);
   }
 
   @Test
@@ -686,7 +754,7 @@ class TaskControllerIntTest {
         template.exchange(
             taskUrlString,
             HttpMethod.GET,
-            new HttpEntity<>(getHeadersForUser_1_2()),
+            new HttpEntity<>(restHelper.getHeadersUser_1_2()),
             ParameterizedTypeReference.forType(TaskResource.class));
 
     assertThat(responseGet.getBody()).isNotNull();
@@ -704,17 +772,10 @@ class TaskControllerIntTest {
                 template.exchange(
                     taskUrlString,
                     HttpMethod.PUT,
-                    new HttpEntity<>(theTaskResource, getHeadersForUser_1_2()),
+                    new HttpEntity<>(theTaskResource, restHelper.getHeadersUser_1_2()),
                     ParameterizedTypeReference.forType(TaskResource.class)))
         .isInstanceOf(HttpClientErrorException.class)
         .hasMessageContaining("409");
-  }
-
-  private HttpHeaders getHeadersForUser_1_2() {
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Authorization", "Basic dXNlcl8xXzI6dXNlcl8xXzI=");
-    headers.add("Content-Type", "application/json");
-    return headers;
   }
 
   private TaskResource getTaskResourceSample() {
