@@ -249,7 +249,9 @@ public interface TaskService {
    *     cannot be found
    * @throws NotAuthorizedException if the current user is not authorized to update the task
    * @throws AttachmentPersistenceException if an Attachment with ID will be added multiple times
-   *     without using the task-methods.
+   *     without using the task-methods
+   * @throws InvalidStateException if an attempt is made to change the owner of the task and the
+   *     task is not in state READY .
    */
   Task updateTask(Task task)
       throws InvalidArgumentException, TaskNotFoundException, ConcurrencyException,
@@ -373,4 +375,14 @@ public interface TaskService {
    */
   BulkOperationResults<String, TaskanaException> setCallbackStateForTasks(
       List<String> externalIds, CallbackState state);
+
+  /**
+   * Sets the owner on a list of tasks. The owner will only be set on tasks that are in state READY.
+   *
+   * @param owner the new owner of the tasks
+   * @param taskIds the IDs of the tasks on which the owner is to be set.
+   * @return the result of the operations with Id and Exception for each failed task deletion.
+   */
+  BulkOperationResults<String, TaskanaException> setOwnerOfTasks(
+      String owner, List<String> taskIds);
 }

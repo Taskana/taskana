@@ -9,6 +9,7 @@ public class MinimalTaskSummary {
   private String taskId;
   private String externalId;
   private String workbasketId;
+  private String owner;
   private TaskState taskState;
   private CallbackState callbackState;
 
@@ -38,6 +39,14 @@ public class MinimalTaskSummary {
     this.workbasketId = workbasketKey;
   }
 
+  public String getOwner() {
+    return owner;
+  }
+
+  public void setOwner(String owner) {
+    this.owner = owner;
+  }
+
   public TaskState getTaskState() {
     return taskState;
   }
@@ -58,10 +67,16 @@ public class MinimalTaskSummary {
   public String toString() {
     return "MinimalTaskSummary [taskId="
         + taskId
+        + ", externalId="
+        + externalId
         + ", workbasketId="
         + workbasketId
+        + ", owner="
+        + owner
         + ", taskState="
         + taskState
+        + ", callbackState="
+        + callbackState
         + "]";
   }
 }

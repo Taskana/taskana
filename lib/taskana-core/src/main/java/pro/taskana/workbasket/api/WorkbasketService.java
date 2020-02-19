@@ -66,6 +66,9 @@ public interface WorkbasketService {
    * @param workbasket The Workbasket to update
    * @return the updated Workbasket
    * @throws NotAuthorizedException if the current user is not authorized to update the work basket
+   * @throws WorkbasketNotFoundException if the workbasket cannot be found.
+   * @throws ConcurrencyException if an attempt is made to update the workbasket and another user
+   *     updated it already
    */
   Workbasket updateWorkbasket(Workbasket workbasket)
       throws NotAuthorizedException, WorkbasketNotFoundException, ConcurrencyException;
