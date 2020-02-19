@@ -14,6 +14,8 @@ set -e # fail fast
 #H   current commit is a HEAD commit
 #H   GH_TOKEN - github access token
 #H   GH_USER - username for the github access token
+#H   GH_USERNAME - github username / displayname (for git config)
+#H   GH_EMAIL - github email address (for git config)
 #H   TRAVIS_TAG (format v[0-9]+\.[0-9]+\.[0-9]+)
 #H   TRAVIS_REPO_SLUG - repo name (in form: owner_name/repo_name)
 # Arguments:
@@ -39,7 +41,7 @@ function increment_version() {
 
 function main() {
   [[ "$1" == '-h' || "$1" == '--help' ]] && helpAndExit 0
-  [[ -z "$GH_USER" || -z "$GH_TOKEN" || -z "$TRAVIS_REPO_SLUG" ]] && helpAndExit 1
+  [[ -z "$GH_USER" || -z "$GH_TOKEN" || -z "$GH_EMAIL" || -z "$GH_USERNAME" || -z "$TRAVIS_REPO_SLUG" ]] && helpAndExit 1
   if [[ "$TRAVIS_TAG" =~ v[0-9]+\.[0-9]+\.[0-9]+ ]]; then
     #check if tagged commit is a head commit of any branch
     commit=$(git ls-remote -q -t origin | grep "$TRAVIS_TAG" | cut -c1-40)
