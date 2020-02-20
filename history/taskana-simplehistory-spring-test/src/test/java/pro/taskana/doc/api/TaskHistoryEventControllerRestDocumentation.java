@@ -10,18 +10,18 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 
 import java.util.HashMap;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.restdocs.JUnitRestDocumentation;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.FieldDescriptor;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -30,33 +30,33 @@ import org.springframework.web.context.WebApplicationContext;
 import pro.taskana.rest.simplehistory.TaskHistoryRestConfiguration;
 
 /** Generate documentation for the history event controller. */
-@RunWith(SpringRunner.class)
 @SpringBootTest(
     classes = TaskHistoryRestConfiguration.class,
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 public class TaskHistoryEventControllerRestDocumentation {
 
-  @Rule public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
+  public RestDocumentationExtension restDocumentation = new RestDocumentationExtension();
   @LocalServerPort int port;
   @Autowired private WebApplicationContext context;
 
   private MockMvc mockMvc;
 
-  private HashMap<String, String> taskHistoryEventFieldDescriptionsMap =
-      new HashMap<String, String>();
+  private HashMap<String, String> taskHistoryEventFieldDescriptionsMap = new HashMap<>();
 
   private FieldDescriptor[] allTaskHistoryEventFieldDescriptors;
 
   private FieldDescriptor[] taskHistoryEventFieldDescriptors;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     document("{methodName}", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()));
 
     this.mockMvc =
         MockMvcBuilders.webAppContextSetup(this.context)
             .apply(
-                documentationConfiguration(this.restDocumentation)
+                documentationConfiguration(
+                        (RestDocumentationContextProvider) this.restDocumentation)
                     .operationPreprocessors()
                     .withResponseDefaults(prettyPrint())
                     .withRequestDefaults(prettyPrint()))
