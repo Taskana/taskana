@@ -1,9 +1,7 @@
 package pro.taskana;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,9 +9,9 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import javax.sql.DataSource;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +27,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -42,7 +39,7 @@ import pro.taskana.rest.simplehistory.sampledata.SampleDataGenerator;
 
 /** Controller for integration test. */
 @EnableAutoConfiguration
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(
     classes = {TaskHistoryRestConfiguration.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -64,8 +61,8 @@ public class TaskHistoryEventControllerIntTest {
 
   @Autowired private DataSource dataSource;
 
-  @Before
-  public void before() {
+  @BeforeEach
+  public void beforeEach() {
     template = getRestTemplate();
     SampleDataGenerator sampleDataGenerator;
     try {
@@ -84,8 +81,8 @@ public class TaskHistoryEventControllerIntTest {
             HttpMethod.GET,
             request,
             ParameterizedTypeReference.forType(TaskHistoryEventListResource.class));
-    assertNotNull(response.getBody().getLink(Link.REL_SELF));
-    assertEquals(50, response.getBody().getContent().size());
+    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getContent()).hasSize(50);
   }
 
   @Test
@@ -98,9 +95,9 @@ public class TaskHistoryEventControllerIntTest {
             HttpMethod.GET,
             request,
             ParameterizedTypeReference.forType(TaskHistoryEventListResource.class));
-    assertNotNull(response.getBody().getLink(Link.REL_SELF));
-    assertEquals(3, response.getBody().getContent().size());
-    assertTrue(response.getBody().getLink(Link.REL_SELF).getHref().endsWith(parameters));
+    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getContent()).hasSize(3);
+    assertThat(response.getBody().getLink(Link.REL_SELF).getHref().endsWith(parameters)).isTrue();
   }
 
   @Test
@@ -115,42 +112,42 @@ public class TaskHistoryEventControllerIntTest {
             request,
             ParameterizedTypeReference.forType(TaskHistoryEventListResource.class));
 
-    assertNotNull(response.getBody().getLink(Link.REL_SELF));
-    assertNotNull(response.getBody().getLinks());
-    assertNotNull(response.getBody().getMetadata());
-    assertEquals(1, response.getBody().getContent().size());
+    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLinks()).isNotNull();
+    assertThat(response.getBody().getMetadata()).isNotNull();
+    assertThat(response.getBody().getContent()).hasSize(1);
   }
 
   @Test
   public void testThrowsExceptionIfInvalidFilterIsUsed() {
-    try {
-      template.exchange(
-          server + port + "/api/v1/task-history-event?invalid=BPI:01",
-          HttpMethod.GET,
-          request,
-          ParameterizedTypeReference.forType(TaskHistoryEventListResource.class));
-      fail();
-    } catch (HttpClientErrorException e) {
-      assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
-      assertTrue(e.getResponseBodyAsString().contains("[invalid]"));
-    }
+    assertThatThrownBy(
+        () ->
+            template.exchange(
+                server + port + "/api/v1/task-history-event?invalid=BPI:01",
+                HttpMethod.GET,
+                request,
+                ParameterizedTypeReference.forType(TaskHistoryEventListResource.class)))
+        .isInstanceOf(HttpClientErrorException.class)
+        .hasMessageContaining("[invalid]")
+        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
   @Test
   public void testGetHistoryEventOfDate() {
     String currentTime = LocalDateTime.now().toString();
-
-    try {
-      template.exchange(
-          server + port + "/api/v1/task-history-event?created=" + currentTime,
-          HttpMethod.GET,
-          request,
-          ParameterizedTypeReference.forType(TaskHistoryEventListResource.class));
-      fail();
-    } catch (HttpClientErrorException e) {
-      assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
-      assertTrue(e.getResponseBodyAsString().contains(currentTime));
-    }
+    final String finalCurrentTime = currentTime;
+    assertThatThrownBy(
+        () ->
+            template.exchange(
+                server + port + "/api/v1/task-history-event?created=" + finalCurrentTime,
+                HttpMethod.GET,
+                request,
+                ParameterizedTypeReference.forType(TaskHistoryEventListResource.class)))
+        .isInstanceOf(HttpClientErrorException.class)
+        .hasMessageContaining(currentTime)
+        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.BAD_REQUEST);
 
     // correct Format 'yyyy-MM-dd'
     currentTime = currentTime.substring(0, 10);
@@ -160,8 +157,8 @@ public class TaskHistoryEventControllerIntTest {
             HttpMethod.GET,
             request,
             ParameterizedTypeReference.forType(TaskHistoryEventListResource.class));
-    assertNotNull(response.getBody().getLink(Link.REL_SELF));
-    assertEquals(25, response.getBody().getContent().size());
+    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getContent()).hasSize(25);
   }
 
   @Test
@@ -175,21 +172,21 @@ public class TaskHistoryEventControllerIntTest {
             request,
             ParameterizedTypeReference.forType(TaskHistoryEventListResource.class));
 
-    assertEquals(2, response.getBody().getContent().size());
-    assertEquals(
-        "WBI:100000000000000000000000000000000002",
-        response.getBody().getContent().iterator().next().getWorkbasketKey());
-    assertNotNull(response.getBody().getLink(Link.REL_SELF));
-    assertTrue(response.getBody().getLink(Link.REL_SELF).getHref().endsWith(parameters));
-    assertNotNull(response.getBody().getLink("allTaskHistoryEvent"));
-    assertTrue(
-        response
-            .getBody()
-            .getLink("allTaskHistoryEvent")
-            .getHref()
-            .endsWith("/api/v1/task-history-event"));
-    assertNotNull(response.getBody().getLink(Link.REL_FIRST));
-    assertNotNull(response.getBody().getLink(Link.REL_LAST));
+    assertThat(response.getBody().getContent()).hasSize(2);
+    assertThat(response.getBody().getContent().iterator().next().getWorkbasketKey())
+        .isEqualTo("WBI:100000000000000000000000000000000002");
+    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(Link.REL_SELF).getHref().endsWith(parameters)).isTrue();
+    assertThat(response.getBody().getLink("allTaskHistoryEvent")).isNotNull();
+    assertThat(
+            response
+                .getBody()
+                .getLink("allTaskHistoryEvent")
+                .getHref()
+                .endsWith("/api/v1/task-history-event"))
+        .isTrue();
+    assertThat(response.getBody().getLink(Link.REL_FIRST)).isNotNull();
+    assertThat(response.getBody().getLink(Link.REL_LAST)).isNotNull();
   }
 
   /**
@@ -206,8 +203,6 @@ public class TaskHistoryEventControllerIntTest {
     converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/hal+json"));
     converter.setObjectMapper(mapper);
 
-    RestTemplate template =
-        new RestTemplate(Collections.<HttpMessageConverter<?>>singletonList(converter));
-    return template;
+    return new RestTemplate(Collections.singletonList(converter));
   }
 }
