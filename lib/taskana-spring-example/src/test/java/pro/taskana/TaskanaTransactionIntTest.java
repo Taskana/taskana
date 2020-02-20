@@ -75,66 +75,66 @@ class TaskanaTransactionIntTest {
 
   @Test
   void testTransaction() {
-    assertBefore(0, 0);
+    assertQuantities(0, 0);
 
     ResponseEntity<String> responseEntity = restTemplate.getForEntity("/transaction", String.class);
     System.err.println("response: " + responseEntity.getBody());
     assertThat(responseEntity.getBody()).containsSequence("workbaskets: 1");
 
-    assertAfter(1, 0);
+    assertQuantities(1, 0);
   }
 
   @Test
   void testTransactionRollback() {
-    assertBefore(0, 0);
+    assertQuantities(0, 0);
 
     ResponseEntity<String> responseEntity =
         restTemplate.getForEntity("/transaction?rollback={rollback}", String.class, "true");
     System.err.println("result: " + responseEntity.getBody());
     assertThat(responseEntity.getBody()).containsSequence("workbaskets: 1");
 
-    assertAfter(0, 0);
+    assertQuantities(0, 0);
   }
 
   @Test
   void testTransactionCombined() {
-    assertBefore(0, 0);
+    assertQuantities(0, 0);
 
     ResponseEntity<String> responseEntity =
         restTemplate.getForEntity("/transaction-many", String.class);
     System.err.println("response: " + responseEntity.getBody());
     assertThat(responseEntity.getBody()).containsSequence("workbaskets: 3");
 
-    assertAfter(3, 0);
+    assertQuantities(3, 0);
   }
 
   @Test
   void testTransactionCombinedRollback() {
-    assertBefore(0, 0);
+    assertQuantities(0, 0);
 
     ResponseEntity<String> responseEntity =
         restTemplate.getForEntity("/transaction-many?rollback={rollback}", String.class, "true");
     System.err.println("result: " + responseEntity.getBody());
     assertThat(responseEntity.getBody()).containsSequence("workbaskets: 3");
 
-    assertAfter(0, 0);
+    assertQuantities(0, 0);
   }
 
   @Test
   void testTransactionCustomdb() {
-    assertBefore(0, 0);
+    assertQuantities(0, 0);
 
     ResponseEntity<String> responseEntity = restTemplate.getForEntity("/customdb", String.class);
     System.err.println("response: " + responseEntity.getBody());
     assertThat(responseEntity.getBody()).containsSequence("workbaskets: 2");
     assertThat(responseEntity.getBody()).containsSequence("tests: 2");
 
-    assertAfter(2, 2);
+    assertQuantities(2, 2);
   }
 
   @Test
   void testTransactionCustomdbRollback() {
-    assertBefore(0, 0);
+    assertQuantities(0, 0);
 
     ResponseEntity<String> responseEntity =
         restTemplate.getForEntity("/customdb?rollback={rollback}", String.class, "true");
@@ -142,7 +142,7 @@ class TaskanaTransactionIntTest {
     assertThat(responseEntity.getBody()).containsSequence("workbaskets: 2");
     assertThat(responseEntity.getBody()).containsSequence("tests: 2");
 
-    assertAfter(0, 0);
+    assertQuantities(0, 0);
   }
 
   @Test
@@ -241,22 +241,17 @@ class TaskanaTransactionIntTest {
     return objRef;
   }
 
-  private void assertBefore(int workbaskets, int tests) {
-    assertWorkbaskets("before", workbaskets);
-    assertCustomdbTests("before", tests);
+  private void assertQuantities(int workbaskets, int tests) {
+    assertWorkbaskets(workbaskets);
+    assertCustomdbTests(tests);
   }
 
-  private void assertAfter(int workbaskets, int tests) {
-    assertWorkbaskets("after", workbaskets);
-    assertCustomdbTests("after", tests);
-  }
-
-  private void assertWorkbaskets(String assertion, int value) {
+  private void assertWorkbaskets(int value) {
     int workbaskets = getWorkbaskets();
     assertThat(workbaskets).isEqualTo(value);
   }
 
-  private void assertCustomdbTests(String assertion, int value) {
+  private void assertCustomdbTests(int value) {
     int tests = getCustomdbTests();
     assertThat(tests).isEqualTo(value);
   }
