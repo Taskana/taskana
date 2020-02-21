@@ -24,7 +24,7 @@ class ClassificationAssemblerTest {
   void classificationToResource() {
     // given
     ClassificationImpl classification =
-        (ClassificationImpl) classificationService.newClassification("DOMAIN_A", "1", "A");
+        (ClassificationImpl) classificationService.newClassification("KEY_A", "DOMAIN_A", "A");
     classification.setId("1");
     classification.setCategory("ABC");
     classification.setName("Classification 1");
@@ -38,6 +38,7 @@ class ClassificationAssemblerTest {
     classification.setCustom7("Custom7");
     classification.setCustom8("Custom8");
     classification.setParentId("2");
+    classification.setParentKey("parentKey");
     classification.setPriority(2);
     classification.setApplicationEntryPoint("12");
     classification.setServiceLevel("P1D");
@@ -55,19 +56,16 @@ class ClassificationAssemblerTest {
   @Test
   void resourceToClassification() {
     ClassificationImpl classification =
-        (ClassificationImpl) classificationService.newClassification("12", "DOMAIN_B", "AB");
+        (ClassificationImpl) classificationService.newClassification("KEY_B", "DOMAIN_B", "AB");
 
     // given
     classification.setId("1");
-    classification.setType("AB");
-    classification.setDomain("DOMAIN_B");
     classification.setApplicationEntryPoint("Test");
     classification.setCategory("ABC");
     classification.setCreated(Instant.parse("2010-01-01T12:00:00Z"));
     classification.setModified(Instant.parse("2011-11-11T11:00:00Z"));
-    classification.setCustom1("Custom");
-    classification.setCustom2("Custom2");
     classification.setCustom1("Custom1");
+    classification.setCustom2("Custom2");
     classification.setCustom3("Custom3");
     classification.setCustom4("Custom4");
     classification.setCustom5("Custom5");
@@ -75,6 +73,7 @@ class ClassificationAssemblerTest {
     classification.setCustom7("Custom7");
     classification.setCustom8("Custom8");
     classification.setParentId("2");
+    classification.setParentKey("parentKey");
     classification.setPriority(2);
     classification.setApplicationEntryPoint("12");
     classification.setServiceLevel("P1D");
@@ -117,9 +116,12 @@ class ClassificationAssemblerTest {
     assertThat(classification.getCustom7()).isEqualTo(classificationResource.getCustom7());
     assertThat(classification.getCustom8()).isEqualTo(classificationResource.getCustom8());
     assertThat(classification.getParentId()).isEqualTo(classificationResource.getParentId());
+    assertThat(classification.getParentKey()).isEqualTo(classificationResource.getParentKey());
     assertThat(classification.getType()).isEqualTo(classificationResource.getType());
     assertThat(classification.getPriority()).isEqualTo(classificationResource.getPriority());
     assertThat(classification.getIsValidInDomain())
         .isEqualTo(classificationResource.getIsValidInDomain());
+    assertThat(classification.getCreated()).isEqualTo(classificationResource.getCreated());
+    assertThat(classification.getModified()).isEqualTo(classificationResource.getModified());
   }
 }

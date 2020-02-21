@@ -55,8 +55,8 @@ public class ClassificationResourceAssembler
     ClassificationImpl classification =
         (ClassificationImpl)
             classificationService.newClassification(
-                classificationResource.getDomain(),
                 classificationResource.getKey(),
+                classificationResource.getDomain(),
                 classificationResource.getType());
     BeanUtils.copyProperties(classificationResource, classification);
 
