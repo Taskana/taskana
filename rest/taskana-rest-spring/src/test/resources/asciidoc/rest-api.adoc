@@ -195,6 +195,26 @@ include::{snippets}/ClaimTaskDocTest/http-response.adoc[]
 The response-body is essentially the same as for getting a single task. +
 Therefore for the response fields you can refer to the <<task, single task>>.
 
+=== Cancel Claim a task
+
+A `DELETE` request is used to cancel claim a task
+
+==== Example Request
+
+Note the empty request-body in the example.
+
+include::{snippets}/CancelClaimTaskDocTest/http-request.adoc[]
+
+==== Example Response
+
+include::{snippets}/CancelClaimTaskDocTest/http-response.adoc[]
+
+==== Response Structure
+
+The response-body is essentially the same as for getting a single task. +
+Therefore for the response fields you can refer to the <<task, single task>>.
+
+
 === Complete a task
 
 A `POST` request is used to complete a task

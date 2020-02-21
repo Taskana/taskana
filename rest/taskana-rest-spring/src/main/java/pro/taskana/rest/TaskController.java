@@ -155,6 +155,26 @@ public class TaskController extends AbstractPagingController {
     return result;
   }
 
+  @DeleteMapping(path = Mapping.URL_TASKS_ID_CLAIM)
+  @Transactional(rollbackFor = Exception.class)
+  public ResponseEntity<TaskResource> cancelClaimTask(
+      @PathVariable String taskId)
+      throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
+                 NotAuthorizedException {
+
+    LOGGER.debug("Entry to cancelClaimTask(taskId= {}", taskId);
+
+    taskService.cancelClaim(taskId);
+    Task updatedTask = taskService.getTask(taskId);
+
+    ResponseEntity<TaskResource> result =
+        ResponseEntity.ok(taskResourceAssembler.toResource(updatedTask));
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Exit from cancelClaimTask(), returning {}", result);
+    }
+    return result;
+  }
+
   @PostMapping(path = Mapping.URL_TASKS_ID_COMPLETE)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskResource> completeTask(@PathVariable String taskId)
