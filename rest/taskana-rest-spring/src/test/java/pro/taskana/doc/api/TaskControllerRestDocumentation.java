@@ -614,12 +614,6 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
         .andDo(
             MockMvcRestDocumentation.document(
                 "ClaimTaskDocTest", responseFields(taskFieldDescriptors)));
-
-    this.mockMvc
-        .perform(
-            RestDocumentationRequestBuilders.delete(restHelper.toUrl(Mapping.URL_TASKS_ID, newId))
-                .header("Authorization", "Basic YWRtaW46YWRtaW4=")) // admin
-        .andExpect(MockMvcResultMatchers.status().isNoContent());
   }
 
   @Test
@@ -656,12 +650,6 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
         .andDo(
             MockMvcRestDocumentation.document(
                 "CancelClaimTaskDocTest", responseFields(taskFieldDescriptors)));
-
-    this.mockMvc
-        .perform(
-            RestDocumentationRequestBuilders.delete(restHelper.toUrl(Mapping.URL_TASKS_ID, newId))
-                .header("Authorization", "Basic YWRtaW46YWRtaW4=")) // admin
-        .andExpect(MockMvcResultMatchers.status().isNoContent());
   }
 
   @Test
@@ -697,12 +685,6 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
         .andDo(
             MockMvcRestDocumentation.document(
                 "CompleteTaskDocTest", responseFields(taskFieldDescriptors)));
-
-    this.mockMvc
-        .perform(
-            RestDocumentationRequestBuilders.delete(restHelper.toUrl(Mapping.URL_TASKS_ID, newId))
-                .header("Authorization", "Basic YWRtaW46YWRtaW4=")) // admin
-        .andExpect(MockMvcResultMatchers.status().isNoContent());
   }
 
   @Test
@@ -741,11 +723,5 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
         .andDo(
             MockMvcRestDocumentation.document(
                 "TransferTaskDocTest", responseFields(taskFieldDescriptors)));
-
-    this.mockMvc
-        .perform(
-            RestDocumentationRequestBuilders.delete(restHelper.toUrl(Mapping.URL_TASKS_ID, newId))
-                .header("Authorization", "Basic YWRtaW46YWRtaW4=")) // admin
-        .andExpect(MockMvcResultMatchers.status().isNoContent());
   }
 }
