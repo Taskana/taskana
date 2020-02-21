@@ -619,8 +619,7 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
         .perform(
             RestDocumentationRequestBuilders.delete(restHelper.toUrl(Mapping.URL_TASKS_ID, newId))
                 .header("Authorization", "Basic YWRtaW46YWRtaW4=")) // admin
-        .andExpect(MockMvcResultMatchers.status().isNoContent())
-        .andDo(MockMvcRestDocumentation.document("DeleteTaskDocTest"));
+        .andExpect(MockMvcResultMatchers.status().isNoContent());
   }
 
   @Test
@@ -662,8 +661,7 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
         .perform(
             RestDocumentationRequestBuilders.delete(restHelper.toUrl(Mapping.URL_TASKS_ID, newId))
                 .header("Authorization", "Basic YWRtaW46YWRtaW4=")) // admin
-        .andExpect(MockMvcResultMatchers.status().isNoContent())
-        .andDo(MockMvcRestDocumentation.document("DeleteTaskDocTest"));
+        .andExpect(MockMvcResultMatchers.status().isNoContent());
   }
 
   @Test
@@ -704,8 +702,7 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
         .perform(
             RestDocumentationRequestBuilders.delete(restHelper.toUrl(Mapping.URL_TASKS_ID, newId))
                 .header("Authorization", "Basic YWRtaW46YWRtaW4=")) // admin
-        .andExpect(MockMvcResultMatchers.status().isNoContent())
-        .andDo(MockMvcRestDocumentation.document("DeleteTaskDocTest"));
+        .andExpect(MockMvcResultMatchers.status().isNoContent());
   }
 
   @Test
