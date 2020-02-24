@@ -93,7 +93,7 @@ public class ClassificationController extends AbstractPagingController {
     this.classificationSummaryResourceAssembler = classificationSummaryResourceAssembler;
   }
 
-  //test2
+  //test233
   @GetMapping(path = Mapping.URL_CLASSIFICATIONS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ClassificationSummaryListResource> getClassifications(
