@@ -55,39 +55,17 @@ public interface AttachmentMapper {
   List<AttachmentImpl> findAttachmentsByTaskId(@Param("taskId") String taskId);
 
   @Select(
-      "<script> SELECT ID, TASK_ID, CREATED, MODIFIED, CLASSIFICATION_KEY, CLASSIFICATION_ID, REF_COMPANY, REF_SYSTEM, REF_INSTANCE, REF_TYPE, REF_VALUE, CHANNEL, RECEIVED, CUSTOM_ATTRIBUTES "
-          + "FROM ATTACHMENT "
-          + "WHERE ID = #{attachmentId} "
-          + "<if test=\"_databaseId == 'db2'\">with UR </if> "
-          + "</script>")
-  @Results(
-      value = {
-        @Result(property = "id", column = "ID"),
-        @Result(property = "taskId", column = "TASK_ID"),
-        @Result(property = "created", column = "CREATED"),
-        @Result(property = "modified", column = "MODIFIED"),
-        @Result(property = "classificationSummaryImpl.key", column = "CLASSIFICATION_KEY"),
-        @Result(property = "classificationSummaryImpl.id", column = "CLASSIFICATION_ID"),
-        @Result(property = "objectReference.company", column = "REF_COMPANY"),
-        @Result(property = "objectReference.system", column = "REF_SYSTEM"),
-        @Result(property = "objectReference.systemInstance", column = "REF_INSTANCE"),
-        @Result(property = "objectReference.type", column = "REF_TYPE"),
-        @Result(property = "objectReference.value", column = "REF_VALUE"),
-        @Result(property = "channel", column = "CHANNEL"),
-        @Result(property = "received", column = "RECEIVED"),
-        @Result(
-            property = "customAttributes",
-            column = "CUSTOM_ATTRIBUTES",
-            javaType = Map.class,
-            typeHandler = MapTypeHandler.class)
-      })
-  AttachmentImpl getAttachment(@Param("attachmentId") String attachmentId);
-
-  @Select(
       "<script>SELECT ID, TASK_ID, CREATED, MODIFIED, CLASSIFICATION_KEY, CLASSIFICATION_ID, REF_COMPANY, REF_SYSTEM, REF_INSTANCE, REF_TYPE, REF_VALUE, CHANNEL, RECEIVED "
           + "FROM ATTACHMENT "
           + "<where>"
+          + "<choose>"
+          + "<when  test='taskIds == null'>"
+          + " 1 = 2 "
+          + "</when>"
+          + "<otherwise>"
           + "TASK_ID IN (<foreach collection='taskIds' item='item' separator=',' >#{item}</foreach>) "
+          + "</otherwise>"
+          + "</choose>"
           + "</where>"
           + "<if test=\"_databaseId == 'db2'\">with UR </if> "
           + "</script>")

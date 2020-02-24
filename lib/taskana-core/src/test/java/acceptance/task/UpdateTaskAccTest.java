@@ -112,8 +112,8 @@ class UpdateTaskAccTest extends AbstractAccTest {
   @Test
   void testThrowsExceptionIfTaskHasAlreadyBeenUpdated()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-          TaskNotFoundException, ConcurrencyException, AttachmentPersistenceException,
-          InvalidStateException, InterruptedException {
+                 TaskNotFoundException, ConcurrencyException, AttachmentPersistenceException,
+                 InvalidStateException, InterruptedException {
 
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
