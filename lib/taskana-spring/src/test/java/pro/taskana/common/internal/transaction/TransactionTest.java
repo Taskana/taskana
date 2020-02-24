@@ -1,16 +1,17 @@
 package pro.taskana.common.internal.transaction;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.UUID;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,23 +21,24 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import pro.taskana.task.api.TaskService;
 
 /** TODO. */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ContextConfiguration("classpath:test-applicationContext.xml")
 @EnableAutoConfiguration
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
+@Disabled
 public class TransactionTest {
 
   @Autowired TaskService taskService;
   @LocalServerPort int port;
   @Autowired private TestRestTemplate restTemplate;
 
-  @Before
+  @BeforeEach
   public void init() throws SQLException, ClassNotFoundException {
     Class.forName("org.h2.Driver");
     try (Connection conn = getConnection()) {
@@ -48,7 +50,6 @@ public class TransactionTest {
   }
 
   @Test
-  @Ignore
   public void testCommit() throws SQLException {
     restTemplate.getForEntity("http://127.0.0.1:" + port + "/test", String.class);
 
@@ -63,11 +64,10 @@ public class TransactionTest {
       }
     }
 
-    Assert.assertEquals(1, resultCount);
+    assertThat(resultCount).isOne();
   }
 
   @Test
-  @Ignore
   public void testRollback() throws SQLException {
     restTemplate.postForEntity("http://127.0.0.1:" + port + "/test", null, String.class);
 
@@ -81,7 +81,7 @@ public class TransactionTest {
         }
       }
 
-      Assert.assertEquals(0, resultCount);
+      assertThat(resultCount).isZero();
     }
   }
 
