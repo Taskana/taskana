@@ -143,68 +143,6 @@ public interface TaskMapper {
       @Param("taskIds") List<String> taskIds,
       @Param("modified") Instant modified);
 
-  @Select(
-      "<script>SELECT ID, EXTERNAL_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, CREATOR, DESCRIPTION, PRIORITY, STATE, CLASSIFICATION_CATEGORY, CLASSIFICATION_KEY, CLASSIFICATION_ID, WORKBASKET_ID, WORKBASKET_KEY, DOMAIN, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, POR_SYSTEM, POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CUSTOM_ATTRIBUTES, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, "
-          + "CUSTOM_8, CUSTOM_9, CUSTOM_10, CUSTOM_11, CUSTOM_12, CUSTOM_13, CUSTOM_14, CUSTOM_15, CUSTOM_16 "
-          + "FROM TASK "
-          + "WHERE CLASSIFICATION_ID = #{classificationId} "
-          + "AND STATE IN ( 'READY','CLAIMED') "
-          + "<if test=\"_databaseId == 'db2'\">with UR </if> "
-          + "</script>")
-  @Results(
-      value = {
-        @Result(property = "taskId", column = "ID"),
-        @Result(property = "externalId", column = "EXTERNAL_ID"),
-        @Result(property = "created", column = "CREATED"),
-        @Result(property = "claimed", column = "CLAIMED"),
-        @Result(property = "completed", column = "COMPLETED"),
-        @Result(property = "modified", column = "MODIFIED"),
-        @Result(property = "planned", column = "PLANNED"),
-        @Result(property = "due", column = "DUE"),
-        @Result(property = "name", column = "NAME"),
-        @Result(property = "creator", column = "CREATOR"),
-        @Result(property = "note", column = "NOTE"),
-        @Result(property = "priority", column = "PRIORITY"),
-        @Result(property = "state", column = "STATE"),
-        @Result(
-            property = "classificationSummaryImpl.category",
-            column = "CLASSIFICATION_CATEGORY"),
-        @Result(property = "classificationSummaryImpl.key", column = "CLASSIFICATION_KEY"),
-        @Result(property = "classificationSummaryImpl.id", column = "CLASSIFICATION_ID"),
-        @Result(property = "workbasketSummaryImpl.id", column = "WORKBASKET_ID"),
-        @Result(property = "workbasketSummaryImpl.key", column = "WORKBASKET_KEY"),
-        @Result(property = "workbasketSummaryImpl.domain", column = "DOMAIN"),
-        @Result(property = "domain", column = "DOMAIN"),
-        @Result(property = "businessProcessId", column = "BUSINESS_PROCESS_ID"),
-        @Result(property = "parentBusinessProcessId", column = "PARENT_BUSINESS_PROCESS_ID"),
-        @Result(property = "owner", column = "OWNER"),
-        @Result(property = "primaryObjRef.company", column = "POR_COMPANY"),
-        @Result(property = "primaryObjRef.system", column = "POR_SYSTEM"),
-        @Result(property = "primaryObjRef.systemInstance", column = "POR_INSTANCE"),
-        @Result(property = "primaryObjRef.type", column = "POR_TYPE"),
-        @Result(property = "primaryObjRef.value", column = "POR_VALUE"),
-        @Result(property = "isRead", column = "IS_READ"),
-        @Result(property = "isTransferred", column = "IS_TRANSFERRED"),
-        @Result(property = "custom1", column = "CUSTOM_1"),
-        @Result(property = "custom2", column = "CUSTOM_2"),
-        @Result(property = "custom3", column = "CUSTOM_3"),
-        @Result(property = "custom4", column = "CUSTOM_4"),
-        @Result(property = "custom5", column = "CUSTOM_5"),
-        @Result(property = "custom6", column = "CUSTOM_6"),
-        @Result(property = "custom7", column = "CUSTOM_7"),
-        @Result(property = "custom8", column = "CUSTOM_8"),
-        @Result(property = "custom9", column = "CUSTOM_9"),
-        @Result(property = "custom10", column = "CUSTOM_10"),
-        @Result(property = "custom11", column = "CUSTOM_11"),
-        @Result(property = "custom12", column = "CUSTOM_12"),
-        @Result(property = "custom13", column = "CUSTOM_13"),
-        @Result(property = "custom14", column = "CUSTOM_14"),
-        @Result(property = "custom15", column = "CUSTOM_15"),
-        @Result(property = "custom16", column = "CUSTOM_16")
-      })
-  List<TaskSummaryImpl> findTasksAffectedByClassificationChange(
-      @Param("classificationId") String classificationId);
-
   @Update(
       "<script>"
           + " UPDATE TASK SET MODIFIED = #{referencetask.modified}, STATE = #{referencetask.state}, WORKBASKET_KEY = #{referencetask.workbasketSummary.key}, WORKBASKET_ID= #{referencetask.workbasketSummary.id}, "
@@ -225,7 +163,8 @@ public interface TaskMapper {
       @Param("referencetask") TaskSummaryImpl referencetask);
 
   @Select(
-      "<script>SELECT ID, EXTERNAL_ID, STATE, WORKBASKET_ID, OWNER, CALLBACK_STATE FROM TASK "
+      "<script>SELECT ID, EXTERNAL_ID, STATE, WORKBASKET_ID, OWNER, MODIFIED, CLASSIFICATION_ID, "
+          + "PLANNED, DUE, CALLBACK_STATE FROM TASK "
           + "<where> "
           + "<if test='taskIds != null'>ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>)</if> "
           + "<if test='externalIds != null'>EXTERNAL_ID IN(<foreach item='item' collection='externalIds' separator=',' >#{item}</foreach>)</if> "
@@ -237,8 +176,12 @@ public interface TaskMapper {
         @Result(property = "taskId", column = "ID"),
         @Result(property = "externalId", column = "EXTERNAL_ID"),
         @Result(property = "workbasketId", column = "WORKBASKET_ID"),
+        @Result(property = "classificationId", column = "CLASSIFICATION_ID"),
         @Result(property = "owner", column = "OWNER"),
         @Result(property = "taskState", column = "STATE"),
+        @Result(property = "modified", column = "MODIFIED"),
+        @Result(property = "due", column = "DUE"),
+        @Result(property = "planned", column = "PLANNED"),
         @Result(property = "callbackState", column = "CALLBACK_STATE")
       })
   List<MinimalTaskSummary> findExistingTasks(
@@ -278,6 +221,17 @@ public interface TaskMapper {
       @Param("task") TaskImpl task,
       @Param("fields") CustomPropertySelector fields);
 
+  @Update(
+      "<script>"
+          + "<if test='taskIds != null'> "
+          + "UPDATE TASK SET  MODIFIED = #{referenceTask.modified}, "
+          + "PLANNED = #{referenceTask.planned}, DUE = #{referenceTask.due} "
+          + "WHERE ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>) "
+          + "</if> "
+          + "</script>")
+  long updateTaskDueDates(
+      @Param("taskIds") List<String> taskIds, @Param("referenceTask") TaskImpl referenceTask);
+
   @Select(
       "<script>SELECT ID, STATE FROM TASK "
           + "WHERE ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>) "
@@ -289,8 +243,12 @@ public interface TaskMapper {
 
   @Select(
       "<script> "
+          + "<choose>"
+          + "<when  test='accessIds == null'>"
+          + "SELECT t.ID FROM TASK t WHERE 1 = 2 "
+          + "</when>"
+          + "<otherwise>"
           + "SELECT t.ID FROM TASK t WHERE t.ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>)"
-          + "<if test='accessIds != null'> "
           + "AND NOT (t.WORKBASKET_ID IN ( "
           + "<choose>"
           + "<when test=\"_databaseId == 'db2'\">"
@@ -302,7 +260,8 @@ public interface TaskMapper {
           + "</choose>"
           + "ACCESS_ID IN (<foreach item='item' collection='accessIds' separator=',' >#{item}</foreach>) "
           + "group by WORKBASKET_ID ) AS f where max_read = 1 ))"
-          + "</if> "
+          + "</otherwise>"
+          + "</choose>"
           + "</script>")
   @Results(value = {@Result(property = "id", column = "ID")})
   List<String> filterTaskIdsNotAuthorizedFor(
