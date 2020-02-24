@@ -1,5 +1,6 @@
 package pro.taskana.task.api;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
@@ -381,8 +382,20 @@ public interface TaskService {
    *
    * @param owner the new owner of the tasks
    * @param taskIds the IDs of the tasks on which the owner is to be set.
-   * @return the result of the operations with Id and Exception for each failed task deletion.
+   * @return the result of the operations with Id and Exception for each failed task update.
    */
   BulkOperationResults<String, TaskanaException> setOwnerOfTasks(
       String owner, List<String> taskIds);
+
+  /**
+   * Sets the planned property on a list of tasks. Only tasks in state READY and CLAIMED will be
+   * affected by this method. On each task, the corresponding due date is set according to the due
+   * dates in the classification() of the task and the task's attachments.
+   *
+   * @param planned   the new 'PLANNED" property of the tasks
+   * @param taskIds the IDs of the tasks on which the new planned property is to be set.
+   * @return the result of the operations with Id and Exception for each failed task update.
+   */
+  BulkOperationResults<String, TaskanaException> setPlannedPropertyOfTasks(
+      Instant planned, List<String> taskIds);
 }

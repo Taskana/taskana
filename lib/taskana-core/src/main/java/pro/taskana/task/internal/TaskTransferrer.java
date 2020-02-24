@@ -376,10 +376,11 @@ public class TaskTransferrer {
       Workbasket destinationWorkbasket) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
-          "entry to updateTasksToBeTransferred(taskIds = {}, taskSummaries = {})",
+          "entry to updateTasksToBeTransferred(taskIds = {}, taskSummaries = {}, "
+              + "destinationWorkbasket = {})",
           LoggerUtils.listToString(taskIds),
           LoggerUtils.listToString(taskSummaries),
-          destinationWorkbasket);
+          destinationWorkbasket.getId());
     }
 
     taskSummaries =

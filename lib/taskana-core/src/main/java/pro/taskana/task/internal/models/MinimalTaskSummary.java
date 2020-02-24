@@ -1,5 +1,7 @@
 package pro.taskana.task.internal.models;
 
+import java.time.Instant;
+
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.TaskState;
 
@@ -9,8 +11,37 @@ public class MinimalTaskSummary {
   private String taskId;
   private String externalId;
   private String workbasketId;
+  private String classificationId;
   private String owner;
   private TaskState taskState;
+  private Instant planned;
+  private Instant due;
+  private Instant modified;
+
+  public Instant getPlanned() {
+    return planned;
+  }
+
+  public void setPlanned(Instant planned) {
+    this.planned = planned;
+  }
+
+  public Instant getDue() {
+    return due;
+  }
+
+  public void setDue(Instant due) {
+    this.due = due;
+  }
+
+  public Instant getModified() {
+    return modified;
+  }
+
+  public void setModified(Instant modified) {
+    this.modified = modified;
+  }
+
   private CallbackState callbackState;
 
   MinimalTaskSummary() {}
@@ -37,6 +68,14 @@ public class MinimalTaskSummary {
 
   public void setWorkbasketId(String workbasketKey) {
     this.workbasketId = workbasketKey;
+  }
+
+  public String getClassificationId() {
+    return classificationId;
+  }
+
+  public void setClassificationId(String classificationId) {
+    this.classificationId = classificationId;
   }
 
   public String getOwner() {
@@ -66,17 +105,25 @@ public class MinimalTaskSummary {
   @Override
   public String toString() {
     return "MinimalTaskSummary [taskId="
-        + taskId
-        + ", externalId="
-        + externalId
-        + ", workbasketId="
-        + workbasketId
-        + ", owner="
-        + owner
-        + ", taskState="
-        + taskState
-        + ", callbackState="
-        + callbackState
-        + "]";
+               + taskId
+               + ", externalId="
+               + externalId
+               + ", workbasketId="
+               + workbasketId
+               + ", classificationId="
+               + classificationId
+               + ", owner="
+               + owner
+               + ", taskState="
+               + taskState
+               + ", planned="
+               + planned
+               + ", due="
+               + due
+               + ", modified="
+               + modified
+               + ", callbackState="
+               + callbackState
+               + "]";
   }
 }
