@@ -19,6 +19,7 @@ import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
+import pro.taskana.common.internal.util.LogSanitizer;
 import pro.taskana.task.api.models.TaskSummary;
 
 /** Job to cleanup completed tasks after a period of time. */
@@ -178,15 +179,15 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
     }
 
     List<String> tasksIdsToBeDeleted =
-        tasksToBeDeleted.stream().map(task -> task.getId()).collect(Collectors.toList());
+        tasksToBeDeleted.stream().map(TaskSummary::getId).collect(Collectors.toList());
     BulkOperationResults<String, TaskanaException> results =
         taskanaEngineImpl.getTaskService().deleteTasks(tasksIdsToBeDeleted);
     LOGGER.debug("{} tasks deleted.", tasksIdsToBeDeleted.size() - results.getFailedIds().size());
     for (String failedId : results.getFailedIds()) {
       LOGGER.warn(
           "Task with id {} could not be deleted. Reason: {}",
-          failedId,
-          results.getErrorForId(failedId));
+          LogSanitizer.stripLineBreakingChars(failedId),
+          LogSanitizer.stripLineBreakingChars(results.getErrorForId(failedId)));
     }
     LOGGER.debug(
         "exit from deleteTasks(), returning {}",
