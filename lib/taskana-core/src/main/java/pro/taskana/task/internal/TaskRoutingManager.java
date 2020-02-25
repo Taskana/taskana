@@ -76,13 +76,17 @@ public final class TaskRoutingManager {
               .filter(Objects::nonNull)
               .collect(Collectors.toSet());
       if (workbasketIds.isEmpty()) {
-        LOGGER.error(
-            "No TaskRouter determined a workbasket for task {}.",
-            LogSanitizer.stripLineBreakingChars(task));
+        if (LOGGER.isErrorEnabled()) {
+          LOGGER.error(
+              "No TaskRouter determined a workbasket for task {}.",
+              LogSanitizer.stripLineBreakingChars(task));
+        }
       } else if (workbasketIds.size() > 1) {
-        LOGGER.error(
-            "The TaskRouters determined more than one workbasket for task {}",
-            LogSanitizer.stripLineBreakingChars(task));
+        if (LOGGER.isErrorEnabled()) {
+          LOGGER.error(
+              "The TaskRouters determined more than one workbasket for task {}",
+              LogSanitizer.stripLineBreakingChars(task));
+        }
       } else {
         workbasketId = workbasketIds.stream().findFirst().orElse(null);
       }

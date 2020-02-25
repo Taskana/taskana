@@ -184,10 +184,12 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
         taskanaEngineImpl.getTaskService().deleteTasks(tasksIdsToBeDeleted);
     LOGGER.debug("{} tasks deleted.", tasksIdsToBeDeleted.size() - results.getFailedIds().size());
     for (String failedId : results.getFailedIds()) {
-      LOGGER.warn(
-          "Task with id {} could not be deleted. Reason: {}",
-          LogSanitizer.stripLineBreakingChars(failedId),
-          LogSanitizer.stripLineBreakingChars(results.getErrorForId(failedId)));
+      if (LOGGER.isWarnEnabled()) {
+        LOGGER.warn(
+            "Task with id {} could not be deleted. Reason: {}",
+            LogSanitizer.stripLineBreakingChars(failedId),
+            LogSanitizer.stripLineBreakingChars(results.getErrorForId(failedId)));
+      }
     }
     LOGGER.debug(
         "exit from deleteTasks(), returning {}",
