@@ -113,15 +113,15 @@ class UpdateTaskAccTest extends AbstractAccTest {
   void testThrowsExceptionIfTaskHasAlreadyBeenUpdated()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
           TaskNotFoundException, ConcurrencyException, AttachmentPersistenceException,
-          InvalidStateException {
+          InvalidStateException, InterruptedException {
 
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
-    Task task2 = taskService.getTask("TKI:000000000000000000000000000000000000");
+    final Task task2 = taskService.getTask("TKI:000000000000000000000000000000000000");
 
     task.setCustomAttribute("1", "willi");
+    Thread.sleep(10);
     taskService.updateTask(task);
-
     task2.setCustomAttribute("2", "Walter");
     // TODO flaky test ... if speed is too high,
     assertThatThrownBy(() -> taskService.updateTask(task2))

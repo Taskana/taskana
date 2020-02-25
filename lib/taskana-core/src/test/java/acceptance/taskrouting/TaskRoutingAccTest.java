@@ -1,9 +1,9 @@
 package acceptance.taskrouting;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -37,15 +37,15 @@ class TaskRoutingAccTest extends AbstractAccTest {
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
     final Task taskToCreate = newTask;
-    Assertions.assertThrows(
-        InvalidArgumentException.class, () -> taskService.createTask(taskToCreate));
+    assertThatThrownBy(() -> taskService.createTask(taskToCreate))
+        .isInstanceOf(InvalidArgumentException.class);
     ((TaskImpl) taskToCreate).setDomain("DOMAIN_C");
-    Assertions.assertThrows(
-        InvalidArgumentException.class, () -> taskService.createTask(taskToCreate));
+    assertThatThrownBy(() -> taskService.createTask(taskToCreate))
+        .isInstanceOf(InvalidArgumentException.class);
     ((TaskImpl) taskToCreate).setDomain("DOMAIN_B");
     Task createdTask = taskService.createTask(taskToCreate);
-    assertEquals(
-        "WBI:100000000000000000000000000000000011", createdTask.getWorkbasketSummary().getId());
+    assertThat("WBI:100000000000000000000000000000000011")
+        .isEqualTo(createdTask.getWorkbasketSummary().getId());
   }
 
   @WithAccessId(
@@ -56,12 +56,49 @@ class TaskRoutingAccTest extends AbstractAccTest {
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
           TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException {
     TaskImpl createdTaskA = createTask("DOMAIN_A", "L12010");
-    assertEquals(
-        "WBI:100000000000000000000000000000000001", createdTaskA.getWorkbasketSummary().getId());
+    assertThat("WBI:100000000000000000000000000000000001")
+        .isEqualTo(createdTaskA.getWorkbasketSummary().getId());
     TaskImpl createdTaskB = createTask("DOMAIN_B", "T21001");
-    assertEquals(
-        "WBI:100000000000000000000000000000000011", createdTaskB.getWorkbasketSummary().getId());
-    Assertions.assertThrows(InvalidArgumentException.class, () -> createTask(null, "L12010"));
+    assertThat("WBI:100000000000000000000000000000000011")
+        .isEqualTo(createdTaskB.getWorkbasketSummary().getId());
+    assertThatThrownBy(() -> createTask(null, "L12010"))
+        .isInstanceOf(InvalidArgumentException.class);
+  }
+
+  @WithAccessId(
+      userName = "admin",
+      groupNames = {"group_1"})
+  @Test
+  void testCreateTaskWithNullRouting()
+      throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
+          TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException {
+
+    TaskService taskService = taskanaEngine.getTaskService();
+    Task newTask = taskService.newTask(null, "DOMAIN_A");
+    newTask.setClassificationKey("L12010");
+    newTask.setPrimaryObjRef(
+        createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+    newTask.setCustomAttribute("7", "noRouting");
+    assertThatThrownBy(() -> taskService.createTask(newTask))
+        .isInstanceOf(InvalidArgumentException.class);
+  }
+
+  @WithAccessId(
+      userName = "admin",
+      groupNames = {"group_1"})
+  @Test
+  void testCreateTaskWithRoutingToMultipleWorkbaskets()
+      throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
+          TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException {
+
+    TaskService taskService = taskanaEngine.getTaskService();
+    Task newTask = taskService.newTask(null, "DOMAIN_B");
+    newTask.setClassificationKey("L12010");
+    newTask.setPrimaryObjRef(
+        createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+    newTask.setCustomAttribute("7", "multipleWorkbaskets");
+    assertThatThrownBy(() -> taskService.createTask(newTask))
+        .isInstanceOf(InvalidArgumentException.class);
   }
 
   private TaskImpl createTask(String domain, String classificationKey)
