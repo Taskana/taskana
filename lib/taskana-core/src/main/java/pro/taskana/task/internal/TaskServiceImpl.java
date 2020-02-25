@@ -16,7 +16,6 @@ import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.api.models.Classification;
@@ -73,12 +72,17 @@ public class TaskServiceImpl implements TaskService {
 
   private static final String IS_ALREADY_CLAIMED_BY = " is already claimed by ";
   private static final String IS_ALREADY_COMPLETED = " is already completed.";
-  private static final String TASK_WITH_ID_IS_NOT_READY = "Task with id %s is not in state ready.";
+  private static final String TASK_WITH_ID_IS_NOT_READY =
+      "Task with id %s is in state %s and not in state ready.";
+  private static final String TASK_WITH_ID_WAS_NOT_FOUND = "Task with id %s was not found.";
+  private static final String TASK_WITH_ID_CALLBACK_NOT_PROCESSED =
+      "Task wit Id %s cannot be deleted because its callback is not yet processed";
   private static final String WAS_NOT_FOUND2 = " was not found.";
   private static final String WAS_NOT_FOUND = " was not found";
   private static final String TASK_WITH_ID = "Task with id ";
   private static final String WAS_MARKED_FOR_DELETION = " was marked for deletion";
   private static final String THE_WORKBASKET = "The workbasket ";
+  private static final String TASK = "Task";
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskServiceImpl.class);
   private static final String ID_PREFIX_ATTACHMENT = "TAI";
   private static final String ID_PREFIX_TASK = "TKI";
@@ -211,7 +215,7 @@ public class TaskServiceImpl implements TaskService {
       Classification classification =
           this.classificationService.getClassification(classificationKey, workbasket.getDomain());
       task.setClassificationSummary(classification.asSummary());
-      validateObjectReference(task.getPrimaryObjRef(), "primary ObjectReference", "Task");
+      validateObjectReference(task.getPrimaryObjRef(), "primary ObjectReference", TASK);
       PrioDurationHolder prioDurationFromAttachments = handleAttachments(task);
       standardSettings(task, classification, prioDurationFromAttachments);
       setCallbackStateOnTaskCreation(task);
@@ -628,39 +632,47 @@ public class TaskServiceImpl implements TaskService {
           owner,
           LoggerUtils.listToString(argTaskIds));
     }
+    BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
+    if (argTaskIds == null || argTaskIds.isEmpty()) {
+      return bulkLog;
+    }
+    // remove duplicates
+    List<String> taskIds = argTaskIds.stream().distinct().collect(Collectors.toList());
+    final int requestSize = taskIds.size();
     try {
       taskanaEngine.openConnection();
-      BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
-      if (argTaskIds == null || argTaskIds.isEmpty()) {
-        return bulkLog;
-      }
-      // remove duplicates
-      List<String> taskIds = argTaskIds.stream().sorted().distinct().collect(Collectors.toList());
-      final int requestSize = taskIds.size();
       // use only elements we are authorized for
-      taskIds = filterForAuthorized(taskIds, bulkLog);
+      Pair<List<String>, BulkOperationResults<String, TaskanaException>> resultsPair =
+          filterForAuthorizedTasks(taskIds);
       // set the Owner of these tasks we are authorized for
+      taskIds = resultsPair.getLeft();
+      bulkLog.addAllErrors(resultsPair.getRight());
       if (taskIds.isEmpty()) {
         return bulkLog;
       } else {
         final int numberOfAffectedTasks = taskMapper.setOwnerOfTasks(owner, taskIds, Instant.now());
-        // check the outcome
-        List<MinimalTaskSummary> existingMinimalTaskSummaries =
-            taskMapper.findExistingTasks(taskIds, null);
-        // check for tasks that don't exist
-        handleNonExistingTasks(taskIds, existingMinimalTaskSummaries, bulkLog);
-        // add all errors that occured to bulkLog
-        addErrorsToResultObject(owner, bulkLog, existingMinimalTaskSummaries);
-        LOGGER.debug(
-            "Received the Request to set owner on "
-                + requestSize
-                + " tasks, "
-                + "actually modified tasks = "
-                + numberOfAffectedTasks
-                + ", could not set owner on "
-                + bulkLog.getFailedIds().size()
-                + " tasks.");
-        return bulkLog;
+        if (numberOfAffectedTasks == taskIds.size()) { // all tasks were updated
+          return bulkLog;
+        } else {
+          // check the outcome
+          List<MinimalTaskSummary> existingMinimalTaskSummaries =
+              taskMapper.findExistingTasks(taskIds, null);
+          // add exceptions for non existing tasks
+          bulkLog.addAllErrors(
+              addExceptionsForNonExistingTasks(taskIds, existingMinimalTaskSummaries));
+          // add exceptions of all remaining tasks whose owners were not set
+          bulkLog.addAllErrors(
+              addExceptionsForTasksWhoseOwnerWasNotSet(owner, existingMinimalTaskSummaries));
+          if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(
+                "Received the Request to set owner on {} tasks, actually modified tasks = {}, "
+                    + "could not set owner on {} tasks",
+                requestSize,
+                numberOfAffectedTasks,
+                bulkLog.getFailedIds().size());
+          }
+          return bulkLog;
+        }
       }
     } finally {
       LOGGER.debug("exit from setOwnerOfTasks()");
@@ -808,20 +820,20 @@ public class TaskServiceImpl implements TaskService {
     return result;
   }
 
-  private void addErrorsToResultObject(
-      String owner,
-      BulkOperationResults<String, TaskanaException> bulkLog,
-      List<MinimalTaskSummary> existingMinimalTaskSummaries) {
+  private BulkOperationResults<String, TaskanaException> addExceptionsForTasksWhoseOwnerWasNotSet(
+      String owner, List<MinimalTaskSummary> existingMinimalTaskSummaries) {
+    BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
+
     for (MinimalTaskSummary taskSummary : existingMinimalTaskSummaries) {
       if (!owner.equals(taskSummary.getOwner())) { // owner was not set
         if (!taskSummary.getTaskState().equals(TaskState.READY)) { // due to invalid state
           bulkLog.addError(
               taskSummary.getTaskId(),
               new InvalidStateException(
-                  "Task "
-                      + taskSummary.getTaskId()
-                      + " is in state "
-                      + taskSummary.getTaskState()));
+                  String.format(
+                      TASK_WITH_ID_IS_NOT_READY,
+                      taskSummary.getTaskId(),
+                      taskSummary.getTaskState())));
         } else { // due to unknown reason
           bulkLog.addError(
               taskSummary.getTaskId(),
@@ -830,12 +842,12 @@ public class TaskServiceImpl implements TaskService {
         }
       }
     }
+    return bulkLog;
   }
 
-  private void handleNonExistingTasks(
-      List<String> taskIds,
-      List<MinimalTaskSummary> existingMinimalTaskSummaries,
-      BulkOperationResults<String, TaskanaException> bulkLog) {
+  private BulkOperationResults<String, TaskanaException> addExceptionsForNonExistingTasks(
+      List<String> taskIds, List<MinimalTaskSummary> existingMinimalTaskSummaries) {
+    BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
     List<String> nonExistingTaskIds = new ArrayList<>(taskIds);
     List<String> existingTaskIds =
         existingMinimalTaskSummaries.stream()
@@ -843,15 +855,20 @@ public class TaskServiceImpl implements TaskService {
             .collect(Collectors.toList());
     nonExistingTaskIds.removeAll(existingTaskIds);
     for (String taskId : nonExistingTaskIds) {
-      bulkLog.addError(taskId, new TaskNotFoundException(taskId, "Task was not found"));
+      bulkLog.addError(
+          taskId,
+          new TaskNotFoundException(taskId, String.format(TASK_WITH_ID_WAS_NOT_FOUND, taskId)));
     }
+    return bulkLog;
   }
 
-  private List<String> filterForAuthorized(
-      List<String> taskIds, BulkOperationResults<String, TaskanaException> bulkLog) {
-    List<String> accessIds = getAccessIds();
+  private Pair<List<String>, BulkOperationResults<String, TaskanaException>>
+      filterForAuthorizedTasks(List<String> taskIds) {
+    BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
+    List<String> accessIds = CurrentUserContext.getAccessIds();
     List<String> tasksAuthorizedFor = new ArrayList<>(taskIds);
-    if (accessIds != null) {
+    // check authorization only for non-admin users
+    if (!taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN)) {
       List<String> tasksNotAuthorizedFor =
           taskMapper.filterTaskIdsNotAuthorizedFor(taskIds, accessIds);
       tasksAuthorizedFor.removeAll(tasksNotAuthorizedFor);
@@ -863,20 +880,7 @@ public class TaskServiceImpl implements TaskService {
                 "Current user not authorized for task " + taskId, currentUserId));
       }
     }
-    return tasksAuthorizedFor;
-  }
-
-  private List<String> getAccessIds() {
-    List<String> accessIds;
-    if (taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN)) {
-      accessIds = null;
-    } else {
-      accessIds = CurrentUserContext.getAccessIds();
-      if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
-        accessIds = accessIds.stream().map(String::toLowerCase).collect(Collectors.toList());
-      }
-    }
-    return accessIds;
+    return new Pair<>(tasksAuthorizedFor, bulkLog);
   }
 
   private Task claim(String taskId, boolean forceClaim)
@@ -1020,8 +1024,7 @@ public class TaskServiceImpl implements TaskService {
             "Cannot delete Task " + taskId + " because it is not completed.");
       }
       if (CallbackState.CALLBACK_PROCESSING_REQUIRED.equals(task.getCallbackState())) {
-        throw new InvalidStateException(
-            "Task " + taskId + " cannot be deleted because its callback is not yet processed");
+        throw new InvalidStateException(String.format(TASK_WITH_ID_CALLBACK_NOT_PROCESSED, taskId));
       }
 
       taskMapper.delete(taskId);
@@ -1062,7 +1065,7 @@ public class TaskServiceImpl implements TaskService {
           bulkLog.addError(
               currentTaskId,
               new InvalidStateException(
-                  "Task " + currentTaskId + " cannot be deleted before callback is processed"));
+                  String.format(TASK_WITH_ID_CALLBACK_NOT_PROCESSED, currentTaskId)));
           taskIdIterator.remove();
         }
       }
@@ -1257,7 +1260,7 @@ public class TaskServiceImpl implements TaskService {
         bulkLog.addError(
             currentTaskId,
             new TaskNotFoundException(
-                currentTaskId, "task with id " + currentTaskId + WAS_NOT_FOUND2));
+                currentTaskId, String.format(TASK_WITH_ID_WAS_NOT_FOUND, currentTaskId)));
         taskIdIterator.remove();
       } else if (taskSummary.getClaimed() == null || taskSummary.getState() != TaskState.CLAIMED) {
         bulkLog.addError(currentTaskId, new InvalidStateException(currentTaskId));
@@ -1266,10 +1269,9 @@ public class TaskServiceImpl implements TaskService {
         bulkLog.addError(
             currentTaskId,
             new InvalidOwnerException(
-                "TaskOwner is"
-                    + taskSummary.getOwner()
-                    + ", but current User is "
-                    + CurrentUserContext.getUserid()));
+                String.format(
+                    "TaskOwner is %s, but currentUser is %s.",
+                    taskSummary.getOwner(), CurrentUserContext.getUserid())));
         taskIdIterator.remove();
       } else {
         taskSummary.setCompleted(now);
@@ -1659,7 +1661,7 @@ public class TaskServiceImpl implements TaskService {
       TaskImpl oldTaskImpl, TaskImpl newTaskImpl, PrioDurationHolder prioDurationFromAttachments)
       throws InvalidArgumentException, ConcurrencyException, ClassificationNotFoundException,
           InvalidStateException {
-    validateObjectReference(newTaskImpl.getPrimaryObjRef(), "primary ObjectReference", "Task");
+    validateObjectReference(newTaskImpl.getPrimaryObjRef(), "primary ObjectReference", TASK);
     // TODO: not safe to rely only on different timestamps.
     // With fast execution below 1ms there will be no concurrencyException
     if (oldTaskImpl.getModified() != null
@@ -1696,7 +1698,7 @@ public class TaskServiceImpl implements TaskService {
     boolean isOwnerChanged = !Objects.equals(newTaskImpl.getOwner(), oldTaskImpl.getOwner());
     if (isOwnerChanged && oldTaskImpl.getState() != TaskState.READY) {
       throw new InvalidStateException(
-          String.format(TASK_WITH_ID_IS_NOT_READY, oldTaskImpl.getId()));
+          String.format(TASK_WITH_ID_IS_NOT_READY, oldTaskImpl.getId(), oldTaskImpl.getState()));
     }
 
     updateClassificationRelatedProperties(oldTaskImpl, newTaskImpl, prioDurationFromAttachments);
@@ -2076,8 +2078,8 @@ public class TaskServiceImpl implements TaskService {
                 id,
                 String.format(
                     "When processing task updates due to change "
-                        + "of classification, the classification with id %s%s",
-                    id, WAS_NOT_FOUND2)));
+                        + "of classification, the classification with id %s was not found",
+                    id)));
       } else {
         att.setClassificationSummary(classificationSummary);
         result.add(att);
