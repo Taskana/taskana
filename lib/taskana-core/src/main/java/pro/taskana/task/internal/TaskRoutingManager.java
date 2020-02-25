@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.internal.util.LogSanitizer;
 import pro.taskana.spi.routing.api.TaskRoutingProvider;
 import pro.taskana.task.api.models.Task;
 
@@ -75,9 +76,13 @@ public final class TaskRoutingManager {
               .filter(Objects::nonNull)
               .collect(Collectors.toSet());
       if (workbasketIds.isEmpty()) {
-        LOGGER.error("No TaskRouter determined a workbasket for task {}.", task);
+        LOGGER.error(
+            "No TaskRouter determined a workbasket for task {}.",
+            LogSanitizer.stripLineBreakingChars(task));
       } else if (workbasketIds.size() > 1) {
-        LOGGER.error("The TaskRouters determined more than one workbasket for task {}", task);
+        LOGGER.error(
+            "The TaskRouters determined more than one workbasket for task {}",
+            LogSanitizer.stripLineBreakingChars(task));
       } else {
         workbasketId = workbasketIds.stream().findFirst().orElse(null);
       }
