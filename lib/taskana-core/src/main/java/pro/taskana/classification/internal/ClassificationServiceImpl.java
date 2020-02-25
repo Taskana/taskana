@@ -30,6 +30,7 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.jobs.ClassificationChangedJob;
 import pro.taskana.common.internal.util.IdGenerator;
+import pro.taskana.common.internal.util.LogSanitizer;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.TaskMapper;
 
@@ -221,7 +222,7 @@ public class ClassificationServiceImpl implements ClassificationService {
           InvalidArgumentException {
     LOGGER.debug("entry to updateClassification(Classification = {})", classification);
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
-    ClassificationImpl classificationImpl = null;
+    ClassificationImpl classificationImpl;
     try {
       taskanaEngine.openConnection();
       if (classification.getKey().equals(classification.getParentKey())) {
@@ -357,7 +358,7 @@ public class ClassificationServiceImpl implements ClassificationService {
         LOGGER.warn(
             "Method createClassification: Classification does already exist "
                 + "in master domain. Classification {}.",
-            masterClassification);
+            LogSanitizer.stripLineBreakingChars(masterClassification));
       } finally {
         if (!doesExist) {
           classificationMapper.insert(masterClassification);
