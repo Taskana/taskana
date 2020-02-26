@@ -18,7 +18,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Component
 public class RestHelper {
 
-  public static final RestTemplate template = getRestTemplate();
+  public static final RestTemplate TEMPLATE = getRestTemplate();
   @Autowired Environment environment;
 
   public String toUrl(String relativeUrl, Object... uriVariables) {
