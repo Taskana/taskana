@@ -25,6 +25,7 @@ import { NgForm } from '@angular/forms';
 import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
 import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
 import { CustomFieldsService } from '../../../services/custom-fields/custom-fields.service';
+import { ERROR_TYPES } from '../../../services/general-modal/errors';
 
 @Component({
   selector: 'taskana-classification-details',
@@ -175,9 +176,11 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         .subscribe((classification: ClassificationDefinition) => {
           this.classification = classification;
           this.classificationsService.selectClassification(classification);
+          // new Key ALERT_TYPES.SUCCESS_ALERT_2
           this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Classification ${classification.key} was saved successfully`));
           this.afterRequest();
         },
+        // new Key: ERROR_TYPES.CREATE_ERR
         error => {
           this.generalModalService.triggerMessage(new MessageModal('There was an error creating a classification', error));
           this.afterRequest();
@@ -188,11 +191,13 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
           this.classification._links.self.href, this.classification
         ));
         this.afterRequest();
+        // new Key: ALERT_TYPES.SUCCESS_ALERT_3
         this.alertService.triggerAlert(
           new AlertModel(AlertType.SUCCESS, `Classification ${this.classification.key} was saved successfully`)
         );
         this.cloneClassification(this.classification);
       } catch (error) {
+        // new Key: ERROR_TYPES.SAVE_ERR
         this.generalModalService.triggerMessage(new MessageModal('There was error while saving your classification', error));
         this.afterRequest();
       }
@@ -201,6 +206,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
 
   onClear() {
     this.formsValidatorService.formSubmitAttempt = false;
+    // new Key: ALERT_TYPES.INFO_ALERT
     this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'Reset edited fields'));
     this.classification = { ...this.classificationClone };
   }
@@ -275,6 +281,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   private removeClassificationConfirmation() {
     if (!this.classification || !this.classification.classificationId) {
       this.generalModalService.triggerMessage(
+          // new Key ERROR_TYPES.SELECT_ERR
         new MessageModal('There is no classification selected', 'Please check if you are creating a classification')
       );
       return;
@@ -290,8 +297,10 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         this.afterRequest();
         this.classificationsService.selectClassification();
         this.router.navigate(['taskana/administration/classifications']);
+          // new Key: ALERT_TYPES.SUCCESS_ALERT_4
         this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Classification ${key} was removed successfully`));
       }, error => {
+        // new Key: ERROR_TYPES.REMOVE_ERR
         this.generalModalService.triggerMessage(new MessageModal('There was error while removing your classification', error));
         this.afterRequest();
       });

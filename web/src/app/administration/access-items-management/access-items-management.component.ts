@@ -16,6 +16,7 @@ import { AlertService } from 'app/services/alert/alert.service';
 import { RequestInProgressService } from '../../services/requestInProgress/request-in-progress.service';
 import { AccessIdsService } from '../../shared/services/access-ids/access-ids.service';
 import { AccessIdDefinition } from '../../models/access-id';
+import { ERROR_TYPES } from '../../services/general-modal/errors';
 
 @Component({
   selector: 'taskana-access-items-management',
@@ -98,6 +99,7 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
           this.belongingGroups = accessIdsWithGroups.filter(item => item.accessId.includes(this.groupsKey));
           this.searchForAccessItemsWorkbaskets();
         },
+        // new Key: ERROR_TYPES.FETCH_ERR
         error => {
           this.requestInProgressService.setRequestInProgress(false);
           this.generalModalService.triggerMessage(
@@ -133,6 +135,7 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
         this.setAccessItemsGroups(accessItemsResource ? accessItemsResource.accessItems : []);
         this.requestInProgressService.setRequestInProgress(false);
       },
+      // new Key: ERROR_TYPES.FETCH_ERR_2
       error => {
         this.requestInProgressService.setRequestInProgress(false);
         this.generalModalService.triggerMessage(
@@ -157,6 +160,7 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
     this.requestInProgressService.setRequestInProgress(true);
     this.accessIdsService.removeAccessItemsPermissions(this.accessIdSelected)
       .subscribe(
+        // new Key: ALERT_TYPES.SUCCESS_ALERT
         response => {
           this.requestInProgressService.setRequestInProgress(false);
           this.alertService.triggerAlert(
@@ -168,6 +172,7 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
           );
           this.searchForAccessItemsWorkbaskets();
         },
+          // new Key: ERROR_TYPES.DELETE_ERR
         error => {
           this.requestInProgressService.setRequestInProgress(false);
           this.generalModalService.triggerMessage(

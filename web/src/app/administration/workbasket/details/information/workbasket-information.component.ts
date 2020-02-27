@@ -18,6 +18,7 @@ import { RequestInProgressService } from 'app/services/requestInProgress/request
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
 import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
+import {ALERT_TYPES, ERROR_TYPES} from '../../../../services/general-modal/errors';
 
 @Component({
   selector: 'taskana-workbasket-information',
@@ -123,6 +124,7 @@ implements OnInit, OnChanges, OnDestroy {
   onClear() {
     this.formsValidatorService.formSubmitAttempt = false;
     this.alertService.triggerAlert(
+      // new Key ALERT_TYPES.INFO_ALERT
       new AlertModel(AlertType.INFO, 'Reset edited fields')
     );
     this.workbasket = { ...this.workbasketClone };
@@ -152,6 +154,7 @@ implements OnInit, OnChanges, OnDestroy {
       .subscribe(
         reponse => {
           this.requestInProgressService.setRequestInProgress(false);
+          // new Key ALERT_TYPES.SUCCESS_ALERT_9
           this.alertService.triggerAlert(
             new AlertModel(
               AlertType.SUCCESS,
@@ -162,6 +165,7 @@ implements OnInit, OnChanges, OnDestroy {
           );
         },
         error => {
+          // new Key ERROR_TYPES.REMOVE_ERR_2
           this.generalModalService.triggerMessage(
             new MessageModal(
               `There was an error removing distribution target for ${
@@ -189,6 +193,7 @@ implements OnInit, OnChanges, OnDestroy {
           this.afterRequest();
           this.workbasket = workbasketUpdated;
           this.workbasketClone = { ...this.workbasket };
+          // new Key ALERT_TYPES.SUCCESS_ALERT_10
           this.alertService.triggerAlert(
             new AlertModel(
               AlertType.SUCCESS,
@@ -198,6 +203,7 @@ implements OnInit, OnChanges, OnDestroy {
         },
         error => {
           this.afterRequest();
+          // new Key ERROR_TYPES.SAVE_ERR_4
           this.generalModalService.triggerMessage(
             new MessageModal(
               'There was error while saving your workbasket',
@@ -221,6 +227,7 @@ implements OnInit, OnChanges, OnDestroy {
     this.addDateToWorkbasket();
     this.workbasketService.createWorkbasket(this.workbasket).subscribe(
       (workbasketUpdated: Workbasket) => {
+        // new Key ALERT_TYPES.SUCCESS_ALERT_11
         this.alertService.triggerAlert(
           new AlertModel(
             AlertType.SUCCESS,
@@ -250,6 +257,7 @@ implements OnInit, OnChanges, OnDestroy {
         }
       },
       error => {
+        // new Key ERROR_TYPES.CREATE_ERR_2
         this.generalModalService.triggerMessage(
           new MessageModal('There was an error creating a workbasket', error)
         );
@@ -273,11 +281,13 @@ implements OnInit, OnChanges, OnDestroy {
           this.requestInProgressService.setRequestInProgress(false);
           this.workbasketService.triggerWorkBasketSaved();
           if (response) {
+            // new Key ERROR_TYPES.MARK_ERR
             this.generalModalService.triggerMessage(
               new MessageModal('There was an error marking workbasket for deletion',
                 'It not possible to mark the workbasket for deletion, It has been deleted.')
             );
           } else {
+            // new Key ALERT_TYPES.SUCCESS_ALERT_12
             this.alertService.triggerAlert(
               new AlertModel(AlertType.SUCCESS, `The Workbasket ${this.workbasket.workbasketId} has been marked for deletion`)
             );

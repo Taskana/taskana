@@ -7,7 +7,6 @@ import { ERROR_TYPES } from '../../../services/general-modal/errors';
   providedIn: 'root'
 })
 export class ErrorsService {
-  // Wie initialisieren? Default ERROR_TYPE für leeres initialisieren einfügen?
   errorSubject$: Subject<ErrorModel>;
   constructor() {}
 
@@ -15,8 +14,8 @@ export class ErrorsService {
     this.errorSubject$.next(errorToShow);
   }
 
-  public updateError(key: ERROR_TYPES, passedError: ErrorHandler): void {
-    // wahrscheinlich wollen wir nicht jedes mal ein neues ErrorModel erzeugen... oder wollen wir?
-    this.updateErrorSubject(new ErrorModel(key, passedError));
+  public updateError(key: ERROR_TYPES, passedError?: ErrorHandler): void {
+    const errorModel = new ErrorModel(key, passedError);
+    this.updateErrorSubject(errorModel);
   }
 }
