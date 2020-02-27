@@ -13,6 +13,7 @@ import { ImportExportService } from 'app/administration/services/import-export/i
 import { ClassificationDefinition } from '../../../../models/classification-definition';
 import { AlertModel, AlertType } from '../../../../models/alert';
 import { AlertService } from '../../../../services/alert/alert.service';
+import { ERROR_TYPES } from '../../../../services/general-modal/errors';
 
 @Component({
   selector: 'taskana-classification-list',
@@ -130,6 +131,7 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
         this.requestInProgress = false;
       });
 
+    // new Error-Key: ALERT_TYPES.SUCCESS_ALERT_5
     if (key) {
       this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Classification ${key} was saved successfully`));
     }

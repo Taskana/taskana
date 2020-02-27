@@ -10,6 +10,7 @@ import { AlertService } from 'app/services/alert/alert.service';
 import { AlertModel, AlertType } from 'app/models/alert';
 import { UploadService } from 'app/shared/services/upload/upload.service';
 import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
+import { ERROR_TYPES } from '../../../services/general-modal/errors';
 
 @Component({
   selector: 'taskana-import-export-component',
@@ -88,6 +89,7 @@ export class ImportExportComponent implements OnInit {
         break;
       default:
         file.value = '';
+        // new Key: ERROR_TYPES.FILE_ERR
         this.generalModalService.triggerMessage(new MessageModal('Wrong format',
           'This file format is not allowed! Please use a .json file.'));
     }
@@ -104,16 +106,21 @@ export class ImportExportComponent implements OnInit {
     if (event.readyState === 4 && event.status >= 400) {
       let title;
       if (event.status === 401) {
+        // new Key ERROR_TYPES.IMPORT_ERR_1
         title = 'Import was not successful, you have no access to apply this operation.';
       } else if (event.status === 404) {
+        // new Key ERROR_TYPES.IMPORT_ERR_2
         title = 'Import was not successful, operation was not found.';
       } else if (event.status === 409) {
+        // new Key ERROR_TYPES.IMPORT_ERR_3
         title = 'Import was not successful, operation has some conflicts.';
       } else if (event.status === 413) {
+        // new Key ERROR_TYPES.IMPORT_ERR_4
         title = 'Import was not successful, maximum file size exceeded.';
       }
       this.errorHandler(title, JSON.parse(event.responseText).message);
     } else if (event.readyState === 4 && event.status === 200) {
+      // new Key: ALERT_TYPES.SUCCESS_ALERT_6
       this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, 'Import was successful'));
       this.importExportService.setImportingFinished(true);
       this.resetProgress();
@@ -121,6 +128,7 @@ export class ImportExportComponent implements OnInit {
   }
 
   private onFailedResponse(event) {
+      // new Key ERROR_TYPES.UPLOAD_ERR
     this.errorHandler('Upload failed', 'The upload didn\'t proceed sucessfully. \n'
     + 'Probably the uploaded file exceeded the maximum file size of 10 MB');
   }

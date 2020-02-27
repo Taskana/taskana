@@ -16,6 +16,7 @@ import { ObjectReference } from 'app/workplace/models/object-reference';
 import { Workbasket } from 'app/models/workbasket';
 import { WorkplaceService } from 'app/workplace/services/workplace.service';
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
+import { ERROR_TYPES } from '../../services/general-modal/errors';
 
 @Component({
   selector: 'taskana-task-details',
@@ -85,6 +86,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
         this.cloneTask();
         this.taskService.selectTask(task);
       }, err => {
+        // new Key ERROR_TYPES.FETCH_ERR_7
         this.generalModalService.triggerMessage(
           new MessageModal('An error occurred while fetching the task', err)
         );
@@ -115,6 +117,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
       this.task = null;
       this.router.navigate(['taskana/workplace/tasks']);
     }, err => {
+      // new Key ERROR_TYPES.DELETE_ERR_2
       this.generalModalService.triggerMessage(
         new MessageModal('An error occurred while deleting the task ', err)
       );
@@ -142,9 +145,11 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
       this.task = task;
       this.cloneTask();
       this.taskService.publishUpdatedTask(task);
+      // new Key ALERT_TYPES.SUCCESS_ALERT_14
       this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, 'Updating was successful.'));
     }, err => {
       this.requestInProgressService.setRequestInProgress(false);
+      // new Key ALERT_TYPES.DANGER_ALERT
       this.alertService.triggerAlert(new AlertModel(AlertType.DANGER, 'There was an error while updating.'));
     });
   }
@@ -154,6 +159,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
     this.addDateToTask();
     this.taskService.createTask(this.task).subscribe(task => {
       this.requestInProgressService.setRequestInProgress(false);
+      // new Key ALERT_TYPES.SUCCESS_ALERT_13
       this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Task ${this.currentId} was created successfully.`));
       this.task = task;
       this.taskService.selectTask(this.task);
@@ -161,6 +167,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
       this.router.navigate([`../${task.taskId}`], { relativeTo: this.route });
     }, err => {
       this.requestInProgressService.setRequestInProgress(false);
+      // new Key ALERT_TYPES.DANGER_ALERT_2
       this.alertService.triggerAlert(new AlertModel(AlertType.DANGER, 'There was an error while creating a new task.'));
     });
   }
