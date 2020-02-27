@@ -4,8 +4,11 @@ import { Component, Input, Output, EventEmitter, OnDestroy, ViewChild } from '@a
 import { MessageModal } from 'app/models/message-modal';
 
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
+import {ERROR_TYPES} from '../../services/general-modal/errors';
 
 declare let $: any;
+
+
 
 @Component({
   selector: 'taskana-spinner',
@@ -64,6 +67,7 @@ export class SpinnerComponent implements OnDestroy {
       this.isDelayedRunning = value;
       this.cancelTimeout();
       this.requestTimeout = setTimeout(() => {
+          // new Key ERROR_TYPES.TIMEOUT_ERR
         this.generalModalService.triggerMessage(
           new MessageModal('There was an error with your request, please make sure you have internet connection',
             'Request time execeed')

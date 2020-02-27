@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { AlertService } from 'app/services/alert/alert.service';
 import { AlertModel, AlertType } from 'app/models/alert';
 import { AccessIdsService } from 'app/shared/services/access-ids/access-ids.service';
+import { ALERT_TYPES } from '../../../services/general-modal/errors';
 
 @Injectable()
 export class FormsValidatorService {
@@ -51,8 +52,10 @@ export class FormsValidatorService {
     const responseOwner = new ResponseOwner(values[1]);
     if (!(values[0] && responseOwner.valid)) {
       if (!responseOwner.valid) {
+        // new Key ALERT_TYPES.WARNING_ALERT_2
         this.alertService.triggerAlert(new AlertModel(AlertType.WARNING, `The ${responseOwner.field} introduced is not valid.`));
       } else {
+        // new Key ALERT_TYPES.WARNING_ALERT
         this.alertService.triggerAlert(new AlertModel(AlertType.WARNING, 'There are some empty fields which are required.'));
       }
     }
@@ -80,6 +83,7 @@ export class FormsValidatorService {
       result = result && responseOwner.valid;
     });
     if (!result) {
+        // new key ALERT_TYPES.WARNING_ALERT_2
       this.alertService.triggerAlert(new AlertModel(AlertType.WARNING, `The ${responseOwner.field} introduced is not valid.`));
     }
     return result;

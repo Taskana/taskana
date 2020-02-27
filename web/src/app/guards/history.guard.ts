@@ -5,6 +5,7 @@ import { TaskanaEngineService } from 'app/services/taskana-engine/taskana-engine
 import { map, catchError } from 'rxjs/operators';
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { MessageModal } from 'app/models/message-modal';
+import {ERROR_TYPES} from '../services/general-modal/errors';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +29,7 @@ export class HistoryGuard implements CanActivate {
         return this.navigateToWorkplace();
       }),
       catchError(() => {
+        // new Key ERROR_TYPES.FETCH_ERR_6
         this.generalModalService.triggerMessage(new MessageModal(
           'There was an error, please contact with your administrator', 'There was an error getting history provider'
         ));

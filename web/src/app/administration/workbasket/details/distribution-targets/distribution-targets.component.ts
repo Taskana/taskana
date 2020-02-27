@@ -18,6 +18,7 @@ import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { Page } from 'app/models/page';
 import { OrientationService } from 'app/services/orientation/orientation.service';
 import { Orientation } from 'app/models/orientation';
+import { ALERT_TYPES, ERROR_TYPES } from '../../../../services/general-modal/errors';
 
 export enum Side {
   LEFT,
@@ -121,11 +122,13 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
       this.distributionTargetsSelected = response.distributionTargets;
       this.distributionTargetsSelectedClone = Object.assign([], this.distributionTargetsSelected);
       this.distributionTargetsClone = Object.assign([], this.distributionTargetsLeft);
+      // new Key ALERT_TYPES.SUCCESS_ALERT_8
       this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS,
         `Workbasket  ${this.workbasket.name} : Distribution targets were saved successfully`));
       return true;
     },
     error => {
+      // new Key ERROR_TYPES.SAVE_ERR_3
       this.generalModalService.triggerMessage(
         new MessageModal('There was error while saving your workbasket\'s distribution targets', error)
       );
@@ -136,6 +139,7 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
   }
 
   onClear() {
+      // new key ALERT_TYPES.INFO_ALERT
     this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'Reset edited fields'));
     this.distributionTargetsLeft = Object.assign([], this.distributionTargetsClone);
     this.distributionTargetsRight = Object.assign([], this.distributionTargetsSelectedClone);
