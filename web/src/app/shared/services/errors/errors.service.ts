@@ -8,7 +8,6 @@ import { ERROR_TYPES } from '../../../services/general-modal/errors';
 })
 export class ErrorsService {
   errorSubject$: Subject<ErrorModel>;
-  constructor() {}
 
   private updateErrorSubject(errorToShow: ErrorModel) {
     this.errorSubject$.next(errorToShow);

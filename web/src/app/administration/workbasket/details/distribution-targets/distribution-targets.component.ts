@@ -139,7 +139,7 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
   }
 
   onClear() {
-      // new key ALERT_TYPES.INFO_ALERT
+    // new key ALERT_TYPES.INFO_ALERT
     this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'Reset edited fields'));
     this.distributionTargetsLeft = Object.assign([], this.distributionTargetsClone);
     this.distributionTargetsRight = Object.assign([], this.distributionTargetsSelectedClone);

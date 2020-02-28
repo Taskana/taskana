@@ -172,7 +172,7 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
           );
           this.searchForAccessItemsWorkbaskets();
         },
-          // new Key: ERROR_TYPES.DELETE_ERR
+        // new Key: ERROR_TYPES.DELETE_ERR
         error => {
           this.requestInProgressService.setRequestInProgress(false);
           this.generalModalService.triggerMessage(

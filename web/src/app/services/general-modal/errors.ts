@@ -1,4 +1,3 @@
-import { ErrorModel } from '../../models/error-model';
 import { Pair } from '../../models/pair';
 
 
@@ -58,7 +57,7 @@ export enum ERROR_TYPES {
   WARNING_ALERT_2,
 }
 
-export const errors = new Map<ERROR_TYPES, Pair> ([
+export const errors = new Map<ERROR_TYPES, Pair>([
   // access-items-management.component.ts
   [ERROR_TYPES.FETCH_ERR, new Pair(
     '',
@@ -122,8 +121,8 @@ export const errors = new Map<ERROR_TYPES, Pair> ([
   // import-export.component
   [ERROR_TYPES.UPLOAD_ERR, new Pair(
     'Upload failed',
-    'The upload didn\'t proceed sucessfully. \
-    \n Probably the uploaded file exceeded the maximum file size of 10 MB'
+    `The upload didn't proceed sucessfully. 
+    \n Probably the uploaded file exceeded the maximum file size of 10 MB.`
   )],
   // taskdetails.component
   [ERROR_TYPES.FETCH_ERR_3, new Pair(
@@ -148,7 +147,7 @@ export const errors = new Map<ERROR_TYPES, Pair> ([
   // workbasket-information.component
   [ERROR_TYPES.REMOVE_ERR_2, new Pair(
     '',
-    'There was an error removing distribution target for ${this.workbasket.workbasketId}.'
+    'There was an error removing distribution target for {this.workbasket.workbasketId}.'
   )],
   // workbasket-information.component
   [ERROR_TYPES.SAVE_ERR_4, new Pair(
@@ -211,16 +210,16 @@ export const errors = new Map<ERROR_TYPES, Pair> ([
   // access-items-management.component
   [ERROR_TYPES.SUCCESS_ALERT, new Pair(
     '',
-    '${this.accessIdSelected} was removed successfully'
+    '{this.accessIdSelected} was removed successfully'
   )],
   // classification-details.component
   [ERROR_TYPES.SUCCESS_ALERT_2, new Pair(
     '',
-    'Classification ${classification.key} was saved successfully'
+    'Classification {classification.key} was saved successfully'
   )],
   // classification-details.component
   [ERROR_TYPES.SUCCESS_ALERT_3, new Pair(
-    'Classification ${this.classification.key} was saved successfully',
+    'Classification {this.classification.key} was saved successfully',
     ''
   )],
   // classification-details.component
@@ -233,12 +232,12 @@ export const errors = new Map<ERROR_TYPES, Pair> ([
   )],
   // classification-details.component
   [ERROR_TYPES.SUCCESS_ALERT_4, new Pair(
-    'Classification ${key} was removed successfully',
+    'Classification {key} was removed successfully',
     ''
   )],
   // classification-list.component
   [ERROR_TYPES.SUCCESS_ALERT_5, new Pair(
-    'Classification ${key} was saved successfully',
+    'Classification {key} was saved successfully',
     ''
   )],
   // import-export.component
@@ -248,32 +247,32 @@ export const errors = new Map<ERROR_TYPES, Pair> ([
   )],
   // access-items.component
   [ERROR_TYPES.SUCCESS_ALERT_7, new Pair(
-    'Workbasket  ${component.workbasket.key} Access items were saved successfully',
+    'Workbasket {component.workbasket.key} Access items were saved successfully',
     ''
   )],
   // workbasket.distribution-targets.component
   [ERROR_TYPES.SUCCESS_ALERT_8, new Pair(
-    'Workbasket  ${this.workbasket.name} : Distribution targets were saved successfully',
+    'Workbasket {this.workbasket.name} Distribution targets were saved successfully',
     ''
   )],
   // workbasket-information.component
   [ERROR_TYPES.SUCCESS_ALERT_9, new Pair(
-    'DistributionTarget for workbasketID: ${this.workbasket.workbasketId} was removed successfully',
+    'DistributionTarget for workbasketID {this.workbasket.workbasketId} was removed successfully',
     ''
   )],
   // workbasket-information.component
   [ERROR_TYPES.SUCCESS_ALERT_10, new Pair(
-    'Workbasket ${workbasketUpdated.key} was saved successfully',
+    'Workbasket {workbasketUpdated.key} was saved successfully',
     ''
   )],
   // workbasket-information.component
   [ERROR_TYPES.SUCCESS_ALERT_11, new Pair(
-    'Workbasket ${workbasketUpdated.key} was created successfully',
+    'Workbasket {workbasketUpdated.key} was created successfully',
     ''
   )],
   // workbasket-information.component
   [ERROR_TYPES.SUCCESS_ALERT_12, new Pair(
-    'The Workbasket ${this.workbasket.workbasketId} has been marked for deletion',
+    'The Workbasket {this.workbasket.workbasketId} has been marked for deletion',
     ''
   )],
   // forms-validator.service
@@ -283,7 +282,7 @@ export const errors = new Map<ERROR_TYPES, Pair> ([
   )],
   // forms-validator.service x2
   [ERROR_TYPES.WARNING_ALERT_2, new Pair(
-    'The ${responseOwner.field} introduced is not valid.',
+    'The {responseOwner.field} introduced is not valid.',
     ''
   )],
   // taskdetails.component
@@ -293,7 +292,7 @@ export const errors = new Map<ERROR_TYPES, Pair> ([
   )],
   // taskdetails.component
   [ERROR_TYPES.SUCCESS_ALERT_13, new Pair(
-    'Task ${this.currentId} was created successfully.',
+    'Task {this.currentId} was created successfully.',
     ''
   )],
   // taskdetails.component

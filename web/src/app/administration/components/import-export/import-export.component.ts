@@ -128,7 +128,7 @@ export class ImportExportComponent implements OnInit {
   }
 
   private onFailedResponse(event) {
-      // new Key ERROR_TYPES.UPLOAD_ERR
+    // new Key ERROR_TYPES.UPLOAD_ERR
     this.errorHandler('Upload failed', 'The upload didn\'t proceed sucessfully. \n'
     + 'Probably the uploaded file exceeded the maximum file size of 10 MB');
   }
