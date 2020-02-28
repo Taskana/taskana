@@ -1635,6 +1635,7 @@ public class TaskServiceImpl implements TaskService {
 
   private void standardUpdateActions(TaskImpl oldTaskImpl, TaskImpl newTaskImpl)
       throws InvalidArgumentException, InvalidStateException, ClassificationNotFoundException {
+
     if (oldTaskImpl.getExternalId() == null
         || !(oldTaskImpl.getExternalId().equals(newTaskImpl.getExternalId()))) {
       throw new InvalidArgumentException(
@@ -1645,6 +1646,10 @@ public class TaskServiceImpl implements TaskService {
     if (newWorkbasketKey != null && !newWorkbasketKey.equals(oldTaskImpl.getWorkbasketKey())) {
       throw new InvalidArgumentException(
           "A task's Workbasket cannot be changed via update of the task");
+    }
+
+    if (newTaskImpl.getClassificationSummary() == null) {
+      newTaskImpl.setClassificationSummary(oldTaskImpl.getClassificationSummary());
     }
 
     updateClassificationSummary(newTaskImpl, oldTaskImpl);
@@ -1662,6 +1667,7 @@ public class TaskServiceImpl implements TaskService {
       throw new InvalidStateException(
           String.format(TASK_WITH_ID_IS_NOT_READY, oldTaskImpl.getId(), oldTaskImpl.getState()));
     }
+
   }
 
   private void updateClassificationSummary(TaskImpl newTaskImpl, TaskImpl oldTaskImpl)

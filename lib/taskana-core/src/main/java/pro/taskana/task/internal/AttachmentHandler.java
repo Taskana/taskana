@@ -79,7 +79,7 @@ public class AttachmentHandler {
   }
 
   void insertAndDeleteAttachmentsOnTaskUpdate(TaskImpl newTaskImpl, TaskImpl oldTaskImpl)
-      throws InvalidArgumentException, AttachmentPersistenceException {
+      throws AttachmentPersistenceException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
           "entry to insertAndDeleteAttachmentsOnTaskUpdate(oldTaskImpl = {}, newTaskImpl = {})",
@@ -122,34 +122,27 @@ public class AttachmentHandler {
   }
 
   void insertNewAttachmentsOnTaskUpdate(TaskImpl newTaskImpl, TaskImpl oldTaskImpl)
-      throws InvalidArgumentException, AttachmentPersistenceException {
+      throws AttachmentPersistenceException {
     List<String> oldAttachmentIds =
         oldTaskImpl.getAttachments().stream()
             .map(AttachmentSummary::getId)
             .collect(Collectors.toList());
-    List<InvalidArgumentException> invalidArgumentExceptions = new ArrayList<>();
-    List<AttachmentPersistenceException> attachmentPersistenceExceptions = new ArrayList<>();
+    List<AttachmentPersistenceException> exceptions = new ArrayList<>();
     newTaskImpl
         .getAttachments()
         .forEach(
             a -> {
               if (!oldAttachmentIds.contains(a.getId())) {
                 try {
-                  initializeAndInsertAttachment(newTaskImpl, (AttachmentImpl) a);
-                } catch (InvalidArgumentException excpt) {
-                  invalidArgumentExceptions.add(excpt);
-                  LOGGER.warn("attempted to insert attachment {} and caught exception", a, excpt);
+                  insertNewAttachmentOnTaskUpdate(newTaskImpl, a);
                 } catch (AttachmentPersistenceException excpt) {
-                  attachmentPersistenceExceptions.add(excpt);
+                  exceptions.add(excpt);
                   LOGGER.warn("attempted to insert attachment {} and caught exception", a, excpt);
                 }
               }
             });
-    if (!invalidArgumentExceptions.isEmpty()) {
-      throw invalidArgumentExceptions.get(0);
-    }
-    if (!attachmentPersistenceExceptions.isEmpty()) {
-      throw attachmentPersistenceExceptions.get(0);
+    if (!exceptions.isEmpty()) {
+      throw exceptions.get(0);
     }
   }
 
@@ -193,6 +186,30 @@ public class AttachmentHandler {
           });
     }
     LOGGER.debug("exit from deleteRemovedAttachmentsOnTaskUpdate()");
+  }
+
+  void insertNewAttachmentOnTaskUpdate(TaskImpl newTaskImpl, Attachment attachment)
+      throws AttachmentPersistenceException {
+    LOGGER.debug("entry to insertNewAttachmentOnTaskUpdate()");
+    AttachmentImpl attachmentImpl = (AttachmentImpl) attachment;
+    initAttachment(attachmentImpl, newTaskImpl);
+
+    try {
+      attachmentMapper.insert(attachmentImpl);
+      LOGGER.debug(
+          "TaskService.updateTask() for TaskId={} INSERTED an Attachment={}.",
+          newTaskImpl.getId(),
+          attachmentImpl);
+    } catch (PersistenceException e) {
+      throw new AttachmentPersistenceException(
+          "Cannot insert the Attachement "
+              + attachmentImpl.getId()
+              + " for Task "
+              + newTaskImpl.getId()
+              + " because it already exists.",
+          e.getCause());
+    }
+    LOGGER.debug("exit from insertNewAttachmentOnTaskUpdate(), returning");
   }
 
   void initAttachment(AttachmentImpl attachment, Task newTask) {
