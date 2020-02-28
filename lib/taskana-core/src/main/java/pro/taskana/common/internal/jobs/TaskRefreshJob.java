@@ -39,7 +39,7 @@ public class TaskRefreshJob extends AbstractTaskanaJob {
       TaskServiceImpl taskService = (TaskServiceImpl) taskanaEngineImpl.getTaskService();
       for (String taskId : affectedTaskIds) {
         try {
-          taskService.refreshPriorityAndDueDate(taskId);
+          taskService.refreshPriorityAndDueDateOnClassificationUpdate(taskId);
         } catch (Exception e) {
           LOGGER.warn(
               "Task {} could not be refreshed because of exception: {}", taskId, e.getMessage());

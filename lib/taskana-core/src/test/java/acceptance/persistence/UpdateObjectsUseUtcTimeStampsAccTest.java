@@ -59,8 +59,8 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
     TaskImpl ti = (TaskImpl) task;
     task.setPlanned(Instant.now().plus(Duration.ofHours(17)));
-    task.setDue(Instant.now().plus(Duration.ofHours(27)));
-    ti.setCompleted(Instant.now().plus(Duration.ofHours(27)));
+    task.setDue(Instant.now().plus(Duration.ofHours(41)));
+    ti.setCompleted(Instant.now().plus(Duration.ofHours(40)));
 
     TimeZone originalZone = TimeZone.getDefault();
     Task updatedTask = taskService.updateTask(task);

@@ -254,6 +254,10 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
     }
   }
 
+  public String getClassificationId() {
+    return classificationSummary == null ? null : classificationSummary.getId();
+  }
+
   protected boolean canEqual(Object other) {
     return (other instanceof TaskImpl);
   }
