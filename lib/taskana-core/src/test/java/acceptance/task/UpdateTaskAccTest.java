@@ -112,8 +112,8 @@ class UpdateTaskAccTest extends AbstractAccTest {
   @Test
   void testThrowsExceptionIfTaskHasAlreadyBeenUpdated()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-                 TaskNotFoundException, ConcurrencyException, AttachmentPersistenceException,
-                 InvalidStateException, InterruptedException {
+          TaskNotFoundException, ConcurrencyException, AttachmentPersistenceException,
+          InvalidStateException, InterruptedException {
 
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
@@ -335,5 +335,22 @@ class UpdateTaskAccTest extends AbstractAccTest {
     Task retrievedUpdatedTask = taskService.getTask(createdTask.getId());
 
     assertThat(retrievedUpdatedTask.getCallbackInfo()).isEqualTo(callbackInfo);
+  }
+
+  @WithAccessId(
+      userName = "user_1_2",
+      groupNames = {"group_1"})
+  @Test
+  void testUpdatePlannedAndDue()
+      throws NotAuthorizedException, TaskNotFoundException, ClassificationNotFoundException,
+          InvalidArgumentException, InvalidStateException, ConcurrencyException,
+          AttachmentPersistenceException {
+    TaskService taskService = taskanaEngine.getTaskService();
+    Task task = taskService.getTask("TKI:000000000000000000000000000000000030");
+    task.setPlanned(Instant.now());
+    task.setPlanned(getInstant("2020-04-21T07:00:00"));
+    task.setDue(getInstant("2020-04-21T10:00:00"));
+    assertThatThrownBy(() -> taskService.updateTask(task))
+        .isInstanceOf(InvalidArgumentException.class);
   }
 }

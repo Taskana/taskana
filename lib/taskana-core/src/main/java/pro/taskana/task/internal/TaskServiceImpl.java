@@ -1,6 +1,5 @@
 package pro.taskana.task.internal;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,7 +30,6 @@ import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.CustomPropertySelector;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.security.CurrentUserContext;
-import pro.taskana.common.internal.util.DaysToWorkingDaysConverter;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.common.internal.util.Pair;
 import pro.taskana.spi.history.api.events.task.ClaimCancelledEvent;
@@ -55,6 +53,7 @@ import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskComment;
 import pro.taskana.task.api.models.TaskSummary;
+import pro.taskana.task.internal.ServiceLevelHandler.BulkLog;
 import pro.taskana.task.internal.models.AttachmentImpl;
 import pro.taskana.task.internal.models.AttachmentSummaryImpl;
 import pro.taskana.task.internal.models.MinimalTaskSummary;
@@ -86,15 +85,12 @@ public class TaskServiceImpl implements TaskService {
   private static final String THE_WORKBASKET = "The workbasket ";
   private static final String TASK = "Task";
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskServiceImpl.class);
-  private static final String ID_PREFIX_ATTACHMENT = "TAI";
   private static final String ID_PREFIX_TASK = "TKI";
   private static final String ID_PREFIX_EXT_TASK_ID = "ETI";
   private static final String ID_PREFIX_BUSINESS_PROCESS = "BPI";
-  private static final String MUST_NOT_BE_EMPTY = " must not be empty";
 
   private static final Set<String> ALLOWED_KEYS =
       IntStream.rangeClosed(1, 16).mapToObj(String::valueOf).collect(Collectors.toSet());
-  private static final Duration MAX_DURATION = Duration.ofSeconds(Long.MAX_VALUE, 999_999_999);
   private DaysToWorkingDaysConverter converter;
   private InternalTaskanaEngine taskanaEngine;
   private WorkbasketService workbasketService;
@@ -104,7 +100,8 @@ public class TaskServiceImpl implements TaskService {
   private HistoryEventProducer historyEventProducer;
   private TaskTransferrer taskTransferrer;
   private TaskCommentServiceImpl taskCommentService;
-  private ServiceLevelHandler serviceLevelHander;
+  private ServiceLevelHandler serviceLevelHandler;
+  private AttachmentHandler attachmentHandler;
 
   public TaskServiceImpl(
       InternalTaskanaEngine taskanaEngine,
@@ -112,12 +109,6 @@ public class TaskServiceImpl implements TaskService {
       TaskCommentMapper taskCommentMapper,
       AttachmentMapper attachmentMapper) {
     super();
-    try {
-      this.converter = DaysToWorkingDaysConverter.initialize();
-    } catch (InvalidArgumentException e) {
-      throw new SystemException(
-          "Internal error. Cannot initialize DaysToWorkingDaysConverter", e.getCause());
-    }
     this.taskanaEngine = taskanaEngine;
     this.taskMapper = taskMapper;
     this.workbasketService = taskanaEngine.getEngine().getWorkbasketService();
@@ -126,7 +117,8 @@ public class TaskServiceImpl implements TaskService {
     this.historyEventProducer = taskanaEngine.getHistoryEventProducer();
     this.taskTransferrer = new TaskTransferrer(taskanaEngine, taskMapper, this);
     this.taskCommentService = new TaskCommentServiceImpl(taskanaEngine, taskCommentMapper, this);
-    this.serviceLevelHander = new ServiceLevelHandler(taskanaEngine, taskMapper, attachmentMapper);
+    this.serviceLevelHandler = new ServiceLevelHandler(taskanaEngine, taskMapper, attachmentMapper);
+    this.attachmentHandler = new AttachmentHandler(attachmentMapper, classificationService);
   }
 
   @Override
@@ -223,9 +215,9 @@ public class TaskServiceImpl implements TaskService {
       Classification classification =
           this.classificationService.getClassification(classificationKey, workbasket.getDomain());
       task.setClassificationSummary(classification.asSummary());
-      validateObjectReference(task.getPrimaryObjRef(), "primary ObjectReference", TASK);
-      PrioDurationHolder prioDurationFromAttachments = handleAttachments(task);
-      standardSettings(task, classification, prioDurationFromAttachments);
+      attachmentHandler.validateObjectReference(
+          task.getPrimaryObjRef(), "primary ObjectReference", TASK);
+      standardSettings(task, classification);
       setCallbackStateOnTaskCreation(task);
       try {
         this.taskMapper.insert(task);
@@ -409,8 +401,8 @@ public class TaskServiceImpl implements TaskService {
   @Override
   public Task updateTask(Task task)
       throws InvalidArgumentException, TaskNotFoundException, ConcurrencyException,
-          ClassificationNotFoundException, NotAuthorizedException, AttachmentPersistenceException,
-          InvalidStateException {
+          NotAuthorizedException, AttachmentPersistenceException, InvalidStateException,
+          ClassificationNotFoundException {
     String userId = CurrentUserContext.getUserid();
     LOGGER.debug("entry to updateTask(task = {}, userId = {})", task, userId);
     TaskImpl newTaskImpl = (TaskImpl) task;
@@ -418,9 +410,7 @@ public class TaskServiceImpl implements TaskService {
     try {
       taskanaEngine.openConnection();
       oldTaskImpl = (TaskImpl) getTask(newTaskImpl.getId());
-      PrioDurationHolder prioDurationFromAttachments =
-          handleAttachmentsOnTaskUpdate(oldTaskImpl, newTaskImpl);
-      standardUpdateActions(oldTaskImpl, newTaskImpl, prioDurationFromAttachments);
+      standardUpdateActions(oldTaskImpl, newTaskImpl);
 
       taskMapper.update(newTaskImpl);
       LOGGER.debug("Method updateTask() updated task '{}' for user '{}'.", task.getId(), userId);
@@ -532,7 +522,8 @@ public class TaskServiceImpl implements TaskService {
           selectionCriteria,
           customFieldsToUpdate);
     }
-    validateObjectReference(selectionCriteria, "ObjectReference", "updateTasks call");
+    attachmentHandler.validateObjectReference(
+        selectionCriteria, "ObjectReference", "updateTasks call");
     validateCustomFields(customFieldsToUpdate);
     CustomPropertySelector fieldSelector = new CustomPropertySelector();
     TaskImpl updated = initUpdatedTask(customFieldsToUpdate, fieldSelector);
@@ -689,10 +680,14 @@ public class TaskServiceImpl implements TaskService {
     try {
       taskanaEngine.openConnection();
       // use only elements we are authorized for
-      Pair<List<String>, BulkOperationResults<String, TaskanaException>> resultsPair =
-          filterForAuthorizedTasks(taskIds);
+      Pair<List<MinimalTaskSummary>, BulkLog> resultsPair =
+          serviceLevelHandler.filterTasksForExistenceAndAuthorization(taskIds);
       // set the Owner of these tasks we are authorized for
-      taskIds = resultsPair.getLeft();
+      List<MinimalTaskSummary> existingMinimalTaskSummaries = resultsPair.getLeft();
+      taskIds =
+          existingMinimalTaskSummaries.stream()
+              .map(MinimalTaskSummary::getTaskId)
+              .collect(Collectors.toList());
       bulkLog.addAllErrors(resultsPair.getRight());
       if (taskIds.isEmpty()) {
         return bulkLog;
@@ -702,13 +697,7 @@ public class TaskServiceImpl implements TaskService {
           return bulkLog;
         } else {
           // check the outcome
-          List<MinimalTaskSummary> existingMinimalTaskSummaries =
-              taskMapper.findExistingTasks(taskIds, null);
-          // add exceptions for non existing tasks
-          bulkLog.addAllErrors(
-              serviceLevelHander.addExceptionsForNonExistingTasks(
-                  taskIds, existingMinimalTaskSummaries));
-          // add exceptions of all remaining tasks whose owners were not set
+          existingMinimalTaskSummaries = taskMapper.findExistingTasks(taskIds, null);
           bulkLog.addAllErrors(
               addExceptionsForTasksWhoseOwnerWasNotSet(owner, existingMinimalTaskSummaries));
           if (LOGGER.isDebugEnabled()) {
@@ -739,7 +728,7 @@ public class TaskServiceImpl implements TaskService {
     }
     try {
       taskanaEngine.openConnection();
-      return serviceLevelHander.setPlannedPropertyOfTasksImpl(planned, argTaskIds);
+      return serviceLevelHandler.setPlannedPropertyOfTasksImpl(planned, argTaskIds);
     } finally {
       LOGGER.debug("exit from setPlannedPropertyOfTasks");
       taskanaEngine.returnConnection();
@@ -780,7 +769,8 @@ public class TaskServiceImpl implements TaskService {
     return affectedTaskIds;
   }
 
-  public void refreshPriorityAndDueDate(String taskId) throws ClassificationNotFoundException {
+  public void refreshPriorityAndDueDateOnClassificationUpdate(String taskId)
+      throws ClassificationNotFoundException {
     LOGGER.debug("entry to refreshPriorityAndDueDate(taskId = {})", taskId);
     TaskImpl task;
     BulkOperationResults<String, Exception> bulkLog = new BulkOperationResults<>();
@@ -796,19 +786,21 @@ public class TaskServiceImpl implements TaskService {
       if (attachmentImpls == null) {
         attachmentImpls = new ArrayList<>();
       }
-      List<Attachment> attachments = augmentAttachmentsByClassification(attachmentImpls, bulkLog);
+      List<Attachment> attachments =
+          attachmentHandler.augmentAttachmentsByClassification(attachmentImpls, bulkLog);
       task.setAttachments(attachments);
 
-      Classification classification =
-          classificationService.getClassification(task.getClassificationSummary().getId());
-      task.setClassificationSummary(classification.asSummary());
-      PrioDurationHolder prioDurationFromAttachments =
-          handleAttachmentsOnClassificationUpdate(task);
-
-      updatePrioDueDateOnClassificationUpdate(task, prioDurationFromAttachments);
+      ClassificationSummary classificationSummary =
+          classificationService
+              .getClassification(task.getClassificationKey(), task.getDomain())
+              .asSummary();
+      task.setClassificationSummary(classificationSummary);
+      task = serviceLevelHandler.updatePrioPlannedDueOfTask(task, null, true);
 
       task.setModified(Instant.now());
       taskMapper.update(task);
+    } catch (InvalidArgumentException e) {
+      LOGGER.error("Internal System error. This situation should not happen. Caught exceptio ", e);
     } finally {
       taskanaEngine.returnConnection();
       LOGGER.debug("exit from refreshPriorityAndDueDate(). ");
@@ -895,7 +887,7 @@ public class TaskServiceImpl implements TaskService {
 
     for (MinimalTaskSummary taskSummary : existingMinimalTaskSummaries) {
       if (!owner.equals(taskSummary.getOwner())) { // owner was not set
-        if (!taskSummary.getTaskState().equals(TaskState.READY)) { // due to invalid state
+        if (!TaskState.READY.equals(taskSummary.getTaskState())) { // due to invalid state
           bulkLog.addError(
               taskSummary.getTaskId(),
               new InvalidStateException(
@@ -912,27 +904,6 @@ public class TaskServiceImpl implements TaskService {
       }
     }
     return bulkLog;
-  }
-
-  private Pair<List<String>, BulkOperationResults<String, TaskanaException>>
-      filterForAuthorizedTasks(List<String> taskIds) {
-    BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
-    List<String> accessIds = CurrentUserContext.getAccessIds();
-    List<String> tasksAuthorizedFor = new ArrayList<>(taskIds);
-    // check authorization only for non-admin users
-    if (!taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN)) {
-      List<String> tasksNotAuthorizedFor =
-          taskMapper.filterTaskIdsNotAuthorizedFor(taskIds, accessIds);
-      tasksAuthorizedFor.removeAll(tasksNotAuthorizedFor);
-      String currentUserId = CurrentUserContext.getUserid();
-      for (String taskId : tasksNotAuthorizedFor) {
-        bulkLog.addError(
-            taskId,
-            new NotAuthorizedException(
-                String.format("Current user not authorized for task %s.", taskId), currentUserId));
-      }
-    }
-    return new Pair<>(tasksAuthorizedFor, bulkLog);
   }
 
   private Task claim(String taskId, boolean forceClaim)
@@ -1178,8 +1149,7 @@ public class TaskServiceImpl implements TaskService {
     }
   }
 
-  private void standardSettings(
-      TaskImpl task, Classification classification, PrioDurationHolder prioDurationFromAttachments)
+  private void standardSettings(TaskImpl task, Classification classification)
       throws InvalidArgumentException {
     LOGGER.debug("entry to standardSettings()");
     final Instant now = Instant.now();
@@ -1206,40 +1176,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     // null in case of manual tasks
-    if (classification == null) {
-      if (task.getPlanned() == null) {
-        task.setPlanned(now);
-      }
-    } else {
-      // do some Classification specific stuff (servicelevel).
-      // get duration in days from planned to due
-      PrioDurationHolder finalPrioDuration =
-          getNewPrioDuration(
-              prioDurationFromAttachments,
-              classification.getPriority(),
-              classification.getServiceLevel());
-      Duration finalDuration = finalPrioDuration.getLeft();
-      if (finalDuration != null && !MAX_DURATION.equals(finalDuration)) {
-        // if we have a due date we need to go x days backwards,
-        // else we take the planned date (or now as fallback) and add x Days
-        if (task.getDue() != null) {
-          long days = converter.convertWorkingDaysToDays(task.getDue(), -finalDuration.toDays());
-          // days < 0 -> so we ne need to add, not substract
-          Instant planned = task.getDue().plus(Duration.ofDays(days));
-          if (task.getPlanned() != null && !task.getPlanned().equals(planned)) {
-            throw new InvalidArgumentException(
-                "Cannot create a task with given planned "
-                    + "and due date not matching the service level");
-          }
-          task.setPlanned(planned);
-        } else {
-          task.setPlanned(task.getPlanned() == null ? now : task.getPlanned());
-          long days = converter.convertWorkingDaysToDays(task.getPlanned(), finalDuration.toDays());
-          Instant due = task.getPlanned().plus(Duration.ofDays(days));
-          task.setDue(due);
-        }
-      }
-      task.setPriority(finalPrioDuration.getRight());
+    if (task.getPlanned() == null && (classification == null || task.getDue() == null)) {
+      task.setPlanned(now);
+    }
+    if (classification != null) {
+      task = serviceLevelHandler.updatePrioPlannedDueOfTask(task, null, false);
     }
 
     if (task.getName() == null && classification != null) {
@@ -1249,19 +1190,7 @@ public class TaskServiceImpl implements TaskService {
     if (task.getDescription() == null && classification != null) {
       task.setDescription(classification.getDescription());
     }
-
-    // insert Attachments if needed
-    List<Attachment> attachments = task.getAttachments();
-    if (attachments != null) {
-      for (Attachment attachment : attachments) {
-        AttachmentImpl attachmentImpl = (AttachmentImpl) attachment;
-        attachmentImpl.setId(IdGenerator.generateWithPrefix(ID_PREFIX_ATTACHMENT));
-        attachmentImpl.setTaskId(task.getId());
-        attachmentImpl.setCreated(now);
-        attachmentImpl.setModified(now);
-        attachmentMapper.insert(attachmentImpl);
-      }
-    }
+    attachmentHandler.insertNewAttachmentsOnTaskCreation(task, now);
     LOGGER.debug("exit from standardSettings()");
   }
 
@@ -1632,86 +1561,11 @@ public class TaskServiceImpl implements TaskService {
         .list();
   }
 
-  private void validateObjectReference(ObjectReference objRef, String objRefType, String objName)
-      throws InvalidArgumentException {
-    LOGGER.debug("entry to validateObjectReference()");
-    // check that all values in the ObjectReference are set correctly
-    if (objRef == null) {
-      throw new InvalidArgumentException(objRefType + " of " + objName + " must not be null");
-    } else if (objRef.getCompany() == null || objRef.getCompany().length() == 0) {
-      throw new InvalidArgumentException(
-          "Company of " + objRefType + " of " + objName + MUST_NOT_BE_EMPTY);
-    } else if (objRef.getSystem() == null || objRef.getSystem().length() == 0) {
-      throw new InvalidArgumentException(
-          "System of " + objRefType + " of " + objName + MUST_NOT_BE_EMPTY);
-    } else if (objRef.getSystemInstance() == null || objRef.getSystemInstance().length() == 0) {
-      throw new InvalidArgumentException(
-          "SystemInstance of " + objRefType + " of " + objName + MUST_NOT_BE_EMPTY);
-    } else if (objRef.getType() == null || objRef.getType().length() == 0) {
-      throw new InvalidArgumentException(
-          "Type of " + objRefType + " of " + objName + MUST_NOT_BE_EMPTY);
-    } else if (objRef.getValue() == null || objRef.getValue().length() == 0) {
-      throw new InvalidArgumentException(
-          "Value of" + objRefType + " of " + objName + MUST_NOT_BE_EMPTY);
-    }
-    LOGGER.debug("exit from validateObjectReference()");
-  }
-
-  private PrioDurationHolder handleAttachments(TaskImpl task) throws InvalidArgumentException {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("entry to handleAttachments(task = {})", task);
-    }
-
-    List<Attachment> attachments = task.getAttachments();
-    if (attachments == null || attachments.isEmpty()) {
-      return new PrioDurationHolder(null, Integer.MIN_VALUE);
-    }
-
-    PrioDurationHolder actualPrioDuration = new PrioDurationHolder(MAX_DURATION, Integer.MIN_VALUE);
-
-    Iterator<Attachment> i = attachments.iterator();
-    while (i.hasNext()) {
-      Attachment attachment = i.next();
-      if (attachment == null) {
-        i.remove();
-      } else {
-        actualPrioDuration = handleNonNullAttachment(actualPrioDuration, attachment);
-      }
-    }
-    if (MAX_DURATION.equals(actualPrioDuration.getLeft())) {
-      actualPrioDuration = new PrioDurationHolder(null, actualPrioDuration.getRight());
-    }
-
-    LOGGER.debug("exit from handleAttachments(), returning {}", actualPrioDuration);
-    return actualPrioDuration;
-  }
-
-  private PrioDurationHolder handleNonNullAttachment(
-      PrioDurationHolder actualPrioDuration, Attachment attachment)
-      throws InvalidArgumentException {
-    ObjectReference objRef = attachment.getObjectReference();
-    validateObjectReference(objRef, "ObjectReference", "Attachment");
-    if (attachment.getClassificationSummary() == null) {
-      throw new InvalidArgumentException(
-          "Classification of attachment " + attachment + " must not be null");
-    } else {
-      ClassificationSummary classificationSummary = attachment.getClassificationSummary();
-      if (classificationSummary != null) {
-        actualPrioDuration =
-            getNewPrioDuration(
-                actualPrioDuration,
-                classificationSummary.getPriority(),
-                classificationSummary.getServiceLevel());
-      }
-    }
-    return actualPrioDuration;
-  }
-
-  private void standardUpdateActions(
-      TaskImpl oldTaskImpl, TaskImpl newTaskImpl, PrioDurationHolder prioDurationFromAttachments)
-      throws InvalidArgumentException, ConcurrencyException, ClassificationNotFoundException,
-          InvalidStateException {
-    validateObjectReference(newTaskImpl.getPrimaryObjRef(), "primary ObjectReference", TASK);
+  private void standardUpdateActions(TaskImpl oldTaskImpl, TaskImpl newTaskImpl)
+      throws InvalidArgumentException, ConcurrencyException, InvalidStateException,
+          AttachmentPersistenceException, ClassificationNotFoundException {
+    attachmentHandler.validateObjectReference(
+        newTaskImpl.getPrimaryObjRef(), "primary ObjectReference", TASK);
     // TODO: not safe to rely only on different timestamps.
     // With fast execution below 1ms there will be no concurrencyException
     if (oldTaskImpl.getModified() != null
@@ -1739,6 +1593,16 @@ public class TaskServiceImpl implements TaskService {
       newTaskImpl.setPlanned(oldTaskImpl.getPlanned());
     }
 
+    if (newTaskImpl.getClassificationSummary() == null) {
+      newTaskImpl.setClassificationSummary(oldTaskImpl.getClassificationSummary());
+    }
+
+    attachmentHandler.insertAndDeleteAttachmentsOnTaskUpdate(newTaskImpl, oldTaskImpl);
+
+    updateClassificationSummary(newTaskImpl, oldTaskImpl);
+
+    newTaskImpl = serviceLevelHandler.updatePrioPlannedDueOfTask(newTaskImpl, oldTaskImpl, false);
+
     // if no business process id is provided, use the id of the old task.
     if (newTaskImpl.getBusinessProcessId() == null) {
       newTaskImpl.setBusinessProcessId(oldTaskImpl.getBusinessProcessId());
@@ -1751,393 +1615,24 @@ public class TaskServiceImpl implements TaskService {
           String.format(TASK_WITH_ID_IS_NOT_READY, oldTaskImpl.getId(), oldTaskImpl.getState()));
     }
 
-    updateClassificationRelatedProperties(oldTaskImpl, newTaskImpl, prioDurationFromAttachments);
-
     newTaskImpl.setModified(Instant.now());
   }
 
-  private void updateClassificationRelatedProperties(
-      TaskImpl oldTaskImpl, TaskImpl newTaskImpl, PrioDurationHolder prioDurationFromAttachments)
+  private void updateClassificationSummary(TaskImpl newTaskImpl, TaskImpl oldTaskImpl)
       throws ClassificationNotFoundException {
-    LOGGER.debug("entry to updateClassificationRelatedProperties()");
-    // insert Classification specifications if Classification is given.
     ClassificationSummary oldClassificationSummary = oldTaskImpl.getClassificationSummary();
     ClassificationSummary newClassificationSummary = newTaskImpl.getClassificationSummary();
     if (newClassificationSummary == null) {
       newClassificationSummary = oldClassificationSummary;
     }
 
-    if (newClassificationSummary
-        == null) { // newClassification is null -> take prio and duration from attachments
-      updateTaskPrioDurationFromAttachments(newTaskImpl, prioDurationFromAttachments);
-    } else {
-      updateTaskPrioDurationFromClassification(
-          newTaskImpl,
-          prioDurationFromAttachments,
-          oldClassificationSummary,
-          newClassificationSummary);
-    }
-
-    LOGGER.debug("exit from updateClassificationRelatedProperties()");
-  }
-
-  private void updateTaskPrioDurationFromClassification(
-      TaskImpl newTaskImpl,
-      PrioDurationHolder prioDurationFromAttachments,
-      ClassificationSummary oldClassificationSummary,
-      ClassificationSummary newClassificationSummary)
-      throws ClassificationNotFoundException {
-    LOGGER.debug("entry to updateTaskPrioDurationFromClassification()");
-    Classification newClassification = null;
     if (!oldClassificationSummary.getKey().equals(newClassificationSummary.getKey())) {
-      newClassification =
+      Classification newClassification =
           this.classificationService.getClassification(
               newClassificationSummary.getKey(), newTaskImpl.getWorkbasketSummary().getDomain());
       newClassificationSummary = newClassification.asSummary();
       newTaskImpl.setClassificationSummary(newClassificationSummary);
     }
-
-    Duration minDuration = calculateDuration(prioDurationFromAttachments, newClassificationSummary);
-    if (minDuration != null) {
-
-      long days =
-          converter.convertWorkingDaysToDays(newTaskImpl.getPlanned(), minDuration.toDays());
-      Instant due = newTaskImpl.getPlanned().plus(Duration.ofDays(days));
-
-      newTaskImpl.setDue(due);
-    }
-
-    if (newTaskImpl.getName() == null) {
-      newTaskImpl.setName(newClassificationSummary.getName());
-    }
-
-    if (newTaskImpl.getDescription() == null && newClassification != null) {
-      newTaskImpl.setDescription(newClassification.getDescription());
-    }
-
-    int newPriority =
-        Math.max(newClassificationSummary.getPriority(), prioDurationFromAttachments.getRight());
-    newTaskImpl.setPriority(newPriority);
-    LOGGER.debug("exit from updateTaskPrioDurationFromClassification()");
-  }
-
-  private PrioDurationHolder handleAttachmentsOnTaskUpdate(
-      TaskImpl oldTaskImpl, TaskImpl newTaskImpl) throws AttachmentPersistenceException {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "entry to handleAttachmentsOnTaskUpdate(oldTaskImpl = {}, newTaskImpl = {})",
-          oldTaskImpl,
-          newTaskImpl);
-    }
-
-    PrioDurationHolder prioDuration = new PrioDurationHolder(MAX_DURATION, Integer.MIN_VALUE);
-
-    // Iterator for removing invalid current values directly. OldAttachments can be ignored.
-    Iterator<Attachment> i = newTaskImpl.getAttachments().iterator();
-    while (i.hasNext()) {
-      Attachment attachment = i.next();
-      if (attachment != null) {
-        prioDuration =
-            handlePrioDurationOfOneAttachmentOnTaskUpdate(
-                oldTaskImpl, newTaskImpl, prioDuration, attachment);
-      } else {
-        i.remove();
-      }
-    }
-
-    // DELETE, when an Attachment was only represented before
-    deleteAttachmentOnTaskUpdate(oldTaskImpl, newTaskImpl);
-    if (MAX_DURATION.equals(prioDuration.getLeft())) {
-      prioDuration = new PrioDurationHolder(null, prioDuration.getRight());
-    }
-
-    LOGGER.debug("exit from handleAttachmentsOnTaskUpdate()");
-    return prioDuration;
-  }
-
-  private void deleteAttachmentOnTaskUpdate(TaskImpl oldTaskImpl, TaskImpl newTaskImpl) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "entry to deleteAttachmentOnTaskUpdate(oldTaskImpl = {}, newTaskImpl = {})",
-          oldTaskImpl,
-          newTaskImpl);
-    }
-
-    for (Attachment oldAttachment : oldTaskImpl.getAttachments()) {
-      if (oldAttachment != null) {
-        boolean isRepresented = false;
-        for (Attachment newAttachment : newTaskImpl.getAttachments()) {
-          if (newAttachment != null && oldAttachment.getId().equals(newAttachment.getId())) {
-            isRepresented = true;
-            break;
-          }
-        }
-        if (!isRepresented) {
-          attachmentMapper.deleteAttachment(oldAttachment.getId());
-          LOGGER.debug(
-              "TaskService.updateTask() for TaskId={} DELETED an Attachment={}.",
-              newTaskImpl.getId(),
-              oldAttachment);
-        }
-      }
-    }
-    LOGGER.debug("exit from deleteAttachmentOnTaskUpdate()");
-  }
-
-  private PrioDurationHolder handlePrioDurationOfOneAttachmentOnTaskUpdate(
-      TaskImpl oldTaskImpl,
-      TaskImpl newTaskImpl,
-      PrioDurationHolder prioDuration,
-      Attachment attachment)
-      throws AttachmentPersistenceException {
-    LOGGER.debug("entry to handlePrioDurationOfOneAttachmentOnTaskUpdate()");
-    boolean wasAlreadyPresent = false;
-    if (attachment.getId() != null) {
-      for (Attachment oldAttachment : oldTaskImpl.getAttachments()) {
-        if (oldAttachment != null && attachment.getId().equals(oldAttachment.getId())) {
-          wasAlreadyPresent = true;
-          if (!attachment.equals(oldAttachment)) {
-            prioDuration =
-                handlePrioDurationOfOneNewAttachmentOnTaskUpdate(
-                    newTaskImpl, prioDuration, attachment);
-            break;
-          }
-        }
-      }
-    }
-
-    // ADD, when ID not set or not found in elements
-    if (!wasAlreadyPresent) {
-      prioDuration = handleNewAttachmentOnTaskUpdate(newTaskImpl, prioDuration, attachment);
-    }
-
-    LOGGER.debug(
-        "exit from handlePrioDurationOfOneAttachmentOnTaskUpdate(), returning {}", prioDuration);
-    return prioDuration;
-  }
-
-  private PrioDurationHolder handlePrioDurationOfOneNewAttachmentOnTaskUpdate(
-      TaskImpl newTaskImpl, PrioDurationHolder prioDuration, Attachment attachment) {
-    LOGGER.debug("entry to handlePrioDurationOfOneNewAttachmentOnTaskUpdate()");
-    AttachmentImpl temp = (AttachmentImpl) attachment;
-
-    ClassificationSummary classification = attachment.getClassificationSummary();
-    if (classification != null) {
-      prioDuration =
-          getNewPrioDuration(
-              prioDuration, classification.getPriority(), classification.getServiceLevel());
-    }
-
-    temp.setModified(Instant.now());
-    attachmentMapper.update(temp);
-    LOGGER.debug(
-        "TaskService.updateTask() for TaskId={} UPDATED an Attachment={}.",
-        newTaskImpl.getId(),
-        attachment);
-    LOGGER.debug(
-        "exit from handlePrioDurationOfOneNewAttachmentOnTaskUpdate(), returning {}", prioDuration);
-    return prioDuration;
-  }
-
-  private PrioDurationHolder handleNewAttachmentOnTaskUpdate(
-      TaskImpl newTaskImpl, PrioDurationHolder prioDuration, Attachment attachment)
-      throws AttachmentPersistenceException {
-    LOGGER.debug("entry to handleNewAttachmentOnTaskUpdate()");
-    AttachmentImpl attachmentImpl = (AttachmentImpl) attachment;
-    initAttachment(attachmentImpl, newTaskImpl);
-    ClassificationSummary classification = attachment.getClassificationSummary();
-    if (classification != null) {
-      prioDuration =
-          getNewPrioDuration(
-              prioDuration, classification.getPriority(), classification.getServiceLevel());
-    }
-
-    try {
-      attachmentMapper.insert(attachmentImpl);
-      LOGGER.debug(
-          "TaskService.updateTask() for TaskId={} INSERTED an Attachment={}.",
-          newTaskImpl.getId(),
-          attachmentImpl);
-    } catch (PersistenceException e) {
-      throw new AttachmentPersistenceException(
-          "Cannot insert the Attachement "
-              + attachmentImpl.getId()
-              + " for Task "
-              + newTaskImpl.getId()
-              + " because it already exists.",
-          e.getCause());
-    }
-    LOGGER.debug("exit from handleNewAttachmentOnTaskUpdate(), returning {}", prioDuration);
-    return prioDuration;
-  }
-
-  private PrioDurationHolder handleAttachmentsOnClassificationUpdate(Task task) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("entry to handleAttachmentsOnClassificationUpdate(task = {})", task);
-    }
-
-    PrioDurationHolder prioDuration = new PrioDurationHolder(MAX_DURATION, Integer.MIN_VALUE);
-
-    // Iterator for removing invalid current values directly. OldAttachments can be ignored.
-    for (Attachment attachment : task.getAttachments()) {
-      if (attachment != null) {
-        ClassificationSummary classification = attachment.getClassificationSummary();
-        if (classification != null) {
-          prioDuration =
-              getNewPrioDuration(
-                  prioDuration, classification.getPriority(), classification.getServiceLevel());
-        }
-      }
-    }
-    if (MAX_DURATION.equals(prioDuration.getLeft())) {
-      prioDuration = new PrioDurationHolder(null, prioDuration.getRight());
-    }
-
-    LOGGER.debug("exit from handleAttachmentsOnClassificationUpdate(), returning {}", prioDuration);
-    return prioDuration;
-  }
-
-  private PrioDurationHolder getNewPrioDuration(
-      PrioDurationHolder prioDurationHolder,
-      int prioFromClassification,
-      String serviceLevelFromClassification) {
-    LOGGER.debug(
-        "entry to getNewPrioDuration(prioDurationHolder = {}, prioFromClassification = {}, "
-            + "serviceLevelFromClassification = {})",
-        prioDurationHolder,
-        prioFromClassification,
-        serviceLevelFromClassification);
-    Duration minDuration = prioDurationHolder.getLeft();
-    int maxPrio = prioDurationHolder.getRight();
-
-    if (serviceLevelFromClassification != null) {
-      Duration currentDuration = Duration.parse(serviceLevelFromClassification);
-      if (prioDurationHolder.getLeft() != null) {
-        if (prioDurationHolder.getLeft().compareTo(currentDuration) > 0) {
-          minDuration = currentDuration;
-        }
-      } else {
-        minDuration = currentDuration;
-      }
-    }
-    if (prioFromClassification > maxPrio) {
-      maxPrio = prioFromClassification;
-    }
-
-    PrioDurationHolder pair = new PrioDurationHolder(minDuration, maxPrio);
-    LOGGER.debug("exit from getNewPrioDuration(), returning {}", pair);
-    return pair;
-  }
-
-  private void initAttachment(AttachmentImpl attachment, Task newTask) {
-    LOGGER.debug("entry to initAttachment()");
-    if (attachment.getId() == null) {
-      attachment.setId(IdGenerator.generateWithPrefix(ID_PREFIX_ATTACHMENT));
-    }
-    if (attachment.getCreated() == null) {
-      attachment.setCreated(Instant.now());
-    }
-    if (attachment.getModified() == null) {
-      attachment.setModified(attachment.getCreated());
-    }
-    if (attachment.getTaskId() == null) {
-      attachment.setTaskId(newTask.getId());
-    }
-    LOGGER.debug("exit from initAttachment()");
-  }
-
-  private void updatePrioDueDateOnClassificationUpdate(
-      TaskImpl task, PrioDurationHolder prioDurationFromAttachments) {
-    LOGGER.debug("entry to updatePrioDueDateOnClassificationUpdate()");
-    ClassificationSummary classificationSummary = task.getClassificationSummary();
-
-    if (classificationSummary
-        == null) { // classification is null -> take prio and duration from attachments
-      updateTaskPrioDurationFromAttachments(task, prioDurationFromAttachments);
-    } else {
-      updateTaskPrioDurationFromClassificationAndAttachments(
-          task, prioDurationFromAttachments, classificationSummary);
-    }
-
-    LOGGER.debug("exit from updatePrioDueDateOnClassificationUpdate()");
-  }
-
-  private void updateTaskPrioDurationFromClassificationAndAttachments(
-      TaskImpl task,
-      PrioDurationHolder prioDurationFromAttachments,
-      ClassificationSummary classificationSummary) {
-    LOGGER.debug("entry to updateTaskPrioDurationFromClassificationAndAttachments()");
-
-    Duration minDuration = calculateDuration(prioDurationFromAttachments, classificationSummary);
-    if (minDuration != null) {
-      long days = converter.convertWorkingDaysToDays(task.getPlanned(), minDuration.toDays());
-      Instant due = task.getPlanned().plus(Duration.ofDays(days));
-
-      task.setDue(due);
-    }
-
-    int newPriority =
-        Math.max(classificationSummary.getPriority(), prioDurationFromAttachments.getRight());
-    task.setPriority(newPriority);
-    LOGGER.debug("exit from updateTaskPrioDurationFromClassificationAndAttachments()");
-  }
-
-  private void updateTaskPrioDurationFromAttachments(
-      TaskImpl task, PrioDurationHolder prioDurationFromAttachments) {
-    LOGGER.debug("entry to updateTaskPrioDurationFromAttachments()");
-    if (prioDurationFromAttachments.getLeft() != null) {
-      long days =
-          converter.convertWorkingDaysToDays(
-              task.getPlanned(), prioDurationFromAttachments.getLeft().toDays());
-      Instant due = task.getPlanned().plus(Duration.ofDays(days));
-      task.setDue(due);
-    }
-    if (prioDurationFromAttachments.getRight() > Integer.MIN_VALUE) {
-      task.setPriority(prioDurationFromAttachments.getRight());
-    }
-    LOGGER.debug("exit from updateTaskPrioDurationFromAttachments()");
-  }
-
-  private List<Attachment> augmentAttachmentsByClassification(
-      List<AttachmentImpl> attachmentImpls, BulkOperationResults<String, Exception> bulkLog) {
-    LOGGER.debug("entry to augmentAttachmentsByClassification()");
-    List<Attachment> result = new ArrayList<>();
-    if (attachmentImpls == null || attachmentImpls.isEmpty()) {
-      return result;
-    }
-    List<ClassificationSummary> classifications =
-        classificationService
-            .createClassificationQuery()
-            .idIn(
-                attachmentImpls.stream()
-                    .map(t -> t.getClassificationSummary().getId())
-                    .distinct()
-                    .toArray(String[]::new))
-            .list();
-    for (AttachmentImpl att : attachmentImpls) {
-      ClassificationSummary classificationSummary =
-          classifications.stream()
-              .filter(cl -> cl.getId().equals(att.getClassificationSummary().getId()))
-              .findFirst()
-              .orElse(null);
-      if (classificationSummary == null) {
-        String id = att.getClassificationSummary().getId();
-        bulkLog.addError(
-            att.getClassificationSummary().getId(),
-            new ClassificationNotFoundException(
-                id,
-                String.format(
-                    "When processing task updates due to change "
-                        + "of classification, the classification with id %s was not found",
-                    id)));
-      } else {
-        att.setClassificationSummary(classificationSummary);
-        result.add(att);
-      }
-    }
-
-    LOGGER.debug("exit from augmentAttachmentsByClassification()");
-    return result;
   }
 
   private void createTasksCompletedEvents(List<TaskSummary> taskSummaries) {
@@ -2145,12 +1640,5 @@ public class TaskServiceImpl implements TaskService {
         task ->
             historyEventProducer.createEvent(
                 new CompletedEvent(task, CurrentUserContext.getUserid())));
-  }
-
-  private static class PrioDurationHolder extends Pair<Duration, Integer> {
-
-    PrioDurationHolder(Duration left, Integer right) {
-      super(left, right);
-    }
   }
 }
