@@ -281,7 +281,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   private removeClassificationConfirmation() {
     if (!this.classification || !this.classification.classificationId) {
       this.generalModalService.triggerMessage(
-          // new Key ERROR_TYPES.SELECT_ERR
+        // new Key ERROR_TYPES.SELECT_ERR
         new MessageModal('There is no classification selected', 'Please check if you are creating a classification')
       );
       return;
@@ -297,7 +297,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         this.afterRequest();
         this.classificationsService.selectClassification();
         this.router.navigate(['taskana/administration/classifications']);
-          // new Key: ALERT_TYPES.SUCCESS_ALERT_4
+        // new Key: ALERT_TYPES.SUCCESS_ALERT_4
         this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Classification ${key} was removed successfully`));
       }, error => {
         // new Key: ERROR_TYPES.REMOVE_ERR

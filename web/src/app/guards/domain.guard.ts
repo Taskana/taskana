@@ -15,7 +15,7 @@ export class DomainGuard implements CanActivate {
     return this.domainService.getDomains().pipe(
       map(domain => true),
       catchError(() => {
-          // new Key ERROR_TYPES.FETCH_ERR_5
+        // new Key ERROR_TYPES.FETCH_ERR_5
         this.generalModalService.triggerMessage(new MessageModal(
           'There was an error, please contact with your administrator', 'There was an error getting Domains'
         ));

@@ -83,7 +83,7 @@ export class FormsValidatorService {
       result = result && responseOwner.valid;
     });
     if (!result) {
-        // new key ALERT_TYPES.WARNING_ALERT_2
+      // new key ALERT_TYPES.WARNING_ALERT_2
       this.alertService.triggerAlert(new AlertModel(AlertType.WARNING, `The ${responseOwner.field} introduced is not valid.`));
     }
     return result;

@@ -18,7 +18,7 @@ import { RequestInProgressService } from 'app/services/requestInProgress/request
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
 import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
-import {ALERT_TYPES, ERROR_TYPES} from '../../../../services/general-modal/errors';
+import { ERROR_TYPES } from '../../../../services/general-modal/errors';
 
 @Component({
   selector: 'taskana-workbasket-information',
