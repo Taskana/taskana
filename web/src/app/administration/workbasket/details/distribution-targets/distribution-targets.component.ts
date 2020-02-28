@@ -18,7 +18,7 @@ import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { Page } from 'app/models/page';
 import { OrientationService } from 'app/services/orientation/orientation.service';
 import { Orientation } from 'app/models/orientation';
-import { ALERT_TYPES, ERROR_TYPES } from '../../../../services/general-modal/errors';
+import { ERROR_TYPES } from '../../../../services/general-modal/errors';
 
 export enum Side {
   LEFT,

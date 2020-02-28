@@ -8,7 +8,7 @@ export class ErrorModel {
 
   constructor(key: ERROR_TYPES, passedError?: ErrorHandler, addition?: string) {
     this.head = errors.get(key).name;
-    this.body = errors.get(key).text
+    this.body = errors.get(key).text;
     if (addition) {
       this.body.replace('{rep}', addition);
     }
