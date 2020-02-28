@@ -14,8 +14,8 @@ export class ErrorsService {
     this.errorSubject$.next(errorToShow);
   }
 
-  public updateError(key: ERROR_TYPES, passedError?: ErrorHandler): void {
-    const errorModel = new ErrorModel(key, passedError);
+  public updateError(key: ERROR_TYPES, passedError?: ErrorHandler, addition?: string): void {
+    const errorModel = new ErrorModel(key, passedError, addition);
     this.updateErrorSubject(errorModel);
   }
 }
