@@ -27,14 +27,14 @@ export class HttpClientInterceptor implements HttpInterceptor {
     return next.handle(req).pipe(tap(() => { }, error => {
       this.requestInProgressService.setRequestInProgress(false);
       if (error instanceof HttpErrorResponse && (error.status === 401 || error.status === 403)) {
-          // new Key ERROR_TYPES.ACCESS_ERR
-          this.generalModalService.triggerMessage(
+        // new Key ERROR_TYPES.ACCESS_ERR
+        this.generalModalService.triggerMessage(
           new MessageModal('You have no access to this resource ', error)
         );
       } else if (error instanceof HttpErrorResponse && (error.status === 404) && error.url.indexOf('environment-information.json')) {
-          // ignore this error message Key ERROR_TYPES.NONE
+        // ignore this error message Key ERROR_TYPES.NONE
       } else {
-          // new Key ERROR_TYPES.GENERAL_ERR
+        // new Key ERROR_TYPES.GENERAL_ERR
         this.generalModalService.triggerMessage(
           new MessageModal('There was error, please contact with your administrator ', error)
         );

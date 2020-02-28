@@ -5,7 +5,7 @@ import { TaskanaEngineService } from 'app/services/taskana-engine/taskana-engine
 import { map, catchError } from 'rxjs/operators';
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { MessageModal } from 'app/models/message-modal';
-import {ERROR_TYPES} from '../services/general-modal/errors';
+import { ERROR_TYPES } from '../services/general-modal/errors';
 
 @Injectable({
   providedIn: 'root'

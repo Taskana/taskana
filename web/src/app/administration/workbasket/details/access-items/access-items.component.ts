@@ -142,7 +142,7 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
     this.setAccessItemsGroups(this.accessItemsResetClone);
     this.accessItemsClone = this.cloneAccessItems(this.accessItemsResetClone);
     // new Key ALERT_TYPES.INFO_ALERT
-	this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'Reset edited fields'));
+    this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'Reset edited fields'));
   }
 
   remove(index: number) {
@@ -186,13 +186,13 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
       .subscribe(response => {
         this.accessItemsClone = this.cloneAccessItems(this.AccessItemsForm.value.accessItemsGroups);
         this.accessItemsResetClone = this.cloneAccessItems(this.AccessItemsForm.value.accessItemsGroups);
-		// new Key ALERT_TYPES.SUCCESS_ALERT_7
+        // new Key ALERT_TYPES.SUCCESS_ALERT_7
         this.alertService.triggerAlert(new AlertModel(
           AlertType.SUCCESS, `Workbasket  ${this.workbasket.name} Access items were saved successfully`
         ));
         this.requestInProgressService.setRequestInProgress(false);
       }, error => {
-		// new Key ERROR_TYPES.SAVE_ERR_2
+        // new Key ERROR_TYPES.SAVE_ERR_2
         this.generalModalService.triggerMessage(new MessageModal('There was error while saving your workbasket\'s access items', error));
         this.requestInProgressService.setRequestInProgress(false);
       });
