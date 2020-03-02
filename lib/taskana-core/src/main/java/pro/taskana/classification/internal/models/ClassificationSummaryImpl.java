@@ -8,15 +8,16 @@ import pro.taskana.classification.api.models.ClassificationSummary;
 public class ClassificationSummaryImpl implements ClassificationSummary {
 
   protected String id;
-  protected String key;
+  protected String applicationEntryPoint;
   protected String category;
-  protected String type;
   protected String domain;
+  protected String key;
   protected String name;
   protected String parentId;
   protected String parentKey;
   protected int priority;
   protected String serviceLevel; // PddDThhHmmM
+  protected String type;
   protected String custom1;
   protected String custom2;
   protected String custom3;
@@ -102,6 +103,11 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
   }
 
   @Override
+  public String getApplicationEntryPoint() {
+    return this.applicationEntryPoint;
+  }
+
+  @Override
   public int getPriority() {
     return priority;
   }
@@ -182,6 +188,10 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
     this.custom8 = custom8;
   }
 
+  public void setApplicationEntryPoint(String applicationEntryPoint) {
+    this.applicationEntryPoint = applicationEntryPoint;
+  }
+
   public void setServiceLevel(String serviceLevel) {
     this.serviceLevel = serviceLevel;
   }
@@ -198,6 +208,7 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
   public int hashCode() {
     return Objects.hash(
         id,
+        applicationEntryPoint,
         key,
         category,
         type,
@@ -233,6 +244,7 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
     }
     return priority == other.priority
         && Objects.equals(id, other.id)
+        && Objects.equals(applicationEntryPoint, other.applicationEntryPoint)
         && Objects.equals(key, other.key)
         && Objects.equals(category, other.category)
         && Objects.equals(type, other.type)
@@ -255,6 +267,8 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
   public String toString() {
     return "ClassificationSummaryImpl [id="
         + id
+        + "applicationEntryPoint="
+        + applicationEntryPoint
         + ", key="
         + key
         + ", category="

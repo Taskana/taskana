@@ -96,5 +96,8 @@ class ClassificationSummaryAssemblerTest {
     assertThat(resource.getParentKey()).isEqualTo(classificationSummary.getParentKey());
     assertThat(resource.getType()).isEqualTo(classificationSummary.getType());
     assertThat(resource.getPriority()).isEqualTo(classificationSummary.getPriority());
+    assertThat(resource.getApplicationEntryPoint())
+        .isEqualTo(classificationSummary.getApplicationEntryPoint());
+    assertThat(resource.getServiceLevel()).isEqualTo(classificationSummary.getServiceLevel());
   }
 }

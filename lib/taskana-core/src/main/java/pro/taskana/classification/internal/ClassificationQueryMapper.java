@@ -63,6 +63,7 @@ public interface ClassificationQueryMapper {
     @Result(property = "serviceLevel", column = "SERVICE_LEVEL"),
     @Result(property = "parentId", column = "PARENT_ID"),
     @Result(property = "parentKey", column = "PARENT_KEY"),
+    @Result(property = "applicationEntryPoint", column = "APPLICATION_ENTRY_POINT"),
     @Result(property = "custom1", column = "CUSTOM_1"),
     @Result(property = "custom2", column = "CUSTOM_2"),
     @Result(property = "custom3", column = "CUSTOM_3"),

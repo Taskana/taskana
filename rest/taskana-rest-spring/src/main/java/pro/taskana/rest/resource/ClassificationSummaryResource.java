@@ -8,14 +8,16 @@ import pro.taskana.classification.api.models.ClassificationSummary;
 public class ClassificationSummaryResource extends ResourceSupport {
 
   private String classificationId;
+  private String applicationEntryPoint;
+  private String category;
+  private String domain;
   private String key;
+  private String name;
   private String parentId;
   private String parentKey;
-  private String category;
-  private String type;
-  private String domain;
-  private String name;
   private int priority;
+  private String serviceLevel;
+  private String type;
   private String custom1;
   private String custom2;
   private String custom3;
@@ -29,14 +31,16 @@ public class ClassificationSummaryResource extends ResourceSupport {
 
   public ClassificationSummaryResource(ClassificationSummary classification) {
     classificationId = classification.getId();
+    applicationEntryPoint = classification.getApplicationEntryPoint();
+    category = classification.getCategory();
+    domain = classification.getDomain();
     key = classification.getKey();
+    name = classification.getName();
     parentId = classification.getParentId();
     parentKey = classification.getParentKey();
-    category = classification.getCategory();
-    type = classification.getType();
-    domain = classification.getDomain();
-    name = classification.getName();
     priority = classification.getPriority();
+    serviceLevel = classification.getServiceLevel();
+    type = classification.getType();
     custom1 = classification.getCustom1();
     custom2 = classification.getCustom2();
     custom3 = classification.getCustom3();
@@ -117,6 +121,22 @@ public class ClassificationSummaryResource extends ResourceSupport {
 
   public void setPriority(int priority) {
     this.priority = priority;
+  }
+
+  public String getApplicationEntryPoint() {
+    return applicationEntryPoint;
+  }
+
+  public void setApplicationEntryPoint(String applicationEntryPoint) {
+    this.applicationEntryPoint = applicationEntryPoint;
+  }
+
+  public String getServiceLevel() {
+    return serviceLevel;
+  }
+
+  public void setServiceLevel(String serviceLevel) {
+    this.serviceLevel = serviceLevel;
   }
 
   public String getCustom1() {
@@ -202,6 +222,10 @@ public class ClassificationSummaryResource extends ResourceSupport {
         + this.name
         + "priority= "
         + this.priority
+        + "serviceLevel="
+        + this.serviceLevel
+        + "applicationEntryPoint="
+        + this.applicationEntryPoint
         + "]";
   }
 }
