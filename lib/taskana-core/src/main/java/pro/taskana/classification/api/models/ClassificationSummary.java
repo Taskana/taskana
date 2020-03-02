@@ -71,6 +71,13 @@ public interface ClassificationSummary {
   String getServiceLevel();
 
   /**
+   * Gets the application entry point of the parent classification.
+   *
+   * @return the application entry point
+   */
+  String getApplicationEntryPoint();
+
+  /**
    * Gets the priority of the classification.
    *
    * @return the priority
