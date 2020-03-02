@@ -13,7 +13,6 @@ public class ClassificationImpl extends ClassificationSummaryImpl implements Cla
   private Instant created;
   private Instant modified;
   private String description;
-  private String applicationEntryPoint;
 
   public ClassificationImpl() {}
 
@@ -104,6 +103,7 @@ public class ClassificationImpl extends ClassificationSummaryImpl implements Cla
     summary.setParentKey(this.parentKey);
     summary.setPriority(this.priority);
     summary.setServiceLevel(this.serviceLevel);
+    summary.setApplicationEntryPoint(this.applicationEntryPoint);
     summary.setCustom1(custom1);
     summary.setCustom2(custom2);
     summary.setCustom3(custom3);
@@ -122,7 +122,7 @@ public class ClassificationImpl extends ClassificationSummaryImpl implements Cla
   @Override
   public int hashCode() {
     return Objects.hash(
-        super.hashCode(), isValidInDomain, created, modified, description, applicationEntryPoint);
+        super.hashCode(), isValidInDomain, created, modified, description);
   }
 
   @Override
@@ -140,8 +140,7 @@ public class ClassificationImpl extends ClassificationSummaryImpl implements Cla
     return Objects.equals(isValidInDomain, other.isValidInDomain)
         && Objects.equals(created, other.created)
         && Objects.equals(modified, other.modified)
-        && Objects.equals(description, other.description)
-        && Objects.equals(applicationEntryPoint, other.applicationEntryPoint);
+        && Objects.equals(description, other.description);
   }
 
   @Override
