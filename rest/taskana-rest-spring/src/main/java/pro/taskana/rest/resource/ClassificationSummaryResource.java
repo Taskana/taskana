@@ -206,26 +206,44 @@ public class ClassificationSummaryResource extends ResourceSupport {
   @Override
   public String toString() {
     return "ClassificationSummaryResource ["
-        + "classificationId= "
+        + "classificationId="
         + this.classificationId
-        + "key= "
-        + this.key
-        + "parentId= "
-        + this.parentId
-        + "parentKey= "
-        + this.parentKey
-        + "type= "
-        + this.type
-        + "domain= "
-        + this.domain
-        + "name= "
-        + this.name
-        + "priority= "
-        + this.priority
-        + "serviceLevel="
-        + this.serviceLevel
-        + "applicationEntryPoint="
+        + ", applicationEntryPoint="
         + this.applicationEntryPoint
+        + ", category="
+        + this.category
+        + ", domain="
+        + this.domain
+        + ", key="
+        + this.key
+        + ", name="
+        + this.name
+        + ", parentId="
+        + this.parentId
+        + ", parentKey="
+        + this.parentKey
+        + ", priority="
+        + this.priority
+        + ", serviceLevel="
+        + this.serviceLevel
+        + ", type="
+        + this.type
+        + ", custom1="
+        + this.custom1
+        + ", custom2="
+        + this.custom2
+        + ", custom3="
+        + this.custom3
+        + ", custom4="
+        + this.custom4
+        + ", custom5="
+        + this.custom5
+        + ", custom6="
+        + this.custom6
+        + ", custom7="
+        + this.custom7
+        + ", custom8="
+        + this.custom8
         + "]";
   }
 }
