@@ -1,8 +1,6 @@
 package pro.taskana.rest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
@@ -27,7 +25,7 @@ class TaskanaEngineControllerIntTest {
 
   @BeforeAll
   static void init() {
-    template = RestHelper.getRestTemplate();
+    template = RestHelper.TEMPLATE;
   }
 
   @Test
@@ -38,7 +36,7 @@ class TaskanaEngineControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(List.class));
-    assertTrue(response.getBody().contains("DOMAIN_A"));
+    assertThat(response.getBody()).contains("DOMAIN_A");
   }
 
   @Test
@@ -49,9 +47,7 @@ class TaskanaEngineControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(List.class));
-    assertTrue(response.getBody().contains("TASK"));
-    assertTrue(response.getBody().contains("DOCUMENT"));
-    assertFalse(response.getBody().contains("UNKNOWN"));
+    assertThat(response.getBody()).containsOnly("TASK", "DOCUMENT");
   }
 
   @Test
@@ -62,11 +58,7 @@ class TaskanaEngineControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(List.class));
-    assertTrue(response.getBody().contains("MANUAL"));
-    assertTrue(response.getBody().contains("EXTERNAL"));
-    assertTrue(response.getBody().contains("AUTOMATIC"));
-    assertTrue(response.getBody().contains("PROCESS"));
-    assertFalse(response.getBody().contains("UNKNOWN"));
+    assertThat(response.getBody()).containsOnly("MANUAL", "EXTERNAL", "AUTOMATIC", "PROCESS");
   }
 
   @Test
@@ -77,9 +69,9 @@ class TaskanaEngineControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(TaskanaUserInfoResource.class));
-    assertEquals("teamlead_1", response.getBody().getUserId());
-    assertTrue(response.getBody().getGroupIds().contains("businessadmin"));
-    assertTrue(response.getBody().getRoles().contains(TaskanaRole.BUSINESS_ADMIN));
-    assertFalse(response.getBody().getRoles().contains(TaskanaRole.ADMIN));
+    assertThat(response.getBody().getUserId()).isEqualTo("teamlead_1");
+    assertThat(response.getBody().getGroupIds()).contains("businessadmin");
+    assertThat(response.getBody().getRoles()).contains(TaskanaRole.BUSINESS_ADMIN);
+    assertThat(response.getBody().getRoles()).doesNotContain(TaskanaRole.ADMIN);
   }
 }

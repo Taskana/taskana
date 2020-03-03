@@ -2,11 +2,9 @@ package pro.taskana.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.fail;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Instant;
-import java.util.Iterator;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +36,7 @@ class WorkbasketControllerIntTest {
 
   @BeforeAll
   static void init() {
-    template = RestHelper.getRestTemplate();
+    template = RestHelper.TEMPLATE;
   }
 
   @Test
@@ -92,17 +90,17 @@ class WorkbasketControllerIntTest {
 
   @Test
   void testThrowsExceptionIfInvalidFilterIsUsed() {
-    try {
-      template.exchange(
-          restHelper.toUrl(Mapping.URL_WORKBASKET) + "?invalid=PERSONAL",
-          HttpMethod.GET,
-          restHelper.defaultRequest(),
-          ParameterizedTypeReference.forType(WorkbasketSummaryListResource.class));
-      fail();
-    } catch (HttpClientErrorException e) {
-      assertThat(e.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-      assertThat(e.getResponseBodyAsString().contains("[invalid]")).isTrue();
-    }
+    assertThatThrownBy(
+        () ->
+            template.exchange(
+                restHelper.toUrl(Mapping.URL_WORKBASKET) + "?invalid=PERSONAL",
+                HttpMethod.GET,
+                restHelper.defaultRequest(),
+                ParameterizedTypeReference.forType(WorkbasketSummaryListResource.class)))
+        .isInstanceOf(HttpClientErrorException.class)
+        .hasMessageContaining("[invalid]")
+        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
   @Test
@@ -214,11 +212,11 @@ class WorkbasketControllerIntTest {
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(DistributionTargetListResource.class));
     assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.OK);
-    Iterator<DistributionTargetResource> iterator = response2.getBody().getContent().iterator();
-    while (iterator.hasNext()) {
-      assertThat(iterator.next().getWorkbasketId())
-          .isNotEqualTo("WBI:100000000000000000000000000000000007");
-    }
+    assertThat(
+        response2.getBody().getContent().stream()
+            .map(DistributionTargetResource::getWorkbasketId)
+            .noneMatch(id -> (id.equals("WBI:100000000000000000000000000000000007"))))
+        .isTrue();
   }
 
   @Test
@@ -235,7 +233,7 @@ class WorkbasketControllerIntTest {
         .isEqualTo(MediaTypes.HAL_JSON_UTF8_VALUE);
     assertThat(response.getBody().getContent()).hasSize(3);
   }
-  
+
   @Test
   void testGetWorkbasketDistributionTargets() {
     ResponseEntity<DistributionTargetListResource> response =
