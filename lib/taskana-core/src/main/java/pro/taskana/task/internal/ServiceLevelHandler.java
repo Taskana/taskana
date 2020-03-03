@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -50,7 +51,7 @@ class ServiceLevelHandler {
     DaysToWorkingDaysConverter.setGermanPublicHolidaysEnabled(
         taskanaEngine.getEngine().getConfiguration().isGermanPublicHolidaysEnabled());
     try {
-      this.converter = DaysToWorkingDaysConverter.initialize();
+      converter = DaysToWorkingDaysConverter.initialize();
     } catch (InvalidArgumentException e) {
       LOGGER.error(ERROR_CANNOT_INITIALIZE_DAYS_TO_WORKING_DAYS_CONVERTER);
       throw new SystemException(
@@ -245,6 +246,9 @@ class ServiceLevelHandler {
   private TaskImpl updatePlannedDueOnTaskUpdate(
       TaskImpl newTaskImpl, TaskImpl oldTaskImpl, DurationPrioHolder durationPrioHolder)
       throws InvalidArgumentException {
+    if (newTaskImpl.getPlanned() == null && newTaskImpl.getDue() == null) {
+      newTaskImpl.setPlanned(oldTaskImpl.getPlanned());
+    }
     // case 1: no change of planned / due, but potentially change of an attachment or classification
     if (oldTaskImpl.getDue().equals(newTaskImpl.getDue())
         && oldTaskImpl.getPlanned().equals(newTaskImpl.getPlanned())) {

@@ -68,7 +68,6 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
 
     TaskImpl ti = (TaskImpl) task;
     ti.setCompleted(now.plus(Duration.ofHours(27)));
-
     TimeZone originalZone = TimeZone.getDefault();
     Task updatedTask = taskService.updateTask(task);
     TimeZone.setDefault(TimeZone.getTimeZone("EST"));

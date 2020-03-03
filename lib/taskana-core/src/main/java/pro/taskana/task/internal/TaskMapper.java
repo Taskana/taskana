@@ -13,7 +13,9 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import pro.taskana.common.internal.CustomPropertySelector;
+import pro.taskana.common.internal.persistence.InstantTypeHandler;
 import pro.taskana.common.internal.persistence.MapTypeHandler;
+import pro.taskana.common.internal.util.Pair;
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.internal.models.MinimalTaskSummary;
 import pro.taskana.task.internal.models.TaskImpl;
@@ -232,14 +234,34 @@ public interface TaskMapper {
   long updateTaskDueDates(
       @Param("taskIds") List<String> taskIds, @Param("referenceTask") TaskImpl referenceTask);
 
+  @Update(
+      "<script>"
+          + "<if test='taskIds != null'> "
+          + "UPDATE TASK SET MODIFIED = #{referenceTask.modified}, "
+          + "PRIORITY = #{referenceTask.priority} "
+          + "WHERE ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>) "
+          + "</if> "
+          + "</script>")
+  long updatePriorityOfTasks(
+      @Param("taskIds") List<String> taskIds, @Param("referenceTask") TaskImpl referenceTask);
+
   @Select(
-      "<script>SELECT ID, STATE FROM TASK "
+      "<script>SELECT ID, PLANNED, STATE FROM TASK "
           + "WHERE ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>) "
           + "AND STATE IN ( 'READY','CLAIMED') "
           + "<if test=\"_databaseId == 'db2'\">with UR </if> "
           + "</script>")
-  @Results(value = {@Result(property = "taskId", column = "ID")})
-  List<String> filterTaskIdsForNotCompleted(@Param("taskIds") List<String> taskIds);
+  @Results(
+      value = {
+        @Result(property = "left", column = "ID"),
+        @Result(
+            property = "right",
+            column = "PLANNED",
+            javaType = Instant.class,
+            typeHandler = InstantTypeHandler.class)
+      })
+  List<Pair<String, Instant>> filterTaskIdsForReadyAndClaimed(
+      @Param("taskIds") List<String> taskIds);
 
   @Select(
       "<script> "
