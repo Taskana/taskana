@@ -1672,7 +1672,6 @@ public class TaskServiceImpl implements TaskService {
       throw new InvalidStateException(
           String.format(TASK_WITH_ID_IS_NOT_READY, oldTaskImpl.getId(), oldTaskImpl.getState()));
     }
-
   }
 
   private void updateClassificationSummary(TaskImpl newTaskImpl, TaskImpl oldTaskImpl)
