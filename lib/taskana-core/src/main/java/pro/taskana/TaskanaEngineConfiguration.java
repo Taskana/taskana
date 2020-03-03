@@ -43,7 +43,7 @@ import pro.taskana.common.internal.configuration.DbSchemaCreator;
 public class TaskanaEngineConfiguration {
 
   protected static final String TASKANA_SCHEMA_VERSION =
-      "1.2.1"; // must match the VERSION value in table
+      "2.0.1"; // must match the VERSION value in table
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineConfiguration.class);
   private static final String USER_NAME = "sa";
   private static final String USER_PASSWORD = "sa";
@@ -485,7 +485,7 @@ public class TaskanaEngineConfiguration {
         this.schemaName = this.schemaName.toUpperCase();
       }
     } catch (SQLException ex) {
-      LOGGER.error("Caught {} when attempting to initialize the schema name", ex);
+      LOGGER.error("Caught exception when attempting to initialize the schema name", ex);
     }
 
     LOGGER.debug("Using schema name {}", this.getSchemaName());
