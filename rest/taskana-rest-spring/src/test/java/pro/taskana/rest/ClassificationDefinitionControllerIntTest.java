@@ -1,7 +1,7 @@
 package pro.taskana.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
@@ -46,7 +46,7 @@ class ClassificationDefinitionControllerIntTest {
 
   @BeforeAll
   static void init() {
-    template = RestHelper.getRestTemplate();
+    template = RestHelper.TEMPLATE;
   }
 
   @Test
@@ -378,12 +378,10 @@ class ClassificationDefinitionControllerIntTest {
     clList.add(classificationString);
     clList.add(classificationString);
 
-    try {
-      importRequest(clList);
-      fail("Expected http-Status 409");
-    } catch (HttpClientErrorException e) {
-      assertThat(e.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
-    }
+    assertThatThrownBy(() -> importRequest(clList))
+        .isInstanceOf(HttpClientErrorException.class)
+        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.CONFLICT);
   }
 
   private ClassificationResource createClassification(

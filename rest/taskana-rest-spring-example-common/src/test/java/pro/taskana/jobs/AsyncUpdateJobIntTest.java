@@ -52,7 +52,7 @@ class AsyncUpdateJobIntTest {
 
   @BeforeAll
   static void init() {
-    template = RestHelper.getRestTemplate();
+    template = RestHelper.TEMPLATE;
   }
 
   @Test
