@@ -63,7 +63,7 @@ public interface ClassificationSummary {
   String getParentKey();
 
   /**
-   * Gets the service level of the parent classification. It is a String in ISO-8601 duration
+   * Gets the service level of the classification. It is a String in ISO-8601 duration
    * format. See the parse() method of {@code Duration} for details.
    *
    * @return the service level
@@ -71,7 +71,7 @@ public interface ClassificationSummary {
   String getServiceLevel();
 
   /**
-   * Gets the application entry point of the parent classification.
+   * Gets the application entry point of the classification.
    *
    * @return the application entry point
    */
