@@ -47,15 +47,19 @@ import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
 import pro.taskana.task.api.exceptions.InvalidOwnerException;
 import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
+import pro.taskana.task.api.exceptions.TaskCommentAlreadyExistException;
+import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.exceptions.UpdateFailedException;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
+import pro.taskana.task.api.models.TaskComment;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.AttachmentImpl;
 import pro.taskana.task.internal.models.AttachmentSummaryImpl;
 import pro.taskana.task.internal.models.MinimalTaskSummary;
+import pro.taskana.task.internal.models.TaskCommentImpl;
 import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.task.internal.models.TaskSummaryImpl;
 import pro.taskana.workbasket.api.WorkbasketPermission;
@@ -101,11 +105,13 @@ public class TaskServiceImpl implements TaskService {
   private AttachmentMapper attachmentMapper;
   private HistoryEventProducer historyEventProducer;
   private TaskTransferrer taskTransferrer;
+  private TaskCommentServiceImpl taskCommentService;
   private ServiceLevelHandler serviceLevelHander;
 
   public TaskServiceImpl(
       InternalTaskanaEngine taskanaEngine,
       TaskMapper taskMapper,
+      TaskCommentMapper taskCommentMapper,
       AttachmentMapper attachmentMapper) {
     super();
     try {
@@ -121,6 +127,7 @@ public class TaskServiceImpl implements TaskService {
     this.classificationService = taskanaEngine.getEngine().getClassificationService();
     this.historyEventProducer = taskanaEngine.getHistoryEventProducer();
     this.taskTransferrer = new TaskTransferrer(taskanaEngine, taskMapper, this);
+    this.taskCommentService = new TaskCommentServiceImpl(taskanaEngine, taskCommentMapper, this);
     this.serviceLevelHander = new ServiceLevelHandler(taskanaEngine, taskMapper, attachmentMapper);
   }
 
@@ -268,7 +275,7 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
-  public Task getTask(String id) throws TaskNotFoundException, NotAuthorizedException {
+  public Task getTask(String id) throws NotAuthorizedException, TaskNotFoundException {
     LOGGER.debug("entry to getTaskById(id = {})", id);
     TaskImpl resultTask = null;
     try {
@@ -594,6 +601,38 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
+  public TaskComment createTaskComment(TaskComment taskComment)
+      throws NotAuthorizedException, TaskCommentAlreadyExistException, TaskNotFoundException {
+    return taskCommentService.createTaskComment(taskComment);
+  }
+
+  @Override
+  public TaskComment updateTaskComment(TaskComment taskComment)
+      throws NotAuthorizedException, ConcurrencyException, TaskCommentNotFoundException,
+          TaskNotFoundException {
+    return taskCommentService.updateTaskComment(taskComment);
+  }
+
+  @Override
+  public void deleteTaskComment(String taskCommentId)
+      throws NotAuthorizedException, TaskCommentNotFoundException, TaskNotFoundException,
+          InvalidArgumentException {
+    taskCommentService.deleteTaskComment(taskCommentId);
+  }
+
+  @Override
+  public TaskComment getTaskComment(String taskCommentid) throws TaskCommentNotFoundException {
+    return taskCommentService.getTaskComment(taskCommentid);
+  }
+
+  @Override
+  public List<TaskCommentImpl> getTaskComments(String taskId)
+      throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException {
+
+    return taskCommentService.getTaskComments(taskId);
+  }
+
+  @Override
   public BulkOperationResults<String, TaskanaException> setCallbackStateForTasks(
       List<String> externalIds, CallbackState state) {
     if (LOGGER.isDebugEnabled()) {
@@ -792,25 +831,6 @@ public class TaskServiceImpl implements TaskService {
     LOGGER.debug("exit from removeNonExistingTasksFromTaskIdList()");
   }
 
-  private Duration calculateDuration(
-      PrioDurationHolder prioDurationFromAttachments,
-      ClassificationSummary newClassificationSummary) {
-    if (newClassificationSummary.getServiceLevel() == null) {
-      return null;
-    }
-    Duration minDuration = prioDurationFromAttachments.getLeft();
-    Duration durationFromClassification =
-        Duration.parse(newClassificationSummary.getServiceLevel());
-    if (minDuration != null) {
-      if (minDuration.compareTo(durationFromClassification) > 0) {
-        minDuration = durationFromClassification;
-      }
-    } else {
-      minDuration = durationFromClassification;
-    }
-    return minDuration;
-  }
-
   List<TaskSummary> augmentTaskSummariesByContainedSummaries(List<TaskSummaryImpl> taskSummaries) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
@@ -843,6 +863,25 @@ public class TaskServiceImpl implements TaskService {
     result.addAll(taskSummaries);
     LOGGER.debug("exit from to augmentTaskSummariesByContainedSummaries()");
     return result;
+  }
+
+  private Duration calculateDuration(
+      PrioDurationHolder prioDurationFromAttachments,
+      ClassificationSummary newClassificationSummary) {
+    if (newClassificationSummary.getServiceLevel() == null) {
+      return null;
+    }
+    Duration minDuration = prioDurationFromAttachments.getLeft();
+    Duration durationFromClassification =
+        Duration.parse(newClassificationSummary.getServiceLevel());
+    if (minDuration != null) {
+      if (minDuration.compareTo(durationFromClassification) > 0) {
+        minDuration = durationFromClassification;
+      }
+    } else {
+      minDuration = durationFromClassification;
+    }
+    return minDuration;
   }
 
   private BulkOperationResults<String, TaskanaException> addExceptionsForTasksWhoseOwnerWasNotSet(
@@ -1230,7 +1269,8 @@ public class TaskServiceImpl implements TaskService {
           CallbackState state = CallbackState.valueOf(value);
           task.setCallbackState(state);
         } catch (Exception e) {
-          LOGGER.warn("Attempted to determine callback state from {} and caught {}", value, e);
+          LOGGER.warn(
+              "Attempted to determine callback state from {} and caught exception", value, e);
           throw new InvalidArgumentException(
               "Attempted to set callback state for task " + task.getId(), e);
         }
