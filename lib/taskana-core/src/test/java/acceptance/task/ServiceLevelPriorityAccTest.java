@@ -220,7 +220,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     String tkId1 = "TKI:000000000000000000000000000000000008";
     String tkId2 = "TKI:000000000000000000000000000000000009";
     String tkId3 = "TKI:000000000000000000000000000000000008";
-    String tkId4 = "TKI:000000000000000000000000000000000010";
+    String tkId4 = "TKI:000000000000000000000000000000000010"; // all three have P13D
 
     List<String> taskIds = Arrays.asList(tkId1, tkId2, tkId3, tkId4);
     Instant planned = getInstant("2020-05-03T07:00:00");

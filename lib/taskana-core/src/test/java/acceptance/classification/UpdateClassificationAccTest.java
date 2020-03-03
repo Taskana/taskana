@@ -225,14 +225,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
     classification.setPriority(1000);
     classification.setServiceLevel("P15D");
 
-    classificationService.updateClassification(classification);
-    Thread.sleep(10);
-    JobRunner runner = new JobRunner(taskanaEngine);
-    // need to run jobs twice, since the first job creates a second one.
-    runner.runJobs();
-    Thread.sleep(10); // otherwise the next runJobs call intermittently doesn't find the Job created
-    // by the previous step (it searches with DueDate < CurrentTime)
-    runner.runJobs();
+    updateClassificationAndRunAssociatedJobs(classification);
     // Get and check the new value
     Classification updatedClassification =
         classificationService.getClassification("CLI:100000000000000000000000000000000003");
@@ -241,7 +234,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
     assertFalse(modifiedBefore.isAfter(updatedClassification.getModified()));
     // TODO - resume old behaviour after attachment query is possible.
     TaskService taskService = taskanaEngine.getTaskService();
-
+    DaysToWorkingDaysConverter.setGermanPublicHolidaysEnabled(true);
     DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize(Instant.now());
 
     List<String> tasksWithP1D =
@@ -252,15 +245,18 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
                 "TKI:000000000000000000000000000000000000",
                 "TKI:000000000000000000000000000000000011",
                 "TKI:000000000000000000000000000000000053"));
-    validateNewTaskProperties(before, tasksWithP1D, taskService, converter, 1);
+    validateTaskPropertiesAfterClassificationChange(
+        before, tasksWithP1D, taskService, converter, 1, 1000);
 
     List<String> tasksWithP8D =
         new ArrayList<>(Arrays.asList("TKI:000000000000000000000000000000000008"));
-    validateNewTaskProperties(before, tasksWithP8D, taskService, converter, 8);
+    validateTaskPropertiesAfterClassificationChange(
+        before, tasksWithP8D, taskService, converter, 8, 1000);
 
     List<String> tasksWithP14D =
         new ArrayList<>(Arrays.asList("TKI:000000000000000000000000000000000010"));
-    validateNewTaskProperties(before, tasksWithP14D, taskService, converter, 14);
+    validateTaskPropertiesAfterClassificationChange(
+        before, tasksWithP14D, taskService, converter, 14, 1000);
 
     List<String> tasksWithP15D =
         new ArrayList<>(
@@ -299,7 +295,8 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
                 "TKI:000000000000000000000000000000000101",
                 "TKI:000000000000000000000000000000000102",
                 "TKI:000000000000000000000000000000000103"));
-    validateNewTaskProperties(before, tasksWithP15D, taskService, converter, 15);
+    validateTaskPropertiesAfterClassificationChange(
+        before, tasksWithP15D, taskService, converter, 15, 1000);
   }
 
   @WithAccessId(
@@ -333,29 +330,263 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
     classificationService.updateClassification(created);
   }
 
-  private void validateNewTaskProperties(
+  @WithAccessId(
+      userName = "dummy",
+      groupNames = {"admin"})
+  @Test
+  public void testUpdateClassificationChangePriority()
+      throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
+          InterruptedException, TaskNotFoundException, InvalidArgumentException {
+    final Instant before = Instant.now();
+    Classification classification =
+        classificationService.getClassification("CLI:100000000000000000000000000000000003");
+    final Instant modifiedBefore = classification.getModified();
+
+    classification.setPriority(99);
+    classification.setServiceLevel("P1D");
+
+    updateClassificationAndRunAssociatedJobs(classification);
+    // Get and check the new value
+    Classification updatedClassification =
+        classificationService.getClassification("CLI:100000000000000000000000000000000003");
+    assertNotNull(updatedClassification);
+    assertFalse(modifiedBefore.isAfter(updatedClassification.getModified()));
+    // TODO - resume old behaviour after attachment query is possible.
+    TaskService taskService = taskanaEngine.getTaskService();
+    DaysToWorkingDaysConverter.setGermanPublicHolidaysEnabled(true);
+    DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize(Instant.now());
+
+    List<String> tasksWithPrio99 =
+        new ArrayList<>(
+            Arrays.asList(
+                "TKI:000000000000000000000000000000000003",
+                "TKI:000000000000000000000000000000000004",
+                "TKI:000000000000000000000000000000000005",
+                "TKI:000000000000000000000000000000000006",
+                "TKI:000000000000000000000000000000000007",
+                "TKI:000000000000000000000000000000000009",
+                "TKI:000000000000000000000000000000000012",
+                "TKI:000000000000000000000000000000000013",
+                "TKI:000000000000000000000000000000000014",
+                "TKI:000000000000000000000000000000000015",
+                "TKI:000000000000000000000000000000000016",
+                "TKI:000000000000000000000000000000000017",
+                "TKI:000000000000000000000000000000000018",
+                "TKI:000000000000000000000000000000000019",
+                "TKI:000000000000000000000000000000000020",
+                "TKI:000000000000000000000000000000000021",
+                "TKI:000000000000000000000000000000000022",
+                "TKI:000000000000000000000000000000000023",
+                "TKI:000000000000000000000000000000000024",
+                "TKI:000000000000000000000000000000000025",
+                "TKI:000000000000000000000000000000000026",
+                "TKI:000000000000000000000000000000000027",
+                "TKI:000000000000000000000000000000000028",
+                "TKI:000000000000000000000000000000000029",
+                "TKI:000000000000000000000000000000000030",
+                "TKI:000000000000000000000000000000000031",
+                "TKI:000000000000000000000000000000000032",
+                "TKI:000000000000000000000000000000000033",
+                "TKI:000000000000000000000000000000000034",
+                "TKI:000000000000000000000000000000000035",
+                "TKI:000000000000000000000000000000000100",
+                "TKI:000000000000000000000000000000000101",
+                "TKI:000000000000000000000000000000000102",
+                "TKI:000000000000000000000000000000000103",
+                "TKI:200000000000000000000000000000000007",
+                "TKI:000000000000000000000000000000000000",
+                "TKI:000000000000000000000000000000000052",
+                "TKI:000000000000000000000000000000000053",
+                "TKI:000000000000000000000000000000000054",
+                "TKI:000000000000000000000000000000000008",
+                "TKI:000000000000000000000000000000000009",
+                "TKI:000000000000000000000000000000000010"));
+    validateTaskPropertiesAfterClassificationChange(
+        before, tasksWithPrio99, taskService, converter, 1, 99);
+
+    List<String> tasksWithPrio101 =
+        new ArrayList<>(Arrays.asList("TKI:000000000000000000000000000000000011"));
+    validateTaskPropertiesAfterClassificationChange(
+        before, tasksWithPrio101, taskService, converter, 1, 101);
+
+    updatedClassification.setPriority(7);
+    updateClassificationAndRunAssociatedJobs(updatedClassification);
+
+    List<String> tasksWithPrio7 =
+        new ArrayList<>(
+            Arrays.asList(
+                "TKI:000000000000000000000000000000000003",
+                "TKI:000000000000000000000000000000000004",
+                "TKI:000000000000000000000000000000000005",
+                "TKI:000000000000000000000000000000000006",
+                "TKI:000000000000000000000000000000000007",
+                "TKI:000000000000000000000000000000000009",
+                "TKI:000000000000000000000000000000000010",
+                "TKI:000000000000000000000000000000000012",
+                "TKI:000000000000000000000000000000000013",
+                "TKI:000000000000000000000000000000000014",
+                "TKI:000000000000000000000000000000000015",
+                "TKI:000000000000000000000000000000000016",
+                "TKI:000000000000000000000000000000000017",
+                "TKI:000000000000000000000000000000000018",
+                "TKI:000000000000000000000000000000000019",
+                "TKI:000000000000000000000000000000000020",
+                "TKI:000000000000000000000000000000000021",
+                "TKI:000000000000000000000000000000000022",
+                "TKI:000000000000000000000000000000000023",
+                "TKI:000000000000000000000000000000000024",
+                "TKI:000000000000000000000000000000000025",
+                "TKI:000000000000000000000000000000000026",
+                "TKI:000000000000000000000000000000000027",
+                "TKI:000000000000000000000000000000000028",
+                "TKI:000000000000000000000000000000000029",
+                "TKI:000000000000000000000000000000000030",
+                "TKI:000000000000000000000000000000000031",
+                "TKI:000000000000000000000000000000000032",
+                "TKI:000000000000000000000000000000000033",
+                "TKI:000000000000000000000000000000000034",
+                "TKI:000000000000000000000000000000000035",
+                "TKI:000000000000000000000000000000000100",
+                "TKI:000000000000000000000000000000000101",
+                "TKI:000000000000000000000000000000000102",
+                "TKI:000000000000000000000000000000000103",
+                "TKI:000000000000000000000000000000000000",
+                "TKI:000000000000000000000000000000000052",
+                "TKI:000000000000000000000000000000000053",
+                "TKI:000000000000000000000000000000000054",
+                "TKI:000000000000000000000000000000000055",
+                "TKI:200000000000000000000000000000000007"));
+    validateTaskPropertiesAfterClassificationChange(
+        before, tasksWithPrio7, taskService, converter, 1, 7);
+
+    List<String> tasksWithPrio9 =
+        new ArrayList<>(Arrays.asList("TKI:000000000000000000000000000000000008"));
+    validateTaskPropertiesAfterClassificationChange(
+        before, tasksWithPrio9, taskService, converter, 1, 9);
+
+    tasksWithPrio101 = new ArrayList<>(Arrays.asList("TKI:000000000000000000000000000000000011"));
+
+    validateTaskPropertiesAfterClassificationChange(
+        before, tasksWithPrio101, taskService, converter, 1, 101);
+  }
+
+  @WithAccessId(
+      userName = "dummy",
+      groupNames = {"admin"})
+  @Test
+  public void testUpdateClassificationChangeServiceLevel()
+      throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
+          InterruptedException, TaskNotFoundException, InvalidArgumentException {
+    final Instant before = Instant.now();
+    Classification classification =
+        classificationService.getClassification("CLI:100000000000000000000000000000000003");
+    final Instant modifiedBefore = classification.getModified();
+
+    classification.setPriority(555);
+    classification.setServiceLevel("P12D");
+
+    updateClassificationAndRunAssociatedJobs(classification);
+    // Get and check the new value
+    Classification updatedClassification =
+        classificationService.getClassification("CLI:100000000000000000000000000000000003");
+    assertNotNull(updatedClassification);
+    assertFalse(modifiedBefore.isAfter(updatedClassification.getModified()));
+    // TODO - resume old behaviour after attachment query is possible.
+    TaskService taskService = taskanaEngine.getTaskService();
+    DaysToWorkingDaysConverter.setGermanPublicHolidaysEnabled(true);
+    DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize(Instant.now());
+    List<String> tasksWithPD12 =
+        new ArrayList<>(
+            Arrays.asList(
+                "TKI:000000000000000000000000000000000003",
+                "TKI:000000000000000000000000000000000004",
+                "TKI:000000000000000000000000000000000005",
+                "TKI:000000000000000000000000000000000006",
+                "TKI:000000000000000000000000000000000007",
+                "TKI:000000000000000000000000000000000009",
+                "TKI:000000000000000000000000000000000010",
+                "TKI:000000000000000000000000000000000012",
+                "TKI:000000000000000000000000000000000013",
+                "TKI:000000000000000000000000000000000014",
+                "TKI:000000000000000000000000000000000015",
+                "TKI:000000000000000000000000000000000016",
+                "TKI:000000000000000000000000000000000017",
+                "TKI:000000000000000000000000000000000018",
+                "TKI:000000000000000000000000000000000019",
+                "TKI:000000000000000000000000000000000020",
+                "TKI:000000000000000000000000000000000021",
+                "TKI:000000000000000000000000000000000022",
+                "TKI:000000000000000000000000000000000023",
+                "TKI:000000000000000000000000000000000024",
+                "TKI:000000000000000000000000000000000025",
+                "TKI:000000000000000000000000000000000026",
+                "TKI:000000000000000000000000000000000027",
+                "TKI:000000000000000000000000000000000028",
+                "TKI:000000000000000000000000000000000029",
+                "TKI:000000000000000000000000000000000030",
+                "TKI:000000000000000000000000000000000031",
+                "TKI:000000000000000000000000000000000032",
+                "TKI:000000000000000000000000000000000033",
+                "TKI:000000000000000000000000000000000034",
+                "TKI:000000000000000000000000000000000035",
+                "TKI:000000000000000000000000000000000100",
+                "TKI:000000000000000000000000000000000101",
+                "TKI:000000000000000000000000000000000102",
+                "TKI:000000000000000000000000000000000103",
+                "TKI:200000000000000000000000000000000007"));
+    validateTaskPropertiesAfterClassificationChange(
+        before, tasksWithPD12, taskService, converter, 12, 555);
+
+    List<String> tasksWithPD8 =
+        new ArrayList<>(Arrays.asList("TKI:000000000000000000000000000000000008"));
+    validateTaskPropertiesAfterClassificationChange(
+        before, tasksWithPD8, taskService, converter, 8, 555);
+
+    List<String> tasksWithPD1 =
+        new ArrayList<>(
+            Arrays.asList(
+                "TKI:000000000000000000000000000000000000",
+                "TKI:000000000000000000000000000000000011",
+                "TKI:000000000000000000000000000000000052",
+                "TKI:000000000000000000000000000000000053",
+                "TKI:000000000000000000000000000000000054",
+                "TKI:000000000000000000000000000000000055"));
+    validateTaskPropertiesAfterClassificationChange(
+        before, tasksWithPD1, taskService, converter, 1, 555);
+  }
+
+  private void updateClassificationAndRunAssociatedJobs(Classification classification)
+      throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
+          InvalidArgumentException, InterruptedException {
+    classificationService.updateClassification(classification);
+    Thread.sleep(10);
+    // run the ClassificationChangedJob
+    JobRunner runner = new JobRunner(taskanaEngine);
+    // run the TaskRefreshJob that was scheduled by the ClassificationChangedJob.
+    runner.runJobs();
+    Thread.sleep(10); // otherwise the next runJobs call intermittently doesn't find the Job created
+    // by the previous step (it searches with DueDate < CurrentTime)
+    runner.runJobs();
+  }
+
+  private void validateTaskPropertiesAfterClassificationChange(
       Instant before,
-      List<String> tasksWithP15D,
+      List<String> tasksUpdated,
       TaskService taskService,
       DaysToWorkingDaysConverter converter,
-      int serviceLevel)
-      throws TaskNotFoundException, NotAuthorizedException {
-    for (String taskId : tasksWithP15D) {
+      int serviceLevel,
+      int priority)
+      throws TaskNotFoundException, NotAuthorizedException, InvalidArgumentException {
+    for (String taskId : tasksUpdated) {
       Task task = taskService.getTask(taskId);
       assertTrue(
           task.getModified().isAfter(before), "Task " + task.getId() + " has not been refreshed.");
-      assertEquals(1000, task.getPriority());
       long calendarDays = converter.convertWorkingDaysToDays(task.getPlanned(), serviceLevel);
 
       String msg =
-          "Task: "
-              + taskId
-              + ": Due Date "
-              + task.getDue()
-              + " does not match planned "
-              + task.getPlanned()
-              + " + calendar days "
-              + calendarDays;
+          String.format(
+              "Task: %s and Due Date: %s do not match planned %s. Calendar days : %s.",
+              taskId, task.getDue(), task.getPlanned(), calendarDays);
       assertEquals(task.getDue(), task.getPlanned().plus(Duration.ofDays(calendarDays)), msg);
     }
   }

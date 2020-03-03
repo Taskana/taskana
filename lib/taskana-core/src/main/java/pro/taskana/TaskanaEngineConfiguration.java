@@ -135,6 +135,8 @@ public class TaskanaEngineConfiguration {
       this.rolesSeparator = rolesSeparator;
     }
 
+    setGermanPublicHolidaysEnabled(true);
+
     if (dataSource != null) {
       this.dataSource = dataSource;
     } else {
