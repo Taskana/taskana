@@ -2,30 +2,18 @@ package pro.taskana.task.internal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.mockito.Mockito.when;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import org.apache.ibatis.session.SqlSession;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.classification.api.models.Classification;
-import pro.taskana.classification.internal.ClassificationQueryImpl;
-import pro.taskana.classification.internal.ClassificationServiceImpl;
 import pro.taskana.classification.internal.models.ClassificationImpl;
-import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.JunitHelper;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.TaskImpl;
-import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 
@@ -34,38 +22,7 @@ import pro.taskana.workbasket.internal.models.WorkbasketImpl;
  *
  * @author EH
  */
-@ExtendWith(MockitoExtension.class)
 class TaskServiceImplTest {
-
-  private TaskServiceImpl cut;
-
-  @Mock private TaskanaEngineConfiguration taskanaEngineConfigurationMock;
-
-  @Mock private InternalTaskanaEngine internalTaskanaEngineMock;
-
-  @Mock private TaskanaEngine taskanaEngineMock;
-
-  @Mock private TaskMapper taskMapperMock;
-
-  @Mock private ObjectReferenceMapper objectReferenceMapperMock;
-
-  @Mock private WorkbasketService workbasketServiceMock;
-
-  @Mock private ClassificationServiceImpl classificationServiceImplMock;
-
-  @Mock private AttachmentMapper attachmentMapperMock;
-
-  @Mock private ClassificationQueryImpl classificationQueryImplMock;
-
-  @Mock private SqlSession sqlSessionMock;
-
-  @BeforeEach
-  void setup() {
-    when(internalTaskanaEngineMock.getEngine()).thenReturn(taskanaEngineMock);
-    when(taskanaEngineMock.getWorkbasketService()).thenReturn(workbasketServiceMock);
-    when(taskanaEngineMock.getClassificationService()).thenReturn(classificationServiceImplMock);
-    cut = new TaskServiceImpl(internalTaskanaEngineMock, taskMapperMock, attachmentMapperMock);
-  }
 
   @Test
   void testTaskSummaryEqualsHashCode() throws InterruptedException {

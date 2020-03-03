@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 public final class SampleDataProvider {
 
   static final String TEST_TASK = "/sql/test-data/task.sql";
+  static final String TEST_TASK_COMMENT = "/sql/test-data/task-comment.sql";
   static final String TEST_WORKBASKET = "/sql/test-data/workbasket.sql";
   static final String TEST_DISTRIBUTION_TARGETS = "/sql/test-data/distribution-targets.sql";
   static final String TEST_WORKBASKET_ACCESS_LIST = "/sql/test-data/workbasket-access-list.sql";
@@ -18,6 +19,7 @@ public final class SampleDataProvider {
   private static final String CLEAR_HISTORY_EVENTS = "/sql/clear/clear-history-events.sql";
   private static final String HISTORY_EVENT = "/sql/sample-data/history-event.sql";
   private static final String SAMPLE_TASK = "/sql/sample-data/task.sql";
+  private static final String SAMPLE_TASK_COMMENT = "/sql/sample-data/task-comment.sql";
   private static final String SAMPLE_WORKBASKET = "/sql/sample-data/workbasket.sql";
   private static final String SAMPLE_DISTRIBUTION_TARGETS =
       "/sql/sample-data/distribution-targets.sql";
@@ -35,6 +37,7 @@ public final class SampleDataProvider {
         SAMPLE_DISTRIBUTION_TARGETS,
         SAMPLE_CLASSIFICATION,
         SAMPLE_TASK,
+        SAMPLE_TASK_COMMENT,
         SAMPLE_ATTACHMENT,
         SAMPLE_WORKBASKET_ACCESS_LIST,
         SAMPLE_OBJECT_REFERENCE);
@@ -57,6 +60,7 @@ public final class SampleDataProvider {
         TEST_CLASSIFICATION,
         TEST_WORKBASKET,
         TEST_TASK,
+        TEST_TASK_COMMENT,
         TEST_WORKBASKET_ACCESS_LIST,
         TEST_DISTRIBUTION_TARGETS,
         TEST_OBJECT_REFERENCE,

@@ -52,6 +52,7 @@ import pro.taskana.spi.history.internal.HistoryEventProducer;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.internal.AttachmentMapper;
 import pro.taskana.task.internal.ObjectReferenceMapper;
+import pro.taskana.task.internal.TaskCommentMapper;
 import pro.taskana.task.internal.TaskMapper;
 import pro.taskana.task.internal.TaskQueryMapper;
 import pro.taskana.task.internal.TaskRoutingManager;
@@ -98,6 +99,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     return new TaskServiceImpl(
         internalTaskanaEngineImpl,
         session.getMapper(TaskMapper.class),
+        session.getMapper(TaskCommentMapper.class),
         session.getMapper(AttachmentMapper.class));
   }
 
@@ -258,6 +260,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     configuration.addMapper(ObjectReferenceMapper.class);
     configuration.addMapper(WorkbasketQueryMapper.class);
     configuration.addMapper(TaskQueryMapper.class);
+    configuration.addMapper(TaskCommentMapper.class);
     configuration.addMapper(ClassificationQueryMapper.class);
     configuration.addMapper(AttachmentMapper.class);
     configuration.addMapper(JobMapper.class);
