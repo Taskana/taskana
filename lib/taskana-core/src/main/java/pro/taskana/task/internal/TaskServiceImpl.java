@@ -3,6 +3,7 @@ package pro.taskana.task.internal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -748,75 +749,78 @@ public class TaskServiceImpl implements TaskService {
     }
   }
 
-  public Set<String> findTasksIdsAffectedByClassificationChange(String classificationId) {
+  public List<String> findTasksIdsAffectedByClassificationChange(String classificationId) {
     LOGGER.debug(
         "entry to findTasksIdsAffectedByClassificationChange(classificationId = {})",
         classificationId);
     // tasks directly affected
-    List<TaskSummary> tasks =
+    List<TaskSummary> tasksAffectedDirectly =
         createTaskQuery()
             .classificationIdIn(classificationId)
             .stateIn(TaskState.READY, TaskState.CLAIMED)
             .list();
 
     // tasks indirectly affected via attachments
-    List<String> taskIdsFromAttachments =
-        attachmentMapper.findTaskIdsAffectedByClassificationChange(classificationId);
+    List<Pair<String, Instant>> affectedPairs =
+        tasksAffectedDirectly.stream()
+            .map(t -> new Pair<String, Instant>(t.getId(), t.getPlanned()))
+            .collect(Collectors.toList());
+    // tasks indirectly affected via attachments
+    List<Pair<String, Instant>> taskIdsAndPlannedFromAttachments =
+        attachmentMapper.findTaskIdsAndPlannedAffectedByClassificationChange(classificationId);
 
-    List<String> filteredTaskIdsFromAttachments =
+    List<String> taskIdsFromAttachments =
+        taskIdsAndPlannedFromAttachments.stream().map(Pair::getLeft).collect(Collectors.toList());
+    List<Pair<String, Instant>> filteredTaskIdsAndPlannedFromAttachments =
         taskIdsFromAttachments.isEmpty()
             ? new ArrayList<>()
-            : taskMapper.filterTaskIdsForNotCompleted(taskIdsFromAttachments);
+            : taskMapper.filterTaskIdsForReadyAndClaimed(taskIdsFromAttachments);
+    affectedPairs.addAll(filteredTaskIdsAndPlannedFromAttachments);
+    //  sort all affected tasks according to the planned instant
+    List<String> affectedTaskIds =
+        affectedPairs.stream()
+            .sorted(Comparator.comparing(Pair::getRight))
+            .distinct()
+            .map(Pair::getLeft)
+            .collect(Collectors.toList());
 
-    Set<String> affectedTaskIds = new HashSet<>(filteredTaskIdsFromAttachments);
-    for (TaskSummary task : tasks) {
-      affectedTaskIds.add(task.getId());
-    }
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
           "the following tasks are affected by the update of classification {} : {}",
           classificationId,
-          LoggerUtils.setToString(affectedTaskIds));
+          LoggerUtils.listToString(affectedTaskIds));
     }
     LOGGER.debug("exit from findTasksIdsAffectedByClassificationChange(). ");
     return affectedTaskIds;
   }
 
-  public void refreshPriorityAndDueDateOnClassificationUpdate(String taskId)
-      throws ClassificationNotFoundException {
-    LOGGER.debug("entry to refreshPriorityAndDueDate(taskId = {})", taskId);
-    TaskImpl task;
-    BulkOperationResults<String, Exception> bulkLog = new BulkOperationResults<>();
+  public void refreshPriorityAndDueDatesOfTasksOnClassificationUpdate(
+      List<String> taskIds, boolean serviceLevelChanged, boolean priorityChanged) {
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug(
+          "entry to refreshPriorityAndDueDateOfTasks(tasks = {})",
+          LoggerUtils.listToString(taskIds));
+    }
+    Pair<List<MinimalTaskSummary>, BulkLog> resultsPair = getMinimalTaskSummaries(taskIds);
+    List<MinimalTaskSummary> tasks = resultsPair.getLeft();
     try {
       taskanaEngine.openConnection();
-      if (taskId == null || taskId.isEmpty()) {
-        return;
+      Set<String> adminAccessIds =
+          taskanaEngine.getEngine().getConfiguration().getRoleMap().get(TaskanaRole.ADMIN);
+      if (adminAccessIds.contains(CurrentUserContext.getUserid())) {
+        serviceLevelHandler.refreshPriorityAndDueDatesOfTasks(
+            tasks, serviceLevelChanged, priorityChanged);
+      } else {
+        taskanaEngine.runAsAdmin(
+            () -> {
+              serviceLevelHandler.refreshPriorityAndDueDatesOfTasks(
+                  tasks, serviceLevelChanged, priorityChanged);
+              return null;
+            });
       }
-
-      task = taskMapper.findById(taskId);
-
-      List<AttachmentImpl> attachmentImpls = attachmentMapper.findAttachmentsByTaskId(task.getId());
-      if (attachmentImpls == null) {
-        attachmentImpls = new ArrayList<>();
-      }
-      List<Attachment> attachments =
-          attachmentHandler.augmentAttachmentsByClassification(attachmentImpls, bulkLog);
-      task.setAttachments(attachments);
-
-      ClassificationSummary classificationSummary =
-          classificationService
-              .getClassification(task.getClassificationKey(), task.getDomain())
-              .asSummary();
-      task.setClassificationSummary(classificationSummary);
-      task = serviceLevelHandler.updatePrioPlannedDueOfTask(task, null, true);
-
-      task.setModified(Instant.now());
-      taskMapper.update(task);
-    } catch (InvalidArgumentException e) {
-      LOGGER.error("Internal System error. This situation should not happen. Caught exceptio ", e);
     } finally {
+      LOGGER.debug("exit from refreshPriorityAndDueDateOfTasks");
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from refreshPriorityAndDueDate(). ");
     }
   }
 
@@ -1217,44 +1221,45 @@ public class TaskServiceImpl implements TaskService {
 
   private void standardSettings(TaskImpl task, Classification classification)
       throws InvalidArgumentException {
+    TaskImpl task1 = task;
     LOGGER.debug("entry to standardSettings()");
     final Instant now = Instant.now();
-    task.setId(IdGenerator.generateWithPrefix(ID_PREFIX_TASK));
-    if (task.getExternalId() == null) {
-      task.setExternalId(IdGenerator.generateWithPrefix(ID_PREFIX_EXT_TASK_ID));
+    task1.setId(IdGenerator.generateWithPrefix(ID_PREFIX_TASK));
+    if (task1.getExternalId() == null) {
+      task1.setExternalId(IdGenerator.generateWithPrefix(ID_PREFIX_EXT_TASK_ID));
     }
-    task.setState(TaskState.READY);
-    task.setCreated(now);
-    task.setModified(now);
-    task.setRead(false);
-    task.setTransferred(false);
+    task1.setState(TaskState.READY);
+    task1.setCreated(now);
+    task1.setModified(now);
+    task1.setRead(false);
+    task1.setTransferred(false);
 
     String creator = CurrentUserContext.getUserid();
     if (taskanaEngine.getEngine().getConfiguration().isSecurityEnabled() && creator == null) {
       throw new SystemException(
           "TaskanaSecurity is enabled, but the current UserId is NULL while creating a Task.");
     }
-    task.setCreator(creator);
+    task1.setCreator(creator);
 
     // if no business process id is provided, a unique id is created.
-    if (task.getBusinessProcessId() == null) {
-      task.setBusinessProcessId(IdGenerator.generateWithPrefix(ID_PREFIX_BUSINESS_PROCESS));
+    if (task1.getBusinessProcessId() == null) {
+      task1.setBusinessProcessId(IdGenerator.generateWithPrefix(ID_PREFIX_BUSINESS_PROCESS));
     }
 
     // null in case of manual tasks
-    if (task.getPlanned() == null && (classification == null || task.getDue() == null)) {
-      task.setPlanned(now);
+    if (task1.getPlanned() == null && (classification == null || task1.getDue() == null)) {
+      task1.setPlanned(now);
     }
     if (classification != null) {
-      task = serviceLevelHandler.updatePrioPlannedDueOfTask(task, null, false);
+      task1 = serviceLevelHandler.updatePrioPlannedDueOfTask(task1, null, false);
     }
 
-    if (task.getName() == null && classification != null) {
-      task.setName(classification.getName());
+    if (task1.getName() == null && classification != null) {
+      task1.setName(classification.getName());
     }
 
-    if (task.getDescription() == null && classification != null) {
-      task.setDescription(classification.getDescription());
+    if (task1.getDescription() == null && classification != null) {
+      task1.setDescription(classification.getDescription());
     }
     try {
       attachmentHandler.insertNewAttachmentsOnTaskCreation(task);
@@ -1276,7 +1281,6 @@ public class TaskServiceImpl implements TaskService {
         } catch (Exception e) {
           LOGGER.warn(
               "Attempted to determine callback state from {} and caught exception", value, e);
-
           throw new InvalidArgumentException(
               String.format("Attempted to set callback state for task %s.", task.getId()), e);
         }
@@ -1654,20 +1658,20 @@ public class TaskServiceImpl implements TaskService {
 
     updateClassificationSummary(newTaskImpl, oldTaskImpl);
 
-    newTaskImpl = serviceLevelHandler.updatePrioPlannedDueOfTask(newTaskImpl, oldTaskImpl, false);
+    TaskImpl newTaskImpl1 =
+        serviceLevelHandler.updatePrioPlannedDueOfTask(newTaskImpl, oldTaskImpl, false);
 
     // if no business process id is provided, use the id of the old task.
-    if (newTaskImpl.getBusinessProcessId() == null) {
-      newTaskImpl.setBusinessProcessId(oldTaskImpl.getBusinessProcessId());
+    if (newTaskImpl1.getBusinessProcessId() == null) {
+      newTaskImpl1.setBusinessProcessId(oldTaskImpl.getBusinessProcessId());
     }
 
     // owner can only be changed if task is in state ready
-    boolean isOwnerChanged = !Objects.equals(newTaskImpl.getOwner(), oldTaskImpl.getOwner());
+    boolean isOwnerChanged = !Objects.equals(newTaskImpl1.getOwner(), oldTaskImpl.getOwner());
     if (isOwnerChanged && oldTaskImpl.getState() != TaskState.READY) {
       throw new InvalidStateException(
           String.format(TASK_WITH_ID_IS_NOT_READY, oldTaskImpl.getId(), oldTaskImpl.getState()));
     }
-
   }
 
   private void updateClassificationSummary(TaskImpl newTaskImpl, TaskImpl oldTaskImpl)

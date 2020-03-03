@@ -23,6 +23,7 @@ import org.apache.ibatis.session.SqlSessionManager;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
+import org.apache.ibatis.type.JdbcType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -250,6 +251,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     // register type handlers
     configuration.getTypeHandlerRegistry().register(new MapTypeHandler());
     configuration.getTypeHandlerRegistry().register(Instant.class, new InstantTypeHandler());
+    configuration.getTypeHandlerRegistry().register(JdbcType.TIMESTAMP,new InstantTypeHandler());
     // add mappers
     configuration.addMapper(TaskMapper.class);
     configuration.addMapper(MonitorMapper.class);

@@ -1,5 +1,6 @@
 package pro.taskana.task.internal;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Delete;
@@ -12,6 +13,7 @@ import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.type.ClobTypeHandler;
 
 import pro.taskana.common.internal.persistence.MapTypeHandler;
+import pro.taskana.common.internal.util.Pair;
 import pro.taskana.task.internal.models.AttachmentImpl;
 import pro.taskana.task.internal.models.AttachmentSummaryImpl;
 
@@ -85,7 +87,8 @@ public interface AttachmentMapper {
         @Result(property = "channel", column = "CHANNEL"),
         @Result(property = "received", column = "RECEIVED")
       })
-  List<AttachmentSummaryImpl> findAttachmentSummariesByTaskIds(@Param("taskIds") List<String> taskIds);
+  List<AttachmentSummaryImpl> findAttachmentSummariesByTaskIds(
+      @Param("taskIds") List<String> taskIds);
 
   @Delete("DELETE FROM ATTACHMENT WHERE ID=#{attachmentId}")
   void deleteAttachment(@Param("attachmentId") String attachmentId);
@@ -113,10 +116,18 @@ public interface AttachmentMapper {
   String getCustomAttributesAsString(@Param("attachmentId") String attachmentId);
 
   @Select(
-      "<script> SELECT DISTINCT TASK_ID FROM ATTACHMENT WHERE CLASSIFICATION_ID = #{classificationId} "
+      "<script> SELECT DISTINCT t.ID, t.PLANNED FROM TASK t "
+          + "LEFT JOIN ATTACHMENT AS a on a.TASK_ID = t.ID"
+          + " WHERE a.CLASSIFICATION_ID = #{classificationId} "
           + "<if test=\"_databaseId == 'db2'\">with UR </if> "
           + "</script>")
-  @Results(value = {@Result(property = "taskId", column = "TASK_ID")})
-  List<String> findTaskIdsAffectedByClassificationChange(
+  @Results(
+      value = {
+        @Result(property = "left", column = "ID"),
+        @Result(property = "right", column = "PLANNED")
+        //          ,  javaType = Instant.class,
+        //            typeHandler = InstantTypeHandler.class)
+      })
+  List<Pair<String, Instant>> findTaskIdsAndPlannedAffectedByClassificationChange(
       @Param("classificationId") String classificationId);
 }

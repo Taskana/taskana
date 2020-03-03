@@ -23,13 +23,18 @@ public class TaskRefreshJob extends AbstractTaskanaJob {
   public static final String ARG_TASK_IDS = "taskIds";
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskRefreshJob.class);
   private List<String> affectedTaskIds;
+  private boolean priorityChanged;
+  private boolean serviceLevelChanged;
 
   public TaskRefreshJob(
       TaskanaEngine engine, TaskanaTransactionProvider<Object> txProvider, ScheduledJob job) {
     super(engine, txProvider, job);
     Map<String, String> args = job.getArguments();
-    String taskIdsString = args.get(ARG_TASK_IDS);
+    String taskIdsString = args.get(ClassificationChangedJob.TASK_IDS);
     affectedTaskIds = Arrays.asList(taskIdsString.split(","));
+    priorityChanged = Boolean.parseBoolean(args.get(ClassificationChangedJob.PRIORITY_CHANGED));
+    serviceLevelChanged =
+        Boolean.parseBoolean(args.get(ClassificationChangedJob.SERVICE_LEVEL_CHANGED));
   }
 
   @Override
@@ -37,14 +42,8 @@ public class TaskRefreshJob extends AbstractTaskanaJob {
     LOGGER.info("Running TaskRefreshJob for {} tasks", affectedTaskIds.size());
     try {
       TaskServiceImpl taskService = (TaskServiceImpl) taskanaEngineImpl.getTaskService();
-      for (String taskId : affectedTaskIds) {
-        try {
-          taskService.refreshPriorityAndDueDateOnClassificationUpdate(taskId);
-        } catch (Exception e) {
-          LOGGER.warn(
-              "Task {} could not be refreshed because of exception: {}", taskId, e.getMessage());
-        }
-      }
+      taskService.refreshPriorityAndDueDatesOfTasksOnClassificationUpdate(
+          affectedTaskIds, serviceLevelChanged, priorityChanged);
       LOGGER.info("TaskRefreshJob ended successfully.");
     } catch (Exception e) {
       throw new TaskanaException("Error while processing TaskRefreshJob.", e);

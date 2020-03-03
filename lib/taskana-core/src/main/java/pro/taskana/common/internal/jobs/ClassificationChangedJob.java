@@ -3,7 +3,6 @@ package pro.taskana.common.internal.jobs;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,16 +42,18 @@ public class ClassificationChangedJob extends AbstractTaskanaJob {
     LOGGER.info("Running ClassificationChangedJob for classification ({})", classificationId);
     try {
       TaskServiceImpl taskService = (TaskServiceImpl) taskanaEngineImpl.getTaskService();
-      Set<String> affectedTaskIds =
+      List<String> affectedTaskIds =
           taskService.findTasksIdsAffectedByClassificationChange(classificationId);
-      scheduleTaskRefreshJobs(affectedTaskIds);
+      if (!affectedTaskIds.isEmpty()) {
+        scheduleTaskRefreshJobs(affectedTaskIds);
+      }
       LOGGER.info("ClassificationChangedJob ended successfully.");
     } catch (Exception e) {
       throw new TaskanaException("Error while processing ClassificationChangedJob.", e);
     }
   }
 
-  private void scheduleTaskRefreshJobs(Set<String> affectedTaskIds) {
+  private void scheduleTaskRefreshJobs(List<String> affectedTaskIds) {
     int batchSize = taskanaEngineImpl.getConfiguration().getMaxNumberOfUpdatesPerTransaction();
     List<List<String>> affectedTaskBatches = partition(affectedTaskIds, batchSize);
     LOGGER.debug(
