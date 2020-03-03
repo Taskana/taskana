@@ -2,7 +2,6 @@ package pro.taskana.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.fail;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
@@ -31,7 +30,7 @@ class WorkbasketAccessItemControllerIntTest {
 
   @BeforeAll
   static void init() {
-    template = RestHelper.getRestTemplate();
+    template = RestHelper.TEMPLATE;
   }
 
   @Test
@@ -60,18 +59,18 @@ class WorkbasketAccessItemControllerIntTest {
 
   @Test
   void testThrowsExceptionIfInvalidFilterIsUsed() {
-    try {
-      template.exchange(
-          restHelper.toUrl(Mapping.URL_WORKBASKETACCESSITEMS)
-              + "?sort-by=workbasket-key&order=asc&page=1&page-size=9&invalid=user_1_1",
-          HttpMethod.GET,
-          restHelper.defaultRequest(),
-          ParameterizedTypeReference.forType(WorkbasketAccessItemListResource.class));
-      fail("Invalid filter is used");
-    } catch (HttpClientErrorException e) {
-      assertThat(e.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-      assertThat(e.getResponseBodyAsString().contains("[invalid]")).isTrue();
-    }
+    assertThatThrownBy(
+        () ->
+            template.exchange(
+                restHelper.toUrl(Mapping.URL_WORKBASKETACCESSITEMS)
+                    + "?sort-by=workbasket-key&order=asc&page=1&page-size=9&invalid=user_1_1",
+                HttpMethod.GET,
+                restHelper.defaultRequest(),
+                ParameterizedTypeReference.forType(WorkbasketAccessItemListResource.class)))
+        .isInstanceOf(HttpClientErrorException.class)
+        .hasMessageContaining("[invalid]")
+        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
   @Test

@@ -17,7 +17,6 @@ import java.net.URL;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import javax.sql.DataSource;
-import org.assertj.core.api.Fail;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +58,7 @@ class TaskControllerIntTest {
 
   @BeforeAll
   static void init() {
-    template = RestHelper.getRestTemplate();
+    template = RestHelper.TEMPLATE;
   }
 
   void resetDb() {
@@ -339,17 +338,17 @@ class TaskControllerIntTest {
 
   @Test
   void testThrowsExceptionIfInvalidFilterIsUsed() {
-    try {
-      template.exchange(
-          restHelper.toUrl(Mapping.URL_TASKS) + "?invalid=VNR",
-          HttpMethod.GET,
-          restHelper.defaultRequest(),
-          ParameterizedTypeReference.forType(TaskSummaryListResource.class));
-      Fail.fail("");
-    } catch (HttpClientErrorException e) {
-      assertThat(e.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-      assertThat(e.getResponseBodyAsString().contains("[invalid]")).isTrue();
-    }
+    assertThatThrownBy(
+      () ->
+          template.exchange(
+              restHelper.toUrl(Mapping.URL_TASKS) + "?invalid=VNR",
+              HttpMethod.GET,
+              restHelper.defaultRequest(),
+              ParameterizedTypeReference.forType(TaskSummaryListResource.class)))
+        .isInstanceOf(HttpClientErrorException.class)
+        .hasMessageContaining("[invalid]")
+        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
   @Test

@@ -30,7 +30,7 @@ import pro.taskana.rest.resource.ClassificationSummaryResource;
 @TaskanaSpringBootTest
 class ClassificationControllerIntTest {
 
-  static RestTemplate template = RestHelper.getRestTemplate();
+  static RestTemplate template = RestHelper.TEMPLATE;
   @Autowired RestHelper restHelper;
 
   @Test

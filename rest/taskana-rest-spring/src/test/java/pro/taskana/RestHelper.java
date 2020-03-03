@@ -69,7 +69,7 @@ public class RestHelper {
    *
    * @return RestTemplate
    */
-  public static RestTemplate getRestTemplate() {
+  private static RestTemplate getRestTemplate() {
     ObjectMapper mapper = new ObjectMapper();
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);

@@ -1,5 +1,7 @@
 package pro.taskana.rest;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,7 +9,6 @@ import java.sql.SQLException;
 import java.util.Locale;
 import javax.sql.DataSource;
 import org.junit.Assume;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -57,7 +58,7 @@ class TestSchemaNameCustomizable {
           String tableName = rs.getString("tablename");
           tablefound = tableName.equals("workbasket");
         }
-        Assertions.assertTrue(tablefound, "Table workbasket should be there ...");
+        assertThat(tablefound).as("Table workbasket should be there ...").isTrue();
       }
     }
   }
@@ -78,7 +79,7 @@ class TestSchemaNameCustomizable {
           String tableName = rs.getString("TABLE_NAME");
           tablefound = tableName.equals("WORKBASKET");
         }
-        Assertions.assertTrue(tablefound, "Table WORKBASKET should be there ...");
+        assertThat(tablefound).as("Table WORKBASKET should be there ...").isTrue();
       }
     }
   }
