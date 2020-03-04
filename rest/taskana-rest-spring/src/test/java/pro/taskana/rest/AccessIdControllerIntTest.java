@@ -36,7 +36,7 @@ class AccessIdControllerIntTest {
     ResponseEntity<List<AccessIdResource>> response =
         template.exchange(
             restHelper.toUrl(Mapping.URL_ACCESSID)
-                + "?search-for=cn=developersgroup,ou=groups,o=taskanatest",
+                + "?search-for=cn=ksc-users,cn=groups,OU=Test,O=TASKANA",
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(List.class));
@@ -47,7 +47,7 @@ class AccessIdControllerIntTest {
   void testQueryGroupsByCn() {
     ResponseEntity<List<AccessIdResource>> response =
         template.exchange(
-            restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=developer",
+            restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=ksc",
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(List.class));
@@ -58,7 +58,7 @@ class AccessIdControllerIntTest {
   void testGetMatches() {
     ResponseEntity<List<AccessIdResource>> response =
         template.exchange(
-            restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=ali",
+            restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=user",
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(AccessIdListResource.class));
