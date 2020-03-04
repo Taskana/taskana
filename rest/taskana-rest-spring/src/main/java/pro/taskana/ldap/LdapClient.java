@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.naming.directory.SearchControls;
+import javax.naming.ldap.LdapName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.ldap.filter.AndFilter;
 import org.springframework.ldap.filter.EqualsFilter;
 import org.springframework.ldap.filter.OrFilter;
 import org.springframework.ldap.filter.WhitespaceWildcardsFilter;
+import org.springframework.ldap.support.LdapNameBuilder;
 import org.springframework.stereotype.Component;
 
 import pro.taskana.common.api.LoggerUtils;
@@ -351,7 +353,11 @@ public class LdapClient {
     @Override
     public AccessIdResource doMapFromContext(final DirContextOperations context) {
       final AccessIdResource accessId = new AccessIdResource();
-      accessId.setAccessId(context.getNameInNamespace()); // fully qualified dn
+      LdapName dn = (LdapName) context.getDn();
+      if (!dn.getRdn(0).toString().equalsIgnoreCase(getBaseDn())) {
+        dn = LdapNameBuilder.newInstance(getBaseDn()).add(dn).build();
+      }
+      accessId.setAccessId(dn.toString()); // fully qualified dn
       accessId.setName(context.getStringAttribute(getGroupNameAttribute()));
       return accessId;
     }
