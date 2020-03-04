@@ -1,0 +1,82 @@
+######################
+# Organizational Units
+######################
+dn: O=TASKANA
+objectclass: top
+objectclass: organization
+o: Unternehmen
+
+dn: OU=Test,O=TASKANA
+ou: Organisationseinheit
+objectclass: top
+objectclass: organizationalUnit
+
+dn: cn=groups,OU=Test,O=TASKANA
+cn: groups
+objectclass: top
+objectclass: container
+
+dn: cn=users,OU=Test,O=TASKANA
+cn: users
+objectclass: top
+objectclass: container
+
+dn: cn=organisation,OU=Test,O=TASKANA
+cn: organisation
+objectclass: top
+objectclass: container
+
+########################
+# Users
+########################
+dn: uid=user_1_1,cn=users,OU=Test,O=TASKANA
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Max
+description: desc
+uid: user_1_1
+sn: Mustermann
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 1
+cn: Max Mustermann
+
+dn: uid=user_1_2,cn=users,OU=Test,O=TASKANA
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Elena
+description: desc
+uid: user_1_1
+sn: Eifrig
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 1
+cn: Elena Eifrig
+
+
+########################
+# Groups
+########################
+dn: cn=ksc-users,cn=groups,OU=Test,O=TASKANA
+uniquemember: uid=user_1_1,cn=users,OU=Test,O=TASKANA
+uniquemember: uid=user_1_2,cn=users,OU=Test,O=TASKANA
+cn: ksc-users
+objectclass: groupofuniquenames
+objectclass: top
+
+
+########################
+# Groups
+########################
+dn: cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA
+cn: Organisationseinheit KSC
+objectclass: groupofuniquenames
+objectclass: top
+
+dn: cn=Organisationseinheit KSC 1,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA
+uniquemember: uid=user_1_1,cn=users,OU=Test,O=TASKANA
+uniquemember: uid=user_1_2,cn=users,OU=Test,O=TASKANA
+cn: Organisationseinheit KSC 1
+objectclass: groupofuniquenames
+objectclass: top
+
