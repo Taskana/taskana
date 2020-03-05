@@ -135,6 +135,23 @@ class LdapClientTest {
         .hasSize(LdapSettings.values().length - 2);
   }
 
+  @Test
+  void testNameIsRecognizedAsDnCorrectly() {
+    setUpEnvMock();
+    assertThat(cut.nameIsDn("uid=userid,cn=users,o=TaskanaTest")).isTrue();
+    assertThat(cut.nameIsDn("uid=userid,cn=users,o=taskanatest")).isTrue();
+    assertThat(cut.nameIsDn("uid=userid,cn=users,o=taskana")).isFalse();
+  }
+
+  @Test
+  void testDnIsCompletedCorrectly() {
+    setUpEnvMock();
+    assertThat(cut.getDnWithBaseDn("uid=userid,cn=users,o=TaskanaTest"))
+        .isEqualTo("uid=userid,cn=users,o=TaskanaTest");
+    assertThat(cut.getDnWithBaseDn("uid=userid,cn=users"))
+        .isEqualTo("uid=userid,cn=users,o=TaskanaTest");
+  }
+
   private void setUpEnvMock() {
 
     Stream.of(
@@ -156,6 +173,8 @@ class LdapClientTest {
               {"taskana.ldap.userFirstnameAttribute", "givenName"},
               {"taskana.ldap.userSearchFilterValue", "person"}
             })
-        .forEach(strings -> when(this.environment.getProperty(strings[0])).thenReturn(strings[1]));
+        .forEach(
+            strings ->
+                lenient().when(this.environment.getProperty(strings[0])).thenReturn(strings[1]));
   }
 }
