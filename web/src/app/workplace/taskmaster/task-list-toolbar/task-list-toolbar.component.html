@@ -21,7 +21,7 @@
         placeholder="Search by value ..." />
     </div>
     <div *ngIf="searched" class="pull-right margin-right btn-group">
-      <taskana-sort [sortingFields]="sortingFields" (performSorting)="sorting($event)" class="btn-group"></taskana-sort>
+      <taskana-sort [sortingFields]="sortingFields" (performSorting)="sorting($event)" class="btn-group" [defaultSortBy] = "taskDefaultSortBy"> </taskana-sort>
       <button class="btn btn-default collapsed" type="button" id="collapsedMenufilterWb" aria-expanded="false" (click)="toolbarState=!toolbarState">
         <span class="material-icons md-20 blue">search</span>
       </button>
