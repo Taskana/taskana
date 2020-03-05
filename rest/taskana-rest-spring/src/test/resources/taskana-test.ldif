@@ -53,6 +53,31 @@ sn: Eifrig
 ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 1
 cn: Elena Eifrig
 
+dn: uid=user_2_1,cn=users,OU=Test,O=TASKANA
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Simone
+description: desc
+uid: user_1_1
+sn: Müller
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 1
+cn: Simone Müller
+
+dn: uid=user_2_2,cn=users,OU=Test,O=TASKANA
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Tim
+description: desc
+uid: user_1_1
+sn: Schläfrig
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 1
+cn: Tim Schläfrig
+
+
 
 ########################
 # Groups
