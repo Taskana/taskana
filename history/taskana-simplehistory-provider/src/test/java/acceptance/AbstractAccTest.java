@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.Properties;
 import javax.sql.DataSource;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +45,7 @@ public class AbstractAccTest {
     // not called
   }
 
-  @BeforeClass
+  @BeforeAll
   public static void setupTest() throws Exception {
     resetDb(null);
   }
