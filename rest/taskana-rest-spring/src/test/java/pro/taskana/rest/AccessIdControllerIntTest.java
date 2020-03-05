@@ -79,8 +79,7 @@ class AccessIdControllerIntTest {
 
   @Test
   void testBadRequestWhenSearchForIsTooShort() {
-    assertThatThrownBy(
-            () ->
+    assertThatThrownBy(() ->
                 template.exchange(
                     restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=al",
                     HttpMethod.GET,
