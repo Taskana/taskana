@@ -23,8 +23,7 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
   @Override
   public void initialize(TaskanaEngineConfiguration taskanaEngineConfiguration) {
     try {
-      this.taskanaHistoryEngine =
-          TaskanaHistoryEngineImpl.createTaskanaEngine(taskanaEngineConfiguration);
+      this.taskanaHistoryEngine = getTaskanaEngine(taskanaEngineConfiguration);
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug(
             "Simple history service implementation initialized with schemaName: {} ",
@@ -58,5 +57,13 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
 
   public HistoryQuery createHistoryQuery() {
     return new HistoryQueryImpl(taskanaHistoryEngine, historyQueryMapper);
+  }
+
+  /*
+   * ATTENTION: This method exists for testing purposes.
+   */
+  TaskanaHistoryEngineImpl getTaskanaEngine(TaskanaEngineConfiguration taskanaEngineConfiguration)
+      throws SQLException {
+    return TaskanaHistoryEngineImpl.createTaskanaEngine(taskanaEngineConfiguration);
   }
 }
