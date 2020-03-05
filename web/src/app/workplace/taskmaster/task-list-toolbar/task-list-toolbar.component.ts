@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import { Task } from 'app/workplace/models/task';
 import { Workbasket } from 'app/models/workbasket';
 import { TaskService } from 'app/workplace/services/task.service';
@@ -22,10 +22,10 @@ export enum Search {
   styleUrls: ['./task-list-toolbar.component.scss']
 })
 export class TaskListToolbarComponent implements OnInit {
+  @Input() taskDefaultSortBy: string;
   @Output() performSorting = new EventEmitter<SortingModel>();
   @Output() performFilter = new EventEmitter<FilterModel>();
   @Output() selectSearchType = new EventEmitter();
-
 
   sortingFields = new Map([['name', 'Name'], ['priority', 'Priority'], ['due', 'Due'], ['planned', 'Planned']]);
   filterParams = { name: '', key: '', owner: '', priority: '', state: '' };

@@ -1,6 +1,6 @@
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h4 class="panel-header">Acces items management</h4>
+    <h4 class="panel-header">Access items management</h4>
   </div>
   <div class="panel-body">
     <div class="col-md-6 col-md-offset-3 margin">
@@ -17,7 +17,7 @@
           <thead>
             <tr>
               <th>
-                <taskana-sort [sortingFields]="sortingFields" (performSorting)="sorting($event)" menuPosition="left" [defaultSortBy]="'workbasket-key'"></taskana-sort>
+                <taskana-sort [sortingFields]="sortingFields" (performSorting)="sorting($event)" menuPosition="left" [defaultSortBy]="accessItemDefaultSortBy"></taskana-sort>
               </th>
               <th class="text-align min-width">Workbasket Key</th>
               <th colspan="2" class="text-align">Access Id</th>

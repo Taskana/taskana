@@ -26,7 +26,8 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
   type = 'tasks';
   currentBasket: Workbasket;
   selectedId = '';
-  sort: SortingModel = new SortingModel('priority');
+  taskDefaultSortBy: string = 'priority';
+  sort: SortingModel = new SortingModel(this.taskDefaultSortBy);
   filterBy: FilterModel = new FilterModel({
     name: '',
     owner: '',

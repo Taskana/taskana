@@ -7,7 +7,7 @@
       <taskana-import-export-component class="btn-group" [currentSelection]="selectionToImport"></taskana-import-export-component>
     </div>
     <div class="margin-right pull-right btn-group">
-      <taskana-sort [sortingFields]="sortingFields" (performSorting)="sorting($event)" class="btn-group"></taskana-sort>
+      <taskana-sort [sortingFields]="sortingFields" (performSorting)="sorting($event)" class="btn-group" [defaultSortBy]="workbasketDefaultSortBy"></taskana-sort>
       <button class="btn btn-default collapsed" type="button" id="collapsedMenufilterWb" aria-expanded="false" (click)="toolbarState=!toolbarState"
         data-toggle="tooltip" title="Filter">
         <span class="material-icons md-20 blue">{{!toolbarState? 'search' : 'expand_less'}}</span>
