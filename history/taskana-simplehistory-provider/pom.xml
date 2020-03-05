@@ -64,21 +64,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.junit.vintage</groupId>
-			<artifactId>junit-vintage-engine</artifactId>
-			<version>${version.junit.jupiter}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-api-mockito2</artifactId>
-			<version>${version.powermock}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-module-junit4</artifactId>
-			<version>${version.powermock}</version>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+			<version>${version.junit.mockito}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -93,5 +81,5 @@
 			<version>${version.h2}</version>
 			<scope>test</scope>
 		</dependency>
-	</dependencies>
+  </dependencies>
 </project>

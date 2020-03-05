@@ -1,6 +1,6 @@
 package pro.taskana.simplehistory.impl;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.validateMockitoUsage;
@@ -9,11 +9,11 @@ import java.sql.SQLException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.simplehistory.impl.mappings.HistoryQueryMapper;
@@ -23,7 +23,7 @@ import pro.taskana.simplehistory.impl.mappings.HistoryQueryMapper;
  *
  * @author BV
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class HistoryQueryImplTest {
 
   private HistoryQueryImpl historyQueryImpl;
@@ -32,7 +32,7 @@ public class HistoryQueryImplTest {
 
   @Mock private HistoryQueryMapper historyQueryMock;
 
-  @Before
+  @BeforeEach
   public void setup() {
     historyQueryImpl = new HistoryQueryImpl(taskanaHistoryEngineMock, historyQueryMock);
   }
@@ -58,7 +58,7 @@ public class HistoryQueryImplTest {
             .list();
 
     validateMockitoUsage();
-    assertArrayEquals(returnList.toArray(), result.toArray());
+    assertThat(result).isEqualTo(returnList);
   }
 
   private HistoryEventImpl createHistoryEvent(
