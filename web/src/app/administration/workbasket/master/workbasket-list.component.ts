@@ -29,7 +29,8 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   type = 'workbaskets';
   cards: number = this.pageSize;
 
-  sort: SortingModel = new SortingModel();
+  workbasketDefaultSortBy: string = 'name';
+  sort: SortingModel = new SortingModel(this.workbasketDefaultSortBy);
   filterBy: FilterModel = new FilterModel({ name: '', owner: '', type: '', description: '', key: '' });
 
   @ViewChild('wbToolbar', { static: true })

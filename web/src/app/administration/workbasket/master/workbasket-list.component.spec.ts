@@ -171,7 +171,7 @@ describe('WorkbasketListComponent', () => {
     });
     component.performFilter(filter);
 
-    expect(workbasketSummarySpy.calls.all()[1].args).toEqual([true, 'key', 'asc',
+    expect(workbasketSummarySpy.calls.all()[1].args).toEqual([true, 'name', 'asc',
       '', 'someName', 'someDescription', '', 'someOwner', 'PERSONAL', '', 'someKey', '']);
   }));
 });

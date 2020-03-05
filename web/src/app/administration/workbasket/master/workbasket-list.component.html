@@ -1,7 +1,7 @@
 <div class="footer-space-pagination-list">
   <div #wbToolbar>
     <taskana-workbasket-list-toolbar [workbaskets]="workbaskets" (performFilter)="performFilter($event)"
-      (performSorting)="performSorting($event)" (importSucessful)="refreshWorkbasketList()"></taskana-workbasket-list-toolbar>
+      (performSorting)="performSorting($event)" (importSucessful)="refreshWorkbasketList()" [workbasketDefaultSortBy]="workbasketDefaultSortBy"></taskana-workbasket-list-toolbar>
   </div>
   <div *ngIf="(workbaskets && workbaskets.length > 0) else empty_workbaskets">
     <ul #wbList id="wb-list-container" class="list-group">

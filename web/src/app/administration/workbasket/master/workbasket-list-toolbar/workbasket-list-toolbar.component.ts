@@ -20,6 +20,7 @@ import { ERROR_TYPES } from '../../../../services/general-modal/errors';
 })
 export class WorkbasketListToolbarComponent implements OnInit {
   @Input() workbaskets: Array<WorkbasketSummary>;
+  @Input() workbasketDefaultSortBy: string;
   @Output() performSorting = new EventEmitter<SortingModel>();
   @Output() performFilter = new EventEmitter<FilterModel>();
   workbasketServiceSubscription: Subscription;

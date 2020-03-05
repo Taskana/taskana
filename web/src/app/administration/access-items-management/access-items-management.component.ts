@@ -34,7 +34,8 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
   accessIdsWithGroups: Array<AccessIdDefinition>;
   belongingGroups: Array<AccessIdDefinition>;
   sortingFields = new Map([['workbasket-key', 'Workbasket Key'], ['access-id', 'Access id']]);
-  sortModel: SortingModel;
+  accessItemDefaultSortBy: string = 'workbasket-key';
+  sortModel: SortingModel = new SortingModel(this.accessItemDefaultSortBy);
   isGroup: boolean;
   groupsKey = 'ou=groups';
 
