@@ -14,13 +14,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
+import pro.taskana.common.internal.util.DaysToWorkingDaysConverter;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
@@ -34,12 +34,11 @@ import pro.taskana.task.api.models.Task;
 @SuppressWarnings({"checkstyle:LineLength"})
 public class SetPlannedAccTest extends AbstractAccTest {
   private TaskService taskService;
-  private ClassificationService classificationService;
 
   @BeforeEach
   void setup() throws SQLException {
+    DaysToWorkingDaysConverter.setGermanPublicHolidaysEnabled(true);
     taskService = taskanaEngine.getTaskService();
-    classificationService = taskanaEngine.getClassificationService();
     resetDb(false);
   }
 
@@ -241,9 +240,9 @@ public class SetPlannedAccTest extends AbstractAccTest {
     Instant dueBulk3 = taskService.getTask(tkId3).getDue();
     Instant dueBulk4 = taskService.getTask(tkId4).getDue();
     assertThat(dueBulk1).isEqualTo(getInstant("2020-05-14T07:00:00"));
-    assertThat(dueBulk2).isEqualTo(getInstant("2020-05-21T07:00:00"));
+    assertThat(dueBulk2).isEqualTo(getInstant("2020-05-22T07:00:00"));
     assertThat(dueBulk3).isEqualTo(getInstant("2020-05-14T07:00:00"));
-    assertThat(dueBulk4).isEqualTo(getInstant("2020-05-21T07:00:00"));
+    assertThat(dueBulk4).isEqualTo(getInstant("2020-05-22T07:00:00"));
   }
 
   @WithAccessId(
