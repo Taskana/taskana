@@ -90,7 +90,7 @@ public class LdapClient {
     return result;
   }
 
-  private boolean nameIsDn(String name) {
+  boolean nameIsDn(String name) {
     return name.toLowerCase().endsWith(getBaseDn().toLowerCase());
   }
 
@@ -348,25 +348,27 @@ public class LdapClient {
     }
   }
 
+  String getDnWithBaseDn(final String givenDn) {
+    String dn = givenDn;
+    if (!dn.toLowerCase().endsWith(getBaseDn().toLowerCase())) {
+      dn = dn + "," + getBaseDn();
+    }
+    return dn;
+  }
+  
   /** Context Mapper for user entries. */
   class GroupContextMapper extends AbstractContextMapper<AccessIdResource> {
 
     @Override
     public AccessIdResource doMapFromContext(final DirContextOperations context) {
       final AccessIdResource accessId = new AccessIdResource();
-      String dn = getDnWithBaseDn(context);
+      String dn = getDnWithBaseDn(context.getDn().toString());
       accessId.setAccessId(dn); // fully qualified dn
       accessId.setName(context.getStringAttribute(getGroupNameAttribute()));
       return accessId;
     }
 
-    private String getDnWithBaseDn(final DirContextOperations context) {
-      String dn = context.getDn().toString();
-      if (!dn.toLowerCase().endsWith(getBaseDn().toLowerCase())) {
-        dn = dn + "," + getBaseDn();
-      }
-      return dn;
-    }
+
   }
 
   /** Context Mapper for user entries. */
