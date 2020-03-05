@@ -44,7 +44,7 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
   @ExceptionHandler(InvalidArgumentException.class)
   protected ResponseEntity<Object> handleInvalidArgument(
       InvalidArgumentException ex, WebRequest req) {
-    return buildResponse(ex, req, HttpStatus.BAD_REQUEST);
+    return buildResponse(ex, req, HttpStatus.BAD_REQUEST, false);
   }
 
   @ExceptionHandler(NotAuthorizedException.class)
@@ -150,13 +150,17 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
   }
 
   private ResponseEntity<Object> buildResponse(Exception ex, WebRequest req, HttpStatus status) {
-    TaskanaErrorData errorData = new TaskanaErrorData(status, ex, req);
-    logError(ex, errorData);
-    return ResponseEntity.status(status).body(errorData);
+    return buildResponse(ex, req, status, true);
   }
 
-  private void logError(Exception ex, TaskanaErrorData errorData) {
-    LOGGER.error(
-        "Error occurred during processing of rest request:\n {}" + errorData.toString(), ex);
+  private ResponseEntity<Object> buildResponse(
+      Exception ex, WebRequest req, HttpStatus status, boolean logExceptionOnError) {
+    TaskanaErrorData errorData = new TaskanaErrorData(status, ex, req);
+    if (logExceptionOnError) {
+      LOGGER.error("Error occurred during processing of rest request: " + errorData.toString(), ex);
+    } else {
+      LOGGER.debug("Error occurred during processing of rest request: " + errorData.toString(), ex);
+    }
+    return ResponseEntity.status(status).body(errorData);
   }
 }
