@@ -202,11 +202,9 @@ public class AttachmentHandler {
           attachmentImpl);
     } catch (PersistenceException e) {
       throw new AttachmentPersistenceException(
-          "Cannot insert the Attachement "
-              + attachmentImpl.getId()
-              + " for Task "
-              + newTaskImpl.getId()
-              + " because it already exists.",
+          String.format(
+              "Cannot insert the Attachement %s for Task %s  because it already exists.",
+              attachmentImpl.getId(), newTaskImpl.getId()),
           e.getCause());
     }
     LOGGER.debug("exit from insertNewAttachmentOnTaskUpdate(), returning");
