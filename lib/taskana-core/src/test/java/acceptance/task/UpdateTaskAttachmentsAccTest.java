@@ -86,6 +86,8 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         equalTo("12345678901234567890123456789012345678901234567890"));
     assertEquals(99, task.getPriority());
     assertEquals(task.getDue(), task.getPlanned().plus(Duration.ofDays(1)));
+
+    task.getAttachments().forEach(at -> assertEquals(at.getModified(), task.getModified()));
   }
 
   @WithAccessId(
@@ -109,6 +111,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     task = taskService.updateTask(task);
 
     assertEquals(1, task.getAttachments().size());
+    task.getAttachments().forEach(at -> assertEquals(at.getModified(), task.getModified()));
   }
 
   @WithAccessId(
@@ -327,7 +330,6 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     assertThat(task.getAttachments().size(), equalTo(attachmentCount));
     assertThat(task.getAttachments().get(0).getChannel(), equalTo(newChannel));
     assertEquals(999, task.getPriority());
-
     DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize(Instant.now());
     long calendarDays = converter.convertWorkingDaysToDays(task.getDue(), 1);
 
@@ -377,6 +379,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
       int custAttSize = att.getCustomAttributes().size();
       if ("ROHRPOST".equals(channel)) {
         rohrpostFound = true;
+        assertEquals(att.getModified(), task.getModified());
       } else if ("E-MAIL".equals(channel)) {
         emailFound = true;
       } else {
@@ -482,7 +485,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     task = taskService.updateTask(task);
     assertThat(task.getAttachments().size(), equalTo(1));
     assertThat(task.getAttachments().get(0).getChannel(), equalTo("DHL"));
-
+    task.getAttachments().forEach(at -> assertEquals(at.getModified(), task.getModified()));
     // setup environment for 2nd version of replacement (list.add call)
     task.getAttachments().add(attachment2);
     task = taskService.updateTask(task);
@@ -540,7 +543,9 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
 
     assertNotNull(createdTask.getId());
     assertThat(createdTask.getCreator(), equalTo(CurrentUserContext.getUserid()));
-
+    createdTask
+        .getAttachments()
+        .forEach(at -> assertEquals(at.getModified(), createdTask.getModified()));
     Task readTask = taskService.getTask(createdTask.getId());
     assertNotNull(readTask);
     assertThat(readTask.getCreator(), equalTo(CurrentUserContext.getUserid()));
@@ -597,6 +602,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
             .findFirst()
             .orElse(null);
     assertNotNull(updatedAttachment);
+    assertEquals(updatedAttachment.getModified(),updatedTask.getModified());
     assertEquals("TEST_VALUE", updatedAttachment.getCustomAttributes().get("TEST_KEY"));
   }
 

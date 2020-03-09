@@ -85,7 +85,7 @@ public interface AttachmentMapper {
         @Result(property = "channel", column = "CHANNEL"),
         @Result(property = "received", column = "RECEIVED")
       })
-  List<AttachmentSummaryImpl> findAttachmentSummariesByTaskIds(@Param("taskIds") String[] taskIds);
+  List<AttachmentSummaryImpl> findAttachmentSummariesByTaskIds(@Param("taskIds") List<String> taskIds);
 
   @Delete("DELETE FROM ATTACHMENT WHERE ID=#{attachmentId}")
   void deleteAttachment(@Param("attachmentId") String attachmentId);
