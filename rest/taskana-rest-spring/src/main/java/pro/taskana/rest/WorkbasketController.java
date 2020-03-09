@@ -140,14 +140,24 @@ public class WorkbasketController extends AbstractPagingController {
 
   @DeleteMapping(path = Mapping.URL_WORKBASKET_ID)
   @Transactional(rollbackFor = Exception.class, noRollbackFor = WorkbasketNotFoundException.class)
-  public ResponseEntity<?> markWorkbasketForDeletion(
+  public ResponseEntity<?> deleteWorkbasket(
       @PathVariable(value = "workbasketId") String workbasketId)
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
           WorkbasketInUseException {
     LOGGER.debug("Entry to markWorkbasketForDeletion(workbasketId= {})", workbasketId);
-    // http status code accepted because workbaskets will not be deleted immediately
-    ResponseEntity<?> response =
-        ResponseEntity.accepted().body(workbasketService.deleteWorkbasket(workbasketId));
+    ResponseEntity<?> response;
+
+    boolean workbasketDeleted = workbasketService.deleteWorkbasket(workbasketId);
+
+    if (workbasketDeleted) {
+      LOGGER.debug("Workbasket successfully deleted.");
+      response = ResponseEntity.noContent().build();
+    } else {
+      LOGGER.debug(
+          "Workbasket was only marked for deletion and will be physically deleted later on.");
+      response = ResponseEntity.accepted().build();
+    }
+
     LOGGER.debug("Exit from markWorkbasketForDeletion(), returning {}", response);
     return response;
   }
@@ -203,7 +213,8 @@ public class WorkbasketController extends AbstractPagingController {
     return result;
   }
 
-  @GetMapping(path = Mapping.URL_WORKBASKET_ID_ACCESSITEMS, 
+  @GetMapping(
+      path = Mapping.URL_WORKBASKET_ID_ACCESSITEMS,
       produces = MediaTypes.HAL_JSON_UTF8_VALUE)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<WorkbasketAccessItemListResource> getWorkbasketAccessItems(
@@ -253,7 +264,8 @@ public class WorkbasketController extends AbstractPagingController {
     return response;
   }
 
-  @GetMapping(path = Mapping.URL_WORKBASKET_ID_DISTRIBUTION, 
+  @GetMapping(
+      path = Mapping.URL_WORKBASKET_ID_DISTRIBUTION,
       produces = MediaTypes.HAL_JSON_UTF8_VALUE)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<DistributionTargetListResource> getDistributionTargets(

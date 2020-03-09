@@ -46,6 +46,9 @@ use of HTTP status codes.
 | `201 Created`
 | The request completed successfully und create the new resource.
 
+| `202 Accepted`
+| The request could not be processed immediatly but will be carried out later.
+
 | `204 No Content` 
 | The request completed successfully and there is no content to send in the response payload.
 
@@ -72,6 +75,9 @@ use of HTTP status codes.
 
 | `415 Unsupported Media Type`
 | The content of the request can't be understood due to being in an unsupported media-type.
+
+| `423 Locked`
+| The resource is currently locked and cannot be modified.
 |===
 
 == Common Fields
@@ -497,15 +503,22 @@ Therefore for the response fields you can refer to the structure of the <<workba
 
 === Delete workbasket
 
-A `DELETE` request to dalete a workbasket
+A `DELETE` request to delete a workbasket. 
+
+Since workbaskets can contain completed and non-completed task, the request has different response codes: +
+
+- *204 NO_CONTENT* - Workbasket has been deleted successfully
+- *202 ACCEPTED* - Workbasket still contains completed tasks. It has been marked for deletion and will be deleted automatically as soon as all completed tasks are deleted.
+- *423 LOCKED* - Worbasket contains non-completed tasks and cannot be deleted.
+
 
 ==== Example Request
 
-include::{snippets}/MarkWorkbasketForDeletionDocTest/http-request.adoc[]
+include::{snippets}/DeleteWorkbasketDocTest/http-request.adoc[]
 
 ==== Example Response
 
-include::{snippets}/MarkWorkbasketForDeletionDocTest/http-response.adoc[]
+include::{snippets}/DeleteWorkbasketDocTest/http-response.adoc[]
 
 
 === Remove a workbasket as distribution-target
