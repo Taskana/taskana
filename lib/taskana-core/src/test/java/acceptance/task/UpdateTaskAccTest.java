@@ -83,26 +83,32 @@ class UpdateTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(() -> taskService.updateTask(task))
         .isInstanceOf(InvalidArgumentException.class);
 
-    task.setPrimaryObjRef(
+    Task task1 = taskService.getTask("TKI:000000000000000000000000000000000000");
+    task1.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", null));
-    assertThatThrownBy(() -> taskService.updateTask(task))
+    assertThatThrownBy(() -> taskService.updateTask(task1))
         .isInstanceOf(InvalidArgumentException.class);
 
-    task.setPrimaryObjRef(
+    Task task2 = taskService.getTask("TKI:000000000000000000000000000000000000");
+    task2.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", null, "1234567"));
-    assertThatThrownBy(() -> taskService.updateTask(task))
+    assertThatThrownBy(() -> taskService.updateTask(task2))
         .isInstanceOf(InvalidArgumentException.class);
 
-    task.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", null, "VNR", "1234567"));
-    assertThatThrownBy(() -> taskService.updateTask(task))
+    Task task3 = taskService.getTask("TKI:000000000000000000000000000000000000");
+    task3.setPrimaryObjRef(createObjectReference("COMPANY_A", "SYSTEM_A", null, "VNR", "1234567"));
+    assertThatThrownBy(() -> taskService.updateTask(task3))
         .isInstanceOf(InvalidArgumentException.class);
 
-    task.setPrimaryObjRef(createObjectReference("COMPANY_A", null, "INSTANCE_A", "VNR", "1234567"));
-    assertThatThrownBy(() -> taskService.updateTask(task))
+    Task task4 = taskService.getTask("TKI:000000000000000000000000000000000000");
+    task4.setPrimaryObjRef(
+        createObjectReference("COMPANY_A", null, "INSTANCE_A", "VNR", "1234567"));
+    assertThatThrownBy(() -> taskService.updateTask(task4))
         .isInstanceOf(InvalidArgumentException.class);
 
-    task.setPrimaryObjRef(createObjectReference(null, "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-    assertThatThrownBy(() -> taskService.updateTask(task))
+    Task task5 = taskService.getTask("TKI:000000000000000000000000000000000000");
+    task5.setPrimaryObjRef(createObjectReference(null, "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+    assertThatThrownBy(() -> taskService.updateTask(task5))
         .isInstanceOf(InvalidArgumentException.class);
   }
 
@@ -347,7 +353,6 @@ class UpdateTaskAccTest extends AbstractAccTest {
           AttachmentPersistenceException {
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000030");
-    task.setPlanned(Instant.now());
     task.setPlanned(getInstant("2020-04-21T07:00:00"));
     task.setDue(getInstant("2020-04-21T10:00:00"));
     assertThatThrownBy(() -> taskService.updateTask(task))

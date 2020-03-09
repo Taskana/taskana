@@ -57,10 +57,11 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
           InvalidStateException {
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
+    Instant now = Instant.now();
     TaskImpl ti = (TaskImpl) task;
-    task.setPlanned(Instant.now().plus(Duration.ofHours(17)));
-    task.setDue(Instant.now().plus(Duration.ofHours(41)));
-    ti.setCompleted(Instant.now().plus(Duration.ofHours(40)));
+    task.setPlanned(now.plus(Duration.ofHours(17)));
+    task.setDue(now.plus(Duration.ofHours(41))); // SL = 1D -> Due must be planned + 24 h
+    ti.setCompleted(now.plus(Duration.ofHours(27)));
 
     TimeZone originalZone = TimeZone.getDefault();
     Task updatedTask = taskService.updateTask(task);
