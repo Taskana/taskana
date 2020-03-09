@@ -1,6 +1,7 @@
 package acceptance.task;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.sql.SQLException;
@@ -35,7 +36,7 @@ import pro.taskana.task.api.models.TaskSummary;
 /** Acceptance test for all "create task" scenarios. */
 @ExtendWith(JaasExtension.class)
 @SuppressWarnings({"checkstyle:LineLength"})
-public class SetPlannedAccTest extends AbstractAccTest {
+public class ServiceLevelPriorityAccTest extends AbstractAccTest {
   private TaskService taskService;
 
   @BeforeEach
@@ -258,6 +259,130 @@ public class SetPlannedAccTest extends AbstractAccTest {
     BulkOperationResults<String, TaskanaException> results =
         taskanaEngine.getTaskService().setPlannedPropertyOfTasks(planned, new ArrayList<>());
     assertThat(results.containsErrors()).isFalse();
+  }
+
+  // +-----------------------------------------+------------------------------------------+------+
+  // |TKI:000000000000000000000000000000000002 | CLI:100000000000000000000000000000000016 | P1D  |
+  // |TAI:000000000000000000000000000000000003 | CLI:000000000000000000000000000000000004 | P4D  |
+  // |TAI:000000000000000000000000000000000004 | CLI:000000000000000000000000000000000005 | P5D  |
+  // |TAI:000000000000000000000000000000000005 | CLI:000000000000000000000000000000000006 | P5D  |
+  // |TAI:000000000000000000000000000000000006 | CLI:000000000000000000000000000000000007 | P6D  |
+  // |TAI:000000000000000000000000000000000007 | CLI:100000000000000000000000000000000008 | P1D  |
+  // +-----------------------------------------+------------------------------------------+------+
+  @WithAccessId(
+      userName = "admin",
+      groupNames = {"group_2"})
+  @Test
+  void testSetPlannedPropertyOnSingleTaskWithBulkUpdate()
+      throws NotAuthorizedException, TaskNotFoundException, InvalidArgumentException,
+          ConcurrencyException, InvalidStateException, ClassificationNotFoundException,
+          AttachmentPersistenceException {
+    String taskId = "TKI:000000000000000000000000000000000002";
+    Instant planned = getInstant("2020-05-03T07:00:00");
+    // test bulk operation setPlanned...
+    BulkOperationResults<String, TaskanaException> results =
+        taskanaEngine.getTaskService().setPlannedPropertyOfTasks(planned, Arrays.asList(taskId));
+    Task task = taskService.getTask(taskId);
+    assertThat(results.containsErrors()).isFalse();
+    DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize();
+    long days = converter.convertWorkingDaysToDays(task.getPlanned(), 1);
+    assertThat(task.getDue()).isEqualTo(planned.plus(Duration.ofDays(days)));
+  }
+
+  @WithAccessId(
+      userName = "admin",
+      groupNames = {"group_2"})
+  @Test
+  void testSetPlannedPropertyOnSingleTaskWitHTaskUpdate()
+      throws NotAuthorizedException, TaskNotFoundException, InvalidArgumentException,
+          ConcurrencyException, InvalidStateException, ClassificationNotFoundException,
+          AttachmentPersistenceException {
+    String taskId = "TKI:000000000000000000000000000000000002";
+    Instant planned = getInstant("2020-05-03T07:00:00");
+    DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize();
+    Task task = taskService.getTask(taskId);
+    // test update of planned date via updateTask()
+    task.setPlanned(task.getPlanned().plus(Duration.ofDays(3)));
+    task = taskService.updateTask(task);
+    long days = converter.convertWorkingDaysToDays(task.getPlanned(), 1);
+    assertThat(task.getDue()).isEqualTo(task.getPlanned().plus(Duration.ofDays(days)));
+  }
+
+  @WithAccessId(
+      userName = "admin",
+      groupNames = {"group_2"})
+  @Test
+  void testSetDuePropertyOnSingleTask()
+      throws NotAuthorizedException, TaskNotFoundException, InvalidArgumentException,
+          ConcurrencyException, InvalidStateException, ClassificationNotFoundException,
+          AttachmentPersistenceException {
+    String taskId = "TKI:000000000000000000000000000000000002";
+    Instant planned = getInstant("2020-05-03T07:00:00");
+    Task task = taskService.getTask(taskId);
+
+    // test update of due that fails
+    task.setDue(planned.plus(Duration.ofDays(8)));
+    Task finalTask = task;
+    assertThatThrownBy(
+        () -> {
+            taskService.updateTask(finalTask);
+        })
+        .isInstanceOf(InvalidArgumentException.class);
+
+    // update due and planned as expected.
+    task = taskService.getTask(taskId);
+    task.setDue(planned.plus(Duration.ofDays(3)));
+    DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize();
+    long days = converter.convertWorkingDaysToDays(task.getDue(), -1);
+    task.setPlanned(task.getDue().plus(Duration.ofDays(-1)));
+    task = taskService.updateTask(task);
+    days = converter.convertWorkingDaysToDays(task.getDue(), -1);
+    assertThat(task.getPlanned()).isEqualTo(task.getDue().plus(Duration.ofDays(days)));
+
+    // update due and planned as expected.
+    task = taskService.getTask(taskId);
+    task.setDue(planned.plus(Duration.ofDays(3)));
+    task.setPlanned(null);
+    task = taskService.updateTask(task);
+    days = converter.convertWorkingDaysToDays(task.getDue(), -1);
+    assertThat(task.getPlanned()).isEqualTo(task.getDue().plus(Duration.ofDays(days)));
+  }
+
+  @WithAccessId(
+      userName = "admin",
+      groupNames = {"group_2"})
+  @Test
+  void testSetPlannedPropertyOnSingleTaskUpdateWithNulls()
+      throws NotAuthorizedException, TaskNotFoundException, InvalidArgumentException,
+          ConcurrencyException, InvalidStateException, ClassificationNotFoundException,
+          AttachmentPersistenceException {
+    String taskId = "TKI:000000000000000000000000000000000002";
+    final Instant planned = getInstant("2020-05-03T07:00:00");
+    Task task = taskService.getTask(taskId);
+    
+    task.setPlanned(null);
+    task = taskService.updateTask(task);
+    DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize();
+    long days = converter.convertWorkingDaysToDays(task.getPlanned(), 1);
+    assertThat(task.getDue()).isEqualTo(task.getPlanned().plus(Duration.ofDays(days)));
+
+    task.setDue(null);
+    task = taskService.updateTask(task);
+    days = converter.convertWorkingDaysToDays(task.getPlanned(), 1);
+    assertThat(task.getDue()).isEqualTo(task.getPlanned().plus(Duration.ofDays(days)));
+
+    task.setPlanned(planned.plus(Duration.ofDays(13)));
+    task.setDue(null);
+    task = taskService.updateTask(task);
+    days = converter.convertWorkingDaysToDays(task.getPlanned(), 1);
+    assertThat(task.getDue()).isEqualTo(task.getPlanned().plus(Duration.ofDays(days)));
+
+    task.setDue(planned.plus(Duration.ofDays(13)));
+    task.setPlanned(null);
+    task = taskService.updateTask(task);
+    days = converter.convertWorkingDaysToDays(task.getDue(), -1);
+    assertThat(task.getDue()).isEqualTo(planned.plus(Duration.ofDays(13)));
+    assertThat(task.getPlanned()).isEqualTo(task.getDue().plus(Duration.ofDays(days)));
   }
 
   @WithAccessId(

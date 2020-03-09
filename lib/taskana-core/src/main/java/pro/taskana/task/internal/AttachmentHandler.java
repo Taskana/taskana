@@ -1,6 +1,5 @@
 package pro.taskana.task.internal;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,9 +36,8 @@ public class AttachmentHandler {
     this.classificationService = classificationService;
   }
 
-  public List<Attachment> augmentAttachmentsByClassification(
-      List<AttachmentImpl> attachmentImpls,
-      BulkOperationResults<String, Exception> bulkLog) {
+  List<Attachment> augmentAttachmentsByClassification(
+      List<AttachmentImpl> attachmentImpls, BulkOperationResults<String, Exception> bulkLog) {
     LOGGER.debug("entry to augmentAttachmentsByClassification()");
     List<Attachment> result = new ArrayList<>();
     if (attachmentImpls == null || attachmentImpls.isEmpty()) {
@@ -148,18 +146,15 @@ public class AttachmentHandler {
     }
   }
 
-  void insertNewAttachmentsOnTaskCreation(TaskImpl task, Instant now)
+  void insertNewAttachmentsOnTaskCreation(TaskImpl task)
       throws InvalidArgumentException {
     List<Attachment> attachments = task.getAttachments();
     if (attachments != null) {
       for (Attachment attachment : attachments) {
         AttachmentImpl attachmentImpl = (AttachmentImpl) attachment;
-        attachmentImpl.setId(IdGenerator.generateWithPrefix(ID_PREFIX_ATTACHMENT));
-        attachmentImpl.setTaskId(task.getId());
-        attachmentImpl.setCreated(now);
-        attachmentImpl.setModified(now);
+        initAttachment(attachmentImpl, task);
         ObjectReference objRef = attachmentImpl.getObjectReference();
-        validateObjectReference(objRef, "ObjectReference", "Attachment");
+        ObjectReference.validate(objRef, "ObjectReference", "Attachment");
         attachmentMapper.insert(attachmentImpl);
       }
     }
@@ -210,11 +205,9 @@ public class AttachmentHandler {
           attachmentImpl);
     } catch (PersistenceException e) {
       throw new AttachmentPersistenceException(
-          "Cannot insert the Attachement "
-              + attachmentImpl.getId()
-              + " for Task "
-              + newTaskImpl.getId()
-              + " because it already exists.",
+          String.format(
+              "Cannot insert the Attachement %s for Task %s  because it already exists.",
+              attachmentImpl.getId(), newTaskImpl.getId()),
           e.getCause());
     }
     LOGGER.debug("exit from insertNewAttachmentOnTaskUpdate(), returning");
@@ -226,7 +219,7 @@ public class AttachmentHandler {
       attachment.setId(IdGenerator.generateWithPrefix(ID_PREFIX_ATTACHMENT));
     }
     if (attachment.getCreated() == null) {
-      attachment.setCreated(Instant.now());
+      attachment.setCreated(newTask.getModified());
     }
     if (attachment.getModified() == null) {
       attachment.setModified(attachment.getCreated());
@@ -237,28 +230,4 @@ public class AttachmentHandler {
     LOGGER.debug("exit from initAttachment()");
   }
 
-  void validateObjectReference(ObjectReference objRef, String objRefType, String objName)
-      throws InvalidArgumentException {
-    LOGGER.debug("entry to validateObjectReference()");
-    // check that all values in the ObjectReference are set correctly
-    if (objRef == null) {
-      throw new InvalidArgumentException(objRefType + " of " + objName + " must not be null");
-    } else if (objRef.getCompany() == null || objRef.getCompany().length() == 0) {
-      throw new InvalidArgumentException(
-          String.format("Company of %s of %s must not be empty", objRefType, objName));
-    } else if (objRef.getSystem() == null || objRef.getSystem().length() == 0) {
-      throw new InvalidArgumentException(
-          String.format("System of %s of %s must not be empty", objRefType, objName));
-    } else if (objRef.getSystemInstance() == null || objRef.getSystemInstance().length() == 0) {
-      throw new InvalidArgumentException(
-          String.format("SystemInstance of %s of %s must not be empty", objRefType, objName));
-    } else if (objRef.getType() == null || objRef.getType().length() == 0) {
-      throw new InvalidArgumentException(
-          String.format("Type of %s of %s must not be empty", objRefType, objName));
-    } else if (objRef.getValue() == null || objRef.getValue().length() == 0) {
-      throw new InvalidArgumentException(
-          String.format("Value of %s of %s must not be empty", objRefType, objName));
-    }
-    LOGGER.debug("exit from validateObjectReference()");
-  }
 }

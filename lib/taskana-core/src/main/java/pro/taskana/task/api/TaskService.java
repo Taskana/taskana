@@ -479,8 +479,8 @@ public interface TaskService {
 
   /**
    * Sets the planned property on a list of tasks. Only tasks in state READY and CLAIMED will be
-   * affected by this method. On each task, the corresponding due date is set according to the due
-   * dates in the classification() of the task and the task's attachments.
+   * affected by this method. On each task, the corresponding due date is set according to the
+   * shortest service level in the classifications of the task and the task's attachments.
    *
    * @param planned the new 'PLANNED" property of the tasks
    * @param taskIds the IDs of the tasks on which the new planned property is to be set.

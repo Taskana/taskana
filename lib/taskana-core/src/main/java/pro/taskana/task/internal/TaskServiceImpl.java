@@ -215,8 +215,7 @@ public class TaskServiceImpl implements TaskService {
       Classification classification =
           this.classificationService.getClassification(classificationKey, workbasket.getDomain());
       task.setClassificationSummary(classification.asSummary());
-      attachmentHandler.validateObjectReference(
-          task.getPrimaryObjRef(), "primary ObjectReference", TASK);
+      ObjectReference.validate(task.getPrimaryObjRef(), "primary ObjectReference", TASK);
       standardSettings(task, classification);
       setCallbackStateOnTaskCreation(task);
       try {
@@ -410,6 +409,10 @@ public class TaskServiceImpl implements TaskService {
     try {
       taskanaEngine.openConnection();
       oldTaskImpl = (TaskImpl) getTask(newTaskImpl.getId());
+
+      newTaskImpl = checkConcurrencyAndSetModified(newTaskImpl, oldTaskImpl);
+
+      attachmentHandler.insertAndDeleteAttachmentsOnTaskUpdate(newTaskImpl, oldTaskImpl);
       standardUpdateActions(oldTaskImpl, newTaskImpl);
 
       taskMapper.update(newTaskImpl);
@@ -522,8 +525,7 @@ public class TaskServiceImpl implements TaskService {
           selectionCriteria,
           customFieldsToUpdate);
     }
-    attachmentHandler.validateObjectReference(
-        selectionCriteria, "ObjectReference", "updateTasks call");
+    ObjectReference.validate(selectionCriteria, "ObjectReference", "updateTasks call");
     validateCustomFields(customFieldsToUpdate);
     CustomPropertySelector fieldSelector = new CustomPropertySelector();
     TaskImpl updated = initUpdatedTask(customFieldsToUpdate, fieldSelector);
@@ -840,16 +842,16 @@ public class TaskServiceImpl implements TaskService {
       return result;
     }
 
-    String[] taskIdArray =
-        taskSummaries.stream().map(TaskSummaryImpl::getId).distinct().toArray(String[]::new);
+    List<String> taskIds =
+        taskSummaries.stream().map(TaskSummaryImpl::getId).distinct().collect(Collectors.toList());
 
-    if (taskIdArray.length == 0) {
-      taskIdArray = null;
+    if (taskIds.isEmpty()) {
+      taskIds = null;
     }
     LOGGER.debug(
         "augmentTaskSummariesByContainedSummaries() about to query for attachmentSummaries ");
     List<AttachmentSummaryImpl> attachmentSummaries =
-        attachmentMapper.findAttachmentSummariesByTaskIds(taskIdArray);
+        attachmentMapper.findAttachmentSummariesByTaskIds(taskIds);
 
     List<ClassificationSummary> classifications =
         findClassificationsForTasksAndAttachments(taskSummaries, attachmentSummaries);
@@ -862,23 +864,22 @@ public class TaskServiceImpl implements TaskService {
     return result;
   }
 
-  private Duration calculateDuration(
-      PrioDurationHolder prioDurationFromAttachments,
-      ClassificationSummary newClassificationSummary) {
-    if (newClassificationSummary.getServiceLevel() == null) {
-      return null;
+
+
+  private TaskImpl checkConcurrencyAndSetModified(TaskImpl newTaskImpl, TaskImpl oldTaskImpl)
+      throws ConcurrencyException {
+    // TODO: not safe to rely only on different timestamps.
+    // With fast execution below 1ms there will be no concurrencyException
+    if (oldTaskImpl.getModified() != null
+            && !oldTaskImpl.getModified().equals(newTaskImpl.getModified())
+        || oldTaskImpl.getClaimed() != null
+            && !oldTaskImpl.getClaimed().equals(newTaskImpl.getClaimed())
+        || oldTaskImpl.getState() != null
+            && !oldTaskImpl.getState().equals(newTaskImpl.getState())) {
+      throw new ConcurrencyException("The task has already been updated by another user");
     }
-    Duration minDuration = prioDurationFromAttachments.getLeft();
-    Duration durationFromClassification =
-        Duration.parse(newClassificationSummary.getServiceLevel());
-    if (minDuration != null) {
-      if (minDuration.compareTo(durationFromClassification) > 0) {
-        minDuration = durationFromClassification;
-      }
-    } else {
-      minDuration = durationFromClassification;
-    }
-    return minDuration;
+    newTaskImpl.setModified(Instant.now());
+    return newTaskImpl;
   }
 
   private BulkOperationResults<String, TaskanaException> addExceptionsForTasksWhoseOwnerWasNotSet(
@@ -1190,7 +1191,7 @@ public class TaskServiceImpl implements TaskService {
     if (task.getDescription() == null && classification != null) {
       task.setDescription(classification.getDescription());
     }
-    attachmentHandler.insertNewAttachmentsOnTaskCreation(task, now);
+    attachmentHandler.insertNewAttachmentsOnTaskCreation(task);
     LOGGER.debug("exit from standardSettings()");
   }
 
@@ -1205,8 +1206,9 @@ public class TaskServiceImpl implements TaskService {
         } catch (Exception e) {
           LOGGER.warn(
               "Attempted to determine callback state from {} and caught exception", value, e);
+              
           throw new InvalidArgumentException(
-              "Attempted to set callback state for task " + task.getId(), e);
+              String.format("Attempted to set callback state for task %s.", task.getId()), e);
         }
       }
     }
@@ -1562,20 +1564,8 @@ public class TaskServiceImpl implements TaskService {
   }
 
   private void standardUpdateActions(TaskImpl oldTaskImpl, TaskImpl newTaskImpl)
-      throws InvalidArgumentException, ConcurrencyException, InvalidStateException,
-          AttachmentPersistenceException, ClassificationNotFoundException {
-    attachmentHandler.validateObjectReference(
-        newTaskImpl.getPrimaryObjRef(), "primary ObjectReference", TASK);
-    // TODO: not safe to rely only on different timestamps.
-    // With fast execution below 1ms there will be no concurrencyException
-    if (oldTaskImpl.getModified() != null
-            && !oldTaskImpl.getModified().equals(newTaskImpl.getModified())
-        || oldTaskImpl.getClaimed() != null
-            && !oldTaskImpl.getClaimed().equals(newTaskImpl.getClaimed())
-        || oldTaskImpl.getState() != null
-            && !oldTaskImpl.getState().equals(newTaskImpl.getState())) {
-      throw new ConcurrencyException("The task has already been updated by another user");
-    }
+      throws InvalidArgumentException, InvalidStateException, ClassificationNotFoundException {
+    ObjectReference.validate(newTaskImpl.getPrimaryObjRef(), "primary ObjectReference", TASK);
 
     if (oldTaskImpl.getExternalId() == null
         || !(oldTaskImpl.getExternalId().equals(newTaskImpl.getExternalId()))) {
@@ -1588,16 +1578,6 @@ public class TaskServiceImpl implements TaskService {
       throw new InvalidArgumentException(
           "A task's Workbasket cannot be changed via update of the task");
     }
-
-    if (newTaskImpl.getPlanned() == null) {
-      newTaskImpl.setPlanned(oldTaskImpl.getPlanned());
-    }
-
-    if (newTaskImpl.getClassificationSummary() == null) {
-      newTaskImpl.setClassificationSummary(oldTaskImpl.getClassificationSummary());
-    }
-
-    attachmentHandler.insertAndDeleteAttachmentsOnTaskUpdate(newTaskImpl, oldTaskImpl);
 
     updateClassificationSummary(newTaskImpl, oldTaskImpl);
 
@@ -1614,8 +1594,6 @@ public class TaskServiceImpl implements TaskService {
       throw new InvalidStateException(
           String.format(TASK_WITH_ID_IS_NOT_READY, oldTaskImpl.getId(), oldTaskImpl.getState()));
     }
-
-    newTaskImpl.setModified(Instant.now());
   }
 
   private void updateClassificationSummary(TaskImpl newTaskImpl, TaskImpl oldTaskImpl)

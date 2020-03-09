@@ -83,10 +83,10 @@ class ServiceLevelHandler {
         findAllInvolvedClassifications(existingTasksAuthorizedFor, attachments);
     List<ClassificationWithServiceLevelResolved> allInvolvedClassificationsWithDuration =
         resolveDurationsInClassifications(allInvolvedClassifications);
-    Map<Duration, List<TaskDuration>> tasksPerDuration =
-        getTasksPerDuration(
+    Map<Duration, List<String>> durationToTaskIdsMap =
+        getDurationToTaskIdsMap(
             existingTasksAuthorizedFor, attachments, allInvolvedClassificationsWithDuration);
-    BulkLog updateResult = updatePlannedPropertyOfAffectedTasks(planned, tasksPerDuration);
+    BulkLog updateResult = updatePlannedPropertyOfAffectedTasks(planned, durationToTaskIdsMap);
     bulkLog.addAllErrors(updateResult);
 
     return bulkLog;
@@ -214,21 +214,31 @@ class ServiceLevelHandler {
   private TaskImpl updatePlannedDueOnTaskUpdate(
       TaskImpl newTaskImpl, TaskImpl oldTaskImpl, DurationPrioHolder durationPrioHolder)
       throws InvalidArgumentException {
-    // case 1: no change of planned / due, but change of an attachment or classification
-    if (newTaskImpl.getDue().equals(oldTaskImpl.getDue())
-        && newTaskImpl.getPlanned().equals(oldTaskImpl.getPlanned())) {
+    if (newTaskImpl.getPlanned() == null && newTaskImpl.getDue() == null) {
+      newTaskImpl.setPlanned(oldTaskImpl.getPlanned());
+    }
+    // case 1: no change of planned / due, but potentially change of an attachment or classification
+    if (oldTaskImpl.getDue().equals(newTaskImpl.getDue())
+        && oldTaskImpl.getPlanned().equals(newTaskImpl.getPlanned())) {
       newTaskImpl.setDue(newPlannedDueInstant(newTaskImpl, durationPrioHolder.getDuration(), true));
-    } else if ((newTaskImpl.getDue().equals(oldTaskImpl.getDue()))) {
+    } else if (oldTaskImpl.getDue().equals(newTaskImpl.getDue())
+        && newTaskImpl.getPlanned() != null) {
       // case 2: planned was changed
       newTaskImpl.setDue(newPlannedDueInstant(newTaskImpl, durationPrioHolder.getDuration(), true));
     } else { // case 3: due was changed
-      Instant planned = newPlannedDueInstant(newTaskImpl, durationPrioHolder.getDuration(), false);
-      if (newTaskImpl.getPlanned() != null && !planned.equals(newTaskImpl.getPlanned())) {
-        throw new InvalidArgumentException(
-            "Cannot update a task with given planned "
-                + "and due date not matching the service level");
+      if (newTaskImpl.getDue() == null) {
+        newTaskImpl.setDue(
+            newPlannedDueInstant(newTaskImpl, durationPrioHolder.getDuration(), true));
+      } else {
+        Instant planned =
+            newPlannedDueInstant(newTaskImpl, durationPrioHolder.getDuration(), false);
+        if (newTaskImpl.getPlanned() != null && !planned.equals(newTaskImpl.getPlanned())) {
+          throw new InvalidArgumentException(
+              "Cannot update a task with given planned "
+                  + "and due date not matching the service level");
+        }
+        newTaskImpl.setPlanned(planned);
       }
-      newTaskImpl.setPlanned(planned);
     }
     return newTaskImpl;
   }
@@ -250,17 +260,16 @@ class ServiceLevelHandler {
   }
 
   private BulkLog updatePlannedPropertyOfAffectedTasks(
-      Instant planned, Map<Duration, List<TaskDuration>> tasksPerDuration) {
+      Instant planned, Map<Duration, List<String>> durationToTaskIdsMap) {
     BulkLog bulkLog = new BulkLog();
     TaskImpl referenceTask = new TaskImpl();
     referenceTask.setPlanned(planned);
-    for (Map.Entry<Duration, List<TaskDuration>> entry : tasksPerDuration.entrySet()) {
-      List<String> taskIdsToUpdate =
-          entry.getValue().stream().map(TaskDuration::getTaskId).collect(Collectors.toList());
+    referenceTask.setModified(Instant.now());
+    for (Map.Entry<Duration, List<String>> entry : durationToTaskIdsMap.entrySet()) {
+      List<String> taskIdsToUpdate = entry.getValue();
       long days = converter.convertWorkingDaysToDays(planned, entry.getKey().toDays());
       Instant due = planned.plus(Duration.ofDays(days));
       referenceTask.setDue(due);
-      referenceTask.setModified(Instant.now());
       long numTasksUpdated = taskMapper.updateTaskDueDates(taskIdsToUpdate, referenceTask);
       if (numTasksUpdated != taskIdsToUpdate.size()) {
         BulkLog checkResult =
@@ -300,17 +309,17 @@ class ServiceLevelHandler {
     return bulkLog;
   }
 
-  private Map<Duration, List<TaskDuration>> getTasksPerDuration(
+  private Map<Duration, List<String>> getDurationToTaskIdsMap(
       List<MinimalTaskSummary> minimalTaskSummariesAuthorizedFor,
       List<AttachmentSummaryImpl> attachments,
       List<ClassificationWithServiceLevelResolved>
           allInvolvedClassificationsWithServiceLevelResolved) {
     List<TaskDuration> resultingTaskDurations = new ArrayList<>();
     // Map taskId -> Set Of involved classification Ids
-    Map<String, Set<String>> classificationIdsPerTaskId =
+    Map<String, Set<String>> taskIdToClassificationIdsMap =
         findAllClassificationIdsPerTask(minimalTaskSummariesAuthorizedFor, attachments);
     // Map classificationId -> Duration
-    Map<String, Duration> durationPerClassificationId =
+    Map<String, Duration> classificationIdToDurationMap =
         allInvolvedClassificationsWithServiceLevelResolved.stream()
             .collect(
                 Collectors.toMap(
@@ -318,15 +327,19 @@ class ServiceLevelHandler {
                     ClassificationWithServiceLevelResolved::getDurationFromClassification));
     for (MinimalTaskSummary task : minimalTaskSummariesAuthorizedFor) {
       Duration duration =
-          determineMinimalDurationForTasks(
-              classificationIdsPerTaskId.get(task.getTaskId()), durationPerClassificationId);
+          determineMinimalDurationForATask(
+              taskIdToClassificationIdsMap.get(task.getTaskId()), classificationIdToDurationMap);
       TaskDuration taskDuration = new TaskDuration(task.getTaskId(), duration);
       resultingTaskDurations.add(taskDuration);
     }
-    return resultingTaskDurations.stream().collect(groupingBy(TaskDuration::getDuration));
+    return resultingTaskDurations.stream()
+        .collect(
+            groupingBy(
+                TaskDuration::getDuration,
+                Collectors.mapping(TaskDuration::getTaskId, Collectors.toList())));
   }
 
-  private Duration determineMinimalDurationForTasks(
+  private Duration determineMinimalDurationForATask(
       Set<String> classificationIds, Map<String, Duration> durationPerClassificationId) {
     Duration result = MAX_DURATION;
     for (String classificationId : classificationIds) {
@@ -341,7 +354,7 @@ class ServiceLevelHandler {
   // returns a map <taskId -> Set of ClassificationIds>
   private Map<String, Set<String>> findAllClassificationIdsPerTask(
       List<MinimalTaskSummary> minimalTaskSummaries, List<AttachmentSummaryImpl> attachments) {
-    Map<String, Set<String>> result = new HashMap<>();
+    Map<String, Set<String>> resultingTaskIdToClassificationIdsMap = new HashMap<>();
     for (MinimalTaskSummary task : minimalTaskSummaries) {
       Set<String> classificationIds =
           attachments.stream()
@@ -350,9 +363,9 @@ class ServiceLevelHandler {
               .map(ClassificationSummary::getId)
               .collect(Collectors.toSet());
       classificationIds.add(task.getClassificationId());
-      result.put(task.getTaskId(), classificationIds);
+      resultingTaskIdToClassificationIdsMap.put(task.getTaskId(), classificationIds);
     }
-    return result;
+    return resultingTaskIdToClassificationIdsMap;
   }
 
   private List<ClassificationWithServiceLevelResolved> resolveDurationsInClassifications(
@@ -374,12 +387,9 @@ class ServiceLevelHandler {
             .map(MinimalTaskSummary::getTaskId)
             .collect(Collectors.toList());
 
-    String[] taskIdsAuthorizedForArray = new String[existingTaskIdsAuthorizedFor.size()];
-    taskIdsAuthorizedForArray = existingTaskIdsAuthorizedFor.toArray(taskIdsAuthorizedForArray);
-
     return existingTaskIdsAuthorizedFor.isEmpty()
         ? new ArrayList<>()
-        : attachmentMapper.findAttachmentSummariesByTaskIds(taskIdsAuthorizedForArray);
+        : attachmentMapper.findAttachmentSummariesByTaskIds(existingTaskIdsAuthorizedFor);
   }
 
   private List<ClassificationSummary> findAllInvolvedClassifications(
