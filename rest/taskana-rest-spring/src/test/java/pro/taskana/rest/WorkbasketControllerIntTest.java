@@ -90,10 +90,9 @@ class WorkbasketControllerIntTest {
 
   @Test
   void testThrowsExceptionIfInvalidFilterIsUsed() {
-    assertThatThrownBy(
-        () ->
-            template.exchange(
-                restHelper.toUrl(Mapping.URL_WORKBASKET) + "?invalid=PERSONAL",
+    assertThatThrownBy(() ->
+        template.exchange(
+            restHelper.toUrl(Mapping.URL_WORKBASKET) + "?invalid=PERSONAL",
                 HttpMethod.GET,
                 restHelper.defaultRequest(),
                 ParameterizedTypeReference.forType(WorkbasketSummaryListResource.class)))
@@ -126,14 +125,13 @@ class WorkbasketControllerIntTest {
     workbasketResource.setOwner("Joerg");
     workbasketResource.setModified(String.valueOf(Instant.now()));
 
-    assertThatThrownBy(
-        () ->
-                template.exchange(
-                    restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketId),
-                    HttpMethod.PUT,
-                    new HttpEntity<>(
-                        mapper.writeValueAsString(workbasketResource), restHelper.getHeaders()),
-                    ParameterizedTypeReference.forType(WorkbasketResource.class)))
+    assertThatThrownBy(() ->
+        template.exchange(
+            restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketId),
+                HttpMethod.PUT,
+                new HttpEntity<>(
+                    mapper.writeValueAsString(workbasketResource), restHelper.getHeaders()),
+                ParameterizedTypeReference.forType(WorkbasketResource.class)))
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
         .isEqualTo(HttpStatus.CONFLICT);
   }
@@ -143,13 +141,12 @@ class WorkbasketControllerIntTest {
 
     String workbasketId = "WBI:100004857400039500000999999999999999";
 
-    assertThatThrownBy(
-        () ->
-                template.exchange(
-                    restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketId),
-                    HttpMethod.GET,
-                    new HttpEntity<String>(restHelper.getHeaders()),
-                    ParameterizedTypeReference.forType(WorkbasketResource.class)))
+    assertThatThrownBy(() ->
+        template.exchange(
+            restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketId),
+                HttpMethod.GET,
+                new HttpEntity<String>(restHelper.getHeaders()),
+                ParameterizedTypeReference.forType(WorkbasketResource.class)))
         .isInstanceOf(HttpClientErrorException.class)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
         .isEqualTo(HttpStatus.NOT_FOUND);
@@ -175,12 +172,8 @@ class WorkbasketControllerIntTest {
     assertThat(response.getBody().getLink(Link.REL_SELF).getHref().endsWith(parameters)).isTrue();
   }
 
-  /**
-   * Bug Ticket TSK-1029. Businessadmin is allowed to delete any workbasket ticket without user
-   * related access restrictions.
-   */
   @Test
-  void testDeleteWorkbasketAsBusinessAdminWithoutExplicitReadPermission() {
+  void testMarkWorkbasketForDeletionAsBusinessAdminWithoutExplicitReadPermission() {
 
     String workbasketID = "WBI:100000000000000000000000000000000005";
 
@@ -191,6 +184,22 @@ class WorkbasketControllerIntTest {
             new HttpEntity<>(restHelper.getHeadersBusinessAdmin()),
             Void.class);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
+  }
+
+  @Test
+  void statusCode423ShouldBeReturnedIfWorkbasketContainsNonCompletedTasks() {
+    String workbasketWithNonCompletedTasks = "WBI:100000000000000000000000000000000004";
+
+    assertThatThrownBy(() ->
+        template.exchange(
+            restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketWithNonCompletedTasks),
+                HttpMethod.DELETE,
+                new HttpEntity<>(restHelper.getHeadersBusinessAdmin()),
+                Void.class))
+            .isInstanceOf(HttpClientErrorException.class)
+            .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+            .isEqualTo(HttpStatus.LOCKED);
+
   }
 
   @Test
@@ -213,9 +222,9 @@ class WorkbasketControllerIntTest {
             ParameterizedTypeReference.forType(DistributionTargetListResource.class));
     assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(
-        response2.getBody().getContent().stream()
-            .map(DistributionTargetResource::getWorkbasketId)
-            .noneMatch(id -> (id.equals("WBI:100000000000000000000000000000000007"))))
+            response2.getBody().getContent().stream()
+                .map(DistributionTargetResource::getWorkbasketId)
+                .noneMatch("WBI:100000000000000000000000000000000007"::equals))
         .isTrue();
   }
 
@@ -248,5 +257,4 @@ class WorkbasketControllerIntTest {
         .isEqualTo(MediaTypes.HAL_JSON_UTF8_VALUE);
     assertThat(response.getBody().getContent()).hasSize(4);
   }
-
 }

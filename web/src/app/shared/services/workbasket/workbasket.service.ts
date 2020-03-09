@@ -89,7 +89,7 @@ export class WorkbasketService {
   // delete
   markWorkbasketForDeletion(url: string): Observable<any> {
     return this.httpClient
-      .delete<any>(url);
+      .delete<any>(url, {observe: 'response'});
   }
 
   // GET

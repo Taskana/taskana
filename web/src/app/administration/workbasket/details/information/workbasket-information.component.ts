@@ -280,16 +280,18 @@ implements OnInit, OnChanges, OnDestroy {
         response => {
           this.requestInProgressService.setRequestInProgress(false);
           this.workbasketService.triggerWorkBasketSaved();
-          if (response) {
+          if (response.status === 202) {
             // new Key ERROR_TYPES.MARK_ERR
+            // TODO: message changed
             this.generalModalService.triggerMessage(
-              new MessageModal('There was an error marking workbasket for deletion',
-                'It not possible to mark the workbasket for deletion, It has been deleted.')
+              new MessageModal('Workbasket was marked for deletion.',
+              `The Workbasket ${this.workbasket.workbasketId} still contains completed tasks and could not be deleted. Instead is was marked for deletion and will be deleted automatically as soon as the completed tasks are deleted from the database.`)
             );
           } else {
             // new Key ALERT_TYPES.SUCCESS_ALERT_12
+            // TODO: message changed
             this.alertService.triggerAlert(
-              new AlertModel(AlertType.SUCCESS, `The Workbasket ${this.workbasket.workbasketId} has been marked for deletion`)
+              new AlertModel(AlertType.SUCCESS, `The Workbasket ${this.workbasket.workbasketId} has been deleted.`)
             );
           }
           this.router.navigate(['taskana/administration/workbaskets']);
