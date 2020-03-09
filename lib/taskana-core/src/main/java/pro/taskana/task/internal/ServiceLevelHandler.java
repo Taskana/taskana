@@ -245,9 +245,6 @@ class ServiceLevelHandler {
   private TaskImpl updatePlannedDueOnTaskUpdate(
       TaskImpl newTaskImpl, TaskImpl oldTaskImpl, DurationPrioHolder durationPrioHolder)
       throws InvalidArgumentException {
-    if (newTaskImpl.getPlanned() == null && newTaskImpl.getDue() == null) {
-      newTaskImpl.setPlanned(oldTaskImpl.getPlanned());
-    }
     // case 1: no change of planned / due, but potentially change of an attachment or classification
     if (oldTaskImpl.getDue().equals(newTaskImpl.getDue())
         && oldTaskImpl.getPlanned().equals(newTaskImpl.getPlanned())) {
