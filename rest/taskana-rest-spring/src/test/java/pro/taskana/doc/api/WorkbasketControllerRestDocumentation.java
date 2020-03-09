@@ -483,15 +483,15 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
   }
 
   @Test
-  void markWorkbasketForDeletionDocTest() throws Exception {
+  void deleteWorkbasketDocTest() throws Exception {
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.delete(
                     restHelper.toUrl(
-                        Mapping.URL_WORKBASKET_ID, "WBI:100000000000000000000000000000000005"))
+                        Mapping.URL_WORKBASKET_ID, "WBI:100000000000000000000000000000000008"))
                 .header("Authorization", "Basic YWRtaW46YWRtaW4="))
-        .andExpect(MockMvcResultMatchers.status().isAccepted())
-        .andDo(MockMvcRestDocumentation.document("MarkWorkbasketForDeletionDocTest"));
+        .andExpect(MockMvcResultMatchers.status().isNoContent())
+        .andDo(MockMvcRestDocumentation.document("DeleteWorkbasketDocTest"));
   }
 
   @Test
