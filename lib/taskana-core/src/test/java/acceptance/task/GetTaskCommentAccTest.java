@@ -8,6 +8,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
@@ -15,7 +16,6 @@ import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.TaskComment;
-import pro.taskana.task.internal.models.TaskCommentImpl;
 
 @ExtendWith(JaasExtension.class)
 public class GetTaskCommentAccTest extends AbstractAccTest {
@@ -28,28 +28,26 @@ public class GetTaskCommentAccTest extends AbstractAccTest {
       userName = "user_1_1",
       groupNames = {"group_1"})
   @Test
-  void testGetTaskComments()
-      throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException {
+  void testGetTaskComments() throws NotAuthorizedException, TaskNotFoundException {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
     taskService.getTask("TKI:000000000000000000000000000000000000");
-    List<TaskCommentImpl> taskComments =
+    List<TaskComment> taskComments =
         taskService.getTaskComments("TKI:000000000000000000000000000000000000");
-    assertThat(taskComments).hasSize(2);
+    assertThat(taskComments).hasSize(3);
   }
 
   @WithAccessId(
       userName = "user_1_1",
       groupNames = {"group_1"})
   @Test
-  void testGetNonExistingTaskCommentsShouldFail() {
+  void testGetNonExistingTaskCommentsShouldReturnEmptyList()
+      throws NotAuthorizedException, TaskNotFoundException {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
-    assertThatThrownBy(
-        () -> taskService.getTaskComments("TKI:000000000000000000000000000000000036"))
-        .isInstanceOf(TaskCommentNotFoundException.class);
+    assertThat(taskService.getTaskComments("TKI:000000000000000000000000000000000036")).isEmpty();
   }
 
   @WithAccessId(
@@ -60,7 +58,8 @@ public class GetTaskCommentAccTest extends AbstractAccTest {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
-    assertThatThrownBy(() -> taskService.getTask("TKI:000000000000000000000000000000000004"))
+    assertThatThrownBy(
+        () -> taskService.getTaskComments("TKI:000000000000000000000000000000000004"))
         .isInstanceOf(NotAuthorizedException.class);
   }
 
@@ -68,7 +67,9 @@ public class GetTaskCommentAccTest extends AbstractAccTest {
       userName = "user_1_1",
       groupNames = {"group_1"})
   @Test
-  void testGetTaskComment() throws TaskCommentNotFoundException {
+  void testGetTaskComment()
+      throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException,
+          InvalidArgumentException {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
@@ -89,6 +90,15 @@ public class GetTaskCommentAccTest extends AbstractAccTest {
         .isInstanceOf(TaskCommentNotFoundException.class);
   }
 
+  @WithAccessId(
+      userName = "user_1_1",
+      groupNames = {"group_1"})
+  @Test
+  void testGetTaskCommentOfNotVisibleTaskShouldFail() {
+
+    TaskService taskService = taskanaEngine.getTaskService();
+
+    assertThatThrownBy(() -> taskService.getTaskComment("TCI:000000000000000000000000000000000012"))
+        .isInstanceOf(NotAuthorizedException.class);
+  }
 }
-
-
