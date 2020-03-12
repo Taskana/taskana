@@ -34,6 +34,12 @@ public interface TaskComment {
   String getTextField();
 
   /**
+   * Sets the text field of the task comment.
+   *
+   */
+  void setTextField(String textField);
+
+  /**
    * Gets the time when the task comment was created.
    *
    * @return the created Instant
@@ -46,5 +52,7 @@ public interface TaskComment {
    * @return the last modified Instant
    */
   Instant getModified();
+
+
 
 }

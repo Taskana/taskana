@@ -47,7 +47,6 @@ import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
 import pro.taskana.task.api.exceptions.InvalidOwnerException;
 import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
-import pro.taskana.task.api.exceptions.TaskCommentAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.exceptions.UpdateFailedException;
@@ -59,7 +58,6 @@ import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.AttachmentImpl;
 import pro.taskana.task.internal.models.AttachmentSummaryImpl;
 import pro.taskana.task.internal.models.MinimalTaskSummary;
-import pro.taskana.task.internal.models.TaskCommentImpl;
 import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.task.internal.models.TaskSummaryImpl;
 import pro.taskana.workbasket.api.WorkbasketPermission;
@@ -399,6 +397,11 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
+  public TaskComment newTaskComment(String taskId) {
+    return taskCommentService.newTaskComment(taskId);
+  }
+
+  @Override
   public Attachment newAttachment() {
     return new AttachmentImpl();
   }
@@ -602,14 +605,14 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   public TaskComment createTaskComment(TaskComment taskComment)
-      throws NotAuthorizedException, TaskCommentAlreadyExistException, TaskNotFoundException {
+      throws NotAuthorizedException, TaskNotFoundException, InvalidArgumentException {
     return taskCommentService.createTaskComment(taskComment);
   }
 
   @Override
   public TaskComment updateTaskComment(TaskComment taskComment)
       throws NotAuthorizedException, ConcurrencyException, TaskCommentNotFoundException,
-          TaskNotFoundException {
+          TaskNotFoundException, InvalidArgumentException {
     return taskCommentService.updateTaskComment(taskComment);
   }
 
@@ -621,13 +624,15 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
-  public TaskComment getTaskComment(String taskCommentid) throws TaskCommentNotFoundException {
+  public TaskComment getTaskComment(String taskCommentid)
+      throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException,
+          InvalidArgumentException {
     return taskCommentService.getTaskComment(taskCommentid);
   }
 
   @Override
-  public List<TaskCommentImpl> getTaskComments(String taskId)
-      throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException {
+  public List<TaskComment> getTaskComments(String taskId)
+      throws NotAuthorizedException, TaskNotFoundException {
 
     return taskCommentService.getTaskComments(taskId);
   }

@@ -15,14 +15,12 @@ import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
 import pro.taskana.task.api.exceptions.InvalidOwnerException;
 import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
-import pro.taskana.task.api.exceptions.TaskCommentAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskComment;
-import pro.taskana.task.internal.models.TaskCommentImpl;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
 /** The Task Service manages all operations on tasks. */
@@ -235,6 +233,14 @@ public interface TaskService {
   Task newTask(String workbasketKey, String domain);
 
   /**
+   * Returns a not persisted instance of {@link TaskComment}.
+   *
+   * @param taskId The id of the task to which the task comment belongs
+   * @return an empty new TaskComment
+   */
+  TaskComment newTaskComment(String taskId);
+
+  /**
    * Returns a not persisted instance of {@link Attachment}.
    *
    * @return an empty new Attachment
@@ -376,13 +382,14 @@ public interface TaskService {
    * @param taskComment the task comment to be created.
    * @return the created task comment.
    * @throws NotAuthorizedException If the current user has no authorization to create a task
-   *     comment for the given taskId in the TaskComment.
-   * @throws TaskCommentAlreadyExistException If the task comment already exists.
+   *     comment for the given taskId in the TaskComment or is not authorized to access the task.
    * @throws TaskNotFoundException If the given taskId in the TaskComment does not refer to an
    *     existing task.
+   * @throws InvalidArgumentException If the given taskCommentId from the provided task comment is
+   *     not null or empty
    */
   TaskComment createTaskComment(TaskComment taskComment)
-      throws NotAuthorizedException, TaskCommentAlreadyExistException, TaskNotFoundException;
+      throws NotAuthorizedException, TaskNotFoundException, InvalidArgumentException;
 
   /**
    * Update a task comment.
@@ -390,29 +397,32 @@ public interface TaskService {
    * @param taskComment the task comment to be updated in the database.
    * @return the updated task comment.
    * @throws NotAuthorizedException If the current user has no authorization to update a task
-   *     comment.
+   *     comment or is not authorized to access the task.
    * @throws ConcurrencyException if an attempt is made to update the task comment and another user.
    *     updated it already.
    * @throws TaskCommentNotFoundException If the given taskCommentId in the TaskComment does not
    *     refer to an existing taskComment.
    * @throws TaskNotFoundException If the given taskId in the TaskComment does not refer to an
    *     existing task.
+   * @throws InvalidArgumentException If the given taskCommentId from the provided task comment is
+   *     null or empty
    */
   TaskComment updateTaskComment(TaskComment taskComment)
       throws NotAuthorizedException, ConcurrencyException, TaskCommentNotFoundException,
-          TaskNotFoundException;
+          TaskNotFoundException, InvalidArgumentException;
 
   /**
    * Deletes the task comment with the given Id.
    *
    * @param taskCommentId The id of the task comment to delete.
    * @throws NotAuthorizedException If the current user has no authorization to delete a task
-   *     comment
+   *     comment or is not authorized to access the task.
    * @throws InvalidArgumentException If the taskCommentId is null/empty
    * @throws TaskCommentNotFoundException If the given taskCommentId in the TaskComment does not
    *     refer to an existing taskComment.
    * @throws TaskNotFoundException If the given taskId in the TaskComment does not refer to an
    *     existing task.
+   * @throws InvalidArgumentException If the given taskCommentId is null or empty
    */
   void deleteTaskComment(String taskCommentId)
       throws NotAuthorizedException, TaskCommentNotFoundException, TaskNotFoundException,
@@ -424,22 +434,27 @@ public interface TaskService {
    * @param taskCommentId The id of the task comment which should be retrieved
    * @throws TaskCommentNotFoundException If the given taskCommentId in the TaskComment does not
    *     refer to an existing taskComment.
+   * @throws NotAuthorizedException If the current user has no authorization to retrieve a
+   *     taskComment from a certain task or is not authorized to access the task.
+   * @throws TaskNotFoundException If the given taskId in the TaskComment does not refer to an
+   *     existing task.
+   * @throws InvalidArgumentException If the given taskCommentId is null or empty
    */
-  TaskComment getTaskComment(String taskCommentId) throws TaskCommentNotFoundException;
+  TaskComment getTaskComment(String taskCommentId)
+      throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException,
+          InvalidArgumentException;
 
   /**
    * Retrieves a list of task comments for a given taskId.
    *
    * @param taskId The id of the task for which all task comments should be retrieved
-   * @throws TaskCommentNotFoundException If the given taskCommentId in the TaskComment does not
-   *     refer to an existing taskComment.
    * @throws NotAuthorizedException If the current user has no authorization to retrieve a
-   *     taskComment from a certain task
+   *     taskComment from a certain task or is not authorized to access the task.
    * @throws TaskNotFoundException If the given taskId in the TaskComment does not refer to an
    *     existing task.
    */
-  List<TaskCommentImpl> getTaskComments(String taskId)
-      throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException;
+  List<TaskComment> getTaskComments(String taskId)
+      throws NotAuthorizedException, TaskNotFoundException;
 
   /**
    * Sets the callback state on a list of tasks. Note: this method is primarily intended to be used
