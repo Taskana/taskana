@@ -1,5 +1,6 @@
 package acceptance.task;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,11 +30,12 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.TaskanaEngineProxyForTest;
 import pro.taskana.common.internal.security.CurrentUserContext;
-import pro.taskana.common.internal.util.DaysToWorkingDaysConverter;
+import pro.taskana.common.internal.util.WorkingDaysToDaysConverter;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
+import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Attachment;
@@ -42,6 +44,7 @@ import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.AttachmentMapper;
 import pro.taskana.task.internal.TaskTestMapper;
 import pro.taskana.workbasket.api.WorkbasketService;
+import pro.taskana.workbasket.api.exceptions.WorkbasketInUseException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 
@@ -161,7 +164,7 @@ class CreateTaskAccTest extends AbstractAccTest {
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
     newTask.setOwner("user_1_1");
 
-    DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize();
+    WorkingDaysToDaysConverter converter = WorkingDaysToDaysConverter.initialize();
     // TODO: this is a temporal bug fix because we did not define what happens when a task is
     // planned on the weekend.
     long i = converter.convertWorkingDaysToDays(instantPlanned, 0);
@@ -445,7 +448,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertEquals(planned, readTask.getPlanned());
 
     long calendarDays =
-        DaysToWorkingDaysConverter.initialize()
+        WorkingDaysToDaysConverter.initialize()
             .convertWorkingDaysToDays(readTask.getPlanned(), serviceLevelDays);
 
     Instant shouldBeDueDate = readTask.getPlanned().plus(Duration.ofDays(calendarDays));
@@ -480,7 +483,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertEquals(due, readTask.getDue());
 
     long calendarDaysToSubstract =
-        DaysToWorkingDaysConverter.initialize().convertWorkingDaysToDays(due, -serviceLevelDays);
+        WorkingDaysToDaysConverter.initialize().convertWorkingDaysToDays(due, -serviceLevelDays);
 
     assertTrue(calendarDaysToSubstract < 0);
     assertTrue(calendarDaysToSubstract <= -serviceLevelDays);
@@ -546,7 +549,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
     assertEquals(99, readTask.getPriority());
 
-    DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize(Instant.now());
+    WorkingDaysToDaysConverter converter = WorkingDaysToDaysConverter.initialize(Instant.now());
     long calendarDays = converter.convertWorkingDaysToDays(readTask.getPlanned(), 1);
 
     assertEquals(readTask.getDue(), readTask.getPlanned().plus(Duration.ofDays(calendarDays)));
@@ -863,6 +866,35 @@ class CreateTaskAccTest extends AbstractAccTest {
     Task task = taskService.newTask("TEAMLEAD_2", "DOMAIN_A");
 
     Assertions.assertThrows(NotAuthorizedException.class, () -> taskService.createTask(task));
+  }
+
+  @WithAccessId(
+      userName = "admin",
+      groupNames = {"group_1"})
+  @Test
+  void testCreateTaskWithWorkbasketMarkedForDeletion()
+      throws NotAuthorizedException, InvalidStateException, TaskNotFoundException,
+          TaskAlreadyExistException, InvalidArgumentException, WorkbasketNotFoundException,
+          ClassificationNotFoundException, WorkbasketInUseException {
+
+    String wbId = "WBI:100000000000000000000000000000000008";
+    Task taskToPreventWorkbasketDeletion = taskService.newTask(wbId);
+    taskToPreventWorkbasketDeletion = setTaskProperties(taskToPreventWorkbasketDeletion);
+    taskService.createTask(taskToPreventWorkbasketDeletion);
+    taskService.cancelTask(taskToPreventWorkbasketDeletion.getId());
+    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+    workbasketService.deleteWorkbasket(wbId);
+    Task task = taskService.newTask(wbId);
+    final Task testTask = setTaskProperties(task);
+    assertThatThrownBy(() -> taskService.createTask(testTask))
+        .isInstanceOf(WorkbasketNotFoundException.class);
+  }
+
+  private Task setTaskProperties(Task task) {
+    task.setClassificationKey("L12010");
+    task.setPrimaryObjRef(
+        createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+    return task;
   }
 
   private Task makeNewTask(TaskService taskService) {

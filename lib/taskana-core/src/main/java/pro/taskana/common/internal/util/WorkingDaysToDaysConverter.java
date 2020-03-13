@@ -19,17 +19,17 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.SystemException;
 
 /**
- * The DaysToWorkingDaysConverter provides a method to convert an age in days into an age in working
+ * The WorkingDaysToDaysConverter provides a method to convert an age in working days into an age in
  * days.
  */
-public final class DaysToWorkingDaysConverter {
+public final class WorkingDaysToDaysConverter {
 
   private static boolean germanHolidaysEnabled;
   private static Set<LocalDate> customHolidays = new HashSet<>();
   private Instant referenceDate;
   private LocalDate easterSunday;
 
-  private DaysToWorkingDaysConverter(Instant referenceDate) {
+  private WorkingDaysToDaysConverter(Instant referenceDate) {
     easterSunday =
         getEasterSunday(LocalDateTime.ofInstant(referenceDate, ZoneId.systemDefault()).getYear());
     this.referenceDate = referenceDate;
@@ -40,30 +40,37 @@ public final class DaysToWorkingDaysConverter {
   }
 
   /**
-   * Initializes the DaysToWorkingDaysConverter for the current day.
+   * Initializes the WorkingDaysToDaysConverter for the current day.
    *
-   * @return an instance of the DaysToWorkingDaysConverter
-   * @throws InvalidArgumentException thrown if columnHeaders is null
+   * @return an instance of the WorkingDaysToDaysConverter
+   * @throws SystemException is thrown when the {@link WorkingDaysToDaysConverter} cannot be
+   *     initialized with the current Instant. Should never occur.
    */
-  public static DaysToWorkingDaysConverter initialize() throws InvalidArgumentException {
-    return initialize(Instant.now());
+  public static WorkingDaysToDaysConverter initialize() {
+    try {
+      return initialize(Instant.now());
+    } catch (InvalidArgumentException ex) {
+      throw new SystemException(
+          "Internal error. Cannot initialize WorkingDaysToDaysConverter. This should not happen",
+          ex);
+    }
   }
 
   /**
-   * Initializes the DaysToWorkingDaysConverter for a referenceDate.
+   * Initializes the WorkingDaysToDaysConverter for a referenceDate.
    *
    * @param referenceDate a {@link Instant} that represents the current day of the table
-   * @return an instance of the DaysToWorkingDaysConverter
+   * @return an instance of the WorkingDaysToDaysConverter
    * @throws InvalidArgumentException thrown if columnHeaders or referenceDate is null
    */
-  public static DaysToWorkingDaysConverter initialize(Instant referenceDate)
+  public static WorkingDaysToDaysConverter initialize(Instant referenceDate)
       throws InvalidArgumentException {
 
     if (referenceDate == null) {
       throw new InvalidArgumentException("ReferenceDate cannot be used as NULL-Parameter");
     }
 
-    return new DaysToWorkingDaysConverter(referenceDate);
+    return new WorkingDaysToDaysConverter(referenceDate);
   }
 
   public static void setGermanPublicHolidaysEnabled(boolean germanPublicHolidaysEnabled) {
@@ -161,12 +168,12 @@ public final class DaysToWorkingDaysConverter {
     int e = (2 * b + 4 * c + 6 * d + n) % 7;
 
     if (d == 29 && e == 6) {
-      return LocalDate.of(year, 3, 15).plusDays(d + e);
+      return LocalDate.of(year, 3, 15).plusDays((long) d + e);
     }
     if (d == 28 && e == 6 && (11 * m + 11) % 30 < 19) {
-      return LocalDate.of(year, 3, 15).plusDays(d + e);
+      return LocalDate.of(year, 3, 15).plusDays((long) d + e);
     }
-    return LocalDate.of(year, 3, 22).plusDays(d + e);
+    return LocalDate.of(year, 3, 22).plusDays((long) d + e);
   }
 
   private void refreshReferenceDate(Instant newReferenceDate) {
@@ -182,7 +189,7 @@ public final class DaysToWorkingDaysConverter {
 
   @Override
   public String toString() {
-    return "DaysToWorkingDaysConverter{"
+    return "WorkingDaysToDaysConverter{"
         + "dateCreated="
         + referenceDate
         + ", easterSunday="

@@ -20,7 +20,7 @@ import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
-import pro.taskana.common.internal.util.DaysToWorkingDaysConverter;
+import pro.taskana.common.internal.util.WorkingDaysToDaysConverter;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
@@ -37,7 +37,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
 
   ServiceLevelPriorityAccTest() {
     super();
-    DaysToWorkingDaysConverter.setGermanPublicHolidaysEnabled(true);
+    WorkingDaysToDaysConverter.setGermanPublicHolidaysEnabled(true);
     taskService = taskanaEngine.getTaskService();
   }
 
@@ -270,7 +270,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
         taskService.setPlannedPropertyOfTasks(planned, Arrays.asList(taskId));
     Task task = taskService.getTask(taskId);
     assertThat(results.containsErrors()).isFalse();
-    DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize();
+    WorkingDaysToDaysConverter converter = WorkingDaysToDaysConverter.initialize();
     long days = converter.convertWorkingDaysToDays(task.getPlanned(), 1);
     assertThat(task.getDue()).isEqualTo(planned.plus(Duration.ofDays(days)));
   }
@@ -284,7 +284,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
           ConcurrencyException, InvalidStateException, ClassificationNotFoundException,
           AttachmentPersistenceException {
     String taskId = "TKI:000000000000000000000000000000000002";
-    DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize();
+    WorkingDaysToDaysConverter converter = WorkingDaysToDaysConverter.initialize();
     Task task = taskService.getTask(taskId);
     // test update of planned date via updateTask()
     task.setPlanned(task.getPlanned().plus(Duration.ofDays(3)));
@@ -317,7 +317,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     // update due and planned as expected.
     task = taskService.getTask(taskId);
     task.setDue(planned.plus(Duration.ofDays(3)));
-    DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize();
+    WorkingDaysToDaysConverter converter = WorkingDaysToDaysConverter.initialize();
     long days = converter.convertWorkingDaysToDays(task.getDue(), -1);
     task.setPlanned(task.getDue().plus(Duration.ofDays(-1)));
     task = taskService.updateTask(task);
@@ -347,7 +347,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
 
     task.setPlanned(null);
     task = taskService.updateTask(task);
-    DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize();
+    WorkingDaysToDaysConverter converter = WorkingDaysToDaysConverter.initialize();
     long days = converter.convertWorkingDaysToDays(task.getPlanned(), 1);
     assertThat(task.getDue()).isEqualTo(task.getPlanned().plus(Duration.ofDays(days)));
 

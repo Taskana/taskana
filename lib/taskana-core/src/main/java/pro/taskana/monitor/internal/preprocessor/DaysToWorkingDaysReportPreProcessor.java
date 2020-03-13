@@ -3,13 +3,13 @@ package pro.taskana.monitor.internal.preprocessor;
 import java.util.List;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.internal.util.DaysToWorkingDaysConverter;
+import pro.taskana.common.internal.util.WorkingDaysToDaysConverter;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.AgeQueryItem;
 import pro.taskana.monitor.api.reports.item.QueryItemPreprocessor;
 
 /**
- * Uses {@link DaysToWorkingDaysConverter} to convert an &lt;I&gt;s age to working days.
+ * Uses {@link WorkingDaysToDaysConverter} to convert an &lt;I&gt;s age to working days.
  *
  * @param <I> QueryItem which is being processed
  */

@@ -40,7 +40,7 @@ class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
             .createTaskQuery()
             .workbasketKeyDomainIn(workbasketIdentifiers.toArray(new KeyDomain[0]))
             .list();
-    assertThat(results.size(), equalTo(42));
+    assertThat(results.size(), equalTo(52));
 
     String[] ids =
         results.stream()
@@ -49,7 +49,7 @@ class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
             .toArray(new String[0]);
 
     List<TaskSummary> result2 = taskService.createTaskQuery().workbasketIdIn(ids).list();
-    assertThat(result2.size(), equalTo(42));
+    assertThat(result2.size(), equalTo(52));
   }
 
   @WithAccessId(

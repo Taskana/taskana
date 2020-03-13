@@ -93,7 +93,7 @@ class QueryTasksAccTest extends AbstractAccTest {
 
     columnValueList = taskService.createTaskQuery().listValues(STATE, null);
     assertNotNull(columnValueList);
-    assertEquals(3, columnValueList.size());
+    assertEquals(5, columnValueList.size());
   }
 
   @WithAccessId(
@@ -145,7 +145,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     List<TaskSummary> results =
         taskService.createTaskQuery().ownerLike("%a%", "%u%").orderByCreated(ASCENDING).list();
 
-    assertThat(results.size(), equalTo(25));
+    assertThat(results.size(), equalTo(35));
     TaskSummary previousSummary = null;
     for (TaskSummary taskSummary : results) {
       if (previousSummary != null) {
@@ -164,7 +164,7 @@ class QueryTasksAccTest extends AbstractAccTest {
 
     List<TaskSummary> results =
         taskService.createTaskQuery().parentBusinessProcessIdLike("%PBPI%", "doc%3%").list();
-    assertThat(results.size(), equalTo(24));
+    assertThat(results.size(), equalTo(32));
     for (TaskSummary taskSummary : results) {
       assertNotNull(taskSummary.getExternalId());
     }
@@ -174,7 +174,7 @@ class QueryTasksAccTest extends AbstractAccTest {
 
     List<TaskSummary> result2 =
         taskService.createTaskQuery().parentBusinessProcessIdIn(parentIds).list();
-    assertThat(result2.size(), equalTo(24));
+    assertThat(result2.size(), equalTo(32));
   }
 
   @WithAccessId(
@@ -201,17 +201,17 @@ class QueryTasksAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
 
     List<TaskSummary> results = taskService.createTaskQuery().classificationKeyLike("L10%").list();
-    assertThat(results.size(), equalTo(67));
+    assertThat(results.size(), equalTo(77));
 
     String[] ids =
         results.stream().map(t -> t.getClassificationSummary().getKey()).toArray(String[]::new);
 
     List<TaskSummary> result2 = taskService.createTaskQuery().classificationKeyIn(ids).list();
-    assertThat(result2.size(), equalTo(67));
+    assertThat(result2.size(), equalTo(77));
 
     List<TaskSummary> result3 =
         taskService.createTaskQuery().classificationKeyNotIn("T2100", "T2000").list();
-    assertThat(result3.size(), equalTo(71));
+    assertThat(result3.size(), equalTo(81));
 
     List<TaskSummary> result4 =
         taskService.createTaskQuery().classificationKeyNotIn("L1050", "L1060", "T2100").list();
@@ -404,7 +404,7 @@ class QueryTasksAccTest extends AbstractAccTest {
 
     List<TaskSummary> results =
         taskService.createTaskQuery().customAttributeLike("5", "ew", "al").list();
-    assertThat(results.size(), equalTo(2));
+    assertThat(results.size(), equalTo(6));
 
     String[] ids =
         results.stream()
@@ -420,7 +420,7 @@ class QueryTasksAccTest extends AbstractAccTest {
             .toArray(String[]::new);
 
     List<TaskSummary> result2 = taskService.createTaskQuery().customAttributeIn("5", ids).list();
-    assertThat(result2.size(), equalTo(2));
+    assertThat(result2.size(), equalTo(6));
   }
 
   @WithAccessId(
@@ -432,7 +432,7 @@ class QueryTasksAccTest extends AbstractAccTest {
 
     List<TaskSummary> results =
         taskService.createTaskQuery().customAttributeLike("6", "%custom6%", "%vvg%", "11%").list();
-    assertThat(results.size(), equalTo(3));
+    assertThat(results.size(), equalTo(5));
 
     String[] ids =
         results.stream()
@@ -448,7 +448,7 @@ class QueryTasksAccTest extends AbstractAccTest {
             .toArray(String[]::new);
 
     List<TaskSummary> result2 = taskService.createTaskQuery().customAttributeIn("6", ids).list();
-    assertThat(result2.size(), equalTo(3));
+    assertThat(result2.size(), equalTo(5));
   }
 
   @WithAccessId(
@@ -693,7 +693,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
 
     List<TaskSummary> results = taskService.createTaskQuery().customAttributeLike("14", "%").list();
-    assertThat(results.size(), equalTo(48));
+    assertThat(results.size(), equalTo(58));
 
     String[] ids =
         results.stream()
@@ -708,7 +708,7 @@ class QueryTasksAccTest extends AbstractAccTest {
                 })
             .toArray(String[]::new);
     List<TaskSummary> results2 = taskService.createTaskQuery().customAttributeIn("14", ids).list();
-    assertThat(results2.size(), equalTo(48));
+    assertThat(results2.size(), equalTo(58));
   }
 
   @WithAccessId(
@@ -925,7 +925,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   void testQueryForReadEquals() {
     TaskService taskService = taskanaEngine.getTaskService();
     List<TaskSummary> results = taskService.createTaskQuery().readEquals(true).list();
-    assertEquals(25, results.size());
+    assertEquals(35, results.size());
   }
 
   @WithAccessId(userName = "admin")
@@ -950,7 +950,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   void testQueryForBusinessProcessIdLike() {
     TaskService taskService = taskanaEngine.getTaskService();
     List<TaskSummary> results = taskService.createTaskQuery().businessProcessIdLike("pI_%").list();
-    assertEquals(67, results.size());
+    assertEquals(77, results.size());
   }
 
   @WithAccessId(userName = "admin")

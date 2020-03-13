@@ -490,4 +490,28 @@ public interface TaskService {
    */
   BulkOperationResults<String, TaskanaException> setPlannedPropertyOfTasks(
       Instant planned, List<String> taskIds);
+
+  /**
+   * Cancels a task.
+   *
+   * @param taskId the id of the task to cancel.
+   * @return the updated task.
+   * @throws TaskNotFoundException if the Task with Id TaskId is not found
+   * @throws InvalidStateException if the task is not in state READY or CLAIMED
+   * @throws NotAuthorizedException if the current user is not authorized to see the task
+   */
+  Task cancelTask(String taskId)
+      throws TaskNotFoundException, InvalidStateException, NotAuthorizedException;
+
+  /**
+   * Terminates a task.
+   *
+   * @param taskId the id of the task to cancel.
+   * @return the updated task.
+   * @throws TaskNotFoundException if the Task with Id TaskId is not found
+   * @throws InvalidStateException if the task is not in state READY or CLAIMED
+   * @throws NotAuthorizedException if the current user is not authorized to see the task
+   */
+  Task terminateTask(String taskId)
+      throws TaskNotFoundException, InvalidStateException, NotAuthorizedException;
 }

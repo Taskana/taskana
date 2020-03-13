@@ -61,6 +61,6 @@ class TaskQueryAccTest extends AbstractAccTest {
 
     List<TaskSummary> results = taskService.createTaskQuery().ownerLike("%a%", "%u%").list();
 
-    assertThat(results.size(), equalTo(25));
+    assertThat(results.size(), equalTo(35));
   }
 }

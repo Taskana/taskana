@@ -13,7 +13,7 @@ import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
-import pro.taskana.common.internal.util.DaysToWorkingDaysConverter;
+import pro.taskana.common.internal.util.WorkingDaysToDaysConverter;
 import pro.taskana.monitor.api.SelectedItem;
 import pro.taskana.monitor.api.reports.ClassificationReport;
 import pro.taskana.monitor.api.reports.TimeIntervalReportBuilder;
@@ -55,7 +55,7 @@ abstract class TimeIntervalReportBuilderImpl<
     this.taskanaEngine = taskanaEngine;
     this.monitorMapper = monitorMapper;
     this.columnHeaders = Collections.emptyList();
-    configureDaysToWorkingDaysConverter();
+    configureWorkingDaysToDaysConverter();
   }
 
   @Override
@@ -185,10 +185,10 @@ abstract class TimeIntervalReportBuilderImpl<
 
   protected abstract String determineGroupedBy();
 
-  private void configureDaysToWorkingDaysConverter() {
-    DaysToWorkingDaysConverter.setCustomHolidays(
+  private void configureWorkingDaysToDaysConverter() {
+    WorkingDaysToDaysConverter.setCustomHolidays(
         this.taskanaEngine.getEngine().getConfiguration().getCustomHolidays());
-    DaysToWorkingDaysConverter.setGermanPublicHolidaysEnabled(
+    WorkingDaysToDaysConverter.setGermanPublicHolidaysEnabled(
         this.taskanaEngine.getEngine().getConfiguration().isGermanPublicHolidaysEnabled());
   }
 

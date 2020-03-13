@@ -17,11 +17,11 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.BulkOperationResults;
+import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
-import pro.taskana.common.internal.util.DaysToWorkingDaysConverter;
+import pro.taskana.common.internal.util.WorkingDaysToDaysConverter;
 import pro.taskana.task.api.exceptions.UpdateFailedException;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.AttachmentSummary;
@@ -33,13 +33,11 @@ import pro.taskana.task.internal.models.TaskImpl;
 class ServiceLevelHandler {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ServiceLevelHandler.class);
-  private static final String ERROR_CANNOT_INITIALIZE_DAYS_TO_WORKING_DAYS_CONVERTER =
-      "Internal error. Cannot initialize DaysToWorkingDaysConverter";
   private static final Duration MAX_DURATION = Duration.ofSeconds(Long.MAX_VALUE, 999_999_999);
   private final InternalTaskanaEngine taskanaEngine;
   private final TaskMapper taskMapper;
   private final AttachmentMapper attachmentMapper;
-  private DaysToWorkingDaysConverter converter;
+  private WorkingDaysToDaysConverter converter;
 
   ServiceLevelHandler(
       InternalTaskanaEngine taskanaEngine,
@@ -48,14 +46,9 @@ class ServiceLevelHandler {
     this.taskanaEngine = taskanaEngine;
     this.taskMapper = taskMapper;
     this.attachmentMapper = attachmentMapper;
-    DaysToWorkingDaysConverter.setGermanPublicHolidaysEnabled(
-        taskanaEngine.getEngine().getConfiguration().isGermanPublicHolidaysEnabled());
-    try {
-      converter = DaysToWorkingDaysConverter.initialize();
-    } catch (InvalidArgumentException e) {
-      LOGGER.error(ERROR_CANNOT_INITIALIZE_DAYS_TO_WORKING_DAYS_CONVERTER);
-      throw new SystemException(
-          ERROR_CANNOT_INITIALIZE_DAYS_TO_WORKING_DAYS_CONVERTER, e.getCause());
+    this.converter = WorkingDaysToDaysConverter.initialize();
+    if (taskanaEngine.getEngine().getConfiguration().isGermanPublicHolidaysEnabled()) {
+      WorkingDaysToDaysConverter.setGermanPublicHolidaysEnabled(true);
     }
   }
 
@@ -91,8 +84,16 @@ class ServiceLevelHandler {
   BulkLog setPlannedPropertyOfTasksImpl(Instant planned, List<MinimalTaskSummary> tasks) {
     BulkLog bulkLog = new BulkLog();
     List<AttachmentSummaryImpl> attachments = getAttachmentSummaries(tasks);
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("found attachments {}.", LoggerUtils.listToString(attachments));
+    }
     List<ClassificationSummary> allInvolvedClassifications =
         findAllClassificationsReferencedByTasksAndAttachments(tasks, attachments);
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug(
+          "found involved classifications {}.",
+          LoggerUtils.listToString(allInvolvedClassifications));
+    }
     List<ClassificationWithServiceLevelResolved> allInvolvedClassificationsWithDuration =
         resolveDurationsInClassifications(allInvolvedClassifications);
     Map<Duration, List<String>> durationToTaskIdsMap =
