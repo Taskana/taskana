@@ -900,7 +900,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         .getTaskService()
         .createTaskQuery()
         .workbasketIdIn(workbasketId)
-        .stateNotIn(TaskState.COMPLETED)
+        .stateNotIn(TaskState.COMPLETED, TaskState.TERMINATED, TaskState.CANCELLED)
         .count();
   }
 

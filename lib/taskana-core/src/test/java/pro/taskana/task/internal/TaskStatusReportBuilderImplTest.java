@@ -77,8 +77,8 @@ class TaskStatusReportBuilderImplTest {
 
     assertNotNull(report);
     assertEquals(1, report.rowSize());
-    assertArrayEquals(new int[] {50, 0, 30}, report.getRow("DOMAIN_X").getCells());
-    assertArrayEquals(new int[] {50, 0, 30}, report.getSumRow().getCells());
+    assertArrayEquals(new int[] {50, 0, 30, 0, 0}, report.getRow("DOMAIN_X").getCells());
+    assertArrayEquals(new int[] {50, 0, 30, 0, 0}, report.getSumRow().getCells());
     assertEquals(80, report.getRow("DOMAIN_X").getTotalValue());
     assertEquals(80, report.getSumRow().getTotalValue());
   }

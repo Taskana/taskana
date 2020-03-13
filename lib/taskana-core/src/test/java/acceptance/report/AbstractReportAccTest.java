@@ -23,7 +23,7 @@ public class AbstractReportAccTest {
     resetDb();
   }
 
-  private static void resetDb() throws SQLException {
+  protected static void resetDb() throws SQLException {
     DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
     String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
     taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, schemaName);

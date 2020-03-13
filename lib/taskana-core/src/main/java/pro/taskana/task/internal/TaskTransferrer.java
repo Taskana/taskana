@@ -37,8 +37,8 @@ import pro.taskana.workbasket.internal.WorkbasketQueryImpl;
 public class TaskTransferrer {
 
   private static final String WAS_NOT_FOUND2 = " was not found.";
-  private static final String CANNOT_BE_TRANSFERRED = " cannot be transferred.";
-  private static final String COMPLETED_TASK_WITH_ID = "Completed task with id ";
+  private static final String TASK_IN_END_STATE_WITH_ID_CANNOT_BE_TRANSFERRED
+      = "Task in end state with id %s cannot be transferred.";
   private static final String TASK_WITH_ID = "Task with id ";
   private static final String WAS_MARKED_FOR_DELETION = " was marked for deletion";
   private static final String THE_WORKBASKET = "The workbasket ";
@@ -73,9 +73,9 @@ public class TaskTransferrer {
       taskanaEngine.openConnection();
       task = (TaskImpl) taskService.getTask(taskId);
 
-      if (task.getState() == TaskState.COMPLETED) {
+      if (task.getState().isEndState()) {
         throw new InvalidStateException(
-            COMPLETED_TASK_WITH_ID + task.getId() + CANNOT_BE_TRANSFERRED);
+            String.format(TASK_IN_END_STATE_WITH_ID_CANNOT_BE_TRANSFERRED, task.getId()));
       }
 
       // Save previous workbasket id before transfer it.
@@ -134,9 +134,9 @@ public class TaskTransferrer {
       taskanaEngine.openConnection();
       task = (TaskImpl) taskService.getTask(taskId);
 
-      if (task.getState() == TaskState.COMPLETED) {
+      if (task.getState().isEndState()) {
         throw new InvalidStateException(
-            COMPLETED_TASK_WITH_ID + task.getId() + CANNOT_BE_TRANSFERRED);
+            String.format(TASK_IN_END_STATE_WITH_ID_CANNOT_BE_TRANSFERRED, task.getId()));
       }
       oldWorkbasketSummary = task.getWorkbasketSummary();
 
@@ -344,11 +344,11 @@ public class TaskTransferrer {
             new TaskNotFoundException(
                 currentTaskId, TASK_WITH_ID + currentTaskId + WAS_NOT_FOUND2));
         taskIdIterator.remove();
-      } else if (taskSummary.getTaskState() == TaskState.COMPLETED) {
+      } else if (taskSummary.getTaskState().isEndState()) {
         bulkLog.addError(
             currentTaskId,
             new InvalidStateException(
-                COMPLETED_TASK_WITH_ID + currentTaskId + CANNOT_BE_TRANSFERRED));
+                String.format(TASK_IN_END_STATE_WITH_ID_CANNOT_BE_TRANSFERRED, currentTaskId)));
         taskIdIterator.remove();
       } else if (sourceWorkbaskets.stream()
           .noneMatch(wb -> taskSummary.getWorkbasketId().equals(wb.getId()))) {

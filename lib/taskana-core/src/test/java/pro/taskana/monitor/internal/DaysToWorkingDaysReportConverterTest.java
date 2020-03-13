@@ -13,7 +13,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.internal.util.DaysToWorkingDaysConverter;
+import pro.taskana.common.internal.util.WorkingDaysToDaysConverter;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.internal.preprocessor.DaysToWorkingDaysReportConverter;
 
@@ -22,10 +22,10 @@ class DaysToWorkingDaysReportConverterTest {
 
   @BeforeAll
   static void setup() {
-    DaysToWorkingDaysConverter.setGermanPublicHolidaysEnabled(true);
+    WorkingDaysToDaysConverter.setGermanPublicHolidaysEnabled(true);
     LocalDate dayOfReformation = LocalDate.of(2018, 10, 31);
     LocalDate allSaintsDays = LocalDate.of(2018, 11, 1);
-    DaysToWorkingDaysConverter.setCustomHolidays(Arrays.asList(dayOfReformation, allSaintsDays));
+    WorkingDaysToDaysConverter.setCustomHolidays(Arrays.asList(dayOfReformation, allSaintsDays));
   }
 
   @Test

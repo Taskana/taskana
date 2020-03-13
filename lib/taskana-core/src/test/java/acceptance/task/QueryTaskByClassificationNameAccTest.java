@@ -98,11 +98,11 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
             .classificationNameLike("Dynamik%", "Widerruf")
             .orderByClassificationName(SortDirection.ASCENDING)
             .list();
-    assertEquals(22, tasks.size());
+    assertEquals(32, tasks.size());
 
     // without sort, the same number of tasks should be returned
     tasks = taskService.createTaskQuery().classificationNameLike("Dynamik%", "Widerruf").list();
-    assertEquals(22, tasks.size());
+    assertEquals(32, tasks.size());
   }
 
   @WithAccessId(

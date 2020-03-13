@@ -198,9 +198,9 @@ public class SetOwnerAccTest extends AbstractAccTest {
         allTaskSummaries.stream().map(TaskSummary::getId).collect(Collectors.toList());
     BulkOperationResults<String, TaskanaException> results =
         taskanaEngine.getTaskService().setOwnerOfTasks("theWorkaholic", allTaskIds);
-    assertThat(allTaskSummaries.size()).isEqualTo(73);
+    assertThat(allTaskSummaries.size()).isEqualTo(83);
     assertThat(results.containsErrors()).isTrue();
-    assertThat(results.getErrorMap().size()).isEqualTo(48);
+    assertThat(results.getErrorMap().size()).isEqualTo(58);
     long numberOfInvalidStateExceptions =
         results.getErrorMap().entrySet().stream()
             .filter(
@@ -210,7 +210,7 @@ public class SetOwnerAccTest extends AbstractAccTest {
                         .getName()
                         .equals(InvalidStateException.class.getCanonicalName()))
             .count();
-    assertThat(numberOfInvalidStateExceptions).isEqualTo(25);
+    assertThat(numberOfInvalidStateExceptions).isEqualTo(35);
 
     long numberOfNotAuthorizedExceptions =
         results.getErrorMap().entrySet().stream()
@@ -236,9 +236,9 @@ public class SetOwnerAccTest extends AbstractAccTest {
         allTaskSummaries.stream().map(TaskSummary::getId).collect(Collectors.toList());
     BulkOperationResults<String, TaskanaException> results =
         taskanaEngine.getTaskService().setOwnerOfTasks("theWorkaholic", allTaskIds);
-    assertThat(allTaskSummaries.size()).isEqualTo(73);
+    assertThat(allTaskSummaries.size()).isEqualTo(83);
     assertThat(results.containsErrors()).isTrue();
-    assertThat(results.getErrorMap().size()).isEqualTo(26);
+    assertThat(results.getErrorMap().size()).isEqualTo(36);
     long numberOfInvalidStateExceptions =
         results.getErrorMap().entrySet().stream()
             .filter(
@@ -248,7 +248,7 @@ public class SetOwnerAccTest extends AbstractAccTest {
                         .getName()
                         .equals(InvalidStateException.class.getCanonicalName()))
             .count();
-    assertThat(numberOfInvalidStateExceptions).isEqualTo(26);
+    assertThat(numberOfInvalidStateExceptions).isEqualTo(36);
   }
 
 

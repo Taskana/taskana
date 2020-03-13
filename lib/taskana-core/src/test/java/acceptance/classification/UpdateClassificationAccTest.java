@@ -27,7 +27,7 @@ import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.jobs.JobRunner;
-import pro.taskana.common.internal.util.DaysToWorkingDaysConverter;
+import pro.taskana.common.internal.util.WorkingDaysToDaysConverter;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
@@ -234,8 +234,8 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
     assertFalse(modifiedBefore.isAfter(updatedClassification.getModified()));
     // TODO - resume old behaviour after attachment query is possible.
     TaskService taskService = taskanaEngine.getTaskService();
-    DaysToWorkingDaysConverter.setGermanPublicHolidaysEnabled(true);
-    DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize(Instant.now());
+
+    WorkingDaysToDaysConverter converter = WorkingDaysToDaysConverter.initialize(Instant.now());
 
     List<String> tasksWithP1D =
         new ArrayList<>(
@@ -353,8 +353,8 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
     assertFalse(modifiedBefore.isAfter(updatedClassification.getModified()));
     // TODO - resume old behaviour after attachment query is possible.
     TaskService taskService = taskanaEngine.getTaskService();
-    DaysToWorkingDaysConverter.setGermanPublicHolidaysEnabled(true);
-    DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize(Instant.now());
+    WorkingDaysToDaysConverter.setGermanPublicHolidaysEnabled(true);
+    WorkingDaysToDaysConverter converter = WorkingDaysToDaysConverter.initialize(Instant.now());
 
     List<String> tasksWithPrio99 =
         new ArrayList<>(
@@ -493,8 +493,8 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
     assertFalse(modifiedBefore.isAfter(updatedClassification.getModified()));
     // TODO - resume old behaviour after attachment query is possible.
     TaskService taskService = taskanaEngine.getTaskService();
-    DaysToWorkingDaysConverter.setGermanPublicHolidaysEnabled(true);
-    DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize(Instant.now());
+    WorkingDaysToDaysConverter.setGermanPublicHolidaysEnabled(true);
+    WorkingDaysToDaysConverter converter = WorkingDaysToDaysConverter.initialize(Instant.now());
     List<String> tasksWithPD12 =
         new ArrayList<>(
             Arrays.asList(
@@ -573,12 +573,13 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
       Instant before,
       List<String> tasksUpdated,
       TaskService taskService,
-      DaysToWorkingDaysConverter converter,
+      WorkingDaysToDaysConverter converter,
       int serviceLevel,
       int priority)
       throws TaskNotFoundException, NotAuthorizedException, InvalidArgumentException {
     for (String taskId : tasksUpdated) {
       Task task = taskService.getTask(taskId);
+
       assertTrue(
           task.getModified().isAfter(before), "Task " + task.getId() + " has not been refreshed.");
       long calendarDays = converter.convertWorkingDaysToDays(task.getPlanned(), serviceLevel);
