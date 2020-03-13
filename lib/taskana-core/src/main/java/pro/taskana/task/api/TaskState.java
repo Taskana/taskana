@@ -4,5 +4,20 @@ package pro.taskana.task.api;
 public enum TaskState {
   READY,
   CLAIMED,
-  COMPLETED
+  COMPLETED,
+  CANCELLED,
+  TERMINATED;
+
+  public boolean isInStates(TaskState... states) {
+    for (TaskState currState : states) {
+      if (this.equals(currState)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public boolean isEndState() {
+    return this.equals(COMPLETED) || this.equals(CANCELLED) || this.equals(TERMINATED);
+  }
 }

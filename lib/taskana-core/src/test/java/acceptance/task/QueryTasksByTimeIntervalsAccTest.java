@@ -47,7 +47,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
             .orderByCreated(asc)
             .list();
 
-    assertThat(results.size(), equalTo(40));
+    assertThat(results.size(), equalTo(50));
     TaskSummary previousSummary = null;
     for (TaskSummary taskSummary : results) {
       Instant cr = taskSummary.getCreated();
@@ -97,7 +97,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
     List<TaskSummary> results =
         taskService.createTaskQuery().createdWithin(interval1).orderByCreated(asc).list();
 
-    assertThat(results.size(), equalTo(38));
+    assertThat(results.size(), equalTo(48));
     TaskSummary previousSummary = null;
     for (TaskSummary taskSummary : results) {
       Instant cr = taskSummary.getCreated();
@@ -129,7 +129,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
             .orderByCreated(asc)
             .list();
 
-    assertThat(results.size(), equalTo(25));
+    assertThat(results.size(), equalTo(35));
     TaskSummary previousSummary = null;
     for (TaskSummary taskSummary : results) {
       Instant cr = taskSummary.getClaimed();
@@ -154,7 +154,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
     List<TaskSummary> results =
         taskService.createTaskQuery().completedWithin(interval).orderByCompleted(asc).list();
 
-    assertThat(results.size(), equalTo(5));
+    assertThat(results.size(), equalTo(15));
     TaskSummary previousSummary = null;
     for (TaskSummary taskSummary : results) {
       Instant cr = taskSummary.getCompleted();
@@ -204,7 +204,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
     List<TaskSummary> results =
         taskService.createTaskQuery().plannedWithin(interval).orderByPlanned(asc).list();
 
-    assertThat(results.size(), equalTo(71));
+    assertThat(results.size(), equalTo(81));
     TaskSummary previousSummary = null;
     for (TaskSummary taskSummary : results) {
       Instant cr = taskSummary.getPlanned();
@@ -229,7 +229,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
     List<TaskSummary> results =
         taskService.createTaskQuery().dueWithin(interval).orderByPlanned(asc).list();
 
-    assertThat(results.size(), equalTo(71));
+    assertThat(results.size(), equalTo(81));
     TaskSummary previousSummary = null;
     for (TaskSummary taskSummary : results) {
       Instant cr = taskSummary.getDue();

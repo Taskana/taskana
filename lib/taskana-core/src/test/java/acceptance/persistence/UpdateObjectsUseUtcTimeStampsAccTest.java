@@ -59,6 +59,7 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
     Instant now = Instant.now();
+
     task.setPlanned(now.plus(Duration.ofHours(17)));
 
     WorkingDaysToDaysConverter.setGermanPublicHolidaysEnabled(true);

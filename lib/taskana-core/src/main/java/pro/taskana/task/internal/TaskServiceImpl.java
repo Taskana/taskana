@@ -72,16 +72,17 @@ import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 @SuppressWarnings("checkstyle:OverloadMethodsDeclarationOrder")
 public class TaskServiceImpl implements TaskService {
 
-  private static final String IS_ALREADY_CLAIMED_BY = " is already claimed by ";
-  private static final String IS_ALREADY_COMPLETED = " is already completed.";
+  public static final String IDS_WITH_EMPTY_OR_NULL_VALUE_ARE_NOT_ALLOWED =
+      "IDs with EMPTY or NULL value are not allowed.";
   private static final String TASK_WITH_ID_IS_NOT_READY =
       "Task with id %s is in state %s and not in state ready.";
   private static final String TASK_WITH_ID_WAS_NOT_FOUND = "Task with id %s was not found.";
+  private static final String TASK_WITH_ID_HAS_TO_BE_CLAIMED_BEFORE =
+      "Task with Id %s has to be claimed before.";
   private static final String TASK_WITH_ID_CALLBACK_NOT_PROCESSED =
       "Task wit Id %s cannot be deleted because its callback is not yet processed";
-  private static final String WAS_NOT_FOUND2 = " was not found.";
-  private static final String WAS_NOT_FOUND = " was not found";
-  private static final String TASK_WITH_ID = "Task with id ";
+  private static final String TASK_WITH_ID_IS_ALREADY_CLAIMED_BY =
+      "Task with id %s is already claimed by %s.";
   private static final String WAS_MARKED_FOR_DELETION = " was marked for deletion";
   private static final String THE_WORKBASKET = "The workbasket ";
   private static final String TASK = "Task";
@@ -89,9 +90,10 @@ public class TaskServiceImpl implements TaskService {
   private static final String ID_PREFIX_TASK = "TKI";
   private static final String ID_PREFIX_EXT_TASK_ID = "ETI";
   private static final String ID_PREFIX_BUSINESS_PROCESS = "BPI";
-
   private static final Set<String> ALLOWED_KEYS =
       IntStream.rangeClosed(1, 16).mapToObj(String::valueOf).collect(Collectors.toSet());
+  private static final String TASK_WITH_ID_IS_ALREADY_IN_END_STATE =
+      "Task with Id %s is already in an end state.";
   private InternalTaskanaEngine taskanaEngine;
   private WorkbasketService workbasketService;
   private ClassificationService classificationService;
@@ -314,7 +316,7 @@ public class TaskServiceImpl implements TaskService {
         resultTask.setClassificationSummary(classification);
         return resultTask;
       } else {
-        throw new TaskNotFoundException(id, TASK_WITH_ID + id + WAS_NOT_FOUND);
+        throw new TaskNotFoundException(id, String.format(TASK_WITH_ID_WAS_NOT_FOUND, id));
       }
     } finally {
       taskanaEngine.returnConnection();
@@ -749,6 +751,32 @@ public class TaskServiceImpl implements TaskService {
     }
   }
 
+  @Override
+  public Task cancelTask(String taskId)
+      throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
+    LOGGER.debug("entry to cancelTask(task = {})", taskId);
+    try {
+      taskanaEngine.openConnection();
+      return terminateCancelCommonActions(taskId, TaskState.CANCELLED);
+    } finally {
+      taskanaEngine.returnConnection();
+      LOGGER.debug("exit from cancelTask()");
+    }
+  }
+
+  @Override
+  public Task terminateTask(String taskId)
+      throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
+    LOGGER.debug("entry to terminateTask(task = {})", taskId);
+    try {
+      taskanaEngine.openConnection();
+      return terminateCancelCommonActions(taskId, TaskState.TERMINATED);
+    } finally {
+      taskanaEngine.returnConnection();
+      LOGGER.debug("exit from terminateTask()");
+    }
+  }
+
   public List<String> findTasksIdsAffectedByClassificationChange(String classificationId) {
     LOGGER.debug(
         "entry to findTasksIdsAffectedByClassificationChange(classificationId = {})",
@@ -894,7 +922,7 @@ public class TaskServiceImpl implements TaskService {
       String currentTaskId = taskIdIterator.next();
       if (currentTaskId == null || currentTaskId.equals("")) {
         bulkLog.addError(
-            "", new InvalidArgumentException("IDs with EMPTY or NULL value are not allowed."));
+            "", new InvalidArgumentException(IDS_WITH_EMPTY_OR_NULL_VALUE_ARE_NOT_ALLOWED));
         taskIdIterator.remove();
       }
     }
@@ -951,6 +979,29 @@ public class TaskServiceImpl implements TaskService {
     return newTaskImpl;
   }
 
+  private TaskImpl terminateCancelCommonActions(String taskId, TaskState targetState)
+      throws NotAuthorizedException, TaskNotFoundException, InvalidStateException {
+    if (taskId == null || taskId.isEmpty()) {
+      throw new TaskNotFoundException(taskId, String.format(TASK_WITH_ID_WAS_NOT_FOUND, taskId));
+    }
+    TaskImpl task = (TaskImpl) getTask(taskId);
+    TaskState state = task.getState();
+    if (state.isEndState()) {
+      throw new InvalidStateException(String.format(TASK_WITH_ID_IS_ALREADY_IN_END_STATE, taskId));
+    }
+
+    Instant now = Instant.now();
+    task.setOwner(null);
+    task.setModified(now);
+    task.setCompleted(now);
+    task.setClaimed(null);
+    task.setRead(true);
+    task.setState(targetState);
+    taskMapper.update(task);
+    LOGGER.debug("Task '{}' cancelled by user '{}'.", taskId, CurrentUserContext.getUserid());
+    return task;
+  }
+
   private BulkOperationResults<String, TaskanaException> addExceptionsForTasksWhoseOwnerWasNotSet(
       String owner, List<MinimalTaskSummary> existingMinimalTaskSummaries) {
     BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
@@ -987,12 +1038,13 @@ public class TaskServiceImpl implements TaskService {
       taskanaEngine.openConnection();
       task = (TaskImpl) getTask(taskId);
       TaskState state = task.getState();
-      if (state == TaskState.COMPLETED) {
-        throw new InvalidStateException(TASK_WITH_ID + taskId + IS_ALREADY_COMPLETED);
+      if (!state.isInStates(TaskState.READY, TaskState.CLAIMED)) {
+        throw new InvalidStateException(
+            String.format(TASK_WITH_ID_IS_ALREADY_IN_END_STATE, taskId));
       }
       if (state == TaskState.CLAIMED && !forceClaim && !task.getOwner().equals(userId)) {
         throw new InvalidOwnerException(
-            TASK_WITH_ID + taskId + IS_ALREADY_CLAIMED_BY + task.getOwner() + ".");
+            String.format(TASK_WITH_ID_IS_ALREADY_CLAIMED_BY, taskId, task.getOwner()));
       }
       Instant now = Instant.now();
       task.setOwner(userId);
@@ -1026,12 +1078,13 @@ public class TaskServiceImpl implements TaskService {
       taskanaEngine.openConnection();
       task = (TaskImpl) getTask(taskId);
       TaskState state = task.getState();
-      if (state == TaskState.COMPLETED) {
-        throw new InvalidStateException(TASK_WITH_ID + taskId + IS_ALREADY_COMPLETED);
+      if (state.isEndState()) {
+        throw new InvalidStateException(
+            String.format(TASK_WITH_ID_IS_ALREADY_IN_END_STATE, taskId));
       }
       if (state == TaskState.CLAIMED && !forceUnclaim && !userId.equals(task.getOwner())) {
         throw new InvalidOwnerException(
-            TASK_WITH_ID + taskId + IS_ALREADY_CLAIMED_BY + task.getOwner() + ".");
+            String.format(TASK_WITH_ID_IS_ALREADY_CLAIMED_BY, taskId, task.getOwner()));
       }
       Instant now = Instant.now();
       task.setOwner(null);
@@ -1067,10 +1120,17 @@ public class TaskServiceImpl implements TaskService {
         return task;
       }
 
+      if (task.getState().isInStates(TaskState.CANCELLED, TaskState.TERMINATED)) {
+        throw new InvalidStateException(
+            String.format(
+                "Cannot complete task %s because it is in state %s.", taskId, task.getState()));
+      }
+
       // check pre-conditions for non-forced invocation
       if (!isForced) {
         if (task.getClaimed() == null || task.getState() != TaskState.CLAIMED) {
-          throw new InvalidStateException(TASK_WITH_ID + taskId + " has to be claimed before.");
+          throw new InvalidStateException(
+              String.format(TASK_WITH_ID_HAS_TO_BE_CLAIMED_BEFORE, taskId));
         } else if (!CurrentUserContext.getAccessIds().contains(task.getOwner())) {
           throw new InvalidOwnerException(
               String.format(
@@ -1109,11 +1169,12 @@ public class TaskServiceImpl implements TaskService {
       taskanaEngine.openConnection();
       task = (TaskImpl) getTask(taskId);
 
-      if (!TaskState.COMPLETED.equals(task.getState()) && !forceDelete) {
+      if (!(task.getState().isEndState()) && !forceDelete) {
         throw new InvalidStateException(
-            "Cannot delete Task " + taskId + " because it is not completed.");
+            "Cannot delete Task " + taskId + " because it is not in an end state.");
       }
-      if (CallbackState.CALLBACK_PROCESSING_REQUIRED.equals(task.getCallbackState())) {
+      if ((!task.getState().isInStates(TaskState.TERMINATED, TaskState.CANCELLED))
+          && CallbackState.CALLBACK_PROCESSING_REQUIRED.equals(task.getCallbackState())) {
         throw new InvalidStateException(String.format(TASK_WITH_ID_CALLBACK_NOT_PROCESSED, taskId));
       }
 
@@ -1133,7 +1194,7 @@ public class TaskServiceImpl implements TaskService {
     String currentTaskId = taskIdIterator.next();
     if (currentTaskId == null || currentTaskId.equals("")) {
       bulkLog.addError(
-          "", new InvalidArgumentException("IDs with EMPTY or NULL value are not allowed."));
+          "", new InvalidArgumentException(IDS_WITH_EMPTY_OR_NULL_VALUE_ARE_NOT_ALLOWED));
       taskIdIterator.remove();
     } else {
       MinimalTaskSummary foundSummary =
@@ -1145,13 +1206,14 @@ public class TaskServiceImpl implements TaskService {
         bulkLog.addError(
             currentTaskId,
             new TaskNotFoundException(
-                currentTaskId, TASK_WITH_ID + currentTaskId + WAS_NOT_FOUND2));
+                currentTaskId, String.format(TASK_WITH_ID_WAS_NOT_FOUND, currentTaskId)));
         taskIdIterator.remove();
-      } else if (!TaskState.COMPLETED.equals(foundSummary.getTaskState())) {
+      } else if (!(foundSummary.getTaskState().isEndState())) {
         bulkLog.addError(currentTaskId, new InvalidStateException(currentTaskId));
         taskIdIterator.remove();
       } else {
-        if (CallbackState.CALLBACK_PROCESSING_REQUIRED.equals(foundSummary.getCallbackState())) {
+        if ((!foundSummary.getTaskState().isInStates(TaskState.CANCELLED, TaskState.TERMINATED))
+            && CallbackState.CALLBACK_PROCESSING_REQUIRED.equals(foundSummary.getCallbackState())) {
           bulkLog.addError(
               currentTaskId,
               new InvalidStateException(
@@ -1172,7 +1234,7 @@ public class TaskServiceImpl implements TaskService {
     String currentExternalId = externalIdIterator.next();
     if (currentExternalId == null || currentExternalId.equals("")) {
       bulkLog.addError(
-          "", new InvalidArgumentException("IDs with EMPTY or NULL value are not allowed."));
+          "", new InvalidArgumentException(IDS_WITH_EMPTY_OR_NULL_VALUE_ARE_NOT_ALLOWED));
       externalIdIterator.remove();
     } else {
       MinimalTaskSummary foundSummary =
@@ -1184,7 +1246,7 @@ public class TaskServiceImpl implements TaskService {
         bulkLog.addError(
             currentExternalId,
             new TaskNotFoundException(
-                currentExternalId, TASK_WITH_ID + currentExternalId + WAS_NOT_FOUND2));
+                currentExternalId, String.format(TASK_WITH_ID_WAS_NOT_FOUND, currentExternalId)));
         externalIdIterator.remove();
       } else if (!desiredCallbackStateCanBeSetForFoundSummary(foundSummary, desiredCallbackState)) {
         bulkLog.addError(currentExternalId, new InvalidStateException(currentExternalId));
@@ -1202,7 +1264,7 @@ public class TaskServiceImpl implements TaskService {
 
     switch (desiredCallbackState) {
       case CALLBACK_PROCESSING_COMPLETED:
-        return currentTaskState.equals(TaskState.COMPLETED);
+        return currentTaskState.isEndState();
 
       case CLAIMED:
         if (!currentTaskState.equals(TaskState.CLAIMED)) {

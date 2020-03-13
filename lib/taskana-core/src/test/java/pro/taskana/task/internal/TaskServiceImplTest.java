@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.internal.models.ClassificationImpl;
 import pro.taskana.common.internal.JunitHelper;
+import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.TaskImpl;
@@ -69,6 +70,7 @@ class TaskServiceImplTest {
     Instant now = Instant.now().minus(Duration.ofMinutes(1L));
     task.setCreated(now);
     task.setModified(now);
+    task.setState(TaskState.READY);
     if (classification == null) {
       classification = createDummyClassification();
     }
