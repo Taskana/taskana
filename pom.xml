@@ -77,7 +77,7 @@
         <version.log4j>2.13.1</version.log4j>
         <version.archunit>0.13.1</version.archunit>
         <version.mockito>3.3.0</version.mockito>
-        <version.junit.mockito>3.3.0</version.junit.mockito>
+        <version.junit.mockito>3.3.3</version.junit.mockito>
         <!-- byte buddy 1.9.7+ is needed to solve dependency errors with 
             spring mock tests see LdapClientTest -->
         <version.byte-buddy>1.10.8</version.byte-buddy>
