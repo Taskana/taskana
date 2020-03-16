@@ -3,6 +3,7 @@ package pro.taskana.common.internal.util;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -80,6 +81,16 @@ public final class DaysToWorkingDaysConverter {
         .skip(limit)
         .findFirst()
         .orElse(0);
+  }
+
+  public Instant addWorkingDaysToInstant(Instant instant, Duration workingDays) {
+    long days = convertWorkingDaysToDays(instant, workingDays.toDays());
+    return instant.plus(Duration.ofDays(days));
+  }
+
+  public Instant subtractWorkingDaysFromInstant(Instant instant, Duration workingDays) {
+    long days = convertWorkingDaysToDays(instant, -workingDays.toDays());
+    return instant.plus(Duration.ofDays(days));
   }
 
   public boolean isWorkingDay(long day, Instant referenceDate) {

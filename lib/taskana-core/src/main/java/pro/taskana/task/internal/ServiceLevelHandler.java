@@ -68,7 +68,7 @@ class ServiceLevelHandler {
   // - For each task iterate through all referenced classifications and find minimum ServiceLevel
   // - collect the results into a map Duration -> List of tasks
   // - for each duration in this map update due date of all associated tasks
-  public BulkLog setPlannedPropertyOfTasksImpl(Instant planned, List<String> argTaskIds) {
+  BulkLog setPlannedPropertyOfTasksImpl(Instant planned, List<String> argTaskIds) {
     BulkLog bulkLog = new BulkLog();
     if (argTaskIds == null || argTaskIds.isEmpty()) {
       return bulkLog;
@@ -131,7 +131,8 @@ class ServiceLevelHandler {
     }
     // classification update
     if (forRefreshOnClassificationUpdate) {
-      newTaskImpl.setDue(newPlannedDueInstant(newTaskImpl, durationPrioHolder.getDuration(), true));
+      newTaskImpl.setDue(converter.addWorkingDaysToInstant(newTaskImpl.getPlanned(),
+          durationPrioHolder.getDuration()));
       return newTaskImpl;
     }
     // creation of new task
@@ -139,16 +140,6 @@ class ServiceLevelHandler {
       return updatePlannedDueOnCreationOfNewTask(newTaskImpl, durationPrioHolder);
     } else {
       return updatePlannedDueOnTaskUpdate(newTaskImpl, oldTaskImpl, durationPrioHolder);
-    }
-  }
-
-  Instant newPlannedDueInstant(TaskImpl task, Duration duration, boolean fromPlannedToDue) {
-    if (fromPlannedToDue) {
-      long days = converter.convertWorkingDaysToDays(task.getPlanned(), duration.toDays());
-      return task.getPlanned().plus(Duration.ofDays(days));
-    } else {
-      long days = converter.convertWorkingDaysToDays(task.getDue(), -duration.toDays());
-      return task.getDue().plus(Duration.ofDays(days));
     }
   }
 
@@ -220,18 +211,21 @@ class ServiceLevelHandler {
     // case 1: no change of planned / due, but potentially change of an attachment or classification
     if (oldTaskImpl.getDue().equals(newTaskImpl.getDue())
         && oldTaskImpl.getPlanned().equals(newTaskImpl.getPlanned())) {
-      newTaskImpl.setDue(newPlannedDueInstant(newTaskImpl, durationPrioHolder.getDuration(), true));
+      newTaskImpl.setDue(converter.addWorkingDaysToInstant(newTaskImpl.getPlanned(),
+          durationPrioHolder.getDuration()));
     } else if (oldTaskImpl.getDue().equals(newTaskImpl.getDue())
         && newTaskImpl.getPlanned() != null) {
       // case 2: planned was changed
-      newTaskImpl.setDue(newPlannedDueInstant(newTaskImpl, durationPrioHolder.getDuration(), true));
+      newTaskImpl.setDue(converter.addWorkingDaysToInstant(newTaskImpl.getPlanned(),
+          durationPrioHolder.getDuration()));
     } else { // case 3: due was changed
       if (newTaskImpl.getDue() == null) {
-        newTaskImpl.setDue(
-            newPlannedDueInstant(newTaskImpl, durationPrioHolder.getDuration(), true));
+        newTaskImpl.setDue(converter.addWorkingDaysToInstant(newTaskImpl.getPlanned(),
+            durationPrioHolder.getDuration()));
       } else {
         Instant planned =
-            newPlannedDueInstant(newTaskImpl, durationPrioHolder.getDuration(), false);
+            (converter.subtractWorkingDaysFromInstant(newTaskImpl.getDue(),
+                durationPrioHolder.getDuration()));
         if (newTaskImpl.getPlanned() != null && !planned.equals(newTaskImpl.getPlanned())) {
           throw new InvalidArgumentException(
               "Cannot update a task with given planned "
@@ -246,7 +240,8 @@ class ServiceLevelHandler {
   private TaskImpl updatePlannedDueOnCreationOfNewTask(
       TaskImpl newTaskImpl, DurationPrioHolder durationPrioHolder) throws InvalidArgumentException {
     if (newTaskImpl.getDue() != null) { // due is specified: calculate back and check correctnes
-      Instant planned = newPlannedDueInstant(newTaskImpl, durationPrioHolder.getDuration(), false);
+      Instant planned = (converter.subtractWorkingDaysFromInstant(newTaskImpl.getDue(),
+          durationPrioHolder.getDuration()));
       if (newTaskImpl.getPlanned() != null && !planned.equals(newTaskImpl.getPlanned())) {
         throw new InvalidArgumentException(
             "Cannot create a task with given planned "
@@ -254,7 +249,8 @@ class ServiceLevelHandler {
       }
       newTaskImpl.setPlanned(planned);
     } else { // task.due is null: calculate forward from planned
-      newTaskImpl.setDue(newPlannedDueInstant(newTaskImpl, durationPrioHolder.getDuration(), true));
+      newTaskImpl.setDue(converter.addWorkingDaysToInstant(newTaskImpl.getPlanned(),
+          durationPrioHolder.getDuration()));
     }
     return newTaskImpl;
   }
