@@ -83,7 +83,7 @@
         <version.byte-buddy>1.10.8</version.byte-buddy>
         <version.byte-buddy-agent>1.10.8</version.byte-buddy-agent>
         <version.hamcrest>2.2</version.hamcrest>
-        <version.equalsverifier>3.1.12</version.equalsverifier>
+        <version.equalsverifier>3.1.13</version.equalsverifier>
         <version.openpojo>0.8.13</version.openpojo>
         <version.jacoco>0.8.5</version.jacoco>
 
