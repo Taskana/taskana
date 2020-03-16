@@ -74,8 +74,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
       groupNames = {"group_1"})
   @Test
   void testThrowsExceptionIfMandatoryPrimaryObjectReferenceIsNotSetOrIncomplete()
-      throws NotAuthorizedException, ClassificationNotFoundException, TaskNotFoundException,
-          ConcurrencyException, AttachmentPersistenceException {
+      throws NotAuthorizedException, TaskNotFoundException {
 
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
@@ -343,19 +342,4 @@ class UpdateTaskAccTest extends AbstractAccTest {
     assertThat(retrievedUpdatedTask.getCallbackInfo()).isEqualTo(callbackInfo);
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
-  @Test
-  void testUpdatePlannedAndDue()
-      throws NotAuthorizedException, TaskNotFoundException, ClassificationNotFoundException,
-          InvalidArgumentException, InvalidStateException, ConcurrencyException,
-          AttachmentPersistenceException {
-    TaskService taskService = taskanaEngine.getTaskService();
-    Task task = taskService.getTask("TKI:000000000000000000000000000000000030");
-    task.setPlanned(getInstant("2020-04-21T07:00:00"));
-    task.setDue(getInstant("2020-04-21T10:00:00"));
-    assertThatThrownBy(() -> taskService.updateTask(task))
-        .isInstanceOf(InvalidArgumentException.class);
-  }
 }
