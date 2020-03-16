@@ -50,10 +50,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
       userName = "user_3_2",
       groupNames = {"group_2"})
   @Test
-  void testSetPlannedWithDuplicatesSucceeds()
-      throws NotAuthorizedException, TaskNotFoundException, ClassificationNotFoundException,
-          InvalidArgumentException, InvalidStateException, ConcurrencyException,
-          AttachmentPersistenceException {
+  void testSetPlannedWithDuplicatesSucceeds() throws NotAuthorizedException, TaskNotFoundException {
 
     // This test works with the following tasks (w/o attachments) and classifications
     //
@@ -124,7 +121,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
   void testSetPlannedForTasksWithAttachmentsSucceeds()
       throws NotAuthorizedException, TaskNotFoundException, ClassificationNotFoundException,
           InvalidArgumentException, InvalidStateException, ConcurrencyException,
-          AttachmentPersistenceException, SQLException {
+          AttachmentPersistenceException {
 
     // This test works with the following tasks, attachments and classifications
     //
@@ -179,7 +176,6 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     assertThat(dueBulk0).isEqualTo(planned.plus(1, ChronoUnit.DAYS));
     assertThat(dueBulk1).isEqualTo(planned.plus(2, ChronoUnit.DAYS));
     assertThat(dueBulk2).isEqualTo(planned.plus(1, ChronoUnit.DAYS));
-    long delta = Duration.between(planned, due1).toDays();
 
     assertThat(results.containsErrors()).isFalse();
     assertThat(dueBulk0).isEqualTo(due0);
@@ -253,8 +249,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
       userName = "admin",
       groupNames = {"group_2"})
   @Test
-  void testSetPlannedPropertyOnEmptyTasksList()
-      throws NotAuthorizedException, TaskNotFoundException {
+  void testSetPlannedPropertyOnEmptyTasksList() {
     Instant planned = getInstant("2020-05-03T07:00:00");
     BulkOperationResults<String, TaskanaException> results =
         taskanaEngine.getTaskService().setPlannedPropertyOfTasks(planned, new ArrayList<>());
@@ -274,9 +269,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
       groupNames = {"group_2"})
   @Test
   void testSetPlannedPropertyOnSingleTaskWithBulkUpdate()
-      throws NotAuthorizedException, TaskNotFoundException, InvalidArgumentException,
-          ConcurrencyException, InvalidStateException, ClassificationNotFoundException,
-          AttachmentPersistenceException {
+      throws NotAuthorizedException, TaskNotFoundException, InvalidArgumentException {
     String taskId = "TKI:000000000000000000000000000000000002";
     Instant planned = getInstant("2020-05-03T07:00:00");
     // test bulk operation setPlanned...
@@ -293,12 +286,11 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
       userName = "admin",
       groupNames = {"group_2"})
   @Test
-  void testSetPlannedPropertyOnSingleTaskWitHTaskUpdate()
+  void testSetPlannedPropertyOnSingleTaskWithTaskUpdate()
       throws NotAuthorizedException, TaskNotFoundException, InvalidArgumentException,
           ConcurrencyException, InvalidStateException, ClassificationNotFoundException,
           AttachmentPersistenceException {
     String taskId = "TKI:000000000000000000000000000000000002";
-    Instant planned = getInstant("2020-05-03T07:00:00");
     DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize();
     Task task = taskService.getTask(taskId);
     // test update of planned date via updateTask()
@@ -324,10 +316,9 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     task.setDue(planned.plus(Duration.ofDays(8)));
     Task finalTask = task;
     assertThatThrownBy(
-        () -> {
-            taskService.updateTask(finalTask);
-        })
-        .isInstanceOf(InvalidArgumentException.class);
+      () -> {
+        taskService.updateTask(finalTask);
+      }).isInstanceOf(InvalidArgumentException.class);
 
     // update due and planned as expected.
     task = taskService.getTask(taskId);
@@ -359,7 +350,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     String taskId = "TKI:000000000000000000000000000000000002";
     final Instant planned = getInstant("2020-05-03T07:00:00");
     Task task = taskService.getTask(taskId);
-    
+
     task.setPlanned(null);
     task = taskService.updateTask(task);
     DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize();
@@ -389,8 +380,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
       userName = "admin",
       groupNames = {"group_2"})
   @Test
-  void testSetPlannedPropertyOnAllTasks()
-      throws NotAuthorizedException, TaskNotFoundException, SQLException {
+  void testSetPlannedPropertyOnAllTasks() throws SQLException {
     Instant planned = getInstant("2020-05-03T07:00:00");
     List<TaskSummary> allTasks = taskService.createTaskQuery().list();
     // Now update each task with updateTask() and new planned
@@ -408,6 +398,19 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
             .collect(Collectors.toMap(TaskSummary::getId, TaskSummary::getDue));
     individuallyUpdatedTasks.forEach(
         t -> assertThat(t.getDue().equals(bulkUpdatedTaskMap.get(t.getId()))));
+  }
+
+  @WithAccessId(
+      userName = "user_1_2",
+      groupNames = {"group_1"})
+  @Test
+  void testUpdatePlannedAndDue() throws NotAuthorizedException, TaskNotFoundException {
+    TaskService taskService = taskanaEngine.getTaskService();
+    Task task = taskService.getTask("TKI:000000000000000000000000000000000030");
+    task.setPlanned(getInstant("2020-04-21T07:00:00"));
+    task.setDue(getInstant("2020-04-21T10:00:00"));
+    assertThatThrownBy(() -> taskService.updateTask(task))
+        .isInstanceOf(InvalidArgumentException.class);
   }
 
   private TaskSummary getUpdatedTaskSummary(TaskSummary t, Instant planned) {

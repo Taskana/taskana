@@ -413,6 +413,8 @@ public class TaskServiceImpl implements TaskService {
       newTaskImpl = checkConcurrencyAndSetModified(newTaskImpl, oldTaskImpl);
 
       attachmentHandler.insertAndDeleteAttachmentsOnTaskUpdate(newTaskImpl, oldTaskImpl);
+      ObjectReference.validate(newTaskImpl.getPrimaryObjRef(), "primary ObjectReference", TASK);
+
       standardUpdateActions(oldTaskImpl, newTaskImpl);
 
       taskMapper.update(newTaskImpl);
@@ -1191,7 +1193,12 @@ public class TaskServiceImpl implements TaskService {
     if (task.getDescription() == null && classification != null) {
       task.setDescription(classification.getDescription());
     }
-    attachmentHandler.insertNewAttachmentsOnTaskCreation(task);
+    try {
+      attachmentHandler.insertNewAttachmentsOnTaskCreation(task);
+    } catch (AttachmentPersistenceException e) {
+      throw new SystemException(
+          "Internal error when trying to insert new Attachments on Task Creation.", e);
+    }
     LOGGER.debug("exit from standardSettings()");
   }
 
@@ -1565,8 +1572,6 @@ public class TaskServiceImpl implements TaskService {
 
   private void standardUpdateActions(TaskImpl oldTaskImpl, TaskImpl newTaskImpl)
       throws InvalidArgumentException, InvalidStateException, ClassificationNotFoundException {
-    ObjectReference.validate(newTaskImpl.getPrimaryObjRef(), "primary ObjectReference", TASK);
-
     if (oldTaskImpl.getExternalId() == null
         || !(oldTaskImpl.getExternalId().equals(newTaskImpl.getExternalId()))) {
       throw new InvalidArgumentException(
