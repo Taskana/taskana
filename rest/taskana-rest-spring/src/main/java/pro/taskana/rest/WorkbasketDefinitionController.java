@@ -106,6 +106,7 @@ public class WorkbasketDefinitionController {
    *     incorrect.
    * @throws WorkbasketAccessItemAlreadyExistException if a WorkbasketAccessItem for the same
    *     workbasket and access_id already exists.
+   * @throws ConcurrencyException if workbasket was updated by an other user
    */
   @PostMapping(path = Mapping.URL_WORKBASKETDEFIITIONS)
   @Transactional(rollbackFor = Exception.class)
