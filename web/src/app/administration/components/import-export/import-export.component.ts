@@ -10,7 +10,10 @@ import { AlertService } from 'app/services/alert/alert.service';
 import { AlertModel, AlertType } from 'app/models/alert';
 import { UploadService } from 'app/shared/services/upload/upload.service';
 import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
-import { ERROR_TYPES } from '../../../services/general-modal/errors';
+import { ERROR_TYPES } from '../../../models/errors';
+import { ErrorsService } from "../../../services/errors/errors.service";
+import { ErrorModel } from "../../../models/error-model";
+import { HttpErrorResponse } from "@angular/common/http";
 
 @Component({
   selector: 'taskana-import-export-component',
@@ -20,26 +23,29 @@ import { ERROR_TYPES } from '../../../services/general-modal/errors';
 export class ImportExportComponent implements OnInit {
   @Input() currentSelection: TaskanaType;
 
-  @ViewChild('selectedFile', { static: true })
+  @ViewChild('selectedFile', {static: true})
   selectedFileInput;
 
   domains: string[] = [];
   errorWhileUploadingText: string;
 
   constructor(
-    private domainService: DomainService,
-    private workbasketDefinitionService: WorkbasketDefinitionService,
-    private classificationDefinitionService: ClassificationDefinitionService,
-    private generalModalService: GeneralModalService,
-    private alertService: AlertService,
-    public uploadservice: UploadService,
-    private importExportService: ImportExportService
+      private domainService: DomainService,
+      private workbasketDefinitionService: WorkbasketDefinitionService,
+      private classificationDefinitionService: ClassificationDefinitionService,
+      private generalModalService: GeneralModalService,
+      private alertService: AlertService,
+      public uploadservice: UploadService,
+      private errorsService: ErrorsService,
+      private importExportService: ImportExportService
   ) {
   }
 
   ngOnInit() {
     this.domainService.getDomains().subscribe(
-      data => { this.domains = data; }
+        data => {
+          this.domains = data;
+        }
     );
   }
 
@@ -83,15 +89,11 @@ export class ImportExportComponent implements OnInit {
   private checkFormatFile(file): boolean {
     const ending = file.name.match(/\.([^.]+)$/)[1];
     let check = false;
-    switch (ending) {
-      case 'json':
-        check = true;
-        break;
-      default:
-        file.value = '';
-        // new Key: ERROR_TYPES.FILE_ERR
-        this.generalModalService.triggerMessage(new MessageModal('Wrong format',
-          'This file format is not allowed! Please use a .json file.'));
+    if (ending === 'json') {
+      check = true;
+    } else {
+      file.value = '';
+      this.errorsService.updateError(ERROR_TYPES.FILE_ERR);
     }
     return check;
   }
@@ -105,20 +107,18 @@ export class ImportExportComponent implements OnInit {
   private onReadyStateChangeHandler(event) {
     if (event.readyState === 4 && event.status >= 400) {
       let title;
+      let key: ERROR_TYPES;
       if (event.status === 401) {
-        // new Key ERROR_TYPES.IMPORT_ERR_1
+        key = ERROR_TYPES.IMPORT_ERR_1;
         title = 'Import was not successful, you have no access to apply this operation.';
       } else if (event.status === 404) {
-        // new Key ERROR_TYPES.IMPORT_ERR_2
-        title = 'Import was not successful, operation was not found.';
+        key = ERROR_TYPES.IMPORT_ERR_2;
       } else if (event.status === 409) {
-        // new Key ERROR_TYPES.IMPORT_ERR_3
-        title = 'Import was not successful, operation has some conflicts.';
+        key = ERROR_TYPES.IMPORT_ERR_3;
       } else if (event.status === 413) {
-        // new Key ERROR_TYPES.IMPORT_ERR_4
-        title = 'Import was not successful, maximum file size exceeded.';
+        key = ERROR_TYPES.IMPORT_ERR_4;
       }
-      this.errorHandler(title, JSON.parse(event.responseText).message);
+      this.errorHandler(key, event);
     } else if (event.readyState === 4 && event.status === 200) {
       // new Key: ALERT_TYPES.SUCCESS_ALERT_6
       this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, 'Import was successful'));
@@ -127,19 +127,12 @@ export class ImportExportComponent implements OnInit {
     }
   }
 
-  private onFailedResponse(event) {
-    // new Key ERROR_TYPES.UPLOAD_ERR
-    this.errorHandler('Upload failed', 'The upload didn\'t proceed sucessfully. \n'
-    + 'Probably the uploaded file exceeded the maximum file size of 10 MB');
+  private onFailedResponse() {
+    this.errorHandler(ERROR_TYPES.UPLOAD_ERR);
   }
 
-  private errorHandler(title = 'Import was not successful', message) {
-    this.generalModalService.triggerMessage(
-      new MessageModal(
-        title,
-        message
-      )
-    );
+  private errorHandler(key: ERROR_TYPES, passedError?: HttpErrorResponse) {
+    this.errorsService.updateError(key, passedError);
     delete this.selectedFileInput.files;
     this.resetProgress();
   }

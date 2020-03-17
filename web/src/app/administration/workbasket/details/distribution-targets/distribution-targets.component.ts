@@ -18,7 +18,8 @@ import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { Page } from 'app/models/page';
 import { OrientationService } from 'app/services/orientation/orientation.service';
 import { Orientation } from 'app/models/orientation';
-import { ERROR_TYPES } from '../../../../services/general-modal/errors';
+import { ERROR_TYPES } from '../../../../models/errors';
+import { ErrorsService } from "../../../../services/errors/errors.service";
 
 export enum Side {
   LEFT,
@@ -74,7 +75,8 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
     private savingWorkbaskets: SavingWorkbasketService,
     private generalModalService: GeneralModalService,
     private requestInProgressService: RequestInProgressService,
-    private orientationService: OrientationService
+    private orientationService: OrientationService,
+    private errorsService: ErrorsService
   ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -128,10 +130,7 @@ export class DistributionTargetsComponent implements OnChanges, OnDestroy {
       return true;
     },
     error => {
-      // new Key ERROR_TYPES.SAVE_ERR_3
-      this.generalModalService.triggerMessage(
-        new MessageModal('There was error while saving your workbasket\'s distribution targets', error)
-      );
+      this.errorsService.updateError(ERROR_TYPES.SAVE_ERR_3, error);
       this.requestInProgressService.setRequestInProgress(false);
       return false;
     });

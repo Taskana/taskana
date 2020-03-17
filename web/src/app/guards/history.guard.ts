@@ -1,40 +1,37 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { TaskanaEngineService } from 'app/services/taskana-engine/taskana-engine.service';
-import { map, catchError } from 'rxjs/operators';
-import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
-import { MessageModal } from 'app/models/message-modal';
-import { ERROR_TYPES } from '../services/general-modal/errors';
+import { catchError, map } from 'rxjs/operators';
+import { ERROR_TYPES } from '../models/errors';
+import { ErrorsService } from "../services/errors/errors.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class HistoryGuard implements CanActivate {
   constructor(
-    private taskanaEngineService: TaskanaEngineService,
-    public router: Router,
-    public generalModalService: GeneralModalService
-  ) { }
+      private taskanaEngineService: TaskanaEngineService,
+      public router: Router,
+      private errorsService: ErrorsService
+  ) {
+  }
 
   canActivate(
-    next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
+      next: ActivatedRouteSnapshot,
+      state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
     return this.taskanaEngineService.isHistoryProviderEnabled().pipe(
-      map(value => {
-        if (value) {
-          return value;
-        }
-        return this.navigateToWorkplace();
-      }),
-      catchError(() => {
-        // new Key ERROR_TYPES.FETCH_ERR_6
-        this.generalModalService.triggerMessage(new MessageModal(
-          'There was an error, please contact with your administrator', 'There was an error getting history provider'
-        ));
-        return of(this.navigateToWorkplace());
-      })
+        map(value => {
+          if (value) {
+            return value;
+          }
+          return this.navigateToWorkplace();
+        }),
+        catchError(() => {
+          this.errorsService.updateError(ERROR_TYPES.FETCH_ERR_6)
+          return of(this.navigateToWorkplace());
+        })
     );
   }
 

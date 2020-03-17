@@ -89,9 +89,9 @@ describe('WorkbasketInformationComponent', () => {
     fixture.detectChanges();
     expect(debugElement.querySelector('#wb-information')).toBeDefined();
     expect(debugElement.querySelector('#wb-information > .panel-heading > h4').textContent.trim()).toBe('name');
-    expect(debugElement.querySelectorAll('#wb-information > .panel-body > form').length).toBe(1);
+    expect(debugElement.querySelectorAll('#wb-information > .panel-message > form').length).toBe(1);
     fixture.whenStable().then(() => {
-      expect(debugElement.querySelector('#wb-information > .panel-body > form > div > div > input ').value).toBe('keyModified');
+      expect(debugElement.querySelector('#wb-information > .panel-message > form > div > div > input ').value).toBe('keyModified');
     });
   }));
 

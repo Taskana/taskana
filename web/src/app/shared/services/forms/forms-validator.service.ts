@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { AlertService } from 'app/services/alert/alert.service';
 import { AlertModel, AlertType } from 'app/models/alert';
 import { AccessIdsService } from 'app/shared/services/access-ids/access-ids.service';
-import { ERROR_TYPES } from '../../../services/general-modal/errors';
+import { ERROR_TYPES } from '../../../models/errors';
 
 @Injectable()
 export class FormsValidatorService {

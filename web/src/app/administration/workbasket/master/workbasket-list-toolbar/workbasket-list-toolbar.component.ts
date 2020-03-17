@@ -9,8 +9,8 @@ import { WorkbasketSummary } from 'app/models/workbasket-summary';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { TaskanaType } from 'app/models/taskana-type';
 import { expandDown } from 'app/shared/animations/expand.animation';
-import { ErrorsService } from '../../../../shared/services/errors/errors.service';
-import { ERROR_TYPES } from '../../../../services/general-modal/errors';
+import { ErrorsService } from '../../../../services/errors/errors.service';
+import { ERROR_TYPES } from '../../../../models/errors';
 
 @Component({
   selector: 'taskana-workbasket-list-toolbar',

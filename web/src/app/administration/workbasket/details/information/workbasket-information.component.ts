@@ -18,7 +18,8 @@ import { RequestInProgressService } from 'app/services/requestInProgress/request
 import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
 import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
-import { ERROR_TYPES } from '../../../../services/general-modal/errors';
+import { ERROR_TYPES } from '../../../../models/errors';
+import { ErrorsService } from "../../../../services/errors/errors.service";
 
 @Component({
   selector: 'taskana-workbasket-information',
@@ -81,7 +82,8 @@ implements OnInit, OnChanges, OnDestroy {
     private requestInProgressService: RequestInProgressService,
     private customFieldsService: CustomFieldsService,
     private removeConfirmationService: RemoveConfirmationService,
-    private formsValidatorService: FormsValidatorService
+    private formsValidatorService: FormsValidatorService,
+    private errorsService: ErrorsService
   ) {
     this.allTypes = new Map([
       ['PERSONAL', 'Personal'],
@@ -165,14 +167,9 @@ implements OnInit, OnChanges, OnDestroy {
           );
         },
         error => {
-          // new Key ERROR_TYPES.REMOVE_ERR_2
-          this.generalModalService.triggerMessage(
-            new MessageModal(
-              `There was an error removing distribution target for ${
-                this.workbasket.workbasketId
-              }.`,
-              error
-            )
+          this.errorsService.updateError(ERROR_TYPES.REMOVE_ERR_2,
+              error,
+              new Map<String,String>([["workbasketId", this.workbasket.workbasketId]])
           );
           this.requestInProgressService.setRequestInProgress(false);
         }
@@ -203,13 +200,7 @@ implements OnInit, OnChanges, OnDestroy {
         },
         error => {
           this.afterRequest();
-          // new Key ERROR_TYPES.SAVE_ERR_4
-          this.generalModalService.triggerMessage(
-            new MessageModal(
-              'There was error while saving your workbasket',
-              error
-            )
-          );
+          this.errorsService.updateError(ERROR_TYPES.SAVE_ERR_4, error);
         }
       );
   }
@@ -258,9 +249,7 @@ implements OnInit, OnChanges, OnDestroy {
       },
       error => {
         // new Key ERROR_TYPES.CREATE_ERR_2
-        this.generalModalService.triggerMessage(
-          new MessageModal('There was an error creating a workbasket', error)
-        );
+        this.errorsService.updateError(ERROR_TYPES.CREATE_ERR_2, error);
         this.requestInProgressService.setRequestInProgress(false);
       }
     );
@@ -281,17 +270,11 @@ implements OnInit, OnChanges, OnDestroy {
           this.requestInProgressService.setRequestInProgress(false);
           this.workbasketService.triggerWorkBasketSaved();
           if (response.status === 202) {
-            // new Key ERROR_TYPES.MARK_ERR
-            // TODO: message changed
-            this.generalModalService.triggerMessage(
-              new MessageModal('Workbasket was marked for deletion.',
-                `The Workbasket ${this.workbasket.workbasketId} still contains completed tasks and could not be deleted.`
-                + 'Instead is was marked for deletion and will be deleted automatically '
-                + 'as soon as the completed tasks are deleted from the database.')
-            );
+            this.errorsService.updateError(ERROR_TYPES.MARK_ERR,
+                undefined,
+                new Map<String, String>([['workbasketId', this.workbasket.workbasketId]]));
           } else {
             // new Key ALERT_TYPES.SUCCESS_ALERT_12
-            // TODO: message changed
             this.alertService.triggerAlert(
               new AlertModel(AlertType.SUCCESS, `The Workbasket ${this.workbasket.workbasketId} has been deleted.`)
             );

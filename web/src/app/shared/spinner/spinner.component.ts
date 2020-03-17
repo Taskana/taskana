@@ -1,10 +1,6 @@
-import { Component, Input, Output, EventEmitter, OnDestroy, ViewChild } from '@angular/core';
-
-
-import { MessageModal } from 'app/models/message-modal';
-
-import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
-import { ERROR_TYPES } from '../../services/general-modal/errors';
+import { Component, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
+import { ERROR_TYPES } from '../../models/errors';
+import { ErrorsService } from "../../services/errors/errors.service";
 
 declare let $: any;
 
@@ -15,25 +11,37 @@ declare let $: any;
   styleUrls: ['./spinner.component.scss']
 })
 export class SpinnerComponent implements OnDestroy {
+  showSpinner: boolean;
+  @Input()
+  delay = 250;
+  @Input()
+  isModal = false;
+  @Input()
+  positionClass: string;
+  @Output()
+  spinnerIsRunning = new EventEmitter<boolean>();
   private currentTimeout: any;
   private requestTimeout: any;
   private maxRequestTimeout = 10000;
+  @ViewChild('spinnerModal', {static: true})
+  private modal;
+
+  constructor(private errorsService: ErrorsService) {
+
+  }
 
   set isDelayedRunning(value: boolean) {
     this.showSpinner = value;
     this.spinnerIsRunning.next(value);
   }
 
-  showSpinner: boolean;
-
-  @Input()
-  delay = 250;
-
   @Input()
   set isRunning(value: boolean) {
     if (!value) {
       this.cancelTimeout();
-      if (this.isModal) { this.closeModal(); }
+      if (this.isModal) {
+        this.closeModal();
+      }
       this.isDelayedRunning = false;
       return;
     }
@@ -44,33 +52,19 @@ export class SpinnerComponent implements OnDestroy {
     this.runSpinner(value);
   }
 
-  @Input()
-  isModal = false;
-
-  @Input()
-  positionClass: string;
-
-  @Output()
-  spinnerIsRunning = new EventEmitter<boolean>();
-
-  @ViewChild('spinnerModal', { static: true })
-  private modal;
-
-  constructor(private generalModalService: GeneralModalService) {
-
+  ngOnDestroy(): any {
+    this.cancelTimeout();
   }
 
   private runSpinner(value) {
     this.currentTimeout = setTimeout(() => {
-      if (this.isModal) { $(this.modal.nativeElement).modal('show'); }
+      if (this.isModal) {
+        $(this.modal.nativeElement).modal('show');
+      }
       this.isDelayedRunning = value;
       this.cancelTimeout();
       this.requestTimeout = setTimeout(() => {
-        // new Key ERROR_TYPES.TIMEOUT_ERR
-        this.generalModalService.triggerMessage(
-          new MessageModal('There was an error with your request, please make sure you have internet connection',
-            'Request time execeed')
-        );
+        this.errorsService.updateError(ERROR_TYPES.TIMEOUT_ERR);
         this.cancelTimeout();
         this.isRunning = false;
       }, this.maxRequestTimeout);
@@ -83,15 +77,10 @@ export class SpinnerComponent implements OnDestroy {
     }
   }
 
-
   private cancelTimeout(): void {
     clearTimeout(this.currentTimeout);
     clearTimeout(this.requestTimeout);
     delete this.currentTimeout; // do we need this?
     delete this.requestTimeout;
-  }
-
-  ngOnDestroy(): any {
-    this.cancelTimeout();
   }
 }

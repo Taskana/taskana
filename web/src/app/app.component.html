@@ -1,9 +1,10 @@
 <taskana-nav-bar></taskana-nav-bar>
-<div class="container-fluid container-main" (window:resize)="onResize($event)">
+<div (window:resize)="onResize()" class="container-fluid container-main">
     <div class="row ">
         <router-outlet></router-outlet>
         <taskana-general-message-modal *ngIf="modalMessage" [(message)]="modalMessage" [title]="modalTitle"
             [type]="modalType" error="true"></taskana-general-message-modal>
+        <error-modal></error-modal>
         <taskana-spinner [isRunning]="requestInProgress" isModal=true></taskana-spinner>
         <taskana-alert></taskana-alert>
         <taskana-remove-confirmation></taskana-remove-confirmation>
