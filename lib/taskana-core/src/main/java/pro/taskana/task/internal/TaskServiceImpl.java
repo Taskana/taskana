@@ -91,7 +91,6 @@ public class TaskServiceImpl implements TaskService {
 
   private static final Set<String> ALLOWED_KEYS =
       IntStream.rangeClosed(1, 16).mapToObj(String::valueOf).collect(Collectors.toSet());
-  private DaysToWorkingDaysConverter converter;
   private InternalTaskanaEngine taskanaEngine;
   private WorkbasketService workbasketService;
   private ClassificationService classificationService;
@@ -684,8 +683,7 @@ public class TaskServiceImpl implements TaskService {
     try {
       taskanaEngine.openConnection();
       // use only elements we are authorized for
-      Pair<List<MinimalTaskSummary>, BulkLog> resultsPair =
-          serviceLevelHandler.filterTasksForExistenceAndAuthorization(taskIds);
+      Pair<List<MinimalTaskSummary>, BulkLog> resultsPair = getMinimalTaskSummaries(taskIds);
       // set the Owner of these tasks we are authorized for
       List<MinimalTaskSummary> existingMinimalTaskSummaries = resultsPair.getLeft();
       taskIds =
@@ -730,9 +728,20 @@ public class TaskServiceImpl implements TaskService {
           planned,
           LoggerUtils.listToString(argTaskIds));
     }
+
+    BulkLog bulkLog = new BulkLog();
+    if (argTaskIds == null || argTaskIds.isEmpty()) {
+      return bulkLog;
+    }
     try {
       taskanaEngine.openConnection();
-      return serviceLevelHandler.setPlannedPropertyOfTasksImpl(planned, argTaskIds);
+      Pair<List<MinimalTaskSummary>, BulkLog> resultsPair = getMinimalTaskSummaries(argTaskIds);
+      List<MinimalTaskSummary> tasksToModify = resultsPair.getLeft();
+      bulkLog.addAllErrors(resultsPair.getRight());
+      BulkLog errorsFromProcessing =
+          serviceLevelHandler.setPlannedPropertyOfTasksImpl(planned, tasksToModify);
+      bulkLog.addAllErrors(errorsFromProcessing);
+      return bulkLog;
     } finally {
       LOGGER.debug("exit from setPlannedPropertyOfTasks");
       taskanaEngine.returnConnection();
@@ -811,6 +820,62 @@ public class TaskServiceImpl implements TaskService {
     }
   }
 
+  Pair<List<MinimalTaskSummary>, BulkLog> getMinimalTaskSummaries(List<String> argTaskIds) {
+    BulkLog bulkLog = new BulkLog();
+    // remove duplicates
+    List<String> taskIds = argTaskIds.stream().distinct().collect(Collectors.toList());
+    // get existing tasks
+    List<MinimalTaskSummary> minimalTaskSummaries = taskMapper.findExistingTasks(taskIds, null);
+    bulkLog.addAllErrors(addExceptionsForNonExistingTasksToBulkLog(taskIds, minimalTaskSummaries));
+    Pair<List<MinimalTaskSummary>, BulkLog> filteredPair =
+        filterTasksAuthorizedForAndLogErrorsForNotAuthorized(minimalTaskSummaries);
+    bulkLog.addAllErrors(filteredPair.getRight());
+    return new Pair<>(filteredPair.getLeft(), bulkLog);
+  }
+
+  Pair<List<MinimalTaskSummary>, BulkLog> filterTasksAuthorizedForAndLogErrorsForNotAuthorized(
+      List<MinimalTaskSummary> existingTasks) {
+    BulkLog bulkLog = new BulkLog();
+    // check authorization only for non-admin users
+    if (taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN)) {
+      return new Pair<>(existingTasks, bulkLog);
+    } else {
+      List<String> taskIds =
+          existingTasks.stream().map(MinimalTaskSummary::getTaskId).collect(Collectors.toList());
+      List<String> accessIds = CurrentUserContext.getAccessIds();
+      List<String> taskIdsNotAuthorizedFor =
+          taskMapper.filterTaskIdsNotAuthorizedFor(taskIds, accessIds);
+      String userId = CurrentUserContext.getUserid();
+      for (String taskId : taskIdsNotAuthorizedFor) {
+        bulkLog.addError(
+            taskId,
+            new NotAuthorizedException(
+                String.format("User %s is not authorized for task %s ", userId, taskId), userId));
+      }
+      taskIds.removeAll(taskIdsNotAuthorizedFor);
+      List<MinimalTaskSummary> tasksAuthorizedFor =
+          existingTasks.stream()
+              .filter(t -> taskIds.contains(t.getTaskId()))
+              .collect(Collectors.toList());
+      return new Pair<>(tasksAuthorizedFor, bulkLog);
+    }
+  }
+
+  BulkLog addExceptionsForNonExistingTasksToBulkLog(
+      List<String> requestTaskIds, List<MinimalTaskSummary> existingMinimalTaskSummaries) {
+    BulkLog bulkLog = new BulkLog();
+    List<String> nonExistingTaskIds = new ArrayList<>(requestTaskIds);
+    List<String> existingTaskIds =
+        existingMinimalTaskSummaries.stream()
+            .map(MinimalTaskSummary::getTaskId)
+            .collect(Collectors.toList());
+    nonExistingTaskIds.removeAll(existingTaskIds);
+    nonExistingTaskIds.forEach(
+        taskId ->
+            bulkLog.addError(taskId, new TaskNotFoundException(taskId, "Task was not found")));
+    return bulkLog;
+  }
+
   void removeNonExistingTasksFromTaskIdList(
       List<String> taskIds, BulkOperationResults<String, TaskanaException> bulkLog) {
     if (LOGGER.isDebugEnabled()) {
@@ -865,8 +930,6 @@ public class TaskServiceImpl implements TaskService {
     LOGGER.debug("exit from to augmentTaskSummariesByContainedSummaries()");
     return result;
   }
-
-
 
   private TaskImpl checkConcurrencyAndSetModified(TaskImpl newTaskImpl, TaskImpl oldTaskImpl)
       throws ConcurrencyException {
@@ -1213,7 +1276,7 @@ public class TaskServiceImpl implements TaskService {
         } catch (Exception e) {
           LOGGER.warn(
               "Attempted to determine callback state from {} and caught exception", value, e);
-              
+
           throw new InvalidArgumentException(
               String.format("Attempted to set callback state for task %s.", task.getId()), e);
         }
