@@ -6,7 +6,6 @@ import { TaskService } from 'app/workplace/services/task.service';
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
 
 import { Task } from 'app/workplace/models/task';
-import { MessageModal } from 'app/models/message-modal';
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { AlertService } from 'app/services/alert/alert.service';
@@ -16,7 +15,8 @@ import { ObjectReference } from 'app/workplace/models/object-reference';
 import { Workbasket } from 'app/models/workbasket';
 import { WorkplaceService } from 'app/workplace/services/workplace.service';
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
-import { ERROR_TYPES } from '../../services/general-modal/errors';
+import { ERROR_TYPES } from '../../models/errors';
+import { ErrorsService } from "../../services/errors/errors.service";
 
 @Component({
   selector: 'taskana-task-details',
@@ -38,14 +38,15 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   private deleteTaskSubscription: Subscription;
 
   constructor(private route: ActivatedRoute,
-    private taskService: TaskService,
-    private workplaceService: WorkplaceService,
-    private router: Router,
-    private removeConfirmationService: RemoveConfirmationService,
-    private requestInProgressService: RequestInProgressService,
-    private alertService: AlertService,
-    private generalModalService: GeneralModalService,
-    private masterAndDetailService: MasterAndDetailService) {
+              private taskService: TaskService,
+              private workplaceService: WorkplaceService,
+              private router: Router,
+              private removeConfirmationService: RemoveConfirmationService,
+              private requestInProgressService: RequestInProgressService,
+              private alertService: AlertService,
+              private generalModalService: GeneralModalService,
+              private errorsService: ErrorsService,
+              private masterAndDetailService: MasterAndDetailService) {
   }
 
   ngOnInit() {
@@ -67,10 +68,10 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   }
 
   resetTask(): void {
-    this.task = { ...this.taskClone };
+    this.task = {...this.taskClone};
     this.task.customAttributes = this.taskClone.customAttributes.slice(0);
     this.task.callbackInfo = this.taskClone.callbackInfo.slice(0);
-    this.task.primaryObjRef = { ...this.taskClone.primaryObjRef };
+    this.task.primaryObjRef = {...this.taskClone.primaryObjRef};
     this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'Reset edited fields'));
   }
 
@@ -85,11 +86,8 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
         this.task = task;
         this.cloneTask();
         this.taskService.selectTask(task);
-      }, err => {
-        // new Key ERROR_TYPES.FETCH_ERR_7
-        this.generalModalService.triggerMessage(
-          new MessageModal('An error occurred while fetching the task', err)
-        );
+      }, error => {
+        this.errorsService.updateError(ERROR_TYPES.FETCH_ERR_7, error);
       });
     }
   }
@@ -99,7 +97,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   }
 
   openTask() {
-    this.router.navigate([{ outlets: { detail: `task/${this.currentId}` } }], { relativeTo: this.route.parent });
+    this.router.navigate([{outlets: {detail: `task/${this.currentId}`}}], {relativeTo: this.route.parent});
   }
 
   workOnTaskDisabled(): boolean {
@@ -108,7 +106,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
 
   deleteTask(): void {
     this.removeConfirmationService.setRemoveConfirmation(this.deleteTaskConfirmation.bind(this),
-      `You are going to delete Task: ${this.currentId}. Can you confirm this action?`);
+        `You are going to delete Task: ${this.currentId}. Can you confirm this action?`);
   }
 
   deleteTaskConfirmation(): void {
@@ -116,11 +114,8 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
       this.taskService.publishUpdatedTask();
       this.task = null;
       this.router.navigate(['taskana/workplace/tasks']);
-    }, err => {
-      // new Key ERROR_TYPES.DELETE_ERR_2
-      this.generalModalService.triggerMessage(
-        new MessageModal('An error occurred while deleting the task ', err)
-      );
+    }, error => {
+      this.errorsService.updateError(ERROR_TYPES.DELETE_ERR_2, error);
     });
   }
 
@@ -131,7 +126,22 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   backClicked(): void {
     delete this.task;
     this.taskService.selectTask(this.task);
-    this.router.navigate(['./'], { relativeTo: this.route.parent });
+    this.router.navigate(['./'], {relativeTo: this.route.parent});
+  }
+
+  ngOnDestroy(): void {
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
+    }
+    if (this.workbasketSubscription) {
+      this.workbasketSubscription.unsubscribe();
+    }
+    if (this.masterAndDetailSubscription) {
+      this.masterAndDetailSubscription.unsubscribe();
+    }
+    if (this.deleteTaskSubscription) {
+      this.deleteTaskSubscription.unsubscribe();
+    }
   }
 
   private onSave() {
@@ -164,7 +174,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
       this.task = task;
       this.taskService.selectTask(this.task);
       this.taskService.publishUpdatedTask(task);
-      this.router.navigate([`../${task.taskId}`], { relativeTo: this.route });
+      this.router.navigate([`../${task.taskId}`], {relativeTo: this.route});
     }, err => {
       this.requestInProgressService.setRequestInProgress(false);
       // new Key ALERT_TYPES.DANGER_ALERT_2
@@ -179,24 +189,9 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   }
 
   private cloneTask() {
-    this.taskClone = { ...this.task };
+    this.taskClone = {...this.task};
     this.taskClone.customAttributes = this.task.customAttributes.slice(0);
     this.taskClone.callbackInfo = this.task.callbackInfo.slice(0);
-    this.taskClone.primaryObjRef = { ...this.task.primaryObjRef };
-  }
-
-  ngOnDestroy(): void {
-    if (this.routeSubscription) {
-      this.routeSubscription.unsubscribe();
-    }
-    if (this.workbasketSubscription) {
-      this.workbasketSubscription.unsubscribe();
-    }
-    if (this.masterAndDetailSubscription) {
-      this.masterAndDetailSubscription.unsubscribe();
-    }
-    if (this.deleteTaskSubscription) {
-      this.deleteTaskSubscription.unsubscribe();
-    }
+    this.taskClone.primaryObjRef = {...this.task.primaryObjRef};
   }
 }

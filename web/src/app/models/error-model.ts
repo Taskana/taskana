@@ -1,17 +1,19 @@
-import { ErrorHandler } from '@angular/core';
-import { ERROR_TYPES, errors } from '../services/general-modal/errors';
+import { ERROR_TYPES, errors } from './errors';
+import { HttpErrorResponse } from "@angular/common/http";
 
 export class ErrorModel {
-  head: string;
-  body: string;
-  errObj?: ErrorHandler;
+  public readonly errObj: HttpErrorResponse;
+  public readonly title: string;
+  public readonly message: string;
 
-  constructor(key: ERROR_TYPES, passedError?: ErrorHandler, addition?: string) {
-    this.head = errors.get(key).name;
-    this.body = errors.get(key).text;
-    if (addition) {
-      this.body.replace('{rep}', addition);
-    }
+  constructor(key: ERROR_TYPES, passedError?: HttpErrorResponse, addition?: Map<String, String>) {
+    this.title = errors.get(key).name;
+    this.message = errors.get(key).text;
     this.errObj = passedError;
+    if (addition) {
+      addition.forEach((value: string, key: string) => {
+        this.message.replace(`{${key}}`, value);
+      });
+    }
   }
 }

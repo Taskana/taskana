@@ -15,6 +15,7 @@ import { ClassificationsService } from 'app/shared/services/classifications/clas
  * Components
  */
 import { GeneralMessageModalComponent } from 'app/shared/general-message-modal/general-message-modal.component';
+import { ErrorModalComponent } from "./error-message-modal/error-modal.component";
 import { SpinnerComponent } from 'app/shared/spinner/spinner.component';
 import { AlertComponent } from 'app/shared/alert/alert.component';
 import { MasterAndDetailComponent } from 'app/shared/master-and-detail/master-and-detail.component';
@@ -65,6 +66,7 @@ const MODULES = [
 
 const DECLARATIONS = [
   GeneralMessageModalComponent,
+  ErrorModalComponent,
   SpinnerComponent,
   AlertComponent,
   MasterAndDetailComponent,

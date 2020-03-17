@@ -13,7 +13,7 @@ import { ImportExportService } from 'app/administration/services/import-export/i
 import { ClassificationDefinition } from '../../../../models/classification-definition';
 import { AlertModel, AlertType } from '../../../../models/alert';
 import { AlertService } from '../../../../services/alert/alert.service';
-import { ERROR_TYPES } from '../../../../services/general-modal/errors';
+import { ERROR_TYPES } from '../../../../models/errors';
 
 @Component({
   selector: 'taskana-classification-list',

@@ -25,7 +25,8 @@ import { NgForm } from '@angular/forms';
 import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
 import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
 import { CustomFieldsService } from '../../../services/custom-fields/custom-fields.service';
-import { ERROR_TYPES } from '../../../services/general-modal/errors';
+import { ERROR_TYPES } from '../../../models/errors';
+import { ErrorsService } from "../../../services/errors/errors.service";
 
 @Component({
   selector: 'taskana-classification-details',
@@ -81,6 +82,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     private customFieldsService: CustomFieldsService,
     private removeConfirmationService: RemoveConfirmationService,
     private formsValidatorService: FormsValidatorService,
+    private errorsService: ErrorsService,
     private importExportService: ImportExportService) {
   }
 
@@ -180,9 +182,8 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
           this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Classification ${classification.key} was saved successfully`));
           this.afterRequest();
         },
-        // new Key: ERROR_TYPES.CREATE_ERR
         error => {
-          this.generalModalService.triggerMessage(new MessageModal('There was an error creating a classification', error));
+          this.errorsService.updateError(ERROR_TYPES.CREATE_ERR, error);
           this.afterRequest();
         });
     } else {
@@ -197,8 +198,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         );
         this.cloneClassification(this.classification);
       } catch (error) {
-        // new Key: ERROR_TYPES.SAVE_ERR
-        this.generalModalService.triggerMessage(new MessageModal('There was error while saving your classification', error));
+        this.errorsService.updateError(ERROR_TYPES.SAVE_ERR, error);
         this.afterRequest();
       }
     }
@@ -280,10 +280,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
 
   private removeClassificationConfirmation() {
     if (!this.classification || !this.classification.classificationId) {
-      this.generalModalService.triggerMessage(
-        // new Key ERROR_TYPES.SELECT_ERR
-        new MessageModal('There is no classification selected', 'Please check if you are creating a classification')
-      );
+      this.errorsService.updateError(ERROR_TYPES.SELECT_ERR);
       return;
     }
     this.requestInProgressService.setRequestInProgress(true);
@@ -300,8 +297,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         // new Key: ALERT_TYPES.SUCCESS_ALERT_4
         this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Classification ${key} was removed successfully`));
       }, error => {
-        // new Key: ERROR_TYPES.REMOVE_ERR
-        this.generalModalService.triggerMessage(new MessageModal('There was error while removing your classification', error));
+        this.errorsService.updateError(ERROR_TYPES.REMOVE_ERR, error);
         this.afterRequest();
       });
   }

@@ -1,16 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { SortingModel, Direction } from 'app/models/sorting';
+import { Direction, SortingModel } from 'app/models/sorting';
 import { OrientationService } from 'app/services/orientation/orientation.service';
 import { Subscription } from 'rxjs';
 import { Orientation } from 'app/models/orientation';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { MessageModal } from 'app/models/message-modal';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { TaskHistoryEventResourceData } from 'app/models/task-history-event-resource';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { TaskHistoryEventData } from '../../models/task-history-event';
 import { TaskQueryService } from '../services/task-query/task-query.service';
+import { ErrorsService } from "../../services/errors/errors.service";
 
 @Component({
   selector: 'taskana-task-query',
@@ -25,15 +26,16 @@ export class TaskQueryComponent implements OnInit {
   orientationSubscription: Subscription;
   taskQuerySubscription: Subscription;
 
-  taskQueryForm = new FormGroup({
-  });
+  taskQueryForm = new FormGroup({});
 
   constructor(
-    private taskQueryService: TaskQueryService,
-    private orientationService: OrientationService,
-    private generalModalService: GeneralModalService,
-    private requestInProgressService: RequestInProgressService
-  ) { }
+      private taskQueryService: TaskQueryService,
+      private orientationService: OrientationService,
+      private generalModalService: GeneralModalService,
+      private requestInProgressService: RequestInProgressService,
+      private errorsService: ErrorsService
+  ) {
+  }
 
   ngOnInit() {
     this.orientationSubscription = this.orientationService.getOrientation().subscribe((orientation: Orientation) => {
@@ -106,7 +108,7 @@ export class TaskQueryComponent implements OnInit {
 
   filterFieldsToAllowQuerying(fieldName: string): boolean {
     if (!fieldName || fieldName === 'oldData' || fieldName === 'newData' || fieldName === 'comment'
-      || fieldName === 'oldValue' || fieldName === 'newValue') {
+        || fieldName === 'oldValue' || fieldName === 'newValue') {
       return false;
     }
 
@@ -122,8 +124,8 @@ export class TaskQueryComponent implements OnInit {
 
   filterExpandGroup(fieldName: string): boolean {
     if (fieldName === 'custom1' || fieldName === 'custom2' || fieldName === 'custom3' || fieldName === 'custom4'
-      || fieldName === 'oldData' || fieldName === 'newData' || fieldName === 'comment'
-      || fieldName === 'oldValue' || fieldName === 'newValue') {
+        || fieldName === 'oldData' || fieldName === 'newData' || fieldName === 'comment'
+        || fieldName === 'oldValue' || fieldName === 'newValue') {
       return true;
     }
     return false;
@@ -146,11 +148,11 @@ export class TaskQueryComponent implements OnInit {
   // TODO: Global?
   openDetails(key: string, val: string) {
     this.generalModalService.triggerMessage(
-      new MessageModal(
-        `These are the details of ${this.getHeaderFieldDescription(key)}`,
-        val,
-        'code'
-      )
+        new MessageModal(
+            `These are the details of ${this.getHeaderFieldDescription(key)}`,
+            val,
+            'code'
+        )
     );
   }
 
@@ -168,6 +170,20 @@ export class TaskQueryComponent implements OnInit {
     this.performRequest();
   }
 
+  updateDate($event: string) {
+    this.taskQueryForm.get('created').setValue($event.substring(0, 10));
+    this.performRequest();
+  }
+
+  ngOnDestroy() {
+    if (this.orientationSubscription) {
+      this.orientationSubscription.unsubscribe();
+    }
+    if (this.taskQuerySubscription) {
+      this.taskQuerySubscription.unsubscribe();
+    }
+  }
+
   private toggleSortDirection(sortDirection: string): Direction {
     if (sortDirection === Direction.ASC) {
       return Direction.DESC;
@@ -179,10 +195,10 @@ export class TaskQueryComponent implements OnInit {
     this.requestInProgressService.setRequestInProgress(true);
     this.calculateQueryPages();
     this.taskQuerySubscription = this.taskQueryService.queryTask(
-      this.orderBy.sortBy.replace(/([A-Z])|([0-9])/g, g => `-${g[0].toLowerCase()}`),
-      this.orderBy.sortDirection,
-      new TaskHistoryEventData(this.taskQueryForm.value),
-      false
+        this.orderBy.sortBy.replace(/([A-Z])|([0-9])/g, g => `-${g[0].toLowerCase()}`),
+        this.orderBy.sortDirection,
+        new TaskHistoryEventData(this.taskQueryForm.value),
+        false
     ).subscribe(taskQueryResource => {
       this.requestInProgressService.setRequestInProgress(false);
       this.taskQueryResource = taskQueryResource.taskHistoryEvents ? taskQueryResource : null;
@@ -204,15 +220,5 @@ export class TaskQueryComponent implements OnInit {
     const cards = Math.round((totalHeight - (unusedHeight)) / rowHeight);
     TaskanaQueryParameters.page = TaskanaQueryParameters.page ? TaskanaQueryParameters.page : 1;
     TaskanaQueryParameters.pageSize = cards > 0 ? cards : 1;
-  }
-
-  updateDate($event: string) {
-    this.taskQueryForm.get('created').setValue($event.substring(0, 10));
-    this.performRequest();
-  }
-
-  onDestroy() {
-    if (this.orientationSubscription) { this.orientationSubscription.unsubscribe(); }
-    if (this.taskQuerySubscription) { this.taskQuerySubscription.unsubscribe(); }
   }
 }
