@@ -4,16 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
-import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -31,7 +27,6 @@ import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
 import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
-import pro.taskana.task.api.models.TaskSummary;
 
 /** Acceptance test for all "create task" scenarios. */
 @ExtendWith(JaasExtension.class)
@@ -39,11 +34,9 @@ import pro.taskana.task.api.models.TaskSummary;
 public class ServiceLevelPriorityAccTest extends AbstractAccTest {
   private TaskService taskService;
 
-  @BeforeEach
-  void setup() throws SQLException {
-    DaysToWorkingDaysConverter.setGermanPublicHolidaysEnabled(true);
+  ServiceLevelPriorityAccTest() {
+    super();
     taskService = taskanaEngine.getTaskService();
-    resetDb(false);
   }
 
   @WithAccessId(
@@ -67,7 +60,6 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     String tkId4 = "TKI:000000000000000000000000000000000060";
 
     List<String> taskIds = Arrays.asList(tkId1, tkId2, tkId3, tkId4);
-    TaskService taskService = taskanaEngine.getTaskService();
 
     Instant planned = getInstant("2020-02-11T07:00:00");
     BulkOperationResults<String, TaskanaException> results =
@@ -100,7 +92,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     List<String> taskIds = Arrays.asList(tkId1, tkId2, tkId3, tkId4, tkId5);
     Instant planned = getInstant("2020-04-20T07:00:00");
     BulkOperationResults<String, TaskanaException> results =
-        taskanaEngine.getTaskService().setPlannedPropertyOfTasks(planned, taskIds);
+        taskService.setPlannedPropertyOfTasks(planned, taskIds);
     assertThat(results.containsErrors()).isTrue();
     assertThat(results.getErrorMap().size()).isEqualTo(1);
     assertThat(results.getErrorForId("TKI:000000000000000000000000000047110059"))
@@ -144,7 +136,6 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     // |TAI:000000000000000000000000000000000007 | CLI:100000000000000000000000000000000008 | P1D  |
     // +-----------------------------------------+------------------------------------------+------+
 
-    TaskService taskService = taskanaEngine.getTaskService();
     String tkId0 = "TKI:000000000000000000000000000000000000";
     String tkId1 = "TKI:000000000000000000000000000000000001";
     String tkId2 = "TKI:000000000000000000000000000000000002";
@@ -209,7 +200,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     List<String> taskIds = Arrays.asList(tkId1, tkId2, tkId3, tkId4);
     Instant planned = getInstant("2020-02-25T07:00:00");
     BulkOperationResults<String, TaskanaException> results =
-        taskanaEngine.getTaskService().setPlannedPropertyOfTasks(planned, taskIds);
+        taskService.setPlannedPropertyOfTasks(planned, taskIds);
     assertThat(results.containsErrors()).isTrue();
     assertThat(results.getErrorMap().size()).isEqualTo(3);
     assertThat(results.getErrorForId(tkId1)).isInstanceOf(NotAuthorizedException.class);
@@ -232,7 +223,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     List<String> taskIds = Arrays.asList(tkId1, tkId2, tkId3, tkId4);
     Instant planned = getInstant("2020-05-03T07:00:00");
     BulkOperationResults<String, TaskanaException> results =
-        taskanaEngine.getTaskService().setPlannedPropertyOfTasks(planned, taskIds);
+        taskService.setPlannedPropertyOfTasks(planned, taskIds);
     assertThat(results.containsErrors()).isFalse();
 
     Instant dueBulk1 = taskService.getTask(tkId1).getDue();
@@ -240,9 +231,9 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     Instant dueBulk3 = taskService.getTask(tkId3).getDue();
     Instant dueBulk4 = taskService.getTask(tkId4).getDue();
     assertThat(dueBulk1).isEqualTo(getInstant("2020-05-14T07:00:00"));
-    assertThat(dueBulk2).isEqualTo(getInstant("2020-05-22T07:00:00"));
+    assertThat(dueBulk2).isEqualTo(getInstant("2020-05-21T07:00:00"));
     assertThat(dueBulk3).isEqualTo(getInstant("2020-05-14T07:00:00"));
-    assertThat(dueBulk4).isEqualTo(getInstant("2020-05-22T07:00:00"));
+    assertThat(dueBulk4).isEqualTo(getInstant("2020-05-21T07:00:00"));
   }
 
   @WithAccessId(
@@ -252,7 +243,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
   void testSetPlannedPropertyOnEmptyTasksList() {
     Instant planned = getInstant("2020-05-03T07:00:00");
     BulkOperationResults<String, TaskanaException> results =
-        taskanaEngine.getTaskService().setPlannedPropertyOfTasks(planned, new ArrayList<>());
+        taskService.setPlannedPropertyOfTasks(planned, new ArrayList<>());
     assertThat(results.containsErrors()).isFalse();
   }
 
@@ -274,7 +265,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     Instant planned = getInstant("2020-05-03T07:00:00");
     // test bulk operation setPlanned...
     BulkOperationResults<String, TaskanaException> results =
-        taskanaEngine.getTaskService().setPlannedPropertyOfTasks(planned, Arrays.asList(taskId));
+        taskService.setPlannedPropertyOfTasks(planned, Arrays.asList(taskId));
     Task task = taskService.getTask(taskId);
     assertThat(results.containsErrors()).isFalse();
     DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize();
@@ -316,9 +307,10 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     task.setDue(planned.plus(Duration.ofDays(8)));
     Task finalTask = task;
     assertThatThrownBy(
-      () -> {
-        taskService.updateTask(finalTask);
-      }).isInstanceOf(InvalidArgumentException.class);
+        () -> {
+          taskService.updateTask(finalTask);
+        })
+        .isInstanceOf(InvalidArgumentException.class);
 
     // update due and planned as expected.
     task = taskService.getTask(taskId);
@@ -377,49 +369,14 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      userName = "admin",
-      groupNames = {"group_2"})
-  @Test
-  void testSetPlannedPropertyOnAllTasks() throws SQLException {
-    Instant planned = getInstant("2020-05-03T07:00:00");
-    List<TaskSummary> allTasks = taskService.createTaskQuery().list();
-    // Now update each task with updateTask() and new planned
-    final List<TaskSummary> individuallyUpdatedTasks = new ArrayList<>();
-    allTasks.forEach(t -> individuallyUpdatedTasks.add(getUpdatedTaskSummary(t, planned)));
-    // reset DB and do the same with bulk update
-    resetDb(false);
-    List<String> taskIds = allTasks.stream().map(TaskSummary::getId).collect(Collectors.toList());
-    BulkOperationResults<String, TaskanaException> bulkLog =
-        taskService.setPlannedPropertyOfTasks(planned, taskIds);
-    // check that there was no error and compare the result of the 2 operations
-    assertThat(bulkLog.containsErrors()).isFalse();
-    Map<String, Instant> bulkUpdatedTaskMap =
-        taskService.createTaskQuery().list().stream()
-            .collect(Collectors.toMap(TaskSummary::getId, TaskSummary::getDue));
-    individuallyUpdatedTasks.forEach(
-        t -> assertThat(t.getDue().equals(bulkUpdatedTaskMap.get(t.getId()))));
-  }
-
-  @WithAccessId(
       userName = "user_1_2",
       groupNames = {"group_1"})
   @Test
   void testUpdatePlannedAndDue() throws NotAuthorizedException, TaskNotFoundException {
-    TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000030");
     task.setPlanned(getInstant("2020-04-21T07:00:00"));
     task.setDue(getInstant("2020-04-21T10:00:00"));
     assertThatThrownBy(() -> taskService.updateTask(task))
         .isInstanceOf(InvalidArgumentException.class);
-  }
-
-  private TaskSummary getUpdatedTaskSummary(TaskSummary t, Instant planned) {
-    try {
-      Task task = taskService.getTask(t.getId());
-      task.setPlanned(planned);
-      return taskService.updateTask(task);
-    } catch (Exception e) {
-      return null;
-    }
   }
 }

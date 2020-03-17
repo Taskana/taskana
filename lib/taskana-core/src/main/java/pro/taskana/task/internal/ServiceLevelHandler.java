@@ -16,16 +16,11 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.BulkOperationResults;
-import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
-import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.common.internal.util.DaysToWorkingDaysConverter;
-import pro.taskana.common.internal.util.Pair;
-import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.exceptions.UpdateFailedException;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.AttachmentSummary;
@@ -68,42 +63,18 @@ class ServiceLevelHandler {
   // - For each task iterate through all referenced classifications and find minimum ServiceLevel
   // - collect the results into a map Duration -> List of tasks
   // - for each duration in this map update due date of all associated tasks
-  BulkLog setPlannedPropertyOfTasksImpl(Instant planned, List<String> argTaskIds) {
+  BulkLog setPlannedPropertyOfTasksImpl(Instant planned, List<MinimalTaskSummary> tasks) {
     BulkLog bulkLog = new BulkLog();
-    if (argTaskIds == null || argTaskIds.isEmpty()) {
-      return bulkLog;
-    }
-    Pair<List<MinimalTaskSummary>, BulkLog> resultsPair =
-        filterTasksForExistenceAndAuthorization(argTaskIds);
-    List<MinimalTaskSummary> existingTasksAuthorizedFor = resultsPair.getLeft();
-    bulkLog.addAllErrors(resultsPair.getRight());
-
-    List<AttachmentSummaryImpl> attachments = getAttachmentSummaries(existingTasksAuthorizedFor);
+    List<AttachmentSummaryImpl> attachments = getAttachmentSummaries(tasks);
     List<ClassificationSummary> allInvolvedClassifications =
-        findAllInvolvedClassifications(existingTasksAuthorizedFor, attachments);
+        findAllInvolvedClassifications(tasks, attachments);
     List<ClassificationWithServiceLevelResolved> allInvolvedClassificationsWithDuration =
         resolveDurationsInClassifications(allInvolvedClassifications);
     Map<Duration, List<String>> durationToTaskIdsMap =
-        getDurationToTaskIdsMap(
-            existingTasksAuthorizedFor, attachments, allInvolvedClassificationsWithDuration);
+        getDurationToTaskIdsMap(tasks, attachments, allInvolvedClassificationsWithDuration);
     BulkLog updateResult = updatePlannedPropertyOfAffectedTasks(planned, durationToTaskIdsMap);
     bulkLog.addAllErrors(updateResult);
 
-    return bulkLog;
-  }
-
-  BulkLog addExceptionsForNonExistingTasksToBulkLog(
-      List<String> requestTaskIds, List<MinimalTaskSummary> existingMinimalTaskSummaries) {
-    BulkLog bulkLog = new BulkLog();
-    List<String> nonExistingTaskIds = new ArrayList<>(requestTaskIds);
-    List<String> existingTaskIds =
-        existingMinimalTaskSummaries.stream()
-            .map(MinimalTaskSummary::getTaskId)
-            .collect(Collectors.toList());
-    nonExistingTaskIds.removeAll(existingTaskIds);
-    nonExistingTaskIds.forEach(
-        taskId ->
-            bulkLog.addError(taskId, new TaskNotFoundException(taskId, "Task was not found")));
     return bulkLog;
   }
 
@@ -131,8 +102,9 @@ class ServiceLevelHandler {
     }
     // classification update
     if (forRefreshOnClassificationUpdate) {
-      newTaskImpl.setDue(converter.addWorkingDaysToInstant(newTaskImpl.getPlanned(),
-          durationPrioHolder.getDuration()));
+      newTaskImpl.setDue(
+          converter.addWorkingDaysToInstant(
+              newTaskImpl.getPlanned(), durationPrioHolder.getDuration()));
       return newTaskImpl;
     }
     // creation of new task
@@ -160,48 +132,6 @@ class ServiceLevelHandler {
     return getFinalPrioDurationOfTask(resolvedClassifications, onlyPriority);
   }
 
-  Pair<List<MinimalTaskSummary>, BulkLog> filterTasksForExistenceAndAuthorization(
-      List<String> argTaskIds) {
-    BulkLog bulkLog = new BulkLog();
-    // remove duplicates
-    List<String> taskIds = argTaskIds.stream().distinct().collect(Collectors.toList());
-    // get existing tasks
-    List<MinimalTaskSummary> minimalTaskSummaries = taskMapper.findExistingTasks(taskIds, null);
-    bulkLog.addAllErrors(addExceptionsForNonExistingTasksToBulkLog(taskIds, minimalTaskSummaries));
-    Pair<List<MinimalTaskSummary>, BulkLog> filteredPair =
-        filterTasksAuthorizedForAndLogErrorsForNotAuthorized(minimalTaskSummaries);
-    bulkLog.addAllErrors(filteredPair.getRight());
-    return new Pair<>(filteredPair.getLeft(), bulkLog);
-  }
-
-  Pair<List<MinimalTaskSummary>, BulkLog> filterTasksAuthorizedForAndLogErrorsForNotAuthorized(
-      List<MinimalTaskSummary> existingTasks) {
-    BulkLog bulkLog = new BulkLog();
-    // check authorization only for non-admin users
-    if (taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN)) {
-      return new Pair<>(existingTasks, bulkLog);
-    } else {
-      List<String> taskIds =
-          existingTasks.stream().map(MinimalTaskSummary::getTaskId).collect(Collectors.toList());
-      List<String> accessIds = CurrentUserContext.getAccessIds();
-      List<String> taskIdsNotAuthorizedFor =
-          taskMapper.filterTaskIdsNotAuthorizedFor(taskIds, accessIds);
-      String userId = CurrentUserContext.getUserid();
-      for (String taskId : taskIdsNotAuthorizedFor) {
-        bulkLog.addError(
-            taskId,
-            new NotAuthorizedException(
-                String.format("User %s is not authorized for task %s ", userId, taskId), userId));
-      }
-      taskIds.removeAll(taskIdsNotAuthorizedFor);
-      List<MinimalTaskSummary> tasksAuthorizedFor =
-          existingTasks.stream()
-              .filter(t -> taskIds.contains(t.getTaskId()))
-              .collect(Collectors.toList());
-      return new Pair<>(tasksAuthorizedFor, bulkLog);
-    }
-  }
-
   private TaskImpl updatePlannedDueOnTaskUpdate(
       TaskImpl newTaskImpl, TaskImpl oldTaskImpl, DurationPrioHolder durationPrioHolder)
       throws InvalidArgumentException {
@@ -211,21 +141,24 @@ class ServiceLevelHandler {
     // case 1: no change of planned / due, but potentially change of an attachment or classification
     if (oldTaskImpl.getDue().equals(newTaskImpl.getDue())
         && oldTaskImpl.getPlanned().equals(newTaskImpl.getPlanned())) {
-      newTaskImpl.setDue(converter.addWorkingDaysToInstant(newTaskImpl.getPlanned(),
-          durationPrioHolder.getDuration()));
+      newTaskImpl.setDue(
+          converter.addWorkingDaysToInstant(
+              newTaskImpl.getPlanned(), durationPrioHolder.getDuration()));
     } else if (oldTaskImpl.getDue().equals(newTaskImpl.getDue())
         && newTaskImpl.getPlanned() != null) {
       // case 2: planned was changed
-      newTaskImpl.setDue(converter.addWorkingDaysToInstant(newTaskImpl.getPlanned(),
-          durationPrioHolder.getDuration()));
+      newTaskImpl.setDue(
+          converter.addWorkingDaysToInstant(
+              newTaskImpl.getPlanned(), durationPrioHolder.getDuration()));
     } else { // case 3: due was changed
       if (newTaskImpl.getDue() == null) {
-        newTaskImpl.setDue(converter.addWorkingDaysToInstant(newTaskImpl.getPlanned(),
-            durationPrioHolder.getDuration()));
+        newTaskImpl.setDue(
+            converter.addWorkingDaysToInstant(
+                newTaskImpl.getPlanned(), durationPrioHolder.getDuration()));
       } else {
         Instant planned =
-            (converter.subtractWorkingDaysFromInstant(newTaskImpl.getDue(),
-                durationPrioHolder.getDuration()));
+            (converter.subtractWorkingDaysFromInstant(
+                newTaskImpl.getDue(), durationPrioHolder.getDuration()));
         if (newTaskImpl.getPlanned() != null && !planned.equals(newTaskImpl.getPlanned())) {
           throw new InvalidArgumentException(
               "Cannot update a task with given planned "
@@ -240,8 +173,9 @@ class ServiceLevelHandler {
   private TaskImpl updatePlannedDueOnCreationOfNewTask(
       TaskImpl newTaskImpl, DurationPrioHolder durationPrioHolder) throws InvalidArgumentException {
     if (newTaskImpl.getDue() != null) { // due is specified: calculate back and check correctnes
-      Instant planned = (converter.subtractWorkingDaysFromInstant(newTaskImpl.getDue(),
-          durationPrioHolder.getDuration()));
+      Instant planned =
+          (converter.subtractWorkingDaysFromInstant(
+              newTaskImpl.getDue(), durationPrioHolder.getDuration()));
       if (newTaskImpl.getPlanned() != null && !planned.equals(newTaskImpl.getPlanned())) {
         throw new InvalidArgumentException(
             "Cannot create a task with given planned "
@@ -249,8 +183,9 @@ class ServiceLevelHandler {
       }
       newTaskImpl.setPlanned(planned);
     } else { // task.due is null: calculate forward from planned
-      newTaskImpl.setDue(converter.addWorkingDaysToInstant(newTaskImpl.getPlanned(),
-          durationPrioHolder.getDuration()));
+      newTaskImpl.setDue(
+          converter.addWorkingDaysToInstant(
+              newTaskImpl.getPlanned(), durationPrioHolder.getDuration()));
     }
     return newTaskImpl;
   }
