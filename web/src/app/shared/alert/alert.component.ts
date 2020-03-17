@@ -13,6 +13,7 @@ import { expandTop } from '../animations/expand.animation';
 
 export class AlertComponent implements OnInit {
   alert: AlertModel;
+  private timeoutId: any; //NodeJS.Timer cannot be imported..
   constructor(private alertService: AlertService) { }
 
   ngOnInit() {
@@ -25,7 +26,8 @@ export class AlertComponent implements OnInit {
   }
 
   setTimeOutForClosing(time: number) {
-    setTimeout(() => {
+    clearTimeout(this.timeoutId);
+    this.timeoutId = setTimeout(() => {
       delete this.alert;
     }, time);
   }
