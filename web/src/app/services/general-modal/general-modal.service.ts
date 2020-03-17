@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Subject, Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { MessageModal } from 'app/models/message-modal';
-
-import { ERROR_TYPES, errors as ERRORS } from './errors';
 
 @Injectable()
 export class GeneralModalService {

@@ -1,0 +1,28 @@
+<div *ngIf="error">
+  <div class="modal-backdrop show"></div>
+  <div aria-labelledby="errorModalLabel"
+       class="modal show"
+       data-backdrop="static"
+       data-keyboard="false" role="dialog"
+       tabindex="-1">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content word-break">
+        <div class="modal-header">
+          <h4 class="modal-title" id="errorModalLabel">{{error.title}}</h4>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-danger" role="alert">
+            <span class="material-icons md-20" data-toggle="tooltip">error</span>
+            <span class="sr-only">Error:</span>
+            {{error.message ? error.message : error.errObj.error.message}}
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button (click)="removeMessage()" class="btn btn-default btn-danger" data-dismiss="modal"
+                  type="button">Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

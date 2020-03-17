@@ -11,7 +11,8 @@ import { DomainService } from 'app/services/domain/domain.service';
 import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
 import { GeneralModalService } from '../../../services/general-modal/general-modal.service';
 import { MessageModal } from '../../../models/message-modal';
-import { ERROR_TYPES } from '../../../services/general-modal/errors';
+import { ERROR_TYPES } from '../../../models/errors';
+import { ErrorsService } from "../../../services/errors/errors.service";
 
 @Component({
   selector: 'taskana-workbasket-details',
@@ -39,6 +40,7 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
     private router: Router,
     private masterAndDetailService: MasterAndDetailService,
     private domainService: DomainService,
+    private errorsService: ErrorsService,
     private generalModalService: GeneralModalService,
     private importExportService: ImportExportService) { }
 
@@ -114,11 +116,8 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
         this.workbasket = workbasket;
         this.requestInProgress = false;
         this.checkDomainAndRedirect();
-      }, err => {
-        // new Key ERROR_TYPES.FETCH_ERR_4
-        this.generalModalService.triggerMessage(
-          new MessageModal('An error occurred while fetching the workbasket', err)
-        );
+      }, error => {
+        this.errorsService.updateError(ERROR_TYPES.FETCH_ERR_4, error);
       });
     }
   }
