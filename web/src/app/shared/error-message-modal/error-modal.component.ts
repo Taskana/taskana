@@ -1,7 +1,7 @@
-import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
-import {ErrorModel} from "../../models/error-model";
-import {Subscription} from "rxjs";
-import {ErrorsService} from "../../services/errors/errors.service";
+import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { ErrorModel } from '../../models/error-model';
+import { ErrorsService } from '../../services/errors/errors.service';
 
 @Component({
   selector: 'error-modal',

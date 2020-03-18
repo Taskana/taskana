@@ -4,22 +4,22 @@ import { Observable } from 'rxjs';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { environment } from 'environments/environment';
 import { tap } from 'rxjs/operators';
-import { ErrorsService } from "../../../services/errors/errors.service";
-import { ERROR_TYPES } from "../../../models/errors";
+import { ErrorsService } from '../../../services/errors/errors.service';
+import { ERROR_TYPES } from '../../../models/errors';
 
 @Injectable()
 export class HttpClientInterceptor implements HttpInterceptor {
   constructor(
-      private requestInProgressService: RequestInProgressService,
-      private errorsService: ErrorsService
+    private requestInProgressService: RequestInProgressService,
+    private errorsService: ErrorsService
   ) {
 
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    let req = request.clone({headers: request.headers.set('Content-Type', 'application/hal+json')});
+    let req = request.clone({ headers: request.headers.set('Content-Type', 'application/hal+json') });
     if (!environment.production) {
-      req = req.clone({headers: req.headers.set('Authorization', 'Basic YWRtaW46YWRtaW4=')});
+      req = req.clone({ headers: req.headers.set('Authorization', 'Basic YWRtaW46YWRtaW4=') });
     }
     return next.handle(req).pipe(tap(() => {
     }, error => {

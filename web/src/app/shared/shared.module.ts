@@ -15,7 +15,6 @@ import { ClassificationsService } from 'app/shared/services/classifications/clas
  * Components
  */
 import { GeneralMessageModalComponent } from 'app/shared/general-message-modal/general-message-modal.component';
-import { ErrorModalComponent } from "./error-message-modal/error-modal.component";
 import { SpinnerComponent } from 'app/shared/spinner/spinner.component';
 import { AlertComponent } from 'app/shared/alert/alert.component';
 import { MasterAndDetailComponent } from 'app/shared/master-and-detail/master-and-detail.component';
@@ -25,6 +24,7 @@ import { RemoveConfirmationComponent } from 'app/shared/remove-confirmation/remo
 import { FilterComponent } from 'app/shared/filter/filter.component';
 import { IconTypeComponent } from 'app/administration/components/type-icon/icon-type.component';
 import { FieldErrorDisplayComponent } from 'app/shared/field-error-display/field-error-display.component';
+import { ErrorModalComponent } from './error-message-modal/error-modal.component';
 import { SortComponent } from './sort/sort.component';
 import { PaginationComponent } from './pagination/pagination.component';
 import { NumberPickerComponent } from './number-picker/number-picker.component';

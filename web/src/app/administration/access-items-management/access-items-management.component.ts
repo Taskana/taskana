@@ -16,8 +16,8 @@ import { AlertService } from 'app/services/alert/alert.service';
 import { RequestInProgressService } from '../../services/requestInProgress/request-in-progress.service';
 import { AccessIdsService } from '../../shared/services/access-ids/access-ids.service';
 import { AccessIdDefinition } from '../../models/access-id';
-import { ErrorsService } from "../../services/errors/errors.service";
-import { ERROR_TYPES } from "../../models/errors";
+import { ErrorsService } from '../../services/errors/errors.service';
+import { ERROR_TYPES } from '../../models/errors';
 
 @Component({
   selector: 'taskana-access-items-management',
@@ -55,14 +55,14 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
   custom12Field = this.customFieldsService.getCustomField('Custom 12', 'workbaskets.access-items.custom12');
 
   constructor(private formBuilder: FormBuilder,
-              private customFieldsService: CustomFieldsService,
-              private accessIdsService: AccessIdsService,
-              private formsValidatorService: FormsValidatorService,
-              private requestInProgressService: RequestInProgressService,
-              private removeConfirmationService: RemoveConfirmationService,
-              private alertService: AlertService,
-              private generalModalService: GeneralModalService,
-              private errorsService: ErrorsService) {
+    private customFieldsService: CustomFieldsService,
+    private accessIdsService: AccessIdsService,
+    private formsValidatorService: FormsValidatorService,
+    private requestInProgressService: RequestInProgressService,
+    private removeConfirmationService: RemoveConfirmationService,
+    private alertService: AlertService,
+    private generalModalService: GeneralModalService,
+    private errorsService: ErrorsService) {
   }
 
   get accessItemsGroups(): FormArray {
@@ -110,16 +110,16 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
 
       AccessItemsManagementComponent.unSubscribe(this.accessItemInformationsubscription);
       this.accessItemInformationsubscription = this.accessIdsService.getAccessItemsInformation(selected.accessId, true)
-      .subscribe((accessIdsWithGroups: Array<AccessIdDefinition>) => {
-            this.accessIdsWithGroups = accessIdsWithGroups;
-            this.belongingGroups = accessIdsWithGroups.filter(item => item.accessId.includes(this.groupsKey));
-            this.searchForAccessItemsWorkbaskets();
-          },
-          // new Key: ERROR_TYPES.FETCH_ERR
-          error => {
-            this.requestInProgressService.setRequestInProgress(false);
-            this.errorsService.updateError(ERROR_TYPES.FETCH_ERR, error);
-          });
+        .subscribe((accessIdsWithGroups: Array<AccessIdDefinition>) => {
+          this.accessIdsWithGroups = accessIdsWithGroups;
+          this.belongingGroups = accessIdsWithGroups.filter(item => item.accessId.includes(this.groupsKey));
+          this.searchForAccessItemsWorkbaskets();
+        },
+        // new Key: ERROR_TYPES.FETCH_ERR
+        error => {
+          this.requestInProgressService.setRequestInProgress(false);
+          this.errorsService.updateError(ERROR_TYPES.FETCH_ERR, error);
+        });
     }
   }
 
@@ -136,28 +136,28 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
     this.requestInProgressService.setRequestInProgress(true);
     AccessItemsManagementComponent.unSubscribe(this.accessItemPermissionsSubscription);
     this.accessItemPermissionsSubscription = this.accessIdsService.getAccessItemsPermissions(
-        this.accessIdsWithGroups,
-        this.AccessItemsForm ? this.AccessItemsForm.value.accessIdFilter : undefined,
-        this.AccessItemsForm ? this.AccessItemsForm.value.workbasketKeyFilter : undefined,
-        this.sortModel,
-        true
+      this.accessIdsWithGroups,
+      this.AccessItemsForm ? this.AccessItemsForm.value.accessIdFilter : undefined,
+      this.AccessItemsForm ? this.AccessItemsForm.value.workbasketKeyFilter : undefined,
+      this.sortModel,
+      true
     )
-    .subscribe((accessItemsResource: AccessItemsWorkbasketResource) => {
-          this.setAccessItemsGroups(accessItemsResource ? accessItemsResource.accessItems : []);
-          this.requestInProgressService.setRequestInProgress(false);
-        },
-        error => {
-          this.requestInProgressService.setRequestInProgress(false);
-          this.errorsService.updateError(ERROR_TYPES.FETCH_ERR_2, error);
-        });
+      .subscribe((accessItemsResource: AccessItemsWorkbasketResource) => {
+        this.setAccessItemsGroups(accessItemsResource ? accessItemsResource.accessItems : []);
+        this.requestInProgressService.setRequestInProgress(false);
+      },
+      error => {
+        this.requestInProgressService.setRequestInProgress(false);
+        this.errorsService.updateError(ERROR_TYPES.FETCH_ERR_2, error);
+      });
   }
 
   revokeAccess() {
     this.removeConfirmationService.setRemoveConfirmation(
-        this.onRemoveConfirmed.bind(this),
-        `You are going to delete all access related: ${
-            this.accessIdSelected
-        }. Can you confirm this action?`
+      this.onRemoveConfirmed.bind(this),
+      `You are going to delete all access related: ${
+        this.accessIdSelected
+      }. Can you confirm this action?`
     );
   }
 
@@ -169,16 +169,16 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
   private onRemoveConfirmed() {
     this.requestInProgressService.setRequestInProgress(true);
     this.accessIdsService.removeAccessItemsPermissions(this.accessIdSelected)
-    .subscribe(
+      .subscribe(
         // new Key: ALERT_TYPES.SUCCESS_ALERT
         response => {
           this.requestInProgressService.setRequestInProgress(false);
           this.alertService.triggerAlert(
-              new AlertModel(
-                  AlertType.SUCCESS,
-                  `${this.accessIdSelected
-                  } was removed successfully`
-              )
+            new AlertModel(
+              AlertType.SUCCESS,
+              `${this.accessIdSelected
+              } was removed successfully`
+            )
           );
           this.searchForAccessItemsWorkbaskets();
         },
@@ -186,6 +186,6 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
           this.requestInProgressService.setRequestInProgress(false);
           this.errorsService.updateError(ERROR_TYPES.DELETE_ERR, error);
         }
-    );
+      );
   }
 }

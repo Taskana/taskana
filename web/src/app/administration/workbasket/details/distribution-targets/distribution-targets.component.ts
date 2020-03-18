@@ -19,7 +19,7 @@ import { Page } from 'app/models/page';
 import { OrientationService } from 'app/services/orientation/orientation.service';
 import { Orientation } from 'app/models/orientation';
 import { ERROR_TYPES } from '../../../../models/errors';
-import { ErrorsService } from "../../../../services/errors/errors.service";
+import { ErrorsService } from '../../../../services/errors/errors.service';
 
 export enum Side {
   LEFT,

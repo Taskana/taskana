@@ -16,7 +16,7 @@ import { Workbasket } from 'app/models/workbasket';
 import { WorkplaceService } from 'app/workplace/services/workplace.service';
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
 import { ERROR_TYPES } from '../../models/errors';
-import { ErrorsService } from "../../services/errors/errors.service";
+import { ErrorsService } from '../../services/errors/errors.service';
 
 @Component({
   selector: 'taskana-task-details',
@@ -38,15 +38,15 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   private deleteTaskSubscription: Subscription;
 
   constructor(private route: ActivatedRoute,
-              private taskService: TaskService,
-              private workplaceService: WorkplaceService,
-              private router: Router,
-              private removeConfirmationService: RemoveConfirmationService,
-              private requestInProgressService: RequestInProgressService,
-              private alertService: AlertService,
-              private generalModalService: GeneralModalService,
-              private errorsService: ErrorsService,
-              private masterAndDetailService: MasterAndDetailService) {
+    private taskService: TaskService,
+    private workplaceService: WorkplaceService,
+    private router: Router,
+    private removeConfirmationService: RemoveConfirmationService,
+    private requestInProgressService: RequestInProgressService,
+    private alertService: AlertService,
+    private generalModalService: GeneralModalService,
+    private errorsService: ErrorsService,
+    private masterAndDetailService: MasterAndDetailService) {
   }
 
   ngOnInit() {
@@ -68,10 +68,10 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   }
 
   resetTask(): void {
-    this.task = {...this.taskClone};
+    this.task = { ...this.taskClone };
     this.task.customAttributes = this.taskClone.customAttributes.slice(0);
     this.task.callbackInfo = this.taskClone.callbackInfo.slice(0);
-    this.task.primaryObjRef = {...this.taskClone.primaryObjRef};
+    this.task.primaryObjRef = { ...this.taskClone.primaryObjRef };
     this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'Reset edited fields'));
   }
 
@@ -97,7 +97,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   }
 
   openTask() {
-    this.router.navigate([{outlets: {detail: `task/${this.currentId}`}}], {relativeTo: this.route.parent});
+    this.router.navigate([{ outlets: { detail: `task/${this.currentId}` } }], { relativeTo: this.route.parent });
   }
 
   workOnTaskDisabled(): boolean {
@@ -106,7 +106,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
 
   deleteTask(): void {
     this.removeConfirmationService.setRemoveConfirmation(this.deleteTaskConfirmation.bind(this),
-        `You are going to delete Task: ${this.currentId}. Can you confirm this action?`);
+      `You are going to delete Task: ${this.currentId}. Can you confirm this action?`);
   }
 
   deleteTaskConfirmation(): void {
@@ -126,7 +126,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   backClicked(): void {
     delete this.task;
     this.taskService.selectTask(this.task);
-    this.router.navigate(['./'], {relativeTo: this.route.parent});
+    this.router.navigate(['./'], { relativeTo: this.route.parent });
   }
 
   ngOnDestroy(): void {
@@ -174,7 +174,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
       this.task = task;
       this.taskService.selectTask(this.task);
       this.taskService.publishUpdatedTask(task);
-      this.router.navigate([`../${task.taskId}`], {relativeTo: this.route});
+      this.router.navigate([`../${task.taskId}`], { relativeTo: this.route });
     }, err => {
       this.requestInProgressService.setRequestInProgress(false);
       // new Key ALERT_TYPES.DANGER_ALERT_2
@@ -189,9 +189,9 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   }
 
   private cloneTask() {
-    this.taskClone = {...this.task};
+    this.taskClone = { ...this.task };
     this.taskClone.customAttributes = this.task.customAttributes.slice(0);
     this.taskClone.callbackInfo = this.task.callbackInfo.slice(0);
-    this.taskClone.primaryObjRef = {...this.task.primaryObjRef};
+    this.taskClone.primaryObjRef = { ...this.task.primaryObjRef };
   }
 }

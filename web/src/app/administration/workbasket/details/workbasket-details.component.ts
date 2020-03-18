@@ -12,7 +12,7 @@ import { ImportExportService } from 'app/administration/services/import-export/i
 import { GeneralModalService } from '../../../services/general-modal/general-modal.service';
 import { MessageModal } from '../../../models/message-modal';
 import { ERROR_TYPES } from '../../../models/errors';
-import { ErrorsService } from "../../../services/errors/errors.service";
+import { ErrorsService } from '../../../services/errors/errors.service';
 
 @Component({
   selector: 'taskana-workbasket-details',
