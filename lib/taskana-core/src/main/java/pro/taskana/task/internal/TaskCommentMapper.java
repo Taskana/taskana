@@ -31,6 +31,7 @@ public interface TaskCommentMapper {
       "<script> SELECT ID, TASK_ID, TEXT_FIELD, CREATOR, CREATED, MODIFIED"
           + " FROM TASK_COMMENT "
           + "WHERE TASK_ID = #{taskId} "
+          + " ORDER BY CREATED ASC "
           + "<if test=\"_databaseId == 'db2'\">with UR </if> "
           + "</script>")
   @Results(
