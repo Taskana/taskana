@@ -41,7 +41,8 @@ public class UpdateTaskCommentAccTest extends AbstractAccTest {
     assertThat(taskComments.get(0).getTextField()).isEqualTo("some text in textfield");
 
     TaskComment taskComment =
-        taskService.getTaskComment("TCI:000000000000000000000000000000000003");
+        taskService.getTaskComment(
+            "TKI:000000000000000000000000000000000025", "TCI:000000000000000000000000000000000003");
     taskComment.setTextField("updated textfield");
 
     taskService.updateTaskComment(taskComment);
@@ -67,7 +68,8 @@ public class UpdateTaskCommentAccTest extends AbstractAccTest {
     assertThat(taskComments.get(1).getTextField()).isEqualTo("some other text in textfield");
 
     TaskComment taskComment =
-        taskService.getTaskComment("TCI:000000000000000000000000000000000001");
+        taskService.getTaskComment(
+            "TKI:000000000000000000000000000000000000", "TCI:000000000000000000000000000000000001");
     taskComment.setTextField("updated textfield");
 
     assertThatThrownBy(() -> taskService.updateTaskComment(taskComment))
@@ -96,11 +98,13 @@ public class UpdateTaskCommentAccTest extends AbstractAccTest {
     assertThat(taskComments.get(2).getTextField()).isEqualTo("some other text in textfield");
 
     TaskComment taskCommentToUpdate =
-        taskService.getTaskComment("TCI:000000000000000000000000000000000002");
+        taskService.getTaskComment(
+            "TKI:000000000000000000000000000000000000", "TCI:000000000000000000000000000000000002");
     taskCommentToUpdate.setTextField("updated textfield");
 
     TaskComment concurrentTaskCommentToUpdate =
-        taskService.getTaskComment("TCI:000000000000000000000000000000000002");
+        taskService.getTaskComment(
+            "TKI:000000000000000000000000000000000000", "TCI:000000000000000000000000000000000002");
     concurrentTaskCommentToUpdate.setTextField("concurrently updated textfield");
 
     taskService.updateTaskComment(taskCommentToUpdate);

@@ -41,7 +41,9 @@ public class TaskCommentResourceAssembler
     TaskCommentResource taskCommentResource = new TaskCommentResource(taskComment);
     try {
       taskCommentResource.add(
-          linkTo(methodOn(TaskCommentController.class).getTaskComment(taskComment.getId()))
+          linkTo(
+                  methodOn(TaskCommentController.class)
+                      .getTaskComment(taskComment.getTaskId(), taskComment.getId()))
               .withSelfRel());
     } catch (TaskCommentNotFoundException
         | TaskNotFoundException
@@ -54,8 +56,7 @@ public class TaskCommentResourceAssembler
   }
 
   @PageLinks(Mapping.URL_TASK_COMMENTS)
-  public TaskCommentListResource toListResource(
-      List<TaskComment> taskComments) {
+  public TaskCommentListResource toListResource(List<TaskComment> taskComments) {
     return new TaskCommentListResource(toResources(taskComments));
   }
 

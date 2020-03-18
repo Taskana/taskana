@@ -614,17 +614,17 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
-  public void deleteTaskComment(String taskCommentId)
+  public void deleteTaskComment(String taskId, String taskCommentId)
       throws NotAuthorizedException, TaskCommentNotFoundException, TaskNotFoundException,
           InvalidArgumentException {
-    taskCommentService.deleteTaskComment(taskCommentId);
+    taskCommentService.deleteTaskComment(taskId, taskCommentId);
   }
 
   @Override
-  public TaskComment getTaskComment(String taskCommentid)
+  public TaskComment getTaskComment(String taskId, String taskCommentid)
       throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException,
           InvalidArgumentException {
-    return taskCommentService.getTaskComment(taskCommentid);
+    return taskCommentService.getTaskComment(taskId, taskCommentid);
   }
 
   @Override
@@ -698,9 +698,7 @@ public class TaskServiceImpl implements TaskService {
         return bulkLog;
       } else {
         final int numberOfAffectedTasks = taskMapper.setOwnerOfTasks(owner, taskIds, Instant.now());
-        if (numberOfAffectedTasks == taskIds.size()) { // all tasks were updated
-          return bulkLog;
-        } else {
+        if (numberOfAffectedTasks != taskIds.size()) { // all tasks were updated
           // check the outcome
           existingMinimalTaskSummaries = taskMapper.findExistingTasks(taskIds, null);
           bulkLog.addAllErrors(
@@ -713,8 +711,8 @@ public class TaskServiceImpl implements TaskService {
                 numberOfAffectedTasks,
                 bulkLog.getFailedIds().size());
           }
-          return bulkLog;
         }
+        return bulkLog;
       }
     } finally {
       LOGGER.debug("exit from setOwnerOfTasks()");
