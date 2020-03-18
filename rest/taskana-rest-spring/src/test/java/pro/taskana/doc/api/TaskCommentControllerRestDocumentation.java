@@ -24,7 +24,7 @@ import pro.taskana.rest.Mapping;
 
 public class TaskCommentControllerRestDocumentation extends BaseRestDocumentation {
 
-  private HashMap<String, String> taskCommentFieldDescriptionsMap = new HashMap<String, String>();
+  private HashMap<String, String> taskCommentFieldDescriptionsMap = new HashMap<>();
 
   private FieldDescriptor[] allTaskCommentsFieldDescriptors;
   private FieldDescriptor[] taskCommentFieldDescriptors;
@@ -58,8 +58,7 @@ public class TaskCommentControllerRestDocumentation extends BaseRestDocumentatio
               .type("String"),
           fieldWithPath("_links").ignored(),
           fieldWithPath("_links.self").ignored(),
-          fieldWithPath("_links.self.href").ignored(),
-          fieldWithPath("_links.self.templated").ignored()
+          fieldWithPath("_links.self.href").ignored()
         };
 
     createTaskCommentFieldDescriptors =
@@ -110,7 +109,7 @@ public class TaskCommentControllerRestDocumentation extends BaseRestDocumentatio
             RestDocumentationRequestBuilders.get(
                     restHelper.toUrl(
                         Mapping.URL_TASK_COMMENT,
-                        "TKI:100000000000000000000000000000000000",
+                        "TKI:000000000000000000000000000000000000",
                         "TCI:000000000000000000000000000000000000"))
                 .accept("application/hal+json")
                 .header("Authorization", "Basic YWRtaW46YWRtaW4="))

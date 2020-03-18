@@ -43,17 +43,17 @@ public class TaskCommentController {
     this.taskCommentResourceAssembler = taskCommentResourceAssembler;
   }
 
-
   @GetMapping(path = Mapping.URL_TASK_COMMENT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<TaskCommentResource> getTaskComment(@PathVariable String taskCommentId)
+  public ResponseEntity<TaskCommentResource> getTaskComment(
+      @PathVariable String taskId, @PathVariable String taskCommentId)
       throws NotAuthorizedException, TaskNotFoundException, TaskCommentNotFoundException,
           InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Entry to getTaskComment(taskCommentId= {})", taskCommentId);
+      LOGGER.debug("Entry to getTaskComment(taskId= {}, taskCommentId= {})", taskId, taskCommentId);
     }
 
-    TaskComment taskComment = taskService.getTaskComment(taskCommentId);
+    TaskComment taskComment = taskService.getTaskComment(taskId, taskCommentId);
 
     TaskCommentResource taskCommentResource = taskCommentResourceAssembler.toResource(taskComment);
 
@@ -90,14 +90,16 @@ public class TaskCommentController {
 
   @DeleteMapping(path = Mapping.URL_TASK_COMMENT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<TaskCommentResource> deleteTaskComment(@PathVariable String taskCommentId)
+  public ResponseEntity<TaskCommentResource> deleteTaskComment(
+      @PathVariable String taskId, @PathVariable String taskCommentId)
       throws NotAuthorizedException, TaskNotFoundException, TaskCommentNotFoundException,
           InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Entry to deleteTaskComment(taskCommentId= {})", taskCommentId);
+      LOGGER.debug(
+          "Entry to deleteTaskComment(taskId= {}, taskCommentId= {})", taskId, taskCommentId);
     }
 
-    taskService.deleteTaskComment(taskCommentId);
+    taskService.deleteTaskComment(taskId, taskCommentId);
 
     ResponseEntity<TaskCommentResource> result = ResponseEntity.noContent().build();
 

@@ -39,7 +39,8 @@ public class DeleteTaskCommentAccTest extends AbstractAccTest {
         taskService.getTaskComments("TKI:000000000000000000000000000000000001");
     assertThat(taskComments).hasSize(2);
 
-    taskService.deleteTaskComment("TCI:000000000000000000000000000000000004");
+    taskService.deleteTaskComment(
+        "TKI:000000000000000000000000000000000001", "TCI:000000000000000000000000000000000004");
 
     // make sure the task comment was deleted
     List<TaskComment> taskCommentsAfterDeletion =
@@ -60,11 +61,12 @@ public class DeleteTaskCommentAccTest extends AbstractAccTest {
         taskService.getTaskComments("TKI:000000000000000000000000000000000002");
     assertThat(taskComments).hasSize(2);
 
-    ThrowingCallable httpCall =
-        () -> {
-          taskService.deleteTaskComment("TCI:000000000000000000000000000000000005");
-        };
-    assertThatThrownBy(httpCall).isInstanceOf(NotAuthorizedException.class);
+    ThrowingCallable lambda =
+        () ->
+            taskService.deleteTaskComment(
+                "TKI:000000000000000000000000000000000001",
+                "TCI:000000000000000000000000000000000005");
+    assertThatThrownBy(lambda).isInstanceOf(NotAuthorizedException.class);
 
     // make sure the task comment was not deleted
     List<TaskComment> taskCommentsAfterDeletion =
@@ -85,10 +87,16 @@ public class DeleteTaskCommentAccTest extends AbstractAccTest {
         taskService.getTaskComments("TKI:000000000000000000000000000000000002");
     assertThat(taskComments).hasSize(2);
 
-    assertThatThrownBy(() -> taskService.deleteTaskComment(""))
+    assertThatThrownBy(() -> taskService.deleteTaskComment("", ""))
         .isInstanceOf(InvalidArgumentException.class);
 
-    assertThatThrownBy(() -> taskService.deleteTaskComment(null))
+    assertThatThrownBy(() -> taskService.deleteTaskComment("", null))
+        .isInstanceOf(InvalidArgumentException.class);
+
+    assertThatThrownBy(() -> taskService.deleteTaskComment(null, ""))
+        .isInstanceOf(InvalidArgumentException.class);
+
+    assertThatThrownBy(() -> taskService.deleteTaskComment(null, null))
         .isInstanceOf(InvalidArgumentException.class);
 
     // make sure that no task comment was deleted
@@ -110,8 +118,9 @@ public class DeleteTaskCommentAccTest extends AbstractAccTest {
         taskService.getTaskComments("TKI:000000000000000000000000000000000002");
     assertThat(taskComments).hasSize(2);
 
-    assertThatThrownBy(() -> taskService.deleteTaskComment("non existing task comment id"))
-        .isInstanceOf(TaskCommentNotFoundException.class);
+    ThrowingCallable lambda =
+        () -> taskService.deleteTaskComment("invalidTaskId", "non existing task comment id");
+    assertThatThrownBy(lambda).isInstanceOf(TaskCommentNotFoundException.class);
 
     // make sure the task comment was not deleted
     List<TaskComment> taskCommentsAfterDeletion =
