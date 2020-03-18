@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import javax.sql.DataSource;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -120,13 +121,15 @@ public class TaskHistoryEventControllerIntTest {
 
   @Test
   public void testThrowsExceptionIfInvalidFilterIsUsed() {
-    assertThatThrownBy(
-        () ->
-            template.exchange(
-                server + port + "/api/v1/task-history-event?invalid=BPI:01",
-                HttpMethod.GET,
-                request,
-                ParameterizedTypeReference.forType(TaskHistoryEventListResource.class)))
+    ThrowingCallable httpCall =
+        () -> {
+          template.exchange(
+              server + port + "/api/v1/task-history-event?invalid=BPI:01",
+              HttpMethod.GET,
+              request,
+              ParameterizedTypeReference.forType(TaskHistoryEventListResource.class));
+        };
+    assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
         .hasMessageContaining("[invalid]")
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
@@ -137,13 +140,15 @@ public class TaskHistoryEventControllerIntTest {
   public void testGetHistoryEventOfDate() {
     String currentTime = LocalDateTime.now().toString();
     final String finalCurrentTime = currentTime;
-    assertThatThrownBy(
-        () ->
-            template.exchange(
-                server + port + "/api/v1/task-history-event?created=" + finalCurrentTime,
-                HttpMethod.GET,
-                request,
-                ParameterizedTypeReference.forType(TaskHistoryEventListResource.class)))
+    ThrowingCallable httpCall =
+        () -> {
+          template.exchange(
+              server + port + "/api/v1/task-history-event?created=" + finalCurrentTime,
+              HttpMethod.GET,
+              request,
+              ParameterizedTypeReference.forType(TaskHistoryEventListResource.class));
+        };
+    assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
         .hasMessageContaining(currentTime)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())

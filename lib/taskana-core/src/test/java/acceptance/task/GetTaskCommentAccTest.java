@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.util.List;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -58,9 +59,11 @@ public class GetTaskCommentAccTest extends AbstractAccTest {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
-    assertThatThrownBy(
-        () -> taskService.getTaskComments("TKI:000000000000000000000000000000000004"))
-        .isInstanceOf(NotAuthorizedException.class);
+    ThrowingCallable httpCall =
+        () -> {
+          taskService.getTaskComments("TKI:000000000000000000000000000000000004");
+        };
+    assertThatThrownBy(httpCall).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(

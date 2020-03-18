@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.util.List;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -59,9 +60,11 @@ public class DeleteTaskCommentAccTest extends AbstractAccTest {
         taskService.getTaskComments("TKI:000000000000000000000000000000000002");
     assertThat(taskComments).hasSize(2);
 
-    assertThatThrownBy(
-        () -> taskService.deleteTaskComment("TCI:000000000000000000000000000000000005"))
-        .isInstanceOf(NotAuthorizedException.class);
+    ThrowingCallable httpCall =
+        () -> {
+          taskService.deleteTaskComment("TCI:000000000000000000000000000000000005");
+        };
+    assertThatThrownBy(httpCall).isInstanceOf(NotAuthorizedException.class);
 
     // make sure the task comment was not deleted
     List<TaskComment> taskCommentsAfterDeletion =

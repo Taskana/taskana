@@ -2,6 +2,7 @@ package pro.taskana.rest;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,13 +29,15 @@ class GeneralExceptionHandlingTest {
 
   @Test
   void testDeleteNonExisitingClassificationExceptionIsLogged() {
-    assertThatThrownBy(
-        () ->
-              template.exchange(
-                  restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, "non-existing-id"),
-                  HttpMethod.DELETE,
-                  restHelper.defaultRequest(),
-                  ParameterizedTypeReference.forType(ClassificationSummaryListResource.class)))
+    ThrowingCallable httpCall =
+        () -> {
+          template.exchange(
+              restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, "non-existing-id"),
+              HttpMethod.DELETE,
+              restHelper.defaultRequest(),
+              ParameterizedTypeReference.forType(ClassificationSummaryListResource.class));
+        };
+    assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
         .hasMessageContaining("non-existing-id");
   }

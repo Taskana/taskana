@@ -36,6 +36,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
 
   ServiceLevelPriorityAccTest() {
     super();
+    DaysToWorkingDaysConverter.setGermanPublicHolidaysEnabled(true);
     taskService = taskanaEngine.getTaskService();
   }
 
@@ -231,9 +232,9 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     Instant dueBulk3 = taskService.getTask(tkId3).getDue();
     Instant dueBulk4 = taskService.getTask(tkId4).getDue();
     assertThat(dueBulk1).isEqualTo(getInstant("2020-05-14T07:00:00"));
-    assertThat(dueBulk2).isEqualTo(getInstant("2020-05-21T07:00:00"));
+    assertThat(dueBulk2).isEqualTo(getInstant("2020-05-22T07:00:00"));
     assertThat(dueBulk3).isEqualTo(getInstant("2020-05-14T07:00:00"));
-    assertThat(dueBulk4).isEqualTo(getInstant("2020-05-21T07:00:00"));
+    assertThat(dueBulk4).isEqualTo(getInstant("2020-05-22T07:00:00"));
   }
 
   @WithAccessId(
