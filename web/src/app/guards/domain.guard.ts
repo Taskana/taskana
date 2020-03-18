@@ -3,8 +3,8 @@ import { CanActivate } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { DomainService } from 'app/services/domain/domain.service';
 import { catchError, map } from 'rxjs/operators';
-import { ErrorsService } from "../services/errors/errors.service";
-import { ERROR_TYPES } from "../models/errors";
+import { ErrorsService } from '../services/errors/errors.service';
+import { ERROR_TYPES } from '../models/errors';
 
 @Injectable()
 export class DomainGuard implements CanActivate {
@@ -13,11 +13,11 @@ export class DomainGuard implements CanActivate {
 
   canActivate() {
     return this.domainService.getDomains().pipe(
-        map(domain => true),
-        catchError(() => {
-          this.errorsService.updateError(ERROR_TYPES.FETCH_ERR_5);
-          return of(false);
-        })
+      map(domain => true),
+      catchError(() => {
+        this.errorsService.updateError(ERROR_TYPES.FETCH_ERR_5);
+        return of(false);
+      })
     );
   }
 }

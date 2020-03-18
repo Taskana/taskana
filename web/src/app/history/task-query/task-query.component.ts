@@ -11,7 +11,7 @@ import { TaskHistoryEventResourceData } from 'app/models/task-history-event-reso
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { TaskHistoryEventData } from '../../models/task-history-event';
 import { TaskQueryService } from '../services/task-query/task-query.service';
-import { ErrorsService } from "../../services/errors/errors.service";
+import { ErrorsService } from '../../services/errors/errors.service';
 
 @Component({
   selector: 'taskana-task-query',
@@ -29,11 +29,11 @@ export class TaskQueryComponent implements OnInit {
   taskQueryForm = new FormGroup({});
 
   constructor(
-      private taskQueryService: TaskQueryService,
-      private orientationService: OrientationService,
-      private generalModalService: GeneralModalService,
-      private requestInProgressService: RequestInProgressService,
-      private errorsService: ErrorsService
+    private taskQueryService: TaskQueryService,
+    private orientationService: OrientationService,
+    private generalModalService: GeneralModalService,
+    private requestInProgressService: RequestInProgressService,
+    private errorsService: ErrorsService
   ) {
   }
 
@@ -148,11 +148,11 @@ export class TaskQueryComponent implements OnInit {
   // TODO: Global?
   openDetails(key: string, val: string) {
     this.generalModalService.triggerMessage(
-        new MessageModal(
-            `These are the details of ${this.getHeaderFieldDescription(key)}`,
-            val,
-            'code'
-        )
+      new MessageModal(
+        `These are the details of ${this.getHeaderFieldDescription(key)}`,
+        val,
+        'code'
+      )
     );
   }
 
@@ -195,10 +195,10 @@ export class TaskQueryComponent implements OnInit {
     this.requestInProgressService.setRequestInProgress(true);
     this.calculateQueryPages();
     this.taskQuerySubscription = this.taskQueryService.queryTask(
-        this.orderBy.sortBy.replace(/([A-Z])|([0-9])/g, g => `-${g[0].toLowerCase()}`),
-        this.orderBy.sortDirection,
-        new TaskHistoryEventData(this.taskQueryForm.value),
-        false
+      this.orderBy.sortBy.replace(/([A-Z])|([0-9])/g, g => `-${g[0].toLowerCase()}`),
+      this.orderBy.sortDirection,
+      new TaskHistoryEventData(this.taskQueryForm.value),
+      false
     ).subscribe(taskQueryResource => {
       this.requestInProgressService.setRequestInProgress(false);
       this.taskQueryResource = taskQueryResource.taskHistoryEvents ? taskQueryResource : null;

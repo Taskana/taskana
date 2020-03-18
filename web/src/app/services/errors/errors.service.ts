@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorModel } from '../../models/error-model';
 import { ERROR_TYPES } from '../../models/errors';
-import { HttpErrorResponse } from "@angular/common/http";
 
 @Injectable({
   providedIn: 'root'
