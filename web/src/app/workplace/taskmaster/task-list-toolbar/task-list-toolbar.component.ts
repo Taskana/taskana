@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Task } from 'app/workplace/models/task';
 import { Workbasket } from 'app/models/workbasket';
 import { TaskService } from 'app/workplace/services/task.service';
