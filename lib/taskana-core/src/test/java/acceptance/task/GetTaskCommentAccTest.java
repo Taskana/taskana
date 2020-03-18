@@ -77,7 +77,8 @@ public class GetTaskCommentAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
 
     TaskComment taskComment =
-        taskService.getTaskComment("TCI:000000000000000000000000000000000007");
+        taskService.getTaskComment(
+            "TKI:000000000000000000000000000000000002", "TCI:000000000000000000000000000000000007");
     assertThat(taskComment.getCreator()).isEqualTo("user_1_1");
   }
 
@@ -89,8 +90,11 @@ public class GetTaskCommentAccTest extends AbstractAccTest {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
-    assertThatThrownBy(() -> taskService.getTaskComment("Definately Non Existing Task Comment Id"))
-        .isInstanceOf(TaskCommentNotFoundException.class);
+    ThrowingCallable lambda =
+        () ->
+            taskService.getTaskComment(
+                "Invalid Task Id", "Definately Non Existing Task Comment Id");
+    assertThatThrownBy(lambda).isInstanceOf(TaskCommentNotFoundException.class);
   }
 
   @WithAccessId(
@@ -101,7 +105,11 @@ public class GetTaskCommentAccTest extends AbstractAccTest {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
-    assertThatThrownBy(() -> taskService.getTaskComment("TCI:000000000000000000000000000000000012"))
-        .isInstanceOf(NotAuthorizedException.class);
+    ThrowingCallable lambda =
+        () ->
+            taskService.getTaskComment(
+                "TKI:000000000000000000000000000000000004",
+                "TCI:000000000000000000000000000000000012");
+    assertThatThrownBy(lambda).isInstanceOf(NotAuthorizedException.class);
   }
 }
