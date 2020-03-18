@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
 import { ERROR_TYPES } from '../../models/errors';
-import { ErrorsService } from "../../services/errors/errors.service";
+import { ErrorsService } from '../../services/errors/errors.service';
 
 declare let $: any;
 
@@ -14,16 +14,20 @@ export class SpinnerComponent implements OnDestroy {
   showSpinner: boolean;
   @Input()
   delay = 250;
+
   @Input()
   isModal = false;
+
   @Input()
   positionClass: string;
+
   @Output()
   spinnerIsRunning = new EventEmitter<boolean>();
+
   private currentTimeout: any;
   private requestTimeout: any;
   private maxRequestTimeout = 10000;
-  @ViewChild('spinnerModal', {static: true})
+  @ViewChild('spinnerModal', { static: true })
   private modal;
 
   constructor(private errorsService: ErrorsService) {

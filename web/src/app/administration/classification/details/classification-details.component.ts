@@ -26,7 +26,7 @@ import { FormsValidatorService } from 'app/shared/services/forms/forms-validator
 import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
 import { CustomFieldsService } from '../../../services/custom-fields/custom-fields.service';
 import { ERROR_TYPES } from '../../../models/errors';
-import { ErrorsService } from "../../../services/errors/errors.service";
+import { ErrorsService } from '../../../services/errors/errors.service';
 
 @Component({
   selector: 'taskana-classification-details',

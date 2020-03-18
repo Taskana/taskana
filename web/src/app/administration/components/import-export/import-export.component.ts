@@ -10,10 +10,10 @@ import { AlertService } from 'app/services/alert/alert.service';
 import { AlertModel, AlertType } from 'app/models/alert';
 import { UploadService } from 'app/shared/services/upload/upload.service';
 import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ERROR_TYPES } from '../../../models/errors';
-import { ErrorsService } from "../../../services/errors/errors.service";
-import { ErrorModel } from "../../../models/error-model";
-import { HttpErrorResponse } from "@angular/common/http";
+import { ErrorsService } from '../../../services/errors/errors.service';
+import { ErrorModel } from '../../../models/error-model';
 
 @Component({
   selector: 'taskana-import-export-component',
@@ -23,29 +23,29 @@ import { HttpErrorResponse } from "@angular/common/http";
 export class ImportExportComponent implements OnInit {
   @Input() currentSelection: TaskanaType;
 
-  @ViewChild('selectedFile', {static: true})
+  @ViewChild('selectedFile', { static: true })
   selectedFileInput;
 
   domains: string[] = [];
   errorWhileUploadingText: string;
 
   constructor(
-      private domainService: DomainService,
-      private workbasketDefinitionService: WorkbasketDefinitionService,
-      private classificationDefinitionService: ClassificationDefinitionService,
-      private generalModalService: GeneralModalService,
-      private alertService: AlertService,
-      public uploadservice: UploadService,
-      private errorsService: ErrorsService,
-      private importExportService: ImportExportService
+    private domainService: DomainService,
+    private workbasketDefinitionService: WorkbasketDefinitionService,
+    private classificationDefinitionService: ClassificationDefinitionService,
+    private generalModalService: GeneralModalService,
+    private alertService: AlertService,
+    public uploadservice: UploadService,
+    private errorsService: ErrorsService,
+    private importExportService: ImportExportService
   ) {
   }
 
   ngOnInit() {
     this.domainService.getDomains().subscribe(
-        data => {
-          this.domains = data;
-        }
+      data => {
+        this.domains = data;
+      }
     );
   }
 

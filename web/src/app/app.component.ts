@@ -1,17 +1,17 @@
-import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
-import {NavigationStart, Router} from '@angular/router';
-import {Subscription} from 'rxjs';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { NavigationStart, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
-import {FormsValidatorService} from 'app/shared/services/forms/forms-validator.service';
-import {MessageModal} from './models/message-modal';
+import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
+import { MessageModal } from './models/message-modal';
 
-import {GeneralModalService} from './services/general-modal/general-modal.service';
-import {RequestInProgressService} from './services/requestInProgress/request-in-progress.service';
-import {OrientationService} from './services/orientation/orientation.service';
-import {SelectedRouteService} from './services/selected-route/selected-route';
-import {UploadService} from './shared/services/upload/upload.service';
-import {ErrorModel} from "./models/error-model";
-import {ErrorsService} from "./services/errors/errors.service";
+import { GeneralModalService } from './services/general-modal/general-modal.service';
+import { RequestInProgressService } from './services/requestInProgress/request-in-progress.service';
+import { OrientationService } from './services/orientation/orientation.service';
+import { SelectedRouteService } from './services/selected-route/selected-route';
+import { UploadService } from './shared/services/upload/upload.service';
+import { ErrorModel } from './models/error-model';
+import { ErrorsService } from './services/errors/errors.service';
 
 @Component({
   selector: 'taskana-root',
@@ -37,14 +37,14 @@ export class AppComponent implements OnInit, OnDestroy {
   error: ErrorModel;
 
   constructor(
-      private router: Router,
-      private generalModalService: GeneralModalService,
-      private requestInProgressService: RequestInProgressService,
-      private orientationService: OrientationService,
-      private selectedRouteService: SelectedRouteService,
-      private formsValidatorService: FormsValidatorService,
-      private errorService: ErrorsService,
-      public uploadService: UploadService
+    private router: Router,
+    private generalModalService: GeneralModalService,
+    private requestInProgressService: RequestInProgressService,
+    private orientationService: OrientationService,
+    private selectedRouteService: SelectedRouteService,
+    private formsValidatorService: FormsValidatorService,
+    private errorService: ErrorsService,
+    public uploadService: UploadService
   ) {
   }
 
@@ -68,8 +68,8 @@ export class AppComponent implements OnInit, OnDestroy {
         this.modalMessage = messageModal.message.message;
       } else {
         this.modalMessage = messageModal.message.error
-            ? (`${messageModal.message.error.error} ${messageModal.message.error.message}`)
-            : messageModal.message.message;
+          ? (`${messageModal.message.error.error} ${messageModal.message.error.message}`)
+          : messageModal.message.message;
       }
       this.modalTitle = messageModal.title;
       this.modalType = messageModal.type;

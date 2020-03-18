@@ -19,7 +19,7 @@ import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.se
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
 import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
 import { ERROR_TYPES } from '../../../../models/errors';
-import { ErrorsService } from "../../../../services/errors/errors.service";
+import { ErrorsService } from '../../../../services/errors/errors.service';
 
 @Component({
   selector: 'taskana-workbasket-information',
@@ -168,9 +168,8 @@ implements OnInit, OnChanges, OnDestroy {
         },
         error => {
           this.errorsService.updateError(ERROR_TYPES.REMOVE_ERR_2,
-              error,
-              new Map<String,String>([["workbasketId", this.workbasket.workbasketId]])
-          );
+            error,
+            new Map<String, String>([['workbasketId', this.workbasket.workbasketId]]));
           this.requestInProgressService.setRequestInProgress(false);
         }
       );
@@ -271,8 +270,8 @@ implements OnInit, OnChanges, OnDestroy {
           this.workbasketService.triggerWorkBasketSaved();
           if (response.status === 202) {
             this.errorsService.updateError(ERROR_TYPES.MARK_ERR,
-                undefined,
-                new Map<String, String>([['workbasketId', this.workbasket.workbasketId]]));
+              undefined,
+              new Map<String, String>([['workbasketId', this.workbasket.workbasketId]]));
           } else {
             // new Key ALERT_TYPES.SUCCESS_ALERT_12
             this.alertService.triggerAlert(

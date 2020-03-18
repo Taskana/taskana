@@ -8,10 +8,8 @@ import { WorkbasketAccessItemsResource } from 'app/models/workbasket-access-item
 import { ACTION } from 'app/models/action';
 import { AlertModel, AlertType } from 'app/models/alert';
 
-import {
-  SavingInformation,
-  SavingWorkbasketService
-} from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
+import { SavingInformation,
+  SavingWorkbasketService } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { AlertService } from 'app/services/alert/alert.service';
@@ -21,7 +19,7 @@ import { highlight } from 'app/shared/animations/validation.animation';
 import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
 import { AccessIdDefinition } from 'app/models/access-id';
 import { ERROR_TYPES } from '../../../../models/errors';
-import { ErrorsService } from "../../../../services/errors/errors.service";
+import { ErrorsService } from '../../../../services/errors/errors.service';
 
 @Component({
   selector: 'taskana-workbasket-access-items',
@@ -71,15 +69,15 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
   private initialized = false;
 
   constructor(
-      private workbasketService: WorkbasketService,
-      private alertService: AlertService,
-      private generalModalService: GeneralModalService,
-      private savingWorkbaskets: SavingWorkbasketService,
-      private requestInProgressService: RequestInProgressService,
-      private customFieldsService: CustomFieldsService,
-      private formBuilder: FormBuilder,
-      private formsValidatorService: FormsValidatorService,
-      private errorsService: ErrorsService
+    private workbasketService: WorkbasketService,
+    private alertService: AlertService,
+    private generalModalService: GeneralModalService,
+    private savingWorkbaskets: SavingWorkbasketService,
+    private requestInProgressService: RequestInProgressService,
+    private customFieldsService: CustomFieldsService,
+    private formBuilder: FormBuilder,
+    private formsValidatorService: FormsValidatorService,
+    private errorsService: ErrorsService
   ) {
   }
 
@@ -173,40 +171,40 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
     }
     this.requestInProgress = true;
     this.accessItemsubscription = this.workbasketService.getWorkBasketAccessItems(this.workbasket._links.accessItems.href)
-    .subscribe((accessItemsResource: WorkbasketAccessItemsResource) => {
-      this.accessItemsResource = accessItemsResource;
-      this.setAccessItemsGroups(accessItemsResource.accessItems);
-      this.accessItemsClone = this.cloneAccessItems(accessItemsResource.accessItems);
-      this.accessItemsResetClone = this.cloneAccessItems(accessItemsResource.accessItems);
-      this.requestInProgress = false;
-    });
+      .subscribe((accessItemsResource: WorkbasketAccessItemsResource) => {
+        this.accessItemsResource = accessItemsResource;
+        this.setAccessItemsGroups(accessItemsResource.accessItems);
+        this.accessItemsClone = this.cloneAccessItems(accessItemsResource.accessItems);
+        this.accessItemsResetClone = this.cloneAccessItems(accessItemsResource.accessItems);
+        this.requestInProgress = false;
+      });
     this.savingAccessItemsSubscription = this.savingWorkbaskets.triggeredAccessItemsSaving()
-    .subscribe((savingInformation: SavingInformation) => {
-      if (this.action === ACTION.COPY) {
-        this.accessItemsResource._links.self.href = savingInformation.url;
-        this.setWorkbasketIdForCopy(savingInformation.workbasketId);
-        this.onSave();
-      }
-    });
+      .subscribe((savingInformation: SavingInformation) => {
+        if (this.action === ACTION.COPY) {
+          this.accessItemsResource._links.self.href = savingInformation.url;
+          this.setWorkbasketIdForCopy(savingInformation.workbasketId);
+          this.onSave();
+        }
+      });
   }
 
   private onSave() {
     this.requestInProgressService.setRequestInProgress(true);
     this.workbasketService.updateWorkBasketAccessItem(
-        this.accessItemsResource._links.self.href, this.AccessItemsForm.value.accessItemsGroups
+      this.accessItemsResource._links.self.href, this.AccessItemsForm.value.accessItemsGroups
     )
-    .subscribe(response => {
-      this.accessItemsClone = this.cloneAccessItems(this.AccessItemsForm.value.accessItemsGroups);
-      this.accessItemsResetClone = this.cloneAccessItems(this.AccessItemsForm.value.accessItemsGroups);
-      // new Key ALERT_TYPES.SUCCESS_ALERT_7
-      this.alertService.triggerAlert(new AlertModel(
+      .subscribe(response => {
+        this.accessItemsClone = this.cloneAccessItems(this.AccessItemsForm.value.accessItemsGroups);
+        this.accessItemsResetClone = this.cloneAccessItems(this.AccessItemsForm.value.accessItemsGroups);
+        // new Key ALERT_TYPES.SUCCESS_ALERT_7
+        this.alertService.triggerAlert(new AlertModel(
           AlertType.SUCCESS, `Workbasket  ${this.workbasket.name} Access items were saved successfully`
-      ));
-      this.requestInProgressService.setRequestInProgress(false);
-    }, error => {
-      this.errorsService.updateError(ERROR_TYPES.SAVE_ERR_2, error);
-      this.requestInProgressService.setRequestInProgress(false);
-    });
+        ));
+        this.requestInProgressService.setRequestInProgress(false);
+      }, error => {
+        this.errorsService.updateError(ERROR_TYPES.SAVE_ERR_2, error);
+        this.requestInProgressService.setRequestInProgress(false);
+      });
   }
 
   private setBadge() {
@@ -217,7 +215,7 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 
   private cloneAccessItems(inputaccessItem): Array<WorkbasketAccessItems> {
     return this.AccessItemsForm.value.accessItemsGroups.map(
-        (accessItems: WorkbasketAccessItems) => ({...accessItems})
+      (accessItems: WorkbasketAccessItems) => ({ ...accessItems })
     );
   }
 

@@ -1,5 +1,5 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { ERROR_TYPES, errors } from './errors';
-import { HttpErrorResponse } from "@angular/common/http";
 
 export class ErrorModel {
   public readonly errObj: HttpErrorResponse;
@@ -11,8 +11,8 @@ export class ErrorModel {
     this.message = errors.get(key).text;
     this.errObj = passedError;
     if (addition) {
-      addition.forEach((value: string, key: string) => {
-        this.message.replace(`{${key}}`, value);
+      addition.forEach((value: string, replacementKey: string) => {
+        this.message.replace(`{${replacementKey}}`, value);
       });
     }
   }
