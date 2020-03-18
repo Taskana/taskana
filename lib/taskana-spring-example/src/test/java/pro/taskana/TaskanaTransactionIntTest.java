@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import javax.sql.DataSource;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -211,10 +212,12 @@ class TaskanaTransactionIntTest {
           new TaskCleanupJob(taskanaEngine, springTransactionProvider, null);
       taskCleanupJob.run();
 
-      assertThatThrownBy(
-          () ->
-                  workbasketService.deleteWorkbasket(
-                      workbasketService.getWorkbasket("key3", "DOMAIN_A").getId()))
+      ThrowingCallable httpCall =
+          () -> {
+            workbasketService.deleteWorkbasket(
+                workbasketService.getWorkbasket("key3", "DOMAIN_A").getId());
+          };
+      assertThatThrownBy(httpCall)
           .isInstanceOf(WorkbasketInUseException.class)
           .hasMessageContaining("contains 1 non-completed tasks");
 

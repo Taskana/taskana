@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,12 +80,15 @@ class AccessIdControllerIntTest {
 
   @Test
   void testBadRequestWhenSearchForIsTooShort() {
-    assertThatThrownBy(() ->
-                template.exchange(
-                    restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=al",
-                    HttpMethod.GET,
-                    restHelper.defaultRequest(),
-                    ParameterizedTypeReference.forType(List.class)))
+    ThrowingCallable httpCall =
+        () -> {
+          template.exchange(
+              restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=al",
+              HttpMethod.GET,
+              restHelper.defaultRequest(),
+              ParameterizedTypeReference.forType(List.class));
+        };
+    assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
         .hasMessageContaining("Minimum searchFor length =")
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())

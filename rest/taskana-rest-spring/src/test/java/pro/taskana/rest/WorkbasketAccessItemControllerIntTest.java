@@ -3,6 +3,7 @@ package pro.taskana.rest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -59,14 +60,16 @@ class WorkbasketAccessItemControllerIntTest {
 
   @Test
   void testThrowsExceptionIfInvalidFilterIsUsed() {
-    assertThatThrownBy(
-        () ->
-            template.exchange(
-                restHelper.toUrl(Mapping.URL_WORKBASKETACCESSITEMS)
-                    + "?sort-by=workbasket-key&order=asc&page=1&page-size=9&invalid=user_1_1",
-                HttpMethod.GET,
-                restHelper.defaultRequest(),
-                ParameterizedTypeReference.forType(WorkbasketAccessItemListResource.class)))
+    ThrowingCallable httpCall =
+        () -> {
+          template.exchange(
+              restHelper.toUrl(Mapping.URL_WORKBASKETACCESSITEMS)
+                  + "?sort-by=workbasket-key&order=asc&page=1&page-size=9&invalid=user_1_1",
+              HttpMethod.GET,
+              restHelper.defaultRequest(),
+              ParameterizedTypeReference.forType(WorkbasketAccessItemListResource.class));
+        };
+    assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
         .hasMessageContaining("[invalid]")
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
@@ -112,13 +115,15 @@ class WorkbasketAccessItemControllerIntTest {
   @Test
   void testGetBadRequestIfTryingToDeleteAccessItemsForGroup() {
     String parameters = "?access-id=cn=DevelopersGroup,ou=groups,o=TaskanaTest";
-    assertThatThrownBy(
-        () ->
-                template.exchange(
-                    restHelper.toUrl(Mapping.URL_WORKBASKETACCESSITEMS) + parameters,
-                    HttpMethod.DELETE,
-                    restHelper.defaultRequest(),
-                    ParameterizedTypeReference.forType(Void.class)))
+    ThrowingCallable httpCall =
+        () -> {
+          template.exchange(
+              restHelper.toUrl(Mapping.URL_WORKBASKETACCESSITEMS) + parameters,
+              HttpMethod.DELETE,
+              restHelper.defaultRequest(),
+              ParameterizedTypeReference.forType(Void.class));
+        };
+    assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
         .isEqualTo(HttpStatus.BAD_REQUEST);
