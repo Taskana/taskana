@@ -3,6 +3,7 @@ package pro.taskana.rest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -238,13 +239,15 @@ class ClassificationControllerIntTest {
             + "\"type\":\"TASK\",\"parentId\":\"CLI:200000000000000000000000000000000015\","
             + "\"parentKey\":\"T2000\"}";
 
-    assertThatThrownBy(
-        () ->
-                template.exchange(
-                    restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
-                    HttpMethod.POST,
-                    new HttpEntity<>(newClassification, restHelper.getHeaders()),
-                    ParameterizedTypeReference.forType(ClassificationResource.class)))
+    ThrowingCallable httpCall =
+        () -> {
+          template.exchange(
+              restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
+              HttpMethod.POST,
+              new HttpEntity<>(newClassification, restHelper.getHeaders()),
+              ParameterizedTypeReference.forType(ClassificationResource.class));
+        };
+    assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
         .isEqualTo(HttpStatus.BAD_REQUEST);
@@ -258,13 +261,15 @@ class ClassificationControllerIntTest {
             + "\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS\","
             + "\"name\":\"new classification\",\"type\":\"TASK\"}";
 
-    assertThatThrownBy(
-        () ->
-                template.exchange(
-                    restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
-                    HttpMethod.POST,
-                    new HttpEntity<>(newClassification, restHelper.getHeaders()),
-                    ParameterizedTypeReference.forType(ClassificationResource.class)))
+    ThrowingCallable httpCall =
+        () -> {
+          template.exchange(
+              restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
+              HttpMethod.POST,
+              new HttpEntity<>(newClassification, restHelper.getHeaders()),
+              ParameterizedTypeReference.forType(ClassificationResource.class));
+        };
+    assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
         .isEqualTo(HttpStatus.BAD_REQUEST);
@@ -299,14 +304,15 @@ class ClassificationControllerIntTest {
     assertThat(HttpStatus.NO_CONTENT).isEqualTo(response.getStatusCode());
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
-    assertThatThrownBy(
-        () ->
-                template.exchange(
-                    restHelper.toUrl(
-                        Mapping.URL_CLASSIFICATIONS_ID, "CLI:200000000000000000000000000000000004"),
-                    HttpMethod.GET,
-                    request,
-                    ParameterizedTypeReference.forType(ClassificationSummaryResource.class)))
-        .isInstanceOf(HttpClientErrorException.class);
+    ThrowingCallable httpCall =
+        () -> {
+          template.exchange(
+              restHelper.toUrl(
+                  Mapping.URL_CLASSIFICATIONS_ID, "CLI:200000000000000000000000000000000004"),
+              HttpMethod.GET,
+              request,
+              ParameterizedTypeReference.forType(ClassificationSummaryResource.class));
+        };
+    assertThatThrownBy(httpCall).isInstanceOf(HttpClientErrorException.class);
   }
 }

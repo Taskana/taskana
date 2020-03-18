@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.sql.DataSource;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -211,11 +212,12 @@ class WorkbasketDefinitionControllerIntTest {
     String w1String = workbasketToString(w);
     w.getWorkbasket().setKey("new Key for this WB");
     String w2String = workbasketToString(w);
-    assertThatThrownBy(
-        () ->
-            expectStatusWhenExecutingImportRequestOfWorkbaskets(
-                    HttpStatus.CONFLICT, Arrays.asList(w1String, w2String)))
-        .isInstanceOf(HttpClientErrorException.class);
+    ThrowingCallable httpCall =
+        () -> {
+          expectStatusWhenExecutingImportRequestOfWorkbaskets(
+              HttpStatus.CONFLICT, Arrays.asList(w1String, w2String));
+        };
+    assertThatThrownBy(httpCall).isInstanceOf(HttpClientErrorException.class);
   }
 
   private void changeWorkbasketIdOrKey(

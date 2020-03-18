@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Instant;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,12 +91,15 @@ class WorkbasketControllerIntTest {
 
   @Test
   void testThrowsExceptionIfInvalidFilterIsUsed() {
-    assertThatThrownBy(() ->
-        template.exchange(
-            restHelper.toUrl(Mapping.URL_WORKBASKET) + "?invalid=PERSONAL",
-                HttpMethod.GET,
-                restHelper.defaultRequest(),
-                ParameterizedTypeReference.forType(WorkbasketSummaryListResource.class)))
+    ThrowingCallable httpCall =
+        () -> {
+          template.exchange(
+              restHelper.toUrl(Mapping.URL_WORKBASKET) + "?invalid=PERSONAL",
+              HttpMethod.GET,
+              restHelper.defaultRequest(),
+              ParameterizedTypeReference.forType(WorkbasketSummaryListResource.class));
+        };
+    assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
         .hasMessageContaining("[invalid]")
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
@@ -125,13 +129,16 @@ class WorkbasketControllerIntTest {
     workbasketResource.setOwner("Joerg");
     workbasketResource.setModified(String.valueOf(Instant.now()));
 
-    assertThatThrownBy(() ->
-        template.exchange(
-            restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketId),
-                HttpMethod.PUT,
-                new HttpEntity<>(
-                    mapper.writeValueAsString(workbasketResource), restHelper.getHeaders()),
-                ParameterizedTypeReference.forType(WorkbasketResource.class)))
+    ThrowingCallable httpCall =
+        () -> {
+          template.exchange(
+              restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketId),
+              HttpMethod.PUT,
+              new HttpEntity<>(
+                  mapper.writeValueAsString(workbasketResource), restHelper.getHeaders()),
+              ParameterizedTypeReference.forType(WorkbasketResource.class));
+        };
+    assertThatThrownBy(httpCall)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
         .isEqualTo(HttpStatus.CONFLICT);
   }
@@ -141,12 +148,15 @@ class WorkbasketControllerIntTest {
 
     String workbasketId = "WBI:100004857400039500000999999999999999";
 
-    assertThatThrownBy(() ->
-        template.exchange(
-            restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketId),
-                HttpMethod.GET,
-                new HttpEntity<String>(restHelper.getHeaders()),
-                ParameterizedTypeReference.forType(WorkbasketResource.class)))
+    ThrowingCallable httpCall =
+        () -> {
+          template.exchange(
+              restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketId),
+              HttpMethod.GET,
+              new HttpEntity<String>(restHelper.getHeaders()),
+              ParameterizedTypeReference.forType(WorkbasketResource.class));
+        };
+    assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
         .isEqualTo(HttpStatus.NOT_FOUND);
