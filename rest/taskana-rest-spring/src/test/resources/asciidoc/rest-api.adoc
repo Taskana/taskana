@@ -293,6 +293,97 @@ include::{snippets}/TransferTaskDocTest/http-response.adoc[]
 The response-body is essentially the same as for getting a single task. +
 Therefore for the response fields you can refer to the <<task, single task>>.
 
+== TaskComment-Resource
+
+=== Get a list of all task comments for a specific task
+
+A `GET` request is used to retrieve the task comments.
+
+==== Example Request
+
+include::{snippets}/GetAllTaskCommentsForSpecificTaskDocTest/http-request.adoc[]
+
+==== Example Response
+
+include::{snippets}/GetAllTaskCommentsForSpecificTaskDocTest/http-response.adoc[]
+
+==== Response Structure
+
+include::{snippets}/GetAllTaskCommentsForSpecificTaskDocTest/response-fields.adoc[]
+
+
+=== Get a specific task comment
+
+A `GET` request is used to retrieve a task comment.
+
+==== Example Request
+
+include::{snippets}/GetSpecificTaskCommentDocTest/http-request.adoc[]
+
+==== Example Response
+
+include::{snippets}/GetSpecificTaskCommentDocTest/http-response.adoc[]
+
+==== Response Structure
+
+include::{snippets}/GetSpecificTaskCommentDocTest/response-fields.adoc[]
+
+=== Update a task comment
+
+A `PUT` request is used to update a task comment.
+
+==== Example Request
+
+include::{snippets}/UpdateTaskCommentDocTest/http-request.adoc[]
+
+==== Request Structure
+
+include::{snippets}/UpdateTaskCommentDocTest/request-fields.adoc[]
+
+==== Example Response
+
+include::{snippets}/UpdateTaskCommentDocTest/http-response.adoc[]
+
+==== Response Structure
+
+include::{snippets}/UpdateTaskCommentDocTest/response-fields.adoc[]
+
+=== Create a new task comment
+
+A `POST` request is used to create a new task comment.
+
+==== Example Request
+
+This minimal example shows only the required fields to create a new task comment. The <<create-task-comment-request-structure, request structure>> shows all possible fields for creating a task comment.
+
+include::{snippets}/CreateTaskCommentDocTest/http-request.adoc[]
+
+[[create-taskcomment--request-structure, request structure]]
+==== Request Structure
+
+include::{snippets}/CreateTaskCommentDocTest/request-fields.adoc[]
+
+==== Example Response
+
+include::{snippets}/CreateTaskCommentDocTest/http-response.adoc[]
+
+==== Response Structure
+
+The response-body is essentially the same as for getting a specific task comment. +
+Therefore for the response fields you can refer to the <<task comment, specific task comment>>.
+
+=== Delete a task comment
+
+A `DELETE` request is used to delete a task comment.
+
+==== Example request
+
+include::{snippets}/DeleteTaskCommentDocTest/http-request.adoc[]
+
+==== Example response
+
+include::{snippets}/DeleteTaskCommentDocTest/http-response.adoc[]
+
 == Classifications-Resource
 
 This resource provides the entry point with classifications.

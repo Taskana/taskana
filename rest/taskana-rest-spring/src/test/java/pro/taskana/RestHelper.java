@@ -64,6 +64,13 @@ public class RestHelper {
     return headers;
   }
 
+  public HttpHeaders getHeadersUser_1_1() {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Authorization", "Basic dXNlcl8xXzE6dXNlcl8xXzE=");
+    headers.add("Content-Type", "application/json");
+    return headers;
+  }
+
   /**
    * Return a REST template which is capable of dealing with responses in HAL format.
    *
