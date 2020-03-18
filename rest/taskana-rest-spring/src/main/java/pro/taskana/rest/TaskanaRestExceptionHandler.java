@@ -14,21 +14,19 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistException;
-import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.NotFoundException;
 import pro.taskana.task.api.exceptions.InvalidOwnerException;
 import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
-import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketInUseException;
-import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
 /**
  * This class handles taskana exceptions.
@@ -52,8 +50,8 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
     return buildResponse(ex, req, HttpStatus.FORBIDDEN);
   }
 
-  @ExceptionHandler(TaskNotFoundException.class)
-  protected ResponseEntity<Object> handleTaskNotFound(TaskNotFoundException ex, WebRequest req) {
+  @ExceptionHandler(NotFoundException.class)
+  protected ResponseEntity<Object> handleTaskNotFound(NotFoundException ex, WebRequest req) {
     return buildResponse(ex, req, HttpStatus.NOT_FOUND);
   }
 
@@ -77,12 +75,6 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
   @ExceptionHandler(InvalidOwnerException.class)
   protected ResponseEntity<Object> handleInvalidOwner(InvalidOwnerException ex, WebRequest req) {
     return buildResponse(ex, req, HttpStatus.CONFLICT);
-  }
-
-  @ExceptionHandler(ClassificationNotFoundException.class)
-  protected ResponseEntity<Object> handleClassificationNotFound(
-      ClassificationNotFoundException ex, WebRequest req) {
-    return buildResponse(ex, req, HttpStatus.NOT_FOUND);
   }
 
   @ExceptionHandler(ClassificationAlreadyExistException.class)
@@ -118,12 +110,6 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
   protected ResponseEntity<Object> handleWorkbasketAccessItemAlreadyExist(
       WorkbasketAccessItemAlreadyExistException ex, WebRequest req) {
     return buildResponse(ex, req, HttpStatus.CONFLICT);
-  }
-
-  @ExceptionHandler(WorkbasketNotFoundException.class)
-  protected ResponseEntity<Object> handleWorkbasketNotFound(
-      WorkbasketNotFoundException ex, WebRequest req) {
-    return buildResponse(ex, req, HttpStatus.NOT_FOUND);
   }
 
   @ExceptionHandler(InvalidWorkbasketException.class)

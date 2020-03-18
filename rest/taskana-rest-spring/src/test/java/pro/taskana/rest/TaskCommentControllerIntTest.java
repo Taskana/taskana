@@ -53,7 +53,7 @@ class TaskCommentControllerIntTest {
                     new HttpEntity<String>(restHelper.getHeadersAdmin()),
                     ParameterizedTypeReference.forType(TaskCommentResource.class)))
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.BAD_REQUEST);
+        .isEqualTo(HttpStatus.NOT_FOUND);
   }
 
   @Test
