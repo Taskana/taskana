@@ -285,7 +285,9 @@ implements OnInit, OnChanges, OnDestroy {
             // TODO: message changed
             this.generalModalService.triggerMessage(
               new MessageModal('Workbasket was marked for deletion.',
-              `The Workbasket ${this.workbasket.workbasketId} still contains completed tasks and could not be deleted. Instead is was marked for deletion and will be deleted automatically as soon as the completed tasks are deleted from the database.`)
+                `The Workbasket ${this.workbasket.workbasketId} still contains completed tasks and could not be deleted.`
+                + 'Instead is was marked for deletion and will be deleted automatically '
+                + 'as soon as the completed tasks are deleted from the database.')
             );
           } else {
             // new Key ALERT_TYPES.SUCCESS_ALERT_12
