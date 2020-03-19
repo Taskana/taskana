@@ -113,15 +113,24 @@ public class TaskCommentController {
   @PutMapping(path = Mapping.URL_TASK_COMMENT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskCommentResource> updateTaskComment(
-      @PathVariable String taskCommentId, @RequestBody TaskCommentResource taskCommentResource)
+      @PathVariable String taskId,
+      @PathVariable String taskCommentId,
+      @RequestBody TaskCommentResource taskCommentResource)
       throws NotAuthorizedException, TaskNotFoundException, TaskCommentNotFoundException,
           InvalidArgumentException, ConcurrencyException {
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Entry to updateTaskComment(taskCommentId= {})", taskCommentId);
+      LOGGER.debug(
+          "Entry to updateTaskComment(taskId= {}, taskCommentId= {}, taskCommentResource= {})",
+          taskId,
+          taskCommentId,
+          taskCommentResource);
     }
 
     ResponseEntity<TaskCommentResource> result;
-    if (taskCommentId.equals(taskCommentResource.getTaskCommentId())) {
+
+    if ((taskCommentId.equals(taskCommentResource.getTaskCommentId())
+        && (taskId.equals(taskCommentResource.getTaskId())))) {
+
       TaskComment taskComment = taskCommentResourceAssembler.toModel(taskCommentResource);
 
       taskComment = taskService.updateTaskComment(taskComment);
@@ -129,8 +138,8 @@ public class TaskCommentController {
     } else {
       throw new InvalidArgumentException(
           String.format(
-              "TaskCommentId ('%s') is not identical with the taskCommentId of "
-                  + "object in the payload which should be updated. ID=('%s')",
+              "TaskCommentId ('%s') or TaskId ('%s') are not identical with the ids"
+                  + " of object in the payload which should be updated",
               taskCommentId, taskCommentResource.getTaskId()));
     }
 
@@ -144,19 +153,34 @@ public class TaskCommentController {
   @PostMapping(path = Mapping.URL_TASK_COMMENTS)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskCommentResource> createTaskComment(
-      @RequestBody TaskCommentResource taskCommentResource)
+      @PathVariable String taskId, @RequestBody TaskCommentResource taskCommentResource)
       throws NotAuthorizedException, InvalidArgumentException, TaskNotFoundException {
 
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Entry to createTaskComment(taskCommentResource= {})", taskCommentResource);
+      LOGGER.debug(
+          "Entry to createTaskComment(taskId = {}, taskCommentResource= {})",
+          taskId,
+          taskCommentResource);
     }
 
-    TaskComment taskCommentFromResource = taskCommentResourceAssembler.toModel(taskCommentResource);
-    TaskComment createdTaskComment = taskService.createTaskComment(taskCommentFromResource);
+    ResponseEntity<TaskCommentResource> result;
 
-    ResponseEntity<TaskCommentResource> result =
-        ResponseEntity.status(HttpStatus.CREATED)
-            .body(taskCommentResourceAssembler.toResource(createdTaskComment));
+    if (taskId.equals(taskCommentResource.getTaskId())) {
+
+      TaskComment taskCommentFromResource =
+          taskCommentResourceAssembler.toModel(taskCommentResource);
+      TaskComment createdTaskComment = taskService.createTaskComment(taskCommentFromResource);
+
+      result =
+          ResponseEntity.status(HttpStatus.CREATED)
+              .body(taskCommentResourceAssembler.toResource(createdTaskComment));
+    } else {
+      throw new InvalidArgumentException(
+          String.format(
+              "TaskId ('%s') is not identical with the taskId of "
+                  + "object in the payload which should be updated.",
+              taskCommentResource.getTaskId()));
+    }
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from createTaskComment(), returning {}", result);
     }

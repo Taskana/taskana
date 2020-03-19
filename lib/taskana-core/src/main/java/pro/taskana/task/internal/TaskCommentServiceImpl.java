@@ -209,7 +209,7 @@ class TaskCommentServiceImpl {
         throw new TaskCommentNotFoundException(
             taskCommentId,
             String.format(
-                "TaskComment for taskIid '%s' and taskCommentId '%s' was not found",
+                "TaskComment for taskId '%s' and taskCommentId '%s' was not found",
                 taskId, taskCommentId));
       }
 
