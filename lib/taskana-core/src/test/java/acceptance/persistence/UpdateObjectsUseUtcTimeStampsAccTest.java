@@ -25,6 +25,7 @@ import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.JobServiceImpl;
+import pro.taskana.common.internal.util.DaysToWorkingDaysConverter;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
@@ -58,9 +59,14 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
     Instant now = Instant.now();
-    TaskImpl ti = (TaskImpl) task;
     task.setPlanned(now.plus(Duration.ofHours(17)));
-    task.setDue(now.plus(Duration.ofHours(41))); // SL = 1D -> Due must be planned + 24 h
+
+    DaysToWorkingDaysConverter.setGermanPublicHolidaysEnabled(true);
+    DaysToWorkingDaysConverter converter = DaysToWorkingDaysConverter.initialize(Instant.now());
+    // associated Classification has ServiceLevel 'P1D'
+    task.setDue(converter.addWorkingDaysToInstant(task.getPlanned(), Duration.ofDays(1)));
+
+    TaskImpl ti = (TaskImpl) task;
     ti.setCompleted(now.plus(Duration.ofHours(27)));
 
     TimeZone originalZone = TimeZone.getDefault();
