@@ -143,9 +143,17 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
       Exception ex, WebRequest req, HttpStatus status, boolean logExceptionOnError) {
     TaskanaErrorData errorData = new TaskanaErrorData(status, ex, req);
     if (logExceptionOnError) {
-      LOGGER.error("Error occurred during processing of rest request: " + errorData.toString(), ex);
+      LOGGER.error(
+          String.format(
+              "Error occurred during processing of rest request: %s", errorData.toString()),
+          ex);
     } else {
-      LOGGER.debug("Error occurred during processing of rest request: " + errorData.toString(), ex);
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug(
+            String.format(
+                "Error occurred during processing of rest request: %s", errorData.toString()),
+            ex);
+      }
     }
     return ResponseEntity.status(status).body(errorData);
   }
