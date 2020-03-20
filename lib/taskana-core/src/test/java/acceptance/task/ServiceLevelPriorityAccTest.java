@@ -10,6 +10,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -307,11 +308,11 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     // test update of due that fails
     task.setDue(planned.plus(Duration.ofDays(8)));
     Task finalTask = task;
-    assertThatThrownBy(
+    ThrowingCallable taskanaCall =
         () -> {
           taskService.updateTask(finalTask);
-        })
-        .isInstanceOf(InvalidArgumentException.class);
+        };
+    assertThatThrownBy(taskanaCall).isInstanceOf(InvalidArgumentException.class);
 
     // update due and planned as expected.
     task = taskService.getTask(taskId);
@@ -361,12 +362,12 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     days = converter.convertWorkingDaysToDays(task.getPlanned(), 1);
     assertThat(task.getDue()).isEqualTo(task.getPlanned().plus(Duration.ofDays(days)));
 
-    task.setDue(planned.plus(Duration.ofDays(13)));
+    task.setDue(planned.plus(Duration.ofDays(13))); // due = 2020-05-16, i.e. saturday
     task.setPlanned(null);
     task = taskService.updateTask(task);
     days = converter.convertWorkingDaysToDays(task.getDue(), -1);
-    assertThat(task.getDue()).isEqualTo(planned.plus(Duration.ofDays(13)));
-    assertThat(task.getPlanned()).isEqualTo(task.getDue().plus(Duration.ofDays(days)));
+    assertThat(task.getPlanned()).isEqualTo(getInstant("2020-05-14T07:00:00"));
+    assertThat(task.getDue()).isEqualTo(getInstant("2020-05-15T07:00:00"));
   }
 
   @WithAccessId(
@@ -379,5 +380,38 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     task.setDue(getInstant("2020-04-21T10:00:00"));
     assertThatThrownBy(() -> taskService.updateTask(task))
         .isInstanceOf(InvalidArgumentException.class);
+  }
+
+  @WithAccessId(
+      userName = "user_1_2",
+      groupNames = {"group_1"})
+  @Test
+  void testUpdateTaskSetPlannedOrDueToWeekend()
+      throws NotAuthorizedException, TaskNotFoundException, ClassificationNotFoundException,
+          InvalidArgumentException, InvalidStateException, ConcurrencyException,
+          AttachmentPersistenceException {
+    Task task = taskService.getTask("TKI:000000000000000000000000000000000030"); // SL=P13D
+    task.setPlanned(getInstant("2020-03-21T07:00:00")); // planned = saturday
+    task = taskService.updateTask(task);
+    assertThat(task.getDue()).isEqualTo(getInstant("2020-04-09T07:00:00"));
+
+    task.setDue(getInstant("2020-04-11T07:00:00")); // due = saturday
+    task.setPlanned(null);
+    task = taskService.updateTask(task);
+    assertThat(task.getPlanned()).isEqualTo(getInstant("2020-03-23T07:00:00"));
+
+    task.setDue(getInstant("2020-04-12T07:00:00")); // due = sunday
+    task = taskService.updateTask(task);
+    assertThat(task.getPlanned()).isEqualTo(getInstant("2020-03-23T07:00:00"));
+
+    task.setPlanned(getInstant("2020-03-21T07:00:00")); // planned = saturday
+    task.setDue(getInstant("2020-04-09T07:00:00")); // thursday
+    task = taskService.updateTask(task);
+    assertThat(task.getPlanned()).isEqualTo(getInstant("2020-03-23T07:00:00"));
+
+    task.setPlanned(getInstant("2020-03-03T07:00:00")); // planned on tuesday
+    task.setDue(getInstant("2020-03-22T07:00:00")); // due = sunday
+    task = taskService.updateTask(task);
+    assertThat(task.getDue()).isEqualTo(getInstant("2020-03-20T07:00:00")); // friday
   }
 }

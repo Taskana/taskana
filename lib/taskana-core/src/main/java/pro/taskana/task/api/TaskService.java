@@ -432,6 +432,7 @@ public interface TaskService {
    * Retrieves a task comment for a given taskCommentId.
    *
    * @param taskCommentId The id of the task comment which should be retrieved
+   * @return the task comment identified by taskCommentId
    * @throws TaskCommentNotFoundException If the given taskCommentId in the TaskComment does not
    *     refer to an existing taskComment.
    * @throws NotAuthorizedException If the current user has no authorization to retrieve a
@@ -448,6 +449,7 @@ public interface TaskService {
    * Retrieves a list of task comments for a given taskId.
    *
    * @param taskId The id of the task for which all task comments should be retrieved
+   * @return the list of task comments attached to task with id taskId
    * @throws NotAuthorizedException If the current user has no authorization to retrieve a
    *     taskComment from a certain task or is not authorized to access the task.
    * @throws TaskNotFoundException If the given taskId in the TaskComment does not refer to an
