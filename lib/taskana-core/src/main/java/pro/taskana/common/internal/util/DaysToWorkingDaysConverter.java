@@ -60,7 +60,7 @@ public final class DaysToWorkingDaysConverter {
       throws InvalidArgumentException {
 
     if (referenceDate == null) {
-      throw new InvalidArgumentException("ReferenceDate can´t be used as NULL-Parameter");
+      throw new InvalidArgumentException("ReferenceDate cannot be used as NULL-Parameter");
     }
 
     return new DaysToWorkingDaysConverter(referenceDate);
