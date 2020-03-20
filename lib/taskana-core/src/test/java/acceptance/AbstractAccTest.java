@@ -43,6 +43,7 @@ public abstract class AbstractAccTest {
     }
     dataSource = TaskanaEngineTestConfiguration.getDataSource();
     taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, schemaName);
+    taskanaEngineConfiguration.setGermanPublicHolidaysEnabled(true);
     taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
     taskanaEngine.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
     sampleDataGenerator.clearDb();

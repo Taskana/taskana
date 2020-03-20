@@ -36,6 +36,7 @@ public interface TaskComment {
   /**
    * Sets the text field of the task comment.
    *
+   * @param textField the text field
    */
   void setTextField(String textField);
 

@@ -47,6 +47,8 @@ class ServiceLevelHandler {
     this.taskanaEngine = taskanaEngine;
     this.taskMapper = taskMapper;
     this.attachmentMapper = attachmentMapper;
+    DaysToWorkingDaysConverter.setGermanPublicHolidaysEnabled(
+        taskanaEngine.getEngine().getConfiguration().isGermanPublicHolidaysEnabled());
     try {
       this.converter = DaysToWorkingDaysConverter.initialize();
     } catch (InvalidArgumentException e) {
@@ -84,6 +86,7 @@ class ServiceLevelHandler {
     boolean onlyPriority = false;
     if (newTaskImpl.getClassificationSummary() == null
         || newTaskImpl.getClassificationSummary().getServiceLevel() == null) {
+      newTaskImpl = setPlannedDueOnMissingServiceLevel(newTaskImpl);
       onlyPriority = true;
     }
 
@@ -132,6 +135,19 @@ class ServiceLevelHandler {
     return getFinalPrioDurationOfTask(resolvedClassifications, onlyPriority);
   }
 
+  private TaskImpl setPlannedDueOnMissingServiceLevel(TaskImpl task) {
+    Instant now = Instant.now();
+    if (task.getDue() == null && task.getPlanned() == null) {
+      task.setDue(now);
+      task.setPlanned(now);
+    } else if (task.getDue() == null) {
+      task.setDue(task.getPlanned());
+    } else {
+      task.setPlanned(task.getDue());
+    }
+    return task;
+  }
+
   private TaskImpl updatePlannedDueOnTaskUpdate(
       TaskImpl newTaskImpl, TaskImpl oldTaskImpl, DurationPrioHolder durationPrioHolder)
       throws InvalidArgumentException {
@@ -150,24 +166,95 @@ class ServiceLevelHandler {
       newTaskImpl.setDue(
           converter.addWorkingDaysToInstant(
               newTaskImpl.getPlanned(), durationPrioHolder.getDuration()));
-    } else { // case 3: due was changed
-      if (newTaskImpl.getDue() == null) {
-        newTaskImpl.setDue(
-            converter.addWorkingDaysToInstant(
-                newTaskImpl.getPlanned(), durationPrioHolder.getDuration()));
-      } else {
-        Instant planned =
-            (converter.subtractWorkingDaysFromInstant(
-                newTaskImpl.getDue(), durationPrioHolder.getDuration()));
-        if (newTaskImpl.getPlanned() != null && !planned.equals(newTaskImpl.getPlanned())) {
-          throw new InvalidArgumentException(
-              "Cannot update a task with given planned "
-                  + "and due date not matching the service level");
-        }
-        newTaskImpl.setPlanned(planned);
+      if (!converter.isWorkingDay(0, newTaskImpl.getPlanned())) {
+        newTaskImpl.setPlanned(getFirstFollowingWorkingDay(newTaskImpl.getPlanned()));
       }
+    } else {
+      updatePlannedDueOnTaskUpdateWhenDueWasChanged(newTaskImpl, durationPrioHolder);
     }
     return newTaskImpl;
+  }
+
+  private void updatePlannedDueOnTaskUpdateWhenDueWasChanged(TaskImpl newTaskImpl,
+      DurationPrioHolder durationPrioHolder) throws InvalidArgumentException {
+    if (newTaskImpl.getDue() == null) {
+      newTaskImpl.setDue(
+          converter.addWorkingDaysToInstant(
+              newTaskImpl.getPlanned(), durationPrioHolder.getDuration()));
+      if (!converter.isWorkingDay(0, newTaskImpl.getPlanned())) {
+        newTaskImpl.setPlanned(getFirstFollowingWorkingDay(newTaskImpl.getPlanned()));
+      }
+    } else {
+      Instant planned =
+          (converter.subtractWorkingDaysFromInstant(
+              newTaskImpl.getDue(), durationPrioHolder.getDuration()));
+      ensureServiceLevelIsNotViolated(newTaskImpl, durationPrioHolder.getDuration(), planned);
+      newTaskImpl.setPlanned(planned);
+      if (!converter.isWorkingDay(0, newTaskImpl.getDue())) {
+        newTaskImpl.setDue(getFirstPreceedingWorkingDay(newTaskImpl.getDue()));
+      }
+    }
+  }
+
+  private Instant getFirstFollowingWorkingDay(Instant planned) {
+    long days = 0;
+    while (!converter.isWorkingDay(days, planned)) {
+      days++;
+    }
+    return planned.plus(Duration.ofDays(days));
+  }
+
+  private Instant getFirstPreceedingWorkingDay(Instant due) {
+    long days = 0;
+    while (!converter.isWorkingDay(days, due)) {
+      days--;
+    }
+    return due.minus(Duration.ofDays(Math.abs(days)));
+  }
+
+  /**
+   * Ensure that planned and due of task comply with the associated service level. The 'planned'
+   * timestamp was calculated by subtracting the service level duration from task.due. It may not be
+   * the same as task.planned and the request may nevertheless be correct. The following Scenario
+   * illustrates this: If task.planned is on a Saturday morning, and duration is 1 working day, then
+   * calculating forward from planned to due will give Tuesday morning as due date, because sunday
+   * is skipped. On the other hand, calculating from due (Tuesday morning) 1 day backwards will
+   * result in a planned date of monday morning which differs from task.planned. Therefore, if
+   * task.getPlanned is not equal to planned, the service level is not violated and we still must
+   * grant the request if the following conditions are fulfilled: - planned is after task.planned -
+   * task.planned is not a working day, - there is no working day between task.planned and planned.
+   *
+   * @param task the task for the difference between planned and due must be duration
+   * @param duration the serviceLevel for the task
+   * @param planned the planned Timestamp thas was calculated based on due and duration
+   * @throws InvalidArgumentException if service level is violated.
+   */
+  private void ensureServiceLevelIsNotViolated(TaskImpl task, Duration duration, Instant planned)
+      throws InvalidArgumentException {
+    if (task.getPlanned() != null && !task.getPlanned().equals(planned)) {
+      boolean isServiceLevelViolated = false;
+      Instant taskPlanned = task.getPlanned();
+      if (converter.isWorkingDay(0, taskPlanned)) {
+        isServiceLevelViolated = true;
+      } else if (taskPlanned.isAfter(planned)) {
+        isServiceLevelViolated = true;
+      } else {
+        long days = Duration.between(taskPlanned, planned).toDays();
+        for (long day = 0; day < days; day++) {
+          if (converter.isWorkingDay(day, taskPlanned)) {
+            isServiceLevelViolated = true;
+            break;
+          }
+        }
+      }
+      if (isServiceLevelViolated) {
+        throw new InvalidArgumentException(
+            String.format(
+                "Cannot update a task with given planned %s "
+                    + "and due date %s not matching the service level %s.",
+                task.getPlanned(), task.getDue(), duration));
+      }
+    }
   }
 
   private TaskImpl updatePlannedDueOnCreationOfNewTask(
