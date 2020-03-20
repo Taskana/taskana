@@ -16,6 +16,7 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.SystemException;
 
 /**
  * The DaysToWorkingDaysConverter provides a method to convert an age in days into an age in working
@@ -74,10 +75,17 @@ public final class DaysToWorkingDaysConverter {
   }
 
   public long convertWorkingDaysToDays(Instant startTime, long numberOfDays) {
+    if (startTime == null) {
+      throw new SystemException(
+          "Internal Error: convertWorkingDasToDays was called with a null startTime");
+    } else if (!startTime.equals(referenceDate)) {
+      refreshReferenceDate(referenceDate);
+    }
     int direction = numberOfDays >= 0 ? 1 : -1;
     long limit = Math.abs(numberOfDays);
+    final Instant finalStartTime = startTime;
     return LongStream.iterate(0, i -> i + direction)
-        .filter(day -> isWorkingDay(day, startTime))
+        .filter(day -> isWorkingDay(day, finalStartTime))
         .skip(limit)
         .findFirst()
         .orElse(0);
@@ -159,6 +167,17 @@ public final class DaysToWorkingDaysConverter {
       return LocalDate.of(year, 3, 15).plusDays(d + e);
     }
     return LocalDate.of(year, 3, 22).plusDays(d + e);
+  }
+
+  private void refreshReferenceDate(Instant newReferenceDate) {
+    int yearOfReferenceDate =
+        LocalDateTime.ofInstant(referenceDate, ZoneId.systemDefault()).getYear();
+    int yearOfNewReferenceDate =
+        LocalDateTime.ofInstant(newReferenceDate, ZoneId.systemDefault()).getYear();
+    if (yearOfReferenceDate != yearOfNewReferenceDate) {
+      easterSunday = getEasterSunday(yearOfNewReferenceDate);
+    }
+    this.referenceDate = newReferenceDate;
   }
 
   @Override
