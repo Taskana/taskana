@@ -4,7 +4,7 @@ package pro.taskana.classification.api.models;
  * Interface for ClassificationSummaries. This is a specific short model-object which only requieres
  * the most important informations. Specific ones can be load afterwards via ID.
  */
-public interface ClassificationSummary {
+public interface ClassificationSummary extends Cloneable {
 
   /**
    * Gets the id of the classification.
@@ -63,8 +63,8 @@ public interface ClassificationSummary {
   String getParentKey();
 
   /**
-   * Gets the service level of the classification. It is a String in ISO-8601 duration
-   * format. See the parse() method of {@code Duration} for details.
+   * Gets the service level of the classification. It is a String in ISO-8601 duration format. See
+   * the parse() method of {@code Duration} for details.
    *
    * @return the service level
    */
@@ -139,4 +139,11 @@ public interface ClassificationSummary {
    * @return custom8
    */
   String getCustom8();
+
+  /**
+   * Duplicates this ClassificationSummary
+   *
+   * @return a copy of this ClassificationSummary
+   */
+  ClassificationSummary clone();
 }

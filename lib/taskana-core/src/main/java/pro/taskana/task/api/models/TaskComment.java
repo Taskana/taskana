@@ -3,7 +3,7 @@ package pro.taskana.task.api.models;
 import java.time.Instant;
 
 /** TaskComment-Interface to specify TaskComment Attributes. */
-public interface TaskComment {
+public interface TaskComment extends Cloneable {
 
   /**
    * Gets the id of the task comment.
@@ -33,11 +33,8 @@ public interface TaskComment {
    */
   String getTextField();
 
-  /**
-   * Sets the text field of the task comment.
-   *
+  /** Sets the text field of the task comment. */
    * @param textField the text field
-   */
   void setTextField(String textField);
 
   /**
@@ -54,6 +51,10 @@ public interface TaskComment {
    */
   Instant getModified();
 
-
-
+  /**
+   * Duplicates this TaskComment
+   *
+   * @return a copy of this TaskComment
+   */
+  TaskComment clone();
 }

@@ -126,4 +126,11 @@ public interface Workbasket extends WorkbasketSummary {
    * @return the WorkbasketSummary object for the current work basket
    */
   WorkbasketSummary asSummary();
+
+  /**
+   * Duplicates this Workbasket
+   *
+   * @return a copy of this Workbasket
+   */
+  Workbasket clone();
 }

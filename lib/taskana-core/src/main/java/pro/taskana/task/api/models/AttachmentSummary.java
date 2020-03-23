@@ -8,7 +8,7 @@ import pro.taskana.classification.api.models.ClassificationSummary;
  * Interface for AttachmentSummaries. This is a specific short model-object which only contains the
  * most important information.
  */
-public interface AttachmentSummary {
+public interface AttachmentSummary extends Cloneable {
 
   /**
    * Gets the id of the attachment.
@@ -65,4 +65,11 @@ public interface AttachmentSummary {
    * @return received Instant
    */
   Instant getReceived();
+
+  /**
+   * Duplicates this AttachmentSummary
+   *
+   * @return a copy of this AttachmentSummary
+   */
+  AttachmentSummary clone();
 }

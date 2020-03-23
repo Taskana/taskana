@@ -57,4 +57,11 @@ public interface Attachment extends AttachmentSummary {
    * @return the AttachmentSummary object for the current attachment
    */
   AttachmentSummary asSummary();
+
+  /**
+   * Duplicates this Attachment
+   *
+   * @return a copy of this Attachment
+   */
+  Attachment clone();
 }
