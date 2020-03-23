@@ -38,7 +38,6 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   classification: ClassificationDefinition;
   classificationClone: ClassificationDefinition;
   showDetail = false;
-  classificationTypes: Array<string> = [];
   badgeMessage = '';
   requestInProgress = false;
   categories: Array<string> = [];
@@ -87,9 +86,6 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.categoryService.getClassificationTypes().subscribe((classificationTypes: Array<string>) => {
-      this.classificationTypes = classificationTypes;
-    });
     this.classificationSelectedSubscription = this.classificationsService.getSelectedClassification()
       .subscribe(classificationSelected => {
         if (classificationSelected && this.classification

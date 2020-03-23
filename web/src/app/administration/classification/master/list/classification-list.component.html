@@ -9,8 +9,8 @@
 				</taskana-import-export-component>
 			</div>
 			<div class="col-xs-6">
-				<taskana-classification-types-selector class="pull-right" [classificationTypes]="classificationsTypes"
-				 [(classificationTypeSelected)]="classificationTypeSelected" (classificationTypeChanged)=selectClassificationType($event)></taskana-classification-types-selector>
+				<taskana-classification-types-selector class="pull-right" [classificationTypes]="classificationTypes$ | async "
+				 (classificationTypeChanged)=selectClassificationType($event)></taskana-classification-types-selector>
 			</div>
 		</div>
 	</li>
@@ -29,7 +29,7 @@
 					<svg-icon class="blue" src="./assets/icons/asterisk.svg"></svg-icon>
 					All
 				</a>
-				<a *ngFor="let category of categories" type="button" (click)="selectCategory(category);" data-toggle="tooltip"
+				<a *ngFor="let category of categories$ | async" type="button" (click)="selectCategory(category);" data-toggle="tooltip"
 				 [title]="category">
 					<svg-icon class="blue" [src]="getCategoryIcon(category).name" data-toggle="tooltip" [title]="getCategoryIcon(category).text"></svg-icon>
 					{{category}}

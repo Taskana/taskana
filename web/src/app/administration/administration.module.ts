@@ -30,6 +30,11 @@ import { ClassificationDefinitionService } from './services/classification-defin
 import { WorkbasketDefinitionService } from './services/workbasket-definition/workbasket-definition.service';
 import { ImportExportService } from './services/import-export/import-export.service';
 
+/**
+ * Store
+ */
+import { AdministrationStoreModule } from './administration-store';
+
 const MODULES = [
   CommonModule,
   FormsModule,
@@ -39,7 +44,8 @@ const MODULES = [
   SharedModule,
   AdministrationRoutingModule,
   TypeaheadModule,
-  InfiniteScrollModule
+  InfiniteScrollModule,
+  AdministrationStoreModule,
 ];
 
 const DECLARATIONS = [

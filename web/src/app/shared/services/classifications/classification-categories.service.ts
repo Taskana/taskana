@@ -16,10 +16,10 @@ export class ClassificationCategoriesService {
   private dataObsCategories$ = new ReplaySubject<Array<string>>(1);
   private categoriesObject = {};
   private missingIcon = 'assets/icons/categories/missing-icon.svg';
-  private type = 'UNKNOW';
+  private type = 'UNKNOWN';
 
   // type
-  private classificationTypeSelectedValue = 'TASK';
+  private classificationTypeSelectedValue;
   private urlType = `${this.mainUrl}/v1/classification-types`;
   private classificationTypeSelected = new BehaviorSubject<string>(this.classificationTypeSelectedValue);
   private dataObsType$ = new ReplaySubject<Array<string>>(1);

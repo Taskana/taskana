@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
 
 import { TaskanaType } from 'app/models/taskana-type';
 import { Classification } from 'app/models/classification';
@@ -15,6 +16,8 @@ import { AlertModel, AlertType } from '../../../../models/alert';
 import { AlertService } from '../../../../services/alert/alert.service';
 import { ERROR_TYPES } from '../../../../models/errors';
 
+import { ClassificationStoreSelectors, AdministrationState } from '../../../administration-store';
+
 @Component({
   selector: 'taskana-classification-list',
   templateUrl: './classification-list.component.html',
@@ -27,16 +30,14 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
   requestInProgress = false;
   initialized = false;
   inputValue: string;
-  categories: Array<string> = [];
-  classifications: Array<Classification> = [];
-  classificationsTypes: Array<string> = [];
-  classificationTypeSelected: string;
+  classifications: Classification[] = [];
+  classificationTypes$: Observable<string[]>;
+  classificationTypeSelected$: Observable<string>;
+  categories$: Observable<string[]>;
   classificationServiceSubscription: Subscription;
-  classificationTypeServiceSubscription: Subscription;
+  classificationTypeSubscription: Subscription;
   classificationSelectedSubscription: Subscription;
   classificationSavedSubscription: Subscription;
-  selectedClassificationSubscription: Subscription;
-  categoriesSubscription: Subscription;
   importingExportingSubscription: Subscription;
 
   constructor(
@@ -45,23 +46,28 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private categoryService: ClassificationCategoriesService,
     private importExportService: ImportExportService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private store$: Store<AdministrationState.State>,
   ) {
   }
 
   ngOnInit() {
+    this.classificationTypes$ = this.store$.select(ClassificationStoreSelectors.selectClassificationTypes);
+    this.classificationTypeSelected$ = this.store$.select(ClassificationStoreSelectors.selectSelectedClassificationType);
+    this.categories$ = this.store$.select(ClassificationStoreSelectors.selectCategories);
+
     this.classificationSavedSubscription = this.classificationService
       .classificationSavedTriggered()
-      .subscribe(value => {
+      .subscribe(() => {
         this.performRequest(true);
       });
-    this.selectedClassificationSubscription = this.categoryService.getSelectedClassificationType().subscribe(value => {
-      this.classificationTypeSelected = value;
+
+    // this should only be temporary until more actions are implemented
+    this.classificationTypeSubscription = this.classificationTypeSelected$.subscribe(type => {
+      this.categoryService.selectClassificationType(type);
       this.performRequest();
     });
 
-    this.categoriesSubscription = this.categoryService.getCategories(this.classificationTypeSelected)
-      .subscribe((categories: Array<string>) => { this.categories = categories; });
     this.importingExportingSubscription = this.importExportService.getImportingFinished().subscribe((value: Boolean) => {
       this.performRequest(true);
     });
@@ -107,13 +113,9 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
     if (this.classificationSelectedSubscription) { this.classificationSelectedSubscription.unsubscribe(); }
 
     this.classificationServiceSubscription = this.classificationService.getClassifications()
-      .subscribe((classifications: Array<TreeNodeModel>) => {
+      .subscribe((classifications: TreeNodeModel[]) => {
         this.requestInProgress = false;
         this.classifications = classifications;
-        this.classificationTypeServiceSubscription = this.categoryService.getClassificationTypes()
-          .subscribe((classificationsTypes: Array<string>) => {
-            this.classificationsTypes = classificationsTypes;
-          });
       });
     this.classificationSelectedSubscription = this.classificationService.getSelectedClassification()
       .subscribe((classificationSelected: ClassificationDefinition) => {
@@ -126,7 +128,7 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
   private getClassifications(key?: string) {
     this.requestInProgress = true;
     this.classificationService.getClassifications()
-      .subscribe((classifications: Array<TreeNodeModel>) => {
+      .subscribe((classifications: TreeNodeModel[]) => {
         this.classifications = classifications;
         this.requestInProgress = false;
       });
@@ -143,9 +145,9 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.classificationServiceSubscription) { this.classificationServiceSubscription.unsubscribe(); }
-    if (this.classificationTypeServiceSubscription) { this.classificationTypeServiceSubscription.unsubscribe(); }
     if (this.classificationSelectedSubscription) { this.classificationSelectedSubscription.unsubscribe(); }
     if (this.classificationSavedSubscription) { this.classificationSavedSubscription.unsubscribe(); }
     if (this.importingExportingSubscription) { this.importingExportingSubscription.unsubscribe(); }
+    if (this.classificationTypeSubscription) { this.classificationTypeSubscription.unsubscribe(); }
   }
 }

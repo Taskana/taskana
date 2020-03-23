@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { provideMockStore } from '@ngrx/store/testing';
 import { ClassificationTypesSelectorComponent } from './classification-types-selector.component';
 
 describe('ClassificationTypesSelectorComponent', () => {
@@ -7,10 +8,17 @@ describe('ClassificationTypesSelectorComponent', () => {
   let fixture: ComponentFixture<ClassificationTypesSelectorComponent>;
 
   beforeEach(async(() => {
+    const initialState = {
+      Classification: {
+        classificationTypes: ['TASK', 'DOCUMENT'],
+        selectedClassificationType: 'DOCUMENT',
+        categories: ['EXTERNAL'],
+      }
+    };
     TestBed.configureTestingModule({
-      declarations: [ClassificationTypesSelectorComponent]
-    })
-      .compileComponents();
+      declarations: [ClassificationTypesSelectorComponent],
+      providers: [provideMockStore({ initialState })]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
