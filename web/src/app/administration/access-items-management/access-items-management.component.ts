@@ -115,7 +115,6 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
           this.belongingGroups = accessIdsWithGroups.filter(item => item.accessId.includes(this.groupsKey));
           this.searchForAccessItemsWorkbaskets();
         },
-        // new Key: ERROR_TYPES.FETCH_ERR
         error => {
           this.requestInProgressService.setRequestInProgress(false);
           this.errorsService.updateError(ERROR_TYPES.FETCH_ERR, error);
