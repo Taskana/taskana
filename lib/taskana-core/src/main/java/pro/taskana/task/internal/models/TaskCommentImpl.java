@@ -14,6 +14,17 @@ public class TaskCommentImpl implements TaskComment {
   private Instant created;
   private Instant modified;
 
+  public TaskCommentImpl() {}
+
+  private TaskCommentImpl(TaskCommentImpl copyFrom) {
+    id = copyFrom.id;
+    taskId = copyFrom.taskId;
+    textField = copyFrom.textField;
+    creator = copyFrom.creator;
+    created = copyFrom.created;
+    modified = copyFrom.modified;
+  }
+
   @Override
   public String getId() {
     return id;
@@ -45,6 +56,10 @@ public class TaskCommentImpl implements TaskComment {
     return textField;
   }
 
+  public void setTextField(String textField) {
+    this.textField = textField;
+  }
+
   @Override
   public Instant getCreated() {
     return created;
@@ -63,23 +78,18 @@ public class TaskCommentImpl implements TaskComment {
     this.modified = modified;
   }
 
-  public void setTextField(String textField) {
-    this.textField = textField;
-  }
-
   protected boolean canEqual(Object other) {
     return (other instanceof TaskCommentImpl);
   }
 
   @Override
+  public TaskCommentImpl clone() {
+    return new TaskCommentImpl(this);
+  }
+
+  @Override
   public int hashCode() {
-    return Objects.hash(
-        id,
-        taskId,
-        textField,
-        creator,
-        created,
-        modified);
+    return Objects.hash(id, taskId, textField, creator, created, modified);
   }
 
   @Override

@@ -22,6 +22,17 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
 
   AttachmentSummaryImpl() {}
 
+  protected AttachmentSummaryImpl(AttachmentSummaryImpl copyFrom) {
+    id = copyFrom.id;
+    taskId = copyFrom.taskId;
+    created = copyFrom.created;
+    modified = copyFrom.modified;
+    classificationSummary = copyFrom.classificationSummary;
+    objectReference = copyFrom.objectReference;
+    channel = copyFrom.channel;
+    received = copyFrom.received;
+  }
+
   /*
    * (non-Javadoc)
    * @see pro.taskana.impl.AttachmentSummary#getId()
@@ -96,6 +107,10 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
     return channel;
   }
 
+  public void setChannel(String channel) {
+    this.channel = channel;
+  }
+
   /*
    * (non-Javadoc)
    * @see pro.taskana.impl.AttachmentSummary#getClassification()
@@ -122,10 +137,6 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
     this.received = received;
   }
 
-  public void setChannel(String channel) {
-    this.channel = channel;
-  }
-
   // auxiliary method to enable MyBatis access to classificationSummary
   @SuppressWarnings("unused")
   public ClassificationSummaryImpl getClassificationSummaryImpl() {
@@ -140,6 +151,11 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
 
   protected boolean canEqual(Object other) {
     return (!(other instanceof AttachmentSummaryImpl));
+  }
+
+  @Override
+  public AttachmentSummaryImpl clone() {
+    return new AttachmentSummaryImpl(this);
   }
 
   @Override

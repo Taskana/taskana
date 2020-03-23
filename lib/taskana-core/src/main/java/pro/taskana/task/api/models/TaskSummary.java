@@ -12,7 +12,7 @@ import pro.taskana.workbasket.api.models.WorkbasketSummary;
  * Interface for TaskSummary. This is a specific short model-object which only contains the most
  * important information.
  */
-public interface TaskSummary {
+public interface TaskSummary extends Cloneable {
 
   /**
    * Gets the id of the task.
@@ -192,4 +192,11 @@ public interface TaskSummary {
    * @throws InvalidArgumentException if num has not a value of "1", "2" ... "16"
    */
   String getCustomAttribute(String num) throws InvalidArgumentException;
+
+  /**
+   * Duplicates this TaskSummary
+   *
+   * @return a copy of this TaskSummary
+   */
+  TaskSummary clone();
 }

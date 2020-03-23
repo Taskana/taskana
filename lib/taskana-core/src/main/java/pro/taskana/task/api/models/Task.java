@@ -187,4 +187,11 @@ public interface Task extends TaskSummary {
    * @return classificationCategory
    */
   String getClassificationCategory();
+
+  /**
+   * Duplicates this Task
+   *
+   * @return a copy of this Task
+   */
+  Task clone();
 }

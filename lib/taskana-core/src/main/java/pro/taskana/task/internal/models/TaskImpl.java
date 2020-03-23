@@ -29,6 +29,14 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
 
   public TaskImpl() {}
 
+  private TaskImpl(TaskImpl copyFrom) {
+    super(copyFrom);
+    customAttributes = new HashMap<>(copyFrom.customAttributes);
+    callbackInfo = new HashMap<>(copyFrom.callbackInfo);
+    callbackState = copyFrom.callbackState;
+    attachments = new ArrayList<>(copyFrom.attachments);
+  }
+
   public CallbackState getCallbackState() {
     return callbackState;
   }
@@ -170,6 +178,14 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
     return attachments;
   }
 
+  public void setAttachments(List<Attachment> attachments) {
+    if (attachments != null) {
+      this.attachments = attachments;
+    } else if (this.attachments == null) {
+      this.attachments = new ArrayList<>();
+    }
+  }
+
   @Override
   public TaskSummary asSummary() {
     TaskSummaryImpl taskSummary = new TaskSummaryImpl();
@@ -246,20 +262,17 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
     ((ClassificationSummaryImpl) this.classificationSummary).setCategory(classificationCategory);
   }
 
-  public void setAttachments(List<Attachment> attachments) {
-    if (attachments != null) {
-      this.attachments = attachments;
-    } else if (this.attachments == null) {
-      this.attachments = new ArrayList<>();
-    }
-  }
-
   public String getClassificationId() {
     return classificationSummary == null ? null : classificationSummary.getId();
   }
 
   protected boolean canEqual(Object other) {
     return (other instanceof TaskImpl);
+  }
+
+  @Override
+  public TaskImpl clone() {
+    return new TaskImpl(this);
   }
 
   @Override
