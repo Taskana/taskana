@@ -247,7 +247,6 @@ implements OnInit, OnChanges, OnDestroy {
         }
       },
       error => {
-        // new Key ERROR_TYPES.CREATE_ERR_2
         this.errorsService.updateError(ERROR_TYPES.CREATE_ERR_2, error);
         this.requestInProgressService.setRequestInProgress(false);
       }
