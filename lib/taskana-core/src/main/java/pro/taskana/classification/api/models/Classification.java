@@ -177,4 +177,11 @@ public interface Classification extends ClassificationSummary {
    * @return the ClassificationSummary object for the current classification
    */
   ClassificationSummary asSummary();
+
+  /**
+   * Duplicates this Classification
+   *
+   * @return a copy of this Classification
+   */
+  Classification clone();
 }

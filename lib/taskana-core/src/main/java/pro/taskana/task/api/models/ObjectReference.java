@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 
 /** ObjectReference entity. */
-public class ObjectReference {
+public class ObjectReference implements Cloneable {
   private static final Logger LOGGER = LoggerFactory.getLogger(ObjectReference.class);
   private String id;
   private String company;
@@ -15,6 +15,44 @@ public class ObjectReference {
   private String systemInstance;
   private String type;
   private String value;
+
+  public ObjectReference() {}
+
+  private ObjectReference(ObjectReference copyFrom) {
+    id = copyFrom.id;
+    company = copyFrom.company;
+    system = copyFrom.system;
+    systemInstance = copyFrom.systemInstance;
+    type = copyFrom.type;
+    value = copyFrom.value;
+  }
+
+  public static void validate(ObjectReference objectReference, String objRefType, String objName)
+      throws InvalidArgumentException {
+    LOGGER.debug("entry to validateObjectReference()");
+    // check that all values in the ObjectReference are set correctly
+    if (objectReference == null) {
+      throw new InvalidArgumentException(
+          String.format("ObectReferenc %s of %s must not be null.", objRefType, objName));
+    } else if (objectReference.getCompany() == null || objectReference.getCompany().length() == 0) {
+      throw new InvalidArgumentException(
+          String.format("Company of %s of %s must not be empty", objRefType, objName));
+    } else if (objectReference.getSystem() == null || objectReference.getSystem().length() == 0) {
+      throw new InvalidArgumentException(
+          String.format("System of %s of %s must not be empty", objRefType, objName));
+    } else if (objectReference.getSystemInstance() == null
+        || objectReference.getSystemInstance().length() == 0) {
+      throw new InvalidArgumentException(
+          String.format("SystemInstance of %s of %s must not be empty", objRefType, objName));
+    } else if (objectReference.getType() == null || objectReference.getType().length() == 0) {
+      throw new InvalidArgumentException(
+          String.format("Type of %s of %s must not be empty", objRefType, objName));
+    } else if (objectReference.getValue() == null || objectReference.getValue().length() == 0) {
+      throw new InvalidArgumentException(
+          String.format("Value of %s of %s must not be empty", objRefType, objName));
+    }
+    LOGGER.debug("exit from validateObjectReference()");
+  }
 
   public String getId() {
     return id;
@@ -64,31 +102,9 @@ public class ObjectReference {
     this.value = value;
   }
 
-  public static void validate(ObjectReference objectReference, String objRefType, String objName)
-      throws InvalidArgumentException {
-    LOGGER.debug("entry to validateObjectReference()");
-    // check that all values in the ObjectReference are set correctly
-    if (objectReference == null) {
-      throw new InvalidArgumentException(
-          String.format("ObectReferenc %s of %s must not be null.", objRefType, objName));
-    } else if (objectReference.getCompany() == null || objectReference.getCompany().length() == 0) {
-      throw new InvalidArgumentException(
-          String.format("Company of %s of %s must not be empty", objRefType, objName));
-    } else if (objectReference.getSystem() == null || objectReference.getSystem().length() == 0) {
-      throw new InvalidArgumentException(
-          String.format("System of %s of %s must not be empty", objRefType, objName));
-    } else if (objectReference.getSystemInstance() == null
-        || objectReference.getSystemInstance().length() == 0) {
-      throw new InvalidArgumentException(
-          String.format("SystemInstance of %s of %s must not be empty", objRefType, objName));
-    } else if (objectReference.getType() == null || objectReference.getType().length() == 0) {
-      throw new InvalidArgumentException(
-          String.format("Type of %s of %s must not be empty", objRefType, objName));
-    } else if (objectReference.getValue() == null || objectReference.getValue().length() == 0) {
-      throw new InvalidArgumentException(
-          String.format("Value of %s of %s must not be empty", objRefType, objName));
-    }
-    LOGGER.debug("exit from validateObjectReference()");
+  @Override
+  protected ObjectReference clone() {
+    return new ObjectReference(this);
   }
 
   @Override

@@ -64,6 +64,48 @@ public class TaskSummaryImpl implements TaskSummary {
 
   public TaskSummaryImpl() {}
 
+  protected TaskSummaryImpl(TaskSummaryImpl copyFrom) {
+    id = copyFrom.id;
+    externalId = copyFrom.externalId;
+    created = copyFrom.created;
+    claimed = copyFrom.claimed;
+    completed = copyFrom.completed;
+    modified = copyFrom.modified;
+    planned = copyFrom.planned;
+    due = copyFrom.due;
+    name = copyFrom.name;
+    creator = copyFrom.creator;
+    note = copyFrom.note;
+    description = copyFrom.description;
+    priority = copyFrom.priority;
+    state = copyFrom.state;
+    classificationSummary = copyFrom.classificationSummary;
+    workbasketSummary = copyFrom.workbasketSummary;
+    businessProcessId = copyFrom.businessProcessId;
+    parentBusinessProcessId = copyFrom.parentBusinessProcessId;
+    owner = copyFrom.owner;
+    primaryObjRef = copyFrom.primaryObjRef;
+    isRead = copyFrom.isRead;
+    isTransferred = copyFrom.isTransferred;
+    attachmentSummaries = new ArrayList<>(copyFrom.attachmentSummaries);
+    custom1 = copyFrom.custom1;
+    custom2 = copyFrom.custom2;
+    custom3 = copyFrom.custom3;
+    custom4 = copyFrom.custom4;
+    custom5 = copyFrom.custom5;
+    custom6 = copyFrom.custom6;
+    custom7 = copyFrom.custom7;
+    custom8 = copyFrom.custom8;
+    custom9 = copyFrom.custom9;
+    custom10 = copyFrom.custom10;
+    custom11 = copyFrom.custom11;
+    custom12 = copyFrom.custom12;
+    custom13 = copyFrom.custom13;
+    custom14 = copyFrom.custom14;
+    custom15 = copyFrom.custom15;
+    custom16 = copyFrom.custom16;
+  }
+
   /*
    * (non-Javadoc)
    * @see pro.taskana.TaskSummary#getTaskId()
@@ -97,6 +139,10 @@ public class TaskSummaryImpl implements TaskSummary {
   @Override
   public String getCreator() {
     return creator;
+  }
+
+  public void setCreator(String creator) {
+    this.creator = creator;
   }
 
   /*
@@ -276,6 +322,10 @@ public class TaskSummaryImpl implements TaskSummary {
     return attachmentSummaries;
   }
 
+  public void setAttachmentSummaries(List<AttachmentSummary> attachmentSummaries) {
+    this.attachmentSummaries = attachmentSummaries;
+  }
+
   /*
    * (non-Javadoc)
    * @see pro.taskana.TaskSummary#getDomain()
@@ -420,14 +470,6 @@ public class TaskSummaryImpl implements TaskSummary {
       default:
         throw new InvalidArgumentException(String.format(NOT_A_VALID_NUMBER_GET, number));
     }
-  }
-
-  public void setAttachmentSummaries(List<AttachmentSummary> attachmentSummaries) {
-    this.attachmentSummaries = attachmentSummaries;
-  }
-
-  public void setCreator(String creator) {
-    this.creator = creator;
   }
 
   // utility method to allow mybatis access to workbasketSummary
@@ -603,6 +645,11 @@ public class TaskSummaryImpl implements TaskSummary {
 
   protected boolean canEqual(Object other) {
     return (other instanceof TaskSummaryImpl);
+  }
+
+  @Override
+  public TaskSummaryImpl clone() {
+    return new TaskSummaryImpl(this);
   }
 
   @Override

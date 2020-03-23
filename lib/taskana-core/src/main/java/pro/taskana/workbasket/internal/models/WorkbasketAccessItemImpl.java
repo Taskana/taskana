@@ -30,8 +30,31 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
   private boolean permCustom11;
   private boolean permCustom12;
 
-  public WorkbasketAccessItemImpl() {
-    super();
+  public WorkbasketAccessItemImpl() {}
+
+  private WorkbasketAccessItemImpl(WorkbasketAccessItemImpl copyFrom) {
+    id = copyFrom.id;
+    workbasketId = copyFrom.workbasketId;
+    workbasketKey = copyFrom.workbasketKey;
+    accessId = copyFrom.accessId;
+    accessName = copyFrom.accessName;
+    permRead = copyFrom.permRead;
+    permOpen = copyFrom.permOpen;
+    permAppend = copyFrom.permAppend;
+    permTransfer = copyFrom.permTransfer;
+    permDistribute = copyFrom.permDistribute;
+    permCustom1 = copyFrom.permCustom1;
+    permCustom2 = copyFrom.permCustom2;
+    permCustom3 = copyFrom.permCustom3;
+    permCustom4 = copyFrom.permCustom4;
+    permCustom5 = copyFrom.permCustom5;
+    permCustom6 = copyFrom.permCustom6;
+    permCustom7 = copyFrom.permCustom7;
+    permCustom8 = copyFrom.permCustom8;
+    permCustom9 = copyFrom.permCustom9;
+    permCustom10 = copyFrom.permCustom10;
+    permCustom11 = copyFrom.permCustom11;
+    permCustom12 = copyFrom.permCustom12;
   }
 
   /*
@@ -404,6 +427,11 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
   @Override
   public void setPermCustom12(boolean permCustom12) {
     this.permCustom12 = permCustom12;
+  }
+
+  @Override
+  public WorkbasketAccessItemImpl clone() {
+    return new WorkbasketAccessItemImpl(this);
   }
 
   @Override

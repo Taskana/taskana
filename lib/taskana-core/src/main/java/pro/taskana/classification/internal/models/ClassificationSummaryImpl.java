@@ -29,6 +29,28 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
 
   public ClassificationSummaryImpl() {}
 
+  protected ClassificationSummaryImpl(ClassificationSummaryImpl copyFrom) {
+    id = copyFrom.id;
+    applicationEntryPoint = copyFrom.applicationEntryPoint;
+    category = copyFrom.category;
+    domain = copyFrom.domain;
+    key = copyFrom.key;
+    name = copyFrom.name;
+    parentId = copyFrom.parentId;
+    parentKey = copyFrom.parentKey;
+    priority = copyFrom.priority;
+    serviceLevel = copyFrom.serviceLevel;
+    type = copyFrom.type;
+    custom1 = copyFrom.custom1;
+    custom2 = copyFrom.custom2;
+    custom3 = copyFrom.custom3;
+    custom4 = copyFrom.custom4;
+    custom5 = copyFrom.custom5;
+    custom6 = copyFrom.custom6;
+    custom7 = copyFrom.custom7;
+    custom8 = copyFrom.custom8;
+  }
+
   @Override
   public String getId() {
     return id;
@@ -97,14 +119,26 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
     return parentKey;
   }
 
+  public void setParentKey(String parentKey) {
+    this.parentKey = parentKey;
+  }
+
   @Override
   public String getServiceLevel() {
     return serviceLevel;
   }
 
+  public void setServiceLevel(String serviceLevel) {
+    this.serviceLevel = serviceLevel;
+  }
+
   @Override
   public String getApplicationEntryPoint() {
     return this.applicationEntryPoint;
+  }
+
+  public void setApplicationEntryPoint(String applicationEntryPoint) {
+    this.applicationEntryPoint = applicationEntryPoint;
   }
 
   @Override
@@ -188,20 +222,13 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
     this.custom8 = custom8;
   }
 
-  public void setApplicationEntryPoint(String applicationEntryPoint) {
-    this.applicationEntryPoint = applicationEntryPoint;
-  }
-
-  public void setServiceLevel(String serviceLevel) {
-    this.serviceLevel = serviceLevel;
-  }
-
-  public void setParentKey(String parentKey) {
-    this.parentKey = parentKey;
-  }
-
   protected boolean canEqual(Object other) {
     return (other instanceof ClassificationSummaryImpl);
+  }
+
+  @Override
+  public ClassificationSummaryImpl clone() {
+    return new ClassificationSummaryImpl(this);
   }
 
   @Override

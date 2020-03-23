@@ -18,6 +18,11 @@ public class AttachmentImpl extends AttachmentSummaryImpl implements Attachment 
 
   public AttachmentImpl() {}
 
+  private AttachmentImpl(AttachmentImpl copyFrom) {
+    super(copyFrom);
+    customAttributes = new HashMap<>(copyFrom.customAttributes);
+  }
+
   @Override
   public Map<String, String> getCustomAttributes() {
     if (customAttributes == null) {
@@ -47,6 +52,11 @@ public class AttachmentImpl extends AttachmentSummaryImpl implements Attachment 
 
   protected boolean canEqual(Object other) {
     return (!(other instanceof AttachmentImpl));
+  }
+
+  @Override
+  public AttachmentImpl clone() {
+    return new AttachmentImpl(this);
   }
 
   @Override

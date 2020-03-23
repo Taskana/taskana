@@ -27,6 +27,25 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
 
   public WorkbasketSummaryImpl() {}
 
+  protected WorkbasketSummaryImpl(WorkbasketSummaryImpl copyFrom) {
+    id = copyFrom.id;
+    key = copyFrom.key;
+    name = copyFrom.name;
+    description = copyFrom.description;
+    owner = copyFrom.owner;
+    domain = copyFrom.domain;
+    type = copyFrom.type;
+    custom1 = copyFrom.custom1;
+    custom2 = copyFrom.custom2;
+    custom3 = copyFrom.custom3;
+    custom4 = copyFrom.custom4;
+    orgLevel1 = copyFrom.orgLevel1;
+    orgLevel2 = copyFrom.orgLevel2;
+    orgLevel3 = copyFrom.orgLevel3;
+    orgLevel4 = copyFrom.orgLevel4;
+    markedForDeletion = copyFrom.markedForDeletion;
+  }
+
   /*
    * (non-Javadoc)
    * @see pro.taskana.impl.WorkbasketSummary#getId()
@@ -284,6 +303,11 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
         && Objects.equals(orgLevel2, other.orgLevel2)
         && Objects.equals(orgLevel3, other.orgLevel3)
         && Objects.equals(orgLevel4, other.orgLevel4);
+  }
+
+  @Override
+  public WorkbasketSummaryImpl clone() {
+    return new WorkbasketSummaryImpl(this);
   }
 
   @Override

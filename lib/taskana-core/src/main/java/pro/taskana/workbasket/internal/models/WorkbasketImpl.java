@@ -14,6 +14,12 @@ public class WorkbasketImpl extends WorkbasketSummaryImpl implements Workbasket 
 
   public WorkbasketImpl() {}
 
+  private WorkbasketImpl(WorkbasketImpl copyFrom) {
+    super(copyFrom);
+    created = copyFrom.created;
+    modified = copyFrom.modified;
+  }
+
   @Override
   public Instant getCreated() {
     return created;
@@ -97,6 +103,11 @@ public class WorkbasketImpl extends WorkbasketSummaryImpl implements Workbasket 
       return false;
     }
     return Objects.equals(created, other.created) && Objects.equals(modified, other.modified);
+  }
+
+  @Override
+  public WorkbasketImpl clone() {
+    return new WorkbasketImpl(this);
   }
 
   @Override
