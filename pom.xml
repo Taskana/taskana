@@ -57,7 +57,7 @@
         <version.spring.boot>2.2.5.RELEASE</version.spring.boot>
         <version.spring.restdocs>2.0.4.RELEASE</version.spring.restdocs>
         <version.spring.mybatis>2.0.4</version.spring.mybatis>
-        <version.spring.hateos>0.24.0.RELEASE</version.spring.hateos>
+        <version.spring.hateos>1.0.4.RELEASE</version.spring.hateos>
         <version.spring.ldap>2.3.2.RELEASE</version.spring.ldap>
 
         <!-- wildfly dependencies -->
