@@ -14,6 +14,7 @@ import java.net.URL;
 import java.util.HashMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.FieldDescriptor;
@@ -81,8 +82,7 @@ public class TaskCommentControllerRestDocumentation extends BaseRestDocumentatio
 
     allTaskCommentsFieldDescriptors =
         new FieldDescriptor[] {
-          subsectionWithPath("task comments")
-              .description("An Array of task comments")
+          subsectionWithPath("task comments").description("An Array of task comments")
         };
   }
 
@@ -93,7 +93,7 @@ public class TaskCommentControllerRestDocumentation extends BaseRestDocumentatio
             RestDocumentationRequestBuilders.get(
                     restHelper.toUrl(
                         Mapping.URL_TASK_COMMENTS, "TKI:000000000000000000000000000000000000"))
-                .accept("application/hal+json")
+                .accept(MediaTypes.HAL_JSON)
                 .header("Authorization", "Basic YWRtaW46YWRtaW4="))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andDo(
@@ -111,7 +111,7 @@ public class TaskCommentControllerRestDocumentation extends BaseRestDocumentatio
                         Mapping.URL_TASK_COMMENT,
                         "TKI:000000000000000000000000000000000000",
                         "TCI:000000000000000000000000000000000000"))
-                .accept("application/hal+json")
+                .accept(MediaTypes.HAL_JSON)
                 .header("Authorization", "Basic YWRtaW46YWRtaW4="))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andDo(
@@ -152,7 +152,7 @@ public class TaskCommentControllerRestDocumentation extends BaseRestDocumentatio
                         "TKI:000000000000000000000000000000000000",
                         "TCI:000000000000000000000000000000000000"))
                 .header("Authorization", "Basic YWRtaW46YWRtaW4=")
-                .contentType("application/json")
+                .contentType(MediaTypes.HAL_JSON)
                 .content(modifiedTaskComment))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andDo(
@@ -165,16 +165,18 @@ public class TaskCommentControllerRestDocumentation extends BaseRestDocumentatio
   @Test
   void createAndDeleteTaskCommentDocTest() throws Exception {
 
+    String createTaskCommentContent =
+        "{ \"taskId\" : \"TKI:000000000000000000000000000000000000\",\n"
+            + "  \"textField\" : \"some text in textfield\"} ";
+
     MvcResult result =
         this.mockMvc
             .perform(
                 RestDocumentationRequestBuilders.post(
                         restHelper.toUrl(
                             Mapping.URL_TASK_COMMENTS, "TKI:000000000000000000000000000000000000"))
-                    .contentType("application/hal+json")
-                    .content(
-                        "{ \"taskId\" : \"TKI:000000000000000000000000000000000000\",\n"
-                            + "  \"textField\" : \"some text in textfield\"} ")
+                    .contentType(MediaTypes.HAL_JSON)
+                    .content(createTaskCommentContent)
                     .header("Authorization", "Basic YWRtaW46YWRtaW4="))
             .andExpect(MockMvcResultMatchers.status().isCreated())
             .andDo(
@@ -184,8 +186,9 @@ public class TaskCommentControllerRestDocumentation extends BaseRestDocumentatio
                     responseFields(taskCommentFieldDescriptors)))
             .andReturn();
 
-    String content = result.getResponse().getContentAsString();
-    String newId = content.substring(content.indexOf("TCI:"), content.indexOf("TCI:") + 40);
+    String resultContent = result.getResponse().getContentAsString();
+    String newId =
+        resultContent.substring(resultContent.indexOf("TCI:"), resultContent.indexOf("TCI:") + 40);
 
     this.mockMvc
         .perform(
