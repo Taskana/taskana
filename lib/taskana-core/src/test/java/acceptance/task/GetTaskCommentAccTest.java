@@ -86,7 +86,7 @@ public class GetTaskCommentAccTest extends AbstractAccTest {
       userName = "user_1_1",
       groupNames = {"group_1"})
   @Test
-  void testGetNonExistingTaskCommentShouldFail() {
+  void testGetNonExistingTaskCommentFromNonExistingTaskShouldFail() {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
@@ -94,6 +94,38 @@ public class GetTaskCommentAccTest extends AbstractAccTest {
         () ->
             taskService.getTaskComment(
                 "Invalid Task Id", "Definately Non Existing Task Comment Id");
+    assertThatThrownBy(lambda).isInstanceOf(TaskCommentNotFoundException.class);
+  }
+
+  @WithAccessId(
+      userName = "user_1_1",
+      groupNames = {"group_1"})
+  @Test
+  void testGetNonExistingTaskCommentShouldFail() {
+
+    TaskService taskService = taskanaEngine.getTaskService();
+
+    ThrowingCallable lambda =
+        () ->
+            taskService.getTaskComment(
+                "TKI:000000000000000000000000000000000002",
+                "Definately Non Existing Task Comment Id");
+    assertThatThrownBy(lambda).isInstanceOf(TaskCommentNotFoundException.class);
+  }
+
+  @WithAccessId(
+      userName = "user_1_1",
+      groupNames = {"group_1"})
+  @Test
+  void testGetTaskCommentFromDifferentTaskShouldFail() {
+
+    TaskService taskService = taskanaEngine.getTaskService();
+
+    ThrowingCallable lambda =
+        () ->
+            taskService.getTaskComment(
+                "TKI:000000000000000000000000000000000000",
+                "TCI:000000000000000000000000000000000003");
     assertThatThrownBy(lambda).isInstanceOf(TaskCommentNotFoundException.class);
   }
 

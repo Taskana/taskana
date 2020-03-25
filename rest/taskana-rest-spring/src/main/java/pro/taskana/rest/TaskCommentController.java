@@ -140,7 +140,7 @@ public class TaskCommentController {
           String.format(
               "TaskCommentId ('%s') or TaskId ('%s') are not identical with the ids"
                   + " of object in the payload which should be updated",
-              taskCommentId, taskCommentResource.getTaskId()));
+              taskCommentId, taskId));
     }
 
     if (LOGGER.isDebugEnabled()) {
@@ -177,7 +177,7 @@ public class TaskCommentController {
     } else {
       throw new InvalidArgumentException(
           String.format(
-              "TaskId ('%s') is not identical with the taskId of "
+              "TaskId ('%s') is not identical with the taskId of the"
                   + "object in the payload which should be updated.",
               taskCommentResource.getTaskId()));
     }
