@@ -64,6 +64,7 @@ public class TaskanaEngineConfiguration {
       "taskana.classification.types";
   private static final String TASKANA_CLASSIFICATION_CATEGORIES_PROPERTY =
       "taskana.classification.categories";
+  private static final String TASKANA_GERMAN_HOLIDAYS_ENABLED = "taskana.german.holidays.enabled";
   // TASKANA_SCHEMA_VERSION
   private static final String DEFAULT_SCHEMA_NAME = "TASKANA";
 
@@ -135,8 +136,6 @@ public class TaskanaEngineConfiguration {
       this.rolesSeparator = rolesSeparator;
     }
 
-    setGermanPublicHolidaysEnabled(true);
-
     if (dataSource != null) {
       this.dataSource = dataSource;
     } else {
@@ -168,6 +167,17 @@ public class TaskanaEngineConfiguration {
     initDomains(props);
     initClassificationTypes(props);
     initClassificationCategories(props);
+    initGermanHolidaysEnabled(props);
+  }
+
+  private void initGermanHolidaysEnabled(Properties props) {
+    String enabled = props.getProperty(TASKANA_GERMAN_HOLIDAYS_ENABLED);
+    if (enabled != null && ! enabled.isEmpty()) {
+      germanPublicHolidaysEnabled = Boolean.parseBoolean(enabled);
+    } else {
+      germanPublicHolidaysEnabled = false;
+    }
+    LOGGER.debug("GermanPublicHolidaysEnabled = {}", germanPublicHolidaysEnabled);
   }
 
   public static DataSource createDefaultDataSource() {

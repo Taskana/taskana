@@ -994,8 +994,6 @@ public class TaskServiceImpl implements TaskService {
     task.setOwner(null);
     task.setModified(now);
     task.setCompleted(now);
-    task.setClaimed(null);
-    task.setRead(true);
     task.setState(targetState);
     taskMapper.update(task);
     LOGGER.debug("Task '{}' cancelled by user '{}'.", taskId, CurrentUserContext.getUserid());

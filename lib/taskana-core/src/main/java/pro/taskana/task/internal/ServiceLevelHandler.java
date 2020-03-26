@@ -47,9 +47,6 @@ class ServiceLevelHandler {
     this.taskMapper = taskMapper;
     this.attachmentMapper = attachmentMapper;
     this.converter = WorkingDaysToDaysConverter.initialize();
-    if (taskanaEngine.getEngine().getConfiguration().isGermanPublicHolidaysEnabled()) {
-      WorkingDaysToDaysConverter.setGermanPublicHolidaysEnabled(true);
-    }
   }
 
   // use the same algorithm as setPlannedPropertyOfTasksImpl to refresh
