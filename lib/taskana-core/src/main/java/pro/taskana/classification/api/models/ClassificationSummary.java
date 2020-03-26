@@ -4,7 +4,7 @@ package pro.taskana.classification.api.models;
  * Interface for ClassificationSummaries. This is a specific short model-object which only requieres
  * the most important informations. Specific ones can be load afterwards via ID.
  */
-public interface ClassificationSummary extends Cloneable {
+public interface ClassificationSummary {
 
   /**
    * Gets the id of the classification.
@@ -141,9 +141,9 @@ public interface ClassificationSummary extends Cloneable {
   String getCustom8();
 
   /**
-   * Duplicates this ClassificationSummary
+   * Duplicates this ClassificationSummary.
    *
    * @return a copy of this ClassificationSummary
    */
-  ClassificationSummary clone();
+  ClassificationSummary copy();
 }

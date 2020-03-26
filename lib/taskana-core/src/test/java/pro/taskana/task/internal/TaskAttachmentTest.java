@@ -9,15 +9,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import pro.taskana.classification.internal.models.ClassificationImpl;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.AttachmentSummary;
 import pro.taskana.task.api.models.ObjectReference;
-import pro.taskana.task.internal.models.AttachmentImpl;
 import pro.taskana.task.internal.models.TaskImpl;
 
 /**
@@ -25,16 +21,15 @@ import pro.taskana.task.internal.models.TaskImpl;
  * This test should test every interaction with Attachments, which means adding, removing, nulling
  * them.
  */
-@ExtendWith(MockitoExtension.class)
 class TaskAttachmentTest {
 
-  @InjectMocks private TaskImpl cut;
+  private TaskImpl cut = new TaskImpl();
 
   @Test
   void testAddAttachmentWithValidValue() {
-    Attachment attachment1 = createAttachment("ID1", "taskId1");
-    Attachment attachment2 = createAttachment("ID2", "taskId1");
-    Attachment attachment3 = createAttachment("ID3", "taskId1");
+    Attachment attachment1 = CreateTaskModelHelper.createAttachment("ID1", "taskId1");
+    Attachment attachment2 = CreateTaskModelHelper.createAttachment("ID2", "taskId1");
+    Attachment attachment3 = CreateTaskModelHelper.createAttachment("ID3", "taskId1");
 
     cut.addAttachment(attachment1);
     cut.addAttachment(attachment2);
@@ -45,7 +40,7 @@ class TaskAttachmentTest {
 
   @Test
   void testAddNullValue() {
-    Attachment attachment1 = createAttachment("ID1", "taskId1");
+    Attachment attachment1 = CreateTaskModelHelper.createAttachment("ID1", "taskId1");
 
     cut.addAttachment(attachment1);
     cut.addAttachment(null);
@@ -56,8 +51,8 @@ class TaskAttachmentTest {
   @Test
   void testAddSameTwice() {
     // Same values, not same REF. Important.
-    Attachment attachment1 = createAttachment("ID1", "taskId1");
-    Attachment attachment2 = createAttachment("ID1", "taskId1");
+    Attachment attachment1 = CreateTaskModelHelper.createAttachment("ID1", "taskId1");
+    Attachment attachment2 = CreateTaskModelHelper.createAttachment("ID1", "taskId1");
 
     cut.addAttachment(attachment1);
     cut.addAttachment(attachment2);
@@ -75,8 +70,8 @@ class TaskAttachmentTest {
   @Test
   void testRemoveAttachment() {
     // Testing normal way
-    Attachment attachment1 = createAttachment("ID1", "taskId1");
-    Attachment attachment2 = createAttachment("ID2", "taskId1");
+    Attachment attachment1 = CreateTaskModelHelper.createAttachment("ID1", "taskId1");
+    Attachment attachment2 = CreateTaskModelHelper.createAttachment("ID2", "taskId1");
     cut.addAttachment(attachment1);
     cut.addAttachment(attachment2);
 
@@ -88,7 +83,7 @@ class TaskAttachmentTest {
 
   @Test
   void testRemoveLoopStopsAtResult() {
-    Attachment attachment1 = createAttachment("ID2", "taskId1");
+    Attachment attachment1 = CreateTaskModelHelper.createAttachment("ID2", "taskId1");
     // adding same uncommon way to test that the loop will stop.
     cut.getAttachments().add(attachment1);
     cut.getAttachments().add(attachment1);
@@ -110,7 +105,7 @@ class TaskAttachmentTest {
     Map<String, String> customAttr = new HashMap<>();
     customAttr.put("key", "value");
 
-    Attachment attachment1 = createAttachment("ID1", "taskId1");
+    Attachment attachment1 = CreateTaskModelHelper.createAttachment("ID1", "taskId1");
     attachment1.setChannel("channel");
     attachment1.setClassificationSummary(new ClassificationImpl().asSummary());
     attachment1.setReceived(Instant.now());
@@ -142,12 +137,5 @@ class TaskAttachmentTest {
     assertThat(summaries.size(), equalTo(1));
     summaries = cut.asSummary().getAttachmentSummaries();
     assertThat(summaries.size(), equalTo(0));
-  }
-
-  private Attachment createAttachment(String id, String taskId) {
-    AttachmentImpl attachment = new AttachmentImpl();
-    attachment.setId(id);
-    attachment.setTaskId(taskId);
-    return attachment;
   }
 }

@@ -250,6 +250,11 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
     this.markedForDeletion = markedForDeletion;
   }
 
+  @Override
+  public WorkbasketSummaryImpl copy() {
+    return new WorkbasketSummaryImpl(this);
+  }
+
   protected boolean canEqual(Object other) {
     return (other instanceof WorkbasketSummaryImpl);
   }
@@ -303,11 +308,6 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
         && Objects.equals(orgLevel2, other.orgLevel2)
         && Objects.equals(orgLevel3, other.orgLevel3)
         && Objects.equals(orgLevel4, other.orgLevel4);
-  }
-
-  @Override
-  public WorkbasketSummaryImpl clone() {
-    return new WorkbasketSummaryImpl(this);
   }
 
   @Override

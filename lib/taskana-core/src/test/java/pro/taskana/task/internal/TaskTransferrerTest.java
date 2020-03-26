@@ -74,12 +74,12 @@ class TaskTransferrerTest {
     cut = new TaskTransferrer(internalTaskanaEngineMock, taskMapperMock, taskServiceImplMock);
 
     final TaskTransferrer cutSpy = Mockito.spy(cut);
-    Workbasket destinationWorkbasket = TaskServiceImplTest.createWorkbasket("2", "k1");
-    Workbasket sourceWorkbasket = TaskServiceImplTest.createWorkbasket("47", "key47");
-    Classification dummyClassification = TaskServiceImplTest.createDummyClassification();
+    Workbasket destinationWorkbasket = CreateTaskModelHelper.createWorkbasket("2", "k1");
+    Workbasket sourceWorkbasket = CreateTaskModelHelper.createWorkbasket("47", "key47");
+    Classification dummyClassification = CreateTaskModelHelper.createDummyClassification();
     TaskImpl task =
-        TaskServiceImplTest.createUnitTestTask(
-            "1", "Unit Test Task 1", "key47", dummyClassification);
+        CreateTaskModelHelper
+            .createUnitTestTask("1", "Unit Test Task 1", "key47", dummyClassification);
     task.setWorkbasketSummary(sourceWorkbasket.asSummary());
     task.setRead(true);
     when(workbasketServiceMock.getWorkbasket(destinationWorkbasket.getId()))

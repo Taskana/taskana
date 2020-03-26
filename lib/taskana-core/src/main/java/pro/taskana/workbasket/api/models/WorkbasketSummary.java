@@ -6,7 +6,7 @@ import pro.taskana.workbasket.api.WorkbasketType;
  * Interface for WorkbasketSummary. This is a specific short model-object which only contains the
  * most important information.
  */
-public interface WorkbasketSummary extends Cloneable {
+public interface WorkbasketSummary {
 
   /**
    * Gets the id of the workbasket.
@@ -121,9 +121,9 @@ public interface WorkbasketSummary extends Cloneable {
   boolean isMarkedForDeletion();
 
   /**
-   * Duplicates this WorkbasketSummary
+   * Duplicates this WorkbasketSummary.
    *
    * @return a copy of this WorkbasketSummary
    */
-  WorkbasketSummary clone();
+  WorkbasketSummary copy();
 }

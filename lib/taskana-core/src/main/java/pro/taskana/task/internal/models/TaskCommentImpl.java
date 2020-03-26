@@ -16,7 +16,7 @@ public class TaskCommentImpl implements TaskComment {
 
   public TaskCommentImpl() {}
 
-  private TaskCommentImpl(TaskCommentImpl copyFrom) {
+  public TaskCommentImpl(TaskCommentImpl copyFrom) {
     id = copyFrom.id;
     taskId = copyFrom.taskId;
     textField = copyFrom.textField;
@@ -78,13 +78,13 @@ public class TaskCommentImpl implements TaskComment {
     this.modified = modified;
   }
 
-  protected boolean canEqual(Object other) {
-    return (other instanceof TaskCommentImpl);
+  @Override
+  public TaskCommentImpl copy() {
+    return new TaskCommentImpl(this);
   }
 
-  @Override
-  public TaskCommentImpl clone() {
-    return new TaskCommentImpl(this);
+  protected boolean canEqual(Object other) {
+    return (other instanceof TaskCommentImpl);
   }
 
   @Override

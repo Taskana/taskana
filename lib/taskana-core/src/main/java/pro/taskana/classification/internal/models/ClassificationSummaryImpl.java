@@ -222,13 +222,13 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
     this.custom8 = custom8;
   }
 
-  protected boolean canEqual(Object other) {
-    return (other instanceof ClassificationSummaryImpl);
+  @Override
+  public ClassificationSummaryImpl copy() {
+    return new ClassificationSummaryImpl(this);
   }
 
-  @Override
-  public ClassificationSummaryImpl clone() {
-    return new ClassificationSummaryImpl(this);
+  protected boolean canEqual(Object other) {
+    return (other instanceof ClassificationSummaryImpl);
   }
 
   @Override

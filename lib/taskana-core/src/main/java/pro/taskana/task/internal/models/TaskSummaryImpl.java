@@ -472,6 +472,11 @@ public class TaskSummaryImpl implements TaskSummary {
     }
   }
 
+  @Override
+  public TaskSummaryImpl copy() {
+    return new TaskSummaryImpl(this);
+  }
+
   // utility method to allow mybatis access to workbasketSummary
   public WorkbasketSummaryImpl getWorkbasketSummaryImpl() {
     return (WorkbasketSummaryImpl) workbasketSummary;
@@ -645,11 +650,6 @@ public class TaskSummaryImpl implements TaskSummary {
 
   protected boolean canEqual(Object other) {
     return (other instanceof TaskSummaryImpl);
-  }
-
-  @Override
-  public TaskSummaryImpl clone() {
-    return new TaskSummaryImpl(this);
   }
 
   @Override

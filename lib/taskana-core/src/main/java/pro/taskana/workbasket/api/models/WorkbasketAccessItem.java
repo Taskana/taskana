@@ -6,7 +6,7 @@ package pro.taskana.workbasket.api.models;
  *
  * @author bbr
  */
-public interface WorkbasketAccessItem extends Cloneable {
+public interface WorkbasketAccessItem {
 
   /**
    * Returns the current id of the WorkbasketAccessItem.
@@ -317,9 +317,9 @@ public interface WorkbasketAccessItem extends Cloneable {
   void setPermCustom12(boolean permCustom12);
 
   /**
-   * Duplicates this WorkbasketAccessItem
+   * Duplicates this WorkbasketAccessItem.
    *
    * @return a copy of this WorkbasketAccessItem
    */
-  WorkbasketAccessItem clone();
+  WorkbasketAccessItem copy();
 }
