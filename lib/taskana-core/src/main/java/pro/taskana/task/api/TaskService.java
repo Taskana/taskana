@@ -492,7 +492,8 @@ public interface TaskService {
       Instant planned, List<String> taskIds);
 
   /**
-   * Cancels a task.
+   * Cancels a task. Cancellation means a task is obsolete from a business perspective an does not
+   * need to be completed anymore.
    *
    * @param taskId the id of the task to cancel.
    * @return the updated task.
@@ -504,7 +505,8 @@ public interface TaskService {
       throws TaskNotFoundException, InvalidStateException, NotAuthorizedException;
 
   /**
-   * Terminates a task.
+   * Terminates a task. Termination is a administrative action to complete a task. This is typically
+   * done by an administration to correct any technical issue.
    *
    * @param taskId the id of the task to cancel.
    * @return the updated task.

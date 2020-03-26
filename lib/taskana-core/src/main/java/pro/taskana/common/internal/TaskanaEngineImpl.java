@@ -46,6 +46,7 @@ import pro.taskana.common.internal.persistence.InstantTypeHandler;
 import pro.taskana.common.internal.persistence.MapTypeHandler;
 import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.common.internal.security.GroupPrincipal;
+import pro.taskana.common.internal.util.WorkingDaysToDaysConverter;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.monitor.internal.MonitorMapper;
 import pro.taskana.monitor.internal.MonitorServiceImpl;
@@ -87,6 +88,8 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     historyEventProducer = HistoryEventProducer.getInstance(taskanaEngineConfiguration);
     taskRoutingManager = TaskRoutingManager.getInstance(this);
     this.internalTaskanaEngineImpl = new InternalTaskanaEngineImpl();
+    WorkingDaysToDaysConverter.setGermanPublicHolidaysEnabled(
+        taskanaEngineConfiguration.isGermanPublicHolidaysEnabled());
   }
 
   public static TaskanaEngine createTaskanaEngine(
@@ -251,7 +254,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     // register type handlers
     configuration.getTypeHandlerRegistry().register(new MapTypeHandler());
     configuration.getTypeHandlerRegistry().register(Instant.class, new InstantTypeHandler());
-    configuration.getTypeHandlerRegistry().register(JdbcType.TIMESTAMP,new InstantTypeHandler());
+    configuration.getTypeHandlerRegistry().register(JdbcType.TIMESTAMP, new InstantTypeHandler());
     // add mappers
     configuration.addMapper(TaskMapper.class);
     configuration.addMapper(MonitorMapper.class);
