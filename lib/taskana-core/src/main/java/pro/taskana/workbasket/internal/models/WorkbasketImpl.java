@@ -60,6 +60,11 @@ public class WorkbasketImpl extends WorkbasketSummaryImpl implements Workbasket 
     return result;
   }
 
+  @Override
+  public WorkbasketImpl copy() {
+    return new WorkbasketImpl(this);
+  }
+
   protected boolean canEqual(Object other) {
     return (other instanceof WorkbasketImpl);
   }
@@ -103,11 +108,6 @@ public class WorkbasketImpl extends WorkbasketSummaryImpl implements Workbasket 
       return false;
     }
     return Objects.equals(created, other.created) && Objects.equals(modified, other.modified);
-  }
-
-  @Override
-  public WorkbasketImpl clone() {
-    return new WorkbasketImpl(this);
   }
 
   @Override

@@ -335,7 +335,7 @@ public class ClassificationServiceImpl implements ClassificationService {
   private void addClassificationToMasterDomain(ClassificationImpl classificationImpl) {
     if (!Objects.equals(classificationImpl.getDomain(), "")) {
       boolean doesExist = true;
-      ClassificationImpl masterClassification = new ClassificationImpl(classificationImpl);
+      ClassificationImpl masterClassification = classificationImpl.copy();
       masterClassification.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
       masterClassification.setParentKey(classificationImpl.getParentKey());
       masterClassification.setDomain("");

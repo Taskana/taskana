@@ -59,9 +59,9 @@ public interface Attachment extends AttachmentSummary {
   AttachmentSummary asSummary();
 
   /**
-   * Duplicates this Attachment
+   * Duplicates this Attachment.
    *
    * @return a copy of this Attachment
    */
-  Attachment clone();
+  Attachment copy();
 }

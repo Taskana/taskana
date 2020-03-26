@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 
 /** ObjectReference entity. */
-public class ObjectReference implements Cloneable {
+public class ObjectReference {
   private static final Logger LOGGER = LoggerFactory.getLogger(ObjectReference.class);
   private String id;
   private String company;
@@ -102,8 +102,7 @@ public class ObjectReference implements Cloneable {
     this.value = value;
   }
 
-  @Override
-  protected ObjectReference clone() {
+  protected ObjectReference copy() {
     return new ObjectReference(this);
   }
 

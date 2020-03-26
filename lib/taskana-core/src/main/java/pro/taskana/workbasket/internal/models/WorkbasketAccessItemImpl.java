@@ -430,7 +430,7 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
   }
 
   @Override
-  public WorkbasketAccessItemImpl clone() {
+  public WorkbasketAccessItemImpl copy() {
     return new WorkbasketAccessItemImpl(this);
   }
 

@@ -100,6 +100,13 @@ public interface Workbasket extends WorkbasketSummary {
   void setMarkedForDeletion(boolean markedForDeletion);
 
   /**
+   * Duplicates this Workbasket.
+   *
+   * @return a copy of this Workbasket
+   */
+  Workbasket copy();
+
+  /**
    * Sets the owner-ID of the workbasket.
    *
    * @param owner of the current workbasket
@@ -126,11 +133,4 @@ public interface Workbasket extends WorkbasketSummary {
    * @return the WorkbasketSummary object for the current work basket
    */
   WorkbasketSummary asSummary();
-
-  /**
-   * Duplicates this Workbasket
-   *
-   * @return a copy of this Workbasket
-   */
-  Workbasket clone();
 }

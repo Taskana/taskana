@@ -37,6 +37,27 @@ public interface Classification extends ClassificationSummary {
   String getDomain();
 
   /**
+   * Get the logical name of the associated application entry point.
+   *
+   * @return applicationEntryPoint
+   */
+  String getApplicationEntryPoint();
+
+  /**
+   * Set the logical name of the associated application entry point.
+   *
+   * @param applicationEntryPoint The application entry point
+   */
+  void setApplicationEntryPoint(String applicationEntryPoint);
+
+  /**
+   * Duplicates this Classification.
+   *
+   * @return a copy of this Classification
+   */
+  Classification copy();
+
+  /**
    * Get a flag if the classification if currently valid in the used domain.
    *
    * @return isValidInDomain - flag
@@ -102,20 +123,6 @@ public interface Classification extends ClassificationSummary {
   void setServiceLevel(String serviceLevel);
 
   /**
-   * Get the logical name of the associated application entry point.
-   *
-   * @return applicationEntryPoint
-   */
-  String getApplicationEntryPoint();
-
-  /**
-   * Set the logical name of the associated application entry point.
-   *
-   * @param applicationEntryPoint The application entry point
-   */
-  void setApplicationEntryPoint(String applicationEntryPoint);
-
-  /**
    * Set/Change the 1. custom-attribute.
    *
    * @param custom1 the first custom attribute
@@ -177,11 +184,4 @@ public interface Classification extends ClassificationSummary {
    * @return the ClassificationSummary object for the current classification
    */
   ClassificationSummary asSummary();
-
-  /**
-   * Duplicates this Classification
-   *
-   * @return a copy of this Classification
-   */
-  Classification clone();
 }

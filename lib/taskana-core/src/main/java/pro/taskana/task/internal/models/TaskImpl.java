@@ -262,17 +262,17 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
     ((ClassificationSummaryImpl) this.classificationSummary).setCategory(classificationCategory);
   }
 
+  @Override
+  public TaskImpl copy() {
+    return new TaskImpl(this);
+  }
+
   public String getClassificationId() {
     return classificationSummary == null ? null : classificationSummary.getId();
   }
 
   protected boolean canEqual(Object other) {
     return (other instanceof TaskImpl);
-  }
-
-  @Override
-  public TaskImpl clone() {
-    return new TaskImpl(this);
   }
 
   @Override

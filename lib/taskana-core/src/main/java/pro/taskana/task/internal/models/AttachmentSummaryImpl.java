@@ -137,6 +137,11 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
     this.received = received;
   }
 
+  @Override
+  public AttachmentSummaryImpl copy() {
+    return new AttachmentSummaryImpl(this);
+  }
+
   // auxiliary method to enable MyBatis access to classificationSummary
   @SuppressWarnings("unused")
   public ClassificationSummaryImpl getClassificationSummaryImpl() {
@@ -151,11 +156,6 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
 
   protected boolean canEqual(Object other) {
     return (!(other instanceof AttachmentSummaryImpl));
-  }
-
-  @Override
-  public AttachmentSummaryImpl clone() {
-    return new AttachmentSummaryImpl(this);
   }
 
   @Override
