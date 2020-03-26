@@ -3,20 +3,15 @@ package pro.taskana.task.internal;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
 
 import pro.taskana.classification.api.models.Classification;
-import pro.taskana.classification.internal.models.ClassificationImpl;
 import pro.taskana.common.internal.JunitHelper;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.models.Workbasket;
-import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 
 /**
  * Unit Test for TaskServiceImpl.
@@ -27,13 +22,15 @@ class TaskServiceImplTest {
 
   @Test
   void testTaskSummaryEqualsHashCode() throws InterruptedException {
-    Classification classification = createDummyClassification();
-    Workbasket wb = createWorkbasket("WB-ID", "WB-Key");
+    Classification classification = CreateTaskModelHelper.createDummyClassification();
+    Workbasket wb = CreateTaskModelHelper.createWorkbasket("WB-ID", "WB-Key");
     ObjectReference objectReference = JunitHelper.createDefaultObjRef();
-    TaskImpl taskBefore = createUnitTestTask("ID", "taskName", wb.getKey(), classification);
+    TaskImpl taskBefore =
+        CreateTaskModelHelper.createUnitTestTask("ID", "taskName", wb.getKey(), classification);
     taskBefore.setPrimaryObjRef(objectReference);
     Thread.sleep(10);
-    TaskImpl taskAfter = createUnitTestTask("ID", "taskName", wb.getKey(), classification);
+    TaskImpl taskAfter =
+        CreateTaskModelHelper.createUnitTestTask("ID", "taskName", wb.getKey(), classification);
     taskAfter.setPrimaryObjRef(objectReference);
     TaskSummary summaryBefore = taskBefore.asSummary();
     TaskSummary summaryAfter = taskAfter.asSummary();
@@ -57,7 +54,7 @@ class TaskServiceImplTest {
     assertEquals(summaryBefore, summaryAfter);
     assertEquals(summaryBefore.hashCode(), summaryAfter.hashCode());
   }
-
+  
   static TaskImpl createUnitTestTask(
       String id, String name, String workbasketKey, Classification classification) {
     TaskImpl task = new TaskImpl();
@@ -97,4 +94,5 @@ class TaskServiceImplTest {
     workbasket.setName("Workbasket " + id);
     return workbasket;
   }
+  
 }

@@ -50,13 +50,13 @@ public class AttachmentImpl extends AttachmentSummaryImpl implements Attachment 
     return summary;
   }
 
-  protected boolean canEqual(Object other) {
-    return (!(other instanceof AttachmentImpl));
+  @Override
+  public AttachmentImpl copy() {
+    return new AttachmentImpl(this);
   }
 
-  @Override
-  public AttachmentImpl clone() {
-    return new AttachmentImpl(this);
+  protected boolean canEqual(Object other) {
+    return (!(other instanceof AttachmentImpl));
   }
 
   @Override

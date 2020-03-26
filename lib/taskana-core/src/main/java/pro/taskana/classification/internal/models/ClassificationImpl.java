@@ -63,16 +63,6 @@ public class ClassificationImpl extends ClassificationSummaryImpl implements Cla
   }
 
   @Override
-  public String getApplicationEntryPoint() {
-    return applicationEntryPoint;
-  }
-
-  @Override
-  public void setApplicationEntryPoint(String applicationEntryPoint) {
-    this.applicationEntryPoint = applicationEntryPoint;
-  }
-
-  @Override
   public ClassificationSummary asSummary() {
     ClassificationSummaryImpl summary = new ClassificationSummaryImpl();
     summary.setCategory(this.category);
@@ -97,13 +87,23 @@ public class ClassificationImpl extends ClassificationSummaryImpl implements Cla
     return summary;
   }
 
-  protected boolean canEqual(Object other) {
-    return (other instanceof ClassificationImpl);
+  @Override
+  public String getApplicationEntryPoint() {
+    return applicationEntryPoint;
   }
 
   @Override
-  public ClassificationImpl clone() {
+  public void setApplicationEntryPoint(String applicationEntryPoint) {
+    this.applicationEntryPoint = applicationEntryPoint;
+  }
+
+  @Override
+  public ClassificationImpl copy() {
     return new ClassificationImpl(this);
+  }
+
+  protected boolean canEqual(Object other) {
+    return (other instanceof ClassificationImpl);
   }
 
   @Override

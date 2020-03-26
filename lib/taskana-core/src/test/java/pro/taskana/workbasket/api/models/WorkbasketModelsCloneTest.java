@@ -1,0 +1,78 @@
+package pro.taskana.workbasket.api.models;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
+
+import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
+import pro.taskana.workbasket.internal.models.WorkbasketImpl;
+
+class WorkbasketModelsCloneTest {
+
+  @Test
+  void testCloneInWorkbasketSummary() {
+    Workbasket dummyWorkbasketForSummaryTest = new WorkbasketImpl();
+    dummyWorkbasketForSummaryTest.setCustom1("dummyCustom1");
+    dummyWorkbasketForSummaryTest.setCustom2("dummyCustom2");
+    dummyWorkbasketForSummaryTest.setCustom3("dummyCustom3");
+    dummyWorkbasketForSummaryTest.setCustom4("dummyCustom4");
+    dummyWorkbasketForSummaryTest.setDescription("dummyDescription");
+    dummyWorkbasketForSummaryTest.setMarkedForDeletion(false);
+    dummyWorkbasketForSummaryTest.setName("dummyName");
+    dummyWorkbasketForSummaryTest.setOrgLevel1("dummyOrgLevel1");
+    dummyWorkbasketForSummaryTest.setOrgLevel2("dummyOrgLevel2");
+    dummyWorkbasketForSummaryTest.setOrgLevel3("dummyOrgLevel3");
+    dummyWorkbasketForSummaryTest.setOrgLevel4("dummyOrgLevel4");
+    dummyWorkbasketForSummaryTest.setOwner("dummyOwner");
+    WorkbasketSummary dummyWorkbasketSummary = dummyWorkbasketForSummaryTest.asSummary();
+    WorkbasketSummary dummyWorkbasketSummaryCloned = dummyWorkbasketSummary.copy();
+    assertThat(dummyWorkbasketSummaryCloned).isEqualTo(dummyWorkbasketSummary);
+    assertThat(dummyWorkbasketSummaryCloned).isNotSameAs(dummyWorkbasketSummary);
+  }
+
+  @Test
+  void testCloneInWorkbasket() {
+    Workbasket dummyWorkbasket = new WorkbasketImpl();
+    dummyWorkbasket.setCustom1("dummyCustom1");
+    dummyWorkbasket.setCustom2("dummyCustom2");
+    dummyWorkbasket.setCustom3("dummyCustom3");
+    dummyWorkbasket.setCustom4("dummyCustom4");
+    dummyWorkbasket.setDescription("dummyDescription");
+    dummyWorkbasket.setMarkedForDeletion(false);
+    dummyWorkbasket.setName("dummyName");
+    dummyWorkbasket.setOrgLevel1("dummyOrgLevel1");
+    dummyWorkbasket.setOrgLevel2("dummyOrgLevel2");
+    dummyWorkbasket.setOrgLevel3("dummyOrgLevel3");
+    dummyWorkbasket.setOrgLevel4("dummyOrgLevel4");
+    dummyWorkbasket.setOwner("dummyOwner");
+    Workbasket dummyWorkbasketCloned = dummyWorkbasket.copy();
+    assertThat(dummyWorkbasketCloned).isEqualTo(dummyWorkbasket);
+    assertThat(dummyWorkbasketCloned).isNotSameAs(dummyWorkbasket);
+  }
+
+  @Test
+  void testCloneInWorkbasketAccessItem() {
+    WorkbasketAccessItem dummyWorkbasketAccessItem = new WorkbasketAccessItemImpl();
+    dummyWorkbasketAccessItem.setAccessName("dummyAccessName");
+    dummyWorkbasketAccessItem.setPermAppend(false);
+    dummyWorkbasketAccessItem.setPermCustom1(false);
+    dummyWorkbasketAccessItem.setPermCustom2(false);
+    dummyWorkbasketAccessItem.setPermCustom3(false);
+    dummyWorkbasketAccessItem.setPermCustom4(false);
+    dummyWorkbasketAccessItem.setPermCustom5(false);
+    dummyWorkbasketAccessItem.setPermCustom6(false);
+    dummyWorkbasketAccessItem.setPermCustom7(false);
+    dummyWorkbasketAccessItem.setPermCustom8(false);
+    dummyWorkbasketAccessItem.setPermCustom9(false);
+    dummyWorkbasketAccessItem.setPermCustom10(false);
+    dummyWorkbasketAccessItem.setPermCustom11(false);
+    dummyWorkbasketAccessItem.setPermCustom12(false);
+    dummyWorkbasketAccessItem.setPermDistribute(false);
+    dummyWorkbasketAccessItem.setPermOpen(false);
+    dummyWorkbasketAccessItem.setPermRead(false);
+    dummyWorkbasketAccessItem.setPermTransfer(false);
+    WorkbasketAccessItem dummyWorkbasketAccessItemCloned = dummyWorkbasketAccessItem.copy();
+    assertThat(dummyWorkbasketAccessItemCloned).isEqualTo(dummyWorkbasketAccessItem);
+    assertThat(dummyWorkbasketAccessItemCloned).isNotSameAs(dummyWorkbasketAccessItem);
+  }
+}
