@@ -7,8 +7,8 @@ import pro.taskana.spi.history.api.events.TaskanaHistoryEvent;
 
 /** Resource class for {@link TaskanaHistoryEvent}. */
 public class TaskHistoryEventResource extends ResourceSupport {
-  @NotNull private String taskHistoryEventId;
 
+  @NotNull private String taskHistoryEventId;
   private String businessProcessId;
   private String parentBusinessProcessId;
   private String taskId;
@@ -25,15 +25,13 @@ public class TaskHistoryEventResource extends ResourceSupport {
   private String taskClassificationKey;
   private String taskClassificationCategory;
   private String attachmentClassificationKey;
-  private String comment;
   private String oldValue;
   private String newValue;
   private String custom1;
   private String custom2;
   private String custom3;
   private String custom4;
-  private String oldData;
-  private String newData;
+  private String details;
 
   public String getTaskHistoryId() {
     return taskHistoryEventId;
@@ -171,14 +169,6 @@ public class TaskHistoryEventResource extends ResourceSupport {
     this.attachmentClassificationKey = attachmentClassificationKey;
   }
 
-  public String getComment() {
-    return comment;
-  }
-
-  public void setComment(String comment) {
-    this.comment = comment;
-  }
-
   public String getOldValue() {
     return oldValue;
   }
@@ -227,20 +217,12 @@ public class TaskHistoryEventResource extends ResourceSupport {
     this.custom4 = custom4;
   }
 
-  public String getOldData() {
-    return oldData;
+  public String getDetails() {
+    return details;
   }
 
-  public void setOldData(String oldData) {
-    this.oldData = oldData;
-  }
-
-  public String getNewData() {
-    return newData;
-  }
-
-  public void setNewData(String newData) {
-    this.newData = newData;
+  public void setDetails(String details) {
+    this.details = details;
   }
 
   @Override
@@ -268,10 +250,8 @@ public class TaskHistoryEventResource extends ResourceSupport {
         + this.oldValue
         + "newValue= "
         + this.newValue
-        + "oldData= "
-        + this.oldData
-        + "newData= "
-        + this.newData
+        + "details= "
+        + this.details
         + "]";
   }
 }

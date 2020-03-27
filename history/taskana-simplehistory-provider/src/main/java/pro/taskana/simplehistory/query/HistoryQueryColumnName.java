@@ -26,16 +26,13 @@ public enum HistoryQueryColumnName implements QueryColumnName {
   TASK_CLASSIFICATION_KEY("task_classification_key"),
   TASK_CLASSIFICATION_CATEGORY("task_classification_category"),
   ATTACHMENT_CLASSIFICATION_KEY("attachment_classification_key"),
-  COMMENT("comment"),
   OLD_VALUE("old_value"),
   NEW_VALUE("new_value"),
   CUSTOM_1("custom_1"),
   CUSTOM_2("custom_2"),
   CUSTOM_3("custom_3"),
   CUSTOM_4("custom_4"),
-  OLD_DATA("old_data"),
-  NEW_DATA("new_data"),
-  TYPE("type");
+  TYPE("event_Type");
 
   private String name;
 

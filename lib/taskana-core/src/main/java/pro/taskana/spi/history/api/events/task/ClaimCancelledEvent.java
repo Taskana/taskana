@@ -6,7 +6,7 @@ import pro.taskana.task.api.models.Task;
 public class ClaimCancelledEvent extends TaskEvent {
 
   public ClaimCancelledEvent(Task task, String userId) {
-    super(task, userId);
+    super(task, userId,"");
     eventType = "TASK_CLAIM_CANCELLED";
     created = task.getModified();
   }

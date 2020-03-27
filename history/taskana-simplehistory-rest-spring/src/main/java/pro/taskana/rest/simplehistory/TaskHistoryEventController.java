@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,11 +24,15 @@ import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.rest.AbstractPagingController;
 import pro.taskana.rest.resource.PagedResources.PageMetadata;
-import pro.taskana.rest.resource.TaskHistoryEventListAssembler;
 import pro.taskana.rest.resource.TaskHistoryEventListResource;
+import pro.taskana.rest.resource.TaskHistoryEventListResourceAssembler;
+import pro.taskana.rest.resource.TaskHistoryEventResource;
+import pro.taskana.rest.resource.TaskHistoryEventResourceAssembler;
 import pro.taskana.simplehistory.impl.HistoryEventImpl;
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
 import pro.taskana.simplehistory.query.HistoryQuery;
+import pro.taskana.spi.history.api.events.TaskanaHistoryEvent;
+import pro.taskana.spi.history.api.exceptions.TaskanaHistoryEventNotFoundException;
 
 /** Controller for all TaskHistoryEvent related endpoints. */
 @RestController
@@ -129,20 +134,24 @@ public class TaskHistoryEventController extends AbstractPagingController {
 
   private TaskanaEngineConfiguration taskanaEngineConfiguration;
 
+  private TaskHistoryEventResourceAssembler taskHistoryEventResourceAssembler;
+
   public TaskHistoryEventController(
       TaskanaEngineConfiguration taskanaEngineConfiguration,
-      SimpleHistoryServiceImpl simpleHistoryServiceImpl) {
+      SimpleHistoryServiceImpl simpleHistoryServiceImpl,
+      TaskHistoryEventResourceAssembler taskHistoryEventResourceAssembler) {
     this.taskanaEngineConfiguration = taskanaEngineConfiguration;
     this.simpleHistoryService = simpleHistoryServiceImpl;
-    simpleHistoryService.initialize(taskanaEngineConfiguration);
+    this.simpleHistoryService.initialize(taskanaEngineConfiguration);
+    this.taskHistoryEventResourceAssembler = taskHistoryEventResourceAssembler;
   }
 
   @GetMapping
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<TaskHistoryEventListResource> getTaskHistoryEvent(
+  public ResponseEntity<TaskHistoryEventListResource> getTaskHistoryEvents(
       @RequestParam MultiValueMap<String, String> params) throws InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Entry to getTaskHistoryEvent(params= {})", LoggerUtils.mapToString(params));
+      LOGGER.debug("Entry to getTaskHistoryEvents(params= {})", LoggerUtils.mapToString(params));
     }
 
     HistoryQuery query = simpleHistoryService.createHistoryQuery();
@@ -166,17 +175,40 @@ public class TaskHistoryEventController extends AbstractPagingController {
       throw new InvalidArgumentException("Paging information is incomplete.");
     }
 
-    TaskHistoryEventListAssembler assembler = new TaskHistoryEventListAssembler();
+    TaskHistoryEventListResourceAssembler assembler = new TaskHistoryEventListResourceAssembler();
     TaskHistoryEventListResource pagedResources =
         assembler.toResources(historyEvents, pageMetadata);
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
-          "Exit from getTaskHistoryEvent(), returning {}",
+          "Exit from getTaskHistoryEvents(), returning {}",
           new ResponseEntity<>(pagedResources, HttpStatus.OK));
     }
 
     return new ResponseEntity<>(pagedResources, HttpStatus.OK);
+  }
+
+  @GetMapping(path = "/{historyEventId}", produces = "application/hal+json")
+  @Transactional(readOnly = true, rollbackFor = Exception.class)
+  public ResponseEntity<TaskHistoryEventResource> getTaskHistoryEvent(
+      @PathVariable String historyEventId) throws TaskanaHistoryEventNotFoundException {
+
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Entry to getTaskHistoryEvent(historyEventId= {})", historyEventId);
+    }
+
+    TaskanaHistoryEvent resultEvent = simpleHistoryService.getHistoryEvent(historyEventId);
+
+    TaskHistoryEventResource taskEventResource =
+        taskHistoryEventResourceAssembler.toResource(resultEvent);
+
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug(
+          "Exit from getTaskHistoryEvent, returning {}",
+          new ResponseEntity<>(taskEventResource, HttpStatus.OK));
+    }
+
+    return new ResponseEntity<>(taskEventResource, HttpStatus.OK);
   }
 
   private HistoryQuery applySortingParams(HistoryQuery query, MultiValueMap<String, String> params)

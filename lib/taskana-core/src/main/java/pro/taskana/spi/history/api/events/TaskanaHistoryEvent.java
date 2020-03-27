@@ -22,18 +22,20 @@ public class TaskanaHistoryEvent {
   protected String taskClassificationKey;
   protected String taskClassificationCategory;
   protected String attachmentClassificationKey;
-  protected String comment;
   protected String oldValue;
   protected String newValue;
   protected String custom1;
   protected String custom2;
   protected String custom3;
   protected String custom4;
-  protected String oldData;
-  protected String newData;
+  protected String details;
 
-  public TaskanaHistoryEvent(String userId) {
+  public TaskanaHistoryEvent() {
+  }
+
+  public TaskanaHistoryEvent(String userId, String details) {
     this.userId = userId;
+    this.details = details;
   }
 
   public long getId() {
@@ -168,14 +170,6 @@ public class TaskanaHistoryEvent {
     this.attachmentClassificationKey = attachmentClassificationKey;
   }
 
-  public String getComment() {
-    return comment;
-  }
-
-  public void setComment(String comment) {
-    this.comment = comment;
-  }
-
   public String getOldValue() {
     return oldValue;
   }
@@ -224,20 +218,12 @@ public class TaskanaHistoryEvent {
     this.custom4 = custom4;
   }
 
-  public String getOldData() {
-    return oldData;
+  public String getDetails() {
+    return details;
   }
 
-  public void setOldData(String oldData) {
-    this.oldData = oldData;
-  }
-
-  public String getNewData() {
-    return newData;
-  }
-
-  public void setNewData(String newData) {
-    this.newData = newData;
+  public void setDetails(String details) {
+    this.details = details;
   }
 
   @Override
@@ -269,10 +255,8 @@ public class TaskanaHistoryEvent {
         + this.oldValue
         + ", newValue="
         + this.newValue
-        + ", oldData="
-        + this.oldData
-        + ", newData="
-        + this.newData
+        + ", details="
+        + this.details
         + "]";
   }
 }

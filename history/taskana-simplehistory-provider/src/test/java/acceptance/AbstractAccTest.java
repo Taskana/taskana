@@ -103,22 +103,22 @@ public class AbstractAccTest {
    * @param workbasketKey the workbasketKey, the task currently resides in.
    * @param taskId the taskid the event belongs to.
    * @param type the type of the event.
-   * @param comment the individual comment.
    * @param previousWorkbasketId the workbasketId of the previous workbasket (if applicable).
+   * @param userid the ID of the user that triggered the event.
+   * @param details the details of the changes that happened.
    * @return History event object created.
    */
   public static HistoryEventImpl createHistoryEvent(
       String workbasketKey,
       String taskId,
       String type,
-      String comment,
       String previousWorkbasketId,
-      String userid) {
-    HistoryEventImpl historyEvent = new HistoryEventImpl(userid);
+      String userid,
+      String details) {
+    HistoryEventImpl historyEvent = new HistoryEventImpl(userid, details);
     historyEvent.setWorkbasketKey(workbasketKey);
     historyEvent.setTaskId(taskId);
     historyEvent.setEventType(type);
-    historyEvent.setComment(comment);
     historyEvent.setOldValue(previousWorkbasketId);
     return historyEvent;
   }
