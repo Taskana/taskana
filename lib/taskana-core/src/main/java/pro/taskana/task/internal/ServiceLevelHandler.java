@@ -46,6 +46,8 @@ class ServiceLevelHandler {
     this.taskanaEngine = taskanaEngine;
     this.taskMapper = taskMapper;
     this.attachmentMapper = attachmentMapper;
+    WorkingDaysToDaysConverter.setGermanPublicHolidaysEnabled(
+        taskanaEngine.getEngine().getConfiguration().isGermanPublicHolidaysEnabled());
     this.converter = WorkingDaysToDaysConverter.initialize();
   }
 
