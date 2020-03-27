@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.UUID;
 import javax.sql.DataSource;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -397,6 +399,22 @@ class TaskServiceImplIntExplicitTest {
   }
 
   @Test
+  void should_DetermineDifferences_When_DifferentAttributesInTwoTasks() {
+
+    Task newTask = taskServiceImpl.newTask();
+    newTask.setBusinessProcessId("key1");
+    newTask.setOwner("owner1");
+
+    Task oldTask = taskServiceImpl.newTask();
+
+    JSONArray changedAttributes =
+        new JSONObject(taskServiceImpl.determineChangesInTaskAttributes(oldTask, newTask))
+            .getJSONArray("changes");
+
+    assertThat(changedAttributes).hasSize(2);
+  }
+
+  @Test
   void shouldNotTransferAnyTask() throws SQLException {
     try (Connection connection = dataSource.getConnection()) {
       taskanaEngineImpl.setConnection(connection);
@@ -511,6 +529,8 @@ class TaskServiceImplIntExplicitTest {
         .isInstanceOf(NotAuthorizedException.class)
         .hasMessageContaining("TRANSFER");
 
+    assertThat(taskCreated2.isTransferred()).isFalse();
+    assertThat(taskCreated2.getWorkbasketKey()).isNotEqualTo(wbNoAppendCreated.getKey());
     assertThat(taskCreated2.isTransferred()).isFalse();
     assertThat(taskCreated2.getWorkbasketKey()).isNotEqualTo(wbNoAppendCreated.getKey());
   }

@@ -25,19 +25,19 @@ public class QueryHistoryAccTest extends AbstractAccTest {
   @Test
   public void testListValuesAscendingAndDescending() {
     List<String> defaultList =
-        getHistoryService().createHistoryQuery().listValues(HistoryQueryColumnName.COMMENT, null);
+        getHistoryService().createHistoryQuery().listValues(HistoryQueryColumnName.TASK_ID, null);
     List<String> ascendingList =
         getHistoryService()
             .createHistoryQuery()
-            .listValues(HistoryQueryColumnName.COMMENT, SortDirection.ASCENDING);
+            .listValues(HistoryQueryColumnName.TASK_ID, SortDirection.ASCENDING);
 
-    assertThat(ascendingList).hasSize(3);
+    assertThat(ascendingList).hasSize(2);
     assertThat(ascendingList).isEqualTo(defaultList);
 
     List<String> descendingList =
         getHistoryService()
             .createHistoryQuery()
-            .listValues(HistoryQueryColumnName.COMMENT, SortDirection.DESCENDING);
+            .listValues(HistoryQueryColumnName.TASK_ID, SortDirection.DESCENDING);
     Collections.reverse(ascendingList);
 
     assertThat(ascendingList).isEqualTo(descendingList);
@@ -77,7 +77,6 @@ public class QueryHistoryAccTest extends AbstractAccTest {
   public void testCorrectResultWithWrongConstraints() {
     List<HistoryEventImpl> result = getHistoryService().createHistoryQuery().list(1, 1000);
     assertThat(result).hasSize(2);
-    assertThat(result.get(0).getComment()).isEqualTo("created by Peter");
 
     result = getHistoryService().createHistoryQuery().list(100, 1000);
     assertThat(result).isEmpty();
@@ -86,10 +85,10 @@ public class QueryHistoryAccTest extends AbstractAccTest {
   @Test
   public void testSingle() {
     HistoryEventImpl single = getHistoryService().createHistoryQuery().userIdIn("peter").single();
-    assertThat(single.getEventType()).isEqualTo("CREATE");
+    assertThat(single.getEventType()).isEqualTo("TASK_CREATED");
 
-    single = getHistoryService().createHistoryQuery().eventTypeIn("CREATE", "xy").single();
-    assertThat(single.getUserId()).isEqualTo("admin");
+    single = getHistoryService().createHistoryQuery().eventTypeIn("TASK_CREATED", "xy").single();
+    assertThat(single.getUserId()).isEqualTo("peter");
   }
 
   @Test
@@ -121,8 +120,8 @@ public class QueryHistoryAccTest extends AbstractAccTest {
             .list();
     assertThat(returnValues).hasSize(2);
 
-    returnValues = getHistoryService().createHistoryQuery().eventTypeIn("CREATE").list();
-    assertThat(returnValues).hasSize(3);
+    returnValues = getHistoryService().createHistoryQuery().eventTypeIn("TASK_CREATED").list();
+    assertThat(returnValues).hasSize(2);
 
     TimeInterval timeInterval = new TimeInterval(Instant.now().minusSeconds(10), Instant.now());
     returnValues = getHistoryService().createHistoryQuery().createdWithin(timeInterval).list();
@@ -183,31 +182,17 @@ public class QueryHistoryAccTest extends AbstractAccTest {
     returnValues = getHistoryService().createHistoryQuery().custom4In("custom4").list();
     assertThat(returnValues).hasSize(1);
 
-    returnValues = getHistoryService().createHistoryQuery().commentIn("created a bug").list();
-    assertThat(returnValues).hasSize(1);
-
     returnValues = getHistoryService().createHistoryQuery().oldValueIn("old_val").list();
     assertThat(returnValues).hasSize(1);
 
     returnValues = getHistoryService().createHistoryQuery().newValueIn("new_val").list();
     assertThat(returnValues).hasSize(1);
 
-    returnValues = getHistoryService().createHistoryQuery().oldDataIn("123").list();
-    assertThat(returnValues).hasSize(2);
-
-    returnValues = getHistoryService().createHistoryQuery().newDataIn("456").list();
-    assertThat(returnValues).hasSize(3);
     returnValues = getHistoryService().createHistoryQuery().oldValueLike("old%").list();
     assertThat(returnValues).hasSize(1);
 
     returnValues = getHistoryService().createHistoryQuery().newValueLike("new_%").list();
     assertThat(returnValues).hasSize(2);
-
-    returnValues = getHistoryService().createHistoryQuery().oldDataLike("%23%").list();
-    assertThat(returnValues).hasSize(3);
-
-    returnValues = getHistoryService().createHistoryQuery().newDataLike("456%").list();
-    assertThat(returnValues).hasSize(3);
   }
 
   @Test
@@ -229,12 +214,6 @@ public class QueryHistoryAccTest extends AbstractAccTest {
 
     returnValues = getHistoryService().createHistoryQuery().newValueLike("new_%").list();
     assertThat(returnValues).hasSize(2);
-
-    returnValues = getHistoryService().createHistoryQuery().oldDataLike("%23%").list();
-    assertThat(returnValues).hasSize(3);
-
-    returnValues = getHistoryService().createHistoryQuery().newDataLike("456%").list();
-    assertThat(returnValues).hasSize(3);
   }
 
   @Test
@@ -263,7 +242,7 @@ public class QueryHistoryAccTest extends AbstractAccTest {
         getHistoryService()
             .createHistoryQuery()
             .listValues(HistoryQueryColumnName.EVENT_TYPE, null);
-    assertThat(returnedList).hasSize(1);
+    assertThat(returnedList).hasSize(2);
 
     returnedList =
         getHistoryService().createHistoryQuery().listValues(HistoryQueryColumnName.CREATED, null);
@@ -328,10 +307,6 @@ public class QueryHistoryAccTest extends AbstractAccTest {
     assertThat(returnedList).hasSize(2);
 
     returnedList =
-        getHistoryService().createHistoryQuery().listValues(HistoryQueryColumnName.COMMENT, null);
-    assertThat(returnedList).hasSize(3);
-
-    returnedList =
         getHistoryService().createHistoryQuery().listValues(HistoryQueryColumnName.OLD_VALUE, null);
     assertThat(returnedList).hasSize(3);
 
@@ -356,11 +331,7 @@ public class QueryHistoryAccTest extends AbstractAccTest {
     assertThat(returnedList).hasSize(2);
 
     returnedList =
-        getHistoryService().createHistoryQuery().listValues(HistoryQueryColumnName.OLD_DATA, null);
+        getHistoryService().createHistoryQuery().listValues(HistoryQueryColumnName.TYPE, null);
     assertThat(returnedList).hasSize(2);
-
-    returnedList =
-        getHistoryService().createHistoryQuery().listValues(HistoryQueryColumnName.NEW_DATA, null);
-    assertThat(returnedList).hasSize(1);
   }
 }

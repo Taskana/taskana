@@ -13,7 +13,6 @@ import java.util.HashMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.restdocs.RestDocumentationContextProvider;
@@ -36,9 +35,7 @@ import pro.taskana.rest.simplehistory.TaskHistoryRestConfiguration;
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 public class TaskHistoryEventControllerRestDocumentation {
 
-  public RestDocumentationExtension restDocumentation = new RestDocumentationExtension();
   @LocalServerPort int port;
-  @Autowired private WebApplicationContext context;
 
   private MockMvc mockMvc;
 
@@ -49,14 +46,15 @@ public class TaskHistoryEventControllerRestDocumentation {
   private FieldDescriptor[] taskHistoryEventFieldDescriptors;
 
   @BeforeEach
-  public void setUp() {
+  public void setUp(
+      WebApplicationContext webApplicationContext,
+      RestDocumentationContextProvider restDocumentationContextProvider) {
     document("{methodName}", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()));
 
     this.mockMvc =
-        MockMvcBuilders.webAppContextSetup(this.context)
+        MockMvcBuilders.webAppContextSetup(webApplicationContext)
             .apply(
-                documentationConfiguration(
-                        (RestDocumentationContextProvider) this.restDocumentation)
+                documentationConfiguration(restDocumentationContextProvider)
                     .operationPreprocessors()
                     .withResponseDefaults(prettyPrint())
                     .withRequestDefaults(prettyPrint()))
@@ -82,15 +80,14 @@ public class TaskHistoryEventControllerRestDocumentation {
     taskHistoryEventFieldDescriptionsMap.put(
         "taskClassificationCategory", "The category of classification");
     taskHistoryEventFieldDescriptionsMap.put("attachmentClassificationKey", "");
-    taskHistoryEventFieldDescriptionsMap.put("comment", "");
     taskHistoryEventFieldDescriptionsMap.put("oldValue", "The old value");
     taskHistoryEventFieldDescriptionsMap.put("newValue", "The new value");
     taskHistoryEventFieldDescriptionsMap.put("custom1", "A custom property with name \"1\"");
     taskHistoryEventFieldDescriptionsMap.put("custom2", "A custom property with name \"2\"");
     taskHistoryEventFieldDescriptionsMap.put("custom3", "A custom property with name \"3\"");
     taskHistoryEventFieldDescriptionsMap.put("custom4", "A custom property with name \"4\"");
-    taskHistoryEventFieldDescriptionsMap.put("oldData", "The old data");
-    taskHistoryEventFieldDescriptionsMap.put("newData", "The new data");
+    taskHistoryEventFieldDescriptionsMap.put("details", "details of changes within the task");
+
     taskHistoryEventFieldDescriptionsMap.put(
         "_links.self.href", "The links of this task history event");
     taskHistoryEventFieldDescriptionsMap.put(
@@ -114,63 +111,45 @@ public class TaskHistoryEventControllerRestDocumentation {
 
     taskHistoryEventFieldDescriptors =
         new FieldDescriptor[] {
-          fieldWithPath("taskHistoryEvents[].taskHistoryId")
+          fieldWithPath("taskHistoryId")
               .description(taskHistoryEventFieldDescriptionsMap.get("taskHistoryId")),
-          fieldWithPath("taskHistoryEvents[].businessProcessId")
+          fieldWithPath("businessProcessId")
               .description(taskHistoryEventFieldDescriptionsMap.get("businessProcessId")),
-          fieldWithPath("taskHistoryEvents[].parentBusinessProcessId")
+          fieldWithPath("parentBusinessProcessId")
               .description(taskHistoryEventFieldDescriptionsMap.get("parentBusinessProcessId")),
-          fieldWithPath("taskHistoryEvents[].taskId")
-              .description(taskHistoryEventFieldDescriptionsMap.get("taskId")),
-          fieldWithPath("taskHistoryEvents[].eventType")
+          fieldWithPath("taskId").description(taskHistoryEventFieldDescriptionsMap.get("taskId")),
+          fieldWithPath("eventType")
               .description(taskHistoryEventFieldDescriptionsMap.get("eventType")),
-          fieldWithPath("taskHistoryEvents[].created")
-              .description(taskHistoryEventFieldDescriptionsMap.get("created")),
-          fieldWithPath("taskHistoryEvents[].userId")
-              .description(taskHistoryEventFieldDescriptionsMap.get("userId")),
-          fieldWithPath("taskHistoryEvents[].domain")
-              .description(taskHistoryEventFieldDescriptionsMap.get("domain")),
-          fieldWithPath("taskHistoryEvents[].workbasketKey")
+          fieldWithPath("created").description(taskHistoryEventFieldDescriptionsMap.get("created")),
+          fieldWithPath("userId").description(taskHistoryEventFieldDescriptionsMap.get("userId")),
+          fieldWithPath("domain").description(taskHistoryEventFieldDescriptionsMap.get("domain")),
+          fieldWithPath("workbasketKey")
               .description(taskHistoryEventFieldDescriptionsMap.get("workbasketKey")),
-          fieldWithPath("taskHistoryEvents[].porCompany")
+          fieldWithPath("porCompany")
               .description(taskHistoryEventFieldDescriptionsMap.get("porCompany")),
-          fieldWithPath("taskHistoryEvents[].porSystem")
+          fieldWithPath("porSystem")
               .description(taskHistoryEventFieldDescriptionsMap.get("porSystem")),
-          fieldWithPath("taskHistoryEvents[].porInstance")
+          fieldWithPath("porInstance")
               .description(taskHistoryEventFieldDescriptionsMap.get("porInstance")),
-          fieldWithPath("taskHistoryEvents[].porValue")
+          fieldWithPath("porValue")
               .description(taskHistoryEventFieldDescriptionsMap.get("porValue")),
-          fieldWithPath("taskHistoryEvents[].porType")
-              .description(taskHistoryEventFieldDescriptionsMap.get("porType")),
-          fieldWithPath("taskHistoryEvents[].taskClassificationKey")
+          fieldWithPath("porType").description(taskHistoryEventFieldDescriptionsMap.get("porType")),
+          fieldWithPath("taskClassificationKey")
               .description(taskHistoryEventFieldDescriptionsMap.get("taskClassificationKey")),
-          fieldWithPath("taskHistoryEvents[].taskClassificationCategory")
+          fieldWithPath("taskClassificationCategory")
               .description(taskHistoryEventFieldDescriptionsMap.get("taskClassificationCategory")),
-          fieldWithPath("taskHistoryEvents[].attachmentClassificationKey")
+          fieldWithPath("attachmentClassificationKey")
               .description(taskHistoryEventFieldDescriptionsMap.get("attachmentClassificationKey")),
-          fieldWithPath("taskHistoryEvents[].comment")
-              .description(taskHistoryEventFieldDescriptionsMap.get("comment")),
-          fieldWithPath("taskHistoryEvents[].oldValue")
+          fieldWithPath("oldValue")
               .description(taskHistoryEventFieldDescriptionsMap.get("oldValue")),
-          fieldWithPath("taskHistoryEvents[].newValue")
+          fieldWithPath("newValue")
               .description(taskHistoryEventFieldDescriptionsMap.get("newValue")),
-          fieldWithPath("taskHistoryEvents[].custom1")
-              .description(taskHistoryEventFieldDescriptionsMap.get("custom1")),
-          fieldWithPath("taskHistoryEvents[].custom2")
-              .description(taskHistoryEventFieldDescriptionsMap.get("custom2")),
-          fieldWithPath("taskHistoryEvents[].custom3")
-              .description(taskHistoryEventFieldDescriptionsMap.get("custom3")),
-          fieldWithPath("taskHistoryEvents[].custom4")
-              .description(taskHistoryEventFieldDescriptionsMap.get("custom4")),
-          fieldWithPath("taskHistoryEvents[].oldData")
-              .description(taskHistoryEventFieldDescriptionsMap.get("oldData")),
-          fieldWithPath("taskHistoryEvents[].newData")
-              .description(taskHistoryEventFieldDescriptionsMap.get("newData")),
-          fieldWithPath("_links.self.href").ignored(),
-          fieldWithPath("page.size").ignored(),
-          fieldWithPath("page.totalElements").ignored(),
-          fieldWithPath("page.totalPages").ignored(),
-          fieldWithPath("page.number").ignored()
+          fieldWithPath("custom1").description(taskHistoryEventFieldDescriptionsMap.get("custom1")),
+          fieldWithPath("custom2").description(taskHistoryEventFieldDescriptionsMap.get("custom2")),
+          fieldWithPath("custom3").description(taskHistoryEventFieldDescriptionsMap.get("custom3")),
+          fieldWithPath("custom4").description(taskHistoryEventFieldDescriptionsMap.get("custom4")),
+          fieldWithPath("details").description(taskHistoryEventFieldDescriptionsMap.get("details")),
+          fieldWithPath("_links.self.href").ignored()
         };
   }
 
@@ -194,9 +173,7 @@ public class TaskHistoryEventControllerRestDocumentation {
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.get(
-                    "http://127.0.0.1:"
-                        + port
-                        + "/api/v1/task-history-event?business-process-id=BPI:02")
+                    "http://127.0.0.1:" + port + "/api/v1/task-history-event/1")
                 .accept("application/hal+json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isOk())

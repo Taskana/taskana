@@ -5,17 +5,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Collections;
-import javax.sql.DataSource;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,10 +29,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.rest.resource.TaskHistoryEventListResource;
+import pro.taskana.rest.resource.TaskHistoryEventResource;
 import pro.taskana.rest.simplehistory.TaskHistoryRestConfiguration;
-import pro.taskana.rest.simplehistory.sampledata.SampleDataGenerator;
 
 /** Controller for integration test. */
 @EnableAutoConfiguration
@@ -54,25 +49,11 @@ public class TaskHistoryEventControllerIntTest {
 
   String server = "http://127.0.0.1:";
 
-  RestTemplate template;
+  RestTemplate template = getRestTemplate();
 
   HttpEntity<String> request;
 
   @LocalServerPort int port;
-
-  @Autowired private DataSource dataSource;
-
-  @BeforeEach
-  public void beforeEach() {
-    template = getRestTemplate();
-    SampleDataGenerator sampleDataGenerator;
-    try {
-      sampleDataGenerator = new SampleDataGenerator(dataSource);
-      sampleDataGenerator.generateSampleData(schemaName);
-    } catch (SQLException e) {
-      throw new SystemException("tried to reset DB and caught Exception " + e, e);
-    }
-  }
 
   @Test
   public void testGetAllHistoryEvent() {
@@ -83,7 +64,7 @@ public class TaskHistoryEventControllerIntTest {
             request,
             ParameterizedTypeReference.forType(TaskHistoryEventListResource.class));
     assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
-    assertThat(response.getBody().getContent()).hasSize(50);
+    assertThat(response.getBody().getContent()).hasSize(45);
   }
 
   @Test
@@ -102,7 +83,7 @@ public class TaskHistoryEventControllerIntTest {
   }
 
   @Test
-  public void testGetSpecificTaskHistoryEvent() {
+  public void should_ReturnSpecificTaskHistoryEventWithoutDetails_When_ListIsQueried() {
     ResponseEntity<TaskHistoryEventListResource> response =
         template.exchange(
             server
@@ -117,6 +98,21 @@ public class TaskHistoryEventControllerIntTest {
     assertThat(response.getBody().getLinks()).isNotNull();
     assertThat(response.getBody().getMetadata()).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(1);
+    assertThat(response.getBody().getContent().stream().findFirst().get().getDetails()).isNull();
+  }
+
+  @Test
+  public void should_ReturnSpecificTaskHistoryEventWithDetails_When_SingleEventIsQueried() {
+    ResponseEntity<TaskHistoryEventResource> response =
+        template.exchange(
+            server + port + "/api/v1/task-history-event/47",
+            HttpMethod.GET,
+            request,
+            ParameterizedTypeReference.forType(TaskHistoryEventResource.class));
+
+    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLinks()).isNotNull();
+    assertThat(response.getBody().getDetails()).isNotNull();
   }
 
   @Test
@@ -163,7 +159,7 @@ public class TaskHistoryEventControllerIntTest {
             request,
             ParameterizedTypeReference.forType(TaskHistoryEventListResource.class));
     assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
-    assertThat(response.getBody().getContent()).hasSize(25);
+    assertThat(response.getBody().getContent()).hasSize(23);
   }
 
   @Test

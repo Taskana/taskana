@@ -24,6 +24,8 @@ public final class Mapping {
       PRE + "classifications-by-type";
   public static final String URL_CURRENT_USER = PRE + "current-user-info";
   public static final String URL_HISTORY_ENABLED = PRE + "history-provider-enabled";
+  public static final String URL_HISTORY_EVENTS = PRE + "task-history-event";
+  public static final String URL_HISTORY_EVENTS_ID = "/{historyEventId}";
   public static final String URL_VERSION = PRE + "version";
   public static final String URL_TASKS = PRE + "tasks";
   public static final String URL_TASKS_ID = URL_TASKS + "/{taskId}";

@@ -43,15 +43,12 @@ public class HistoryQueryImpl implements HistoryQuery {
   private String[] taskClassificationKeyIn;
   private String[] taskClassificationCategoryIn;
   private String[] attachmentClassificationKeyIn;
-  private String[] commentIn;
   private String[] oldValueIn;
   private String[] newValueIn;
   private String[] custom1In;
   private String[] custom2In;
   private String[] custom3In;
   private String[] custom4In;
-  private String[] oldDataIn;
-  private String[] newDataIn;
 
   private String[] businessProcessIdLike;
   private String[] parentBusinessProcessIdLike;
@@ -68,15 +65,12 @@ public class HistoryQueryImpl implements HistoryQuery {
   private String[] taskClassificationKeyLike;
   private String[] taskClassificationCategoryLike;
   private String[] attachmentClassificationKeyLike;
-  private String[] commentLike;
   private String[] oldValueLike;
   private String[] newValueLike;
   private String[] custom1Like;
   private String[] custom2Like;
   private String[] custom3Like;
   private String[] custom4Like;
-  private String[] oldDataLike;
-  private String[] newDataLike;
 
   public HistoryQueryImpl(
       TaskanaHistoryEngineImpl taskanaHistoryEngineImpl, HistoryQueryMapper historyQueryMapper) {
@@ -190,12 +184,6 @@ public class HistoryQueryImpl implements HistoryQuery {
   }
 
   @Override
-  public HistoryQuery commentIn(String... commentIn) {
-    this.commentIn = toUpperCopy(commentIn);
-    return this;
-  }
-
-  @Override
   public HistoryQuery oldValueIn(String... oldValueIn) {
     this.oldValueIn = toUpperCopy(oldValueIn);
     return this;
@@ -228,18 +216,6 @@ public class HistoryQueryImpl implements HistoryQuery {
   @Override
   public HistoryQuery custom4In(String... custom4) {
     this.custom4In = toUpperCopy(custom4);
-    return this;
-  }
-
-  @Override
-  public HistoryQuery oldDataIn(String... oldDataIn) {
-    this.oldDataIn = toUpperCopy(oldDataIn);
-    return this;
-  }
-
-  @Override
-  public HistoryQuery newDataIn(String... newDataIn) {
-    this.newDataIn = toUpperCopy(newDataIn);
     return this;
   }
 
@@ -334,12 +310,6 @@ public class HistoryQueryImpl implements HistoryQuery {
   }
 
   @Override
-  public HistoryQuery commentLike(String... comment) {
-    this.commentLike = toUpperCopy(comment);
-    return this;
-  }
-
-  @Override
   public HistoryQuery oldValueLike(String... oldValue) {
     this.oldValueLike = toUpperCopy(oldValue);
     return this;
@@ -372,18 +342,6 @@ public class HistoryQueryImpl implements HistoryQuery {
   @Override
   public HistoryQuery custom4Like(String... custom4) {
     this.custom4Like = toUpperCopy(custom4);
-    return this;
-  }
-
-  @Override
-  public HistoryQuery oldDataLike(String... oldData) {
-    this.oldDataLike = toUpperCopy(oldData);
-    return this;
-  }
-
-  @Override
-  public HistoryQuery newDataLike(String... newData) {
-    this.newDataLike = toUpperCopy(newData);
     return this;
   }
 
@@ -468,11 +426,6 @@ public class HistoryQueryImpl implements HistoryQuery {
   }
 
   @Override
-  public HistoryQuery orderByComment(SortDirection sortDirection) {
-    return addOrderCriteria("COMMENT", sortDirection);
-  }
-
-  @Override
   public HistoryQuery orderByOldValue(SortDirection sortDirection) {
     return addOrderCriteria("OLD_VALUE", sortDirection);
   }
@@ -480,16 +433,6 @@ public class HistoryQueryImpl implements HistoryQuery {
   @Override
   public HistoryQuery orderByNewValue(SortDirection sortDirection) {
     return addOrderCriteria("NEW_VALUE", sortDirection);
-  }
-
-  @Override
-  public HistoryQuery orderByOldData(SortDirection sortDirection) {
-    return addOrderCriteria("OLD_DATA", sortDirection);
-  }
-
-  @Override
-  public HistoryQuery orderByNewData(SortDirection sortDirection) {
-    return addOrderCriteria("NEW_DATA", sortDirection);
   }
 
   @Override
@@ -510,7 +453,7 @@ public class HistoryQueryImpl implements HistoryQuery {
             "Custom number has to be between 1 and 4, but this is: " + num);
     }
   }
-
+  
   @Override
   public List<HistoryEventImpl> list() {
     LOGGER.debug("entry to list(), this = {}", this);

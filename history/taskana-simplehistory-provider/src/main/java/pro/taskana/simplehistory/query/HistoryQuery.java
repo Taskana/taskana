@@ -146,14 +146,6 @@ public interface HistoryQuery extends BaseQuery<HistoryEventImpl, HistoryQueryCo
   HistoryQuery attachmentClassificationKeyIn(String... attachmentClassificationKey);
 
   /**
-   * Add your comment to your query.
-   *
-   * @param comment as String
-   * @return the query
-   */
-  HistoryQuery commentIn(String... comment);
-
-  /**
    * Add your oldValue to your query.
    *
    * @param oldValue as String
@@ -200,22 +192,6 @@ public interface HistoryQuery extends BaseQuery<HistoryEventImpl, HistoryQueryCo
    * @return the query
    */
   HistoryQuery custom4In(String... custom4);
-
-  /**
-   * Add your oldData to your query.
-   *
-   * @param oldData as String
-   * @return the query
-   */
-  HistoryQuery oldDataIn(String... oldData);
-
-  /**
-   * Add your newData to your query.
-   *
-   * @param newData as String
-   * @return the query
-   */
-  HistoryQuery newDataIn(String... newData);
 
   /**
    * Add your businessProcessId to your query. It will be compared in SQL with an LIKE. If you use a
@@ -353,15 +329,6 @@ public interface HistoryQuery extends BaseQuery<HistoryEventImpl, HistoryQueryCo
   HistoryQuery attachmentClassificationKeyLike(String... attachmentClassificationKey);
 
   /**
-   * Add your comment to your query. It will be compared in SQL with an LIKE. If you use a wildcard
-   * like % then it will be transmitted to the database.
-   *
-   * @param comment as String
-   * @return the query
-   */
-  HistoryQuery commentLike(String... comment);
-
-  /**
    * Add your oldValue to your query. It will be compared in SQL with an LIKE. If you use a wildcard
    * like % then it will be transmitted to the database.
    *
@@ -414,24 +381,6 @@ public interface HistoryQuery extends BaseQuery<HistoryEventImpl, HistoryQueryCo
    * @return the query
    */
   HistoryQuery custom4Like(String... custom4);
-
-  /**
-   * Add your oldData to your query. It will be compared in SQL with an LIKE. If you use a wildcard
-   * like % then it will be transmitted to the database.
-   *
-   * @param oldData as String
-   * @return the query
-   */
-  HistoryQuery oldDataLike(String... oldData);
-
-  /**
-   * Add your newData to your query. It will be compared in SQL with an LIKE. If you use a wildcard
-   * like % then it will be transmitted to the database.
-   *
-   * @param newData as String
-   * @return the query
-   */
-  HistoryQuery newDataLike(String... newData);
 
   /**
    * Sort the query result by businessProcessId.
@@ -578,15 +527,6 @@ public interface HistoryQuery extends BaseQuery<HistoryEventImpl, HistoryQueryCo
   HistoryQuery orderByAttachmentClassificationKey(SortDirection sortDirection);
 
   /**
-   * Sort the query result by comment.
-   *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
-   * @return the query
-   */
-  HistoryQuery orderByComment(SortDirection sortDirection);
-
-  /**
    * Sort the query result by oldValue.
    *
    * @param sortDirection Determines whether the result is sorted in ascending or descending order.
@@ -605,27 +545,9 @@ public interface HistoryQuery extends BaseQuery<HistoryEventImpl, HistoryQueryCo
   HistoryQuery orderByNewValue(SortDirection sortDirection);
 
   /**
-   * Sort the query result by oldData.
+   * Sort the query result by a custom attribute.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
-   * @return the query
-   */
-  HistoryQuery orderByOldData(SortDirection sortDirection);
-
-  /**
-   * Sort the query result by newData.
-   *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
-   * @return the query
-   */
-  HistoryQuery orderByNewData(SortDirection sortDirection);
-
-  /**
-   * Sort the query result by a custom.
-   *
-   * @param num the number of the custom as String (eg "4")
+   * @param num the number of the custom attribute as String (eg "4")
    * @param sortDirection Determines whether the result is sorted in ascending or descending order.
    *     If sortDirection is null, the result is sorted in ascending order
    * @return the query
