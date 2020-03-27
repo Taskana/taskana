@@ -7,8 +7,8 @@ import pro.taskana.task.api.models.TaskSummary;
 /** Super class for all task related events. */
 public class TaskEvent extends TaskanaHistoryEvent {
 
-  public TaskEvent(Task task, String userId) {
-    super(userId);
+  public TaskEvent(Task task, String userId, String details) {
+    super(userId, details);
     taskId = task.getId();
     businessProcessId = task.getBusinessProcessId();
     parentBusinessProcessId = task.getParentBusinessProcessId();
@@ -31,8 +31,8 @@ public class TaskEvent extends TaskanaHistoryEvent {
     }
   }
 
-  public TaskEvent(TaskSummary task, String userId) {
-    super(userId);
+  public TaskEvent(TaskSummary task, String userId, String details) {
+    super(userId, details);
     taskId = task.getId();
     businessProcessId = task.getBusinessProcessId();
     parentBusinessProcessId = task.getParentBusinessProcessId();
@@ -164,15 +164,17 @@ public class TaskEvent extends TaskanaHistoryEvent {
   @Override
   public String toString() {
     return "TaskEvent [taskId= "
-        + this.taskId
-        + ", businessProcessId= "
-        + this.businessProcessId
-        + ", parentBusinessProcessId= "
-        + this.parentBusinessProcessId
-        + ", domain= "
-        + this.domain
-        + ", workbasketKey= "
-        + this.workbasketKey
-        + "]";
+               + this.taskId
+               + ", businessProcessId= "
+               + this.businessProcessId
+               + ", parentBusinessProcessId= "
+               + this.parentBusinessProcessId
+               + ", domain= "
+               + this.domain
+               + ", workbasketKey= "
+               + this.workbasketKey
+               + ", details= "
+               + this.details
+               + "]";
   }
 }

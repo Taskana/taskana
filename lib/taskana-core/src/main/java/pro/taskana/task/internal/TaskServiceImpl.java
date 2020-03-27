@@ -1,7 +1,9 @@
 package pro.taskana.task.internal;
 
+import java.lang.reflect.Field;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -9,10 +11,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.apache.ibatis.exceptions.PersistenceException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,12 +36,15 @@ import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.CustomPropertySelector;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.security.CurrentUserContext;
+import pro.taskana.common.internal.util.CheckedFunction;
+import pro.taskana.common.internal.util.FieldAndValuePairTriplet;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.common.internal.util.Pair;
 import pro.taskana.spi.history.api.events.task.ClaimCancelledEvent;
 import pro.taskana.spi.history.api.events.task.ClaimedEvent;
 import pro.taskana.spi.history.api.events.task.CompletedEvent;
 import pro.taskana.spi.history.api.events.task.CreatedEvent;
+import pro.taskana.spi.history.api.events.task.UpdatedEvent;
 import pro.taskana.spi.history.internal.HistoryEventProducer;
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.TaskQuery;
@@ -224,7 +232,10 @@ public class TaskServiceImpl implements TaskService {
         this.taskMapper.insert(task);
         LOGGER.debug("Method createTask() created Task '{}'.", task.getId());
         if (HistoryEventProducer.isHistoryEnabled()) {
-          historyEventProducer.createEvent(new CreatedEvent(task, CurrentUserContext.getUserid()));
+
+          String details = determineChangesInTaskAttributes(newTask(), task);
+          historyEventProducer.createEvent(
+              new CreatedEvent(task, CurrentUserContext.getUserid(), details));
         }
       } catch (PersistenceException e) {
         // Error messages:
@@ -420,7 +431,17 @@ public class TaskServiceImpl implements TaskService {
       standardUpdateActions(oldTaskImpl, newTaskImpl);
 
       taskMapper.update(newTaskImpl);
+
       LOGGER.debug("Method updateTask() updated task '{}' for user '{}'.", task.getId(), userId);
+
+      if (HistoryEventProducer.isHistoryEnabled()) {
+
+        String changeDetails = determineChangesInTaskAttributes(oldTaskImpl, newTaskImpl);
+
+        LOGGER.warn(changeDetails);
+        historyEventProducer.createEvent(
+            new UpdatedEvent(task, CurrentUserContext.getUserid(), changeDetails));
+      }
 
     } finally {
       taskanaEngine.returnConnection();
@@ -848,6 +869,60 @@ public class TaskServiceImpl implements TaskService {
       LOGGER.debug("exit from refreshPriorityAndDueDateOfTasks");
       taskanaEngine.returnConnection();
     }
+  }
+
+  protected String determineChangesInTaskAttributes(Task oldTaskImpl, Task newTaskImpl) {
+
+    LOGGER.debug(
+        "Entry to determineChangesInTaskAttributes (oldTaskImpl = {}, newTaskImpl = {}",
+        oldTaskImpl,
+        newTaskImpl);
+
+    List<Field> fields = new ArrayList<>();
+
+    Class<?> currentClass = oldTaskImpl.getClass();
+    while (currentClass.getSuperclass() != null) {
+      fields.addAll(Arrays.asList(currentClass.getDeclaredFields()));
+      currentClass = currentClass.getSuperclass();
+    }
+
+    Predicate<FieldAndValuePairTriplet> areFieldsNotEqual =
+        fieldAndValuePairTriplet ->
+            !Objects.equals(
+                fieldAndValuePairTriplet.getOldValue(), fieldAndValuePairTriplet.getNewValue());
+    Predicate<FieldAndValuePairTriplet> isFieldNotCustomAttributes =
+        fieldAndValuePairTriplet ->
+            !fieldAndValuePairTriplet.getField().getName().equals("customAttributes");
+
+    List<JSONObject> changedAttributes =
+        fields.stream()
+            .peek(field -> field.setAccessible(true))
+            .map(
+                CheckedFunction.wrap(
+                    field ->
+                        new FieldAndValuePairTriplet(
+                            field, field.get(oldTaskImpl), field.get(newTaskImpl))))
+            .filter(areFieldsNotEqual.and(isFieldNotCustomAttributes))
+            .map(
+                fieldAndValuePairTriplet -> {
+                  JSONObject changedAttribute = new JSONObject();
+                  changedAttribute.put("fieldName", fieldAndValuePairTriplet.getField().getName());
+                  changedAttribute.put(
+                      "oldValue",
+                      Optional.ofNullable(fieldAndValuePairTriplet.getOldValue()).orElse(""));
+                  changedAttribute.put(
+                      "newValue",
+                      Optional.ofNullable(fieldAndValuePairTriplet.getNewValue()).orElse(""));
+                  return changedAttribute;
+                })
+            .collect(Collectors.toList());
+
+    JSONObject changes = new JSONObject();
+    changes.put("changes", changedAttributes);
+
+    LOGGER.debug("Exit from determineChangesInTaskAttributes()");
+
+    return changes.toString();
   }
 
   Pair<List<MinimalTaskSummary>, BulkLog> getMinimalTaskSummaries(List<String> argTaskIds) {

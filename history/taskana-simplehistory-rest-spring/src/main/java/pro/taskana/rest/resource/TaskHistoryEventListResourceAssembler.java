@@ -10,14 +10,12 @@ import pro.taskana.rest.simplehistory.TaskHistoryEventController;
 import pro.taskana.simplehistory.impl.HistoryEventImpl;
 
 /** Mapper to convert from a list of HistoryEventImpl to a TaskHistoryEventResource. */
-public class TaskHistoryEventListAssembler extends AbstractRessourcesAssembler {
-
-  public TaskHistoryEventListAssembler() {}
+public class TaskHistoryEventListResourceAssembler extends AbstractRessourcesAssembler {
 
   public TaskHistoryEventListResource toResources(
       List<HistoryEventImpl> historyEvents, PageMetadata pageMetadata) {
 
-    TaskHistoryEventAssembler assembler = new TaskHistoryEventAssembler();
+    TaskHistoryEventResourceAssembler assembler = new TaskHistoryEventResourceAssembler();
     List<TaskHistoryEventResource> resources = assembler.toResources(historyEvents);
     TaskHistoryEventListResource pagedResources =
         new TaskHistoryEventListResource(resources, pageMetadata);

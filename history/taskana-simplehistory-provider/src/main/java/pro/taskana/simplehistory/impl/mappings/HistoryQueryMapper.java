@@ -16,7 +16,7 @@ public interface HistoryQueryMapper {
       "<script>"
           + "SELECT ID, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, TASK_ID, EVENT_TYPE, CREATED, USER_ID, DOMAIN, WORKBASKET_KEY, "
           + "POR_COMPANY, POR_SYSTEM, POR_INSTANCE, POR_TYPE, POR_VALUE, TASK_CLASSIFICATION_KEY, TASK_CLASSIFICATION_CATEGORY,"
-          + "ATTACHMENT_CLASSIFICATION_KEY, COMMENT, OLD_VALUE, NEW_VALUE, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, OLD_DATA, NEW_DATA "
+          + "ATTACHMENT_CLASSIFICATION_KEY, OLD_VALUE, NEW_VALUE, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4 "
           + "FROM HISTORY_EVENTS"
           + "<where>"
           // IN-Queries
@@ -37,15 +37,12 @@ public interface HistoryQueryMapper {
           + "<if test='taskClassificationKeyIn != null'>AND UPPER(TASK_CLASSIFICATION_KEY) IN (<foreach item='item' collection='taskClassificationKeyIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='taskClassificationCategoryIn != null'>AND UPPER(TASK_CLASSIFICATION_CATEGORY) IN (<foreach item='item' collection='taskClassificationCategoryIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='attachmentClassificationKeyIn != null'>AND UPPER(ATTACHMENT_CLASSIFICATION_KEY) IN (<foreach item='item' collection='attachmentClassificationKeyIn' separator=',' >#{item}</foreach>)</if> "
-          + "<if test='commentIn != null'>AND UPPER(COMMENT) IN (<foreach item='item' collection='commentIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='oldValueIn != null'>AND UPPER(OLD_VALUE) IN (<foreach item='item' collection='oldValueIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='newValueIn != null'>AND UPPER(NEW_VALUE) IN (<foreach item='item' collection='newValueIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='custom1In != null'>AND UPPER(CUSTOM_1) IN (<foreach item='item' collection='custom1In' separator=',' >#{item}</foreach>)</if> "
           + "<if test='custom2In != null'>AND UPPER(CUSTOM_2) IN (<foreach item='item' collection='custom2In' separator=',' >#{item}</foreach>)</if> "
           + "<if test='custom3In != null'>AND UPPER(CUSTOM_3) IN (<foreach item='item' collection='custom3In' separator=',' >#{item}</foreach>)</if> "
           + "<if test='custom4In != null'>AND UPPER(CUSTOM_4) IN (<foreach item='item' collection='custom4In' separator=',' >#{item}</foreach>)</if> "
-          + "<if test='oldDataIn != null'>AND UPPER(OLD_DATA) IN (<foreach item='item' collection='oldDataIn' separator=',' >#{item}</foreach>)</if> "
-          + "<if test='newDataIn != null'>AND UPPER(NEW_DATA) IN (<foreach item='item' collection='newDataIn' separator=',' >#{item}</foreach>)</if> "
           // LIKE-Queries
           + "<if test='businessProcessIdLike != null'>AND (<foreach item='item' collection='businessProcessIdLike' separator='OR' > UPPER(BUSINESS_PROCESS_ID) LIKE #{item} </foreach>)</if> "
           + "<if test='parentBusinessProcessIdLike != null'>AND (<foreach item='item' collection='parentBusinessProcessIdLike' separator=' OR ' >UPPER(PARENT_BUSINESS_PROCESS_ID) LIKE #{item}</foreach>)</if> "
@@ -62,15 +59,12 @@ public interface HistoryQueryMapper {
           + "<if test='taskClassificationKeyLike != null'>AND (<foreach item='item' collection='taskClassificationKeyLike' separator=' OR ' >UPPER(TASK_CLASSIFICATION_KEY) LIKE #{item}</foreach>)</if> "
           + "<if test='taskClassificationCategoryLike != null'>AND (<foreach item='item' collection='taskClassificationCategoryLike' separator=' OR ' >UPPER(TASK_CLASSIFICATION_CATEGORY) LIKE #{item}</foreach>)</if> "
           + "<if test='attachmentClassificationKeyLike != null'>AND (<foreach item='item' collection='attachmentClassificationKeyLike' separator=' OR ' >UPPER(ATTACHMENT_CLASSIFICATION_KEY) LIKE #{item}</foreach>)</if> "
-          + "<if test='commentLike != null'>AND (<foreach item='item' collection='commentLike' separator=' OR ' >UPPER(COMMENT) LIKE #{item}</foreach>)</if> "
           + "<if test='oldValueLike != null'>AND (<foreach item='item' collection='oldValueLike' separator=' OR ' >UPPER(OLD_VALUE) LIKE #{item}</foreach>)</if> "
           + "<if test='newValueLike != null'>AND (<foreach item='item' collection='newValueLike' separator=' OR ' >UPPER(NEW_VALUE) LIKE #{item}</foreach>)</if> "
           + "<if test='custom1Like != null'>AND (<foreach item='item' collection='custom1Like' separator=' OR ' >UPPER(CUSTOM_1) LIKE #{item}</foreach>)</if> "
           + "<if test='custom2Like != null'>AND (<foreach item='item' collection='custom2Like' separator=' OR ' >UPPER(CUSTOM_2) LIKE #{item}</foreach>)</if> "
           + "<if test='custom3Like != null'>AND (<foreach item='item' collection='custom3Like' separator=' OR ' >UPPER(CUSTOM_3) LIKE #{item}</foreach>)</if> "
           + "<if test='custom4Like != null'>AND (<foreach item='item' collection='custom4Like' separator=' OR ' >UPPER(CUSTOM_4) LIKE #{item}</foreach>)</if> "
-          + "<if test='oldDataLike != null'>AND (<foreach item='item' collection='oldDataLike' separator=' OR ' >UPPER(OLD_DATA) LIKE #{item}</foreach>)</if> "
-          + "<if test='newDataLike != null'>AND (<foreach item='item' collection='newDataLike' separator=' OR ' >UPPER(NEW_DATA) LIKE #{item}</foreach>)</if> "
           + "</where>"
           + "<if test='!orderBy.isEmpty()'>ORDER BY <foreach item='item' collection='orderBy' separator=',' >${item}</foreach></if> "
           + "<if test='maxRows > 0'> FETCH FIRST #{maxRows} ROWS ONLY </if>"
@@ -94,15 +88,12 @@ public interface HistoryQueryMapper {
         @Result(property = "taskClassificationKey", column = "TASK_CLASSIFICATION_KEY"),
         @Result(property = "taskClassificationCategory", column = "TASK_CLASSIFICATION_CATEGORY"),
         @Result(property = "attachmentClassificationKey", column = "ATTACHMENT_CLASSIFICATION_KEY"),
-        @Result(property = "comment", column = "COMMENT"),
         @Result(property = "oldValue", column = "OLD_VALUE"),
         @Result(property = "newValue", column = "NEW_VALUE"),
         @Result(property = "custom1", column = "CUSTOM_1"),
         @Result(property = "custom2", column = "CUSTOM_2"),
         @Result(property = "custom3", column = "CUSTOM_3"),
-        @Result(property = "custom4", column = "CUSTOM_4"),
-        @Result(property = "oldData", column = "OLD_DATA"),
-        @Result(property = "newData", column = "NEW_DATA")
+        @Result(property = "custom4", column = "CUSTOM_4")
       })
   List<HistoryEventImpl> queryHistoryEvent(HistoryQueryImpl historyEventQuery);
 
@@ -128,15 +119,12 @@ public interface HistoryQueryMapper {
           + "<if test='taskClassificationKeyIn != null'>AND UPPER(TASK_CLASSIFICATION_KEY) IN (<foreach item='item' collection='taskClassificationKeyIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='taskClassificationCategoryIn != null'>AND UPPER(TASK_CLASSIFICATION_CATEGORY) IN (<foreach item='item' collection='taskClassificationCategoryIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='attachmentClassificationKeyIn != null'>AND UPPER(ATTACHMENT_CLASSIFICATION_KEY) IN (<foreach item='item' collection='attachmentClassificationKeyIn' separator=',' >#{item}</foreach>)</if> "
-          + "<if test='commentIn != null'>AND UPPER(COMMENT) IN (<foreach item='item' collection='commentIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='oldValueIn != null'>AND UPPER(OLD_VALUE) IN (<foreach item='item' collection='oldValueIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='newValueIn != null'>AND UPPER(NEW_VALUE) IN (<foreach item='item' collection='newValueIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='custom1In != null'>AND UPPER(CUSTOM_1) IN (<foreach item='item' collection='custom1In' separator=',' >#{item}</foreach>)</if> "
           + "<if test='custom2In != null'>AND UPPER(CUSTOM_2) IN (<foreach item='item' collection='custom2In' separator=',' >#{item}</foreach>)</if> "
           + "<if test='custom3In != null'>AND UPPER(CUSTOM_3) IN (<foreach item='item' collection='custom3In' separator=',' >#{item}</foreach>)</if> "
           + "<if test='custom4In != null'>AND UPPER(CUSTOM_4) IN (<foreach item='item' collection='custom4In' separator=',' >#{item}</foreach>)</if> "
-          + "<if test='oldDataIn != null'>AND UPPER(OLD_DATA) IN (<foreach item='item' collection='oldDataIn' separator=',' >#{item}</foreach>)</if> "
-          + "<if test='newDataIn != null'>AND UPPER(NEW_DATA) IN (<foreach item='item' collection='newDataIn' separator=',' >#{item}</foreach>)</if> "
           // LIKE-Queries
           + "<if test='businessProcessIdLike != null'>AND (<foreach item='item' collection='businessProcessIdLike' separator='OR' > UPPER(BUSINESS_PROCESS_ID) LIKE #{item} </foreach>)</if> "
           + "<if test='parentBusinessProcessIdLike != null'>AND (<foreach item='item' collection='parentBusinessProcessIdLike' separator=' OR ' >UPPER(PARENT_BUSINESS_PROCESS_ID) LIKE #{item}</foreach>)</if> "
@@ -153,15 +141,12 @@ public interface HistoryQueryMapper {
           + "<if test='taskClassificationKeyLike != null'>AND (<foreach item='item' collection='taskClassificationKeyLike' separator=' OR ' >UPPER(TASK_CLASSIFICATION_KEY) LIKE #{item}</foreach>)</if> "
           + "<if test='taskClassificationCategoryLike != null'>AND (<foreach item='item' collection='taskClassificationCategoryLike' separator=' OR ' >UPPER(TASK_CLASSIFICATION_CATEGORY) LIKE #{item}</foreach>)</if> "
           + "<if test='attachmentClassificationKeyLike != null'>AND (<foreach item='item' collection='attachmentClassificationKeyLike' separator=' OR ' >UPPER(ATTACHMENT_CLASSIFICATION_KEY) LIKE #{item}</foreach>)</if> "
-          + "<if test='commentLike != null'>AND (<foreach item='item' collection='commentLike' separator=' OR ' >UPPER(COMMENT) LIKE #{item}</foreach>)</if> "
           + "<if test='oldValueLike != null'>AND (<foreach item='item' collection='oldValueLike' separator=' OR ' >UPPER(OLD_VALUE) LIKE #{item}</foreach>)</if> "
           + "<if test='newValueLike != null'>AND (<foreach item='item' collection='newValueLike' separator=' OR ' >UPPER(NEW_VALUE) LIKE #{item}</foreach>)</if> "
           + "<if test='custom1Like != null'>AND (<foreach item='item' collection='custom1Like' separator=' OR ' >UPPER(CUSTOM_1) LIKE #{item}</foreach>)</if> "
           + "<if test='custom2Like != null'>AND (<foreach item='item' collection='custom2Like' separator=' OR ' >UPPER(CUSTOM_2) LIKE #{item}</foreach>)</if> "
           + "<if test='custom3Like != null'>AND (<foreach item='item' collection='custom3Like' separator=' OR ' >UPPER(CUSTOM_3) LIKE #{item}</foreach>)</if> "
           + "<if test='custom4Like != null'>AND (<foreach item='item' collection='custom4Like' separator=' OR ' >UPPER(CUSTOM_4) LIKE #{item}</foreach>)</if> "
-          + "<if test='oldDataLike != null'>AND (<foreach item='item' collection='oldDataLike' separator=' OR ' >UPPER(OLD_DATA) LIKE #{item}</foreach>)</if> "
-          + "<if test='newDataLike != null'>AND (<foreach item='item' collection='newDataLike' separator=' OR ' >UPPER(NEW_DATA) LIKE #{item}</foreach>)</if> "
           + "</where>"
           + "</script>")
   long countHistoryEvent(HistoryQueryImpl historyEventQuery);
@@ -188,15 +173,12 @@ public interface HistoryQueryMapper {
           + "<if test='taskClassificationKeyIn != null'>AND UPPER(TASK_CLASSIFICATION_KEY) IN (<foreach item='item' collection='taskClassificationKeyIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='taskClassificationCategoryIn != null'>AND UPPER(TASK_CLASSIFICATION_CATEGORY) IN (<foreach item='item' collection='taskClassificationCategoryIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='attachmentClassificationKeyIn != null'>AND UPPER(ATTACHMENT_CLASSIFICATION_KEY) IN (<foreach item='item' collection='attachmentClassificationKeyIn' separator=',' >#{item}</foreach>)</if> "
-          + "<if test='commentIn != null'>AND UPPER(COMMENT) IN (<foreach item='item' collection='commentIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='oldValueIn != null'>AND UPPER(OLD_VALUE) IN (<foreach item='item' collection='oldValueIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='newValueIn != null'>AND UPPER(NEW_VALUE) IN (<foreach item='item' collection='newValueIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='custom1In != null'>AND UPPER(CUSTOM_1) IN (<foreach item='item' collection='custom1In' separator=',' >#{item}</foreach>)</if> "
           + "<if test='custom2In != null'>AND UPPER(CUSTOM_2) IN (<foreach item='item' collection='custom2In' separator=',' >#{item}</foreach>)</if> "
           + "<if test='custom3In != null'>AND UPPER(CUSTOM_3) IN (<foreach item='item' collection='custom3In' separator=',' >#{item}</foreach>)</if> "
           + "<if test='custom4In != null'>AND UPPER(CUSTOM_4) IN (<foreach item='item' collection='custom4In' separator=',' >#{item}</foreach>)</if> "
-          + "<if test='oldDataIn != null'>AND UPPER(OLD_DATA) IN (<foreach item='item' collection='oldDataIn' separator=',' >#{item}</foreach>)</if> "
-          + "<if test='newDataIn != null'>AND UPPER(NEW_DATA) IN (<foreach item='item' collection='newDataIn' separator=',' >#{item}</foreach>)</if> "
           // LIKE-Queries
           + "<if test='businessProcessIdLike != null'>AND (<foreach item='item' collection='businessProcessIdLike' separator='OR' > UPPER(BUSINESS_PROCESS_ID) LIKE #{item} </foreach>)</if> "
           + "<if test='parentBusinessProcessIdLike != null'>AND (<foreach item='item' collection='parentBusinessProcessIdLike' separator=' OR ' >UPPER(PARENT_BUSINESS_PROCESS_ID) LIKE #{item}</foreach>)</if> "
@@ -213,15 +195,12 @@ public interface HistoryQueryMapper {
           + "<if test='taskClassificationKeyLike != null'>AND (<foreach item='item' collection='taskClassificationKeyLike' separator=' OR ' >UPPER(TASK_CLASSIFICATION_KEY) LIKE #{item}</foreach>)</if> "
           + "<if test='taskClassificationCategoryLike != null'>AND (<foreach item='item' collection='taskClassificationCategoryLike' separator=' OR ' >UPPER(TASK_CLASSIFICATION_CATEGORY) LIKE #{item}</foreach>)</if> "
           + "<if test='attachmentClassificationKeyLike != null'>AND (<foreach item='item' collection='attachmentClassificationKeyLike' separator=' OR ' >UPPER(ATTACHMENT_CLASSIFICATION_KEY) LIKE #{item}</foreach>)</if> "
-          + "<if test='commentLike != null'>AND (<foreach item='item' collection='commentLike' separator=' OR ' >UPPER(COMMENT) LIKE #{item}</foreach>)</if> "
           + "<if test='oldValueLike != null'>AND (<foreach item='item' collection='oldValueLike' separator=' OR ' >UPPER(OLD_VALUE) LIKE #{item}</foreach>)</if> "
           + "<if test='newValueLike != null'>AND (<foreach item='item' collection='newValueLike' separator=' OR ' >UPPER(NEW_VALUE) LIKE #{item}</foreach>)</if> "
           + "<if test='custom1Like != null'>AND (<foreach item='item' collection='custom1Like' separator=' OR ' >UPPER(CUSTOM_1) LIKE #{item}</foreach>)</if> "
           + "<if test='custom2Like != null'>AND (<foreach item='item' collection='custom2Like' separator=' OR ' >UPPER(CUSTOM_2) LIKE #{item}</foreach>)</if> "
           + "<if test='custom3Like != null'>AND (<foreach item='item' collection='custom3Like' separator=' OR ' >UPPER(CUSTOM_3) LIKE #{item}</foreach>)</if> "
           + "<if test='custom4Like != null'>AND (<foreach item='item' collection='custom4Like' separator=' OR ' >UPPER(CUSTOM_4) LIKE #{item}</foreach>)</if> "
-          + "<if test='oldDataLike != null'>AND (<foreach item='item' collection='oldDataLike' separator=' OR ' >UPPER(OLD_DATA) LIKE #{item}</foreach>)</if> "
-          + "<if test='newDataLike != null'>AND (<foreach item='item' collection='newDataLike' separator=' OR ' >UPPER(NEW_DATA) LIKE #{item}</foreach>)</if> "
           + "</where>"
           + "<if test='!orderBy.isEmpty()'>ORDER BY <foreach item='item' collection='orderBy' separator=',' >${item}</foreach></if> "
           + "</script>")

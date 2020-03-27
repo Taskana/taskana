@@ -11,6 +11,7 @@ import pro.taskana.simplehistory.impl.mappings.HistoryQueryMapper;
 import pro.taskana.simplehistory.query.HistoryQuery;
 import pro.taskana.spi.history.api.TaskanaHistory;
 import pro.taskana.spi.history.api.events.TaskanaHistoryEvent;
+import pro.taskana.spi.history.api.exceptions.TaskanaHistoryEventNotFoundException;
 
 /** This is the implementation of TaskanaHistory. */
 public class SimpleHistoryServiceImpl implements TaskanaHistory {
@@ -52,6 +53,32 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
     } finally {
       taskanaHistoryEngine.returnConnection();
       LOGGER.debug("Exit from create(TaskanaHistoryEvent event). Returning object = {}.", event);
+    }
+  }
+
+  @Override
+  public TaskanaHistoryEvent getHistoryEvent(String historyEventId)
+      throws TaskanaHistoryEventNotFoundException {
+    LOGGER.debug("entry to getHistoryEvent (id = {})", historyEventId);
+    TaskanaHistoryEvent resultEvent = null;
+    try {
+      taskanaHistoryEngine.openConnection();
+      resultEvent = historyEventMapper.findById(historyEventId);
+
+      if (resultEvent == null) {
+        throw new TaskanaHistoryEventNotFoundException(
+            historyEventId,
+            String.format("TaskanaHistoryEvent for id %s was not found", historyEventId));
+      }
+
+      return resultEvent;
+
+    } catch (SQLException e) {
+      LOGGER.error("Caught exception while trying to retrieve a history event", e);
+      return resultEvent;
+    } finally {
+      taskanaHistoryEngine.returnConnection();
+      LOGGER.debug("exit from getHistoryEvent(). Returning result {} ", resultEvent);
     }
   }
 

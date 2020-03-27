@@ -53,7 +53,6 @@ public class HistoryQueryImplTest {
             .workbasketKeyIn(
                 "T22", "some_long_long, long loooooooooooooooooooooooooooooooooooong String.")
             .userIdIn("BV")
-            .commentLike("%as important")
             .createdWithin(interval)
             .list();
 
@@ -66,13 +65,12 @@ public class HistoryQueryImplTest {
       String workbasketKey,
       String type,
       String userId,
-      String comment,
+      String details,
       Instant created) {
-    HistoryEventImpl he = new HistoryEventImpl(userId);
+    HistoryEventImpl he = new HistoryEventImpl(userId, details);
     he.setTaskId(taskId);
     he.setWorkbasketKey(workbasketKey);
     he.setEventType(type);
-    he.setComment(comment);
     he.setCreated(created);
     return he;
   }

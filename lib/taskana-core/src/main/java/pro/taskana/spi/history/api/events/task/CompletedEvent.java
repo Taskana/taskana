@@ -7,13 +7,13 @@ import pro.taskana.task.api.models.TaskSummary;
 public class CompletedEvent extends TaskEvent {
 
   public CompletedEvent(Task completedTask, String userId) {
-    super(completedTask, userId);
+    super(completedTask, userId,"");
     eventType = "TASK_COMPLETED";
     created = completedTask.getCompleted();
   }
 
   public CompletedEvent(TaskSummary completedTask, String userId) {
-    super(completedTask, userId);
+    super(completedTask, userId,"");
     eventType = "TASK_COMPLETED";
     created = completedTask.getCompleted();
   }
