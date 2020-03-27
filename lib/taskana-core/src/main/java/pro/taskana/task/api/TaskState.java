@@ -8,7 +8,7 @@ public enum TaskState {
   CANCELLED,
   TERMINATED;
 
-  public boolean isInStates(TaskState... states) {
+  public boolean in(TaskState... states) {
     for (TaskState currState : states) {
       if (this.equals(currState)) {
         return true;

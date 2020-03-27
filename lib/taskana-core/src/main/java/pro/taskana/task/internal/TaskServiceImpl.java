@@ -991,7 +991,6 @@ public class TaskServiceImpl implements TaskService {
     }
 
     Instant now = Instant.now();
-    task.setOwner(null);
     task.setModified(now);
     task.setCompleted(now);
     task.setState(targetState);
@@ -1036,7 +1035,7 @@ public class TaskServiceImpl implements TaskService {
       taskanaEngine.openConnection();
       task = (TaskImpl) getTask(taskId);
       TaskState state = task.getState();
-      if (!state.isInStates(TaskState.READY, TaskState.CLAIMED)) {
+      if (!state.in(TaskState.READY, TaskState.CLAIMED)) {
         throw new InvalidStateException(
             String.format(TASK_WITH_ID_IS_ALREADY_IN_END_STATE, taskId));
       }
@@ -1118,7 +1117,7 @@ public class TaskServiceImpl implements TaskService {
         return task;
       }
 
-      if (task.getState().isInStates(TaskState.CANCELLED, TaskState.TERMINATED)) {
+      if (task.getState().in(TaskState.CANCELLED, TaskState.TERMINATED)) {
         throw new InvalidStateException(
             String.format(
                 "Cannot complete task %s because it is in state %s.", taskId, task.getState()));
@@ -1171,7 +1170,7 @@ public class TaskServiceImpl implements TaskService {
         throw new InvalidStateException(
             "Cannot delete Task " + taskId + " because it is not in an end state.");
       }
-      if ((!task.getState().isInStates(TaskState.TERMINATED, TaskState.CANCELLED))
+      if ((!task.getState().in(TaskState.TERMINATED, TaskState.CANCELLED))
           && CallbackState.CALLBACK_PROCESSING_REQUIRED.equals(task.getCallbackState())) {
         throw new InvalidStateException(String.format(TASK_WITH_ID_CALLBACK_NOT_PROCESSED, taskId));
       }
@@ -1210,7 +1209,7 @@ public class TaskServiceImpl implements TaskService {
         bulkLog.addError(currentTaskId, new InvalidStateException(currentTaskId));
         taskIdIterator.remove();
       } else {
-        if ((!foundSummary.getTaskState().isInStates(TaskState.CANCELLED, TaskState.TERMINATED))
+        if ((!foundSummary.getTaskState().in(TaskState.CANCELLED, TaskState.TERMINATED))
             && CallbackState.CALLBACK_PROCESSING_REQUIRED.equals(foundSummary.getCallbackState())) {
           bulkLog.addError(
               currentTaskId,
