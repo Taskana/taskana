@@ -43,7 +43,7 @@ public class TaskCommentResourceAssembler
       taskCommentResource.add(
           linkTo(
                   methodOn(TaskCommentController.class)
-                      .getTaskComment(taskComment.getTaskId(), taskComment.getId()))
+                      .getTaskComment(taskComment.getId()))
               .withSelfRel());
     } catch (TaskCommentNotFoundException
         | TaskNotFoundException

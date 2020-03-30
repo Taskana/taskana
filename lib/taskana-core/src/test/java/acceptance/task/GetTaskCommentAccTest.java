@@ -29,7 +29,7 @@ public class GetTaskCommentAccTest extends AbstractAccTest {
       userName = "user_1_1",
       groupNames = {"group_1"})
   @Test
-  void testGetTaskComments() throws NotAuthorizedException, TaskNotFoundException {
+  void should_ReturnTaskComments_For_TaskId() throws NotAuthorizedException, TaskNotFoundException {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
@@ -43,7 +43,7 @@ public class GetTaskCommentAccTest extends AbstractAccTest {
       userName = "user_1_1",
       groupNames = {"group_1"})
   @Test
-  void testGetNonExistingTaskCommentsShouldReturnEmptyList()
+  void should_ReturnEmptyList_When_TaskCommentsDontExist()
       throws NotAuthorizedException, TaskNotFoundException {
 
     TaskService taskService = taskanaEngine.getTaskService();
@@ -55,7 +55,7 @@ public class GetTaskCommentAccTest extends AbstractAccTest {
       userName = "user_1_1",
       groupNames = {"group_1"})
   @Test
-  void testGetTaskCommentsOfNotVisibleTaskShouldFail() {
+  void should_FailToReturnTaskComments_When_TaskIstNotVisible() {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
@@ -70,15 +70,14 @@ public class GetTaskCommentAccTest extends AbstractAccTest {
       userName = "user_1_1",
       groupNames = {"group_1"})
   @Test
-  void testGetTaskComment()
+  void should_ReturnTaskComment_For_TaskCommentId()
       throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException,
           InvalidArgumentException {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
     TaskComment taskComment =
-        taskService.getTaskComment(
-            "TKI:000000000000000000000000000000000002", "TCI:000000000000000000000000000000000007");
+        taskService.getTaskComment("TCI:000000000000000000000000000000000007");
     assertThat(taskComment.getCreator()).isEqualTo("user_1_1");
   }
 
@@ -86,14 +85,12 @@ public class GetTaskCommentAccTest extends AbstractAccTest {
       userName = "user_1_1",
       groupNames = {"group_1"})
   @Test
-  void testGetNonExistingTaskCommentFromNonExistingTaskShouldFail() {
+  void should_FailToReturnTaskComment_When_TaskCommentIsNotExisting() {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
     ThrowingCallable lambda =
-        () ->
-            taskService.getTaskComment(
-                "Invalid Task Id", "Definately Non Existing Task Comment Id");
+        () -> taskService.getTaskComment("Definately Non Existing Task Comment Id");
     assertThatThrownBy(lambda).isInstanceOf(TaskCommentNotFoundException.class);
   }
 
@@ -101,47 +98,12 @@ public class GetTaskCommentAccTest extends AbstractAccTest {
       userName = "user_1_1",
       groupNames = {"group_1"})
   @Test
-  void testGetNonExistingTaskCommentShouldFail() {
+  void should_FailToReturntaskComment_When_TaskIstNotVisible() {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
     ThrowingCallable lambda =
-        () ->
-            taskService.getTaskComment(
-                "TKI:000000000000000000000000000000000002",
-                "Definately Non Existing Task Comment Id");
-    assertThatThrownBy(lambda).isInstanceOf(TaskCommentNotFoundException.class);
-  }
-
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
-  @Test
-  void testGetTaskCommentFromDifferentTaskShouldFail() {
-
-    TaskService taskService = taskanaEngine.getTaskService();
-
-    ThrowingCallable lambda =
-        () ->
-            taskService.getTaskComment(
-                "TKI:000000000000000000000000000000000000",
-                "TCI:000000000000000000000000000000000003");
-    assertThatThrownBy(lambda).isInstanceOf(TaskCommentNotFoundException.class);
-  }
-
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
-  @Test
-  void testGetTaskCommentOfNotVisibleTaskShouldFail() {
-
-    TaskService taskService = taskanaEngine.getTaskService();
-
-    ThrowingCallable lambda =
-        () ->
-            taskService.getTaskComment(
-                "TKI:000000000000000000000000000000000004",
-                "TCI:000000000000000000000000000000000012");
+        () -> taskService.getTaskComment("TCI:000000000000000000000000000000000012");
     assertThatThrownBy(lambda).isInstanceOf(NotAuthorizedException.class);
   }
 }

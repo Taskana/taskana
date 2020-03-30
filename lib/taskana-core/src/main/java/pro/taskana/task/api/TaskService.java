@@ -414,7 +414,6 @@ public interface TaskService {
   /**
    * Deletes the task comment with the given Id.
    *
-   * @param taskId The task id where the comment is supposed to be attached to
    * @param taskCommentId The id of the task comment to delete.
    * @throws NotAuthorizedException If the current user has no authorization to delete a task
    *     comment or is not authorized to access the task.
@@ -425,14 +424,13 @@ public interface TaskService {
    *     existing task.
    * @throws InvalidArgumentException If the given taskCommentId is null or empty
    */
-  void deleteTaskComment(String taskId, String taskCommentId)
+  void deleteTaskComment(String taskCommentId)
       throws NotAuthorizedException, TaskCommentNotFoundException, TaskNotFoundException,
           InvalidArgumentException;
 
   /**
    * Retrieves a task comment for a given taskCommentId.
    *
-   * @param taskId The task id where the comment is supposed to be attached to
    * @param taskCommentId The id of the task comment which should be retrieved
    * @throws TaskCommentNotFoundException If the given taskCommentId in the TaskComment does not
    *     refer to an existing taskComment.
@@ -442,7 +440,7 @@ public interface TaskService {
    *     existing task.
    * @throws InvalidArgumentException If the given taskCommentId is null or empty
    */
-  TaskComment getTaskComment(String taskId, String taskCommentId)
+  TaskComment getTaskComment(String taskCommentId)
       throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException,
           InvalidArgumentException;
 

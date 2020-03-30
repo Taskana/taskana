@@ -29,7 +29,7 @@ public class UpdateTaskCommentAccTest extends AbstractAccTest {
       userName = "user_1_1",
       groupNames = {"group_1"})
   @Test
-  void testUpdateTaskComment()
+  void should_UpdateTaskComment_For_TaskComment()
       throws TaskCommentNotFoundException, NotAuthorizedException, ConcurrencyException,
           TaskNotFoundException, InvalidArgumentException {
 
@@ -42,7 +42,7 @@ public class UpdateTaskCommentAccTest extends AbstractAccTest {
 
     TaskComment taskComment =
         taskService.getTaskComment(
-            "TKI:000000000000000000000000000000000025", "TCI:000000000000000000000000000000000003");
+            "TCI:000000000000000000000000000000000003");
     taskComment.setTextField("updated textfield");
 
     taskService.updateTaskComment(taskComment);
@@ -56,7 +56,7 @@ public class UpdateTaskCommentAccTest extends AbstractAccTest {
       userName = "user_1_2",
       groupNames = {"group_1"})
   @Test
-  void testUpdateTaskCommentWithNoAuthorizationShouldFail()
+  void should_FailToUpdateTaskComment_When_UserHasNoAuthorization()
       throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException,
           InvalidArgumentException {
 
@@ -69,7 +69,7 @@ public class UpdateTaskCommentAccTest extends AbstractAccTest {
 
     TaskComment taskComment =
         taskService.getTaskComment(
-            "TKI:000000000000000000000000000000000000", "TCI:000000000000000000000000000000000001");
+            "TCI:000000000000000000000000000000000001");
     taskComment.setTextField("updated textfield");
 
     assertThatThrownBy(() -> taskService.updateTaskComment(taskComment))
@@ -86,7 +86,7 @@ public class UpdateTaskCommentAccTest extends AbstractAccTest {
       userName = "user_1_1",
       groupNames = {"group_1"})
   @Test
-  void testUpdateTaskCommentWithConcurrentModificationShouldFail()
+  void should_FailToUpdateTaskComment_When_TaskCommentWasModifiedConcurrently()
       throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException,
           ConcurrencyException, InvalidArgumentException {
 
@@ -99,12 +99,12 @@ public class UpdateTaskCommentAccTest extends AbstractAccTest {
 
     TaskComment taskCommentToUpdate =
         taskService.getTaskComment(
-            "TKI:000000000000000000000000000000000000", "TCI:000000000000000000000000000000000002");
+            "TCI:000000000000000000000000000000000002");
     taskCommentToUpdate.setTextField("updated textfield");
 
     TaskComment concurrentTaskCommentToUpdate =
         taskService.getTaskComment(
-            "TKI:000000000000000000000000000000000000", "TCI:000000000000000000000000000000000002");
+            "TCI:000000000000000000000000000000000002");
     concurrentTaskCommentToUpdate.setTextField("concurrently updated textfield");
 
     taskService.updateTaskComment(taskCommentToUpdate);

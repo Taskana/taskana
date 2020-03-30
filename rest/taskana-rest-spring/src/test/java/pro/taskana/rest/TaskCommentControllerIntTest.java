@@ -42,13 +42,10 @@ class TaskCommentControllerIntTest {
   }
 
   @Test
-  void testGetNonExistentCommentShouldFail() {
+  void should_FailToReturnTaskComment_When_TaskCommentIsNotExisting() {
 
     String urlToNonExistingTaskComment =
-        restHelper.toUrl(
-            Mapping.URL_TASK_COMMENT,
-            "TKI:000000000000000000000000000000000000",
-            "Non existing task comment Id");
+        restHelper.toUrl(Mapping.URL_TASK_COMMENT, "Non existing task comment Id");
 
     ThrowingCallable httpCall =
         () -> {
@@ -63,27 +60,9 @@ class TaskCommentControllerIntTest {
         .isEqualTo(HttpStatus.NOT_FOUND);
   }
 
-  @Test
-  void testGetCommentsForNonExistingTaskShouldFail() {
-
-    String urlToNonExistingTask = restHelper.toUrl(Mapping.URL_TASK_COMMENTS, "nonExistingTaskId");
-
-    ThrowingCallable httpCall =
-        () -> {
-          template.exchange(
-              urlToNonExistingTask,
-              HttpMethod.GET,
-              new HttpEntity<String>(restHelper.getHeadersAdmin()),
-              ParameterizedTypeReference.forType(TaskCommentListResource.class));
-        };
-    assertThatThrownBy(httpCall)
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.NOT_FOUND);
-  }
-
   @Disabled("Disabled until Authorization check is up!")
   @Test
-  void testGetTaskCommentsOfNotVisibleTaskShouldFail() {
+  void should_FailToReturnTaskComments_When_TaskIstNotVisible() {
 
     String urlToNotVisibleTask =
         restHelper.toUrl(Mapping.URL_TASK_COMMENTS, "TKI:000000000000000000000000000000000004");
@@ -103,20 +82,17 @@ class TaskCommentControllerIntTest {
 
   @Disabled("Disabled until Authorization check is up!")
   @Test
-  void testGetTaskCommentOfNotVisibleTaskShouldFail() {
+  void should_FailToReturnTaskComment_When_TaskIstNotVisible() {
 
     String urlToNotVisibleTask =
-        restHelper.toUrl(
-            Mapping.URL_TASK_COMMENT,
-            "TKI:000000000000000000000000000000000004",
-            "TCI:000000000000000000000000000000000013");
+        restHelper.toUrl(Mapping.URL_TASK_COMMENT, "TCI:000000000000000000000000000000000012");
 
     ThrowingCallable httpCall =
         () -> {
           template.exchange(
               urlToNotVisibleTask,
               HttpMethod.GET,
-              new HttpEntity<String>(restHelper.getHeadersUser_1_1()),
+              new HttpEntity<String>(restHelper.getHeadersUser_1_2()),
               ParameterizedTypeReference.forType(TaskCommentResource.class));
         };
     assertThatThrownBy(httpCall)
@@ -126,17 +102,17 @@ class TaskCommentControllerIntTest {
 
   @Disabled("Disabled until Authorization check is up!")
   @Test
-  void testCreateTaskCommentForNotVisibleTaskShouldFail() {
+  void should_FailToCreateTaskComment_When_TaskIsNotVisible() {
 
     TaskCommentResource taskCommentResourceToCreate = new TaskCommentResource();
-    taskCommentResourceToCreate.setTaskId("TKI:000000000000000000000000000000000004");
+    taskCommentResourceToCreate.setTaskId("TKI:000000000000000000000000000000000000");
     taskCommentResourceToCreate.setTextField("newly created task comment");
 
     ThrowingCallable httpCall =
         () -> {
           template.exchange(
               restHelper.toUrl(
-                  Mapping.URL_TASK_COMMENTS, "TKI:000000000000000000000000000000000004"),
+                  Mapping.URL_TASK_GET_POST_COMMENTS, "TKI:000000000000000000000000000000000000"),
               HttpMethod.POST,
               new HttpEntity<>(taskCommentResourceToCreate, restHelper.getHeadersUser_1_1()),
               ParameterizedTypeReference.forType(TaskCommentResource.class));
@@ -147,7 +123,7 @@ class TaskCommentControllerIntTest {
   }
 
   @Test
-  void testCreateTaskCommentForNotExistingTaskShouldFail() {
+  void should_FailToCreateTaskComment_When_TaskIdIsNonExisting() {
 
     TaskCommentResource taskCommentResourceToCreate = new TaskCommentResource();
     taskCommentResourceToCreate.setTaskId("DefinatelyNotExistingId");
@@ -156,7 +132,7 @@ class TaskCommentControllerIntTest {
     ThrowingCallable httpCall =
         () -> {
           template.exchange(
-              restHelper.toUrl(Mapping.URL_TASK_COMMENTS, "DefinatelyNotExistingId"),
+              restHelper.toUrl(Mapping.URL_TASK_GET_POST_COMMENTS, "DefinatelyNotExistingId"),
               HttpMethod.POST,
               new HttpEntity<>(taskCommentResourceToCreate, restHelper.getHeadersAdmin()),
               ParameterizedTypeReference.forType(TaskCommentResource.class));
@@ -164,38 +140,17 @@ class TaskCommentControllerIntTest {
     assertThatThrownBy(httpCall)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
         .isEqualTo(HttpStatus.NOT_FOUND);
+
   }
 
-  @Test
-  void testCreateTaskCommentWithDifferentTaskIdInResourceShouldFail() {
-
-    TaskCommentResource taskCommentResourceToCreate = new TaskCommentResource();
-    taskCommentResourceToCreate.setTaskId("TKI:000000000000000000000000000000000000");
-    taskCommentResourceToCreate.setTextField("newly created task comment");
-
-    ThrowingCallable httpCall =
-        () -> {
-          template.exchange(
-              restHelper.toUrl(Mapping.URL_TASK_COMMENTS, "DifferentTaskId"),
-              HttpMethod.POST,
-              new HttpEntity<>(taskCommentResourceToCreate, restHelper.getHeadersAdmin()),
-              ParameterizedTypeReference.forType(TaskCommentResource.class));
-        };
-    assertThatThrownBy(httpCall)
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.BAD_REQUEST);
-  }
 
   @Test
-  void testUpdateTaskCommentWithConcurrentModificationShouldFail() {
+  void should_FailToUpdateTaskComment_When_TaskCommentWasModifiedConcurrently() {
 
     final ObjectMapper mapper = new ObjectMapper();
 
     String url =
-        restHelper.toUrl(
-            Mapping.URL_TASK_COMMENT,
-            "TKI:000000000000000000000000000000000000",
-            "TCI:000000000000000000000000000000000000");
+        restHelper.toUrl(Mapping.URL_TASK_COMMENT, "TCI:000000000000000000000000000000000000");
 
     ResponseEntity<TaskCommentResource> getTaskCommentResponse =
         template.exchange(
@@ -227,15 +182,12 @@ class TaskCommentControllerIntTest {
 
   @Disabled("Disabled until Authorization check is up!")
   @Test
-  void testUpdateTaskCommentWithNoAuthorizationShouldFail() {
+  void should_FailToUpdateTaskComment_When_UserHasNoAuthorization() {
 
     final ObjectMapper mapper = new ObjectMapper();
 
     String url =
-        restHelper.toUrl(
-            Mapping.URL_TASK_COMMENT,
-            "TKI:000000000000000000000000000000000000",
-            "TCI:000000000000000000000000000000000000");
+        restHelper.toUrl(Mapping.URL_TASK_COMMENT, "TCI:000000000000000000000000000000000000");
 
     ResponseEntity<TaskCommentResource> getTaskCommentResponse =
         template.exchange(
@@ -266,7 +218,7 @@ class TaskCommentControllerIntTest {
   }
 
   @Test
-  void testUpdateTaskCommentOfNotExistingTaskShouldFail() {
+  void should_FailToUpdateTaskComment_When_TaskIsNotExisting() {
     final ObjectMapper mapper = new ObjectMapper();
 
     TaskCommentResource taskCommentResourceToUpdate = new TaskCommentResource();
@@ -275,10 +227,7 @@ class TaskCommentControllerIntTest {
     taskCommentResourceToUpdate.setTextField("updated text");
 
     String url =
-        restHelper.toUrl(
-            Mapping.URL_TASK_COMMENT,
-            "TKI:000000000000000000000000000000009999",
-            "TCI:000000000000000000000000000000000000");
+        restHelper.toUrl(Mapping.URL_TASK_COMMENT, "TCI:000000000000000000000000000000000000");
 
     ThrowingCallable httpCall =
         () -> {
@@ -296,15 +245,12 @@ class TaskCommentControllerIntTest {
   }
 
   @Test
-  void testUpdateTaskCommentWithDifferentIdsInResourceShouldFail() {
+  void should_FailToUpdateTaskComment_When_TaskCommentIdInResourceDoesNotMatchPathVariable() {
 
     final ObjectMapper mapper = new ObjectMapper();
 
     String url =
-        restHelper.toUrl(
-            Mapping.URL_TASK_COMMENT,
-            "TKI:000000000000000000000000000000000000",
-            "TCI:000000000000000000000000000000000000");
+        restHelper.toUrl(Mapping.URL_TASK_COMMENT, "TCI:000000000000000000000000000000000000");
 
     ResponseEntity<TaskCommentResource> getTaskCommentResponse =
         template.exchange(
@@ -318,7 +264,7 @@ class TaskCommentControllerIntTest {
 
     TaskCommentResource taskCommentResourceToUpdate = getTaskCommentResponse.getBody();
     taskCommentResourceToUpdate.setTextField("updated text");
-    taskCommentResourceToUpdate.setTaskId("DifferentTaskid");
+    taskCommentResourceToUpdate.setTaskCommentId("DifferentTaskCommentId");
 
     ThrowingCallable httpCall =
         () -> {
@@ -333,28 +279,11 @@ class TaskCommentControllerIntTest {
     assertThatThrownBy(httpCall)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
         .isEqualTo(HttpStatus.BAD_REQUEST);
-
-    taskCommentResourceToUpdate.setTaskId("TKI:000000000000000000000000000000000000");
-    taskCommentResourceToUpdate.setTaskCommentId("DifferentTaskCommentId");
-
-    ThrowingCallable httpCall2 =
-        () -> {
-          template.exchange(
-              url,
-              HttpMethod.PUT,
-              new HttpEntity<>(
-                  mapper.writeValueAsString(taskCommentResourceToUpdate),
-                  restHelper.getHeadersUser_1_1()),
-              ParameterizedTypeReference.forType(TaskCommentResource.class));
-        };
-    assertThatThrownBy(httpCall2)
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
   @Disabled("Disabled until Authorization check is up!")
   @Test
-  void testDeleteTaskCommentWithDifferentUserThanCreatorShouldFail() {
+  void should_FailToDeleteTaskComment_When_UserHasNoAuthorization() {
 
     ResponseEntity<TaskCommentListResource> getTaskCommentsBeforeDeleteionResponse =
         template.exchange(
@@ -365,10 +294,7 @@ class TaskCommentControllerIntTest {
     assertThat(getTaskCommentsBeforeDeleteionResponse.getBody().getContent()).hasSize(2);
 
     String url =
-        restHelper.toUrl(
-            Mapping.URL_TASK_COMMENT,
-            "TKI:000000000000000000000000000000000001",
-            "TCI:000000000000000000000000000000000004");
+        restHelper.toUrl(Mapping.URL_TASK_COMMENT, "TCI:000000000000000000000000000000000004");
 
     ThrowingCallable httpCall =
         () -> {
@@ -384,35 +310,9 @@ class TaskCommentControllerIntTest {
   }
 
   @Test
-  void testDeleteNonExistingTaskCommentShouldFail() {
+  void should_FailToDeleteTaskComment_When_TaskCommentIsNotExisting() {
 
-    String url =
-        restHelper.toUrl(
-            Mapping.URL_TASK_COMMENT,
-            "TKI:000000000000000000000000000000000001",
-            "NotExistingTaskComment");
-
-    ThrowingCallable httpCall =
-        () -> {
-          template.exchange(
-              url,
-              HttpMethod.DELETE,
-              new HttpEntity<String>(restHelper.getHeadersAdmin()),
-              ParameterizedTypeReference.forType(TaskCommentResource.class));
-        };
-    assertThatThrownBy(httpCall)
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.NOT_FOUND);
-  }
-
-  @Test
-  void testDeleteTaskCommentOfNotExistingTaskShouldFail() {
-
-    String url =
-        restHelper.toUrl(
-            Mapping.URL_TASK_COMMENT,
-            "NotExistingTaskId",
-            "TCI:000000000000000000000000000000000004");
+    String url = restHelper.toUrl(Mapping.URL_TASK_COMMENT, "NotExistingTaskComment");
 
     ThrowingCallable httpCall =
         () -> {

@@ -27,7 +27,7 @@ public class CreateTaskCommentAccTest extends AbstractAccTest {
       userName = "user_1_1",
       groupNames = {"group_1"})
   @Test
-  void testCreateTaskComment()
+  void should_CreateTaskComment_For_TaskComment()
       throws TaskNotFoundException, NotAuthorizedException, InvalidArgumentException {
 
     TaskService taskService = taskanaEngine.getTaskService();
@@ -52,7 +52,7 @@ public class CreateTaskCommentAccTest extends AbstractAccTest {
       userName = "user_1_1",
       groupNames = {"group_1"})
   @Test
-  void testCreateTaskCommentForNullOrNonExistingTaskIdShouldFail() {
+  void should_FailToCreateTaskComment_When_TaskIdIsNullOrNonExisting() {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
