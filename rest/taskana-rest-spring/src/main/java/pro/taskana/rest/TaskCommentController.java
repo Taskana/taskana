@@ -45,15 +45,14 @@ public class TaskCommentController {
 
   @GetMapping(path = Mapping.URL_TASK_COMMENT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<TaskCommentResource> getTaskComment(
-      @PathVariable String taskId, @PathVariable String taskCommentId)
+  public ResponseEntity<TaskCommentResource> getTaskComment(@PathVariable String taskCommentId)
       throws NotAuthorizedException, TaskNotFoundException, TaskCommentNotFoundException,
           InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Entry to getTaskComment(taskId= {}, taskCommentId= {})", taskId, taskCommentId);
+      LOGGER.debug("Entry to getTaskComment(taskCommentId= {})", taskCommentId);
     }
 
-    TaskComment taskComment = taskService.getTaskComment(taskId, taskCommentId);
+    TaskComment taskComment = taskService.getTaskComment(taskCommentId);
 
     TaskCommentResource taskCommentResource = taskCommentResourceAssembler.toResource(taskComment);
 
@@ -66,7 +65,7 @@ public class TaskCommentController {
     return response;
   }
 
-  @GetMapping(path = Mapping.URL_TASK_COMMENTS)
+  @GetMapping(path = Mapping.URL_TASK_GET_POST_COMMENTS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskCommentListResource> getTaskComments(@PathVariable String taskId)
       throws NotAuthorizedException, TaskNotFoundException {
@@ -90,16 +89,14 @@ public class TaskCommentController {
 
   @DeleteMapping(path = Mapping.URL_TASK_COMMENT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<TaskCommentResource> deleteTaskComment(
-      @PathVariable String taskId, @PathVariable String taskCommentId)
+  public ResponseEntity<TaskCommentResource> deleteTaskComment(@PathVariable String taskCommentId)
       throws NotAuthorizedException, TaskNotFoundException, TaskCommentNotFoundException,
           InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "Entry to deleteTaskComment(taskId= {}, taskCommentId= {})", taskId, taskCommentId);
+      LOGGER.debug("Entry to deleteTaskComment(taskCommentId= {})", taskCommentId);
     }
 
-    taskService.deleteTaskComment(taskId, taskCommentId);
+    taskService.deleteTaskComment(taskCommentId);
 
     ResponseEntity<TaskCommentResource> result = ResponseEntity.noContent().build();
 
@@ -113,23 +110,19 @@ public class TaskCommentController {
   @PutMapping(path = Mapping.URL_TASK_COMMENT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskCommentResource> updateTaskComment(
-      @PathVariable String taskId,
-      @PathVariable String taskCommentId,
-      @RequestBody TaskCommentResource taskCommentResource)
+      @PathVariable String taskCommentId, @RequestBody TaskCommentResource taskCommentResource)
       throws NotAuthorizedException, TaskNotFoundException, TaskCommentNotFoundException,
           InvalidArgumentException, ConcurrencyException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
-          "Entry to updateTaskComment(taskId= {}, taskCommentId= {}, taskCommentResource= {})",
-          taskId,
+          "Entry to updateTaskComment(taskCommentId= {}, taskCommentResource= {})",
           taskCommentId,
           taskCommentResource);
     }
 
-    ResponseEntity<TaskCommentResource> result;
+    ResponseEntity<TaskCommentResource> result = null;
 
-    if ((taskCommentId.equals(taskCommentResource.getTaskCommentId())
-        && (taskId.equals(taskCommentResource.getTaskId())))) {
+    if ((taskCommentId.equals(taskCommentResource.getTaskCommentId()))) {
 
       TaskComment taskComment = taskCommentResourceAssembler.toModel(taskCommentResource);
 
@@ -138,9 +131,9 @@ public class TaskCommentController {
     } else {
       throw new InvalidArgumentException(
           String.format(
-              "TaskCommentId ('%s') or TaskId ('%s') are not identical with the ids"
-                  + " of object in the payload which should be updated",
-              taskCommentId, taskId));
+              "TaskCommentId ('%s') is not identical with the id"
+                  + " of the object in the payload which should be updated",
+              taskCommentId));
     }
 
     if (LOGGER.isDebugEnabled()) {
@@ -150,7 +143,7 @@ public class TaskCommentController {
     return result;
   }
 
-  @PostMapping(path = Mapping.URL_TASK_COMMENTS)
+  @PostMapping(path = Mapping.URL_TASK_GET_POST_COMMENTS)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskCommentResource> createTaskComment(
       @PathVariable String taskId, @RequestBody TaskCommentResource taskCommentResource)
@@ -158,29 +151,22 @@ public class TaskCommentController {
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
-          "Entry to createTaskComment(taskId = {}, taskCommentResource= {})",
+          "Entry to createTaskComment(taskId= {}, taskCommentResource= {})",
           taskId,
           taskCommentResource);
     }
 
+    taskCommentResource.setTaskId(taskId);
+
+    TaskComment taskCommentFromResource = taskCommentResourceAssembler.toModel(taskCommentResource);
+    TaskComment createdTaskComment = taskService.createTaskComment(taskCommentFromResource);
+
     ResponseEntity<TaskCommentResource> result;
 
-    if (taskId.equals(taskCommentResource.getTaskId())) {
+    result =
+        ResponseEntity.status(HttpStatus.CREATED)
+            .body(taskCommentResourceAssembler.toResource(createdTaskComment));
 
-      TaskComment taskCommentFromResource =
-          taskCommentResourceAssembler.toModel(taskCommentResource);
-      TaskComment createdTaskComment = taskService.createTaskComment(taskCommentFromResource);
-
-      result =
-          ResponseEntity.status(HttpStatus.CREATED)
-              .body(taskCommentResourceAssembler.toResource(createdTaskComment));
-    } else {
-      throw new InvalidArgumentException(
-          String.format(
-              "TaskId ('%s') is not identical with the taskId of the"
-                  + "object in the payload which should be updated.",
-              taskCommentResource.getTaskId()));
-    }
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from createTaskComment(), returning {}", result);
     }

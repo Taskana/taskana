@@ -49,7 +49,6 @@ public interface TaskCommentMapper {
       "<script> SELECT ID, TASK_ID, TEXT_FIELD, CREATOR, CREATED, MODIFIED"
           + " FROM TASK_COMMENT "
           + "WHERE ID = #{taskCommentId} "
-          + "AND TASK_ID = #{taskId} "
           + "<if test=\"_databaseId == 'db2'\">with UR </if> "
           + "</script>")
   @Results(
@@ -62,5 +61,5 @@ public interface TaskCommentMapper {
         @Result(property = "modified", column = "MODIFIED"),
       })
   TaskCommentImpl findById(
-      @Param("taskId") String taskId, @Param("taskCommentId") String taskCommentId);
+      @Param("taskCommentId") String taskCommentId);
 }

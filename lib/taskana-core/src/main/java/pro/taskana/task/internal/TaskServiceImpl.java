@@ -614,17 +614,17 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
-  public void deleteTaskComment(String taskId, String taskCommentId)
+  public void deleteTaskComment(String taskCommentId)
       throws NotAuthorizedException, TaskCommentNotFoundException, TaskNotFoundException,
           InvalidArgumentException {
-    taskCommentService.deleteTaskComment(taskId, taskCommentId);
+    taskCommentService.deleteTaskComment(taskCommentId);
   }
 
   @Override
-  public TaskComment getTaskComment(String taskId, String taskCommentid)
+  public TaskComment getTaskComment(String taskCommentid)
       throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException,
           InvalidArgumentException {
-    return taskCommentService.getTaskComment(taskId, taskCommentid);
+    return taskCommentService.getTaskComment(taskCommentid);
   }
 
   @Override

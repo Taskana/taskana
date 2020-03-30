@@ -73,7 +73,7 @@ class TaskCommentServiceImpl {
           || taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN)) {
 
         TaskComment oldTaskComment =
-            getTaskComment(taskCommentImplToUpdate.getTaskId(), taskCommentImplToUpdate.getId());
+            getTaskComment(taskCommentImplToUpdate.getId());
 
         checkModifiedHasNotChanged(oldTaskComment, taskCommentImplToUpdate);
 
@@ -128,12 +128,12 @@ class TaskCommentServiceImpl {
     return taskCommentImplToCreate;
   }
 
-  void deleteTaskComment(String taskId, String taskCommentId)
+  void deleteTaskComment(String taskCommentId)
       throws NotAuthorizedException, TaskCommentNotFoundException, TaskNotFoundException,
           InvalidArgumentException {
 
     LOGGER.debug(
-        "entry to deleteTaskComment (taskId = {}, taskComment = {}", taskId, taskCommentId);
+        "entry to deleteTaskComment (taskComment = {}", taskCommentId);
 
     String userId = CurrentUserContext.getUserid();
 
@@ -141,7 +141,7 @@ class TaskCommentServiceImpl {
 
       taskanaEngine.openConnection();
 
-      TaskComment taskCommentToDelete = getTaskComment(taskId, taskCommentId);
+      TaskComment taskCommentToDelete = getTaskComment(taskCommentId);
 
       if (taskCommentToDelete.getCreator().equals(userId)
           || taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN)) {
@@ -189,11 +189,11 @@ class TaskCommentServiceImpl {
     }
   }
 
-  TaskComment getTaskComment(String taskId, String taskCommentId)
+  TaskComment getTaskComment(String taskCommentId)
       throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException,
           InvalidArgumentException {
 
-    LOGGER.debug("entry to getTaskComment (taskId= {}, taskCommentId = {})", taskId, taskCommentId);
+    LOGGER.debug("entry to getTaskComment (taskCommentId = {})", taskCommentId);
 
     TaskCommentImpl result;
 
@@ -203,14 +203,14 @@ class TaskCommentServiceImpl {
 
       taskanaEngine.openConnection();
 
-      result = taskCommentMapper.findById(taskId, taskCommentId);
+      result = taskCommentMapper.findById(taskCommentId);
 
       if (result == null) {
         throw new TaskCommentNotFoundException(
             taskCommentId,
             String.format(
-                "TaskComment for taskId '%s' and taskCommentId '%s' was not found",
-                taskId, taskCommentId));
+                "TaskComment for taskCommentId '%s' was not found",
+                taskCommentId));
       }
 
       taskService.getTask(result.getTaskId());
