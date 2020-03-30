@@ -16,13 +16,13 @@ import pro.taskana.monitor.api.reports.item.QueryItemPreprocessor;
 public class DaysToWorkingDaysReportPreProcessor<I extends AgeQueryItem>
     implements QueryItemPreprocessor<I> {
 
-  private DaysToWorkingDaysReportConverter instance;
+  private WorkingDaysToDaysReportConverter instance;
 
   public DaysToWorkingDaysReportPreProcessor(
       List<? extends TimeIntervalColumnHeader> columnHeaders, boolean activate)
       throws InvalidArgumentException {
     if (activate) {
-      instance = DaysToWorkingDaysReportConverter.initialize(columnHeaders);
+      instance = WorkingDaysToDaysReportConverter.initialize(columnHeaders);
     }
   }
 

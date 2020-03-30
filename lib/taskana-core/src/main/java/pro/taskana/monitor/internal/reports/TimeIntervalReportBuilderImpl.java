@@ -20,7 +20,7 @@ import pro.taskana.monitor.api.reports.TimeIntervalReportBuilder;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.AgeQueryItem;
 import pro.taskana.monitor.internal.MonitorMapper;
-import pro.taskana.monitor.internal.preprocessor.DaysToWorkingDaysReportConverter;
+import pro.taskana.monitor.internal.preprocessor.WorkingDaysToDaysReportConverter;
 import pro.taskana.task.api.CustomField;
 import pro.taskana.task.api.TaskState;
 
@@ -194,8 +194,8 @@ abstract class TimeIntervalReportBuilderImpl<
 
   private List<SelectedItem> convertWorkingDaysToDays(
       List<SelectedItem> selectedItems, List<H> columnHeaders) throws InvalidArgumentException {
-    DaysToWorkingDaysReportConverter instance =
-        DaysToWorkingDaysReportConverter.initialize(columnHeaders);
+    WorkingDaysToDaysReportConverter instance =
+        WorkingDaysToDaysReportConverter.initialize(columnHeaders);
     for (SelectedItem selectedItem : selectedItems) {
       selectedItem.setLowerAgeLimit(
           Collections.min(instance.convertWorkingDaysToDays(selectedItem.getLowerAgeLimit())));
