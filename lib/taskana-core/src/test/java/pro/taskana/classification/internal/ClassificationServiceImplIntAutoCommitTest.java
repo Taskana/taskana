@@ -13,6 +13,7 @@ import java.time.ZoneId;
 import java.util.List;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -42,25 +43,30 @@ class ClassificationServiceImplIntAutoCommitTest {
 
   private ClassificationService classificationService;
 
-  @BeforeEach
-  void setup() throws SQLException {
+  private SampleDataGenerator sampleDataGenerator;
 
+  private TaskanaEngineConfiguration taskanaEngineConfiguration;
+
+  @BeforeAll
+  void beforeAll() throws SQLException {
     DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
     String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
-    TaskanaEngineConfiguration taskanaEngineConfiguration =
+    sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
+    taskanaEngineConfiguration =
         new TaskanaEngineConfiguration(dataSource, false, false, schemaName);
+  }
+
+  @BeforeEach
+  void setup() {
     TaskanaEngine taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
     classificationService = taskanaEngine.getClassificationService();
     TaskanaEngineImpl taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
     taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
-    new SampleDataGenerator(dataSource, schemaName).clearDb();
   }
 
   @AfterEach
   void teardown() {
-    DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
-    String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
-    new SampleDataGenerator(dataSource, schemaName).dropDb();
+    sampleDataGenerator.clearDb();
   }
 
   @Test

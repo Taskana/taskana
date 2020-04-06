@@ -10,7 +10,9 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 import javax.sql.DataSource;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -66,8 +68,6 @@ class TaskServiceImplIntAutocommitTest {
 
   private TaskServiceImpl taskServiceImpl;
 
-  private TaskanaEngineConfiguration taskanaEngineConfiguration;
-
   private TaskanaEngine taskanaEngine;
 
   private TaskanaEngineImpl taskanaEngineImpl;
@@ -76,20 +76,31 @@ class TaskServiceImplIntAutocommitTest {
 
   private WorkbasketService workbasketService;
 
-  @BeforeEach
-  void setup() throws SQLException {
-    dataSource = TaskanaEngineTestConfiguration.getDataSource();
+  private SampleDataGenerator sampleDataGenerator;
+
+  private TaskanaEngineConfiguration taskanaEngineConfiguration;
+
+  @BeforeAll
+  void beforeAll() throws SQLException {
+    DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
     String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
+    sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
     taskanaEngineConfiguration =
         new TaskanaEngineConfiguration(dataSource, false, false, schemaName);
+  }
 
+  @BeforeEach
+  void setup() throws SQLException {
     taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
     taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
     taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
     taskServiceImpl = (TaskServiceImpl) taskanaEngine.getTaskService();
     classificationService = taskanaEngine.getClassificationService();
     workbasketService = taskanaEngine.getWorkbasketService();
-    SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
+  }
+
+  @AfterEach
+  void tearDown() {
     sampleDataGenerator.clearDb();
   }
 
