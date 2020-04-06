@@ -290,6 +290,20 @@ class TaskControllerIntTest {
   }
 
   @Test
+  void testGetAllTasksByExternalId() {
+    ResponseEntity<TaskSummaryListResource> response =
+        template.exchange(
+            restHelper.toUrl(Mapping.URL_TASKS)
+                + "?external-id=ETI:000000000000000000000000000000000003,"
+                + "ETI:000000000000000000000000000000000004",
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
+            ParameterizedTypeReference.forType(TaskSummaryListResource.class));
+    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getContent()).hasSize(2);
+  }
+
+  @Test
   void testExceptionIfKeyIsSetButDomainIsMissing() {
 
     HttpHeaders headers = new HttpHeaders();
