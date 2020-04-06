@@ -179,7 +179,7 @@ public interface Classification extends ClassificationSummary {
   void setCustom8(String custom8);
 
   /**
-   * Return a summary of the current Classification.
+   * Return a summary of the current Classification without the id.
    *
    * @return the ClassificationSummary object for the current classification
    */

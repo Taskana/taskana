@@ -141,7 +141,7 @@ public interface ClassificationSummary {
   String getCustom8();
 
   /**
-   * Duplicates this ClassificationSummary.
+   * Duplicates this ClassificationSummary without the id.
    *
    * @return a copy of this ClassificationSummary
    */

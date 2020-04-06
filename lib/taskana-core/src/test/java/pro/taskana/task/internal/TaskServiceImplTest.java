@@ -6,12 +6,13 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import org.junit.jupiter.api.Test;
 
 import pro.taskana.classification.api.models.Classification;
+import pro.taskana.classification.internal.models.ClassificationImpl;
 import pro.taskana.common.internal.JunitHelper;
-import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.models.Workbasket;
+import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 
 /**
  * Unit Test for TaskServiceImpl.
@@ -54,28 +55,6 @@ class TaskServiceImplTest {
     assertEquals(summaryBefore, summaryAfter);
     assertEquals(summaryBefore.hashCode(), summaryAfter.hashCode());
   }
-  
-  static TaskImpl createUnitTestTask(
-      String id, String name, String workbasketKey, Classification classification) {
-    TaskImpl task = new TaskImpl();
-    task.setId(id);
-    task.setExternalId(id);
-    task.setName(name);
-    task.setWorkbasketKey(workbasketKey);
-    task.setDomain("");
-    task.setAttachments(new ArrayList<>());
-    Instant now = Instant.now().minus(Duration.ofMinutes(1L));
-    task.setCreated(now);
-    task.setModified(now);
-    task.setState(TaskState.READY);
-    if (classification == null) {
-      classification = createDummyClassification();
-    }
-    task.setClassificationSummary(classification.asSummary());
-    task.setClassificationKey(classification.getKey());
-    task.setDomain(classification.getDomain());
-    return task;
-  }
 
   static Classification createDummyClassification() {
     ClassificationImpl classification = new ClassificationImpl();
@@ -94,5 +73,4 @@ class TaskServiceImplTest {
     workbasket.setName("Workbasket " + id);
     return workbasket;
   }
-  
 }

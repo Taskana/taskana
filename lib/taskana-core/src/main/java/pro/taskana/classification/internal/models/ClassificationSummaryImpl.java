@@ -30,7 +30,6 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
   public ClassificationSummaryImpl() {}
 
   protected ClassificationSummaryImpl(ClassificationSummaryImpl copyFrom) {
-    id = copyFrom.id;
     applicationEntryPoint = copyFrom.applicationEntryPoint;
     category = copyFrom.category;
     domain = copyFrom.domain;

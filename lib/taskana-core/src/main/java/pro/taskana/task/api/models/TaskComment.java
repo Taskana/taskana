@@ -55,7 +55,7 @@ public interface TaskComment {
   Instant getModified();
 
   /**
-   * Duplicates this TaskComment.
+   * Duplicates this TaskComment without the id.
    *
    * @return a copy of this TaskComment
    */

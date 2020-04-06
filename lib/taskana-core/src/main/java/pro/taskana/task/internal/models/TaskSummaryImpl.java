@@ -65,7 +65,6 @@ public class TaskSummaryImpl implements TaskSummary {
   public TaskSummaryImpl() {}
 
   protected TaskSummaryImpl(TaskSummaryImpl copyFrom) {
-    id = copyFrom.id;
     externalId = copyFrom.externalId;
     created = copyFrom.created;
     claimed = copyFrom.claimed;

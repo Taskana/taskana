@@ -67,7 +67,7 @@ public interface AttachmentSummary {
   Instant getReceived();
 
   /**
-   * Duplicates this AttachmentSummary.
+   * Duplicates this AttachmentSummary without the id.
    *
    * @return a copy of this AttachmentSummary
    */

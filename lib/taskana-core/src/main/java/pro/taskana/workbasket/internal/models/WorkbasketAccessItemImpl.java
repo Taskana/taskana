@@ -33,7 +33,6 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
   public WorkbasketAccessItemImpl() {}
 
   private WorkbasketAccessItemImpl(WorkbasketAccessItemImpl copyFrom) {
-    id = copyFrom.id;
     workbasketId = copyFrom.workbasketId;
     workbasketKey = copyFrom.workbasketKey;
     accessId = copyFrom.accessId;

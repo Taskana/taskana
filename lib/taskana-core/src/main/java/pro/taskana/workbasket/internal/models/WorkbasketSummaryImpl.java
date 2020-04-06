@@ -28,7 +28,6 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
   public WorkbasketSummaryImpl() {}
 
   protected WorkbasketSummaryImpl(WorkbasketSummaryImpl copyFrom) {
-    id = copyFrom.id;
     key = copyFrom.key;
     name = copyFrom.name;
     description = copyFrom.description;

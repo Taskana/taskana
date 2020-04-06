@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 
 import pro.taskana.classification.internal.models.ClassificationImpl;
+import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
 
 class ClassificationModelsCloneTest {
 
@@ -28,16 +29,20 @@ class ClassificationModelsCloneTest {
     dummyClassificationForSummaryTest.setPriority(1);
     dummyClassificationForSummaryTest.setName("dummyName");
     dummyClassificationForSummaryTest.setParentKey("dummyParentKey");
-    ClassificationSummary dummyClassificationSummary =
-        dummyClassificationForSummaryTest.asSummary();
-    ClassificationSummary dummyClassificationSummaryCloned = dummyClassificationSummary.copy();
+    ClassificationSummaryImpl dummyClassificationSummary =
+        (ClassificationSummaryImpl) dummyClassificationForSummaryTest.asSummary();
+    dummyClassificationSummary.setId("dummyId");
+    ClassificationSummaryImpl dummyClassificationSummaryCloned = dummyClassificationSummary.copy();
+    assertThat(dummyClassificationSummaryCloned).isNotEqualTo(dummyClassificationSummary);
+    dummyClassificationSummaryCloned.setId(dummyClassificationSummary.getId());
     assertThat(dummyClassificationSummaryCloned).isEqualTo(dummyClassificationSummary);
     assertThat(dummyClassificationSummaryCloned).isNotSameAs(dummyClassificationSummary);
   }
 
   @Test
   void testCloneInClassification() {
-    Classification dummyClassification = new ClassificationImpl();
+    ClassificationImpl dummyClassification = new ClassificationImpl();
+    dummyClassification.setId("dummyId");
     dummyClassification.setApplicationEntryPoint("dummyEntryPoint");
     dummyClassification.setCategory("dummyCategory");
     dummyClassification.setCustom1("dummyCustom1");
@@ -55,7 +60,9 @@ class ClassificationModelsCloneTest {
     dummyClassification.setPriority(1);
     dummyClassification.setName("dummyName");
     dummyClassification.setParentKey("dummyParentKey");
-    Classification dummyClassificationCloned = dummyClassification.copy();
+    ClassificationImpl dummyClassificationCloned = dummyClassification.copy();
+    assertThat(dummyClassificationCloned).isNotEqualTo(dummyClassification);
+    dummyClassificationCloned.setId(dummyClassification.getId());
     assertThat(dummyClassificationCloned).isEqualTo(dummyClassification);
     assertThat(dummyClassificationCloned).isNotSameAs(dummyClassification);
   }

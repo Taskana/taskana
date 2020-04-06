@@ -17,7 +17,6 @@ public class TaskCommentImpl implements TaskComment {
   public TaskCommentImpl() {}
 
   public TaskCommentImpl(TaskCommentImpl copyFrom) {
-    id = copyFrom.id;
     taskId = copyFrom.taskId;
     textField = copyFrom.textField;
     creator = copyFrom.creator;

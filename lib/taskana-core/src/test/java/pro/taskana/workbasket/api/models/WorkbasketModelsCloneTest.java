@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
+import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 
 class WorkbasketModelsCloneTest {
 
@@ -24,15 +25,20 @@ class WorkbasketModelsCloneTest {
     dummyWorkbasketForSummaryTest.setOrgLevel3("dummyOrgLevel3");
     dummyWorkbasketForSummaryTest.setOrgLevel4("dummyOrgLevel4");
     dummyWorkbasketForSummaryTest.setOwner("dummyOwner");
-    WorkbasketSummary dummyWorkbasketSummary = dummyWorkbasketForSummaryTest.asSummary();
-    WorkbasketSummary dummyWorkbasketSummaryCloned = dummyWorkbasketSummary.copy();
+    WorkbasketSummaryImpl dummyWorkbasketSummary =
+        (WorkbasketSummaryImpl) dummyWorkbasketForSummaryTest.asSummary();
+    dummyWorkbasketSummary.setId("dummyId");
+    WorkbasketSummaryImpl dummyWorkbasketSummaryCloned = dummyWorkbasketSummary.copy();
+    assertThat(dummyWorkbasketSummaryCloned).isNotEqualTo(dummyWorkbasketSummary);
+    dummyWorkbasketSummaryCloned.setId(dummyWorkbasketSummary.getId());
     assertThat(dummyWorkbasketSummaryCloned).isEqualTo(dummyWorkbasketSummary);
     assertThat(dummyWorkbasketSummaryCloned).isNotSameAs(dummyWorkbasketSummary);
   }
 
   @Test
   void testCloneInWorkbasket() {
-    Workbasket dummyWorkbasket = new WorkbasketImpl();
+    WorkbasketImpl dummyWorkbasket = new WorkbasketImpl();
+    dummyWorkbasket.setId("dummyId");
     dummyWorkbasket.setCustom1("dummyCustom1");
     dummyWorkbasket.setCustom2("dummyCustom2");
     dummyWorkbasket.setCustom3("dummyCustom3");
@@ -45,14 +51,17 @@ class WorkbasketModelsCloneTest {
     dummyWorkbasket.setOrgLevel3("dummyOrgLevel3");
     dummyWorkbasket.setOrgLevel4("dummyOrgLevel4");
     dummyWorkbasket.setOwner("dummyOwner");
-    Workbasket dummyWorkbasketCloned = dummyWorkbasket.copy();
+    WorkbasketImpl dummyWorkbasketCloned = dummyWorkbasket.copy();
+    assertThat(dummyWorkbasketCloned).isNotEqualTo(dummyWorkbasket);
+    dummyWorkbasketCloned.setId(dummyWorkbasket.getId());
     assertThat(dummyWorkbasketCloned).isEqualTo(dummyWorkbasket);
     assertThat(dummyWorkbasketCloned).isNotSameAs(dummyWorkbasket);
   }
 
   @Test
   void testCloneInWorkbasketAccessItem() {
-    WorkbasketAccessItem dummyWorkbasketAccessItem = new WorkbasketAccessItemImpl();
+    WorkbasketAccessItemImpl dummyWorkbasketAccessItem = new WorkbasketAccessItemImpl();
+    dummyWorkbasketAccessItem.setId("dummyId");
     dummyWorkbasketAccessItem.setAccessName("dummyAccessName");
     dummyWorkbasketAccessItem.setPermAppend(false);
     dummyWorkbasketAccessItem.setPermCustom1(false);
@@ -71,7 +80,9 @@ class WorkbasketModelsCloneTest {
     dummyWorkbasketAccessItem.setPermOpen(false);
     dummyWorkbasketAccessItem.setPermRead(false);
     dummyWorkbasketAccessItem.setPermTransfer(false);
-    WorkbasketAccessItem dummyWorkbasketAccessItemCloned = dummyWorkbasketAccessItem.copy();
+    WorkbasketAccessItemImpl dummyWorkbasketAccessItemCloned = dummyWorkbasketAccessItem.copy();
+    assertThat(dummyWorkbasketAccessItemCloned).isNotEqualTo(dummyWorkbasketAccessItem);
+    dummyWorkbasketAccessItemCloned.setId(dummyWorkbasketAccessItem.getId());
     assertThat(dummyWorkbasketAccessItemCloned).isEqualTo(dummyWorkbasketAccessItem);
     assertThat(dummyWorkbasketAccessItemCloned).isNotSameAs(dummyWorkbasketAccessItem);
   }
