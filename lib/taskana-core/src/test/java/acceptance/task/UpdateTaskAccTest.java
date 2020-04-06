@@ -43,35 +43,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
       userName = "user_1_1",
       groupNames = {"group_1"})
   @Test
-  public void should_updatePlanned_when_onlyDueWasChanged() throws Exception {
-    TaskService taskService = taskanaEngine.getTaskService();
-    Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
-    task.setDue(Instant.parse("2020-07-02T01:00:00Z"));
-    Task task1 = taskService.updateTask(task);
-    assertThat(task1.getPlanned()).isEqualTo(Instant.parse("2020-07-01T01:00:00Z"));
-  }
-
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
-  @Test
-  public void should_throwException_when_DueAndPlannedWasChangedInconsistently() throws Exception {
-    TaskService taskService = taskanaEngine.getTaskService();
-    Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
-    task.setDue(Instant.parse("2020-07-02T00:00:00Z"));
-    task.setPlanned(Instant.parse("2020-07-07T00:00:00Z"));
-    assertThatThrownBy(() -> taskService.updateTask(task))
-        .isInstanceOf(InvalidArgumentException.class)
-        .withFailMessage(
-            "Cannot update a task with given planned 2020-07-07T00:00:00Z and due "
-                + "date 2020-07-02T00:00:00Z not matching the service level PT24H.");
-  }
-
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
-  @Test
-  void should_UpdatePrimaryObjectReferenceOfTask_when_requested()
+  void should_UpdatePrimaryObjectReferenceOfTask_When_Requested()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
           TaskNotFoundException, ConcurrencyException, AttachmentPersistenceException,
           InvalidStateException {
@@ -102,7 +74,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
       userName = "user_1_1",
       groupNames = {"group_1"})
   @Test
-  void should_ThrowException_when_MandatoryPrimaryObjectReferenceIsNotSetOrIncomplete()
+  void should_ThrowException_When_MandatoryPrimaryObjectReferenceIsNotSetOrIncomplete()
       throws NotAuthorizedException, TaskNotFoundException {
 
     TaskService taskService = taskanaEngine.getTaskService();
@@ -144,7 +116,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
       userName = "user_1_1",
       groupNames = {"group_1"})
   @Test
-  void should_ThrowException_when_TaskHasAlreadyBeenUpdated()
+  void should_ThrowException_When_TaskHasAlreadyBeenUpdated()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
           TaskNotFoundException, ConcurrencyException, AttachmentPersistenceException,
           InvalidStateException, InterruptedException {
@@ -167,10 +139,10 @@ class UpdateTaskAccTest extends AbstractAccTest {
       userName = "user_1_1",
       groupNames = {"group_1"})
   @Test
-  void should_UpdateTaskProperties_when_ClassificationOfTaskIsChanged()
+  void should_UpdateTaskProperties_When_ClassificationOfTaskIsChanged()
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
-                 ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
-                 InvalidStateException, SQLException {
+          ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
+          InvalidStateException, SQLException {
 
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
@@ -193,7 +165,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
       userName = "user_1_2",
       groupNames = {"group_1"})
   @Test
-  void should_UpdateReadFlagOfTask_whenSetTaskReadIsCalled()
+  void should_UpdateReadFlagOfTask_When_SetTaskReadIsCalled()
       throws TaskNotFoundException, NotAuthorizedException {
 
     TaskService taskService = taskanaEngine.getTaskService();
@@ -218,7 +190,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
       userName = "user_1_1",
       groupNames = {"group_1"})
   @Test
-  void should_UpdateTask_when_CustomPropertiesOfTaskWereChanged()
+  void should_UpdateTask_When_CustomPropertiesOfTaskWereChanged()
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
           ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
           InvalidStateException {
@@ -235,7 +207,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
       userName = "user_1_1",
       groupNames = {"group_1"})
   @Test
-  void should_ThrowException_when_ModificationOfWorkbasketKeyIsAttempted()
+  void should_ThrowException_When_ModificationOfWorkbasketKeyIsAttempted()
       throws NotAuthorizedException, TaskNotFoundException {
 
     TaskService taskService = taskanaEngine.getTaskService();
@@ -250,7 +222,8 @@ class UpdateTaskAccTest extends AbstractAccTest {
       userName = "user_1_1",
       groupNames = {"group_1"})
   @Test
-  void should_UpdateTask_when_ObjectReferenceWasChanged() throws InvalidArgumentException {
+  void should_UpdateNoTasks_When_UpdateTasksWithUnmatchedObjectReferenceWasCalled()
+      throws InvalidArgumentException {
     ObjectReference por = new ObjectReference();
     por.setCompany("00");
     por.setSystem("PASystem");
@@ -272,7 +245,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
       userName = "teamlead_1",
       groupNames = {"group_1"})
   @Test
-  void should_UpdateTask_when_PrimaryObjectReferenceWasChanged()
+  void should_UpdateTasks_When_MatchingPrimaryObjectReferenceWasChanged()
       throws InvalidArgumentException, TaskNotFoundException, NotAuthorizedException {
     ObjectReference por = new ObjectReference();
     por.setCompany("00");
@@ -302,7 +275,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
       userName = "teamlead_1",
       groupNames = {"group_1"})
   @Test
-  void should_UpdateTaskCustomAttributes_when_UpdateTasksIsCalled()
+  void should_UpdateTaskCustomAttributes_When_UpdateTasksIsCalled()
       throws InvalidArgumentException, TaskNotFoundException, NotAuthorizedException {
     List<String> taskIds =
         Arrays.asList(
@@ -332,7 +305,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
       userName = "user_1_1",
       groupNames = {"group_1"})
   @Test
-  void should_UpdateCallbackInfo_when_requestedByApi()
+  void should_UpdateCallbackInfo_When_RequestedByApi()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
           TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException,
           ConcurrencyException, AttachmentPersistenceException, InvalidStateException {
