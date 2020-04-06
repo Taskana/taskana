@@ -10,7 +10,7 @@ import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
 class ClassificationModelsCloneTest {
 
   @Test
-  void testCloneInClassificationSummary() {
+  void should_CopyWithoutId_When_ClassificationSummaryClone() {
     Classification dummyClassificationForSummaryTest = new ClassificationImpl();
     dummyClassificationForSummaryTest.setApplicationEntryPoint("dummyEntryPoint");
     dummyClassificationForSummaryTest.setCategory("dummyCategory");
@@ -32,7 +32,9 @@ class ClassificationModelsCloneTest {
     ClassificationSummaryImpl dummyClassificationSummary =
         (ClassificationSummaryImpl) dummyClassificationForSummaryTest.asSummary();
     dummyClassificationSummary.setId("dummyId");
+
     ClassificationSummaryImpl dummyClassificationSummaryCloned = dummyClassificationSummary.copy();
+
     assertThat(dummyClassificationSummaryCloned).isNotEqualTo(dummyClassificationSummary);
     dummyClassificationSummaryCloned.setId(dummyClassificationSummary.getId());
     assertThat(dummyClassificationSummaryCloned).isEqualTo(dummyClassificationSummary);
@@ -40,7 +42,7 @@ class ClassificationModelsCloneTest {
   }
 
   @Test
-  void testCloneInClassification() {
+  void should_CopyWithoutId_When_ClassificationClone() {
     ClassificationImpl dummyClassification = new ClassificationImpl();
     dummyClassification.setId("dummyId");
     dummyClassification.setApplicationEntryPoint("dummyEntryPoint");
@@ -60,7 +62,10 @@ class ClassificationModelsCloneTest {
     dummyClassification.setPriority(1);
     dummyClassification.setName("dummyName");
     dummyClassification.setParentKey("dummyParentKey");
-    ClassificationImpl dummyClassificationCloned = dummyClassification.copy();
+
+    ClassificationImpl dummyClassificationCloned =
+        dummyClassification.copy(dummyClassification.getKey());
+
     assertThat(dummyClassificationCloned).isNotEqualTo(dummyClassification);
     dummyClassificationCloned.setId(dummyClassification.getId());
     assertThat(dummyClassificationCloned).isEqualTo(dummyClassification);

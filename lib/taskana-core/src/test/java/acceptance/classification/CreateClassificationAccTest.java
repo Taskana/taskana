@@ -2,6 +2,8 @@ package acceptance.classification;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import acceptance.AbstractAccTest;
 import org.junit.jupiter.api.Test;
@@ -250,5 +252,20 @@ class CreateClassificationAccTest extends AbstractAccTest {
     classification.setId("EXPLICIT ID");
     assertThatThrownBy(() -> classificationService.createClassification(classification))
         .isInstanceOf(InvalidArgumentException.class);
+  }
+
+  @WithAccessId(
+      userName = "teamlead_1",
+      groupNames = {"group_1", "businessadmin"})
+  @Test
+  void should_beAbleToCreateNewClassification_When_ClassificationCopy() throws Exception {
+    ClassificationImpl oldClassification =
+        (ClassificationImpl) classificationService.getClassification("T2100", "DOMAIN_B");
+    Classification newClassification = oldClassification.copy("T9949");
+
+    newClassification = classificationService.createClassification(newClassification);
+
+    assertNotNull(newClassification.getId());
+    assertNotEquals(newClassification.getId(), oldClassification.getId());
   }
 }

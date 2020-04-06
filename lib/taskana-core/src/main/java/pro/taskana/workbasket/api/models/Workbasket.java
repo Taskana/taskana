@@ -102,9 +102,10 @@ public interface Workbasket extends WorkbasketSummary {
   /**
    * Duplicates this Workbasket without the id.
    *
+   * @param key for the new Workbasket
    * @return a copy of this Workbasket
    */
-  Workbasket copy();
+  Workbasket copy(String key);
 
   /**
    * Sets the owner-ID of the workbasket.

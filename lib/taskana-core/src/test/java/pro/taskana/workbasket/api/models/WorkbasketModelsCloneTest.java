@@ -11,7 +11,7 @@ import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 class WorkbasketModelsCloneTest {
 
   @Test
-  void testCloneInWorkbasketSummary() {
+  void should_CopyWithoutId_When_WorkbasketSummaryClone() {
     Workbasket dummyWorkbasketForSummaryTest = new WorkbasketImpl();
     dummyWorkbasketForSummaryTest.setCustom1("dummyCustom1");
     dummyWorkbasketForSummaryTest.setCustom2("dummyCustom2");
@@ -28,7 +28,9 @@ class WorkbasketModelsCloneTest {
     WorkbasketSummaryImpl dummyWorkbasketSummary =
         (WorkbasketSummaryImpl) dummyWorkbasketForSummaryTest.asSummary();
     dummyWorkbasketSummary.setId("dummyId");
+
     WorkbasketSummaryImpl dummyWorkbasketSummaryCloned = dummyWorkbasketSummary.copy();
+
     assertThat(dummyWorkbasketSummaryCloned).isNotEqualTo(dummyWorkbasketSummary);
     dummyWorkbasketSummaryCloned.setId(dummyWorkbasketSummary.getId());
     assertThat(dummyWorkbasketSummaryCloned).isEqualTo(dummyWorkbasketSummary);
@@ -36,7 +38,7 @@ class WorkbasketModelsCloneTest {
   }
 
   @Test
-  void testCloneInWorkbasket() {
+  void should_CopyWithoutId_When_WorkbasketClone() {
     WorkbasketImpl dummyWorkbasket = new WorkbasketImpl();
     dummyWorkbasket.setId("dummyId");
     dummyWorkbasket.setCustom1("dummyCustom1");
@@ -51,7 +53,9 @@ class WorkbasketModelsCloneTest {
     dummyWorkbasket.setOrgLevel3("dummyOrgLevel3");
     dummyWorkbasket.setOrgLevel4("dummyOrgLevel4");
     dummyWorkbasket.setOwner("dummyOwner");
-    WorkbasketImpl dummyWorkbasketCloned = dummyWorkbasket.copy();
+
+    WorkbasketImpl dummyWorkbasketCloned = dummyWorkbasket.copy(dummyWorkbasket.getKey());
+
     assertThat(dummyWorkbasketCloned).isNotEqualTo(dummyWorkbasket);
     dummyWorkbasketCloned.setId(dummyWorkbasket.getId());
     assertThat(dummyWorkbasketCloned).isEqualTo(dummyWorkbasket);
@@ -59,7 +63,7 @@ class WorkbasketModelsCloneTest {
   }
 
   @Test
-  void testCloneInWorkbasketAccessItem() {
+  void should_CopyWithoutId_When_WorkbasketAccessItemClone() {
     WorkbasketAccessItemImpl dummyWorkbasketAccessItem = new WorkbasketAccessItemImpl();
     dummyWorkbasketAccessItem.setId("dummyId");
     dummyWorkbasketAccessItem.setAccessName("dummyAccessName");
@@ -80,7 +84,9 @@ class WorkbasketModelsCloneTest {
     dummyWorkbasketAccessItem.setPermOpen(false);
     dummyWorkbasketAccessItem.setPermRead(false);
     dummyWorkbasketAccessItem.setPermTransfer(false);
+
     WorkbasketAccessItemImpl dummyWorkbasketAccessItemCloned = dummyWorkbasketAccessItem.copy();
+
     assertThat(dummyWorkbasketAccessItemCloned).isNotEqualTo(dummyWorkbasketAccessItem);
     dummyWorkbasketAccessItemCloned.setId(dummyWorkbasketAccessItem.getId());
     assertThat(dummyWorkbasketAccessItemCloned).isEqualTo(dummyWorkbasketAccessItem);
