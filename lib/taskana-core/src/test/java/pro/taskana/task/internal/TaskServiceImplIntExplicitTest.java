@@ -111,8 +111,6 @@ class TaskServiceImplIntExplicitTest {
       DbSchemaCreator creator = new DbSchemaCreator(dataSource, connection.getSchema());
       creator.run();
     }
-
-    // String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
   }
 
   @AfterEach
