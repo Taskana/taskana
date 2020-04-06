@@ -189,7 +189,7 @@ public interface Task extends TaskSummary {
   String getClassificationCategory();
 
   /**
-   * Duplicates this Task.
+   * Duplicates this Task without the id.
    *
    * @return a copy of this Task
    */

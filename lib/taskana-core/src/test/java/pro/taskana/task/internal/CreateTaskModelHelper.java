@@ -6,33 +6,12 @@ import java.util.ArrayList;
 
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.internal.models.ClassificationImpl;
-import pro.taskana.task.api.models.Attachment;
+import pro.taskana.task.api.TaskState;
 import pro.taskana.task.internal.models.AttachmentImpl;
 import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 
 public class CreateTaskModelHelper {
-
-  public static TaskImpl createUnitTestTask(
-      String id, String name, String workbasketKey, Classification classification) {
-    TaskImpl task = new TaskImpl();
-    task.setId(id);
-    task.setExternalId(id);
-    task.setName(name);
-    task.setWorkbasketKey(workbasketKey);
-    task.setDomain("");
-    task.setAttachments(new ArrayList<>());
-    Instant now = Instant.now().minus(Duration.ofMinutes(1L));
-    task.setCreated(now);
-    task.setModified(now);
-    if (classification == null) {
-      classification = createDummyClassification();
-    }
-    task.setClassificationSummary(classification.asSummary());
-    task.setClassificationKey(classification.getKey());
-    task.setDomain(classification.getDomain());
-    return task;
-  }
 
   public static Classification createDummyClassification() {
     ClassificationImpl classification = new ClassificationImpl();
@@ -52,10 +31,32 @@ public class CreateTaskModelHelper {
     return workbasket;
   }
 
-  public static Attachment createAttachment(String id, String taskId) {
+  public static AttachmentImpl createAttachment(String id, String taskId) {
     AttachmentImpl attachment = new AttachmentImpl();
     attachment.setId(id);
     attachment.setTaskId(taskId);
     return attachment;
+  }
+
+  public static TaskImpl createUnitTestTask(
+      String id, String name, String workbasketKey, Classification classification) {
+    TaskImpl task = new TaskImpl();
+    task.setId(id);
+    task.setExternalId(id);
+    task.setName(name);
+    task.setWorkbasketKey(workbasketKey);
+    task.setDomain("");
+    task.setAttachments(new ArrayList<>());
+    Instant now = Instant.now().minus(Duration.ofMinutes(1L));
+    task.setCreated(now);
+    task.setModified(now);
+    task.setState(TaskState.READY);
+    if (classification == null) {
+      classification = createDummyClassification();
+    }
+    task.setClassificationSummary(classification.asSummary());
+    task.setClassificationKey(classification.getKey());
+    task.setDomain(classification.getDomain());
+    return task;
   }
 }

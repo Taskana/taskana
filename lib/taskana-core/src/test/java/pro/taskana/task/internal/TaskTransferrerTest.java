@@ -7,7 +7,6 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
@@ -68,9 +67,8 @@ class TaskTransferrerTest {
   void testTransferTaskToDestinationWorkbasketWithoutSecurity()
       throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
           InvalidStateException {
-
-    when(internalTaskanaEngineMock.getEngine()).thenReturn(taskanaEngineMock);
-    when(taskanaEngineMock.getWorkbasketService()).thenReturn(workbasketServiceMock);
+    doReturn(taskanaEngineMock).when(internalTaskanaEngineMock).getEngine();
+    doReturn(workbasketServiceMock).when(taskanaEngineMock).getWorkbasketService();
     cut = new TaskTransferrer(internalTaskanaEngineMock, taskMapperMock, taskServiceImplMock);
 
     final TaskTransferrer cutSpy = Mockito.spy(cut);
@@ -78,12 +76,13 @@ class TaskTransferrerTest {
     Workbasket sourceWorkbasket = CreateTaskModelHelper.createWorkbasket("47", "key47");
     Classification dummyClassification = CreateTaskModelHelper.createDummyClassification();
     TaskImpl task =
-        CreateTaskModelHelper
-            .createUnitTestTask("1", "Unit Test Task 1", "key47", dummyClassification);
+        CreateTaskModelHelper.createUnitTestTask(
+            "1", "Unit Test Task 1", "key47", dummyClassification);
     task.setWorkbasketSummary(sourceWorkbasket.asSummary());
     task.setRead(true);
-    when(workbasketServiceMock.getWorkbasket(destinationWorkbasket.getId()))
-        .thenReturn(destinationWorkbasket);
+    doReturn(destinationWorkbasket)
+        .when(workbasketServiceMock)
+        .getWorkbasket(destinationWorkbasket.getId());
     doReturn(task).when(taskServiceImplMock).getTask(task.getId());
 
     final Task actualTask = cutSpy.transfer(task.getId(), destinationWorkbasket.getId());

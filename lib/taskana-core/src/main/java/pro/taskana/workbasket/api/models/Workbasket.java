@@ -100,7 +100,7 @@ public interface Workbasket extends WorkbasketSummary {
   void setMarkedForDeletion(boolean markedForDeletion);
 
   /**
-   * Duplicates this Workbasket.
+   * Duplicates this Workbasket without the id.
    *
    * @return a copy of this Workbasket
    */

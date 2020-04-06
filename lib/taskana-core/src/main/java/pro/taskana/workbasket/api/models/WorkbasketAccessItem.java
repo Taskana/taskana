@@ -317,7 +317,7 @@ public interface WorkbasketAccessItem {
   void setPermCustom12(boolean permCustom12);
 
   /**
-   * Duplicates this WorkbasketAccessItem.
+   * Duplicates this WorkbasketAccessItem without the id.
    *
    * @return a copy of this WorkbasketAccessItem
    */

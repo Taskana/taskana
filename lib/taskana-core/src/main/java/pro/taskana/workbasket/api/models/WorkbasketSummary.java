@@ -121,7 +121,7 @@ public interface WorkbasketSummary {
   boolean isMarkedForDeletion();
 
   /**
-   * Duplicates this WorkbasketSummary.
+   * Duplicates this WorkbasketSummary without the id.
    *
    * @return a copy of this WorkbasketSummary
    */

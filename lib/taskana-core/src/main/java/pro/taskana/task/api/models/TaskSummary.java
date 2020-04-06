@@ -194,7 +194,7 @@ public interface TaskSummary {
   String getCustomAttribute(String num) throws InvalidArgumentException;
 
   /**
-   * Duplicates this TaskSummary.
+   * Duplicates this TaskSummary without the id.
    *
    * @return a copy of this TaskSummary
    */
