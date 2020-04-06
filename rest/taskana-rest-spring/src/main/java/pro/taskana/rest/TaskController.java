@@ -74,8 +74,9 @@ public class TaskController extends AbstractPagingController {
   private static final String DUE_TO = "due-until";
   private static final String DUE_FROM = "due-from";
   private static final String PLANNED = "planned";
-  private static final String PLANNED_TO = "planned-until";
+  private static final String PLANNED_UNTIL = "planned-until";
   private static final String PLANNED_FROM = "planned-from";
+  private static final String EXTERNAL_ID = "external-id";
 
   private static final String SORT_BY = "sort-by";
   private static final String SORT_DIRECTION = "order";
@@ -157,10 +158,9 @@ public class TaskController extends AbstractPagingController {
 
   @DeleteMapping(path = Mapping.URL_TASKS_ID_CLAIM)
   @Transactional(rollbackFor = Exception.class)
-  public ResponseEntity<TaskResource> cancelClaimTask(
-      @PathVariable String taskId)
+  public ResponseEntity<TaskResource> cancelClaimTask(@PathVariable String taskId)
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
-                 NotAuthorizedException {
+          NotAuthorizedException {
 
     LOGGER.debug("Entry to cancelClaimTask(taskId= {}", taskId);
 
@@ -353,18 +353,18 @@ public class TaskController extends AbstractPagingController {
       updateTaskQueryWithPlannedOrDueTimeIntervals(taskQuery, params, DUE);
     }
 
-    if (params.containsKey(PLANNED_FROM) && params.containsKey(PLANNED_TO)) {
-      updateTaskQueryWithPlannedOrDueTimeInterval(taskQuery, params, PLANNED_FROM, PLANNED_TO);
+    if (params.containsKey(PLANNED_FROM) && params.containsKey(PLANNED_UNTIL)) {
+      updateTaskQueryWithPlannedOrDueTimeInterval(taskQuery, params, PLANNED_FROM, PLANNED_UNTIL);
 
-    } else if (params.containsKey(PLANNED_FROM) && !params.containsKey(PLANNED_TO)) {
+    } else if (params.containsKey(PLANNED_FROM) && !params.containsKey(PLANNED_UNTIL)) {
 
       TimeInterval timeInterval = createIndefiniteTimeIntervalFromParam(params, PLANNED_FROM);
       updateTaskQueryWithIndefiniteTimeInterval(taskQuery, params, PLANNED_FROM, timeInterval);
 
-    } else if (!params.containsKey(PLANNED_FROM) && params.containsKey(PLANNED_TO)) {
+    } else if (!params.containsKey(PLANNED_FROM) && params.containsKey(PLANNED_UNTIL)) {
 
-      TimeInterval timeInterval = createIndefiniteTimeIntervalFromParam(params, PLANNED_TO);
-      updateTaskQueryWithIndefiniteTimeInterval(taskQuery, params, PLANNED_TO, timeInterval);
+      TimeInterval timeInterval = createIndefiniteTimeIntervalFromParam(params, PLANNED_UNTIL);
+      updateTaskQueryWithIndefiniteTimeInterval(taskQuery, params, PLANNED_UNTIL, timeInterval);
     }
 
     if (params.containsKey(DUE_FROM) && params.containsKey(DUE_TO)) {
@@ -380,6 +380,12 @@ public class TaskController extends AbstractPagingController {
 
       TimeInterval timeInterval = createIndefiniteTimeIntervalFromParam(params, DUE_TO);
       updateTaskQueryWithIndefiniteTimeInterval(taskQuery, params, DUE_TO, timeInterval);
+    }
+
+    if (params.containsKey(EXTERNAL_ID)) {
+      String[] externalIds = extractCommaSeparatedFields(params.get(EXTERNAL_ID));
+      taskQuery.externalIdIn(externalIds);
+      params.remove(EXTERNAL_ID);
     }
 
     if (LOGGER.isDebugEnabled()) {
@@ -413,7 +419,7 @@ public class TaskController extends AbstractPagingController {
   private void checkForIllegalParamCombinations(MultiValueMap<String, String> params) {
 
     if (params.containsKey(PLANNED)
-        && (params.containsKey(PLANNED_FROM) || params.containsKey(PLANNED_TO))) {
+        && (params.containsKey(PLANNED_FROM) || params.containsKey(PLANNED_UNTIL))) {
 
       throw new IllegalArgumentException(
           "It is prohibited to use the param \""
@@ -421,7 +427,7 @@ public class TaskController extends AbstractPagingController {
               + "\" in combination with the params \""
               + PLANNED_FROM
               + "\" and / or \""
-              + PLANNED_TO
+              + PLANNED_UNTIL
               + "\"");
     }
 
@@ -433,7 +439,7 @@ public class TaskController extends AbstractPagingController {
               + "\" in combination with the params \""
               + PLANNED_FROM
               + "\" and / or \""
-              + PLANNED_TO
+              + PLANNED_UNTIL
               + "\"");
     }
   }
@@ -444,7 +450,7 @@ public class TaskController extends AbstractPagingController {
       String param,
       TimeInterval timeInterval) {
 
-    if (param.equals(PLANNED_FROM) || param.equals(PLANNED_TO)) {
+    if (param.equals(PLANNED_FROM) || param.equals(PLANNED_UNTIL)) {
       taskQuery.plannedWithin(timeInterval);
 
     } else {
