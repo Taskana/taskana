@@ -257,7 +257,7 @@ class ServiceLevelHandler {
               newTaskImpl.getPlanned(), durationPrioHolder.getDuration()));
     } else if (oldTaskImpl.getDue().equals(newTaskImpl.getDue())
         && newTaskImpl.getPlanned() != null) {
-      // case 2: planned was changed
+      // case 2: planned was changed and due not
       newTaskImpl.setDue(
           converter.addWorkingDaysToInstant(
               newTaskImpl.getPlanned(), durationPrioHolder.getDuration()));
@@ -265,13 +265,14 @@ class ServiceLevelHandler {
         newTaskImpl.setPlanned(getFirstFollowingWorkingDay(newTaskImpl.getPlanned()));
       }
     } else {
-      updatePlannedDueOnTaskUpdateWhenDueWasChanged(newTaskImpl, durationPrioHolder);
+      updatePlannedDueOnTaskUpdateWhenDueWasChanged(newTaskImpl, oldTaskImpl, durationPrioHolder);
     }
     return newTaskImpl;
   }
 
-  private void updatePlannedDueOnTaskUpdateWhenDueWasChanged(TaskImpl newTaskImpl,
-      DurationPrioHolder durationPrioHolder) throws InvalidArgumentException {
+  private void updatePlannedDueOnTaskUpdateWhenDueWasChanged(
+      TaskImpl newTaskImpl, TaskImpl oldTaskImpl, DurationPrioHolder durationPrioHolder)
+      throws InvalidArgumentException {
     if (newTaskImpl.getDue() == null) {
       newTaskImpl.setDue(
           converter.addWorkingDaysToInstant(
@@ -283,7 +284,10 @@ class ServiceLevelHandler {
       Instant planned =
           (converter.subtractWorkingDaysFromInstant(
               newTaskImpl.getDue(), durationPrioHolder.getDuration()));
-      ensureServiceLevelIsNotViolated(newTaskImpl, durationPrioHolder.getDuration(), planned);
+      if (newTaskImpl.getPlanned() != null
+          && !newTaskImpl.getPlanned().equals(oldTaskImpl.getPlanned())) {
+        ensureServiceLevelIsNotViolated(newTaskImpl, durationPrioHolder.getDuration(), planned);
+      }
       newTaskImpl.setPlanned(planned);
       if (!converter.isWorkingDay(0, newTaskImpl.getDue())) {
         newTaskImpl.setDue(getFirstPreceedingWorkingDay(newTaskImpl.getDue()));
