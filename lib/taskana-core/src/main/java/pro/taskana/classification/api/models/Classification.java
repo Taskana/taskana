@@ -51,11 +51,12 @@ public interface Classification extends ClassificationSummary {
   void setApplicationEntryPoint(String applicationEntryPoint);
 
   /**
-   * Duplicates this Classification.
+   * Duplicates this Classification without the id.
    *
+   * @param key for the new Classification
    * @return a copy of this Classification
    */
-  Classification copy();
+  Classification copy(String key);
 
   /**
    * Get a flag if the classification if currently valid in the used domain.
@@ -179,7 +180,7 @@ public interface Classification extends ClassificationSummary {
   void setCustom8(String custom8);
 
   /**
-   * Return a summary of the current Classification without the id.
+   * Return a summary of the current Classification.
    *
    * @return the ClassificationSummary object for the current classification
    */

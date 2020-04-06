@@ -67,7 +67,7 @@ public interface AttachmentSummary {
   Instant getReceived();
 
   /**
-   * Duplicates this AttachmentSummary without the id.
+   * Duplicates this AttachmentSummary without the id and taskId.
    *
    * @return a copy of this AttachmentSummary
    */

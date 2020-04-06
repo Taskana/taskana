@@ -1,6 +1,7 @@
 package acceptance.workbasket;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -23,6 +24,7 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
+import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 
 /** Acceptance test for all "create workbasket" scenarios. */
 @ExtendWith(JaasExtension.class)
@@ -77,6 +79,22 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
 
     Assertions.assertThrows(
         NotAuthorizedException.class, () -> workbasketService.createWorkbasket(workbasket));
+  }
+
+  @WithAccessId(
+      userName = "teamlead_1",
+      groupNames = {"group_1", "businessadmin"})
+  @Test
+  void should_beAbleToCreateNewWorkbasket_When_WorkbasketCopy() throws Exception {
+    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+    WorkbasketImpl oldWorkbasket =
+        (WorkbasketImpl) workbasketService.getWorkbasket("GPK_KSC", "DOMAIN_A");
+
+    WorkbasketImpl newWorkbasket = oldWorkbasket.copy("keyname");
+    newWorkbasket = (WorkbasketImpl) workbasketService.createWorkbasket(newWorkbasket);
+
+    assertNotNull(newWorkbasket.getId());
+    assertNotEquals(newWorkbasket.getId(), oldWorkbasket.getId());
   }
 
   @WithAccessId(

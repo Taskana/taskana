@@ -14,10 +14,16 @@ public class WorkbasketImpl extends WorkbasketSummaryImpl implements Workbasket 
 
   public WorkbasketImpl() {}
 
-  private WorkbasketImpl(WorkbasketImpl copyFrom) {
+  private WorkbasketImpl(WorkbasketImpl copyFrom, String key) {
     super(copyFrom);
     created = copyFrom.created;
     modified = copyFrom.modified;
+    this.key = key;
+  }
+
+  @Override
+  public WorkbasketImpl copy(String key) {
+    return new WorkbasketImpl(this, key);
   }
 
   @Override
@@ -58,11 +64,6 @@ public class WorkbasketImpl extends WorkbasketSummaryImpl implements Workbasket 
     result.setOrgLevel4(this.getOrgLevel4());
     result.setMarkedForDeletion(this.isMarkedForDeletion());
     return result;
-  }
-
-  @Override
-  public WorkbasketImpl copy() {
-    return new WorkbasketImpl(this);
   }
 
   protected boolean canEqual(Object other) {

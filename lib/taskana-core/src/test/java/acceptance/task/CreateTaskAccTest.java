@@ -5,6 +5,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -39,6 +40,7 @@ import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Attachment;
+import pro.taskana.task.api.models.AttachmentSummary;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.AttachmentMapper;
@@ -59,6 +61,23 @@ class CreateTaskAccTest extends AbstractAccTest {
   void setup() {
     taskService = taskanaEngine.getTaskService();
     classificationService = taskanaEngine.getClassificationService();
+  }
+
+  @WithAccessId(
+      userName = "user_1_1",
+      groupNames = {"group_1"})
+  @Test
+  void should_beAbleToCreateNewTask_When_TaskCopy() throws Exception {
+    Task oldTask = taskService.getTask("TKI:000000000000000000000000000000000000");
+
+    Task newTask = oldTask.copy();
+    newTask = taskService.createTask(newTask);
+
+    assertNotNull(newTask.getId());
+    assertNotEquals(newTask.getId(), oldTask.getId());
+    org.assertj.core.api.Assertions.assertThat(newTask.getAttachments())
+        .extracting(AttachmentSummary::getTaskId)
+        .containsOnly(newTask.getId());
   }
 
   @WithAccessId(
