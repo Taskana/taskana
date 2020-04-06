@@ -19,7 +19,6 @@ public class ObjectReference {
   public ObjectReference() {}
 
   private ObjectReference(ObjectReference copyFrom) {
-    id = copyFrom.id;
     company = copyFrom.company;
     system = copyFrom.system;
     systemInstance = copyFrom.systemInstance;
