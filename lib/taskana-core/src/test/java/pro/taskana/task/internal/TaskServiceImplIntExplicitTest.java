@@ -15,6 +15,7 @@ import java.util.UUID;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -71,8 +72,6 @@ class TaskServiceImplIntExplicitTest {
 
   private TaskServiceImpl taskServiceImpl;
 
-  private TaskanaEngineConfiguration taskanaEngineConfiguration;
-
   private TaskanaEngine taskanaEngine;
 
   private TaskanaEngineImpl taskanaEngineImpl;
@@ -81,8 +80,12 @@ class TaskServiceImplIntExplicitTest {
 
   private WorkbasketService workbasketService;
 
-  @BeforeEach
-  void setup() throws SQLException {
+  private SampleDataGenerator sampleDataGenerator;
+
+  private TaskanaEngineConfiguration taskanaEngineConfiguration;
+
+  @BeforeAll
+  void beforeAll() throws SQLException {
     String userHomeDirectory = System.getProperty("user.home");
     String propertiesFileName = userHomeDirectory + "/taskanaUnitTest.properties";
 
@@ -93,6 +96,10 @@ class TaskServiceImplIntExplicitTest {
     taskanaEngineConfiguration =
         new TaskanaEngineConfiguration(
             dataSource, false, TaskanaEngineTestConfiguration.getSchemaName());
+  }
+
+  @BeforeEach
+  void setup() throws SQLException {
     taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
     taskServiceImpl = (TaskServiceImpl) taskanaEngine.getTaskService();
     taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
@@ -100,15 +107,16 @@ class TaskServiceImplIntExplicitTest {
     taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.EXPLICIT);
     workbasketService = taskanaEngine.getWorkbasketService();
     try (Connection connection = dataSource.getConnection()) {
-      SampleDataGenerator sampleDataGenerator =
-          new SampleDataGenerator(dataSource, TaskanaEngineTestConfiguration.getSchemaName());
       sampleDataGenerator.clearDb();
       DbSchemaCreator creator = new DbSchemaCreator(dataSource, connection.getSchema());
       creator.run();
     }
 
-    String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
-    SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
+    // String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
+  }
+
+  @AfterEach
+  void tearDown() {
     sampleDataGenerator.clearDb();
   }
 
