@@ -26,9 +26,9 @@ import pro.taskana.task.api.models.TaskSummary;
  * correctly.
  */
 @ExtendWith(JaasExtension.class)
-class QueryTaskWithAttachment extends AbstractAccTest {
+class QueryTaskWithAttachmentAccTest extends AbstractAccTest {
 
-  QueryTaskWithAttachment() {
+  QueryTaskWithAttachmentAccTest() {
     super();
   }
 
@@ -51,7 +51,7 @@ class QueryTaskWithAttachment extends AbstractAccTest {
   void testGetNoAttachmentSummaryFromTask() {
     TaskService taskService = taskanaEngine.getTaskService();
     List<TaskSummary> tasks = taskService.createTaskQuery().list();
-    assertEquals(20, tasks.size());
+    assertEquals(30, tasks.size());
 
     List<AttachmentSummary> attachmentSummaries = tasks.get(0).getAttachmentSummaries();
     assertNotNull(attachmentSummaries);
