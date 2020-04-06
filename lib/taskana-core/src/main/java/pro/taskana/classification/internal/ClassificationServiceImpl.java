@@ -332,19 +332,19 @@ public class ClassificationServiceImpl implements ClassificationService {
     }
   }
 
-  private void addClassificationToMasterDomain(ClassificationImpl classificationImpl) {
-    if (!Objects.equals(classificationImpl.getDomain(), "")) {
+  private void addClassificationToMasterDomain(ClassificationImpl classification) {
+    if (!Objects.equals(classification.getDomain(), "")) {
       boolean doesExist = true;
-      ClassificationImpl masterClassification = classificationImpl.copy();
+      ClassificationImpl masterClassification = classification.copy(classification.getKey());
       masterClassification.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
-      masterClassification.setParentKey(classificationImpl.getParentKey());
+      masterClassification.setParentKey(classification.getParentKey());
       masterClassification.setDomain("");
       masterClassification.setIsValidInDomain(false);
       try {
-        if (classificationImpl.getParentKey() != null
-            && !"".equals(classificationImpl.getParentKey())) {
+        if (classification.getParentKey() != null
+            && !"".equals(classification.getParentKey())) {
           masterClassification.setParentId(
-              getClassification(classificationImpl.getParentKey(), "").getId());
+              getClassification(classification.getParentKey(), "").getId());
         }
         this.getClassification(masterClassification.getKey(), masterClassification.getDomain());
         throw new ClassificationAlreadyExistException(masterClassification);

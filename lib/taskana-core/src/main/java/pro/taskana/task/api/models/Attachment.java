@@ -59,7 +59,7 @@ public interface Attachment extends AttachmentSummary {
   AttachmentSummary asSummary();
 
   /**
-   * Duplicates this Attachment without the id.
+   * Duplicates this Attachment without the id and taskId.
    *
    * @return a copy of this Attachment
    */

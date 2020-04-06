@@ -23,7 +23,6 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
   AttachmentSummaryImpl() {}
 
   protected AttachmentSummaryImpl(AttachmentSummaryImpl copyFrom) {
-    taskId = copyFrom.taskId;
     created = copyFrom.created;
     modified = copyFrom.modified;
     classificationSummary = copyFrom.classificationSummary;
