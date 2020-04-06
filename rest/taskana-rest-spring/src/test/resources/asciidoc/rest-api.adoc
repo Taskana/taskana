@@ -121,7 +121,8 @@ include::{snippets}/GetAllTasksDocTest/response-fields.adoc[]
 The list generated in the response can be filtered using following parameters in the uri: +
 name | priority | state | classification.key | workbasket-id | {workbasket-key , domain} | +
 owner | por.company | por.system | por.instance | por.type | por.value +
-planned | planned-from | planned-until | due | due-from | due-until +
+planned | planned-from | planned-until | due | due-from | due-until | +
+external-id
 
 If it is sufficient to filter the list with a single time interval, use the parameters +
 planned-from/due-from and planned-until/due-until. +
