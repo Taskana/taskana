@@ -1,7 +1,6 @@
 package acceptance.workbasket;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
 import java.util.ArrayList;
@@ -31,13 +30,14 @@ public class UpdateWorkbasketAuthorizations2AccTest extends AbstractAccTest {
     final String wbId = "WBI:100000000000000000000000000000000004";
     List<WorkbasketAccessItem> accessItems = workbasketService.getWorkbasketAccessItems(wbId);
     int countBefore = accessItems.size();
-    assertThat(3, equalTo(countBefore));
+    assertThat(countBefore).isEqualTo(3);
 
     workbasketService.setWorkbasketAccessItems(wbId, new ArrayList<>());
 
     List<WorkbasketAccessItem> updatedAccessItems =
         workbasketService.getWorkbasketAccessItems(wbId);
     int countAfter = updatedAccessItems.size();
-    assertThat(0, equalTo(countAfter));
+    assertThat(countAfter).isEqualTo(0);
+    
   }
 }

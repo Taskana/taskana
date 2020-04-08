@@ -1,9 +1,7 @@
 package pro.taskana.classification.internal;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.StringStartsWith.startsWith;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -14,9 +12,8 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
 import javax.sql.DataSource;
-import org.hamcrest.core.IsEqual;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -102,14 +99,14 @@ public class ClassificationServiceImplIntExplicitTest {
       connection.commit();
       Classification actualClassification =
           classificationService.getClassification(key, "DOMAIN_B");
-      assertThat(actualClassification, not(IsEqual.equalTo(null)));
-      assertThat(actualClassification.getCreated(), not(IsEqual.equalTo(null)));
-      assertThat(actualClassification.getId(), not(IsEqual.equalTo(null)));
-      assertThat(actualClassification.getKey(), IsEqual.equalTo(key));
-      assertThat(actualClassification.getDomain(), IsEqual.equalTo("DOMAIN_B"));
-      assertThat(actualClassification.getId(), startsWith(ID_PREFIX_CLASSIFICATION));
+      assertThat(actualClassification).isNotNull();
+      assertThat(actualClassification.getCreated()).isNotNull();
+      assertThat(actualClassification.getId()).isNotNull();
+      assertThat(actualClassification.getKey()).isEqualTo(key);
+      assertThat(actualClassification.getDomain()).isEqualTo("DOMAIN_B");
+      assertThat(actualClassification.getId()).startsWith(ID_PREFIX_CLASSIFICATION);
       Classification masterResult = classificationService.getClassification(key, "");
-      assertThat(masterResult, not(IsEqual.equalTo(null)));
+      assertThat(masterResult).isNotNull();
 
       // invalid serviceLevel
       ClassificationImpl expectedClassificationCreated =
@@ -118,12 +115,14 @@ public class ClassificationServiceImplIntExplicitTest {
       expectedClassificationCreated.setKey("");
       expectedClassificationCreated.setServiceLevel("ASAP");
 
-      Assertions.assertThrows(
-          InvalidArgumentException.class,
+      ThrowingCallable call =
           () -> {
             classificationService.createClassification(expectedClassificationCreated);
-          },
-          "Should have thrown IllegalArgumentException, because ServiceLevel is invalid.");
+          };
+      assertThatThrownBy(call)
+          .describedAs(
+              "Should have thrown IllegalArgumentException, because ServiceLevel is invalid.")
+          .isInstanceOf(InvalidArgumentException.class);
 
       connection.commit();
     }
@@ -143,7 +142,7 @@ public class ClassificationServiceImplIntExplicitTest {
       classification2.setParentId(classification0.getId());
       classificationService.createClassification(classification2);
 
-      assertEquals(2 + 1, classificationService.createClassificationQuery().list().size());
+      assertThat(classificationService.createClassificationQuery().list()).hasSize(2 + 1);
       connection.commit();
     }
   }
@@ -168,7 +167,7 @@ public class ClassificationServiceImplIntExplicitTest {
       classification =
           classificationService.getClassification(
               classification.getKey(), classification.getDomain());
-      assertThat(classification.getDescription(), IsEqual.equalTo(updatedDescription));
+      assertThat(classification.getDescription()).isEqualTo(updatedDescription);
     }
   }
 
@@ -186,7 +185,7 @@ public class ClassificationServiceImplIntExplicitTest {
               .validInDomainEquals(Boolean.TRUE)
               .createdWithin(today())
               .list();
-      assertEquals(1, list.size());
+      assertThat(list).hasSize(1);
     }
   }
 
@@ -204,21 +203,21 @@ public class ClassificationServiceImplIntExplicitTest {
       classification = classificationService.updateClassification(classification);
 
       List<ClassificationSummary> list = classificationService.createClassificationQuery().list();
-      assertEquals(2, list.size());
+      assertThat(list).hasSize(2);
       list = classificationService.createClassificationQuery().validInDomainEquals(true).list();
-      assertEquals(1, list.size());
+      assertThat(list).hasSize(1);
       classification =
           classificationService.getClassification(
               classification.getKey(), classification.getDomain());
-      assertThat(classification.getDescription(), IsEqual.equalTo("description"));
+      assertThat(classification.getDescription()).isEqualTo("description");
 
       classification = classificationService.updateClassification(classification);
       list = classificationService.createClassificationQuery().list();
-      assertEquals(2, list.size());
+      assertThat(list).hasSize(2);
 
       List<ClassificationSummary> allClassifications =
           classificationService.createClassificationQuery().list();
-      assertEquals(2, allClassifications.size());
+      assertThat(allClassifications).hasSize(2);
       connection.commit();
     }
   }
@@ -241,33 +240,33 @@ public class ClassificationServiceImplIntExplicitTest {
 
       List<ClassificationSummary> list =
           classificationService.createClassificationQuery().parentIdIn("").list();
-      assertEquals(3, list.size());
+      assertThat(list).hasSize(3);
       list = classificationService.createClassificationQuery().list();
-      assertEquals(4, list.size());
+      assertThat(list).hasSize(4);
       connection.commit();
 
       list = classificationService.createClassificationQuery().validInDomainEquals(true).list();
-      assertEquals(2, list.size());
+      assertThat(list).hasSize(2);
       list = classificationService.createClassificationQuery().createdWithin(today()).list();
-      assertEquals(4, list.size());
+      assertThat(list).hasSize(4);
       list =
           classificationService
               .createClassificationQuery()
               .domainIn("DOMAIN_C")
               .validInDomainEquals(false)
               .list();
-      assertEquals(0, list.size());
+      assertThat(list).isEmpty();
       list =
           classificationService.createClassificationQuery().keyIn(classification1.getKey()).list();
-      assertEquals(2, list.size());
+      assertThat(list).hasSize(2);
 
       list =
           classificationService
               .createClassificationQuery()
               .parentIdIn(classification.getId())
               .list();
-      assertEquals(1, list.size());
-      assertThat(list.get(0).getKey(), IsEqual.equalTo(classification1.getKey()));
+      assertThat(list).hasSize(1);
+      assertThat(list.get(0).getKey()).isEqualTo(classification1.getKey());
       connection.commit();
     }
   }

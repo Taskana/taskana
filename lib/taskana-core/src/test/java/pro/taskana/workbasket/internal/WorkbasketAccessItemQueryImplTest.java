@@ -1,6 +1,6 @@
 package pro.taskana.workbasket.internal;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -37,7 +37,7 @@ class WorkbasketAccessItemQueryImplTest {
 
     List<WorkbasketAccessItem> result =
         workbasketAccessItemQueryImpl.accessIdIn("test", "asd").list();
-    assertNotNull(result);
+    assertThat(result).isNotNull();
   }
 
   @Test
@@ -47,7 +47,7 @@ class WorkbasketAccessItemQueryImplTest {
 
     List<WorkbasketAccessItem> result =
         workbasketAccessItemQueryImpl.accessIdIn("test", "asd").list(1, 1);
-    assertNotNull(result);
+    assertThat(result).isNotNull();
   }
 
   @Test
@@ -56,6 +56,6 @@ class WorkbasketAccessItemQueryImplTest {
     when(sqlSession.selectOne(any(), any())).thenReturn(new WorkbasketAccessItemImpl());
 
     WorkbasketAccessItem result = workbasketAccessItemQueryImpl.accessIdIn("test", "asd").single();
-    assertNotNull(result);
+    assertThat(result).isNotNull();
   }
 }

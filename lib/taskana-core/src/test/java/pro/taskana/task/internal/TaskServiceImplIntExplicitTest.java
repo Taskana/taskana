@@ -1,11 +1,7 @@
 package pro.taskana.task.internal;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.File;
 import java.sql.Connection;
@@ -13,8 +9,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 import javax.sql.DataSource;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -68,7 +64,7 @@ import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 @ExtendWith(JaasExtension.class)
 class TaskServiceImplIntExplicitTest {
 
-  private DataSource dataSource;
+  private static DataSource dataSource;
 
   private TaskServiceImpl taskServiceImpl;
 
@@ -80,12 +76,12 @@ class TaskServiceImplIntExplicitTest {
 
   private WorkbasketService workbasketService;
 
-  private SampleDataGenerator sampleDataGenerator;
+  private static SampleDataGenerator sampleDataGenerator;
 
-  private TaskanaEngineConfiguration taskanaEngineConfiguration;
+  private static TaskanaEngineConfiguration taskanaEngineConfiguration;
 
   @BeforeAll
-  void beforeAll() throws SQLException {
+  static void beforeAll() throws SQLException {
     String userHomeDirectory = System.getProperty("user.home");
     String propertiesFileName = userHomeDirectory + "/taskanaUnitTest.properties";
 
@@ -96,6 +92,8 @@ class TaskServiceImplIntExplicitTest {
     taskanaEngineConfiguration =
         new TaskanaEngineConfiguration(
             dataSource, false, TaskanaEngineTestConfiguration.getSchemaName());
+    sampleDataGenerator =
+        new SampleDataGenerator(dataSource, TaskanaEngineTestConfiguration.getSchemaName());
   }
 
   @BeforeEach
@@ -159,8 +157,11 @@ class TaskServiceImplIntExplicitTest {
 
       TaskanaEngineImpl te2 = (TaskanaEngineImpl) taskanaEngineConfiguration.buildTaskanaEngine();
       TaskServiceImpl taskServiceImpl2 = (TaskServiceImpl) te2.getTaskService();
-      Assertions.assertThrows(
-          TaskNotFoundException.class, () -> taskServiceImpl2.getTask(workbasket.getId()));
+      ThrowingCallable call =
+          () -> {
+            taskServiceImpl2.getTask(workbasket.getId());
+          };
+      assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
       connection.commit();
     }
   }
@@ -194,7 +195,7 @@ class TaskServiceImplIntExplicitTest {
       TaskanaEngine te2 = taskanaEngineConfiguration.buildTaskanaEngine();
       TaskServiceImpl taskServiceImpl2 = (TaskServiceImpl) te2.getTaskService();
       Task resultTask = taskServiceImpl2.getTask(task2.getId());
-      assertNotNull(resultTask);
+      assertThat(resultTask).isNotNull();
       connection.commit();
     }
   }
@@ -212,8 +213,11 @@ class TaskServiceImplIntExplicitTest {
       Task test = this.generateDummyTask();
       ((WorkbasketSummaryImpl) (test.getWorkbasketSummary())).setId("2");
 
-      Assertions.assertThrows(
-          WorkbasketNotFoundException.class, () -> taskServiceImpl.createTask(test));
+      ThrowingCallable call =
+          () -> {
+            taskServiceImpl.createTask(test);
+          };
+      assertThatThrownBy(call).isInstanceOf(WorkbasketNotFoundException.class);
     }
   }
 
@@ -246,8 +250,11 @@ class TaskServiceImplIntExplicitTest {
       ((TaskImpl) task).setWorkbasketSummary(wb.asSummary());
       task.setClassificationKey(classification.getKey());
 
-      Assertions.assertThrows(
-          ClassificationNotFoundException.class, () -> taskServiceImpl.createTask(task));
+      ThrowingCallable call =
+          () -> {
+            taskServiceImpl.createTask(task);
+          };
+      assertThatThrownBy(call).isInstanceOf(ClassificationNotFoundException.class);
     }
   }
 
@@ -303,7 +310,7 @@ class TaskServiceImplIntExplicitTest {
               .primaryObjectReferenceValueIn("val1", "val2", "val3")
               .list();
 
-      assertEquals(0, results.size());
+      assertThat(results).isEmpty();
       connection.commit();
     }
   }
@@ -335,12 +342,13 @@ class TaskServiceImplIntExplicitTest {
       workbasketService.createWorkbasketAccessItem(
           createWorkbasketWithSecurity(wb, wb.getOwner(), true, true, true, true));
       connection.commit();
-      Assertions.assertThrows(
-          WorkbasketAccessItemAlreadyExistException.class,
-          () ->
-              workbasketService.createWorkbasketAccessItem(
-                  createWorkbasketWithSecurity(
-                      sourceWB, sourceWB.getOwner(), false, false, false, false)));
+      ThrowingCallable call =
+          () -> {
+            workbasketService.createWorkbasketAccessItem(
+                createWorkbasketWithSecurity(
+                    sourceWB, sourceWB.getOwner(), false, false, false, false));
+          };
+      assertThatThrownBy(call).isInstanceOf(WorkbasketAccessItemAlreadyExistException.class);
       connection.rollback();
 
       // Destination Workbasket
@@ -378,13 +386,13 @@ class TaskServiceImplIntExplicitTest {
 
       Task resultTask = taskServiceImpl.transfer(task.getId(), destinationWB.getId());
       connection.commit();
-      assertThat(resultTask.isRead(), equalTo(false));
-      assertThat(resultTask.isTransferred(), equalTo(true));
-      assertThat(resultTask.getWorkbasketKey(), equalTo(destinationWB.getKey()));
-      assertThat(resultTask.getModified(), not(equalTo(null)));
-      assertThat(resultTask.getModified(), not(equalTo(task.getModified())));
-      assertThat(resultTask.getCreated(), not(equalTo(null)));
-      assertThat(resultTask.getCreated(), equalTo(task.getCreated()));
+      assertThat(resultTask.isRead()).isFalse();
+      assertThat(resultTask.isTransferred()).isTrue();
+      assertThat(resultTask.getWorkbasketKey()).isEqualTo(destinationWB.getKey());
+      assertThat(resultTask.getModified()).isNotNull();
+      assertThat(resultTask.getModified()).isNotEqualTo(task.getModified());
+      assertThat(resultTask.getCreated()).isNotNull();
+      assertThat(resultTask.getCreated()).isEqualTo(task.getCreated());
     }
   }
 
@@ -393,9 +401,11 @@ class TaskServiceImplIntExplicitTest {
     try (Connection connection = dataSource.getConnection()) {
       taskanaEngineImpl.setConnection(connection);
 
-      Assertions.assertThrows(
-          TaskNotFoundException.class,
-          () -> taskServiceImpl.transfer(UUID.randomUUID() + "_X", "1"));
+      ThrowingCallable call =
+          () -> {
+            taskServiceImpl.transfer(UUID.randomUUID() + "_X", "1");
+          };
+      assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
     }
   }
 
@@ -470,21 +480,20 @@ class TaskServiceImplIntExplicitTest {
     TaskImpl taskCreated = (TaskImpl) taskServiceImpl.createTask(task);
 
     // Check failing with missing APPEND
-    NotAuthorizedException e =
-        Assertions.assertThrows(
-            NotAuthorizedException.class,
-            () -> taskServiceImpl.transfer(taskCreated.getId(), wbNoAppendCreated.getId()),
+    ThrowingCallable call =
+        () -> {
+          taskServiceImpl.transfer(taskCreated.getId(), wbNoAppendCreated.getId());
+        };
+    assertThatThrownBy(call)
+        .describedAs(
             "Transfer Task should be FAILED, "
-                + "because there are no APPEND-Rights on destination WB.");
+                + "because there are no APPEND-Rights on destination WB.")
+        .isInstanceOf(NotAuthorizedException.class)
+        .hasMessageContaining("APPEND");
 
-    assertTrue(
-        e.getMessage().contains("APPEND"),
-        "Transfer Task should be FAILED, "
-            + "because there are no APPEND-Rights on destination WB.");
-
-    assertThat(taskCreated.isTransferred(), equalTo(false));
-    assertThat(taskCreated.getWorkbasketKey(), not(equalTo(wbNoAppendCreated.getKey())));
-    assertThat(taskCreated.getWorkbasketKey(), equalTo(wbCreated.getKey()));
+    assertThat(taskCreated.isTransferred()).isFalse();
+    assertThat(taskCreated.getWorkbasketKey()).isNotEqualTo(wbNoAppendCreated.getKey());
+    assertThat(taskCreated.getWorkbasketKey()).isEqualTo(wbCreated.getKey());
 
     // Check failing with missing TRANSFER
     taskCreated.setId("");
@@ -492,17 +501,18 @@ class TaskServiceImplIntExplicitTest {
     taskCreated.getWorkbasketSummaryImpl().setId(wbNoTransfer.getId());
     taskCreated.setExternalId(IdGenerator.generateWithPrefix("TST"));
     TaskImpl taskCreated2 = (TaskImpl) taskServiceImpl.createTask(taskCreated);
-    e =
-        Assertions.assertThrows(
-            NotAuthorizedException.class,
-            () -> taskServiceImpl.transfer(taskCreated2.getId(), wbCreated.getId()),
-            "Transfer Task should be FAILED, because there are no TRANSFER-Rights on current WB.");
+    call =
+        () -> {
+          taskServiceImpl.transfer(taskCreated2.getId(), wbCreated.getId());
+        };
+    assertThatThrownBy(call)
+        .describedAs(
+            "Transfer Task should be FAILED, because there are no TRANSFER-Rights on current WB.")
+        .isInstanceOf(NotAuthorizedException.class)
+        .hasMessageContaining("TRANSFER");
 
-    assertTrue(
-        e.getMessage().contains("TRANSFER"),
-        "Transfer Task should be FAILED, because there are no APPEND-Rights on current WB.");
-    assertThat(taskCreated2.isTransferred(), equalTo(false));
-    assertThat(taskCreated2.getWorkbasketKey(), not(equalTo(wbNoAppendCreated.getKey())));
+    assertThat(taskCreated2.isTransferred()).isFalse();
+    assertThat(taskCreated2.getWorkbasketKey()).isNotEqualTo(wbNoAppendCreated.getKey());
   }
 
   @AfterEach

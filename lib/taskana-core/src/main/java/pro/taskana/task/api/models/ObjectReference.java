@@ -101,7 +101,7 @@ public class ObjectReference {
     this.value = value;
   }
 
-  protected ObjectReference copy() {
+  public ObjectReference copy() {
     return new ObjectReference(this);
   }
 

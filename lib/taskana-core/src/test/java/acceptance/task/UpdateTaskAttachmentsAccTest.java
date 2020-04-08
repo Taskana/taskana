@@ -1,19 +1,16 @@
 package acceptance.task;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.fail;
 
 import acceptance.AbstractAccTest;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -33,6 +30,7 @@ import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Attachment;
+import pro.taskana.task.api.models.AttachmentSummary;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.AttachmentImpl;
 import pro.taskana.task.internal.models.TaskImpl;
@@ -49,8 +47,32 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
   private Attachment attachment;
   private TaskService taskService;
 
-  UpdateTaskAttachmentsAccTest() {
-    super();
+  @BeforeEach
+  @WithAccessId(userName = "admin")
+  void setUp()
+      throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
+          InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException,
+          InvalidStateException {
+    taskService = taskanaEngine.getTaskService();
+    task =
+        taskService.getTask(
+            "TKI:000000000000000000000000000000000000"); // class T2000, prio 1, SL P1D
+    task.setClassificationKey("T2000");
+    attachment =
+        createAttachment(
+            "DOCTYPE_DEFAULT", // prio 99, SL P2000D
+            createObjectReference(
+                "COMPANY_A",
+                "SYSTEM_B",
+                "INSTANCE_B",
+                "ArchiveId",
+                "12345678901234567890123456789012345678901234567890"),
+            "E-MAIL",
+            "2018-01-15",
+            createSimpleCustomProperties(3));
+    task.getAttachments().clear();
+    taskService.updateTask(task);
+    assertThat(task).isNotNull();
   }
 
   @WithAccessId(
@@ -61,33 +83,18 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
       throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
           InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException,
           InvalidStateException {
-    setUpMethod();
     final int attachmentCount = task.getAttachments().size();
-    assertEquals(1, task.getPriority());
-    assertEquals(task.getDue(), task.getPlanned().plus(Duration.ofDays(1)));
+    assertThat(task.getPriority()).isEqualTo(1);
+    assertThat(task.getPlanned().plus(Duration.ofDays(1))).isEqualTo(task.getDue());
     task.addAttachment(attachment);
 
     task = taskService.updateTask(task);
-
     task = taskService.getTask(task.getId());
-    assertThat(task.getAttachments().size(), equalTo(attachmentCount + 1));
-    assertThat(
-        task.getAttachments().get(0).getClassificationSummary().getKey(),
-        equalTo("DOCTYPE_DEFAULT"));
-    assertThat(
-        task.getAttachments().get(0).getObjectReference().getCompany(), equalTo("COMPANY_A"));
-    assertThat(task.getAttachments().get(0).getObjectReference().getSystem(), equalTo("SYSTEM_B"));
-    assertThat(
-        task.getAttachments().get(0).getObjectReference().getSystemInstance(),
-        equalTo("INSTANCE_B"));
-    assertThat(task.getAttachments().get(0).getObjectReference().getType(), equalTo("ArchiveId"));
-    assertThat(
-        task.getAttachments().get(0).getObjectReference().getValue(),
-        equalTo("12345678901234567890123456789012345678901234567890"));
-    assertEquals(99, task.getPriority());
-    assertEquals(task.getDue(), task.getPlanned().plus(Duration.ofDays(1)));
-
-    task.getAttachments().forEach(at -> assertEquals(at.getModified(), task.getModified()));
+    assertThat(task.getAttachments())
+        .hasSize(attachmentCount + 1)
+        .contains(attachment)
+        .extracting(Attachment::getModified)
+        .containsOnly(task.getModified());
   }
 
   @WithAccessId(
@@ -98,11 +105,10 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
           ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
           InvalidStateException {
-    setUpMethod();
     task.getAttachments().clear();
     task = taskService.updateTask(task);
     task = taskService.getTask(task.getId());
-    assertEquals(0, task.getAttachments().size());
+    assertThat(task.getAttachments()).isEmpty();
 
     AttachmentImpl attachment = (AttachmentImpl) this.attachment;
     attachment.setId("TAI:000017");
@@ -110,8 +116,10 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     task.addAttachment(attachment);
     task = taskService.updateTask(task);
 
-    assertEquals(1, task.getAttachments().size());
-    task.getAttachments().forEach(at -> assertEquals(at.getModified(), task.getModified()));
+    assertThat(task.getAttachments())
+        .hasSize(1)
+        .extracting(AttachmentSummary::getModified)
+        .containsOnly(task.getModified());
   }
 
   @WithAccessId(
@@ -122,20 +130,18 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
           ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
           InvalidStateException {
-    setUpMethod();
     final int attachmentCount = 0;
     task.getAttachments().clear();
     task = taskService.updateTask(task);
     task = taskService.getTask(task.getId());
-    assertThat(task.getAttachments().size(), equalTo(attachmentCount));
+    assertThat(task.getAttachments()).hasSize(attachmentCount);
 
     AttachmentImpl attachment = (AttachmentImpl) this.attachment;
     attachment.setId("TAI:000017");
     task.getAttachments().add(attachment);
     task.getAttachments().add(attachment);
-    task.getAttachments().add(attachment);
-    Assertions.assertThrows(
-        AttachmentPersistenceException.class, () -> task = taskService.updateTask(task));
+    ThrowingCallable call = () -> taskService.updateTask(task);
+    assertThatThrownBy(call).isInstanceOf(AttachmentPersistenceException.class);
   }
 
   @WithAccessId(
@@ -146,14 +152,13 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
       throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
           InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException,
           InvalidStateException {
-    setUpMethod();
     // Add attachment before
     task = taskService.getTask(task.getId());
     final int attachmentCount = task.getAttachments().size();
     task.addAttachment(attachment);
     task = taskService.updateTask(task);
     task = taskService.getTask(task.getId());
-    assertThat(task.getAttachments().size(), equalTo(attachmentCount + 1));
+    assertThat(task.getAttachments()).hasSize(attachmentCount + 1);
 
     // Change sth. and add same (id) again - override/update
     String newChannel = "UPDATED EXTERNAL SINCE LAST ADD";
@@ -168,13 +173,13 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     task.addAttachment(updatedAttachment);
     task = taskService.updateTask(task);
     task = taskService.getTask(task.getId());
-    assertThat(task.getAttachments().size(), equalTo(attachmentCount2));
-    assertThat(task.getAttachments().get(0).getChannel(), equalTo(newChannel));
-    assertEquals(999, task.getPriority());
+    assertThat(task.getAttachments()).hasSize(attachmentCount2);
+    assertThat(task.getAttachments().get(0).getChannel()).isEqualTo(newChannel);
+    assertThat(task.getPriority()).isEqualTo(999);
 
     WorkingDaysToDaysConverter converter = WorkingDaysToDaysConverter.initialize(Instant.now());
     long calendarDays = converter.convertWorkingDaysToDays(task.getDue(), 1);
-    assertEquals(task.getDue(), task.getPlanned().plus(Duration.ofDays(calendarDays)));
+    assertThat(task.getPlanned().plus(Duration.ofDays(calendarDays))).isEqualTo(task.getDue());
   }
 
   @WithAccessId(
@@ -185,7 +190,6 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
       throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
           InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException,
           InvalidStateException {
-    setUpMethod();
     // Add Attachment before
     final int attachmentCount = task.getAttachments().size();
     ((AttachmentImpl) attachment).setId("TAI:0001");
@@ -194,14 +198,14 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     task.addAttachment(attachment); // overwrite, same id
     task = taskService.updateTask(task);
     task = taskService.getTask(task.getId());
-    assertThat(task.getAttachments().size(), equalTo(attachmentCount + 1));
+    assertThat(task.getAttachments()).hasSize(attachmentCount + 1);
 
     // Add same again - ignored
     final int attachmentCount2 = task.getAttachments().size();
     Attachment redundantAttachment = task.getAttachments().get(0);
     task.addAttachment(redundantAttachment);
     task = taskService.updateTask(task);
-    assertThat(task.getAttachments().size(), equalTo(attachmentCount2));
+    assertThat(task.getAttachments()).hasSize(attachmentCount2);
   }
 
   @WithAccessId(
@@ -212,21 +216,19 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
           ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
           InvalidStateException {
-    setUpMethod();
     // Try to add a single NULL-Element
     final int attachmentCount = task.getAttachments().size();
     task.addAttachment(null);
     task = taskService.updateTask(task);
     task = taskService.getTask(task.getId());
-    assertThat(task.getAttachments().size(), equalTo(attachmentCount));
+    assertThat(task.getAttachments()).hasSize(attachmentCount);
 
     // Try to set the Attachments to NULL and update it
     ((TaskImpl) task).setAttachments(null);
     task = taskService.updateTask(task);
-    assertThat(task.getAttachments().size(), equalTo(attachmentCount)); // locally, not persisted
+    assertThat(task.getAttachments()).hasSize(attachmentCount); // locally, not persisted
     task = taskService.getTask(task.getId());
-    assertThat(
-        task.getAttachments().size(), equalTo(attachmentCount)); // persisted values not changed
+    assertThat(task.getAttachments()).hasSize(attachmentCount); // persisted values not changed
 
     // Test no NullPointer on NULL-Value and removing it on current data.
     // New loading can do this, but returned value should got this "function", too.
@@ -235,12 +237,11 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     task.getAttachments().add(null);
     task.getAttachments().add(null);
     task = taskService.updateTask(task);
-    assertThat(task.getAttachments().size(), equalTo(attachmentCount2)); // locally, not persisted
+    assertThat(task.getAttachments()).hasSize(attachmentCount2); // locally, not persisted
     task = taskService.getTask(task.getId());
-    assertThat(
-        task.getAttachments().size(), equalTo(attachmentCount2)); // persisted values not changed
-    assertEquals(1, task.getPriority());
-    assertEquals(task.getDue(), task.getPlanned().plus(Duration.ofDays(1)));
+    assertThat(task.getAttachments()).hasSize(attachmentCount2); // persisted values not changed
+    assertThat(task.getPriority()).isEqualTo(1);
+    assertThat(task.getPlanned().plus(Duration.ofDays(1))).isEqualTo(task.getDue());
   }
 
   @WithAccessId(
@@ -251,23 +252,20 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
           ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
           InvalidStateException {
-    setUpMethod();
     task.addAttachment(attachment);
     task = taskService.updateTask(task);
-    assertEquals(99, task.getPriority());
-    assertEquals(task.getDue(), task.getPlanned().plus(Duration.ofDays(1)));
+    assertThat(task.getPriority()).isEqualTo(99);
+    assertThat(task.getPlanned().plus(Duration.ofDays(1))).isEqualTo(task.getDue());
     int attachmentCount = task.getAttachments().size();
     Attachment attachmentToRemove = task.getAttachments().get(0);
     task.removeAttachment(attachmentToRemove.getId());
     task = taskService.updateTask(task);
-    assertThat(
-        task.getAttachments().size(),
-        equalTo(attachmentCount - 1)); // locally, removed and not persisted
+    assertThat(task.getAttachments())
+        .hasSize(attachmentCount - 1); // locally, removed and not persisted
     task = taskService.getTask(task.getId());
-    assertThat(
-        task.getAttachments().size(), equalTo(attachmentCount - 1)); // persisted, values removed
-    assertEquals(1, task.getPriority());
-    assertEquals(task.getDue(), task.getPlanned().plus(Duration.ofDays(1)));
+    assertThat(task.getAttachments()).hasSize(attachmentCount - 1); // persisted, values removed
+    assertThat(task.getPriority()).isEqualTo(1);
+    assertThat(task.getPlanned().plus(Duration.ofDays(1))).isEqualTo(task.getDue());
   }
 
   @WithAccessId(
@@ -278,22 +276,21 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
           ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
           InvalidStateException {
-    setUpMethod();
     task.addAttachment(attachment);
     task = taskService.updateTask(task);
     int attachmentCount = task.getAttachments().size();
 
     task.removeAttachment(null);
     task = taskService.updateTask(task);
-    assertThat(task.getAttachments().size(), equalTo(attachmentCount)); // locally, nothing changed
+    assertThat(task.getAttachments()).hasSize(attachmentCount); // locally, nothing changed
     task = taskService.getTask(task.getId());
-    assertThat(task.getAttachments().size(), equalTo(attachmentCount)); // persisted, still same
+    assertThat(task.getAttachments()).hasSize(attachmentCount); // persisted, still same
 
     task.removeAttachment("INVALID ID HERE");
     task = taskService.updateTask(task);
-    assertThat(task.getAttachments().size(), equalTo(attachmentCount)); // locally, nothing changed
+    assertThat(task.getAttachments()).hasSize(attachmentCount); // locally, nothing changed
     task = taskService.getTask(task.getId());
-    assertThat(task.getAttachments().size(), equalTo(attachmentCount)); // persisted, still same
+    assertThat(task.getAttachments()).hasSize(attachmentCount); // persisted, still same
   }
 
   @WithAccessId(
@@ -304,17 +301,16 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
           ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
           InvalidStateException {
-    setUpMethod();
     ((TaskImpl) task).setAttachments(new ArrayList<>());
     task = taskService.updateTask(task);
-    assertEquals(1, task.getPriority());
-    assertEquals(task.getDue(), task.getPlanned().plus(Duration.ofDays(1)));
+    assertThat(task.getPriority()).isEqualTo(1);
+    assertThat(task.getPlanned().plus(Duration.ofDays(1))).isEqualTo(task.getDue());
 
     Attachment attachment = this.attachment;
     task.addAttachment(attachment);
     task = taskService.updateTask(task);
-    assertEquals(99, task.getPriority());
-    assertEquals(task.getDue(), task.getPlanned().plus(Duration.ofDays(1)));
+    assertThat(task.getPriority()).isEqualTo(99);
+    assertThat(task.getPlanned().plus(Duration.ofDays(1))).isEqualTo(task.getDue());
 
     final int attachmentCount = task.getAttachments().size();
 
@@ -327,13 +323,13 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     task.getAttachments().get(0).setClassificationSummary(newClassification.asSummary());
     task = taskService.updateTask(task);
     task = taskService.getTask(task.getId());
-    assertThat(task.getAttachments().size(), equalTo(attachmentCount));
-    assertThat(task.getAttachments().get(0).getChannel(), equalTo(newChannel));
-    assertEquals(999, task.getPriority());
+    assertThat(task.getAttachments()).hasSize(attachmentCount);
+    assertThat(task.getAttachments().get(0).getChannel()).isEqualTo(newChannel);
+    assertThat(task.getPriority()).isEqualTo(999);
     WorkingDaysToDaysConverter converter = WorkingDaysToDaysConverter.initialize(Instant.now());
     long calendarDays = converter.convertWorkingDaysToDays(task.getDue(), 1);
 
-    assertEquals(task.getDue(), task.getPlanned().plus(Duration.ofDays(calendarDays)));
+    assertThat(task.getPlanned().plus(Duration.ofDays(calendarDays))).isEqualTo(task.getDue());
   }
 
   @WithAccessId(
@@ -344,9 +340,8 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
       throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
           InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException,
           InvalidStateException {
-    setUpMethod();
     // setup test
-    assertThat(task.getAttachments().size(), equalTo(0));
+    assertThat(task.getAttachments()).isEmpty();
     task.addAttachment(attachment);
 
     Attachment attachment2 =
@@ -364,13 +359,13 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     task.addAttachment(attachment2);
     task = taskService.updateTask(task);
     task = taskService.getTask(task.getId());
-    assertEquals(101, task.getPriority());
+    assertThat(task.getPriority()).isEqualTo(101);
     WorkingDaysToDaysConverter converter = WorkingDaysToDaysConverter.initialize(Instant.now());
     long calendarDays = converter.convertWorkingDaysToDays(task.getDue(), 1);
 
-    assertEquals(task.getDue(), task.getPlanned().plus(Duration.ofDays(calendarDays)));
+    assertThat(task.getPlanned().plus(Duration.ofDays(calendarDays))).isEqualTo(task.getDue());
 
-    assertThat(task.getAttachments().size(), equalTo(2));
+    assertThat(task.getAttachments()).hasSize(2);
     List<Attachment> attachments = task.getAttachments();
     boolean rohrpostFound = false;
     boolean emailFound = false;
@@ -379,17 +374,18 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
       int custAttSize = att.getCustomAttributes().size();
       if ("ROHRPOST".equals(channel)) {
         rohrpostFound = true;
-        assertEquals(att.getModified(), task.getModified());
+        assertThat(task.getModified()).isEqualTo(att.getModified());
       } else if ("E-MAIL".equals(channel)) {
         emailFound = true;
       } else {
         fail("unexpected attachment detected " + att);
       }
-      assertTrue(
-          ("ROHRPOST".equals(channel) && custAttSize == 4)
-              || ("E-MAIL".equals(channel) && custAttSize == 3));
+      assertThat(
+              ("ROHRPOST".equals(channel) && custAttSize == 4)
+                  || ("E-MAIL".equals(channel) && custAttSize == 3))
+          .isTrue();
     }
-    assertTrue(rohrpostFound && emailFound);
+    assertThat(rohrpostFound && emailFound).isTrue();
 
     ClassificationSummary newClassificationSummary =
         taskanaEngine
@@ -407,11 +403,11 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     task.setClassificationKey("DOCTYPE_DEFAULT"); // Prio 99, SL P2000D
     task = taskService.updateTask(task);
     task = taskService.getTask(task.getId());
-    assertEquals(99, task.getPriority());
+    assertThat(task.getPriority()).isEqualTo(99);
 
     calendarDays = converter.convertWorkingDaysToDays(task.getDue(), 16);
 
-    assertEquals(task.getDue(), task.getPlanned().plus(Duration.ofDays(calendarDays)));
+    assertThat(task.getPlanned().plus(Duration.ofDays(calendarDays))).isEqualTo(task.getDue());
 
     rohrpostFound = false;
     boolean faxFound = false;
@@ -427,11 +423,12 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         fail("unexpected attachment detected " + att);
       }
 
-      assertTrue(
-          ("ROHRPOST".equals(channel) && custAttSize == 4)
-              || ("FAX".equals(channel) && custAttSize == 3));
+      assertThat(
+              ("ROHRPOST".equals(channel) && custAttSize == 4)
+                  || ("FAX".equals(channel) && custAttSize == 3))
+          .isTrue();
     }
-    assertTrue(faxFound && rohrpostFound);
+    assertThat(faxFound && rohrpostFound).isTrue();
   }
 
   @WithAccessId(
@@ -442,9 +439,8 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
       throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
           InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException,
           InvalidStateException {
-    setUpMethod();
     // setup test
-    assertThat(task.getAttachments().size(), equalTo(0));
+    assertThat(task.getAttachments()).isEmpty();
     task.addAttachment(attachment);
     Attachment attachment2 =
         createAttachment(
@@ -461,10 +457,9 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     task.addAttachment(attachment2);
     task = taskService.updateTask(task);
     task = taskService.getTask(task.getId());
-    assertThat(task.getAttachments().size(), equalTo(2));
-    assertThat(
-        task.getAttachments().get(0).getClassificationSummary().getKey(),
-        equalTo("DOCTYPE_DEFAULT"));
+    assertThat(task.getAttachments()).hasSize(2);
+    assertThat(task.getAttachments().get(0).getClassificationSummary().getKey())
+        .isEqualTo("DOCTYPE_DEFAULT");
 
     Attachment attachment3 =
         createAttachment(
@@ -483,20 +478,20 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     task.getAttachments().clear();
     task.addAttachment(attachment3);
     task = taskService.updateTask(task);
-    assertThat(task.getAttachments().size(), equalTo(1));
-    assertThat(task.getAttachments().get(0).getChannel(), equalTo("DHL"));
-    task.getAttachments().forEach(at -> assertEquals(at.getModified(), task.getModified()));
+    assertThat(task.getAttachments()).hasSize(1);
+    assertThat(task.getAttachments().get(0).getChannel()).isEqualTo("DHL");
+    task.getAttachments().forEach(at -> assertThat(task.getModified()).isEqualTo(at.getModified()));
     // setup environment for 2nd version of replacement (list.add call)
     task.getAttachments().add(attachment2);
     task = taskService.updateTask(task);
-    assertThat(task.getAttachments().size(), equalTo(2));
-    assertThat(task.getAttachments().get(1).getChannel(), equalTo("E-MAIL"));
+    assertThat(task.getAttachments()).hasSize(2);
+    assertThat(task.getAttachments().get(1).getChannel()).isEqualTo("E-MAIL");
     // replace attachments
     task.getAttachments().clear();
     task.getAttachments().add(attachment3);
     task = taskService.updateTask(task);
-    assertThat(task.getAttachments().size(), equalTo(1));
-    assertThat(task.getAttachments().get(0).getChannel(), equalTo("DHL"));
+    assertThat(task.getAttachments()).hasSize(1);
+    assertThat(task.getAttachments().get(0).getChannel()).isEqualTo("DHL");
   }
 
   @WithAccessId(
@@ -508,7 +503,6 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
           WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException,
           ConcurrencyException, AttachmentPersistenceException, InvalidStateException {
 
-    setUpMethod();
     TaskService taskService = taskanaEngine.getTaskService();
     Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
     newTask.setClassificationKey("L12010"); // prio 8, SL P7D
@@ -541,30 +535,29 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
             createSimpleCustomProperties(3)));
     Task createdTask = taskService.createTask(newTask);
 
-    assertNotNull(createdTask.getId());
-    assertThat(createdTask.getCreator(), equalTo(CurrentUserContext.getUserid()));
+    assertThat(createdTask.getId()).isNotNull();
+    assertThat(createdTask.getCreator()).isEqualTo(CurrentUserContext.getUserid());
     createdTask
         .getAttachments()
-        .forEach(at -> assertEquals(at.getModified(), createdTask.getModified()));
+        .forEach(at -> assertThat(createdTask.getModified()).isEqualTo(at.getModified()));
     Task readTask = taskService.getTask(createdTask.getId());
-    assertNotNull(readTask);
-    assertThat(readTask.getCreator(), equalTo(CurrentUserContext.getUserid()));
-    assertNotNull(readTask.getAttachments());
-    assertEquals(2, readTask.getAttachments().size());
-    assertNotNull(readTask.getAttachments().get(1).getCreated());
-    assertNotNull(readTask.getAttachments().get(1).getModified());
-    assertEquals(
-        readTask.getAttachments().get(0).getCreated(),
-        readTask.getAttachments().get(1).getModified());
-    // assertNotNull(readTask.getAttachments().get(0).getClassification());
-    assertNotNull(readTask.getAttachments().get(0).getObjectReference());
+    assertThat(readTask).isNotNull();
+    assertThat(createdTask.getCreator()).isEqualTo(CurrentUserContext.getUserid());
+    assertThat(readTask.getAttachments()).isNotNull();
+    assertThat(readTask.getAttachments()).hasSize(2);
+    assertThat(readTask.getAttachments().get(1).getCreated()).isNotNull();
+    assertThat(readTask.getAttachments().get(1).getModified()).isNotNull();
+    assertThat(readTask.getAttachments().get(0).getCreated())
+        .isEqualTo(readTask.getAttachments().get(1).getModified());
+    assertThat(readTask.getAttachments().get(0).getObjectReference()).isNotNull();
 
-    assertEquals(99, readTask.getPriority());
+    assertThat(readTask.getPriority()).isEqualTo(99);
 
     WorkingDaysToDaysConverter converter = WorkingDaysToDaysConverter.initialize(Instant.now());
     long calendarDays = converter.convertWorkingDaysToDays(readTask.getPlanned(), 1);
 
-    assertEquals(readTask.getDue(), readTask.getPlanned().plus(Duration.ofDays(calendarDays)));
+    assertThat(readTask.getPlanned().plus(Duration.ofDays(calendarDays)))
+        .isEqualTo(readTask.getDue());
   }
 
   @WithAccessId(
@@ -601,38 +594,8 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
             .filter(a -> attachment.getId().equals(a.getId()))
             .findFirst()
             .orElse(null);
-    assertNotNull(updatedAttachment);
-    assertEquals(updatedAttachment.getModified(),updatedTask.getModified());
-    assertEquals("TEST_VALUE", updatedAttachment.getCustomAttributes().get("TEST_KEY"));
-  }
-
-  // this method needs to run with access ids, otherwise getTask throws NotAuthorizedException
-  // since only @Test and not @Before methods are run by JAASRunner, we call this method explicitely
-  // at
-  // the begin of each testcase....
-  private void setUpMethod()
-      throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException,
-          InvalidStateException {
-    taskService = taskanaEngine.getTaskService();
-    task =
-        taskService.getTask(
-            "TKI:000000000000000000000000000000000000"); // class T2000, prio 1, SL P1D
-    task.setClassificationKey("T2000");
-    attachment =
-        createAttachment(
-            "DOCTYPE_DEFAULT", // prio 99, SL P2000D
-            createObjectReference(
-                "COMPANY_A",
-                "SYSTEM_B",
-                "INSTANCE_B",
-                "ArchiveId",
-                "12345678901234567890123456789012345678901234567890"),
-            "E-MAIL",
-            "2018-01-15",
-            createSimpleCustomProperties(3));
-    task.getAttachments().clear();
-    taskService.updateTask(task);
-    assertThat(task, not(equalTo(null)));
+    assertThat(updatedAttachment).isNotNull();
+    assertThat(updatedTask.getModified()).isEqualTo(updatedAttachment.getModified());
+    assertThat(updatedAttachment.getCustomAttributes().get("TEST_KEY")).isEqualTo("TEST_VALUE");
   }
 }

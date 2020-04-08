@@ -1,12 +1,12 @@
 package acceptance.report;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -28,12 +28,11 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
 
     List<SelectedItem> selectedItems = new ArrayList<>();
 
-    Assertions.assertThrows(
-        NotAuthorizedException.class,
-        () ->
-            monitorService
-                .createWorkbasketReportBuilder()
-                .listTaskIdsForSelectedItems(selectedItems));
+    ThrowingCallable call =
+        () -> {
+          monitorService.createWorkbasketReportBuilder().listTaskIdsForSelectedItems(selectedItems);
+        };
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(userName = "monitor")
@@ -70,14 +69,15 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
             .inWorkingDays()
             .listTaskIdsForSelectedItems(selectedItems);
 
-    assertEquals(7, ids.size());
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000001"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000004"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000006"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000009"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000010"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000031"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000050"));
+    assertThat(ids)
+        .containsOnly(
+            "TKI:000000000000000000000000000000000001",
+            "TKI:000000000000000000000000000000000004",
+            "TKI:000000000000000000000000000000000006",
+            "TKI:000000000000000000000000000000000009",
+            "TKI:000000000000000000000000000000000010",
+            "TKI:000000000000000000000000000000000031",
+            "TKI:000000000000000000000000000000000050");
   }
 
   @WithAccessId(userName = "monitor")
@@ -117,11 +117,13 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
                 Collections.singletonList("CLI:000000000000000000000000000000000001"))
             .listTaskIdsForSelectedItems(selectedItems);
 
-    assertEquals(4, ids.size());
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000006"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000009"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000031"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000050"));
+    assertThat(ids).hasSize(4);
+    assertThat(ids)
+        .containsOnly(
+            "TKI:000000000000000000000000000000000006",
+            "TKI:000000000000000000000000000000000009",
+            "TKI:000000000000000000000000000000000031",
+            "TKI:000000000000000000000000000000000050");
   }
 
   private List<TimeIntervalColumnHeader> getListOfColumnHeaders() {

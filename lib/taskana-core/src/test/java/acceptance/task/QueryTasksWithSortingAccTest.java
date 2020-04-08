@@ -1,16 +1,12 @@
 package acceptance.task;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static java.lang.String.CASE_INSENSITIVE_ORDER;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -47,11 +43,11 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
             .orderByDomain(null)
             .list();
 
-    assertThat(results.size(), equalTo(25));
+    assertThat(results).hasSize(25);
     TaskSummary previousSummary = null;
     for (TaskSummary taskSummary : results) {
       if (previousSummary != null) {
-        assertFalse(previousSummary.getModified().isBefore(taskSummary.getModified()));
+        assertThat(previousSummary.getModified().isBefore(taskSummary.getModified())).isFalse();
       }
       previousSummary = taskSummary;
     }
@@ -71,7 +67,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
             .list();
 
     // test is only valid with at least 2 results
-    Assertions.assertTrue(results.size() > 2);
+    assertThat(results).hasSizeGreaterThan(2);
 
     List<String> idsDesc =
         results.stream()
@@ -80,7 +76,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
             .collect(Collectors.toList());
 
     for (int i = 0; i < results.size(); i++) {
-      assertEquals(idsDesc.get(i), results.get(i).getId());
+      assertThat(results.get(i).getId()).isEqualTo(idsDesc.get(i));
     }
   }
 
@@ -98,13 +94,13 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
             .list();
 
     // test is only valid with at least 2 results
-    Assertions.assertTrue(results.size() > 2);
+    assertThat(results).hasSizeGreaterThan(2);
 
     List<String> idsAsc =
         results.stream().map(TaskSummary::getId).sorted().collect(Collectors.toList());
 
     for (int i = 0; i < results.size(); i++) {
-      assertEquals(idsAsc.get(i), results.get(i).getId());
+      assertThat(results.get(i).getId()).isEqualTo(idsAsc.get(i));
     }
   }
 
@@ -117,29 +113,17 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
     List<TaskSummary> results =
         taskService
             .createTaskQuery()
-            .workbasketKeyDomainIn(new KeyDomain("USER_3_2", "DOMAIN_B"))
             .orderByDomain(asc)
             .orderByName(asc)
             .orderByCreated(null)
             .list();
 
-    assertThat(results.size(), equalTo(25));
-    TaskSummary previousSummary = null;
-    for (TaskSummary taskSummary : results) {
-      // System.out.println("domain: " + taskSummary.getDomain() + ", name: " +
-      // taskSummary.getName() + ",
-      // created: " + taskSummary.getCreated());
-      if (previousSummary != null) {
-        assertTrue(taskSummary.getDomain().compareToIgnoreCase(previousSummary.getDomain()) >= 0);
-        if (taskSummary.getDomain().equals(previousSummary.getDomain())) {
-          assertTrue(taskSummary.getName().compareToIgnoreCase(previousSummary.getName()) >= 0);
-          if (taskSummary.getName().equals(previousSummary.getName())) {
-            assertFalse(taskSummary.getCreated().isBefore(previousSummary.getCreated()));
-          }
-        }
-      }
-      previousSummary = taskSummary;
-    }
+    assertThat(results)
+        .hasSizeGreaterThan(2)
+        .isSortedAccordingTo(
+            Comparator.comparing(TaskSummary::getDomain, CASE_INSENSITIVE_ORDER)
+                .thenComparing(TaskSummary::getName, CASE_INSENSITIVE_ORDER)
+                .thenComparing(TaskSummary::getCreated));
   }
 
   @WithAccessId(
@@ -158,16 +142,17 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
             .orderByOwner(asc)
             .list();
 
-    assertThat(results.size(), equalTo(25));
+    assertThat(results).hasSize(25);
     TaskSummary previousSummary = null;
     for (TaskSummary taskSummary : results) {
       if (previousSummary != null) {
-        assertTrue(
-            taskSummary
-                    .getPrimaryObjRef()
-                    .getSystem()
-                    .compareToIgnoreCase(previousSummary.getPrimaryObjRef().getSystem())
-                <= 0);
+        assertThat(
+                taskSummary
+                        .getPrimaryObjRef()
+                        .getSystem()
+                        .compareToIgnoreCase(previousSummary.getPrimaryObjRef().getSystem())
+                    <= 0)
+            .isTrue();
       }
       previousSummary = taskSummary;
     }
@@ -189,16 +174,17 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
             .orderByState(asc)
             .list();
 
-    assertThat(results.size(), equalTo(25));
+    assertThat(results).hasSize(25);
     TaskSummary previousSummary = null;
     for (TaskSummary taskSummary : results) {
       if (previousSummary != null) {
-        assertTrue(
-            taskSummary
-                    .getPrimaryObjRef()
-                    .getSystemInstance()
-                    .compareToIgnoreCase(previousSummary.getPrimaryObjRef().getSystemInstance())
-                <= 0);
+        assertThat(
+                taskSummary
+                        .getPrimaryObjRef()
+                        .getSystemInstance()
+                        .compareToIgnoreCase(previousSummary.getPrimaryObjRef().getSystemInstance())
+                    <= 0)
+            .isTrue();
       }
       previousSummary = taskSummary;
     }
@@ -218,19 +204,20 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
             .orderByClaimed(asc)
             .list();
 
-    assertThat(results.size(), equalTo(25));
+    assertThat(results).hasSize(25);
     TaskSummary previousSummary = null;
     for (TaskSummary taskSummary : results) {
       // System.out.println("porCompany: " + taskSummary.getPrimaryObjRef().getCompany() + ",
       // claimed: "
       // + taskSummary.getClaimed());
       if (previousSummary != null) {
-        assertTrue(
-            taskSummary
-                    .getPrimaryObjRef()
-                    .getCompany()
-                    .compareToIgnoreCase(previousSummary.getPrimaryObjRef().getCompany())
-                <= 0);
+        assertThat(
+                taskSummary
+                        .getPrimaryObjRef()
+                        .getCompany()
+                        .compareToIgnoreCase(previousSummary.getPrimaryObjRef().getCompany())
+                    <= 0)
+            .isTrue();
       }
       previousSummary = taskSummary;
     }
@@ -253,16 +240,17 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
             .orderByCompleted(desc)
             .list();
 
-    assertThat(results.size(), equalTo(22));
+    assertThat(results).hasSize(22);
     TaskSummary previousSummary = null;
     for (TaskSummary taskSummary : results) {
       if (previousSummary != null) {
-        assertTrue(
-            taskSummary
-                    .getWorkbasketSummary()
-                    .getKey()
-                    .compareToIgnoreCase(previousSummary.getWorkbasketSummary().getKey())
-                >= 0);
+        assertThat(
+                taskSummary
+                        .getWorkbasketSummary()
+                        .getKey()
+                        .compareToIgnoreCase(previousSummary.getWorkbasketSummary().getKey())
+                    >= 0)
+            .isTrue();
       }
       previousSummary = taskSummary;
     }
@@ -284,15 +272,16 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
             .orderByPrimaryObjectReferenceType(SortDirection.DESCENDING)
             .list();
 
-    assertThat(results.size(), equalTo(22));
+    assertThat(results).hasSize(22);
     TaskSummary previousSummary = null;
     for (TaskSummary taskSummary : results) {
       if (previousSummary != null) {
-        assertTrue(
-            taskSummary
-                    .getBusinessProcessId()
-                    .compareToIgnoreCase(previousSummary.getBusinessProcessId())
-                >= 0);
+        assertThat(
+                taskSummary
+                        .getBusinessProcessId()
+                        .compareToIgnoreCase(previousSummary.getBusinessProcessId())
+                    >= 0)
+            .isTrue();
       }
       previousSummary = taskSummary;
     }

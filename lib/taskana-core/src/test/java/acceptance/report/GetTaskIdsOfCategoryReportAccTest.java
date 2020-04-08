@@ -1,7 +1,7 @@
 package acceptance.report;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -32,13 +32,11 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
     MonitorService monitorService = taskanaEngine.getMonitorService();
 
     List<SelectedItem> selectedItems = new ArrayList<>();
-
-    Assertions.assertThrows(
-        NotAuthorizedException.class,
-        () ->
-            monitorService
-                .createCategoryReportBuilder()
-                .listTaskIdsForSelectedItems(selectedItems));
+    ThrowingCallable call =
+        () -> {
+          monitorService.createCategoryReportBuilder().listTaskIdsForSelectedItems(selectedItems);
+        };
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(userName = "monitor")
@@ -75,18 +73,18 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
             .inWorkingDays()
             .listTaskIdsForSelectedItems(selectedItems);
 
-    assertEquals(11, ids.size());
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000006"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000020"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000021"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000022"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000023"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000024"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000026"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000027"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000028"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000031"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000032"));
+    assertThat(ids).hasSize(11);
+    assertThat(ids.contains("TKI:000000000000000000000000000000000006")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000020")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000021")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000022")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000023")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000024")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000026")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000027")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000028")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000031")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000032")).isTrue();
   }
 
   @WithAccessId(userName = "monitor")
@@ -127,11 +125,11 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
             .workbasketIdIn(workbasketIds)
             .listTaskIdsForSelectedItems(selectedItems);
 
-    assertEquals(4, ids.size());
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000006"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000020"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000026"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000031"));
+    assertThat(ids).hasSize(4);
+    assertThat(ids.contains("TKI:000000000000000000000000000000000006")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000020")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000026")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000031")).isTrue();
   }
 
   @WithAccessId(userName = "monitor")
@@ -171,18 +169,18 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
             .stateIn(states)
             .listTaskIdsForSelectedItems(selectedItems);
 
-    assertEquals(11, ids.size());
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000006"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000020"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000021"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000022"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000023"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000024"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000026"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000027"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000028"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000031"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000032"));
+    assertThat(ids).hasSize(11);
+    assertThat(ids.contains("TKI:000000000000000000000000000000000006")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000020")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000021")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000022")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000023")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000024")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000026")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000027")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000028")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000031")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000032")).isTrue();
   }
 
   @WithAccessId(userName = "monitor")
@@ -216,10 +214,10 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
             .categoryIn(categories)
             .listTaskIdsForSelectedItems(selectedItems);
 
-    assertEquals(3, ids.size());
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000006"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000031"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000032"));
+    assertThat(ids).hasSize(3);
+    assertThat(ids.contains("TKI:000000000000000000000000000000000006")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000031")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000032")).isTrue();
   }
 
   @WithAccessId(userName = "monitor")
@@ -259,11 +257,11 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
             .domainIn(domains)
             .listTaskIdsForSelectedItems(selectedItems);
 
-    assertEquals(4, ids.size());
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000020"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000021"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000022"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000028"));
+    assertThat(ids).hasSize(4);
+    assertThat(ids.contains("TKI:000000000000000000000000000000000020")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000021")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000022")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000028")).isTrue();
   }
 
   @WithAccessId(userName = "monitor")
@@ -304,12 +302,12 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
             .customAttributeFilterIn(customAttributeFilter)
             .listTaskIdsForSelectedItems(selectedItems);
 
-    assertEquals(5, ids.size());
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000020"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000024"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000027"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000031"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000032"));
+    assertThat(ids).hasSize(5);
+    assertThat(ids.contains("TKI:000000000000000000000000000000000020")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000024")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000027")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000031")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000032")).isTrue();
   }
 
   @WithAccessId(userName = "monitor")
@@ -328,13 +326,14 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
     s1.setUpperAgeLimit(-2);
     selectedItems.add(s1);
 
-    Assertions.assertThrows(
-        InvalidArgumentException.class,
-        () ->
-            monitorService
-                .createCategoryReportBuilder()
-                .withColumnHeaders(columnHeaders)
-                .listTaskIdsForSelectedItems(selectedItems));
+    ThrowingCallable call =
+        () -> {
+          monitorService
+              .createCategoryReportBuilder()
+              .withColumnHeaders(columnHeaders)
+              .listTaskIdsForSelectedItems(selectedItems);
+        };
+    assertThatThrownBy(call).isInstanceOf(InvalidArgumentException.class);
   }
 
   private List<TimeIntervalColumnHeader> getListOfColumnHeaders() {

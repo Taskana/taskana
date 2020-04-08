@@ -1,13 +1,11 @@
 package acceptance.workbasket;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.util.List;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -24,7 +22,6 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
-import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 
 /** Acceptance test for all "create workbasket" scenarios. */
 @ExtendWith(JaasExtension.class)
@@ -56,15 +53,15 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     workbasketService.createWorkbasketAccessItem(wbai);
 
     int after = workbasketService.createWorkbasketQuery().domainIn("DOMAIN_A").list().size();
-    assertEquals(before + 1, after);
+    assertThat(after).isEqualTo(before + 1);
     Workbasket createdWorkbasket = workbasketService.getWorkbasket("NT1234", "DOMAIN_A");
-    assertNotNull(createdWorkbasket);
-    assertNotNull(createdWorkbasket.getId());
-    assertTrue(createdWorkbasket.getId().startsWith("WBI"));
-    assertEquals(workbasket, createdWorkbasket);
+    assertThat(createdWorkbasket).isNotNull();
+    assertThat(createdWorkbasket.getId()).isNotNull();
+    assertThat(createdWorkbasket.getId().startsWith("WBI")).isTrue();
+    assertThat(createdWorkbasket).isEqualTo(workbasket);
     Workbasket createdWorkbasket2 = workbasketService.getWorkbasket(createdWorkbasket.getId());
-    assertNotNull(createdWorkbasket);
-    assertEquals(createdWorkbasket, createdWorkbasket2);
+    assertThat(createdWorkbasket).isNotNull();
+    assertThat(createdWorkbasket2).isEqualTo(createdWorkbasket);
   }
 
   @WithAccessId(userName = "dummy")
@@ -77,8 +74,8 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     workbasket.setType(WorkbasketType.GROUP);
     workbasket.setOrgLevel1("company");
 
-    Assertions.assertThrows(
-        NotAuthorizedException.class, () -> workbasketService.createWorkbasket(workbasket));
+    ThrowingCallable call = () -> workbasketService.createWorkbasket(workbasket);
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(
@@ -87,14 +84,13 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
   @Test
   void should_beAbleToCreateNewWorkbasket_When_WorkbasketCopy() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-    WorkbasketImpl oldWorkbasket =
-        (WorkbasketImpl) workbasketService.getWorkbasket("GPK_KSC", "DOMAIN_A");
+    Workbasket oldWorkbasket = workbasketService.getWorkbasket("GPK_KSC", "DOMAIN_A");
 
-    WorkbasketImpl newWorkbasket = oldWorkbasket.copy("keyname");
-    newWorkbasket = (WorkbasketImpl) workbasketService.createWorkbasket(newWorkbasket);
+    Workbasket newWorkbasket = oldWorkbasket.copy("keyname");
+    newWorkbasket = workbasketService.createWorkbasket(newWorkbasket);
 
-    assertNotNull(newWorkbasket.getId());
-    assertNotEquals(newWorkbasket.getId(), oldWorkbasket.getId());
+    assertThat(newWorkbasket.getId()).isNotNull();
+    assertThat(newWorkbasket.getId()).isNotEqualTo(oldWorkbasket.getId());
   }
 
   @WithAccessId(
@@ -108,8 +104,8 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     workbasket.setName("Megabasket");
     workbasket.setType(WorkbasketType.GROUP);
     workbasket.setOrgLevel1("company");
-    Assertions.assertThrows(
-        DomainNotFoundException.class, () -> workbasketService.createWorkbasket(workbasket));
+    ThrowingCallable call = () -> workbasketService.createWorkbasket(workbasket);
+    assertThatThrownBy(call).isInstanceOf(DomainNotFoundException.class);
   }
 
   @WithAccessId(
@@ -125,46 +121,58 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     workbasket.setType(WorkbasketType.GROUP);
     workbasket.setOrgLevel1("company");
     // missing key
-    Assertions.assertThrows(
-        InvalidWorkbasketException.class, () -> workbasketService.createWorkbasket(workbasket));
+    ThrowingCallable call = () -> workbasketService.createWorkbasket(workbasket);
+    assertThatThrownBy(call).isInstanceOf(InvalidWorkbasketException.class);
 
     Workbasket workbasket2 = workbasketService.newWorkbasket("key", "novatec");
     workbasket2.setType(WorkbasketType.GROUP);
     workbasket2.setOrgLevel1("company");
     // missing name
-    Assertions.assertThrows(
-        InvalidWorkbasketException.class, () -> workbasketService.createWorkbasket(workbasket2));
+    call =
+        () -> {
+          workbasketService.createWorkbasket(workbasket2);
+        };
+    assertThatThrownBy(call).isInstanceOf(InvalidWorkbasketException.class);
 
     Workbasket workbasket3 = workbasketService.newWorkbasket("key", "novatec");
     workbasket3.setName("Megabasket");
     workbasket3.setOrgLevel1("company");
     // missing type
-    Assertions.assertThrows(
-        InvalidWorkbasketException.class, () -> workbasketService.createWorkbasket(workbasket3));
+    call = () -> workbasketService.createWorkbasket(workbasket3);
+    assertThatThrownBy(call).isInstanceOf(InvalidWorkbasketException.class);
 
     Workbasket workbasket4 = workbasketService.newWorkbasket("key", null);
     workbasket4.setName("Megabasket");
     workbasket4.setType(WorkbasketType.GROUP);
     workbasket4.setOrgLevel1("company");
     // missing domain
-    Assertions.assertThrows(
-        InvalidWorkbasketException.class, () -> workbasketService.createWorkbasket(workbasket4));
+    call =
+        () -> {
+          workbasketService.createWorkbasket(workbasket4);
+        };
+    assertThatThrownBy(call).isInstanceOf(InvalidWorkbasketException.class);
 
     Workbasket workbasket5 = workbasketService.newWorkbasket("", "novatec");
     workbasket5.setName("Megabasket");
     workbasket5.setType(WorkbasketType.GROUP);
     workbasket5.setOrgLevel1("company");
     // empty key
-    Assertions.assertThrows(
-        InvalidWorkbasketException.class, () -> workbasketService.createWorkbasket(workbasket5));
+    call =
+        () -> {
+          workbasketService.createWorkbasket(workbasket5);
+        };
+    assertThatThrownBy(call).isInstanceOf(InvalidWorkbasketException.class);
 
     Workbasket workbasket6 = workbasketService.newWorkbasket("key", "novatec");
     workbasket6.setName("");
     workbasket6.setType(WorkbasketType.GROUP);
     workbasket6.setOrgLevel1("company");
     // empty name
-    Assertions.assertThrows(
-        InvalidWorkbasketException.class, () -> workbasketService.createWorkbasket(workbasket));
+    call =
+        () -> {
+          workbasketService.createWorkbasket(workbasket);
+        };
+    assertThatThrownBy(call).isInstanceOf(InvalidWorkbasketException.class);
   }
 
   @WithAccessId(
@@ -186,9 +194,11 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     duplicateWorkbasketWithSmallX.setName("Personal Workbasket for UID X123456");
     duplicateWorkbasketWithSmallX.setType(WorkbasketType.PERSONAL);
 
-    Assertions.assertThrows(
-        WorkbasketAlreadyExistException.class,
-        () -> workbasketService.createWorkbasket(duplicateWorkbasketWithSmallX));
+    ThrowingCallable call =
+        () -> {
+          workbasketService.createWorkbasket(duplicateWorkbasketWithSmallX);
+        };
+    assertThatThrownBy(call).isInstanceOf(WorkbasketAlreadyExistException.class);
   }
 
   @WithAccessId(
@@ -210,9 +220,11 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     sameKeyAndDomain.setType(WorkbasketType.TOPIC);
     sameKeyAndDomain.setName("new name");
 
-    Assertions.assertThrows(
-        WorkbasketAlreadyExistException.class,
-        () -> workbasketService.createWorkbasket(sameKeyAndDomain));
+    ThrowingCallable call =
+        () -> {
+          workbasketService.createWorkbasket(sameKeyAndDomain);
+        };
+    assertThatThrownBy(call).isInstanceOf(WorkbasketAlreadyExistException.class);
   }
 
   @WithAccessId(
@@ -238,14 +250,14 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     workbasketService.createWorkbasketAccessItem(wbai);
 
     Workbasket createdWorkbasket = workbasketService.getWorkbasket("WBAIT1234", "DOMAIN_A");
-    assertNotNull(createdWorkbasket);
-    assertNotNull(createdWorkbasket.getId());
+    assertThat(createdWorkbasket).isNotNull();
+    assertThat(createdWorkbasket.getId()).isNotNull();
 
     List<WorkbasketAccessItem> accessItems =
         workbasketService.getWorkbasketAccessItems(createdWorkbasket.getId());
     WorkbasketAccessItem item =
         accessItems.stream().filter(t -> wbai.getId().equals(t.getId())).findFirst().orElse(null);
-    assertEquals("Karl Napf", item.getAccessName());
+    assertThat(item.getAccessName()).isEqualTo("Karl Napf");
   }
 
   @WithAccessId(
@@ -254,7 +266,6 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
   @Test
   void testCreateDuplicateWorkbasketAccessListFails() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-    final int before = workbasketService.createWorkbasketQuery().domainIn("DOMAIN_A").list().size();
 
     Workbasket workbasket = workbasketService.newWorkbasket("NT4321", "DOMAIN_A");
     workbasket.setName("Terabasket");
@@ -266,8 +277,10 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     wbai.setPermRead(true);
     workbasketService.createWorkbasketAccessItem(wbai);
 
-    Assertions.assertThrows(
-        WorkbasketAccessItemAlreadyExistException.class,
-        () -> workbasketService.createWorkbasketAccessItem(wbai));
+    ThrowingCallable call =
+        () -> {
+          workbasketService.createWorkbasketAccessItem(wbai);
+        };
+    assertThatThrownBy(call).isInstanceOf(WorkbasketAccessItemAlreadyExistException.class);
   }
 }

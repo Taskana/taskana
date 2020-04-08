@@ -1,7 +1,6 @@
 package pro.taskana.monitor.internal;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -113,10 +112,10 @@ class ClassificationReportBuilderImplTest {
         monitorMapperMock,
         taskanaEngineConfiguration);
 
-    assertNotNull(actualResult);
-    assertEquals(
-        actualResult.getRow("CLI:000000000000000000000000000000000001").getTotalValue(), 1);
-    assertEquals(actualResult.getSumRow().getTotalValue(), 1);
+    assertThat(actualResult).isNotNull();
+    assertThat(actualResult.getRow("CLI:000000000000000000000000000000000001").getTotalValue())
+        .isEqualTo(1);
+    assertThat(1).isEqualTo(actualResult.getSumRow().getTotalValue());
   }
 
   @Test
@@ -179,11 +178,12 @@ class ClassificationReportBuilderImplTest {
         monitorMapperMock,
         taskanaEngineConfiguration);
 
-    assertNotNull(actualResult);
-    assertEquals(
-        actualResult.getRow("CLI:000000000000000000000000000000000001").getTotalValue(), 1);
-    assertEquals(actualResult.getRow("CLI:000000000000000000000000000000000001").getCells()[0], 1);
-    assertEquals(actualResult.getSumRow().getTotalValue(), 1);
+    assertThat(actualResult).isNotNull();
+    assertThat(actualResult.getRow("CLI:000000000000000000000000000000000001").getTotalValue())
+        .isEqualTo(1);
+    assertThat(1)
+        .isEqualTo(actualResult.getRow("CLI:000000000000000000000000000000000001").getCells()[0]);
+    assertThat(1).isEqualTo(actualResult.getSumRow().getTotalValue());
   }
 
   @Test
@@ -243,11 +243,11 @@ class ClassificationReportBuilderImplTest {
 
     FoldableRow<DetailedMonitorQueryItem> line =
         actualResult.getRow("CLI:000000000000000000000000000000000001");
-    assertNotNull(actualResult);
-    assertEquals(line.getTotalValue(), 1);
-    assertEquals(
-        line.getFoldableRow("CLI:000000000000000000000000000000000006").getTotalValue(), 1);
-    assertEquals(actualResult.getSumRow().getTotalValue(), 1);
+    assertThat(actualResult).isNotNull();
+    assertThat(1).isEqualTo(line.getTotalValue());
+    assertThat(line.getFoldableRow("CLI:000000000000000000000000000000000006").getTotalValue())
+        .isEqualTo(1);
+    assertThat(1).isEqualTo(actualResult.getSumRow().getTotalValue());
   }
 
   @Test
@@ -311,14 +311,15 @@ class ClassificationReportBuilderImplTest {
 
     FoldableRow<DetailedMonitorQueryItem> line =
         actualResult.getRow("CLI:000000000000000000000000000000000001");
-    assertNotNull(actualResult);
-    assertEquals(line.getTotalValue(), 1);
-    assertEquals(
-        line.getFoldableRow("CLI:000000000000000000000000000000000006").getTotalValue(), 1);
-    assertEquals(line.getCells()[0], 1);
-    assertEquals(line.getFoldableRow("CLI:000000000000000000000000000000000006").getCells()[0], 1);
-    assertEquals(actualResult.getSumRow().getTotalValue(), 1);
-    assertEquals(actualResult.getSumRow().getCells()[0], 1);
+    assertThat(actualResult).isNotNull();
+    assertThat(1).isEqualTo(line.getTotalValue());
+    assertThat(line.getFoldableRow("CLI:000000000000000000000000000000000006").getTotalValue())
+        .isEqualTo(1);
+    assertThat(1).isEqualTo(line.getCells()[0]);
+    assertThat(1)
+        .isEqualTo(line.getFoldableRow("CLI:000000000000000000000000000000000006").getCells()[0]);
+    assertThat(1).isEqualTo(actualResult.getSumRow().getTotalValue());
+    assertThat(1).isEqualTo(actualResult.getSumRow().getCells()[0]);
   }
 
   @Test
@@ -384,8 +385,8 @@ class ClassificationReportBuilderImplTest {
         monitorMapperMock,
         taskanaEngineConfiguration);
 
-    assertNotNull(actualResult);
-    assertEquals(expectedResult, actualResult);
+    assertThat(actualResult).isNotNull();
+    assertThat(actualResult).isEqualTo(expectedResult);
   }
 
   @Test
@@ -398,7 +399,7 @@ class ClassificationReportBuilderImplTest {
         cut.createClassificationReportBuilder()
             .workbasketIdIn(Arrays.asList("DieGibtsEhNed"))
             .listTaskIdsForSelectedItems(selectedItems);
-    assertNotNull(result);
+    assertThat(result).isNotNull();
   }
 
   @Test
@@ -459,8 +460,8 @@ class ClassificationReportBuilderImplTest {
         monitorMapperMock,
         taskanaEngineConfiguration);
 
-    assertNotNull(actualResult);
-    assertEquals(expectedResult, actualResult);
+    assertThat(actualResult).isNotNull();
+    assertThat(actualResult).isEqualTo(expectedResult);
   }
 
   @Test
@@ -470,6 +471,6 @@ class ClassificationReportBuilderImplTest {
         cut.createClassificationReportBuilder()
             .workbasketIdIn(Collections.singletonList("DieGibtsGarantiertNed"))
             .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_10);
-    assertNotNull(result);
+    assertThat(result).isNotNull();
   }
 }

@@ -1,15 +1,14 @@
 package pro.taskana.workbasket.internal;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.sql.SQLException;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.sql.DataSource;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,7 +47,6 @@ class WorkbasketServiceImplIntAutocommitTest {
   private static final int SLEEP_TIME = 100;
   private TaskanaEngine taskanaEngine;
   private WorkbasketService workBasketService;
-  private Instant now;
 
   @BeforeAll
   static void resetDb() {
@@ -68,13 +66,15 @@ class WorkbasketServiceImplIntAutocommitTest {
     workBasketService = taskanaEngine.getWorkbasketService();
     SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
     sampleDataGenerator.clearDb();
-    now = Instant.now();
   }
 
   @Test
   void testGetWorkbasketFail() {
-    Assertions.assertThrows(
-        WorkbasketNotFoundException.class, () -> workBasketService.getWorkbasket("fail"));
+    ThrowingCallable call =
+        () -> {
+          workBasketService.getWorkbasket("fail");
+        };
+    assertThatThrownBy(call).isInstanceOf(WorkbasketNotFoundException.class);
   }
 
   @WithAccessId(
@@ -120,17 +120,14 @@ class WorkbasketServiceImplIntAutocommitTest {
     List<WorkbasketSummary> distributionTargets =
         workBasketService.getDistributionTargets(foundBasket.getId());
 
-    assertEquals(1, distributionTargets.size());
-    assertEquals(id3, distributionTargets.get(0).getId());
-    assertNotEquals(
-        workBasketService.getWorkbasket(id2).getCreated(),
-        workBasketService.getWorkbasket(id2).getModified());
-    assertEquals(
-        workBasketService.getWorkbasket(id1).getCreated(),
-        workBasketService.getWorkbasket(id1).getModified());
-    assertEquals(
-        workBasketService.getWorkbasket(id3).getCreated(),
-        workBasketService.getWorkbasket(id3).getModified());
+    assertThat(distributionTargets).hasSize(1);
+    assertThat(distributionTargets.get(0).getId()).isEqualTo(id3);
+    assertThat(workBasketService.getWorkbasket(id2).getCreated())
+        .isNotEqualTo(workBasketService.getWorkbasket(id2).getModified());
+    assertThat(workBasketService.getWorkbasket(id1).getCreated())
+        .isEqualTo(workBasketService.getWorkbasket(id1).getModified());
+    assertThat(workBasketService.getWorkbasket(id3).getCreated())
+        .isEqualTo(workBasketService.getWorkbasket(id3).getModified());
   }
 
   @WithAccessId(
@@ -157,11 +154,11 @@ class WorkbasketServiceImplIntAutocommitTest {
     accessItem.setPermRead(true);
     workBasketService.createWorkbasketAccessItem(accessItem);
 
-    assertEquals(
-        1,
-        workBasketService
-            .getWorkbasketAccessItems("k100000000000000000000000000000000000000")
-            .size());
+    assertThat(1)
+        .isEqualTo(
+            workBasketService
+                .getWorkbasketAccessItems("k100000000000000000000000000000000000000")
+                .size());
   }
 
   @WithAccessId(
@@ -186,19 +183,19 @@ class WorkbasketServiceImplIntAutocommitTest {
     accessItem.setPermRead(true);
     workBasketService.createWorkbasketAccessItem(accessItem);
 
-    assertEquals(
-        1,
-        workBasketService
-            .getWorkbasketAccessItems("k200000000000000000000000000000000000000")
-            .size());
+    assertThat(1)
+        .isEqualTo(
+            workBasketService
+                .getWorkbasketAccessItems("k200000000000000000000000000000000000000")
+                .size());
 
     accessItem.setPermAppend(true);
     workBasketService.updateWorkbasketAccessItem(accessItem);
 
     if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
-      assertEquals("zaphod beeblebrox", accessItem.getAccessId());
+      assertThat(accessItem.getAccessId()).isEqualTo("zaphod beeblebrox");
     } else {
-      assertEquals("Zaphod Beeblebrox", accessItem.getAccessId());
+      assertThat(accessItem.getAccessId()).isEqualTo("Zaphod Beeblebrox");
     }
   }
 

@@ -7,8 +7,11 @@ import acceptance.AbstractAccTest;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -62,9 +65,7 @@ public class SetOwnerAccTest extends AbstractAccTest {
       userName = "user_1_2",
       groupNames = {"group_1"})
   @Test
-  void testSetOwnerViaUpdateTaskNotAuthorized()
-      throws TaskNotFoundException, NotAuthorizedException, InvalidStateException,
-          InvalidOwnerException {
+  void testSetOwnerViaUpdateTaskNotAuthorized() {
 
     TaskService taskService = taskanaEngine.getTaskService();
     String taskReadyId = "TKI:000000000000000000000000000000000024";
@@ -80,9 +81,7 @@ public class SetOwnerAccTest extends AbstractAccTest {
       userName = "user_1_2",
       groupNames = {"group_1"})
   @Test
-  void testSetOwnerOfClaimedTaskFails()
-      throws TaskNotFoundException, NotAuthorizedException, InvalidStateException,
-          InvalidOwnerException {
+  void testSetOwnerOfClaimedTaskFails() throws TaskNotFoundException, NotAuthorizedException {
 
     TaskService taskService = taskanaEngine.getTaskService();
     String taskClaimedId = "TKI:000000000000000000000000000000000026";
@@ -98,9 +97,7 @@ public class SetOwnerAccTest extends AbstractAccTest {
       userName = "user_1_2",
       groupNames = {"group_1"})
   @Test
-  void testSetOwnerNotAuthorized()
-      throws TaskNotFoundException, NotAuthorizedException, InvalidStateException,
-          InvalidOwnerException {
+  void testSetOwnerNotAuthorized() {
 
     TaskService taskService = taskanaEngine.getTaskService();
     String taskReadyId = "TKI:000000000000000000000000000000000024";
@@ -109,7 +106,7 @@ public class SetOwnerAccTest extends AbstractAccTest {
     assertThatThrownBy(() -> taskService.getTask(taskReadyId))
         .isInstanceOf(NotAuthorizedException.class);
     BulkOperationResults<String, TaskanaException> results =
-        taskService.setOwnerOfTasks(anyUserName, Arrays.asList(taskReadyId));
+        taskService.setOwnerOfTasks(anyUserName, Collections.singletonList(taskReadyId));
     assertThat(results.containsErrors()).isTrue();
     assertThat(results.getErrorForId(taskReadyId)).isInstanceOf(NotAuthorizedException.class);
   }
@@ -146,7 +143,7 @@ public class SetOwnerAccTest extends AbstractAccTest {
     BulkOperationResults<String, TaskanaException> results =
         taskanaEngine.getTaskService().setOwnerOfTasks("someUser", taskIds);
     assertThat(results.containsErrors()).isTrue();
-    assertThat(results.getErrorMap().size()).isEqualTo(1);
+    assertThat(results.getErrorMap()).hasSize(1);
     assertThat(results.getErrorForId("TKI:000000000000000000000000000047110059"))
         .isInstanceOf(TaskNotFoundException.class);
   }
@@ -166,7 +163,7 @@ public class SetOwnerAccTest extends AbstractAccTest {
     BulkOperationResults<String, TaskanaException> results =
         taskanaEngine.getTaskService().setOwnerOfTasks("someUser", taskIds);
     assertThat(results.containsErrors()).isTrue();
-    assertThat(results.getErrorMap().size()).isEqualTo(3);
+    assertThat(results.getErrorMap()).hasSize(3);
   }
 
   @WithAccessId(
@@ -190,67 +187,45 @@ public class SetOwnerAccTest extends AbstractAccTest {
     List<TaskSummary> allTaskSummaries =
         new TaskanaEngineProxyForTest(taskanaEngine)
             .getEngine()
-            .runAsAdmin(
-                () -> {
-                  return taskanaEngine.getTaskService().createTaskQuery().list();
-                });
+            .runAsAdmin(() -> taskanaEngine.getTaskService().createTaskQuery().list());
     List<String> allTaskIds =
         allTaskSummaries.stream().map(TaskSummary::getId).collect(Collectors.toList());
     BulkOperationResults<String, TaskanaException> results =
         taskanaEngine.getTaskService().setOwnerOfTasks("theWorkaholic", allTaskIds);
-    assertThat(allTaskSummaries.size()).isEqualTo(83);
+    assertThat(allTaskSummaries).hasSize(83);
     assertThat(results.containsErrors()).isTrue();
-    assertThat(results.getErrorMap().size()).isEqualTo(58);
-    long numberOfInvalidStateExceptions =
-        results.getErrorMap().entrySet().stream()
-            .filter(
-                e ->
-                    e.getValue()
-                        .getClass()
-                        .getName()
-                        .equals(InvalidStateException.class.getCanonicalName()))
-            .count();
-    assertThat(numberOfInvalidStateExceptions).isEqualTo(35);
 
-    long numberOfNotAuthorizedExceptions =
-        results.getErrorMap().entrySet().stream()
-            .filter(
-                e ->
-                    e.getValue()
-                        .getClass()
-                        .getName()
-                        .equals(NotAuthorizedException.class.getCanonicalName()))
-            .count();
-    assertThat(numberOfNotAuthorizedExceptions).isEqualTo(23);
+    Condition<Object> invalidStateException =
+        new Condition<>(c -> c.getClass() == InvalidStateException.class, "InvalidStateException");
+    Condition<Object> notAuthorizedException =
+        new Condition<>(
+            c -> c.getClass() == NotAuthorizedException.class, "NotAuthorizedException");
+    assertThat(results.getErrorMap())
+        .hasSize(58)
+        .extractingFromEntries(Entry::getValue)
+        .hasOnlyElementsOfTypes(InvalidStateException.class, NotAuthorizedException.class)
+        .areExactly(35, invalidStateException)
+        .areExactly(23, notAuthorizedException);
   }
 
   @WithAccessId(
       userName = "admin",
       groupNames = {"group_2"})
   @Test
-  void testSetOwnerWithAllTasksAndVariousExceptionsAsAdmin()
-      throws NoSuchFieldException, IllegalAccessException, SQLException {
+  void testSetOwnerWithAllTasksAndVariousExceptionsAsAdmin() throws SQLException {
     resetDb(false);
     List<TaskSummary> allTaskSummaries = taskanaEngine.getTaskService().createTaskQuery().list();
     List<String> allTaskIds =
         allTaskSummaries.stream().map(TaskSummary::getId).collect(Collectors.toList());
     BulkOperationResults<String, TaskanaException> results =
         taskanaEngine.getTaskService().setOwnerOfTasks("theWorkaholic", allTaskIds);
-    assertThat(allTaskSummaries.size()).isEqualTo(83);
+    assertThat(allTaskSummaries).hasSize(83);
     assertThat(results.containsErrors()).isTrue();
-    assertThat(results.getErrorMap().size()).isEqualTo(36);
-    long numberOfInvalidStateExceptions =
-        results.getErrorMap().entrySet().stream()
-            .filter(
-                e ->
-                    e.getValue()
-                        .getClass()
-                        .getName()
-                        .equals(InvalidStateException.class.getCanonicalName()))
-            .count();
-    assertThat(numberOfInvalidStateExceptions).isEqualTo(36);
+    assertThat(results.getErrorMap())
+        .hasSize(36)
+        .extractingFromEntries(Entry::getValue)
+        .hasOnlyElementsOfType(InvalidStateException.class);
   }
-
 
   private Task setOwner(String taskReadyId, String anyUserName)
       throws TaskNotFoundException, NotAuthorizedException, ClassificationNotFoundException,

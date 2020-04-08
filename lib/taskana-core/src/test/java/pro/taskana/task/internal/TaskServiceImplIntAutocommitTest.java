@@ -1,17 +1,14 @@
 package pro.taskana.task.internal;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 import javax.sql.DataSource;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -76,12 +73,12 @@ class TaskServiceImplIntAutocommitTest {
 
   private WorkbasketService workbasketService;
 
-  private SampleDataGenerator sampleDataGenerator;
+  private static SampleDataGenerator sampleDataGenerator;
 
-  private TaskanaEngineConfiguration taskanaEngineConfiguration;
+  private static TaskanaEngineConfiguration taskanaEngineConfiguration;
 
   @BeforeAll
-  void beforeAll() throws SQLException {
+  static void beforeAll() throws SQLException {
     DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
     String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
     sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
@@ -130,7 +127,7 @@ class TaskServiceImplIntAutocommitTest {
     TaskanaEngine te2 = taskanaEngineConfiguration.buildTaskanaEngine();
     TaskServiceImpl taskServiceImpl2 = (TaskServiceImpl) te2.getTaskService();
     Task resultTask = taskServiceImpl2.getTask(task.getId());
-    assertNotNull(resultTask);
+    assertThat(resultTask).isNotNull();
   }
 
   @Test
@@ -163,8 +160,11 @@ class TaskServiceImplIntAutocommitTest {
     TaskanaEngineImpl te2 = (TaskanaEngineImpl) taskanaEngineConfiguration.buildTaskanaEngine();
     TaskServiceImpl taskServiceImpl2 = (TaskServiceImpl) te2.getTaskService();
 
-    Assertions.assertThrows(
-        TaskNotFoundException.class, () -> taskServiceImpl2.getTask(wb.getId()));
+    ThrowingCallable call =
+        () -> {
+          taskServiceImpl2.getTask(wb.getId());
+        };
+    assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
   }
 
   @Test
@@ -206,7 +206,7 @@ class TaskServiceImplIntAutocommitTest {
             .primaryObjectReferenceValueIn("val1", "val2", "val3")
             .list();
 
-    assertEquals(0, results.size());
+    assertThat(results).isEmpty();
   }
 
   @Test
@@ -254,20 +254,23 @@ class TaskServiceImplIntAutocommitTest {
     Thread.sleep(sleepTime); // Sleep for modification-timestamp
 
     Task resultTask = taskServiceImpl.transfer(task.getId(), destinationWB.getId());
-    assertThat(resultTask.isRead(), equalTo(false));
-    assertThat(resultTask.isTransferred(), equalTo(true));
-    assertThat(resultTask.getWorkbasketSummary().getId(), equalTo(destinationWB.getId()));
-    assertThat(resultTask.getModified(), not(equalTo(null)));
-    assertThat(resultTask.getModified(), not(equalTo(task.getModified())));
-    assertThat(resultTask.getCreated(), not(equalTo(null)));
-    assertThat(resultTask.getCreated(), equalTo(task.getCreated()));
+    assertThat(resultTask.isRead()).isFalse();
+    assertThat(resultTask.isTransferred()).isTrue();
+    assertThat(resultTask.getWorkbasketSummary().getId()).isEqualTo(destinationWB.getId());
+    assertThat(resultTask.getModified()).isNotNull();
+    assertThat(resultTask.getModified()).isNotEqualTo(task.getModified());
+    assertThat(resultTask.getCreated()).isNotNull();
+    assertThat(resultTask.getCreated()).isEqualTo(task.getCreated());
   }
 
   @Test
   void shouldNotTransferAnyTask() {
 
-    Assertions.assertThrows(
-        TaskNotFoundException.class, () -> taskServiceImpl.transfer(UUID.randomUUID() + "_X", "1"));
+    ThrowingCallable call =
+        () -> {
+          taskServiceImpl.transfer(UUID.randomUUID() + "_X", "1");
+        };
+    assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
   }
 
   @WithAccessId(
@@ -337,19 +340,19 @@ class TaskServiceImplIntAutocommitTest {
     task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
     TaskImpl taskCreated = (TaskImpl) taskServiceImpl.createTask(task);
 
-    // Check failing with missing APPEND
-    NotAuthorizedException e =
-        Assertions.assertThrows(
-            NotAuthorizedException.class,
-            () -> taskServiceImpl.transfer(taskCreated.getId(), wbNoAppendCreated.getId()),
-            "Transfer Task should be FAILD, because there are no APPEND-Rights on destination WB.");
+    ThrowingCallable call =
+        () -> {
+          taskServiceImpl.transfer(taskCreated.getId(), wbNoAppendCreated.getId());
+        };
+    assertThatThrownBy(call)
+        .describedAs(
+            "Transfer Task should be FAILD, because there are no APPEND-Rights on destination WB.")
+        .isInstanceOf(NotAuthorizedException.class)
+        .hasMessageContaining("APPEND");
 
-    Assertions.assertTrue(
-        e.getMessage().contains("APPEND"),
-        "Transfer Task should be FAILD, because there are no APPEND-Rights on destination WB.");
-    assertThat(taskCreated.isTransferred(), equalTo(false));
-    assertThat(taskCreated.getWorkbasketKey(), not(equalTo(wbNoAppendCreated.getKey())));
-    assertThat(taskCreated.getWorkbasketKey(), equalTo(wbCreated.getKey()));
+    assertThat(taskCreated.isTransferred()).isFalse();
+    assertThat(taskCreated.getWorkbasketKey()).isNotEqualTo(wbNoAppendCreated.getKey());
+    assertThat(taskCreated.getWorkbasketKey()).isEqualTo(wbCreated.getKey());
 
     // Check failing with missing TRANSFER
     taskCreated.setId("");
@@ -359,17 +362,18 @@ class TaskServiceImplIntAutocommitTest {
 
     TaskImpl taskCreated2 = (TaskImpl) taskServiceImpl.createTask(taskCreated);
 
-    e =
-        Assertions.assertThrows(
-            NotAuthorizedException.class,
-            () -> taskServiceImpl.transfer(taskCreated2.getId(), wbCreated.getId()),
-            "Transfer Task should be FAILED, because there are no TRANSFER-Rights on current WB.");
-    Assertions.assertTrue(
-        e.getMessage().contains("TRANSFER"),
-        "Transfer Task should be FAILED, because there are no APPEND-Rights on current WB.");
+    call =
+        () -> {
+          taskServiceImpl.transfer(taskCreated2.getId(), wbCreated.getId());
+        };
+    assertThatThrownBy(call)
+        .describedAs(
+            "Transfer Task should be FAILED, because there are no TRANSFER-Rights on current WB.")
+        .isInstanceOf(NotAuthorizedException.class)
+        .hasMessageContaining("TRANSFER");
 
-    assertThat(taskCreated2.isTransferred(), equalTo(false));
-    assertThat(taskCreated2.getWorkbasketKey(), not(equalTo(wbNoAppendCreated.getKey())));
+    assertThat(taskCreated2.isTransferred()).isFalse();
+    assertThat(taskCreated2.getWorkbasketKey()).isNotEqualTo(wbNoAppendCreated.getKey());
   }
 
   @Test
@@ -405,7 +409,7 @@ class TaskServiceImplIntAutocommitTest {
     // skanaEngineImpl.getSqlSession().commit(); // needed so that the change is visible in the
     // other session
 
-    assertNotNull(task2);
+    assertThat(task2).isNotNull();
   }
 
   private void createWorkbasketWithSecurity(

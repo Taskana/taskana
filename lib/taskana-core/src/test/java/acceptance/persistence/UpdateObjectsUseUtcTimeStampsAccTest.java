@@ -1,8 +1,6 @@
 package acceptance.persistence;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
 import java.sql.SQLException;
@@ -74,7 +72,7 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
     TimeZone.setDefault(TimeZone.getTimeZone("EST"));
     Task retrievedTask = taskService.getTask(updatedTask.getId());
     TimeZone.setDefault(originalZone);
-    assertEquals(updatedTask, retrievedTask);
+    assertThat(retrievedTask).isEqualTo(updatedTask);
   }
 
   @WithAccessId(
@@ -114,7 +112,7 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
     TimeZone.setDefault(TimeZone.getTimeZone("EST"));
     Task readTask = taskService.getTask(createdTask.getId());
     TimeZone.setDefault(originalZone);
-    assertEquals(createdTask, readTask);
+    assertThat(readTask).isEqualTo(createdTask);
   }
 
   @WithAccessId(
@@ -136,7 +134,7 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
     Classification retrievedClassification =
         classificationService.getClassification(updatedClassification.getId());
     TimeZone.setDefault(originalZone);
-    assertEquals(updatedClassification, retrievedClassification);
+    assertThat(retrievedClassification).isEqualTo(updatedClassification);
   }
 
   @WithAccessId(
@@ -154,7 +152,7 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
 
     // check only 1 created
     long amountOfClassificationsAfter = classificationService.createClassificationQuery().count();
-    assertThat(amountOfClassificationsAfter, equalTo(amountOfClassificationsBefore + 1));
+    assertThat(amountOfClassificationsAfter).isEqualTo(amountOfClassificationsBefore + 1);
 
     TimeZone originalZone = TimeZone.getDefault();
     TimeZone.setDefault(TimeZone.getTimeZone("EST"));
@@ -162,7 +160,7 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
         classificationService.getClassification(classification.getId());
     TimeZone.setDefault(originalZone);
 
-    assertEquals(classification, retrievedClassification);
+    assertThat(retrievedClassification).isEqualTo(classification);
   }
 
   @WithAccessId(
@@ -182,7 +180,7 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
     TimeZone.setDefault(TimeZone.getTimeZone("EST"));
     Workbasket retrievedWorkbasket = workbasketService.getWorkbasket(updatedWorkbasket.getId());
     TimeZone.setDefault(originalZone);
-    assertEquals(updatedWorkbasket, retrievedWorkbasket);
+    assertThat(retrievedWorkbasket).isEqualTo(updatedWorkbasket);
   }
 
   @WithAccessId(
@@ -207,13 +205,13 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
     workbasketService.createWorkbasketAccessItem(wbai);
 
     int after = workbasketService.createWorkbasketQuery().domainIn("DOMAIN_A").list().size();
-    assertEquals(before + 1, after);
+    assertThat(after).isEqualTo(before + 1);
 
     TimeZone originalZone = TimeZone.getDefault();
     TimeZone.setDefault(TimeZone.getTimeZone("EST"));
     Workbasket retrievedWorkbasket = workbasketService.getWorkbasket("NT1234", "DOMAIN_A");
     TimeZone.setDefault(originalZone);
-    assertEquals(workbasket, retrievedWorkbasket);
+    assertThat(retrievedWorkbasket).isEqualTo(workbasket);
   }
 
   @WithAccessId(
@@ -249,6 +247,6 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
             .orElse(null);
 
     TimeZone.setDefault(originalZone);
-    assertEquals(job, retrievedJob);
+    assertThat(retrievedJob).isEqualTo(job);
   }
 }

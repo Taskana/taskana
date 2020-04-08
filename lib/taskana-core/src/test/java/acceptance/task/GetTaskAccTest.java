@@ -1,13 +1,11 @@
 package acceptance.task;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.util.HashMap;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -38,48 +36,49 @@ class GetTaskAccTest extends AbstractAccTest {
 
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
 
-    assertNull(task.getCompleted());
-    assertEquals("Task99", task.getName());
-    assertEquals("creator_user_id", task.getCreator());
-    assertEquals("Lorem ipsum was n Quatsch dolor sit amet.", task.getDescription());
-    assertEquals("Some custom Note", task.getNote());
-    assertEquals(1, task.getPriority());
-    assertEquals(TaskState.CLAIMED, task.getState());
-    assertEquals("MANUAL", task.getClassificationCategory());
-    assertEquals("T2000", task.getClassificationSummary().getKey());
-    assertEquals(
-        "CLI:100000000000000000000000000000000016", task.getClassificationSummary().getId());
-    assertEquals("WBI:100000000000000000000000000000000006", task.getWorkbasketSummary().getId());
-    assertEquals("USER_1_1", task.getWorkbasketKey());
-    assertEquals("DOMAIN_A", task.getDomain());
-    assertEquals("BPI21", task.getBusinessProcessId());
-    assertEquals("PBPI21", task.getParentBusinessProcessId());
-    assertEquals("user_1_1", task.getOwner());
-    assertEquals("MyCompany1", task.getPrimaryObjRef().getCompany());
-    assertEquals("MySystem1", task.getPrimaryObjRef().getSystem());
-    assertEquals("MyInstance1", task.getPrimaryObjRef().getSystemInstance());
-    assertEquals("MyType1", task.getPrimaryObjRef().getType());
-    assertEquals("MyValue1", task.getPrimaryObjRef().getValue());
-    assertTrue(task.isRead());
-    assertFalse(task.isTransferred());
-    assertEquals(new HashMap<String, String>(), task.getCallbackInfo());
-    assertEquals(new HashMap<String, String>(), task.getCustomAttributes());
-    assertEquals("custom1", task.getCustomAttribute("1"));
-    assertEquals("custom2", task.getCustomAttribute("2"));
-    assertEquals("custom3", task.getCustomAttribute("3"));
-    assertEquals("custom4", task.getCustomAttribute("4"));
-    assertEquals("custom5", task.getCustomAttribute("5"));
-    assertEquals("custom6", task.getCustomAttribute("6"));
-    assertEquals("custom7", task.getCustomAttribute("7"));
-    assertEquals("custom8", task.getCustomAttribute("8"));
-    assertEquals("custom9", task.getCustomAttribute("9"));
-    assertEquals("custom10", task.getCustomAttribute("10"));
-    assertEquals("custom11", task.getCustomAttribute("11"));
-    assertEquals("custom12", task.getCustomAttribute("12"));
-    assertEquals("custom13", task.getCustomAttribute("13"));
-    assertEquals("abc", task.getCustomAttribute("14"));
-    assertEquals("custom15", task.getCustomAttribute("15"));
-    assertEquals("custom16", task.getCustomAttribute("16"));
+    assertThat(task.getCompleted()).isNull();
+    assertThat(task.getName()).isEqualTo("Task99");
+    assertThat(task.getCreator()).isEqualTo("creator_user_id");
+    assertThat(task.getDescription()).isEqualTo("Lorem ipsum was n Quatsch dolor sit amet.");
+    assertThat(task.getNote()).isEqualTo("Some custom Note");
+    assertThat(task.getPriority()).isEqualTo(1);
+    assertThat(task.getState()).isEqualTo(TaskState.CLAIMED);
+    assertThat(task.getClassificationCategory()).isEqualTo("MANUAL");
+    assertThat(task.getClassificationSummary().getKey()).isEqualTo("T2000");
+    assertThat(task.getClassificationSummary().getId())
+        .isEqualTo("CLI:100000000000000000000000000000000016");
+    assertThat(task.getWorkbasketSummary().getId())
+        .isEqualTo("WBI:100000000000000000000000000000000006");
+    assertThat(task.getWorkbasketKey()).isEqualTo("USER_1_1");
+    assertThat(task.getDomain()).isEqualTo("DOMAIN_A");
+    assertThat(task.getBusinessProcessId()).isEqualTo("BPI21");
+    assertThat(task.getParentBusinessProcessId()).isEqualTo("PBPI21");
+    assertThat(task.getOwner()).isEqualTo("user_1_1");
+    assertThat(task.getPrimaryObjRef().getCompany()).isEqualTo("MyCompany1");
+    assertThat(task.getPrimaryObjRef().getSystem()).isEqualTo("MySystem1");
+    assertThat(task.getPrimaryObjRef().getSystemInstance()).isEqualTo("MyInstance1");
+    assertThat(task.getPrimaryObjRef().getType()).isEqualTo("MyType1");
+    assertThat(task.getPrimaryObjRef().getValue()).isEqualTo("MyValue1");
+    assertThat(task.isRead()).isTrue();
+    assertThat(task.isTransferred()).isFalse();
+    assertThat(task.getCallbackInfo()).isEqualTo(new HashMap<String, String>());
+    assertThat(task.getCustomAttributes()).isEqualTo(new HashMap<String, String>());
+    assertThat(task.getCustomAttribute("1")).isEqualTo("custom1");
+    assertThat(task.getCustomAttribute("2")).isEqualTo("custom2");
+    assertThat(task.getCustomAttribute("3")).isEqualTo("custom3");
+    assertThat(task.getCustomAttribute("4")).isEqualTo("custom4");
+    assertThat(task.getCustomAttribute("5")).isEqualTo("custom5");
+    assertThat(task.getCustomAttribute("6")).isEqualTo("custom6");
+    assertThat(task.getCustomAttribute("7")).isEqualTo("custom7");
+    assertThat(task.getCustomAttribute("8")).isEqualTo("custom8");
+    assertThat(task.getCustomAttribute("9")).isEqualTo("custom9");
+    assertThat(task.getCustomAttribute("10")).isEqualTo("custom10");
+    assertThat(task.getCustomAttribute("11")).isEqualTo("custom11");
+    assertThat(task.getCustomAttribute("12")).isEqualTo("custom12");
+    assertThat(task.getCustomAttribute("13")).isEqualTo("custom13");
+    assertThat(task.getCustomAttribute("14")).isEqualTo("abc");
+    assertThat(task.getCustomAttribute("15")).isEqualTo("custom15");
+    assertThat(task.getCustomAttribute("16")).isEqualTo("custom16");
   }
 
   @WithAccessId(
@@ -89,6 +88,12 @@ class GetTaskAccTest extends AbstractAccTest {
   void testGetTaskByIdNotExisting() {
     TaskService taskService = taskanaEngine.getTaskService();
 
-    Assertions.assertThrows(TaskNotFoundException.class, () -> taskService.getTask("INVALID"));
+    //    Assertions.assertThrows(TaskNotFoundException.class, () ->
+    // taskService.getTask("INVALID"));
+    ThrowingCallable call =
+        () -> {
+          taskService.getTask("INVALID");
+        };
+    assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
   }
 }

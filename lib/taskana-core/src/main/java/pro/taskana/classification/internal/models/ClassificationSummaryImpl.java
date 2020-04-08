@@ -292,16 +292,14 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
   public String toString() {
     return "ClassificationSummaryImpl [id="
         + id
-        + "applicationEntryPoint="
+        + ", applicationEntryPoint="
         + applicationEntryPoint
-        + ", key="
-        + key
         + ", category="
         + category
-        + ", type="
-        + type
         + ", domain="
         + domain
+        + ", key="
+        + key
         + ", name="
         + name
         + ", parentId="
@@ -312,6 +310,8 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
         + priority
         + ", serviceLevel="
         + serviceLevel
+        + ", type="
+        + type
         + ", custom1="
         + custom1
         + ", custom2="

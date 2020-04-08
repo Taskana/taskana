@@ -1,7 +1,6 @@
 package acceptance.task;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
 import java.util.List;
@@ -33,7 +32,7 @@ class QueryTasksWithPaginationAccTest extends AbstractAccTest {
             .createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
             .list(0, 10);
-    assertThat(results.size(), equalTo(10));
+    assertThat(results).hasSize(10);
   }
 
   @WithAccessId(
@@ -47,7 +46,7 @@ class QueryTasksWithPaginationAccTest extends AbstractAccTest {
             .createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
             .list(10, 10);
-    assertThat(results.size(), equalTo(10));
+    assertThat(results).hasSize(10);
   }
 
   @WithAccessId(
@@ -63,7 +62,7 @@ class QueryTasksWithPaginationAccTest extends AbstractAccTest {
             .createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
             .list(-1, -3);
-    assertThat(results.size(), equalTo(0));
+    assertThat(results).isEmpty();
 
     // limit will be 0
     results =
@@ -71,7 +70,7 @@ class QueryTasksWithPaginationAccTest extends AbstractAccTest {
             .createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
             .list(1, -3);
-    assertThat(results.size(), equalTo(0));
+    assertThat(results).isEmpty();
 
     // offset will be 0
     results =
@@ -79,7 +78,7 @@ class QueryTasksWithPaginationAccTest extends AbstractAccTest {
             .createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
             .list(-1, 3);
-    assertThat(results.size(), equalTo(3));
+    assertThat(results).hasSize(3);
   }
 
   @WithAccessId(
@@ -97,7 +96,7 @@ class QueryTasksWithPaginationAccTest extends AbstractAccTest {
             .createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
             .listPage(pageNumber, pageSize);
-    assertThat(results.size(), equalTo(4));
+    assertThat(results).hasSize(4);
 
     // Getting full page
     pageNumber = 4;
@@ -107,7 +106,7 @@ class QueryTasksWithPaginationAccTest extends AbstractAccTest {
             .createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
             .listPage(pageNumber, pageSize);
-    assertThat(results.size(), equalTo(1));
+    assertThat(results).hasSize(1);
 
     // Getting last results on 1 big page
     pageNumber = 1;
@@ -117,7 +116,7 @@ class QueryTasksWithPaginationAccTest extends AbstractAccTest {
             .createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
             .listPage(pageNumber, pageSize);
-    assertThat(results.size(), equalTo(22));
+    assertThat(results).hasSize(22);
 
     // Getting last results on multiple pages
     pageNumber = 3;
@@ -127,7 +126,7 @@ class QueryTasksWithPaginationAccTest extends AbstractAccTest {
             .createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
             .listPage(pageNumber, pageSize);
-    assertThat(results.size(), equalTo(2));
+    assertThat(results).hasSize(2);
   }
 
   @WithAccessId(
@@ -145,7 +144,7 @@ class QueryTasksWithPaginationAccTest extends AbstractAccTest {
             .createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
             .listPage(pageNumber, pageSize);
-    assertThat(results.size(), equalTo(0));
+    assertThat(results).isEmpty();
 
     // Negative size will be 0 = 0 results
     pageNumber = 2;
@@ -155,7 +154,7 @@ class QueryTasksWithPaginationAccTest extends AbstractAccTest {
             .createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
             .listPage(pageNumber, pageSize);
-    assertThat(results.size(), equalTo(0));
+    assertThat(results).isEmpty();
 
     // Negative page = first page
     pageNumber = -1;
@@ -165,7 +164,7 @@ class QueryTasksWithPaginationAccTest extends AbstractAccTest {
             .createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
             .listPage(pageNumber, pageSize);
-    assertThat(results.size(), equalTo(10));
+    assertThat(results).hasSize(10);
   }
 
   @WithAccessId(
@@ -179,7 +178,7 @@ class QueryTasksWithPaginationAccTest extends AbstractAccTest {
             .createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("GPK_KSC", "DOMAIN_A"))
             .count();
-    assertThat(count, equalTo(22L));
+    assertThat(count).isEqualTo(22L);
   }
 
   @WithAccessId(
@@ -189,6 +188,6 @@ class QueryTasksWithPaginationAccTest extends AbstractAccTest {
   void testCountOfTaskQueryWithAttachmentChannelFilter() {
     TaskService taskService = taskanaEngine.getTaskService();
     long count = taskService.createTaskQuery().attachmentChannelIn("ch6").count();
-    assertThat(count, equalTo(2L));
+    assertThat(count).isEqualTo(2L);
   }
 }

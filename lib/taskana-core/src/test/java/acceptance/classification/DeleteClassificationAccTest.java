@@ -1,11 +1,10 @@
 package acceptance.classification;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -37,8 +36,8 @@ class DeleteClassificationAccTest extends AbstractAccTest {
     classificationService.deleteClassification("L140101", "DOMAIN_A");
 
     Classification classification = classificationService.getClassification("L140101", "DOMAIN_A");
-    assertNotNull(classification);
-    assertEquals("", classification.getDomain());
+    assertThat(classification).isNotNull();
+    assertThat(classification.getDomain()).isEqualTo("");
   }
 
   @WithAccessId(
@@ -46,9 +45,8 @@ class DeleteClassificationAccTest extends AbstractAccTest {
       groupNames = {"group_1", "group_2"})
   @Test
   void testDeleteClassificationInDomainUserIsNotAuthorized() {
-    Assertions.assertThrows(
-        NotAuthorizedException.class,
-        () -> classificationService.deleteClassification("L140101", "DOMAIN_A"));
+    ThrowingCallable call = () -> classificationService.deleteClassification("L140101", "DOMAIN_A");
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(
@@ -56,9 +54,8 @@ class DeleteClassificationAccTest extends AbstractAccTest {
       groupNames = {"group_1", "businessadmin"})
   @Test
   void testThrowExeptionIfDeleteClassificationWithExistingTasks() {
-    Assertions.assertThrows(
-        ClassificationInUseException.class,
-        () -> classificationService.deleteClassification("L1050", "DOMAIN_A"));
+    ThrowingCallable call = () -> classificationService.deleteClassification("L1050", "DOMAIN_A");
+    assertThatThrownBy(call).isInstanceOf(ClassificationInUseException.class);
   }
 
   @WithAccessId(
@@ -66,9 +63,8 @@ class DeleteClassificationAccTest extends AbstractAccTest {
       groupNames = {"group_1", "businessadmin"})
   @Test
   void testThrowExeptionIfDeleteMasterClassificationWithExistingTasks() {
-    Assertions.assertThrows(
-        ClassificationInUseException.class,
-        () -> classificationService.deleteClassification("L1050", ""));
+    ThrowingCallable call = () -> classificationService.deleteClassification("L1050", "");
+    assertThatThrownBy(call).isInstanceOf(ClassificationInUseException.class);
   }
 
   @WithAccessId(
@@ -79,9 +75,8 @@ class DeleteClassificationAccTest extends AbstractAccTest {
       throws ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
 
     classificationService.deleteClassification("L3060", "");
-    Assertions.assertThrows(
-        ClassificationNotFoundException.class,
-        () -> classificationService.getClassification("L3060", "DOMAIN_A"));
+    ThrowingCallable call = () -> classificationService.getClassification("L3060", "DOMAIN_A");
+    assertThatThrownBy(call).isInstanceOf(ClassificationNotFoundException.class);
   }
 
   @WithAccessId(
@@ -89,9 +84,8 @@ class DeleteClassificationAccTest extends AbstractAccTest {
       groupNames = {"businessadmin"})
   @Test
   void testDeleteMasterClassificationWithExistingAttachment() {
-    Assertions.assertThrows(
-        ClassificationInUseException.class,
-        () -> classificationService.deleteClassification("L12010", ""));
+    ThrowingCallable call = () -> classificationService.deleteClassification("L12010", "");
+    assertThatThrownBy(call).isInstanceOf(ClassificationInUseException.class);
   }
 
   @WithAccessId(
@@ -101,21 +95,19 @@ class DeleteClassificationAccTest extends AbstractAccTest {
   void testThrowExceptionWhenChildClassificationIsInUseAndRollback()
       throws ClassificationNotFoundException {
 
-    Assertions.assertThrows(
-        ClassificationInUseException.class,
-        () -> classificationService.deleteClassification("L11010", "DOMAIN_A"));
+    ThrowingCallable call = () -> classificationService.deleteClassification("L11010", "DOMAIN_A");
+    assertThatThrownBy(call).isInstanceOf(ClassificationInUseException.class);
 
     Classification rollback = classificationService.getClassification("L11010", "DOMAIN_A");
-    assertEquals("DOMAIN_A", rollback.getDomain());
+    assertThat(rollback.getDomain()).isEqualTo("DOMAIN_A");
 
-    Assertions.assertThrows(
-        ClassificationInUseException.class,
-        () -> classificationService.deleteClassification("L11010", ""));
+    call = () -> classificationService.deleteClassification("L11010", "");
+    assertThatThrownBy(call).isInstanceOf(ClassificationInUseException.class);
 
     Classification rollbackMaster = classificationService.getClassification("L11010", "");
     Classification rollbackA = classificationService.getClassification("L11010", "DOMAIN_A");
-    assertEquals(rollbackMaster.getKey(), rollbackA.getKey());
-    assertNotEquals(rollbackMaster.getDomain(), rollbackA.getDomain());
+    assertThat(rollbackA.getKey()).isEqualTo(rollbackMaster.getKey());
+    assertThat(rollbackA.getDomain()).isNotEqualTo(rollbackMaster.getDomain());
   }
 
   @WithAccessId(
@@ -123,9 +115,9 @@ class DeleteClassificationAccTest extends AbstractAccTest {
       groupNames = {"businessadmin"})
   @Test
   void testThrowClassificationNotFoundIfClassificationNotExists() {
-    Assertions.assertThrows(
-        ClassificationNotFoundException.class,
-        () -> classificationService.deleteClassification("not existing classification key", ""));
+    ThrowingCallable call =
+        () -> classificationService.deleteClassification("not existing classification key", "");
+    assertThatThrownBy(call).isInstanceOf(ClassificationNotFoundException.class);
   }
 
   @WithAccessId(
@@ -133,8 +125,7 @@ class DeleteClassificationAccTest extends AbstractAccTest {
       groupNames = {"businessadmin"})
   @Test
   void testThrowClassificationNotFoundIfClassificationNotExistsInDomain() {
-    Assertions.assertThrows(
-        ClassificationNotFoundException.class,
-        () -> classificationService.deleteClassification("L10000", "DOMAIN_B"));
+    ThrowingCallable call = () -> classificationService.deleteClassification("L10000", "DOMAIN_B");
+    assertThatThrownBy(call).isInstanceOf(ClassificationNotFoundException.class);
   }
 }

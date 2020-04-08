@@ -1,14 +1,11 @@
 package acceptance.workbasket;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.util.List;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -50,34 +47,37 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
   void testDeleteWorkbasket() throws WorkbasketNotFoundException, NotAuthorizedException {
     Workbasket wb = workbasketService.getWorkbasket("USER_2_2", "DOMAIN_A");
 
-    Assertions.assertThrows(
-        WorkbasketNotFoundException.class,
+    ThrowingCallable call =
         () -> {
           workbasketService.deleteWorkbasket(wb.getId());
           workbasketService.getWorkbasket("USER_2_2", "DOMAIN_A");
-        },
-        "There should be no result for a deleted Workbasket.");
+        };
+    assertThatThrownBy(call)
+        .describedAs("There should be no result for a deleted Workbasket.")
+        .isInstanceOf(WorkbasketNotFoundException.class);
   }
 
   @WithAccessId(userName = "elena")
   @Test
   void testDeleteWorkbasketNotAuthorized() {
 
-    Assertions.assertThrows(
-        NotAuthorizedException.class,
+    ThrowingCallable call =
         () -> {
           Workbasket wb = workbasketService.getWorkbasket("TEAMLEAD_2", "DOMAIN_A");
           workbasketService.deleteWorkbasket(wb.getId());
-        });
+        };
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(userName = "elena")
   @Test
   void testGetWorkbasketNotAuthorized() {
 
-    Assertions.assertThrows(
-        NotAuthorizedException.class,
-        () -> workbasketService.getWorkbasket("TEAMLEAD_2", "DOMAIN_A"));
+    ThrowingCallable call =
+        () -> {
+          workbasketService.getWorkbasket("TEAMLEAD_2", "DOMAIN_A");
+        };
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(
@@ -90,19 +90,19 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
     int distTargets =
         workbasketService.getDistributionTargets("WBI:100000000000000000000000000000000001").size();
 
-    Assertions.assertThrows(
-        WorkbasketNotFoundException.class,
+    ThrowingCallable call =
         () -> {
           // WB deleted
           workbasketService.deleteWorkbasket(wb.getId());
           workbasketService.getWorkbasket("GPK_KSC_1", "DOMAIN_A");
-        },
-        "There should be no result for a deleted Workbasket.");
+        };
+    assertThatThrownBy(call)
+        .describedAs("There should be no result for a deleted Workbasket.")
+        .isInstanceOf(WorkbasketNotFoundException.class);
 
     int newDistTargets =
         workbasketService.getDistributionTargets("WBI:100000000000000000000000000000000001").size();
-    assertThat(newDistTargets, equalTo(3));
-    assertTrue(newDistTargets < distTargets);
+    assertThat(newDistTargets).isEqualTo(3).isLessThan(distTargets);
   }
 
   @WithAccessId(
@@ -111,18 +111,26 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
   @Test
   void testDeleteWorkbasketWithNullOrEmptyParam() {
     // Test Null-Value
-    Assertions.assertThrows(
-        InvalidArgumentException.class,
-        () -> workbasketService.deleteWorkbasket(null),
-        "delete() should have thrown an InvalidArgumentException, " + "when the param ID is null.");
+    ThrowingCallable call =
+        () -> {
+          workbasketService.deleteWorkbasket(null);
+        };
+    assertThatThrownBy(call)
+        .describedAs(
+            "delete() should have thrown an InvalidArgumentException, "
+                + "when the param ID is null.")
+        .isInstanceOf(InvalidArgumentException.class);
 
     // Test EMPTY-Value
-
-    Assertions.assertThrows(
-        InvalidArgumentException.class,
-        () -> workbasketService.deleteWorkbasket(""),
-        "delete() should have thrown an InvalidArgumentException, "
-            + "when the param ID is EMPTY-String.");
+    call =
+        () -> {
+          workbasketService.deleteWorkbasket("");
+        };
+    assertThatThrownBy(call)
+        .describedAs(
+            "delete() should have thrown an InvalidArgumentException, \"\n"
+                + "            + \"when the param ID is EMPTY-String.")
+        .isInstanceOf(InvalidArgumentException.class);
   }
 
   @WithAccessId(
@@ -130,9 +138,11 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
       groupNames = {"businessadmin"})
   @Test
   void testDeleteWorkbasketButNotExisting() {
-    Assertions.assertThrows(
-        WorkbasketNotFoundException.class,
-        () -> workbasketService.deleteWorkbasket("SOME NOT EXISTING ID"));
+    ThrowingCallable call =
+        () -> {
+          workbasketService.deleteWorkbasket("SOME NOT EXISTING ID");
+        };
+    assertThatThrownBy(call).isInstanceOf(WorkbasketNotFoundException.class);
   }
 
   @WithAccessId(
@@ -143,8 +153,11 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
       throws WorkbasketNotFoundException, NotAuthorizedException {
     Workbasket wb =
         workbasketService.getWorkbasket("USER_1_2", "DOMAIN_A"); // all rights, DOMAIN_A with Tasks
-    Assertions.assertThrows(
-        WorkbasketInUseException.class, () -> workbasketService.deleteWorkbasket(wb.getId()));
+    ThrowingCallable call =
+        () -> {
+          workbasketService.deleteWorkbasket(wb.getId());
+        };
+    assertThatThrownBy(call).isInstanceOf(WorkbasketInUseException.class);
   }
 
   @WithAccessId(
@@ -168,18 +181,19 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
     accessItem.setPermOpen(true);
     workbasketService.createWorkbasketAccessItem(accessItem);
     List<WorkbasketAccessItem> accessItemsBefore = workbasketService.getWorkbasketAccessItems(wbId);
-    assertEquals(5, accessItemsBefore.size());
+    assertThat(accessItemsBefore).hasSize(5);
 
-    Assertions.assertThrows(
-        WorkbasketNotFoundException.class,
+    ThrowingCallable call =
         () -> {
           workbasketService.deleteWorkbasket(wbId);
           workbasketService.getWorkbasket("WBI:100000000000000000000000000000000008");
-        },
-        "There should be no result for a deleted Workbasket.");
+        };
+    assertThatThrownBy(call)
+        .describedAs("There should be no result for a deleted Workbasket.")
+        .isInstanceOf(WorkbasketNotFoundException.class);
 
     List<WorkbasketAccessItem> accessItemsAfter = workbasketService.getWorkbasketAccessItems(wbId);
-    assertEquals(0, accessItemsAfter.size());
+    assertThat(accessItemsAfter).isEmpty();
   }
 
   @WithAccessId(
@@ -201,9 +215,9 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
     taskService.forceCompleteTask(task.getId());
 
     boolean markedForDeletion = workbasketService.deleteWorkbasket(wb.getId());
-    assertFalse(markedForDeletion);
+    assertThat(markedForDeletion).isFalse();
 
     Workbasket wb2 = workbasketService.getWorkbasket(wb.getId());
-    assertTrue(wb2.isMarkedForDeletion());
+    assertThat(wb2.isMarkedForDeletion()).isTrue();
   }
 }

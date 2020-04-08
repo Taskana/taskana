@@ -1,7 +1,6 @@
 package acceptance.task;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
 import java.util.List;
@@ -43,8 +42,8 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
             .ownerLike("%user%")
             .orderByOwner(desc)
             .listValues(TaskQueryColumnName.A_CLASSIFICATION_NAME, null);
-    assertNotNull(columnValueList);
-    assertEquals(8, columnValueList.size());
+    assertThat(columnValueList).isNotNull();
+    assertThat(columnValueList).hasSize(8);
   }
 
   @WithAccessId(
@@ -59,8 +58,8 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
             .ownerLike("%user%")
             .orderByClassificationName(asc)
             .listValues(TaskQueryColumnName.CLASSIFICATION_NAME, null);
-    assertNotNull(columnValueList);
-    assertEquals(5, columnValueList.size());
+    assertThat(columnValueList).isNotNull();
+    assertThat(columnValueList).hasSize(5);
   }
 
   @WithAccessId(
@@ -71,11 +70,11 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
     List<TaskSummary> tasks =
         taskService.createTaskQuery().classificationNameIn("Dynamik-Ablehnung").list();
-    assertEquals(1, tasks.size());
+    assertThat(tasks).hasSize(1);
 
     List<AttachmentSummary> attachmentSummaries = tasks.get(0).getAttachmentSummaries();
-    assertNotNull(attachmentSummaries);
-    assertEquals(2, attachmentSummaries.size());
+    assertThat(attachmentSummaries).isNotNull();
+    assertThat(attachmentSummaries).hasSize(2);
 
     tasks =
         taskService
@@ -83,7 +82,7 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
             .classificationNameIn("Dynamik-Ablehnung")
             .orderByClassificationName(SortDirection.ASCENDING)
             .list();
-    assertEquals(1, tasks.size());
+    assertThat(tasks).hasSize(1);
   }
 
   @WithAccessId(
@@ -98,11 +97,11 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
             .classificationNameLike("Dynamik%", "Widerruf")
             .orderByClassificationName(SortDirection.ASCENDING)
             .list();
-    assertEquals(32, tasks.size());
+    assertThat(tasks).hasSize(32);
 
     // without sort, the same number of tasks should be returned
     tasks = taskService.createTaskQuery().classificationNameLike("Dynamik%", "Widerruf").list();
-    assertEquals(32, tasks.size());
+    assertThat(tasks).hasSize(32);
   }
 
   @WithAccessId(
@@ -118,14 +117,14 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
             .attachmentClassificationNameLike("Widerruf", "Beratungsprotokoll", "Dynamik%")
             .orderByAttachmentClassificationName(SortDirection.ASCENDING)
             .list();
-    assertEquals(7, tasks.size());
+    assertThat(tasks).hasSize(7);
     // make sure that unordered query returns the same number of objects
     tasks =
         taskService
             .createTaskQuery()
             .attachmentClassificationNameLike("Widerruf", "Beratungsprotokoll", "Dynamik%")
             .list();
-    assertEquals(7, tasks.size());
+    assertThat(tasks).hasSize(7);
   }
 
   @WithAccessId(
@@ -141,14 +140,14 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
             .attachmentClassificationNameIn("Widerruf", "Beratungsprotokoll", "Dynamikänderung")
             .orderByAttachmentClassificationName(SortDirection.ASCENDING)
             .list();
-    assertEquals(4, tasks.size());
+    assertThat(tasks).hasSize(4);
     // make sure that unordered query returns the same number of objects
     tasks =
         taskService
             .createTaskQuery()
             .attachmentClassificationNameIn("Widerruf", "Beratungsprotokoll", "Dynamikänderung")
             .list();
-    assertEquals(4, tasks.size());
+    assertThat(tasks).hasSize(4);
   }
 
   @WithAccessId(
@@ -162,7 +161,7 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
         taskQuery.classificationNameIn("Widerruf", "Beratungsprotokoll", "Dynamikänderung").list();
     long numberOfTasks =
         taskQuery.classificationNameIn("Widerruf", "Beratungsprotokoll", "Dynamikänderung").count();
-    assertEquals(numberOfTasks, tasks.size());
+    assertThat(tasks).hasSize((int)numberOfTasks);
   }
 
   @WithAccessId(
@@ -179,12 +178,12 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
     // we expect 4 result objects in this case, because task
     // TKI:000000000000000000000000000000000001  has 2 attachments with different Classifications
     // therefore task TKI:000000000000000000000000000000000001 occurs twice in the result set
-    assertEquals(4, tasks.size());
+    assertThat(tasks).hasSize(4);
     long numberOfTasks =
         taskQuery
             .attachmentClassificationNameIn("Widerruf", "Beratungsprotokoll", "Dynamikänderung")
             .count();
-    assertEquals(3, numberOfTasks);
+    assertThat(numberOfTasks).isEqualTo(3);
     // the count returns only the number of tasks that have an attachment with the specified
     // classification name.
     // therefore, task 001 is counted only once.

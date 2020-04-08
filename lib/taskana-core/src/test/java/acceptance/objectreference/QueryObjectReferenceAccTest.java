@@ -1,7 +1,6 @@
 package acceptance.objectreference;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static pro.taskana.task.api.ObjectReferenceQueryColumnName.COMPANY;
 import static pro.taskana.task.api.ObjectReferenceQueryColumnName.SYSTEM;
 
@@ -23,14 +22,14 @@ class QueryObjectReferenceAccTest extends AbstractAccTest {
   void testQueryObjectReferenceValuesForColumnName() {
     TaskQuery taskQuery = taskanaEngine.getTaskService().createTaskQuery();
     List<String> columnValues = taskQuery.createObjectReferenceQuery().listValues(COMPANY, null);
-    assertEquals(3, columnValues.size());
+    assertThat(columnValues).hasSize(3);
 
     columnValues = taskQuery.createObjectReferenceQuery().listValues(SYSTEM, null);
-    assertEquals(3, columnValues.size());
+    assertThat(columnValues).hasSize(3);
 
     columnValues =
         taskQuery.createObjectReferenceQuery().systemIn("System1").listValues(SYSTEM, null);
-    assertEquals(1, columnValues.size());
+    assertThat(columnValues).hasSize(1);
   }
 
   @Test
@@ -40,8 +39,8 @@ class QueryObjectReferenceAccTest extends AbstractAccTest {
     List<ObjectReference> objectReferenceList =
         taskQuery.createObjectReferenceQuery().companyIn("Company1", "Company2").list();
 
-    assertNotNull(objectReferenceList);
-    assertEquals(2, objectReferenceList.size());
+    assertThat(objectReferenceList).isNotNull();
+    assertThat(objectReferenceList).hasSize(2);
   }
 
   @Test
@@ -55,8 +54,8 @@ class QueryObjectReferenceAccTest extends AbstractAccTest {
             .systemIn("System2")
             .list();
 
-    assertNotNull(objectReferenceList);
-    assertEquals(1, objectReferenceList.size());
+    assertThat(objectReferenceList).isNotNull();
+    assertThat(objectReferenceList).hasSize(1);
   }
 
   @Test
@@ -70,8 +69,8 @@ class QueryObjectReferenceAccTest extends AbstractAccTest {
             .systemInstanceIn("Instance1")
             .list();
 
-    assertNotNull(objectReferenceList);
-    assertEquals(1, objectReferenceList.size());
+    assertThat(objectReferenceList).isNotNull();
+    assertThat(objectReferenceList).hasSize(1);
   }
 
   @Test
@@ -81,8 +80,8 @@ class QueryObjectReferenceAccTest extends AbstractAccTest {
     List<ObjectReference> objectReferenceList =
         taskQuery.createObjectReferenceQuery().typeIn("Type2", "Type3").list();
 
-    assertNotNull(objectReferenceList);
-    assertEquals(2, objectReferenceList.size());
+    assertThat(objectReferenceList).isNotNull();
+    assertThat(objectReferenceList).hasSize(2);
   }
 
   @Test
@@ -92,7 +91,7 @@ class QueryObjectReferenceAccTest extends AbstractAccTest {
     List<ObjectReference> objectReferenceList =
         taskQuery.createObjectReferenceQuery().valueIn("Value1", "Value3").list();
 
-    assertNotNull(objectReferenceList);
-    assertEquals(2, objectReferenceList.size());
+    assertThat(objectReferenceList).isNotNull();
+    assertThat(objectReferenceList).hasSize(2);
   }
 }

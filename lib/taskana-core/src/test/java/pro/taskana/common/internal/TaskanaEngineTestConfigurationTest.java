@@ -1,6 +1,6 @@
 package pro.taskana.common.internal;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.sql.SQLException;
 import javax.sql.DataSource;
@@ -20,6 +20,6 @@ class TaskanaEngineTestConfigurationTest {
 
     TaskanaEngine te = taskEngineConfiguration.buildTaskanaEngine();
 
-    assertNotNull(te);
+    assertThat(te).isNotNull();
   }
 }

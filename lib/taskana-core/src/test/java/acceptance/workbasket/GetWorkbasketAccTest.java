@@ -1,11 +1,11 @@
 package acceptance.workbasket;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.util.List;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -37,20 +37,20 @@ class GetWorkbasketAccTest extends AbstractAccTest {
     Workbasket workbasket =
         workbasketService.getWorkbasket("WBI:100000000000000000000000000000000007");
 
-    assertEquals("DOMAIN_A", workbasket.getDomain());
-    assertEquals("PPK User 2 KSC 1", workbasket.getDescription());
-    assertEquals("PPK User 2 KSC 1", workbasket.getName());
-    assertEquals("USER_1_2", workbasket.getKey());
-    assertEquals(WorkbasketType.PERSONAL, workbasket.getType());
-    assertEquals("Peter Maier", workbasket.getOwner());
-    assertEquals("versicherung", workbasket.getOrgLevel1());
-    assertEquals("abteilung", workbasket.getOrgLevel2());
-    assertEquals("projekt", workbasket.getOrgLevel3());
-    assertEquals("team", workbasket.getOrgLevel4());
-    assertEquals("custom1", workbasket.getCustom1());
-    assertEquals("custom2", workbasket.getCustom2());
-    assertEquals("custom3", workbasket.getCustom3());
-    assertEquals("custom4", workbasket.getCustom4());
+    assertThat(workbasket.getDomain()).isEqualTo("DOMAIN_A");
+    assertThat(workbasket.getDescription()).isEqualTo("PPK User 2 KSC 1");
+    assertThat(workbasket.getName()).isEqualTo("PPK User 2 KSC 1");
+    assertThat(workbasket.getKey()).isEqualTo("USER_1_2");
+    assertThat(workbasket.getType()).isEqualTo(WorkbasketType.PERSONAL);
+    assertThat(workbasket.getOwner()).isEqualTo("Peter Maier");
+    assertThat(workbasket.getOrgLevel1()).isEqualTo("versicherung");
+    assertThat(workbasket.getOrgLevel2()).isEqualTo("abteilung");
+    assertThat(workbasket.getOrgLevel3()).isEqualTo("projekt");
+    assertThat(workbasket.getOrgLevel4()).isEqualTo("team");
+    assertThat(workbasket.getCustom1()).isEqualTo("custom1");
+    assertThat(workbasket.getCustom2()).isEqualTo("custom2");
+    assertThat(workbasket.getCustom3()).isEqualTo("custom3");
+    assertThat(workbasket.getCustom4()).isEqualTo("custom4");
   }
 
   @WithAccessId(
@@ -63,19 +63,19 @@ class GetWorkbasketAccTest extends AbstractAccTest {
 
     Workbasket workbasket = workbasketService.getWorkbasket("USER_1_2", "DOMAIN_A");
 
-    assertEquals("WBI:100000000000000000000000000000000007", workbasket.getId());
-    assertEquals("PPK User 2 KSC 1", workbasket.getDescription());
-    assertEquals("PPK User 2 KSC 1", workbasket.getName());
-    assertEquals(WorkbasketType.PERSONAL, workbasket.getType());
-    assertEquals("Peter Maier", workbasket.getOwner());
-    assertEquals("versicherung", workbasket.getOrgLevel1());
-    assertEquals("abteilung", workbasket.getOrgLevel2());
-    assertEquals("projekt", workbasket.getOrgLevel3());
-    assertEquals("team", workbasket.getOrgLevel4());
-    assertEquals("custom1", workbasket.getCustom1());
-    assertEquals("custom2", workbasket.getCustom2());
-    assertEquals("custom3", workbasket.getCustom3());
-    assertEquals("custom4", workbasket.getCustom4());
+    assertThat(workbasket.getId()).isEqualTo("WBI:100000000000000000000000000000000007");
+    assertThat(workbasket.getDescription()).isEqualTo("PPK User 2 KSC 1");
+    assertThat(workbasket.getName()).isEqualTo("PPK User 2 KSC 1");
+    assertThat(workbasket.getType()).isEqualTo(WorkbasketType.PERSONAL);
+    assertThat(workbasket.getOwner()).isEqualTo("Peter Maier");
+    assertThat(workbasket.getOrgLevel1()).isEqualTo("versicherung");
+    assertThat(workbasket.getOrgLevel2()).isEqualTo("abteilung");
+    assertThat(workbasket.getOrgLevel3()).isEqualTo("projekt");
+    assertThat(workbasket.getOrgLevel4()).isEqualTo("team");
+    assertThat(workbasket.getCustom1()).isEqualTo("custom1");
+    assertThat(workbasket.getCustom2()).isEqualTo("custom2");
+    assertThat(workbasket.getCustom3()).isEqualTo("custom3");
+    assertThat(workbasket.getCustom4()).isEqualTo("custom4");
   }
 
   @WithAccessId(
@@ -87,11 +87,11 @@ class GetWorkbasketAccTest extends AbstractAccTest {
     List<WorkbasketPermission> permissions =
         workbasketService.getPermissionsForWorkbasket("WBI:100000000000000000000000000000000007");
 
-    assertEquals(4, permissions.size());
-    assertTrue(permissions.contains(WorkbasketPermission.READ));
-    assertTrue(permissions.contains(WorkbasketPermission.OPEN));
-    assertTrue(permissions.contains(WorkbasketPermission.TRANSFER));
-    assertTrue(permissions.contains(WorkbasketPermission.APPEND));
+    assertThat(permissions).hasSize(4);
+    assertThat(permissions.contains(WorkbasketPermission.READ)).isTrue();
+    assertThat(permissions.contains(WorkbasketPermission.OPEN)).isTrue();
+    assertThat(permissions.contains(WorkbasketPermission.TRANSFER)).isTrue();
+    assertThat(permissions.contains(WorkbasketPermission.APPEND)).isTrue();
   }
 
   @WithAccessId(
@@ -103,7 +103,7 @@ class GetWorkbasketAccTest extends AbstractAccTest {
     List<WorkbasketPermission> permissions =
         workbasketService.getPermissionsForWorkbasket("WBI:invalid");
 
-    assertEquals(0, permissions.size());
+    assertThat(permissions).isEmpty();
   }
 
   @WithAccessId(
@@ -116,52 +116,62 @@ class GetWorkbasketAccTest extends AbstractAccTest {
     WorkbasketSummary workbasketSummary =
         workbasketService.getWorkbasket("WBI:100000000000000000000000000000000007").asSummary();
 
-    assertEquals("DOMAIN_A", workbasketSummary.getDomain());
-    assertEquals("PPK User 2 KSC 1", workbasketSummary.getDescription());
-    assertEquals("PPK User 2 KSC 1", workbasketSummary.getName());
-    assertEquals("USER_1_2", workbasketSummary.getKey());
-    assertEquals(WorkbasketType.PERSONAL, workbasketSummary.getType());
-    assertEquals("Peter Maier", workbasketSummary.getOwner());
-    assertEquals("versicherung", workbasketSummary.getOrgLevel1());
-    assertEquals("abteilung", workbasketSummary.getOrgLevel2());
-    assertEquals("projekt", workbasketSummary.getOrgLevel3());
-    assertEquals("team", workbasketSummary.getOrgLevel4());
-    assertEquals("custom1", workbasketSummary.getCustom1());
-    assertEquals("custom2", workbasketSummary.getCustom2());
-    assertEquals("custom3", workbasketSummary.getCustom3());
-    assertEquals("custom4", workbasketSummary.getCustom4());
-    assertEquals(false, workbasketSummary.isMarkedForDeletion());
+    assertThat(workbasketSummary.getDomain()).isEqualTo("DOMAIN_A");
+    assertThat(workbasketSummary.getDescription()).isEqualTo("PPK User 2 KSC 1");
+    assertThat(workbasketSummary.getName()).isEqualTo("PPK User 2 KSC 1");
+    assertThat(workbasketSummary.getKey()).isEqualTo("USER_1_2");
+    assertThat(workbasketSummary.getType()).isEqualTo(WorkbasketType.PERSONAL);
+    assertThat(workbasketSummary.getOwner()).isEqualTo("Peter Maier");
+    assertThat(workbasketSummary.getOrgLevel1()).isEqualTo("versicherung");
+    assertThat(workbasketSummary.getOrgLevel2()).isEqualTo("abteilung");
+    assertThat(workbasketSummary.getOrgLevel3()).isEqualTo("projekt");
+    assertThat(workbasketSummary.getOrgLevel4()).isEqualTo("team");
+    assertThat(workbasketSummary.getCustom1()).isEqualTo("custom1");
+    assertThat(workbasketSummary.getCustom2()).isEqualTo("custom2");
+    assertThat(workbasketSummary.getCustom3()).isEqualTo("custom3");
+    assertThat(workbasketSummary.getCustom4()).isEqualTo("custom4");
+    assertThat(workbasketSummary.isMarkedForDeletion()).isEqualTo(false);
   }
 
   @Test
   void testThrowsExceptionIfIdIsInvalid() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-    Assertions.assertThrows(
-        WorkbasketNotFoundException.class, () -> workbasketService.getWorkbasket("INVALID_ID"));
+    ThrowingCallable call =
+        () -> {
+          workbasketService.getWorkbasket("INVALID_ID");
+        };
+    assertThatThrownBy(call).isInstanceOf(WorkbasketNotFoundException.class);
   }
 
   @Test
   void testThrowsExceptionIfKeyOrDomainIsInvalid() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
-    Assertions.assertThrows(
-        WorkbasketNotFoundException.class,
-        () -> workbasketService.getWorkbasket("INVALID_KEY", "INVALID_DOMAIN"));
+    ThrowingCallable call =
+        () -> {
+          workbasketService.getWorkbasket("INVALID_KEY", "INVALID_DOMAIN");
+        };
+    assertThatThrownBy(call).isInstanceOf(WorkbasketNotFoundException.class);
   }
 
   @Test
   void testGetByIdNotAuthorized() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-    Assertions.assertThrows(
-        NotAuthorizedException.class,
-        () -> workbasketService.getWorkbasket("WBI:100000000000000000000000000000000001"));
+    ThrowingCallable call =
+        () -> {
+          workbasketService.getWorkbasket("WBI:100000000000000000000000000000000001");
+        };
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @Test
   void testGetByKeyDomainNotAuthorized() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-    Assertions.assertThrows(
-        NotAuthorizedException.class, () -> workbasketService.getWorkbasket("GPK_KSC", "DOMAIN_A"));
+    ThrowingCallable call =
+        () -> {
+          workbasketService.getWorkbasket("GPK_KSC", "DOMAIN_A");
+        };
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(
@@ -170,8 +180,10 @@ class GetWorkbasketAccTest extends AbstractAccTest {
   @Test
   void testGetWorkbasketByIdNotExisting() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-    Assertions.assertThrows(
-        WorkbasketNotFoundException.class,
-        () -> workbasketService.getWorkbasket("NOT EXISTING ID"));
+    ThrowingCallable call =
+        () -> {
+          workbasketService.getWorkbasket("NOT EXISTING ID");
+        };
+    assertThatThrownBy(call).isInstanceOf(WorkbasketNotFoundException.class);
   }
 }

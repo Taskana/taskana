@@ -1,8 +1,6 @@
 package pro.taskana.task.internal;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -75,12 +73,12 @@ class TaskStatusReportBuilderImplTest {
     inOrder.verifyNoMoreInteractions();
     verifyNoMoreInteractions(taskanaEngineMock, internalTaskanaEngineMock, monitorMapperMock);
 
-    assertNotNull(report);
-    assertEquals(1, report.rowSize());
-    assertArrayEquals(new int[] {50, 0, 30, 0, 0}, report.getRow("DOMAIN_X").getCells());
-    assertArrayEquals(new int[] {50, 0, 30, 0, 0}, report.getSumRow().getCells());
-    assertEquals(80, report.getRow("DOMAIN_X").getTotalValue());
-    assertEquals(80, report.getSumRow().getTotalValue());
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(1);
+    assertThat(report.getRow("DOMAIN_X").getCells()).isEqualTo(new int[] {50, 0, 30, 0, 0});
+    assertThat(report.getSumRow().getCells()).isEqualTo(new int[] {50, 0, 30, 0, 0});
+    assertThat(report.getRow("DOMAIN_X").getTotalValue()).isEqualTo(80);
+    assertThat(report.getSumRow().getTotalValue()).isEqualTo(80);
   }
 
   @Test
@@ -113,11 +111,11 @@ class TaskStatusReportBuilderImplTest {
     inOrder.verifyNoMoreInteractions();
     verifyNoMoreInteractions(taskanaEngineMock, monitorMapperMock, internalTaskanaEngineMock);
 
-    assertNotNull(report);
-    assertEquals(1, report.rowSize());
-    assertArrayEquals(new int[0], report.getRow("DOMAIN_X").getCells());
-    assertArrayEquals(new int[0], report.getSumRow().getCells());
-    assertEquals(80, report.getRow("DOMAIN_X").getTotalValue());
-    assertEquals(80, report.getSumRow().getTotalValue());
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(1);
+    assertThat(report.getRow("DOMAIN_X").getCells()).isEqualTo(new int[0]);
+    assertThat(report.getSumRow().getCells()).isEqualTo(new int[0]);
+    assertThat(report.getRow("DOMAIN_X").getTotalValue()).isEqualTo(80);
+    assertThat(report.getSumRow().getTotalValue()).isEqualTo(80);
   }
 }

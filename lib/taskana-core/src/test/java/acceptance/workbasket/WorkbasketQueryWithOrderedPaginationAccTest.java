@@ -1,7 +1,6 @@
 package acceptance.workbasket;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
 import java.util.List;
@@ -29,15 +28,15 @@ class WorkbasketQueryWithOrderedPaginationAccTest extends AbstractAccTest {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     List<WorkbasketSummary> results =
         workbasketService.createWorkbasketQuery().domainIn("DOMAIN_A").orderByKey(asc).list(0, 5);
-    assertThat(results.size(), equalTo(5));
-    assertThat(results.get(0).getKey(), equalTo("GPK_KSC"));
-    assertThat(results.get(4).getKey(), equalTo("TEAMLEAD_2"));
+    assertThat(results).hasSize(5);
+    assertThat(results.get(0).getKey()).isEqualTo("GPK_KSC");
+    assertThat(results.get(4).getKey()).isEqualTo("TEAMLEAD_2");
 
     results =
         workbasketService.createWorkbasketQuery().domainIn("DOMAIN_A").orderByKey(desc).list(0, 5);
-    assertThat(results.size(), equalTo(5));
-    assertThat(results.get(0).getKey(), equalTo("USER_2_2"));
-    assertThat(results.get(4).getKey(), equalTo("TPK_VIP"));
+    assertThat(results).hasSize(5);
+    assertThat(results.get(0).getKey()).isEqualTo("USER_2_2");
+    assertThat(results.get(4).getKey()).isEqualTo("TPK_VIP");
   }
 
   @Test
@@ -48,14 +47,14 @@ class WorkbasketQueryWithOrderedPaginationAccTest extends AbstractAccTest {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     List<WorkbasketSummary> results =
         workbasketService.createWorkbasketQuery().domainIn("DOMAIN_A").orderByKey(asc).list(5, 5);
-    assertThat(results.size(), equalTo(5));
-    assertThat(results.get(0).getKey(), equalTo("TPK_VIP"));
-    assertThat(results.get(4).getKey(), equalTo("USER_2_2"));
+    assertThat(results).hasSize(5);
+    assertThat(results.get(0).getKey()).isEqualTo("TPK_VIP");
+    assertThat(results.get(4).getKey()).isEqualTo("USER_2_2");
 
     results =
         workbasketService.createWorkbasketQuery().domainIn("DOMAIN_A").orderByKey(desc).list(5, 5);
-    assertThat(results.size(), equalTo(5));
-    assertThat(results.get(0).getKey(), equalTo("TEAMLEAD_2"));
-    assertThat(results.get(4).getKey(), equalTo("GPK_KSC"));
+    assertThat(results).hasSize(5);
+    assertThat(results.get(0).getKey()).isEqualTo("TEAMLEAD_2");
+    assertThat(results.get(4).getKey()).isEqualTo("GPK_KSC");
   }
 }

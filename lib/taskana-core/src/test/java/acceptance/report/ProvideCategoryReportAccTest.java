@@ -1,8 +1,7 @@
 package acceptance.report;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
@@ -37,9 +36,14 @@ class ProvideCategoryReportAccTest extends AbstractReportAccTest {
   void testRoleCheck() {
     MonitorService monitorService = taskanaEngine.getMonitorService();
 
-    Assertions.assertThrows(
-        NotAuthorizedException.class,
-        () -> monitorService.createCategoryReportBuilder().buildReport());
+    //    Assertions.assertThrows(
+    //        NotAuthorizedException.class,
+    //        () -> monitorService.createCategoryReportBuilder().buildReport());
+    ThrowingCallable call =
+        () -> {
+          monitorService.createCategoryReportBuilder().buildReport();
+        };
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(userName = "monitor")
@@ -54,16 +58,16 @@ class ProvideCategoryReportAccTest extends AbstractReportAccTest {
       LOGGER.debug(reportToString(report));
     }
 
-    assertNotNull(report);
-    assertEquals(3, report.rowSize());
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(3);
 
-    assertEquals(33, report.getRow("EXTERN").getTotalValue());
-    assertEquals(7, report.getRow("AUTOMATIC").getTotalValue());
-    assertEquals(10, report.getRow("MANUAL").getTotalValue());
-    assertEquals(0, report.getRow("EXTERN").getCells().length);
-    assertEquals(0, report.getRow("AUTOMATIC").getCells().length);
-    assertEquals(0, report.getRow("MANUAL").getCells().length);
-    assertEquals(50, report.getSumRow().getTotalValue());
+    assertThat(report.getRow("EXTERN").getTotalValue()).isEqualTo(33);
+    assertThat(report.getRow("AUTOMATIC").getTotalValue()).isEqualTo(7);
+    assertThat(report.getRow("MANUAL").getTotalValue()).isEqualTo(10);
+    assertThat(report.getRow("EXTERN").getCells().length).isEqualTo(0);
+    assertThat(report.getRow("AUTOMATIC").getCells().length).isEqualTo(0);
+    assertThat(report.getRow("MANUAL").getCells().length).isEqualTo(0);
+    assertThat(report.getSumRow().getTotalValue()).isEqualTo(50);
   }
 
   @WithAccessId(userName = "monitor")
@@ -87,17 +91,17 @@ class ProvideCategoryReportAccTest extends AbstractReportAccTest {
 
     final int sumLineCount = IntStream.of(report.getSumRow().getCells()).sum();
 
-    assertNotNull(report);
-    assertEquals(3, report.rowSize());
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(3);
 
-    assertEquals(33, report.getRow("EXTERN").getTotalValue());
-    assertEquals(7, report.getRow("AUTOMATIC").getTotalValue());
-    assertEquals(10, report.getRow("MANUAL").getTotalValue());
+    assertThat(report.getRow("EXTERN").getTotalValue()).isEqualTo(33);
+    assertThat(report.getRow("AUTOMATIC").getTotalValue()).isEqualTo(7);
+    assertThat(report.getRow("MANUAL").getTotalValue()).isEqualTo(10);
 
     int[] sumRow = report.getSumRow().getCells();
-    assertArrayEquals(new int[] {10, 9, 11, 0, 4, 0, 7, 4, 5}, sumRow);
-    assertEquals(50, report.getSumRow().getTotalValue());
-    assertEquals(50, sumLineCount);
+    assertThat(sumRow).isEqualTo(new int[] {10, 9, 11, 0, 4, 0, 7, 4, 5});
+    assertThat(report.getSumRow().getTotalValue()).isEqualTo(50);
+    assertThat(sumLineCount).isEqualTo(50);
   }
 
   @WithAccessId(userName = "monitor")
@@ -118,17 +122,17 @@ class ProvideCategoryReportAccTest extends AbstractReportAccTest {
       LOGGER.debug(reportToString(report, columnHeaders));
     }
 
-    assertNotNull(report);
-    assertEquals(3, report.rowSize());
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(3);
 
     int[] row1 = report.getRow("EXTERN").getCells();
-    assertArrayEquals(new int[] {15, 8, 2, 6, 2}, row1);
+    assertThat(row1).isEqualTo(new int[] {15, 8, 2, 6, 2});
 
     int[] row2 = report.getRow("AUTOMATIC").getCells();
-    assertArrayEquals(new int[] {2, 1, 0, 1, 3}, row2);
+    assertThat(row2).isEqualTo(new int[] {2, 1, 0, 1, 3});
 
     int[] row3 = report.getRow("MANUAL").getCells();
-    assertArrayEquals(new int[] {2, 2, 2, 0, 4}, row3);
+    assertThat(row3).isEqualTo(new int[] {2, 2, 2, 0, 4});
   }
 
   @WithAccessId(userName = "monitor")
@@ -146,17 +150,17 @@ class ProvideCategoryReportAccTest extends AbstractReportAccTest {
       LOGGER.debug(reportToString(report, columnHeaders));
     }
 
-    assertNotNull(report);
-    assertEquals(3, report.rowSize());
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(3);
 
     int[] row1 = report.getRow("EXTERN").getCells();
-    assertArrayEquals(new int[] {23, 0, 2, 0, 8}, row1);
+    assertThat(row1).isEqualTo(new int[] {23, 0, 2, 0, 8});
 
     int[] row2 = report.getRow("AUTOMATIC").getCells();
-    assertArrayEquals(new int[] {3, 0, 0, 0, 4}, row2);
+    assertThat(row2).isEqualTo(new int[] {3, 0, 0, 0, 4});
 
     int[] row3 = report.getRow("MANUAL").getCells();
-    assertArrayEquals(new int[] {4, 0, 2, 0, 4}, row3);
+    assertThat(row3).isEqualTo(new int[] {4, 0, 2, 0, 4});
   }
 
   @WithAccessId(userName = "monitor")
@@ -181,17 +185,17 @@ class ProvideCategoryReportAccTest extends AbstractReportAccTest {
       LOGGER.debug(reportToString(report, columnHeaders));
     }
 
-    assertNotNull(report);
-    assertEquals(3, report.rowSize());
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(3);
 
     int[] row1 = report.getRow("EXTERN").getCells();
-    assertArrayEquals(new int[] {10, 2, 0, 0, 0}, row1);
+    assertThat(row1).isEqualTo(new int[] {10, 2, 0, 0, 0});
 
     int[] row2 = report.getRow("AUTOMATIC").getCells();
-    assertArrayEquals(new int[] {2, 1, 0, 1, 1}, row2);
+    assertThat(row2).isEqualTo(new int[] {2, 1, 0, 1, 1});
 
     int[] row3 = report.getRow("MANUAL").getCells();
-    assertArrayEquals(new int[] {1, 0, 1, 0, 1}, row3);
+    assertThat(row3).isEqualTo(new int[] {1, 0, 1, 0, 1});
   }
 
   @WithAccessId(userName = "monitor")
@@ -215,17 +219,17 @@ class ProvideCategoryReportAccTest extends AbstractReportAccTest {
       LOGGER.debug(reportToString(report, columnHeaders));
     }
 
-    assertNotNull(report);
-    assertEquals(3, report.rowSize());
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(3);
 
     int[] row1 = report.getRow("EXTERN").getCells();
-    assertArrayEquals(new int[] {15, 8, 2, 6, 0}, row1);
+    assertThat(row1).isEqualTo(new int[] {15, 8, 2, 6, 0});
 
     int[] row2 = report.getRow("AUTOMATIC").getCells();
-    assertArrayEquals(new int[] {2, 1, 0, 1, 0}, row2);
+    assertThat(row2).isEqualTo(new int[] {2, 1, 0, 1, 0});
 
     int[] row3 = report.getRow("MANUAL").getCells();
-    assertArrayEquals(new int[] {2, 2, 2, 0, 0}, row3);
+    assertThat(row3).isEqualTo(new int[] {2, 2, 2, 0, 0});
   }
 
   @WithAccessId(userName = "monitor")
@@ -249,14 +253,14 @@ class ProvideCategoryReportAccTest extends AbstractReportAccTest {
       LOGGER.debug(reportToString(report, columnHeaders));
     }
 
-    assertNotNull(report);
-    assertEquals(2, report.rowSize());
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(2);
 
     int[] row1 = report.getRow("AUTOMATIC").getCells();
-    assertArrayEquals(new int[] {2, 1, 0, 1, 3}, row1);
+    assertThat(row1).isEqualTo(new int[] {2, 1, 0, 1, 3});
 
     int[] row2 = report.getRow("MANUAL").getCells();
-    assertArrayEquals(new int[] {2, 2, 2, 0, 4}, row2);
+    assertThat(row2).isEqualTo(new int[] {2, 2, 2, 0, 4});
   }
 
   @WithAccessId(userName = "monitor")
@@ -280,17 +284,17 @@ class ProvideCategoryReportAccTest extends AbstractReportAccTest {
       LOGGER.debug(reportToString(report, columnHeaders));
     }
 
-    assertNotNull(report);
-    assertEquals(3, report.rowSize());
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(3);
 
     int[] row1 = report.getRow("EXTERN").getCells();
-    assertArrayEquals(new int[] {8, 4, 2, 4, 0}, row1);
+    assertThat(row1).isEqualTo(new int[] {8, 4, 2, 4, 0});
 
     int[] row2 = report.getRow("AUTOMATIC").getCells();
-    assertArrayEquals(new int[] {1, 0, 0, 1, 1}, row2);
+    assertThat(row2).isEqualTo(new int[] {1, 0, 0, 1, 1});
 
     int[] row3 = report.getRow("MANUAL").getCells();
-    assertArrayEquals(new int[] {2, 0, 0, 0, 3}, row3);
+    assertThat(row3).isEqualTo(new int[] {2, 0, 0, 0, 3});
   }
 
   @WithAccessId(userName = "monitor")
@@ -315,17 +319,17 @@ class ProvideCategoryReportAccTest extends AbstractReportAccTest {
       LOGGER.debug(reportToString(report, columnHeaders));
     }
 
-    assertNotNull(report);
-    assertEquals(3, report.rowSize());
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(3);
 
     int[] row1 = report.getRow("EXTERN").getCells();
-    assertArrayEquals(new int[] {9, 3, 1, 3, 0}, row1);
+    assertThat(row1).isEqualTo(new int[] {9, 3, 1, 3, 0});
 
     int[] row2 = report.getRow("AUTOMATIC").getCells();
-    assertArrayEquals(new int[] {1, 0, 0, 1, 1}, row2);
+    assertThat(row2).isEqualTo(new int[] {1, 0, 0, 1, 1});
 
     int[] row3 = report.getRow("MANUAL").getCells();
-    assertArrayEquals(new int[] {1, 1, 2, 0, 2}, row3);
+    assertThat(row3).isEqualTo(new int[] {1, 1, 2, 0, 2});
   }
 
   private List<TimeIntervalColumnHeader> getListOfColumnHeaders() {
