@@ -1,9 +1,10 @@
-package pro.taskana.classification.api.models;
+package pro.taskana.classification.internal.models;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
+import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.internal.models.ClassificationImpl;
 import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
 

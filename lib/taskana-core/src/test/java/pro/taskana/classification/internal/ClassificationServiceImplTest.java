@@ -1,11 +1,11 @@
 package pro.taskana.classification.internal;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -46,17 +46,15 @@ class ClassificationServiceImplTest {
   @Test
   void testThrowExceptionIdIfClassificationIsCreatedWithAnExplicitId() {
     when(internalTaskanaEngineMock.getEngine()).thenReturn(taskanaEngineMock);
-    InvalidArgumentException invalidArgumentException =
-        Assertions.assertThrows(
-            InvalidArgumentException.class,
-            () -> {
-              Classification classification = createDummyClassification();
-              when(internalTaskanaEngineMock.domainExists(any())).thenReturn(true);
-              cutSpy.createClassification(classification);
-            });
-
-    assertEquals(
-        invalidArgumentException.getMessage(), "ClassificationId should be null on creation");
+    ThrowingCallable call =
+        () -> {
+          Classification classification = createDummyClassification();
+          when(internalTaskanaEngineMock.domainExists(any())).thenReturn(true);
+          cutSpy.createClassification(classification);
+        };
+    assertThatThrownBy(call)
+        .isInstanceOf(InvalidArgumentException.class)
+        .hasMessage("ClassificationId should be null on creation");
   }
 
   private Classification createDummyClassification() {

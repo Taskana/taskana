@@ -2,6 +2,7 @@ package acceptance.task;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.util.IterableUtil.toArray;
 
 import acceptance.AbstractAccTest;
 import java.time.Duration;
@@ -10,6 +11,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map.Entry;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -112,7 +114,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     BulkOperationResults<String, TaskanaException> results =
         taskService.setPlannedPropertyOfTasks(planned, taskIds);
     assertThat(results.containsErrors()).isTrue();
-    assertThat(results.getErrorMap().size()).isEqualTo(1);
+    assertThat(results.getErrorMap()).hasSize(1);
     assertThat(results.getErrorForId("TKI:000000000000000000000000000047110059"))
         .isInstanceOf(TaskNotFoundException.class);
     Instant dueExpected = getInstant("2020-04-21T07:00:00");
@@ -214,17 +216,18 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     String tkId2 = "TKI:000000000000000000000000000000000009";
     String tkId3 = "TKI:000000000000000000000000000000000008";
     String tkId4 = "TKI:000000000000000000000000000000000010";
-
     List<String> taskIds = Arrays.asList(tkId1, tkId2, tkId3, tkId4);
     Instant planned = getInstant("2020-02-25T07:00:00");
+
     BulkOperationResults<String, TaskanaException> results =
         taskService.setPlannedPropertyOfTasks(planned, taskIds);
+
     assertThat(results.containsErrors()).isTrue();
-    assertThat(results.getErrorMap().size()).isEqualTo(3);
-    assertThat(results.getErrorForId(tkId1)).isInstanceOf(NotAuthorizedException.class);
-    assertThat(results.getErrorForId(tkId2)).isInstanceOf(NotAuthorizedException.class);
-    assertThat(results.getErrorForId(tkId3)).isInstanceOf(NotAuthorizedException.class);
-    assertThat(results.getErrorForId(tkId4)).isInstanceOf(NotAuthorizedException.class);
+    assertThat(results.getErrorMap())
+        .hasSize(3)
+        .containsKeys(toArray(taskIds))
+        .extractingFromEntries(Entry::getValue)
+        .hasOnlyElementsOfType(NotAuthorizedException.class);
   }
 
   @WithAccessId(

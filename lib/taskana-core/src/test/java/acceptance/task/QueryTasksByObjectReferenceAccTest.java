@@ -1,6 +1,6 @@
 package acceptance.task;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
 import java.util.List;
@@ -29,7 +29,7 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
     List<TaskSummary> results =
         taskService.createTaskQuery().primaryObjectReferenceValueIn("11223344", "22334455").list();
-    assertEquals(33L, results.size());
+    assertThat(results).hasSize(33);
   }
 
   @WithAccessId(
@@ -44,7 +44,7 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
             .primaryObjectReferenceTypeIn("SDNR")
             .primaryObjectReferenceValueIn("11223344")
             .list();
-    assertEquals(10L, results.size());
+    assertThat(results).hasSize(10);
   }
 
   @WithAccessId(
@@ -55,6 +55,6 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
     List<TaskSummary> results =
         taskService.createTaskQuery().primaryObjectReferenceValueLike("%567%").list();
-    assertEquals(10L, results.size());
+    assertThat(results).hasSize(10);
   }
 }

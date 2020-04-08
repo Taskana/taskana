@@ -1,10 +1,11 @@
 package acceptance.security;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.util.List;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -29,16 +30,17 @@ class WorkbasketQueryAccTest extends AbstractAccTest {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     List<WorkbasketSummary> results =
         workbasketService.createWorkbasketQuery().nameLike("%").list();
-    assertEquals(0L, results.size());
-    Assertions.assertThrows(
-        NotAuthorizedException.class,
-        () ->
-            workbasketService
-                .createWorkbasketQuery()
-                .nameLike("%")
-                .accessIdsHavePermission(
-                    WorkbasketPermission.TRANSFER, "teamlead_1", "group_1", "group_2")
-                .list());
+    assertThat(results).isEmpty();
+    ThrowingCallable call =
+        () -> {
+          workbasketService
+              .createWorkbasketQuery()
+              .nameLike("%")
+              .accessIdsHavePermission(
+                  WorkbasketPermission.TRANSFER, "teamlead_1", "group_1", "group_2")
+              .list();
+        };
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(userName = "unknown")
@@ -47,17 +49,17 @@ class WorkbasketQueryAccTest extends AbstractAccTest {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     List<WorkbasketSummary> results =
         workbasketService.createWorkbasketQuery().nameLike("%").list();
-    assertEquals(0L, results.size());
-
-    Assertions.assertThrows(
-        NotAuthorizedException.class,
-        () ->
-            workbasketService
-                .createWorkbasketQuery()
-                .nameLike("%")
-                .accessIdsHavePermission(
-                    WorkbasketPermission.TRANSFER, "teamlead_1", "group_1", "group_2")
-                .list());
+    assertThat(results).isEmpty();
+    ThrowingCallable call =
+        () -> {
+          workbasketService
+              .createWorkbasketQuery()
+              .nameLike("%")
+              .accessIdsHavePermission(
+                  WorkbasketPermission.TRANSFER, "teamlead_1", "group_1", "group_2")
+              .list();
+        };
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(userName = "unknown", groupNames = "businessadmin")
@@ -67,7 +69,7 @@ class WorkbasketQueryAccTest extends AbstractAccTest {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     List<WorkbasketSummary> results =
         workbasketService.createWorkbasketQuery().nameLike("%").list();
-    assertEquals(25L, results.size());
+    assertThat(results).hasSize(25);
 
     results =
         workbasketService
@@ -77,7 +79,7 @@ class WorkbasketQueryAccTest extends AbstractAccTest {
                 WorkbasketPermission.TRANSFER, "teamlead_1", "group_1", "group_2")
             .list();
 
-    assertEquals(13L, results.size());
+    assertThat(results).hasSize(13);
   }
 
   @WithAccessId(userName = "unknown", groupNames = "admin")
@@ -86,7 +88,7 @@ class WorkbasketQueryAccTest extends AbstractAccTest {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     List<WorkbasketSummary> results =
         workbasketService.createWorkbasketQuery().nameLike("%").list();
-    assertEquals(25L, results.size());
+    assertThat(results).hasSize(25);
 
     results =
         workbasketService
@@ -96,6 +98,6 @@ class WorkbasketQueryAccTest extends AbstractAccTest {
                 WorkbasketPermission.TRANSFER, "teamlead_1", "group_1", "group_2")
             .list();
 
-    assertEquals(13L, results.size());
+    assertThat(results).hasSize(13);
   }
 }

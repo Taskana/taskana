@@ -1,7 +1,6 @@
 package pro.taskana.monitor.internal;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -110,9 +109,9 @@ class CustomFieldValueReportBuilderImplTest {
         monitorMapperMock,
         taskanaEngineConfigurationMock);
 
-    assertNotNull(actualResult);
-    assertEquals(actualResult.getRow("Geschaeftsstelle A").getTotalValue(), 1);
-    assertEquals(actualResult.getSumRow().getTotalValue(), 1);
+    assertThat(actualResult).isNotNull();
+    assertThat(1).isEqualTo(actualResult.getRow("Geschaeftsstelle A").getTotalValue());
+    assertThat(1).isEqualTo(actualResult.getSumRow().getTotalValue());
   }
 
   @Test
@@ -174,10 +173,10 @@ class CustomFieldValueReportBuilderImplTest {
         monitorMapperMock,
         taskanaEngineConfigurationMock);
 
-    assertNotNull(actualResult);
-    assertEquals(actualResult.getRow("Geschaeftsstelle A").getTotalValue(), 1);
-    assertEquals(actualResult.getRow("Geschaeftsstelle A").getCells()[0], 1);
-    assertEquals(actualResult.getSumRow().getTotalValue(), 1);
+    assertThat(actualResult).isNotNull();
+    assertThat(1).isEqualTo(actualResult.getRow("Geschaeftsstelle A").getTotalValue());
+    assertThat(1).isEqualTo(actualResult.getRow("Geschaeftsstelle A").getCells()[0]);
+    assertThat(1).isEqualTo(actualResult.getSumRow().getTotalValue());
   }
 
   @Test
@@ -238,7 +237,7 @@ class CustomFieldValueReportBuilderImplTest {
         monitorMapperMock,
         taskanaEngineConfigurationMock);
 
-    assertNotNull(actualResult);
-    assertEquals(expectedResult, actualResult);
+    assertThat(actualResult).isNotNull();
+    assertThat(actualResult).isEqualTo(expectedResult);
   }
 }

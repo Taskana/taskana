@@ -2,7 +2,6 @@ package pro.taskana.sampledata;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /** Test SampleDataGenerator. */
@@ -24,6 +23,6 @@ class SampleDataProviderTest {
   void getScriptsFileExists() {
     SampleDataProvider.getSampleDataCreationScripts()
         .map(SqlReplacer::getScriptBufferedStream)
-        .forEach(Assertions::assertNotNull);
+        .forEach(script -> assertThat(script).isNotNull());
   }
 }

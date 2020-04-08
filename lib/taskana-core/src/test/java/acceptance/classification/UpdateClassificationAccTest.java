@@ -1,12 +1,7 @@
 package acceptance.classification;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.time.Duration;
@@ -14,7 +9,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -82,11 +77,11 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
     // Get and check the new value
     Classification updatedClassification =
         classificationService.getClassification("T2100", "DOMAIN_A");
-    assertNotNull(updatedClassification);
-    assertThat(updatedClassification.getName(), equalTo(newName));
-    assertThat(updatedClassification.getApplicationEntryPoint(), equalTo(newEntryPoint));
-    assertThat(updatedClassification.getCreated(), equalTo(createdBefore));
-    assertTrue(modifiedBefore.isBefore(updatedClassification.getModified()));
+    assertThat(updatedClassification).isNotNull();
+    assertThat(updatedClassification.getName()).isEqualTo(newName);
+    assertThat(updatedClassification.getApplicationEntryPoint()).isEqualTo(newEntryPoint);
+    assertThat(updatedClassification.getCreated()).isEqualTo(createdBefore);
+    assertThat(modifiedBefore).isBefore(updatedClassification.getModified());
   }
 
   @Test
@@ -113,9 +108,8 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
     classification.setPriority(1000);
     classification.setServiceLevel("P2DT3H4M");
 
-    Assertions.assertThrows(
-        NotAuthorizedException.class,
-        () -> classificationService.updateClassification(classification));
+    ThrowingCallable call = () -> classificationService.updateClassification(classification);
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(
@@ -139,20 +133,15 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
     TaskImpl updatedTask =
         (TaskImpl)
             taskanaEngine.getTaskService().getTask("TKI:000000000000000000000000000000000000");
-    assertThat(
-        updatedTask.getClassificationCategory(),
-        not(equalTo(beforeTask.getClassificationCategory())));
-    assertThat(
-        updatedTask.getClassificationSummary().getCategory(),
-        not(equalTo(beforeTask.getClassificationSummary().getCategory())));
-    assertThat(updatedTask.getClassificationCategory(), equalTo("PROCESS"));
-    assertThat(updatedTask.getClassificationSummary().getCategory(), equalTo("PROCESS"));
-
-    assertThat(classification.getCreated(), equalTo(createdBefore));
+    assertThat(beforeTask.getClassificationCategory())
+        .isNotEqualTo(updatedTask.getClassificationCategory());
+    assertThat(beforeTask.getClassificationSummary().getCategory())
+        .isNotEqualTo(updatedTask.getClassificationSummary().getCategory());
+    assertThat(updatedTask.getClassificationCategory()).isEqualTo("PROCESS");
+    assertThat(updatedTask.getClassificationSummary().getCategory()).isEqualTo("PROCESS");
+    assertThat(classification.getCreated()).isEqualTo(createdBefore);
     // isBeforeOrEquals in case of too fast execution
-    assertTrue(
-        modifiedBefore.isBefore(classification.getModified())
-            || modifiedBefore.equals(classification.getModified()));
+    assertThat(modifiedBefore).isBeforeOrEqualTo(classification.getModified());
   }
 
   @WithAccessId(
@@ -175,10 +164,11 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
 
     classification.setName("NOW IT´S MY TURN");
     classification.setDescription("IT SHOULD BE TO LATE...");
-    Assertions.assertThrows(
-        ConcurrencyException.class,
-        () -> classificationService.updateClassification(classification),
-        "The Classification should not be updated, because it was modified while editing.");
+    ThrowingCallable call = () -> classificationService.updateClassification(classification);
+    assertThatThrownBy(call)
+        .isInstanceOf(ConcurrencyException.class)
+        .describedAs(
+            "The Classification should not be updated, because it was modified while editing.");
   }
 
   @WithAccessId(
@@ -190,9 +180,8 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
           InvalidArgumentException {
     Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
     classification.setParentId("ID WHICH CANT BE FOUND");
-    Assertions.assertThrows(
-        ClassificationNotFoundException.class,
-        () -> classificationService.updateClassification(classification));
+    ThrowingCallable call = () -> classificationService.updateClassification(classification);
+    assertThatThrownBy(call).isInstanceOf(ClassificationNotFoundException.class);
   }
 
   @WithAccessId(
@@ -204,10 +193,8 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
           InvalidArgumentException {
     Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
     classification.setParentKey("KEY WHICH CANT BE FOUND");
-
-    Assertions.assertThrows(
-        ClassificationNotFoundException.class,
-        () -> classificationService.updateClassification(classification));
+    ThrowingCallable call = () -> classificationService.updateClassification(classification);
+    assertThatThrownBy(call).isInstanceOf(ClassificationNotFoundException.class);
   }
 
   @WithAccessId(
@@ -217,7 +204,6 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
   public void testUpdateClassificationPrioServiceLevel()
       throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
           InterruptedException, TaskNotFoundException, InvalidArgumentException {
-    String newEntryPoint = "updated EntryPoint";
     final Instant before = Instant.now();
     Classification classification =
         classificationService.getClassification("CLI:100000000000000000000000000000000003");
@@ -229,9 +215,9 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
     // Get and check the new value
     Classification updatedClassification =
         classificationService.getClassification("CLI:100000000000000000000000000000000003");
-    assertNotNull(updatedClassification);
+    assertThat(updatedClassification).isNotNull();
 
-    assertFalse(modifiedBefore.isAfter(updatedClassification.getModified()));
+    assertThat(modifiedBefore.isAfter(updatedClassification.getModified())).isFalse();
     // TODO - resume old behaviour after attachment query is possible.
     TaskService taskService = taskanaEngine.getTaskService();
 
@@ -310,9 +296,8 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
     Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
 
     classification.setParentKey(classification.getKey());
-    Assertions.assertThrows(
-        InvalidArgumentException.class,
-        () -> classificationService.updateClassification(classification));
+    ThrowingCallable call = () -> classificationService.updateClassification(classification);
+    assertThatThrownBy(call).isInstanceOf(InvalidArgumentException.class);
   }
 
   @WithAccessId(
@@ -349,8 +334,8 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
     // Get and check the new value
     Classification updatedClassification =
         classificationService.getClassification("CLI:100000000000000000000000000000000003");
-    assertNotNull(updatedClassification);
-    assertFalse(modifiedBefore.isAfter(updatedClassification.getModified()));
+    assertThat(updatedClassification).isNotNull();
+    assertThat(modifiedBefore.isAfter(updatedClassification.getModified())).isFalse();
     // TODO - resume old behaviour after attachment query is possible.
     TaskService taskService = taskanaEngine.getTaskService();
     WorkingDaysToDaysConverter.setGermanPublicHolidaysEnabled(true);
@@ -489,8 +474,8 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
     // Get and check the new value
     Classification updatedClassification =
         classificationService.getClassification("CLI:100000000000000000000000000000000003");
-    assertNotNull(updatedClassification);
-    assertFalse(modifiedBefore.isAfter(updatedClassification.getModified()));
+    assertThat(updatedClassification).isNotNull();
+    assertThat(modifiedBefore.isAfter(updatedClassification.getModified())).isFalse();
     // TODO - resume old behaviour after attachment query is possible.
     TaskService taskService = taskanaEngine.getTaskService();
     WorkingDaysToDaysConverter.setGermanPublicHolidaysEnabled(true);
@@ -580,15 +565,18 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
     for (String taskId : tasksUpdated) {
       Task task = taskService.getTask(taskId);
 
-      assertTrue(
-          task.getModified().isAfter(before), "Task " + task.getId() + " has not been refreshed.");
+      assertThat(task.getModified())
+          .describedAs("Task " + task.getId() + " has not been refreshed.")
+          .isAfter(before);
       long calendarDays = converter.convertWorkingDaysToDays(task.getPlanned(), serviceLevel);
 
       String msg =
           String.format(
               "Task: %s and Due Date: %s do not match planned %s. Calendar days : %s.",
               taskId, task.getDue(), task.getPlanned(), calendarDays);
-      assertEquals(task.getDue(), task.getPlanned().plus(Duration.ofDays(calendarDays)), msg);
+      assertThat(task.getDue())
+          .describedAs(msg)
+          .isEqualTo(task.getPlanned().plus(Duration.ofDays(calendarDays)));
     }
   }
 }

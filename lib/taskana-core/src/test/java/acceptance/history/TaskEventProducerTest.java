@@ -1,6 +1,6 @@
 package acceptance.history;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
 import org.junit.jupiter.api.Test;
@@ -10,6 +10,6 @@ class TaskEventProducerTest extends AbstractAccTest {
 
   @Test
   void testHistoryEventProducerIsNotEnabled() {
-    assertFalse(taskanaEngine.isHistoryEnabled());
+    assertThat(taskanaEngine.isHistoryEnabled()).isFalse();
   }
 }

@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import acceptance.AbstractAccTest;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,10 +23,10 @@ import pro.taskana.task.api.models.TaskSummary;
 /** Acceptance tests for all claim and complete scenarios. */
 @ExtendWith(JaasExtension.class)
 class TerminateTaskAccTest extends AbstractAccTest {
-  private TaskService taskService;
+  private static TaskService taskService;
 
-  TerminateTaskAccTest() {
-    super();
+  @BeforeAll
+  static void setup() {
     taskService = taskanaEngine.getTaskService();
   }
 
@@ -41,7 +42,7 @@ class TerminateTaskAccTest extends AbstractAccTest {
   void testQueryTerminatedTasks() {
     List<TaskSummary> taskSummaries =
         taskService.createTaskQuery().stateIn(TaskState.TERMINATED).list();
-    assertThat(taskSummaries.size()).isEqualTo(5);
+    assertThat(taskSummaries).hasSize(5);
   }
 
   @WithAccessId(
@@ -51,7 +52,7 @@ class TerminateTaskAccTest extends AbstractAccTest {
   void testTerminateReadyTask()
       throws NotAuthorizedException, TaskNotFoundException, InvalidStateException {
     List<TaskSummary> taskSummaries = taskService.createTaskQuery().stateIn(TaskState.READY).list();
-    assertThat(taskSummaries.size()).isEqualTo(47);
+    assertThat(taskSummaries).hasSize(47);
     taskService.terminateTask(taskSummaries.get(0).getId());
     long numTasks = taskService.createTaskQuery().stateIn(TaskState.READY).count();
     assertThat(numTasks).isEqualTo(46);
@@ -67,7 +68,7 @@ class TerminateTaskAccTest extends AbstractAccTest {
       throws NotAuthorizedException, TaskNotFoundException, InvalidStateException {
     List<TaskSummary> taskSummaries =
         taskService.createTaskQuery().stateIn(TaskState.CLAIMED).list();
-    assertThat(taskSummaries.size()).isEqualTo(16);
+    assertThat(taskSummaries).hasSize(16);
 
     long numTasksTerminated = taskService.createTaskQuery().stateIn(TaskState.TERMINATED).count();
     assertThat(numTasksTerminated).isEqualTo(5);
@@ -83,15 +84,11 @@ class TerminateTaskAccTest extends AbstractAccTest {
       userName = "user_1_2",
       groupNames = {"group_1"})
   @Test
-  void testTerminateCompletedTask()
-      throws NotAuthorizedException, TaskNotFoundException, InvalidStateException {
+  void testTerminateCompletedTask() {
     List<TaskSummary> taskSummaries =
         taskService.createTaskQuery().stateIn(TaskState.COMPLETED).list();
-    assertThat(taskSummaries.size()).isEqualTo(6);
-    ThrowingCallable taskanaCall =
-        () -> {
-          taskService.terminateTask(taskSummaries.get(0).getId());
-        };
+    assertThat(taskSummaries).hasSize(6);
+    ThrowingCallable taskanaCall = () -> taskService.terminateTask(taskSummaries.get(0).getId());
 
     assertThatThrownBy(taskanaCall).isInstanceOf(InvalidStateException.class);
   }
@@ -100,15 +97,11 @@ class TerminateTaskAccTest extends AbstractAccTest {
       userName = "user_1_2",
       groupNames = {"group_1"})
   @Test
-  void testTerminateTerminatedTask()
-      throws NotAuthorizedException, TaskNotFoundException, InvalidStateException {
+  void testTerminateTerminatedTask() {
     List<TaskSummary> taskSummaries =
         taskService.createTaskQuery().stateIn(TaskState.TERMINATED).list();
-    assertThat(taskSummaries.size()).isEqualTo(5);
-    ThrowingCallable taskanaCall =
-        () -> {
-          taskService.terminateTask(taskSummaries.get(0).getId());
-        };
+    assertThat(taskSummaries).hasSize(5);
+    ThrowingCallable taskanaCall = () -> taskService.terminateTask(taskSummaries.get(0).getId());
 
     assertThatThrownBy(taskanaCall).isInstanceOf(InvalidStateException.class);
   }
@@ -117,15 +110,11 @@ class TerminateTaskAccTest extends AbstractAccTest {
       userName = "user_1_2",
       groupNames = {"group_1"})
   @Test
-  void testTerminateCancelledTask()
-      throws NotAuthorizedException, TaskNotFoundException, InvalidStateException {
+  void testTerminateCancelledTask() {
     List<TaskSummary> taskSummaries =
         taskService.createTaskQuery().stateIn(TaskState.CANCELLED).list();
-    assertThat(taskSummaries.size()).isEqualTo(5);
-    ThrowingCallable taskanaCall =
-        () -> {
-          taskService.terminateTask(taskSummaries.get(0).getId());
-        };
+    assertThat(taskSummaries).hasSize(5);
+    ThrowingCallable taskanaCall = () -> taskService.terminateTask(taskSummaries.get(0).getId());
     assertThatThrownBy(taskanaCall).isInstanceOf(InvalidStateException.class);
   }
 }

@@ -1,8 +1,6 @@
 package pro.taskana.task.internal;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -35,7 +33,7 @@ class TaskAttachmentTest {
     cut.addAttachment(attachment2);
     cut.addAttachment(attachment3);
 
-    assertThat(cut.getAttachments().size(), equalTo(3));
+    assertThat(cut.getAttachments()).hasSize(3);
   }
 
   @Test
@@ -45,7 +43,7 @@ class TaskAttachmentTest {
     cut.addAttachment(attachment1);
     cut.addAttachment(null);
 
-    assertThat(cut.getAttachments().size(), equalTo(1));
+    assertThat(cut.getAttachments()).hasSize(1);
   }
 
   @Test
@@ -57,14 +55,14 @@ class TaskAttachmentTest {
     cut.addAttachment(attachment1);
     cut.addAttachment(attachment2);
 
-    assertThat(cut.getAttachments().size(), equalTo(1));
+    assertThat(cut.getAttachments()).hasSize(1);
 
     // Check with not same vlaues (same ID)
     String newChannel = "I will overwrite the other!";
     attachment1.setChannel(newChannel);
     cut.addAttachment(attachment1);
-    assertThat(cut.getAttachments().size(), equalTo(1));
-    assertThat(cut.getAttachments().get(0).getChannel(), equalTo(newChannel));
+    assertThat(cut.getAttachments()).hasSize(1);
+    assertThat(cut.getAttachments().get(0).getChannel()).isEqualTo(newChannel);
   }
 
   @Test
@@ -77,8 +75,8 @@ class TaskAttachmentTest {
 
     Attachment actual = cut.removeAttachment(attachment2.getId());
 
-    assertThat(cut.getAttachments().size(), equalTo(1));
-    assertThat(actual, equalTo(attachment2));
+    assertThat(cut.getAttachments()).hasSize(1);
+    assertThat(actual).isEqualTo(attachment2);
   }
 
   @Test
@@ -88,12 +86,12 @@ class TaskAttachmentTest {
     cut.getAttachments().add(attachment1);
     cut.getAttachments().add(attachment1);
     cut.getAttachments().add(attachment1);
-    assertThat(cut.getAttachments().size(), equalTo(3));
+    assertThat(cut.getAttachments()).hasSize(3);
 
     Attachment actual = cut.removeAttachment(attachment1.getId());
 
-    assertThat(cut.getAttachments().size(), equalTo(2));
-    assertThat(actual, equalTo(attachment1));
+    assertThat(cut.getAttachments()).hasSize(2);
+    assertThat(actual).isEqualTo(attachment1);
   }
 
   @Test
@@ -117,25 +115,23 @@ class TaskAttachmentTest {
     List<AttachmentSummary> summaries = cut.asSummary().getAttachmentSummaries();
     AttachmentSummary attachmentSummary = summaries.get(0);
 
-    assertThat(attachmentSummary, equalTo(attachment1.asSummary()));
-
-    assertThat(attachmentSummary.getId(), equalTo(attachment1.getId()));
-    assertThat(attachmentSummary.getTaskId(), equalTo(attachment1.getTaskId()));
-    assertThat(attachmentSummary.getChannel(), equalTo(attachment1.getChannel()));
-    assertThat(
-        attachmentSummary.getClassificationSummary(),
-        equalTo(attachment1.getClassificationSummary()));
-    assertThat(attachmentSummary.getObjectReference(), equalTo(attachment1.getObjectReference()));
-    assertThat(attachmentSummary.getCreated(), equalTo(attachment1.getCreated()));
-    assertThat(attachmentSummary.getReceived(), equalTo(attachment1.getReceived()));
-    assertThat(attachmentSummary.getModified(), equalTo(attachment1.getModified()));
+    assertThat(attachmentSummary).isEqualTo(attachment1.asSummary());
+    assertThat(attachmentSummary.getId()).isEqualTo(attachment1.getId());
+    assertThat(attachmentSummary.getTaskId()).isEqualTo(attachment1.getTaskId());
+    assertThat(attachmentSummary.getChannel()).isEqualTo(attachment1.getChannel());
+    assertThat(attachmentSummary.getClassificationSummary())
+        .isEqualTo(attachment1.getClassificationSummary());
+    assertThat(attachmentSummary.getObjectReference()).isEqualTo(attachment1.getObjectReference());
+    assertThat(attachmentSummary.getCreated()).isEqualTo(attachment1.getCreated());
+    assertThat(attachmentSummary.getReceived()).isEqualTo(attachment1.getReceived());
+    assertThat(attachmentSummary.getModified()).isEqualTo(attachment1.getModified());
 
     // Must be different
-    assertNotEquals(attachmentSummary.hashCode(), attachment1.hashCode());
+    assertThat(attachment1.hashCode()).isNotEqualTo(attachmentSummary.hashCode());
 
     cut.removeAttachment("ID1");
-    assertThat(summaries.size(), equalTo(1));
+    assertThat(summaries).hasSize(1);
     summaries = cut.asSummary().getAttachmentSummaries();
-    assertThat(summaries.size(), equalTo(0));
+    assertThat(summaries).isEmpty();
   }
 }

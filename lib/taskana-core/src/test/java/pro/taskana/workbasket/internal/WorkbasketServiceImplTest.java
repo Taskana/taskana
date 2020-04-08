@@ -1,12 +1,8 @@
 package pro.taskana.workbasket.internal;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.startsWith;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -23,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -114,10 +110,10 @@ class WorkbasketServiceImplTest {
         internalTaskanaEngineMock,
         taskanaEngine,
         taskanaEngineConfigurationMock);
-    assertThat(actualWb.getId(), not(equalTo(null)));
-    assertThat(actualWb.getId(), startsWith("WBI"));
-    assertThat(actualWb.getCreated(), not(equalTo(null)));
-    assertThat(actualWb.getModified(), not(equalTo(null)));
+    assertThat(actualWb.getId()).isNotNull();
+    assertThat(actualWb.getId()).startsWith("WBI");
+    assertThat(actualWb.getCreated()).isNotNull();
+    assertThat(actualWb.getModified()).isNotNull();
   }
 
   @Test
@@ -129,14 +125,15 @@ class WorkbasketServiceImplTest {
     workbasketServiceSpy.createWorkbasket(expectedWb);
     doReturn(expectedWb).when(workbasketServiceSpy).getWorkbasket(eq(expectedWb.getId()));
 
-    WorkbasketNotFoundException e =
-        Assertions.assertThrows(
-            WorkbasketNotFoundException.class,
-            () -> workbasketServiceSpy.setDistributionTargets(expectedWb.getId(), destinations));
-
-    Assertions.assertEquals(e.getId(), otherWorkbasketId);
-    Assertions.assertNull(e.getKey());
-    Assertions.assertNull(e.getDomain());
+    ThrowingCallable call =
+        () -> {
+          workbasketServiceSpy.setDistributionTargets(expectedWb.getId(), destinations);
+        };
+    assertThatThrownBy(call)
+        .isInstanceOf(WorkbasketNotFoundException.class)
+        .hasFieldOrPropertyWithValue("id", otherWorkbasketId)
+        .hasFieldOrPropertyWithValue("key", null)
+        .hasFieldOrPropertyWithValue("domain", null);
 
     verify(internalTaskanaEngineMock, times(3)).openConnection();
     verify(workbasketMapperMock, times(1)).insert(expectedWb);
@@ -165,8 +162,11 @@ class WorkbasketServiceImplTest {
   void testDeleteWorkbasketIsUsed() throws NotAuthorizedException, WorkbasketNotFoundException {
     Workbasket wb = createTestWorkbasket("WBI:0", "wb-key");
 
-    Assertions.assertThrows(
-        WorkbasketNotFoundException.class, () -> workbasketServiceSpy.deleteWorkbasket(wb.getId()));
+    ThrowingCallable call =
+        () -> {
+          workbasketServiceSpy.deleteWorkbasket(wb.getId());
+        };
+    assertThatThrownBy(call).isInstanceOf(WorkbasketNotFoundException.class);
 
     verify(internalTaskanaEngineMock, times(2)).openConnection();
     verify(workbasketServiceSpy, times(1)).getWorkbasket(wb.getId());
@@ -207,15 +207,14 @@ class WorkbasketServiceImplTest {
     oldWb.setModified(expectedModifiedTimestamp);
     workbasketImplToUpdate.setModified(expectedModifiedTimestamp);
 
-    assertThatCode(
-        () -> workbasketServiceSpy.checkModifiedHasNotChanged(oldWb, workbasketImplToUpdate))
-        .doesNotThrowAnyException();
+    ThrowingCallable call =
+        () -> workbasketServiceSpy.checkModifiedHasNotChanged(oldWb, workbasketImplToUpdate);
+    assertThatCode(call).doesNotThrowAnyException();
 
     workbasketImplToUpdate.setModified(expectedModifiedTimestamp.minus(1, ChronoUnit.HOURS));
 
-    assertThatExceptionOfType(ConcurrencyException.class)
-        .isThrownBy(
-            () -> workbasketServiceSpy.checkModifiedHasNotChanged(oldWb, workbasketImplToUpdate));
+    call = () -> workbasketServiceSpy.checkModifiedHasNotChanged(oldWb, workbasketImplToUpdate);
+    assertThatThrownBy(call).isInstanceOf(ConcurrencyException.class);
   }
 
   private WorkbasketImpl createTestWorkbasket(String id, String key) {

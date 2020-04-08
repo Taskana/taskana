@@ -217,13 +217,13 @@ class TaskResourceAssemberTest {
 
   private void testEqualityAttachements(
       List<Attachment> attachments, List<AttachmentResource> resources) {
-    assertThat(resources).hasSize(attachments.size());
-    for (int i = 0; i < resources.size(); i++) {
-      AttachmentResource resource = resources.get(i);
-      Attachment attachment = attachments.get(i);
-      // Anything else should be be tested in AttachementResourceAssemblerTest
-      assertThat(resource.getAttachmentId()).isEqualTo(attachment.getId());
-    }
+    String[] objects = attachments.stream().map(Attachment::getId).toArray(String[]::new);
+
+    // Anything else should be be tested in AttachementResourceAssemblerTest
+    assertThat(resources)
+        .hasSize(attachments.size())
+        .extracting(AttachmentResource::getAttachmentId)
+        .containsOnly(objects);
   }
 
   private void testLinks(TaskResource resource) {

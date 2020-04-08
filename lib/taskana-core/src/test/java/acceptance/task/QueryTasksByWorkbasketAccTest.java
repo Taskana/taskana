@@ -1,13 +1,13 @@
 package acceptance.task;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -40,7 +40,7 @@ class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
             .createTaskQuery()
             .workbasketKeyDomainIn(workbasketIdentifiers.toArray(new KeyDomain[0]))
             .list();
-    assertThat(results.size(), equalTo(52));
+    assertThat(results).hasSize(52);
 
     String[] ids =
         results.stream()
@@ -49,7 +49,7 @@ class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
             .toArray(new String[0]);
 
     List<TaskSummary> result2 = taskService.createTaskQuery().workbasketIdIn(ids).list();
-    assertThat(result2.size(), equalTo(52));
+    assertThat(result2).hasSize(52);
   }
 
   @WithAccessId(
@@ -59,13 +59,14 @@ class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
   void testThrowsExceptionIfNoOpenerPermissionOnQueriedWorkbasket() {
     TaskService taskService = taskanaEngine.getTaskService();
 
-    Assertions.assertThrows(
-        NotAuthorizedToQueryWorkbasketException.class,
-        () ->
-            taskService
-                .createTaskQuery()
-                .workbasketKeyDomainIn(new KeyDomain("USER_2_1", "DOMAIN_A"))
-                .list());
+    ThrowingCallable call =
+        () -> {
+          taskService
+              .createTaskQuery()
+              .workbasketKeyDomainIn(new KeyDomain("USER_2_1", "DOMAIN_A"))
+              .list();
+        };
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedToQueryWorkbasketException.class);
   }
 
   @WithAccessId(
@@ -74,13 +75,14 @@ class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
   @Test
   void testThrowsExceptionIfNoOpenerPermissionOnAtLeastOneQueriedWorkbasket() {
     TaskService taskService = taskanaEngine.getTaskService();
-    Assertions.assertThrows(
-        NotAuthorizedToQueryWorkbasketException.class,
-        () ->
-            taskService
-                .createTaskQuery()
-                .workbasketKeyDomainIn(
-                    new KeyDomain("USER_1_1", "DOMAIN_A"), new KeyDomain("USER_2_1", "DOMAIN_A"))
-                .list());
+    ThrowingCallable call =
+        () -> {
+          taskService
+              .createTaskQuery()
+              .workbasketKeyDomainIn(
+                  new KeyDomain("USER_1_1", "DOMAIN_A"), new KeyDomain("USER_2_1", "DOMAIN_A"))
+              .list();
+        };
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedToQueryWorkbasketException.class);
   }
 }

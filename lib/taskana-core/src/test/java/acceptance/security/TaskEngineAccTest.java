@@ -1,10 +1,10 @@
 package acceptance.security;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -24,11 +24,13 @@ class TaskEngineAccTest extends AbstractAccTest {
 
   @Test
   void testUnauthenticated() {
-    assertFalse(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN));
-    assertFalse(taskanaEngine.isUserInRole(TaskanaRole.ADMIN));
-    Assertions.assertThrows(
-        NotAuthorizedException.class,
-        () -> taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN));
+    assertThat(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN)).isFalse();
+    assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isFalse();
+    ThrowingCallable call =
+        () -> {
+          taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN);
+        };
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(
@@ -36,27 +38,29 @@ class TaskEngineAccTest extends AbstractAccTest {
       groupNames = {"businessadmin"})
   @Test
   void testRunAsAdminIsOnlyTemporary() throws NoSuchFieldException, IllegalAccessException {
-    assertTrue(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN));
-    assertFalse(taskanaEngine.isUserInRole(TaskanaRole.ADMIN));
+    assertThat(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN)).isTrue();
+    assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isFalse();
 
     new TaskanaEngineProxyForTest(taskanaEngine)
         .getEngine()
         .runAsAdmin(
             () -> {
-              assertTrue(taskanaEngine.isUserInRole(TaskanaRole.ADMIN));
+              assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isTrue();
               return true;
             });
-    assertFalse(taskanaEngine.isUserInRole(TaskanaRole.ADMIN));
+    assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isFalse();
   }
 
   @WithAccessId(userName = "user_1_1") // , groupNames = {"businessadmin"})
   @Test
   void testUser() throws NotAuthorizedException {
-    assertFalse(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN));
-    assertFalse(taskanaEngine.isUserInRole(TaskanaRole.ADMIN));
-    Assertions.assertThrows(
-        NotAuthorizedException.class,
-        () -> taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN));
+    assertThat(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN)).isFalse();
+    assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isFalse();
+    ThrowingCallable call =
+        () -> {
+          taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN);
+        };
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(
@@ -64,8 +68,8 @@ class TaskEngineAccTest extends AbstractAccTest {
       groupNames = {"businessadmin"})
   @Test
   void testBusinessAdmin() throws NotAuthorizedException {
-    assertTrue(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN));
-    assertFalse(taskanaEngine.isUserInRole(TaskanaRole.ADMIN));
+    assertThat(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN)).isTrue();
+    assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isFalse();
     taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN);
   }
 
@@ -74,8 +78,8 @@ class TaskEngineAccTest extends AbstractAccTest {
       groupNames = {"admin"})
   @Test
   void testAdmin() throws NotAuthorizedException {
-    assertFalse(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN));
-    assertTrue(taskanaEngine.isUserInRole(TaskanaRole.ADMIN));
+    assertThat(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN)).isFalse();
+    assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isTrue();
     taskanaEngine.checkRoleMembership(TaskanaRole.ADMIN);
   }
 }

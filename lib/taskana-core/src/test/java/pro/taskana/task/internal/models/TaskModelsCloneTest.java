@@ -1,4 +1,4 @@
-package pro.taskana.task.api.models;
+package pro.taskana.task.internal.models;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static pro.taskana.task.internal.CreateTaskModelHelper.createAttachment;
@@ -12,11 +12,9 @@ import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
-import pro.taskana.task.internal.models.AttachmentImpl;
-import pro.taskana.task.internal.models.AttachmentSummaryImpl;
-import pro.taskana.task.internal.models.TaskCommentImpl;
-import pro.taskana.task.internal.models.TaskImpl;
-import pro.taskana.task.internal.models.TaskSummaryImpl;
+import pro.taskana.task.api.models.Attachment;
+import pro.taskana.task.api.models.AttachmentSummary;
+import pro.taskana.task.api.models.ObjectReference;
 
 class TaskModelsCloneTest {
 

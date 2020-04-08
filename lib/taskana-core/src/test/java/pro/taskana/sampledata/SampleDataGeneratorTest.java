@@ -1,7 +1,9 @@
 package pro.taskana.sampledata;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import pro.taskana.common.internal.configuration.DbSchemaCreator;
@@ -15,20 +17,23 @@ class SampleDataGeneratorTest {
   @Test
   void getScriptsValidSql() {
     PooledDataSource pooledDataSource = new PooledDataSource("org.h2.Driver", JDBC_URL, "sa", "sa");
-    Assertions.assertDoesNotThrow(() -> new DbSchemaCreator(pooledDataSource, "TASKANA").run());
-    Assertions.assertDoesNotThrow(
-        () -> new SampleDataGenerator(pooledDataSource, "TASKANA").generateSampleData());
+    assertThatCode(() -> new DbSchemaCreator(pooledDataSource, "TASKANA").run())
+        .doesNotThrowAnyException();
+    assertThatCode(() -> new SampleDataGenerator(pooledDataSource, "TASKANA").generateSampleData())
+        .doesNotThrowAnyException();
+
     pooledDataSource.forceCloseAll();
   }
 
   @Test
   void tableExists() {
     PooledDataSource pooledDataSource = new PooledDataSource("org.h2.Driver", JDBC_URL, "sa", "sa");
-    Assertions.assertDoesNotThrow(() -> new DbSchemaCreator(pooledDataSource, "TASKANA").run());
+    assertThatCode(() -> new DbSchemaCreator(pooledDataSource, "TASKANA").run())
+        .doesNotThrowAnyException();
 
     SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(pooledDataSource, "TASKANA");
-    Assertions.assertTrue(sampleDataGenerator.tableExists("TASK"));
-    Assertions.assertFalse(sampleDataGenerator.tableExists("TASKRANDOM"));
+    assertThat(sampleDataGenerator.tableExists("TASK")).isTrue();
+    assertThat(sampleDataGenerator.tableExists("TASKRANDOM")).isFalse();
     pooledDataSource.forceCloseAll();
   }
 }

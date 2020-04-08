@@ -1,14 +1,11 @@
 package acceptance.task;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.time.Instant;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -45,15 +42,13 @@ class CompleteTaskAccTest extends AbstractAccTest {
           NotAuthorizedException {
     TaskService taskService = taskanaEngine.getTaskService();
 
-    assertEquals(
-        TaskState.CLAIMED,
-        taskService.getTask("TKI:000000000000000000000000000000000001").getState());
-
+    assertThat(taskService.getTask("TKI:000000000000000000000000000000000001").getState())
+        .isEqualTo(TaskState.CLAIMED);
     Task completedTask = taskService.completeTask("TKI:000000000000000000000000000000000001");
-    assertNotNull(completedTask);
-    assertNotNull(completedTask.getCompleted());
-    assertEquals(TaskState.COMPLETED, completedTask.getState());
-    assertNotEquals(completedTask.getCreated(), completedTask.getModified());
+    assertThat(completedTask).isNotNull();
+    assertThat(completedTask.getCompleted()).isNotNull();
+    assertThat(completedTask.getState()).isEqualTo(TaskState.COMPLETED);
+    assertThat(completedTask.getModified()).isNotEqualTo(completedTask.getCreated());
   }
 
   @WithAccessId(
@@ -66,7 +61,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
     Task completedTask = taskService.completeTask("TKI:000000000000000000000000000000000002");
     Task completedTask2 = taskService.completeTask("TKI:000000000000000000000000000000000002");
-    assertEquals(completedTask, completedTask2);
+    assertThat(completedTask2).isEqualTo(completedTask);
   }
 
   @WithAccessId(
@@ -91,10 +86,10 @@ class CompleteTaskAccTest extends AbstractAccTest {
     Task createdTask = taskService.createTask(newTaskImpl);
     Task completedTask = taskService.forceCompleteTask(createdTask.getId());
 
-    assertEquals(TaskState.COMPLETED, completedTask.getState());
-    assertNotNull(completedTask.getCompleted());
-    assertTrue(isBeforeOrEqual(completedTask.getCreated(), completedTask.getModified()));
-    assertEquals(completedTask.getModified(), completedTask.getCompleted());
+    assertThat(completedTask.getState()).isEqualTo(TaskState.COMPLETED);
+    assertThat(completedTask.getCompleted()).isNotNull();
+    assertThat(isBeforeOrEqual(completedTask.getCreated(), completedTask.getModified())).isTrue();
+    assertThat(completedTask.getCompleted()).isEqualTo(completedTask.getModified());
   }
 
   @WithAccessId(
@@ -118,10 +113,10 @@ class CompleteTaskAccTest extends AbstractAccTest {
     Task createdTask = taskService.createTask(newTaskImpl);
     Task completedTask = taskService.forceCompleteTask(createdTask.getId());
 
-    assertEquals(TaskState.COMPLETED, completedTask.getState());
-    assertNotNull(completedTask.getCompleted());
-    assertTrue(isBeforeOrEqual(completedTask.getCreated(), completedTask.getModified()));
-    assertEquals(completedTask.getModified(), completedTask.getCompleted());
+    assertThat(completedTask.getState()).isEqualTo(TaskState.COMPLETED);
+    assertThat(completedTask.getCompleted()).isNotNull();
+    assertThat(isBeforeOrEqual(completedTask.getCreated(), completedTask.getModified())).isTrue();
+    assertThat(completedTask.getCompleted()).isEqualTo(completedTask.getModified());
   }
 
   @WithAccessId(
@@ -131,21 +126,29 @@ class CompleteTaskAccTest extends AbstractAccTest {
   void testCompleteTaskThrowsErrors() {
     TaskService taskService = taskanaEngine.getTaskService();
 
-    Assertions.assertThrows(
-        TaskNotFoundException.class,
-        () -> taskService.completeTask("TKI:0000000000000000000000000000000000xx"));
+    ThrowingCallable call =
+        () -> {
+          taskService.completeTask("TKI:0000000000000000000000000000000000xx");
+        };
+    assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
 
-    Assertions.assertThrows(
-        NotAuthorizedException.class,
-        () -> taskService.completeTask("TKI:000000000000000000000000000000000004"));
+    call =
+        () -> {
+          taskService.completeTask("TKI:000000000000000000000000000000000004");
+        };
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
 
-    Assertions.assertThrows(
-        InvalidStateException.class,
-        () -> taskService.completeTask("TKI:000000000000000000000000000000000025"));
+    call =
+        () -> {
+          taskService.completeTask("TKI:000000000000000000000000000000000025");
+        };
+    assertThatThrownBy(call).isInstanceOf(InvalidStateException.class);
 
-    Assertions.assertThrows(
-        InvalidOwnerException.class,
-        () -> taskService.completeTask("TKI:000000000000000000000000000000000027"));
+    call =
+        () -> {
+          taskService.completeTask("TKI:000000000000000000000000000000000027");
+        };
+    assertThatThrownBy(call).isInstanceOf(InvalidOwnerException.class);
   }
 
   @WithAccessId(
@@ -165,19 +168,19 @@ class CompleteTaskAccTest extends AbstractAccTest {
     newTask.setOwner(null);
     Task createdTask = taskService.createTask(newTask);
 
-    assertNotNull(createdTask);
-    assertNull(createdTask.getClaimed());
+    assertThat(createdTask).isNotNull();
+    assertThat(createdTask.getClaimed()).isNull();
 
     final Instant before = createdTask.getCreated();
     Task claimedTask = taskService.claim(createdTask.getId());
 
-    assertNotNull(claimedTask.getOwner());
-    assertEquals(claimedTask.getOwner(), CurrentUserContext.getUserid());
-    assertNotNull(claimedTask.getClaimed());
-    assertTrue(isBeforeOrEqual(before, claimedTask.getClaimed()));
-    assertTrue(isBeforeOrEqual(claimedTask.getCreated(), claimedTask.getClaimed()));
-    assertTrue(isBeforeOrEqual(claimedTask.getClaimed(), Instant.now()));
-    assertEquals(claimedTask.getClaimed(), claimedTask.getModified());
+    assertThat(claimedTask.getOwner()).isNotNull();
+    assertThat(CurrentUserContext.getUserid()).isEqualTo(claimedTask.getOwner());
+    assertThat(claimedTask.getClaimed()).isNotNull();
+    assertThat(isBeforeOrEqual(before, claimedTask.getClaimed())).isTrue();
+    assertThat(isBeforeOrEqual(claimedTask.getCreated(), claimedTask.getClaimed())).isTrue();
+    assertThat(isBeforeOrEqual(claimedTask.getClaimed(), Instant.now())).isTrue();
+    assertThat(claimedTask.getModified()).isEqualTo(claimedTask.getClaimed());
   }
 
   @WithAccessId(
@@ -197,19 +200,19 @@ class CompleteTaskAccTest extends AbstractAccTest {
     newTask.setOwner("other_user");
     Task createdTask = taskService.createTask(newTask);
 
-    assertNotNull(createdTask);
-    assertEquals(createdTask.getOwner(), "other_user");
+    assertThat(createdTask).isNotNull();
+    assertThat("other_user").isEqualTo(createdTask.getOwner());
 
     Instant beforeForceClaim = Instant.now();
     Task taskAfterClaim = taskService.forceClaim(createdTask.getId());
 
-    assertEquals(CurrentUserContext.getUserid(), taskAfterClaim.getOwner());
-    assertTrue(isBeforeOrEqual(beforeForceClaim, taskAfterClaim.getModified()));
-    assertTrue(isBeforeOrEqual(beforeForceClaim, taskAfterClaim.getClaimed()));
-    assertTrue(isBeforeOrEqual(taskAfterClaim.getCreated(), taskAfterClaim.getModified()));
+    assertThat(taskAfterClaim.getOwner()).isEqualTo(CurrentUserContext.getUserid());
+    assertThat(isBeforeOrEqual(beforeForceClaim, taskAfterClaim.getModified())).isTrue();
+    assertThat(isBeforeOrEqual(beforeForceClaim, taskAfterClaim.getClaimed())).isTrue();
+    assertThat(isBeforeOrEqual(taskAfterClaim.getCreated(), taskAfterClaim.getModified())).isTrue();
 
-    assertEquals(TaskState.CLAIMED, taskAfterClaim.getState());
-    assertTrue(taskAfterClaim.isRead());
+    assertThat(taskAfterClaim.getState()).isEqualTo(TaskState.CLAIMED);
+    assertThat(taskAfterClaim.isRead()).isTrue();
   }
 
   @WithAccessId(
@@ -219,7 +222,11 @@ class CompleteTaskAccTest extends AbstractAccTest {
   void testClaimTaskNotExisting() {
 
     TaskService taskService = taskanaEngine.getTaskService();
-    Assertions.assertThrows(TaskNotFoundException.class, () -> taskService.claim("NOT_EXISTING"));
+    ThrowingCallable call =
+        () -> {
+          taskService.claim("NOT_EXISTING");
+        };
+    assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
   }
 
   @WithAccessId(
@@ -229,9 +236,11 @@ class CompleteTaskAccTest extends AbstractAccTest {
   void testClaimTaskWithInvalidState() {
 
     TaskService taskService = taskanaEngine.getTaskService();
-    Assertions.assertThrows(
-        InvalidStateException.class,
-        () -> taskService.forceClaim("TKI:000000000000000000000000000000000036"));
+    ThrowingCallable call =
+        () -> {
+          taskService.forceClaim("TKI:000000000000000000000000000000000036");
+        };
+    assertThatThrownBy(call).isInstanceOf(InvalidStateException.class);
   }
 
   @WithAccessId(
@@ -241,9 +250,11 @@ class CompleteTaskAccTest extends AbstractAccTest {
   void testClaimTaskWithInvalidOwner() {
 
     TaskService taskService = taskanaEngine.getTaskService();
-    Assertions.assertThrows(
-        InvalidOwnerException.class,
-        () -> taskService.claim("TKI:000000000000000000000000000000000100"));
+    ThrowingCallable call =
+        () -> {
+          taskService.claim("TKI:000000000000000000000000000000000100");
+        };
+    assertThatThrownBy(call).isInstanceOf(InvalidOwnerException.class);
   }
 
   @WithAccessId(
@@ -253,9 +264,11 @@ class CompleteTaskAccTest extends AbstractAccTest {
   void testCancelClaimForcedWithInvalidState() {
 
     TaskService taskService = taskanaEngine.getTaskService();
-    Assertions.assertThrows(
-        InvalidStateException.class,
-        () -> taskService.forceCancelClaim("TKI:000000000000000000000000000000000036"));
+    ThrowingCallable call =
+        () -> {
+          taskService.forceCancelClaim("TKI:000000000000000000000000000000000036");
+        };
+    assertThatThrownBy(call).isInstanceOf(InvalidStateException.class);
   }
 
   @WithAccessId(
@@ -274,13 +287,13 @@ class CompleteTaskAccTest extends AbstractAccTest {
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
     Task createdTask = taskService.createTask(newTask);
 
-    assertNotNull(createdTask);
-    assertEquals(createdTask.getState(), TaskState.READY);
+    assertThat(createdTask).isNotNull();
+    assertThat(TaskState.READY).isEqualTo(createdTask.getState());
 
     createdTask = taskService.cancelClaim(createdTask.getId());
 
-    assertNotNull(createdTask);
-    assertEquals(createdTask.getState(), TaskState.READY);
+    assertThat(createdTask).isNotNull();
+    assertThat(TaskState.READY).isEqualTo(createdTask.getState());
   }
 
   @WithAccessId(
@@ -294,19 +307,19 @@ class CompleteTaskAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
     Task taskBefore = taskService.getTask("TKI:000000000000000000000000000000000043");
 
-    assertNotNull(taskBefore);
-    assertEquals(TaskState.CLAIMED, taskBefore.getState());
+    assertThat(taskBefore).isNotNull();
+    assertThat(taskBefore.getState()).isEqualTo(TaskState.CLAIMED);
 
     final Instant before = Instant.now();
     Thread.sleep(1);
     Task taskAfter = taskService.forceCancelClaim("TKI:000000000000000000000000000000000043");
 
-    assertNotNull(taskAfter);
-    assertEquals(TaskState.READY, taskAfter.getState());
-    assertNull(taskAfter.getClaimed());
-    assertTrue(taskAfter.getModified().isAfter(before));
-    assertNull(taskAfter.getOwner());
-    assertTrue(taskAfter.isRead());
+    assertThat(taskAfter).isNotNull();
+    assertThat(taskAfter.getState()).isEqualTo(TaskState.READY);
+    assertThat(taskAfter.getClaimed()).isNull();
+    assertThat(taskAfter.getModified().isAfter(before)).isTrue();
+    assertThat(taskAfter.getOwner()).isNull();
+    assertThat(taskAfter.isRead()).isTrue();
   }
 
   @WithAccessId(
@@ -316,9 +329,11 @@ class CompleteTaskAccTest extends AbstractAccTest {
   void testCancelClaimWithInvalidOwner() {
 
     TaskService taskService = taskanaEngine.getTaskService();
-    Assertions.assertThrows(
-        InvalidOwnerException.class,
-        () -> taskService.cancelClaim("TKI:000000000000000000000000000000000100"));
+    ThrowingCallable call =
+        () -> {
+          taskService.cancelClaim("TKI:000000000000000000000000000000000100");
+        };
+    assertThatThrownBy(call).isInstanceOf(InvalidOwnerException.class);
   }
 
   private boolean isBeforeOrEqual(Instant before, Instant after) {

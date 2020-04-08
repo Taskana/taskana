@@ -1,14 +1,17 @@
 package acceptance.config;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
-import org.h2.store.fs.FileUtils;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaRole;
@@ -22,6 +25,8 @@ import pro.taskana.common.internal.TaskanaEngineTestConfiguration;
  */
 class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
 
+  @TempDir Path tempDir;
+
   TaskanaRoleConfigAccTest() throws SQLException {
     super(
         new TaskanaEngineConfiguration(
@@ -33,118 +38,83 @@ class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
   @Test
   void testStandardConfig() {
     Set<TaskanaRole> rolesConfigured = getConfiguration().getRoleMap().keySet();
-    assertTrue(rolesConfigured.contains(TaskanaRole.ADMIN));
-    assertTrue(rolesConfigured.contains(TaskanaRole.BUSINESS_ADMIN));
-    assertTrue(rolesConfigured.contains(TaskanaRole.USER));
+    assertThat(rolesConfigured).containsOnly(TaskanaRole.values());
 
     Set<String> users = getConfiguration().getRoleMap().get(TaskanaRole.USER);
-    assertTrue(users.contains("user_1_1"));
-    assertTrue(users.contains("user_1_2"));
+    assertThat(users).contains("user_1_1", "user_1_2");
 
     Set<String> admins = getConfiguration().getRoleMap().get(TaskanaRole.ADMIN);
-    assertTrue(admins.contains("name=konrad,organisation=novatec"));
-    assertTrue(admins.contains("admin"));
+    assertThat(admins).contains("name=konrad,organisation=novatec", "admin");
 
     Set<String> businessAdmins = getConfiguration().getRoleMap().get(TaskanaRole.BUSINESS_ADMIN);
-    assertTrue(businessAdmins.contains("max"));
-    assertTrue(businessAdmins.contains("moritz"));
+    assertThat(businessAdmins).contains("max", "moritz");
 
     Set<String> monitorAccessIds = getConfiguration().getRoleMap().get(TaskanaRole.MONITOR);
-    assertTrue(monitorAccessIds.contains("john"));
-    assertTrue(monitorAccessIds.contains("teamlead_2"));
-    assertTrue(monitorAccessIds.contains("monitor"));
+    assertThat(monitorAccessIds).contains("teamlead_2", "monitor");
   }
 
   @Test
   void testOtherConfigFileSameDelimiter() throws IOException {
-    String propertiesFileName = createNewConfigFileWithSameDelimiter("/dummyTestConfig.properties");
-    try {
-      getConfiguration().initTaskanaProperties(propertiesFileName, "|");
+    String propertiesFileName = createNewConfigFileWithSameDelimiter("dummyTestConfig.properties");
+    getConfiguration().initTaskanaProperties(propertiesFileName, "|");
 
-      Set<TaskanaRole> rolesConfigured = getConfiguration().getRoleMap().keySet();
-      assertTrue(rolesConfigured.contains(TaskanaRole.ADMIN));
-      assertTrue(rolesConfigured.contains(TaskanaRole.BUSINESS_ADMIN));
-      assertTrue(rolesConfigured.contains(TaskanaRole.USER));
+    Set<TaskanaRole> rolesConfigured = getConfiguration().getRoleMap().keySet();
+    assertThat(rolesConfigured).containsOnly(TaskanaRole.values());
 
-      Set<String> users = getConfiguration().getRoleMap().get(TaskanaRole.USER);
-      assertTrue(users.contains("nobody"));
+    Set<String> users = getConfiguration().getRoleMap().get(TaskanaRole.USER);
+    assertThat(users).containsOnly("nobody");
 
-      Set<String> admins = getConfiguration().getRoleMap().get(TaskanaRole.ADMIN);
-      assertTrue(admins.contains("holger"));
-      assertTrue(admins.contains("stefan"));
+    Set<String> admins = getConfiguration().getRoleMap().get(TaskanaRole.ADMIN);
+    assertThat(admins).containsOnly("holger", "stefan");
 
-      Set<String> businessAdmins = getConfiguration().getRoleMap().get(TaskanaRole.BUSINESS_ADMIN);
-      assertTrue(businessAdmins.contains("ebe"));
-      assertTrue(businessAdmins.contains("konstantin"));
-    } finally {
-      deleteFile(propertiesFileName);
-    }
+    Set<String> businessAdmins = getConfiguration().getRoleMap().get(TaskanaRole.BUSINESS_ADMIN);
+    assertThat(businessAdmins).containsOnly("ebe", "konstantin");
   }
 
   @Test
   void testOtherConfigFileDifferentDelimiter() throws IOException {
     String delimiter = ";";
     String propertiesFileName =
-        createNewConfigFileWithDifferentDelimiter("/dummyTestConfig.properties", delimiter);
-    try {
-      getConfiguration().initTaskanaProperties(propertiesFileName, delimiter);
+        createNewConfigFileWithDifferentDelimiter("dummyTestConfig.properties", delimiter);
+    getConfiguration().initTaskanaProperties(propertiesFileName, delimiter);
 
-      Set<TaskanaRole> rolesConfigured = getConfiguration().getRoleMap().keySet();
-      assertTrue(rolesConfigured.contains(TaskanaRole.ADMIN));
-      assertTrue(rolesConfigured.contains(TaskanaRole.BUSINESS_ADMIN));
-      assertTrue(rolesConfigured.contains(TaskanaRole.USER));
+    Set<TaskanaRole> rolesConfigured = getConfiguration().getRoleMap().keySet();
+    assertThat(rolesConfigured).containsOnly(TaskanaRole.values());
 
-      Set<String> users = getConfiguration().getRoleMap().get(TaskanaRole.USER);
-      assertTrue(users.isEmpty());
+    Set<String> users = getConfiguration().getRoleMap().get(TaskanaRole.USER);
+    assertThat(users).isEmpty();
 
-      Set<String> admins = getConfiguration().getRoleMap().get(TaskanaRole.ADMIN);
-      assertTrue(admins.contains("holger"));
-      assertTrue(admins.contains("name=stefan,organisation=novatec"));
+    Set<String> admins = getConfiguration().getRoleMap().get(TaskanaRole.ADMIN);
+    assertThat(admins).containsOnly("holger", "name=stefan,organisation=novatec");
 
-      Set<String> businessAdmins = getConfiguration().getRoleMap().get(TaskanaRole.BUSINESS_ADMIN);
-      assertTrue(businessAdmins.contains("name=ebe, ou = bpm"));
-      assertTrue(businessAdmins.contains("konstantin"));
-    } finally {
-      deleteFile(propertiesFileName);
-    }
+    Set<String> businessAdmins = getConfiguration().getRoleMap().get(TaskanaRole.BUSINESS_ADMIN);
+    assertThat(businessAdmins).containsOnly("name=ebe, ou = bpm", "konstantin");
   }
 
   private String createNewConfigFileWithDifferentDelimiter(String filename, String delimiter)
       throws IOException {
-    String userHomeDirectroy = System.getProperty("user.home");
-    String propertiesFileName = userHomeDirectroy + filename;
-    File f = new File(propertiesFileName);
-    if (!f.exists()) {
-      try (PrintWriter writer = new PrintWriter(propertiesFileName, "UTF-8")) {
-        writer.println(
-            "taskana.roles.Admin =hOlGeR " + delimiter + "name=Stefan,Organisation=novatec");
-        writer.println(
-            "  taskana.roles.businessadmin  = name=ebe, ou = bpm " + delimiter + " konstantin ");
-        writer.println(" taskana.roles.user = ");
-      }
-    }
-    return propertiesFileName;
-  }
+    Path file = Files.createFile(tempDir.resolve(filename));
+    List<String> lines =
+        Arrays.asList(
+            "taskana.roles.Admin =hOlGeR " + delimiter + "name=Stefan,Organisation=novatec",
+            "  taskana.roles.businessadmin  = name=ebe, ou = bpm " + delimiter + " konstantin ",
+            " taskana.roles.user = ");
 
-  private void deleteFile(String propertiesFileName) {
-    System.out.println("about to delete " + propertiesFileName);
-    File f = new File(propertiesFileName);
-    if (f.exists() && !f.isDirectory()) {
-      FileUtils.delete(propertiesFileName);
-    }
+    Files.write(file, lines, StandardCharsets.UTF_8);
+
+    return file.toString();
   }
 
   private String createNewConfigFileWithSameDelimiter(String filename) throws IOException {
-    String userHomeDirectroy = System.getProperty("user.home");
-    String propertiesFileName = userHomeDirectroy + filename;
-    File f = new File(propertiesFileName);
-    if (!f.exists()) {
-      try (PrintWriter writer = new PrintWriter(propertiesFileName, "UTF-8")) {
-        writer.println("taskana.roles.Admin =hOlGeR|Stefan");
-        writer.println("  taskana.roles.businessadmin  = ebe  | konstantin ");
-        writer.println(" taskana.roles.user = nobody");
-      }
-    }
-    return propertiesFileName;
+    Path file = Files.createFile(tempDir.resolve(filename));
+    List<String> lines =
+        Arrays.asList(
+            "taskana.roles.Admin =hOlGeR|Stefan",
+            "  taskana.roles.businessadmin  = ebe  | konstantin ",
+            " taskana.roles.user = nobody");
+
+    Files.write(file, lines, StandardCharsets.UTF_8);
+
+    return file.toString();
   }
 }

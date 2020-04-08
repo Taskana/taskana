@@ -1,7 +1,6 @@
 package acceptance.objectreference;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
 import java.util.List;
@@ -38,28 +37,28 @@ class QueryObjectreferencesWithPaginationAccTest extends AbstractAccTest {
   void testGetFirstPageOfObjectRefQueryWithOffset() {
 
     List<ObjectReference> results = objRefQuery.list(0, 5);
-    assertThat(results.size(), equalTo(3));
+    assertThat(results).hasSize(3);
   }
 
   @Test
   void testGetSecondPageOfObjectRefQueryWithOffset() {
     List<ObjectReference> results = objRefQuery.list(2, 5);
-    assertThat(results.size(), equalTo(1));
+    assertThat(results).hasSize(1);
   }
 
   @Test
   void testListOffsetAndLimitOutOfBounds() {
     // both will be 0, working
     List<ObjectReference> results = objRefQuery.list(-1, -3);
-    assertThat(results.size(), equalTo(0));
+    assertThat(results).isEmpty();
 
     // limit will be 0
     results = objRefQuery.list(1, -3);
-    assertThat(results.size(), equalTo(0));
+    assertThat(results).isEmpty();
 
     // offset will be 0
     results = objRefQuery.list(-1, 3);
-    assertThat(results.size(), equalTo(3));
+    assertThat(results).hasSize(3);
   }
 
   @Test
@@ -68,25 +67,25 @@ class QueryObjectreferencesWithPaginationAccTest extends AbstractAccTest {
     int pageNumber = 1;
     int pageSize = 10;
     List<ObjectReference> results = objRefQuery.listPage(pageNumber, pageSize);
-    assertThat(results.size(), equalTo(3));
+    assertThat(results).hasSize(3);
 
     // Getting full page
     pageNumber = 2;
     pageSize = 2;
     results = objRefQuery.listPage(pageNumber, pageSize);
-    assertThat(results.size(), equalTo(1));
+    assertThat(results).hasSize(1);
 
     // Getting last results on 1 big page
     pageNumber = 1;
     pageSize = 100;
     results = objRefQuery.listPage(pageNumber, pageSize);
-    assertThat(results.size(), equalTo(3));
+    assertThat(results).hasSize(3);
 
     // Getting last results on multiple pages
     pageNumber = 2;
     pageSize = 2;
     results = objRefQuery.listPage(pageNumber, pageSize);
-    assertThat(results.size(), equalTo(1));
+    assertThat(results).hasSize(1);
   }
 
   @Test
@@ -95,24 +94,24 @@ class QueryObjectreferencesWithPaginationAccTest extends AbstractAccTest {
     int pageNumber = 2;
     int pageSize = 0;
     List<ObjectReference> results = objRefQuery.listPage(pageNumber, pageSize);
-    assertThat(results.size(), equalTo(0));
+    assertThat(results).isEmpty();
 
     // Negative will be 0 = all results
     pageNumber = 2;
     pageSize = -1;
     results = objRefQuery.listPage(pageNumber, pageSize);
-    assertThat(results.size(), equalTo(0));
+    assertThat(results).isEmpty();
 
     // Negative page = first page
     pageNumber = -1;
     pageSize = 10;
     results = objRefQuery.listPage(pageNumber, pageSize);
-    assertThat(results.size(), equalTo(3));
+    assertThat(results).hasSize(3);
   }
 
   @Test
   void testCountOfClassificationsQuery() {
     long count = objRefQuery.count();
-    assertThat(count, equalTo(3L));
+    assertThat(count).isEqualTo(3L);
   }
 }

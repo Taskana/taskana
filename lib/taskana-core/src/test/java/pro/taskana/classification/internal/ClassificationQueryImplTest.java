@@ -1,6 +1,6 @@
 package pro.taskana.classification.internal;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -43,7 +43,7 @@ class ClassificationQueryImplTest {
             .priorityIn(1, 2)
             .parentIdIn("superId")
             .list();
-    assertNotNull(result);
+    assertThat(result).isNotNull();
   }
 
   @Test
@@ -58,7 +58,7 @@ class ClassificationQueryImplTest {
             .priorityIn(1, 2)
             .parentIdIn("superId")
             .list(1, 1);
-    assertNotNull(result);
+    assertThat(result).isNotNull();
   }
 
   @Test
@@ -73,6 +73,6 @@ class ClassificationQueryImplTest {
             .priorityIn(1, 2)
             .parentIdIn("superId")
             .single();
-    assertNotNull(result);
+    assertThat(result).isNotNull();
   }
 }

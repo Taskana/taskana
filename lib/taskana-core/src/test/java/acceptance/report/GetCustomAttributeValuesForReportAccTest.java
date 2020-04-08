@@ -1,15 +1,14 @@
 package acceptance.report;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -26,13 +25,13 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
   @Test
   void testRoleCheck() {
     MonitorService monitorService = taskanaEngine.getMonitorService();
-
-    Assertions.assertThrows(
-        NotAuthorizedException.class,
-        () ->
-            monitorService
-                .createWorkbasketReportBuilder()
-                .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_2));
+    ThrowingCallable call =
+        () -> {
+          monitorService
+              .createWorkbasketReportBuilder()
+              .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_2);
+        };
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(userName = "monitor")
@@ -46,10 +45,7 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
             .workbasketIdIn(Collections.singletonList("WBI:000000000000000000000000000000000001"))
             .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_2);
 
-    assertNotNull(values);
-    assertEquals(2, values.size());
-    assertTrue(values.contains("Vollkasko"));
-    assertTrue(values.contains("Teilkasko"));
+    assertThat(values).containsOnly("Vollkasko", "Teilkasko");
   }
 
   @WithAccessId(userName = "monitor")
@@ -62,8 +58,7 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
             .createWorkbasketReportBuilder()
             .domainIn(Collections.singletonList("DOMAIN_A"))
             .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_16);
-    assertNotNull(values);
-    assertEquals(26, values.size());
+    assertThat(values).hasSize(26);
   }
 
   @WithAccessId(userName = "monitor")
@@ -81,8 +76,7 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
             .customAttributeFilterIn(customAttributeFilter)
             .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_16);
 
-    assertNotNull(values);
-    assertEquals(12, values.size());
+    assertThat(values).hasSize(12);
   }
 
   @WithAccessId(userName = "monitor")
@@ -90,10 +84,7 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
   void testGetCustomAttributeValuesForExcludedClassifications() throws NotAuthorizedException {
     MonitorService monitorService = taskanaEngine.getMonitorService();
 
-    List<String> domains = new ArrayList<>();
-    domains.add("DOMAIN_A");
-    domains.add("DOMAIN_B");
-    domains.add("DOMAIN_C");
+    List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
 
     List<String> values =
         monitorService
@@ -103,7 +94,6 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
                 Collections.singletonList("CLI:000000000000000000000000000000000003"))
             .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_16);
 
-    assertNotNull(values);
-    assertEquals(43, values.size());
+    assertThat(values).hasSize(43);
   }
 }

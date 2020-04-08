@@ -1,8 +1,7 @@
 package acceptance.task;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.util.ArrayList;
@@ -11,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -49,19 +48,21 @@ class CallbackStateAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
     TaskImpl createdTask = createTask(taskService, CallbackState.NONE);
     createdTask = (TaskImpl) taskService.getTask(createdTask.getId());
-    assertEquals(CallbackState.NONE, createdTask.getCallbackState());
+    assertThat(createdTask.getCallbackState()).isEqualTo(CallbackState.NONE);
 
     createdTask = createTask(taskService, CallbackState.CALLBACK_PROCESSING_REQUIRED);
     createdTask = (TaskImpl) taskService.getTask(createdTask.getId());
-    assertEquals(CallbackState.CALLBACK_PROCESSING_REQUIRED, createdTask.getCallbackState());
+    assertThat(createdTask.getCallbackState())
+        .isEqualTo(CallbackState.CALLBACK_PROCESSING_REQUIRED);
 
     createdTask = createTask(taskService, CallbackState.CALLBACK_PROCESSING_COMPLETED);
     createdTask = (TaskImpl) taskService.getTask(createdTask.getId());
-    assertEquals(CallbackState.CALLBACK_PROCESSING_COMPLETED, createdTask.getCallbackState());
+    assertThat(createdTask.getCallbackState())
+        .isEqualTo(CallbackState.CALLBACK_PROCESSING_COMPLETED);
 
     createdTask = createTask(taskService, CallbackState.CLAIMED);
     createdTask = (TaskImpl) taskService.getTask(createdTask.getId());
-    assertEquals(CallbackState.CLAIMED, createdTask.getCallbackState());
+    assertThat(createdTask.getCallbackState()).isEqualTo(CallbackState.CLAIMED);
   }
 
   @WithAccessId(
@@ -76,31 +77,41 @@ class CallbackStateAccTest extends AbstractAccTest {
 
     final TaskImpl createdTask =
         createTask(taskanaEngine.getTaskService(), CallbackState.CALLBACK_PROCESSING_REQUIRED);
-    assertEquals(CallbackState.CALLBACK_PROCESSING_REQUIRED, createdTask.getCallbackState());
+    assertThat(createdTask.getCallbackState())
+        .isEqualTo(CallbackState.CALLBACK_PROCESSING_REQUIRED);
 
-    assertEquals(TaskState.READY, createdTask.getState());
+    assertThat(createdTask.getState()).isEqualTo(TaskState.READY);
     String endOfMessage = " cannot be deleted because its callback is not yet processed";
 
-    Throwable t =
-        Assertions.assertThrows(
-            InvalidStateException.class, () -> taskService.forceDeleteTask(createdTask.getId()));
-    assertTrue(t.getMessage().endsWith(endOfMessage));
+    ThrowingCallable call =
+        () -> {
+          taskService.forceDeleteTask(createdTask.getId());
+        };
+    assertThatThrownBy(call)
+        .isInstanceOf(InvalidStateException.class)
+        .hasMessageEndingWith(endOfMessage);
 
     final TaskImpl createdTask2 = (TaskImpl) taskService.claim(createdTask.getId());
 
-    assertEquals(TaskState.CLAIMED, createdTask2.getState());
+    assertThat(createdTask2.getState()).isEqualTo(TaskState.CLAIMED);
 
-    Throwable t2 =
-        Assertions.assertThrows(
-            InvalidStateException.class, () -> taskService.forceDeleteTask(createdTask2.getId()));
-    assertTrue(t2.getMessage().endsWith(endOfMessage));
+    call =
+        () -> {
+          taskService.forceDeleteTask(createdTask2.getId());
+        };
+    assertThatThrownBy(call)
+        .isInstanceOf(InvalidStateException.class)
+        .hasMessageEndingWith(endOfMessage);
 
     final TaskImpl createdTask3 = (TaskImpl) taskService.completeTask(createdTask.getId());
 
-    Throwable t3 =
-        Assertions.assertThrows(
-            InvalidStateException.class, () -> taskService.forceDeleteTask(createdTask3.getId()));
-    assertTrue(t3.getMessage().endsWith(endOfMessage));
+    call =
+        () -> {
+          taskService.forceDeleteTask(createdTask3.getId());
+        };
+    assertThatThrownBy(call)
+        .isInstanceOf(InvalidStateException.class)
+        .hasMessageEndingWith(endOfMessage);
   }
 
   @WithAccessId(
@@ -114,24 +125,27 @@ class CallbackStateAccTest extends AbstractAccTest {
 
     TaskImpl createdTask1 =
         createTask(taskanaEngine.getTaskService(), CallbackState.CALLBACK_PROCESSING_REQUIRED);
-    assertEquals(CallbackState.CALLBACK_PROCESSING_REQUIRED, createdTask1.getCallbackState());
+    assertThat(createdTask1.getCallbackState())
+        .isEqualTo(CallbackState.CALLBACK_PROCESSING_REQUIRED);
 
     TaskImpl createdTask2 =
         createTask(taskanaEngine.getTaskService(), CallbackState.CALLBACK_PROCESSING_REQUIRED);
-    assertEquals(CallbackState.CALLBACK_PROCESSING_REQUIRED, createdTask2.getCallbackState());
+    assertThat(createdTask2.getCallbackState())
+        .isEqualTo(CallbackState.CALLBACK_PROCESSING_REQUIRED);
 
     TaskImpl createdTask3 =
         createTask(taskanaEngine.getTaskService(), CallbackState.CALLBACK_PROCESSING_REQUIRED);
-    assertEquals(CallbackState.CALLBACK_PROCESSING_REQUIRED, createdTask3.getCallbackState());
+    assertThat(createdTask3.getCallbackState())
+        .isEqualTo(CallbackState.CALLBACK_PROCESSING_REQUIRED);
 
     TaskService taskService = taskanaEngine.getTaskService();
     createdTask1 = (TaskImpl) taskService.forceCompleteTask(createdTask1.getId());
     createdTask2 = (TaskImpl) taskService.forceCompleteTask(createdTask2.getId());
     createdTask3 = (TaskImpl) taskService.forceCompleteTask(createdTask3.getId());
 
-    assertEquals(TaskState.COMPLETED, createdTask1.getState());
-    assertEquals(TaskState.COMPLETED, createdTask2.getState());
-    assertEquals(TaskState.COMPLETED, createdTask3.getState());
+    assertThat(createdTask1.getState()).isEqualTo(TaskState.COMPLETED);
+    assertThat(createdTask2.getState()).isEqualTo(TaskState.COMPLETED);
+    assertThat(createdTask3.getState()).isEqualTo(TaskState.COMPLETED);
 
     List<String> taskIds =
         new ArrayList<>(
@@ -139,14 +153,13 @@ class CallbackStateAccTest extends AbstractAccTest {
     // delete should fail because callback_state = CALLBACK_PROCESSING_REQUIRED
     BulkOperationResults<String, TaskanaException> bulkResult1 = taskService.deleteTasks(taskIds);
 
-    assertTrue(bulkResult1.containsErrors());
+    assertThat(bulkResult1.containsErrors()).isTrue();
     List<String> failedTaskIds = bulkResult1.getFailedIds();
 
-    assertEquals(3, failedTaskIds.size());
+    assertThat(failedTaskIds).hasSize(3);
     for (String taskId : failedTaskIds) {
       TaskanaException excpt = bulkResult1.getErrorForId(taskId);
-      assertEquals(
-          "pro.taskana.task.api.exceptions.InvalidStateException", excpt.getClass().getName());
+      assertThat(excpt.getClass().getName()).isEqualTo(InvalidStateException.class.getName());
     }
     List<String> externalIds =
         new ArrayList<>(
@@ -159,14 +172,14 @@ class CallbackStateAccTest extends AbstractAccTest {
     BulkOperationResults<String, TaskanaException> bulkResult2 =
         taskService.setCallbackStateForTasks(
             externalIds, CallbackState.CALLBACK_PROCESSING_COMPLETED);
-    assertFalse(bulkResult2.containsErrors());
+    assertThat(bulkResult2.containsErrors()).isFalse();
 
     taskIds =
         new ArrayList<>(
             Arrays.asList(createdTask1.getId(), createdTask2.getId(), createdTask3.getId()));
     // now it should be possible to delete the tasks
     BulkOperationResults<String, TaskanaException> bulkResult3 = taskService.deleteTasks(taskIds);
-    assertFalse(bulkResult3.containsErrors());
+    assertThat(bulkResult3.containsErrors()).isFalse();
   }
 
   @WithAccessId(
@@ -180,13 +193,15 @@ class CallbackStateAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
 
     TaskImpl createdTask1 = createTask(taskService, CallbackState.CALLBACK_PROCESSING_REQUIRED);
-    assertEquals(CallbackState.CALLBACK_PROCESSING_REQUIRED, createdTask1.getCallbackState());
+    assertThat(createdTask1.getCallbackState())
+        .isEqualTo(CallbackState.CALLBACK_PROCESSING_REQUIRED);
 
     TaskImpl createdTask2 = createTask(taskService, CallbackState.CLAIMED);
-    assertEquals(CallbackState.CLAIMED, createdTask2.getCallbackState());
+    assertThat(createdTask2.getCallbackState()).isEqualTo(CallbackState.CLAIMED);
 
     TaskImpl createdTask3 = createTask(taskService, CallbackState.CALLBACK_PROCESSING_COMPLETED);
-    assertEquals(CallbackState.CALLBACK_PROCESSING_COMPLETED, createdTask3.getCallbackState());
+    assertThat(createdTask3.getCallbackState())
+        .isEqualTo(CallbackState.CALLBACK_PROCESSING_COMPLETED);
 
     List<String> externalIds =
         new ArrayList<>(
@@ -200,9 +215,9 @@ class CallbackStateAccTest extends AbstractAccTest {
         taskService.setCallbackStateForTasks(externalIds, CallbackState.NONE);
 
     // It's never allowed to set CallbackState to NONE over public API
-    assertTrue(bulkResult.containsErrors());
+    assertThat(bulkResult.containsErrors()).isTrue();
     List<String> failedTaskIds = bulkResult.getFailedIds();
-    assertTrue(failedTaskIds.size() == 3);
+    assertThat(failedTaskIds).hasSize(3);
   }
 
   @WithAccessId(
@@ -217,13 +232,15 @@ class CallbackStateAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
 
     TaskImpl createdTask1 = createTask(taskService, CallbackState.CALLBACK_PROCESSING_REQUIRED);
-    assertEquals(CallbackState.CALLBACK_PROCESSING_REQUIRED, createdTask1.getCallbackState());
+    assertThat(createdTask1.getCallbackState())
+        .isEqualTo(CallbackState.CALLBACK_PROCESSING_REQUIRED);
 
     TaskImpl createdTask2 = createTask(taskService, CallbackState.CLAIMED);
-    assertEquals(CallbackState.CLAIMED, createdTask2.getCallbackState());
+    assertThat(createdTask2.getCallbackState()).isEqualTo(CallbackState.CLAIMED);
 
     TaskImpl createdTask3 = createTask(taskService, CallbackState.CALLBACK_PROCESSING_COMPLETED);
-    assertEquals(CallbackState.CALLBACK_PROCESSING_COMPLETED, createdTask3.getCallbackState());
+    assertThat(createdTask3.getCallbackState())
+        .isEqualTo(CallbackState.CALLBACK_PROCESSING_COMPLETED);
 
     List<String> externalIds =
         new ArrayList<>(
@@ -240,9 +257,9 @@ class CallbackStateAccTest extends AbstractAccTest {
     BulkOperationResults<String, TaskanaException> bulkResult =
         taskService.setCallbackStateForTasks(
             externalIds, CallbackState.CALLBACK_PROCESSING_COMPLETED);
-    assertTrue(bulkResult.containsErrors());
+    assertThat(bulkResult.containsErrors()).isTrue();
     List<String> failedTaskIds = bulkResult.getFailedIds();
-    assertTrue(failedTaskIds.size() == 2 && !failedTaskIds.contains(createdTask3.getExternalId()));
+    assertThat(failedTaskIds).hasSize(2).doesNotContain(createdTask3.getExternalId());
   }
 
   @WithAccessId(
@@ -257,13 +274,15 @@ class CallbackStateAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
 
     TaskImpl createdTask1 = createTask(taskService, CallbackState.CALLBACK_PROCESSING_REQUIRED);
-    assertEquals(CallbackState.CALLBACK_PROCESSING_REQUIRED, createdTask1.getCallbackState());
+    assertThat(createdTask1.getCallbackState())
+        .isEqualTo(CallbackState.CALLBACK_PROCESSING_REQUIRED);
 
     TaskImpl createdTask2 = createTask(taskService, CallbackState.CLAIMED);
-    assertEquals(CallbackState.CLAIMED, createdTask2.getCallbackState());
+    assertThat(createdTask2.getCallbackState()).isEqualTo(CallbackState.CLAIMED);
 
     TaskImpl createdTask3 = createTask(taskService, CallbackState.CALLBACK_PROCESSING_COMPLETED);
-    assertEquals(CallbackState.CALLBACK_PROCESSING_COMPLETED, createdTask3.getCallbackState());
+    assertThat(createdTask3.getCallbackState())
+        .isEqualTo(CallbackState.CALLBACK_PROCESSING_COMPLETED);
 
     List<String> externalIds =
         new ArrayList<>(
@@ -281,9 +300,12 @@ class CallbackStateAccTest extends AbstractAccTest {
     // Therefore 2 tasks should not get updated
     BulkOperationResults<String, TaskanaException> bulkResult =
         taskService.setCallbackStateForTasks(externalIds, CallbackState.CLAIMED);
-    assertTrue(bulkResult.containsErrors());
+    assertThat(bulkResult.containsErrors()).isTrue();
     List<String> failedTaskIds = bulkResult.getFailedIds();
-    assertTrue(failedTaskIds.size() == 2 && !failedTaskIds.contains(createdTask1.getExternalId()));
+    assertThat(failedTaskIds)
+        .hasSize(2)
+        .doesNotContain(createdTask1.getExternalId())
+        .containsOnly(createdTask2.getExternalId(), createdTask3.getExternalId());
   }
 
   @WithAccessId(
@@ -297,13 +319,15 @@ class CallbackStateAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
 
     TaskImpl createdTask1 = createTask(taskService, CallbackState.CALLBACK_PROCESSING_REQUIRED);
-    assertEquals(CallbackState.CALLBACK_PROCESSING_REQUIRED, createdTask1.getCallbackState());
+    assertThat(createdTask1.getCallbackState())
+        .isEqualTo(CallbackState.CALLBACK_PROCESSING_REQUIRED);
 
     TaskImpl createdTask2 = createTask(taskService, CallbackState.CLAIMED);
-    assertEquals(CallbackState.CLAIMED, createdTask2.getCallbackState());
+    assertThat(createdTask2.getCallbackState()).isEqualTo(CallbackState.CLAIMED);
 
     TaskImpl createdTask3 = createTask(taskService, CallbackState.CALLBACK_PROCESSING_COMPLETED);
-    assertEquals(CallbackState.CALLBACK_PROCESSING_COMPLETED, createdTask3.getCallbackState());
+    assertThat(createdTask3.getCallbackState())
+        .isEqualTo(CallbackState.CALLBACK_PROCESSING_COMPLETED);
 
     List<String> externalIds =
         new ArrayList<>(
@@ -318,9 +342,9 @@ class CallbackStateAccTest extends AbstractAccTest {
     BulkOperationResults<String, TaskanaException> bulkResult =
         taskService.setCallbackStateForTasks(
             externalIds, CallbackState.CALLBACK_PROCESSING_REQUIRED);
-    assertTrue(bulkResult.containsErrors());
+    assertThat(bulkResult.containsErrors()).isTrue();
     List<String> failedTaskIds = bulkResult.getFailedIds();
-    assertTrue(failedTaskIds.size() == 1 && failedTaskIds.contains(createdTask3.getExternalId()));
+    assertThat(failedTaskIds).containsOnly(createdTask3.getExternalId());
   }
 
   @WithAccessId(
@@ -333,7 +357,7 @@ class CallbackStateAccTest extends AbstractAccTest {
 
     List<TaskSummary> claimedTasks =
         taskService.createTaskQuery().stateIn(TaskState.CLAIMED).list();
-    assertTrue(claimedTasks.size() > 10);
+    assertThat(claimedTasks).hasSizeGreaterThan(10);
     taskService.forceCompleteTask(claimedTasks.get(0).getId());
     taskService.forceCompleteTask(claimedTasks.get(1).getId());
     taskService.forceCompleteTask(claimedTasks.get(2).getId());
@@ -347,14 +371,14 @@ class CallbackStateAccTest extends AbstractAccTest {
     BulkOperationResults<String, TaskanaException> bulkResultCompleted =
         taskService.setCallbackStateForTasks(
             externalIds, CallbackState.CALLBACK_PROCESSING_REQUIRED);
-    assertFalse(bulkResultCompleted.containsErrors());
+    assertThat(bulkResultCompleted.containsErrors()).isFalse();
 
     // now complete some additional tasks
     taskService.forceCompleteTask(claimedTasks.get(3).getId());
     taskService.forceCompleteTask(claimedTasks.get(4).getId());
     taskService.forceCompleteTask(claimedTasks.get(5).getId());
 
-    long numberOfCompletedTasksAtStartOfTest = completedTasks.size();
+    int numberOfCompletedTasksAtStartOfTest = completedTasks.size();
     // now lets retrieve those completed tasks that have callback_processing_required
     List<TaskSummary> tasksToBeActedUpon =
         taskService
@@ -362,14 +386,14 @@ class CallbackStateAccTest extends AbstractAccTest {
             .stateIn(TaskState.COMPLETED)
             .callbackStateIn(CallbackState.CALLBACK_PROCESSING_REQUIRED)
             .list();
-    assertEquals(tasksToBeActedUpon.size(), numberOfCompletedTasksAtStartOfTest);
+    assertThat(tasksToBeActedUpon).hasSize(numberOfCompletedTasksAtStartOfTest);
     // now we set callback state to callback_processing_completed
     externalIds =
         tasksToBeActedUpon.stream().map(TaskSummary::getExternalId).collect(Collectors.toList());
     BulkOperationResults<String, TaskanaException> bulkResult =
         taskService.setCallbackStateForTasks(
             externalIds, CallbackState.CALLBACK_PROCESSING_COMPLETED);
-    assertFalse(bulkResult.containsErrors());
+    assertThat(bulkResult.containsErrors()).isFalse();
 
     long numOfTasksRemaining =
         taskService
@@ -377,7 +401,7 @@ class CallbackStateAccTest extends AbstractAccTest {
             .stateIn(TaskState.COMPLETED)
             .callbackStateIn(CallbackState.CALLBACK_PROCESSING_REQUIRED)
             .count();
-    assertEquals(0, numOfTasksRemaining);
+    assertThat(numOfTasksRemaining).isEqualTo(0);
   }
 
   private TaskImpl createTask(TaskService taskService, CallbackState callbackState)

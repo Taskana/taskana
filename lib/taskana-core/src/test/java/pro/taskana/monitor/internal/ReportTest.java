@@ -1,7 +1,6 @@
 package pro.taskana.monitor.internal;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,10 +39,10 @@ class ReportTest {
   @Test
   void testEmptyReport() {
     // then
-    assertEquals(0, report.getRows().size());
+    assertThat(report.getRows()).isEmpty();
     Row<MonitorQueryItem> sumRow = report.getSumRow();
-    assertArrayEquals(new int[] {0, 0, 0, 0}, sumRow.getCells());
-    assertEquals(0, sumRow.getTotalValue());
+    assertThat(sumRow.getCells()).isEqualTo(new int[] {0, 0, 0, 0});
+    assertThat(sumRow.getTotalValue()).isEqualTo(0);
   }
 
   @Test
@@ -52,10 +51,10 @@ class ReportTest {
     report.addItem(item);
 
     // then
-    assertEquals(1, report.getRows().size());
+    assertThat(report.getRows()).hasSize(1);
     Row<MonitorQueryItem> row = report.getRow("key");
-    assertArrayEquals(new int[] {item.getValue(), 0, 0, 0}, row.getCells());
-    assertEquals(item.getValue(), row.getTotalValue());
+    assertThat(row.getCells()).isEqualTo(new int[] {item.getValue(), 0, 0, 0});
+    assertThat(row.getTotalValue()).isEqualTo(item.getValue());
   }
 
   @Test
@@ -65,10 +64,10 @@ class ReportTest {
     report.addItem(item);
 
     // then
-    assertEquals(1, report.getRows().size());
+    assertThat(report.getRows()).hasSize(1);
     Row<MonitorQueryItem> row = report.getRow("key");
-    assertArrayEquals(new int[] {2 * item.getValue(), 0, 0, 0}, row.getCells());
-    assertEquals(2 * item.getValue(), row.getTotalValue());
+    assertThat(row.getCells()).isEqualTo(new int[] {2 * item.getValue(), 0, 0, 0});
+    assertThat(row.getTotalValue()).isEqualTo(2 * item.getValue());
   }
 
   @Test
@@ -83,10 +82,10 @@ class ReportTest {
     report.addItems(Arrays.asList(item, item));
 
     // then
-    assertEquals(1, report.getRows().size());
+    assertThat(report.getRows()).hasSize(1);
     Row<MonitorQueryItem> row = report.getRow("key");
-    assertArrayEquals(new int[] {2 * item.getValue(), 0, 0, 0}, row.getCells());
-    assertEquals(2 * item.getValue(), row.getTotalValue());
+    assertThat(row.getCells()).isEqualTo(new int[] {2 * item.getValue(), 0, 0, 0});
+    assertThat(row.getTotalValue()).isEqualTo(2 * item.getValue());
   }
 
   @Test
@@ -102,10 +101,10 @@ class ReportTest {
     report.addItems(Arrays.asList(item, item), preprocessor);
 
     // then
-    assertEquals(1, report.getRows().size());
+    assertThat(report.getRows()).hasSize(1);
     Row<MonitorQueryItem> row = report.getRow("key");
-    assertArrayEquals(new int[] {2 * overrideValue, 0, 0, 0}, row.getCells());
-    assertEquals(2 * overrideValue, row.getTotalValue());
+    assertThat(row.getCells()).isEqualTo(new int[] {2 * overrideValue, 0, 0, 0});
+    assertThat(row.getTotalValue()).isEqualTo(2 * overrideValue);
   }
 
   @Test
@@ -119,9 +118,9 @@ class ReportTest {
     report.addItem(item);
 
     // then
-    assertEquals(1, report.getRows().size());
-    assertArrayEquals(new int[0], report.getRow("key").getCells());
-    assertEquals(item.getValue(), report.getRow("key").getTotalValue());
+    assertThat(report.getRows()).hasSize(1);
+    assertThat(report.getRow("key").getCells()).isEqualTo(new int[0]);
+    assertThat(report.getRow("key").getTotalValue()).isEqualTo(item.getValue());
   }
 
   @Test
@@ -132,10 +131,10 @@ class ReportTest {
     report.addItem(item);
 
     // then
-    assertEquals(0, report.getRows().size());
+    assertThat(report.getRows()).isEmpty();
     Row<MonitorQueryItem> sumRow = report.getSumRow();
-    assertArrayEquals(new int[] {0, 0, 0, 0}, sumRow.getCells());
-    assertEquals(0, sumRow.getTotalValue());
+    assertThat(sumRow.getCells()).isEqualTo(new int[] {0, 0, 0, 0});
+    assertThat(sumRow.getTotalValue()).isEqualTo(0);
   }
 
   @Test
@@ -151,15 +150,15 @@ class ReportTest {
     report.addItem(item);
 
     // then
-    assertEquals(1, report.getRows().size());
+    assertThat(report.getRows()).hasSize(1);
 
     Row<MonitorQueryItem> row = report.getRow("key");
-    assertArrayEquals(new int[] {0, 0, item.getValue(), 0, item.getValue()}, row.getCells());
-    assertEquals(2 * item.getValue(), row.getTotalValue());
+    assertThat(row.getCells()).isEqualTo(new int[] {0, 0, item.getValue(), 0, item.getValue()});
+    assertThat(row.getTotalValue()).isEqualTo(2 * item.getValue());
 
     Row<MonitorQueryItem> sumRow = report.getSumRow();
-    assertArrayEquals(new int[] {0, 0, item.getValue(), 0, item.getValue()}, sumRow.getCells());
-    assertEquals(2 * item.getValue(), sumRow.getTotalValue());
+    assertThat(sumRow.getCells()).isEqualTo(new int[] {0, 0, item.getValue(), 0, item.getValue()});
+    assertThat(sumRow.getTotalValue()).isEqualTo(2 * item.getValue());
   }
 
   @Test
@@ -177,15 +176,15 @@ class ReportTest {
     report.addItem(item, preprocessor);
 
     // then
-    assertEquals(1, report.getRows().size());
+    assertThat(report.getRows()).hasSize(1);
 
     Row<MonitorQueryItem> row = report.getRow(item.getKey());
-    assertArrayEquals(new int[] {0, overrideValue, 0, 0}, row.getCells());
-    assertEquals(overrideValue, row.getTotalValue());
+    assertThat(row.getCells()).isEqualTo(new int[] {0, overrideValue, 0, 0});
+    assertThat(row.getTotalValue()).isEqualTo(overrideValue);
 
     Row<MonitorQueryItem> sumRow = report.getSumRow();
-    assertArrayEquals(new int[] {0, overrideValue, 0, 0}, sumRow.getCells());
-    assertEquals(overrideValue, sumRow.getTotalValue());
+    assertThat(sumRow.getCells()).isEqualTo(new int[] {0, overrideValue, 0, 0});
+    assertThat(sumRow.getTotalValue()).isEqualTo(overrideValue);
   }
 
   private static class MonitorQueryItemTimeIntervalColumnHeaderReport

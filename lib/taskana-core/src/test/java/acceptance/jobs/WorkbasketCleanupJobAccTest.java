@@ -1,7 +1,6 @@
 package acceptance.jobs;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
 import java.util.List;
@@ -43,7 +42,7 @@ class WorkbasketCleanupJobAccTest extends AbstractAccTest {
   @Test
   void shouldCleanWorkbasketMarkedForDeletionWithoutTasks() throws TaskanaException {
     long totalWorkbasketCount = workbasketService.createWorkbasketQuery().count();
-    assertEquals(25, totalWorkbasketCount);
+    assertThat(totalWorkbasketCount).isEqualTo(25);
     List<WorkbasketSummary> workbaskets =
         workbasketService
             .createWorkbasketQuery()
@@ -51,8 +50,8 @@ class WorkbasketCleanupJobAccTest extends AbstractAccTest {
             .orderByKey(BaseQuery.SortDirection.ASCENDING)
             .list();
 
-    assertEquals(getNumberTaskNotCompleted(workbaskets.get(0).getId()), 0);
-    assertEquals(getNumberTaskCompleted(workbaskets.get(0).getId()), 1);
+    assertThat(0).isEqualTo(getNumberTaskNotCompleted(workbaskets.get(0).getId()));
+    assertThat(1).isEqualTo(getNumberTaskCompleted(workbaskets.get(0).getId()));
 
     // Workbasket with completed task will be marked for deletion.
     workbasketService.deleteWorkbasket(workbaskets.get(0).getId());
@@ -61,20 +60,20 @@ class WorkbasketCleanupJobAccTest extends AbstractAccTest {
     TaskCleanupJob taskCleanupJob = new TaskCleanupJob(taskanaEngine, null, null);
     taskCleanupJob.run();
 
-    assertEquals(getNumberTaskCompleted(workbaskets.get(0).getId()), 0);
+    assertThat(0).isEqualTo(getNumberTaskCompleted(workbaskets.get(0).getId()));
 
     WorkbasketCleanupJob workbasketCleanupJob = new WorkbasketCleanupJob(taskanaEngine, null, null);
     workbasketCleanupJob.run();
 
     totalWorkbasketCount = workbasketService.createWorkbasketQuery().count();
-    assertEquals(24, totalWorkbasketCount);
+    assertThat(totalWorkbasketCount).isEqualTo(24);
   }
 
   @WithAccessId(userName = "admin")
   @Test
   void shouldNotCleanWorkbasketMarkedForDeletionIfWorkbasketHasTasks() throws Exception {
     long totalWorkbasketCount = workbasketService.createWorkbasketQuery().count();
-    assertEquals(25, totalWorkbasketCount);
+    assertThat(totalWorkbasketCount).isEqualTo(25);
     List<WorkbasketSummary> workbaskets =
         workbasketService
             .createWorkbasketQuery()
@@ -82,7 +81,7 @@ class WorkbasketCleanupJobAccTest extends AbstractAccTest {
             .orderByKey(BaseQuery.SortDirection.ASCENDING)
             .list();
 
-    assertNotEquals(getNumberTaskCompleted(workbaskets.get(0).getId()), 0);
+    assertThat(0).isNotEqualTo(getNumberTaskCompleted(workbaskets.get(0).getId()));
 
     // Workbasket with completed task will be marked for deletion.
     workbasketService.deleteWorkbasket(workbaskets.get(0).getId());
@@ -91,7 +90,7 @@ class WorkbasketCleanupJobAccTest extends AbstractAccTest {
     job.run();
 
     totalWorkbasketCount = workbasketService.createWorkbasketQuery().count();
-    assertEquals(25, totalWorkbasketCount);
+    assertThat(totalWorkbasketCount).isEqualTo(25);
   }
 
   private long getNumberTaskNotCompleted(String workbasketId) {

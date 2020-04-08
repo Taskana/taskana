@@ -1,7 +1,7 @@
 package acceptance.workbasket;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.io.IOException;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -43,7 +43,7 @@ class DistributionTargetsAccTest extends AbstractAccTest {
     List<WorkbasketSummary> retrievedDistributionTargets =
         workbasketService.getDistributionTargets(workbasketSummary.getId());
 
-    assertEquals(4, retrievedDistributionTargets.size());
+    assertThat(retrievedDistributionTargets).hasSize(4);
     List<String> expectedTargetIds =
         new ArrayList<>(
             Arrays.asList(
@@ -53,7 +53,7 @@ class DistributionTargetsAccTest extends AbstractAccTest {
                 "WBI:100000000000000000000000000000000005"));
 
     for (WorkbasketSummary wbSummary : retrievedDistributionTargets) {
-      assertTrue(expectedTargetIds.contains(wbSummary.getId()));
+      assertThat(expectedTargetIds.contains(wbSummary.getId())).isTrue();
     }
   }
 
@@ -71,7 +71,7 @@ class DistributionTargetsAccTest extends AbstractAccTest {
         workbasketService.getDistributionTargets(
             workbasketSummary.getKey(), workbasketSummary.getDomain());
 
-    assertEquals(4, retrievedDistributionTargets.size());
+    assertThat(retrievedDistributionTargets).hasSize(4);
     List<String> expectedTargetIds =
         new ArrayList<>(
             Arrays.asList(
@@ -81,7 +81,7 @@ class DistributionTargetsAccTest extends AbstractAccTest {
                 "WBI:100000000000000000000000000000000005"));
 
     for (WorkbasketSummary wbSummary : retrievedDistributionTargets) {
-      assertTrue(expectedTargetIds.contains(wbSummary.getId()));
+      assertThat(expectedTargetIds.contains(wbSummary.getId())).isTrue();
     }
   }
 
@@ -95,25 +95,30 @@ class DistributionTargetsAccTest extends AbstractAccTest {
     String existingWb = "WBI:100000000000000000000000000000000001";
     String nonExistingWb = "WBI:100000000000000000000000000000000xx1";
 
-    Assertions.assertThrows(
-        WorkbasketNotFoundException.class,
-        () -> workbasketService.getDistributionTargets("WBI:100000000000000000000000000000000xx1"));
+    ThrowingCallable call =
+        () -> {
+          workbasketService.getDistributionTargets("WBI:100000000000000000000000000000000xx1");
+        };
+    assertThatThrownBy(call).isInstanceOf(WorkbasketNotFoundException.class);
 
-    Assertions.assertThrows(
-        WorkbasketNotFoundException.class,
-        () ->
-            workbasketService.setDistributionTargets(
-                existingWb, new ArrayList<>(Arrays.asList(nonExistingWb))));
+    call =
+        () -> {
+          workbasketService.setDistributionTargets(
+              existingWb, new ArrayList<>(Arrays.asList(nonExistingWb)));
+        };
+    assertThatThrownBy(call).isInstanceOf(WorkbasketNotFoundException.class);
 
-    Assertions.assertThrows(
-        WorkbasketNotFoundException.class,
-        () -> workbasketService.addDistributionTarget(existingWb, nonExistingWb));
+    call =
+        () -> {
+          workbasketService.addDistributionTarget(existingWb, nonExistingWb);
+        };
+    assertThatThrownBy(call).isInstanceOf(WorkbasketNotFoundException.class);
 
     int beforeCount = workbasketService.getDistributionTargets(existingWb).size();
     workbasketService.removeDistributionTarget(existingWb, nonExistingWb);
     int afterCount = workbasketService.getDistributionTargets(existingWb).size();
 
-    assertEquals(afterCount, beforeCount);
+    assertThat(beforeCount).isEqualTo(afterCount);
   }
 
   @WithAccessId(
@@ -124,26 +129,32 @@ class DistributionTargetsAccTest extends AbstractAccTest {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     String existingWb = "WBI:100000000000000000000000000000000001";
 
-    Assertions.assertThrows(
-        NotAuthorizedException.class, () -> workbasketService.getDistributionTargets(existingWb));
+    ThrowingCallable call =
+        () -> {
+          workbasketService.getDistributionTargets(existingWb);
+        };
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
 
-    Assertions.assertThrows(
-        NotAuthorizedException.class,
-        () ->
-            workbasketService.setDistributionTargets(
-                existingWb, Arrays.asList("WBI:100000000000000000000000000000000002")));
+    call =
+        () -> {
+          workbasketService.setDistributionTargets(
+              existingWb, Arrays.asList("WBI:100000000000000000000000000000000002"));
+        };
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
 
-    Assertions.assertThrows(
-        NotAuthorizedException.class,
-        () ->
-            workbasketService.addDistributionTarget(
-                existingWb, "WBI:100000000000000000000000000000000002"));
+    call =
+        () -> {
+          workbasketService.addDistributionTarget(
+              existingWb, "WBI:100000000000000000000000000000000002");
+        };
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
 
-    Assertions.assertThrows(
-        NotAuthorizedException.class,
-        () ->
-            workbasketService.removeDistributionTarget(
-                existingWb, "WBI:100000000000000000000000000000000002"));
+    call =
+        () -> {
+          workbasketService.removeDistributionTarget(
+              existingWb, "WBI:100000000000000000000000000000000002");
+        };
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(
@@ -157,24 +168,24 @@ class DistributionTargetsAccTest extends AbstractAccTest {
 
     List<WorkbasketSummary> distributionTargets =
         workbasketService.getDistributionTargets(workbasket.getId());
-    assertEquals(4, distributionTargets.size());
+    assertThat(distributionTargets).hasSize(4);
 
     // add a new distribution target
     Workbasket newTarget = workbasketService.getWorkbasket("GPK_B_KSC_2", "DOMAIN_B");
     workbasketService.addDistributionTarget(workbasket.getId(), newTarget.getId());
 
     distributionTargets = workbasketService.getDistributionTargets(workbasket.getId());
-    assertEquals(5, distributionTargets.size());
+    assertThat(distributionTargets).hasSize(5);
 
     // remove the new target
     workbasketService.removeDistributionTarget(workbasket.getId(), newTarget.getId());
     distributionTargets = workbasketService.getDistributionTargets(workbasket.getId());
-    assertEquals(4, distributionTargets.size());
+    assertThat(distributionTargets).hasSize(4);
 
     // remove the new target again Question: should this throw an exception?
     workbasketService.removeDistributionTarget(workbasket.getId(), newTarget.getId());
     distributionTargets = workbasketService.getDistributionTargets(workbasket.getId());
-    assertEquals(4, distributionTargets.size());
+    assertThat(distributionTargets).hasSize(4);
   }
 
   @WithAccessId(
@@ -188,19 +199,19 @@ class DistributionTargetsAccTest extends AbstractAccTest {
 
     List<WorkbasketSummary> distributionTargets =
         workbasketService.getDistributionTargets(workbasket.getId());
-    assertEquals(0, distributionTargets.size());
+    assertThat(distributionTargets).isEmpty();
 
     // add a new distribution target
     Workbasket newTarget = workbasketService.getWorkbasket("GPK_KSC_1", "DOMAIN_A");
     workbasketService.addDistributionTarget(workbasket.getId(), newTarget.getId());
 
     distributionTargets = workbasketService.getDistributionTargets(workbasket.getId());
-    assertEquals(1, distributionTargets.size());
+    assertThat(distributionTargets).hasSize(1);
 
     // remove the new target
     workbasketService.removeDistributionTarget(workbasket.getId(), newTarget.getId());
     distributionTargets = workbasketService.getDistributionTargets(workbasket.getId());
-    assertEquals(0, distributionTargets.size());
+    assertThat(distributionTargets).isEmpty();
   }
 
   @WithAccessId(
@@ -214,14 +225,16 @@ class DistributionTargetsAccTest extends AbstractAccTest {
 
     List<WorkbasketSummary> distributionTargets =
         workbasketService.getDistributionTargets(workbasket.getId());
-    assertEquals(4, distributionTargets.size());
+    assertThat(distributionTargets).hasSize(4);
 
     // add a new distribution target
     Workbasket newTarget = workbasketService.getWorkbasket("GPK_B_KSC_2", "DOMAIN_B");
 
-    Assertions.assertThrows(
-        NotAuthorizedException.class,
-        () -> workbasketService.addDistributionTarget(workbasket.getId(), newTarget.getId()));
+    ThrowingCallable call =
+        () -> {
+          workbasketService.addDistributionTarget(workbasket.getId(), newTarget.getId());
+        };
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(
@@ -236,11 +249,11 @@ class DistributionTargetsAccTest extends AbstractAccTest {
 
     List<WorkbasketSummary> initialDistributionTargets =
         workbasketService.getDistributionTargets(sourceWorkbasket.getId());
-    assertEquals(4, initialDistributionTargets.size());
+    assertThat(initialDistributionTargets).hasSize(4);
 
     List<WorkbasketSummary> newDistributionTargets =
         workbasketService.createWorkbasketQuery().keyIn("USER_1_1", "GPK_B_KSC_1").list();
-    assertEquals(2, newDistributionTargets.size());
+    assertThat(newDistributionTargets).hasSize(2);
 
     List<String> newDistributionTargetIds =
         newDistributionTargets.stream().map(WorkbasketSummary::getId).collect(Collectors.toList());
@@ -248,7 +261,7 @@ class DistributionTargetsAccTest extends AbstractAccTest {
     workbasketService.setDistributionTargets(sourceWorkbasket.getId(), newDistributionTargetIds);
     List<WorkbasketSummary> changedTargets =
         workbasketService.getDistributionTargets(sourceWorkbasket.getId());
-    assertEquals(2, changedTargets.size());
+    assertThat(changedTargets).hasSize(2);
 
     // reset DB to original state
     resetDb(false);
@@ -264,7 +277,7 @@ class DistributionTargetsAccTest extends AbstractAccTest {
     List<WorkbasketSummary> distributionSources =
         workbasketService.getDistributionSources("WBI:100000000000000000000000000000000004");
 
-    assertEquals(2, distributionSources.size());
+    assertThat(distributionSources).hasSize(2);
     List<String> expectedIds =
         new ArrayList<>(
             Arrays.asList(
@@ -272,7 +285,7 @@ class DistributionTargetsAccTest extends AbstractAccTest {
                 "WBI:100000000000000000000000000000000002"));
 
     for (WorkbasketSummary foundSummary : distributionSources) {
-      assertTrue(expectedIds.contains(foundSummary.getId()));
+      assertThat(expectedIds.contains(foundSummary.getId())).isTrue();
     }
   }
 
@@ -287,7 +300,7 @@ class DistributionTargetsAccTest extends AbstractAccTest {
     List<WorkbasketSummary> distributionSources =
         workbasketService.getDistributionSources("TEAMLEAD_1", "DOMAIN_A");
 
-    assertEquals(2, distributionSources.size());
+    assertThat(distributionSources).hasSize(2);
     List<String> expectedIds =
         new ArrayList<>(
             Arrays.asList(
@@ -295,7 +308,7 @@ class DistributionTargetsAccTest extends AbstractAccTest {
                 "WBI:100000000000000000000000000000000002"));
 
     for (WorkbasketSummary foundSummary : distributionSources) {
-      assertTrue(expectedIds.contains(foundSummary.getId()));
+      assertThat(expectedIds.contains(foundSummary.getId())).isTrue();
     }
   }
 
@@ -306,9 +319,11 @@ class DistributionTargetsAccTest extends AbstractAccTest {
   void testQueryDistributionSourcesThrowsNotAuthorized() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
-    Assertions.assertThrows(
-        NotAuthorizedException.class,
-        () -> workbasketService.getDistributionSources("WBI:100000000000000000000000000000000004"));
+    ThrowingCallable call =
+        () -> {
+          workbasketService.getDistributionSources("WBI:100000000000000000000000000000000004");
+        };
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(
@@ -318,8 +333,10 @@ class DistributionTargetsAccTest extends AbstractAccTest {
   void testQueryDistributionSourcesThrowsWorkbasketNotFound() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
-    Assertions.assertThrows(
-        WorkbasketNotFoundException.class,
-        () -> workbasketService.getDistributionSources("WBI:10dasgibtsdochnicht00000000000000004"));
+    ThrowingCallable call =
+        () -> {
+          workbasketService.getDistributionSources("WBI:10dasgibtsdochnicht00000000000000004");
+        };
+    assertThatThrownBy(call).isInstanceOf(WorkbasketNotFoundException.class);
   }
 }

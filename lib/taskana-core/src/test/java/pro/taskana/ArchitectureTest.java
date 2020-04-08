@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
-import com.tngtech.archunit.core.importer.ImportOption.DoNotIncludeTests;
 import com.tngtech.archunit.lang.ArchRule;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -29,10 +28,7 @@ class ArchitectureTest {
   @BeforeAll
   static void init() throws ClassNotFoundException {
     // time intensive operation should only be done once
-    importedClasses =
-        new ClassFileImporter()
-            .withImportOption(new DoNotIncludeTests())
-            .importPackages("pro.taskana");
+    importedClasses = new ClassFileImporter().importPackages("pro.taskana", "acceptance");
   }
 
   @Test
@@ -167,5 +163,16 @@ class ArchitectureTest {
   void freeOfCyclicDependencies() {
     ArchRule myRule = slices().matching("pro.taskana.(*)..").should().notDependOnEachOther();
     myRule.check(importedClasses);
+  }
+
+  @Test
+  void classesShouldNotUseJunit5Assertions() {
+    ArchRule rule =
+        noClasses()
+            .should()
+            .dependOnClassesThat()
+            .haveFullyQualifiedName(org.junit.jupiter.api.Assertions.class.getName())
+            .because("we consistently want to use assertj in our tests");
+    rule.check(importedClasses);
   }
 }

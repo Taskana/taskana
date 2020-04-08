@@ -42,8 +42,6 @@ import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.models.ObjectReference;
 
-// import org.junit.jupiter.api.Assertions;
-
 /** Test Task Controller. */
 @TaskanaSpringBootTest
 class TaskControllerIntTest {

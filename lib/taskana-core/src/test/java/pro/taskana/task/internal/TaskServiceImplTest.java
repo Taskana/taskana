@@ -1,7 +1,6 @@
 package pro.taskana.task.internal;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
@@ -36,24 +35,24 @@ class TaskServiceImplTest {
     TaskSummary summaryBefore = taskBefore.asSummary();
     TaskSummary summaryAfter = taskAfter.asSummary();
 
-    assertNotEquals(summaryBefore, summaryAfter);
-    assertNotEquals(summaryBefore.hashCode(), summaryAfter.hashCode());
+    assertThat(summaryAfter).isNotEqualTo(summaryBefore);
+    assertThat(summaryAfter.hashCode()).isNotEqualTo(summaryBefore.hashCode());
 
     taskAfter.setCreated(taskBefore.getCreated());
     taskAfter.setModified(taskBefore.getModified());
     summaryAfter = taskAfter.asSummary();
-    assertEquals(summaryBefore, summaryAfter);
-    assertEquals(summaryBefore.hashCode(), summaryAfter.hashCode());
+    assertThat(summaryAfter).isEqualTo(summaryBefore);
+    assertThat(summaryAfter.hashCode()).isEqualTo(summaryBefore.hashCode());
 
     taskBefore.setModified(null);
     summaryBefore = taskBefore.asSummary();
-    assertNotEquals(summaryBefore, summaryAfter);
-    assertNotEquals(summaryBefore.hashCode(), summaryAfter.hashCode());
+    assertThat(summaryAfter).isNotEqualTo(summaryBefore);
+    assertThat(summaryAfter.hashCode()).isNotEqualTo(summaryBefore.hashCode());
 
     taskAfter.setModified(null);
     summaryAfter = taskAfter.asSummary();
-    assertEquals(summaryBefore, summaryAfter);
-    assertEquals(summaryBefore.hashCode(), summaryAfter.hashCode());
+    assertThat(summaryAfter).isEqualTo(summaryBefore);
+    assertThat(summaryAfter.hashCode()).isEqualTo(summaryBefore.hashCode());
   }
 
   static Classification createDummyClassification() {

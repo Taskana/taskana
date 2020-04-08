@@ -1,7 +1,6 @@
 package pro.taskana.task.internal;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
@@ -109,9 +108,9 @@ class TaskTransferrerTest {
         sqlSessionMock,
         classificationQueryImplMock);
 
-    assertThat(actualTask.isRead(), equalTo(false));
-    assertThat(actualTask.getState(), equalTo(TaskState.READY));
-    assertThat(actualTask.isTransferred(), equalTo(true));
-    assertThat(actualTask.getWorkbasketKey(), equalTo(destinationWorkbasket.getKey()));
+    assertThat(actualTask.isRead()).isFalse();
+    assertThat(actualTask.getState()).isEqualTo(TaskState.READY);
+    assertThat(actualTask.isTransferred()).isTrue();
+    assertThat(actualTask.getWorkbasketKey()).isEqualTo(destinationWorkbasket.getKey());
   }
 }

@@ -1,13 +1,13 @@
 package acceptance.workbasket;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -44,8 +44,8 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
             .createWorkbasketQuery()
             .accessIdsHavePermission(WorkbasketPermission.APPEND, "user_1_1")
             .list();
-    assertEquals(1, results.size());
-    assertEquals("USER_1_1", results.get(0).getKey());
+    assertThat(results).hasSize(1);
+    assertThat(results.get(0).getKey()).isEqualTo("USER_1_1");
   }
 
   @WithAccessId(userName = "dummy")
@@ -53,13 +53,14 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
   void testQueryAllTransferTargetsForUserNotAuthorized() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
-    Assertions.assertThrows(
-        NotAuthorizedException.class,
-        () ->
-            workbasketService
-                .createWorkbasketQuery()
-                .accessIdsHavePermission(WorkbasketPermission.APPEND, "user_1_1")
-                .list());
+    ThrowingCallable call =
+        () -> {
+          workbasketService
+              .createWorkbasketQuery()
+              .accessIdsHavePermission(WorkbasketPermission.APPEND, "user_1_1")
+              .list();
+        };
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(
@@ -74,7 +75,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
             .createWorkbasketQuery()
             .accessIdsHavePermission(WorkbasketPermission.APPEND, "user_1_1", "group_1")
             .list();
-    assertEquals(6, results.size());
+    assertThat(results).hasSize(6);
   }
 
   @WithAccessId(
@@ -90,8 +91,8 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
             .accessIdsHavePermission(WorkbasketPermission.APPEND, "user_1_1", "group_1")
             .orderByName(asc)
             .list();
-    assertEquals(6, results.size());
-    assertEquals("GPK_KSC_1", results.get(0).getKey());
+    assertThat(results).hasSize(6);
+    assertThat(results.get(0).getKey()).isEqualTo("GPK_KSC_1");
   }
 
   @WithAccessId(
@@ -108,8 +109,8 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
             .orderByName(desc)
             .orderByKey(asc)
             .list();
-    assertEquals(6, results.size());
-    assertEquals("USER_2_2", results.get(0).getKey());
+    assertThat(results).hasSize(6);
+    assertThat(results.get(0).getKey()).isEqualTo("USER_2_2");
   }
 
   @WithAccessId(
@@ -124,10 +125,10 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
             .createWorkbasketQuery()
             .accessIdsHavePermission(WorkbasketPermission.DISTRIBUTE, "user_1_1", "group_1")
             .list();
-    assertEquals(2, results.size());
+    assertThat(results).hasSize(2);
     List<String> keys = new ArrayList<>(Arrays.asList("GPK_KSC_1", "USER_1_1"));
     for (WorkbasketSummary wb : results) {
-      assertTrue(keys.contains(wb.getKey()));
+      assertThat(keys.contains(wb.getKey())).isTrue();
     }
   }
 
@@ -142,7 +143,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
             .createWorkbasketQuery()
             .callerHasPermission(WorkbasketPermission.APPEND)
             .list();
-    assertEquals(6, results.size());
+    assertThat(results).hasSize(6);
   }
 
   @WithAccessId(userName = "user_1_1")
@@ -154,7 +155,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
             .createWorkbasketQuery()
             .callerHasPermission(WorkbasketPermission.READ)
             .list();
-    assertEquals(1, results.size());
+    assertThat(results).hasSize(1);
   }
 
   @WithAccessId(
@@ -168,7 +169,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
             .createWorkbasketQuery()
             .callerHasPermission(WorkbasketPermission.OPEN)
             .list();
-    assertEquals(3, results.size());
+    assertThat(results).hasSize(3);
   }
 
   @WithAccessId(userName = "admin")
@@ -180,6 +181,6 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
             .createWorkbasketQuery()
             .callerHasPermission(WorkbasketPermission.OPEN)
             .list();
-    assertEquals(25, results.size());
+    assertThat(results).hasSize(25);
   }
 }

@@ -1,7 +1,6 @@
 package pro.taskana.workbasket.internal;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -121,17 +120,14 @@ class WorkbasketServiceImplIntExplicitTest {
 
       List<WorkbasketSummary> distributionTargets =
           workBasketService.getDistributionTargets(foundBasket.getId());
-      assertEquals(1, distributionTargets.size());
-      assertEquals(workbasket3.getId(), distributionTargets.get(0).getId());
-      assertNotEquals(
-          workBasketService.getWorkbasket(id2).getCreated(),
-          workBasketService.getWorkbasket(id2).getModified());
-      assertEquals(
-          workBasketService.getWorkbasket(id1).getCreated(),
-          workBasketService.getWorkbasket(id1).getModified());
-      assertEquals(
-          workBasketService.getWorkbasket(id3).getCreated(),
-          workBasketService.getWorkbasket(id3).getModified());
+      assertThat(distributionTargets).hasSize(1);
+      assertThat(distributionTargets.get(0).getId()).isEqualTo(workbasket3.getId());
+      assertThat(workBasketService.getWorkbasket(id2).getCreated())
+          .isNotEqualTo(workBasketService.getWorkbasket(id2).getModified());
+      assertThat(workBasketService.getWorkbasket(id1).getCreated())
+          .isEqualTo(workBasketService.getWorkbasket(id1).getModified());
+      assertThat(workBasketService.getWorkbasket(id3).getCreated())
+          .isEqualTo(workBasketService.getWorkbasket(id3).getModified());
       connection.commit();
     }
   }
@@ -156,7 +152,7 @@ class WorkbasketServiceImplIntExplicitTest {
       accessItem.setPermRead(true);
       workBasketService.createWorkbasketAccessItem(accessItem);
 
-      assertEquals(1, workBasketService.getWorkbasketAccessItems("id1").size());
+      assertThat(workBasketService.getWorkbasketAccessItems("id1")).hasSize(1);
       connection.commit();
     }
   }
@@ -182,8 +178,8 @@ class WorkbasketServiceImplIntExplicitTest {
       accessItem.setPermRead(true);
       workBasketService.createWorkbasketAccessItem(accessItem);
 
-      assertEquals(1, workBasketService.getWorkbasketAccessItems("key2").size());
-      assertEquals("zaphod beeblebrox", accessItem.getAccessId());
+      assertThat(workBasketService.getWorkbasketAccessItems("key2")).hasSize(1);
+      assertThat(accessItem.getAccessId()).isEqualTo("zaphod beeblebrox");
       connection.commit();
     }
   }
