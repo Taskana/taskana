@@ -1,7 +1,6 @@
 package acceptance.security;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
 import java.util.List;
@@ -31,8 +30,8 @@ class ClassificationQueryAccTest extends AbstractAccTest {
     List<ClassificationSummary> classificationSummaryList =
         classificationService.createClassificationQuery().domainIn("DOMAIN_A").list();
 
-    assertNotNull(classificationSummaryList);
-    assertEquals(17, classificationSummaryList.size());
+    assertThat(classificationSummaryList).isNotNull();
+    assertThat(classificationSummaryList).hasSize(17);
   }
 
   @WithAccessId(userName = "businessadmin")
@@ -42,8 +41,8 @@ class ClassificationQueryAccTest extends AbstractAccTest {
     List<ClassificationSummary> classificationSummaryList =
         classificationService.createClassificationQuery().domainIn("DOMAIN_A").list();
 
-    assertNotNull(classificationSummaryList);
-    assertEquals(17, classificationSummaryList.size());
+    assertThat(classificationSummaryList).isNotNull();
+    assertThat(classificationSummaryList).hasSize(17);
   }
 
   @WithAccessId(userName = "admin")
@@ -53,7 +52,7 @@ class ClassificationQueryAccTest extends AbstractAccTest {
     List<ClassificationSummary> classificationSummaryList =
         classificationService.createClassificationQuery().domainIn("DOMAIN_A").list();
 
-    assertNotNull(classificationSummaryList);
-    assertEquals(17, classificationSummaryList.size());
+    assertThat(classificationSummaryList).isNotNull();
+    assertThat(classificationSummaryList).hasSize(17);
   }
 }

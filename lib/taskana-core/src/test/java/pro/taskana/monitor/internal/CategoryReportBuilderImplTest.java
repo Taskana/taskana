@@ -1,7 +1,6 @@
 package pro.taskana.monitor.internal;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -110,9 +109,9 @@ class CategoryReportBuilderImplTest {
         monitorMapperMock,
         taskanaEngineConfiguration);
 
-    assertNotNull(actualResult);
-    assertEquals(actualResult.getRow("EXTERN").getTotalValue(), 1);
-    assertEquals(actualResult.getSumRow().getTotalValue(), 1);
+    assertThat(actualResult).isNotNull();
+    assertThat(1).isEqualTo(actualResult.getRow("EXTERN").getTotalValue());
+    assertThat(1).isEqualTo(actualResult.getSumRow().getTotalValue());
   }
 
   @Test
@@ -173,10 +172,10 @@ class CategoryReportBuilderImplTest {
         monitorMapperMock,
         taskanaEngineConfiguration);
 
-    assertNotNull(actualResult);
-    assertEquals(actualResult.getRow("EXTERN").getTotalValue(), 1);
-    assertEquals(actualResult.getRow("EXTERN").getCells()[0], 1);
-    assertEquals(actualResult.getSumRow().getTotalValue(), 1);
+    assertThat(actualResult).isNotNull();
+    assertThat(1).isEqualTo(actualResult.getRow("EXTERN").getTotalValue());
+    assertThat(1).isEqualTo(actualResult.getRow("EXTERN").getCells()[0]);
+    assertThat(1).isEqualTo(actualResult.getSumRow().getTotalValue());
   }
 
   @Test
@@ -243,8 +242,8 @@ class CategoryReportBuilderImplTest {
         monitorMapperMock,
         taskanaEngineConfiguration);
 
-    assertNotNull(actualResult);
-    assertEquals(expectedResult, actualResult);
+    assertThat(actualResult).isNotNull();
+    assertThat(actualResult).isEqualTo(expectedResult);
   }
 
   @Test
@@ -254,7 +253,7 @@ class CategoryReportBuilderImplTest {
     List<SelectedItem> selectedItems = Collections.singletonList(selectedItem);
     List<String> result =
         cut.createCategoryReportBuilder().listTaskIdsForSelectedItems(selectedItems);
-    assertNotNull(result);
+    assertThat(result).isNotNull();
   }
 
   @Test
@@ -315,8 +314,8 @@ class CategoryReportBuilderImplTest {
         monitorMapperMock,
         taskanaEngineConfiguration);
 
-    assertNotNull(actualResult);
-    assertEquals(expectedResult, actualResult);
+    assertThat(actualResult).isNotNull();
+    assertThat(actualResult).isEqualTo(expectedResult);
   }
 
   @Test
@@ -326,6 +325,6 @@ class CategoryReportBuilderImplTest {
         cut.createCategoryReportBuilder()
             .workbasketIdIn(Arrays.asList("DieGibtsSicherNed"))
             .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_1);
-    assertNotNull(result);
+    assertThat(result).isNotNull();
   }
 }

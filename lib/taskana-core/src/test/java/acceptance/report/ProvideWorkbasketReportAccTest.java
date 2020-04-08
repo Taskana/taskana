@@ -1,8 +1,7 @@
 package acceptance.report;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
@@ -38,10 +37,11 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
   @Test
   void testRoleCheck() {
     MonitorService monitorService = taskanaEngine.getMonitorService();
-
-    Assertions.assertThrows(
-        NotAuthorizedException.class,
-        () -> monitorService.createWorkbasketReportBuilder().buildReport());
+    ThrowingCallable call =
+        () -> {
+          monitorService.createWorkbasketReportBuilder().buildReport();
+        };
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(userName = "monitor")
@@ -56,14 +56,14 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
       LOGGER.debug(reportToString(report));
     }
 
-    assertNotNull(report);
-    assertEquals(3, report.rowSize());
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(3);
 
-    assertEquals(20, report.getRow("USER_1_1").getTotalValue());
-    assertEquals(20, report.getRow("USER_1_2").getTotalValue());
-    assertEquals(10, report.getRow("USER_1_3").getTotalValue());
+    assertThat(report.getRow("USER_1_1").getTotalValue()).isEqualTo(20);
+    assertThat(report.getRow("USER_1_2").getTotalValue()).isEqualTo(20);
+    assertThat(report.getRow("USER_1_3").getTotalValue()).isEqualTo(10);
 
-    assertEquals(50, report.getSumRow().getTotalValue());
+    assertThat(report.getSumRow().getTotalValue()).isEqualTo(50);
   }
 
   @WithAccessId(userName = "monitor")
@@ -87,18 +87,18 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
 
     final int sumLineCount = IntStream.of(report.getSumRow().getCells()).sum();
 
-    assertNotNull(report);
-    assertEquals(3, report.rowSize());
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(3);
 
-    assertEquals(20, report.getRow("USER_1_1").getTotalValue());
-    assertEquals(20, report.getRow("USER_1_2").getTotalValue());
-    assertEquals(10, report.getRow("USER_1_3").getTotalValue());
+    assertThat(report.getRow("USER_1_1").getTotalValue()).isEqualTo(20);
+    assertThat(report.getRow("USER_1_2").getTotalValue()).isEqualTo(20);
+    assertThat(report.getRow("USER_1_3").getTotalValue()).isEqualTo(10);
 
     int[] sumRow = report.getSumRow().getCells();
-    assertArrayEquals(new int[] {10, 9, 11, 0, 4, 0, 7, 4, 5}, sumRow);
+    assertThat(sumRow).isEqualTo(new int[] {10, 9, 11, 0, 4, 0, 7, 4, 5});
 
-    assertEquals(50, report.getSumRow().getTotalValue());
-    assertEquals(50, sumLineCount);
+    assertThat(report.getSumRow().getTotalValue()).isEqualTo(50);
+    assertThat(sumLineCount).isEqualTo(50);
   }
 
   @WithAccessId(userName = "monitor")
@@ -119,17 +119,17 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
       LOGGER.debug(reportToString(report, columnHeaders));
     }
 
-    assertNotNull(report);
-    assertEquals(3, report.rowSize());
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(3);
 
     int[] row1 = report.getRow("USER_1_1").getCells();
-    assertArrayEquals(new int[] {13, 3, 1, 1, 2}, row1);
+    assertThat(row1).isEqualTo(new int[] {13, 3, 1, 1, 2});
 
     int[] row2 = report.getRow("USER_1_2").getCells();
-    assertArrayEquals(new int[] {4, 6, 3, 6, 1}, row2);
+    assertThat(row2).isEqualTo(new int[] {4, 6, 3, 6, 1});
 
     int[] row3 = report.getRow("USER_1_3").getCells();
-    assertArrayEquals(new int[] {2, 2, 0, 0, 6}, row3);
+    assertThat(row3).isEqualTo(new int[] {2, 2, 0, 0, 6});
   }
 
   @WithAccessId(userName = "monitor")
@@ -150,17 +150,17 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
       LOGGER.debug(reportToString(report, columnHeaders));
     }
 
-    assertNotNull(report);
-    assertEquals(3, report.rowSize());
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(3);
 
     int[] row1 = report.getRow("USER_1_1").getCells();
-    assertArrayEquals(new int[] {16, 0, 1, 0, 3}, row1);
+    assertThat(row1).isEqualTo(new int[] {16, 0, 1, 0, 3});
 
     int[] row2 = report.getRow("USER_1_2").getCells();
-    assertArrayEquals(new int[] {10, 0, 3, 0, 7}, row2);
+    assertThat(row2).isEqualTo(new int[] {10, 0, 3, 0, 7});
 
     int[] row3 = report.getRow("USER_1_3").getCells();
-    assertArrayEquals(new int[] {4, 0, 0, 0, 6}, row3);
+    assertThat(row3).isEqualTo(new int[] {4, 0, 0, 0, 6});
   }
 
   @WithAccessId(userName = "monitor")
@@ -185,11 +185,11 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
       LOGGER.debug(reportToString(report, columnHeaders));
     }
 
-    assertNotNull(report);
-    assertEquals(1, report.rowSize());
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(1);
 
     int[] row1 = report.getRow("USER_1_1").getCells();
-    assertArrayEquals(new int[] {13, 3, 1, 1, 2}, row1);
+    assertThat(row1).isEqualTo(new int[] {13, 3, 1, 1, 2});
   }
 
   @WithAccessId(userName = "monitor")
@@ -213,17 +213,17 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
       LOGGER.debug(reportToString(report, columnHeaders));
     }
 
-    assertNotNull(report);
-    assertEquals(3, report.rowSize());
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(3);
 
     int[] row1 = report.getRow("USER_1_1").getCells();
-    assertArrayEquals(new int[] {13, 3, 1, 1, 0}, row1);
+    assertThat(row1).isEqualTo(new int[] {13, 3, 1, 1, 0});
 
     int[] row2 = report.getRow("USER_1_2").getCells();
-    assertArrayEquals(new int[] {4, 6, 3, 6, 0}, row2);
+    assertThat(row2).isEqualTo(new int[] {4, 6, 3, 6, 0});
 
     int[] row3 = report.getRow("USER_1_3").getCells();
-    assertArrayEquals(new int[] {2, 2, 0, 0, 0}, row3);
+    assertThat(row3).isEqualTo(new int[] {2, 2, 0, 0, 0});
   }
 
   @WithAccessId(userName = "monitor")
@@ -247,17 +247,17 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
       LOGGER.debug(reportToString(report, columnHeaders));
     }
 
-    assertNotNull(report);
-    assertEquals(3, report.rowSize());
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(3);
 
     int[] row1 = report.getRow("USER_1_1").getCells();
-    assertArrayEquals(new int[] {3, 1, 1, 1, 2}, row1);
+    assertThat(row1).isEqualTo(new int[] {3, 1, 1, 1, 2});
 
     int[] row2 = report.getRow("USER_1_2").getCells();
-    assertArrayEquals(new int[] {1, 1, 1, 0, 1}, row2);
+    assertThat(row2).isEqualTo(new int[] {1, 1, 1, 0, 1});
 
     int[] row3 = report.getRow("USER_1_3").getCells();
-    assertArrayEquals(new int[] {0, 1, 0, 0, 4}, row3);
+    assertThat(row3).isEqualTo(new int[] {0, 1, 0, 0, 4});
   }
 
   @WithAccessId(userName = "monitor")
@@ -281,17 +281,17 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
       LOGGER.debug(reportToString(report, columnHeaders));
     }
 
-    assertNotNull(report);
-    assertEquals(3, report.rowSize());
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(3);
 
     int[] row1 = report.getRow("USER_1_1").getCells();
-    assertArrayEquals(new int[] {8, 1, 0, 1, 2}, row1);
+    assertThat(row1).isEqualTo(new int[] {8, 1, 0, 1, 2});
 
     int[] row2 = report.getRow("USER_1_2").getCells();
-    assertArrayEquals(new int[] {2, 2, 2, 4, 0}, row2);
+    assertThat(row2).isEqualTo(new int[] {2, 2, 2, 4, 0});
 
     int[] row3 = report.getRow("USER_1_3").getCells();
-    assertArrayEquals(new int[] {1, 1, 0, 0, 2}, row3);
+    assertThat(row3).isEqualTo(new int[] {1, 1, 0, 0, 2});
   }
 
   @WithAccessId(userName = "monitor")
@@ -316,17 +316,17 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
       LOGGER.debug(reportToString(report, columnHeaders));
     }
 
-    assertNotNull(report);
-    assertEquals(3, report.rowSize());
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(3);
 
     int[] row1 = report.getRow("USER_1_1").getCells();
-    assertArrayEquals(new int[] {6, 1, 1, 1, 1}, row1);
+    assertThat(row1).isEqualTo(new int[] {6, 1, 1, 1, 1});
 
     int[] row2 = report.getRow("USER_1_2").getCells();
-    assertArrayEquals(new int[] {3, 2, 2, 3, 1}, row2);
+    assertThat(row2).isEqualTo(new int[] {3, 2, 2, 3, 1});
 
     int[] row3 = report.getRow("USER_1_3").getCells();
-    assertArrayEquals(new int[] {2, 1, 0, 0, 1}, row3);
+    assertThat(row3).isEqualTo(new int[] {2, 1, 0, 0, 1});
   }
 
   @WithAccessId(userName = "monitor")
@@ -364,17 +364,17 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
       LOGGER.debug(reportToString(report, columnHeaders));
     }
 
-    assertNotNull(report);
-    assertEquals(3, report.rowSize());
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(3);
 
     int[] row1 = report.getRow("USER_1_1").getCells();
-    assertArrayEquals(new int[] {3, 3, 0, 1, 1}, row1);
+    assertThat(row1).isEqualTo(new int[] {3, 3, 0, 1, 1});
 
     int[] row2 = report.getRow("USER_1_2").getCells();
-    assertArrayEquals(new int[] {0, 2, 1, 6, 0}, row2);
+    assertThat(row2).isEqualTo(new int[] {0, 2, 1, 6, 0});
 
     int[] row3 = report.getRow("USER_1_3").getCells();
-    assertArrayEquals(new int[] {1, 0, 0, 0, 3}, row3);
+    assertThat(row3).isEqualTo(new int[] {1, 0, 0, 0, 3});
   }
 
   @WithAccessId(userName = "monitor")
@@ -394,16 +394,16 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
       LOGGER.debug(reportToString(report));
     }
 
-    assertNotNull(report);
-    assertEquals(3, report.rowSize());
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(3);
 
-    assertEquals(20, report.getRow("USER_1_1").getTotalValue());
-    assertEquals(20, report.getRow("USER_1_2").getTotalValue());
-    assertEquals(10, report.getRow("USER_1_3").getTotalValue());
-    assertEquals(2, report.getRow("USER_1_1").getCells()[2]);
-    assertEquals(1, report.getRow("USER_1_2").getCells()[1]);
+    assertThat(report.getRow("USER_1_1").getTotalValue()).isEqualTo(20);
+    assertThat(report.getRow("USER_1_2").getTotalValue()).isEqualTo(20);
+    assertThat(report.getRow("USER_1_3").getTotalValue()).isEqualTo(10);
+    assertThat(report.getRow("USER_1_1").getCells()[2]).isEqualTo(2);
+    assertThat(report.getRow("USER_1_2").getCells()[1]).isEqualTo(1);
 
-    assertEquals(50, report.getSumRow().getTotalValue());
+    assertThat(report.getSumRow().getTotalValue()).isEqualTo(50);
   }
 
   private List<TimeIntervalColumnHeader> getListOfColumnHeaders() {

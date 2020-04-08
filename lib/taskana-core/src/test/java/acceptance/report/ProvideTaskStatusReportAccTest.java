@@ -1,14 +1,13 @@
 package acceptance.report;
 
 import static java.util.Arrays.asList;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,9 +43,11 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
   @Test
   void testRoleCheck() {
     MonitorService monitorService = taskanaEngine.getMonitorService();
-    Assertions.assertThrows(
-        NotAuthorizedException.class,
-        () -> monitorService.createTaskStatusReportBuilder().buildReport());
+    ThrowingCallable call =
+        () -> {
+          monitorService.createTaskStatusReportBuilder().buildReport();
+        };
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(userName = "monitor")
@@ -60,24 +61,24 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(reportToString(report));
     }
-    assertNotNull(report);
-    assertEquals(3, report.rowSize());
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(3);
 
     Row<TaskQueryItem> row1 = report.getRow("DOMAIN_A");
-    assertArrayEquals(new int[] {22, 4, 0, 0, 0}, row1.getCells());
-    assertEquals(26, row1.getTotalValue());
+    assertThat(row1.getCells()).isEqualTo(new int[] {22, 4, 0, 0, 0});
+    assertThat(row1.getTotalValue()).isEqualTo(26);
 
     Row<TaskQueryItem> row2 = report.getRow("DOMAIN_B");
-    assertArrayEquals(new int[] {9, 3, 0, 0, 0}, row2.getCells());
-    assertEquals(12, row2.getTotalValue());
+    assertThat(row2.getCells()).isEqualTo(new int[] {9, 3, 0, 0, 0});
+    assertThat(row2.getTotalValue()).isEqualTo(12);
 
     Row<TaskQueryItem> row3 = report.getRow("DOMAIN_C");
-    assertArrayEquals(new int[] {10, 2, 0, 0, 0}, row3.getCells());
-    assertEquals(12, row3.getTotalValue());
+    assertThat(row3.getCells()).isEqualTo(new int[] {10, 2, 0, 0, 0});
+    assertThat(row3.getTotalValue()).isEqualTo(12);
 
     Row<TaskQueryItem> sumRow = report.getSumRow();
-    assertArrayEquals(new int[] {41, 9, 0, 0, 0}, sumRow.getCells());
-    assertEquals(50, sumRow.getTotalValue());
+    assertThat(sumRow.getCells()).isEqualTo(new int[] {41, 9, 0, 0, 0});
+    assertThat(sumRow.getTotalValue()).isEqualTo(50);
   }
 
   @WithAccessId(userName = "admin")
@@ -104,20 +105,20 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(reportToString(report));
     }
-    assertNotNull(report);
-    assertEquals(2, report.rowSize());
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(2);
 
     Row<TaskQueryItem> row1 = report.getRow("DOMAIN_A");
-    assertArrayEquals(new int[] {22, 4, 0, 0, 0}, row1.getCells());
-    assertEquals(26, row1.getTotalValue());
+    assertThat(row1.getCells()).isEqualTo(new int[] {22, 4, 0, 0, 0});
+    assertThat(row1.getTotalValue()).isEqualTo(26);
 
     Row<TaskQueryItem> row2 = report.getRow("DOMAIN_C");
-    assertArrayEquals(new int[] {10, 2, 0, 0, 0}, row2.getCells());
-    assertEquals(12, row2.getTotalValue());
+    assertThat(row2.getCells()).isEqualTo(new int[] {10, 2, 0, 0, 0});
+    assertThat(row2.getTotalValue()).isEqualTo(12);
 
     Row<TaskQueryItem> sumRow = report.getSumRow();
-    assertArrayEquals(new int[] {32, 6, 0, 0, 0}, sumRow.getCells());
-    assertEquals(38, sumRow.getTotalValue());
+    assertThat(sumRow.getCells()).isEqualTo(new int[] {32, 6, 0, 0, 0});
+    assertThat(sumRow.getTotalValue()).isEqualTo(38);
   }
 
   @WithAccessId(userName = "monitor")
@@ -136,24 +137,24 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(reportToString(report));
     }
-    assertNotNull(report);
-    assertEquals(3, report.rowSize());
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(3);
 
     Row<TaskQueryItem> row1 = report.getRow("DOMAIN_A");
-    assertArrayEquals(new int[] {22}, row1.getCells());
-    assertEquals(22, row1.getTotalValue());
+    assertThat(row1.getCells()).isEqualTo(new int[] {22});
+    assertThat(row1.getTotalValue()).isEqualTo(22);
 
     Row<TaskQueryItem> row2 = report.getRow("DOMAIN_B");
-    assertArrayEquals(new int[] {9}, row2.getCells());
-    assertEquals(9, row2.getTotalValue());
+    assertThat(row2.getCells()).isEqualTo(new int[] {9});
+    assertThat(row2.getTotalValue()).isEqualTo(9);
 
     Row<TaskQueryItem> row3 = report.getRow("DOMAIN_C");
-    assertArrayEquals(new int[] {10}, row3.getCells());
-    assertEquals(10, row3.getTotalValue());
+    assertThat(row3.getCells()).isEqualTo(new int[] {10});
+    assertThat(row3.getTotalValue()).isEqualTo(10);
 
     Row<TaskQueryItem> sumRow = report.getSumRow();
-    assertArrayEquals(new int[] {41}, sumRow.getCells());
-    assertEquals(41, sumRow.getTotalValue());
+    assertThat(sumRow.getCells()).isEqualTo(new int[] {41});
+    assertThat(sumRow.getTotalValue()).isEqualTo(41);
   }
 
   @WithAccessId(
@@ -185,9 +186,9 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     // String rep = reportToString(report);
     // System.out.println(rep);
     int[] summaryNumbers = report.getSumRow().getCells();
-    assertEquals(5, summaryNumbers.length);
-    assertEquals(2, summaryNumbers[3]); // number of cancelled tasks
-    assertEquals(3, summaryNumbers[4]); // number of terminated tasks
+    assertThat(summaryNumbers.length).isEqualTo(5);
+    assertThat(summaryNumbers[3]).isEqualTo(2); // number of cancelled tasks
+    assertThat(summaryNumbers[4]).isEqualTo(3); // number of terminated tasks
   }
 
   private String reportToString(TaskStatusReport report) {

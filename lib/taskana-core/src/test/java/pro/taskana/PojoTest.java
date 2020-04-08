@@ -1,5 +1,7 @@
 package pro.taskana;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.openpojo.reflection.impl.PojoClassFactory;
 import com.openpojo.validation.ValidatorBuilder;
 import com.openpojo.validation.rule.Rule;
@@ -17,7 +19,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
@@ -27,7 +28,7 @@ class PojoTest {
 
   @Test
   void testsThatPojoClassesAreFound() {
-    Assertions.assertTrue(getPojoClasses().count() > 0);
+    assertThat(getPojoClasses().count() > 0).isTrue();
   }
 
   @TestFactory

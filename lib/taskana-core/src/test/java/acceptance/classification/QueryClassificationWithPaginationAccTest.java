@@ -1,7 +1,6 @@
 package acceptance.classification;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
 import java.util.List;
@@ -25,7 +24,7 @@ class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
     ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().domainIn("DOMAIN_A").list(0, 5);
-    assertThat(results.size(), equalTo(5));
+    assertThat(results).hasSize(5);
   }
 
   @Test
@@ -33,7 +32,7 @@ class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
     ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().domainIn("DOMAIN_A").list(5, 5);
-    assertThat(results.size(), equalTo(5));
+    assertThat(results).hasSize(5);
   }
 
   @Test
@@ -43,15 +42,15 @@ class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
     // both will be 0, working
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().domainIn("DOMAIN_A").list(-1, -3);
-    assertThat(results.size(), equalTo(0));
+    assertThat(results).isEmpty();
 
     // limit will be 0
     results = classificationService.createClassificationQuery().domainIn("DOMAIN_A").list(1, -3);
-    assertThat(results.size(), equalTo(0));
+    assertThat(results).isEmpty();
 
     // offset will be 0
     results = classificationService.createClassificationQuery().domainIn("DOMAIN_A").list(-1, 3);
-    assertThat(results.size(), equalTo(3));
+    assertThat(results).hasSize(3);
   }
 
   @Test
@@ -66,7 +65,7 @@ class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
             .createClassificationQuery()
             .domainIn("DOMAIN_A")
             .listPage(pageNumber, pageSize);
-    assertThat(results.size(), equalTo(4));
+    assertThat(results).hasSize(4);
 
     // Getting full page
     pageNumber = 3;
@@ -76,7 +75,7 @@ class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
             .createClassificationQuery()
             .domainIn("DOMAIN_A")
             .listPage(pageNumber, pageSize);
-    assertThat(results.size(), equalTo(4));
+    assertThat(results).hasSize(4);
 
     // Getting last results on 1 big page
     pageNumber = 1;
@@ -86,7 +85,7 @@ class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
             .createClassificationQuery()
             .domainIn("DOMAIN_A")
             .listPage(pageNumber, pageSize);
-    assertThat(results.size(), equalTo(17));
+    assertThat(results).hasSize(17);
 
     // Getting last results on multiple pages
     pageNumber = 2;
@@ -96,7 +95,7 @@ class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
             .createClassificationQuery()
             .domainIn("DOMAIN_A")
             .listPage(pageNumber, pageSize);
-    assertThat(results.size(), equalTo(7));
+    assertThat(results).hasSize(7);
   }
 
   @Test
@@ -111,7 +110,7 @@ class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
             .createClassificationQuery()
             .domainIn("DOMAIN_A")
             .listPage(pageNumber, pageSize);
-    assertThat(results.size(), equalTo(0));
+    assertThat(results).isEmpty();
 
     // Negative will be 0 = all results
     pageNumber = 1;
@@ -121,7 +120,7 @@ class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
             .createClassificationQuery()
             .domainIn("DOMAIN_A")
             .listPage(pageNumber, pageSize);
-    assertThat(results.size(), equalTo(0));
+    assertThat(results).isEmpty();
 
     // Negative page = first page
     pageNumber = -1;
@@ -131,13 +130,13 @@ class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
             .createClassificationQuery()
             .domainIn("DOMAIN_A")
             .listPage(pageNumber, pageSize);
-    assertThat(results.size(), equalTo(10));
+    assertThat(results).hasSize(10);
   }
 
   @Test
   void testCountOfClassificationsQuery() {
     ClassificationService classificationService = taskanaEngine.getClassificationService();
     long count = classificationService.createClassificationQuery().domainIn("DOMAIN_A").count();
-    assertThat(count, equalTo(17L));
+    assertThat(count).isEqualTo(17L);
   }
 }

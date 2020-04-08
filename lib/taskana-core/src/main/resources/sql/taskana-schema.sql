@@ -2,6 +2,11 @@ CREATE SCHEMA IF NOT EXISTS %schemaName%;
 
 SET SCHEMA %schemaName%;
 
+-- MOved to h2 jdbc connect string, because of taskana-spring-example project is using two schemas. 
+-- There the order of the schema setup's (dbcustom, taskana) should be switched then we can set collation
+-- here in this file!
+-- SET COLLATION DEFAULT_de_DE;
+
 CREATE TABLE TASKANA_SCHEMA_VERSION(
         ID INT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),
         VERSION VARCHAR(255) NOT NULL,

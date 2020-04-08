@@ -1,11 +1,11 @@
 package acceptance.report;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -45,12 +45,13 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
     s3.setUpperAgeLimit(-11);
     selectedItems.add(s3);
 
-    Assertions.assertThrows(
-        NotAuthorizedException.class,
-        () ->
-            monitorService
-                .createClassificationReportBuilder()
-                .listTaskIdsForSelectedItems(selectedItems));
+    ThrowingCallable call =
+        () -> {
+          monitorService
+              .createClassificationReportBuilder()
+              .listTaskIdsForSelectedItems(selectedItems);
+        };
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(userName = "monitor")
@@ -88,13 +89,13 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
             .inWorkingDays()
             .listTaskIdsForSelectedItems(selectedItems);
 
-    assertEquals(6, ids.size());
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000001"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000004"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000007"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000010"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000033"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000006"));
+    assertThat(ids).hasSize(6);
+    assertThat(ids.contains("TKI:000000000000000000000000000000000001")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000004")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000007")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000010")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000033")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000006")).isTrue();
   }
 
   @WithAccessId(userName = "monitor")
@@ -134,9 +135,9 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
             .inWorkingDays()
             .listTaskIdsForSelectedItems(selectedItems);
 
-    assertEquals(2, ids.size());
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000001"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000033"));
+    assertThat(ids).hasSize(2);
+    assertThat(ids.contains("TKI:000000000000000000000000000000000001")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000033")).isTrue();
   }
 
   @WithAccessId(userName = "monitor")
@@ -179,10 +180,10 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
             .domainIn(domains)
             .listTaskIdsForSelectedItems(selectedItems);
 
-    assertEquals(3, ids.size());
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000001"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000004"));
-    assertTrue(ids.contains("TKI:000000000000000000000000000000000006"));
+    assertThat(ids).hasSize(3);
+    assertThat(ids.contains("TKI:000000000000000000000000000000000001")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000004")).isTrue();
+    assertThat(ids.contains("TKI:000000000000000000000000000000000006")).isTrue();
   }
 
   private List<TimeIntervalColumnHeader> getListOfColumnHeaders() {

@@ -1,7 +1,7 @@
 package pro.taskana.workbasket.internal;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -122,10 +122,10 @@ class WorkbasketReportBuilderImplTest {
         monitorMapperMock,
         taskanaEngineConfiguration);
 
-    assertNotNull(actualResult);
-    assertEquals(
-        actualResult.getRow("WBI:000000000000000000000000000000000001").getTotalValue(), 1);
-    assertEquals(actualResult.getSumRow().getTotalValue(), 1);
+    assertThat(actualResult).isNotNull();
+    assertThat(actualResult.getRow("WBI:000000000000000000000000000000000001").getTotalValue())
+        .isEqualTo(1);
+    assertThat(actualResult.getSumRow().getTotalValue()).isEqualTo(1);
   }
 
   @Test
@@ -193,11 +193,12 @@ class WorkbasketReportBuilderImplTest {
         monitorMapperMock,
         taskanaEngineConfiguration);
 
-    assertNotNull(actualResult);
-    assertEquals(
-        actualResult.getRow("WBI:000000000000000000000000000000000001").getTotalValue(), 1);
-    assertEquals(actualResult.getRow("WBI:000000000000000000000000000000000001").getCells()[0], 1);
-    assertEquals(actualResult.getSumRow().getTotalValue(), 1);
+    assertThat(actualResult).isNotNull();
+    assertThat(actualResult.getRow("WBI:000000000000000000000000000000000001").getTotalValue())
+        .isEqualTo(1);
+    assertThat(actualResult.getRow("WBI:000000000000000000000000000000000001").getCells()[0])
+        .isEqualTo(1);
+    assertThat(actualResult.getSumRow().getTotalValue()).isEqualTo(1);
   }
 
   @Test
@@ -264,22 +265,22 @@ class WorkbasketReportBuilderImplTest {
         monitorMapperMock,
         taskanaEngineConfiguration);
 
-    assertNotNull(actualResult);
-    assertEquals(expectedResult, actualResult);
+    assertThat(actualResult).isNotNull();
+    assertThat(actualResult).isEqualTo(expectedResult);
   }
 
   @Test
   void testListTaskIdsForSelectedItemsIsEmptyResult() {
     List<SelectedItem> selectedItems = new ArrayList<>();
-    Assertions.assertThrows(
-        InvalidArgumentException.class,
+    ThrowingCallable call =
         () -> {
           List<String> result =
               cut.createWorkbasketReportBuilder()
                   .workbasketIdIn(Arrays.asList("DieGibtsGarantiertNed"))
                   .listTaskIdsForSelectedItems(selectedItems);
-          assertNotNull(result);
-        });
+          assertThat(result).isNotNull();
+        };
+    assertThatThrownBy(call).isInstanceOf(InvalidArgumentException.class);
   }
 
   @Test
@@ -340,8 +341,8 @@ class WorkbasketReportBuilderImplTest {
         monitorMapperMock,
         taskanaEngineConfiguration);
 
-    assertNotNull(actualResult);
-    assertEquals(expectedResult, actualResult);
+    assertThat(actualResult).isNotNull();
+    assertThat(actualResult).isEqualTo(expectedResult);
   }
 
   @Test
@@ -351,7 +352,7 @@ class WorkbasketReportBuilderImplTest {
         cut.createWorkbasketReportBuilder()
             .workbasketIdIn(Arrays.asList("GibtsSicherNed"))
             .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_14);
-    assertNotNull(result);
+    assertThat(result).isNotNull();
   }
 
   @Test
@@ -423,9 +424,9 @@ class WorkbasketReportBuilderImplTest {
         monitorMapperMock,
         taskanaEngineConfiguration);
 
-    assertNotNull(actualResult);
-    assertEquals(
-        actualResult.getRow("WBI:000000000000000000000000000000000001").getTotalValue(), 1);
-    assertEquals(actualResult.getSumRow().getTotalValue(), 1);
+    assertThat(actualResult).isNotNull();
+    assertThat(actualResult.getRow("WBI:000000000000000000000000000000000001").getTotalValue())
+        .isEqualTo(1);
+    assertThat(actualResult.getSumRow().getTotalValue()).isEqualTo(1);
   }
 }

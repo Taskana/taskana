@@ -1,7 +1,6 @@
 package acceptance.jobs;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
 import java.sql.SQLException;
@@ -46,7 +45,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
 
     createAndCompleteTask();
     long totalTasksCount = taskService.createTaskQuery().count();
-    assertEquals(84, totalTasksCount);
+    assertThat(totalTasksCount).isEqualTo(84);
 
     taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(false);
 
@@ -54,14 +53,14 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
     job.run();
 
     totalTasksCount = taskService.createTaskQuery().count();
-    assertEquals(68, totalTasksCount);
+    assertThat(totalTasksCount).isEqualTo(68);
   }
 
   @WithAccessId(userName = "admin")
   @Test
   void shouldCleanCompletedTasksUntilDateWithSameParentBussiness() throws Exception {
     long totalTasksCount = taskService.createTaskQuery().count();
-    assertEquals(83, totalTasksCount);
+    assertThat(totalTasksCount).isEqualTo(83);
 
     taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(true);
 
@@ -80,7 +79,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
     job.run();
 
     totalTasksCount = taskService.createTaskQuery().count();
-    assertEquals(66, totalTasksCount);
+    assertThat(totalTasksCount).isEqualTo(66);
   }
 
   @WithAccessId(userName = "admin")
@@ -92,7 +91,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
     job.run();
 
     Task completedCreatedTask = taskService.getTask(createdTask.getId());
-    assertNotNull(completedCreatedTask);
+    assertThat(completedCreatedTask).isNotNull();
   }
 
   private Task createAndCompleteTask()

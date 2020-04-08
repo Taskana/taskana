@@ -1,23 +1,29 @@
 package acceptance.classification;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static java.lang.String.CASE_INSENSITIVE_ORDER;
+import static org.assertj.core.api.Assertions.assertThat;
 import static pro.taskana.classification.api.ClassificationQueryColumnName.CREATED;
 import static pro.taskana.classification.api.ClassificationQueryColumnName.NAME;
 import static pro.taskana.classification.api.ClassificationQueryColumnName.TYPE;
 import static pro.taskana.classification.api.ClassificationQueryColumnName.VALID_IN_DOMAIN;
+import static pro.taskana.common.api.BaseQuery.SortDirection.ASCENDING;
+import static pro.taskana.common.api.BaseQuery.SortDirection.DESCENDING;
 
 import acceptance.AbstractAccTest;
+import java.text.Collator;
 import java.time.Instant;
+import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Locale;
+import org.assertj.core.api.Condition;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.api.models.ClassificationSummary;
-import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -29,33 +35,29 @@ import pro.taskana.security.WithAccessId;
 @ExtendWith(JaasExtension.class)
 class QueryClassificationAccTest extends AbstractAccTest {
 
-  private static SortDirection asc = SortDirection.ASCENDING;
-  private static SortDirection desc = SortDirection.DESCENDING;
+  private static ClassificationService classificationService;
 
-  QueryClassificationAccTest() {
-    super();
+  @BeforeAll
+  static void setup() {
+    classificationService = taskanaEngine.getClassificationService();
   }
 
   @Test
   void testQueryClassificationValuesForColumnName() {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<String> columnValueList =
         classificationService.createClassificationQuery().listValues(NAME, null);
-    assertNotNull(columnValueList);
-    assertEquals(16, columnValueList.size());
+    assertThat(columnValueList).hasSize(16);
 
     columnValueList = classificationService.createClassificationQuery().listValues(TYPE, null);
-    assertNotNull(columnValueList);
-    assertEquals(2, columnValueList.size());
+    assertThat(columnValueList).hasSize(2);
 
     columnValueList =
         classificationService.createClassificationQuery().domainIn("").listValues(TYPE, null);
-    assertNotNull(columnValueList);
-    assertEquals(2, columnValueList.size());
+    assertThat(columnValueList).hasSize(2);
 
     columnValueList =
         classificationService.createClassificationQuery().domainIn("").listValues(CREATED, null);
-    assertNotNull(columnValueList);
+    assertThat(columnValueList);
 
     columnValueList =
         classificationService
@@ -63,13 +65,11 @@ class QueryClassificationAccTest extends AbstractAccTest {
             .domainIn("")
             .validInDomainEquals(false)
             .listValues(VALID_IN_DOMAIN, null);
-    assertNotNull(columnValueList);
-    assertEquals(1, columnValueList.size()); // all are false in ""
+    assertThat(columnValueList).hasSize(1); // all are false in ""
   }
 
   @Test
   void testFindClassificationsByCategoryAndDomain() {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> classificationSummaryList =
         classificationService
             .createClassificationQuery()
@@ -77,13 +77,11 @@ class QueryClassificationAccTest extends AbstractAccTest {
             .domainIn("DOMAIN_A")
             .list();
 
-    assertNotNull(classificationSummaryList);
-    assertEquals(2, classificationSummaryList.size());
+    assertThat(classificationSummaryList).hasSize(2);
   }
 
   @Test
   void testGetOneClassificationForMultipleDomains() {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> classifications =
         classificationService
             .createClassificationQuery()
@@ -91,13 +89,11 @@ class QueryClassificationAccTest extends AbstractAccTest {
             .domainIn("DOMAIN_A", "DOMAIN_B", "")
             .list();
 
-    assertNotNull(classifications);
-    assertEquals(2, classifications.size());
+    assertThat(classifications).hasSize(2);
   }
 
   @Test
   void testGetClassificationsForTypeAndParent() {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> classifications =
         classificationService
             .createClassificationQuery()
@@ -105,25 +101,16 @@ class QueryClassificationAccTest extends AbstractAccTest {
             .parentIdIn("")
             .list();
 
-    assertNotNull(classifications);
-    assertEquals(28, classifications.size());
-
-    List<ClassificationSummary> documentTypes =
-        classifications.stream()
-            .filter(c -> c.getType().equals("DOCUMENT"))
-            .collect(Collectors.toList());
-    assertEquals(2, documentTypes.size());
-
-    List<ClassificationSummary> taskTypes =
-        classifications.stream()
-            .filter(c -> c.getType().equals("TASK"))
-            .collect(Collectors.toList());
-    assertEquals(26, taskTypes.size());
+    assertThat(classifications)
+        .hasSize(28)
+        .extracting(ClassificationSummary::getType)
+        .containsOnly("TASK", "DOCUMENT")
+        .areExactly(26, new Condition<>("TASK"::equals, "TASK"))
+        .areExactly(2, new Condition<>("DOCUMENT"::equals, "DOCUMENT"));
   }
 
   @Test
   void testGetClassificationsForKeyAndCategories() {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> classifications =
         classificationService
             .createClassificationQuery()
@@ -131,25 +118,16 @@ class QueryClassificationAccTest extends AbstractAccTest {
             .categoryIn("EXTERNAL", "MANUAL")
             .list();
 
-    assertNotNull(classifications);
-    assertEquals(5, classifications.size());
-
-    List<ClassificationSummary> externCategory =
-        classifications.stream()
-            .filter(c -> c.getCategory().equals("EXTERNAL"))
-            .collect(Collectors.toList());
-    assertEquals(2, externCategory.size());
-
-    List<ClassificationSummary> manualCategory =
-        classifications.stream()
-            .filter(c -> c.getCategory().equals("MANUAL"))
-            .collect(Collectors.toList());
-    assertEquals(3, manualCategory.size());
+    assertThat(classifications)
+        .hasSize(5)
+        .extracting(ClassificationSummary::getCategory)
+        .containsOnly("EXTERNAL", "MANUAL")
+        .areExactly(2, new Condition<>("EXTERNAL"::equals, "EXTERNAL"))
+        .areExactly(3, new Condition<>("MANUAL"::equals, "MANUAL"));
   }
 
   @Test
   void testGetClassificationsWithParentId() {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> classifications =
         classificationService
             .createClassificationQuery()
@@ -158,8 +136,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
             .parentIdIn("CLI:100000000000000000000000000000000014")
             .list();
 
-    assertNotNull(classifications);
-    assertEquals(1, classifications.size());
+    assertThat(classifications).hasSize(1);
 
     classifications =
         classificationService
@@ -172,13 +149,11 @@ class QueryClassificationAccTest extends AbstractAccTest {
                 "CLI:100000000000000000000000000000000011")
             .domainIn("DOMAIN_A")
             .list();
-    assertNotNull(classifications);
-    assertEquals(2, classifications.size());
+    assertThat(classifications).hasSize(2);
   }
 
   @Test
   void testGetClassificationsWithParentKey() {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> classifications =
         classificationService
             .createClassificationQuery()
@@ -186,9 +161,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
             .categoryIn("EXTERNAL", "MANUAL")
             .parentKeyIn("L10000")
             .list();
-
-    assertNotNull(classifications);
-    assertEquals(2, classifications.size());
+    assertThat(classifications).hasSize(2);
 
     classifications =
         classificationService
@@ -198,26 +171,22 @@ class QueryClassificationAccTest extends AbstractAccTest {
             .parentKeyIn("L10000", "T2100", "T6310")
             .domainIn("DOMAIN_A")
             .list();
-    assertNotNull(classifications);
-    assertEquals(2, classifications.size());
+    assertThat(classifications).hasSize(2);
   }
 
   @Test
   void testGetClassificationsWithCustom1() throws InvalidArgumentException {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> classifications =
         classificationService
             .createClassificationQuery()
             .customAttributeIn("1", "VNR,RVNR,KOLVNR", "VNR")
             .domainIn("DOMAIN_A")
             .list();
-    assertNotNull(classifications);
-    assertEquals(14, classifications.size());
+    assertThat(classifications).hasSize(14);
   }
 
   @Test
   void testGetClassificationsWithCustom1Like() throws InvalidArgumentException {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> classifications =
         classificationService
             .createClassificationQuery()
@@ -225,27 +194,23 @@ class QueryClassificationAccTest extends AbstractAccTest {
             .domainIn("DOMAIN_A")
             .typeIn("TASK")
             .list();
-    assertNotNull(classifications);
-    assertEquals(13, classifications.size());
+    assertThat(classifications).hasSize(13);
   }
 
   @Test
   void testGetClassificationsWithParentAndCustom2() throws InvalidArgumentException {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> classifications =
         classificationService
             .createClassificationQuery()
             .parentIdIn("CLI:100000000000000000000000000000000004")
             .customAttributeIn("2", "TEXT_1", "TEXT_2")
             .list();
-    // zwei tests
-    assertNotNull(classifications);
-    assertEquals(3, classifications.size());
+
+    assertThat(classifications).hasSize(3);
   }
 
   @Test
   void testFindClassificationsByCreatedTimestamp() {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> classificationSummaryList =
         classificationService
             .createClassificationQuery()
@@ -253,20 +218,19 @@ class QueryClassificationAccTest extends AbstractAccTest {
             .createdWithin(todaysInterval())
             .list();
 
-    assertNotNull(classificationSummaryList);
-    assertEquals(17, classificationSummaryList.size());
+    assertThat(classificationSummaryList).hasSize(17);
   }
 
   @Test
   void testFindClassificationsByPriorityAndValidInDomain() {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> list =
         classificationService
             .createClassificationQuery()
             .validInDomainEquals(Boolean.TRUE)
             .priorityIn(1, 2, 3)
             .list();
-    assertEquals(15, list.size());
+
+    assertThat(list).hasSize(15);
   }
 
   @WithAccessId(userName = "businessadmin")
@@ -274,9 +238,9 @@ class QueryClassificationAccTest extends AbstractAccTest {
   void testFindClassificationByModifiedWithin()
       throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
           InvalidArgumentException {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     String clId = "CLI:200000000000000000000000000000000015";
     classificationService.updateClassification(classificationService.getClassification(clId));
+
     List<ClassificationSummary> list =
         classificationService
             .createClassificationQuery()
@@ -284,403 +248,419 @@ class QueryClassificationAccTest extends AbstractAccTest {
                 new TimeInterval(
                     classificationService.getClassification(clId).getModified(), Instant.now()))
             .list();
-    assertEquals(1, list.size());
-    assertEquals(clId, list.get(0).getId());
+
+    assertThat(list).hasSize(1).first().extracting(ClassificationSummary::getId).isEqualTo(clId);
   }
 
   @Test
   void testQueryForNameLike() {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().nameLike("Dynamik%").list();
-    assertEquals(8, results.size());
+    assertThat(results).hasSize(8);
   }
 
   @Test
   void testQueryForNameIn() {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
             .nameIn("Widerruf", "OLD-Leistungsfall")
             .list();
-    assertEquals(6, results.size());
+    assertThat(results).hasSize(6);
   }
 
   @Test
   void testQueryForDescriptionLike() {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().descriptionLike("Widerruf%").list();
-    assertEquals(9, results.size());
+    assertThat(results).hasSize(9);
   }
 
   @Test
   void testQueryForServiceLevelIn() {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().serviceLevelIn("P2D").list();
-    assertEquals(5, results.size());
+    assertThat(results).hasSize(5);
   }
 
   @Test
   void testQueryForServiceLevelLike() {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().serviceLevelLike("PT%").list();
-    assertEquals(0, results.size());
+    assertThat(results).isEmpty();
   }
 
   @Test
   void testQueryForApplicationEntryPointIn() {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
             .applicationEntryPointIn("specialPoint", "point0815")
             .list();
-    assertEquals(3, results.size());
+    assertThat(results).hasSize(3);
   }
 
   @Test
   void testQueryForApplicationEntryPointLike() {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
             .applicationEntryPointLike("point%")
             .list();
-    assertEquals(3, results.size());
+    assertThat(results).hasSize(3);
   }
 
   @Test
   void testQueryForCustom1In() throws InvalidArgumentException {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
             .customAttributeIn("1", "VNR,RVNR,KOLVNR, ANR", "VNR")
             .list();
-    assertEquals(17, results.size());
+    assertThat(results).hasSize(17);
   }
 
   @Test
   void testQueryForCustom2In() throws InvalidArgumentException {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
             .customAttributeIn("2", "CUSTOM2", "custom2")
             .list();
-    assertEquals(3, results.size());
+    assertThat(results).hasSize(3);
   }
 
   @Test
   void testQueryForCustom3In() throws InvalidArgumentException {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
             .customAttributeIn("3", "Custom3", "custom3")
             .list();
-    assertEquals(3, results.size());
+    assertThat(results).hasSize(3);
   }
 
   @Test
   void testQueryForCustom4In() throws InvalidArgumentException {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().customAttributeIn("4", "custom4").list();
-    assertEquals(3, results.size());
+    assertThat(results).hasSize(3);
   }
 
   @Test
   void testQueryForCustom5In() throws InvalidArgumentException {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().customAttributeIn("5", "custom5").list();
-    assertEquals(3, results.size());
+    assertThat(results).hasSize(3);
   }
 
   @Test
   void testQueryForCustom6In() throws InvalidArgumentException {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().customAttributeIn("6", "custom6").list();
-    assertEquals(3, results.size());
+    assertThat(results).hasSize(3);
   }
 
   @Test
   void testQueryForCustom7In() throws InvalidArgumentException {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
             .customAttributeIn("7", "custom7", "custom_7")
             .list();
-    assertEquals(3, results.size());
+    assertThat(results).hasSize(3);
   }
 
   @Test
   void testQueryForCustom8In() throws InvalidArgumentException {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
             .customAttributeIn("8", "custom_8", "custom8")
             .list();
-    assertEquals(3, results.size());
+    assertThat(results).hasSize(3);
   }
 
   @Test
   void testQueryForCustom2Like() throws InvalidArgumentException {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().customAttributeLike("2", "cus%").list();
-    assertEquals(4, results.size());
+    assertThat(results).hasSize(4);
   }
 
   @Test
   void testQueryForCustom3Like() throws InvalidArgumentException {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().customAttributeLike("3", "cus%").list();
-    assertEquals(4, results.size());
+    assertThat(results).hasSize(4);
   }
 
   @Test
   void testQueryForCustom4Like() throws InvalidArgumentException {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().customAttributeLike("4", "cus%").list();
-    assertEquals(4, results.size());
+    assertThat(results).hasSize(4);
   }
 
   @Test
   void testQueryForCustom5Like() throws InvalidArgumentException {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().customAttributeLike("5", "cus%").list();
-    assertEquals(4, results.size());
+    assertThat(results).hasSize(4);
   }
 
   @Test
   void testQueryForCustom6Like() throws InvalidArgumentException {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().customAttributeLike("6", "cus%").list();
-    assertEquals(4, results.size());
+    assertThat(results).hasSize(4);
   }
 
   @Test
   void testQueryForCustom7Like() throws InvalidArgumentException {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().customAttributeLike("7", "cus%").list();
-    assertEquals(4, results.size());
+    assertThat(results).hasSize(4);
   }
 
   @Test
   void testQueryForCustom8Like() throws InvalidArgumentException {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().customAttributeLike("8", "cus%").list();
-    assertEquals(4, results.size());
+    assertThat(results).hasSize(4);
   }
 
   @Test
   void testQueryForOrderByKeyAsc() {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
-        classificationService.createClassificationQuery().orderByKey(asc).list();
-    assertEquals("A12", results.get(0).getKey());
+        classificationService.createClassificationQuery().orderByKey(ASCENDING).list();
+
+    assertThat(results)
+        .hasSizeGreaterThan(2)
+        .extracting(ClassificationSummary::getKey)
+        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
   }
 
   @Test
   void testQueryForOrderByParentIdDesc() {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
-        classificationService
-            .createClassificationQuery()
-            .orderByDomain(asc)
-            .orderByParentId(desc)
-            .list();
-    assertEquals("CLI:000000000000000000000000000000000020", results.get(0).getParentId());
+        classificationService.createClassificationQuery().orderByParentId(DESCENDING).list();
+
+    assertThat(results)
+        .hasSizeGreaterThan(2)
+        .extracting(ClassificationSummary::getParentId)
+        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
   }
 
   @Test
   void testQueryForOrderByParentKeyDesc() {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
-        classificationService.createClassificationQuery().orderByParentKey(desc).list();
-    assertEquals("T6310", results.get(0).getParentKey());
+        classificationService.createClassificationQuery().orderByParentKey(DESCENDING).list();
+
+    assertThat(results)
+        .hasSizeGreaterThan(2)
+        .extracting(ClassificationSummary::getParentKey)
+        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
   }
 
   @Test
   void testQueryForOrderByCategoryDesc() {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
-        classificationService.createClassificationQuery().orderByCategory(desc).list();
-    assertEquals("MANUAL", results.get(0).getCategory());
+        classificationService.createClassificationQuery().orderByCategory(DESCENDING).list();
+
+    assertThat(results)
+        .hasSizeGreaterThan(2)
+        .extracting(ClassificationSummary::getCategory)
+        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
   }
 
   @Test
   void testQueryForOrderByDomainAsc() {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
-        classificationService.createClassificationQuery().orderByDomain(asc).list();
-    assertEquals("", results.get(0).getDomain());
+        classificationService.createClassificationQuery().orderByDomain(ASCENDING).list();
+
+    assertThat(results)
+        .hasSizeGreaterThan(2)
+        .extracting(ClassificationSummary::getDomain)
+        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
   }
 
   @Test
   void testQueryForOrderByPriorityDesc() {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
-        classificationService.createClassificationQuery().orderByPriority(desc).list();
-    assertEquals(999, results.get(0).getPriority());
+        classificationService.createClassificationQuery().orderByPriority(DESCENDING).list();
+
+    assertThat(results)
+        .hasSizeGreaterThan(2)
+        .isSortedAccordingTo(
+            Comparator.comparingInt(ClassificationSummary::getPriority).reversed());
   }
 
   @Test
-  void testQueryForOrderByNameAsc() {
+  void testQueryForOrderByNameAsc_old() {
     ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
-        classificationService.createClassificationQuery().orderByName(asc).list();
-    assertEquals("Beratungsprotokoll", results.get(0).getName());
+        classificationService.createClassificationQuery().orderByName(ASCENDING).list();
+    assertThat(results.get(0).getName()).isEqualTo("Beratungsprotokoll");
+  }
+
+  @Test
+  @Disabled("due to https://taskana.atlassian.net/browse/TSK-1197")
+  void testQueryForOrderByNameAsc() {
+    List<ClassificationSummary> results =
+        classificationService.createClassificationQuery().orderByName(ASCENDING).list();
+
+    assertThat(results)
+        .hasSizeGreaterThan(2)
+        .extracting(ClassificationSummary::getName)
+        .isSortedAccordingTo(Collator.getInstance(Locale.GERMANY));
   }
 
   @Test
   void testQueryForOrderByServiceLevelDesc() {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
-        classificationService.createClassificationQuery().orderByServiceLevel(desc).list();
-    assertEquals("P8D", results.get(0).getServiceLevel());
+        classificationService.createClassificationQuery().orderByServiceLevel(DESCENDING).list();
+
+    assertThat(results)
+        .hasSizeGreaterThan(2)
+        .extracting(ClassificationSummary::getServiceLevel)
+        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
   }
 
   @Test
   void testQueryForOrderByApplicationEntryPointAsc() {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
-            .orderByApplicationEntryPoint(asc)
-            .orderByName(asc)
+            .orderByApplicationEntryPoint(ASCENDING)
             .list();
-    assertEquals(
-        "CLI:100000000000000000000000000000000007", results.get(results.size() - 6).getId());
+
+    assertThat(results)
+        .hasSizeGreaterThan(2)
+        .extracting(ClassificationSummary::getApplicationEntryPoint)
+        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
   }
 
   @Test
   void testQueryForOrderByParentKeyAsc() {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
-        classificationService
-            .createClassificationQuery()
-            .orderByParentKey(asc)
-            .orderByDomain(asc)
-            .list();
-    assertEquals(
-        "CLI:000000000000000000000000000000000019", results.get(results.size() - 5).getId());
+        classificationService.createClassificationQuery().orderByParentKey(ASCENDING).list();
+
+    assertThat(results)
+        .hasSizeGreaterThan(2)
+        .extracting(ClassificationSummary::getParentKey)
+        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
   }
 
   @Test
   void testQueryForOrderByCustom1Desc() throws InvalidArgumentException {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
-            .orderByCustomAttribute("1", desc)
-            .orderByDomain(asc)
-            .orderByServiceLevel(desc)
+            .orderByCustomAttribute("1", DESCENDING)
             .list();
-    assertEquals("CLI:000000000000000000000000000000000002", results.get(0).getId());
+
+    assertThat(results)
+        .hasSizeGreaterThan(2)
+        .extracting(ClassificationSummary::getCustom1)
+        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
   }
 
   @Test
   void testQueryForOrderByCustom2Asc() throws InvalidArgumentException {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
-            .orderByCustomAttribute("2", asc)
-            .orderByName(asc)
-            .orderByParentKey(asc)
-            .orderByDomain(asc)
+            .orderByCustomAttribute("2", ASCENDING)
             .list();
-    assertEquals("CLI:000000000000000000000000000000000002", results.get(0).getId());
+
+    assertThat(results)
+        .hasSizeGreaterThan(2)
+        .extracting(ClassificationSummary::getCustom2)
+        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
   }
 
   @Test
   void testQueryForOrderByCustom3Desc() throws InvalidArgumentException {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
-            .orderByCustomAttribute("3", desc)
-            .orderByName(asc)
+            .orderByCustomAttribute("3", DESCENDING)
             .list();
-    assertEquals("CLI:100000000000000000000000000000000014", results.get(0).getId());
+
+    assertThat(results)
+        .hasSizeGreaterThan(2)
+        .extracting(ClassificationSummary::getCustom3)
+        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
   }
 
   @Test
   void testQueryForOrderByCustom4Asc() throws InvalidArgumentException {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
-            .orderByCustomAttribute("4", asc)
-            .orderByName(asc)
+            .orderByCustomAttribute("4", ASCENDING)
             .list();
-    assertEquals(
-        "CLI:100000000000000000000000000000000010", results.get(results.size() - 5).getId());
+
+    assertThat(results)
+        .hasSizeGreaterThan(2)
+        .extracting(ClassificationSummary::getCustom4)
+        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
   }
 
   @Test
   void testQueryForOrderByCustom5Desc() throws InvalidArgumentException {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
-            .orderByCustomAttribute("5", desc)
-            .orderByName(asc)
+            .orderByCustomAttribute("5", DESCENDING)
             .list();
-    assertEquals("CLI:100000000000000000000000000000000011", results.get(0).getId());
+
+    assertThat(results)
+        .hasSizeGreaterThan(2)
+        .extracting(ClassificationSummary::getCustom5)
+        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
   }
 
   @Test
   void testQueryForOrderByCustom6Asc() throws InvalidArgumentException {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
-            .orderByCustomAttribute("6", asc)
-            .orderByName(asc)
+            .orderByCustomAttribute("6", ASCENDING)
             .list();
-    assertEquals(
-        "CLI:100000000000000000000000000000000010", results.get(results.size() - 4).getId());
+
+    assertThat(results)
+        .hasSizeGreaterThan(2)
+        .extracting(ClassificationSummary::getCustom6)
+        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
   }
 
   @Test
   void testQueryForOrderByCustom7Desc() throws InvalidArgumentException {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
-            .orderByCustomAttribute("7", desc)
-            .orderByName(asc)
+            .orderByCustomAttribute("7", DESCENDING)
             .list();
-    assertEquals("CLI:100000000000000000000000000000000011", results.get(0).getId());
+
+    assertThat(results)
+        .hasSizeGreaterThan(2)
+        .extracting(ClassificationSummary::getCustom7)
+        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
   }
 
   @Test
   void testQueryForOrderByCustom8Asc() throws InvalidArgumentException {
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
-            .orderByCustomAttribute("8", asc)
-            .orderByName(asc)
+            .orderByCustomAttribute("8", ASCENDING)
             .list();
-    assertEquals(
-        "CLI:100000000000000000000000000000000010", results.get(results.size() - 4).getId());
+
+    assertThat(results)
+        .hasSizeGreaterThan(2)
+        .extracting(ClassificationSummary::getCustom8)
+        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
   }
 }

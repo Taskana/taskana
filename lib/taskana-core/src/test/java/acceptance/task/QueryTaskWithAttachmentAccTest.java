@@ -1,9 +1,7 @@
 package acceptance.task;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.util.IterableUtil.toArray;
 
 import acceptance.AbstractAccTest;
 import java.util.Comparator;
@@ -30,6 +28,8 @@ import pro.taskana.task.api.models.TaskSummary;
 @ExtendWith(JaasExtension.class)
 class QueryTaskWithAttachmentAccTest extends AbstractAccTest {
 
+  private static final Comparator<Object> REFERENCE_COMPARATOR = (o1, o2) -> o1 == o2 ? 0 : -1;
+
   QueryTaskWithAttachmentAccTest() {
     super();
   }
@@ -41,11 +41,11 @@ class QueryTaskWithAttachmentAccTest extends AbstractAccTest {
   void testGetAttachmentSummariesFromTask() {
     TaskService taskService = taskanaEngine.getTaskService();
     List<TaskSummary> tasks = taskService.createTaskQuery().classificationKeyIn("L110102").list();
-    assertEquals(1, tasks.size());
+    assertThat(tasks).hasSize(1);
 
     List<AttachmentSummary> attachmentSummaries = tasks.get(0).getAttachmentSummaries();
-    assertNotNull(attachmentSummaries);
-    assertEquals(2, attachmentSummaries.size());
+    assertThat(attachmentSummaries).isNotNull();
+    assertThat(attachmentSummaries).hasSize(2);
   }
 
   @WithAccessId(userName = "user_1_2")
@@ -53,11 +53,11 @@ class QueryTaskWithAttachmentAccTest extends AbstractAccTest {
   void testGetNoAttachmentSummaryFromTask() {
     TaskService taskService = taskanaEngine.getTaskService();
     List<TaskSummary> tasks = taskService.createTaskQuery().list();
-    assertEquals(30, tasks.size());
+    assertThat(tasks).hasSize(30);
 
     List<AttachmentSummary> attachmentSummaries = tasks.get(0).getAttachmentSummaries();
-    assertNotNull(attachmentSummaries);
-    assertTrue(attachmentSummaries.isEmpty());
+    assertThat(attachmentSummaries).isNotNull();
+    assertThat(attachmentSummaries).isEmpty();
   }
 
   @WithAccessId(
@@ -67,8 +67,8 @@ class QueryTaskWithAttachmentAccTest extends AbstractAccTest {
   void testIfNewTaskHasEmptyAttachmentList() {
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.newTask("WBI:100000000000000000000000000000000006");
-    assertNotNull(task.getAttachments());
-    assertNotNull(task.asSummary().getAttachmentSummaries());
+    assertThat(task.getAttachments()).isNotNull();
+    assertThat(task.asSummary().getAttachmentSummaries()).isNotNull();
   }
 
   @WithAccessId(
@@ -81,48 +81,20 @@ class QueryTaskWithAttachmentAccTest extends AbstractAccTest {
     // find Task with ID TKI:00...00
     List<TaskSummary> tasks =
         taskService.createTaskQuery().idIn("TKI:000000000000000000000000000000000000").list();
-    assertEquals(1, tasks.size());
-    List<AttachmentSummary> queryAttachmentSummaries =
-        tasks.get(0).getAttachmentSummaries().stream()
-            .sorted(Comparator.comparing(AttachmentSummary::getId))
-            .collect(Collectors.toList());
+    assertThat(tasks).hasSize(1);
+    List<AttachmentSummary> queryAttachmentSummaries = tasks.get(0).getAttachmentSummaries();
 
     Task originalTask = taskService.getTask("TKI:000000000000000000000000000000000000");
-    List<Attachment> originalAttachments =
+    List<AttachmentSummary> originalAttachments =
         originalTask.getAttachments().stream()
-            .sorted(Comparator.comparing(Attachment::getId))
+            .map(Attachment::asSummary)
             .collect(Collectors.toList());
 
-    assertEquals(originalAttachments.size(), queryAttachmentSummaries.size());
-
-    for (int i = 0; i < queryAttachmentSummaries.size(); i++) {
-      // Test if it's the Summary of the Original Attachment
-      assertEquals(originalAttachments.get(i).asSummary(), queryAttachmentSummaries.get(i));
-      // Test if the values are correct
-      assertEquals(
-          originalAttachments.get(i).getChannel(), queryAttachmentSummaries.get(i).getChannel());
-      assertEquals(
-          originalAttachments.get(i).getClassificationSummary(),
-          queryAttachmentSummaries.get(i).getClassificationSummary());
-      assertEquals(
-          originalAttachments.get(i).getCreated(), queryAttachmentSummaries.get(i).getCreated());
-      assertEquals(originalAttachments.get(i).getId(), queryAttachmentSummaries.get(i).getId());
-      assertEquals(
-          originalAttachments.get(i).getModified(), queryAttachmentSummaries.get(i).getModified());
-      assertEquals(
-          originalAttachments.get(i).getObjectReference(),
-          queryAttachmentSummaries.get(i).getObjectReference());
-      assertEquals(
-          originalAttachments.get(i).getReceived(), queryAttachmentSummaries.get(i).getReceived());
-      assertEquals(
-          originalAttachments.get(i).getTaskId(), queryAttachmentSummaries.get(i).getTaskId());
-
-      // Verify that they're not the same Object
-      assertNotEquals(
-          originalAttachments.get(i).hashCode(), queryAttachmentSummaries.get(i).hashCode());
-      assertNotEquals(
-          originalAttachments.get(i).getClass(), queryAttachmentSummaries.get(i).getClass());
-    }
+    assertThat(queryAttachmentSummaries)
+        .hasSize(originalAttachments.size())
+        .containsOnly(toArray(originalAttachments)) // same values
+        .usingElementComparator(REFERENCE_COMPARATOR)
+        .doesNotContain(toArray(originalAttachments)); // but not same reference
   }
 
   @WithAccessId(
@@ -139,47 +111,19 @@ class QueryTaskWithAttachmentAccTest extends AbstractAccTest {
             .classificationKeyIn("T2000")
             .customAttributeIn("1", "custom1")
             .list();
-    assertEquals(1, tasks.size());
-    List<AttachmentSummary> queryAttachmentSummaries =
-        tasks.get(0).getAttachmentSummaries().stream()
-            .sorted(Comparator.comparing(AttachmentSummary::getId))
-            .collect(Collectors.toList());
+    assertThat(tasks).hasSize(1);
+    List<AttachmentSummary> queryAttachmentSummaries = tasks.get(0).getAttachmentSummaries();
 
     Task originalTask = taskService.getTask("TKI:000000000000000000000000000000000000");
-    List<Attachment> originalAttachments =
+    List<AttachmentSummary> originalAttachments =
         originalTask.getAttachments().stream()
-            .sorted(Comparator.comparing(Attachment::getId))
+            .map(Attachment::asSummary)
             .collect(Collectors.toList());
 
-    assertEquals(originalAttachments.size(), queryAttachmentSummaries.size());
-
-    for (int i = 0; i < queryAttachmentSummaries.size(); i++) {
-      // Test if it's the Summary of the Original Attachment
-      assertEquals(originalAttachments.get(i).asSummary(), queryAttachmentSummaries.get(i));
-      // Test if the values are correct
-      assertEquals(
-          originalAttachments.get(i).getChannel(), queryAttachmentSummaries.get(i).getChannel());
-      assertEquals(
-          originalAttachments.get(i).getClassificationSummary(),
-          queryAttachmentSummaries.get(i).getClassificationSummary());
-      assertEquals(
-          originalAttachments.get(i).getCreated(), queryAttachmentSummaries.get(i).getCreated());
-      assertEquals(originalAttachments.get(i).getId(), queryAttachmentSummaries.get(i).getId());
-      assertEquals(
-          originalAttachments.get(i).getModified(), queryAttachmentSummaries.get(i).getModified());
-      assertEquals(
-          originalAttachments.get(i).getObjectReference(),
-          queryAttachmentSummaries.get(i).getObjectReference());
-      assertEquals(
-          originalAttachments.get(i).getReceived(), queryAttachmentSummaries.get(i).getReceived());
-      assertEquals(
-          originalAttachments.get(i).getTaskId(), queryAttachmentSummaries.get(i).getTaskId());
-
-      // Verify that they're not the same Object
-      assertNotEquals(
-          originalAttachments.get(i).hashCode(), queryAttachmentSummaries.get(i).hashCode());
-      assertNotEquals(
-          originalAttachments.get(i).getClass(), queryAttachmentSummaries.get(i).getClass());
-    }
+    assertThat(queryAttachmentSummaries)
+        .hasSize(originalAttachments.size())
+        .containsOnly(toArray(originalAttachments)) // same values
+        .usingElementComparator(REFERENCE_COMPARATOR)
+        .doesNotContain(toArray(originalAttachments)); // but not same reference
   }
 }

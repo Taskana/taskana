@@ -1,6 +1,6 @@
 package pro.taskana.task.internal;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -47,7 +47,7 @@ class ObjectReferenceQueryImplTest {
             .systemInstanceIn("1", "2")
             .systemIn("superId")
             .list();
-    assertNotNull(result);
+    assertThat(result).isNotNull();
   }
 
   @Test
@@ -62,7 +62,7 @@ class ObjectReferenceQueryImplTest {
             .systemInstanceIn("1", "2")
             .systemIn("superId")
             .list(1, 1);
-    assertNotNull(result);
+    assertThat(result).isNotNull();
   }
 
   @Test
@@ -77,6 +77,6 @@ class ObjectReferenceQueryImplTest {
             .systemInstanceIn("1", "2")
             .systemIn("superId")
             .single();
-    assertNotNull(result);
+    assertThat(result).isNotNull();
   }
 }

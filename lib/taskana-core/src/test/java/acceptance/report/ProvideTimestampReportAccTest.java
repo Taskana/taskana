@@ -1,7 +1,6 @@
 package acceptance.report;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -48,151 +47,153 @@ class ProvideTimestampReportAccTest extends AbstractReportAccTest {
     final HashSet<String> org1Set = new HashSet<>(Arrays.asList("N/A", "org1"));
     final HashSet<String> allOtherOrgLevelSet = new HashSet<>(Collections.singletonList("N/A"));
 
-    assertEquals(2, timestampReport.getRows().size());
-    assertEquals(
-        new HashSet<>(Arrays.asList("CREATED", "COMPLETED")), timestampReport.getRows().keySet());
+    assertThat(timestampReport.getRows()).hasSize(2);
+    assertThat(timestampReport.getRows().keySet())
+        .isEqualTo(new HashSet<>(Arrays.asList("CREATED", "COMPLETED")));
 
     // * * * * * * * * * * * * * * * * * *  * *  * TEST THE CREATED ROW * * * * * * * * * * * * * *
     // * * * * * * *
 
     TimestampRow statusRow = timestampReport.getRow("CREATED");
-    assertEquals(2, statusRow.getFoldableRowCount());
-    assertEquals(org1Set, statusRow.getFoldableRowKeySet());
+    assertThat(statusRow.getFoldableRowCount()).isEqualTo(2);
+    assertThat(statusRow.getFoldableRowKeySet()).isEqualTo(org1Set);
     // 2 Entries with -8 days and one with -9 days.
-    assertArrayEquals(new int[] {0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0}, statusRow.getCells());
-    assertEquals(3, statusRow.getTotalValue());
+    assertThat(statusRow.getCells())
+        .isEqualTo(new int[] {0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0});
+    assertThat(statusRow.getTotalValue()).isEqualTo(3);
 
     // 'CREATED' -> 'org1'
     TimestampRow.OrgLevel1Row org1Row = statusRow.getFoldableRow("org1");
-    assertEquals(1, org1Row.getFoldableRowCount());
-    assertEquals(allOtherOrgLevelSet, org1Row.getFoldableRowKeySet());
+    assertThat(org1Row.getFoldableRowCount()).isEqualTo(1);
+    assertThat(org1Row.getFoldableRowKeySet()).isEqualTo(allOtherOrgLevelSet);
     // only task TKI:000000000000000000000000000000000029 in 'org1'.
-    assertArrayEquals(new int[] {0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0}, org1Row.getCells());
-    assertEquals(1, org1Row.getTotalValue());
+    assertThat(org1Row.getCells()).isEqualTo(new int[] {0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0});
+    assertThat(org1Row.getTotalValue()).isEqualTo(1);
 
     // 'CREATED' -> 'org1'/'N/A'
     TimestampRow.OrgLevel2Row org2Row = org1Row.getFoldableRow("N/A");
-    assertEquals(1, org2Row.getFoldableRowCount());
-    assertEquals(allOtherOrgLevelSet, org2Row.getFoldableRowKeySet());
+    assertThat(org2Row.getFoldableRowCount()).isEqualTo(1);
+    assertThat(org2Row.getFoldableRowKeySet()).isEqualTo(allOtherOrgLevelSet);
     // Since no further separation (in org level) they should be the same.
-    assertArrayEquals(org1Row.getCells(), org2Row.getCells());
-    assertEquals(org1Row.getTotalValue(), org2Row.getTotalValue());
+    assertThat(org2Row.getCells()).isEqualTo(org1Row.getCells());
+    assertThat(org2Row.getTotalValue()).isEqualTo(org1Row.getTotalValue());
 
     // 'CREATED' -> 'org1'/'N/A'/'N/A'
     TimestampRow.OrgLevel3Row org3Row = org2Row.getFoldableRow("N/A");
-    assertEquals(1, org2Row.getFoldableRowCount());
-    assertEquals(allOtherOrgLevelSet, org3Row.getFoldableRowKeySet());
+    assertThat(org2Row.getFoldableRowCount()).isEqualTo(1);
+    assertThat(org3Row.getFoldableRowKeySet()).isEqualTo(allOtherOrgLevelSet);
     // Since no further separation (in org level) they should be the same.
-    assertArrayEquals(org2Row.getCells(), org3Row.getCells());
-    assertEquals(org2Row.getTotalValue(), org3Row.getTotalValue());
+    assertThat(org3Row.getCells()).isEqualTo(org2Row.getCells());
+    assertThat(org3Row.getTotalValue()).isEqualTo(org2Row.getTotalValue());
 
     // 'CREATED' -> 'org1'/'N/A'/'N/A'/'N/A'
     SingleRow<TimestampQueryItem> org4Row = org3Row.getFoldableRow("N/A");
     // Since no further separation (in org level) they should be the same.
-    assertArrayEquals(org3Row.getCells(), org4Row.getCells());
-    assertEquals(org3Row.getTotalValue(), org4Row.getTotalValue());
+    assertThat(org4Row.getCells()).isEqualTo(org3Row.getCells());
+    assertThat(org4Row.getTotalValue()).isEqualTo(org3Row.getTotalValue());
 
     // 'CREATED' -> 'N/A'
     org1Row = statusRow.getFoldableRow("N/A");
-    assertEquals(1, org1Row.getFoldableRowCount());
-    assertEquals(allOtherOrgLevelSet, org1Row.getFoldableRowKeySet());
+    assertThat(org1Row.getFoldableRowCount()).isEqualTo(1);
+    assertThat(org1Row.getFoldableRowKeySet()).isEqualTo(allOtherOrgLevelSet);
     // task TKI:000000000000000000000000000000000030,
     //  and TKI:000000000000000000000000000000000036 in 'N/A'.
-    assertArrayEquals(new int[] {0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0}, org1Row.getCells());
-    assertEquals(2, org1Row.getTotalValue());
+    assertThat(org1Row.getCells()).isEqualTo(new int[] {0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0});
+    assertThat(org1Row.getTotalValue()).isEqualTo(2);
 
     // 'CREATED' -> 'N/A'/'N/A'
     org2Row = org1Row.getFoldableRow("N/A");
-    assertEquals(1, org2Row.getFoldableRowCount());
-    assertEquals(allOtherOrgLevelSet, org2Row.getFoldableRowKeySet());
+    assertThat(org2Row.getFoldableRowCount()).isEqualTo(1);
+    assertThat(org2Row.getFoldableRowKeySet()).isEqualTo(allOtherOrgLevelSet);
     // Since no further separation (in org level) they should be the same.
-    assertArrayEquals(org1Row.getCells(), org2Row.getCells());
-    assertEquals(org1Row.getTotalValue(), org2Row.getTotalValue());
+    assertThat(org2Row.getCells()).isEqualTo(org1Row.getCells());
+    assertThat(org2Row.getTotalValue()).isEqualTo(org1Row.getTotalValue());
 
     // 'CREATED' -> 'N/A'/'N/A'/'N/A'
     org3Row = org2Row.getFoldableRow("N/A");
-    assertEquals(1, org2Row.getFoldableRowCount());
-    assertEquals(allOtherOrgLevelSet, org3Row.getFoldableRowKeySet());
+    assertThat(org2Row.getFoldableRowCount()).isEqualTo(1);
+    assertThat(org3Row.getFoldableRowKeySet()).isEqualTo(allOtherOrgLevelSet);
     // Since no further separation (in org level) they should be the same.
-    assertArrayEquals(org2Row.getCells(), org3Row.getCells());
-    assertEquals(org2Row.getTotalValue(), org3Row.getTotalValue());
+    assertThat(org3Row.getCells()).isEqualTo(org2Row.getCells());
+    assertThat(org3Row.getTotalValue()).isEqualTo(org2Row.getTotalValue());
 
     // 'CREATED' -> 'N/A'/'N/A'/'N/A'/'N/A'
     org4Row = org3Row.getFoldableRow("N/A");
     // Since no further separation (in org level) they should be the same.
-    assertArrayEquals(org3Row.getCells(), org4Row.getCells());
-    assertEquals(org3Row.getTotalValue(), org4Row.getTotalValue());
+    assertThat(org4Row.getCells()).isEqualTo(org3Row.getCells());
+    assertThat(org4Row.getTotalValue()).isEqualTo(org3Row.getTotalValue());
 
     // * * * * * * * * * * * * * * * * * *  * *  * TEST THE COMPLETED ROW * * * * * * * * * * * * *
     // * * * * * * * *
 
     statusRow = timestampReport.getRow("COMPLETED");
-    assertEquals(2, statusRow.getFoldableRowCount());
-    assertEquals(org1Set, statusRow.getFoldableRowKeySet());
+    assertThat(statusRow.getFoldableRowCount()).isEqualTo(2);
+    assertThat(statusRow.getFoldableRowKeySet()).isEqualTo(org1Set);
     // 2 Entries with -1 days, one with -2 days and one with -7 days.
-    assertArrayEquals(new int[] {0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 2}, statusRow.getCells());
-    assertEquals(4, statusRow.getTotalValue());
+    assertThat(statusRow.getCells())
+        .isEqualTo(new int[] {0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 2});
+    assertThat(statusRow.getTotalValue()).isEqualTo(4);
 
     // 'COMPLETED' -> 'org1'
     org1Row = statusRow.getFoldableRow("org1");
-    assertEquals(1, org1Row.getFoldableRowCount());
-    assertEquals(allOtherOrgLevelSet, org1Row.getFoldableRowKeySet());
+    assertThat(org1Row.getFoldableRowCount()).isEqualTo(1);
+    assertThat(org1Row.getFoldableRowKeySet()).isEqualTo(allOtherOrgLevelSet);
     // only task TKI:000000000000000000000000000000000029 in 'org1'.
-    assertArrayEquals(new int[] {0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0}, org1Row.getCells());
-    assertEquals(1, org1Row.getTotalValue());
+    assertThat(org1Row.getCells()).isEqualTo(new int[] {0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0});
+    assertThat(org1Row.getTotalValue()).isEqualTo(1);
 
     // 'COMPLETED' -> 'org1'/'N/A'
     org2Row = org1Row.getFoldableRow("N/A");
-    assertEquals(1, org2Row.getFoldableRowCount());
-    assertEquals(allOtherOrgLevelSet, org2Row.getFoldableRowKeySet());
+    assertThat(org2Row.getFoldableRowCount()).isEqualTo(1);
+    assertThat(org2Row.getFoldableRowKeySet()).isEqualTo(allOtherOrgLevelSet);
     // Since no further separation (in org level) they should be the same.
-    assertArrayEquals(org1Row.getCells(), org2Row.getCells());
-    assertEquals(org1Row.getTotalValue(), org2Row.getTotalValue());
+    assertThat(org2Row.getCells()).isEqualTo(org1Row.getCells());
+    assertThat(org2Row.getTotalValue()).isEqualTo(org1Row.getTotalValue());
 
     // 'COMPLETED' -> 'org1'/'N/A'/'N/A'
     org3Row = org2Row.getFoldableRow("N/A");
-    assertEquals(1, org2Row.getFoldableRowCount());
-    assertEquals(allOtherOrgLevelSet, org3Row.getFoldableRowKeySet());
+    assertThat(org2Row.getFoldableRowCount()).isEqualTo(1);
+    assertThat(org3Row.getFoldableRowKeySet()).isEqualTo(allOtherOrgLevelSet);
     // Since no further separation (in org level) they should be the same.
-    assertArrayEquals(org2Row.getCells(), org3Row.getCells());
-    assertEquals(org2Row.getTotalValue(), org3Row.getTotalValue());
+    assertThat(org3Row.getCells()).isEqualTo(org2Row.getCells());
+    assertThat(org3Row.getTotalValue()).isEqualTo(org2Row.getTotalValue());
 
     // 'COMPLETED' -> 'org1'/'N/A'/'N/A'/'N/A'
     org4Row = org3Row.getFoldableRow("N/A");
     // Since no further separation (in org level) they should be the same.
-    assertArrayEquals(org3Row.getCells(), org4Row.getCells());
-    assertEquals(org3Row.getTotalValue(), org4Row.getTotalValue());
+    assertThat(org4Row.getCells()).isEqualTo(org3Row.getCells());
+    assertThat(org4Row.getTotalValue()).isEqualTo(org3Row.getTotalValue());
 
     // 'COMPLETED' -> 'N/A'
     org1Row = statusRow.getFoldableRow("N/A");
-    assertEquals(1, org1Row.getFoldableRowCount());
-    assertEquals(allOtherOrgLevelSet, org1Row.getFoldableRowKeySet());
+    assertThat(org1Row.getFoldableRowCount()).isEqualTo(1);
+    assertThat(org1Row.getFoldableRowKeySet()).isEqualTo(allOtherOrgLevelSet);
     // task TKI:000000000000000000000000000000000032,
     //      TKI:000000000000000000000000000000000034,
     //  and TKI:000000000000000000000000000000000037  in 'N/A'.
-    assertArrayEquals(new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2}, org1Row.getCells());
-    assertEquals(3, org1Row.getTotalValue());
+    assertThat(org1Row.getCells()).isEqualTo(new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2});
+    assertThat(org1Row.getTotalValue()).isEqualTo(3);
 
     // 'COMPLETED' -> 'N/A'/'N/A'
     org2Row = org1Row.getFoldableRow("N/A");
-    assertEquals(1, org2Row.getFoldableRowCount());
-    assertEquals(allOtherOrgLevelSet, org2Row.getFoldableRowKeySet());
+    assertThat(org2Row.getFoldableRowCount()).isEqualTo(1);
+    assertThat(org2Row.getFoldableRowKeySet()).isEqualTo(allOtherOrgLevelSet);
     // Since no further separation (in org level) they should be the same.
-    assertArrayEquals(org1Row.getCells(), org2Row.getCells());
-    assertEquals(org1Row.getTotalValue(), org2Row.getTotalValue());
+    assertThat(org2Row.getCells()).isEqualTo(org1Row.getCells());
+    assertThat(org2Row.getTotalValue()).isEqualTo(org1Row.getTotalValue());
 
     // 'COMPLETED' -> 'N/A'/'N/A'/'N/A'
     org3Row = org2Row.getFoldableRow("N/A");
-    assertEquals(1, org2Row.getFoldableRowCount());
-    assertEquals(allOtherOrgLevelSet, org3Row.getFoldableRowKeySet());
+    assertThat(org2Row.getFoldableRowCount()).isEqualTo(1);
+    assertThat(org3Row.getFoldableRowKeySet()).isEqualTo(allOtherOrgLevelSet);
     // Since no further separation (in org level) they should be the same.
-    assertArrayEquals(org2Row.getCells(), org3Row.getCells());
-    assertEquals(org2Row.getTotalValue(), org3Row.getTotalValue());
+    assertThat(org3Row.getCells()).isEqualTo(org2Row.getCells());
+    assertThat(org3Row.getTotalValue()).isEqualTo(org2Row.getTotalValue());
 
     // 'COMPLETED' -> 'N/A'/'N/A'/'N/A'/'N/A'
     org4Row = org3Row.getFoldableRow("N/A");
     // Since no further separation (in org level) they should be the same.
-    assertArrayEquals(org3Row.getCells(), org4Row.getCells());
-    assertEquals(org3Row.getTotalValue(), org4Row.getTotalValue());
+    assertThat(org4Row.getCells()).isEqualTo(org3Row.getCells());
+    assertThat(org4Row.getTotalValue()).isEqualTo(org3Row.getTotalValue());
   }
 }

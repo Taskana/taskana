@@ -2,8 +2,6 @@ package acceptance.classification;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import acceptance.AbstractAccTest;
 import org.junit.jupiter.api.Test;
@@ -265,7 +263,7 @@ class CreateClassificationAccTest extends AbstractAccTest {
 
     newClassification = classificationService.createClassification(newClassification);
 
-    assertNotNull(newClassification.getId());
-    assertNotEquals(newClassification.getId(), oldClassification.getId());
+    assertThat(newClassification.getId()).isNotNull();
+    assertThat(newClassification.getId()).isNotEqualTo(oldClassification.getId());
   }
 }

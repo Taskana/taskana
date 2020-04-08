@@ -1,9 +1,6 @@
 package acceptance.task;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
 import java.time.Instant;
@@ -47,14 +44,14 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
             .orderByCreated(asc)
             .list();
 
-    assertThat(results.size(), equalTo(50));
+    assertThat(results).hasSize(50);
     TaskSummary previousSummary = null;
     for (TaskSummary taskSummary : results) {
       Instant cr = taskSummary.getCreated();
-      assertTrue(interval1.contains(cr) || interval2.contains(cr));
+      assertThat(interval1.contains(cr) || interval2.contains(cr)).isTrue();
 
       if (previousSummary != null) {
-        assertFalse(previousSummary.getCreated().isAfter(taskSummary.getCreated()));
+        assertThat(previousSummary.getCreated().isAfter(taskSummary.getCreated())).isFalse();
       }
       previousSummary = taskSummary;
     }
@@ -72,14 +69,14 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
     List<TaskSummary> results =
         taskService.createTaskQuery().createdWithin(interval1).orderByCreated(asc).list();
 
-    assertThat(results.size(), equalTo(37));
+    assertThat(results).hasSize(37);
     TaskSummary previousSummary = null;
     for (TaskSummary taskSummary : results) {
       Instant cr = taskSummary.getCreated();
-      assertTrue(interval1.contains(cr));
+      assertThat(interval1.contains(cr)).isTrue();
 
       if (previousSummary != null) {
-        assertFalse(previousSummary.getCreated().isAfter(taskSummary.getCreated()));
+        assertThat(previousSummary.getCreated().isAfter(taskSummary.getCreated())).isFalse();
       }
       previousSummary = taskSummary;
     }
@@ -97,14 +94,14 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
     List<TaskSummary> results =
         taskService.createTaskQuery().createdWithin(interval1).orderByCreated(asc).list();
 
-    assertThat(results.size(), equalTo(48));
+    assertThat(results).hasSize(48);
     TaskSummary previousSummary = null;
     for (TaskSummary taskSummary : results) {
       Instant cr = taskSummary.getCreated();
-      assertTrue(interval1.contains(cr));
+      assertThat(interval1.contains(cr)).isTrue();
 
       if (previousSummary != null) {
-        assertFalse(previousSummary.getCreated().isAfter(taskSummary.getCreated()));
+        assertThat(previousSummary.getCreated().isAfter(taskSummary.getCreated())).isFalse();
       }
       previousSummary = taskSummary;
     }
@@ -129,14 +126,14 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
             .orderByCreated(asc)
             .list();
 
-    assertThat(results.size(), equalTo(35));
+    assertThat(results).hasSize(35);
     TaskSummary previousSummary = null;
     for (TaskSummary taskSummary : results) {
       Instant cr = taskSummary.getClaimed();
-      assertTrue(interval1.contains(cr) || interval2.contains(cr));
+      assertThat(interval1.contains(cr) || interval2.contains(cr)).isTrue();
 
       if (previousSummary != null) {
-        assertFalse(previousSummary.getClaimed().isAfter(taskSummary.getClaimed()));
+        assertThat(previousSummary.getClaimed().isAfter(taskSummary.getClaimed())).isFalse();
       }
       previousSummary = taskSummary;
     }
@@ -154,14 +151,14 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
     List<TaskSummary> results =
         taskService.createTaskQuery().completedWithin(interval).orderByCompleted(asc).list();
 
-    assertThat(results.size(), equalTo(15));
+    assertThat(results).hasSize(15);
     TaskSummary previousSummary = null;
     for (TaskSummary taskSummary : results) {
       Instant cr = taskSummary.getCompleted();
-      assertTrue(interval.contains(cr));
+      assertThat(interval.contains(cr)).isTrue();
 
       if (previousSummary != null) {
-        assertFalse(previousSummary.getCompleted().isAfter(taskSummary.getCompleted()));
+        assertThat(previousSummary.getCompleted().isAfter(taskSummary.getCompleted())).isFalse();
       }
       previousSummary = taskSummary;
     }
@@ -179,14 +176,14 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
     List<TaskSummary> results =
         taskService.createTaskQuery().modifiedWithin(interval).orderByModified(asc).list();
 
-    assertThat(results.size(), equalTo(6));
+    assertThat(results).hasSize(6);
     TaskSummary previousSummary = null;
     for (TaskSummary taskSummary : results) {
       Instant cr = taskSummary.getModified();
-      assertTrue(interval.contains(cr));
+      assertThat(interval.contains(cr)).isTrue();
 
       if (previousSummary != null) {
-        assertFalse(previousSummary.getModified().isAfter(taskSummary.getModified()));
+        assertThat(previousSummary.getModified().isAfter(taskSummary.getModified())).isFalse();
       }
       previousSummary = taskSummary;
     }
@@ -204,14 +201,14 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
     List<TaskSummary> results =
         taskService.createTaskQuery().plannedWithin(interval).orderByPlanned(asc).list();
 
-    assertThat(results.size(), equalTo(81));
+    assertThat(results).hasSize(81);
     TaskSummary previousSummary = null;
     for (TaskSummary taskSummary : results) {
       Instant cr = taskSummary.getPlanned();
-      assertTrue(interval.contains(cr));
+      assertThat(interval.contains(cr)).isTrue();
 
       if (previousSummary != null) {
-        assertFalse(previousSummary.getPlanned().isAfter(taskSummary.getPlanned()));
+        assertThat(previousSummary.getPlanned().isAfter(taskSummary.getPlanned())).isFalse();
       }
       previousSummary = taskSummary;
     }
@@ -229,14 +226,14 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
     List<TaskSummary> results =
         taskService.createTaskQuery().dueWithin(interval).orderByPlanned(asc).list();
 
-    assertThat(results.size(), equalTo(81));
+    assertThat(results).hasSize(81);
     TaskSummary previousSummary = null;
     for (TaskSummary taskSummary : results) {
       Instant cr = taskSummary.getDue();
-      assertTrue(interval.contains(cr));
+      assertThat(interval.contains(cr)).isTrue();
 
       if (previousSummary != null) {
-        assertFalse(previousSummary.getPlanned().isAfter(taskSummary.getPlanned()));
+        assertThat(previousSummary.getPlanned().isAfter(taskSummary.getPlanned())).isFalse();
       }
       previousSummary = taskSummary;
     }

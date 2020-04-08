@@ -1,8 +1,6 @@
 package pro.taskana.classification.internal;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.sql.SQLException;
 import java.time.Instant;
@@ -12,7 +10,6 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
 import javax.sql.DataSource;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,14 +38,12 @@ import pro.taskana.sampledata.SampleDataGenerator;
  */
 class ClassificationServiceImplIntAutoCommitTest {
 
+  private static SampleDataGenerator sampleDataGenerator;
+  private static TaskanaEngineConfiguration taskanaEngineConfiguration;
   private ClassificationService classificationService;
 
-  private SampleDataGenerator sampleDataGenerator;
-
-  private TaskanaEngineConfiguration taskanaEngineConfiguration;
-
   @BeforeAll
-  void beforeAll() throws SQLException {
+  static void beforeAll() throws SQLException {
     DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
     String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
     sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
@@ -62,10 +57,6 @@ class ClassificationServiceImplIntAutoCommitTest {
     classificationService = taskanaEngine.getClassificationService();
     TaskanaEngineImpl taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
     taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
-  }
-
-  @AfterEach
-  void teardown() {
     sampleDataGenerator.clearDb();
   }
 
@@ -81,7 +72,7 @@ class ClassificationServiceImplIntAutoCommitTest {
     classification2.setParentId(classification0.getId());
     classificationService.createClassification(classification2);
 
-    assertEquals(2 + 1, classificationService.createClassificationQuery().list().size());
+    assertThat(classificationService.createClassificationQuery().list()).hasSize(2 + 1);
   }
 
   @Test
@@ -100,7 +91,7 @@ class ClassificationServiceImplIntAutoCommitTest {
     classification =
         classificationService.getClassification(
             classification.getKey(), classification.getDomain());
-    assertThat(description, equalTo(classification.getDescription()));
+    assertThat(classification.getDescription()).isEqualTo(description);
   }
 
   @Test
@@ -118,7 +109,7 @@ class ClassificationServiceImplIntAutoCommitTest {
             .createdWithin(today())
             .list();
 
-    assertEquals(1, list.size());
+    assertThat(list).hasSize(1);
   }
 
   @Test
@@ -134,15 +125,15 @@ class ClassificationServiceImplIntAutoCommitTest {
 
     List<ClassificationSummary> list =
         classificationService.createClassificationQuery().validInDomainEquals(true).list();
-    assertEquals(1, list.size());
+    assertThat(list).hasSize(1);
 
     classificationService.updateClassification(classification);
     list = classificationService.createClassificationQuery().list();
-    assertEquals(2, list.size());
+    assertThat(list).hasSize(2);
 
     List<ClassificationSummary> allClassifications =
         classificationService.createClassificationQuery().list();
-    assertEquals(2, allClassifications.size());
+    assertThat(allClassifications).hasSize(2);
   }
 
   @Test
@@ -163,19 +154,19 @@ class ClassificationServiceImplIntAutoCommitTest {
 
     List<ClassificationSummary> list =
         classificationService.createClassificationQuery().parentIdIn("").list();
-    assertEquals(3, list.size());
+    assertThat(list).hasSize(3);
     list = classificationService.createClassificationQuery().list();
-    assertEquals(4, list.size());
+    assertThat(list).hasSize(4);
 
     List<ClassificationSummary> listAll = classificationService.createClassificationQuery().list();
     list = classificationService.createClassificationQuery().list();
-    assertEquals(listAll.size(), list.size());
+    assertThat(list).hasSize(listAll.size());
 
     list = classificationService.createClassificationQuery().validInDomainEquals(true).list();
-    assertEquals(2, list.size());
+    assertThat(list).hasSize(2);
 
     list = classificationService.createClassificationQuery().createdWithin(today()).list();
-    assertEquals(4, list.size());
+    assertThat(list).hasSize(4);
 
     list =
         classificationService
@@ -183,10 +174,10 @@ class ClassificationServiceImplIntAutoCommitTest {
             .domainIn("DOMAIN_C")
             .validInDomainEquals(false)
             .list();
-    assertEquals(0, list.size());
+    assertThat(list).isEmpty();
 
     list = classificationService.createClassificationQuery().list();
-    assertEquals(4, list.size());
+    assertThat(list).hasSize(4);
   }
 
   private TimeInterval today() {

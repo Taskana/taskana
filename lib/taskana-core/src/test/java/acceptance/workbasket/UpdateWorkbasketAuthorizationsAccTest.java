@@ -1,19 +1,13 @@
 package acceptance.workbasket;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -69,13 +63,13 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     WorkbasketAccessItem updatedItem =
         items.stream().filter(t -> newItem.getId().equals(t.getId())).findFirst().orElse(null);
 
-    assertNotNull(updatedItem);
-    assertEquals("Rojas, Miguel", updatedItem.getAccessName());
-    assertFalse(updatedItem.isPermAppend());
-    assertTrue(updatedItem.isPermRead());
-    assertTrue(updatedItem.isPermCustom11());
-    assertTrue(updatedItem.isPermCustom1());
-    assertFalse(updatedItem.isPermCustom2());
+    assertThat(updatedItem).isNotNull();
+    assertThat(updatedItem.getAccessName()).isEqualTo("Rojas, Miguel");
+    assertThat(updatedItem.isPermAppend()).isFalse();
+    assertThat(updatedItem.isPermRead()).isTrue();
+    assertThat(updatedItem.isPermCustom11()).isTrue();
+    assertThat(updatedItem.isPermCustom1()).isTrue();
+    assertThat(updatedItem.isPermCustom2()).isFalse();
   }
 
   @WithAccessId(
@@ -99,26 +93,32 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     accessItemCreated.setPermAppend(false);
     ((WorkbasketAccessItemImpl) accessItemCreated).setAccessId("willi");
 
-    Assertions.assertThrows(
-        InvalidArgumentException.class,
-        () -> workbasketService.updateWorkbasketAccessItem(accessItemCreated),
-        "InvalidArgumentException was expected because access id was changed");
+    ThrowingCallable call =
+        () -> {
+          workbasketService.updateWorkbasketAccessItem(accessItemCreated);
+        };
+    assertThatThrownBy(call)
+        .describedAs("InvalidArgumentException was expected because access id was changed")
+        .isInstanceOf(InvalidArgumentException.class);
 
     ((WorkbasketAccessItemImpl) accessItemCreated).setAccessId("user1");
     WorkbasketAccessItem accessItemUpdated =
         workbasketService.updateWorkbasketAccessItem(accessItemCreated);
-    assertFalse(accessItemUpdated.isPermAppend());
-    assertTrue(accessItemUpdated.isPermRead());
-    assertTrue(accessItemUpdated.isPermCustom11());
-    assertTrue(accessItemUpdated.isPermCustom1());
-    assertFalse(accessItemUpdated.isPermCustom2());
+    assertThat(accessItemUpdated.isPermAppend()).isFalse();
+    assertThat(accessItemUpdated.isPermRead()).isTrue();
+    assertThat(accessItemUpdated.isPermCustom11()).isTrue();
+    assertThat(accessItemUpdated.isPermCustom1()).isTrue();
+    assertThat(accessItemUpdated.isPermCustom2()).isFalse();
 
     ((WorkbasketAccessItemImpl) accessItemUpdated).setWorkbasketId("2");
 
-    Assertions.assertThrows(
-        InvalidArgumentException.class,
-        () -> workbasketService.updateWorkbasketAccessItem(accessItemUpdated),
-        "InvalidArgumentException was expected because key was changed");
+    call =
+        () -> {
+          workbasketService.updateWorkbasketAccessItem(accessItemUpdated);
+        };
+    assertThatThrownBy(call)
+        .describedAs("InvalidArgumentException was expected because key was changed")
+        .isInstanceOf(InvalidArgumentException.class);
   }
 
   @WithAccessId(
@@ -142,8 +142,8 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     Task createdTask = taskService.createTask(newTask);
     List<TaskSummary> tasks =
         taskService.createTaskQuery().workbasketKeyDomainIn(new KeyDomain(wbKey, wbDomain)).list();
-    assertEquals(1, tasks.size());
-    assertThat(createdTask, not(equalTo(null)));
+    assertThat(tasks).hasSize(1);
+    assertThat(createdTask).isNotNull();
 
     List<WorkbasketAccessItem> accessItems =
         workbasketService.getWorkbasketAccessItems("WBI:100000000000000000000000000000000008");
@@ -153,17 +153,18 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
             .findFirst()
             .orElse(null);
 
-    assertNotNull(theAccessItem);
+    assertThat(theAccessItem).isNotNull();
     theAccessItem.setPermOpen(false);
     workbasketService.updateWorkbasketAccessItem(theAccessItem);
 
-    Assertions.assertThrows(
-        NotAuthorizedToQueryWorkbasketException.class,
-        () ->
-            taskService
-                .createTaskQuery()
-                .workbasketKeyDomainIn(new KeyDomain(wbKey, wbDomain))
-                .list());
+    ThrowingCallable call =
+        () -> {
+          taskService
+              .createTaskQuery()
+              .workbasketKeyDomainIn(new KeyDomain(wbKey, wbDomain))
+              .list();
+        };
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedToQueryWorkbasketException.class);
   }
 
   @WithAccessId(
@@ -193,17 +194,17 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     List<WorkbasketAccessItem> updatedAccessItems =
         workbasketService.getWorkbasketAccessItems(wbId);
     int countAfter = updatedAccessItems.size();
-    assertThat(countAfter, equalTo(countBefore));
+    assertThat(countAfter).isEqualTo(countBefore);
 
     item0 = updatedAccessItems.stream().filter(i -> i.getId().equals(updateId0)).findFirst().get();
-    assertFalse(item0.isPermAppend());
-    assertFalse(item0.isPermOpen());
-    assertFalse(item0.isPermTransfer());
+    assertThat(item0.isPermAppend()).isFalse();
+    assertThat(item0.isPermOpen()).isFalse();
+    assertThat(item0.isPermTransfer()).isFalse();
 
     item1 = updatedAccessItems.stream().filter(i -> i.getId().equals(updateId1)).findFirst().get();
-    assertFalse(item1.isPermAppend());
-    assertFalse(item1.isPermOpen());
-    assertFalse(item1.isPermTransfer());
+    assertThat(item1.isPermAppend()).isFalse();
+    assertThat(item1.isPermOpen()).isFalse();
+    assertThat(item1.isPermTransfer()).isFalse();
   }
 
   @WithAccessId(
@@ -234,14 +235,14 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     List<WorkbasketAccessItem> updatedAccessItems =
         workbasketService.getWorkbasketAccessItems(wbId);
     int countAfter = updatedAccessItems.size();
-    assertEquals((countBefore + 1), countAfter);
+    assertThat(countAfter).isEqualTo((countBefore + 1));
 
     item0 = updatedAccessItems.stream().filter(i -> i.getId().equals(updateId0)).findFirst().get();
-    assertFalse(item0.isPermAppend());
-    assertFalse(item0.isPermOpen());
-    assertFalse(item0.isPermTransfer());
-    assertFalse(item0.isPermAppend());
-    assertFalse(item0.isPermTransfer());
+    assertThat(item0.isPermAppend()).isFalse();
+    assertThat(item0.isPermOpen()).isFalse();
+    assertThat(item0.isPermTransfer()).isFalse();
+    assertThat(item0.isPermAppend()).isFalse();
+    assertThat(item0.isPermTransfer()).isFalse();
   }
 
   @WithAccessId(
@@ -261,7 +262,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     List<WorkbasketAccessItem> accessList = new ArrayList<>(originalList);
     WorkbasketAccessItem newItem = workbasketService.newWorkbasketAccessItem(wbId, "group_1");
     accessList.add(newItem);
-    assertNotEquals(originalList, accessList);
+    assertThat(accessList).isNotEqualTo(originalList);
     workbasketService.setWorkbasketAccessItems(wbId, accessList);
 
     List<WorkbasketAccessItem> modifiedList =
@@ -275,7 +276,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         new ArrayList<>(workbasketService.getWorkbasketAccessItems(wbId));
 
     // with DB2 V 11, the lists are sorted differently...
-    assertEquals(new HashSet<>(originalList), new HashSet<>(listEqualToOriginal));
+    assertThat(new HashSet<>(listEqualToOriginal)).isEqualTo(new HashSet<>(originalList));
   }
 
   @WithAccessId(
@@ -292,7 +293,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
     final long accessIdCountAfter =
         workbasketService.createWorkbasketAccessItemQuery().accessIdIn(accessId).count();
-    assertTrue(accessIdCountBefore > accessIdCountAfter);
+    assertThat(accessIdCountBefore > accessIdCountAfter).isTrue();
   }
 
   @WithAccessId(

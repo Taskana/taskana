@@ -1,7 +1,6 @@
 package acceptance.security;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
 import java.util.List;
@@ -27,7 +26,7 @@ class TaskQueryAccTest extends AbstractAccTest {
 
     List<TaskSummary> results = taskService.createTaskQuery().ownerLike("%a%", "%u%").list();
 
-    assertThat(results.size(), equalTo(0));
+    assertThat(results).isEmpty();
   }
 
   @WithAccessId(userName = "user_1_1") // , groupNames = {"businessadmin"})
@@ -37,7 +36,7 @@ class TaskQueryAccTest extends AbstractAccTest {
 
     List<TaskSummary> results = taskService.createTaskQuery().ownerLike("%a%", "%u%").list();
 
-    assertThat(results.size(), equalTo(3));
+    assertThat(results).hasSize(3);
   }
 
   @WithAccessId(
@@ -49,7 +48,7 @@ class TaskQueryAccTest extends AbstractAccTest {
 
     List<TaskSummary> results = taskService.createTaskQuery().ownerLike("%a%", "%u%").list();
 
-    assertThat(results.size(), equalTo(3));
+    assertThat(results).hasSize(3);
   }
 
   @WithAccessId(
@@ -61,6 +60,6 @@ class TaskQueryAccTest extends AbstractAccTest {
 
     List<TaskSummary> results = taskService.createTaskQuery().ownerLike("%a%", "%u%").list();
 
-    assertThat(results.size(), equalTo(35));
+    assertThat(results).hasSize(35);
   }
 }

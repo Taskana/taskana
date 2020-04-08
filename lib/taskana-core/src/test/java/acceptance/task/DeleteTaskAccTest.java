@@ -1,15 +1,12 @@
 package acceptance.task;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -39,9 +36,11 @@ class DeleteTaskAccTest extends AbstractAccTest {
   void testDeleteSingleTaskNotAuthorized() {
 
     TaskService taskService = taskanaEngine.getTaskService();
-    Assertions.assertThrows(
-        NotAuthorizedException.class,
-        () -> taskService.deleteTask("TKI:000000000000000000000000000000000037"));
+    ThrowingCallable call =
+        () -> {
+          taskService.deleteTask("TKI:000000000000000000000000000000000037");
+        };
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(
@@ -56,9 +55,11 @@ class DeleteTaskAccTest extends AbstractAccTest {
 
     taskService.deleteTask(task.getId());
 
-    Assertions.assertThrows(
-        TaskNotFoundException.class,
-        () -> taskService.getTask("TKI:000000000000000000000000000000000036"));
+    ThrowingCallable call =
+        () -> {
+          taskService.getTask("TKI:000000000000000000000000000000000036");
+        };
+    assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
   }
 
   @WithAccessId(
@@ -70,8 +71,11 @@ class DeleteTaskAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000029");
 
-    Assertions.assertThrows(
-        InvalidStateException.class, () -> taskService.deleteTask(task.getId()));
+    ThrowingCallable call =
+        () -> {
+          taskService.deleteTask(task.getId());
+        };
+    assertThatThrownBy(call).isInstanceOf(InvalidStateException.class);
   }
 
   @WithAccessId(
@@ -83,16 +87,21 @@ class DeleteTaskAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000027");
 
-    Assertions.assertThrows(
-        InvalidStateException.class,
-        () -> taskService.deleteTask(task.getId()),
-        "Should not be possible to delete claimed task without force flag");
+    ThrowingCallable call =
+        () -> {
+          taskService.deleteTask(task.getId());
+        };
+    assertThatThrownBy(call)
+        .describedAs("Should not be possible to delete claimed task without force flag")
+        .isInstanceOf(InvalidStateException.class);
 
     taskService.forceDeleteTask(task.getId());
 
-    Assertions.assertThrows(
-        TaskNotFoundException.class,
-        () -> taskService.getTask("TKI:000000000000000000000000000000000027"));
+    call =
+        () -> {
+          taskService.getTask("TKI:000000000000000000000000000000000027");
+        };
+    assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
   }
 
   @WithAccessId(
@@ -108,10 +117,12 @@ class DeleteTaskAccTest extends AbstractAccTest {
 
     BulkOperationResults<String, TaskanaException> results = taskService.deleteTasks(taskIdList);
 
-    assertFalse(results.containsErrors());
-    Assertions.assertThrows(
-        TaskNotFoundException.class,
-        () -> taskService.getTask("TKI:000000000000000000000000000000000038"));
+    assertThat(results.containsErrors()).isFalse();
+    ThrowingCallable call =
+        () -> {
+          taskService.getTask("TKI:000000000000000000000000000000000038");
+        };
+    assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
   }
 
   @WithAccessId(
@@ -130,16 +141,19 @@ class DeleteTaskAccTest extends AbstractAccTest {
     BulkOperationResults<String, TaskanaException> results = taskService.deleteTasks(taskIdList);
 
     String expectedFailedId = "TKI:000000000000000000000000000000000028";
-    assertTrue(results.containsErrors());
+    assertThat(results.containsErrors()).isTrue();
     List<String> failedTaskIds = results.getFailedIds();
-    assertEquals(1, failedTaskIds.size());
-    assertEquals(expectedFailedId, failedTaskIds.get(0));
-    assertSame(results.getErrorMap().get(expectedFailedId).getClass(), InvalidStateException.class);
+    assertThat(failedTaskIds).hasSize(1);
+    assertThat(failedTaskIds.get(0)).isEqualTo(expectedFailedId);
+    assertThat(InvalidStateException.class)
+        .isSameAs(results.getErrorMap().get(expectedFailedId).getClass());
 
     Task notDeletedTask = taskService.getTask("TKI:000000000000000000000000000000000028");
-    assertNotNull(notDeletedTask);
-    Assertions.assertThrows(
-        TaskNotFoundException.class,
-        () -> taskService.getTask("TKI:000000000000000000000000000000000040"));
+    assertThat(notDeletedTask).isNotNull();
+    ThrowingCallable call =
+        () -> {
+          taskService.getTask("TKI:000000000000000000000000000000000040");
+        };
+    assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
   }
 }
