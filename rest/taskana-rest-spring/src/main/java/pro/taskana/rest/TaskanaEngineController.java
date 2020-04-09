@@ -1,6 +1,7 @@
 package pro.taskana.rest;
 
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,7 +47,7 @@ public class TaskanaEngineController {
     return response;
   }
 
-  @GetMapping(path = Mapping.URL_CLASSIFICATIONCATEGORIES)
+  @GetMapping(path = Mapping.URL_CLASSIFICATION_CATEGORIES)
   public ResponseEntity<List<String>> getClassificationCategories(String type) {
     LOGGER.debug("Entry to getClassificationCategories(type = {})", type);
     ResponseEntity<List<String>> response;
@@ -65,7 +66,7 @@ public class TaskanaEngineController {
     return response;
   }
 
-  @GetMapping(path = Mapping.URL_CLASSIFICATIONTYPES)
+  @GetMapping(path = Mapping.URL_CLASSIFICATION_TYPES)
   public ResponseEntity<List<String>> getClassificationTypes() {
     ResponseEntity<List<String>> response =
         ResponseEntity.ok(taskanaEngineConfiguration.getClassificationTypes());
@@ -75,7 +76,17 @@ public class TaskanaEngineController {
     return response;
   }
 
-  @GetMapping(path = Mapping.URL_CURRENTUSER)
+  @GetMapping(path = Mapping.URL_CLASSIFICATION_CATEGORIES_BY_TYPES)
+  public ResponseEntity<Map<String, List<String>>> getClassificationCategoriesByTypeMap() {
+    ResponseEntity<Map<String, List<String>>> response =
+        ResponseEntity.ok(taskanaEngineConfiguration.getClassificationCategoriesByTypeMap());
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Exit from getClassificationCategoriesByTypeMap(), returning {}", response);
+    }
+    return response;
+  }
+
+  @GetMapping(path = Mapping.URL_CURRENT_USER)
   public ResponseEntity<TaskanaUserInfoResource> getCurrentUserInfo() {
     LOGGER.debug("Entry to getCurrentUserInfo()");
     TaskanaUserInfoResource resource = new TaskanaUserInfoResource();
@@ -94,7 +105,7 @@ public class TaskanaEngineController {
     return response;
   }
 
-  @GetMapping(path = Mapping.URL_HISTORYENABLED)
+  @GetMapping(path = Mapping.URL_HISTORY_ENABLED)
   public ResponseEntity<Boolean> getIsHistoryProviderEnabled() {
     ResponseEntity<Boolean> response = ResponseEntity.ok(taskanaEngine.isHistoryEnabled());
     LOGGER.debug("Exit from getIsHistoryProviderEnabled(), returning {}", response);

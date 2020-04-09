@@ -39,7 +39,7 @@ const MODULES = [
   SharedModule,
   AdministrationRoutingModule,
   TypeaheadModule,
-  InfiniteScrollModule
+  InfiniteScrollModule,
 ];
 
 const DECLARATIONS = [

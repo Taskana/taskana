@@ -30,9 +30,9 @@
           <span *ngIf="action=== 'CREATE'" class="badge warning"> {{badgeMessage}}</span>
         </h4>
       </div>
-      <div class="panel-body">
+      <div class="panel-body" style="padding: 0">
         <form #ClassificationForm="ngForm">
-          <div class="row">
+          <div class="row" style="padding: 15px">
 
             <div class="col-md-6">
               <div class="form-group required">
@@ -67,26 +67,26 @@
               <div class="row">
                 <div class="form-group col-xs-6">
                   <label for="classification-priority" class="control-label">Priority</label>
-                  <taskana-number-picker [(ngModel)]="classification.priority" name="classification.priority"></taskana-number-picker>
+                  <taskana-number-picker [(ngModel)]="classification.priority" name="classification.priority" id="classification-priority"></taskana-number-picker>
                 </div>
                 <div class="form-group required btn-group col-xs-6">
                   <label for="classification-category" class="control-label">Category</label>
                   <div class="dropdown clearfix ">
                     <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true"
-                      aria-expanded="true">
+                      aria-expanded="true" id="classification-category">
                       <span class="text-top">
-                        <svg-icon class="blue fa-fw" src="{{getCategoryIcon(classification.category).name}}"
-                          data-toggle="tooltip" [title]="getCategoryIcon(classification.category).text"></svg-icon>
+                        <svg-icon class="blue fa-fw" src="{{(getCategoryIcon(classification.category) | async)?.name}}"
+                          data-toggle="tooltip" [title]="(getCategoryIcon(classification.category) | async)?.text"></svg-icon>
                       </span>
                       {{classification.category}}
                       <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu" aria-labelledby="dropdownMenu">
                       <li>
-                        <a *ngFor="let category of categories" (click)="selectCategory(category)">
+                        <a *ngFor="let category of getAvailableCategories(classification.type)" (click)="selectCategory(category)">
                           <span class="text-top">
-                            <svg-icon class="blue fa-fw" src="{{getCategoryIcon(category).name}}" data-toggle="tooltip"
-                              [title]="getCategoryIcon(category).text"></svg-icon>
+                            <svg-icon class="blue fa-fw" src="{{(getCategoryIcon(category) | async)?.name}}" data-toggle="tooltip"
+                              [title]="(getCategoryIcon(category) | async)?.text"></svg-icon>
                             {{category}}
                           </span>
                         </a>
@@ -114,50 +114,18 @@
               </div>
             </div>
           </div>
-          <div class="row">
-            <div class="col-md-6">
-              <div *ngIf="custom1Field.visible" class="form-group">
-                <label for="classification-custom-1" class="control-label">{{custom1Field.field}}</label>
-                <input type="text" class="form-control" id="classification-custom-1" placeholder="{{custom1Field.field}}"
-                  [(ngModel)]="classification.custom1" name="classification.custom1">
+
+          <div class="row custom-field-row">
+
+            <div class="custom-classification-form" *ngFor="let customField of (customFields$ | async), let i = index"
+                 style="width: 50%;">
+
+              <div *ngIf="customField.visible" class="form-group custom-field-wrapper">
+                <label for="classification-custom-{{i + 1}}" class="control-label">{{customField.field}}</label>
+                <input type="text" class="form-control" id="classification-custom-{{i + 1}}" placeholder="{{customField.field}}"
+                  [(ngModel)]="classification[getClassificationCustom(i + 1)]" name="classification.custom{{i + 1}}">
               </div>
-              <div *ngIf="custom2Field.visible" class="form-group">
-                <label for="classification-custom-2" class="control-label">{{custom2Field.field}}</label>
-                <input type="text" class="form-control" id="classification-custom-2" placeholder="{{custom2Field.field}}"
-                  [(ngModel)]="classification.custom2" name="classification.custom2">
-              </div>
-              <div *ngIf="custom3Field.visible" class="form-group">
-                <label for="classification-custom-3" class="control-label">{{custom3Field.field}}</label>
-                <input type="text" class="form-control" id="classification-custom-3" placeholder="{{custom3Field.field}}"
-                  [(ngModel)]="classification.custom3" name="classification.custom3">
-              </div>
-              <div *ngIf="custom4Field.visible" class="form-group">
-                <label for="classification-custom-4" class="control-label">{{custom4Field.field}}</label>
-                <input type="text" class="form-control" id="classification-custom-4" placeholder="{{custom4Field.field}}"
-                  [(ngModel)]="classification.custom4" name="classification.custom4">
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div *ngIf="custom5Field.visible" class="form-group">
-                <label for="classification-custom-5" class="control-label">{{custom5Field.field}}</label>
-                <input type="text" class="form-control" id="classification-custom-5" placeholder="{{custom5Field.field}}"
-                  [(ngModel)]="classification.custom5" name="classification.custom5">
-              </div>
-              <div *ngIf="custom6Field.visible" class="form-group">
-                <label for="classification-custom-6" class="control-label">{{custom6Field.field}}</label>
-                <input type="text" class="form-control" id="classification-custom-6" placeholder="{{custom6Field.field}}"
-                  [(ngModel)]="classification.custom6" name="classification.custom6">
-              </div>
-              <div *ngIf="custom7Field.visible" class="form-group">
-                <label for="classification-custom-7" class="control-label">{{custom7Field.field}}</label>
-                <input type="text" class="form-control" id="classification-custom-7" placeholder="{{custom7Field.field}}"
-                  [(ngModel)]="classification.custom7" name="classification.custom7">
-              </div>
-              <div *ngIf="custom8Field.visible" class="form-group">
-                <label for="classification-custom-8" class="control-label">{{custom8Field.field}}</label>
-                <input type="text" class="form-control" id="classification-custom-8" placeholder="{{custom8Field.field}}"
-                  [(ngModel)]="classification.custom8" name="classification.custom8">
-              </div>
+
             </div>
           </div>
         </form>

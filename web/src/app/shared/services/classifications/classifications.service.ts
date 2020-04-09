@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'environments/environment';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { map, mergeMap, tap } from 'rxjs/operators';
+import { Select, Store } from '@ngxs/store';
 
 import { Classification } from 'app/models/classification';
 import { ClassificationDefinition } from 'app/models/classification-definition';
@@ -12,7 +13,8 @@ import { DomainService } from 'app/services/domain/domain.service';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { Direction } from 'app/models/sorting';
 import { QueryParametersModel } from 'app/models/query-parameters';
-import { ClassificationCategoriesService } from './classification-categories.service';
+import { ClassificationSelectors } from 'app/store/classification-store/classification.selectors';
+import { SetSelectedClassificationType } from 'app/store/classification-store/classification.actions';
 
 @Injectable()
 export class ClassificationsService {
@@ -21,13 +23,14 @@ export class ClassificationsService {
   private classificationSaved = new Subject<number>();
   private classificationResourcePromise: Promise<ClassificationResource>;
   private lastDomain: string;
+  // TODO: this should not be here in the service
+  @Select(ClassificationSelectors.selectedClassificationType) classificationTypeSelected$: Observable<string>;
 
   constructor(
     private httpClient: HttpClient,
-    private classificationCategoriesService: ClassificationCategoriesService,
-    private domainService: DomainService
-  ) {
-  }
+    private domainService: DomainService,
+    private store: Store
+  ) {}
 
   private static classificationParameters(domain: string): QueryParametersModel {
     const parameters = new QueryParametersModel();
@@ -68,7 +71,7 @@ export class ClassificationsService {
     return this.httpClient.get<ClassificationDefinition>(`${this.url}${id}`)
       .pipe(tap((classification: ClassificationDefinition) => {
         if (classification) {
-          this.classificationCategoriesService.selectClassificationType(classification.type);
+          this.store.dispatch(new SetSelectedClassificationType(classification.type));
         }
       })).toPromise();
   }
@@ -107,15 +110,14 @@ export class ClassificationsService {
 
   // #endregion
 
-  private getClassificationObservable(classificationRef: Observable<any>): Observable<Array<Classification>> {
-    const classificationTypes: Observable<string> = this.classificationCategoriesService.getSelectedClassificationType();
+  private getClassificationObservable(classificationRef: Observable<ClassificationResource>): Observable<Array<Classification>> {
     return combineLatest(
       [classificationRef,
-        classificationTypes]
+        this.classificationTypeSelected$]
     ).pipe(
       map(
-        (classification: any[]) => (
-          classification[0].classifications ? this.buildHierarchy(classification[0].classifications, classification[1]) : []
+        ([resource, type]: [ClassificationResource, string]) => (
+          resource.classifications ? this.buildHierarchy(resource.classifications, type) : []
         )
       )
     );

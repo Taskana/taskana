@@ -18,10 +18,12 @@ public final class Mapping {
       URL_MONITOR + "/tasks-classification-report";
   public static final String URL_MONITOR_TIMESTAMP = URL_MONITOR + "/timestamp-report";
   public static final String URL_DOMAIN = PRE + "domains";
-  public static final String URL_CLASSIFICATIONCATEGORIES = PRE + "classification-categories";
-  public static final String URL_CLASSIFICATIONTYPES = PRE + "classification-types";
-  public static final String URL_CURRENTUSER = PRE + "current-user-info";
-  public static final String URL_HISTORYENABLED = PRE + "history-provider-enabled";
+  public static final String URL_CLASSIFICATION_CATEGORIES = PRE + "classification-categories";
+  public static final String URL_CLASSIFICATION_TYPES = PRE + "classification-types";
+  public static final String URL_CLASSIFICATION_CATEGORIES_BY_TYPES =
+      PRE + "classifications-by-type";
+  public static final String URL_CURRENT_USER = PRE + "current-user-info";
+  public static final String URL_HISTORY_ENABLED = PRE + "history-provider-enabled";
   public static final String URL_VERSION = PRE + "version";
   public static final String URL_TASKS = PRE + "tasks";
   public static final String URL_TASKS_ID = URL_TASKS + "/{taskId}";

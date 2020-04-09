@@ -6,6 +6,7 @@ import { FormsValidatorService } from 'app/shared/services/forms/forms-validator
 import { AccessIdDefinition } from 'app/models/access-id';
 import { AccessItemsWorkbasketResource } from 'app/models/access-item-workbasket-resource';
 import { of } from 'rxjs';
+import { NgxsModule } from '@ngxs/store';
 import { AccessItemsManagementComponent } from './access-items-management.component';
 
 
@@ -14,20 +15,20 @@ describe('AccessItemsManagementComponent', () => {
   let fixture: ComponentFixture<AccessItemsManagementComponent>;
   let accessIdsService;
 
+  const configure = (testBed: TestBed) => {
+    testBed.configureTestingModule({
+      imports: [NgxsModule.forRoot()],
+      declarations: [AccessItemsManagementComponent],
+      providers: [AccessIdsService, FormsValidatorService]
+    });
+  };
+
 
   beforeEach(done => {
-    const configure = (testBed: TestBed) => {
-      testBed.configureTestingModule({
-        imports: [],
-        declarations: [AccessItemsManagementComponent],
-        providers: [AccessIdsService, FormsValidatorService]
-      });
-    };
-
     configureTests(configure).then(testBed => {
-      fixture = TestBed.createComponent(AccessItemsManagementComponent);
+      fixture = testBed.createComponent(AccessItemsManagementComponent);
       component = fixture.componentInstance;
-      accessIdsService = TestBed.get(AccessIdsService);
+      accessIdsService = testBed.get(AccessIdsService);
       spyOn(accessIdsService, 'getAccessItemsPermissions').and.returnValue(of(new Array<AccessIdDefinition>()));
       spyOn(accessIdsService, 'getAccessItemsInformation').and.returnValue(of(new AccessItemsWorkbasketResource()));
       fixture.detectChanges();

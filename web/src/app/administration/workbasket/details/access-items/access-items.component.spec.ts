@@ -19,9 +19,10 @@ import { SavingWorkbasketService } from 'app/administration/services/saving-work
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
-import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { AccessIdsService } from 'app/shared/services/access-ids/access-ids.service';
 import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
+import { NgxsModule, Store } from '@ngxs/store';
+import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
 import { AccessItemsComponent } from './access-items.component';
 
 describe('AccessItemsComponent', () => {
@@ -33,26 +34,43 @@ describe('AccessItemsComponent', () => {
   let accessIdsService;
   let formsValidatorService;
 
+  const storeSpy: jasmine.SpyObj<Store> = jasmine.createSpyObj('Store', ['select']);
+
+  const configure = (testBed: TestBed) => {
+    testBed.configureTestingModule({
+      declarations: [AccessItemsComponent],
+      imports: [FormsModule, AngularSvgIconModule, HttpClientModule, ReactiveFormsModule, NgxsModule.forRoot()],
+      providers: [WorkbasketService, AlertService, GeneralModalService, SavingWorkbasketService, RequestInProgressService,
+        AccessIdsService, FormsValidatorService, { provide: Store, useValue: storeSpy }]
+    });
+  };
 
   beforeEach(done => {
-    const configure = (testBed: TestBed) => {
-      testBed.configureTestingModule({
-        declarations: [AccessItemsComponent],
-        imports: [FormsModule, AngularSvgIconModule, HttpClientModule, ReactiveFormsModule],
-        providers: [WorkbasketService, AlertService, GeneralModalService, SavingWorkbasketService, RequestInProgressService,
-          CustomFieldsService, AccessIdsService, FormsValidatorService]
-      });
-    };
     configureTests(configure).then(testBed => {
-      fixture = TestBed.createComponent(AccessItemsComponent);
+      storeSpy.select.and.callFake(selector => {
+        switch (selector) {
+          case EngineConfigurationSelectors.accessItemsCustomisation:
+            return of({
+              accessId: {
+                lookupField: false
+              },
+              custom1: {}
+            });
+          default:
+            return of();
+        }
+      });
+
+      fixture = testBed.createComponent(AccessItemsComponent);
+
       component = fixture.componentInstance;
       component.workbasket = new Workbasket('1');
       component.workbasket.type = ICONTYPES.TOPIC;
       component.workbasket._links = new Links();
       component.workbasket._links.accessItems = { href: 'someurl' };
 
-      workbasketService = TestBed.get(WorkbasketService);
-      alertService = TestBed.get(AlertService);
+      workbasketService = testBed.get(WorkbasketService);
+      alertService = testBed.get(AlertService);
       spyOn(workbasketService, 'getWorkBasketAccessItems').and.returnValue(of(new WorkbasketAccessItemsResource(
         new Array<WorkbasketAccessItems>(
           new WorkbasketAccessItems('id1', '1', 'accessID1', '', false, false, false, false, false, false, false, false,
@@ -64,11 +82,11 @@ describe('AccessItemsComponent', () => {
       spyOn(workbasketService, 'updateWorkBasketAccessItem').and.returnValue(of(true));
       spyOn(alertService, 'triggerAlert').and.returnValue(of(true));
       debugElement = fixture.debugElement.nativeElement;
-      accessIdsService = TestBed.get(AccessIdsService);
+      accessIdsService = testBed.get(AccessIdsService);
       spyOn(accessIdsService, 'getAccessItemsInformation').and.returnValue(of(new Array<string>(
         'accessID1', 'accessID2'
       )));
-      formsValidatorService = TestBed.get(FormsValidatorService);
+      formsValidatorService = testBed.get(FormsValidatorService);
       component.ngOnChanges({
         active: new SimpleChange(undefined, 'accessItems', true)
       });

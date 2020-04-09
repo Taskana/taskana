@@ -9,16 +9,15 @@
 				</taskana-import-export-component>
 			</div>
 			<div class="col-xs-6">
-				<taskana-classification-types-selector class="pull-right" [classificationTypes]="classificationsTypes"
-				 [(classificationTypeSelected)]="classificationTypeSelected" (classificationTypeChanged)=selectClassificationType($event)></taskana-classification-types-selector>
+				<taskana-classification-types-selector class="pull-right"></taskana-classification-types-selector>
 			</div>
 		</div>
 	</li>
 	<div class="col-xs-2 category-filter">
 		<button class="btn btn-default" data-toggle="dropdown" type="button" id="dropdown-classification-filter" data-toggle="dropdown"
 		 aria-haspopup="true" aria-expanded="true">
-			<svg-icon *ngIf="selectedCategory else category_unselected" class="blue" [src]="getCategoryIcon(selectedCategory).name"
-			 data-toggle="tooltip" [title]="getCategoryIcon(category).text"></svg-icon>
+			<svg-icon *ngIf="selectedCategory else category_unselected" class="blue" [src]="(getCategoryIcon(selectedCategory) | async)?.name"
+			 data-toggle="tooltip" [title]="(getCategoryIcon(category) | async)?.text"></svg-icon>
 			<ng-template #category_unselected>
 				<svg-icon data-toggle="tooltip" title="All" class="blue " src="./assets/icons/asterisk.svg"></svg-icon>
 			</ng-template>
@@ -29,9 +28,9 @@
 					<svg-icon class="blue" src="./assets/icons/asterisk.svg"></svg-icon>
 					All
 				</a>
-				<a *ngFor="let category of categories" type="button" (click)="selectCategory(category);" data-toggle="tooltip"
+				<a *ngFor="let category of categories$ | async" type="button" (click)="selectCategory(category);" data-toggle="tooltip"
 				 [title]="category">
-					<svg-icon class="blue" [src]="getCategoryIcon(category).name" data-toggle="tooltip" [title]="getCategoryIcon(category).text"></svg-icon>
+					<svg-icon class="blue" [src]="(getCategoryIcon(category) | async)?.name" data-toggle="tooltip" [title]="(getCategoryIcon(category) | async)?.text"></svg-icon>
 					{{category}}
 				</a>
 			</li>

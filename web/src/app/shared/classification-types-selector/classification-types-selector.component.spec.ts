@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { NgxsModule } from '@ngxs/store';
 import { ClassificationTypesSelectorComponent } from './classification-types-selector.component';
 
 describe('ClassificationTypesSelectorComponent', () => {
@@ -8,9 +9,10 @@ describe('ClassificationTypesSelectorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ClassificationTypesSelectorComponent]
-    })
-      .compileComponents();
+      imports: [NgxsModule.forRoot()],
+      declarations: [ClassificationTypesSelectorComponent],
+      providers: []
+    }).compileComponents();
   }));
 
   beforeEach(() => {

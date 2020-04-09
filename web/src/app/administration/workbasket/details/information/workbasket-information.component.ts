@@ -1,12 +1,12 @@
 import { Component, OnInit, Input, OnDestroy, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { NgForm } from '@angular/forms';
+import { Select } from '@ngxs/store';
 
 import { ICONTYPES } from 'app/models/type';
-import { MessageModal } from 'app/models/message-modal';
 import { ACTION } from 'app/models/action';
-import { Workbasket } from 'app/models/workbasket';
+import { customFieldCount, Workbasket } from 'app/models/workbasket';
 import { AlertModel, AlertType } from 'app/models/alert';
 import { TaskanaDate } from 'app/shared/util/taskana.date';
 
@@ -15,11 +15,13 @@ import { GeneralModalService } from 'app/services/general-modal/general-modal.se
 import { SavingWorkbasketService, SavingInformation } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
-import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
 import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
+import { map } from 'rxjs/operators';
+import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
 import { ERROR_TYPES } from '../../../../models/errors';
 import { ErrorsService } from '../../../../services/errors/errors.service';
+import { CustomField, getCustomFields, WorkbasketsCustomisation } from '../../../../models/customisation';
 
 @Component({
   selector: 'taskana-workbasket-information',
@@ -40,30 +42,8 @@ implements OnInit, OnChanges, OnDestroy {
   requestInProgress = false;
   badgeMessage = '';
 
-  ownerField = this.customFieldsService.getCustomField(
-    'Owner',
-    'workbaskets.information.owner'
-  );
-
-  custom1Field = this.customFieldsService.getCustomField(
-    'Custom 1',
-    'workbaskets.information.custom1'
-  );
-
-  custom2Field = this.customFieldsService.getCustomField(
-    'Custom 2',
-    'workbaskets.information.custom2'
-  );
-
-  custom3Field = this.customFieldsService.getCustomField(
-    'Custom 3',
-    'workbaskets.information.custom3'
-  );
-
-  custom4Field = this.customFieldsService.getCustomField(
-    'Custom 4',
-    'workbaskets.information.custom4'
-  );
+  @Select(EngineConfigurationSelectors.workbasketsCustomisation) workbasketsCustomisation$: Observable<WorkbasketsCustomisation>;
+  customFields$: Observable<CustomField[]>;
 
   toogleValidationMap = new Map<string, boolean>();
 
@@ -80,20 +60,23 @@ implements OnInit, OnChanges, OnDestroy {
     private generalModalService: GeneralModalService,
     private savingWorkbasket: SavingWorkbasketService,
     private requestInProgressService: RequestInProgressService,
-    private customFieldsService: CustomFieldsService,
     private removeConfirmationService: RemoveConfirmationService,
     private formsValidatorService: FormsValidatorService,
     private errorsService: ErrorsService
-  ) {
+  ) {}
+
+  ngOnInit(): void {
     this.allTypes = new Map([
       ['PERSONAL', 'Personal'],
       ['GROUP', 'Group'],
       ['CLEARANCE', 'Clearance'],
       ['TOPIC', 'Topic']
     ]);
+    this.customFields$ = this.workbasketsCustomisation$.pipe(
+      map(customisation => customisation.information),
+      getCustomFields(customFieldCount)
+    );
   }
-
-  ngOnInit(): void { }
 
   ngOnChanges(changes: SimpleChanges): void {
     this.workbasketClone = { ...this.workbasket };
@@ -289,5 +272,9 @@ implements OnInit, OnChanges, OnDestroy {
     if (this.routeSubscription) {
       this.routeSubscription.unsubscribe();
     }
+  }
+
+  getWorkbasketCustomProperty(custom: number) {
+    return `custom${custom}`;
   }
 }

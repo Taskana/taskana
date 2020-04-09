@@ -3,7 +3,6 @@ import { TestBed, inject, getTestBed } from '@angular/core/testing';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { StartupService } from './startup.service';
-import { CustomFieldsService } from '../custom-fields/custom-fields.service';
 import { TaskanaEngineService } from '../taskana-engine/taskana-engine.service';
 import { WindowRefService } from '../window/window.service';
 import { environment } from '../../../environments/environment';
@@ -29,7 +28,6 @@ describe('StartupService', () => {
       providers: [
         StartupService,
         HttpClient,
-        CustomFieldsService,
         TaskanaEngineService,
         WindowRefService
       ]

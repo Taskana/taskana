@@ -26,3 +26,5 @@ export class WorkbasketAccessItems {
     public _links: Links = new Links()
   ) { }
 }
+
+export const customFieldCount: number = 12;

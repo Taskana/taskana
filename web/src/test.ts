@@ -15,7 +15,7 @@ declare let __karma__: any;
 declare let require: any;
 
 // Prevent Karma from running prematurely.
-__karma__.loaded = function () {};
+__karma__.loaded = function noop() {};
 
 // First, initialize the Angular testing environment.
 getTestBed().initTestEnvironment(

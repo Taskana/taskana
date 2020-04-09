@@ -2,87 +2,37 @@ import { HttpClient } from '@angular/common/http';
 
 import { Injectable } from '@angular/core';
 import { environment } from 'environments/environment';
-import { Observable, ReplaySubject, BehaviorSubject } from 'rxjs';
-import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
-import { Pair } from 'app/models/pair';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import set from 'set-value';
+import { Customisation } from '../../../models/customisation';
+
+const customisationUrl = 'environments/data-sources/taskana-customization.json';
+
+export const missingIcon = 'assets/icons/categories/missing-icon.svg';
+
+export interface CategoriesResponse { [key: string]: string[] }
 
 @Injectable()
 export class ClassificationCategoriesService {
   private mainUrl = environment.taskanaRestUrl;
+  private urlCategoriesByType = `${this.mainUrl}/v1/classifications-by-type`;
 
-  // categories
-  private urlCategories = `${this.mainUrl}/v1/classification-categories`;
-  private param = '/?type=';
-  private dataObsCategories$ = new ReplaySubject<Array<string>>(1);
-  private categoriesObject = {};
-  private missingIcon = 'assets/icons/categories/missing-icon.svg';
-  private type = 'UNKNOW';
+  constructor(private httpClient: HttpClient) {}
 
-  // type
-  private classificationTypeSelectedValue = 'TASK';
-  private urlType = `${this.mainUrl}/v1/classification-types`;
-  private classificationTypeSelected = new BehaviorSubject<string>(this.classificationTypeSelectedValue);
-  private dataObsType$ = new ReplaySubject<Array<string>>(1);
-
-  constructor(
-    private httpClient: HttpClient,
-    private customFieldsService: CustomFieldsService
-  ) { }
-
-  getCategories(type?: string): Observable<Array<string>> {
-    if (!this.dataObsCategories$.observers.length || type !== this.type) {
-      this.httpClient.get<Array<string>>(type ? this.urlCategories + this.param + type : this.urlCategories).subscribe(
-        data => { this.dataObsCategories$.next(data); this.categoriesObject = this.getCustomCategoriesObject(data); this.type = type; },
-        error => { this.dataObsCategories$.error(error); this.dataObsCategories$ = new ReplaySubject(1); }
-      );
-    }
-    return this.dataObsCategories$;
+  // TODO: convert to Map (maybe via ES6)
+  getClassificationCategoriesByType(): Observable<CategoriesResponse> {
+    return this.httpClient.get<CategoriesResponse>(this.urlCategoriesByType);
   }
 
-  getCategoryIcon(category: string): Pair {
-    let categoryIcon = this.categoriesObject[category];
-    let text = category;
-    if (!categoryIcon) {
-      categoryIcon = this.missingIcon;
-      text = 'Category does not match with the configuration';
-    }
-    return new Pair(categoryIcon, text);
-  }
-
-  private getCustomCategoriesObject(categories: Array<string>): Object {
-    return this.customFieldsService.getCustomObject(
-      this.getDefaultCategoryMap(categories), 'classifications.categories'
+  getCustomisation(): Observable<Customisation> {
+    return this.httpClient.get<Customisation>(customisationUrl).pipe(
+      map(customisation => {
+        Object.keys(customisation).forEach(lang => {
+          set(customisation[lang], 'classifications.categories.missing', missingIcon);
+        });
+        return customisation;
+      })
     );
-  }
-
-  private getDefaultCategoryMap(categoryList: Array<string>): Object {
-    const defaultCategoryMap = {};
-    categoryList.forEach(element => {
-      defaultCategoryMap[element] = `assets/icons/categories/${element.toLowerCase()}.svg`;
-    });
-    return defaultCategoryMap;
-  }
-
-  getClassificationTypes(forceRefresh = false): Observable<Array<string>> {
-    if (!this.dataObsType$.observers.length || forceRefresh) {
-      this.httpClient.get<Array<string>>(this.urlType).subscribe(
-        data => this.dataObsType$.next(data),
-        error => {
-          this.dataObsType$.error(error);
-          this.dataObsType$ = new ReplaySubject(1);
-        }
-      );
-    }
-    return this.dataObsType$;
-  }
-
-  selectClassificationType(id: string) {
-    this.getCategories(id);
-    this.classificationTypeSelectedValue = id;
-    this.classificationTypeSelected.next(id);
-  }
-
-  getSelectedClassificationType(): Observable<string> {
-    return this.classificationTypeSelected.asObservable();
   }
 }

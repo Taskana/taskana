@@ -1,15 +1,15 @@
 <div class="dropdown clearfix btn-group">
-  <button type="button" class="btn btn-default"> {{classificationTypeSelected}}</button>
+  <button type="button" class="btn btn-default"> {{classificationTypeSelected$ | async}}</button>
   <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
     aria-expanded="false">
     <span class="caret"></span>
     <span class="sr-only">Toggle Dropdown</span>
   </button>
   <div class="dropdown-menu dropdown-menu-right sortby-dropdown popup" aria-labelledby="sortingDropdown">
-    <li *ngFor="let classificationType of classificationTypes">
+    <li *ngFor="let classificationType of classificationTypes$ | async">
       <a (click)="select(classificationType)">
         <label>
-          <span data-toggle="tooltip" class="material-icons md-20 blue">{{classificationTypeSelected === classificationType?
+          <span data-toggle="tooltip" class="material-icons md-20 blue">{{(classificationTypeSelected$ | async) === classificationType?
             'check_box': 'check_box_outline_blank'}}</span>
           <span>{{classificationType}}</span>
         </label>
