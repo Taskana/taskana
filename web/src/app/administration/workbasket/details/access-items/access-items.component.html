@@ -25,18 +25,9 @@
 						<th>Append</th>
 						<th>Transfer</th>
 						<th>Distribute</th>
-						<th *ngIf="custom1Field.visible">{{custom1Field.field}}</th>
-						<th *ngIf="custom2Field.visible">{{custom2Field.field}}</th>
-						<th *ngIf="custom3Field.visible">{{custom3Field.field}}</th>
-						<th *ngIf="custom4Field.visible">{{custom4Field.field}}</th>
-						<th *ngIf="custom5Field.visible">{{custom5Field.field}}</th>
-						<th *ngIf="custom6Field.visible">{{custom6Field.field}}</th>
-						<th *ngIf="custom7Field.visible">{{custom7Field.field}}</th>
-						<th *ngIf="custom8Field.visible">{{custom8Field.field}}</th>
-						<th *ngIf="custom9Field.visible">{{custom9Field.field}}</th>
-						<th *ngIf="custom10Field.visible">{{custom10Field.field}}</th>
-						<th *ngIf="custom11Field.visible">{{custom11Field.field}}</th>
-						<th *ngIf="custom12Field.visible">{{custom12Field.field}}</th>
+						<ng-container *ngFor="let customField of customFields$ | async">
+							<th *ngIf="customField.visible">{{customField.field}}</th>
+						</ng-container>
 					</tr>
 				</thead>
 				<tbody>
@@ -46,7 +37,7 @@
 								<span class="material-icons md-20 red">clear</span>
 							</button>
 						</td>
-						<td *ngIf="accessIdField.lookupField else accessIdInput" class="input-group text-align text-width taskana-type-ahead"
+						<td *ngIf="(accessItemsCustomization$ | async)?.accessId.lookupField else accessIdInput" class="input-group text-align text-width taskana-type-ahead"
 						 [ngClass]="{
 							'has-warning': (accessItemsClone[index].accessId !== accessItem.value.accessId),
 							'has-error': !accessItem.value.accessId }">
@@ -87,54 +78,12 @@
 							<input id="checkbox-{{index}}-4" type="checkbox" formControlName="permDistribute">
 							<label for="checkbox-{{index}}-4"></label>
 						</td>
-						<td *ngIf="custom1Field.visible" [ngClass]="{ 'has-changes': (accessItemsClone[index].permCustom1 !== accessItem.value.permCustom1)}">
-							<input id="checkbox-{{index}}-5" type="checkbox" formControlName="permCustom1">
-							<label for="checkbox-{{index}}-5"></label>
-						</td>
-						<td *ngIf="custom2Field.visible" [ngClass]="{ 'has-changes': (accessItemsClone[index].permCustom2 !== accessItem.value.permCustom2)}">
-							<input id="checkbox-{{index}}-6" type="checkbox" formControlName="permCustom2">
-							<label for="checkbox-{{index}}-6"></label>
-						</td>
-						<td *ngIf="custom3Field.visible" [ngClass]="{ 'has-changes': (accessItemsClone[index].permCustom3 !== accessItem.value.permCustom3)}">
-							<input id="checkbox-{{index}}-7" type="checkbox" formControlName="permCustom3">
-							<label for="checkbox-{{index}}-7"></label>
-						</td>
-						<td *ngIf="custom4Field.visible" [ngClass]="{ 'has-changes': (accessItemsClone[index].permCustom4 !== accessItem.value.permCustom4)}">
-							<input id="checkbox-{{index}}-8" type="checkbox" formControlName="permCustom4">
-							<label for="checkbox-{{index}}-8"></label>
-						</td>
-						<td *ngIf="custom5Field.visible" [ngClass]="{ 'has-changes': (accessItemsClone[index].permCustom5 !== accessItem.value.permCustom5)}">
-							<input id="checkbox-{{index}}-9" type="checkbox" formControlName="permCustom5">
-							<label for="checkbox-{{index}}-9"></label>
-						</td>
-						<td *ngIf="custom6Field.visible" [ngClass]="{ 'has-changes': (accessItemsClone[index].permCustom6 !== accessItem.value.permCustom6)}">
-							<input id="checkbox-{{index}}-10" type="checkbox" formControlName="permCustom6">
-							<label for="checkbox-{{index}}-10"></label>
-						</td>
-						<td *ngIf="custom7Field.visible" [ngClass]="{ 'has-changes': (accessItemsClone[index].permCustom7 !== accessItem.value.permCustom7)}">
-							<input id="checkbox-{{index}}-11" type="checkbox" formControlName="permCustom7">
-							<label for="checkbox-{{index}}-11"></label>
-						</td>
-						<td *ngIf="custom8Field.visible" [ngClass]="{ 'has-changes': (accessItemsClone[index].permCustom8 !== accessItem.value.permCustom8)}">
-							<input id="checkbox-{{index}}-12" type="checkbox" formControlName="permCustom8">
-							<label for="checkbox-{{index}}-12"></label>
-						</td>
-						<td *ngIf="custom9Field.visible" [ngClass]="{ 'has-changes': (accessItemsClone[index].permCustom9 !== accessItem.value.permCustom9)}">
-							<input id="checkbox-{{index}}-13" type="checkbox" formControlName="permCustom9">
-							<label for="checkbox-{{index}}-13"></label>
-						</td>
-						<td *ngIf="custom10Field.visible" [ngClass]="{ 'has-changes': (accessItemsClone[index].permCustom10 !== accessItem.value.permCustom10)}">
-							<input id="checkbox-{{index}}-14" type="checkbox" formControlName="permCustom10">
-							<label for="checkbox-{{index}}-14"></label>
-						</td>
-						<td *ngIf="custom11Field.visible" [ngClass]="{ 'has-changes': (accessItemsClone[index].permCustom11 !== accessItem.value.permCustom11)}">
-							<input id="checkbox-{{index}}-15" type="checkbox" formControlName="permCustom11">
-							<label for="checkbox-{{index}}-15"></label>
-						</td>
-						<td *ngIf="custom12Field.visible" [ngClass]="{ 'has-changes': (accessItemsClone[index].permCustom12 !== accessItem.value.permCustom12)}">
-							<input id="checkbox-{{index}}-16" type="checkbox" formControlName="permCustom12">
-							<label for="checkbox-{{index}}-16"></label>
-						</td>
+						<ng-container *ngFor="let customField of customFields$ | async; let customIndex = index">
+							<td *ngIf="customField.visible" [ngClass]="{ 'has-changes': accessItemsClone[index][getAccessItemCustomProperty(customIndex + 1)] !== accessItem.value[getAccessItemCustomProperty(customIndex+1)] }">
+								<input id="checkbox-{{index}}-{{customIndex + 5}}" type="checkbox" formControlName="permCustom{{customIndex+1}}">
+								<label for="checkbox-{{index}}-{{customIndex + 5}}"></label>
+							</td>
+						</ng-container>
 					</tr>
 				</tbody>
 			</table>

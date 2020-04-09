@@ -1,23 +1,25 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Select } from '@ngxs/store';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
 import { AccessItemsWorkbasketResource } from 'app/models/access-item-workbasket-resource';
 import { AccessItemWorkbasket } from 'app/models/access-item-workbasket';
 import { SortingModel } from 'app/models/sorting';
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
-import { MessageModal } from 'app/models/message-modal';
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
 import { AlertModel, AlertType } from 'app/models/alert';
 import { AlertService } from 'app/services/alert/alert.service';
+import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
 import { RequestInProgressService } from '../../services/requestInProgress/request-in-progress.service';
 import { AccessIdsService } from '../../shared/services/access-ids/access-ids.service';
 import { AccessIdDefinition } from '../../models/access-id';
 import { ErrorsService } from '../../services/errors/errors.service';
 import { ERROR_TYPES } from '../../models/errors';
+import { AccessItemsCustomisation, CustomField, getCustomFields } from '../../models/customisation';
+import { customFieldCount } from '../../models/workbasket-access-items';
 
 @Component({
   selector: 'taskana-access-items-management',
@@ -40,22 +42,10 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
   isGroup: boolean;
   groupsKey = 'ou=groups';
 
-  accessIdField = this.customFieldsService.getCustomField('Owner', 'workbaskets.access-items.accessId');
-  custom1Field = this.customFieldsService.getCustomField('Custom 1', 'workbaskets.access-items.custom1');
-  custom2Field = this.customFieldsService.getCustomField('Custom 2', 'workbaskets.access-items.custom2');
-  custom3Field = this.customFieldsService.getCustomField('Custom 3', 'workbaskets.access-items.custom3');
-  custom4Field = this.customFieldsService.getCustomField('Custom 4', 'workbaskets.access-items.custom4');
-  custom5Field = this.customFieldsService.getCustomField('Custom 5', 'workbaskets.access-items.custom5');
-  custom6Field = this.customFieldsService.getCustomField('Custom 6', 'workbaskets.access-items.custom6');
-  custom7Field = this.customFieldsService.getCustomField('Custom 7', 'workbaskets.access-items.custom7');
-  custom8Field = this.customFieldsService.getCustomField('Custom 8', 'workbaskets.access-items.custom8');
-  custom9Field = this.customFieldsService.getCustomField('Custom 9', 'workbaskets.access-items.custom9');
-  custom10Field = this.customFieldsService.getCustomField('Custom 10', 'workbaskets.access-items.custom10');
-  custom11Field = this.customFieldsService.getCustomField('Custom 11', 'workbaskets.access-items.custom11');
-  custom12Field = this.customFieldsService.getCustomField('Custom 12', 'workbaskets.access-items.custom12');
+  @Select(EngineConfigurationSelectors.accessItemsCustomisation) accessItemsCustomization$: Observable<AccessItemsCustomisation>;
+  customFields$: Observable<CustomField[]>;
 
   constructor(private formBuilder: FormBuilder,
-    private customFieldsService: CustomFieldsService,
     private accessIdsService: AccessIdsService,
     private formsValidatorService: FormsValidatorService,
     private requestInProgressService: RequestInProgressService,
@@ -73,6 +63,10 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
     if (subscription) {
       subscription.unsubscribe();
     }
+  }
+
+  ngOnInit() {
+    this.customFields$ = this.accessItemsCustomization$.pipe(getCustomFields(customFieldCount));
   }
 
   setAccessItemsGroups(accessItems: Array<AccessItemWorkbasket>) {
@@ -94,9 +88,6 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
     if (!this.AccessItemsForm.value.accessIdFilter) {
       this.AccessItemsForm.addControl('accessIdFilter', new FormControl());
     }
-  }
-
-  ngOnInit() {
   }
 
   onSelectAccessId(selected: AccessIdDefinition) {

@@ -46,3 +46,5 @@ export class Workbasket {
   ) {
   }
 }
+
+export const customFieldCount: number = 4;

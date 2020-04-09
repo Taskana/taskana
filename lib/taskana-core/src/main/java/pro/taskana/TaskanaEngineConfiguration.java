@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -82,14 +83,13 @@ public class TaskanaEngineConfiguration {
 
   // global switch to enable JAAS based authentication and Taskana
   // authorizations
-  protected boolean securityEnabled = true;
+  protected boolean securityEnabled;
   protected boolean useManagedTransactions;
   // List of configured domain names
-  protected List<String> domains = new ArrayList<String>();
+  protected List<String> domains = new ArrayList<>();
   // List of configured classification types
-  protected List<String> classificationTypes = new ArrayList<String>();
-  protected Map<String, List<String>> classificationCategoriesByTypeMap =
-      new HashMap<String, List<String>>();
+  protected List<String> classificationTypes = new ArrayList<>();
+  protected Map<String, List<String>> classificationCategoriesByTypeMap = new HashMap<>();
   // Properties for the monitor
   private boolean germanPublicHolidaysEnabled;
   private List<LocalDate> customHolidays;
@@ -294,8 +294,13 @@ public class TaskanaEngineConfiguration {
     return classificationCategories;
   }
 
+  public Map<String, List<String>> getClassificationCategoriesByTypeMap() {
+    return this.classificationCategoriesByTypeMap.entrySet().stream()
+        .collect(Collectors.toMap(Entry::getKey, e -> new ArrayList<>(e.getValue())));
+  }
+
   public List<String> getClassificationCategoriesByType(String type) {
-    return classificationCategoriesByTypeMap.get(type);
+    return classificationCategoriesByTypeMap.getOrDefault(type, Collections.emptyList());
   }
 
   public void setClassificationCategoriesByType(

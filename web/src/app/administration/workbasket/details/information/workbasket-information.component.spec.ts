@@ -17,9 +17,10 @@ import { GeneralModalService } from 'app/services/general-modal/general-modal.se
 import { SavingWorkbasketService } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
-import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { configureTests } from 'app/app.test.configuration';
 import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
+import { NgxsModule, Store } from '@ngxs/store';
+import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
 import { WorkbasketInformationComponent } from './workbasket-information.component';
 
 @Component({
@@ -44,29 +45,38 @@ describe('WorkbasketInformationComponent', () => {
   let requestInProgressService;
   let formsValidatorService;
 
-  beforeEach(done => {
-    const configure = (testBed: TestBed) => {
-      testBed.configureTestingModule({
-        declarations: [WorkbasketInformationComponent, DummyDetailComponent],
-        imports: [FormsModule,
-          AngularSvgIconModule,
-          HttpClientModule,
-          RouterTestingModule.withRoutes(routes)],
-        providers: [WorkbasketService, AlertService, SavingWorkbasketService, GeneralModalService, RequestInProgressService,
-          CustomFieldsService, FormsValidatorService]
+  const storeSpy: jasmine.SpyObj<Store> = jasmine.createSpyObj('Store', ['select']);
 
-      });
-    };
+  const configure = (testBed: TestBed) => {
+    testBed.configureTestingModule({
+      declarations: [WorkbasketInformationComponent, DummyDetailComponent],
+      imports: [FormsModule, AngularSvgIconModule, HttpClientModule, RouterTestingModule.withRoutes(routes), NgxsModule.forRoot()],
+      providers: [WorkbasketService, AlertService, SavingWorkbasketService, GeneralModalService,
+        RequestInProgressService, FormsValidatorService, { provide: Store, useValue: storeSpy }]
+
+    });
+  };
+
+  beforeEach(done => {
     configureTests(configure).then(testBed => {
-      fixture = TestBed.createComponent(WorkbasketInformationComponent);
+      storeSpy.select.and.callFake(selector => {
+        switch (selector) {
+          case EngineConfigurationSelectors.workbasketsCustomisation:
+            return of({ information: {} });
+          default:
+            return of();
+        }
+      });
+
+      fixture = testBed.createComponent(WorkbasketInformationComponent);
       component = fixture.componentInstance;
       debugElement = fixture.debugElement.nativeElement;
-      workbasketService = TestBed.get(WorkbasketService);
-      alertService = TestBed.get(AlertService);
-      savingWorkbasketService = TestBed.get(SavingWorkbasketService);
-      requestInProgressService = TestBed.get(RequestInProgressService);
+      workbasketService = testBed.get(WorkbasketService);
+      alertService = testBed.get(AlertService);
+      savingWorkbasketService = testBed.get(SavingWorkbasketService);
+      requestInProgressService = testBed.get(RequestInProgressService);
 
-      formsValidatorService = TestBed.get(FormsValidatorService);
+      formsValidatorService = testBed.get(FormsValidatorService);
 
       spyOn(alertService, 'triggerAlert');
       fixture.detectChanges();
@@ -113,7 +123,7 @@ describe('WorkbasketInformationComponent', () => {
     expect(component.workbasket.workbasketId).toEqual(component.workbasketClone.workbasketId);
   });
 
-  it('should reset requestInProgress after saving request is done', () => {
+  it('should reset requestInProgress after saving request is done', async(() => {
     component.workbasket = new Workbasket('id', 'created', 'keyModified', 'domain', ICONTYPES.TOPIC, 'modified', 'name', 'description',
       'owner', 'custom1', 'custom2', 'custom3', 'custom4', 'orgLevel1', 'orgLevel2',
       'orgLevel3', 'orgLevel4', new Links({ href: 'someUrl' }));
@@ -122,7 +132,7 @@ describe('WorkbasketInformationComponent', () => {
     spyOn(workbasketService, 'triggerWorkBasketSaved').and.returnValue(of(component.workbasket));
     component.onSubmit();
     expect(component.requestInProgress).toBeFalsy();
-  });
+  }));
 
   it('should trigger triggerWorkBasketSaved method after saving request is done', async(() => {
     component.workbasket = new Workbasket('id', 'created', 'keyModified', 'domain', ICONTYPES.TOPIC, 'modified', 'name', 'description',

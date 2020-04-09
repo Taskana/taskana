@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { of } from 'rxjs';
 import { Routes } from '@angular/router';
@@ -20,11 +20,11 @@ import { DomainService } from 'app/services/domain/domain.service';
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { configureTests } from 'app/app.test.configuration';
-import { ClassificationCategoriesService } from 'app/shared/services/classifications/classification-categories.service';
-import { Pair } from 'app/models/pair';
 import { TreeService } from 'app/services/tree/tree.service';
 import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
+import { NgxsModule } from '@ngxs/store';
 import { ClassificationListComponent } from './classification-list.component';
+
 
 @Component({
   selector: 'taskana-dummy-detail',
@@ -37,38 +37,32 @@ const routes: Routes = [
   { path: ':id', component: DummyDetailComponent }
 ];
 
-
 describe('ClassificationListComponent', () => {
   let component: ClassificationListComponent;
   let fixture: ComponentFixture<ClassificationListComponent>;
   const treeNodes: Array<TreeNodeModel> = new Array(new TreeNodeModel());
-  const classificationTypes: Array<string> = new Array<string>('type1', 'type2');
   let classificationsService;
-  let classificationCategoriesService;
+
+  const configure = (testBed: TestBed) => {
+    testBed.configureTestingModule({
+      declarations: [ClassificationListComponent, ImportExportComponent, ClassificationTypesSelectorComponent,
+        DummyDetailComponent],
+      imports: [HttpClientModule, RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule, NgxsModule.forRoot()],
+      providers: [
+        HttpClient, WorkbasketDefinitionService, AlertService, ClassificationsService, DomainService, ClassificationDefinitionService,
+        GeneralModalService, RequestInProgressService, TreeService, ImportExportService
+      ]
+    });
+  };
 
   beforeEach(done => {
-    const configure = (testBed: TestBed) => {
-      testBed.configureTestingModule({
-        declarations: [ClassificationListComponent, ImportExportComponent, ClassificationTypesSelectorComponent,
-          DummyDetailComponent],
-        imports: [HttpClientModule, RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule],
-        providers: [
-          HttpClient, WorkbasketDefinitionService, AlertService, ClassificationsService, DomainService, ClassificationDefinitionService,
-          GeneralModalService, RequestInProgressService, ClassificationCategoriesService, TreeService, ImportExportService
-        ]
-      });
-    };
     configureTests(configure).then(testBed => {
       fixture = testBed.createComponent(ClassificationListComponent);
       component = fixture.componentInstance;
 
       classificationsService = testBed.get(ClassificationsService);
-      classificationCategoriesService = testBed.get(ClassificationCategoriesService);
       spyOn(classificationsService, 'getClassifications').and.returnValue(of(treeNodes));
-      spyOn(classificationCategoriesService, 'getClassificationTypes')
-        .and.returnValue(of(classificationTypes));
-      spyOn(classificationCategoriesService, 'getCategories').and.returnValue(of(new Array<string>('cat1', 'cat2')));
-      spyOn(classificationCategoriesService, 'getCategoryIcon').and.returnValue(new Pair('assets/icons/categories/external.svg'));
+
       fixture.detectChanges();
       done();
     });

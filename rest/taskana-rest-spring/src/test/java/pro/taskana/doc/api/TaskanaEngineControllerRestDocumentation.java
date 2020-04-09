@@ -65,7 +65,7 @@ class TaskanaEngineControllerRestDocumentation extends BaseRestDocumentation {
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.get(
-                    restHelper.toUrl(Mapping.URL_CLASSIFICATIONCATEGORIES))
+                    restHelper.toUrl(Mapping.URL_CLASSIFICATION_CATEGORIES))
                 .accept("application/json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -79,7 +79,7 @@ class TaskanaEngineControllerRestDocumentation extends BaseRestDocumentation {
   void getAllClassificationTypesDocTest() throws Exception {
     this.mockMvc
         .perform(
-            RestDocumentationRequestBuilders.get(restHelper.toUrl(Mapping.URL_CLASSIFICATIONTYPES))
+            RestDocumentationRequestBuilders.get(restHelper.toUrl(Mapping.URL_CLASSIFICATION_TYPES))
                 .accept("application/json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -93,7 +93,7 @@ class TaskanaEngineControllerRestDocumentation extends BaseRestDocumentation {
   void getCurrentUserInfo() throws Exception {
     this.mockMvc
         .perform(
-            RestDocumentationRequestBuilders.get(restHelper.toUrl(Mapping.URL_CURRENTUSER))
+            RestDocumentationRequestBuilders.get(restHelper.toUrl(Mapping.URL_CURRENT_USER))
                 .accept("application/json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -106,7 +106,7 @@ class TaskanaEngineControllerRestDocumentation extends BaseRestDocumentation {
   void getHistoryProviderIsEnabled() throws Exception {
     this.mockMvc
         .perform(
-            RestDocumentationRequestBuilders.get(restHelper.toUrl(Mapping.URL_HISTORYENABLED))
+            RestDocumentationRequestBuilders.get(restHelper.toUrl(Mapping.URL_HISTORY_ENABLED))
                 .accept("application/json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isOk())

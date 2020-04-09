@@ -11,13 +11,16 @@ import { AfterViewChecked,
 import { TreeNodeModel } from 'app/models/tree-node';
 
 import { ITreeOptions, KEYS, TreeComponent, TreeNode } from 'angular-tree-component';
-import { ClassificationCategoriesService } from 'app/shared/services/classifications/classification-categories.service';
 import { Pair } from 'app/models/pair';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Select } from '@ngxs/store';
+import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
 import { TreeService } from '../../services/tree/tree.service';
 import { Classification } from '../../models/classification';
 import { ClassificationDefinition } from '../../models/classification-definition';
 import { ClassificationsService } from '../services/classifications/classifications.service';
+import { ClassificationCategoryImages } from '../../models/customisation';
 
 @Component({
   selector: 'taskana-tree',
@@ -25,9 +28,6 @@ import { ClassificationsService } from '../services/classifications/classificati
   styleUrls: ['./tree.component.scss'],
 })
 export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy {
-  @ViewChild('tree', { static: true })
-  private tree: TreeComponent;
-
   @Input() treeNodes: Array<TreeNodeModel>;
   @Output() treeNodesChange = new EventEmitter<Array<TreeNodeModel>>();
   @Input() selectNodeId: string;
@@ -36,11 +36,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
   @Input() filterIcon = '';
   @Output() refreshClassification = new EventEmitter<string>();
   @Output() switchTaskanaSpinnerEmit = new EventEmitter<boolean>();
-
-  private filterTextOld: string;
-  private filterIconOld = '';
-  private removedNodeIdSubscription: Subscription;
-
+  @Select(EngineConfigurationSelectors.selectCategoryIcons) categoryIcons$: Observable<ClassificationCategoryImages>;
   options: ITreeOptions = {
     displayField: 'name',
     idField: 'classificationId',
@@ -59,19 +55,25 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
     allowDrop: true
   };
 
+  @ViewChild('tree', { static: true })
+  private tree: TreeComponent;
+
+  private filterTextOld: string;
+  private filterIconOld = '';
+  private removedNodeIdSubscription: Subscription;
+
+  constructor(
+    private treeService: TreeService,
+    private elementRef: ElementRef,
+    private classificationsService: ClassificationsService,
+  ) {
+  }
+
   @HostListener('document:click', ['$event'])
   onDocumentClick(event) {
     if (this.checkValidElements(event) && this.tree.treeModel.getActiveNode()) {
       this.unSelectActiveNode();
     }
-  }
-
-  constructor(
-    private treeService: TreeService,
-    private categoryService: ClassificationCategoriesService,
-    private elementRef: ElementRef,
-    private classificationsService: ClassificationsService
-  ) {
   }
 
   ngOnInit() {
@@ -91,7 +93,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
     }
 
     if (this.filterTextOld !== this.filterText
-      || this.filterIconOld !== this.filterIcon) {
+        || this.filterIconOld !== this.filterIcon) {
       this.filterIconOld = this.filterIcon;
       this.filterTextOld = this.filterText;
       this.filterNodes(this.filterText ? this.filterText : '', this.filterIcon);
@@ -127,8 +129,22 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
     }
   }
 
-  getCategoryIcon(category: string): Pair {
-    return this.categoryService.getCategoryIcon(category);
+  getCategoryIcon(category: string): Observable<Pair> {
+    return this.categoryIcons$.pipe(map(
+      iconMap => (iconMap[category]
+        ? new Pair(iconMap[category], category)
+        : new Pair(iconMap.missing, 'Category does not match with the configuration'))
+    ));
+  }
+
+  switchTaskanaSpinner(active: boolean) {
+    this.switchTaskanaSpinnerEmit.emit(active);
+  }
+
+  ngOnDestroy(): void {
+    if (this.removedNodeIdSubscription) {
+      this.removedNodeIdSubscription.unsubscribe();
+    }
   }
 
   private selectNode(nodeId: string) {
@@ -167,12 +183,12 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
 
   private checkNameAndKey(node: any, text: string): boolean {
     return (node.data.name.toUpperCase().includes(text.toUpperCase())
-      || node.data.key.toUpperCase().includes(text.toUpperCase()));
+        || node.data.key.toUpperCase().includes(text.toUpperCase()));
   }
 
   private checkIcon(node: any, iconText: string): boolean {
     return (node.data.category.toUpperCase() === iconText.toUpperCase()
-      || iconText === '');
+        || iconText === '');
   }
 
   private manageTreeState() {
@@ -183,9 +199,9 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
 
   private checkValidElements(event): boolean {
     return (this.elementRef.nativeElement.contains(event.target)
-      || this.elementRef.nativeElement === event.target)
-      && (event.target.localName === 'tree-viewport'
-        || event.target.localName === 'taskana-tree');
+        || this.elementRef.nativeElement === event.target)
+        && (event.target.localName === 'tree-viewport'
+            || event.target.localName === 'taskana-tree');
   }
 
   private getClassification(classificationId: string): Promise<ClassificationDefinition> {
@@ -202,16 +218,6 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
     if (node.parentId.length > 0 && this.getNode(node.parentId) && this.getNode(node.parentId).children.length < 2) {
       this.tree.treeModel.update();
       this.getNode(node.parentId).collapse();
-    }
-  }
-
-  switchTaskanaSpinner(active: boolean) {
-    this.switchTaskanaSpinnerEmit.emit(active);
-  }
-
-  ngOnDestroy(): void {
-    if (this.removedNodeIdSubscription) {
-      this.removedNodeIdSubscription.unsubscribe();
     }
   }
 }

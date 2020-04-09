@@ -3,14 +3,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
 
-
 import { TreeService } from 'app/services/tree/tree.service';
 import { configureTests } from 'app/app.test.configuration';
-import { Pair } from 'app/models/pair';
+import { NgxsModule } from '@ngxs/store';
 import { TaskanaTreeComponent } from './tree.component';
 import { ClassificationDefinition } from '../../models/classification-definition';
 import { LinksClassification } from '../../models/links-classfication';
-import { ClassificationCategoriesService } from '../services/classifications/classification-categories.service';
 import { ClassificationsService } from '../services/classifications/classifications.service';
 
 @Component({
@@ -21,34 +19,27 @@ class TreeVendorComponent {
   @Input() options;
   @Input() state;
   @Input() nodes;
-  treeModel = {
-    getActiveNode() {
-    }
-  };
 }
 
 describe('TaskanaTreeComponent', () => {
   let component: TaskanaTreeComponent;
   let fixture: ComponentFixture<TaskanaTreeComponent>;
-  let classificationCategoriesService;
   let classificationsService;
   let moveNodeEvent;
   let dropEvent;
 
-  beforeEach(done => {
-    const configure = (testBed: TestBed) => {
-      testBed.configureTestingModule({
-        imports: [AngularSvgIconModule, HttpClientModule],
-        declarations: [TreeVendorComponent],
-        providers: [TreeService, ClassificationCategoriesService, ClassificationsService]
+  const configure = (testBed: TestBed) => {
+    testBed.configureTestingModule({
+      imports: [AngularSvgIconModule, HttpClientModule, NgxsModule.forRoot()],
+      declarations: [TreeVendorComponent],
+      providers: [TreeService, ClassificationsService]
+    });
+  };
 
-      });
-    };
+  beforeEach(done => {
     configureTests(configure).then(testBed => {
       fixture = testBed.createComponent(TaskanaTreeComponent);
-      classificationCategoriesService = testBed.get(ClassificationCategoriesService);
-      spyOn(classificationCategoriesService, 'getCategoryIcon').and.returnValue(new Pair('assets/icons/categories/external.svg'));
-      classificationsService = TestBed.get(ClassificationsService);
+      classificationsService = testBed.get(ClassificationsService);
       spyOn(classificationsService, 'putClassification').and.callFake((url, classification) => classification);
       moveNodeEvent = {
         eventName: 'moveNode',

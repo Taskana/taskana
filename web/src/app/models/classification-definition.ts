@@ -27,3 +27,5 @@ export class ClassificationDefinition {
     public _links?: LinksClassification) {
   }
 }
+
+export const customFieldCount: number = 8;

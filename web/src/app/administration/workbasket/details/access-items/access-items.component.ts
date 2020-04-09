@@ -1,25 +1,26 @@
 import { Component, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
+import { Select } from '@ngxs/store';
 import { FormArray, FormBuilder, Validators } from '@angular/forms';
 
 import { Workbasket } from 'app/models/workbasket';
-import { WorkbasketAccessItems } from 'app/models/workbasket-access-items';
+import { WorkbasketAccessItems, customFieldCount } from 'app/models/workbasket-access-items';
 import { WorkbasketAccessItemsResource } from 'app/models/workbasket-access-items-resource';
 import { ACTION } from 'app/models/action';
-import { AlertModel, AlertType } from 'app/models/alert';
 
-import { SavingInformation,
-  SavingWorkbasketService } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
+import { AlertModel, AlertType } from 'app/models/alert';
+import { SavingInformation, SavingWorkbasketService } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
-import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { highlight } from 'app/shared/animations/validation.animation';
 import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
 import { AccessIdDefinition } from 'app/models/access-id';
+import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
 import { ERROR_TYPES } from '../../../../models/errors';
 import { ErrorsService } from '../../../../services/errors/errors.service';
+import { AccessItemsCustomisation, CustomField, getCustomFields } from '../../../../models/customisation';
 
 @Component({
   selector: 'taskana-workbasket-access-items',
@@ -39,26 +40,13 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 
   badgeMessage = '';
 
-  accessIdField = this.customFieldsService.getCustomField('Owner', 'workbaskets.access-items.accessId');
-  custom1Field = this.customFieldsService.getCustomField('Custom 1', 'workbaskets.access-items.custom1');
-  custom2Field = this.customFieldsService.getCustomField('Custom 2', 'workbaskets.access-items.custom2');
-  custom3Field = this.customFieldsService.getCustomField('Custom 3', 'workbaskets.access-items.custom3');
-  custom4Field = this.customFieldsService.getCustomField('Custom 4', 'workbaskets.access-items.custom4');
-  custom5Field = this.customFieldsService.getCustomField('Custom 5', 'workbaskets.access-items.custom5');
-  custom6Field = this.customFieldsService.getCustomField('Custom 6', 'workbaskets.access-items.custom6');
-  custom7Field = this.customFieldsService.getCustomField('Custom 7', 'workbaskets.access-items.custom7');
-  custom8Field = this.customFieldsService.getCustomField('Custom 8', 'workbaskets.access-items.custom8');
-  custom9Field = this.customFieldsService.getCustomField('Custom 9', 'workbaskets.access-items.custom9');
-  custom10Field = this.customFieldsService.getCustomField('Custom 10', 'workbaskets.access-items.custom10');
-  custom11Field = this.customFieldsService.getCustomField('Custom 11', 'workbaskets.access-items.custom11');
-  custom12Field = this.customFieldsService.getCustomField('Custom 12', 'workbaskets.access-items.custom12');
+  @Select(EngineConfigurationSelectors.accessItemsCustomisation) accessItemsCustomization$: Observable<AccessItemsCustomisation>;
+  customFields$: Observable<CustomField[]>;
 
   accessItemsResource: WorkbasketAccessItemsResource;
   accessItemsClone: Array<WorkbasketAccessItems>;
   accessItemsResetClone: Array<WorkbasketAccessItems>;
   requestInProgress = false;
-  modalTitle: string;
-  modalErrorMessage: string;
   accessItemsubscription: Subscription;
   savingAccessItemsSubscription: Subscription;
   AccessItemsForm = this.formBuilder.group({
@@ -74,7 +62,6 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
     private generalModalService: GeneralModalService,
     private savingWorkbaskets: SavingWorkbasketService,
     private requestInProgressService: RequestInProgressService,
-    private customFieldsService: CustomFieldsService,
     private formBuilder: FormBuilder,
     private formsValidatorService: FormsValidatorService,
     private errorsService: ErrorsService
@@ -83,6 +70,10 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
 
   get accessItemsGroups(): FormArray {
     return this.AccessItemsForm.get('accessItemsGroups') as FormArray;
+  }
+
+  ngOnInit() {
+    this.customFields$ = this.accessItemsCustomization$.pipe(getCustomFields(customFieldCount));
   }
 
   setAccessItemsGroups(accessItems: Array<WorkbasketAccessItems>) {
@@ -224,5 +215,9 @@ export class AccessItemsComponent implements OnChanges, OnDestroy {
       delete element.accessItemId;
       element.workbasketId = workbasketId;
     });
+  }
+
+  getAccessItemCustomProperty(customNumber: number): string {
+    return `permCustom${customNumber}`;
   }
 }
