@@ -3,6 +3,8 @@ package pro.taskana.rest;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
@@ -35,6 +37,7 @@ import pro.taskana.rest.resource.TaskSummaryResourceAssembler;
 import pro.taskana.task.api.TaskQuery;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
+import pro.taskana.task.api.WildcardSearchFields;
 import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
 import pro.taskana.task.api.exceptions.InvalidOwnerException;
 import pro.taskana.task.api.exceptions.InvalidStateException;
@@ -77,6 +80,8 @@ public class TaskController extends AbstractPagingController {
   private static final String PLANNED_UNTIL = "planned-until";
   private static final String PLANNED_FROM = "planned-from";
   private static final String EXTERNAL_ID = "external-id";
+  private static final String WILDCARD_SEARCH_VALUE = "wildcard-search-value";
+  private static final String WILDCARD_SEARCH_FIELDS = "wildcard-search-fields";
 
   private static final String SORT_BY = "sort-by";
   private static final String SORT_DIRECTION = "order";
@@ -295,6 +300,7 @@ public class TaskController extends AbstractPagingController {
       params.remove(PRIORITY);
     }
     if (params.containsKey(STATE)) {
+
       TaskState[] states = extractStates(params);
       taskQuery.stateIn(states);
       params.remove(STATE);
@@ -382,6 +388,18 @@ public class TaskController extends AbstractPagingController {
       updateTaskQueryWithIndefiniteTimeInterval(taskQuery, params, DUE_TO, timeInterval);
     }
 
+    if (params.containsKey(WILDCARD_SEARCH_FIELDS) && params.containsKey(WILDCARD_SEARCH_VALUE)) {
+
+      String[] requestedWildcardSearchFields =
+          extractCommaSeparatedFields(params.get(WILDCARD_SEARCH_FIELDS));
+
+      taskQuery.wildcardSearchFieldsIn(createWildcardSearchFields(requestedWildcardSearchFields));
+
+      taskQuery.wildcardSearchValueLike(params.getFirst(WILDCARD_SEARCH_VALUE));
+      params.remove(WILDCARD_SEARCH_FIELDS);
+      params.remove(WILDCARD_SEARCH_VALUE);
+    }
+
     if (params.containsKey(EXTERNAL_ID)) {
       String[] externalIds = extractCommaSeparatedFields(params.get(EXTERNAL_ID));
       taskQuery.externalIdIn(externalIds);
@@ -393,6 +411,14 @@ public class TaskController extends AbstractPagingController {
     }
 
     return taskQuery;
+  }
+
+  private WildcardSearchFields[] createWildcardSearchFields(String[] wildcardFields) {
+
+    return Stream.of(wildcardFields)
+        .map(WildcardSearchFields::fromString)
+        .filter(Objects::nonNull)
+        .toArray(WildcardSearchFields[]::new);
   }
 
   private void updateTaskQueryWithWorkbasketKey(
@@ -441,6 +467,22 @@ public class TaskController extends AbstractPagingController {
               + "\" and / or \""
               + PLANNED_UNTIL
               + "\"");
+    }
+
+    if (params.containsKey(WILDCARD_SEARCH_FIELDS) && !params.containsKey(WILDCARD_SEARCH_VALUE)
+        || !params.containsKey(WILDCARD_SEARCH_FIELDS)
+            && params.containsKey(WILDCARD_SEARCH_VALUE)) {
+
+      throw new IllegalArgumentException(
+          "It is prohibited to use the params "
+              + "\""
+              + WILDCARD_SEARCH_FIELDS
+              + "\""
+              + " or "
+              + "\""
+              + WILDCARD_SEARCH_VALUE
+              + "\""
+              + " without one another. If one is provided you must provide the other one as well");
     }
   }
 

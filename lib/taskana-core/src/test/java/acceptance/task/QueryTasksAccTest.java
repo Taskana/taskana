@@ -642,6 +642,8 @@ class QueryTasksAccTest extends AbstractAccTest {
   void testQueryForOrderByWorkbasketIdDesc() {
     List<TaskSummary> results =
         taskService.createTaskQuery().orderByWorkbasketId(DESCENDING).list();
+            .orderByCustomAttribute("4", DESCENDING)
+    assertEquals("99rty", results.get(0).getCustomAttribute("4"));
 
     assertThat(results)
         .hasSizeGreaterThan(2)

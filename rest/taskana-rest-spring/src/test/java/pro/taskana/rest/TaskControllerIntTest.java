@@ -211,6 +211,53 @@ class TaskControllerIntTest {
   }
 
   @Test
+  void should_ReturnAllTasksByWildcardSearch_For_ProvidedSearchValue() {
+    ResponseEntity<TaskSummaryListResource> response =
+        template.exchange(
+            restHelper.toUrl(Mapping.URL_TASKS)
+                + "?wildcard-search-value=%99%"
+                + "&wildcard-search-fields=NAME,custom_3,CuStOM_4",
+            HttpMethod.GET,
+            new HttpEntity<String>(restHelper.getHeadersAdmin()),
+            ParameterizedTypeReference.forType(TaskSummaryListResource.class));
+    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getContent()).hasSize(4);
+  }
+
+  @Test
+  void should_ThrowException_When_ProvidingInvalidWildcardSearchParameters() {
+
+    ThrowingCallable httpCall =
+        () -> {
+          template.exchange(
+              restHelper.toUrl(Mapping.URL_TASKS) + "?wildcard-search-value=%rt%",
+              HttpMethod.GET,
+              restHelper.defaultRequest(),
+              ParameterizedTypeReference.forType(TaskSummaryListResource.class));
+        };
+    assertThatThrownBy(httpCall)
+        .isInstanceOf(HttpClientErrorException.class)
+        .hasMessageContaining("400")
+        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.BAD_REQUEST);
+
+    ThrowingCallable httpCall2 =
+        () -> {
+          template.exchange(
+              restHelper.toUrl(Mapping.URL_TASKS)
+                  + "?wildcard-search-fields=NAME,CUSTOM_3,CUSTOM_4",
+              HttpMethod.GET,
+              restHelper.defaultRequest(),
+              ParameterizedTypeReference.forType(TaskSummaryListResource.class));
+        };
+    assertThatThrownBy(httpCall2)
+        .isInstanceOf(HttpClientErrorException.class)
+        .hasMessageContaining("400")
+        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.BAD_REQUEST);
+  }
+
+  @Test
   void testGetAllTasksByWorkbasketIdWithinSingleDueTimeInterval() {
 
     Instant dueFromInstant = Instant.now().minus(8, ChronoUnit.DAYS);
