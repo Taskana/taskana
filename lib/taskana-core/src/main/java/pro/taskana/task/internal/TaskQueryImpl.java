@@ -24,6 +24,7 @@ import pro.taskana.task.api.ObjectReferenceQuery;
 import pro.taskana.task.api.TaskQuery;
 import pro.taskana.task.api.TaskQueryColumnName;
 import pro.taskana.task.api.TaskState;
+import pro.taskana.task.api.WildcardSearchFields;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.TaskSummaryImpl;
 import pro.taskana.workbasket.api.WorkbasketPermission;
@@ -147,6 +148,8 @@ public class TaskQueryImpl implements TaskQuery {
   private TimeInterval[] dueIn;
   private List<String> orderBy;
   private List<String> orderColumns;
+  private WildcardSearchFields[] wildcardSearchFieldsIn;
+  private String wildcardSearchValueLike;
 
   private boolean useDistinctKeyword = false;
   private boolean joinWithAttachments = false;
@@ -735,6 +738,18 @@ public class TaskQueryImpl implements TaskQuery {
     return DB.DB2.dbProductId.equals(getDatabaseId())
         ? addOrderCriteria("CNAME", sortDirection)
         : addOrderCriteria("c.NAME", sortDirection);
+  }
+
+  @Override
+  public TaskQuery wildcardSearchValueLike(String wildcardSearchValue) {
+    this.wildcardSearchValueLike = wildcardSearchValue;
+    return this;
+  }
+
+  @Override
+  public TaskQuery wildcardSearchFieldsIn(WildcardSearchFields... wildcardSearchFields) {
+    this.wildcardSearchFieldsIn = wildcardSearchFields;
+    return this;
   }
 
   @Override
@@ -1588,6 +1603,14 @@ public class TaskQueryImpl implements TaskQuery {
         addAttachmentClassificationNameToSelectClauseForOrdering;
   }
 
+  public WildcardSearchFields[] getWildcardSearchFieldIn() {
+    return wildcardSearchFieldsIn;
+  }
+
+  public String getWildcardSearchValueLike() {
+    return wildcardSearchValueLike;
+  }
+
   private String getDatabaseId() {
     return this.taskanaEngine.getSqlSession().getConfiguration().getDatabaseId();
   }
@@ -1663,7 +1686,8 @@ public class TaskQueryImpl implements TaskQuery {
           .getWorkbasketService()
           .checkAuthorization(workbasketId, WorkbasketPermission.OPEN, WorkbasketPermission.READ);
     } catch (WorkbasketNotFoundException e) {
-      LOGGER.warn("The workbasket with the ID '" + workbasketId + "' does not exist.", e);
+      LOGGER.warn(
+          String.format("The workbasket with the ID ' %s ' does not exist.", workbasketId), e);
     }
   }
 
@@ -1680,11 +1704,9 @@ public class TaskQueryImpl implements TaskQuery {
               WorkbasketPermission.READ);
     } catch (WorkbasketNotFoundException e) {
       LOGGER.warn(
-          "The workbasket with the KEY '"
-              + keyDomain.getKey()
-              + "' and DOMAIN '"
-              + keyDomain.getDomain()
-              + "'does not exist.",
+          String.format(
+              "The workbasket with the KEY ' %s ' and DOMAIN ' %s ' does not exist.",
+              keyDomain.getKey(), keyDomain.getDomain()),
           e);
     }
   }
@@ -1899,6 +1921,10 @@ public class TaskQueryImpl implements TaskQuery {
         + addClassificationNameToSelectClauseForOrdering
         + ", addAttachmentClassificationNameToSelectClauseForOrdering="
         + addAttachmentClassificationNameToSelectClauseForOrdering
+        + ", wildcardSearchFieldsIn="
+        + wildcardSearchFieldsIn
+        + ", wildcardSearchValueLike="
+        + wildcardSearchValueLike
         + "]";
   }
 }

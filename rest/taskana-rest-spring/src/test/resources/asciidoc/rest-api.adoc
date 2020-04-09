@@ -122,7 +122,16 @@ The list generated in the response can be filtered using following parameters in
 name | priority | state | classification.key | workbasket-id | {workbasket-key , domain} | +
 owner | por.company | por.system | por.instance | por.type | por.value +
 planned | planned-from | planned-until | due | due-from | due-until | +
-external-id
+external-id | wildcard-search-value | wildcard-search-fields
+
+When filtering a wildcard search you must provide both paremters +
+(wildcard-search-value and wildcard-search-fields). Valid wildcard-search-fields are: +
+
+-name +
+-description +
+-custom_1 to custom_16 +
+
+These fields are case insensitive! +
 
 If it is sufficient to filter the list with a single time interval, use the parameters +
 planned-from/due-from and planned-until/due-until. +

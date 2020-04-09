@@ -612,6 +612,23 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
   TaskQuery orderByClassificationName(SortDirection sortDirection);
 
   /**
+   * Add your wildcard search value for pattern matching to your query. It will be compared in SQL
+   * with the LIKE operator. You may use a wildcard like % to specify the pattern.
+   *
+   * @param wildcardSearchValue the wildcard search value
+   * @return the query
+   */
+  TaskQuery wildcardSearchValueLike(String wildcardSearchValue);
+
+  /**
+   * Add the values of the wildcard search fields for exact matching to your query.
+   *
+   * @param wildcardSearchFields the values of your wildcard search fields
+   * @return the query
+   */
+  TaskQuery wildcardSearchFieldsIn(WildcardSearchFields... wildcardSearchFields);
+
+  /**
    * This method sorts the query result according to the completed timestamp.
    *
    * @param sortDirection Determines whether the result is sorted in ascending or descending order.
