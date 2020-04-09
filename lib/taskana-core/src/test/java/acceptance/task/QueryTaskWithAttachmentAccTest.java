@@ -6,7 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import acceptance.AbstractAccTest;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -73,17 +75,23 @@ class QueryTaskWithAttachmentAccTest extends AbstractAccTest {
       userName = "user_1_1",
       groupNames = {"group_1"})
   @Test
-  void testIfAttachmentSummariesAreCorrectUsingTaskQueryAndGetTaskById()
+  void should_ConfirmIfAttachmentSummariesAreCorrect_When_UsingTaskQueryAndGetTaskById()
       throws TaskNotFoundException, NotAuthorizedException {
     TaskService taskService = taskanaEngine.getTaskService();
     // find Task with ID TKI:00...00
     List<TaskSummary> tasks =
         taskService.createTaskQuery().idIn("TKI:000000000000000000000000000000000000").list();
     assertEquals(1, tasks.size());
-    List<AttachmentSummary> queryAttachmentSummaries = tasks.get(0).getAttachmentSummaries();
+    List<AttachmentSummary> queryAttachmentSummaries =
+        tasks.get(0).getAttachmentSummaries().stream()
+            .sorted(Comparator.comparing(AttachmentSummary::getId))
+            .collect(Collectors.toList());
 
     Task originalTask = taskService.getTask("TKI:000000000000000000000000000000000000");
-    List<Attachment> originalAttachments = originalTask.getAttachments();
+    List<Attachment> originalAttachments =
+        originalTask.getAttachments().stream()
+            .sorted(Comparator.comparing(Attachment::getId))
+            .collect(Collectors.toList());
 
     assertEquals(originalAttachments.size(), queryAttachmentSummaries.size());
 
@@ -121,7 +129,7 @@ class QueryTaskWithAttachmentAccTest extends AbstractAccTest {
       userName = "user_1_1",
       groupNames = {"group_1"})
   @Test
-  void testIfAttachmentSummariesAreCorrect()
+  void should_ConfirmIfAttachmentSummariesAreCorrect()
       throws InvalidArgumentException, TaskNotFoundException, NotAuthorizedException {
     TaskService taskService = taskanaEngine.getTaskService();
     // find Task with ID TKI:00...00
@@ -132,10 +140,16 @@ class QueryTaskWithAttachmentAccTest extends AbstractAccTest {
             .customAttributeIn("1", "custom1")
             .list();
     assertEquals(1, tasks.size());
-    List<AttachmentSummary> queryAttachmentSummaries = tasks.get(0).getAttachmentSummaries();
+    List<AttachmentSummary> queryAttachmentSummaries =
+        tasks.get(0).getAttachmentSummaries().stream()
+            .sorted(Comparator.comparing(AttachmentSummary::getId))
+            .collect(Collectors.toList());
 
     Task originalTask = taskService.getTask("TKI:000000000000000000000000000000000000");
-    List<Attachment> originalAttachments = originalTask.getAttachments();
+    List<Attachment> originalAttachments =
+        originalTask.getAttachments().stream()
+            .sorted(Comparator.comparing(Attachment::getId))
+            .collect(Collectors.toList());
 
     assertEquals(originalAttachments.size(), queryAttachmentSummaries.size());
 
