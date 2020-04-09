@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Select, Store } from '@ngxs/store';
+import { Observable, Subscription, zip } from 'rxjs';
 
-import { ClassificationDefinition } from 'app/models/classification-definition';
+import { ClassificationDefinition, customFieldCount } from 'app/models/classification-definition';
 import { ACTION } from 'app/models/action';
-import { MessageModal } from 'app/models/message-modal';
 import { AlertModel, AlertType } from 'app/models/alert';
 
 import { highlight } from 'app/shared/animations/validation.animation';
@@ -18,15 +18,17 @@ import { AlertService } from 'app/services/alert/alert.service';
 import { TreeService } from 'app/services/tree/tree.service';
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
 
-import { ClassificationCategoriesService } from 'app/shared/services/classifications/classification-categories.service';
 import { DomainService } from 'app/services/domain/domain.service';
 import { Pair } from 'app/models/pair';
 import { NgForm } from '@angular/forms';
 import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
 import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
-import { CustomFieldsService } from '../../../services/custom-fields/custom-fields.service';
+import { map, take } from 'rxjs/operators';
+import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
+import { ClassificationSelectors } from 'app/store/classification-store/classification.selectors';
 import { ERROR_TYPES } from '../../../models/errors';
 import { ErrorsService } from '../../../services/errors/errors.service';
+import { ClassificationCategoryImages, CustomField, getCustomFields } from '../../../models/customisation';
 
 @Component({
   selector: 'taskana-classification-details',
@@ -37,22 +39,20 @@ import { ErrorsService } from '../../../services/errors/errors.service';
 export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   classification: ClassificationDefinition;
   classificationClone: ClassificationDefinition;
+  classificationCategories: string[];
   showDetail = false;
-  classificationTypes: Array<string> = [];
   badgeMessage = '';
   requestInProgress = false;
-  categories: Array<string> = [];
-  categorySelected: string;
-  spinnerIsRunning = false;
-  custom1Field = this.customFieldsService.getCustomField('Custom 1', 'classifications.information.custom1');
-  custom2Field = this.customFieldsService.getCustomField('Custom 2', 'classifications.information.custom2');
-  custom3Field = this.customFieldsService.getCustomField('Custom 3', 'classifications.information.custom3');
-  custom4Field = this.customFieldsService.getCustomField('Custom 4', 'classifications.information.custom4');
-  custom5Field = this.customFieldsService.getCustomField('Custom 5', 'classifications.information.custom5');
-  custom6Field = this.customFieldsService.getCustomField('Custom 6', 'classifications.information.custom6');
-  custom7Field = this.customFieldsService.getCustomField('Custom 7', 'classifications.information.custom7');
-  custom8Field = this.customFieldsService.getCustomField('Custom 8', 'classifications.information.custom8');
+  @Select(ClassificationSelectors.selectCategories) categories$: Observable<string[]>;
+  @Select(EngineConfigurationSelectors.selectCategoryIcons) categoryIcons$: Observable<ClassificationCategoryImages>;
+  @Select(ClassificationSelectors.selectedClassificationType) selectedClassificationType$: Observable<string>;
+  @Select(ClassificationSelectors.selectClassificationTypesObject) classificationTypes$: Observable<Object>;
 
+  spinnerIsRunning = false;
+  customFields$: Observable<CustomField[]>;
+
+  @ViewChild('ClassificationForm', { static: false }) classificationForm: NgForm;
+  toogleValidationMap = new Map<string, boolean>();
   private action: any;
   private classificationServiceSubscription: Subscription;
   private classificationSelectedSubscription: Subscription;
@@ -60,14 +60,8 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   private masterAndDetailSubscription: Subscription;
   private classificationSavingSubscription: Subscription;
   private classificationRemoveSubscription: Subscription;
-  private selectedClassificationSubscription: Subscription;
-  private selectedClassificationTypeSubscription: Subscription;
-  private categoriesSubscription: Subscription;
   private domainSubscription: Subscription;
   private importingExportingSubscription: Subscription;
-
-  @ViewChild('ClassificationForm', { static: false }) classificationForm: NgForm;
-  toogleValidationMap = new Map<string, boolean>();
 
   constructor(private classificationsService: ClassificationsService,
     private route: ActivatedRoute,
@@ -77,19 +71,19 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     private requestInProgressService: RequestInProgressService,
     private alertService: AlertService,
     private treeService: TreeService,
-    private categoryService: ClassificationCategoriesService,
     private domainService: DomainService,
-    private customFieldsService: CustomFieldsService,
     private removeConfirmationService: RemoveConfirmationService,
     private formsValidatorService: FormsValidatorService,
     private errorsService: ErrorsService,
-    private importExportService: ImportExportService) {
+    private importExportService: ImportExportService,
+    private store: Store) {
   }
 
   ngOnInit() {
-    this.categoryService.getClassificationTypes().subscribe((classificationTypes: Array<string>) => {
-      this.classificationTypes = classificationTypes;
-    });
+    this.customFields$ = this.store.select(EngineConfigurationSelectors.classificationsCustomisation).pipe(
+      map(customisation => customisation.information),
+      getCustomFields(customFieldCount)
+    );
     this.classificationSelectedSubscription = this.classificationsService.getSelectedClassification()
       .subscribe(classificationSelected => {
         if (classificationSelected && this.classification
@@ -122,30 +116,16 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
       this.showDetail = showDetail;
     });
 
-    this.categoriesSubscription = this.categoryService.getCategories().subscribe((categories: Array<string>) => {
-      this.categories = categories;
-      // ToDo: Remove this line during refactoring. Atm checking why it was written takes too long
-      if (categories.length > 0 && this.classification) {
-        // TSK-891 fix: The property is already set and is crucial value
-        // Wrapped with an if to set a default if not already set.
-        if (!this.classification.category) {
-          [this.classification.category] = categories;
-        }
-      }
-    });
-
     this.importingExportingSubscription = this.importExportService.getImportingFinished().subscribe((value: Boolean) => {
-      if (this.classification.classificationId) { this.selectClassification(this.classification.classificationId); }
+      if (this.classification.classificationId) {
+        this.selectClassification(this.classification.classificationId);
+      }
     });
   }
 
   backClicked(): void {
     this.classificationsService.selectClassification();
     this.router.navigate(['./'], { relativeTo: this.route.parent });
-  }
-
-  selectType(type: string) {
-    this.classification.type = type;
   }
 
   removeClassification() {
@@ -164,6 +144,37 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         this.onSave();
       }
     });
+  }
+
+  onClear() {
+    this.formsValidatorService.formSubmitAttempt = false;
+    // new Key: ALERT_TYPES.INFO_ALERT
+    this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'Reset edited fields'));
+    this.classification = { ...this.classificationClone };
+  }
+
+  selectCategory(category: string) {
+    this.classification.category = category;
+  }
+
+  getCategoryIcon(category: string): Observable<Pair> {
+    return this.categoryIcons$.pipe(map(
+      iconMap => (iconMap[category]
+        ? new Pair(iconMap[category], category)
+        : new Pair(iconMap.missing, 'Category does not match with the configuration'))
+    ));
+  }
+
+  spinnerRunning(value) {
+    this.spinnerIsRunning = value;
+  }
+
+  validChanged(): void {
+    this.classification.isValidInDomain = !this.classification.isValidInDomain;
+  }
+
+  masterDomainSelected(): boolean {
+    return this.domainService.getSelectedDomainValue() === '';
   }
 
   private initProperties() {
@@ -204,24 +215,6 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  onClear() {
-    this.formsValidatorService.formSubmitAttempt = false;
-    // new Key: ALERT_TYPES.INFO_ALERT
-    this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'Reset edited fields'));
-    this.classification = { ...this.classificationClone };
-  }
-
-
-  selectCategory(category: string) {
-    this.classification.category = category;
-  }
-
-  getCategoryIcon(category: string): Pair {
-    return this.categoryService.getCategoryIcon(category);
-  }
-
-  spinnerRunning(value) { this.spinnerIsRunning = value; }
-
   private afterRequest() {
     this.requestInProgressService.setRequestInProgress(false);
     this.classificationsService.triggerClassificationSaved();
@@ -251,23 +244,24 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private addDateToClassification() {
+  private addDateToClassification(classification: ClassificationDefinition) {
     const date = TaskanaDate.getDate();
-    this.classification.created = date;
-    this.classification.modified = date;
+    classification.created = date;
+    classification.modified = date;
   }
 
   private initClassificationOnCreation(classificationSelected: ClassificationDefinition) {
-    this.classification = new ClassificationDefinition();
-    this.classification.parentId = classificationSelected.classificationId;
-    this.classification.parentKey = classificationSelected.key;
-    this.classification.category = classificationSelected.category;
-    this.classification.domain = this.domainService.getSelectedDomainValue();
-    this.selectedClassificationSubscription = this.categoryService.getSelectedClassificationType().subscribe(type => {
-      if (this.classification) { this.classification.type = type; }
+    zip(this.categories$, this.selectedClassificationType$).pipe(take(1)).subscribe(([categories, selectedType]: [string[], string]) => {
+      const tempClassification: ClassificationDefinition = new ClassificationDefinition();
+      // tempClassification.parentId = classificationSelected.classificationId;
+      // tempClassification.parentKey = classificationSelected.key;
+      [tempClassification.category] = categories;
+      tempClassification.domain = this.domainService.getSelectedDomainValue();
+      tempClassification.type = selectedType;
+      this.addDateToClassification(tempClassification);
+      this.classification = tempClassification;
+      this.cloneClassification(this.classification);
     });
-    this.addDateToClassification();
-    this.cloneClassification(this.classification);
   }
 
   private checkDomainAndRedirect() {
@@ -306,25 +300,44 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     this.classificationClone = { ...classification };
   }
 
-  validChanged(): void {
-    this.classification.isValidInDomain = !this.classification.isValidInDomain;
+  getClassificationCustom(customNumber: number): string {
+    return `custom${customNumber}`;
   }
 
-  masterDomainSelected(): boolean {
-    return this.domainService.getSelectedDomainValue() === '';
+  // TODO: Remove when classification is in store
+  getAvailableCategories(type: string) {
+    let returnCategories: string[] = [];
+    this.classificationTypes$.subscribe(classTypes => {
+      returnCategories = classTypes[type];
+    });
+
+    return returnCategories;
   }
 
   ngOnDestroy(): void {
-    if (this.masterAndDetailSubscription) { this.masterAndDetailSubscription.unsubscribe(); }
-    if (this.routeSubscription) { this.routeSubscription.unsubscribe(); }
-    if (this.classificationSelectedSubscription) { this.classificationSelectedSubscription.unsubscribe(); }
-    if (this.classificationServiceSubscription) { this.classificationServiceSubscription.unsubscribe(); }
-    if (this.classificationSavingSubscription) { this.classificationSavingSubscription.unsubscribe(); }
-    if (this.classificationRemoveSubscription) { this.classificationRemoveSubscription.unsubscribe(); }
-    if (this.selectedClassificationSubscription) { this.selectedClassificationSubscription.unsubscribe(); }
-    if (this.selectedClassificationTypeSubscription) { this.selectedClassificationTypeSubscription.unsubscribe(); }
-    if (this.categoriesSubscription) { this.categoriesSubscription.unsubscribe(); }
-    if (this.domainSubscription) { this.domainSubscription.unsubscribe(); }
-    if (this.importingExportingSubscription) { this.importingExportingSubscription.unsubscribe(); }
+    if (this.masterAndDetailSubscription) {
+      this.masterAndDetailSubscription.unsubscribe();
+    }
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
+    }
+    if (this.classificationSelectedSubscription) {
+      this.classificationSelectedSubscription.unsubscribe();
+    }
+    if (this.classificationServiceSubscription) {
+      this.classificationServiceSubscription.unsubscribe();
+    }
+    if (this.classificationSavingSubscription) {
+      this.classificationSavingSubscription.unsubscribe();
+    }
+    if (this.classificationRemoveSubscription) {
+      this.classificationRemoveSubscription.unsubscribe();
+    }
+    if (this.domainSubscription) {
+      this.domainSubscription.unsubscribe();
+    }
+    if (this.importingExportingSubscription) {
+      this.importingExportingSubscription.unsubscribe();
+    }
   }
 }

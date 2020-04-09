@@ -44,7 +44,7 @@
                 </div>
                 <div class="input-group form-group col-xs-12 required">
                     <label for="wb-owner" class="control-label ">Owner</label>
-                    <taskana-type-ahead *ngIf="ownerField.lookupField else ownerInput" required #owner="ngModel" name="workbasket.owner"
+                    <taskana-type-ahead *ngIf="(workbasketsCustomisation$ | async)?.information?.lookupField else ownerInput" required #owner="ngModel" name="workbasket.owner"
                         [(ngModel)]="workbasket.owner" placeHolderMessage="* Owner is required" [validationValue]="this.toogleValidationMap.get('workbasket.owner')"
                         [displayError]="!isFieldValid('workbasket.owner')" width="100%"></taskana-type-ahead>
                     <ng-template #ownerInput>
@@ -107,26 +107,13 @@
                     <input type="text" class="form-control" id="wb-org-level-4" placeholder="OrgLevel 4" [(ngModel)]="workbasket.orgLevel4"
                         name="workbasket.orgLevel4">
                 </div>
-                <div *ngIf="custom1Field.visible" class="form-group">
-                    <label for="wb-custom-1" class="control-label">{{custom1Field.field}}</label>
-                    <input type="text" class="form-control" id="wb-custom-1" [placeholder]="custom1Field.field"
-                        [(ngModel)]="workbasket.custom1" name="workbasket.custom1">
-                </div>
-                <div *ngIf="custom2Field.visible" class="form-group">
-                    <label for="wb-custom-2" class="control-label">{{custom2Field.field}}</label>
-                    <input type="text" class="form-control" id="wb-custom-2" [placeholder]="custom2Field.field"
-                        [(ngModel)]="workbasket.custom2" name="workbasket.custom2">
-                </div>
-                <div *ngIf="custom3Field.visible" class="form-group">
-                    <label for="wb-custom-3" class="control-label">{{custom3Field.field}}</label>
-                    <input type="text" class="form-control" id="wb-custom-3" [placeholder]="custom3Field.field"
-                        [(ngModel)]="workbasket.custom3" name="workbasket.custom3">
-                </div>
-                <div *ngIf="custom4Field.visible" class="form-group">
-                    <label for="wb-custom-4" class="control-label">{{custom4Field.field}}</label>
-                    <input type="text" class="form-control" id="wb-custom-4" [placeholder]="custom4Field.field"
-                        [(ngModel)]="workbasket.custom4" name="workbasket.custom4">
-                </div>
+                <ng-container *ngFor="let customField of customFields$ | async; let index = index">
+                    <div *ngIf="customField.visible" class="form-group">
+                        <label for='wb-custom-{{index+1}}' class="control-label">{{customField.field}}</label>
+                        <input type="text" class="form-control" id="wb-custom-{{index+1}}" [placeholder]="customField.field"
+                               [(ngModel)]="workbasket[getWorkbasketCustomProperty(index + 1)]" name="workbasket[getWorkbasketCustomValue(index + 1)]">
+                    </div>
+                </ng-container>
             </div>
         </form>
     </div>

@@ -1,11 +1,14 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild, SimpleChanges, OnChanges, HostListener } from '@angular/core';
 import { Task } from 'app/workplace/models/task';
-import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
 import { NgForm } from '@angular/forms';
 import { DomainService } from 'app/services/domain/domain.service';
+import { Select } from '@ngxs/store';
+import { Observable } from 'rxjs';
+import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
 import { ClassificationsService } from '../../../shared/services/classifications/classifications.service';
 import { Classification } from '../../../models/classification';
+import { TasksCustomisation } from '../../../models/customisation';
 
 @Component({
   selector: 'taskana-task-details-general-fields',
@@ -30,14 +33,10 @@ export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges {
   requestInProgress = false;
   classifications: Classification[];
 
-  ownerField = this.customFieldsService.getCustomField(
-    'Owner',
-    'tasks.information.owner'
-  );
+  @Select(EngineConfigurationSelectors.tasksCustomisation) tasksCustomisation$: Observable<TasksCustomisation>;
 
   constructor(
     private classificationService: ClassificationsService,
-    private customFieldsService: CustomFieldsService,
     private formsValidatorService: FormsValidatorService,
     private domainService: DomainService
   ) {

@@ -22,7 +22,6 @@ import { AlertService } from 'app/services/alert/alert.service';
 import { SavingWorkbasketService } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
-import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { configureTests } from 'app/app.test.configuration';
 
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
@@ -63,7 +62,7 @@ describe('WorkbasketDetailsComponent', () => {
           AccessItemsComponent,
           DistributionTargetsComponent, DualListComponent, DummyDetailComponent],
         providers: [WorkbasketService, MasterAndDetailService, GeneralModalService, RequestInProgressService,
-          AlertService, SavingWorkbasketService, CustomFieldsService, ImportExportService]
+          AlertService, SavingWorkbasketService, ImportExportService]
       });
     };
     configureTests(configure).then(testBed => {

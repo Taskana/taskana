@@ -2,9 +2,11 @@
  * Modules
  */
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, APP_INITIALIZER } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { NgxsModule } from '@ngxs/store';
+import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { AlertModule } from 'ngx-bootstrap';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { TabsModule } from 'ngx-bootstrap/tabs';
@@ -15,7 +17,6 @@ import { SharedModule } from 'app/shared/shared.module';
 /**
  * Services
  */
-
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { OrientationService } from 'app/services/orientation/orientation.service';
@@ -26,7 +27,6 @@ import { AlertService } from 'app/services/alert/alert.service';
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
 import { TreeService } from 'app/services/tree/tree.service';
 import { TitlesService } from 'app/services/titles/titles.service';
-import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { WindowRefService } from 'app/services/window/window.service';
 import { TaskanaEngineService } from 'app/services/taskana-engine/taskana-engine.service';
 import { NavBarComponent } from 'app/components/nav-bar/nav-bar.component';
@@ -36,14 +36,11 @@ import { RemoveConfirmationService } from './services/remove-confirmation/remove
 import { FormsValidatorService } from './shared/services/forms/forms-validator.service';
 import { UploadService } from './shared/services/upload/upload.service';
 import { ErrorsService } from './services/errors/errors.service';
-
-
 /**
  * Components
  */
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-
 /**
  * Guards
  */
@@ -51,7 +48,12 @@ import { DomainGuard } from './guards/domain.guard';
 import { BusinessAdminGuard } from './guards/business-admin.guard';
 import { MonitorGuard } from './guards/monitor.guard';
 import { UserGuard } from './guards/user.guard';
-
+/**
+ * Store
+ */
+import { ClassificationCategoriesService } from './shared/services/classifications/classification-categories.service';
+import { environment } from '../environments/environment';
+import { STATES } from './store';
 
 const MODULES = [
   TabsModule.forRoot(),
@@ -64,7 +66,9 @@ const MODULES = [
   BrowserAnimationsModule,
   ReactiveFormsModule,
   TreeModule,
-  SharedModule
+  SharedModule,
+  NgxsModule.forRoot(STATES, { developmentMode: !environment.production }),
+  NgxsReduxDevtoolsPluginModule.forRoot({ disabled: environment.production, maxAge: 25 })
 ];
 
 const DECLARATIONS = [
@@ -104,12 +108,12 @@ export function startupServiceFactory(startupService: StartupService): () => Pro
     MasterAndDetailService,
     TreeService,
     TitlesService,
-    CustomFieldsService,
     TaskanaEngineService,
     RemoveConfirmationService,
     FormsValidatorService,
     UploadService,
     ErrorsService,
+    ClassificationCategoriesService,
   ],
   bootstrap: [AppComponent]
 })

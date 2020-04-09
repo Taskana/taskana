@@ -3,7 +3,6 @@ import { getTestBed, TestBed } from '@angular/core/testing';
 
 import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
 
-import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -35,7 +34,7 @@ export const configureTests = (configure: (testBed: TestBed) => void) => {
   testBed.configureTestingModule({
     imports: [BrowserAnimationsModule, SharedModule, FormsModule, ReactiveFormsModule, HttpClientModule, AngularSvgIconModule],
     providers: [{ provide: TaskanaEngineService, useClass: TaskanaEngineServiceMock },
-      { provide: DomainService, useClass: DomainServiceMock }, CustomFieldsService, RemoveConfirmationService,
+      { provide: DomainService, useClass: DomainServiceMock }, RemoveConfirmationService,
       AlertService, GeneralModalService, RequestInProgressService, OrientationService, SelectedRouteService, FormsValidatorService]
   });
 

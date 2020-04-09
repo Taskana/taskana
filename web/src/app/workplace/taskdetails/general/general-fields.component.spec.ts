@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ClassificationCategoriesService } from 'app/shared/services/classifications/classification-categories.service';
-import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { DomainService } from 'app/services/domain/domain.service';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Routes } from '@angular/router';
@@ -39,7 +38,7 @@ xdescribe('GeneralComponent', () => {
       TestBed.configureTestingModule({
         imports: [FormsModule, HttpClientModule, RouterTestingModule.withRoutes(routes)],
         declarations: [TaskdetailsGeneralFieldsComponent, DummyDetailComponent],
-        providers: [HttpClient, ClassificationCategoriesService, CustomFieldsService,
+        providers: [HttpClient, ClassificationCategoriesService,
           DomainService, RequestInProgressService, SelectedRouteService, ClassificationsService]
       });
     };

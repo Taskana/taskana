@@ -21,6 +21,8 @@
     "@angular/platform-browser": "8.2.14",
     "@angular/platform-browser-dynamic": "8.2.14",
     "@angular/router": "8.2.14",
+    "@ngxs/devtools-plugin": "3.6.2",
+    "@ngxs/store": "3.6.2",
     "angular-svg-icon": "7.2.1",
     "angular-tree-component": "8.5.2",
     "bootstrap": "4.3.1",
@@ -37,6 +39,7 @@
     "node-sass": "4.13.1",
     "popper.js": "1.16.0",
     "rxjs": "6.5.3",
+    "set-value": "3.0.2",
     "zone.js": "0.9.1"
   },
   "devDependencies": {

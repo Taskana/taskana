@@ -7,13 +7,12 @@ import { Component } from '@angular/core';
 import { of } from 'rxjs';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { configureTests } from 'app/app.test.configuration';
+import { NgxsModule, Store } from '@ngxs/store';
 
 
 import { ClassificationDefinition } from 'app/models/classification-definition';
 import { LinksClassification } from 'app/models/links-classfication';
-import { Pair } from 'app/models/pair';
 
-import { ClassificationCategoriesService } from 'app/shared/services/classifications/classification-categories.service';
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
@@ -21,10 +20,12 @@ import { TreeNodeModel } from 'app/models/tree-node';
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { TreeService } from 'app/services/tree/tree.service';
-import { CustomFieldsService } from 'app/services/custom-fields/custom-fields.service';
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
 import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
+import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
+import { ClassificationSelectors } from 'app/store/classification-store/classification.selectors';
 import { ClassificationDetailsComponent } from './classification-details.component';
+
 
 @Component({
   selector: 'taskana-dummy-detail',
@@ -43,33 +44,42 @@ describe('ClassificationDetailsComponent', () => {
   const treeNodes: Array<TreeNodeModel> = new Array(new TreeNodeModel());
 
   let classificationsService;
-  let classificationCategoriesService;
   let treeService;
   let removeConfirmationService;
 
+  const storeSpy: jasmine.SpyObj<Store> = jasmine.createSpyObj('Store', ['select']);
+  const configure = (testBed: TestBed) => {
+    testBed.configureTestingModule({
+      imports: [FormsModule, HttpClientModule, RouterTestingModule.withRoutes(routes), AngularSvgIconModule, NgxsModule.forRoot()],
+      declarations: [ClassificationDetailsComponent, DummyDetailComponent],
+      providers: [MasterAndDetailService, RequestInProgressService, ClassificationsService, HttpClient, GeneralModalService, AlertService,
+        TreeService, ImportExportService, { provide: Store, useValue: storeSpy }]
+    });
+  };
+
   beforeEach(done => {
-    const configure = (testBed: TestBed) => {
-      testBed.configureTestingModule({
-        imports: [FormsModule, HttpClientModule, RouterTestingModule.withRoutes(routes), AngularSvgIconModule],
-        declarations: [ClassificationDetailsComponent, DummyDetailComponent],
-        providers: [MasterAndDetailService, RequestInProgressService, ClassificationsService, HttpClient, GeneralModalService, AlertService,
-          TreeService, ClassificationCategoriesService, CustomFieldsService, ImportExportService]
-      });
-    };
     configureTests(configure).then(testBed => {
-      fixture = TestBed.createComponent(ClassificationDetailsComponent);
+      storeSpy.select.and.callFake(selector => {
+        switch (selector) {
+          case EngineConfigurationSelectors.classificationsCustomisation:
+            return of({ information: {} });
+          case ClassificationSelectors.selectCategories:
+            return of(['EXTERNAL', 'MANUAL']);
+          default:
+            return of();
+        }
+      });
+
+      fixture = testBed.createComponent(ClassificationDetailsComponent);
+
       component = fixture.componentInstance;
-      classificationsService = TestBed.get(ClassificationsService);
-      classificationCategoriesService = TestBed.get(ClassificationCategoriesService);
-      removeConfirmationService = TestBed.get(RemoveConfirmationService);
+      classificationsService = testBed.get(ClassificationsService);
+      removeConfirmationService = testBed.get(RemoveConfirmationService);
       spyOn(classificationsService, 'getClassifications').and.returnValue(of(treeNodes));
-      spyOn(classificationCategoriesService, 'getClassificationTypes').and.returnValue(of([]));
-      spyOn(classificationCategoriesService, 'getCategories').and.returnValue(of(['firstCategory', 'secondCategory']));
       spyOn(classificationsService, 'deleteClassification').and.returnValue(of(true));
-      spyOn(classificationCategoriesService, 'getCategoryIcon').and.returnValue(new Pair('assets/icons/categories/external.svg'));
       component.classification = new ClassificationDefinition('id1');
       component.classification._links = new LinksClassification({ self: '' });
-      treeService = TestBed.get(TreeService);
+      treeService = testBed.get(TreeService);
       fixture.detectChanges();
       done();
     });
@@ -85,9 +95,5 @@ describe('ClassificationDetailsComponent', () => {
     component.removeClassification();
     removeConfirmationService.runCallbackFunction();
     expect(treeServiceSpy).toHaveBeenCalledWith('id1');
-  });
-
-  it('should selected first classificationCategory if is defined', () => {
-    expect(component.classification.category).toBe('firstCategory');
   });
 });
