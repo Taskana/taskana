@@ -19,17 +19,14 @@ import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.internal.ClassificationQueryImpl;
 import pro.taskana.classification.internal.ClassificationServiceImpl;
-import pro.taskana.classification.internal.models.ClassificationImpl;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.internal.InternalTaskanaEngine;
-import pro.taskana.common.internal.JunitHelper;
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.Workbasket;
-import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 
 /**
  * Unit Test for TaskServiceImpl.
@@ -185,23 +182,5 @@ class TaskServiceImplTest {
     summaryAfter = taskAfter.asSummary();
     assertThat(summaryAfter).isEqualTo(summaryBefore);
     assertThat(summaryAfter.hashCode()).isEqualTo(summaryBefore.hashCode());
-  }
-
-  static Classification createDummyClassification() {
-    ClassificationImpl classification = new ClassificationImpl();
-    classification.setName("dummy-classification");
-    classification.setDomain("dummy-domain");
-    classification.setKey("dummy-classification-key");
-    classification.setId("DummyClassificationId");
-    return classification;
-  }
-
-  static WorkbasketImpl createWorkbasket(String id, String key) {
-    WorkbasketImpl workbasket = new WorkbasketImpl();
-    workbasket.setId(id);
-    workbasket.setDomain("Domain1");
-    workbasket.setKey(key);
-    workbasket.setName("Workbasket " + id);
-    return workbasket;
   }
 }

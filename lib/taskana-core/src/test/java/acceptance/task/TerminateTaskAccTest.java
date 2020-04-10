@@ -12,8 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.security.JaasExtension;
-import pro.taskana.security.WithAccessId;
+import pro.taskana.common.internal.security.JaasExtension;
+import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.InvalidStateException;

@@ -9,8 +9,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
-import pro.taskana.security.JaasExtension;
-import pro.taskana.security.WithAccessId;
+import pro.taskana.common.internal.security.JaasExtension;
+import pro.taskana.common.internal.security.WithAccessId;
 
 /**
  * Acceptance test for classification queries and authorization.

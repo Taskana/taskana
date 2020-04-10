@@ -1,4 +1,4 @@
-package pro.taskana.common.internal.jobs;
+package pro.taskana.task.internal.jobs;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -18,6 +18,7 @@ import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.TaskanaException;
+import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 import pro.taskana.common.internal.util.LogSanitizer;
 import pro.taskana.task.api.models.TaskSummary;

@@ -11,14 +11,14 @@ import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import pro.taskana.common.internal.security.JaasExtension;
+import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.monitor.api.reports.TimestampReport;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.TimestampQueryItem;
 import pro.taskana.monitor.api.reports.row.SingleRow;
 import pro.taskana.monitor.api.reports.row.TimestampRow;
-import pro.taskana.security.JaasExtension;
-import pro.taskana.security.WithAccessId;
 
 /** Test class for {@link TimestampReport}. */
 @ExtendWith(JaasExtension.class)

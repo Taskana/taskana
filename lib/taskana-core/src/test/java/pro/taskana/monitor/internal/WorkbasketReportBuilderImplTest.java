@@ -1,4 +1,4 @@
-package pro.taskana.workbasket.internal;
+package pro.taskana.monitor.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -34,8 +34,6 @@ import pro.taskana.monitor.api.SelectedItem;
 import pro.taskana.monitor.api.reports.WorkbasketReport;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.MonitorQueryItem;
-import pro.taskana.monitor.internal.MonitorMapper;
-import pro.taskana.monitor.internal.MonitorServiceImpl;
 import pro.taskana.task.api.CustomField;
 import pro.taskana.task.api.TaskState;
 
