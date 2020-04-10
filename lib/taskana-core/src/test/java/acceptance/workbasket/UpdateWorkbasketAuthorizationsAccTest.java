@@ -15,8 +15,8 @@ import pro.taskana.classification.api.exceptions.ClassificationNotFoundException
 import pro.taskana.common.api.KeyDomain;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.security.JaasExtension;
-import pro.taskana.security.WithAccessId;
+import pro.taskana.common.internal.security.JaasExtension;
+import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.models.Task;

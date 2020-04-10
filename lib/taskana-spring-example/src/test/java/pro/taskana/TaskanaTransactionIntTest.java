@@ -27,14 +27,13 @@ import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.TaskanaEngineImpl;
-import pro.taskana.common.internal.jobs.TaskCleanupJob;
-import pro.taskana.common.internal.jobs.WorkbasketCleanupJob;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
+import pro.taskana.task.internal.jobs.TaskCleanupJob;
 import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
@@ -43,6 +42,7 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketInUseException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
+import pro.taskana.workbasket.internal.jobs.WorkbasketCleanupJob;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 
 /** Test for internal transaction management. */

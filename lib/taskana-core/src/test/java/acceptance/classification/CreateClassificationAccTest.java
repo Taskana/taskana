@@ -16,8 +16,8 @@ import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
-import pro.taskana.security.JaasExtension;
-import pro.taskana.security.WithAccessId;
+import pro.taskana.common.internal.security.JaasExtension;
+import pro.taskana.common.internal.security.WithAccessId;
 
 /** Acceptance test for all "create classification" scenarios. */
 @ExtendWith(JaasExtension.class)

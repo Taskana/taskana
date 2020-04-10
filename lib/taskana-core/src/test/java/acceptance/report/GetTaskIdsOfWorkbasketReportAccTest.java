@@ -12,11 +12,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.internal.security.JaasExtension;
+import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.monitor.api.SelectedItem;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
-import pro.taskana.security.JaasExtension;
-import pro.taskana.security.WithAccessId;
 
 /** Acceptance test for all "get task ids of workbasket report" scenarios. */
 @ExtendWith(JaasExtension.class)

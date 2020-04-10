@@ -1,4 +1,4 @@
-package pro.taskana.common.internal;
+package pro.taskana.task.internal;
 
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.ObjectReference;
