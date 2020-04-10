@@ -13,8 +13,8 @@ import pro.taskana.classification.api.exceptions.ClassificationInUseException;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.security.JaasExtension;
-import pro.taskana.security.WithAccessId;
+import pro.taskana.common.internal.security.JaasExtension;
+import pro.taskana.common.internal.security.WithAccessId;
 
 /** Acceptance test for all "delete classification" scenarios. */
 @ExtendWith(JaasExtension.class)

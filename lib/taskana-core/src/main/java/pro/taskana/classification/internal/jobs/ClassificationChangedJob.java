@@ -1,4 +1,4 @@
-package pro.taskana.common.internal.jobs;
+package pro.taskana.classification.internal.jobs;
 
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.TaskanaException;
+import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 import pro.taskana.task.internal.TaskServiceImpl;
 

@@ -11,14 +11,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.exceptions.TaskanaException;
-import pro.taskana.common.internal.jobs.TaskCleanupJob;
-import pro.taskana.common.internal.jobs.WorkbasketCleanupJob;
-import pro.taskana.security.JaasExtension;
-import pro.taskana.security.WithAccessId;
+import pro.taskana.common.internal.security.JaasExtension;
+import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
+import pro.taskana.task.internal.jobs.TaskCleanupJob;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
+import pro.taskana.workbasket.internal.jobs.WorkbasketCleanupJob;
 
 /** Acceptance test for all "jobs workbasket runner" scenarios. */
 @ExtendWith(JaasExtension.class)

@@ -1,4 +1,4 @@
-package pro.taskana.common.internal.jobs;
+package pro.taskana.task.internal.jobs;
 
 import java.util.Arrays;
 import java.util.List;
@@ -6,10 +6,12 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.classification.internal.jobs.ClassificationChangedJob;
 import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.TaskanaException;
+import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 import pro.taskana.task.internal.TaskServiceImpl;
 

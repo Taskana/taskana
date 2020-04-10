@@ -1,4 +1,4 @@
-package pro.taskana.task.internal;
+package pro.taskana.monitor.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
@@ -24,8 +24,6 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.monitor.api.reports.TaskStatusReport;
 import pro.taskana.monitor.api.reports.item.TaskQueryItem;
-import pro.taskana.monitor.internal.MonitorMapper;
-import pro.taskana.monitor.internal.MonitorServiceImpl;
 import pro.taskana.task.api.TaskState;
 
 /** Unit Test for TaskStatusReportBuilderImpl. */

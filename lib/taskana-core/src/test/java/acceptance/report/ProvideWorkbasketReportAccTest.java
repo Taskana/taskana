@@ -18,12 +18,12 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.internal.security.JaasExtension;
+import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.monitor.api.CombinedClassificationFilter;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.monitor.api.reports.WorkbasketReport;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
-import pro.taskana.security.JaasExtension;
-import pro.taskana.security.WithAccessId;
 import pro.taskana.task.api.CustomField;
 import pro.taskana.task.api.TaskState;
 

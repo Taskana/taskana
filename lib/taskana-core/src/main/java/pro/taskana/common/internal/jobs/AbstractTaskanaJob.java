@@ -4,11 +4,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import pro.taskana.classification.internal.jobs.ClassificationChangedJob;
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
+import pro.taskana.task.internal.jobs.TaskCleanupJob;
+import pro.taskana.task.internal.jobs.TaskRefreshJob;
+import pro.taskana.workbasket.internal.jobs.WorkbasketCleanupJob;
 
 /** Abstract base for all background jobs of TASKANA. */
 public abstract class AbstractTaskanaJob implements TaskanaJob {
@@ -48,7 +52,7 @@ public abstract class AbstractTaskanaJob implements TaskanaJob {
     }
   }
 
-  <T> List<List<T>> partition(Collection<T> members, int maxSize) {
+  protected <T> List<List<T>> partition(Collection<T> members, int maxSize) {
     List<List<T>> result = new ArrayList<>();
     List<T> internal = new ArrayList<>();
     for (T member : members) {
