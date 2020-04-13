@@ -53,6 +53,7 @@ public class SampleDataGenerator {
   }
 
   public void generateSampleData() {
+    LOGGER.debug("entry to generateSampleData()");
     runScripts(
         (runner) -> {
           clearDb();
@@ -63,31 +64,40 @@ public class SampleDataGenerator {
             scripts = SampleDataProvider.getScriptsWithEvents();
             cacheKey = CACHED_EVENTSAMPLE;
           } else {
-            scripts = SampleDataProvider.getDefaultScripts();
+            scripts = SampleDataProvider.getSampleDataCreationScripts();
             cacheKey = CACHED_SAMPLE;
           }
           executeAndCacheScripts(scripts, cacheKey);
         });
+    LOGGER.debug("exit from generateSampleData()");
   }
 
   public void generateTestData() {
+    LOGGER.debug("entry to generateTestData()");
     Stream<String> scripts = SampleDataProvider.getTestDataScripts();
     executeAndCacheScripts(scripts, CACHED_TEST);
+    LOGGER.debug("exit from generateTestData()");
   }
 
   public void generateMonitorData() {
+    LOGGER.debug("entry to generateMonitorData()");
     Stream<String> scripts = SampleDataProvider.getMonitorDataScripts();
     executeAndCacheScripts(scripts, CACHED_MONITOR);
+    LOGGER.debug("exit from generateMonitorData()");
   }
 
   public void clearDb() {
+    LOGGER.debug("entry to clearDb()");
     Stream<String> scripts = SampleDataProvider.getScriptsToClearDatabase();
     executeAndCacheScripts(scripts, CACHED_CLEARDB);
+    LOGGER.debug("exit from clearDb()");
   }
 
   public void dropDb() {
+    LOGGER.debug("entry to dropDb()");
     Stream<String> scripts = SampleDataProvider.getScriptsToDropDatabase();
     executeAndCacheScripts(scripts, CACHED_DROPDB);
+    LOGGER.debug("exit from dropDb()");
   }
 
   boolean tableExists(String table) {
@@ -139,6 +149,7 @@ public class SampleDataGenerator {
   }
 
   private void executeAndCacheScripts(Stream<String> scripts, String cacheKey) {
+    LOGGER.debug("entry to executeAndCacheScripts(scripts = {}, cacheKey = {})", scripts, cacheKey);
     runScripts(
         runner ->
             cachedScripts.computeIfAbsent(cacheKey, key -> parseScripts(scripts)).stream()
@@ -146,6 +157,7 @@ public class SampleDataGenerator {
                 .map(ByteArrayInputStream::new)
                 .map(s -> new InputStreamReader(s, StandardCharsets.UTF_8))
                 .forEach(runner::runScript));
+    LOGGER.debug("exit from executeAndCacheScripts()");
   }
 
   private ScriptRunner getScriptRunner(
