@@ -10,19 +10,19 @@ class SampleDataProviderTest {
 
   @Test
   void getScriptsNotNull() {
-    assertThat(SampleDataProvider.getDefaultScripts()).isNotNull();
+    assertThat(SampleDataProvider.getSampleDataCreationScripts()).isNotNull();
     assertThat(SampleDataProvider.getScriptsWithEvents()).isNotNull();
   }
 
   @Test
   void getScriptsNotEmpty() {
-    assertThat(SampleDataProvider.getDefaultScripts().count() > 0).isTrue();
+    assertThat(SampleDataProvider.getSampleDataCreationScripts().count() > 0).isTrue();
     assertThat(SampleDataProvider.getScriptsWithEvents().count() > 0).isTrue();
   }
 
   @Test
   void getScriptsFileExists() {
-    SampleDataProvider.getDefaultScripts()
+    SampleDataProvider.getSampleDataCreationScripts()
         .map(SqlReplacer::getScriptBufferedStream)
         .forEach(Assertions::assertNotNull);
   }

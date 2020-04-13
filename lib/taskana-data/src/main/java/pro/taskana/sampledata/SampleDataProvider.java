@@ -31,7 +31,7 @@ public final class SampleDataProvider {
 
   private SampleDataProvider() {}
 
-  static Stream<String> getDefaultScripts() {
+  static Stream<String> getSampleDataCreationScripts() {
     return Stream.of(
         SAMPLE_WORKBASKET,
         SAMPLE_DISTRIBUTION_TARGETS,
@@ -44,15 +44,16 @@ public final class SampleDataProvider {
   }
 
   static Stream<String> getScriptsWithEvents() {
-    return Stream.concat(getDefaultScripts(), Stream.of(CLEAR_HISTORY_EVENTS, HISTORY_EVENT));
+    return Stream.concat(
+        getSampleDataCreationScripts(), Stream.of(CLEAR_HISTORY_EVENTS, HISTORY_EVENT));
   }
 
   static Stream<String> getScriptsToClearDatabase() {
-    return Stream.concat(getDefaultScripts(), Stream.of(DB_CLEAR_TABLES_SCRIPT));
+    return Stream.of(DB_CLEAR_TABLES_SCRIPT);
   }
 
   static Stream<String> getScriptsToDropDatabase() {
-    return Stream.concat(getDefaultScripts(), Stream.of(DB_DROP_TABLES_SCRIPT));
+    return Stream.of(DB_DROP_TABLES_SCRIPT);
   }
 
   static Stream<String> getTestDataScripts() {
