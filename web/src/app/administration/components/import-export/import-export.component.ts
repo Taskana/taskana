@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ClassificationDefinitionService } from 'app/administration/services/classification-definition/classification-definition.service';
-import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition/workbasket-definition.service';
+import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition.service';
 import { DomainService } from 'app/services/domain/domain.service';
 import { TaskanaType } from 'app/models/taskana-type';
 import { MessageModal } from 'app/models/message-modal';

@@ -27,7 +27,7 @@ import { ImportExportComponent } from './components/import-export/import-export.
  */
 import { SavingWorkbasketService } from './services/saving-workbaskets/saving-workbaskets.service';
 import { ClassificationDefinitionService } from './services/classification-definition/classification-definition.service';
-import { WorkbasketDefinitionService } from './services/workbasket-definition/workbasket-definition.service';
+import { WorkbasketDefinitionService } from './services/workbasket-definition.service';
 import { ImportExportService } from './services/import-export/import-export.service';
 
 const MODULES = [
