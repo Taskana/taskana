@@ -8,7 +8,7 @@ import { GeneralModalService } from 'app/services/general-modal/general-modal.se
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { configureTests } from 'app/app.test.configuration';
 import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
-import { WorkbasketDefinitionService } from '../../services/workbasket-definition/workbasket-definition.service';
+import { WorkbasketDefinitionService } from '../../services/workbasket-definition.service';
 import { ImportExportComponent } from './import-export.component';
 
 describe('ImportExportComponent', () => {
