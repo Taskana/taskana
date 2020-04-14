@@ -12,13 +12,13 @@ import { AdministrationRoutingModule } from './administration-routing.module';
 /**
  * Components
  */
-import { WorkbasketListComponent } from './workbasket/master/workbasket-list.component';
-import { WorkbasketListToolbarComponent } from './workbasket/master/workbasket-list-toolbar/workbasket-list-toolbar.component';
-import { WorkbasketDetailsComponent } from './workbasket/details/workbasket-details.component';
-import { WorkbasketInformationComponent } from './workbasket/details/information/workbasket-information.component';
-import { DistributionTargetsComponent } from './workbasket/details/distribution-targets/distribution-targets.component';
-import { DualListComponent } from './workbasket/details/distribution-targets/dual-list/dual-list.component';
-import { AccessItemsComponent } from './workbasket/details/access-items/access-items.component';
+import { WorkbasketListComponent } from './components/workbasket-list/workbasket-list.component';
+import { WorkbasketListToolbarComponent } from './components/workbasket-list-toolbar/workbasket-list-toolbar.component';
+import { WorkbasketDetailsComponent } from './components/workbasket-details/workbasket-details.component';
+import { WorkbasketInformationComponent } from './components/workbasket-information/workbasket-information.component';
+import { WorkbasketDistributionTargetsComponent } from './components/workbasket-distribution-targets/workbasket-distribution-targets.component';
+import { WorkbasketDualListComponent } from './components/workbasket-dual-list/workbasket-dual-list.component';
+import { WorkbasketAccessItemsComponent } from './components/workbasket-access-items/workbasket-access-items.component';
 import { ClassificationListComponent } from './components/classification-list/classification-list.component';
 import { ClassificationDetailsComponent } from './components/classification-details/classification-details.component';
 import { ImportExportComponent } from './components/import-export/import-export.component';
@@ -45,11 +45,11 @@ const MODULES = [
 const DECLARATIONS = [
   WorkbasketListComponent,
   WorkbasketListToolbarComponent,
-  AccessItemsComponent,
+  WorkbasketAccessItemsComponent,
   WorkbasketDetailsComponent,
   WorkbasketInformationComponent,
-  DistributionTargetsComponent,
-  DualListComponent,
+  WorkbasketDistributionTargetsComponent,
+  WorkbasketDualListComponent,
   ClassificationListComponent,
   ImportExportComponent,
   ClassificationTypesSelectorComponent,

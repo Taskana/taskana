@@ -23,11 +23,11 @@ import { AccessIdsService } from 'app/shared/services/access-ids/access-ids.serv
 import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
 import { NgxsModule, Store } from '@ngxs/store';
 import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
-import { AccessItemsComponent } from './access-items.component';
+import { WorkbasketAccessItemsComponent } from './workbasket-access-items.component';
 
 describe('AccessItemsComponent', () => {
-  let component: AccessItemsComponent;
-  let fixture: ComponentFixture<AccessItemsComponent>;
+  let component: WorkbasketAccessItemsComponent;
+  let fixture: ComponentFixture<WorkbasketAccessItemsComponent>;
   let workbasketService;
   let debugElement;
   let alertService;
@@ -38,7 +38,7 @@ describe('AccessItemsComponent', () => {
 
   const configure = (testBed: TestBed) => {
     testBed.configureTestingModule({
-      declarations: [AccessItemsComponent],
+      declarations: [WorkbasketAccessItemsComponent],
       imports: [FormsModule, AngularSvgIconModule, HttpClientModule, ReactiveFormsModule, NgxsModule.forRoot()],
       providers: [WorkbasketService, AlertService, GeneralModalService, SavingWorkbasketService, RequestInProgressService,
         AccessIdsService, FormsValidatorService, { provide: Store, useValue: storeSpy }]
@@ -61,7 +61,7 @@ describe('AccessItemsComponent', () => {
         }
       });
 
-      fixture = testBed.createComponent(AccessItemsComponent);
+      fixture = testBed.createComponent(WorkbasketAccessItemsComponent);
 
       component = fixture.componentInstance;
       component.workbasket = new Workbasket('1');
