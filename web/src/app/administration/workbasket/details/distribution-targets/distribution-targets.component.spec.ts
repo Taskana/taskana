@@ -80,7 +80,7 @@ describe('DistributionTargetsComponent', () => {
     expect(component.distributionTargetsRight).toBeDefined();
   });
 
-  it('should have two list with differents elements onInit', () => {
+  it('should have two classification-list with differents elements onInit', () => {
     let repeteadElemens = false;
     expect(component.distributionTargetsLeft.length).toBe(2);
     expect(component.distributionTargetsRight.length).toBe(1);
@@ -92,7 +92,7 @@ describe('DistributionTargetsComponent', () => {
     expect(repeteadElemens).toBeFalsy();
   });
 
-  it('should filter left list and keep selected elements as selected', () => {
+  it('should filter left classification-list and keep selected elements as selected', () => {
     component.performFilter({
       filterBy: new FilterModel({
         name: 'someName', owner: 'someOwner', description: 'someDescription', key: 'someKey'

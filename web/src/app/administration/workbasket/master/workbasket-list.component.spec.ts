@@ -122,34 +122,34 @@ describe('WorkbasketListComponent', () => {
     });
   });
 
-  it('should have wb-action-toolbar, wb-search-bar, wb-list-container, wb-pagination,'
+  it('should have wb-action-toolbar, wb-search-bar, wb-classification-list-container, wb-pagination,'
         + ' collapsedMenufilterWb and taskana-filter created in the html', () => {
     expect(debugElement.querySelector('#wb-action-toolbar')).toBeDefined();
     expect(debugElement.querySelector('#wb-search-bar')).toBeDefined();
     expect(debugElement.querySelector('#wb-pagination')).toBeDefined();
-    expect(debugElement.querySelector('#wb-list-container')).toBeDefined();
+    expect(debugElement.querySelector('#wb-classification-list-container')).toBeDefined();
     expect(debugElement.querySelector('#collapsedMenufilterWb')).toBeDefined();
     expect(debugElement.querySelector('taskana-filter')).toBeDefined();
-    expect(debugElement.querySelectorAll('#wb-list-container > li').length).toBe(3);
+    expect(debugElement.querySelectorAll('#wb-classification-list-container > li').length).toBe(3);
   });
 
   // it('should have two workbasketsummary rows created with the second one selected.', fakeAsync(() => {
   //   tick(0);
   //   fixture.detectChanges();
   //   fixture.whenStable().then(() => {
-  //     expect(debugElement.querySelectorAll('#wb-list-container > li').length).toBe(3);
-  //     expect(debugElement.querySelectorAll('#wb-list-container > li')[1].getAttribute('class'))
-  //       .toBe('list-group-item ng-star-inserted');
-  //     expect(debugElement.querySelectorAll('#wb-list-container > li')[2].getAttribute('class'))
-  //       .toBe('list-group-item ng-star-inserted active');
+  //     expect(debugElement.querySelectorAll('#wb-classification-list-container > li').length).toBe(3);
+  //     expect(debugElement.querySelectorAll('#wb-classification-list-container > li')[1].getAttribute('class'))
+  //       .toBe('classification-list-group-item ng-star-inserted');
+  //     expect(debugElement.querySelectorAll('#wb-classification-list-container > li')[2].getAttribute('class'))
+  //       .toBe('classification-list-group-item ng-star-inserted active');
   //   })
   //
   // }));
 
   it('should have two workbasketsummary rows created with two different icons: user and users', () => {
-    expect(debugElement.querySelectorAll('#wb-list-container > li')[1]
+    expect(debugElement.querySelectorAll('#wb-classification-list-container > li')[1]
       .querySelector('svg-icon').getAttribute('ng-reflect-src')).toBe('./assets/icons/user.svg');
-    expect(debugElement.querySelectorAll('#wb-list-container > li')[2]
+    expect(debugElement.querySelectorAll('#wb-classification-list-container > li')[2]
       .querySelector('svg-icon').getAttribute('ng-reflect-src')).toBe('./assets/icons/users.svg');
   });
 

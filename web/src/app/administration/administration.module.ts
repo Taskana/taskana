@@ -7,7 +7,7 @@ import { SharedModule } from 'app/shared/shared.module';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { ClassificationTypesSelectorComponent } from 'app/shared/classification-types-selector/classification-types-selector.component';
 import { ClassificationCategoriesService } from 'app/shared/services/classifications/classification-categories.service';
-import { AccessItemsManagementComponent } from 'app/administration/access-items-management/access-items-management.component';
+import { AccessItemsManagementComponent } from 'app/administration/components/access-items-management/access-items-management.component';
 import { AdministrationRoutingModule } from './administration-routing.module';
 /**
  * Components
@@ -19,8 +19,8 @@ import { WorkbasketInformationComponent } from './workbasket/details/information
 import { DistributionTargetsComponent } from './workbasket/details/distribution-targets/distribution-targets.component';
 import { DualListComponent } from './workbasket/details/distribution-targets/dual-list/dual-list.component';
 import { AccessItemsComponent } from './workbasket/details/access-items/access-items.component';
-import { ClassificationListComponent } from './classification/master/list/classification-list.component';
-import { ClassificationDetailsComponent } from './classification/details/classification-details.component';
+import { ClassificationListComponent } from './components/classification-list/classification-list.component';
+import { ClassificationDetailsComponent } from './components/classification-details/classification-details.component';
 import { ImportExportComponent } from './components/import-export/import-export.component';
 /**
  * Services

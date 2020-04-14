@@ -13,12 +13,12 @@ import { Pair } from 'app/models/pair';
 import { ImportExportService } from 'app/administration/services/import-export.service';
 import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
 import { ClassificationSelectors } from 'app/store/classification-store/classification.selectors';
-import { ClassificationDefinition } from '../../../../models/classification-definition';
-import { AlertModel, AlertType } from '../../../../models/alert';
-import { AlertService } from '../../../../services/alert/alert.service';
-import { ERROR_TYPES } from '../../../../models/errors';
+import { ClassificationDefinition } from '../../../models/classification-definition';
+import { AlertModel, AlertType } from '../../../models/alert';
+import { AlertService } from '../../../services/alert/alert.service';
+import { ERROR_TYPES } from '../../../models/errors';
 
-import { ClassificationCategoryImages } from '../../../../models/customisation';
+import { ClassificationCategoryImages } from '../../../models/customisation';
 
 @Component({
   selector: 'taskana-classification-list',
