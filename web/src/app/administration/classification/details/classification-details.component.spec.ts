@@ -21,7 +21,7 @@ import { GeneralModalService } from 'app/services/general-modal/general-modal.se
 import { AlertService } from 'app/services/alert/alert.service';
 import { TreeService } from 'app/services/tree/tree.service';
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
-import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
+import { ImportExportService } from 'app/administration/services/import-export.service';
 import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
 import { ClassificationSelectors } from 'app/store/classification-store/classification.selectors';
 import { ClassificationDetailsComponent } from './classification-details.component';

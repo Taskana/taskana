@@ -18,10 +18,10 @@ import { SortingModel } from 'app/models/sorting';
 import { ImportExportComponent } from 'app/administration/components/import-export/import-export.component';
 
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
-import { ClassificationDefinitionService } from 'app/administration/services/classification-definition/classification-definition.service';
+import { ClassificationDefinitionService } from 'app/administration/services/classification-definition.service';
 import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition.service';
 import { configureTests } from 'app/app.test.configuration';
-import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
+import { ImportExportService } from 'app/administration/services/import-export.service';
 import { WorkbasketListToolbarComponent } from './workbasket-list-toolbar.component';
 
 @Component({

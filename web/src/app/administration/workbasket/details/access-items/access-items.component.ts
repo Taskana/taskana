@@ -9,7 +9,7 @@ import { WorkbasketAccessItemsResource } from 'app/models/workbasket-access-item
 import { ACTION } from 'app/models/action';
 
 import { AlertModel, AlertType } from 'app/models/alert';
-import { SavingInformation, SavingWorkbasketService } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
+import { SavingInformation, SavingWorkbasketService } from 'app/administration/services/saving-workbaskets.service';
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { AlertService } from 'app/services/alert/alert.service';
