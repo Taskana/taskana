@@ -72,22 +72,22 @@ export const errors = new Map<ERROR_TYPES, Pair>([
     'You can\'t delete a group',
     '',
   )],
-  // classification-classification-details.component
+  // classification-details.component
   [ERROR_TYPES.CREATE_ERR, new Pair(
     'There was an error creating a classification',
     '',
   )],
-  // classification-classification-details.component
+  // classification-details.component
   [ERROR_TYPES.REMOVE_ERR, new Pair(
     'There was error while removing your classification',
     ''
   )],
-  // classification-classification-details.component
+  // classification-details.component
   [ERROR_TYPES.SAVE_ERR, new Pair(
     'There was error while saving your classification',
     ''
   )],
-  // classification-classification-details.component
+  // classification-details.component
   [ERROR_TYPES.SELECT_ERR, new Pair(
     'There is no classification selected',
     'Please check if you are creating a classification'
@@ -128,7 +128,7 @@ export const errors = new Map<ERROR_TYPES, Pair>([
     '',
     'An error occurred while fetching the task'
   )],
-  // workbasket-classification-details.component
+  // workbasket-details.component
   [ERROR_TYPES.FETCH_ERR_4, new Pair(
     'An error occurred while fetching the workbasket',
     ''
@@ -208,17 +208,17 @@ export const errors = new Map<ERROR_TYPES, Pair>([
     '',
     '{this.accessIdSelected} was removed successfully'
   )],
-  // classification-classification-details.component
+  // classification-details.component
   [ERROR_TYPES.SUCCESS_ALERT_2, new Pair(
     '',
     'Classification {classification.key} was saved successfully'
   )],
-  // classification-classification-details.component
+  // classification-details.component
   [ERROR_TYPES.SUCCESS_ALERT_3, new Pair(
     'Classification {this.classification.key} was saved successfully',
     ''
   )],
-  // classification-classification-details.component
+  // classification-details.component
   // access-items.component
   // workbasket.distribution-targets.component
   // workbasket-information.component
@@ -226,12 +226,12 @@ export const errors = new Map<ERROR_TYPES, Pair>([
     'Reset edited fields',
     ''
   )],
-  // classification-classification-details.component
+  // classification-details.component
   [ERROR_TYPES.SUCCESS_ALERT_4, new Pair(
     'Classification {key} was removed successfully',
     ''
   )],
-  // classification-classification-list.component
+  // classification-list.component
   [ERROR_TYPES.SUCCESS_ALERT_5, new Pair(
     'Classification {key} was saved successfully',
     ''
