@@ -13,13 +13,13 @@ import { RemoveConfirmationService } from 'app/services/remove-confirmation/remo
 import { AlertModel, AlertType } from 'app/models/alert';
 import { AlertService } from 'app/services/alert/alert.service';
 import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
-import { RequestInProgressService } from '../../services/requestInProgress/request-in-progress.service';
-import { AccessIdsService } from '../../shared/services/access-ids/access-ids.service';
-import { AccessIdDefinition } from '../../models/access-id';
-import { ErrorsService } from '../../services/errors/errors.service';
-import { ERROR_TYPES } from '../../models/errors';
-import { AccessItemsCustomisation, CustomField, getCustomFields } from '../../models/customisation';
-import { customFieldCount } from '../../models/workbasket-access-items';
+import { RequestInProgressService } from '../../../services/requestInProgress/request-in-progress.service';
+import { AccessIdsService } from '../../../shared/services/access-ids/access-ids.service';
+import { AccessIdDefinition } from '../../../models/access-id';
+import { ErrorsService } from '../../../services/errors/errors.service';
+import { ERROR_TYPES } from '../../../models/errors';
+import { AccessItemsCustomisation, CustomField, getCustomFields } from '../../../models/customisation';
+import { customFieldCount } from '../../../models/workbasket-access-items';
 
 @Component({
   selector: 'taskana-access-items-management',
