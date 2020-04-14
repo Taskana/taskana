@@ -15,7 +15,7 @@ import { ICONTYPES } from 'app/models/type';
 
 
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
-import { SavingWorkbasketService } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
+import { SavingWorkbasketService } from 'app/administration/services/saving-workbaskets.service';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';

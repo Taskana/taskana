@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { ClassificationDefinitionService } from 'app/administration/services/classification-definition/classification-definition.service';
+import { ClassificationDefinitionService } from 'app/administration/services/classification-definition.service';
 import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition.service';
 import { DomainService } from 'app/services/domain/domain.service';
 import { TaskanaType } from 'app/models/taskana-type';
@@ -9,7 +9,7 @@ import { environment } from 'environments/environment';
 import { AlertService } from 'app/services/alert/alert.service';
 import { AlertModel, AlertType } from 'app/models/alert';
 import { UploadService } from 'app/shared/services/upload/upload.service';
-import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
+import { ImportExportService } from 'app/administration/services/import-export.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ERROR_TYPES } from '../../../models/errors';
 import { ErrorsService } from '../../../services/errors/errors.service';

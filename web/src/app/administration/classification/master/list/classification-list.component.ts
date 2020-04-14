@@ -10,7 +10,7 @@ import { TreeNodeModel } from 'app/models/tree-node';
 
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
 import { Pair } from 'app/models/pair';
-import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
+import { ImportExportService } from 'app/administration/services/import-export.service';
 import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
 import { ClassificationSelectors } from 'app/store/classification-store/classification.selectors';
 import { ClassificationDefinition } from '../../../../models/classification-definition';

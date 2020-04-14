@@ -11,7 +11,7 @@ import { Orientation } from 'app/models/orientation';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { OrientationService } from 'app/services/orientation/orientation.service';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
-import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
+import { ImportExportService } from 'app/administration/services/import-export.service';
 
 @Component({
   selector: 'taskana-workbasket-list',

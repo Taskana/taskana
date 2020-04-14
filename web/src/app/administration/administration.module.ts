@@ -25,10 +25,10 @@ import { ImportExportComponent } from './components/import-export/import-export.
 /**
  * Services
  */
-import { SavingWorkbasketService } from './services/saving-workbaskets/saving-workbaskets.service';
-import { ClassificationDefinitionService } from './services/classification-definition/classification-definition.service';
+import { SavingWorkbasketService } from './services/saving-workbaskets.service';
+import { ClassificationDefinitionService } from './services/classification-definition.service';
 import { WorkbasketDefinitionService } from './services/workbasket-definition.service';
-import { ImportExportService } from './services/import-export/import-export.service';
+import { ImportExportService } from './services/import-export.service';
 
 const MODULES = [
   CommonModule,
