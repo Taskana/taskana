@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'app/../environments/environment';
+import { environment } from 'environments/environment';
 import { WorkbasketDefinition } from 'app/models/workbasket-definition';
 import { TaskanaDate } from 'app/shared/util/taskana.date';
 import { BlobGenerator } from 'app/shared/util/blob-generator';

@@ -19,7 +19,7 @@ import { ImportExportComponent } from 'app/administration/components/import-expo
 
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { ClassificationDefinitionService } from 'app/administration/services/classification-definition/classification-definition.service';
-import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition/workbasket-definition.service';
+import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition.service';
 import { configureTests } from 'app/app.test.configuration';
 import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
 import { WorkbasketListToolbarComponent } from './workbasket-list-toolbar.component';

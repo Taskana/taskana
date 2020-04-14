@@ -12,7 +12,7 @@ import { TreeNodeModel } from 'app/models/tree-node';
 import { ImportExportComponent } from 'app/administration/components/import-export/import-export.component';
 import { ClassificationTypesSelectorComponent } from 'app/shared/classification-types-selector/classification-types-selector.component';
 
-import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition/workbasket-definition.service';
+import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
 import { ClassificationDefinitionService } from 'app/administration/services/classification-definition/classification-definition.service';

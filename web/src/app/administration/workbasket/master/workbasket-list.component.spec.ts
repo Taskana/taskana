@@ -14,7 +14,7 @@ import { LinksWorkbasketSummary } from 'app/models/links-workbasket-summary';
 
 import { ImportExportComponent } from 'app/administration/components/import-export/import-export.component';
 
-import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition/workbasket-definition.service';
+import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition.service';
 import { ClassificationDefinitionService } from 'app/administration/services/classification-definition/classification-definition.service';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { OrientationService } from 'app/services/orientation/orientation.service';
