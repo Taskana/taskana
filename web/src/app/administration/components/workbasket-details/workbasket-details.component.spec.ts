@@ -27,10 +27,10 @@ import { configureTests } from 'app/app.test.configuration';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { ImportExportService } from 'app/administration/services/import-export.service';
 import { WorkbasketDetailsComponent } from './workbasket-details.component';
-import { WorkbasketInformationComponent } from './information/workbasket-information.component';
-import { AccessItemsComponent } from './access-items/access-items.component';
-import { DistributionTargetsComponent } from './distribution-targets/distribution-targets.component';
-import { DualListComponent } from './distribution-targets/dual-list/dual-list.component';
+import { WorkbasketInformationComponent } from '../workbasket-information/workbasket-information.component';
+import { WorkbasketAccessItemsComponent } from '../workbasket-access-items/workbasket-access-items.component';
+import { WorkbasketDistributionTargetsComponent } from '../workbasket-distribution-targets/workbasket-distribution-targets.component';
+import { WorkbasketDualListComponent } from '../workbasket-dual-list/workbasket-dual-list.component';
 
 @Component({
   selector: 'taskana-dummy-detail',
@@ -59,8 +59,8 @@ describe('WorkbasketDetailsComponent', () => {
         imports: [RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule, HttpClientModule, ReactiveFormsModule,
           InfiniteScrollModule],
         declarations: [WorkbasketDetailsComponent, WorkbasketInformationComponent,
-          AccessItemsComponent,
-          DistributionTargetsComponent, DualListComponent, DummyDetailComponent],
+          WorkbasketAccessItemsComponent,
+          WorkbasketDistributionTargetsComponent, WorkbasketDualListComponent, DummyDetailComponent],
         providers: [WorkbasketService, MasterAndDetailService, GeneralModalService, RequestInProgressService,
           AlertService, SavingWorkbasketService, ImportExportService]
       });

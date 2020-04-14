@@ -18,17 +18,17 @@ import { highlight } from 'app/shared/animations/validation.animation';
 import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
 import { AccessIdDefinition } from 'app/models/access-id';
 import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
-import { ERROR_TYPES } from '../../../../models/errors';
-import { ErrorsService } from '../../../../services/errors/errors.service';
-import { AccessItemsCustomisation, CustomField, getCustomFields } from '../../../../models/customisation';
+import { ERROR_TYPES } from '../../../models/errors';
+import { ErrorsService } from '../../../services/errors/errors.service';
+import { AccessItemsCustomisation, CustomField, getCustomFields } from '../../../models/customisation';
 
 @Component({
   selector: 'taskana-workbasket-access-items',
-  templateUrl: './access-items.component.html',
+  templateUrl: './workbasket-access-items.component.html',
   animations: [highlight],
-  styleUrls: ['./access-items.component.scss']
+  styleUrls: ['./workbasket-access-items.component.scss']
 })
-export class AccessItemsComponent implements OnChanges, OnDestroy {
+export class WorkbasketAccessItemsComponent implements OnChanges, OnDestroy {
   @Input()
   workbasket: Workbasket;
 
