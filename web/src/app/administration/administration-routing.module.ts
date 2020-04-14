@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { WorkbasketListComponent } from 'app/administration/workbasket/master/workbasket-list.component';
-import { WorkbasketDetailsComponent } from 'app/administration/workbasket/details/workbasket-details.component';
+import { WorkbasketListComponent } from 'app/administration/components/workbasket-list/workbasket-list.component';
+import { WorkbasketDetailsComponent } from 'app/administration/components/workbasket-details/workbasket-details.component';
 import { MasterAndDetailComponent } from 'app/shared/master-and-detail/master-and-detail.component';
 import { ClassificationListComponent } from 'app/administration/components/classification-list/classification-list.component';
 import { ClassificationDetailsComponent } from 'app/administration/components/classification-details/classification-details.component';

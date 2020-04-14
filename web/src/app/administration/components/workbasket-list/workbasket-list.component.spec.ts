@@ -21,7 +21,7 @@ import { OrientationService } from 'app/services/orientation/orientation.service
 import { configureTests } from 'app/app.test.configuration';
 import { Page } from 'app/models/page';
 import { ImportExportService } from 'app/administration/services/import-export.service';
-import { WorkbasketListToolbarComponent } from './workbasket-list-toolbar/workbasket-list-toolbar.component';
+import { WorkbasketListToolbarComponent } from '../workbasket-list-toolbar/workbasket-list-toolbar.component';
 import { WorkbasketListComponent } from './workbasket-list.component';
 
 @Component({

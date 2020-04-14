@@ -21,12 +21,12 @@ import { RequestInProgressService } from 'app/services/requestInProgress/request
 import { LinksWorkbasketSummary } from 'app/models/links-workbasket-summary';
 import { configureTests } from 'app/app.test.configuration';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-import { DistributionTargetsComponent, Side } from './distribution-targets.component';
-import { DualListComponent } from './dual-list/dual-list.component';
+import { WorkbasketDistributionTargetsComponent, Side } from './workbasket-distribution-targets.component';
+import { WorkbasketDualListComponent } from '../workbasket-dual-list/workbasket-dual-list.component';
 
 describe('DistributionTargetsComponent', () => {
-  let component: DistributionTargetsComponent;
-  let fixture: ComponentFixture<DistributionTargetsComponent>;
+  let component: WorkbasketDistributionTargetsComponent;
+  let fixture: ComponentFixture<WorkbasketDistributionTargetsComponent>;
   let workbasketService;
   const workbasket = new Workbasket('1', '', '', '', ICONTYPES.TOPIC, '', '', '', '', '', '', '', '', '', '', '', '',
     new Links({ href: 'someurl' }, { href: 'someurl' }, { href: 'someurl' }));
@@ -35,13 +35,13 @@ describe('DistributionTargetsComponent', () => {
     const configure = (testBed: TestBed) => {
       testBed.configureTestingModule({
         imports: [AngularSvgIconModule, HttpClientModule, InfiniteScrollModule],
-        declarations: [DistributionTargetsComponent, DualListComponent],
+        declarations: [WorkbasketDistributionTargetsComponent, WorkbasketDualListComponent],
         providers: [WorkbasketService, AlertService, SavingWorkbasketService, GeneralModalService, RequestInProgressService,
         ]
       });
     };
     configureTests(configure).then(testBed => {
-      fixture = TestBed.createComponent(DistributionTargetsComponent);
+      fixture = TestBed.createComponent(WorkbasketDistributionTargetsComponent);
       component = fixture.componentInstance;
       component.workbasket = workbasket;
       workbasketService = TestBed.get(WorkbasketService);
