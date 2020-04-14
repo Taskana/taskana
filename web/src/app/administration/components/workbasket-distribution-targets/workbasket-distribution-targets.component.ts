@@ -18,8 +18,8 @@ import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { Page } from 'app/models/page';
 import { OrientationService } from 'app/services/orientation/orientation.service';
 import { Orientation } from 'app/models/orientation';
-import { ERROR_TYPES } from '../../../../models/errors';
-import { ErrorsService } from '../../../../services/errors/errors.service';
+import { ERROR_TYPES } from '../../../models/errors';
+import { ErrorsService } from '../../../services/errors/errors.service';
 
 export enum Side {
   LEFT,
@@ -27,10 +27,10 @@ export enum Side {
 }
 @Component({
   selector: 'taskana-workbaskets-distribution-targets',
-  templateUrl: './distribution-targets.component.html',
-  styleUrls: ['./distribution-targets.component.scss']
+  templateUrl: './workbasket-distribution-targets.component.html',
+  styleUrls: ['./workbasket-distribution-targets.component.scss']
 })
-export class DistributionTargetsComponent implements OnChanges, OnDestroy {
+export class WorkbasketDistributionTargetsComponent implements OnChanges, OnDestroy {
   @Input()
   workbasket: Workbasket;
 

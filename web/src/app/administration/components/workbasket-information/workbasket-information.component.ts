@@ -19,9 +19,9 @@ import { RemoveConfirmationService } from 'app/services/remove-confirmation/remo
 import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
 import { map } from 'rxjs/operators';
 import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
-import { ERROR_TYPES } from '../../../../models/errors';
-import { ErrorsService } from '../../../../services/errors/errors.service';
-import { CustomField, getCustomFields, WorkbasketsCustomisation } from '../../../../models/customisation';
+import { ERROR_TYPES } from '../../../models/errors';
+import { ErrorsService } from '../../../services/errors/errors.service';
+import { CustomField, getCustomFields, WorkbasketsCustomisation } from '../../../models/customisation';
 
 @Component({
   selector: 'taskana-workbasket-information',
