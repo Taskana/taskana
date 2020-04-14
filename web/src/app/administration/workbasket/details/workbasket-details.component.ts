@@ -8,7 +8,7 @@ import { ACTION } from 'app/models/action';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
 import { DomainService } from 'app/services/domain/domain.service';
-import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
+import { ImportExportService } from 'app/administration/services/import-export.service';
 import { GeneralModalService } from '../../../services/general-modal/general-modal.service';
 import { MessageModal } from '../../../models/message-modal';
 import { ERROR_TYPES } from '../../../models/errors';

@@ -19,13 +19,13 @@ import { LinksWorkbasketSummary } from 'app/models/links-workbasket-summary';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
 import { AlertService } from 'app/services/alert/alert.service';
-import { SavingWorkbasketService } from 'app/administration/services/saving-workbaskets/saving-workbaskets.service';
+import { SavingWorkbasketService } from 'app/administration/services/saving-workbaskets.service';
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { configureTests } from 'app/app.test.configuration';
 
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-import { ImportExportService } from 'app/administration/services/import-export/import-export.service';
+import { ImportExportService } from 'app/administration/services/import-export.service';
 import { WorkbasketDetailsComponent } from './workbasket-details.component';
 import { WorkbasketInformationComponent } from './information/workbasket-information.component';
 import { AccessItemsComponent } from './access-items/access-items.component';
