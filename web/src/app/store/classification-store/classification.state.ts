@@ -34,7 +34,8 @@ export class ClassificationState {
     );
   }
 
-  ngxsOnInit(ctx: StateContext<ClassificationStateModel>): void {
+  // initialize after Startup service has configured the taskanaRestUrl properly.
+  ngxsAfterBootstrap(ctx: StateContext<ClassificationStateModel>): void {
     ctx.dispatch(new InitializeStore());
   }
 }
