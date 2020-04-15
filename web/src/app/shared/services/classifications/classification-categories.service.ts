@@ -15,14 +15,11 @@ export interface CategoriesResponse { [key: string]: string[] }
 
 @Injectable()
 export class ClassificationCategoriesService {
-  private mainUrl = environment.taskanaRestUrl;
-  private urlCategoriesByType = `${this.mainUrl}/v1/classifications-by-type`;
-
   constructor(private httpClient: HttpClient) {}
 
   // TODO: convert to Map (maybe via ES6)
   getClassificationCategoriesByType(): Observable<CategoriesResponse> {
-    return this.httpClient.get<CategoriesResponse>(this.urlCategoriesByType);
+    return this.httpClient.get<CategoriesResponse>(`${environment.taskanaRestUrl}/v1/classifications-by-type`);
   }
 
   getCustomisation(): Observable<Customisation> {
