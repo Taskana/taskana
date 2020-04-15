@@ -25,7 +25,7 @@ import { NgxsModule, Store } from '@ngxs/store';
 import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
 import { WorkbasketAccessItemsComponent } from './workbasket-access-items.component';
 
-describe('AccessItemsComponent', () => {
+describe('WorkbasketAccessItemsComponent', () => {
   let component: WorkbasketAccessItemsComponent;
   let fixture: ComponentFixture<WorkbasketAccessItemsComponent>;
   let workbasketService;
