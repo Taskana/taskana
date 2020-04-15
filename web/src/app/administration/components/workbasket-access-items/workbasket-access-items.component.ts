@@ -6,7 +6,7 @@ import { FormArray, FormBuilder, Validators } from '@angular/forms';
 import { Workbasket } from 'app/models/workbasket';
 import { WorkbasketAccessItems, customFieldCount } from 'app/models/workbasket-access-items';
 import { WorkbasketAccessItemsResource } from 'app/models/workbasket-access-items-resource';
-import { ACTION } from 'app/models/action';
+import { ACTION } from 'app/administration/models/action';
 
 import { AlertModel, AlertType } from 'app/models/alert';
 import { SavingInformation, SavingWorkbasketService } from 'app/administration/services/saving-workbaskets.service';
