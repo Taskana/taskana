@@ -20,7 +20,7 @@ import { DomainService } from 'app/services/domain/domain.service';
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { configureTests } from 'app/app.test.configuration';
-import { TreeService } from 'app/services/tree/tree.service';
+import { TreeService } from 'app/administration/services/tree.service';
 import { ImportExportService } from 'app/administration/services/import-export.service';
 import { NgxsModule } from '@ngxs/store';
 import { ClassificationListComponent } from './classification-list.component';

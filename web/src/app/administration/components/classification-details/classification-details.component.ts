@@ -15,7 +15,7 @@ import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { AlertService } from 'app/services/alert/alert.service';
-import { TreeService } from 'app/services/tree/tree.service';
+import { TreeService } from 'app/administration/services/tree.service';
 import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
 
 import { DomainService } from 'app/services/domain/domain.service';

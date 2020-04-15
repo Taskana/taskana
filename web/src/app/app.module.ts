@@ -25,7 +25,6 @@ import { DomainService } from 'app/services/domain/domain.service';
 import { StartupService } from 'app/services/startup-service/startup.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
-import { TreeService } from 'app/services/tree/tree.service';
 import { TitlesService } from 'app/services/titles/titles.service';
 import { WindowRefService } from 'app/services/window/window.service';
 import { TaskanaEngineService } from 'app/services/taskana-engine/taskana-engine.service';
@@ -106,7 +105,6 @@ export function startupServiceFactory(startupService: StartupService): () => Pro
     },
     AlertService,
     MasterAndDetailService,
-    TreeService,
     TitlesService,
     TaskanaEngineService,
     RemoveConfirmationService,
