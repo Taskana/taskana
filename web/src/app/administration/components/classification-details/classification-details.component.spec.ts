@@ -16,7 +16,7 @@ import { LinksClassification } from 'app/models/links-classfication';
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
-import { TreeNodeModel } from 'app/administration/models/tree-node';
+import { TreeNodeModel } from 'app/models/tree-node';
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { TreeService } from 'app/administration/services/tree.service';

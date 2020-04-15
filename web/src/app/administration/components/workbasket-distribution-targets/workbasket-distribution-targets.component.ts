@@ -6,7 +6,7 @@ import { WorkbasketSummary } from 'app/models/workbasket-summary';
 import { WorkbasketSummaryResource } from 'app/models/workbasket-summary-resource';
 import { WorkbasketDistributionTargetsResource } from 'app/models/workbasket-distribution-targets-resource';
 import { MessageModal } from 'app/models/message-modal';
-import { ACTION } from 'app/administration/models/action';
+import { ACTION } from 'app/models/action';
 import { AlertModel, AlertType } from 'app/models/alert';
 
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';

@@ -4,7 +4,7 @@ import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription, zip } from 'rxjs';
 
 import { ClassificationDefinition, customFieldCount } from 'app/models/classification-definition';
-import { ACTION } from 'app/administration/models/action';
+import { ACTION } from 'app/models/action';
 import { AlertModel, AlertType } from 'app/models/alert';
 
 import { highlight } from 'app/shared/animations/validation.animation';
