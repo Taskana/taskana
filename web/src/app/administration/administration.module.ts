@@ -24,8 +24,6 @@ import { WorkbasketAccessItemsComponent } from './components/workbasket-access-i
 import { ClassificationListComponent } from './components/classification-list/classification-list.component';
 import { ClassificationDetailsComponent } from './components/classification-details/classification-details.component';
 import { ImportExportComponent } from './components/import-export/import-export.component';
-import { ClassificationTreeComponent } from './components/classification-tree/tree.component';
-
 /**
  * Services
  */
@@ -33,7 +31,6 @@ import { SavingWorkbasketService } from './services/saving-workbaskets.service';
 import { ClassificationDefinitionService } from './services/classification-definition.service';
 import { WorkbasketDefinitionService } from './services/workbasket-definition.service';
 import { ImportExportService } from './services/import-export.service';
-import { TreeService } from './services/tree.service';
 
 const MODULES = [
   CommonModule,
@@ -45,7 +42,6 @@ const MODULES = [
   AdministrationRoutingModule,
   TypeaheadModule,
   InfiniteScrollModule,
-  TreeModule.forRoot()
 ];
 
 const DECLARATIONS = [
@@ -60,8 +56,7 @@ const DECLARATIONS = [
   ImportExportComponent,
   ClassificationTypesSelectorComponent,
   ClassificationDetailsComponent,
-  AccessItemsManagementComponent,
-  ClassificationTreeComponent
+  AccessItemsManagementComponent
 ];
 
 @NgModule({
@@ -73,7 +68,6 @@ const DECLARATIONS = [
     SavingWorkbasketService,
     ClassificationCategoriesService,
     ImportExportService,
-    TreeService
   ]
 })
 export class AdministrationModule {
