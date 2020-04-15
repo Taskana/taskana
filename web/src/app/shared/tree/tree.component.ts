@@ -8,6 +8,7 @@ import { AfterViewChecked,
   OnInit,
   Output,
   ViewChild } from '@angular/core';
+import { TreeNodeModel } from 'app/models/tree-node';
 
 import { ITreeOptions, KEYS, TreeComponent, TreeNode } from 'angular-tree-component';
 import { Pair } from 'app/models/pair';
@@ -16,19 +17,18 @@ import { map } from 'rxjs/operators';
 import { Select } from '@ngxs/store';
 import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
 
-import { TreeService } from '../../services/tree.service';
-import { TreeNodeModel } from '../../models/tree-node';
-import { Classification } from '../../../models/classification';
-import { ClassificationDefinition } from '../../../models/classification-definition';
-import { ClassificationsService } from '../../../shared/services/classifications/classifications.service';
-import { ClassificationCategoryImages } from '../../../models/customisation';
+import { TreeService } from '../../services/tree/tree.service';
+import { Classification } from '../../models/classification';
+import { ClassificationDefinition } from '../../models/classification-definition';
+import { ClassificationsService } from '../services/classifications/classifications.service';
+import { ClassificationCategoryImages } from '../../models/customisation';
 
 @Component({
   selector: 'taskana-tree',
   templateUrl: './tree.component.html',
   styleUrls: ['./tree.component.scss'],
 })
-export class ClassificationTreeComponent implements OnInit, AfterViewChecked, OnDestroy {
+export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy {
   @Input() treeNodes: Array<TreeNodeModel>;
   @Output() treeNodesChange = new EventEmitter<Array<TreeNodeModel>>();
   @Input() selectNodeId: string;

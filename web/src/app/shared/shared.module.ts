@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { RouterModule } from '@angular/router';
+import { TreeModule } from 'angular-tree-component';
 import { AlertModule, TypeaheadModule, BsDatepickerModule } from 'ngx-bootstrap';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
@@ -17,6 +18,7 @@ import { GeneralMessageModalComponent } from 'app/shared/general-message-modal/g
 import { SpinnerComponent } from 'app/shared/spinner/spinner.component';
 import { AlertComponent } from 'app/shared/alert/alert.component';
 import { MasterAndDetailComponent } from 'app/shared/master-and-detail/master-and-detail.component';
+import { TaskanaTreeComponent } from 'app/shared/tree/tree.component';
 import { TypeAheadComponent } from 'app/shared/type-ahead/type-ahead.component';
 import { RemoveConfirmationComponent } from 'app/shared/remove-confirmation/remove-confirmation.component';
 import { FilterComponent } from 'app/shared/filter/filter.component';
@@ -59,6 +61,7 @@ const MODULES = [
   AngularSvgIconModule,
   HttpClientModule,
   RouterModule,
+  TreeModule.forRoot()
 ];
 
 const DECLARATIONS = [
@@ -67,6 +70,7 @@ const DECLARATIONS = [
   SpinnerComponent,
   AlertComponent,
   MasterAndDetailComponent,
+  TaskanaTreeComponent,
   TypeAheadComponent,
   MapValuesPipe,
   RemoveNoneTypePipe,
