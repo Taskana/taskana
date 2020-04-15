@@ -10,7 +10,7 @@ import { Routes } from '@angular/router';
 
 import { Workbasket } from 'app/models/workbasket';
 import { ICONTYPES } from 'app/models/type';
-import { ACTION } from 'app/administration/models/action';
+import { ACTION } from 'app/models/action';
 import { Links } from 'app/models/links';
 
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';

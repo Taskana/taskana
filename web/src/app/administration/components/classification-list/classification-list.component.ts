@@ -6,7 +6,7 @@ import { Select } from '@ngxs/store';
 
 import { TaskanaType } from 'app/models/taskana-type';
 import { Classification } from 'app/models/classification';
-import { TreeNodeModel } from 'app/administration/models/tree-node';
+import { TreeNodeModel } from 'app/models/tree-node';
 
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
 import { Pair } from 'app/models/pair';

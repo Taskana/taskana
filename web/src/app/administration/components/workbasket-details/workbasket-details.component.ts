@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { Workbasket } from 'app/models/workbasket';
-import { ACTION } from 'app/administration/models/action';
+import { ACTION } from 'app/models/action';
 
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
