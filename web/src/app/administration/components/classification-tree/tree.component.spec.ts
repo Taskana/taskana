@@ -3,13 +3,13 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
 
-import { TreeService } from 'app/services/tree/tree.service';
+import { TreeService } from 'app/administration/services/tree.service';
 import { configureTests } from 'app/app.test.configuration';
 import { NgxsModule } from '@ngxs/store';
 import { TaskanaTreeComponent } from './tree.component';
-import { ClassificationDefinition } from '../../models/classification-definition';
-import { LinksClassification } from '../../models/links-classfication';
-import { ClassificationsService } from '../services/classifications/classifications.service';
+import { ClassificationDefinition } from '../../../models/classification-definition';
+import { LinksClassification } from '../../../models/links-classfication';
+import { ClassificationsService } from '../../../shared/services/classifications/classifications.service';
 
 @Component({
   selector: 'tree-root',
