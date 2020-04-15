@@ -24,7 +24,7 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { WorkbasketDistributionTargetsComponent, Side } from './workbasket-distribution-targets.component';
 import { WorkbasketDualListComponent } from '../workbasket-dual-list/workbasket-dual-list.component';
 
-describe('DistributionTargetsComponent', () => {
+describe('WorkbasketDistributionTargetsComponent', () => {
   let component: WorkbasketDistributionTargetsComponent;
   let fixture: ComponentFixture<WorkbasketDistributionTargetsComponent>;
   let workbasketService;

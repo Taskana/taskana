@@ -22,8 +22,8 @@ class TreeVendorComponent {
 }
 
 describe('TaskanaTreeComponent', () => {
-  let component: ClassificationTreeComponent;
-  let fixture: ComponentFixture<ClassificationTreeComponent>;
+  let component: TaskanaTreeComponent;
+  let fixture: ComponentFixture<TaskanaTreeComponent>;
   let classificationsService;
   let moveNodeEvent;
   let dropEvent;
@@ -38,7 +38,7 @@ describe('TaskanaTreeComponent', () => {
 
   beforeEach(done => {
     configureTests(configure).then(testBed => {
-      fixture = testBed.createComponent(ClassificationTreeComponent);
+      fixture = testBed.createComponent(TaskanaTreeComponent);
       classificationsService = testBed.get(ClassificationsService);
       spyOn(classificationsService, 'putClassification').and.callFake((url, classification) => classification);
       moveNodeEvent = {
