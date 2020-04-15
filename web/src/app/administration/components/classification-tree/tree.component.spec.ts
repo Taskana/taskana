@@ -6,7 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { TreeService } from 'app/administration/services/tree.service';
 import { configureTests } from 'app/app.test.configuration';
 import { NgxsModule } from '@ngxs/store';
-import { TaskanaTreeComponent } from './tree.component';
+import { ClassificationTreeComponent } from './tree.component';
 import { ClassificationDefinition } from '../../../models/classification-definition';
 import { LinksClassification } from '../../../models/links-classfication';
 import { ClassificationsService } from '../../../shared/services/classifications/classifications.service';
@@ -22,8 +22,8 @@ class TreeVendorComponent {
 }
 
 describe('TaskanaTreeComponent', () => {
-  let component: TaskanaTreeComponent;
-  let fixture: ComponentFixture<TaskanaTreeComponent>;
+  let component: ClassificationTreeComponent;
+  let fixture: ComponentFixture<ClassificationTreeComponent>;
   let classificationsService;
   let moveNodeEvent;
   let dropEvent;
@@ -38,7 +38,7 @@ describe('TaskanaTreeComponent', () => {
 
   beforeEach(done => {
     configureTests(configure).then(testBed => {
-      fixture = testBed.createComponent(TaskanaTreeComponent);
+      fixture = testBed.createComponent(ClassificationTreeComponent);
       classificationsService = testBed.get(ClassificationsService);
       spyOn(classificationsService, 'putClassification').and.callFake((url, classification) => classification);
       moveNodeEvent = {

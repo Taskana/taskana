@@ -5,11 +5,12 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { AlertModule, TypeaheadModule } from 'ngx-bootstrap';
 import { SharedModule } from 'app/shared/shared.module';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { TreeModule } from 'angular-tree-component';
+
 import { ClassificationTypesSelectorComponent } from 'app/shared/classification-types-selector/classification-types-selector.component';
 import { ClassificationCategoriesService } from 'app/shared/services/classifications/classification-categories.service';
 import { AccessItemsManagementComponent } from 'app/administration/components/access-items-management/access-items-management.component';
 import { AdministrationRoutingModule } from './administration-routing.module';
-import { TreeModule } from 'angular-tree-component';
 /**
  * Components
  */
