@@ -5,7 +5,7 @@ import { NgForm } from '@angular/forms';
 import { Select } from '@ngxs/store';
 
 import { ICONTYPES } from 'app/models/type';
-import { ACTION } from 'app/models/action';
+import { ACTION } from 'app/administration/models/action';
 import { customFieldCount, Workbasket } from 'app/models/workbasket';
 import { AlertModel, AlertType } from 'app/models/alert';
 import { TaskanaDate } from 'app/shared/util/taskana.date';
