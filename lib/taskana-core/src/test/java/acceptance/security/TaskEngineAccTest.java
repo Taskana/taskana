@@ -23,7 +23,7 @@ class TaskEngineAccTest extends AbstractAccTest {
   }
 
   @Test
-  void testUnauthenticated() {
+  void should_ThrowException_When_AccessIdIsUnauthenticated() {
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN)).isFalse();
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isFalse();
     ThrowingCallable call = () -> taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN);
@@ -32,7 +32,8 @@ class TaskEngineAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user_1_1", groups = "businessadmin")
   @Test
-  void testRunAsAdminIsOnlyTemporary() throws NoSuchFieldException, IllegalAccessException {
+  void should_RunAsAdminOnlyTemorarily_When_RunAsAdminMethodIsCalled()
+      throws NoSuchFieldException, IllegalAccessException {
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN)).isTrue();
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isFalse();
 
@@ -45,7 +46,7 @@ class TaskEngineAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user_1_1") // , groupNames = {"businessadmin"})
   @Test
-  void testUser() {
+  void should_ThrowException_When_CheckingNormalUserForAdminRoles() throws NotAuthorizedException {
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN)).isFalse();
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isFalse();
     ThrowingCallable call = () -> taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN);
@@ -54,15 +55,24 @@ class TaskEngineAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user_1_1", groups = "businessadmin")
   @Test
-  void testBusinessAdmin() throws NotAuthorizedException {
+  void should_ConfirmBusinessAdminRole_When_AccessIdIsBusinessAdmin()
+      throws NotAuthorizedException {
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN)).isTrue();
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isFalse();
     taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN);
   }
 
+  @WithAccessId(user = "user_1_1", groups = "taskadmin")
+  @Test
+  void should_ConfirmTaskAdminRole_When_AccessIdIsTaskAdmin() throws NotAuthorizedException {
+    assertThat(taskanaEngine.isUserInRole(TaskanaRole.TASK_ADMIN)).isTrue();
+    assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isFalse();
+    taskanaEngine.checkRoleMembership(TaskanaRole.TASK_ADMIN);
+  }
+
   @WithAccessId(user = "user_1_1", groups = "admin")
   @Test
-  void testAdmin() throws NotAuthorizedException {
+  void should_ConfirmAdminRole_When_AccessIdIsAdmin() throws NotAuthorizedException {
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN)).isFalse();
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isTrue();
     taskanaEngine.checkRoleMembership(TaskanaRole.ADMIN);

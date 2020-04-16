@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -265,5 +266,19 @@ class CreateClassificationAccTest extends AbstractAccTest {
 
     assertThat(newClassification.getId()).isNotNull();
     assertThat(newClassification.getId()).isNotEqualTo(oldClassification.getId());
+  }
+
+  @WithAccessId(user = "taskadmin")
+  @Test
+  void should_ThrowException_When_UserIsTaskAdminAndNotAuthorizedToCreateClassification() {
+    ClassificationImpl classification =
+        (ClassificationImpl) classificationService.newClassification("newKey718", "", "TASK");
+
+    ThrowingCallable createClassificationCall =
+        () -> {
+          classificationService.createClassification(classification);
+        };
+
+    assertThatThrownBy(createClassificationCall).isInstanceOf(NotAuthorizedException.class);
   }
 }
