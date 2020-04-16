@@ -111,4 +111,18 @@ public class UpdateWorkbasketAccTest extends AbstractAccTest {
     assertThatThrownBy(() -> workbasketService.updateWorkbasket(workbasket))
         .isInstanceOf(NotAuthorizedException.class);
   }
+
+  @WithAccessId(user = "taskadmin")
+  @Test
+  public void should_ThrowException_When_UserIsTaskAdminAndNotAuthorizedToUpdateWorkbasket()
+      throws NotAuthorizedException, WorkbasketNotFoundException {
+
+    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+    Workbasket workbasket = workbasketService.getWorkbasket("USER_1_1", "DOMAIN_A");
+
+    workbasket.setName("updated workbasket name");
+
+    assertThatThrownBy(() -> workbasketService.updateWorkbasket(workbasket))
+        .isInstanceOf(NotAuthorizedException.class);
+  }
 }

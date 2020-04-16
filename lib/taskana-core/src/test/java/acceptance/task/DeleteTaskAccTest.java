@@ -60,6 +60,19 @@ class DeleteTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
   }
 
+  @WithAccessId(user = "taskadmin")
+  @Test
+  void should_ThrowException_When_UserIsTaskAdminAndNotAuthorizedToDeleteTask() {
+
+    TaskService taskService = taskanaEngine.getTaskService();
+
+    ThrowingCallable deleteTaskCall =
+        () -> {
+          taskService.deleteTask("TKI:000000000000000000000000000000000041");
+        };
+    assertThatThrownBy(deleteTaskCall).isInstanceOf(NotAuthorizedException.class);
+  }
+
   @WithAccessId(
       user = "user_1_2",
       groups = {"group_1", "admin"})

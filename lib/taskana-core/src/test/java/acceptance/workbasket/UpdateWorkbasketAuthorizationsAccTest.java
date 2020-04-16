@@ -28,12 +28,82 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
 
-/** Acceptance test for all "update workbasket" scenarios. */
+/**
+ * Acceptance test for all "update workbasket" scenarios.
+ */
 @ExtendWith(JaasExtension.class)
 class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
   UpdateWorkbasketAuthorizationsAccTest() {
     super();
+  }
+
+  @WithAccessId(user = "taskadmin")
+  @Test
+  public void should_ThrowException_When_TaskAdminTriesToGetWorkbasketAccItem() {
+
+    final WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+
+    ThrowingCallable retrieveWorkbasketAccessItemCall =
+        () -> {
+          workbasketService.getWorkbasketAccessItems("WBI:100000000000000000000000000000000008");
+        };
+
+    assertThatThrownBy(retrieveWorkbasketAccessItemCall).isInstanceOf(NotAuthorizedException.class);
+  }
+
+  @WithAccessId(user = "taskadmin")
+  @Test
+  public void should_ThrowException_When_TaskAdminTriesToDeleteWorkbasketAccItemById() {
+
+    final WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+
+    ThrowingCallable deleteWorkbasketAccessItemCall =
+        () -> {
+          workbasketService.deleteWorkbasketAccessItemsForAccessId("group_1");
+        };
+
+    assertThatThrownBy(deleteWorkbasketAccessItemCall).isInstanceOf(NotAuthorizedException.class);
+  }
+
+  @WithAccessId(user = "taskadmin")
+  @Test
+  public void should_ThrowException_When_TaskAdminTriesToDeleteWorkbasketAccessItemByAccessId() {
+
+    final WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+
+    WorkbasketAccessItem workbasketAccessItem =
+        workbasketService.newWorkbasketAccessItem(
+            "WBI:100000000000000000000000000000000008", "newAccessIdForUpdate");
+
+    workbasketAccessItem.setPermCustom1(true);
+
+    ThrowingCallable deleteWorkbasketAccessItemCall =
+        () -> {
+          workbasketService.deleteWorkbasketAccessItem(workbasketAccessItem.getId());
+        };
+
+    assertThatThrownBy(deleteWorkbasketAccessItemCall).isInstanceOf(NotAuthorizedException.class);
+  }
+
+  @WithAccessId(user = "taskadmin")
+  @Test
+  public void should_ThrowException_When_TaskAdminTriesToUpdateWorkbasketAccItem() {
+
+    final WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+
+    WorkbasketAccessItem workbasketAccessItem =
+        workbasketService.newWorkbasketAccessItem(
+            "WBI:100000000000000000000000000000000008", "newAccessIdForUpdate");
+
+    workbasketAccessItem.setPermCustom1(true);
+
+    ThrowingCallable updateWorkbasketAccessItemCall =
+        () -> {
+          workbasketService.updateWorkbasketAccessItem(workbasketAccessItem);
+        };
+
+    assertThatThrownBy(updateWorkbasketAccessItemCall).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(
@@ -42,7 +112,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
   @Test
   void testUpdateWorkbasketAccessItemSucceeds()
       throws InvalidArgumentException, NotAuthorizedException, WorkbasketNotFoundException,
-          WorkbasketAccessItemAlreadyExistException {
+                 WorkbasketAccessItemAlreadyExistException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     WorkbasketAccessItem accessItem =
         workbasketService.newWorkbasketAccessItem(
@@ -78,7 +148,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
   @Test
   void testUpdateWorkbasketAccessItemRejected()
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-          WorkbasketAccessItemAlreadyExistException {
+                 WorkbasketAccessItemAlreadyExistException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     WorkbasketAccessItem accessItem =
         workbasketService.newWorkbasketAccessItem(
@@ -127,7 +197,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
   @Test
   void testUpdatedAccessItemLeadsToNotAuthorizedException()
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-          ClassificationNotFoundException, TaskAlreadyExistException {
+                 ClassificationNotFoundException, TaskAlreadyExistException {
     TaskService taskService = taskanaEngine.getTaskService();
     final WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 

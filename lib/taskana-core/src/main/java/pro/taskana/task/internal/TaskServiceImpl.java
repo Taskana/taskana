@@ -787,6 +787,9 @@ public class TaskServiceImpl implements TaskService {
   public Task terminateTask(String taskId)
       throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
     LOGGER.debug("entry to terminateTask(task = {})", taskId);
+
+    taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.TASK_ADMIN);
+
     try {
       taskanaEngine.openConnection();
       return terminateCancelCommonActions(taskId, TaskState.TERMINATED);
@@ -939,8 +942,8 @@ public class TaskServiceImpl implements TaskService {
   Pair<List<MinimalTaskSummary>, BulkLog> filterTasksAuthorizedForAndLogErrorsForNotAuthorized(
       List<MinimalTaskSummary> existingTasks) {
     BulkLog bulkLog = new BulkLog();
-    // check authorization only for non-admin users
-    if (taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN)) {
+    // check authorization only for non-admin or task-admin users
+    if (taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN, TaskanaRole.TASK_ADMIN)) {
       return new Pair<>(existingTasks, bulkLog);
     } else {
       List<String> taskIds =

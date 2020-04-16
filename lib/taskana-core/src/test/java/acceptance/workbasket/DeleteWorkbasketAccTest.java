@@ -67,7 +67,32 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(user = "elena")
+  @WithAccessId(user = "taskadmin")
+  @Test
+  void
+      should_ThrowException_When_UserIsTaskAdminAndNotAuthorizedToDeleteWorkbasketByKeyAndDomain() {
+
+    ThrowingCallable deleteWorkbasketCall =
+        () -> {
+          Workbasket wb = workbasketService.getWorkbasket("TEAMLEAD_2", "DOMAIN_A");
+          workbasketService.deleteWorkbasket(wb.getId());
+        };
+    assertThatThrownBy(deleteWorkbasketCall).isInstanceOf(NotAuthorizedException.class);
+  }
+
+  @WithAccessId(user = "taskadmin")
+  @Test
+  void should_ThrowException_When_UserIsTaskAdminAndNotAuthorizedToDeleteWorkbasketById() {
+
+    ThrowingCallable deleteWorkbasketCall =
+        () -> {
+          Workbasket wb =
+              workbasketService.getWorkbasket("WBI:100000000000000000000000000000000005");
+          workbasketService.deleteWorkbasket(wb.getId());
+        };
+    assertThatThrownBy(deleteWorkbasketCall).isInstanceOf(NotAuthorizedException.class);
+  }
+
   @Test
   void testGetWorkbasketNotAuthorized() {
 

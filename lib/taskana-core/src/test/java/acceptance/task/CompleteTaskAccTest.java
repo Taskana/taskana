@@ -49,6 +49,22 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(completedTask.getModified()).isNotEqualTo(completedTask.getCreated());
   }
 
+  @WithAccessId(user = "taskadmin")
+  @Test
+  void should_ForceCompleteTask_When_NoExplicitPermissionsButUserIsInTaskAdminRole()
+      throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
+          NotAuthorizedException {
+    TaskService taskService = taskanaEngine.getTaskService();
+
+    assertThat(taskService.getTask("TKI:000000000000000000000000000000000000").getState())
+        .isEqualTo(TaskState.CLAIMED);
+    Task completedTask = taskService.forceCompleteTask("TKI:000000000000000000000000000000000000");
+    assertThat(completedTask).isNotNull();
+    assertThat(completedTask.getCompleted()).isNotNull();
+    assertThat(completedTask.getState()).isEqualTo(TaskState.COMPLETED);
+    assertThat(completedTask.getModified()).isNotEqualTo(completedTask.getCreated());
+  }
+
   @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testCompleteTaskTwice()

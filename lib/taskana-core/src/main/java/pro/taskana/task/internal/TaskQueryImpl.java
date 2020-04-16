@@ -1655,7 +1655,8 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   private void setupAccessIds() {
-    if (taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN) || !filterByAccessIdIn) {
+    if (taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN, TaskanaRole.TASK_ADMIN)
+        || !filterByAccessIdIn) {
       this.accessIdIn = null;
     } else if (this.accessIdIn == null) {
       String[] accessIds = new String[0];
@@ -1670,8 +1671,8 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   private void checkOpenAndReadPermissionForSpecifiedWorkbaskets() {
-    if (taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN)) {
-      LOGGER.debug("Skipping permissions check since user is in role ADMIN.");
+    if (taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN, TaskanaRole.TASK_ADMIN)) {
+      LOGGER.debug("Skipping permissions check since user is in role ADMIN or TASK_ADMIN.");
       return;
     }
     try {

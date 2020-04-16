@@ -28,7 +28,7 @@ class GetTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
-  void testGetTaskById()
+  void should_ReturnTask_When_RequestingTaskByTaskId()
       throws TaskNotFoundException, NotAuthorizedException, InvalidArgumentException {
     TaskService taskService = taskanaEngine.getTaskService();
 
@@ -81,7 +81,7 @@ class GetTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
-  void testGetTaskByIdNotExisting() {
+  void should_ThrowException_When_RequestedTaskByIdIsNotExisting() {
     TaskService taskService = taskanaEngine.getTaskService();
 
     //    Assertions.assertThrows(TaskNotFoundException.class, () ->
@@ -91,5 +91,30 @@ class GetTaskAccTest extends AbstractAccTest {
           taskService.getTask("INVALID");
         };
     assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
+  }
+
+  @WithAccessId(user = "user_1_2")
+  @Test
+  void should_ThrowException_When_UserIsNotAuthorizedToGetTask()
+      throws NotAuthorizedException, TaskNotFoundException {
+
+    TaskService taskService = taskanaEngine.getTaskService();
+
+    ThrowingCallable getTaskCall =
+        () -> {
+          taskService.getTask("TKI:000000000000000000000000000000000000");
+        };
+    assertThatThrownBy(getTaskCall).isInstanceOf(NotAuthorizedException.class);
+  }
+
+  @WithAccessId(user = "taskadmin")
+  @Test
+  void should_ReturnTask_When_NoExplicitPermissionsButUserIsInTaskAdminRole()
+      throws NotAuthorizedException, TaskNotFoundException {
+
+    TaskService taskService = taskanaEngine.getTaskService();
+
+    Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
+    assertThat(task).isNotNull();
   }
 }

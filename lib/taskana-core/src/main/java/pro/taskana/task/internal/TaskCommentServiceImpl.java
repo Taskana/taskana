@@ -70,7 +70,8 @@ class TaskCommentServiceImpl {
       taskService.getTask(taskCommentImplToUpdate.getTaskId());
 
       if (taskCommentToUpdate.getCreator().equals(userId)
-          || taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN)) {
+          || taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN)
+          || taskanaEngine.getEngine().isUserInRole(TaskanaRole.TASK_ADMIN)) {
 
         TaskComment oldTaskComment = getTaskComment(taskCommentImplToUpdate.getId());
 
@@ -142,7 +143,8 @@ class TaskCommentServiceImpl {
       TaskComment taskCommentToDelete = getTaskComment(taskCommentId);
 
       if (taskCommentToDelete.getCreator().equals(userId)
-          || taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN)) {
+          || taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN)
+          || taskanaEngine.getEngine().isUserInRole(TaskanaRole.TASK_ADMIN)) {
 
         taskCommentMapper.delete(taskCommentId);
 

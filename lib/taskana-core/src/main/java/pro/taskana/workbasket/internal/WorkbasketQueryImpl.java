@@ -179,7 +179,9 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
   public WorkbasketQuery accessIdsHavePermission(
       WorkbasketPermission permission, String... accessIds)
       throws InvalidArgumentException, NotAuthorizedException {
-    taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN);
+    taskanaEngine
+        .getEngine()
+        .checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN, TaskanaRole.TASK_ADMIN);
     // Checking pre-conditions
     if (permission == null) {
       throw new InvalidArgumentException("Permission can´t be null.");
@@ -654,8 +656,9 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     if (!callerRolesAndAccessIdsAlreadyHandled) {
       callerRolesAndAccessIdsAlreadyHandled = true;
 
-      // if user is admin or businessadmin, don't check read permission on workbasket.
-      // in addition, if user is admin or businessadmin and no accessIds were specified, don't join
+      // if user is admin, taskadmin or businessadmin, don't check read permission on workbasket.
+      // in addition, if user is admin, taskadmin or businessadmin and no accessIds were specified,
+      // don't join
       // with access
       // list
       // if this query is used to augment task or a permission is given as filter criteria,
@@ -663,12 +666,13 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
       //
       // (joinWithAccessList,checkReadPermission) can assume the following combinations:
       // (t,t) -> query performed by user
-      // (f,f) -> admin queries w/o access ids specified
-      // (t,f) -> admin queries with access ids specified or permissions given
+      // (f,f) -> admin/task admin queries w/o access ids specified
+      // (t,f) -> business admin queries with access ids specified or permissions given
       // (f,t) -> cannot happen, cannot be matched to meaningful query
       joinWithAccessList = true;
       checkReadPermission = true;
-      if (taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN) && accessId == null) {
+      if (taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN, TaskanaRole.TASK_ADMIN)
+          && accessId == null) {
         checkReadPermission = false;
         joinWithAccessList = false;
       } else if (taskanaEngine.getEngine().isUserInRole(TaskanaRole.BUSINESS_ADMIN)

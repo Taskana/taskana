@@ -47,6 +47,23 @@ class DeleteClassificationAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
+  @WithAccessId(user = "taskadmin")
+  @Test
+  void
+      should_ThrowException_When_UserIsTaskAdminAndNotAuthorizedToDelClassificationByKeyDomain() {
+    ThrowingCallable call = () -> classificationService.deleteClassification("L140101", "DOMAIN_A");
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
+  }
+
+  @WithAccessId(user = "taskadmin")
+  @Test
+  void should_ThrowException_When_UserIsTaskAdminAndNotAuthorizedToDeleteClassificationById() {
+    ThrowingCallable call =
+        () ->
+            classificationService.deleteClassification("CLI:000000000000000000000000000000000009");
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
+  }
+
   @WithAccessId(
       user = "teamlead_1",
       groups = {"group_1", "businessadmin"})

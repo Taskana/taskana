@@ -11,7 +11,8 @@ public enum TaskanaRole {
   USER("taskana.roles.user"),
   BUSINESS_ADMIN("taskana.roles.businessadmin"),
   ADMIN("taskana.roles.admin"),
-  MONITOR("taskana.roles.monitor");
+  MONITOR("taskana.roles.monitor"),
+  TASK_ADMIN("taskana.roles.taskadmin");
 
   private final String propertyName;
 

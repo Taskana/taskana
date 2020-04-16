@@ -76,6 +76,20 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
+  @WithAccessId(user = "taskadmin")
+  @Test
+  void should_ThrowException_When_UserIsTaskAdminAndNotAuthorizedToCreateWorkbasket() {
+    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+
+    Workbasket workbasket = workbasketService.newWorkbasket("NT1234", "DOMAIN_A");
+    workbasket.setName("new workbasket");
+    workbasket.setType(WorkbasketType.GROUP);
+    workbasket.setOrgLevel1("company");
+
+    ThrowingCallable createWorkbasketCall = () -> workbasketService.createWorkbasket(workbasket);
+    assertThatThrownBy(createWorkbasketCall).isInstanceOf(NotAuthorizedException.class);
+  }
+
   @WithAccessId(
       user = "teamlead_1",
       groups = {"group_1", "businessadmin"})

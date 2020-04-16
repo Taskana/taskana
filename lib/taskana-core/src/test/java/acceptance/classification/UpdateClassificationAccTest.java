@@ -110,6 +110,21 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
+  @WithAccessId(user = "taskadmin")
+  @Test
+  public void should_ThrowException_When_UserIsTaskAdminAndNotAuthorizedToUpdateClassification()
+      throws ClassificationNotFoundException {
+
+    Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
+
+    classification.setApplicationEntryPoint("updated EntryPoint");
+    classification.setName("updated Name");
+
+    ThrowingCallable updateClassificationCall =
+        () -> classificationService.updateClassification(classification);
+    assertThatThrownBy(updateClassificationCall).isInstanceOf(NotAuthorizedException.class);
+  }
+
   @WithAccessId(
       user = "teamlead_1",
       groups = {"group_1", "businessadmin"})
