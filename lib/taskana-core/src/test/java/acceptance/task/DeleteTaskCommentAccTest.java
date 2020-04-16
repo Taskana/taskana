@@ -53,18 +53,38 @@ public class DeleteTaskCommentAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
 
     List<TaskComment> taskComments =
-        taskService.getTaskComments("TKI:000000000000000000000000000000000002");
-    assertThat(taskComments).hasSize(2);
+        taskService.getTaskComments("TKI:000000000000000000000000000000000000");
+    assertThat(taskComments).hasSize(3);
 
     ThrowingCallable lambda =
-        () -> taskService.deleteTaskComment("TCI:000000000000000000000000000000000005");
+        () -> taskService.deleteTaskComment("TCI:000000000000000000000000000000000000");
 
     assertThatThrownBy(lambda).isInstanceOf(NotAuthorizedException.class);
 
     // make sure the task comment was not deleted
     List<TaskComment> taskCommentsAfterDeletion =
+        taskService.getTaskComments("TKI:000000000000000000000000000000000000");
+    assertThat(taskCommentsAfterDeletion).hasSize(3);
+  }
+
+  @WithAccessId(user = "taskadmin")
+  @Test
+  void should_DeleteTaskComment_When_NoExplicitPermissionsButUserIsInTaskAdminRole()
+      throws NotAuthorizedException, TaskNotFoundException, TaskCommentNotFoundException,
+          InvalidArgumentException {
+
+    TaskService taskService = taskanaEngine.getTaskService();
+
+    List<TaskComment> taskComments =
         taskService.getTaskComments("TKI:000000000000000000000000000000000002");
-    assertThat(taskCommentsAfterDeletion).hasSize(2);
+    assertThat(taskComments).hasSize(2);
+
+    taskService.deleteTaskComment("TCI:000000000000000000000000000000000006");
+
+    // make sure the task comment was deleted
+    List<TaskComment> taskCommentsAfterDeletion =
+        taskService.getTaskComments("TKI:000000000000000000000000000000000002");
+    assertThat(taskCommentsAfterDeletion).hasSize(1);
   }
 
   @WithAccessId(user = "user_1_1", groups = "group_1")
@@ -75,8 +95,8 @@ public class DeleteTaskCommentAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
 
     List<TaskComment> taskComments =
-        taskService.getTaskComments("TKI:000000000000000000000000000000000002");
-    assertThat(taskComments).hasSize(2);
+        taskService.getTaskComments("TKI:000000000000000000000000000000000000");
+    assertThat(taskComments).hasSize(3);
 
     assertThatThrownBy(() -> taskService.deleteTaskComment(""))
         .isInstanceOf(InvalidArgumentException.class);
@@ -86,8 +106,8 @@ public class DeleteTaskCommentAccTest extends AbstractAccTest {
 
     // make sure that no task comment was deleted
     List<TaskComment> taskCommentsAfterDeletion =
-        taskService.getTaskComments("TKI:000000000000000000000000000000000002");
-    assertThat(taskCommentsAfterDeletion).hasSize(2);
+        taskService.getTaskComments("TKI:000000000000000000000000000000000000");
+    assertThat(taskCommentsAfterDeletion).hasSize(3);
   }
 
   @WithAccessId(user = "user_1_1", groups = "group_1")
@@ -98,15 +118,15 @@ public class DeleteTaskCommentAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
 
     List<TaskComment> taskComments =
-        taskService.getTaskComments("TKI:000000000000000000000000000000000002");
-    assertThat(taskComments).hasSize(2);
+        taskService.getTaskComments("TKI:000000000000000000000000000000000000");
+    assertThat(taskComments).hasSize(3);
 
     ThrowingCallable lambda = () -> taskService.deleteTaskComment("non existing task comment id");
     assertThatThrownBy(lambda).isInstanceOf(TaskCommentNotFoundException.class);
 
     // make sure the task comment was not deleted
     List<TaskComment> taskCommentsAfterDeletion =
-        taskService.getTaskComments("TKI:000000000000000000000000000000000002");
-    assertThat(taskCommentsAfterDeletion).hasSize(2);
+        taskService.getTaskComments("TKI:000000000000000000000000000000000000");
+    assertThat(taskCommentsAfterDeletion).hasSize(3);
   }
 }

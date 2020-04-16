@@ -51,6 +51,33 @@ class GetWorkbasketAccTest extends AbstractAccTest {
     assertThat(workbasket.getCustom4()).isEqualTo("custom4");
   }
 
+  @WithAccessId(user = "taskadmin")
+  @Test
+  void should_ReturnWorkbasketByKeyAndDomain_When_NoExplicitPermissionsButUserIsInTaskAdminRole()
+      throws NotAuthorizedException, WorkbasketNotFoundException {
+
+    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+
+    Workbasket retrievedWorkbasket =
+        workbasketService.getWorkbasket("WBI:100000000000000000000000000000000007");
+
+    assertThat(retrievedWorkbasket).isNotNull();
+    assertThat(retrievedWorkbasket.getOwner()).isEqualTo("Peter Maier");
+  }
+
+  @WithAccessId(user = "taskadmin")
+  @Test
+  void should_ReturnWorkbasketById_When_NoExplicitPermissionsButUserIsInTaskAdminRole()
+      throws NotAuthorizedException, WorkbasketNotFoundException {
+
+    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+
+    Workbasket retrievedWorkbasket = workbasketService.getWorkbasket("USER_1_2", "DOMAIN_A");
+    assertThat(retrievedWorkbasket.getOwner()).isEqualTo("Peter Maier");
+
+    assertThat(retrievedWorkbasket).isNotNull();
+  }
+
   @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testGetWorkbasketByKeyAndDomain()

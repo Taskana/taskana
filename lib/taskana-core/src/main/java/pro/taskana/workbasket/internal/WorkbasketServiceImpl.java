@@ -75,7 +75,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         throw new WorkbasketNotFoundException(
             workbasketId, "Workbasket with id " + workbasketId + " was not found.");
       }
-      if (!taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN)) {
+      if (!taskanaEngine
+          .getEngine()
+          .isUserInRole(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN, TaskanaRole.TASK_ADMIN)) {
         this.checkAuthorization(workbasketId, WorkbasketPermission.READ);
       }
       return result;
@@ -99,7 +101,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             domain,
             "Workbasket with key " + workbasketKey + " and domain " + domain + " was not found.");
       }
-      if (!taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN)) {
+      if (!taskanaEngine
+          .getEngine()
+          .isUserInRole(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN, TaskanaRole.TASK_ADMIN)) {
         this.checkAuthorization(workbasketKey, domain, WorkbasketPermission.READ);
       }
       return result;
@@ -311,7 +315,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             workbasketId, "Workbasket with id " + workbasketId + " was not found.");
       }
 
-      if (skipAuthorizationCheck()) {
+      if (skipAuthorizationCheck(requestedPermissions)) {
         return;
       }
 
@@ -363,7 +367,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             domain,
             "Workbasket with key " + workbasketKey + " and domain " + domain + " was not found");
       }
-      if (skipAuthorizationCheck()) {
+      if (skipAuthorizationCheck(requestedPermissions)) {
         return;
       }
       List<String> accessIds = CurrentUserContext.getAccessIds();
@@ -904,16 +908,22 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         .count();
   }
 
-  private boolean skipAuthorizationCheck() {
+  private boolean skipAuthorizationCheck(WorkbasketPermission... requestedPermissions) {
 
-    // Skip permission check is security is not enabled
+    // Skip permission check if security is not enabled
     if (!taskanaEngine.getEngine().getConfiguration().isSecurityEnabled()) {
       LOGGER.debug("Skipping permissions check since security is disabled.");
       return true;
     }
 
-    if (taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN)) {
-      LOGGER.debug("Skipping permissions check since user is in role ADMIN.");
+    if (Arrays.stream(requestedPermissions).anyMatch(WorkbasketPermission.READ::equals)) {
+
+      if (taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN)) {
+        LOGGER.debug("Skipping read permissions check since user is in role ADMIN");
+        return true;
+      }
+    } else if (taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN, TaskanaRole.TASK_ADMIN)) {
+      LOGGER.debug("Skipping permissions check since user is in role ADMIN or TASK_ADMIN.");
       return true;
     }
 

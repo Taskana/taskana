@@ -109,6 +109,24 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(createdTask.isTransferred()).isFalse();
   }
 
+  @WithAccessId(user = "taskadmin")
+  @Test
+  void should_CreateTask_When_NoExplicitPermissionsButUserIsInTaskAdminRole()
+      throws TaskAlreadyExistException, InvalidArgumentException, WorkbasketNotFoundException,
+          NotAuthorizedException, ClassificationNotFoundException {
+
+    Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+    newTask.setClassificationKey("T2100");
+    ObjectReference objectReference =
+        createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567");
+    newTask.setPrimaryObjRef(objectReference);
+    newTask.setOwner("taskadmin");
+    Task createdTask = taskService.createTask(newTask);
+
+    assertThat(createdTask).isNotNull();
+    assertThat(createdTask.getCreator()).isEqualTo(CurrentUserContext.getUserid());
+  }
+
   @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testCreateTaskWithPlanned()

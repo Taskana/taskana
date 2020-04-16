@@ -46,6 +46,9 @@ class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
     Set<String> admins = getConfiguration().getRoleMap().get(TaskanaRole.ADMIN);
     assertThat(admins).contains("name=konrad,organisation=novatec", "admin");
 
+    Set<String> taskAdmins = getConfiguration().getRoleMap().get(TaskanaRole.TASK_ADMIN);
+    assertThat(taskAdmins).contains("taskadmin", "peter");
+
     Set<String> businessAdmins = getConfiguration().getRoleMap().get(TaskanaRole.BUSINESS_ADMIN);
     assertThat(businessAdmins).contains("max", "moritz");
 
@@ -70,6 +73,10 @@ class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
 
       Set<String> businessAdmins = getConfiguration().getRoleMap().get(TaskanaRole.BUSINESS_ADMIN);
       assertThat(businessAdmins).containsOnly("ebe", "konstantin");
+
+    Set<String> taskAdmins = getConfiguration().getRoleMap().get(TaskanaRole.TASK_ADMIN);
+    assertThat(taskAdmins).contains("taskadmin", "peter");
+    
     } finally {
       deleteFile(propertiesFileName);
     }
@@ -94,6 +101,10 @@ class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
 
       Set<String> businessAdmins = getConfiguration().getRoleMap().get(TaskanaRole.BUSINESS_ADMIN);
       assertThat(businessAdmins).containsOnly("name=ebe, ou = bpm", "konstantin");
+
+    Set<String> taskAdmins = getConfiguration().getRoleMap().get(TaskanaRole.TASK_ADMIN);
+    assertThat(taskAdmins).contains("taskadmin", "peter");
+    
     } finally {
       deleteFile(propertiesFileName);
     }

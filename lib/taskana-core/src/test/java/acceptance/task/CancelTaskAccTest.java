@@ -17,9 +17,10 @@ import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
+import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 
-/** Acceptance tests for all claim and complete scenarios. */
+/** Acceptance tests for all "cancel task" scenarios. */
 @ExtendWith(JaasExtension.class)
 class CancelTaskAccTest extends AbstractAccTest {
   private TaskService taskService;
@@ -53,6 +54,18 @@ class CancelTaskAccTest extends AbstractAccTest {
     assertThat(numTasks).isEqualTo(46);
     numTasks = taskService.createTaskQuery().stateIn(TaskState.CANCELLED).count();
     assertThat(numTasks).isEqualTo(6);
+  }
+
+  @WithAccessId(user = "taskadmin")
+  @Test
+  void should_CancelTask_When_NoExplicitPermissionsButUserIsInTaskAdminRole()
+      throws NotAuthorizedException, TaskNotFoundException, InvalidStateException {
+
+    Task tasktoCancel = taskService.getTask("TKI:000000000000000000000000000000000001");
+    assertThat(tasktoCancel.getState()).isEqualTo(TaskState.CLAIMED);
+
+    Task cancelledTask = taskService.cancelTask(tasktoCancel.getId());
+    assertThat(cancelledTask.getState()).isEqualTo(TaskState.CANCELLED);
   }
 
   @WithAccessId(user = "user_1_2", groups = "group_1")

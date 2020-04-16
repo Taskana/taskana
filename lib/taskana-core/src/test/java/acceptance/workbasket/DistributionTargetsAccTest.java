@@ -308,6 +308,62 @@ class DistributionTargetsAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
+  @WithAccessId(user = "taskadmin")
+  @Test
+  void should_ThrowException_When_UserIsTaskAdminAndNotAuthorizedToGetWorkbasketDistTargets() {
+    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+
+    ThrowingCallable retrieveWorkbasketDistributionTargetsCall =
+        () -> {
+          List<WorkbasketSummary> ws =
+              workbasketService.getDistributionSources("WBI:100000000000000000000000000000000004");
+        };
+    assertThatThrownBy(retrieveWorkbasketDistributionTargetsCall)
+        .isInstanceOf(NotAuthorizedException.class);
+  }
+
+  @WithAccessId(user = "taskadmin")
+  @Test
+  void should_ThrowException_When_UserIsTaskAdminAndNotAuthorizedToSetWorkbasketDistTargets() {
+    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+
+    ThrowingCallable call =
+        () -> {
+          workbasketService.setDistributionTargets(
+              "WBI:100000000000000000000000000000000004",
+              Arrays.asList("WBI:100000000000000000000000000000000002"));
+        };
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
+  }
+
+  @WithAccessId(user = "taskadmin")
+  @Test
+  void should_ThrowException_When_UserIsTaskAdminAndNotAuthorizedToAddWorkbasketDistTarget() {
+    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+
+    ThrowingCallable call =
+        () -> {
+          workbasketService.addDistributionTarget(
+              "WBI:100000000000000000000000000000000004",
+              "WBI:100000000000000000000000000000000002");
+        };
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
+  }
+
+  @WithAccessId(user = "taskadmin")
+  @Test
+  void should_ThrowException_When_UserIsTaskAdminAndNotAuthorizedToRemoveWorkbasketDistTarget() {
+    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+
+    ThrowingCallable call =
+        () -> {
+          workbasketService.removeDistributionTarget(
+              "WBI:100000000000000000000000000000000004",
+              "WBI:100000000000000000000000000000000002");
+        };
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
+  }
+
   @WithAccessId(
       user = "user_2_2",
       groups = {"group_1", "group_2"})

@@ -33,7 +33,7 @@ import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 
-/** Acceptance test for all "update task" scenarios. */
+/** Acceptance test for all "set owner" scenarios. */
 @ExtendWith(JaasExtension.class)
 public class SetOwnerAccTest extends AbstractAccTest {
 

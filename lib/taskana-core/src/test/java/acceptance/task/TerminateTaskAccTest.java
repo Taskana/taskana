@@ -20,7 +20,7 @@ import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.TaskSummary;
 
-/** Acceptance tests for all claim and complete scenarios. */
+/** Acceptance tests for "terminate task" scenarios. */
 @ExtendWith(JaasExtension.class)
 class TerminateTaskAccTest extends AbstractAccTest {
   private static TaskService taskService;
@@ -37,7 +37,7 @@ class TerminateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
-  void testQueryTerminatedTasks() {
+  void should_ReturnAllTerminatedTasks_When_QueryTerminatedState() {
     List<TaskSummary> taskSummaries =
         taskService.createTaskQuery().stateIn(TaskState.TERMINATED).list();
     assertThat(taskSummaries).hasSize(5);
@@ -45,7 +45,7 @@ class TerminateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin", groups = "group_1")
   @Test
-  void testTerminateReadyTask()
+  void should_TerminateTask_When_TaskStateIsReady()
       throws NotAuthorizedException, TaskNotFoundException, InvalidStateException {
     List<TaskSummary> taskSummaries = taskService.createTaskQuery().stateIn(TaskState.READY).list();
     assertThat(taskSummaries).hasSize(47);
@@ -56,38 +56,48 @@ class TerminateTaskAccTest extends AbstractAccTest {
     assertThat(numTasks).isEqualTo(6);
   }
 
-  @WithAccessId(user = "user_1_2", groups = "group_1")
+  @WithAccessId(user = "taskadmin", groups = "group_1")
   @Test
-  void testTerminateClaimedTask()
+  void should_TerminateTask_When_TaskStateIsClaimed()
       throws NotAuthorizedException, TaskNotFoundException, InvalidStateException {
     List<TaskSummary> taskSummaries =
         taskService.createTaskQuery().stateIn(TaskState.CLAIMED).list();
-    assertThat(taskSummaries).hasSize(16);
+    assertThat(taskSummaries.size()).isEqualTo(19);
 
     long numTasksTerminated = taskService.createTaskQuery().stateIn(TaskState.TERMINATED).count();
     assertThat(numTasksTerminated).isEqualTo(5);
 
     taskService.terminateTask(taskSummaries.get(0).getId());
     long numTasksClaimed = taskService.createTaskQuery().stateIn(TaskState.CLAIMED).count();
-    assertThat(numTasksClaimed).isEqualTo(15);
+    assertThat(numTasksClaimed).isEqualTo(18);
     numTasksTerminated = taskService.createTaskQuery().stateIn(TaskState.TERMINATED).count();
     assertThat(numTasksTerminated).isEqualTo(6);
   }
 
-  @WithAccessId(user = "user_1_2", groups = "group_1")
+  @WithAccessId(user = "taskadmin", groups = "group_1")
   @Test
-  void testTerminateCompletedTask() {
+  void should_ThrowException_When_TerminateTaskWithTaskStateCompleted() {
     List<TaskSummary> taskSummaries =
         taskService.createTaskQuery().stateIn(TaskState.COMPLETED).list();
-    assertThat(taskSummaries).hasSize(6);
+    assertThat(taskSummaries.size()).isEqualTo(7);
     ThrowingCallable taskanaCall = () -> taskService.terminateTask(taskSummaries.get(0).getId());
 
     assertThatThrownBy(taskanaCall).isInstanceOf(InvalidStateException.class);
   }
 
-  @WithAccessId(user = "user_1_2", groups = "group_1")
+  @WithAccessId(user = "user_1_2")
   @Test
-  void testTerminateTerminatedTask() {
+  void should_ThrowException_When_UserIsNotAdmin() {
+
+    ThrowingCallable taskanaCall =
+        () -> taskService.terminateTask("TKI:000000000000000000000000000000000000");
+
+    assertThatThrownBy(taskanaCall).isInstanceOf(NotAuthorizedException.class);
+  }
+
+  @WithAccessId(user = "taskadmin", groups = "group_1")
+  @Test
+  void should_ThrowException_When_TerminateTaskWithTaskStateTerminated() {
     List<TaskSummary> taskSummaries =
         taskService.createTaskQuery().stateIn(TaskState.TERMINATED).list();
     assertThat(taskSummaries).hasSize(5);
@@ -96,9 +106,9 @@ class TerminateTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(taskanaCall).isInstanceOf(InvalidStateException.class);
   }
 
-  @WithAccessId(user = "user_1_2", groups = "group_1")
+  @WithAccessId(user = "taskadmin", groups = "group_1")
   @Test
-  void testTerminateCancelledTask() {
+  void should_ThrowException_When_TerminateTaskWithTaskStateCancelled() {
     List<TaskSummary> taskSummaries =
         taskService.createTaskQuery().stateIn(TaskState.CANCELLED).list();
     assertThat(taskSummaries).hasSize(5);
