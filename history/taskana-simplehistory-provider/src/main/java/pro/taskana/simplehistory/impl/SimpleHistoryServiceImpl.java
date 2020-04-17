@@ -56,7 +56,6 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
     }
   }
 
-  @Override
   public TaskanaHistoryEvent getHistoryEvent(String historyEventId)
       throws TaskanaHistoryEventNotFoundException {
     LOGGER.debug("entry to getHistoryEvent (id = {})", historyEventId);

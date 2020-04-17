@@ -1,8 +1,10 @@
-package pro.taskana.rest.resource;
+package pro.taskana.simplehistory.rest.resource;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Collection;
 import org.springframework.hateoas.Link;
+
+import pro.taskana.rest.resource.PagedResources;
 
 /** Resource class for {@link TaskHistoryEventResource} with Pagination. */
 public class TaskHistoryEventListResource extends PagedResources<TaskHistoryEventResource> {

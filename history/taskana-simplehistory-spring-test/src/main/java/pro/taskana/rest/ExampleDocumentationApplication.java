@@ -16,8 +16,8 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import pro.taskana.rest.simplehistory.TaskHistoryRestConfiguration;
-import pro.taskana.rest.simplehistory.sampledata.SampleDataGenerator;
+import pro.taskana.simplehistory.rest.TaskHistoryRestConfiguration;
+import pro.taskana.simplehistory.rest.sampledata.SampleDataGenerator;
 
 /** Example Application to create the documentation. */
 @SpringBootApplication

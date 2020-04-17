@@ -29,9 +29,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import pro.taskana.rest.resource.TaskHistoryEventListResource;
-import pro.taskana.rest.resource.TaskHistoryEventResource;
-import pro.taskana.rest.simplehistory.TaskHistoryRestConfiguration;
+import pro.taskana.simplehistory.rest.TaskHistoryRestConfiguration;
+import pro.taskana.simplehistory.rest.resource.TaskHistoryEventListResource;
+import pro.taskana.simplehistory.rest.resource.TaskHistoryEventResource;
 
 /** Controller for integration test. */
 @EnableAutoConfiguration

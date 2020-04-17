@@ -26,7 +26,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import pro.taskana.rest.simplehistory.TaskHistoryRestConfiguration;
+import pro.taskana.simplehistory.rest.TaskHistoryRestConfiguration;
 
 /** Generate documentation for the history event controller. */
 @SpringBootTest(

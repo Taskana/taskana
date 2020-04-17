@@ -1,4 +1,4 @@
-package pro.taskana.rest.resource;
+package pro.taskana.simplehistory.rest.resource;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
@@ -7,8 +7,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 
 import pro.taskana.common.api.exceptions.SystemException;
-import pro.taskana.rest.simplehistory.TaskHistoryEventController;
 import pro.taskana.simplehistory.impl.HistoryEventImpl;
+import pro.taskana.simplehistory.rest.TaskHistoryEventController;
 import pro.taskana.spi.history.api.events.TaskanaHistoryEvent;
 import pro.taskana.spi.history.api.exceptions.TaskanaHistoryEventNotFoundException;
 

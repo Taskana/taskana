@@ -69,11 +69,15 @@ public class SampleDataGenerator {
           }
           executeAndCacheScripts(scripts, cacheKey);
         });
-    LOGGER.debug("exit from generateSampleData()");
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("exit from generateSampleData()");
+    }
   }
 
   public void generateTestData() {
-    LOGGER.debug("entry to generateTestData()");
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("entry to generateTestData()");
+    }
     Stream<String> scripts = SampleDataProvider.getTestDataScripts();
     executeAndCacheScripts(scripts, CACHED_TEST);
     LOGGER.debug("exit from generateTestData()");

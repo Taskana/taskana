@@ -10,10 +10,10 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import pro.taskana.rest.resource.TaskHistoryEventResource;
-import pro.taskana.rest.resource.TaskHistoryEventResourceAssembler;
-import pro.taskana.rest.simplehistory.TaskHistoryRestConfiguration;
 import pro.taskana.simplehistory.impl.HistoryEventImpl;
+import pro.taskana.simplehistory.rest.TaskHistoryRestConfiguration;
+import pro.taskana.simplehistory.rest.resource.TaskHistoryEventResource;
+import pro.taskana.simplehistory.rest.resource.TaskHistoryEventResourceAssembler;
 import pro.taskana.spi.history.api.events.TaskanaHistoryEvent;
 
 /** Test for {@link TaskHistoryEventResourceAssembler}. */

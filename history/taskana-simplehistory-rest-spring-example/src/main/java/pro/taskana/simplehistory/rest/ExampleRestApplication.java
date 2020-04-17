@@ -1,4 +1,4 @@
-package rest.pro.taskana.rest.simplehistory;
+package pro.taskana.simplehistory.rest;
 
 import java.sql.SQLException;
 import javax.sql.DataSource;
@@ -15,12 +15,11 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import pro.taskana.rest.simplehistory.TaskHistoryRestConfiguration;
-import pro.taskana.rest.simplehistory.sampledata.SampleDataGenerator;
+import pro.taskana.simplehistory.rest.sampledata.SampleDataGenerator;
 
 /** Example Application showing the implementation of taskana-rest-spring. */
 @SpringBootApplication
-@ComponentScan(basePackages = "pro.taskana.rest.simplehistory")
+@ComponentScan(basePackages = "pro.taskana.simplehistory.rest")
 @Import({TaskHistoryRestConfiguration.class, WebMvcConfig.class})
 public class ExampleRestApplication {
 

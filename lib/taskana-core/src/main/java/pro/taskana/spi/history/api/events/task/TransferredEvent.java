@@ -13,7 +13,7 @@ public class TransferredEvent extends TaskEvent {
 
   public TransferredEvent(
       Task task, WorkbasketSummary oldWorkbasket, WorkbasketSummary newWorkbasket, String userId) {
-    super(task, userId,"");
+    super(task, userId,null);
     eventType = "TASK_TRANSFERRED";
     created = task.getModified();
     this.oldValue = oldWorkbasket.getId();

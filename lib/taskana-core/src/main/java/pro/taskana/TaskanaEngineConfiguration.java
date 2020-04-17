@@ -44,7 +44,7 @@ import pro.taskana.common.internal.configuration.DbSchemaCreator;
 public class TaskanaEngineConfiguration {
 
   protected static final String TASKANA_SCHEMA_VERSION =
-      "2.0.2"; // must match the VERSION value in table
+      "3.0.0"; // must match the VERSION value in table
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineConfiguration.class);
   private static final String USER_NAME = "sa";
   private static final String USER_PASSWORD = "sa";

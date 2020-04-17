@@ -23,13 +23,13 @@ public class QueryHistoryAccTest extends AbstractAccTest {
   }
 
   @Test
-  public void testListValuesAscendingAndDescending() {
+  public void should_ConfirmEquality_When_UsingListValuesAscendingAndDescending() {
     List<String> defaultList =
-        getHistoryService().createHistoryQuery().listValues(HistoryQueryColumnName.TASK_ID, null);
+        getHistoryService().createHistoryQuery().listValues(HistoryQueryColumnName.CREATED, null);
     List<String> ascendingList =
         getHistoryService()
             .createHistoryQuery()
-            .listValues(HistoryQueryColumnName.TASK_ID, SortDirection.ASCENDING);
+            .listValues(HistoryQueryColumnName.CREATED, SortDirection.ASCENDING);
 
     assertThat(ascendingList).hasSize(2);
     assertThat(ascendingList).isEqualTo(defaultList);
@@ -37,14 +37,14 @@ public class QueryHistoryAccTest extends AbstractAccTest {
     List<String> descendingList =
         getHistoryService()
             .createHistoryQuery()
-            .listValues(HistoryQueryColumnName.TASK_ID, SortDirection.DESCENDING);
+            .listValues(HistoryQueryColumnName.CREATED, SortDirection.DESCENDING);
     Collections.reverse(ascendingList);
 
     assertThat(ascendingList).isEqualTo(descendingList);
   }
 
   @Test
-  public void testComplexQuery() {
+  public void should_ReturnHistoryEvents_For_ComplexQuery() {
     HistoryQuery query =
         getHistoryService()
             .createHistoryQuery()
@@ -64,7 +64,7 @@ public class QueryHistoryAccTest extends AbstractAccTest {
   }
 
   @Test
-  public void testQueryListOffset() {
+  public void should_ConfirmQueryListOffset_When_ProvidingOffsetAndLimit() {
     List<HistoryEventImpl> result = getHistoryService().createHistoryQuery().list(1, 2);
     List<HistoryEventImpl> wrongList = getHistoryService().createHistoryQuery().list();
 
@@ -74,7 +74,7 @@ public class QueryHistoryAccTest extends AbstractAccTest {
   }
 
   @Test
-  public void testCorrectResultWithWrongConstraints() {
+  public void should_ReturnEmptyList_When_ProvidingWrongContraints() {
     List<HistoryEventImpl> result = getHistoryService().createHistoryQuery().list(1, 1000);
     assertThat(result).hasSize(2);
 
@@ -83,7 +83,7 @@ public class QueryHistoryAccTest extends AbstractAccTest {
   }
 
   @Test
-  public void testSingle() {
+  public void should_ReturnSingleHistoryEvent_When_UsingSingleMethod() {
     HistoryEventImpl single = getHistoryService().createHistoryQuery().userIdIn("peter").single();
     assertThat(single.getEventType()).isEqualTo("TASK_CREATED");
 
@@ -92,7 +92,7 @@ public class QueryHistoryAccTest extends AbstractAccTest {
   }
 
   @Test
-  public void testCount() {
+  public void should_ReturnCountOfEvents_When_UsingCountMethod() {
     long count = getHistoryService().createHistoryQuery().userIdIn("peter").count();
     assertThat(count).isOne();
 
@@ -104,7 +104,7 @@ public class QueryHistoryAccTest extends AbstractAccTest {
   }
 
   @Test
-  public void testQueryAttributesIn() {
+  public void should_ReturnHistoryEvents_For_DifferentInAttributes() {
     List<HistoryEventImpl> returnValues =
         getHistoryService().createHistoryQuery().businessProcessIdIn("BPI:01", "BPI:02").list();
     assertThat(returnValues).hasSize(2);
@@ -196,7 +196,7 @@ public class QueryHistoryAccTest extends AbstractAccTest {
   }
 
   @Test
-  public void testSomeLikeMethods() {
+  public void should_ReturnHistoryEvents_For_DifferentLikeAttributes() {
     List<HistoryEventImpl> returnValues =
         getHistoryService().createHistoryQuery().businessProcessIdLike("BPI:0%").list();
     assertThat(returnValues).hasSize(3);
@@ -217,7 +217,7 @@ public class QueryHistoryAccTest extends AbstractAccTest {
   }
 
   @Test
-  public void testListValues() {
+  public void should_ReturnHistoryEvents_When_ProvidingListValues() {
     List<String> returnedList =
         getHistoryService().createHistoryQuery().listValues(HistoryQueryColumnName.ID, null);
     assertThat(returnedList).hasSize(3);
@@ -330,8 +330,5 @@ public class QueryHistoryAccTest extends AbstractAccTest {
         getHistoryService().createHistoryQuery().listValues(HistoryQueryColumnName.CUSTOM_4, null);
     assertThat(returnedList).hasSize(2);
 
-    returnedList =
-        getHistoryService().createHistoryQuery().listValues(HistoryQueryColumnName.TYPE, null);
-    assertThat(returnedList).hasSize(2);
   }
 }

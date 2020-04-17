@@ -31,8 +31,7 @@ public enum HistoryQueryColumnName implements QueryColumnName {
   CUSTOM_1("custom_1"),
   CUSTOM_2("custom_2"),
   CUSTOM_3("custom_3"),
-  CUSTOM_4("custom_4"),
-  TYPE("event_Type");
+  CUSTOM_4("custom_4");
 
   private String name;
 
