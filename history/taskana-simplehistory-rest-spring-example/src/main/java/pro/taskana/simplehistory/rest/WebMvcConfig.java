@@ -1,4 +1,4 @@
-package rest.pro.taskana.rest.simplehistory;
+package pro.taskana.simplehistory.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;

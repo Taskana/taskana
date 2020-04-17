@@ -1,4 +1,4 @@
-package pro.taskana.rest.simplehistory.sampledata;
+package pro.taskana.simplehistory.rest.sampledata;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

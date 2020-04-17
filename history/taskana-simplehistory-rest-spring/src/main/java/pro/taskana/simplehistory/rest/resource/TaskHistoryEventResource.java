@@ -1,4 +1,4 @@
-package pro.taskana.rest.resource;
+package pro.taskana.simplehistory.rest.resource;
 
 import javax.validation.constraints.NotNull;
 import org.springframework.hateoas.ResourceSupport;

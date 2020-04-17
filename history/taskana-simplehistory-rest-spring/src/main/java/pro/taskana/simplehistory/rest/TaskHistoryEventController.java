@@ -1,4 +1,4 @@
-package pro.taskana.rest.simplehistory;
+package pro.taskana.simplehistory.rest;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -24,13 +24,13 @@ import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.rest.AbstractPagingController;
 import pro.taskana.rest.resource.PagedResources.PageMetadata;
-import pro.taskana.rest.resource.TaskHistoryEventListResource;
-import pro.taskana.rest.resource.TaskHistoryEventListResourceAssembler;
-import pro.taskana.rest.resource.TaskHistoryEventResource;
-import pro.taskana.rest.resource.TaskHistoryEventResourceAssembler;
 import pro.taskana.simplehistory.impl.HistoryEventImpl;
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
 import pro.taskana.simplehistory.query.HistoryQuery;
+import pro.taskana.simplehistory.rest.resource.TaskHistoryEventListResource;
+import pro.taskana.simplehistory.rest.resource.TaskHistoryEventListResourceAssembler;
+import pro.taskana.simplehistory.rest.resource.TaskHistoryEventResource;
+import pro.taskana.simplehistory.rest.resource.TaskHistoryEventResourceAssembler;
 import pro.taskana.spi.history.api.events.TaskanaHistoryEvent;
 import pro.taskana.spi.history.api.exceptions.TaskanaHistoryEventNotFoundException;
 
@@ -132,15 +132,13 @@ public class TaskHistoryEventController extends AbstractPagingController {
 
   private SimpleHistoryServiceImpl simpleHistoryService;
 
-  private TaskanaEngineConfiguration taskanaEngineConfiguration;
-
   private TaskHistoryEventResourceAssembler taskHistoryEventResourceAssembler;
 
   public TaskHistoryEventController(
       TaskanaEngineConfiguration taskanaEngineConfiguration,
       SimpleHistoryServiceImpl simpleHistoryServiceImpl,
       TaskHistoryEventResourceAssembler taskHistoryEventResourceAssembler) {
-    this.taskanaEngineConfiguration = taskanaEngineConfiguration;
+
     this.simpleHistoryService = simpleHistoryServiceImpl;
     this.simpleHistoryService.initialize(taskanaEngineConfiguration);
     this.taskHistoryEventResourceAssembler = taskHistoryEventResourceAssembler;
@@ -212,7 +210,7 @@ public class TaskHistoryEventController extends AbstractPagingController {
   }
 
   private HistoryQuery applySortingParams(HistoryQuery query, MultiValueMap<String, String> params)
-      throws IllegalArgumentException, InvalidArgumentException {
+      throws InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to applySortingParams(params= {})", LoggerUtils.mapToString(params));
     }
@@ -510,7 +508,6 @@ public class TaskHistoryEventController extends AbstractPagingController {
     }
     Instant beginInst = begin.atStartOfDay(ZoneId.systemDefault()).toInstant();
     Instant endInst = end.atStartOfDay(ZoneId.systemDefault()).toInstant();
-    TimeInterval timeInterval = new TimeInterval(beginInst, endInst);
-    return timeInterval;
+    return new TimeInterval(beginInst, endInst);
   }
 }

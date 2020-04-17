@@ -4,7 +4,7 @@ SET SCHEMA %schemaName%;
 
 CREATE TABLE IF NOT EXISTS HISTORY_EVENTS
 (
-    ID                            INT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),
+    ID                            INT          NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),
     BUSINESS_PROCESS_ID           VARCHAR(128) NULL,
     PARENT_BUSINESS_PROCESS_ID    VARCHAR(128) NULL,
     TASK_ID                       VARCHAR(40)  NULL,
@@ -27,6 +27,6 @@ CREATE TABLE IF NOT EXISTS HISTORY_EVENTS
     CUSTOM_2                      VARCHAR(128) NULL,
     CUSTOM_3                      VARCHAR(128) NULL,
     CUSTOM_4                      VARCHAR(128) NULL,
-    DETAILS                       CLOB         NULL,
+    DETAILS                       TEXT         NULL,
     PRIMARY KEY (ID)
 );
