@@ -17,6 +17,10 @@ public abstract class AbstractRessourcesAssembler {
 
   UriComponentsBuilder original = getBuilderForOriginalUri();
 
+  public UriComponentsBuilder getOriginal() {
+    return original;
+  }
+
   public AbstractRessourcesAssembler() {}
 
   protected static UriComponentsBuilder getBuilderForOriginalUri() {
