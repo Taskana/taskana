@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { MetaInfoData } from '../models/meta-info-data';
-import { MonitorQueryType } from '../models/monitor-query-type';
+import { MetaInfoData } from '../../models/meta-info-data';
+import { QueryType } from '../../models/query-type';
 
 @Component({
   selector: 'taskana-monitor-workbaskets',
-  templateUrl: './monitor-workbaskets.component.html',
-  styleUrls: ['./monitor-workbaskets.component.scss']
+  templateUrl: './workbasket-report.component.html',
+  styleUrls: ['./workbasket-report.component.scss']
 })
-export class MonitorWorkbasketsComponent implements OnInit {
+export class WorkbasketReportComponent implements OnInit {
   metaInformation: MetaInfoData;
   showMonitorQueryPlannedDate: Boolean;
   showMonitorQueryDueDate: Boolean;
@@ -19,7 +19,7 @@ export class MonitorWorkbasketsComponent implements OnInit {
     this.metaInformation = metaInformation;
   }
 
-  queryChanged(monitorQueryType: MonitorQueryType) {
+  queryChanged(monitorQueryType: QueryType) {
     this.switchGraphicShowed(monitorQueryType);
   }
 
@@ -29,11 +29,11 @@ export class MonitorWorkbasketsComponent implements OnInit {
       : 'Tasks grouped by workbasket, querying by due date';
   }
 
-  private switchGraphicShowed(monitorQueryType: MonitorQueryType) {
-    if (monitorQueryType === MonitorQueryType.PlannedDate) {
+  private switchGraphicShowed(monitorQueryType: QueryType) {
+    if (monitorQueryType === QueryType.PlannedDate) {
       this.showMonitorQueryPlannedDate = true;
       this.showMonitorQueryDueDate = false;
-    } else if (monitorQueryType === MonitorQueryType.DueDate) {
+    } else if (monitorQueryType === QueryType.DueDate) {
       this.showMonitorQueryPlannedDate = false;
       this.showMonitorQueryDueDate = true;
     }

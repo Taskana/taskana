@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { ReportData } from '../models/report-data';
-import { RestConnectorService } from '../services/restConnector/rest-connector.service';
+import { ReportData } from '../../models/report-data';
+import { RestConnectorService } from '../../services/rest-connector.service';
 
 @Component({
   selector: 'taskana-monitor-timestamp',
-  templateUrl: './timestamp.component.html',
-  styleUrls: ['./timestamp.component.scss']
+  templateUrl: './timestamp-report.component.html',
+  styleUrls: ['./timestamp-report.component.scss']
 })
-export class TimestampComponent implements OnInit {
+export class TimestampReportComponent implements OnInit {
   reportData: ReportData;
 
   constructor(private restConnectorService: RestConnectorService) {

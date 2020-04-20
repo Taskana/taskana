@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'environments/environment';
 import { Observable } from 'rxjs';
 import { ChartData } from 'app/monitor/models/chart-data';
-import { ReportData } from '../../models/report-data';
+import { ReportData } from '../models/report-data';
 
 const monitorUrl = '/v1/monitor/';
 

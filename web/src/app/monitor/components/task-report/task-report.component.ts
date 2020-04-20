@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ReportData } from 'app/monitor/models/report-data';
-import { RestConnectorService } from '../services/restConnector/rest-connector.service';
-import { RequestInProgressService } from '../../services/requestInProgress/request-in-progress.service';
+import { RestConnectorService } from '../../services/rest-connector.service';
+import { RequestInProgressService } from '../../../services/requestInProgress/request-in-progress.service';
 
 @Component({
   selector: 'taskana-monitor-tasks',
-  templateUrl: './tasks.component.html',
-  styleUrls: ['./tasks.component.scss'],
+  templateUrl: './task-report.component.html',
+  styleUrls: ['./task-report.component.scss'],
 })
-export class TasksComponent implements OnInit {
+export class TaskReportComponent implements OnInit {
   pieChartLabels: string[];
   pieChartData: number[] = [];
   pieChartType = 'pie';
