@@ -111,7 +111,7 @@
                     <div *ngIf="customField.visible" class="form-group">
                         <label for='wb-custom-{{index+1}}' class="control-label">{{customField.field}}</label>
                         <input type="text" class="form-control" id="wb-custom-{{index+1}}" [placeholder]="customField.field"
-                               [(ngModel)]="workbasket[getWorkbasketCustomProperty(index + 1)]" name="workbasket[getWorkbasketCustomValue(index + 1)]">
+                               [(ngModel)]="workbasket[getWorkbasketCustomProperty(index + 1)]" name="workbasket[{{getWorkbasketCustomProperty(index + 1)}}]">
                     </div>
                 </ng-container>
             </div>
