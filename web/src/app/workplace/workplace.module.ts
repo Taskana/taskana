@@ -21,7 +21,7 @@ import { CodeComponent } from './components/code/code.component';
 import { GeneralFieldsExtensionComponent } from './components/taskdetails-general-fields-extension/general-fields-extension.component';
 import { TaskListComponent } from './components/task-list/task-list.component';
 
-import { OrderTasksByPipe } from './pipes/orderTasksBy.pipe';
+import { OrderTasksPipe } from './pipes/order-tasks.pipe';
 
 import { TaskService } from './services/task.service';
 import { TokenHttpClientInterceptor } from './services/token-http-interceptor.service';
@@ -51,7 +51,7 @@ const DECLARATIONS = [
   CodeComponent,
   GeneralFieldsExtensionComponent,
   TaskListComponent,
-  OrderTasksByPipe
+  OrderTasksPipe
 ];
 
 @NgModule({

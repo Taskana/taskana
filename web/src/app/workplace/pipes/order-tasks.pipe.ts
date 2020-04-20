@@ -3,9 +3,9 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { Task } from '../models/task';
 
 @Pipe({
-  name: 'orderTasksBy'
+  name: 'orderTasks'
 })
-export class OrderTasksByPipe implements PipeTransform {
+export class OrderTasksPipe implements PipeTransform {
   transform(value: Task[], column: string) {
     if (value === null) { return null; }
     value.sort((a, b) => {
