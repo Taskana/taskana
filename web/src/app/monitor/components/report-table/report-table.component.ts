@@ -3,10 +3,10 @@ import { ReportData } from 'app/monitor/models/report-data';
 
 @Component({
   selector: 'taskana-report',
-  templateUrl: './report.component.html',
-  styleUrls: ['./report.component.scss']
+  templateUrl: './report-table.component.html',
+  styleUrls: ['./report-table.component.scss']
 })
-export class ReportComponent implements OnInit {
+export class ReportTableComponent implements OnInit {
   currentExpHeaders = 0;
 
   @Input()

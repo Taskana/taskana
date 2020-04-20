@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ClassificationTasksComponent } from './classification-tasks.component';
+import { WorkbasketReportComponent } from './workbasket-report.component';
 
-describe('ClassificationTasksComponent', () => {
-  let component: ClassificationTasksComponent;
-  let fixture: ComponentFixture<ClassificationTasksComponent>;
+describe('WorkbasketReportComponent', () => {
+  let component: WorkbasketReportComponent;
+  let fixture: ComponentFixture<WorkbasketReportComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ClassificationTasksComponent]
+      declarations: [WorkbasketReportComponent]
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ClassificationTasksComponent);
+    fixture = TestBed.createComponent(WorkbasketReportComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

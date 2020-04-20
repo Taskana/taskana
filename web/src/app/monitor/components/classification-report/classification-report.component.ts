@@ -1,20 +1,16 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { RestConnectorService } from 'app/monitor/services/rest-connector.service';
+import { ChartData } from 'app/monitor/models/chart-data';
 import { ReportData } from '../../models/report-data';
-import { ChartData } from '../../models/chart-data';
 import { ChartColorsDefinition } from '../../models/chart-colors';
-import { RestConnectorService } from '../../services/restConnector/rest-connector.service';
-import { MetaInfoData } from '../../models/meta-info-data';
 import { RequestInProgressService } from '../../../services/requestInProgress/request-in-progress.service';
 
 @Component({
-  selector: 'taskana-monitor-workbasket-due-date',
-  templateUrl: './monitor-workbasket-due-date.component.html',
-  styleUrls: ['./monitor-workbasket-due-date.component.scss']
+  selector: 'taskana-monitor-classification-tasks',
+  templateUrl: './classification-report.component.html',
+  styleUrls: ['./classification-report.component.scss']
 })
-export class MonitorWorkbasketDueDateComponent implements OnInit {
-  @Output()
-  metaInformation = new EventEmitter<MetaInfoData>();
-
+export class ClassificationReportComponent implements OnInit {
   reportData: ReportData;
 
 
@@ -34,13 +30,15 @@ export class MonitorWorkbasketDueDateComponent implements OnInit {
   ) {
   }
 
-
   async ngOnInit() {
     this.requestInProgressService.setRequestInProgress(true);
-    this.reportData = await this.restConnectorService.getWorkbasketStatisticsQueryingByDueDate().toPromise();
-    this.metaInformation.emit(this.reportData.meta);
-    this.lineChartLabels = this.reportData.meta.header;
+    this.reportData = await this.restConnectorService.getClassificationTasksReport().toPromise();
     this.lineChartData = this.restConnectorService.getChartData(this.reportData);
+    this.lineChartLabels = this.reportData.meta.header;
     this.requestInProgressService.setRequestInProgress(false);
+  }
+
+  getTitle(): string {
+    return 'Tasks grouped by classification, querying by due date';
   }
 }

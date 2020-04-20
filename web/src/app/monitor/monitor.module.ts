@@ -9,19 +9,19 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { MonitorRoutingModule } from './monitor-routing.module';
 import { SharedModule } from '../shared/shared.module';
 
-import { ReportComponent } from './report/report.component';
-import { MonitorComponent } from './monitor.component';
-import { TasksComponent } from './tasks/tasks.component';
-import { ClassificationTasksComponent } from './classification-tasks/classification-tasks.component';
-import { TimestampComponent } from './timestamp/timestamp.component';
+import { ReportTableComponent } from './components/report-table/report-table.component';
+import { MonitorComponent } from './components/monitor/monitor.component';
+import { TaskReportComponent } from './components/task-report/task-report.component';
+import { ClassificationReportComponent } from './components/classification-report/classification-report.component';
+import { TimestampReportComponent } from './components/timestamp-report/timestamp-report.component';
 
-import { RestConnectorService } from './services/restConnector/rest-connector.service';
+import { RestConnectorService } from './services/rest-connector.service';
 
 import { MapToIterable } from '../shared/pipes/mapToIterable/mapToIterable';
-import { MonitorWorkbasketsComponent } from './workbasket/monitor-workbaskets.component';
-import { MonitorWorkbasketPlannedDateComponent } from './workbasket/workbasket-planned-date/monitor-workbasket-planned-date.component';
-import { MonitorWorkbasketDueDateComponent } from './workbasket/monitor-workbasket-due-date/monitor-workbasket-due-date.component';
-import { MonitorWorkbasketQuerySwitcherComponent } from './workbasket/monitor-workbasket-query-switcher/monitor-workbasket-query-switcher.component';
+import { WorkbasketReportComponent } from './components/workbasket-report/workbasket-report.component';
+import { WorkbasketReportPlannedDateComponent } from './components/workbasket-report-planned-date/workbasket-report-planned-date.component';
+import { WorkbasketReportDueDateComponent } from './components/workbasket-report-due-date/workbasket-report-due-date.component';
+import { WorkbasketReportQuerySwitcherComponent } from './components/workbasket-report-query-switcher/workbasket-report-query-switcher.component';
 
 
 const MODULES = [
@@ -36,15 +36,15 @@ const MODULES = [
   SharedModule
 ];
 const DECLARATIONS = [
-  ReportComponent,
+  ReportTableComponent,
   MonitorComponent,
-  TimestampComponent,
-  MonitorWorkbasketsComponent,
-  MonitorWorkbasketPlannedDateComponent,
-  MonitorWorkbasketDueDateComponent,
-  MonitorWorkbasketQuerySwitcherComponent,
-  TasksComponent,
-  ClassificationTasksComponent,
+  TimestampReportComponent,
+  WorkbasketReportComponent,
+  WorkbasketReportPlannedDateComponent,
+  WorkbasketReportDueDateComponent,
+  WorkbasketReportQuerySwitcherComponent,
+  TaskReportComponent,
+  ClassificationReportComponent,
 ];
 
 @NgModule({
