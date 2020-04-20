@@ -614,6 +614,7 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
   /**
    * Add your wildcard search value for pattern matching to your query. It will be compared in SQL
    * with the LIKE operator. You may use a wildcard like % to specify the pattern.
+   * Must be used in combination with the wilcardSearchFieldIn parameter
    *
    * @param wildcardSearchValue the wildcard search value
    * @return the query
@@ -622,11 +623,12 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
 
   /**
    * Add the values of the wildcard search fields for exact matching to your query.
+   * Must be used in combination with the wildcardSearchValueLike parameter
    *
    * @param wildcardSearchFields the values of your wildcard search fields
    * @return the query
    */
-  TaskQuery wildcardSearchFieldsIn(WildcardSearchFields... wildcardSearchFields);
+  TaskQuery wildcardSearchFieldsIn(WildcardSearchField... wildcardSearchFields);
 
   /**
    * This method sorts the query result according to the completed timestamp.

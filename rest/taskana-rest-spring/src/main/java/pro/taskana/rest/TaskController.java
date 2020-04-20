@@ -37,7 +37,7 @@ import pro.taskana.rest.resource.TaskSummaryResourceAssembler;
 import pro.taskana.task.api.TaskQuery;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
-import pro.taskana.task.api.WildcardSearchFields;
+import pro.taskana.task.api.WildcardSearchField;
 import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
 import pro.taskana.task.api.exceptions.InvalidOwnerException;
 import pro.taskana.task.api.exceptions.InvalidStateException;
@@ -413,12 +413,12 @@ public class TaskController extends AbstractPagingController {
     return taskQuery;
   }
 
-  private WildcardSearchFields[] createWildcardSearchFields(String[] wildcardFields) {
+  private WildcardSearchField[] createWildcardSearchFields(String[] wildcardFields) {
 
     return Stream.of(wildcardFields)
-        .map(WildcardSearchFields::fromString)
+        .map(WildcardSearchField::fromString)
         .filter(Objects::nonNull)
-        .toArray(WildcardSearchFields[]::new);
+        .toArray(WildcardSearchField[]::new);
   }
 
   private void updateTaskQueryWithWorkbasketKey(
@@ -474,15 +474,11 @@ public class TaskController extends AbstractPagingController {
             && params.containsKey(WILDCARD_SEARCH_VALUE)) {
 
       throw new IllegalArgumentException(
-          "It is prohibited to use the params "
-              + "\""
+          "The params "
               + WILDCARD_SEARCH_FIELDS
-              + "\""
-              + " or "
-              + "\""
+              + " and "
               + WILDCARD_SEARCH_VALUE
-              + "\""
-              + " without one another. If one is provided you must provide the other one as well");
+              + " must be used together!");
     }
   }
 

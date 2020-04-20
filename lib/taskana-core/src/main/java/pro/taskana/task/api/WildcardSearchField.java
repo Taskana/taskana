@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-public enum WildcardSearchFields {
+public enum WildcardSearchField {
   NAME("NAME"),
   DESCRIPTION("DESCRIPTION"),
   CUSTOM_1("CUSTOM_1"),
@@ -25,21 +25,21 @@ public enum WildcardSearchFields {
   CUSTOM_15("CUSTOM_15"),
   CUSTOM_16("CUSTOM_16");
 
-  WildcardSearchFields(String name) {
+  WildcardSearchField(String name) {
     this.name = name;
   }
 
-  private static final Map<String, WildcardSearchFields> STRING_TO_ENUM =
+  private static final Map<String, WildcardSearchField> STRING_TO_ENUM =
       Arrays.stream(values())
           .collect(
               Collectors.toMap(
-                  WildcardSearchFields::toString,
+                  WildcardSearchField::toString,
                   e -> e,
                   (first, second) -> first,
                   () -> new TreeMap<>(String.CASE_INSENSITIVE_ORDER)));
   private String name;
 
-  public static WildcardSearchFields fromString(String name) {
+  public static WildcardSearchField fromString(String name) {
 
     return STRING_TO_ENUM.get(name);
   }
