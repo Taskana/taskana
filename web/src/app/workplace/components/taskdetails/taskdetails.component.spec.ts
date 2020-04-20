@@ -10,11 +10,11 @@ import { RemoveConfirmationService } from 'app/services/remove-confirmation/remo
 import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
 import { AlertService } from 'app/services/alert/alert.service';
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
-import { WorkplaceService } from '../services/workplace.service';
-import { TaskService } from '../services/task.service';
-import { TaskdetailsAttributeComponent } from './attribute/attribute.component';
-import { TaskdetailsCustomFieldsComponent } from './custom/custom-fields.component';
-import { TaskdetailsGeneralFieldsComponent } from './general/general-fields.component';
+import { WorkplaceService } from '../../services/workplace.service';
+import { TaskService } from '../../services/task.service';
+import { TaskdetailsAttributeComponent } from '../taskdetails-attribute/attribute.component';
+import { TaskdetailsCustomFieldsComponent } from '../taskdetails-custom-fields/custom-fields.component';
+import { TaskdetailsGeneralFieldsComponent } from '../taskdetails-general-fields/general-fields.component';
 import { TaskdetailsComponent } from './taskdetails.component';
 
 @Component({

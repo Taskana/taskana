@@ -15,8 +15,8 @@ import { ObjectReference } from 'app/workplace/models/object-reference';
 import { Workbasket } from 'app/models/workbasket';
 import { WorkplaceService } from 'app/workplace/services/workplace.service';
 import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
-import { ERROR_TYPES } from '../../models/errors';
-import { ErrorsService } from '../../services/errors/errors.service';
+import { ERROR_TYPES } from '../../../models/errors';
+import { ErrorsService } from '../../../services/errors/errors.service';
 
 @Component({
   selector: 'taskana-task-details',

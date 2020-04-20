@@ -1,4 +1,4 @@
-@import './src/assets/_colors';
+@import '../../../../assets/colors';
 
 ::ng-deep .btn-block {
     background-color: whitesmoke;
@@ -16,12 +16,12 @@
     -o-transition: max-height 0.5s ease;
     -ms-transition: max-height 0.5s ease;
     transition: max-height 0.5s ease;
-    
+
     display: block!important;
     overflow: hidden!important;
     visibility: visible!important;
     max-height: 0;
-    
+
     &.in {
         max-height: 2000px;
         overflow: visible!important;
