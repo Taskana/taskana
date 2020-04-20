@@ -24,7 +24,7 @@ import pro.taskana.task.api.ObjectReferenceQuery;
 import pro.taskana.task.api.TaskQuery;
 import pro.taskana.task.api.TaskQueryColumnName;
 import pro.taskana.task.api.TaskState;
-import pro.taskana.task.api.WildcardSearchFields;
+import pro.taskana.task.api.WildcardSearchField;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.TaskSummaryImpl;
 import pro.taskana.workbasket.api.WorkbasketPermission;
@@ -148,7 +148,7 @@ public class TaskQueryImpl implements TaskQuery {
   private TimeInterval[] dueIn;
   private List<String> orderBy;
   private List<String> orderColumns;
-  private WildcardSearchFields[] wildcardSearchFieldsIn;
+  private WildcardSearchField[] wildcardSearchFieldIn;
   private String wildcardSearchValueLike;
 
   private boolean useDistinctKeyword = false;
@@ -747,8 +747,8 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
-  public TaskQuery wildcardSearchFieldsIn(WildcardSearchFields... wildcardSearchFields) {
-    this.wildcardSearchFieldsIn = wildcardSearchFields;
+  public TaskQuery wildcardSearchFieldsIn(WildcardSearchField... wildcardSearchFields) {
+    this.wildcardSearchFieldIn = wildcardSearchFields;
     return this;
   }
 
@@ -970,6 +970,7 @@ public class TaskQueryImpl implements TaskQuery {
     try {
       LOGGER.debug("entry to list(), this = {}", this);
       taskanaEngine.openConnection();
+      checkForIllegalParamCombinations();
       checkOpenAndReadPermissionForSpecifiedWorkbaskets();
       setupJoinAndOrderParameters();
       setupAccessIds();
@@ -1000,6 +1001,7 @@ public class TaskQueryImpl implements TaskQuery {
     List<TaskSummary> result = new ArrayList<>();
     try {
       taskanaEngine.openConnection();
+      checkForIllegalParamCombinations();
       checkOpenAndReadPermissionForSpecifiedWorkbaskets();
       setupAccessIds();
       setupJoinAndOrderParameters();
@@ -1037,6 +1039,7 @@ public class TaskQueryImpl implements TaskQuery {
       this.columnName = columnName;
       this.orderBy.clear();
       this.addOrderCriteria(columnName.toString(), sortDirection);
+      checkForIllegalParamCombinations();
       checkOpenAndReadPermissionForSpecifiedWorkbaskets();
       setupAccessIds();
 
@@ -1603,12 +1606,22 @@ public class TaskQueryImpl implements TaskQuery {
         addAttachmentClassificationNameToSelectClauseForOrdering;
   }
 
-  public WildcardSearchFields[] getWildcardSearchFieldIn() {
-    return wildcardSearchFieldsIn;
+  public WildcardSearchField[] getWildcardSearchFieldIn() {
+    return wildcardSearchFieldIn;
   }
 
   public String getWildcardSearchValueLike() {
     return wildcardSearchValueLike;
+  }
+
+  private void checkForIllegalParamCombinations() {
+
+    if ((wildcardSearchValueLike != null && wildcardSearchFieldIn == null)
+        || (wildcardSearchValueLike == null && wildcardSearchFieldIn != null)) {
+      throw new IllegalArgumentException(
+          "The params \"wildcardSearchFieldIn\" and \"wildcardSearchValueLike\""
+              + " must be used together!");
+    }
   }
 
   private String getDatabaseId() {
@@ -1922,7 +1935,7 @@ public class TaskQueryImpl implements TaskQuery {
         + ", addAttachmentClassificationNameToSelectClauseForOrdering="
         + addAttachmentClassificationNameToSelectClauseForOrdering
         + ", wildcardSearchFieldsIn="
-        + wildcardSearchFieldsIn
+        + wildcardSearchFieldIn
         + ", wildcardSearchValueLike="
         + wildcardSearchValueLike
         + "]";
