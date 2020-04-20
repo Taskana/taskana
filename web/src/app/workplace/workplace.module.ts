@@ -24,7 +24,7 @@ import { TaskListComponent } from './components/task-list/task-list.component';
 import { OrderTasksByPipe } from './pipes/orderTasksBy.pipe';
 
 import { TaskService } from './services/task.service';
-import { CustomHttpClientInterceptor } from './services/custom-http-interceptor.service';
+import { TokenHttpClientInterceptor } from './services/token-http-interceptor.service';
 import { WorkplaceService } from './services/workplace.service';
 
 const MODULES = [
@@ -63,7 +63,7 @@ const DECLARATIONS = [
     WorkplaceService,
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: CustomHttpClientInterceptor,
+      useClass: TokenHttpClientInterceptor,
       multi: true
     },
   ]

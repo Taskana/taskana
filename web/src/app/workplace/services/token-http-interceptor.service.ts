@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { environment } from 'environments/environment';
 
 @Injectable()
-export class CustomHttpClientInterceptor implements HttpInterceptor {
+export class TokenHttpClientInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let request = req;
     if (!environment.production) {
