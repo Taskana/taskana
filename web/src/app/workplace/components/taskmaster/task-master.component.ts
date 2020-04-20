@@ -12,8 +12,8 @@ import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { OrientationService } from 'app/services/orientation/orientation.service';
 import { Orientation } from 'app/models/orientation';
 import { Page } from 'app/models/page';
-import { ObjectReference } from '../models/object-reference';
-import { Search } from './task-list-toolbar/task-list-toolbar.component';
+import { ObjectReference } from '../../models/object-reference';
+import { Search } from '../task-list-toolbar/task-list-toolbar.component';
 
 @Component({
   selector: 'taskana-task-master',

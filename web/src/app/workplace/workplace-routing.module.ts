@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MasterAndDetailComponent } from '../shared/master-and-detail/master-and-detail.component';
-import { TaskComponent } from './task/task.component';
-import { TaskdetailsComponent } from './taskdetails/taskdetails.component';
-import { TaskMasterComponent } from './taskmaster/task-master.component';
+import { TaskComponent } from './components/task/task.component';
+import { TaskdetailsComponent } from './components/taskdetails/taskdetails.component';
+import { TaskMasterComponent } from './components/taskmaster/task-master.component';
 
 const routes: Routes = [
   {

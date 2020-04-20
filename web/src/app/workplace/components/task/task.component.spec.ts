@@ -12,7 +12,7 @@ import { RequestInProgressService } from 'app/services/requestInProgress/request
 import { SelectedRouteService } from 'app/services/selected-route/selected-route';
 import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
-import { TaskService } from '../services/task.service';
+import { TaskService } from '../../services/task.service';
 import { TaskComponent } from './task.component';
 
 @Component({
