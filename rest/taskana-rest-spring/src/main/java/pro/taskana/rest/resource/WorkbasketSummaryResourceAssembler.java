@@ -3,7 +3,7 @@ package pro.taskana.rest.resource;
 import java.util.List;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
 import pro.taskana.rest.Mapping;
@@ -14,10 +14,10 @@ import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 
-/** Resource assembler for {@link WorkbasketSummaryResource}. */
+/** EntityModel assembler for {@link WorkbasketSummaryResource}. */
 @Component
 public class WorkbasketSummaryResourceAssembler
-    extends ResourceAssemblerSupport<WorkbasketSummary, WorkbasketSummaryResource> {
+    extends RepresentationModelAssemblerSupport<WorkbasketSummary, WorkbasketSummaryResource> {
 
   @Autowired private WorkbasketService workbasketService;
 
@@ -25,15 +25,16 @@ public class WorkbasketSummaryResourceAssembler
     super(WorkbasketController.class, WorkbasketSummaryResource.class);
   }
 
-  @Override
-  public WorkbasketSummaryResource toResource(WorkbasketSummary workbasketSummary) {
-    return new WorkbasketSummaryResource(workbasketSummary);
+  @PageLinks(Mapping.URL_WORKBASKET)
+  public WorkbasketSummaryListResource toCollectionModel(
+      List<WorkbasketSummary> entities, PageMetadata pageMetadata) {
+    return new WorkbasketSummaryListResource(
+        toCollectionModel(entities).getContent(), pageMetadata);
   }
 
-  @PageLinks(Mapping.URL_WORKBASKET)
-  public WorkbasketSummaryListResource toResources(
-      List<WorkbasketSummary> entities, PageMetadata pageMetadata) {
-    return new WorkbasketSummaryListResource(toResources(entities), pageMetadata);
+  @Override
+  public WorkbasketSummaryResource toModel(WorkbasketSummary workbasketSummary) {
+    return new WorkbasketSummaryResource(workbasketSummary);
   }
 
   public WorkbasketSummary toModel(WorkbasketSummaryResource resource) {

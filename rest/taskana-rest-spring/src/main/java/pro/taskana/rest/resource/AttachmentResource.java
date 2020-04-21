@@ -2,13 +2,13 @@ package pro.taskana.rest.resource;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.RepresentationModel;
 
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.ObjectReference;
 
-/** Resource class for {@link Attachment}. */
-public class AttachmentResource extends ResourceSupport {
+/** EntityModel class for {@link Attachment}. */
+public class AttachmentResource extends RepresentationModel<AttachmentResource> {
 
   private String attachmentId;
   private String taskId;

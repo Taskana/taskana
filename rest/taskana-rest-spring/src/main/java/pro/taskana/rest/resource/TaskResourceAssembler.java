@@ -1,14 +1,14 @@
 package pro.taskana.rest.resource;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.time.Instant;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -20,9 +20,9 @@ import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.TaskImpl;
 
-/** Resource assembler for {@link TaskResource}. */
+/** EntityModel assembler for {@link TaskResource}. */
 @Component
-public class TaskResourceAssembler extends ResourceAssemblerSupport<Task, TaskResource> {
+public class TaskResourceAssembler extends RepresentationModelAssemblerSupport<Task, TaskResource> {
 
   private final TaskService taskService;
 
@@ -46,7 +46,7 @@ public class TaskResourceAssembler extends ResourceAssemblerSupport<Task, TaskRe
   }
 
   @Override
-  public TaskResource toResource(Task task) {
+  public TaskResource toModel(Task task) {
     TaskResource resource;
     try {
       resource = new TaskResource(task);

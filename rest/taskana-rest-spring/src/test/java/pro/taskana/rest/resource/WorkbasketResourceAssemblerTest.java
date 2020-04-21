@@ -40,7 +40,7 @@ class WorkbasketResourceAssemblerTest {
     ((WorkbasketImpl) workbasket).setCreated(Instant.parse("2010-01-01T12:00:00Z"));
     ((WorkbasketImpl) workbasket).setModified(Instant.parse("2010-01-01T12:00:00Z"));
     // when
-    WorkbasketResource resource = workbasketResourceAssembler.toResource(workbasket);
+    WorkbasketResource resource = workbasketResourceAssembler.toModel(workbasket);
     // then
     testEquality(workbasket, resource);
     verifyLinks(resource);
@@ -101,14 +101,15 @@ class WorkbasketResourceAssemblerTest {
 
   private void verifyLinks(WorkbasketResource workbasket) {
     assertThat(workbasket.getLinks()).hasSize(5);
-    assertThat(workbasket.getLink("self").getHref())
+    assertThat(workbasket.getRequiredLink("self").getHref())
         .isEqualTo(Mapping.URL_WORKBASKET_ID.replaceAll("\\{.*}", workbasket.getWorkbasketId()));
-    assertThat(workbasket.getLink("distributionTargets").getHref())
+    assertThat(workbasket.getRequiredLink("distributionTargets").getHref())
         .isEqualTo(
             Mapping.URL_WORKBASKET_ID_DISTRIBUTION.replaceAll(
                 "\\{.*}", workbasket.getWorkbasketId()));
-    assertThat(workbasket.getLink("allWorkbaskets").getHref()).isEqualTo(Mapping.URL_WORKBASKET);
-    assertThat(workbasket.getLink("removeDistributionTargets").getHref())
+    assertThat(workbasket.getRequiredLink("allWorkbaskets").getHref())
+        .isEqualTo(Mapping.URL_WORKBASKET);
+    assertThat(workbasket.getRequiredLink("removeDistributionTargets").getHref())
         .isEqualTo(
             Mapping.URL_WORKBASKET_DISTRIBUTION_ID.replaceAll(
                 "\\{.*}", workbasket.getWorkbasketId()));

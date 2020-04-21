@@ -36,7 +36,7 @@ public class WorkbasketDefinitionResourceAssembler {
    * @throws NotAuthorizedException if the user is not authorized
    * @throws WorkbasketNotFoundException if {@code basket} is an unknown workbasket
    */
-  public WorkbasketDefinitionResource toResource(Workbasket workbasket)
+  public WorkbasketDefinitionResource toModel(Workbasket workbasket)
       throws NotAuthorizedException, WorkbasketNotFoundException {
 
     WorkbasketResourceWithoutLinks basket = new WorkbasketResourceWithoutLinks(workbasket);

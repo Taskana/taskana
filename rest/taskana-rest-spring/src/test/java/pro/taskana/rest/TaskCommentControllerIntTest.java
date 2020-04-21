@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.hateoas.Link;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -140,9 +140,7 @@ class TaskCommentControllerIntTest {
     assertThatThrownBy(httpCall)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
         .isEqualTo(HttpStatus.NOT_FOUND);
-
   }
-
 
   @Test
   void should_FailToUpdateTaskComment_When_TaskCommentWasModifiedConcurrently() {
@@ -158,7 +156,7 @@ class TaskCommentControllerIntTest {
             HttpMethod.GET,
             new HttpEntity<String>(restHelper.getHeadersAdmin()),
             ParameterizedTypeReference.forType(TaskCommentResource.class));
-    assertThat(getTaskCommentResponse.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(getTaskCommentResponse.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(getTaskCommentResponse.getBody().getCreator()).isEqualTo("user_1_1");
     assertThat(getTaskCommentResponse.getBody().getTextField()).isEqualTo("some text in textfield");
 
@@ -195,7 +193,7 @@ class TaskCommentControllerIntTest {
             HttpMethod.GET,
             new HttpEntity<String>(restHelper.getHeadersUser_1_1()),
             ParameterizedTypeReference.forType(TaskCommentResource.class));
-    assertThat(getTaskCommentResponse.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(getTaskCommentResponse.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(getTaskCommentResponse.getBody().getCreator()).isEqualTo("user_1_1");
     assertThat(getTaskCommentResponse.getBody().getTextField()).isEqualTo("some text in textfield");
 
@@ -258,7 +256,7 @@ class TaskCommentControllerIntTest {
             HttpMethod.GET,
             new HttpEntity<String>(restHelper.getHeadersAdmin()),
             ParameterizedTypeReference.forType(TaskCommentResource.class));
-    assertThat(getTaskCommentResponse.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(getTaskCommentResponse.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(getTaskCommentResponse.getBody().getCreator()).isEqualTo("user_1_1");
     assertThat(getTaskCommentResponse.getBody().getTextField()).isEqualTo("some text in textfield");
 

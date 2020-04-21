@@ -54,7 +54,7 @@ public class TaskCommentController {
 
     TaskComment taskComment = taskService.getTaskComment(taskCommentId);
 
-    TaskCommentResource taskCommentResource = taskCommentResourceAssembler.toResource(taskComment);
+    TaskCommentResource taskCommentResource = taskCommentResourceAssembler.toModel(taskComment);
 
     ResponseEntity<TaskCommentResource> response = ResponseEntity.ok(taskCommentResource);
 
@@ -127,7 +127,7 @@ public class TaskCommentController {
       TaskComment taskComment = taskCommentResourceAssembler.toModel(taskCommentResource);
 
       taskComment = taskService.updateTaskComment(taskComment);
-      result = ResponseEntity.ok(taskCommentResourceAssembler.toResource(taskComment));
+      result = ResponseEntity.ok(taskCommentResourceAssembler.toModel(taskComment));
     } else {
       throw new InvalidArgumentException(
           String.format(
@@ -165,7 +165,7 @@ public class TaskCommentController {
 
     result =
         ResponseEntity.status(HttpStatus.CREATED)
-            .body(taskCommentResourceAssembler.toResource(createdTaskComment));
+            .body(taskCommentResourceAssembler.toModel(createdTaskComment));
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from createTaskComment(), returning {}", result);

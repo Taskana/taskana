@@ -1,13 +1,13 @@
 package pro.taskana.rest.resource;
 
 import javax.validation.constraints.NotNull;
-import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.RepresentationModel;
 
 import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.api.models.Workbasket;
 
-/** Resource class for {@link Workbasket}. */
-public class WorkbasketResource extends ResourceSupport {
+/** EntityModel class for {@link Workbasket}. */
+public class WorkbasketResource extends RepresentationModel<WorkbasketResource> {
 
   private String workbasketId;
   @NotNull private String key;

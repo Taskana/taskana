@@ -110,7 +110,7 @@ public class ClassificationController extends AbstractPagingController {
 
     ResponseEntity<ClassificationSummaryListResource> response =
         ResponseEntity.ok(
-            classificationSummaryResourceAssembler.toResources(
+            classificationSummaryResourceAssembler.toCollectionModel(
                 classificationSummaries, pageMetadata));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from getClassifications(), returning {}", response);
@@ -119,7 +119,7 @@ public class ClassificationController extends AbstractPagingController {
     return response;
   }
 
-  @GetMapping(path = Mapping.URL_CLASSIFICATIONS_ID, produces = MediaTypes.HAL_JSON_UTF8_VALUE)
+  @GetMapping(path = Mapping.URL_CLASSIFICATIONS_ID, produces = MediaTypes.HAL_JSON_VALUE)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ClassificationResource> getClassification(
       @PathVariable String classificationId) throws ClassificationNotFoundException {
@@ -129,7 +129,7 @@ public class ClassificationController extends AbstractPagingController {
 
     Classification classification = classificationService.getClassification(classificationId);
     ResponseEntity<ClassificationResource> response =
-        ResponseEntity.ok(classificationResourceAssembler.toResource(classification));
+        ResponseEntity.ok(classificationResourceAssembler.toModel(classification));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from getClassification(), returning {}", response);
     }
@@ -151,7 +151,7 @@ public class ClassificationController extends AbstractPagingController {
 
     ResponseEntity<ClassificationResource> response =
         ResponseEntity.status(HttpStatus.CREATED)
-            .body(classificationResourceAssembler.toResource(classification));
+            .body(classificationResourceAssembler.toModel(classification));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from createClassification(), returning {}", response);
     }
@@ -177,7 +177,7 @@ public class ClassificationController extends AbstractPagingController {
     if (classificationId.equals(resource.getClassificationId())) {
       Classification classification = classificationResourceAssembler.toModel(resource);
       classification = classificationService.updateClassification(classification);
-      result = ResponseEntity.ok(classificationResourceAssembler.toResource(classification));
+      result = ResponseEntity.ok(classificationResourceAssembler.toModel(classification));
     } else {
       throw new InvalidArgumentException(
           "ClassificationId ('"

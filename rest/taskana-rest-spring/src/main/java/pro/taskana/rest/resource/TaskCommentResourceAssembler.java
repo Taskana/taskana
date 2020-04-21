@@ -1,13 +1,15 @@
 package pro.taskana.rest.resource;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -22,10 +24,10 @@ import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.TaskComment;
 import pro.taskana.task.internal.models.TaskCommentImpl;
 
-/** Resource assembler for {@link TaskCommentResource}. */
+/** EntityModel assembler for {@link TaskCommentResource}. */
 @Component
 public class TaskCommentResourceAssembler
-    extends ResourceAssemblerSupport<TaskComment, TaskCommentResource> {
+    extends RepresentationModelAssemblerSupport<TaskComment, TaskCommentResource> {
 
   private final TaskService taskService;
 
@@ -35,15 +37,20 @@ public class TaskCommentResourceAssembler
     this.taskService = taskService;
   }
 
+  @PageLinks(Mapping.URL_TASK_COMMENTS)
+  public TaskCommentListResource toListResource(List<TaskComment> taskComments) {
+    Collection<TaskCommentResource> col = toCollectionModel(taskComments).getContent();
+    List<TaskCommentResource> resourceList = new ArrayList<>(col);
+    return new TaskCommentListResource(resourceList);
+  }
+
   @Override
-  public TaskCommentResource toResource(TaskComment taskComment) {
+  public TaskCommentResource toModel(TaskComment taskComment) {
 
     TaskCommentResource taskCommentResource = new TaskCommentResource(taskComment);
     try {
       taskCommentResource.add(
-          linkTo(
-                  methodOn(TaskCommentController.class)
-                      .getTaskComment(taskComment.getId()))
+          linkTo(methodOn(TaskCommentController.class).getTaskComment(taskComment.getId()))
               .withSelfRel());
     } catch (TaskCommentNotFoundException
         | TaskNotFoundException
@@ -53,11 +60,6 @@ public class TaskCommentResourceAssembler
     }
 
     return taskCommentResource;
-  }
-
-  @PageLinks(Mapping.URL_TASK_COMMENTS)
-  public TaskCommentListResource toListResource(List<TaskComment> taskComments) {
-    return new TaskCommentListResource(toResources(taskComments));
   }
 
   public TaskComment toModel(TaskCommentResource taskCommentResource) {

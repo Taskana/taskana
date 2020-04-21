@@ -13,6 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder;
  * deprecated, it can be removed after fixing taskana-simple-history references
  */
 // TODO: @Deprecated
+// TODO: please remove spring-webmvc dependency
 public abstract class AbstractRessourcesAssembler {
 
   UriComponentsBuilder original = getBuilderForOriginalUri();
