@@ -1,15 +1,33 @@
 package pro.taskana.task.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.ibatis.session.SqlSession;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.classification.api.models.Classification;
+import pro.taskana.classification.internal.ClassificationQueryImpl;
+import pro.taskana.classification.internal.ClassificationServiceImpl;
 import pro.taskana.classification.internal.models.ClassificationImpl;
+import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.JunitHelper;
+import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.TaskImpl;
+import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 
@@ -18,7 +36,121 @@ import pro.taskana.workbasket.internal.models.WorkbasketImpl;
  *
  * @author EH
  */
+@ExtendWith(MockitoExtension.class)
 class TaskServiceImplTest {
+
+  private TaskServiceImpl cut;
+
+  @Mock private TaskanaEngineConfiguration taskanaEngineConfigurationMock;
+
+  @Mock private InternalTaskanaEngine internalTaskanaEngineMock;
+
+  @Mock private TaskanaEngine taskanaEngineMock;
+
+  @Mock private TaskMapper taskMapperMock;
+
+  @Mock private TaskCommentMapper taskCommentMapperMock;
+
+  @Mock private ObjectReferenceMapper objectReferenceMapperMock;
+
+  @Mock private WorkbasketService workbasketServiceMock;
+
+  @Mock private ClassificationServiceImpl classificationServiceImplMock;
+
+  @Mock private AttachmentMapper attachmentMapperMock;
+
+  @Mock private ClassificationQueryImpl classificationQueryImplMock;
+
+  @Mock private SqlSession sqlSessionMock;
+
+  @BeforeEach
+  void setup() {
+    when(internalTaskanaEngineMock.getEngine()).thenReturn(taskanaEngineMock);
+    when(taskanaEngineMock.getWorkbasketService()).thenReturn(workbasketServiceMock);
+    when(taskanaEngineMock.getClassificationService()).thenReturn(classificationServiceImplMock);
+    when(taskanaEngineMock.getConfiguration()).thenReturn(taskanaEngineConfigurationMock);
+    when(taskanaEngineConfigurationMock.isGermanPublicHolidaysEnabled()).thenReturn(true);
+    cut =
+        new TaskServiceImpl(
+            internalTaskanaEngineMock, taskMapperMock, taskCommentMapperMock, attachmentMapperMock);
+  }
+
+  @Test
+  void should_DetermineDifferences_When_ComparingEmptyTaskWithNonEmptyTask() {
+
+    TaskImpl oldTask = (TaskImpl) cut.newTask();
+
+    TaskImpl newTask = (TaskImpl) cut.newTask();
+    newTask.setOwner("new Owner");
+    newTask.setCreator("new Creator");
+    newTask.setId("new ID");
+    newTask.setCreated(Instant.now());
+    newTask.setModified(Instant.now());
+    newTask.setClassificationKey("new ClassificationKey");
+    newTask.setWorkbasketKey("new WorkbasketKey");
+    newTask.setBusinessProcessId("new BusinessProcessId");
+    newTask.setCallbackState(CallbackState.CALLBACK_PROCESSING_REQUIRED);
+
+    JSONArray changedAttributes =
+        new JSONObject(cut.determineChangesInTaskAttributes(oldTask, newTask))
+            .getJSONArray("changes");
+
+    assertThat(changedAttributes).hasSize(9);
+  }
+
+  @Test
+  void should_DetermineDifferences_When_ComparingNonEmptyTaskWithNonEmptyTask() {
+
+    TaskImpl oldTask = (TaskImpl) cut.newTask();
+    oldTask.setOwner("old Owner");
+    oldTask.setCreator("old  Creator");
+    oldTask.setId("old  ID");
+    oldTask.setCreated(Instant.now().minusMillis(100));
+    oldTask.setModified(Instant.now().minusMillis(100));
+    oldTask.setClassificationKey("old  ClassificationKey");
+    oldTask.setWorkbasketKey("old  WorkbasketKey");
+    oldTask.setBusinessProcessId("old  BusinessProcessId");
+    oldTask.setCallbackState(CallbackState.NONE);
+
+    TaskImpl newTask = (TaskImpl) cut.newTask();
+    newTask.setOwner("new Owner");
+    newTask.setCreator("new Creator");
+    newTask.setId("new ID");
+    newTask.setCreated(Instant.now());
+    newTask.setModified(Instant.now());
+    newTask.setClassificationKey("new ClassificationKey");
+    newTask.setWorkbasketKey("new WorkbasketKey");
+    newTask.setBusinessProcessId("new BusinessProcessId");
+    newTask.setCallbackState(CallbackState.CALLBACK_PROCESSING_REQUIRED);
+
+    JSONArray changedAttributes =
+        new JSONObject(cut.determineChangesInTaskAttributes(oldTask, newTask))
+            .getJSONArray("changes");
+
+    assertThat(changedAttributes).hasSize(9);
+  }
+
+  @Test
+  void should_IgnoreDifferencesInCustomAttributes_When_CustomAttributesHaveChanged() {
+
+    TaskImpl oldTask = (TaskImpl) cut.newTask();
+    oldTask.setOwner("old Owner");
+    oldTask.setCreator("old  Creator");
+
+    TaskImpl newTask = (TaskImpl) cut.newTask();
+    newTask.setOwner("new Owner");
+    newTask.setCreator("new Creator");
+
+    Map<String, String> customAttriutes = new HashMap<>();
+    customAttriutes.put("new key", "new value");
+    newTask.setCustomAttributes(customAttriutes);
+
+    JSONArray changedAttributes =
+        new JSONObject(cut.determineChangesInTaskAttributes(oldTask, newTask))
+            .getJSONArray("changes");
+
+    assertThat(changedAttributes).hasSize(2);
+  }
 
   @Test
   void testTaskSummaryEqualsHashCode() throws InterruptedException {

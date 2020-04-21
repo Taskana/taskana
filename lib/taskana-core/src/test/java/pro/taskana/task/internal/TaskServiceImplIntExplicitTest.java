@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.UUID;
 import javax.sql.DataSource;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,20 +65,13 @@ import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 class TaskServiceImplIntExplicitTest {
 
   private static DataSource dataSource;
-
-  private TaskServiceImpl taskServiceImpl;
-
-  private TaskanaEngine taskanaEngine;
-
-  private TaskanaEngineImpl taskanaEngineImpl;
-
-  private ClassificationService classificationService;
-
-  private WorkbasketService workbasketService;
-
   private static SampleDataGenerator sampleDataGenerator;
-
   private static TaskanaEngineConfiguration taskanaEngineConfiguration;
+  private TaskServiceImpl taskServiceImpl;
+  private TaskanaEngine taskanaEngine;
+  private TaskanaEngineImpl taskanaEngineImpl;
+  private ClassificationService classificationService;
+  private WorkbasketService workbasketService;
 
   @BeforeAll
   static void beforeAll() throws SQLException {
@@ -396,22 +387,6 @@ class TaskServiceImplIntExplicitTest {
       assertThat(resultTask.getCreated()).isNotNull();
       assertThat(resultTask.getCreated()).isEqualTo(task.getCreated());
     }
-  }
-
-  @Test
-  void should_DetermineDifferences_When_DifferentAttributesInTwoTasks() {
-
-    Task newTask = taskServiceImpl.newTask();
-    newTask.setBusinessProcessId("key1");
-    newTask.setOwner("owner1");
-
-    Task oldTask = taskServiceImpl.newTask();
-
-    JSONArray changedAttributes =
-        new JSONObject(taskServiceImpl.determineChangesInTaskAttributes(oldTask, newTask))
-            .getJSONArray("changes");
-
-    assertThat(changedAttributes).hasSize(2);
   }
 
   @Test
