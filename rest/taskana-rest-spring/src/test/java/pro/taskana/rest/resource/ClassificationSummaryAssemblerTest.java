@@ -44,7 +44,7 @@ class ClassificationSummaryAssemblerTest {
     ClassificationSummary classificationSummary = classification.asSummary();
     // when
     ClassificationSummaryResource resource =
-        classificationSummaryResourceAssembler.toResource(classification);
+        classificationSummaryResourceAssembler.toModel(classification);
     // then
     testEquality(classificationSummary, resource);
   }

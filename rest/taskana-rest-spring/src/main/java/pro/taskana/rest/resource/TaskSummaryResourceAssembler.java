@@ -1,7 +1,7 @@
 package pro.taskana.rest.resource;
 
 import java.util.List;
-import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -12,17 +12,17 @@ import pro.taskana.rest.resource.PagedResources.PageMetadata;
 import pro.taskana.rest.resource.links.PageLinks;
 import pro.taskana.task.api.models.TaskSummary;
 
-/** Resource assembler for {@link TaskSummaryResource}. */
+/** EntityModel assembler for {@link TaskSummaryResource}. */
 @Component
 public class TaskSummaryResourceAssembler
-    extends ResourceAssemblerSupport<TaskSummary, TaskSummaryResource> {
+    extends RepresentationModelAssemblerSupport<TaskSummary, TaskSummaryResource> {
 
   public TaskSummaryResourceAssembler() {
     super(TaskController.class, TaskSummaryResource.class);
   }
 
   @Override
-  public TaskSummaryResource toResource(TaskSummary taskSummary) {
+  public TaskSummaryResource toModel(TaskSummary taskSummary) {
     TaskSummaryResource resource;
     try {
       resource = new TaskSummaryResource(taskSummary);
@@ -33,8 +33,8 @@ public class TaskSummaryResourceAssembler
   }
 
   @PageLinks(Mapping.URL_TASKS)
-  public TaskSummaryListResource toResources(
+  public TaskSummaryListResource toCollectionModel(
       List<TaskSummary> taskSummaries, PageMetadata pageMetadata) {
-    return new TaskSummaryListResource(toResources(taskSummaries), pageMetadata);
+    return new TaskSummaryListResource(toCollectionModel(taskSummaries).getContent(), pageMetadata);
   }
 }

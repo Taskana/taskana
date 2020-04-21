@@ -1,14 +1,15 @@
 package pro.taskana.rest.resource;
 
 import javax.validation.constraints.NotNull;
-import org.springframework.hateoas.ResourceSupport;
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 
-/** Resource class for {@link WorkbasketAccessItem}. */
+/** EntityModel class for {@link WorkbasketAccessItem}. */
 @Relation(collectionRelation = "accessItems")
-public class WorkbasketAccessItemResource extends ResourceSupport {
+public class WorkbasketAccessItemResource
+    extends RepresentationModel<WorkbasketAccessItemResource> {
 
   private String accessItemId;
 

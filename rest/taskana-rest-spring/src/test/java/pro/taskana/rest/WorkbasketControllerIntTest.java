@@ -10,7 +10,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.hateoas.Link;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -48,9 +48,9 @@ class WorkbasketControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(WorkbasketResource.class));
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getHeaders().getContentType().toString())
-        .isEqualTo(MediaTypes.HAL_JSON_UTF8_VALUE);
+        .isEqualTo(MediaTypes.HAL_JSON_VALUE);
   }
 
   @Test
@@ -61,7 +61,7 @@ class WorkbasketControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(WorkbasketSummaryListResource.class));
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
   }
 
   @Test
@@ -72,7 +72,7 @@ class WorkbasketControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(WorkbasketSummaryListResource.class));
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getRequiredLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(3);
   }
 
@@ -85,8 +85,14 @@ class WorkbasketControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(WorkbasketSummaryListResource.class));
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
-    assertThat(response.getBody().getLink(Link.REL_SELF).getHref().endsWith(parameters)).isTrue();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
+    assertThat(
+            response
+                .getBody()
+                .getRequiredLink(IanaLinkRelations.SELF)
+                .getHref()
+                .endsWith(parameters))
+        .isTrue();
   }
 
   @Test
@@ -174,12 +180,18 @@ class WorkbasketControllerIntTest {
             ParameterizedTypeReference.forType(WorkbasketSummaryListResource.class));
     assertThat(response.getBody().getContent()).hasSize(5);
     assertThat(response.getBody().getContent().iterator().next().getKey()).isEqualTo("USER_1_1");
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
-    assertThat(response.getBody().getLink(Link.REL_FIRST)).isNotNull();
-    assertThat(response.getBody().getLink(Link.REL_LAST)).isNotNull();
-    assertThat(response.getBody().getLink(Link.REL_NEXT)).isNotNull();
-    assertThat(response.getBody().getLink(Link.REL_PREVIOUS)).isNotNull();
-    assertThat(response.getBody().getLink(Link.REL_SELF).getHref().endsWith(parameters)).isTrue();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.FIRST)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.LAST)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.NEXT)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.PREV)).isNotNull();
+    assertThat(
+            response
+                .getBody()
+                .getRequiredLink(IanaLinkRelations.SELF)
+                .getHref()
+                .endsWith(parameters))
+        .isTrue();
   }
 
   @Test
@@ -200,16 +212,16 @@ class WorkbasketControllerIntTest {
   void statusCode423ShouldBeReturnedIfWorkbasketContainsNonCompletedTasks() {
     String workbasketWithNonCompletedTasks = "WBI:100000000000000000000000000000000004";
 
-    assertThatThrownBy(() ->
-        template.exchange(
-            restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketWithNonCompletedTasks),
-                HttpMethod.DELETE,
-                new HttpEntity<>(restHelper.getHeadersBusinessAdmin()),
-                Void.class))
-            .isInstanceOf(HttpClientErrorException.class)
-            .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
-            .isEqualTo(HttpStatus.LOCKED);
-
+    assertThatThrownBy(
+        () ->
+                template.exchange(
+                    restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketWithNonCompletedTasks),
+                    HttpMethod.DELETE,
+                    new HttpEntity<>(restHelper.getHeadersBusinessAdmin()),
+                    Void.class))
+        .isInstanceOf(HttpClientErrorException.class)
+        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.LOCKED);
   }
 
   @Test
@@ -247,9 +259,9 @@ class WorkbasketControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(WorkbasketAccessItemListResource.class));
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getHeaders().getContentType().toString())
-        .isEqualTo(MediaTypes.HAL_JSON_UTF8_VALUE);
+        .isEqualTo(MediaTypes.HAL_JSON_VALUE);
     assertThat(response.getBody().getContent()).hasSize(3);
   }
 
@@ -262,9 +274,9 @@ class WorkbasketControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(DistributionTargetListResource.class));
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getHeaders().getContentType().toString())
-        .isEqualTo(MediaTypes.HAL_JSON_UTF8_VALUE);
+        .isEqualTo(MediaTypes.HAL_JSON_VALUE);
     assertThat(response.getBody().getContent()).hasSize(4);
   }
 }

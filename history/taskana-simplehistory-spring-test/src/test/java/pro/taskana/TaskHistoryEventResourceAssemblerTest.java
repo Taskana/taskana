@@ -58,7 +58,7 @@ public class TaskHistoryEventResourceAssemblerTest {
     historyEvent.setCustom4("custom4");
 
     TaskHistoryEventResource taskHistoryEventResource =
-        taskHistoryEventResourceAssembler.toResource(historyEvent);
+        taskHistoryEventResourceAssembler.toModel(historyEvent);
 
     testEquality(historyEvent, taskHistoryEventResource);
   }

@@ -1,12 +1,12 @@
 package pro.taskana.rest.resource;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.List;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
@@ -25,7 +25,8 @@ import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
  */
 @Component
 public class WorkbasketAccessItemResourceAssembler
-    extends ResourceAssemblerSupport<WorkbasketAccessItem, WorkbasketAccessItemResource> {
+    extends RepresentationModelAssemblerSupport<
+        WorkbasketAccessItem, WorkbasketAccessItemResource> {
 
   @Autowired private WorkbasketService workbasketService;
 
@@ -33,7 +34,7 @@ public class WorkbasketAccessItemResourceAssembler
     super(WorkbasketController.class, WorkbasketAccessItemResource.class);
   }
 
-  public WorkbasketAccessItemResource toResource(WorkbasketAccessItem wbAccItem) {
+  public WorkbasketAccessItemResource toModel(WorkbasketAccessItem wbAccItem) {
     return new WorkbasketAccessItemResource(wbAccItem);
   }
 
@@ -48,16 +49,17 @@ public class WorkbasketAccessItemResourceAssembler
   }
 
   @PageLinks(Mapping.URL_WORKBASKETACCESSITEMS)
-  public WorkbasketAccessItemListResource toResources(
+  public WorkbasketAccessItemListResource toCollectionModel(
       List<WorkbasketAccessItem> entities, PageMetadata pageMetadata) {
-    return new WorkbasketAccessItemListResource(toResources(entities), pageMetadata);
+    return new WorkbasketAccessItemListResource(
+        toCollectionModel(entities).getContent(), pageMetadata);
   }
 
-  public WorkbasketAccessItemListResource toResources(
+  public WorkbasketAccessItemListResource toCollectionModel(
       String workbasketId, List<WorkbasketAccessItem> entities)
       throws NotAuthorizedException, WorkbasketNotFoundException {
     WorkbasketAccessItemListResource accessItemListResource =
-        new WorkbasketAccessItemListResource(super.toResources(entities), null);
+        new WorkbasketAccessItemListResource(super.toCollectionModel(entities).getContent(), null);
     accessItemListResource.add(
         linkTo(methodOn(WorkbasketController.class).getWorkbasketAccessItems(workbasketId))
             .withSelfRel());

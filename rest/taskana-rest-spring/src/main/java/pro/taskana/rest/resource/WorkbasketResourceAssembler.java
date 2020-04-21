@@ -1,12 +1,12 @@
 package pro.taskana.rest.resource;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.time.Instant;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 
@@ -25,7 +25,7 @@ import pro.taskana.workbasket.internal.models.WorkbasketImpl;
  */
 @Component
 public class WorkbasketResourceAssembler
-    extends ResourceAssemblerSupport<Workbasket, WorkbasketResource> {
+    extends RepresentationModelAssemblerSupport<Workbasket, WorkbasketResource> {
 
   private final WorkbasketService workbasketService;
 
@@ -35,7 +35,7 @@ public class WorkbasketResourceAssembler
     this.workbasketService = workbasketService;
   }
 
-  public WorkbasketResource toResource(Workbasket wb) {
+  public WorkbasketResource toModel(Workbasket wb) {
     try {
       WorkbasketResource resource = new WorkbasketResource(wb);
       return addLinks(resource, wb);

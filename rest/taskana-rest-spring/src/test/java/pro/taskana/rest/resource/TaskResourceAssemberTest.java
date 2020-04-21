@@ -149,7 +149,7 @@ class TaskResourceAssemberTest {
     task.setCustom14("custom14");
     task.setCustom15("custom15");
     // when
-    TaskResource resource = taskResourceAssembler.toResource(task);
+    TaskResource resource = taskResourceAssembler.toModel(task);
     // then
     testEquality(task, resource);
     testLinks(resource);
@@ -228,7 +228,7 @@ class TaskResourceAssemberTest {
 
   private void testLinks(TaskResource resource) {
     assertThat(resource.getLinks()).hasSize(1);
-    assertThat(resource.getLink("self").getHref())
+    assertThat(resource.getRequiredLink("self").getHref())
         .isEqualTo(Mapping.URL_TASKS_ID.replaceAll("\\{.*}", resource.getTaskId()));
   }
 }

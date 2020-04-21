@@ -47,7 +47,7 @@ class ClassificationAssemblerTest {
     classification.setModified(Instant.parse("2011-11-11T11:00:00Z"));
     // when
     ClassificationResource classificationResource =
-        classificationResourceAssembler.toResource(classification);
+        classificationResourceAssembler.toModel(classification);
     // then
     testEquality(classification, classificationResource);
     testLinks(classificationResource);
@@ -92,7 +92,7 @@ class ClassificationAssemblerTest {
   private void testLinks(ClassificationResource resource) {
     assertThat(resource.getLinks()).hasSize(1);
     assertThat(Mapping.URL_CLASSIFICATIONS_ID.replaceAll("\\{.*}", resource.getClassificationId()))
-        .isEqualTo(resource.getLink("self").getHref());
+        .isEqualTo(resource.getRequiredLink("self").getHref());
   }
 
   private void testEquality(

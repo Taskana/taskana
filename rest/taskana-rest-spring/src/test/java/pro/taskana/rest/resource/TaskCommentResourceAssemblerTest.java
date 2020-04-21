@@ -36,7 +36,7 @@ public class TaskCommentResourceAssemblerTest {
     taskComment.setCreated(Instant.parse("2010-01-01T12:00:00Z"));
     taskComment.setModified(Instant.parse("2011-11-11T11:00:00Z"));
 
-    TaskCommentResource taskCommentResource = taskCommentResourceAssembler.toResource(taskComment);
+    TaskCommentResource taskCommentResource = taskCommentResourceAssembler.toModel(taskComment);
 
     testEquality(taskComment, taskCommentResource);
   }

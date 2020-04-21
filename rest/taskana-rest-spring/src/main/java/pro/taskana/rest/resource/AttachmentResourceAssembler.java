@@ -1,12 +1,12 @@
 package pro.taskana.rest.resource;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
 import pro.taskana.rest.AttachmentController;
@@ -14,10 +14,10 @@ import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.internal.models.AttachmentImpl;
 
-/** Resource assembler for {@link AttachmentResource}. */
+/** EntityModel assembler for {@link AttachmentResource}. */
 @Component
 public class AttachmentResourceAssembler
-    extends ResourceAssemblerSupport<Attachment, AttachmentResource> {
+    extends RepresentationModelAssemblerSupport<Attachment, AttachmentResource> {
 
   @Autowired private TaskService taskService;
 
@@ -28,7 +28,7 @@ public class AttachmentResourceAssembler
   }
 
   @Override
-  public AttachmentResource toResource(Attachment attachment) {
+  public AttachmentResource toModel(Attachment attachment) {
     AttachmentResource resource = new AttachmentResource(attachment);
     resource.add(linkTo(AttachmentController.class).slash(attachment.getId()).withSelfRel());
     return resource;

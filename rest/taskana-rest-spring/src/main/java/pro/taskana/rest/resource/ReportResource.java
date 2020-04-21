@@ -2,13 +2,13 @@ package pro.taskana.rest.resource;
 
 import java.util.Arrays;
 import java.util.List;
-import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.RepresentationModel;
 
 import pro.taskana.monitor.api.reports.Report;
 import pro.taskana.monitor.api.reports.row.SingleRow;
 
-/** Resource class for {@link Report}. */
-public class ReportResource extends ResourceSupport {
+/** EntityModel class for {@link Report}. */
+public class ReportResource extends RepresentationModel<ReportResource> {
 
   private MetaInformation meta;
 
@@ -34,7 +34,7 @@ public class ReportResource extends ResourceSupport {
     return sumRow;
   }
 
-  /** Resource class for {@link SingleRow}. */
+  /** EntityModel class for {@link SingleRow}. */
   public static class RowResource {
 
     private int[] cells;

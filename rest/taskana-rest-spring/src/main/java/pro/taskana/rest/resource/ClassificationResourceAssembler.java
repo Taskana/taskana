@@ -1,12 +1,12 @@
 package pro.taskana.rest.resource;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.time.Instant;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
 import pro.taskana.classification.api.ClassificationService;
@@ -22,7 +22,7 @@ import pro.taskana.rest.ClassificationController;
  */
 @Component
 public class ClassificationResourceAssembler
-    extends ResourceAssemblerSupport<Classification, ClassificationResource> {
+    extends RepresentationModelAssemblerSupport<Classification, ClassificationResource> {
 
   final ClassificationService classificationService;
 
@@ -32,7 +32,14 @@ public class ClassificationResourceAssembler
     this.classificationService = classificationService;
   }
 
-  public ClassificationResource toResource(Classification classification) {
+  public ClassificationResource toDefinition(Classification classification) {
+    ClassificationResource resource = new ClassificationResource(classification);
+    resource.add(
+        linkTo(ClassificationController.class).slash(classification.getId()).withSelfRel());
+    return resource;
+  }
+
+  public ClassificationResource toModel(Classification classification) {
     ClassificationResource resource = new ClassificationResource(classification);
     try {
       resource.add(
@@ -41,13 +48,6 @@ public class ClassificationResourceAssembler
     } catch (ClassificationNotFoundException e) {
       throw new SystemException("caught unexpected Exception.", e.getCause());
     }
-    return resource;
-  }
-
-  public ClassificationResource toDefinition(Classification classification) {
-    ClassificationResource resource = new ClassificationResource(classification);
-    resource.add(
-        linkTo(ClassificationController.class).slash(classification.getId()).withSelfRel());
     return resource;
   }
 

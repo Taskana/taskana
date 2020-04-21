@@ -7,7 +7,7 @@ import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.hateoas.Link;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -43,9 +43,9 @@ class ClassificationControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(ClassificationResource.class));
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getHeaders().getContentType().toString())
-        .isEqualTo(MediaTypes.HAL_JSON_UTF8_VALUE);
+        .isEqualTo(MediaTypes.HAL_JSON_VALUE);
   }
 
   @Test
@@ -56,7 +56,7 @@ class ClassificationControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(ClassificationSummaryListResource.class));
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
   }
 
   @Test
@@ -67,7 +67,7 @@ class ClassificationControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(ClassificationSummaryListResource.class));
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(13);
   }
 
@@ -80,11 +80,11 @@ class ClassificationControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(ClassificationSummaryListResource.class));
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(
             response
                 .getBody()
-                .getLink(Link.REL_SELF)
+                .getRequiredLink(IanaLinkRelations.SELF)
                 .getHref()
                 .endsWith("/api/v1/classifications?domain=DOMAIN_A&sort-by=key&order=asc"))
         .isTrue();
@@ -103,20 +103,20 @@ class ClassificationControllerIntTest {
             ParameterizedTypeReference.forType(ClassificationSummaryListResource.class));
     assertThat(response.getBody().getContent()).hasSize(5);
     assertThat(response.getBody().getContent().iterator().next().getKey()).isEqualTo("L1050");
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(
             response
                 .getBody()
-                .getLink(Link.REL_SELF)
+                .getRequiredLink(IanaLinkRelations.SELF)
                 .getHref()
                 .endsWith(
                     "/api/v1/classifications?"
                         + "domain=DOMAIN_A&sort-by=key&order=asc&page=2&page-size=5"))
         .isTrue();
-    assertThat(response.getBody().getLink(Link.REL_FIRST)).isNotNull();
-    assertThat(response.getBody().getLink(Link.REL_LAST)).isNotNull();
-    assertThat(response.getBody().getLink(Link.REL_NEXT)).isNotNull();
-    assertThat(response.getBody().getLink(Link.REL_PREVIOUS)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.FIRST)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.LAST)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.NEXT)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.PREV)).isNotNull();
   }
 
   @Test
@@ -216,7 +216,7 @@ class ClassificationControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(ClassificationSummaryListResource.class));
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     boolean foundClassificationCreated = false;
     for (ClassificationSummaryResource classification : response.getBody().getContent()) {
       if ("NEW_CLASS_P2".equals(classification.getKey())

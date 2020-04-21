@@ -1,10 +1,10 @@
 package pro.taskana.simplehistory.rest.resource;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import org.springframework.beans.BeanUtils;
-import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.simplehistory.impl.HistoryEventImpl;
@@ -14,15 +14,15 @@ import pro.taskana.spi.history.api.exceptions.TaskanaHistoryEventNotFoundExcepti
 
 /** Transforms any {@link HistoryEventImpl} into its {@link TaskHistoryEventResource}. */
 public class TaskHistoryEventResourceAssembler
-    extends ResourceAssemblerSupport<TaskanaHistoryEvent, TaskHistoryEventResource> {
+    extends RepresentationModelAssemblerSupport<TaskanaHistoryEvent, TaskHistoryEventResource> {
 
   public TaskHistoryEventResourceAssembler() {
     super(HistoryEventImpl.class, TaskHistoryEventResource.class);
   }
 
   @Override
-  public TaskHistoryEventResource toResource(TaskanaHistoryEvent historyEvent) {
-    TaskHistoryEventResource resource = createResourceWithId(historyEvent.getId(), historyEvent);
+  public TaskHistoryEventResource toModel(TaskanaHistoryEvent historyEvent) {
+    TaskHistoryEventResource resource = createModelWithId(historyEvent.getId(), historyEvent);
     try {
       resource.removeLinks();
       resource.add(

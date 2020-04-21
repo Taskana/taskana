@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.RepresentationModel;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 
-/** Resource class for {@link Task}. */
-public class TaskResource extends ResourceSupport {
+/** EntityModel class for {@link Task}. */
+public class TaskResource extends RepresentationModel<TaskResource> {
 
   private String taskId;
   private String externalId;

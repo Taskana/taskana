@@ -80,7 +80,7 @@ class TaskSummaryAssemblerTest {
     task.setCustom14("custom14");
     task.setCustom15("custom15");
     TaskSummaryImpl taskSummary = (TaskSummaryImpl) task.asSummary();
-    TaskSummaryResource resource = this.taskSummaryResourceAssembler.toResource(taskSummary);
+    TaskSummaryResource resource = this.taskSummaryResourceAssembler.toModel(taskSummary);
     this.testEquality(taskSummary, resource);
   }
 

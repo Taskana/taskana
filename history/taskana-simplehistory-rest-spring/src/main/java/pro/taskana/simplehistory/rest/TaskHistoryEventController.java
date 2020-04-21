@@ -198,7 +198,7 @@ public class TaskHistoryEventController extends AbstractPagingController {
     TaskanaHistoryEvent resultEvent = simpleHistoryService.getHistoryEvent(historyEventId);
 
     TaskHistoryEventResource taskEventResource =
-        taskHistoryEventResourceAssembler.toResource(resultEvent);
+        taskHistoryEventResourceAssembler.toModel(resultEvent);
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(

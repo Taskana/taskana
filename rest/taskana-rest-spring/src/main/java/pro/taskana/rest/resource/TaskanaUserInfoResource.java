@@ -2,13 +2,13 @@ package pro.taskana.rest.resource;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.RepresentationModel;
 
 import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.TaskanaRole;
 
-/** Resource class for user information. */
-public class TaskanaUserInfoResource extends ResourceSupport {
+/** EntityModel class for user information. */
+public class TaskanaUserInfoResource extends RepresentationModel<TaskanaUserInfoResource> {
 
   private String userId;
   private List<String> groupIds = new ArrayList<>();

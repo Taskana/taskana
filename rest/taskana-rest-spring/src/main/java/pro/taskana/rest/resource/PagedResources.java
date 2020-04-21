@@ -8,15 +8,15 @@ import java.util.Collections;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlAttribute;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.RepresentationModel;
 import org.springframework.util.Assert;
 
 /**
- * Base Class for Resources with pagination.
+ * Base Class for CollectionModel with pagination.
  *
  * @param <T> The Class of the paginatied content
  */
-public class PagedResources<T> extends ResourceSupport {
+public class PagedResources<T> extends RepresentationModel<PagedResources<T>> {
 
   private Collection<T> content;
 

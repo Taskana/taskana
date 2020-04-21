@@ -119,7 +119,7 @@ public class TaskController extends AbstractPagingController {
     List<TaskSummary> taskSummaries = getQueryList(query, pageMetadata);
 
     TaskSummaryListResource pagedResources =
-        taskSummaryResourceAssembler.toResources(taskSummaries, pageMetadata);
+        taskSummaryResourceAssembler.toCollectionModel(taskSummaries, pageMetadata);
     ResponseEntity<TaskSummaryListResource> response = ResponseEntity.ok(pagedResources);
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from getTasks(), returning {}", response);
@@ -134,7 +134,7 @@ public class TaskController extends AbstractPagingController {
       throws TaskNotFoundException, NotAuthorizedException {
     LOGGER.debug("Entry to getTask(taskId= {})", taskId);
     Task task = taskService.getTask(taskId);
-    ResponseEntity<TaskResource> result = ResponseEntity.ok(taskResourceAssembler.toResource(task));
+    ResponseEntity<TaskResource> result = ResponseEntity.ok(taskResourceAssembler.toModel(task));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from getTask(), returning {}", result);
     }
@@ -153,7 +153,7 @@ public class TaskController extends AbstractPagingController {
     taskService.claim(taskId);
     Task updatedTask = taskService.getTask(taskId);
     ResponseEntity<TaskResource> result =
-        ResponseEntity.ok(taskResourceAssembler.toResource(updatedTask));
+        ResponseEntity.ok(taskResourceAssembler.toModel(updatedTask));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from claimTask(), returning {}", result);
     }
@@ -173,7 +173,7 @@ public class TaskController extends AbstractPagingController {
     Task updatedTask = taskService.getTask(taskId);
 
     ResponseEntity<TaskResource> result =
-        ResponseEntity.ok(taskResourceAssembler.toResource(updatedTask));
+        ResponseEntity.ok(taskResourceAssembler.toModel(updatedTask));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from cancelClaimTask(), returning {}", result);
     }
@@ -189,7 +189,7 @@ public class TaskController extends AbstractPagingController {
     taskService.forceCompleteTask(taskId);
     Task updatedTask = taskService.getTask(taskId);
     ResponseEntity<TaskResource> result =
-        ResponseEntity.ok(taskResourceAssembler.toResource(updatedTask));
+        ResponseEntity.ok(taskResourceAssembler.toModel(updatedTask));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from completeTask(), returning {}", result);
     }
@@ -221,8 +221,7 @@ public class TaskController extends AbstractPagingController {
     Task createdTask = taskService.createTask(fromResource);
 
     ResponseEntity<TaskResource> result =
-        ResponseEntity.status(HttpStatus.CREATED)
-            .body(taskResourceAssembler.toResource(createdTask));
+        ResponseEntity.status(HttpStatus.CREATED).body(taskResourceAssembler.toModel(createdTask));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from createTask(), returning {}", result);
     }
@@ -239,7 +238,7 @@ public class TaskController extends AbstractPagingController {
     LOGGER.debug("Entry to transferTask(taskId= {}, workbasketId= {})", taskId, workbasketId);
     Task updatedTask = taskService.transfer(taskId, workbasketId);
     ResponseEntity<TaskResource> result =
-        ResponseEntity.ok(taskResourceAssembler.toResource(updatedTask));
+        ResponseEntity.ok(taskResourceAssembler.toModel(updatedTask));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from transferTask(), returning {}", result);
     }
@@ -259,7 +258,7 @@ public class TaskController extends AbstractPagingController {
     if (taskId.equals(taskResource.getTaskId())) {
       Task task = taskResourceAssembler.toModel(taskResource);
       task = taskService.updateTask(task);
-      result = ResponseEntity.ok(taskResourceAssembler.toResource(task));
+      result = ResponseEntity.ok(taskResourceAssembler.toModel(task));
     } else {
       throw new InvalidArgumentException(
           String.format(

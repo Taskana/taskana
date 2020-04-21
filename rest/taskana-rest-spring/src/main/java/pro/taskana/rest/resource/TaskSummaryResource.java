@@ -3,8 +3,8 @@ package pro.taskana.rest.resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.hateoas.ResourceSupport;
-import org.springframework.hateoas.core.Relation;
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.task.api.TaskState;
@@ -12,9 +12,9 @@ import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
-/** Resource class for {@link WorkbasketSummary}. */
+/** EntityModel class for {@link WorkbasketSummary}. */
 @Relation(collectionRelation = "tasks")
-public class TaskSummaryResource extends ResourceSupport {
+public class TaskSummaryResource extends RepresentationModel<TaskSummaryResource> {
 
   private String taskId;
   private String externalId;

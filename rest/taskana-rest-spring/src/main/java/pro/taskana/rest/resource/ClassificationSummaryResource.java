@@ -1,11 +1,12 @@
 package pro.taskana.rest.resource;
 
-import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.RepresentationModel;
 
 import pro.taskana.classification.api.models.ClassificationSummary;
 
-/** Resource class for {@link ClassificationSummary}. */
-public class ClassificationSummaryResource extends ResourceSupport {
+/** EntityModel class for {@link ClassificationSummary}. */
+public class ClassificationSummaryResource
+    extends RepresentationModel<ClassificationSummaryResource> {
 
   private String classificationId;
   private String applicationEntryPoint;
