@@ -23,7 +23,7 @@ public class DbSchemaCreator {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DbSchemaCreator.class);
   private static final String SQL = "/sql";
-  private static final String DB_SCHEMA = SQL + "/taskana-schema.sql";
+  private static final String DB_SCHEMA_H2 = SQL + "/taskana-schema-h2.sql";
   private static final String DB_SCHEMA_DB2 = SQL + "/taskana-schema-db2.sql";
   private static final String DB_SCHEMA_POSTGRES = SQL + "/taskana-schema-postgres.sql";
   private static final String DB_SCHEMA_DETECTION = SQL + "/schema-detection.sql";
@@ -114,7 +114,7 @@ public class DbSchemaCreator {
   private static String selectDbScriptFileName(String dbProductName) {
     return DB.isPostgreSql(dbProductName)
         ? DB_SCHEMA_POSTGRES
-        : DB.isH2(dbProductName) ? DB_SCHEMA : DB_SCHEMA_DB2;
+        : DB.isH2(dbProductName) ? DB_SCHEMA_H2 : DB_SCHEMA_DB2;
   }
 
   private static String selectDbSchemaDetectionScript(String dbProductName) {

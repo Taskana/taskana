@@ -15,7 +15,6 @@ import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.simplehistory.TaskanaHistoryEngine;
-import pro.taskana.simplehistory.configuration.DbSchemaCreator;
 import pro.taskana.simplehistory.impl.mappings.HistoryEventMapper;
 import pro.taskana.simplehistory.impl.mappings.HistoryQueryMapper;
 import pro.taskana.spi.history.api.TaskanaHistory;
@@ -31,15 +30,11 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
   protected TaskanaHistory taskanaHistoryService;
   TaskanaEngineConfiguration taskanaEngineConfiguration;
 
-  protected TaskanaHistoryEngineImpl(TaskanaEngineConfiguration taskanaEngineConfiguration)
-      throws SQLException {
+  protected TaskanaHistoryEngineImpl(TaskanaEngineConfiguration taskanaEngineConfiguration) {
     this.taskanaEngineConfiguration = taskanaEngineConfiguration;
 
     createTransactionFactory(this.taskanaEngineConfiguration.getUseManagedTransactions());
     this.sessionManager = createSqlSessionManager();
-    new DbSchemaCreator(
-            taskanaEngineConfiguration.getDatasource(), taskanaEngineConfiguration.getSchemaName())
-        .run();
   }
 
   public static TaskanaHistoryEngineImpl createTaskanaEngine(

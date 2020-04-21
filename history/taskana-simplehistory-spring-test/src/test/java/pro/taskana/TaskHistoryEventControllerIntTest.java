@@ -10,8 +10,6 @@ import java.util.Collections;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -40,9 +38,6 @@ import pro.taskana.simplehistory.rest.resource.TaskHistoryEventResource;
     classes = {TaskHistoryRestConfiguration.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class TaskHistoryEventControllerIntTest {
-
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(TaskHistoryEventControllerIntTest.class);
 
   @Value("${taskana.schemaName:TASKANA}")
   public String schemaName;
