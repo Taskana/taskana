@@ -1,25 +1,25 @@
 import { Component, Input, OnDestroy, SimpleChanges, OnChanges, ViewChild, ElementRef } from '@angular/core';
 import { Subscription } from 'rxjs';
 
-import { Workbasket } from 'app/models/workbasket';
-import { WorkbasketSummary } from 'app/models/workbasket-summary';
-import { WorkbasketSummaryResource } from 'app/models/workbasket-summary-resource';
-import { WorkbasketDistributionTargetsResource } from 'app/models/workbasket-distribution-targets-resource';
-import { MessageModal } from 'app/models/message-modal';
-import { ACTION } from 'app/models/action';
-import { AlertModel, AlertType } from 'app/models/alert';
+import { Workbasket } from 'app/shared/models/workbasket';
+import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
+import { WorkbasketSummaryResource } from 'app/shared/models/workbasket-summary-resource';
+import { WorkbasketDistributionTargetsResource } from 'app/shared/models/workbasket-distribution-targets-resource';
+import { MessageModal } from 'app/shared/models/message-modal';
+import { ACTION } from 'app/shared/models/action';
+import { AlertModel, AlertType } from 'app/shared/models/alert';
 
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
-import { AlertService } from 'app/services/alert/alert.service';
+import { AlertService } from 'app/shared/services/alert/alert.service';
 import { SavingWorkbasketService, SavingInformation } from 'app/administration/services/saving-workbaskets.service';
-import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
-import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
+import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
+import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
-import { Page } from 'app/models/page';
-import { OrientationService } from 'app/services/orientation/orientation.service';
-import { Orientation } from 'app/models/orientation';
-import { ERROR_TYPES } from '../../../models/errors';
-import { ErrorsService } from '../../../services/errors/errors.service';
+import { Page } from 'app/shared/models/page';
+import { OrientationService } from 'app/shared/services/orientation/orientation.service';
+import { Orientation } from 'app/shared/models/orientation';
+import { ERROR_TYPES } from '../../../shared/models/errors';
+import { ErrorsService } from '../../../shared/services/errors/errors.service';
 
 export enum Side {
   LEFT,

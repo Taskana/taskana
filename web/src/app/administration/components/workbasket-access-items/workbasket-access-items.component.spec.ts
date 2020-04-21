@@ -6,21 +6,21 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { of } from 'rxjs';
 import { configureTests } from 'app/app.test.configuration';
 
-import { Workbasket } from 'app/models/workbasket';
-import { AlertModel, AlertType } from 'app/models/alert';
-import { Links } from 'app/models/links';
-import { WorkbasketAccessItems } from 'app/models/workbasket-access-items';
-import { WorkbasketAccessItemsResource } from 'app/models/workbasket-access-items-resource';
-import { ICONTYPES } from 'app/models/type';
+import { Workbasket } from 'app/shared/models/workbasket';
+import { AlertModel, AlertType } from 'app/shared/models/alert';
+import { Links } from 'app/shared/models/links';
+import { WorkbasketAccessItems } from 'app/shared/models/workbasket-access-items';
+import { WorkbasketAccessItemsResource } from 'app/shared/models/workbasket-access-items-resource';
+import { ICONTYPES } from 'app/shared/models/icon-types';
 
 
-import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
+import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { SavingWorkbasketService } from 'app/administration/services/saving-workbaskets.service';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
-import { AlertService } from 'app/services/alert/alert.service';
-import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
+import { AlertService } from 'app/shared/services/alert/alert.service';
+import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { AccessIdsService } from 'app/shared/services/access-ids/access-ids.service';
-import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
+import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { NgxsModule, Store } from '@ngxs/store';
 import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
 import { WorkbasketAccessItemsComponent } from './workbasket-access-items.component';

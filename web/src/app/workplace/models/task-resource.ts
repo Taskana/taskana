@@ -1,5 +1,5 @@
-import { Page } from 'app/models/page';
-import { Links } from '../../models/links';
+import { Page } from 'app/shared/models/page';
+import { Links } from '../../shared/models/links';
 import { Task } from './task';
 
 export class TaskResource {

@@ -27,14 +27,10 @@ const contextAdministration = require.context('./app/administration', true, /\.s
 const contextWorplace = require.context('./app/workplace', true, /\.spec\.ts$/);
 // const contextMonitor = require.context('./app/monitor', true, /\.spec\.ts$/);
 const contextShared = require.context('./app/shared', true, /\.spec\.ts$/);
-const contextAppComponents = require.context('./app/components', true, /\.spec\.ts$/);
-const contextAppServices = require.context('./app/services', true, /\.spec\.ts$/);
 // And load the modules.
 contextAdministration.keys().map(contextAdministration);
 contextWorplace.keys().map(contextWorplace);
 // contextMonitor.keys().map(contextMonitor);
 contextShared.keys().map(contextShared);
-contextAppComponents.keys().map(contextAppComponents);
-contextAppServices.keys().map(contextAppServices);
 // Finally, start Karma to run the tests.
 __karma__.start();

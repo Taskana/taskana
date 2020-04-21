@@ -1,14 +1,14 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild, SimpleChanges, OnChanges, HostListener } from '@angular/core';
 import { Task } from 'app/workplace/models/task';
-import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
+import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { NgForm } from '@angular/forms';
-import { DomainService } from 'app/services/domain/domain.service';
+import { DomainService } from 'app/shared/services/domain/domain.service';
 import { Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
 import { ClassificationsService } from '../../../shared/services/classifications/classifications.service';
-import { Classification } from '../../../models/classification';
-import { TasksCustomisation } from '../../../models/customisation';
+import { Classification } from '../../../shared/models/classification';
+import { TasksCustomisation } from '../../../shared/models/customisation';
 
 @Component({
   selector: 'taskana-task-details-general-fields',

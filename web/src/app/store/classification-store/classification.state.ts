@@ -1,7 +1,7 @@
 import { Action, State, StateContext } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { CategoriesResponse, ClassificationCategoriesService } from '../../shared/services/classifications/classification-categories.service';
+import { CategoriesResponse, ClassificationCategoriesService } from '../../shared/services/classification-categories/classification-categories.service';
 import { SetSelectedClassificationType } from './classification.actions';
 
 class InitializeStore {

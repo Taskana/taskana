@@ -7,19 +7,19 @@ import { HttpClientModule } from '@angular/common/http';
 import { Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { WorkbasketSummary } from 'app/models/workbasket-summary';
-import { WorkbasketSummaryResource } from 'app/models/workbasket-summary-resource';
-import { FilterModel } from 'app/models/filter';
-import { LinksWorkbasketSummary } from 'app/models/links-workbasket-summary';
+import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
+import { WorkbasketSummaryResource } from 'app/shared/models/workbasket-summary-resource';
+import { Filter } from 'app/shared/models/filter';
+import { LinksWorkbasketSummary } from 'app/shared/models/links-workbasket-summary';
 
 import { ImportExportComponent } from 'app/administration/components/import-export/import-export.component';
 
 import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition.service';
 import { ClassificationDefinitionService } from 'app/administration/services/classification-definition.service';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
-import { OrientationService } from 'app/services/orientation/orientation.service';
+import { OrientationService } from 'app/shared/services/orientation/orientation.service';
 import { configureTests } from 'app/app.test.configuration';
-import { Page } from 'app/models/page';
+import { Page } from 'app/shared/models/page';
 import { ImportExportService } from 'app/administration/services/import-export.service';
 import { WorkbasketListToolbarComponent } from '../workbasket-list-toolbar/workbasket-list-toolbar.component';
 import { WorkbasketListComponent } from './workbasket-list.component';
@@ -162,7 +162,7 @@ describe('WorkbasketListComponent', () => {
   });
 
   it('should have performRequest with forced = true after performFilter is triggered', (() => {
-    const filter = new FilterModel({
+    const filter = new Filter({
       name: 'someName',
       owner: 'someOwner',
       description: 'someDescription',

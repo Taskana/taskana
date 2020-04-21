@@ -7,7 +7,7 @@ import { Routes } from '@angular/router';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { WorkplaceService } from 'app/workplace/services/workplace.service';
 import { TaskListComponent } from './task-list.component';
-import { DateTimeZonePipe } from '../../../shared/pipes/date-time-zone/date-time-zone.pipe';
+import { DateTimeZonePipe } from '../../../shared/pipes/date-time-zone.pipe';
 
 
 @Component({

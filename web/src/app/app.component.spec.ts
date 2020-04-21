@@ -6,7 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { SharedModule } from 'app/shared/shared.module';
 import { AppComponent } from './app.component';
 
-import { NavBarComponent } from './components/nav-bar/nav-bar.component';
+import { NavBarComponent } from './shared/components/nav-bar/nav-bar.component';
 
 describe('AppComponent', () => {
   let app;

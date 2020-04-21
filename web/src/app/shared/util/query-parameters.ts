@@ -1,4 +1,4 @@
-import { QueryParametersModel } from 'app/models/query-parameters';
+import { QueryParameters } from 'app/shared/models/query-parameters';
 
 export class TaskanaQueryParameters {
   static parameters = {
@@ -57,7 +57,7 @@ export class TaskanaQueryParameters {
   static page = 1;
   static pageSize = 9;
 
-  public static getQueryParameters(queryParametersModel: QueryParametersModel): string {
+  public static getQueryParameters(queryParametersModel: QueryParameters): string {
     let query = '?';
 
     Object.keys(queryParametersModel).forEach(key => {

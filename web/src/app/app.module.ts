@@ -17,25 +17,25 @@ import { SharedModule } from 'app/shared/shared.module';
 /**
  * Services
  */
-import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
-import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
-import { OrientationService } from 'app/services/orientation/orientation.service';
-import { SelectedRouteService } from 'app/services/selected-route/selected-route';
-import { DomainService } from 'app/services/domain/domain.service';
-import { StartupService } from 'app/services/startup-service/startup.service';
-import { AlertService } from 'app/services/alert/alert.service';
-import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
-import { TreeService } from 'app/services/tree/tree.service';
-import { TitlesService } from 'app/services/titles/titles.service';
-import { WindowRefService } from 'app/services/window/window.service';
-import { TaskanaEngineService } from 'app/services/taskana-engine/taskana-engine.service';
-import { NavBarComponent } from 'app/components/nav-bar/nav-bar.component';
-import { UserInformationComponent } from 'app/components/user-information/user-information.component';
-import { NoAccessComponent } from 'app/components/no-access/no-access.component';
-import { RemoveConfirmationService } from './services/remove-confirmation/remove-confirmation.service';
-import { FormsValidatorService } from './shared/services/forms/forms-validator.service';
+import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
+import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
+import { OrientationService } from 'app/shared/services/orientation/orientation.service';
+import { SelectedRouteService } from 'app/shared/services/selected-route/selected-route';
+import { DomainService } from 'app/shared/services/domain/domain.service';
+import { StartupService } from 'app/shared/services/startup/startup.service';
+import { AlertService } from 'app/shared/services/alert/alert.service';
+import { MasterAndDetailService } from 'app/shared/services/master-and-detail/master-and-detail.service';
+import { TreeService } from 'app/shared/services/tree/tree.service';
+import { TitlesService } from 'app/shared/services/titles/titles.service';
+import { WindowRefService } from 'app/shared/services/window/window.service';
+import { TaskanaEngineService } from 'app/shared/services/taskana-engine/taskana-engine.service';
+import { NavBarComponent } from 'app/shared/components/nav-bar/nav-bar.component';
+import { UserInformationComponent } from 'app/shared/components/user-information/user-information.component';
+import { NoAccessComponent } from 'app/shared/components/no-access/no-access.component';
+import { RemoveConfirmationService } from './shared/services/remove-confirmation/remove-confirmation.service';
+import { FormsValidatorService } from './shared/services/forms-validator/forms-validator.service';
 import { UploadService } from './shared/services/upload/upload.service';
-import { ErrorsService } from './services/errors/errors.service';
+import { ErrorsService } from './shared/services/errors/errors.service';
 /**
  * Components
  */
@@ -44,14 +44,14 @@ import { AppRoutingModule } from './app-routing.module';
 /**
  * Guards
  */
-import { DomainGuard } from './guards/domain.guard';
-import { BusinessAdminGuard } from './guards/business-admin.guard';
-import { MonitorGuard } from './guards/monitor.guard';
-import { UserGuard } from './guards/user.guard';
+import { DomainGuard } from './shared/guards/domain.guard';
+import { BusinessAdminGuard } from './shared/guards/business-admin.guard';
+import { MonitorGuard } from './shared/guards/monitor.guard';
+import { UserGuard } from './shared/guards/user.guard';
 /**
  * Store
  */
-import { ClassificationCategoriesService } from './shared/services/classifications/classification-categories.service';
+import { ClassificationCategoriesService } from './shared/services/classification-categories/classification-categories.service';
 import { environment } from '../environments/environment';
 import { STATES } from './store';
 

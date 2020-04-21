@@ -1,19 +1,19 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'environments/environment';
-import { AccessIdDefinition } from 'app/models/access-id';
+import { AccessIdDefinition } from 'app/shared/models/access-id';
 import { Observable, of } from 'rxjs';
-import { AccessItemsWorkbasketResource } from 'app/models/access-item-workbasket-resource';
+import { AccessItemWorkbasketResource } from 'app/shared/models/access-item-workbasket-resource';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
-import { SortingModel } from 'app/models/sorting';
-import { QueryParametersModel } from 'app/models/query-parameters';
+import { Sorting } from 'app/shared/models/sorting';
+import { QueryParameters } from 'app/shared/models/query-parameters';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccessIdsService {
   private url = `${environment.taskanaRestUrl}/v1/access-ids`;
-  private accessItemsRef: Observable<AccessItemsWorkbasketResource> = new Observable();
+  private accessItemsRef: Observable<AccessItemWorkbasketResource> = new Observable();
   constructor(
     private httpClient: HttpClient
   ) { }
@@ -32,11 +32,11 @@ export class AccessIdsService {
     accessIds: Array<AccessIdDefinition>,
     accessIdLike?: string,
     workbasketKeyLike?: string,
-    sortModel: SortingModel = new SortingModel('workbasket-key'),
+    sortModel: Sorting = new Sorting('workbasket-key'),
     forceRequest: boolean = false
-  ): Observable<AccessItemsWorkbasketResource> {
+  ): Observable<AccessItemWorkbasketResource> {
     if (forceRequest || !this.accessItemsRef) {
-      this.accessItemsRef = this.httpClient.get<AccessItemsWorkbasketResource>(encodeURI(
+      this.accessItemsRef = this.httpClient.get<AccessItemWorkbasketResource>(encodeURI(
         `${environment.taskanaRestUrl}/v1/workbasket-access-items/${TaskanaQueryParameters.getQueryParameters(
           this.accessIdsParameters(sortModel,
             accessIds,
@@ -50,16 +50,16 @@ export class AccessIdsService {
 
   removeAccessItemsPermissions(accessId: string) {
     return this.httpClient
-      .delete<AccessItemsWorkbasketResource>(`${environment.taskanaRestUrl}/v1/workbasket-access-items/?access-id=${accessId}`);
+      .delete<AccessItemWorkbasketResource>(`${environment.taskanaRestUrl}/v1/workbasket-access-items/?access-id=${accessId}`);
   }
 
   private accessIdsParameters(
-    sortModel: SortingModel,
+    sortModel: Sorting,
     accessIds: Array<AccessIdDefinition>,
     accessIdLike?: string,
     workbasketKeyLike?: string
-  ): QueryParametersModel {
-    const parameters = new QueryParametersModel();
+  ): QueryParameters {
+    const parameters = new QueryParameters();
     parameters.SORTBY = sortModel.sortBy;
     parameters.SORTDIRECTION = sortModel.sortDirection;
     parameters.ACCESSIDS = accessIds.map((values: AccessIdDefinition) => values.accessId).join('|');

@@ -1,5 +1,5 @@
-import { Classification } from 'app/models/classification';
-import { Workbasket } from 'app/models/workbasket';
+import { Classification } from 'app/shared/models/classification';
+import { Workbasket } from 'app/shared/models/workbasket';
 import { ObjectReference } from './object-reference';
 
 export class Task {

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { Workbasket } from 'app/models/workbasket';
+import { Workbasket } from 'app/shared/models/workbasket';
 import { ObjectReference } from '../models/object-reference';
 
 @Injectable()

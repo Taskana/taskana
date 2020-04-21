@@ -2,17 +2,17 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
-import { Workbasket } from 'app/models/workbasket';
-import { ACTION } from 'app/models/action';
+import { Workbasket } from 'app/shared/models/workbasket';
+import { ACTION } from 'app/shared/models/action';
 
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
-import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
-import { DomainService } from 'app/services/domain/domain.service';
+import { MasterAndDetailService } from 'app/shared/services/master-and-detail/master-and-detail.service';
+import { DomainService } from 'app/shared/services/domain/domain.service';
 import { ImportExportService } from 'app/administration/services/import-export.service';
-import { GeneralModalService } from '../../../services/general-modal/general-modal.service';
-import { MessageModal } from '../../../models/message-modal';
-import { ERROR_TYPES } from '../../../models/errors';
-import { ErrorsService } from '../../../services/errors/errors.service';
+import { GeneralModalService } from '../../../shared/services/general-modal/general-modal.service';
+import { MessageModal } from '../../../shared/models/message-modal';
+import { ERROR_TYPES } from '../../../shared/models/errors';
+import { ErrorsService } from '../../../shared/services/errors/errors.service';
 
 @Component({
   selector: 'taskana-workbasket-details',

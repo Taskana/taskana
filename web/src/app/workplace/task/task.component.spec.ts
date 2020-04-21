@@ -1,16 +1,16 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Routes } from '@angular/router';
 
-import { SpinnerComponent } from 'app/shared/spinner/spinner.component';
+import { SpinnerComponent } from 'app/shared/components/spinner/spinner.component';
 import { FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { Component } from '@angular/core';
-import { DomainService } from 'app/services/domain/domain.service';
-import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
-import { SelectedRouteService } from 'app/services/selected-route/selected-route';
-import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
+import { DomainService } from 'app/shared/services/domain/domain.service';
+import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
+import { SelectedRouteService } from 'app/shared/services/selected-route/selected-route';
+import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
 import { TaskService } from '../services/task.service';
 import { TaskComponent } from './task.component';

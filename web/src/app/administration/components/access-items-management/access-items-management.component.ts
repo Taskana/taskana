@@ -4,22 +4,22 @@ import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@ang
 
 import { Observable, Subscription } from 'rxjs';
 
-import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
-import { AccessItemsWorkbasketResource } from 'app/models/access-item-workbasket-resource';
-import { AccessItemWorkbasket } from 'app/models/access-item-workbasket';
-import { SortingModel } from 'app/models/sorting';
-import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
-import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
-import { AlertModel, AlertType } from 'app/models/alert';
-import { AlertService } from 'app/services/alert/alert.service';
+import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
+import { AccessItemWorkbasketResource } from 'app/shared/models/access-item-workbasket-resource';
+import { AccessItemWorkbasket } from 'app/shared/models/access-item-workbasket';
+import { Sorting } from 'app/shared/models/sorting';
+import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
+import { RemoveConfirmationService } from 'app/shared/services/remove-confirmation/remove-confirmation.service';
+import { AlertModel, AlertType } from 'app/shared/models/alert';
+import { AlertService } from 'app/shared/services/alert/alert.service';
 import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
-import { RequestInProgressService } from '../../../services/requestInProgress/request-in-progress.service';
+import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 import { AccessIdsService } from '../../../shared/services/access-ids/access-ids.service';
-import { AccessIdDefinition } from '../../../models/access-id';
-import { ErrorsService } from '../../../services/errors/errors.service';
-import { ERROR_TYPES } from '../../../models/errors';
-import { AccessItemsCustomisation, CustomField, getCustomFields } from '../../../models/customisation';
-import { customFieldCount } from '../../../models/workbasket-access-items';
+import { AccessIdDefinition } from '../../../shared/models/access-id';
+import { ErrorsService } from '../../../shared/services/errors/errors.service';
+import { ERROR_TYPES } from '../../../shared/models/errors';
+import { AccessItemsCustomisation, CustomField, getCustomFields } from '../../../shared/models/customisation';
+import { customFieldCount } from '../../../shared/models/workbasket-access-items';
 
 @Component({
   selector: 'taskana-access-items-management',
@@ -38,7 +38,7 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
   belongingGroups: Array<AccessIdDefinition>;
   sortingFields = new Map([['workbasket-key', 'Workbasket Key'], ['access-id', 'Access id']]);
   accessItemDefaultSortBy: string = 'workbasket-key';
-  sortModel: SortingModel = new SortingModel(this.accessItemDefaultSortBy);
+  sortModel: Sorting = new Sorting(this.accessItemDefaultSortBy);
   isGroup: boolean;
   groupsKey = 'ou=groups';
 
@@ -117,7 +117,7 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
     return this.formsValidatorService.isFieldValid(this.accessItemsGroups[index], field);
   }
 
-  sorting(sort: SortingModel) {
+  sorting(sort: Sorting) {
     this.sortModel = sort;
     this.searchForAccessItemsWorkbaskets();
   }
@@ -132,7 +132,7 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
       this.sortModel,
       true
     )
-      .subscribe((accessItemsResource: AccessItemsWorkbasketResource) => {
+      .subscribe((accessItemsResource: AccessItemWorkbasketResource) => {
         this.setAccessItemsGroups(accessItemsResource ? accessItemsResource.accessItems : []);
         this.requestInProgressService.setRequestInProgress(false);
       },

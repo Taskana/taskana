@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { TaskHistoryEventData } from 'app/models/task-history-event';
-import { TaskHistoryEventResourceData } from 'app/models/task-history-event-resource';
-import { QueryParametersModel } from 'app/models/query-parameters';
+import { TaskHistoryEventData } from 'app/shared/models/task-history-event';
+import { TaskHistoryEventResourceData } from 'app/shared/models/task-history-event-resource';
+import { QueryParameters } from 'app/shared/models/query-parameters';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
-import { Direction } from 'app/models/sorting';
+import { Direction } from 'app/shared/models/sorting';
 import { Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'environments/environment';
@@ -74,7 +74,7 @@ export class TaskQueryService {
     created: string,
     allPages: boolean = false
   ): string {
-    const parameters = new QueryParametersModel();
+    const parameters = new QueryParameters();
     parameters.SORTBY = orderBy;
     parameters.SORTDIRECTION = sortDirection;
     parameters.TASK_ID_LIKE = taskId;

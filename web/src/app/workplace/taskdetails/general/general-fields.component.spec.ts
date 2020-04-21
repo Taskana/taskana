@@ -3,17 +3,17 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { ClassificationCategoriesService } from 'app/shared/services/classifications/classification-categories.service';
-import { DomainService } from 'app/services/domain/domain.service';
+import { ClassificationCategoriesService } from 'app/shared/services/classification-categories/classification-categories.service';
+import { DomainService } from 'app/shared/services/domain/domain.service';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Routes } from '@angular/router';
 import { Component } from '@angular/core';
-import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
-import { SelectedRouteService } from 'app/services/selected-route/selected-route';
+import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
+import { SelectedRouteService } from 'app/shared/services/selected-route/selected-route';
 import { configureTests } from 'app/app.test.configuration';
-import { ClassificationResource } from 'app/models/classification-resource';
-import { Classification } from 'app/models/classification';
-import { Links } from 'app/models/links';
+import { ClassificationResource } from 'app/shared/models/classification-resource';
+import { Classification } from 'app/shared/models/classification';
+import { Links } from 'app/shared/models/links';
 import { TaskdetailsGeneralFieldsComponent } from './general-fields.component';
 
 @Component({

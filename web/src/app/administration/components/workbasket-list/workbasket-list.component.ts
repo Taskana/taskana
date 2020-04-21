@@ -2,14 +2,14 @@ import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/co
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
-import { WorkbasketSummaryResource } from 'app/models/workbasket-summary-resource';
-import { WorkbasketSummary } from 'app/models/workbasket-summary';
-import { FilterModel } from 'app/models/filter';
-import { SortingModel } from 'app/models/sorting';
-import { Orientation } from 'app/models/orientation';
+import { WorkbasketSummaryResource } from 'app/shared/models/workbasket-summary-resource';
+import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
+import { Filter } from 'app/shared/models/filter';
+import { Sorting } from 'app/shared/models/sorting';
+import { Orientation } from 'app/shared/models/orientation';
 
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
-import { OrientationService } from 'app/services/orientation/orientation.service';
+import { OrientationService } from 'app/shared/services/orientation/orientation.service';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { ImportExportService } from 'app/administration/services/import-export.service';
 
@@ -30,8 +30,8 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   cards: number = this.pageSize;
 
   workbasketDefaultSortBy: string = 'name';
-  sort: SortingModel = new SortingModel(this.workbasketDefaultSortBy);
-  filterBy: FilterModel = new FilterModel({ name: '', owner: '', type: '', description: '', key: '' });
+  sort: Sorting = new Sorting(this.workbasketDefaultSortBy);
+  filterBy: Filter = new Filter({ name: '', owner: '', type: '', description: '', key: '' });
 
   @ViewChild('wbToolbar', { static: true })
   private toolbarElement: ElementRef;
@@ -79,12 +79,12 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
     this.router.navigate([{ outlets: { detail: [this.selectedId] } }], { relativeTo: this.route });
   }
 
-  performSorting(sort: SortingModel) {
+  performSorting(sort: Sorting) {
     this.sort = sort;
     this.performRequest();
   }
 
-  performFilter(filterBy: FilterModel) {
+  performFilter(filterBy: Filter) {
     this.filterBy = filterBy;
     this.performRequest();
   }

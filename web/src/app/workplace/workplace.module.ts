@@ -7,7 +7,7 @@ import { AlertModule, TypeaheadModule } from 'ngx-bootstrap';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { SharedModule } from 'app/shared/shared.module';
-import { ClassificationCategoriesService } from 'app/shared/services/classifications/classification-categories.service';
+import { ClassificationCategoriesService } from 'app/shared/services/classification-categories/classification-categories.service';
 import { WorkplaceRoutingModule } from './workplace-routing.module';
 
 import { TaskListToolbarComponent } from './taskmaster/task-list-toolbar/task-list-toolbar.component';

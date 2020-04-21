@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Task } from 'app/workplace/models/task';
-import { Workbasket } from 'app/models/workbasket';
+import { Workbasket } from 'app/shared/models/workbasket';
 import { TaskService } from 'app/workplace/services/task.service';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
-import { SortingModel } from 'app/models/sorting';
-import { FilterModel } from 'app/models/filter';
-import { TaskanaType } from 'app/models/taskana-type';
+import { Sorting } from 'app/shared/models/sorting';
+import { Filter } from 'app/shared/models/filter';
+import { TaskanaType } from 'app/shared/models/taskana-type';
 import { expandDown } from 'app/shared/animations/expand.animation';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { WorkplaceService } from 'app/workplace/services/workplace.service';
@@ -23,8 +23,8 @@ export enum Search {
 })
 export class TaskListToolbarComponent implements OnInit {
   @Input() taskDefaultSortBy: string;
-  @Output() performSorting = new EventEmitter<SortingModel>();
-  @Output() performFilter = new EventEmitter<FilterModel>();
+  @Output() performSorting = new EventEmitter<Sorting>();
+  @Output() performFilter = new EventEmitter<Filter>();
   @Output() selectSearchType = new EventEmitter();
 
   sortingFields = new Map([['name', 'Name'], ['priority', 'Priority'], ['due', 'Due'], ['planned', 'Planned']]);
@@ -110,11 +110,11 @@ export class TaskListToolbarComponent implements OnInit {
     this.router.navigate(['']);
   }
 
-  sorting(sort: SortingModel) {
+  sorting(sort: Sorting) {
     this.performSorting.emit(sort);
   }
 
-  filtering(filterBy: FilterModel) {
+  filtering(filterBy: Filter) {
     this.performFilter.emit(filterBy);
   }
 
