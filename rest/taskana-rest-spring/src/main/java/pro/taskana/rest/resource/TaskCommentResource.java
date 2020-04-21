@@ -1,11 +1,11 @@
 package pro.taskana.rest.resource;
 
-import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.RepresentationModel;
 
 import pro.taskana.task.api.models.TaskComment;
 
-/** Resource class for {@link TaskComment}. */
-public class TaskCommentResource extends ResourceSupport {
+/** EntityModel class for {@link TaskComment}. */
+public class TaskCommentResource extends RepresentationModel<TaskCommentResource> {
 
   private String taskCommentId;
   private String taskId;

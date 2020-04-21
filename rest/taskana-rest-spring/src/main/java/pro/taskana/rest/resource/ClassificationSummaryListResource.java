@@ -4,19 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Collection;
 import org.springframework.hateoas.Link;
 
-/** Resource class for {@link ClassificationSummaryResource} with Pagination. */
+/** EntityModel class for {@link ClassificationSummaryResource} with Pagination. */
 public class ClassificationSummaryListResource
     extends PagedResources<ClassificationSummaryResource> {
 
   public ClassificationSummaryListResource() {
     super();
-  }
-
-  public ClassificationSummaryListResource(
-      Collection<ClassificationSummaryResource> content,
-      PageMetadata metadata,
-      Iterable<Link> links) {
-    super(content, metadata, links);
   }
 
   public ClassificationSummaryListResource(

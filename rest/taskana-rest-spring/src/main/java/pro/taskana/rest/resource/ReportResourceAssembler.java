@@ -1,7 +1,7 @@
 package pro.taskana.rest.resource;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.time.Instant;
 import java.util.Collection;
@@ -31,7 +31,7 @@ import pro.taskana.task.api.TaskState;
 @Component
 public class ReportResourceAssembler {
 
-  public ReportResource toResource(
+  public ReportResource toModel(
       TaskStatusReport report, List<String> domains, List<TaskState> states)
       throws NotAuthorizedException, InvalidArgumentException {
     ReportResource resource = toReportResource(report);
@@ -42,7 +42,7 @@ public class ReportResourceAssembler {
     return resource;
   }
 
-  public ReportResource toResource(ClassificationReport report)
+  public ReportResource toModel(ClassificationReport report)
       throws NotAuthorizedException, InvalidArgumentException {
     ReportResource resource = toReportResource(report);
     resource.add(
@@ -52,7 +52,7 @@ public class ReportResourceAssembler {
     return resource;
   }
 
-  public ReportResource toResource(WorkbasketReport report, List<TaskState> states)
+  public ReportResource toModel(WorkbasketReport report, List<TaskState> states)
       throws NotAuthorizedException, InvalidArgumentException {
     ReportResource resource = toReportResource(report);
     resource.add(
@@ -62,7 +62,7 @@ public class ReportResourceAssembler {
     return resource;
   }
 
-  public ReportResource toResource(WorkbasketReport report, int daysInPast, List<TaskState> states)
+  public ReportResource toModel(WorkbasketReport report, int daysInPast, List<TaskState> states)
       throws NotAuthorizedException, InvalidArgumentException {
     ReportResource resource = toReportResource(report);
     resource.add(
@@ -74,7 +74,7 @@ public class ReportResourceAssembler {
     return resource;
   }
 
-  public ReportResource toResource(TimestampReport report)
+  public ReportResource toModel(TimestampReport report)
       throws NotAuthorizedException, InvalidArgumentException {
     ReportResource resource = toReportResource(report);
     resource.add(

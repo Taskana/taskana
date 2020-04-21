@@ -1,12 +1,12 @@
 package pro.taskana.rest.resource;
 
 import javax.validation.constraints.NotNull;
-import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.RepresentationModel;
 
 import pro.taskana.classification.api.models.Classification;
 
-/** Resource class for {@link Classification}. */
-public class ClassificationResource extends ResourceSupport {
+/** EntityModel class for {@link Classification}. */
+public class ClassificationResource extends RepresentationModel<ClassificationResource> {
 
   @NotNull private String classificationId;
   @NotNull private String key;

@@ -49,7 +49,7 @@ public class MonitorController {
     LOGGER.debug("Entry to getTasksStatusReport()");
     ResponseEntity<ReportResource> response =
         ResponseEntity.ok(
-            reportResourceAssembler.toResource(
+            reportResourceAssembler.toModel(
                 monitorService
                     .createTaskStatusReportBuilder()
                     .stateIn(states)
@@ -72,7 +72,7 @@ public class MonitorController {
     LOGGER.debug("Entry to getTasksWorkbasketReport()");
 
     ReportResource report =
-        reportResourceAssembler.toResource(
+        reportResourceAssembler.toModel(
             monitorService
                 .createWorkbasketReportBuilder()
                 .withColumnHeaders(getRangeTimeInterval())
@@ -95,7 +95,7 @@ public class MonitorController {
     LOGGER.debug("Entry to getTasksWorkbasketPlannedDateReport()");
 
     ReportResource report =
-        reportResourceAssembler.toResource(
+        reportResourceAssembler.toModel(
             monitorService
                 .createWorkbasketReportBuilder()
                 .stateIn(states)
@@ -117,7 +117,7 @@ public class MonitorController {
     LOGGER.debug("Entry to getTasksClassificationReport()");
 
     ReportResource report =
-        reportResourceAssembler.toResource(
+        reportResourceAssembler.toModel(
             monitorService
                 .createClassificationReportBuilder()
                 .withColumnHeaders(getRangeTimeInterval())
@@ -140,7 +140,7 @@ public class MonitorController {
             .collect(Collectors.toList());
     return ResponseEntity.status(HttpStatus.OK)
         .body(
-            reportResourceAssembler.toResource(
+            reportResourceAssembler.toModel(
                 monitorService
                     .createTimestampReportBuilder()
                     .withColumnHeaders(columnHeaders)

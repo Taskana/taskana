@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.MediaTypes;
-import org.springframework.hateoas.Resources;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
 import org.springframework.http.HttpStatus;
@@ -112,7 +112,7 @@ public class WorkbasketController extends AbstractPagingController {
     PageMetadata pageMetadata = getPageMetadata(params, query);
     List<WorkbasketSummary> workbasketSummaries = getQueryList(query, pageMetadata);
     WorkbasketSummaryListResource pagedResources =
-        workbasketSummaryResourceAssembler.toResources(workbasketSummaries, pageMetadata);
+        workbasketSummaryResourceAssembler.toCollectionModel(workbasketSummaries, pageMetadata);
 
     ResponseEntity<WorkbasketSummaryListResource> response = ResponseEntity.ok(pagedResources);
     if (LOGGER.isDebugEnabled()) {
@@ -122,7 +122,7 @@ public class WorkbasketController extends AbstractPagingController {
     return response;
   }
 
-  @GetMapping(path = Mapping.URL_WORKBASKET_ID, produces = MediaTypes.HAL_JSON_UTF8_VALUE)
+  @GetMapping(path = Mapping.URL_WORKBASKET_ID, produces = MediaTypes.HAL_JSON_VALUE)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<WorkbasketResource> getWorkbasket(
       @PathVariable(value = "workbasketId") String workbasketId)
@@ -130,7 +130,7 @@ public class WorkbasketController extends AbstractPagingController {
     LOGGER.debug("Entry to getWorkbasket(workbasketId= {})", workbasketId);
     ResponseEntity<WorkbasketResource> result;
     Workbasket workbasket = workbasketService.getWorkbasket(workbasketId);
-    result = ResponseEntity.ok(workbasketResourceAssembler.toResource(workbasket));
+    result = ResponseEntity.ok(workbasketResourceAssembler.toModel(workbasket));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from getWorkbasket(), returning {}", result);
     }
@@ -176,7 +176,7 @@ public class WorkbasketController extends AbstractPagingController {
     workbasket = workbasketService.createWorkbasket(workbasket);
     ResponseEntity<WorkbasketResource> response =
         ResponseEntity.status(HttpStatus.CREATED)
-            .body(workbasketResourceAssembler.toResource(workbasket));
+            .body(workbasketResourceAssembler.toModel(workbasket));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from createWorkbasket(), returning {}", response);
     }
@@ -196,13 +196,13 @@ public class WorkbasketController extends AbstractPagingController {
     if (workbasketId.equals(workbasketResource.getWorkbasketId())) {
       Workbasket workbasket = workbasketResourceAssembler.toModel(workbasketResource);
       workbasket = workbasketService.updateWorkbasket(workbasket);
-      result = ResponseEntity.ok(workbasketResourceAssembler.toResource(workbasket));
+      result = ResponseEntity.ok(workbasketResourceAssembler.toModel(workbasket));
     } else {
       throw new InvalidWorkbasketException(
           "Target-WB-ID('"
               + workbasketId
               + "') is not identical with the WB-ID of to object which should be updated. ID=('"
-              + workbasketResource.getId()
+              + workbasketResource.getWorkbasketId()
               + "')");
     }
 
@@ -213,9 +213,7 @@ public class WorkbasketController extends AbstractPagingController {
     return result;
   }
 
-  @GetMapping(
-      path = Mapping.URL_WORKBASKET_ID_ACCESSITEMS,
-      produces = MediaTypes.HAL_JSON_UTF8_VALUE)
+  @GetMapping(path = Mapping.URL_WORKBASKET_ID_ACCESSITEMS, produces = MediaTypes.HAL_JSON_VALUE)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<WorkbasketAccessItemListResource> getWorkbasketAccessItems(
       @PathVariable(value = "workbasketId") String workbasketId)
@@ -227,7 +225,7 @@ public class WorkbasketController extends AbstractPagingController {
         workbasketService.getWorkbasketAccessItems(workbasketId);
     result =
         ResponseEntity.ok(
-            workbasketAccessItemResourceAssembler.toResources(workbasketId, accessItems));
+            workbasketAccessItemResourceAssembler.toCollectionModel(workbasketId, accessItems));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from getWorkbasketAccessItems(), returning {}", result);
     }
@@ -256,7 +254,8 @@ public class WorkbasketController extends AbstractPagingController {
 
     ResponseEntity<WorkbasketAccessItemListResource> response =
         ResponseEntity.ok(
-            workbasketAccessItemResourceAssembler.toResources(workbasketId, updatedWbAccessItems));
+            workbasketAccessItemResourceAssembler.toCollectionModel(
+                workbasketId, updatedWbAccessItems));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from setWorkbasketAccessItems(), returning {}", response);
     }
@@ -264,9 +263,7 @@ public class WorkbasketController extends AbstractPagingController {
     return response;
   }
 
-  @GetMapping(
-      path = Mapping.URL_WORKBASKET_ID_DISTRIBUTION,
-      produces = MediaTypes.HAL_JSON_UTF8_VALUE)
+  @GetMapping(path = Mapping.URL_WORKBASKET_ID_DISTRIBUTION, produces = MediaTypes.HAL_JSON_VALUE)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<DistributionTargetListResource> getDistributionTargets(
       @PathVariable(value = "workbasketId") String workbasketId)
@@ -276,7 +273,7 @@ public class WorkbasketController extends AbstractPagingController {
     List<WorkbasketSummary> distributionTargets =
         workbasketService.getDistributionTargets(workbasketId);
     DistributionTargetListResource distributionTargetListResource =
-        distributionTargetResourceAssembler.toResources(workbasketId, distributionTargets);
+        distributionTargetResourceAssembler.toCollectionModel(workbasketId, distributionTargets);
     ResponseEntity<DistributionTargetListResource> result =
         ResponseEntity.ok(distributionTargetListResource);
     if (LOGGER.isDebugEnabled()) {
@@ -305,7 +302,7 @@ public class WorkbasketController extends AbstractPagingController {
         workbasketService.getDistributionTargets(sourceWorkbasketId);
     ResponseEntity<DistributionTargetListResource> response =
         ResponseEntity.ok(
-            distributionTargetResourceAssembler.toResources(
+            distributionTargetResourceAssembler.toCollectionModel(
                 sourceWorkbasketId, distributionTargets));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from getTasksStatusReport(), returning {}", response);
@@ -317,7 +314,7 @@ public class WorkbasketController extends AbstractPagingController {
   // TODO - schema inconsistent with PUT and GET
   @DeleteMapping(path = Mapping.URL_WORKBASKET_DISTRIBUTION_ID)
   @Transactional(rollbackFor = Exception.class)
-  public ResponseEntity<Resources<DistributionTargetResource>>
+  public ResponseEntity<CollectionModel<DistributionTargetResource>>
       removeDistributionTargetForWorkbasketId(
           @PathVariable(value = "workbasketId") String targetWorkbasketId)
           throws WorkbasketNotFoundException, NotAuthorizedException {
@@ -330,7 +327,7 @@ public class WorkbasketController extends AbstractPagingController {
       workbasketService.removeDistributionTarget(source.getId(), targetWorkbasketId);
     }
 
-    ResponseEntity<Resources<DistributionTargetResource>> response =
+    ResponseEntity<CollectionModel<DistributionTargetResource>> response =
         ResponseEntity.noContent().build();
     LOGGER.debug("Exit from removeDistributionTargetForWorkbasketId(), returning {}", response);
     return response;

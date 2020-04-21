@@ -13,7 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.hateoas.Link;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -71,7 +71,7 @@ class AsyncUpdateJobIntTest {
 
     assertThat(response.getBody()).isNotNull();
     ClassificationResource classification = response.getBody();
-    assertThat(classification.getLink(Link.REL_SELF)).isNotNull();
+    assertThat(classification.getLink(IanaLinkRelations.SELF)).isNotNull();
 
     // 2nd step: modify classification and trigger update
     classification.removeLinks();

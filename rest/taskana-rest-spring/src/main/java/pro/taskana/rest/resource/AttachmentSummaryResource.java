@@ -1,12 +1,12 @@
 package pro.taskana.rest.resource;
 
-import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.RepresentationModel;
 
 import pro.taskana.task.api.models.AttachmentSummary;
 import pro.taskana.task.api.models.ObjectReference;
 
-/** Resource class for {@link AttachmentSummary}. */
-public class AttachmentSummaryResource extends ResourceSupport {
+/** EntityModel class for {@link AttachmentSummary}. */
+public class AttachmentSummaryResource extends RepresentationModel<AttachmentSummaryResource> {
 
   private String attachmentId;
   private String taskId;

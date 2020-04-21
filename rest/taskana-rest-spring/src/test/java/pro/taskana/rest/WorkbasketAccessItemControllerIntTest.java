@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.hateoas.Link;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +42,7 @@ class WorkbasketAccessItemControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(WorkbasketAccessItemListResource.class));
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
   }
 
   @Test
@@ -54,8 +54,14 @@ class WorkbasketAccessItemControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(WorkbasketAccessItemListResource.class));
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
-    assertThat(response.getBody().getLink(Link.REL_SELF).getHref().endsWith(parameters)).isTrue();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
+    assertThat(
+            response
+                .getBody()
+                .getRequiredLink(IanaLinkRelations.SELF)
+                .getHref()
+                .endsWith(parameters))
+        .isTrue();
   }
 
   @Test
@@ -88,10 +94,16 @@ class WorkbasketAccessItemControllerIntTest {
     assertThat(response.getBody().getContent()).hasSize(1);
     assertThat(response.getBody().getContent().iterator().next().getAccessId())
         .isEqualTo("user_1_1");
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
-    assertThat(response.getBody().getLink(Link.REL_SELF).getHref().endsWith(parameters)).isTrue();
-    assertThat(response.getBody().getLink(Link.REL_FIRST)).isNotNull();
-    assertThat(response.getBody().getLink(Link.REL_LAST)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
+    assertThat(
+            response
+                .getBody()
+                .getRequiredLink(IanaLinkRelations.SELF)
+                .getHref()
+                .endsWith(parameters))
+        .isTrue();
+    assertThat(response.getBody().getLink(IanaLinkRelations.FIRST)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.LAST)).isNotNull();
     assertThat(response.getBody().getMetadata().getSize()).isEqualTo(9);
     assertThat(response.getBody().getMetadata().getTotalElements()).isEqualTo(1);
     assertThat(response.getBody().getMetadata().getTotalPages()).isEqualTo(1);

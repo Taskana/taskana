@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Collection;
 import org.springframework.hateoas.Link;
 
-/** Resource class for {@link DistributionTargetResource} with Pagination. */
+/** EntityModel class for {@link DistributionTargetResource} with Pagination. */
 public class DistributionTargetListResource extends PagedResources<DistributionTargetResource> {
 
   public DistributionTargetListResource() {

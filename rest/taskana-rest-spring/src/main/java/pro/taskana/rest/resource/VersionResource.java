@@ -1,9 +1,9 @@
 package pro.taskana.rest.resource;
 
-import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.RepresentationModel;
 
-/** Resource class for version information. */
-public class VersionResource extends ResourceSupport {
+/** EntityModel class for version information. */
+public class VersionResource extends RepresentationModel<VersionResource> {
 
   private String version;
 

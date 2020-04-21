@@ -15,8 +15,8 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.hal.Jackson2HalModule;
+import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.mediatype.hal.Jackson2HalModule;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -58,7 +58,7 @@ public class TaskHistoryEventControllerIntTest {
             HttpMethod.GET,
             request,
             ParameterizedTypeReference.forType(TaskHistoryEventListResource.class));
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(45);
   }
 
@@ -72,9 +72,15 @@ public class TaskHistoryEventControllerIntTest {
             HttpMethod.GET,
             request,
             ParameterizedTypeReference.forType(TaskHistoryEventListResource.class));
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(3);
-    assertThat(response.getBody().getLink(Link.REL_SELF).getHref().endsWith(parameters)).isTrue();
+    assertThat(
+            response
+                .getBody()
+                .getRequiredLink(IanaLinkRelations.SELF)
+                .getHref()
+                .endsWith(parameters))
+        .isTrue();
   }
 
   @Test
@@ -89,7 +95,7 @@ public class TaskHistoryEventControllerIntTest {
             request,
             ParameterizedTypeReference.forType(TaskHistoryEventListResource.class));
 
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getLinks()).isNotNull();
     assertThat(response.getBody().getMetadata()).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(1);
@@ -105,7 +111,7 @@ public class TaskHistoryEventControllerIntTest {
             request,
             ParameterizedTypeReference.forType(TaskHistoryEventResource.class));
 
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getLinks()).isNotNull();
     assertThat(response.getBody().getDetails()).isNotNull();
   }
@@ -153,7 +159,7 @@ public class TaskHistoryEventControllerIntTest {
             HttpMethod.GET,
             request,
             ParameterizedTypeReference.forType(TaskHistoryEventListResource.class));
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(23);
   }
 
@@ -171,18 +177,24 @@ public class TaskHistoryEventControllerIntTest {
     assertThat(response.getBody().getContent()).hasSize(2);
     assertThat(response.getBody().getContent().iterator().next().getWorkbasketKey())
         .isEqualTo("WBI:100000000000000000000000000000000002");
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
-    assertThat(response.getBody().getLink(Link.REL_SELF).getHref().endsWith(parameters)).isTrue();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
+    assertThat(
+            response
+                .getBody()
+                .getRequiredLink(IanaLinkRelations.SELF)
+                .getHref()
+                .endsWith(parameters))
+        .isTrue();
     assertThat(response.getBody().getLink("allTaskHistoryEvent")).isNotNull();
     assertThat(
             response
                 .getBody()
-                .getLink("allTaskHistoryEvent")
+                .getRequiredLink("allTaskHistoryEvent")
                 .getHref()
                 .endsWith("/api/v1/task-history-event"))
         .isTrue();
-    assertThat(response.getBody().getLink(Link.REL_FIRST)).isNotNull();
-    assertThat(response.getBody().getLink(Link.REL_LAST)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.FIRST)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.LAST)).isNotNull();
   }
 
   /**

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Collection;
 import org.springframework.hateoas.Link;
 
-/** Resource class for {@link TaskSummaryResource} with Pagination. */
+/** EntityModel class for {@link TaskSummaryResource} with Pagination. */
 public class TaskSummaryListResource extends PagedResources<TaskSummaryResource> {
 
   public TaskSummaryListResource() {

@@ -42,7 +42,7 @@ class WorkbasketAccessItemResourceAssemblerTest {
     accessItem.setPermCustom12(true);
     // when
     WorkbasketAccessItemResource resource =
-        workbasketAccessItemResourceAssembler.toResource(accessItem);
+        workbasketAccessItemResourceAssembler.toModel(accessItem);
     // then
     testEquality(accessItem, resource);
   }

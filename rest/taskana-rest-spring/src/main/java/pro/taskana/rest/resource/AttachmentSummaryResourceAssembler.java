@@ -1,28 +1,22 @@
 package pro.taskana.rest.resource;
 
-import java.util.List;
-import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
 import pro.taskana.rest.AttachmentController;
 import pro.taskana.task.api.models.AttachmentSummary;
 
-/** Resource assembler for {@link AttachmentSummaryResource}. */
+/** EntityModel assembler for {@link AttachmentSummaryResource}. */
 @Component
 public class AttachmentSummaryResourceAssembler
-    extends ResourceAssemblerSupport<AttachmentSummary, AttachmentSummaryResource> {
+    extends RepresentationModelAssemblerSupport<AttachmentSummary, AttachmentSummaryResource> {
 
   public AttachmentSummaryResourceAssembler() {
     super(AttachmentController.class, AttachmentSummaryResource.class);
   }
 
   @Override
-  public AttachmentSummaryResource toResource(AttachmentSummary attachmentSummary) {
+  public AttachmentSummaryResource toModel(AttachmentSummary attachmentSummary) {
     return new AttachmentSummaryResource(attachmentSummary);
-  }
-
-  public List<AttachmentSummaryResource> toResources(List<AttachmentSummary> attachmentSummaries) {
-    List<AttachmentSummaryResource> resources = super.toResources(attachmentSummaries);
-    return resources;
   }
 }

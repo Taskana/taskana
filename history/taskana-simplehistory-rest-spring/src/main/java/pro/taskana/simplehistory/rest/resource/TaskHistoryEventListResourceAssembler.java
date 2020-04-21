@@ -1,8 +1,10 @@
 package pro.taskana.simplehistory.rest.resource;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
+import java.util.ArrayList;
 import java.util.List;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.Link;
 
 import pro.taskana.rest.resource.AbstractRessourcesAssembler;
@@ -17,7 +19,8 @@ public class TaskHistoryEventListResourceAssembler extends AbstractRessourcesAss
       List<HistoryEventImpl> historyEvents, PageMetadata pageMetadata) {
 
     TaskHistoryEventResourceAssembler assembler = new TaskHistoryEventResourceAssembler();
-    List<TaskHistoryEventResource> resources = assembler.toResources(historyEvents);
+    List<TaskHistoryEventResource> resources =
+        new ArrayList<>(assembler.toCollectionModel(historyEvents).getContent());
     TaskHistoryEventListResource pagedResources =
         new TaskHistoryEventListResource(resources, pageMetadata);
 
@@ -26,20 +29,20 @@ public class TaskHistoryEventListResourceAssembler extends AbstractRessourcesAss
       pagedResources.add(linkTo(TaskHistoryEventController.class).withRel("allTaskHistoryEvent"));
       pagedResources.add(
           new Link(this.getOriginal().replaceQueryParam("page", 1).toUriString())
-              .withRel(Link.REL_FIRST));
+              .withRel(IanaLinkRelations.FIRST));
       pagedResources.add(
           new Link(
                   this.getOriginal()
                       .replaceQueryParam("page", pageMetadata.getTotalPages())
                       .toUriString())
-              .withRel(Link.REL_LAST));
+                      .withRel(IanaLinkRelations.LAST));
       if (pageMetadata.getNumber() > 1) {
         pagedResources.add(
             new Link(
                     this.getOriginal()
                         .replaceQueryParam("page", pageMetadata.getNumber() - 1)
                         .toUriString())
-                .withRel(Link.REL_PREVIOUS));
+                        .withRel(IanaLinkRelations.PREV));
       }
       if (pageMetadata.getNumber() < pageMetadata.getTotalPages()) {
         pagedResources.add(
@@ -47,7 +50,7 @@ public class TaskHistoryEventListResourceAssembler extends AbstractRessourcesAss
                     this.getOriginal()
                         .replaceQueryParam("page", pageMetadata.getNumber() + 1)
                         .toUriString())
-                .withRel(Link.REL_NEXT));
+                        .withRel(IanaLinkRelations.NEXT));
       }
     }
 

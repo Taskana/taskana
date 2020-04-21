@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.hateoas.Link;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -73,7 +73,7 @@ class TaskControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(25);
   }
 
@@ -86,7 +86,7 @@ class TaskControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(22);
   }
 
@@ -115,7 +115,7 @@ class TaskControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(6);
   }
 
@@ -137,7 +137,7 @@ class TaskControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(3);
   }
 
@@ -156,7 +156,7 @@ class TaskControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(4);
   }
 
@@ -206,7 +206,7 @@ class TaskControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(6);
   }
 
@@ -220,7 +220,7 @@ class TaskControllerIntTest {
             HttpMethod.GET,
             new HttpEntity<String>(restHelper.getHeadersAdmin()),
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(4);
   }
 
@@ -275,7 +275,7 @@ class TaskControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(9);
   }
 
@@ -294,7 +294,7 @@ class TaskControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(6);
   }
 
@@ -330,7 +330,7 @@ class TaskControllerIntTest {
             HttpMethod.GET,
             request,
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(20);
   }
 
@@ -344,7 +344,7 @@ class TaskControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(2);
   }
 
@@ -376,7 +376,7 @@ class TaskControllerIntTest {
             HttpMethod.GET,
             new HttpEntity<>(restHelper.getHeadersAdmin()),
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(73);
   }
 
@@ -389,11 +389,11 @@ class TaskControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(
             response
                 .getBody()
-                .getLink(Link.REL_SELF)
+                .getRequiredLink(IanaLinkRelations.SELF)
                 .getHref()
                 .endsWith(
                     "/api/v1/tasks?por.type=VNR&por.value=22334455&sort-by=por.value&order=desc"))
@@ -429,24 +429,30 @@ class TaskControllerIntTest {
             request,
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
     assertThat(response.getBody().getContent()).hasSize(1);
-    assertThat(response.getBody().getLink(Link.REL_LAST).getHref().contains("page=14")).isTrue();
-    assertThat("TKI:100000000000000000000000000000000000")
-        .isEqualTo(response.getBody().getContent().iterator().next().getTaskId());
-
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
     assertThat(
             response
                 .getBody()
-                .getLink(Link.REL_SELF)
+                .getRequiredLink(IanaLinkRelations.LAST)
+                .getHref()
+                .contains("page=14"))
+        .isTrue();
+    assertThat("TKI:100000000000000000000000000000000000")
+        .isEqualTo(response.getBody().getContent().iterator().next().getTaskId());
+
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
+    assertThat(
+            response
+                .getBody()
+                .getRequiredLink(IanaLinkRelations.SELF)
                 .getHref()
                 .endsWith(
                     "/api/v1/tasks?"
                         + "state=READY,CLAIMED&sort-by=por.value&order=desc&page=15&page-size=5"))
         .isTrue();
 
-    assertThat(response.getBody().getLink(Link.REL_FIRST)).isNotNull();
-    assertThat(response.getBody().getLink(Link.REL_LAST)).isNotNull();
-    assertThat(response.getBody().getLink(Link.REL_PREVIOUS)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.FIRST)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.LAST)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.PREV)).isNotNull();
   }
 
   @Test
@@ -475,22 +481,24 @@ class TaskControllerIntTest {
             request,
             ParameterizedTypeReference.forType(TaskSummaryListResource.class));
     assertThat(response.getBody().getContent()).hasSize(5);
-    assertThat(response.getBody().getLink(Link.REL_LAST).getHref().contains("page=5")).isTrue();
+    assertThat(
+            response.getBody().getRequiredLink(IanaLinkRelations.LAST).getHref().contains("page=5"))
+        .isTrue();
     assertThat("TKI:000000000000000000000000000000000023")
         .isEqualTo(response.getBody().getContent().iterator().next().getTaskId());
 
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(
             response
                 .getBody()
-                .getLink(Link.REL_SELF)
+                .getRequiredLink(IanaLinkRelations.SELF)
                 .getHref()
                 .endsWith("/api/v1/tasks?sort-by=due&order=desc&page=5&page-size=5"))
         .isTrue();
 
-    assertThat(response.getBody().getLink(Link.REL_FIRST)).isNotNull();
-    assertThat(response.getBody().getLink(Link.REL_LAST)).isNotNull();
-    assertThat(response.getBody().getLink(Link.REL_PREVIOUS)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.FIRST)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.LAST)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.PREV)).isNotNull();
   }
 
   @Test
@@ -515,12 +523,12 @@ class TaskControllerIntTest {
     assertThat("TKI:000000000000000000000000000000000013")
         .isEqualTo(response.getBody().getContent().iterator().next().getTaskId());
 
-    assertThat(response.getBody().getLink(Link.REL_SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
 
     assertThat(
             response
                 .getBody()
-                .getLink(Link.REL_SELF)
+                .getRequiredLink(IanaLinkRelations.SELF)
                 .getHref()
                 .endsWith(
                     "/api/v1/tasks?por.company=00&por.system=PASystem&por.instance=00&"
@@ -528,9 +536,9 @@ class TaskControllerIntTest {
                         + "page=2&page-size=5"))
         .isTrue();
 
-    assertThat(response.getBody().getLink(Link.REL_FIRST)).isNotNull();
-    assertThat(response.getBody().getLink(Link.REL_LAST)).isNotNull();
-    assertThat(response.getBody().getLink(Link.REL_PREVIOUS)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.FIRST)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.LAST)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.PREV)).isNotNull();
   }
 
   @Test

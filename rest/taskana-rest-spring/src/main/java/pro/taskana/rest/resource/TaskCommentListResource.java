@@ -2,10 +2,10 @@ package pro.taskana.rest.resource;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
-import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.RepresentationModel;
 
-/** Resource class for {@link TaskCommentResource} with Pagination. */
-public class TaskCommentListResource extends ResourceSupport {
+/** EntityModel class for {@link TaskCommentResource} with Pagination. */
+public class TaskCommentListResource extends RepresentationModel<TaskCommentListResource> {
 
   private List<TaskCommentResource> content;
 

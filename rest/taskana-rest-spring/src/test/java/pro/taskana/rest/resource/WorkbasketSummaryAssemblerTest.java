@@ -36,7 +36,7 @@ class WorkbasketSummaryAssemblerTest {
     workbasketSummary.setType(WorkbasketType.PERSONAL);
     // when
     WorkbasketSummaryResource workbasketSummaryResource =
-        workbasketSummaryAssembler.toResource(workbasketSummary);
+        workbasketSummaryAssembler.toModel(workbasketSummary);
     // then
     Assert.assertEquals(
         workbasketSummary.getDescription(), workbasketSummaryResource.getDescription());

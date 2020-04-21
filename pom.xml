@@ -57,7 +57,7 @@
         <version.spring.boot>2.2.6.RELEASE</version.spring.boot>
         <version.spring.restdocs>2.0.4.RELEASE</version.spring.restdocs>
         <version.spring.mybatis>2.0.4</version.spring.mybatis>
-        <version.spring.hateos>0.24.0.RELEASE</version.spring.hateos>
+        <version.spring.hateos>1.0.4.RELEASE</version.spring.hateos>
         <version.spring.ldap>2.3.2.RELEASE</version.spring.ldap>
 
         <!-- wildfly dependencies -->
@@ -78,7 +78,7 @@
         <version.archunit>0.13.1</version.archunit>
         <version.mockito>3.3.3</version.mockito>
         <version.junit.mockito>3.3.3</version.junit.mockito>
-        <!-- byte buddy 1.9.7+ is needed to solve dependency errors with 
+        <!-- byte buddy 1.9.7+ is needed to solve dependency errors with
             spring mock tests see LdapClientTest -->
         <version.byte-buddy>1.10.9</version.byte-buddy>
         <version.byte-buddy-agent>1.10.9</version.byte-buddy-agent>
@@ -250,7 +250,7 @@
 
     <build>
         <plugins>
-            <!-- This plugin appends version information into the jar, so 
+            <!-- This plugin appends version information into the jar, so
                 that it can be extracted from the jar. See TSK-837 for more information -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

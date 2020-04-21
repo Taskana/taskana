@@ -74,7 +74,8 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
     List<WorkbasketAccessItem> workbasketAccessItems = getQueryList(query, pageMetadata);
 
     WorkbasketAccessItemListResource pagedResources =
-        workbasketAccessItemResourceAssembler.toResources(workbasketAccessItems, pageMetadata);
+        workbasketAccessItemResourceAssembler.toCollectionModel(
+            workbasketAccessItems, pageMetadata);
 
     ResponseEntity<WorkbasketAccessItemListResource> response = ResponseEntity.ok(pagedResources);
     if (LOGGER.isDebugEnabled()) {
