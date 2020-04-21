@@ -4,21 +4,21 @@ import { map } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Select } from '@ngxs/store';
 
-import { TaskanaType } from 'app/models/taskana-type';
-import { Classification } from 'app/models/classification';
-import { TreeNodeModel } from 'app/models/tree-node';
+import { TaskanaType } from 'app/shared/models/taskana-type';
+import { Classification } from 'app/shared/models/classification';
+import { TreeNodeModel } from 'app/shared/models/tree-node';
 
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
-import { Pair } from 'app/models/pair';
+import { Pair } from 'app/shared/models/pair';
 import { ImportExportService } from 'app/administration/services/import-export.service';
 import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
 import { ClassificationSelectors } from 'app/store/classification-store/classification.selectors';
-import { ClassificationDefinition } from '../../../models/classification-definition';
-import { AlertModel, AlertType } from '../../../models/alert';
-import { AlertService } from '../../../services/alert/alert.service';
-import { ERROR_TYPES } from '../../../models/errors';
+import { ClassificationDefinition } from '../../../shared/models/classification-definition';
+import { AlertModel, AlertType } from '../../../shared/models/alert';
+import { AlertService } from '../../../shared/services/alert/alert.service';
+import { ERROR_TYPES } from '../../../shared/models/errors';
 
-import { ClassificationCategoryImages } from '../../../models/customisation';
+import { ClassificationCategoryImages } from '../../../shared/models/customisation';
 
 @Component({
   selector: 'taskana-classification-list',

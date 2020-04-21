@@ -1,6 +1,6 @@
-import { Customisation } from 'app/models/customisation';
+import { Customisation } from 'app/shared/models/customisation';
 import { State, NgxsOnInit, StateContext, Action } from '@ngxs/store';
-import { ClassificationCategoriesService } from 'app/shared/services/classifications/classification-categories.service';
+import { ClassificationCategoriesService } from 'app/shared/services/classification-categories/classification-categories.service';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 

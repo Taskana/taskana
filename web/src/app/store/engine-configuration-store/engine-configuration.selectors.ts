@@ -1,4 +1,4 @@
-import { WorkbasketsCustomisation, ClassificationsCustomisation, AccessItemsCustomisation, TasksCustomisation, ClassificationCategoryImages } from 'app/models/customisation';
+import { WorkbasketsCustomisation, ClassificationsCustomisation, AccessItemsCustomisation, TasksCustomisation, ClassificationCategoryImages } from 'app/shared/models/customisation';
 import { Selector } from '@ngxs/store';
 import { EngineConfigurationStateModel, EngineConfigurationState } from './engine-configuration.state';
 

@@ -3,32 +3,32 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription, zip } from 'rxjs';
 
-import { ClassificationDefinition, customFieldCount } from 'app/models/classification-definition';
-import { ACTION } from 'app/models/action';
-import { AlertModel, AlertType } from 'app/models/alert';
+import { ClassificationDefinition, customFieldCount } from 'app/shared/models/classification-definition';
+import { ACTION } from 'app/shared/models/action';
+import { AlertModel, AlertType } from 'app/shared/models/alert';
 
 import { highlight } from 'app/shared/animations/validation.animation';
 import { TaskanaDate } from 'app/shared/util/taskana.date';
 
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
-import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
-import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
-import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
-import { AlertService } from 'app/services/alert/alert.service';
-import { TreeService } from 'app/services/tree/tree.service';
-import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
+import { MasterAndDetailService } from 'app/shared/services/master-and-detail/master-and-detail.service';
+import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
+import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
+import { AlertService } from 'app/shared/services/alert/alert.service';
+import { TreeService } from 'app/shared/services/tree/tree.service';
+import { RemoveConfirmationService } from 'app/shared/services/remove-confirmation/remove-confirmation.service';
 
-import { DomainService } from 'app/services/domain/domain.service';
-import { Pair } from 'app/models/pair';
+import { DomainService } from 'app/shared/services/domain/domain.service';
+import { Pair } from 'app/shared/models/pair';
 import { NgForm } from '@angular/forms';
-import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
+import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { ImportExportService } from 'app/administration/services/import-export.service';
 import { map, take } from 'rxjs/operators';
 import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
 import { ClassificationSelectors } from 'app/store/classification-store/classification.selectors';
-import { ERROR_TYPES } from '../../../models/errors';
-import { ErrorsService } from '../../../services/errors/errors.service';
-import { ClassificationCategoryImages, CustomField, getCustomFields } from '../../../models/customisation';
+import { ERROR_TYPES } from '../../../shared/models/errors';
+import { ErrorsService } from '../../../shared/services/errors/errors.service';
+import { ClassificationCategoryImages, CustomField, getCustomFields } from '../../../shared/models/customisation';
 
 @Component({
   selector: 'taskana-classification-details',

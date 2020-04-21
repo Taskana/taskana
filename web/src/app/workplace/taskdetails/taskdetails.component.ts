@@ -3,20 +3,20 @@ import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { TaskService } from 'app/workplace/services/task.service';
-import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
+import { RemoveConfirmationService } from 'app/shared/services/remove-confirmation/remove-confirmation.service';
 
 import { Task } from 'app/workplace/models/task';
-import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
-import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
-import { AlertService } from 'app/services/alert/alert.service';
-import { AlertModel, AlertType } from 'app/models/alert';
+import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
+import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
+import { AlertService } from 'app/shared/services/alert/alert.service';
+import { AlertModel, AlertType } from 'app/shared/models/alert';
 import { TaskanaDate } from 'app/shared/util/taskana.date';
 import { ObjectReference } from 'app/workplace/models/object-reference';
-import { Workbasket } from 'app/models/workbasket';
+import { Workbasket } from 'app/shared/models/workbasket';
 import { WorkplaceService } from 'app/workplace/services/workplace.service';
-import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
-import { ERROR_TYPES } from '../../models/errors';
-import { ErrorsService } from '../../services/errors/errors.service';
+import { MasterAndDetailService } from 'app/shared/services/master-and-detail/master-and-detail.service';
+import { ERROR_TYPES } from '../../shared/models/errors';
+import { ErrorsService } from '../../shared/services/errors/errors.service';
 
 @Component({
   selector: 'taskana-task-details',

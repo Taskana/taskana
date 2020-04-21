@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { WorkbasketSummary } from 'app/models/workbasket-summary';
-import { FilterModel } from 'app/models/filter';
+import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
+import { Filter } from 'app/shared/models/filter';
 import { expandDown } from 'app/shared/animations/expand.animation';
 import { Side } from '../workbasket-distribution-targets/workbasket-distribution-targets.component';
 
@@ -13,7 +13,7 @@ import { Side } from '../workbasket-distribution-targets/workbasket-distribution
 export class WorkbasketDualListComponent implements OnInit {
   @Input() distributionTargets: Array<WorkbasketSummary>;
   @Input() distributionTargetsSelected: Array<WorkbasketSummary>;
-  @Output() performDualListFilter = new EventEmitter<{ filterBy: FilterModel, side: Side }>();
+  @Output() performDualListFilter = new EventEmitter<{ filterBy: Filter, side: Side }>();
   @Input() requestInProgress = false;
   @Input() loadingItems ? = false;
   @Input() side: Side;
@@ -40,7 +40,7 @@ export class WorkbasketDualListComponent implements OnInit {
     this.scrolling.emit(this.side);
   }
 
-  performAvailableFilter(filterModel: FilterModel) {
+  performAvailableFilter(filterModel: Filter) {
     this.performDualListFilter.emit({ filterBy: filterModel, side: this.side });
   }
 

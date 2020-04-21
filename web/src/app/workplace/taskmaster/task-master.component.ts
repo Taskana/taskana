@@ -2,16 +2,16 @@ import { Component, OnDestroy, OnInit, ViewChild, ElementRef } from '@angular/co
 import { Task } from 'app/workplace/models/task';
 import { TaskService } from 'app/workplace/services/task.service';
 import { Subscription } from 'rxjs';
-import { SortingModel } from 'app/models/sorting';
-import { Workbasket } from 'app/models/workbasket';
-import { FilterModel } from 'app/models/filter';
-import { AlertService } from 'app/services/alert/alert.service';
-import { AlertModel, AlertType } from 'app/models/alert';
+import { Sorting } from 'app/shared/models/sorting';
+import { Workbasket } from 'app/shared/models/workbasket';
+import { Filter } from 'app/shared/models/filter';
+import { AlertService } from 'app/shared/services/alert/alert.service';
+import { AlertModel, AlertType } from 'app/shared/models/alert';
 import { WorkplaceService } from 'app/workplace/services/workplace.service';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
-import { OrientationService } from 'app/services/orientation/orientation.service';
-import { Orientation } from 'app/models/orientation';
-import { Page } from 'app/models/page';
+import { OrientationService } from 'app/shared/services/orientation/orientation.service';
+import { Orientation } from 'app/shared/models/orientation';
+import { Page } from 'app/shared/models/page';
 import { ObjectReference } from '../models/object-reference';
 import { Search } from './task-list-toolbar/task-list-toolbar.component';
 
@@ -27,8 +27,8 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
   currentBasket: Workbasket;
   selectedId = '';
   taskDefaultSortBy: string = 'priority';
-  sort: SortingModel = new SortingModel(this.taskDefaultSortBy);
-  filterBy: FilterModel = new FilterModel({
+  sort: Sorting = new Sorting(this.taskDefaultSortBy);
+  filterBy: Filter = new Filter({
     name: '',
     owner: '',
     priority: '',
@@ -96,12 +96,12 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
   }
 
 
-  performSorting(sort: SortingModel) {
+  performSorting(sort: Sorting) {
     this.sort = sort;
     this.getTasks();
   }
 
-  performFilter(filterBy: FilterModel) {
+  performFilter(filterBy: Filter) {
     this.filterBy = filterBy;
     this.getTasks();
   }

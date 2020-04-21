@@ -10,10 +10,10 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { SharedModule } from 'app/shared/shared.module';
 import { AppModule } from 'app/app.module';
 
-import { WorkbasketSummary } from 'app/models/workbasket-summary';
-import { Links } from 'app/models/links';
-import { FilterModel } from 'app/models/filter';
-import { SortingModel } from 'app/models/sorting';
+import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
+import { Links } from 'app/shared/models/links';
+import { Filter } from 'app/shared/models/filter';
+import { Sorting } from 'app/shared/models/sorting';
 
 import { ImportExportComponent } from 'app/administration/components/import-export/import-export.component';
 
@@ -93,8 +93,8 @@ describe('WorkbasketListToolbarComponent', () => {
 
 
   it('should emit performSorting when sorting is triggered', () => {
-    let sort: SortingModel;
-    const compareSort = new SortingModel();
+    let sort: Sorting;
+    const compareSort = new Sorting();
 
     component.performSorting.subscribe(value => { sort = value; });
     component.sorting(compareSort);
@@ -102,8 +102,8 @@ describe('WorkbasketListToolbarComponent', () => {
   });
 
   it('should emit performFilter when filter is triggered', () => {
-    let filter: FilterModel;
-    const compareFilter = new FilterModel();
+    let filter: Filter;
+    const compareFilter = new Filter();
 
     component.performFilter.subscribe(value => { filter = value; });
     component.filtering(compareFilter);

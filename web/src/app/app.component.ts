@@ -2,16 +2,16 @@ import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
-import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
-import { MessageModal } from './models/message-modal';
+import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
+import { MessageModal } from './shared/models/message-modal';
 
-import { GeneralModalService } from './services/general-modal/general-modal.service';
-import { RequestInProgressService } from './services/requestInProgress/request-in-progress.service';
-import { OrientationService } from './services/orientation/orientation.service';
-import { SelectedRouteService } from './services/selected-route/selected-route';
+import { GeneralModalService } from './shared/services/general-modal/general-modal.service';
+import { RequestInProgressService } from './shared/services/request-in-progress/request-in-progress.service';
+import { OrientationService } from './shared/services/orientation/orientation.service';
+import { SelectedRouteService } from './shared/services/selected-route/selected-route';
 import { UploadService } from './shared/services/upload/upload.service';
-import { ErrorModel } from './models/error-model';
-import { ErrorsService } from './services/errors/errors.service';
+import { ErrorModel } from './shared/models/error-model';
+import { ErrorsService } from './shared/services/errors/errors.service';
 
 @Component({
   selector: 'taskana-root',

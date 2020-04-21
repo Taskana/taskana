@@ -3,24 +3,24 @@ import { Observable, Subscription } from 'rxjs';
 import { Select } from '@ngxs/store';
 import { FormArray, FormBuilder, Validators } from '@angular/forms';
 
-import { Workbasket } from 'app/models/workbasket';
-import { WorkbasketAccessItems, customFieldCount } from 'app/models/workbasket-access-items';
-import { WorkbasketAccessItemsResource } from 'app/models/workbasket-access-items-resource';
-import { ACTION } from 'app/models/action';
+import { Workbasket } from 'app/shared/models/workbasket';
+import { WorkbasketAccessItems, customFieldCount } from 'app/shared/models/workbasket-access-items';
+import { WorkbasketAccessItemsResource } from 'app/shared/models/workbasket-access-items-resource';
+import { ACTION } from 'app/shared/models/action';
 
-import { AlertModel, AlertType } from 'app/models/alert';
+import { AlertModel, AlertType } from 'app/shared/models/alert';
 import { SavingInformation, SavingWorkbasketService } from 'app/administration/services/saving-workbaskets.service';
-import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
+import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
-import { AlertService } from 'app/services/alert/alert.service';
-import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
+import { AlertService } from 'app/shared/services/alert/alert.service';
+import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { highlight } from 'app/shared/animations/validation.animation';
-import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
-import { AccessIdDefinition } from 'app/models/access-id';
+import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
+import { AccessIdDefinition } from 'app/shared/models/access-id';
 import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
-import { ERROR_TYPES } from '../../../models/errors';
-import { ErrorsService } from '../../../services/errors/errors.service';
-import { AccessItemsCustomisation, CustomField, getCustomFields } from '../../../models/customisation';
+import { ERROR_TYPES } from '../../../shared/models/errors';
+import { ErrorsService } from '../../../shared/services/errors/errors.service';
+import { AccessItemsCustomisation, CustomField, getCustomFields } from '../../../shared/models/customisation';
 
 @Component({
   selector: 'taskana-workbasket-access-items',
