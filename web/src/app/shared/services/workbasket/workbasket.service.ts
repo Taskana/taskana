@@ -3,18 +3,18 @@ import { throwError as observableThrowError, Observable, Subject } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'environments/environment';
-import { Workbasket } from 'app/models/workbasket';
-import { WorkbasketAccessItems } from 'app/models/workbasket-access-items';
-import { WorkbasketSummaryResource } from 'app/models/workbasket-summary-resource';
-import { WorkbasketAccessItemsResource } from 'app/models/workbasket-access-items-resource';
-import { WorkbasketDistributionTargetsResource } from 'app/models/workbasket-distribution-targets-resource';
-import { Direction } from 'app/models/sorting';
+import { Workbasket } from 'app/shared/models/workbasket';
+import { WorkbasketAccessItems } from 'app/shared/models/workbasket-access-items';
+import { WorkbasketSummaryResource } from 'app/shared/models/workbasket-summary-resource';
+import { WorkbasketAccessItemsResource } from 'app/shared/models/workbasket-access-items-resource';
+import { WorkbasketDistributionTargetsResource } from 'app/shared/models/workbasket-distribution-targets-resource';
+import { Direction } from 'app/shared/models/sorting';
 
-import { DomainService } from 'app/services/domain/domain.service';
+import { DomainService } from 'app/shared/services/domain/domain.service';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { mergeMap, tap, catchError } from 'rxjs/operators';
-import { QueryParametersModel } from 'app/models/query-parameters';
-import { WorkbasketResource } from '../../../models/workbasket-resource';
+import { QueryParameters } from 'app/shared/models/query-parameters';
+import { WorkbasketResource } from '../../models/workbasket-resource';
 
 @Injectable()
 export class WorkbasketService {
@@ -174,8 +174,8 @@ export class WorkbasketService {
     requiredPermission?: string,
     allPages?: boolean,
     domain?: string
-  ): QueryParametersModel {
-    const parameters = new QueryParametersModel();
+  ): QueryParameters {
+    const parameters = new QueryParameters();
     parameters.SORTBY = sortBy;
     parameters.SORTDIRECTION = order;
     parameters.NAME = name;

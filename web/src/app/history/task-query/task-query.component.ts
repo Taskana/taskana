@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { Direction, SortingModel } from 'app/models/sorting';
-import { OrientationService } from 'app/services/orientation/orientation.service';
+import { Direction, Sorting } from 'app/shared/models/sorting';
+import { OrientationService } from 'app/shared/services/orientation/orientation.service';
 import { Subscription } from 'rxjs';
-import { Orientation } from 'app/models/orientation';
+import { Orientation } from 'app/shared/models/orientation';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
-import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
-import { MessageModal } from 'app/models/message-modal';
+import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
+import { MessageModal } from 'app/shared/models/message-modal';
 import { FormControl, FormGroup } from '@angular/forms';
-import { TaskHistoryEventResourceData } from 'app/models/task-history-event-resource';
-import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
-import { TaskHistoryEventData } from '../../models/task-history-event';
+import { TaskHistoryEventResourceData } from 'app/shared/models/task-history-event-resource';
+import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
+import { TaskHistoryEventData } from '../../shared/models/task-history-event';
 import { TaskQueryService } from '../services/task-query/task-query.service';
-import { ErrorsService } from '../../services/errors/errors.service';
+import { ErrorsService } from '../../shared/services/errors/errors.service';
 
 @Component({
   selector: 'taskana-task-query',
@@ -22,7 +22,7 @@ export class TaskQueryComponent implements OnInit {
   taskQueryResource: TaskHistoryEventResourceData;
   taskQuery: Array<TaskHistoryEventData>;
   taskQueryHeader = new TaskHistoryEventData();
-  orderBy = new SortingModel(TaskanaQueryParameters.parameters.CREATED);
+  orderBy = new Sorting(TaskanaQueryParameters.parameters.CREATED);
   orientationSubscription: Subscription;
   taskQuerySubscription: Subscription;
 

@@ -4,11 +4,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'environments/environment';
 import { TaskResource } from 'app/workplace/models/task-resource';
-import { Direction } from 'app/models/sorting';
+import { Direction } from 'app/shared/models/sorting';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { TaskanaDate } from 'app/shared/util/taskana.date';
 import { map } from 'rxjs/operators';
-import { QueryParametersModel } from 'app/models/query-parameters';
+import { QueryParameters } from 'app/shared/models/query-parameters';
 
 @Injectable()
 export class TaskService {
@@ -109,8 +109,8 @@ export class TaskService {
     objRefTypeLike: string,
     objRefValueLike: string,
     allPages: boolean = false
-  ): QueryParametersModel {
-    const parameters = new QueryParametersModel();
+  ): QueryParameters {
+    const parameters = new QueryParameters();
     parameters.WORKBASKET_ID = basketId;
     parameters.SORTBY = sortBy;
     parameters.SORTDIRECTION = sortDirection;

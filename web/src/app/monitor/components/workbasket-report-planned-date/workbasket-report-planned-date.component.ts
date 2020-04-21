@@ -4,7 +4,7 @@ import { ChartData } from '../../models/chart-data';
 import { ChartColorsDefinition } from '../../models/chart-colors';
 import { RestConnectorService } from '../../services/rest-connector.service';
 import { MetaInfoData } from '../../models/meta-info-data';
-import { RequestInProgressService } from '../../../services/requestInProgress/request-in-progress.service';
+import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 
 @Component({
   selector: 'taskana-monitor-workbasket-planned-date',

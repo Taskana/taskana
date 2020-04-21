@@ -1,19 +1,19 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ClassificationDefinitionService } from 'app/administration/services/classification-definition.service';
 import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition.service';
-import { DomainService } from 'app/services/domain/domain.service';
-import { TaskanaType } from 'app/models/taskana-type';
-import { MessageModal } from 'app/models/message-modal';
-import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
+import { DomainService } from 'app/shared/services/domain/domain.service';
+import { TaskanaType } from 'app/shared/models/taskana-type';
+import { MessageModal } from 'app/shared/models/message-modal';
+import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { environment } from 'environments/environment';
-import { AlertService } from 'app/services/alert/alert.service';
-import { AlertModel, AlertType } from 'app/models/alert';
+import { AlertService } from 'app/shared/services/alert/alert.service';
+import { AlertModel, AlertType } from 'app/shared/models/alert';
 import { UploadService } from 'app/shared/services/upload/upload.service';
 import { ImportExportService } from 'app/administration/services/import-export.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ERROR_TYPES } from '../../../models/errors';
-import { ErrorsService } from '../../../services/errors/errors.service';
-import { ErrorModel } from '../../../models/error-model';
+import { ERROR_TYPES } from '../../../shared/models/errors';
+import { ErrorsService } from '../../../shared/services/errors/errors.service';
+import { ErrorModel } from '../../../shared/models/error-model';
 
 @Component({
   selector: 'taskana-import-export-component',

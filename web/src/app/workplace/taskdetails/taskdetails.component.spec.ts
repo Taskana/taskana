@@ -1,15 +1,15 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SpinnerComponent } from 'app/shared/spinner/spinner.component';
+import { SpinnerComponent } from 'app/shared/components/spinner/spinner.component';
 import { FormsModule } from '@angular/forms';
 import { Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Component } from '@angular/core';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
-import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
-import { AlertService } from 'app/services/alert/alert.service';
-import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
+import { RemoveConfirmationService } from 'app/shared/services/remove-confirmation/remove-confirmation.service';
+import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
+import { AlertService } from 'app/shared/services/alert/alert.service';
+import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { WorkplaceService } from '../services/workplace.service';
 import { TaskService } from '../services/task.service';
 import { TaskdetailsAttributeComponent } from './attribute/attribute.component';

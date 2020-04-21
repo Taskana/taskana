@@ -7,21 +7,21 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
 import { of } from 'rxjs';
 
-import { Workbasket } from 'app/models/workbasket';
-import { WorkbasketSummary } from 'app/models/workbasket-summary';
-import { WorkbasketSummaryResource } from 'app/models/workbasket-summary-resource';
-import { WorkbasketAccessItemsResource } from 'app/models/workbasket-access-items-resource';
-import { ICONTYPES } from 'app/models/type';
-import { Links } from 'app/models/links';
-import { WorkbasketAccessItems } from 'app/models/workbasket-access-items';
-import { LinksWorkbasketSummary } from 'app/models/links-workbasket-summary';
+import { Workbasket } from 'app/shared/models/workbasket';
+import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
+import { WorkbasketSummaryResource } from 'app/shared/models/workbasket-summary-resource';
+import { WorkbasketAccessItemsResource } from 'app/shared/models/workbasket-access-items-resource';
+import { ICONTYPES } from 'app/shared/models/icon-types';
+import { Links } from 'app/shared/models/links';
+import { WorkbasketAccessItems } from 'app/shared/models/workbasket-access-items';
+import { LinksWorkbasketSummary } from 'app/shared/models/links-workbasket-summary';
 
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
-import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
-import { AlertService } from 'app/services/alert/alert.service';
+import { MasterAndDetailService } from 'app/shared/services/master-and-detail/master-and-detail.service';
+import { AlertService } from 'app/shared/services/alert/alert.service';
 import { SavingWorkbasketService } from 'app/administration/services/saving-workbaskets.service';
-import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
-import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
+import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
+import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { configureTests } from 'app/app.test.configuration';
 
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';

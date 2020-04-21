@@ -4,24 +4,24 @@ import { Observable, Subscription } from 'rxjs';
 import { NgForm } from '@angular/forms';
 import { Select } from '@ngxs/store';
 
-import { ICONTYPES } from 'app/models/type';
-import { ACTION } from 'app/models/action';
-import { customFieldCount, Workbasket } from 'app/models/workbasket';
-import { AlertModel, AlertType } from 'app/models/alert';
+import { ICONTYPES } from 'app/shared/models/icon-types';
+import { ACTION } from 'app/shared/models/action';
+import { customFieldCount, Workbasket } from 'app/shared/models/workbasket';
+import { AlertModel, AlertType } from 'app/shared/models/alert';
 import { TaskanaDate } from 'app/shared/util/taskana.date';
 
-import { AlertService } from 'app/services/alert/alert.service';
-import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
+import { AlertService } from 'app/shared/services/alert/alert.service';
+import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { SavingWorkbasketService, SavingInformation } from 'app/administration/services/saving-workbaskets.service';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
-import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
-import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
-import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
+import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
+import { RemoveConfirmationService } from 'app/shared/services/remove-confirmation/remove-confirmation.service';
+import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { map } from 'rxjs/operators';
 import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
-import { ERROR_TYPES } from '../../../models/errors';
-import { ErrorsService } from '../../../services/errors/errors.service';
-import { CustomField, getCustomFields, WorkbasketsCustomisation } from '../../../models/customisation';
+import { ERROR_TYPES } from '../../../shared/models/errors';
+import { ErrorsService } from '../../../shared/services/errors/errors.service';
+import { CustomField, getCustomFields, WorkbasketsCustomisation } from '../../../shared/models/customisation';
 
 @Component({
   selector: 'taskana-workbasket-information',

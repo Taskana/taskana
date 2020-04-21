@@ -5,14 +5,14 @@ import { combineLatest, Observable, Subject } from 'rxjs';
 import { map, mergeMap, tap } from 'rxjs/operators';
 import { Select, Store } from '@ngxs/store';
 
-import { Classification } from 'app/models/classification';
-import { ClassificationDefinition } from 'app/models/classification-definition';
+import { Classification } from 'app/shared/models/classification';
+import { ClassificationDefinition } from 'app/shared/models/classification-definition';
 
-import { ClassificationResource } from 'app/models/classification-resource';
-import { DomainService } from 'app/services/domain/domain.service';
+import { ClassificationResource } from 'app/shared/models/classification-resource';
+import { DomainService } from 'app/shared/services/domain/domain.service';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
-import { Direction } from 'app/models/sorting';
-import { QueryParametersModel } from 'app/models/query-parameters';
+import { Direction } from 'app/shared/models/sorting';
+import { QueryParameters } from 'app/shared/models/query-parameters';
 import { ClassificationSelectors } from 'app/store/classification-store/classification.selectors';
 import { SetSelectedClassificationType } from 'app/store/classification-store/classification.actions';
 
@@ -32,8 +32,8 @@ export class ClassificationsService {
     private store: Store
   ) {}
 
-  private static classificationParameters(domain: string): QueryParametersModel {
-    const parameters = new QueryParametersModel();
+  private static classificationParameters(domain: string): QueryParameters {
+    const parameters = new QueryParameters();
     parameters.SORTBY = TaskanaQueryParameters.parameters.KEY;
     parameters.SORTDIRECTION = Direction.ASC;
     parameters.DOMAIN = domain;

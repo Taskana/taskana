@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ReportData } from 'app/monitor/models/report-data';
 import { RestConnectorService } from '../../services/rest-connector.service';
-import { RequestInProgressService } from '../../../services/requestInProgress/request-in-progress.service';
+import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 
 @Component({
   selector: 'taskana-monitor-tasks',

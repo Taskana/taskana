@@ -1,16 +1,16 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { SortingModel } from 'app/models/sorting';
-import { FilterModel } from 'app/models/filter';
+import { Sorting } from 'app/shared/models/sorting';
+import { Filter } from 'app/shared/models/filter';
 import { Subscription } from 'rxjs';
-import { WorkbasketSummary } from 'app/models/workbasket-summary';
+import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
 
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
-import { TaskanaType } from 'app/models/taskana-type';
+import { TaskanaType } from 'app/shared/models/taskana-type';
 import { expandDown } from 'app/shared/animations/expand.animation';
-import { ErrorsService } from '../../../services/errors/errors.service';
-import { ERROR_TYPES } from '../../../models/errors';
+import { ErrorsService } from '../../../shared/services/errors/errors.service';
+import { ERROR_TYPES } from '../../../shared/models/errors';
 
 @Component({
   selector: 'taskana-workbasket-list-toolbar',
@@ -21,8 +21,8 @@ import { ERROR_TYPES } from '../../../models/errors';
 export class WorkbasketListToolbarComponent implements OnInit {
   @Input() workbaskets: Array<WorkbasketSummary>;
   @Input() workbasketDefaultSortBy: string;
-  @Output() performSorting = new EventEmitter<SortingModel>();
-  @Output() performFilter = new EventEmitter<FilterModel>();
+  @Output() performSorting = new EventEmitter<Sorting>();
+  @Output() performFilter = new EventEmitter<Filter>();
   workbasketServiceSubscription: Subscription;
   selectionToImport = TaskanaType.WORKBASKETS;
   sortingFields = new Map([['name', 'Name'], ['key', 'Key'], ['description', 'Description'], ['owner', 'Owner'], ['type', 'Type']]);
@@ -44,11 +44,11 @@ export class WorkbasketListToolbarComponent implements OnInit {
   ngOnInit() {
   }
 
-  sorting(sort: SortingModel) {
+  sorting(sort: Sorting) {
     this.performSorting.emit(sort);
   }
 
-  filtering(filterBy: FilterModel) {
+  filtering(filterBy: Filter) {
     this.performFilter.emit(filterBy);
   }
 

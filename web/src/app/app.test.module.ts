@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { TaskanaTypeAheadMockComponent } from 'app/shared/type-ahead/type-ahead.mock.component';
+import { TaskanaTypeAheadMockComponent } from 'app/shared/components/type-ahead/type-ahead.mock.component';
 
 const MODULES = [
 ];

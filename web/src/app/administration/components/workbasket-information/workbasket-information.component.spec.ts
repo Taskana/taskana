@@ -8,17 +8,17 @@ import { of } from 'rxjs';
 import { Component } from '@angular/core';
 import { Routes } from '@angular/router';
 
-import { Workbasket } from 'app/models/workbasket';
-import { ICONTYPES } from 'app/models/type';
-import { ACTION } from 'app/models/action';
-import { Links } from 'app/models/links';
+import { Workbasket } from 'app/shared/models/workbasket';
+import { ICONTYPES } from 'app/shared/models/icon-types';
+import { ACTION } from 'app/shared/models/action';
+import { Links } from 'app/shared/models/links';
 
-import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
+import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { SavingWorkbasketService } from 'app/administration/services/saving-workbaskets.service';
-import { AlertService } from 'app/services/alert/alert.service';
-import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
+import { AlertService } from 'app/shared/services/alert/alert.service';
+import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { configureTests } from 'app/app.test.configuration';
-import { FormsValidatorService } from 'app/shared/services/forms/forms-validator.service';
+import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { NgxsModule, Store } from '@ngxs/store';
 import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
 import { WorkbasketInformationComponent } from './workbasket-information.component';

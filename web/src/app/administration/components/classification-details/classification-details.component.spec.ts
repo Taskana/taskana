@@ -10,17 +10,17 @@ import { configureTests } from 'app/app.test.configuration';
 import { NgxsModule, Store } from '@ngxs/store';
 
 
-import { ClassificationDefinition } from 'app/models/classification-definition';
-import { LinksClassification } from 'app/models/links-classfication';
+import { ClassificationDefinition } from 'app/shared/models/classification-definition';
+import { LinksClassification } from 'app/shared/models/links-classfication';
 
-import { MasterAndDetailService } from 'app/services/masterAndDetail/master-and-detail.service';
-import { RequestInProgressService } from 'app/services/requestInProgress/request-in-progress.service';
+import { MasterAndDetailService } from 'app/shared/services/master-and-detail/master-and-detail.service';
+import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
-import { TreeNodeModel } from 'app/models/tree-node';
-import { GeneralModalService } from 'app/services/general-modal/general-modal.service';
-import { AlertService } from 'app/services/alert/alert.service';
-import { TreeService } from 'app/services/tree/tree.service';
-import { RemoveConfirmationService } from 'app/services/remove-confirmation/remove-confirmation.service';
+import { TreeNodeModel } from 'app/shared/models/tree-node';
+import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
+import { AlertService } from 'app/shared/services/alert/alert.service';
+import { TreeService } from 'app/shared/services/tree/tree.service';
+import { RemoveConfirmationService } from 'app/shared/services/remove-confirmation/remove-confirmation.service';
 import { ImportExportService } from 'app/administration/services/import-export.service';
 import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
 import { ClassificationSelectors } from 'app/store/classification-store/classification.selectors';
