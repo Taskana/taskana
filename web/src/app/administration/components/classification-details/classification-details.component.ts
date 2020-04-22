@@ -5,7 +5,6 @@ import { Observable, Subscription, zip } from 'rxjs';
 
 import { ClassificationDefinition, customFieldCount } from 'app/shared/models/classification-definition';
 import { ACTION } from 'app/shared/models/action';
-import { AlertModel, AlertType } from 'app/shared/models/alert';
 
 import { highlight } from 'theme/animations/validation.animation';
 import { TaskanaDate } from 'app/shared/util/taskana.date';
@@ -14,7 +13,6 @@ import { ClassificationsService } from 'app/shared/services/classifications/clas
 import { MasterAndDetailService } from 'app/shared/services/master-and-detail/master-and-detail.service';
 import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
-import { AlertService } from 'app/shared/services/alert/alert.service';
 import { TreeService } from 'app/shared/services/tree/tree.service';
 import { RemoveConfirmationService } from 'app/shared/services/remove-confirmation/remove-confirmation.service';
 
@@ -26,9 +24,11 @@ import { ImportExportService } from 'app/administration/services/import-export.s
 import { map, take } from 'rxjs/operators';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { ClassificationSelectors } from 'app/shared/store/classification-store/classification.selectors';
-import { ERROR_TYPES } from '../../../shared/models/errors';
-import { ErrorsService } from '../../../shared/services/errors/errors.service';
-import { ClassificationCategoryImages, CustomField, getCustomFields } from '../../../shared/models/customisation';
+import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
+import { NotificationService } from '../../../shared/services/notifications/notification.service';
+import { ClassificationCategoryImages,
+  CustomField,
+  getCustomFields } from '../../../shared/models/customisation';
 
 @Component({
   selector: 'taskana-classification-details',
@@ -69,12 +69,11 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     private masterAndDetailService: MasterAndDetailService,
     private generalModalService: GeneralModalService,
     private requestInProgressService: RequestInProgressService,
-    private alertService: AlertService,
     private treeService: TreeService,
     private domainService: DomainService,
     private removeConfirmationService: RemoveConfirmationService,
     private formsValidatorService: FormsValidatorService,
-    private errorsService: ErrorsService,
+    private notificationsService: NotificationService,
     private importExportService: ImportExportService,
     private store: Store) {
   }
@@ -87,7 +86,9 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     this.classificationSelectedSubscription = this.classificationsService.getSelectedClassification()
       .subscribe(classificationSelected => {
         if (classificationSelected && this.classification
-            && this.classification.classificationId === classificationSelected.classificationId) { return; }
+          && this.classification.classificationId === classificationSelected.classificationId) {
+          return;
+        }
         this.initProperties();
         if (classificationSelected) {
           this.fillClassificationInformation(classificationSelected);
@@ -148,8 +149,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
 
   onClear() {
     this.formsValidatorService.formSubmitAttempt = false;
-    // new Key: ALERT_TYPES.INFO_ALERT
-    this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'Reset edited fields'));
+    this.notificationsService.triggerAlert(NOTIFICATION_TYPES.INFO_ALERT);
     this.classification = { ...this.classificationClone };
   }
 
@@ -189,12 +189,14 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         .subscribe((classification: ClassificationDefinition) => {
           this.classification = classification;
           this.classificationsService.selectClassification(classification);
-          // new Key ALERT_TYPES.SUCCESS_ALERT_2
-          this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Classification ${classification.key} was saved successfully`));
+          this.notificationsService.triggerAlert(
+            NOTIFICATION_TYPES.SUCCESS_ALERT_2,
+            new Map<string, string>([['classificationKey', classification.key]])
+          );
           this.afterRequest();
         },
         error => {
-          this.errorsService.updateError(ERROR_TYPES.CREATE_ERR, error);
+          this.notificationsService.triggerError(NOTIFICATION_TYPES.CREATE_ERR, error);
           this.afterRequest();
         });
     } else {
@@ -203,13 +205,13 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
           this.classification._links.self.href, this.classification
         ));
         this.afterRequest();
-        // new Key: ALERT_TYPES.SUCCESS_ALERT_3
-        this.alertService.triggerAlert(
-          new AlertModel(AlertType.SUCCESS, `Classification ${this.classification.key} was saved successfully`)
+        this.notificationsService.triggerAlert(
+          NOTIFICATION_TYPES.SUCCESS_ALERT_3,
+          new Map<string, string>([['classificationKey', this.classification.key]])
         );
         this.cloneClassification(this.classification);
       } catch (error) {
-        this.errorsService.updateError(ERROR_TYPES.SAVE_ERR, error);
+        this.notificationsService.triggerError(NOTIFICATION_TYPES.SAVE_ERR, error);
         this.afterRequest();
       }
     }
@@ -274,7 +276,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
 
   private removeClassificationConfirmation() {
     if (!this.classification || !this.classification.classificationId) {
-      this.errorsService.updateError(ERROR_TYPES.SELECT_ERR);
+      this.notificationsService.triggerError(NOTIFICATION_TYPES.SELECT_ERR);
       return;
     }
     this.requestInProgressService.setRequestInProgress(true);
@@ -288,10 +290,12 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         this.afterRequest();
         this.classificationsService.selectClassification();
         this.router.navigate(['taskana/administration/classifications']);
-        // new Key: ALERT_TYPES.SUCCESS_ALERT_4
-        this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Classification ${key} was removed successfully`));
+        this.notificationsService.triggerAlert(
+          NOTIFICATION_TYPES.SUCCESS_ALERT_4,
+          new Map<string, string>([['classificationKey', key]])
+        );
       }, error => {
-        this.errorsService.updateError(ERROR_TYPES.REMOVE_ERR, error);
+        this.notificationsService.triggerError(NOTIFICATION_TYPES.REMOVE_ERR, error);
         this.afterRequest();
       });
   }

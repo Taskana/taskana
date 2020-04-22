@@ -8,7 +8,6 @@ import { Component } from '@angular/core';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { RemoveConfirmationService } from 'app/shared/services/remove-confirmation/remove-confirmation.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
-import { AlertService } from 'app/shared/services/alert/alert.service';
 import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { WorkplaceService } from '../../services/workplace.service';
 import { TaskService } from '../../services/task.service';
@@ -16,6 +15,7 @@ import { TaskdetailsAttributeComponent } from '../taskdetails-attribute/attribut
 import { TaskdetailsCustomFieldsComponent } from '../taskdetails-custom-fields/custom-fields.component';
 import { TaskdetailsGeneralFieldsComponent } from '../taskdetails-general/general-fields.component';
 import { TaskdetailsComponent } from './taskdetails.component';
+import { NotificationService } from '../../../shared/services/notifications/notification.service';
 
 @Component({
   selector: 'taskana-dummy-detail',
@@ -40,7 +40,7 @@ xdescribe('TaskdetailsComponent', () => {
         TaskdetailsAttributeComponent, DummyDetailComponent],
       imports: [FormsModule, RouterTestingModule.withRoutes(routes), HttpClientModule],
       providers: [TaskService, HttpClient, WorkplaceService, RemoveConfirmationService,
-        RequestInProgressService, AlertService, GeneralModalService]
+        RequestInProgressService, NotificationService, GeneralModalService]
     })
       .compileComponents();
   }));

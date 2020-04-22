@@ -4,22 +4,20 @@ import { Select } from '@ngxs/store';
 import { FormArray, FormBuilder, Validators } from '@angular/forms';
 
 import { Workbasket } from 'app/shared/models/workbasket';
-import { WorkbasketAccessItems, customFieldCount } from 'app/shared/models/workbasket-access-items';
+import { customFieldCount, WorkbasketAccessItems } from 'app/shared/models/workbasket-access-items';
 import { WorkbasketAccessItemsResource } from 'app/shared/models/workbasket-access-items-resource';
 import { ACTION } from 'app/shared/models/action';
 
-import { AlertModel, AlertType } from 'app/shared/models/alert';
 import { SavingInformation, SavingWorkbasketService } from 'app/administration/services/saving-workbaskets.service';
 import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
-import { AlertService } from 'app/shared/services/alert/alert.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { highlight } from 'theme/animations/validation.animation';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { AccessIdDefinition } from 'app/shared/models/access-id';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
-import { ERROR_TYPES } from '../../../shared/models/errors';
-import { ErrorsService } from '../../../shared/services/errors/errors.service';
+import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
+import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { AccessItemsCustomisation, CustomField, getCustomFields } from '../../../shared/models/customisation';
 
 @Component({
@@ -58,13 +56,12 @@ export class WorkbasketAccessItemsComponent implements OnChanges, OnDestroy {
 
   constructor(
     private workbasketService: WorkbasketService,
-    private alertService: AlertService,
     private generalModalService: GeneralModalService,
     private savingWorkbaskets: SavingWorkbasketService,
     private requestInProgressService: RequestInProgressService,
     private formBuilder: FormBuilder,
     private formsValidatorService: FormsValidatorService,
-    private errorsService: ErrorsService
+    private notificationsService: NotificationService
   ) {
   }
 
@@ -109,8 +106,7 @@ export class WorkbasketAccessItemsComponent implements OnChanges, OnDestroy {
     this.AccessItemsForm.reset();
     this.setAccessItemsGroups(this.accessItemsResetClone);
     this.accessItemsClone = this.cloneAccessItems(this.accessItemsResetClone);
-    // new Key ALERT_TYPES.INFO_ALERT
-    this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'Reset edited fields'));
+    this.notificationsService.triggerAlert(NOTIFICATION_TYPES.INFO_ALERT);
   }
 
   remove(index: number) {
@@ -187,13 +183,11 @@ export class WorkbasketAccessItemsComponent implements OnChanges, OnDestroy {
       .subscribe(response => {
         this.accessItemsClone = this.cloneAccessItems(this.AccessItemsForm.value.accessItemsGroups);
         this.accessItemsResetClone = this.cloneAccessItems(this.AccessItemsForm.value.accessItemsGroups);
-        // new Key ALERT_TYPES.SUCCESS_ALERT_7
-        this.alertService.triggerAlert(new AlertModel(
-          AlertType.SUCCESS, `Workbasket  ${this.workbasket.name} Access items were saved successfully`
-        ));
+        this.notificationsService.triggerAlert(NOTIFICATION_TYPES.SUCCESS_ALERT_7,
+          new Map<string, string>([['workbasketKey', this.workbasket.key]]));
         this.requestInProgressService.setRequestInProgress(false);
       }, error => {
-        this.errorsService.updateError(ERROR_TYPES.SAVE_ERR_2, error);
+        this.notificationsService.triggerError(NOTIFICATION_TYPES.SAVE_ERR_2, error);
         this.requestInProgressService.setRequestInProgress(false);
       });
   }

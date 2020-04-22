@@ -11,7 +11,7 @@ import { OrientationService } from './shared/services/orientation/orientation.se
 import { SelectedRouteService } from './shared/services/selected-route/selected-route';
 import { UploadService } from './shared/services/upload/upload.service';
 import { ErrorModel } from './shared/models/error-model';
-import { ErrorsService } from './shared/services/errors/errors.service';
+import { NotificationService } from './shared/services/notifications/notification.service';
 
 @Component({
   selector: 'taskana-root',
@@ -43,7 +43,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private orientationService: OrientationService,
     private selectedRouteService: SelectedRouteService,
     private formsValidatorService: FormsValidatorService,
-    private errorService: ErrorsService,
+    private errorService: NotificationService,
     public uploadService: UploadService
   ) {
 
