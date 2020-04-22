@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Store, Select } from '@ngxs/store';
-import { ClassificationSelectors } from 'app/store/classification-store/classification.selectors';
-import { SetSelectedClassificationType } from 'app/store/classification-store/classification.actions';
+import { ClassificationSelectors } from 'app/shared/store/classification-store/classification.selectors';
+import { SetSelectedClassificationType } from 'app/shared/store/classification-store/classification.actions';
 
 
 @Component({

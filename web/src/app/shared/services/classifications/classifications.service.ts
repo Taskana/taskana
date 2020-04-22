@@ -13,8 +13,8 @@ import { DomainService } from 'app/shared/services/domain/domain.service';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { Direction } from 'app/shared/models/sorting';
 import { QueryParameters } from 'app/shared/models/query-parameters';
-import { ClassificationSelectors } from 'app/store/classification-store/classification.selectors';
-import { SetSelectedClassificationType } from 'app/store/classification-store/classification.actions';
+import { ClassificationSelectors } from 'app/shared/store/classification-store/classification.selectors';
+import { SetSelectedClassificationType } from 'app/shared/store/classification-store/classification.actions';
 
 @Injectable()
 export class ClassificationsService {

@@ -18,7 +18,7 @@ import { RequestInProgressService } from 'app/shared/services/request-in-progres
 import { RemoveConfirmationService } from 'app/shared/services/remove-confirmation/remove-confirmation.service';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { map } from 'rxjs/operators';
-import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
+import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { ERROR_TYPES } from '../../../shared/models/errors';
 import { ErrorsService } from '../../../shared/services/errors/errors.service';
 import { CustomField, getCustomFields, WorkbasketsCustomisation } from '../../../shared/models/customisation';

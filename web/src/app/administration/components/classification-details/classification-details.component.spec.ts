@@ -22,8 +22,8 @@ import { AlertService } from 'app/shared/services/alert/alert.service';
 import { TreeService } from 'app/shared/services/tree/tree.service';
 import { RemoveConfirmationService } from 'app/shared/services/remove-confirmation/remove-confirmation.service';
 import { ImportExportService } from 'app/administration/services/import-export.service';
-import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
-import { ClassificationSelectors } from 'app/store/classification-store/classification.selectors';
+import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
+import { ClassificationSelectors } from 'app/shared/store/classification-store/classification.selectors';
 import { ClassificationDetailsComponent } from './classification-details.component';
 
 
