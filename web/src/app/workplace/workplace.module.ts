@@ -17,11 +17,9 @@ import { TaskdetailsGeneralFieldsComponent } from './components/taskdetails-gene
 import { TaskdetailsCustomFieldsComponent } from './components/taskdetails-custom-fields/custom-fields.component';
 import { TaskdetailsAttributeComponent } from './components/taskdetails-attribute/attribute.component';
 import { TaskComponent } from './components/task/task.component';
-import { CodeComponent } from './components/code/code.component';
 import { GeneralFieldsExtensionComponent } from './components/taskdetails-general-fields-extension/general-fields-extension.component';
 import { TaskListComponent } from './components/task-list/task-list.component';
 
-import { OrderTasksByPipe } from './util/orderTasksBy.pipe';
 
 import { TaskService } from './services/task.service';
 import { TokenInterceptor } from './services/token-interceptor.service';
@@ -48,10 +46,8 @@ const DECLARATIONS = [
   TaskdetailsCustomFieldsComponent,
   TaskdetailsAttributeComponent,
   TaskComponent,
-  CodeComponent,
   GeneralFieldsExtensionComponent,
   TaskListComponent,
-  OrderTasksByPipe
 ];
 
 @NgModule({

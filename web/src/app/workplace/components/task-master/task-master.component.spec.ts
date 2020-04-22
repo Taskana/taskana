@@ -20,7 +20,6 @@ import { SelectedRouteService } from 'app/shared/services/selected-route/selecte
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { WorkplaceService } from '../../services/workplace.service';
 import { TaskService } from '../../services/task.service';
-import { CodeComponent } from '../code/code.component';
 import { TaskListToolbarComponent } from '../task-list-toolbar/task-list-toolbar.component';
 import { TaskMasterComponent } from './task-master.component';
 
@@ -42,7 +41,7 @@ xdescribe('TaskMasterComponent', () => {
       imports: [FormsModule, TypeaheadModule,
         HttpClientModule, BrowserAnimationsModule],
       declarations: [TaskMasterComponent, TaskListToolbarComponent, SvgIconComponent,
-        PaginationComponent, CodeComponent, SortComponent, FilterComponent,
+        PaginationComponent, SortComponent, FilterComponent,
         SpreadNumberPipe, MapValuesPipe, IconTypeComponent, DummyDetailComponent],
       providers: [TaskService, HttpClient, WorkplaceService, AlertService, OrientationService,
         WorkbasketService, DomainService, RequestInProgressService, SelectedRouteService,
