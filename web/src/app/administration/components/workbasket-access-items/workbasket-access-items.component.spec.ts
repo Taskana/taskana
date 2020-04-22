@@ -22,7 +22,7 @@ import { RequestInProgressService } from 'app/shared/services/request-in-progres
 import { AccessIdsService } from 'app/shared/services/access-ids/access-ids.service';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { NgxsModule, Store } from '@ngxs/store';
-import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
+import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { WorkbasketAccessItemsComponent } from './workbasket-access-items.component';
 
 describe('WorkbasketAccessItemsComponent', () => {

@@ -12,7 +12,7 @@ import { GeneralModalService } from 'app/shared/services/general-modal/general-m
 import { RemoveConfirmationService } from 'app/shared/services/remove-confirmation/remove-confirmation.service';
 import { AlertModel, AlertType } from 'app/shared/models/alert';
 import { AlertService } from 'app/shared/services/alert/alert.service';
-import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
+import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 import { AccessIdsService } from '../../../shared/services/access-ids/access-ids.service';
 import { AccessIdDefinition } from '../../../shared/models/access-id';

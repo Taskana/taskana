@@ -53,7 +53,7 @@ import { UserGuard } from './shared/guards/user.guard';
  */
 import { ClassificationCategoriesService } from './shared/services/classification-categories/classification-categories.service';
 import { environment } from '../environments/environment';
-import { STATES } from './store';
+import { STATES } from './shared/store';
 
 const MODULES = [
   TabsModule.forRoot(),

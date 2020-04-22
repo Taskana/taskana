@@ -15,7 +15,7 @@ import { Pair } from 'app/shared/models/pair';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Select } from '@ngxs/store';
-import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
+import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 
 import { TreeService } from '../../services/tree/tree.service';
 import { Classification } from '../../models/classification';

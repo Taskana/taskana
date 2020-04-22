@@ -17,7 +17,7 @@ import { RequestInProgressService } from 'app/shared/services/request-in-progres
 import { highlight } from 'theme/animations/validation.animation';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { AccessIdDefinition } from 'app/shared/models/access-id';
-import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
+import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { ERROR_TYPES } from '../../../shared/models/errors';
 import { ErrorsService } from '../../../shared/services/errors/errors.service';
 import { AccessItemsCustomisation, CustomField, getCustomFields } from '../../../shared/models/customisation';

@@ -46,6 +46,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private errorService: ErrorsService,
     public uploadService: UploadService
   ) {
+
   }
 
   @HostListener('window:resize', ['$event'])
