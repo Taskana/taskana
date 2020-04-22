@@ -1,4 +1,4 @@
-@import './src/assets/_variables';
+@import '../../../../theme/variables';
 
 .navbar.main:before  {
     @include degraded-bar(right, 100%, 3px)

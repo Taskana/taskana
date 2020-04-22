@@ -7,7 +7,7 @@ import { ClassificationDefinition, customFieldCount } from 'app/shared/models/cl
 import { ACTION } from 'app/shared/models/action';
 import { AlertModel, AlertType } from 'app/shared/models/alert';
 
-import { highlight } from 'app/shared/animations/validation.animation';
+import { highlight } from 'theme/animations/validation.animation';
 import { TaskanaDate } from 'app/shared/util/taskana.date';
 
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
