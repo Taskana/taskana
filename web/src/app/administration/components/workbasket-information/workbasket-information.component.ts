@@ -1,4 +1,10 @@
-import { Component, OnInit, Input, OnDestroy, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import { Component,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+  ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { NgForm } from '@angular/forms';
@@ -7,10 +13,8 @@ import { Select } from '@ngxs/store';
 import { ICONTYPES } from 'app/shared/models/icon-types';
 import { ACTION } from 'app/shared/models/action';
 import { customFieldCount, Workbasket } from 'app/shared/models/workbasket';
-import { AlertModel, AlertType } from 'app/shared/models/alert';
 import { TaskanaDate } from 'app/shared/util/taskana.date';
 
-import { AlertService } from 'app/shared/services/alert/alert.service';
 import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { SavingWorkbasketService, SavingInformation } from 'app/administration/services/saving-workbaskets.service';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
@@ -19,9 +23,11 @@ import { RemoveConfirmationService } from 'app/shared/services/remove-confirmati
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { map } from 'rxjs/operators';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
-import { ERROR_TYPES } from '../../../shared/models/errors';
-import { ErrorsService } from '../../../shared/services/errors/errors.service';
-import { CustomField, getCustomFields, WorkbasketsCustomisation } from '../../../shared/models/customisation';
+import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
+import { NotificationService } from '../../../shared/services/notifications/notification.service';
+import { CustomField,
+  getCustomFields,
+  WorkbasketsCustomisation } from '../../../shared/models/customisation';
 
 @Component({
   selector: 'taskana-workbasket-information',
@@ -54,7 +60,6 @@ implements OnInit, OnChanges, OnDestroy {
 
   constructor(
     private workbasketService: WorkbasketService,
-    private alertService: AlertService,
     private route: ActivatedRoute,
     private router: Router,
     private generalModalService: GeneralModalService,
@@ -62,8 +67,9 @@ implements OnInit, OnChanges, OnDestroy {
     private requestInProgressService: RequestInProgressService,
     private removeConfirmationService: RemoveConfirmationService,
     private formsValidatorService: FormsValidatorService,
-    private errorsService: ErrorsService
-  ) {}
+    private notificationsService: NotificationService
+  ) {
+  }
 
   ngOnInit(): void {
     this.allTypes = new Map([
@@ -108,10 +114,7 @@ implements OnInit, OnChanges, OnDestroy {
 
   onClear() {
     this.formsValidatorService.formSubmitAttempt = false;
-    this.alertService.triggerAlert(
-      // new Key ALERT_TYPES.INFO_ALERT
-      new AlertModel(AlertType.INFO, 'Reset edited fields')
-    );
+    this.notificationsService.triggerAlert(NOTIFICATION_TYPES.INFO_ALERT);
     this.workbasket = { ...this.workbasketClone };
   }
 
@@ -139,18 +142,13 @@ implements OnInit, OnChanges, OnDestroy {
       .subscribe(
         reponse => {
           this.requestInProgressService.setRequestInProgress(false);
-          // new Key ALERT_TYPES.SUCCESS_ALERT_9
-          this.alertService.triggerAlert(
-            new AlertModel(
-              AlertType.SUCCESS,
-              `DistributionTarget for workbasketID: ${
-                this.workbasket.workbasketId
-              } was removed successfully`
-            )
+          this.notificationsService.triggerAlert(
+            NOTIFICATION_TYPES.SUCCESS_ALERT_9,
+            new Map<string, string>([['workbasketId', this.workbasket.workbasketId]])
           );
         },
         error => {
-          this.errorsService.updateError(ERROR_TYPES.REMOVE_ERR_2,
+          this.notificationsService.triggerError(NOTIFICATION_TYPES.REMOVE_ERR_2,
             error,
             new Map<String, String>([['workbasketId', this.workbasket.workbasketId]]));
           this.requestInProgressService.setRequestInProgress(false);
@@ -172,17 +170,14 @@ implements OnInit, OnChanges, OnDestroy {
           this.afterRequest();
           this.workbasket = workbasketUpdated;
           this.workbasketClone = { ...this.workbasket };
-          // new Key ALERT_TYPES.SUCCESS_ALERT_10
-          this.alertService.triggerAlert(
-            new AlertModel(
-              AlertType.SUCCESS,
-              `Workbasket ${workbasketUpdated.key} was saved successfully`
-            )
+          this.notificationsService.triggerAlert(
+            NOTIFICATION_TYPES.SUCCESS_ALERT_10,
+            new Map<string, string>([['workbasketKey', workbasketUpdated.key]])
           );
         },
         error => {
           this.afterRequest();
-          this.errorsService.updateError(ERROR_TYPES.SAVE_ERR_4, error);
+          this.notificationsService.triggerError(NOTIFICATION_TYPES.SAVE_ERR_4, error);
         }
       );
   }
@@ -200,12 +195,9 @@ implements OnInit, OnChanges, OnDestroy {
     this.addDateToWorkbasket();
     this.workbasketService.createWorkbasket(this.workbasket).subscribe(
       (workbasketUpdated: Workbasket) => {
-        // new Key ALERT_TYPES.SUCCESS_ALERT_11
-        this.alertService.triggerAlert(
-          new AlertModel(
-            AlertType.SUCCESS,
-            `Workbasket ${workbasketUpdated.key} was created successfully`
-          )
+        this.notificationsService.triggerAlert(
+          NOTIFICATION_TYPES.SUCCESS_ALERT_11,
+          new Map<string, string>([['workbasketKey', workbasketUpdated.key]])
         );
         this.workbasket = workbasketUpdated;
         this.afterRequest();
@@ -230,7 +222,7 @@ implements OnInit, OnChanges, OnDestroy {
         }
       },
       error => {
-        this.errorsService.updateError(ERROR_TYPES.CREATE_ERR_2, error);
+        this.notificationsService.triggerError(NOTIFICATION_TYPES.CREATE_ERR_2, error);
         this.requestInProgressService.setRequestInProgress(false);
       }
     );
@@ -251,13 +243,14 @@ implements OnInit, OnChanges, OnDestroy {
           this.requestInProgressService.setRequestInProgress(false);
           this.workbasketService.triggerWorkBasketSaved();
           if (response.status === 202) {
-            this.errorsService.updateError(ERROR_TYPES.MARK_ERR,
+            this.notificationsService.triggerError(NOTIFICATION_TYPES.MARK_ERR,
               undefined,
               new Map<String, String>([['workbasketId', this.workbasket.workbasketId]]));
           } else {
             // new Key ALERT_TYPES.SUCCESS_ALERT_12
-            this.alertService.triggerAlert(
-              new AlertModel(AlertType.SUCCESS, `The Workbasket ${this.workbasket.workbasketId} has been deleted.`)
+            this.notificationsService.triggerAlert(
+              NOTIFICATION_TYPES.SUCCESS_ALERT_12,
+              new Map<string, string>([['workbasketId', this.workbasket.workbasketId]])
             );
           }
           this.router.navigate(['taskana/administration/workbaskets']);

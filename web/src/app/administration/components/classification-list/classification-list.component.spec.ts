@@ -13,7 +13,6 @@ import { ImportExportComponent } from 'app/administration/components/import-expo
 import { ClassificationTypesSelectorComponent } from 'app/administration/components/classification-types-selector/classification-types-selector.component';
 
 import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition.service';
-import { AlertService } from 'app/shared/services/alert/alert.service';
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
 import { ClassificationDefinitionService } from 'app/administration/services/classification-definition.service';
 import { DomainService } from 'app/shared/services/domain/domain.service';
@@ -24,6 +23,7 @@ import { TreeService } from 'app/shared/services/tree/tree.service';
 import { ImportExportService } from 'app/administration/services/import-export.service';
 import { NgxsModule } from '@ngxs/store';
 import { ClassificationListComponent } from './classification-list.component';
+import { NotificationService } from '../../../shared/services/notifications/notification.service';
 
 
 @Component({
@@ -49,7 +49,8 @@ describe('ClassificationListComponent', () => {
         DummyDetailComponent],
       imports: [HttpClientModule, RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule, NgxsModule.forRoot()],
       providers: [
-        HttpClient, WorkbasketDefinitionService, AlertService, ClassificationsService, DomainService, ClassificationDefinitionService,
+        HttpClient, WorkbasketDefinitionService, NotificationService,
+        ClassificationsService, DomainService, ClassificationDefinitionService,
         GeneralModalService, RequestInProgressService, TreeService, ImportExportService
       ]
     });

@@ -4,14 +4,14 @@ import { Observable } from 'rxjs';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { environment } from 'environments/environment';
 import { tap } from 'rxjs/operators';
-import { ErrorsService } from '../errors/errors.service';
-import { ERROR_TYPES } from '../../models/errors';
+import { NotificationService } from '../notifications/notification.service';
+import { NOTIFICATION_TYPES } from '../../models/notifications';
 
 @Injectable()
 export class HttpClientInterceptor implements HttpInterceptor {
   constructor(
     private requestInProgressService: RequestInProgressService,
-    private errorsService: ErrorsService
+    private errorsService: NotificationService
   ) {
 
   }
@@ -25,11 +25,11 @@ export class HttpClientInterceptor implements HttpInterceptor {
     }, error => {
       this.requestInProgressService.setRequestInProgress(false);
       if (error instanceof HttpErrorResponse && (error.status === 401 || error.status === 403)) {
-        this.errorsService.updateError(ERROR_TYPES.ACCESS_ERR, error);
+        this.errorsService.triggerError(NOTIFICATION_TYPES.ACCESS_ERR, error);
       } else if (error instanceof HttpErrorResponse && (error.status === 404) && error.url.indexOf('environment-information.json')) {
         // ignore this error
       } else {
-        this.errorsService.updateError(ERROR_TYPES.GENERAL_ERR, error);
+        this.errorsService.triggerError(NOTIFICATION_TYPES.GENERAL_ERR, error);
       }
     }));
   }

@@ -11,7 +11,6 @@ import { MapValuesPipe } from 'app/shared/pipes/map-values.pipe';
 import { IconTypeComponent } from 'app/administration/components/type-icon/icon-type.component';
 import { Component } from '@angular/core';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { AlertService } from 'app/shared/services/alert/alert.service';
 import { OrientationService } from 'app/shared/services/orientation/orientation.service';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { DomainService } from 'app/shared/services/domain/domain.service';
@@ -22,6 +21,7 @@ import { WorkplaceService } from '../../services/workplace.service';
 import { TaskService } from '../../services/task.service';
 import { TaskListToolbarComponent } from '../task-list-toolbar/task-list-toolbar.component';
 import { TaskMasterComponent } from './task-master.component';
+import { NotificationService } from '../../../shared/services/notifications/notification.service';
 
 @Component({
   selector: 'taskana-dummy-detail',
@@ -43,7 +43,7 @@ xdescribe('TaskMasterComponent', () => {
       declarations: [TaskMasterComponent, TaskListToolbarComponent, SvgIconComponent,
         PaginationComponent, SortComponent, FilterComponent,
         SpreadNumberPipe, MapValuesPipe, IconTypeComponent, DummyDetailComponent],
-      providers: [TaskService, HttpClient, WorkplaceService, AlertService, OrientationService,
+      providers: [TaskService, HttpClient, WorkplaceService, NotificationService, OrientationService,
         WorkbasketService, DomainService, RequestInProgressService, SelectedRouteService,
         ComponentLoaderFactory, PositioningService, SvgIconRegistryService]
     })

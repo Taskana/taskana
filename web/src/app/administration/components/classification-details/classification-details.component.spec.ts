@@ -18,13 +18,13 @@ import { RequestInProgressService } from 'app/shared/services/request-in-progres
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
 import { TreeNodeModel } from 'app/shared/models/tree-node';
 import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
-import { AlertService } from 'app/shared/services/alert/alert.service';
 import { TreeService } from 'app/shared/services/tree/tree.service';
 import { RemoveConfirmationService } from 'app/shared/services/remove-confirmation/remove-confirmation.service';
 import { ImportExportService } from 'app/administration/services/import-export.service';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { ClassificationSelectors } from 'app/shared/store/classification-store/classification.selectors';
 import { ClassificationDetailsComponent } from './classification-details.component';
+import { NotificationService } from '../../../shared/services/notifications/notification.service';
 
 
 @Component({
@@ -52,7 +52,8 @@ describe('ClassificationDetailsComponent', () => {
     testBed.configureTestingModule({
       imports: [FormsModule, HttpClientModule, RouterTestingModule.withRoutes(routes), AngularSvgIconModule, NgxsModule.forRoot()],
       declarations: [ClassificationDetailsComponent, DummyDetailComponent],
-      providers: [MasterAndDetailService, RequestInProgressService, ClassificationsService, HttpClient, GeneralModalService, AlertService,
+      providers: [MasterAndDetailService, RequestInProgressService, ClassificationsService,
+        HttpClient, GeneralModalService, NotificationService,
         TreeService, ImportExportService, { provide: Store, useValue: storeSpy }]
     });
   };

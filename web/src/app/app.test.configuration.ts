@@ -12,13 +12,13 @@ import { TaskanaEngineServiceMock } from './shared/services/taskana-engine/taska
 import { TaskanaEngineService } from './shared/services/taskana-engine/taskana-engine.service';
 import { DomainService } from './shared/services/domain/domain.service';
 import { DomainServiceMock } from './shared/services/domain/domain.service.mock';
-import { AlertService } from './shared/services/alert/alert.service';
 import { GeneralModalService } from './shared/services/general-modal/general-modal.service';
 import { RequestInProgressService } from './shared/services/request-in-progress/request-in-progress.service';
 import { OrientationService } from './shared/services/orientation/orientation.service';
 import { SelectedRouteService } from './shared/services/selected-route/selected-route';
 import { FormsValidatorService } from './shared/services/forms-validator/forms-validator.service';
 import { SharedModule } from './shared/shared.module';
+import { NotificationService } from './shared/services/notifications/notification.service';
 
 export const configureTests = (configure: (testBed: TestBed) => void) => {
   const testBed = getTestBed();
@@ -35,7 +35,7 @@ export const configureTests = (configure: (testBed: TestBed) => void) => {
     imports: [BrowserAnimationsModule, SharedModule, FormsModule, ReactiveFormsModule, HttpClientModule, AngularSvgIconModule],
     providers: [{ provide: TaskanaEngineService, useClass: TaskanaEngineServiceMock },
       { provide: DomainService, useClass: DomainServiceMock }, RemoveConfirmationService,
-      AlertService, GeneralModalService, RequestInProgressService, OrientationService, SelectedRouteService, FormsValidatorService]
+      NotificationService, GeneralModalService, RequestInProgressService, OrientationService, SelectedRouteService, FormsValidatorService]
   });
 
   return testBed.compileComponents().then(() => testBed);

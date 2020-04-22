@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ErrorModel } from '../../models/error-model';
-import { ErrorsService } from '../../services/errors/errors.service';
+import { NotificationService } from '../../services/notifications/notification.service';
 
 @Component({
   selector: 'error-modal',
@@ -13,7 +13,7 @@ export class ErrorModalComponent implements OnInit {
 
   errorsSubscription: Subscription;
 
-  constructor(private errorsService: ErrorsService) {
+  constructor(private errorsService: NotificationService) {
   }
 
   ngOnInit(): void {

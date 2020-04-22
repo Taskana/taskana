@@ -11,8 +11,8 @@ import { DomainService } from 'app/shared/services/domain/domain.service';
 import { ImportExportService } from 'app/administration/services/import-export.service';
 import { GeneralModalService } from '../../../shared/services/general-modal/general-modal.service';
 import { MessageModal } from '../../../shared/models/message-modal';
-import { ERROR_TYPES } from '../../../shared/models/errors';
-import { ErrorsService } from '../../../shared/services/errors/errors.service';
+import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
+import { NotificationService } from '../../../shared/services/notifications/notification.service';
 
 @Component({
   selector: 'taskana-workbasket-details',
@@ -40,7 +40,7 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
     private router: Router,
     private masterAndDetailService: MasterAndDetailService,
     private domainService: DomainService,
-    private errorsService: ErrorsService,
+    private errorsService: NotificationService,
     private generalModalService: GeneralModalService,
     private importExportService: ImportExportService) { }
 
@@ -117,7 +117,7 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
         this.requestInProgress = false;
         this.checkDomainAndRedirect();
       }, error => {
-        this.errorsService.updateError(ERROR_TYPES.FETCH_ERR_4, error);
+        this.errorsService.triggerError(NOTIFICATION_TYPES.FETCH_ERR_4, error);
       });
     }
   }

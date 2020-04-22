@@ -23,7 +23,6 @@ import { OrientationService } from 'app/shared/services/orientation/orientation.
 import { SelectedRouteService } from 'app/shared/services/selected-route/selected-route';
 import { DomainService } from 'app/shared/services/domain/domain.service';
 import { StartupService } from 'app/shared/services/startup/startup.service';
-import { AlertService } from 'app/shared/services/alert/alert.service';
 import { MasterAndDetailService } from 'app/shared/services/master-and-detail/master-and-detail.service';
 import { TreeService } from 'app/shared/services/tree/tree.service';
 import { TitlesService } from 'app/shared/services/titles/titles.service';
@@ -35,7 +34,7 @@ import { NoAccessComponent } from 'app/shared/components/no-access/no-access.com
 import { RemoveConfirmationService } from './shared/services/remove-confirmation/remove-confirmation.service';
 import { FormsValidatorService } from './shared/services/forms-validator/forms-validator.service';
 import { UploadService } from './shared/services/upload/upload.service';
-import { ErrorsService } from './shared/services/errors/errors.service';
+import { NotificationService } from './shared/services/notifications/notification.service';
 /**
  * Components
  */
@@ -104,7 +103,6 @@ export function startupServiceFactory(startupService: StartupService): () => Pro
       deps: [StartupService],
       multi: true
     },
-    AlertService,
     MasterAndDetailService,
     TreeService,
     TitlesService,
@@ -112,7 +110,7 @@ export function startupServiceFactory(startupService: StartupService): () => Pro
     RemoveConfirmationService,
     FormsValidatorService,
     UploadService,
-    ErrorsService,
+    NotificationService,
     ClassificationCategoriesService,
   ],
   bootstrap: [AppComponent]

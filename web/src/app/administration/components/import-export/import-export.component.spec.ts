@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { ClassificationDefinitionService } from 'app/administration/services/classification-definition.service';
-import { AlertService } from 'app/shared/services/alert/alert.service';
 import { HttpClientModule } from '@angular/common/http';
 import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { AngularSvgIconModule } from 'angular-svg-icon';
@@ -10,6 +9,7 @@ import { configureTests } from 'app/app.test.configuration';
 import { ImportExportService } from 'app/administration/services/import-export.service';
 import { WorkbasketDefinitionService } from '../../services/workbasket-definition.service';
 import { ImportExportComponent } from './import-export.component';
+import { NotificationService } from '../../../shared/services/notifications/notification.service';
 
 describe('ImportExportComponent', () => {
   let component: ImportExportComponent;
@@ -21,7 +21,7 @@ describe('ImportExportComponent', () => {
       testBed.configureTestingModule({
         declarations: [ImportExportComponent],
         imports: [HttpClientModule, AngularSvgIconModule],
-        providers: [WorkbasketService, ClassificationDefinitionService, WorkbasketDefinitionService, AlertService,
+        providers: [WorkbasketService, ClassificationDefinitionService, WorkbasketDefinitionService, NotificationService,
           GeneralModalService, ImportExportService]
       });
     };

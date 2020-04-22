@@ -6,14 +6,11 @@ import { TaskanaType } from 'app/shared/models/taskana-type';
 import { MessageModal } from 'app/shared/models/message-modal';
 import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { environment } from 'environments/environment';
-import { AlertService } from 'app/shared/services/alert/alert.service';
-import { AlertModel, AlertType } from 'app/shared/models/alert';
 import { UploadService } from 'app/shared/services/upload/upload.service';
 import { ImportExportService } from 'app/administration/services/import-export.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ERROR_TYPES } from '../../../shared/models/errors';
-import { ErrorsService } from '../../../shared/services/errors/errors.service';
-import { ErrorModel } from '../../../shared/models/error-model';
+import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
+import { NotificationService } from '../../../shared/services/notifications/notification.service';
 
 @Component({
   selector: 'taskana-import-export-component',
@@ -34,9 +31,9 @@ export class ImportExportComponent implements OnInit {
     private workbasketDefinitionService: WorkbasketDefinitionService,
     private classificationDefinitionService: ClassificationDefinitionService,
     private generalModalService: GeneralModalService,
-    private alertService: AlertService,
+    private notificationsService: NotificationService,
     public uploadservice: UploadService,
-    private errorsService: ErrorsService,
+    private errorsService: NotificationService,
     private importExportService: ImportExportService
   ) {
   }
@@ -93,7 +90,7 @@ export class ImportExportComponent implements OnInit {
       check = true;
     } else {
       file.value = '';
-      this.errorsService.updateError(ERROR_TYPES.FILE_ERR);
+      this.errorsService.triggerError(NOTIFICATION_TYPES.FILE_ERR);
     }
     return check;
   }
@@ -107,32 +104,31 @@ export class ImportExportComponent implements OnInit {
   private onReadyStateChangeHandler(event) {
     if (event.readyState === 4 && event.status >= 400) {
       let title;
-      let key: ERROR_TYPES;
+      let key: NOTIFICATION_TYPES;
       if (event.status === 401) {
-        key = ERROR_TYPES.IMPORT_ERR_1;
+        key = NOTIFICATION_TYPES.IMPORT_ERR_1;
         title = 'Import was not successful, you have no access to apply this operation.';
       } else if (event.status === 404) {
-        key = ERROR_TYPES.IMPORT_ERR_2;
+        key = NOTIFICATION_TYPES.IMPORT_ERR_2;
       } else if (event.status === 409) {
-        key = ERROR_TYPES.IMPORT_ERR_3;
+        key = NOTIFICATION_TYPES.IMPORT_ERR_3;
       } else if (event.status === 413) {
-        key = ERROR_TYPES.IMPORT_ERR_4;
+        key = NOTIFICATION_TYPES.IMPORT_ERR_4;
       }
       this.errorHandler(key, event);
     } else if (event.readyState === 4 && event.status === 200) {
-      // new Key: ALERT_TYPES.SUCCESS_ALERT_6
-      this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, 'Import was successful'));
+      this.notificationsService.triggerAlert(NOTIFICATION_TYPES.SUCCESS_ALERT_6);
       this.importExportService.setImportingFinished(true);
       this.resetProgress();
     }
   }
 
   private onFailedResponse() {
-    this.errorHandler(ERROR_TYPES.UPLOAD_ERR);
+    this.errorHandler(NOTIFICATION_TYPES.UPLOAD_ERR);
   }
 
-  private errorHandler(key: ERROR_TYPES, passedError?: HttpErrorResponse) {
-    this.errorsService.updateError(key, passedError);
+  private errorHandler(key: NOTIFICATION_TYPES, passedError?: HttpErrorResponse) {
+    this.errorsService.triggerError(key, passedError);
     delete this.selectedFileInput.files;
     this.resetProgress();
   }
