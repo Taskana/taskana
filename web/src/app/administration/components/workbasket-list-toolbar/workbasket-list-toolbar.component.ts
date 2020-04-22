@@ -8,7 +8,7 @@ import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
 
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { TaskanaType } from 'app/shared/models/taskana-type';
-import { expandDown } from 'app/shared/animations/expand.animation';
+import { expandDown } from 'theme/animations/expand.animation';
 import { ErrorsService } from '../../../shared/services/errors/errors.service';
 import { ERROR_TYPES } from '../../../shared/models/errors';
 

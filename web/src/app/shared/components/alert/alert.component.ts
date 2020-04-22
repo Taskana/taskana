@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { AlertModel } from 'app/shared/models/alert';
 import { AlertService } from 'app/shared/services/alert/alert.service';
-import { expandTop } from '../../animations/expand.animation';
+import { expandTop } from '../../../../theme/animations/expand.animation';
 
 @Component({
   selector: 'taskana-alert',
