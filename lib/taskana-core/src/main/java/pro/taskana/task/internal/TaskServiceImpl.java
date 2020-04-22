@@ -37,9 +37,9 @@ import pro.taskana.common.internal.CustomPropertySelector;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.common.internal.util.CheckedFunction;
-import pro.taskana.common.internal.util.FieldAndValuePairTriplet;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.common.internal.util.Pair;
+import pro.taskana.common.internal.util.Triplet;
 import pro.taskana.spi.history.api.events.task.ClaimCancelledEvent;
 import pro.taskana.spi.history.api.events.task.ClaimedEvent;
 import pro.taskana.spi.history.api.events.task.CompletedEvent;
@@ -886,33 +886,31 @@ public class TaskServiceImpl implements TaskService {
       currentClass = currentClass.getSuperclass();
     }
 
-    Predicate<FieldAndValuePairTriplet> areFieldsNotEqual =
+    Predicate<Triplet<Field, Object, Object>> areFieldsNotEqual =
         fieldAndValuePairTriplet ->
             !Objects.equals(
-                fieldAndValuePairTriplet.getOldValue(), fieldAndValuePairTriplet.getNewValue());
-    Predicate<FieldAndValuePairTriplet> isFieldNotCustomAttributes =
+                fieldAndValuePairTriplet.getMiddle(), fieldAndValuePairTriplet.getRight());
+    Predicate<Triplet<Field, Object, Object>> isFieldNotCustomAttributes =
         fieldAndValuePairTriplet ->
-            !fieldAndValuePairTriplet.getField().getName().equals("customAttributes");
+            !fieldAndValuePairTriplet.getLeft().getName().equals("customAttributes");
 
     List<JSONObject> changedAttributes =
         fields.stream()
             .peek(field -> field.setAccessible(true))
             .map(
                 CheckedFunction.wrap(
-                    field ->
-                        new FieldAndValuePairTriplet(
-                            field, field.get(oldTaskImpl), field.get(newTaskImpl))))
+                    field -> new Triplet<>(field, field.get(oldTaskImpl), field.get(newTaskImpl))))
             .filter(areFieldsNotEqual.and(isFieldNotCustomAttributes))
             .map(
                 fieldAndValuePairTriplet -> {
                   JSONObject changedAttribute = new JSONObject();
-                  changedAttribute.put("fieldName", fieldAndValuePairTriplet.getField().getName());
+                  changedAttribute.put("fieldName", fieldAndValuePairTriplet.getLeft().getName());
                   changedAttribute.put(
                       "oldValue",
-                      Optional.ofNullable(fieldAndValuePairTriplet.getOldValue()).orElse(""));
+                      Optional.ofNullable(fieldAndValuePairTriplet.getMiddle()).orElse(""));
                   changedAttribute.put(
                       "newValue",
-                      Optional.ofNullable(fieldAndValuePairTriplet.getNewValue()).orElse(""));
+                      Optional.ofNullable(fieldAndValuePairTriplet.getRight()).orElse(""));
                   return changedAttribute;
                 })
             .collect(Collectors.toList());
