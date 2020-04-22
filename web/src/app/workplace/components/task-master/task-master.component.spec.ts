@@ -18,10 +18,10 @@ import { DomainService } from 'app/shared/services/domain/domain.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { SelectedRouteService } from 'app/shared/services/selected-route/selected-route';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { WorkplaceService } from '../services/workplace.service';
-import { TaskService } from '../services/task.service';
-import { CodeComponent } from '../components/code/code.component';
-import { TaskListToolbarComponent } from './task-list-toolbar/task-list-toolbar.component';
+import { WorkplaceService } from '../../services/workplace.service';
+import { TaskService } from '../../services/task.service';
+import { CodeComponent } from '../code/code.component';
+import { TaskListToolbarComponent } from '../task-list-toolbar/task-list-toolbar.component';
 import { TaskMasterComponent } from './task-master.component';
 
 @Component({
