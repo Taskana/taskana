@@ -7,7 +7,6 @@ import { of } from 'rxjs';
 import { configureTests } from 'app/app.test.configuration';
 
 import { Workbasket } from 'app/shared/models/workbasket';
-import { AlertModel, AlertType } from 'app/shared/models/alert';
 import { Links } from 'app/shared/models/links';
 import { WorkbasketAccessItems } from 'app/shared/models/workbasket-access-items';
 import { WorkbasketAccessItemsResource } from 'app/shared/models/workbasket-access-items-resource';
@@ -17,20 +16,21 @@ import { ICONTYPES } from 'app/shared/models/icon-types';
 import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { SavingWorkbasketService } from 'app/administration/services/saving-workbaskets.service';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
-import { AlertService } from 'app/shared/services/alert/alert.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { AccessIdsService } from 'app/shared/services/access-ids/access-ids.service';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { NgxsModule, Store } from '@ngxs/store';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { WorkbasketAccessItemsComponent } from './workbasket-access-items.component';
+import { NotificationService } from '../../../shared/services/notifications/notification.service';
+import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 
 describe('WorkbasketAccessItemsComponent', () => {
   let component: WorkbasketAccessItemsComponent;
   let fixture: ComponentFixture<WorkbasketAccessItemsComponent>;
   let workbasketService;
   let debugElement;
-  let alertService;
+  let notificationsService;
   let accessIdsService;
   let formsValidatorService;
 
@@ -40,7 +40,7 @@ describe('WorkbasketAccessItemsComponent', () => {
     testBed.configureTestingModule({
       declarations: [WorkbasketAccessItemsComponent],
       imports: [FormsModule, AngularSvgIconModule, HttpClientModule, ReactiveFormsModule, NgxsModule.forRoot()],
-      providers: [WorkbasketService, AlertService, GeneralModalService, SavingWorkbasketService, RequestInProgressService,
+      providers: [WorkbasketService, NotificationService, GeneralModalService, SavingWorkbasketService, RequestInProgressService,
         AccessIdsService, FormsValidatorService, { provide: Store, useValue: storeSpy }]
     });
   };
@@ -70,7 +70,7 @@ describe('WorkbasketAccessItemsComponent', () => {
       component.workbasket._links.accessItems = { href: 'someurl' };
 
       workbasketService = testBed.get(WorkbasketService);
-      alertService = testBed.get(AlertService);
+      notificationsService = testBed.get(NotificationService);
       spyOn(workbasketService, 'getWorkBasketAccessItems').and.returnValue(of(new WorkbasketAccessItemsResource(
         new Array<WorkbasketAccessItems>(
           new WorkbasketAccessItems('id1', '1', 'accessID1', '', false, false, false, false, false, false, false, false,
@@ -80,7 +80,7 @@ describe('WorkbasketAccessItemsComponent', () => {
         new Links({ href: 'someurl' })
       )));
       spyOn(workbasketService, 'updateWorkBasketAccessItem').and.returnValue(of(true));
-      spyOn(alertService, 'triggerAlert').and.returnValue(of(true));
+      spyOn(notificationsService, 'triggerAlert').and.returnValue(of(true));
       debugElement = fixture.debugElement.nativeElement;
       accessIdsService = testBed.get(AccessIdsService);
       spyOn(accessIdsService, 'getAccessItemsInformation').and.returnValue(of(new Array<string>(
@@ -115,15 +115,16 @@ describe('WorkbasketAccessItemsComponent', () => {
     expect(debugElement.querySelectorAll('#table-access-items > tbody > tr').length).toBe(1);
   });
 
-  it('should show alert successfull after saving', async(() => {
+  it('should show success alert after saving', async(() => {
     fixture.detectChanges();
     spyOn(formsValidatorService, 'validateFormAccess').and.returnValue(Promise.resolve(true));
     component.onSubmit();
 
     fixture.whenStable().then(() => {
       fixture.detectChanges();
-      expect(alertService.triggerAlert).toHaveBeenCalledWith(
-        new AlertModel(AlertType.SUCCESS, `Workbasket  ${component.workbasket.key} Access items were saved successfully`)
+      expect(notificationsService.triggerAlert).toHaveBeenCalledWith(
+        NOTIFICATION_TYPES.SUCCESS_ALERT_7,
+        new Map<string, string>([['workbasketKey', component.workbasket.key]])
       );
     });
     fixture.detectChanges();

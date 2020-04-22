@@ -1,9 +1,8 @@
-import { NgForm, FormArray } from '@angular/forms';
+import { FormArray, NgForm } from '@angular/forms';
 import { Injectable } from '@angular/core';
-import { AlertService } from 'app/shared/services/alert/alert.service';
-import { AlertModel, AlertType } from 'app/shared/models/alert';
 import { AccessIdsService } from 'app/shared/services/access-ids/access-ids.service';
-import { ERROR_TYPES } from '../../models/errors';
+import { NOTIFICATION_TYPES } from '../../models/notifications';
+import { NotificationService } from '../notifications/notification.service';
 
 @Injectable()
 export class FormsValidatorService {
@@ -11,7 +10,7 @@ export class FormsValidatorService {
   private workbasketOwner = 'workbasket.owner';
 
   constructor(
-    private alertService: AlertService,
+    private notificationsService: NotificationService,
     private accessIdsService: AccessIdsService
   ) {
   }
@@ -52,11 +51,12 @@ export class FormsValidatorService {
     const responseOwner = new ResponseOwner(values[1]);
     if (!(values[0] && responseOwner.valid)) {
       if (!responseOwner.valid) {
-        // new Key ALERT_TYPES.WARNING_ALERT_2
-        this.alertService.triggerAlert(new AlertModel(AlertType.WARNING, `The ${responseOwner.field} introduced is not valid.`));
+        this.notificationsService.triggerAlert(
+          NOTIFICATION_TYPES.WARNING_ALERT_2,
+          new Map<string, string>([['owner', responseOwner.field]])
+        );
       } else {
-        // new Key ALERT_TYPES.WARNING_ALERT
-        this.alertService.triggerAlert(new AlertModel(AlertType.WARNING, 'There are some empty fields which are required.'));
+        this.notificationsService.triggerAlert(NOTIFICATION_TYPES.WARNING_ALERT);
       }
     }
     return values[0] && responseOwner.valid;
@@ -83,8 +83,10 @@ export class FormsValidatorService {
       result = result && responseOwner.valid;
     });
     if (!result) {
-      // new key ALERT_TYPES.WARNING_ALERT_2
-      this.alertService.triggerAlert(new AlertModel(AlertType.WARNING, `The ${responseOwner.field} introduced is not valid.`));
+      this.notificationsService.triggerAlert(
+        NOTIFICATION_TYPES.WARNING_ALERT_2,
+        new Map<string, string>([['owner', responseOwner.field]])
+      );
     }
     return result;
   }
@@ -97,7 +99,7 @@ export class FormsValidatorService {
       return true;
     }
     return (this.formSubmitAttempt && ngForm.form.controls[field].valid)
-      || (ngForm.form.controls[field].touched && ngForm.form.controls[field].valid);
+        || (ngForm.form.controls[field].touched && ngForm.form.controls[field].valid);
   }
 }
 

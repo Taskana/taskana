@@ -11,7 +11,7 @@ import { TaskHistoryEventResourceData } from 'app/shared/models/task-history-eve
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { TaskHistoryEventData } from '../../shared/models/task-history-event';
 import { TaskQueryService } from '../services/task-query/task-query.service';
-import { ErrorsService } from '../../shared/services/errors/errors.service';
+import { NotificationService } from '../../shared/services/notifications/notification.service';
 
 @Component({
   selector: 'taskana-task-query',
@@ -33,7 +33,7 @@ export class TaskQueryComponent implements OnInit {
     private orientationService: OrientationService,
     private generalModalService: GeneralModalService,
     private requestInProgressService: RequestInProgressService,
-    private errorsService: ErrorsService
+    private errorsService: NotificationService
   ) {
   }
 

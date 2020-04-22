@@ -1,19 +1,20 @@
-import { Component, OnDestroy, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Task } from 'app/workplace/models/task';
 import { TaskService } from 'app/workplace/services/task.service';
 import { Subscription } from 'rxjs';
 import { Sorting } from 'app/shared/models/sorting';
 import { Workbasket } from 'app/shared/models/workbasket';
 import { Filter } from 'app/shared/models/filter';
-import { AlertService } from 'app/shared/services/alert/alert.service';
-import { AlertModel, AlertType } from 'app/shared/models/alert';
 import { WorkplaceService } from 'app/workplace/services/workplace.service';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { OrientationService } from 'app/shared/services/orientation/orientation.service';
 import { Orientation } from 'app/shared/models/orientation';
 import { Page } from 'app/shared/models/page';
+import { map } from 'rxjs/operators';
 import { ObjectReference } from '../../models/object-reference';
 import { Search } from '../task-list-toolbar/task-list-toolbar.component';
+import { NotificationService } from '../../../shared/services/notifications/notification.service';
+import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 
 @Component({
   selector: 'taskana-task-master',
@@ -51,10 +52,11 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
   private workbasketChangeSubscription: Subscription;
   private orientationSubscription: Subscription;
   private objectReferenceSubscription: Subscription;
+
   constructor(
     private taskService: TaskService,
     private workplaceService: WorkplaceService,
-    private alertService: AlertService,
+    private notificationsService: NotificationService,
     private orientationService: OrientationService
   ) {
     this.taskChangeSubscription = this.taskService.taskChangedStream.subscribe(task => {
@@ -144,25 +146,37 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
         this.sort.sortBy, this.sort.sortDirection, this.filterBy.filterParams.name, this.filterBy.filterParams.owner,
         this.filterBy.filterParams.priority, this.filterBy.filterParams.state, this.objectReference ? this.objectReference.type : '',
         this.objectReference ? this.objectReference.value : '')
-        .subscribe(tasks => {
+        .subscribe(taskResource => {
           this.requestInProgress = false;
-          if (tasks.tasks) {
-            this.tasks = tasks.tasks;
+          if (taskResource.tasks && taskResource.tasks.length > 1) {
+            this.tasks = taskResource.tasks;
           } else {
             this.tasks = [];
-            this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'The selected Workbasket is empty!'));
+            this.notificationsService.triggerAlert(NOTIFICATION_TYPES.INFO_ALERT_2);
           }
-          this.tasksPageInformation = tasks.page;
+          this.tasksPageInformation = taskResource.page;
         });
     }
   }
 
   ngOnDestroy(): void {
-    if (this.taskChangeSubscription) { this.taskChangeSubscription.unsubscribe(); }
-    if (this.taskDeletedSubscription) { this.taskDeletedSubscription.unsubscribe(); }
-    if (this.workbasketChangeSubscription) { this.workbasketChangeSubscription.unsubscribe(); }
-    if (this.taskAddedSubscription) { this.taskAddedSubscription.unsubscribe(); }
-    if (this.orientationSubscription) { this.orientationSubscription.unsubscribe(); }
-    if (this.objectReferenceSubscription) { this.objectReferenceSubscription.unsubscribe(); }
+    if (this.taskChangeSubscription) {
+      this.taskChangeSubscription.unsubscribe();
+    }
+    if (this.taskDeletedSubscription) {
+      this.taskDeletedSubscription.unsubscribe();
+    }
+    if (this.workbasketChangeSubscription) {
+      this.workbasketChangeSubscription.unsubscribe();
+    }
+    if (this.taskAddedSubscription) {
+      this.taskAddedSubscription.unsubscribe();
+    }
+    if (this.orientationSubscription) {
+      this.orientationSubscription.unsubscribe();
+    }
+    if (this.objectReferenceSubscription) {
+      this.objectReferenceSubscription.unsubscribe();
+    }
   }
 }

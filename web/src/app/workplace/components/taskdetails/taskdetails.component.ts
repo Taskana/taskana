@@ -8,15 +8,13 @@ import { RemoveConfirmationService } from 'app/shared/services/remove-confirmati
 import { Task } from 'app/workplace/models/task';
 import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
-import { AlertService } from 'app/shared/services/alert/alert.service';
-import { AlertModel, AlertType } from 'app/shared/models/alert';
 import { TaskanaDate } from 'app/shared/util/taskana.date';
 import { ObjectReference } from 'app/workplace/models/object-reference';
 import { Workbasket } from 'app/shared/models/workbasket';
 import { WorkplaceService } from 'app/workplace/services/workplace.service';
 import { MasterAndDetailService } from 'app/shared/services/master-and-detail/master-and-detail.service';
-import { ERROR_TYPES } from '../../../shared/models/errors';
-import { ErrorsService } from '../../../shared/services/errors/errors.service';
+import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
+import { NotificationService } from '../../../shared/services/notifications/notification.service';
 
 @Component({
   selector: 'taskana-task-details',
@@ -43,9 +41,9 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
     private router: Router,
     private removeConfirmationService: RemoveConfirmationService,
     private requestInProgressService: RequestInProgressService,
-    private alertService: AlertService,
+    private notificationsService: NotificationService,
     private generalModalService: GeneralModalService,
-    private errorsService: ErrorsService,
+    private errorsService: NotificationService,
     private masterAndDetailService: MasterAndDetailService) {
   }
 
@@ -72,7 +70,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
     this.task.customAttributes = this.taskClone.customAttributes.slice(0);
     this.task.callbackInfo = this.taskClone.callbackInfo.slice(0);
     this.task.primaryObjRef = { ...this.taskClone.primaryObjRef };
-    this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'Reset edited fields'));
+    this.notificationsService.triggerAlert(NOTIFICATION_TYPES.INFO_ALERT);
   }
 
   getTask(): void {
@@ -87,7 +85,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
         this.cloneTask();
         this.taskService.selectTask(task);
       }, error => {
-        this.errorsService.updateError(ERROR_TYPES.FETCH_ERR_7, error);
+        this.errorsService.triggerError(NOTIFICATION_TYPES.FETCH_ERR_7, error);
       });
     }
   }
@@ -115,7 +113,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
       this.task = null;
       this.router.navigate(['taskana/workplace/tasks']);
     }, error => {
-      this.errorsService.updateError(ERROR_TYPES.DELETE_ERR_2, error);
+      this.errorsService.triggerError(NOTIFICATION_TYPES.DELETE_ERR_2, error);
     });
   }
 
@@ -155,12 +153,10 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
       this.task = task;
       this.cloneTask();
       this.taskService.publishUpdatedTask(task);
-      // new Key ALERT_TYPES.SUCCESS_ALERT_14
-      this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, 'Updating was successful.'));
-    }, err => {
+      this.notificationsService.triggerAlert(NOTIFICATION_TYPES.SUCCESS_ALERT_14);
+    }, () => {
       this.requestInProgressService.setRequestInProgress(false);
-      // new Key ALERT_TYPES.DANGER_ALERT
-      this.alertService.triggerAlert(new AlertModel(AlertType.DANGER, 'There was an error while updating.'));
+      this.notificationsService.triggerAlert(NOTIFICATION_TYPES.DANGER_ALERT);
     });
   }
 
@@ -169,16 +165,17 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
     this.addDateToTask();
     this.taskService.createTask(this.task).subscribe(task => {
       this.requestInProgressService.setRequestInProgress(false);
-      // new Key ALERT_TYPES.SUCCESS_ALERT_13
-      this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Task ${this.currentId} was created successfully.`));
+      this.notificationsService.triggerAlert(
+        NOTIFICATION_TYPES.SUCCESS_ALERT_13,
+        new Map<string, string>([['taskId', task.name]])
+      );
       this.task = task;
       this.taskService.selectTask(this.task);
       this.taskService.publishUpdatedTask(task);
       this.router.navigate([`../${task.taskId}`], { relativeTo: this.route });
-    }, err => {
+    }, () => {
       this.requestInProgressService.setRequestInProgress(false);
-      // new Key ALERT_TYPES.DANGER_ALERT_2
-      this.alertService.triggerAlert(new AlertModel(AlertType.DANGER, 'There was an error while creating a new task.'));
+      this.notificationsService.triggerAlert(NOTIFICATION_TYPES.DANGER_ALERT_2);
     });
   }
 

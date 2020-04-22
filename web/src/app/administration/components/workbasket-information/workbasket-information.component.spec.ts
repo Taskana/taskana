@@ -15,13 +15,13 @@ import { Links } from 'app/shared/models/links';
 
 import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { SavingWorkbasketService } from 'app/administration/services/saving-workbaskets.service';
-import { AlertService } from 'app/shared/services/alert/alert.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { configureTests } from 'app/app.test.configuration';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { NgxsModule, Store } from '@ngxs/store';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { WorkbasketInformationComponent } from './workbasket-information.component';
+import { NotificationService } from '../../../shared/services/notifications/notification.service';
 
 @Component({
   selector: 'taskana-dummy-detail',
@@ -51,7 +51,7 @@ describe('WorkbasketInformationComponent', () => {
     testBed.configureTestingModule({
       declarations: [WorkbasketInformationComponent, DummyDetailComponent],
       imports: [FormsModule, AngularSvgIconModule, HttpClientModule, RouterTestingModule.withRoutes(routes), NgxsModule.forRoot()],
-      providers: [WorkbasketService, AlertService, SavingWorkbasketService, GeneralModalService,
+      providers: [WorkbasketService, NotificationService, SavingWorkbasketService, GeneralModalService,
         RequestInProgressService, FormsValidatorService, { provide: Store, useValue: storeSpy }]
 
     });
@@ -72,7 +72,7 @@ describe('WorkbasketInformationComponent', () => {
       component = fixture.componentInstance;
       debugElement = fixture.debugElement.nativeElement;
       workbasketService = testBed.get(WorkbasketService);
-      alertService = testBed.get(AlertService);
+      alertService = testBed.get(NotificationService);
       savingWorkbasketService = testBed.get(SavingWorkbasketService);
       requestInProgressService = testBed.get(RequestInProgressService);
 

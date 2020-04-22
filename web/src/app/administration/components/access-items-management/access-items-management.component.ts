@@ -10,14 +10,13 @@ import { AccessItemWorkbasket } from 'app/shared/models/access-item-workbasket';
 import { Sorting } from 'app/shared/models/sorting';
 import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { RemoveConfirmationService } from 'app/shared/services/remove-confirmation/remove-confirmation.service';
-import { AlertModel, AlertType } from 'app/shared/models/alert';
-import { AlertService } from 'app/shared/services/alert/alert.service';
+
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 import { AccessIdsService } from '../../../shared/services/access-ids/access-ids.service';
 import { AccessIdDefinition } from '../../../shared/models/access-id';
-import { ErrorsService } from '../../../shared/services/errors/errors.service';
-import { ERROR_TYPES } from '../../../shared/models/errors';
+import { NotificationService } from '../../../shared/services/notifications/notification.service';
+import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { AccessItemsCustomisation, CustomField, getCustomFields } from '../../../shared/models/customisation';
 import { customFieldCount } from '../../../shared/models/workbasket-access-items';
 
@@ -50,9 +49,8 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
     private formsValidatorService: FormsValidatorService,
     private requestInProgressService: RequestInProgressService,
     private removeConfirmationService: RemoveConfirmationService,
-    private alertService: AlertService,
     private generalModalService: GeneralModalService,
-    private errorsService: ErrorsService) {
+    private notificationsService: NotificationService) {
   }
 
   get accessItemsGroups(): FormArray {
@@ -108,7 +106,7 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
         },
         error => {
           this.requestInProgressService.setRequestInProgress(false);
-          this.errorsService.updateError(ERROR_TYPES.FETCH_ERR, error);
+          this.notificationsService.triggerError(NOTIFICATION_TYPES.FETCH_ERR, error);
         });
     }
   }
@@ -138,7 +136,7 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
       },
       error => {
         this.requestInProgressService.setRequestInProgress(false);
-        this.errorsService.updateError(ERROR_TYPES.FETCH_ERR_2, error);
+        this.notificationsService.triggerError(NOTIFICATION_TYPES.FETCH_ERR_2, error);
       });
   }
 
@@ -160,21 +158,16 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
     this.requestInProgressService.setRequestInProgress(true);
     this.accessIdsService.removeAccessItemsPermissions(this.accessIdSelected)
       .subscribe(
-        // new Key: ALERT_TYPES.SUCCESS_ALERT
         response => {
           this.requestInProgressService.setRequestInProgress(false);
-          this.alertService.triggerAlert(
-            new AlertModel(
-              AlertType.SUCCESS,
-              `${this.accessIdSelected
-              } was removed successfully`
-            )
+          this.notificationsService.triggerAlert(
+            NOTIFICATION_TYPES.SUCCESS_ALERT, new Map<string, string>([['accessId', this.accessIdSelected]])
           );
           this.searchForAccessItemsWorkbaskets();
         },
         error => {
           this.requestInProgressService.setRequestInProgress(false);
-          this.errorsService.updateError(ERROR_TYPES.DELETE_ERR, error);
+          this.notificationsService.triggerError(NOTIFICATION_TYPES.DELETE_ERR, error);
         }
       );
   }

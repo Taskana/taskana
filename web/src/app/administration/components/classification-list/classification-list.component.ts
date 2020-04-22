@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription, Observable } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Select } from '@ngxs/store';
 
 import { TaskanaType } from 'app/shared/models/taskana-type';
@@ -14,11 +14,10 @@ import { ImportExportService } from 'app/administration/services/import-export.s
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { ClassificationSelectors } from 'app/shared/store/classification-store/classification.selectors';
 import { ClassificationDefinition } from '../../../shared/models/classification-definition';
-import { AlertModel, AlertType } from '../../../shared/models/alert';
-import { AlertService } from '../../../shared/services/alert/alert.service';
-import { ERROR_TYPES } from '../../../shared/models/errors';
+import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 
 import { ClassificationCategoryImages } from '../../../shared/models/customisation';
+import { NotificationService } from '../../../shared/services/notifications/notification.service';
 
 @Component({
   selector: 'taskana-classification-list',
@@ -48,7 +47,7 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private importExportService: ImportExportService,
-    private alertService: AlertService
+    private notificationsService: NotificationService
   ) {
   }
 
@@ -128,9 +127,11 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
         this.requestInProgress = false;
       });
 
-    // new Error-Key: ALERT_TYPES.SUCCESS_ALERT_5
     if (key) {
-      this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS, `Classification ${key} was saved successfully`));
+      this.notificationsService.triggerAlert(
+        NOTIFICATION_TYPES.SUCCESS_ALERT_5,
+        new Map<string, string>([['classificationKey', key]])
+      );
     }
   }
 

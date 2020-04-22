@@ -13,7 +13,6 @@ import { Workbasket } from 'app/shared/models/workbasket';
 import { WorkbasketDistributionTargetsResource } from 'app/shared/models/workbasket-distribution-targets-resource';
 
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
-import { AlertService } from 'app/shared/services/alert/alert.service';
 import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { SavingWorkbasketService } from 'app/administration/services/saving-workbaskets.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
@@ -23,6 +22,7 @@ import { configureTests } from 'app/app.test.configuration';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { WorkbasketDistributionTargetsComponent, Side } from './workbasket-distribution-targets.component';
 import { WorkbasketDualListComponent } from '../workbasket-dual-list/workbasket-dual-list.component';
+import { NotificationService } from '../../../shared/services/notifications/notification.service';
 
 describe('WorkbasketDistributionTargetsComponent', () => {
   let component: WorkbasketDistributionTargetsComponent;
@@ -36,7 +36,7 @@ describe('WorkbasketDistributionTargetsComponent', () => {
       testBed.configureTestingModule({
         imports: [AngularSvgIconModule, HttpClientModule, InfiniteScrollModule],
         declarations: [WorkbasketDistributionTargetsComponent, WorkbasketDualListComponent],
-        providers: [WorkbasketService, AlertService, SavingWorkbasketService, GeneralModalService, RequestInProgressService,
+        providers: [WorkbasketService, NotificationService, SavingWorkbasketService, GeneralModalService, RequestInProgressService,
         ]
       });
     };

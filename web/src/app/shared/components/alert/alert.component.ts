@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-import { AlertModel } from 'app/shared/models/alert';
-import { AlertService } from 'app/shared/services/alert/alert.service';
+import { NotificationService } from 'app/shared/services/notifications/notification.service';
+import { AlertModel } from '../../models/alert-model';
 import { expandTop } from '../../../../theme/animations/expand.animation';
 
 @Component({
@@ -14,10 +14,11 @@ import { expandTop } from '../../../../theme/animations/expand.animation';
 export class AlertComponent implements OnInit {
   alert: AlertModel;
   private timeoutId: any; // NodeJS.Timer cannot be imported..
-  constructor(private alertService: AlertService) { }
+  constructor(private notificationService: NotificationService) {
+  }
 
   ngOnInit() {
-    this.alertService.getAlert().subscribe((alert: AlertModel) => {
+    this.notificationService.getAlert().subscribe((alert: AlertModel) => {
       this.alert = alert;
       if (alert.autoClosing) {
         this.setTimeOutForClosing(alert.closingDelay);

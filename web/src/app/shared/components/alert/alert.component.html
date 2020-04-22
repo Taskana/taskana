@@ -2,7 +2,8 @@
  role="alert">
 	<span id="alert-icon" title="{{alert.type}}" data-toggle="tooltip" class="material-icons md-20">{{alert.type ===
 		'success'? 'done': (alert.type === 'danger'? 'error' :alert.type)}}</span>
-	<span id="alert-text">{{alert.text}}</span>
+	<!--TODO: aufräumen-->
+	<span id="alert-text">{{alert.message}}</span>
 	<button *ngIf="!alert.autoClosing" type="button" class="close" data-dismiss="alert" aria-label="Close">
 		<span aria-hidden="true">&times;</span>
 	</button>

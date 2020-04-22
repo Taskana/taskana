@@ -18,7 +18,6 @@ import { LinksWorkbasketSummary } from 'app/shared/models/links-workbasket-summa
 
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { MasterAndDetailService } from 'app/shared/services/master-and-detail/master-and-detail.service';
-import { AlertService } from 'app/shared/services/alert/alert.service';
 import { SavingWorkbasketService } from 'app/administration/services/saving-workbaskets.service';
 import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
@@ -31,6 +30,7 @@ import { WorkbasketInformationComponent } from '../workbasket-information/workba
 import { WorkbasketAccessItemsComponent } from '../workbasket-access-items/workbasket-access-items.component';
 import { WorkbasketDistributionTargetsComponent } from '../workbasket-distribution-targets/workbasket-distribution-targets.component';
 import { WorkbasketDualListComponent } from '../workbasket-dual-list/workbasket-dual-list.component';
+import { NotificationService } from '../../../shared/services/notifications/notification.service';
 
 @Component({
   selector: 'taskana-dummy-detail',
@@ -62,7 +62,7 @@ describe('WorkbasketDetailsComponent', () => {
           WorkbasketAccessItemsComponent,
           WorkbasketDistributionTargetsComponent, WorkbasketDualListComponent, DummyDetailComponent],
         providers: [WorkbasketService, MasterAndDetailService, GeneralModalService, RequestInProgressService,
-          AlertService, SavingWorkbasketService, ImportExportService]
+          NotificationService, SavingWorkbasketService, ImportExportService]
       });
     };
     configureTests(configure).then(testBed => {

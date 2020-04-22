@@ -1,4 +1,10 @@
-import { Component, Input, OnDestroy, SimpleChanges, OnChanges, ViewChild, ElementRef } from '@angular/core';
+import { Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  OnDestroy,
+  SimpleChanges,
+  ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { Workbasket } from 'app/shared/models/workbasket';
@@ -7,10 +13,8 @@ import { WorkbasketSummaryResource } from 'app/shared/models/workbasket-summary-
 import { WorkbasketDistributionTargetsResource } from 'app/shared/models/workbasket-distribution-targets-resource';
 import { MessageModal } from 'app/shared/models/message-modal';
 import { ACTION } from 'app/shared/models/action';
-import { AlertModel, AlertType } from 'app/shared/models/alert';
 
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
-import { AlertService } from 'app/shared/services/alert/alert.service';
 import { SavingWorkbasketService, SavingInformation } from 'app/administration/services/saving-workbaskets.service';
 import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
@@ -18,8 +22,8 @@ import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { Page } from 'app/shared/models/page';
 import { OrientationService } from 'app/shared/services/orientation/orientation.service';
 import { Orientation } from 'app/shared/models/orientation';
-import { ERROR_TYPES } from '../../../shared/models/errors';
-import { ErrorsService } from '../../../shared/services/errors/errors.service';
+import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
+import { NotificationService } from '../../../shared/services/notifications/notification.service';
 
 export enum Side {
   LEFT,
@@ -71,12 +75,11 @@ export class WorkbasketDistributionTargetsComponent implements OnChanges, OnDest
 
   constructor(
     private workbasketService: WorkbasketService,
-    private alertService: AlertService,
     private savingWorkbaskets: SavingWorkbasketService,
     private generalModalService: GeneralModalService,
     private requestInProgressService: RequestInProgressService,
     private orientationService: OrientationService,
-    private errorsService: ErrorsService
+    private notificationsService: NotificationService
   ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -124,13 +127,14 @@ export class WorkbasketDistributionTargetsComponent implements OnChanges, OnDest
       this.distributionTargetsSelected = response.distributionTargets;
       this.distributionTargetsSelectedClone = Object.assign([], this.distributionTargetsSelected);
       this.distributionTargetsClone = Object.assign([], this.distributionTargetsLeft);
-      // new Key ALERT_TYPES.SUCCESS_ALERT_8
-      this.alertService.triggerAlert(new AlertModel(AlertType.SUCCESS,
-        `Workbasket  ${this.workbasket.name} : Distribution targets were saved successfully`));
+      this.notificationsService.triggerAlert(
+        NOTIFICATION_TYPES.SUCCESS_ALERT_8,
+        new Map<string, string>([['workbasketName', this.workbasket.name]])
+      );
       return true;
     },
     error => {
-      this.errorsService.updateError(ERROR_TYPES.SAVE_ERR_3, error);
+      this.notificationsService.triggerError(NOTIFICATION_TYPES.SAVE_ERR_3, error);
       this.requestInProgressService.setRequestInProgress(false);
       return false;
     });
@@ -138,8 +142,7 @@ export class WorkbasketDistributionTargetsComponent implements OnChanges, OnDest
   }
 
   onClear() {
-    // new key ALERT_TYPES.INFO_ALERT
-    this.alertService.triggerAlert(new AlertModel(AlertType.INFO, 'Reset edited fields'));
+    this.notificationsService.triggerAlert(NOTIFICATION_TYPES.INFO_ALERT);
     this.distributionTargetsLeft = Object.assign([], this.distributionTargetsClone);
     this.distributionTargetsRight = Object.assign([], this.distributionTargetsSelectedClone);
     this.distributionTargetsSelected = Object.assign([], this.distributionTargetsSelectedClone);
@@ -201,7 +204,10 @@ export class WorkbasketDistributionTargetsComponent implements OnChanges, OnDest
   private calculateNumberItemsList() {
     if (this.panelBody) {
       const cardHeight = 72;
-      this.cards = this.orientationService.calculateNumberItemsList(this.panelBody.nativeElement.offsetHeight, cardHeight, 100, true) + 1;
+      const unusedHeight = 100;
+      this.cards = this.orientationService.calculateNumberItemsList(
+        this.panelBody.nativeElement.offsetHeight, cardHeight, unusedHeight, true
+      ) + 1; // TODO: warum +1
     }
   }
 
