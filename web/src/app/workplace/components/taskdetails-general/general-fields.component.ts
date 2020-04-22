@@ -5,7 +5,7 @@ import { NgForm } from '@angular/forms';
 import { DomainService } from 'app/shared/services/domain/domain.service';
 import { Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
-import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
+import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { ClassificationsService } from '../../../shared/services/classifications/classifications.service';
 import { Classification } from '../../../shared/models/classification';
 import { TasksCustomisation } from '../../../shared/models/customisation';

@@ -20,7 +20,7 @@ import { RequestInProgressService } from 'app/shared/services/request-in-progres
 import { configureTests } from 'app/app.test.configuration';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { NgxsModule, Store } from '@ngxs/store';
-import { EngineConfigurationSelectors } from 'app/store/engine-configuration-store/engine-configuration.selectors';
+import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { WorkbasketInformationComponent } from './workbasket-information.component';
 
 @Component({
