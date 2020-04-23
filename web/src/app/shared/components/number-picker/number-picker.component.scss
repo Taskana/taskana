@@ -33,3 +33,14 @@ input{
   margin-top: -3px;
   border-bottom-right-radius: 4px;
 }
+
+// small "hack" to remove the arrows in the input fields of type numbers
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance:textfield;
+}
