@@ -38,6 +38,5 @@ public class UpdateWorkbasketAuthorizations2AccTest extends AbstractAccTest {
         workbasketService.getWorkbasketAccessItems(wbId);
     int countAfter = updatedAccessItems.size();
     assertThat(countAfter).isEqualTo(0);
-    
   }
 }

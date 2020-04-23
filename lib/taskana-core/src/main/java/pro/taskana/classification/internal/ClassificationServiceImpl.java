@@ -341,8 +341,7 @@ public class ClassificationServiceImpl implements ClassificationService {
       masterClassification.setDomain("");
       masterClassification.setIsValidInDomain(false);
       try {
-        if (classification.getParentKey() != null
-            && !"".equals(classification.getParentKey())) {
+        if (classification.getParentKey() != null && !"".equals(classification.getParentKey())) {
           masterClassification.setParentId(
               getClassification(classification.getParentKey(), "").getId());
         }

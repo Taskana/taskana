@@ -202,7 +202,8 @@ class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
             .orderById(SortDirection.ASCENDING)
             .list();
 
-    assertThat(results).hasSizeGreaterThan(2)
+    assertThat(results)
+        .hasSizeGreaterThan(2)
         .extracting(WorkbasketAccessItem::getId)
         .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
   }

@@ -18,11 +18,11 @@ public abstract class AbstractRessourcesAssembler {
 
   UriComponentsBuilder original = getBuilderForOriginalUri();
 
+  public AbstractRessourcesAssembler() {}
+
   public UriComponentsBuilder getOriginal() {
     return original;
   }
-
-  public AbstractRessourcesAssembler() {}
 
   protected static UriComponentsBuilder getBuilderForOriginalUri() {
     HttpServletRequest request =

@@ -30,8 +30,7 @@ public class TaskanaHistoryEvent {
   protected String custom4;
   protected String details;
 
-  public TaskanaHistoryEvent() {
-  }
+  public TaskanaHistoryEvent() {}
 
   public TaskanaHistoryEvent(String userId, String details) {
     this.userId = userId;

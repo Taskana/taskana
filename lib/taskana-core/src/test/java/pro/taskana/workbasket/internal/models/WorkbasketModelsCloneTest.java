@@ -5,9 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 
 import pro.taskana.workbasket.api.models.Workbasket;
-import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
-import pro.taskana.workbasket.internal.models.WorkbasketImpl;
-import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 
 class WorkbasketModelsCloneTest {
 

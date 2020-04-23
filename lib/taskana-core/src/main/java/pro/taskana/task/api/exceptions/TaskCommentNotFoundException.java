@@ -10,5 +10,4 @@ public class TaskCommentNotFoundException extends NotFoundException {
   public TaskCommentNotFoundException(String id, String msg) {
     super(id, msg);
   }
-
 }

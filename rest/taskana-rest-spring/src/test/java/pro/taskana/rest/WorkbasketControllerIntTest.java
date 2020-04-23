@@ -212,13 +212,14 @@ class WorkbasketControllerIntTest {
   void statusCode423ShouldBeReturnedIfWorkbasketContainsNonCompletedTasks() {
     String workbasketWithNonCompletedTasks = "WBI:100000000000000000000000000000000004";
 
-    assertThatThrownBy(
+    ThrowingCallable call =
         () ->
-                template.exchange(
-                    restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketWithNonCompletedTasks),
-                    HttpMethod.DELETE,
-                    new HttpEntity<>(restHelper.getHeadersBusinessAdmin()),
-                    Void.class))
+            template.exchange(
+                restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketWithNonCompletedTasks),
+                HttpMethod.DELETE,
+                new HttpEntity<>(restHelper.getHeadersBusinessAdmin()),
+                Void.class);
+    assertThatThrownBy(call)
         .isInstanceOf(HttpClientErrorException.class)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
         .isEqualTo(HttpStatus.LOCKED);

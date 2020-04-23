@@ -25,10 +25,6 @@ public enum WildcardSearchField {
   CUSTOM_15("CUSTOM_15"),
   CUSTOM_16("CUSTOM_16");
 
-  WildcardSearchField(String name) {
-    this.name = name;
-  }
-
   private static final Map<String, WildcardSearchField> STRING_TO_ENUM =
       Arrays.stream(values())
           .collect(
@@ -38,6 +34,9 @@ public enum WildcardSearchField {
                   (first, second) -> first,
                   () -> new TreeMap<>(String.CASE_INSENSITIVE_ORDER)));
   private String name;
+  WildcardSearchField(String name) {
+    this.name = name;
+  }
 
   public static WildcardSearchField fromString(String name) {
 
