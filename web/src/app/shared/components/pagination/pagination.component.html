@@ -6,7 +6,7 @@
   <li *ngFor="let pageNumber of page?.totalPages | spreadNumber: page?.number: maxPagesAvailable">
     <a *ngIf="pageNumber + 1 !== page?.number" (click)="changeToPage(pageNumber+1)">{{pageNumber + 1}}</a>
     <a *ngIf="pageNumber + 1 === page?.number" class="pagination">
-      <input [(ngModel)]="pageSelected" (keyup.enter)="changeToPage(pageSelected)" type="text" (blur)="changeToPage(pageSelected)">
+      <input [(ngModel)]="pageSelected" (keyup.enter)="changeToPage(pageSelected)" type="number" (blur)="changeToPage(pageSelected)" >
     </a>
   </li>
   <li>
