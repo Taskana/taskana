@@ -1,4 +1,4 @@
-import { Component, OnInit, forwardRef } from '@angular/core';
+import { Component, OnInit, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
@@ -14,6 +14,8 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   ]
 })
 export class NumberPickerComponent implements OnInit, ControlValueAccessor {
+  @Input() required = false;
+
   // The internal data model
   private innerValue: any = 0;
 
@@ -21,6 +23,9 @@ export class NumberPickerComponent implements OnInit, ControlValueAccessor {
   // by the Control Value Accessor
   private onTouchedCallback: () => {};
   private onChangeCallback: (_: any) => {};
+
+  ngOnInit() {
+  }
 
   // get accessor
   get value(): any {
@@ -52,14 +57,17 @@ export class NumberPickerComponent implements OnInit, ControlValueAccessor {
     this.onTouchedCallback = fn;
   }
 
-  ngOnInit() {
-  }
-
   increase() {
+    if (!this.value) {
+      this.value = 0;
+    }
     this.value += 1;
   }
 
   decrease() {
+    if (!this.value) {
+      this.value = 0;
+    }
     this.value -= 1;
   }
 }
