@@ -1,5 +1,5 @@
 <div class="input-group">
-  <input class="form-control input-text" name="number" [(ngModel)]="value">
+  <input class="form-control input-text" name="number" type="number" [(ngModel)]="value" [required]="required">
   <div class="input-group-btn-vertical">
     <button type="button" (click)="increase()" data-toggle="tooltip" title="increase value" class="btn btn-default">
       <span class="material-icons md-14 green-blue">arrow_drop_up</span>
