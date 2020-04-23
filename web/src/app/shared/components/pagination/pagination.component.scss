@@ -34,3 +34,15 @@ ul.pagination{
     margin: 0px 5px 0 0;
     color: $blue;
 }
+
+
+// small "hack" to remove the arrows in the input fields of type numbers
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance:textfield;
+}
