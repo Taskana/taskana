@@ -27,7 +27,7 @@ public class QueryTasksByWildcardSearchAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
 
     WildcardSearchField[] wildcards = {
-        WildcardSearchField.CUSTOM_3, WildcardSearchField.CUSTOM_4, WildcardSearchField.NAME
+      WildcardSearchField.CUSTOM_3, WildcardSearchField.CUSTOM_4, WildcardSearchField.NAME
     };
 
     List<TaskSummary> foundTasks =

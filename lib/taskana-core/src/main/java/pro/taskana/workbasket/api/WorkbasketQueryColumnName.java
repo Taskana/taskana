@@ -3,8 +3,8 @@ package pro.taskana.workbasket.api;
 import pro.taskana.common.api.QueryColumnName;
 
 /**
- * Enum containing the column names
- * for pro.taskana.workbasket.internal.WorkbasketQueryMapper.queryWorkbasketColumnValues
+ * Enum containing the column names for
+ * pro.taskana.workbasket.internal.WorkbasketQueryMapper.queryWorkbasketColumnValues
  *
  * @author jsa
  */

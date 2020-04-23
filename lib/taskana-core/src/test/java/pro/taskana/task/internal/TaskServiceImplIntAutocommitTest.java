@@ -61,21 +61,14 @@ import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 @ExtendWith(JaasExtension.class)
 class TaskServiceImplIntAutocommitTest {
 
-  private DataSource dataSource;
-
-  private TaskServiceImpl taskServiceImpl;
-
-  private TaskanaEngine taskanaEngine;
-
-  private TaskanaEngineImpl taskanaEngineImpl;
-
-  private ClassificationService classificationService;
-
-  private WorkbasketService workbasketService;
-
   private static SampleDataGenerator sampleDataGenerator;
-
   private static TaskanaEngineConfiguration taskanaEngineConfiguration;
+  private DataSource dataSource;
+  private TaskServiceImpl taskServiceImpl;
+  private TaskanaEngine taskanaEngine;
+  private TaskanaEngineImpl taskanaEngineImpl;
+  private ClassificationService classificationService;
+  private WorkbasketService workbasketService;
 
   @BeforeAll
   static void beforeAll() throws SQLException {

@@ -541,7 +541,8 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
     List<WorkbasketSummary> results =
         workbasketService.createWorkbasketQuery().orderByOrgLevel1(DESCENDING).list();
 
-    assertThat(results).hasSizeGreaterThan(2)
+    assertThat(results)
+        .hasSizeGreaterThan(2)
         .extracting(WorkbasketSummary::getOrgLevel1)
         .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
   }
@@ -552,7 +553,8 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
     List<WorkbasketSummary> results =
         workbasketService.createWorkbasketQuery().orderByOrgLevel2(ASCENDING).list();
 
-    assertThat(results).hasSizeGreaterThan(2)
+    assertThat(results)
+        .hasSizeGreaterThan(2)
         .extracting(WorkbasketSummary::getOrgLevel2)
         .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
   }
@@ -563,7 +565,8 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
     List<WorkbasketSummary> results =
         workbasketService.createWorkbasketQuery().orderByOrgLevel3(DESCENDING).list();
 
-    assertThat(results).hasSizeGreaterThan(2)
+    assertThat(results)
+        .hasSizeGreaterThan(2)
         .extracting(WorkbasketSummary::getOrgLevel3)
         .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
   }
@@ -574,7 +577,8 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
     List<WorkbasketSummary> results =
         workbasketService.createWorkbasketQuery().orderByOrgLevel4(ASCENDING).list();
 
-    assertThat(results).hasSizeGreaterThan(2)
+    assertThat(results)
+        .hasSizeGreaterThan(2)
         .extracting(WorkbasketSummary::getOrgLevel4)
         .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
   }
@@ -585,7 +589,8 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
     List<WorkbasketSummary> results =
         workbasketService.createWorkbasketQuery().orderByCustom1(ASCENDING).list();
 
-    assertThat(results).hasSizeGreaterThan(2)
+    assertThat(results)
+        .hasSizeGreaterThan(2)
         .extracting(WorkbasketSummary::getCustom1)
         .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
   }
@@ -596,7 +601,8 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
     List<WorkbasketSummary> results =
         workbasketService.createWorkbasketQuery().orderByCustom2(DESCENDING).list();
 
-    assertThat(results).hasSizeGreaterThan(2)
+    assertThat(results)
+        .hasSizeGreaterThan(2)
         .extracting(WorkbasketSummary::getCustom2)
         .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
   }
@@ -607,7 +613,8 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
     List<WorkbasketSummary> results =
         workbasketService.createWorkbasketQuery().orderByCustom3(ASCENDING).list();
 
-    assertThat(results).hasSizeGreaterThan(2)
+    assertThat(results)
+        .hasSizeGreaterThan(2)
         .extracting(WorkbasketSummary::getCustom3)
         .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
   }
@@ -618,7 +625,8 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
     List<WorkbasketSummary> results =
         workbasketService.createWorkbasketQuery().orderByCustom4(DESCENDING).list();
 
-    assertThat(results).hasSizeGreaterThan(2)
+    assertThat(results)
+        .hasSizeGreaterThan(2)
         .extracting(WorkbasketSummary::getCustom4)
         .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
   }

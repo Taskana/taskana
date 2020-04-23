@@ -25,14 +25,14 @@ import pro.taskana.task.api.models.TaskSummary;
 class TerminateTaskAccTest extends AbstractAccTest {
   private static TaskService taskService;
 
-  @BeforeAll
-  static void setup() {
-    taskService = taskanaEngine.getTaskService();
-  }
-
   @BeforeEach
   public void setupIndividualTest() throws Exception {
     resetDb(false);
+  }
+
+  @BeforeAll
+  static void setup() {
+    taskService = taskanaEngine.getTaskService();
   }
 
   @WithAccessId(

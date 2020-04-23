@@ -292,8 +292,8 @@ public interface WorkbasketService {
    * Deletes the workbasket by the given ID of it.
    *
    * @param workbasketId Id of the workbasket which should be deleted.
-   * @return true if the workbasket was deleted successfully. 
-   *         false if the workbasket is marked for deletion.
+   * @return true if the workbasket was deleted successfully. false if the workbasket is marked for
+   *     deletion.
    * @throws NotAuthorizedException if the current user got no permissions for this interaction.
    * @throws WorkbasketNotFoundException if the workbasket does not exist.
    * @throws WorkbasketInUseException if the workbasket does contain task-content.

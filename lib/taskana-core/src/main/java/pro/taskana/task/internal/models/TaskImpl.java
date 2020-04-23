@@ -268,10 +268,6 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
     return new TaskImpl(this);
   }
 
-  public String getClassificationId() {
-    return classificationSummary == null ? null : classificationSummary.getId();
-  }
-
   protected boolean canEqual(Object other) {
     return (other instanceof TaskImpl);
   }
@@ -391,5 +387,9 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
         + ", custom16="
         + custom16
         + "]";
+  }
+
+  public String getClassificationId() {
+    return classificationSummary == null ? null : classificationSummary.getId();
   }
 }

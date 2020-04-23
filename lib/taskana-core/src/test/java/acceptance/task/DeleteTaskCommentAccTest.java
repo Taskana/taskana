@@ -39,8 +39,7 @@ public class DeleteTaskCommentAccTest extends AbstractAccTest {
         taskService.getTaskComments("TKI:000000000000000000000000000000000001");
     assertThat(taskComments).hasSize(2);
 
-    taskService.deleteTaskComment(
-        "TCI:000000000000000000000000000000000004");
+    taskService.deleteTaskComment("TCI:000000000000000000000000000000000004");
 
     // make sure the task comment was deleted
     List<TaskComment> taskCommentsAfterDeletion =
@@ -62,10 +61,8 @@ public class DeleteTaskCommentAccTest extends AbstractAccTest {
     assertThat(taskComments).hasSize(2);
 
     ThrowingCallable lambda =
-        () ->
-            taskService.deleteTaskComment(
+        () -> taskService.deleteTaskComment("TCI:000000000000000000000000000000000005");
 
-                "TCI:000000000000000000000000000000000005");
     assertThatThrownBy(lambda).isInstanceOf(NotAuthorizedException.class);
 
     // make sure the task comment was not deleted
@@ -112,8 +109,7 @@ public class DeleteTaskCommentAccTest extends AbstractAccTest {
         taskService.getTaskComments("TKI:000000000000000000000000000000000002");
     assertThat(taskComments).hasSize(2);
 
-    ThrowingCallable lambda =
-        () -> taskService.deleteTaskComment("non existing task comment id");
+    ThrowingCallable lambda = () -> taskService.deleteTaskComment("non existing task comment id");
     assertThatThrownBy(lambda).isInstanceOf(TaskCommentNotFoundException.class);
 
     // make sure the task comment was not deleted

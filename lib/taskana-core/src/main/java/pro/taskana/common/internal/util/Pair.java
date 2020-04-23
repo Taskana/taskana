@@ -36,6 +36,11 @@ public final class Pair<L, R> {
   }
 
   @Override
+  public int hashCode() {
+    return Objects.hash(left, right);
+  }
+
+  @Override
   public boolean equals(Object obj) {
     if (this == obj) {
       return true;
@@ -47,13 +52,7 @@ public final class Pair<L, R> {
       return false;
     }
     Pair<?, ?> other = (Pair<?, ?>) obj;
-    return Objects.equals(left, other.left)
-               && Objects.equals(right, other.right);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(left, right);
+    return Objects.equals(left, other.left) && Objects.equals(right, other.right);
   }
 
   @Override

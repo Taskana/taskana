@@ -60,6 +60,5 @@ public interface TaskCommentMapper {
         @Result(property = "created", column = "CREATED"),
         @Result(property = "modified", column = "MODIFIED"),
       })
-  TaskCommentImpl findById(
-      @Param("taskCommentId") String taskCommentId);
+  TaskCommentImpl findById(@Param("taskCommentId") String taskCommentId);
 }

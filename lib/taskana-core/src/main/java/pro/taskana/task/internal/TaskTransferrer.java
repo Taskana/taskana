@@ -37,8 +37,8 @@ import pro.taskana.workbasket.internal.WorkbasketQueryImpl;
 public class TaskTransferrer {
 
   private static final String WAS_NOT_FOUND2 = " was not found.";
-  private static final String TASK_IN_END_STATE_WITH_ID_CANNOT_BE_TRANSFERRED
-      = "Task in end state with id %s cannot be transferred.";
+  private static final String TASK_IN_END_STATE_WITH_ID_CANNOT_BE_TRANSFERRED =
+      "Task in end state with id %s cannot be transferred.";
   private static final String TASK_WITH_ID = "Task with id ";
   private static final String WAS_MARKED_FOR_DELETION = " was marked for deletion";
   private static final String THE_WORKBASKET = "The workbasket ";

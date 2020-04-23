@@ -90,10 +90,6 @@ public class LdapClient {
     return result;
   }
 
-  boolean nameIsDn(String name) {
-    return name.toLowerCase().endsWith(getBaseDn().toLowerCase());
-  }
-
   public List<AccessIdResource> searchUsersByName(final String name)
       throws InvalidArgumentException {
     LOGGER.debug("entry to searchUsersByName(name = {}).", name);
@@ -278,6 +274,10 @@ public class LdapClient {
     return accessId.contains(getGroupSearchBase());
   }
 
+  boolean nameIsDn(String name) {
+    return name.toLowerCase().endsWith(getBaseDn().toLowerCase());
+  }
+
   List<AccessIdResource> getFirstPageOfaResultList(List<AccessIdResource> accessIds) {
     return accessIds.subList(0, Math.min(accessIds.size(), maxNumberOfReturnedAccessIds));
   }
@@ -355,7 +355,7 @@ public class LdapClient {
     }
     return dn;
   }
-  
+
   /** Context Mapper for user entries. */
   class GroupContextMapper extends AbstractContextMapper<AccessIdResource> {
 
@@ -367,8 +367,6 @@ public class LdapClient {
       accessId.setName(context.getStringAttribute(getGroupNameAttribute()));
       return accessId;
     }
-
-
   }
 
   /** Context Mapper for user entries. */

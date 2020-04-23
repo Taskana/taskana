@@ -35,14 +35,14 @@ public class TaskHistoryEventListResourceAssembler extends AbstractRessourcesAss
                   this.getOriginal()
                       .replaceQueryParam("page", pageMetadata.getTotalPages())
                       .toUriString())
-                      .withRel(IanaLinkRelations.LAST));
+              .withRel(IanaLinkRelations.LAST));
       if (pageMetadata.getNumber() > 1) {
         pagedResources.add(
             new Link(
                     this.getOriginal()
                         .replaceQueryParam("page", pageMetadata.getNumber() - 1)
                         .toUriString())
-                        .withRel(IanaLinkRelations.PREV));
+                .withRel(IanaLinkRelations.PREV));
       }
       if (pageMetadata.getNumber() < pageMetadata.getTotalPages()) {
         pagedResources.add(
@@ -50,7 +50,7 @@ public class TaskHistoryEventListResourceAssembler extends AbstractRessourcesAss
                     this.getOriginal()
                         .replaceQueryParam("page", pageMetadata.getNumber() + 1)
                         .toUriString())
-                        .withRel(IanaLinkRelations.NEXT));
+                .withRel(IanaLinkRelations.NEXT));
       }
     }
 

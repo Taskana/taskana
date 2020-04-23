@@ -17,6 +17,9 @@ public class MinimalTaskSummary {
   private Instant planned;
   private Instant due;
   private Instant modified;
+  private CallbackState callbackState;
+
+  MinimalTaskSummary() {}
 
   public Instant getPlanned() {
     return planned;
@@ -41,10 +44,6 @@ public class MinimalTaskSummary {
   public void setModified(Instant modified) {
     this.modified = modified;
   }
-
-  private CallbackState callbackState;
-
-  MinimalTaskSummary() {}
 
   public String getTaskId() {
     return taskId;
@@ -105,25 +104,25 @@ public class MinimalTaskSummary {
   @Override
   public String toString() {
     return "MinimalTaskSummary [taskId="
-               + taskId
-               + ", externalId="
-               + externalId
-               + ", workbasketId="
-               + workbasketId
-               + ", classificationId="
-               + classificationId
-               + ", owner="
-               + owner
-               + ", taskState="
-               + taskState
-               + ", planned="
-               + planned
-               + ", due="
-               + due
-               + ", modified="
-               + modified
-               + ", callbackState="
-               + callbackState
-               + "]";
+        + taskId
+        + ", externalId="
+        + externalId
+        + ", workbasketId="
+        + workbasketId
+        + ", classificationId="
+        + classificationId
+        + ", owner="
+        + owner
+        + ", taskState="
+        + taskState
+        + ", planned="
+        + planned
+        + ", due="
+        + due
+        + ", modified="
+        + modified
+        + ", callbackState="
+        + callbackState
+        + "]";
   }
 }

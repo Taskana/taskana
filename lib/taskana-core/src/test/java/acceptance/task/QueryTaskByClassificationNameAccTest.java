@@ -161,7 +161,7 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
         taskQuery.classificationNameIn("Widerruf", "Beratungsprotokoll", "Dynamikänderung").list();
     long numberOfTasks =
         taskQuery.classificationNameIn("Widerruf", "Beratungsprotokoll", "Dynamikänderung").count();
-    assertThat(tasks).hasSize((int)numberOfTasks);
+    assertThat(tasks).hasSize((int) numberOfTasks);
   }
 
   @WithAccessId(
