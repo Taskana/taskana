@@ -453,7 +453,7 @@ public class HistoryQueryImpl implements HistoryQuery {
             "Custom number has to be between 1 and 4, but this is: " + num);
     }
   }
-  
+
   @Override
   public List<HistoryEventImpl> list() {
     LOGGER.debug("entry to list(), this = {}", this);

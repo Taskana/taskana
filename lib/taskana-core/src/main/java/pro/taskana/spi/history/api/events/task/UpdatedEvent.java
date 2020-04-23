@@ -9,5 +9,4 @@ public class UpdatedEvent extends TaskEvent {
     eventType = "TASK_UPDATED";
     created = updatedTask.getModified();
   }
-
 }

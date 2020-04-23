@@ -5,8 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 
 import pro.taskana.classification.api.models.Classification;
-import pro.taskana.classification.internal.models.ClassificationImpl;
-import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
 
 class ClassificationModelsCloneTest {
 

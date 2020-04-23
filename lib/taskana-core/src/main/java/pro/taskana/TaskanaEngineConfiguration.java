@@ -172,16 +172,6 @@ public class TaskanaEngineConfiguration {
     initGermanHolidaysEnabled(props);
   }
 
-  private void initGermanHolidaysEnabled(Properties props) {
-    String enabled = props.getProperty(TASKANA_GERMAN_HOLIDAYS_ENABLED);
-    if (enabled != null && !enabled.isEmpty()) {
-      germanPublicHolidaysEnabled = Boolean.parseBoolean(enabled);
-    } else {
-      germanPublicHolidaysEnabled = false;
-    }
-    LOGGER.debug("GermanPublicHolidaysEnabled = {}", germanPublicHolidaysEnabled);
-  }
-
   public static DataSource createDefaultDataSource() {
     LOGGER.info(
         "No datasource is provided. A inmemory db is used: "
@@ -350,6 +340,16 @@ public class TaskanaEngineConfiguration {
    */
   public static boolean shouldUseLowerCaseForAccessIds() {
     return true;
+  }
+
+  private void initGermanHolidaysEnabled(Properties props) {
+    String enabled = props.getProperty(TASKANA_GERMAN_HOLIDAYS_ENABLED);
+    if (enabled != null && !enabled.isEmpty()) {
+      germanPublicHolidaysEnabled = Boolean.parseBoolean(enabled);
+    } else {
+      germanPublicHolidaysEnabled = false;
+    }
+    LOGGER.debug("GermanPublicHolidaysEnabled = {}", germanPublicHolidaysEnabled);
   }
 
   private void initJobParameters(Properties props) {

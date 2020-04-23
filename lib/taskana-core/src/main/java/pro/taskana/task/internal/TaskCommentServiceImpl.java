@@ -72,8 +72,7 @@ class TaskCommentServiceImpl {
       if (taskCommentToUpdate.getCreator().equals(userId)
           || taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN)) {
 
-        TaskComment oldTaskComment =
-            getTaskComment(taskCommentImplToUpdate.getId());
+        TaskComment oldTaskComment = getTaskComment(taskCommentImplToUpdate.getId());
 
         checkModifiedHasNotChanged(oldTaskComment, taskCommentImplToUpdate);
 
@@ -132,8 +131,7 @@ class TaskCommentServiceImpl {
       throws NotAuthorizedException, TaskCommentNotFoundException, TaskNotFoundException,
           InvalidArgumentException {
 
-    LOGGER.debug(
-        "entry to deleteTaskComment (taskComment = {}", taskCommentId);
+    LOGGER.debug("entry to deleteTaskComment (taskComment = {}", taskCommentId);
 
     String userId = CurrentUserContext.getUserid();
 
@@ -208,9 +206,7 @@ class TaskCommentServiceImpl {
       if (result == null) {
         throw new TaskCommentNotFoundException(
             taskCommentId,
-            String.format(
-                "TaskComment for taskCommentId '%s' was not found",
-                taskCommentId));
+            String.format("TaskComment for taskCommentId '%s' was not found", taskCommentId));
       }
 
       taskService.getTask(result.getTaskId());

@@ -329,6 +329,5 @@ public class QueryHistoryAccTest extends AbstractAccTest {
     returnedList =
         getHistoryService().createHistoryQuery().listValues(HistoryQueryColumnName.CUSTOM_4, null);
     assertThat(returnedList).hasSize(2);
-
   }
 }

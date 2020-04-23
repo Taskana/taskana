@@ -6,7 +6,7 @@ import pro.taskana.task.api.models.Task;
 public class ClaimedEvent extends TaskEvent {
 
   public ClaimedEvent(Task task, String userId) {
-    super(task, userId,null);
+    super(task, userId, null);
     setEventType("TASK_CLAIMED");
     created = task.getClaimed();
   }
