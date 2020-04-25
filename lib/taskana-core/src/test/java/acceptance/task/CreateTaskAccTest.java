@@ -60,9 +60,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     classificationService = taskanaEngine.getClassificationService();
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void should_beAbleToCreateNewTask_When_TaskCopy() throws Exception {
     Task oldTask = taskService.getTask("TKI:000000000000000000000000000000000000");
@@ -77,9 +75,7 @@ class CreateTaskAccTest extends AbstractAccTest {
         .containsOnly(newTask.getId());
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testCreateSimpleManualTask()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -113,9 +109,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(createdTask.isTransferred()).isFalse();
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testCreateTaskWithPlanned()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -140,9 +134,7 @@ class CreateTaskAccTest extends AbstractAccTest {
         .isCloseTo(createdTask.getCreated(), new TemporalUnitWithinOffset(5L, ChronoUnit.SECONDS));
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testCreateTaskWithInvalidPlannedAndDue() {
 
@@ -162,9 +154,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(InvalidArgumentException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testCreateTaskWithValidPlannedAndDue()
       throws ClassificationNotFoundException, InvalidArgumentException {
@@ -196,9 +186,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThatCode(call).doesNotThrowAnyException();
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testIdempotencyOfTaskCreation()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -242,9 +230,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(TaskAlreadyExistException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testCreateSimpleTaskWithCustomAttributes()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -311,9 +297,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(customAttributesForCreate).isEqualTo(customAttributesFromDb);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testCreateExternalTaskWithAttachment()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -399,9 +383,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(customAttributesForCreate).isEqualTo(customAttributesFromDb);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testCreateExternalTaskWithMultipleAttachments()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -453,9 +435,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(readTask.getAttachments().get(0).getObjectReference()).isNotNull();
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testCalculationOfDueDateAtCreate()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -488,9 +468,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(shouldBeDueDate).isEqualTo(readTask.getDue());
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testCalculationOfPlannedDateAtCreate()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -525,9 +503,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(shouldBePlannedDate).isEqualTo(readTask.getPlanned());
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testPrioDurationOfTaskFromAttachmentsAtCreate()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -588,9 +564,7 @@ class CreateTaskAccTest extends AbstractAccTest {
         .isEqualTo(readTask.getDue());
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testThrowsExceptionIfAttachmentIsInvalid() throws ClassificationNotFoundException {
 
@@ -674,9 +648,7 @@ class CreateTaskAccTest extends AbstractAccTest {
             createSimpleCustomProperties(3)));
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testUseCustomNameIfSetForNewTask()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -694,9 +666,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(createdTask.getName()).isEqualTo("Test Name");
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testUseClassificationMetadataFromCorrectDomainForNewTask()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -714,9 +684,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(createdTask.getPriority()).isEqualTo(2);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testGetExceptionIfWorkbasketDoesNotExist() {
 
@@ -732,9 +700,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(WorkbasketNotFoundException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testGetExceptionIfAppendIsNotPermitted() {
 
@@ -750,9 +716,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testThrowsExceptionIfMandatoryPrimaryObjectReferenceIsNotSetOrIncomplete() {
 
@@ -783,9 +747,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     testCreateTask.accept(createObjectReference(null, "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testSetDomainFromWorkbasket()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -807,9 +769,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(createdTask.getDomain()).isEqualTo(workbasket.getDomain());
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testCreatedTaskObjectEqualsReadTaskObject()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -843,9 +803,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(readTask).isEqualTo(createdTask);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testCreateSimpleTaskWithCallbackInfo()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -897,9 +855,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testCreateTaskAlreadyExisting() throws NotAuthorizedException, TaskNotFoundException {
 
@@ -912,9 +868,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(TaskAlreadyExistException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testCreateTaskNotAuthorizedOnWorkbasket() {
 
@@ -927,9 +881,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(
-      userName = "admin",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "admin", groups = "group_1")
   @Test
   void testCreateTaskWithWorkbasketMarkedForDeletion()
       throws NotAuthorizedException, InvalidStateException, TaskNotFoundException,

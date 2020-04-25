@@ -32,7 +32,7 @@ class ProvideTimestampReportAccTest extends AbstractReportAccTest {
    *
    * @throws Exception if any error occurs during the test.
    */
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testProperInsertionOfQueryItems() throws Exception {
     MonitorService monitorService = taskanaEngine.getMonitorService();

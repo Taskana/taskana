@@ -39,7 +39,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
     taskService = taskanaEngine.getTaskService();
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void shouldCleanCompletedTasksUntilDate() throws Exception {
 
@@ -56,7 +56,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
     assertThat(totalTasksCount).isEqualTo(68);
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void shouldCleanCompletedTasksUntilDateWithSameParentBussiness() throws Exception {
     long totalTasksCount = taskService.createTaskQuery().count();
@@ -82,7 +82,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
     assertThat(totalTasksCount).isEqualTo(66);
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void shouldNotCleanCompleteTasksAfterDefinedDay() throws Exception {
     Task createdTask = createAndCompleteTask();

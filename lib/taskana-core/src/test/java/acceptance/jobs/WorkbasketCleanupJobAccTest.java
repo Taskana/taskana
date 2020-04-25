@@ -38,7 +38,7 @@ class WorkbasketCleanupJobAccTest extends AbstractAccTest {
     resetDb(true);
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void shouldCleanWorkbasketMarkedForDeletionWithoutTasks() throws TaskanaException {
     long totalWorkbasketCount = workbasketService.createWorkbasketQuery().count();
@@ -69,7 +69,7 @@ class WorkbasketCleanupJobAccTest extends AbstractAccTest {
     assertThat(totalWorkbasketCount).isEqualTo(24);
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void shouldNotCleanWorkbasketMarkedForDeletionIfWorkbasketHasTasks() throws Exception {
     long totalWorkbasketCount = workbasketService.createWorkbasketQuery().count();

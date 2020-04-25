@@ -29,7 +29,7 @@ class TaskQueryAccTest extends AbstractAccTest {
     assertThat(results).isEmpty();
   }
 
-  @WithAccessId(userName = "user_1_1") // , groupNames = {"businessadmin"})
+  @WithAccessId(user = "user_1_1") // , groupNames = {"businessadmin"})
   @Test
   void testTaskQueryUser_1_1() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -39,9 +39,7 @@ class TaskQueryAccTest extends AbstractAccTest {
     assertThat(results).hasSize(3);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "user_1_1", groups = "businessadmin")
   @Test
   void testTaskQueryUser_1_1BusinessAdm() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -51,9 +49,7 @@ class TaskQueryAccTest extends AbstractAccTest {
     assertThat(results).hasSize(3);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"admin"})
+  @WithAccessId(user = "user_1_1", groups = "admin")
   @Test
   void testTaskQueryUser_1_1Admin() {
     TaskService taskService = taskanaEngine.getTaskService();

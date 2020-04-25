@@ -50,7 +50,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testCompleteTaskStatusReport() throws NotAuthorizedException, InvalidArgumentException {
     // given
@@ -81,7 +81,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     assertThat(sumRow.getTotalValue()).isEqualTo(50);
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testCompleteTaskStatusReportAsAdmin()
       throws NotAuthorizedException, InvalidArgumentException {
@@ -89,7 +89,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     monitorService.createTaskStatusReportBuilder().buildReport();
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testCompleteTaskStatusReportWithDomainFilter()
       throws NotAuthorizedException, InvalidArgumentException {
@@ -121,7 +121,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     assertThat(sumRow.getTotalValue()).isEqualTo(38);
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testCompleteTaskStatusReportWithStateFilter()
       throws NotAuthorizedException, InvalidArgumentException {
@@ -157,9 +157,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     assertThat(sumRow.getTotalValue()).isEqualTo(41);
   }
 
-  @WithAccessId(
-      userName = "monitor",
-      groupNames = {"admin"})
+  @WithAccessId(user = "monitor", groups = "admin")
   @Test
   void testCompleteTaskStatusReportWithStates()
       throws NotAuthorizedException, InvalidArgumentException, InvalidStateException,

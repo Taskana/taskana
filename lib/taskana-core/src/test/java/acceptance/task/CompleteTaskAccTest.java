@@ -33,9 +33,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testCompleteTask()
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
@@ -51,9 +49,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(completedTask.getModified()).isNotEqualTo(completedTask.getCreated());
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testCompleteTaskTwice()
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
@@ -64,9 +60,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(completedTask2).isEqualTo(completedTask);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testForceCompleteAlreadyClaimed()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -92,9 +86,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(completedTask.getCompleted()).isEqualTo(completedTask.getModified());
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testForceCompleteNotClaimed()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -119,9 +111,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(completedTask.getCompleted()).isEqualTo(completedTask.getModified());
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testCompleteTaskThrowsErrors() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -151,9 +141,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(InvalidOwnerException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testClaimTaskWithDefaultFlag()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -183,9 +171,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(claimedTask.getModified()).isEqualTo(claimedTask.getClaimed());
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testForceClaimTaskFromOtherUser()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -215,9 +201,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(taskAfterClaim.isRead()).isTrue();
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testClaimTaskNotExisting() {
 
@@ -229,9 +213,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testClaimTaskWithInvalidState() {
 
@@ -243,9 +225,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(InvalidStateException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testClaimTaskWithInvalidOwner() {
 
@@ -257,9 +237,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(InvalidOwnerException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testCancelClaimForcedWithInvalidState() {
 
@@ -271,9 +249,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(InvalidStateException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testCancelClaimDefaultFlag()
       throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
@@ -296,9 +272,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(TaskState.READY).isEqualTo(createdTask.getState());
   }
 
-  @WithAccessId(
-      userName = "admin",
-      groupNames = {"admin"})
+  @WithAccessId(user = "admin", groups = "admin")
   @Test
   void testForceCancelClaimSuccessfull()
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
@@ -322,9 +296,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(taskAfter.isRead()).isTrue();
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testCancelClaimWithInvalidOwner() {
 

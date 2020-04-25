@@ -22,8 +22,8 @@ public class UpdateWorkbasketAuthorizations2AccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1", "businessadmin"})
+      user = "teamlead_1",
+      groups = {"group_1", "businessadmin"})
   @Test
   void testUpdatedAccessItemListToEmptyList() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();

@@ -54,7 +54,7 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfClassificationReport()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -99,7 +99,7 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
             "TKI:000000000000000000000000000000000006");
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfClassificationReportWithAttachments()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -141,7 +141,7 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
             "TKI:000000000000000000000000000000000001", "TKI:000000000000000000000000000000000033");
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfClassificationReportWithDomainFilter()
       throws InvalidArgumentException, NotAuthorizedException {

@@ -46,7 +46,7 @@ class ProvideDetailedClassificationReportAccTest extends AbstractReportAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetTotalNumbersOfTasksOfDetailedClassificationReport()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -99,7 +99,7 @@ class ProvideDetailedClassificationReportAccTest extends AbstractReportAccTest {
     assertThat(report.getSumRow().getTotalValue()).isEqualTo(50);
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetDetailedClassificationReportWithReportLineItemDefinitions()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -132,7 +132,7 @@ class ProvideDetailedClassificationReportAccTest extends AbstractReportAccTest {
     assertThat(report.getSumRow().getTotalValue()).isEqualTo(50);
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfDetailedClassificationReport()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -197,7 +197,7 @@ class ProvideDetailedClassificationReportAccTest extends AbstractReportAccTest {
     assertThat(detailedLineNoAttachment5.getCells()).isEqualTo(new int[] {3, 3, 0, 5, 2});
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfDetailedClassificationReportWithWorkbasketFilter()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -262,7 +262,7 @@ class ProvideDetailedClassificationReportAccTest extends AbstractReportAccTest {
     assertThat(detailedLineNoAttachment5.getCells()).isEqualTo(new int[] {2, 2, 0, 0, 0});
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfDetailedClassificationReportWithStateFilter()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -326,7 +326,7 @@ class ProvideDetailedClassificationReportAccTest extends AbstractReportAccTest {
     assertThat(detailedLineNoAttachment5.getCells()).isEqualTo(new int[] {3, 3, 0, 5, 0});
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfDetailedClassificationReportNotInWorkingDays()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -390,7 +390,7 @@ class ProvideDetailedClassificationReportAccTest extends AbstractReportAccTest {
     assertThat(detailedLineNoAttachment5.getCells()).isEqualTo(new int[] {6, 0, 0, 0, 7});
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfDetailedClassificationReportWithCategoryFilter()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -433,7 +433,7 @@ class ProvideDetailedClassificationReportAccTest extends AbstractReportAccTest {
     assertThat(detailedLine2WithoutAttachment.getCells()).isEqualTo(new int[] {2, 2, 2, 0, 4});
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfDetailedClassificationReportWithDomainFilter()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -497,7 +497,7 @@ class ProvideDetailedClassificationReportAccTest extends AbstractReportAccTest {
     assertThat(detailedLineNoAttachment5.getCells()).isEqualTo(new int[] {0, 1, 0, 3, 0});
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfDetailedClassificationReportWithCustomFieldValueFilter()
       throws InvalidArgumentException, NotAuthorizedException {

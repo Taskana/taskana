@@ -43,7 +43,7 @@ class WorkbasketQueryAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(userName = "unknown")
+  @WithAccessId(user = "unknown")
   @Test
   void testQueryWorkbasketByUnknownUser() throws InvalidArgumentException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -62,7 +62,7 @@ class WorkbasketQueryAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(userName = "unknown", groupNames = "businessadmin")
+  @WithAccessId(user = "unknown", groups = "businessadmin")
   @Test
   void testQueryWorkbasketByBusinessAdmin()
       throws NotAuthorizedException, InvalidArgumentException {
@@ -82,7 +82,7 @@ class WorkbasketQueryAccTest extends AbstractAccTest {
     assertThat(results).hasSize(13);
   }
 
-  @WithAccessId(userName = "unknown", groupNames = "admin")
+  @WithAccessId(user = "unknown", groups = "admin")
   @Test
   void testQueryWorkbasketByAdmin() throws NotAuthorizedException, InvalidArgumentException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();

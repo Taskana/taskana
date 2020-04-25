@@ -30,9 +30,7 @@ class TaskEngineAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "user_1_1", groups = "businessadmin")
   @Test
   void testRunAsAdminIsOnlyTemporary() throws NoSuchFieldException, IllegalAccessException {
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN)).isTrue();
@@ -45,7 +43,7 @@ class TaskEngineAccTest extends AbstractAccTest {
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isFalse();
   }
 
-  @WithAccessId(userName = "user_1_1") // , groupNames = {"businessadmin"})
+  @WithAccessId(user = "user_1_1") // , groupNames = {"businessadmin"})
   @Test
   void testUser() {
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN)).isFalse();
@@ -54,9 +52,7 @@ class TaskEngineAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "user_1_1", groups = "businessadmin")
   @Test
   void testBusinessAdmin() throws NotAuthorizedException {
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN)).isTrue();
@@ -64,9 +60,7 @@ class TaskEngineAccTest extends AbstractAccTest {
     taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"admin"})
+  @WithAccessId(user = "user_1_1", groups = "admin")
   @Test
   void testAdmin() throws NotAuthorizedException {
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN)).isFalse();

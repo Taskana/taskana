@@ -42,9 +42,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     taskService = taskanaEngine.getTaskService();
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   public void should_ThrowException_When_DueAndPlannedAreChangedInconsistently() throws Exception {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -58,9 +56,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
                 + "date 2020-07-02T00:00:00Z not matching the service level PT24H.");
   }
 
-  @WithAccessId(
-      userName = "user_3_2",
-      groupNames = {"group_2"})
+  @WithAccessId(user = "user_3_2", groups = "group_2")
   @Test
   void should_SetPlanned_When_SetPlannedRequestContainsDuplicateTaskIds()
       throws NotAuthorizedException, TaskNotFoundException {
@@ -97,9 +93,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     assertThat(due4).isEqualTo(dueExpected);
   }
 
-  @WithAccessId(
-      userName = "user_3_2",
-      groupNames = {"group_2"})
+  @WithAccessId(user = "user_3_2", groups = "group_2")
   @Test
   void should_SetPlanned_When_RequestContainsDuplicatesAndNotExistingTaskIds()
       throws NotAuthorizedException, TaskNotFoundException {
@@ -126,9 +120,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     assertThat(due5).isEqualTo(dueExpected);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_2"})
+  @WithAccessId(user = "user_1_1", groups = "group_2")
   @Test
   void should_SetPlanned_When_RequestContainsTasksWithAttachments()
       throws NotAuthorizedException, TaskNotFoundException, ClassificationNotFoundException,
@@ -207,9 +199,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
   // |TAI:000000000000000000000000000000000014 | CLI:100000000000000000000000000000000004,| P14D |
   // +-----------------------------------------+------------------------------------------+------+
 
-  @WithAccessId(
-      userName = "user_3_2",
-      groupNames = {"group_2"})
+  @WithAccessId(user = "user_3_2", groups = "group_2")
   @Test
   void should_ReturnBulkLog_When_UserIsNotAuthorizedForTasks() {
     String tkId1 = "TKI:000000000000000000000000000000000008";
@@ -230,9 +220,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
         .hasOnlyElementsOfType(NotAuthorizedException.class);
   }
 
-  @WithAccessId(
-      userName = "admin",
-      groupNames = {"group_2"})
+  @WithAccessId(user = "admin", groups = "group_2")
   @Test
   void should_SetPlannedPropertyOfTasks_When_RequestedByAdminUser()
       throws NotAuthorizedException, TaskNotFoundException {
@@ -257,9 +245,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     assertThat(dueBulk4).isEqualTo(getInstant("2020-05-22T07:00:00"));
   }
 
-  @WithAccessId(
-      userName = "admin",
-      groupNames = {"group_2"})
+  @WithAccessId(user = "admin", groups = "group_2")
   @Test
   void should_DoNothing_When_SetPlannedIsCalledWithEmptyTasksList() {
     Instant planned = getInstant("2020-05-03T07:00:00");
@@ -276,9 +262,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
   // |TAI:000000000000000000000000000000000006 | CLI:000000000000000000000000000000000007 | P6D  |
   // |TAI:000000000000000000000000000000000007 | CLI:100000000000000000000000000000000008 | P1D  |
   // +-----------------------------------------+------------------------------------------+------+
-  @WithAccessId(
-      userName = "admin",
-      groupNames = {"group_2"})
+  @WithAccessId(user = "admin", groups = "group_2")
   @Test
   void should_SetPlannedPropertyWithBulkUpdate_When_RequestContainsASingleTask()
       throws NotAuthorizedException, TaskNotFoundException, InvalidArgumentException {
@@ -294,9 +278,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     assertThat(task.getDue()).isEqualTo(planned.plus(Duration.ofDays(days)));
   }
 
-  @WithAccessId(
-      userName = "admin",
-      groupNames = {"group_2"})
+  @WithAccessId(user = "admin", groups = "group_2")
   @Test
   void should_SetPlannedPropertyOnSingle_When_UpdateTaskWasCalled()
       throws NotAuthorizedException, TaskNotFoundException, InvalidArgumentException,
@@ -312,9 +294,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     assertThat(task.getDue()).isEqualTo(task.getPlanned().plus(Duration.ofDays(days)));
   }
 
-  @WithAccessId(
-      userName = "admin",
-      groupNames = {"group_2"})
+  @WithAccessId(user = "admin", groups = "group_2")
   @Test
   void should_SetPlanned_When_OnlyDueWasChanged()
       throws NotAuthorizedException, TaskNotFoundException, InvalidArgumentException,
@@ -330,9 +310,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     assertThat(task.getPlanned()).isEqualTo(getInstant("2020-05-08T07:00:00"));
   }
 
-  @WithAccessId(
-      userName = "admin",
-      groupNames = {"group_2"})
+  @WithAccessId(user = "admin", groups = "group_2")
   @Test
   void should_SetDue_When_OnlyPlannedWasChanged()
       throws NotAuthorizedException, TaskNotFoundException, InvalidArgumentException,
@@ -350,9 +328,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     assertThat(task.getPlanned()).isEqualTo(task.getDue().plus(Duration.ofDays(days)));
   }
 
-  @WithAccessId(
-      userName = "admin",
-      groupNames = {"group_2"})
+  @WithAccessId(user = "admin", groups = "group_2")
   @Test
   void should_SetPlanned_When_DueIsChangedAndPlannedIsNulled()
       throws NotAuthorizedException, TaskNotFoundException, InvalidArgumentException,
@@ -369,9 +345,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     assertThat(task.getPlanned()).isEqualTo(task.getDue().plus(Duration.ofDays(days)));
   }
 
-  @WithAccessId(
-      userName = "admin",
-      groupNames = {"group_2"})
+  @WithAccessId(user = "admin", groups = "group_2")
   @Test
   void should_SetDue_When_TaskUpdateIsCalled()
       throws NotAuthorizedException, TaskNotFoundException, InvalidArgumentException,
@@ -406,9 +380,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     assertThat(task.getDue()).isEqualTo(getInstant("2020-05-15T07:00:00"));
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_2", groups = "group_1")
   @Test
   void should_UpdateTaskPlannedOrDue_When_PlannedOrDueAreWeekendDays()
       throws NotAuthorizedException, TaskNotFoundException, ClassificationNotFoundException,

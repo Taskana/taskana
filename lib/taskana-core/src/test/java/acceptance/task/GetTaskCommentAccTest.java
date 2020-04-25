@@ -25,9 +25,7 @@ public class GetTaskCommentAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void should_ReturnTaskComments_For_TaskId() throws NotAuthorizedException, TaskNotFoundException {
 
@@ -39,9 +37,7 @@ public class GetTaskCommentAccTest extends AbstractAccTest {
     assertThat(taskComments).hasSize(3);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void should_ReturnEmptyList_When_TaskCommentsDontExist()
       throws NotAuthorizedException, TaskNotFoundException {
@@ -51,9 +47,7 @@ public class GetTaskCommentAccTest extends AbstractAccTest {
     assertThat(taskService.getTaskComments("TKI:000000000000000000000000000000000036")).isEmpty();
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void should_FailToReturnTaskComments_When_TaskIstNotVisible() {
 
@@ -66,9 +60,7 @@ public class GetTaskCommentAccTest extends AbstractAccTest {
     assertThatThrownBy(httpCall).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void should_ReturnTaskComment_For_TaskCommentId()
       throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException,
@@ -81,9 +73,7 @@ public class GetTaskCommentAccTest extends AbstractAccTest {
     assertThat(taskComment.getCreator()).isEqualTo("user_1_1");
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void should_FailToReturnTaskComment_When_TaskCommentIsNotExisting() {
 
@@ -94,9 +84,7 @@ public class GetTaskCommentAccTest extends AbstractAccTest {
     assertThatThrownBy(lambda).isInstanceOf(TaskCommentNotFoundException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void should_FailToReturntaskComment_When_TaskIstNotVisible() {
 

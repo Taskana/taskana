@@ -22,8 +22,8 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1", "group_2"})
+      user = "teamlead_1",
+      groups = {"group_1", "group_2"})
   @Test
   void testQueryTasksByExcactValueOfObjectReference() throws SystemException {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -33,8 +33,8 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1", "group_2"})
+      user = "teamlead_1",
+      groups = {"group_1", "group_2"})
   @Test
   void testQueryTasksByExcactValueAndTypeOfObjectReference() throws SystemException {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -48,8 +48,8 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1", "group_2"})
+      user = "teamlead_1",
+      groups = {"group_1", "group_2"})
   @Test
   void testQueryTasksByValueLikeOfObjectReference() throws SystemException {
     TaskService taskService = taskanaEngine.getTaskService();

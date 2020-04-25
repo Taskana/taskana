@@ -33,9 +33,7 @@ class WorkOnTaskAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_2", groups = "group_1")
   @Test
   void testClaimTask()
       throws NotAuthorizedException, TaskNotFoundException, InvalidStateException,
@@ -55,9 +53,7 @@ class WorkOnTaskAccTest extends AbstractAccTest {
     assertThat(claimedTask.getOwner()).isEqualTo("user_1_2");
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_2", groups = "group_1")
   @Test
   void testThrowsExceptionIfTaskIsAlreadyClaimed()
       throws NotAuthorizedException, TaskNotFoundException {
@@ -73,9 +69,7 @@ class WorkOnTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(InvalidOwnerException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_2", groups = "group_1")
   @Test
   void testClaimAlreadyClaimedByCallerTask()
       throws NotAuthorizedException, TaskNotFoundException, InvalidStateException,
@@ -86,9 +80,7 @@ class WorkOnTaskAccTest extends AbstractAccTest {
     taskService.claim(task.getId());
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_2", groups = "group_1")
   @Test
   void testForceClaimTaskWhichIsAlreadyClaimedByAnotherUser()
       throws NotAuthorizedException, TaskNotFoundException {
@@ -104,9 +96,7 @@ class WorkOnTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(InvalidOwnerException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_2", groups = "group_1")
   @Test
   void testCancelClaimTask()
       throws NotAuthorizedException, TaskNotFoundException, InvalidStateException,
@@ -124,9 +114,7 @@ class WorkOnTaskAccTest extends AbstractAccTest {
     assertThat(unclaimedTask.getOwner()).isNull();
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_2", groups = "group_1")
   @Test
   void testThrowsExceptionIfCancelClaimOfTaskFromAnotherUser()
       throws NotAuthorizedException, TaskNotFoundException {
@@ -142,9 +130,7 @@ class WorkOnTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(InvalidOwnerException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_2", groups = "group_1")
   @Test
   void testForceCancelClaimOfTaskFromAnotherUser()
       throws NotAuthorizedException, TaskNotFoundException, InvalidStateException,
@@ -162,9 +148,7 @@ class WorkOnTaskAccTest extends AbstractAccTest {
     assertThat(unclaimedTask.getOwner()).isNull();
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_2", groups = "group_1")
   @Test
   void testCompleteTask()
       throws NotAuthorizedException, TaskNotFoundException, InvalidStateException,
@@ -186,9 +170,7 @@ class WorkOnTaskAccTest extends AbstractAccTest {
     assertThat(completedTask.getOwner()).isEqualTo("user_1_2");
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_2", groups = "group_1")
   @Test
   void testForceCompleteUnclaimedTask()
       throws NotAuthorizedException, TaskNotFoundException, InvalidStateException,
@@ -207,9 +189,7 @@ class WorkOnTaskAccTest extends AbstractAccTest {
     assertThat(completedTask.getOwner()).isEqualTo("user_1_2");
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_2", groups = "group_1")
   @Test
   void testThrowsExceptionIfCompletingClaimedTaskOfAnotherUser()
       throws NotAuthorizedException, TaskNotFoundException {
@@ -225,9 +205,7 @@ class WorkOnTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(InvalidOwnerException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_2", groups = "group_1")
   @Test
   void testForceCompleteClaimedTaskOfAnotherUser()
       throws NotAuthorizedException, TaskNotFoundException, InvalidStateException,
@@ -246,9 +224,7 @@ class WorkOnTaskAccTest extends AbstractAccTest {
     assertThat(completedTask.getOwner()).isEqualTo("user_1_2");
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_2", groups = "group_1")
   @Test
   void testBulkCompleteTasks()
       throws NotAuthorizedException, InvalidArgumentException, TaskNotFoundException {
@@ -269,9 +245,7 @@ class WorkOnTaskAccTest extends AbstractAccTest {
     assertThat(completedTask2.getCompleted()).isNotNull();
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_2", groups = "group_1")
   @Test
   void testBulkDeleteTasksWithException() throws InvalidArgumentException {
 

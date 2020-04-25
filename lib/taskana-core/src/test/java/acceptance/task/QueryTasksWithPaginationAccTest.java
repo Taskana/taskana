@@ -21,9 +21,7 @@ class QueryTasksWithPaginationAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "teamlead_1", groups = "group_1")
   @Test
   void testGetFirstPageOfTaskQueryWithOffset() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -35,9 +33,7 @@ class QueryTasksWithPaginationAccTest extends AbstractAccTest {
     assertThat(results).hasSize(10);
   }
 
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "teamlead_1", groups = "group_1")
   @Test
   void testSecondPageOfTaskQueryWithOffset() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -49,9 +45,7 @@ class QueryTasksWithPaginationAccTest extends AbstractAccTest {
     assertThat(results).hasSize(10);
   }
 
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "teamlead_1", groups = "group_1")
   @Test
   void testListOffsetAndLimitOutOfBounds() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -81,9 +75,7 @@ class QueryTasksWithPaginationAccTest extends AbstractAccTest {
     assertThat(results).hasSize(3);
   }
 
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "teamlead_1", groups = "group_1")
   @Test
   void testPaginationWithPages() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -129,9 +121,7 @@ class QueryTasksWithPaginationAccTest extends AbstractAccTest {
     assertThat(results).hasSize(2);
   }
 
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "teamlead_1", groups = "group_1")
   @Test
   void testPaginationNullAndNegativeLimitsIgnoring() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -167,9 +157,7 @@ class QueryTasksWithPaginationAccTest extends AbstractAccTest {
     assertThat(results).hasSize(10);
   }
 
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "teamlead_1", groups = "group_1")
   @Test
   void testCountOfTaskQuery() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -181,9 +169,7 @@ class QueryTasksWithPaginationAccTest extends AbstractAccTest {
     assertThat(count).isEqualTo(22L);
   }
 
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "teamlead_1", groups = "group_1")
   @Test
   void testCountOfTaskQueryWithAttachmentChannelFilter() {
     TaskService taskService = taskanaEngine.getTaskService();

@@ -1,6 +1,5 @@
 package acceptance;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -101,13 +100,7 @@ public abstract class AbstractAccTest {
     return attachment;
   }
 
-  protected String getDatabaseProductId() throws SQLException {
-    try (Connection connection = taskanaEngineConfiguration.getDatasource().getConnection()) {
-      return connection.getMetaData().getDatabaseProductName();
-    }
-  }
-
-  protected TimeInterval todaysInterval() {
+  protected TimeInterval toDaysInterval() {
     Instant begin =
         LocalDateTime.of(LocalDate.now(), LocalTime.MIN).atZone(ZoneId.of("UTC")).toInstant();
     Instant end =

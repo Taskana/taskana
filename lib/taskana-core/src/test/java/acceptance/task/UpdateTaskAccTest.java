@@ -39,9 +39,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void should_UpdatePrimaryObjectReferenceOfTask_When_Requested()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -70,9 +68,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
     assertThat(updatedTask.getParentBusinessProcessId()).isEqualTo("MY_PARENT_PROCESS_ID");
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void should_ThrowException_When_MandatoryPrimaryObjectReferenceIsNotSetOrIncomplete()
       throws NotAuthorizedException, TaskNotFoundException {
@@ -112,9 +108,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
         .isInstanceOf(InvalidArgumentException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void should_ThrowException_When_TaskHasAlreadyBeenUpdated()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -135,9 +129,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
         .withFailMessage("The task has already been updated by another user");
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void should_UpdateTaskProperties_When_ClassificationOfTaskIsChanged()
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
@@ -161,9 +153,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
     resetDb(false); // classification of task TKI:0..00 was changed...
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_2", groups = "group_1")
   @Test
   void should_UpdateReadFlagOfTask_When_SetTaskReadIsCalled()
       throws TaskNotFoundException, NotAuthorizedException {
@@ -186,9 +176,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
         .isInstanceOf(TaskNotFoundException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void should_UpdateTask_When_CustomPropertiesOfTaskWereChanged()
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
@@ -203,9 +191,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
     assertThat(updatedTask).isNotNull();
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void should_ThrowException_When_ModificationOfWorkbasketKeyIsAttempted()
       throws NotAuthorizedException, TaskNotFoundException {
@@ -218,9 +204,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
         .isInstanceOf(InvalidArgumentException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void should_UpdateNoTasks_When_UpdateTasksWithUnmatchedObjectReferenceWasCalled()
       throws InvalidArgumentException {
@@ -241,9 +225,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
     assertThat(taskIds).isEmpty();
   }
 
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "teamlead_1", groups = "group_1")
   @Test
   void should_UpdateTasks_When_MatchingPrimaryObjectReferenceWasChanged()
       throws InvalidArgumentException, TaskNotFoundException, NotAuthorizedException {
@@ -271,9 +253,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
     }
   }
 
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "teamlead_1", groups = "group_1")
   @Test
   void should_UpdateTaskCustomAttributes_When_UpdateTasksIsCalled()
       throws InvalidArgumentException, TaskNotFoundException, NotAuthorizedException {
@@ -301,9 +281,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
     }
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void should_UpdateCallbackInfo_When_RequestedByApi()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,

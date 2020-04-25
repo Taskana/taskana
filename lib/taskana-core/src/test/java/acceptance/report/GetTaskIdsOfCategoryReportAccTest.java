@@ -39,7 +39,7 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfCategoryReport() throws InvalidArgumentException, NotAuthorizedException {
     final MonitorService monitorService = taskanaEngine.getMonitorService();
@@ -88,7 +88,7 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
             "TKI:000000000000000000000000000000000032");
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfCategoryReportWithWorkbasketFilter()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -134,7 +134,7 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
             "TKI:000000000000000000000000000000000031");
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfCategoryReportWithStateFilter()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -186,7 +186,7 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
             "TKI:000000000000000000000000000000000032");
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfCategoryReportWithCategoryFilter()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -224,7 +224,7 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
             "TKI:000000000000000000000000000000000032");
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfCategoryReportWithDomainFilter()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -269,7 +269,7 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
             "TKI:000000000000000000000000000000000028");
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfCategoryReportWithCustomFieldValueFilter()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -316,7 +316,7 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
             "TKI:000000000000000000000000000000000032");
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testThrowsExceptionIfSubKeysAreUsed() {
     final MonitorService monitorService = taskanaEngine.getMonitorService();
