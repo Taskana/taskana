@@ -34,7 +34,7 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetCustomAttributeValuesForOneWorkbasket() throws NotAuthorizedException {
     MonitorService monitorService = taskanaEngine.getMonitorService();
@@ -48,7 +48,7 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
     assertThat(values).containsOnly("Vollkasko", "Teilkasko");
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetCustomAttributeValuesForOneDomain() throws NotAuthorizedException {
     MonitorService monitorService = taskanaEngine.getMonitorService();
@@ -61,7 +61,7 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
     assertThat(values).hasSize(26);
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetCustomAttributeValuesForCustomAttribute() throws NotAuthorizedException {
     MonitorService monitorService = taskanaEngine.getMonitorService();
@@ -79,7 +79,7 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
     assertThat(values).hasSize(12);
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetCustomAttributeValuesForExcludedClassifications() throws NotAuthorizedException {
     MonitorService monitorService = taskanaEngine.getMonitorService();

@@ -266,9 +266,7 @@ class TaskServiceImplIntAutocommitTest {
     assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
   }
 
-  @WithAccessId(
-      userName = "User",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "User", groups = "businessadmin")
   @Test
   void shouldNotTransferByFailingSecurity()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,

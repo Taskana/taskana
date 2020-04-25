@@ -27,9 +27,7 @@ class GetWorkbasketAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testGetWorkbasketById() throws NotAuthorizedException, WorkbasketNotFoundException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -53,9 +51,7 @@ class GetWorkbasketAccTest extends AbstractAccTest {
     assertThat(workbasket.getCustom4()).isEqualTo("custom4");
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testGetWorkbasketByKeyAndDomain()
       throws NotAuthorizedException, WorkbasketNotFoundException {
@@ -78,9 +74,7 @@ class GetWorkbasketAccTest extends AbstractAccTest {
     assertThat(workbasket.getCustom4()).isEqualTo("custom4");
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testGetWorkbasketPermissions() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -94,9 +88,7 @@ class GetWorkbasketAccTest extends AbstractAccTest {
     assertThat(permissions.contains(WorkbasketPermission.APPEND)).isTrue();
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testGetWorkbasketPermissionsForInvalidWorkbasketId() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -106,9 +98,7 @@ class GetWorkbasketAccTest extends AbstractAccTest {
     assertThat(permissions).isEmpty();
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testGetWorkbasketAsSummary() throws NotAuthorizedException, WorkbasketNotFoundException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -174,9 +164,7 @@ class GetWorkbasketAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testGetWorkbasketByIdNotExisting() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();

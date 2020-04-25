@@ -215,7 +215,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
         classificationService
             .createClassificationQuery()
             .domainIn("DOMAIN_A")
-            .createdWithin(todaysInterval())
+            .createdWithin(toDaysInterval())
             .list();
 
     assertThat(classificationSummaryList).hasSize(17);
@@ -233,7 +233,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
     assertThat(list).hasSize(15);
   }
 
-  @WithAccessId(userName = "businessadmin")
+  @WithAccessId(user = "businessadmin")
   @Test
   void testFindClassificationByModifiedWithin()
       throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,

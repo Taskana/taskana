@@ -43,7 +43,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetTotalNumbersOfTasksOfCustomFieldValueReportForCustom1()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -69,7 +69,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
     assertThat(report.getSumRow().getTotalValue()).isEqualTo(50);
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetTotalNumbersOfTasksOfCustomFieldValueReportForCustom2()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -94,7 +94,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
     assertThat(report.getSumRow().getTotalValue()).isEqualTo(50);
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetCustomFieldValueReportWithReportLineItemDefinitions()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -126,7 +126,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
     assertThat(report.getSumRow().getTotalValue()).isEqualTo(50);
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfCustomFieldValueReport()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -158,7 +158,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
     assertThat(row3).isEqualTo(new int[] {3, 4, 1, 1, 6});
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfCustomFieldValueReportNotInWorkingDays()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -189,7 +189,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
     assertThat(row3).isEqualTo(new int[] {7, 0, 1, 0, 7});
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfCustomFieldValueReportWithWorkbasketFilter()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -224,7 +224,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
     assertThat(row3).isEqualTo(new int[] {3, 1, 0, 0, 1});
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfCustomFieldValueReportWithStateFilter()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -258,7 +258,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
     assertThat(row3).isEqualTo(new int[] {3, 4, 1, 1, 0});
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfCustomFieldValueReportWithCategoryFilter()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -292,7 +292,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
     assertThat(row3).isEqualTo(new int[] {0, 2, 0, 0, 4});
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfCustomFieldValueReportWithDomainFilter()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -326,7 +326,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
     assertThat(row3).isEqualTo(new int[] {1, 1, 1, 0, 3});
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfCustomFieldValueReportWithCustomFieldValueFilter()
       throws InvalidArgumentException, NotAuthorizedException {

@@ -42,7 +42,7 @@ class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfCustomFieldValueReport()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -89,7 +89,7 @@ class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAccTest {
             "TKI:000000000000000000000000000000000033");
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfCustomFieldValueReportWithWorkbasketFilter()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -134,7 +134,7 @@ class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAccTest {
             "TKI:000000000000000000000000000000000020");
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfCustomFieldValueReportWithStateFilter()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -181,7 +181,7 @@ class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAccTest {
     assertThat(ids.contains("TKI:000000000000000000000000000000000033")).isTrue();
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfCustomFieldValueReportWithCategoryFilter()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -224,7 +224,7 @@ class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAccTest {
     assertThat(ids.contains("TKI:000000000000000000000000000000000029")).isTrue();
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfCustomFieldValueReportWithDomainFilter()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -266,7 +266,7 @@ class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAccTest {
     assertThat(ids.contains("TKI:000000000000000000000000000000000033")).isTrue();
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfCustomFieldValueReportWithCustomFieldValueFilter()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -311,7 +311,7 @@ class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAccTest {
     assertThat(ids.contains("TKI:000000000000000000000000000000000029")).isTrue();
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testThrowsExceptionIfSubKeysAreUsed() {
     final MonitorService monitorService = taskanaEngine.getMonitorService();

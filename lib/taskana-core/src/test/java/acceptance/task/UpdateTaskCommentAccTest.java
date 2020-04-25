@@ -25,9 +25,7 @@ public class UpdateTaskCommentAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void should_UpdateTaskComment_For_TaskComment()
       throws TaskCommentNotFoundException, NotAuthorizedException, ConcurrencyException,
@@ -51,9 +49,7 @@ public class UpdateTaskCommentAccTest extends AbstractAccTest {
     assertThat(taskCommentsAfterUpdate.get(0).getTextField()).isEqualTo("updated textfield");
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_2", groups = "group_1")
   @Test
   void should_FailToUpdateTaskComment_When_UserHasNoAuthorization()
       throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException,
@@ -80,9 +76,7 @@ public class UpdateTaskCommentAccTest extends AbstractAccTest {
         .isEqualTo("some other text in textfield");
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void should_FailToUpdateTaskComment_When_TaskCommentWasModifiedConcurrently()
       throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException,

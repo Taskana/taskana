@@ -35,7 +35,7 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfWorkbasketReport() throws InvalidArgumentException, NotAuthorizedException {
     final MonitorService monitorService = taskanaEngine.getMonitorService();
@@ -80,7 +80,7 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
             "TKI:000000000000000000000000000000000050");
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfWorkbasketReportWithExcludedClassifications()
       throws InvalidArgumentException, NotAuthorizedException {

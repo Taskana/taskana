@@ -74,9 +74,7 @@ class WorkbasketServiceImplIntExplicitTest {
     sampleDataGenerator.clearDb();
   }
 
-  @WithAccessId(
-      userName = "Elena",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "Elena", groups = "businessadmin")
   @Test
   void testUpdateWorkbasket() throws Exception {
     try (Connection connection = dataSource.getConnection()) {
@@ -132,9 +130,7 @@ class WorkbasketServiceImplIntExplicitTest {
     }
   }
 
-  @WithAccessId(
-      userName = "Elena",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "Elena", groups = "businessadmin")
   @Test
   void testInsertWorkbasketAccessUser()
       throws NotAuthorizedException, SQLException, InvalidArgumentException,
@@ -157,9 +153,7 @@ class WorkbasketServiceImplIntExplicitTest {
     }
   }
 
-  @WithAccessId(
-      userName = "Elena",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "Elena", groups = "businessadmin")
   @Test
   void testUpdateWorkbasketAccessUser()
       throws NotAuthorizedException, SQLException, InvalidArgumentException,

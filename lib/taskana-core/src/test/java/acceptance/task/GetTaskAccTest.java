@@ -26,9 +26,7 @@ class GetTaskAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testGetTaskById()
       throws TaskNotFoundException, NotAuthorizedException, InvalidArgumentException {
@@ -81,9 +79,7 @@ class GetTaskAccTest extends AbstractAccTest {
     assertThat(task.getCustomAttribute("16")).isEqualTo("custom16");
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testGetTaskByIdNotExisting() {
     TaskService taskService = taskanaEngine.getTaskService();

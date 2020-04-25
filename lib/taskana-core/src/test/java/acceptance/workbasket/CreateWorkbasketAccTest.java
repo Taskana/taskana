@@ -31,9 +31,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "user_1_2", groups = "businessadmin")
   @Test
   void testCreateWorkbasket()
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
@@ -64,7 +62,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     assertThat(createdWorkbasket2).isEqualTo(createdWorkbasket);
   }
 
-  @WithAccessId(userName = "dummy")
+  @WithAccessId(user = "dummy")
   @Test
   void testCreateWorkbasketNotAuthorized() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -79,8 +77,8 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1", "businessadmin"})
+      user = "teamlead_1",
+      groups = {"group_1", "businessadmin"})
   @Test
   void should_beAbleToCreateNewWorkbasket_When_WorkbasketCopy() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -93,9 +91,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     assertThat(newWorkbasket.getId()).isNotEqualTo(oldWorkbasket.getId());
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "user_1_2", groups = "businessadmin")
   @Test
   void testCreateWorkbasketWithInvalidDomain() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -108,9 +104,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(DomainNotFoundException.class);
   }
 
-  @WithAccessId(
-      userName = "dummy",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "dummy", groups = "businessadmin")
   @Test
   void testCreateWorkbasketWithMissingRequiredField()
       throws NotAuthorizedException, WorkbasketAlreadyExistException, DomainNotFoundException {
@@ -175,9 +169,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(InvalidWorkbasketException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "user_1_2", groups = "businessadmin")
   @Test
   void testThrowsExceptionIfWorkbasketWithCaseInsensitiveSameKeyDomainIsCreated()
       throws NotAuthorizedException, InvalidWorkbasketException, WorkbasketAlreadyExistException,
@@ -201,9 +193,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(WorkbasketAlreadyExistException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "user_1_2", groups = "businessadmin")
   @Test
   void testCreateWorkbasketWithAlreadyExistingKeyAndDomainAndEmptyIdUpdatesOlderWorkbasket()
       throws DomainNotFoundException, InvalidWorkbasketException, NotAuthorizedException,
@@ -227,9 +217,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(WorkbasketAlreadyExistException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "user_1_2", groups = "businessadmin")
   @Test
   void testWorkbasketAccessItemSetName()
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
@@ -260,9 +248,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     assertThat(item.getAccessName()).isEqualTo("Karl Napf");
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "user_1_2", groups = "businessadmin")
   @Test
   void testCreateDuplicateWorkbasketAccessListFails() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();

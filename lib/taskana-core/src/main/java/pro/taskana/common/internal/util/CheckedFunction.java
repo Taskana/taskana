@@ -9,12 +9,12 @@ public interface CheckedFunction<T, E> {
   static <T, E> Function<T, E> wrap(CheckedFunction<T, E> checkedFunction) {
     return t -> {
       try {
-        return checkedFunction.accept(t);
+        return checkedFunction.apply(t);
       } catch (Throwable e) {
         throw new SystemException("Caught exception", e);
       }
     };
   }
 
-  E accept(T t) throws Throwable;
+  E apply(T t) throws Throwable;
 }

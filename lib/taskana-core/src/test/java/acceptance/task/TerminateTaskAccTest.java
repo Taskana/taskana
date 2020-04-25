@@ -35,9 +35,7 @@ class TerminateTaskAccTest extends AbstractAccTest {
     taskService = taskanaEngine.getTaskService();
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testQueryTerminatedTasks() {
     List<TaskSummary> taskSummaries =
@@ -45,9 +43,7 @@ class TerminateTaskAccTest extends AbstractAccTest {
     assertThat(taskSummaries).hasSize(5);
   }
 
-  @WithAccessId(
-      userName = "admin",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "admin", groups = "group_1")
   @Test
   void testTerminateReadyTask()
       throws NotAuthorizedException, TaskNotFoundException, InvalidStateException {
@@ -60,9 +56,7 @@ class TerminateTaskAccTest extends AbstractAccTest {
     assertThat(numTasks).isEqualTo(6);
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_2", groups = "group_1")
   @Test
   void testTerminateClaimedTask()
       throws NotAuthorizedException, TaskNotFoundException, InvalidStateException {
@@ -80,9 +74,7 @@ class TerminateTaskAccTest extends AbstractAccTest {
     assertThat(numTasksTerminated).isEqualTo(6);
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_2", groups = "group_1")
   @Test
   void testTerminateCompletedTask() {
     List<TaskSummary> taskSummaries =
@@ -93,9 +85,7 @@ class TerminateTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(taskanaCall).isInstanceOf(InvalidStateException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_2", groups = "group_1")
   @Test
   void testTerminateTerminatedTask() {
     List<TaskSummary> taskSummaries =
@@ -106,9 +96,7 @@ class TerminateTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(taskanaCall).isInstanceOf(InvalidStateException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_2", groups = "group_1")
   @Test
   void testTerminateCancelledTask() {
     List<TaskSummary> taskSummaries =
