@@ -26,10 +26,7 @@ class TaskEngineAccTest extends AbstractAccTest {
   void testUnauthenticated() {
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN)).isFalse();
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isFalse();
-    ThrowingCallable call =
-        () -> {
-          taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN);
-        };
+    ThrowingCallable call = () -> taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN);
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
@@ -43,23 +40,17 @@ class TaskEngineAccTest extends AbstractAccTest {
 
     new TaskanaEngineProxyForTest(taskanaEngine)
         .getEngine()
-        .runAsAdmin(
-            () -> {
-              assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isTrue();
-              return true;
-            });
+        .runAsAdmin(() -> assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isTrue());
+
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isFalse();
   }
 
   @WithAccessId(userName = "user_1_1") // , groupNames = {"businessadmin"})
   @Test
-  void testUser() throws NotAuthorizedException {
+  void testUser() {
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN)).isFalse();
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isFalse();
-    ThrowingCallable call =
-        () -> {
-          taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN);
-        };
+    ThrowingCallable call = () -> taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN);
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
