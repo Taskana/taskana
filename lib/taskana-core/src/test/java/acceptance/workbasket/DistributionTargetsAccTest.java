@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
@@ -39,22 +40,19 @@ class DistributionTargetsAccTest extends AbstractAccTest {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     WorkbasketSummary workbasketSummary =
         workbasketService.createWorkbasketQuery().keyIn("GPK_KSC").single();
+    List<String> expectedTargetIds =
+        Arrays.asList(
+            "WBI:100000000000000000000000000000000002",
+            "WBI:100000000000000000000000000000000003",
+            "WBI:100000000000000000000000000000000004",
+            "WBI:100000000000000000000000000000000005");
 
     List<WorkbasketSummary> retrievedDistributionTargets =
         workbasketService.getDistributionTargets(workbasketSummary.getId());
 
-    assertThat(retrievedDistributionTargets).hasSize(4);
-    List<String> expectedTargetIds =
-        new ArrayList<>(
-            Arrays.asList(
-                "WBI:100000000000000000000000000000000002",
-                "WBI:100000000000000000000000000000000003",
-                "WBI:100000000000000000000000000000000004",
-                "WBI:100000000000000000000000000000000005"));
-
-    for (WorkbasketSummary wbSummary : retrievedDistributionTargets) {
-      assertThat(expectedTargetIds.contains(wbSummary.getId())).isTrue();
-    }
+    assertThat(retrievedDistributionTargets)
+        .extracting(WorkbasketSummary::getId)
+        .containsExactlyInAnyOrderElementsOf(expectedTargetIds);
   }
 
   @WithAccessId(
@@ -66,23 +64,20 @@ class DistributionTargetsAccTest extends AbstractAccTest {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     WorkbasketSummary workbasketSummary =
         workbasketService.createWorkbasketQuery().keyIn("GPK_KSC").single();
+    List<String> expectedTargetIds =
+        Arrays.asList(
+            "WBI:100000000000000000000000000000000002",
+            "WBI:100000000000000000000000000000000003",
+            "WBI:100000000000000000000000000000000004",
+            "WBI:100000000000000000000000000000000005");
 
     List<WorkbasketSummary> retrievedDistributionTargets =
         workbasketService.getDistributionTargets(
             workbasketSummary.getKey(), workbasketSummary.getDomain());
 
-    assertThat(retrievedDistributionTargets).hasSize(4);
-    List<String> expectedTargetIds =
-        new ArrayList<>(
-            Arrays.asList(
-                "WBI:100000000000000000000000000000000002",
-                "WBI:100000000000000000000000000000000003",
-                "WBI:100000000000000000000000000000000004",
-                "WBI:100000000000000000000000000000000005"));
-
-    for (WorkbasketSummary wbSummary : retrievedDistributionTargets) {
-      assertThat(expectedTargetIds.contains(wbSummary.getId())).isTrue();
-    }
+    assertThat(retrievedDistributionTargets)
+        .extracting(WorkbasketSummary::getId)
+        .containsExactlyInAnyOrderElementsOf(expectedTargetIds);
   }
 
   @WithAccessId(
@@ -104,14 +99,11 @@ class DistributionTargetsAccTest extends AbstractAccTest {
     call =
         () -> {
           workbasketService.setDistributionTargets(
-              existingWb, new ArrayList<>(Arrays.asList(nonExistingWb)));
+              existingWb, Collections.singletonList(nonExistingWb));
         };
     assertThatThrownBy(call).isInstanceOf(WorkbasketNotFoundException.class);
 
-    call =
-        () -> {
-          workbasketService.addDistributionTarget(existingWb, nonExistingWb);
-        };
+    call = () -> workbasketService.addDistributionTarget(existingWb, nonExistingWb);
     assertThatThrownBy(call).isInstanceOf(WorkbasketNotFoundException.class);
 
     int beforeCount = workbasketService.getDistributionTargets(existingWb).size();
@@ -138,7 +130,7 @@ class DistributionTargetsAccTest extends AbstractAccTest {
     call =
         () -> {
           workbasketService.setDistributionTargets(
-              existingWb, Arrays.asList("WBI:100000000000000000000000000000000002"));
+              existingWb, Collections.singletonList("WBI:100000000000000000000000000000000002"));
         };
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
 

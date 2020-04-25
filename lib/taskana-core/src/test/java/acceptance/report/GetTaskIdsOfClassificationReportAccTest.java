@@ -89,13 +89,14 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
             .inWorkingDays()
             .listTaskIdsForSelectedItems(selectedItems);
 
-    assertThat(ids).hasSize(6);
-    assertThat(ids.contains("TKI:000000000000000000000000000000000001")).isTrue();
-    assertThat(ids.contains("TKI:000000000000000000000000000000000004")).isTrue();
-    assertThat(ids.contains("TKI:000000000000000000000000000000000007")).isTrue();
-    assertThat(ids.contains("TKI:000000000000000000000000000000000010")).isTrue();
-    assertThat(ids.contains("TKI:000000000000000000000000000000000033")).isTrue();
-    assertThat(ids.contains("TKI:000000000000000000000000000000000006")).isTrue();
+    assertThat(ids)
+        .containsOnly(
+            "TKI:000000000000000000000000000000000001",
+            "TKI:000000000000000000000000000000000004",
+            "TKI:000000000000000000000000000000000007",
+            "TKI:000000000000000000000000000000000010",
+            "TKI:000000000000000000000000000000000033",
+            "TKI:000000000000000000000000000000000006");
   }
 
   @WithAccessId(userName = "monitor")
@@ -135,9 +136,9 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
             .inWorkingDays()
             .listTaskIdsForSelectedItems(selectedItems);
 
-    assertThat(ids).hasSize(2);
-    assertThat(ids.contains("TKI:000000000000000000000000000000000001")).isTrue();
-    assertThat(ids.contains("TKI:000000000000000000000000000000000033")).isTrue();
+    assertThat(ids)
+        .containsOnly(
+            "TKI:000000000000000000000000000000000001", "TKI:000000000000000000000000000000000033");
   }
 
   @WithAccessId(userName = "monitor")
@@ -180,10 +181,11 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
             .domainIn(domains)
             .listTaskIdsForSelectedItems(selectedItems);
 
-    assertThat(ids).hasSize(3);
-    assertThat(ids.contains("TKI:000000000000000000000000000000000001")).isTrue();
-    assertThat(ids.contains("TKI:000000000000000000000000000000000004")).isTrue();
-    assertThat(ids.contains("TKI:000000000000000000000000000000000006")).isTrue();
+    assertThat(ids)
+        .containsOnly(
+            "TKI:000000000000000000000000000000000001",
+            "TKI:000000000000000000000000000000000004",
+            "TKI:000000000000000000000000000000000006");
   }
 
   private List<TimeIntervalColumnHeader> getListOfColumnHeaders() {

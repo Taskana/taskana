@@ -10,11 +10,11 @@ public interface CheckedFunction<T, E> {
     return t -> {
       try {
         return checkedFunction.accept(t);
-      } catch (Exception e) {
+      } catch (Throwable e) {
         throw new SystemException("Caught exception", e);
       }
     };
   }
 
-  E accept(T t) throws Exception;
+  E accept(T t) throws Throwable;
 }

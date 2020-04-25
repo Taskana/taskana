@@ -127,10 +127,11 @@ class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAccTest {
             .workbasketIdIn(workbasketIds)
             .listTaskIdsForSelectedItems(selectedItems);
 
-    assertThat(ids).hasSize(3);
-    assertThat(ids.contains("TKI:000000000000000000000000000000000006")).isTrue();
-    assertThat(ids.contains("TKI:000000000000000000000000000000000009")).isTrue();
-    assertThat(ids.contains("TKI:000000000000000000000000000000000020")).isTrue();
+    assertThat(ids)
+        .containsOnly(
+            "TKI:000000000000000000000000000000000006",
+            "TKI:000000000000000000000000000000000009",
+            "TKI:000000000000000000000000000000000020");
   }
 
   @WithAccessId(userName = "monitor")
