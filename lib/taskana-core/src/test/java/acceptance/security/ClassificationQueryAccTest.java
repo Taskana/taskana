@@ -34,7 +34,7 @@ class ClassificationQueryAccTest extends AbstractAccTest {
     assertThat(classificationSummaryList).hasSize(17);
   }
 
-  @WithAccessId(userName = "businessadmin")
+  @WithAccessId(user = "businessadmin")
   @Test
   void testFindClassificationsByDomainBusinessAdmin() {
     ClassificationService classificationService = taskanaEngine.getClassificationService();
@@ -45,7 +45,7 @@ class ClassificationQueryAccTest extends AbstractAccTest {
     assertThat(classificationSummaryList).hasSize(17);
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testFindClassificationsByDomainAdmin() {
     ClassificationService classificationService = taskanaEngine.getClassificationService();

@@ -34,6 +34,7 @@ public enum WildcardSearchField {
                   (first, second) -> first,
                   () -> new TreeMap<>(String.CASE_INSENSITIVE_ORDER)));
   private String name;
+
   WildcardSearchField(String name) {
     this.name = name;
   }

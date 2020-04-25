@@ -41,9 +41,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
     classificationService = taskanaEngine.getClassificationService();
   }
 
-  @WithAccessId(
-      userName = "dummy",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "dummy", groups = "businessadmin")
   @Test
   public void testUpdateClassification()
       throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
@@ -113,8 +111,8 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1", "businessadmin"})
+      user = "teamlead_1",
+      groups = {"group_1", "businessadmin"})
   @Test
   public void testUpdateTaskOnClassificationKeyCategoryChange() throws Exception {
     setupTest();
@@ -145,8 +143,8 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1", "businessadmin"})
+      user = "teamlead_1",
+      groups = {"group_1", "businessadmin"})
   @Test
   public void testUpdateClassificationNotLatestAnymore()
       throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
@@ -172,8 +170,8 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1", "businessadmin"})
+      user = "teamlead_1",
+      groups = {"group_1", "businessadmin"})
   @Test
   public void testUpdateClassificationParentIdToInvalid()
       throws NotAuthorizedException, ClassificationNotFoundException, ConcurrencyException,
@@ -185,8 +183,8 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1", "businessadmin"})
+      user = "teamlead_1",
+      groups = {"group_1", "businessadmin"})
   @Test
   public void testUpdateClassificationParentKeyToInvalid()
       throws NotAuthorizedException, ClassificationNotFoundException, ConcurrencyException,
@@ -197,9 +195,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(ClassificationNotFoundException.class);
   }
 
-  @WithAccessId(
-      userName = "dummy",
-      groupNames = {"admin"})
+  @WithAccessId(user = "dummy", groups = "admin")
   @Test
   public void testUpdateClassificationPrioServiceLevel()
       throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
@@ -285,9 +281,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         before, tasksWithP15D, taskService, converter, 15, 1000);
   }
 
-  @WithAccessId(
-      userName = "dummy",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "dummy", groups = "businessadmin")
   @Test
   public void testUpdateClassificationWithSameKeyAndParentKey()
       throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
@@ -300,9 +294,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(InvalidArgumentException.class);
   }
 
-  @WithAccessId(
-      userName = "dummy",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "dummy", groups = "businessadmin")
   @Test
   public void testUpdateClassificationWithEmptyServiceLevel()
       throws DomainNotFoundException, ClassificationAlreadyExistException, NotAuthorizedException,
@@ -315,9 +307,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
     classificationService.updateClassification(created);
   }
 
-  @WithAccessId(
-      userName = "dummy",
-      groupNames = {"admin"})
+  @WithAccessId(user = "dummy", groups = "admin")
   @Test
   public void testUpdateClassificationChangePriority()
       throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
@@ -455,9 +445,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         before, tasksWithPrio101, taskService, converter, 1, 101);
   }
 
-  @WithAccessId(
-      userName = "dummy",
-      groupNames = {"admin"})
+  @WithAccessId(user = "dummy", groups = "admin")
   @Test
   public void testUpdateClassificationChangeServiceLevel()
       throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,

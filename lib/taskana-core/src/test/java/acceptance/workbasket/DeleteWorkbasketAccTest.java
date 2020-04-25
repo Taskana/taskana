@@ -40,9 +40,7 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
     taskService = taskanaEngine.getTaskService();
   }
 
-  @WithAccessId(
-      userName = "admin",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "admin", groups = "businessadmin")
   @Test
   void testDeleteWorkbasket() throws WorkbasketNotFoundException, NotAuthorizedException {
     Workbasket wb = workbasketService.getWorkbasket("USER_2_2", "DOMAIN_A");
@@ -57,7 +55,7 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
         .isInstanceOf(WorkbasketNotFoundException.class);
   }
 
-  @WithAccessId(userName = "elena")
+  @WithAccessId(user = "elena")
   @Test
   void testDeleteWorkbasketNotAuthorized() {
 
@@ -69,7 +67,7 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(userName = "elena")
+  @WithAccessId(user = "elena")
   @Test
   void testGetWorkbasketNotAuthorized() {
 
@@ -81,8 +79,8 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"teamlead_1", "group_1", "businessadmin"})
+      user = "user_1_1",
+      groups = {"teamlead_1", "group_1", "businessadmin"})
   @Test
   void testDeleteWorkbasketAlsoAsDistributionTarget()
       throws WorkbasketNotFoundException, NotAuthorizedException {
@@ -105,9 +103,7 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
     assertThat(newDistTargets).isEqualTo(3).isLessThan(distTargets);
   }
 
-  @WithAccessId(
-      userName = "dummy",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "dummy", groups = "businessadmin")
   @Test
   void testDeleteWorkbasketWithNullOrEmptyParam() {
     // Test Null-Value
@@ -133,9 +129,7 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
         .isInstanceOf(InvalidArgumentException.class);
   }
 
-  @WithAccessId(
-      userName = "dummy",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "dummy", groups = "businessadmin")
   @Test
   void testDeleteWorkbasketButNotExisting() {
     ThrowingCallable call =
@@ -145,9 +139,7 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(WorkbasketNotFoundException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "user_1_2", groups = "businessadmin")
   @Test
   void testDeleteWorkbasketWhichIsUsed()
       throws WorkbasketNotFoundException, NotAuthorizedException {
@@ -160,9 +152,7 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(WorkbasketInUseException.class);
   }
 
-  @WithAccessId(
-      userName = "teamlead_2",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "teamlead_2", groups = "businessadmin")
   @Test
   void testCascadingDeleteOfAccessItems()
       throws WorkbasketNotFoundException, NotAuthorizedException, InvalidArgumentException,
@@ -196,9 +186,7 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
     assertThat(accessItemsAfter).isEmpty();
   }
 
-  @WithAccessId(
-      userName = "admin",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "admin", groups = "businessadmin")
   @Test
   void testMarkWorkbasketForDeletion()
       throws WorkbasketInUseException, NotAuthorizedException, WorkbasketNotFoundException,

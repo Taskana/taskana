@@ -32,9 +32,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(
-      userName = "dummy",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "dummy", groups = "businessadmin")
   @Test
   void testQueryAllTransferTargetsForUser()
       throws NotAuthorizedException, InvalidArgumentException {
@@ -48,7 +46,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     assertThat(results.get(0).getKey()).isEqualTo("USER_1_1");
   }
 
-  @WithAccessId(userName = "dummy")
+  @WithAccessId(user = "dummy")
   @Test
   void testQueryAllTransferTargetsForUserNotAuthorized() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -63,9 +61,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(
-      userName = "dummy",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "dummy", groups = "businessadmin")
   @Test
   void testQueryAllTransferTargetsForUserAndGroup()
       throws NotAuthorizedException, InvalidArgumentException, SystemException {
@@ -78,9 +74,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     assertThat(results).hasSize(6);
   }
 
-  @WithAccessId(
-      userName = "dummy",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "dummy", groups = "businessadmin")
   @Test
   void testQueryAllTransferTargetsForUserAndGroupSortedByNameAscending()
       throws NotAuthorizedException, InvalidArgumentException, SystemException {
@@ -95,9 +89,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     assertThat(results.get(0).getKey()).isEqualTo("GPK_KSC_1");
   }
 
-  @WithAccessId(
-      userName = "dummy",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "dummy", groups = "businessadmin")
   @Test
   void testQueryAllTransferTargetsForUserAndGroupSortedByNameDescending()
       throws NotAuthorizedException, InvalidArgumentException, SystemException {
@@ -113,9 +105,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     assertThat(results.get(0).getKey()).isEqualTo("USER_2_2");
   }
 
-  @WithAccessId(
-      userName = "dummy",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "dummy", groups = "businessadmin")
   @Test
   void testQueryAllTransferSourcesForUserAndGroup()
       throws NotAuthorizedException, InvalidArgumentException, SystemException {
@@ -132,9 +122,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     }
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testQueryAllTransferTargetsForUserAndGroupFromSubject() throws SystemException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -146,7 +134,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     assertThat(results).hasSize(6);
   }
 
-  @WithAccessId(userName = "user_1_1")
+  @WithAccessId(user = "user_1_1")
   @Test
   void testQueryAllAvailableWorkbasketForOpeningForUserAndGroupFromSubject() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -158,9 +146,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     assertThat(results).hasSize(1);
   }
 
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "teamlead_1", groups = "businessadmin")
   @Test
   void testConsiderBusinessAdminPermissionsWhileQueryingWorkbaskets() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -172,7 +158,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     assertThat(results).hasSize(3);
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testSkipAuthorizationCheckForAdminWhileQueryingWorkbaskets() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();

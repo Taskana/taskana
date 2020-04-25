@@ -77,9 +77,7 @@ class WorkbasketServiceImplIntAutocommitTest {
     assertThatThrownBy(call).isInstanceOf(WorkbasketNotFoundException.class);
   }
 
-  @WithAccessId(
-      userName = "Elena",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "Elena", groups = "businessadmin")
   @Test
   void testUpdateWorkbasket() throws Exception {
     String id0 = IdGenerator.generateWithPrefix("TWB");
@@ -130,9 +128,7 @@ class WorkbasketServiceImplIntAutocommitTest {
         .isEqualTo(workBasketService.getWorkbasket(id3).getModified());
   }
 
-  @WithAccessId(
-      userName = "Elena",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "Elena", groups = "businessadmin")
   @Test
   void testInsertWorkbasketAccessUser()
       throws NotAuthorizedException, InvalidArgumentException, DomainNotFoundException,
@@ -161,9 +157,7 @@ class WorkbasketServiceImplIntAutocommitTest {
                 .size());
   }
 
-  @WithAccessId(
-      userName = "Elena",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "Elena", groups = "businessadmin")
   @Test
   void testUpdateWorkbasketAccessUser()
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,

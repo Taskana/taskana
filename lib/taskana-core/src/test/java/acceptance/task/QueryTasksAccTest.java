@@ -80,9 +80,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     resetDb(false);
   }
 
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"admin"})
+  @WithAccessId(user = "teamlead_1", groups = "admin")
   @Test
   void testQueryTaskValuesForEveryColumn() {
     SoftAssertions softly = new SoftAssertions();
@@ -97,9 +95,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     softly.assertAll();
   }
 
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"admin"})
+  @WithAccessId(user = "teamlead_1", groups = "admin")
   @Test
   void testQueryTaskValuesForColumnName() {
     List<String> columnValueList =
@@ -116,9 +112,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThat(columnValueList).hasSize(5);
   }
 
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"admin"})
+  @WithAccessId(user = "teamlead_1", groups = "admin")
   @Test
   void testQueryTaskValuesForColumnNameOnAttachments() {
     List<String> columnValueList =
@@ -155,8 +149,8 @@ class QueryTasksAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1", "group_2"})
+      user = "teamlead_1",
+      groups = {"group_1", "group_2"})
   @Test
   void testQueryForOwnerLike() {
 
@@ -174,8 +168,8 @@ class QueryTasksAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1", "group_2"})
+      user = "teamlead_1",
+      groups = {"group_1", "group_2"})
   @Test
   void testQueryForParentBusinessProcessId() {
 
@@ -195,8 +189,8 @@ class QueryTasksAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1", "group_2"})
+      user = "teamlead_1",
+      groups = {"group_1", "group_2"})
   @Test
   void testQueryForName() {
 
@@ -210,8 +204,8 @@ class QueryTasksAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1", "group_2"})
+      user = "teamlead_1",
+      groups = {"group_1", "group_2"})
   @Test
   void testQueryForClassificationKey() {
 
@@ -233,9 +227,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThat(result4).hasSize(6);
   }
 
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "teamlead_1", groups = "group_1")
   @Test
   void testQueryForAttachmentInSummary()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -267,9 +259,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThat(results.get(0).getAttachmentSummaries().get(0)).isNotNull();
   }
 
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"admin"})
+  @WithAccessId(user = "teamlead_1", groups = "admin")
   @Test
   void testQueryForExternalId() {
 
@@ -294,9 +284,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThat(countAllExternalIds).isEqualTo(countAllIds);
   }
 
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "teamlead_1", groups = "group_1")
   @TestFactory
   Stream<DynamicTest> testQueryForCustomX() {
     List<Triplet<String, String[], Integer>> list =
@@ -338,9 +326,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThat(result2).hasSize(expectedResult);
   }
 
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "teamlead_1", groups = "group_1")
   @Test
   void testQueryForCustom7WithExceptionInLike() {
 
@@ -352,9 +338,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(InvalidArgumentException.class);
   }
 
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "teamlead_1", groups = "group_1")
   @Test
   void testQueryForCustom7WithExceptionInIn() throws InvalidArgumentException {
 
@@ -374,9 +358,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(InvalidArgumentException.class);
   }
 
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "teamlead_1", groups = "group_1")
   @Test
   void testQueryForCustom7WithException() throws InvalidArgumentException {
 
@@ -390,9 +372,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThat(result2).hasSize(2);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testQueryTaskByCustomAttributes()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -438,9 +418,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     }
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testQueryAndCountMatch() {
     TaskQuery taskQuery = taskService.createTaskQuery();
@@ -449,9 +427,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThat(tasks).hasSize((int) numberOfTasks);
   }
 
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "teamlead_1", groups = "businessadmin")
   @Test
   void testQueryAllPaged() {
     TaskQuery taskQuery = taskService.createTaskQuery();
@@ -465,7 +441,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThat(tasksp).hasSize(5);
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testQueryForCreatorIn() {
     List<TaskSummary> results =
@@ -473,21 +449,21 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThat(results).hasSize(4);
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testQueryForCreatorLike() {
     List<TaskSummary> results = taskService.createTaskQuery().creatorLike("ersTeLlEr%").list();
     assertThat(results).hasSize(3);
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testQueryForNoteLike() {
     List<TaskSummary> results = taskService.createTaskQuery().noteLike("Some%").list();
     assertThat(results).hasSize(6);
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testQueryForClassificationCategoryIn() {
     List<TaskSummary> results =
@@ -495,7 +471,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThat(results).hasSize(3);
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testQueryForClassificationCategoryLike() {
     List<TaskSummary> results =
@@ -503,7 +479,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThat(results).hasSize(1);
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testQueryForPrimaryObjectReferenceCompanyLike() {
     List<TaskSummary> results =
@@ -511,7 +487,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThat(results).hasSize(6);
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testQueryForPrimaryObjectReferenceSystemLike() {
     List<TaskSummary> results =
@@ -519,7 +495,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThat(results).hasSize(6);
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testQueryForPrimaryObjectReferenceSystemInstanceLike() {
     List<TaskSummary> results =
@@ -527,7 +503,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThat(results).hasSize(6);
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testQueryForPrimaryObjectReferenceTypeLike() {
     List<TaskSummary> results =
@@ -535,21 +511,21 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThat(results).hasSize(6);
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testQueryForReadEquals() {
     List<TaskSummary> results = taskService.createTaskQuery().readEquals(true).list();
     assertThat(results).hasSize(35);
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testQueryForTransferredEquals() {
     List<TaskSummary> results = taskService.createTaskQuery().transferredEquals(true).list();
     assertThat(results).hasSize(2);
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testQueryForBusinessProcessIdIn() {
     List<TaskSummary> results =
@@ -557,14 +533,14 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThat(results).hasSize(8);
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testQueryForBusinessProcessIdLike() {
     List<TaskSummary> results = taskService.createTaskQuery().businessProcessIdLike("pI_%").list();
     assertThat(results).hasSize(77);
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testQueryForAttachmentClassificationKeyIn() {
     List<TaskSummary> results =
@@ -573,7 +549,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThat(results.get(0).getId()).isEqualTo("TKI:000000000000000000000000000000000002");
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testQueryForAttachmentClassificationKeyLike() {
     List<TaskSummary> results =
@@ -582,7 +558,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThat(results.get(0).getId()).isEqualTo("TKI:000000000000000000000000000000000002");
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testQueryForAttachmentclassificationIdIn() {
     List<TaskSummary> results =
@@ -594,14 +570,14 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThat(results.get(0).getId()).isEqualTo("TKI:000000000000000000000000000000000001");
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testQueryForAttachmentChannelLike() {
     List<TaskSummary> results = taskService.createTaskQuery().attachmentChannelLike("%6").list();
     assertThat(results).hasSize(2);
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testQueryForAttachmentReferenceIn() {
     List<TaskSummary> results =
@@ -610,7 +586,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThat(results.get(5).getAttachmentSummaries()).hasSize(1);
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testQueryForAttachmentReceivedIn() {
     TimeInterval interval =
@@ -626,7 +602,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThat(results.get(1).getId()).isEqualTo("TKI:000000000000000000000000000000000011");
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testQueryForOrderByCreatorDesc() {
     List<TaskSummary> results = taskService.createTaskQuery().orderByCreator(DESCENDING).list();
@@ -637,7 +613,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testQueryForOrderByWorkbasketIdDesc() {
     List<TaskSummary> results =
@@ -650,7 +626,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @TestFactory
   Stream<DynamicTest> testQueryForOrderByCustomXAsc() {
     Iterator<String> iterator = IntStream.rangeClosed(1, 16).mapToObj(String::valueOf).iterator();
@@ -660,10 +636,11 @@ class QueryTasksAccTest extends AbstractAccTest {
         s -> testQueryForOrderByCustomX(s, ASCENDING));
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @TestFactory
   Stream<DynamicTest> testQueryForOrderByCustomXDesc() {
     Iterator<String> iterator = IntStream.rangeClosed(1, 16).mapToObj(String::valueOf).iterator();
+
     return DynamicTest.stream(
         iterator,
         s -> String.format("order by custom%s desc", s),
@@ -685,7 +662,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         .isSortedAccordingTo(comparator);
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testQueryForOrderWithDirectionNull() {
     List<TaskSummary> results =
@@ -698,7 +675,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testQueryForOrderByAttachmentClassificationIdAsc() {
     List<TaskSummary> results =
@@ -720,7 +697,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testQueryForOrderByAttachmentClassificationIdDesc() {
     List<TaskSummary> results =
@@ -742,7 +719,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testQueryForOrderByAttachmentClassificationKeyAsc() {
     List<TaskSummary> results =
@@ -764,7 +741,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testQueryForOrderByAttachmentClassificationKeyDesc() {
     List<TaskSummary> results =
@@ -786,7 +763,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testQueryForOrderByAttachmentRefValueDesc() {
     List<TaskSummary> results =
@@ -807,7 +784,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testQueryForOrderByAttachmentChannelAscAndReferenceDesc() {
     List<TaskSummary> results =
@@ -831,7 +808,7 @@ class QueryTasksAccTest extends AbstractAccTest {
                     a -> a.getObjectReference().getValue(), CASE_INSENSITIVE_ORDER.reversed()));
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testQueryForAttachmentChannelLikeAndOrdering() {
     List<TaskSummary> results =
@@ -860,8 +837,8 @@ class QueryTasksAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1", "group_2"})
+      user = "teamlead_1",
+      groups = {"group_1", "group_2"})
   @Test
   void testQueryForExternalIdIn() {
 
@@ -889,8 +866,8 @@ class QueryTasksAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1", "group_2"})
+      user = "teamlead_1",
+      groups = {"group_1", "group_2"})
   @Test
   void testQueryForExternalIdLike() {
 

@@ -29,9 +29,7 @@ class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(
-      userName = "dummy",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "dummy", groups = "businessadmin")
   @Test
   void testQueryWorkbasketAccessItemValuesForColumnName() throws NotAuthorizedException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -54,9 +52,7 @@ class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
     assertThat(countEntries).isGreaterThan(columnValueList.size()); // DISTINCT
   }
 
-  @WithAccessId(
-      userName = "dummy",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "dummy", groups = "businessadmin")
   @Test
   void testQueryAccessItemsForAccessIds() throws NotAuthorizedException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -68,7 +64,7 @@ class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
     assertThat(results).hasSize(8);
   }
 
-  @WithAccessId(userName = "dummy")
+  @WithAccessId(user = "dummy")
   @Test
   void testQueryAccessItemsForAccessIdsNotAuthorized() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -83,9 +79,7 @@ class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(
-      userName = "dummy",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "dummy", groups = "businessadmin")
   @Test
   void testQueryAccessItemsForAccessIdsOrderedDescending() throws NotAuthorizedException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -101,9 +95,7 @@ class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
     assertThat(results.get(0).getId()).isEqualTo("WAI:100000000000000000000000000000000003");
   }
 
-  @WithAccessId(
-      userName = "dummy",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "dummy", groups = "businessadmin")
   @Test
   void testQueryAccessItemsForAccessIdsAndWorkbasketKey() throws NotAuthorizedException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -118,9 +110,7 @@ class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
     assertThat(results).hasSize(3);
   }
 
-  @WithAccessId(
-      userName = "dummy",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "dummy", groups = "businessadmin")
   @Test
   void testQueryAccessItemsForAccessIdsWorkbasketKeyLike() throws NotAuthorizedException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -129,9 +119,7 @@ class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
     assertThat(results).hasSize(4);
   }
 
-  @WithAccessId(
-      userName = "dummy",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "dummy", groups = "businessadmin")
   @Test
   void testQueryAccessItemsForAccessIdsWorkbasketKeyLikeAndOrderAsc()
       throws NotAuthorizedException {
@@ -147,9 +135,7 @@ class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
     assertThat(results.get(3).getWorkbasketKey()).isEqualTo("GPK_KSC_2");
   }
 
-  @WithAccessId(
-      userName = "dummy",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "dummy", groups = "businessadmin")
   @Test
   void testQueryAccessItemsByWorkbasketKey() throws NotAuthorizedException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -161,9 +147,7 @@ class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
     assertThat(results).hasSize(3);
   }
 
-  @WithAccessId(
-      userName = "dummy",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "dummy", groups = "businessadmin")
   @Test
   void testQueryAccessItemsByWorkbasketKeyOrderedDescending() throws NotAuthorizedException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -178,7 +162,7 @@ class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
     assertThat(results.get(0).getId()).isEqualTo("WAI:100000000000000000000000000000000009");
   }
 
-  @WithAccessId(userName = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testQueryForIdIn() throws NotAuthorizedException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -192,7 +176,7 @@ class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
     assertThat(results).extracting(WorkbasketAccessItem::getId).containsOnly(expectedIds);
   }
 
-  @WithAccessId(userName = "businessadmin")
+  @WithAccessId(user = "businessadmin")
   @Test
   void testQueryForOrderById() throws NotAuthorizedException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();

@@ -109,9 +109,7 @@ class TaskServiceImplIntExplicitTest {
     sampleDataGenerator.clearDb();
   }
 
-  @WithAccessId(
-      userName = "Elena",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "Elena", groups = "businessadmin")
   @Test
   void testStartTransactionFail()
       throws SQLException, TaskNotFoundException, NotAuthorizedException,
@@ -159,9 +157,7 @@ class TaskServiceImplIntExplicitTest {
     }
   }
 
-  @WithAccessId(
-      userName = "Elena",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "Elena", groups = "businessadmin")
   @Test
   void testCreateTask()
       throws SQLException, TaskNotFoundException, NotAuthorizedException,
@@ -193,9 +189,7 @@ class TaskServiceImplIntExplicitTest {
     }
   }
 
-  @WithAccessId(
-      userName = "Elena",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "Elena", groups = "businessadmin")
   @Test
   void createTaskShouldThrowWorkbasketNotFoundException()
       throws NotAuthorizedException, SQLException, ClassificationAlreadyExistException,
@@ -214,9 +208,7 @@ class TaskServiceImplIntExplicitTest {
     }
   }
 
-  @WithAccessId(
-      userName = "Elena",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "Elena", groups = "businessadmin")
   @Test
   void createManualTaskShouldThrowClassificationNotFoundException()
       throws NotAuthorizedException, WorkbasketNotFoundException, SQLException,
@@ -252,8 +244,8 @@ class TaskServiceImplIntExplicitTest {
   }
 
   @WithAccessId(
-      userName = "Elena",
-      groupNames = {"DummyGroup", "businessadmin"})
+      user = "Elena",
+      groups = {"DummyGroup", "businessadmin"})
   @Test
   void should_ReturnList_when_BuilderIsUsed()
       throws SQLException, NotAuthorizedException, WorkbasketNotFoundException,
@@ -308,9 +300,7 @@ class TaskServiceImplIntExplicitTest {
     }
   }
 
-  @WithAccessId(
-      userName = "Elena",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "Elena", groups = "businessadmin")
   @Test
   void shouldTransferTaskToOtherWorkbasket()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -402,9 +392,7 @@ class TaskServiceImplIntExplicitTest {
     }
   }
 
-  @WithAccessId(
-      userName = "User",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "User", groups = "businessadmin")
   @Test
   void shouldNotTransferByFailingSecurity()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,

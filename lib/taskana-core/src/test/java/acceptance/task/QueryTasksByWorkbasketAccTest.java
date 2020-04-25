@@ -26,9 +26,7 @@ class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "teamlead_1", groups = "group_1")
   @Test
   void testQueryForWorkbasketKeyDomain() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -52,9 +50,7 @@ class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
     assertThat(result2).hasSize(52);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testThrowsExceptionIfNoOpenerPermissionOnQueriedWorkbasket() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -69,9 +65,7 @@ class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedToQueryWorkbasketException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testThrowsExceptionIfNoOpenerPermissionOnAtLeastOneQueriedWorkbasket() {
     TaskService taskService = taskanaEngine.getTaskService();

@@ -44,7 +44,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetTotalNumbersOfTasksOfWorkbasketReportBasedOnDueDate()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -66,7 +66,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
     assertThat(report.getSumRow().getTotalValue()).isEqualTo(50);
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetWorkbasketReportWithReportLineItemDefinitions()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -101,7 +101,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
     assertThat(sumLineCount).isEqualTo(50);
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfWorkbasketReport() throws InvalidArgumentException, NotAuthorizedException {
     MonitorService monitorService = taskanaEngine.getMonitorService();
@@ -132,7 +132,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
     assertThat(row3).isEqualTo(new int[] {2, 2, 0, 0, 6});
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfWorkbasketReportNotInWorkingDays()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -163,7 +163,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
     assertThat(row3).isEqualTo(new int[] {4, 0, 0, 0, 6});
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfWorkbasketReportWithWorkbasketFilter()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -192,7 +192,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
     assertThat(row1).isEqualTo(new int[] {13, 3, 1, 1, 2});
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfWorkbasketReportWithStateFilter()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -226,7 +226,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
     assertThat(row3).isEqualTo(new int[] {2, 2, 0, 0, 0});
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfWorkbasketReportWithCategoryFilter()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -260,7 +260,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
     assertThat(row3).isEqualTo(new int[] {0, 1, 0, 0, 4});
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfWorkbasketReportWithDomainFilter()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -294,7 +294,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
     assertThat(row3).isEqualTo(new int[] {1, 1, 0, 0, 2});
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfWorkbasketReportWithCustomFieldValueFilter()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -329,7 +329,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
     assertThat(row3).isEqualTo(new int[] {2, 1, 0, 0, 1});
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfWorkbasketReportForSelectedClassifications()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -377,7 +377,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
     assertThat(row3).isEqualTo(new int[] {1, 0, 0, 0, 3});
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetTotalNumbersOfTasksOfWorkbasketReportBasedOnPlannedDateWithReportLineItemDefinitions()
       throws InvalidArgumentException, NotAuthorizedException {

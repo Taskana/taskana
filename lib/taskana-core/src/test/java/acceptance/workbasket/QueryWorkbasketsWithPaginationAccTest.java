@@ -20,9 +20,7 @@ class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "teamlead_1", groups = "group_1")
   @Test
   void testGetFirstPageOfWorkbasketQueryWithOffset() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -31,9 +29,7 @@ class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
     assertThat(results).hasSize(5);
   }
 
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "teamlead_1", groups = "group_1")
   @Test
   void testGetSecondPageOfWorkbasketQueryWithOffset() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -42,9 +38,7 @@ class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
     assertThat(results).hasSize(4);
   }
 
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "teamlead_1", groups = "group_1")
   @Test
   void testListOffsetAndLimitOutOfBounds() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -63,9 +57,7 @@ class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
     assertThat(results).hasSize(3);
   }
 
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "teamlead_1", groups = "group_1")
   @Test
   void testPaginationWithPages() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -111,9 +103,7 @@ class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
     assertThat(results).hasSize(4);
   }
 
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "teamlead_1", groups = "group_1")
   @Test
   void testPaginationNullAndNegativeLimitsIgnoring() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -149,9 +139,7 @@ class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
     assertThat(results).hasSize(9);
   }
 
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "teamlead_1", groups = "group_1")
   @Test
   void testCountOfWorkbasketQuery() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -159,9 +147,7 @@ class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
     assertThat(count).isEqualTo(9L);
   }
 
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "teamlead_1", groups = "group_1")
   @Test
   void testWorkbasketQueryDomA() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();

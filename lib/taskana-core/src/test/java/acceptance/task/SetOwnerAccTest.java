@@ -37,9 +37,7 @@ import pro.taskana.task.api.models.TaskSummary;
 @ExtendWith(JaasExtension.class)
 public class SetOwnerAccTest extends AbstractAccTest {
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_2", groups = "group_1")
   @Test
   void testSetOwnerAndSubsequentClaimSucceeds()
       throws TaskNotFoundException, NotAuthorizedException, InvalidStateException,
@@ -61,9 +59,7 @@ public class SetOwnerAccTest extends AbstractAccTest {
     assertThat(taskClaimed.getOwner()).isEqualTo("user_1_2");
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_2", groups = "group_1")
   @Test
   void testSetOwnerViaUpdateTaskNotAuthorized() {
 
@@ -77,9 +73,7 @@ public class SetOwnerAccTest extends AbstractAccTest {
         .isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_2", groups = "group_1")
   @Test
   void testSetOwnerOfClaimedTaskFails() throws TaskNotFoundException, NotAuthorizedException {
 
@@ -93,9 +87,7 @@ public class SetOwnerAccTest extends AbstractAccTest {
         .isInstanceOf(InvalidStateException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_2", groups = "group_1")
   @Test
   void testSetOwnerNotAuthorized() {
 
@@ -111,9 +103,7 @@ public class SetOwnerAccTest extends AbstractAccTest {
     assertThat(results.getErrorForId(taskReadyId)).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(
-      userName = "user_3_2",
-      groupNames = {"group_2"})
+  @WithAccessId(user = "user_3_2", groups = "group_2")
   @Test
   void testSetOwnerOfTasksWithDuplicatesSucceeds() {
 
@@ -128,9 +118,7 @@ public class SetOwnerAccTest extends AbstractAccTest {
     assertThat(results.containsErrors()).isFalse();
   }
 
-  @WithAccessId(
-      userName = "user_3_2",
-      groupNames = {"group_2"})
+  @WithAccessId(user = "user_3_2", groups = "group_2")
   @Test
   void testSetOwnerOfTasksWithDuplicatesAndNotExistingSucceeds() {
     List<String> taskIds =
@@ -148,9 +136,7 @@ public class SetOwnerAccTest extends AbstractAccTest {
         .isInstanceOf(TaskNotFoundException.class);
   }
 
-  @WithAccessId(
-      userName = "user_3_2",
-      groupNames = {"group_2"})
+  @WithAccessId(user = "user_3_2", groups = "group_2")
   @Test
   void testSetOwnerOfTasksWithNoQualifyingTasks() {
 
@@ -166,9 +152,7 @@ public class SetOwnerAccTest extends AbstractAccTest {
     assertThat(results.getErrorMap()).hasSize(3);
   }
 
-  @WithAccessId(
-      userName = "user_3_2",
-      groupNames = {"group_2"})
+  @WithAccessId(user = "user_3_2", groups = "group_2")
   @Test
   void testSetOwnerWithEmptyList() {
     List<String> taskIds = new ArrayList<>();
@@ -177,9 +161,7 @@ public class SetOwnerAccTest extends AbstractAccTest {
     assertThat(results.containsErrors()).isFalse();
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_2"})
+  @WithAccessId(user = "user_1_2", groups = "group_2")
   @Test
   void testSetOwnerWithAllTasksAndVariousExceptions()
       throws NoSuchFieldException, IllegalAccessException, SQLException {
@@ -208,9 +190,7 @@ public class SetOwnerAccTest extends AbstractAccTest {
         .areExactly(23, notAuthorizedException);
   }
 
-  @WithAccessId(
-      userName = "admin",
-      groupNames = {"group_2"})
+  @WithAccessId(user = "admin", groups = "group_2")
   @Test
   void testSetOwnerWithAllTasksAndVariousExceptionsAsAdmin() throws SQLException {
     resetDb(false);

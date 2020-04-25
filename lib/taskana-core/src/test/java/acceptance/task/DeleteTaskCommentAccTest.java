@@ -25,9 +25,7 @@ public class DeleteTaskCommentAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void should_DeleteTaskComment_For_TaskCommentId()
       throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException,
@@ -47,9 +45,7 @@ public class DeleteTaskCommentAccTest extends AbstractAccTest {
     assertThat(taskCommentsAfterDeletion).hasSize(1);
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_2", groups = "group_1")
   @Test
   void should_FailToDeleteTaskComment_When_UserHasNoAuthorization()
       throws NotAuthorizedException, TaskNotFoundException {
@@ -71,9 +67,7 @@ public class DeleteTaskCommentAccTest extends AbstractAccTest {
     assertThat(taskCommentsAfterDeletion).hasSize(2);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void should_FailToDeleteTaskComment_When_TaskCommentIdIsInvalid()
       throws NotAuthorizedException, TaskNotFoundException {
@@ -96,9 +90,7 @@ public class DeleteTaskCommentAccTest extends AbstractAccTest {
     assertThat(taskCommentsAfterDeletion).hasSize(2);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void should_FailToDeleteTaskComment_When_TaskCommentIsNotExisting()
       throws NotAuthorizedException, TaskNotFoundException {

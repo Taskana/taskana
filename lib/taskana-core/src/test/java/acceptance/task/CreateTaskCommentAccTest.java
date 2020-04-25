@@ -23,9 +23,7 @@ public class CreateTaskCommentAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void should_CreateTaskComment_For_TaskComment()
       throws TaskNotFoundException, NotAuthorizedException, InvalidArgumentException {
@@ -48,9 +46,7 @@ public class CreateTaskCommentAccTest extends AbstractAccTest {
     assertThat(taskCommentsAfterInsert).hasSize(3);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void should_FailToCreateTaskComment_When_TaskIdIsNullOrNonExisting() {
 

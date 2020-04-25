@@ -63,11 +63,9 @@ public interface MonitorMapper {
           + ") AS B "
           + "GROUP BY B.WORKBASKET_KEY, B.AGE_IN_DAYS"
           + "</script>")
-  @Results({
-    @Result(column = "WORKBASKET_KEY", property = "key"),
-    @Result(column = "AGE_IN_DAYS", property = "ageInDays"),
-    @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks")
-  })
+  @Result(column = "WORKBASKET_KEY", property = "key")
+  @Result(column = "AGE_IN_DAYS", property = "ageInDays")
+  @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks")
   List<MonitorQueryItem> getTaskCountOfWorkbaskets(
       @Param("workbasketIds") List<String> workbasketIds,
       @Param("states") List<TaskState> states,

@@ -30,9 +30,7 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"admin"})
+  @WithAccessId(user = "teamlead_1", groups = "admin")
   @Test
   void testQueryTaskValuesForAttachmentClassificationName() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -46,9 +44,7 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
     assertThat(columnValueList).hasSize(8);
   }
 
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"admin"})
+  @WithAccessId(user = "teamlead_1", groups = "admin")
   @Test
   void testQueryTaskValuesForClassificationName() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -62,9 +58,7 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
     assertThat(columnValueList).hasSize(5);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testQueryByClassificationNameIn() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -85,9 +79,7 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
     assertThat(tasks).hasSize(1);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testQueryByClassificationNameLike() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -104,9 +96,7 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
     assertThat(tasks).hasSize(32);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testSelectByAttachmentClassificationNameLike() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -127,9 +117,7 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
     assertThat(tasks).hasSize(7);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testSelectByAttachmentClassificationNameIn() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -150,9 +138,7 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
     assertThat(tasks).hasSize(4);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testQueryAndCountMatchForClassificationName() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -164,9 +150,7 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
     assertThat(tasks).hasSize((int) numberOfTasks);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testQueryAndCountForAttachmentClassificationName() {
     TaskService taskService = taskanaEngine.getTaskService();

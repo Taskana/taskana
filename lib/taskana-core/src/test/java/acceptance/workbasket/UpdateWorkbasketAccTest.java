@@ -29,8 +29,8 @@ public class UpdateWorkbasketAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1", "businessadmin"})
+      user = "teamlead_1",
+      groups = {"group_1", "businessadmin"})
   @Test
   public void testUpdateWorkbasket()
       throws NotAuthorizedException, WorkbasketNotFoundException, ConcurrencyException {
@@ -63,8 +63,8 @@ public class UpdateWorkbasketAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1", "businessadmin"})
+      user = "teamlead_1",
+      groups = {"group_1", "businessadmin"})
   @Test
   public void testUpdateWorkbasketWithConcurrentModificationShouldThrowException()
       throws NotAuthorizedException, WorkbasketNotFoundException, ConcurrencyException {
@@ -81,8 +81,8 @@ public class UpdateWorkbasketAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1", "businessadmin"})
+      user = "teamlead_1",
+      groups = {"group_1", "businessadmin"})
   @Test
   public void testUpdateWorkbasketOfNonExistingWorkbasketShouldThrowException()
       throws NotAuthorizedException, WorkbasketNotFoundException, ConcurrencyException {
@@ -99,9 +99,7 @@ public class UpdateWorkbasketAccTest extends AbstractAccTest {
         .isThrownBy(() -> workbasketService.updateWorkbasket(workbasket));
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   public void testCheckAuthorizationToUpdateWorkbasket()
       throws NotAuthorizedException, WorkbasketNotFoundException {

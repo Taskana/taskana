@@ -44,7 +44,7 @@ class ProvideClassificationReportAccTest extends AbstractReportAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetTotalNumbersOfTasksOfClassificationReport()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -72,7 +72,7 @@ class ProvideClassificationReportAccTest extends AbstractReportAccTest {
     assertThat(report.getSumRow().getTotalValue()).isEqualTo(50);
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetClassificationReportWithReportLineItemDefinitions()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -115,7 +115,7 @@ class ProvideClassificationReportAccTest extends AbstractReportAccTest {
     assertThat(sumLineCount).isEqualTo(50);
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfClassificationReport()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -153,7 +153,7 @@ class ProvideClassificationReportAccTest extends AbstractReportAccTest {
     assertThat(row5).isEqualTo(new int[] {3, 3, 0, 5, 2});
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfClassificationReportNotInWorkingDays()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -190,7 +190,7 @@ class ProvideClassificationReportAccTest extends AbstractReportAccTest {
     assertThat(row5).isEqualTo(new int[] {6, 0, 0, 0, 7});
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfClassificationReportWithWorkbasketFilter()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -231,7 +231,7 @@ class ProvideClassificationReportAccTest extends AbstractReportAccTest {
     assertThat(row5).isEqualTo(new int[] {2, 2, 0, 0, 0});
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfClassificationReportWithStateFilter()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -271,7 +271,7 @@ class ProvideClassificationReportAccTest extends AbstractReportAccTest {
     assertThat(row5).isEqualTo(new int[] {3, 3, 0, 5, 0});
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfClassificationReportWithCategoryFilter()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -302,7 +302,7 @@ class ProvideClassificationReportAccTest extends AbstractReportAccTest {
     assertThat(row2).isEqualTo(new int[] {2, 2, 2, 0, 4});
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfClassificationReportWithDomainFilter()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -342,7 +342,7 @@ class ProvideClassificationReportAccTest extends AbstractReportAccTest {
     assertThat(row5).isEqualTo(new int[] {0, 1, 0, 3, 0});
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfClassificationReportWithCustomFieldValueFilter()
       throws InvalidArgumentException, NotAuthorizedException {

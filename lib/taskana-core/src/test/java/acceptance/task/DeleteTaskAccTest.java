@@ -29,9 +29,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_2", groups = "group_1")
   @Test
   void testDeleteSingleTaskNotAuthorized() {
 
@@ -44,8 +42,8 @@ class DeleteTaskAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1", "admin"})
+      user = "user_1_2",
+      groups = {"group_1", "admin"})
   @Test
   void testDeleteSingleTask()
       throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
@@ -63,8 +61,8 @@ class DeleteTaskAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1", "admin"})
+      user = "user_1_2",
+      groups = {"group_1", "admin"})
   @Test
   void testThrowsExceptionIfTaskIsNotCompleted()
       throws TaskNotFoundException, NotAuthorizedException {
@@ -79,8 +77,8 @@ class DeleteTaskAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1", "admin"})
+      user = "user_1_2",
+      groups = {"group_1", "admin"})
   @Test
   void testForceDeleteTaskIfNotCompleted()
       throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
@@ -104,9 +102,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_2", groups = "group_1")
   @Test
   void testBulkDeleteTask() throws InvalidArgumentException {
 
@@ -125,9 +121,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_2", groups = "group_1")
   @Test
   void testBulkDeleteTasksWithException()
       throws TaskNotFoundException, InvalidArgumentException, NotAuthorizedException {

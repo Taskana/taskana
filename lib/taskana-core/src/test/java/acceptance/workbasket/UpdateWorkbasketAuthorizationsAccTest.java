@@ -37,8 +37,8 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1", "businessadmin"})
+      user = "teamlead_1",
+      groups = {"group_1", "businessadmin"})
   @Test
   void testUpdateWorkbasketAccessItemSucceeds()
       throws InvalidArgumentException, NotAuthorizedException, WorkbasketNotFoundException,
@@ -73,8 +73,8 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1", "businessadmin"})
+      user = "teamlead_1",
+      groups = {"group_1", "businessadmin"})
   @Test
   void testUpdateWorkbasketAccessItemRejected()
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
@@ -122,8 +122,8 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_2", "businessadmin"})
+      user = "user_1_1",
+      groups = {"group_2", "businessadmin"})
   @Test
   void testUpdatedAccessItemLeadsToNotAuthorizedException()
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
@@ -168,8 +168,8 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1", "businessadmin"})
+      user = "teamlead_1",
+      groups = {"group_1", "businessadmin"})
   @Test
   void testUpdatedAccessItemList() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -208,8 +208,8 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1", "businessadmin"})
+      user = "teamlead_1",
+      groups = {"group_1", "businessadmin"})
   @Test
   void testInsertAccessItemList() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -246,8 +246,8 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"group_1", "businessadmin"})
+      user = "teamlead_1",
+      groups = {"group_1", "businessadmin"})
   @Test
   void testDeleteAccessItemForAccessItemId() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -279,9 +279,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     assertThat(new HashSet<>(listEqualToOriginal)).isEqualTo(new HashSet<>(originalList));
   }
 
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "teamlead_1", groups = "businessadmin")
   @Test
   void testDeleteAccessItemsForAccessId() throws NotAuthorizedException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -296,9 +294,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     assertThat(accessIdCountBefore > accessIdCountAfter).isTrue();
   }
 
-  @WithAccessId(
-      userName = "teamlead_1",
-      groupNames = {"businessadmin"})
+  @WithAccessId(user = "teamlead_1", groups = "businessadmin")
   @Test
   void testDeleteAccessItemsForAccessIdWithUnusedValuesThrowingNoException()
       throws NotAuthorizedException {

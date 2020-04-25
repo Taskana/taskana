@@ -34,9 +34,7 @@ class CancelTaskAccTest extends AbstractAccTest {
     resetDb(false);
   }
 
-  @WithAccessId(
-      userName = "user_1_1",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void testQeryCancelledTasks() {
     List<TaskSummary> taskSummaries =
@@ -44,9 +42,7 @@ class CancelTaskAccTest extends AbstractAccTest {
     assertThat(taskSummaries).hasSize(5);
   }
 
-  @WithAccessId(
-      userName = "admin",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "admin", groups = "group_1")
   @Test
   void testCancelReadyTask()
       throws NotAuthorizedException, TaskNotFoundException, InvalidStateException {
@@ -59,9 +55,7 @@ class CancelTaskAccTest extends AbstractAccTest {
     assertThat(numTasks).isEqualTo(6);
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_2", groups = "group_1")
   @Test
   void testCancelClaimedTask()
       throws NotAuthorizedException, TaskNotFoundException, InvalidStateException {
@@ -79,9 +73,7 @@ class CancelTaskAccTest extends AbstractAccTest {
     assertThat(numTasksCancelled).isEqualTo(6);
   }
 
-  @WithAccessId(
-      userName = "admin",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "admin", groups = "group_1")
   @Test
   void testCancelCompletedTask() {
     List<TaskSummary> taskSummaries =
@@ -93,9 +85,7 @@ class CancelTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(taskanaCall).isInstanceOf(InvalidStateException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_2", groups = "group_1")
   @Test
   void testCancelTerminatedTask() {
     List<TaskSummary> taskSummaries =
@@ -106,9 +96,7 @@ class CancelTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(taskanaCall).isInstanceOf(InvalidStateException.class);
   }
 
-  @WithAccessId(
-      userName = "user_1_2",
-      groupNames = {"group_1"})
+  @WithAccessId(user = "user_1_2", groups = "group_1")
   @Test
   void testCancelCancelledTask() {
     List<TaskSummary> taskSummaries =

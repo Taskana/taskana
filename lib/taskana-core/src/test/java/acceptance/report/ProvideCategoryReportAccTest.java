@@ -46,7 +46,7 @@ class ProvideCategoryReportAccTest extends AbstractReportAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetTotalNumbersOfTasksOfCategoryReport()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -70,7 +70,7 @@ class ProvideCategoryReportAccTest extends AbstractReportAccTest {
     assertThat(report.getSumRow().getTotalValue()).isEqualTo(50);
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testGetCategoryReportWithReportLineItemDefinitions()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -104,7 +104,7 @@ class ProvideCategoryReportAccTest extends AbstractReportAccTest {
     assertThat(sumLineCount).isEqualTo(50);
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfCategoryReport() throws InvalidArgumentException, NotAuthorizedException {
     MonitorService monitorService = taskanaEngine.getMonitorService();
@@ -135,7 +135,7 @@ class ProvideCategoryReportAccTest extends AbstractReportAccTest {
     assertThat(row3).isEqualTo(new int[] {2, 2, 2, 0, 4});
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfCategoryReportNotInWorkingDays()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -163,7 +163,7 @@ class ProvideCategoryReportAccTest extends AbstractReportAccTest {
     assertThat(row3).isEqualTo(new int[] {4, 0, 2, 0, 4});
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfCategoryReportWithWorkbasketFilter()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -198,7 +198,7 @@ class ProvideCategoryReportAccTest extends AbstractReportAccTest {
     assertThat(row3).isEqualTo(new int[] {1, 0, 1, 0, 1});
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfCategoryReportWithStateFilter()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -232,7 +232,7 @@ class ProvideCategoryReportAccTest extends AbstractReportAccTest {
     assertThat(row3).isEqualTo(new int[] {2, 2, 2, 0, 0});
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfCategoryReportWithCategoryFilter()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -263,7 +263,7 @@ class ProvideCategoryReportAccTest extends AbstractReportAccTest {
     assertThat(row2).isEqualTo(new int[] {2, 2, 2, 0, 4});
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfCategoryReportWithDomainFilter()
       throws InvalidArgumentException, NotAuthorizedException {
@@ -297,7 +297,7 @@ class ProvideCategoryReportAccTest extends AbstractReportAccTest {
     assertThat(row3).isEqualTo(new int[] {2, 0, 0, 0, 3});
   }
 
-  @WithAccessId(userName = "monitor")
+  @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfCategoryReportWithCustomFieldValueFilter()
       throws InvalidArgumentException, NotAuthorizedException {
