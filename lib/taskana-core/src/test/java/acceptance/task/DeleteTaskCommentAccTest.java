@@ -4,9 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
+import java.sql.SQLException;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -29,7 +31,7 @@ public class DeleteTaskCommentAccTest extends AbstractAccTest {
   @Test
   void should_DeleteTaskComment_For_TaskCommentId()
       throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException,
-          InvalidArgumentException {
+                 InvalidArgumentException {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
@@ -67,11 +69,14 @@ public class DeleteTaskCommentAccTest extends AbstractAccTest {
     assertThat(taskCommentsAfterDeletion).hasSize(3);
   }
 
+  @WithAccessId(user = "admin")
   @WithAccessId(user = "taskadmin")
-  @Test
-  void should_DeleteTaskComment_When_NoExplicitPermissionsButUserIsInTaskAdminRole()
+  @TestTemplate
+  void should_DeleteTaskComment_When_NoExplicitPermissionsButUserIsInAdministrativeRole()
       throws NotAuthorizedException, TaskNotFoundException, TaskCommentNotFoundException,
-          InvalidArgumentException {
+                 InvalidArgumentException, SQLException {
+
+    resetDb(false);
 
     TaskService taskService = taskanaEngine.getTaskService();
 

@@ -9,6 +9,7 @@ import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
@@ -44,7 +45,8 @@ class TerminateTaskAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(user = "admin", groups = "group_1")
-  @Test
+  @WithAccessId(user = "taskadmin")
+  @TestTemplate
   void should_TerminateTask_When_TaskStateIsReady()
       throws NotAuthorizedException, TaskNotFoundException, InvalidStateException {
     List<TaskSummary> taskSummaries = taskService.createTaskQuery().stateIn(TaskState.READY).list();
@@ -56,8 +58,9 @@ class TerminateTaskAccTest extends AbstractAccTest {
     assertThat(numTasks).isEqualTo(6);
   }
 
-  @WithAccessId(user = "taskadmin", groups = "group_1")
-  @Test
+  @WithAccessId(user = "admin", groups = "group_1")
+  @WithAccessId(user = "taskadmin")
+  @TestTemplate
   void should_TerminateTask_When_TaskStateIsClaimed()
       throws NotAuthorizedException, TaskNotFoundException, InvalidStateException {
     List<TaskSummary> taskSummaries =
@@ -87,7 +90,7 @@ class TerminateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user_1_2")
   @Test
-  void should_ThrowException_When_UserIsNotAdmin() {
+  void should_ThrowException_When_UserIsNotInAdministrativeRole() {
 
     ThrowingCallable taskanaCall =
         () -> taskService.terminateTask("TKI:000000000000000000000000000000000000");

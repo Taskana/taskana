@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
@@ -29,7 +30,7 @@ import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
 
 /**
- * Acceptance test for all "update workbasket" scenarios.
+ * Acceptance test for all "update workbasket authorizations" scenarios.
  */
 @ExtendWith(JaasExtension.class)
 class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
@@ -38,57 +39,10 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     super();
   }
 
+  @WithAccessId(user = "user_1_1")
   @WithAccessId(user = "taskadmin")
-  @Test
-  public void should_ThrowException_When_TaskAdminTriesToGetWorkbasketAccItem() {
-
-    final WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-
-    ThrowingCallable retrieveWorkbasketAccessItemCall =
-        () -> {
-          workbasketService.getWorkbasketAccessItems("WBI:100000000000000000000000000000000008");
-        };
-
-    assertThatThrownBy(retrieveWorkbasketAccessItemCall).isInstanceOf(NotAuthorizedException.class);
-  }
-
-  @WithAccessId(user = "taskadmin")
-  @Test
-  public void should_ThrowException_When_TaskAdminTriesToDeleteWorkbasketAccItemById() {
-
-    final WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-
-    ThrowingCallable deleteWorkbasketAccessItemCall =
-        () -> {
-          workbasketService.deleteWorkbasketAccessItemsForAccessId("group_1");
-        };
-
-    assertThatThrownBy(deleteWorkbasketAccessItemCall).isInstanceOf(NotAuthorizedException.class);
-  }
-
-  @WithAccessId(user = "taskadmin")
-  @Test
-  public void should_ThrowException_When_TaskAdminTriesToDeleteWorkbasketAccessItemByAccessId() {
-
-    final WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-
-    WorkbasketAccessItem workbasketAccessItem =
-        workbasketService.newWorkbasketAccessItem(
-            "WBI:100000000000000000000000000000000008", "newAccessIdForUpdate");
-
-    workbasketAccessItem.setPermCustom1(true);
-
-    ThrowingCallable deleteWorkbasketAccessItemCall =
-        () -> {
-          workbasketService.deleteWorkbasketAccessItem(workbasketAccessItem.getId());
-        };
-
-    assertThatThrownBy(deleteWorkbasketAccessItemCall).isInstanceOf(NotAuthorizedException.class);
-  }
-
-  @WithAccessId(user = "taskadmin")
-  @Test
-  public void should_ThrowException_When_TaskAdminTriesToUpdateWorkbasketAccItem() {
+  @TestTemplate
+  public void should_ThrowException_When_UserIsNotAdminOrBusinessAdmin() {
 
     final WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 

@@ -1,6 +1,7 @@
 package acceptance.task;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
@@ -11,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.BulkOperationResults;
@@ -57,10 +59,10 @@ class TransferTaskAccTest extends AbstractAccTest {
     assertThat(transferredTask.getState()).isEqualTo(TaskState.READY);
   }
 
-  @WithAccessId(
-      user = "taskadmin")
-  @Test
-  void should_TransferTask_When_NoExplicitPermissionsButUserIsInTaskAdminRole()
+  @WithAccessId(user = "admin")
+  @WithAccessId(user = "taskadmin")
+  @TestTemplate
+  void should_TransferTask_When_NoExplicitPermissionsButUserIsInAdministrativeRole()
       throws NotAuthorizedException, WorkbasketNotFoundException, TaskNotFoundException,
                  InvalidStateException, InvalidOwnerException {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -302,7 +304,12 @@ class TransferTaskAccTest extends AbstractAccTest {
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
     TaskService taskService = taskanaEngine.getTaskService();
     List<String> taskIds = Collections.singletonList("TKI:000000000000000000000000000000000006");
-    taskService.transferTasks("WBI:100000000000000000000000000000000006", taskIds);
+
+    ThrowingCallable call = () -> {
+      taskService.transferTasks("WBI:100000000000000000000000000000000006", taskIds);
+    };
+
+    assertThatCode(call).doesNotThrowAnyException();
   }
 
   @WithAccessId(user = "teamlead_1", groups = "group_1")

@@ -4,10 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
+import java.sql.SQLException;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
@@ -20,9 +22,12 @@ import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 
-/** Acceptance tests for all "cancel task" scenarios. */
+/**
+ * Acceptance tests for all "cancel task" scenarios.
+ */
 @ExtendWith(JaasExtension.class)
 class CancelTaskAccTest extends AbstractAccTest {
+
   private TaskService taskService;
 
   CancelTaskAccTest() {
@@ -56,11 +61,13 @@ class CancelTaskAccTest extends AbstractAccTest {
     assertThat(numTasks).isEqualTo(6);
   }
 
+  @WithAccessId(user = "admin")
   @WithAccessId(user = "taskadmin")
-  @Test
-  void should_CancelTask_When_NoExplicitPermissionsButUserIsInTaskAdminRole()
-      throws NotAuthorizedException, TaskNotFoundException, InvalidStateException {
+  @TestTemplate
+  void should_CancelTask_When_NoExplicitPermissionsButUserIsInAdministrativeRole()
+      throws NotAuthorizedException, TaskNotFoundException, InvalidStateException, SQLException {
 
+    resetDb(false);
     Task tasktoCancel = taskService.getTask("TKI:000000000000000000000000000000000001");
     assertThat(tasktoCancel.getState()).isEqualTo(TaskState.CLAIMED);
 

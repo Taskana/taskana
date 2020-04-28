@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import acceptance.AbstractAccTest;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.classification.api.ClassificationService;
@@ -269,8 +270,9 @@ class CreateClassificationAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(user = "taskadmin")
-  @Test
-  void should_ThrowException_When_UserIsTaskAdminAndNotAuthorizedToCreateClassification() {
+  @WithAccessId(user = "user_1_1")
+  @TestTemplate
+  void should_ThrowException_When_UserRoleIsNotAdminOrBusinessAdmin() {
     ClassificationImpl classification =
         (ClassificationImpl) classificationService.newClassification("newKey718", "", "TASK");
 

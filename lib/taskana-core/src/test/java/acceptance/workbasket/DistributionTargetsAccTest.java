@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
@@ -109,9 +110,10 @@ class DistributionTargetsAccTest extends AbstractAccTest {
     assertThat(beforeCount).isEqualTo(afterCount);
   }
 
-  @WithAccessId(user = "user_3_1", groups = "group_1")
-  @Test
-  void testDistributionTargetCallsFailWithNotAuthorizedException() {
+  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "taskadmin")
+  @TestTemplate
+  void should_ThrowException_When_UserRoleIsNotAdminOrBusinessAdminAndMakesDistTargetCalls() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     String existingWb = "WBI:100000000000000000000000000000000001";
 
@@ -304,62 +306,6 @@ class DistributionTargetsAccTest extends AbstractAccTest {
     ThrowingCallable call =
         () -> {
           workbasketService.getDistributionSources("WBI:100000000000000000000000000000000004");
-        };
-    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
-  }
-
-  @WithAccessId(user = "taskadmin")
-  @Test
-  void should_ThrowException_When_UserIsTaskAdminAndNotAuthorizedToGetWorkbasketDistTargets() {
-    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-
-    ThrowingCallable retrieveWorkbasketDistributionTargetsCall =
-        () -> {
-          List<WorkbasketSummary> ws =
-              workbasketService.getDistributionSources("WBI:100000000000000000000000000000000004");
-        };
-    assertThatThrownBy(retrieveWorkbasketDistributionTargetsCall)
-        .isInstanceOf(NotAuthorizedException.class);
-  }
-
-  @WithAccessId(user = "taskadmin")
-  @Test
-  void should_ThrowException_When_UserIsTaskAdminAndNotAuthorizedToSetWorkbasketDistTargets() {
-    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-
-    ThrowingCallable call =
-        () -> {
-          workbasketService.setDistributionTargets(
-              "WBI:100000000000000000000000000000000004",
-              Arrays.asList("WBI:100000000000000000000000000000000002"));
-        };
-    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
-  }
-
-  @WithAccessId(user = "taskadmin")
-  @Test
-  void should_ThrowException_When_UserIsTaskAdminAndNotAuthorizedToAddWorkbasketDistTarget() {
-    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-
-    ThrowingCallable call =
-        () -> {
-          workbasketService.addDistributionTarget(
-              "WBI:100000000000000000000000000000000004",
-              "WBI:100000000000000000000000000000000002");
-        };
-    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
-  }
-
-  @WithAccessId(user = "taskadmin")
-  @Test
-  void should_ThrowException_When_UserIsTaskAdminAndNotAuthorizedToRemoveWorkbasketDistTarget() {
-    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-
-    ThrowingCallable call =
-        () -> {
-          workbasketService.removeDistributionTarget(
-              "WBI:100000000000000000000000000000000004",
-              "WBI:100000000000000000000000000000000002");
         };
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }

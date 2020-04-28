@@ -8,6 +8,7 @@ import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -26,7 +27,9 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 
-/** Acceptance test which does test the deletion of a workbasket and all wanted failures. */
+/**
+ * Acceptance test which does test the deletion of a workbasket and all wanted failures.
+ */
 @ExtendWith(JaasExtension.class)
 class DeleteWorkbasketAccTest extends AbstractAccTest {
 
@@ -56,21 +59,9 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(user = "elena")
-  @Test
-  void testDeleteWorkbasketNotAuthorized() {
-
-    ThrowingCallable call =
-        () -> {
-          Workbasket wb = workbasketService.getWorkbasket("TEAMLEAD_2", "DOMAIN_A");
-          workbasketService.deleteWorkbasket(wb.getId());
-        };
-    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
-  }
-
   @WithAccessId(user = "taskadmin")
-  @Test
-  void
-      should_ThrowException_When_UserIsTaskAdminAndNotAuthorizedToDeleteWorkbasketByKeyAndDomain() {
+  @TestTemplate
+  void should_ThrowException_When_UserRoleIsNotAdminOrBusinessAdmin() {
 
     ThrowingCallable deleteWorkbasketCall =
         () -> {
@@ -78,13 +69,8 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
           workbasketService.deleteWorkbasket(wb.getId());
         };
     assertThatThrownBy(deleteWorkbasketCall).isInstanceOf(NotAuthorizedException.class);
-  }
 
-  @WithAccessId(user = "taskadmin")
-  @Test
-  void should_ThrowException_When_UserIsTaskAdminAndNotAuthorizedToDeleteWorkbasketById() {
-
-    ThrowingCallable deleteWorkbasketCall =
+    deleteWorkbasketCall =
         () -> {
           Workbasket wb =
               workbasketService.getWorkbasket("WBI:100000000000000000000000000000000005");
@@ -181,7 +167,7 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
   @Test
   void testCascadingDeleteOfAccessItems()
       throws WorkbasketNotFoundException, NotAuthorizedException, InvalidArgumentException,
-          WorkbasketAccessItemAlreadyExistException {
+                 WorkbasketAccessItemAlreadyExistException {
     Workbasket wb = workbasketService.getWorkbasket("WBI:100000000000000000000000000000000008");
     String wbId = wb.getId();
     // create 2 access Items
@@ -215,8 +201,8 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
   @Test
   void testMarkWorkbasketForDeletion()
       throws WorkbasketInUseException, NotAuthorizedException, WorkbasketNotFoundException,
-          InvalidArgumentException, InvalidOwnerException, InvalidStateException,
-          TaskNotFoundException {
+                 InvalidArgumentException, InvalidOwnerException, InvalidStateException,
+                 TaskNotFoundException {
     final Workbasket wb =
         workbasketService.getWorkbasket("WBI:100000000000000000000000000000000006");
 
