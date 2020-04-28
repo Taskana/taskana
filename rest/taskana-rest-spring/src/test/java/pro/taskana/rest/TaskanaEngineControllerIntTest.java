@@ -14,7 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import pro.taskana.RestHelper;
 import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.common.api.TaskanaRole;
-import pro.taskana.rest.resource.TaskanaUserInfoResource;
+import pro.taskana.rest.resource.TaskanaUserInfoRepresentationModel;
 
 /** Test TaskanaEngineController. */
 @TaskanaSpringBootTest
@@ -63,12 +63,12 @@ class TaskanaEngineControllerIntTest {
 
   @Test
   void testGetCurrentUserInfo() {
-    ResponseEntity<TaskanaUserInfoResource> response =
+    ResponseEntity<TaskanaUserInfoRepresentationModel> response =
         template.exchange(
             restHelper.toUrl(Mapping.URL_CURRENT_USER),
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(TaskanaUserInfoResource.class));
+            ParameterizedTypeReference.forType(TaskanaUserInfoRepresentationModel.class));
     assertThat(response.getBody().getUserId()).isEqualTo("teamlead_1");
     assertThat(response.getBody().getGroupIds()).contains("businessadmin");
     assertThat(response.getBody().getRoles()).contains(TaskanaRole.BUSINESS_ADMIN);

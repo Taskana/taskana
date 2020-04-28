@@ -3,6 +3,7 @@ package pro.taskana.rest.resource;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel.PageMetadata;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -41,7 +42,7 @@ public abstract class AbstractRessourcesAssembler {
   }
 
   protected PagedResources<?> addPageLinks(
-      PagedResources<?> pagedResources, PagedResources.PageMetadata pageMetadata) {
+      PagedResources<?> pagedResources, PageMetadata pageMetadata) {
     UriComponentsBuilder original = getBuilderForOriginalUri();
     pagedResources.add(
         (new Link(original.replaceQueryParam("page", 1).toUriString())).withRel("first"));
@@ -51,7 +52,7 @@ public abstract class AbstractRessourcesAssembler {
     if (pageMetadata.getNumber() > 1L) {
       pagedResources.add(
           (new Link(
-                  original.replaceQueryParam("page", pageMetadata.getNumber() - 1L).toUriString()))
+              original.replaceQueryParam("page", pageMetadata.getNumber() - 1L).toUriString()))
               .withRel("prev"));
     }
 

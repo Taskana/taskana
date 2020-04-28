@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.common.api.BaseQuery;
+import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.ScheduledJob;
@@ -24,19 +24,21 @@ import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 import pro.taskana.common.internal.util.LogSanitizer;
 import pro.taskana.task.api.models.TaskSummary;
 
-/** Job to cleanup completed tasks after a period of time. */
+/**
+ * Job to cleanup completed tasks after a period of time.
+ */
 public class TaskCleanupJob extends AbstractTaskanaJob {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskCleanupJob.class);
 
-  private static BaseQuery.SortDirection asc = BaseQuery.SortDirection.ASCENDING;
+  private static final SortDirection ASCENDING = SortDirection.ASCENDING;
 
   // Parameter
-  private Instant firstRun;
-  private Duration runEvery;
-  private Duration minimumAge;
-  private int batchSize;
-  private boolean allCompletedSameParentBusiness;
+  private final Instant firstRun;
+  private final Duration runEvery;
+  private final Duration minimumAge;
+  private final int batchSize;
+  private final boolean allCompletedSameParentBusiness;
 
   public TaskCleanupJob(
       TaskanaEngine taskanaEngine,
@@ -55,7 +57,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
   public void run() throws TaskanaException {
     Instant completedBefore = Instant.now().minus(minimumAge);
     LOGGER.info(
-        "Running job to delete all tasks completed before ({})", completedBefore.toString());
+        "Running job to delete all tasks completed before ({})", completedBefore);
     try {
       List<TaskSummary> tasksCompletedBefore = getTasksCompletedBefore(completedBefore);
       int totalNumberOfTasksCompleted = 0;
@@ -94,7 +96,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
             .getTaskService()
             .createTaskQuery()
             .completedWithin(new TimeInterval(null, untilDate))
-            .orderByBusinessProcessId(asc)
+            .orderByBusinessProcessId(ASCENDING)
             .list();
 
     if (allCompletedSameParentBusiness) {

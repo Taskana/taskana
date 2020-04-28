@@ -23,10 +23,20 @@ import pro.taskana.workbasket.api.models.Workbasket;
 @TaskanaSpringBootTest
 class TaskSummaryAssemblerTest {
 
-  @Autowired TaskService taskService;
-  @Autowired TaskSummaryResourceAssembler taskSummaryResourceAssembler;
-  @Autowired WorkbasketService workbasketService;
-  @Autowired ClassificationService classificationService;
+  TaskService taskService;
+  TaskSummaryRepresentationModelAssembler taskSummaryRepresentationModelAssembler;
+  WorkbasketService workbasketService;
+  ClassificationService classificationService;
+
+  @Autowired
+  TaskSummaryAssemblerTest(TaskService taskService,
+      TaskSummaryRepresentationModelAssembler taskSummaryRepresentationModelAssembler,
+      WorkbasketService workbasketService, ClassificationService classificationService) {
+    this.taskService = taskService;
+    this.taskSummaryRepresentationModelAssembler = taskSummaryRepresentationModelAssembler;
+    this.workbasketService = workbasketService;
+    this.classificationService = classificationService;
+  }
 
   @Test
   void taskSummaryToResource() {
@@ -80,11 +90,12 @@ class TaskSummaryAssemblerTest {
     task.setCustom14("custom14");
     task.setCustom15("custom15");
     TaskSummaryImpl taskSummary = (TaskSummaryImpl) task.asSummary();
-    TaskSummaryResource resource = this.taskSummaryResourceAssembler.toModel(taskSummary);
+    TaskSummaryRepresentationModel resource =
+        this.taskSummaryRepresentationModelAssembler.toModel(taskSummary);
     this.testEquality(taskSummary, resource);
   }
 
-  void testEquality(TaskSummaryImpl taskSummary, TaskSummaryResource resource) {
+  void testEquality(TaskSummaryImpl taskSummary, TaskSummaryRepresentationModel resource) {
     Assert.assertEquals(taskSummary.getId(), resource.getTaskId());
     Assert.assertEquals(taskSummary.getExternalId(), resource.getExternalId());
     Assert.assertEquals(
@@ -106,14 +117,14 @@ class TaskSummaryAssemblerTest {
     Assert.assertEquals(taskSummary.getName(), resource.getName());
     Assert.assertEquals(taskSummary.getCreator(), resource.getCreator());
     Assert.assertEquals(taskSummary.getNote(), resource.getNote());
-    Assert.assertEquals((long) taskSummary.getPriority(), (long) resource.getPriority());
+    Assert.assertEquals(taskSummary.getPriority(), resource.getPriority());
     Assert.assertEquals(taskSummary.getState(), resource.getState());
     Assert.assertEquals(
         taskSummary.getClassificationSummary().getId(),
-        resource.getClassificationSummaryResource().getClassificationId());
+        resource.getClassificationSummary().getClassificationId());
     Assert.assertEquals(
         taskSummary.getWorkbasketSummary().getId(),
-        resource.getWorkbasketSummaryResource().getWorkbasketId());
+        resource.getWorkbasketSummary().getWorkbasketId());
     Assert.assertEquals(taskSummary.getBusinessProcessId(), resource.getBusinessProcessId());
     Assert.assertEquals(
         taskSummary.getParentBusinessProcessId(), resource.getParentBusinessProcessId());
@@ -143,11 +154,12 @@ class TaskSummaryAssemblerTest {
   }
 
   private void testEqualityAttachments(
-      List<AttachmentSummary> attachmentSummaries, List<AttachmentSummaryResource> resources) {
-    Assert.assertEquals((long) attachmentSummaries.size(), (long) resources.size());
+      List<AttachmentSummary> attachmentSummaries,
+      List<AttachmentSummaryRepresentationModel> resources) {
+    Assert.assertEquals(attachmentSummaries.size(), resources.size());
 
     for (int i = 0; i < resources.size(); ++i) {
-      AttachmentSummaryResource resource = resources.get(i);
+      AttachmentSummaryRepresentationModel resource = resources.get(i);
       AttachmentSummary attachmentSummary = attachmentSummaries.get(i);
       Assert.assertEquals(attachmentSummary.getId(), resource.getAttachmentId());
     }

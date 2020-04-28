@@ -25,7 +25,7 @@ import pro.taskana.rest.Mapping;
 /** Generate REST Documentation for the TaskController. */
 class TaskControllerRestDocumentation extends BaseRestDocumentation {
 
-  private HashMap<String, String> taskFieldDescriptionsMap = new HashMap<String, String>();
+  private final HashMap<String, String> taskFieldDescriptionsMap = new HashMap<>();
 
   private FieldDescriptor[] allTasksFieldDescriptors;
   private FieldDescriptor[] taskFieldDescriptors;
@@ -60,10 +60,11 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
     taskFieldDescriptionsMap.put("priority", "The priority of the task");
     taskFieldDescriptionsMap.put("state", "he state of the task. See (...)");
     taskFieldDescriptionsMap.put(
-        "classificationSummaryResource",
+        "classificationSummary",
         "The <<classification-subset, Classification>> of the task");
     taskFieldDescriptionsMap.put(
-        "workbasketSummaryResource", "The <<workbasket-subset, Workbasket>> of the task");
+        "workbasketSummary",
+        "The <<workbasket-subset, Workbasket>> of the task");
     taskFieldDescriptionsMap.put("businessProcessId", "");
     taskFieldDescriptionsMap.put("parentBusinessProcessId", "");
     taskFieldDescriptionsMap.put(
@@ -112,11 +113,6 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
           fieldWithPath("_links").ignored(),
           fieldWithPath("_links.self").ignored(),
           fieldWithPath("_links.self.href").ignored(),
-          fieldWithPath("page").ignored(),
-          fieldWithPath("page.size").ignored(),
-          fieldWithPath("page.totalElements").ignored(),
-          fieldWithPath("page.totalPages").ignored(),
-          fieldWithPath("page.number").ignored()
         };
 
     taskFieldDescriptors =
@@ -137,28 +133,30 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
               .description(taskFieldDescriptionsMap.get("planned"))
               .type("String"),
           fieldWithPath("due").description(taskFieldDescriptionsMap.get("due")).type("String"),
-          fieldWithPath("name").description(taskFieldDescriptionsMap.get("name")),
-          fieldWithPath("creator").description(taskFieldDescriptionsMap.get("creator")),
-          fieldWithPath("description").description(taskFieldDescriptionsMap.get("description")),
-          fieldWithPath("note")
-              .description(taskFieldDescriptionsMap.get("note"))
-              .description("Some custom Note"),
-          fieldWithPath("priority").description(taskFieldDescriptionsMap.get("priority")),
-          fieldWithPath("state").description(taskFieldDescriptionsMap.get("state")),
-          subsectionWithPath("classificationSummaryResource")
-              .description(taskFieldDescriptionsMap.get("classificationSummaryResource")),
-          subsectionWithPath("workbasketSummaryResource")
-              .description(taskFieldDescriptionsMap.get("workbasketSummaryResource")),
-          fieldWithPath("businessProcessId")
-              .description(taskFieldDescriptionsMap.get("businessProcessId")),
-          fieldWithPath("parentBusinessProcessId")
-              .description(taskFieldDescriptionsMap.get("parentBusinessProcessId")),
-          fieldWithPath("owner").description(taskFieldDescriptionsMap.get("owner")).type("String"),
-          fieldWithPath("primaryObjRef.id")
-              .description(taskFieldDescriptionsMap.get("primaryObjRef.id"))
-              .type("String"),
-          fieldWithPath("primaryObjRef.company")
-              .description(taskFieldDescriptionsMap.get("primaryObjRef.company")),
+            fieldWithPath("name").description(taskFieldDescriptionsMap.get("name")),
+            fieldWithPath("creator").description(taskFieldDescriptionsMap.get("creator")),
+            fieldWithPath("description").description(taskFieldDescriptionsMap.get("description")),
+            fieldWithPath("note")
+                .description(taskFieldDescriptionsMap.get("note"))
+                .description("Some custom Note"),
+            fieldWithPath("priority").description(taskFieldDescriptionsMap.get("priority")),
+            fieldWithPath("state").description(taskFieldDescriptionsMap.get("state")),
+            subsectionWithPath("classificationSummary")
+                .description(
+                taskFieldDescriptionsMap.get("classificationSummary")),
+            subsectionWithPath("workbasketSummary")
+                .description(taskFieldDescriptionsMap.get("workbasketSummary")),
+            fieldWithPath("businessProcessId")
+                .description(taskFieldDescriptionsMap.get("businessProcessId")),
+            fieldWithPath("parentBusinessProcessId")
+                .description(taskFieldDescriptionsMap.get("parentBusinessProcessId")),
+            fieldWithPath("owner").description(taskFieldDescriptionsMap.get("owner")).type(
+                "String"),
+            fieldWithPath("primaryObjRef.id")
+                .description(taskFieldDescriptionsMap.get("primaryObjRef.id"))
+                .type("String"),
+            fieldWithPath("primaryObjRef.company")
+                .description(taskFieldDescriptionsMap.get("primaryObjRef.company")),
           fieldWithPath("primaryObjRef.system")
               .description(taskFieldDescriptionsMap.get("primaryObjRef.system")),
           fieldWithPath("primaryObjRef.systemInstance")
@@ -240,28 +238,29 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
               .description(taskFieldDescriptionsMap.get("planned"))
               .type("String"),
           fieldWithPath("due").description(taskFieldDescriptionsMap.get("due")).type("String"),
-          fieldWithPath("name").description(taskFieldDescriptionsMap.get("name")),
-          fieldWithPath("creator").description(taskFieldDescriptionsMap.get("creator")),
-          fieldWithPath("description").ignored(),
-          fieldWithPath("note")
-              .description(taskFieldDescriptionsMap.get("note"))
-              .description("Some custom Note"),
-          fieldWithPath("priority").description(taskFieldDescriptionsMap.get("priority")),
-          fieldWithPath("state").description(taskFieldDescriptionsMap.get("state")),
-          subsectionWithPath("classificationSummaryResource")
-              .description(taskFieldDescriptionsMap.get("classificationSummaryResource")),
-          subsectionWithPath("workbasketSummaryResource")
-              .description(taskFieldDescriptionsMap.get("workbasketSummaryResource")),
-          fieldWithPath("businessProcessId")
-              .description(taskFieldDescriptionsMap.get("businessProcessId")),
-          fieldWithPath("parentBusinessProcessId")
-              .description(taskFieldDescriptionsMap.get("parentBusinessProcessId")),
-          fieldWithPath("owner").description(taskFieldDescriptionsMap.get("owner")),
-          fieldWithPath("primaryObjRef.id")
-              .description(taskFieldDescriptionsMap.get("primaryObjRef.id"))
-              .type("String"),
-          fieldWithPath("primaryObjRef.company")
-              .description(taskFieldDescriptionsMap.get("primaryObjRef.company")),
+            fieldWithPath("name").description(taskFieldDescriptionsMap.get("name")),
+            fieldWithPath("creator").description(taskFieldDescriptionsMap.get("creator")),
+            fieldWithPath("description").ignored(),
+            fieldWithPath("note")
+                .description(taskFieldDescriptionsMap.get("note"))
+                .description("Some custom Note"),
+            fieldWithPath("priority").description(taskFieldDescriptionsMap.get("priority")),
+            fieldWithPath("state").description(taskFieldDescriptionsMap.get("state")),
+            subsectionWithPath("classificationSummary")
+                .description(
+                taskFieldDescriptionsMap.get("classificationSummary")),
+            subsectionWithPath("workbasketSummary")
+                .description(taskFieldDescriptionsMap.get("workbasketSummary")),
+            fieldWithPath("businessProcessId")
+                .description(taskFieldDescriptionsMap.get("businessProcessId")),
+            fieldWithPath("parentBusinessProcessId")
+                .description(taskFieldDescriptionsMap.get("parentBusinessProcessId")),
+            fieldWithPath("owner").description(taskFieldDescriptionsMap.get("owner")),
+            fieldWithPath("primaryObjRef.id")
+                .description(taskFieldDescriptionsMap.get("primaryObjRef.id"))
+                .type("String"),
+            fieldWithPath("primaryObjRef.company")
+                .description(taskFieldDescriptionsMap.get("primaryObjRef.company")),
           fieldWithPath("primaryObjRef.system")
               .description(taskFieldDescriptionsMap.get("primaryObjRef.system")),
           fieldWithPath("primaryObjRef.systemInstance")
@@ -295,21 +294,21 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
         };
 
     createTaskFieldDescriptors =
-        new FieldDescriptor[] {
-          subsectionWithPath("classificationSummaryResource")
-              .description("The new classificationSummaryResource for the task"),
-          subsectionWithPath("workbasketSummaryResource")
-              .description("The new workbasketSummaryResource for the task"),
-          fieldWithPath("externalId")
-              .description(taskFieldDescriptionsMap.get("externalId"))
-              .type("String")
-              .optional(),
-          fieldWithPath("primaryObjRef.company")
-              .description(taskFieldDescriptionsMap.get("primaryObjRef.company")),
-          fieldWithPath("primaryObjRef.system")
-              .description(taskFieldDescriptionsMap.get("primaryObjRef.system")),
-          fieldWithPath("primaryObjRef.systemInstance")
-              .description(taskFieldDescriptionsMap.get("primaryObjRef.systemInstance")),
+        new FieldDescriptor[]{
+            subsectionWithPath("classificationSummary")
+                .description("The new classificationSummary for the task"),
+            subsectionWithPath("workbasketSummary")
+                .description("The new workbasketSummary for the task"),
+            fieldWithPath("externalId")
+                .description(taskFieldDescriptionsMap.get("externalId"))
+                .type("String")
+                .optional(),
+            fieldWithPath("primaryObjRef.company")
+                .description(taskFieldDescriptionsMap.get("primaryObjRef.company")),
+            fieldWithPath("primaryObjRef.system")
+                .description(taskFieldDescriptionsMap.get("primaryObjRef.system")),
+            fieldWithPath("primaryObjRef.systemInstance")
+                .description(taskFieldDescriptionsMap.get("primaryObjRef.systemInstance")),
           fieldWithPath("primaryObjRef.type")
               .description(taskFieldDescriptionsMap.get("primaryObjRef.type")),
           fieldWithPath("primaryObjRef.value")
@@ -554,8 +553,8 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
                 RestDocumentationRequestBuilders.post(restHelper.toUrl(Mapping.URL_TASKS))
                     .contentType("application/hal+json")
                     .content(
-                        "{\"classificationSummaryResource\":{\"key\":\"L11010\"},"
-                            + "\"workbasketSummaryResource\":"
+                        "{\"classificationSummary\":{\"key\":\"L11010\"},"
+                            + "\"workbasketSummary\":"
                             + "{\"workbasketId\":\"WBI:100000000000000000000000000000000004\"},"
                             + "\"primaryObjRef\":{\"company\":\"MyCompany1\","
                             + "\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\","
@@ -589,8 +588,8 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
                 RestDocumentationRequestBuilders.post(restHelper.toUrl(Mapping.URL_TASKS))
                     .contentType("application/hal+json")
                     .content(
-                        "{\"classificationSummaryResource\":{\"key\":\"L11010\"},"
-                            + "\"workbasketSummaryResource\":"
+                        "{\"classificationSummary\":{\"key\":\"L11010\"},"
+                            + "\"workbasketSummary\":"
                             + "{\"workbasketId\":\"WBI:100000000000000000000000000000000004\"},"
                             + "\"primaryObjRef\":{\"company\":\"MyCompany1\","
                             + "\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\","
@@ -625,8 +624,8 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
                 RestDocumentationRequestBuilders.post(restHelper.toUrl(Mapping.URL_TASKS))
                     .contentType("application/hal+json")
                     .content(
-                        "{\"classificationSummaryResource\":{\"key\":\"L11010\"},"
-                            + "\"workbasketSummaryResource\":"
+                        "{\"classificationSummary\":{\"key\":\"L11010\"},"
+                            + "\"workbasketSummary\":"
                             + "{\"workbasketId\":\"WBI:100000000000000000000000000000000004\"},"
                             + "\"primaryObjRef\":{\"company\":\"MyCompany1\","
                             + "\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\","
@@ -660,8 +659,8 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
                 RestDocumentationRequestBuilders.post(restHelper.toUrl(Mapping.URL_TASKS))
                     .contentType("application/hal+json")
                     .content(
-                        "{\"classificationSummaryResource\":{\"key\":\"L11010\"},"
-                            + "\"workbasketSummaryResource\":"
+                        "{\"classificationSummary\":{\"key\":\"L11010\"},"
+                            + "\"workbasketSummary\":"
                             + "{\"workbasketId\":\"WBI:100000000000000000000000000000000004\"},"
                             + "\"primaryObjRef\":{\"company\":\"MyCompany1\","
                             + "\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\","
@@ -673,7 +672,6 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
 
     String content = result.getResponse().getContentAsString();
     String newId = content.substring(content.indexOf("TKI:"), content.indexOf("TKI:") + 40);
-
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.post(
@@ -695,8 +693,8 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
                 RestDocumentationRequestBuilders.post(restHelper.toUrl(Mapping.URL_TASKS))
                     .contentType("application/hal+json")
                     .content(
-                        "{\"classificationSummaryResource\":{\"key\":\"L11010\"},"
-                            + "\"workbasketSummaryResource\":"
+                        "{\"classificationSummary\":{\"key\":\"L11010\"},"
+                            + "\"workbasketSummary\":"
                             + "{\"workbasketId\":\"WBI:100000000000000000000000000000000004\"},"
                             + "\"primaryObjRef\":{\"company\":\"MyCompany1\","
                             + "\"system\":\"MySystem1\",\"systemInstance\":\"MyInstance1\","

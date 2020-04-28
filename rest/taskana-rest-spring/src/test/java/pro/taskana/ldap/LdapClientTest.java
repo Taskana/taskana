@@ -26,7 +26,7 @@ import org.springframework.ldap.core.LdapTemplate;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.SystemException;
-import pro.taskana.rest.resource.AccessIdResource;
+import pro.taskana.rest.resource.AccessIdRepresentationModel;
 
 @ExtendWith(MockitoExtension.class)
 class LdapClientTest {
@@ -56,8 +56,8 @@ class LdapClientTest {
     setUpEnvMock();
     cut.init();
 
-    AccessIdResource group = new AccessIdResource("testG", "testGId");
-    AccessIdResource user = new AccessIdResource("testU", "testUId");
+    AccessIdRepresentationModel group = new AccessIdRepresentationModel("testG", "testGId");
+    AccessIdRepresentationModel user = new AccessIdRepresentationModel("testU", "testUId");
 
     when(ldapTemplate.search(
             any(String.class), any(), anyInt(), any(), any(LdapClient.GroupContextMapper.class)))
@@ -89,9 +89,9 @@ class LdapClientTest {
     setUpEnvMock();
     cut.init();
 
-    List<AccessIdResource> result =
+    List<AccessIdRepresentationModel> result =
         IntStream.range(0, 100)
-            .mapToObj(i -> new AccessIdResource("" + i, "" + i))
+            .mapToObj(i -> new AccessIdRepresentationModel("" + i, "" + i))
             .collect(Collectors.toList());
 
     assertThat(cut.getFirstPageOfaResultList(result))

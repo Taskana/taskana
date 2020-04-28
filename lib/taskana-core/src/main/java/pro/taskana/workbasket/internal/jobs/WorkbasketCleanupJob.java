@@ -26,9 +26,9 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
   private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketCleanupJob.class);
 
   // Parameter
-  private Instant firstRun;
-  private Duration runEvery;
-  private int batchSize;
+  private final Instant firstRun;
+  private final Duration runEvery;
+  private final int batchSize;
 
   public WorkbasketCleanupJob(
       TaskanaEngine taskanaEngine,
@@ -76,31 +76,27 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
   }
 
   private List<String> getWorkbasketsMarkedForDeletion() {
-    List<String> workbasketList =
-        taskanaEngineImpl
-            .getWorkbasketService()
-            .createWorkbasketQuery()
-            .markedForDeletion(true)
-            .listValues(WorkbasketQueryColumnName.ID, BaseQuery.SortDirection.ASCENDING);
 
-    return workbasketList;
+    return taskanaEngineImpl
+        .getWorkbasketService()
+        .createWorkbasketQuery()
+        .markedForDeletion(true)
+        .listValues(WorkbasketQueryColumnName.ID, BaseQuery.SortDirection.ASCENDING);
   }
 
   private int deleteWorkbasketsTransactionally(List<String> workbasketsToBeDeleted) {
     int deletedWorkbasketsCount = 0;
     if (txProvider != null) {
-      int count =
-          (Integer)
-              txProvider.executeInTransaction(
-                  () -> {
-                    try {
-                      return deleteWorkbaskets(workbasketsToBeDeleted);
-                    } catch (Exception e) {
-                      LOGGER.warn("Could not delete workbaskets.", e);
-                      return 0;
-                    }
-                  });
-      return count;
+      return (Integer)
+          txProvider.executeInTransaction(
+              () -> {
+                try {
+                  return deleteWorkbaskets(workbasketsToBeDeleted);
+                } catch (Exception e) {
+                  LOGGER.warn("Could not delete workbaskets.", e);
+                  return 0;
+                }
+              });
     } else {
       try {
         deletedWorkbasketsCount = deleteWorkbaskets(workbasketsToBeDeleted);

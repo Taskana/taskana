@@ -19,13 +19,19 @@ import org.springframework.web.client.RestTemplate;
 
 import pro.taskana.RestHelper;
 import pro.taskana.TaskanaSpringBootTest;
-import pro.taskana.rest.resource.WorkbasketAccessItemListResource;
+import pro.taskana.rest.resource.TaskanaPagedModel;
+import pro.taskana.rest.resource.WorkbasketAccessItemRepresentationModel;
 
 /** Test WorkbasketAccessItemController. */
 @TestMethodOrder(MethodOrderer.Alphanumeric.class)
 @TaskanaSpringBootTest
 class WorkbasketAccessItemControllerIntTest {
 
+  private static final ParameterizedTypeReference<
+          TaskanaPagedModel<WorkbasketAccessItemRepresentationModel>>
+      WORKBASKET_ACCESS_ITEM_PAGE_MODEL_TYPE =
+          new ParameterizedTypeReference<
+              TaskanaPagedModel<WorkbasketAccessItemRepresentationModel>>() {};
   private static RestTemplate template;
   @Autowired RestHelper restHelper;
 
@@ -36,24 +42,26 @@ class WorkbasketAccessItemControllerIntTest {
 
   @Test
   void testGetAllWorkbasketAccessItems() {
-    ResponseEntity<WorkbasketAccessItemListResource> response =
+    ResponseEntity<TaskanaPagedModel<WorkbasketAccessItemRepresentationModel>> response =
         template.exchange(
             restHelper.toUrl(Mapping.URL_WORKBASKETACCESSITEMS),
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(WorkbasketAccessItemListResource.class));
+            WORKBASKET_ACCESS_ITEM_PAGE_MODEL_TYPE);
+    assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
   }
 
   @Test
   void testGetWorkbasketAccessItemsKeepingFilters() {
-    String parameters = "?sort-by=workbasket-key&order=asc&page=1&page-size=9&access-ids=user_1_1";
-    ResponseEntity<WorkbasketAccessItemListResource> response =
+    String parameters = "?sort-by=workbasket-key&order=asc&page-size=9&access-ids=user_1_1&page=1";
+    ResponseEntity<TaskanaPagedModel<WorkbasketAccessItemRepresentationModel>> response =
         template.exchange(
             restHelper.toUrl(Mapping.URL_WORKBASKETACCESSITEMS) + parameters,
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(WorkbasketAccessItemListResource.class));
+            WORKBASKET_ACCESS_ITEM_PAGE_MODEL_TYPE);
+    assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(
             response
@@ -67,14 +75,12 @@ class WorkbasketAccessItemControllerIntTest {
   @Test
   void testThrowsExceptionIfInvalidFilterIsUsed() {
     ThrowingCallable httpCall =
-        () -> {
-          template.exchange(
-              restHelper.toUrl(Mapping.URL_WORKBASKETACCESSITEMS)
-                  + "?sort-by=workbasket-key&order=asc&page=1&page-size=9&invalid=user_1_1",
-              HttpMethod.GET,
-              restHelper.defaultRequest(),
-              ParameterizedTypeReference.forType(WorkbasketAccessItemListResource.class));
-        };
+        () -> template.exchange(
+            restHelper.toUrl(Mapping.URL_WORKBASKETACCESSITEMS)
+                + "?sort-by=workbasket-key&order=asc&page=1&page-size=9&invalid=user_1_1",
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
+            WORKBASKET_ACCESS_ITEM_PAGE_MODEL_TYPE);
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
         .hasMessageContaining("[invalid]")
@@ -84,13 +90,14 @@ class WorkbasketAccessItemControllerIntTest {
 
   @Test
   void testGetSecondPageSortedByWorkbasketKey() {
-    String parameters = "?sort-by=workbasket-key&order=asc&page=2&page-size=9&access-ids=user_1_1";
-    ResponseEntity<WorkbasketAccessItemListResource> response =
+    String parameters = "?sort-by=workbasket-key&order=asc&page-size=9&access-ids=user_1_1&page=1";
+    ResponseEntity<TaskanaPagedModel<WorkbasketAccessItemRepresentationModel>> response =
         template.exchange(
             restHelper.toUrl(Mapping.URL_WORKBASKETACCESSITEMS) + parameters,
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(WorkbasketAccessItemListResource.class));
+            WORKBASKET_ACCESS_ITEM_PAGE_MODEL_TYPE);
+    assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(1);
     assertThat(response.getBody().getContent().iterator().next().getAccessId())
         .isEqualTo("user_1_1");
@@ -128,13 +135,11 @@ class WorkbasketAccessItemControllerIntTest {
   void testGetBadRequestIfTryingToDeleteAccessItemsForGroup() {
     String parameters = "?access-id=cn=DevelopersGroup,ou=groups,o=TaskanaTest";
     ThrowingCallable httpCall =
-        () -> {
-          template.exchange(
-              restHelper.toUrl(Mapping.URL_WORKBASKETACCESSITEMS) + parameters,
-              HttpMethod.DELETE,
-              restHelper.defaultRequest(),
-              ParameterizedTypeReference.forType(Void.class));
-        };
+        () -> template.exchange(
+            restHelper.toUrl(Mapping.URL_WORKBASKETACCESSITEMS) + parameters,
+            HttpMethod.DELETE,
+            restHelper.defaultRequest(),
+            ParameterizedTypeReference.forType(Void.class));
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())

@@ -14,8 +14,8 @@ import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.internal.security.CurrentUserContext;
-import pro.taskana.rest.resource.TaskanaUserInfoResource;
-import pro.taskana.rest.resource.VersionResource;
+import pro.taskana.rest.resource.TaskanaUserInfoRepresentationModel;
+import pro.taskana.rest.resource.VersionRepresentationModel;
 
 /** Controller for TaskanaEngine related tasks. */
 @RestController
@@ -24,9 +24,9 @@ public class TaskanaEngineController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineController.class);
 
-  private TaskanaEngineConfiguration taskanaEngineConfiguration;
+  private final TaskanaEngineConfiguration taskanaEngineConfiguration;
 
-  private TaskanaEngine taskanaEngine;
+  private final TaskanaEngine taskanaEngine;
 
   @Value("${version:Local build}")
   private String version;
@@ -87,9 +87,9 @@ public class TaskanaEngineController {
   }
 
   @GetMapping(path = Mapping.URL_CURRENT_USER)
-  public ResponseEntity<TaskanaUserInfoResource> getCurrentUserInfo() {
+  public ResponseEntity<TaskanaUserInfoRepresentationModel> getCurrentUserInfo() {
     LOGGER.debug("Entry to getCurrentUserInfo()");
-    TaskanaUserInfoResource resource = new TaskanaUserInfoResource();
+    TaskanaUserInfoRepresentationModel resource = new TaskanaUserInfoRepresentationModel();
     resource.setUserId(CurrentUserContext.getUserid());
     resource.setGroupIds(CurrentUserContext.getGroupIds());
     for (TaskanaRole role : taskanaEngineConfiguration.getRoleMap().keySet()) {
@@ -97,7 +97,7 @@ public class TaskanaEngineController {
         resource.getRoles().add(role);
       }
     }
-    ResponseEntity<TaskanaUserInfoResource> response = ResponseEntity.ok(resource);
+    ResponseEntity<TaskanaUserInfoRepresentationModel> response = ResponseEntity.ok(resource);
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from getCurrentUserInfo(), returning {}", response);
     }
@@ -118,11 +118,11 @@ public class TaskanaEngineController {
    * @return The current version.
    */
   @GetMapping(path = Mapping.URL_VERSION)
-  public ResponseEntity<VersionResource> currentVersion() {
+  public ResponseEntity<VersionRepresentationModel> currentVersion() {
     LOGGER.debug("Entry to currentVersion()");
-    VersionResource resource = new VersionResource();
+    VersionRepresentationModel resource = new VersionRepresentationModel();
     resource.setVersion(TaskanaEngineConfiguration.class.getPackage().getImplementationVersion());
-    ResponseEntity<VersionResource> response = ResponseEntity.ok(resource);
+    ResponseEntity<VersionRepresentationModel> response = ResponseEntity.ok(resource);
     LOGGER.debug("Exit from currentVersion(), returning {}", response);
     return response;
   }

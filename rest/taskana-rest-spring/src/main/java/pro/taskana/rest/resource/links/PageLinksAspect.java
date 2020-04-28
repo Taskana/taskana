@@ -13,12 +13,11 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel.PageMetadata;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import pro.taskana.rest.resource.PagedResources.PageMetadata;
 
 /**
  * Implementation of the PageLinks annotation to generate HATEOAS Links for paged list resources.
@@ -39,8 +38,10 @@ public class PageLinksAspect {
     String relativeUrl = pageLinks.value();
     UriComponentsBuilder original = originalUri(relativeUrl, request);
     RepresentationModel<T> resourceSupport = (RepresentationModel<T>) joinPoint.proceed();
-    resourceSupport.add(new Link(original.toUriString()).withSelfRel());
     if (page != null) {
+      resourceSupport.add(
+          new Link(original.replaceQueryParam("page", page.getNumber()).toUriString())
+              .withSelfRel());
       resourceSupport.add(
           new Link(original.replaceQueryParam("page", 1).toUriString())
               .withRel(IanaLinkRelations.FIRST));
@@ -57,6 +58,8 @@ public class PageLinksAspect {
             new Link(original.replaceQueryParam("page", page.getNumber() + 1).toUriString())
                 .withRel(IanaLinkRelations.NEXT));
       }
+    } else {
+      resourceSupport.add(new Link(original.toUriString()).withSelfRel());
     }
     return resourceSupport;
   }

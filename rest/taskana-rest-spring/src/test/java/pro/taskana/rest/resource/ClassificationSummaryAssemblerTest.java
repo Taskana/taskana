@@ -11,10 +11,13 @@ import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.classification.internal.models.ClassificationImpl;
 
-/** Test for {@link ClassificationSummaryResourceAssembler}. */
+/** Test for {@link ClassificationSummaryRepresentationModelAssembler}. */
 @TaskanaSpringBootTest
 class ClassificationSummaryAssemblerTest {
-  @Autowired ClassificationSummaryResourceAssembler classificationSummaryResourceAssembler;
+  @Autowired
+  ClassificationSummaryRepresentationModelAssembler
+      classificationSummaryRepresentationModelAssembler;
+
   @Autowired private ClassificationService classificationService;
 
   @Test
@@ -43,8 +46,8 @@ class ClassificationSummaryAssemblerTest {
     classification.setModified(Instant.parse("2011-11-11T11:00:00Z"));
     ClassificationSummary classificationSummary = classification.asSummary();
     // when
-    ClassificationSummaryResource resource =
-        classificationSummaryResourceAssembler.toModel(classification);
+    ClassificationSummaryRepresentationModel resource =
+        classificationSummaryRepresentationModelAssembler.toModel(classification);
     // then
     testEquality(classificationSummary, resource);
   }
@@ -52,7 +55,8 @@ class ClassificationSummaryAssemblerTest {
   @Test
   void testResourceToModel() {
     // given
-    ClassificationSummaryResource resource = new ClassificationSummaryResource();
+    ClassificationSummaryRepresentationModel resource =
+        new ClassificationSummaryRepresentationModel();
     resource.setCategory("EFG");
     resource.setClassificationId("2");
     resource.setCustom1("custom1");
@@ -72,13 +76,14 @@ class ClassificationSummaryAssemblerTest {
     resource.setType("A");
     // when
     ClassificationSummary classificationSummary =
-        classificationSummaryResourceAssembler.toModel(resource);
+        classificationSummaryRepresentationModelAssembler.toEntityModel(resource);
     // then
     testEquality(classificationSummary, resource);
   }
 
   private void testEquality(
-      ClassificationSummary classificationSummary, ClassificationSummaryResource resource) {
+      ClassificationSummary classificationSummary,
+      ClassificationSummaryRepresentationModel resource) {
     assertThat(resource.getKey()).isEqualTo(classificationSummary.getKey());
     assertThat(resource.getDomain()).isEqualTo(classificationSummary.getDomain());
     assertThat(resource.getClassificationId()).isEqualTo(classificationSummary.getId());

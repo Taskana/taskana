@@ -22,11 +22,13 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import pro.taskana.rest.Mapping;
 
-/** Generate REST Dokumentation for ClassificationController. */
+/**
+ * Generate REST Dokumentation for ClassificationController.
+ */
 class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
 
-  private HashMap<String, String> classificationFieldDescriptionsMap =
-      new HashMap<String, String>();
+  private final HashMap<String, String> classificationFieldDescriptionsMap =
+      new HashMap<>();
 
   private FieldDescriptor[] allClassificationsFieldDescriptors;
   private FieldDescriptor[] classificationFieldDescriptors;
@@ -87,11 +89,6 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
           subsectionWithPath("classifications")
               .description("An Array of <<classification-subset, Classification-Subsets>>"),
           fieldWithPath("_links.self.href").ignored(),
-          fieldWithPath("page").ignored(),
-          fieldWithPath("page.size").ignored(),
-          fieldWithPath("page.totalElements").ignored(),
-          fieldWithPath("page.totalPages").ignored(),
-          fieldWithPath("page.number").ignored()
         };
 
     classificationFieldDescriptors =
@@ -256,7 +253,7 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.get(
-                    restHelper.toUrl(Mapping.URL_CLASSIFICATIONS) + "?domain=DOMAIN_B")
+                restHelper.toUrl(Mapping.URL_CLASSIFICATIONS) + "?domain=DOMAIN_B")
                 .accept("application/hal+json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -337,14 +334,13 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
 
     BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), UTF_8));
     String inputLine;
-    StringBuffer content = new StringBuffer();
+    StringBuilder content = new StringBuilder();
     while ((inputLine = in.readLine()) != null) {
       content.append(inputLine);
     }
     in.close();
     con.disconnect();
-    String originalTask = content.toString();
-    String modifiedTask = originalTask;
+    String modifiedTask = content.toString();
 
     this.mockMvc
         .perform(
