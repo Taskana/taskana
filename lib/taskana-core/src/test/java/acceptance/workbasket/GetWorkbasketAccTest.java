@@ -7,6 +7,7 @@ import acceptance.AbstractAccTest;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
@@ -51,9 +52,12 @@ class GetWorkbasketAccTest extends AbstractAccTest {
     assertThat(workbasket.getCustom4()).isEqualTo("custom4");
   }
 
+  @WithAccessId(user = "admin")
+  @WithAccessId(user = "businessadmin")
   @WithAccessId(user = "taskadmin")
-  @Test
-  void should_ReturnWorkbasketByKeyAndDomain_When_NoExplicitPermissionsButUserIsInTaskAdminRole()
+
+  @TestTemplate
+  void should_ReturnWorkbasketByKeyAndDomain_When_NoExplicitPermissionButUserHasAdministrativeRole()
       throws NotAuthorizedException, WorkbasketNotFoundException {
 
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -65,9 +69,11 @@ class GetWorkbasketAccTest extends AbstractAccTest {
     assertThat(retrievedWorkbasket.getOwner()).isEqualTo("Peter Maier");
   }
 
+  @WithAccessId(user = "admin")
+  @WithAccessId(user = "businessadmin")
   @WithAccessId(user = "taskadmin")
-  @Test
-  void should_ReturnWorkbasketById_When_NoExplicitPermissionsButUserIsInTaskAdminRole()
+  @TestTemplate
+  void should_ReturnWorkbasketById_When_NoExplicitPermissionsButUserIsInAdministrativeRole()
       throws NotAuthorizedException, WorkbasketNotFoundException {
 
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();

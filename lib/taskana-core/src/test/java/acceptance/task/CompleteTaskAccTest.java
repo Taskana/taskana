@@ -4,9 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
+import java.sql.SQLException;
 import java.time.Instant;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
@@ -25,7 +27,9 @@ import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
-/** Acceptance tests for all claim and complete scenarios. */
+/**
+ * Acceptance tests for all claim and complete scenarios.
+ */
 @ExtendWith(JaasExtension.class)
 class CompleteTaskAccTest extends AbstractAccTest {
 
@@ -37,7 +41,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @Test
   void testCompleteTask()
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
-          NotAuthorizedException {
+                 NotAuthorizedException {
     TaskService taskService = taskanaEngine.getTaskService();
 
     assertThat(taskService.getTask("TKI:000000000000000000000000000000000001").getState())
@@ -49,11 +53,14 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(completedTask.getModified()).isNotEqualTo(completedTask.getCreated());
   }
 
+  @WithAccessId(user = "admin")
   @WithAccessId(user = "taskadmin")
-  @Test
-  void should_ForceCompleteTask_When_NoExplicitPermissionsButUserIsInTaskAdminRole()
+  @TestTemplate
+  void should_ForceCompleteTask_When_NoExplicitPermissionsButUserIsInAdministrativeRole()
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
-          NotAuthorizedException {
+                 NotAuthorizedException, SQLException {
+
+    resetDb(false);
     TaskService taskService = taskanaEngine.getTaskService();
 
     assertThat(taskService.getTask("TKI:000000000000000000000000000000000000").getState())
@@ -69,7 +76,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @Test
   void testCompleteTaskTwice()
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
-          NotAuthorizedException {
+                 NotAuthorizedException {
     TaskService taskService = taskanaEngine.getTaskService();
     Task completedTask = taskService.completeTask("TKI:000000000000000000000000000000000002");
     Task completedTask2 = taskService.completeTask("TKI:000000000000000000000000000000000002");
@@ -80,8 +87,8 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @Test
   void testForceCompleteAlreadyClaimed()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException,
-          InvalidOwnerException, InvalidStateException {
+                 TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException,
+                 InvalidOwnerException, InvalidStateException {
 
     TaskService taskService = taskanaEngine.getTaskService();
     Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
@@ -106,8 +113,8 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @Test
   void testForceCompleteNotClaimed()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException,
-          InvalidOwnerException, InvalidStateException {
+                 TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException,
+                 InvalidOwnerException, InvalidStateException {
 
     TaskService taskService = taskanaEngine.getTaskService();
     Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
@@ -161,8 +168,8 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @Test
   void testClaimTaskWithDefaultFlag()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException,
-          InvalidStateException, InvalidOwnerException {
+                 TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException,
+                 InvalidStateException, InvalidOwnerException {
 
     TaskService taskService = taskanaEngine.getTaskService();
     Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
@@ -191,8 +198,8 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @Test
   void testForceClaimTaskFromOtherUser()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException,
-          InvalidStateException, InvalidOwnerException {
+                 TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException,
+                 InvalidStateException, InvalidOwnerException {
 
     TaskService taskService = taskanaEngine.getTaskService();
     Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
@@ -269,8 +276,8 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @Test
   void testCancelClaimDefaultFlag()
       throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
-          TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException,
-          InvalidStateException, InvalidOwnerException {
+                 TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException,
+                 InvalidStateException, InvalidOwnerException {
 
     TaskService taskService = taskanaEngine.getTaskService();
     Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
@@ -292,7 +299,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @Test
   void testForceCancelClaimSuccessfull()
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
-          NotAuthorizedException, InterruptedException {
+                 NotAuthorizedException, InterruptedException {
 
     TaskService taskService = taskanaEngine.getTaskService();
     Task taskBefore = taskService.getTask("TKI:000000000000000000000000000000000043");

@@ -8,6 +8,7 @@ import acceptance.AbstractAccTest;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.exceptions.ConcurrencyException;
@@ -20,7 +21,9 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 
-/** Acceptance test for all "update workbasket" scenarios. */
+/**
+ * Acceptance test for all "update workbasket" scenarios.
+ */
 @ExtendWith(JaasExtension.class)
 public class UpdateWorkbasketAccTest extends AbstractAccTest {
 
@@ -100,27 +103,14 @@ public class UpdateWorkbasketAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(user = "user_1_1", groups = "group_1")
-  @Test
-  public void testCheckAuthorizationToUpdateWorkbasket()
+  @WithAccessId(user = "taskadmin")
+  @TestTemplate
+  public void should_ThrowException_When_UserRoleIsNotAdminOrBusinessAdmin()
       throws NotAuthorizedException, WorkbasketNotFoundException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     Workbasket workbasket = workbasketService.getWorkbasket("USER_1_1", "DOMAIN_A");
 
     workbasket.setName("new name");
-
-    assertThatThrownBy(() -> workbasketService.updateWorkbasket(workbasket))
-        .isInstanceOf(NotAuthorizedException.class);
-  }
-
-  @WithAccessId(user = "taskadmin")
-  @Test
-  public void should_ThrowException_When_UserIsTaskAdminAndNotAuthorizedToUpdateWorkbasket()
-      throws NotAuthorizedException, WorkbasketNotFoundException {
-
-    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-    Workbasket workbasket = workbasketService.getWorkbasket("USER_1_1", "DOMAIN_A");
-
-    workbasket.setName("updated workbasket name");
 
     assertThatThrownBy(() -> workbasketService.updateWorkbasket(workbasket))
         .isInstanceOf(NotAuthorizedException.class);

@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
@@ -127,6 +128,31 @@ class UpdateTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(() -> taskService.updateTask(task2))
         .isInstanceOf(ConcurrencyException.class)
         .withFailMessage("The task has already been updated by another user");
+  }
+
+  @WithAccessId(user = "admin")
+  @WithAccessId(user = "taskadmin")
+  @TestTemplate
+  void should_UpdateTask_When_NoExplicitPermissionsButUserIsInAdministrativeRole()
+      throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
+                 ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
+                 InvalidStateException, SQLException {
+
+    TaskService taskService = taskanaEngine.getTaskService();
+    Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
+    final ClassificationSummary classificationSummary = task.getClassificationSummary();
+    task.setClassificationKey("T2100");
+    Task updatedTask = taskService.updateTask(task);
+    updatedTask = taskService.getTask(updatedTask.getId());
+
+    assertThat(updatedTask).isNotNull();
+    assertThat(updatedTask.getClassificationSummary().getKey()).isEqualTo("T2100");
+    assertThat(updatedTask.getClassificationSummary()).isNotEqualTo(classificationSummary);
+    assertThat(updatedTask.getCreated()).isNotEqualTo(updatedTask.getModified());
+    assertThat(task.getPlanned()).isEqualTo(updatedTask.getPlanned());
+    assertThat(task.getName()).isEqualTo(updatedTask.getName());
+    assertThat(task.getDescription()).isEqualTo(updatedTask.getDescription());
+    resetDb(false); // classification of task TKI:0..00 was changed...
   }
 
   @WithAccessId(user = "user_1_1", groups = "group_1")

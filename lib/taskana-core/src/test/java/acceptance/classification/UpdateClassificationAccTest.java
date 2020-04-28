@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.classification.api.ClassificationService;
@@ -111,8 +112,9 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(user = "taskadmin")
-  @Test
-  public void should_ThrowException_When_UserIsTaskAdminAndNotAuthorizedToUpdateClassification()
+  @WithAccessId(user = "user_1_1")
+  @TestTemplate
+  public void should_ThrowException_When_UserRoleIsNotAdminOrBusinessAdmin()
       throws ClassificationNotFoundException {
 
     Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");

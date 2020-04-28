@@ -7,6 +7,7 @@ import acceptance.AbstractAccTest;
 import java.util.HashMap;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -18,7 +19,9 @@ import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
 
-/** Acceptance test for all "get task" scenarios. */
+/**
+ * Acceptance test for all "get task" scenarios.
+ */
 @ExtendWith(JaasExtension.class)
 class GetTaskAccTest extends AbstractAccTest {
 
@@ -107,9 +110,10 @@ class GetTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(getTaskCall).isInstanceOf(NotAuthorizedException.class);
   }
 
+  @WithAccessId(user = "admin")
   @WithAccessId(user = "taskadmin")
-  @Test
-  void should_ReturnTask_When_NoExplicitPermissionsButUserIsInTaskAdminRole()
+  @TestTemplate
+  void should_ReturnTask_When_NoExplicitPermissionsButUserIsInAdministrativeRole()
       throws NotAuthorizedException, TaskNotFoundException {
 
     TaskService taskService = taskanaEngine.getTaskService();
