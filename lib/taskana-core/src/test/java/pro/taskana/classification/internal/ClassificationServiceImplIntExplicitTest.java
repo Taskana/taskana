@@ -57,7 +57,6 @@ public class ClassificationServiceImplIntExplicitTest {
   public static void resetDb() throws SQLException {
     DataSource ds = TaskanaEngineTestConfiguration.getDataSource();
     String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
-    new SampleDataGenerator(ds, schemaName).dropDb();
   }
 
   @BeforeEach

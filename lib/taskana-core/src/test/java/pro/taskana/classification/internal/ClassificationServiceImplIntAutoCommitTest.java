@@ -63,7 +63,7 @@ class ClassificationServiceImplIntAutoCommitTest {
   @Test
   void testFindAllClassifications()
       throws ClassificationAlreadyExistException, NotAuthorizedException, DomainNotFoundException,
-          InvalidArgumentException {
+                 InvalidArgumentException {
     Classification classification0 = classificationService.newClassification("TEST1", "", "TASK");
     classificationService.createClassification(classification0);
     Classification classification1 = classificationService.newClassification("TEST2", "", "TASK");
@@ -78,8 +78,8 @@ class ClassificationServiceImplIntAutoCommitTest {
   @Test
   void testModifiedClassification()
       throws ClassificationAlreadyExistException, ClassificationNotFoundException,
-          NotAuthorizedException, ConcurrencyException, DomainNotFoundException,
-          InvalidArgumentException {
+                 NotAuthorizedException, ConcurrencyException, DomainNotFoundException,
+                 InvalidArgumentException {
     final String description = "TEST SOMETHING";
     Classification classification =
         classificationService.newClassification("TEST434", "DOMAIN_A", "TASK");
@@ -97,7 +97,7 @@ class ClassificationServiceImplIntAutoCommitTest {
   @Test
   void testInsertClassification()
       throws NotAuthorizedException, ClassificationAlreadyExistException, InvalidArgumentException,
-          DomainNotFoundException {
+                 DomainNotFoundException {
     Classification classification =
         classificationService.newClassification("TEST1333", "DOMAIN_A", "TASK");
     classificationService.createClassification(classification);
@@ -115,8 +115,8 @@ class ClassificationServiceImplIntAutoCommitTest {
   @Test
   void testUpdateClassification()
       throws NotAuthorizedException, ClassificationAlreadyExistException,
-          ClassificationNotFoundException, ConcurrencyException, DomainNotFoundException,
-          InvalidArgumentException {
+                 ClassificationNotFoundException, ConcurrencyException, DomainNotFoundException,
+                 InvalidArgumentException {
     Classification classification =
         classificationService.newClassification("TEST32451", "DOMAIN_A", "TASK");
     classification = classificationService.createClassification(classification);
@@ -139,8 +139,8 @@ class ClassificationServiceImplIntAutoCommitTest {
   @Test
   void testDefaultSettings()
       throws NotAuthorizedException, ClassificationAlreadyExistException,
-          ClassificationNotFoundException, ConcurrencyException, DomainNotFoundException,
-          InvalidArgumentException {
+                 ClassificationNotFoundException, ConcurrencyException, DomainNotFoundException,
+                 InvalidArgumentException {
     Classification classification =
         classificationService.newClassification("TEST7771", "DOMAIN_A", "TASK");
     classification = classificationService.createClassification(classification);
