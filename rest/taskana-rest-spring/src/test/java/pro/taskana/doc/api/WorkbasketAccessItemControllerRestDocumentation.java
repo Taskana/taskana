@@ -105,10 +105,6 @@ class WorkbasketAccessItemControllerRestDocumentation extends BaseRestDocumentat
               .description(accessItemFieldDescriptionsMap.get("accessItems.permCustom12")),
           fieldWithPath("_links.self.href")
               .description(accessItemFieldDescriptionsMap.get("_links.self.href")),
-          fieldWithPath("page.size").ignored(),
-          fieldWithPath("page.totalElements").ignored(),
-          fieldWithPath("page.totalPages").ignored(),
-          fieldWithPath("page.number").ignored()
         };
   }
 

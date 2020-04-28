@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel.PageMetadata;
 
 import pro.taskana.rest.resource.AbstractRessourcesAssembler;
-import pro.taskana.rest.resource.PagedResources.PageMetadata;
 import pro.taskana.simplehistory.impl.HistoryEventImpl;
 import pro.taskana.simplehistory.rest.TaskHistoryEventController;
 

@@ -2,13 +2,14 @@ package pro.taskana.ldap;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
-import pro.taskana.rest.resource.AccessIdResource;
+import pro.taskana.rest.resource.AccessIdRepresentationModel;
 
 /**
  * Implementation of LdapCache used for Unit tests.
@@ -19,283 +20,292 @@ import pro.taskana.rest.resource.AccessIdResource;
 public class LdapCacheTestImpl implements LdapCache {
 
   /**
-   * Dictionary is a {@link Map} collection that contains {@link AccessIdResource} as key (user) and
-   * {@link List} as value (groups of which the user is a member) .
+   * Dictionary is a {@link Map} collection that contains {@link AccessIdRepresentationModel} as key
+   * (user) and {@link List} as value (groups of which the user is a member) .
    */
-  private Map<AccessIdResource, List<AccessIdResource>> users;
+  private Map<AccessIdRepresentationModel, List<AccessIdRepresentationModel>> users;
 
-  private List<AccessIdResource> accessIds =
+  private final List<AccessIdRepresentationModel> accessIds =
       new ArrayList<>(
           Arrays.asList(
-              new AccessIdResource("Martin, Rojas Miguel Angel", "user_1_1"),
-              new AccessIdResource("Zorgati, Mustapha", "user_2_1"),
-              new AccessIdResource("Behrendt, Maximilian", "max"),
-              new AccessIdResource("Bert, Ali", "teamlead_5"),
-              new AccessIdResource("Hagen, Holger", "teamlead_3"),
-              new AccessIdResource("Breier, Bernd", "user_2_2"),
-              new AccessIdResource("Fielmalz, Anke", "user017"),
-              new AccessIdResource("Mente, Maximilian", "max_mente"),
-              new AccessIdResource("Theke, Bernd", "user_2_3"),
-              new AccessIdResource("Ferrante, Elena", "elena"),
-              new AccessIdResource("Mueller, Simone", "simone"),
-              new AccessIdResource("Sirup, Aaron", "user001"),
-              new AccessIdResource("Nacho, recuerda", "user_1_2"),
-              new AccessIdResource("Lass, Ada", "user003"),
-              new AccessIdResource("Tion, Addi", "user004"),
-              new AccessIdResource("Lette, Adi", "user005"),
-              new AccessIdResource("Admin", "teamlead_2"),
-              new AccessIdResource("Native, Alter", "user006"),
-              new AccessIdResource("Herum, Albert", "user007"),
-              new AccessIdResource("Meyer, Dominik", "teamlead_1"),
-              new AccessIdResource("Mente, Ali", "user009"),
-              new AccessIdResource("Nach, Alma", "user011"),
-              new AccessIdResource("Gehzauch, Anders", "user012"),
-              new AccessIdResource("Theke, Andi", "user013"),
-              new AccessIdResource("Kreuz, Andreas", "user014"),
-              new AccessIdResource("Tiefsee, Anka", "user016"),
-              new AccessIdResource("Fassen, Ann", "user018"),
-              new AccessIdResource("Probe, Ann", "user019"),
-              new AccessIdResource("Bolika, Anna", "user020"),
-              new AccessIdResource("Ecke, Anna", "user021"),
-              new AccessIdResource("Hosi, Anna", "user022"),
-              new AccessIdResource("Kronis-Tisch, Anna", "user023"),
-              new AccessIdResource("Logie, Anna", "user024"),
-              new AccessIdResource("Luehse, Anna", "user025"),
-              new AccessIdResource("Nass, Anna", "user026"),
-              new AccessIdResource("Thalb, Anna", "user027"),
-              new AccessIdResource("Tomie, Anna", "user028"),
-              new AccessIdResource("Donnich, Anne", "user029"),
-              new AccessIdResource("Kaffek, Anne", "user030"),
-              new AccessIdResource("Thek, Anne", "user031"),
-              new AccessIdResource("Matoer, Anni", "user032"),
-              new AccessIdResource("Ragentor, Ansgar", "user033"),
-              new AccessIdResource("Stoteles, Ari", "user034"),
-              new AccessIdResource("Thmetik, Ari", "user035"),
-              new AccessIdResource("Nuehm, Arno", "user036"),
-              new AccessIdResource("Schocke, Artie", "user037"),
-              new AccessIdResource("Stoppel, Bart", "user038"),
-              new AccessIdResource("Beitung, Bea", "user039"),
-              new AccessIdResource("Ildich, Bea", "user040"),
-              new AccessIdResource("Vista, Bella", "user041"),
-              new AccessIdResource("Utzer, Ben", "user042"),
-              new AccessIdResource("Zien, Ben", "user043"),
-              new AccessIdResource("Stein, Bernd", "user044"),
-              new AccessIdResource("Deramen, Bill", "user045"),
-              new AccessIdResource("Honig, Bine", "user046"),
-              new AccessIdResource("Densatz, Bo", "user047"),
-              new AccessIdResource("Densee, Bo", "user048"),
-              new AccessIdResource("Lerwagen, Bo", "user049"),
-              new AccessIdResource("Tail, Bob", "user050"),
-              new AccessIdResource("Ketta, Bruce", "user051"),
-              new AccessIdResource("Terrie, Bud", "user052"),
-              new AccessIdResource("Biener-Haken, Cara", "user053"),
-              new AccessIdResource("Ass, Caro", "user054"),
-              new AccessIdResource("Kaffee, Caro", "user055"),
-              new AccessIdResource("Linger, Caro", "user056"),
-              new AccessIdResource("tenSaft, Caro", "user057"),
-              new AccessIdResource("Antheme, Chris", "user058"),
-              new AccessIdResource("Baum, Chris", "user059"),
-              new AccessIdResource("Tall, Chris", "user060"),
-              new AccessIdResource("Reiniger, Claas", "user061"),
-              new AccessIdResource("Grube, Claire", "user062"),
-              new AccessIdResource("Fall, Clara", "user063"),
-              new AccessIdResource("Korn, Clara", "user064"),
-              new AccessIdResource("Lenriff, Cora", "user065"),
-              new AccessIdResource("Schiert, Cora", "user066"),
-              new AccessIdResource("Hose, Cord", "user067"),
-              new AccessIdResource("Onbleu, Cord", "user068"),
-              new AccessIdResource("Umkleide, Damon", "user069"),
-              new AccessIdResource("Affier, Dean", "user070"),
-              new AccessIdResource("Orm, Dean", "user071"),
-              new AccessIdResource("Platz, Dennis", "user072"),
-              new AccessIdResource("Milch, Dick", "user073"),
-              new AccessIdResource("Mow, Dina", "user074"),
-              new AccessIdResource("Keil, Donna", "user075"),
-              new AccessIdResource("Littchen, Donna", "user076"),
-              new AccessIdResource("Wetter, Donna", "user077"),
-              new AccessIdResource("Was, Ed", "user078"),
-              new AccessIdResource("Khar, Ede", "user079"),
-              new AccessIdResource("Nut, Ella", "user080"),
-              new AccessIdResource("Stisch, Ella", "user081"),
-              new AccessIdResource("Diel, Emma", "user082"),
-              new AccessIdResource("Herdamit, Emma", "user083"),
-              new AccessIdResource("Mitter-Uhe, Emma", "user084"),
-              new AccessIdResource("Tatt, Erich", "user085"),
-              new AccessIdResource("Drigend, Ernie", "user086"),
-              new AccessIdResource("Poly, Esther", "user087"),
-              new AccessIdResource("Trautz, Eugen", "user088"),
-              new AccessIdResource("Quiert, Eva", "user089"),
-              new AccessIdResource("Inurlaub, Fatma", "user090"),
-              new AccessIdResource("Land, Finn", "user091"),
-              new AccessIdResource("Sternis, Finn", "user092"),
-              new AccessIdResource("Furt, Frank", "user093"),
-              new AccessIdResource("Reich, Frank", "user094"),
-              new AccessIdResource("Iskaner, Franz", "user095"),
-              new AccessIdResource("Nerr, Franziska", "user096"),
-              new AccessIdResource("Zafen, Friedrich", "user097"),
-              new AccessIdResource("Pomm, Fritz", "user098"),
-              new AccessIdResource("deWegs, Gera", "user099"),
-              new AccessIdResource("Staebe, Gitta", "user100"),
-              new AccessIdResource("Zend, Glenn", "user101"),
-              new AccessIdResource("Fisch, Grete", "user102"),
-              new AccessIdResource("Zucker, Gus", "user103"),
-              new AccessIdResource("Muhn, Hanni", "user104"),
-              new AccessIdResource("Fermesse, Hanno", "user105"),
-              new AccessIdResource("Aplast, Hans", "user106"),
-              new AccessIdResource("Eart, Hans", "user107"),
-              new AccessIdResource("Back, Hardy", "user108"),
-              new AccessIdResource("Beau, Harry", "user109"),
-              new AccessIdResource("Kraut, Heide", "user110"),
-              new AccessIdResource("Witzka, Heide", "user111"),
-              new AccessIdResource("Buchen, Hein", "user112"),
-              new AccessIdResource("Lichkeit, Hein", "user113"),
-              new AccessIdResource("Suchung, Hein", "user114"),
-              new AccessIdResource("Ellmann, Heinz", "user115"),
-              new AccessIdResource("Ketchup, Heinz", "user116"),
-              new AccessIdResource("Zeim, Hilde", "user117"),
-              new AccessIdResource("Bilien, Immo", "user118"),
-              new AccessIdResource("Her, Inge", "user119"),
-              new AccessIdResource("Wahrsam, Inge", "user120"),
-              new AccessIdResource("Flamm, Ingo", "user121"),
-              new AccessIdResource("Enzien, Ingrid", "user122"),
-              new AccessIdResource("Rohsch, Inken", "user123"),
-              new AccessIdResource("Ihr, Insa", "user124"),
-              new AccessIdResource("Nerda, Iska", "user125"),
-              new AccessIdResource("Eitz, Jens", "user126"),
-              new AccessIdResource("Nastik, Jim", "user127"),
-              new AccessIdResource("Gurt, Jo", "user128"),
-              new AccessIdResource("Kurrth, Jo", "user129"),
-              new AccessIdResource("Kolade, Joe", "user130"),
-              new AccessIdResource("Iter, Johann", "user131"),
-              new AccessIdResource("Tick, Joyce", "user132"),
-              new AccessIdResource("Case, Justin", "user133"),
-              new AccessIdResource("Time, Justin", "user134"),
-              new AccessIdResource("Komp, Jutta", "user135"),
-              new AccessIdResource("Mauer, Kai", "user136"),
-              new AccessIdResource("Pirinja, Kai", "user137"),
-              new AccessIdResource("Serpfalz, Kai", "user138"),
-              new AccessIdResource("Auer, Karl", "user139"),
-              new AccessIdResource("Ielauge, Karl", "user140"),
-              new AccessIdResource("Ifornjen, Karl", "user141"),
-              new AccessIdResource("Radi, Karl", "user142"),
-              new AccessIdResource("Verti, Karl", "user143"),
-              new AccessIdResource("Sery, Karo", "user144"),
-              new AccessIdResource("Lisator, Katha", "user145"),
-              new AccessIdResource("Flo, Kati", "user146"),
-              new AccessIdResource("Schenn, Knut", "user147"),
-              new AccessIdResource("Achse, Kurt", "user148"),
-              new AccessIdResource("Zepause, Kurt", "user149"),
-              new AccessIdResource("Zerr, Kurt", "user150"),
-              new AccessIdResource("Reden, Lasse", "user151"),
-              new AccessIdResource("Metten, Lee", "user152"),
-              new AccessIdResource("Arm, Lene", "user153"),
-              new AccessIdResource("Thur, Linnea", "user154"),
-              new AccessIdResource("Bonn, Lisa", "user155"),
-              new AccessIdResource("Sembourg, Luc", "user156"),
-              new AccessIdResource("Rung, Lucky", "user157"),
-              new AccessIdResource("Zafen, Ludwig", "user158"),
-              new AccessIdResource("Hauden, Lukas", "user159"),
-              new AccessIdResource("Hose, Lutz", "user160"),
-              new AccessIdResource("Tablette, Lutz", "user161"),
-              new AccessIdResource("Fehr, Luzie", "user162"),
-              new AccessIdResource("Nalyse, Magda", "user163"),
-              new AccessIdResource("Ehfer, Maik", "user164"),
-              new AccessIdResource("Sehr, Malte", "user165"),
-              new AccessIdResource("Thon, Mara", "user166"),
-              new AccessIdResource("Quark, Marga", "user167"),
-              new AccessIdResource("Nade, Marie", "user168"),
-              new AccessIdResource("Niert, Marie", "user169"),
-              new AccessIdResource("Neese, Mario", "user170"),
-              new AccessIdResource("Nette, Marion", "user171"),
-              new AccessIdResource("Nesium, Mark", "user172"),
-              new AccessIdResource("Thalle, Mark", "user173"),
-              new AccessIdResource("Diven, Marle", "user174"),
-              new AccessIdResource("Fitz, Marle", "user175"),
-              new AccessIdResource("Pfahl, Marta", "user176"),
-              new AccessIdResource("Zorn, Martin", "user177"),
-              new AccessIdResource("Krissmes, Mary", "user178"),
-              new AccessIdResource("Jess, Matt", "user179"),
-              new AccessIdResource("Strammer, Max", "user180"),
-              new AccessIdResource("Mumm, Maxi", "user181"),
-              new AccessIdResource("Morphose, Meta", "user182"),
-              new AccessIdResource("Uh, Mia", "user183"),
-              new AccessIdResource("Rofon, Mike", "user184"),
-              new AccessIdResource("Rosoft, Mike", "user185"),
-              new AccessIdResource("Liter, Milli", "user186"),
-              new AccessIdResource("Thär, Milli", "user187"),
-              new AccessIdResource("Welle, Mirko", "user188"),
-              new AccessIdResource("Thorat, Mo", "user189"),
-              new AccessIdResource("Thor, Moni", "user190"),
-              new AccessIdResource("Kinolta, Monika", "user191"),
-              new AccessIdResource("Mundhaar, Monika", "user192"),
-              new AccessIdResource("Munter, Monika", "user193"),
-              new AccessIdResource("Zwerg, Nat", "user194"),
-              new AccessIdResource("Elmine, Nick", "user195"),
-              new AccessIdResource("Thien, Niko", "user196"),
-              new AccessIdResource("Pferd, Nils", "user197"),
-              new AccessIdResource("Lerweise, Norma", "user198"),
-              new AccessIdResource("Motor, Otto", "user199"),
-              new AccessIdResource("Totol, Otto", "user200"),
-              new AccessIdResource("Nerr, Paula", "user201"),
-              new AccessIdResource("Imeter, Peer", "user202"),
-              new AccessIdResource("Serkatze, Peer", "user203"),
-              new AccessIdResource("Gogisch, Peter", "user204"),
-              new AccessIdResource("Silje, Peter", "user205"),
-              new AccessIdResource("Harmonie, Phil", "user206"),
-              new AccessIdResource("Ihnen, Philip", "user207"),
-              new AccessIdResource("Uto, Pia", "user208"),
-              new AccessIdResource("Kothek, Pina", "user209"),
-              new AccessIdResource("Zar, Pit", "user210"),
-              new AccessIdResource("Zeih, Polly", "user211"),
-              new AccessIdResource("Tswan, Puh", "user212"),
-              new AccessIdResource("Zufall, Rainer", "user213"),
-              new AccessIdResource("Lien, Rita", "user214"),
-              new AccessIdResource("Held, Roman", "user215"),
-              new AccessIdResource("Haar, Ross", "user216"),
-              new AccessIdResource("Dick, Roy", "user217"),
-              new AccessIdResource("Enplaner, Ruth", "user218"),
-              new AccessIdResource("Kommen, Ryan", "user219"),
-              new AccessIdResource("Philo, Sophie", "user220"),
-              new AccessIdResource("Matisier, Stig", "user221"),
-              new AccessIdResource("Loniki, Tessa", "user222"),
-              new AccessIdResource("Tralisch, Thea", "user223"),
-              new AccessIdResource("Logie, Theo", "user224"),
-              new AccessIdResource("Ister, Thorn", "user225"),
-              new AccessIdResource("Buktu, Tim", "user226"),
-              new AccessIdResource("Ate, Tom", "user227"),
-              new AccessIdResource("Pie, Udo", "user228"),
-              new AccessIdResource("Aloe, Vera", "user229"),
-              new AccessIdResource("Hausver, Walter", "user230"),
-              new AccessIdResource("Schuh, Wanda", "user231"),
-              new AccessIdResource("Rahm, Wolf", "user232"),
-              new AccessIdResource("businessadmin", "cn=businessadmin,ou=groups,o=taskanatest"),
-              new AccessIdResource("UsersGroup", "cn=usersgroup,ou=groups,o=taskanatest"),
-              new AccessIdResource("DevelopersGroup", "cn=developersgroup,ou=groups,o=taskanatest"),
-              new AccessIdResource("businessadmin", "cn=customersgroup,ou=groups,o=taskanatest"),
-              new AccessIdResource("user_domain_A", "cn=user_domain_a,ou=groups,o=taskanatest"),
-              new AccessIdResource("monitor", "cn=monitor,ou=groups,o=taskanatest"),
-              new AccessIdResource("user_domain_C", "cn=user_domain_c,ou=groups,o=taskanatest"),
-              new AccessIdResource("user_domain_D", "cn=user_domain_d,ou=groups,o=taskanatest"),
-              new AccessIdResource("admin", "cn=admin,ou=groups,o=taskanatest"),
-              new AccessIdResource(
+              new AccessIdRepresentationModel("Martin, Rojas Miguel Angel", "user_1_1"),
+              new AccessIdRepresentationModel("Zorgati, Mustapha", "user_2_1"),
+              new AccessIdRepresentationModel("Behrendt, Maximilian", "max"),
+              new AccessIdRepresentationModel("Bert, Ali", "teamlead_5"),
+              new AccessIdRepresentationModel("Hagen, Holger", "teamlead_3"),
+              new AccessIdRepresentationModel("Breier, Bernd", "user_2_2"),
+              new AccessIdRepresentationModel("Fielmalz, Anke", "user017"),
+              new AccessIdRepresentationModel("Mente, Maximilian", "max_mente"),
+              new AccessIdRepresentationModel("Theke, Bernd", "user_2_3"),
+              new AccessIdRepresentationModel("Ferrante, Elena", "elena"),
+              new AccessIdRepresentationModel("Mueller, Simone", "simone"),
+              new AccessIdRepresentationModel("Sirup, Aaron", "user001"),
+              new AccessIdRepresentationModel("Nacho, recuerda", "user_1_2"),
+              new AccessIdRepresentationModel("Lass, Ada", "user003"),
+              new AccessIdRepresentationModel("Tion, Addi", "user004"),
+              new AccessIdRepresentationModel("Lette, Adi", "user005"),
+              new AccessIdRepresentationModel("Admin", "teamlead_2"),
+              new AccessIdRepresentationModel("Native, Alter", "user006"),
+              new AccessIdRepresentationModel("Herum, Albert", "user007"),
+              new AccessIdRepresentationModel("Meyer, Dominik", "teamlead_1"),
+              new AccessIdRepresentationModel("Mente, Ali", "user009"),
+              new AccessIdRepresentationModel("Nach, Alma", "user011"),
+              new AccessIdRepresentationModel("Gehzauch, Anders", "user012"),
+              new AccessIdRepresentationModel("Theke, Andi", "user013"),
+              new AccessIdRepresentationModel("Kreuz, Andreas", "user014"),
+              new AccessIdRepresentationModel("Tiefsee, Anka", "user016"),
+              new AccessIdRepresentationModel("Fassen, Ann", "user018"),
+              new AccessIdRepresentationModel("Probe, Ann", "user019"),
+              new AccessIdRepresentationModel("Bolika, Anna", "user020"),
+              new AccessIdRepresentationModel("Ecke, Anna", "user021"),
+              new AccessIdRepresentationModel("Hosi, Anna", "user022"),
+              new AccessIdRepresentationModel("Kronis-Tisch, Anna", "user023"),
+              new AccessIdRepresentationModel("Logie, Anna", "user024"),
+              new AccessIdRepresentationModel("Luehse, Anna", "user025"),
+              new AccessIdRepresentationModel("Nass, Anna", "user026"),
+              new AccessIdRepresentationModel("Thalb, Anna", "user027"),
+              new AccessIdRepresentationModel("Tomie, Anna", "user028"),
+              new AccessIdRepresentationModel("Donnich, Anne", "user029"),
+              new AccessIdRepresentationModel("Kaffek, Anne", "user030"),
+              new AccessIdRepresentationModel("Thek, Anne", "user031"),
+              new AccessIdRepresentationModel("Matoer, Anni", "user032"),
+              new AccessIdRepresentationModel("Ragentor, Ansgar", "user033"),
+              new AccessIdRepresentationModel("Stoteles, Ari", "user034"),
+              new AccessIdRepresentationModel("Thmetik, Ari", "user035"),
+              new AccessIdRepresentationModel("Nuehm, Arno", "user036"),
+              new AccessIdRepresentationModel("Schocke, Artie", "user037"),
+              new AccessIdRepresentationModel("Stoppel, Bart", "user038"),
+              new AccessIdRepresentationModel("Beitung, Bea", "user039"),
+              new AccessIdRepresentationModel("Ildich, Bea", "user040"),
+              new AccessIdRepresentationModel("Vista, Bella", "user041"),
+              new AccessIdRepresentationModel("Utzer, Ben", "user042"),
+              new AccessIdRepresentationModel("Zien, Ben", "user043"),
+              new AccessIdRepresentationModel("Stein, Bernd", "user044"),
+              new AccessIdRepresentationModel("Deramen, Bill", "user045"),
+              new AccessIdRepresentationModel("Honig, Bine", "user046"),
+              new AccessIdRepresentationModel("Densatz, Bo", "user047"),
+              new AccessIdRepresentationModel("Densee, Bo", "user048"),
+              new AccessIdRepresentationModel("Lerwagen, Bo", "user049"),
+              new AccessIdRepresentationModel("Tail, Bob", "user050"),
+              new AccessIdRepresentationModel("Ketta, Bruce", "user051"),
+              new AccessIdRepresentationModel("Terrie, Bud", "user052"),
+              new AccessIdRepresentationModel("Biener-Haken, Cara", "user053"),
+              new AccessIdRepresentationModel("Ass, Caro", "user054"),
+              new AccessIdRepresentationModel("Kaffee, Caro", "user055"),
+              new AccessIdRepresentationModel("Linger, Caro", "user056"),
+              new AccessIdRepresentationModel("tenSaft, Caro", "user057"),
+              new AccessIdRepresentationModel("Antheme, Chris", "user058"),
+              new AccessIdRepresentationModel("Baum, Chris", "user059"),
+              new AccessIdRepresentationModel("Tall, Chris", "user060"),
+              new AccessIdRepresentationModel("Reiniger, Claas", "user061"),
+              new AccessIdRepresentationModel("Grube, Claire", "user062"),
+              new AccessIdRepresentationModel("Fall, Clara", "user063"),
+              new AccessIdRepresentationModel("Korn, Clara", "user064"),
+              new AccessIdRepresentationModel("Lenriff, Cora", "user065"),
+              new AccessIdRepresentationModel("Schiert, Cora", "user066"),
+              new AccessIdRepresentationModel("Hose, Cord", "user067"),
+              new AccessIdRepresentationModel("Onbleu, Cord", "user068"),
+              new AccessIdRepresentationModel("Umkleide, Damon", "user069"),
+              new AccessIdRepresentationModel("Affier, Dean", "user070"),
+              new AccessIdRepresentationModel("Orm, Dean", "user071"),
+              new AccessIdRepresentationModel("Platz, Dennis", "user072"),
+              new AccessIdRepresentationModel("Milch, Dick", "user073"),
+              new AccessIdRepresentationModel("Mow, Dina", "user074"),
+              new AccessIdRepresentationModel("Keil, Donna", "user075"),
+              new AccessIdRepresentationModel("Littchen, Donna", "user076"),
+              new AccessIdRepresentationModel("Wetter, Donna", "user077"),
+              new AccessIdRepresentationModel("Was, Ed", "user078"),
+              new AccessIdRepresentationModel("Khar, Ede", "user079"),
+              new AccessIdRepresentationModel("Nut, Ella", "user080"),
+              new AccessIdRepresentationModel("Stisch, Ella", "user081"),
+              new AccessIdRepresentationModel("Diel, Emma", "user082"),
+              new AccessIdRepresentationModel("Herdamit, Emma", "user083"),
+              new AccessIdRepresentationModel("Mitter-Uhe, Emma", "user084"),
+              new AccessIdRepresentationModel("Tatt, Erich", "user085"),
+              new AccessIdRepresentationModel("Drigend, Ernie", "user086"),
+              new AccessIdRepresentationModel("Poly, Esther", "user087"),
+              new AccessIdRepresentationModel("Trautz, Eugen", "user088"),
+              new AccessIdRepresentationModel("Quiert, Eva", "user089"),
+              new AccessIdRepresentationModel("Inurlaub, Fatma", "user090"),
+              new AccessIdRepresentationModel("Land, Finn", "user091"),
+              new AccessIdRepresentationModel("Sternis, Finn", "user092"),
+              new AccessIdRepresentationModel("Furt, Frank", "user093"),
+              new AccessIdRepresentationModel("Reich, Frank", "user094"),
+              new AccessIdRepresentationModel("Iskaner, Franz", "user095"),
+              new AccessIdRepresentationModel("Nerr, Franziska", "user096"),
+              new AccessIdRepresentationModel("Zafen, Friedrich", "user097"),
+              new AccessIdRepresentationModel("Pomm, Fritz", "user098"),
+              new AccessIdRepresentationModel("deWegs, Gera", "user099"),
+              new AccessIdRepresentationModel("Staebe, Gitta", "user100"),
+              new AccessIdRepresentationModel("Zend, Glenn", "user101"),
+              new AccessIdRepresentationModel("Fisch, Grete", "user102"),
+              new AccessIdRepresentationModel("Zucker, Gus", "user103"),
+              new AccessIdRepresentationModel("Muhn, Hanni", "user104"),
+              new AccessIdRepresentationModel("Fermesse, Hanno", "user105"),
+              new AccessIdRepresentationModel("Aplast, Hans", "user106"),
+              new AccessIdRepresentationModel("Eart, Hans", "user107"),
+              new AccessIdRepresentationModel("Back, Hardy", "user108"),
+              new AccessIdRepresentationModel("Beau, Harry", "user109"),
+              new AccessIdRepresentationModel("Kraut, Heide", "user110"),
+              new AccessIdRepresentationModel("Witzka, Heide", "user111"),
+              new AccessIdRepresentationModel("Buchen, Hein", "user112"),
+              new AccessIdRepresentationModel("Lichkeit, Hein", "user113"),
+              new AccessIdRepresentationModel("Suchung, Hein", "user114"),
+              new AccessIdRepresentationModel("Ellmann, Heinz", "user115"),
+              new AccessIdRepresentationModel("Ketchup, Heinz", "user116"),
+              new AccessIdRepresentationModel("Zeim, Hilde", "user117"),
+              new AccessIdRepresentationModel("Bilien, Immo", "user118"),
+              new AccessIdRepresentationModel("Her, Inge", "user119"),
+              new AccessIdRepresentationModel("Wahrsam, Inge", "user120"),
+              new AccessIdRepresentationModel("Flamm, Ingo", "user121"),
+              new AccessIdRepresentationModel("Enzien, Ingrid", "user122"),
+              new AccessIdRepresentationModel("Rohsch, Inken", "user123"),
+              new AccessIdRepresentationModel("Ihr, Insa", "user124"),
+              new AccessIdRepresentationModel("Nerda, Iska", "user125"),
+              new AccessIdRepresentationModel("Eitz, Jens", "user126"),
+              new AccessIdRepresentationModel("Nastik, Jim", "user127"),
+              new AccessIdRepresentationModel("Gurt, Jo", "user128"),
+              new AccessIdRepresentationModel("Kurrth, Jo", "user129"),
+              new AccessIdRepresentationModel("Kolade, Joe", "user130"),
+              new AccessIdRepresentationModel("Iter, Johann", "user131"),
+              new AccessIdRepresentationModel("Tick, Joyce", "user132"),
+              new AccessIdRepresentationModel("Case, Justin", "user133"),
+              new AccessIdRepresentationModel("Time, Justin", "user134"),
+              new AccessIdRepresentationModel("Komp, Jutta", "user135"),
+              new AccessIdRepresentationModel("Mauer, Kai", "user136"),
+              new AccessIdRepresentationModel("Pirinja, Kai", "user137"),
+              new AccessIdRepresentationModel("Serpfalz, Kai", "user138"),
+              new AccessIdRepresentationModel("Auer, Karl", "user139"),
+              new AccessIdRepresentationModel("Ielauge, Karl", "user140"),
+              new AccessIdRepresentationModel("Ifornjen, Karl", "user141"),
+              new AccessIdRepresentationModel("Radi, Karl", "user142"),
+              new AccessIdRepresentationModel("Verti, Karl", "user143"),
+              new AccessIdRepresentationModel("Sery, Karo", "user144"),
+              new AccessIdRepresentationModel("Lisator, Katha", "user145"),
+              new AccessIdRepresentationModel("Flo, Kati", "user146"),
+              new AccessIdRepresentationModel("Schenn, Knut", "user147"),
+              new AccessIdRepresentationModel("Achse, Kurt", "user148"),
+              new AccessIdRepresentationModel("Zepause, Kurt", "user149"),
+              new AccessIdRepresentationModel("Zerr, Kurt", "user150"),
+              new AccessIdRepresentationModel("Reden, Lasse", "user151"),
+              new AccessIdRepresentationModel("Metten, Lee", "user152"),
+              new AccessIdRepresentationModel("Arm, Lene", "user153"),
+              new AccessIdRepresentationModel("Thur, Linnea", "user154"),
+              new AccessIdRepresentationModel("Bonn, Lisa", "user155"),
+              new AccessIdRepresentationModel("Sembourg, Luc", "user156"),
+              new AccessIdRepresentationModel("Rung, Lucky", "user157"),
+              new AccessIdRepresentationModel("Zafen, Ludwig", "user158"),
+              new AccessIdRepresentationModel("Hauden, Lukas", "user159"),
+              new AccessIdRepresentationModel("Hose, Lutz", "user160"),
+              new AccessIdRepresentationModel("Tablette, Lutz", "user161"),
+              new AccessIdRepresentationModel("Fehr, Luzie", "user162"),
+              new AccessIdRepresentationModel("Nalyse, Magda", "user163"),
+              new AccessIdRepresentationModel("Ehfer, Maik", "user164"),
+              new AccessIdRepresentationModel("Sehr, Malte", "user165"),
+              new AccessIdRepresentationModel("Thon, Mara", "user166"),
+              new AccessIdRepresentationModel("Quark, Marga", "user167"),
+              new AccessIdRepresentationModel("Nade, Marie", "user168"),
+              new AccessIdRepresentationModel("Niert, Marie", "user169"),
+              new AccessIdRepresentationModel("Neese, Mario", "user170"),
+              new AccessIdRepresentationModel("Nette, Marion", "user171"),
+              new AccessIdRepresentationModel("Nesium, Mark", "user172"),
+              new AccessIdRepresentationModel("Thalle, Mark", "user173"),
+              new AccessIdRepresentationModel("Diven, Marle", "user174"),
+              new AccessIdRepresentationModel("Fitz, Marle", "user175"),
+              new AccessIdRepresentationModel("Pfahl, Marta", "user176"),
+              new AccessIdRepresentationModel("Zorn, Martin", "user177"),
+              new AccessIdRepresentationModel("Krissmes, Mary", "user178"),
+              new AccessIdRepresentationModel("Jess, Matt", "user179"),
+              new AccessIdRepresentationModel("Strammer, Max", "user180"),
+              new AccessIdRepresentationModel("Mumm, Maxi", "user181"),
+              new AccessIdRepresentationModel("Morphose, Meta", "user182"),
+              new AccessIdRepresentationModel("Uh, Mia", "user183"),
+              new AccessIdRepresentationModel("Rofon, Mike", "user184"),
+              new AccessIdRepresentationModel("Rosoft, Mike", "user185"),
+              new AccessIdRepresentationModel("Liter, Milli", "user186"),
+              new AccessIdRepresentationModel("Thär, Milli", "user187"),
+              new AccessIdRepresentationModel("Welle, Mirko", "user188"),
+              new AccessIdRepresentationModel("Thorat, Mo", "user189"),
+              new AccessIdRepresentationModel("Thor, Moni", "user190"),
+              new AccessIdRepresentationModel("Kinolta, Monika", "user191"),
+              new AccessIdRepresentationModel("Mundhaar, Monika", "user192"),
+              new AccessIdRepresentationModel("Munter, Monika", "user193"),
+              new AccessIdRepresentationModel("Zwerg, Nat", "user194"),
+              new AccessIdRepresentationModel("Elmine, Nick", "user195"),
+              new AccessIdRepresentationModel("Thien, Niko", "user196"),
+              new AccessIdRepresentationModel("Pferd, Nils", "user197"),
+              new AccessIdRepresentationModel("Lerweise, Norma", "user198"),
+              new AccessIdRepresentationModel("Motor, Otto", "user199"),
+              new AccessIdRepresentationModel("Totol, Otto", "user200"),
+              new AccessIdRepresentationModel("Nerr, Paula", "user201"),
+              new AccessIdRepresentationModel("Imeter, Peer", "user202"),
+              new AccessIdRepresentationModel("Serkatze, Peer", "user203"),
+              new AccessIdRepresentationModel("Gogisch, Peter", "user204"),
+              new AccessIdRepresentationModel("Silje, Peter", "user205"),
+              new AccessIdRepresentationModel("Harmonie, Phil", "user206"),
+              new AccessIdRepresentationModel("Ihnen, Philip", "user207"),
+              new AccessIdRepresentationModel("Uto, Pia", "user208"),
+              new AccessIdRepresentationModel("Kothek, Pina", "user209"),
+              new AccessIdRepresentationModel("Zar, Pit", "user210"),
+              new AccessIdRepresentationModel("Zeih, Polly", "user211"),
+              new AccessIdRepresentationModel("Tswan, Puh", "user212"),
+              new AccessIdRepresentationModel("Zufall, Rainer", "user213"),
+              new AccessIdRepresentationModel("Lien, Rita", "user214"),
+              new AccessIdRepresentationModel("Held, Roman", "user215"),
+              new AccessIdRepresentationModel("Haar, Ross", "user216"),
+              new AccessIdRepresentationModel("Dick, Roy", "user217"),
+              new AccessIdRepresentationModel("Enplaner, Ruth", "user218"),
+              new AccessIdRepresentationModel("Kommen, Ryan", "user219"),
+              new AccessIdRepresentationModel("Philo, Sophie", "user220"),
+              new AccessIdRepresentationModel("Matisier, Stig", "user221"),
+              new AccessIdRepresentationModel("Loniki, Tessa", "user222"),
+              new AccessIdRepresentationModel("Tralisch, Thea", "user223"),
+              new AccessIdRepresentationModel("Logie, Theo", "user224"),
+              new AccessIdRepresentationModel("Ister, Thorn", "user225"),
+              new AccessIdRepresentationModel("Buktu, Tim", "user226"),
+              new AccessIdRepresentationModel("Ate, Tom", "user227"),
+              new AccessIdRepresentationModel("Pie, Udo", "user228"),
+              new AccessIdRepresentationModel("Aloe, Vera", "user229"),
+              new AccessIdRepresentationModel("Hausver, Walter", "user230"),
+              new AccessIdRepresentationModel("Schuh, Wanda", "user231"),
+              new AccessIdRepresentationModel("Rahm, Wolf", "user232"),
+              new AccessIdRepresentationModel(
+                  "businessadmin", "cn=businessadmin,ou=groups,o=taskanatest"),
+              new AccessIdRepresentationModel(
+                  "UsersGroup", "cn=usersgroup,ou=groups,o=taskanatest"),
+              new AccessIdRepresentationModel(
+                  "DevelopersGroup", "cn=developersgroup,ou=groups,o=taskanatest"),
+              new AccessIdRepresentationModel(
+                  "businessadmin", "cn=customersgroup,ou=groups,o=taskanatest"),
+              new AccessIdRepresentationModel(
+                  "user_domain_A", "cn=user_domain_a,ou=groups,o=taskanatest"),
+              new AccessIdRepresentationModel("monitor", "cn=monitor,ou=groups,o=taskanatest"),
+              new AccessIdRepresentationModel(
+                  "user_domain_C", "cn=user_domain_c,ou=groups,o=taskanatest"),
+              new AccessIdRepresentationModel(
+                  "user_domain_D", "cn=user_domain_d,ou=groups,o=taskanatest"),
+              new AccessIdRepresentationModel("admin", "cn=admin,ou=groups,o=taskanatest"),
+              new AccessIdRepresentationModel(
                   "manager_domain_B", "cn=manager_domain_b,ou=groups,o=taskanatest"),
-              new AccessIdResource(
+              new AccessIdRepresentationModel(
                   "manager_domain_C", "cn=manager_domain_c,ou=groups,o=taskanatest"),
-              new AccessIdResource(
+              new AccessIdRepresentationModel(
                   "manager_domain_D", "cn=manager_domain_d,ou=groups,o=taskanatest"),
-              new AccessIdResource("teamlead_2", "cn=teamlead_2" + ",ou=groups,o=taskanatest"),
-              new AccessIdResource("teamlead_4", "cn=teamlead_4" + ",ou=groups,o=taskanatest"),
-              new AccessIdResource("team_3", "cn=team_3" + ",ou=groups,o=taskanatest"),
-              new AccessIdResource("team_4", "cn=team_4" + ",ou=groups,o=taskanatest")));
+              new AccessIdRepresentationModel(
+                  "teamlead_2", "cn=teamlead_2" + ",ou=groups,o=taskanatest"),
+              new AccessIdRepresentationModel(
+                  "teamlead_4", "cn=teamlead_4" + ",ou=groups,o=taskanatest"),
+              new AccessIdRepresentationModel("team_3", "cn=team_3" + ",ou=groups,o=taskanatest"),
+              new AccessIdRepresentationModel("team_4", "cn=team_4" + ",ou=groups,o=taskanatest")));
 
   @Override
-  public List<AccessIdResource> findMatchingAccessId(
+  public List<AccessIdRepresentationModel> findMatchingAccessId(
       String searchFor, int maxNumberOfReturnedAccessIds) {
     return findAcessIdResource(searchFor, maxNumberOfReturnedAccessIds, false);
   }
 
   @Override
-  public List<AccessIdResource> findGroupsOfUser(
+  public List<AccessIdRepresentationModel> findGroupsOfUser(
       String searchFor, int maxNumberOfReturnedAccessIds) {
     if (users == null) {
       users = addUsersToGroups();
@@ -304,15 +314,15 @@ public class LdapCacheTestImpl implements LdapCache {
   }
 
   @Override
-  public List<AccessIdResource> validateAccessId(String accessId) {
+  public List<AccessIdRepresentationModel> validateAccessId(String accessId) {
     return accessIds.stream()
         .filter(t -> (t.getAccessId().equalsIgnoreCase(accessId.toLowerCase())))
         .collect(Collectors.toList());
   }
 
-  private List<AccessIdResource> findAcessIdResource(
+  private List<AccessIdRepresentationModel> findAcessIdResource(
       String searchFor, int maxNumberOfReturnedAccessIds, boolean groupMember) {
-    List<AccessIdResource> usersAndGroups =
+    List<AccessIdRepresentationModel> usersAndGroups =
         accessIds.stream()
             .filter(
                 t ->
@@ -320,7 +330,7 @@ public class LdapCacheTestImpl implements LdapCache {
                         || t.getAccessId().toLowerCase().contains(searchFor.toLowerCase())))
             .collect(Collectors.toList());
 
-    List<AccessIdResource> usersAndGroupsAux = new ArrayList<>(usersAndGroups);
+    List<AccessIdRepresentationModel> usersAndGroupsAux = new ArrayList<>(usersAndGroups);
     if (groupMember) {
       usersAndGroupsAux.forEach(
           item -> {
@@ -331,36 +341,32 @@ public class LdapCacheTestImpl implements LdapCache {
     }
 
     usersAndGroups.sort(
-        (AccessIdResource a, AccessIdResource b) -> {
-          return a.getAccessId().compareToIgnoreCase(b.getAccessId());
-        });
+        Comparator.comparing(
+            AccessIdRepresentationModel::getAccessId, String.CASE_INSENSITIVE_ORDER));
 
-    List<AccessIdResource> result =
-        usersAndGroups.subList(0, Math.min(usersAndGroups.size(), maxNumberOfReturnedAccessIds));
-
-    return result;
+    return usersAndGroups.subList(0, Math.min(usersAndGroups.size(), maxNumberOfReturnedAccessIds));
   }
 
-  private Map<AccessIdResource, List<AccessIdResource>> addUsersToGroups() {
-    List<AccessIdResource> groups = new ArrayList<>();
-    Map<AccessIdResource, List<AccessIdResource>> users = new HashMap<>();
+  private Map<AccessIdRepresentationModel, List<AccessIdRepresentationModel>> addUsersToGroups() {
+    List<AccessIdRepresentationModel> groups = new ArrayList<>();
+    Map<AccessIdRepresentationModel, List<AccessIdRepresentationModel>> userMap = new HashMap<>();
 
     accessIds.forEach(
         item -> {
           if (!item.getAccessId().contains("ou=groups")) {
-            users.put(item, new ArrayList<>());
+            userMap.put(item, new ArrayList<>());
           } else {
             groups.add(item);
           }
         });
 
     int groupNumber = 0;
-    List<AccessIdResource> group0 = new ArrayList<>();
-    List<AccessIdResource> group1 = new ArrayList<>();
-    List<AccessIdResource> group2 = new ArrayList<>();
-    List<AccessIdResource> group3 = new ArrayList<>();
+    List<AccessIdRepresentationModel> group0 = new ArrayList<>();
+    List<AccessIdRepresentationModel> group1 = new ArrayList<>();
+    List<AccessIdRepresentationModel> group2 = new ArrayList<>();
+    List<AccessIdRepresentationModel> group3 = new ArrayList<>();
 
-    for (AccessIdResource group : groups) {
+    for (AccessIdRepresentationModel group : groups) {
       switch (groupNumber) {
         case 0:
           group0.add(group);
@@ -381,20 +387,20 @@ public class LdapCacheTestImpl implements LdapCache {
     }
 
     int countUser = 0;
-    for (AccessIdResource item : accessIds) {
+    for (AccessIdRepresentationModel item : accessIds) {
       if (!item.getAccessId().contains("ou=groups")) {
         switch (countUser) {
           case 0:
-            users.put(item, group0);
+            userMap.put(item, group0);
             break;
           case 1:
-            users.put(item, group1);
+            userMap.put(item, group1);
             break;
           case 2:
-            users.put(item, group2);
+            userMap.put(item, group2);
             break;
           case 3:
-            users.put(item, group3);
+            userMap.put(item, group3);
             break;
           default:
             break;
@@ -402,6 +408,6 @@ public class LdapCacheTestImpl implements LdapCache {
       }
       countUser = (countUser + 1) % 4;
     }
-    return users;
+    return userMap;
   }
 }

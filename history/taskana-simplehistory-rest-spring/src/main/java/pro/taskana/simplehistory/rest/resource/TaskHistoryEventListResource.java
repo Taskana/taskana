@@ -3,6 +3,7 @@ package pro.taskana.simplehistory.rest.resource;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Collection;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel.PageMetadata;
 
 import pro.taskana.rest.resource.PagedResources;
 

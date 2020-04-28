@@ -1,5 +1,7 @@
 package pro.taskana.task.api;
 
+import java.util.Arrays;
+
 /** This enum contains all status of the tasks. */
 public enum TaskState {
   READY,
@@ -9,15 +11,10 @@ public enum TaskState {
   TERMINATED;
 
   public boolean in(TaskState... states) {
-    for (TaskState currState : states) {
-      if (this.equals(currState)) {
-        return true;
-      }
-    }
-    return false;
+    return Arrays.stream(states).anyMatch(state -> state == this);
   }
 
   public boolean isEndState() {
-    return this.equals(COMPLETED) || this.equals(CANCELLED) || this.equals(TERMINATED);
+    return this == COMPLETED || this == CANCELLED || this == TERMINATED;
   }
 }

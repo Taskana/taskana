@@ -22,11 +22,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-import pro.taskana.rest.resource.TaskanaUserInfoResource;
+import pro.taskana.rest.resource.TaskanaUserInfoRepresentationModel;
 
 /**
  * This test class is configured to run with postgres DB if you want to run it with h2 it is needed.
@@ -59,14 +58,14 @@ public class TaskanaWildflyTest {
   public void shouldGetStatusOK() {
 
     HttpHeaders headers = new HttpHeaders();
-    HttpEntity<String> request = new HttpEntity<String>(headers);
-    ResponseEntity<TaskanaUserInfoResource> response =
+    HttpEntity<String> request = new HttpEntity<>(headers);
+    ResponseEntity<TaskanaUserInfoRepresentationModel> response =
         getRestTemplate()
             .exchange(
                 "http://127.0.0.1:" + "8090" + "/api/v1/current-user-info",
                 HttpMethod.GET,
                 request,
-                ParameterizedTypeReference.forType(TaskanaUserInfoResource.class));
+                ParameterizedTypeReference.forType(TaskanaUserInfoRepresentationModel.class));
     assertEquals(HttpStatus.OK, response.getStatusCode());
   }
 
@@ -78,8 +77,6 @@ public class TaskanaWildflyTest {
     converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/json"));
     converter.setObjectMapper(mapper);
 
-    RestTemplate template =
-        new RestTemplate(Collections.<HttpMessageConverter<?>>singletonList(converter));
-    return template;
+    return new RestTemplate(Collections.singletonList(converter));
   }
 }

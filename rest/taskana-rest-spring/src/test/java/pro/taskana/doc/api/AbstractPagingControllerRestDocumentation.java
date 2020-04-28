@@ -17,7 +17,7 @@ import pro.taskana.rest.Mapping;
 /** Generate Rest Docu for AbstractPagingController. */
 class AbstractPagingControllerRestDocumentation extends BaseRestDocumentation {
 
-  private HashMap<String, String> pagingFieldDescriptionsMap = new HashMap<String, String>();
+  private final HashMap<String, String> pagingFieldDescriptionsMap = new HashMap<>();
 
   private FieldDescriptor[] pagingFieldDescriptors;
 

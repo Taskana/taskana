@@ -19,9 +19,9 @@ import org.springframework.web.client.RestTemplate;
 
 import pro.taskana.RestHelper;
 import pro.taskana.TaskanaSpringBootTest;
-import pro.taskana.rest.resource.ClassificationResource;
-import pro.taskana.rest.resource.ClassificationSummaryListResource;
-import pro.taskana.rest.resource.ClassificationSummaryResource;
+import pro.taskana.rest.resource.ClassificationRepresentationModel;
+import pro.taskana.rest.resource.ClassificationSummaryRepresentationModel;
+import pro.taskana.rest.resource.TaskanaPagedModel;
 
 /**
  * Test ClassificationController.
@@ -31,18 +31,23 @@ import pro.taskana.rest.resource.ClassificationSummaryResource;
 @TaskanaSpringBootTest
 class ClassificationControllerIntTest {
 
+  private static final ParameterizedTypeReference<
+          TaskanaPagedModel<ClassificationSummaryRepresentationModel>>
+      CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE =
+          new ParameterizedTypeReference<
+              TaskanaPagedModel<ClassificationSummaryRepresentationModel>>() {};
   static RestTemplate template = RestHelper.TEMPLATE;
   @Autowired RestHelper restHelper;
 
   @Test
   void testGetClassification() {
-    ResponseEntity<ClassificationResource> response =
+    ResponseEntity<ClassificationRepresentationModel> response =
         template.exchange(
             restHelper.toUrl(
                 Mapping.URL_CLASSIFICATIONS_ID, "CLI:100000000000000000000000000000000002"),
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(ClassificationResource.class));
+            ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getHeaders().getContentType().toString())
         .isEqualTo(MediaTypes.HAL_JSON_VALUE);
@@ -50,36 +55,36 @@ class ClassificationControllerIntTest {
 
   @Test
   void testGetAllClassifications() {
-    ResponseEntity<ClassificationSummaryListResource> response =
+    ResponseEntity<TaskanaPagedModel<ClassificationSummaryRepresentationModel>> response =
         template.exchange(
             restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(ClassificationSummaryListResource.class));
+            CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
   }
 
   @Test
   void testGetAllClassificationsFilterByCustomAttribute() {
-    ResponseEntity<ClassificationSummaryListResource> response =
+    ResponseEntity<TaskanaPagedModel<ClassificationSummaryRepresentationModel>> response =
         template.exchange(
             restHelper.toUrl(Mapping.URL_CLASSIFICATIONS) + "?domain=DOMAIN_A&custom-1-like=RVNR",
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(ClassificationSummaryListResource.class));
+            CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(13);
   }
 
   @Test
   void testGetAllClassificationsKeepingFilters() {
-    ResponseEntity<ClassificationSummaryListResource> response =
+    ResponseEntity<TaskanaPagedModel<ClassificationSummaryRepresentationModel>> response =
         template.exchange(
             restHelper.toUrl(Mapping.URL_CLASSIFICATIONS)
                 + "?domain=DOMAIN_A&sort-by=key&order=asc",
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(ClassificationSummaryListResource.class));
+            CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(
             response
@@ -94,13 +99,13 @@ class ClassificationControllerIntTest {
 
   @Test
   void testGetSecondPageSortedByKey() {
-    ResponseEntity<ClassificationSummaryListResource> response =
+    ResponseEntity<TaskanaPagedModel<ClassificationSummaryRepresentationModel>> response =
         template.exchange(
             restHelper.toUrl(Mapping.URL_CLASSIFICATIONS)
                 + "?domain=DOMAIN_A&sort-by=key&order=asc&page=2&page-size=5",
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(ClassificationSummaryListResource.class));
+            CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody().getContent()).hasSize(5);
     assertThat(response.getBody().getContent().iterator().next().getKey()).isEqualTo("L1050");
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
@@ -111,7 +116,7 @@ class ClassificationControllerIntTest {
                 .getHref()
                 .endsWith(
                     "/api/v1/classifications?"
-                        + "domain=DOMAIN_A&sort-by=key&order=asc&page=2&page-size=5"))
+                        + "domain=DOMAIN_A&sort-by=key&order=asc&page-size=5&page=2"))
         .isTrue();
     assertThat(response.getBody().getLink(IanaLinkRelations.FIRST)).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.LAST)).isNotNull();
@@ -127,12 +132,12 @@ class ClassificationControllerIntTest {
             + "\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS\","
             + "\"name\":\"new classification\",\"type\":\"TASK\"}";
 
-    ResponseEntity<ClassificationResource> responseEntity =
+    ResponseEntity<ClassificationRepresentationModel> responseEntity =
         template.exchange(
             restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
             HttpMethod.POST,
             new HttpEntity<>(newClassification, restHelper.getHeaders()),
-            ParameterizedTypeReference.forType(ClassificationResource.class));
+            ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
 
     assertThat(responseEntity).isNotNull();
     assertThat(HttpStatus.CREATED).isEqualTo(responseEntity.getStatusCode());
@@ -147,7 +152,7 @@ class ClassificationControllerIntTest {
             restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
             HttpMethod.POST,
             new HttpEntity<>(newClassification, restHelper.getHeaders()),
-            ParameterizedTypeReference.forType(ClassificationResource.class));
+            ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
 
     assertThat(HttpStatus.CREATED).isEqualTo(responseEntity.getStatusCode());
   }
@@ -161,12 +166,12 @@ class ClassificationControllerIntTest {
             + "\"name\":\"new classification\",\"type\":\"TASK\","
             + "\"parentId\":\"CLI:200000000000000000000000000000000015\"}";
 
-    ResponseEntity<ClassificationResource> responseEntity =
+    ResponseEntity<ClassificationRepresentationModel> responseEntity =
         template.exchange(
             restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
             HttpMethod.POST,
             new HttpEntity<>(newClassification, restHelper.getHeaders()),
-            ParameterizedTypeReference.forType(ClassificationResource.class));
+            ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
 
     assertThat(responseEntity).isNotNull();
     assertThat(HttpStatus.CREATED).isEqualTo(responseEntity.getStatusCode());
@@ -181,12 +186,12 @@ class ClassificationControllerIntTest {
             + "\"key\":\"NEW_CLASS_P2\",\"name\":\"new classification\","
             + "\"type\":\"TASK\",\"parentKey\":\"T2100\"}";
 
-    ResponseEntity<ClassificationResource> responseEntity =
+    ResponseEntity<ClassificationRepresentationModel> responseEntity =
         template.exchange(
             restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
             HttpMethod.POST,
             new HttpEntity<>(newClassification, restHelper.getHeaders()),
-            ParameterizedTypeReference.forType(ClassificationResource.class));
+            ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
 
     assertThat(responseEntity).isNotNull();
     assertThat(HttpStatus.CREATED).isEqualTo(responseEntity.getStatusCode());
@@ -200,25 +205,26 @@ class ClassificationControllerIntTest {
             + "\"key\":\"NEW_CLASS_P2\",\"name\":\"new classification\","
             + "\"type\":\"TASK\",\"parentKey\":\"T2100\"}";
 
-    ResponseEntity<ClassificationResource> responseEntity =
+    ResponseEntity<ClassificationRepresentationModel> responseEntity =
         template.exchange(
             restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
             HttpMethod.POST,
             new HttpEntity<>(newClassification, restHelper.getHeaders()),
-            ParameterizedTypeReference.forType(ClassificationResource.class));
+            ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
 
     assertThat(responseEntity).isNotNull();
     assertThat(HttpStatus.CREATED).isEqualTo(responseEntity.getStatusCode());
 
-    ResponseEntity<ClassificationSummaryListResource> response =
+    ResponseEntity<TaskanaPagedModel<ClassificationSummaryRepresentationModel>> response =
         template.exchange(
             restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(ClassificationSummaryListResource.class));
+            CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     boolean foundClassificationCreated = false;
-    for (ClassificationSummaryResource classification : response.getBody().getContent()) {
+    for (ClassificationSummaryRepresentationModel classification :
+        response.getBody().getContent()) {
       if ("NEW_CLASS_P2".equals(classification.getKey())
           && "".equals(classification.getDomain())
           && "T2100".equals(classification.getParentKey())) {
@@ -245,7 +251,7 @@ class ClassificationControllerIntTest {
               restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
               HttpMethod.POST,
               new HttpEntity<>(newClassification, restHelper.getHeaders()),
-              ParameterizedTypeReference.forType(ClassificationResource.class));
+              ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
         };
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
@@ -267,7 +273,7 @@ class ClassificationControllerIntTest {
               restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
               HttpMethod.POST,
               new HttpEntity<>(newClassification, restHelper.getHeaders()),
-              ParameterizedTypeReference.forType(ClassificationResource.class));
+              ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
         };
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
@@ -279,13 +285,13 @@ class ClassificationControllerIntTest {
   void testGetClassificationWithSpecialCharacter() {
 
     HttpEntity<String> request = new HttpEntity<>(restHelper.getHeadersAdmin());
-    ResponseEntity<ClassificationSummaryResource> response =
+    ResponseEntity<ClassificationSummaryRepresentationModel> response =
         template.exchange(
             restHelper.toUrl(
                 Mapping.URL_CLASSIFICATIONS_ID, "CLI:100000000000000000000000000000000009"),
             HttpMethod.GET,
             request,
-            ParameterizedTypeReference.forType(ClassificationSummaryResource.class));
+            ParameterizedTypeReference.forType(ClassificationSummaryRepresentationModel.class));
     assertThat(response.getBody().getName()).isEqualTo("Zustimmungserklärung");
   }
 
@@ -294,13 +300,13 @@ class ClassificationControllerIntTest {
   void testDeleteClassification() {
     HttpEntity<String> request = new HttpEntity<>(restHelper.getHeaders());
 
-    ResponseEntity<ClassificationSummaryResource> response =
+    ResponseEntity<ClassificationSummaryRepresentationModel> response =
         template.exchange(
             restHelper.toUrl(
                 Mapping.URL_CLASSIFICATIONS_ID, "CLI:200000000000000000000000000000000004"),
             HttpMethod.DELETE,
             request,
-            ParameterizedTypeReference.forType(ClassificationSummaryResource.class));
+            ParameterizedTypeReference.forType(ClassificationSummaryRepresentationModel.class));
     assertThat(HttpStatus.NO_CONTENT).isEqualTo(response.getStatusCode());
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
@@ -311,7 +317,7 @@ class ClassificationControllerIntTest {
                   Mapping.URL_CLASSIFICATIONS_ID, "CLI:200000000000000000000000000000000004"),
               HttpMethod.GET,
               request,
-              ParameterizedTypeReference.forType(ClassificationSummaryResource.class));
+              ParameterizedTypeReference.forType(ClassificationSummaryRepresentationModel.class));
         };
     assertThatThrownBy(httpCall).isInstanceOf(HttpClientErrorException.class);
   }

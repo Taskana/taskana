@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.rest.resource.TaskCommentListResource;
-import pro.taskana.rest.resource.TaskCommentResource;
-import pro.taskana.rest.resource.TaskCommentResourceAssembler;
+import pro.taskana.rest.resource.TaskCommentRepresentationModel;
+import pro.taskana.rest.resource.TaskCommentRepresentationModelAssembler;
+import pro.taskana.rest.resource.TaskanaPagedModel;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
@@ -35,17 +35,19 @@ public class TaskCommentController {
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskCommentController.class);
 
   private TaskService taskService;
-  private TaskCommentResourceAssembler taskCommentResourceAssembler;
+  private TaskCommentRepresentationModelAssembler taskCommentRepresentationModelAssembler;
 
   TaskCommentController(
-      TaskService taskService, TaskCommentResourceAssembler taskCommentResourceAssembler) {
+      TaskService taskService,
+      TaskCommentRepresentationModelAssembler taskCommentRepresentationModelAssembler) {
     this.taskService = taskService;
-    this.taskCommentResourceAssembler = taskCommentResourceAssembler;
+    this.taskCommentRepresentationModelAssembler = taskCommentRepresentationModelAssembler;
   }
 
   @GetMapping(path = Mapping.URL_TASK_COMMENT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<TaskCommentResource> getTaskComment(@PathVariable String taskCommentId)
+  public ResponseEntity<TaskCommentRepresentationModel> getTaskComment(
+      @PathVariable String taskCommentId)
       throws NotAuthorizedException, TaskNotFoundException, TaskCommentNotFoundException,
           InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
@@ -54,9 +56,11 @@ public class TaskCommentController {
 
     TaskComment taskComment = taskService.getTaskComment(taskCommentId);
 
-    TaskCommentResource taskCommentResource = taskCommentResourceAssembler.toModel(taskComment);
+    TaskCommentRepresentationModel taskCommentRepresentationModel =
+        taskCommentRepresentationModelAssembler.toModel(taskComment);
 
-    ResponseEntity<TaskCommentResource> response = ResponseEntity.ok(taskCommentResource);
+    ResponseEntity<TaskCommentRepresentationModel> response =
+        ResponseEntity.ok(taskCommentRepresentationModel);
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from getTaskComment(), returning {}", response);
@@ -67,18 +71,19 @@ public class TaskCommentController {
 
   @GetMapping(path = Mapping.URL_TASK_GET_POST_COMMENTS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<TaskCommentListResource> getTaskComments(@PathVariable String taskId)
-      throws NotAuthorizedException, TaskNotFoundException {
+  public ResponseEntity<TaskanaPagedModel<TaskCommentRepresentationModel>> getTaskComments(
+      @PathVariable String taskId) throws NotAuthorizedException, TaskNotFoundException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to getTaskComments(taskId= {})", taskId);
     }
 
     List<TaskComment> taskComments = taskService.getTaskComments(taskId);
 
-    TaskCommentListResource taskCommentListResource =
-        taskCommentResourceAssembler.toListResource(taskComments);
+    TaskanaPagedModel<TaskCommentRepresentationModel> taskCommentListResource =
+        taskCommentRepresentationModelAssembler.toPageModel(taskComments, null);
 
-    ResponseEntity<TaskCommentListResource> response = ResponseEntity.ok(taskCommentListResource);
+    ResponseEntity<TaskanaPagedModel<TaskCommentRepresentationModel>> response =
+        ResponseEntity.ok(taskCommentListResource);
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from getTaskComments(), returning {}", response);
@@ -89,7 +94,8 @@ public class TaskCommentController {
 
   @DeleteMapping(path = Mapping.URL_TASK_COMMENT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<TaskCommentResource> deleteTaskComment(@PathVariable String taskCommentId)
+  public ResponseEntity<TaskCommentRepresentationModel> deleteTaskComment(
+      @PathVariable String taskCommentId)
       throws NotAuthorizedException, TaskNotFoundException, TaskCommentNotFoundException,
           InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
@@ -98,7 +104,7 @@ public class TaskCommentController {
 
     taskService.deleteTaskComment(taskCommentId);
 
-    ResponseEntity<TaskCommentResource> result = ResponseEntity.noContent().build();
+    ResponseEntity<TaskCommentRepresentationModel> result = ResponseEntity.noContent().build();
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from deleteTaskComment(), returning {}", result);
@@ -109,25 +115,27 @@ public class TaskCommentController {
 
   @PutMapping(path = Mapping.URL_TASK_COMMENT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<TaskCommentResource> updateTaskComment(
-      @PathVariable String taskCommentId, @RequestBody TaskCommentResource taskCommentResource)
+  public ResponseEntity<TaskCommentRepresentationModel> updateTaskComment(
+      @PathVariable String taskCommentId,
+      @RequestBody TaskCommentRepresentationModel taskCommentRepresentationModel)
       throws NotAuthorizedException, TaskNotFoundException, TaskCommentNotFoundException,
           InvalidArgumentException, ConcurrencyException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
           "Entry to updateTaskComment(taskCommentId= {}, taskCommentResource= {})",
           taskCommentId,
-          taskCommentResource);
+          taskCommentRepresentationModel);
     }
 
-    ResponseEntity<TaskCommentResource> result = null;
+    ResponseEntity<TaskCommentRepresentationModel> result = null;
 
-    if ((taskCommentId.equals(taskCommentResource.getTaskCommentId()))) {
+    if ((taskCommentId.equals(taskCommentRepresentationModel.getTaskCommentId()))) {
 
-      TaskComment taskComment = taskCommentResourceAssembler.toModel(taskCommentResource);
+      TaskComment taskComment =
+          taskCommentRepresentationModelAssembler.toEntityModel(taskCommentRepresentationModel);
 
       taskComment = taskService.updateTaskComment(taskComment);
-      result = ResponseEntity.ok(taskCommentResourceAssembler.toModel(taskComment));
+      result = ResponseEntity.ok(taskCommentRepresentationModelAssembler.toModel(taskComment));
     } else {
       throw new InvalidArgumentException(
           String.format(
@@ -145,27 +153,29 @@ public class TaskCommentController {
 
   @PostMapping(path = Mapping.URL_TASK_GET_POST_COMMENTS)
   @Transactional(rollbackFor = Exception.class)
-  public ResponseEntity<TaskCommentResource> createTaskComment(
-      @PathVariable String taskId, @RequestBody TaskCommentResource taskCommentResource)
+  public ResponseEntity<TaskCommentRepresentationModel> createTaskComment(
+      @PathVariable String taskId,
+      @RequestBody TaskCommentRepresentationModel taskCommentRepresentationModel)
       throws NotAuthorizedException, InvalidArgumentException, TaskNotFoundException {
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
           "Entry to createTaskComment(taskId= {}, taskCommentResource= {})",
           taskId,
-          taskCommentResource);
+          taskCommentRepresentationModel);
     }
 
-    taskCommentResource.setTaskId(taskId);
+    taskCommentRepresentationModel.setTaskId(taskId);
 
-    TaskComment taskCommentFromResource = taskCommentResourceAssembler.toModel(taskCommentResource);
+    TaskComment taskCommentFromResource =
+        taskCommentRepresentationModelAssembler.toEntityModel(taskCommentRepresentationModel);
     TaskComment createdTaskComment = taskService.createTaskComment(taskCommentFromResource);
 
-    ResponseEntity<TaskCommentResource> result;
+    ResponseEntity<TaskCommentRepresentationModel> result;
 
     result =
         ResponseEntity.status(HttpStatus.CREATED)
-            .body(taskCommentResourceAssembler.toModel(createdTaskComment));
+            .body(taskCommentRepresentationModelAssembler.toModel(createdTaskComment));
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from createTaskComment(), returning {}", result);

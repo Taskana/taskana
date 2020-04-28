@@ -19,8 +19,8 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
-import pro.taskana.rest.resource.ReportResource;
-import pro.taskana.rest.resource.ReportResourceAssembler;
+import pro.taskana.rest.resource.ReportRepresentationModel;
+import pro.taskana.rest.resource.ReportRepresentationModelAssembler;
 import pro.taskana.task.api.TaskState;
 
 /** Controller for all monitoring endpoints. */
@@ -32,24 +32,25 @@ public class MonitorController {
 
   private MonitorService monitorService;
 
-  private ReportResourceAssembler reportResourceAssembler;
+  private ReportRepresentationModelAssembler reportRepresentationModelAssembler;
 
   MonitorController(
-      MonitorService monitorService, ReportResourceAssembler reportResourceAssembler) {
+      MonitorService monitorService,
+      ReportRepresentationModelAssembler reportRepresentationModelAssembler) {
     this.monitorService = monitorService;
-    this.reportResourceAssembler = reportResourceAssembler;
+    this.reportRepresentationModelAssembler = reportRepresentationModelAssembler;
   }
 
   @GetMapping(path = Mapping.URL_MONITOR_TASKSSTATUS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<ReportResource> getTasksStatusReport(
+  public ResponseEntity<ReportRepresentationModel> getTasksStatusReport(
       @RequestParam(required = false) List<String> domains,
       @RequestParam(required = false) List<TaskState> states)
       throws NotAuthorizedException, InvalidArgumentException {
     LOGGER.debug("Entry to getTasksStatusReport()");
-    ResponseEntity<ReportResource> response =
+    ResponseEntity<ReportRepresentationModel> response =
         ResponseEntity.ok(
-            reportResourceAssembler.toModel(
+            reportRepresentationModelAssembler.toModel(
                 monitorService
                     .createTaskStatusReportBuilder()
                     .stateIn(states)
@@ -71,8 +72,8 @@ public class MonitorController {
       throws NotAuthorizedException, InvalidArgumentException {
     LOGGER.debug("Entry to getTasksWorkbasketReport()");
 
-    ReportResource report =
-        reportResourceAssembler.toModel(
+    ReportRepresentationModel report =
+        reportRepresentationModelAssembler.toModel(
             monitorService
                 .createWorkbasketReportBuilder()
                 .withColumnHeaders(getRangeTimeInterval())
@@ -94,8 +95,8 @@ public class MonitorController {
       throws NotAuthorizedException, InvalidArgumentException {
     LOGGER.debug("Entry to getTasksWorkbasketPlannedDateReport()");
 
-    ReportResource report =
-        reportResourceAssembler.toModel(
+    ReportRepresentationModel report =
+        reportRepresentationModelAssembler.toModel(
             monitorService
                 .createWorkbasketReportBuilder()
                 .stateIn(states)
@@ -112,12 +113,12 @@ public class MonitorController {
 
   @GetMapping(path = Mapping.URL_MONITOR_TASKSCLASSIFICATION)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<ReportResource> getTasksClassificationReport()
+  public ResponseEntity<ReportRepresentationModel> getTasksClassificationReport()
       throws NotAuthorizedException, InvalidArgumentException {
     LOGGER.debug("Entry to getTasksClassificationReport()");
 
-    ReportResource report =
-        reportResourceAssembler.toModel(
+    ReportRepresentationModel report =
+        reportRepresentationModelAssembler.toModel(
             monitorService
                 .createClassificationReportBuilder()
                 .withColumnHeaders(getRangeTimeInterval())
@@ -132,7 +133,7 @@ public class MonitorController {
 
   @GetMapping(path = Mapping.URL_MONITOR_TIMESTAMP)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<ReportResource> getDailyEntryExitReport()
+  public ResponseEntity<ReportRepresentationModel> getDailyEntryExitReport()
       throws NotAuthorizedException, InvalidArgumentException {
     List<TimeIntervalColumnHeader> columnHeaders =
         IntStream.range(-14, 0)
@@ -140,7 +141,7 @@ public class MonitorController {
             .collect(Collectors.toList());
     return ResponseEntity.status(HttpStatus.OK)
         .body(
-            reportResourceAssembler.toModel(
+            reportRepresentationModelAssembler.toModel(
                 monitorService
                     .createTimestampReportBuilder()
                     .withColumnHeaders(columnHeaders)

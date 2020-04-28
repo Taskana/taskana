@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.ldap.LdapCache;
 import pro.taskana.ldap.LdapClient;
-import pro.taskana.rest.resource.AccessIdResource;
+import pro.taskana.rest.resource.AccessIdRepresentationModel;
 
 /**
  * Controller for access id validation.
@@ -30,7 +30,7 @@ public class AccessIdController {
   @Autowired LdapClient ldapClient;
 
   @GetMapping(path = Mapping.URL_ACCESSID)
-  public ResponseEntity<List<AccessIdResource>> validateAccessIds(
+  public ResponseEntity<List<AccessIdRepresentationModel>> validateAccessIds(
       @RequestParam("search-for") String searchFor) throws InvalidArgumentException {
     LOGGER.debug("Entry to validateAccessIds(search-for= {})", searchFor);
     if (searchFor.length() < ldapClient.getMinSearchForLength()) {
@@ -40,9 +40,9 @@ public class AccessIdController {
               + "' is too short. Minimum searchFor length = "
               + ldapClient.getMinSearchForLength());
     }
-    ResponseEntity<List<AccessIdResource>> response;
+    ResponseEntity<List<AccessIdRepresentationModel>> response;
     if (ldapClient.useLdap()) {
-      List<AccessIdResource> accessIdUsers = ldapClient.searchUsersAndGroups(searchFor);
+      List<AccessIdRepresentationModel> accessIdUsers = ldapClient.searchUsersAndGroups(searchFor);
       response = ResponseEntity.ok(accessIdUsers);
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("Exit from validateAccessIds(), returning {}", response);
@@ -67,7 +67,7 @@ public class AccessIdController {
   }
 
   @GetMapping(path = Mapping.URL_ACCESSID_GROUPS)
-  public ResponseEntity<List<AccessIdResource>> getGroupsByAccessId(
+  public ResponseEntity<List<AccessIdRepresentationModel>> getGroupsByAccessId(
       @RequestParam("access-id") String accessId) throws InvalidArgumentException {
     LOGGER.debug("Entry to getGroupsByAccessId(access-id= {})", accessId);
     if (ldapClient.useLdap() || ldapCache != null) {
@@ -75,8 +75,8 @@ public class AccessIdController {
         throw new InvalidArgumentException("The accessId is invalid");
       }
     }
-    List<AccessIdResource> accessIdUsers;
-    ResponseEntity<List<AccessIdResource>> response;
+    List<AccessIdRepresentationModel> accessIdUsers;
+    ResponseEntity<List<AccessIdRepresentationModel>> response;
     if (ldapClient.useLdap()) {
       accessIdUsers = ldapClient.searchUsersAndGroups(accessId);
       accessIdUsers.addAll(ldapClient.searchGroupsofUsersIsMember(accessId));

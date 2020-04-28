@@ -3,11 +3,11 @@ package pro.taskana.rest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.springframework.hateoas.PagedModel.PageMetadata;
 import org.springframework.util.MultiValueMap;
 
 import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.rest.resource.PagedResources.PageMetadata;
 
 /** Abstract superclass for taskana REST controller with pageable resources. */
 public abstract class AbstractPagingController {

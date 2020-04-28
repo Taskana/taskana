@@ -38,7 +38,7 @@ import org.springframework.web.client.RestTemplate;
 
 import pro.taskana.RestHelper;
 import pro.taskana.TaskanaSpringBootTest;
-import pro.taskana.rest.resource.WorkbasketDefinitionResource;
+import pro.taskana.rest.resource.WorkbasketDefinitionRepresentationModel;
 import pro.taskana.sampledata.SampleDataGenerator;
 
 /** Integration tests for WorkbasketDefinitionController. */
@@ -69,16 +69,17 @@ class WorkbasketDefinitionControllerIntTest {
 
   @Test
   void testExportWorkbasketFromDomain() {
-    ResponseEntity<List<WorkbasketDefinitionResource>> response =
+    ResponseEntity<List<WorkbasketDefinitionRepresentationModel>> response =
         executeExportRequestForDomain("DOMAIN_A");
 
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-    assertThat(response.getBody().get(0)).isInstanceOf(WorkbasketDefinitionResource.class);
+    assertThat(response.getBody().get(0))
+        .isInstanceOf(WorkbasketDefinitionRepresentationModel.class);
 
     boolean allAuthorizationsAreEmpty = true;
     boolean allDistributionTargetsAreEmpty = true;
-    for (WorkbasketDefinitionResource workbasketDefinition : response.getBody()) {
+    for (WorkbasketDefinitionRepresentationModel workbasketDefinition : response.getBody()) {
       if (allAuthorizationsAreEmpty && !workbasketDefinition.getAuthorizations().isEmpty()) {
         allAuthorizationsAreEmpty = false;
       }
@@ -96,22 +97,24 @@ class WorkbasketDefinitionControllerIntTest {
 
   @Test
   void testExportWorkbasketsFromWrongDomain() {
-    ResponseEntity<List<WorkbasketDefinitionResource>> response =
+    ResponseEntity<List<WorkbasketDefinitionRepresentationModel>> response =
         executeExportRequestForDomain("wrongDomain");
     assertThat(response.getBody()).isEmpty();
   }
 
   @Test
   void testImportEveryWorkbasketFromDomainA() throws IOException {
-    List<WorkbasketDefinitionResource> wbList = executeExportRequestForDomain("DOMAIN_A").getBody();
-    for (WorkbasketDefinitionResource w : wbList) {
+    List<WorkbasketDefinitionRepresentationModel> wbList =
+        executeExportRequestForDomain("DOMAIN_A").getBody();
+    for (WorkbasketDefinitionRepresentationModel w : wbList) {
       expectStatusWhenExecutingImportRequestOfWorkbaskets(HttpStatus.NO_CONTENT, w);
     }
   }
 
   @Test
   void testImportWorkbasketWithoutDistributionTargets() throws IOException {
-    WorkbasketDefinitionResource w = executeExportRequestForDomain("DOMAIN_A").getBody().get(0);
+    WorkbasketDefinitionRepresentationModel w =
+        executeExportRequestForDomain("DOMAIN_A").getBody().get(0);
     w.setDistributionTargets(new HashSet<>());
 
     this.expectStatusWhenExecutingImportRequestOfWorkbaskets(HttpStatus.NO_CONTENT, w);
@@ -123,12 +126,13 @@ class WorkbasketDefinitionControllerIntTest {
 
   @Test
   void testImportWorkbasketWithDistributionTargetsInImportFile() throws IOException {
-    List<WorkbasketDefinitionResource> wbList = executeExportRequestForDomain("DOMAIN_A").getBody();
+    List<WorkbasketDefinitionRepresentationModel> wbList =
+        executeExportRequestForDomain("DOMAIN_A").getBody();
 
-    WorkbasketDefinitionResource w = wbList.get(0);
+    WorkbasketDefinitionRepresentationModel w = wbList.get(0);
     w.setDistributionTargets(new HashSet<>());
     String letMeBeYourDistributionTarget = w.getWorkbasket().getWorkbasketId();
-    WorkbasketDefinitionResource w2 = wbList.get(1);
+    WorkbasketDefinitionRepresentationModel w2 = wbList.get(1);
     w2.setDistributionTargets(Collections.singleton(letMeBeYourDistributionTarget));
     expectStatusWhenExecutingImportRequestOfWorkbaskets(HttpStatus.NO_CONTENT, w, w2);
 
@@ -145,10 +149,11 @@ class WorkbasketDefinitionControllerIntTest {
 
   @Test
   void testImportWorkbasketWithDistributionTargetsInSystem() throws IOException {
-    List<WorkbasketDefinitionResource> wbList = executeExportRequestForDomain("DOMAIN_A").getBody();
+    List<WorkbasketDefinitionRepresentationModel> wbList =
+        executeExportRequestForDomain("DOMAIN_A").getBody();
 
     wbList.removeIf(definition -> definition.getDistributionTargets().isEmpty());
-    WorkbasketDefinitionResource w = wbList.get(0);
+    WorkbasketDefinitionRepresentationModel w = wbList.get(0);
     expectStatusWhenExecutingImportRequestOfWorkbaskets(HttpStatus.NO_CONTENT, w);
 
     changeWorkbasketIdOrKey(w, null, "new");
@@ -157,9 +162,10 @@ class WorkbasketDefinitionControllerIntTest {
 
   @Test
   void testImportWorkbasketWithDistributionTargetsNotInSystem() throws IOException {
-    List<WorkbasketDefinitionResource> wbList = executeExportRequestForDomain("DOMAIN_A").getBody();
+    List<WorkbasketDefinitionRepresentationModel> wbList =
+        executeExportRequestForDomain("DOMAIN_A").getBody();
 
-    WorkbasketDefinitionResource w = wbList.get(0);
+    WorkbasketDefinitionRepresentationModel w = wbList.get(0);
     w.setDistributionTargets(Collections.singleton("invalidWorkbasketId"));
     try {
       expectStatusWhenExecutingImportRequestOfWorkbaskets(HttpStatus.BAD_REQUEST, w);
@@ -179,7 +185,8 @@ class WorkbasketDefinitionControllerIntTest {
 
   @Test
   void testFailOnImportDuplicates() throws IOException {
-    WorkbasketDefinitionResource w = executeExportRequestForDomain("DOMAIN_A").getBody().get(0);
+    WorkbasketDefinitionRepresentationModel w =
+        executeExportRequestForDomain("DOMAIN_A").getBody().get(0);
     try {
       expectStatusWhenExecutingImportRequestOfWorkbaskets(HttpStatus.CONFLICT, w, w);
       fail("Expected http-Status 409");
@@ -190,14 +197,15 @@ class WorkbasketDefinitionControllerIntTest {
 
   @Test
   void testNoErrorWhenImportWithSameIdButDifferentKeyAndDomain() throws IOException {
-    List<WorkbasketDefinitionResource> wbList = executeExportRequestForDomain("DOMAIN_A").getBody();
+    List<WorkbasketDefinitionRepresentationModel> wbList =
+        executeExportRequestForDomain("DOMAIN_A").getBody();
 
-    WorkbasketDefinitionResource w = wbList.get(0);
-    WorkbasketDefinitionResource differentLogicalId = wbList.get(1);
+    WorkbasketDefinitionRepresentationModel w = wbList.get(0);
+    WorkbasketDefinitionRepresentationModel differentLogicalId = wbList.get(1);
     this.changeWorkbasketIdOrKey(differentLogicalId, w.getWorkbasket().getWorkbasketId(), null);
 
     // breaks the logic but not the script- should we really allow this case?
-    WorkbasketDefinitionResource theDestroyer = wbList.get(2);
+    WorkbasketDefinitionRepresentationModel theDestroyer = wbList.get(2);
     theDestroyer.setDistributionTargets(
         Collections.singleton(differentLogicalId.getWorkbasket().getWorkbasketId()));
 
@@ -207,7 +215,8 @@ class WorkbasketDefinitionControllerIntTest {
 
   @Test
   void testErrorWhenImportWithSameAccessIdAndWorkbasket() {
-    WorkbasketDefinitionResource w = executeExportRequestForDomain("DOMAIN_A").getBody().get(0);
+    WorkbasketDefinitionRepresentationModel w =
+        executeExportRequestForDomain("DOMAIN_A").getBody().get(0);
 
     String w1String = workbasketToString(w);
     w.getWorkbasket().setKey("new Key for this WB");
@@ -221,7 +230,7 @@ class WorkbasketDefinitionControllerIntTest {
   }
 
   private void changeWorkbasketIdOrKey(
-      WorkbasketDefinitionResource w, String newId, String newKey) {
+      WorkbasketDefinitionRepresentationModel w, String newId, String newKey) {
     if (newId != null && !newId.isEmpty()) {
       w.getWorkbasket().setWorkbasketId(newId);
       w.getAuthorizations().forEach(auth -> auth.setWorkbasketId(newId));
@@ -232,17 +241,18 @@ class WorkbasketDefinitionControllerIntTest {
     }
   }
 
-  private ResponseEntity<List<WorkbasketDefinitionResource>> executeExportRequestForDomain(
-      String domain) {
+  private ResponseEntity<List<WorkbasketDefinitionRepresentationModel>>
+      executeExportRequestForDomain(String domain) {
     return template.exchange(
         restHelper.toUrl(Mapping.URL_WORKBASKETDEFIITIONS) + "?domain=" + domain,
         HttpMethod.GET,
         restHelper.defaultRequest(),
-        new ParameterizedTypeReference<List<WorkbasketDefinitionResource>>() {});
+        new ParameterizedTypeReference<List<WorkbasketDefinitionRepresentationModel>>() {});
   }
 
   private void expectStatusWhenExecutingImportRequestOfWorkbaskets(
-      HttpStatus expectedStatus, WorkbasketDefinitionResource... workbaskets) throws IOException {
+      HttpStatus expectedStatus, WorkbasketDefinitionRepresentationModel... workbaskets)
+      throws IOException {
     List<String> workbasketStrings =
         Arrays.stream(workbaskets).map(this::workbasketToString).collect(Collectors.toList());
     expectStatusWhenExecutingImportRequestOfWorkbaskets(expectedStatus, workbasketStrings);
@@ -268,9 +278,10 @@ class WorkbasketDefinitionControllerIntTest {
     assertThat(responseImport.getStatusCode()).isEqualTo(expectedStatus);
   }
 
-  private String workbasketToString(WorkbasketDefinitionResource workbasketDefinitionResource) {
+  private String workbasketToString(
+      WorkbasketDefinitionRepresentationModel workbasketDefinitionRepresentationModel) {
     try {
-      return objMapper.writeValueAsString(workbasketDefinitionResource);
+      return objMapper.writeValueAsString(workbasketDefinitionRepresentationModel);
     } catch (JsonProcessingException e) {
       return "";
     }

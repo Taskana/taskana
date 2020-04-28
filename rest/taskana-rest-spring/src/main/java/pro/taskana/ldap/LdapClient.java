@@ -2,6 +2,7 @@ package pro.taskana.ldap;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -24,7 +25,7 @@ import org.springframework.stereotype.Component;
 import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.SystemException;
-import pro.taskana.rest.resource.AccessIdResource;
+import pro.taskana.rest.resource.AccessIdRepresentationModel;
 
 /**
  * Class for Ldap access.
@@ -62,15 +63,15 @@ public class LdapClient {
    *     maxNumberOfReturnedAccessIds
    * @throws InvalidArgumentException if input is shorter than minSearchForLength
    */
-  public List<AccessIdResource> searchUsersAndGroups(final String name)
+  public List<AccessIdRepresentationModel> searchUsersAndGroups(final String name)
       throws InvalidArgumentException {
     LOGGER.debug("entry to searchUsersAndGroups(name = {})", name);
     isInitOrFail();
     testMinSearchForLength(name);
 
-    List<AccessIdResource> accessIds = new ArrayList<>();
+    List<AccessIdRepresentationModel> accessIds = new ArrayList<>();
     if (nameIsDn(name)) {
-      AccessIdResource groupByDn = searchGroupByDn(name);
+      AccessIdRepresentationModel groupByDn = searchGroupByDn(name);
       if (groupByDn != null) {
         accessIds.add(groupByDn);
       }
@@ -79,7 +80,7 @@ public class LdapClient {
       accessIds.addAll(searchGroupsByName(name));
     }
     sortListOfAccessIdResources(accessIds);
-    List<AccessIdResource> result = getFirstPageOfaResultList(accessIds);
+    List<AccessIdRepresentationModel> result = getFirstPageOfaResultList(accessIds);
 
     LOGGER.debug(
         "exit from searchUsersAndGroups(name = {}). Returning {} users and groups: {}",
@@ -90,7 +91,7 @@ public class LdapClient {
     return result;
   }
 
-  public List<AccessIdResource> searchUsersByName(final String name)
+  public List<AccessIdRepresentationModel> searchUsersByName(final String name)
       throws InvalidArgumentException {
     LOGGER.debug("entry to searchUsersByName(name = {}).", name);
     isInitOrFail();
@@ -109,7 +110,7 @@ public class LdapClient {
       getUserFirstnameAttribute(), getUserLastnameAttribute(), getUserIdAttribute()
     };
 
-    final List<AccessIdResource> accessIds =
+    final List<AccessIdRepresentationModel> accessIds =
         ldapTemplate.search(
             getUserSearchBase(),
             andFilter.encode(),
@@ -122,7 +123,7 @@ public class LdapClient {
     return accessIds;
   }
 
-  public List<AccessIdResource> searchGroupsByName(final String name)
+  public List<AccessIdRepresentationModel> searchGroupsByName(final String name)
       throws InvalidArgumentException {
     LOGGER.debug("entry to searchGroupsByName(name = {}).", name);
     isInitOrFail();
@@ -137,7 +138,7 @@ public class LdapClient {
     }
     andFilter.and(orFilter);
 
-    final List<AccessIdResource> accessIds =
+    final List<AccessIdRepresentationModel> accessIds =
         ldapTemplate.search(
             getGroupSearchBase(),
             andFilter.encode(),
@@ -150,7 +151,7 @@ public class LdapClient {
     return accessIds;
   }
 
-  public AccessIdResource searchGroupByDn(final String name) {
+  public AccessIdRepresentationModel searchGroupByDn(final String name) {
     LOGGER.debug("entry to searchGroupByDn(name = {}).", name);
     isInitOrFail();
     // Obviously Spring LdapTemplate does have a inconsistency and always adds the base name to the
@@ -160,14 +161,14 @@ public class LdapClient {
     String nameWithoutBaseDn = getNameWithoutBaseDn(name);
     LOGGER.debug(
         "Removed baseDN {} from given DN. New DN to be used: {}", getBaseDn(), nameWithoutBaseDn);
-    final AccessIdResource accessId =
+    final AccessIdRepresentationModel accessId =
         ldapTemplate.lookup(
             nameWithoutBaseDn, getLookUpGoupAttributesToReturn(), new GroupContextMapper());
     LOGGER.debug("Exit from searchGroupByDn. Retrieved the following group: {}", accessId);
     return accessId;
   }
 
-  public List<AccessIdResource> searchGroupsofUsersIsMember(final String name)
+  public List<AccessIdRepresentationModel> searchGroupsofUsersIsMember(final String name)
       throws InvalidArgumentException {
     LOGGER.debug("entry to searchGroupsofUsersIsMember(name = {}).", name);
     isInitOrFail();
@@ -179,7 +180,7 @@ public class LdapClient {
 
     String[] userAttributesToReturn = {getUserIdAttribute(), getGroupNameAttribute()};
 
-    final List<AccessIdResource> accessIds =
+    final List<AccessIdRepresentationModel> accessIds =
         ldapTemplate.search(
             getGroupSearchBase(),
             andFilter.encode(),
@@ -278,7 +279,8 @@ public class LdapClient {
     return name.toLowerCase().endsWith(getBaseDn().toLowerCase());
   }
 
-  List<AccessIdResource> getFirstPageOfaResultList(List<AccessIdResource> accessIds) {
+  List<AccessIdRepresentationModel> getFirstPageOfaResultList(
+      List<AccessIdRepresentationModel> accessIds) {
     return accessIds.subList(0, Math.min(accessIds.size(), maxNumberOfReturnedAccessIds));
   }
 
@@ -288,10 +290,10 @@ public class LdapClient {
     }
   }
 
-  void sortListOfAccessIdResources(List<AccessIdResource> accessIds) {
+  void sortListOfAccessIdResources(List<AccessIdRepresentationModel> accessIds) {
     accessIds.sort(
-        (AccessIdResource a, AccessIdResource b) ->
-            a.getAccessId().compareToIgnoreCase(b.getAccessId()));
+        Comparator.comparing(
+            AccessIdRepresentationModel::getAccessId, String.CASE_INSENSITIVE_ORDER));
   }
 
   String getNameWithoutBaseDn(String name) {
@@ -357,11 +359,11 @@ public class LdapClient {
   }
 
   /** Context Mapper for user entries. */
-  class GroupContextMapper extends AbstractContextMapper<AccessIdResource> {
+  class GroupContextMapper extends AbstractContextMapper<AccessIdRepresentationModel> {
 
     @Override
-    public AccessIdResource doMapFromContext(final DirContextOperations context) {
-      final AccessIdResource accessId = new AccessIdResource();
+    public AccessIdRepresentationModel doMapFromContext(final DirContextOperations context) {
+      final AccessIdRepresentationModel accessId = new AccessIdRepresentationModel();
       String dn = getDnWithBaseDn(context.getDn().toString());
       accessId.setAccessId(dn); // fully qualified dn
       accessId.setName(context.getStringAttribute(getGroupNameAttribute()));
@@ -370,11 +372,11 @@ public class LdapClient {
   }
 
   /** Context Mapper for user entries. */
-  class UserContextMapper extends AbstractContextMapper<AccessIdResource> {
+  class UserContextMapper extends AbstractContextMapper<AccessIdRepresentationModel> {
 
     @Override
-    public AccessIdResource doMapFromContext(final DirContextOperations context) {
-      final AccessIdResource accessId = new AccessIdResource();
+    public AccessIdRepresentationModel doMapFromContext(final DirContextOperations context) {
+      final AccessIdRepresentationModel accessId = new AccessIdRepresentationModel();
       accessId.setAccessId(context.getStringAttribute(getUserIdAttribute()));
       String firstName = context.getStringAttribute(getUserFirstnameAttribute());
       String lastName = context.getStringAttribute(getUserLastnameAttribute());

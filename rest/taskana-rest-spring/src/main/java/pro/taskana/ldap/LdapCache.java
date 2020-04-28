@@ -2,7 +2,7 @@ package pro.taskana.ldap;
 
 import java.util.List;
 
-import pro.taskana.rest.resource.AccessIdResource;
+import pro.taskana.rest.resource.AccessIdRepresentationModel;
 
 /**
  * This interface is used for caching Ldap data.
@@ -20,7 +20,8 @@ public interface LdapCache {
    * @return a List of access ids for users and group where the name or id contains the search
    *     string.
    */
-  List<AccessIdResource> findMatchingAccessId(String searchFor, int maxNumberOfReturnedAccessIds);
+  List<AccessIdRepresentationModel> findMatchingAccessId(
+      String searchFor, int maxNumberOfReturnedAccessIds);
 
   /**
    * Find the groups belong to a user.
@@ -29,7 +30,8 @@ public interface LdapCache {
    * @param maxNumberOfReturnedAccessIds the maximum number of results to return.
    * @return a List of access ids for groups of users.
    */
-  List<AccessIdResource> findGroupsOfUser(String searchFor, int maxNumberOfReturnedAccessIds);
+  List<AccessIdRepresentationModel> findGroupsOfUser(
+      String searchFor, int maxNumberOfReturnedAccessIds);
 
   /**
    * Validate a access id.
@@ -37,5 +39,5 @@ public interface LdapCache {
    * @param accessId the search string.
    * @return the corresponding access ids.
    */
-  List<AccessIdResource> validateAccessId(String accessId);
+  List<AccessIdRepresentationModel> validateAccessId(String accessId);
 }
