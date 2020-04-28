@@ -11,7 +11,6 @@ import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
@@ -32,7 +31,6 @@ import pro.taskana.simplehistory.rest.resource.TaskHistoryEventListResource;
 import pro.taskana.simplehistory.rest.resource.TaskHistoryEventResource;
 
 /** Controller for integration test. */
-@EnableAutoConfiguration
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
     classes = {TaskHistoryRestConfiguration.class},
@@ -106,7 +104,7 @@ public class TaskHistoryEventControllerIntTest {
   public void should_ReturnSpecificTaskHistoryEventWithDetails_When_SingleEventIsQueried() {
     ResponseEntity<TaskHistoryEventResource> response =
         template.exchange(
-            server + port + "/api/v1/task-history-event/47",
+            server + port + "/api/v1/task-history-event/45",
             HttpMethod.GET,
             request,
             ParameterizedTypeReference.forType(TaskHistoryEventResource.class));
