@@ -25,7 +25,6 @@ import { DomainService } from 'app/shared/services/domain/domain.service';
 import { StartupService } from 'app/shared/services/startup/startup.service';
 import { MasterAndDetailService } from 'app/shared/services/master-and-detail/master-and-detail.service';
 import { TreeService } from 'app/shared/services/tree/tree.service';
-import { TitlesService } from 'app/shared/services/titles/titles.service';
 import { WindowRefService } from 'app/shared/services/window/window.service';
 import { TaskanaEngineService } from 'app/shared/services/taskana-engine/taskana-engine.service';
 import { NavBarComponent } from 'app/shared/components/nav-bar/nav-bar.component';
@@ -105,7 +104,6 @@ export function startupServiceFactory(startupService: StartupService): () => Pro
     },
     MasterAndDetailService,
     TreeService,
-    TitlesService,
     TaskanaEngineService,
     RemoveConfirmationService,
     FormsValidatorService,
