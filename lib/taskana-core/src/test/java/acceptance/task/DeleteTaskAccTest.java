@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.BulkOperationResults;
@@ -60,9 +61,11 @@ class DeleteTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
   }
 
+  @WithAccessId(user = "businessadmin")
   @WithAccessId(user = "taskadmin")
-  @Test
-  void should_ThrowException_When_UserIsTaskAdminAndNotAuthorizedToDeleteTask() {
+  @WithAccessId(user = "user_1_1")
+  @TestTemplate
+  void should_ThrowException_When_UserIsNotInAdminRole() {
 
     TaskService taskService = taskanaEngine.getTaskService();
 

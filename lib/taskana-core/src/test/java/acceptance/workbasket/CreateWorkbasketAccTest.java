@@ -7,6 +7,7 @@ import acceptance.AbstractAccTest;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
@@ -62,9 +63,10 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     assertThat(createdWorkbasket2).isEqualTo(createdWorkbasket);
   }
 
-  @WithAccessId(user = "dummy")
-  @Test
-  void testCreateWorkbasketNotAuthorized() {
+  @WithAccessId(user = "user_1_1")
+  @WithAccessId(user = "taskadmin")
+  @TestTemplate
+  void should_ThrowException_When_UserRoleIsNotAdminOrBusinessAdmin() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
     Workbasket workbasket = workbasketService.newWorkbasket("key3", "DOMAIN_A");
@@ -74,20 +76,6 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
 
     ThrowingCallable call = () -> workbasketService.createWorkbasket(workbasket);
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
-  }
-
-  @WithAccessId(user = "taskadmin")
-  @Test
-  void should_ThrowException_When_UserIsTaskAdminAndNotAuthorizedToCreateWorkbasket() {
-    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-
-    Workbasket workbasket = workbasketService.newWorkbasket("NT1234", "DOMAIN_A");
-    workbasket.setName("new workbasket");
-    workbasket.setType(WorkbasketType.GROUP);
-    workbasket.setOrgLevel1("company");
-
-    ThrowingCallable createWorkbasketCall = () -> workbasketService.createWorkbasket(workbasket);
-    assertThatThrownBy(createWorkbasketCall).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(
