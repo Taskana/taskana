@@ -19,7 +19,7 @@ import org.springframework.web.client.RestTemplate;
 
 import pro.taskana.RestHelper;
 import pro.taskana.TaskanaSpringBootTest;
-import pro.taskana.rest.resource.AccessIdResource;
+import pro.taskana.rest.resource.AccessIdRepresentationModel;
 
 @TaskanaSpringBootTest
 @ActiveProfiles({"test", "ldap"})
@@ -63,18 +63,18 @@ class AccessIdControllerIntTest {
 
   @Test
   void testGetMatches() {
-    ResponseEntity<List<AccessIdResource>> response =
+    ResponseEntity<List<AccessIdRepresentationModel>> response =
         template.exchange(
             restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=rig",
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(AccessIdListResource.class));
 
-    List<AccessIdResource> body = response.getBody();
+    List<AccessIdRepresentationModel> body = response.getBody();
     assertThat(body).isNotNull();
     assertThat(body).hasSize(2);
     assertThat(body)
-        .extracting(AccessIdResource::getName)
+        .extracting(AccessIdRepresentationModel::getName)
         .containsExactlyInAnyOrder("Schläfrig, Tim", "Eifrig, Elena");
   }
 
@@ -95,7 +95,7 @@ class AccessIdControllerIntTest {
         .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
-  static class AccessIdListResource extends ArrayList<AccessIdResource> {
+  static class AccessIdListResource extends ArrayList<AccessIdRepresentationModel> {
     private static final long serialVersionUID = 1L;
   }
 }

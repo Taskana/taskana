@@ -4,6 +4,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.PagedModel.PageMetadata;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
 import org.springframework.http.HttpStatus;
@@ -31,11 +32,11 @@ import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.rest.resource.ClassificationResource;
-import pro.taskana.rest.resource.ClassificationResourceAssembler;
-import pro.taskana.rest.resource.ClassificationSummaryListResource;
-import pro.taskana.rest.resource.ClassificationSummaryResourceAssembler;
-import pro.taskana.rest.resource.PagedResources.PageMetadata;
+import pro.taskana.rest.resource.ClassificationRepresentationModel;
+import pro.taskana.rest.resource.ClassificationRepresentationModelAssembler;
+import pro.taskana.rest.resource.ClassificationSummaryRepresentationModel;
+import pro.taskana.rest.resource.ClassificationSummaryRepresentationModelAssembler;
+import pro.taskana.rest.resource.TaskanaPagedModel;
 
 /** Controller for all {@link Classification} related endpoints. */
 @RestController
@@ -78,39 +79,45 @@ public class ClassificationController extends AbstractPagingController {
 
   private static final String SORT_DIRECTION = "order";
 
-  private ClassificationService classificationService;
+  private final ClassificationService classificationService;
 
-  private ClassificationResourceAssembler classificationResourceAssembler;
+  private final ClassificationRepresentationModelAssembler
+      classificationRepresentationModelAssembler;
 
-  private ClassificationSummaryResourceAssembler classificationSummaryResourceAssembler;
+  private final ClassificationSummaryRepresentationModelAssembler
+      classificationSummaryRepresentationModelAssembler;
 
   ClassificationController(
       ClassificationService classificationService,
-      ClassificationResourceAssembler classificationResourceAssembler,
-      ClassificationSummaryResourceAssembler classificationSummaryResourceAssembler) {
+      ClassificationRepresentationModelAssembler classificationRepresentationModelAssembler,
+      ClassificationSummaryRepresentationModelAssembler
+          classificationSummaryRepresentationModelAssembler) {
     this.classificationService = classificationService;
-    this.classificationResourceAssembler = classificationResourceAssembler;
-    this.classificationSummaryResourceAssembler = classificationSummaryResourceAssembler;
+    this.classificationRepresentationModelAssembler = classificationRepresentationModelAssembler;
+    this.classificationSummaryRepresentationModelAssembler =
+        classificationSummaryRepresentationModelAssembler;
   }
 
   @GetMapping(path = Mapping.URL_CLASSIFICATIONS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<ClassificationSummaryListResource> getClassifications(
-      @RequestParam MultiValueMap<String, String> params) throws InvalidArgumentException {
+  public ResponseEntity<TaskanaPagedModel<ClassificationSummaryRepresentationModel>>
+      getClassifications(
+      @RequestParam MultiValueMap<String, String> params)
+      throws InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to getClassifications(params= {})", params);
     }
 
     ClassificationQuery query = classificationService.createClassificationQuery();
     query = applySortingParams(query, params);
-    query = applyFilterParams(query, params);
+    applyFilterParams(query, params);
 
     PageMetadata pageMetadata = getPageMetadata(params, query);
     List<ClassificationSummary> classificationSummaries = getQueryList(query, pageMetadata);
 
-    ResponseEntity<ClassificationSummaryListResource> response =
+    ResponseEntity<TaskanaPagedModel<ClassificationSummaryRepresentationModel>> response =
         ResponseEntity.ok(
-            classificationSummaryResourceAssembler.toCollectionModel(
+            classificationSummaryRepresentationModelAssembler.toPageModel(
                 classificationSummaries, pageMetadata));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from getClassifications(), returning {}", response);
@@ -121,15 +128,15 @@ public class ClassificationController extends AbstractPagingController {
 
   @GetMapping(path = Mapping.URL_CLASSIFICATIONS_ID, produces = MediaTypes.HAL_JSON_VALUE)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<ClassificationResource> getClassification(
+  public ResponseEntity<ClassificationRepresentationModel> getClassification(
       @PathVariable String classificationId) throws ClassificationNotFoundException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to getClassification(classificationId= {})", classificationId);
     }
 
     Classification classification = classificationService.getClassification(classificationId);
-    ResponseEntity<ClassificationResource> response =
-        ResponseEntity.ok(classificationResourceAssembler.toModel(classification));
+    ResponseEntity<ClassificationRepresentationModel> response =
+        ResponseEntity.ok(classificationRepresentationModelAssembler.toModel(classification));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from getClassification(), returning {}", response);
     }
@@ -139,19 +146,20 @@ public class ClassificationController extends AbstractPagingController {
 
   @PostMapping(path = Mapping.URL_CLASSIFICATIONS)
   @Transactional(rollbackFor = Exception.class)
-  public ResponseEntity<ClassificationResource> createClassification(
-      @RequestBody ClassificationResource resource)
+  public ResponseEntity<ClassificationRepresentationModel> createClassification(
+      @RequestBody ClassificationRepresentationModel resource)
       throws NotAuthorizedException, ClassificationAlreadyExistException, DomainNotFoundException,
           InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to createClassification(resource= {})", resource);
     }
-    Classification classification = classificationResourceAssembler.toModel(resource);
+    Classification classification = classificationRepresentationModelAssembler
+                                        .toEntityModel(resource);
     classification = classificationService.createClassification(classification);
 
-    ResponseEntity<ClassificationResource> response =
+    ResponseEntity<ClassificationRepresentationModel> response =
         ResponseEntity.status(HttpStatus.CREATED)
-            .body(classificationResourceAssembler.toModel(classification));
+            .body(classificationRepresentationModelAssembler.toModel(classification));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from createClassification(), returning {}", response);
     }
@@ -161,9 +169,9 @@ public class ClassificationController extends AbstractPagingController {
 
   @PutMapping(path = Mapping.URL_CLASSIFICATIONS_ID)
   @Transactional(rollbackFor = Exception.class)
-  public ResponseEntity<ClassificationResource> updateClassification(
+  public ResponseEntity<ClassificationRepresentationModel> updateClassification(
       @PathVariable(value = "classificationId") String classificationId,
-      @RequestBody ClassificationResource resource)
+      @RequestBody ClassificationRepresentationModel resource)
       throws NotAuthorizedException, ClassificationNotFoundException, ConcurrencyException,
           InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
@@ -173,11 +181,13 @@ public class ClassificationController extends AbstractPagingController {
           resource);
     }
 
-    ResponseEntity<ClassificationResource> result;
+    ResponseEntity<ClassificationRepresentationModel> result;
     if (classificationId.equals(resource.getClassificationId())) {
-      Classification classification = classificationResourceAssembler.toModel(resource);
+      Classification classification = classificationRepresentationModelAssembler
+                                          .toEntityModel(resource);
       classification = classificationService.updateClassification(classification);
-      result = ResponseEntity.ok(classificationResourceAssembler.toModel(classification));
+      result =
+          ResponseEntity.ok(classificationRepresentationModelAssembler.toModel(classification));
     } else {
       throw new InvalidArgumentException(
           "ClassificationId ('"
@@ -247,7 +257,7 @@ public class ClassificationController extends AbstractPagingController {
     return query;
   }
 
-  private ClassificationQuery applyFilterParams(
+  private void applyFilterParams(
       ClassificationQuery query, MultiValueMap<String, String> params)
       throws InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
@@ -320,6 +330,5 @@ public class ClassificationController extends AbstractPagingController {
       LOGGER.debug("Exit from applyFilterParams(), returning {}", query);
     }
 
-    return query;
   }
 }

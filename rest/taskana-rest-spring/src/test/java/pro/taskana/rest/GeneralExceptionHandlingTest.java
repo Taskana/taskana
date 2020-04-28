@@ -13,12 +13,18 @@ import org.springframework.web.client.RestTemplate;
 
 import pro.taskana.RestHelper;
 import pro.taskana.TaskanaSpringBootTest;
-import pro.taskana.rest.resource.ClassificationSummaryListResource;
+import pro.taskana.rest.resource.ClassificationSummaryRepresentationModel;
+import pro.taskana.rest.resource.TaskanaPagedModel;
 
 /** Test general Exception Handling. */
 @TaskanaSpringBootTest
 class GeneralExceptionHandlingTest {
 
+  private static final ParameterizedTypeReference<
+          TaskanaPagedModel<ClassificationSummaryRepresentationModel>>
+      CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE =
+          new ParameterizedTypeReference<
+              TaskanaPagedModel<ClassificationSummaryRepresentationModel>>() {};
   private static RestTemplate template;
   @Autowired RestHelper restHelper;
 
@@ -35,7 +41,7 @@ class GeneralExceptionHandlingTest {
               restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, "non-existing-id"),
               HttpMethod.DELETE,
               restHelper.defaultRequest(),
-              ParameterizedTypeReference.forType(ClassificationSummaryListResource.class));
+              CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE);
         };
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)

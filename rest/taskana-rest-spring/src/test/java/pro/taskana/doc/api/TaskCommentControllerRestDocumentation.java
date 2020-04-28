@@ -22,10 +22,11 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import pro.taskana.rest.Mapping;
+import pro.taskana.rest.resource.TaskanaPagedModelKeys;
 
 public class TaskCommentControllerRestDocumentation extends BaseRestDocumentation {
 
-  private HashMap<String, String> taskCommentFieldDescriptionsMap = new HashMap<>();
+  private final HashMap<String, String> taskCommentFieldDescriptionsMap = new HashMap<>();
 
   private FieldDescriptor[] allTaskCommentsFieldDescriptors;
   private FieldDescriptor[] taskCommentFieldDescriptors;
@@ -81,8 +82,10 @@ public class TaskCommentControllerRestDocumentation extends BaseRestDocumentatio
         };
 
     allTaskCommentsFieldDescriptors =
-        new FieldDescriptor[] {
-          subsectionWithPath("task comments").description("An Array of task comments")
+        new FieldDescriptor[]{
+            subsectionWithPath(TaskanaPagedModelKeys.TASK_COMMENTS.getPropertyName()).description(
+                "An Array of task comments"),
+            fieldWithPath("_links.self.href").ignored()
         };
   }
 

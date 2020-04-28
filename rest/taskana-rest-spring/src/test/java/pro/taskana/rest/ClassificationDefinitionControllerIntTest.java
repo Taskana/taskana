@@ -31,14 +31,19 @@ import org.springframework.web.client.RestTemplate;
 
 import pro.taskana.RestHelper;
 import pro.taskana.TaskanaSpringBootTest;
-import pro.taskana.rest.resource.ClassificationResource;
-import pro.taskana.rest.resource.ClassificationSummaryListResource;
-import pro.taskana.rest.resource.ClassificationSummaryResource;
+import pro.taskana.rest.resource.ClassificationRepresentationModel;
+import pro.taskana.rest.resource.ClassificationSummaryRepresentationModel;
+import pro.taskana.rest.resource.TaskanaPagedModel;
 
 /** Test classification definitions. */
 @TaskanaSpringBootTest
 class ClassificationDefinitionControllerIntTest {
 
+  private static final ParameterizedTypeReference<
+          TaskanaPagedModel<ClassificationSummaryRepresentationModel>>
+      CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE =
+          new ParameterizedTypeReference<
+              TaskanaPagedModel<ClassificationSummaryRepresentationModel>>() {};
   private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationController.class);
   private static RestTemplate template;
   @Autowired RestHelper restHelper;
@@ -51,32 +56,32 @@ class ClassificationDefinitionControllerIntTest {
 
   @Test
   void testExportClassifications() {
-    ResponseEntity<ClassificationResource[]> response =
+    ResponseEntity<ClassificationRepresentationModel[]> response =
         template.exchange(
             restHelper.toUrl(Mapping.URL_CLASSIFICATIONDEFINITION) + "?domain=DOMAIN_B",
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(ClassificationResource[].class));
+            ParameterizedTypeReference.forType(ClassificationRepresentationModel[].class));
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(response.getBody().length >= 5).isTrue();
     assertThat(response.getBody().length <= 7).isTrue();
-    assertThat(response.getBody()[0]).isInstanceOf(ClassificationResource.class);
+    assertThat(response.getBody()[0]).isInstanceOf(ClassificationRepresentationModel.class);
   }
 
   @Test
   void testExportClassificationsFromWrongDomain() {
-    ResponseEntity<ClassificationResource[]> response =
+    ResponseEntity<ClassificationRepresentationModel[]> response =
         template.exchange(
             restHelper.toUrl(Mapping.URL_CLASSIFICATIONDEFINITION) + "?domain=ADdfe",
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(ClassificationResource[].class));
+            ParameterizedTypeReference.forType(ClassificationRepresentationModel[].class));
     assertThat(response.getBody()).isEmpty();
   }
 
   @Test
   void testImportFilledClassification() throws IOException {
-    ClassificationResource classification = new ClassificationResource();
+    ClassificationRepresentationModel classification = new ClassificationRepresentationModel();
     classification.setClassificationId("classificationId_");
     classification.setKey("key drelf");
     classification.setParentId("CLI:100000000000000000000000000000000016");
@@ -110,7 +115,7 @@ class ClassificationDefinitionControllerIntTest {
 
   @Test
   void testFailureWhenKeyIsMissing() throws IOException {
-    ClassificationResource classification = new ClassificationResource();
+    ClassificationRepresentationModel classification = new ClassificationRepresentationModel();
     classification.setDomain("DOMAIN_A");
     List<String> clList = new ArrayList<>();
     clList.add(objMapper.writeValueAsString(classification));
@@ -124,7 +129,7 @@ class ClassificationDefinitionControllerIntTest {
 
   @Test
   void testFailureWhenDomainIsMissing() throws IOException {
-    ClassificationResource classification = new ClassificationResource();
+    ClassificationRepresentationModel classification = new ClassificationRepresentationModel();
     classification.setKey("one");
     List<String> clList = new ArrayList<>();
     clList.add(objMapper.writeValueAsString(classification));
@@ -138,7 +143,7 @@ class ClassificationDefinitionControllerIntTest {
 
   @Test
   void testFailureWhenUpdatingTypeOfExistingClassification() throws IOException {
-    ClassificationSummaryResource classification =
+    ClassificationSummaryRepresentationModel classification =
         this.getClassificationWithKeyAndDomain("T6310", "");
     classification.setType("DOCUMENT");
     List<String> clList = new ArrayList<>();
@@ -153,11 +158,11 @@ class ClassificationDefinitionControllerIntTest {
 
   @Test
   void testImportMultipleClassifications() throws IOException {
-    ClassificationResource classification1 =
+    ClassificationRepresentationModel classification1 =
         this.createClassification("id1", "ImportKey1", "DOMAIN_A", null, null);
     final String c1 = objMapper.writeValueAsString(classification1);
 
-    ClassificationResource classification2 =
+    ClassificationRepresentationModel classification2 =
         this.createClassification(
             "id2", "ImportKey2", "DOMAIN_A", "CLI:100000000000000000000000000000000016", "T2000");
     classification2.setCategory("MANUAL");
@@ -182,7 +187,7 @@ class ClassificationDefinitionControllerIntTest {
 
   @Test
   void testImportDuplicateClassification() throws IOException {
-    ClassificationResource classification1 = new ClassificationResource();
+    ClassificationRepresentationModel classification1 = new ClassificationRepresentationModel();
     classification1.setClassificationId("id1");
     classification1.setKey("ImportKey3");
     classification1.setDomain("DOMAIN_A");
@@ -201,7 +206,7 @@ class ClassificationDefinitionControllerIntTest {
 
   @Test
   void testInsertExistingClassificationWithOlderTimestamp() throws IOException {
-    ClassificationSummaryResource existingClassification =
+    ClassificationSummaryRepresentationModel existingClassification =
         getClassificationWithKeyAndDomain("L110107", "DOMAIN_A");
     existingClassification.setName("first new Name");
     List<String> clList = new ArrayList<>();
@@ -217,16 +222,16 @@ class ClassificationDefinitionControllerIntTest {
     response = importRequest(clList);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
-    ClassificationSummaryResource testClassification =
+    ClassificationSummaryRepresentationModel testClassification =
         this.getClassificationWithKeyAndDomain("L110107", "DOMAIN_A");
     assertThat(testClassification.getName()).isEqualTo("second new Name");
   }
 
   @Test
   void testHookExistingChildToNewParent() throws IOException {
-    final ClassificationResource newClassification =
+    final ClassificationRepresentationModel newClassification =
         createClassification("new Classification", "newClass", "DOMAIN_A", null, "L11010");
-    ClassificationSummaryResource existingClassification =
+    ClassificationSummaryRepresentationModel existingClassification =
         getClassificationWithKeyAndDomain("L110102", "DOMAIN_A");
     existingClassification.setParentId("new Classification");
     existingClassification.setParentKey("newClass");
@@ -238,11 +243,11 @@ class ClassificationDefinitionControllerIntTest {
     ResponseEntity<Void> response = importRequest(clList);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
-    ClassificationSummaryResource parentCl =
+    ClassificationSummaryRepresentationModel parentCl =
         getClassificationWithKeyAndDomain("L11010", "DOMAIN_A");
-    ClassificationSummaryResource testNewCl =
+    ClassificationSummaryRepresentationModel testNewCl =
         getClassificationWithKeyAndDomain("newClass", "DOMAIN_A");
-    ClassificationSummaryResource testExistingCl =
+    ClassificationSummaryRepresentationModel testExistingCl =
         getClassificationWithKeyAndDomain("L110102", "DOMAIN_A");
 
     assertThat(parentCl).isNotNull();
@@ -254,18 +259,18 @@ class ClassificationDefinitionControllerIntTest {
 
   @Test
   void testImportParentAndChildClassification() throws IOException {
-    ClassificationResource classification1 =
+    ClassificationRepresentationModel classification1 =
         this.createClassification("parentId", "ImportKey6", "DOMAIN_A", null, null);
     final String c1 = objMapper.writeValueAsString(classification1);
 
-    ClassificationResource classification2 =
+    ClassificationRepresentationModel classification2 =
         this.createClassification("childId1", "ImportKey7", "DOMAIN_A", null, "ImportKey6");
     final String c21 = objMapper.writeValueAsString(classification2);
     classification2 =
         this.createClassification("childId2", "ImportKey8", "DOMAIN_A", "parentId", null);
     final String c22 = objMapper.writeValueAsString(classification2);
 
-    ClassificationResource classification3 =
+    ClassificationRepresentationModel classification3 =
         this.createClassification(
             "grandchildId1", "ImportKey9", "DOMAIN_A", "childId1", "ImportKey7");
     final String c31 = objMapper.writeValueAsString(classification3);
@@ -283,11 +288,11 @@ class ClassificationDefinitionControllerIntTest {
     ResponseEntity<Void> response = importRequest(clList);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
-    ClassificationSummaryResource parentCl =
+    ClassificationSummaryRepresentationModel parentCl =
         getClassificationWithKeyAndDomain("ImportKey6", "DOMAIN_A");
-    ClassificationSummaryResource childCl =
+    ClassificationSummaryRepresentationModel childCl =
         getClassificationWithKeyAndDomain("ImportKey7", "DOMAIN_A");
-    ClassificationSummaryResource grandchildCl =
+    ClassificationSummaryRepresentationModel grandchildCl =
         getClassificationWithKeyAndDomain("ImportKey9", "DOMAIN_A");
 
     assertThat(parentCl).isNotNull();
@@ -299,14 +304,14 @@ class ClassificationDefinitionControllerIntTest {
 
   @Test
   void testImportParentAndChildClassificationWithKey() throws IOException {
-    ClassificationResource classification1 =
+    ClassificationRepresentationModel classification1 =
         createClassification("parent", "ImportKey11", "DOMAIN_A", null, null);
     classification1.setCustom1("parent is correct");
     String parent = objMapper.writeValueAsString(classification1);
-    ClassificationResource classification2 =
+    ClassificationRepresentationModel classification2 =
         createClassification("wrongParent", "ImportKey11", "DOMAIN_B", null, null);
     String wrongParent = objMapper.writeValueAsString(classification2);
-    ClassificationResource classification3 =
+    ClassificationRepresentationModel classification3 =
         createClassification("child", "ImportKey13", "DOMAIN_A", null, "ImportKey11");
     String child = objMapper.writeValueAsString(classification3);
 
@@ -318,11 +323,11 @@ class ClassificationDefinitionControllerIntTest {
     ResponseEntity<Void> response = importRequest(clList);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
-    ClassificationSummaryResource rightParentCl =
+    ClassificationSummaryRepresentationModel rightParentCl =
         getClassificationWithKeyAndDomain("ImportKey11", "DOMAIN_A");
-    ClassificationSummaryResource wrongParentCl =
+    ClassificationSummaryRepresentationModel wrongParentCl =
         getClassificationWithKeyAndDomain("ImportKey11", "DOMAIN_B");
-    ClassificationSummaryResource childCl =
+    ClassificationSummaryRepresentationModel childCl =
         getClassificationWithKeyAndDomain("ImportKey13", "DOMAIN_A");
 
     assertThat(rightParentCl).isNotNull();
@@ -335,14 +340,14 @@ class ClassificationDefinitionControllerIntTest {
   @Test
   void testChangeParentByImportingExistingClassification()
       throws IOException, InterruptedException {
-    ClassificationSummaryResource child1 =
+    ClassificationSummaryRepresentationModel child1 =
         this.getClassificationWithKeyAndDomain("L110105", "DOMAIN_A");
     assertThat(child1.getParentKey()).isEqualTo("L11010");
     child1.setParentId("CLI:100000000000000000000000000000000002");
     child1.setParentKey("L10303");
     final String withNewParent = objMapper.writeValueAsString(child1);
 
-    ClassificationSummaryResource child2 =
+    ClassificationSummaryRepresentationModel child2 =
         this.getClassificationWithKeyAndDomain("L110107", "DOMAIN_A");
     assertThat(child2.getParentKey()).isEqualTo("L11010");
     child2.setParentId("");
@@ -358,11 +363,11 @@ class ClassificationDefinitionControllerIntTest {
     Thread.sleep(10);
     LOGGER.debug("Wait 10 ms to give the system a chance to update");
 
-    ClassificationSummaryResource childWithNewParent =
+    ClassificationSummaryRepresentationModel childWithNewParent =
         this.getClassificationWithKeyAndDomain("L110105", "DOMAIN_A");
     assertThat(childWithNewParent.getParentKey()).isEqualTo(child1.getParentKey());
 
-    ClassificationSummaryResource childWithoutParent =
+    ClassificationSummaryRepresentationModel childWithoutParent =
         this.getClassificationWithKeyAndDomain("L110107", "DOMAIN_A");
     assertThat(childWithoutParent.getParentId()).isEqualTo(child2.getParentId());
     assertThat(childWithoutParent.getParentKey()).isEqualTo(child2.getParentKey());
@@ -370,7 +375,7 @@ class ClassificationDefinitionControllerIntTest {
 
   @Test
   void testFailOnImportDuplicates() throws IOException {
-    ClassificationSummaryResource classification =
+    ClassificationSummaryRepresentationModel classification =
         this.getClassificationWithKeyAndDomain("L110105", "DOMAIN_A");
     String classificationString = objMapper.writeValueAsString(classification);
 
@@ -384,28 +389,32 @@ class ClassificationDefinitionControllerIntTest {
         .isEqualTo(HttpStatus.CONFLICT);
   }
 
-  private ClassificationResource createClassification(
+  private ClassificationRepresentationModel createClassification(
       String id, String key, String domain, String parentId, String parentKey) {
-    ClassificationResource classificationResource = new ClassificationResource();
-    classificationResource.setClassificationId(id);
-    classificationResource.setKey(key);
-    classificationResource.setDomain(domain);
-    classificationResource.setParentId(parentId);
-    classificationResource.setParentKey(parentKey);
-    return classificationResource;
+    ClassificationRepresentationModel classificationRepresentationModel =
+        new ClassificationRepresentationModel();
+    classificationRepresentationModel.setClassificationId(id);
+    classificationRepresentationModel.setKey(key);
+    classificationRepresentationModel.setDomain(domain);
+    classificationRepresentationModel.setParentId(parentId);
+    classificationRepresentationModel.setParentKey(parentKey);
+    return classificationRepresentationModel;
   }
 
-  private ClassificationSummaryResource getClassificationWithKeyAndDomain(
+  private ClassificationSummaryRepresentationModel getClassificationWithKeyAndDomain(
       String key, String domain) {
     LOGGER.debug("Request classification with key={} in domain={}", key, domain);
     HttpEntity<String> request = new HttpEntity<>(restHelper.getHeaders());
-    ResponseEntity<ClassificationSummaryListResource> response =
+    ResponseEntity<TaskanaPagedModel<ClassificationSummaryRepresentationModel>> response =
         template.exchange(
             restHelper.toUrl(Mapping.URL_CLASSIFICATIONS) + "?key=" + key + "&domain=" + domain,
             HttpMethod.GET,
             request,
-            ParameterizedTypeReference.forType(ClassificationSummaryListResource.class));
-    return response.getBody().getContent().toArray(new ClassificationSummaryResource[1])[0];
+            CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE);
+    return response
+        .getBody()
+        .getContent()
+        .toArray(new ClassificationSummaryRepresentationModel[1])[0];
   }
 
   private ResponseEntity<Void> importRequest(List<String> clList) throws IOException {

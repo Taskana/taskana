@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.hateoas.PagedModel.PageMetadata;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
 import org.springframework.http.HttpStatus;
@@ -29,11 +30,11 @@ import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.rest.resource.PagedResources.PageMetadata;
-import pro.taskana.rest.resource.TaskResource;
-import pro.taskana.rest.resource.TaskResourceAssembler;
-import pro.taskana.rest.resource.TaskSummaryListResource;
-import pro.taskana.rest.resource.TaskSummaryResourceAssembler;
+import pro.taskana.rest.resource.TaskRepresentationModel;
+import pro.taskana.rest.resource.TaskRepresentationModelAssembler;
+import pro.taskana.rest.resource.TaskSummaryRepresentationModel;
+import pro.taskana.rest.resource.TaskSummaryRepresentationModelAssembler;
+import pro.taskana.rest.resource.TaskanaPagedModel;
 import pro.taskana.task.api.TaskQuery;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
@@ -90,22 +91,22 @@ public class TaskController extends AbstractPagingController {
 
   private TaskService taskService;
 
-  private TaskResourceAssembler taskResourceAssembler;
+  private TaskRepresentationModelAssembler taskRepresentationModelAssembler;
 
-  private TaskSummaryResourceAssembler taskSummaryResourceAssembler;
+  private TaskSummaryRepresentationModelAssembler taskSummaryRepresentationModelAssembler;
 
   TaskController(
       TaskService taskService,
-      TaskResourceAssembler taskResourceAssembler,
-      TaskSummaryResourceAssembler taskSummaryResourceAssembler) {
+      TaskRepresentationModelAssembler taskRepresentationModelAssembler,
+      TaskSummaryRepresentationModelAssembler taskSummaryRepresentationModelAssembler) {
     this.taskService = taskService;
-    this.taskResourceAssembler = taskResourceAssembler;
-    this.taskSummaryResourceAssembler = taskSummaryResourceAssembler;
+    this.taskRepresentationModelAssembler = taskRepresentationModelAssembler;
+    this.taskSummaryRepresentationModelAssembler = taskSummaryRepresentationModelAssembler;
   }
 
   @GetMapping(path = Mapping.URL_TASKS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<TaskSummaryListResource> getTasks(
+  public ResponseEntity<TaskanaPagedModel<TaskSummaryRepresentationModel>> getTasks(
       @RequestParam MultiValueMap<String, String> params) throws InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to getTasks(params= {})", params);
@@ -118,9 +119,10 @@ public class TaskController extends AbstractPagingController {
     PageMetadata pageMetadata = getPageMetadata(params, query);
     List<TaskSummary> taskSummaries = getQueryList(query, pageMetadata);
 
-    TaskSummaryListResource pagedResources =
-        taskSummaryResourceAssembler.toCollectionModel(taskSummaries, pageMetadata);
-    ResponseEntity<TaskSummaryListResource> response = ResponseEntity.ok(pagedResources);
+    TaskanaPagedModel<TaskSummaryRepresentationModel> pagedModels =
+        taskSummaryRepresentationModelAssembler.toPageModel(taskSummaries, pageMetadata);
+    ResponseEntity<TaskanaPagedModel<TaskSummaryRepresentationModel>> response =
+        ResponseEntity.ok(pagedModels);
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from getTasks(), returning {}", response);
     }
@@ -130,11 +132,12 @@ public class TaskController extends AbstractPagingController {
 
   @GetMapping(path = Mapping.URL_TASKS_ID)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<TaskResource> getTask(@PathVariable String taskId)
+  public ResponseEntity<TaskRepresentationModel> getTask(@PathVariable String taskId)
       throws TaskNotFoundException, NotAuthorizedException {
     LOGGER.debug("Entry to getTask(taskId= {})", taskId);
     Task task = taskService.getTask(taskId);
-    ResponseEntity<TaskResource> result = ResponseEntity.ok(taskResourceAssembler.toModel(task));
+    ResponseEntity<TaskRepresentationModel> result =
+        ResponseEntity.ok(taskRepresentationModelAssembler.toModel(task));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from getTask(), returning {}", result);
     }
@@ -144,7 +147,7 @@ public class TaskController extends AbstractPagingController {
 
   @PostMapping(path = Mapping.URL_TASKS_ID_CLAIM)
   @Transactional(rollbackFor = Exception.class)
-  public ResponseEntity<TaskResource> claimTask(
+  public ResponseEntity<TaskRepresentationModel> claimTask(
       @PathVariable String taskId, @RequestBody String userName)
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
           NotAuthorizedException {
@@ -152,8 +155,8 @@ public class TaskController extends AbstractPagingController {
     // TODO verify user
     taskService.claim(taskId);
     Task updatedTask = taskService.getTask(taskId);
-    ResponseEntity<TaskResource> result =
-        ResponseEntity.ok(taskResourceAssembler.toModel(updatedTask));
+    ResponseEntity<TaskRepresentationModel> result =
+        ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from claimTask(), returning {}", result);
     }
@@ -163,7 +166,7 @@ public class TaskController extends AbstractPagingController {
 
   @DeleteMapping(path = Mapping.URL_TASKS_ID_CLAIM)
   @Transactional(rollbackFor = Exception.class)
-  public ResponseEntity<TaskResource> cancelClaimTask(@PathVariable String taskId)
+  public ResponseEntity<TaskRepresentationModel> cancelClaimTask(@PathVariable String taskId)
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
           NotAuthorizedException {
 
@@ -172,8 +175,8 @@ public class TaskController extends AbstractPagingController {
     taskService.cancelClaim(taskId);
     Task updatedTask = taskService.getTask(taskId);
 
-    ResponseEntity<TaskResource> result =
-        ResponseEntity.ok(taskResourceAssembler.toModel(updatedTask));
+    ResponseEntity<TaskRepresentationModel> result =
+        ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from cancelClaimTask(), returning {}", result);
     }
@@ -182,14 +185,14 @@ public class TaskController extends AbstractPagingController {
 
   @PostMapping(path = Mapping.URL_TASKS_ID_COMPLETE)
   @Transactional(rollbackFor = Exception.class)
-  public ResponseEntity<TaskResource> completeTask(@PathVariable String taskId)
+  public ResponseEntity<TaskRepresentationModel> completeTask(@PathVariable String taskId)
       throws TaskNotFoundException, InvalidOwnerException, InvalidStateException,
           NotAuthorizedException {
     LOGGER.debug("Entry to completeTask(taskId= {})", taskId);
     taskService.forceCompleteTask(taskId);
     Task updatedTask = taskService.getTask(taskId);
-    ResponseEntity<TaskResource> result =
-        ResponseEntity.ok(taskResourceAssembler.toModel(updatedTask));
+    ResponseEntity<TaskRepresentationModel> result =
+        ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from completeTask(), returning {}", result);
     }
@@ -199,29 +202,31 @@ public class TaskController extends AbstractPagingController {
 
   @DeleteMapping(path = Mapping.URL_TASKS_ID)
   @Transactional(rollbackFor = Exception.class)
-  public ResponseEntity<TaskResource> deleteTask(@PathVariable String taskId)
+  public ResponseEntity<TaskRepresentationModel> deleteTask(@PathVariable String taskId)
       throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
     LOGGER.debug("Entry to deleteTask(taskId= {})", taskId);
     taskService.forceDeleteTask(taskId);
-    ResponseEntity<TaskResource> result = ResponseEntity.noContent().build();
+    ResponseEntity<TaskRepresentationModel> result = ResponseEntity.noContent().build();
     LOGGER.debug("Exit from deleteTask(), returning {}", result);
     return result;
   }
 
   @PostMapping(path = Mapping.URL_TASKS)
   @Transactional(rollbackFor = Exception.class)
-  public ResponseEntity<TaskResource> createTask(@RequestBody TaskResource taskResource)
+  public ResponseEntity<TaskRepresentationModel> createTask(
+      @RequestBody TaskRepresentationModel taskRepresentationModel)
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
           TaskAlreadyExistException, InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Entry to createTask(params= {})", taskResource);
+      LOGGER.debug("Entry to createTask(params= {})", taskRepresentationModel);
     }
 
-    Task fromResource = taskResourceAssembler.toModel(taskResource);
+    Task fromResource = taskRepresentationModelAssembler.toEntityModel(taskRepresentationModel);
     Task createdTask = taskService.createTask(fromResource);
 
-    ResponseEntity<TaskResource> result =
-        ResponseEntity.status(HttpStatus.CREATED).body(taskResourceAssembler.toModel(createdTask));
+    ResponseEntity<TaskRepresentationModel> result =
+        ResponseEntity.status(HttpStatus.CREATED)
+            .body(taskRepresentationModelAssembler.toModel(createdTask));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from createTask(), returning {}", result);
     }
@@ -231,14 +236,14 @@ public class TaskController extends AbstractPagingController {
 
   @PostMapping(path = Mapping.URL_TASKS_ID_TRANSFER_WORKBASKETID)
   @Transactional(rollbackFor = Exception.class)
-  public ResponseEntity<TaskResource> transferTask(
+  public ResponseEntity<TaskRepresentationModel> transferTask(
       @PathVariable String taskId, @PathVariable String workbasketId)
       throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
           InvalidStateException {
     LOGGER.debug("Entry to transferTask(taskId= {}, workbasketId= {})", taskId, workbasketId);
     Task updatedTask = taskService.transfer(taskId, workbasketId);
-    ResponseEntity<TaskResource> result =
-        ResponseEntity.ok(taskResourceAssembler.toModel(updatedTask));
+    ResponseEntity<TaskRepresentationModel> result =
+        ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from transferTask(), returning {}", result);
     }
@@ -248,23 +253,25 @@ public class TaskController extends AbstractPagingController {
 
   @PutMapping(path = Mapping.URL_TASKS_ID)
   @Transactional(rollbackFor = Exception.class)
-  public ResponseEntity<TaskResource> updateTask(
-      @PathVariable(value = "taskId") String taskId, @RequestBody TaskResource taskResource)
+  public ResponseEntity<TaskRepresentationModel> updateTask(
+      @PathVariable(value = "taskId") String taskId,
+      @RequestBody TaskRepresentationModel taskRepresentationModel)
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
           ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
           InvalidStateException {
-    LOGGER.debug("Entry to updateTask(taskId= {}, taskResource= {})", taskId, taskResource);
-    ResponseEntity<TaskResource> result;
-    if (taskId.equals(taskResource.getTaskId())) {
-      Task task = taskResourceAssembler.toModel(taskResource);
+    LOGGER.debug(
+        "Entry to updateTask(taskId= {}, taskResource= {})", taskId, taskRepresentationModel);
+    ResponseEntity<TaskRepresentationModel> result;
+    if (taskId.equals(taskRepresentationModel.getTaskId())) {
+      Task task = taskRepresentationModelAssembler.toEntityModel(taskRepresentationModel);
       task = taskService.updateTask(task);
-      result = ResponseEntity.ok(taskResourceAssembler.toModel(task));
+      result = ResponseEntity.ok(taskRepresentationModelAssembler.toModel(task));
     } else {
       throw new InvalidArgumentException(
           String.format(
               "TaskId ('%s') is not identical with the taskId of to "
                   + "object in the payload which should be updated. ID=('%s')",
-              taskId, taskResource.getTaskId()));
+              taskId, taskRepresentationModel.getTaskId()));
     }
 
     if (LOGGER.isDebugEnabled()) {

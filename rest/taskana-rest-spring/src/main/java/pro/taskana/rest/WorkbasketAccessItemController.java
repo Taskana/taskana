@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.PagedModel.PageMetadata;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
@@ -18,9 +19,9 @@ import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.ldap.LdapClient;
-import pro.taskana.rest.resource.PagedResources.PageMetadata;
-import pro.taskana.rest.resource.WorkbasketAccessItemListResource;
-import pro.taskana.rest.resource.WorkbasketAccessItemResourceAssembler;
+import pro.taskana.rest.resource.TaskanaPagedModel;
+import pro.taskana.rest.resource.WorkbasketAccessItemRepresentationModel;
+import pro.taskana.rest.resource.WorkbasketAccessItemRepresentationModelAssembler;
 import pro.taskana.workbasket.api.WorkbasketAccessItemQuery;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
@@ -43,22 +44,35 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
   private static final String SORT_BY = "sort-by";
   private static final String SORT_DIRECTION = "order";
 
-  @Autowired LdapClient ldapClient;
+  final LdapClient ldapClient;
 
-  @Autowired private WorkbasketService workbasketService;
+  private final WorkbasketService workbasketService;
 
-  @Autowired private WorkbasketAccessItemResourceAssembler workbasketAccessItemResourceAssembler;
+  private final WorkbasketAccessItemRepresentationModelAssembler
+      workbasketAccessItemRepresentationModelAssembler;
+
+  @Autowired
+  public WorkbasketAccessItemController(
+      LdapClient ldapClient, WorkbasketService workbasketService,
+      WorkbasketAccessItemRepresentationModelAssembler
+          workbasketAccessItemRepresentationModelAssembler) {
+    this.ldapClient = ldapClient;
+    this.workbasketService = workbasketService;
+    this.workbasketAccessItemRepresentationModelAssembler
+        = workbasketAccessItemRepresentationModelAssembler;
+  }
 
   /**
    * This GET method return all workbasketAccessItems that correspond the given data.
    *
    * @param params filter, order and access ids.
    * @return all WorkbasketAccesItemResource.
-   * @throws NotAuthorizedException if the user is not authorized.
+   * @throws NotAuthorizedException   if the user is not authorized.
    * @throws InvalidArgumentException if some argument is invalid.
    */
   @GetMapping(path = Mapping.URL_WORKBASKETACCESSITEMS)
-  public ResponseEntity<WorkbasketAccessItemListResource> getWorkbasketAccessItems(
+  public ResponseEntity<TaskanaPagedModel<WorkbasketAccessItemRepresentationModel>>
+        getWorkbasketAccessItems(
       @RequestParam MultiValueMap<String, String> params)
       throws NotAuthorizedException, InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
@@ -66,18 +80,19 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
     }
 
     WorkbasketAccessItemQuery query = workbasketService.createWorkbasketAccessItemQuery();
-    query = getAccessIds(query, params);
-    query = applyFilterParams(query, params);
+    getAccessIds(query, params);
+    applyFilterParams(query, params);
     query = applySortingParams(query, params);
 
     PageMetadata pageMetadata = getPageMetadata(params, query);
     List<WorkbasketAccessItem> workbasketAccessItems = getQueryList(query, pageMetadata);
 
-    WorkbasketAccessItemListResource pagedResources =
-        workbasketAccessItemResourceAssembler.toCollectionModel(
+    TaskanaPagedModel<WorkbasketAccessItemRepresentationModel> pagedResources =
+        workbasketAccessItemRepresentationModelAssembler.toPageModel(
             workbasketAccessItems, pageMetadata);
 
-    ResponseEntity<WorkbasketAccessItemListResource> response = ResponseEntity.ok(pagedResources);
+    ResponseEntity<TaskanaPagedModel<WorkbasketAccessItemRepresentationModel>> response =
+        ResponseEntity.ok(pagedResources);
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from getWorkbasketAccessItems(), returning {}", response);
     }
@@ -118,7 +133,7 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
     return response;
   }
 
-  private WorkbasketAccessItemQuery getAccessIds(
+  private void getAccessIds(
       WorkbasketAccessItemQuery query, MultiValueMap<String, String> params) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to getAccessIds(query= {}, params= {})", params);
@@ -134,10 +149,9 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
       LOGGER.debug("Exit from getAccessIds(), returning {}", query);
     }
 
-    return query;
   }
 
-  private WorkbasketAccessItemQuery applyFilterParams(
+  private void applyFilterParams(
       WorkbasketAccessItemQuery query, MultiValueMap<String, String> params) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to applyFilterParams(query= {}, params= {})", params);
@@ -165,7 +179,6 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
       LOGGER.debug("Exit from applyFilterParams(), returning {}", query);
     }
 
-    return query;
   }
 
   private WorkbasketAccessItemQuery applySortingParams(

@@ -13,7 +13,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import pro.taskana.common.internal.security.GroupPrincipal;
 import pro.taskana.common.internal.security.UserPrincipal;
 import pro.taskana.ldap.LdapCacheTestImpl;
-import pro.taskana.rest.resource.AccessIdResource;
+import pro.taskana.rest.resource.AccessIdRepresentationModel;
 
 /**
  * This class will take care of Test API calls authentification. Also see {@link WebSecurityConfig}
@@ -70,9 +70,10 @@ public class SampleLoginModule extends UsernamePasswordAuthenticationFilter impl
   private void addGroupSubjectsDerivedFromUsername() {
     LdapCacheTestImpl ldapCacheTest = new LdapCacheTestImpl();
     String username = nameCallback.getName().toLowerCase();
-    List<AccessIdResource> groups = ldapCacheTest.findGroupsOfUser(username, Integer.MAX_VALUE);
+    List<AccessIdRepresentationModel> groups =
+        ldapCacheTest.findGroupsOfUser(username, Integer.MAX_VALUE);
     groups.forEach(
-        (AccessIdResource group) -> {
+        (AccessIdRepresentationModel group) -> {
           if (group.getAccessId().contains("ou=groups")) {
             subject.getPrincipals().add(new GroupPrincipal(group.getName()));
           }

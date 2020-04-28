@@ -5,6 +5,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
+import org.springframework.lang.NonNull;
 
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.simplehistory.impl.HistoryEventImpl;
@@ -20,8 +21,9 @@ public class TaskHistoryEventResourceAssembler
     super(HistoryEventImpl.class, TaskHistoryEventResource.class);
   }
 
+  @NonNull
   @Override
-  public TaskHistoryEventResource toModel(TaskanaHistoryEvent historyEvent) {
+  public TaskHistoryEventResource toModel(@NonNull TaskanaHistoryEvent historyEvent) {
     TaskHistoryEventResource resource = createModelWithId(historyEvent.getId(), historyEvent);
     try {
       resource.removeLinks();

@@ -12,11 +12,11 @@ import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.internal.models.ClassificationImpl;
 import pro.taskana.rest.Mapping;
 
-/** Test for {@link ClassificationResourceAssembler}. */
+/** Test for {@link ClassificationRepresentationModelAssembler}. */
 @TaskanaSpringBootTest
 class ClassificationAssemblerTest {
 
-  @Autowired ClassificationResourceAssembler classificationResourceAssembler;
+  @Autowired ClassificationRepresentationModelAssembler classificationRepresentationModelAssembler;
 
   @Autowired ClassificationService classificationService;
 
@@ -46,11 +46,11 @@ class ClassificationAssemblerTest {
     classification.setCreated(Instant.parse("2010-01-01T12:00:00Z"));
     classification.setModified(Instant.parse("2011-11-11T11:00:00Z"));
     // when
-    ClassificationResource classificationResource =
-        classificationResourceAssembler.toModel(classification);
+    ClassificationRepresentationModel classificationRepresentationModel =
+        classificationRepresentationModelAssembler.toModel(classification);
     // then
-    testEquality(classification, classificationResource);
-    testLinks(classificationResource);
+    testEquality(classification, classificationRepresentationModel);
+    testLinks(classificationRepresentationModel);
   }
 
   @Test
@@ -80,48 +80,68 @@ class ClassificationAssemblerTest {
     classification.setDescription("Test");
     classification.setIsValidInDomain(true);
 
-    ClassificationResource classificationResource = new ClassificationResource(classification);
+    ClassificationRepresentationModel classificationRepresentationModel =
+        new ClassificationRepresentationModel(classification);
 
     // when
     classification =
-        (ClassificationImpl) classificationResourceAssembler.toModel(classificationResource);
+        (ClassificationImpl)
+            classificationRepresentationModelAssembler
+                .toEntityModel(classificationRepresentationModel);
     // then
-    testEquality(classification, classificationResource);
+    testEquality(classification, classificationRepresentationModel);
   }
 
-  private void testLinks(ClassificationResource resource) {
+  private void testLinks(ClassificationRepresentationModel resource) {
     assertThat(resource.getLinks()).hasSize(1);
     assertThat(Mapping.URL_CLASSIFICATIONS_ID.replaceAll("\\{.*}", resource.getClassificationId()))
         .isEqualTo(resource.getRequiredLink("self").getHref());
   }
 
   private void testEquality(
-      Classification classification, ClassificationResource classificationResource) {
+      Classification classification,
+      ClassificationRepresentationModel classificationRepresentationModel) {
     assertThat(classification.getApplicationEntryPoint())
-        .isEqualTo(classificationResource.getApplicationEntryPoint());
-    assertThat(classification.getKey()).isEqualTo(classificationResource.getKey());
-    assertThat(classification.getDomain()).isEqualTo(classificationResource.getDomain());
-    assertThat(classification.getId()).isEqualTo(classificationResource.getClassificationId());
-    assertThat(classification.getDescription()).isEqualTo(classificationResource.getDescription());
-    assertThat(classification.getName()).isEqualTo(classificationResource.getName());
+        .isEqualTo(classificationRepresentationModel.getApplicationEntryPoint());
+    assertThat(classification.getKey()).isEqualTo(classificationRepresentationModel.getKey());
+    assertThat(classification.getDomain()).isEqualTo(classificationRepresentationModel.getDomain());
+    assertThat(classification.getId())
+        .isEqualTo(classificationRepresentationModel.getClassificationId());
+    assertThat(classification.getDescription())
+        .isEqualTo(classificationRepresentationModel.getDescription());
+    assertThat(classification.getName()).isEqualTo(classificationRepresentationModel.getName());
     assertThat(classification.getServiceLevel())
-        .isEqualTo(classificationResource.getServiceLevel());
-    assertThat(classification.getCategory()).isEqualTo(classificationResource.getCategory());
-    assertThat(classification.getCustom1()).isEqualTo(classificationResource.getCustom1());
-    assertThat(classification.getCustom2()).isEqualTo(classificationResource.getCustom2());
-    assertThat(classification.getCustom3()).isEqualTo(classificationResource.getCustom3());
-    assertThat(classification.getCustom4()).isEqualTo(classificationResource.getCustom4());
-    assertThat(classification.getCustom5()).isEqualTo(classificationResource.getCustom5());
-    assertThat(classification.getCustom6()).isEqualTo(classificationResource.getCustom6());
-    assertThat(classification.getCustom7()).isEqualTo(classificationResource.getCustom7());
-    assertThat(classification.getCustom8()).isEqualTo(classificationResource.getCustom8());
-    assertThat(classification.getParentId()).isEqualTo(classificationResource.getParentId());
-    assertThat(classification.getParentKey()).isEqualTo(classificationResource.getParentKey());
-    assertThat(classification.getType()).isEqualTo(classificationResource.getType());
-    assertThat(classification.getPriority()).isEqualTo(classificationResource.getPriority());
+        .isEqualTo(classificationRepresentationModel.getServiceLevel());
+    assertThat(classification.getCategory())
+        .isEqualTo(classificationRepresentationModel.getCategory());
+    assertThat(classification.getCustom1())
+        .isEqualTo(classificationRepresentationModel.getCustom1());
+    assertThat(classification.getCustom2())
+        .isEqualTo(classificationRepresentationModel.getCustom2());
+    assertThat(classification.getCustom3())
+        .isEqualTo(classificationRepresentationModel.getCustom3());
+    assertThat(classification.getCustom4())
+        .isEqualTo(classificationRepresentationModel.getCustom4());
+    assertThat(classification.getCustom5())
+        .isEqualTo(classificationRepresentationModel.getCustom5());
+    assertThat(classification.getCustom6())
+        .isEqualTo(classificationRepresentationModel.getCustom6());
+    assertThat(classification.getCustom7())
+        .isEqualTo(classificationRepresentationModel.getCustom7());
+    assertThat(classification.getCustom8())
+        .isEqualTo(classificationRepresentationModel.getCustom8());
+    assertThat(classification.getParentId())
+        .isEqualTo(classificationRepresentationModel.getParentId());
+    assertThat(classification.getParentKey())
+        .isEqualTo(classificationRepresentationModel.getParentKey());
+    assertThat(classification.getType()).isEqualTo(classificationRepresentationModel.getType());
+    assertThat(classification.getPriority())
+        .isEqualTo(classificationRepresentationModel.getPriority());
     assertThat(classification.getIsValidInDomain())
-        .isEqualTo(classificationResource.getIsValidInDomain());
-    assertThat(classification.getCreated()).isEqualTo(classificationResource.getCreated());
-    assertThat(classification.getModified()).isEqualTo(classificationResource.getModified());
+        .isEqualTo(classificationRepresentationModel.getIsValidInDomain());
+    assertThat(classification.getCreated())
+        .isEqualTo(classificationRepresentationModel.getCreated());
+    assertThat(classification.getModified())
+        .isEqualTo(classificationRepresentationModel.getModified());
   }
 }

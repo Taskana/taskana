@@ -9,12 +9,17 @@ import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 
-/** Test for {@link WorkbasketSummaryResourceAssembler}. */
+/**
+ * Test for {@link WorkbasketSummaryRepresentationModelAssembler}.
+ */
 @TaskanaSpringBootTest
 class WorkbasketSummaryAssemblerTest {
 
-  @Autowired WorkbasketSummaryResourceAssembler workbasketSummaryAssembler;
-  @Autowired WorkbasketService workbasketService;
+  @Autowired
+  WorkbasketSummaryRepresentationModelAssembler
+      workbasketSummaryRepresentationModelAssembler;
+  @Autowired
+  WorkbasketService workbasketService;
 
   @Test
   void workbasketSummaryToResource() {
@@ -35,24 +40,37 @@ class WorkbasketSummaryAssemblerTest {
     workbasketSummary.setOwner("Lars");
     workbasketSummary.setType(WorkbasketType.PERSONAL);
     // when
-    WorkbasketSummaryResource workbasketSummaryResource =
-        workbasketSummaryAssembler.toModel(workbasketSummary);
+    WorkbasketSummaryRepresentationModel workbasketSummaryRepresentationModel =
+        workbasketSummaryRepresentationModelAssembler.toModel(workbasketSummary);
     // then
     Assert.assertEquals(
-        workbasketSummary.getDescription(), workbasketSummaryResource.getDescription());
-    Assert.assertEquals(workbasketSummary.getDomain(), workbasketSummaryResource.getDomain());
-    Assert.assertEquals(workbasketSummary.getId(), workbasketSummaryResource.getWorkbasketId());
-    Assert.assertEquals(workbasketSummary.getKey(), workbasketSummaryResource.getKey());
-    Assert.assertEquals(workbasketSummary.getName(), workbasketSummaryResource.getName());
-    Assert.assertEquals(workbasketSummary.getCustom1(), workbasketSummaryResource.getCustom1());
-    Assert.assertEquals(workbasketSummary.getCustom2(), workbasketSummaryResource.getCustom2());
-    Assert.assertEquals(workbasketSummary.getCustom3(), workbasketSummaryResource.getCustom3());
-    Assert.assertEquals(workbasketSummary.getCustom4(), workbasketSummaryResource.getCustom4());
-    Assert.assertEquals(workbasketSummary.getOrgLevel1(), workbasketSummaryResource.getOrgLevel1());
-    Assert.assertEquals(workbasketSummary.getOrgLevel2(), workbasketSummaryResource.getOrgLevel2());
-    Assert.assertEquals(workbasketSummary.getOrgLevel3(), workbasketSummaryResource.getOrgLevel3());
-    Assert.assertEquals(workbasketSummary.getOrgLevel4(), workbasketSummaryResource.getOrgLevel4());
-    Assert.assertEquals(workbasketSummary.getOwner(), workbasketSummaryResource.getOwner());
-    Assert.assertEquals(workbasketSummary.getType(), workbasketSummaryResource.getType());
+        workbasketSummary.getDescription(), workbasketSummaryRepresentationModel.getDescription());
+    Assert.assertEquals(
+        workbasketSummary.getDomain(), workbasketSummaryRepresentationModel.getDomain());
+    Assert.assertEquals(
+        workbasketSummary.getId(), workbasketSummaryRepresentationModel.getWorkbasketId());
+    Assert.assertEquals(workbasketSummary.getKey(), workbasketSummaryRepresentationModel.getKey());
+    Assert.assertEquals(
+        workbasketSummary.getName(), workbasketSummaryRepresentationModel.getName());
+    Assert.assertEquals(
+        workbasketSummary.getCustom1(), workbasketSummaryRepresentationModel.getCustom1());
+    Assert.assertEquals(
+        workbasketSummary.getCustom2(), workbasketSummaryRepresentationModel.getCustom2());
+    Assert.assertEquals(
+        workbasketSummary.getCustom3(), workbasketSummaryRepresentationModel.getCustom3());
+    Assert.assertEquals(
+        workbasketSummary.getCustom4(), workbasketSummaryRepresentationModel.getCustom4());
+    Assert.assertEquals(
+        workbasketSummary.getOrgLevel1(), workbasketSummaryRepresentationModel.getOrgLevel1());
+    Assert.assertEquals(
+        workbasketSummary.getOrgLevel2(), workbasketSummaryRepresentationModel.getOrgLevel2());
+    Assert.assertEquals(
+        workbasketSummary.getOrgLevel3(), workbasketSummaryRepresentationModel.getOrgLevel3());
+    Assert.assertEquals(
+        workbasketSummary.getOrgLevel4(), workbasketSummaryRepresentationModel.getOrgLevel4());
+    Assert.assertEquals(
+        workbasketSummary.getOwner(), workbasketSummaryRepresentationModel.getOwner());
+    Assert.assertEquals(
+        workbasketSummary.getType(), workbasketSummaryRepresentationModel.getType());
   }
 }

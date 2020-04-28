@@ -26,10 +26,10 @@ import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.rest.Mapping;
 import pro.taskana.rest.RestConfiguration;
-import pro.taskana.rest.resource.ClassificationResource;
-import pro.taskana.rest.resource.ClassificationResourceAssembler;
-import pro.taskana.rest.resource.TaskResource;
-import pro.taskana.rest.resource.TaskResourceAssembler;
+import pro.taskana.rest.resource.ClassificationRepresentationModel;
+import pro.taskana.rest.resource.ClassificationRepresentationModelAssembler;
+import pro.taskana.rest.resource.TaskRepresentationModel;
+import pro.taskana.rest.resource.TaskRepresentationModelAssembler;
 import pro.taskana.task.api.models.Task;
 
 /** Test async updates. */
@@ -45,8 +45,8 @@ class AsyncUpdateJobIntTest {
   @SuppressWarnings("checkstyle:DeclarationOrder")
   static RestTemplate template;
 
-  @Autowired ClassificationResourceAssembler classificationResourceAssembler;
-  @Autowired TaskResourceAssembler taskResourceAssembler;
+  @Autowired ClassificationRepresentationModelAssembler classificationRepresentationModelAssembler;
+  @Autowired TaskRepresentationModelAssembler taskRepresentationModelAssembler;
   @Autowired JobScheduler jobScheduler;
   @Autowired RestHelper restHelper;
 
@@ -62,15 +62,15 @@ class AsyncUpdateJobIntTest {
     final Instant before = Instant.now();
     final ObjectMapper mapper = new ObjectMapper();
 
-    ResponseEntity<ClassificationResource> response =
+    ResponseEntity<ClassificationRepresentationModel> response =
         template.exchange(
             restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, CLASSIFICATION_ID),
             HttpMethod.GET,
             new HttpEntity<String>(restHelper.getHeaders()),
-            ParameterizedTypeReference.forType(ClassificationResource.class));
+            ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
 
     assertThat(response.getBody()).isNotNull();
-    ClassificationResource classification = response.getBody();
+    ClassificationRepresentationModel classification = response.getBody();
     assertThat(classification.getLink(IanaLinkRelations.SELF)).isNotNull();
 
     // 2nd step: modify classification and trigger update
@@ -88,18 +88,20 @@ class AsyncUpdateJobIntTest {
     jobScheduler.triggerJobs();
 
     // verify the classification modified timestamp is after 'before'
-    ResponseEntity<ClassificationResource> repeatedResponse =
+    ResponseEntity<ClassificationRepresentationModel> repeatedResponse =
         template.exchange(
             restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, CLASSIFICATION_ID),
             HttpMethod.GET,
             new HttpEntity<String>(restHelper.getHeaders()),
-            ParameterizedTypeReference.forType(ClassificationResource.class));
+            ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
 
     assertThat(repeatedResponse.getBody()).isNotNull();
 
-    ClassificationResource modifiedClassificationResource = repeatedResponse.getBody();
+    ClassificationRepresentationModel modifiedClassificationRepresentationModel =
+        repeatedResponse.getBody();
     Classification modifiedClassification =
-        classificationResourceAssembler.toModel(modifiedClassificationResource);
+        classificationRepresentationModelAssembler.toEntityModel(
+            modifiedClassificationRepresentationModel);
 
     assertThat(before).isBefore(modifiedClassification.getModified());
 
@@ -151,15 +153,15 @@ class AsyncUpdateJobIntTest {
   private void verifyTaskIsModifiedAfterOrEquals(String taskId, Instant before)
       throws InvalidArgumentException {
 
-    ResponseEntity<TaskResource> taskResponse =
+    ResponseEntity<TaskRepresentationModel> taskResponse =
         template.exchange(
             restHelper.toUrl(Mapping.URL_TASKS_ID, taskId),
             HttpMethod.GET,
             new HttpEntity<>(restHelper.getHeadersAdmin()),
-            ParameterizedTypeReference.forType(TaskResource.class));
+            ParameterizedTypeReference.forType(TaskRepresentationModel.class));
 
-    TaskResource taskResource = taskResponse.getBody();
-    Task task = taskResourceAssembler.toModel(taskResource);
+    TaskRepresentationModel taskRepresentationModel = taskResponse.getBody();
+    Task task = taskRepresentationModelAssembler.toEntityModel(taskRepresentationModel);
 
     Instant modified = task.getModified();
     assertThat(before).as("Task " + task.getId() + " has not been refreshed.").isBefore(modified);

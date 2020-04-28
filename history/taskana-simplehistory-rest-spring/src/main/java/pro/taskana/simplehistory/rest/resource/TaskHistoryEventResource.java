@@ -1,6 +1,5 @@
 package pro.taskana.simplehistory.rest.resource;
 
-import javax.validation.constraints.NotNull;
 import org.springframework.hateoas.RepresentationModel;
 
 import pro.taskana.spi.history.api.events.TaskanaHistoryEvent;
@@ -8,7 +7,7 @@ import pro.taskana.spi.history.api.events.TaskanaHistoryEvent;
 /** Resource class for {@link TaskanaHistoryEvent}. */
 public class TaskHistoryEventResource extends RepresentationModel<TaskHistoryEventResource> {
 
-  @NotNull private String taskHistoryEventId;
+  private String taskHistoryEventId;
   private String businessProcessId;
   private String parentBusinessProcessId;
   private String taskId;

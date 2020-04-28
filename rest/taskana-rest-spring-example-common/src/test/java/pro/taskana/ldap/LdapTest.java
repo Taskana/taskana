@@ -13,7 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.rest.RestConfiguration;
-import pro.taskana.rest.resource.AccessIdResource;
+import pro.taskana.rest.resource.AccessIdRepresentationModel;
 
 /** Test Ldap attachment. */
 @ActiveProfiles({"test"})
@@ -28,7 +28,7 @@ class LdapTest {
   @Test
   void testFindUsers() throws InvalidArgumentException {
     if (ldapClient.useLdap()) {
-      List<AccessIdResource> usersAndGroups = ldapClient.searchUsersAndGroups("ser0");
+      List<AccessIdRepresentationModel> usersAndGroups = ldapClient.searchUsersAndGroups("ser0");
       System.out.println("#### found " + LoggerUtils.listToString(usersAndGroups));
       assertThat(usersAndGroups).hasSize(50);
     }
