@@ -35,9 +35,11 @@ import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.configuration.DB;
 import pro.taskana.common.internal.configuration.DbSchemaCreator;
+import pro.taskana.common.internal.configuration.SecurityVerifier;
 
 /**
- * This central class creates the TaskanaEngine and holds all the information about DB and Security.
+ * This central class creates the TaskanaEngine and holds all the information about DB and
+ * Security.
  * <br>
  * Security is enabled by default.
  */
@@ -86,6 +88,7 @@ public class TaskanaEngineConfiguration {
   // global switch to enable JAAS based authentication and Taskana
   // authorizations
   protected boolean securityEnabled;
+  protected SecurityVerifier securityVerifier;
   protected boolean useManagedTransactions;
   // List of configured domain names
   protected List<String> domains = new ArrayList<>();
@@ -156,6 +159,9 @@ public class TaskanaEngineConfiguration {
           "The Database Schema Version doesn't match the expected version "
               + TASKANA_SCHEMA_VERSION);
     }
+
+    securityVerifier = new SecurityVerifier(this.dataSource, this.getSchemaName());
+    securityVerifier.checkSecureAccess(securityEnabled);
   }
 
   public void initTaskanaProperties(String propertiesFile, String rolesSeparator) {
@@ -290,7 +296,7 @@ public class TaskanaEngineConfiguration {
 
   public Map<String, List<String>> getClassificationCategoriesByTypeMap() {
     return this.classificationCategoriesByTypeMap.entrySet().stream()
-        .collect(Collectors.toMap(Entry::getKey, e -> new ArrayList<>(e.getValue())));
+               .collect(Collectors.toMap(Entry::getKey, e -> new ArrayList<>(e.getValue())));
   }
 
   public List<String> getClassificationCategoriesByType(String type) {
@@ -416,7 +422,7 @@ public class TaskanaEngineConfiguration {
     String taskCleanupJobAllCompletedSameParentBusinessProperty =
         props.getProperty(TASKANA_JOB_TASK_CLEANUP_ALL_COMPLETED_SAME_PARENTE_BUSINESS);
     if (taskCleanupJobAllCompletedSameParentBusinessProperty != null
-        && !taskCleanupJobAllCompletedSameParentBusinessProperty.isEmpty()) {
+            && !taskCleanupJobAllCompletedSameParentBusinessProperty.isEmpty()) {
       try {
         taskCleanupJobAllCompletedSameParentBusiness =
             Boolean.parseBoolean(taskCleanupJobAllCompletedSameParentBusinessProperty);
@@ -522,7 +528,8 @@ public class TaskanaEngineConfiguration {
             validPropertyName ->
                 roleMap.put(
                     TaskanaRole.fromPropertyName(validPropertyName),
-                    getTokensWithCollection(props.getProperty(validPropertyName), rolesSeparator)));
+                    getTokensWithCollection(props.getProperty(validPropertyName),
+                        rolesSeparator)));
 
     ensureRoleMapIsFullyInitialized();
 
@@ -535,8 +542,8 @@ public class TaskanaEngineConfiguration {
 
   private HashSet<String> getTokensWithCollection(String str, String rolesSeparator) {
     return Collections.list(new StringTokenizer(str, rolesSeparator)).stream()
-        .map(token -> String.valueOf(token).toLowerCase().trim())
-        .collect(Collectors.toCollection(HashSet::new));
+               .map(token -> String.valueOf(token).toLowerCase().trim())
+               .collect(Collectors.toCollection(HashSet::new));
   }
 
   private Properties readPropertiesFromFile(String propertiesFile) {
@@ -550,7 +557,8 @@ public class TaskanaEngineConfiguration {
           LOGGER.error("taskana properties file {} was not found on classpath.", propertiesFile);
         } else {
           props.load(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-          LOGGER.debug("Role properties were loaded from file {} from classpath.", propertiesFile);
+          LOGGER
+              .debug("Role properties were loaded from file {} from classpath.", propertiesFile);
         }
       } else {
         props.load(new FileInputStream(propertiesFile));
@@ -559,7 +567,8 @@ public class TaskanaEngineConfiguration {
     } catch (IOException e) {
       LOGGER.error("caught IOException when processing properties file {}.", propertiesFile);
       throw new SystemException(
-          "internal System error when processing properties file " + propertiesFile, e.getCause());
+          "internal System error when processing properties file " + propertiesFile,
+          e.getCause());
     }
     return props;
   }
@@ -575,6 +584,7 @@ public class TaskanaEngineConfiguration {
 
   private void ensureRoleMapIsFullyInitialized() {
     // make sure that roleMap does not return null for any role
-    Arrays.stream(TaskanaRole.values()).forEach(role -> roleMap.putIfAbsent(role, new HashSet<>()));
+    Arrays.stream(TaskanaRole.values())
+        .forEach(role -> roleMap.putIfAbsent(role, new HashSet<>()));
   }
 }
