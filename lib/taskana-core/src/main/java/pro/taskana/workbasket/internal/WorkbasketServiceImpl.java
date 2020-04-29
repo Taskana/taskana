@@ -41,7 +41,9 @@ import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 
-/** This is the implementation of WorkbasketService. */
+/**
+ * This is the implementation of WorkbasketService.
+ */
 public class WorkbasketServiceImpl implements WorkbasketService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketServiceImpl.class);
@@ -76,8 +78,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             workbasketId, "Workbasket with id " + workbasketId + " was not found.");
       }
       if (!taskanaEngine
-          .getEngine()
-          .isUserInRole(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN, TaskanaRole.TASK_ADMIN)) {
+               .getEngine()
+               .isUserInRole(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN,
+                   TaskanaRole.TASK_ADMIN)) {
         this.checkAuthorization(workbasketId, WorkbasketPermission.READ);
       }
       return result;
@@ -102,8 +105,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             "Workbasket with key " + workbasketKey + " and domain " + domain + " was not found.");
       }
       if (!taskanaEngine
-          .getEngine()
-          .isUserInRole(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN, TaskanaRole.TASK_ADMIN)) {
+               .getEngine()
+               .isUserInRole(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN,
+                   TaskanaRole.TASK_ADMIN)) {
         this.checkAuthorization(workbasketKey, domain, WorkbasketPermission.READ);
       }
       return result;
@@ -116,7 +120,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
   @Override
   public Workbasket createWorkbasket(Workbasket newWorkbasket)
       throws InvalidWorkbasketException, NotAuthorizedException, WorkbasketAlreadyExistException,
-          DomainNotFoundException {
+                 DomainNotFoundException {
     LOGGER.debug("entry to createtWorkbasket(workbasket)", newWorkbasket);
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
 
@@ -205,7 +209,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
   @Override
   public WorkbasketAccessItem createWorkbasketAccessItem(WorkbasketAccessItem workbasketAccessItem)
       throws InvalidArgumentException, NotAuthorizedException, WorkbasketNotFoundException,
-          WorkbasketAccessItemAlreadyExistException {
+                 WorkbasketAccessItemAlreadyExistException {
     LOGGER.debug(
         "entry to createWorkbasketAccessItemn(workbasketAccessItem = {})", workbasketAccessItem);
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
@@ -214,8 +218,8 @@ public class WorkbasketServiceImpl implements WorkbasketService {
       taskanaEngine.openConnection();
       accessItem.setId(IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET_AUTHORIZATION));
       if (workbasketAccessItem.getId() == null
-          || workbasketAccessItem.getAccessId() == null
-          || workbasketAccessItem.getWorkbasketId() == null) {
+              || workbasketAccessItem.getAccessId() == null
+              || workbasketAccessItem.getWorkbasketId() == null) {
         throw new InvalidArgumentException(
             String.format(
                 "Checking the preconditions of the current "
@@ -242,7 +246,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                 "SQLCODE=-803", // DB2
                 "uc_accessid_wbid", // POSTGRES
                 "UC_ACCESSID_WBID_INDEX_E" // H2
-                );
+            );
         if (accessItemExistsIdentifier.anyMatch(e.getMessage()::contains)) {
           throw new WorkbasketAccessItemAlreadyExistException(accessItem);
         }
@@ -269,9 +273,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
       WorkbasketAccessItem originalItem = workbasketAccessMapper.findById(accessItem.getId());
 
       if ((originalItem.getAccessId() != null
-              && !originalItem.getAccessId().equals(accessItem.getAccessId()))
-          || (originalItem.getWorkbasketId() != null
-              && !originalItem.getWorkbasketId().equals(accessItem.getWorkbasketId()))) {
+               && !originalItem.getAccessId().equals(accessItem.getAccessId()))
+              || (originalItem.getWorkbasketId() != null
+                      && !originalItem.getWorkbasketId().equals(accessItem.getWorkbasketId()))) {
         throw new InvalidArgumentException(
             "AccessId and WorkbasketId must not be changed in updateWorkbasketAccessItem calls");
       }
@@ -435,7 +439,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
   public void setWorkbasketAccessItems(
       String workbasketId, List<WorkbasketAccessItem> wbAccessItems)
       throws InvalidArgumentException, NotAuthorizedException,
-          WorkbasketAccessItemAlreadyExistException {
+                 WorkbasketAccessItemAlreadyExistException {
     LOGGER.debug(
         "entry to setWorkbasketAccessItems(workbasketAccessItems = {})", wbAccessItems.toString());
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
@@ -514,7 +518,8 @@ public class WorkbasketServiceImpl implements WorkbasketService {
       taskanaEngine.openConnection();
       // check that source workbasket exists
       getWorkbasket(workbasketId);
-      if (!taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN)) {
+      if (!taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN,
+          TaskanaRole.TASK_ADMIN)) {
         checkAuthorization(workbasketId, WorkbasketPermission.READ);
       }
       List<WorkbasketSummaryImpl> distributionTargets =
@@ -543,7 +548,8 @@ public class WorkbasketServiceImpl implements WorkbasketService {
       taskanaEngine.openConnection();
       // check that source workbasket exists
       Workbasket workbasket = getWorkbasket(workbasketKey, domain);
-      if (!taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN)) {
+      if (!taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN,
+          TaskanaRole.TASK_ADMIN)) {
         checkAuthorization(workbasket.getId(), WorkbasketPermission.READ);
       }
       List<WorkbasketSummaryImpl> distributionTargets =
@@ -690,7 +696,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
   @Override
   public boolean deleteWorkbasket(String workbasketId)
       throws NotAuthorizedException, WorkbasketNotFoundException, WorkbasketInUseException,
-          InvalidArgumentException {
+                 InvalidArgumentException {
     LOGGER.debug("entry to deleteWorkbasket(workbasketId = {})", workbasketId);
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
 
@@ -862,9 +868,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
   /**
    * Check if current workbasket is based on the newest (by modified).
    *
-   * @param oldWorkbasket the old workbasket in the system
+   * @param oldWorkbasket          the old workbasket in the system
    * @param workbasketImplToUpdate the workbasket to update
-   * @throws ConcurrencyException if the workbasket has been modified by some other process.
+   * @throws ConcurrencyException        if the workbasket has been modified by some other process.
    * @throws WorkbasketNotFoundException if the given workbasket does not exist.
    */
   void checkModifiedHasNotChanged(Workbasket oldWorkbasket, WorkbasketImpl workbasketImplToUpdate)
@@ -891,21 +897,21 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
   private long getCountTasksByWorkbasketId(String workbasketId) {
     return taskanaEngine
-        .getEngine()
-        .getTaskService()
-        .createTaskQuery()
-        .workbasketIdIn(workbasketId)
-        .count();
+               .getEngine()
+               .getTaskService()
+               .createTaskQuery()
+               .workbasketIdIn(workbasketId)
+               .count();
   }
 
   private long getCountTasksNotCompletedByWorkbasketId(String workbasketId) {
     return taskanaEngine
-        .getEngine()
-        .getTaskService()
-        .createTaskQuery()
-        .workbasketIdIn(workbasketId)
-        .stateNotIn(TaskState.COMPLETED, TaskState.TERMINATED, TaskState.CANCELLED)
-        .count();
+               .getEngine()
+               .getTaskService()
+               .createTaskQuery()
+               .workbasketIdIn(workbasketId)
+               .stateNotIn(TaskState.COMPLETED, TaskState.TERMINATED, TaskState.CANCELLED)
+               .count();
   }
 
   private boolean skipAuthorizationCheck(WorkbasketPermission... requestedPermissions) {
