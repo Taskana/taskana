@@ -11,7 +11,6 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.security.JaasExtension;
 import pro.taskana.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketService;
-import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 
 /**
  * Acceptance test for all "delete workbasket authorizations" scenarios.
@@ -33,15 +32,9 @@ public class DeleteWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
     assertThatThrownBy(deleteWorkbasketAccessItemCall).isInstanceOf(NotAuthorizedException.class);
 
-    WorkbasketAccessItem workbasketAccessItem =
-        workbasketService.newWorkbasketAccessItem(
-            "WBI:100000000000000000000000000000000008", "newAccessIdForUpdate");
-
-    workbasketAccessItem.setPermCustom1(true);
-
     deleteWorkbasketAccessItemCall =
         () -> {
-          workbasketService.deleteWorkbasketAccessItem(workbasketAccessItem.getId());
+          workbasketService.deleteWorkbasketAccessItem("WAI:100000000000000000000000000000000001");
         };
 
     assertThatThrownBy(deleteWorkbasketAccessItemCall).isInstanceOf(NotAuthorizedException.class);
