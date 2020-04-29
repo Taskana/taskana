@@ -52,7 +52,7 @@ class AccessIdControllerIntTest {
   void testQueryGroupsByCn() {
     ResponseEntity<AccessIdListResource> response =
         template.exchange(
-            restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=ksc",
+            restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=ksc-use",
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(AccessIdListResource.class));

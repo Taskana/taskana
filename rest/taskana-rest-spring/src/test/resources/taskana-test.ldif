@@ -1,5 +1,5 @@
 ######################
-# Organizational Units
+# Base Structure
 ######################
 dn: O=TASKANA
 objectclass: top
@@ -26,82 +26,127 @@ cn: organisation
 objectclass: top
 objectclass: container
 
+
 ########################
-# Users
+# Users KSC 1
 ########################
-dn: uid=user_1_1,cn=users,OU=Test,O=TASKANA
+dn: uid=teamlead-1,cn=users,OU=Test,O=TASKANA
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Titus
+description: desc
+uid: teamlead-1
+sn: Toll
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 1
+cn: Titus Toll
+
+dn: uid=user-1-1,cn=users,OU=Test,O=TASKANA
 objectclass: inetorgperson
 objectclass: organizationalperson
 objectclass: person
 objectclass: top
 givenName: Max
 description: desc
-uid: user_1_1
+uid: user-1-1
 sn: Mustermann
 ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 1
 cn: Max Mustermann
 
-dn: uid=user_1_2,cn=users,OU=Test,O=TASKANA
+dn: uid=user-1-2,cn=users,OU=Test,O=TASKANA
 objectclass: inetorgperson
 objectclass: organizationalperson
 objectclass: person
 objectclass: top
 givenName: Elena
 description: desc
-uid: user_1_1
+uid: user-1-2
 sn: Eifrig
 ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 1
 cn: Elena Eifrig
 
-dn: uid=user_2_1,cn=users,OU=Test,O=TASKANA
+
+########################
+# Users KSC 2
+########################
+dn: uid=teamlead-2,cn=users,OU=Test,O=TASKANA
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Frauke Faul
+description: desc
+uid: teamlead-2
+sn: Faul
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
+cn: Frauke Faul
+
+dn: uid=user-2-1,cn=users,OU=Test,O=TASKANA
 objectclass: inetorgperson
 objectclass: organizationalperson
 objectclass: person
 objectclass: top
 givenName: Simone
 description: desc
-uid: user_1_1
+uid: user-2-1
 sn: Müller
-ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 1
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
 cn: Simone Müller
 
-dn: uid=user_2_2,cn=users,OU=Test,O=TASKANA
+dn: uid=user-2-2,cn=users,OU=Test,O=TASKANA
 objectclass: inetorgperson
 objectclass: organizationalperson
 objectclass: person
 objectclass: top
 givenName: Tim
 description: desc
-uid: user_1_1
+uid: user-2-2
 sn: Schläfrig
-ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 1
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
 cn: Tim Schläfrig
-
 
 
 ########################
 # Groups
 ########################
 dn: cn=ksc-users,cn=groups,OU=Test,O=TASKANA
-uniquemember: uid=user_1_1,cn=users,OU=Test,O=TASKANA
-uniquemember: uid=user_1_2,cn=users,OU=Test,O=TASKANA
+uniquemember: uid=user-1-1,cn=users,OU=Test,O=TASKANA
+uniquemember: uid=user-1-2,cn=users,OU=Test,O=TASKANA
+uniquemember: uid=user-2-1,cn=users,OU=Test,O=TASKANA
+uniquemember: uid=user-2-2,cn=users,OU=Test,O=TASKANA
 cn: ksc-users
 objectclass: groupofuniquenames
 objectclass: top
 
+dn: cn=ksc-teamleads,cn=groups,OU=Test,O=TASKANA
+uniquemember: uid=teamlead-1,cn=users,OU=Test,O=TASKANA
+uniquemember: uid=teamlead-2,cn=users,OU=Test,O=TASKANA
+cn: ksc-teamleads
+objectclass: groupofuniquenames
+objectclass: top
 
-########################
-# Groups
-########################
+
+######################
+# Organizational Units
+######################
 dn: cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA
 cn: Organisationseinheit KSC
 objectclass: groupofuniquenames
 objectclass: top
 
 dn: cn=Organisationseinheit KSC 1,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA
-uniquemember: uid=user_1_1,cn=users,OU=Test,O=TASKANA
-uniquemember: uid=user_1_2,cn=users,OU=Test,O=TASKANA
+uniquemember: uid=teamlead-1,cn=users,OU=Test,O=TASKANA
+uniquemember: uid=user-1-1,cn=users,OU=Test,O=TASKANA
+uniquemember: uid=user-1-2,cn=users,OU=Test,O=TASKANA
 cn: Organisationseinheit KSC 1
 objectclass: groupofuniquenames
 objectclass: top
 
+dn: cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA
+uniquemember: uid=teamlead-2,cn=users,OU=Test,O=TASKANA
+uniquemember: uid=user-2-1,cn=users,OU=Test,O=TASKANA
+uniquemember: uid=user-2-2,cn=users,OU=Test,O=TASKANA
+cn: Organisationseinheit KSC 2
+objectclass: groupofuniquenames
+objectclass: top
