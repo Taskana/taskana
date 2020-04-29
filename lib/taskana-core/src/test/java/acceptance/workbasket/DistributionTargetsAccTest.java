@@ -24,7 +24,9 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
-/** Acceptance test for all "get workbasket" scenarios. */
+/**
+ * Acceptance test for all "get workbasket" scenarios.
+ */
 @ExtendWith(JaasExtension.class)
 class DistributionTargetsAccTest extends AbstractAccTest {
 
@@ -110,6 +112,22 @@ class DistributionTargetsAccTest extends AbstractAccTest {
     assertThat(beforeCount).isEqualTo(afterCount);
   }
 
+  @WithAccessId(user = "admin")
+  @WithAccessId(user = "businessadmin")
+  @WithAccessId(user = "taskadmin")
+  @TestTemplate
+  void should_ReturnDistributionTargets_When_NoExplicitPermissionsButUserIsInAdministrativeRole()
+      throws NotAuthorizedException, WorkbasketNotFoundException {
+
+    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+    String existingWb = "WBI:100000000000000000000000000000000001";
+
+    List<WorkbasketSummary> distributionTargets = workbasketService
+                                                      .getDistributionTargets(existingWb);
+    assertThat(distributionTargets).hasSize(4);
+
+  }
+
   @WithAccessId(user = "user_1_1", groups = "group_1")
   @WithAccessId(user = "taskadmin")
   @TestTemplate
@@ -118,12 +136,6 @@ class DistributionTargetsAccTest extends AbstractAccTest {
     String existingWb = "WBI:100000000000000000000000000000000001";
 
     ThrowingCallable call =
-        () -> {
-          workbasketService.getDistributionTargets(existingWb);
-        };
-    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
-
-    call =
         () -> {
           workbasketService.setDistributionTargets(
               existingWb, Collections.singletonList("WBI:100000000000000000000000000000000002"));
@@ -143,6 +155,20 @@ class DistributionTargetsAccTest extends AbstractAccTest {
               existingWb, "WBI:100000000000000000000000000000000002");
         };
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
+  }
+
+  @WithAccessId(user = "user_1_1")
+  @Test
+  void should_ThrowException_When_UserTriesToGetDistributionTargetsAndRoleIsNotAdministrative() {
+
+    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+    String existingWb = "WBI:100000000000000000000000000000000001";
+
+    ThrowingCallable getDistributionTargetsCall =
+        () -> {
+          workbasketService.getDistributionTargets(existingWb);
+        };
+    assertThatThrownBy(getDistributionTargetsCall).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(

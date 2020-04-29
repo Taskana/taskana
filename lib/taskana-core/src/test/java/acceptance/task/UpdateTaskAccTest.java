@@ -1,6 +1,7 @@
 package acceptance.task;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
@@ -10,6 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,7 +34,9 @@ import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
-/** Acceptance test for all "update task" scenarios. */
+/**
+ * Acceptance test for all "update task" scenarios.
+ */
 @ExtendWith(JaasExtension.class)
 class UpdateTaskAccTest extends AbstractAccTest {
 
@@ -44,8 +48,8 @@ class UpdateTaskAccTest extends AbstractAccTest {
   @Test
   void should_UpdatePrimaryObjectReferenceOfTask_When_Requested()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-          TaskNotFoundException, ConcurrencyException, AttachmentPersistenceException,
-          InvalidStateException {
+                 TaskNotFoundException, ConcurrencyException, AttachmentPersistenceException,
+                 InvalidStateException {
 
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
@@ -113,8 +117,8 @@ class UpdateTaskAccTest extends AbstractAccTest {
   @Test
   void should_ThrowException_When_TaskHasAlreadyBeenUpdated()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-          TaskNotFoundException, ConcurrencyException, AttachmentPersistenceException,
-          InvalidStateException, InterruptedException {
+                 TaskNotFoundException, ConcurrencyException, AttachmentPersistenceException,
+                 InvalidStateException, InterruptedException {
 
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
@@ -134,6 +138,22 @@ class UpdateTaskAccTest extends AbstractAccTest {
   @WithAccessId(user = "taskadmin")
   @TestTemplate
   void should_UpdateTask_When_NoExplicitPermissionsButUserIsInAdministrativeRole()
+      throws NotAuthorizedException, TaskNotFoundException {
+
+    TaskService taskService = taskanaEngine.getTaskService();
+    Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
+    final ClassificationSummary classificationSummary = task.getClassificationSummary();
+    task.setClassificationKey("T2100");
+    ThrowingCallable updateTaskCall = () -> {
+      taskService.updateTask(task);
+    };
+    assertThatCode(updateTaskCall).doesNotThrowAnyException();
+
+  }
+
+  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @Test
+  void should_UpdateTaskProperties_When_ClassificationOfTaskIsChanged()
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
                  ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
                  InvalidStateException, SQLException {
@@ -152,31 +172,6 @@ class UpdateTaskAccTest extends AbstractAccTest {
     assertThat(task.getPlanned()).isEqualTo(updatedTask.getPlanned());
     assertThat(task.getName()).isEqualTo(updatedTask.getName());
     assertThat(task.getDescription()).isEqualTo(updatedTask.getDescription());
-    resetDb(false); // classification of task TKI:0..00 was changed...
-  }
-
-  @WithAccessId(user = "user_1_1", groups = "group_1")
-  @Test
-  void should_UpdateTaskProperties_When_ClassificationOfTaskIsChanged()
-      throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
-          ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
-          InvalidStateException, SQLException {
-
-    TaskService taskService = taskanaEngine.getTaskService();
-    Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
-    final ClassificationSummary classificationSummary = task.getClassificationSummary();
-    task.setClassificationKey("T2100");
-    Task updatedTask = taskService.updateTask(task);
-    updatedTask = taskService.getTask(updatedTask.getId());
-
-    assertThat(updatedTask).isNotNull();
-    assertThat(updatedTask.getClassificationSummary().getKey()).isEqualTo("T2100");
-    assertThat(updatedTask.getClassificationSummary()).isNotEqualTo(classificationSummary);
-    assertThat(updatedTask.getCreated()).isNotEqualTo(updatedTask.getModified());
-    assertThat(task.getPlanned()).isEqualTo(updatedTask.getPlanned());
-    assertThat(task.getName()).isEqualTo(updatedTask.getName());
-    assertThat(task.getDescription()).isEqualTo(updatedTask.getDescription());
-    resetDb(false); // classification of task TKI:0..00 was changed...
   }
 
   @WithAccessId(user = "user_1_2", groups = "group_1")
@@ -206,8 +201,8 @@ class UpdateTaskAccTest extends AbstractAccTest {
   @Test
   void should_UpdateTask_When_CustomPropertiesOfTaskWereChanged()
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
-          ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
-          InvalidStateException {
+                 ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
+                 InvalidStateException {
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
     task.setCustomAttribute("1", "T2100");
@@ -311,8 +306,8 @@ class UpdateTaskAccTest extends AbstractAccTest {
   @Test
   void should_UpdateCallbackInfo_When_RequestedByApi()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException,
-          ConcurrencyException, AttachmentPersistenceException, InvalidStateException {
+                 TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException,
+                 ConcurrencyException, AttachmentPersistenceException, InvalidStateException {
 
     TaskService taskService = taskanaEngine.getTaskService();
     Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
