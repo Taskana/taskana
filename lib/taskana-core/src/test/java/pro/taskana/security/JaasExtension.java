@@ -108,8 +108,8 @@ public class JaasExtension implements InvocationInterceptor, TestTemplateInvocat
       if (factoryResult instanceof DynamicNode) {
         newChildrenForDynamicContainer = Collections.singleton((DynamicNode) factoryResult);
       } else if (factoryResult instanceof Stream) {
-        Stream<DynamicNode> tt = (Stream<DynamicNode>) factoryResult;
-        newChildrenForDynamicContainer = tt.collect(Collectors.toList());
+        Stream<DynamicNode> nodes = (Stream<DynamicNode>) factoryResult;
+        newChildrenForDynamicContainer = nodes.collect(Collectors.toList());
       } else if (factoryResult instanceof Iterable) {
         newChildrenForDynamicContainer = (Iterable<DynamicNode>) factoryResult;
       } else if (factoryResult instanceof Iterator) {
@@ -209,14 +209,14 @@ public class JaasExtension implements InvocationInterceptor, TestTemplateInvocat
   // endregion
 
   private static void persistDynamicContainerChildren(
-      Iterable<DynamicNode> nodes, Map<String, List<DynamicNode>> map) {
+      Iterable<DynamicNode> nodes, Map<String, List<DynamicNode>> childrenMap) {
     nodes.forEach(
         node -> {
           if (node instanceof DynamicContainer) {
             DynamicContainer container = (DynamicContainer) node;
-            List<DynamicNode> collect = container.getChildren().collect(Collectors.toList());
-            map.put(container.hashCode() + container.getDisplayName(), collect);
-            persistDynamicContainerChildren(collect, map);
+            List<DynamicNode> children = container.getChildren().collect(Collectors.toList());
+            childrenMap.put(container.hashCode() + container.getDisplayName(), children);
+            persistDynamicContainerChildren(children, childrenMap);
           }
         });
   }

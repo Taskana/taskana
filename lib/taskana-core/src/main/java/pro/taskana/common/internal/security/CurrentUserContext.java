@@ -65,9 +65,9 @@ public final class CurrentUserContext {
   }
 
   public static List<String> getAccessIds() {
-    List<String> groups = new ArrayList<>(getGroupIds());
-    groups.add(getUserid());
-    return groups;
+    List<String> accessIds = new ArrayList<>(getGroupIds());
+    accessIds.add(getUserid());
+    return accessIds;
   }
 
   /**
