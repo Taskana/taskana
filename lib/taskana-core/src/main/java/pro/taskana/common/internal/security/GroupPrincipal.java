@@ -12,12 +12,12 @@ import pro.taskana.common.api.LoggerUtils;
 /** Represents a group with a name and a set of members. */
 public class GroupPrincipal implements Group {
 
-  private String name;
-  private Set<Principal> members;
+  private final String name;
+  private final Set<Principal> members;
 
   public GroupPrincipal(String name) {
     this.name = name;
-    this.members = new HashSet<Principal>();
+    this.members = new HashSet<>();
   }
 
   @Override

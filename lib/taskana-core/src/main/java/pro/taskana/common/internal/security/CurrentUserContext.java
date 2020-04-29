@@ -8,8 +8,11 @@ import java.security.AccessController;
 import java.security.Principal;
 import java.security.acl.Group;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.security.auth.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,34 +51,23 @@ public final class CurrentUserContext {
   public static List<String> getGroupIds() {
     Subject subject = Subject.getSubject(AccessController.getContext());
     LOGGER.trace("Subject of caller: {}", subject);
-    List<String> groupIds = new ArrayList<>();
     if (subject != null) {
       Set<Group> groups = subject.getPrincipals(Group.class);
       LOGGER.trace("Public groups of caller: {}", groups);
-      for (Principal group : groups) {
-        String groupNameFound = group.getName();
-        String groupNameReturned = groupNameFound;
-        if (shouldUseLowerCaseForAccessIds() && groupNameFound != null) {
-          groupNameReturned = groupNameFound.toLowerCase();
-        }
-        LOGGER.trace(
-            "Found group id {}. Returning group Id: {}", groupNameFound, groupNameReturned);
-        groupIds.add(groupNameReturned);
-      }
-      return groupIds;
+      return groups.stream()
+          .map(Principal::getName)
+          .filter(Objects::nonNull)
+          .map(CurrentUserContext::convertAccessId)
+          .collect(Collectors.toList());
     }
-    LOGGER.trace("No groupids found in subject!");
-    return groupIds;
+    LOGGER.trace("No groupIds found in subject!");
+    return Collections.emptyList();
   }
 
   public static List<String> getAccessIds() {
-    List<String> accessIds = new ArrayList<>();
-    List<String> groupIds = getGroupIds();
-    accessIds.add(getUserid());
-    if (!groupIds.isEmpty()) {
-      accessIds.addAll(groupIds);
-    }
-    return accessIds;
+    List<String> groups = new ArrayList<>(getGroupIds());
+    groups.add(getUserid());
+    return groups;
   }
 
   /**
@@ -130,10 +122,10 @@ public final class CurrentUserContext {
       try {
         Class.forName(WSSUBJECT_CLASSNAME);
         LOGGER.debug("WSSubject detected. Assuming that Taskana runs on IBM WebSphere.");
-        runningOnWebSphere = Boolean.TRUE;
+        runningOnWebSphere = true;
       } catch (ClassNotFoundException e) {
         LOGGER.debug("No WSSubject detected. Using JAAS subject further on.");
-        runningOnWebSphere = Boolean.FALSE;
+        runningOnWebSphere = false;
       }
     }
     return runningOnWebSphere;
@@ -145,19 +137,24 @@ public final class CurrentUserContext {
     if (subject != null) {
       Set<Principal> principals = subject.getPrincipals();
       LOGGER.trace("Public principals of caller: {}", principals);
-      for (Principal principal : principals) {
-        if (!(principal instanceof Group)) {
-          String userIdFound = principal.getName();
-          String userIdUsed = userIdFound;
-          if (shouldUseLowerCaseForAccessIds() && userIdFound != null) {
-            userIdUsed = userIdFound.toLowerCase();
-          }
-          LOGGER.trace("Found User id {}. Returning User id {} ", userIdFound, userIdUsed);
-          return userIdUsed;
-        }
-      }
+      return principals.stream()
+          .filter(principal -> !(principal instanceof Group))
+          .map(Principal::getName)
+          .filter(Objects::nonNull)
+          .map(CurrentUserContext::convertAccessId)
+          .findFirst()
+          .orElse(null);
     }
-    LOGGER.trace("No userid found in subject!");
+    LOGGER.trace("No userId found in subject!");
     return null;
+  }
+
+  private static String convertAccessId(String accessId) {
+    String toReturn = accessId;
+    if (shouldUseLowerCaseForAccessIds()) {
+      toReturn = accessId.toLowerCase();
+    }
+    LOGGER.trace("Found AccessId '{}'. Returning AccessId '{}' ", accessId, toReturn);
+    return toReturn;
   }
 }
