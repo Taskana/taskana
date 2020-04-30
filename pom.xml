@@ -81,7 +81,7 @@
         <!-- byte buddy 1.9.7+ is needed to solve dependency errors with
             spring mock tests see LdapClientTest -->
         <version.byte-buddy>1.10.10</version.byte-buddy>
-        <version.byte-buddy-agent>1.10.9</version.byte-buddy-agent>
+        <version.byte-buddy-agent>1.10.10</version.byte-buddy-agent>
         <version.equalsverifier>3.1.13</version.equalsverifier>
         <version.openpojo>0.8.13</version.openpojo>
         <version.jacoco>0.8.5</version.jacoco>
