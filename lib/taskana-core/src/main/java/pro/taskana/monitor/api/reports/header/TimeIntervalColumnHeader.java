@@ -34,19 +34,15 @@ public class TimeIntervalColumnHeader implements ColumnHeader<AgeQueryItem> {
   public static int getSmallestUpperLimit(List<? extends TimeIntervalColumnHeader> columnHeaders) {
     return columnHeaders.stream()
         .mapToInt(TimeIntervalColumnHeader::getUpperAgeLimit)
-        .filter(i -> i < 0)
         .min()
         .orElse(0);
   }
 
   public static int getLargestLowerLimit(List<? extends TimeIntervalColumnHeader> columnHeaders) {
-    int greatestLowerLimit = 0;
-    for (TimeIntervalColumnHeader columnHeader : columnHeaders) {
-      if (columnHeader.getUpperAgeLimit() > greatestLowerLimit) {
-        greatestLowerLimit = columnHeader.getLowerAgeLimit();
-      }
-    }
-    return greatestLowerLimit;
+    return columnHeaders.stream()
+        .mapToInt(TimeIntervalColumnHeader::getLowerAgeLimit)
+        .max()
+        .orElse(0);
   }
 
   public int getLowerAgeLimit() {

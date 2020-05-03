@@ -27,8 +27,8 @@ public class WorkingDaysToDaysReportConverter {
 
   private static final Logger LOGGER =
       LoggerFactory.getLogger(WorkingDaysToDaysReportConverter.class);
-  private WorkingDaysToDaysConverter daysToWorkingDaysConverter;
-  private Map<Integer, Integer> cacheDaysToWorkingDays;
+  private final WorkingDaysToDaysConverter daysToWorkingDaysConverter;
+  private final Map<Integer, Integer> cacheDaysToWorkingDays;
 
   WorkingDaysToDaysReportConverter(
       List<? extends TimeIntervalColumnHeader> columnHeaders,
@@ -93,30 +93,30 @@ public class WorkingDaysToDaysReportConverter {
 
   protected Map<Integer, Integer> generateDaysToWorkingDays(
       List<? extends TimeIntervalColumnHeader> columnHeaders, final Instant referenceDate) {
-    HashMap<Integer, Integer> cacheDaysToWorkingDays = new HashMap<>();
-    cacheDaysToWorkingDays.put(0, 0);
+    HashMap<Integer, Integer> daysToWorkingDaysMap = new HashMap<>();
+    daysToWorkingDaysMap.put(0, 0);
 
     int positiveWorkdayLimit = TimeIntervalColumnHeader.getLargestLowerLimit(columnHeaders);
-    calculateFutureDaysToWorkingDays(cacheDaysToWorkingDays, referenceDate, positiveWorkdayLimit);
+    calculateFutureDaysToWorkingDays(daysToWorkingDaysMap, referenceDate, positiveWorkdayLimit);
 
     int negativeWorkdayLimit = TimeIntervalColumnHeader.getSmallestUpperLimit(columnHeaders);
-    calculateNegativeDaysToWorkingDays(cacheDaysToWorkingDays, referenceDate, negativeWorkdayLimit);
+    calculateNegativeDaysToWorkingDays(daysToWorkingDaysMap, referenceDate, negativeWorkdayLimit);
 
-    return cacheDaysToWorkingDays;
+    return daysToWorkingDaysMap;
   }
 
   private void calculateFutureDaysToWorkingDays(
-      HashMap<Integer, Integer> cacheDaysToWorkingDays, Instant referenceDate, int workdayLimit) {
-    calculateDaysToWorkingDays(cacheDaysToWorkingDays, referenceDate, workdayLimit, 1);
+      HashMap<Integer, Integer> daysToWorkingDaysMap, Instant referenceDate, int workdayLimit) {
+    calculateDaysToWorkingDays(daysToWorkingDaysMap, referenceDate, workdayLimit, 1);
   }
 
   private void calculateNegativeDaysToWorkingDays(
-      HashMap<Integer, Integer> cacheDaysToWorkingDays, Instant referenceDate, int workdayLimit) {
-    calculateDaysToWorkingDays(cacheDaysToWorkingDays, referenceDate, workdayLimit, -1);
+      HashMap<Integer, Integer> daysToWorkingDaysMap, Instant referenceDate, int workdayLimit) {
+    calculateDaysToWorkingDays(daysToWorkingDaysMap, referenceDate, workdayLimit, -1);
   }
 
   private void calculateDaysToWorkingDays(
-      HashMap<Integer, Integer> cacheDaysToWorkingDays,
+      HashMap<Integer, Integer> daysToWorkingDaysMap,
       Instant referenceDate,
       int workdayLimit,
       int direction) {
@@ -126,7 +126,7 @@ public class WorkingDaysToDaysReportConverter {
       amountOfDays += direction;
       amountOfWorkdays +=
           (daysToWorkingDaysConverter.isWorkingDay(amountOfDays, referenceDate)) ? direction : 0;
-      cacheDaysToWorkingDays.put(amountOfDays, amountOfWorkdays);
+      daysToWorkingDaysMap.put(amountOfDays, amountOfWorkdays);
     }
   }
 
