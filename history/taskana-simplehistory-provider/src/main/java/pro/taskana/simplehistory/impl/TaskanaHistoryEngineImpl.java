@@ -38,7 +38,7 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
   }
 
   public static TaskanaHistoryEngineImpl createTaskanaEngine(
-      TaskanaEngineConfiguration taskanaEngineConfiguration) throws SQLException {
+      TaskanaEngineConfiguration taskanaEngineConfiguration) {
     return new TaskanaHistoryEngineImpl(taskanaEngineConfiguration);
   }
 

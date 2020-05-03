@@ -57,7 +57,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
 
     columnValueList =
         classificationService.createClassificationQuery().domainIn("").listValues(CREATED, null);
-    assertThat(columnValueList);
+    assertThat(columnValueList).hasSize(1);
 
     columnValueList =
         classificationService

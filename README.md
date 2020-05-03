@@ -2,6 +2,7 @@ TASKANA - The open source task management library
 =================================================
 
 [![Build Status](https://travis-ci.org/Taskana/taskana.svg?branch=master)](https://travis-ci.org/Taskana/taskana)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Taskana_taskana&metric=alert_status)](https://sonarcloud.io/dashboard?id=Taskana_taskana)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/pro.taskana/taskana-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/pro.taskana/taskana-core)
 [![License](http://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
