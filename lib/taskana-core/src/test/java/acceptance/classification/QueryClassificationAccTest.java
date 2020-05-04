@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Locale;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -504,8 +503,8 @@ class QueryClassificationAccTest extends AbstractAccTest {
     assertThat(results.get(0).getName()).isEqualTo("Beratungsprotokoll");
   }
 
+  // This test checks the collation of the used databases H2, Postgres and DB2 11.1
   @Test
-  @Disabled("due to https://taskana.atlassian.net/browse/TSK-1197")
   void testQueryForOrderByNameAsc() {
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().orderByName(ASCENDING).list();

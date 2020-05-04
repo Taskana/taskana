@@ -261,7 +261,7 @@ public class TaskServiceImpl implements TaskService {
         // primary key violation: "UC_EXTERNAL_ID_INDEX_2 ON TASKANA.TASK(EXTERNAL_ID) ...
         String msg = e.getMessage() != null ? e.getMessage().toLowerCase() : null;
         if (msg != null
-            && (msg.contains("violation") || msg.contains("violates"))
+            && (msg.contains("violation") || msg.contains("violates") || msg.contains("verletzt"))
             && msg.contains("external_id")) {
           throw new TaskAlreadyExistException(
               "Task with external id " + task.getExternalId() + " already exists");

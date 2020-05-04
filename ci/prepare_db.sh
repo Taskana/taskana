@@ -63,9 +63,9 @@ function main() {
   POSTGRES_10_4)
     if [[ -z $(docker ps -aq -f name=^/taskana-postgres_10_4$ -f status=running) ]]; then
       if [[ -z $(docker ps -aq -f name=^/taskana-postgres_10_4$) ]]; then
-        docker run -d -p 50102:5432 --name taskana-postgres_10_4 -e POSTGRES_PASSWORD=postgres postgres:10.4
+		 docker-compose -f `dirname $0`/docker-compose.yml up -d
       else
-        docker start taskana-postgres_10_4
+		docker-compose -f `dirname $0`/docker-compose.yml start taskana-postgres_10_4
       fi
     fi
     echo 'jdbcDriver=org.postgresql.Driver' >$propFile
