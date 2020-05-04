@@ -38,7 +38,6 @@ env:
     - NODE_VERSION=12.10.0
   jobs:
     - DB=H2
-    - DB=DB2_10_5
     - DB=DB2_11_1
     - DB=POSTGRES_10_4
 
@@ -53,9 +52,17 @@ jobs:
       language: node_js
       node_js: $NODE_VERSION
       install: skip
-      env: DB=WEB
+      env: 
+        - DB=WEB
+        - DOCKER_COMPOSE_VERSION=1.4.2
       script: ci/test.sh "$DB"
       before_cache: rm -rf "$HOME/.m2/repository/pro/taskana"
+      before_install:
+        - sudo rm /usr/local/bin/docker-compose
+        - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+        - chmod +x docker-compose
+        - sudo mv docker-compose /usr/local/bin
+      
 
     # We are using the environment variable 'MODULE' to force travis into using a different cache for each build. 
     # See https://docs.travis-ci.com/user/caching/#caches-and-build-matrices for detailed information on

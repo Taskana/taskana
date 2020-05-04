@@ -107,13 +107,17 @@ SET PROP_FILE=%HOMEPATH%\taskanaUnitTest.properties
     del %TEMP%\temp
 
     IF DEFINED CONTAINER_EXISTS (
-        ECHO docker start taskana-postgres_10_4
-        docker start taskana-postgres_10_4
+        REM ECHO docker start taskana-postgres_10_4
+        REM docker start taskana-postgres_10_4
+        ECHO docker-compose -f %~dp0/docker-compose.yml start taskana-postgres_10_4
+        docker-compose -f %~dp0/docker-compose.yml start taskana-postgres_10_4
     )
 
     IF NOT DEFINED CONTAINER_EXISTS (
-        ECHO docker run -d -p 50102:5432 --name taskana-postgres_10_4 -e POSTGRES_PASSWORD=postgres postgres:10.4
-        docker run -d -p 50102:5432 --name taskana-postgres_10_4 -e POSTGRES_PASSWORD=postgres postgres:10.4
+        REM ECHO docker run -d -p 50102:5432 --name taskana-postgres_10_4 -e POSTGRES_PASSWORD=postgres postgres:10.4
+        REM docker run -d -p 50102:5432 --name taskana-postgres_10_4 -e POSTGRES_PASSWORD=postgres postgres:10.4
+        ECHO docker-compose -f %~dp0/docker-compose.yml up -d
+        docker-compose -f %~dp0/docker-compose.yml up -d
     )
 
     ECHO jdbcDriver=org.postgresql.Driver> %PROP_FILE%
