@@ -12,9 +12,8 @@ set -e # fail fast
 #H
 #H database:
 #H   - H2
-#H   - DB2_10_5
 #H   - DB2_11_1
-#H   - POSTGRES_10_4
+#H   - POSTGRES_10
 #H module:
 #H   - HISTORY
 #H sonar project key:
@@ -44,12 +43,12 @@ function main() {
       mvn sonar:sonar -f $REL/.. -Pcoverage -Dsonar.projectKey="$2"
     fi
     ;;
-  DB2_10_5 | DB2_11_1)
+  DB2_11_1)
     set -x
     eval "$REL/prepare_db.sh '$1'"
     mvn -q verify -B -f $REL/.. -am -T 4C -Dmaven.javadoc.skip -Dcheckstyle.skip -pl :taskana-core
     ;;
-  POSTGRES_10_4)
+  POSTGRES_10)
     set -x
     eval "$REL/prepare_db.sh '$1'"
     ### INSTALL ###
