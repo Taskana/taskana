@@ -22,48 +22,13 @@ SET PROP_FILE=%HOMEPATH%\taskanaUnitTest.properties
     ECHO.
     SET /P MENU=Select task then press ENTER:
     ECHO.
-    IF [%MENU%]==[1] GOTO START_DB2_10_5
-    IF [%MENU%]==[2] GOTO STOP_DB2_10_5
     IF [%MENU%]==[3] GOTO START_DB2_11_1
     IF [%MENU%]==[4] GOTO STOP_DB2_11_1
-    IF [%MENU%]==[5] GOTO START_POSTGRES_10_4
-    IF [%MENU%]==[6] GOTO STOP_POSTGRES_10_4
+    IF [%MENU%]==[5] GOTO START_POSTGRES_10
+    IF [%MENU%]==[6] GOTO STOP_POSTGRES_10
     IF [%MENU%]==[7] GOTO STOP_ALL
     IF [%MENU%]==[8] GOTO REMOVE_PROP
     EXIT /B
-
-:START_DB2_10_5
-    ECHO ---
-    docker ps -aq -f name=^/taskana-db2_10_5$ -f status=running > %TEMP%\temp
-    SET /P CONTAINER_RUNNING=< %TEMP%\temp
-    docker ps -aq -f name=^/taskana-db2_10_5$ > %TEMP%\temp
-    SET /P CONTAINER_EXISTS=< %TEMP%\temp
-    del %TEMP%\temp
-
-    IF DEFINED CONTAINER_EXISTS (
-        ECHO docker start taskana-db2_10_5
-        docker start taskana-db2_10_5
-    )
-
-    IF NOT DEFINED CONTAINER_EXISTS (
-        ECHO docker run -d -p 50100:50000 --name taskana-db2_10_5 taskana/db2:10.5 -d
-        docker run -d -p 50100:50000 --name taskana-db2_10_5 taskana/db2:10.5 -d
-    )
-
-    ECHO jdbcDriver=com.ibm.db2.jcc.DB2Driver> %PROP_FILE%
-    ECHO jdbcUrl=jdbc:db2://localhost:50100/tskdb>> %PROP_FILE%
-    ECHO dbUserName=db2inst1>> %PROP_FILE%
-    ECHO dbPassword=db2inst1-pwd>> %PROP_FILE%
-    ECHO schemaName=taskana>> %PROP_FILE%
-    ECHO ---
-    GOTO MENU
-
-:STOP_DB2_10_5
-    ECHO ---
-    ECHO docker stop taskana-db2_1 
-    docker stop taskana-db2_1
-    ECHO ---
-    GOTO MENU
 
 :START_DB2_11_1
     ECHO ---
@@ -98,27 +63,9 @@ SET PROP_FILE=%HOMEPATH%\taskanaUnitTest.properties
     ECHO ---
     GOTO MENU
 
-:START_POSTGRES_10_4
-    ECHO ---
-    docker ps -aq -f name=^/taskana-postgres_10_4$ -f status=running > %TEMP%\temp
-    SET /P CONTAINER_RUNNING=< %TEMP%\temp
-    docker ps -aq -f name=^/taskana-postgres_10_4$ > %TEMP%\temp
-    SET /P CONTAINER_EXISTS=< %TEMP%\temp
-    del %TEMP%\temp
-
-    IF DEFINED CONTAINER_EXISTS (
-        REM ECHO docker start taskana-postgres_10_4
-        REM docker start taskana-postgres_10_4
-        ECHO docker-compose -f %~dp0/docker-compose.yml start taskana-postgres_10_4
-        docker-compose -f %~dp0/docker-compose.yml start taskana-postgres_10_4
-    )
-
-    IF NOT DEFINED CONTAINER_EXISTS (
-        REM ECHO docker run -d -p 50102:5432 --name taskana-postgres_10_4 -e POSTGRES_PASSWORD=postgres postgres:10.4
-        REM docker run -d -p 50102:5432 --name taskana-postgres_10_4 -e POSTGRES_PASSWORD=postgres postgres:10.4
-        ECHO docker-compose -f %~dp0/docker-compose.yml up -d
-        docker-compose -f %~dp0/docker-compose.yml up -d
-    )
+:START_POSTGRES_10
+    ECHO docker-compose -f %~dp0/docker-compose.yml up -d
+    docker-compose -f %~dp0/docker-compose.yml up -d
 
     ECHO jdbcDriver=org.postgresql.Driver> %PROP_FILE%
     ECHO jdbcUrl=jdbc:postgresql://localhost:50102/postgres>> %PROP_FILE%
@@ -128,21 +75,19 @@ SET PROP_FILE=%HOMEPATH%\taskanaUnitTest.properties
     ECHO ---
     GOTO MENU
 
-:STOP_POSTGRES_10_4
+:STOP_POSTGRES_10
     ECHO ---
-    ECHO docker stop taskana-postgres_10_4 
-    docker stop taskana-postgres_10_4
+    ECHO docker stop taskana-postgres_10 
+    docker stop taskana-postgres_10
     ECHO ---
     GOTO MENU
 
 :STOP_ALL
     ECHO ---
-    ECHO docker stop taskana-db2_10_5
-    docker stop taskana-db2_10_5
     ECHO docker stop taskana-db2_11_1
     docker stop taskana-db2_11_1
-    ECHO docker stop taskana-postgres_10_4
-    docker stop takana-postgres_10_4
+    ECHO docker stop taskana-postgres_10
+    docker stop takana-postgres_10
     ECHO ---
     GOTO MENU
 
