@@ -23,18 +23,23 @@ public class DbSchemaCreator {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DbSchemaCreator.class);
   private static final String SQL = "/sql";
-  private static final String DB_SCHEMA_H2 = SQL + "/taskana-schema-h2.sql";
-  private static final String DB_SCHEMA_DB2 = SQL + "/taskana-schema-db2.sql";
-  private static final String DB_SCHEMA_POSTGRES = SQL + "/taskana-schema-postgres.sql";
-  private static final String DB_SCHEMA_DETECTION = SQL + "/schema-detection.sql";
-  private static final String DB_SCHEMA_DETECTION_POSTGRES = SQL + "/schema-detection-postgres.sql";
 
+  private static final String DB_SCHEMA_H2 = SQL + "/h2/taskana-schema-h2.sql";
+  private static final String DB_SCHEMA_DETECTION_H2 = SQL + "/h2/schema-detection-h2.sql";
+
+  private static final String DB_SCHEMA_DB2 = SQL + "/db2/taskana-schema-db2.sql";
+  private static final String DB_SCHEMA_DETECTION_DB2 = SQL + "/db2/schema-detection-db2.sql";
+
+  private static final String DB_SCHEMA_POSTGRES = SQL + "/postgres/taskana-schema-postgres.sql";
+  private static final String DB_SCHEMA_DETECTION_POSTGRES =
+      SQL + "/postgres/schema-detection-postgres.sql";
+
+  private final String schemaName;
+  private final StringWriter outWriter = new StringWriter();
+  private final PrintWriter logWriter = new PrintWriter(outWriter);
+  private final StringWriter errorWriter = new StringWriter();
+  private final PrintWriter errorLogWriter = new PrintWriter(errorWriter);
   private DataSource dataSource;
-  private String schemaName;
-  private StringWriter outWriter = new StringWriter();
-  private PrintWriter logWriter = new PrintWriter(outWriter);
-  private StringWriter errorWriter = new StringWriter();
-  private PrintWriter errorLogWriter = new PrintWriter(errorWriter);
 
   public DbSchemaCreator(DataSource dataSource, String schema) {
     super();
@@ -71,10 +76,9 @@ public class DbSchemaCreator {
   }
 
   public boolean isValidSchemaVersion(String expectedVersion) {
-    SqlRunner runner = null;
     try (Connection connection = dataSource.getConnection()) {
       connection.setSchema(this.schemaName);
-      runner = new SqlRunner(connection);
+      SqlRunner runner = new SqlRunner(connection);
       LOGGER.debug(connection.getMetaData().toString());
 
       String query =
@@ -118,7 +122,9 @@ public class DbSchemaCreator {
   }
 
   private static String selectDbSchemaDetectionScript(String dbProductName) {
-    return DB.isPostgreSql(dbProductName) ? DB_SCHEMA_DETECTION_POSTGRES : DB_SCHEMA_DETECTION;
+    return DB.isPostgreSql(dbProductName)
+        ? DB_SCHEMA_DETECTION_POSTGRES
+        : DB.isH2(dbProductName) ? DB_SCHEMA_DETECTION_H2 : DB_SCHEMA_DETECTION_DB2;
   }
 
   private ScriptRunner getScriptRunnerInstance(Connection connection) {
@@ -153,13 +159,15 @@ public class DbSchemaCreator {
 
   private StringReader getSqlSchemaNameParsed(BufferedReader reader) {
 
-    StringBuffer content = new StringBuffer();
+    StringBuilder content = new StringBuilder();
     try {
       String line = "";
       while (line != null) {
         line = reader.readLine();
         if (line != null) {
-          content.append(line.replaceAll("%schemaName%", schemaName) + System.lineSeparator());
+          content
+              .append(line.replaceAll("%schemaName%", schemaName))
+              .append(System.lineSeparator());
         }
       }
     } catch (IOException e) {
