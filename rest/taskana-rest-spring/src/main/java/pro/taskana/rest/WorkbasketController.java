@@ -311,8 +311,7 @@ public class WorkbasketController extends AbstractPagingController {
     return response;
   }
 
-  // TODO - schema inconsistent with PUT and GET
-  @DeleteMapping(path = Mapping.URL_WORKBASKET_DISTRIBUTION_ID)
+  @DeleteMapping(path = Mapping.URL_WORKBASKET_ID_DISTRIBUTION)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<CollectionModel<DistributionTargetResource>>
       removeDistributionTargetForWorkbasketId(
