@@ -230,7 +230,7 @@ class WorkbasketControllerIntTest {
     ResponseEntity<?> response =
         template.exchange(
             restHelper.toUrl(
-                Mapping.URL_WORKBASKET_DISTRIBUTION_ID, "WBI:100000000000000000000000000000000007"),
+                Mapping.URL_WORKBASKET_ID_DISTRIBUTION, "WBI:100000000000000000000000000000000007"),
             HttpMethod.DELETE,
             restHelper.defaultRequest(),
             Void.class);

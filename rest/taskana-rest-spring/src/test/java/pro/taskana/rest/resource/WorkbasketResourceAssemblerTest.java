@@ -111,7 +111,7 @@ class WorkbasketResourceAssemblerTest {
         .isEqualTo(Mapping.URL_WORKBASKET);
     assertThat(workbasket.getRequiredLink("removeDistributionTargets").getHref())
         .isEqualTo(
-            Mapping.URL_WORKBASKET_DISTRIBUTION_ID.replaceAll(
+            Mapping.URL_WORKBASKET_ID_DISTRIBUTION.replaceAll(
                 "\\{.*}", workbasket.getWorkbasketId()));
   }
 

@@ -43,9 +43,6 @@ public final class Mapping {
       URL_WORKBASKET_ID + "/workbasketAccessItems";
   public static final String URL_WORKBASKET_ID_DISTRIBUTION =
       URL_WORKBASKET_ID + "/distribution-targets";
-  // TODO @Deprecated
-  public static final String URL_WORKBASKET_DISTRIBUTION_ID =
-      URL_WORKBASKET + "/distribution-targets/{workbasketId}";
   public static final String URL_WORKBASKETDEFIITIONS = PRE + "workbasket-definitions";
 
   private Mapping() {}
