@@ -17,8 +17,8 @@ class WorkingDaysToDaysConverterTest {
   @BeforeAll
   static void setup() {
     WorkingDaysToDaysConverter.setGermanPublicHolidaysEnabled(true);
-    LocalDate dayOfReformation = LocalDate.of(2018, 10, 31);
-    LocalDate allSaintsDays = LocalDate.of(2018, 11, 1);
+    CustomHoliday dayOfReformation = CustomHoliday.of(31, 10);
+    CustomHoliday allSaintsDays = CustomHoliday.of(1, 11);
     WorkingDaysToDaysConverter.setCustomHolidays(Arrays.asList(dayOfReformation, allSaintsDays));
   }
 

@@ -25,7 +25,7 @@ import pro.taskana.common.api.exceptions.SystemException;
 public final class WorkingDaysToDaysConverter {
 
   private static boolean germanHolidaysEnabled;
-  private static Set<LocalDate> customHolidays = new HashSet<>();
+  private static Set<CustomHoliday> customHolidays = new HashSet<>();
   private Instant referenceDate;
   private LocalDate easterSunday;
 
@@ -77,7 +77,7 @@ public final class WorkingDaysToDaysConverter {
     germanHolidaysEnabled = germanPublicHolidaysEnabled;
   }
 
-  public static void setCustomHolidays(List<LocalDate> holidays) {
+  public static void setCustomHolidays(List<CustomHoliday> holidays) {
     customHolidays = new HashSet<>(holidays == null ? Collections.emptyList() : holidays);
   }
 
@@ -125,7 +125,7 @@ public final class WorkingDaysToDaysConverter {
       return true;
     }
     // Custom holidays that can be configured in the TaskanaEngineConfiguration
-    return customHolidays.contains(date);
+    return customHolidays.contains(CustomHoliday.of(date.getDayOfMonth(), date.getMonthValue()));
   }
 
   public boolean isGermanHoliday(LocalDate date) {
