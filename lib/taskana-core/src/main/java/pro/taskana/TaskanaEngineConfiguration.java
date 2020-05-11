@@ -10,7 +10,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,9 +31,11 @@ import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.SystemException;
+import pro.taskana.common.api.exceptions.WrongCustomHolidayFormatException;
 import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.configuration.DB;
 import pro.taskana.common.internal.configuration.DbSchemaCreator;
+import pro.taskana.common.internal.util.CustomHoliday;
 import pro.taskana.common.internal.configuration.SecurityVerifier;
 
 /**
@@ -73,6 +74,10 @@ public class TaskanaEngineConfiguration {
   // TASKANA_SCHEMA_VERSION
   private static final String DEFAULT_SCHEMA_NAME = "TASKANA";
 
+  private static final String TASKANA_CUSTOM_HOLIDAY = "taskana.custom.holidays";
+  private static final String TASKANA_CUSTOM_HOLIDAY_SEPERATOR = ";";
+  private static final String TASKANA_CUSTOM_HOLIDAY_DAY_MONTH_SEPERATOR = "\\.";
+
   // Taskana properties file
   protected String propertiesFileName = TASKANA_PROPERTIES;
 
@@ -97,8 +102,8 @@ public class TaskanaEngineConfiguration {
   protected Map<String, List<String>> classificationCategoriesByTypeMap = new HashMap<>();
   // Properties for the monitor
   private boolean germanPublicHolidaysEnabled;
-  private List<LocalDate> customHolidays;
-  // Properties for generalo job execution
+  private List<CustomHoliday> customHolidays = new ArrayList<>();
+  // Properties for general job execution
   private int jobBatchSize = 100;
   private int maxNumberOfJobRetries = 3;
   // Properties for the cleanup job
@@ -176,6 +181,7 @@ public class TaskanaEngineConfiguration {
     initClassificationTypes(props);
     initClassificationCategories(props);
     initGermanHolidaysEnabled(props);
+    initCustomHolidays(props);
   }
 
   public static DataSource createDefaultDataSource() {
@@ -254,12 +260,12 @@ public class TaskanaEngineConfiguration {
     this.germanPublicHolidaysEnabled = germanPublicHolidaysEnabled;
   }
 
-  public List<LocalDate> getCustomHolidays() {
+  public List<CustomHoliday> getCustomHolidays() {
     return customHolidays;
   }
 
-  public void setCustomHolidays(List<LocalDate> customHolidays) {
-    this.customHolidays = customHolidays;
+  public void setCustomHolidays(List<CustomHoliday> customHolidays) {
+    customHolidays.forEach(this.customHolidays::add);
   }
 
   public Map<TaskanaRole, Set<String>> getRoleMap() {
@@ -538,6 +544,34 @@ public class TaskanaEngineConfiguration {
           (k, v) ->
               LOGGER.debug("Found Taskana RoleConfig {} : {} ", k, LoggerUtils.setToString(v)));
     }
+  }
+
+  private void initCustomHolidays(Properties props) {
+    if (props.getProperty(TASKANA_CUSTOM_HOLIDAY) != null) {
+      Arrays.asList(
+              props.getProperty(TASKANA_CUSTOM_HOLIDAY).split(TASKANA_CUSTOM_HOLIDAY_SEPERATOR))
+          .forEach(
+              entry -> {
+                try {
+                  customHolidays.add(createCustomHolidayFromPropsEntry(entry));
+                } catch (WrongCustomHolidayFormatException e) {
+                  LOGGER.warn(e.getMessage());
+                }
+              });
+    }
+  }
+
+  private CustomHoliday createCustomHolidayFromPropsEntry(String customHolidayEntry)
+      throws WrongCustomHolidayFormatException {
+    String[] parts = customHolidayEntry.split(TASKANA_CUSTOM_HOLIDAY_DAY_MONTH_SEPERATOR);
+    if (parts.length == 2) {
+      return CustomHoliday.of(Integer.valueOf(parts[0]), Integer.valueOf(parts[1]));
+    }
+    throw new WrongCustomHolidayFormatException(
+        String.format(
+            "Wrong format fpr custom holiday entry %s! The format should be 'dd.MM' "
+                + "i.e. 01.05 for the first of may.",
+            customHolidayEntry));
   }
 
   private HashSet<String> getTokensWithCollection(String str, String rolesSeparator) {
