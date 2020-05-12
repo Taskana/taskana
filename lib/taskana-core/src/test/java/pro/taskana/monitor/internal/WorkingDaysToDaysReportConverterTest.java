@@ -9,8 +9,8 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import pro.taskana.common.api.CustomHoliday;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.internal.util.CustomHoliday;
 import pro.taskana.common.internal.util.WorkingDaysToDaysConverter;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.internal.preprocessor.WorkingDaysToDaysReportConverter;

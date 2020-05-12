@@ -1,4 +1,4 @@
-package pro.taskana.common.internal.util;
+package pro.taskana.common.api;
 
 import java.util.Objects;
 

@@ -21,12 +21,14 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.sql.DataSource;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.common.api.CustomHoliday;
 import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
@@ -57,7 +59,7 @@ public class TaskanaEngineConfiguration {
           + "SET COLLATION DEFAULT_de_DE ";
   private static final String H2_DRIVER = "org.h2.Driver";
   private static final String TASKANA_PROPERTIES = "/taskana.properties";
-  private static final String TASKANA_ROLES_SEPARATOR = "|";
+  private static final String TASKANA_PROPERTY_SEPARATOR = "|";
   private static final String TASKANA_JOB_BATCHSIZE = "taskana.jobs.batchSize";
   private static final String TASKANA_JOB_RETRIES = "taskana.jobs.maxRetries";
   private static final String TASKANA_JOB_CLEANUP_RUN_EVERY = "taskana.jobs.cleanup.runEvery";
@@ -75,8 +77,7 @@ public class TaskanaEngineConfiguration {
   private static final String DEFAULT_SCHEMA_NAME = "TASKANA";
 
   private static final String TASKANA_CUSTOM_HOLIDAY = "taskana.custom.holidays";
-  private static final String TASKANA_CUSTOM_HOLIDAY_SEPERATOR = ";";
-  private static final String TASKANA_CUSTOM_HOLIDAY_DAY_MONTH_SEPERATOR = "\\.";
+  private static final String TASKANA_CUSTOM_HOLIDAY_DAY_MONTH_SEPERATOR = ".";
 
   // Taskana properties file
   protected String propertiesFileName = TASKANA_PROPERTIES;
@@ -87,7 +88,7 @@ public class TaskanaEngineConfiguration {
   protected String schemaName;
 
   // Taskana role configuration
-  protected String rolesSeparator = TASKANA_ROLES_SEPARATOR;
+  protected String propertiesSeparator = TASKANA_PROPERTY_SEPARATOR;
   protected Map<TaskanaRole, Set<String>> roleMap = new HashMap<>();
 
   // global switch to enable JAAS based authentication and Taskana
@@ -132,7 +133,7 @@ public class TaskanaEngineConfiguration {
       boolean useManagedTransactions,
       boolean securityEnabled,
       String propertiesFileName,
-      String rolesSeparator,
+      String propertySeparator,
       String schemaName)
       throws SQLException {
     this.useManagedTransactions = useManagedTransactions;
@@ -142,8 +143,8 @@ public class TaskanaEngineConfiguration {
       this.propertiesFileName = propertiesFileName;
     }
 
-    if (rolesSeparator != null) {
-      this.rolesSeparator = rolesSeparator;
+    if (propertySeparator != null) {
+      this.propertiesSeparator = propertySeparator;
     }
 
     if (dataSource != null) {
@@ -154,7 +155,7 @@ public class TaskanaEngineConfiguration {
     }
 
     initSchemaName(schemaName);
-    initTaskanaProperties(this.propertiesFileName, this.rolesSeparator);
+    initTaskanaProperties(this.propertiesFileName, this.propertiesSeparator);
 
     dbSchemaCreator = new DbSchemaCreator(this.dataSource, this.getSchemaName());
     dbSchemaCreator.run();
@@ -245,11 +246,11 @@ public class TaskanaEngineConfiguration {
   }
 
   public String getPropertiesSeparator() {
-    return this.rolesSeparator;
+    return this.propertiesSeparator;
   }
 
   public void setPropertiesSeparator(String propertiesSeparator) {
-    this.rolesSeparator = propertiesSeparator;
+    this.propertiesSeparator = propertiesSeparator;
   }
 
   public boolean isGermanPublicHolidaysEnabled() {
@@ -264,7 +265,7 @@ public class TaskanaEngineConfiguration {
     return customHolidays;
   }
 
-  public void setCustomHolidays(List<CustomHoliday> customHolidays) {
+  public void addCustomHolidays(List<CustomHoliday> customHolidays) {
     customHolidays.forEach(this.customHolidays::add);
   }
 
@@ -549,7 +550,9 @@ public class TaskanaEngineConfiguration {
   private void initCustomHolidays(Properties props) {
     if (props.getProperty(TASKANA_CUSTOM_HOLIDAY) != null) {
       Arrays.asList(
-              props.getProperty(TASKANA_CUSTOM_HOLIDAY).split(TASKANA_CUSTOM_HOLIDAY_SEPERATOR))
+              props
+                  .getProperty(TASKANA_CUSTOM_HOLIDAY)
+                  .split(Pattern.quote(propertiesSeparator)))
           .forEach(
               entry -> {
                 try {
@@ -563,7 +566,8 @@ public class TaskanaEngineConfiguration {
 
   private CustomHoliday createCustomHolidayFromPropsEntry(String customHolidayEntry)
       throws WrongCustomHolidayFormatException {
-    String[] parts = customHolidayEntry.split(TASKANA_CUSTOM_HOLIDAY_DAY_MONTH_SEPERATOR);
+    String[] parts =
+        customHolidayEntry.split(Pattern.quote(TASKANA_CUSTOM_HOLIDAY_DAY_MONTH_SEPERATOR));
     if (parts.length == 2) {
       return CustomHoliday.of(Integer.valueOf(parts[0]), Integer.valueOf(parts[1]));
     }

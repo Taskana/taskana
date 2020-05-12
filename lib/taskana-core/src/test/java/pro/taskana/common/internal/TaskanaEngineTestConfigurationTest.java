@@ -7,8 +7,8 @@ import javax.sql.DataSource;
 import org.junit.jupiter.api.Test;
 
 import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.common.api.CustomHoliday;
 import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.common.internal.util.CustomHoliday;
 
 /** Test of configuration. */
 class TaskanaEngineTestConfigurationTest {
