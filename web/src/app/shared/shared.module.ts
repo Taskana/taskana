@@ -14,17 +14,16 @@ import { ClassificationsService } from 'app/shared/services/classifications/clas
 /**
  * Components
  */
-import { GeneralMessageModalComponent } from 'app/shared/components/general-message-modal/general-message-modal.component';
 import { SpinnerComponent } from 'app/shared/components/spinner/spinner.component';
-import { AlertComponent } from 'app/shared/components/alert/alert.component';
 import { MasterAndDetailComponent } from 'app/shared/components/master-and-detail/master-and-detail.component';
 import { TaskanaTreeComponent } from 'app/shared/components/tree/tree.component';
 import { TypeAheadComponent } from 'app/shared/components/type-ahead/type-ahead.component';
-import { RemoveConfirmationComponent } from 'app/shared/components/remove-confirmation/remove-confirmation.component';
 import { FilterComponent } from 'app/shared/components/filter/filter.component';
 import { IconTypeComponent } from 'app/administration/components/type-icon/icon-type.component';
 import { FieldErrorDisplayComponent } from 'app/shared/components/field-error-display/field-error-display.component';
-import { ErrorModalComponent } from './components/error-message-modal/error-modal.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
 import { SortComponent } from './components/sort/sort.component';
 import { PaginationComponent } from './components/pagination/pagination.component';
 import { NumberPickerComponent } from './components/number-picker/number-picker.component';
@@ -50,6 +49,8 @@ import { DateTimeZonePipe } from './pipes/date-time-zone.pipe';
  */
 import { HttpClientInterceptor } from './services/http-client-interceptor/http-client-interceptor.service';
 import { AccessIdsService } from './services/access-ids/access-ids.service';
+import { ToastComponent } from './components/toast/toast.component';
+import { DialogPopUpComponent } from './components/popup/dialog-pop-up.component';
 
 const MODULES = [
   CommonModule,
@@ -60,15 +61,15 @@ const MODULES = [
   BsDatepickerModule.forRoot(),
   AngularSvgIconModule,
   HttpClientModule,
+  MatSnackBarModule,
+  MatDialogModule,
+  MatButtonModule,
   RouterModule,
   TreeModule.forRoot()
 ];
 
 const DECLARATIONS = [
-  GeneralMessageModalComponent,
-  ErrorModalComponent,
   SpinnerComponent,
-  AlertComponent,
   MasterAndDetailComponent,
   TaskanaTreeComponent,
   TypeAheadComponent,
@@ -83,18 +84,21 @@ const DECLARATIONS = [
   SortComponent,
   FilterComponent,
   IconTypeComponent,
-  RemoveConfirmationComponent,
   FieldErrorDisplayComponent,
   PaginationComponent,
   NumberPickerComponent,
   ProgressBarComponent,
   DatePickerComponent,
-  DropdownComponent
+  DropdownComponent,
+  ToastComponent,
+  DialogPopUpComponent
 ];
 
 @NgModule({
   declarations: DECLARATIONS,
-  imports: MODULES,
+  imports: [
+    MODULES
+  ],
   exports: DECLARATIONS,
   providers: [
     {
@@ -105,7 +109,8 @@ const DECLARATIONS = [
     AccessIdsService,
     ClassificationsService,
     WorkbasketService
-  ]
+  ],
+  entryComponents: [ToastComponent, DialogPopUpComponent]
 })
 export class SharedModule {
 }

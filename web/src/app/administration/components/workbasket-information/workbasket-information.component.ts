@@ -15,11 +15,9 @@ import { ACTION } from 'app/shared/models/action';
 import { customFieldCount, Workbasket } from 'app/shared/models/workbasket';
 import { TaskanaDate } from 'app/shared/util/taskana.date';
 
-import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { SavingWorkbasketService, SavingInformation } from 'app/administration/services/saving-workbaskets.service';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
-import { RemoveConfirmationService } from 'app/shared/services/remove-confirmation/remove-confirmation.service';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { map } from 'rxjs/operators';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
@@ -62,12 +60,10 @@ implements OnInit, OnChanges, OnDestroy {
     private workbasketService: WorkbasketService,
     private route: ActivatedRoute,
     private router: Router,
-    private generalModalService: GeneralModalService,
     private savingWorkbasket: SavingWorkbasketService,
     private requestInProgressService: RequestInProgressService,
-    private removeConfirmationService: RemoveConfirmationService,
     private formsValidatorService: FormsValidatorService,
-    private notificationsService: NotificationService
+    private notificationService: NotificationService
   ) {
   }
 
@@ -114,16 +110,14 @@ implements OnInit, OnChanges, OnDestroy {
 
   onClear() {
     this.formsValidatorService.formSubmitAttempt = false;
-    this.notificationsService.triggerAlert(NOTIFICATION_TYPES.INFO_ALERT);
+    this.notificationService.showToast(NOTIFICATION_TYPES.INFO_ALERT);
     this.workbasket = { ...this.workbasketClone };
   }
 
   removeWorkbasket() {
-    this.removeConfirmationService.setRemoveConfirmation(
-      this.onRemoveConfirmed.bind(this),
-      `You are going to delete workbasket: ${
-        this.workbasket.key
-      }. Can you confirm this action?`
+    this.notificationService.showDialog(
+      `You are going to delete workbasket: ${this.workbasket.key}. Can you confirm this action?`,
+      this.onRemoveConfirmed.bind(this)
     );
   }
 
@@ -142,13 +136,13 @@ implements OnInit, OnChanges, OnDestroy {
       .subscribe(
         reponse => {
           this.requestInProgressService.setRequestInProgress(false);
-          this.notificationsService.triggerAlert(
+          this.notificationService.showToast(
             NOTIFICATION_TYPES.SUCCESS_ALERT_9,
             new Map<string, string>([['workbasketId', this.workbasket.workbasketId]])
           );
         },
         error => {
-          this.notificationsService.triggerError(NOTIFICATION_TYPES.REMOVE_ERR_2,
+          this.notificationService.triggerError(NOTIFICATION_TYPES.REMOVE_ERR_2,
             error,
             new Map<String, String>([['workbasketId', this.workbasket.workbasketId]]));
           this.requestInProgressService.setRequestInProgress(false);
@@ -170,14 +164,14 @@ implements OnInit, OnChanges, OnDestroy {
           this.afterRequest();
           this.workbasket = workbasketUpdated;
           this.workbasketClone = { ...this.workbasket };
-          this.notificationsService.triggerAlert(
+          this.notificationService.showToast(
             NOTIFICATION_TYPES.SUCCESS_ALERT_10,
             new Map<string, string>([['workbasketKey', workbasketUpdated.key]])
           );
         },
         error => {
           this.afterRequest();
-          this.notificationsService.triggerError(NOTIFICATION_TYPES.SAVE_ERR_4, error);
+          this.notificationService.triggerError(NOTIFICATION_TYPES.SAVE_ERR_4, error);
         }
       );
   }
@@ -195,7 +189,7 @@ implements OnInit, OnChanges, OnDestroy {
     this.addDateToWorkbasket();
     this.workbasketService.createWorkbasket(this.workbasket).subscribe(
       (workbasketUpdated: Workbasket) => {
-        this.notificationsService.triggerAlert(
+        this.notificationService.showToast(
           NOTIFICATION_TYPES.SUCCESS_ALERT_11,
           new Map<string, string>([['workbasketKey', workbasketUpdated.key]])
         );
@@ -222,7 +216,7 @@ implements OnInit, OnChanges, OnDestroy {
         }
       },
       error => {
-        this.notificationsService.triggerError(NOTIFICATION_TYPES.CREATE_ERR_2, error);
+        this.notificationService.triggerError(NOTIFICATION_TYPES.CREATE_ERR_2, error);
         this.requestInProgressService.setRequestInProgress(false);
       }
     );
@@ -243,12 +237,11 @@ implements OnInit, OnChanges, OnDestroy {
           this.requestInProgressService.setRequestInProgress(false);
           this.workbasketService.triggerWorkBasketSaved();
           if (response.status === 202) {
-            this.notificationsService.triggerError(NOTIFICATION_TYPES.MARK_ERR,
+            this.notificationService.triggerError(NOTIFICATION_TYPES.MARK_ERR,
               undefined,
               new Map<String, String>([['workbasketId', this.workbasket.workbasketId]]));
           } else {
-            // new Key ALERT_TYPES.SUCCESS_ALERT_12
-            this.notificationsService.triggerAlert(
+            this.notificationService.showToast(
               NOTIFICATION_TYPES.SUCCESS_ALERT_12,
               new Map<string, string>([['workbasketId', this.workbasket.workbasketId]])
             );

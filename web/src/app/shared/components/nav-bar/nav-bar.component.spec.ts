@@ -11,10 +11,11 @@ import { SelectedRouteService } from 'app/shared/services/selected-route/selecte
 import { BusinessAdminGuard } from 'app/shared/guards/business-admin.guard';
 import { MonitorGuard } from 'app/shared/guards/monitor.guard';
 import { WindowRefService } from 'app/shared/services/window/window.service';
-import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 
 import { configureTests } from 'app/app.test.configuration';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Overlay } from '@angular/cdk/overlay';
 import { NavBarComponent } from './nav-bar.component';
 
 describe('NavBarComponent', () => {
@@ -42,8 +43,9 @@ describe('NavBarComponent', () => {
           BusinessAdminGuard,
           MonitorGuard,
           WindowRefService,
-          GeneralModalService,
-          RequestInProgressService]
+          RequestInProgressService,
+          MatSnackBar,
+          Overlay]
       });
     };
     configureTests(configure).then(testBed => {

@@ -11,10 +11,8 @@ import { TaskanaDate } from 'app/shared/util/taskana.date';
 
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
 import { MasterAndDetailService } from 'app/shared/services/master-and-detail/master-and-detail.service';
-import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { TreeService } from 'app/shared/services/tree/tree.service';
-import { RemoveConfirmationService } from 'app/shared/services/remove-confirmation/remove-confirmation.service';
 
 import { DomainService } from 'app/shared/services/domain/domain.service';
 import { Pair } from 'app/shared/models/pair';
@@ -24,11 +22,13 @@ import { ImportExportService } from 'app/administration/services/import-export.s
 import { map, take } from 'rxjs/operators';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { ClassificationSelectors } from 'app/shared/store/classification-store/classification.selectors';
+import { MatDialogRef } from '@angular/material/dialog';
 import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { ClassificationCategoryImages,
   CustomField,
   getCustomFields } from '../../../shared/models/customisation';
+import { DialogPopUpComponent } from '../../../shared/components/popup/dialog-pop-up.component';
 
 @Component({
   selector: 'taskana-classification-details',
@@ -67,13 +67,11 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private masterAndDetailService: MasterAndDetailService,
-    private generalModalService: GeneralModalService,
     private requestInProgressService: RequestInProgressService,
     private treeService: TreeService,
     private domainService: DomainService,
-    private removeConfirmationService: RemoveConfirmationService,
     private formsValidatorService: FormsValidatorService,
-    private notificationsService: NotificationService,
+    private notificationService: NotificationService,
     private importExportService: ImportExportService,
     private store: Store) {
   }
@@ -129,9 +127,11 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     this.router.navigate(['./'], { relativeTo: this.route.parent });
   }
 
-  removeClassification() {
-    this.removeConfirmationService.setRemoveConfirmation(this.removeClassificationConfirmation.bind(this),
-      `You are going to delete classification: ${this.classification.key}. Can you confirm this action?`);
+  removeClassification(): MatDialogRef<DialogPopUpComponent> {
+    return this.notificationService.showDialog(
+      `You are going to delete classification: ${this.classification.key}. Can you confirm this action?`,
+      this.removeClassificationConfirmation.bind(this)
+    );
   }
 
   isFieldValid(field: string): boolean {
@@ -149,7 +149,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
 
   onClear() {
     this.formsValidatorService.formSubmitAttempt = false;
-    this.notificationsService.triggerAlert(NOTIFICATION_TYPES.INFO_ALERT);
+    this.notificationService.showToast(NOTIFICATION_TYPES.INFO_ALERT);
     this.classification = { ...this.classificationClone };
   }
 
@@ -189,14 +189,14 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         .subscribe((classification: ClassificationDefinition) => {
           this.classification = classification;
           this.classificationsService.selectClassification(classification);
-          this.notificationsService.triggerAlert(
+          this.notificationService.showToast(
             NOTIFICATION_TYPES.SUCCESS_ALERT_2,
             new Map<string, string>([['classificationKey', classification.key]])
           );
           this.afterRequest();
         },
         error => {
-          this.notificationsService.triggerError(NOTIFICATION_TYPES.CREATE_ERR, error);
+          this.notificationService.triggerError(NOTIFICATION_TYPES.CREATE_ERR, error);
           this.afterRequest();
         });
     } else {
@@ -205,13 +205,13 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
           this.classification._links.self.href, this.classification
         ));
         this.afterRequest();
-        this.notificationsService.triggerAlert(
+        this.notificationService.showToast(
           NOTIFICATION_TYPES.SUCCESS_ALERT_3,
           new Map<string, string>([['classificationKey', this.classification.key]])
         );
         this.cloneClassification(this.classification);
       } catch (error) {
-        this.notificationsService.triggerError(NOTIFICATION_TYPES.SAVE_ERR, error);
+        this.notificationService.triggerError(NOTIFICATION_TYPES.SAVE_ERR, error);
         this.afterRequest();
       }
     }
@@ -276,7 +276,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
 
   private removeClassificationConfirmation() {
     if (!this.classification || !this.classification.classificationId) {
-      this.notificationsService.triggerError(NOTIFICATION_TYPES.SELECT_ERR);
+      this.notificationService.triggerError(NOTIFICATION_TYPES.SELECT_ERR);
       return;
     }
     this.requestInProgressService.setRequestInProgress(true);
@@ -290,12 +290,12 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         this.afterRequest();
         this.classificationsService.selectClassification();
         this.router.navigate(['taskana/administration/classifications']);
-        this.notificationsService.triggerAlert(
+        this.notificationService.showToast(
           NOTIFICATION_TYPES.SUCCESS_ALERT_4,
           new Map<string, string>([['classificationKey', key]])
         );
       }, error => {
-        this.notificationsService.triggerError(NOTIFICATION_TYPES.REMOVE_ERR, error);
+        this.notificationService.triggerError(NOTIFICATION_TYPES.REMOVE_ERR, error);
         this.afterRequest();
       });
   }

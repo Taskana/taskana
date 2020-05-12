@@ -152,7 +152,7 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
             this.tasks = taskResource.tasks;
           } else {
             this.tasks = [];
-            this.notificationsService.triggerAlert(NOTIFICATION_TYPES.INFO_ALERT_2);
+            this.notificationsService.showToast(NOTIFICATION_TYPES.INFO_ALERT_2);
           }
           this.tasksPageInformation = taskResource.page;
         });

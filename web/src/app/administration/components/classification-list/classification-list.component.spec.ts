@@ -16,7 +16,6 @@ import { WorkbasketDefinitionService } from 'app/administration/services/workbas
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
 import { ClassificationDefinitionService } from 'app/administration/services/classification-definition.service';
 import { DomainService } from 'app/shared/services/domain/domain.service';
-import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { configureTests } from 'app/app.test.configuration';
 import { TreeService } from 'app/shared/services/tree/tree.service';
@@ -51,7 +50,7 @@ describe('ClassificationListComponent', () => {
       providers: [
         HttpClient, WorkbasketDefinitionService, NotificationService,
         ClassificationsService, DomainService, ClassificationDefinitionService,
-        GeneralModalService, RequestInProgressService, TreeService, ImportExportService
+        RequestInProgressService, TreeService, ImportExportService
       ]
     });
   };
