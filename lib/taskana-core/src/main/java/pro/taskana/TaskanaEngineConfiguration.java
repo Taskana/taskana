@@ -569,8 +569,8 @@ public class TaskanaEngineConfiguration {
     }
     throw new WrongCustomHolidayFormatException(
         String.format(
-            "Wrong format fpr custom holiday entry %s! The format should be 'dd.MM' "
-                + "i.e. 01.05 for the first of may.",
+            "Wrong format for custom holiday entry %s! The format should be 'dd.MM' "
+                + "i.e. 01.05 for the first of may. The value will be ignored!",
             customHolidayEntry));
   }
 
