@@ -4,8 +4,6 @@ import { OrientationService } from 'app/shared/services/orientation/orientation.
 import { Subscription } from 'rxjs';
 import { Orientation } from 'app/shared/models/orientation';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
-import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
-import { MessageModal } from 'app/shared/models/message-modal';
 import { FormControl, FormGroup } from '@angular/forms';
 import { TaskHistoryEventResourceData } from 'app/shared/models/task-history-event-resource';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
@@ -31,7 +29,6 @@ export class TaskQueryComponent implements OnInit {
   constructor(
     private taskQueryService: TaskQueryService,
     private orientationService: OrientationService,
-    private generalModalService: GeneralModalService,
     private requestInProgressService: RequestInProgressService,
     private errorsService: NotificationService
   ) {
@@ -143,17 +140,6 @@ export class TaskQueryComponent implements OnInit {
       }
       this.orderBy.sortBy = key;
     }
-  }
-
-  // TODO: Global?
-  openDetails(key: string, val: string) {
-    this.generalModalService.triggerMessage(
-      new MessageModal(
-        `These are the details of ${this.getHeaderFieldDescription(key)}`,
-        val,
-        'code'
-      )
-    );
   }
 
   getTaskValue(key: string, task: TaskHistoryEventData): string {

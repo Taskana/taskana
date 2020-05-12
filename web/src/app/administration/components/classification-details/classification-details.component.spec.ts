@@ -17,14 +17,15 @@ import { MasterAndDetailService } from 'app/shared/services/master-and-detail/ma
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
 import { TreeNodeModel } from 'app/shared/models/tree-node';
-import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { TreeService } from 'app/shared/services/tree/tree.service';
-import { RemoveConfirmationService } from 'app/shared/services/remove-confirmation/remove-confirmation.service';
 import { ImportExportService } from 'app/administration/services/import-export.service';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { ClassificationSelectors } from 'app/shared/store/classification-store/classification.selectors';
-import { ClassificationDetailsComponent } from './classification-details.component';
+import { dispatchKeyboardEvent } from '@angular/cdk/testing';
+import { TabDirective } from 'ngx-bootstrap';
+import { KEYS } from 'angular-tree-component';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
+import { ClassificationDetailsComponent } from './classification-details.component';
 
 
 @Component({
@@ -35,7 +36,7 @@ class DummyDetailComponent {
 }
 
 const routes: Routes = [
-  { path: 'administration/classifications', component: DummyDetailComponent }
+  { path: 'taskana/administration/classifications', component: DummyDetailComponent }
 ];
 
 describe('ClassificationDetailsComponent', () => {
@@ -45,7 +46,6 @@ describe('ClassificationDetailsComponent', () => {
 
   let classificationsService;
   let treeService;
-  let removeConfirmationService;
 
   const storeSpy: jasmine.SpyObj<Store> = jasmine.createSpyObj('Store', ['select']);
   const configure = (testBed: TestBed) => {
@@ -53,7 +53,7 @@ describe('ClassificationDetailsComponent', () => {
       imports: [FormsModule, HttpClientModule, RouterTestingModule.withRoutes(routes), AngularSvgIconModule, NgxsModule.forRoot()],
       declarations: [ClassificationDetailsComponent, DummyDetailComponent],
       providers: [MasterAndDetailService, RequestInProgressService, ClassificationsService,
-        HttpClient, GeneralModalService, NotificationService,
+        HttpClient, NotificationService,
         TreeService, ImportExportService, { provide: Store, useValue: storeSpy }]
     });
   };
@@ -75,7 +75,6 @@ describe('ClassificationDetailsComponent', () => {
 
       component = fixture.componentInstance;
       classificationsService = testBed.get(ClassificationsService);
-      removeConfirmationService = testBed.get(RemoveConfirmationService);
       spyOn(classificationsService, 'getClassifications').and.returnValue(of(treeNodes));
       spyOn(classificationsService, 'deleteClassification').and.returnValue(of(true));
       component.classification = new ClassificationDefinition('id1');
@@ -91,10 +90,15 @@ describe('ClassificationDetailsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should trigger treeService remove node id after removing a node', () => {
+  it('should trigger treeService remove node id after removing a node', done => {
     const treeServiceSpy = spyOn(treeService, 'setRemovedNodeId');
-    component.removeClassification();
-    removeConfirmationService.runCallbackFunction();
-    expect(treeServiceSpy).toHaveBeenCalledWith('id1');
+    const ref = component.removeClassification();
+    ref.afterOpened().subscribe(() => {
+      ref.close(ref.componentInstance.callback);
+    });
+    ref.afterClosed().subscribe(() => {
+      expect(treeServiceSpy).toHaveBeenCalledWith('id1');
+      done();
+    });
   });
 });

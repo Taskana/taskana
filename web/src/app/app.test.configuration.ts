@@ -3,7 +3,6 @@ import { getTestBed, TestBed } from '@angular/core/testing';
 
 import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
 
-import { RemoveConfirmationService } from 'app/shared/services/remove-confirmation/remove-confirmation.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
@@ -12,7 +11,6 @@ import { TaskanaEngineServiceMock } from './shared/services/taskana-engine/taska
 import { TaskanaEngineService } from './shared/services/taskana-engine/taskana-engine.service';
 import { DomainService } from './shared/services/domain/domain.service';
 import { DomainServiceMock } from './shared/services/domain/domain.service.mock';
-import { GeneralModalService } from './shared/services/general-modal/general-modal.service';
 import { RequestInProgressService } from './shared/services/request-in-progress/request-in-progress.service';
 import { OrientationService } from './shared/services/orientation/orientation.service';
 import { SelectedRouteService } from './shared/services/selected-route/selected-route';
@@ -34,8 +32,8 @@ export const configureTests = (configure: (testBed: TestBed) => void) => {
   testBed.configureTestingModule({
     imports: [BrowserAnimationsModule, SharedModule, FormsModule, ReactiveFormsModule, HttpClientModule, AngularSvgIconModule],
     providers: [{ provide: TaskanaEngineService, useClass: TaskanaEngineServiceMock },
-      { provide: DomainService, useClass: DomainServiceMock }, RemoveConfirmationService,
-      NotificationService, GeneralModalService, RequestInProgressService, OrientationService, SelectedRouteService, FormsValidatorService]
+      { provide: DomainService, useClass: DomainServiceMock }, NotificationService,
+      RequestInProgressService, OrientationService, SelectedRouteService, FormsValidatorService]
   });
 
   return testBed.compileComponents().then(() => testBed);

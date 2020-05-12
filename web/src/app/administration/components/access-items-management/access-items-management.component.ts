@@ -8,8 +8,6 @@ import { FormsValidatorService } from 'app/shared/services/forms-validator/forms
 import { AccessItemWorkbasketResource } from 'app/shared/models/access-item-workbasket-resource';
 import { AccessItemWorkbasket } from 'app/shared/models/access-item-workbasket';
 import { Sorting } from 'app/shared/models/sorting';
-import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
-import { RemoveConfirmationService } from 'app/shared/services/remove-confirmation/remove-confirmation.service';
 
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
@@ -48,8 +46,7 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
     private accessIdsService: AccessIdsService,
     private formsValidatorService: FormsValidatorService,
     private requestInProgressService: RequestInProgressService,
-    private removeConfirmationService: RemoveConfirmationService,
-    private generalModalService: GeneralModalService,
+    private notificationService: NotificationService,
     private notificationsService: NotificationService) {
   }
 
@@ -141,11 +138,11 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
   }
 
   revokeAccess() {
-    this.removeConfirmationService.setRemoveConfirmation(
-      this.onRemoveConfirmed.bind(this),
+    this.notificationService.showDialog(
       `You are going to delete all access related: ${
         this.accessIdSelected
-      }. Can you confirm this action?`
+      }. Can you confirm this action?`,
+      this.onRemoveConfirmed.bind(this)
     );
   }
 
@@ -160,7 +157,7 @@ export class AccessItemsManagementComponent implements OnInit, OnDestroy {
       .subscribe(
         response => {
           this.requestInProgressService.setRequestInProgress(false);
-          this.notificationsService.triggerAlert(
+          this.notificationsService.showToast(
             NOTIFICATION_TYPES.SUCCESS_ALERT, new Map<string, string>([['accessId', this.accessIdSelected]])
           );
           this.searchForAccessItemsWorkbaskets();

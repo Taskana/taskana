@@ -9,7 +9,6 @@ import { WorkbasketAccessItemsResource } from 'app/shared/models/workbasket-acce
 import { ACTION } from 'app/shared/models/action';
 
 import { SavingInformation, SavingWorkbasketService } from 'app/administration/services/saving-workbaskets.service';
-import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { highlight } from 'theme/animations/validation.animation';
@@ -56,7 +55,6 @@ export class WorkbasketAccessItemsComponent implements OnChanges, OnDestroy {
 
   constructor(
     private workbasketService: WorkbasketService,
-    private generalModalService: GeneralModalService,
     private savingWorkbaskets: SavingWorkbasketService,
     private requestInProgressService: RequestInProgressService,
     private formBuilder: FormBuilder,
@@ -106,7 +104,7 @@ export class WorkbasketAccessItemsComponent implements OnChanges, OnDestroy {
     this.AccessItemsForm.reset();
     this.setAccessItemsGroups(this.accessItemsResetClone);
     this.accessItemsClone = this.cloneAccessItems(this.accessItemsResetClone);
-    this.notificationsService.triggerAlert(NOTIFICATION_TYPES.INFO_ALERT);
+    this.notificationsService.showToast(NOTIFICATION_TYPES.INFO_ALERT);
   }
 
   remove(index: number) {
@@ -183,7 +181,7 @@ export class WorkbasketAccessItemsComponent implements OnChanges, OnDestroy {
       .subscribe(response => {
         this.accessItemsClone = this.cloneAccessItems(this.AccessItemsForm.value.accessItemsGroups);
         this.accessItemsResetClone = this.cloneAccessItems(this.AccessItemsForm.value.accessItemsGroups);
-        this.notificationsService.triggerAlert(NOTIFICATION_TYPES.SUCCESS_ALERT_7,
+        this.notificationsService.showToast(NOTIFICATION_TYPES.SUCCESS_ALERT_7,
           new Map<string, string>([['workbasketKey', this.workbasket.key]]));
         this.requestInProgressService.setRequestInProgress(false);
       }, error => {

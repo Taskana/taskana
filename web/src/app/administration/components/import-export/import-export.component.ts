@@ -3,8 +3,6 @@ import { ClassificationDefinitionService } from 'app/administration/services/cla
 import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition.service';
 import { DomainService } from 'app/shared/services/domain/domain.service';
 import { TaskanaType } from 'app/shared/models/taskana-type';
-import { MessageModal } from 'app/shared/models/message-modal';
-import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { environment } from 'environments/environment';
 import { UploadService } from 'app/shared/services/upload/upload.service';
 import { ImportExportService } from 'app/administration/services/import-export.service';
@@ -30,7 +28,6 @@ export class ImportExportComponent implements OnInit {
     private domainService: DomainService,
     private workbasketDefinitionService: WorkbasketDefinitionService,
     private classificationDefinitionService: ClassificationDefinitionService,
-    private generalModalService: GeneralModalService,
     private notificationsService: NotificationService,
     public uploadservice: UploadService,
     private errorsService: NotificationService,
@@ -117,7 +114,7 @@ export class ImportExportComponent implements OnInit {
       }
       this.errorHandler(key, event);
     } else if (event.readyState === 4 && event.status === 200) {
-      this.notificationsService.triggerAlert(NOTIFICATION_TYPES.SUCCESS_ALERT_6);
+      this.notificationsService.showToast(NOTIFICATION_TYPES.SUCCESS_ALERT_6);
       this.importExportService.setImportingFinished(true);
       this.resetProgress();
     }

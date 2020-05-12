@@ -12,8 +12,6 @@ import { WorkbasketAccessItems } from 'app/shared/models/workbasket-access-items
 import { WorkbasketAccessItemsResource } from 'app/shared/models/workbasket-access-items-resource';
 import { ICONTYPES } from 'app/shared/models/icon-types';
 
-
-import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { SavingWorkbasketService } from 'app/administration/services/saving-workbaskets.service';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
@@ -40,7 +38,7 @@ describe('WorkbasketAccessItemsComponent', () => {
     testBed.configureTestingModule({
       declarations: [WorkbasketAccessItemsComponent],
       imports: [FormsModule, AngularSvgIconModule, HttpClientModule, ReactiveFormsModule, NgxsModule.forRoot()],
-      providers: [WorkbasketService, NotificationService, GeneralModalService, SavingWorkbasketService, RequestInProgressService,
+      providers: [WorkbasketService, NotificationService, SavingWorkbasketService, RequestInProgressService,
         AccessIdsService, FormsValidatorService, { provide: Store, useValue: storeSpy }]
     });
   };
@@ -80,7 +78,7 @@ describe('WorkbasketAccessItemsComponent', () => {
         new Links({ href: 'someurl' })
       )));
       spyOn(workbasketService, 'updateWorkBasketAccessItem').and.returnValue(of(true));
-      spyOn(notificationsService, 'triggerAlert').and.returnValue(of(true));
+      spyOn(notificationsService, 'showToast').and.returnValue(of(true));
       debugElement = fixture.debugElement.nativeElement;
       accessIdsService = testBed.get(AccessIdsService);
       spyOn(accessIdsService, 'getAccessItemsInformation').and.returnValue(of(new Array<string>(
@@ -122,7 +120,7 @@ describe('WorkbasketAccessItemsComponent', () => {
 
     fixture.whenStable().then(() => {
       fixture.detectChanges();
-      expect(notificationsService.triggerAlert).toHaveBeenCalledWith(
+      expect(notificationsService.showToast).toHaveBeenCalledWith(
         NOTIFICATION_TYPES.SUCCESS_ALERT_7,
         new Map<string, string>([['workbasketKey', component.workbasket.key]])
       );

@@ -4,6 +4,8 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
 
 import { configureTests } from 'app/app.test.configuration';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Overlay } from '@angular/cdk/overlay';
 import { FilterComponent } from './filter.component';
 
 describe('FilterComponent', () => {
@@ -15,7 +17,7 @@ describe('FilterComponent', () => {
   beforeEach(done => {
     const configure = (testBed: TestBed) => {
       testBed.configureTestingModule({
-        declarations: [],
+        providers: [MatSnackBar, Overlay],
         imports: [AngularSvgIconModule, FormsModule, HttpClientModule]
       });
     };

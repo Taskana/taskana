@@ -8,13 +8,14 @@ export class ErrorModel {
 
   constructor(key: NOTIFICATION_TYPES, passedError?: HttpErrorResponse, addition?: Map<String, String>) {
     this.title = notifications.get(key).name;
-    this.message = notifications.get(key).text;
+    let messageTemp = notifications.get(key).text;
     this.errObj = passedError;
     if (addition) {
       addition.forEach((value: string, replacementKey: string) => {
-        this.message.replace(`{${replacementKey}}`, value);
+        messageTemp = messageTemp.replace(`{${replacementKey}}`, value);
         this.title.replace(`{${replacementKey}}`, value);
       });
     }
+    this.message = messageTemp;
   }
 }

@@ -51,12 +51,12 @@ export class FormsValidatorService {
     const responseOwner = new ResponseOwner(values[1]);
     if (!(values[0] && responseOwner.valid)) {
       if (!responseOwner.valid) {
-        this.notificationsService.triggerAlert(
+        this.notificationsService.showToast(
           NOTIFICATION_TYPES.WARNING_ALERT_2,
           new Map<string, string>([['owner', responseOwner.field]])
         );
       } else {
-        this.notificationsService.triggerAlert(NOTIFICATION_TYPES.WARNING_ALERT);
+        this.notificationsService.showToast(NOTIFICATION_TYPES.WARNING_ALERT);
       }
     }
     return values[0] && responseOwner.valid;
@@ -83,7 +83,7 @@ export class FormsValidatorService {
       result = result && responseOwner.valid;
     });
     if (!result) {
-      this.notificationsService.triggerAlert(
+      this.notificationsService.showToast(
         NOTIFICATION_TYPES.WARNING_ALERT_2,
         new Map<string, string>([['owner', responseOwner.field]])
       );

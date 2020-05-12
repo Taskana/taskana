@@ -13,7 +13,6 @@ import { Workbasket } from 'app/shared/models/workbasket';
 import { WorkbasketDistributionTargetsResource } from 'app/shared/models/workbasket-distribution-targets-resource';
 
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
-import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { SavingWorkbasketService } from 'app/administration/services/saving-workbaskets.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 
@@ -36,7 +35,7 @@ describe('WorkbasketDistributionTargetsComponent', () => {
       testBed.configureTestingModule({
         imports: [AngularSvgIconModule, HttpClientModule, InfiniteScrollModule],
         declarations: [WorkbasketDistributionTargetsComponent, WorkbasketDualListComponent],
-        providers: [WorkbasketService, NotificationService, SavingWorkbasketService, GeneralModalService, RequestInProgressService,
+        providers: [WorkbasketService, NotificationService, SavingWorkbasketService, RequestInProgressService,
         ]
       });
     };

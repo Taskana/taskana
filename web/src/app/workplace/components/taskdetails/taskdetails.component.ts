@@ -3,10 +3,7 @@ import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { TaskService } from 'app/workplace/services/task.service';
-import { RemoveConfirmationService } from 'app/shared/services/remove-confirmation/remove-confirmation.service';
-
 import { Task } from 'app/workplace/models/task';
-import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { TaskanaDate } from 'app/shared/util/taskana.date';
 import { ObjectReference } from 'app/workplace/models/object-reference';
@@ -39,11 +36,8 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
     private taskService: TaskService,
     private workplaceService: WorkplaceService,
     private router: Router,
-    private removeConfirmationService: RemoveConfirmationService,
     private requestInProgressService: RequestInProgressService,
-    private notificationsService: NotificationService,
-    private generalModalService: GeneralModalService,
-    private errorsService: NotificationService,
+    private notificationService: NotificationService,
     private masterAndDetailService: MasterAndDetailService) {
   }
 
@@ -70,7 +64,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
     this.task.customAttributes = this.taskClone.customAttributes.slice(0);
     this.task.callbackInfo = this.taskClone.callbackInfo.slice(0);
     this.task.primaryObjRef = { ...this.taskClone.primaryObjRef };
-    this.notificationsService.triggerAlert(NOTIFICATION_TYPES.INFO_ALERT);
+    this.notificationService.showToast(NOTIFICATION_TYPES.INFO_ALERT);
   }
 
   getTask(): void {
@@ -85,7 +79,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
         this.cloneTask();
         this.taskService.selectTask(task);
       }, error => {
-        this.errorsService.triggerError(NOTIFICATION_TYPES.FETCH_ERR_7, error);
+        this.notificationService.triggerError(NOTIFICATION_TYPES.FETCH_ERR_7, error);
       });
     }
   }
@@ -103,8 +97,10 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   }
 
   deleteTask(): void {
-    this.removeConfirmationService.setRemoveConfirmation(this.deleteTaskConfirmation.bind(this),
-      `You are going to delete Task: ${this.currentId}. Can you confirm this action?`);
+    this.notificationService.showDialog(
+      `You are going to delete Task: ${this.currentId}. Can you confirm this action?`,
+      this.deleteTaskConfirmation.bind(this)
+    );
   }
 
   deleteTaskConfirmation(): void {
@@ -113,7 +109,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
       this.task = null;
       this.router.navigate(['taskana/workplace/tasks']);
     }, error => {
-      this.errorsService.triggerError(NOTIFICATION_TYPES.DELETE_ERR_2, error);
+      this.notificationService.triggerError(NOTIFICATION_TYPES.DELETE_ERR_2, error);
     });
   }
 
@@ -153,10 +149,10 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
       this.task = task;
       this.cloneTask();
       this.taskService.publishUpdatedTask(task);
-      this.notificationsService.triggerAlert(NOTIFICATION_TYPES.SUCCESS_ALERT_14);
+      this.notificationService.showToast(NOTIFICATION_TYPES.SUCCESS_ALERT_14);
     }, () => {
       this.requestInProgressService.setRequestInProgress(false);
-      this.notificationsService.triggerAlert(NOTIFICATION_TYPES.DANGER_ALERT);
+      this.notificationService.showToast(NOTIFICATION_TYPES.DANGER_ALERT);
     });
   }
 
@@ -165,7 +161,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
     this.addDateToTask();
     this.taskService.createTask(this.task).subscribe(task => {
       this.requestInProgressService.setRequestInProgress(false);
-      this.notificationsService.triggerAlert(
+      this.notificationService.showToast(
         NOTIFICATION_TYPES.SUCCESS_ALERT_13,
         new Map<string, string>([['taskId', task.name]])
       );
@@ -175,7 +171,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
       this.router.navigate([`../${task.taskId}`], { relativeTo: this.route });
     }, () => {
       this.requestInProgressService.setRequestInProgress(false);
-      this.notificationsService.triggerAlert(NOTIFICATION_TYPES.DANGER_ALERT_2);
+      this.notificationService.showToast(NOTIFICATION_TYPES.DANGER_ALERT_2);
     });
   }
 
