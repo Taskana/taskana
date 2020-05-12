@@ -25,7 +25,8 @@ class TaskanaEngineTestConfigurationTest {
   }
 
   @Test
-  void testCustomHolidayInitialisationWithTaskanaProprtiesFile() throws SQLException {
+  void should_returnTheTwoCustomHolidays_When_twoCustomHolidaysAreConfiguredInThePropertiesFile()
+      throws SQLException {
     DataSource ds = TaskanaEngineTestConfiguration.getDataSource();
     TaskanaEngineConfiguration taskEngineConfiguration =
         new TaskanaEngineConfiguration(
@@ -37,5 +38,20 @@ class TaskanaEngineTestConfigurationTest {
             TaskanaEngineTestConfiguration.getSchemaName());
     assertThat(taskEngineConfiguration.getCustomHolidays()).contains(CustomHoliday.of(31, 7));
     assertThat(taskEngineConfiguration.getCustomHolidays()).contains(CustomHoliday.of(16, 12));
+  }
+
+  @Test
+  void should_returnEmptyCustomHolidaysList_When_allCustomHolidaysAreInWrongFormatInPropertiesFile()
+      throws SQLException {
+    DataSource ds = TaskanaEngineTestConfiguration.getDataSource();
+    TaskanaEngineConfiguration taskEngineConfiguration =
+        new TaskanaEngineConfiguration(
+            ds,
+            false,
+            false,
+            "/custom_holiday_With_Wrong_format_taskana.properties",
+            "|",
+            TaskanaEngineTestConfiguration.getSchemaName());
+    assertThat(taskEngineConfiguration.getCustomHolidays()).isEmpty();
   }
 }
