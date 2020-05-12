@@ -479,10 +479,13 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   public BulkOperationResults<String, TaskanaException> deleteTasks(List<String> taskIds)
-      throws InvalidArgumentException {
+      throws InvalidArgumentException, NotAuthorizedException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("entry to deleteTasks(tasks = {})", LoggerUtils.listToString(taskIds));
     }
+
+    taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.ADMIN);
+
     try {
       taskanaEngine.openConnection();
       if (taskIds == null) {

@@ -331,9 +331,10 @@ public interface TaskService {
    * @param tasks the ids of the tasks to delete.
    * @return the result of the operations with Id and Exception for each failed task deletion.
    * @throws InvalidArgumentException if the TaskIds parameter is NULL
+   * @throws NotAuthorizedException if the current user is not member of role ADMIN
    */
   BulkOperationResults<String, TaskanaException> deleteTasks(List<String> tasks)
-      throws InvalidArgumentException;
+      throws InvalidArgumentException, NotAuthorizedException;
 
   /**
    * Completes a list of tasks.

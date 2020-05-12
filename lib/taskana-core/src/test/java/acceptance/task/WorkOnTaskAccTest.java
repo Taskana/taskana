@@ -245,9 +245,9 @@ class WorkOnTaskAccTest extends AbstractAccTest {
     assertThat(completedTask2.getCompleted()).isNotNull();
   }
 
-  @WithAccessId(user = "user_1_2", groups = "group_1")
+  @WithAccessId(user = "admin")
   @Test
-  void testBulkDeleteTasksWithException() throws InvalidArgumentException {
+  void testBulkDeleteTasksWithException() throws InvalidArgumentException, NotAuthorizedException {
 
     TaskService taskService = taskanaEngine.getTaskService();
     List<String> taskIdList = new ArrayList<>();

@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
@@ -38,6 +39,28 @@ class DeleteTaskAccTest extends AbstractAccTest {
     ThrowingCallable call =
         () -> {
           taskService.deleteTask("TKI:000000000000000000000000000000000037");
+        };
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
+  }
+
+  @WithAccessId(user = "businessadmin")
+  @WithAccessId(user = "taskadmin")
+  @WithAccessId(user = "user_1_1")
+  @TestTemplate
+  void should_ThrowException_When_UserIsNotInAdminRoleButTriesToBulkDeleteTasks() {
+
+    TaskService taskService = taskanaEngine.getTaskService();
+
+    List<String> taskIds =
+        Arrays.asList(
+            "TKI:000000000000000000000000000000000008",
+            "TKI:000000000000000000000000000000000009",
+            "TKI:000000000000000000000000000000000008",
+            "TKI:000000000000000000000000000000000010");
+
+    ThrowingCallable call =
+        () -> {
+          taskService.deleteTasks(taskIds);
         };
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
@@ -118,9 +141,9 @@ class DeleteTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
   }
 
-  @WithAccessId(user = "user_1_2", groups = "group_1")
+  @WithAccessId(user = "admin")
   @Test
-  void testBulkDeleteTask() throws InvalidArgumentException {
+  void testBulkDeleteTask() throws InvalidArgumentException, NotAuthorizedException {
 
     TaskService taskService = taskanaEngine.getTaskService();
     ArrayList<String> taskIdList = new ArrayList<>();
@@ -137,7 +160,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
   }
 
-  @WithAccessId(user = "user_1_2", groups = "group_1")
+  @WithAccessId(user = "admin")
   @Test
   void testBulkDeleteTasksWithException()
       throws TaskNotFoundException, InvalidArgumentException, NotAuthorizedException {
