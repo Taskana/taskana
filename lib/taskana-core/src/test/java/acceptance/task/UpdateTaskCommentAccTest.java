@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.util.List;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -17,6 +18,7 @@ import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.TaskComment;
+import pro.taskana.task.internal.models.TaskCommentImpl;
 
 @ExtendWith(JaasExtension.class)
 public class UpdateTaskCommentAccTest extends AbstractAccTest {
@@ -29,7 +31,7 @@ public class UpdateTaskCommentAccTest extends AbstractAccTest {
   @Test
   void should_UpdateTaskComment_For_TaskComment()
       throws TaskCommentNotFoundException, NotAuthorizedException, ConcurrencyException,
-          TaskNotFoundException, InvalidArgumentException {
+                 TaskNotFoundException, InvalidArgumentException {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
@@ -53,7 +55,7 @@ public class UpdateTaskCommentAccTest extends AbstractAccTest {
   @Test
   void should_FailToUpdateTaskComment_When_UserHasNoAuthorization()
       throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException,
-          InvalidArgumentException {
+                 InvalidArgumentException {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
@@ -76,11 +78,35 @@ public class UpdateTaskCommentAccTest extends AbstractAccTest {
         .isEqualTo("some other text in textfield");
   }
 
+  @WithAccessId(user = "user_1_2", groups = "group_1")
+  @Test
+  void should_FailToUpdateTaskComment_When_UserTriesToUpdateTaskByManipulatingOwner()
+      throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException,
+                 InvalidArgumentException {
+
+    TaskService taskService = taskanaEngine.getTaskService();
+
+    TaskCommentImpl taskCommentToUpdate = (TaskCommentImpl)
+                                              taskService.getTaskComment(
+                                                  "TCI:000000000000000000000000000000000001");
+
+    taskCommentToUpdate.setTextField("updated textfield");
+    taskCommentToUpdate.setCreator("user_1_2");
+
+    ThrowingCallable updateTaskCommentCall =
+        () -> {
+
+          taskService.updateTaskComment(taskCommentToUpdate);
+        };
+    assertThatThrownBy(updateTaskCommentCall).isInstanceOf(NotAuthorizedException.class);
+
+  }
+
   @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void should_FailToUpdateTaskComment_When_TaskCommentWasModifiedConcurrently()
       throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException,
-          ConcurrencyException, InvalidArgumentException {
+                 ConcurrencyException, InvalidArgumentException {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
