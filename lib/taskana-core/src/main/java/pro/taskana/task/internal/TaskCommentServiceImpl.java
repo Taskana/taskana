@@ -69,13 +69,13 @@ class TaskCommentServiceImpl {
 
       taskService.getTask(taskCommentImplToUpdate.getTaskId());
 
-      if (taskCommentToUpdate.getCreator().equals(userId)
+      TaskComment originalTaskComment = getTaskComment(taskCommentImplToUpdate.getId());
+
+      if (originalTaskComment.getCreator().equals(userId)
           || taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN)
           || taskanaEngine.getEngine().isUserInRole(TaskanaRole.TASK_ADMIN)) {
 
-        TaskComment oldTaskComment = getTaskComment(taskCommentImplToUpdate.getId());
-
-        checkModifiedHasNotChanged(oldTaskComment, taskCommentImplToUpdate);
+        checkModifiedHasNotChanged(originalTaskComment, taskCommentImplToUpdate);
 
         taskCommentImplToUpdate.setModified(Instant.now());
 
