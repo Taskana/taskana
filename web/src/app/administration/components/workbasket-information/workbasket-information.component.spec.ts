@@ -13,7 +13,6 @@ import { ICONTYPES } from 'app/shared/models/icon-types';
 import { ACTION } from 'app/shared/models/action';
 import { Links } from 'app/shared/models/links';
 
-import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { SavingWorkbasketService } from 'app/administration/services/saving-workbaskets.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { configureTests } from 'app/app.test.configuration';
@@ -51,7 +50,7 @@ describe('WorkbasketInformationComponent', () => {
     testBed.configureTestingModule({
       declarations: [WorkbasketInformationComponent, DummyDetailComponent],
       imports: [FormsModule, AngularSvgIconModule, HttpClientModule, RouterTestingModule.withRoutes(routes), NgxsModule.forRoot()],
-      providers: [WorkbasketService, NotificationService, SavingWorkbasketService, GeneralModalService,
+      providers: [WorkbasketService, NotificationService, SavingWorkbasketService,
         RequestInProgressService, FormsValidatorService, { provide: Store, useValue: storeSpy }]
 
     });
@@ -78,7 +77,7 @@ describe('WorkbasketInformationComponent', () => {
 
       formsValidatorService = testBed.get(FormsValidatorService);
 
-      spyOn(alertService, 'triggerAlert');
+      spyOn(alertService, 'showToast');
       fixture.detectChanges();
       done();
     });
@@ -165,7 +164,7 @@ describe('WorkbasketInformationComponent', () => {
     component.onSubmit();
     fixture.whenStable().then(() => {
       fixture.detectChanges();
-      expect(alertService.triggerAlert).toHaveBeenCalled();
+      expect(alertService.showToast).toHaveBeenCalled();
       expect(component.workbasket.workbasketId).toBe('someNewId');
     });
   }));
@@ -192,7 +191,7 @@ describe('WorkbasketInformationComponent', () => {
     component.onSubmit();
     fixture.whenStable().then(() => {
       fixture.detectChanges();
-      expect(alertService.triggerAlert).toHaveBeenCalled();
+      expect(alertService.showToast).toHaveBeenCalled();
       expect(component.workbasket.workbasketId).toBe('someNewId');
       expect(savingWorkbasketService.triggerDistributionTargetSaving).toHaveBeenCalled();
       expect(savingWorkbasketService.triggerAccessItemsSaving).toHaveBeenCalled();

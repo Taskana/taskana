@@ -9,8 +9,6 @@ import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.ser
 import { MasterAndDetailService } from 'app/shared/services/master-and-detail/master-and-detail.service';
 import { DomainService } from 'app/shared/services/domain/domain.service';
 import { ImportExportService } from 'app/administration/services/import-export.service';
-import { GeneralModalService } from '../../../shared/services/general-modal/general-modal.service';
-import { MessageModal } from '../../../shared/models/message-modal';
 import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 
@@ -41,7 +39,6 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
     private masterAndDetailService: MasterAndDetailService,
     private domainService: DomainService,
     private errorsService: NotificationService,
-    private generalModalService: GeneralModalService,
     private importExportService: ImportExportService) { }
 
 

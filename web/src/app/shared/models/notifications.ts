@@ -59,12 +59,12 @@ export enum NOTIFICATION_TYPES {
 export const notifications = new Map<NOTIFICATION_TYPES, Pair>([
   // access-items-management.component.ts
   [NOTIFICATION_TYPES.FETCH_ERR, new Pair(
-    'There was error while retrieving your access ids with groups.',
+    'There was an error while retrieving your access ids with groups.',
     ''
   )],
   // access-items-management.component.ts
   [NOTIFICATION_TYPES.FETCH_ERR_2, new Pair(
-    'There was error while retrieving your access items ',
+    'There was an error while retrieving your access items ',
     ''
   )],
   // access-items-management.component.ts
@@ -74,17 +74,17 @@ export const notifications = new Map<NOTIFICATION_TYPES, Pair>([
   )],
   // classification-details.component
   [NOTIFICATION_TYPES.CREATE_ERR, new Pair(
-    'There was an error creating a classification',
+    'There was an error while creating this classification',
     '',
   )],
   // classification-details.component
   [NOTIFICATION_TYPES.REMOVE_ERR, new Pair(
-    'There was error while removing your classification',
+    'There was an error while removing your classification',
     ''
   )],
   // classification-details.component
   [NOTIFICATION_TYPES.SAVE_ERR, new Pair(
-    'There was error while saving your classification',
+    'There was an error while saving your classification',
     ''
   )],
   // classification-details.component
@@ -121,7 +121,7 @@ export const notifications = new Map<NOTIFICATION_TYPES, Pair>([
   [NOTIFICATION_TYPES.UPLOAD_ERR, new Pair(
     'Upload failed',
     `The upload didn't proceed sucessfully. 
-    \n Probably the uploaded file exceeded the maximum file size of 10 MB.`
+    \n The uploaded file probably exceeded the maximum file size of 10 MB.`
   )],
   // taskdetails.component
   [NOTIFICATION_TYPES.FETCH_ERR_3, new Pair(
@@ -130,17 +130,17 @@ export const notifications = new Map<NOTIFICATION_TYPES, Pair>([
   )],
   // workbasket-details.component
   [NOTIFICATION_TYPES.FETCH_ERR_4, new Pair(
-    'An error occurred while fetching the workbasket',
-    ''
+    '',
+    'An error occurred while fetching the workbasket'
   )],
   // access-items.component
   [NOTIFICATION_TYPES.SAVE_ERR_2, new Pair(
-    'There was error while saving your workbasket\'s access items',
+    'There was an error while saving your workbasket\'s access items',
     ''
   )],
   // workbaskets-distribution-targets.component
   [NOTIFICATION_TYPES.SAVE_ERR_3, new Pair(
-    'There was error while saving your workbasket\'s distribution targets',
+    'There was an error while saving your workbasket\'s distribution targets',
     '',
   )],
   // workbasket-information.component
@@ -150,39 +150,39 @@ export const notifications = new Map<NOTIFICATION_TYPES, Pair>([
   )],
   // workbasket-information.component
   [NOTIFICATION_TYPES.SAVE_ERR_4, new Pair(
-    'There was error while saving your workbasket',
+    'There was an error while saving your workbasket',
     ''
   )],
   // workbasket-information.component
   [NOTIFICATION_TYPES.CREATE_ERR_2, new Pair(
-    'There was an error creating a workbasket',
+    'There was an error while creating this workbasket',
     ''
   )],
   // workbasket-information.component
   [NOTIFICATION_TYPES.MARK_ERR, new Pair(
     'Workbasket was marked for deletion.',
     'The Workbasket {workbasketId} still contains completed tasks and could not be deleted.'
-      + 'Instead is was marked for deletion and will be deleted automatically '
-      + 'as soon as the completed tasks are deleted from the database.'
+      + ' Instead is was marked for deletion and will be deleted automatically '
+      + 'as soon as the completed tasks are cleared from the database.'
   )],
   // domain.guard
   [NOTIFICATION_TYPES.FETCH_ERR_5, new Pair(
-    'There was an error, please contact with your administrator',
+    'There was an error, please contact your administrator',
     'There was an error getting Domains'
   )],
   // history.guard
   [NOTIFICATION_TYPES.FETCH_ERR_6, new Pair(
-    'There was an error, please contact with your administrator',
+    'There was an error, please contact your administrator',
     'There was an error getting history provider'
   )],
   // http-client-interceptor.service
   [NOTIFICATION_TYPES.ACCESS_ERR, new Pair(
-    'You have no access to this resource ',
+    'You have no access to this resource',
     ''
   )],
   // http-client-interceptor.service
   [NOTIFICATION_TYPES.GENERAL_ERR, new Pair(
-    'There was error, please contact with your administrator',
+    'There was an error, please contact your administrator',
     ''
   )],
   // spinner.component

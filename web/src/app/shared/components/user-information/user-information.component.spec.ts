@@ -3,6 +3,8 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
 
 import { configureTests } from 'app/app.test.configuration';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Overlay } from '@angular/cdk/overlay';
 import { UserInformationComponent } from './user-information.component';
 
 
@@ -18,6 +20,7 @@ describe('UserInformationComponent', () => {
         imports: [AngularSvgIconModule,
           HttpClientModule],
         declarations: [UserInformationComponent],
+        providers: [MatSnackBar, Overlay]
       });
     };
     configureTests(configure).then(testBed => {

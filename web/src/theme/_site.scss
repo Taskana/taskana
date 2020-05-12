@@ -1,19 +1,19 @@
 
 .placeholder img {
-	display: inline-block;
-	border-radius: 50%;
+  display: inline-block;
+  border-radius: 50%;
 }
 
 .no-margin {
-	margin: 0px;
+  margin: 0px;
 }
 
 .content-margin {
-	margin: 0px 10px 0px 10px;
+  margin: 0px 10px 0px 10px;
 }
 
 .no-border-radius {
-	border-radius: 0px;
+  border-radius: 0px;
 }
 
 /*
@@ -22,139 +22,139 @@
 /* Move down content because we have a fixed navbar that is 55px tall */
 
 .container-main {
-	margin-top: 55px;
-	overflow-y: hidden;
-	/*Min mobile view size*/
-	min-width: 420px;
+  margin-top: 55px;
+  overflow-y: hidden;
+  /*Min mobile view size*/
+  min-width: 420px;
 }
 
 .container-scrollable {
-	max-height: calc(100vh - 55px);
-	height: calc(100vh - 55px);
-	overflow: hidden;
+  max-height: calc(100vh - 55px);
+  height: calc(100vh - 55px);
+  overflow: hidden;
 }
 
 .vertical-center {
-	/* Make it a flex container */
-	display: -webkit-box;
-	display: -moz-box;
-	display: -ms-flexbox;
-	display: -webkit-flex;
-	display: flex;
+  /* Make it a flex container */
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
 
-	/* In legacy web browsers such as Firefox 9
-	 we need to specify the width of the flex container */
-	width: 100%;
+  /* In legacy web browsers such as Firefox 9
+   we need to specify the width of the flex container */
+  width: 100%;
 
-	/* Also 'margin: 0 auto' doesn't have any effect on flex items in such web browsers
-	 hence the bootstrap's container won't be aligned to the center anymore.
-	 Therefore, we should use the following declarations to get it centered again */
-	-webkit-box-pack: center;
-	-moz-box-pack: center;
-	-ms-flex-pack: center;
-	-webkit-justify-content: center;
-	justify-content: center;
+  /* Also 'margin: 0 auto' doesn't have any effect on flex items in such web browsers
+   hence the bootstrap's container won't be aligned to the center anymore.
+   Therefore, we should use the following declarations to get it centered again */
+  -webkit-box-pack: center;
+  -moz-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
 }
 
 /*
     Colors
 */
 .white {
-	color: white;
+  color: white;
 
-	& svg {
-		fill: white;
-	}
+  & svg {
+    fill: white;
+  }
 }
 
 .blue {
-	color: $blue;
+  color: $blue;
 
-	& svg {
-		fill: $blue;
-	}
+  & svg {
+    fill: $blue;
+  }
 }
 
 .blue-green {
-	color: $blue-green;
+  color: $blue-green;
 
-	& svg {
-		fill: $blue-green;
-	}
+  & svg {
+    fill: $blue-green;
+  }
 }
 
 .green {
-	color: $green;
+  color: $green;
 
-	& svg {
-		fill: $green;
-	}
+  & svg {
+    fill: $green;
+  }
 }
 
 .dark-green {
-	color: $dark-green;
+  color: $dark-green;
 
-	& svg {
-		fill: $dark-green;
-	}
+  & svg {
+    fill: $dark-green;
+  }
 }
 
 .grey {
-	color: $grey;
+  color: $grey;
 
-	& svg {
-		fill: $grey;
-	}
+  & svg {
+    fill: $grey;
+  }
 }
 
 .brown {
-	color: $brown;
+  color: $brown;
 
-	& svg {
-		fill: $brown;
-	}
+  & svg {
+    fill: $brown;
+  }
 }
 
 .red {
-	color: $invalid;
+  color: $invalid;
 
-	& svg {
-		fill: $invalid;
-	}
+  & svg {
+    fill: $invalid;
+  }
 }
 
 .green-blue {
-	color: $blue-green;
+  color: $blue-green;
 
-	& svg {
-		fill: $blue-green;
-	}
+  & svg {
+    fill: $blue-green;
+  }
 }
 
 .aquamarine {
-	color: $aquamarine;
+  color: $aquamarine;
 
-	& svg {
-		fill: $aquamarine;
-	}
+  & svg {
+    fill: $aquamarine;
+  }
 }
 
 svg-icon.fa-fw > svg {
-	text-align: center;
-	width: 1.25em;
+  text-align: center;
+  width: 1.25em;
 }
 
 svg-icon {
-	position: relative;
-	top: 4px;
+  position: relative;
+  top: 4px;
 }
 
 .panel-default > .panel-heading .badge.warning {
-	background-color: $brown;
+  background-color: $brown;
 }
 
 .badge.priority {
-	background-color: #e1e1e1;
+  background-color: #e1e1e1;
 }
 
 
@@ -162,297 +162,307 @@ svg-icon {
  *Remove bootstrap cols padding for master and detail component
 */
 .no-gutter > taskana-master-and-detail > [class*='col-'] {
-	padding-right: 0;
-	padding-left: 0;
+  padding-right: 0;
+  padding-left: 0;
 }
 
 .small {
-	width: 16px;
-	height: 16px;
+  width: 16px;
+  height: 16px;
 }
 
 .dropdown-menu.action {
-	min-width: 0px;
+  min-width: 0px;
 }
 
 .footer-space-pagination-list {
-	max-height: calc(100vh - 130px);
-	height: calc(100vh - 130px);
-	overflow-y: auto;
-	overflow-x: hidden;
+  max-height: calc(100vh - 130px);
+  height: calc(100vh - 130px);
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .margin-right {
-	margin-right: 2px;
+  margin-right: 2px;
 }
 
 .no-border-bottom {
-	border-bottom: none;
+  border-bottom: none;
 }
 
 .selected {
-	z-index: 2;
-	background-color: #f5f5f5;
-	border-color: #f5f5f5;
+  z-index: 2;
+  background-color: #f5f5f5;
+  border-color: #f5f5f5;
 }
 
 .form-group.required .control-label:after {
-	content: " *";
-	color: red;
+  content: " *";
+  color: red;
 }
 
 
 .user-select {
-	margin-left: 2px;
+  margin-left: 2px;
 }
 
 .dropdown-menu-users {
-	min-width: 0px;
+  min-width: 0px;
 }
 
 .no-gutter > [class*='col-'] {
-	padding-right: 0;
-	padding-left: 0;
+  padding-right: 0;
+  padding-left: 0;
 }
 
 .table-center > thead > tr > th {
-	text-align: center;
-	vertical-align: middle;
+  text-align: center;
+  vertical-align: middle;
 }
 
 body {
-	overflow-y: hidden;
+  overflow-y: hidden;
 }
 
 .table-center > tbody > tr > td {
-	text-align: center;
-	vertical-align: middle;
+  text-align: center;
+  vertical-align: middle;
 }
 
 .table-center > tbody > tr > td.text-align {
-	text-align: left;
+  text-align: left;
 }
 
 .table-center > thead > tr > th.text-align {
-	text-align: left;
+  text-align: left;
 }
 
 .dropdown-menu-users > li {
-	margin-bottom: 5px;
+  margin-bottom: 5px;
 }
 
 
 .toolbar {
-	padding: 13px 15px;
+  padding: 13px 15px;
 }
 
 .open > .dropdown-menu {
-	opacity: 1;
-	visibility: visible;
+  opacity: 1;
+  visibility: visible;
 }
 
 .dropdown-menu {
-	display: block;
-	opacity: 0;
-	visibility: hidden;
-	-webkit-transition: opacity 300ms ease, visibility 300ms ease;
-	-moz-transition: opacity 300ms ease, visibility 300ms ease;
-	-o-transition: opacity 300ms ease, visibility 300ms ease;
-	transition: opacity 300ms ease, visibility 300ms ease;
+  display: block;
+  opacity: 0;
+  visibility: hidden;
+  -webkit-transition: opacity 300ms ease, visibility 300ms ease;
+  -moz-transition: opacity 300ms ease, visibility 300ms ease;
+  -o-transition: opacity 300ms ease, visibility 300ms ease;
+  transition: opacity 300ms ease, visibility 300ms ease;
 }
 
 /* buttons and icons vertical align */
 .vertical-align {
-	vertical-align: top;
+  vertical-align: top;
 }
 
 .btn > svg-icon > svg {
-	vertical-align: middle;
+  vertical-align: middle;
 }
 
 a > svg-icon > svg {
-	vertical-align: text-top;
+  vertical-align: text-top;
 }
 
 /*end buttons and icons vertical align */
 
 span.flip {
-	transform: rotateX(180deg);
+  transform: rotateX(180deg);
 }
 
 .panel-heading {
-	padding: 8px 15px 4px 15px;
+  padding: 8px 15px 4px 15px;
 }
 
 .panel {
-	border-radius: 0px;
+  border-radius: 0px;
 }
 
 .centered-spinner {
-	margin-top: 30px;
-	margin-bottom: 30px;
+  margin-top: 30px;
+  margin-bottom: 30px;
 }
 
 .centered-spinner-whole-screen {
-	position: absolute !important;
-	top: 20vh;
-	left: 42%;
+  position: absolute !important;
+  top: 20vh;
+  left: 42%;
 }
 
 .list-group-item {
-	padding: 5px 15px;
+  padding: 5px 15px;
 }
 
 .dual-list > taskana-filter > .list-group-search {
-	margin-top: 4px;
+  margin-top: 4px;
 }
 
 .container {
-	@media (min-width: 1200px) {
-		width: 100%;
-	}
+  @media (min-width: 1200px) {
+    width: 100%;
+  }
 }
 
 taskana-workbasket-information, taskana-workbasket-access-items, taskana-workbaskets-distribution-targets, taskana-workbasket-details, taskana-monitor-tasks,
 taskana-monitor-workbaskets, taskana-monitor-classification-tasks, taskana-monitor-timestamp {
-	& .panel {
-		border: none;
-		box-shadow: none;
-		margin-bottom: 0px;
+  & .panel {
+    border: none;
+    box-shadow: none;
+    margin-bottom: 0px;
 
-		& > .panel-body {
-			height: calc(100vh - 155px);
-			max-height: calc(100vh - 155px);
-			overflow-y: auto;
-		}
-	}
+    & > .panel-body {
+      height: calc(100vh - 155px);
+      max-height: calc(100vh - 155px);
+      overflow-y: auto;
+    }
+  }
 }
 
 taskana-task-details, taskana-classification-details, taskana-access-items-management, taskana-task, taskana-task-query {
-	& .panel {
-		border: none;
-		box-shadow: none;
-		margin-bottom: 0px;
+  & .panel {
+    border: none;
+    box-shadow: none;
+    margin-bottom: 0px;
 
-		& > .panel-body {
-			height: calc(100vh - 100px);
-			max-height: calc(100vh - 100px);
-			overflow-y: auto;
-		}
-	}
+    & > .panel-body {
+      height: calc(100vh - 100px);
+      max-height: calc(100vh - 100px);
+      overflow-y: auto;
+    }
+  }
 }
 
 taskana-task-query {
-	& .panel {
-		& > .panel-body {
-			height: calc(100vh - 105px);
-			max-height: calc(100vh - 105px);
-		}
-	}
+  & .panel {
+    & > .panel-body {
+      height: calc(100vh - 105px);
+      max-height: calc(100vh - 105px);
+    }
+  }
 }
 
 
 taskana-monitor-tasks, taskana-monitor-workbaskets, taskana-monitor-classification-tasks, taskana-access-items-management {
-	& .panel {
-		& > .panel-heading {
-			border-left: 1px solid #ddd;
-			border-right: 1px solid #ddd;
-		}
-	}
+  & .panel {
+    & > .panel-heading {
+      border-left: 1px solid #ddd;
+      border-right: 1px solid #ddd;
+    }
+  }
 }
 
 li.list-group-item.active:hover {
-	color: #fff;
-	background-color: $green;
-	border-color: $green;
+  color: #fff;
+  background-color: $green;
+  border-color: $green;
 }
 
 .list-group-item.active {
-	background-color: $green;
+  background-color: $green;
 }
 
 li.list-group-item:hover {
-	color: #555;
-	text-decoration: none;
-	background-color: #f5f5f5;
+  color: #555;
+  text-decoration: none;
+  background-color: #f5f5f5;
 }
 
 .vertical-right-divider {
-	border-right: 1px solid #ccc;
-	height: calc(100vh - 55px);
+  border-right: 1px solid #ccc;
+  height: calc(100vh - 55px);
 }
 
 .horizontal-bottom-divider {
-	border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
 }
 
 .center-block > span.empty-icon, .empty-icon {
-	display: block;
-	width: 150px;
-	height: 150px;
-	fill: grey;
-	color: grey;
-	margin: 20px auto;
-	font-size: 100px;
+  display: block;
+  width: 150px;
+  height: 150px;
+  fill: grey;
+  color: grey;
+  margin: 20px auto;
+  font-size: 100px;
 }
 
 .btn.no-style {
-	border: none;
-	background-color: transparent;
+  border: none;
+  background-color: transparent;
 }
 
 .align-header {
-	margin-top: 3px;
+  margin-top: 3px;
 }
 
 .container-no-items {
-	top: 20vh;
-	height: 40vh;
+  top: 20vh;
+  height: 40vh;
 }
 
 .center-block {
-	text-align: center;
+  text-align: center;
 }
 
 .align-center {
-	text-align: center;
+  text-align: center;
 }
 
 .btn.rounded {
-	border-radius: 50%;
-	background-color: transparent;
+  border-radius: 50%;
+  background-color: transparent;
 
-	&:focus, &:active:focus {
-		outline: none;
-	}
+  &:focus, &:active:focus {
+    outline: none;
+  }
 }
 
 .modal-backdrop.show {
-	background-color: $transparent-grey;
+  background-color: $transparent-grey;
 }
 
 .padding-right.pull-right {
-	padding-right: 15px;
+  padding-right: 15px;
 }
 
 .backdrop {
-	position: fixed;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	top: 0;
-	z-index: 990;
-	background-color: white;
-	opacity: 0.8;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  z-index: 990;
+  background-color: rgba(180,180,180,0.7);
+  opacity: 0.8;
 }
 
 .mask {
-	position: fixed;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	top: 0;
-	z-index: 2000;
-	background-color: white;
-	opacity: 0.8;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  z-index: 2000;
+  background-color: white;
+  opacity: 0.8;
+}
+
+.background-darkgreen {
+  background-color: $dark-green;
+}
+
+/* our header has a z-index of 1031 and the default z-index of the
+ mat-dialog is just 1000 which leads to undesirable overlap*/
+.cdk-overlay-container {
+  z-index: 1337;
 }

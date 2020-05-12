@@ -19,7 +19,6 @@ import { LinksWorkbasketSummary } from 'app/shared/models/links-workbasket-summa
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { MasterAndDetailService } from 'app/shared/services/master-and-detail/master-and-detail.service';
 import { SavingWorkbasketService } from 'app/administration/services/saving-workbaskets.service';
-import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { configureTests } from 'app/app.test.configuration';
 
@@ -61,7 +60,7 @@ describe('WorkbasketDetailsComponent', () => {
         declarations: [WorkbasketDetailsComponent, WorkbasketInformationComponent,
           WorkbasketAccessItemsComponent,
           WorkbasketDistributionTargetsComponent, WorkbasketDualListComponent, DummyDetailComponent],
-        providers: [WorkbasketService, MasterAndDetailService, GeneralModalService, RequestInProgressService,
+        providers: [WorkbasketService, MasterAndDetailService, RequestInProgressService,
           NotificationService, SavingWorkbasketService, ImportExportService]
       });
     };

@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Overlay } from '@angular/cdk/overlay';
+import { MAT_DIALOG_SCROLL_STRATEGY, MatDialog } from '@angular/material/dialog';
 import { SpinnerComponent } from './spinner.component';
 
 describe('SpinnerComponent', () => {
@@ -10,7 +12,7 @@ describe('SpinnerComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [SpinnerComponent],
-      providers: [GeneralModalService]
+      providers: [MatSnackBar, Overlay, MatDialog, { provide: MAT_DIALOG_SCROLL_STRATEGY }]
     })
       .compileComponents();
   }));

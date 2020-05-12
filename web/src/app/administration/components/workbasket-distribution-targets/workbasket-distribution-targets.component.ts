@@ -11,12 +11,10 @@ import { Workbasket } from 'app/shared/models/workbasket';
 import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
 import { WorkbasketSummaryResource } from 'app/shared/models/workbasket-summary-resource';
 import { WorkbasketDistributionTargetsResource } from 'app/shared/models/workbasket-distribution-targets-resource';
-import { MessageModal } from 'app/shared/models/message-modal';
 import { ACTION } from 'app/shared/models/action';
 
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { SavingWorkbasketService, SavingInformation } from 'app/administration/services/saving-workbaskets.service';
-import { GeneralModalService } from 'app/shared/services/general-modal/general-modal.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { Page } from 'app/shared/models/page';
@@ -76,7 +74,6 @@ export class WorkbasketDistributionTargetsComponent implements OnChanges, OnDest
   constructor(
     private workbasketService: WorkbasketService,
     private savingWorkbaskets: SavingWorkbasketService,
-    private generalModalService: GeneralModalService,
     private requestInProgressService: RequestInProgressService,
     private orientationService: OrientationService,
     private notificationsService: NotificationService
@@ -127,7 +124,7 @@ export class WorkbasketDistributionTargetsComponent implements OnChanges, OnDest
       this.distributionTargetsSelected = response.distributionTargets;
       this.distributionTargetsSelectedClone = Object.assign([], this.distributionTargetsSelected);
       this.distributionTargetsClone = Object.assign([], this.distributionTargetsLeft);
-      this.notificationsService.triggerAlert(
+      this.notificationsService.showToast(
         NOTIFICATION_TYPES.SUCCESS_ALERT_8,
         new Map<string, string>([['workbasketName', this.workbasket.name]])
       );
@@ -142,7 +139,7 @@ export class WorkbasketDistributionTargetsComponent implements OnChanges, OnDest
   }
 
   onClear() {
-    this.notificationsService.triggerAlert(NOTIFICATION_TYPES.INFO_ALERT);
+    this.notificationsService.showToast(NOTIFICATION_TYPES.INFO_ALERT);
     this.distributionTargetsLeft = Object.assign([], this.distributionTargetsClone);
     this.distributionTargetsRight = Object.assign([], this.distributionTargetsSelectedClone);
     this.distributionTargetsSelected = Object.assign([], this.distributionTargetsSelectedClone);

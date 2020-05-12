@@ -128,7 +128,7 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
       });
 
     if (key) {
-      this.notificationsService.triggerAlert(
+      this.notificationsService.showToast(
         NOTIFICATION_TYPES.SUCCESS_ALERT_5,
         new Map<string, string>([['classificationKey', key]])
       );
