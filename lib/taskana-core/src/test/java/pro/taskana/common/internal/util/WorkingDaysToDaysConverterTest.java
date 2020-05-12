@@ -9,6 +9,7 @@ import java.util.Arrays;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import pro.taskana.common.api.CustomHoliday;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 
 /** Test for the WorkingDaysToDaysConverter. */
