@@ -17,6 +17,7 @@ import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
@@ -174,7 +175,8 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
     return deletedTaskCount;
   }
 
-  private int deleteTasks(List<TaskSummary> tasksToBeDeleted) throws InvalidArgumentException {
+  private int deleteTasks(List<TaskSummary> tasksToBeDeleted)
+      throws InvalidArgumentException, NotAuthorizedException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("entry to deleteTasks(tasksToBeDeleted = {})", tasksToBeDeleted);
     }
