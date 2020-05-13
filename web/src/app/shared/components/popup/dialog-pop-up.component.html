@@ -10,7 +10,7 @@
   <button mat-dialog-close mat-stroked-button data-dismiss="modal" type="button">
     <span data-toggle="tooltip" class="material-icons md-20 red">cancel</span>
   </button>
-  <button *ngIf="isDialog" mat-dialog-close="callback" mat-raised-button color="primary"
+  <button *ngIf="isDialog" [mat-dialog-close]="callback" mat-raised-button color="primary"
           data-dismiss="modal" type="button">
     <span data-toggle="tooltip" class="material-icons md-20 white">done</span>
   </button>
