@@ -13,8 +13,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
-import pro.taskana.RestHelper;
-import pro.taskana.TaskanaSpringBootTest;
+import pro.taskana.common.rest.RestHelper;
+import pro.taskana.common.rest.TaskanaSpringBootTest;
 import pro.taskana.doc.api.BaseRestDocumentation.ResultHandlerConfiguration;
 
 /** Base class for Rest Documentation tests. */

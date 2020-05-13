@@ -5,7 +5,7 @@ import java.util.Collection;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedModel.PageMetadata;
 
-import pro.taskana.rest.resource.PagedResources;
+import pro.taskana.common.rest.models.PagedResources;
 
 /** Resource class for {@link TaskHistoryEventResource} with Pagination. */
 public class TaskHistoryEventListResource extends PagedResources<TaskHistoryEventResource> {

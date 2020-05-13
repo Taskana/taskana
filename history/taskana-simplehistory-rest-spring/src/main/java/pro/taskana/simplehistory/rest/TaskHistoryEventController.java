@@ -23,7 +23,7 @@ import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.rest.AbstractPagingController;
+import pro.taskana.common.rest.AbstractPagingController;
 import pro.taskana.simplehistory.impl.HistoryEventImpl;
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
 import pro.taskana.simplehistory.query.HistoryQuery;
@@ -130,9 +130,9 @@ public class TaskHistoryEventController extends AbstractPagingController {
 
   private static final String PAGING_PAGE_SIZE = "page-size";
 
-  private SimpleHistoryServiceImpl simpleHistoryService;
+  private final SimpleHistoryServiceImpl simpleHistoryService;
 
-  private TaskHistoryEventResourceAssembler taskHistoryEventResourceAssembler;
+  private final TaskHistoryEventResourceAssembler taskHistoryEventResourceAssembler;
 
   public TaskHistoryEventController(
       TaskanaEngineConfiguration taskanaEngineConfiguration,
@@ -154,10 +154,10 @@ public class TaskHistoryEventController extends AbstractPagingController {
 
     HistoryQuery query = simpleHistoryService.createHistoryQuery();
     query = applySortingParams(query, params);
-    query = applyFilterParams(query, params);
+    applyFilterParams(query, params);
 
     PageMetadata pageMetadata = null;
-    List<HistoryEventImpl> historyEvents = null;
+    List<HistoryEventImpl> historyEvents;
     final String page = params.getFirst(PAGING_PAGE);
     final String pageSize = params.getFirst(PAGING_PAGE_SIZE);
     params.remove(PAGING_PAGE);
@@ -298,7 +298,7 @@ public class TaskHistoryEventController extends AbstractPagingController {
     return query;
   }
 
-  private HistoryQuery applyFilterParams(HistoryQuery query, MultiValueMap<String, String> params) {
+  private void applyFilterParams(HistoryQuery query, MultiValueMap<String, String> params) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to applyFilterParams(query= {}, params= {})", query, params);
     }
@@ -487,7 +487,6 @@ public class TaskHistoryEventController extends AbstractPagingController {
       LOGGER.debug("Exit from applyFilterParams(), returning {}", query);
     }
 
-    return query;
   }
 
   private TimeInterval getTimeIntervalOf(String[] created) {

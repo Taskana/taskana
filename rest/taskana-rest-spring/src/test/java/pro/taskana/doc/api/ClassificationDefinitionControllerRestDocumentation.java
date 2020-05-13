@@ -15,7 +15,7 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import pro.taskana.rest.Mapping;
+import pro.taskana.common.rest.Mapping;
 
 /** Test ClassificationDefinitionControlller. */
 class ClassificationDefinitionControllerRestDocumentation extends BaseRestDocumentation {

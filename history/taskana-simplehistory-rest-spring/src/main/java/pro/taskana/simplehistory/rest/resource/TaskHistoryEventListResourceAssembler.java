@@ -8,7 +8,7 @@ import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedModel.PageMetadata;
 
-import pro.taskana.rest.resource.AbstractRessourcesAssembler;
+import pro.taskana.resource.rest.AbstractRessourcesAssembler;
 import pro.taskana.simplehistory.impl.HistoryEventImpl;
 import pro.taskana.simplehistory.rest.TaskHistoryEventController;
 

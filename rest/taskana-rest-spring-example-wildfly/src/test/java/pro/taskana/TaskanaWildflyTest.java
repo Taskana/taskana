@@ -25,7 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-import pro.taskana.rest.resource.TaskanaUserInfoRepresentationModel;
+import pro.taskana.common.rest.models.TaskanaUserInfoRepresentationModel;
 
 /**
  * This test class is configured to run with postgres DB if you want to run it with h2 it is needed.

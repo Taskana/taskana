@@ -26,7 +26,7 @@ import org.springframework.ldap.core.LdapTemplate;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.SystemException;
-import pro.taskana.rest.resource.AccessIdRepresentationModel;
+import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 
 @ExtendWith(MockitoExtension.class)
 class LdapClientTest {

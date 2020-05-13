@@ -19,8 +19,8 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import pro.taskana.rest.Mapping;
-import pro.taskana.rest.resource.TaskanaPagedModelKeys;
+import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.rest.models.TaskanaPagedModelKeys;
 
 /** Generate REST Documentatioon for the WorkbasketController. */
 class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {

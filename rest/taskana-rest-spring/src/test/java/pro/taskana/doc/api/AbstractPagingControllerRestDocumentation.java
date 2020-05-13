@@ -12,7 +12,7 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import pro.taskana.rest.Mapping;
+import pro.taskana.common.rest.Mapping;
 
 /** Generate Rest Docu for AbstractPagingController. */
 class AbstractPagingControllerRestDocumentation extends BaseRestDocumentation {

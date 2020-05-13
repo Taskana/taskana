@@ -21,16 +21,16 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestTemplate;
 
+import pro.taskana.RestConfiguration;
 import pro.taskana.RestHelper;
 import pro.taskana.classification.api.models.Classification;
+import pro.taskana.classification.rest.assembler.ClassificationRepresentationModelAssembler;
+import pro.taskana.classification.rest.models.ClassificationRepresentationModel;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.rest.Mapping;
-import pro.taskana.rest.RestConfiguration;
-import pro.taskana.rest.resource.ClassificationRepresentationModel;
-import pro.taskana.rest.resource.ClassificationRepresentationModelAssembler;
-import pro.taskana.rest.resource.TaskRepresentationModel;
-import pro.taskana.rest.resource.TaskRepresentationModelAssembler;
+import pro.taskana.common.rest.Mapping;
 import pro.taskana.task.api.models.Task;
+import pro.taskana.task.rest.assembler.TaskRepresentationModelAssembler;
+import pro.taskana.task.rest.models.TaskRepresentationModel;
 
 /** Test async updates. */
 @ActiveProfiles({"test"})

@@ -12,8 +12,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import pro.taskana.common.internal.security.GroupPrincipal;
 import pro.taskana.common.internal.security.UserPrincipal;
+import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 import pro.taskana.ldap.LdapCacheTestImpl;
-import pro.taskana.rest.resource.AccessIdRepresentationModel;
 
 /** TODO. */
 public class SampleLoginModule extends UsernamePasswordAuthenticationFilter implements LoginModule {

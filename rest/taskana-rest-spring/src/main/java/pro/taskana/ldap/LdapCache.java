@@ -2,7 +2,7 @@ package pro.taskana.ldap;
 
 import java.util.List;
 
-import pro.taskana.rest.resource.AccessIdRepresentationModel;
+import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 
 /**
  * This interface is used for caching Ldap data.

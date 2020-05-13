@@ -23,12 +23,11 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import pro.taskana.common.rest.AccessIdController;
 import pro.taskana.jobs.TransactionalJobsConfiguration;
 import pro.taskana.ldap.LdapCacheTestImpl;
 import pro.taskana.ldap.LdapClient;
 import pro.taskana.ldap.LdapConfiguration;
-import pro.taskana.rest.AccessIdController;
-import pro.taskana.rest.RestConfiguration;
 import pro.taskana.rest.WebMvcConfig;
 import pro.taskana.sampledata.SampleDataGenerator;
 
@@ -43,7 +42,7 @@ import pro.taskana.sampledata.SampleDataGenerator;
   TransactionalJobsConfiguration.class,
   LdapConfiguration.class,
   RestConfiguration.class,
-  WebMvcConfig.class
+  WebMvcConfig.class,
 })
 public class TaskanaWildFlyApplication extends SpringBootServletInitializer {
 

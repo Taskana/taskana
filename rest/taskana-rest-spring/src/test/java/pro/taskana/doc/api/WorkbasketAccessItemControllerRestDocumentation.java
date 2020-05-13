@@ -12,7 +12,7 @@ import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import pro.taskana.rest.Mapping;
+import pro.taskana.common.rest.Mapping;
 
 /** Generate REST Docu for the WorkbasketAccessItemController. */
 class WorkbasketAccessItemControllerRestDocumentation extends BaseRestDocumentation {
