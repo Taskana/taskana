@@ -43,7 +43,7 @@ export class NotificationService {
 
   showToast(key: NOTIFICATION_TYPES, additions?: Map<string, string>) {
     this.matSnack.openFromComponent(ToastComponent, {
-      duration: 2000,
+      duration: 5000,
       data: { key, additions },
       panelClass: ['white', 'background-darkgreen']
     });
