@@ -4,7 +4,6 @@ import { NOTIFICATION_TYPES, notifications } from '../../models/notifications';
 
 @Component({
   selector: 'app-toast',
-  // template: '{{ message }}',
   templateUrl: './toast.component.html',
   styleUrls: ['./toast.component.scss']
 })
