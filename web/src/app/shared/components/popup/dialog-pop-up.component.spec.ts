@@ -1,5 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MAT_DIALOG_DATA, MAT_DIALOG_SCROLL_STRATEGY, MatDialog } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA,
+  MAT_DIALOG_SCROLL_STRATEGY,
+  MatDialog,
+  MatDialogClose, MatDialogModule } from '@angular/material/dialog';
 
 import { DialogPopUpComponent } from './dialog-pop-up.component';
 
@@ -10,7 +13,8 @@ describe('PopupComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [DialogPopUpComponent],
-      providers: [MatDialog, { provide: MAT_DIALOG_SCROLL_STRATEGY }, { provide: MAT_DIALOG_DATA }]
+      providers: [{ provide: MAT_DIALOG_SCROLL_STRATEGY }, { provide: MAT_DIALOG_DATA }],
+      imports: [MatDialogModule]
     }).compileComponents();
   }));
 
