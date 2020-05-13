@@ -36,13 +36,6 @@ public class ObjectReference {
     } else if (objectReference.getCompany() == null || objectReference.getCompany().length() == 0) {
       throw new InvalidArgumentException(
           String.format("Company of %s of %s must not be empty", objRefType, objName));
-    } else if (objectReference.getSystem() == null || objectReference.getSystem().length() == 0) {
-      throw new InvalidArgumentException(
-          String.format("System of %s of %s must not be empty", objRefType, objName));
-    } else if (objectReference.getSystemInstance() == null
-        || objectReference.getSystemInstance().length() == 0) {
-      throw new InvalidArgumentException(
-          String.format("SystemInstance of %s of %s must not be empty", objRefType, objName));
     } else if (objectReference.getType() == null || objectReference.getType().length() == 0) {
       throw new InvalidArgumentException(
           String.format("Type of %s of %s must not be empty", objRefType, objName));
