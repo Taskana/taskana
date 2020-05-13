@@ -29,7 +29,7 @@ export class HttpClientInterceptor implements HttpInterceptor {
       } else if (error instanceof HttpErrorResponse && (error.status === 404) && error.url.indexOf('environment-information.json')) {
         // ignore this error
       } else {
-        this.errorsService.triggerError(NOTIFICATION_TYPES.GENERAL_ERR, error);
+        // this.errorsService.triggerError(NOTIFICATION_TYPES.GENERAL_ERR, error);
       }
     }));
   }
