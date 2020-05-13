@@ -114,8 +114,8 @@ class CreateTaskAccTest extends AbstractAccTest {
   @Test
   void should_createTask_When_ObjectReferenceSystemAndSystemInstanceIsNull()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-      WorkbasketNotFoundException, TaskAlreadyExistException {
-    
+          WorkbasketNotFoundException, TaskAlreadyExistException {
+
     String currentUser = CurrentUserContext.getUserid();
 
     Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
@@ -129,7 +129,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(createdTask).isNotNull();
     assertThat(createdTask.getCreator()).isEqualTo(CurrentUserContext.getUserid());
   }
-  
+
   @WithAccessId(user = "admin")
   @WithAccessId(user = "taskadmin")
   @TestTemplate
@@ -758,10 +758,6 @@ class CreateTaskAccTest extends AbstractAccTest {
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", null));
     testCreateTask.accept(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", null, "1234567"));
-    //    testCreateTask.accept(createObjectReference("COMPANY_A", "SYSTEM_A", null, "VNR",
-    // "1234567"));
-    //    testCreateTask.accept(createObjectReference("COMPANY_A", null, "INSTANCE_A", "VNR",
-    // "1234567"));
     testCreateTask.accept(createObjectReference(null, "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
   }
 
