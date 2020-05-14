@@ -214,34 +214,7 @@ class TaskCommentControllerIntTest {
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
         .isEqualTo(HttpStatus.FORBIDDEN);
   }
-
-  @Test
-  void should_FailToUpdateTaskComment_When_TaskIsNotExisting() {
-    final ObjectMapper mapper = new ObjectMapper();
-
-    TaskCommentResource taskCommentResourceToUpdate = new TaskCommentResource();
-    taskCommentResourceToUpdate.setTaskId("TKI:000000000000000000000000000000009999");
-    taskCommentResourceToUpdate.setTaskCommentId("TCI:000000000000000000000000000000000000");
-    taskCommentResourceToUpdate.setTextField("updated text");
-
-    String url =
-        restHelper.toUrl(Mapping.URL_TASK_COMMENT, "TCI:000000000000000000000000000000000000");
-
-    ThrowingCallable httpCall =
-        () -> {
-          template.exchange(
-              url,
-              HttpMethod.PUT,
-              new HttpEntity<>(
-                  mapper.writeValueAsString(taskCommentResourceToUpdate),
-                  restHelper.getHeadersUser_1_1()),
-              ParameterizedTypeReference.forType(TaskCommentResource.class));
-        };
-    assertThatThrownBy(httpCall)
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.NOT_FOUND);
-  }
-
+  
   @Test
   void should_FailToUpdateTaskComment_When_TaskCommentIdInResourceDoesNotMatchPathVariable() {
 
