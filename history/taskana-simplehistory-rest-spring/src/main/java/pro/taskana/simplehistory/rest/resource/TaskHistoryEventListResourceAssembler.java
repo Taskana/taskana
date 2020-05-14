@@ -24,32 +24,32 @@ public class TaskHistoryEventListResourceAssembler extends AbstractRessourcesAss
     TaskHistoryEventListResource pagedResources =
         new TaskHistoryEventListResource(resources, pageMetadata);
 
-    pagedResources.add(new Link(this.getOriginal().toUriString()).withSelfRel());
+    pagedResources.add(Link.of(this.getOriginal().toUriString()).withSelfRel());
     if (pageMetadata != null) {
       pagedResources.add(linkTo(TaskHistoryEventController.class).withRel("allTaskHistoryEvent"));
       pagedResources.add(
-          new Link(this.getOriginal().replaceQueryParam("page", 1).toUriString())
+          Link.of(this.getOriginal().replaceQueryParam("page", 1).toUriString())
               .withRel(IanaLinkRelations.FIRST));
       pagedResources.add(
-          new Link(
-                  this.getOriginal()
-                      .replaceQueryParam("page", pageMetadata.getTotalPages())
-                      .toUriString())
+          Link.of(
+              this.getOriginal()
+                  .replaceQueryParam("page", pageMetadata.getTotalPages())
+                  .toUriString())
               .withRel(IanaLinkRelations.LAST));
       if (pageMetadata.getNumber() > 1) {
         pagedResources.add(
-            new Link(
-                    this.getOriginal()
-                        .replaceQueryParam("page", pageMetadata.getNumber() - 1)
-                        .toUriString())
+            Link.of(
+                this.getOriginal()
+                    .replaceQueryParam("page", pageMetadata.getNumber() - 1)
+                    .toUriString())
                 .withRel(IanaLinkRelations.PREV));
       }
       if (pageMetadata.getNumber() < pageMetadata.getTotalPages()) {
         pagedResources.add(
-            new Link(
-                    this.getOriginal()
-                        .replaceQueryParam("page", pageMetadata.getNumber() + 1)
-                        .toUriString())
+            Link.of(
+                this.getOriginal()
+                    .replaceQueryParam("page", pageMetadata.getNumber() + 1)
+                    .toUriString())
                 .withRel(IanaLinkRelations.NEXT));
       }
     }
