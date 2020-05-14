@@ -34,6 +34,10 @@ export enum NOTIFICATION_TYPES {
   MARK_ERR,
 
   // ALERTS
+  // currently their names are used as a way to determine the type of the alert
+  // e.g. we extract from 'SUCCESS_ALERT_2' in notification.service, that this is a success alert
+  // and should therefore have the color green, so please __keep this in mind when refactoring__
+  // usages of this undocumented sideffect: notification.service.ts and toast.component.ts
   INFO_ALERT,
   INFO_ALERT_2,
   DANGER_ALERT,
