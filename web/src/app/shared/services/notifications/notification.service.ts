@@ -55,7 +55,7 @@ export class NotificationService {
         break;
       default: colorClass = ['white', 'background-darkgreen'];
     }
-    this.matSnack.openFromComponent(ToastComponent, {
+    return this.matSnack.openFromComponent(ToastComponent, {
       duration: 5000,
       data: { key, additions },
       panelClass: colorClass
