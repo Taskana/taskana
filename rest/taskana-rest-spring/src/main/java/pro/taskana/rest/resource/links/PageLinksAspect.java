@@ -40,26 +40,26 @@ public class PageLinksAspect {
     RepresentationModel<T> resourceSupport = (RepresentationModel<T>) joinPoint.proceed();
     if (page != null) {
       resourceSupport.add(
-          new Link(original.replaceQueryParam("page", page.getNumber()).toUriString())
+           Link.of(original.replaceQueryParam("page", page.getNumber()).toUriString())
               .withSelfRel());
       resourceSupport.add(
-          new Link(original.replaceQueryParam("page", 1).toUriString())
+          Link.of(original.replaceQueryParam("page", 1).toUriString())
               .withRel(IanaLinkRelations.FIRST));
       resourceSupport.add(
-          new Link(original.replaceQueryParam("page", page.getTotalPages()).toUriString())
+          Link.of(original.replaceQueryParam("page", page.getTotalPages()).toUriString())
               .withRel(IanaLinkRelations.LAST));
       if (page.getNumber() > 1) {
         resourceSupport.add(
-            new Link(original.replaceQueryParam("page", page.getNumber() - 1).toUriString())
+            Link.of(original.replaceQueryParam("page", page.getNumber() - 1).toUriString())
                 .withRel(IanaLinkRelations.PREV));
       }
       if (page.getNumber() < page.getTotalPages()) {
         resourceSupport.add(
-            new Link(original.replaceQueryParam("page", page.getNumber() + 1).toUriString())
+            Link.of(original.replaceQueryParam("page", page.getNumber() + 1).toUriString())
                 .withRel(IanaLinkRelations.NEXT));
       }
     } else {
-      resourceSupport.add(new Link(original.toUriString()).withSelfRel());
+      resourceSupport.add(Link.of(original.toUriString()).withSelfRel());
     }
     return resourceSupport;
   }

@@ -45,21 +45,21 @@ public abstract class AbstractRessourcesAssembler {
       PagedResources<?> pagedResources, PageMetadata pageMetadata) {
     UriComponentsBuilder original = getBuilderForOriginalUri();
     pagedResources.add(
-        (new Link(original.replaceQueryParam("page", 1).toUriString())).withRel("first"));
+        (Link.of(original.replaceQueryParam("page", 1).toUriString())).withRel("first"));
     pagedResources.add(
-        (new Link(original.replaceQueryParam("page", pageMetadata.getTotalPages()).toUriString()))
+        (Link.of(original.replaceQueryParam("page", pageMetadata.getTotalPages()).toUriString()))
             .withRel("last"));
     if (pageMetadata.getNumber() > 1L) {
       pagedResources.add(
-          (new Link(
+          (Link.of(
               original.replaceQueryParam("page", pageMetadata.getNumber() - 1L).toUriString()))
               .withRel("prev"));
     }
 
     if (pageMetadata.getNumber() < pageMetadata.getTotalPages()) {
       pagedResources.add(
-          (new Link(
-                  original.replaceQueryParam("page", pageMetadata.getNumber() + 1L).toUriString()))
+          (Link.of(
+              original.replaceQueryParam("page", pageMetadata.getNumber() + 1L).toUriString()))
               .withRel("next"));
     }
 
