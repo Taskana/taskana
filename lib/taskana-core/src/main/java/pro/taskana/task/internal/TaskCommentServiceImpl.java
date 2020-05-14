@@ -67,8 +67,6 @@ class TaskCommentServiceImpl {
 
       taskanaEngine.openConnection();
 
-      taskService.getTask(taskCommentImplToUpdate.getTaskId());
-
       TaskComment originalTaskComment = getTaskComment(taskCommentImplToUpdate.getId());
 
       if (originalTaskComment.getCreator().equals(userId)
