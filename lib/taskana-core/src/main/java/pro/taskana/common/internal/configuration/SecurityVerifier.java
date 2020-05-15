@@ -28,35 +28,40 @@ public class SecurityVerifier {
 
   public void checkSecureAccess(boolean securityEnabled) {
 
-    if (!securityEnabled) {
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug(String.format("Entering checkSecureAccess with securityEnabled set to %b",
+          securityEnabled));
+    }
 
-      LOGGER.debug("Trying to connect in disabled security-mode");
+    try (Connection connection = dataSource.getConnection()) {
 
-      try (Connection connection = dataSource.getConnection()) {
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug(connection.getMetaData().toString());
+      }
 
-        if (LOGGER.isDebugEnabled()) {
-          LOGGER.debug(connection.getMetaData().toString());
-        }
+      SqlRunner sqlRunner = new SqlRunner(connection);
 
-        SqlRunner sqlRunner = new SqlRunner(connection);
+      String querySecurity = String.format(SELECT_SECURITY_FLAG, SECURITY_FLAG_COLUMN_NAME,
+          schemaName);
 
-        String querySecurity = String.format(SELECT_SECURITY_FLAG, SECURITY_FLAG_COLUMN_NAME,
-            schemaName);
+      if ((boolean) sqlRunner.selectOne(querySecurity).get(SECURITY_FLAG_COLUMN_NAME)
+              && !securityEnabled) {
 
-        if ((boolean) sqlRunner.selectOne(querySecurity).get(SECURITY_FLAG_COLUMN_NAME)) {
+        LOGGER.error("Tried to start TASKANA in unsecured mode while secured mode is enforced!");
 
-          throw new SystemException(
-              "Secured TASKANA mode is enforced, can't start in unsecured mode");
-        }
-      } catch (SQLException ex) {
-
-        LOGGER.info(String.format(
-            "Security-mode is not yet set. Setting security flag to %b", securityEnabled));
-
-        setInitialSecurityMode(securityEnabled);
+        throw new SystemException(
+            "Secured TASKANA mode is enforced, can't start in unsecured mode");
 
       }
+    } catch (SQLException ex) {
+
+      LOGGER.info(String.format(
+          "Security-mode is not yet set. Setting security flag to %b", securityEnabled));
+
+      setInitialSecurityMode(securityEnabled);
+
     }
+
     LOGGER.debug("Security-mode is enabled");
 
   }
