@@ -292,11 +292,11 @@ public class LdapCacheTestImpl implements LdapCache {
               new AccessIdRepresentationModel(
                   "manager_domain_D", "cn=manager_domain_d,ou=groups,o=taskanatest"),
               new AccessIdRepresentationModel(
-                  "teamlead_2", "cn=teamlead_2" + ",ou=groups,o=taskanatest"),
+                  "teamlead_2", "cn=teamlead_2,ou=groups,o=taskanatest"),
               new AccessIdRepresentationModel(
-                  "teamlead_4", "cn=teamlead_4" + ",ou=groups,o=taskanatest"),
-              new AccessIdRepresentationModel("team_3", "cn=team_3" + ",ou=groups,o=taskanatest"),
-              new AccessIdRepresentationModel("team_4", "cn=team_4" + ",ou=groups,o=taskanatest")));
+                  "teamlead_4", "cn=teamlead_4,ou=groups,o=taskanatest"),
+              new AccessIdRepresentationModel("team_3", "cn=team_3,ou=groups,o=taskanatest"),
+              new AccessIdRepresentationModel("team_4", "cn=team_4,ou=groups,o=taskanatest")));
 
   @Override
   public List<AccessIdRepresentationModel> findMatchingAccessId(
