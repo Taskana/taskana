@@ -10,8 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import javax.sql.DataSource;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import pro.taskana.TaskanaEngineConfiguration;
@@ -22,25 +21,20 @@ import pro.taskana.sampledata.SampleDataGenerator;
 
 public class TaskanaSecurityConfigAccTest {
 
-  @BeforeAll
-  public static void setupTests() throws SQLException {
-    DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
-    String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
-    DbSchemaCreator dbSchemaCreator = new DbSchemaCreator(dataSource, schemaName);
-    dbSchemaCreator.run();
-  }
-
-  @AfterEach
-  public void cleanDb() {
+  @BeforeEach
+  public void cleanDb() throws SQLException {
     DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
     String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
 
     SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
-    sampleDataGenerator.clearDb();
+    sampleDataGenerator.dropDb();
+    DbSchemaCreator dbSchemaCreator = new DbSchemaCreator(dataSource, schemaName);
+    dbSchemaCreator.run();
+
   }
 
   @Test
-  public void should_ThrowException_When_CreatingUnsecuredEngineConfigWhileSecurityIsEnforced()
+  public void should_ThrowException_When_CreatingUnsecuredEngineCfgWhileSecurityIsEnforced()
       throws SQLException {
 
     setSecurityFlag(true);
@@ -59,7 +53,7 @@ public class TaskanaSecurityConfigAccTest {
   }
 
   @Test
-  public void should_StartUpNormally_When_CreatingUnsecuredEngineConfigWhileSecurityIsNotEnforced()
+  public void should_StartUpNormally_When_CreatingUnsecuredEngineCfgWhileSecurityIsNotEnforced()
       throws SQLException {
 
     setSecurityFlag(false);
@@ -76,7 +70,8 @@ public class TaskanaSecurityConfigAccTest {
   }
 
   @Test
-  public void should_SetSecurityFlag_When_SecurityFlagIsNotSet() throws SQLException {
+  public void should_SetSecurityFlagToFalse_When_CreatingUnsecureEngineCfgAndSecurityFlagIsNotSet()
+      throws SQLException {
 
     assertThat(retrieveSecurityFlag()).isNull();
 
@@ -93,13 +88,32 @@ public class TaskanaSecurityConfigAccTest {
 
   }
 
+  @Test
+  public void should_SetSecurityFlagToTrue_When_CreatingSecureEngineCfgAndSecurityFlagIsNotSet()
+      throws SQLException {
+
+    assertThat(retrieveSecurityFlag()).isNull();
+
+    ThrowingCallable createSecuredTaskanaEngineConfiguration = () -> {
+
+      TaskanaEngineConfiguration taskanaEngineConfiguration = new TaskanaEngineConfiguration(
+          TaskanaEngineTestConfiguration.getDataSource(), false, true,
+          TaskanaEngineTestConfiguration.getSchemaName());
+    };
+
+    assertThatCode(createSecuredTaskanaEngineConfiguration).doesNotThrowAnyException();
+
+    assertThat(retrieveSecurityFlag()).isTrue();
+
+  }
+
   private Boolean retrieveSecurityFlag() throws SQLException {
 
     try (Connection connection = TaskanaEngineTestConfiguration.getDataSource().getConnection()) {
 
       String selectSecurityFlagSql = String
-                       .format("SELECT * FROM %s.CONFIGURATION",
-                           TaskanaEngineTestConfiguration.getSchemaName());
+                                         .format("SELECT * FROM %s.CONFIGURATION",
+                                             TaskanaEngineTestConfiguration.getSchemaName());
 
       Statement statement = connection.createStatement();
       ResultSet resultSet = statement.executeQuery(selectSecurityFlagSql);
