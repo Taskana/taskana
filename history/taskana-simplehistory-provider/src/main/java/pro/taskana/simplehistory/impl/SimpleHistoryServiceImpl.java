@@ -13,7 +13,9 @@ import pro.taskana.spi.history.api.TaskanaHistory;
 import pro.taskana.spi.history.api.events.TaskanaHistoryEvent;
 import pro.taskana.spi.history.api.exceptions.TaskanaHistoryEventNotFoundException;
 
-/** This is the implementation of TaskanaHistory. */
+/**
+ * This is the implementation of TaskanaHistory.
+ */
 public class SimpleHistoryServiceImpl implements TaskanaHistory {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SimpleHistoryServiceImpl.class);
@@ -23,16 +25,14 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
 
   @Override
   public void initialize(TaskanaEngineConfiguration taskanaEngineConfiguration) {
-    try {
-      this.taskanaHistoryEngine = getTaskanaEngine(taskanaEngineConfiguration);
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "Simple history service implementation initialized with schemaName: {} ",
-            taskanaEngineConfiguration.getSchemaName());
-      }
-    } catch (SQLException e) {
-      LOGGER.error("There was an error creating Taskana history engine", e);
+ 
+    this.taskanaHistoryEngine = getTaskanaEngine(taskanaEngineConfiguration);
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug(
+          "Simple history service implementation initialized with schemaName: {} ",
+          taskanaEngineConfiguration.getSchemaName());
     }
+
     this.historyEventMapper =
         this.taskanaHistoryEngine.getSqlSession().getMapper(HistoryEventMapper.class);
     this.historyQueryMapper =
@@ -88,8 +88,7 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
   /*
    * ATTENTION: This method exists for testing purposes.
    */
-  TaskanaHistoryEngineImpl getTaskanaEngine(TaskanaEngineConfiguration taskanaEngineConfiguration)
-      throws SQLException {
+  TaskanaHistoryEngineImpl getTaskanaEngine(TaskanaEngineConfiguration taskanaEngineConfiguration) {
     return TaskanaHistoryEngineImpl.createTaskanaEngine(taskanaEngineConfiguration);
   }
 }
