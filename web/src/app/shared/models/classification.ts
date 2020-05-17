@@ -1,7 +1,8 @@
 import { Links } from 'app/shared/models/links';
 
 export class Classification {
-  constructor(public classificationId?: string, // newly created classifications don't have an id yet.
+  constructor(
+    public classificationId?: string, // newly created classifications don't have an id yet.
     public key?: string,
     public category?: string,
     public type?: string,
@@ -10,6 +11,7 @@ export class Classification {
     public parentId?: string,
     public priority?: number,
     public serviceLevel?: string,
-    public _links?: Links) {
+    public _links?: Links
+  ) {
   }
 }

@@ -22,7 +22,7 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
   selectedId: string;
   showDetail = false;
   requestInProgress = false;
-  action: string;
+  action: ACTION;
   tabSelected = 'information';
 
   private workbasketSelectedSubscription: Subscription;

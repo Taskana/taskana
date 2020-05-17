@@ -31,6 +31,7 @@ import { SavingWorkbasketService } from './services/saving-workbaskets.service';
 import { ClassificationDefinitionService } from './services/classification-definition.service';
 import { WorkbasketDefinitionService } from './services/workbasket-definition.service';
 import { ImportExportService } from './services/import-export.service';
+import { ClassificationOverviewComponent } from './components/classification-overview/classification-overview.component';
 
 const MODULES = [
   CommonModule,
@@ -52,10 +53,11 @@ const DECLARATIONS = [
   WorkbasketInformationComponent,
   WorkbasketDistributionTargetsComponent,
   WorkbasketDualListComponent,
+  ClassificationOverviewComponent,
   ClassificationListComponent,
-  ImportExportComponent,
   ClassificationTypesSelectorComponent,
   ClassificationDetailsComponent,
+  ImportExportComponent,
   AccessItemsManagementComponent
 ];
 

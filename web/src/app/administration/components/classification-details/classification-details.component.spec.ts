@@ -1,13 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Routes } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
 import { Component } from '@angular/core';
 import { of } from 'rxjs';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { configureTests } from 'app/app.test.configuration';
 import { NgxsModule, Store } from '@ngxs/store';
+import { Location } from '@angular/common';
 
 
 import { ClassificationDefinition } from 'app/shared/models/classification-definition';
@@ -17,15 +16,11 @@ import { MasterAndDetailService } from 'app/shared/services/master-and-detail/ma
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
 import { TreeNodeModel } from 'app/shared/models/tree-node';
-import { TreeService } from 'app/shared/services/tree/tree.service';
 import { ImportExportService } from 'app/administration/services/import-export.service';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { ClassificationSelectors } from 'app/shared/store/classification-store/classification.selectors';
-import { dispatchKeyboardEvent } from '@angular/cdk/testing';
-import { TabDirective } from 'ngx-bootstrap';
-import { KEYS } from 'angular-tree-component';
-import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { ClassificationDetailsComponent } from './classification-details.component';
+import { NotificationService } from '../../../shared/services/notifications/notification.service';
 
 
 @Component({
@@ -35,26 +30,25 @@ import { ClassificationDetailsComponent } from './classification-details.compone
 class DummyDetailComponent {
 }
 
-const routes: Routes = [
-  { path: 'taskana/administration/classifications', component: DummyDetailComponent }
-];
-
 describe('ClassificationDetailsComponent', () => {
   let component: ClassificationDetailsComponent;
   let fixture: ComponentFixture<ClassificationDetailsComponent>;
   const treeNodes: Array<TreeNodeModel> = new Array(new TreeNodeModel());
 
   let classificationsService;
-  let treeService;
+  let removeConfirmationService;
 
-  const storeSpy: jasmine.SpyObj<Store> = jasmine.createSpyObj('Store', ['select']);
+  const locationSpy: jasmine.SpyObj<Location> = jasmine.createSpyObj('Location', ['go']);
+  const storeSpy: jasmine.SpyObj<Store> = jasmine.createSpyObj('Store', ['select', 'dispatch']);
   const configure = (testBed: TestBed) => {
     testBed.configureTestingModule({
-      imports: [FormsModule, HttpClientModule, RouterTestingModule.withRoutes(routes), AngularSvgIconModule, NgxsModule.forRoot()],
+      imports: [FormsModule, HttpClientModule, AngularSvgIconModule, NgxsModule.forRoot()],
       declarations: [ClassificationDetailsComponent, DummyDetailComponent],
       providers: [MasterAndDetailService, RequestInProgressService, ClassificationsService,
         HttpClient, NotificationService,
-        TreeService, ImportExportService, { provide: Store, useValue: storeSpy }]
+        ImportExportService,
+        { provide: Location, useValue: locationSpy },
+        { provide: Store, useValue: storeSpy }]
     });
   };
 
@@ -71,6 +65,7 @@ describe('ClassificationDetailsComponent', () => {
         }
       });
 
+
       fixture = testBed.createComponent(ClassificationDetailsComponent);
 
       component = fixture.componentInstance;
@@ -79,7 +74,6 @@ describe('ClassificationDetailsComponent', () => {
       spyOn(classificationsService, 'deleteClassification').and.returnValue(of(true));
       component.classification = new ClassificationDefinition('id1');
       component.classification._links = new LinksClassification({ self: '' });
-      treeService = testBed.get(TreeService);
       fixture.detectChanges();
       done();
     });
@@ -88,17 +82,5 @@ describe('ClassificationDetailsComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should trigger treeService remove node id after removing a node', done => {
-    const treeServiceSpy = spyOn(treeService, 'setRemovedNodeId');
-    const ref = component.removeClassification();
-    ref.afterOpened().subscribe(() => {
-      ref.close(ref.componentInstance.callback);
-    });
-    ref.afterClosed().subscribe(() => {
-      expect(treeServiceSpy).toHaveBeenCalledWith('id1');
-      done();
-    });
   });
 });

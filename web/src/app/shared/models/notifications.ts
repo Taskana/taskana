@@ -229,7 +229,7 @@ export const notifications = new Map<NOTIFICATION_TYPES, Pair>([
   // taskdetails.component
   [NOTIFICATION_TYPES.INFO_ALERT, new Pair(
     '',
-    'Reset edited fields'
+    'Refreshed selected classification'
   )],
   // classification-details.component
   [NOTIFICATION_TYPES.SUCCESS_ALERT_4, new Pair(
@@ -310,5 +310,5 @@ export const notifications = new Map<NOTIFICATION_TYPES, Pair>([
   [NOTIFICATION_TYPES.INFO_ALERT_2, new Pair(
     '',
     'The selected Workbasket is empty!'
-  )],
+  )]
 ]);

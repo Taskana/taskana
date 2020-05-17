@@ -40,7 +40,7 @@ implements OnInit, OnChanges, OnDestroy {
   workbasketClone: Workbasket;
   workbasketErrors;
   @Input()
-  action: string;
+  action: ACTION;
 
   allTypes: Map<string, string>;
   requestInProgress = false;

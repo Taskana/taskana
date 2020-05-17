@@ -1,34 +1,35 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { Select, Store } from '@ngxs/store';
-import { Observable, Subscription, zip } from 'rxjs';
+import { Observable, Subject, zip } from 'rxjs';
 
-import { ClassificationDefinition, customFieldCount } from 'app/shared/models/classification-definition';
+import { ClassificationDefinition,
+  customFieldCount } from 'app/shared/models/classification-definition';
 import { ACTION } from 'app/shared/models/action';
 
 import { highlight } from 'theme/animations/validation.animation';
 import { TaskanaDate } from 'app/shared/util/taskana.date';
 
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
-import { MasterAndDetailService } from 'app/shared/services/master-and-detail/master-and-detail.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
-import { TreeService } from 'app/shared/services/tree/tree.service';
 
 import { DomainService } from 'app/shared/services/domain/domain.service';
 import { Pair } from 'app/shared/models/pair';
 import { NgForm } from '@angular/forms';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { ImportExportService } from 'app/administration/services/import-export.service';
-import { map, take } from 'rxjs/operators';
+import { map, take, takeUntil } from 'rxjs/operators';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { ClassificationSelectors } from 'app/shared/store/classification-store/classification.selectors';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Location } from '@angular/common';
 import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { ClassificationCategoryImages,
   CustomField,
   getCustomFields } from '../../../shared/models/customisation';
-import { DialogPopUpComponent } from '../../../shared/components/popup/dialog-pop-up.component';
+
+import { CreateClassification,
+  RestoreSelectedClassification,
+  SaveClassification } from '../../../shared/store/classification-store/classification.actions';
 
 @Component({
   selector: 'taskana-classification-details',
@@ -38,42 +39,33 @@ import { DialogPopUpComponent } from '../../../shared/components/popup/dialog-po
 })
 export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   classification: ClassificationDefinition;
-  classificationClone: ClassificationDefinition;
-  classificationCategories: string[];
-  showDetail = false;
   badgeMessage = '';
   requestInProgress = false;
   @Select(ClassificationSelectors.selectCategories) categories$: Observable<string[]>;
   @Select(EngineConfigurationSelectors.selectCategoryIcons) categoryIcons$: Observable<ClassificationCategoryImages>;
   @Select(ClassificationSelectors.selectedClassificationType) selectedClassificationType$: Observable<string>;
   @Select(ClassificationSelectors.selectClassificationTypesObject) classificationTypes$: Observable<Object>;
+  @Select(ClassificationSelectors.selectedClassification) selectedClassification$: Observable<ClassificationDefinition>;
+  @Select(ClassificationSelectors.activeAction) action$: Observable<ACTION>;
 
   spinnerIsRunning = false;
   customFields$: Observable<CustomField[]>;
 
   @ViewChild('ClassificationForm', { static: false }) classificationForm: NgForm;
   toogleValidationMap = new Map<string, boolean>();
-  private action: any;
-  private classificationServiceSubscription: Subscription;
-  private classificationSelectedSubscription: Subscription;
-  private routeSubscription: Subscription;
-  private masterAndDetailSubscription: Subscription;
-  private classificationSavingSubscription: Subscription;
-  private classificationRemoveSubscription: Subscription;
-  private domainSubscription: Subscription;
-  private importingExportingSubscription: Subscription;
+  action: ACTION;
+  destroy$ = new Subject<void>();
 
-  constructor(private classificationsService: ClassificationsService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private masterAndDetailService: MasterAndDetailService,
+  constructor(
+    private classificationsService: ClassificationsService,
+    private location: Location,
     private requestInProgressService: RequestInProgressService,
-    private treeService: TreeService,
     private domainService: DomainService,
     private formsValidatorService: FormsValidatorService,
-    private notificationService: NotificationService,
+    private notificationsService: NotificationService,
     private importExportService: ImportExportService,
-    private store: Store) {
+    private store: Store
+  ) {
   }
 
   ngOnInit() {
@@ -81,57 +73,34 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
       map(customisation => customisation.information),
       getCustomFields(customFieldCount)
     );
-    this.classificationSelectedSubscription = this.classificationsService.getSelectedClassification()
-      .subscribe(classificationSelected => {
-        if (classificationSelected && this.classification
-          && this.classification.classificationId === classificationSelected.classificationId) {
-          return;
-        }
-        this.initProperties();
-        if (classificationSelected) {
-          this.fillClassificationInformation(classificationSelected);
-        }
-      });
-
-    this.routeSubscription = this.route.params.subscribe(params => {
-      let { id } = params;
-      delete this.action;
-      if (id && id.indexOf('new-classification') !== -1) {
-        this.action = ACTION.CREATE;
+    this.selectedClassification$.pipe(takeUntil(this.destroy$)).subscribe(data => {
+      this.fillClassificationInformation(data);
+    });
+    this.action$.pipe(takeUntil(this.destroy$)).subscribe(data => {
+      this.action = data;
+      if (this.action === ACTION.CREATE) {
+        this.initClassificationOnCreation();
         this.badgeMessage = 'Creating new classification';
-        id = id.replace('new-classification/', '');
-        if (id === 'undefined') {
-          id = '';
-        }
-        this.fillClassificationInformation(this.classification ? this.classification : new ClassificationDefinition());
-      }
-
-      if (!this.classification || (this.classification.classificationId !== id && id)) {
-        this.selectClassification(id);
+      } else {
+        this.badgeMessage = '';
       }
     });
 
-    this.masterAndDetailSubscription = this.masterAndDetailService.getShowDetail().subscribe(showDetail => {
-      this.showDetail = showDetail;
-    });
-
-    this.importingExportingSubscription = this.importExportService.getImportingFinished().subscribe((value: Boolean) => {
+    this.importExportService.getImportingFinished().pipe(takeUntil(this.destroy$)).subscribe(() => {
       if (this.classification.classificationId) {
         this.selectClassification(this.classification.classificationId);
       }
     });
   }
 
+
   backClicked(): void {
-    this.classificationsService.selectClassification();
-    this.router.navigate(['./'], { relativeTo: this.route.parent });
+    this.location.go(this.location.path().replace(/(classifications).*/g, 'classifications'));
   }
 
-  removeClassification(): MatDialogRef<DialogPopUpComponent> {
-    return this.notificationService.showDialog(
-      `You are going to delete classification: ${this.classification.key}. Can you confirm this action?`,
-      this.removeClassificationConfirmation.bind(this)
-    );
+  removeClassification() {
+    this.notificationsService.showDialog(`You are going to delete classification: ${this.classification.key}. Can you confirm this action?`,
+      this.removeClassificationConfirmation.bind(this));
   }
 
   isFieldValid(field: string): boolean {
@@ -147,10 +116,18 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onClear() {
+  onRestore() {
     this.formsValidatorService.formSubmitAttempt = false;
-    this.notificationService.showToast(NOTIFICATION_TYPES.INFO_ALERT);
-    this.classification = { ...this.classificationClone };
+    if (this.action === ACTION.CREATE) {
+      this.classification = new ClassificationDefinition();
+      this.notificationsService.showToast(NOTIFICATION_TYPES.INFO_ALERT);
+    } else {
+      this.store.dispatch(
+        new RestoreSelectedClassification(this.classification.classificationId)
+      ).pipe(take(1)).subscribe(ctx => {
+        this.notificationsService.showToast(NOTIFICATION_TYPES.INFO_ALERT);
+      });
+    }
   }
 
   selectCategory(category: string) {
@@ -177,41 +154,31 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     return this.domainService.getSelectedDomainValue() === '';
   }
 
-  private initProperties() {
-    delete this.classification;
-    delete this.action;
-  }
-
   private async onSave() {
     this.requestInProgressService.setRequestInProgress(true);
     if (this.action === ACTION.CREATE) {
-      this.classificationSavingSubscription = this.classificationsService.postClassification(this.classification)
-        .subscribe((classification: ClassificationDefinition) => {
-          this.classification = classification;
-          this.classificationsService.selectClassification(classification);
-          this.notificationService.showToast(
-            NOTIFICATION_TYPES.SUCCESS_ALERT_2,
-            new Map<string, string>([['classificationKey', classification.key]])
-          );
-          this.afterRequest();
-        },
-        error => {
-          this.notificationService.triggerError(NOTIFICATION_TYPES.CREATE_ERR, error);
-          this.afterRequest();
-        });
+      this.store.dispatch(
+        new CreateClassification(this.classification)
+      ).pipe(take(1)).subscribe(store => {
+        this.notificationsService.showToast(
+          NOTIFICATION_TYPES.SUCCESS_ALERT_2,
+          new Map<string, string>([['classificationKey', store.classification.selectedClassification.key]])
+        );
+        this.afterRequest();
+      }, error => {
+        this.notificationsService.triggerError(NOTIFICATION_TYPES.CREATE_ERR, error);
+        this.afterRequest();
+      });
     } else {
       try {
-        this.classification = (<ClassificationDefinition> await this.classificationsService.putClassification(
-          this.classification._links.self.href, this.classification
-        ));
+        this.store.dispatch(new SaveClassification(this.classification));
         this.afterRequest();
-        this.notificationService.showToast(
+        this.notificationsService.showToast(
           NOTIFICATION_TYPES.SUCCESS_ALERT_3,
           new Map<string, string>([['classificationKey', this.classification.key]])
         );
-        this.cloneClassification(this.classification);
       } catch (error) {
-        this.notificationService.triggerError(NOTIFICATION_TYPES.SAVE_ERR, error);
+        this.notificationsService.triggerError(NOTIFICATION_TYPES.SAVE_ERR, error);
         this.afterRequest();
       }
     }
@@ -225,9 +192,8 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   private async selectClassification(id: string) {
     if (!this.classificationIsAlreadySelected()) {
       this.requestInProgress = true;
-      const classification = await this.classificationsService.getClassification(id);
+      const classification = await this.classificationsService.getClassification(id).toPromise();
       this.fillClassificationInformation(classification);
-      this.classificationsService.selectClassification(classification);
       this.requestInProgress = false;
     }
   }
@@ -237,13 +203,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   }
 
   private fillClassificationInformation(classificationSelected: ClassificationDefinition) {
-    if (this.action === ACTION.CREATE) { // CREATE
-      this.initClassificationOnCreation(classificationSelected);
-    } else {
-      this.classification = classificationSelected;
-      this.cloneClassification(classificationSelected);
-      this.checkDomainAndRedirect();
-    }
+    this.classification = { ...classificationSelected };
   }
 
   private addDateToClassification(classification: ClassificationDefinition) {
@@ -252,56 +212,29 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     classification.modified = date;
   }
 
-  private initClassificationOnCreation(classificationSelected: ClassificationDefinition) {
+  private initClassificationOnCreation() {
     zip(this.categories$, this.selectedClassificationType$).pipe(take(1)).subscribe(([categories, selectedType]: [string[], string]) => {
       const tempClassification: ClassificationDefinition = new ClassificationDefinition();
-      // tempClassification.parentId = classificationSelected.classificationId;
-      // tempClassification.parentKey = classificationSelected.key;
       [tempClassification.category] = categories;
       tempClassification.domain = this.domainService.getSelectedDomainValue();
       tempClassification.type = selectedType;
       this.addDateToClassification(tempClassification);
       this.classification = tempClassification;
-      this.cloneClassification(this.classification);
-    });
-  }
-
-  private checkDomainAndRedirect() {
-    this.domainSubscription = this.domainService.getSelectedDomain().subscribe(domain => {
-      if (domain !== '' && this.classification && this.classification.domain !== domain) {
-        this.backClicked();
-      }
     });
   }
 
   private removeClassificationConfirmation() {
     if (!this.classification || !this.classification.classificationId) {
-      this.notificationService.triggerError(NOTIFICATION_TYPES.SELECT_ERR);
+      this.notificationsService.triggerError(NOTIFICATION_TYPES.SELECT_ERR);
       return;
     }
     this.requestInProgressService.setRequestInProgress(true);
-    this.treeService.setRemovedNodeId(this.classification.classificationId);
 
-    this.classificationRemoveSubscription = this.classificationsService
-      .deleteClassification(this.classification._links.self.href)
-      .subscribe(() => {
-        const { key } = this.classification;
-        delete this.classification;
-        this.afterRequest();
-        this.classificationsService.selectClassification();
-        this.router.navigate(['taskana/administration/classifications']);
-        this.notificationService.showToast(
-          NOTIFICATION_TYPES.SUCCESS_ALERT_4,
-          new Map<string, string>([['classificationKey', key]])
-        );
-      }, error => {
-        this.notificationService.triggerError(NOTIFICATION_TYPES.REMOVE_ERR, error);
-        this.afterRequest();
-      });
-  }
-
-  private cloneClassification(classification: ClassificationDefinition) {
-    this.classificationClone = { ...classification };
+    this.store.dispatch(new RemoveSelectedClassification()).pipe(take(1)).subscribe(() => {
+      this.notificationsService.showToast(NOTIFICATION_TYPES.SUCCESS_ALERT_4,
+        new Map<string, string>([['classificationKey', this.classification.key]]));
+      this.afterRequest();
+    });
   }
 
   getClassificationCustom(customNumber: number): string {
@@ -311,7 +244,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   // TODO: Remove when classification is in store
   getAvailableCategories(type: string) {
     let returnCategories: string[] = [];
-    this.classificationTypes$.subscribe(classTypes => {
+    this.classificationTypes$.pipe(take(1)).subscribe(classTypes => {
       returnCategories = classTypes[type];
     });
 
@@ -319,29 +252,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.masterAndDetailSubscription) {
-      this.masterAndDetailSubscription.unsubscribe();
-    }
-    if (this.routeSubscription) {
-      this.routeSubscription.unsubscribe();
-    }
-    if (this.classificationSelectedSubscription) {
-      this.classificationSelectedSubscription.unsubscribe();
-    }
-    if (this.classificationServiceSubscription) {
-      this.classificationServiceSubscription.unsubscribe();
-    }
-    if (this.classificationSavingSubscription) {
-      this.classificationSavingSubscription.unsubscribe();
-    }
-    if (this.classificationRemoveSubscription) {
-      this.classificationRemoveSubscription.unsubscribe();
-    }
-    if (this.domainSubscription) {
-      this.domainSubscription.unsubscribe();
-    }
-    if (this.importingExportingSubscription) {
-      this.importingExportingSubscription.unsubscribe();
-    }
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

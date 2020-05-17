@@ -13,7 +13,7 @@ declare let $: any;
 export class SpinnerComponent implements OnDestroy {
   showSpinner: boolean;
   @Input()
-  delay = 250;
+  delay = 0;
 
   @Input()
   isModal = false;
@@ -50,9 +50,6 @@ export class SpinnerComponent implements OnDestroy {
       return;
     }
 
-    if (this.currentTimeout) {
-      return;
-    }
     this.runSpinner(value);
   }
 

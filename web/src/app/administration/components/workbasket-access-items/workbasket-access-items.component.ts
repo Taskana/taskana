@@ -30,7 +30,7 @@ export class WorkbasketAccessItemsComponent implements OnChanges, OnDestroy {
   workbasket: Workbasket;
 
   @Input()
-  action: string;
+  action: ACTION;
 
   @Input()
   active: string;
