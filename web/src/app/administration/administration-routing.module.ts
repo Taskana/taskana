@@ -8,6 +8,7 @@ import { ClassificationListComponent } from 'app/administration/components/class
 import { ClassificationDetailsComponent } from 'app/administration/components/classification-details/classification-details.component';
 import { DomainGuard } from 'app/shared/guards/domain.guard';
 import { AccessItemsManagementComponent } from './components/access-items-management/access-items-management.component';
+import { ClassificationOverviewComponent } from './components/classification-overview/classification-overview.component';
 
 const routes: Routes = [
   {
@@ -38,17 +39,17 @@ const routes: Routes = [
   },
   {
     path: 'classifications',
-    component: MasterAndDetailComponent,
+    component: ClassificationOverviewComponent,
     canActivate: [DomainGuard],
     children: [
       {
         path: '',
-        component: ClassificationListComponent,
+        component: ClassificationOverviewComponent,
         outlet: 'master'
       },
       {
         path: ':id',
-        component: ClassificationDetailsComponent,
+        component: ClassificationOverviewComponent,
         outlet: 'detail'
       },
       {
@@ -83,4 +84,5 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class AdministrationRoutingModule {}
+export class AdministrationRoutingModule {
+}

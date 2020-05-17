@@ -1,7 +1,8 @@
 import { LinksClassification } from 'app/shared/models/links-classfication';
 
 export class ClassificationDefinition {
-  constructor(public classificationId?: string,
+  constructor(
+    public classificationId?: string,
     public key?: string,
     public parentId?: string,
     public parentKey?: string,
@@ -24,7 +25,8 @@ export class ClassificationDefinition {
     public custom6?: string,
     public custom7?: string,
     public custom8?: string,
-    public _links?: LinksClassification) {
+    public _links?: LinksClassification
+  ) {
   }
 }
 

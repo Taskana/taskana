@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'environments/environment';
-import { combineLatest, Observable, Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { map, mergeMap, tap } from 'rxjs/operators';
-import { Select, Store } from '@ngxs/store';
 
 import { Classification } from 'app/shared/models/classification';
 import { ClassificationDefinition } from 'app/shared/models/classification-definition';
@@ -13,23 +12,17 @@ import { DomainService } from 'app/shared/services/domain/domain.service';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { Direction } from 'app/shared/models/sorting';
 import { QueryParameters } from 'app/shared/models/query-parameters';
-import { ClassificationSelectors } from 'app/shared/store/classification-store/classification.selectors';
-import { SetSelectedClassificationType } from 'app/shared/store/classification-store/classification.actions';
 
 @Injectable()
 export class ClassificationsService {
   private url = `${environment.taskanaRestUrl}/v1/classifications/`;
-  private classificationSelected = new Subject<ClassificationDefinition>();
   private classificationSaved = new Subject<number>();
   private classificationResourcePromise: Promise<ClassificationResource>;
   private lastDomain: string;
-  // TODO: this should not be here in the service
-  @Select(ClassificationSelectors.selectedClassificationType) classificationTypeSelected$: Observable<string>;
 
   constructor(
     private httpClient: HttpClient,
     private domainService: DomainService,
-    private store: Store
   ) {}
 
   private static classificationParameters(domain: string): QueryParameters {
@@ -44,11 +37,11 @@ export class ClassificationsService {
   }
 
   // GET
-  getClassifications(): Observable<Array<Classification>> {
+  getClassifications(classificationType?: string): Observable<Array<Classification>> {
     return this.domainService.getSelectedDomain().pipe(
       mergeMap(domain => this.getClassificationObservable(this.httpClient.get<ClassificationResource>(
         `${this.url}${TaskanaQueryParameters.getQueryParameters(ClassificationsService.classificationParameters(domain))}`
-      ))),
+      ), classificationType)),
       tap(() => {
         this.domainService.domainChangedComplete();
       })
@@ -67,13 +60,8 @@ export class ClassificationsService {
   }
 
   // GET
-  getClassification(id: string): Promise<ClassificationDefinition> {
-    return this.httpClient.get<ClassificationDefinition>(`${this.url}${id}`)
-      .pipe(tap((classification: ClassificationDefinition) => {
-        if (classification) {
-          this.store.dispatch(new SetSelectedClassificationType(classification.type));
-        }
-      })).toPromise();
+  getClassification(id: string): Observable<ClassificationDefinition> {
+    return this.httpClient.get<ClassificationDefinition>(`${this.url}${id}`);
   }
 
   // POST
@@ -82,23 +70,16 @@ export class ClassificationsService {
   }
 
   // PUT
-  putClassification(url: string, classification: Classification): Promise<Classification> {
-    return this.httpClient.put<Classification>(url, classification).toPromise();
+  putClassification(classification: Classification): Observable<Classification> {
+    return this.httpClient.put<Classification>(`${this.url}${classification.classificationId}`, classification);
   }
 
   // DELETE
-  deleteClassification(url: string): Observable<string> {
-    return this.httpClient.delete<string>(url);
+  deleteClassification(id: string): Observable<string> {
+    return this.httpClient.delete<string>(`${this.url}${id}`);
   }
 
   // #region "Service extras"
-  selectClassification(classification?: ClassificationDefinition) {
-    this.classificationSelected.next(classification);
-  }
-
-  getSelectedClassification(): Observable<ClassificationDefinition> {
-    return this.classificationSelected.asObservable();
-  }
 
   triggerClassificationSaved() {
     this.classificationSaved.next(Date.now());
@@ -110,17 +91,15 @@ export class ClassificationsService {
 
   // #endregion
 
-  private getClassificationObservable(classificationRef: Observable<ClassificationResource>): Observable<Array<Classification>> {
-    return combineLatest(
-      [classificationRef,
-        this.classificationTypeSelected$]
-    ).pipe(
-      map(
-        ([resource, type]: [ClassificationResource, string]) => (
-          resource.classifications ? this.buildHierarchy(resource.classifications, type) : []
-        )
+  private getClassificationObservable(
+    classificationRef: Observable<ClassificationResource>,
+    classificationType: string
+  ): Observable<Array<Classification>> {
+    return classificationRef.pipe(map(
+      (resource: ClassificationResource) => (
+        resource.classifications ? this.buildHierarchy(resource.classifications, classificationType) : []
       )
-    );
+    ));
   }
 
   private buildHierarchy(classifications: Array<Classification>, type: string): Array<Classification> {

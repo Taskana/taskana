@@ -23,7 +23,6 @@ import { SelectedRouteService } from 'app/shared/services/selected-route/selecte
 import { DomainService } from 'app/shared/services/domain/domain.service';
 import { StartupService } from 'app/shared/services/startup/startup.service';
 import { MasterAndDetailService } from 'app/shared/services/master-and-detail/master-and-detail.service';
-import { TreeService } from 'app/shared/services/tree/tree.service';
 import { WindowRefService } from 'app/shared/services/window/window.service';
 import { TaskanaEngineService } from 'app/shared/services/taskana-engine/taskana-engine.service';
 import { NavBarComponent } from 'app/shared/components/nav-bar/nav-bar.component';
@@ -50,7 +49,6 @@ import { UserGuard } from './shared/guards/user.guard';
 import { ClassificationCategoriesService } from './shared/services/classification-categories/classification-categories.service';
 import { environment } from '../environments/environment';
 import { STATES } from './shared/store';
-import { ToastComponent } from './shared/components/toast/toast.component';
 
 const MODULES = [
   TabsModule.forRoot(),
@@ -101,7 +99,6 @@ export function startupServiceFactory(startupService: StartupService): () => Pro
       multi: true
     },
     MasterAndDetailService,
-    TreeService,
     TaskanaEngineService,
     FormsValidatorService,
     UploadService,
