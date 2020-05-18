@@ -177,7 +177,7 @@ public class AttachmentHandler {
       oldAttachments.forEach(
           a -> {
             if (!newAttIds.contains(a.getId())) {
-              attachmentMapper.deleteAttachment(a.getId());
+              attachmentMapper.delete(a.getId());
               LOGGER.debug(
                   "TaskService.updateTask() for TaskId={} DELETED an Attachment={}.",
                   newTaskImpl.getId(),

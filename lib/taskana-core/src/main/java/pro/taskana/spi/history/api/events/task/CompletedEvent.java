@@ -6,14 +6,14 @@ import pro.taskana.task.api.models.TaskSummary;
 /** Event fired if a task is completed. */
 public class CompletedEvent extends TaskEvent {
 
-  public CompletedEvent(Task completedTask, String userId) {
-    super(completedTask, userId, null);
+  public CompletedEvent(String id, Task completedTask, String userId) {
+    super(id, completedTask, userId, null);
     eventType = "TASK_COMPLETED";
     created = completedTask.getCompleted();
   }
 
-  public CompletedEvent(TaskSummary completedTask, String userId) {
-    super(completedTask, userId, null);
+  public CompletedEvent(String id, TaskSummary completedTask, String userId) {
+    super(id, completedTask, userId, null);
     eventType = "TASK_COMPLETED";
     created = completedTask.getCompleted();
   }

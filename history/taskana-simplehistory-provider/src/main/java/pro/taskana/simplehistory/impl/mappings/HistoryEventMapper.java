@@ -1,5 +1,7 @@
 package pro.taskana.simplehistory.impl.mappings;
 
+import java.util.List;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
@@ -13,11 +15,11 @@ import pro.taskana.spi.history.api.events.TaskanaHistoryEvent;
 public interface HistoryEventMapper {
 
   @Insert(
-      "<script>INSERT INTO HISTORY_EVENTS (BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, TASK_ID,"
+      "<script>INSERT INTO HISTORY_EVENTS (ID,BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, TASK_ID,"
           + " EVENT_TYPE, CREATED, USER_ID, DOMAIN, WORKBASKET_KEY, POR_COMPANY, POR_SYSTEM, POR_INSTANCE,"
           + " POR_TYPE, POR_VALUE, TASK_CLASSIFICATION_KEY, TASK_CLASSIFICATION_CATEGORY, ATTACHMENT_CLASSIFICATION_KEY, "
           + " OLD_VALUE, NEW_VALUE, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, DETAILS)"
-          + " VALUES ( #{historyEvent.businessProcessId}, #{historyEvent.parentBusinessProcessId}, #{historyEvent.taskId},"
+          + " VALUES ( #{historyEvent.id}, #{historyEvent.businessProcessId}, #{historyEvent.parentBusinessProcessId}, #{historyEvent.taskId},"
           + " #{historyEvent.eventType}, #{historyEvent.created}, #{historyEvent.userId}, #{historyEvent.domain}, #{historyEvent.workbasketKey},"
           + " #{historyEvent.porCompany}, #{historyEvent.porSystem}, #{historyEvent.porInstance}, #{historyEvent.porType},"
           + " #{historyEvent.porValue}, #{historyEvent.taskClassificationKey}, #{historyEvent.taskClassificationCategory},"
@@ -63,4 +65,9 @@ public interface HistoryEventMapper {
         @Result(property = "details", column = "DETAILS")
       })
   TaskanaHistoryEvent findById(@Param("id") String id);
+
+  @Delete(
+      "<script>DELETE FROM HISTORY_EVENTS WHERE TASK_ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>)</script>")
+  void deleteMultipleByTaskIds(@Param("taskIds") List<String> taskIds);
+
 }

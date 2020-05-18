@@ -79,7 +79,7 @@ class TerminateTaskAccTest extends AbstractAccTest {
   void should_ThrowException_When_TerminateTaskWithTaskStateCompleted() {
     List<TaskSummary> taskSummaries =
         taskService.createTaskQuery().stateIn(TaskState.COMPLETED).list();
-    assertThat(taskSummaries.size()).isEqualTo(7);
+    assertThat(taskSummaries.size()).isEqualTo(10);
     ThrowingCallable taskanaCall = () -> taskService.terminateTask(taskSummaries.get(0).getId());
 
     assertThatThrownBy(taskanaCall).isInstanceOf(InvalidStateException.class);

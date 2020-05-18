@@ -145,7 +145,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     List<TaskSummary> results =
         taskService.createTaskQuery().ownerLike("%a%", "%u%").orderByCreated(ASCENDING).list();
 
-    assertThat(results).hasSize(36);
+    assertThat(results).hasSize(39);
     TaskSummary previousSummary = null;
     for (TaskSummary taskSummary : results) {
       if (previousSummary != null) {
@@ -206,7 +206,7 @@ class QueryTasksAccTest extends AbstractAccTest {
 
     List<TaskSummary> result4 =
         taskService.createTaskQuery().classificationKeyNotIn("L1050", "L1060", "T2100").list();
-    assertThat(result4).hasSize(7);
+    assertThat(result4).hasSize(10);
   }
 
   @WithAccessId(user = "admin")
@@ -256,7 +256,7 @@ class QueryTasksAccTest extends AbstractAccTest {
             .createTaskQuery()
             .externalIdLike("ETI:000000000000000000000000000000%")
             .listValues(TaskQueryColumnName.EXTERNAL_ID, DESCENDING);
-    assertThat(resultValues).hasSize(71);
+    assertThat(resultValues).hasSize(74);
 
     long countAllExternalIds = taskService.createTaskQuery().externalIdLike("ETI:%").count();
     long countAllIds = taskService.createTaskQuery().count();
@@ -475,7 +475,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void testQueryForReadEquals() {
     List<TaskSummary> results = taskService.createTaskQuery().readEquals(true).list();
-    assertThat(results).hasSize(36);
+    assertThat(results).hasSize(39);
   }
 
   @WithAccessId(user = "admin")
@@ -497,7 +497,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void testQueryForBusinessProcessIdLike() {
     List<TaskSummary> results = taskService.createTaskQuery().businessProcessIdLike("pI_%").list();
-    assertThat(results).hasSize(77);
+    assertThat(results).hasSize(80);
   }
 
   @WithAccessId(user = "admin")

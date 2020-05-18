@@ -15,14 +15,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
+import pro.taskana.common.internal.TaskanaEngineProxyForTest;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
+import pro.taskana.task.internal.AttachmentMapper;
 
-/** Acceptance test for all "delete task" scenarios. */
+/**
+ * Acceptance test for all "delete task" scenarios.
+ */
 @ExtendWith(JaasExtension.class)
 class DeleteTaskAccTest extends AbstractAccTest {
 
@@ -40,6 +44,54 @@ class DeleteTaskAccTest extends AbstractAccTest {
           taskService.deleteTask("TKI:000000000000000000000000000000000037");
         };
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_deleteAttachments_When_MultipleTasksAreDeleted()
+      throws NotAuthorizedException, InvalidArgumentException, NoSuchFieldException,
+                 IllegalAccessException {
+
+    TaskService taskService = taskanaEngine.getTaskService();
+
+    TaskanaEngineProxyForTest engineProxy = new TaskanaEngineProxyForTest(taskanaEngine);
+    AttachmentMapper attachmentMapper =
+        engineProxy.getEngine().getSqlSession().getMapper(AttachmentMapper.class);
+
+    assertThat(attachmentMapper.findAttachmentSummariesByTaskIds(Arrays.asList(
+        "TKI:000000000000000000000000000000000067", "TKI:000000000000000000000000000000000068")))
+        .hasSize(4);
+
+    taskService.deleteTasks(Arrays.asList("TKI:000000000000000000000000000000000067",
+        "TKI:000000000000000000000000000000000068"));
+
+    assertThat(attachmentMapper.findAttachmentSummariesByTaskIds(Arrays.asList(
+        "TKI:000000000000000000000000000000000067", "TKI:000000000000000000000000000000000068")))
+        .hasSize(0);
+
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_deleteAttachments_When_SingleTaskIsDeleted()
+      throws NotAuthorizedException, NoSuchFieldException,
+                 IllegalAccessException, InvalidStateException, TaskNotFoundException {
+
+    TaskService taskService = taskanaEngine.getTaskService();
+
+    TaskanaEngineProxyForTest engineProxy = new TaskanaEngineProxyForTest(taskanaEngine);
+    AttachmentMapper attachmentMapper =
+        engineProxy.getSqlSession().getMapper(AttachmentMapper.class);
+
+    assertThat(attachmentMapper.findAttachmentsByTaskId("TKI:000000000000000000000000000000000069"))
+        .hasSize(1);
+
+    taskService.deleteTask(
+        "TKI:000000000000000000000000000000000069");
+
+    assertThat(attachmentMapper.findAttachmentsByTaskId("TKI:000000000000000000000000000000000069"))
+        .hasSize(0);
+
   }
 
   @WithAccessId(user = "businessadmin")

@@ -49,7 +49,7 @@ import pro.taskana.common.internal.security.GroupPrincipal;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.monitor.internal.MonitorMapper;
 import pro.taskana.monitor.internal.MonitorServiceImpl;
-import pro.taskana.spi.history.internal.HistoryEventProducer;
+import pro.taskana.spi.history.internal.HistoryEventManager;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.internal.AttachmentMapper;
 import pro.taskana.task.internal.ObjectReferenceMapper;
@@ -80,12 +80,13 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   protected SqlSessionManager sessionManager;
   protected ConnectionManagementMode mode = ConnectionManagementMode.PARTICIPATE;
   protected Connection connection = null;
+  private HistoryEventManager historyEventManager;
 
   protected TaskanaEngineImpl(TaskanaEngineConfiguration taskanaEngineConfiguration) {
     this.taskanaEngineConfiguration = taskanaEngineConfiguration;
     createTransactionFactory(taskanaEngineConfiguration.getUseManagedTransactions());
     this.sessionManager = createSqlSessionManager();
-    historyEventProducer = HistoryEventProducer.getInstance(taskanaEngineConfiguration);
+    historyEventManager = HistoryEventManager.getInstance(taskanaEngineConfiguration);
     taskRoutingManager = TaskRoutingManager.getInstance(this);
     this.internalTaskanaEngineImpl = new InternalTaskanaEngineImpl();
     workingDaysToDaysConverter =
@@ -154,7 +155,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
   @Override
   public boolean isHistoryEnabled() {
-    return HistoryEventProducer.isHistoryEnabled();
+    return HistoryEventManager.isHistoryEnabled();
   }
 
   @Override
@@ -410,8 +411,8 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     }
 
     @Override
-    public HistoryEventProducer getHistoryEventProducer() {
-      return historyEventProducer;
+    public HistoryEventManager getHistoryEventManager() {
+      return historyEventManager;
     }
 
     @Override

@@ -1,27 +1,39 @@
 package acceptance;
 
-import configuration.DbWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.util.Objects;
 import java.util.Properties;
 import javax.sql.DataSource;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
+import org.apache.ibatis.session.SqlSessionManager;
 import org.junit.jupiter.api.BeforeAll;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
+import pro.taskana.common.internal.util.IdGenerator;
+import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.simplehistory.impl.HistoryEventImpl;
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
+import pro.taskana.simplehistory.impl.TaskanaHistoryEngineImpl;
+import pro.taskana.simplehistory.impl.mappings.HistoryQueryMapper;
 
 /** Set up database for tests. */
 public abstract class AbstractAccTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAccTest.class);
+  private static final String ID_PREFIX_HISTORY_EVENT = "HEI";
+
+  protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
+  protected static TaskanaHistoryEngineImpl taskanaHistoryEngine;
+  protected static TaskanaEngine taskanaEngine;
 
   private static final String USER_HOME_DIRECTORY = System.getProperty("user.home");
   private static final int POOL_TIME_TO_WAIT = 50;
@@ -72,17 +84,20 @@ public abstract class AbstractAccTest {
   protected static void resetDb(String schemaName) throws Exception {
     DataSource dataSource = getDataSource();
 
-    TaskanaEngineConfiguration taskanaEngineConfiguration =
+    taskanaEngineConfiguration =
         new TaskanaEngineConfiguration(
             dataSource,
             false,
             schemaName != null && !schemaName.isEmpty() ? schemaName : getSchemaName());
+    taskanaHistoryEngine = TaskanaHistoryEngineImpl.createTaskanaEngine(taskanaEngineConfiguration);
+    taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
+    taskanaEngine.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
     historyService = new SimpleHistoryServiceImpl();
     historyService.initialize(taskanaEngineConfiguration);
 
-    DbWriter writer = new DbWriter();
-    writer.clearDB(dataSource);
-    writer.generateTestData(dataSource);
+    SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, getSchemaName());
+    sampleDataGenerator.clearDb();
+    sampleDataGenerator.generateTestData();
   }
 
   protected static DataSource getDataSource() {
@@ -117,6 +132,12 @@ public abstract class AbstractAccTest {
 
   protected static SimpleHistoryServiceImpl getHistoryService() {
     return historyService;
+   * @param id the id of the event
+      String id,
+    HistoryEventImpl historyEvent =
+        new HistoryEventImpl(
+            IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT), userid, details);
+    historyEvent.setId(id);
   }
 
   @BeforeAll
@@ -235,5 +256,16 @@ public abstract class AbstractAccTest {
     }
 
     return schemaName;
+  }
+
+  protected HistoryQueryMapper getHistoryQueryMapper()
+      throws NoSuchFieldException, IllegalAccessException {
+
+    Field sessionManagerField = TaskanaHistoryEngineImpl.class.getDeclaredField("sessionManager");
+    sessionManagerField.setAccessible(true);
+    SqlSessionManager sqlSessionManager =
+        (SqlSessionManager) sessionManagerField.get(taskanaHistoryEngine);
+
+    return sqlSessionManager.getMapper(HistoryQueryMapper.class);
   }
 }

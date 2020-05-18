@@ -91,7 +91,11 @@ public interface AttachmentMapper {
       @Param("taskIds") List<String> taskIds);
 
   @Delete("DELETE FROM ATTACHMENT WHERE ID=#{attachmentId}")
-  void deleteAttachment(@Param("attachmentId") String attachmentId);
+  void delete(@Param("attachmentId") String attachmentId);
+
+  @Delete(
+      "<script>DELETE FROM ATTACHMENT WHERE TASK_ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>)</script>")
+  void deleteMultipleByTaskIds(@Param("taskIds") List<String> taskIds);
 
   @Update(
       "UPDATE ATTACHMENT SET TASK_ID = #{taskId}, CREATED = #{created}, MODIFIED = #{modified},"
