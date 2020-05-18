@@ -2,7 +2,10 @@ package pro.taskana.simplehistory.impl;
 
 import java.sql.SQLException;
 import java.util.ArrayDeque;
+import java.util.Arrays;
 import java.util.Deque;
+import java.util.HashSet;
+import java.util.Set;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
@@ -12,8 +15,13 @@ import org.apache.ibatis.session.SqlSessionManager;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.common.api.TaskanaRole;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.simplehistory.TaskanaHistoryEngine;
 import pro.taskana.simplehistory.impl.mappings.HistoryEventMapper;
 import pro.taskana.simplehistory.impl.mappings.HistoryQueryMapper;
@@ -23,7 +31,7 @@ import pro.taskana.spi.history.api.TaskanaHistory;
 public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
 
   protected static final ThreadLocal<Deque<SqlSessionManager>> SESSION_STACK = new ThreadLocal<>();
-
+  private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaHistoryEngineImpl.class);
   private static final String DEFAULT = "default";
   protected SqlSessionManager sessionManager;
   protected TransactionFactory transactionFactory;
@@ -50,6 +58,38 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
       this.taskanaHistoryService = historyService;
     }
     return this.taskanaHistoryService;
+  }
+
+  public boolean isUserInRole(TaskanaRole... roles) {
+    if (!getConfiguration().isSecurityEnabled()) {
+      return true;
+    }
+
+    Set<String> rolesMembers =
+        Arrays.stream(roles)
+            .map(role -> getConfiguration().getRoleMap().get(role))
+            .collect(HashSet::new, Set::addAll, Set::addAll);
+
+    return CurrentUserContext.getAccessIds().stream()
+        .anyMatch(rolesMembers::contains);
+  }
+
+  public void checkRoleMembership(TaskanaRole... roles) throws NotAuthorizedException {
+    if (!isUserInRole(roles)) {
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug(
+            "Throwing NotAuthorizedException because accessIds {} are not member of roles {}",
+            CurrentUserContext.getAccessIds(),
+            Arrays.toString(roles));
+      }
+      throw new NotAuthorizedException(
+          "current user is not member of role(s) " + Arrays.toString(roles),
+          CurrentUserContext.getUserid());
+    }
+  }
+
+  public TaskanaEngineConfiguration getConfiguration() {
+    return this.taskanaEngineConfiguration;
   }
 
   protected SqlSessionManager createSqlSessionManager() {

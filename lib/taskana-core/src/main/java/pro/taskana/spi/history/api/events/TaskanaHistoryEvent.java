@@ -5,7 +5,7 @@ import java.time.Instant;
 /** Super class for all specific events from the TASKANA engine. */
 public class TaskanaHistoryEvent {
 
-  protected long id;
+  protected String id;
   protected String businessProcessId;
   protected String parentBusinessProcessId;
   protected String taskId;
@@ -32,13 +32,18 @@ public class TaskanaHistoryEvent {
 
   public TaskanaHistoryEvent() {}
 
-  public TaskanaHistoryEvent(String userId, String details) {
+  public TaskanaHistoryEvent(String id, String userId, String details) {
+    this.id = id;
     this.userId = userId;
     this.details = details;
   }
 
-  public long getId() {
+  public String getId() {
     return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
   }
 
   public String getBusinessProcessId() {

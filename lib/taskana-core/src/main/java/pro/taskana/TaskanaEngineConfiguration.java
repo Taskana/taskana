@@ -68,6 +68,8 @@ public class TaskanaEngineConfiguration {
       "taskana.german.holidays.corpus-christi.enabled";
   private static final String TASKANA_CUSTOM_HOLIDAY = "taskana.custom.holidays";
   private static final String TASKANA_CUSTOM_HOLIDAY_DAY_MONTH_SEPARATOR = ".";
+  private static final String TASKANA_HISTORY_DELETION_ON_TASK_DELETION_ENABLED =
+      "taskana.history.deletion.on.task.deletion.enabled";
   // TASKANA_SCHEMA_VERSION
   private static final String DEFAULT_SCHEMA_NAME = "TASKANA";
 
@@ -92,6 +94,7 @@ public class TaskanaEngineConfiguration {
   protected List<String> classificationTypes = new ArrayList<>();
   protected Map<String, List<String>> classificationCategoriesByTypeMap = new HashMap<>();
   // Properties for the monitor
+  private boolean deleteHistoryOnTaskDeletionEnabled;
   private boolean germanPublicHolidaysEnabled;
   private boolean corpusChristiEnabled;
   // Properties for general job execution
@@ -171,8 +174,9 @@ public class TaskanaEngineConfiguration {
     initDomains(props);
     initClassificationTypes(props);
     initClassificationCategories(props);
-    initGermanHolidaysEnabled(props);
-    initCorpusChristiEnabled(props);
+    initBooleanFlag(props, TASKANA_GERMAN_HOLIDAYS_ENABLED);
+    initBooleanFlag(props, TASKANA_GERMAN_HOLIDAYS_CORPUS_CHRISTI_ENABLED);
+    initBooleanFlag(props, TASKANA_HISTORY_DELETION_ON_TASK_DELETION_ENABLED);
     initCustomHolidays(props);
   }
 
@@ -266,6 +270,14 @@ public class TaskanaEngineConfiguration {
 
   public void setGermanPublicHolidaysEnabled(boolean germanPublicHolidaysEnabled) {
     this.germanPublicHolidaysEnabled = germanPublicHolidaysEnabled;
+  }
+
+  public boolean isDeleteHistoryOnTaskDeletionEnabled() {
+    return deleteHistoryOnTaskDeletionEnabled;
+  }
+
+  public void setDeleteHistoryOnTaskDeletionEnabled(boolean deleteHistoryOnTaskDeletionEnabled) {
+    this.deleteHistoryOnTaskDeletionEnabled = deleteHistoryOnTaskDeletionEnabled;
   }
 
   public List<CustomHoliday> getCustomHolidays() {
@@ -362,24 +374,21 @@ public class TaskanaEngineConfiguration {
     return true;
   }
 
-  private void initGermanHolidaysEnabled(Properties props) {
-    String enabled = props.getProperty(TASKANA_GERMAN_HOLIDAYS_ENABLED);
+  private void initBooleanFlag(Properties props, String propName) {
+    String enabled = props.getProperty(propName);
     if (enabled != null && !enabled.isEmpty()) {
-      germanPublicHolidaysEnabled = Boolean.parseBoolean(enabled);
-    } else {
-      germanPublicHolidaysEnabled = false;
+      boolean isEnabled = Boolean.parseBoolean(enabled);
+      if (propName.equals(TASKANA_GERMAN_HOLIDAYS_ENABLED)) {
+        germanPublicHolidaysEnabled = isEnabled;
+      } else if (propName.equals(TASKANA_GERMAN_HOLIDAYS_CORPUS_CHRISTI_ENABLED)) {
+        corpusChristiEnabled = isEnabled;
+      } else if (propName.equals(TASKANA_HISTORY_DELETION_ON_TASK_DELETION_ENABLED)) {
+        deleteHistoryOnTaskDeletionEnabled = isEnabled;
+      }
     }
-    LOGGER.debug("GermanPublicHolidaysEnabled = {}", germanPublicHolidaysEnabled);
-  }
-
-  private void initCorpusChristiEnabled(Properties props) {
-    String enabled = props.getProperty(TASKANA_GERMAN_HOLIDAYS_CORPUS_CHRISTI_ENABLED);
-    if (enabled != null && !enabled.isEmpty()) {
-      corpusChristiEnabled = Boolean.parseBoolean(enabled);
-    } else {
-      corpusChristiEnabled = false;
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug(String.format("%s = %b", propName, Boolean.parseBoolean(enabled)));
     }
-    LOGGER.debug("CorpusChristiEnabled = {}", corpusChristiEnabled);
   }
 
   private void initJobParameters(Properties props) {

@@ -164,7 +164,7 @@ class SetOwnerAccTest extends AbstractAccTest {
         allTaskSummaries.stream().map(TaskSummary::getId).collect(Collectors.toList());
     BulkOperationResults<String, TaskanaException> results =
         taskanaEngine.getTaskService().setOwnerOfTasks("theWorkaholic", allTaskIds);
-    assertThat(allTaskSummaries).hasSize(84);
+    assertThat(allTaskSummaries).hasSize(87);
     assertThat(results.containsErrors()).isTrue();
 
     Condition<Object> invalidStateException =
@@ -173,10 +173,10 @@ class SetOwnerAccTest extends AbstractAccTest {
         new Condition<>(
             c -> c.getClass() == NotAuthorizedException.class, "NotAuthorizedException");
     assertThat(results.getErrorMap())
-        .hasSize(82)
+        .hasSize(62)
         .extractingFromEntries(Entry::getValue)
         .hasOnlyElementsOfTypes(InvalidStateException.class, NotAuthorizedException.class)
-        .areExactly(28, invalidStateException)
+        .areExactly(39, invalidStateException)
         .areExactly(54, notAuthorizedException);
   }
 
@@ -189,10 +189,10 @@ class SetOwnerAccTest extends AbstractAccTest {
         allTaskSummaries.stream().map(TaskSummary::getId).collect(Collectors.toList());
     BulkOperationResults<String, TaskanaException> results =
         taskanaEngine.getTaskService().setOwnerOfTasks("theWorkaholic", allTaskIds);
-    assertThat(allTaskSummaries).hasSize(84);
+    assertThat(allTaskSummaries).hasSize(87);
     assertThat(results.containsErrors()).isTrue();
     assertThat(results.getErrorMap())
-        .hasSize(37)
+        .hasSize(40)
         .extractingFromEntries(Entry::getValue)
         .hasOnlyElementsOfType(InvalidStateException.class);
   }

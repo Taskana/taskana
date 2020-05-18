@@ -104,7 +104,7 @@ class TaskHistoryEventControllerIntTest {
   void should_ReturnSpecificTaskHistoryEventWithDetails_When_SingleEventIsQueried() {
     ResponseEntity<TaskHistoryEventResource> response =
         template.exchange(
-            server + port + "/api/v1/task-history-event/45",
+            server + port + "/api/v1/task-history-event/HEI:000000000000000000000000000000000000",
             HttpMethod.GET,
             request,
             ParameterizedTypeReference.forType(TaskHistoryEventResource.class));

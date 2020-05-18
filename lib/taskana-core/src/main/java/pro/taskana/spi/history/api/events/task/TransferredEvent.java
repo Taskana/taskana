@@ -12,8 +12,12 @@ public class TransferredEvent extends TaskEvent {
   private static final Logger LOGGER = LoggerFactory.getLogger(TransferredEvent.class);
 
   public TransferredEvent(
-      Task task, WorkbasketSummary oldWorkbasket, WorkbasketSummary newWorkbasket, String userId) {
-    super(task, userId, null);
+      String id,
+      Task task,
+      WorkbasketSummary oldWorkbasket,
+      WorkbasketSummary newWorkbasket,
+      String userId) {
+    super(id, task, userId, null);
     eventType = "TASK_TRANSFERRED";
     created = task.getModified();
     this.oldValue = oldWorkbasket.getId();

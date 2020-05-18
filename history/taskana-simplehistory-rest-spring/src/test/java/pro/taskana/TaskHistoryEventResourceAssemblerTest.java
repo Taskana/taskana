@@ -33,7 +33,8 @@ class TaskHistoryEventResourceAssemblerTest {
   @Test
   void taskHistoryEventModelToResource() {
 
-    HistoryEventImpl historyEvent = new HistoryEventImpl("user1", "someDetails");
+    HistoryEventImpl historyEvent =
+        new HistoryEventImpl("HEI:000000000000000000000000000000000000", "user1", "someDetails");
 
     historyEvent.setEventType("TASK_CREATED");
     historyEvent.setBusinessProcessId("BPI:01");

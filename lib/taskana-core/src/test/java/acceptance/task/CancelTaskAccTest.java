@@ -89,7 +89,7 @@ class CancelTaskAccTest extends AbstractAccTest {
   void testCancelCompletedTask() {
     List<TaskSummary> taskSummaries =
         taskService.createTaskQuery().stateIn(TaskState.COMPLETED).list();
-    assertThat(taskSummaries).hasSize(7);
+    assertThat(taskSummaries).hasSize(10);
 
     ThrowingCallable taskanaCall = () -> taskService.cancelTask(taskSummaries.get(0).getId());
 

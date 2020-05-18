@@ -89,7 +89,7 @@ class TaskTransferrerTest {
     verify(taskMapperMock, times(1)).update(any());
     verify(internalTaskanaEngineMock, times(1)).returnConnection();
     verify(internalTaskanaEngineMock, times(1)).getEngine();
-    verify(internalTaskanaEngineMock).getHistoryEventProducer();
+    verify(internalTaskanaEngineMock).getHistoryEventManager();
     verify(taskanaEngineMock).getWorkbasketService();
     verifyNoMoreInteractions(
         attachmentMapperMock,
