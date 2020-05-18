@@ -54,7 +54,7 @@
         <version.spring>5.2.5.RELEASE</version.spring>
         <version.spring.security>5.3.2.RELEASE</version.spring.security>
         <version.spring.core>2.0.0.RELEASE</version.spring.core>
-        <version.spring.boot>2.2.7.RELEASE</version.spring.boot>
+        <version.spring.boot>2.3.0.RELEASE</version.spring.boot>
         <version.spring.restdocs>2.0.4.RELEASE</version.spring.restdocs>
         <version.spring.mybatis>2.0.4</version.spring.mybatis>
         <version.spring.hateos>1.1.0.RELEASE</version.spring.hateos>
