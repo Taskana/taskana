@@ -10,7 +10,7 @@ swarm:
         password: postgres
     jdbc-drivers:
       mypostgres:
-        driver-class-name: postgresql
+        driver-class-name: org.postgresql.Driver
         xa-datasource-name: org.postgresql.xa.PGXADataSource
         driver-module-name: org.postgresql
       myh2:
