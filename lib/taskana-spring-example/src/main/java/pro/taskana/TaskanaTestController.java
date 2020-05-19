@@ -57,7 +57,7 @@ public class TaskanaTestController {
 
     int workbaskets = getWorkbaskets();
     if (Boolean.parseBoolean(rollback)) {
-      throw new RuntimeException("workbaskets: " + workbaskets);
+      throw new RuntimeException();
     } else {
       return "workbaskets: " + workbaskets;
     }
@@ -74,7 +74,7 @@ public class TaskanaTestController {
     taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key3", "workbasket3"));
 
     if (Boolean.parseBoolean(rollback)) {
-      throw new RuntimeException("workbaskets: " + getWorkbaskets());
+      throw new RuntimeException();
     } else {
       return "workbaskets: " + getWorkbaskets();
     }
@@ -93,8 +93,7 @@ public class TaskanaTestController {
     jdbcTemplate.execute("INSERT INTO CUSTOMDB.TEST VALUES ('2', 'test2')");
 
     if (Boolean.parseBoolean(rollback)) {
-      throw new RuntimeException(
-          "workbaskets: " + getWorkbaskets() + ", tests: " + getCustomdbTests());
+      throw new RuntimeException();
     } else {
       return "workbaskets: " + getWorkbaskets() + ", tests: " + getCustomdbTests();
     }

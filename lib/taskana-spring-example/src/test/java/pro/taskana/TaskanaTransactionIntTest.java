@@ -54,6 +54,8 @@ import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 @Import({TransactionalJobsConfiguration.class})
 class TaskanaTransactionIntTest {
 
+  private static final String INTERNAL_SERVER_ERROR_MESSAGE = "Internal Server Error";
+  private static final String INTERNAL_SERVER_ERROR_STATUS = "500";
   @Autowired TaskanaTransactionProvider<Object> springTransactionProvider;
   @Autowired private TestRestTemplate restTemplate;
   @Autowired private DataSource dataSource;
@@ -92,7 +94,8 @@ class TaskanaTransactionIntTest {
     ResponseEntity<String> responseEntity =
         restTemplate.getForEntity("/transaction?rollback={rollback}", String.class, "true");
     System.err.println("result: " + responseEntity.getBody());
-    assertThat(responseEntity.getBody()).containsSequence("workbaskets: 1");
+    assertThat(responseEntity.getBody()).containsSequence(INTERNAL_SERVER_ERROR_MESSAGE);
+    assertThat(responseEntity.getBody()).containsSequence(INTERNAL_SERVER_ERROR_STATUS);
 
     assertQuantities(0, 0);
   }
@@ -116,7 +119,8 @@ class TaskanaTransactionIntTest {
     ResponseEntity<String> responseEntity =
         restTemplate.getForEntity("/transaction-many?rollback={rollback}", String.class, "true");
     System.err.println("result: " + responseEntity.getBody());
-    assertThat(responseEntity.getBody()).containsSequence("workbaskets: 3");
+    assertThat(responseEntity.getBody()).containsSequence(INTERNAL_SERVER_ERROR_MESSAGE);
+    assertThat(responseEntity.getBody()).containsSequence(INTERNAL_SERVER_ERROR_STATUS);
 
     assertQuantities(0, 0);
   }
@@ -140,8 +144,8 @@ class TaskanaTransactionIntTest {
     ResponseEntity<String> responseEntity =
         restTemplate.getForEntity("/customdb?rollback={rollback}", String.class, "true");
     System.err.println("response: " + responseEntity.getBody());
-    assertThat(responseEntity.getBody()).containsSequence("workbaskets: 2");
-    assertThat(responseEntity.getBody()).containsSequence("tests: 2");
+    assertThat(responseEntity.getBody()).containsSequence(INTERNAL_SERVER_ERROR_MESSAGE);
+    assertThat(responseEntity.getBody()).containsSequence(INTERNAL_SERVER_ERROR_STATUS);
 
     assertQuantities(0, 0);
   }
