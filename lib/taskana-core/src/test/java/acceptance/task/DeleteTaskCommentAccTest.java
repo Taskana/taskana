@@ -31,7 +31,7 @@ public class DeleteTaskCommentAccTest extends AbstractAccTest {
   @Test
   void should_DeleteTaskComment_For_TaskCommentId()
       throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException,
-                 InvalidArgumentException {
+          InvalidArgumentException {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
@@ -74,7 +74,7 @@ public class DeleteTaskCommentAccTest extends AbstractAccTest {
   @TestTemplate
   void should_DeleteTaskComment_When_NoExplicitPermissionsButUserIsInAdministrativeRole()
       throws NotAuthorizedException, TaskNotFoundException, TaskCommentNotFoundException,
-                 InvalidArgumentException, SQLException {
+          InvalidArgumentException, SQLException {
 
     resetDb(false);
 

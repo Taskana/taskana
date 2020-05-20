@@ -31,7 +31,7 @@ public class UpdateTaskCommentAccTest extends AbstractAccTest {
   @Test
   void should_UpdateTaskComment_For_TaskComment()
       throws TaskCommentNotFoundException, NotAuthorizedException, ConcurrencyException,
-                 TaskNotFoundException, InvalidArgumentException {
+          TaskNotFoundException, InvalidArgumentException {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
@@ -55,7 +55,7 @@ public class UpdateTaskCommentAccTest extends AbstractAccTest {
   @Test
   void should_FailToUpdateTaskComment_When_UserHasNoAuthorization()
       throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException,
-                 InvalidArgumentException {
+          InvalidArgumentException {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
@@ -82,31 +82,28 @@ public class UpdateTaskCommentAccTest extends AbstractAccTest {
   @Test
   void should_FailToUpdateTaskComment_When_UserTriesToUpdateTaskByManipulatingOwner()
       throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException,
-                 InvalidArgumentException {
+          InvalidArgumentException {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
-    TaskCommentImpl taskCommentToUpdate = (TaskCommentImpl)
-                                              taskService.getTaskComment(
-                                                  "TCI:000000000000000000000000000000000001");
+    TaskCommentImpl taskCommentToUpdate =
+        (TaskCommentImpl) taskService.getTaskComment("TCI:000000000000000000000000000000000001");
 
     taskCommentToUpdate.setTextField("updated textfield");
     taskCommentToUpdate.setCreator("user_1_2");
 
     ThrowingCallable updateTaskCommentCall =
         () -> {
-
           taskService.updateTaskComment(taskCommentToUpdate);
         };
     assertThatThrownBy(updateTaskCommentCall).isInstanceOf(NotAuthorizedException.class);
-
   }
 
   @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
   void should_FailToUpdateTaskComment_When_TaskCommentWasModifiedConcurrently()
       throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException,
-                 ConcurrencyException, InvalidArgumentException {
+          ConcurrencyException, InvalidArgumentException {
 
     TaskService taskService = taskanaEngine.getTaskService();
 

@@ -24,9 +24,7 @@ import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 import pro.taskana.common.internal.util.LogSanitizer;
 import pro.taskana.task.api.models.TaskSummary;
 
-/**
- * Job to cleanup completed tasks after a period of time.
- */
+/** Job to cleanup completed tasks after a period of time. */
 public class TaskCleanupJob extends AbstractTaskanaJob {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskCleanupJob.class);
@@ -56,8 +54,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
   @Override
   public void run() throws TaskanaException {
     Instant completedBefore = Instant.now().minus(minimumAge);
-    LOGGER.info(
-        "Running job to delete all tasks completed before ({})", completedBefore);
+    LOGGER.info("Running job to delete all tasks completed before ({})", completedBefore);
     try {
       List<TaskSummary> tasksCompletedBefore = getTasksCompletedBefore(completedBefore);
       int totalNumberOfTasksCompleted = 0;

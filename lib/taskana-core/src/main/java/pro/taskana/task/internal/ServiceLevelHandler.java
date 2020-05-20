@@ -25,6 +25,7 @@ import pro.taskana.common.internal.util.WorkingDaysToDaysConverter;
 import pro.taskana.task.api.exceptions.UpdateFailedException;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.AttachmentSummary;
+import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.AttachmentSummaryImpl;
 import pro.taskana.task.internal.models.MinimalTaskSummary;
 import pro.taskana.task.internal.models.TaskImpl;
@@ -129,8 +130,7 @@ class ServiceLevelHandler {
     // classification update
     if (forRefreshOnClassificationUpdate) {
       newTaskImpl.setDue(
-          converter.addWorkingDaysToInstant(
-              newTaskImpl.getPlanned(), durationPrioHolder.getDuration()));
+          getFollowingWorkingDays(newTaskImpl.getPlanned(), durationPrioHolder.getDuration()));
       return newTaskImpl;
     }
     // creation of new task
@@ -183,7 +183,7 @@ class ServiceLevelHandler {
     referenceTask.setModified(Instant.now());
     priorityToTaskIdsMap.forEach(
         (prio, taskIdList) -> {
-          referenceTask.setPriority(prio.intValue());
+          referenceTask.setPriority(prio);
           if (!taskIdList.isEmpty()) {
             taskMapper.updatePriorityOfTasks(taskIdList, referenceTask);
           }
@@ -249,66 +249,45 @@ class ServiceLevelHandler {
     if (newTaskImpl.getPlanned() == null && newTaskImpl.getDue() == null) {
       newTaskImpl.setPlanned(oldTaskImpl.getPlanned());
     }
-    // case 1: no change of planned / due, but potentially change of an attachment or classification
+
     if (oldTaskImpl.getDue().equals(newTaskImpl.getDue())
         && oldTaskImpl.getPlanned().equals(newTaskImpl.getPlanned())) {
+      // case 1: no change of planned/due, but potentially change of an attachment or classification
+      // -> recalculate due
       newTaskImpl.setDue(
-          converter.addWorkingDaysToInstant(
-              newTaskImpl.getPlanned(), durationPrioHolder.getDuration()));
-    } else if (oldTaskImpl.getDue().equals(newTaskImpl.getDue())
-        && newTaskImpl.getPlanned() != null) {
-      // case 2: planned was changed and due not
+          getFollowingWorkingDays(newTaskImpl.getPlanned(), durationPrioHolder.getDuration()));
+    } else if (dueIsUnchangedOrNull(newTaskImpl, oldTaskImpl) && newTaskImpl.getPlanned() != null) {
+      // case 2: due is null or only planned was changed -> recalculate due
+      newTaskImpl.setPlanned(getFollowingWorkingDays(newTaskImpl.getPlanned(), Duration.ofDays(0)));
       newTaskImpl.setDue(
-          converter.addWorkingDaysToInstant(
-              newTaskImpl.getPlanned(), durationPrioHolder.getDuration()));
-      if (!converter.isWorkingDay(0, newTaskImpl.getPlanned())) {
-        newTaskImpl.setPlanned(getFirstFollowingWorkingDay(newTaskImpl.getPlanned()));
-      }
+          getFollowingWorkingDays(newTaskImpl.getPlanned(), durationPrioHolder.getDuration()));
     } else {
-      updatePlannedDueOnTaskUpdateWhenDueWasChanged(newTaskImpl, oldTaskImpl, durationPrioHolder);
+      // case 3: due and (maybe) planned were changed -> validate SLA if planned changed
+      Instant calcDue = getPrecedingWorkingDays(newTaskImpl.getDue(), Duration.ofDays(0));
+      Instant calcPlanned = getPrecedingWorkingDays(calcDue, durationPrioHolder.getDuration());
+      if (plannedHasChanged(newTaskImpl, oldTaskImpl)) {
+        ensureServiceLevelIsNotViolated(newTaskImpl, durationPrioHolder.getDuration(), calcPlanned);
+      }
+      newTaskImpl.setPlanned(calcPlanned);
+      newTaskImpl.setDue(calcDue);
     }
     return newTaskImpl;
   }
 
-  private void updatePlannedDueOnTaskUpdateWhenDueWasChanged(
-      TaskImpl newTaskImpl, TaskImpl oldTaskImpl, DurationPrioHolder durationPrioHolder)
-      throws InvalidArgumentException {
-    if (newTaskImpl.getDue() == null) {
-      newTaskImpl.setDue(
-          converter.addWorkingDaysToInstant(
-              newTaskImpl.getPlanned(), durationPrioHolder.getDuration()));
-      if (!converter.isWorkingDay(0, newTaskImpl.getPlanned())) {
-        newTaskImpl.setPlanned(getFirstFollowingWorkingDay(newTaskImpl.getPlanned()));
-      }
-    } else {
-      Instant planned =
-          (converter.subtractWorkingDaysFromInstant(
-              newTaskImpl.getDue(), durationPrioHolder.getDuration()));
-      if (newTaskImpl.getPlanned() != null
-          && !newTaskImpl.getPlanned().equals(oldTaskImpl.getPlanned())) {
-        ensureServiceLevelIsNotViolated(newTaskImpl, durationPrioHolder.getDuration(), planned);
-      }
-      newTaskImpl.setPlanned(planned);
-      if (!converter.isWorkingDay(0, newTaskImpl.getDue())) {
-        newTaskImpl.setDue(getFirstPreceedingWorkingDay(newTaskImpl.getDue()));
-      }
-    }
+  private boolean dueIsUnchangedOrNull(Task newTask, Task oldTask) {
+    return newTask.getDue() == null || oldTask.getDue().equals(newTask.getDue());
   }
 
-  private Instant getFirstFollowingWorkingDay(Instant planned) {
-    long days = 0;
-    while (!converter.isWorkingDay(days, planned)) {
-      days++;
-    }
-    return planned.plus(Duration.ofDays(days));
+  private boolean plannedHasChanged(Task newTask, Task oldTask) {
+    return newTask.getPlanned() != null && !oldTask.getPlanned().equals(newTask.getPlanned());
   }
 
-  private Instant getFirstPreceedingWorkingDay(Instant due) {
-    long days = 0;
-    while (!converter.isWorkingDay(days, due)) {
-      days--;
-    }
-    return due.minus(Duration.ofDays(Math.abs(days)));
+  private Instant getPrecedingWorkingDays(Instant instant, Duration days) {
+    return converter.subtractWorkingDaysFromInstant(instant, days);
+  }
+
+  private Instant getFollowingWorkingDays(Instant instant, Duration days) {
+    return converter.addWorkingDaysToInstant(instant, days);
   }
 
   /**
@@ -319,34 +298,23 @@ class ServiceLevelHandler {
    * calculating forward from planned to due will give Tuesday morning as due date, because sunday
    * is skipped. On the other hand, calculating from due (Tuesday morning) 1 day backwards will
    * result in a planned date of monday morning which differs from task.planned. Therefore, if
-   * task.getPlanned is not equal to planned, the service level is not violated and we still must
-   * grant the request if the following conditions are fulfilled: - planned is after task.planned -
-   * task.planned is not a working day, - there is no working day between task.planned and planned.
+   * task.planned is not equal to calcPlanned, the service level is not violated and we still must
+   * grant the request if the following conditions are fulfilled:
+   *
+   * <ul>
+   *   <li>task.planned is not a working day
+   *   <li>there are no working days between task.planned and calcPlanned
+   * </ul>
    *
    * @param task the task for the difference between planned and due must be duration
    * @param duration the serviceLevel for the task
-   * @param planned the planned Timestamp thas was calculated based on due and duration
+   * @param planned the planned timestamp that was calculated based on due and duration
    * @throws InvalidArgumentException if service level is violated.
    */
   private void ensureServiceLevelIsNotViolated(TaskImpl task, Duration duration, Instant planned)
       throws InvalidArgumentException {
     if (task.getPlanned() != null && !task.getPlanned().equals(planned)) {
-      boolean isServiceLevelViolated = false;
-      Instant taskPlanned = task.getPlanned();
-      if (converter.isWorkingDay(0, taskPlanned)) {
-        isServiceLevelViolated = true;
-      } else if (taskPlanned.isAfter(planned)) {
-        isServiceLevelViolated = true;
-      } else {
-        long days = Duration.between(taskPlanned, planned).toDays();
-        for (long day = 0; day < days; day++) {
-          if (converter.isWorkingDay(day, taskPlanned)) {
-            isServiceLevelViolated = true;
-            break;
-          }
-        }
-      }
-      if (isServiceLevelViolated) {
+      if (hasWorkingDaysInBetween(task.getPlanned(), planned)) {
         throw new InvalidArgumentException(
             String.format(
                 "Cannot update a task with given planned %s "
@@ -356,24 +324,50 @@ class ServiceLevelHandler {
     }
   }
 
-  private TaskImpl updatePlannedDueOnCreationOfNewTask(
-      TaskImpl newTaskImpl, DurationPrioHolder durationPrioHolder) throws InvalidArgumentException {
-    if (newTaskImpl.getDue() != null) { // due is specified: calculate back and check correctnes
-      Instant planned =
-          (converter.subtractWorkingDaysFromInstant(
-              newTaskImpl.getDue(), durationPrioHolder.getDuration()));
-      if (newTaskImpl.getPlanned() != null && !planned.equals(newTaskImpl.getPlanned())) {
-        throw new InvalidArgumentException(
-            "Cannot create a task with given planned "
-                + "and due date not matching the service level");
-      }
-      newTaskImpl.setPlanned(planned);
-    } else { // task.due is null: calculate forward from planned
-      newTaskImpl.setDue(
-          converter.addWorkingDaysToInstant(
-              newTaskImpl.getPlanned(), durationPrioHolder.getDuration()));
+  /**
+   * Check if there are working days between the dates. The method respects if calc > planned or
+   * vise versa and excludes the calculated planned date from the check since it is always a working
+   * day!
+   *
+   * @param planned the changed planned date of a task
+   * @param calculated the calculated planned date of a task
+   * @return true if there are working days between the two dates
+   */
+  private boolean hasWorkingDaysInBetween(Instant planned, Instant calculated) {
+    Instant withoutCalculated;
+    // exclude calculated from check since it is always a working day
+    if (planned.isAfter(calculated)) {
+      withoutCalculated = calculated.plus(Duration.ofDays(1)); // start 1 day later
+    } else if (planned.isBefore(calculated)) {
+      withoutCalculated = calculated.minus(Duration.ofDays(1)); // stop 1 day earlier
+    } else {
+      return false; // no violation if they are equal
     }
-    return newTaskImpl;
+    return converter.hasWorkingDaysInBetween(planned, withoutCalculated);
+  }
+
+  private TaskImpl updatePlannedDueOnCreationOfNewTask(
+      TaskImpl newTask, DurationPrioHolder durationPrioHolder) throws InvalidArgumentException {
+    if (newTask.getDue() != null) {
+      // due is specified: calculate back and check correctness
+      Instant calcDue = getPrecedingWorkingDays(newTask.getDue(), Duration.ofDays(0));
+      Instant calcPlanned = getPrecedingWorkingDays(calcDue, durationPrioHolder.getDuration());
+      if (newTask.getPlanned() != null && !calcPlanned.equals(newTask.getPlanned())) {
+        throw new InvalidArgumentException(
+            String.format(
+                "Cannot update a task with given planned %s "
+                    + "and due date %s not matching the service level %s.",
+                newTask.getPlanned(), newTask.getDue(), durationPrioHolder.getDuration()));
+      }
+      newTask.setDue(calcDue);
+      newTask.setPlanned(calcPlanned);
+    } else {
+      // task.due is null: calculate forward from planned
+      newTask.setPlanned(getFollowingWorkingDays(newTask.getPlanned(), Duration.ofDays(0)));
+      newTask.setDue(
+          getFollowingWorkingDays(newTask.getPlanned(), durationPrioHolder.getDuration()));
+    }
+    return newTask;
   }
 
   private BulkLog updateDuePropertyOfAffectedTasks(
@@ -388,13 +382,13 @@ class ServiceLevelHandler {
 
   private BulkOperationResults<String, TaskanaException>
       updateDuePropertyOfTasksWithIdenticalDueDate(
-          InstantDurationHolder instDurHld, List<TaskDuration> taskDurationList) {
+          InstantDurationHolder durationHolder, List<TaskDuration> taskDurationList) {
     BulkLog bulkLog = new BulkLog();
     TaskImpl referenceTask = new TaskImpl();
-    referenceTask.setPlanned(instDurHld.getPlanned());
+    referenceTask.setPlanned(durationHolder.getPlanned());
     referenceTask.setModified(Instant.now());
     referenceTask.setDue(
-        converter.addWorkingDaysToInstant(referenceTask.getPlanned(), instDurHld.getDuration()));
+        getFollowingWorkingDays(referenceTask.getPlanned(), durationHolder.getDuration()));
     List<String> taskIdsToUpdate =
         taskDurationList.stream().map(TaskDuration::getTaskId).collect(Collectors.toList());
     long numTasksUpdated = taskMapper.updateTaskDueDates(taskIdsToUpdate, referenceTask);
@@ -415,8 +409,7 @@ class ServiceLevelHandler {
     referenceTask.setModified(Instant.now());
     for (Map.Entry<Duration, List<String>> entry : durationToTaskIdsMap.entrySet()) {
       List<String> taskIdsToUpdate = entry.getValue();
-      referenceTask.setDue(
-          converter.addWorkingDaysToInstant(referenceTask.getPlanned(), entry.getKey()));
+      referenceTask.setDue(getFollowingWorkingDays(referenceTask.getPlanned(), entry.getKey()));
       long numTasksUpdated = taskMapper.updateTaskDueDates(taskIdsToUpdate, referenceTask);
       if (numTasksUpdated != taskIdsToUpdate.size()) {
         BulkLog checkResult =
@@ -448,7 +441,7 @@ class ServiceLevelHandler {
       if (numErrorsNotLogged != 0) {
         for (int i = 1; i <= numErrorsNotLogged; i++) {
           bulkLog.addError(
-              String.format("UnknownTaskId%s", Integer.valueOf(i)),
+              String.format("UnknownTaskId: %d", i),
               new UpdateFailedException("Update of unknown task failed"));
         }
       }
@@ -681,12 +674,14 @@ class ServiceLevelHandler {
   }
 
   static class BulkLog extends BulkOperationResults<String, TaskanaException> {
+
     BulkLog() {
       super();
     }
   }
 
   static final class DurationPrioHolder {
+
     private Duration duration;
     private int priority;
 
@@ -734,6 +729,7 @@ class ServiceLevelHandler {
   }
 
   private static final class TaskIdPriority {
+
     private String taskId;
     private int priority;
 
@@ -760,6 +756,7 @@ class ServiceLevelHandler {
   }
 
   private static final class InstantDurationHolder {
+
     private Instant planned;
     private Duration duration;
 
@@ -806,6 +803,7 @@ class ServiceLevelHandler {
   }
 
   private static final class ClassificationWithServiceLevelResolved {
+
     private final int priority;
     private final String classificationId;
     private final Duration duration;

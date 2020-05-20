@@ -145,7 +145,7 @@ class QueryTasksAccTest extends AbstractAccTest {
             .orderByClassificationKey(DESCENDING)
             .listValues(CLASSIFICATION_KEY, null);
     assertThat(columnValueList).isNotNull();
-    assertThat(columnValueList).hasSize(6);
+    assertThat(columnValueList).hasSize(7);
   }
 
   @WithAccessId(
@@ -157,7 +157,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     List<TaskSummary> results =
         taskService.createTaskQuery().ownerLike("%a%", "%u%").orderByCreated(ASCENDING).list();
 
-    assertThat(results).hasSize(35);
+    assertThat(results).hasSize(36);
     TaskSummary previousSummary = null;
     for (TaskSummary taskSummary : results) {
       if (previousSummary != null) {
@@ -175,7 +175,7 @@ class QueryTasksAccTest extends AbstractAccTest {
 
     List<TaskSummary> results =
         taskService.createTaskQuery().parentBusinessProcessIdLike("%PBPI%", "doc%3%").list();
-    assertThat(results).hasSize(32);
+    assertThat(results).hasSize(33);
     for (TaskSummary taskSummary : results) {
       assertThat(taskSummary.getExternalId()).isNotNull();
     }
@@ -185,7 +185,7 @@ class QueryTasksAccTest extends AbstractAccTest {
 
     List<TaskSummary> result2 =
         taskService.createTaskQuery().parentBusinessProcessIdIn(parentIds).list();
-    assertThat(result2).hasSize(32);
+    assertThat(result2).hasSize(33);
   }
 
   @WithAccessId(
@@ -195,12 +195,12 @@ class QueryTasksAccTest extends AbstractAccTest {
   void testQueryForName() {
 
     List<TaskSummary> results = taskService.createTaskQuery().nameLike("task%").list();
-    assertThat(results).hasSize(6);
+    assertThat(results).hasSize(7);
 
     String[] ids = results.stream().map(TaskSummary::getName).toArray(String[]::new);
 
     List<TaskSummary> result2 = taskService.createTaskQuery().nameIn(ids).list();
-    assertThat(result2).hasSize(6);
+    assertThat(result2).hasSize(7);
   }
 
   @WithAccessId(
@@ -220,11 +220,11 @@ class QueryTasksAccTest extends AbstractAccTest {
 
     List<TaskSummary> result3 =
         taskService.createTaskQuery().classificationKeyNotIn("T2100", "T2000").list();
-    assertThat(result3).hasSize(81);
+    assertThat(result3).hasSize(82);
 
     List<TaskSummary> result4 =
         taskService.createTaskQuery().classificationKeyNotIn("L1050", "L1060", "T2100").list();
-    assertThat(result4).hasSize(6);
+    assertThat(result4).hasSize(7);
   }
 
   @WithAccessId(user = "teamlead_1", groups = "group_1")
@@ -277,7 +277,7 @@ class QueryTasksAccTest extends AbstractAccTest {
             .createTaskQuery()
             .externalIdLike("ETI:000000000000000000000000000000%")
             .listValues(TaskQueryColumnName.EXTERNAL_ID, DESCENDING);
-    assertThat(resultValues).hasSize(70);
+    assertThat(resultValues).hasSize(71);
 
     long countAllExternalIds = taskService.createTaskQuery().externalIdLike("ETI:%").count();
     long countAllIds = taskService.createTaskQuery().count();
@@ -302,7 +302,7 @@ class QueryTasksAccTest extends AbstractAccTest {
             new Triplet<>("11", new String[] {"%"}, 3),
             new Triplet<>("12", new String[] {"%"}, 3),
             new Triplet<>("13", new String[] {"%"}, 3),
-            new Triplet<>("14", new String[] {"%"}, 58),
+            new Triplet<>("14", new String[] {"%"}, 59),
             new Triplet<>("15", new String[] {"%"}, 3),
             new Triplet<>("16", new String[] {"%"}, 3));
 
@@ -460,7 +460,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void testQueryForNoteLike() {
     List<TaskSummary> results = taskService.createTaskQuery().noteLike("Some%").list();
-    assertThat(results).hasSize(6);
+    assertThat(results).hasSize(7);
   }
 
   @WithAccessId(user = "admin")
@@ -468,7 +468,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   void testQueryForClassificationCategoryIn() {
     List<TaskSummary> results =
         taskService.createTaskQuery().classificationCategoryIn("MANUAL", "AUTOMATIC").list();
-    assertThat(results).hasSize(3);
+    assertThat(results).hasSize(4);
   }
 
   @WithAccessId(user = "admin")
@@ -484,7 +484,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   void testQueryForPrimaryObjectReferenceCompanyLike() {
     List<TaskSummary> results =
         taskService.createTaskQuery().primaryObjectReferenceCompanyLike("My%").list();
-    assertThat(results).hasSize(6);
+    assertThat(results).hasSize(7);
   }
 
   @WithAccessId(user = "admin")
@@ -492,7 +492,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   void testQueryForPrimaryObjectReferenceSystemLike() {
     List<TaskSummary> results =
         taskService.createTaskQuery().primaryObjectReferenceSystemLike("My%").list();
-    assertThat(results).hasSize(6);
+    assertThat(results).hasSize(7);
   }
 
   @WithAccessId(user = "admin")
@@ -500,7 +500,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   void testQueryForPrimaryObjectReferenceSystemInstanceLike() {
     List<TaskSummary> results =
         taskService.createTaskQuery().primaryObjectReferenceSystemInstanceLike("My%").list();
-    assertThat(results).hasSize(6);
+    assertThat(results).hasSize(7);
   }
 
   @WithAccessId(user = "admin")
@@ -508,14 +508,14 @@ class QueryTasksAccTest extends AbstractAccTest {
   void testQueryForPrimaryObjectReferenceTypeLike() {
     List<TaskSummary> results =
         taskService.createTaskQuery().primaryObjectReferenceTypeLike("My%").list();
-    assertThat(results).hasSize(6);
+    assertThat(results).hasSize(7);
   }
 
   @WithAccessId(user = "admin")
   @Test
   void testQueryForReadEquals() {
     List<TaskSummary> results = taskService.createTaskQuery().readEquals(true).list();
-    assertThat(results).hasSize(35);
+    assertThat(results).hasSize(36);
   }
 
   @WithAccessId(user = "admin")
@@ -530,7 +530,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   void testQueryForBusinessProcessIdIn() {
     List<TaskSummary> results =
         taskService.createTaskQuery().businessProcessIdIn("PI_0000000000003", "BPI21").list();
-    assertThat(results).hasSize(8);
+    assertThat(results).hasSize(9);
   }
 
   @WithAccessId(user = "admin")

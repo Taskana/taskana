@@ -1,6 +1,5 @@
 package acceptance.workbasket;
 
-
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
@@ -14,9 +13,7 @@ import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 
-/**
- * Acceptance test for all "set workbasket access item" scenarios.
- */
+/** Acceptance test for all "set workbasket access item" scenarios. */
 @ExtendWith(JaasExtension.class)
 public class CreateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
@@ -31,9 +28,10 @@ public class CreateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     accessItem.setPermAppend(true);
     accessItem.setPermCustom11(true);
     accessItem.setPermRead(true);
-    ThrowingCallable call = () -> {
-      workbasketService.createWorkbasketAccessItem(accessItem);
-    };
+    ThrowingCallable call =
+        () -> {
+          workbasketService.createWorkbasketAccessItem(accessItem);
+        };
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 }

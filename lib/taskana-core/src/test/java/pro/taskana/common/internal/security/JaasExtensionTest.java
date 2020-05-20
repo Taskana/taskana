@@ -249,8 +249,7 @@ public class JaasExtensionTest {
   // WITH DynamicContainer
 
   @TestFactory
-  DynamicContainer
-      should_NotSetAccessIdForDynamicContainer_When_AnnotationIsMissing() {
+  DynamicContainer should_NotSetAccessIdForDynamicContainer_When_AnnotationIsMissing() {
     return dynamicContainer("dynamic container", Stream.of(NULL_DYNAMIC_TEST, NULL_DYNAMIC_TEST));
   }
 
@@ -265,8 +264,7 @@ public class JaasExtensionTest {
   @WithAccessId(user = INSIDE_DYNAMIC_TEST_USER)
   @WithAccessId(user = INSIDE_DYNAMIC_TEST_USER)
   @TestFactory
-  DynamicContainer
-      should_SetMultipleAccessIdForDynamicContainer_When_AnnotationsExist() {
+  DynamicContainer should_SetMultipleAccessIdForDynamicContainer_When_AnnotationsExist() {
     return dynamicContainer(
         "dynamic container", Stream.of(NOT_NULL_DYNAMIC_TEST, NOT_NULL_DYNAMIC_TEST));
   }
@@ -274,8 +272,7 @@ public class JaasExtensionTest {
   // WITH nested DynamicContainer
 
   @TestFactory
-  DynamicContainer
-      should_NotSetAccessIdForNestedDynamicContainer_When_AnnotationIsMissing() {
+  DynamicContainer should_NotSetAccessIdForNestedDynamicContainer_When_AnnotationIsMissing() {
     DynamicContainer container =
         dynamicContainer("inside container", Stream.of(NULL_DYNAMIC_TEST, NULL_DYNAMIC_TEST));
     return dynamicContainer("outside container", Stream.of(container, NULL_DYNAMIC_TEST));
@@ -283,8 +280,7 @@ public class JaasExtensionTest {
 
   @WithAccessId(user = INSIDE_DYNAMIC_TEST_USER)
   @TestFactory
-  DynamicContainer
-      should_SetAccessIdForNestedDynamicContainer_When_AnnotationExists() {
+  DynamicContainer should_SetAccessIdForNestedDynamicContainer_When_AnnotationExists() {
     DynamicContainer container =
         dynamicContainer(
             "nested container",
@@ -296,8 +292,7 @@ public class JaasExtensionTest {
   @WithAccessId(user = INSIDE_DYNAMIC_TEST_USER)
   @WithAccessId(user = INSIDE_DYNAMIC_TEST_USER)
   @TestFactory
-  DynamicContainer
-      should_SetMultipleAccessIdForNestedDynamicContainer_When_AnnotationsExist() {
+  DynamicContainer should_SetMultipleAccessIdForNestedDynamicContainer_When_AnnotationsExist() {
     DynamicContainer container =
         dynamicContainer(
             "inside container", Stream.of(NOT_NULL_DYNAMIC_TEST, NOT_NULL_DYNAMIC_TEST));
@@ -309,23 +304,20 @@ public class JaasExtensionTest {
   // region RETURNING Stream<DynamicNode>
 
   @TestFactory
-  Stream<DynamicTest>
-      should_NotSetAccessIdForDynamicTestInStream_When_AnnotationIsMissing() {
+  Stream<DynamicTest> should_NotSetAccessIdForDynamicTestInStream_When_AnnotationIsMissing() {
     return Stream.of(NULL_DYNAMIC_TEST, NULL_DYNAMIC_TEST);
   }
 
   @WithAccessId(user = INSIDE_DYNAMIC_TEST_USER)
   @TestFactory
-  Stream<DynamicTest>
-      should_SetAccessIdForDynamicTestInStream_When_AnnotationExists() {
+  Stream<DynamicTest> should_SetAccessIdForDynamicTestInStream_When_AnnotationExists() {
     return Stream.of(DYNAMIC_TEST_USER_DYNAMIC_TEST, DYNAMIC_TEST_USER_DYNAMIC_TEST);
   }
 
   @WithAccessId(user = INSIDE_DYNAMIC_TEST_USER)
   @WithAccessId(user = INSIDE_DYNAMIC_TEST_USER)
   @TestFactory
-  Stream<DynamicTest>
-      should_SetMultipleAccessIdForDynamicTestInStream_When_AnnotationsExist() {
+  Stream<DynamicTest> should_SetMultipleAccessIdForDynamicTestInStream_When_AnnotationsExist() {
     return Stream.of(NOT_NULL_DYNAMIC_TEST, NOT_NULL_DYNAMIC_TEST);
   }
 
@@ -342,8 +334,7 @@ public class JaasExtensionTest {
 
   @WithAccessId(user = INSIDE_DYNAMIC_TEST_USER)
   @TestFactory
-  Stream<DynamicContainer>
-      should_SetAccessIdForDynamicContainerInStream_When_AnnotationExists() {
+  Stream<DynamicContainer> should_SetAccessIdForDynamicContainerInStream_When_AnnotationExists() {
     Supplier<DynamicContainer> supplier =
         () ->
             dynamicContainer(
@@ -412,15 +403,13 @@ public class JaasExtensionTest {
   // region RETURNING Iterable<DynamicNode>
 
   @TestFactory
-  Iterable<DynamicTest>
-      should_NotSetAccessIdForDynamicTestInIterable_When_AnnotationIsMissing() {
+  Iterable<DynamicTest> should_NotSetAccessIdForDynamicTestInIterable_When_AnnotationIsMissing() {
     return Stream.of(NULL_DYNAMIC_TEST, NULL_DYNAMIC_TEST).collect(Collectors.toList());
   }
 
   @WithAccessId(user = INSIDE_DYNAMIC_TEST_USER)
   @TestFactory
-  Iterable<DynamicTest>
-      should_SetAccessIdForDynamicTestInIterable_When_AnnotationExists() {
+  Iterable<DynamicTest> should_SetAccessIdForDynamicTestInIterable_When_AnnotationExists() {
     return Stream.of(DYNAMIC_TEST_USER_DYNAMIC_TEST, DYNAMIC_TEST_USER_DYNAMIC_TEST)
         .collect(Collectors.toList());
   }
@@ -428,8 +417,7 @@ public class JaasExtensionTest {
   @WithAccessId(user = INSIDE_DYNAMIC_TEST_USER)
   @WithAccessId(user = INSIDE_DYNAMIC_TEST_USER)
   @TestFactory
-  Iterable<DynamicTest>
-      should_SetMultipleAccessIdForDynamicTestInIterable_When_AnnotationsExist() {
+  Iterable<DynamicTest> should_SetMultipleAccessIdForDynamicTestInIterable_When_AnnotationsExist() {
     return Stream.of(NOT_NULL_DYNAMIC_TEST, NOT_NULL_DYNAMIC_TEST).collect(Collectors.toList());
   }
 
@@ -516,23 +504,20 @@ public class JaasExtensionTest {
   // region RETURNING Iterator<DynamicNode>
 
   @TestFactory
-  Iterator<DynamicTest>
-      should_NotSetAccessIdForDynamicTestInIterator_When_AnnotationIsMissing() {
+  Iterator<DynamicTest> should_NotSetAccessIdForDynamicTestInIterator_When_AnnotationIsMissing() {
     return Stream.of(NULL_DYNAMIC_TEST, NULL_DYNAMIC_TEST).iterator();
   }
 
   @WithAccessId(user = INSIDE_DYNAMIC_TEST_USER)
   @TestFactory
-  Iterator<DynamicTest>
-      should_SetAccessIdForDynamicTestInIterator_When_AnnotationExists() {
+  Iterator<DynamicTest> should_SetAccessIdForDynamicTestInIterator_When_AnnotationExists() {
     return Stream.of(DYNAMIC_TEST_USER_DYNAMIC_TEST, DYNAMIC_TEST_USER_DYNAMIC_TEST).iterator();
   }
 
   @WithAccessId(user = INSIDE_DYNAMIC_TEST_USER)
   @WithAccessId(user = INSIDE_DYNAMIC_TEST_USER)
   @TestFactory
-  Iterator<DynamicTest>
-      should_SetMultipleAccessIdForDynamicTestInIterator_When_AnnotationsExist() {
+  Iterator<DynamicTest> should_SetMultipleAccessIdForDynamicTestInIterator_When_AnnotationsExist() {
     return Stream.of(NOT_NULL_DYNAMIC_TEST, NOT_NULL_DYNAMIC_TEST).iterator();
   }
 
@@ -619,8 +604,7 @@ public class JaasExtensionTest {
   // region RETURNING DynamicNode[]
 
   @TestFactory
-  DynamicTest[]
-      should_NotSetAccessIdForDynamicTestInArray_When_AnnotationIsMissing() {
+  DynamicTest[] should_NotSetAccessIdForDynamicTestInArray_When_AnnotationIsMissing() {
     return Stream.of(NULL_DYNAMIC_TEST, NULL_DYNAMIC_TEST).toArray(DynamicTest[]::new);
   }
 
@@ -634,16 +618,14 @@ public class JaasExtensionTest {
   @WithAccessId(user = INSIDE_DYNAMIC_TEST_USER)
   @WithAccessId(user = INSIDE_DYNAMIC_TEST_USER)
   @TestFactory
-  DynamicTest[]
-      should_SetMultipleAccessIdForDynamicTestInArray_When_AnnotationsExist() {
+  DynamicTest[] should_SetMultipleAccessIdForDynamicTestInArray_When_AnnotationsExist() {
     return Stream.of(NOT_NULL_DYNAMIC_TEST, NOT_NULL_DYNAMIC_TEST).toArray(DynamicTest[]::new);
   }
 
   // WITH DynamicContainer
 
   @TestFactory
-  DynamicContainer[]
-      should_NotSetAccessIdForDynamicContainerInArray_When_AnnotationIsMissing() {
+  DynamicContainer[] should_NotSetAccessIdForDynamicContainerInArray_When_AnnotationIsMissing() {
     Supplier<DynamicContainer> supplier =
         () ->
             dynamicContainer("dynamic container", Stream.of(NULL_DYNAMIC_TEST, NULL_DYNAMIC_TEST));
@@ -652,8 +634,7 @@ public class JaasExtensionTest {
 
   @WithAccessId(user = INSIDE_DYNAMIC_TEST_USER)
   @TestFactory
-  DynamicContainer[]
-      should_SetAccessIdForDynamicContainerInArray_When_AnnotationExists() {
+  DynamicContainer[] should_SetAccessIdForDynamicContainerInArray_When_AnnotationExists() {
     Supplier<DynamicContainer> supplier =
         () ->
             dynamicContainer(
@@ -665,8 +646,7 @@ public class JaasExtensionTest {
   @WithAccessId(user = INSIDE_DYNAMIC_TEST_USER)
   @WithAccessId(user = INSIDE_DYNAMIC_TEST_USER)
   @TestFactory
-  DynamicContainer[]
-      should_SetMultipleAccessIdForDynamicContainerInArray_When_AnnotationsExist() {
+  DynamicContainer[] should_SetMultipleAccessIdForDynamicContainerInArray_When_AnnotationsExist() {
     Supplier<DynamicContainer> supplier =
         () ->
             dynamicContainer(
@@ -688,8 +668,7 @@ public class JaasExtensionTest {
 
   @WithAccessId(user = INSIDE_DYNAMIC_TEST_USER)
   @TestFactory
-  DynamicContainer[]
-      should_SetAccessIdForNestedDynamicContainerInArray_When_AnnotationExists() {
+  DynamicContainer[] should_SetAccessIdForNestedDynamicContainerInArray_When_AnnotationExists() {
     Supplier<DynamicContainer> supplier =
         () ->
             dynamicContainer(

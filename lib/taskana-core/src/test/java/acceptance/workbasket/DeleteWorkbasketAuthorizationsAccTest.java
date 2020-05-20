@@ -12,9 +12,7 @@ import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketService;
 
-/**
- * Acceptance test for all "delete workbasket authorizations" scenarios.
- */
+/** Acceptance test for all "delete workbasket authorizations" scenarios. */
 @ExtendWith(JaasExtension.class)
 public class DeleteWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
@@ -39,6 +37,4 @@ public class DeleteWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
     assertThatThrownBy(deleteWorkbasketAccessItemCall).isInstanceOf(NotAuthorizedException.class);
   }
-
 }
-

@@ -167,9 +167,7 @@ public class DbSchemaCreator {
       while (line != null) {
         line = reader.readLine();
         if (line != null) {
-          content
-              .append(line.replace("%schemaName%", schemaName))
-              .append(System.lineSeparator());
+          content.append(line.replace("%schemaName%", schemaName)).append(System.lineSeparator());
         }
       }
     } catch (IOException e) {

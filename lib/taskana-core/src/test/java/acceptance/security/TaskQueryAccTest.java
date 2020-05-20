@@ -36,7 +36,7 @@ class TaskQueryAccTest extends AbstractAccTest {
 
     List<TaskSummary> results = taskService.createTaskQuery().ownerLike("%a%", "%u%").list();
 
-    assertThat(results).hasSize(3);
+    assertThat(results).hasSize(4);
   }
 
   @WithAccessId(user = "user_1_1", groups = "businessadmin")
@@ -46,7 +46,7 @@ class TaskQueryAccTest extends AbstractAccTest {
 
     List<TaskSummary> results = taskService.createTaskQuery().ownerLike("%a%", "%u%").list();
 
-    assertThat(results).hasSize(3);
+    assertThat(results).hasSize(4);
   }
 
   @WithAccessId(user = "user_1_1", groups = "admin")
@@ -56,6 +56,6 @@ class TaskQueryAccTest extends AbstractAccTest {
 
     List<TaskSummary> results = taskService.createTaskQuery().ownerLike("%a%", "%u%").list();
 
-    assertThat(results).hasSize(35);
+    assertThat(results).hasSize(36);
   }
 }

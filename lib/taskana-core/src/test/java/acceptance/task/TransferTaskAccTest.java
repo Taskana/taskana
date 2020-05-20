@@ -30,9 +30,7 @@ import pro.taskana.task.api.models.Task;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 
-/**
- * Acceptance test for all "transfer task" scenarios.
- */
+/** Acceptance test for all "transfer task" scenarios. */
 @ExtendWith(JaasExtension.class)
 class TransferTaskAccTest extends AbstractAccTest {
 
@@ -44,7 +42,7 @@ class TransferTaskAccTest extends AbstractAccTest {
   @Test
   void should_TransferTaskToWorkbasket_When_WorkbasketIdIsProvided()
       throws NotAuthorizedException, WorkbasketNotFoundException, TaskNotFoundException,
-                 InvalidStateException, InvalidOwnerException {
+          InvalidStateException, InvalidOwnerException {
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000003");
     taskService.claim(task.getId());
@@ -64,7 +62,7 @@ class TransferTaskAccTest extends AbstractAccTest {
   @TestTemplate
   void should_TransferTask_When_NoExplicitPermissionsButUserIsInAdministrativeRole()
       throws NotAuthorizedException, WorkbasketNotFoundException, TaskNotFoundException,
-                 InvalidStateException, InvalidOwnerException {
+          InvalidStateException, InvalidOwnerException {
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000003");
     taskService.claim(task.getId());
@@ -83,7 +81,7 @@ class TransferTaskAccTest extends AbstractAccTest {
   @Test
   void should_TransferTaskToWorkbasket_When_WorkbasketKeyAndDomainIsProvided()
       throws NotAuthorizedException, WorkbasketNotFoundException, TaskNotFoundException,
-                 InvalidStateException, InvalidOwnerException {
+          InvalidStateException, InvalidOwnerException {
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000003");
     taskService.claim(task.getId());
@@ -102,7 +100,7 @@ class TransferTaskAccTest extends AbstractAccTest {
   @Test
   void should_ChangeDomain_When_TransferingTaskToWorkbasketWithDifferentDomain()
       throws NotAuthorizedException, WorkbasketNotFoundException, TaskNotFoundException,
-                 InvalidStateException {
+          InvalidStateException {
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
     String domain1 = task.getDomain();
@@ -131,7 +129,7 @@ class TransferTaskAccTest extends AbstractAccTest {
   @Test
   void should_ThrowException_When_DestinationWorkbasketDoesNotExist()
       throws NotAuthorizedException, TaskNotFoundException, InvalidStateException,
-                 InvalidOwnerException {
+          InvalidOwnerException {
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000003");
     taskService.claim(task.getId());
@@ -188,7 +186,7 @@ class TransferTaskAccTest extends AbstractAccTest {
   @Test
   void should_BulkTransferTasks_When_WorkbasketIdIsProvided()
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-                 TaskNotFoundException {
+          TaskNotFoundException {
     final Instant before = Instant.now();
     TaskService taskService = taskanaEngine.getTaskService();
     ArrayList<String> taskIdList = new ArrayList<>();
@@ -225,7 +223,7 @@ class TransferTaskAccTest extends AbstractAccTest {
   @Test
   void should_BulkTransferOnlyValidTasks_When_SomeTasksToTransferCauseExceptions()
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-                 TaskNotFoundException {
+          TaskNotFoundException {
     TaskService taskService = taskanaEngine.getTaskService();
     final Workbasket wb =
         taskanaEngine.getWorkbasketService().getWorkbasket("USER_1_1", "DOMAIN_A");
@@ -305,9 +303,10 @@ class TransferTaskAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
     List<String> taskIds = Collections.singletonList("TKI:000000000000000000000000000000000006");
 
-    ThrowingCallable call = () -> {
-      taskService.transferTasks("WBI:100000000000000000000000000000000006", taskIds);
-    };
+    ThrowingCallable call =
+        () -> {
+          taskService.transferTasks("WBI:100000000000000000000000000000000006", taskIds);
+        };
 
     assertThatCode(call).doesNotThrowAnyException();
   }
@@ -353,7 +352,7 @@ class TransferTaskAccTest extends AbstractAccTest {
   @Test
   void should_BulkTransferTasks_When_WorkbasketKeyAndDomainIsProvided()
       throws WorkbasketNotFoundException, NotAuthorizedException, InvalidArgumentException,
-                 TaskNotFoundException {
+          TaskNotFoundException {
     final Instant before = Instant.now();
     TaskService taskService = taskanaEngine.getTaskService();
     List<String> taskIdList = new ArrayList<>();

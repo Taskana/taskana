@@ -65,14 +65,14 @@ class TerminateTaskAccTest extends AbstractAccTest {
       throws NotAuthorizedException, TaskNotFoundException, InvalidStateException {
     List<TaskSummary> taskSummaries =
         taskService.createTaskQuery().stateIn(TaskState.CLAIMED).list();
-    assertThat(taskSummaries.size()).isEqualTo(19);
+    assertThat(taskSummaries.size()).isEqualTo(20);
 
     long numTasksTerminated = taskService.createTaskQuery().stateIn(TaskState.TERMINATED).count();
     assertThat(numTasksTerminated).isEqualTo(5);
 
     taskService.terminateTask(taskSummaries.get(0).getId());
     long numTasksClaimed = taskService.createTaskQuery().stateIn(TaskState.CLAIMED).count();
-    assertThat(numTasksClaimed).isEqualTo(18);
+    assertThat(numTasksClaimed).isEqualTo(19);
     numTasksTerminated = taskService.createTaskQuery().stateIn(TaskState.TERMINATED).count();
     assertThat(numTasksTerminated).isEqualTo(6);
   }

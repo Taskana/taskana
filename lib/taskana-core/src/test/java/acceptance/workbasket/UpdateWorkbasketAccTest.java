@@ -21,9 +21,7 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 
-/**
- * Acceptance test for all "update workbasket" scenarios.
- */
+/** Acceptance test for all "update workbasket" scenarios. */
 @ExtendWith(JaasExtension.class)
 public class UpdateWorkbasketAccTest extends AbstractAccTest {
 

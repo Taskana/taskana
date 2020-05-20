@@ -31,7 +31,7 @@ class ClassificationQueryAccTest extends AbstractAccTest {
         classificationService.createClassificationQuery().domainIn("DOMAIN_A").list();
 
     assertThat(classificationSummaryList).isNotNull();
-    assertThat(classificationSummaryList).hasSize(17);
+    assertThat(classificationSummaryList).hasSize(18);
   }
 
   @WithAccessId(user = "businessadmin")
@@ -42,7 +42,7 @@ class ClassificationQueryAccTest extends AbstractAccTest {
         classificationService.createClassificationQuery().domainIn("DOMAIN_A").list();
 
     assertThat(classificationSummaryList).isNotNull();
-    assertThat(classificationSummaryList).hasSize(17);
+    assertThat(classificationSummaryList).hasSize(18);
   }
 
   @WithAccessId(user = "admin")
@@ -53,6 +53,6 @@ class ClassificationQueryAccTest extends AbstractAccTest {
         classificationService.createClassificationQuery().domainIn("DOMAIN_A").list();
 
     assertThat(classificationSummaryList).isNotNull();
-    assertThat(classificationSummaryList).hasSize(17);
+    assertThat(classificationSummaryList).hasSize(18);
   }
 }

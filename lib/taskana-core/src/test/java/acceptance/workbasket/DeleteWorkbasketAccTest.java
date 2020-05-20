@@ -27,9 +27,7 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 
-/**
- * Acceptance test which does test the deletion of a workbasket and all wanted failures.
- */
+/** Acceptance test which does test the deletion of a workbasket and all wanted failures. */
 @ExtendWith(JaasExtension.class)
 class DeleteWorkbasketAccTest extends AbstractAccTest {
 
@@ -167,7 +165,7 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
   @Test
   void testCascadingDeleteOfAccessItems()
       throws WorkbasketNotFoundException, NotAuthorizedException, InvalidArgumentException,
-                 WorkbasketAccessItemAlreadyExistException {
+          WorkbasketAccessItemAlreadyExistException {
     Workbasket wb = workbasketService.getWorkbasket("WBI:100000000000000000000000000000000008");
     String wbId = wb.getId();
     // create 2 access Items
@@ -201,8 +199,8 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
   @Test
   void testMarkWorkbasketForDeletion()
       throws WorkbasketInUseException, NotAuthorizedException, WorkbasketNotFoundException,
-                 InvalidArgumentException, InvalidOwnerException, InvalidStateException,
-                 TaskNotFoundException {
+          InvalidArgumentException, InvalidOwnerException, InvalidStateException,
+          TaskNotFoundException {
     final Workbasket wb =
         workbasketService.getWorkbasket("WBI:100000000000000000000000000000000006");
 
@@ -211,6 +209,8 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
     task = (TaskImpl) taskService.getTask("TKI:000000000000000000000000000000000001");
     taskService.forceCompleteTask(task.getId());
     task = (TaskImpl) taskService.getTask("TKI:000000000000000000000000000000000002");
+    taskService.forceCompleteTask(task.getId());
+    task = (TaskImpl) taskService.getTask("TKI:000000000000000000000000000000000066");
     taskService.forceCompleteTask(task.getId());
 
     boolean markedForDeletion = workbasketService.deleteWorkbasket(wb.getId());

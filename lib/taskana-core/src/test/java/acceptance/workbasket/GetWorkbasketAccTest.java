@@ -55,7 +55,6 @@ class GetWorkbasketAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @WithAccessId(user = "businessadmin")
   @WithAccessId(user = "taskadmin")
-
   @TestTemplate
   void should_ReturnWorkbasketByKeyAndDomain_When_NoExplicitPermissionButUserHasAdministrativeRole()
       throws NotAuthorizedException, WorkbasketNotFoundException {
