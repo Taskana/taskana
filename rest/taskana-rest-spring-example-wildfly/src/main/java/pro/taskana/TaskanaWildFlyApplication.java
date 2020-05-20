@@ -24,10 +24,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import pro.taskana.common.rest.AccessIdController;
+import pro.taskana.common.rest.ldap.LdapClient;
+import pro.taskana.common.rest.ldap.LdapConfiguration;
 import pro.taskana.jobs.TransactionalJobsConfiguration;
 import pro.taskana.ldap.LdapCacheTestImpl;
-import pro.taskana.ldap.LdapClient;
-import pro.taskana.ldap.LdapConfiguration;
 import pro.taskana.rest.WebMvcConfig;
 import pro.taskana.sampledata.SampleDataGenerator;
 

@@ -1,6 +1,5 @@
-package pro.taskana.ldap;
+package pro.taskana.common.rest.ldap;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;
@@ -11,11 +10,17 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.LdapContextSource;
 
-/** Configuration for Ldap access. */
+/**
+ * Configuration for Ldap access.
+ */
 @Configuration
 public class LdapConfiguration {
 
-  @Autowired private Environment env;
+  private final Environment env;
+
+  public LdapConfiguration(Environment env) {
+    this.env = env;
+  }
 
   @Bean
   public LdapContextSource contextSource() {

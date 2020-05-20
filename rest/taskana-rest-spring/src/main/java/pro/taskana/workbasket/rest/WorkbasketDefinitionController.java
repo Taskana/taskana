@@ -75,7 +75,7 @@ public class WorkbasketDefinitionController {
     List<WorkbasketDefinitionRepresentationModel> basketExports = new ArrayList<>();
     for (WorkbasketSummary summary : workbasketSummaryList) {
       Workbasket workbasket = workbasketService.getWorkbasket(summary.getId());
-      basketExports.add(workbasketDefinitionAssembler.toEntityModel(workbasket));
+      basketExports.add(workbasketDefinitionAssembler.toModel(workbasket));
     }
 
     ResponseEntity<List<WorkbasketDefinitionRepresentationModel>> response =

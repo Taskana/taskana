@@ -44,10 +44,11 @@ public class AttachmentRepresentationModelAssembler
   }
 
   public List<Attachment> toAttachmentList(List<AttachmentRepresentationModel> resources) {
-    return resources.stream().map(this::apply).collect(Collectors.toList());
+    return resources.stream().map(this::toEntityModel).collect(Collectors.toList());
   }
 
-  private AttachmentImpl apply(AttachmentRepresentationModel attachmentRepresentationModel) {
+  private AttachmentImpl toEntityModel(
+      AttachmentRepresentationModel attachmentRepresentationModel) {
     AttachmentImpl attachment = (AttachmentImpl) taskService.newAttachment();
     BeanUtils.copyProperties(attachmentRepresentationModel, attachment);
     attachment.setId(attachmentRepresentationModel.getAttachmentId());

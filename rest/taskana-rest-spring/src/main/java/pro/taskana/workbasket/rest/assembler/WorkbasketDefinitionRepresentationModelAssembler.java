@@ -47,7 +47,7 @@ public class WorkbasketDefinitionRepresentationModelAssembler {
    * @throws WorkbasketNotFoundException if {@code basket} is an unknown workbasket
    */
   @NonNull
-  public WorkbasketDefinitionRepresentationModel toEntityModel(Workbasket workbasket)
+  public WorkbasketDefinitionRepresentationModel toModel(Workbasket workbasket)
       throws NotAuthorizedException, WorkbasketNotFoundException {
 
     WorkbasketRepresentationModelWithoutLinks basket =

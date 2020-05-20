@@ -1,4 +1,4 @@
-package pro.taskana.ldap;
+package pro.taskana.common.rest.ldap;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -320,7 +320,7 @@ public class LdapClient {
 
       final List<LdapSettings> missingConfigurations = checkForMissingConfigurations();
 
-      if (missingConfigurations.size() > 0) {
+      if (!missingConfigurations.isEmpty()) {
         message =
             String.format(
                 "taskana.ldap.useLdap is set to true, but following configurations are missing: %s",

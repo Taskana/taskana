@@ -1,4 +1,4 @@
-package pro.taskana.ldap;
+package pro.taskana.common.rest.ldap;
 
 import java.util.List;
 

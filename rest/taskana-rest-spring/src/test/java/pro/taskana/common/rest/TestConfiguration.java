@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Import;
 
 import pro.taskana.RestConfiguration;
 import pro.taskana.TaskanaEngineConfiguration;
-import pro.taskana.ldap.LdapConfiguration;
+import pro.taskana.common.rest.ldap.LdapConfiguration;
 
 /** Configuration class for all rest tests. */
 @Import({RestConfiguration.class, LdapConfiguration.class})

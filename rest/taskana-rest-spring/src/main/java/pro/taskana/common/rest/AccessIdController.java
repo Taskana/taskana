@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.rest.ldap.LdapCache;
+import pro.taskana.common.rest.ldap.LdapClient;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
-import pro.taskana.ldap.LdapCache;
-import pro.taskana.ldap.LdapClient;
 
 /**
  * Controller for access id validation.

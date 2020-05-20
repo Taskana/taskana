@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
+import pro.taskana.common.rest.ldap.LdapCache;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 
 /**

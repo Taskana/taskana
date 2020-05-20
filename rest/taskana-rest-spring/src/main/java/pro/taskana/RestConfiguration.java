@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.ldap.LdapClient;
+import pro.taskana.common.rest.ldap.LdapClient;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.workbasket.api.WorkbasketService;

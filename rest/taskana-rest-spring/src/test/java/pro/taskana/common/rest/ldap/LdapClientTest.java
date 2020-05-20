@@ -1,4 +1,4 @@
-package pro.taskana.ldap;
+package pro.taskana.common.rest.ldap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
@@ -9,7 +9,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static pro.taskana.ldap.LdapSettings.TASKANA_LDAP_USE_LDAP;
+import static pro.taskana.common.rest.ldap.LdapSettings.TASKANA_LDAP_USE_LDAP;
 
 import java.util.Collections;
 import java.util.List;
