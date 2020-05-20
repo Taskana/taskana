@@ -40,8 +40,7 @@ import pro.taskana.common.internal.configuration.DbSchemaCreator;
 import pro.taskana.common.internal.configuration.SecurityVerifier;
 
 /**
- * This central class creates the TaskanaEngine and holds all the information about DB and
- * Security.
+ * This central class creates the TaskanaEngine and holds all the information about DB and Security.
  * <br>
  * Security is enabled by default.
  */
@@ -302,7 +301,7 @@ public class TaskanaEngineConfiguration {
 
   public Map<String, List<String>> getClassificationCategoriesByTypeMap() {
     return this.classificationCategoriesByTypeMap.entrySet().stream()
-               .collect(Collectors.toMap(Entry::getKey, e -> new ArrayList<>(e.getValue())));
+        .collect(Collectors.toMap(Entry::getKey, e -> new ArrayList<>(e.getValue())));
   }
 
   public List<String> getClassificationCategoriesByType(String type) {
@@ -428,7 +427,7 @@ public class TaskanaEngineConfiguration {
     String taskCleanupJobAllCompletedSameParentBusinessProperty =
         props.getProperty(TASKANA_JOB_TASK_CLEANUP_ALL_COMPLETED_SAME_PARENTE_BUSINESS);
     if (taskCleanupJobAllCompletedSameParentBusinessProperty != null
-            && !taskCleanupJobAllCompletedSameParentBusinessProperty.isEmpty()) {
+        && !taskCleanupJobAllCompletedSameParentBusinessProperty.isEmpty()) {
       try {
         taskCleanupJobAllCompletedSameParentBusiness =
             Boolean.parseBoolean(taskCleanupJobAllCompletedSameParentBusinessProperty);
@@ -534,8 +533,7 @@ public class TaskanaEngineConfiguration {
             validPropertyName ->
                 roleMap.put(
                     TaskanaRole.fromPropertyName(validPropertyName),
-                    getTokensWithCollection(props.getProperty(validPropertyName),
-                        rolesSeparator)));
+                    getTokensWithCollection(props.getProperty(validPropertyName), rolesSeparator)));
 
     ensureRoleMapIsFullyInitialized();
 
@@ -549,9 +547,7 @@ public class TaskanaEngineConfiguration {
   private void initCustomHolidays(Properties props) {
     if (props.getProperty(TASKANA_CUSTOM_HOLIDAY) != null) {
       Arrays.asList(
-              props
-                  .getProperty(TASKANA_CUSTOM_HOLIDAY)
-                  .split(Pattern.quote(propertiesSeparator)))
+              props.getProperty(TASKANA_CUSTOM_HOLIDAY).split(Pattern.quote(propertiesSeparator)))
           .forEach(
               entry -> {
                 try {
@@ -579,8 +575,8 @@ public class TaskanaEngineConfiguration {
 
   private HashSet<String> getTokensWithCollection(String str, String rolesSeparator) {
     return Collections.list(new StringTokenizer(str, rolesSeparator)).stream()
-               .map(token -> String.valueOf(token).toLowerCase().trim())
-               .collect(Collectors.toCollection(HashSet::new));
+        .map(token -> String.valueOf(token).toLowerCase().trim())
+        .collect(Collectors.toCollection(HashSet::new));
   }
 
   private Properties readPropertiesFromFile(String propertiesFile) {
@@ -594,8 +590,7 @@ public class TaskanaEngineConfiguration {
           LOGGER.error("taskana properties file {} was not found on classpath.", propertiesFile);
         } else {
           props.load(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-          LOGGER
-              .debug("Role properties were loaded from file {} from classpath.", propertiesFile);
+          LOGGER.debug("Role properties were loaded from file {} from classpath.", propertiesFile);
         }
       } else {
         props.load(new FileInputStream(propertiesFile));
@@ -604,8 +599,7 @@ public class TaskanaEngineConfiguration {
     } catch (IOException e) {
       LOGGER.error("caught IOException when processing properties file {}.", propertiesFile);
       throw new SystemException(
-          "internal System error when processing properties file " + propertiesFile,
-          e.getCause());
+          "internal System error when processing properties file " + propertiesFile, e.getCause());
     }
     return props;
   }
@@ -621,7 +615,6 @@ public class TaskanaEngineConfiguration {
 
   private void ensureRoleMapIsFullyInitialized() {
     // make sure that roleMap does not return null for any role
-    Arrays.stream(TaskanaRole.values())
-        .forEach(role -> roleMap.putIfAbsent(role, new HashSet<>()));
+    Arrays.stream(TaskanaRole.values()).forEach(role -> roleMap.putIfAbsent(role, new HashSet<>()));
   }
 }

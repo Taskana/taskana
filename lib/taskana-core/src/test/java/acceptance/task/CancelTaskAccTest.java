@@ -22,9 +22,7 @@ import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 
-/**
- * Acceptance tests for all "cancel task" scenarios.
- */
+/** Acceptance tests for all "cancel task" scenarios. */
 @ExtendWith(JaasExtension.class)
 class CancelTaskAccTest extends AbstractAccTest {
 
@@ -81,14 +79,14 @@ class CancelTaskAccTest extends AbstractAccTest {
       throws NotAuthorizedException, TaskNotFoundException, InvalidStateException {
     List<TaskSummary> taskSummaries =
         taskService.createTaskQuery().stateIn(TaskState.CLAIMED).list();
-    assertThat(taskSummaries).hasSize(16);
+    assertThat(taskSummaries).hasSize(17);
 
     long numTasksCancelled = taskService.createTaskQuery().stateIn(TaskState.CANCELLED).count();
     assertThat(numTasksCancelled).isEqualTo(5);
 
     taskService.cancelTask(taskSummaries.get(0).getId());
     long numTasksClaimed = taskService.createTaskQuery().stateIn(TaskState.CLAIMED).count();
-    assertThat(numTasksClaimed).isEqualTo(15);
+    assertThat(numTasksClaimed).isEqualTo(16);
     numTasksCancelled = taskService.createTaskQuery().stateIn(TaskState.CANCELLED).count();
     assertThat(numTasksCancelled).isEqualTo(6);
   }

@@ -493,7 +493,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
 
-    Instant planned = Instant.now().plus(10, ChronoUnit.DAYS);
+    Instant planned = getInstant("2020-05-25T07:00:00");
     newTask.setPlanned(planned);
     Task createdTask = taskService.createTask(newTask);
     assertThat(createdTask.getId()).isNotNull();

@@ -34,6 +34,7 @@ import pro.taskana.task.api.models.Task;
 @ExtendWith(JaasExtension.class)
 @SuppressWarnings({"checkstyle:LineLength"})
 public class ServiceLevelPriorityAccTest extends AbstractAccTest {
+
   private TaskService taskService;
 
   ServiceLevelPriorityAccTest() {
@@ -46,12 +47,12 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
   @Test
   public void should_ThrowException_When_DueAndPlannedAreChangedInconsistently() throws Exception {
     TaskService taskService = taskanaEngine.getTaskService();
-    Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
+    Task task = taskService.getTask("TKI:000000000000000000000000000000000000"); // P1D
     task.setDue(Instant.parse("2020-07-02T00:00:00Z"));
     task.setPlanned(Instant.parse("2020-07-07T00:00:00Z"));
     assertThatThrownBy(() -> taskService.updateTask(task))
         .isInstanceOf(InvalidArgumentException.class)
-        .withFailMessage(
+        .hasMessage(
             "Cannot update a task with given planned 2020-07-07T00:00:00Z and due "
                 + "date 2020-07-02T00:00:00Z not matching the service level PT24H.");
   }
@@ -261,6 +262,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
   // |TAI:000000000000000000000000000000000005 | CLI:000000000000000000000000000000000006 | P5D  |
   // |TAI:000000000000000000000000000000000006 | CLI:000000000000000000000000000000000007 | P6D  |
   // |TAI:000000000000000000000000000000000007 | CLI:100000000000000000000000000000000008 | P1D  |
+  // |TKI:000000000000000000000000000000000066 | CLI:100000000000000000000000000000000024 | P0D  |
   // +-----------------------------------------+------------------------------------------+------+
   @WithAccessId(user = "admin", groups = "group_2")
   @Test
@@ -300,14 +302,14 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
       throws NotAuthorizedException, TaskNotFoundException, InvalidArgumentException,
           ConcurrencyException, InvalidStateException, ClassificationNotFoundException,
           AttachmentPersistenceException {
-    String taskId = "TKI:000000000000000000000000000000000002";
+    String taskId = "TKI:000000000000000000000000000000000002"; // P1D
     Instant planned = getInstant("2020-05-03T07:00:00");
     Task task = taskService.getTask(taskId);
 
     // test update of due with unchanged planned
-    task.setDue(planned.plus(Duration.ofDays(8)));
+    task.setDue(planned.plus(Duration.ofDays(8))); // Monday
     task = taskService.updateTask(task);
-    assertThat(task.getPlanned()).isEqualTo(getInstant("2020-05-08T07:00:00"));
+    assertThat(task.getPlanned()).isEqualTo(getInstant("2020-05-08T07:00:00")); // Friday
   }
 
   @WithAccessId(user = "admin", groups = "group_2")
@@ -352,7 +354,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
           ConcurrencyException, InvalidStateException, ClassificationNotFoundException,
           AttachmentPersistenceException {
     String taskId = "TKI:000000000000000000000000000000000002";
-    final Instant planned = getInstant("2020-05-03T07:00:00");
+    final Instant planned = getInstant("2020-05-03T07:00:00"); // Sunday
     Task task = taskService.getTask(taskId);
 
     task.setPlanned(null);
@@ -366,16 +368,15 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     days = converter.convertWorkingDaysToDays(task.getPlanned(), 1);
     assertThat(task.getDue()).isEqualTo(task.getPlanned().plus(Duration.ofDays(days)));
 
-    task.setPlanned(planned.plus(Duration.ofDays(13)));
+    task.setPlanned(planned.plus(Duration.ofDays(13))); // Saturday
     task.setDue(null);
     task = taskService.updateTask(task);
     days = converter.convertWorkingDaysToDays(task.getPlanned(), 1);
     assertThat(task.getDue()).isEqualTo(task.getPlanned().plus(Duration.ofDays(days)));
 
-    task.setDue(planned.plus(Duration.ofDays(13))); // due = 2020-05-16, i.e. saturday
+    task.setDue(planned.plus(Duration.ofDays(13))); // Saturday
     task.setPlanned(null);
     task = taskService.updateTask(task);
-    days = converter.convertWorkingDaysToDays(task.getDue(), -1);
     assertThat(task.getPlanned()).isEqualTo(getInstant("2020-05-14T07:00:00"));
     assertThat(task.getDue()).isEqualTo(getInstant("2020-05-15T07:00:00"));
   }
@@ -409,5 +410,94 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     task.setDue(getInstant("2020-03-22T07:00:00")); // due = sunday
     task = taskService.updateTask(task);
     assertThat(task.getDue()).isEqualTo(getInstant("2020-03-20T07:00:00")); // friday
+  }
+
+  @WithAccessId(user = "user1_4", groups = "group_1")
+  @Test
+  void should_UpdateTaskPlannedOrDue_When_PlannedOrDueAreOnWeekends_ServiceLevel_P0D()
+      throws NotAuthorizedException, TaskNotFoundException, ClassificationNotFoundException,
+          InvalidArgumentException, InvalidStateException, ConcurrencyException,
+          AttachmentPersistenceException {
+    Task task = taskService.getTask("TKI:000000000000000000000000000000000066"); // P0D
+
+    // nothing changed
+    task = taskService.updateTask(task);
+    assertThat(task.getDue()).isEqualTo(getInstant("2018-01-29T15:55:00")); // Monday
+    assertThat(task.getPlanned()).isEqualTo(getInstant("2018-01-29T15:55:00")); // Monday
+
+    // planned changed, due did not change
+    task.setPlanned(getInstant("2020-03-21T07:00:00")); // Saturday
+    task = taskService.updateTask(task);
+    assertThat(task.getDue()).isEqualTo(getInstant("2020-03-23T07:00:00")); // Monday
+    assertThat(task.getPlanned()).isEqualTo(getInstant("2020-03-23T07:00:00")); // Monday
+
+    // due changed, planned did not change
+    task.setDue(getInstant("2020-04-12T07:00:00")); // Sunday
+    task = taskService.updateTask(task);
+    assertThat(task.getPlanned())
+        .isEqualTo(getInstant("2020-04-09T07:00:00")); // Thursday (skip Good Friday)
+    assertThat(task.getDue()).isEqualTo(getInstant("2020-04-09T07:00:00"));
+
+    // due changed, planned is null
+    task.setDue(getInstant("2020-04-11T07:00:00")); // Saturday
+    task.setPlanned(null);
+    task = taskService.updateTask(task);
+    assertThat(task.getPlanned())
+        .isEqualTo(getInstant("2020-04-09T07:00:00")); // Thursday (skip Good Friday)
+    assertThat(task.getDue()).isEqualTo(getInstant("2020-04-09T07:00:00"));
+
+    // planned changed, due is null
+    task.setPlanned(getInstant("2020-03-22T07:00:00")); // Sunday
+    task.setDue(null);
+    task = taskService.updateTask(task);
+    assertThat(task.getDue()).isEqualTo(getInstant("2020-03-23T07:00:00")); // Monday
+    assertThat(task.getPlanned()).isEqualTo(getInstant("2020-03-23T07:00:00")); // Monday
+
+    // both changed, not null (due at weekend)
+    task.setPlanned(getInstant("2020-03-20T07:00:00")); // Friday
+    task.setDue(getInstant("2020-03-22T07:00:00")); // Sunday
+    task = taskService.updateTask(task);
+    assertThat(task.getPlanned()).isEqualTo(getInstant("2020-03-20T07:00:00")); // Friday
+    assertThat(task.getDue()).isEqualTo(getInstant("2020-03-20T07:00:00")); // Friday
+
+    // both changed, not null (planned at weekend)
+    task.setPlanned(getInstant("2020-03-22T07:00:00")); // Sunday
+    task.setDue(getInstant("2020-03-23T07:00:00")); // Monday
+    task = taskService.updateTask(task);
+    assertThat(task.getDue()).isEqualTo(getInstant("2020-03-23T07:00:00")); // Monday
+    assertThat(task.getPlanned()).isEqualTo(getInstant("2020-03-23T07:00:00")); // Monday
+
+    // both changed, not null (both at weekend) within SLA
+    task.setPlanned(getInstant("2020-03-22T07:00:00")); // Sunday
+    task.setDue(getInstant("2020-03-22T07:00:00")); // Sunday
+    task = taskService.updateTask(task);
+    assertThat(task.getDue()).isEqualTo(getInstant("2020-03-20T07:00:00")); // Friday
+    assertThat(task.getPlanned()).isEqualTo(getInstant("2020-03-20T07:00:00")); // Friday
+
+    // both changed, not null (planned > due)
+    task.setPlanned(getInstant("2020-03-24T07:00:00")); // Tuesday
+    task.setDue(getInstant("2020-03-23T07:00:00")); // Monday
+    Task finalTask = task;
+    assertThatThrownBy(() -> taskService.updateTask(finalTask))
+        .isInstanceOf(InvalidArgumentException.class)
+        .hasMessage(
+            "Cannot update a task with given planned 2020-03-24T07:00:00Z and "
+                + "due date 2020-03-23T07:00:00Z not matching the service level PT0S.");
+  }
+
+  @WithAccessId(user = "user_1_2", groups = "group_1")
+  @Test
+  void should_notThrowServiceLevelViolation_IfWeekendOrHolidaysBetweenDates()
+      throws NotAuthorizedException, TaskNotFoundException, ClassificationNotFoundException,
+          InvalidArgumentException, InvalidStateException, ConcurrencyException,
+          AttachmentPersistenceException {
+    Task task = taskService.getTask("TKI:000000000000000000000000000000000002"); // P1D
+
+    // SLA is broken but only with holidays in between
+    task.setDue(getInstant("2020-04-14T07:00:00")); // Tuesday after Easter
+    task.setPlanned(getInstant("2020-04-09T07:00:00")); // Thursday before Easter
+    task = taskService.updateTask(task);
+    assertThat(task.getDue()).isEqualTo(getInstant("2020-04-14T07:00:00")); // Tuesday
+    assertThat(task.getPlanned()).isEqualTo(getInstant("2020-04-09T07:00:00")); // Thursday
   }
 }

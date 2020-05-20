@@ -7,18 +7,18 @@ public final class CustomHoliday {
   private final Integer day;
   private final Integer month;
 
+  public CustomHoliday(Integer day, Integer month) {
+    super();
+    this.day = day;
+    this.month = month;
+  }
+
   public Integer getDay() {
     return day;
   }
 
   public Integer getMonth() {
     return month;
-  }
-
-  public CustomHoliday(Integer day, Integer month) {
-    super();
-    this.day = day;
-    this.month = month;
   }
 
   public static CustomHoliday of(Integer day, Integer month) {

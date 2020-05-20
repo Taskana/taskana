@@ -19,7 +19,6 @@ public class SecurityVerifier {
   private final String schemaName;
   private DataSource dataSource;
 
-
   public SecurityVerifier(DataSource dataSource, String schema) {
     super();
     this.dataSource = dataSource;
@@ -29,8 +28,9 @@ public class SecurityVerifier {
   public void checkSecureAccess(boolean securityEnabled) {
 
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(String.format("Entering checkSecureAccess with securityEnabled set to %b",
-          securityEnabled));
+      LOGGER.debug(
+          String.format(
+              "Entering checkSecureAccess with securityEnabled set to %b", securityEnabled));
     }
 
     try (Connection connection = dataSource.getConnection()) {
@@ -41,37 +41,34 @@ public class SecurityVerifier {
 
       SqlRunner sqlRunner = new SqlRunner(connection);
 
-      String querySecurity = String.format(SELECT_SECURITY_FLAG, SECURITY_FLAG_COLUMN_NAME,
-          schemaName);
+      String querySecurity =
+          String.format(SELECT_SECURITY_FLAG, SECURITY_FLAG_COLUMN_NAME, schemaName);
 
       if ((boolean) sqlRunner.selectOne(querySecurity).get(SECURITY_FLAG_COLUMN_NAME)
-              && !securityEnabled) {
+          && !securityEnabled) {
 
         LOGGER.error("Tried to start TASKANA in unsecured mode while secured mode is enforced!");
 
         throw new SystemException(
             "Secured TASKANA mode is enforced, can't start in unsecured mode");
-
       }
     } catch (SQLException ex) {
 
-      LOGGER.info(String.format(
-          "Security-mode is not yet set. Setting security flag to %b", securityEnabled));
+      LOGGER.info(
+          String.format(
+              "Security-mode is not yet set. Setting security flag to %b", securityEnabled));
 
       setInitialSecurityMode(securityEnabled);
-
     }
 
     LOGGER.debug("Security-mode is enabled");
-
   }
 
   private void setInitialSecurityMode(boolean securityEnabled) {
 
     try (Connection connection = dataSource.getConnection()) {
 
-      String setSecurityFlagSql = String.format(INSERT_SECURITY_FLAG,
-          schemaName, securityEnabled);
+      String setSecurityFlagSql = String.format(INSERT_SECURITY_FLAG, schemaName, securityEnabled);
 
       try (PreparedStatement preparedStatement = connection.prepareStatement(setSecurityFlagSql)) {
 

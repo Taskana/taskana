@@ -76,7 +76,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
             .domainIn("DOMAIN_A")
             .list();
 
-    assertThat(classificationSummaryList).hasSize(2);
+    assertThat(classificationSummaryList).hasSize(3);
   }
 
   @Test
@@ -101,10 +101,10 @@ class QueryClassificationAccTest extends AbstractAccTest {
             .list();
 
     assertThat(classifications)
-        .hasSize(28)
+        .hasSize(30)
         .extracting(ClassificationSummary::getType)
         .containsOnly("TASK", "DOCUMENT")
-        .areExactly(26, new Condition<>("TASK"::equals, "TASK"))
+        .areExactly(28, new Condition<>("TASK"::equals, "TASK"))
         .areExactly(2, new Condition<>("DOCUMENT"::equals, "DOCUMENT"));
   }
 
@@ -193,7 +193,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
             .domainIn("DOMAIN_A")
             .typeIn("TASK")
             .list();
-    assertThat(classifications).hasSize(13);
+    assertThat(classifications).hasSize(14);
   }
 
   @Test
@@ -217,7 +217,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
             .createdWithin(toDaysInterval())
             .list();
 
-    assertThat(classificationSummaryList).hasSize(17);
+    assertThat(classificationSummaryList).hasSize(18);
   }
 
   @Test
@@ -229,7 +229,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
             .priorityIn(1, 2, 3)
             .list();
 
-    assertThat(list).hasSize(15);
+    assertThat(list).hasSize(16);
   }
 
   @WithAccessId(user = "businessadmin")
@@ -326,7 +326,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
             .createClassificationQuery()
             .customAttributeIn("2", "CUSTOM2", "custom2")
             .list();
-    assertThat(results).hasSize(3);
+    assertThat(results).hasSize(5);
   }
 
   @Test
@@ -336,28 +336,28 @@ class QueryClassificationAccTest extends AbstractAccTest {
             .createClassificationQuery()
             .customAttributeIn("3", "Custom3", "custom3")
             .list();
-    assertThat(results).hasSize(3);
+    assertThat(results).hasSize(5);
   }
 
   @Test
   void testQueryForCustom4In() throws InvalidArgumentException {
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().customAttributeIn("4", "custom4").list();
-    assertThat(results).hasSize(3);
+    assertThat(results).hasSize(5);
   }
 
   @Test
   void testQueryForCustom5In() throws InvalidArgumentException {
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().customAttributeIn("5", "custom5").list();
-    assertThat(results).hasSize(3);
+    assertThat(results).hasSize(5);
   }
 
   @Test
   void testQueryForCustom6In() throws InvalidArgumentException {
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().customAttributeIn("6", "custom6").list();
-    assertThat(results).hasSize(3);
+    assertThat(results).hasSize(5);
   }
 
   @Test
@@ -367,7 +367,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
             .createClassificationQuery()
             .customAttributeIn("7", "custom7", "custom_7")
             .list();
-    assertThat(results).hasSize(3);
+    assertThat(results).hasSize(5);
   }
 
   @Test
@@ -377,56 +377,56 @@ class QueryClassificationAccTest extends AbstractAccTest {
             .createClassificationQuery()
             .customAttributeIn("8", "custom_8", "custom8")
             .list();
-    assertThat(results).hasSize(3);
+    assertThat(results).hasSize(5);
   }
 
   @Test
   void testQueryForCustom2Like() throws InvalidArgumentException {
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().customAttributeLike("2", "cus%").list();
-    assertThat(results).hasSize(4);
+    assertThat(results).hasSize(6);
   }
 
   @Test
   void testQueryForCustom3Like() throws InvalidArgumentException {
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().customAttributeLike("3", "cus%").list();
-    assertThat(results).hasSize(4);
+    assertThat(results).hasSize(6);
   }
 
   @Test
   void testQueryForCustom4Like() throws InvalidArgumentException {
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().customAttributeLike("4", "cus%").list();
-    assertThat(results).hasSize(4);
+    assertThat(results).hasSize(6);
   }
 
   @Test
   void testQueryForCustom5Like() throws InvalidArgumentException {
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().customAttributeLike("5", "cus%").list();
-    assertThat(results).hasSize(4);
+    assertThat(results).hasSize(6);
   }
 
   @Test
   void testQueryForCustom6Like() throws InvalidArgumentException {
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().customAttributeLike("6", "cus%").list();
-    assertThat(results).hasSize(4);
+    assertThat(results).hasSize(6);
   }
 
   @Test
   void testQueryForCustom7Like() throws InvalidArgumentException {
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().customAttributeLike("7", "cus%").list();
-    assertThat(results).hasSize(4);
+    assertThat(results).hasSize(6);
   }
 
   @Test
   void testQueryForCustom8Like() throws InvalidArgumentException {
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().customAttributeLike("8", "cus%").list();
-    assertThat(results).hasSize(4);
+    assertThat(results).hasSize(6);
   }
 
   @Test

@@ -25,6 +25,12 @@ import pro.taskana.common.api.exceptions.SystemException;
  */
 public final class WorkingDaysToDaysConverter {
 
+  // offset in days from easter sunday
+  private static final int OFFSET_GOOD_FRIDAY = -2; // Karfreitag
+  private static final int OFFSET_EASTER_MONDAY = 1; // Ostermontag
+  private static final int OFFSET_ASCENSION_DAY = 39; // Himmelfahrt
+  private static final int OFFSET_WHIT_MONDAY = 50; // Pfingstmontag
+
   private static boolean germanHolidaysEnabled;
   private static Set<CustomHoliday> customHolidays = new HashSet<>();
   private Instant referenceDate;
@@ -83,30 +89,52 @@ public final class WorkingDaysToDaysConverter {
   }
 
   public long convertWorkingDaysToDays(Instant startTime, long numberOfDays) {
+    return convertWorkingDaysToDays(startTime, numberOfDays, ZeroDirection.ADD_DAYS);
+  }
+
+  public long convertWorkingDaysToDays(
+      final Instant startTime, long numberOfDays, ZeroDirection zeroDirection) {
     if (startTime == null) {
       throw new SystemException(
-          "Internal Error: convertWorkingDasToDays was called with a null startTime");
+          "Internal Error: convertWorkingDaysToDays was called with a null startTime");
     } else if (!startTime.equals(referenceDate)) {
       refreshReferenceDate(referenceDate);
     }
-    int direction = numberOfDays >= 0 ? 1 : -1;
+    int direction = calculateDirection(numberOfDays, zeroDirection);
     long limit = Math.abs(numberOfDays);
-    final Instant finalStartTime = startTime;
     return LongStream.iterate(0, i -> i + direction)
-        .filter(day -> isWorkingDay(day, finalStartTime))
+        .filter(day -> isWorkingDay(day, startTime))
         .skip(limit)
         .findFirst()
         .orElse(0);
   }
 
   public Instant addWorkingDaysToInstant(Instant instant, Duration workingDays) {
-    long days = convertWorkingDaysToDays(instant, workingDays.toDays());
+    long days = convertWorkingDaysToDays(instant, workingDays.toDays(), ZeroDirection.ADD_DAYS);
     return instant.plus(Duration.ofDays(days));
   }
 
   public Instant subtractWorkingDaysFromInstant(Instant instant, Duration workingDays) {
-    long days = convertWorkingDaysToDays(instant, -workingDays.toDays());
+    long days = convertWorkingDaysToDays(instant, -workingDays.toDays(), ZeroDirection.SUB_DAYS);
     return instant.plus(Duration.ofDays(days));
+  }
+
+  /** counts working days between two dates, inclusive for both margins. */
+  public boolean hasWorkingDaysInBetween(Instant leftInstant, Instant rightInstant) {
+    Instant left = leftInstant;
+    Instant right = rightInstant;
+    // make sure dates are ordered
+    if (leftInstant.isAfter(rightInstant)) {
+      left = rightInstant;
+      right = leftInstant;
+    }
+    long days = Duration.between(left, right).toDays();
+    for (long day = 0; day <= days; day++) {
+      if (isWorkingDay(day, left)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public boolean isWorkingDay(long day, Instant referenceDate) {
@@ -139,12 +167,9 @@ public final class WorkingDaysToDaysConverter {
 
     // Easter holidays Good Friday, Easter Monday, Ascension Day, Whit Monday.
     long diffFromEasterSunday = DAYS.between(easterSunday, date);
-    long goodFriday = -2;
-    long easterMonday = 1;
-    long ascensionDay = 39;
-    long whitMonday = 50;
 
-    return LongStream.of(goodFriday, easterMonday, ascensionDay, whitMonday)
+    return LongStream.of(
+            OFFSET_GOOD_FRIDAY, OFFSET_EASTER_MONDAY, OFFSET_ASCENSION_DAY, OFFSET_WHIT_MONDAY)
         .anyMatch(diff -> diff == diffFromEasterSunday);
   }
 
@@ -177,6 +202,14 @@ public final class WorkingDaysToDaysConverter {
     return LocalDate.of(year, 3, 22).plusDays((long) d + e);
   }
 
+  private int calculateDirection(long numberOfDays, ZeroDirection zeroDirection) {
+    if (numberOfDays == 0) {
+      return zeroDirection.getDirection();
+    } else {
+      return numberOfDays >= 0 ? 1 : -1;
+    }
+  }
+
   private void refreshReferenceDate(Instant newReferenceDate) {
     int yearOfReferenceDate =
         LocalDateTime.ofInstant(referenceDate, ZoneId.systemDefault()).getYear();
@@ -196,6 +229,21 @@ public final class WorkingDaysToDaysConverter {
         + ", easterSunday="
         + easterSunday
         + '}';
+  }
+
+  private enum ZeroDirection {
+    SUB_DAYS(-1),
+    ADD_DAYS(1);
+
+    private int direction;
+
+    ZeroDirection(int direction) {
+      this.direction = direction;
+    }
+
+    public int getDirection() {
+      return direction;
+    }
   }
 
   /** Enumeration of German holidays. */

@@ -85,7 +85,7 @@ class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
             .createClassificationQuery()
             .domainIn("DOMAIN_A")
             .listPage(pageNumber, pageSize);
-    assertThat(results).hasSize(17);
+    assertThat(results).hasSize(18);
 
     // Getting last results on multiple pages
     pageNumber = 2;
@@ -95,7 +95,7 @@ class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
             .createClassificationQuery()
             .domainIn("DOMAIN_A")
             .listPage(pageNumber, pageSize);
-    assertThat(results).hasSize(7);
+    assertThat(results).hasSize(8);
   }
 
   @Test
@@ -137,6 +137,6 @@ class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
   void testCountOfClassificationsQuery() {
     ClassificationService classificationService = taskanaEngine.getClassificationService();
     long count = classificationService.createClassificationQuery().domainIn("DOMAIN_A").count();
-    assertThat(count).isEqualTo(17L);
+    assertThat(count).isEqualTo(18L);
   }
 }

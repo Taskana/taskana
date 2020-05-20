@@ -30,7 +30,6 @@ public class TaskanaSecurityConfigAccTest {
     sampleDataGenerator.dropDb();
     DbSchemaCreator dbSchemaCreator = new DbSchemaCreator(dataSource, schemaName);
     dbSchemaCreator.run();
-
   }
 
   @Test
@@ -39,17 +38,19 @@ public class TaskanaSecurityConfigAccTest {
 
     setSecurityFlag(true);
 
-    ThrowingCallable createUnsecuredTaskanaEngineConfiguration = () -> {
-
-      TaskanaEngineConfiguration taskanaEngineConfiguration = new TaskanaEngineConfiguration(
-          TaskanaEngineTestConfiguration.getDataSource(), false, false,
-          TaskanaEngineTestConfiguration.getSchemaName());
-    };
+    ThrowingCallable createUnsecuredTaskanaEngineConfiguration =
+        () -> {
+          TaskanaEngineConfiguration taskanaEngineConfiguration =
+              new TaskanaEngineConfiguration(
+                  TaskanaEngineTestConfiguration.getDataSource(),
+                  false,
+                  false,
+                  TaskanaEngineTestConfiguration.getSchemaName());
+        };
 
     assertThatThrownBy(createUnsecuredTaskanaEngineConfiguration)
         .isInstanceOf(SystemException.class)
         .hasMessageContaining("Secured TASKANA mode is enforced, can't start in unsecured mode");
-
   }
 
   @Test
@@ -58,15 +59,17 @@ public class TaskanaSecurityConfigAccTest {
 
     setSecurityFlag(false);
 
-    ThrowingCallable createUnsecuredTaskanaEngineConfiguration = () -> {
-
-      TaskanaEngineConfiguration taskanaEngineConfiguration = new TaskanaEngineConfiguration(
-          TaskanaEngineTestConfiguration.getDataSource(), false, false,
-          TaskanaEngineTestConfiguration.getSchemaName());
-    };
+    ThrowingCallable createUnsecuredTaskanaEngineConfiguration =
+        () -> {
+          TaskanaEngineConfiguration taskanaEngineConfiguration =
+              new TaskanaEngineConfiguration(
+                  TaskanaEngineTestConfiguration.getDataSource(),
+                  false,
+                  false,
+                  TaskanaEngineTestConfiguration.getSchemaName());
+        };
 
     assertThatCode(createUnsecuredTaskanaEngineConfiguration).doesNotThrowAnyException();
-
   }
 
   @Test
@@ -75,17 +78,19 @@ public class TaskanaSecurityConfigAccTest {
 
     assertThat(retrieveSecurityFlag()).isNull();
 
-    ThrowingCallable createUnsecuredTaskanaEngineConfiguration = () -> {
-
-      TaskanaEngineConfiguration taskanaEngineConfiguration = new TaskanaEngineConfiguration(
-          TaskanaEngineTestConfiguration.getDataSource(), false, false,
-          TaskanaEngineTestConfiguration.getSchemaName());
-    };
+    ThrowingCallable createUnsecuredTaskanaEngineConfiguration =
+        () -> {
+          TaskanaEngineConfiguration taskanaEngineConfiguration =
+              new TaskanaEngineConfiguration(
+                  TaskanaEngineTestConfiguration.getDataSource(),
+                  false,
+                  false,
+                  TaskanaEngineTestConfiguration.getSchemaName());
+        };
 
     assertThatCode(createUnsecuredTaskanaEngineConfiguration).doesNotThrowAnyException();
 
     assertThat(retrieveSecurityFlag()).isFalse();
-
   }
 
   @Test
@@ -94,26 +99,28 @@ public class TaskanaSecurityConfigAccTest {
 
     assertThat(retrieveSecurityFlag()).isNull();
 
-    ThrowingCallable createSecuredTaskanaEngineConfiguration = () -> {
-
-      TaskanaEngineConfiguration taskanaEngineConfiguration = new TaskanaEngineConfiguration(
-          TaskanaEngineTestConfiguration.getDataSource(), false, true,
-          TaskanaEngineTestConfiguration.getSchemaName());
-    };
+    ThrowingCallable createSecuredTaskanaEngineConfiguration =
+        () -> {
+          TaskanaEngineConfiguration taskanaEngineConfiguration =
+              new TaskanaEngineConfiguration(
+                  TaskanaEngineTestConfiguration.getDataSource(),
+                  false,
+                  true,
+                  TaskanaEngineTestConfiguration.getSchemaName());
+        };
 
     assertThatCode(createSecuredTaskanaEngineConfiguration).doesNotThrowAnyException();
 
     assertThat(retrieveSecurityFlag()).isTrue();
-
   }
 
   private Boolean retrieveSecurityFlag() throws SQLException {
 
     try (Connection connection = TaskanaEngineTestConfiguration.getDataSource().getConnection()) {
 
-      String selectSecurityFlagSql = String
-                                         .format("SELECT * FROM %s.CONFIGURATION",
-                                             TaskanaEngineTestConfiguration.getSchemaName());
+      String selectSecurityFlagSql =
+          String.format(
+              "SELECT * FROM %s.CONFIGURATION", TaskanaEngineTestConfiguration.getSchemaName());
 
       Statement statement = connection.createStatement();
       ResultSet resultSet = statement.executeQuery(selectSecurityFlagSql);
@@ -123,18 +130,17 @@ public class TaskanaSecurityConfigAccTest {
       }
       statement.close();
       return null;
-
     }
-
   }
 
   private void setSecurityFlag(boolean securityFlag) throws SQLException {
 
     try (Connection connection = TaskanaEngineTestConfiguration.getDataSource().getConnection()) {
 
-      String sql = String
-                       .format("INSERT INTO %s.CONFIGURATION VALUES (%b)",
-                           TaskanaEngineTestConfiguration.getSchemaName(), securityFlag);
+      String sql =
+          String.format(
+              "INSERT INTO %s.CONFIGURATION VALUES (%b)",
+              TaskanaEngineTestConfiguration.getSchemaName(), securityFlag);
 
       Statement statement = connection.createStatement();
       statement.execute(sql);
@@ -142,7 +148,6 @@ public class TaskanaSecurityConfigAccTest {
         connection.commit();
       }
       statement.close();
-
     }
   }
 }

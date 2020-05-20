@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
@@ -102,9 +103,9 @@ public abstract class AbstractAccTest {
 
   protected TimeInterval toDaysInterval() {
     Instant begin =
-        LocalDateTime.of(LocalDate.now(), LocalTime.MIN).atZone(ZoneId.of("UTC")).toInstant();
+        ZonedDateTime.of(LocalDate.now(ZoneId.of("UTC")), LocalTime.MIN, ZoneId.of("UTC")).toInstant();
     Instant end =
-        LocalDateTime.of(LocalDate.now(), LocalTime.MAX).atZone(ZoneId.of("UTC")).toInstant();
+        ZonedDateTime.of(LocalDate.now(ZoneId.of("UTC")), LocalTime.MAX, ZoneId.of("UTC")).toInstant();
     return new TimeInterval(begin, end);
   }
 

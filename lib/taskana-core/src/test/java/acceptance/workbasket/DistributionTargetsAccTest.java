@@ -24,9 +24,7 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
-/**
- * Acceptance test for all "get workbasket" scenarios.
- */
+/** Acceptance test for all "get workbasket" scenarios. */
 @ExtendWith(JaasExtension.class)
 class DistributionTargetsAccTest extends AbstractAccTest {
 
@@ -122,10 +120,9 @@ class DistributionTargetsAccTest extends AbstractAccTest {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     String existingWb = "WBI:100000000000000000000000000000000001";
 
-    List<WorkbasketSummary> distributionTargets = workbasketService
-                                                      .getDistributionTargets(existingWb);
+    List<WorkbasketSummary> distributionTargets =
+        workbasketService.getDistributionTargets(existingWb);
     assertThat(distributionTargets).hasSize(4);
-
   }
 
   @WithAccessId(user = "user_1_1", groups = "group_1")

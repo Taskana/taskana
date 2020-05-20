@@ -17,9 +17,7 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 
-/**
- * Acceptance test for all "delete classification" scenarios.
- */
+/** Acceptance test for all "delete classification" scenarios. */
 @ExtendWith(JaasExtension.class)
 class DeleteClassificationAccTest extends AbstractAccTest {
 
@@ -55,8 +53,7 @@ class DeleteClassificationAccTest extends AbstractAccTest {
   @TestTemplate
   void should_ThrowException_When_UserRoleIsNotAdminOrBusinessAdmin() {
 
-    ThrowingCallable call =
-        () -> classificationService.deleteClassification("L140101", "DOMAIN_A");
+    ThrowingCallable call = () -> classificationService.deleteClassification("L140101", "DOMAIN_A");
 
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
 
