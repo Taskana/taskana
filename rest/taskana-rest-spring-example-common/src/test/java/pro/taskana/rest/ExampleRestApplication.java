@@ -14,10 +14,12 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import pro.taskana.RestConfiguration;
+import pro.taskana.common.rest.AccessIdController;
+import pro.taskana.common.rest.ldap.LdapClient;
+import pro.taskana.common.rest.ldap.LdapConfiguration;
 import pro.taskana.jobs.TransactionalJobsConfiguration;
 import pro.taskana.ldap.LdapCacheTestImpl;
-import pro.taskana.ldap.LdapClient;
-import pro.taskana.ldap.LdapConfiguration;
 import pro.taskana.sampledata.SampleDataGenerator;
 
 /** Example Application showing the implementation of taskana-rest-spring. */

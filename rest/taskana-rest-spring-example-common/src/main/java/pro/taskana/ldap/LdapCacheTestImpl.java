@@ -9,7 +9,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
-import pro.taskana.rest.resource.AccessIdRepresentationModel;
+import pro.taskana.common.rest.ldap.LdapCache;
+import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 
 /**
  * Implementation of LdapCache used for Unit tests.
@@ -18,12 +19,6 @@ import pro.taskana.rest.resource.AccessIdRepresentationModel;
  */
 @Component
 public class LdapCacheTestImpl implements LdapCache {
-
-  /**
-   * Dictionary is a {@link Map} collection that contains {@link AccessIdRepresentationModel} as key
-   * (user) and {@link List} as value (groups of which the user is a member) .
-   */
-  private Map<AccessIdRepresentationModel, List<AccessIdRepresentationModel>> users;
 
   private final List<AccessIdRepresentationModel> accessIds =
       new ArrayList<>(
@@ -297,6 +292,11 @@ public class LdapCacheTestImpl implements LdapCache {
                   "teamlead_4", "cn=teamlead_4,ou=groups,o=taskanatest"),
               new AccessIdRepresentationModel("team_3", "cn=team_3,ou=groups,o=taskanatest"),
               new AccessIdRepresentationModel("team_4", "cn=team_4,ou=groups,o=taskanatest")));
+  /**
+   * Dictionary is a {@link Map} collection that contains {@link AccessIdRepresentationModel} as key
+   * (user) and {@link List} as value (groups of which the user is a member) .
+   */
+  private Map<AccessIdRepresentationModel, List<AccessIdRepresentationModel>> users;
 
   @Override
   public List<AccessIdRepresentationModel> findMatchingAccessId(

@@ -10,10 +10,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import pro.taskana.RestConfiguration;
 import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.rest.RestConfiguration;
-import pro.taskana.rest.resource.AccessIdRepresentationModel;
+import pro.taskana.common.rest.ldap.LdapClient;
+import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 
 /** Test Ldap attachment. */
 @ActiveProfiles({"test"})
