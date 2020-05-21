@@ -32,8 +32,8 @@ export class DialogPopUpComponent implements OnInit {
   }
 
   initError() {
-    this.title = notifications.get(this.data.key).name;
-    this.message = notifications.get(this.data.key).text || this.data.passedError.error.message;
+    this.title = notifications.get(this.data.key).name || '';
+    this.message = notifications.get(this.data.key).text || this.data.passedError.error ? this.data.passedError.error.message : '';
     if (this.data.additions) {
       this.data.additions.forEach((value: string, replacementKey: string) => {
         this.message = this.message.replace(`{${replacementKey}}`, value);

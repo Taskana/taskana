@@ -42,10 +42,23 @@ export class NotificationService {
   }
 
   showToast(key: NOTIFICATION_TYPES, additions?: Map<string, string>) {
-    this.matSnack.openFromComponent(ToastComponent, {
-      duration: 2000,
+    let colorClass: string[];
+    const type = NOTIFICATION_TYPES[key].split('_')[0].toLowerCase();
+    switch (type) {
+      case 'danger': colorClass = ['red', 'background-white'];
+        break;
+      case 'success': colorClass = ['white', 'background-bluegreen'];
+        break;
+      case 'info': colorClass = ['white', 'background-darkgreen'];
+        break;
+      case 'warning': colorClass = ['brown', 'background-white'];
+        break;
+      default: colorClass = ['white', 'background-darkgreen'];
+    }
+    return this.matSnack.openFromComponent(ToastComponent, {
+      duration: 5000,
       data: { key, additions },
-      panelClass: ['white', 'background-darkgreen']
+      panelClass: colorClass
     });
   }
 }

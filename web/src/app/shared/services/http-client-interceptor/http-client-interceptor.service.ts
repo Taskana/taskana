@@ -28,7 +28,7 @@ export class HttpClientInterceptor implements HttpInterceptor {
         this.errorsService.triggerError(NOTIFICATION_TYPES.ACCESS_ERR, error);
       } else if (error instanceof HttpErrorResponse && (error.status === 404) && error.url.indexOf('environment-information.json')) {
         // ignore this error
-      } else {
+      } else if (!(error.status === 409 && error.error.exception.endsWith('WorkbasketAccessItemAlreadyExistException'))) {
         this.errorsService.triggerError(NOTIFICATION_TYPES.GENERAL_ERR, error);
       }
     }));
