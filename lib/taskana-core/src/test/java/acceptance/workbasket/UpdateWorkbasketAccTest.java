@@ -23,17 +23,13 @@ import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 
 /** Acceptance test for all "update workbasket" scenarios. */
 @ExtendWith(JaasExtension.class)
-public class UpdateWorkbasketAccTest extends AbstractAccTest {
-
-  public UpdateWorkbasketAccTest() {
-    super();
-  }
+class UpdateWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead_1",
       groups = {"group_1", "businessadmin"})
   @Test
-  public void testUpdateWorkbasket()
+  void testUpdateWorkbasket()
       throws NotAuthorizedException, WorkbasketNotFoundException, ConcurrencyException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     Workbasket workbasket = workbasketService.getWorkbasket("GPK_KSC", "DOMAIN_A");
@@ -67,7 +63,7 @@ public class UpdateWorkbasketAccTest extends AbstractAccTest {
       user = "teamlead_1",
       groups = {"group_1", "businessadmin"})
   @Test
-  public void testUpdateWorkbasketWithConcurrentModificationShouldThrowException()
+  void testUpdateWorkbasketWithConcurrentModificationShouldThrowException()
       throws NotAuthorizedException, WorkbasketNotFoundException, ConcurrencyException {
 
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -85,7 +81,7 @@ public class UpdateWorkbasketAccTest extends AbstractAccTest {
       user = "teamlead_1",
       groups = {"group_1", "businessadmin"})
   @Test
-  public void testUpdateWorkbasketOfNonExistingWorkbasketShouldThrowException()
+  void testUpdateWorkbasketOfNonExistingWorkbasketShouldThrowException()
       throws NotAuthorizedException, WorkbasketNotFoundException, ConcurrencyException {
 
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -103,7 +99,7 @@ public class UpdateWorkbasketAccTest extends AbstractAccTest {
   @WithAccessId(user = "user_1_1", groups = "group_1")
   @WithAccessId(user = "taskadmin")
   @TestTemplate
-  public void should_ThrowException_When_UserRoleIsNotAdminOrBusinessAdmin()
+  void should_ThrowException_When_UserRoleIsNotAdminOrBusinessAdmin()
       throws NotAuthorizedException, WorkbasketNotFoundException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     Workbasket workbasket = workbasketService.getWorkbasket("USER_1_1", "DOMAIN_A");

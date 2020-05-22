@@ -19,10 +19,10 @@ import pro.taskana.common.internal.TaskanaEngineTestConfiguration;
 import pro.taskana.common.internal.configuration.DbSchemaCreator;
 import pro.taskana.sampledata.SampleDataGenerator;
 
-public class TaskanaSecurityConfigAccTest {
+class TaskanaSecurityConfigAccTest {
 
   @BeforeEach
-  public void cleanDb() throws SQLException {
+  void cleanDb() throws SQLException {
     DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
     String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
 
@@ -33,7 +33,7 @@ public class TaskanaSecurityConfigAccTest {
   }
 
   @Test
-  public void should_ThrowException_When_CreatingUnsecuredEngineCfgWhileSecurityIsEnforced()
+  void should_ThrowException_When_CreatingUnsecuredEngineCfgWhileSecurityIsEnforced()
       throws SQLException {
 
     setSecurityFlag(true);
@@ -54,7 +54,7 @@ public class TaskanaSecurityConfigAccTest {
   }
 
   @Test
-  public void should_StartUpNormally_When_CreatingUnsecuredEngineCfgWhileSecurityIsNotEnforced()
+  void should_StartUpNormally_When_CreatingUnsecuredEngineCfgWhileSecurityIsNotEnforced()
       throws SQLException {
 
     setSecurityFlag(false);
@@ -73,7 +73,7 @@ public class TaskanaSecurityConfigAccTest {
   }
 
   @Test
-  public void should_SetSecurityFlagToFalse_When_CreatingUnsecureEngineCfgAndSecurityFlagIsNotSet()
+  void should_SetSecurityFlagToFalse_When_CreatingUnsecureEngineCfgAndSecurityFlagIsNotSet()
       throws SQLException {
 
     assertThat(retrieveSecurityFlag()).isNull();
@@ -94,7 +94,7 @@ public class TaskanaSecurityConfigAccTest {
   }
 
   @Test
-  public void should_SetSecurityFlagToTrue_When_CreatingSecureEngineCfgAndSecurityFlagIsNotSet()
+  void should_SetSecurityFlagToTrue_When_CreatingSecureEngineCfgAndSecurityFlagIsNotSet()
       throws SQLException {
 
     assertThat(retrieveSecurityFlag()).isNull();

@@ -15,7 +15,7 @@ import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 
 /** Acceptance test for all "set workbasket access item" scenarios. */
 @ExtendWith(JaasExtension.class)
-public class CreateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
+class CreateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user_1_1")
   @WithAccessId(user = "taskadmin")

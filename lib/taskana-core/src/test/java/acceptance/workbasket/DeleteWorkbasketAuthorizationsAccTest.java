@@ -14,12 +14,12 @@ import pro.taskana.workbasket.api.WorkbasketService;
 
 /** Acceptance test for all "delete workbasket authorizations" scenarios. */
 @ExtendWith(JaasExtension.class)
-public class DeleteWorkbasketAuthorizationsAccTest extends AbstractAccTest {
+class DeleteWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user_1_1")
   @WithAccessId(user = "taskadmin")
   @TestTemplate
-  public void should_ThrowException_When_UserRoleIsNotAdminOrBusinessAdmin() {
+  void should_ThrowException_When_UserRoleIsNotAdminOrBusinessAdmin() {
 
     final WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 

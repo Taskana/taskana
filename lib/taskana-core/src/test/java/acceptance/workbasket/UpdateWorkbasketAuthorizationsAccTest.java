@@ -40,7 +40,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
   @WithAccessId(user = "user_1_1")
   @WithAccessId(user = "taskadmin")
   @TestTemplate
-  public void should_ThrowException_When_UserIsNotAdminOrBusinessAdmin() {
+  void should_ThrowException_When_UserIsNotAdminOrBusinessAdmin() {
 
     final WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 

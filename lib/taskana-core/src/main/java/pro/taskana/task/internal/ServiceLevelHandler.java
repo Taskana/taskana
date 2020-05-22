@@ -313,16 +313,16 @@ class ServiceLevelHandler {
    */
   private void ensureServiceLevelIsNotViolated(
       TaskImpl task, Duration duration, Instant calcPlanned) throws InvalidArgumentException {
-    if (task.getPlanned() != null && !task.getPlanned().equals(calcPlanned)) {
-      // manual entered planned date is a different working day than computed value
-      if (converter.isWorkingDay(0, task.getPlanned())
-          || converter.hasWorkingDaysInBetween(task.getPlanned(), calcPlanned)) {
-        throw new InvalidArgumentException(
-            String.format(
-                "Cannot update a task with given planned %s "
-                    + "and due date %s not matching the service level %s.",
-                task.getPlanned(), task.getDue(), duration));
-      }
+    if (task.getPlanned() != null
+        && !task.getPlanned().equals(calcPlanned)
+        // manual entered planned date is a different working day than computed value
+        && (converter.isWorkingDay(0, task.getPlanned())
+            || converter.hasWorkingDaysInBetween(task.getPlanned(), calcPlanned))) {
+      throw new InvalidArgumentException(
+          String.format(
+              "Cannot update a task with given planned %s "
+                  + "and due date %s not matching the service level %s.",
+              task.getPlanned(), task.getDue(), duration));
     }
   }
 

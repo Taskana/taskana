@@ -24,7 +24,7 @@ import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(JaasExtension.class)
-public class JaasExtensionTest {
+class JaasExtensionTest {
 
   private static final String INSIDE_DYNAMIC_TEST_USER = "insidedynamictest";
   private static final DynamicTest NOT_NULL_DYNAMIC_TEST =
