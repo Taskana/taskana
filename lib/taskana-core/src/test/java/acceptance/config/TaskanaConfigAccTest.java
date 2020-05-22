@@ -66,7 +66,7 @@ class TaskanaConfigAccTest extends TaskanaEngineImpl {
   }
 
   @Test
-  void testDoesNotExistPropertyClassificatioCategoryOrItIsEmpty() throws IOException {
+  void testDoesNotExistPropertyClassificationCategoryOrItIsEmpty() throws IOException {
     taskanaEngineConfiguration.setClassificationTypes(new ArrayList<>());
     taskanaEngineConfiguration.setClassificationCategoriesByType(new HashMap<>());
     String propertiesFileName = createNewConfigFile("/dummyTestConfig.properties", true, false);

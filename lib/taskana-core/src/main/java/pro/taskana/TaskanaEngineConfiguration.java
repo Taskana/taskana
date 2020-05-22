@@ -71,24 +71,23 @@ public class TaskanaEngineConfiguration {
   private static final String TASKANA_CLASSIFICATION_CATEGORIES_PROPERTY =
       "taskana.classification.categories";
   private static final String TASKANA_GERMAN_HOLIDAYS_ENABLED = "taskana.german.holidays.enabled";
+  private static final String TASKANA_GERMAN_HOLIDAYS_CORPUS_CHRISTI_ENABLED =
+      "taskana.german.holidays.corpus-christi.enabled";
   // TASKANA_SCHEMA_VERSION
   private static final String DEFAULT_SCHEMA_NAME = "TASKANA";
 
   private static final String TASKANA_CUSTOM_HOLIDAY = "taskana.custom.holidays";
   private static final String TASKANA_CUSTOM_HOLIDAY_DAY_MONTH_SEPERATOR = ".";
-
+  private final List<CustomHoliday> customHolidays = new ArrayList<>();
   // Taskana properties file
   protected String propertiesFileName = TASKANA_PROPERTIES;
-
   // Taskana datasource configuration
   protected DataSource dataSource;
   protected DbSchemaCreator dbSchemaCreator;
   protected String schemaName;
-
   // Taskana role configuration
   protected String propertiesSeparator = TASKANA_PROPERTY_SEPARATOR;
   protected Map<TaskanaRole, Set<String>> roleMap = new HashMap<>();
-
   // global switch to enable JAAS based authentication and Taskana
   // authorizations
   protected boolean securityEnabled;
@@ -101,7 +100,7 @@ public class TaskanaEngineConfiguration {
   protected Map<String, List<String>> classificationCategoriesByTypeMap = new HashMap<>();
   // Properties for the monitor
   private boolean germanPublicHolidaysEnabled;
-  private List<CustomHoliday> customHolidays = new ArrayList<>();
+  private boolean corpusChristiEnabled;
   // Properties for general job execution
   private int jobBatchSize = 100;
   private int maxNumberOfJobRetries = 3;
@@ -180,6 +179,7 @@ public class TaskanaEngineConfiguration {
     initClassificationTypes(props);
     initClassificationCategories(props);
     initGermanHolidaysEnabled(props);
+    initCorpusChristiEnabled(props);
     initCustomHolidays(props);
   }
 
@@ -251,6 +251,14 @@ public class TaskanaEngineConfiguration {
     this.propertiesSeparator = propertiesSeparator;
   }
 
+  public boolean isCorpusChristiEnabled() {
+    return corpusChristiEnabled;
+  }
+
+  public void setCorpusChristiEnabled(boolean corpusChristiEnabled) {
+    this.corpusChristiEnabled = corpusChristiEnabled;
+  }
+
   public boolean isGermanPublicHolidaysEnabled() {
     return this.germanPublicHolidaysEnabled;
   }
@@ -264,7 +272,7 @@ public class TaskanaEngineConfiguration {
   }
 
   public void addCustomHolidays(List<CustomHoliday> customHolidays) {
-    customHolidays.forEach(this.customHolidays::add);
+    this.customHolidays.addAll(customHolidays);
   }
 
   public Map<TaskanaRole, Set<String>> getRoleMap() {
@@ -361,6 +369,16 @@ public class TaskanaEngineConfiguration {
       germanPublicHolidaysEnabled = false;
     }
     LOGGER.debug("GermanPublicHolidaysEnabled = {}", germanPublicHolidaysEnabled);
+  }
+
+  private void initCorpusChristiEnabled(Properties props) {
+    String enabled = props.getProperty(TASKANA_GERMAN_HOLIDAYS_CORPUS_CHRISTI_ENABLED);
+    if (enabled != null && !enabled.isEmpty()) {
+      corpusChristiEnabled = Boolean.parseBoolean(enabled);
+    } else {
+      corpusChristiEnabled = false;
+    }
+    LOGGER.debug("CorpusChristiEnabled = {}", corpusChristiEnabled);
   }
 
   private void initJobParameters(Properties props) {

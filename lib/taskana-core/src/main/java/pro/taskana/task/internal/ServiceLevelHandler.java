@@ -38,7 +38,7 @@ class ServiceLevelHandler {
   private final InternalTaskanaEngine taskanaEngine;
   private final TaskMapper taskMapper;
   private final AttachmentMapper attachmentMapper;
-  private WorkingDaysToDaysConverter converter;
+  private final WorkingDaysToDaysConverter converter;
 
   ServiceLevelHandler(
       InternalTaskanaEngine taskanaEngine,
@@ -49,6 +49,8 @@ class ServiceLevelHandler {
     this.attachmentMapper = attachmentMapper;
     WorkingDaysToDaysConverter.setGermanPublicHolidaysEnabled(
         taskanaEngine.getEngine().getConfiguration().isGermanPublicHolidaysEnabled());
+    WorkingDaysToDaysConverter.setCorpusChristiEnabled(
+        taskanaEngine.getEngine().getConfiguration().isCorpusChristiEnabled());
     this.converter = WorkingDaysToDaysConverter.initialize();
   }
 

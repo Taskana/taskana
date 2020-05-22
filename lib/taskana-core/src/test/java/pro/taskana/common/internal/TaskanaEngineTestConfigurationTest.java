@@ -25,6 +25,21 @@ class TaskanaEngineTestConfigurationTest {
   }
 
   @Test
+  void should_SetCorpusChristiEnabled_When_PropertyIsSet() throws SQLException {
+    DataSource ds = TaskanaEngineTestConfiguration.getDataSource();
+    TaskanaEngineConfiguration taskEngineConfiguration =
+        new TaskanaEngineConfiguration(
+            ds,
+            false,
+            false,
+            "/corpusChristiEnabled.properties",
+            "|",
+            TaskanaEngineTestConfiguration.getSchemaName());
+
+    assertThat(taskEngineConfiguration.isCorpusChristiEnabled()).isTrue();
+  }
+
+  @Test
   void should_returnTheTwoCustomHolidays_When_twoCustomHolidaysAreConfiguredInThePropertiesFile()
       throws SQLException {
     DataSource ds = TaskanaEngineTestConfiguration.getDataSource();

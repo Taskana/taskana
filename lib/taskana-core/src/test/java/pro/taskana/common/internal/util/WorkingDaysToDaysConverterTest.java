@@ -5,6 +5,8 @@ import static pro.taskana.common.internal.util.WorkingDaysToDaysConverter.getEas
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeAll;
@@ -26,6 +28,56 @@ class WorkingDaysToDaysConverterTest {
     CustomHoliday dayOfReformation = CustomHoliday.of(31, 10);
     CustomHoliday allSaintsDays = CustomHoliday.of(1, 11);
     WorkingDaysToDaysConverter.setCustomHolidays(Arrays.asList(dayOfReformation, allSaintsDays));
+  }
+
+  void verifyCorpusChristiForDate(
+      WorkingDaysToDaysConverter converter,
+      String date,
+      boolean enableCorpsChristi,
+      boolean expected) {
+    WorkingDaysToDaysConverter.setCorpusChristiEnabled(enableCorpsChristi);
+    Instant referenceDay = Instant.parse(date);
+    converter.refreshReferenceDate(referenceDay);
+    assertThat(
+            converter.isGermanHoliday(
+                LocalDateTime.ofInstant(referenceDay, ZoneId.systemDefault()).toLocalDate()))
+        .isEqualTo(expected);
+    WorkingDaysToDaysConverter.setCorpusChristiEnabled(false);
+  }
+
+  @TestFactory
+  Stream<DynamicNode> should_DetectCorpusChristiAsHoliday_When_CorpusChristiIsEnabled() {
+    WorkingDaysToDaysConverter converter = WorkingDaysToDaysConverter.initialize();
+
+    DynamicContainer enabledCorpusChristi =
+        DynamicContainer.dynamicContainer(
+            "corpus christi is enabled",
+            Stream.of(
+                DynamicTest.dynamicTest(
+                    "year 1980",
+                    () ->
+                        verifyCorpusChristiForDate(
+                            converter, "1980-06-05T12:00:00.000Z", true, true)),
+                DynamicTest.dynamicTest(
+                    "year 2020",
+                    () ->
+                        verifyCorpusChristiForDate(
+                            converter, "2020-06-11T12:00:00.000Z", true, true))));
+    DynamicContainer disabledCorpusChristi =
+        DynamicContainer.dynamicContainer(
+            "corpus christi is enabled",
+            Stream.of(
+                DynamicTest.dynamicTest(
+                    "year 1980",
+                    () ->
+                        verifyCorpusChristiForDate(
+                            converter, "1980-06-05T12:00:00.000Z", false, false)),
+                DynamicTest.dynamicTest(
+                    "year 2020",
+                    () ->
+                        verifyCorpusChristiForDate(
+                            converter, "2020-06-11T12:00:00.000Z", false, false))));
+    return Stream.of(enabledCorpusChristi, disabledCorpusChristi);
   }
 
   @TestFactory
