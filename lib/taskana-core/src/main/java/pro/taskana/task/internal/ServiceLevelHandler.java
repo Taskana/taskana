@@ -257,7 +257,7 @@ class ServiceLevelHandler {
       newTaskImpl.setDue(
           getFollowingWorkingDays(newTaskImpl.getPlanned(), durationPrioHolder.getDuration()));
     } else if (dueIsUnchangedOrNull(newTaskImpl, oldTaskImpl) && newTaskImpl.getPlanned() != null) {
-      // case 2: due is null or only planned was changed -> recalculate due
+      // case 2: due is null or only planned was changed -> normalize planned & recalculate due
       newTaskImpl.setPlanned(getFollowingWorkingDays(newTaskImpl.getPlanned(), Duration.ofDays(0)));
       newTaskImpl.setDue(
           getFollowingWorkingDays(newTaskImpl.getPlanned(), durationPrioHolder.getDuration()));
@@ -308,13 +308,15 @@ class ServiceLevelHandler {
    *
    * @param task the task for the difference between planned and due must be duration
    * @param duration the serviceLevel for the task
-   * @param planned the planned timestamp that was calculated based on due and duration
+   * @param calcPlanned the planned timestamp that was calculated based on due and duration
    * @throws InvalidArgumentException if service level is violated.
    */
-  private void ensureServiceLevelIsNotViolated(TaskImpl task, Duration duration, Instant planned)
-      throws InvalidArgumentException {
-    if (task.getPlanned() != null && !task.getPlanned().equals(planned)) {
-      if (hasWorkingDaysInBetween(task.getPlanned(), planned)) {
+  private void ensureServiceLevelIsNotViolated(
+      TaskImpl task, Duration duration, Instant calcPlanned) throws InvalidArgumentException {
+    if (task.getPlanned() != null && !task.getPlanned().equals(calcPlanned)) {
+      // manual entered planned date is a different working day than computed value
+      if (converter.isWorkingDay(0, task.getPlanned())
+          || converter.hasWorkingDaysInBetween(task.getPlanned(), calcPlanned)) {
         throw new InvalidArgumentException(
             String.format(
                 "Cannot update a task with given planned %s "
@@ -324,41 +326,13 @@ class ServiceLevelHandler {
     }
   }
 
-  /**
-   * Check if there are working days between the dates. The method respects if calc > planned or
-   * vise versa and excludes the calculated planned date from the check since it is always a working
-   * day!
-   *
-   * @param planned the changed planned date of a task
-   * @param calculated the calculated planned date of a task
-   * @return true if there are working days between the two dates
-   */
-  private boolean hasWorkingDaysInBetween(Instant planned, Instant calculated) {
-    Instant withoutCalculated;
-    // exclude calculated from check since it is always a working day
-    if (planned.isAfter(calculated)) {
-      withoutCalculated = calculated.plus(Duration.ofDays(1)); // start 1 day later
-    } else if (planned.isBefore(calculated)) {
-      withoutCalculated = calculated.minus(Duration.ofDays(1)); // stop 1 day earlier
-    } else {
-      return false; // no violation if they are equal
-    }
-    return converter.hasWorkingDaysInBetween(planned, withoutCalculated);
-  }
-
   private TaskImpl updatePlannedDueOnCreationOfNewTask(
       TaskImpl newTask, DurationPrioHolder durationPrioHolder) throws InvalidArgumentException {
     if (newTask.getDue() != null) {
       // due is specified: calculate back and check correctness
       Instant calcDue = getPrecedingWorkingDays(newTask.getDue(), Duration.ofDays(0));
       Instant calcPlanned = getPrecedingWorkingDays(calcDue, durationPrioHolder.getDuration());
-      if (newTask.getPlanned() != null && !calcPlanned.equals(newTask.getPlanned())) {
-        throw new InvalidArgumentException(
-            String.format(
-                "Cannot update a task with given planned %s "
-                    + "and due date %s not matching the service level %s.",
-                newTask.getPlanned(), newTask.getDue(), durationPrioHolder.getDuration()));
-      }
+      ensureServiceLevelIsNotViolated(newTask, durationPrioHolder.getDuration(), calcPlanned);
       newTask.setDue(calcDue);
       newTask.setPlanned(calcPlanned);
     } else {

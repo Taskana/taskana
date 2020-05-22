@@ -26,10 +26,10 @@ import pro.taskana.common.api.exceptions.SystemException;
 public final class WorkingDaysToDaysConverter {
 
   // offset in days from easter sunday
-  private static final int OFFSET_GOOD_FRIDAY = -2; // Karfreitag
-  private static final int OFFSET_EASTER_MONDAY = 1; // Ostermontag
-  private static final int OFFSET_ASCENSION_DAY = 39; // Himmelfahrt
-  private static final int OFFSET_WHIT_MONDAY = 50; // Pfingstmontag
+  private static final long OFFSET_GOOD_FRIDAY = -2; // Karfreitag
+  private static final long OFFSET_EASTER_MONDAY = 1; // Ostermontag
+  private static final long OFFSET_ASCENSION_DAY = 39; // Himmelfahrt
+  private static final long OFFSET_WHIT_MONDAY = 50; // Pfingstmontag
 
   private static boolean germanHolidaysEnabled;
   private static Set<CustomHoliday> customHolidays = new HashSet<>();
@@ -120,21 +120,10 @@ public final class WorkingDaysToDaysConverter {
   }
 
   /** counts working days between two dates, inclusive for both margins. */
-  public boolean hasWorkingDaysInBetween(Instant leftInstant, Instant rightInstant) {
-    Instant left = leftInstant;
-    Instant right = rightInstant;
-    // make sure dates are ordered
-    if (leftInstant.isAfter(rightInstant)) {
-      left = rightInstant;
-      right = leftInstant;
-    }
-    long days = Duration.between(left, right).toDays();
-    for (long day = 0; day <= days; day++) {
-      if (isWorkingDay(day, left)) {
-        return true;
-      }
-    }
-    return false;
+  public boolean hasWorkingDaysInBetween(Instant left, Instant right) {
+    long days = Duration.between(left, right).abs().toDays();
+    Instant firstInstant = left.isBefore(right) ? left : right;
+    return LongStream.range(1, days).anyMatch(day -> isWorkingDay(day, firstInstant));
   }
 
   public boolean isWorkingDay(long day, Instant referenceDate) {
@@ -235,7 +224,7 @@ public final class WorkingDaysToDaysConverter {
     SUB_DAYS(-1),
     ADD_DAYS(1);
 
-    private int direction;
+    private final int direction;
 
     ZeroDirection(int direction) {
       this.direction = direction;
@@ -254,8 +243,8 @@ public final class WorkingDaysToDaysConverter {
     CHRISTMAS1(12, 25),
     CHRISTMAS2(12, 26);
 
-    private int month;
-    private int day;
+    private final int month;
+    private final int day;
 
     GermanFixHolidays(int month, int day) {
       this.month = month;
