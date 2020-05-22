@@ -10,7 +10,7 @@
     <parent>
         <groupId>pro.taskana</groupId>
         <artifactId>taskana-rest-parent</artifactId>
-        <version>2.1.2-SNAPSHOT</version>
+        <version>3.0.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
