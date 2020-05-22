@@ -94,15 +94,16 @@ class CustomFieldValueReportBuilderImplTest {
             .customAttributeFilterIn(customAttributeFilter)
             .buildReport();
 
-    verify(internalTaskanaEngineMock, times(1)).openConnection();
-    verify(taskanaEngineMock, times(1)).checkRoleMembership(any());
-    verify(taskanaEngineMock, times(2)).getConfiguration();
-    verify(internalTaskanaEngineMock, times(3)).getEngine();
-    verify(taskanaEngineConfigurationMock, times(1)).isGermanPublicHolidaysEnabled();
-    verify(taskanaEngineConfigurationMock, times(1)).getCustomHolidays();
-    verify(monitorMapperMock, times(1))
+    verify(internalTaskanaEngineMock).openConnection();
+    verify(taskanaEngineMock).checkRoleMembership(any());
+    verify(taskanaEngineMock).getConfiguration();
+    verify(internalTaskanaEngineMock, times(2)).getEngine();
+    verify(taskanaEngineConfigurationMock).isGermanPublicHolidaysEnabled();
+    verify(taskanaEngineConfigurationMock).isCorpusChristiEnabled();
+    verify(taskanaEngineConfigurationMock).getCustomHolidays();
+    verify(monitorMapperMock)
         .getTaskCountOfCustomFieldValues(any(), any(), any(), any(), any(), any(), any(), any());
-    verify(internalTaskanaEngineMock, times(1)).returnConnection();
+    verify(internalTaskanaEngineMock).returnConnection();
     verifyNoMoreInteractions(
         internalTaskanaEngineMock,
         taskanaEngineMock,
@@ -158,15 +159,16 @@ class CustomFieldValueReportBuilderImplTest {
             .withColumnHeaders(columnHeaders)
             .buildReport();
 
-    verify(internalTaskanaEngineMock, times(1)).openConnection();
-    verify(taskanaEngineMock, times(1)).checkRoleMembership(any());
-    verify(taskanaEngineMock, times(2)).getConfiguration();
-    verify(internalTaskanaEngineMock, times(3)).getEngine();
-    verify(taskanaEngineConfigurationMock, times(1)).isGermanPublicHolidaysEnabled();
-    verify(taskanaEngineConfigurationMock, times(1)).getCustomHolidays();
-    verify(monitorMapperMock, times(1))
+    verify(internalTaskanaEngineMock).openConnection();
+    verify(taskanaEngineMock).checkRoleMembership(any());
+    verify(taskanaEngineMock).getConfiguration();
+    verify(internalTaskanaEngineMock, times(2)).getEngine();
+    verify(taskanaEngineConfigurationMock).isGermanPublicHolidaysEnabled();
+    verify(taskanaEngineConfigurationMock).isCorpusChristiEnabled();
+    verify(taskanaEngineConfigurationMock).getCustomHolidays();
+    verify(monitorMapperMock)
         .getTaskCountOfCustomFieldValues(any(), any(), any(), any(), any(), any(), any(), any());
-    verify(internalTaskanaEngineMock, times(1)).returnConnection();
+    verify(internalTaskanaEngineMock).returnConnection();
     verifyNoMoreInteractions(
         internalTaskanaEngineMock,
         taskanaEngineMock,
@@ -222,15 +224,16 @@ class CustomFieldValueReportBuilderImplTest {
             .withColumnHeaders(columnHeaders)
             .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_1);
 
-    verify(internalTaskanaEngineMock, times(1)).openConnection();
-    verify(taskanaEngineMock, times(1)).checkRoleMembership(any());
-    verify(taskanaEngineMock, times(2)).getConfiguration();
-    verify(internalTaskanaEngineMock, times(3)).getEngine();
-    verify(taskanaEngineConfigurationMock, times(1)).isGermanPublicHolidaysEnabled();
-    verify(taskanaEngineConfigurationMock, times(1)).getCustomHolidays();
-    verify(monitorMapperMock, times(1))
+    verify(internalTaskanaEngineMock).openConnection();
+    verify(taskanaEngineMock).checkRoleMembership(any());
+    verify(taskanaEngineMock).getConfiguration();
+    verify(internalTaskanaEngineMock, times(2)).getEngine();
+    verify(taskanaEngineConfigurationMock).isGermanPublicHolidaysEnabled();
+    verify(taskanaEngineConfigurationMock).isCorpusChristiEnabled();
+    verify(taskanaEngineConfigurationMock).getCustomHolidays();
+    verify(monitorMapperMock)
         .getCustomAttributeValuesForReport(any(), any(), any(), any(), any(), any(), any(), any());
-    verify(internalTaskanaEngineMock, times(1)).returnConnection();
+    verify(internalTaskanaEngineMock).returnConnection();
     verifyNoMoreInteractions(
         internalTaskanaEngineMock,
         taskanaEngineMock,

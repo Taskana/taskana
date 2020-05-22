@@ -8,6 +8,8 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -30,8 +32,10 @@ public final class WorkingDaysToDaysConverter {
   private static final long OFFSET_EASTER_MONDAY = 1; // Ostermontag
   private static final long OFFSET_ASCENSION_DAY = 39; // Himmelfahrt
   private static final long OFFSET_WHIT_MONDAY = 50; // Pfingstmontag
+  private static final long OFFSET_CORPUS_CHRISTI = 60; // Fronleichnam
 
   private static boolean germanHolidaysEnabled;
+  private static boolean corpusChristiEnabled; // Fronleichnam
   private static Set<CustomHoliday> customHolidays = new HashSet<>();
   private Instant referenceDate;
   private LocalDate easterSunday;
@@ -82,6 +86,10 @@ public final class WorkingDaysToDaysConverter {
 
   public static void setGermanPublicHolidaysEnabled(boolean germanPublicHolidaysEnabled) {
     germanHolidaysEnabled = germanPublicHolidaysEnabled;
+  }
+
+  public static void setCorpusChristiEnabled(boolean corpusChristiEnabled) {
+    WorkingDaysToDaysConverter.corpusChristiEnabled = corpusChristiEnabled;
   }
 
   public static void setCustomHolidays(List<CustomHoliday> holidays) {
@@ -157,9 +165,18 @@ public final class WorkingDaysToDaysConverter {
     // Easter holidays Good Friday, Easter Monday, Ascension Day, Whit Monday.
     long diffFromEasterSunday = DAYS.between(easterSunday, date);
 
-    return LongStream.of(
-            OFFSET_GOOD_FRIDAY, OFFSET_EASTER_MONDAY, OFFSET_ASCENSION_DAY, OFFSET_WHIT_MONDAY)
-        .anyMatch(diff -> diff == diffFromEasterSunday);
+    List<Long> offSets =
+        new ArrayList<>(
+            Arrays.asList(
+                OFFSET_GOOD_FRIDAY,
+                OFFSET_EASTER_MONDAY,
+                OFFSET_ASCENSION_DAY,
+                OFFSET_WHIT_MONDAY));
+
+    if (corpusChristiEnabled) {
+      offSets.add(OFFSET_CORPUS_CHRISTI);
+    }
+    return offSets.contains(diffFromEasterSunday);
   }
 
   /**
@@ -199,7 +216,7 @@ public final class WorkingDaysToDaysConverter {
     }
   }
 
-  private void refreshReferenceDate(Instant newReferenceDate) {
+  void refreshReferenceDate(Instant newReferenceDate) {
     int yearOfReferenceDate =
         LocalDateTime.ofInstant(referenceDate, ZoneId.systemDefault()).getYear();
     int yearOfNewReferenceDate =

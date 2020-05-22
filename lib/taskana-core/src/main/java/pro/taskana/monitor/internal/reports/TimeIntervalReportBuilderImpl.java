@@ -8,6 +8,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -186,10 +187,11 @@ abstract class TimeIntervalReportBuilderImpl<
   protected abstract String determineGroupedBy();
 
   private void configureWorkingDaysToDaysConverter() {
-    WorkingDaysToDaysConverter.setCustomHolidays(
-        this.taskanaEngine.getEngine().getConfiguration().getCustomHolidays());
+    TaskanaEngineConfiguration configuration = taskanaEngine.getEngine().getConfiguration();
+    WorkingDaysToDaysConverter.setCustomHolidays(configuration.getCustomHolidays());
     WorkingDaysToDaysConverter.setGermanPublicHolidaysEnabled(
-        this.taskanaEngine.getEngine().getConfiguration().isGermanPublicHolidaysEnabled());
+        configuration.isGermanPublicHolidaysEnabled());
+    WorkingDaysToDaysConverter.setCorpusChristiEnabled(configuration.isCorpusChristiEnabled());
   }
 
   private List<SelectedItem> convertWorkingDaysToDays(

@@ -97,15 +97,17 @@ class ClassificationReportBuilderImplTest {
             .customAttributeFilterIn(customAttributeFilter)
             .buildReport();
 
-    verify(internalTaskanaEngineMock, times(1)).openConnection();
-    verify(taskanaEngineMock, times(1)).checkRoleMembership(any());
-    verify(taskanaEngineMock, times(2)).getConfiguration();
-    verify(internalTaskanaEngineMock, times(3)).getEngine();
-    verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
-    verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
-    verify(monitorMapperMock, times(1))
+    verify(internalTaskanaEngineMock).openConnection();
+    verify(taskanaEngineMock).checkRoleMembership(any());
+    verify(taskanaEngineMock).getConfiguration();
+    verify(internalTaskanaEngineMock, times(2)).getEngine();
+
+    verify(taskanaEngineConfiguration).isGermanPublicHolidaysEnabled();
+    verify(taskanaEngineConfiguration).isCorpusChristiEnabled();
+    verify(taskanaEngineConfiguration).getCustomHolidays();
+    verify(monitorMapperMock)
         .getTaskCountOfClassifications(any(), any(), any(), any(), any(), any(), any());
-    verify(internalTaskanaEngineMock, times(1)).returnConnection();
+    verify(internalTaskanaEngineMock).returnConnection();
     verifyNoMoreInteractions(
         internalTaskanaEngineMock,
         taskanaEngineMock,
@@ -162,16 +164,17 @@ class ClassificationReportBuilderImplTest {
             .withColumnHeaders(columnHeaders)
             .buildReport();
 
-    verify(internalTaskanaEngineMock, times(1)).openConnection();
-    verify(taskanaEngineMock, times(1)).checkRoleMembership(any());
-    verify(taskanaEngineMock, times(2)).getConfiguration();
-    verify(internalTaskanaEngineMock, times(3)).getEngine();
+    verify(internalTaskanaEngineMock).openConnection();
+    verify(taskanaEngineMock).checkRoleMembership(any());
+    verify(taskanaEngineMock).getConfiguration();
+    verify(internalTaskanaEngineMock, times(2)).getEngine();
 
-    verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
-    verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
-    verify(monitorMapperMock, times(1))
+    verify(taskanaEngineConfiguration).isGermanPublicHolidaysEnabled();
+    verify(taskanaEngineConfiguration).isCorpusChristiEnabled();
+    verify(taskanaEngineConfiguration).getCustomHolidays();
+    verify(monitorMapperMock)
         .getTaskCountOfClassifications(any(), any(), any(), any(), any(), any(), any());
-    verify(internalTaskanaEngineMock, times(1)).returnConnection();
+    verify(internalTaskanaEngineMock).returnConnection();
     verifyNoMoreInteractions(
         internalTaskanaEngineMock,
         taskanaEngineMock,
@@ -226,15 +229,17 @@ class ClassificationReportBuilderImplTest {
             .customAttributeFilterIn(customAttributeFilter)
             .buildDetailedReport();
 
-    verify(internalTaskanaEngineMock, times(1)).openConnection();
-    verify(taskanaEngineMock, times(1)).checkRoleMembership(any());
-    verify(taskanaEngineMock, times(2)).getConfiguration();
-    verify(internalTaskanaEngineMock, times(3)).getEngine();
-    verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
-    verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
-    verify(monitorMapperMock, times(1))
+    verify(internalTaskanaEngineMock).openConnection();
+    verify(taskanaEngineMock).checkRoleMembership(any());
+    verify(taskanaEngineMock).getConfiguration();
+    verify(internalTaskanaEngineMock, times(2)).getEngine();
+
+    verify(taskanaEngineConfiguration).isGermanPublicHolidaysEnabled();
+    verify(taskanaEngineConfiguration).isCorpusChristiEnabled();
+    verify(taskanaEngineConfiguration).getCustomHolidays();
+    verify(monitorMapperMock)
         .getTaskCountOfDetailedClassifications(any(), any(), any(), any(), any(), any(), any());
-    verify(internalTaskanaEngineMock, times(1)).returnConnection();
+    verify(internalTaskanaEngineMock).returnConnection();
     verifyNoMoreInteractions(
         internalTaskanaEngineMock,
         taskanaEngineMock,
@@ -294,15 +299,17 @@ class ClassificationReportBuilderImplTest {
             .withColumnHeaders(columnHeaders)
             .buildDetailedReport();
 
-    verify(internalTaskanaEngineMock, times(1)).openConnection();
-    verify(taskanaEngineMock, times(1)).checkRoleMembership(any());
-    verify(taskanaEngineMock, times(2)).getConfiguration();
-    verify(internalTaskanaEngineMock, times(3)).getEngine();
-    verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
-    verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
-    verify(monitorMapperMock, times(1))
+    verify(internalTaskanaEngineMock).openConnection();
+    verify(taskanaEngineMock).checkRoleMembership(any());
+    verify(taskanaEngineMock).getConfiguration();
+    verify(internalTaskanaEngineMock, times(2)).getEngine();
+
+    verify(taskanaEngineConfiguration).isGermanPublicHolidaysEnabled();
+    verify(taskanaEngineConfiguration).isCorpusChristiEnabled();
+    verify(taskanaEngineConfiguration).getCustomHolidays();
+    verify(monitorMapperMock)
         .getTaskCountOfDetailedClassifications(any(), any(), any(), any(), any(), any(), any());
-    verify(internalTaskanaEngineMock, times(1)).returnConnection();
+    verify(internalTaskanaEngineMock).returnConnection();
     verifyNoMoreInteractions(
         internalTaskanaEngineMock,
         taskanaEngineMock,
@@ -369,16 +376,18 @@ class ClassificationReportBuilderImplTest {
             .withColumnHeaders(columnHeaders)
             .listTaskIdsForSelectedItems(selectedItems);
 
-    verify(internalTaskanaEngineMock, times(1)).openConnection();
-    verify(taskanaEngineMock, times(1)).checkRoleMembership(any());
-    verify(taskanaEngineMock, times(2)).getConfiguration();
-    verify(internalTaskanaEngineMock, times(3)).getEngine();
-    verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
-    verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
-    verify(monitorMapperMock, times(1))
+    verify(internalTaskanaEngineMock).openConnection();
+    verify(taskanaEngineMock).checkRoleMembership(any());
+    verify(taskanaEngineMock).getConfiguration();
+    verify(internalTaskanaEngineMock, times(2)).getEngine();
+
+    verify(taskanaEngineConfiguration).isGermanPublicHolidaysEnabled();
+    verify(taskanaEngineConfiguration).isCorpusChristiEnabled();
+    verify(taskanaEngineConfiguration).getCustomHolidays();
+    verify(monitorMapperMock)
         .getTaskIdsForSelectedItems(
             any(), any(), any(), any(), any(), any(), any(), any(), any(), eq(false));
-    verify(internalTaskanaEngineMock, times(1)).returnConnection();
+    verify(internalTaskanaEngineMock).returnConnection();
     verifyNoMoreInteractions(
         internalTaskanaEngineMock,
         taskanaEngineMock,
@@ -445,15 +454,17 @@ class ClassificationReportBuilderImplTest {
             .withColumnHeaders(columnHeaders)
             .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_1);
 
-    verify(internalTaskanaEngineMock, times(1)).openConnection();
-    verify(taskanaEngineMock, times(1)).checkRoleMembership(any());
-    verify(taskanaEngineMock, times(2)).getConfiguration();
-    verify(internalTaskanaEngineMock, times(3)).getEngine();
-    verify(taskanaEngineConfiguration, times(1)).isGermanPublicHolidaysEnabled();
-    verify(taskanaEngineConfiguration, times(1)).getCustomHolidays();
-    verify(monitorMapperMock, times(1))
+    verify(internalTaskanaEngineMock).openConnection();
+    verify(taskanaEngineMock).checkRoleMembership(any());
+    verify(taskanaEngineMock).getConfiguration();
+    verify(internalTaskanaEngineMock, times(2)).getEngine();
+
+    verify(taskanaEngineConfiguration).isGermanPublicHolidaysEnabled();
+    verify(taskanaEngineConfiguration).isCorpusChristiEnabled();
+    verify(taskanaEngineConfiguration).getCustomHolidays();
+    verify(monitorMapperMock)
         .getCustomAttributeValuesForReport(any(), any(), any(), any(), any(), any(), any(), any());
-    verify(internalTaskanaEngineMock, times(1)).returnConnection();
+    verify(internalTaskanaEngineMock).returnConnection();
     verifyNoMoreInteractions(
         internalTaskanaEngineMock,
         taskanaEngineMock,
