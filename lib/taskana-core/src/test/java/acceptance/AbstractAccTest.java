@@ -103,9 +103,11 @@ public abstract class AbstractAccTest {
 
   protected TimeInterval toDaysInterval() {
     Instant begin =
-        ZonedDateTime.of(LocalDate.now(ZoneId.of("UTC")), LocalTime.MIN, ZoneId.of("UTC")).toInstant();
+        ZonedDateTime.of(LocalDate.now(ZoneId.of("UTC")), LocalTime.MIN, ZoneId.of("UTC"))
+            .toInstant();
     Instant end =
-        ZonedDateTime.of(LocalDate.now(ZoneId.of("UTC")), LocalTime.MAX, ZoneId.of("UTC")).toInstant();
+        ZonedDateTime.of(LocalDate.now(ZoneId.of("UTC")), LocalTime.MAX, ZoneId.of("UTC"))
+            .toInstant();
     return new TimeInterval(begin, end);
   }
 

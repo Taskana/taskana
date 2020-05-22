@@ -6,8 +6,13 @@ import static pro.taskana.common.internal.util.WorkingDaysToDaysConverter.getEas
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DynamicContainer;
+import org.junit.jupiter.api.DynamicNode;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 
 import pro.taskana.common.api.CustomHoliday;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -21,6 +26,69 @@ class WorkingDaysToDaysConverterTest {
     CustomHoliday dayOfReformation = CustomHoliday.of(31, 10);
     CustomHoliday allSaintsDays = CustomHoliday.of(1, 11);
     WorkingDaysToDaysConverter.setCustomHolidays(Arrays.asList(dayOfReformation, allSaintsDays));
+  }
+
+  @TestFactory
+  Stream<DynamicNode> testHasWorkingInBetween() throws InvalidArgumentException {
+    Instant referenceDay = Instant.parse("2020-02-01T07:00:00.000Z");
+    WorkingDaysToDaysConverter converter = WorkingDaysToDaysConverter.initialize(referenceDay);
+
+    Instant thursday = Instant.parse("2020-04-30T07:12:00.000Z");
+    Instant friday = Instant.parse("2020-05-01T07:12:00.000Z"); // german holiday
+    Instant saturday = Instant.parse("2020-05-02T07:12:00.000Z");
+    Instant sunday = Instant.parse("2020-05-03T07:12:00.000Z");
+    Instant monday = Instant.parse("2020-05-04T07:12:00.000Z");
+    Instant tuesday = Instant.parse("2020-05-05T07:12:00.000Z");
+    DynamicContainer noWorkingDaysInBetween =
+        DynamicContainer.dynamicContainer(
+            "no working days in between",
+            Stream.of(
+                DynamicTest.dynamicTest(
+                    "tuesday <-> tuesday",
+                    () ->
+                        assertThat(converter.hasWorkingDaysInBetween(tuesday, tuesday)).isFalse()),
+                DynamicTest.dynamicTest(
+                    "thursday <-> saturday (friday is holiday)",
+                    () ->
+                        assertThat(converter.hasWorkingDaysInBetween(thursday, saturday))
+                            .isFalse()),
+                DynamicTest.dynamicTest(
+                    "friday <-> friday",
+                    () -> assertThat(converter.hasWorkingDaysInBetween(friday, friday)).isFalse()),
+                DynamicTest.dynamicTest(
+                    "friday <-> monday",
+                    () -> assertThat(converter.hasWorkingDaysInBetween(friday, monday)).isFalse()),
+                DynamicTest.dynamicTest(
+                    "saturday <-> monday",
+                    () ->
+                        assertThat(converter.hasWorkingDaysInBetween(saturday, monday)).isFalse()),
+                DynamicTest.dynamicTest(
+                    "sunday <-> monday",
+                    () -> assertThat(converter.hasWorkingDaysInBetween(sunday, monday)).isFalse()),
+                DynamicTest.dynamicTest(
+                    "monday <-> monday",
+                    () -> assertThat(converter.hasWorkingDaysInBetween(sunday, monday)).isFalse()),
+                DynamicTest.dynamicTest(
+                    "monday <-> sunday",
+                    () -> assertThat(converter.hasWorkingDaysInBetween(monday, sunday)).isFalse()),
+                DynamicTest.dynamicTest(
+                    "monday <-> friday",
+                    () ->
+                        assertThat(converter.hasWorkingDaysInBetween(monday, friday)).isFalse())));
+
+    DynamicContainer hasWorkingDaysInBetween =
+        DynamicContainer.dynamicContainer(
+            "has working days in between",
+            Stream.of(
+                DynamicTest.dynamicTest(
+                    "friday <-> tuesday",
+                    () -> assertThat(converter.hasWorkingDaysInBetween(friday, tuesday)).isTrue()),
+                DynamicTest.dynamicTest(
+                    "sunday <-> tuesday",
+                    () ->
+                        assertThat(converter.hasWorkingDaysInBetween(sunday, tuesday)).isTrue())));
+
+    return Stream.of(noWorkingDaysInBetween, hasWorkingDaysInBetween);
   }
 
   @Test
@@ -97,7 +165,6 @@ class WorkingDaysToDaysConverterTest {
 
   @Test
   void testGetEasterSunday() {
-
     assertThat(getEasterSunday(2018)).isEqualTo(LocalDate.of(2018, 4, 1));
     assertThat(getEasterSunday(2019)).isEqualTo(LocalDate.of(2019, 4, 21));
     assertThat(getEasterSunday(2020)).isEqualTo(LocalDate.of(2020, 4, 12));
