@@ -1,10 +1,12 @@
 package pro.taskana.classification.rest;
 
+import static pro.taskana.common.internal.util.CheckedFunction.wrap;
+
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +40,7 @@ import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.rest.models.TaskanaPagedModel;
 
 /** Controller for Importing / Exporting classifications. */
 @SuppressWarnings("unused")
@@ -47,37 +51,41 @@ public class ClassificationDefinitionController {
   private static final Logger LOGGER =
       LoggerFactory.getLogger(ClassificationDefinitionController.class);
 
+  private final ObjectMapper mapper;
   private final ClassificationService classificationService;
-
   private final ClassificationRepresentationModelAssembler
       classificationRepresentationModelAssembler;
 
+  @Autowired
   ClassificationDefinitionController(
+      ObjectMapper mapper,
       ClassificationService classificationService,
       ClassificationRepresentationModelAssembler classificationRepresentationModelAssembler) {
+    this.mapper = mapper;
     this.classificationService = classificationService;
     this.classificationRepresentationModelAssembler = classificationRepresentationModelAssembler;
   }
 
   @GetMapping(path = Mapping.URL_CLASSIFICATIONDEFINITION)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<List<ClassificationRepresentationModel>> exportClassifications(
+  public ResponseEntity<TaskanaPagedModel<ClassificationRepresentationModel>> exportClassifications(
       @RequestParam(required = false) String domain) throws ClassificationNotFoundException {
     LOGGER.debug("Entry to exportClassifications(domain= {})", domain);
     ClassificationQuery query = classificationService.createClassificationQuery();
 
     List<ClassificationSummary> summaries =
         domain != null ? query.domainIn(domain).list() : query.list();
-    List<ClassificationRepresentationModel> export = new ArrayList<>();
 
-    for (ClassificationSummary summary : summaries) {
-      Classification classification =
-          classificationService.getClassification(summary.getKey(), summary.getDomain());
+    TaskanaPagedModel<ClassificationRepresentationModel> pageModel =
+        summaries.stream()
+            .map(ClassificationSummary::getId)
+            .map(wrap(classificationService::getClassification))
+            .collect(
+                Collectors.collectingAndThen(
+                    Collectors.toList(), classificationRepresentationModelAssembler::toPageModel));
 
-      export.add(classificationRepresentationModelAssembler.toModel(classification));
-    }
-
-    ResponseEntity<List<ClassificationRepresentationModel>> response = ResponseEntity.ok(export);
+    ResponseEntity<TaskanaPagedModel<ClassificationRepresentationModel>> response =
+        ResponseEntity.ok(pageModel);
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from exportClassifications(), returning {}", response);
     }
@@ -93,13 +101,13 @@ public class ClassificationDefinitionController {
           DomainNotFoundException, IOException {
     LOGGER.debug("Entry to importClassifications()");
     Map<String, String> systemIds = getSystemIds();
-    List<ClassificationRepresentationModel> classificationsResources =
+    TaskanaPagedModel<ClassificationRepresentationModel> classificationsResources =
         extractClassificationResourcesFromFile(file);
-    checkForDuplicates(classificationsResources);
+    checkForDuplicates(classificationsResources.getContent());
 
     Map<Classification, String> childrenInFile =
-        mapChildrenToParentKeys(classificationsResources, systemIds);
-    insertOrUpdateClassificationsWithoutParent(classificationsResources, systemIds);
+        mapChildrenToParentKeys(classificationsResources.getContent(), systemIds);
+    insertOrUpdateClassificationsWithoutParent(classificationsResources.getContent(), systemIds);
     updateParentChildrenRelations(childrenInFile);
     ResponseEntity<Void> response = ResponseEntity.noContent().build();
     LOGGER.debug("Exit from importClassifications(), returning {}", response);
@@ -112,15 +120,15 @@ public class ClassificationDefinitionController {
             Collectors.toMap(i -> i.getKey() + "|" + i.getDomain(), ClassificationSummary::getId));
   }
 
-  private List<ClassificationRepresentationModel> extractClassificationResourcesFromFile(
-      MultipartFile file) throws IOException {
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+  private TaskanaPagedModel<ClassificationRepresentationModel>
+      extractClassificationResourcesFromFile(MultipartFile file) throws IOException {
     return mapper.readValue(
-        file.getInputStream(), new TypeReference<List<ClassificationRepresentationModel>>() {});
+        file.getInputStream(),
+        new TypeReference<TaskanaPagedModel<ClassificationRepresentationModel>>() {});
   }
 
-  private void checkForDuplicates(List<ClassificationRepresentationModel> classificationList) {
+  private void checkForDuplicates(
+      Collection<ClassificationRepresentationModel> classificationList) {
     List<String> identifiers = new ArrayList<>();
     Set<String> duplicates = new HashSet<>();
     for (ClassificationRepresentationModel classification : classificationList) {
@@ -138,7 +146,7 @@ public class ClassificationDefinitionController {
   }
 
   private Map<Classification, String> mapChildrenToParentKeys(
-      List<ClassificationRepresentationModel> classificationRepresentationModels,
+      Collection<ClassificationRepresentationModel> classificationRepresentationModels,
       Map<String, String> systemIds) {
     LOGGER.debug("Entry to mapChildrenToParentKeys()");
     Map<Classification, String> childrenInFile = new HashMap<>();
@@ -159,8 +167,9 @@ public class ClassificationDefinitionController {
       }
 
       String parentKeyAndDomain = cl.getParentKey() + "|" + cl.getDomain();
-      if ((!cl.getParentKey().isEmpty() && !cl.getParentKey().equals("") && (
-          newKeysWithDomain.contains(parentKeyAndDomain)
+      if ((!cl.getParentKey().isEmpty()
+          && !cl.getParentKey().equals("")
+          && (newKeysWithDomain.contains(parentKeyAndDomain)
               || systemIds.containsKey(parentKeyAndDomain)))) {
         childrenInFile.put(
             classificationRepresentationModelAssembler.toEntityModel(cl), cl.getParentKey());
@@ -176,7 +185,7 @@ public class ClassificationDefinitionController {
   }
 
   private void insertOrUpdateClassificationsWithoutParent(
-      List<ClassificationRepresentationModel> classificationRepresentationModels,
+      Collection<ClassificationRepresentationModel> classificationRepresentationModels,
       Map<String, String> systemIds)
       throws ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException,
           ClassificationAlreadyExistException, DomainNotFoundException, ConcurrencyException {
@@ -197,8 +206,8 @@ public class ClassificationDefinitionController {
         updateExistingClassification(classificationRepresentationModel, systemId);
       } else {
         classificationService.createClassification(
-            classificationRepresentationModelAssembler
-                .toEntityModel(classificationRepresentationModel));
+            classificationRepresentationModelAssembler.toEntityModel(
+                classificationRepresentationModel));
       }
     }
     LOGGER.debug("Exit from insertOrUpdateClassificationsWithoutParent()");

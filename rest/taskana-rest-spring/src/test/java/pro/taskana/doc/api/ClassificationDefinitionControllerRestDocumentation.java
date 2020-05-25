@@ -27,8 +27,8 @@ class ClassificationDefinitionControllerRestDocumentation extends BaseRestDocume
 
     classificationDefinitionsFieldDescriptors =
         new FieldDescriptor[] {
-          subsectionWithPath("[]")
-              .description("An array of <<ClassificationResource, classifications>>")
+          subsectionWithPath("classifications")
+              .description("An array of <<ClassificationRepresentationModels, classifications>>")
         };
   }
 
@@ -49,7 +49,8 @@ class ClassificationDefinitionControllerRestDocumentation extends BaseRestDocume
 
   @Test
   void importClassificationDefinitions() throws Exception {
-    String definitionString = "[{\"key\":\"Key0815\", \"domain\":\"DOMAIN_B\"}]";
+    String definitionString =
+        "{\"classifications\":[{\"key\":\"Key0815\", \"domain\":\"DOMAIN_B\"}]}";
 
     this.mockMvc
         .perform(

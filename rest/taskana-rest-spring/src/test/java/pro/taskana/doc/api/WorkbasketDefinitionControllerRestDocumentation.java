@@ -27,8 +27,10 @@ class WorkbasketDefinitionControllerRestDocumentation extends BaseRestDocumentat
 
     workbasketDefinitionsFieldDescriptors =
         new FieldDescriptor[] {
-          subsectionWithPath("[]")
-              .description("An array of <<WorkbasketDefinitions, workbasketsDefinitions>>")
+          subsectionWithPath("workbasketDefinitions")
+              .description(
+                  "An array of <<WorkbasketDefinitionRepresentationModels, "
+                      + "workbasketsDefinitions>>")
         };
   }
 
@@ -49,7 +51,7 @@ class WorkbasketDefinitionControllerRestDocumentation extends BaseRestDocumentat
   @Test
   void importWorkbasketDefinition() throws Exception {
     String definitionString =
-        "["
+        "{ \"workbasketDefinitions\": ["
             + "{"
             + "\"distributionTargets\":[], "
             + "\"authorizations\":[], "
@@ -57,7 +59,7 @@ class WorkbasketDefinitionControllerRestDocumentation extends BaseRestDocumentat
             + "\"domain\": \"DOMAIN_A\", \"type\":\"GROUP\" , "
             + "\"workbasketId\":\"gibtsNed\"}"
             + "}"
-            + "]";
+            + "]}";
 
     this.mockMvc
         .perform(

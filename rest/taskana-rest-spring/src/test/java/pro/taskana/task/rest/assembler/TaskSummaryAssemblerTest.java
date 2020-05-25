@@ -100,21 +100,11 @@ class TaskSummaryAssemblerTest {
   void testEquality(TaskSummaryImpl taskSummary, TaskSummaryRepresentationModel resource) {
     Assert.assertEquals(taskSummary.getId(), resource.getTaskId());
     Assert.assertEquals(taskSummary.getExternalId(), resource.getExternalId());
-    Assert.assertEquals(
-        taskSummary.getCreated() == null ? null : taskSummary.getCreated().toString(),
-        resource.getCreated());
-    Assert.assertEquals(
-        taskSummary.getClaimed() == null ? null : taskSummary.getClaimed().toString(),
-        resource.getClaimed());
-    Assert.assertEquals(
-        taskSummary.getCompleted() == null ? null : taskSummary.getCompleted().toString(),
-        resource.getCompleted());
-    Assert.assertEquals(
-        taskSummary.getModified() == null ? null : taskSummary.getModified().toString(),
-        resource.getModified());
-    Assert.assertEquals(
-        taskSummary.getPlanned() == null ? null : taskSummary.getPlanned().toString(),
-        resource.getPlanned());
+    Assert.assertEquals(taskSummary.getCreated(), resource.getCreated());
+    Assert.assertEquals(taskSummary.getClaimed(), resource.getClaimed());
+    Assert.assertEquals(taskSummary.getCompleted(), resource.getCompleted());
+    Assert.assertEquals(taskSummary.getModified(), resource.getModified());
+    Assert.assertEquals(taskSummary.getPlanned(), resource.getPlanned());
     Assert.assertEquals(taskSummary.getDescription(), resource.getDescription());
     Assert.assertEquals(taskSummary.getName(), resource.getName());
     Assert.assertEquals(taskSummary.getCreator(), resource.getCreator());

@@ -2,11 +2,11 @@ package pro.taskana.workbasket.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static pro.taskana.common.rest.RestHelper.TEMPLATE;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Instant;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -17,7 +17,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 
 import pro.taskana.common.rest.Mapping;
 import pro.taskana.common.rest.RestHelper;
@@ -42,46 +41,49 @@ class WorkbasketControllerIntTest {
       WORKBASKET_SUMMARY_PAGE_MODEL_TYPE =
           new ParameterizedTypeReference<
               TaskanaPagedModel<WorkbasketSummaryRepresentationModel>>() {};
-  private static RestTemplate template;
-  @Autowired RestHelper restHelper;
+  private final RestHelper restHelper;
+  private final ObjectMapper mapper;
 
-  @BeforeAll
-  static void init() {
-    template = RestHelper.TEMPLATE;
+  @Autowired
+  WorkbasketControllerIntTest(RestHelper restHelper, ObjectMapper mapper) {
+    this.restHelper = restHelper;
+    this.mapper = mapper;
   }
 
   @Test
   void testGetWorkbasket() {
     ResponseEntity<WorkbasketRepresentationModel> response =
-        template.exchange(
+        TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_WORKBASKET_ID, "WBI:100000000000000000000000000000000006"),
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(WorkbasketRepresentationModel.class));
+    assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(response.getHeaders().getContentType().toString())
-        .isEqualTo(MediaTypes.HAL_JSON_VALUE);
+    assertThat(response.getHeaders().getContentType()).isEqualTo(MediaTypes.HAL_JSON);
   }
 
   @Test
   void testGetAllWorkbaskets() {
     ResponseEntity<TaskanaPagedModel<WorkbasketSummaryRepresentationModel>> response =
-        template.exchange(
+        TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_WORKBASKET),
             HttpMethod.GET,
             restHelper.defaultRequest(),
             WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
+    assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
   }
 
   @Test
   void testGetAllWorkbasketsBusinessAdminHasOpenPermission() {
     ResponseEntity<TaskanaPagedModel<WorkbasketSummaryRepresentationModel>> response =
-        template.exchange(
+        TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_WORKBASKET) + "?required-permission=OPEN",
             HttpMethod.GET,
             restHelper.defaultRequest(),
             WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
+    assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getRequiredLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(3);
   }
@@ -90,11 +92,12 @@ class WorkbasketControllerIntTest {
   void testGetAllWorkbasketsKeepingFilters() {
     String parameters = "?type=PERSONAL&sort-by=key&order=desc";
     ResponseEntity<TaskanaPagedModel<WorkbasketSummaryRepresentationModel>> response =
-        template.exchange(
+        TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_WORKBASKET) + parameters,
             HttpMethod.GET,
             restHelper.defaultRequest(),
             WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
+    assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(
             response
@@ -108,11 +111,12 @@ class WorkbasketControllerIntTest {
   @Test
   void testThrowsExceptionIfInvalidFilterIsUsed() {
     ThrowingCallable httpCall =
-        () -> template.exchange(
-            restHelper.toUrl(Mapping.URL_WORKBASKET) + "?invalid=PERSONAL",
-            HttpMethod.GET,
-            restHelper.defaultRequest(),
-            WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
+        () ->
+            TEMPLATE.exchange(
+                restHelper.toUrl(Mapping.URL_WORKBASKET) + "?invalid=PERSONAL",
+                HttpMethod.GET,
+                restHelper.defaultRequest(),
+                WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
         .hasMessageContaining("[invalid]")
@@ -125,10 +129,8 @@ class WorkbasketControllerIntTest {
 
     String workbasketId = "WBI:100000000000000000000000000000000001";
 
-    final ObjectMapper mapper = new ObjectMapper();
-
     ResponseEntity<WorkbasketRepresentationModel> initialWorkbasketResourceRequestResponse =
-        template.exchange(
+        TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketId),
             HttpMethod.GET,
             new HttpEntity<String>(restHelper.getHeaders()),
@@ -137,16 +139,17 @@ class WorkbasketControllerIntTest {
     WorkbasketRepresentationModel workbasketRepresentationModel =
         initialWorkbasketResourceRequestResponse.getBody();
 
+    assertThat(workbasketRepresentationModel).isNotNull();
     workbasketRepresentationModel.setKey("GPK_KSC");
     workbasketRepresentationModel.setDomain("DOMAIN_A");
     workbasketRepresentationModel.setType(WorkbasketType.PERSONAL);
     workbasketRepresentationModel.setName("was auch immer");
     workbasketRepresentationModel.setOwner("Joerg");
-    workbasketRepresentationModel.setModified(String.valueOf(Instant.now()));
+    workbasketRepresentationModel.setModified(Instant.now());
 
     ThrowingCallable httpCall =
         () -> {
-          template.exchange(
+          TEMPLATE.exchange(
               restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketId),
               HttpMethod.PUT,
               new HttpEntity<>(
@@ -166,7 +169,7 @@ class WorkbasketControllerIntTest {
 
     ThrowingCallable httpCall =
         () -> {
-          template.exchange(
+          TEMPLATE.exchange(
               restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketId),
               HttpMethod.GET,
               new HttpEntity<String>(restHelper.getHeaders()),
@@ -183,11 +186,12 @@ class WorkbasketControllerIntTest {
 
     String parameters = "?sort-by=key&order=desc&page-size=5&page=2";
     ResponseEntity<TaskanaPagedModel<WorkbasketSummaryRepresentationModel>> response =
-        template.exchange(
+        TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_WORKBASKET) + parameters,
             HttpMethod.GET,
             restHelper.defaultRequest(),
             WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
+    assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(5);
     assertThat(response.getBody().getContent().iterator().next().getKey()).isEqualTo("USER_1_1");
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
@@ -210,7 +214,7 @@ class WorkbasketControllerIntTest {
     String workbasketID = "WBI:100000000000000000000000000000000005";
 
     ResponseEntity<?> response =
-        template.exchange(
+        TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketID),
             HttpMethod.DELETE,
             new HttpEntity<>(restHelper.getHeadersBusinessAdmin()),
@@ -224,7 +228,7 @@ class WorkbasketControllerIntTest {
 
     ThrowingCallable call =
         () ->
-            template.exchange(
+            TEMPLATE.exchange(
                 restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketWithNonCompletedTasks),
                 HttpMethod.DELETE,
                 new HttpEntity<>(restHelper.getHeadersBusinessAdmin()),
@@ -238,7 +242,7 @@ class WorkbasketControllerIntTest {
   @Test
   void testRemoveWorkbasketAsDistributionTarget() {
     ResponseEntity<?> response =
-        template.exchange(
+        TEMPLATE.exchange(
             restHelper.toUrl(
                 Mapping.URL_WORKBASKET_ID_DISTRIBUTION, "WBI:100000000000000000000000000000000007"),
             HttpMethod.DELETE,
@@ -247,47 +251,47 @@ class WorkbasketControllerIntTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
     ResponseEntity<TaskanaPagedModel<WorkbasketSummaryRepresentationModel>> response2 =
-        template.exchange(
+        TEMPLATE.exchange(
             restHelper.toUrl(
                 Mapping.URL_WORKBASKET_ID_DISTRIBUTION, "WBI:100000000000000000000000000000000002"),
             HttpMethod.GET,
             restHelper.defaultRequest(),
             WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.OK);
-    assertThat(
-            response2.getBody().getContent().stream()
-                .map(WorkbasketSummaryRepresentationModel::getWorkbasketId)
-                .noneMatch("WBI:100000000000000000000000000000000007"::equals))
-        .isTrue();
+    assertThat(response2.getBody()).isNotNull();
+    assertThat(response2.getBody().getContent())
+        .extracting(WorkbasketSummaryRepresentationModel::getWorkbasketId)
+        .doesNotContain("WBI:100000000000000000000000000000000007");
   }
 
   @Test
   void testGetWorkbasketAccessItems() {
     ResponseEntity<TaskanaPagedModel<WorkbasketAccessItemRepresentationModel>> response =
-        template.exchange(
+        TEMPLATE.exchange(
             restHelper.toUrl(
                 Mapping.URL_WORKBASKET_ID_ACCESSITEMS, "WBI:100000000000000000000000000000000005"),
             HttpMethod.GET,
             restHelper.defaultRequest(),
             WORKBASKET_ACCESS_ITEM_PAGE_MODEL_TYPE);
+    assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(response.getHeaders().getContentType().toString())
-        .isEqualTo(MediaTypes.HAL_JSON_VALUE);
+    assertThat(response.getHeaders().getContentType()).isEqualTo(MediaTypes.HAL_JSON);
     assertThat(response.getBody().getContent()).hasSize(3);
   }
 
   @Test
   void testGetWorkbasketDistributionTargets() {
     ResponseEntity<TaskanaPagedModel<WorkbasketSummaryRepresentationModel>> response =
-        template.exchange(
+        TEMPLATE.exchange(
             restHelper.toUrl(
                 Mapping.URL_WORKBASKET_ID_DISTRIBUTION, "WBI:100000000000000000000000000000000001"),
             HttpMethod.GET,
             restHelper.defaultRequest(),
             WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
+    assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(response.getHeaders().getContentType().toString())
-        .isEqualTo(MediaTypes.HAL_JSON_VALUE);
+    assertThat(response.getHeaders().getContentType())
+        .isEqualTo(MediaTypes.HAL_JSON);
     assertThat(response.getBody().getContent()).hasSize(4);
   }
 }

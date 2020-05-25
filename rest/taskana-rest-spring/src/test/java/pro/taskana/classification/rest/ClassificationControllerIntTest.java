@@ -103,18 +103,19 @@ class ClassificationControllerIntTest {
     ResponseEntity<TaskanaPagedModel<ClassificationSummaryRepresentationModel>> response =
         template.exchange(
             restHelper.toUrl(Mapping.URL_CLASSIFICATIONS)
-                + "?domain=DOMAIN_A&sort-by=key&order=asc&page=2&page-size=5",
+                + "?domain=DOMAIN_A&sort-by=key&order=asc&page-size=5&page=2",
             HttpMethod.GET,
             restHelper.defaultRequest(),
             CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody().getContent()).hasSize(5);
     assertThat(response.getBody().getContent().iterator().next().getKey()).isEqualTo("L1050");
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
+    String href = response
+                      .getBody()
+                      .getRequiredLink(IanaLinkRelations.SELF)
+                      .getHref();
     assertThat(
-            response
-                .getBody()
-                .getRequiredLink(IanaLinkRelations.SELF)
-                .getHref()
+            href
                 .endsWith(
                     "/api/v1/classifications?"
                         + "domain=DOMAIN_A&sort-by=key&order=asc&page-size=5&page=2"))

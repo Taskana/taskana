@@ -58,7 +58,7 @@ public class WorkbasketAccessItemRepresentationModelAssembler
     return wbAccItemModel;
   }
 
-  public TaskanaPagedModel<WorkbasketAccessItemRepresentationModel> toPageModel(
+  public TaskanaPagedModel<WorkbasketAccessItemRepresentationModel> toPageModelForSingleWorkbasket(
       String workbasketId,
       List<WorkbasketAccessItem> workbasketAccessItems,
       PageMetadata pageMetadata)

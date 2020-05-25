@@ -1,5 +1,7 @@
 package pro.taskana.workbasket.rest.models;
 
+import java.time.Instant;
+
 import pro.taskana.workbasket.api.models.Workbasket;
 
 /**
@@ -9,49 +11,31 @@ public class WorkbasketRepresentationModel
     extends WorkbasketSummaryRepresentationModel {
 
 
-  private String created; // ISO-8601
-  private String modified; // ISO-8601
+  private Instant created; // ISO-8601
+  private Instant modified; // ISO-8601
 
   public WorkbasketRepresentationModel() {
   }
 
   public WorkbasketRepresentationModel(Workbasket workbasket) {
     super(workbasket);
-    this.created = workbasket.getCreated() != null ? workbasket.getCreated().toString() : null;
-    this.modified = workbasket.getModified() != null ? workbasket.getModified().toString() : null;
+    this.created = workbasket.getCreated();
+    this.modified = workbasket.getModified();
   }
 
-  public String getCreated() {
+  public Instant getCreated() {
     return created;
   }
 
-  public void setCreated(String created) {
+  public void setCreated(Instant created) {
     this.created = created;
   }
 
-  public String getModified() {
+  public Instant getModified() {
     return modified;
   }
 
-  public void setModified(String modified) {
+  public void setModified(Instant modified) {
     this.modified = modified;
-  }
-
-  @Override
-  public String toString() {
-    return "WorkbasketResource ["
-               + "workbasketId= "
-               + this.workbasketId
-               + "key= "
-               + this.key
-               + "name= "
-               + this.name
-               + "domain= "
-               + this.domain
-               + "type= "
-               + this.type
-               + "owner= "
-               + this.owner
-               + "]";
   }
 }

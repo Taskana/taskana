@@ -3,7 +3,6 @@ package pro.taskana.workbasket.rest.assembler;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import java.time.Instant;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
@@ -32,8 +31,7 @@ public class WorkbasketRepresentationModelAssembler
   private final WorkbasketService workbasketService;
 
   @Autowired
-  public WorkbasketRepresentationModelAssembler(
-      WorkbasketService workbasketService) {
+  public WorkbasketRepresentationModelAssembler(WorkbasketService workbasketService) {
     this.workbasketService = workbasketService;
   }
 
@@ -55,12 +53,8 @@ public class WorkbasketRepresentationModelAssembler
     BeanUtils.copyProperties(wbResource, workbasket);
 
     workbasket.setId(wbResource.getWorkbasketId());
-    if (wbResource.getModified() != null) {
-      workbasket.setModified(Instant.parse(wbResource.getModified()));
-    }
-    if (wbResource.getCreated() != null) {
-      workbasket.setCreated(Instant.parse(wbResource.getCreated()));
-    }
+    workbasket.setModified(wbResource.getModified());
+    workbasket.setCreated(wbResource.getCreated());
     return workbasket;
   }
 
