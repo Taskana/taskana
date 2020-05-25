@@ -17,26 +17,23 @@ import org.springframework.hateoas.RepresentationModel;
  *
  * @param <T> The class of the paginated content
  */
-public class TaskanaPagedModel<T extends RepresentationModel<T>>
+public class TaskanaPagedModel<T extends RepresentationModel<? super T>>
     extends RepresentationModel<TaskanaPagedModel<T>> {
 
-  @JsonIgnore
-  private TaskanaPagedModelKeys key;
-  @JsonIgnore
-  private Collection<? extends T> content;
+  @JsonIgnore private TaskanaPagedModelKeys key;
+  @JsonIgnore private Collection<? extends T> content;
 
   @JsonProperty(value = "page", access = Access.WRITE_ONLY)
   private PageMetadata metadata;
 
   @SuppressWarnings("unused") // needed for jackson
-  private TaskanaPagedModel() {
-  }
+  private TaskanaPagedModel() {}
 
   /**
    * Creates a new {@link TaskanaPagedModel} from the given content.
    *
    * @param property property which will be used for serialization.
-   * @param content  must not be {@literal null}.
+   * @param content must not be {@literal null}.
    * @param metadata the metadata. Can be null. If null, no metadata will be serialized.
    */
   public TaskanaPagedModel(
@@ -46,12 +43,20 @@ public class TaskanaPagedModel<T extends RepresentationModel<T>>
     this.key = property;
   }
 
+  public TaskanaPagedModel(TaskanaPagedModelKeys property, Collection<? extends T> content) {
+    this(property, content, null);
+  }
+
   public Collection<T> getContent() {
     return Collections.unmodifiableCollection(content);
   }
 
   public PageMetadata getMetadata() {
     return metadata;
+  }
+
+  public TaskanaPagedModelKeys getKey() {
+    return key;
   }
 
   @JsonAnySetter

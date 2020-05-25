@@ -1,11 +1,12 @@
 package pro.taskana.workbasket.rest;
 
+import static pro.taskana.common.internal.util.CheckedFunction.wrap;
+
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +31,7 @@ import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.rest.models.TaskanaPagedModel;
 import pro.taskana.workbasket.api.WorkbasketQuery;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
@@ -53,33 +56,38 @@ public class WorkbasketDefinitionController {
       LoggerFactory.getLogger(WorkbasketDefinitionController.class);
 
   private final WorkbasketService workbasketService;
-
   private final WorkbasketDefinitionRepresentationModelAssembler workbasketDefinitionAssembler;
+  private final ObjectMapper mapper;
 
+  @Autowired
   WorkbasketDefinitionController(
       WorkbasketService workbasketService,
-      WorkbasketDefinitionRepresentationModelAssembler workbasketDefinitionAssembler) {
+      WorkbasketDefinitionRepresentationModelAssembler workbasketDefinitionAssembler,
+      ObjectMapper mapper) {
     this.workbasketService = workbasketService;
     this.workbasketDefinitionAssembler = workbasketDefinitionAssembler;
+    this.mapper = mapper;
   }
 
   @GetMapping(path = Mapping.URL_WORKBASKETDEFIITIONS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<List<WorkbasketDefinitionRepresentationModel>> exportWorkbaskets(
-      @RequestParam(required = false) String domain)
-      throws NotAuthorizedException, WorkbasketNotFoundException {
+  public ResponseEntity<TaskanaPagedModel<WorkbasketDefinitionRepresentationModel>>
+      exportWorkbaskets(@RequestParam(required = false) String domain) {
     LOGGER.debug("Entry to exportWorkbaskets(domain= {})", domain);
     WorkbasketQuery workbasketQuery = workbasketService.createWorkbasketQuery();
     List<WorkbasketSummary> workbasketSummaryList =
         domain != null ? workbasketQuery.domainIn(domain).list() : workbasketQuery.list();
-    List<WorkbasketDefinitionRepresentationModel> basketExports = new ArrayList<>();
-    for (WorkbasketSummary summary : workbasketSummaryList) {
-      Workbasket workbasket = workbasketService.getWorkbasket(summary.getId());
-      basketExports.add(workbasketDefinitionAssembler.toModel(workbasket));
-    }
 
-    ResponseEntity<List<WorkbasketDefinitionRepresentationModel>> response =
-        ResponseEntity.ok(basketExports);
+    TaskanaPagedModel<WorkbasketDefinitionRepresentationModel> pageModel =
+        workbasketSummaryList.stream()
+            .map(WorkbasketSummary::getId)
+            .map(wrap(workbasketService::getWorkbasket))
+            .collect(
+                Collectors.collectingAndThen(
+                    Collectors.toList(), workbasketDefinitionAssembler::toPageModel));
+
+    ResponseEntity<TaskanaPagedModel<WorkbasketDefinitionRepresentationModel>> response =
+        ResponseEntity.ok(pageModel);
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from exportWorkbaskets(), returning {}", response);
     }
@@ -118,29 +126,26 @@ public class WorkbasketDefinitionController {
           InvalidArgumentException, WorkbasketAccessItemAlreadyExistException,
           ConcurrencyException {
     LOGGER.debug("Entry to importWorkbaskets()");
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.enable(SerializationFeature.INDENT_OUTPUT);
-    mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-    List<WorkbasketDefinitionRepresentationModel> definitions =
+    TaskanaPagedModel<WorkbasketDefinitionRepresentationModel> definitions =
         mapper.readValue(
             file.getInputStream(),
-            new TypeReference<List<WorkbasketDefinitionRepresentationModel>>() {});
+            new TypeReference<TaskanaPagedModel<WorkbasketDefinitionRepresentationModel>>() {});
 
     // key: logical ID
     // value: system ID (in database)
     Map<String, String> systemIds =
         workbasketService.createWorkbasketQuery().list().stream()
             .collect(Collectors.toMap(this::logicalId, WorkbasketSummary::getId));
-    checkForDuplicates(definitions);
+    checkForDuplicates(definitions.getContent());
 
     // key: old system ID
     // value: system ID
     Map<String, String> idConversion = new HashMap<>();
 
     // STEP 1: update or create workbaskets from the import
-    for (WorkbasketDefinitionRepresentationModel definition : definitions) {
-      Workbasket importedWb = workbasketDefinitionAssembler
-                                  .toEntityModel(definition.getWorkbasket());
+    for (WorkbasketDefinitionRepresentationModel definition : definitions.getContent()) {
+      Workbasket importedWb =
+          workbasketDefinitionAssembler.toEntityModel(definition.getWorkbasket());
       String newId;
       WorkbasketImpl wbWithoutId = (WorkbasketImpl) removeId(importedWb);
       if (systemIds.containsKey(logicalId(importedWb))) {
@@ -160,8 +165,9 @@ public class WorkbasketDefinitionController {
       boolean authenticated =
           definition.getAuthorizations().stream()
               .anyMatch(
-                  access -> (access.getWorkbasketId().equals(importedWb.getId()))
-                                && (access.getWorkbasketKey().equals(importedWb.getKey())));
+                  access ->
+                      (access.getWorkbasketId().equals(importedWb.getId()))
+                          && (access.getWorkbasketKey().equals(importedWb.getKey())));
       if (!authenticated && !definition.getAuthorizations().isEmpty()) {
         throw new InvalidWorkbasketException(
             "The given Authentications for Workbasket "
@@ -181,7 +187,7 @@ public class WorkbasketDefinitionController {
 
     // STEP 2: update distribution targets
     // This can not be done in step 1 because the system IDs are only known after step 1
-    for (WorkbasketDefinitionRepresentationModel definition : definitions) {
+    for (WorkbasketDefinitionRepresentationModel definition : definitions.getContent()) {
       List<String> distributionTargets = new ArrayList<>();
       for (String oldId : definition.getDistributionTargets()) {
         if (idConversion.containsKey(oldId)) {
@@ -211,7 +217,7 @@ public class WorkbasketDefinitionController {
     return workbasketDefinitionAssembler.toEntityModel(wbRes);
   }
 
-  private void checkForDuplicates(List<WorkbasketDefinitionRepresentationModel> definitions) {
+  private void checkForDuplicates(Collection<WorkbasketDefinitionRepresentationModel> definitions) {
     List<String> identifiers = new ArrayList<>();
     Set<String> duplicates = new HashSet<>();
     for (WorkbasketDefinitionRepresentationModel definition : definitions) {

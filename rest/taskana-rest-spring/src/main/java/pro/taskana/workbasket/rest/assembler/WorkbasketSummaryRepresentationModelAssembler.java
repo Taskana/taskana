@@ -1,5 +1,6 @@
 package pro.taskana.workbasket.rest.assembler;
 
+import static pro.taskana.common.rest.models.TaskanaPagedModelKeys.DISTRIBUTION_TARGETS;
 import static pro.taskana.common.rest.models.TaskanaPagedModelKeys.WORKBASKETS;
 
 import java.util.List;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 import pro.taskana.common.rest.Mapping;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
-import pro.taskana.common.rest.models.TaskanaPagedModelKeys;
 import pro.taskana.resource.rest.PageLinks;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
@@ -60,10 +60,17 @@ public class WorkbasketSummaryRepresentationModelAssembler implements
                .collect(
                    Collectors.collectingAndThen(
                        Collectors.toList(),
-                       list -> new TaskanaPagedModel<>(getKey(), list, pageMetadata)));
+                       list -> new TaskanaPagedModel<>(WORKBASKETS, list, pageMetadata)));
   }
 
-  protected TaskanaPagedModelKeys getKey() {
-    return WORKBASKETS;
+  @PageLinks(Mapping.URL_WORKBASKET_ID_DISTRIBUTION)
+  public TaskanaPagedModel<WorkbasketSummaryRepresentationModel> toDistributionTargetPageModel(
+      List<WorkbasketSummary> workbasketSummaries, PageMetadata pageMetadata) {
+    return workbasketSummaries.stream()
+               .map(this::toModel)
+               .collect(
+                   Collectors.collectingAndThen(
+                       Collectors.toList(),
+                       list -> new TaskanaPagedModel<>(DISTRIBUTION_TARGETS, list, pageMetadata)));
   }
 }

@@ -1,5 +1,6 @@
 package pro.taskana.task.rest.models;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,12 +22,12 @@ public class TaskSummaryRepresentationModel
 
   protected String taskId;
   protected String externalId;
-  protected String created; // ISO-8601
-  protected String claimed; // ISO-8601
-  protected String completed; // ISO-8601
-  protected String modified; // ISO-8601
-  protected String planned; // ISO-8601
-  protected String due; // ISO-8601
+  protected Instant created; // ISO-8601
+  protected Instant claimed; // ISO-8601
+  protected Instant completed; // ISO-8601
+  protected Instant modified; // ISO-8601
+  protected Instant planned; // ISO-8601
+  protected Instant due; // ISO-8601
   protected String name;
   protected String creator;
   protected String note;
@@ -66,12 +67,12 @@ public class TaskSummaryRepresentationModel
   public TaskSummaryRepresentationModel(TaskSummary taskSummary) throws InvalidArgumentException {
     this.taskId = taskSummary.getId();
     this.externalId = taskSummary.getExternalId();
-    created = taskSummary.getCreated() != null ? taskSummary.getCreated().toString() : null;
-    claimed = taskSummary.getClaimed() != null ? taskSummary.getClaimed().toString() : null;
-    completed = taskSummary.getCompleted() != null ? taskSummary.getCompleted().toString() : null;
-    modified = taskSummary.getModified() != null ? taskSummary.getModified().toString() : null;
-    planned = taskSummary.getPlanned() != null ? taskSummary.getPlanned().toString() : null;
-    due = taskSummary.getDue() != null ? taskSummary.getDue().toString() : null;
+    created = taskSummary.getCreated();
+    claimed = taskSummary.getClaimed();
+    completed = taskSummary.getCompleted();
+    modified = taskSummary.getModified();
+    planned = taskSummary.getPlanned();
+    due = taskSummary.getDue();
     this.name = taskSummary.getName();
     this.creator = taskSummary.getCreator();
     this.note = taskSummary.getNote();
@@ -126,51 +127,51 @@ public class TaskSummaryRepresentationModel
     this.externalId = externalId;
   }
 
-  public String getCreated() {
+  public Instant getCreated() {
     return created;
   }
 
-  public void setCreated(String created) {
+  public void setCreated(Instant created) {
     this.created = created;
   }
 
-  public String getClaimed() {
+  public Instant getClaimed() {
     return claimed;
   }
 
-  public void setClaimed(String claimed) {
+  public void setClaimed(Instant claimed) {
     this.claimed = claimed;
   }
 
-  public String getCompleted() {
+  public Instant getCompleted() {
     return completed;
   }
 
-  public void setCompleted(String completed) {
+  public void setCompleted(Instant completed) {
     this.completed = completed;
   }
 
-  public String getModified() {
+  public Instant getModified() {
     return modified;
   }
 
-  public void setModified(String modified) {
+  public void setModified(Instant modified) {
     this.modified = modified;
   }
 
-  public String getPlanned() {
+  public Instant getPlanned() {
     return planned;
   }
 
-  public void setPlanned(String planned) {
+  public void setPlanned(Instant planned) {
     this.planned = planned;
   }
 
-  public String getDue() {
+  public Instant getDue() {
     return due;
   }
 
-  public void setDue(String due) {
+  public void setDue(Instant due) {
     this.due = due;
   }
 

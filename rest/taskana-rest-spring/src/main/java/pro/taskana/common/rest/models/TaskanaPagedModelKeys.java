@@ -12,7 +12,8 @@ public enum TaskanaPagedModelKeys {
   DISTRIBUTION_TARGETS("distributionTargets"),
   TASKS("tasks"),
   TASK_COMMENTS("taskComments"),
-  WORKBASKETS("workbaskets");
+  WORKBASKETS("workbaskets"),
+  WORKBASKET_DEFINITIONS("workbasketDefinitions");
 
   private static final Map<String, TaskanaPagedModelKeys> PROPERTY_MAP =
       Arrays.stream(TaskanaPagedModelKeys.values())

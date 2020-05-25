@@ -2,10 +2,8 @@ package pro.taskana.classification.rest.assembler;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import java.time.Instant;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -17,6 +15,8 @@ import pro.taskana.classification.internal.models.ClassificationImpl;
 import pro.taskana.classification.rest.ClassificationController;
 import pro.taskana.classification.rest.models.ClassificationRepresentationModel;
 import pro.taskana.common.api.exceptions.SystemException;
+import pro.taskana.common.rest.assembler.TaskanaPagingAssembler;
+import pro.taskana.common.rest.models.TaskanaPagedModelKeys;
 
 /**
  * Transforms {@link Classification} to its resource counterpart {@link
@@ -24,13 +24,12 @@ import pro.taskana.common.api.exceptions.SystemException;
  */
 @Component
 public class ClassificationRepresentationModelAssembler
-    implements RepresentationModelAssembler<Classification, ClassificationRepresentationModel> {
+    implements TaskanaPagingAssembler<Classification, ClassificationRepresentationModel> {
 
   final ClassificationService classificationService;
 
   @Autowired
-  public ClassificationRepresentationModelAssembler(
-      ClassificationService classificationService) {
+  public ClassificationRepresentationModelAssembler(ClassificationService classificationService) {
     this.classificationService = classificationService;
   }
 
@@ -42,12 +41,18 @@ public class ClassificationRepresentationModelAssembler
     try {
       resource.add(
           WebMvcLinkBuilder.linkTo(
-              methodOn(ClassificationController.class).getClassification(classification.getId()))
+                  methodOn(ClassificationController.class)
+                      .getClassification(classification.getId()))
               .withSelfRel());
     } catch (ClassificationNotFoundException e) {
       throw new SystemException("caught unexpected Exception.", e.getCause());
     }
     return resource;
+  }
+
+  @Override
+  public TaskanaPagedModelKeys getProperty() {
+    return TaskanaPagedModelKeys.CLASSIFICATIONS;
   }
 
   public Classification toEntityModel(
@@ -61,12 +66,8 @@ public class ClassificationRepresentationModelAssembler
     BeanUtils.copyProperties(classificationRepresentationModel, classification);
 
     classification.setId(classificationRepresentationModel.getClassificationId());
-    if (classificationRepresentationModel.getCreated() != null) {
-      classification.setCreated(Instant.parse(classificationRepresentationModel.getCreated()));
-    }
-    if (classificationRepresentationModel.getModified() != null) {
-      classification.setModified(Instant.parse(classificationRepresentationModel.getModified()));
-    }
+    classification.setCreated(classificationRepresentationModel.getCreated());
+    classification.setModified(classificationRepresentationModel.getModified());
     return classification;
   }
 }

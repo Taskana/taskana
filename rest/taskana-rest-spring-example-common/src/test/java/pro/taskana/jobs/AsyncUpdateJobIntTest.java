@@ -1,13 +1,13 @@
 package pro.taskana.jobs;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pro.taskana.RestHelper.TEMPLATE;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +19,12 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.web.client.RestTemplate;
 
 import pro.taskana.RestConfiguration;
 import pro.taskana.RestHelper;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.rest.assembler.ClassificationRepresentationModelAssembler;
 import pro.taskana.classification.rest.models.ClassificationRepresentationModel;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.rest.Mapping;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.rest.assembler.TaskRepresentationModelAssembler;
@@ -42,17 +40,25 @@ class AsyncUpdateJobIntTest {
 
   private static final String CLASSIFICATION_ID = "CLI:100000000000000000000000000000000003";
 
-  @SuppressWarnings("checkstyle:DeclarationOrder")
-  static RestTemplate template;
+  private final ClassificationRepresentationModelAssembler
+      classificationRepresentationModelAssembler;
+  private final TaskRepresentationModelAssembler taskRepresentationModelAssembler;
+  private final JobScheduler jobScheduler;
+  private final RestHelper restHelper;
+  private final ObjectMapper mapper;
 
-  @Autowired ClassificationRepresentationModelAssembler classificationRepresentationModelAssembler;
-  @Autowired TaskRepresentationModelAssembler taskRepresentationModelAssembler;
-  @Autowired JobScheduler jobScheduler;
-  @Autowired RestHelper restHelper;
-
-  @BeforeAll
-  static void init() {
-    template = RestHelper.TEMPLATE;
+  @Autowired
+  AsyncUpdateJobIntTest(
+      ClassificationRepresentationModelAssembler classificationRepresentationModelAssembler,
+      TaskRepresentationModelAssembler taskRepresentationModelAssembler,
+      JobScheduler jobScheduler,
+      RestHelper restHelper,
+      ObjectMapper mapper) {
+    this.classificationRepresentationModelAssembler = classificationRepresentationModelAssembler;
+    this.taskRepresentationModelAssembler = taskRepresentationModelAssembler;
+    this.jobScheduler = jobScheduler;
+    this.restHelper = restHelper;
+    this.mapper = mapper;
   }
 
   @Test
@@ -60,10 +66,9 @@ class AsyncUpdateJobIntTest {
 
     // 1st step: get old classification :
     final Instant before = Instant.now();
-    final ObjectMapper mapper = new ObjectMapper();
 
     ResponseEntity<ClassificationRepresentationModel> response =
-        template.exchange(
+        TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, CLASSIFICATION_ID),
             HttpMethod.GET,
             new HttpEntity<String>(restHelper.getHeaders()),
@@ -78,7 +83,7 @@ class AsyncUpdateJobIntTest {
     classification.setServiceLevel("P5D");
     classification.setPriority(1000);
 
-    template.put(
+    TEMPLATE.put(
         restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, CLASSIFICATION_ID),
         new HttpEntity<>(mapper.writeValueAsString(classification), restHelper.getHeaders()));
 
@@ -89,7 +94,7 @@ class AsyncUpdateJobIntTest {
 
     // verify the classification modified timestamp is after 'before'
     ResponseEntity<ClassificationRepresentationModel> repeatedResponse =
-        template.exchange(
+        TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, CLASSIFICATION_ID),
             HttpMethod.GET,
             new HttpEntity<String>(restHelper.getHeaders()),
@@ -150,17 +155,17 @@ class AsyncUpdateJobIntTest {
     }
   }
 
-  private void verifyTaskIsModifiedAfterOrEquals(String taskId, Instant before)
-      throws InvalidArgumentException {
+  private void verifyTaskIsModifiedAfterOrEquals(String taskId, Instant before) {
 
     ResponseEntity<TaskRepresentationModel> taskResponse =
-        template.exchange(
+        TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_TASKS_ID, taskId),
             HttpMethod.GET,
             new HttpEntity<>(restHelper.getHeadersAdmin()),
             ParameterizedTypeReference.forType(TaskRepresentationModel.class));
 
     TaskRepresentationModel taskRepresentationModel = taskResponse.getBody();
+    assertThat(taskRepresentationModel).isNotNull();
     Task task = taskRepresentationModelAssembler.toEntityModel(taskRepresentationModel);
 
     Instant modified = task.getModified();

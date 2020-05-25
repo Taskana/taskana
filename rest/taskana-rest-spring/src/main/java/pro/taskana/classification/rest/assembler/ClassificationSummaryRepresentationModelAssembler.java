@@ -2,12 +2,9 @@ package pro.taskana.classification.rest.assembler;
 
 import static pro.taskana.common.rest.models.TaskanaPagedModelKeys.CLASSIFICATIONS;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.PagedModel.PageMetadata;
-import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
@@ -16,16 +13,16 @@ import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.classification.internal.models.ClassificationImpl;
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
 import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.rest.assembler.TaskanaPagingAssembler;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
+import pro.taskana.common.rest.models.TaskanaPagedModelKeys;
 import pro.taskana.resource.rest.PageLinks;
 
-/**
- * EntityModel assembler for {@link ClassificationSummaryRepresentationModel}.
- */
+/** EntityModel assembler for {@link ClassificationSummaryRepresentationModel}. */
 @Component
 public class ClassificationSummaryRepresentationModelAssembler
-    implements
-    RepresentationModelAssembler<ClassificationSummary, ClassificationSummaryRepresentationModel> {
+    implements TaskanaPagingAssembler<
+        ClassificationSummary, ClassificationSummaryRepresentationModel> {
 
   private final ClassificationService classificationService;
 
@@ -51,15 +48,16 @@ public class ClassificationSummaryRepresentationModelAssembler
     BeanUtils.copyProperties(resource, classification);
     return classification.asSummary();
   }
-  
+
+  @Override
+  public TaskanaPagedModelKeys getProperty() {
+    return CLASSIFICATIONS;
+  }
+
   @PageLinks(Mapping.URL_CLASSIFICATIONS)
+  @Override
   public TaskanaPagedModel<ClassificationSummaryRepresentationModel> toPageModel(
-      List<ClassificationSummary> classificationSummaries, PageMetadata pageMetadata) {
-    return classificationSummaries.stream()
-               .map(this::toModel)
-               .collect(
-                   Collectors.collectingAndThen(
-                       Collectors.toList(),
-                       list -> new TaskanaPagedModel<>(CLASSIFICATIONS, list, pageMetadata)));
+      Iterable<? extends ClassificationSummary> entities, PageMetadata pageMetadata) {
+    return TaskanaPagingAssembler.super.toPageModel(entities, pageMetadata);
   }
 }

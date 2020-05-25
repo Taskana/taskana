@@ -406,9 +406,9 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.get(
-                    restHelper.toUrl(
-                        Mapping.URL_WORKBASKET_ID_DISTRIBUTION,
-                        "WBI:100000000000000000000000000000000002"))
+                restHelper.toUrl(
+                    Mapping.URL_WORKBASKET_ID_DISTRIBUTION,
+                    "WBI:100000000000000000000000000000000002"))
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andDo(

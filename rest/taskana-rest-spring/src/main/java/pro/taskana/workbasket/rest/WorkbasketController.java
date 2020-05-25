@@ -42,7 +42,6 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
-import pro.taskana.workbasket.rest.assembler.DistributionTargetRepresentationModelAssembler;
 import pro.taskana.workbasket.rest.assembler.WorkbasketAccessItemRepresentationModelAssembler;
 import pro.taskana.workbasket.rest.assembler.WorkbasketRepresentationModelAssembler;
 import pro.taskana.workbasket.rest.assembler.WorkbasketSummaryRepresentationModelAssembler;
@@ -80,8 +79,7 @@ public class WorkbasketController extends AbstractPagingController {
   private final WorkbasketSummaryRepresentationModelAssembler
       workbasketSummaryRepresentationModelAssembler;
 
-  private final DistributionTargetRepresentationModelAssembler
-      distributionTargetRepresentationModelAssembler;
+
 
   private final WorkbasketAccessItemRepresentationModelAssembler
       workbasketAccessItemRepresentationModelAssembler;
@@ -90,15 +88,13 @@ public class WorkbasketController extends AbstractPagingController {
       WorkbasketService workbasketService,
       WorkbasketRepresentationModelAssembler workbasketRepresentationModelAssembler,
       WorkbasketSummaryRepresentationModelAssembler workbasketSummaryRepresentationModelAssembler,
-      DistributionTargetRepresentationModelAssembler distributionTargetRepresentationModelAssembler,
       WorkbasketAccessItemRepresentationModelAssembler
           workbasketAccessItemRepresentationModelAssembler) {
     this.workbasketService = workbasketService;
     this.workbasketRepresentationModelAssembler = workbasketRepresentationModelAssembler;
     this.workbasketSummaryRepresentationModelAssembler =
         workbasketSummaryRepresentationModelAssembler;
-    this.distributionTargetRepresentationModelAssembler =
-        distributionTargetRepresentationModelAssembler;
+
     this.workbasketAccessItemRepresentationModelAssembler =
         workbasketAccessItemRepresentationModelAssembler;
   }
@@ -236,7 +232,7 @@ public class WorkbasketController extends AbstractPagingController {
         workbasketService.getWorkbasketAccessItems(workbasketId);
     result =
         ResponseEntity.ok(
-            workbasketAccessItemRepresentationModelAssembler.toPageModel(
+            workbasketAccessItemRepresentationModelAssembler.toPageModelForSingleWorkbasket(
                 workbasketId, accessItems, null));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from getWorkbasketAccessItems(), returning {}", result);
@@ -268,7 +264,7 @@ public class WorkbasketController extends AbstractPagingController {
 
     ResponseEntity<TaskanaPagedModel<WorkbasketAccessItemRepresentationModel>> response =
         ResponseEntity.ok(
-            workbasketAccessItemRepresentationModelAssembler.toPageModel(
+            workbasketAccessItemRepresentationModelAssembler.toPageModelForSingleWorkbasket(
                 workbasketId, updatedWbAccessItems, null));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from setWorkbasketAccessItems(), returning {}", response);
@@ -287,7 +283,8 @@ public class WorkbasketController extends AbstractPagingController {
     List<WorkbasketSummary> distributionTargets =
         workbasketService.getDistributionTargets(workbasketId);
     TaskanaPagedModel<WorkbasketSummaryRepresentationModel> distributionTargetListResource =
-        distributionTargetRepresentationModelAssembler.toPageModel(distributionTargets, null);
+        workbasketSummaryRepresentationModelAssembler
+            .toDistributionTargetPageModel(distributionTargets, null);
     ResponseEntity<TaskanaPagedModel<WorkbasketSummaryRepresentationModel>> result =
         ResponseEntity.ok(distributionTargetListResource);
     if (LOGGER.isDebugEnabled()) {
@@ -317,7 +314,8 @@ public class WorkbasketController extends AbstractPagingController {
         workbasketService.getDistributionTargets(sourceWorkbasketId);
     ResponseEntity<TaskanaPagedModel<WorkbasketSummaryRepresentationModel>> response =
         ResponseEntity.ok(
-            distributionTargetRepresentationModelAssembler.toPageModel(distributionTargets, null));
+            workbasketSummaryRepresentationModelAssembler
+                .toDistributionTargetPageModel(distributionTargets, null));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from getTasksStatusReport(), returning {}", response);
     }

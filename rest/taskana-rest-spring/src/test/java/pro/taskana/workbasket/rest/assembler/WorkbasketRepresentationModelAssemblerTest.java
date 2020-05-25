@@ -18,8 +18,16 @@ import pro.taskana.workbasket.rest.models.WorkbasketRepresentationModel;
 @TaskanaSpringBootTest
 class WorkbasketRepresentationModelAssemblerTest {
 
-  @Autowired WorkbasketService workbasketService;
-  @Autowired WorkbasketRepresentationModelAssembler workbasketRepresentationModelAssembler;
+  private final WorkbasketService workbasketService;
+  private final WorkbasketRepresentationModelAssembler workbasketRepresentationModelAssembler;
+
+  @Autowired
+  WorkbasketRepresentationModelAssemblerTest(
+      WorkbasketService workbasketService,
+      WorkbasketRepresentationModelAssembler workbasketRepresentationModelAssembler) {
+    this.workbasketService = workbasketService;
+    this.workbasketRepresentationModelAssembler = workbasketRepresentationModelAssembler;
+  }
 
   @Test
   void workbasketToResource() {
@@ -53,7 +61,7 @@ class WorkbasketRepresentationModelAssemblerTest {
     // given
     WorkbasketRepresentationModel resource = new WorkbasketRepresentationModel();
     resource.setWorkbasketId("1");
-    resource.setModified("2010-01-01T12:00:00Z");
+    resource.setModified(Instant.parse("2010-01-01T12:00:00Z"));
     resource.setType(WorkbasketType.PERSONAL);
     // when
     Workbasket workbasket = workbasketRepresentationModelAssembler.toEntityModel(resource);
@@ -66,7 +74,7 @@ class WorkbasketRepresentationModelAssemblerTest {
     // given
     WorkbasketRepresentationModel resource = new WorkbasketRepresentationModel();
     resource.setWorkbasketId("1");
-    resource.setCreated("2010-01-01T12:00:00Z");
+    resource.setCreated(Instant.parse("2010-01-01T12:00:00Z"));
     resource.setType(WorkbasketType.PERSONAL);
     // when
     Workbasket workbasket = workbasketRepresentationModelAssembler.toEntityModel(resource);
@@ -80,8 +88,8 @@ class WorkbasketRepresentationModelAssemblerTest {
     WorkbasketRepresentationModel workbasketRepresentationModel =
         new WorkbasketRepresentationModel();
     workbasketRepresentationModel.setWorkbasketId("1");
-    workbasketRepresentationModel.setCreated("2010-01-01T12:00:00Z");
-    workbasketRepresentationModel.setModified("2010-01-01T12:00:00Z");
+    workbasketRepresentationModel.setCreated(Instant.parse("2010-01-01T12:00:00Z"));
+    workbasketRepresentationModel.setModified(Instant.parse("2010-01-01T12:00:00Z"));
     workbasketRepresentationModel.setCustom1("Custom1");
     workbasketRepresentationModel.setCustom2("Custom2");
     workbasketRepresentationModel.setCustom3("Custom3");
@@ -124,9 +132,9 @@ class WorkbasketRepresentationModelAssemblerTest {
     assertThat(workbasketRepresentationModel.getWorkbasketId()).isEqualTo(workbasket.getId());
     assertThat(workbasketRepresentationModel.getKey()).isEqualTo(workbasket.getKey());
     assertThat(workbasketRepresentationModel.getCreated())
-        .isEqualTo(workbasket.getCreated() == null ? null : workbasket.getCreated().toString());
+        .isEqualTo(workbasket.getCreated());
     assertThat(workbasketRepresentationModel.getModified())
-        .isEqualTo(workbasket.getModified() == null ? null : workbasket.getModified().toString());
+        .isEqualTo(workbasket.getModified());
     assertThat(workbasketRepresentationModel.getName()).isEqualTo(workbasket.getName());
     assertThat(workbasketRepresentationModel.getDescription())
         .isEqualTo(workbasket.getDescription());

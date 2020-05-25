@@ -3,12 +3,11 @@ package pro.taskana.task.rest.assembler;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import java.time.Instant;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
+import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +29,7 @@ import pro.taskana.workbasket.rest.assembler.WorkbasketSummaryRepresentationMode
  */
 @Component
 public class TaskRepresentationModelAssembler
-    extends RepresentationModelAssemblerSupport<Task, TaskRepresentationModel> {
+    implements RepresentationModelAssembler<Task, TaskRepresentationModel> {
 
   private final TaskService taskService;
 
@@ -47,7 +46,6 @@ public class TaskRepresentationModelAssembler
       ClassificationSummaryRepresentationModelAssembler classificationAssembler,
       WorkbasketSummaryRepresentationModelAssembler workbasketSummaryRepresentationModelAssembler,
       AttachmentRepresentationModelAssembler attachmentAssembler) {
-    super(TaskController.class, TaskRepresentationModel.class);
     this.taskService = taskService;
     this.classificationAssembler = classificationAssembler;
     this.workbasketSummaryRepresentationModelAssembler
@@ -68,8 +66,7 @@ public class TaskRepresentationModelAssembler
     return resource;
   }
 
-  public Task toEntityModel(TaskRepresentationModel resource) throws InvalidArgumentException {
-    validateTaskResource(resource);
+  public Task toEntityModel(TaskRepresentationModel resource) {
     TaskImpl task =
         (TaskImpl)
             taskService.newTask(
@@ -77,24 +74,7 @@ public class TaskRepresentationModelAssembler
     task.setId(resource.getTaskId());
     task.setExternalId(resource.getExternalId());
     BeanUtils.copyProperties(resource, task);
-    if (resource.getCreated() != null) {
-      task.setCreated(Instant.parse(resource.getCreated()));
-    }
-    if (resource.getModified() != null) {
-      task.setModified(Instant.parse(resource.getModified()));
-    }
-    if (resource.getClaimed() != null) {
-      task.setClaimed(Instant.parse(resource.getClaimed()));
-    }
-    if (resource.getCompleted() != null) {
-      task.setCompleted(Instant.parse(resource.getCompleted()));
-    }
-    if (resource.getDue() != null) {
-      task.setDue(Instant.parse(resource.getDue()));
-    }
-    if (resource.getPlanned() != null) {
-      task.setPlanned(Instant.parse(resource.getPlanned()));
-    }
+
     task.setClassificationSummary(
         classificationAssembler.toEntityModel(
             resource.getClassificationSummary()));
@@ -112,21 +92,5 @@ public class TaskRepresentationModelAssembler
             .collect(Collectors.toMap(CustomAttribute::getKey, CustomAttribute::getValue)));
 
     return task;
-  }
-
-  private void validateTaskResource(TaskRepresentationModel resource)
-      throws InvalidArgumentException {
-    if (resource.getWorkbasketSummary() == null
-            || resource.getWorkbasketSummary().getWorkbasketId() == null
-            || resource.getWorkbasketSummary().getWorkbasketId().isEmpty()) {
-      throw new InvalidArgumentException(
-          "TaskResource must have a workbasket summary with a valid workbasketId.");
-    }
-    if (resource.getClassificationSummary() == null
-            || resource.getClassificationSummary().getKey() == null
-            || resource.getClassificationSummary().getKey().isEmpty()) {
-      throw new InvalidArgumentException(
-          "TaskResource must have a classification summary with a valid classification key.");
-    }
   }
 }

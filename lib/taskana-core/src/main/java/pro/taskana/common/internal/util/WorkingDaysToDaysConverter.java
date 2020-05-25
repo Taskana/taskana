@@ -8,14 +8,13 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.LongStream;
-import java.util.stream.Stream;
+import java.util.stream.LongStream.Builder;
 
 import pro.taskana.common.api.CustomHoliday;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -37,6 +36,15 @@ public final class WorkingDaysToDaysConverter {
   private static boolean germanHolidaysEnabled;
   private static boolean corpusChristiEnabled; // Fronleichnam
   private static Set<CustomHoliday> customHolidays = new HashSet<>();
+  private static Set<CustomHoliday> germanHolidays =
+      new HashSet<>(
+          Arrays.asList(
+              CustomHoliday.of(1, 1), // new year
+              CustomHoliday.of(1, 5), // labour day
+              CustomHoliday.of(3, 10), // german unity
+              CustomHoliday.of(25, 12), // Christmas
+              CustomHoliday.of(26, 12) // Christmas
+              ));
   private Instant referenceDate;
   private LocalDate easterSunday;
 
@@ -127,7 +135,7 @@ public final class WorkingDaysToDaysConverter {
     return instant.plus(Duration.ofDays(days));
   }
 
-  /** counts working days between two dates, inclusive for both margins. */
+  /** counts working days between two dates, exclusive for both margins. */
   public boolean hasWorkingDaysInBetween(Instant left, Instant right) {
     long days = Duration.between(left, right).abs().toDays();
     Instant firstInstant = left.isBefore(right) ? left : right;
@@ -155,28 +163,25 @@ public final class WorkingDaysToDaysConverter {
   }
 
   public boolean isGermanHoliday(LocalDate date) {
-    // Fix and movable holidays that are valid throughout Germany: New years day, Labour Day, Day of
-    // German
-    // Unity, Christmas,
-    if (Stream.of(GermanFixHolidays.values()).anyMatch(day -> day.matches(date))) {
+    if (germanHolidays.contains(CustomHoliday.of(date.getDayOfMonth(), date.getMonthValue()))) {
       return true;
     }
 
     // Easter holidays Good Friday, Easter Monday, Ascension Day, Whit Monday.
     long diffFromEasterSunday = DAYS.between(easterSunday, date);
 
-    List<Long> offSets =
-        new ArrayList<>(
-            Arrays.asList(
-                OFFSET_GOOD_FRIDAY,
-                OFFSET_EASTER_MONDAY,
-                OFFSET_ASCENSION_DAY,
-                OFFSET_WHIT_MONDAY));
+    Builder builder =
+        LongStream.builder()
+            .add(OFFSET_GOOD_FRIDAY)
+            .add(OFFSET_EASTER_MONDAY)
+            .add(OFFSET_ASCENSION_DAY)
+            .add(OFFSET_WHIT_MONDAY);
 
     if (corpusChristiEnabled) {
-      offSets.add(OFFSET_CORPUS_CHRISTI);
+      builder.add(OFFSET_CORPUS_CHRISTI);
     }
-    return offSets.contains(diffFromEasterSunday);
+
+    return builder.build().anyMatch(c -> c == diffFromEasterSunday);
   }
 
   /**
@@ -208,14 +213,6 @@ public final class WorkingDaysToDaysConverter {
     return LocalDate.of(year, 3, 22).plusDays((long) d + e);
   }
 
-  private int calculateDirection(long numberOfDays, ZeroDirection zeroDirection) {
-    if (numberOfDays == 0) {
-      return zeroDirection.getDirection();
-    } else {
-      return numberOfDays >= 0 ? 1 : -1;
-    }
-  }
-
   void refreshReferenceDate(Instant newReferenceDate) {
     int yearOfReferenceDate =
         LocalDateTime.ofInstant(referenceDate, ZoneId.systemDefault()).getYear();
@@ -227,14 +224,21 @@ public final class WorkingDaysToDaysConverter {
     this.referenceDate = newReferenceDate;
   }
 
+  private int calculateDirection(long numberOfDays, ZeroDirection zeroDirection) {
+    if (numberOfDays == 0) {
+      return zeroDirection.getDirection();
+    } else {
+      return numberOfDays >= 0 ? 1 : -1;
+    }
+  }
+
   @Override
   public String toString() {
-    return "WorkingDaysToDaysConverter{"
-        + "dateCreated="
+    return "WorkingDaysToDaysConverter [referenceDate="
         + referenceDate
         + ", easterSunday="
         + easterSunday
-        + '}';
+        + "]";
   }
 
   private enum ZeroDirection {
@@ -249,27 +253,6 @@ public final class WorkingDaysToDaysConverter {
 
     public int getDirection() {
       return direction;
-    }
-  }
-
-  /** Enumeration of German holidays. */
-  private enum GermanFixHolidays {
-    NEWYEAR(1, 1),
-    LABOURDAY(5, 1),
-    GERMANUNITY(10, 3),
-    CHRISTMAS1(12, 25),
-    CHRISTMAS2(12, 26);
-
-    private final int month;
-    private final int day;
-
-    GermanFixHolidays(int month, int day) {
-      this.month = month;
-      this.day = day;
-    }
-
-    public boolean matches(LocalDate date) {
-      return date.getDayOfMonth() == day && date.getMonthValue() == month;
     }
   }
 }
