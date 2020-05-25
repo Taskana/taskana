@@ -1,20 +1,16 @@
 package acceptance.task;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.time.Duration;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
-import org.assertj.core.data.TemporalUnitWithinOffset;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
@@ -22,7 +18,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
-import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.TaskanaEngineProxyForTest;
@@ -54,11 +49,13 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   private TaskService taskService;
   private ClassificationService classificationService;
+  private WorkingDaysToDaysConverter converter;
 
   @BeforeEach
   void setup() {
     taskService = taskanaEngine.getTaskService();
     classificationService = taskanaEngine.getClassificationService();
+    converter = WorkingDaysToDaysConverter.initialize();
   }
 
   @WithAccessId(user = "user_1_1", groups = "group_1")
@@ -149,83 +146,6 @@ class CreateTaskAccTest extends AbstractAccTest {
 
     assertThat(createdTask).isNotNull();
     assertThat(createdTask.getCreator()).isEqualTo(CurrentUserContext.getUserid());
-  }
-
-  @WithAccessId(user = "user_1_1", groups = "group_1")
-  @Test
-  void testCreateTaskWithPlanned()
-      throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-          WorkbasketNotFoundException, TaskAlreadyExistException {
-
-    Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
-    Instant instantPlanned = Instant.now().plus(2, ChronoUnit.HOURS);
-    newTask.setClassificationKey("T2100");
-    newTask.setPrimaryObjRef(
-        createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-    newTask.setOwner("user_1_1");
-    newTask.setPlanned(instantPlanned);
-    Task createdTask = taskService.createTask(newTask);
-
-    assertThat(createdTask).isNotNull();
-    assertThat(createdTask.getPlanned()).isEqualTo(instantPlanned);
-    assertThat(createdTask.getCreated()).isBefore(createdTask.getPlanned());
-
-    // verify that planned takes place 2 hours after creation (+- 5 seconds)
-    Instant plannedAdjusted = createdTask.getPlanned().minus(2, ChronoUnit.HOURS);
-    assertThat(plannedAdjusted)
-        .isCloseTo(createdTask.getCreated(), new TemporalUnitWithinOffset(5L, ChronoUnit.SECONDS));
-  }
-
-  @WithAccessId(user = "user_1_1", groups = "group_1")
-  @Test
-  void testCreateTaskWithInvalidPlannedAndDue() {
-
-    Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
-    Instant instantPlanned = Instant.now().plus(2, ChronoUnit.HOURS);
-    newTask.setClassificationKey("T2100");
-    newTask.setPrimaryObjRef(
-        createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-    newTask.setOwner("user_1_1");
-
-    newTask.setPlanned(instantPlanned);
-    newTask.setDue(instantPlanned); // due date not according to service level
-    ThrowingCallable call =
-        () -> {
-          taskService.createTask(newTask);
-        };
-    assertThatThrownBy(call).isInstanceOf(InvalidArgumentException.class);
-  }
-
-  @WithAccessId(user = "user_1_1", groups = "group_1")
-  @Test
-  void testCreateTaskWithValidPlannedAndDue()
-      throws ClassificationNotFoundException, InvalidArgumentException {
-
-    Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
-    long serviceLevelDays = Duration.parse(classification.getServiceLevel()).toDays();
-
-    Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
-    Instant instantPlanned = Instant.now();
-    newTask.setClassificationKey(classification.getKey());
-    newTask.setPrimaryObjRef(
-        createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-    newTask.setOwner("user_1_1");
-
-    WorkingDaysToDaysConverter converter = WorkingDaysToDaysConverter.initialize();
-    // TODO: this is a temporal bug fix because we did not define what happens when a task is
-    // planned on the weekend.
-    long i = converter.convertWorkingDaysToDays(instantPlanned, 0);
-    newTask.setPlanned(instantPlanned.plus(Duration.ofDays(i)));
-    // due date according to service level
-    long calendarDays = converter.convertWorkingDaysToDays(newTask.getPlanned(), serviceLevelDays);
-    Instant shouldBeDueDate = newTask.getPlanned().plus(Duration.ofDays(calendarDays));
-
-    newTask.setDue(shouldBeDueDate);
-    ThrowingCallable call =
-        () -> {
-          taskService.createTask(newTask);
-        };
-    assertThatCode(call).doesNotThrowAnyException();
   }
 
   @WithAccessId(user = "user_1_1", groups = "group_1")
@@ -479,74 +399,6 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
-  void testCalculationOfDueDateAtCreate()
-      throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-          WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException {
-
-    // SL P16D
-    Classification classification = classificationService.getClassification("L110105", "DOMAIN_A");
-    long serviceLevelDays = Duration.parse(classification.getServiceLevel()).toDays();
-    assertThat(serviceLevelDays > 5).isTrue();
-
-    Task newTask = taskService.newTask("USER_1_1", classification.getDomain());
-    newTask.setClassificationKey(classification.getKey());
-    newTask.setPrimaryObjRef(
-        createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-
-    Instant planned = getInstant("2020-05-25T07:00:00");
-    newTask.setPlanned(planned);
-    Task createdTask = taskService.createTask(newTask);
-    assertThat(createdTask.getId()).isNotNull();
-
-    Task readTask = taskService.getTask(createdTask.getId());
-    assertThat(readTask).isNotNull();
-    assertThat(readTask.getPlanned()).isEqualTo(planned);
-
-    long calendarDays =
-        WorkingDaysToDaysConverter.initialize()
-            .convertWorkingDaysToDays(readTask.getPlanned(), serviceLevelDays);
-
-    Instant shouldBeDueDate = readTask.getPlanned().plus(Duration.ofDays(calendarDays));
-    assertThat(shouldBeDueDate).isEqualTo(readTask.getDue());
-  }
-
-  @WithAccessId(user = "user_1_1", groups = "group_1")
-  @Test
-  void testCalculationOfPlannedDateAtCreate()
-      throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-          WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException {
-
-    // SL P16D
-    Classification classification = classificationService.getClassification("L110105", "DOMAIN_A");
-    long serviceLevelDays = Duration.parse(classification.getServiceLevel()).toDays();
-    assertThat(serviceLevelDays > 5).isTrue();
-
-    Task newTask = taskService.newTask("USER_1_1", classification.getDomain());
-    newTask.setClassificationKey(classification.getKey());
-    newTask.setPrimaryObjRef(
-        createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-
-    Instant due = Instant.now().plus(40, ChronoUnit.DAYS);
-    newTask.setDue(due);
-    Task createdTask = taskService.createTask(newTask);
-    assertThat(createdTask.getId()).isNotNull();
-
-    Task readTask = taskService.getTask(createdTask.getId());
-    assertThat(readTask).isNotNull();
-    assertThat(readTask.getDue()).isEqualTo(due);
-
-    long calendarDaysToSubstract =
-        WorkingDaysToDaysConverter.initialize().convertWorkingDaysToDays(due, -serviceLevelDays);
-
-    assertThat(calendarDaysToSubstract < 0).isTrue();
-    assertThat(calendarDaysToSubstract <= -serviceLevelDays).isTrue();
-
-    Instant shouldBePlannedDate = due.plus(Duration.ofDays(calendarDaysToSubstract));
-    assertThat(shouldBePlannedDate).isEqualTo(readTask.getPlanned());
-  }
-
-  @WithAccessId(user = "user_1_1", groups = "group_1")
-  @Test
   void testPrioDurationOfTaskFromAttachmentsAtCreate()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
           WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException {
@@ -599,7 +451,6 @@ class CreateTaskAccTest extends AbstractAccTest {
 
     assertThat(readTask.getPriority()).isEqualTo(99);
 
-    WorkingDaysToDaysConverter converter = WorkingDaysToDaysConverter.initialize(Instant.now());
     long calendarDays = converter.convertWorkingDaysToDays(readTask.getPlanned(), 1);
 
     assertThat(readTask.getPlanned().plus(Duration.ofDays(calendarDays)))
