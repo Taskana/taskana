@@ -75,7 +75,7 @@
         <version.junit.jupiter>5.6.2</version.junit.jupiter>
         <version.junit.vintage.engine>5.5.2</version.junit.vintage.engine>
         <version.log4j>2.13.3</version.log4j>
-        <version.archunit>0.13.1</version.archunit>
+        <version.archunit>0.14.1</version.archunit>
         <version.mockito>3.3.3</version.mockito>
         <version.junit.mockito>3.3.3</version.junit.mockito>
         <!-- byte buddy 1.9.7+ is needed to solve dependency errors with
