@@ -20,22 +20,6 @@ public class AttachmentSummaryRepresentationModel
   protected ObjectReference objectReference;
   protected String channel;
 
-  // TODO: remove this constructor
-  public AttachmentSummaryRepresentationModel() {}
-
-  // TODO: remove this constructor
-  public AttachmentSummaryRepresentationModel(AttachmentSummary attachmentSummary) {
-    this.attachmentId = attachmentSummary.getId();
-    this.taskId = attachmentSummary.getTaskId();
-    this.created = attachmentSummary.getCreated();
-    this.modified = attachmentSummary.getModified();
-    this.received = attachmentSummary.getReceived();
-    this.classificationSummary =
-        new ClassificationSummaryRepresentationModel(attachmentSummary.getClassificationSummary());
-    this.objectReference = attachmentSummary.getObjectReference();
-    this.channel = attachmentSummary.getChannel();
-  }
-
   public String getAttachmentId() {
     return attachmentId;
   }

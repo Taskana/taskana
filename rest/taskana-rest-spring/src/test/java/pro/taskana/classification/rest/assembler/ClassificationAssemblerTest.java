@@ -82,7 +82,7 @@ class ClassificationAssemblerTest {
     classification.setIsValidInDomain(true);
 
     ClassificationRepresentationModel classificationRepresentationModel =
-        new ClassificationRepresentationModel(classification);
+        classificationRepresentationModelAssembler.toModel(classification);
 
     // when
     classification =

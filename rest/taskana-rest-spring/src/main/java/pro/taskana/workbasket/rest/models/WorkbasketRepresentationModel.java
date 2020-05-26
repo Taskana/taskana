@@ -10,18 +10,8 @@ import pro.taskana.workbasket.api.models.Workbasket;
 public class WorkbasketRepresentationModel
     extends WorkbasketSummaryRepresentationModel {
 
-
   private Instant created; // ISO-8601
   private Instant modified; // ISO-8601
-
-  public WorkbasketRepresentationModel() {
-  }
-
-  public WorkbasketRepresentationModel(Workbasket workbasket) {
-    super(workbasket);
-    this.created = workbasket.getCreated();
-    this.modified = workbasket.getModified();
-  }
 
   public Instant getCreated() {
     return created;

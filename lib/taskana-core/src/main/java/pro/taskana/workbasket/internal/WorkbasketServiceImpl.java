@@ -41,16 +41,18 @@ import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 
-/** This is the implementation of WorkbasketService. */
+/**
+ * This is the implementation of WorkbasketService.
+ */
 public class WorkbasketServiceImpl implements WorkbasketService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketServiceImpl.class);
   private static final String ID_PREFIX_WORKBASKET = "WBI";
   private static final String ID_PREFIX_WORKBASKET_AUTHORIZATION = "WAI";
-  private InternalTaskanaEngine taskanaEngine;
-  private WorkbasketMapper workbasketMapper;
-  private DistributionTargetMapper distributionTargetMapper;
-  private WorkbasketAccessMapper workbasketAccessMapper;
+  private final InternalTaskanaEngine taskanaEngine;
+  private final WorkbasketMapper workbasketMapper;
+  private final DistributionTargetMapper distributionTargetMapper;
+  private final WorkbasketAccessMapper workbasketAccessMapper;
 
   public WorkbasketServiceImpl(
       InternalTaskanaEngine taskanaEngine,
@@ -117,7 +119,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
   public Workbasket createWorkbasket(Workbasket newWorkbasket)
       throws InvalidWorkbasketException, NotAuthorizedException, WorkbasketAlreadyExistException,
           DomainNotFoundException {
-    LOGGER.debug("entry to createtWorkbasket(workbasket)", newWorkbasket);
+    LOGGER.debug("entry to createWorkbasket(workbasket) with Workbasket {}", newWorkbasket);
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
 
     WorkbasketImpl workbasket = (WorkbasketImpl) newWorkbasket;
@@ -869,7 +871,6 @@ public class WorkbasketServiceImpl implements WorkbasketService {
    * @param oldWorkbasket the old workbasket in the system
    * @param workbasketImplToUpdate the workbasket to update
    * @throws ConcurrencyException if the workbasket has been modified by some other process.
-   * @throws WorkbasketNotFoundException if the given workbasket does not exist.
    */
   void checkModifiedHasNotChanged(Workbasket oldWorkbasket, WorkbasketImpl workbasketImplToUpdate)
       throws ConcurrencyException {
@@ -920,7 +921,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
       return true;
     }
 
-    if (Arrays.stream(requestedPermissions).anyMatch(WorkbasketPermission.READ::equals)) {
+    if (Arrays.asList(requestedPermissions).contains(WorkbasketPermission.READ)) {
 
       if (taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN)) {
         LOGGER.debug("Skipping read permissions check since user is in role ADMIN");

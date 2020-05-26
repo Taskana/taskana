@@ -3,14 +3,11 @@ package pro.taskana.task.rest.models;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.hateoas.RepresentationModel;
 
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.models.ObjectReference;
-import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 
@@ -60,56 +57,6 @@ public class TaskSummaryRepresentationModel
   protected String custom16;
   private List<AttachmentSummaryRepresentationModel> attachmentSummaries =
       new ArrayList<>();
-
-  TaskSummaryRepresentationModel() {
-  }
-
-  public TaskSummaryRepresentationModel(TaskSummary taskSummary) throws InvalidArgumentException {
-    this.taskId = taskSummary.getId();
-    this.externalId = taskSummary.getExternalId();
-    created = taskSummary.getCreated();
-    claimed = taskSummary.getClaimed();
-    completed = taskSummary.getCompleted();
-    modified = taskSummary.getModified();
-    planned = taskSummary.getPlanned();
-    due = taskSummary.getDue();
-    this.name = taskSummary.getName();
-    this.creator = taskSummary.getCreator();
-    this.note = taskSummary.getNote();
-    this.description = taskSummary.getDescription();
-    this.priority = taskSummary.getPriority();
-    this.state = taskSummary.getState();
-    this.classificationSummary =
-        new ClassificationSummaryRepresentationModel(taskSummary.getClassificationSummary());
-    this.workbasketSummary =
-        new WorkbasketSummaryRepresentationModel(taskSummary.getWorkbasketSummary());
-    this.businessProcessId = taskSummary.getBusinessProcessId();
-    this.parentBusinessProcessId = taskSummary.getParentBusinessProcessId();
-    this.owner = taskSummary.getOwner();
-    this.primaryObjRef = taskSummary.getPrimaryObjRef();
-    this.isRead = taskSummary.isRead();
-    this.isTransferred = taskSummary.isTransferred();
-    this.attachmentSummaries =
-        taskSummary.getAttachmentSummaries().stream()
-            .map(AttachmentSummaryRepresentationModel::new)
-            .collect(Collectors.toList());
-    this.custom1 = taskSummary.getCustomAttribute("1");
-    this.custom2 = taskSummary.getCustomAttribute("2");
-    this.custom3 = taskSummary.getCustomAttribute("3");
-    this.custom4 = taskSummary.getCustomAttribute("4");
-    this.custom5 = taskSummary.getCustomAttribute("5");
-    this.custom6 = taskSummary.getCustomAttribute("6");
-    this.custom7 = taskSummary.getCustomAttribute("7");
-    this.custom8 = taskSummary.getCustomAttribute("8");
-    this.custom9 = taskSummary.getCustomAttribute("9");
-    this.custom10 = taskSummary.getCustomAttribute("10");
-    this.custom11 = taskSummary.getCustomAttribute("11");
-    this.custom12 = taskSummary.getCustomAttribute("12");
-    this.custom13 = taskSummary.getCustomAttribute("13");
-    this.custom14 = taskSummary.getCustomAttribute("14");
-    this.custom15 = taskSummary.getCustomAttribute("15");
-    this.custom16 = taskSummary.getCustomAttribute("16");
-  }
 
   public String getTaskId() {
     return taskId;
@@ -426,33 +373,5 @@ public class TaskSummaryRepresentationModel
     this.custom16 = custom16;
   }
 
-  @Override
-  public String toString() {
-    return "TaskSummaryResource ["
-        + "taskId= "
-        + this.taskId
-        + "externalId= "
-        + this.externalId
-        + "created= "
-        + this.created
-        + "modified= "
-        + this.modified
-        + "claimed= "
-        + this.claimed
-        + "completed= "
-        + this.completed
-        + "planned= "
-        + this.planned
-        + "due= "
-        + this.due
-        + "name= "
-        + this.name
-        + "creator= "
-        + this.creator
-        + "priority= "
-        + this.priority
-        + "owner= "
-        + this.owner
-        + "]";
-  }
+
 }

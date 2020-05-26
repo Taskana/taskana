@@ -13,16 +13,6 @@ public class ClassificationRepresentationModel extends ClassificationSummaryRepr
   private Instant modified; // ISO-8601
   private String description;
 
-  public ClassificationRepresentationModel() {}
-
-  public ClassificationRepresentationModel(Classification classification) {
-    super(classification);
-    this.isValidInDomain = classification.getIsValidInDomain();
-    this.created = classification.getCreated();
-    this.modified = classification.getModified();
-    this.description = classification.getDescription();
-  }
-
   public Boolean getIsValidInDomain() {
     return isValidInDomain;
   }

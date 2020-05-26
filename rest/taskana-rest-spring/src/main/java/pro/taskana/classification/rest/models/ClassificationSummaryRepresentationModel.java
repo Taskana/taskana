@@ -30,31 +30,6 @@ public class ClassificationSummaryRepresentationModel
   protected String custom7;
   protected String custom8;
 
-  public ClassificationSummaryRepresentationModel() {
-  }
-
-  public ClassificationSummaryRepresentationModel(ClassificationSummary classification) {
-    classificationId = classification.getId();
-    applicationEntryPoint = classification.getApplicationEntryPoint();
-    category = classification.getCategory();
-    domain = classification.getDomain();
-    key = classification.getKey();
-    name = classification.getName();
-    parentId = classification.getParentId();
-    parentKey = classification.getParentKey();
-    priority = classification.getPriority();
-    serviceLevel = classification.getServiceLevel();
-    type = classification.getType();
-    custom1 = classification.getCustom1();
-    custom2 = classification.getCustom2();
-    custom3 = classification.getCustom3();
-    custom4 = classification.getCustom4();
-    custom5 = classification.getCustom5();
-    custom6 = classification.getCustom6();
-    custom7 = classification.getCustom7();
-    custom8 = classification.getCustom8();
-  }
-
   public String getClassificationId() {
     return classificationId;
   }
@@ -205,49 +180,5 @@ public class ClassificationSummaryRepresentationModel
 
   public void setCustom8(String custom8) {
     this.custom8 = custom8;
-  }
-
-  @Override
-  public String toString() {
-    return "ClassificationSummaryResource ["
-        + "classificationId="
-        + this.classificationId
-        + ", applicationEntryPoint="
-        + this.applicationEntryPoint
-        + ", category="
-        + this.category
-        + ", domain="
-        + this.domain
-        + ", key="
-        + this.key
-        + ", name="
-        + this.name
-        + ", parentId="
-        + this.parentId
-        + ", parentKey="
-        + this.parentKey
-        + ", priority="
-        + this.priority
-        + ", serviceLevel="
-        + this.serviceLevel
-        + ", type="
-        + this.type
-        + ", custom1="
-        + this.custom1
-        + ", custom2="
-        + this.custom2
-        + ", custom3="
-        + this.custom3
-        + ", custom4="
-        + this.custom4
-        + ", custom5="
-        + this.custom5
-        + ", custom6="
-        + this.custom6
-        + ", custom7="
-        + this.custom7
-        + ", custom8="
-        + this.custom8
-        + "]";
   }
 }

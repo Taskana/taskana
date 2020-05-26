@@ -44,6 +44,7 @@ import pro.taskana.workbasket.api.models.WorkbasketSummary;
 import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 import pro.taskana.workbasket.rest.assembler.WorkbasketDefinitionRepresentationModelAssembler;
+import pro.taskana.workbasket.rest.assembler.WorkbasketRepresentationModelAssembler;
 import pro.taskana.workbasket.rest.models.WorkbasketDefinitionRepresentationModel;
 import pro.taskana.workbasket.rest.models.WorkbasketRepresentationModel;
 
@@ -57,19 +58,22 @@ public class WorkbasketDefinitionController {
 
   private final WorkbasketService workbasketService;
   private final WorkbasketDefinitionRepresentationModelAssembler workbasketDefinitionAssembler;
+  private final WorkbasketRepresentationModelAssembler workbasketAssembler;
   private final ObjectMapper mapper;
 
   @Autowired
   WorkbasketDefinitionController(
       WorkbasketService workbasketService,
       WorkbasketDefinitionRepresentationModelAssembler workbasketDefinitionAssembler,
+      WorkbasketRepresentationModelAssembler workbasketAssembler,
       ObjectMapper mapper) {
     this.workbasketService = workbasketService;
     this.workbasketDefinitionAssembler = workbasketDefinitionAssembler;
+    this.workbasketAssembler = workbasketAssembler;
     this.mapper = mapper;
   }
 
-  @GetMapping(path = Mapping.URL_WORKBASKETDEFIITIONS)
+  @GetMapping(path = Mapping.URL_WORKBASKETDEFINITIONS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskanaPagedModel<WorkbasketDefinitionRepresentationModel>>
       exportWorkbaskets(@RequestParam(required = false) String domain) {
@@ -118,7 +122,7 @@ public class WorkbasketDefinitionController {
    *     workbasket and access_id already exists.
    * @throws ConcurrencyException if workbasket was updated by an other user
    */
-  @PostMapping(path = Mapping.URL_WORKBASKETDEFIITIONS)
+  @PostMapping(path = Mapping.URL_WORKBASKETDEFINITIONS)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<Void> importWorkbaskets(@RequestParam("file") MultipartFile file)
       throws IOException, NotAuthorizedException, DomainNotFoundException,
@@ -212,7 +216,7 @@ public class WorkbasketDefinitionController {
   }
 
   private Workbasket removeId(Workbasket importedWb) {
-    WorkbasketRepresentationModel wbRes = new WorkbasketRepresentationModel(importedWb);
+    WorkbasketRepresentationModel wbRes = workbasketAssembler.toModel(importedWb);
     wbRes.setWorkbasketId(null);
     return workbasketDefinitionAssembler.toEntityModel(wbRes);
   }

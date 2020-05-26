@@ -4,7 +4,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.lang.NonNull;
@@ -26,21 +25,32 @@ public class AttachmentRepresentationModelAssembler
 
   private final TaskService taskService;
 
-  private final ClassificationSummaryRepresentationModelAssembler classificationAssembler;
+  private final ClassificationSummaryRepresentationModelAssembler classificationSummaryAssembler;
 
   @Autowired
-  public AttachmentRepresentationModelAssembler(TaskService taskService,
-      ClassificationSummaryRepresentationModelAssembler classificationAssembler) {
+  public AttachmentRepresentationModelAssembler(
+      TaskService taskService,
+      ClassificationSummaryRepresentationModelAssembler classificationSummaryAssembler) {
     this.taskService = taskService;
-    this.classificationAssembler = classificationAssembler;
+    this.classificationSummaryAssembler = classificationSummaryAssembler;
   }
 
   @NonNull
   @Override
   public AttachmentRepresentationModel toModel(@NonNull Attachment attachment) {
-    AttachmentRepresentationModel resource = new AttachmentRepresentationModel(attachment);
-    resource.add(linkTo(AttachmentController.class).slash(attachment.getId()).withSelfRel());
-    return resource;
+    AttachmentRepresentationModel repModel = new AttachmentRepresentationModel();
+    repModel.setAttachmentId(attachment.getId());
+    repModel.setTaskId(attachment.getTaskId());
+    repModel.setCreated(attachment.getCreated());
+    repModel.setModified(attachment.getModified());
+    repModel.setReceived(attachment.getReceived());
+    repModel.setClassificationSummary(
+        classificationSummaryAssembler.toModel(attachment.getClassificationSummary()));
+    repModel.setObjectReference(attachment.getObjectReference());
+    repModel.setChannel(attachment.getChannel());
+    repModel.setCustomAttributes(attachment.getCustomAttributes());
+    repModel.add(linkTo(AttachmentController.class).slash(attachment.getId()).withSelfRel());
+    return repModel;
   }
 
   public List<Attachment> toAttachmentList(List<AttachmentRepresentationModel> resources) {
@@ -50,10 +60,18 @@ public class AttachmentRepresentationModelAssembler
   private AttachmentImpl toEntityModel(
       AttachmentRepresentationModel attachmentRepresentationModel) {
     AttachmentImpl attachment = (AttachmentImpl) taskService.newAttachment();
-    BeanUtils.copyProperties(attachmentRepresentationModel, attachment);
     attachment.setId(attachmentRepresentationModel.getAttachmentId());
-    attachment.setClassificationSummary(classificationAssembler.toEntityModel(
-        attachmentRepresentationModel.getClassificationSummary()));
+    attachment.setTaskId(attachmentRepresentationModel.getTaskId());
+    attachment.setCreated(attachmentRepresentationModel.getCreated());
+    attachment.setModified(attachmentRepresentationModel.getModified());
+    attachment.setReceived(attachmentRepresentationModel.getReceived());
+    attachment.setClassificationSummary(
+        classificationSummaryAssembler.toEntityModel(
+            attachmentRepresentationModel.getClassificationSummary()));
+    attachment.setObjectReference(attachmentRepresentationModel.getObjectReference());
+    attachment.setChannel(attachmentRepresentationModel.getChannel());
+    attachment.setCustomAttributes(attachmentRepresentationModel.getCustomAttributes());
     return attachment;
   }
 }
+

@@ -43,7 +43,7 @@ public final class Mapping {
       URL_WORKBASKET_ID + "/workbasketAccessItems";
   public static final String URL_WORKBASKET_ID_DISTRIBUTION =
       URL_WORKBASKET_ID + "/distribution-targets";
-  public static final String URL_WORKBASKETDEFIITIONS = PRE + "workbasket-definitions";
+  public static final String URL_WORKBASKETDEFINITIONS = PRE + "workbasket-definitions";
 
   private Mapping() {}
 }

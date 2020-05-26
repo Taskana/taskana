@@ -7,7 +7,6 @@ import static pro.taskana.common.rest.models.TaskanaPagedModelKeys.TASK_COMMENTS
 import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.PagedModel.PageMetadata;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
@@ -39,34 +38,37 @@ public class TaskCommentRepresentationModelAssembler
   @NonNull
   @Override
   public TaskCommentRepresentationModel toModel(@NonNull TaskComment taskComment) {
-    TaskCommentRepresentationModel taskCommentRepresentationModel =
-        new TaskCommentRepresentationModel(taskComment);
+    TaskCommentRepresentationModel repModel =
+        new TaskCommentRepresentationModel();
+    repModel.setTaskCommentId(taskComment.getId());
+    repModel.setTaskId(taskComment.getTaskId());
+    repModel.setTextField(taskComment.getTextField());
+    repModel.setCreator(taskComment.getCreator());
+    repModel.setCreated(taskComment.getCreated().toString());
+    repModel.setModified(taskComment.getModified().toString());
     try {
-      taskCommentRepresentationModel.add(
+      repModel.add(
           linkTo(methodOn(TaskCommentController.class).getTaskComment(taskComment.getId()))
               .withSelfRel());
     } catch (Exception e) {
       throw new SystemException("caught unexpected Exception.", e.getCause());
     }
-
-    return taskCommentRepresentationModel;
+    return repModel;
   }
 
-  public TaskComment toEntityModel(TaskCommentRepresentationModel taskCommentRepresentationModel) {
+  public TaskComment toEntityModel(TaskCommentRepresentationModel repModel) {
 
     TaskCommentImpl taskComment =
-        (TaskCommentImpl) taskService.newTaskComment(taskCommentRepresentationModel.getTaskId());
-    taskComment.setId(taskCommentRepresentationModel.getTaskCommentId());
-
-    BeanUtils.copyProperties(taskCommentRepresentationModel, taskComment);
-
-    if (taskCommentRepresentationModel.getCreated() != null) {
-      taskComment.setCreated(Instant.parse(taskCommentRepresentationModel.getCreated()));
+        (TaskCommentImpl) taskService.newTaskComment(repModel.getTaskId());
+    taskComment.setId(repModel.getTaskCommentId());
+    taskComment.setTextField(repModel.getTextField());
+    taskComment.setCreator(repModel.getCreator());
+    if (repModel.getCreated() != null) {
+      taskComment.setCreated(Instant.parse(repModel.getCreated()));
     }
-    if (taskCommentRepresentationModel.getModified() != null) {
-      taskComment.setModified(Instant.parse(taskCommentRepresentationModel.getModified()));
+    if (repModel.getModified() != null) {
+      taskComment.setModified(Instant.parse(repModel.getModified()));
     }
-
     return taskComment;
   }
 
