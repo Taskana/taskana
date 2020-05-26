@@ -4,6 +4,11 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 
+import pro.taskana.classification.internal.jobs.ClassificationChangedJob;
+import pro.taskana.task.internal.jobs.TaskCleanupJob;
+import pro.taskana.task.internal.jobs.TaskRefreshJob;
+import pro.taskana.workbasket.internal.jobs.WorkbasketCleanupJob;
+
 /**
  * This class holds all data that go into the Job table.
  *
@@ -172,9 +177,20 @@ public class ScheduledJob {
 
   /** This enum controls the type of a job. */
   public enum Type {
-    CLASSIFICATIONCHANGEDJOB,
-    UPDATETASKSJOB,
-    TASKCLEANUPJOB,
-    WORKBASKETCLEANUPJOB;
+    CLASSIFICATIONCHANGEDJOB(ClassificationChangedJob.class.getName()),
+    UPDATETASKSJOB(TaskRefreshJob.class.getName()),
+    TASKCLEANUPJOB(TaskCleanupJob.class.getName()),
+    WORKBASKETCLEANUPJOB(WorkbasketCleanupJob.class.getName()),
+    HISTORYCLEANUPJOB("pro.taskana.simplehistory.impl.HistoryCleanupJob");
+
+    private String clazz;
+
+    Type(String clazz) {
+      this.clazz = clazz;
+    }
+
+    public String getClazz() {
+      return clazz;
+    }
   }
 }

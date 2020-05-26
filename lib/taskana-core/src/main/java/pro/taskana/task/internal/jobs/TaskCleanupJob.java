@@ -2,7 +2,6 @@ package pro.taskana.task.internal.jobs;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,8 +85,10 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
   }
 
   private List<TaskSummary> getTasksCompletedBefore(Instant untilDate) {
+
     LOGGER.debug("entry to getTasksCompletedBefore(untilDate = {})", untilDate);
-    List<TaskSummary> taskList =
+
+    List<TaskSummary> tasksToDelete =
         taskanaEngineImpl
             .getTaskService()
             .createTaskQuery()
@@ -98,45 +99,41 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
     if (allCompletedSameParentBusiness) {
       Map<String, Long> numberParentTasksShouldHave = new HashMap<>();
       Map<String, Long> countParentTask = new HashMap<>();
-      for (TaskSummary task : taskList) {
-        numberParentTasksShouldHave.put(
-            task.getParentBusinessProcessId(),
-            taskanaEngineImpl
-                .getTaskService()
-                .createTaskQuery()
-                .parentBusinessProcessIdIn(task.getParentBusinessProcessId())
-                .count());
-        countParentTask.merge(task.getParentBusinessProcessId(), 1L, Long::sum);
-      }
 
-      List<String> idsList = new ArrayList<>();
-      numberParentTasksShouldHave.forEach(
-          (k, v) -> {
-            if (v.compareTo(countParentTask.get(k)) == 0) {
-              idsList.add(k);
+      tasksToDelete.forEach(
+          task -> {
+            if (!numberParentTasksShouldHave.containsKey(task.getParentBusinessProcessId())) {
+              numberParentTasksShouldHave.put(
+                  task.getParentBusinessProcessId(),
+                  taskanaEngineImpl
+                      .getTaskService()
+                      .createTaskQuery()
+                      .parentBusinessProcessIdIn(task.getParentBusinessProcessId())
+                      .count());
             }
+            countParentTask.merge(task.getParentBusinessProcessId(), 1L, Long::sum);
           });
 
-      if (idsList.isEmpty()) {
-        LOGGER.debug("exit from getTasksCompletedBefore(), returning {}", new ArrayList<>());
-        return new ArrayList<>();
-      }
+      List<String> taskIdsNotAllCompletedSameParentBusiness =
+          numberParentTasksShouldHave.entrySet().stream()
+              .filter(entry -> !entry.getValue().equals(countParentTask.get(entry.getKey())))
+              .map(Map.Entry::getKey)
+              .collect(Collectors.toList());
 
-      String[] ids = new String[idsList.size()];
-      ids = idsList.toArray(ids);
-      taskList =
-          taskanaEngineImpl
-              .getTaskService()
-              .createTaskQuery()
-              .parentBusinessProcessIdIn(ids)
-              .list();
+      tasksToDelete =
+          tasksToDelete.stream()
+              .filter(
+                  taskSummary ->
+                      !taskIdsNotAllCompletedSameParentBusiness.contains(
+                          taskSummary.getParentBusinessProcessId()))
+              .collect(Collectors.toList());
     }
 
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("exit from getTasksCompletedBefore(), returning {}", taskList);
+      LOGGER.debug("exit from getTasksCompletedBefore(), returning {}", tasksToDelete);
     }
 
-    return taskList;
+    return tasksToDelete;
   }
 
   private int deleteTasksTransactionally(List<TaskSummary> tasksToBeDeleted) {

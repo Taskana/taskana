@@ -1,5 +1,6 @@
 package pro.taskana.jobs;
 
+import java.lang.reflect.InvocationTargetException;
 import java.security.Principal;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import pro.taskana.common.api.ScheduledJob.Type;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.internal.jobs.JobRunner;
@@ -30,10 +32,20 @@ public class JobScheduler {
   @Autowired private TaskanaEngine taskanaEngine;
 
   @PostConstruct
-  public void scheduleCleanupJob() {
+  public void scheduleCleanupJob()
+      throws NoSuchMethodException, InvocationTargetException, IllegalAccessException,
+          ClassNotFoundException {
     LOGGER.debug("Entry to scheduleCleanupJob.");
     TaskCleanupJob.initializeSchedule(taskanaEngine);
     WorkbasketCleanupJob.initializeSchedule(taskanaEngine);
+
+    if (taskanaEngine.isHistoryEnabled()) {
+      Thread.currentThread()
+          .getContextClassLoader()
+          .loadClass(Type.HISTORYCLEANUPJOB.getClazz())
+          .getDeclaredMethod("initializeSchedule", TaskanaEngine.class)
+          .invoke(null, taskanaEngine);
+    }
     LOGGER.debug("Exit from scheduleCleanupJob.");
   }
 
