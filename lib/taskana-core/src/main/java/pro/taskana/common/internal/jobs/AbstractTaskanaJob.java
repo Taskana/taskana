@@ -1,5 +1,6 @@
 package pro.taskana.common.internal.jobs;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -32,7 +33,9 @@ public abstract class AbstractTaskanaJob implements TaskanaJob {
 
   public static TaskanaJob createFromScheduledJob(
       TaskanaEngine engine, TaskanaTransactionProvider<Object> txProvider, ScheduledJob job)
-      throws TaskanaException {
+      throws TaskanaException, ClassNotFoundException, IllegalAccessException,
+          InstantiationException, InvocationTargetException {
+
     switch (job.getType()) {
       case CLASSIFICATIONCHANGEDJOB:
         return new ClassificationChangedJob(engine, txProvider, job);
@@ -42,6 +45,14 @@ public abstract class AbstractTaskanaJob implements TaskanaJob {
         return new TaskCleanupJob(engine, txProvider, job);
       case WORKBASKETCLEANUPJOB:
         return new WorkbasketCleanupJob(engine, txProvider, job);
+      case HISTORYCLEANUPJOB:
+        return (TaskanaJob)
+            Thread.currentThread()
+                .getContextClassLoader()
+                .loadClass(job.getType().getClazz())
+                .getConstructors()[0]
+                .newInstance(engine, txProvider, job);
+
       default:
         throw new TaskanaException(
             "No matching job found for "
