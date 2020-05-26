@@ -8,26 +8,23 @@ SET PROP_FILE=%HOMEPATH%\taskanaUnitTest.properties
     ECHO PRESS a number to select your task - anthing to EXIT.
     ECHO -----------------------------------------------------
     ECHO.
-    ECHO 1 - Start DB2 10.5
-    ECHO 2 - Stop  DB2 10.5
+    ECHO 1 - Start DB2 11.1
+    ECHO 2 - Stop  DB2 11.1
     ECHO.
-    ECHO 3 - Start DB2 11.1
-    ECHO 4 - Stop  DB2 11.1
+    ECHO 3 - Start POSTGRES 10.4
+    ECHO 4 - Stop  POSTGRES 10.4
     ECHO.
-    ECHO 5 - Start POSTGRES 10.4
-    ECHO 6 - Stop  POSTGRES 10.4
-    ECHO.
-    ECHO 7 - Stop all
-    ECHO 8 - Remove %PROP_FILE%
+    ECHO 5 - Stop all
+    ECHO 6 - Remove %PROP_FILE%
     ECHO.
     SET /P MENU=Select task then press ENTER:
     ECHO.
-    IF [%MENU%]==[3] GOTO START_DB2_11_1
-    IF [%MENU%]==[4] GOTO STOP_DB2_11_1
-    IF [%MENU%]==[5] GOTO START_POSTGRES_10
-    IF [%MENU%]==[6] GOTO STOP_POSTGRES_10
-    IF [%MENU%]==[7] GOTO STOP_ALL
-    IF [%MENU%]==[8] GOTO REMOVE_PROP
+    IF [%MENU%]==[1] GOTO START_DB2_11_1
+    IF [%MENU%]==[2] GOTO STOP_DB2_11_1
+    IF [%MENU%]==[3] GOTO START_POSTGRES_10
+    IF [%MENU%]==[4] GOTO STOP_POSTGRES_10
+    IF [%MENU%]==[5] GOTO STOP_ALL
+    IF [%MENU%]==[6] GOTO REMOVE_PROP
     EXIT /B
 
 :START_DB2_11_1
