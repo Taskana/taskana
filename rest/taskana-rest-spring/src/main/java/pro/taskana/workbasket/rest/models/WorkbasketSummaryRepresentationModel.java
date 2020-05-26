@@ -28,28 +28,6 @@ public class WorkbasketSummaryRepresentationModel
   protected String orgLevel4;
   private boolean markedForDeletion;
 
-  public WorkbasketSummaryRepresentationModel() {
-  }
-
-  public WorkbasketSummaryRepresentationModel(WorkbasketSummary workbasketSummary) {
-    this.workbasketId = workbasketSummary.getId();
-    this.key = workbasketSummary.getKey();
-    this.name = workbasketSummary.getName();
-    this.domain = workbasketSummary.getDomain();
-    this.type = workbasketSummary.getType();
-    this.description = workbasketSummary.getDescription();
-    this.owner = workbasketSummary.getOwner();
-    this.markedForDeletion = workbasketSummary.isMarkedForDeletion();
-    this.custom1 = workbasketSummary.getCustom1();
-    this.custom2 = workbasketSummary.getCustom2();
-    this.custom3 = workbasketSummary.getCustom3();
-    this.custom4 = workbasketSummary.getCustom4();
-    this.orgLevel1 = workbasketSummary.getOrgLevel1();
-    this.orgLevel2 = workbasketSummary.getOrgLevel2();
-    this.orgLevel3 = workbasketSummary.getOrgLevel3();
-    this.orgLevel4 = workbasketSummary.getOrgLevel4();
-  }
-
   public String getWorkbasketId() {
     return workbasketId;
   }
@@ -178,21 +156,4 @@ public class WorkbasketSummaryRepresentationModel
     this.markedForDeletion = markedForDeletion;
   }
 
-  @Override
-  public String toString() {
-    return "WorkbasketSummaryResource ["
-        + "workbasketId= "
-        + this.workbasketId
-        + "key= "
-        + this.key
-        + "name= "
-        + this.name
-        + "domain= "
-        + this.domain
-        + "type= "
-        + this.type
-        + "owner= "
-        + this.owner
-        + "]";
-  }
 }

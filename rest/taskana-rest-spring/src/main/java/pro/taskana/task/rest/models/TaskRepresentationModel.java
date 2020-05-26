@@ -4,10 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.task.api.models.Task;
+import pro.taskana.task.rest.assembler.AttachmentRepresentationModelAssembler;
 
 /**
  * EntityModel class for {@link Task}.
@@ -16,30 +15,11 @@ import pro.taskana.task.api.models.Task;
 public class TaskRepresentationModel extends TaskSummaryRepresentationModel {
 
 
+  protected AttachmentRepresentationModelAssembler attachmentAssembler;
   // All objects have to be serializable
   private List<CustomAttribute> customAttributes = Collections.emptyList();
   private List<CustomAttribute> callbackInfo = Collections.emptyList();
   private List<AttachmentRepresentationModel> attachments = new ArrayList<>();
-
-  public TaskRepresentationModel() {
-  }
-
-  public TaskRepresentationModel(Task task) throws InvalidArgumentException {
-    super(task);
-    customAttributes =
-        task.getCustomAttributes().entrySet().stream()
-            .map(e -> new TaskRepresentationModel.CustomAttribute(e.getKey(), e.getValue()))
-            .collect(Collectors.toList());
-    callbackInfo =
-        task.getCallbackInfo().entrySet().stream()
-            .map(e -> new TaskRepresentationModel.CustomAttribute(e.getKey(), e.getValue()))
-            .collect(Collectors.toList());
-
-    attachments =
-        task.getAttachments().stream()
-            .map(AttachmentRepresentationModel::new)
-            .collect(Collectors.toList());
-  }
 
   public List<CustomAttribute> getCustomAttributes() {
     return customAttributes;
@@ -63,38 +43,6 @@ public class TaskRepresentationModel extends TaskSummaryRepresentationModel {
 
   public void setAttachments(List<AttachmentRepresentationModel> attachments) {
     this.attachments = attachments;
-  }
-
-  @Override
-  public String toString() {
-    return "TaskResource ["
-               + "taskId= "
-               + this.taskId
-               + "externalId= "
-               + this.externalId
-               + "created= "
-               + this.created
-               + "modified= "
-               + this.modified
-               + "claimed= "
-               + this.claimed
-               + "completed= "
-               + this.completed
-               + "planned= "
-               + this.planned
-               + "due= "
-               + this.due
-               + "name= "
-               + this.name
-               + "creator= "
-               + this.creator
-               + "description= "
-               + this.description
-               + "priority= "
-               + this.priority
-               + "owner= "
-               + this.owner
-               + "]";
   }
 
   /**
@@ -125,9 +73,5 @@ public class TaskRepresentationModel extends TaskSummaryRepresentationModel {
       return value;
     }
 
-    @Override
-    public String toString() {
-      return "CustomAttribute [" + "key= " + this.key + "value= " + this.value + "]";
-    }
   }
 }

@@ -3,7 +3,6 @@ package pro.taskana.workbasket.rest.assembler;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.lang.NonNull;
@@ -37,24 +36,52 @@ public class WorkbasketRepresentationModelAssembler
 
   @NonNull
   @Override
-  public WorkbasketRepresentationModel toModel(@NonNull Workbasket wb) {
+  public WorkbasketRepresentationModel toModel(@NonNull Workbasket workbasket) {
+    WorkbasketRepresentationModel repModel = new WorkbasketRepresentationModel();
+    repModel.setWorkbasketId(workbasket.getId());
+    repModel.setKey(workbasket.getKey());
+    repModel.setName(workbasket.getName());
+    repModel.setDomain(workbasket.getDomain());
+    repModel.setType(workbasket.getType());
+    repModel.setDescription(workbasket.getDescription());
+    repModel.setOwner(workbasket.getOwner());
+    repModel.setMarkedForDeletion(workbasket.isMarkedForDeletion());
+    repModel.setCustom1(workbasket.getCustom1());
+    repModel.setCustom2(workbasket.getCustom2());
+    repModel.setCustom3(workbasket.getCustom3());
+    repModel.setCustom4(workbasket.getCustom4());
+    repModel.setOrgLevel1(workbasket.getOrgLevel1());
+    repModel.setOrgLevel2(workbasket.getOrgLevel2());
+    repModel.setOrgLevel3(workbasket.getOrgLevel3());
+    repModel.setOrgLevel4(workbasket.getOrgLevel4());
+    repModel.setCreated(workbasket.getCreated());
+    repModel.setModified(workbasket.getModified());
     try {
-      WorkbasketRepresentationModel resource = new WorkbasketRepresentationModel(wb);
-      return addLinks(resource, wb);
+      return addLinks(repModel, workbasket);
     } catch (Exception e) {
       throw new SystemException("caught unexpected Exception.", e.getCause());
     }
   }
 
-  public Workbasket toEntityModel(WorkbasketRepresentationModel wbResource) {
-    String wbKey = wbResource.getKey();
-    String wbDomain = wbResource.getDomain();
-    WorkbasketImpl workbasket = (WorkbasketImpl) workbasketService.newWorkbasket(wbKey, wbDomain);
-    BeanUtils.copyProperties(wbResource, workbasket);
-
-    workbasket.setId(wbResource.getWorkbasketId());
-    workbasket.setModified(wbResource.getModified());
-    workbasket.setCreated(wbResource.getCreated());
+  public Workbasket toEntityModel(WorkbasketRepresentationModel repModel) {
+    WorkbasketImpl workbasket = (WorkbasketImpl) workbasketService.newWorkbasket(repModel.getKey(),
+        repModel.getDomain());
+    workbasket.setId(repModel.getWorkbasketId());
+    workbasket.setName(repModel.getName());
+    workbasket.setType(repModel.getType());
+    workbasket.setDescription(repModel.getDescription());
+    workbasket.setOwner(repModel.getOwner());
+    workbasket.setMarkedForDeletion(repModel.getMarkedForDeletion());
+    workbasket.setCustom1(repModel.getCustom1());
+    workbasket.setCustom2(repModel.getCustom2());
+    workbasket.setCustom3(repModel.getCustom3());
+    workbasket.setCustom4(repModel.getCustom4());
+    workbasket.setOrgLevel1(repModel.getOrgLevel1());
+    workbasket.setOrgLevel2(repModel.getOrgLevel2());
+    workbasket.setOrgLevel3(repModel.getOrgLevel3());
+    workbasket.setOrgLevel4(repModel.getOrgLevel4());
+    workbasket.setCreated(repModel.getCreated());
+    workbasket.setModified(repModel.getModified());
     return workbasket;
   }
 

@@ -123,9 +123,7 @@ class WorkbasketDefinitionControllerIntTest {
     assertThat(pagedModel).isNotNull();
     WorkbasketDefinitionRepresentationModel w = pagedModel.getContent().iterator().next();
     w.setDistributionTargets(new HashSet<>());
-
     this.expectStatusWhenExecutingImportRequestOfWorkbaskets(HttpStatus.NO_CONTENT, w);
-
     w.getWorkbasket().setKey("newKey");
     w.getAuthorizations().forEach(authorization -> authorization.setWorkbasketKey("newKey"));
     expectStatusWhenExecutingImportRequestOfWorkbaskets(HttpStatus.NO_CONTENT, w);
@@ -263,11 +261,12 @@ class WorkbasketDefinitionControllerIntTest {
   private ResponseEntity<TaskanaPagedModel<WorkbasketDefinitionRepresentationModel>>
       executeExportRequestForDomain(String domain) {
     return TEMPLATE.exchange(
-        restHelper.toUrl(Mapping.URL_WORKBASKETDEFIITIONS) + "?domain=" + domain,
+        restHelper.toUrl(Mapping.URL_WORKBASKETDEFINITIONS) + "?domain=" + domain,
         HttpMethod.GET,
         restHelper.defaultRequest(),
-        new ParameterizedTypeReference<
-            TaskanaPagedModel<WorkbasketDefinitionRepresentationModel>>() {});
+        new ParameterizedTypeReference<TaskanaPagedModel<WorkbasketDefinitionRepresentationModel>>(
+        ) {
+        });
   }
 
   private void expectStatusWhenExecutingImportRequestOfWorkbaskets(
@@ -293,7 +292,7 @@ class WorkbasketDefinitionControllerIntTest {
     body.add("file", new FileSystemResource(tmpFile));
 
     HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-    String serverUrl = restHelper.toUrl(Mapping.URL_WORKBASKETDEFIITIONS);
+    String serverUrl = restHelper.toUrl(Mapping.URL_WORKBASKETDEFINITIONS);
 
     ResponseEntity<Void> responseImport =
         TEMPLATE.postForEntity(serverUrl, requestEntity, Void.class);

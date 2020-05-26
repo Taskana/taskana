@@ -5,7 +5,6 @@ import static pro.taskana.common.rest.models.TaskanaPagedModelKeys.WORKBASKETS;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.PagedModel.PageMetadata;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
@@ -41,15 +40,44 @@ public class WorkbasketSummaryRepresentationModelAssembler implements
   @Override
   public WorkbasketSummaryRepresentationModel toModel(
       @NonNull WorkbasketSummary workbasketSummary) {
-    return new WorkbasketSummaryRepresentationModel(workbasketSummary);
+    WorkbasketSummaryRepresentationModel repModel = new WorkbasketSummaryRepresentationModel();
+    repModel.setWorkbasketId(workbasketSummary.getId());
+    repModel.setKey(workbasketSummary.getKey());
+    repModel.setName(workbasketSummary.getName());
+    repModel.setDomain(workbasketSummary.getDomain());
+    repModel.setType(workbasketSummary.getType());
+    repModel.setDescription(workbasketSummary.getDescription());
+    repModel.setOwner(workbasketSummary.getOwner());
+    repModel.setMarkedForDeletion(workbasketSummary.isMarkedForDeletion());
+    repModel.setCustom1(workbasketSummary.getCustom1());
+    repModel.setCustom2(workbasketSummary.getCustom2());
+    repModel.setCustom3(workbasketSummary.getCustom3());
+    repModel.setCustom4(workbasketSummary.getCustom4());
+    repModel.setOrgLevel1(workbasketSummary.getOrgLevel1());
+    repModel.setOrgLevel2(workbasketSummary.getOrgLevel2());
+    repModel.setOrgLevel3(workbasketSummary.getOrgLevel3());
+    repModel.setOrgLevel4(workbasketSummary.getOrgLevel4());
+    return repModel;
   }
 
-  public WorkbasketSummary toEntityModel(WorkbasketSummaryRepresentationModel resource) {
+  public WorkbasketSummary toEntityModel(WorkbasketSummaryRepresentationModel repModel) {
     WorkbasketImpl workbasket =
-        (WorkbasketImpl) workbasketService.newWorkbasket(resource.getKey(), resource.getDomain());
-    workbasket.setId(resource.getWorkbasketId());
-    BeanUtils.copyProperties(resource, workbasket);
-    return workbasket.asSummary();
+        (WorkbasketImpl) workbasketService.newWorkbasket(repModel.getKey(), repModel.getDomain());
+    workbasket.setId(repModel.getWorkbasketId());
+    workbasket.setName(repModel.getName());
+    workbasket.setType(repModel.getType());
+    workbasket.setDescription(repModel.getDescription());
+    workbasket.setOwner(repModel.getOwner());
+    workbasket.setMarkedForDeletion(repModel.getMarkedForDeletion());
+    workbasket.setCustom1(repModel.getCustom1());
+    workbasket.setCustom2(repModel.getCustom2());
+    workbasket.setCustom3(repModel.getCustom3());
+    workbasket.setCustom4(repModel.getCustom4());
+    workbasket.setOrgLevel1(repModel.getOrgLevel1());
+    workbasket.setOrgLevel2(repModel.getOrgLevel2());
+    workbasket.setOrgLevel3(repModel.getOrgLevel3());
+    workbasket.setOrgLevel4(repModel.getOrgLevel4());
+    return workbasket;
   }
 
   @PageLinks(Mapping.URL_WORKBASKET)

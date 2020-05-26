@@ -38,7 +38,8 @@ class WorkbasketDefinitionControllerRestDocumentation extends BaseRestDocumentat
   void exportAllWorkbasketDefinitions() throws Exception {
     this.mockMvc
         .perform(
-            RestDocumentationRequestBuilders.get(restHelper.toUrl(Mapping.URL_WORKBASKETDEFIITIONS))
+            RestDocumentationRequestBuilders
+                .get(restHelper.toUrl(Mapping.URL_WORKBASKETDEFINITIONS))
                 .accept("application/json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -63,7 +64,7 @@ class WorkbasketDefinitionControllerRestDocumentation extends BaseRestDocumentat
 
     this.mockMvc
         .perform(
-            multipart(restHelper.toUrl(Mapping.URL_WORKBASKETDEFIITIONS))
+            multipart(restHelper.toUrl(Mapping.URL_WORKBASKETDEFINITIONS))
                 .file("file", definitionString.getBytes(UTF_8))
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isNoContent())

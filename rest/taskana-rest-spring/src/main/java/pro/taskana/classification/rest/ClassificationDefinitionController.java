@@ -69,7 +69,7 @@ public class ClassificationDefinitionController {
   @GetMapping(path = Mapping.URL_CLASSIFICATIONDEFINITION)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskanaPagedModel<ClassificationRepresentationModel>> exportClassifications(
-      @RequestParam(required = false) String domain) throws ClassificationNotFoundException {
+      @RequestParam(required = false) String domain) {
     LOGGER.debug("Entry to exportClassifications(domain= {})", domain);
     ClassificationQuery query = classificationService.createClassificationQuery();
 

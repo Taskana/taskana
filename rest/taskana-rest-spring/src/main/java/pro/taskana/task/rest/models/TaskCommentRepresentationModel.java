@@ -15,17 +15,6 @@ public class TaskCommentRepresentationModel
   private String created;
   private String modified;
 
-  public TaskCommentRepresentationModel() {}
-
-  public TaskCommentRepresentationModel(TaskComment taskComment) {
-    this.taskCommentId = taskComment.getId();
-    this.taskId = taskComment.getTaskId();
-    this.textField = taskComment.getTextField();
-    this.creator = taskComment.getCreator();
-    this.created = taskComment.getCreated().toString();
-    this.modified = taskComment.getModified().toString();
-  }
-
   public String getTaskCommentId() {
     return taskCommentId;
   }
@@ -74,20 +63,4 @@ public class TaskCommentRepresentationModel
     this.modified = modified;
   }
 
-  @Override
-  public String toString() {
-    return "TaskCommentResource [taskCommentId="
-        + taskCommentId
-        + ", taskId="
-        + taskId
-        + ", textField="
-        + textField
-        + ", creator="
-        + creator
-        + ", created="
-        + created
-        + ", modified="
-        + modified
-        + "]";
-  }
 }
