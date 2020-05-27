@@ -82,6 +82,7 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>${version.maven.resources}</version>
                 <executions>
@@ -98,7 +99,7 @@
                             <resources>
                                 <resource>
                                     <directory>
-                                        ${project.build.directory}/generated-docs
+                                        ../taskana-simplehistory-rest-spring/target/generated-docs
                                     </directory>
                                 </resource>
                             </resources>
