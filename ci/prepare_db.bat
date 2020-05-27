@@ -11,8 +11,8 @@ SET PROP_FILE=%HOMEPATH%\taskanaUnitTest.properties
     ECHO 1 - Start DB2 11.1
     ECHO 2 - Stop  DB2 11.1
     ECHO.
-    ECHO 3 - Start POSTGRES 10.4
-    ECHO 4 - Stop  POSTGRES 10.4
+    ECHO 3 - Start POSTGRES 10
+    ECHO 4 - Stop  POSTGRES 10
     ECHO.
     ECHO 5 - Stop all
     ECHO 6 - Remove %PROP_FILE%
