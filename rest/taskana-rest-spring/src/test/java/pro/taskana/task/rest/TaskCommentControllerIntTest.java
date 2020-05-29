@@ -3,7 +3,6 @@ package pro.taskana.task.rest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Instant;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeAll;
@@ -152,9 +151,6 @@ class TaskCommentControllerIntTest {
 
   @Test
   void should_FailToUpdateTaskComment_When_TaskCommentWasModifiedConcurrently() {
-
-    final ObjectMapper mapper = new ObjectMapper();
-
     String url =
         restHelper.toUrl(Mapping.URL_TASK_COMMENT, "TCI:000000000000000000000000000000000000");
 
@@ -178,7 +174,7 @@ class TaskCommentControllerIntTest {
               url,
               HttpMethod.PUT,
               new HttpEntity<>(
-                  mapper.writeValueAsString(taskCommentRepresentationModelToUpdate),
+                  taskCommentRepresentationModelToUpdate,
                   restHelper.getHeadersUser_1_1()),
               ParameterizedTypeReference.forType(TaskCommentRepresentationModel.class));
         };
@@ -190,9 +186,6 @@ class TaskCommentControllerIntTest {
   @Disabled("Disabled until Authorization check is up!")
   @Test
   void should_FailToUpdateTaskComment_When_UserHasNoAuthorization() {
-
-    final ObjectMapper mapper = new ObjectMapper();
-
     String url =
         restHelper.toUrl(Mapping.URL_TASK_COMMENT, "TCI:000000000000000000000000000000000000");
 
@@ -211,15 +204,13 @@ class TaskCommentControllerIntTest {
     taskCommentRepresentationModelToUpdate.setTextField("updated textfield");
 
     ThrowingCallable httpCall =
-        () -> {
-          template.exchange(
-              url,
-              HttpMethod.PUT,
-              new HttpEntity<>(
-                  mapper.writeValueAsString(taskCommentRepresentationModelToUpdate),
-                  restHelper.getHeadersUser_1_2()),
-              ParameterizedTypeReference.forType(TaskCommentRepresentationModel.class));
-        };
+        () -> template.exchange(
+            url,
+            HttpMethod.PUT,
+            new HttpEntity<>(
+                taskCommentRepresentationModelToUpdate,
+                restHelper.getHeadersUser_1_2()),
+            ParameterizedTypeReference.forType(TaskCommentRepresentationModel.class));
     assertThatThrownBy(httpCall)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
         .isEqualTo(HttpStatus.FORBIDDEN);
@@ -228,7 +219,6 @@ class TaskCommentControllerIntTest {
   @Test
   void should_FailToUpdateTaskComment_When_TaskCommentIdInResourceDoesNotMatchPathVariable() {
 
-    final ObjectMapper mapper = new ObjectMapper();
 
     String url =
         restHelper.toUrl(Mapping.URL_TASK_COMMENT, "TCI:000000000000000000000000000000000000");
@@ -254,7 +244,7 @@ class TaskCommentControllerIntTest {
               url,
               HttpMethod.PUT,
               new HttpEntity<>(
-                  mapper.writeValueAsString(taskCommentRepresentationModelToUpdate),
+                  taskCommentRepresentationModelToUpdate,
                   restHelper.getHeadersUser_1_1()),
               ParameterizedTypeReference.forType(TaskCommentRepresentationModel.class));
         };
