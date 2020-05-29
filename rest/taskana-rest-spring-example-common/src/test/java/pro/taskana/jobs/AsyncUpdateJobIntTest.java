@@ -3,7 +3,6 @@ package pro.taskana.jobs;
 import static org.assertj.core.api.Assertions.assertThat;
 import static pro.taskana.RestHelper.TEMPLATE;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,20 +44,17 @@ class AsyncUpdateJobIntTest {
   private final TaskRepresentationModelAssembler taskRepresentationModelAssembler;
   private final JobScheduler jobScheduler;
   private final RestHelper restHelper;
-  private final ObjectMapper mapper;
 
   @Autowired
   AsyncUpdateJobIntTest(
       ClassificationRepresentationModelAssembler classificationRepresentationModelAssembler,
       TaskRepresentationModelAssembler taskRepresentationModelAssembler,
       JobScheduler jobScheduler,
-      RestHelper restHelper,
-      ObjectMapper mapper) {
+      RestHelper restHelper) {
     this.classificationRepresentationModelAssembler = classificationRepresentationModelAssembler;
     this.taskRepresentationModelAssembler = taskRepresentationModelAssembler;
     this.jobScheduler = jobScheduler;
     this.restHelper = restHelper;
-    this.mapper = mapper;
   }
 
   @Test
@@ -83,9 +79,9 @@ class AsyncUpdateJobIntTest {
     classification.setServiceLevel("P5D");
     classification.setPriority(1000);
 
-    TEMPLATE.put(
-        restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, CLASSIFICATION_ID),
-        new HttpEntity<>(mapper.writeValueAsString(classification), restHelper.getHeaders()));
+    TEMPLATE.exchange(restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, CLASSIFICATION_ID),
+        HttpMethod.PUT, new HttpEntity<>(classification, restHelper.getHeaders()),
+        ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
 
     // trigger jobs twice to refresh all entries. first entry on the first call and follow up on the
     // seconds call

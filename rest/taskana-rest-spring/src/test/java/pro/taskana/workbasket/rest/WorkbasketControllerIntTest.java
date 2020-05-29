@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static pro.taskana.common.rest.RestHelper.TEMPLATE;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Instant;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
@@ -42,12 +41,10 @@ class WorkbasketControllerIntTest {
           new ParameterizedTypeReference<
               TaskanaPagedModel<WorkbasketSummaryRepresentationModel>>() {};
   private final RestHelper restHelper;
-  private final ObjectMapper mapper;
 
   @Autowired
-  WorkbasketControllerIntTest(RestHelper restHelper, ObjectMapper mapper) {
+  WorkbasketControllerIntTest(RestHelper restHelper) {
     this.restHelper = restHelper;
-    this.mapper = mapper;
   }
 
   @Test
@@ -153,7 +150,7 @@ class WorkbasketControllerIntTest {
               restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketId),
               HttpMethod.PUT,
               new HttpEntity<>(
-                  mapper.writeValueAsString(workbasketRepresentationModel),
+                  workbasketRepresentationModel,
                   restHelper.getHeaders()),
               ParameterizedTypeReference.forType(WorkbasketRepresentationModel.class));
         };
