@@ -28,6 +28,7 @@ import { ClassificationCategoryImages,
   getCustomFields } from '../../../shared/models/customisation';
 
 import { CreateClassification,
+  RemoveSelectedClassification,
   RestoreSelectedClassification,
   SaveClassification } from '../../../shared/store/classification-store/classification.actions';
 
