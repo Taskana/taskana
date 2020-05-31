@@ -42,12 +42,11 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 @SuppressWarnings({"checkstyle:LineLength"})
 public class ServiceLevelPriorityAccTest extends AbstractAccTest {
 
-  private TaskService taskService;
-  private ClassificationService classificationService;
-  private WorkingDaysToDaysConverter converter;
+  private final TaskService taskService;
+  private final ClassificationService classificationService;
+  private final WorkingDaysToDaysConverter converter;
 
   ServiceLevelPriorityAccTest() {
-    super();
     WorkingDaysToDaysConverter.setGermanPublicHolidaysEnabled(true);
     taskService = taskanaEngine.getTaskService();
     classificationService = taskanaEngine.getClassificationService();
@@ -173,9 +172,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
-  void should_VerifyThatCreateAndPlannedAreClose()
-      throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-                 WorkbasketNotFoundException, TaskAlreadyExistException {
+  void should_VerifyThatCreateAndPlannedAreClose() throws Exception {
 
     Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
     Instant planned = moveForwardToWorkingDay(Instant.now().plus(2, ChronoUnit.HOURS));
@@ -190,17 +187,17 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     assertThat(createdTask.getPlanned()).isEqualTo(planned);
     assertThat(createdTask.getCreated()).isBefore(createdTask.getPlanned());
 
-    // verify that planned takes place 2 hours after creation (+- 5 seconds)
-    Instant plannedAdjusted = createdTask.getPlanned().minus(2, ChronoUnit.HOURS);
-    assertThat(plannedAdjusted)
-        .isCloseTo(createdTask.getCreated(), new TemporalUnitWithinOffset(5L, ChronoUnit.SECONDS));
+    assertThat(createdTask.getPlanned())
+        .isCloseTo(
+            moveForwardToWorkingDay(createdTask.getCreated()),
+            new TemporalUnitWithinOffset(2L, ChronoUnit.HOURS));
   }
 
   /* UPDATE TASK */
 
   @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
-  public void should_ThrowException_When_DueAndPlannedAreChangedInconsistently() throws Exception {
+  void should_ThrowException_When_DueAndPlannedAreChangedInconsistently() throws Exception {
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000"); // P1D
     task.setDue(Instant.parse("2020-07-02T00:00:00Z"));
@@ -654,13 +651,5 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     task = taskService.updateTask(task);
     assertThat(task.getDue()).isEqualTo(getInstant("2020-04-14T07:00:00")); // Tuesday
     assertThat(task.getPlanned()).isEqualTo(getInstant("2020-04-09T07:00:00")); // Thursday
-  }
-
-  protected Instant moveForwardToWorkingDay(Instant date) {
-    return converter.addWorkingDaysToInstant(date, Duration.ofDays(0));
-  }
-
-  protected Instant moveBackToWorkingDay(Instant date) {
-    return converter.subtractWorkingDaysFromInstant(date, Duration.ofDays(0));
   }
 }

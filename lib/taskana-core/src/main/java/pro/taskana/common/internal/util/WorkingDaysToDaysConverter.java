@@ -32,11 +32,7 @@ public final class WorkingDaysToDaysConverter {
   private static final long OFFSET_ASCENSION_DAY = 39; // Himmelfahrt
   private static final long OFFSET_WHIT_MONDAY = 50; // Pfingstmontag
   private static final long OFFSET_CORPUS_CHRISTI = 60; // Fronleichnam
-
-  private static boolean germanHolidaysEnabled;
-  private static boolean corpusChristiEnabled; // Fronleichnam
-  private static Set<CustomHoliday> customHolidays = new HashSet<>();
-  private static Set<CustomHoliday> germanHolidays =
+  private static final Set<CustomHoliday> GERMAN_HOLIDAYS =
       new HashSet<>(
           Arrays.asList(
               CustomHoliday.of(1, 1), // new year
@@ -45,6 +41,10 @@ public final class WorkingDaysToDaysConverter {
               CustomHoliday.of(25, 12), // Christmas
               CustomHoliday.of(26, 12) // Christmas
               ));
+
+  private static boolean germanHolidaysEnabled;
+  private static boolean corpusChristiEnabled; // Fronleichnam
+  private static Set<CustomHoliday> customHolidays = new HashSet<>();
   private Instant referenceDate;
   private LocalDate easterSunday;
 
@@ -163,7 +163,7 @@ public final class WorkingDaysToDaysConverter {
   }
 
   public boolean isGermanHoliday(LocalDate date) {
-    if (germanHolidays.contains(CustomHoliday.of(date.getDayOfMonth(), date.getMonthValue()))) {
+    if (GERMAN_HOLIDAYS.contains(CustomHoliday.of(date.getDayOfMonth(), date.getMonthValue()))) {
       return true;
     }
 

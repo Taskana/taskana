@@ -1,6 +1,7 @@
 package acceptance;
 
 import java.sql.SQLException;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -8,8 +9,9 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeAll;
 
@@ -19,6 +21,7 @@ import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.internal.TaskanaEngineTestConfiguration;
+import pro.taskana.common.internal.util.WorkingDaysToDaysConverter;
 import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.ObjectReference;
@@ -28,6 +31,12 @@ public abstract class AbstractAccTest {
 
   protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
   protected static TaskanaEngine taskanaEngine;
+  protected static WorkingDaysToDaysConverter converter;
+
+  public AbstractAccTest() {
+    WorkingDaysToDaysConverter.setGermanPublicHolidaysEnabled(true);
+    converter = WorkingDaysToDaysConverter.initialize();
+  }
 
   @BeforeAll
   public static void setupTest() throws Exception {
@@ -62,11 +71,9 @@ public abstract class AbstractAccTest {
   }
 
   protected Map<String, String> createSimpleCustomProperties(int propertiesCount) {
-    HashMap<String, String> properties = new HashMap<>();
-    for (int i = 1; i <= propertiesCount; i++) {
-      properties.put("Property_" + i, "Property Value of Property_" + i);
-    }
-    return properties;
+    return IntStream.rangeClosed(1, propertiesCount)
+        .mapToObj(String::valueOf)
+        .collect(Collectors.toMap("Property_"::concat, "Property Value of Property_"::concat));
   }
 
   protected Attachment createAttachment(
@@ -113,5 +120,13 @@ public abstract class AbstractAccTest {
 
   protected Instant getInstant(String datetime) {
     return LocalDateTime.parse(datetime).atZone(ZoneId.of("UTC")).toInstant();
+  }
+
+  protected Instant moveForwardToWorkingDay(Instant date) {
+    return converter.addWorkingDaysToInstant(date, Duration.ZERO);
+  }
+
+  protected Instant moveBackToWorkingDay(Instant date) {
+    return converter.subtractWorkingDaysFromInstant(date, Duration.ZERO);
   }
 }

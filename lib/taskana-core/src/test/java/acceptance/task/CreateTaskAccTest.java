@@ -5,18 +5,16 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.time.Duration;
-import java.util.HashMap;
+import java.time.Instant;
 import java.util.Map;
 import java.util.function.Consumer;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
@@ -24,7 +22,6 @@ import pro.taskana.common.internal.TaskanaEngineProxyForTest;
 import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
-import pro.taskana.common.internal.util.WorkingDaysToDaysConverter;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.InvalidStateException;
@@ -41,22 +38,11 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketInUseException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 
-// import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-
 /** Acceptance test for all "create task" scenarios. */
 @ExtendWith(JaasExtension.class)
 class CreateTaskAccTest extends AbstractAccTest {
 
-  private TaskService taskService;
-  private ClassificationService classificationService;
-  private WorkingDaysToDaysConverter converter;
-
-  @BeforeEach
-  void setup() {
-    taskService = taskanaEngine.getTaskService();
-    classificationService = taskanaEngine.getClassificationService();
-    converter = WorkingDaysToDaysConverter.initialize();
-  }
+  private final TaskService taskService = taskanaEngine.getTaskService();
 
   @WithAccessId(user = "user_1_1", groups = "group_1")
   @Test
@@ -86,6 +72,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     newTask.setPrimaryObjRef(objectReference);
     newTask.setOwner("user_1_1");
     Task createdTask = taskService.createTask(newTask);
+    Instant expectedPlanned = moveForwardToWorkingDay(createdTask.getCreated());
 
     assertThat(createdTask).isNotNull();
     assertThat(createdTask.getCreator()).isEqualTo(CurrentUserContext.getUserid());
@@ -99,7 +86,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(createdTask.getClaimed()).isNull();
     assertThat(createdTask.getCompleted()).isNull();
     assertThat(createdTask.getModified()).isEqualTo(createdTask.getCreated());
-    assertThat(createdTask.getPlanned()).isEqualTo(createdTask.getCreated());
+    assertThat(createdTask.getPlanned()).isEqualTo(expectedPlanned);
     assertThat(createdTask.getState()).isEqualTo(TaskState.READY);
     assertThat(createdTask.getParentBusinessProcessId()).isNull();
     assertThat(createdTask.getPriority()).isEqualTo(2);
@@ -160,6 +147,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
     Task createdTask = taskService.createTask(newTask);
+    Instant expectedPlanned = moveForwardToWorkingDay(createdTask.getCreated());
 
     assertThat(createdTask).isNotNull();
     assertThat(createdTask.getCreator()).isEqualTo(CurrentUserContext.getUserid());
@@ -172,7 +160,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(createdTask.getClaimed()).isNull();
     assertThat(createdTask.getCompleted()).isNull();
     assertThat(createdTask.getModified()).isEqualTo(createdTask.getCreated());
-    assertThat(createdTask.getPlanned()).isEqualTo(createdTask.getCreated());
+    assertThat(createdTask.getPlanned()).isEqualTo(expectedPlanned);
     assertThat(createdTask.getState()).isEqualTo(TaskState.READY);
     assertThat(createdTask.getParentBusinessProcessId()).isNull();
     assertThat(createdTask.getPriority()).isEqualTo(2);
@@ -185,10 +173,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     newTask2.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
 
-    ThrowingCallable call =
-        () -> {
-          taskService.createTask(newTask2);
-        };
+    ThrowingCallable call = () -> taskService.createTask(newTask2);
     assertThatThrownBy(call).isInstanceOf(TaskAlreadyExistException.class);
   }
 
@@ -206,6 +191,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     Map<String, String> customAttributesForCreate = createSimpleCustomProperties(13);
     newTask.setCustomAttributes(customAttributesForCreate);
     Task createdTask = taskService.createTask(newTask);
+    Instant expectedPlanned = moveForwardToWorkingDay(createdTask.getCreated());
 
     assertThat(createdTask).isNotNull();
     assertThat(createdTask.getName()).isEqualTo("T-Vertragstermin VERA");
@@ -216,7 +202,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(createdTask.getClaimed()).isNull();
     assertThat(createdTask.getCompleted()).isNull();
     assertThat(createdTask.getModified()).isEqualTo(createdTask.getCreated());
-    assertThat(createdTask.getPlanned()).isEqualTo(createdTask.getCreated());
+    assertThat(createdTask.getPlanned()).isEqualTo(expectedPlanned);
     assertThat(createdTask.getState()).isEqualTo(TaskState.READY);
     assertThat(createdTask.getParentBusinessProcessId()).isNull();
     assertThat(createdTask.getPriority()).isEqualTo(2);
@@ -462,13 +448,10 @@ class CreateTaskAccTest extends AbstractAccTest {
   void testThrowsExceptionIfAttachmentIsInvalid() throws ClassificationNotFoundException {
 
     Consumer<Attachment> testCreateTask =
-        (Attachment invalidAttachment) -> {
+        invalidAttachment -> {
           Task taskWithInvalidAttachment = makeNewTask(taskService);
           taskWithInvalidAttachment.addAttachment(invalidAttachment);
-          ThrowingCallable call =
-              () -> {
-                taskService.createTask(taskWithInvalidAttachment);
-              };
+          ThrowingCallable call = () -> taskService.createTask(taskWithInvalidAttachment);
           assertThatThrownBy(call)
               .describedAs(
                   "Should have thrown an InvalidArgumentException, "
@@ -560,10 +543,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
 
-    ThrowingCallable call =
-        () -> {
-          taskService.createTask(newTask);
-        };
+    ThrowingCallable call = () -> taskService.createTask(newTask);
     assertThatThrownBy(call).isInstanceOf(WorkbasketNotFoundException.class);
   }
 
@@ -576,10 +556,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
 
-    ThrowingCallable call =
-        () -> {
-          taskService.createTask(newTask);
-        };
+    ThrowingCallable call = () -> taskService.createTask(newTask);
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
@@ -594,10 +571,7 @@ class CreateTaskAccTest extends AbstractAccTest {
           if (objectReference != null) {
             newTask.setPrimaryObjRef(objectReference);
           }
-          ThrowingCallable call =
-              () -> {
-                taskService.createTask(newTask);
-              };
+          ThrowingCallable call = () -> taskService.createTask(newTask);
           assertThatThrownBy(call)
               .describedAs(
                   "Should have thrown an InvalidArgumentException, because ObjRef-ObjRef is null.")
@@ -679,12 +653,10 @@ class CreateTaskAccTest extends AbstractAccTest {
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
 
-    HashMap<String, String> callbackInfo = new HashMap<>();
-    for (int i = 1; i <= 10; i++) {
-      callbackInfo.put("info_" + i, "Value of info_" + i);
-    }
+    Map<String, String> callbackInfo = createSimpleCustomProperties(10);
     newTask.setCallbackInfo(callbackInfo);
     Task createdTask = taskService.createTask(newTask);
+    Instant expectedPlanned = moveForwardToWorkingDay(createdTask.getCreated());
 
     assertThat(createdTask).isNotNull();
     assertThat(createdTask.getPrimaryObjRef().getValue()).isEqualTo("1234567");
@@ -694,7 +666,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(createdTask.getClaimed()).isNull();
     assertThat(createdTask.getCompleted()).isNull();
     assertThat(createdTask.getModified()).isEqualTo(createdTask.getCreated());
-    assertThat(createdTask.getPlanned()).isEqualTo(createdTask.getCreated());
+    assertThat(createdTask.getPlanned()).isEqualTo(expectedPlanned);
     assertThat(createdTask.getState()).isEqualTo(TaskState.READY);
     assertThat(createdTask.getParentBusinessProcessId()).isNull();
     assertThat(createdTask.getPriority()).isEqualTo(2);
@@ -713,10 +685,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_B", "SYSTEM_B", "INSTANCE_B", "VNR", "1234567"));
 
-    ThrowingCallable call =
-        () -> {
-          taskService.createTask(newTask);
-        };
+    ThrowingCallable call = () -> taskService.createTask(newTask);
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
@@ -726,10 +695,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
     Task existingTask = taskService.getTask("TKI:000000000000000000000000000000000000");
 
-    ThrowingCallable call =
-        () -> {
-          taskService.createTask(existingTask);
-        };
+    ThrowingCallable call = () -> taskService.createTask(existingTask);
     assertThatThrownBy(call).isInstanceOf(TaskAlreadyExistException.class);
   }
 
@@ -739,10 +705,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
     Task task = taskService.newTask("TEAMLEAD_2", "DOMAIN_A");
 
-    ThrowingCallable call =
-        () -> {
-          taskService.createTask(task);
-        };
+    ThrowingCallable call = () -> taskService.createTask(task);
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
@@ -755,7 +718,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
     String wbId = "WBI:100000000000000000000000000000000008";
     Task taskToPreventWorkbasketDeletion = taskService.newTask(wbId);
-    taskToPreventWorkbasketDeletion = setTaskProperties(taskToPreventWorkbasketDeletion);
+    setTaskProperties(taskToPreventWorkbasketDeletion);
     taskService.createTask(taskToPreventWorkbasketDeletion);
     taskService.cancelTask(taskToPreventWorkbasketDeletion.getId());
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
