@@ -3,9 +3,8 @@ package pro.taskana.task.api;
 import pro.taskana.common.api.QueryColumnName;
 
 /**
- * Enum containing the column names for TaskQueryMapper.queryTaskColumnValues
+ * Enum containing the column names for TaskQueryMapper.queryTaskColumnValues.
  *
- * @author jsa
  */
 public enum TaskQueryColumnName implements QueryColumnName {
   ID("t.id"),

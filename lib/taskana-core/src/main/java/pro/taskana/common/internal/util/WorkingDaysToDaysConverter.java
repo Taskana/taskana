@@ -135,7 +135,7 @@ public final class WorkingDaysToDaysConverter {
     return instant.plus(Duration.ofDays(days));
   }
 
-  /** counts working days between two dates, exclusive for both margins. */
+  // counts working days between two dates, exclusive for both margins.
   public boolean hasWorkingDaysInBetween(Instant left, Instant right) {
     long days = Duration.between(left, right).abs().toDays();
     Instant firstInstant = left.isBefore(right) ? left : right;

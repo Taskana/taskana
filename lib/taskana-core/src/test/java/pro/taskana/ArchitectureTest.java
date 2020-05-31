@@ -27,7 +27,7 @@ import org.junit.jupiter.api.function.ThrowingConsumer;
 
 /**
  * Test architecture of classes in taskana. For more info and examples see
- * https://www.archunit.org/userguide/html/000_Index.html
+ * https://www.archunit.org/userguide/html/000_Index.html.
  */
 class ArchitectureTest {
   private static final List<String> TASKANA_SUB_PACKAGES =
@@ -133,7 +133,7 @@ class ArchitectureTest {
         p -> assertThat(importedClasses.containPackage(p)).isTrue());
   }
 
-  /**
+  /*
    * Test for cycles with subpackages
    * https://www.archunit.org/userguide/html/000_Index.html#_cycle_checks
    */

@@ -4,7 +4,7 @@ import pro.taskana.common.api.QueryColumnName;
 
 /**
  * Enum containing the column names for
- * pro.taskana.workbasket.internal.WorkbasketQueryMapper.queryWorkbasketColumnValues
+ * pro.taskana.workbasket.internal.WorkbasketQueryMapper.queryWorkbasketColumnValues.
  *
  * @author jsa
  */
