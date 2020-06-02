@@ -160,13 +160,13 @@ class TaskCommentControllerIntTest {
             HttpMethod.GET,
             new HttpEntity<String>(restHelper.getHeadersAdmin()),
             ParameterizedTypeReference.forType(TaskCommentRepresentationModel.class));
-    assertThat(getTaskCommentResponse.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(getTaskCommentResponse.getBody().getCreator()).isEqualTo("user_1_1");
-    assertThat(getTaskCommentResponse.getBody().getTextField()).isEqualTo("some text in textfield");
+    assertThat(getTaskCommentResponse.getBody()).isNotNull();
+    TaskCommentRepresentationModel taskCommentToUpdate = getTaskCommentResponse.getBody();
+    assertThat(taskCommentToUpdate.getLink(IanaLinkRelations.SELF)).isNotNull();
+    assertThat(taskCommentToUpdate.getCreator()).isEqualTo("user_1_1");
+    assertThat(taskCommentToUpdate.getTextField()).isEqualTo("some text in textfield");
 
-    TaskCommentRepresentationModel taskCommentRepresentationModelToUpdate =
-        getTaskCommentResponse.getBody();
-    taskCommentRepresentationModelToUpdate.setModified(Instant.now().toString());
+    taskCommentToUpdate.setModified(Instant.now());
 
     ThrowingCallable httpCall =
         () -> {
@@ -174,7 +174,7 @@ class TaskCommentControllerIntTest {
               url,
               HttpMethod.PUT,
               new HttpEntity<>(
-                  taskCommentRepresentationModelToUpdate,
+                  taskCommentToUpdate,
                   restHelper.getHeadersUser_1_1()),
               ParameterizedTypeReference.forType(TaskCommentRepresentationModel.class));
         };

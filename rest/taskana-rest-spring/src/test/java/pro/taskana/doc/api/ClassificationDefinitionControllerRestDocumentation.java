@@ -37,7 +37,7 @@ class ClassificationDefinitionControllerRestDocumentation extends BaseRestDocume
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.get(
-                    restHelper.toUrl(Mapping.URL_CLASSIFICATIONDEFINITION))
+                    restHelper.toUrl(Mapping.URL_CLASSIFICATIONDEFINITIONS))
                 .accept("application/json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -54,7 +54,7 @@ class ClassificationDefinitionControllerRestDocumentation extends BaseRestDocume
 
     this.mockMvc
         .perform(
-            multipart(restHelper.toUrl(Mapping.URL_CLASSIFICATIONDEFINITION))
+            multipart(restHelper.toUrl(Mapping.URL_CLASSIFICATIONDEFINITIONS))
                 .file("file", definitionString.getBytes(UTF_8))
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isNoContent())

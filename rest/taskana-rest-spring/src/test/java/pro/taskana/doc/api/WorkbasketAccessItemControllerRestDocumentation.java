@@ -113,7 +113,7 @@ class WorkbasketAccessItemControllerRestDocumentation extends BaseRestDocumentat
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.get(
-                    restHelper.toUrl(Mapping.URL_WORKBASKETACCESSITEMS)
+                    restHelper.toUrl(Mapping.URL_WORKBASKET_ACCESS_ITEMS)
                         + "?sort-by=workbasket-key&order=asc&access-ids=user_2_2")
                 .accept("application/hal+json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
@@ -129,7 +129,7 @@ class WorkbasketAccessItemControllerRestDocumentation extends BaseRestDocumentat
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.delete(
-                    restHelper.toUrl(Mapping.URL_WORKBASKETACCESSITEMS) + "?access-id=user_2_2")
+                    restHelper.toUrl(Mapping.URL_WORKBASKET_ACCESS_ITEMS) + "?access-id=user_2_2")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isNoContent())
         .andDo(MockMvcRestDocumentation.document("RemoveWorkbasketAccessItemsDocTest"));

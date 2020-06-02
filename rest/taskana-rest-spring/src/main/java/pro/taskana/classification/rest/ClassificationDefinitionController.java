@@ -66,7 +66,7 @@ public class ClassificationDefinitionController {
     this.classificationRepresentationModelAssembler = classificationRepresentationModelAssembler;
   }
 
-  @GetMapping(path = Mapping.URL_CLASSIFICATIONDEFINITION)
+  @GetMapping(path = Mapping.URL_CLASSIFICATIONDEFINITIONS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskanaPagedModel<ClassificationRepresentationModel>> exportClassifications(
       @RequestParam(required = false) String domain) {
@@ -93,7 +93,7 @@ public class ClassificationDefinitionController {
     return response;
   }
 
-  @PostMapping(path = Mapping.URL_CLASSIFICATIONDEFINITION)
+  @PostMapping(path = Mapping.URL_CLASSIFICATIONDEFINITIONS)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<Void> importClassifications(@RequestParam("file") MultipartFile file)
       throws InvalidArgumentException, NotAuthorizedException, ConcurrencyException,

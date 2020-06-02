@@ -261,7 +261,7 @@ class WorkbasketDefinitionControllerIntTest {
   private ResponseEntity<TaskanaPagedModel<WorkbasketDefinitionRepresentationModel>>
       executeExportRequestForDomain(String domain) {
     return TEMPLATE.exchange(
-        restHelper.toUrl(Mapping.URL_WORKBASKETDEFINITIONS) + "?domain=" + domain,
+        restHelper.toUrl(Mapping.URL_WORKBASKET_DEFINITIONS) + "?domain=" + domain,
         HttpMethod.GET,
         restHelper.defaultRequest(),
         new ParameterizedTypeReference<TaskanaPagedModel<WorkbasketDefinitionRepresentationModel>>(
@@ -292,7 +292,7 @@ class WorkbasketDefinitionControllerIntTest {
     body.add("file", new FileSystemResource(tmpFile));
 
     HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-    String serverUrl = restHelper.toUrl(Mapping.URL_WORKBASKETDEFINITIONS);
+    String serverUrl = restHelper.toUrl(Mapping.URL_WORKBASKET_DEFINITIONS);
 
     ResponseEntity<Void> responseImport =
         TEMPLATE.postForEntity(serverUrl, requestEntity, Void.class);

@@ -54,8 +54,8 @@ class TaskCommentRepresentationModelAssemblerTest {
     taskCommentRepresentationModel.setTaskId("TKI:000000000000000000000000000000000000");
     taskCommentRepresentationModel.setTaskCommentId("TCI:000000000000000000000000000000000000");
     taskCommentRepresentationModel.setCreator("user_1_1");
-    taskCommentRepresentationModel.setCreated("2010-01-01T12:00:00Z");
-    taskCommentRepresentationModel.setModified("2011-11-11T11:00:00Z");
+    taskCommentRepresentationModel.setCreated(Instant.parse("2010-01-01T12:00:00Z"));
+    taskCommentRepresentationModel.setModified(Instant.parse("2011-11-11T11:00:00Z"));
 
     TaskComment taskComment =
         taskCommentRepresentationModelAssembler.toEntityModel(taskCommentRepresentationModel);

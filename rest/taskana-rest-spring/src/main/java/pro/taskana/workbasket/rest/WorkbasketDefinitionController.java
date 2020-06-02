@@ -73,7 +73,7 @@ public class WorkbasketDefinitionController {
     this.mapper = mapper;
   }
 
-  @GetMapping(path = Mapping.URL_WORKBASKETDEFINITIONS)
+  @GetMapping(path = Mapping.URL_WORKBASKET_DEFINITIONS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskanaPagedModel<WorkbasketDefinitionRepresentationModel>>
       exportWorkbaskets(@RequestParam(required = false) String domain) {
@@ -122,7 +122,7 @@ public class WorkbasketDefinitionController {
    *     workbasket and access_id already exists.
    * @throws ConcurrencyException if workbasket was updated by an other user
    */
-  @PostMapping(path = Mapping.URL_WORKBASKETDEFINITIONS)
+  @PostMapping(path = Mapping.URL_WORKBASKET_DEFINITIONS)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<Void> importWorkbaskets(@RequestParam("file") MultipartFile file)
       throws IOException, NotAuthorizedException, DomainNotFoundException,

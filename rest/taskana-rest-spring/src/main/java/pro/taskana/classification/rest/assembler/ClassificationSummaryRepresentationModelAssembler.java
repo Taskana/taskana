@@ -35,8 +35,8 @@ public class ClassificationSummaryRepresentationModelAssembler
   @Override
   public ClassificationSummaryRepresentationModel toModel(
       @NonNull ClassificationSummary classificationSummary) {
-    ClassificationSummaryRepresentationModel repModel
-        = new ClassificationSummaryRepresentationModel();
+    ClassificationSummaryRepresentationModel repModel =
+        new ClassificationSummaryRepresentationModel();
     repModel.setClassificationId(classificationSummary.getId());
     repModel.setApplicationEntryPoint(classificationSummary.getApplicationEntryPoint());
     repModel.setCategory(classificationSummary.getCategory());
@@ -62,8 +62,8 @@ public class ClassificationSummaryRepresentationModelAssembler
   public ClassificationSummary toEntityModel(ClassificationSummaryRepresentationModel repModel) {
     ClassificationImpl classification =
         (ClassificationImpl)
-            classificationService
-                .newClassification(repModel.getKey(), repModel.getDomain(), repModel.getType());
+            classificationService.newClassification(
+                repModel.getKey(), repModel.getDomain(), repModel.getType());
     classification.setId(repModel.getClassificationId());
     classification.setApplicationEntryPoint(repModel.getApplicationEntryPoint());
     classification.setCategory(repModel.getCategory());
@@ -88,10 +88,10 @@ public class ClassificationSummaryRepresentationModelAssembler
     return CLASSIFICATIONS;
   }
 
-  @PageLinks(Mapping.URL_CLASSIFICATIONS)
   @Override
+  @PageLinks(Mapping.URL_CLASSIFICATIONS)
   public TaskanaPagedModel<ClassificationSummaryRepresentationModel> toPageModel(
-      Iterable<? extends ClassificationSummary> entities, PageMetadata pageMetadata) {
+      Iterable<ClassificationSummary> entities, PageMetadata pageMetadata) {
     return TaskanaPagingAssembler.super.toPageModel(entities, pageMetadata);
   }
 }

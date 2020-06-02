@@ -52,7 +52,7 @@ class MonitorControllerRestDocumentation extends BaseRestDocumentation {
   void getTaskStatusReport() throws Exception {
     this.mockMvc
         .perform(
-            RestDocumentationRequestBuilders.get(restHelper.toUrl(Mapping.URL_MONITOR_TASKSSTATUS))
+            RestDocumentationRequestBuilders.get(restHelper.toUrl(Mapping.URL_MONITOR_TASKS_STATUS))
                 .header("Authorization", "Basic YWRtaW46YWRtaW4="))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andDo(
@@ -65,7 +65,7 @@ class MonitorControllerRestDocumentation extends BaseRestDocumentation {
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.get(
-                    restHelper.toUrl(Mapping.URL_MONITOR_TASKSWORKBASKET)
+                    restHelper.toUrl(Mapping.URL_MONITOR_TASKS_WORKBASKET)
                         + "?daysInPast=4&states=READY,CLAIMED,COMPLETED")
                 .accept("application/hal+json")
                 .header("Authorization", "Basic YWRtaW46YWRtaW4="))
@@ -80,7 +80,7 @@ class MonitorControllerRestDocumentation extends BaseRestDocumentation {
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.get(
-                    restHelper.toUrl(Mapping.URL_MONITOR_TASKSCLASSIFICATION))
+                    restHelper.toUrl(Mapping.URL_MONITOR_TASKS_CLASSIFICATION))
                 .accept("application/hal+json")
                 .header("Authorization", "Basic YWRtaW46YWRtaW4="))
         .andExpect(MockMvcResultMatchers.status().isOk())

@@ -72,7 +72,7 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
    * @throws NotAuthorizedException   if the user is not authorized.
    * @throws InvalidArgumentException if some argument is invalid.
    */
-  @GetMapping(path = Mapping.URL_WORKBASKETACCESSITEMS)
+  @GetMapping(path = Mapping.URL_WORKBASKET_ACCESS_ITEMS)
   public ResponseEntity<TaskanaPagedModel<WorkbasketAccessItemRepresentationModel>>
         getWorkbasketAccessItems(
       @RequestParam MultiValueMap<String, String> params)
@@ -110,7 +110,7 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
    * @throws NotAuthorizedException if the user is not authorized.
    * @throws InvalidArgumentException if some argument is invalid.
    */
-  @DeleteMapping(path = Mapping.URL_WORKBASKETACCESSITEMS)
+  @DeleteMapping(path = Mapping.URL_WORKBASKET_ACCESS_ITEMS)
   public ResponseEntity<Void> removeWorkbasketAccessItems(
       @RequestParam("access-id") String accessId)
       throws NotAuthorizedException, InvalidArgumentException {

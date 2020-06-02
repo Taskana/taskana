@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.PagedModel.PageMetadata;
-import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +13,9 @@ import pro.taskana.classification.rest.assembler.ClassificationSummaryRepresenta
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.rest.assembler.TaskanaPagingAssembler;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
+import pro.taskana.common.rest.models.TaskanaPagedModelKeys;
 import pro.taskana.resource.rest.PageLinks;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.TaskSummary;
@@ -22,12 +23,10 @@ import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.task.rest.models.TaskSummaryRepresentationModel;
 import pro.taskana.workbasket.rest.assembler.WorkbasketSummaryRepresentationModelAssembler;
 
-/**
- * EntityModel assembler for {@link TaskSummaryRepresentationModel}.
- */
+/** EntityModel assembler for {@link TaskSummaryRepresentationModel}. */
 @Component
 public class TaskSummaryRepresentationModelAssembler
-    implements RepresentationModelAssembler<TaskSummary, TaskSummaryRepresentationModel> {
+    implements TaskanaPagingAssembler<TaskSummary, TaskSummaryRepresentationModel> {
 
   private final ClassificationSummaryRepresentationModelAssembler classificationAssembler;
   private final WorkbasketSummaryRepresentationModelAssembler workbasketAssembler;
@@ -118,8 +117,8 @@ public class TaskSummaryRepresentationModelAssembler
     taskSummary.setState(repModel.getState());
     taskSummary.setClassificationSummary(
         classificationAssembler.toEntityModel(repModel.getClassificationSummary()));
-    taskSummary
-        .setWorkbasketSummary(workbasketAssembler.toEntityModel(repModel.getWorkbasketSummary()));
+    taskSummary.setWorkbasketSummary(
+        workbasketAssembler.toEntityModel(repModel.getWorkbasketSummary()));
     taskSummary.setBusinessProcessId(repModel.getBusinessProcessId());
     taskSummary.setParentBusinessProcessId(repModel.getParentBusinessProcessId());
     taskSummary.setOwner(repModel.getOwner());
@@ -152,11 +151,11 @@ public class TaskSummaryRepresentationModelAssembler
   @PageLinks(Mapping.URL_TASKS)
   public TaskanaPagedModel<TaskSummaryRepresentationModel> toPageModel(
       List<TaskSummary> taskSummaries, PageMetadata pageMetadata) {
-    return taskSummaries.stream()
-               .map(this::toModel)
-               .collect(
-                   Collectors.collectingAndThen(
-                       Collectors.toList(),
-                       list -> new TaskanaPagedModel<>(TASKS, list, pageMetadata)));
+    return TaskanaPagingAssembler.super.toPageModel(taskSummaries, pageMetadata);
+  }
+
+  @Override
+  public TaskanaPagedModelKeys getProperty() {
+    return TASKS;
   }
 }

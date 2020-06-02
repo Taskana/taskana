@@ -15,7 +15,7 @@ public interface TaskanaPagingAssembler<T, D extends RepresentationModel<? super
   TaskanaPagedModelKeys getProperty();
 
   default TaskanaPagedModel<D> toPageModel(
-      Iterable<? extends T> entities, PageMetadata pageMetadata) {
+      Iterable<T> entities, PageMetadata pageMetadata) {
     return StreamSupport.stream(entities.spliterator(), false)
         .map(this::toModel)
         .collect(
@@ -23,7 +23,7 @@ public interface TaskanaPagingAssembler<T, D extends RepresentationModel<? super
                 Collectors.toList(), l -> new TaskanaPagedModel<>(getProperty(), l, pageMetadata)));
   }
 
-  default TaskanaPagedModel<D> toPageModel(Iterable<? extends T> entities) {
+  default TaskanaPagedModel<D> toPageModel(Iterable<T> entities) {
     return toPageModel(entities, null);
   }
 }

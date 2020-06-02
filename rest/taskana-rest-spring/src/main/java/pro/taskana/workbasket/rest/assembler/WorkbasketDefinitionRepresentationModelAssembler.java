@@ -34,16 +34,14 @@ public class WorkbasketDefinitionRepresentationModelAssembler
   private final WorkbasketService workbasketService;
 
   @Autowired
-  public WorkbasketDefinitionRepresentationModelAssembler(WorkbasketService workbasketService,
-      WorkbasketRepresentationModelAssembler workbasketAssembler
-  ) {
+  public WorkbasketDefinitionRepresentationModelAssembler(WorkbasketService workbasketService) {
     this.workbasketService = workbasketService;
   }
 
   @NonNull
   public WorkbasketDefinitionRepresentationModel toModel(@NonNull Workbasket workbasket) {
-    WorkbasketRepresentationModelWithoutLinks basket
-        = new WorkbasketRepresentationModelWithoutLinks();
+    WorkbasketRepresentationModelWithoutLinks basket =
+        new WorkbasketRepresentationModelWithoutLinks();
 
     basket.setKey(workbasket.getKey());
     basket.setModified(workbasket.getModified());
@@ -64,7 +62,7 @@ public class WorkbasketDefinitionRepresentationModelAssembler
     basket.setOrgLevel4(workbasket.getOrgLevel4());
 
     List<WorkbasketAccessItemImpl> authorizations = new ArrayList<>();
-    Set<String> distroTargets = null;
+    Set<String> distroTargets;
     try {
       for (WorkbasketAccessItem accessItem :
           workbasketService.getWorkbasketAccessItems(basket.getWorkbasketId())) {
@@ -78,8 +76,8 @@ public class WorkbasketDefinitionRepresentationModelAssembler
       throw new SystemException("Caught Exception", e);
     }
 
-    WorkbasketDefinitionRepresentationModel repModel
-        = new WorkbasketDefinitionRepresentationModel();
+    WorkbasketDefinitionRepresentationModel repModel =
+        new WorkbasketDefinitionRepresentationModel();
 
     repModel.setWorkbasket(basket);
     repModel.setAuthorizations(authorizations);
@@ -89,8 +87,7 @@ public class WorkbasketDefinitionRepresentationModelAssembler
 
   public Workbasket toEntityModel(WorkbasketRepresentationModel repModel) {
     WorkbasketImpl workbasket =
-        (WorkbasketImpl)
-            workbasketService.newWorkbasket(repModel.getKey(), repModel.getDomain());
+        (WorkbasketImpl) workbasketService.newWorkbasket(repModel.getKey(), repModel.getDomain());
     workbasket.setId(repModel.getWorkbasketId());
     workbasket.setName(repModel.getName());
     workbasket.setType(repModel.getType());
