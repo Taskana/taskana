@@ -8,13 +8,13 @@ public final class Mapping {
   public static final String URL_ACCESSID_GROUPS = URL_ACCESSID + "/groups";
   public static final String URL_CLASSIFICATIONS = PRE + "classifications";
   public static final String URL_CLASSIFICATIONS_ID = URL_CLASSIFICATIONS + "/{classificationId}";
-  public static final String URL_CLASSIFICATIONDEFINITION = PRE + "classification-definitions";
+  public static final String URL_CLASSIFICATIONDEFINITIONS = PRE + "classification-definitions";
   public static final String URL_MONITOR = PRE + "monitor";
-  public static final String URL_MONITOR_TASKSSTATUS = URL_MONITOR + "/tasks-status-report";
-  public static final String URL_MONITOR_TASKSWORKBASKET = URL_MONITOR + "/tasks-workbasket-report";
-  public static final String URL_MONITOR_TASKSWORKBASKETPLANNED =
+  public static final String URL_MONITOR_TASKS_STATUS = URL_MONITOR + "/tasks-status-report";
+  public static final String URL_MONITOR_TASKS_WORKBASKET = URL_MONITOR + "/tasks-workbasket-report";
+  public static final String URL_MONITOR_TASKS_WORKBASKET_PLANNED =
       URL_MONITOR + "/tasks-workbasket-planned-date-report";
-  public static final String URL_MONITOR_TASKSCLASSIFICATION =
+  public static final String URL_MONITOR_TASKS_CLASSIFICATION =
       URL_MONITOR + "/tasks-classification-report";
   public static final String URL_MONITOR_TIMESTAMP = URL_MONITOR + "/timestamp-report";
   public static final String URL_DOMAIN = PRE + "domains";
@@ -36,14 +36,14 @@ public final class Mapping {
   public static final String URL_TASKS_ID_COMPLETE = URL_TASKS_ID + "/complete";
   public static final String URL_TASKS_ID_TRANSFER_WORKBASKETID =
       URL_TASKS_ID + "/transfer/{workbasketId}";
-  public static final String URL_WORKBASKETACCESSITEMS = PRE + "workbasket-access-items";
+  public static final String URL_WORKBASKET_ACCESS_ITEMS = PRE + "workbasket-access-items";
   public static final String URL_WORKBASKET = PRE + "workbaskets";
   public static final String URL_WORKBASKET_ID = URL_WORKBASKET + "/{workbasketId}";
   public static final String URL_WORKBASKET_ID_ACCESSITEMS =
       URL_WORKBASKET_ID + "/workbasketAccessItems";
   public static final String URL_WORKBASKET_ID_DISTRIBUTION =
       URL_WORKBASKET_ID + "/distribution-targets";
-  public static final String URL_WORKBASKETDEFINITIONS = PRE + "workbasket-definitions";
+  public static final String URL_WORKBASKET_DEFINITIONS = PRE + "workbasket-definitions";
 
   private Mapping() {}
 }

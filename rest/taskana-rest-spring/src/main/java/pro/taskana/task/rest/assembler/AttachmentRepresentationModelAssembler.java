@@ -53,11 +53,7 @@ public class AttachmentRepresentationModelAssembler
     return repModel;
   }
 
-  public List<Attachment> toAttachmentList(List<AttachmentRepresentationModel> resources) {
-    return resources.stream().map(this::toEntityModel).collect(Collectors.toList());
-  }
-
-  private AttachmentImpl toEntityModel(
+  public AttachmentImpl toEntityModel(
       AttachmentRepresentationModel attachmentRepresentationModel) {
     AttachmentImpl attachment = (AttachmentImpl) taskService.newAttachment();
     attachment.setId(attachmentRepresentationModel.getAttachmentId());

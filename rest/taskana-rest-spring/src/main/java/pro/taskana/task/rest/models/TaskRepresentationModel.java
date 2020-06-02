@@ -4,16 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map.Entry;
 
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.rest.assembler.AttachmentRepresentationModelAssembler;
 
-/**
- * EntityModel class for {@link Task}.
- */
+/** EntityModel class for {@link Task}. */
 @JsonIgnoreProperties("attachmentSummaries")
 public class TaskRepresentationModel extends TaskSummaryRepresentationModel {
-
 
   protected AttachmentRepresentationModelAssembler attachmentAssembler;
   // All objects have to be serializable
@@ -51,27 +49,34 @@ public class TaskRepresentationModel extends TaskSummaryRepresentationModel {
    */
   public static class CustomAttribute {
 
-    private final String key;
-    private final String value;
+    private String key;
+    private String value;
 
-    @SuppressWarnings("unused")
-    public CustomAttribute() {
-      this(null, null);
-      // necessary for jackson.
+    public static CustomAttribute of(Entry<String, String> entry) {
+      return of(entry.getKey(), entry.getValue());
     }
 
-    public CustomAttribute(String key, String value) {
-      this.key = key;
-      this.value = value;
+    public static CustomAttribute of (String key, String value) {
+      CustomAttribute customAttribute = new CustomAttribute();
+      customAttribute.setKey(key);
+      customAttribute.setValue(value);
+      return customAttribute;
     }
 
     public String getKey() {
       return key;
     }
 
+    public void setKey(String key) {
+      this.key = key;
+    }
+
     public String getValue() {
       return value;
     }
 
+    public void setValue(String value) {
+      this.value = value;
+    }
   }
 }

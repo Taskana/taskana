@@ -45,7 +45,7 @@ class WorkbasketAccessItemControllerIntTest {
   void testGetAllWorkbasketAccessItems() {
     ResponseEntity<TaskanaPagedModel<WorkbasketAccessItemRepresentationModel>> response =
         template.exchange(
-            restHelper.toUrl(Mapping.URL_WORKBASKETACCESSITEMS),
+            restHelper.toUrl(Mapping.URL_WORKBASKET_ACCESS_ITEMS),
             HttpMethod.GET,
             restHelper.defaultRequest(),
             WORKBASKET_ACCESS_ITEM_PAGE_MODEL_TYPE);
@@ -58,7 +58,7 @@ class WorkbasketAccessItemControllerIntTest {
     String parameters = "?sort-by=workbasket-key&order=asc&page-size=9&access-ids=user_1_1&page=1";
     ResponseEntity<TaskanaPagedModel<WorkbasketAccessItemRepresentationModel>> response =
         template.exchange(
-            restHelper.toUrl(Mapping.URL_WORKBASKETACCESSITEMS) + parameters,
+            restHelper.toUrl(Mapping.URL_WORKBASKET_ACCESS_ITEMS) + parameters,
             HttpMethod.GET,
             restHelper.defaultRequest(),
             WORKBASKET_ACCESS_ITEM_PAGE_MODEL_TYPE);
@@ -77,7 +77,7 @@ class WorkbasketAccessItemControllerIntTest {
   void testThrowsExceptionIfInvalidFilterIsUsed() {
     ThrowingCallable httpCall =
         () -> template.exchange(
-            restHelper.toUrl(Mapping.URL_WORKBASKETACCESSITEMS)
+            restHelper.toUrl(Mapping.URL_WORKBASKET_ACCESS_ITEMS)
                 + "?sort-by=workbasket-key&order=asc&page=1&page-size=9&invalid=user_1_1",
             HttpMethod.GET,
             restHelper.defaultRequest(),
@@ -94,7 +94,7 @@ class WorkbasketAccessItemControllerIntTest {
     String parameters = "?sort-by=workbasket-key&order=asc&page-size=9&access-ids=user_1_1&page=1";
     ResponseEntity<TaskanaPagedModel<WorkbasketAccessItemRepresentationModel>> response =
         template.exchange(
-            restHelper.toUrl(Mapping.URL_WORKBASKETACCESSITEMS) + parameters,
+            restHelper.toUrl(Mapping.URL_WORKBASKET_ACCESS_ITEMS) + parameters,
             HttpMethod.GET,
             restHelper.defaultRequest(),
             WORKBASKET_ACCESS_ITEM_PAGE_MODEL_TYPE);
@@ -124,7 +124,7 @@ class WorkbasketAccessItemControllerIntTest {
     String parameters = "?access-id=user_1_1";
     ResponseEntity<Void> response =
         template.exchange(
-            restHelper.toUrl(Mapping.URL_WORKBASKETACCESSITEMS) + parameters,
+            restHelper.toUrl(Mapping.URL_WORKBASKET_ACCESS_ITEMS) + parameters,
             HttpMethod.DELETE,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(Void.class));
@@ -137,7 +137,7 @@ class WorkbasketAccessItemControllerIntTest {
     String parameters = "?access-id=cn=DevelopersGroup,ou=groups,o=TaskanaTest";
     ThrowingCallable httpCall =
         () -> template.exchange(
-            restHelper.toUrl(Mapping.URL_WORKBASKETACCESSITEMS) + parameters,
+            restHelper.toUrl(Mapping.URL_WORKBASKET_ACCESS_ITEMS) + parameters,
             HttpMethod.DELETE,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(Void.class));

@@ -6,6 +6,7 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -89,9 +90,9 @@ class TaskRepresentationModelAssemberTest {
     resource.setRead(true);
     resource.setTransferred(true);
     resource.setCustomAttributes(
-        Collections.singletonList(new TaskRepresentationModel.CustomAttribute("abc", "def")));
+        Collections.singletonList(TaskRepresentationModel.CustomAttribute.of("abc", "def")));
     resource.setCallbackInfo(
-        Collections.singletonList(new TaskRepresentationModel.CustomAttribute("ghi", "jkl")));
+        Collections.singletonList(TaskRepresentationModel.CustomAttribute.of("ghi", "jkl")));
     resource.setAttachments(Collections.singletonList(attachement));
     resource.setCustom1("custom1");
     resource.setCustom2("custom2");

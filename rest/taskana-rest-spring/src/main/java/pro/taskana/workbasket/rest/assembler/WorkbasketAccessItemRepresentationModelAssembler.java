@@ -115,7 +115,7 @@ public class WorkbasketAccessItemRepresentationModelAssembler
     return pageModel;
   }
 
-  @PageLinks(Mapping.URL_WORKBASKETACCESSITEMS)
+  @PageLinks(Mapping.URL_WORKBASKET_ACCESS_ITEMS)
   public TaskanaPagedModel<WorkbasketAccessItemRepresentationModel> toPageModel(
       List<WorkbasketAccessItem> workbasketAccessItems, PageMetadata pageMetadata) {
     return workbasketAccessItems.stream()

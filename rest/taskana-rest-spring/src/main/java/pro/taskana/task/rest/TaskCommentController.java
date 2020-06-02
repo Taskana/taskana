@@ -3,6 +3,7 @@ package pro.taskana.task.rest;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
 import org.springframework.http.HttpStatus;
@@ -35,9 +36,10 @@ public class TaskCommentController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskCommentController.class);
 
-  private TaskService taskService;
-  private TaskCommentRepresentationModelAssembler taskCommentRepresentationModelAssembler;
+  private final TaskService taskService;
+  private final TaskCommentRepresentationModelAssembler taskCommentRepresentationModelAssembler;
 
+  @Autowired
   TaskCommentController(
       TaskService taskService,
       TaskCommentRepresentationModelAssembler taskCommentRepresentationModelAssembler) {

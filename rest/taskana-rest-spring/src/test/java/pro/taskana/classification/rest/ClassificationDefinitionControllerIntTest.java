@@ -79,7 +79,7 @@ class ClassificationDefinitionControllerIntTest {
   void testExportClassifications() {
     ResponseEntity<TaskanaPagedModel<ClassificationRepresentationModel>> response =
         template.exchange(
-            restHelper.toUrl(Mapping.URL_CLASSIFICATIONDEFINITION) + "?domain=DOMAIN_B",
+            restHelper.toUrl(Mapping.URL_CLASSIFICATIONDEFINITIONS) + "?domain=DOMAIN_B",
             HttpMethod.GET,
             restHelper.defaultRequest(),
             CLASSIFICATION_PAGE_MODEL_TYPE);
@@ -99,7 +99,7 @@ class ClassificationDefinitionControllerIntTest {
   void testExportClassificationsFromWrongDomain() {
     ResponseEntity<TaskanaPagedModel<ClassificationRepresentationModel>> response =
         template.exchange(
-            restHelper.toUrl(Mapping.URL_CLASSIFICATIONDEFINITION) + "?domain=ADdfe",
+            restHelper.toUrl(Mapping.URL_CLASSIFICATIONDEFINITIONS) + "?domain=ADdfe",
             HttpMethod.GET,
             restHelper.defaultRequest(),
             CLASSIFICATION_PAGE_MODEL_TYPE);
@@ -444,7 +444,7 @@ class ClassificationDefinitionControllerIntTest {
     body.add("file", new FileSystemResource(tmpFile));
 
     HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-    String serverUrl = restHelper.toUrl(Mapping.URL_CLASSIFICATIONDEFINITION);
+    String serverUrl = restHelper.toUrl(Mapping.URL_CLASSIFICATIONDEFINITIONS);
 
     return template.postForEntity(serverUrl, requestEntity, Void.class);
   }

@@ -11,11 +11,8 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import pro.taskana.classification.rest.assembler.ClassificationSummaryRepresentationModelAssembler;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.task.api.TaskService;
-import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.task.rest.TaskController;
@@ -23,20 +20,14 @@ import pro.taskana.task.rest.models.TaskRepresentationModel;
 import pro.taskana.task.rest.models.TaskRepresentationModel.CustomAttribute;
 import pro.taskana.workbasket.rest.assembler.WorkbasketSummaryRepresentationModelAssembler;
 
-/**
- * EntityModel assembler for {@link TaskRepresentationModel}.
- */
+/** EntityModel assembler for {@link TaskRepresentationModel}. */
 @Component
 public class TaskRepresentationModelAssembler
     implements RepresentationModelAssembler<Task, TaskRepresentationModel> {
 
   private final TaskService taskService;
-
   private final ClassificationSummaryRepresentationModelAssembler classificationAssembler;
-
-  private final WorkbasketSummaryRepresentationModelAssembler
-      workbasketAssembler;
-
+  private final WorkbasketSummaryRepresentationModelAssembler workbasketAssembler;
   private final AttachmentRepresentationModelAssembler attachmentAssembler;
 
   @Autowired
@@ -47,8 +38,7 @@ public class TaskRepresentationModelAssembler
       AttachmentRepresentationModelAssembler attachmentAssembler) {
     this.taskService = taskService;
     this.classificationAssembler = classificationAssembler;
-    this.workbasketAssembler
-        = workbasketAssembler;
+    this.workbasketAssembler = workbasketAssembler;
     this.attachmentAssembler = attachmentAssembler;
   }
 
@@ -85,14 +75,13 @@ public class TaskRepresentationModelAssembler
             .collect(Collectors.toList()));
     repModel.setCustomAttributes(
         task.getCustomAttributes().entrySet().stream()
-            .map(e -> new TaskRepresentationModel.CustomAttribute(e.getKey(), e.getValue()))
+            .map(CustomAttribute::of)
             .collect(Collectors.toList()));
     repModel.setCallbackInfo(
         task.getCallbackInfo().entrySet().stream()
-            .map(e -> new TaskRepresentationModel.CustomAttribute(e.getKey(), e.getValue()))
+            .map(CustomAttribute::of)
             .collect(Collectors.toList()));
     try {
-      repModel.add(linkTo(methodOn(TaskController.class).getTask(task.getId())).withSelfRel());
       repModel.setCustom1(task.getCustomAttribute("1"));
       repModel.setCustom2(task.getCustomAttribute("2"));
       repModel.setCustom3(task.getCustomAttribute("3"));
@@ -109,15 +98,16 @@ public class TaskRepresentationModelAssembler
       repModel.setCustom14(task.getCustomAttribute("14"));
       repModel.setCustom15(task.getCustomAttribute("15"));
       repModel.setCustom16(task.getCustomAttribute("16"));
-    } catch (InvalidArgumentException | TaskNotFoundException | NotAuthorizedException e) {
+      repModel.add(linkTo(methodOn(TaskController.class).getTask(task.getId())).withSelfRel());
+    } catch (Exception e) {
       throw new SystemException("caught unexpected Exception.", e.getCause());
     }
     return repModel;
   }
 
   public Task toEntityModel(TaskRepresentationModel repModel) {
-    TaskImpl task = (TaskImpl) taskService
-                                   .newTask(repModel.getWorkbasketSummary().getWorkbasketId());
+    TaskImpl task =
+        (TaskImpl) taskService.newTask(repModel.getWorkbasketSummary().getWorkbasketId());
     task.setId(repModel.getTaskId());
     task.setExternalId(repModel.getExternalId());
     task.setCreated(repModel.getCreated());
@@ -134,8 +124,7 @@ public class TaskRepresentationModelAssembler
     task.setState(repModel.getState());
     task.setClassificationSummary(
         classificationAssembler.toEntityModel(repModel.getClassificationSummary()));
-    task
-        .setWorkbasketSummary(workbasketAssembler.toEntityModel(repModel.getWorkbasketSummary()));
+    task.setWorkbasketSummary(workbasketAssembler.toEntityModel(repModel.getWorkbasketSummary()));
     task.setBusinessProcessId(repModel.getBusinessProcessId());
     task.setParentBusinessProcessId(repModel.getParentBusinessProcessId());
     task.setOwner(repModel.getOwner());
@@ -158,7 +147,10 @@ public class TaskRepresentationModelAssembler
     task.setCustom14(repModel.getCustom14());
     task.setCustom15(repModel.getCustom15());
     task.setCustom16(repModel.getCustom16());
-    task.setAttachments(attachmentAssembler.toAttachmentList(repModel.getAttachments()));
+    task.setAttachments(
+        repModel.getAttachments().stream()
+            .map(attachmentAssembler::toEntityModel)
+            .collect(Collectors.toList()));
     task.setCustomAttributes(
         repModel.getCustomAttributes().stream()
             .filter(e -> Objects.nonNull(e.getKey()) && !e.getKey().isEmpty())

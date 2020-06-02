@@ -1,5 +1,6 @@
 package pro.taskana.task.rest.models;
 
+import java.time.Instant;
 import org.springframework.hateoas.RepresentationModel;
 
 import pro.taskana.task.api.models.TaskComment;
@@ -12,15 +13,15 @@ public class TaskCommentRepresentationModel
   private String taskId;
   private String textField;
   private String creator;
-  private String created;
-  private String modified;
+  private Instant created;
+  private Instant modified;
 
   public String getTaskCommentId() {
     return taskCommentId;
   }
 
-  public void setTaskCommentId(String id) {
-    this.taskCommentId = id;
+  public void setTaskCommentId(String taskCommentId) {
+    this.taskCommentId = taskCommentId;
   }
 
   public String getTaskId() {
@@ -31,14 +32,6 @@ public class TaskCommentRepresentationModel
     this.taskId = taskId;
   }
 
-  public String getCreator() {
-    return creator;
-  }
-
-  public void setCreator(String creator) {
-    this.creator = creator;
-  }
-
   public String getTextField() {
     return textField;
   }
@@ -47,20 +40,27 @@ public class TaskCommentRepresentationModel
     this.textField = textField;
   }
 
-  public String getCreated() {
+  public String getCreator() {
+    return creator;
+  }
+
+  public void setCreator(String creator) {
+    this.creator = creator;
+  }
+
+  public Instant getCreated() {
     return created;
   }
 
-  public void setCreated(String created) {
+  public void setCreated(Instant created) {
     this.created = created;
   }
 
-  public String getModified() {
+  public Instant getModified() {
     return modified;
   }
 
-  public void setModified(String modified) {
+  public void setModified(Instant modified) {
     this.modified = modified;
   }
-
 }

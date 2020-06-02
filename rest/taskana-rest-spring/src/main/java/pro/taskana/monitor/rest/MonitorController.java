@@ -44,7 +44,7 @@ public class MonitorController {
     this.reportRepresentationModelAssembler = reportRepresentationModelAssembler;
   }
 
-  @GetMapping(path = Mapping.URL_MONITOR_TASKSSTATUS)
+  @GetMapping(path = Mapping.URL_MONITOR_TASKS_STATUS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ReportRepresentationModel> getTasksStatusReport(
       @RequestParam(required = false) List<String> domains,
@@ -68,7 +68,7 @@ public class MonitorController {
     return response;
   }
 
-  @GetMapping(path = Mapping.URL_MONITOR_TASKSWORKBASKET)
+  @GetMapping(path = Mapping.URL_MONITOR_TASKS_WORKBASKET)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ReportRepresentationModel> getTasksWorkbasketReport(
       @RequestParam(value = "states") List<TaskState> states)
@@ -90,7 +90,7 @@ public class MonitorController {
     return ResponseEntity.status(HttpStatus.OK).body(report);
   }
 
-  @GetMapping(path = Mapping.URL_MONITOR_TASKSWORKBASKETPLANNED)
+  @GetMapping(path = Mapping.URL_MONITOR_TASKS_WORKBASKET_PLANNED)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ReportRepresentationModel> getTasksWorkbasketPlannedDateReport(
       @RequestParam(value = "daysInPast") int daysInPast,
@@ -114,7 +114,7 @@ public class MonitorController {
     return ResponseEntity.status(HttpStatus.OK).body(report);
   }
 
-  @GetMapping(path = Mapping.URL_MONITOR_TASKSCLASSIFICATION)
+  @GetMapping(path = Mapping.URL_MONITOR_TASKS_CLASSIFICATION)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ReportRepresentationModel> getTasksClassificationReport()
       throws NotAuthorizedException, InvalidArgumentException {
