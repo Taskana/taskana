@@ -30,7 +30,7 @@ class TaskCommentRepresentationModelAssemblerTest {
   }
 
   @Test
-  void taskCommentModelToResource() {
+  void should_ReturnRepresentationModel_When_ConvertingEntityToRepresentationModel() {
 
     TaskCommentImpl taskComment =
         (TaskCommentImpl) taskService.newTaskComment("TKI:000000000000000000000000000000000000");
@@ -47,7 +47,7 @@ class TaskCommentRepresentationModelAssemblerTest {
   }
 
   @Test
-  void taskCommentResourceToModel() {
+  void should_ReturnEntity_When_ConvertingRepresentationModelToEntity() {
 
     TaskCommentRepresentationModel taskCommentRepresentationModel =
         new TaskCommentRepresentationModel();
@@ -63,6 +63,23 @@ class TaskCommentRepresentationModelAssemblerTest {
     testEquality(taskComment, taskCommentRepresentationModel);
   }
 
+  @Test
+  void should_Equal_When_ComparingEntityWithConvertedEntity() {
+    TaskCommentImpl taskComment =
+        (TaskCommentImpl) taskService.newTaskComment("TKI:000000000000000000000000000000000000");
+    taskComment.setCreator("user_1_1");
+    taskComment.setTextField("this is a task comment");
+    taskComment.setCreated(Instant.parse("2010-01-01T12:00:00Z"));
+    taskComment.setModified(Instant.parse("2011-11-11T11:00:00Z"));
+
+    TaskCommentRepresentationModel repModel =
+        taskCommentRepresentationModelAssembler.toModel(taskComment);
+    TaskCommentImpl taskComment2
+        = (TaskCommentImpl) taskCommentRepresentationModelAssembler.toEntityModel(repModel);
+
+    testEqualityOfEntities(taskComment, taskComment2);
+  }
+
   private void testEquality(
       TaskComment taskComment, TaskCommentRepresentationModel taskCommentRepresentationModel) {
 
@@ -72,5 +89,18 @@ class TaskCommentRepresentationModelAssemblerTest {
     assertThat(taskComment.getTextField()).isEqualTo(taskCommentRepresentationModel.getTextField());
     assertThat(taskComment.getCreated()).isEqualTo(taskCommentRepresentationModel.getCreated());
     assertThat(taskComment.getModified()).isEqualTo(taskCommentRepresentationModel.getModified());
+  }
+
+  private void testEqualityOfEntities(
+      TaskComment taskComment, TaskComment taskComment2) {
+    assertThat(taskComment.getTaskId()).isEqualTo(taskComment2.getTaskId());
+    assertThat(taskComment.getId()).isEqualTo(taskComment2.getId());
+    assertThat(taskComment.getCreator()).isEqualTo(taskComment2.getCreator());
+    assertThat(taskComment.getTextField()).isEqualTo(taskComment2.getTextField());
+    assertThat(taskComment.getCreated()).isEqualTo(taskComment2.getCreated());
+    assertThat(taskComment.getModified()).isEqualTo(taskComment2.getModified());
+  }
+
+  private void testLinks() {
   }
 }

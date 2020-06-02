@@ -45,7 +45,7 @@ public class WorkbasketDefinitionRepresentationModelAssembler
 
     basket.setKey(workbasket.getKey());
     basket.setModified(workbasket.getModified());
-    basket.setCreated(workbasket.getModified());
+    basket.setCreated(workbasket.getCreated());
     basket.setWorkbasketId(workbasket.getId());
     basket.setDescription(workbasket.getDescription());
     basket.setDomain(workbasket.getDomain());

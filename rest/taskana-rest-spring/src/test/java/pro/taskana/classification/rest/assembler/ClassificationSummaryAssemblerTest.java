@@ -22,7 +22,7 @@ class ClassificationSummaryAssemblerTest {
   @Autowired private ClassificationService classificationService;
 
   @Test
-  void testModelToResource() {
+  void should_ReturnRepresentationModel_When_ConvertingEntityToRepresentationModel() {
     // given
     ClassificationImpl classification =
         (ClassificationImpl) classificationService.newClassification("DOMAIN_A", "1", "A");
@@ -45,16 +45,15 @@ class ClassificationSummaryAssemblerTest {
     classification.setDescription("Test");
     classification.setCreated(Instant.parse("2010-01-01T12:00:00Z"));
     classification.setModified(Instant.parse("2011-11-11T11:00:00Z"));
-    ClassificationSummary classificationSummary = classification.asSummary();
     // when
-    ClassificationSummaryRepresentationModel resource =
+    ClassificationSummaryRepresentationModel repModel =
         classificationSummaryRepresentationModelAssembler.toModel(classification);
     // then
-    testEquality(classificationSummary, resource);
+    testEqualityAfterConversion(classification, repModel);
   }
 
   @Test
-  void testResourceToModel() {
+  void should_ReturnEntity_When_ConvertingRepresentationModelToEntity() {
     // given
     ClassificationSummaryRepresentationModel resource =
         new ClassificationSummaryRepresentationModel();
@@ -79,31 +78,92 @@ class ClassificationSummaryAssemblerTest {
     ClassificationSummary classificationSummary =
         classificationSummaryRepresentationModelAssembler.toEntityModel(resource);
     // then
-    testEquality(classificationSummary, resource);
+    testEqualityAfterConversion(classificationSummary, resource);
   }
 
-  private void testEquality(
-      ClassificationSummary classificationSummary,
-      ClassificationSummaryRepresentationModel resource) {
-    assertThat(resource.getKey()).isEqualTo(classificationSummary.getKey());
-    assertThat(resource.getDomain()).isEqualTo(classificationSummary.getDomain());
-    assertThat(resource.getClassificationId()).isEqualTo(classificationSummary.getId());
-    assertThat(resource.getName()).isEqualTo(classificationSummary.getName());
-    assertThat(resource.getCategory()).isEqualTo(classificationSummary.getCategory());
-    assertThat(resource.getCustom1()).isEqualTo(classificationSummary.getCustom1());
-    assertThat(resource.getCustom2()).isEqualTo(classificationSummary.getCustom2());
-    assertThat(resource.getCustom3()).isEqualTo(classificationSummary.getCustom3());
-    assertThat(resource.getCustom4()).isEqualTo(classificationSummary.getCustom4());
-    assertThat(resource.getCustom5()).isEqualTo(classificationSummary.getCustom5());
-    assertThat(resource.getCustom6()).isEqualTo(classificationSummary.getCustom6());
-    assertThat(resource.getCustom7()).isEqualTo(classificationSummary.getCustom7());
-    assertThat(resource.getCustom8()).isEqualTo(classificationSummary.getCustom8());
-    assertThat(resource.getParentId()).isEqualTo(classificationSummary.getParentId());
-    assertThat(resource.getParentKey()).isEqualTo(classificationSummary.getParentKey());
-    assertThat(resource.getType()).isEqualTo(classificationSummary.getType());
-    assertThat(resource.getPriority()).isEqualTo(classificationSummary.getPriority());
-    assertThat(resource.getApplicationEntryPoint())
-        .isEqualTo(classificationSummary.getApplicationEntryPoint());
-    assertThat(resource.getServiceLevel()).isEqualTo(classificationSummary.getServiceLevel());
+  @Test
+  void should_Equal_When_ComparingEntityWithConvertedEntity() {
+    // given
+    ClassificationImpl classification =
+        (ClassificationImpl) classificationService.newClassification("DOMAIN_A", "1", "A");
+    classification.setId("1");
+    classification.setCategory("ABC");
+    classification.setName("Classification 1");
+    classification.setIsValidInDomain(true);
+    classification.setCustom1("Custom1");
+    classification.setCustom2("Custom2");
+    classification.setCustom3("Custom3");
+    classification.setCustom4("Custom4");
+    classification.setCustom5("Custom5");
+    classification.setCustom6("Custom6");
+    classification.setCustom7("Custom7");
+    classification.setCustom8("Custom8");
+    classification.setParentId("2");
+    classification.setPriority(2);
+    classification.setApplicationEntryPoint("12");
+    classification.setServiceLevel("P1D");
+    classification.setDescription("Test");
+    classification.setCreated(Instant.parse("2010-01-01T12:00:00Z"));
+    classification.setModified(Instant.parse("2011-11-11T11:00:00Z"));
+    // when
+    ClassificationSummaryRepresentationModel repModel =
+        classificationSummaryRepresentationModelAssembler.toModel(classification);
+    ClassificationImpl secondClassification
+        = (ClassificationImpl) classificationSummaryRepresentationModelAssembler
+                                   .toEntityModel(repModel);
+    testEqualityOfEntities(classification, secondClassification);
+  }
+
+  private void testEqualityAfterConversion(
+      ClassificationSummary entity,
+      ClassificationSummaryRepresentationModel repModel) {
+    assertThat(repModel.getKey()).isEqualTo(entity.getKey());
+    assertThat(repModel.getDomain()).isEqualTo(entity.getDomain());
+    assertThat(repModel.getClassificationId()).isEqualTo(entity.getId());
+    assertThat(repModel.getName()).isEqualTo(entity.getName());
+    assertThat(repModel.getCategory()).isEqualTo(entity.getCategory());
+    assertThat(repModel.getCustom1()).isEqualTo(entity.getCustom1());
+    assertThat(repModel.getCustom2()).isEqualTo(entity.getCustom2());
+    assertThat(repModel.getCustom3()).isEqualTo(entity.getCustom3());
+    assertThat(repModel.getCustom4()).isEqualTo(entity.getCustom4());
+    assertThat(repModel.getCustom5()).isEqualTo(entity.getCustom5());
+    assertThat(repModel.getCustom6()).isEqualTo(entity.getCustom6());
+    assertThat(repModel.getCustom7()).isEqualTo(entity.getCustom7());
+    assertThat(repModel.getCustom8()).isEqualTo(entity.getCustom8());
+    assertThat(repModel.getParentId()).isEqualTo(entity.getParentId());
+    assertThat(repModel.getParentKey()).isEqualTo(entity.getParentKey());
+    assertThat(repModel.getType()).isEqualTo(entity.getType());
+    assertThat(repModel.getPriority()).isEqualTo(entity.getPriority());
+    assertThat(repModel.getApplicationEntryPoint())
+        .isEqualTo(entity.getApplicationEntryPoint());
+    assertThat(repModel.getServiceLevel()).isEqualTo(entity.getServiceLevel());
+  }
+
+  private void testEqualityOfEntities(
+      ClassificationSummary class1,
+      ClassificationSummary class2) {
+    assertThat(class1.getKey()).isEqualTo(class2.getKey());
+    assertThat(class1.getDomain()).isEqualTo(class2.getDomain());
+    assertThat(class1.getId()).isEqualTo(class2.getId());
+    assertThat(class1.getName()).isEqualTo(class2.getName());
+    assertThat(class1.getCategory()).isEqualTo(class2.getCategory());
+    assertThat(class1.getCustom1()).isEqualTo(class2.getCustom1());
+    assertThat(class1.getCustom2()).isEqualTo(class2.getCustom2());
+    assertThat(class1.getCustom3()).isEqualTo(class2.getCustom3());
+    assertThat(class1.getCustom4()).isEqualTo(class2.getCustom4());
+    assertThat(class1.getCustom5()).isEqualTo(class2.getCustom5());
+    assertThat(class1.getCustom6()).isEqualTo(class2.getCustom6());
+    assertThat(class1.getCustom7()).isEqualTo(class2.getCustom7());
+    assertThat(class1.getCustom8()).isEqualTo(class2.getCustom8());
+    assertThat(class1.getParentId()).isEqualTo(class2.getParentId());
+    assertThat(class1.getParentKey()).isEqualTo(class2.getParentKey());
+    assertThat(class1.getType()).isEqualTo(class2.getType());
+    assertThat(class1.getPriority()).isEqualTo(class2.getPriority());
+    assertThat(class1.getApplicationEntryPoint())
+        .isEqualTo(class2.getApplicationEntryPoint());
+    assertThat(class1.getServiceLevel()).isEqualTo(class2.getServiceLevel());
+  }
+
+  private void testLinks(ClassificationSummaryRepresentationModel repModel) {
   }
 }
