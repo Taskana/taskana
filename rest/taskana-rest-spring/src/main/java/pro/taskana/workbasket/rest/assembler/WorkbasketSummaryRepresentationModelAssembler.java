@@ -2,13 +2,11 @@ package pro.taskana.workbasket.rest.assembler;
 
 import static pro.taskana.common.rest.models.TaskanaPagedModelKeys.DISTRIBUTION_TARGETS;
 import static pro.taskana.common.rest.models.TaskanaPagedModelKeys.WORKBASKETS;
-import static pro.taskana.common.rest.models.TaskanaPagedModelKeys.WORKBASKET_DEFINITIONS;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.PagedModel.PageMetadata;
-import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
@@ -22,17 +20,14 @@ import pro.taskana.workbasket.api.models.WorkbasketSummary;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 
-/**
- * EntityModel assembler for {@link WorkbasketSummaryRepresentationModel}.
- */
+/** EntityModel assembler for {@link WorkbasketSummaryRepresentationModel}. */
 @Component
-public class WorkbasketSummaryRepresentationModelAssembler implements
-    TaskanaPagingAssembler<WorkbasketSummary, WorkbasketSummaryRepresentationModel> {
+public class WorkbasketSummaryRepresentationModelAssembler
+    implements TaskanaPagingAssembler<WorkbasketSummary, WorkbasketSummaryRepresentationModel> {
 
   private WorkbasketService workbasketService;
 
-  public WorkbasketSummaryRepresentationModelAssembler() {
-  }
+  public WorkbasketSummaryRepresentationModelAssembler() {}
 
   @Autowired
   public WorkbasketSummaryRepresentationModelAssembler(WorkbasketService workbasketService) {
@@ -84,25 +79,25 @@ public class WorkbasketSummaryRepresentationModelAssembler implements
   }
 
   @Override
+  public TaskanaPagedModelKeys getProperty() {
+    return WORKBASKETS;
+  }
+
+  @Override
   @PageLinks(Mapping.URL_WORKBASKET)
   public TaskanaPagedModel<WorkbasketSummaryRepresentationModel> toPageModel(
       Iterable<WorkbasketSummary> entities, PageMetadata pageMetadata) {
     return TaskanaPagingAssembler.super.toPageModel(entities, pageMetadata);
   }
 
-  @Override
-  public TaskanaPagedModelKeys getProperty() {
-    return WORKBASKETS;
-  }
-
   @PageLinks(Mapping.URL_WORKBASKET_ID_DISTRIBUTION)
   public TaskanaPagedModel<WorkbasketSummaryRepresentationModel> toDistributionTargetPageModel(
       List<WorkbasketSummary> workbasketSummaries, PageMetadata pageMetadata) {
     return workbasketSummaries.stream()
-               .map(this::toModel)
-               .collect(
-                   Collectors.collectingAndThen(
-                       Collectors.toList(),
-                       list -> new TaskanaPagedModel<>(DISTRIBUTION_TARGETS, list, pageMetadata)));
+        .map(this::toModel)
+        .collect(
+            Collectors.collectingAndThen(
+                Collectors.toList(),
+                list -> new TaskanaPagedModel<>(DISTRIBUTION_TARGETS, list, pageMetadata)));
   }
 }

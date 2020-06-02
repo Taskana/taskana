@@ -6,7 +6,6 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -29,9 +28,7 @@ import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 
-/**
- * Test for {@link TaskRepresentationModelAssembler}.
- */
+/** Test for {@link TaskRepresentationModelAssembler}. */
 @TaskanaSpringBootTest
 class TaskRepresentationModelAssemberTest {
 
@@ -41,7 +38,9 @@ class TaskRepresentationModelAssemberTest {
   TaskRepresentationModelAssembler taskRepresentationModelAssembler;
 
   @Autowired
-  TaskRepresentationModelAssemberTest(TaskService taskService, WorkbasketService workbasketService,
+  TaskRepresentationModelAssemberTest(
+      TaskService taskService,
+      WorkbasketService workbasketService,
       ClassificationService classificationService,
       TaskRepresentationModelAssembler taskRepresentationModelAssembler) {
     this.taskService = taskService;

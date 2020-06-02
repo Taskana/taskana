@@ -11,7 +11,8 @@ public final class Mapping {
   public static final String URL_CLASSIFICATIONDEFINITIONS = PRE + "classification-definitions";
   public static final String URL_MONITOR = PRE + "monitor";
   public static final String URL_MONITOR_TASKS_STATUS = URL_MONITOR + "/tasks-status-report";
-  public static final String URL_MONITOR_TASKS_WORKBASKET = URL_MONITOR + "/tasks-workbasket-report";
+  public static final String URL_MONITOR_TASKS_WORKBASKET =
+      URL_MONITOR + "/tasks-workbasket-report";
   public static final String URL_MONITOR_TASKS_WORKBASKET_PLANNED =
       URL_MONITOR + "/tasks-workbasket-planned-date-report";
   public static final String URL_MONITOR_TASKS_CLASSIFICATION =

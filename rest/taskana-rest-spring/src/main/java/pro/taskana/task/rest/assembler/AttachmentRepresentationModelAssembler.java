@@ -2,8 +2,6 @@ package pro.taskana.task.rest.assembler;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.lang.NonNull;
@@ -16,9 +14,7 @@ import pro.taskana.task.internal.models.AttachmentImpl;
 import pro.taskana.task.rest.AttachmentController;
 import pro.taskana.task.rest.models.AttachmentRepresentationModel;
 
-/**
- * EntityModel assembler for {@link AttachmentRepresentationModel}.
- */
+/** EntityModel assembler for {@link AttachmentRepresentationModel}. */
 @Component
 public class AttachmentRepresentationModelAssembler
     implements RepresentationModelAssembler<Attachment, AttachmentRepresentationModel> {
@@ -53,8 +49,7 @@ public class AttachmentRepresentationModelAssembler
     return repModel;
   }
 
-  public AttachmentImpl toEntityModel(
-      AttachmentRepresentationModel attachmentRepresentationModel) {
+  public AttachmentImpl toEntityModel(AttachmentRepresentationModel attachmentRepresentationModel) {
     AttachmentImpl attachment = (AttachmentImpl) taskService.newAttachment();
     attachment.setId(attachmentRepresentationModel.getAttachmentId());
     attachment.setTaskId(attachmentRepresentationModel.getTaskId());
@@ -70,4 +65,3 @@ public class AttachmentRepresentationModelAssembler
     return attachment;
   }
 }
-

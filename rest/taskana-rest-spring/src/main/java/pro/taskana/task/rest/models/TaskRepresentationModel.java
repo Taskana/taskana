@@ -56,7 +56,7 @@ public class TaskRepresentationModel extends TaskSummaryRepresentationModel {
       return of(entry.getKey(), entry.getValue());
     }
 
-    public static CustomAttribute of (String key, String value) {
+    public static CustomAttribute of(String key, String value) {
       CustomAttribute customAttribute = new CustomAttribute();
       customAttribute.setKey(key);
       customAttribute.setValue(value);

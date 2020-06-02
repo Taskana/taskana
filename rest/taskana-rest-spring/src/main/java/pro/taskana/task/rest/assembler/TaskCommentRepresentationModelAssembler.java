@@ -4,11 +4,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static pro.taskana.common.rest.models.TaskanaPagedModelKeys.TASK_COMMENTS;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.PagedModel.PageMetadata;
-import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
@@ -68,14 +65,14 @@ public class TaskCommentRepresentationModelAssembler
   }
 
   @Override
+  public TaskanaPagedModelKeys getProperty() {
+    return TASK_COMMENTS;
+  }
+
+  @Override
   @PageLinks(Mapping.URL_TASK_COMMENTS)
   public TaskanaPagedModel<TaskCommentRepresentationModel> toPageModel(
       Iterable<TaskComment> taskComments, PageMetadata pageMetadata) {
     return TaskanaPagingAssembler.super.toPageModel(taskComments, pageMetadata);
-  }
-
-  @Override
-  public TaskanaPagedModelKeys getProperty() {
-    return TASK_COMMENTS;
   }
 }
