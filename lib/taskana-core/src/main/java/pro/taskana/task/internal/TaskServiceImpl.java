@@ -26,7 +26,6 @@ import pro.taskana.classification.api.exceptions.ClassificationNotFoundException
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.BulkOperationResults;
-import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -481,7 +480,7 @@ public class TaskServiceImpl implements TaskService {
   public BulkOperationResults<String, TaskanaException> deleteTasks(List<String> taskIds)
       throws InvalidArgumentException, NotAuthorizedException {
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("entry to deleteTasks(tasks = {})", LoggerUtils.listToString(taskIds));
+      LOGGER.debug("entry to deleteTasks(tasks = {})", taskIds);
     }
 
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.ADMIN);
@@ -571,7 +570,7 @@ public class TaskServiceImpl implements TaskService {
         if (LOGGER.isDebugEnabled()) {
           LOGGER.debug(
               "updateTasks() updated the following tasks: {} ",
-              LoggerUtils.listToString(changedTasks));
+              changedTasks);
         }
 
       } else {
@@ -611,7 +610,7 @@ public class TaskServiceImpl implements TaskService {
         if (LOGGER.isDebugEnabled()) {
           LOGGER.debug(
               "updateTasks() updated the following tasks: {} ",
-              LoggerUtils.listToString(changedTasks));
+              changedTasks);
         }
 
       } else {
@@ -664,7 +663,7 @@ public class TaskServiceImpl implements TaskService {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
           "entry to setCallbackStateForTasks(externalIds = {})",
-          LoggerUtils.listToString(externalIds));
+          externalIds);
     }
     try {
       taskanaEngine.openConnection();
@@ -698,7 +697,7 @@ public class TaskServiceImpl implements TaskService {
       LOGGER.debug(
           "entry to setOwnerOfTasks(owner = {}, tasks = {})",
           owner,
-          LoggerUtils.listToString(argTaskIds));
+          argTaskIds);
     }
     BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
     if (argTaskIds == null || argTaskIds.isEmpty()) {
@@ -751,7 +750,7 @@ public class TaskServiceImpl implements TaskService {
       LOGGER.debug(
           "entry to setPlannedPropertyOfTasks(planned = {}, tasks = {})",
           planned,
-          LoggerUtils.listToString(argTaskIds));
+          argTaskIds);
     }
 
     BulkLog bulkLog = new BulkLog();
@@ -841,7 +840,7 @@ public class TaskServiceImpl implements TaskService {
       LOGGER.debug(
           "the following tasks are affected by the update of classification {} : {}",
           classificationId,
-          LoggerUtils.listToString(affectedTaskIds));
+          affectedTaskIds);
     }
     LOGGER.debug("exit from findTasksIdsAffectedByClassificationChange(). ");
     return affectedTaskIds;
@@ -852,7 +851,7 @@ public class TaskServiceImpl implements TaskService {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
           "entry to refreshPriorityAndDueDateOfTasks(tasks = {})",
-          LoggerUtils.listToString(taskIds));
+          taskIds);
     }
     Pair<List<MinimalTaskSummary>, BulkLog> resultsPair = getMinimalTaskSummaries(taskIds);
     List<MinimalTaskSummary> tasks = resultsPair.getLeft();
@@ -1010,7 +1009,7 @@ public class TaskServiceImpl implements TaskService {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
           "entry to augmentTaskSummariesByContainedSummaries(taskSummaries= {})",
-          LoggerUtils.listToString(taskSummaries));
+          taskSummaries);
     }
 
     List<TaskSummary> result = new ArrayList<>();
@@ -1432,8 +1431,8 @@ public class TaskServiceImpl implements TaskService {
       LOGGER.debug(
           "entry to checkIfTasksMatchCompleteCriteria(taskIds = {}, "
               + "taskSummaries = {}, bulkLog = {})",
-          LoggerUtils.listToString(taskIds),
-          LoggerUtils.listToString(taskSummaries),
+          taskIds,
+          taskSummaries,
           bulkLog);
     }
 
@@ -1477,8 +1476,8 @@ public class TaskServiceImpl implements TaskService {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
           "entry to updateTasksToBeCompleted(taskIds = {}, taskSummaries = {})",
-          LoggerUtils.listToString(taskIds),
-          LoggerUtils.listToString(taskSummaries));
+          taskIds,
+          taskSummaries);
     }
 
     if (!taskIds.isEmpty() && !taskSummaries.isEmpty()) {
@@ -1495,8 +1494,7 @@ public class TaskServiceImpl implements TaskService {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
           "entry to addClassificationSummariesToTaskSummaries(tasks = {}, classifications = {})",
-          LoggerUtils.listToString(tasks),
-          LoggerUtils.listToString(classifications));
+          tasks, classifications);
     }
 
     if (tasks == null || tasks.isEmpty()) {
@@ -1619,9 +1617,9 @@ public class TaskServiceImpl implements TaskService {
       LOGGER.debug(
           "entry to addAttachmentSummariesToTaskSummaries(taskSummaries = {}, "
               + "attachmentSummaries = {}, classifications = {})",
-          LoggerUtils.listToString(taskSummaries),
-          LoggerUtils.listToString(attachmentSummaries),
-          LoggerUtils.listToString(classifications));
+          taskSummaries,
+          attachmentSummaries,
+          classifications);
     }
 
     if (taskSummaries == null || taskSummaries.isEmpty()) {
@@ -1680,8 +1678,8 @@ public class TaskServiceImpl implements TaskService {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
           "entry to addClassificationSummariesToAttachments(targetWbId = {}, taskIds = {})",
-          LoggerUtils.listToString(attachmentImpls),
-          LoggerUtils.listToString(classifications));
+          attachmentImpls,
+          classifications);
     }
 
     if (attachmentImpls == null || attachmentImpls.isEmpty()) {
@@ -1717,7 +1715,7 @@ public class TaskServiceImpl implements TaskService {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
           "entry to initUpdatedTask(customFieldsToUpdate = {}, fieldSelector = {})",
-          LoggerUtils.mapToString(customFieldsToUpdate),
+          customFieldsToUpdate,
           fieldSelector);
     }
 
@@ -1741,7 +1739,7 @@ public class TaskServiceImpl implements TaskService {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
           "entry to validateCustomFields(customFieldsToUpdate = {})",
-          LoggerUtils.mapToString(customFieldsToUpdate));
+          customFieldsToUpdate);
     }
 
     if (customFieldsToUpdate == null || customFieldsToUpdate.isEmpty()) {

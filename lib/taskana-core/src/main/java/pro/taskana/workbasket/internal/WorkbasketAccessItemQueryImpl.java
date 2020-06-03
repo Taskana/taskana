@@ -8,7 +8,6 @@ import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.workbasket.api.AccessItemQueryColumnName;
@@ -111,7 +110,7 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
       LOGGER.debug(
           "exit from list(). Returning {} resulting Objects: {} ",
           result.size(),
-          LoggerUtils.listToString(result));
+          result);
     }
     return result;
   }
@@ -142,7 +141,7 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
         LOGGER.debug(
             "exit from list(offset,limit). Returning {} resulting Objects: {} ",
             result.size(),
-            LoggerUtils.listToString(result));
+            result);
       }
     }
   }
@@ -166,7 +165,7 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
         LOGGER.debug(
             "Exit from listValues. Returning {} resulting Objects: {} ",
             numberOfResultObjects,
-            LoggerUtils.listToString(result));
+            result);
       }
     }
   }

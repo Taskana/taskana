@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.TaskanaEngineConfiguration;
-import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
@@ -119,7 +118,7 @@ abstract class TimeIntervalReportBuilderImpl<
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
           "entry to listTaskIdsForSelectedItems(selectedItems = {}), this = {}",
-          LoggerUtils.listToString(selectedItems),
+          selectedItems,
           this);
     }
 

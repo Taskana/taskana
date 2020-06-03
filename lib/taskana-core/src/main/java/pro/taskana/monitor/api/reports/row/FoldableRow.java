@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.monitor.api.reports.Report;
 import pro.taskana.monitor.api.reports.item.QueryItem;
 
@@ -62,6 +61,6 @@ public abstract class FoldableRow<I extends QueryItem> extends SingleRow<I> {
   public String toString() {
     return String.format(
         "FoldableRow [detailRows= %s, columnSize= %d]",
-        LoggerUtils.mapToString(this.foldableRows), columnSize);
+        this.foldableRows, columnSize);
   }
 }

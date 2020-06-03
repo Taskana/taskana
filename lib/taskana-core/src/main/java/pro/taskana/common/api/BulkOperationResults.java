@@ -128,7 +128,7 @@ public class BulkOperationResults<K, V> {
   @Override
   public String toString() {
     return "BulkOperationResults [BulkOperationResults= "
-        + LoggerUtils.mapToString(this.errorMap)
+        + this.errorMap
         + "]";
   }
 }

@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.internal.util.WorkingDaysToDaysConverter;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
@@ -60,7 +59,7 @@ public class WorkingDaysToDaysReportConverter {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
           "Initialize WorkingDaysToDaysConverter with columnHeaders: {}",
-          LoggerUtils.listToString(columnHeaders));
+          columnHeaders);
     }
     if (columnHeaders == null) {
       throw new InvalidArgumentException(

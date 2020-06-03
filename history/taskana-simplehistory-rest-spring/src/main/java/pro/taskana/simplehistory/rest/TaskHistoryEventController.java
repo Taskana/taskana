@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.BaseQuery;
-import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.rest.AbstractPagingController;
@@ -149,7 +148,7 @@ public class TaskHistoryEventController extends AbstractPagingController {
   public ResponseEntity<TaskHistoryEventListResource> getTaskHistoryEvents(
       @RequestParam MultiValueMap<String, String> params) throws InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Entry to getTaskHistoryEvents(params= {})", LoggerUtils.mapToString(params));
+      LOGGER.debug("Entry to getTaskHistoryEvents(params= {})", params);
     }
 
     HistoryQuery query = simpleHistoryService.createHistoryQuery();
@@ -212,7 +211,7 @@ public class TaskHistoryEventController extends AbstractPagingController {
   private HistoryQuery applySortingParams(HistoryQuery query, MultiValueMap<String, String> params)
       throws InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Entry to applySortingParams(params= {})", LoggerUtils.mapToString(params));
+      LOGGER.debug("Entry to applySortingParams(params= {})", params);
     }
 
     String sortBy = params.getFirst(SORT_BY);

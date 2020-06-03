@@ -33,7 +33,6 @@ import pro.taskana.classification.internal.ClassificationMapper;
 import pro.taskana.classification.internal.ClassificationQueryMapper;
 import pro.taskana.classification.internal.ClassificationServiceImpl;
 import pro.taskana.common.api.JobService;
-import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.AutocommitFailedException;
@@ -209,11 +208,10 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   public void checkRoleMembership(TaskanaRole... roles) throws NotAuthorizedException {
     if (!isUserInRole(roles)) {
       if (LOGGER.isDebugEnabled()) {
-        String accessIds = LoggerUtils.listToString(CurrentUserContext.getAccessIds());
         String rolesAsString = Arrays.toString(roles);
         LOGGER.debug(
             "Throwing NotAuthorizedException because accessIds {} are not member of roles {}",
-            accessIds,
+            CurrentUserContext.getAccessIds(),
             rolesAsString);
       }
       throw new NotAuthorizedException(

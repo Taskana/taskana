@@ -22,7 +22,6 @@ import org.springframework.ldap.filter.OrFilter;
 import org.springframework.ldap.filter.WhitespaceWildcardsFilter;
 import org.springframework.stereotype.Component;
 
-import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
@@ -86,7 +85,7 @@ public class LdapClient {
         "exit from searchUsersAndGroups(name = {}). Returning {} users and groups: {}",
         name,
         accessIds.size(),
-        LoggerUtils.listToString(result));
+        result);
 
     return result;
   }
@@ -119,7 +118,7 @@ public class LdapClient {
             new UserContextMapper());
     LOGGER.debug(
         "exit from searchUsersByName. Retrieved the following users: {}.",
-        LoggerUtils.listToString(accessIds));
+        accessIds);
     return accessIds;
   }
 
@@ -147,7 +146,7 @@ public class LdapClient {
             new GroupContextMapper());
     LOGGER.debug(
         "Exit from searchGroupsByName. Retrieved the following groups: {}",
-        LoggerUtils.listToString(accessIds));
+        accessIds);
     return accessIds;
   }
 
@@ -189,7 +188,7 @@ public class LdapClient {
             new GroupContextMapper());
     LOGGER.debug(
         "exit from searchGroupsofUsersIsMember. Retrieved the following users: {}.",
-        LoggerUtils.listToString(accessIds));
+        accessIds);
     return accessIds;
   }
 

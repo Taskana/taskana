@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.BulkOperationResults;
-import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
@@ -87,14 +86,14 @@ class ServiceLevelHandler {
     BulkLog bulkLog = new BulkLog();
     List<AttachmentSummaryImpl> attachments = getAttachmentSummaries(tasks);
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("found attachments {}.", LoggerUtils.listToString(attachments));
+      LOGGER.debug("found attachments {}.", attachments);
     }
     List<ClassificationSummary> allInvolvedClassifications =
         findAllClassificationsReferencedByTasksAndAttachments(tasks, attachments);
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
           "found involved classifications {}.",
-          LoggerUtils.listToString(allInvolvedClassifications));
+          allInvolvedClassifications);
     }
     List<ClassificationWithServiceLevelResolved> allInvolvedClassificationsWithDuration =
         resolveDurationsInClassifications(allInvolvedClassifications);

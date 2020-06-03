@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.common.api.BaseQuery.SortDirection;
-import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -305,7 +304,7 @@ public class WorkbasketController extends AbstractPagingController {
       LOGGER.debug(
           "Entry to getTasksStatusReport(workbasketId= {}, targetWorkbasketIds´= {})",
           sourceWorkbasketId,
-          LoggerUtils.listToString(targetWorkbasketIds));
+          targetWorkbasketIds);
     }
 
     workbasketService.setDistributionTargets(sourceWorkbasketId, targetWorkbasketIds);

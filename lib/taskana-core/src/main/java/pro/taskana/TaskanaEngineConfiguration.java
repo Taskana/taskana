@@ -29,7 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.CustomHoliday;
-import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.SystemException;
@@ -558,7 +557,7 @@ public class TaskanaEngineConfiguration {
     if (LOGGER.isDebugEnabled()) {
       roleMap.forEach(
           (k, v) ->
-              LOGGER.debug("Found Taskana RoleConfig {} : {} ", k, LoggerUtils.setToString(v)));
+              LOGGER.debug("Found Taskana RoleConfig {} : {} ", k, v));
     }
   }
 

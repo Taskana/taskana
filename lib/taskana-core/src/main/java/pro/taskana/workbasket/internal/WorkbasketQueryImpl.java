@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.TaskanaEngineConfiguration;
-import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -398,7 +397,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         LOGGER.debug(
             "exit from list(). Returning {} resulting Objects: {} ",
             numberOfResultObjects,
-            LoggerUtils.listToString(workbaskets));
+            workbaskets);
       }
     }
   }
@@ -428,7 +427,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         LOGGER.debug(
             "exit from list(offset,limit). Returning {} resulting Objects: {} ",
             workbaskets.size(),
-            LoggerUtils.listToString(workbaskets));
+            workbaskets);
       }
     }
   }
@@ -450,7 +449,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         LOGGER.debug(
             "Exit from listValues. Returning {} resulting Objects: {} ",
             result.size(),
-            LoggerUtils.listToString(result));
+            result);
       }
     }
   }
