@@ -1,5 +1,5 @@
 import { Action, NgxsAfterBootstrap, State, StateContext } from '@ngxs/store';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { take, tap } from 'rxjs/operators';
 import { CategoriesResponse,
   ClassificationCategoriesService } from '../../services/classification-categories/classification-categories.service';
@@ -28,15 +28,16 @@ export class ClassificationState implements NgxsAfterBootstrap {
   }
 
   @Action(SetSelectedClassificationType)
-  setSelectedClassificationType(ctx: StateContext<ClassificationStateModel>, action: SetSelectedClassificationType): void {
+  setSelectedClassificationType(ctx: StateContext<ClassificationStateModel>, action: SetSelectedClassificationType): Observable<null> {
     const state: ClassificationStateModel = ctx.getState();
     if (state.classificationTypes[action.selectedType]) {
       ctx.patchState({ selectedClassificationType: action.selectedType });
     }
+    return of(null);
   }
 
   @Action(SelectClassification)
-  selectClassification(ctx: StateContext<ClassificationStateModel>, action: SelectClassification): Observable<any> | void {
+  selectClassification(ctx: StateContext<ClassificationStateModel>, action: SelectClassification): Observable<any|null> {
     if (typeof action.classificationId !== 'undefined') {
       return this.classificationsService.getClassification(action.classificationId).pipe(take(1), tap(
         selectedClassification => {
@@ -47,16 +48,16 @@ export class ClassificationState implements NgxsAfterBootstrap {
         }
       ));
     }
-    return null;
+    return of(null);
   }
 
   @Action(DeselectClassification)
-  deselectClassification(ctx: StateContext<ClassificationStateModel>): Observable<any> | void {
+  deselectClassification(ctx: StateContext<ClassificationStateModel>): Observable<null> {
     ctx.patchState({
       selectedClassification: undefined,
       action: null
     });
-    return null;
+    return of(null);
   }
 
   @Action(InitializeStore)
@@ -106,22 +107,19 @@ export class ClassificationState implements NgxsAfterBootstrap {
   @Action(SaveClassification)
   saveClassification(ctx: StateContext<ClassificationStateModel>, action: SaveClassification): Observable<any> {
     return this.classificationsService.putClassification(action.classification).pipe(
-      // TODO remove this call when backend is fixed modified dates are not same
-      take(1), tap(retClassification => this.classificationsService.getClassification(retClassification.classificationId).subscribe(
-        savedClassification => {
-          ctx.patchState({
-            classifications: ctx.getState().classifications.map(currentClassification => {
-              if (currentClassification.classificationId === savedClassification.classificationId) { // TODO there has to be a better way
-                return savedClassification;
-              }
-              return currentClassification;
-            }),
-            selectedClassification: savedClassification
-          });
-        }
-      )), tap(() => this.classificationsService.getClassifications(
+      take(1), tap(savedClassification => {
+        ctx.patchState({
+          classifications: ctx.getState().classifications.map(currentClassification => {
+            if (currentClassification.classificationId === savedClassification.classificationId) {
+              return savedClassification;
+            }
+            return currentClassification;
+          }),
+          selectedClassification: savedClassification
+        });
+      }), tap(() => this.classificationsService.getClassifications(
         ctx.getState().selectedClassificationType
-      ).subscribe( // TODO find a better way because 3 calls are way too much
+      ).subscribe(
         classifications => {
           ctx.patchState({
             classifications
@@ -141,12 +139,13 @@ export class ClassificationState implements NgxsAfterBootstrap {
   }
 
   @Action(SetActiveAction)
-  setActiveAction(ctx: StateContext<ClassificationStateModel>, action: SetActiveAction): void {
+  setActiveAction(ctx: StateContext<ClassificationStateModel>, action: SetActiveAction): Observable<null> {
     if (action.action === ACTION.CREATE) {
       ctx.patchState({ selectedClassification: new ClassificationDefinition(), action: action.action });
     } else {
       ctx.patchState({ action: action.action });
     }
+    return of(null);
   }
 
   @Action(RemoveSelectedClassification)
@@ -173,8 +172,9 @@ export class ClassificationState implements NgxsAfterBootstrap {
   }
 
   // initialize after Startup service has configured the taskanaRestUrl properly.
-  ngxsAfterBootstrap(ctx: StateContext<ClassificationStateModel>): void {
+  ngxsAfterBootstrap(ctx: StateContext<ClassificationStateModel>): Observable<null> {
     ctx.dispatch(new InitializeStore());
+    return of(null);
   }
 }
 
