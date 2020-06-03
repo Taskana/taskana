@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.BulkOperationResults;
-import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TimeInterval;
@@ -135,7 +134,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
-          "exit from getTasksCompletedBefore(), returning {}", LoggerUtils.listToString(taskList));
+          "exit from getTasksCompletedBefore(), returning {}", taskList);
     }
 
     return taskList;
@@ -145,7 +144,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
           "entry to deleteTasksTransactionally(tasksToBeDeleted = {})",
-          LoggerUtils.listToString(tasksToBeDeleted));
+          tasksToBeDeleted);
     }
 
     int deletedTaskCount = 0;

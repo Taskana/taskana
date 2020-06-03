@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.KeyDomain;
-import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -980,7 +979,7 @@ public class TaskQueryImpl implements TaskQuery {
         LOGGER.debug(
             "mapper returned {} resulting Objects: {} ",
             tasks.size(),
-            LoggerUtils.listToString(tasks));
+            tasks);
       }
       result = taskService.augmentTaskSummariesByContainedSummaries(tasks);
       return result;
@@ -990,7 +989,7 @@ public class TaskQueryImpl implements TaskQuery {
         LOGGER.debug(
             "exit from list(). Returning {} resulting Objects: {} ",
             result.size(),
-            LoggerUtils.listToString(result));
+            result);
       }
     }
   }
@@ -1025,7 +1024,7 @@ public class TaskQueryImpl implements TaskQuery {
         LOGGER.debug(
             "exit from list(offset,limit). Returning {} resulting Objects: {} ",
             result.size(),
-            LoggerUtils.listToString(result));
+            result);
       }
     }
   }
@@ -1064,7 +1063,7 @@ public class TaskQueryImpl implements TaskQuery {
         LOGGER.debug(
             "Exit from listValues. Returning {} resulting Objects: {} ",
             result.size(),
-            LoggerUtils.listToString(result));
+            result);
       }
     }
   }

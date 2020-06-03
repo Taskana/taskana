@@ -7,8 +7,6 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 
-import pro.taskana.common.api.LoggerUtils;
-
 /** Represents a group with a name and a set of members. */
 public class GroupPrincipal implements Group {
 
@@ -50,7 +48,7 @@ public class GroupPrincipal implements Group {
     return "GroupPrincipal [name="
         + name
         + ", members="
-        + LoggerUtils.setToString(this.members)
+        + this.members
         + "]";
   }
 }

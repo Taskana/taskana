@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.BulkOperationResults;
-import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
@@ -428,7 +427,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         LOGGER.debug(
             "exit from getWorkbasketAccessItems(workbasketId). Returning {} resulting Objects: {} ",
             result.size(),
-            LoggerUtils.listToString(result));
+            result);
       }
     }
   }
@@ -532,7 +531,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         LOGGER.debug(
             "exit from getDistributionTargets(workbasketId). Returning {} resulting Objects: {} ",
             numberOfResultObjects,
-            LoggerUtils.listToString(result));
+            result);
       }
     }
   }
@@ -563,7 +562,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         LOGGER.debug(
             "exit from getDistributionTargets(workbasketId). Returning {} resulting Objects: {} ",
             numberOfResultObjects,
-            LoggerUtils.listToString(result));
+            result);
       }
     }
   }
@@ -575,7 +574,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
       LOGGER.debug(
           "entry to setDistributionTargets(sourceWorkbasketId = {}, targetWorkazketIds = {})",
           sourceWorkbasketId,
-          LoggerUtils.listToString(targetWorkbasketIds));
+          targetWorkbasketIds);
     }
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
     try {
@@ -746,7 +745,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
           "entry to deleteWorkbaskets(workbasketId = {})",
-          LoggerUtils.listToString(workbasketsIds));
+          workbasketsIds);
     }
 
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
@@ -817,7 +816,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         LOGGER.debug(
             "exit from getDistributionSources(workbasketId). Returning {} resulting Objects: {} ",
             numberOfResultObjects,
-            LoggerUtils.listToString(result));
+            result);
       }
     }
   }
@@ -846,7 +845,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         LOGGER.debug(
             "exit from getDistributionSources(workbasketId). Returning {} resulting Objects: {} ",
             numberOfResultObjects,
-            LoggerUtils.listToString(result));
+            result);
       }
     }
   }

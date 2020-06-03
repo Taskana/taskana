@@ -34,7 +34,6 @@ import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.classification.rest.assembler.ClassificationRepresentationModelAssembler;
 import pro.taskana.classification.rest.models.ClassificationRepresentationModel;
-import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -178,7 +177,7 @@ public class ClassificationDefinitionController {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
           "Exit from mapChildrenToParentKeys(), returning {}",
-          LoggerUtils.mapToString(childrenInFile));
+          childrenInFile);
     }
 
     return childrenInFile;

@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.classification.api.ClassificationQuery;
 import pro.taskana.classification.api.ClassificationQueryColumnName;
 import pro.taskana.classification.api.models.ClassificationSummary;
-import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
@@ -399,7 +398,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         LOGGER.debug(
             "exit from list(). Returning {} resulting Objects: {} ",
             result.size(),
-            LoggerUtils.listToString(result));
+            result);
       }
     }
   }
@@ -430,7 +429,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         LOGGER.debug(
             "exit from list(offset,limit). Returning {} resulting Objects: {} ",
             result.size(),
-            LoggerUtils.listToString(result));
+            result);
       }
     }
   }
@@ -453,7 +452,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
         LOGGER.debug(
             "Exit from listValues. Returning {} resulting Objects: {} ",
             result.size(),
-            LoggerUtils.listToString(result));
+            result);
       }
     }
   }

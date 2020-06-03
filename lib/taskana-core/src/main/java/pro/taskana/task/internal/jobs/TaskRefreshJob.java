@@ -6,7 +6,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.TaskanaException;
@@ -54,6 +53,6 @@ public class TaskRefreshJob extends AbstractTaskanaJob {
 
   @Override
   public String toString() {
-    return "TaskRefreshJob [affectedTaskIds= " + LoggerUtils.listToString(affectedTaskIds) + "]";
+    return "TaskRefreshJob [affectedTaskIds= " + affectedTaskIds + "]";
   }
 }

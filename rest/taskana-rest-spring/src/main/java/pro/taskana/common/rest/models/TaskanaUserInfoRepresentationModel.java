@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.hateoas.RepresentationModel;
 
-import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.TaskanaRole;
 
 /** EntityModel class for user information. */
@@ -45,9 +44,9 @@ public class TaskanaUserInfoRepresentationModel
         + "userId= "
         + this.userId
         + "groupIds= "
-        + LoggerUtils.listToString(this.groupIds)
+        + groupIds
         + "roles= "
-        + LoggerUtils.listToString(this.roles)
+        + this.roles
         + "]";
   }
 }

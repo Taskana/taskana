@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.BulkOperationResults;
-import pro.taskana.common.api.LoggerUtils;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
@@ -188,7 +187,7 @@ public class TaskTransferrer {
             "entry to transferTasks(targetWbKey = {}, domain = {}, taskIds = {})",
             destinationWorkbasketKey,
             destinationWorkbasketDomain,
-            LoggerUtils.listToString(taskIds));
+            taskIds);
       }
 
       // Check pre-conditions with trowing Exceptions
@@ -207,7 +206,7 @@ public class TaskTransferrer {
                 + "destination taskIds = {})",
             destinationWorkbasketKey,
             destinationWorkbasketDomain,
-            LoggerUtils.listToString(taskIds));
+            taskIds);
       }
 
       taskanaEngine.returnConnection();
@@ -223,7 +222,7 @@ public class TaskTransferrer {
         LOGGER.debug(
             "entry to transferTasks(targetWbId = {}, taskIds = {})",
             destinationWorkbasketId,
-            LoggerUtils.listToString(taskIds));
+            taskIds);
       }
 
       // Check pre-conditions with trowing Exceptions
@@ -238,7 +237,7 @@ public class TaskTransferrer {
         LOGGER.debug(
             "exit from transferTasks(targetWbKey = {}, taskIds = {})",
             destinationWorkbasketId,
-            LoggerUtils.listToString(taskIds));
+            taskIds);
       }
 
       taskanaEngine.returnConnection();
@@ -251,7 +250,7 @@ public class TaskTransferrer {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
           "entry to transferTasks(taskIdsToBeTransferred = {}, destinationWorkbasket = {})",
-          LoggerUtils.listToString(taskIdsToBeTransferred),
+          taskIdsToBeTransferred,
           destinationWorkbasket);
     }
 
@@ -292,8 +291,8 @@ public class TaskTransferrer {
       LOGGER.debug(
           "entry to checkIfTransferConditionsAreFulfilled(taskIds = {}, "
               + "taskSummaries = {}, bulkLog = {})",
-          LoggerUtils.listToString(taskIds),
-          LoggerUtils.listToString(taskSummaries),
+          taskIds,
+          taskSummaries,
           bulkLog);
     }
 
@@ -324,9 +323,9 @@ public class TaskTransferrer {
       LOGGER.debug(
           "entry to checkIfTasksMatchTransferCriteria(taskIds = {}, taskSummaries = {}, "
               + "sourceWorkbaskets = {}, bulkLog = {})",
-          LoggerUtils.listToString(taskIds),
-          LoggerUtils.listToString(taskSummaries),
-          LoggerUtils.listToString(sourceWorkbaskets),
+          taskIds,
+          taskSummaries,
+          sourceWorkbaskets,
           bulkLog);
     }
 
@@ -378,8 +377,8 @@ public class TaskTransferrer {
       LOGGER.debug(
           "entry to updateTasksToBeTransferred(taskIds = {}, taskSummaries = {}, "
               + "destinationWorkbasket = {})",
-          LoggerUtils.listToString(taskIds),
-          LoggerUtils.listToString(taskSummaries),
+          taskIds,
+          taskSummaries,
           destinationWorkbasket.getId());
     }
 
