@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.Instant;
+import java.util.Comparator;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
@@ -25,19 +26,23 @@ import pro.taskana.common.rest.TaskanaSpringBootTest;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
 import pro.taskana.task.rest.models.TaskCommentRepresentationModel;
 
-/** Test TaskCommentController. */
+/**
+ * Test TaskCommentController.
+ */
 @TaskanaSpringBootTest
 class TaskCommentControllerIntTest {
 
   private static final ParameterizedTypeReference<TaskanaPagedModel<TaskCommentRepresentationModel>>
       TASK_COMMENT_PAGE_MODEL_TYPE =
-          new ParameterizedTypeReference<TaskanaPagedModel<TaskCommentRepresentationModel>>() {};
+      new ParameterizedTypeReference<TaskanaPagedModel<TaskCommentRepresentationModel>>() {
+      };
   private static RestTemplate template;
 
   @Value("${taskana.schemaName:TASKANA}")
   public String schemaName;
 
-  @Autowired RestHelper restHelper;
+  @Autowired
+  RestHelper restHelper;
 
   @BeforeAll
   static void init() {
@@ -82,6 +87,85 @@ class TaskCommentControllerIntTest {
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
         .isEqualTo(HttpStatus.FORBIDDEN);
   }
+
+  @Test
+  void should_ReturnSortedAndOrederedTaskCommentsSortedByModified_When_UsingSortAndOrderParams() {
+
+    String url =
+        restHelper.toUrl(Mapping.URL_TASK_GET_POST_COMMENTS,
+            "TKI:000000000000000000000000000000000000");
+
+    ResponseEntity<TaskanaPagedModel<TaskCommentRepresentationModel>>
+        getTaskCommentsSortedByModifiedOrderedByDescendingResponse = template.exchange(
+        url + "?sort-by=modified&order=desc",
+        HttpMethod.GET,
+        new HttpEntity<String>(restHelper.getHeadersAdmin()),
+        TASK_COMMENT_PAGE_MODEL_TYPE);
+
+    assertThat(getTaskCommentsSortedByModifiedOrderedByDescendingResponse.getBody().getContent())
+        .hasSize(3)
+        .extracting(TaskCommentRepresentationModel::getModified)
+        .isSortedAccordingTo(Comparator.reverseOrder());
+
+    ResponseEntity<TaskanaPagedModel<TaskCommentRepresentationModel>>
+        getTaskCommentsSortedByModifiedOrderedByAscendingResponse = template.exchange(
+        url + "?sort-by=modified",
+        HttpMethod.GET,
+        new HttpEntity<String>(restHelper.getHeadersAdmin()),
+        TASK_COMMENT_PAGE_MODEL_TYPE);
+
+    assertThat(getTaskCommentsSortedByModifiedOrderedByAscendingResponse.getBody().getContent())
+        .hasSize(3)
+        .extracting(TaskCommentRepresentationModel::getModified)
+        .isSortedAccordingTo(Comparator.naturalOrder());
+
+    ResponseEntity<TaskanaPagedModel<TaskCommentRepresentationModel>>
+        getTaskCommentsSortedByCreatedOrderedByDescendingResponse = template.exchange(
+        url + "?sort-by=created&order=desc",
+        HttpMethod.GET,
+        new HttpEntity<String>(restHelper.getHeadersAdmin()),
+        TASK_COMMENT_PAGE_MODEL_TYPE);
+
+    assertThat(getTaskCommentsSortedByCreatedOrderedByDescendingResponse.getBody().getContent())
+        .hasSize(3)
+        .extracting(TaskCommentRepresentationModel::getCreated)
+        .isSortedAccordingTo(Comparator.reverseOrder());
+
+    ResponseEntity<TaskanaPagedModel<TaskCommentRepresentationModel>>
+        getTaskCommentsSortedByCreatedOrderedByAscendingResponse = template.exchange(
+        url + "?sort-by=created",
+        HttpMethod.GET,
+        new HttpEntity<String>(restHelper.getHeadersAdmin()),
+        TASK_COMMENT_PAGE_MODEL_TYPE);
+
+    assertThat(getTaskCommentsSortedByCreatedOrderedByAscendingResponse.getBody().getContent())
+        .hasSize(3)
+        .extracting(TaskCommentRepresentationModel::getCreated)
+        .isSortedAccordingTo(Comparator.naturalOrder());
+
+  }
+
+  @Test
+  void should_ThrowException_When_UsingInvalidSortParam() {
+
+    String url =
+        restHelper.toUrl(Mapping.URL_TASK_GET_POST_COMMENTS,
+            "TKI:000000000000000000000000000000000000");
+    
+    ThrowingCallable httpCall =
+        () -> {
+          template.exchange(
+              url + "?sort-by=invalidSortParam",
+              HttpMethod.GET,
+              new HttpEntity<String>(restHelper.getHeadersUser_1_1()),
+              TASK_COMMENT_PAGE_MODEL_TYPE);
+        };
+    assertThatThrownBy(httpCall)
+        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.BAD_REQUEST);
+
+  }
+
 
   @Disabled("Disabled until Authorization check is up!")
   @Test
@@ -219,7 +303,6 @@ class TaskCommentControllerIntTest {
   @Test
   void should_FailToUpdateTaskComment_When_TaskCommentIdInResourceDoesNotMatchPathVariable() {
 
-
     String url =
         restHelper.toUrl(Mapping.URL_TASK_COMMENT, "TCI:000000000000000000000000000000000000");
 
@@ -259,12 +342,12 @@ class TaskCommentControllerIntTest {
 
     ResponseEntity<TaskanaPagedModel<TaskCommentRepresentationModel>>
         getTaskCommentsBeforeDeleteionResponse =
-            template.exchange(
-                restHelper.toUrl(
-                    Mapping.URL_TASK_COMMENTS, "TKI:000000000000000000000000000000000001"),
-                HttpMethod.GET,
-                new HttpEntity<String>(restHelper.getHeadersAdmin()),
-                TASK_COMMENT_PAGE_MODEL_TYPE);
+        template.exchange(
+            restHelper.toUrl(
+                Mapping.URL_TASK_COMMENTS, "TKI:000000000000000000000000000000000001"),
+            HttpMethod.GET,
+            new HttpEntity<String>(restHelper.getHeadersAdmin()),
+            TASK_COMMENT_PAGE_MODEL_TYPE);
     assertThat(getTaskCommentsBeforeDeleteionResponse.getBody().getContent()).hasSize(2);
 
     String url =

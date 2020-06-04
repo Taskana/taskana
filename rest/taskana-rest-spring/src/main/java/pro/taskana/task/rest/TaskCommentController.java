@@ -1,5 +1,6 @@
 package pro.taskana.task.rest;
 
+import java.util.Comparator;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,12 +10,14 @@ import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.common.api.exceptions.ConcurrencyException;
@@ -29,12 +32,20 @@ import pro.taskana.task.api.models.TaskComment;
 import pro.taskana.task.rest.assembler.TaskCommentRepresentationModelAssembler;
 import pro.taskana.task.rest.models.TaskCommentRepresentationModel;
 
-/** Controller for all {@link TaskComment} related endpoints. */
+/**
+ * Controller for all {@link TaskComment} related endpoints.
+ */
 @RestController
 @EnableHypermediaSupport(type = HypermediaType.HAL)
 public class TaskCommentController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskCommentController.class);
+
+  private static final String SORT_BY = "sort-by";
+  private static final String SORT_DIRECTION = "order";
+  private static final String CREATED = "created";
+  private static final String MODIFIED = "modified";
+
 
   private final TaskService taskService;
   private final TaskCommentRepresentationModelAssembler taskCommentRepresentationModelAssembler;
@@ -52,7 +63,7 @@ public class TaskCommentController {
   public ResponseEntity<TaskCommentRepresentationModel> getTaskComment(
       @PathVariable String taskCommentId)
       throws NotAuthorizedException, TaskNotFoundException, TaskCommentNotFoundException,
-          InvalidArgumentException {
+                 InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to getTaskComment(taskCommentId= {})", taskCommentId);
     }
@@ -75,12 +86,18 @@ public class TaskCommentController {
   @GetMapping(path = Mapping.URL_TASK_GET_POST_COMMENTS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskanaPagedModel<TaskCommentRepresentationModel>> getTaskComments(
-      @PathVariable String taskId) throws NotAuthorizedException, TaskNotFoundException {
+      @PathVariable String taskId,
+      @RequestParam(required = false) MultiValueMap<String, String> params)
+      throws NotAuthorizedException, TaskNotFoundException, InvalidArgumentException {
+
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to getTaskComments(taskId= {})", taskId);
     }
 
     List<TaskComment> taskComments = taskService.getTaskComments(taskId);
+
+    //TODO Maybe introduce a query for task comments
+    applySortingParams(taskComments, params);
 
     TaskanaPagedModel<TaskCommentRepresentationModel> taskCommentListResource =
         taskCommentRepresentationModelAssembler.toPageModel(taskComments, null);
@@ -100,7 +117,7 @@ public class TaskCommentController {
   public ResponseEntity<TaskCommentRepresentationModel> deleteTaskComment(
       @PathVariable String taskCommentId)
       throws NotAuthorizedException, TaskNotFoundException, TaskCommentNotFoundException,
-          InvalidArgumentException {
+                 InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to deleteTaskComment(taskCommentId= {})", taskCommentId);
     }
@@ -122,7 +139,7 @@ public class TaskCommentController {
       @PathVariable String taskCommentId,
       @RequestBody TaskCommentRepresentationModel taskCommentRepresentationModel)
       throws NotAuthorizedException, TaskNotFoundException, TaskCommentNotFoundException,
-          InvalidArgumentException, ConcurrencyException {
+                 InvalidArgumentException, ConcurrencyException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
           "Entry to updateTaskComment(taskCommentId= {}, taskCommentResource= {})",
@@ -185,5 +202,48 @@ public class TaskCommentController {
     }
 
     return result;
+  }
+
+  private List<TaskComment> applySortingParams(List<TaskComment> taskComments,
+      MultiValueMap<String, String> params) throws InvalidArgumentException {
+
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER
+          .debug("Entry to applySortingParams(taskComments= {}, params= {})", taskComments, params);
+    }
+
+    String sortBy = params.getFirst(SORT_BY);
+
+    if (sortBy != null) {
+
+      switch (sortBy) {
+        case (CREATED):
+          if (params.getFirst(SORT_DIRECTION) != null
+                  && "desc".equals(params.getFirst(SORT_DIRECTION))) {
+            taskComments.sort(Comparator.comparing(TaskComment::getCreated).reversed());
+          } else {
+            taskComments.sort(Comparator.comparing(TaskComment::getCreated));
+
+          }
+          break;
+        case (MODIFIED):
+          if (params.getFirst(SORT_DIRECTION) != null
+                  && "desc".equals(params.getFirst(SORT_DIRECTION))) {
+            taskComments.sort(Comparator.comparing(TaskComment::getModified).reversed());
+          } else {
+            taskComments.sort(Comparator.comparing(TaskComment::getModified));
+
+          }
+          break;
+        default:
+          throw new InvalidArgumentException("Unknown sort attribute: " + sortBy);
+      }
+    }
+
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Exit from applySortingParams(), returning {}", taskComments);
+    }
+
+    return taskComments;
   }
 }
