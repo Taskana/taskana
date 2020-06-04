@@ -52,7 +52,7 @@ class WorkbasketRepresentationModelAssemblerTest {
     WorkbasketRepresentationModel repModel =
         workbasketRepresentationModelAssembler.toModel(workbasket);
     // then
-    testEqualityAfterConversion(workbasket, repModel);
+    testEquality(workbasket, repModel);
     testLinks(repModel);
   }
 
@@ -79,11 +79,10 @@ class WorkbasketRepresentationModelAssemblerTest {
     workbasketRepresentationModel.setOwner("Lars");
     workbasketRepresentationModel.setType(WorkbasketType.PERSONAL);
     // when
-    WorkbasketImpl workbasket =
-        (WorkbasketImpl) workbasketRepresentationModelAssembler
-                             .toEntityModel(workbasketRepresentationModel);
+    Workbasket workbasket
+        = workbasketRepresentationModelAssembler.toEntityModel(workbasketRepresentationModel);
     // then
-    testEqualityAfterConversion(workbasket, workbasketRepresentationModel);
+    testEquality(workbasket, workbasketRepresentationModel);
   }
 
   @Test
@@ -107,34 +106,12 @@ class WorkbasketRepresentationModelAssemblerTest {
     // when
     WorkbasketRepresentationModel repModel =
         workbasketRepresentationModelAssembler.toModel(workbasket);
-    WorkbasketImpl workbasket2
-        = (WorkbasketImpl) workbasketRepresentationModelAssembler.toEntityModel(repModel);
+    Workbasket workbasket2
+        = workbasketRepresentationModelAssembler.toEntityModel(repModel);
 
-    testEqualityOfEntities(workbasket, workbasket2);
+    assertThat(workbasket).isNotSameAs(workbasket2).isEqualTo(workbasket2);
   }
 
-  private void testEqualityOfEntities(Workbasket workbasket, Workbasket workbasket2) {
-    assertThat(workbasket2.getId()).isEqualTo(workbasket.getId());
-    assertThat(workbasket2.getKey()).isEqualTo(workbasket.getKey());
-    assertThat(workbasket2.getCreated())
-        .isEqualTo(workbasket.getCreated());
-    assertThat(workbasket2.getModified())
-        .isEqualTo(workbasket.getModified());
-    assertThat(workbasket2.getName()).isEqualTo(workbasket.getName());
-    assertThat(workbasket2.getDescription())
-        .isEqualTo(workbasket.getDescription());
-    assertThat(workbasket2.getOwner()).isEqualTo(workbasket.getOwner());
-    assertThat(workbasket2.getDomain()).isEqualTo(workbasket.getDomain());
-    assertThat(workbasket2.getType()).isEqualTo(workbasket.getType());
-    assertThat(workbasket2.getCustom1()).isEqualTo(workbasket.getCustom1());
-    assertThat(workbasket2.getCustom2()).isEqualTo(workbasket.getCustom2());
-    assertThat(workbasket2.getCustom3()).isEqualTo(workbasket.getCustom3());
-    assertThat(workbasket2.getCustom4()).isEqualTo(workbasket.getCustom4());
-    assertThat(workbasket2.getOrgLevel1()).isEqualTo(workbasket.getOrgLevel1());
-    assertThat(workbasket2.getOrgLevel2()).isEqualTo(workbasket.getOrgLevel2());
-    assertThat(workbasket2.getOrgLevel3()).isEqualTo(workbasket.getOrgLevel3());
-    assertThat(workbasket2.getOrgLevel4()).isEqualTo(workbasket.getOrgLevel4());
-  }
 
   private void testLinks(WorkbasketRepresentationModel workbasket) {
     assertThat(workbasket.getLinks()).hasSize(5);
@@ -152,7 +129,7 @@ class WorkbasketRepresentationModelAssemblerTest {
                 "\\{.*}", workbasket.getWorkbasketId()));
   }
 
-  private void testEqualityAfterConversion(
+  private void testEquality(
       Workbasket workbasket, WorkbasketRepresentationModel workbasketRepresentationModel) {
     assertThat(workbasketRepresentationModel.getWorkbasketId()).isEqualTo(workbasket.getId());
     assertThat(workbasketRepresentationModel.getKey()).isEqualTo(workbasket.getKey());

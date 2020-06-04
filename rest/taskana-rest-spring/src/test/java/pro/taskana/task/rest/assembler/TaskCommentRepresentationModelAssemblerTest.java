@@ -74,10 +74,10 @@ class TaskCommentRepresentationModelAssemblerTest {
 
     TaskCommentRepresentationModel repModel =
         taskCommentRepresentationModelAssembler.toModel(taskComment);
-    TaskCommentImpl taskComment2
-        = (TaskCommentImpl) taskCommentRepresentationModelAssembler.toEntityModel(repModel);
+    TaskComment taskComment2
+        = taskCommentRepresentationModelAssembler.toEntityModel(repModel);
 
-    testEqualityOfEntities(taskComment, taskComment2);
+    assertThat(taskComment).isNotSameAs(taskComment2).isEqualTo(taskComment2);
   }
 
   private void testEquality(
@@ -89,16 +89,6 @@ class TaskCommentRepresentationModelAssemblerTest {
     assertThat(taskComment.getTextField()).isEqualTo(taskCommentRepresentationModel.getTextField());
     assertThat(taskComment.getCreated()).isEqualTo(taskCommentRepresentationModel.getCreated());
     assertThat(taskComment.getModified()).isEqualTo(taskCommentRepresentationModel.getModified());
-  }
-
-  private void testEqualityOfEntities(
-      TaskComment taskComment, TaskComment taskComment2) {
-    assertThat(taskComment.getTaskId()).isEqualTo(taskComment2.getTaskId());
-    assertThat(taskComment.getId()).isEqualTo(taskComment2.getId());
-    assertThat(taskComment.getCreator()).isEqualTo(taskComment2.getCreator());
-    assertThat(taskComment.getTextField()).isEqualTo(taskComment2.getTextField());
-    assertThat(taskComment.getCreated()).isEqualTo(taskComment2.getCreated());
-    assertThat(taskComment.getModified()).isEqualTo(taskComment2.getModified());
   }
 
   private void testLinks() {

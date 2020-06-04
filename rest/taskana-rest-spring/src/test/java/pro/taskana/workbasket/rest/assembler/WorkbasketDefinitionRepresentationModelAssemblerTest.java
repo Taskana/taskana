@@ -11,36 +11,26 @@ import pro.taskana.common.rest.TaskanaSpringBootTest;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
-import pro.taskana.workbasket.rest.models.WorkbasketRepresentationModel;
+import pro.taskana.workbasket.rest.models.WorkbasketDefinitionRepresentationModel;
 import pro.taskana.workbasket.rest.models.WorkbasketRepresentationModelWithoutLinks;
 
 /**
  * Test for {@link WorkbasketDefinitionRepresentationModelAssembler}.
  */
-//TODO:Since the Definiton has no Entity to fully represent it
-// there are still many parts of the DefinitionRepresentationModel
-// not being tested. Add Tests to test all parts of the Definition.
-//@ExtendWith(JaasExtension.class)
 @TaskanaSpringBootTest
 class WorkbasketDefinitionRepresentationModelAssemblerTest {
 
   private final WorkbasketService workbasketService;
   private final WorkbasketDefinitionRepresentationModelAssembler assembler;
-  private final WorkbasketRepresentationModelAssembler tempAssembler;
 
   @Autowired
   WorkbasketDefinitionRepresentationModelAssemblerTest(
       WorkbasketService workbasketService,
-      WorkbasketDefinitionRepresentationModelAssembler assembler,
-      WorkbasketRepresentationModelAssembler tempAssembler) {
+      WorkbasketDefinitionRepresentationModelAssembler assembler) {
     this.workbasketService = workbasketService;
     this.assembler = assembler;
-    this.tempAssembler = tempAssembler;
   }
 
-  /*  @WithAccessId(
-        user = "teamlead_1",
-        groups = {"group_1", "businessadmin"})*/
   @Test
   void should_EqualWorkbasketEntity_When_ConvertingEntityToRepresentationModel() {
     WorkbasketImpl workbasket = (WorkbasketImpl) workbasketService.newWorkbasket("1", "DOMAIN_A");
@@ -62,14 +52,14 @@ class WorkbasketDefinitionRepresentationModelAssemblerTest {
     workbasket.setModified(Instant.parse("2010-01-01T12:00:00Z"));
     workbasketService.newWorkbasketAccessItem("1", "1");
 
-    WorkbasketRepresentationModel repModel = tempAssembler.toModel(workbasket);
-    testEqualityOfWorkbasketsAfterConversion(workbasket, repModel);
+    WorkbasketDefinitionRepresentationModel repModel = assembler.toModel(workbasket);
+    testEquality(workbasket, repModel);
   }
 
   @Test
   void should_EqualWorkbasketInDefinition_When_ConvertingRepresentationModelToEntity() {
-    WorkbasketRepresentationModel repModel
-        = new WorkbasketRepresentationModel();
+    WorkbasketDefinitionRepresentationModel repModel
+        = new WorkbasketDefinitionRepresentationModel();
     WorkbasketRepresentationModelWithoutLinks basket =
         new WorkbasketRepresentationModelWithoutLinks();
     basket.setKey("1");
@@ -89,11 +79,11 @@ class WorkbasketDefinitionRepresentationModelAssemblerTest {
     basket.setOrgLevel2("2");
     basket.setOrgLevel3("3");
     basket.setOrgLevel4("4");
-    //repModel.setWorkbasket(basket);
+    repModel.setWorkbasket(basket);
 
-    WorkbasketImpl workbasket = (WorkbasketImpl) tempAssembler.toEntityModel(repModel);
+    Workbasket workbasket = assembler.toEntityModel(repModel.getWorkbasket());
 
-    testEqualityOfWorkbasketsAfterConversion(workbasket, repModel);
+    testEquality(workbasket, repModel);
   }
 
   @Test
@@ -117,51 +107,30 @@ class WorkbasketDefinitionRepresentationModelAssemblerTest {
     workbasket.setModified(Instant.parse("2010-01-01T12:00:00Z"));
     workbasketService.newWorkbasketAccessItem("1", "1");
 
-    WorkbasketRepresentationModel repModel = tempAssembler.toModel(workbasket);
-    WorkbasketImpl workbasket2 = (WorkbasketImpl) tempAssembler.toEntityModel(repModel);
+    WorkbasketDefinitionRepresentationModel repModel = assembler.toModel(workbasket);
+    Workbasket workbasket2 = assembler.toEntityModel(repModel.getWorkbasket());
 
-    testEqualityOfEntities(workbasket, workbasket2);
+    assertThat(workbasket).isNotSameAs(workbasket2).isEqualTo(workbasket2);
   }
 
-  private void testEqualityOfWorkbasketsAfterConversion(Workbasket workbasket,
-      WorkbasketRepresentationModel repModel) {
-    assertThat(repModel.getWorkbasketId()).isEqualTo(workbasket.getId());
-    assertThat(repModel.getKey()).isEqualTo(workbasket.getKey());
-    assertThat(repModel.getCreated()).isEqualTo(workbasket.getCreated());
-    assertThat(repModel.getModified()).isEqualTo(workbasket.getModified());
-    assertThat(repModel.getName()).isEqualTo(workbasket.getName());
-    assertThat(repModel.getDescription()).isEqualTo(workbasket.getDescription());
-    assertThat(repModel.getOwner()).isEqualTo(workbasket.getOwner());
-    assertThat(repModel.getDomain()).isEqualTo(workbasket.getDomain());
-    assertThat(repModel.getType()).isEqualTo(workbasket.getType());
-    assertThat(repModel.getCustom1()).isEqualTo(workbasket.getCustom1());
-    assertThat(repModel.getCustom2()).isEqualTo(workbasket.getCustom2());
-    assertThat(repModel.getCustom3()).isEqualTo(workbasket.getCustom3());
-    assertThat(repModel.getCustom4()).isEqualTo(workbasket.getCustom4());
-    assertThat(repModel.getOrgLevel1()).isEqualTo(workbasket.getOrgLevel1());
-    assertThat(repModel.getOrgLevel2()).isEqualTo(workbasket.getOrgLevel2());
-    assertThat(repModel.getOrgLevel3()).isEqualTo(workbasket.getOrgLevel3());
-    assertThat(repModel.getOrgLevel4()).isEqualTo(workbasket.getOrgLevel4());
+  private void testEquality(Workbasket workbasket,
+      WorkbasketDefinitionRepresentationModel repModel) {
+    assertThat(repModel.getWorkbasket().getWorkbasketId()).isEqualTo(workbasket.getId());
+    assertThat(repModel.getWorkbasket().getKey()).isEqualTo(workbasket.getKey());
+    assertThat(repModel.getWorkbasket().getCreated()).isEqualTo(workbasket.getCreated());
+    assertThat(repModel.getWorkbasket().getModified()).isEqualTo(workbasket.getModified());
+    assertThat(repModel.getWorkbasket().getName()).isEqualTo(workbasket.getName());
+    assertThat(repModel.getWorkbasket().getDescription()).isEqualTo(workbasket.getDescription());
+    assertThat(repModel.getWorkbasket().getOwner()).isEqualTo(workbasket.getOwner());
+    assertThat(repModel.getWorkbasket().getDomain()).isEqualTo(workbasket.getDomain());
+    assertThat(repModel.getWorkbasket().getType()).isEqualTo(workbasket.getType());
+    assertThat(repModel.getWorkbasket().getCustom1()).isEqualTo(workbasket.getCustom1());
+    assertThat(repModel.getWorkbasket().getCustom2()).isEqualTo(workbasket.getCustom2());
+    assertThat(repModel.getWorkbasket().getCustom3()).isEqualTo(workbasket.getCustom3());
+    assertThat(repModel.getWorkbasket().getCustom4()).isEqualTo(workbasket.getCustom4());
+    assertThat(repModel.getWorkbasket().getOrgLevel1()).isEqualTo(workbasket.getOrgLevel1());
+    assertThat(repModel.getWorkbasket().getOrgLevel2()).isEqualTo(workbasket.getOrgLevel2());
+    assertThat(repModel.getWorkbasket().getOrgLevel3()).isEqualTo(workbasket.getOrgLevel3());
+    assertThat(repModel.getWorkbasket().getOrgLevel4()).isEqualTo(workbasket.getOrgLevel4());
   }
-
-  private void testEqualityOfEntities(Workbasket workbasket, Workbasket workbasket2) {
-    assertThat(workbasket2.getId()).isEqualTo(workbasket.getId());
-    assertThat(workbasket2.getKey()).isEqualTo(workbasket.getKey());
-    assertThat(workbasket2.getCreated()).isEqualTo(workbasket.getCreated());
-    assertThat(workbasket2.getModified()).isEqualTo(workbasket.getModified());
-    assertThat(workbasket2.getName()).isEqualTo(workbasket.getName());
-    assertThat(workbasket2.getDescription()).isEqualTo(workbasket.getDescription());
-    assertThat(workbasket2.getOwner()).isEqualTo(workbasket.getOwner());
-    assertThat(workbasket2.getDomain()).isEqualTo(workbasket.getDomain());
-    assertThat(workbasket2.getType()).isEqualTo(workbasket.getType());
-    assertThat(workbasket2.getCustom1()).isEqualTo(workbasket.getCustom1());
-    assertThat(workbasket2.getCustom2()).isEqualTo(workbasket.getCustom2());
-    assertThat(workbasket2.getCustom3()).isEqualTo(workbasket.getCustom3());
-    assertThat(workbasket2.getCustom4()).isEqualTo(workbasket.getCustom4());
-    assertThat(workbasket2.getOrgLevel1()).isEqualTo(workbasket.getOrgLevel1());
-    assertThat(workbasket2.getOrgLevel2()).isEqualTo(workbasket.getOrgLevel2());
-    assertThat(workbasket2.getOrgLevel3()).isEqualTo(workbasket.getOrgLevel3());
-    assertThat(workbasket2.getOrgLevel4()).isEqualTo(workbasket.getOrgLevel4());
-  }
-
 }

@@ -22,14 +22,19 @@ import pro.taskana.task.rest.models.AttachmentSummaryRepresentationModel;
 @TaskanaSpringBootTest
 class AttachmentSummaryRepresentationModelAssemblerTest {
 
-  @Autowired
-  AttachmentSummaryRepresentationModelAssembler assembler;
+
+  private final AttachmentSummaryRepresentationModelAssembler assembler;
+  private final ClassificationService classService;
+  private final TaskService taskService;
 
   @Autowired
-  ClassificationService classService;
-
-  @Autowired
-  TaskService taskService;
+  AttachmentSummaryRepresentationModelAssemblerTest(
+      AttachmentSummaryRepresentationModelAssembler assembler,
+      ClassificationService classService, TaskService taskService) {
+    this.assembler = assembler;
+    this.classService = classService;
+    this.taskService = taskService;
+  }
 
   @Test
   void should_ReturnEntity_When_ConvertingRepresentationModelToEntity() {
@@ -50,9 +55,9 @@ class AttachmentSummaryRepresentationModelAssemblerTest {
     repModel.setObjectReference(reference);
     repModel.setReceived(Instant.parse("2019-09-13T08:44:17.588Z"));
 
-    AttachmentSummaryImpl attachment = (AttachmentSummaryImpl) assembler.toEntityModel(repModel);
+    AttachmentSummary attachment = assembler.toEntityModel(repModel);
 
-    testEqualityAfterConversion(repModel, attachment);
+    testEquality(repModel, attachment);
   }
 
 
@@ -73,8 +78,8 @@ class AttachmentSummaryRepresentationModelAssemblerTest {
 
     AttachmentSummaryRepresentationModel repModel = assembler.toModel(attachment);
 
-    testEqualityAfterConversion(repModel, attachment);
-    testLinks();
+    testEquality(repModel, attachment);
+    testLinks(repModel);
   }
 
   @Test
@@ -95,10 +100,10 @@ class AttachmentSummaryRepresentationModelAssemblerTest {
     AttachmentSummaryRepresentationModel repModel = assembler.toModel(attachment);
     AttachmentSummaryImpl attachment2 = (AttachmentSummaryImpl) assembler.toEntityModel(repModel);
 
-    testEqualityOfEntities(attachment, attachment2);
+    assertThat(attachment).isNotSameAs(attachment2).isEqualTo(attachment2);
   }
 
-  void testEqualityAfterConversion(AttachmentSummaryRepresentationModel repModel,
+  void testEquality(AttachmentSummaryRepresentationModel repModel,
       AttachmentSummary attachment) {
     assertThat(repModel.getAttachmentId()).isEqualTo(attachment.getId());
     assertThat(repModel.getTaskId()).isEqualTo(attachment.getTaskId());
@@ -111,19 +116,6 @@ class AttachmentSummaryRepresentationModelAssemblerTest {
         .isEqualTo(attachment.getClassificationSummary().getId());
   }
 
-  void testLinks() {
+  void testLinks(AttachmentSummaryRepresentationModel repModel) {
   }
-
-  private void testEqualityOfEntities(AttachmentSummary attachment, AttachmentSummary attachment2) {
-    assertThat(attachment2.getId()).isEqualTo(attachment.getId());
-    assertThat(attachment2.getTaskId()).isEqualTo(attachment.getTaskId());
-    assertThat(attachment2.getChannel()).isEqualTo(attachment.getChannel());
-    assertThat(attachment2.getCreated()).isEqualTo(attachment.getCreated());
-    assertThat(attachment2.getModified()).isEqualTo(attachment.getModified());
-    assertThat(attachment2.getObjectReference()).isEqualTo(attachment.getObjectReference());
-    assertThat(attachment2.getReceived()).isEqualTo(attachment.getReceived());
-    assertThat(attachment2.getClassificationSummary().getId())
-        .isEqualTo(attachment.getClassificationSummary().getId());
-  }
-
 }

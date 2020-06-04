@@ -16,13 +16,11 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.rest.TaskanaSpringBootTest;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
-import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.AttachmentSummary;
 import pro.taskana.task.api.models.ObjectReference;
-import pro.taskana.task.api.models.Task;
+import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.AttachmentImpl;
 import pro.taskana.task.internal.models.TaskImpl;
-import pro.taskana.task.internal.models.TaskSummaryImpl;
 import pro.taskana.task.rest.models.AttachmentRepresentationModel;
 import pro.taskana.task.rest.models.AttachmentSummaryRepresentationModel;
 import pro.taskana.task.rest.models.TaskRepresentationModel;
@@ -32,7 +30,7 @@ import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 
 @TaskanaSpringBootTest
-class TaskSummaryAssemblerTest {
+class TaskSummaryRepresentationModelAssemblerTest {
 
   TaskService taskService;
   TaskSummaryRepresentationModelAssembler taskSummaryRepresentationModelAssembler;
@@ -40,7 +38,7 @@ class TaskSummaryAssemblerTest {
   ClassificationService classificationService;
 
   @Autowired
-  TaskSummaryAssemblerTest(TaskService taskService,
+  TaskSummaryRepresentationModelAssemblerTest(TaskService taskService,
       TaskSummaryRepresentationModelAssembler taskSummaryRepresentationModelAssembler,
       WorkbasketService workbasketService, ClassificationService classificationService) {
     this.taskService = taskService;
@@ -50,7 +48,8 @@ class TaskSummaryAssemblerTest {
   }
 
   @Test
-  void should_ReturnRepresentationModel_When_ConvertingEntityToRepresentationModel() {
+  void should_ReturnRepresentationModel_When_ConvertingEntityToRepresentationModel()
+      throws InvalidArgumentException {
     ObjectReference primaryObjRef = new ObjectReference();
     primaryObjRef.setId("abc");
     Classification classification =
@@ -102,12 +101,15 @@ class TaskSummaryAssemblerTest {
     task.setCustom15("custom15");
     TaskSummaryRepresentationModel repModel =
         taskSummaryRepresentationModelAssembler.toModel(task);
-    testEqualityAfterConversion(task, repModel);
+
+    testEquality(task, repModel);
+    testLinks(repModel);
   }
 
 
   @Test
-  void should_ReturnEntity_When_ConvertingRepresentationModelToEntity() {
+  void should_ReturnEntity_When_ConvertingRepresentationModelToEntity()
+      throws InvalidArgumentException {
     ObjectReference primaryObjRef = new ObjectReference();
     primaryObjRef.setId("abc");
     WorkbasketSummaryRepresentationModel workbasketResource =
@@ -161,14 +163,13 @@ class TaskSummaryAssemblerTest {
     repModel.setCustom15("custom15");
     repModel.setCustom16("custom16");
     // when
-    TaskImpl task = (TaskImpl) taskSummaryRepresentationModelAssembler.toEntityModel(repModel);
+    TaskSummary task = taskSummaryRepresentationModelAssembler.toEntityModel(repModel);
     // then
-    testEqualityAfterConversion(task, repModel);
+    testEquality(task, repModel);
   }
 
   @Test
-  void should_Equal_When_ComparingEntityWithConvertedEntity()
-      throws InvalidArgumentException {
+  void should_Equal_When_ComparingEntityWithConvertedEntity() {
     // given
     ObjectReference primaryObjRef = new ObjectReference();
     primaryObjRef.setId("abc");
@@ -194,7 +195,7 @@ class TaskSummaryAssemblerTest {
     task.setPriority(123);
     task.setState(TaskState.READY);
     task.setClassificationSummary(classification);
-    task.setWorkbasketSummary(workbasket.asSummary());
+    task.setWorkbasketSummary(workbasket);
     task.setBusinessProcessId("businessProcessId");
     task.setParentBusinessProcessId("parentBusinessProcessId");
     task.setOwner("owner");
@@ -219,106 +220,58 @@ class TaskSummaryAssemblerTest {
     task.setCustom16("custom16");
     // when
     TaskSummaryRepresentationModel repModel = taskSummaryRepresentationModelAssembler.toModel(task);
-    TaskImpl task2 = (TaskImpl) taskSummaryRepresentationModelAssembler.toEntityModel(repModel);
+    TaskSummary task2 = taskSummaryRepresentationModelAssembler.toEntityModel(repModel);
     // then
-    testEqualityOfEntities(task, task2);
+    assertThat(task).isNotSameAs(task2).isEqualTo(task2);
   }
 
-  void testEqualityAfterConversion(TaskSummaryImpl taskSummary,
-      TaskSummaryRepresentationModel resource) {
-    Assert.assertEquals(taskSummary.getId(), resource.getTaskId());
-    Assert.assertEquals(taskSummary.getExternalId(), resource.getExternalId());
-    Assert.assertEquals(taskSummary.getCreated(), resource.getCreated());
-    Assert.assertEquals(taskSummary.getClaimed(), resource.getClaimed());
-    Assert.assertEquals(taskSummary.getCompleted(), resource.getCompleted());
-    Assert.assertEquals(taskSummary.getModified(), resource.getModified());
-    Assert.assertEquals(taskSummary.getPlanned(), resource.getPlanned());
-    Assert.assertEquals(taskSummary.getDescription(), resource.getDescription());
-    Assert.assertEquals(taskSummary.getName(), resource.getName());
-    Assert.assertEquals(taskSummary.getCreator(), resource.getCreator());
-    Assert.assertEquals(taskSummary.getNote(), resource.getNote());
-    Assert.assertEquals(taskSummary.getPriority(), resource.getPriority());
-    Assert.assertEquals(taskSummary.getState(), resource.getState());
+  void testEquality(TaskSummary taskSummary,
+      TaskSummaryRepresentationModel repModel) throws InvalidArgumentException {
+    Assert.assertEquals(taskSummary.getId(), repModel.getTaskId());
+    Assert.assertEquals(taskSummary.getExternalId(), repModel.getExternalId());
+    Assert.assertEquals(taskSummary.getCreated(), repModel.getCreated());
+    Assert.assertEquals(taskSummary.getClaimed(), repModel.getClaimed());
+    Assert.assertEquals(taskSummary.getCompleted(), repModel.getCompleted());
+    Assert.assertEquals(taskSummary.getModified(), repModel.getModified());
+    Assert.assertEquals(taskSummary.getPlanned(), repModel.getPlanned());
+    Assert.assertEquals(taskSummary.getDescription(), repModel.getDescription());
+    Assert.assertEquals(taskSummary.getName(), repModel.getName());
+    Assert.assertEquals(taskSummary.getCreator(), repModel.getCreator());
+    Assert.assertEquals(taskSummary.getNote(), repModel.getNote());
+    Assert.assertEquals(taskSummary.getPriority(), repModel.getPriority());
+    Assert.assertEquals(taskSummary.getState(), repModel.getState());
     Assert.assertEquals(
         taskSummary.getClassificationSummary().getId(),
-        resource.getClassificationSummary().getClassificationId());
+        repModel.getClassificationSummary().getClassificationId());
     Assert.assertEquals(
         taskSummary.getWorkbasketSummary().getId(),
-        resource.getWorkbasketSummary().getWorkbasketId());
-    Assert.assertEquals(taskSummary.getBusinessProcessId(), resource.getBusinessProcessId());
+        repModel.getWorkbasketSummary().getWorkbasketId());
+    Assert.assertEquals(taskSummary.getBusinessProcessId(), repModel.getBusinessProcessId());
     Assert.assertEquals(
-        taskSummary.getParentBusinessProcessId(), resource.getParentBusinessProcessId());
-    Assert.assertEquals(taskSummary.getOwner(), resource.getOwner());
-    Assert.assertEquals(taskSummary.getPrimaryObjRef(), resource.getPrimaryObjRef());
-    Assert.assertEquals(taskSummary.isRead(), resource.isRead());
-    Assert.assertEquals(taskSummary.isTransferred(), resource.isTransferred());
-    Assert.assertEquals(taskSummary.getCustom1(), resource.getCustom1());
-    Assert.assertEquals(taskSummary.getCustom2(), resource.getCustom2());
-    Assert.assertEquals(taskSummary.getCustom3(), resource.getCustom3());
-    Assert.assertEquals(taskSummary.getCustom4(), resource.getCustom4());
-    Assert.assertEquals(taskSummary.getCustom5(), resource.getCustom5());
-    Assert.assertEquals(taskSummary.getCustom6(), resource.getCustom6());
-    Assert.assertEquals(taskSummary.getCustom7(), resource.getCustom7());
-    Assert.assertEquals(taskSummary.getCustom8(), resource.getCustom8());
-    Assert.assertEquals(taskSummary.getCustom9(), resource.getCustom9());
-    Assert.assertEquals(taskSummary.getCustom10(), resource.getCustom10());
-    Assert.assertEquals(taskSummary.getCustom11(), resource.getCustom11());
-    Assert.assertEquals(taskSummary.getCustom12(), resource.getCustom12());
-    Assert.assertEquals(taskSummary.getCustom13(), resource.getCustom13());
-    Assert.assertEquals(taskSummary.getCustom14(), resource.getCustom14());
-    Assert.assertEquals(taskSummary.getCustom15(), resource.getCustom15());
-    Assert.assertEquals(taskSummary.getCustom16(), resource.getCustom16());
+        taskSummary.getParentBusinessProcessId(), repModel.getParentBusinessProcessId());
+    Assert.assertEquals(taskSummary.getOwner(), repModel.getOwner());
+    Assert.assertEquals(taskSummary.getPrimaryObjRef(), repModel.getPrimaryObjRef());
+    Assert.assertEquals(taskSummary.isRead(), repModel.isRead());
+    Assert.assertEquals(taskSummary.isTransferred(), repModel.isTransferred());
+    Assert.assertEquals(taskSummary.getCustomAttribute("1"), repModel.getCustom1());
+    Assert.assertEquals(taskSummary.getCustomAttribute("2"), repModel.getCustom2());
+    Assert.assertEquals(taskSummary.getCustomAttribute("3"), repModel.getCustom3());
+    Assert.assertEquals(taskSummary.getCustomAttribute("4"), repModel.getCustom4());
+    Assert.assertEquals(taskSummary.getCustomAttribute("5"), repModel.getCustom5());
+    Assert.assertEquals(taskSummary.getCustomAttribute("6"), repModel.getCustom6());
+    Assert.assertEquals(taskSummary.getCustomAttribute("7"), repModel.getCustom7());
+    Assert.assertEquals(taskSummary.getCustomAttribute("8"), repModel.getCustom8());
+    Assert.assertEquals(taskSummary.getCustomAttribute("9"), repModel.getCustom9());
+    Assert.assertEquals(taskSummary.getCustomAttribute("10"), repModel.getCustom10());
+    Assert.assertEquals(taskSummary.getCustomAttribute("11"), repModel.getCustom11());
+    Assert.assertEquals(taskSummary.getCustomAttribute("12"), repModel.getCustom12());
+    Assert.assertEquals(taskSummary.getCustomAttribute("13"), repModel.getCustom13());
+    Assert.assertEquals(taskSummary.getCustomAttribute("14"), repModel.getCustom14());
+    Assert.assertEquals(taskSummary.getCustomAttribute("15"), repModel.getCustom15());
+    Assert.assertEquals(taskSummary.getCustomAttribute("16"), repModel.getCustom16());
 
     this.testEqualityAttachments(
-        taskSummary.getAttachmentSummaries(), resource.getAttachmentSummaries());
-  }
-
-
-  void testEqualityOfEntities(Task task1, Task task2)
-      throws InvalidArgumentException {
-    assertThat(task1.getId()).isEqualTo(task2.getId());
-    assertThat(task1.getExternalId()).isEqualTo(task2.getExternalId());
-    assertThat(task1.getCreated()).isEqualTo(task2.getCreated());
-    assertThat(task1.getClaimed()).isEqualTo(task2.getClaimed());
-    assertThat(task1.getCompleted()).isEqualTo(task2.getCompleted());
-    assertThat(task1.getModified()).isEqualTo(task2.getModified());
-    assertThat(task1.getPlanned()).isEqualTo(task2.getPlanned());
-    assertThat(task1.getDue()).isEqualTo(task2.getDue());
-    assertThat(task1.getName()).isEqualTo(task2.getName());
-    assertThat(task1.getCreator()).isEqualTo(task2.getCreator());
-    assertThat(task1.getDescription()).isEqualTo(task2.getDescription());
-    assertThat(task1.getNote()).isEqualTo(task2.getNote());
-    assertThat(task1.getPriority()).isEqualTo(task2.getPriority());
-    assertThat(task1.getState()).isEqualTo(task2.getState());
-    assertThat(task1.getClassificationSummary().getId())
-        .isEqualTo(task2.getClassificationSummary().getId());
-    assertThat(task1.getWorkbasketSummary().getId())
-        .isEqualTo(task2.getWorkbasketSummary().getId());
-    assertThat(task1.getBusinessProcessId()).isEqualTo(task2.getBusinessProcessId());
-    assertThat(task1.getParentBusinessProcessId()).isEqualTo(task2.getParentBusinessProcessId());
-    assertThat(task1.getOwner()).isEqualTo(task2.getOwner());
-    assertThat(task1.getPrimaryObjRef()).isEqualTo(task2.getPrimaryObjRef());
-    assertThat(task1.isRead()).isEqualTo(task2.isRead());
-    assertThat(task1.isTransferred()).isEqualTo(task2.isTransferred());
-    assertThat(task2.getCustomAttributes()).isEqualTo(task1.getCustomAttributes());
-    assertThat(task2.getCallbackInfo()).isEqualTo(task1.getCallbackInfo());
-    testEqualityAttachmentsOfEqualEntities(task1.getAttachments(), task2.getAttachments());
-    assertThat(task1.getCustomAttribute("1")).isEqualTo(task2.getCustomAttribute("1"));
-    assertThat(task1.getCustomAttribute("2")).isEqualTo(task2.getCustomAttribute("2"));
-    assertThat(task1.getCustomAttribute("3")).isEqualTo(task2.getCustomAttribute("3"));
-    assertThat(task1.getCustomAttribute("4")).isEqualTo(task2.getCustomAttribute("4"));
-    assertThat(task1.getCustomAttribute("5")).isEqualTo(task2.getCustomAttribute("5"));
-    assertThat(task1.getCustomAttribute("6")).isEqualTo(task2.getCustomAttribute("6"));
-    assertThat(task1.getCustomAttribute("7")).isEqualTo(task2.getCustomAttribute("7"));
-    assertThat(task1.getCustomAttribute("8")).isEqualTo(task2.getCustomAttribute("8"));
-    assertThat(task1.getCustomAttribute("9")).isEqualTo(task2.getCustomAttribute("9"));
-    assertThat(task1.getCustomAttribute("10")).isEqualTo(task2.getCustomAttribute("10"));
-    assertThat(task1.getCustomAttribute("11")).isEqualTo(task2.getCustomAttribute("11"));
-    assertThat(task1.getCustomAttribute("12")).isEqualTo(task2.getCustomAttribute("12"));
-    assertThat(task1.getCustomAttribute("13")).isEqualTo(task2.getCustomAttribute("13"));
-    assertThat(task1.getCustomAttribute("14")).isEqualTo(task2.getCustomAttribute("14"));
-    assertThat(task1.getCustomAttribute("15")).isEqualTo(task2.getCustomAttribute("15"));
-    assertThat(task1.getCustomAttribute("16")).isEqualTo(task2.getCustomAttribute("16"));
+        taskSummary.getAttachmentSummaries(), repModel.getAttachmentSummaries());
   }
 
   private void testEqualityAttachments(
@@ -331,16 +284,6 @@ class TaskSummaryAssemblerTest {
       AttachmentSummary attachmentSummary = attachmentSummaries.get(i);
       Assert.assertEquals(attachmentSummary.getId(), resource.getAttachmentId());
     }
-  }
-
-  private void testEqualityAttachmentsOfEqualEntities(
-      List<Attachment> attachments, List<Attachment> attachments2) {
-    String[] objects = attachments.stream().map(Attachment::getId).toArray(String[]::new);
-
-    assertThat(attachments2)
-        .hasSize(attachments.size())
-        .extracting(Attachment::getId)
-        .containsOnly(objects);
   }
 
   private void testLinks(TaskSummaryRepresentationModel repModel) {

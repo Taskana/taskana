@@ -11,14 +11,23 @@ import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
 import pro.taskana.workbasket.rest.models.WorkbasketAccessItemRepresentationModel;
 
-/** Test for {@link WorkbasketAccessItemRepresentationModelAssembler}. */
+/**
+ * Test for {@link WorkbasketAccessItemRepresentationModelAssembler}.
+ */
 @TaskanaSpringBootTest
 class WorkbasketAccessItemRepresentationModelAssemblerTest {
 
-  @Autowired
-  WorkbasketAccessItemRepresentationModelAssembler workbasketAccessItemRepresentationModelAssembler;
 
-  @Autowired WorkbasketService workbasketService;
+  private final WorkbasketAccessItemRepresentationModelAssembler assembler;
+  private final WorkbasketService workbasketService;
+
+  @Autowired
+  WorkbasketAccessItemRepresentationModelAssemblerTest(
+      WorkbasketAccessItemRepresentationModelAssembler assembler,
+      WorkbasketService workbasketService) {
+    this.assembler = assembler;
+    this.workbasketService = workbasketService;
+  }
 
   @Test
   void should_ReturnRepresentationModel_When_ConvertingEntityToRepresentationModel() {
@@ -44,10 +53,10 @@ class WorkbasketAccessItemRepresentationModelAssemblerTest {
     accessItem.setPermCustom11(true);
     accessItem.setPermCustom12(true);
     // when
-    WorkbasketAccessItemRepresentationModel repModel =
-        workbasketAccessItemRepresentationModelAssembler.toModel(accessItem);
+    WorkbasketAccessItemRepresentationModel repModel = assembler.toModel(accessItem);
     // then
-    testEqualityAfterConversion(accessItem, repModel);
+    testEquality(accessItem, repModel);
+    testLinks(repModel);
   }
 
   @Test
@@ -77,10 +86,9 @@ class WorkbasketAccessItemRepresentationModelAssemblerTest {
     repModel.setPermCustom11(true);
     repModel.setPermCustom12(false);
     // when
-    WorkbasketAccessItem accessItem =
-        workbasketAccessItemRepresentationModelAssembler.toEntityModel(repModel);
+    WorkbasketAccessItem accessItem = assembler.toEntityModel(repModel);
     // then
-    testEqualityAfterConversion(accessItem, repModel);
+    testEquality(accessItem, repModel);
   }
 
   @Test
@@ -107,16 +115,13 @@ class WorkbasketAccessItemRepresentationModelAssemblerTest {
     accessItem.setPermCustom11(true);
     accessItem.setPermCustom12(true);
     // when
-    WorkbasketAccessItemRepresentationModel repModel =
-        workbasketAccessItemRepresentationModelAssembler.toModel(accessItem);
-    WorkbasketAccessItemImpl accessItem2
-        = (WorkbasketAccessItemImpl) workbasketAccessItemRepresentationModelAssembler
-                                         .toEntityModel(repModel);
+    WorkbasketAccessItemRepresentationModel repModel = assembler.toModel(accessItem);
+    WorkbasketAccessItem accessItem2 = assembler.toEntityModel(repModel);
     //then
-    testEqualityOfEntities(accessItem, accessItem2);
+    assertThat(accessItem).isNotSameAs(accessItem2).isEqualTo(accessItem2);
   }
 
-  private void testEqualityAfterConversion(
+  private void testEquality(
       WorkbasketAccessItem accessItem, WorkbasketAccessItemRepresentationModel repModel) {
     assertThat(repModel.getAccessId()).isEqualTo(accessItem.getAccessId());
     assertThat(repModel.getWorkbasketKey()).isEqualTo(accessItem.getWorkbasketKey());
@@ -141,30 +146,7 @@ class WorkbasketAccessItemRepresentationModelAssemblerTest {
     assertThat(repModel.isPermTransfer()).isEqualTo(accessItem.isPermTransfer());
   }
 
-  private void testEqualityOfEntities(WorkbasketAccessItem item1, WorkbasketAccessItem items2) {
-    assertThat(item1.getAccessId()).isEqualTo(items2.getAccessId());
-    assertThat(item1.getWorkbasketKey()).isEqualTo(items2.getWorkbasketKey());
-    assertThat(item1.getId()).isEqualTo(items2.getId());
-    assertThat(item1.getWorkbasketId()).isEqualTo(items2.getWorkbasketId());
-    assertThat(item1.isPermAppend()).isEqualTo(items2.isPermAppend());
-    assertThat(item1.isPermCustom1()).isEqualTo(items2.isPermCustom1());
-    assertThat(item1.isPermCustom2()).isEqualTo(items2.isPermCustom2());
-    assertThat(item1.isPermCustom3()).isEqualTo(items2.isPermCustom3());
-    assertThat(item1.isPermCustom4()).isEqualTo(items2.isPermCustom4());
-    assertThat(item1.isPermCustom5()).isEqualTo(items2.isPermCustom5());
-    assertThat(item1.isPermCustom6()).isEqualTo(items2.isPermCustom6());
-    assertThat(item1.isPermCustom7()).isEqualTo(items2.isPermCustom7());
-    assertThat(item1.isPermCustom8()).isEqualTo(items2.isPermCustom8());
-    assertThat(item1.isPermCustom9()).isEqualTo(items2.isPermCustom9());
-    assertThat(item1.isPermCustom10()).isEqualTo(items2.isPermCustom10());
-    assertThat(item1.isPermCustom11()).isEqualTo(items2.isPermCustom11());
-    assertThat(item1.isPermCustom12()).isEqualTo(items2.isPermCustom12());
-    assertThat(item1.isPermDistribute()).isEqualTo(items2.isPermDistribute());
-    assertThat(item1.isPermRead()).isEqualTo(items2.isPermRead());
-    assertThat(item1.isPermOpen()).isEqualTo(items2.isPermOpen());
-    assertThat(item1.isPermTransfer()).isEqualTo(items2.isPermTransfer());
-  }
-
-  private void testLinks() {
+  private void testLinks(
+      WorkbasketAccessItemRepresentationModel repModel) {
   }
 }

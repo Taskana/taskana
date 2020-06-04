@@ -113,9 +113,9 @@ class TaskRepresentationModelAssemberTest {
     repModel.setCustom15("custom15");
     repModel.setCustom16("custom16");
     // when
-    TaskImpl task = (TaskImpl) taskRepresentationModelAssembler.toEntityModel(repModel);
+    Task task = taskRepresentationModelAssembler.toEntityModel(repModel);
     // then
-    testEqualityAfterConversion(task, repModel);
+    testEquality(task, repModel);
   }
 
   @Test
@@ -175,7 +175,7 @@ class TaskRepresentationModelAssemberTest {
     // when
     TaskRepresentationModel repModel = taskRepresentationModelAssembler.toModel(task);
     // then
-    testEqualityAfterConversion(task, repModel);
+    testEquality(task, repModel);
     testLinks(repModel);
   }
 
@@ -207,7 +207,7 @@ class TaskRepresentationModelAssemberTest {
     task.setPriority(123);
     task.setState(TaskState.READY);
     task.setClassificationSummary(classification);
-    task.setWorkbasketSummary(workbasket.asSummary());
+    task.setWorkbasketSummary(workbasket);
     task.setBusinessProcessId("businessProcessId");
     task.setParentBusinessProcessId("parentBusinessProcessId");
     task.setOwner("owner");
@@ -237,10 +237,10 @@ class TaskRepresentationModelAssemberTest {
     TaskRepresentationModel repModel = taskRepresentationModelAssembler.toModel(task);
     TaskImpl task2 = (TaskImpl) taskRepresentationModelAssembler.toEntityModel(repModel);
     // then
-    testEqualityOfEntities(task, task2);
+    assertThat(task).isNotSameAs(task2).isEqualTo(task2);
   }
 
-  private void testEqualityAfterConversion(Task task, TaskRepresentationModel repModel)
+  private void testEquality(Task task, TaskRepresentationModel repModel)
       throws InvalidArgumentException {
     assertThat(repModel.getTaskId()).isEqualTo(task.getId());
     assertThat(repModel.getExternalId()).isEqualTo(task.getExternalId());
@@ -287,53 +287,6 @@ class TaskRepresentationModelAssemberTest {
     assertThat(repModel.getCustom16()).isEqualTo(task.getCustomAttribute("16"));
   }
 
-  private void testEqualityOfEntities(Task task1, Task task2)
-      throws InvalidArgumentException {
-    assertThat(task1.getId()).isEqualTo(task2.getId());
-    assertThat(task1.getExternalId()).isEqualTo(task2.getExternalId());
-    assertThat(task1.getCreated()).isEqualTo(task2.getCreated());
-    assertThat(task1.getClaimed()).isEqualTo(task2.getClaimed());
-    assertThat(task1.getCompleted()).isEqualTo(task2.getCompleted());
-    assertThat(task1.getModified()).isEqualTo(task2.getModified());
-    assertThat(task1.getPlanned()).isEqualTo(task2.getPlanned());
-    assertThat(task1.getDue()).isEqualTo(task2.getDue());
-    assertThat(task1.getName()).isEqualTo(task2.getName());
-    assertThat(task1.getCreator()).isEqualTo(task2.getCreator());
-    assertThat(task1.getDescription()).isEqualTo(task2.getDescription());
-    assertThat(task1.getNote()).isEqualTo(task2.getNote());
-    assertThat(task1.getPriority()).isEqualTo(task2.getPriority());
-    assertThat(task1.getState()).isEqualTo(task2.getState());
-    assertThat(task1.getClassificationSummary().getId())
-        .isEqualTo(task2.getClassificationSummary().getId());
-    assertThat(task1.getWorkbasketSummary().getId())
-        .isEqualTo(task2.getWorkbasketSummary().getId());
-    assertThat(task1.getBusinessProcessId()).isEqualTo(task2.getBusinessProcessId());
-    assertThat(task1.getParentBusinessProcessId()).isEqualTo(task2.getParentBusinessProcessId());
-    assertThat(task1.getOwner()).isEqualTo(task2.getOwner());
-    assertThat(task1.getPrimaryObjRef()).isEqualTo(task2.getPrimaryObjRef());
-    assertThat(task1.isRead()).isEqualTo(task2.isRead());
-    assertThat(task1.isTransferred()).isEqualTo(task2.isTransferred());
-    assertThat(task2.getCustomAttributes()).isEqualTo(task1.getCustomAttributes());
-    assertThat(task2.getCallbackInfo()).isEqualTo(task1.getCallbackInfo());
-    testEqualityAttachmentsOfEqualEntities(task1.getAttachments(), task2.getAttachments());
-    assertThat(task1.getCustomAttribute("1")).isEqualTo(task2.getCustomAttribute("1"));
-    assertThat(task1.getCustomAttribute("2")).isEqualTo(task2.getCustomAttribute("2"));
-    assertThat(task1.getCustomAttribute("3")).isEqualTo(task2.getCustomAttribute("3"));
-    assertThat(task1.getCustomAttribute("4")).isEqualTo(task2.getCustomAttribute("4"));
-    assertThat(task1.getCustomAttribute("5")).isEqualTo(task2.getCustomAttribute("5"));
-    assertThat(task1.getCustomAttribute("6")).isEqualTo(task2.getCustomAttribute("6"));
-    assertThat(task1.getCustomAttribute("7")).isEqualTo(task2.getCustomAttribute("7"));
-    assertThat(task1.getCustomAttribute("8")).isEqualTo(task2.getCustomAttribute("8"));
-    assertThat(task1.getCustomAttribute("9")).isEqualTo(task2.getCustomAttribute("9"));
-    assertThat(task1.getCustomAttribute("10")).isEqualTo(task2.getCustomAttribute("10"));
-    assertThat(task1.getCustomAttribute("11")).isEqualTo(task2.getCustomAttribute("11"));
-    assertThat(task1.getCustomAttribute("12")).isEqualTo(task2.getCustomAttribute("12"));
-    assertThat(task1.getCustomAttribute("13")).isEqualTo(task2.getCustomAttribute("13"));
-    assertThat(task1.getCustomAttribute("14")).isEqualTo(task2.getCustomAttribute("14"));
-    assertThat(task1.getCustomAttribute("15")).isEqualTo(task2.getCustomAttribute("15"));
-    assertThat(task1.getCustomAttribute("16")).isEqualTo(task2.getCustomAttribute("16"));
-  }
-
   private void testEqualityCustomAttributes(
       Map<String, String> customAttributes,
       List<TaskRepresentationModel.CustomAttribute> resourceAttributes) {
@@ -354,19 +307,9 @@ class TaskRepresentationModelAssemberTest {
         .containsOnly(objects);
   }
 
-  private void testEqualityAttachmentsOfEqualEntities(
-      List<Attachment> attachments, List<Attachment> attachments2) {
-    String[] objects = attachments.stream().map(Attachment::getId).toArray(String[]::new);
-
-    assertThat(attachments2)
-        .hasSize(attachments.size())
-        .extracting(Attachment::getId)
-        .containsOnly(objects);
-  }
-
-  private void testLinks(TaskRepresentationModel resource) {
-    assertThat(resource.getLinks()).hasSize(1);
-    assertThat(resource.getRequiredLink("self").getHref())
-        .isEqualTo(Mapping.URL_TASKS_ID.replaceAll("\\{.*}", resource.getTaskId()));
+  private void testLinks(TaskRepresentationModel repModel) {
+    assertThat(repModel.getLinks()).hasSize(1);
+    assertThat(repModel.getRequiredLink("self").getHref())
+        .isEqualTo(Mapping.URL_TASKS_ID.replaceAll("\\{.*}", repModel.getTaskId()));
   }
 }

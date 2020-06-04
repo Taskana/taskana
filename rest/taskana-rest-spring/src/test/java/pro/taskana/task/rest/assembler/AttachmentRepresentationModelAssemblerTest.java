@@ -24,14 +24,18 @@ import pro.taskana.task.rest.models.AttachmentRepresentationModel;
 @TaskanaSpringBootTest
 class AttachmentRepresentationModelAssemblerTest {
 
-  @Autowired
-  AttachmentRepresentationModelAssembler assembler;
+  private final AttachmentRepresentationModelAssembler assembler;
+  private final ClassificationService classService;
+  private final TaskService taskService;
 
   @Autowired
-  ClassificationService classService;
-
-  @Autowired
-  TaskService taskService;
+  AttachmentRepresentationModelAssemblerTest(
+      AttachmentRepresentationModelAssembler assembler,
+      ClassificationService classService, TaskService taskService) {
+    this.assembler = assembler;
+    this.classService = classService;
+    this.taskService = taskService;
+  }
 
   @Test
   void should_ReturnEntity_When_ConvertingRepresentationModelToEntity() {
@@ -53,9 +57,9 @@ class AttachmentRepresentationModelAssemblerTest {
     repModel.setObjectReference(reference);
     repModel.setReceived(Instant.parse("2019-09-13T08:44:17.588Z"));
 
-    AttachmentImpl attachment = assembler.toEntityModel(repModel);
+    Attachment attachment = assembler.toEntityModel(repModel);
 
-    testEqualityAfterConversion(repModel, attachment);
+    testEquality(attachment, repModel);
   }
 
 
@@ -77,8 +81,8 @@ class AttachmentRepresentationModelAssemblerTest {
 
     AttachmentRepresentationModel repModel = assembler.toModel(attachment);
 
-    testEqualityAfterConversion(repModel, attachment);
-    testLinks();
+    testEquality(attachment, repModel);
+    testLinks(repModel);
   }
 
   @Test
@@ -98,38 +102,24 @@ class AttachmentRepresentationModelAssemblerTest {
     attachment.setReceived(Instant.parse("2019-09-13T08:44:17.588Z"));
 
     AttachmentRepresentationModel repModel = assembler.toModel(attachment);
-    AttachmentImpl attachment2 = assembler.toEntityModel(repModel);
+    Attachment attachment2 = assembler.toEntityModel(repModel);
 
-    testEqualityOfEntities(attachment, attachment2);
+    assertThat(attachment).isNotSameAs(attachment2).isEqualTo(attachment2);
   }
 
-  void testEqualityAfterConversion(AttachmentRepresentationModel repModel, Attachment attachment) {
-    assertThat(repModel.getAttachmentId()).isEqualTo(attachment.getId());
-    assertThat(repModel.getTaskId()).isEqualTo(attachment.getTaskId());
-    assertThat(repModel.getChannel()).isEqualTo(attachment.getChannel());
-    assertThat(repModel.getCreated()).isEqualTo(attachment.getCreated());
-    assertThat(repModel.getModified()).isEqualTo(attachment.getModified());
-    assertThat(repModel.getObjectReference()).isEqualTo(attachment.getObjectReference());
-    assertThat(repModel.getReceived()).isEqualTo(attachment.getReceived());
-    assertThat(repModel.getClassificationSummary().getClassificationId())
-        .isEqualTo(attachment.getClassificationSummary().getId());
-    assertThat(repModel.getCustomAttributes()).isEqualTo(attachment.getCustomAttributes());
+  void testEquality(Attachment attachment, AttachmentRepresentationModel repModel) {
+    assertThat(attachment.getId()).isEqualTo(repModel.getAttachmentId());
+    assertThat(attachment.getTaskId()).isEqualTo(repModel.getTaskId());
+    assertThat(attachment.getChannel()).isEqualTo(repModel.getChannel());
+    assertThat(attachment.getCreated()).isEqualTo(repModel.getCreated());
+    assertThat(attachment.getModified()).isEqualTo(repModel.getModified());
+    assertThat(attachment.getObjectReference()).isEqualTo(repModel.getObjectReference());
+    assertThat(attachment.getReceived()).isEqualTo(repModel.getReceived());
+    assertThat(attachment.getClassificationSummary().getId())
+        .isEqualTo(repModel.getClassificationSummary().getClassificationId());
+    assertThat(attachment.getCustomAttributes()).isEqualTo(repModel.getCustomAttributes());
   }
 
-  void testLinks() {
+  void testLinks(AttachmentRepresentationModel repModel) {
   }
-
-  private void testEqualityOfEntities(Attachment attachment, Attachment attachment2) {
-    assertThat(attachment2.getId()).isEqualTo(attachment.getId());
-    assertThat(attachment2.getTaskId()).isEqualTo(attachment.getTaskId());
-    assertThat(attachment2.getChannel()).isEqualTo(attachment.getChannel());
-    assertThat(attachment2.getCreated()).isEqualTo(attachment.getCreated());
-    assertThat(attachment2.getModified()).isEqualTo(attachment.getModified());
-    assertThat(attachment2.getObjectReference()).isEqualTo(attachment.getObjectReference());
-    assertThat(attachment2.getReceived()).isEqualTo(attachment.getReceived());
-    assertThat(attachment2.getClassificationSummary().getId())
-        .isEqualTo(attachment.getClassificationSummary().getId());
-    assertThat(attachment2.getCustomAttributes()).isEqualTo(attachment.getCustomAttributes());
-  }
-
 }
