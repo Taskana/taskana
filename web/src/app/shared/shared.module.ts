@@ -24,6 +24,7 @@ import { FieldErrorDisplayComponent } from 'app/shared/components/field-error-di
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+import { MatRadioModule } from '@angular/material/radio';
 import { SortComponent } from './components/sort/sort.component';
 import { PaginationComponent } from './components/pagination/pagination.component';
 import { NumberPickerComponent } from './components/number-picker/number-picker.component';
@@ -97,7 +98,8 @@ const DECLARATIONS = [
 @NgModule({
   declarations: DECLARATIONS,
   imports: [
-    MODULES
+    MODULES,
+    MatRadioModule
   ],
   exports: DECLARATIONS,
   providers: [

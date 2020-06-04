@@ -42,7 +42,7 @@ describe('SortComponent', () => {
     component.sortingFields = new Map<string, string>([['name', 'Name']]);
     fixture.detectChanges();
     expect(component.sort.sortBy).toBe('key');
-    debugElement.querySelector('#sort-by-name').click();
+    debugElement.querySelector('#sort-by-name-input').click();
     expect(component.sort.sortBy).toBe('name');
   });
 });

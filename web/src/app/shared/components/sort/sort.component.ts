@@ -1,5 +1,13 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild, ViewChildren,
+  ViewRef } from '@angular/core';
 import { Direction, Sorting } from 'app/shared/models/sorting';
+import { MatRadioButton } from '@angular/material/radio';
 
 @Component({
   selector: 'taskana-sort',
