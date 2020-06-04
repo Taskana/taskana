@@ -50,3 +50,10 @@
 /* Rules for using icons as white on a dark background. */
 .material-icons.md-light { color: rgba(255, 255, 255, 1); }
 .material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
+
+/** styling of mat-radio overwrites the default colors of the radio TODO needs to be removed when migrating to material*/
+.mat-radio-button.mat-accent .mat-radio-inner-circle{background-color: $blue;}
+.mat-radio-button.mat-accent.mat-radio-checked .mat-radio-outer-circle {border-color: $blue;}
+.mat-radio-button.mat-accent .mat-radio-inner-circle, .mat-radio-button.mat-accent .mat-radio-ripple .mat-ripple-element:not(.mat-radio-persistent-ripple), .mat-radio-button.mat-accent.mat-radio-checked .mat-radio-persistent-ripple, .mat-radio-button.mat-accent:active .mat-radio-persistent-ripple {background-color: $blue;}
+.mat-radio-outer-circle {border-color: $blue;}
+.mat-radio-label-content {color: $blue;}
