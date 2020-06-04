@@ -9,17 +9,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.classification.internal.models.ClassificationImpl;
+import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
 import pro.taskana.common.rest.TaskanaSpringBootTest;
 
 /** Test for {@link ClassificationSummaryRepresentationModelAssembler}. */
 @TaskanaSpringBootTest
-class ClassificationSummaryAssemblerTest {
-  @Autowired
-  ClassificationSummaryRepresentationModelAssembler
-      classificationSummaryRepresentationModelAssembler;
+class ClassificationSummaryRepresentationModelAssemblerTest {
+  private final ClassificationSummaryRepresentationModelAssembler assembler;
 
-  @Autowired private ClassificationService classificationService;
+  private final ClassificationService classificationService;
+
+  @Autowired
+  ClassificationSummaryRepresentationModelAssemblerTest(
+      ClassificationSummaryRepresentationModelAssembler assembler,
+      ClassificationService classificationService) {
+    this.assembler = assembler;
+    this.classificationService = classificationService;
+  }
 
   @Test
   void should_ReturnRepresentationModel_When_ConvertingEntityToRepresentationModel() {
@@ -46,50 +53,48 @@ class ClassificationSummaryAssemblerTest {
     classification.setCreated(Instant.parse("2010-01-01T12:00:00Z"));
     classification.setModified(Instant.parse("2011-11-11T11:00:00Z"));
     // when
-    ClassificationSummaryRepresentationModel repModel =
-        classificationSummaryRepresentationModelAssembler.toModel(classification);
+    ClassificationSummaryRepresentationModel repModel = assembler.toModel(classification);
     // then
-    testEqualityAfterConversion(classification, repModel);
+    testEquality(classification, repModel);
+    testLinks(repModel);
   }
 
   @Test
   void should_ReturnEntity_When_ConvertingRepresentationModelToEntity() {
     // given
-    ClassificationSummaryRepresentationModel resource =
+    ClassificationSummaryRepresentationModel repModel =
         new ClassificationSummaryRepresentationModel();
-    resource.setCategory("EFG");
-    resource.setClassificationId("2");
-    resource.setCustom1("custom1");
-    resource.setCustom2("custom2");
-    resource.setCustom3("custom3");
-    resource.setCustom4("custom4");
-    resource.setCustom5("custom5");
-    resource.setCustom6("custom6");
-    resource.setCustom7("custom7");
-    resource.setCustom8("custom8");
-    resource.setDomain("domain1");
-    resource.setKey("key");
-    resource.setName("classSummary");
-    resource.setParentId("ID2");
-    resource.setParentKey("key2");
-    resource.setPriority(1);
-    resource.setType("A");
+    repModel.setCategory("EFG");
+    repModel.setClassificationId("2");
+    repModel.setCustom1("custom1");
+    repModel.setCustom2("custom2");
+    repModel.setCustom3("custom3");
+    repModel.setCustom4("custom4");
+    repModel.setCustom5("custom5");
+    repModel.setCustom6("custom6");
+    repModel.setCustom7("custom7");
+    repModel.setCustom8("custom8");
+    repModel.setDomain("domain1");
+    repModel.setKey("key");
+    repModel.setName("classSummary");
+    repModel.setParentId("ID2");
+    repModel.setParentKey("key2");
+    repModel.setPriority(1);
+    repModel.setType("A");
     // when
-    ClassificationSummary classificationSummary =
-        classificationSummaryRepresentationModelAssembler.toEntityModel(resource);
+    ClassificationSummary classificationSummary = assembler.toEntityModel(repModel);
     // then
-    testEqualityAfterConversion(classificationSummary, resource);
+    testEquality(classificationSummary, repModel);
   }
 
   @Test
   void should_Equal_When_ComparingEntityWithConvertedEntity() {
     // given
-    ClassificationImpl classification =
+    ClassificationSummaryImpl classification =
         (ClassificationImpl) classificationService.newClassification("DOMAIN_A", "1", "A");
     classification.setId("1");
     classification.setCategory("ABC");
     classification.setName("Classification 1");
-    classification.setIsValidInDomain(true);
     classification.setCustom1("Custom1");
     classification.setCustom2("Custom2");
     classification.setCustom3("Custom3");
@@ -102,21 +107,14 @@ class ClassificationSummaryAssemblerTest {
     classification.setPriority(2);
     classification.setApplicationEntryPoint("12");
     classification.setServiceLevel("P1D");
-    classification.setDescription("Test");
-    classification.setCreated(Instant.parse("2010-01-01T12:00:00Z"));
-    classification.setModified(Instant.parse("2011-11-11T11:00:00Z"));
     // when
-    ClassificationSummaryRepresentationModel repModel =
-        classificationSummaryRepresentationModelAssembler.toModel(classification);
-    ClassificationImpl secondClassification
-        = (ClassificationImpl) classificationSummaryRepresentationModelAssembler
-                                   .toEntityModel(repModel);
-    testEqualityOfEntities(classification, secondClassification);
+    ClassificationSummaryRepresentationModel repModel = assembler.toModel(classification);
+    ClassificationSummary secondClassification = assembler.toEntityModel(repModel);
+    assertThat(classification).isNotSameAs(secondClassification).isEqualTo(secondClassification);
   }
 
-  private void testEqualityAfterConversion(
-      ClassificationSummary entity,
-      ClassificationSummaryRepresentationModel repModel) {
+  private void testEquality(
+      ClassificationSummary entity, ClassificationSummaryRepresentationModel repModel) {
     assertThat(repModel.getKey()).isEqualTo(entity.getKey());
     assertThat(repModel.getDomain()).isEqualTo(entity.getDomain());
     assertThat(repModel.getClassificationId()).isEqualTo(entity.getId());
@@ -134,36 +132,9 @@ class ClassificationSummaryAssemblerTest {
     assertThat(repModel.getParentKey()).isEqualTo(entity.getParentKey());
     assertThat(repModel.getType()).isEqualTo(entity.getType());
     assertThat(repModel.getPriority()).isEqualTo(entity.getPriority());
-    assertThat(repModel.getApplicationEntryPoint())
-        .isEqualTo(entity.getApplicationEntryPoint());
+    assertThat(repModel.getApplicationEntryPoint()).isEqualTo(entity.getApplicationEntryPoint());
     assertThat(repModel.getServiceLevel()).isEqualTo(entity.getServiceLevel());
   }
 
-  private void testEqualityOfEntities(
-      ClassificationSummary class1,
-      ClassificationSummary class2) {
-    assertThat(class1.getKey()).isEqualTo(class2.getKey());
-    assertThat(class1.getDomain()).isEqualTo(class2.getDomain());
-    assertThat(class1.getId()).isEqualTo(class2.getId());
-    assertThat(class1.getName()).isEqualTo(class2.getName());
-    assertThat(class1.getCategory()).isEqualTo(class2.getCategory());
-    assertThat(class1.getCustom1()).isEqualTo(class2.getCustom1());
-    assertThat(class1.getCustom2()).isEqualTo(class2.getCustom2());
-    assertThat(class1.getCustom3()).isEqualTo(class2.getCustom3());
-    assertThat(class1.getCustom4()).isEqualTo(class2.getCustom4());
-    assertThat(class1.getCustom5()).isEqualTo(class2.getCustom5());
-    assertThat(class1.getCustom6()).isEqualTo(class2.getCustom6());
-    assertThat(class1.getCustom7()).isEqualTo(class2.getCustom7());
-    assertThat(class1.getCustom8()).isEqualTo(class2.getCustom8());
-    assertThat(class1.getParentId()).isEqualTo(class2.getParentId());
-    assertThat(class1.getParentKey()).isEqualTo(class2.getParentKey());
-    assertThat(class1.getType()).isEqualTo(class2.getType());
-    assertThat(class1.getPriority()).isEqualTo(class2.getPriority());
-    assertThat(class1.getApplicationEntryPoint())
-        .isEqualTo(class2.getApplicationEntryPoint());
-    assertThat(class1.getServiceLevel()).isEqualTo(class2.getServiceLevel());
-  }
-
-  private void testLinks(ClassificationSummaryRepresentationModel repModel) {
-  }
+  private void testLinks(ClassificationSummaryRepresentationModel repModel) {}
 }

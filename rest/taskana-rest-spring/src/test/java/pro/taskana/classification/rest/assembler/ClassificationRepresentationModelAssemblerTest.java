@@ -15,11 +15,19 @@ import pro.taskana.common.rest.TaskanaSpringBootTest;
 
 /** Test for {@link ClassificationRepresentationModelAssembler}. */
 @TaskanaSpringBootTest
-class ClassificationAssemblerTest {
+class ClassificationRepresentationModelAssemblerTest {
 
-  @Autowired ClassificationRepresentationModelAssembler classificationRepresentationModelAssembler;
+  private final ClassificationRepresentationModelAssembler assembler;
 
-  @Autowired ClassificationService classificationService;
+  private final ClassificationService classificationService;
+
+  @Autowired
+  ClassificationRepresentationModelAssemblerTest(
+      ClassificationRepresentationModelAssembler assembler,
+      ClassificationService classificationService) {
+    this.assembler = assembler;
+    this.classificationService = classificationService;
+  }
 
   @Test
   void should_ReturnRepresentationModel_When_ConvertingEntityToRepresentationModel() {
@@ -47,50 +55,43 @@ class ClassificationAssemblerTest {
     classification.setCreated(Instant.parse("2010-01-01T12:00:00Z"));
     classification.setModified(Instant.parse("2011-11-11T11:00:00Z"));
     // when
-    ClassificationRepresentationModel classificationRepresentationModel =
-        classificationRepresentationModelAssembler.toModel(classification);
+    ClassificationRepresentationModel repModel = assembler.toModel(classification);
     // then
-    testEqualityAfterConversion(classification, classificationRepresentationModel);
-    testLinks(classificationRepresentationModel);
+    testEquality(classification, repModel);
+    testLinks(repModel);
   }
 
   @Test
   void should_ReturnEntity_When_ConvertingRepresentationModelToEntity() {
-    ClassificationImpl classification =
-        (ClassificationImpl) classificationService.newClassification("KEY_B", "DOMAIN_B", "AB");
-
     // given
-    classification.setId("1");
-    classification.setApplicationEntryPoint("Test");
-    classification.setCategory("ABC");
-    classification.setCreated(Instant.parse("2010-01-01T12:00:00Z"));
-    classification.setModified(Instant.parse("2011-11-11T11:00:00Z"));
-    classification.setCustom1("Custom1");
-    classification.setCustom2("Custom2");
-    classification.setCustom3("Custom3");
-    classification.setCustom4("Custom4");
-    classification.setCustom5("Custom5");
-    classification.setCustom6("Custom6");
-    classification.setCustom7("Custom7");
-    classification.setCustom8("Custom8");
-    classification.setParentId("2");
-    classification.setParentKey("parentKey");
-    classification.setPriority(2);
-    classification.setApplicationEntryPoint("12");
-    classification.setServiceLevel("P1D");
-    classification.setDescription("Test");
-    classification.setIsValidInDomain(true);
-
-    ClassificationRepresentationModel classificationRepresentationModel =
-        classificationRepresentationModelAssembler.toModel(classification);
-
+    ClassificationRepresentationModel repModel = new ClassificationRepresentationModel();
+    repModel.setKey("KEY_B");
+    repModel.setDomain("DOMAIN_B");
+    repModel.setType("AB");
+    repModel.setClassificationId("1");
+    repModel.setApplicationEntryPoint("Test");
+    repModel.setCategory("ABC");
+    repModel.setCreated(Instant.parse("2010-01-01T12:00:00Z"));
+    repModel.setModified(Instant.parse("2011-11-11T11:00:00Z"));
+    repModel.setCustom1("Custom1");
+    repModel.setCustom2("Custom2");
+    repModel.setCustom3("Custom3");
+    repModel.setCustom4("Custom4");
+    repModel.setCustom5("Custom5");
+    repModel.setCustom6("Custom6");
+    repModel.setCustom7("Custom7");
+    repModel.setCustom8("Custom8");
+    repModel.setParentId("2");
+    repModel.setParentKey("parentKey");
+    repModel.setPriority(2);
+    repModel.setApplicationEntryPoint("12");
+    repModel.setServiceLevel("P1D");
+    repModel.setDescription("Test");
+    repModel.setIsValidInDomain(true);
     // when
-    classification =
-        (ClassificationImpl)
-            classificationRepresentationModelAssembler
-                .toEntityModel(classificationRepresentationModel);
+    Classification classification = assembler.toEntityModel(repModel);
     // then
-    testEqualityAfterConversion(classification, classificationRepresentationModel);
+    testEquality(classification, repModel);
   }
 
   @Test
@@ -118,13 +119,10 @@ class ClassificationAssemblerTest {
     classification.setCreated(Instant.parse("2010-01-01T12:00:00Z"));
     classification.setModified(Instant.parse("2011-11-11T11:00:00Z"));
     // when
-    ClassificationRepresentationModel classificationRepresentationModel =
-        classificationRepresentationModelAssembler.toModel(classification);
-    ClassificationImpl secondClassification
-        = (ClassificationImpl) classificationRepresentationModelAssembler
-                                   .toEntityModel(classificationRepresentationModel);
+    ClassificationRepresentationModel repModel = assembler.toModel(classification);
+    Classification secondClassification = assembler.toEntityModel(repModel);
     // then
-    testEqualityOfEntities(classification, secondClassification);
+    assertThat(classification).isNotSameAs(secondClassification).isEqualTo(secondClassification);
   }
 
   private void testLinks(ClassificationRepresentationModel repModel) {
@@ -133,9 +131,7 @@ class ClassificationAssemblerTest {
         .isEqualTo(repModel.getRequiredLink("self").getHref());
   }
 
-  private void testEqualityAfterConversion(
-      Classification entity,
-      ClassificationRepresentationModel repModel) {
+  private void testEquality(Classification entity, ClassificationRepresentationModel repModel) {
     assertThat(entity.getApplicationEntryPoint()).isEqualTo(repModel.getApplicationEntryPoint());
     assertThat(entity.getKey()).isEqualTo(repModel.getKey());
     assertThat(entity.getDomain()).isEqualTo(repModel.getDomain());
@@ -160,32 +156,4 @@ class ClassificationAssemblerTest {
     assertThat(entity.getCreated()).isEqualTo(repModel.getCreated());
     assertThat(entity.getModified()).isEqualTo(repModel.getModified());
   }
-
-  private void testEqualityOfEntities(Classification class1, Classification class2) {
-    assertThat(class1.getApplicationEntryPoint()).isEqualTo(class2.getApplicationEntryPoint());
-    assertThat(class1.getKey()).isEqualTo(class2.getKey());
-    assertThat(class1.getDomain()).isEqualTo(class2.getDomain());
-    assertThat(class1.getId()).isEqualTo(class2.getId());
-    assertThat(class1.getDescription()).isEqualTo(class2.getDescription());
-    assertThat(class1.getName()).isEqualTo(class2.getName());
-    assertThat(class1.getServiceLevel()).isEqualTo(class2.getServiceLevel());
-    assertThat(class1.getCategory()).isEqualTo(class2.getCategory());
-    assertThat(class1.getCustom1()).isEqualTo(class2.getCustom1());
-    assertThat(class1.getCustom2()).isEqualTo(class2.getCustom2());
-    assertThat(class1.getCustom3()).isEqualTo(class2.getCustom3());
-    assertThat(class1.getCustom4()).isEqualTo(class2.getCustom4());
-    assertThat(class1.getCustom5()).isEqualTo(class2.getCustom5());
-    assertThat(class1.getCustom6()).isEqualTo(class2.getCustom6());
-    assertThat(class1.getCustom7()).isEqualTo(class2.getCustom7());
-    assertThat(class1.getCustom8()).isEqualTo(class2.getCustom8());
-    assertThat(class1.getParentId()).isEqualTo(class2.getParentId());
-    assertThat(class1.getParentKey()).isEqualTo(class2.getParentKey());
-    assertThat(class1.getType()).isEqualTo(class2.getType());
-    assertThat(class1.getPriority()).isEqualTo(class2.getPriority());
-    assertThat(class1.getIsValidInDomain()).isEqualTo(class2.getIsValidInDomain());
-    assertThat(class1.getCreated()).isEqualTo(class2.getCreated());
-    assertThat(class1.getModified()).isEqualTo(class2.getModified());
-  }
-
-
 }
