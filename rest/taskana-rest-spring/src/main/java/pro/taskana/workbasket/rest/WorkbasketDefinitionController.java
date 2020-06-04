@@ -41,10 +41,11 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
-import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
+import pro.taskana.workbasket.rest.assembler.WorkbasketAccessItemRepresentationModelAssembler;
 import pro.taskana.workbasket.rest.assembler.WorkbasketDefinitionRepresentationModelAssembler;
 import pro.taskana.workbasket.rest.assembler.WorkbasketRepresentationModelAssembler;
+import pro.taskana.workbasket.rest.models.WorkbasketAccessItemRepresentationModel;
 import pro.taskana.workbasket.rest.models.WorkbasketDefinitionRepresentationModel;
 import pro.taskana.workbasket.rest.models.WorkbasketRepresentationModel;
 
@@ -59,6 +60,7 @@ public class WorkbasketDefinitionController {
   private final WorkbasketService workbasketService;
   private final WorkbasketDefinitionRepresentationModelAssembler workbasketDefinitionAssembler;
   private final WorkbasketRepresentationModelAssembler workbasketAssembler;
+  private final WorkbasketAccessItemRepresentationModelAssembler accessItemAssembler;
   private final ObjectMapper mapper;
 
   @Autowired
@@ -66,10 +68,12 @@ public class WorkbasketDefinitionController {
       WorkbasketService workbasketService,
       WorkbasketDefinitionRepresentationModelAssembler workbasketDefinitionAssembler,
       WorkbasketRepresentationModelAssembler workbasketAssembler,
+      WorkbasketAccessItemRepresentationModelAssembler accessItemAssembler,
       ObjectMapper mapper) {
     this.workbasketService = workbasketService;
     this.workbasketDefinitionAssembler = workbasketDefinitionAssembler;
     this.workbasketAssembler = workbasketAssembler;
+    this.accessItemAssembler = accessItemAssembler;
     this.mapper = mapper;
   }
 
@@ -149,7 +153,7 @@ public class WorkbasketDefinitionController {
     // STEP 1: update or create workbaskets from the import
     for (WorkbasketDefinitionRepresentationModel definition : definitions.getContent()) {
       Workbasket importedWb =
-          workbasketDefinitionAssembler.toEntityModel(definition.getWorkbasket());
+          workbasketAssembler.toEntityModel(definition.getWorkbasket());
       String newId;
       WorkbasketImpl wbWithoutId = (WorkbasketImpl) removeId(importedWb);
       if (systemIds.containsKey(logicalId(importedWb))) {
@@ -182,9 +186,10 @@ public class WorkbasketDefinitionController {
       for (WorkbasketAccessItem accessItem : workbasketService.getWorkbasketAccessItems(newId)) {
         workbasketService.deleteWorkbasketAccessItem(accessItem.getId());
       }
-      for (WorkbasketAccessItemImpl authorization : definition.getAuthorizations()) {
+      for (WorkbasketAccessItemRepresentationModel authorization : definition.getAuthorizations()) {
         authorization.setWorkbasketId(newId);
-        workbasketService.createWorkbasketAccessItem(authorization);
+        workbasketService.createWorkbasketAccessItem(
+            accessItemAssembler.toEntityModel(authorization));
       }
       idConversion.put(importedWb.getId(), newId);
     }
@@ -218,7 +223,7 @@ public class WorkbasketDefinitionController {
   private Workbasket removeId(Workbasket importedWb) {
     WorkbasketRepresentationModel wbRes = workbasketAssembler.toModel(importedWb);
     wbRes.setWorkbasketId(null);
-    return workbasketDefinitionAssembler.toEntityModel(wbRes);
+    return workbasketAssembler.toEntityModel(wbRes);
   }
 
   private void checkForDuplicates(Collection<WorkbasketDefinitionRepresentationModel> definitions) {
@@ -226,7 +231,7 @@ public class WorkbasketDefinitionController {
     Set<String> duplicates = new HashSet<>();
     for (WorkbasketDefinitionRepresentationModel definition : definitions) {
       String identifier =
-          logicalId(workbasketDefinitionAssembler.toEntityModel(definition.getWorkbasket()));
+          logicalId(workbasketAssembler.toEntityModel(definition.getWorkbasket()));
       if (identifiers.contains(identifier)) {
         duplicates.add(identifier);
       } else {

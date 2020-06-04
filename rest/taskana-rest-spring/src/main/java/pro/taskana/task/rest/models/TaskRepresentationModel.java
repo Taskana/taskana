@@ -7,13 +7,11 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import pro.taskana.task.api.models.Task;
-import pro.taskana.task.rest.assembler.AttachmentRepresentationModelAssembler;
 
 /** EntityModel class for {@link Task}. */
 @JsonIgnoreProperties("attachmentSummaries")
 public class TaskRepresentationModel extends TaskSummaryRepresentationModel {
 
-  protected AttachmentRepresentationModelAssembler attachmentAssembler;
   // All objects have to be serializable
   private List<CustomAttribute> customAttributes = Collections.emptyList();
   private List<CustomAttribute> callbackInfo = Collections.emptyList();

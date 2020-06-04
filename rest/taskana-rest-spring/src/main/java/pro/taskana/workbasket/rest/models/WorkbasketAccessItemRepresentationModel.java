@@ -4,9 +4,7 @@ import org.springframework.hateoas.RepresentationModel;
 
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 
-/**
- * EntityModel class for {@link WorkbasketAccessItem}.
- */
+/** EntityModel class for {@link WorkbasketAccessItem}. */
 public class WorkbasketAccessItemRepresentationModel
     extends RepresentationModel<WorkbasketAccessItemRepresentationModel> {
 
@@ -208,5 +206,4 @@ public class WorkbasketAccessItemRepresentationModel
   public void setPermCustom12(boolean permCustom12) {
     this.permCustom12 = permCustom12;
   }
-  
 }

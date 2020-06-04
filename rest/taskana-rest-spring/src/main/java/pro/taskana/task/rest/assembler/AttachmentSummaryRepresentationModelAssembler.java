@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import pro.taskana.classification.rest.assembler.ClassificationSummaryRepresentationModelAssembler;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.AttachmentSummary;
-import pro.taskana.task.internal.models.AttachmentImpl;
+import pro.taskana.task.internal.models.AttachmentSummaryImpl;
 import pro.taskana.task.rest.models.AttachmentSummaryRepresentationModel;
 
 /** EntityModel assembler for {@link AttachmentSummaryRepresentationModel}. */
@@ -45,7 +45,8 @@ public class AttachmentSummaryRepresentationModelAssembler
   }
 
   public AttachmentSummary toEntityModel(AttachmentSummaryRepresentationModel repModel) {
-    AttachmentImpl attachment = (AttachmentImpl) taskService.newAttachment();
+    AttachmentSummaryImpl attachment =
+        (AttachmentSummaryImpl) taskService.newAttachment().asSummary();
     attachment.setId(repModel.getAttachmentId());
     attachment.setTaskId(repModel.getTaskId());
     attachment.setCreated(repModel.getCreated());

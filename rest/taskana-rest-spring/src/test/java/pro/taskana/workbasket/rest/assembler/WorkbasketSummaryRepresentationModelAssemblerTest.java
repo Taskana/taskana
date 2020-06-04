@@ -13,12 +13,9 @@ import pro.taskana.workbasket.api.models.WorkbasketSummary;
 import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 
-/**
- * Test for {@link WorkbasketSummaryRepresentationModelAssembler}.
- */
+/** Test for {@link WorkbasketSummaryRepresentationModelAssembler}. */
 @TaskanaSpringBootTest
 class WorkbasketSummaryRepresentationModelAssemblerTest {
-
 
   private final WorkbasketSummaryRepresentationModelAssembler assembler;
 
@@ -36,7 +33,7 @@ class WorkbasketSummaryRepresentationModelAssemblerTest {
   void should_ReturnRepresentationModel_When_ConvertingEntityToRepresentationModel() {
     // given
     WorkbasketSummaryImpl workbasketSummary =
-        (WorkbasketSummaryImpl) workbasketService.newWorkbasket("1", "DOMAIN_A");
+        (WorkbasketSummaryImpl) workbasketService.newWorkbasket("1", "DOMAIN_A").asSummary();
     workbasketSummary.setDescription("WorkbasketSummaryImplTes");
     workbasketSummary.setId("1");
     workbasketSummary.setName("WorkbasketSummary");
@@ -53,14 +50,13 @@ class WorkbasketSummaryRepresentationModelAssemblerTest {
     // when
     WorkbasketSummaryRepresentationModel repModel = assembler.toModel(workbasketSummary);
     // then
-    testEquality(repModel, workbasketSummary);
+    testEquality(workbasketSummary, repModel);
     testLinks(repModel);
   }
 
   @Test
   void should_ReturnEntity_When_ConvertingRepresentationModelToEntity() {
-    WorkbasketSummaryRepresentationModel repModel =
-        new WorkbasketSummaryRepresentationModel();
+    WorkbasketSummaryRepresentationModel repModel = new WorkbasketSummaryRepresentationModel();
     repModel.setWorkbasketId("1");
     repModel.setCustom1("Custom1");
     repModel.setCustom2("Custom2");
@@ -79,13 +75,13 @@ class WorkbasketSummaryRepresentationModelAssemblerTest {
     // when
     WorkbasketSummary workbasket = assembler.toEntityModel(repModel);
     // then
-    testEquality(repModel, workbasket);
+    testEquality(workbasket, repModel);
   }
 
   @Test
   void should_Equal_When_ComparingEntityWithConvertedEntity() {
     WorkbasketSummaryImpl workbasketSummary =
-        (WorkbasketSummaryImpl) workbasketService.newWorkbasket("1", "DOMAIN_A");
+        (WorkbasketSummaryImpl) workbasketService.newWorkbasket("1", "DOMAIN_A").asSummary();
     workbasketSummary.setDescription("WorkbasketSummaryImplTes");
     workbasketSummary.setId("1");
     workbasketSummary.setName("WorkbasketSummary");
@@ -103,11 +99,16 @@ class WorkbasketSummaryRepresentationModelAssemblerTest {
     WorkbasketSummaryRepresentationModel repModel = assembler.toModel(workbasketSummary);
     WorkbasketSummary workbasketSummary2 = assembler.toEntityModel(repModel);
 
-    assertThat(workbasketSummary).isNotSameAs(workbasketSummary2).isEqualTo(workbasketSummary2);
+    assertThat(workbasketSummary)
+        .hasNoNullFieldsOrProperties()
+        .isNotSameAs(workbasketSummary2)
+        .isEqualTo(workbasketSummary2);
   }
 
-  private void testEquality(WorkbasketSummaryRepresentationModel repModel,
-      WorkbasketSummary summary) {
+  static void testEquality(
+      WorkbasketSummary summary, WorkbasketSummaryRepresentationModel repModel) {
+    assertThat(summary).hasNoNullFieldsOrProperties();
+    assertThat(repModel).hasNoNullFieldsOrProperties();
     Assert.assertEquals(summary.getDescription(), repModel.getDescription());
     Assert.assertEquals(summary.getDomain(), repModel.getDomain());
     Assert.assertEquals(summary.getId(), repModel.getWorkbasketId());
@@ -125,7 +126,5 @@ class WorkbasketSummaryRepresentationModelAssemblerTest {
     Assert.assertEquals(summary.getType(), repModel.getType());
   }
 
-  private void testLinks(
-      WorkbasketSummaryRepresentationModel repModel) {
-  }
+  private void testLinks(WorkbasketSummaryRepresentationModel repModel) {}
 }

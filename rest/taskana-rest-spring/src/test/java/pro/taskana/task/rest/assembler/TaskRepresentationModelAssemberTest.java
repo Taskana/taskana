@@ -26,29 +26,28 @@ import pro.taskana.task.rest.models.AttachmentRepresentationModel;
 import pro.taskana.task.rest.models.TaskRepresentationModel;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.Workbasket;
+import pro.taskana.workbasket.api.models.WorkbasketSummary;
 import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 
-/**
- * Test for {@link TaskRepresentationModelAssembler}.
- */
+/** Test for {@link TaskRepresentationModelAssembler}. */
 @TaskanaSpringBootTest
 class TaskRepresentationModelAssemberTest {
 
   TaskService taskService;
   WorkbasketService workbasketService;
   ClassificationService classificationService;
-  TaskRepresentationModelAssembler taskRepresentationModelAssembler;
+  TaskRepresentationModelAssembler assembler;
 
   @Autowired
   TaskRepresentationModelAssemberTest(
       TaskService taskService,
       WorkbasketService workbasketService,
       ClassificationService classificationService,
-      TaskRepresentationModelAssembler taskRepresentationModelAssembler) {
+      TaskRepresentationModelAssembler assembler) {
     this.taskService = taskService;
     this.workbasketService = workbasketService;
     this.classificationService = classificationService;
-    this.taskRepresentationModelAssembler = taskRepresentationModelAssembler;
+    this.assembler = assembler;
   }
 
   @Test
@@ -113,7 +112,7 @@ class TaskRepresentationModelAssemberTest {
     repModel.setCustom15("custom15");
     repModel.setCustom16("custom16");
     // when
-    Task task = taskRepresentationModelAssembler.toEntityModel(repModel);
+    Task task = assembler.toEntityModel(repModel);
     // then
     testEquality(task, repModel);
   }
@@ -126,7 +125,7 @@ class TaskRepresentationModelAssemberTest {
     primaryObjRef.setId("abc");
     final Workbasket workbasket = workbasketService.newWorkbasket("key", "domain");
     ClassificationSummary classification =
-        classificationService.newClassification("ckey", "cdomain", "MANUAL");
+        classificationService.newClassification("ckey", "cdomain", "MANUAL").asSummary();
     AttachmentImpl attachment = (AttachmentImpl) taskService.newAttachment();
     attachment.setClassificationSummary(classification);
     attachment.setId("attachmentId");
@@ -173,21 +172,21 @@ class TaskRepresentationModelAssemberTest {
     task.setCustom15("custom15");
     task.setCustom16("custom16");
     // when
-    TaskRepresentationModel repModel = taskRepresentationModelAssembler.toModel(task);
+    TaskRepresentationModel repModel = assembler.toModel(task);
     // then
     testEquality(task, repModel);
     testLinks(repModel);
   }
 
   @Test
-  void should_Equal_When_ComparingEntityWithConvertedEntity()
-      throws InvalidArgumentException {
+  void should_Equal_When_ComparingEntityWithConvertedEntity() {
     // given
     ObjectReference primaryObjRef = new ObjectReference();
     primaryObjRef.setId("abc");
-    final Workbasket workbasket = workbasketService.newWorkbasket("key", "domain");
+    final WorkbasketSummary workbasket =
+        workbasketService.newWorkbasket("key", "domain").asSummary();
     ClassificationSummary classification =
-        classificationService.newClassification("ckey", "cdomain", "MANUAL");
+        classificationService.newClassification("ckey", "cdomain", "MANUAL").asSummary();
     AttachmentImpl attachment = (AttachmentImpl) taskService.newAttachment();
     attachment.setClassificationSummary(classification);
     attachment.setId("attachmentId");
@@ -234,77 +233,39 @@ class TaskRepresentationModelAssemberTest {
     task.setCustom15("custom15");
     task.setCustom16("custom16");
     // when
-    TaskRepresentationModel repModel = taskRepresentationModelAssembler.toModel(task);
-    TaskImpl task2 = (TaskImpl) taskRepresentationModelAssembler.toEntityModel(repModel);
+    TaskRepresentationModel repModel = assembler.toModel(task);
+    Task task2 = assembler.toEntityModel(repModel);
     // then
-    assertThat(task).isNotSameAs(task2).isEqualTo(task2);
+    assertThat(task).hasNoNullFieldsOrProperties().isNotSameAs(task2).isEqualTo(task2);
   }
 
   private void testEquality(Task task, TaskRepresentationModel repModel)
       throws InvalidArgumentException {
-    assertThat(repModel.getTaskId()).isEqualTo(task.getId());
-    assertThat(repModel.getExternalId()).isEqualTo(task.getExternalId());
-    assertThat(repModel.getCreated()).isEqualTo(task.getCreated());
-    assertThat(repModel.getClaimed()).isEqualTo(task.getClaimed());
-    assertThat(repModel.getCompleted()).isEqualTo(task.getCompleted());
-    assertThat(repModel.getModified()).isEqualTo(task.getModified());
-    assertThat(repModel.getPlanned()).isEqualTo(task.getPlanned());
-    assertThat(repModel.getDue()).isEqualTo(task.getDue());
-    assertThat(repModel.getName()).isEqualTo(task.getName());
-    assertThat(repModel.getCreator()).isEqualTo(task.getCreator());
-    assertThat(repModel.getDescription()).isEqualTo(task.getDescription());
-    assertThat(repModel.getNote()).isEqualTo(task.getNote());
-    assertThat(repModel.getPriority()).isEqualTo(task.getPriority());
-    assertThat(repModel.getState()).isEqualTo(task.getState());
-    assertThat(repModel.getClassificationSummary().getClassificationId())
-        .isEqualTo(task.getClassificationSummary().getId());
-    assertThat(repModel.getWorkbasketSummary().getWorkbasketId())
-        .isEqualTo(task.getWorkbasketSummary().getId());
-    assertThat(repModel.getBusinessProcessId()).isEqualTo(task.getBusinessProcessId());
-    assertThat(repModel.getParentBusinessProcessId()).isEqualTo(task.getParentBusinessProcessId());
-    assertThat(repModel.getOwner()).isEqualTo(task.getOwner());
-    assertThat(repModel.getPrimaryObjRef()).isEqualTo(task.getPrimaryObjRef());
-    assertThat(repModel.isRead()).isEqualTo(task.isRead());
-    assertThat(repModel.isTransferred()).isEqualTo(task.isTransferred());
+    TaskSummaryRepresentationModelAssemblerTest.testEquality(task, repModel);
+
     testEqualityCustomAttributes(task.getCustomAttributes(), repModel.getCustomAttributes());
     testEqualityCustomAttributes(task.getCallbackInfo(), repModel.getCallbackInfo());
     testEqualityAttachments(task.getAttachments(), repModel.getAttachments());
-    assertThat(repModel.getCustom1()).isEqualTo(task.getCustomAttribute("1"));
-    assertThat(repModel.getCustom2()).isEqualTo(task.getCustomAttribute("2"));
-    assertThat(repModel.getCustom3()).isEqualTo(task.getCustomAttribute("3"));
-    assertThat(repModel.getCustom4()).isEqualTo(task.getCustomAttribute("4"));
-    assertThat(repModel.getCustom5()).isEqualTo(task.getCustomAttribute("5"));
-    assertThat(repModel.getCustom6()).isEqualTo(task.getCustomAttribute("6"));
-    assertThat(repModel.getCustom7()).isEqualTo(task.getCustomAttribute("7"));
-    assertThat(repModel.getCustom8()).isEqualTo(task.getCustomAttribute("8"));
-    assertThat(repModel.getCustom9()).isEqualTo(task.getCustomAttribute("9"));
-    assertThat(repModel.getCustom10()).isEqualTo(task.getCustomAttribute("10"));
-    assertThat(repModel.getCustom11()).isEqualTo(task.getCustomAttribute("11"));
-    assertThat(repModel.getCustom12()).isEqualTo(task.getCustomAttribute("12"));
-    assertThat(repModel.getCustom13()).isEqualTo(task.getCustomAttribute("13"));
-    assertThat(repModel.getCustom14()).isEqualTo(task.getCustomAttribute("14"));
-    assertThat(repModel.getCustom15()).isEqualTo(task.getCustomAttribute("15"));
-    assertThat(repModel.getCustom16()).isEqualTo(task.getCustomAttribute("16"));
   }
 
   private void testEqualityCustomAttributes(
       Map<String, String> customAttributes,
-      List<TaskRepresentationModel.CustomAttribute> resourceAttributes) {
-    assertThat(resourceAttributes).hasSize(customAttributes.size());
-    resourceAttributes.forEach(
+      List<TaskRepresentationModel.CustomAttribute> repModelAttributes) {
+    assertThat(repModelAttributes).hasSize(customAttributes.size());
+    repModelAttributes.forEach(
         attribute ->
             assertThat(attribute.getValue()).isEqualTo(customAttributes.get(attribute.getKey())));
   }
 
   private void testEqualityAttachments(
-      List<Attachment> attachments, List<AttachmentRepresentationModel> resources) {
+      List<Attachment> attachments, List<AttachmentRepresentationModel> repModels) {
     String[] objects = attachments.stream().map(Attachment::getId).toArray(String[]::new);
 
     // Anything else should be be tested in AttachmentResourceAssemblerTest
-    assertThat(resources)
+    assertThat(repModels)
         .hasSize(attachments.size())
         .extracting(AttachmentRepresentationModel::getAttachmentId)
-        .containsOnly(objects);
+        .containsOnlyOnce(objects);
   }
 
   private void testLinks(TaskRepresentationModel repModel) {

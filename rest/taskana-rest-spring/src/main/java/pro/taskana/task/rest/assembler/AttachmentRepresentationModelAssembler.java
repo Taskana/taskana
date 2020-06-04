@@ -49,7 +49,7 @@ public class AttachmentRepresentationModelAssembler
     return repModel;
   }
 
-  public AttachmentImpl toEntityModel(AttachmentRepresentationModel attachmentRepresentationModel) {
+  public Attachment toEntityModel(AttachmentRepresentationModel attachmentRepresentationModel) {
     AttachmentImpl attachment = (AttachmentImpl) taskService.newAttachment();
     attachment.setId(attachmentRepresentationModel.getAttachmentId());
     attachment.setTaskId(attachmentRepresentationModel.getTaskId());

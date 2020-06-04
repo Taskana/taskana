@@ -66,6 +66,7 @@ class ClassificationRepresentationModelAssemblerTest {
     // given
     ClassificationRepresentationModel repModel = new ClassificationRepresentationModel();
     repModel.setKey("KEY_B");
+    repModel.setName("name");
     repModel.setDomain("DOMAIN_B");
     repModel.setType("AB");
     repModel.setClassificationId("1");
@@ -122,7 +123,10 @@ class ClassificationRepresentationModelAssemblerTest {
     ClassificationRepresentationModel repModel = assembler.toModel(classification);
     Classification secondClassification = assembler.toEntityModel(repModel);
     // then
-    assertThat(classification).isNotSameAs(secondClassification).isEqualTo(secondClassification);
+    assertThat(classification)
+        .hasNoNullFieldsOrProperties()
+        .isNotSameAs(secondClassification)
+        .isEqualTo(secondClassification);
   }
 
   private void testLinks(ClassificationRepresentationModel repModel) {
@@ -131,29 +135,13 @@ class ClassificationRepresentationModelAssemblerTest {
         .isEqualTo(repModel.getRequiredLink("self").getHref());
   }
 
-  private void testEquality(Classification entity, ClassificationRepresentationModel repModel) {
-    assertThat(entity.getApplicationEntryPoint()).isEqualTo(repModel.getApplicationEntryPoint());
-    assertThat(entity.getKey()).isEqualTo(repModel.getKey());
-    assertThat(entity.getDomain()).isEqualTo(repModel.getDomain());
-    assertThat(entity.getId()).isEqualTo(repModel.getClassificationId());
-    assertThat(entity.getDescription()).isEqualTo(repModel.getDescription());
-    assertThat(entity.getName()).isEqualTo(repModel.getName());
-    assertThat(entity.getServiceLevel()).isEqualTo(repModel.getServiceLevel());
-    assertThat(entity.getCategory()).isEqualTo(repModel.getCategory());
-    assertThat(entity.getCustom1()).isEqualTo(repModel.getCustom1());
-    assertThat(entity.getCustom2()).isEqualTo(repModel.getCustom2());
-    assertThat(entity.getCustom3()).isEqualTo(repModel.getCustom3());
-    assertThat(entity.getCustom4()).isEqualTo(repModel.getCustom4());
-    assertThat(entity.getCustom5()).isEqualTo(repModel.getCustom5());
-    assertThat(entity.getCustom6()).isEqualTo(repModel.getCustom6());
-    assertThat(entity.getCustom7()).isEqualTo(repModel.getCustom7());
-    assertThat(entity.getCustom8()).isEqualTo(repModel.getCustom8());
-    assertThat(entity.getParentId()).isEqualTo(repModel.getParentId());
-    assertThat(entity.getParentKey()).isEqualTo(repModel.getParentKey());
-    assertThat(entity.getType()).isEqualTo(repModel.getType());
-    assertThat(entity.getPriority()).isEqualTo(repModel.getPriority());
+  private static void testEquality(
+      Classification entity, ClassificationRepresentationModel repModel) {
+    ClassificationSummaryRepresentationModelAssemblerTest.testEquality(entity, repModel);
+
     assertThat(entity.getIsValidInDomain()).isEqualTo(repModel.getIsValidInDomain());
     assertThat(entity.getCreated()).isEqualTo(repModel.getCreated());
     assertThat(entity.getModified()).isEqualTo(repModel.getModified());
+    assertThat(entity.getDescription()).isEqualTo(repModel.getDescription());
   }
 }

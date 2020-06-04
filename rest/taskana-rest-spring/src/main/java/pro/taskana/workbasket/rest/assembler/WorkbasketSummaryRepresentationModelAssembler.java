@@ -17,7 +17,7 @@ import pro.taskana.common.rest.models.TaskanaPagedModelKeys;
 import pro.taskana.resource.rest.PageLinks;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
-import pro.taskana.workbasket.internal.models.WorkbasketImpl;
+import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 
 /** EntityModel assembler for {@link WorkbasketSummaryRepresentationModel}. */
@@ -59,8 +59,9 @@ public class WorkbasketSummaryRepresentationModelAssembler
   }
 
   public WorkbasketSummary toEntityModel(WorkbasketSummaryRepresentationModel repModel) {
-    WorkbasketImpl workbasket =
-        (WorkbasketImpl) workbasketService.newWorkbasket(repModel.getKey(), repModel.getDomain());
+    WorkbasketSummaryImpl workbasket =
+        (WorkbasketSummaryImpl)
+            workbasketService.newWorkbasket(repModel.getKey(), repModel.getDomain()).asSummary();
     workbasket.setId(repModel.getWorkbasketId());
     workbasket.setName(repModel.getName());
     workbasket.setType(repModel.getType());
