@@ -321,6 +321,10 @@ include::{snippets}/GetAllTaskCommentsForSpecificTaskDocTest/http-response.adoc[
 
 include::{snippets}/GetAllTaskCommentsForSpecificTaskDocTest/response-fields.adoc[]
 
+=== Sort options
+
+sort-by={ created | modified } | order={ desc | asc }
+
 
 === Get a specific task comment
 
