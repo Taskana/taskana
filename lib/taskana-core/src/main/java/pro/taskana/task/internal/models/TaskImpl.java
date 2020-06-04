@@ -38,12 +38,13 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
     attachments = copyFrom.attachments.stream().map(Attachment::copy).collect(Collectors.toList());
   }
 
-  public CallbackState getCallbackState() {
-    return callbackState;
+  public String getClassificationId() {
+    return classificationSummary == null ? null : classificationSummary.getId();
   }
 
-  public void setCallbackState(CallbackState callbackState) {
-    this.callbackState = callbackState;
+  @Override
+  public TaskImpl copy() {
+    return new TaskImpl(this);
   }
 
   public String getClassificationKey() {
@@ -79,6 +80,14 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
   @Override
   public void setCustomAttributes(Map<String, String> customAttributes) {
     this.customAttributes = customAttributes;
+  }
+
+  public CallbackState getCallbackState() {
+    return callbackState;
+  }
+
+  public void setCallbackState(CallbackState callbackState) {
+    this.callbackState = callbackState;
   }
 
   @Override
@@ -263,11 +272,6 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
     ((ClassificationSummaryImpl) this.classificationSummary).setCategory(classificationCategory);
   }
 
-  @Override
-  public TaskImpl copy() {
-    return new TaskImpl(this);
-  }
-
   protected boolean canEqual(Object other) {
     return (other instanceof TaskImpl);
   }
@@ -387,9 +391,5 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
         + ", custom16="
         + custom16
         + "]";
-  }
-
-  public String getClassificationId() {
-    return classificationSummary == null ? null : classificationSummary.getId();
   }
 }

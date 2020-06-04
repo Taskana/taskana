@@ -25,7 +25,7 @@ import pro.taskana.common.rest.models.TaskanaPagedModelKeys;
 /** Generate REST Documentatioon for the WorkbasketController. */
 class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
 
-  public static final String PROPERTY_NAME = TaskanaPagedModelKeys.ACCESSITEMS.getPropertyName();
+  public static final String PROPERTY_NAME = TaskanaPagedModelKeys.ACCESS_ITEMS.getPropertyName();
   // HashMaps to store the field descriptions centrally for multiple uses
   private final HashMap<String, String> workbasketFieldDescriptionsMap = new HashMap<>();
   private final HashMap<String, String> accessItemFieldDescriptionsMap = new HashMap<>();

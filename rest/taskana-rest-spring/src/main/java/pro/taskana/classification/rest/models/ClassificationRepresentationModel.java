@@ -8,7 +8,6 @@ import pro.taskana.classification.api.models.Classification;
 public class ClassificationRepresentationModel extends ClassificationSummaryRepresentationModel {
 
   private Boolean isValidInDomain;
-
   private Instant created; // ISO-8601
   private Instant modified; // ISO-8601
   private String description;

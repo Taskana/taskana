@@ -563,7 +563,7 @@ class TaskControllerIntTest {
   }
 
   @Test
-  void should_ChangeValueOfModified_When_UpdatingTask() throws IOException {
+  void should_ChangeValueOfModified_When_UpdatingTask() {
 
     ResponseEntity<TaskRepresentationModel> responseGet =
         template.exchange(

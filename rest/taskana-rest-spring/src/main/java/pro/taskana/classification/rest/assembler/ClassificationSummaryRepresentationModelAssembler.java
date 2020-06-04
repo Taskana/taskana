@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
-import pro.taskana.classification.internal.models.ClassificationImpl;
+import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
 import pro.taskana.common.rest.Mapping;
 import pro.taskana.common.rest.assembler.TaskanaPagingAssembler;
@@ -60,10 +60,10 @@ public class ClassificationSummaryRepresentationModelAssembler
   }
 
   public ClassificationSummary toEntityModel(ClassificationSummaryRepresentationModel repModel) {
-    ClassificationImpl classification =
-        (ClassificationImpl)
+    ClassificationSummaryImpl classification =
+        (ClassificationSummaryImpl)
             classificationService.newClassification(
-                repModel.getKey(), repModel.getDomain(), repModel.getType());
+                repModel.getKey(), repModel.getDomain(), repModel.getType()).asSummary();
     classification.setId(repModel.getClassificationId());
     classification.setApplicationEntryPoint(repModel.getApplicationEntryPoint());
     classification.setCategory(repModel.getCategory());

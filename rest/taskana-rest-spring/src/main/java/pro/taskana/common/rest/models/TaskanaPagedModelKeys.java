@@ -7,7 +7,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public enum TaskanaPagedModelKeys {
-  ACCESSITEMS("accessItems"),
+  ACCESS_ITEMS("accessItems"),
   CLASSIFICATIONS("classifications"),
   DISTRIBUTION_TARGETS("distributionTargets"),
   TASKS("tasks"),

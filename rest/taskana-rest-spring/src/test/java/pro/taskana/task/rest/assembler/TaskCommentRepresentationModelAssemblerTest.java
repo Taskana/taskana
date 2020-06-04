@@ -12,65 +12,83 @@ import pro.taskana.task.api.models.TaskComment;
 import pro.taskana.task.internal.models.TaskCommentImpl;
 import pro.taskana.task.rest.models.TaskCommentRepresentationModel;
 
-/**
- * Test for {@link TaskCommentRepresentationModelAssembler}.
- */
+/** Test for {@link TaskCommentRepresentationModelAssembler}. */
 @TaskanaSpringBootTest
 class TaskCommentRepresentationModelAssemblerTest {
 
-  private final TaskCommentRepresentationModelAssembler taskCommentRepresentationModelAssembler;
+  private final TaskCommentRepresentationModelAssembler assembler;
   private final TaskService taskService;
 
   @Autowired
   TaskCommentRepresentationModelAssemblerTest(
-      TaskCommentRepresentationModelAssembler taskCommentRepresentationModelAssembler,
-      TaskService taskService) {
-    this.taskCommentRepresentationModelAssembler = taskCommentRepresentationModelAssembler;
+      TaskCommentRepresentationModelAssembler assembler, TaskService taskService) {
+    this.assembler = assembler;
     this.taskService = taskService;
   }
 
   @Test
-  void taskCommentModelToResource() {
+  void should_ReturnRepresentationModel_When_ConvertingEntityToRepresentationModel() {
 
     TaskCommentImpl taskComment =
         (TaskCommentImpl) taskService.newTaskComment("TKI:000000000000000000000000000000000000");
 
+    taskComment.setId("taskCommentId");
     taskComment.setCreator("user_1_1");
     taskComment.setTextField("this is a task comment");
     taskComment.setCreated(Instant.parse("2010-01-01T12:00:00Z"));
     taskComment.setModified(Instant.parse("2011-11-11T11:00:00Z"));
 
-    TaskCommentRepresentationModel taskCommentRepresentationModel =
-        taskCommentRepresentationModelAssembler.toModel(taskComment);
+    TaskCommentRepresentationModel repModel = assembler.toModel(taskComment);
 
-    testEquality(taskComment, taskCommentRepresentationModel);
+    testEquality(taskComment, repModel);
+    testLinks(repModel);
   }
 
   @Test
-  void taskCommentResourceToModel() {
+  void should_ReturnEntity_When_ConvertingRepresentationModelToEntity() {
 
-    TaskCommentRepresentationModel taskCommentRepresentationModel =
-        new TaskCommentRepresentationModel();
-    taskCommentRepresentationModel.setTaskId("TKI:000000000000000000000000000000000000");
-    taskCommentRepresentationModel.setTaskCommentId("TCI:000000000000000000000000000000000000");
-    taskCommentRepresentationModel.setCreator("user_1_1");
-    taskCommentRepresentationModel.setCreated(Instant.parse("2010-01-01T12:00:00Z"));
-    taskCommentRepresentationModel.setModified(Instant.parse("2011-11-11T11:00:00Z"));
+    TaskCommentRepresentationModel repModel = new TaskCommentRepresentationModel();
+    repModel.setTaskId("TKI:000000000000000000000000000000000000");
+    repModel.setTaskCommentId("TCI:000000000000000000000000000000000000");
+    repModel.setCreator("user_1_1");
+    repModel.setCreated(Instant.parse("2010-01-01T12:00:00Z"));
+    repModel.setModified(Instant.parse("2011-11-11T11:00:00Z"));
+    repModel.setTextField("textField");
 
-    TaskComment taskComment =
-        taskCommentRepresentationModelAssembler.toEntityModel(taskCommentRepresentationModel);
+    TaskComment taskComment = assembler.toEntityModel(repModel);
 
-    testEquality(taskComment, taskCommentRepresentationModel);
+    testEquality(taskComment, repModel);
   }
 
-  private void testEquality(
-      TaskComment taskComment, TaskCommentRepresentationModel taskCommentRepresentationModel) {
+  @Test
+  void should_Equal_When_ComparingEntityWithConvertedEntity() {
+    TaskCommentImpl taskComment =
+        (TaskCommentImpl) taskService.newTaskComment("TKI:000000000000000000000000000000000000");
+    taskComment.setId("taskCommentId");
+    taskComment.setCreator("user_1_1");
+    taskComment.setTextField("this is a task comment");
+    taskComment.setCreated(Instant.parse("2010-01-01T12:00:00Z"));
+    taskComment.setModified(Instant.parse("2011-11-11T11:00:00Z"));
 
-    assertThat(taskComment.getTaskId()).isEqualTo(taskCommentRepresentationModel.getTaskId());
-    assertThat(taskComment.getId()).isEqualTo(taskCommentRepresentationModel.getTaskCommentId());
-    assertThat(taskComment.getCreator()).isEqualTo(taskCommentRepresentationModel.getCreator());
-    assertThat(taskComment.getTextField()).isEqualTo(taskCommentRepresentationModel.getTextField());
-    assertThat(taskComment.getCreated()).isEqualTo(taskCommentRepresentationModel.getCreated());
-    assertThat(taskComment.getModified()).isEqualTo(taskCommentRepresentationModel.getModified());
+    TaskCommentRepresentationModel repModel = assembler.toModel(taskComment);
+    TaskComment taskComment2 = assembler.toEntityModel(repModel);
+
+    assertThat(taskComment)
+        .hasNoNullFieldsOrProperties()
+        .isNotSameAs(taskComment2)
+        .isEqualTo(taskComment2);
   }
+
+  private void testEquality(TaskComment taskComment, TaskCommentRepresentationModel repModel) {
+    assertThat(taskComment).hasNoNullFieldsOrProperties();
+    assertThat(repModel).hasNoNullFieldsOrProperties();
+    assertThat(taskComment.getId()).isEqualTo(repModel.getTaskCommentId());
+    assertThat(taskComment.getTaskId()).isEqualTo(repModel.getTaskId());
+    assertThat(taskComment.getTextField()).isEqualTo(repModel.getTextField());
+    assertThat(taskComment.getCreator()).isEqualTo(repModel.getCreator());
+    assertThat(taskComment.getCreated()).isEqualTo(repModel.getCreated());
+    assertThat(taskComment.getModified()).isEqualTo(repModel.getModified());
+  }
+
+  private void testLinks(TaskCommentRepresentationModel repModel) {}
 }

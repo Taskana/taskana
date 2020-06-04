@@ -19,7 +19,7 @@ import pro.taskana.common.rest.models.TaskanaPagedModelKeys;
 import pro.taskana.resource.rest.PageLinks;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.TaskSummary;
-import pro.taskana.task.internal.models.TaskImpl;
+import pro.taskana.task.internal.models.TaskSummaryImpl;
 import pro.taskana.task.rest.models.TaskSummaryRepresentationModel;
 import pro.taskana.workbasket.rest.assembler.WorkbasketSummaryRepresentationModelAssembler;
 
@@ -100,7 +100,7 @@ public class TaskSummaryRepresentationModelAssembler
   }
 
   public TaskSummary toEntityModel(TaskSummaryRepresentationModel repModel) {
-    TaskImpl taskSummary = (TaskImpl) taskService.newTask();
+    TaskSummaryImpl taskSummary = (TaskSummaryImpl) taskService.newTask().asSummary();
     taskSummary.setId(repModel.getTaskId());
     taskSummary.setExternalId(repModel.getExternalId());
     taskSummary.setCreated(repModel.getCreated());

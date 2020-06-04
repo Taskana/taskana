@@ -1,6 +1,6 @@
 package pro.taskana.workbasket.rest.assembler;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -17,11 +17,9 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
-import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
-import pro.taskana.workbasket.internal.models.WorkbasketImpl;
+import pro.taskana.workbasket.rest.models.WorkbasketAccessItemRepresentationModel;
 import pro.taskana.workbasket.rest.models.WorkbasketDefinitionRepresentationModel;
 import pro.taskana.workbasket.rest.models.WorkbasketRepresentationModel;
-import pro.taskana.workbasket.rest.models.WorkbasketRepresentationModelWithoutLinks;
 
 /**
  * Transforms {@link Workbasket} into a {@link WorkbasketDefinitionRepresentationModel} containing
@@ -32,42 +30,28 @@ public class WorkbasketDefinitionRepresentationModelAssembler
     implements TaskanaPagingAssembler<Workbasket, WorkbasketDefinitionRepresentationModel> {
 
   private final WorkbasketService workbasketService;
+  private final WorkbasketAccessItemRepresentationModelAssembler accessItemAssembler;
+  private final WorkbasketRepresentationModelAssembler workbasketAssembler;
 
   @Autowired
-  public WorkbasketDefinitionRepresentationModelAssembler(WorkbasketService workbasketService) {
+  public WorkbasketDefinitionRepresentationModelAssembler(
+      WorkbasketService workbasketService,
+      WorkbasketAccessItemRepresentationModelAssembler accessItemAssembler,
+      WorkbasketRepresentationModelAssembler workbasketAssembler) {
     this.workbasketService = workbasketService;
+    this.accessItemAssembler = accessItemAssembler;
+    this.workbasketAssembler = workbasketAssembler;
   }
 
   @NonNull
   public WorkbasketDefinitionRepresentationModel toModel(@NonNull Workbasket workbasket) {
-    WorkbasketRepresentationModelWithoutLinks basket =
-        new WorkbasketRepresentationModelWithoutLinks();
-
-    basket.setKey(workbasket.getKey());
-    basket.setModified(workbasket.getModified());
-    basket.setCreated(workbasket.getModified());
-    basket.setWorkbasketId(workbasket.getId());
-    basket.setDescription(workbasket.getDescription());
-    basket.setDomain(workbasket.getDomain());
-    basket.setName(workbasket.getName());
-    basket.setType(workbasket.getType());
-    basket.setOwner(workbasket.getOwner());
-    basket.setCustom1(workbasket.getCustom1());
-    basket.setCustom2(workbasket.getCustom2());
-    basket.setCustom3(workbasket.getCustom3());
-    basket.setCustom4(workbasket.getCustom4());
-    basket.setOrgLevel1(workbasket.getOrgLevel1());
-    basket.setOrgLevel2(workbasket.getOrgLevel2());
-    basket.setOrgLevel3(workbasket.getOrgLevel3());
-    basket.setOrgLevel4(workbasket.getOrgLevel4());
-
-    List<WorkbasketAccessItemImpl> authorizations = new ArrayList<>();
+    WorkbasketRepresentationModel basket = workbasketAssembler.toModel(workbasket);
+    Collection<WorkbasketAccessItemRepresentationModel> authorizations;
     Set<String> distroTargets;
     try {
-      for (WorkbasketAccessItem accessItem :
-          workbasketService.getWorkbasketAccessItems(basket.getWorkbasketId())) {
-        authorizations.add((WorkbasketAccessItemImpl) accessItem);
-      }
+      List<WorkbasketAccessItem> workbasketAccessItems =
+          workbasketService.getWorkbasketAccessItems(basket.getWorkbasketId());
+      authorizations = accessItemAssembler.toCollectionModel(workbasketAccessItems).getContent();
       distroTargets =
           workbasketService.getDistributionTargets(workbasket.getId()).stream()
               .map(WorkbasketSummary::getId)
@@ -83,28 +67,6 @@ public class WorkbasketDefinitionRepresentationModelAssembler
     repModel.setAuthorizations(authorizations);
     repModel.setDistributionTargets(distroTargets);
     return repModel;
-  }
-
-  public Workbasket toEntityModel(WorkbasketRepresentationModel repModel) {
-    WorkbasketImpl workbasket =
-        (WorkbasketImpl) workbasketService.newWorkbasket(repModel.getKey(), repModel.getDomain());
-    workbasket.setId(repModel.getWorkbasketId());
-    workbasket.setName(repModel.getName());
-    workbasket.setType(repModel.getType());
-    workbasket.setDescription(repModel.getDescription());
-    workbasket.setOwner(repModel.getOwner());
-    workbasket.setMarkedForDeletion(repModel.getMarkedForDeletion());
-    workbasket.setCustom1(repModel.getCustom1());
-    workbasket.setCustom2(repModel.getCustom2());
-    workbasket.setCustom3(repModel.getCustom3());
-    workbasket.setCustom4(repModel.getCustom4());
-    workbasket.setOrgLevel1(repModel.getOrgLevel1());
-    workbasket.setOrgLevel2(repModel.getOrgLevel2());
-    workbasket.setOrgLevel3(repModel.getOrgLevel3());
-    workbasket.setOrgLevel4(repModel.getOrgLevel4());
-    workbasket.setCreated(repModel.getCreated());
-    workbasket.setModified(repModel.getModified());
-    return workbasket;
   }
 
   @Override
