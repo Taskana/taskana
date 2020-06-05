@@ -265,7 +265,7 @@ class TaskRepresentationModelAssemberTest {
     assertThat(repModels)
         .hasSize(attachments.size())
         .extracting(AttachmentRepresentationModel::getAttachmentId)
-        .containsOnlyOnce(objects);
+        .containsExactlyInAnyOrder(objects);
   }
 
   private void testLinks(TaskRepresentationModel repModel) {

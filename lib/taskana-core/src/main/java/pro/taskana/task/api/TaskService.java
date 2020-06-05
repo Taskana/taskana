@@ -347,6 +347,16 @@ public interface TaskService {
       throws InvalidArgumentException;
 
   /**
+   * Completes a list of tasks.
+   *
+   * @param taskIds of the tasks which should be completed.
+   * @return the result of the operations with Id and Exception for each failed task completion.
+   * @throws InvalidArgumentException If the taskId parameter is NULL.
+   */
+  BulkOperationResults<String, TaskanaException> forceCompleteTasks(List<String> taskIds)
+      throws InvalidArgumentException;
+
+  /**
    * Updates tasks with a matching {@link ObjectReference}.
    *
    * @param selectionCriteria the {@link ObjectReference} that is used to select the tasks.
