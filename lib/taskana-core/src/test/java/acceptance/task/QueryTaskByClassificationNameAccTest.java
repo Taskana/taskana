@@ -58,7 +58,7 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
     assertThat(columnValueList).hasSize(5);
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group-1")
   @Test
   void testQueryByClassificationNameIn() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -79,7 +79,7 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
     assertThat(tasks).hasSize(1);
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group-1")
   @Test
   void testQueryByClassificationNameLike() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -96,7 +96,7 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
     assertThat(tasks).hasSize(32);
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group-1")
   @Test
   void testSelectByAttachmentClassificationNameLike() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -117,7 +117,7 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
     assertThat(tasks).hasSize(7);
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group-1")
   @Test
   void testSelectByAttachmentClassificationNameIn() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -138,7 +138,7 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
     assertThat(tasks).hasSize(4);
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group-1")
   @Test
   void testQueryAndCountMatchForClassificationName() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -150,7 +150,7 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
     assertThat(tasks).hasSize((int) numberOfTasks);
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group-1")
   @Test
   void testQueryAndCountForAttachmentClassificationName() {
     TaskService taskService = taskanaEngine.getTaskService();

@@ -31,7 +31,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(user = "user-1-2", groups = "group_1")
+  @WithAccessId(user = "user-1-2", groups = "group-1")
   @Test
   void testDeleteSingleTaskNotAuthorized() {
 
@@ -67,7 +67,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "user-1-2",
-      groups = {"group_1", "admin"})
+      groups = {"group-1", "admin"})
   @Test
   void testDeleteSingleTask()
       throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
@@ -101,7 +101,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "user-1-2",
-      groups = {"group_1", "admin"})
+      groups = {"group-1", "admin"})
   @Test
   void testThrowsExceptionIfTaskIsNotCompleted()
       throws TaskNotFoundException, NotAuthorizedException {
@@ -117,7 +117,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "user-1-2",
-      groups = {"group_1", "admin"})
+      groups = {"group-1", "admin"})
   @Test
   void testForceDeleteTaskIfNotCompleted()
       throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {

@@ -37,7 +37,7 @@ class WorkbasketQueryAccTest extends AbstractAccTest {
               .createWorkbasketQuery()
               .nameLike("%")
               .accessIdsHavePermission(
-                  WorkbasketPermission.TRANSFER, "teamlead-1", "group_1", "group_2")
+                  WorkbasketPermission.TRANSFER, "teamlead-1", "group-1", "group-2")
               .list();
         };
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
@@ -56,7 +56,7 @@ class WorkbasketQueryAccTest extends AbstractAccTest {
               .createWorkbasketQuery()
               .nameLike("%")
               .accessIdsHavePermission(
-                  WorkbasketPermission.TRANSFER, "teamlead-1", "group_1", "group_2")
+                  WorkbasketPermission.TRANSFER, "teamlead-1", "group-1", "group-2")
               .list();
         };
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
@@ -76,7 +76,7 @@ class WorkbasketQueryAccTest extends AbstractAccTest {
             .createWorkbasketQuery()
             .nameLike("%")
             .accessIdsHavePermission(
-                WorkbasketPermission.TRANSFER, "teamlead-1", "group_1", "group_2")
+                WorkbasketPermission.TRANSFER, "teamlead-1", "group-1", "group-2")
             .list();
 
     assertThat(results).hasSize(13);
@@ -95,7 +95,7 @@ class WorkbasketQueryAccTest extends AbstractAccTest {
             .createWorkbasketQuery()
             .nameLike("%")
             .accessIdsHavePermission(
-                WorkbasketPermission.TRANSFER, "teamlead-1", "group_1", "group_2")
+                WorkbasketPermission.TRANSFER, "teamlead-1", "group-1", "group-2")
             .list();
 
     assertThat(results).hasSize(13);

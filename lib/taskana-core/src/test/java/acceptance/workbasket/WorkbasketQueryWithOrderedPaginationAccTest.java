@@ -23,7 +23,7 @@ class WorkbasketQueryWithOrderedPaginationAccTest extends AbstractAccTest {
   @Test
   @WithAccessId(
       user = "teamlead-1",
-      groups = {"group_1", "group_2"})
+      groups = {"group-1", "group-2"})
   void testGetFirstPageOfTaskQueryWithOffset() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     List<WorkbasketSummary> results =
@@ -42,7 +42,7 @@ class WorkbasketQueryWithOrderedPaginationAccTest extends AbstractAccTest {
   @Test
   @WithAccessId(
       user = "teamlead-1",
-      groups = {"group_1", "group_2"})
+      groups = {"group-1", "group-2"})
   void testGetSecondPageOfTaskQueryWithOffset() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     List<WorkbasketSummary> results =

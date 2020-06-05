@@ -41,7 +41,7 @@ class DeleteClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead_1",
-      groups = {"group_1", "group_2"})
+      groups = {"group-1", "group-2"})
   @Test
   void testDeleteClassificationInDomainUserIsNotAuthorized() {
     ThrowingCallable call = () -> classificationService.deleteClassification("L140101", "DOMAIN_A");
@@ -65,7 +65,7 @@ class DeleteClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead_1",
-      groups = {"group_1", "businessadmin"})
+      groups = {"group-1", "businessadmin"})
   @Test
   void testThrowExeptionIfDeleteClassificationWithExistingTasks() {
     ThrowingCallable call = () -> classificationService.deleteClassification("L1050", "DOMAIN_A");
@@ -74,7 +74,7 @@ class DeleteClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead_1",
-      groups = {"group_1", "businessadmin"})
+      groups = {"group-1", "businessadmin"})
   @Test
   void testThrowExeptionIfDeleteMasterClassificationWithExistingTasks() {
     ThrowingCallable call = () -> classificationService.deleteClassification("L1050", "");
@@ -100,7 +100,7 @@ class DeleteClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead_1",
-      groups = {"group_1", "businessadmin"})
+      groups = {"group-1", "businessadmin"})
   @Test
   void testThrowExceptionWhenChildClassificationIsInUseAndRollback()
       throws ClassificationNotFoundException {

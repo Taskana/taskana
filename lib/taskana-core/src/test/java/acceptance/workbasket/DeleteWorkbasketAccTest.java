@@ -89,7 +89,7 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "user-1-1",
-      groups = {"teamlead_1", "group_1", "businessadmin"})
+      groups = {"teamlead_1", "group-1", "businessadmin"})
   @Test
   void testDeleteWorkbasketAlsoAsDistributionTarget()
       throws WorkbasketNotFoundException, NotAuthorizedException {

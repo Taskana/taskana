@@ -26,7 +26,7 @@ import pro.taskana.task.api.models.TaskSummary;
 public class ServiceLevelOfAllTasksAccTest extends AbstractAccTest {
   TaskService taskService;
 
-  @WithAccessId(user = "admin", groups = "group_2")
+  @WithAccessId(user = "admin", groups = "group-2")
   @Test
   void testSetPlannedPropertyOnAllTasks() throws SQLException {
     taskService = taskanaEngine.getTaskService();

@@ -124,7 +124,7 @@ class UpdateClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead_1",
-      groups = {"group_1", "businessadmin"})
+      groups = {"group-1", "businessadmin"})
   @Test
   void testUpdateTaskOnClassificationKeyCategoryChange() throws Exception {
     setupTest();
@@ -156,7 +156,7 @@ class UpdateClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead_1",
-      groups = {"group_1", "businessadmin"})
+      groups = {"group-1", "businessadmin"})
   @Test
   void testUpdateClassificationNotLatestAnymore()
       throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
@@ -183,7 +183,7 @@ class UpdateClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead_1",
-      groups = {"group_1", "businessadmin"})
+      groups = {"group-1", "businessadmin"})
   @Test
   void testUpdateClassificationParentIdToInvalid() throws ClassificationNotFoundException {
     Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
@@ -194,7 +194,7 @@ class UpdateClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead_1",
-      groups = {"group_1", "businessadmin"})
+      groups = {"group-1", "businessadmin"})
   @Test
   void testUpdateClassificationParentKeyToInvalid() throws ClassificationNotFoundException {
     Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");

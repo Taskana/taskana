@@ -27,7 +27,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead-1",
-      groups = {"group_1", "group_2"})
+      groups = {"group-1", "group-2"})
   @Test
   void testCreatedWithin2Intervals() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -59,7 +59,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead-1",
-      groups = {"group_1", "group_2"})
+      groups = {"group-1", "group-2"})
   @Test
   void testCreatedBefore() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -84,7 +84,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead-1",
-      groups = {"group_1", "group_2"})
+      groups = {"group-1", "group-2"})
   @Test
   void testCreatedAfter() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -109,7 +109,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead-1",
-      groups = {"group_1", "group_2"})
+      groups = {"group-1", "group-2"})
   @Test
   void testClaimedWithin2Intervals() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -141,7 +141,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead-1",
-      groups = {"group_1", "group_2"})
+      groups = {"group-1", "group-2"})
   @Test
   void testCompletedWithin() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -166,7 +166,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead-1",
-      groups = {"group_1", "group_2"})
+      groups = {"group-1", "group-2"})
   @Test
   void testModifiedWithin() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -191,7 +191,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead-1",
-      groups = {"group_1", "group_2"})
+      groups = {"group-1", "group-2"})
   @Test
   void testPlannedWithin() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -216,7 +216,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead-1",
-      groups = {"group_1", "group_2"})
+      groups = {"group-1", "group-2"})
   @Test
   void testDueWithin() {
     TaskService taskService = taskanaEngine.getTaskService();

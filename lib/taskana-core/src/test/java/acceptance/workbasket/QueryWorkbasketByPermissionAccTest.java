@@ -69,7 +69,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     List<WorkbasketSummary> results =
         workbasketService
             .createWorkbasketQuery()
-            .accessIdsHavePermission(WorkbasketPermission.APPEND, "user-1-1", "group_1")
+            .accessIdsHavePermission(WorkbasketPermission.APPEND, "user-1-1", "group-1")
             .list();
     assertThat(results).hasSize(6);
   }
@@ -82,7 +82,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     List<WorkbasketSummary> results =
         workbasketService
             .createWorkbasketQuery()
-            .accessIdsHavePermission(WorkbasketPermission.APPEND, "user-1-1", "group_1")
+            .accessIdsHavePermission(WorkbasketPermission.APPEND, "user-1-1", "group-1")
             .orderByName(asc)
             .list();
     assertThat(results).hasSize(6);
@@ -97,7 +97,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     List<WorkbasketSummary> results =
         workbasketService
             .createWorkbasketQuery()
-            .accessIdsHavePermission(WorkbasketPermission.APPEND, "user-1-1", "group_1")
+            .accessIdsHavePermission(WorkbasketPermission.APPEND, "user-1-1", "group-1")
             .orderByName(desc)
             .orderByKey(asc)
             .list();
@@ -113,7 +113,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     List<WorkbasketSummary> results =
         workbasketService
             .createWorkbasketQuery()
-            .accessIdsHavePermission(WorkbasketPermission.DISTRIBUTE, "user-1-1", "group_1")
+            .accessIdsHavePermission(WorkbasketPermission.DISTRIBUTE, "user-1-1", "group-1")
             .list();
     assertThat(results).hasSize(2);
     List<String> keys = new ArrayList<>(Arrays.asList("GPK_KSC_1", "USER-1-1"));
@@ -122,7 +122,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     }
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group-1")
   @Test
   void testQueryAllTransferTargetsForUserAndGroupFromSubject() throws SystemException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
