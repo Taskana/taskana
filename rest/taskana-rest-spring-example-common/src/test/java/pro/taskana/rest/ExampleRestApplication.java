@@ -15,11 +15,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import pro.taskana.RestConfiguration;
-import pro.taskana.common.rest.AccessIdController;
 import pro.taskana.common.rest.ldap.LdapClient;
 import pro.taskana.common.rest.ldap.LdapConfiguration;
 import pro.taskana.jobs.TransactionalJobsConfiguration;
-import pro.taskana.ldap.LdapCacheTestImpl;
 import pro.taskana.sampledata.SampleDataGenerator;
 
 /** Example Application showing the implementation of taskana-rest-spring. */
@@ -45,8 +43,6 @@ public class ExampleRestApplication {
 
   @Autowired private LdapClient ldapClient;
 
-  @Autowired private LdapCacheTestImpl ldapCacheTest;
-
   public static void main(String[] args) {
     SpringApplication.run(ExampleRestApplication.class, args);
   }
@@ -65,9 +61,6 @@ public class ExampleRestApplication {
 
   @PostConstruct
   private void init() {
-    if (!ldapClient.useLdap()) {
-      AccessIdController.setLdapCache(ldapCacheTest);
-    }
     if (generateSampleData) {
       sampleDataGenerator.generateSampleData();
     }

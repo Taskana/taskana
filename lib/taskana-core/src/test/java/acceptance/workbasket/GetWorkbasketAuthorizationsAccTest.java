@@ -16,7 +16,7 @@ import pro.taskana.workbasket.api.WorkbasketService;
 @ExtendWith(JaasExtension.class)
 class GetWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
-  @WithAccessId(user = "user_1_1")
+  @WithAccessId(user = "user-1-1")
   @WithAccessId(user = "taskadmin")
   @TestTemplate
   void should_ThrowException_When_UserRoleIsNotAdminOrBusinessAdmin() {

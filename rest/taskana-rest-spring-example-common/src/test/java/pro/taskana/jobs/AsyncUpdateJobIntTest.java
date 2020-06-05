@@ -8,19 +8,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import pro.taskana.RestConfiguration;
 import pro.taskana.RestHelper;
+import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.rest.assembler.ClassificationRepresentationModelAssembler;
 import pro.taskana.classification.rest.models.ClassificationRepresentationModel;
@@ -30,11 +26,7 @@ import pro.taskana.task.rest.assembler.TaskRepresentationModelAssembler;
 import pro.taskana.task.rest.models.TaskRepresentationModel;
 
 /** Test async updates. */
-@ActiveProfiles({"test"})
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(
-    classes = RestConfiguration.class,
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TaskanaSpringBootTest
 class AsyncUpdateJobIntTest {
 
   private static final String CLASSIFICATION_ID = "CLI:100000000000000000000000000000000003";
@@ -67,7 +59,7 @@ class AsyncUpdateJobIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, CLASSIFICATION_ID),
             HttpMethod.GET,
-            new HttpEntity<String>(restHelper.getHeaders()),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
 
     assertThat(response.getBody()).isNotNull();
@@ -80,7 +72,7 @@ class AsyncUpdateJobIntTest {
     classification.setPriority(1000);
 
     TEMPLATE.exchange(restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, CLASSIFICATION_ID),
-        HttpMethod.PUT, new HttpEntity<>(classification, restHelper.getHeaders()),
+        HttpMethod.PUT, new HttpEntity<>(classification, restHelper.getHeadersTeamlead_1()),
         ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
 
     // trigger jobs twice to refresh all entries. first entry on the first call and follow up on the
@@ -93,7 +85,7 @@ class AsyncUpdateJobIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, CLASSIFICATION_ID),
             HttpMethod.GET,
-            new HttpEntity<String>(restHelper.getHeaders()),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
 
     assertThat(repeatedResponse.getBody()).isNotNull();

@@ -171,7 +171,7 @@ class WorkbasketDefinitionControllerIntTest {
   }
 
   @Test
-  void testImportWorkbasketWithDistributionTargetsNotInSystem() throws IOException {
+  void testImportWorkbasketWithDistributionTargetsNotInSystem() {
     TaskanaPagedModel<WorkbasketDefinitionRepresentationModel> wbList =
         executeExportRequestForDomain("DOMAIN_A").getBody();
 
@@ -196,7 +196,7 @@ class WorkbasketDefinitionControllerIntTest {
   }
 
   @Test
-  void testFailOnImportDuplicates() throws IOException {
+  void testFailOnImportDuplicates() {
     TaskanaPagedModel<WorkbasketDefinitionRepresentationModel> pagedModel =
         executeExportRequestForDomain("DOMAIN_A").getBody();
 
@@ -264,9 +264,8 @@ class WorkbasketDefinitionControllerIntTest {
         restHelper.toUrl(Mapping.URL_WORKBASKET_DEFINITIONS) + "?domain=" + domain,
         HttpMethod.GET,
         restHelper.defaultRequest(),
-        new ParameterizedTypeReference<TaskanaPagedModel<WorkbasketDefinitionRepresentationModel>>(
-        ) {
-        });
+        new ParameterizedTypeReference<
+            TaskanaPagedModel<WorkbasketDefinitionRepresentationModel>>() {});
   }
 
   private void expectStatusWhenExecutingImportRequestOfWorkbaskets(
@@ -287,7 +286,7 @@ class WorkbasketDefinitionControllerIntTest {
       objMapper.writeValue(writer, pageModel);
     }
     MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-    HttpHeaders headers = restHelper.getHeaders();
+    HttpHeaders headers = restHelper.getHeadersBusinessAdmin();
     headers.setContentType(MediaType.MULTIPART_FORM_DATA);
     body.add("file", new FileSystemResource(tmpFile));
 

@@ -26,7 +26,7 @@ import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 class UpdateWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(
-      user = "teamlead_1",
+      user = "teamlead-1",
       groups = {"group_1", "businessadmin"})
   @Test
   void testUpdateWorkbasket()
@@ -60,11 +60,11 @@ class UpdateWorkbasketAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "teamlead_1",
+      user = "teamlead-1",
       groups = {"group_1", "businessadmin"})
   @Test
   void testUpdateWorkbasketWithConcurrentModificationShouldThrowException()
-      throws NotAuthorizedException, WorkbasketNotFoundException, ConcurrencyException {
+      throws NotAuthorizedException, WorkbasketNotFoundException {
 
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
@@ -78,11 +78,11 @@ class UpdateWorkbasketAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "teamlead_1",
+      user = "teamlead-1",
       groups = {"group_1", "businessadmin"})
   @Test
   void testUpdateWorkbasketOfNonExistingWorkbasketShouldThrowException()
-      throws NotAuthorizedException, WorkbasketNotFoundException, ConcurrencyException {
+      throws NotAuthorizedException, WorkbasketNotFoundException {
 
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
@@ -96,13 +96,13 @@ class UpdateWorkbasketAccTest extends AbstractAccTest {
         .isThrownBy(() -> workbasketService.updateWorkbasket(workbasket));
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @WithAccessId(user = "taskadmin")
   @TestTemplate
   void should_ThrowException_When_UserRoleIsNotAdminOrBusinessAdmin()
       throws NotAuthorizedException, WorkbasketNotFoundException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-    Workbasket workbasket = workbasketService.getWorkbasket("USER_1_1", "DOMAIN_A");
+    Workbasket workbasket = workbasketService.getWorkbasket("USER-1-1", "DOMAIN_A");
 
     workbasket.setName("new name");
 

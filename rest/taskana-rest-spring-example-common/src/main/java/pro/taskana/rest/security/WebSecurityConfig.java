@@ -1,19 +1,24 @@
 package pro.taskana.rest.security;
 
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.jaas.AuthorityGranter;
-import org.springframework.security.authentication.jaas.JaasAuthenticationCallbackHandler;
-import org.springframework.security.authentication.jaas.JaasAuthenticationProvider;
-import org.springframework.security.authentication.jaas.JaasNameCallbackHandler;
-import org.springframework.security.authentication.jaas.JaasPasswordCallbackHandler;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
+import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper;
+import org.springframework.security.ldap.DefaultSpringSecurityContextSource;
+import org.springframework.security.ldap.userdetails.DefaultLdapAuthoritiesPopulator;
+import org.springframework.security.ldap.userdetails.LdapAuthoritiesPopulator;
 import org.springframework.security.web.jaasapi.JaasApiIntegrationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
@@ -27,21 +32,23 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+  @Value("${taskana.ldap.serverUrl:ldap://localhost:10389}")
+  private String ldapServerUrl;
+
+  @Value("${taskana.ldap.baseDn:OU=Test,O=TASKANA}")
+  private String ldapBaseDn;
+
+  @Value("${taskana.ldap.groupSearchBase:cn=groups}")
+  private String ldapGroupSearchBase;
+
+  @Value("${taskana.ldap.userDnPatterns:uid={0},cn=users}")
+  private String ldapUserDnPatterns;
+
+  @Value("${taskana.ldap.groupSearchFilter:uniqueMember={0}}")
+  private String ldapGroupSearchFilter;
+
   @Value("${devMode:false}")
   private boolean devMode;
-
-  @Bean
-  public JaasAuthenticationProvider jaasAuthProvider() {
-    JaasAuthenticationProvider authenticationProvider = new JaasAuthenticationProvider();
-    authenticationProvider.setAuthorityGranters(new AuthorityGranter[] {new SampleRoleGranter()});
-    authenticationProvider.setCallbackHandlers(
-        new JaasAuthenticationCallbackHandler[] {
-          new JaasNameCallbackHandler(), new JaasPasswordCallbackHandler()
-        });
-    authenticationProvider.setLoginContextName("taskana");
-    authenticationProvider.setLoginConfig(new ClassPathResource("pss_jaas.config"));
-    return authenticationProvider;
-  }
 
   @Bean
   public WebMvcConfigurer corsConfigurer() {
@@ -74,12 +81,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .disable()
         .httpBasic()
         .and()
-        .authenticationProvider(jaasAuthProvider())
         .authorizeRequests()
         .antMatchers(HttpMethod.GET, "/docs/**")
         .permitAll()
         .and()
-        .addFilter(new JaasApiIntegrationFilter());
+        .addFilter(jaasApiIntegrationFilter())
+        .addFilterAfter(new SpringSecurityToJaasFilter(), JaasApiIntegrationFilter.class);
 
     if (devMode) {
       http.headers()
@@ -92,6 +99,50 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     } else {
       addLoginPageConfiguration(http);
     }
+  }
+
+  @Override
+  public void configure(AuthenticationManagerBuilder auth) throws Exception {
+    auth.ldapAuthentication()
+        .userDnPatterns(ldapUserDnPatterns)
+        .groupSearchBase(ldapGroupSearchBase)
+        .ldapAuthoritiesPopulator(authoritiesPopulator())
+        .authoritiesMapper(grantedAuthoritiesMapper())
+        .contextSource()
+        .url(ldapServerUrl + "/" + ldapBaseDn)
+        .and()
+        .passwordCompare()
+        .passwordAttribute("userPassword");
+  }
+
+  @Bean
+  public DefaultSpringSecurityContextSource defaultSpringSecurityContextSource() {
+    return new DefaultSpringSecurityContextSource(ldapServerUrl + "/" + ldapBaseDn);
+  }
+
+  @Bean
+  public LdapAuthoritiesPopulator authoritiesPopulator() {
+    Function<Map<String, List<String>>, GrantedAuthority> authorityMapper =
+        record -> {
+          String role = record.get("spring.security.ldap.dn").get(0);
+          return new SimpleGrantedAuthority(role);
+        };
+
+    DefaultLdapAuthoritiesPopulator populator =
+        new DefaultLdapAuthoritiesPopulator(
+            defaultSpringSecurityContextSource(), ldapGroupSearchBase);
+    populator.setGroupSearchFilter(ldapGroupSearchFilter);
+    populator.setSearchSubtree(true);
+    populator.setRolePrefix("");
+    populator.setAuthorityMapper(authorityMapper);
+    return populator;
+  }
+
+  @Bean
+  public GrantedAuthoritiesMapper grantedAuthoritiesMapper() {
+    SimpleAuthorityMapper grantedAuthoritiesMapper = new SimpleAuthorityMapper();
+    grantedAuthoritiesMapper.setPrefix("");
+    return grantedAuthoritiesMapper;
   }
 
   private void addLoginPageConfiguration(HttpSecurity http) throws Exception {
@@ -120,5 +171,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void addCorsMappings(CorsRegistry registry) {
       registry.addMapping("/**").allowedOrigins("*");
     }
+  }
+
+  private JaasApiIntegrationFilter jaasApiIntegrationFilter() {
+    JaasApiIntegrationFilter filter = new JaasApiIntegrationFilter();
+    filter.setCreateEmptySubject(true);
+    return filter;
   }
 }

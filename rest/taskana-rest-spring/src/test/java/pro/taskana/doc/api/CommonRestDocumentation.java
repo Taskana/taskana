@@ -66,7 +66,7 @@ class CommonRestDocumentation extends BaseRestDocumentation {
             RestDocumentationRequestBuilders.get(
                     restHelper.toUrl(
                         Mapping.URL_CLASSIFICATIONS_ID, "CLI:100000000000000000000000000000000009"))
-                .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
+                .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andDo(
             MockMvcRestDocumentation.document(

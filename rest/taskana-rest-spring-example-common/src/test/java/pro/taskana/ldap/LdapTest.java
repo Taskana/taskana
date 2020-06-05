@@ -27,10 +27,9 @@ class LdapTest {
 
   @Test
   void testFindUsers() throws InvalidArgumentException {
-    if (ldapClient.useLdap()) {
-      List<AccessIdRepresentationModel> usersAndGroups = ldapClient.searchUsersAndGroups("ser0");
-      System.out.println("#### found " + usersAndGroups);
-      assertThat(usersAndGroups).hasSize(50);
-    }
+    List<AccessIdRepresentationModel> usersAndGroups = ldapClient.searchUsersAndGroups("lead");
+    assertThat(usersAndGroups)
+        .extracting(AccessIdRepresentationModel::getAccessId)
+        .containsOnly("teamlead-1", "teamlead-2", "cn=ksc-teamleads,cn=groups,ou=Test,O=TASKANA");
   }
 }

@@ -38,10 +38,8 @@ public class PageLinksAspect {
     String relativeUrl = pageLinks.value();
     UriComponentsBuilder original = originalUri(relativeUrl, request);
     RepresentationModel<T> resourceSupport = (RepresentationModel<T>) joinPoint.proceed();
+    resourceSupport.add(Link.of(original.toUriString()).withSelfRel());
     if (page != null) {
-      resourceSupport.add(
-           Link.of(original.replaceQueryParam("page", page.getNumber()).toUriString())
-              .withSelfRel());
       resourceSupport.add(
           Link.of(original.replaceQueryParam("page", 1).toUriString())
               .withRel(IanaLinkRelations.FIRST));
@@ -58,8 +56,6 @@ public class PageLinksAspect {
             Link.of(original.replaceQueryParam("page", page.getNumber() + 1).toUriString())
                 .withRel(IanaLinkRelations.NEXT));
       }
-    } else {
-      resourceSupport.add(Link.of(original.toUriString()).withSelfRel());
     }
     return resourceSupport;
   }

@@ -21,7 +21,7 @@ objectclass: top
 cn: Rojas Miguel Angel Martin
 sn: Martin
 givenName: Rojas Miguel Angel
-uid: user_1_1
+uid: user-1-1
 
 dn: cn=Marcel Lengl,ou=people,o=TaskanaTest
 objectclass: inetOrgPerson
@@ -31,7 +31,7 @@ objectclass: top
 cn: Marcel Lengl
 sn: Lengl
 givenName: Marcel
-uid: user_1_2
+uid: user-1-2
 
 dn: cn=Mustapha Zorgati,ou=people,o=TaskanaTest
 objectclass: inetOrgPerson
@@ -41,7 +41,7 @@ objectclass: top
 cn: Mustapha Zorgati
 sn: Zorgati
 givenName: Mustapha
-uid: user_2_1
+uid: user-2-1
 
 dn: cn=Bernd Breier,ou=people,o=TaskanaTest
 objectclass: inetOrgPerson
@@ -51,7 +51,7 @@ objectclass: top
 cn: Bernd Breier
 sn: Breier
 givenName: Bernd
-uid: user_2_2
+uid: user-2-2
 
 dn: cn=Dominik Meyer,ou=people,o=TaskanaTest
 objectclass: inetOrgPerson
@@ -61,7 +61,7 @@ objectclass: top
 cn: Dominik Meyer
 sn: Meyer
 givenName: Dominik
-uid: teamlead_1
+uid: teamlead-1
 
 dn: cn=Holger Hagen,ou=people,o=TaskanaTest
 objectclass: inetOrgPerson
@@ -71,7 +71,7 @@ objectclass: top
 cn: Holger Hagen
 sn: Hagen
 givenName: Holger
-uid: teamlead_2
+uid: teamlead-2
 
 dn: cn=Maximilian Behrendt,ou=people,o=TaskanaTest
 objectclass: inetOrgPerson
@@ -2723,14 +2723,14 @@ dn: cn=DevelopersGroup,ou=groups,o=TaskanaTest
 objectClass: groupOfUniqueNames
 objectClass: top
 cn: DevelopersGroup
-ou: group_1
+ou: group-1
 uniqueMember: cn=Kurt Achse,ou=people,o=TaskanaTest
 
 dn: cn=UsersGroup,ou=groups,o=TaskanaTest
 objectClass: groupOfUniqueNames
 objectClass: top
 cn: UsersGroup
-ou: group_2
+ou: group-2
 uniqueMember: cn=Kurt Achse,ou=people,o=TaskanaTest
 
 dn: cn=Sachbearbeiter,ou=groups,o=TaskanaTest

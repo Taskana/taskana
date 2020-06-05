@@ -31,7 +31,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(user = "user_1_2", groups = "group_1")
+  @WithAccessId(user = "user-1-2", groups = "group_1")
   @Test
   void testDeleteSingleTaskNotAuthorized() {
 
@@ -45,7 +45,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @WithAccessId(user = "taskadmin")
-  @WithAccessId(user = "user_1_1")
+  @WithAccessId(user = "user-1-1")
   @TestTemplate
   void should_ThrowException_When_UserIsNotInAdminRoleButTriesToBulkDeleteTasks() {
 
@@ -66,7 +66,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "user_1_2",
+      user = "user-1-2",
       groups = {"group_1", "admin"})
   @Test
   void testDeleteSingleTask()
@@ -86,7 +86,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @WithAccessId(user = "taskadmin")
-  @WithAccessId(user = "user_1_1")
+  @WithAccessId(user = "user-1-1")
   @TestTemplate
   void should_ThrowException_When_UserIsNotInAdminRole() {
 
@@ -100,7 +100,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "user_1_2",
+      user = "user-1-2",
       groups = {"group_1", "admin"})
   @Test
   void testThrowsExceptionIfTaskIsNotCompleted()
@@ -116,7 +116,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "user_1_2",
+      user = "user-1-2",
       groups = {"group_1", "admin"})
   @Test
   void testForceDeleteTaskIfNotCompleted()

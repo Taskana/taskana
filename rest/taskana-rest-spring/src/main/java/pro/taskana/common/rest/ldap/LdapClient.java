@@ -192,11 +192,6 @@ public class LdapClient {
     return accessIds;
   }
 
-  public boolean useLdap() {
-    String useLdap = LdapSettings.TASKANA_LDAP_USE_LDAP.getValueFromEnv(env);
-    return Boolean.parseBoolean(useLdap);
-  }
-
   public String getUserSearchBase() {
     return LdapSettings.TASKANA_LDAP_USER_SEARCH_BASE.getValueFromEnv(env);
   }
@@ -314,20 +309,16 @@ public class LdapClient {
     minSearchForLength = calcMinSearchForLength(3);
     maxNumberOfReturnedAccessIds = calcMaxNumberOfReturnedAccessIds(50);
 
-    if (useLdap()) {
-      ldapTemplate.setDefaultCountLimit(maxNumberOfReturnedAccessIds);
+    ldapTemplate.setDefaultCountLimit(maxNumberOfReturnedAccessIds);
 
-      final List<LdapSettings> missingConfigurations = checkForMissingConfigurations();
+    final List<LdapSettings> missingConfigurations = checkForMissingConfigurations();
 
-      if (!missingConfigurations.isEmpty()) {
-        message =
-            String.format(
-                "taskana.ldap.useLdap is set to true, but following configurations are missing: %s",
-                missingConfigurations);
-        throw new SystemException(message);
-      }
-      active = true;
+    if (!missingConfigurations.isEmpty()) {
+      message = String.format("LDAP configurations are missing: %s", missingConfigurations);
+      throw new SystemException(message);
     }
+    active = true;
+
     LOGGER.debug("Exit from init()");
   }
 

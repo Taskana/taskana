@@ -39,7 +39,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
 
   private final TaskService taskService = taskanaEngine.getTaskService();
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void should_UpdatePrimaryObjectReferenceOfTask_When_Requested()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -67,7 +67,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
     assertThat(updatedTask.getParentBusinessProcessId()).isEqualTo("MY_PARENT_PROCESS_ID");
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void should_UpdatePrimaryObjectReferenceOfTask_When_ObjectreferenceSystemAndSystemInstanceIsNull()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -96,7 +96,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
     assertThat(updatedTask.getParentBusinessProcessId()).isEqualTo("MY_PARENT_PROCESS_ID");
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void should_ThrowException_When_MandatoryPrimaryObjectReferenceIsNotSetOrIncomplete()
       throws NotAuthorizedException, TaskNotFoundException {
@@ -124,7 +124,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
         .isInstanceOf(InvalidArgumentException.class);
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void should_ThrowException_When_TaskHasAlreadyBeenUpdated()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -156,10 +156,9 @@ class UpdateTaskAccTest extends AbstractAccTest {
     assertThatCode(updateTaskCall).doesNotThrowAnyException();
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void should_UpdateTaskProperties_When_ClassificationOfTaskIsChanged() throws Exception {
-
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
     final ClassificationSummary classificationSummary = task.getClassificationSummary();
     task.setClassificationKey("T2100");
@@ -175,7 +174,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
     assertThat(task.getDescription()).isEqualTo(updatedTask.getDescription());
   }
 
-  @WithAccessId(user = "user_1_2", groups = "group_1")
+  @WithAccessId(user = "user-1-2", groups = "group_1")
   @Test
   void should_UpdateReadFlagOfTask_When_SetTaskReadIsCalled()
       throws TaskNotFoundException, NotAuthorizedException {
@@ -196,7 +195,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
         .isInstanceOf(TaskNotFoundException.class);
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void should_UpdateTask_When_CustomPropertiesOfTaskWereChanged()
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
@@ -210,19 +209,19 @@ class UpdateTaskAccTest extends AbstractAccTest {
     assertThat(updatedTask).isNotNull();
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void should_ThrowException_When_ModificationOfWorkbasketKeyIsAttempted()
       throws NotAuthorizedException, TaskNotFoundException {
 
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
-    ((TaskImpl) task).setWorkbasketKey("USER_2_2");
+    ((TaskImpl) task).setWorkbasketKey("USER-2-2");
 
     assertThatThrownBy(() -> taskService.updateTask(task))
         .isInstanceOf(InvalidArgumentException.class);
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void should_UpdateNoTasks_When_UpdateTasksWithUnmatchedObjectReferenceWasCalled()
       throws InvalidArgumentException {
@@ -242,7 +241,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
     assertThat(taskIds).isEmpty();
   }
 
-  @WithAccessId(user = "teamlead_1", groups = "group_1")
+  @WithAccessId(user = "teamlead-1", groups = "group_1")
   @Test
   void should_UpdateTasks_When_MatchingPrimaryObjectReferenceWasChanged()
       throws InvalidArgumentException, TaskNotFoundException, NotAuthorizedException {
@@ -269,7 +268,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
     }
   }
 
-  @WithAccessId(user = "teamlead_1", groups = "group_1")
+  @WithAccessId(user = "teamlead-1", groups = "group_1")
   @Test
   void should_UpdateTaskCustomAttributes_When_UpdateTasksIsCalled()
       throws InvalidArgumentException, TaskNotFoundException, NotAuthorizedException {
@@ -296,14 +295,14 @@ class UpdateTaskAccTest extends AbstractAccTest {
     }
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void should_UpdateCallbackInfo_When_RequestedByApi()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
           TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException,
           ConcurrencyException, AttachmentPersistenceException, InvalidStateException {
 
-    Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));

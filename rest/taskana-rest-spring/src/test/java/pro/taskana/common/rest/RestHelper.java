@@ -22,7 +22,15 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Component
 public class RestHelper {
 
+  public static final String AUTHORIZATION_TEAMLEAD_1 = "Basic dGVhbWxlYWQtMTp0ZWFtbGVhZC0x";
+  public static final String AUTHORIZATION_ADMIN = "Basic YWRtaW46YWRtaW4=";
+  public static final String AUTHORIZATION_BUSINESSADMIN =
+      "Basic YnVzaW5lc3NhZG1pbjpidXNpbmVzc2FkbWlu";
+  public static final String AUTHORIZATION_USER_1_1 = "Basic dXNlci0xLTE6dXNlci0xLTE=";
+  public static final String AUTHORIZATION_USER_1_2 = "Basic dXNlci0xLTI6dXNlci0xLTI=";
+
   public static final RestTemplate TEMPLATE = getRestTemplate();
+
   @Autowired Environment environment;
 
   public String toUrl(String relativeUrl, Object... uriVariables) {
@@ -36,41 +44,40 @@ public class RestHelper {
   }
 
   public HttpEntity<String> defaultRequest() {
-    return new HttpEntity<>(getHeaders());
+    return new HttpEntity<>(getHeadersTeamlead_1());
   }
 
-  public HttpHeaders getHeaders() {
+  public HttpHeaders getHeadersTeamlead_1() {
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
+    headers.add("Authorization", AUTHORIZATION_TEAMLEAD_1);
     headers.add("Content-Type", "application/json");
     return headers;
   }
 
   public HttpHeaders getHeadersAdmin() {
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Authorization", "Basic YWRtaW46YWRtaW4="); // admin:admin
+    headers.add("Authorization", AUTHORIZATION_ADMIN);
     headers.add("Content-Type", "application/hal+json");
     return headers;
   }
 
   public HttpHeaders getHeadersBusinessAdmin() {
     HttpHeaders headers = new HttpHeaders();
-    // businessadmin:businessadmin
-    headers.add("Authorization", "Basic YnVzaW5lc3NhZG1pbjpidXNpbmVzc2FkbWlu");
+    headers.add("Authorization", AUTHORIZATION_BUSINESSADMIN);
     headers.add("Content-Type", "application/hal+json");
     return headers;
   }
 
   public HttpHeaders getHeadersUser_1_2() {
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Authorization", "Basic dXNlcl8xXzI6dXNlcl8xXzI=");
+    headers.add("Authorization", AUTHORIZATION_USER_1_2);
     headers.add("Content-Type", "application/json");
     return headers;
   }
 
   public HttpHeaders getHeadersUser_1_1() {
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Authorization", "Basic dXNlcl8xXzE6dXNlcl8xXzE=");
+    headers.add("Authorization", AUTHORIZATION_USER_1_1);
     headers.add("Content-Type", "application/json");
     return headers;
   }
@@ -85,7 +92,8 @@ public class RestHelper {
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
     mapper.registerModule(new Jackson2HalModule());
-    mapper.registerModule(new ParameterNamesModule())
+    mapper
+        .registerModule(new ParameterNamesModule())
         .registerModule(new Jdk8Module())
         .registerModule(new JavaTimeModule());
     MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();

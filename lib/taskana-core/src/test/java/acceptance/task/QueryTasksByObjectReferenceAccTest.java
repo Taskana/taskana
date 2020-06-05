@@ -22,7 +22,7 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "teamlead_1",
+      user = "teamlead-1",
       groups = {"group_1", "group_2"})
   @Test
   void testQueryTasksByExcactValueOfObjectReference() throws SystemException {
@@ -33,7 +33,7 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "teamlead_1",
+      user = "teamlead-1",
       groups = {"group_1", "group_2"})
   @Test
   void testQueryTasksByExcactValueAndTypeOfObjectReference() throws SystemException {
@@ -48,7 +48,7 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "teamlead_1",
+      user = "teamlead-1",
       groups = {"group_1", "group_2"})
   @Test
   void testQueryTasksByValueLikeOfObjectReference() throws SystemException {

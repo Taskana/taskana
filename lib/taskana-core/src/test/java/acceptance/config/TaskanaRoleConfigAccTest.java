@@ -41,7 +41,7 @@ class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
     assertThat(rolesConfigured).containsOnly(TaskanaRole.values());
 
     Set<String> users = getConfiguration().getRoleMap().get(TaskanaRole.USER);
-    assertThat(users).contains("user_1_1", "user_1_2");
+    assertThat(users).contains("user-1-1", "user-1-2");
 
     Set<String> admins = getConfiguration().getRoleMap().get(TaskanaRole.ADMIN);
     assertThat(admins).contains("name=konrad,organisation=novatec", "admin");
@@ -53,7 +53,7 @@ class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
     assertThat(businessAdmins).contains("max", "moritz");
 
     Set<String> monitorAccessIds = getConfiguration().getRoleMap().get(TaskanaRole.MONITOR);
-    assertThat(monitorAccessIds).contains("teamlead_2", "monitor");
+    assertThat(monitorAccessIds).contains("teamlead-2", "monitor");
   }
 
   @Test

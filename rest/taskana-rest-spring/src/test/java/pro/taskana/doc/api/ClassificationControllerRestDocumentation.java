@@ -255,7 +255,7 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
             RestDocumentationRequestBuilders.get(
                 restHelper.toUrl(Mapping.URL_CLASSIFICATIONS) + "?domain=DOMAIN_B")
                 .accept("application/hal+json")
-                .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
+                .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andDo(
             MockMvcRestDocumentation.document(
@@ -270,7 +270,7 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
             RestDocumentationRequestBuilders.get(
                     restHelper.toUrl(
                         Mapping.URL_CLASSIFICATIONS_ID, "CLI:100000000000000000000000000000000009"))
-                .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
+                .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andDo(
             MockMvcRestDocumentation.document(
@@ -285,7 +285,7 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
             RestDocumentationRequestBuilders.get(
                     restHelper.toUrl(
                         Mapping.URL_CLASSIFICATIONS_ID, "CLI:100000000000000000000000000000000009"))
-                .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
+                .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andDo(
             MockMvcRestDocumentation.document(
@@ -300,7 +300,7 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
                 RestDocumentationRequestBuilders.post(restHelper.toUrl(Mapping.URL_CLASSIFICATIONS))
                     .contentType("application/hal+json")
                     .content("{\"key\":\"Key0815casdgdgh\", \"domain\":\"DOMAIN_B\"}")
-                    .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
+                    .header("Authorization", TEAMLEAD_1_CREDENTIALS))
             .andExpect(MockMvcResultMatchers.status().isCreated())
             .andDo(
                 MockMvcRestDocumentation.document(
@@ -316,7 +316,7 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
         .perform(
             RestDocumentationRequestBuilders.delete(
                     restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, newId))
-                .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
+                .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isNoContent())
         .andDo(MockMvcRestDocumentation.document("DeleteClassificationDocTest"));
   }
@@ -329,7 +329,7 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
                 Mapping.URL_CLASSIFICATIONS_ID, "CLI:100000000000000000000000000000000009"));
     HttpURLConnection con = (HttpURLConnection) url.openConnection();
     con.setRequestMethod("GET");
-    con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
+    con.setRequestProperty("Authorization", TEAMLEAD_1_CREDENTIALS);
     assertEquals(200, con.getResponseCode());
 
     BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), UTF_8));
@@ -347,7 +347,7 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
             RestDocumentationRequestBuilders.put(
                     restHelper.toUrl(
                         Mapping.URL_CLASSIFICATIONS_ID, "CLI:100000000000000000000000000000000009"))
-                .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x")
+                .header("Authorization", TEAMLEAD_1_CREDENTIALS)
                 .contentType("application/json")
                 .content(modifiedTask))
         .andExpect(MockMvcResultMatchers.status().isOk())

@@ -27,7 +27,7 @@ class GetTaskAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void should_ReturnTask_When_RequestingTaskByTaskId()
       throws TaskNotFoundException, NotAuthorizedException, InvalidArgumentException {
@@ -48,11 +48,11 @@ class GetTaskAccTest extends AbstractAccTest {
         .isEqualTo("CLI:100000000000000000000000000000000016");
     assertThat(task.getWorkbasketSummary().getId())
         .isEqualTo("WBI:100000000000000000000000000000000006");
-    assertThat(task.getWorkbasketKey()).isEqualTo("USER_1_1");
+    assertThat(task.getWorkbasketKey()).isEqualTo("USER-1-1");
     assertThat(task.getDomain()).isEqualTo("DOMAIN_A");
     assertThat(task.getBusinessProcessId()).isEqualTo("BPI21");
     assertThat(task.getParentBusinessProcessId()).isEqualTo("PBPI21");
-    assertThat(task.getOwner()).isEqualTo("user_1_1");
+    assertThat(task.getOwner()).isEqualTo("user-1-1");
     assertThat(task.getPrimaryObjRef().getCompany()).isEqualTo("MyCompany1");
     assertThat(task.getPrimaryObjRef().getSystem()).isEqualTo("MySystem1");
     assertThat(task.getPrimaryObjRef().getSystemInstance()).isEqualTo("MyInstance1");
@@ -80,7 +80,7 @@ class GetTaskAccTest extends AbstractAccTest {
     assertThat(task.getCustomAttribute("16")).isEqualTo("custom16");
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void should_ThrowException_When_RequestedTaskByIdIsNotExisting() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -94,10 +94,9 @@ class GetTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
   }
 
-  @WithAccessId(user = "user_1_2")
+  @WithAccessId(user = "user-1-2")
   @Test
-  void should_ThrowException_When_UserIsNotAuthorizedToGetTask()
-      throws NotAuthorizedException, TaskNotFoundException {
+  void should_ThrowException_When_UserIsNotAuthorizedToGetTask() {
 
     TaskService taskService = taskanaEngine.getTaskService();
 

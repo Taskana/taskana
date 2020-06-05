@@ -20,7 +20,7 @@ import org.springframework.web.client.RestTemplate;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 
 @TaskanaSpringBootTest
-@ActiveProfiles({"test", "ldap"})
+@ActiveProfiles({"test"})
 class AccessIdControllerIntTest {
 
   private static RestTemplate template;

@@ -68,8 +68,9 @@ class TaskanaEngineControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(TaskanaUserInfoRepresentationModel.class));
-    assertThat(response.getBody().getUserId()).isEqualTo("teamlead_1");
-    assertThat(response.getBody().getGroupIds()).contains("businessadmin");
+    assertThat(response.getBody().getUserId()).isEqualTo("teamlead-1");
+    assertThat(response.getBody().getGroupIds())
+        .contains("cn=business-admins,cn=groups,ou=test,o=taskana");
     assertThat(response.getBody().getRoles()).contains(TaskanaRole.BUSINESS_ADMIN);
     assertThat(response.getBody().getRoles()).doesNotContain(TaskanaRole.ADMIN);
   }

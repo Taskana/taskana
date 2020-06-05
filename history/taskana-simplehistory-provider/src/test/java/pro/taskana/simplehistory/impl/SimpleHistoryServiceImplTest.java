@@ -25,7 +25,7 @@ import pro.taskana.simplehistory.impl.mappings.HistoryQueryMapper;
 
 /** Unit Test for SimpleHistoryServiceImplTest. */
 @ExtendWith(MockitoExtension.class)
-public class SimpleHistoryServiceImplTest {
+class SimpleHistoryServiceImplTest {
 
   @InjectMocks @Spy private SimpleHistoryServiceImpl cutSpy;
 
@@ -40,7 +40,7 @@ public class SimpleHistoryServiceImplTest {
   @Mock private SqlSessionManager sqlSessionManagerMock;
 
   @Test
-  public void testInitializeSimpleHistoryService() throws SQLException {
+  void testInitializeSimpleHistoryService() {
     when(sqlSessionManagerMock.getMapper(HistoryEventMapper.class))
         .thenReturn(historyEventMapperMock);
     when(sqlSessionManagerMock.getMapper(HistoryQueryMapper.class))
@@ -54,7 +54,7 @@ public class SimpleHistoryServiceImplTest {
   }
 
   @Test
-  public void testCreateEvent() throws SQLException {
+  void testCreateEvent() throws SQLException {
     HistoryEventImpl expectedWb =
         AbstractAccTest.createHistoryEvent(
             "wbKey1", "taskId1", "type1", "wbKey2", "someUserId", "someDetails");
@@ -67,7 +67,7 @@ public class SimpleHistoryServiceImplTest {
   }
 
   @Test
-  public void testQueryEvent() throws SQLException {
+  void testQueryEvent() throws SQLException {
     List<HistoryEventImpl> returnList = new ArrayList<>();
     returnList.add(
         AbstractAccTest.createHistoryEvent(

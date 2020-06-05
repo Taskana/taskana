@@ -9,7 +9,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static pro.taskana.common.rest.ldap.LdapSettings.TASKANA_LDAP_USE_LDAP;
 
 import java.util.Collections;
 import java.util.List;
@@ -79,12 +78,6 @@ class LdapClientTest {
   }
 
   @Test
-  void testLdap_notConfigured() {
-    lenient().when(this.environment.getProperty(TASKANA_LDAP_USE_LDAP.getKey())).thenReturn("true");
-    assertThatThrownBy(() -> cut.init()).isInstanceOf(SystemException.class);
-  }
-
-  @Test
   void testLdap_getFirstPageOfaResultList() {
     setUpEnvMock();
     cut.init();
@@ -96,27 +89,6 @@ class LdapClientTest {
 
     assertThat(cut.getFirstPageOfaResultList(result))
         .hasSize(cut.getMaxNumberOfReturnedAccessIds());
-  }
-
-  @Test
-  void testLdap_useLdap_null() {
-
-    when(this.environment.getProperty(TASKANA_LDAP_USE_LDAP.getKey())).thenReturn(null);
-    assertThat(cut.useLdap()).isFalse();
-  }
-
-  @Test
-  void testLdap_useLdap_empty() {
-
-    when(this.environment.getProperty(TASKANA_LDAP_USE_LDAP.getKey())).thenReturn("");
-    assertThat(cut.useLdap()).isFalse();
-  }
-
-  @Test
-  void testLdap_useLdap_true() {
-
-    when(this.environment.getProperty(TASKANA_LDAP_USE_LDAP.getKey())).thenReturn("true");
-    assertThat(cut.useLdap()).isTrue();
   }
 
   @Test
@@ -158,7 +130,6 @@ class LdapClientTest {
             new String[][] {
               {"taskana.ldap.minSearchForLength", "3"},
               {"taskana.ldap.maxNumberOfReturnedAccessIds", "50"},
-              {"taskana.ldap.useLdap", "true"},
               {"taskana.ldap.baseDn", "o=TaskanaTest"},
               {"taskana.ldap.userSearchBase", "ou=people"},
               {"taskana.ldap.userSearchFilterName", "objectclass"},

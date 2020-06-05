@@ -130,7 +130,7 @@ class WorkbasketControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketId),
             HttpMethod.GET,
-            new HttpEntity<String>(restHelper.getHeaders()),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             ParameterizedTypeReference.forType(WorkbasketRepresentationModel.class));
 
     WorkbasketRepresentationModel workbasketRepresentationModel =
@@ -151,7 +151,7 @@ class WorkbasketControllerIntTest {
               HttpMethod.PUT,
               new HttpEntity<>(
                   workbasketRepresentationModel,
-                  restHelper.getHeaders()),
+                  restHelper.getHeadersTeamlead_1()),
               ParameterizedTypeReference.forType(WorkbasketRepresentationModel.class));
         };
     assertThatThrownBy(httpCall)
@@ -169,7 +169,7 @@ class WorkbasketControllerIntTest {
           TEMPLATE.exchange(
               restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketId),
               HttpMethod.GET,
-              new HttpEntity<String>(restHelper.getHeaders()),
+              new HttpEntity<String>(restHelper.getHeadersBusinessAdmin()),
               ParameterizedTypeReference.forType(WorkbasketRepresentationModel.class));
         };
     assertThatThrownBy(httpCall)
@@ -190,7 +190,7 @@ class WorkbasketControllerIntTest {
             WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(5);
-    assertThat(response.getBody().getContent().iterator().next().getKey()).isEqualTo("USER_1_1");
+    assertThat(response.getBody().getContent().iterator().next().getKey()).isEqualTo("USER-1-1");
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.FIRST)).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.LAST)).isNotNull();

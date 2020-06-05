@@ -59,7 +59,7 @@ class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
     List<WorkbasketAccessItem> results =
         workbasketService
             .createWorkbasketAccessItemQuery()
-            .accessIdIn("user_1_1", "group_1")
+            .accessIdIn("user-1-1", "group_1")
             .list();
     assertThat(results).hasSize(8);
   }
@@ -73,7 +73,7 @@ class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
         () -> {
           workbasketService
               .createWorkbasketAccessItemQuery()
-              .accessIdIn("user_1_1", "group_1")
+              .accessIdIn("user-1-1", "group_1")
               .list();
         };
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
@@ -86,7 +86,7 @@ class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
     WorkbasketAccessItemQuery query =
         workbasketService
             .createWorkbasketAccessItemQuery()
-            .accessIdIn("user_1_1", "group_1")
+            .accessIdIn("user-1-1", "group_1")
             .orderByAccessId(SortDirection.DESCENDING)
             .orderByWorkbasketId(SortDirection.DESCENDING);
     List<WorkbasketAccessItem> results = query.list();
@@ -102,7 +102,7 @@ class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
     List<WorkbasketAccessItem> results =
         workbasketService
             .createWorkbasketAccessItemQuery()
-            .accessIdIn("user_1_1", "group_1")
+            .accessIdIn("user-1-1", "group_1")
             .workbasketIdIn(
                 "WBI:100000000000000000000000000000000006",
                 "WBI:100000000000000000000000000000000002")

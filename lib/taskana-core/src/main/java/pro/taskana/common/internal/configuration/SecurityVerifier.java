@@ -17,7 +17,7 @@ public class SecurityVerifier {
   private static final String INSERT_SECURITY_FLAG = "INSERT INTO %s.CONFIGURATION VALUES (%b)";
   private static final String SELECT_SECURITY_FLAG = "SELECT %s FROM %s.CONFIGURATION";
   private final String schemaName;
-  private DataSource dataSource;
+  private final DataSource dataSource;
 
   public SecurityVerifier(DataSource dataSource, String schema) {
     super();
@@ -54,7 +54,7 @@ public class SecurityVerifier {
       }
     } catch (SQLException ex) {
 
-      LOGGER.info(
+      LOGGER.debug(
           String.format(
               "Security-mode is not yet set. Setting security flag to %b", securityEnabled));
 

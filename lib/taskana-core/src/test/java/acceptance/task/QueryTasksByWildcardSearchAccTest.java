@@ -20,7 +20,7 @@ import pro.taskana.task.api.models.TaskSummary;
 public class QueryTasksByWildcardSearchAccTest extends AbstractAccTest {
 
   @WithAccessId(
-      user = "teamlead_1",
+      user = "teamlead-1",
       groups = {"group_1", "group_2"})
   @Test
   void should_ReturnAllTasksByWildcardSearch_For_ProvidedSearchValue() {
@@ -42,7 +42,7 @@ public class QueryTasksByWildcardSearchAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "teamlead_1",
+      user = "teamlead-1",
       groups = {"group_1", "group_2"})
   @Test
   void should_ReturnAllTasks_For_ProvidedSearchValueAndAdditionalParameters() {
@@ -57,7 +57,7 @@ public class QueryTasksByWildcardSearchAccTest extends AbstractAccTest {
             .createTaskQuery()
             .wildcardSearchFieldsIn(wildcards)
             .wildcardSearchValueLike("%99%")
-            .ownerIn("user_1_1")
+            .ownerIn("user-1-1")
             .businessProcessIdLike("%PI2%")
             .orderByName(SortDirection.ASCENDING)
             .list();
@@ -66,7 +66,7 @@ public class QueryTasksByWildcardSearchAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "teamlead_1",
+      user = "teamlead-1",
       groups = {"group_1", "group_2"})
   @Test
   void should_ThrowException_When_NotUsingSearchFieldsAndValueParamsTogether() {

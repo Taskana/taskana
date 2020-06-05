@@ -24,6 +24,9 @@ import pro.taskana.doc.api.BaseRestDocumentation.ResultHandlerConfiguration;
 @Import(ResultHandlerConfiguration.class)
 public abstract class BaseRestDocumentation {
 
+  protected static String ADMIN_CREDENTIALS = "Basic YWRtaW46YWRtaW4=";
+  protected static String TEAMLEAD_1_CREDENTIALS = "Basic dGVhbWxlYWQtMTp0ZWFtbGVhZC0x";
+
   @LocalServerPort protected int port;
 
   @Autowired protected WebApplicationContext context;

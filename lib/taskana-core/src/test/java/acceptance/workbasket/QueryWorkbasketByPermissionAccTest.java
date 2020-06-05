@@ -40,10 +40,10 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     List<WorkbasketSummary> results =
         workbasketService
             .createWorkbasketQuery()
-            .accessIdsHavePermission(WorkbasketPermission.APPEND, "user_1_1")
+            .accessIdsHavePermission(WorkbasketPermission.APPEND, "user-1-1")
             .list();
     assertThat(results).hasSize(1);
-    assertThat(results.get(0).getKey()).isEqualTo("USER_1_1");
+    assertThat(results.get(0).getKey()).isEqualTo("USER-1-1");
   }
 
   @WithAccessId(user = "dummy")
@@ -55,7 +55,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         () -> {
           workbasketService
               .createWorkbasketQuery()
-              .accessIdsHavePermission(WorkbasketPermission.APPEND, "user_1_1")
+              .accessIdsHavePermission(WorkbasketPermission.APPEND, "user-1-1")
               .list();
         };
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
@@ -69,7 +69,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     List<WorkbasketSummary> results =
         workbasketService
             .createWorkbasketQuery()
-            .accessIdsHavePermission(WorkbasketPermission.APPEND, "user_1_1", "group_1")
+            .accessIdsHavePermission(WorkbasketPermission.APPEND, "user-1-1", "group_1")
             .list();
     assertThat(results).hasSize(6);
   }
@@ -82,7 +82,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     List<WorkbasketSummary> results =
         workbasketService
             .createWorkbasketQuery()
-            .accessIdsHavePermission(WorkbasketPermission.APPEND, "user_1_1", "group_1")
+            .accessIdsHavePermission(WorkbasketPermission.APPEND, "user-1-1", "group_1")
             .orderByName(asc)
             .list();
     assertThat(results).hasSize(6);
@@ -97,12 +97,12 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     List<WorkbasketSummary> results =
         workbasketService
             .createWorkbasketQuery()
-            .accessIdsHavePermission(WorkbasketPermission.APPEND, "user_1_1", "group_1")
+            .accessIdsHavePermission(WorkbasketPermission.APPEND, "user-1-1", "group_1")
             .orderByName(desc)
             .orderByKey(asc)
             .list();
     assertThat(results).hasSize(6);
-    assertThat(results.get(0).getKey()).isEqualTo("USER_2_2");
+    assertThat(results.get(0).getKey()).isEqualTo("USER-2-2");
   }
 
   @WithAccessId(user = "dummy", groups = "businessadmin")
@@ -113,16 +113,16 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     List<WorkbasketSummary> results =
         workbasketService
             .createWorkbasketQuery()
-            .accessIdsHavePermission(WorkbasketPermission.DISTRIBUTE, "user_1_1", "group_1")
+            .accessIdsHavePermission(WorkbasketPermission.DISTRIBUTE, "user-1-1", "group_1")
             .list();
     assertThat(results).hasSize(2);
-    List<String> keys = new ArrayList<>(Arrays.asList("GPK_KSC_1", "USER_1_1"));
+    List<String> keys = new ArrayList<>(Arrays.asList("GPK_KSC_1", "USER-1-1"));
     for (WorkbasketSummary wb : results) {
       assertThat(keys.contains(wb.getKey())).isTrue();
     }
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testQueryAllTransferTargetsForUserAndGroupFromSubject() throws SystemException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -134,7 +134,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     assertThat(results).hasSize(6);
   }
 
-  @WithAccessId(user = "user_1_1")
+  @WithAccessId(user = "user-1-1")
   @Test
   void testQueryAllAvailableWorkbasketForOpeningForUserAndGroupFromSubject() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -146,7 +146,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     assertThat(results).hasSize(1);
   }
 
-  @WithAccessId(user = "teamlead_1", groups = "businessadmin")
+  @WithAccessId(user = "teamlead-1", groups = "businessadmin")
   @Test
   void testConsiderBusinessAdminPermissionsWhileQueryingWorkbaskets() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();

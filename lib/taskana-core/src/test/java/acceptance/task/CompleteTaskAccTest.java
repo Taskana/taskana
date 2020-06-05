@@ -35,7 +35,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testCompleteTask()
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
@@ -70,7 +70,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(completedTask.getModified()).isNotEqualTo(completedTask.getCreated());
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testCompleteTaskTwice()
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
@@ -81,7 +81,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(completedTask2).isEqualTo(completedTask);
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testForceCompleteAlreadyClaimed()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -89,7 +89,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
           InvalidOwnerException, InvalidStateException {
 
     TaskService taskService = taskanaEngine.getTaskService();
-    Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
     newTask.setOwner("other");
     newTask.setPrimaryObjRef(
@@ -107,7 +107,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(completedTask.getCompleted()).isEqualTo(completedTask.getModified());
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testForceCompleteNotClaimed()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -115,7 +115,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
           InvalidOwnerException, InvalidStateException {
 
     TaskService taskService = taskanaEngine.getTaskService();
-    Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
     newTask.setOwner("other");
     newTask.setPrimaryObjRef(
@@ -132,7 +132,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(completedTask.getCompleted()).isEqualTo(completedTask.getModified());
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testCompleteTaskThrowsErrors() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -162,7 +162,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(InvalidOwnerException.class);
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testClaimTaskWithDefaultFlag()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -170,7 +170,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
           InvalidStateException, InvalidOwnerException {
 
     TaskService taskService = taskanaEngine.getTaskService();
-    Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
@@ -192,7 +192,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(claimedTask.getModified()).isEqualTo(claimedTask.getClaimed());
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testForceClaimTaskFromOtherUser()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -200,7 +200,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
           InvalidStateException, InvalidOwnerException {
 
     TaskService taskService = taskanaEngine.getTaskService();
-    Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
@@ -222,7 +222,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(taskAfterClaim.isRead()).isTrue();
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testClaimTaskNotExisting() {
 
@@ -234,7 +234,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testClaimTaskWithInvalidState() {
 
@@ -246,7 +246,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(InvalidStateException.class);
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testClaimTaskWithInvalidOwner() {
 
@@ -258,7 +258,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(InvalidOwnerException.class);
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testCancelClaimForcedWithInvalidState() {
 
@@ -270,7 +270,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(InvalidStateException.class);
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testCancelClaimDefaultFlag()
       throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
@@ -278,7 +278,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
           InvalidStateException, InvalidOwnerException {
 
     TaskService taskService = taskanaEngine.getTaskService();
-    Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
@@ -317,7 +317,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(taskAfter.isRead()).isTrue();
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testCancelClaimWithInvalidOwner() {
 

@@ -37,7 +37,7 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 @ExtendWith(JaasExtension.class)
 class CallbackStateAccTest extends AbstractAccTest {
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testCreateTaskWithDifferentCallbackStates()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -391,7 +391,7 @@ class CallbackStateAccTest extends AbstractAccTest {
   private TaskImpl createTask(TaskService taskService, CallbackState callbackState)
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
           TaskAlreadyExistException, InvalidArgumentException {
-    Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("L12010");
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));

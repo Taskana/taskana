@@ -34,7 +34,7 @@ class ProvideClassificationReportAccTest extends AbstractReportAccTest {
       LoggerFactory.getLogger(ProvideClassificationReportAccTest.class);
 
   @Test
-  void testRoleCheck() throws InvalidArgumentException, NotAuthorizedException {
+  void testRoleCheck() {
     MonitorService monitorService = taskanaEngine.getMonitorService();
 
     ThrowingCallable call =
