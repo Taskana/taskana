@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import acceptance.AbstractAccTest;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
@@ -28,10 +28,6 @@ import pro.taskana.task.api.models.Task;
 /** Acceptance test for all "work on task" scenarios. This includes claim, complete... */
 @ExtendWith(JaasExtension.class)
 class WorkOnTaskAccTest extends AbstractAccTest {
-
-  WorkOnTaskAccTest() {
-    super();
-  }
 
   @WithAccessId(user = "user-1-2", groups = "group-1")
   @Test
@@ -60,8 +56,6 @@ class WorkOnTaskAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000026");
 
-    //    Assertions.assertThrows(InvalidOwnerException.class, () ->
-    // taskService.claim(task.getId()));
     ThrowingCallable call =
         () -> {
           taskService.claim(task.getId());
@@ -87,8 +81,6 @@ class WorkOnTaskAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000028");
 
-    //    Assertions.assertThrows(InvalidOwnerException.class, () ->
-    // taskService.claim(task.getId()));
     ThrowingCallable call =
         () -> {
           taskService.claim(task.getId());
@@ -121,8 +113,6 @@ class WorkOnTaskAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
     Task claimedTask = taskService.getTask("TKI:000000000000000000000000000000000030");
 
-    //    Assertions.assertThrows(
-    //        InvalidOwnerException.class, () -> taskService.cancelClaim(claimedTask.getId()));
     ThrowingCallable call =
         () -> {
           taskService.cancelClaim(claimedTask.getId());
@@ -196,8 +186,6 @@ class WorkOnTaskAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
     Task claimedTask = taskService.getTask("TKI:000000000000000000000000000000000034");
 
-    //    Assertions.assertThrows(
-    //        InvalidOwnerException.class, () -> taskService.completeTask(claimedTask.getId()));
     ThrowingCallable call =
         () -> {
           taskService.completeTask(claimedTask.getId());
@@ -224,47 +212,20 @@ class WorkOnTaskAccTest extends AbstractAccTest {
     assertThat(completedTask.getOwner()).isEqualTo("user-1-2");
   }
 
-  @WithAccessId(user = "user-1-2", groups = "group-1")
-  @Test
-  void testBulkCompleteTasks()
-      throws NotAuthorizedException, InvalidArgumentException, TaskNotFoundException {
-
-    TaskService taskService = taskanaEngine.getTaskService();
-    List<String> taskIdList = new ArrayList<>();
-    taskIdList.add("TKI:000000000000000000000000000000000100");
-    taskIdList.add("TKI:000000000000000000000000000000000101");
-
-    BulkOperationResults<String, TaskanaException> results = taskService.completeTasks(taskIdList);
-
-    assertThat(results.containsErrors()).isFalse();
-    Task completedTask1 = taskService.getTask("TKI:000000000000000000000000000000000100");
-    assertThat(completedTask1.getState()).isEqualTo(TaskState.COMPLETED);
-    assertThat(completedTask1.getCompleted()).isNotNull();
-    Task completedTask2 = taskService.getTask("TKI:000000000000000000000000000000000101");
-    assertThat(completedTask2.getState()).isEqualTo(TaskState.COMPLETED);
-    assertThat(completedTask2.getCompleted()).isNotNull();
-  }
-
   @WithAccessId(user = "admin")
   @Test
   void testBulkDeleteTasksWithException() throws InvalidArgumentException, NotAuthorizedException {
 
     TaskService taskService = taskanaEngine.getTaskService();
-    List<String> taskIdList = new ArrayList<>();
-    taskIdList.add("TKI:000000000000000000000000000000000102");
-    taskIdList.add("TKI:000000000000000000000000000000003333");
+    String id1 = "TKI:000000000000000000000000000000000102";
+    String id2 = "TKI:000000000000000000000000000000003333";
+    List<String> taskIdList = Arrays.asList(id1, id2);
 
     BulkOperationResults<String, TaskanaException> results = taskService.deleteTasks(taskIdList);
 
     assertThat(results.containsErrors()).isTrue();
-    assertThat(results.getErrorMap()).hasSize(2);
-    assertThat(
-            results.getErrorForId("TKI:000000000000000000000000000000003333")
-                instanceof TaskNotFoundException)
-        .isTrue();
-    assertThat(
-            results.getErrorForId("TKI:000000000000000000000000000000000102")
-                instanceof InvalidStateException)
-        .isTrue();
+    assertThat(results.getFailedIds()).containsExactlyInAnyOrder(id1, id2);
+    assertThat(results.getErrorForId(id1)).isInstanceOf(InvalidStateException.class);
+    assertThat(results.getErrorForId(id2)).isInstanceOf(TaskNotFoundException.class);
   }
 }

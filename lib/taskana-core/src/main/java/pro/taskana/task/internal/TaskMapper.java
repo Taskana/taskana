@@ -17,6 +17,7 @@ import pro.taskana.common.internal.persistence.InstantTypeHandler;
 import pro.taskana.common.internal.persistence.MapTypeHandler;
 import pro.taskana.common.internal.util.Pair;
 import pro.taskana.task.api.CallbackState;
+import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.MinimalTaskSummary;
 import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.task.internal.models.TaskSummaryImpl;
@@ -157,12 +158,12 @@ public interface TaskMapper {
 
   @Update(
       "<script>"
-          + " UPDATE TASK SET COMPLETED = #{referencetask.completed}, MODIFIED = #{referencetask.modified}, STATE = #{referencetask.state}"
+          + " UPDATE TASK SET COMPLETED = #{referenceTask.completed}, MODIFIED = #{referenceTask.modified}, STATE = #{referenceTask.state}"
           + " WHERE ID IN <foreach item='taskId' index='index' separator=',' open='(' close=')' collection='taskIds'>#{taskId}</foreach>"
           + "</script>")
   void updateCompleted(
       @Param("taskIds") List<String> taskIds,
-      @Param("referencetask") TaskSummaryImpl referencetask);
+      @Param("referenceTask") TaskSummary referenceTask);
 
   @Select(
       "<script>SELECT ID, EXTERNAL_ID, STATE, WORKBASKET_ID, OWNER, MODIFIED, CLASSIFICATION_ID, "

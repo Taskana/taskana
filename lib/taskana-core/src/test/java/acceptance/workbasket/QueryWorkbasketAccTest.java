@@ -2,13 +2,11 @@ package acceptance.workbasket;
 
 import static java.lang.String.CASE_INSENSITIVE_ORDER;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.util.IterableUtil.toArray;
 import static pro.taskana.common.api.BaseQuery.SortDirection.ASCENDING;
 import static pro.taskana.common.api.BaseQuery.SortDirection.DESCENDING;
 import static pro.taskana.workbasket.api.WorkbasketQueryColumnName.NAME;
 
 import acceptance.AbstractAccTest;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
@@ -327,23 +325,21 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
             .orderByDomain(ASCENDING)
             .list();
 
-    ArrayList<String> expectedIds =
-        new ArrayList<>(
-            Arrays.asList(
-                "WBI:100000000000000000000000000000000001",
-                "WBI:100000000000000000000000000000000002",
-                "WBI:100000000000000000000000000000000004",
-                "WBI:100000000000000000000000000000000005",
-                "WBI:100000000000000000000000000000000006",
-                "WBI:100000000000000000000000000000000007",
-                "WBI:100000000000000000000000000000000008",
-                "WBI:100000000000000000000000000000000009",
-                "WBI:100000000000000000000000000000000010",
-                "WBI:100000000000000000000000000000000012"));
+    List<String> expectedIds =
+        Arrays.asList(
+            "WBI:100000000000000000000000000000000001",
+            "WBI:100000000000000000000000000000000002",
+            "WBI:100000000000000000000000000000000004",
+            "WBI:100000000000000000000000000000000005",
+            "WBI:100000000000000000000000000000000006",
+            "WBI:100000000000000000000000000000000007",
+            "WBI:100000000000000000000000000000000008",
+            "WBI:100000000000000000000000000000000009",
+            "WBI:100000000000000000000000000000000010",
+            "WBI:100000000000000000000000000000000012");
     assertThat(results)
-        .hasSize(10)
         .extracting(WorkbasketSummary::getId)
-        .containsOnly(toArray(expectedIds));
+        .containsExactlyInAnyOrderElementsOf(expectedIds);
   }
 
   @WithAccessId(user = "admin", groups = "group-1")

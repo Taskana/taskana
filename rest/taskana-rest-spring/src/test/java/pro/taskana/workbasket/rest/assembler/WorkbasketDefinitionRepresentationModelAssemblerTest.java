@@ -69,7 +69,7 @@ class WorkbasketDefinitionRepresentationModelAssemblerTest {
     assertThat(repModel.getWorkbasket()).isNotNull();
     // accessItemAssembler does the conversion. Thus no further testing needed.
     assertThat(repModel.getAuthorizations()).hasSize(2);
-    assertThat(repModel.getDistributionTargets()).containsOnlyOnce("target1", "target2");
+    assertThat(repModel.getDistributionTargets()).containsExactlyInAnyOrder("target1", "target2");
     InOrder inOrder = Mockito.inOrder(mocks);
     inOrder.verify(workbasketAssembler).toModel(workbasket);
     inOrder.verify(workbasketService).getWorkbasketAccessItems(id);

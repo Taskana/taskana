@@ -1,7 +1,6 @@
 package acceptance.task;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.util.IterableUtil.toArray;
 
 import acceptance.AbstractAccTest;
 import java.util.Comparator;
@@ -86,10 +85,9 @@ class QueryTaskWithAttachmentAccTest extends AbstractAccTest {
 
     assertThat(queryAttachmentSummaries)
         .hasSize(originalAttachments.size())
-        .containsOnly(toArray(originalAttachments)) // same values
+        .containsExactlyElementsOf(originalAttachments) // same values
         .usingElementComparator(REFERENCE_COMPARATOR)
-        .doesNotContain(
-            toArray(originalAttachments)); // but not same reference
+        .doesNotContainAnyElementsOf(originalAttachments); // but not same reference
   }
 
   @WithAccessId(user = "user-1-1", groups = "group-1")
@@ -115,9 +113,8 @@ class QueryTaskWithAttachmentAccTest extends AbstractAccTest {
 
     assertThat(queryAttachmentSummaries)
         .hasSize(originalAttachments.size())
-        .containsOnly(toArray(originalAttachments)) // same values
+        .containsExactlyElementsOf(originalAttachments) // same values
         .usingElementComparator(REFERENCE_COMPARATOR)
-        .doesNotContain(
-            toArray(originalAttachments)); // but not same reference
+        .doesNotContainAnyElementsOf(originalAttachments); // but not same reference
   }
 }

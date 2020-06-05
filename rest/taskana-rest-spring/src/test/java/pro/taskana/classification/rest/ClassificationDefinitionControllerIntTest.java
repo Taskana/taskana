@@ -81,7 +81,7 @@ class ClassificationDefinitionControllerIntTest {
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent())
         .extracting(ClassificationRepresentationModel::getClassificationId)
-        .containsOnlyOnce(
+        .containsExactlyInAnyOrder(
             "CLI:200000000000000000000000000000000015",
             "CLI:200000000000000000000000000000000017",
             "CLI:200000000000000000000000000000000018",
