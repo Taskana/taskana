@@ -4,7 +4,6 @@ import org.springframework.core.env.Environment;
 
 /** Required settings to run ldap. */
 enum LdapSettings {
-  TASKANA_LDAP_USE_LDAP("taskana.ldap.useLdap"),
   TASKANA_LDAP_USER_SEARCH_BASE("taskana.ldap.userSearchBase"),
   TASKANA_LDAP_USER_SEARCH_FILTER_NAME("taskana.ldap.userSearchFilterName"),
   TASKANA_LDAP_USER_SEARCH_FILTER_VALUE("taskana.ldap.userSearchFilterValue"),

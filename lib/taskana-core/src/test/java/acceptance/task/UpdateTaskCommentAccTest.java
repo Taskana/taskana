@@ -27,7 +27,7 @@ public class UpdateTaskCommentAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void should_UpdateTaskComment_For_TaskComment()
       throws TaskCommentNotFoundException, NotAuthorizedException, ConcurrencyException,
@@ -51,7 +51,7 @@ public class UpdateTaskCommentAccTest extends AbstractAccTest {
     assertThat(taskCommentsAfterUpdate.get(0).getTextField()).isEqualTo("updated textfield");
   }
 
-  @WithAccessId(user = "user_1_2", groups = "group_1")
+  @WithAccessId(user = "user-1-2", groups = "group_1")
   @Test
   void should_FailToUpdateTaskComment_When_UserHasNoAuthorization()
       throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException,
@@ -78,7 +78,7 @@ public class UpdateTaskCommentAccTest extends AbstractAccTest {
         .isEqualTo("some other text in textfield");
   }
 
-  @WithAccessId(user = "user_1_2", groups = "group_1")
+  @WithAccessId(user = "user-1-2", groups = "group_1")
   @Test
   void should_FailToUpdateTaskComment_When_UserTriesToUpdateTaskByManipulatingOwner()
       throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException,
@@ -90,7 +90,7 @@ public class UpdateTaskCommentAccTest extends AbstractAccTest {
         (TaskCommentImpl) taskService.getTaskComment("TCI:000000000000000000000000000000000001");
 
     taskCommentToUpdate.setTextField("updated textfield");
-    taskCommentToUpdate.setCreator("user_1_2");
+    taskCommentToUpdate.setCreator("user-1-2");
 
     ThrowingCallable updateTaskCommentCall =
         () -> {
@@ -99,7 +99,7 @@ public class UpdateTaskCommentAccTest extends AbstractAccTest {
     assertThatThrownBy(updateTaskCommentCall).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void should_FailToUpdateTaskComment_When_TaskCommentWasModifiedConcurrently()
       throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException,

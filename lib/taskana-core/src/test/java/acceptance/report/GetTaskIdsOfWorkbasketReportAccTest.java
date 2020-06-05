@@ -45,19 +45,19 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
     final List<SelectedItem> selectedItems = new ArrayList<>();
 
     SelectedItem s1 = new SelectedItem();
-    s1.setKey("USER_1_1");
+    s1.setKey("USER-1-1");
     s1.setLowerAgeLimit(0);
     s1.setUpperAgeLimit(0);
     selectedItems.add(s1);
 
     SelectedItem s2 = new SelectedItem();
-    s2.setKey("USER_1_1");
+    s2.setKey("USER-1-1");
     s2.setLowerAgeLimit(Integer.MIN_VALUE);
     s2.setUpperAgeLimit(-11);
     selectedItems.add(s2);
 
     SelectedItem s3 = new SelectedItem();
-    s3.setKey("USER_1_2");
+    s3.setKey("USER-1-2");
     s3.setLowerAgeLimit(1000);
     s3.setUpperAgeLimit(Integer.MAX_VALUE);
     selectedItems.add(s3);
@@ -91,19 +91,19 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
     final List<SelectedItem> selectedItems = new ArrayList<>();
 
     SelectedItem s1 = new SelectedItem();
-    s1.setKey("USER_1_1");
+    s1.setKey("USER-1-1");
     s1.setLowerAgeLimit(0);
     s1.setUpperAgeLimit(0);
     selectedItems.add(s1);
 
     SelectedItem s2 = new SelectedItem();
-    s2.setKey("USER_1_1");
+    s2.setKey("USER-1-1");
     s2.setLowerAgeLimit(Integer.MIN_VALUE);
     s2.setUpperAgeLimit(-11);
     selectedItems.add(s2);
 
     SelectedItem s3 = new SelectedItem();
-    s3.setKey("USER_1_2");
+    s3.setKey("USER-1-2");
     s3.setLowerAgeLimit(1000);
     s3.setUpperAgeLimit(Integer.MAX_VALUE);
     selectedItems.add(s3);

@@ -32,7 +32,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(user = "user_1_2", groups = "businessadmin")
+  @WithAccessId(user = "user-1-2", groups = "businessadmin")
   @Test
   void testCreateWorkbasket()
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
@@ -47,7 +47,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     workbasket.setOrgLevel1("company");
     workbasket = workbasketService.createWorkbasket(workbasket);
     WorkbasketAccessItem wbai =
-        workbasketService.newWorkbasketAccessItem(workbasket.getId(), "user_1_2");
+        workbasketService.newWorkbasketAccessItem(workbasket.getId(), "user-1-2");
     wbai.setPermRead(true);
     workbasketService.createWorkbasketAccessItem(wbai);
 
@@ -63,7 +63,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     assertThat(createdWorkbasket2).isEqualTo(createdWorkbasket);
   }
 
-  @WithAccessId(user = "user_1_1")
+  @WithAccessId(user = "user-1-1")
   @WithAccessId(user = "taskadmin")
   @TestTemplate
   void should_ThrowException_When_UserRoleIsNotAdminOrBusinessAdmin() {
@@ -93,7 +93,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     assertThat(newWorkbasket.getId()).isNotEqualTo(oldWorkbasket.getId());
   }
 
-  @WithAccessId(user = "user_1_2", groups = "businessadmin")
+  @WithAccessId(user = "user-1-2", groups = "businessadmin")
   @Test
   void testCreateWorkbasketWithInvalidDomain() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -108,8 +108,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "dummy", groups = "businessadmin")
   @Test
-  void testCreateWorkbasketWithMissingRequiredField()
-      throws NotAuthorizedException, WorkbasketAlreadyExistException, DomainNotFoundException {
+  void testCreateWorkbasketWithMissingRequiredField() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
     Workbasket workbasket = workbasketService.newWorkbasket(null, "novatec");
@@ -171,7 +170,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(InvalidWorkbasketException.class);
   }
 
-  @WithAccessId(user = "user_1_2", groups = "businessadmin")
+  @WithAccessId(user = "user-1-2", groups = "businessadmin")
   @Test
   void testThrowsExceptionIfWorkbasketWithCaseInsensitiveSameKeyDomainIsCreated()
       throws NotAuthorizedException, InvalidWorkbasketException, WorkbasketAlreadyExistException,
@@ -195,7 +194,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(WorkbasketAlreadyExistException.class);
   }
 
-  @WithAccessId(user = "user_1_2", groups = "businessadmin")
+  @WithAccessId(user = "user-1-2", groups = "businessadmin")
   @Test
   void testCreateWorkbasketWithAlreadyExistingKeyAndDomainAndEmptyIdUpdatesOlderWorkbasket()
       throws DomainNotFoundException, InvalidWorkbasketException, NotAuthorizedException,
@@ -219,7 +218,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(WorkbasketAlreadyExistException.class);
   }
 
-  @WithAccessId(user = "user_1_2", groups = "businessadmin")
+  @WithAccessId(user = "user-1-2", groups = "businessadmin")
   @Test
   void testWorkbasketAccessItemSetName()
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
@@ -234,7 +233,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     workbasket.setOrgLevel1("company");
     workbasket = workbasketService.createWorkbasket(workbasket);
     WorkbasketAccessItem wbai =
-        workbasketService.newWorkbasketAccessItem(workbasket.getId(), "user_1_2");
+        workbasketService.newWorkbasketAccessItem(workbasket.getId(), "user-1-2");
     wbai.setPermRead(true);
     wbai.setAccessName("Karl Napf");
     workbasketService.createWorkbasketAccessItem(wbai);
@@ -247,10 +246,10 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
         workbasketService.getWorkbasketAccessItems(createdWorkbasket.getId());
     WorkbasketAccessItem item =
         accessItems.stream().filter(t -> wbai.getId().equals(t.getId())).findFirst().orElse(null);
-    assertThat(item.getAccessName()).isEqualTo("Karl Napf");
+    assertThat("Karl Napf").isEqualTo(item.getAccessName());
   }
 
-  @WithAccessId(user = "user_1_2", groups = "businessadmin")
+  @WithAccessId(user = "user-1-2", groups = "businessadmin")
   @Test
   void testCreateDuplicateWorkbasketAccessListFails() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -261,7 +260,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     workbasket.setOrgLevel1("company");
     workbasket = workbasketService.createWorkbasket(workbasket);
     WorkbasketAccessItem wbai =
-        workbasketService.newWorkbasketAccessItem(workbasket.getId(), "user_3_2");
+        workbasketService.newWorkbasketAccessItem(workbasket.getId(), "user-3-2");
     wbai.setPermRead(true);
     workbasketService.createWorkbasketAccessItem(wbai);
 

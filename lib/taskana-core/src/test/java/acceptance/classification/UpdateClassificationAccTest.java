@@ -8,6 +8,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
@@ -33,18 +34,14 @@ import pro.taskana.task.internal.models.TaskImpl;
 
 /** Acceptance test for all "update classification" scenarios. */
 @ExtendWith(JaasExtension.class)
-public class UpdateClassificationAccTest extends AbstractAccTest {
+class UpdateClassificationAccTest extends AbstractAccTest {
 
-  private ClassificationService classificationService;
-
-  public UpdateClassificationAccTest() {
-    super();
-    classificationService = taskanaEngine.getClassificationService();
-  }
+  private final ClassificationService classificationService =
+      taskanaEngine.getClassificationService();
 
   @WithAccessId(user = "dummy", groups = "businessadmin")
   @Test
-  public void testUpdateClassification()
+  void testUpdateClassification()
       throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
           InvalidArgumentException {
     String newName = "updated Name";
@@ -84,8 +81,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
   }
 
   @Test
-  public void testUpdateClassificationFails()
-      throws ClassificationNotFoundException, ConcurrencyException, InvalidArgumentException {
+  void testUpdateClassificationFails() throws ClassificationNotFoundException {
     String newName = "updated Name";
     String newEntryPoint = "updated EntryPoint";
     Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
@@ -112,9 +108,9 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(user = "taskadmin")
-  @WithAccessId(user = "user_1_1")
+  @WithAccessId(user = "user-1-1")
   @TestTemplate
-  public void should_ThrowException_When_UserRoleIsNotAdminOrBusinessAdmin()
+  void should_ThrowException_When_UserRoleIsNotAdminOrBusinessAdmin()
       throws ClassificationNotFoundException {
 
     Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
@@ -131,7 +127,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
       user = "teamlead_1",
       groups = {"group_1", "businessadmin"})
   @Test
-  public void testUpdateTaskOnClassificationKeyCategoryChange() throws Exception {
+  void testUpdateTaskOnClassificationKeyCategoryChange() throws Exception {
     setupTest();
     TaskImpl beforeTask =
         (TaskImpl)
@@ -163,7 +159,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
       user = "teamlead_1",
       groups = {"group_1", "businessadmin"})
   @Test
-  public void testUpdateClassificationNotLatestAnymore()
+  void testUpdateClassificationNotLatestAnymore()
       throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
           InterruptedException, InvalidArgumentException {
     Classification base = classificationService.getClassification("T2100", "DOMAIN_A");
@@ -190,9 +186,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
       user = "teamlead_1",
       groups = {"group_1", "businessadmin"})
   @Test
-  public void testUpdateClassificationParentIdToInvalid()
-      throws NotAuthorizedException, ClassificationNotFoundException, ConcurrencyException,
-          InvalidArgumentException {
+  void testUpdateClassificationParentIdToInvalid() throws ClassificationNotFoundException {
     Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
     classification.setParentId("ID WHICH CANT BE FOUND");
     ThrowingCallable call = () -> classificationService.updateClassification(classification);
@@ -203,9 +197,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
       user = "teamlead_1",
       groups = {"group_1", "businessadmin"})
   @Test
-  public void testUpdateClassificationParentKeyToInvalid()
-      throws NotAuthorizedException, ClassificationNotFoundException, ConcurrencyException,
-          InvalidArgumentException {
+  void testUpdateClassificationParentKeyToInvalid() throws ClassificationNotFoundException {
     Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
     classification.setParentKey("KEY WHICH CANT BE FOUND");
     ThrowingCallable call = () -> classificationService.updateClassification(classification);
@@ -214,7 +206,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "dummy", groups = "admin")
   @Test
-  public void testUpdateClassificationPrioServiceLevel()
+  void testUpdateClassificationPrioServiceLevel()
       throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
           InterruptedException, TaskNotFoundException, InvalidArgumentException {
     final Instant before = Instant.now();
@@ -248,12 +240,12 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         before, tasksWithP1D, taskService, converter, 1, 1000);
 
     List<String> tasksWithP8D =
-        new ArrayList<>(Arrays.asList("TKI:000000000000000000000000000000000008"));
+        new ArrayList<>(Collections.singletonList("TKI:000000000000000000000000000000000008"));
     validateTaskPropertiesAfterClassificationChange(
         before, tasksWithP8D, taskService, converter, 8, 1000);
 
     List<String> tasksWithP14D =
-        new ArrayList<>(Arrays.asList("TKI:000000000000000000000000000000000010"));
+        new ArrayList<>(Collections.singletonList("TKI:000000000000000000000000000000000010"));
     validateTaskPropertiesAfterClassificationChange(
         before, tasksWithP14D, taskService, converter, 14, 1000);
 
@@ -300,9 +292,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "dummy", groups = "businessadmin")
   @Test
-  public void testUpdateClassificationWithSameKeyAndParentKey()
-      throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
-          InvalidArgumentException {
+  void testUpdateClassificationWithSameKeyAndParentKey() throws ClassificationNotFoundException {
 
     Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
 
@@ -313,7 +303,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "dummy", groups = "businessadmin")
   @Test
-  public void testUpdateClassificationWithEmptyServiceLevel()
+  void testUpdateClassificationWithEmptyServiceLevel()
       throws DomainNotFoundException, ClassificationAlreadyExistException, NotAuthorizedException,
           InvalidArgumentException, ClassificationNotFoundException, ConcurrencyException {
 
@@ -326,7 +316,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "dummy", groups = "admin")
   @Test
-  public void testUpdateClassificationChangePriority()
+  void testUpdateClassificationChangePriority()
       throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
           InterruptedException, TaskNotFoundException, InvalidArgumentException {
     final Instant before = Instant.now();
@@ -397,7 +387,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         before, tasksWithPrio99, taskService, converter, 1, 99);
 
     List<String> tasksWithPrio101 =
-        new ArrayList<>(Arrays.asList("TKI:000000000000000000000000000000000011"));
+        new ArrayList<>(Collections.singletonList("TKI:000000000000000000000000000000000011"));
     validateTaskPropertiesAfterClassificationChange(
         before, tasksWithPrio101, taskService, converter, 1, 101);
 
@@ -452,11 +442,12 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         before, tasksWithPrio7, taskService, converter, 1, 7);
 
     List<String> tasksWithPrio9 =
-        new ArrayList<>(Arrays.asList("TKI:000000000000000000000000000000000008"));
+        new ArrayList<>(Collections.singletonList("TKI:000000000000000000000000000000000008"));
     validateTaskPropertiesAfterClassificationChange(
         before, tasksWithPrio9, taskService, converter, 1, 9);
 
-    tasksWithPrio101 = new ArrayList<>(Arrays.asList("TKI:000000000000000000000000000000000011"));
+    tasksWithPrio101 =
+        new ArrayList<>(Collections.singletonList("TKI:000000000000000000000000000000000011"));
 
     validateTaskPropertiesAfterClassificationChange(
         before, tasksWithPrio101, taskService, converter, 1, 101);
@@ -464,7 +455,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "dummy", groups = "admin")
   @Test
-  public void testUpdateClassificationChangeServiceLevel()
+  void testUpdateClassificationChangeServiceLevel()
       throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
           InterruptedException, TaskNotFoundException, InvalidArgumentException {
     final Instant before = Instant.now();
@@ -528,7 +519,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
         before, tasksWithPD12, taskService, converter, 12, 555);
 
     List<String> tasksWithPD8 =
-        new ArrayList<>(Arrays.asList("TKI:000000000000000000000000000000000008"));
+        new ArrayList<>(Collections.singletonList("TKI:000000000000000000000000000000000008"));
     validateTaskPropertiesAfterClassificationChange(
         before, tasksWithPD8, taskService, converter, 8, 555);
 
@@ -566,7 +557,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
       WorkingDaysToDaysConverter converter,
       int serviceLevel,
       int priority)
-      throws TaskNotFoundException, NotAuthorizedException, InvalidArgumentException {
+      throws TaskNotFoundException, NotAuthorizedException {
     for (String taskId : tasksUpdated) {
       Task task = taskService.getTask(taskId);
 
@@ -582,6 +573,7 @@ public class UpdateClassificationAccTest extends AbstractAccTest {
       assertThat(task.getDue())
           .describedAs(msg)
           .isEqualTo(task.getPlanned().plus(Duration.ofDays(calendarDays)));
+      assertThat(task.getPriority()).isEqualTo(priority);
     }
   }
 }

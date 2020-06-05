@@ -46,7 +46,7 @@ class WorkbasketCleanupJobAccTest extends AbstractAccTest {
     List<WorkbasketSummary> workbaskets =
         workbasketService
             .createWorkbasketQuery()
-            .keyIn("TEAMLEAD_1")
+            .keyIn("TEAMLEAD-1")
             .orderByKey(BaseQuery.SortDirection.ASCENDING)
             .list();
 
@@ -77,7 +77,7 @@ class WorkbasketCleanupJobAccTest extends AbstractAccTest {
     List<WorkbasketSummary> workbaskets =
         workbasketService
             .createWorkbasketQuery()
-            .keyIn("TEAMLEAD_1")
+            .keyIn("TEAMLEAD-1")
             .orderByKey(BaseQuery.SortDirection.ASCENDING)
             .list();
 

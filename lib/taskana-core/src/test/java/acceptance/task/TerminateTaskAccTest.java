@@ -36,7 +36,7 @@ class TerminateTaskAccTest extends AbstractAccTest {
     taskService = taskanaEngine.getTaskService();
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void should_ReturnAllTerminatedTasks_When_QueryTerminatedState() {
     List<TaskSummary> taskSummaries =
@@ -88,7 +88,7 @@ class TerminateTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(taskanaCall).isInstanceOf(InvalidStateException.class);
   }
 
-  @WithAccessId(user = "user_1_2")
+  @WithAccessId(user = "user-1-2")
   @Test
   void should_ThrowException_When_UserIsNotInAdministrativeRole() {
 

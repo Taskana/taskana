@@ -244,10 +244,10 @@ class TaskCommentControllerIntTest {
             HttpMethod.GET,
             new HttpEntity<String>(restHelper.getHeadersAdmin()),
             ParameterizedTypeReference.forType(TaskCommentRepresentationModel.class));
-    assertThat(getTaskCommentResponse.getBody()).isNotNull();
     TaskCommentRepresentationModel taskCommentToUpdate = getTaskCommentResponse.getBody();
+    assertThat(taskCommentToUpdate).isNotNull();
     assertThat(taskCommentToUpdate.getLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(taskCommentToUpdate.getCreator()).isEqualTo("user_1_1");
+    assertThat(taskCommentToUpdate.getCreator()).isEqualTo("user-1-1");
     assertThat(taskCommentToUpdate.getTextField()).isEqualTo("some text in textfield");
 
     taskCommentToUpdate.setModified(Instant.now());
@@ -257,9 +257,7 @@ class TaskCommentControllerIntTest {
           template.exchange(
               url,
               HttpMethod.PUT,
-              new HttpEntity<>(
-                  taskCommentToUpdate,
-                  restHelper.getHeadersUser_1_1()),
+              new HttpEntity<>(taskCommentToUpdate, restHelper.getHeadersUser_1_1()),
               ParameterizedTypeReference.forType(TaskCommentRepresentationModel.class));
         };
     assertThatThrownBy(httpCall)
@@ -279,22 +277,21 @@ class TaskCommentControllerIntTest {
             HttpMethod.GET,
             new HttpEntity<String>(restHelper.getHeadersUser_1_1()),
             ParameterizedTypeReference.forType(TaskCommentRepresentationModel.class));
-    assertThat(getTaskCommentResponse.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(getTaskCommentResponse.getBody().getCreator()).isEqualTo("user_1_1");
-    assertThat(getTaskCommentResponse.getBody().getTextField()).isEqualTo("some text in textfield");
+    TaskCommentRepresentationModel taskComment = getTaskCommentResponse.getBody();
+    assertThat(taskComment).isNotNull();
+    assertThat(taskComment.getLink(IanaLinkRelations.SELF)).isNotNull();
+    assertThat(taskComment.getCreator()).isEqualTo("user-1-1");
+    assertThat(taskComment.getTextField()).isEqualTo("some text in textfield");
 
-    TaskCommentRepresentationModel taskCommentRepresentationModelToUpdate =
-        getTaskCommentResponse.getBody();
-    taskCommentRepresentationModelToUpdate.setTextField("updated textfield");
+    taskComment.setTextField("updated textfield");
 
     ThrowingCallable httpCall =
-        () -> template.exchange(
-            url,
-            HttpMethod.PUT,
-            new HttpEntity<>(
-                taskCommentRepresentationModelToUpdate,
-                restHelper.getHeadersUser_1_2()),
-            ParameterizedTypeReference.forType(TaskCommentRepresentationModel.class));
+        () ->
+            template.exchange(
+                url,
+                HttpMethod.PUT,
+                new HttpEntity<>(taskComment, restHelper.getHeadersUser_1_2()),
+                ParameterizedTypeReference.forType(TaskCommentRepresentationModel.class));
     assertThatThrownBy(httpCall)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
         .isEqualTo(HttpStatus.FORBIDDEN);
@@ -313,7 +310,7 @@ class TaskCommentControllerIntTest {
             new HttpEntity<String>(restHelper.getHeadersAdmin()),
             ParameterizedTypeReference.forType(TaskCommentRepresentationModel.class));
     assertThat(getTaskCommentResponse.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(getTaskCommentResponse.getBody().getCreator()).isEqualTo("user_1_1");
+    assertThat(getTaskCommentResponse.getBody().getCreator()).isEqualTo("user-1-1");
     assertThat(getTaskCommentResponse.getBody().getTextField()).isEqualTo("some text in textfield");
 
     TaskCommentRepresentationModel taskCommentRepresentationModelToUpdate =
@@ -327,8 +324,7 @@ class TaskCommentControllerIntTest {
               url,
               HttpMethod.PUT,
               new HttpEntity<>(
-                  taskCommentRepresentationModelToUpdate,
-                  restHelper.getHeadersUser_1_1()),
+                  taskCommentRepresentationModelToUpdate, restHelper.getHeadersUser_1_1()),
               ParameterizedTypeReference.forType(TaskCommentRepresentationModel.class));
         };
     assertThatThrownBy(httpCall)

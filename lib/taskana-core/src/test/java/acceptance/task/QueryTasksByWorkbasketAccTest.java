@@ -26,12 +26,12 @@ class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(user = "teamlead_1", groups = "group_1")
+  @WithAccessId(user = "teamlead-1", groups = "group_1")
   @Test
   void testQueryForWorkbasketKeyDomain() {
     TaskService taskService = taskanaEngine.getTaskService();
     List<KeyDomain> workbasketIdentifiers =
-        Arrays.asList(new KeyDomain("GPK_KSC", "DOMAIN_A"), new KeyDomain("USER_1_2", "DOMAIN_A"));
+        Arrays.asList(new KeyDomain("GPK_KSC", "DOMAIN_A"), new KeyDomain("USER-1-2", "DOMAIN_A"));
 
     List<TaskSummary> results =
         taskService
@@ -50,7 +50,7 @@ class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
     assertThat(result2).hasSize(52);
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testThrowsExceptionIfNoOpenerPermissionOnQueriedWorkbasket() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -59,13 +59,13 @@ class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
         () -> {
           taskService
               .createTaskQuery()
-              .workbasketKeyDomainIn(new KeyDomain("USER_2_1", "DOMAIN_A"))
+              .workbasketKeyDomainIn(new KeyDomain("USER-2-1", "DOMAIN_A"))
               .list();
         };
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedToQueryWorkbasketException.class);
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testThrowsExceptionIfNoOpenerPermissionOnAtLeastOneQueriedWorkbasket() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -74,7 +74,7 @@ class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
           taskService
               .createTaskQuery()
               .workbasketKeyDomainIn(
-                  new KeyDomain("USER_1_1", "DOMAIN_A"), new KeyDomain("USER_2_1", "DOMAIN_A"))
+                  new KeyDomain("USER-1-1", "DOMAIN_A"), new KeyDomain("USER-2-1", "DOMAIN_A"))
               .list();
         };
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedToQueryWorkbasketException.class);

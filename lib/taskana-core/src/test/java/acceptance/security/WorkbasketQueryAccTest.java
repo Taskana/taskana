@@ -26,7 +26,7 @@ class WorkbasketQueryAccTest extends AbstractAccTest {
   }
 
   @Test
-  void testQueryWorkbasketByUnauthenticated() throws InvalidArgumentException {
+  void testQueryWorkbasketByUnauthenticated() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     List<WorkbasketSummary> results =
         workbasketService.createWorkbasketQuery().nameLike("%").list();
@@ -37,7 +37,7 @@ class WorkbasketQueryAccTest extends AbstractAccTest {
               .createWorkbasketQuery()
               .nameLike("%")
               .accessIdsHavePermission(
-                  WorkbasketPermission.TRANSFER, "teamlead_1", "group_1", "group_2")
+                  WorkbasketPermission.TRANSFER, "teamlead-1", "group_1", "group_2")
               .list();
         };
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
@@ -45,7 +45,7 @@ class WorkbasketQueryAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "unknown")
   @Test
-  void testQueryWorkbasketByUnknownUser() throws InvalidArgumentException {
+  void testQueryWorkbasketByUnknownUser() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     List<WorkbasketSummary> results =
         workbasketService.createWorkbasketQuery().nameLike("%").list();
@@ -56,7 +56,7 @@ class WorkbasketQueryAccTest extends AbstractAccTest {
               .createWorkbasketQuery()
               .nameLike("%")
               .accessIdsHavePermission(
-                  WorkbasketPermission.TRANSFER, "teamlead_1", "group_1", "group_2")
+                  WorkbasketPermission.TRANSFER, "teamlead-1", "group_1", "group_2")
               .list();
         };
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
@@ -76,7 +76,7 @@ class WorkbasketQueryAccTest extends AbstractAccTest {
             .createWorkbasketQuery()
             .nameLike("%")
             .accessIdsHavePermission(
-                WorkbasketPermission.TRANSFER, "teamlead_1", "group_1", "group_2")
+                WorkbasketPermission.TRANSFER, "teamlead-1", "group_1", "group_2")
             .list();
 
     assertThat(results).hasSize(13);
@@ -95,7 +95,7 @@ class WorkbasketQueryAccTest extends AbstractAccTest {
             .createWorkbasketQuery()
             .nameLike("%")
             .accessIdsHavePermission(
-                WorkbasketPermission.TRANSFER, "teamlead_1", "group_1", "group_2")
+                WorkbasketPermission.TRANSFER, "teamlead-1", "group_1", "group_2")
             .list();
 
     assertThat(results).hasSize(13);

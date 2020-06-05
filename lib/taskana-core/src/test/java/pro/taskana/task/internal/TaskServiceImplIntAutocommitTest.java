@@ -79,7 +79,7 @@ class TaskServiceImplIntAutocommitTest {
   }
 
   @BeforeEach
-  void setup() throws SQLException {
+  void setup() {
     taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
     taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
     taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);

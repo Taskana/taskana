@@ -12,7 +12,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +50,7 @@ class ClassificationDefinitionControllerIntTest {
       CLASSIFICATION_PAGE_MODEL_TYPE =
           new ParameterizedTypeReference<TaskanaPagedModel<ClassificationRepresentationModel>>() {};
   private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationController.class);
-  private static RestTemplate template;
+  private static RestTemplate template = RestHelper.TEMPLATE;
 
   private final RestHelper restHelper;
   private final ObjectMapper mapper;
@@ -68,11 +67,6 @@ class ClassificationDefinitionControllerIntTest {
     this.mapper = mapper;
     this.classificationService = classificationService;
     this.classificationAssembler = classificationAssembler;
-  }
-
-  @BeforeAll
-  static void init() {
-    template = RestHelper.TEMPLATE;
   }
 
   @Test
@@ -439,7 +433,7 @@ class ClassificationDefinitionControllerIntTest {
 
     MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
 
-    HttpHeaders headers = restHelper.getHeaders();
+    HttpHeaders headers = restHelper.getHeadersBusinessAdmin();
     headers.setContentType(MediaType.MULTIPART_FORM_DATA);
     body.add("file", new FileSystemResource(tmpFile));
 

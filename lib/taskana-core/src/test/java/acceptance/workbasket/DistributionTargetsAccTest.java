@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +31,7 @@ class DistributionTargetsAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(user = "user_1_1", groups = "teamlead_1")
+  @WithAccessId(user = "user-1-1", groups = "teamlead-1")
   @Test
   void testGetDistributionTargetsSucceedsById()
       throws NotAuthorizedException, WorkbasketNotFoundException {
@@ -54,7 +53,7 @@ class DistributionTargetsAccTest extends AbstractAccTest {
         .containsExactlyInAnyOrderElementsOf(expectedTargetIds);
   }
 
-  @WithAccessId(user = "user_1_1", groups = "teamlead_1")
+  @WithAccessId(user = "user-1-1", groups = "teamlead-1")
   @Test
   void testGetDistributionTargetsSucceeds()
       throws NotAuthorizedException, WorkbasketNotFoundException {
@@ -78,8 +77,8 @@ class DistributionTargetsAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "user_1_1",
-      groups = {"teamlead_1", "group_1", "group_2", "businessadmin"})
+      user = "user-1-1",
+      groups = {"teamlead-1", "group_1", "group_2", "businessadmin"})
   @Test
   void testDistributionTargetCallsWithNonExistingWorkbaskets()
       throws NotAuthorizedException, WorkbasketNotFoundException {
@@ -125,7 +124,7 @@ class DistributionTargetsAccTest extends AbstractAccTest {
     assertThat(distributionTargets).hasSize(4);
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @WithAccessId(user = "taskadmin")
   @TestTemplate
   void should_ThrowException_When_UserRoleIsNotAdminOrBusinessAdminAndMakesDistTargetCalls() {
@@ -154,7 +153,7 @@ class DistributionTargetsAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(user = "user_1_1")
+  @WithAccessId(user = "user-1-1")
   @Test
   void should_ThrowException_When_UserTriesToGetDistributionTargetsAndRoleIsNotAdministrative() {
 
@@ -169,7 +168,7 @@ class DistributionTargetsAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "user_2_2",
+      user = "user-2-2",
       groups = {"group_1", "group_2", "businessadmin"})
   @Test
   void testAddAndRemoveDistributionTargets()
@@ -199,7 +198,7 @@ class DistributionTargetsAccTest extends AbstractAccTest {
     assertThat(distributionTargets).hasSize(4);
   }
 
-  @WithAccessId(user = "user_2_2", groups = "businessadmin")
+  @WithAccessId(user = "user-2-2", groups = "businessadmin")
   @Test
   void testAddAndRemoveDistributionTargetsOnWorkbasketWithoutReadPermission()
       throws NotAuthorizedException, WorkbasketNotFoundException {
@@ -224,7 +223,7 @@ class DistributionTargetsAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "user_2_2",
+      user = "user-2-2",
       groups = {"group_1", "group_2"})
   @Test
   void testAddDistributionTargetsFailsNotAuthorized()
@@ -247,11 +246,11 @@ class DistributionTargetsAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "user_2_2",
+      user = "user-2-2",
       groups = {"group_1", "group_2", "businessadmin"})
   @Test
   void testSetDistributionTargets()
-      throws NotAuthorizedException, WorkbasketNotFoundException, SQLException, IOException {
+      throws NotAuthorizedException, WorkbasketNotFoundException, SQLException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
     Workbasket sourceWorkbasket = workbasketService.getWorkbasket("GPK_KSC_1", "DOMAIN_A");
@@ -261,7 +260,7 @@ class DistributionTargetsAccTest extends AbstractAccTest {
     assertThat(initialDistributionTargets).hasSize(4);
 
     List<WorkbasketSummary> newDistributionTargets =
-        workbasketService.createWorkbasketQuery().keyIn("USER_1_1", "GPK_B_KSC_1").list();
+        workbasketService.createWorkbasketQuery().keyIn("USER-1-1", "GPK_B_KSC_1").list();
     assertThat(newDistributionTargets).hasSize(2);
 
     List<String> newDistributionTargetIds =
@@ -277,7 +276,7 @@ class DistributionTargetsAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "user_2_2",
+      user = "user-2-2",
       groups = {"group_1", "group_2"})
   @Test
   void testGetDistributionSourcesById() throws NotAuthorizedException, WorkbasketNotFoundException {
@@ -299,7 +298,7 @@ class DistributionTargetsAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "user_2_2",
+      user = "user-2-2",
       groups = {"group_1", "group_2"})
   @Test
   void testGetDistributionSourcesByKeyDomain()
@@ -307,7 +306,7 @@ class DistributionTargetsAccTest extends AbstractAccTest {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
     List<WorkbasketSummary> distributionSources =
-        workbasketService.getDistributionSources("TEAMLEAD_1", "DOMAIN_A");
+        workbasketService.getDistributionSources("TEAMLEAD-1", "DOMAIN_A");
 
     assertThat(distributionSources).hasSize(2);
     List<String> expectedIds =
@@ -334,7 +333,7 @@ class DistributionTargetsAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "user_2_2",
+      user = "user-2-2",
       groups = {"group_1", "group_2"})
   @Test
   void testQueryDistributionSourcesThrowsWorkbasketNotFound() {

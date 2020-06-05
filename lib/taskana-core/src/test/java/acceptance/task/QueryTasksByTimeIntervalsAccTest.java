@@ -26,7 +26,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "teamlead_1",
+      user = "teamlead-1",
       groups = {"group_1", "group_2"})
   @Test
   void testCreatedWithin2Intervals() {
@@ -58,7 +58,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "teamlead_1",
+      user = "teamlead-1",
       groups = {"group_1", "group_2"})
   @Test
   void testCreatedBefore() {
@@ -83,7 +83,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "teamlead_1",
+      user = "teamlead-1",
       groups = {"group_1", "group_2"})
   @Test
   void testCreatedAfter() {
@@ -108,7 +108,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "teamlead_1",
+      user = "teamlead-1",
       groups = {"group_1", "group_2"})
   @Test
   void testClaimedWithin2Intervals() {
@@ -140,7 +140,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "teamlead_1",
+      user = "teamlead-1",
       groups = {"group_1", "group_2"})
   @Test
   void testCompletedWithin() {
@@ -165,7 +165,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "teamlead_1",
+      user = "teamlead-1",
       groups = {"group_1", "group_2"})
   @Test
   void testModifiedWithin() {
@@ -190,7 +190,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "teamlead_1",
+      user = "teamlead-1",
       groups = {"group_1", "group_2"})
   @Test
   void testPlannedWithin() {
@@ -215,7 +215,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "teamlead_1",
+      user = "teamlead-1",
       groups = {"group_1", "group_2"})
   @Test
   void testDueWithin() {

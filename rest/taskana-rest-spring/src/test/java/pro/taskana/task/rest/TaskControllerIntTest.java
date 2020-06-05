@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,23 +39,21 @@ import pro.taskana.task.rest.models.TaskRepresentationModel;
 import pro.taskana.task.rest.models.TaskSummaryRepresentationModel;
 import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 
-/**
- * Test Task Controller.
- */
+/** Test Task Controller. */
 @TaskanaSpringBootTest
 class TaskControllerIntTest {
 
   private static final ParameterizedTypeReference<TaskanaPagedModel<TaskSummaryRepresentationModel>>
       TASK_SUMMARY_PAGE_MODEL_TYPE =
-      new ParameterizedTypeReference<TaskanaPagedModel<TaskSummaryRepresentationModel>>() {
-      };
+          new ParameterizedTypeReference<TaskanaPagedModel<TaskSummaryRepresentationModel>>() {};
 
-  private static final ParameterizedTypeReference<TaskRepresentationModel> TASK_MODEL_TYPE
-      = ParameterizedTypeReference.forType(TaskRepresentationModel.class);
+  private static final ParameterizedTypeReference<TaskRepresentationModel> TASK_MODEL_TYPE =
+      ParameterizedTypeReference.forType(TaskRepresentationModel.class);
 
   private static RestTemplate template;
   private final RestHelper restHelper;
   private final DataSource dataSource;
+
   @Value("${taskana.schemaName:TASKANA}")
   public String schemaName;
 
@@ -337,12 +334,10 @@ class TaskControllerIntTest {
 
   @Test
   void testGetAllTasksByWorkbasketKeyAndDomain() {
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Authorization", "Basic dXNlcl8xXzI6dXNlcl8xXzI="); // user_1_2
-    HttpEntity<String> request = new HttpEntity<>(headers);
+    HttpEntity<String> request = new HttpEntity<>(restHelper.getHeadersUser_1_2());
     ResponseEntity<TaskanaPagedModel<TaskSummaryRepresentationModel>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS) + "?workbasket-key=USER_1_2&domain=DOMAIN_A",
+            restHelper.toUrl(Mapping.URL_TASKS) + "?workbasket-key=USER-1-2&domain=DOMAIN_A",
             HttpMethod.GET,
             request,
             TASK_SUMMARY_PAGE_MODEL_TYPE);
@@ -368,15 +363,12 @@ class TaskControllerIntTest {
 
   @Test
   void testExceptionIfKeyIsSetButDomainIsMissing() {
-
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Authorization", "Basic dXNlcl8xXzI6dXNlcl8xXzI="); // user_1_2
-    HttpEntity<String> request = new HttpEntity<>(headers);
+    HttpEntity<String> request = new HttpEntity<>(restHelper.getHeadersUser_1_2());
 
     ThrowingCallable httpCall =
         () ->
             TEMPLATE.exchange(
-                restHelper.toUrl(Mapping.URL_TASKS) + "?workbasket-key=USER_1_2",
+                restHelper.toUrl(Mapping.URL_TASKS) + "?workbasket-key=USER-1-2",
                 HttpMethod.GET,
                 request,
                 TASK_SUMMARY_PAGE_MODEL_TYPE);
@@ -409,8 +401,8 @@ class TaskControllerIntTest {
             TASK_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(response.getBody().getRequiredLink(IanaLinkRelations.SELF).getHref()).endsWith(
-        "/api/v1/tasks?por.type=VNR&por.value=22334455&sort-by=por.value&order=desc");
+    assertThat(response.getBody().getRequiredLink(IanaLinkRelations.SELF).getHref())
+        .endsWith("/api/v1/tasks?por.type=VNR&por.value=22334455&sort-by=por.value&order=desc");
   }
 
   @Test
@@ -448,11 +440,7 @@ class TaskControllerIntTest {
         .isEqualTo(response.getBody().getContent().iterator().next().getTaskId());
 
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(
-        response
-            .getBody()
-            .getRequiredLink(IanaLinkRelations.SELF)
-            .getHref())
+    assertThat(response.getBody().getRequiredLink(IanaLinkRelations.SELF).getHref())
         .endsWith(
             "/api/v1/tasks?"
                 + "state=READY,CLAIMED&sort-by=por.value&order=desc&page-size=5&page=14");
@@ -469,10 +457,7 @@ class TaskControllerIntTest {
     // ClassificationControllerIntTest.testGetQueryByPorSecondPageSortedByType changes
     // tasks and this test depends on the tasks as they are in sampledata
 
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-    HttpEntity<String> request = new HttpEntity<>(headers);
-
+    HttpEntity<String> request = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
     ResponseEntity<TaskanaPagedModel<TaskSummaryRepresentationModel>> response =
         TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_TASKS) + "?sort-by=due&order=desc",
@@ -490,17 +475,13 @@ class TaskControllerIntTest {
             TASK_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat((response.getBody()).getContent()).hasSize(5);
-    assertThat(
-        response.getBody().getRequiredLink(IanaLinkRelations.LAST).getHref()).contains("page=5");
+    assertThat(response.getBody().getRequiredLink(IanaLinkRelations.LAST).getHref())
+        .contains("page=5");
     assertThat("TKI:000000000000000000000000000000000023")
         .isEqualTo(response.getBody().getContent().iterator().next().getTaskId());
 
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(
-        response
-            .getBody()
-            .getRequiredLink(IanaLinkRelations.SELF)
-            .getHref())
+    assertThat(response.getBody().getRequiredLink(IanaLinkRelations.SELF).getHref())
         .endsWith("/api/v1/tasks?sort-by=due&order=desc&page-size=5&page=5");
     assertThat(response.getBody().getLink(IanaLinkRelations.FIRST)).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.LAST)).isNotNull();
@@ -513,9 +494,7 @@ class TaskControllerIntTest {
     // ClassificationControllerIntTest.testGetQueryByPorSecondPageSortedByType changes
     // tasks and this test depends on the tasks as they are in sampledata
 
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
-    HttpEntity<String> request = new HttpEntity<>(headers);
+    HttpEntity<String> request = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
     ResponseEntity<TaskanaPagedModel<TaskSummaryRepresentationModel>> response =
         TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_TASKS)
@@ -532,11 +511,7 @@ class TaskControllerIntTest {
 
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
 
-    assertThat(
-        response
-            .getBody()
-            .getRequiredLink(IanaLinkRelations.SELF)
-            .getHref())
+    assertThat(response.getBody().getRequiredLink(IanaLinkRelations.SELF).getHref())
         .endsWith(
             "/api/v1/tasks?por.company=00&por.system=PASystem&por.instance=00&"
                 + "por.type=VNR&por.value=22334455&sort-by=por.type&order=asc&"
@@ -550,8 +525,7 @@ class TaskControllerIntTest {
   void should_NotGetEmptyAttachmentList_When_GettingTaskWithAttachment() {
     ResponseEntity<TaskRepresentationModel> response =
         template.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS_ID,
-                "TKI:000000000000000000000000000000000002"),
+            restHelper.toUrl(Mapping.URL_TASKS_ID, "TKI:000000000000000000000000000000000002"),
             HttpMethod.GET,
             new HttpEntity<>(restHelper.getHeadersAdmin()),
             TASK_MODEL_TYPE);
@@ -569,7 +543,7 @@ class TaskControllerIntTest {
         template.exchange(
             restHelper.toUrl(Mapping.URL_TASKS_ID, "TKI:100000000000000000000000000000000000"),
             HttpMethod.GET,
-            new HttpEntity<>(restHelper.getHeaders()),
+            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
             TASK_MODEL_TYPE);
 
     final TaskRepresentationModel originalTask = responseGet.getBody();
@@ -578,11 +552,13 @@ class TaskControllerIntTest {
         template.exchange(
             restHelper.toUrl(Mapping.URL_TASKS_ID, "TKI:100000000000000000000000000000000000"),
             HttpMethod.PUT,
-            new HttpEntity<>(originalTask, restHelper.getHeaders()),
+            new HttpEntity<>(originalTask, restHelper.getHeadersTeamlead_1()),
             TASK_MODEL_TYPE);
 
     TaskRepresentationModel updatedTask = responseUpdate.getBody();
-    assertThat(originalTask.getModified()).isNotEqualTo(updatedTask.getModified());
+    assertThat(originalTask).isNotNull();
+    assertThat(updatedTask).isNotNull();
+    assertThat(originalTask.getModified()).isBefore(updatedTask.getModified());
   }
 
   @Test
@@ -593,7 +569,7 @@ class TaskControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_TASKS),
             HttpMethod.POST,
-            new HttpEntity<>(taskRepresentationModel, restHelper.getHeaders()),
+            new HttpEntity<>(taskRepresentationModel, restHelper.getHeadersTeamlead_1()),
             TASK_MODEL_TYPE);
     assertThat(HttpStatus.CREATED).isEqualTo(responseCreate.getStatusCode());
     assertThat(responseCreate.getBody()).isNotNull();
@@ -625,11 +601,12 @@ class TaskControllerIntTest {
     taskRepresentationModel.setDue(now);
 
     ThrowingCallable httpCall =
-        () -> template.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS),
-            HttpMethod.POST,
-            new HttpEntity<>(taskRepresentationModel, restHelper.getHeaders()),
-            TASK_MODEL_TYPE);
+        () ->
+            template.exchange(
+                restHelper.toUrl(Mapping.URL_TASKS),
+                HttpMethod.POST,
+                new HttpEntity<>(taskRepresentationModel, restHelper.getHeadersUser_1_1()),
+                TASK_MODEL_TYPE);
     assertThatThrownBy(httpCall).isInstanceOf(HttpClientErrorException.class);
   }
 
@@ -646,7 +623,7 @@ class TaskControllerIntTest {
     HttpURLConnection con = (HttpURLConnection) url.openConnection();
     con.setRequestMethod("POST");
     con.setDoOutput(true);
-    con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
+    con.setRequestProperty("Authorization", RestHelper.AUTHORIZATION_TEAMLEAD_1);
     con.setRequestProperty("Content-Type", "application/json");
     BufferedWriter out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream(), UTF_8));
     out.write(taskToCreateJson);
@@ -666,7 +643,7 @@ class TaskControllerIntTest {
     con = (HttpURLConnection) url.openConnection();
     con.setRequestMethod("POST");
     con.setDoOutput(true);
-    con.setRequestProperty("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
+    con.setRequestProperty("Authorization", RestHelper.AUTHORIZATION_TEAMLEAD_1);
     con.setRequestProperty("Content-Type", "application/json");
     out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream(), UTF_8));
     out.write(taskToCreateJson2);
@@ -681,7 +658,7 @@ class TaskControllerIntTest {
   void testCancelClaimTask() {
 
     final String claimed_task_id = "TKI:000000000000000000000000000000000027";
-    final String user_id_of_claimed_task = "user_1_2";
+    final String user_id_of_claimed_task = "user-1-2";
 
     // retrieve task from Rest Api
     ResponseEntity<TaskRepresentationModel> getTaskResponse =
@@ -718,7 +695,7 @@ class TaskControllerIntTest {
   void testCancelClaimOfClaimedTaskByAnotherUserShouldThrowException() {
 
     final String claimed_task_id = "TKI:000000000000000000000000000000000026";
-    final String user_id_of_claimed_task = "user_1_1";
+    final String user_id_of_claimed_task = "user-1-1";
 
     // retrieve task from Rest Api
     ResponseEntity<TaskRepresentationModel> responseGet =
@@ -735,11 +712,12 @@ class TaskControllerIntTest {
 
     // try to cancel claim
     ThrowingCallable httpCall =
-        () -> template.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS_ID_CLAIM, claimed_task_id),
-            HttpMethod.DELETE,
-            new HttpEntity<>(restHelper.getHeadersUser_1_2()),
-            TASK_MODEL_TYPE);
+        () ->
+            template.exchange(
+                restHelper.toUrl(Mapping.URL_TASKS_ID_CLAIM, claimed_task_id),
+                HttpMethod.DELETE,
+                new HttpEntity<>(restHelper.getHeadersUser_1_2()),
+                TASK_MODEL_TYPE);
     assertThatThrownBy(httpCall)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
         .isEqualTo(HttpStatus.CONFLICT);
@@ -798,7 +776,7 @@ class TaskControllerIntTest {
     assertThat(responseGet.getBody()).isNotNull();
     TaskRepresentationModel theTaskRepresentationModel = responseGet.getBody();
     assertThat(theTaskRepresentationModel.getState()).isEqualTo(TaskState.CLAIMED);
-    assertThat(theTaskRepresentationModel.getOwner()).isEqualTo("user_1_1");
+    assertThat(theTaskRepresentationModel.getOwner()).isEqualTo("user-1-1");
 
     // set Owner and update Task
 
@@ -806,11 +784,12 @@ class TaskControllerIntTest {
     theTaskRepresentationModel.setOwner(anyUserName);
 
     ThrowingCallable httpCall =
-        () -> template.exchange(
-            taskUrlString,
-            HttpMethod.PUT,
-            new HttpEntity<>(theTaskRepresentationModel, restHelper.getHeadersUser_1_2()),
-            TASK_MODEL_TYPE);
+        () ->
+            template.exchange(
+                taskUrlString,
+                HttpMethod.PUT,
+                new HttpEntity<>(theTaskRepresentationModel, restHelper.getHeadersUser_1_2()),
+                TASK_MODEL_TYPE);
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
         .hasMessageContaining("409");

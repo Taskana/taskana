@@ -34,7 +34,7 @@ class QueryTaskWithAttachmentAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testGetAttachmentSummariesFromTask() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -46,7 +46,7 @@ class QueryTaskWithAttachmentAccTest extends AbstractAccTest {
     assertThat(attachmentSummaries).hasSize(2);
   }
 
-  @WithAccessId(user = "user_1_2")
+  @WithAccessId(user = "user-1-2")
   @Test
   void testGetNoAttachmentSummaryFromTask() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -58,7 +58,7 @@ class QueryTaskWithAttachmentAccTest extends AbstractAccTest {
     assertThat(attachmentSummaries).isEmpty();
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testIfNewTaskHasEmptyAttachmentList() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -67,7 +67,7 @@ class QueryTaskWithAttachmentAccTest extends AbstractAccTest {
     assertThat(task.asSummary().getAttachmentSummaries()).isNotNull();
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void should_ConfirmIfAttachmentSummariesAreCorrect_When_UsingTaskQueryAndGetTaskById()
       throws TaskNotFoundException, NotAuthorizedException {
@@ -88,10 +88,11 @@ class QueryTaskWithAttachmentAccTest extends AbstractAccTest {
         .hasSize(originalAttachments.size())
         .containsOnly(toArray(originalAttachments)) // same values
         .usingElementComparator(REFERENCE_COMPARATOR)
-        .doesNotContain(toArray(originalAttachments)); // but not same reference
+        .doesNotContain(
+            toArray(originalAttachments)); // but not same reference
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void should_ConfirmIfAttachmentSummariesAreCorrect()
       throws InvalidArgumentException, TaskNotFoundException, NotAuthorizedException {
@@ -116,6 +117,7 @@ class QueryTaskWithAttachmentAccTest extends AbstractAccTest {
         .hasSize(originalAttachments.size())
         .containsOnly(toArray(originalAttachments)) // same values
         .usingElementComparator(REFERENCE_COMPARATOR)
-        .doesNotContain(toArray(originalAttachments)); // but not same reference
+        .doesNotContain(
+            toArray(originalAttachments)); // but not same reference
   }
 }

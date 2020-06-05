@@ -55,7 +55,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
 
   /* CREATE TASK */
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void should_CalculatePlannedDateAtCreate()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -66,7 +66,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     long serviceLevelDays = Duration.parse(classification.getServiceLevel()).toDays();
     assertThat(serviceLevelDays).isEqualTo(16);
 
-    Task newTask = taskService.newTask("USER_1_1", classification.getDomain());
+    Task newTask = taskService.newTask("USER-1-1", classification.getDomain());
     newTask.setClassificationKey(classification.getKey());
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
@@ -90,7 +90,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     assertThat(expectedPlanned).isEqualTo(readTask.getPlanned());
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void should_calculateDueDateAtCreate()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -101,7 +101,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     long serviceLevelDays = Duration.parse(classification.getServiceLevel()).toDays();
     assertThat(serviceLevelDays).isEqualTo(16);
 
-    Task newTask = taskService.newTask("USER_1_1", classification.getDomain());
+    Task newTask = taskService.newTask("USER-1-1", classification.getDomain());
     newTask.setClassificationKey(classification.getKey());
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
@@ -122,20 +122,20 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     assertThat(expectedDue).isEqualTo(readTask.getDue());
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void should_NotThrowException_When_DueAndPlannedAreConsistent()
-      throws ClassificationNotFoundException, InvalidArgumentException {
+      throws ClassificationNotFoundException {
 
     Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
     long duration = Duration.parse(classification.getServiceLevel()).toDays();
 
-    Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setPlanned(moveForwardToWorkingDay(Instant.now()));
     newTask.setClassificationKey(classification.getKey());
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-    newTask.setOwner("user_1_1");
+    newTask.setOwner("user-1-1");
 
     // due date according to service level
     long daysToDue = converter.convertWorkingDaysToDays(newTask.getPlanned(), duration);
@@ -150,16 +150,16 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     assertThatCode(call).doesNotThrowAnyException();
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void should_ThrowException_When_DueAndPlannedAreInconsistent() {
 
-    Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     Instant planned = moveForwardToWorkingDay(Instant.now().plus(2, ChronoUnit.HOURS));
     newTask.setClassificationKey("T2100"); // P10D
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-    newTask.setOwner("user_1_1");
+    newTask.setOwner("user-1-1");
 
     newTask.setPlanned(planned);
     newTask.setDue(planned); // due date not according to service level
@@ -170,16 +170,16 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(InvalidArgumentException.class);
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void should_VerifyThatCreateAndPlannedAreClose() throws Exception {
 
-    Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     Instant planned = moveForwardToWorkingDay(Instant.now().plus(2, ChronoUnit.HOURS));
     newTask.setClassificationKey("T2100");
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-    newTask.setOwner("user_1_1");
+    newTask.setOwner("user-1-1");
     newTask.setPlanned(planned);
     Task createdTask = taskService.createTask(newTask);
 
@@ -195,7 +195,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
 
   /* UPDATE TASK */
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void should_ThrowException_When_DueAndPlannedAreChangedInconsistently() throws Exception {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -209,7 +209,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
                 + "date 2020-07-02T00:00:00Z not matching the service level PT24H.");
   }
 
-  @WithAccessId(user = "user_3_2", groups = "group_2")
+  @WithAccessId(user = "user-3-2", groups = "group_2")
   @Test
   void should_SetPlanned_When_SetPlannedRequestContainsDuplicateTaskIds()
       throws NotAuthorizedException, TaskNotFoundException {
@@ -246,7 +246,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     assertThat(due4).isEqualTo(dueExpected);
   }
 
-  @WithAccessId(user = "user_3_2", groups = "group_2")
+  @WithAccessId(user = "user-3-2", groups = "group_2")
   @Test
   void should_SetPlanned_When_RequestContainsDuplicatesAndNotExistingTaskIds()
       throws NotAuthorizedException, TaskNotFoundException {
@@ -273,7 +273,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     assertThat(due5).isEqualTo(dueExpected);
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_2")
+  @WithAccessId(user = "user-1-1", groups = "group_2")
   @Test
   void should_SetPlanned_When_RequestContainsTasksWithAttachments()
       throws NotAuthorizedException, TaskNotFoundException, ClassificationNotFoundException,
@@ -352,7 +352,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
   // |TAI:000000000000000000000000000000000014 | CLI:100000000000000000000000000000000004,| P14D |
   // +-----------------------------------------+------------------------------------------+------+
 
-  @WithAccessId(user = "user_3_2", groups = "group_2")
+  @WithAccessId(user = "user-3-2", groups = "group_2")
   @Test
   void should_ReturnBulkLog_When_UserIsNotAuthorizedForTasks() {
     String tkId1 = "TKI:000000000000000000000000000000000008";
@@ -419,7 +419,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin", groups = "group_2")
   @Test
   void should_SetPlannedPropertyWithBulkUpdate_When_RequestContainsASingleTask()
-      throws NotAuthorizedException, TaskNotFoundException, InvalidArgumentException {
+      throws NotAuthorizedException, TaskNotFoundException {
     String taskId = "TKI:000000000000000000000000000000000002";
     Instant planned = getInstant("2020-05-03T07:00:00");
     // test bulk operation setPlanned...
@@ -533,7 +533,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     assertThat(task.getDue()).isEqualTo(getInstant("2020-05-15T07:00:00"));
   }
 
-  @WithAccessId(user = "user_1_2", groups = "group_1")
+  @WithAccessId(user = "user-1-2", groups = "group_1")
   @Test
   void should_UpdateTaskPlannedOrDue_When_PlannedOrDueAreWeekendDays()
       throws NotAuthorizedException, TaskNotFoundException, ClassificationNotFoundException,
@@ -564,7 +564,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     assertThat(task.getDue()).isEqualTo(getInstant("2020-03-20T07:00:00")); // friday
   }
 
-  @WithAccessId(user = "user1_4", groups = "group_1")
+  @WithAccessId(user = "user-1-4", groups = "group_1")
   @Test
   void should_UpdateTaskPlannedOrDue_When_PlannedOrDueAreOnWeekends_ServiceLevel_P0D()
       throws NotAuthorizedException, TaskNotFoundException, ClassificationNotFoundException,
@@ -637,7 +637,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
                 + "due date 2020-03-23T07:00:00Z not matching the service level PT0S.");
   }
 
-  @WithAccessId(user = "user_1_2", groups = "group_1")
+  @WithAccessId(user = "user-1-2", groups = "group_1")
   @Test
   void should_notThrowServiceLevelViolation_IfWeekendOrHolidaysBetweenDates()
       throws NotAuthorizedException, TaskNotFoundException, ClassificationNotFoundException,

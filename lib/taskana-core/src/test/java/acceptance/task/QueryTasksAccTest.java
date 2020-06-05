@@ -80,7 +80,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     resetDb(false);
   }
 
-  @WithAccessId(user = "teamlead_1", groups = "admin")
+  @WithAccessId(user = "teamlead-1", groups = "admin")
   @Test
   void testQueryTaskValuesForEveryColumn() {
     SoftAssertions softly = new SoftAssertions();
@@ -95,7 +95,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     softly.assertAll();
   }
 
-  @WithAccessId(user = "teamlead_1", groups = "admin")
+  @WithAccessId(user = "teamlead-1", groups = "admin")
   @Test
   void testQueryTaskValuesForColumnName() {
     List<String> columnValueList =
@@ -112,7 +112,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThat(columnValueList).hasSize(5);
   }
 
-  @WithAccessId(user = "teamlead_1", groups = "admin")
+  @WithAccessId(user = "teamlead-1", groups = "admin")
   @Test
   void testQueryTaskValuesForColumnNameOnAttachments() {
     List<String> columnValueList =
@@ -149,7 +149,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "teamlead_1",
+      user = "teamlead-1",
       groups = {"group_1", "group_2"})
   @Test
   void testQueryForOwnerLike() {
@@ -168,7 +168,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "teamlead_1",
+      user = "teamlead-1",
       groups = {"group_1", "group_2"})
   @Test
   void testQueryForParentBusinessProcessId() {
@@ -189,7 +189,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "teamlead_1",
+      user = "teamlead-1",
       groups = {"group_1", "group_2"})
   @Test
   void testQueryForName() {
@@ -204,7 +204,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "teamlead_1",
+      user = "teamlead-1",
       groups = {"group_1", "group_2"})
   @Test
   void testQueryForClassificationKey() {
@@ -227,7 +227,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThat(result4).hasSize(7);
   }
 
-  @WithAccessId(user = "teamlead_1", groups = "group_1")
+  @WithAccessId(user = "teamlead-1", groups = "group_1")
   @Test
   void testQueryForAttachmentInSummary()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -259,7 +259,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThat(results.get(0).getAttachmentSummaries().get(0)).isNotNull();
   }
 
-  @WithAccessId(user = "teamlead_1", groups = "admin")
+  @WithAccessId(user = "teamlead-1", groups = "admin")
   @Test
   void testQueryForExternalId() {
 
@@ -284,7 +284,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThat(countAllExternalIds).isEqualTo(countAllIds);
   }
 
-  @WithAccessId(user = "teamlead_1", groups = "group_1")
+  @WithAccessId(user = "teamlead-1", groups = "group_1")
   @TestFactory
   Stream<DynamicTest> testQueryForCustomX() {
     List<Triplet<String, String[], Integer>> list =
@@ -326,7 +326,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThat(result2).hasSize(expectedResult);
   }
 
-  @WithAccessId(user = "teamlead_1", groups = "group_1")
+  @WithAccessId(user = "teamlead-1", groups = "group_1")
   @Test
   void testQueryForCustom7WithExceptionInLike() {
 
@@ -338,7 +338,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(InvalidArgumentException.class);
   }
 
-  @WithAccessId(user = "teamlead_1", groups = "group_1")
+  @WithAccessId(user = "teamlead-1", groups = "group_1")
   @Test
   void testQueryForCustom7WithExceptionInIn() throws InvalidArgumentException {
 
@@ -358,7 +358,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(InvalidArgumentException.class);
   }
 
-  @WithAccessId(user = "teamlead_1", groups = "group_1")
+  @WithAccessId(user = "teamlead-1", groups = "group_1")
   @Test
   void testQueryForCustom7WithException() throws InvalidArgumentException {
 
@@ -372,14 +372,14 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThat(result2).hasSize(2);
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testQueryTaskByCustomAttributes()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
           WorkbasketNotFoundException, TaskAlreadyExistException, NoSuchFieldException,
           IllegalAccessException {
 
-    Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
     newTask.setClassificationKey("T2100");
@@ -418,7 +418,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     }
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testQueryAndCountMatch() {
     TaskQuery taskQuery = taskService.createTaskQuery();
@@ -427,7 +427,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThat(tasks).hasSize((int) numberOfTasks);
   }
 
-  @WithAccessId(user = "teamlead_1", groups = "businessadmin")
+  @WithAccessId(user = "teamlead-1", groups = "businessadmin")
   @Test
   void testQueryAllPaged() {
     TaskQuery taskQuery = taskService.createTaskQuery();
@@ -837,7 +837,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "teamlead_1",
+      user = "teamlead-1",
       groups = {"group_1", "group_2"})
   @Test
   void testQueryForExternalIdIn() {
@@ -866,7 +866,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "teamlead_1",
+      user = "teamlead-1",
       groups = {"group_1", "group_2"})
   @Test
   void testQueryForExternalIdLike() {

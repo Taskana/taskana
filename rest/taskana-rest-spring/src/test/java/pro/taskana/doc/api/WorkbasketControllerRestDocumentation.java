@@ -144,8 +144,8 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
           fieldWithPath("orgLevel2").description(workbasketFieldDescriptionsMap.get("orgLevel2")),
           fieldWithPath("orgLevel3").description(workbasketFieldDescriptionsMap.get("orgLevel3")),
           fieldWithPath("orgLevel4").description(workbasketFieldDescriptionsMap.get("orgLevel4")),
-            fieldWithPath("markedForDeletion").description(
-                workbasketFieldDescriptionsMap.get("markedForDeletion")),
+          fieldWithPath("markedForDeletion")
+              .description(workbasketFieldDescriptionsMap.get("markedForDeletion")),
           fieldWithPath("_links.distributionTargets.href")
               .description(workbasketFieldDescriptionsMap.get("_links.distributionTargets.href")),
           fieldWithPath("_links.removeDistributionTargets.href")
@@ -167,25 +167,25 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
           fieldWithPath("description")
               .description(workbasketFieldDescriptionsMap.get("description")),
           fieldWithPath("owner").description(workbasketFieldDescriptionsMap.get("owner")),
-            fieldWithPath("domain").description(workbasketFieldDescriptionsMap.get("domain")),
-            fieldWithPath("type").description(workbasketFieldDescriptionsMap.get("type")),
-            fieldWithPath("custom1").description(workbasketFieldDescriptionsMap.get("custom1")),
-            fieldWithPath("custom2").description(workbasketFieldDescriptionsMap.get("custom2")),
-            fieldWithPath("custom3").description(workbasketFieldDescriptionsMap.get("custom3")),
-            fieldWithPath("custom4").description(workbasketFieldDescriptionsMap.get("custom4")),
-            fieldWithPath("orgLevel1").description(workbasketFieldDescriptionsMap.get("orgLevel1")),
-            fieldWithPath("orgLevel2").description(workbasketFieldDescriptionsMap.get("orgLevel2")),
-            fieldWithPath("orgLevel3").description(workbasketFieldDescriptionsMap.get("orgLevel3")),
-            fieldWithPath("orgLevel4").description(workbasketFieldDescriptionsMap.get("orgLevel4")),
-            fieldWithPath("markedForDeletion").description(
-                workbasketFieldDescriptionsMap.get("markedForDeletion")),
-            fieldWithPath("created").ignored(),
-            fieldWithPath("modified").ignored(),
-            fieldWithPath("_links.distributionTargets.href").ignored(),
-            fieldWithPath("_links.removeDistributionTargets.href").ignored(),
-            fieldWithPath("_links." + PROPERTY_NAME + ".href").ignored(),
-            fieldWithPath("_links.allWorkbaskets.href").ignored(),
-            fieldWithPath("_links.self.href").ignored()
+          fieldWithPath("domain").description(workbasketFieldDescriptionsMap.get("domain")),
+          fieldWithPath("type").description(workbasketFieldDescriptionsMap.get("type")),
+          fieldWithPath("custom1").description(workbasketFieldDescriptionsMap.get("custom1")),
+          fieldWithPath("custom2").description(workbasketFieldDescriptionsMap.get("custom2")),
+          fieldWithPath("custom3").description(workbasketFieldDescriptionsMap.get("custom3")),
+          fieldWithPath("custom4").description(workbasketFieldDescriptionsMap.get("custom4")),
+          fieldWithPath("orgLevel1").description(workbasketFieldDescriptionsMap.get("orgLevel1")),
+          fieldWithPath("orgLevel2").description(workbasketFieldDescriptionsMap.get("orgLevel2")),
+          fieldWithPath("orgLevel3").description(workbasketFieldDescriptionsMap.get("orgLevel3")),
+          fieldWithPath("orgLevel4").description(workbasketFieldDescriptionsMap.get("orgLevel4")),
+          fieldWithPath("markedForDeletion")
+              .description(workbasketFieldDescriptionsMap.get("markedForDeletion")),
+          fieldWithPath("created").ignored(),
+          fieldWithPath("modified").ignored(),
+          fieldWithPath("_links.distributionTargets.href").ignored(),
+          fieldWithPath("_links.removeDistributionTargets.href").ignored(),
+          fieldWithPath("_links." + PROPERTY_NAME + ".href").ignored(),
+          fieldWithPath("_links.allWorkbaskets.href").ignored(),
+          fieldWithPath("_links.self.href").ignored()
         };
 
     accessItemFieldDescriptors =
@@ -334,7 +334,7 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
             RestDocumentationRequestBuilders.get(
                     restHelper.toUrl(Mapping.URL_WORKBASKET) + "?type=PERSONAL")
                 .accept("application/hal+json")
-                .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
+                .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andDo(
             MockMvcRestDocumentation.document(
@@ -349,7 +349,7 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
                     restHelper.toUrl(
                         Mapping.URL_WORKBASKET_ID, "WBI:100000000000000000000000000000000001"))
                 .accept("application/hal+json")
-                .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
+                .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andDo(
             MockMvcRestDocumentation.document(
@@ -365,7 +365,7 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
                         Mapping.URL_WORKBASKET_ID_ACCESSITEMS,
                         "WBI:100000000000000000000000000000000001"))
                 .accept("application/hal+json")
-                .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
+                .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andDo(
             MockMvcRestDocumentation.document(
@@ -381,7 +381,7 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
                     restHelper.toUrl(
                         Mapping.URL_WORKBASKET_ID, "WBI:100000000000000000000000000000000001"))
                 .accept("application/hal+json")
-                .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
+                .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andDo(
             MockMvcRestDocumentation.document(
@@ -396,7 +396,7 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
                     restHelper.toUrl(
                         Mapping.URL_WORKBASKET_ID_DISTRIBUTION,
                         "WBI:100000000000000000000000000000000007"))
-                .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
+                .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isNoContent())
         .andDo(MockMvcRestDocumentation.document("RemoveWorkbasketAsDistributionTargetDocTest"));
   }
@@ -406,10 +406,10 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.get(
-                restHelper.toUrl(
-                    Mapping.URL_WORKBASKET_ID_DISTRIBUTION,
-                    "WBI:100000000000000000000000000000000002"))
-                .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
+                    restHelper.toUrl(
+                        Mapping.URL_WORKBASKET_ID_DISTRIBUTION,
+                        "WBI:100000000000000000000000000000000002"))
+                .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andDo(
             MockMvcRestDocumentation.document(
@@ -423,7 +423,7 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
         .perform(
             RestDocumentationRequestBuilders.post(restHelper.toUrl(Mapping.URL_WORKBASKET))
                 .contentType("application/json")
-                .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x")
+                .header("Authorization", TEAMLEAD_1_CREDENTIALS)
                 .content(
                     "{\"key\" : \"asdasdasd\", \"name\" : \"Gruppenpostkorb KSC\", "
                         + "\"domain\" : \"DOMAIN_A\", \"type\" : \"GROUP\",   "
@@ -446,26 +446,27 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
                 Mapping.URL_WORKBASKET_ID, "WBI:100000000000000000000000000000000002"));
     HttpURLConnection con = (HttpURLConnection) url.openConnection();
     con.setRequestMethod("GET");
-    con.setRequestProperty("Authorization", "Basic YWRtaW46YWRtaW4=");
+    con.setRequestProperty("Authorization", ADMIN_CREDENTIALS);
     assertEquals(200, con.getResponseCode());
 
-    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), UTF_8));
-    String inputLine;
-    StringBuffer content = new StringBuffer();
-    while ((inputLine = in.readLine()) != null) {
-      content.append(inputLine);
+    String modifiedWorkbasket;
+    try (BufferedReader in =
+        new BufferedReader(new InputStreamReader(con.getInputStream(), UTF_8))) {
+      String inputLine;
+      StringBuilder content = new StringBuilder();
+      while ((inputLine = in.readLine()) != null) {
+        content.append(inputLine);
+      }
+      con.disconnect();
+      modifiedWorkbasket = content.toString();
     }
-    in.close();
-    con.disconnect();
-    String originalWorkbasket = content.toString();
-    String modifiedWorkbasket = originalWorkbasket;
 
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.put(
                     restHelper.toUrl(
                         Mapping.URL_WORKBASKET_ID, "WBI:100000000000000000000000000000000002"))
-                .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x")
+                .header("Authorization", TEAMLEAD_1_CREDENTIALS)
                 .contentType("application/json")
                 .content(modifiedWorkbasket))
         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -483,7 +484,7 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
             RestDocumentationRequestBuilders.delete(
                     restHelper.toUrl(
                         Mapping.URL_WORKBASKET_ID, "WBI:100000000000000000000000000000000008"))
-                .header("Authorization", "Basic YWRtaW46YWRtaW4="))
+                .header("Authorization", ADMIN_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isNoContent())
         .andDo(MockMvcRestDocumentation.document("DeleteWorkbasketDocTest"));
   }
@@ -497,7 +498,7 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
                         Mapping.URL_WORKBASKET_ID_ACCESSITEMS,
                         "WBI:100000000000000000000000000000000001"))
                 .accept("application/hal+json")
-                .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
+                .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andDo(
             MockMvcRestDocumentation.document(

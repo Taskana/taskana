@@ -37,7 +37,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(user = "user_1_1")
+  @WithAccessId(user = "user-1-1")
   @WithAccessId(user = "taskadmin")
   @TestTemplate
   void should_ThrowException_When_UserIsNotAdminOrBusinessAdmin() {
@@ -144,7 +144,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "user_1_1",
+      user = "user-1-1",
       groups = {"group_2", "businessadmin"})
   @Test
   void testUpdatedAccessItemLeadsToNotAuthorizedException()
@@ -153,7 +153,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
     final WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
-    String wbKey = "USER_2_1";
+    String wbKey = "USER-2-1";
     String wbDomain = "DOMAIN_A";
     final String groupName = "group_2";
 

@@ -36,12 +36,12 @@ public class RestHelper {
   }
 
   public HttpEntity<String> defaultRequest() {
-    return new HttpEntity<>(getHeaders());
+    return new HttpEntity<>(getHeadersTeamlead_1());
   }
 
-  public HttpHeaders getHeaders() {
+  public HttpHeaders getHeadersTeamlead_1() {
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x");
+    headers.add("Authorization", "Basic dGVhbWxlYWQtMTp0ZWFtbGVhZC0x"); // teamlead-1
     headers.add("Content-Type", "application/json");
     return headers;
   }
@@ -61,12 +61,26 @@ public class RestHelper {
     return headers;
   }
 
+  public HttpHeaders getHeadersUser_1_2() {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Authorization", "Basic dXNlci0xLTI6dXNlci0xLTI="); // user-1-2
+    headers.add("Content-Type", "application/json");
+    return headers;
+  }
+
+  public HttpHeaders getHeadersUser_1_1() {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Authorization", "Basic dXNlci0xLTE6dXNlci0xLTE="); // user-1-1
+    headers.add("Content-Type", "application/json");
+    return headers;
+  }
+
   /**
    * Return a REST template which is capable of dealing with responses in HAL format.
    *
    * @return RestTemplate
    */
-  public static RestTemplate getRestTemplate() {
+  private static RestTemplate getRestTemplate() {
     ObjectMapper mapper = new ObjectMapper();
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);

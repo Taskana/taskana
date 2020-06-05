@@ -30,7 +30,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "teamlead_1",
+      user = "teamlead-1",
       groups = {"group_1", "group_2"})
   @Test
   void testSortByModifiedAndDomain() {
@@ -38,7 +38,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
     List<TaskSummary> results =
         taskService
             .createTaskQuery()
-            .workbasketKeyDomainIn(new KeyDomain("USER_3_2", "DOMAIN_B"))
+            .workbasketKeyDomainIn(new KeyDomain("USER-3-2", "DOMAIN_B"))
             .orderByModified(desc)
             .orderByDomain(null)
             .list();
@@ -54,7 +54,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "teamlead_1",
+      user = "teamlead-1",
       groups = {"group_1", "group_2"})
   @Test
   void testSortByTaskIdDesc() {
@@ -62,7 +62,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
     List<TaskSummary> results =
         taskService
             .createTaskQuery()
-            .workbasketKeyDomainIn(new KeyDomain("USER_3_2", "DOMAIN_B"))
+            .workbasketKeyDomainIn(new KeyDomain("USER-3-2", "DOMAIN_B"))
             .orderByTaskId(desc)
             .list();
 
@@ -81,7 +81,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "teamlead_1",
+      user = "teamlead-1",
       groups = {"group_1", "group_2"})
   @Test
   void testSortByTaskIdAsc() {
@@ -89,7 +89,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
     List<TaskSummary> results =
         taskService
             .createTaskQuery()
-            .workbasketKeyDomainIn(new KeyDomain("USER_3_2", "DOMAIN_B"))
+            .workbasketKeyDomainIn(new KeyDomain("USER-3-2", "DOMAIN_B"))
             .orderByTaskId(null)
             .list();
 
@@ -105,7 +105,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "teamlead_1",
+      user = "teamlead-1",
       groups = {"group_1", "group_2"})
   @Test
   void testSortByDomainNameAndCreated() {
@@ -127,7 +127,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "teamlead_1",
+      user = "teamlead-1",
       groups = {"group_1", "group_2"})
   @Test
   void testSortByPorSystemNoteDueAndOwner() {
@@ -135,7 +135,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
     List<TaskSummary> results =
         taskService
             .createTaskQuery()
-            .workbasketKeyDomainIn(new KeyDomain("USER_3_2", "DOMAIN_B"))
+            .workbasketKeyDomainIn(new KeyDomain("USER-3-2", "DOMAIN_B"))
             .orderByPrimaryObjectReferenceSystem(SortDirection.DESCENDING)
             .orderByNote(null)
             .orderByDue(null)
@@ -159,7 +159,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "teamlead_1",
+      user = "teamlead-1",
       groups = {"group_1", "group_2"})
   @Test
   void testSortByPorSystemInstanceParentProcPlannedAndState() {
@@ -167,7 +167,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
     List<TaskSummary> results =
         taskService
             .createTaskQuery()
-            .workbasketKeyDomainIn(new KeyDomain("USER_3_2", "DOMAIN_B"))
+            .workbasketKeyDomainIn(new KeyDomain("USER-3-2", "DOMAIN_B"))
             .orderByPrimaryObjectReferenceSystemInstance(desc)
             .orderByParentBusinessProcessId(asc)
             .orderByPlanned(asc)
@@ -191,7 +191,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "teamlead_1",
+      user = "teamlead-1",
       groups = {"group_1", "group_2"})
   @Test
   void testSortByPorCompanyAndClaimed() {
@@ -199,7 +199,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
     List<TaskSummary> results =
         taskService
             .createTaskQuery()
-            .workbasketKeyDomainIn(new KeyDomain("USER_3_2", "DOMAIN_B"))
+            .workbasketKeyDomainIn(new KeyDomain("USER-3-2", "DOMAIN_B"))
             .orderByPrimaryObjectReferenceCompany(desc)
             .orderByClaimed(asc)
             .list();
@@ -224,7 +224,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "teamlead_1",
+      user = "teamlead-1",
       groups = {"group_1", "group_2"})
   @Test
   void testSortByWbKeyPrioPorValueAndCompleted() {
@@ -257,7 +257,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "teamlead_1",
+      user = "teamlead-1",
       groups = {"group_1", "group_2"})
   @Test
   void testSortBpIdClassificationIdDescriptionAndPorType() {

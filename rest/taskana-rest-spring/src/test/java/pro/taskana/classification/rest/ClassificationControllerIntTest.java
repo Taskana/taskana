@@ -138,7 +138,7 @@ class ClassificationControllerIntTest {
         template.exchange(
             restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
             HttpMethod.POST,
-            new HttpEntity<>(newClassification, restHelper.getHeaders()),
+            new HttpEntity<>(newClassification, restHelper.getHeadersTeamlead_1()),
             ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
 
     assertThat(responseEntity).isNotNull();
@@ -153,7 +153,7 @@ class ClassificationControllerIntTest {
         template.exchange(
             restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
             HttpMethod.POST,
-            new HttpEntity<>(newClassification, restHelper.getHeaders()),
+            new HttpEntity<>(newClassification, restHelper.getHeadersTeamlead_1()),
             ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
 
     assertThat(HttpStatus.CREATED).isEqualTo(responseEntity.getStatusCode());
@@ -172,7 +172,7 @@ class ClassificationControllerIntTest {
         template.exchange(
             restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
             HttpMethod.POST,
-            new HttpEntity<>(newClassification, restHelper.getHeaders()),
+            new HttpEntity<>(newClassification, restHelper.getHeadersTeamlead_1()),
             ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
 
     assertThat(responseEntity).isNotNull();
@@ -192,7 +192,7 @@ class ClassificationControllerIntTest {
         template.exchange(
             restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
             HttpMethod.POST,
-            new HttpEntity<>(newClassification, restHelper.getHeaders()),
+            new HttpEntity<>(newClassification, restHelper.getHeadersTeamlead_1()),
             ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
 
     assertThat(responseEntity).isNotNull();
@@ -211,7 +211,7 @@ class ClassificationControllerIntTest {
         template.exchange(
             restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
             HttpMethod.POST,
-            new HttpEntity<>(newClassification, restHelper.getHeaders()),
+            new HttpEntity<>(newClassification, restHelper.getHeadersTeamlead_1()),
             ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
 
     assertThat(responseEntity).isNotNull();
@@ -252,7 +252,7 @@ class ClassificationControllerIntTest {
           template.exchange(
               restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
               HttpMethod.POST,
-              new HttpEntity<>(newClassification, restHelper.getHeaders()),
+              new HttpEntity<>(newClassification, restHelper.getHeadersBusinessAdmin()),
               ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
         };
     assertThatThrownBy(httpCall)
@@ -274,7 +274,7 @@ class ClassificationControllerIntTest {
           template.exchange(
               restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
               HttpMethod.POST,
-              new HttpEntity<>(newClassification, restHelper.getHeaders()),
+              new HttpEntity<>(newClassification, restHelper.getHeadersBusinessAdmin()),
               ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
         };
     assertThatThrownBy(httpCall)
@@ -300,7 +300,7 @@ class ClassificationControllerIntTest {
   @Test
   @DirtiesContext
   void testDeleteClassification() {
-    HttpEntity<String> request = new HttpEntity<>(restHelper.getHeaders());
+    HttpEntity<String> request = new HttpEntity<>(restHelper.getHeadersBusinessAdmin());
 
     ResponseEntity<ClassificationSummaryRepresentationModel> response =
         template.exchange(

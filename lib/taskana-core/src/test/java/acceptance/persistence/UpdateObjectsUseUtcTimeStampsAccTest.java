@@ -73,14 +73,14 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
     assertThat(retrievedTask).isEqualTo(updatedTask);
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testCreatedTaskObjectEqualsReadTaskObjectInNewTimezone()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
           WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException {
 
     TaskService taskService = taskanaEngine.getTaskService();
-    Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
@@ -114,8 +114,8 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin", groups = "group_1")
   @Test
   void testTimestampsOnClassificationUpdate()
-      throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
-          ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException {
+      throws ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
+          NotAuthorizedException {
     ClassificationService classificationService = taskanaEngine.getClassificationService();
     Classification classification =
         classificationService.getClassification("CLI:000000000000000000000000000000000001");
@@ -160,8 +160,7 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin", groups = "group_1")
   @Test
   void testTimestampsOnWorkbasketUpdate()
-      throws TaskNotFoundException, InvalidArgumentException, ConcurrencyException,
-          NotAuthorizedException, AttachmentPersistenceException, WorkbasketNotFoundException {
+      throws ConcurrencyException, NotAuthorizedException, WorkbasketNotFoundException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     Workbasket workbasket =
         workbasketService.getWorkbasket("WBI:100000000000000000000000000000000001");
@@ -175,7 +174,7 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
     assertThat(retrievedWorkbasket).isEqualTo(updatedWorkbasket);
   }
 
-  @WithAccessId(user = "user_1_2", groups = "businessadmin")
+  @WithAccessId(user = "user-1-2", groups = "businessadmin")
   @Test
   void testTimestampsOnCreateWorkbasket()
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
@@ -190,7 +189,7 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
     workbasket.setOrgLevel1("company");
     workbasket = workbasketService.createWorkbasket(workbasket);
     WorkbasketAccessItem wbai =
-        workbasketService.newWorkbasketAccessItem(workbasket.getId(), "user_1_2");
+        workbasketService.newWorkbasketAccessItem(workbasket.getId(), "user-1-2");
     wbai.setPermRead(true);
     workbasketService.createWorkbasketAccessItem(wbai);
 
@@ -204,12 +203,9 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
     assertThat(retrievedWorkbasket).isEqualTo(workbasket);
   }
 
-  @WithAccessId(user = "user_1_2", groups = "businessadmin")
+  @WithAccessId(user = "user-1-2", groups = "businessadmin")
   @Test
-  void testTimestampsOnCreateScheduledJob()
-      throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-          InvalidWorkbasketException, WorkbasketAlreadyExistException, DomainNotFoundException,
-          SQLException {
+  void testTimestampsOnCreateScheduledJob() throws SQLException {
     resetDb(true);
     ScheduledJob job = new ScheduledJob();
     job.setArguments(Collections.singletonMap("keyBla", "valueBla"));

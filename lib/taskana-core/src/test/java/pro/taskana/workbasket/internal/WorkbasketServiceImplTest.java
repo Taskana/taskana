@@ -184,7 +184,7 @@ class WorkbasketServiceImplTest {
   }
 
   @Test
-  void testSetWorkbasketAccessItemsWithMultipleAccessIds() throws Exception {
+  void testSetWorkbasketAccessItemsWithMultipleAccessIds() {
 
     String wid = "workbasketId";
     List<WorkbasketAccessItem> accessItems =
@@ -198,7 +198,7 @@ class WorkbasketServiceImplTest {
   }
 
   @Test
-  void testCheckModifiedHasNotChanged() throws Exception {
+  void testCheckModifiedHasNotChanged() {
 
     Instant expectedModifiedTimestamp = Instant.now();
 

@@ -49,7 +49,7 @@ class DeleteClassificationAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(user = "taskadmin")
-  @WithAccessId(user = "user_1_1")
+  @WithAccessId(user = "user-1-1")
   @TestTemplate
   void should_ThrowException_When_UserRoleIsNotAdminOrBusinessAdmin() {
 

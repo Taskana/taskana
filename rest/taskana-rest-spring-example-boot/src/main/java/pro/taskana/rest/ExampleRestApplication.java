@@ -10,11 +10,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import pro.taskana.RestConfiguration;
-import pro.taskana.common.rest.AccessIdController;
-import pro.taskana.common.rest.ldap.LdapClient;
-import pro.taskana.common.rest.ldap.LdapConfiguration;
 import pro.taskana.jobs.TransactionalJobsConfiguration;
-import pro.taskana.ldap.LdapCacheTestImpl;
 import pro.taskana.sampledata.SampleDataGenerator;
 
 /** Example Application showing the implementation of taskana-rest-spring. */
@@ -25,27 +21,19 @@ import pro.taskana.sampledata.SampleDataGenerator;
 @Import({
   ExampleRestConfiguration.class,
   TransactionalJobsConfiguration.class,
-  LdapConfiguration.class,
   RestConfiguration.class,
   WebMvcConfig.class
 })
 public class ExampleRestApplication {
 
   private final SampleDataGenerator sampleDataGenerator;
-  private final LdapClient ldapClient;
-  private final LdapCacheTestImpl ldapCacheTest;
 
   @Value("${generateSampleData:true}")
   public boolean generateSampleData;
 
   @Autowired
-  public ExampleRestApplication(
-      SampleDataGenerator sampleDataGenerator,
-      LdapClient ldapClient,
-      LdapCacheTestImpl ldapCacheTest) {
+  public ExampleRestApplication(SampleDataGenerator sampleDataGenerator) {
     this.sampleDataGenerator = sampleDataGenerator;
-    this.ldapClient = ldapClient;
-    this.ldapCacheTest = ldapCacheTest;
   }
 
   public static void main(String[] args) {
@@ -54,9 +42,6 @@ public class ExampleRestApplication {
 
   @PostConstruct
   private void init() {
-    if (!ldapClient.useLdap()) {
-      AccessIdController.setLdapCache(ldapCacheTest);
-    }
     if (generateSampleData) {
       sampleDataGenerator.generateSampleData();
     }

@@ -44,12 +44,12 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin", groups = "businessadmin")
   @Test
   void testDeleteWorkbasket() throws WorkbasketNotFoundException, NotAuthorizedException {
-    Workbasket wb = workbasketService.getWorkbasket("USER_2_2", "DOMAIN_A");
+    Workbasket wb = workbasketService.getWorkbasket("USER-2-2", "DOMAIN_A");
 
     ThrowingCallable call =
         () -> {
           workbasketService.deleteWorkbasket(wb.getId());
-          workbasketService.getWorkbasket("USER_2_2", "DOMAIN_A");
+          workbasketService.getWorkbasket("USER-2-2", "DOMAIN_A");
         };
     assertThatThrownBy(call)
         .describedAs("There should be no result for a deleted Workbasket.")
@@ -63,7 +63,7 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
 
     ThrowingCallable deleteWorkbasketCall =
         () -> {
-          Workbasket wb = workbasketService.getWorkbasket("TEAMLEAD_2", "DOMAIN_A");
+          Workbasket wb = workbasketService.getWorkbasket("TEAMLEAD-2", "DOMAIN_A");
           workbasketService.deleteWorkbasket(wb.getId());
         };
     assertThatThrownBy(deleteWorkbasketCall).isInstanceOf(NotAuthorizedException.class);
@@ -82,13 +82,13 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
 
     ThrowingCallable call =
         () -> {
-          workbasketService.getWorkbasket("TEAMLEAD_2", "DOMAIN_A");
+          workbasketService.getWorkbasket("TEAMLEAD-2", "DOMAIN_A");
         };
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(
-      user = "user_1_1",
+      user = "user-1-1",
       groups = {"teamlead_1", "group_1", "businessadmin"})
   @Test
   void testDeleteWorkbasketAlsoAsDistributionTarget()
@@ -148,12 +148,12 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(WorkbasketNotFoundException.class);
   }
 
-  @WithAccessId(user = "user_1_2", groups = "businessadmin")
+  @WithAccessId(user = "user-1-2", groups = "businessadmin")
   @Test
   void testDeleteWorkbasketWhichIsUsed()
       throws WorkbasketNotFoundException, NotAuthorizedException {
     Workbasket wb =
-        workbasketService.getWorkbasket("USER_1_2", "DOMAIN_A"); // all rights, DOMAIN_A with Tasks
+        workbasketService.getWorkbasket("user-1-2", "DOMAIN_A"); // all rights, DOMAIN_A with Tasks
     ThrowingCallable call =
         () -> {
           workbasketService.deleteWorkbasket(wb.getId());
@@ -161,7 +161,7 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(WorkbasketInUseException.class);
   }
 
-  @WithAccessId(user = "teamlead_2", groups = "businessadmin")
+  @WithAccessId(user = "TEAMLEAD-2", groups = "businessadmin")
   @Test
   void testCascadingDeleteOfAccessItems()
       throws WorkbasketNotFoundException, NotAuthorizedException, InvalidArgumentException,
@@ -169,7 +169,7 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
     Workbasket wb = workbasketService.getWorkbasket("WBI:100000000000000000000000000000000008");
     String wbId = wb.getId();
     // create 2 access Items
-    WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem(wbId, "teamlead_2");
+    WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem(wbId, "TEAMLEAD-2");
     accessItem.setPermAppend(true);
     accessItem.setPermRead(true);
     accessItem.setPermOpen(true);

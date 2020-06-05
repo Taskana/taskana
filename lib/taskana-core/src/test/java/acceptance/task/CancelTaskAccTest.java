@@ -38,7 +38,7 @@ class CancelTaskAccTest extends AbstractAccTest {
     resetDb(false);
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testQeryCancelledTasks() {
     List<TaskSummary> taskSummaries =
@@ -73,7 +73,7 @@ class CancelTaskAccTest extends AbstractAccTest {
     assertThat(cancelledTask.getState()).isEqualTo(TaskState.CANCELLED);
   }
 
-  @WithAccessId(user = "user_1_2", groups = "group_1")
+  @WithAccessId(user = "user-1-2", groups = "group_1")
   @Test
   void testCancelClaimedTask()
       throws NotAuthorizedException, TaskNotFoundException, InvalidStateException {
@@ -103,7 +103,7 @@ class CancelTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(taskanaCall).isInstanceOf(InvalidStateException.class);
   }
 
-  @WithAccessId(user = "user_1_2", groups = "group_1")
+  @WithAccessId(user = "user-1-2", groups = "group_1")
   @Test
   void testCancelTerminatedTask() {
     List<TaskSummary> taskSummaries =
@@ -114,7 +114,7 @@ class CancelTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(taskanaCall).isInstanceOf(InvalidStateException.class);
   }
 
-  @WithAccessId(user = "user_1_2", groups = "group_1")
+  @WithAccessId(user = "user-1-2", groups = "group_1")
   @Test
   void testCancelCancelledTask() {
     List<TaskSummary> taskSummaries =

@@ -33,7 +33,7 @@ class TaskCommentRepresentationModelAssemblerTest {
         (TaskCommentImpl) taskService.newTaskComment("TKI:000000000000000000000000000000000000");
 
     taskComment.setId("taskCommentId");
-    taskComment.setCreator("user_1_1");
+    taskComment.setCreator("user-1-1");
     taskComment.setTextField("this is a task comment");
     taskComment.setCreated(Instant.parse("2010-01-01T12:00:00Z"));
     taskComment.setModified(Instant.parse("2011-11-11T11:00:00Z"));
@@ -50,7 +50,7 @@ class TaskCommentRepresentationModelAssemblerTest {
     TaskCommentRepresentationModel repModel = new TaskCommentRepresentationModel();
     repModel.setTaskId("TKI:000000000000000000000000000000000000");
     repModel.setTaskCommentId("TCI:000000000000000000000000000000000000");
-    repModel.setCreator("user_1_1");
+    repModel.setCreator("user-1-1");
     repModel.setCreated(Instant.parse("2010-01-01T12:00:00Z"));
     repModel.setModified(Instant.parse("2011-11-11T11:00:00Z"));
     repModel.setTextField("textField");
@@ -65,7 +65,7 @@ class TaskCommentRepresentationModelAssemblerTest {
     TaskCommentImpl taskComment =
         (TaskCommentImpl) taskService.newTaskComment("TKI:000000000000000000000000000000000000");
     taskComment.setId("taskCommentId");
-    taskComment.setCreator("user_1_1");
+    taskComment.setCreator("user-1-1");
     taskComment.setTextField("this is a task comment");
     taskComment.setCreated(Instant.parse("2010-01-01T12:00:00Z"));
     taskComment.setModified(Instant.parse("2011-11-11T11:00:00Z"));

@@ -23,11 +23,9 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import pro.taskana.common.rest.AccessIdController;
 import pro.taskana.common.rest.ldap.LdapClient;
 import pro.taskana.common.rest.ldap.LdapConfiguration;
 import pro.taskana.jobs.TransactionalJobsConfiguration;
-import pro.taskana.ldap.LdapCacheTestImpl;
 import pro.taskana.rest.WebMvcConfig;
 import pro.taskana.sampledata.SampleDataGenerator;
 
@@ -57,8 +55,6 @@ public class TaskanaWildFlyApplication extends SpringBootServletInitializer {
   @Autowired private SampleDataGenerator sampleDataGenerator;
 
   @Autowired private LdapClient ldapClient;
-
-  @Autowired private LdapCacheTestImpl ldapCacheTest;
 
   public static void main(String[] args) {
     SpringApplication.run(TaskanaWildFlyApplication.class, args);
@@ -110,9 +106,6 @@ public class TaskanaWildFlyApplication extends SpringBootServletInitializer {
 
   @PostConstruct
   private void init() {
-    if (!ldapClient.useLdap()) {
-      AccessIdController.setLdapCache(ldapCacheTest);
-    }
     if (generateSampleData) {
       sampleDataGenerator.generateSampleData();
     }

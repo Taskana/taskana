@@ -53,7 +53,7 @@ class MonitorControllerRestDocumentation extends BaseRestDocumentation {
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.get(restHelper.toUrl(Mapping.URL_MONITOR_TASKS_STATUS))
-                .header("Authorization", "Basic YWRtaW46YWRtaW4="))
+                .header("Authorization", ADMIN_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andDo(
             MockMvcRestDocumentation.document(
@@ -68,7 +68,7 @@ class MonitorControllerRestDocumentation extends BaseRestDocumentation {
                     restHelper.toUrl(Mapping.URL_MONITOR_TASKS_WORKBASKET)
                         + "?daysInPast=4&states=READY,CLAIMED,COMPLETED")
                 .accept("application/hal+json")
-                .header("Authorization", "Basic YWRtaW46YWRtaW4="))
+                .header("Authorization", ADMIN_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andDo(
             MockMvcRestDocumentation.document(
@@ -82,7 +82,7 @@ class MonitorControllerRestDocumentation extends BaseRestDocumentation {
             RestDocumentationRequestBuilders.get(
                     restHelper.toUrl(Mapping.URL_MONITOR_TASKS_CLASSIFICATION))
                 .accept("application/hal+json")
-                .header("Authorization", "Basic YWRtaW46YWRtaW4="))
+                .header("Authorization", ADMIN_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andDo(
             MockMvcRestDocumentation.document(
@@ -95,7 +95,7 @@ class MonitorControllerRestDocumentation extends BaseRestDocumentation {
         .perform(
             RestDocumentationRequestBuilders.get(restHelper.toUrl(Mapping.URL_MONITOR_TIMESTAMP))
                 .accept("application/hal+json")
-                .header("Authorization", "Basic YWRtaW46YWRtaW4="))
+                .header("Authorization", ADMIN_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andDo(
             MockMvcRestDocumentation.document(

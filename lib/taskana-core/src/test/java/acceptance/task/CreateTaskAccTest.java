@@ -44,7 +44,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   private final TaskService taskService = taskanaEngine.getTaskService();
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void should_beAbleToCreateNewTask_When_TaskCopy() throws Exception {
     Task oldTask = taskService.getTask("TKI:000000000000000000000000000000000000");
@@ -59,25 +59,25 @@ class CreateTaskAccTest extends AbstractAccTest {
         .containsOnly(newTask.getId());
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testCreateSimpleManualTask()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
           WorkbasketNotFoundException, TaskAlreadyExistException {
 
-    Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
     ObjectReference objectReference =
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567");
     newTask.setPrimaryObjRef(objectReference);
-    newTask.setOwner("user_1_1");
+    newTask.setOwner("user-1-1");
     Task createdTask = taskService.createTask(newTask);
     Instant expectedPlanned = moveForwardToWorkingDay(createdTask.getCreated());
 
     assertThat(createdTask).isNotNull();
     assertThat(createdTask.getCreator()).isEqualTo(CurrentUserContext.getUserid());
-    assertThat(createdTask.getOwner()).isEqualTo("user_1_1");
-    assertThat(createdTask.getWorkbasketKey()).isEqualTo("USER_1_1");
+    assertThat(createdTask.getOwner()).isEqualTo("user-1-1");
+    assertThat(createdTask.getWorkbasketKey()).isEqualTo("USER-1-1");
     assertThat(createdTask.getName()).isEqualTo("T-Vertragstermin VERA");
     assertThat(createdTask.getPrimaryObjRef()).isEqualTo(objectReference);
     assertThat(createdTask.getCreated()).isNotNull();
@@ -94,7 +94,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(createdTask.isTransferred()).isFalse();
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void should_createTask_When_ObjectReferenceSystemAndSystemInstanceIsNull()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -102,7 +102,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
     String currentUser = CurrentUserContext.getUserid();
 
-    Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
     ObjectReference objectReference =
         createObjectReference("COMPANY_A", null, null, "VNR", "1234567");
@@ -123,7 +123,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
     String currentUser = CurrentUserContext.getUserid();
 
-    Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
     ObjectReference objectReference =
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567");
@@ -135,13 +135,13 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(createdTask.getCreator()).isEqualTo(CurrentUserContext.getUserid());
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testIdempotencyOfTaskCreation()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
           WorkbasketNotFoundException, TaskAlreadyExistException {
 
-    Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setExternalId("MyExternalId");
     newTask.setClassificationKey("T2100");
     newTask.setPrimaryObjRef(
@@ -167,7 +167,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(createdTask.isRead()).isFalse();
     assertThat(createdTask.isTransferred()).isFalse();
 
-    Task newTask2 = taskService.newTask("USER_1_1", "DOMAIN_A");
+    Task newTask2 = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask2.setExternalId("MyExternalId");
     newTask2.setClassificationKey("T2100");
     newTask2.setPrimaryObjRef(
@@ -177,14 +177,14 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(TaskAlreadyExistException.class);
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testCreateSimpleTaskWithCustomAttributes()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
           WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException,
           NoSuchFieldException, IllegalAccessException {
 
-    Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
@@ -245,14 +245,14 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(customAttributesForCreate).isEqualTo(customAttributesFromDb);
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testCreateExternalTaskWithAttachment()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
           WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException,
           NoSuchFieldException, IllegalAccessException {
 
-    Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("L12010");
     Map<String, String> customAttributesForCreate = createSimpleCustomProperties(27);
     newTask.addAttachment(
@@ -331,13 +331,13 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(customAttributesForCreate).isEqualTo(customAttributesFromDb);
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testCreateExternalTaskWithMultipleAttachments()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
           WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException {
 
-    Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("L12010");
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
@@ -383,13 +383,13 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(readTask.getAttachments().get(0).getObjectReference()).isNotNull();
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testPrioDurationOfTaskFromAttachmentsAtCreate()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
           WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException {
 
-    Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("L12010"); // prio 8, SL P7D
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
@@ -443,7 +443,7 @@ class CreateTaskAccTest extends AbstractAccTest {
         .isEqualTo(readTask.getDue());
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testThrowsExceptionIfAttachmentIsInvalid() throws ClassificationNotFoundException {
 
@@ -498,13 +498,13 @@ class CreateTaskAccTest extends AbstractAccTest {
             createSimpleCustomProperties(3)));
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testUseCustomNameIfSetForNewTask()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
           WorkbasketNotFoundException, TaskAlreadyExistException {
 
-    Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
@@ -516,13 +516,13 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(createdTask.getName()).isEqualTo("Test Name");
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testUseClassificationMetadataFromCorrectDomainForNewTask()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
           WorkbasketNotFoundException, TaskAlreadyExistException {
 
-    Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
@@ -534,7 +534,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(createdTask.getPriority()).isEqualTo(2);
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testGetExceptionIfWorkbasketDoesNotExist() {
 
@@ -547,7 +547,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(WorkbasketNotFoundException.class);
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testGetExceptionIfAppendIsNotPermitted() {
 
@@ -560,13 +560,13 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testThrowsExceptionIfMandatoryPrimaryObjectReferenceIsNotSetOrIncomplete() {
 
     Consumer<ObjectReference> testCreateTask =
         (ObjectReference objectReference) -> {
-          Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+          Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
           newTask.setClassificationKey("T2100");
           if (objectReference != null) {
             newTask.setPrimaryObjRef(objectReference);
@@ -586,7 +586,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     testCreateTask.accept(createObjectReference(null, "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testSetDomainFromWorkbasket()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -594,7 +594,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
-    final Workbasket workbasket = workbasketService.getWorkbasket("USER_1_1", "DOMAIN_A");
+    final Workbasket workbasket = workbasketService.getWorkbasket("USER-1-1", "DOMAIN_A");
 
     Task newTask = taskService.newTask("WBI:100000000000000000000000000000000006");
     newTask.setClassificationKey("T2100");
@@ -608,13 +608,13 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(createdTask.getDomain()).isEqualTo(workbasket.getDomain());
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testCreatedTaskObjectEqualsReadTaskObject()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
           WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException {
 
-    Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
@@ -642,13 +642,13 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(readTask).isEqualTo(createdTask);
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testCreateSimpleTaskWithCallbackInfo()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
           TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException {
 
-    Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
@@ -680,7 +680,7 @@ class CreateTaskAccTest extends AbstractAccTest {
   @Test
   void testCreateTaskWithSecurityButNoUserId() {
 
-    Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_B", "SYSTEM_B", "INSTANCE_B", "VNR", "1234567"));
@@ -689,7 +689,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testCreateTaskAlreadyExisting() throws NotAuthorizedException, TaskNotFoundException {
 
@@ -699,11 +699,11 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(TaskAlreadyExistException.class);
   }
 
-  @WithAccessId(user = "user_1_1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group_1")
   @Test
   void testCreateTaskNotAuthorizedOnWorkbasket() {
 
-    Task task = taskService.newTask("TEAMLEAD_2", "DOMAIN_A");
+    Task task = taskService.newTask("TEAMLEAD-2", "DOMAIN_A");
 
     ThrowingCallable call = () -> taskService.createTask(task);
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
@@ -737,7 +737,7 @@ class CreateTaskAccTest extends AbstractAccTest {
   }
 
   private Task makeNewTask(TaskService taskService) {
-    Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("L12010");
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));

@@ -65,7 +65,7 @@ class AbstractPagingControllerRestDocumentation extends BaseRestDocumentation {
         .perform(
             RestDocumentationRequestBuilders.get(
                     restHelper.toUrl(Mapping.URL_CLASSIFICATIONS) + "?page=2&page-size=5")
-                .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
+                .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andDo(
             MockMvcRestDocumentation.document(

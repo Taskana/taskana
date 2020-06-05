@@ -98,7 +98,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
       throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
           TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException,
           InvalidStateException, InvalidOwnerException {
-    Task newTask = taskService.newTask("USER_1_1", "DOMAIN_A");
+    Task newTask = taskService.newTask("user-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));

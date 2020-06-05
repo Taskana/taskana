@@ -18,7 +18,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import pro.taskana.RestConfiguration;
-import pro.taskana.common.rest.ldap.LdapCacheTestImpl;
 import pro.taskana.sampledata.SampleDataGenerator;
 
 /** Example Application to create the documentation. */
@@ -67,7 +66,6 @@ public class ExampleDocumentationApp {
 
   @PostConstruct
   private void init() {
-    AccessIdController.setLdapCache(new LdapCacheTestImpl());
     sampleDataGenerator.generateSampleData();
   }
 }
