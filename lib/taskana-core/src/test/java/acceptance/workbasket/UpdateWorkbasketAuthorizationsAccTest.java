@@ -60,7 +60,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead_1",
-      groups = {"group_1", "businessadmin"})
+      groups = {"group-1", "businessadmin"})
   @Test
   void testUpdateWorkbasketAccessItemSucceeds()
       throws InvalidArgumentException, NotAuthorizedException, WorkbasketNotFoundException,
@@ -96,7 +96,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead_1",
-      groups = {"group_1", "businessadmin"})
+      groups = {"group-1", "businessadmin"})
   @Test
   void testUpdateWorkbasketAccessItemRejected()
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
@@ -145,7 +145,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "user-1-1",
-      groups = {"group_2", "businessadmin"})
+      groups = {"group-2", "businessadmin"})
   @Test
   void testUpdatedAccessItemLeadsToNotAuthorizedException()
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
@@ -155,7 +155,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
     String wbKey = "USER-2-1";
     String wbDomain = "DOMAIN_A";
-    final String groupName = "group_2";
+    final String groupName = "group-2";
 
     Task newTask = taskService.newTask(wbKey, wbDomain);
     newTask.setClassificationKey("T2100");
@@ -191,7 +191,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead_1",
-      groups = {"group_1", "businessadmin"})
+      groups = {"group-1", "businessadmin"})
   @Test
   void testUpdatedAccessItemList() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -231,7 +231,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead_1",
-      groups = {"group_1", "businessadmin"})
+      groups = {"group-1", "businessadmin"})
   @Test
   void testInsertAccessItemList() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -269,7 +269,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead_1",
-      groups = {"group_1", "businessadmin"})
+      groups = {"group-1", "businessadmin"})
   @Test
   void testDeleteAccessItemForAccessItemId() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -282,7 +282,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     }
 
     List<WorkbasketAccessItem> accessList = new ArrayList<>(originalList);
-    WorkbasketAccessItem newItem = workbasketService.newWorkbasketAccessItem(wbId, "group_1");
+    WorkbasketAccessItem newItem = workbasketService.newWorkbasketAccessItem(wbId, "group-1");
     accessList.add(newItem);
     assertThat(accessList).isNotEqualTo(originalList);
     workbasketService.setWorkbasketAccessItems(wbId, accessList);
@@ -305,7 +305,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
   @Test
   void testDeleteAccessItemsForAccessId() throws NotAuthorizedException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-    final String accessId = "group_1";
+    final String accessId = "group-1";
     final long accessIdCountBefore =
         workbasketService.createWorkbasketAccessItemQuery().accessIdIn(accessId).count();
 

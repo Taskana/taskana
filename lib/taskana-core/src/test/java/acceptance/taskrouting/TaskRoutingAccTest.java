@@ -22,7 +22,7 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 @ExtendWith(JaasExtension.class)
 class TaskRoutingAccTest extends AbstractAccTest {
 
-  @WithAccessId(user = "admin", groups = "group_1")
+  @WithAccessId(user = "admin", groups = "group-1")
   @Test
   void testCreateTaskWithoutWorkbasketAndVoidNewTaskMethod()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -45,7 +45,7 @@ class TaskRoutingAccTest extends AbstractAccTest {
         .isEqualTo(createdTask.getWorkbasketSummary().getId());
   }
 
-  @WithAccessId(user = "admin", groups = "group_1")
+  @WithAccessId(user = "admin", groups = "group-1")
   @Test
   void testCreateTaskWithNullWorkbasket()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -60,7 +60,7 @@ class TaskRoutingAccTest extends AbstractAccTest {
         .isInstanceOf(InvalidArgumentException.class);
   }
 
-  @WithAccessId(user = "admin", groups = "group_1")
+  @WithAccessId(user = "admin", groups = "group-1")
   @Test
   void testCreateTaskWithNullRouting() throws InvalidArgumentException {
 
@@ -74,7 +74,7 @@ class TaskRoutingAccTest extends AbstractAccTest {
         .isInstanceOf(InvalidArgumentException.class);
   }
 
-  @WithAccessId(user = "admin", groups = "group_1")
+  @WithAccessId(user = "admin", groups = "group-1")
   @Test
   void testCreateTaskWithRoutingToMultipleWorkbaskets() throws InvalidArgumentException {
 

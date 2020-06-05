@@ -31,7 +31,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead-1",
-      groups = {"group_1", "group_2"})
+      groups = {"group-1", "group-2"})
   @Test
   void testSortByModifiedAndDomain() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -55,7 +55,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead-1",
-      groups = {"group_1", "group_2"})
+      groups = {"group-1", "group-2"})
   @Test
   void testSortByTaskIdDesc() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -82,7 +82,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead-1",
-      groups = {"group_1", "group_2"})
+      groups = {"group-1", "group-2"})
   @Test
   void testSortByTaskIdAsc() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -106,7 +106,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead-1",
-      groups = {"group_1", "group_2"})
+      groups = {"group-1", "group-2"})
   @Test
   void testSortByDomainNameAndCreated() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -128,7 +128,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead-1",
-      groups = {"group_1", "group_2"})
+      groups = {"group-1", "group-2"})
   @Test
   void testSortByPorSystemNoteDueAndOwner() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -160,7 +160,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead-1",
-      groups = {"group_1", "group_2"})
+      groups = {"group-1", "group-2"})
   @Test
   void testSortByPorSystemInstanceParentProcPlannedAndState() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -192,7 +192,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead-1",
-      groups = {"group_1", "group_2"})
+      groups = {"group-1", "group-2"})
   @Test
   void testSortByPorCompanyAndClaimed() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -225,7 +225,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead-1",
-      groups = {"group_1", "group_2"})
+      groups = {"group-1", "group-2"})
   @Test
   void testSortByWbKeyPrioPorValueAndCompleted() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -258,7 +258,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead-1",
-      groups = {"group_1", "group_2"})
+      groups = {"group-1", "group-2"})
   @Test
   void testSortBpIdClassificationIdDescriptionAndPorType() {
     TaskService taskService = taskanaEngine.getTaskService();

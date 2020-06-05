@@ -25,7 +25,7 @@ class DeleteWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
     ThrowingCallable deleteWorkbasketAccessItemCall =
         () -> {
-          workbasketService.deleteWorkbasketAccessItemsForAccessId("group_1");
+          workbasketService.deleteWorkbasketAccessItemsForAccessId("group-1");
         };
 
     assertThatThrownBy(deleteWorkbasketAccessItemCall).isInstanceOf(NotAuthorizedException.class);

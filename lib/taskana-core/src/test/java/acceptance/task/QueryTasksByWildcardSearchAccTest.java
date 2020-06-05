@@ -21,7 +21,7 @@ public class QueryTasksByWildcardSearchAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead-1",
-      groups = {"group_1", "group_2"})
+      groups = {"group-1", "group-2"})
   @Test
   void should_ReturnAllTasksByWildcardSearch_For_ProvidedSearchValue() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -43,7 +43,7 @@ public class QueryTasksByWildcardSearchAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead-1",
-      groups = {"group_1", "group_2"})
+      groups = {"group-1", "group-2"})
   @Test
   void should_ReturnAllTasks_For_ProvidedSearchValueAndAdditionalParameters() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -67,7 +67,7 @@ public class QueryTasksByWildcardSearchAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead-1",
-      groups = {"group_1", "group_2"})
+      groups = {"group-1", "group-2"})
   @Test
   void should_ThrowException_When_NotUsingSearchFieldsAndValueParamsTogether() {
 

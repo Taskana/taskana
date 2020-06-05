@@ -27,7 +27,7 @@ class GetTaskAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group-1")
   @Test
   void should_ReturnTask_When_RequestingTaskByTaskId()
       throws TaskNotFoundException, NotAuthorizedException, InvalidArgumentException {
@@ -80,7 +80,7 @@ class GetTaskAccTest extends AbstractAccTest {
     assertThat(task.getCustomAttribute("16")).isEqualTo("custom16");
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group-1")
   @Test
   void should_ThrowException_When_RequestedTaskByIdIsNotExisting() {
     TaskService taskService = taskanaEngine.getTaskService();

@@ -46,7 +46,7 @@ import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 @ExtendWith(JaasExtension.class)
 public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
 
-  @WithAccessId(user = "admin", groups = "group_1")
+  @WithAccessId(user = "admin", groups = "group-1")
   @Test
   void testTimestampsOnTaskUpdate()
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
@@ -73,7 +73,7 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
     assertThat(retrievedTask).isEqualTo(updatedTask);
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group-1")
   @Test
   void testCreatedTaskObjectEqualsReadTaskObjectInNewTimezone()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -111,7 +111,7 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
     assertThat(readTask).isEqualTo(createdTask);
   }
 
-  @WithAccessId(user = "admin", groups = "group_1")
+  @WithAccessId(user = "admin", groups = "group-1")
   @Test
   void testTimestampsOnClassificationUpdate()
       throws ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
@@ -133,7 +133,7 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead_1",
-      groups = {"group_1", "businessadmin"})
+      groups = {"group-1", "businessadmin"})
   @Test
   void testTimestampsOnCreateMasterClassification()
       throws ClassificationAlreadyExistException, ClassificationNotFoundException,
@@ -157,7 +157,7 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
     assertThat(retrievedClassification).isEqualTo(classification);
   }
 
-  @WithAccessId(user = "admin", groups = "group_1")
+  @WithAccessId(user = "admin", groups = "group-1")
   @Test
   void testTimestampsOnWorkbasketUpdate()
       throws ConcurrencyException, NotAuthorizedException, WorkbasketNotFoundException {

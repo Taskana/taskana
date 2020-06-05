@@ -27,7 +27,7 @@ class UpdateWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead-1",
-      groups = {"group_1", "businessadmin"})
+      groups = {"group-1", "businessadmin"})
   @Test
   void testUpdateWorkbasket()
       throws NotAuthorizedException, WorkbasketNotFoundException, ConcurrencyException {
@@ -61,7 +61,7 @@ class UpdateWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead-1",
-      groups = {"group_1", "businessadmin"})
+      groups = {"group-1", "businessadmin"})
   @Test
   void testUpdateWorkbasketWithConcurrentModificationShouldThrowException()
       throws NotAuthorizedException, WorkbasketNotFoundException {
@@ -79,7 +79,7 @@ class UpdateWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(
       user = "teamlead-1",
-      groups = {"group_1", "businessadmin"})
+      groups = {"group-1", "businessadmin"})
   @Test
   void testUpdateWorkbasketOfNonExistingWorkbasketShouldThrowException()
       throws NotAuthorizedException, WorkbasketNotFoundException {
@@ -96,7 +96,7 @@ class UpdateWorkbasketAccTest extends AbstractAccTest {
         .isThrownBy(() -> workbasketService.updateWorkbasket(workbasket));
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group-1")
   @WithAccessId(user = "taskadmin")
   @TestTemplate
   void should_ThrowException_When_UserRoleIsNotAdminOrBusinessAdmin()

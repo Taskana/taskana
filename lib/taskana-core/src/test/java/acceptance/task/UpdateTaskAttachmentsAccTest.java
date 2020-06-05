@@ -75,7 +75,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     assertThat(task).isNotNull();
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group-1")
   @Test
   void testAddNewAttachment()
       throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -95,7 +95,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         .containsOnly(task.getModified());
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group-1")
   @Test
   void testAddValidAttachmentTwice()
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
@@ -118,7 +118,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         .containsOnly(task.getModified());
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group-1")
   @Test
   void testAddNewAttachmentTwiceWithoutTaskanaMethodWillThrowAttachmentPersistenceException()
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
@@ -138,7 +138,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(AttachmentPersistenceException.class);
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group-1")
   @Test
   void testAddExistingAttachmentAgainWillUpdateWhenNotEqual()
       throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -174,7 +174,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     assertThat(task.getPlanned().plus(Duration.ofDays(calendarDays))).isEqualTo(task.getDue());
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group-1")
   @Test
   void testAddExistingAttachmentAgainWillDoNothingWhenEqual()
       throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -198,7 +198,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     assertThat(task.getAttachments()).hasSize(attachmentCount2);
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group-1")
   @Test
   void testAddAttachmentAsNullValueWillBeIgnored()
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
@@ -232,7 +232,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     assertThat(task.getPlanned().plus(Duration.ofDays(1))).isEqualTo(task.getDue());
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group-1")
   @Test
   void testRemoveAttachment()
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
@@ -254,7 +254,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     assertThat(task.getPlanned().plus(Duration.ofDays(1))).isEqualTo(task.getDue());
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group-1")
   @Test
   void testRemoveAttachmentWithNullAndNotAddedId()
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
@@ -277,7 +277,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     assertThat(task.getAttachments()).hasSize(attachmentCount); // persisted, still same
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group-1")
   @Test
   void testUpdateAttachment()
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
@@ -314,7 +314,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     assertThat(task.getPlanned().plus(Duration.ofDays(calendarDays))).isEqualTo(task.getDue());
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group-1")
   @Test
   void modifyExistingAttachment()
       throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -411,7 +411,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     assertThat(faxFound && rohrpostFound).isTrue();
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group-1")
   @Test
   void replaceExistingAttachments()
       throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -472,7 +472,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     assertThat(task.getAttachments().get(0).getChannel()).isEqualTo("DHL");
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group-1")
   @Test
   void testPrioDurationOfTaskFromAttachmentsAtUpdate()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -535,7 +535,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         .isEqualTo(readTask.getDue());
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group_1")
+  @WithAccessId(user = "user-1-1", groups = "group-1")
   @Test
   void testAddCustomAttributeToAttachment()
       throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
