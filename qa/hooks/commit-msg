@@ -1,0 +1,15 @@
+#!/bin/bash
+MSG_FILE=$1
+COMMIT_MESSAGE="$(cat $MSG_FILE)"
+REGEX='^(TSK-[0-9]+):'
+if [[ $COMMIT_MESSAGE =~ $REGEX ]]; then
+ TICKET=${BASH_REMATCH[1]}
+ RESULT=$(curl -s https://taskana.atlassian.net/rest/api/3/issue/$TICKET)
+ if [[ $RESULT =~ "errorMessages" ]]; then
+  echo -e "\033[0;31mERROR:\033[0m $TICKET is not a valid ticket number"
+  exit 1
+ fi
+else
+ echo -e "\033[0;31mERROR:\033[0m Prefix Git commit messages with the ticket number, e.g. TSK-140: xyz..."
+ exit 1
+fi
