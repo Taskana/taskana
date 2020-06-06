@@ -237,7 +237,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             "Method createWorkbasketAccessItem() created workbaskteAccessItem {}", accessItem);
       } catch (PersistenceException e) {
         LOGGER.debug(
-            "when trying to insert WorkbasketAccessItem {} caught exception {}", accessItem, e);
+            "when trying to insert WorkbasketAccessItem {} caught exception", accessItem, e);
         Stream<String> accessItemExistsIdentifier =
             Stream.of(
                 "SQLCODE=-803", // DB2

@@ -69,15 +69,15 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
   private static final String DEFAULT = "default";
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineImpl.class);
-  private static SessionStack sessionStack = new SessionStack();
+  private static final SessionStack SESSION_STACK = new SessionStack();
   protected TaskanaEngineConfiguration taskanaEngineConfiguration;
   protected TransactionFactory transactionFactory;
   protected SqlSessionManager sessionManager;
   protected ConnectionManagementMode mode = ConnectionManagementMode.PARTICIPATE;
   protected java.sql.Connection connection = null;
-  private HistoryEventProducer historyEventProducer;
-  private TaskRoutingManager taskRoutingManager;
-  private InternalTaskanaEngineImpl internalTaskanaEngineImpl;
+  private final HistoryEventProducer historyEventProducer;
+  private final TaskRoutingManager taskRoutingManager;
+  private final InternalTaskanaEngineImpl internalTaskanaEngineImpl;
 
   protected TaskanaEngineImpl(TaskanaEngineConfiguration taskanaEngineConfiguration) {
     this.taskanaEngineConfiguration = taskanaEngineConfiguration;
@@ -295,7 +295,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
    */
   private static class SessionStack {
 
-    private ThreadLocal<Deque<SqlSessionManager>> sessionStack = new ThreadLocal<>();
+    private final ThreadLocal<Deque<SqlSessionManager>> sessionStack = new ThreadLocal<>();
 
     /**
      * Get latest SqlSession from session stack.
@@ -338,15 +338,15 @@ public class TaskanaEngineImpl implements TaskanaEngine {
             e.getCause());
       }
       if (mode != ConnectionManagementMode.EXPLICIT) {
-        sessionStack.pushSessionToStack(sessionManager);
+        SESSION_STACK.pushSessionToStack(sessionManager);
       }
     }
 
     @Override
     public void returnConnection() {
       if (mode != ConnectionManagementMode.EXPLICIT) {
-        sessionStack.popSessionFromStack();
-        if (sessionStack.getSessionStack().isEmpty()
+        SESSION_STACK.popSessionFromStack();
+        if (SESSION_STACK.getSessionStack().isEmpty()
             && sessionManager != null
             && sessionManager.isManagedSessionStarted()) {
           if (mode == ConnectionManagementMode.AUTOCOMMIT) {

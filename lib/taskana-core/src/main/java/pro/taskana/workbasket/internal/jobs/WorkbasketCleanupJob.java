@@ -116,7 +116,7 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
         "{} workbasket deleted.", workbasketsToBeDeleted.size() - results.getFailedIds().size());
     for (String failedId : results.getFailedIds()) {
       LOGGER.warn(
-          "Workbasket with id {} could not be deleted. Reason: {}",
+          "Workbasket with id {} could not be deleted. Reason:",
           failedId,
           results.getErrorForId(failedId));
     }

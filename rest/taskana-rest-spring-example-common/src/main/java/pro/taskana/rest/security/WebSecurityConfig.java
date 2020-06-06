@@ -70,6 +70,50 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     return bean;
   }
 
+  @Bean
+  public DefaultSpringSecurityContextSource defaultSpringSecurityContextSource() {
+    return new DefaultSpringSecurityContextSource(ldapServerUrl + "/" + ldapBaseDn);
+  }
+
+  @Bean
+  public LdapAuthoritiesPopulator authoritiesPopulator() {
+    Function<Map<String, List<String>>, GrantedAuthority> authorityMapper =
+        record -> {
+          String role = record.get("spring.security.ldap.dn").get(0);
+          return new SimpleGrantedAuthority(role);
+        };
+
+    DefaultLdapAuthoritiesPopulator populator =
+        new DefaultLdapAuthoritiesPopulator(
+            defaultSpringSecurityContextSource(), ldapGroupSearchBase);
+    populator.setGroupSearchFilter(ldapGroupSearchFilter);
+    populator.setSearchSubtree(true);
+    populator.setRolePrefix("");
+    populator.setAuthorityMapper(authorityMapper);
+    return populator;
+  }
+
+  @Bean
+  public GrantedAuthoritiesMapper grantedAuthoritiesMapper() {
+    SimpleAuthorityMapper grantedAuthoritiesMapper = new SimpleAuthorityMapper();
+    grantedAuthoritiesMapper.setPrefix("");
+    return grantedAuthoritiesMapper;
+  }
+
+  @Override
+  public void configure(AuthenticationManagerBuilder auth) throws Exception {
+    auth.ldapAuthentication()
+        .userDnPatterns(ldapUserDnPatterns)
+        .groupSearchBase(ldapGroupSearchBase)
+        .ldapAuthoritiesPopulator(authoritiesPopulator())
+        .authoritiesMapper(grantedAuthoritiesMapper())
+        .contextSource()
+        .url(ldapServerUrl + "/" + ldapBaseDn)
+        .and()
+        .passwordCompare()
+        .passwordAttribute("userPassword");
+  }
+
   @Override
   protected void configure(HttpSecurity http) throws Exception {
 
@@ -101,51 +145,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
   }
 
-  @Override
-  public void configure(AuthenticationManagerBuilder auth) throws Exception {
-    auth.ldapAuthentication()
-        .userDnPatterns(ldapUserDnPatterns)
-        .groupSearchBase(ldapGroupSearchBase)
-        .ldapAuthoritiesPopulator(authoritiesPopulator())
-        .authoritiesMapper(grantedAuthoritiesMapper())
-        .contextSource()
-        .url(ldapServerUrl + "/" + ldapBaseDn)
-        .and()
-        .passwordCompare()
-        .passwordAttribute("userPassword");
-  }
-
-  @Bean
-  public DefaultSpringSecurityContextSource defaultSpringSecurityContextSource() {
-    return new DefaultSpringSecurityContextSource(ldapServerUrl + "/" + ldapBaseDn);
-  }
-
-  @Bean
-  public LdapAuthoritiesPopulator authoritiesPopulator() {
-    Function<Map<String, List<String>>, GrantedAuthority> authorityMapper =
-        record -> {
-          String role = record.get("spring.security.ldap.dn").get(0);
-          return new SimpleGrantedAuthority(role);
-        };
-
-    DefaultLdapAuthoritiesPopulator populator =
-        new DefaultLdapAuthoritiesPopulator(
-            defaultSpringSecurityContextSource(), ldapGroupSearchBase);
-    populator.setGroupSearchFilter(ldapGroupSearchFilter);
-    populator.setSearchSubtree(true);
-    populator.setRolePrefix("");
-    populator.setAuthorityMapper(authorityMapper);
-    return populator;
-  }
-
-  @Bean
-  public GrantedAuthoritiesMapper grantedAuthoritiesMapper() {
-    SimpleAuthorityMapper grantedAuthoritiesMapper = new SimpleAuthorityMapper();
-    grantedAuthoritiesMapper.setPrefix("");
-    return grantedAuthoritiesMapper;
-  }
-
-  private void addLoginPageConfiguration(HttpSecurity http) throws Exception {
+  protected void addLoginPageConfiguration(HttpSecurity http) throws Exception {
     http.authorizeRequests()
         .anyRequest()
         .fullyAuthenticated()
@@ -165,17 +165,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .permitAll();
   }
 
+  protected JaasApiIntegrationFilter jaasApiIntegrationFilter() {
+    JaasApiIntegrationFilter filter = new JaasApiIntegrationFilter();
+    filter.setCreateEmptySubject(true);
+    return filter;
+  }
+
   private static class CorsWebMvcConfigurer implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
       registry.addMapping("/**").allowedOrigins("*");
     }
-  }
-
-  private JaasApiIntegrationFilter jaasApiIntegrationFilter() {
-    JaasApiIntegrationFilter filter = new JaasApiIntegrationFilter();
-    filter.setCreateEmptySubject(true);
-    return filter;
   }
 }
