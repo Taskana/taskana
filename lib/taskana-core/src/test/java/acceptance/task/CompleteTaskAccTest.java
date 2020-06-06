@@ -304,7 +304,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
   }
 
   @Test
-  void should_ThrowException_When_BulkUpdateWithNullList() {
+  void should_ThrowException_When_BulkCompleteWithNullList() {
     assertThatThrownBy(() -> TASK_SERVICE.completeTasks(null))
         .isInstanceOf(InvalidArgumentException.class);
   }
@@ -320,16 +320,20 @@ class CompleteTaskAccTest extends AbstractAccTest {
     BulkOperationResults<String, TaskanaException> results = TASK_SERVICE.completeTasks(taskIdList);
 
     assertThat(results.containsErrors()).isFalse();
+
     Task completedTask1 = TASK_SERVICE.getTask(id1);
     assertThat(completedTask1.getState()).isEqualTo(TaskState.COMPLETED);
     assertThat(completedTask1.getCompleted())
         .isEqualTo(completedTask1.getModified())
         .isAfter(beforeBulkComplete);
+    assertThat(completedTask1.getOwner()).isEqualTo("user-1-2");
+
     Task completedTask2 = TASK_SERVICE.getTask(id2);
     assertThat(completedTask2.getState()).isEqualTo(TaskState.COMPLETED);
     assertThat(completedTask2.getCompleted())
         .isEqualTo(completedTask2.getModified())
         .isAfter(beforeBulkComplete);
+    assertThat(completedTask2.getOwner()).isEqualTo("user-1-2");
   }
 
   @WithAccessId(user = "user-1-2")
@@ -343,11 +347,12 @@ class CompleteTaskAccTest extends AbstractAccTest {
     BulkOperationResults<String, TaskanaException> results = TASK_SERVICE.completeTasks(taskIdList);
 
     assertThat(results.containsErrors()).isTrue();
-    Task completedTask2 = TASK_SERVICE.getTask(validId);
-    assertThat(completedTask2.getState()).isEqualTo(TaskState.COMPLETED);
-    assertThat(completedTask2.getCompleted())
-        .isEqualTo(completedTask2.getModified())
+    Task completedTask = TASK_SERVICE.getTask(validId);
+    assertThat(completedTask.getState()).isEqualTo(TaskState.COMPLETED);
+    assertThat(completedTask.getCompleted())
+        .isEqualTo(completedTask.getModified())
         .isAfter(beforeBulkComplete);
+    assertThat(completedTask.getOwner()).isEqualTo("user-1-2");
   }
 
   @WithAccessId(user = "user-1-2")
@@ -370,23 +375,54 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-2")
   @Test
   void should_AddErrorForTaskWhichIsNotClaimed_When_BulkCompletingTasks() throws Exception {
-    String id1 = "TKI:000000000000000000000000000000000033"; // task is not claimed
-    String id2 = "TKI:000000000000000000000000000000000036"; // task is completed
-    String id3 = "TKI:300000000000000000000000000000000000"; // task is canceled
-    String id4 = "TKI:300000000000000000000000000000000010"; // task is terminated
-    List<String> taskIdList = Arrays.asList(id1, id2, id3, id4);
+    String id = "TKI:000000000000000000000000000000000025"; // task is not claimed
+    List<String> taskIdList = Collections.singletonList(id);
 
     BulkOperationResults<String, TaskanaException> results = TASK_SERVICE.completeTasks(taskIdList);
 
     assertThat(results.containsErrors()).isTrue();
-    assertThat(results.getFailedIds()).containsExactlyInAnyOrder(id1, id2, id3, id4);
-    assertThat(results.getErrorForId(id1)).isInstanceOf(InvalidStateException.class);
+    assertThat(results.getFailedIds()).containsExactlyInAnyOrder(id);
+    assertThat(results.getErrorMap().values()).hasOnlyElementsOfType(InvalidStateException.class);
+    assertThat(results.getErrorForId(id))
+        .hasMessage("Task with Id %s has to be claimed before.", id);
+  }
+
+  @WithAccessId(user = "user-1-2")
+  @Test
+  void should_AddErrorForTasksInEndState_When_BulkCompletingTasks() throws Exception {
+    String id1 = "TKI:300000000000000000000000000000000000"; // task is canceled
+    String id2 = "TKI:300000000000000000000000000000000010"; // task is terminated
+    List<String> taskIdList = Arrays.asList(id1, id2);
+
+    BulkOperationResults<String, TaskanaException> results = TASK_SERVICE.completeTasks(taskIdList);
+
+    assertThat(results.containsErrors()).isTrue();
+    assertThat(results.getFailedIds()).containsExactlyInAnyOrder(id1, id2);
+    assertThat(results.getErrorMap().values()).hasOnlyElementsOfType(InvalidStateException.class);
+    assertThat(results.getErrorForId(id1))
+        .hasMessage("Cannot complete task %s because it is in state CANCELLED.", id1);
+    assertThat(results.getErrorForId(id2))
+        .hasMessage("Cannot complete task %s because it is in state TERMINATED.", id2);
+  }
+
+  @WithAccessId(user = "user-1-2")
+  @Test
+  void should_DoNothingForCompletedTask_When_BulkCompletingTasks() throws Exception {
+    String id = "TKI:000000000000000000000000000000000036"; // task is completed
+    List<String> taskIdList = Collections.singletonList(id);
+
+    Task before = TASK_SERVICE.getTask(id);
+    BulkOperationResults<String, TaskanaException> results = TASK_SERVICE.completeTasks(taskIdList);
+    Task after = TASK_SERVICE.getTask(id);
+
+    assertThat(results.containsErrors()).isFalse();
+    assertThat(before).isEqualTo(after);
   }
 
   @WithAccessId(user = "user-1-2", groups = "group-1")
   @Test
   void should_AddErrorForTaskIfOwnerDoesNotMach_When_BulkCompletingTasks() throws Exception {
-    String id1 = "TKI:000000000000000000000000000000000002";
+    String id1 = "TKI:000000000000000000000000000000000066";
     List<String> taskIdList = Collections.singletonList(id1);
 
     BulkOperationResults<String, TaskanaException> results = TASK_SERVICE.completeTasks(taskIdList);
@@ -394,5 +430,153 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(results.containsErrors()).isTrue();
     assertThat(results.getFailedIds()).containsExactlyInAnyOrder(id1);
     assertThat(results.getErrorForId(id1)).isInstanceOf(InvalidOwnerException.class);
+  }
+
+  @WithAccessId(user = "user-1-2")
+  @Test
+  void should_CompleteAllTasks_When_BulkForceCompletingTasks() throws Exception {
+    String id1 = "TKI:000000000000000000000000000000000026";
+    String id2 = "TKI:000000000000000000000000000000000027";
+    List<String> taskIdList = Arrays.asList(id1, id2);
+
+    Instant beforeBulkComplete = Instant.now();
+    BulkOperationResults<String, TaskanaException> results =
+        TASK_SERVICE.forceCompleteTasks(taskIdList);
+
+    assertThat(results.containsErrors()).isFalse();
+
+    Task completedTask1 = TASK_SERVICE.getTask(id1);
+    assertThat(completedTask1.getState()).isEqualTo(TaskState.COMPLETED);
+    assertThat(completedTask1.getCompleted())
+        .isEqualTo(completedTask1.getModified())
+        .isAfter(beforeBulkComplete);
+    assertThat(completedTask1.getOwner()).isEqualTo("user-1-2");
+
+    Task completedTask2 = TASK_SERVICE.getTask(id2);
+    assertThat(completedTask2.getState()).isEqualTo(TaskState.COMPLETED);
+    assertThat(completedTask2.getCompleted())
+        .isEqualTo(completedTask2.getModified())
+        .isAfter(beforeBulkComplete);
+    assertThat(completedTask2.getOwner()).isEqualTo("user-1-2");
+  }
+
+  @WithAccessId(user = "user-1-2")
+  @Test
+  void should_CompleteValidTasksEvenIfErrorsExist_When_BulkForceCompletingTasks() throws Exception {
+    String invalid = "invalid-id";
+    String validId = "TKI:000000000000000000000000000000000028";
+    List<String> taskIdList = Arrays.asList(invalid, validId);
+
+    Instant beforeBulkComplete = Instant.now();
+    BulkOperationResults<String, TaskanaException> results =
+        TASK_SERVICE.forceCompleteTasks(taskIdList);
+
+    assertThat(results.containsErrors()).isTrue();
+    Task completedTask = TASK_SERVICE.getTask(validId);
+    assertThat(completedTask.getState()).isEqualTo(TaskState.COMPLETED);
+    assertThat(completedTask.getCompleted())
+        .isEqualTo(completedTask.getModified())
+        .isAfter(beforeBulkComplete);
+    assertThat(completedTask.getOwner()).isEqualTo("user-1-2");
+  }
+
+  @WithAccessId(user = "user-1-2")
+  @Test
+  void should_AddErrorsForInvalidTaskIds_When_BulkForceCompletingTasks() throws Exception {
+    String invalid1 = "";
+    String invalid2 = null;
+    String invalid3 = "invalid-id";
+    String notAuthorized = "TKI:000000000000000000000000000000000002";
+    List<String> taskIdList = Arrays.asList(invalid1, invalid2, invalid3, notAuthorized);
+
+    BulkOperationResults<String, TaskanaException> results =
+        TASK_SERVICE.forceCompleteTasks(taskIdList);
+
+    assertThat(results.containsErrors()).isTrue();
+    assertThat(results.getFailedIds())
+        .containsExactlyInAnyOrder(invalid1, invalid2, invalid3, notAuthorized);
+    assertThat(results.getErrorMap().values()).hasOnlyElementsOfType(TaskNotFoundException.class);
+  }
+
+  @WithAccessId(user = "user-1-2")
+  @Test
+  void should_AddErrorForTasksInEndState_When_BulkForceCompletingTasks() throws Exception {
+    String id1 = "TKI:300000000000000000000000000000000000"; // task is canceled
+    String id2 = "TKI:300000000000000000000000000000000010"; // task is terminated
+    List<String> taskIdList = Arrays.asList(id1, id2);
+
+    BulkOperationResults<String, TaskanaException> results =
+        TASK_SERVICE.forceCompleteTasks(taskIdList);
+
+    assertThat(results.containsErrors()).isTrue();
+    assertThat(results.getFailedIds()).containsExactlyInAnyOrder(id1, id2);
+    assertThat(results.getErrorMap().values()).hasOnlyElementsOfType(InvalidStateException.class);
+    assertThat(results.getErrorForId(id1))
+        .hasMessage("Cannot complete task %s because it is in state CANCELLED.", id1);
+    assertThat(results.getErrorForId(id2))
+        .hasMessage("Cannot complete task %s because it is in state TERMINATED.", id2);
+  }
+
+  @WithAccessId(user = "user-1-2")
+  @Test
+  void should_DoNothingForCompletedTask_When_BulkForceCompletingTasks() throws Exception {
+    String id = "TKI:000000000000000000000000000000000036"; // task is completed
+    List<String> taskIdList = Collections.singletonList(id);
+
+    Task before = TASK_SERVICE.getTask(id);
+    BulkOperationResults<String, TaskanaException> results =
+        TASK_SERVICE.forceCompleteTasks(taskIdList);
+    Task after = TASK_SERVICE.getTask(id);
+
+    assertThat(results.containsErrors()).isFalse();
+    assertThat(before).isEqualTo(after);
+  }
+
+  @WithAccessId(user = "user-1-2", groups = "group-1")
+  @Test
+  void should_CompleteTaskWhenAlreadyClaimedByDifferentUser_When_BulkForceCompletingTasks()
+      throws Exception {
+    String id = "TKI:000000000000000000000000000000000002";
+    List<String> taskIdList = Collections.singletonList(id);
+
+    Task beforeClaim = TASK_SERVICE.getTask(id);
+    assertThat(beforeClaim.getOwner()).isNotEqualTo("user-1-2");
+    final Instant beforeBulkComplete = Instant.now();
+    BulkOperationResults<String, TaskanaException> results =
+        TASK_SERVICE.forceCompleteTasks(taskIdList);
+    Task afterClaim = TASK_SERVICE.getTask(id);
+
+    assertThat(results.containsErrors()).isFalse();
+    assertThat(afterClaim.getState()).isEqualTo(TaskState.COMPLETED);
+    assertThat(afterClaim.getClaimed()).isEqualTo(beforeClaim.getClaimed());
+    assertThat(afterClaim.getCompleted())
+        .isEqualTo(afterClaim.getModified())
+        .isAfter(beforeBulkComplete);
+    assertThat(afterClaim.getOwner()).isEqualTo("user-1-2");
+  }
+
+  @WithAccessId(user = "user-1-2", groups = "group-1")
+  @Test
+  void should_ClaimTaskWhenNotClaimed_When_BulkForceCompletingTasks() throws Exception {
+    String id = "TKI:000000000000000000000000000000000033";
+    List<String> taskIdList = Collections.singletonList(id);
+
+    Task task = TASK_SERVICE.getTask(id);
+    assertThat(task.getState()).isSameAs(TaskState.READY);
+    assertThat(task.getClaimed()).isNull();
+
+    final Instant beforeBulkComplete = Instant.now();
+
+    BulkOperationResults<String, TaskanaException> results =
+        TASK_SERVICE.forceCompleteTasks(taskIdList);
+
+    assertThat(results.containsErrors()).isFalse();
+    task = TASK_SERVICE.getTask(id);
+    assertThat(task.getState()).isEqualTo(TaskState.COMPLETED);
+    assertThat(task.getCompleted())
+        .isEqualTo(task.getClaimed())
+        .isEqualTo(task.getModified())
+        .isAfter(beforeBulkComplete);
+    assertThat(task.getOwner()).isEqualTo("user-1-2");
   }
 }

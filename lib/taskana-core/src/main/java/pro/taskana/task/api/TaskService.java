@@ -349,6 +349,7 @@ public interface TaskService {
   /**
    * Completes a list of tasks.
    *
+   * @see TaskService#forceCompleteTask
    * @param taskIds of the tasks which should be completed.
    * @return the result of the operations with Id and Exception for each failed task completion.
    * @throws InvalidArgumentException If the taskId parameter is NULL.
