@@ -5,7 +5,6 @@ import java.time.Instant;
 import pro.taskana.workbasket.api.WorkbasketType;
 
 /** Workbasket entity interface. */
-// @JsonDeserialize(as = WorkbasketImpl.class)
 public interface Workbasket extends WorkbasketSummary {
 
   /**

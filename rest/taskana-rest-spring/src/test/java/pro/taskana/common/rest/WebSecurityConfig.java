@@ -117,10 +117,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Bean
   public DefaultSpringSecurityContextSource defaultSpringSecurityContextSource() {
-
-    DefaultSpringSecurityContextSource contextSource =
-        new DefaultSpringSecurityContextSource(ldapServerUrl + "/" + ldapBaseDn);
-    return contextSource;
+    return new DefaultSpringSecurityContextSource(ldapServerUrl + "/" + ldapBaseDn);
   }
 
   @Bean

@@ -1,8 +1,8 @@
 package pro.taskana.common.internal.security;
 
 import static pro.taskana.TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds;
+import static pro.taskana.common.internal.util.CheckedFunction.wrap;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.Principal;
@@ -42,9 +42,9 @@ public final class CurrentUserContext {
    */
   public static String getUserid() {
     if (runningOnWebSphere()) {
-      return getUseridFromWsSubject();
+      return getUserIdFromWsSubject();
     } else {
-      return getUseridFromJaasSubject();
+      return getUserIdFromJaasSubject();
     }
   }
 
@@ -76,7 +76,7 @@ public final class CurrentUserContext {
    *
    * @return the userid of the caller. If the userid could not be obtained, null is returned.
    */
-  private static String getUseridFromWsSubject() {
+  private static String getUserIdFromWsSubject() {
     try {
       Class<?> wsSubjectClass = Class.forName(WSSUBJECT_CLASSNAME);
       Method getCallerSubjectMethod =
@@ -86,27 +86,24 @@ public final class CurrentUserContext {
       if (callerSubject != null) {
         Set<Object> publicCredentials = callerSubject.getPublicCredentials();
         LOGGER.debug("Public credentials of caller: {}", publicCredentials);
-        for (Object credential : publicCredentials) {
-          Object o =
-              credential
-                  .getClass()
-                  .getMethod(GET_UNIQUE_SECURITY_NAME_METHOD, (Class<?>[]) null)
-                  .invoke(credential, (Object[]) null);
-          LOGGER.debug("Returning the unique security name of first public credential: {}", o);
-          String userIdFound = o.toString();
-          String userIdUsed = userIdFound;
-          if (shouldUseLowerCaseForAccessIds() && userIdFound != null) {
-            userIdUsed = userIdFound.toLowerCase();
-          }
-          LOGGER.trace("Found User id {}. Returning User id {} ", userIdFound, userIdUsed);
-          return userIdUsed;
-        }
+        return publicCredentials.stream()
+            .map(
+                wrap(
+                    credential ->
+                        credential
+                            .getClass()
+                            .getMethod(GET_UNIQUE_SECURITY_NAME_METHOD, (Class<?>[]) null)
+                            .invoke(credential, (Object[]) null)))
+            .peek(
+                o ->
+                    LOGGER.debug(
+                        "Returning the unique security name of first public credential: {}", o))
+            .map(Object::toString)
+            .map(CurrentUserContext::convertAccessId)
+            .findFirst()
+            .orElse(null);
       }
-    } catch (RuntimeException
-        | ClassNotFoundException
-        | IllegalAccessException
-        | InvocationTargetException
-        | NoSuchMethodException e) {
+    } catch (Exception e) {
       LOGGER.warn("Could not get user from WSSubject. Going ahead unauthorized.");
     }
     return null;
@@ -131,7 +128,7 @@ public final class CurrentUserContext {
     return runningOnWebSphere;
   }
 
-  private static String getUseridFromJaasSubject() {
+  private static String getUserIdFromJaasSubject() {
     Subject subject = Subject.getSubject(AccessController.getContext());
     LOGGER.trace("Subject of caller: {}", subject);
     if (subject != null) {

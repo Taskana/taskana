@@ -283,8 +283,7 @@ public class ClassificationServiceImpl implements ClassificationService {
     }
     // check that the duration is based on format PnD, i.e. it must start with a P, end with a D
     String serviceLevelLower = serviceLevel.toLowerCase();
-    if (!('p' == serviceLevelLower.charAt(0))
-        || !('d' == serviceLevelLower.charAt(serviceLevel.length() - 1))) {
+    if (!serviceLevelLower.startsWith("p") || !serviceLevelLower.endsWith("d")) {
 
       throw new InvalidArgumentException(
           String.format(

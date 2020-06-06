@@ -1,6 +1,7 @@
 package acceptance.classification;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
@@ -16,11 +17,9 @@ import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.classification.api.ClassificationService;
-import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
-import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.jobs.JobRunner;
@@ -303,15 +302,15 @@ class UpdateClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "dummy", groups = "businessadmin")
   @Test
-  void testUpdateClassificationWithEmptyServiceLevel()
-      throws DomainNotFoundException, ClassificationAlreadyExistException, NotAuthorizedException,
-          InvalidArgumentException, ClassificationNotFoundException, ConcurrencyException {
+  void testUpdateClassificationWithEmptyServiceLevel() throws Exception {
 
     Classification classification =
         classificationService.newClassification("Key=0818", "DOMAIN_A", "TASK");
     Classification created = classificationService.createClassification(classification);
     created.setServiceLevel("");
-    classificationService.updateClassification(created);
+
+    assertThatCode(() -> classificationService.updateClassification(created))
+        .doesNotThrowAnyException();
   }
 
   @WithAccessId(user = "dummy", groups = "admin")

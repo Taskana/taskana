@@ -3,7 +3,6 @@ package pro.taskana.classification.api.models;
 import java.time.Instant;
 
 /** Interface used to specify the Classification-Model. */
-// @JsonDeserialize(as = ClassificationImpl.class)
 public interface Classification extends ClassificationSummary {
 
   /**

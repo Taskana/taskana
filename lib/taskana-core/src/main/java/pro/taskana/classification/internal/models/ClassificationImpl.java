@@ -35,6 +35,74 @@ public class ClassificationImpl extends ClassificationSummaryImpl implements Cla
     this.applicationEntryPoint = applicationEntryPoint;
   }
 
+  @Override
+  public ClassificationImpl copy(String key) {
+    return new ClassificationImpl(this, key);
+  }
+
+  @Override
+  public Boolean getIsValidInDomain() {
+    return isValidInDomain;
+  }
+
+  @Override
+  public void setIsValidInDomain(Boolean isValidInDomain) {
+    this.isValidInDomain = isValidInDomain;
+  }
+
+  @Override
+  public Instant getCreated() {
+    return created;
+  }
+
+  public void setCreated(Instant created) {
+    this.created = created;
+  }
+
+  @Override
+  public Instant getModified() {
+    return modified;
+  }
+
+  public void setModified(Instant modified) {
+    this.modified = modified;
+  }
+
+  @Override
+  public String getDescription() {
+    return description;
+  }
+
+  @Override
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  @Override
+  public ClassificationSummary asSummary() {
+    ClassificationSummaryImpl summary = new ClassificationSummaryImpl();
+    summary.setCategory(this.category);
+    summary.setDomain(this.domain);
+    summary.setId(this.id);
+    summary.setKey(this.key);
+    summary.setName(this.name);
+    summary.setType(this.type);
+    summary.setParentId(this.parentId);
+    summary.setParentKey(this.parentKey);
+    summary.setPriority(this.priority);
+    summary.setServiceLevel(this.serviceLevel);
+    summary.setApplicationEntryPoint(this.applicationEntryPoint);
+    summary.setCustom1(custom1);
+    summary.setCustom2(custom2);
+    summary.setCustom3(custom3);
+    summary.setCustom4(custom4);
+    summary.setCustom5(custom5);
+    summary.setCustom6(custom6);
+    summary.setCustom7(custom7);
+    summary.setCustom8(custom8);
+    return summary;
+  }
+
   protected boolean canEqual(Object other) {
     return (other instanceof ClassificationImpl);
   }
@@ -111,73 +179,5 @@ public class ClassificationImpl extends ClassificationSummaryImpl implements Cla
         + ", custom8="
         + custom8
         + "]";
-  }
-
-  @Override
-  public ClassificationImpl copy(String key) {
-    return new ClassificationImpl(this, key);
-  }
-
-  @Override
-  public Boolean getIsValidInDomain() {
-    return isValidInDomain;
-  }
-
-  @Override
-  public void setIsValidInDomain(Boolean isValidInDomain) {
-    this.isValidInDomain = isValidInDomain;
-  }
-
-  @Override
-  public Instant getCreated() {
-    return created;
-  }
-
-  public void setCreated(Instant created) {
-    this.created = created;
-  }
-
-  @Override
-  public Instant getModified() {
-    return modified;
-  }
-
-  public void setModified(Instant modified) {
-    this.modified = modified;
-  }
-
-  @Override
-  public String getDescription() {
-    return description;
-  }
-
-  @Override
-  public void setDescription(String description) {
-    this.description = description;
-  }
-
-  @Override
-  public ClassificationSummary asSummary() {
-    ClassificationSummaryImpl summary = new ClassificationSummaryImpl();
-    summary.setCategory(this.category);
-    summary.setDomain(this.domain);
-    summary.setId(this.id);
-    summary.setKey(this.key);
-    summary.setName(this.name);
-    summary.setType(this.type);
-    summary.setParentId(this.parentId);
-    summary.setParentKey(this.parentKey);
-    summary.setPriority(this.priority);
-    summary.setServiceLevel(this.serviceLevel);
-    summary.setApplicationEntryPoint(this.applicationEntryPoint);
-    summary.setCustom1(custom1);
-    summary.setCustom2(custom2);
-    summary.setCustom3(custom3);
-    summary.setCustom4(custom4);
-    summary.setCustom5(custom5);
-    summary.setCustom6(custom6);
-    summary.setCustom7(custom7);
-    summary.setCustom8(custom8);
-    return summary;
   }
 }

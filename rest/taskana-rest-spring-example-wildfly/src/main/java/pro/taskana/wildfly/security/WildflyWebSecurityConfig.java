@@ -7,9 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -21,8 +19,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.security.web.authentication.preauth.j2ee.J2eePreAuthenticatedProcessingFilter;
-import org.springframework.security.web.jaasapi.JaasApiIntegrationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.wildfly.security.auth.server.SecurityDomain;
 import org.wildfly.security.auth.server.SecurityIdentity;
 import org.wildfly.security.authz.Roles;
@@ -72,64 +68,6 @@ public class WildflyWebSecurityConfig extends WebSecurityConfig {
   public AuthenticationUserDetailsService<PreAuthenticatedAuthenticationToken>
       authenticationUserDetailsService() {
     return new PreAuthenticatedAuthenticationTokenAuthenticationUserDetailsService();
-  }
-
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
-    http.authorizeRequests()
-        .antMatchers("/css/**", "/img/**")
-        .permitAll()
-        .and()
-        .csrf()
-        .disable()
-        .httpBasic()
-        .and()
-        .authenticationProvider(preauthAuthProvider())
-        .authorizeRequests()
-        .antMatchers(HttpMethod.GET, "/docs/**")
-        .permitAll()
-        .and()
-        .addFilter(preAuthFilter())
-        .addFilterAfter(new ElytronToJaasFilter(), JaasApiIntegrationFilter.class)
-        .addFilter(jaasApiIntegrationFilter());
-
-    if (devMode) {
-      http.headers()
-          .frameOptions()
-          .sameOrigin()
-          .and()
-          .authorizeRequests()
-          .antMatchers("/h2-console/**")
-          .permitAll();
-    } else {
-      addLoginPageConfiguration(http);
-    }
-  }
-
-  private JaasApiIntegrationFilter jaasApiIntegrationFilter() {
-    JaasApiIntegrationFilter filter = new JaasApiIntegrationFilter();
-    filter.setCreateEmptySubject(true);
-    return filter;
-  }
-
-  private void addLoginPageConfiguration(HttpSecurity http) throws Exception {
-    http.authorizeRequests()
-        .anyRequest()
-        .fullyAuthenticated()
-        .and()
-        .formLogin()
-        .loginPage("/login")
-        .failureUrl("/login?error")
-        .defaultSuccessUrl("/")
-        .permitAll()
-        .and()
-        .logout()
-        .invalidateHttpSession(true)
-        .clearAuthentication(true)
-        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-        .logoutSuccessUrl("/login?logout")
-        .deleteCookies("JSESSIONID")
-        .permitAll();
   }
 
   private static class PreAuthenticatedAuthenticationTokenAuthenticationUserDetailsService
