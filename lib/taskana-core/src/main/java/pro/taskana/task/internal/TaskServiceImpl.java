@@ -98,7 +98,7 @@ public class TaskServiceImpl implements TaskService {
   private static final String ID_PREFIX_TASK = "TKI";
   private static final String ID_PREFIX_EXT_TASK_ID = "ETI";
   private static final String ID_PREFIX_BUSINESS_PROCESS = "BPI";
-  private static final Set<String> ALLOWED_KEYS =
+  private static final Set<String> ALLOWED_CUSTOM_KEYS =
       IntStream.rangeClosed(1, 16).mapToObj(String::valueOf).collect(Collectors.toSet());
   private static final String TASK_WITH_ID_IS_ALREADY_IN_END_STATE =
       "Task with Id %s is already in an end state.";
@@ -517,78 +517,13 @@ public class TaskServiceImpl implements TaskService {
   @Override
   public BulkOperationResults<String, TaskanaException> completeTasks(List<String> taskIds)
       throws InvalidArgumentException {
-    try {
-      LOGGER.debug("entry to completeTasks(taskIds = {})", taskIds);
-      taskanaEngine.openConnection();
-      if (taskIds == null) {
-        throw new InvalidArgumentException("TaskIds can't be used as NULL-Parameter.");
-      }
-      BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
-      Map<String, TaskSummaryImpl> taskSummaryMap =
-          createTaskQuery().idIn(taskIds.toArray(new String[0])).list().stream()
-              .collect(Collectors.toMap(TaskSummary::getId, e -> (TaskSummaryImpl) e));
-
-      Predicate<Pair<String, ? extends TaskSummary>> taskIdNotFound =
-          pair -> {
-            if (pair.getRight() == null) {
-              String taskId = pair.getLeft();
-              bulkLog.addError(
-                  taskId,
-                  new TaskNotFoundException(
-                      taskId, String.format(TASK_WITH_ID_WAS_NOT_FOUND, taskId)));
-              return false;
-            }
-            return true;
-          };
-
-      Predicate<TaskSummary> stateIsCorrect =
-          summary -> {
-            if (summary.getClaimed() == null || summary.getState() != TaskState.CLAIMED) {
-              bulkLog.addError(summary.getId(), new InvalidStateException(summary.getId()));
-              return false;
-            }
-            return true;
-          };
-
-      Predicate<TaskSummary> userIsCorrect =
-          summary -> {
-            if (!CurrentUserContext.getAccessIds().contains(summary.getOwner())) {
-              bulkLog.addError(
-                  summary.getId(),
-                  new InvalidOwnerException(
-                      String.format(
-                          "TaskOwner is %s, but currentUser is %s.",
-                          summary.getOwner(), CurrentUserContext.getUserid())));
-              return false;
-            }
-            return true;
-          };
-
-      Stream<TaskSummaryImpl> filteredSummaries =
-          taskIds.stream()
-              .map(id -> Pair.of(id, taskSummaryMap.get(id)))
-              .filter(taskIdNotFound)
-              .map(Pair::getRight)
-              .filter(stateIsCorrect)
-              .filter(userIsCorrect);
-
-      updateTasksToBeCompleted(filteredSummaries);
-
-      return bulkLog;
-    } finally {
-      taskanaEngine.returnConnection();
-      LOGGER.debug("exit from to completeTasks(taskIds = {})", taskIds);
-    }
+    return completeTasks(taskIds, false);
   }
 
   @Override
   public BulkOperationResults<String, TaskanaException> forceCompleteTasks(List<String> taskIds)
       throws InvalidArgumentException {
-
-    if (taskIds == null) {
-      throw new InvalidArgumentException("TaskIds can't be used as NULL-Parameter.");
-    }
-    return null;
+    return completeTasks(taskIds, true);
   }
 
   @Override
@@ -1074,6 +1009,109 @@ public class TaskServiceImpl implements TaskService {
     return result;
   }
 
+  private BulkOperationResults<String, TaskanaException> completeTasks(
+      List<String> taskIds, boolean forced) throws InvalidArgumentException {
+    try {
+      LOGGER.debug("entry to completeTasks(taskIds = {})", taskIds);
+      taskanaEngine.openConnection();
+      if (taskIds == null) {
+        throw new InvalidArgumentException("TaskIds can't be used as NULL-Parameter.");
+      }
+      BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
+
+      Instant now = Instant.now();
+      Stream<TaskSummaryImpl> filteredSummaries = filterNotExistingTaskIds(taskIds, bulkLog);
+      filteredSummaries = filterInvalidTaskStates(filteredSummaries, bulkLog);
+
+      if (!forced) {
+        filteredSummaries = filterPreConditionForCompleteTasks(filteredSummaries, bulkLog);
+      } else {
+        filteredSummaries = claimNotClaimedTasks(filteredSummaries, forced, now, bulkLog);
+      }
+
+      updateTasksToBeCompleted(filteredSummaries, now);
+
+      return bulkLog;
+    } finally {
+      taskanaEngine.returnConnection();
+      LOGGER.debug("exit from to completeTasks(taskIds = {})", taskIds);
+    }
+  }
+
+  private static Stream<TaskSummaryImpl> filterPreConditionForCompleteTasks(
+      Stream<TaskSummaryImpl> stream, BulkOperationResults<String, TaskanaException> bulkLog) {
+    return stream.filter(
+        summary -> {
+          try {
+            checkPreconditionsForCompleteTask(summary);
+            return true;
+          } catch (TaskanaException e) {
+            bulkLog.addError(summary.getId(), e);
+            return false;
+          }
+        });
+  }
+
+  private static Stream<TaskSummaryImpl> claimNotClaimedTasks(
+      Stream<TaskSummaryImpl> stream,
+      boolean forced,
+      Instant now,
+      BulkOperationResults<String, TaskanaException> bulkLog) {
+    String userId = CurrentUserContext.getUserid();
+    return stream.filter(
+        summary -> {
+          try {
+            if (taskIsNotClaimed(summary)) {
+              checkPreconditionsForClaimTask(summary, forced);
+              claimActionsOnTask(summary, userId, now);
+            }
+            return true;
+          } catch (TaskanaException e) {
+            bulkLog.addError(summary.getId(), e);
+            return false;
+          }
+        });
+  }
+
+  private Stream<TaskSummaryImpl> filterNotExistingTaskIds(
+      List<String> taskIds, BulkOperationResults<String, TaskanaException> bulkLog) {
+
+    Map<String, TaskSummaryImpl> taskSummaryMap =
+        getTasksToChange(taskIds).stream()
+            .collect(Collectors.toMap(TaskSummary::getId, e -> (TaskSummaryImpl) e));
+    return taskIds.stream()
+        .map(id -> Pair.of(id, taskSummaryMap.get(id)))
+        .filter(
+            pair -> {
+              if (pair.getRight() == null) {
+                String taskId = pair.getLeft();
+                bulkLog.addError(
+                    taskId,
+                    new TaskNotFoundException(
+                        taskId, String.format(TASK_WITH_ID_WAS_NOT_FOUND, taskId)));
+                return false;
+              }
+              return true;
+            })
+        .map(Pair::getRight);
+  }
+
+  private static Stream<TaskSummaryImpl> filterInvalidTaskStates(
+      Stream<TaskSummaryImpl> stream, BulkOperationResults<String, TaskanaException> bulkLog) {
+    return stream
+        .filter(task -> task.getState() != TaskState.COMPLETED)
+        .filter(
+            summary -> {
+              try {
+                checkIfTaskIsTerminatedOrCancelled(summary);
+                return true;
+              } catch (TaskanaException e) {
+                bulkLog.addError(summary.getId(), e);
+                return false;
+              }
+            });
+  }
+
   private void checkConcurrencyAndSetModified(TaskImpl newTaskImpl, TaskImpl oldTaskImpl)
       throws ConcurrencyException {
     // TODO: not safe to rely only on different timestamps.
@@ -1144,21 +1182,10 @@ public class TaskServiceImpl implements TaskService {
     try {
       taskanaEngine.openConnection();
       task = (TaskImpl) getTask(taskId);
-      TaskState state = task.getState();
-      if (!state.in(TaskState.READY, TaskState.CLAIMED)) {
-        throw new InvalidStateException(
-            String.format(TASK_WITH_ID_IS_ALREADY_IN_END_STATE, taskId));
-      }
-      if (state == TaskState.CLAIMED && !forceClaim && !task.getOwner().equals(userId)) {
-        throw new InvalidOwnerException(
-            String.format(TASK_WITH_ID_IS_ALREADY_CLAIMED_BY, taskId, task.getOwner()));
-      }
       Instant now = Instant.now();
-      task.setOwner(userId);
-      task.setModified(now);
-      task.setClaimed(now);
-      task.setRead(true);
-      task.setState(TaskState.CLAIMED);
+
+      checkPreconditionsForClaimTask(task, forceClaim);
+      claimActionsOnTask(task, userId, now);
       taskMapper.update(task);
       LOGGER.debug("Task '{}' claimed by user '{}'.", taskId, userId);
       if (HistoryEventProducer.isHistoryEnabled()) {
@@ -1169,6 +1196,62 @@ public class TaskServiceImpl implements TaskService {
       LOGGER.debug("exit from claim()");
     }
     return task;
+  }
+
+  private static void claimActionsOnTask(TaskSummaryImpl task, String userId, Instant now) {
+    task.setOwner(userId);
+    task.setModified(now);
+    task.setClaimed(now);
+    task.setRead(true);
+    task.setState(TaskState.CLAIMED);
+  }
+
+  private static void completeActionsOnTask(TaskSummaryImpl task, String userId, Instant now) {
+    task.setCompleted(now);
+    task.setModified(now);
+    task.setState(TaskState.COMPLETED);
+    task.setOwner(userId);
+  }
+
+  private static void checkPreconditionsForClaimTask(TaskSummary task, boolean forced)
+      throws InvalidStateException, InvalidOwnerException {
+    TaskState state = task.getState();
+    if (!state.in(TaskState.READY, TaskState.CLAIMED)) {
+      throw new InvalidStateException(
+          String.format(TASK_WITH_ID_IS_ALREADY_IN_END_STATE, task.getId()));
+    }
+    if (!forced
+        && state == TaskState.CLAIMED
+        && !task.getOwner().equals(CurrentUserContext.getUserid())) {
+      throw new InvalidOwnerException(
+          String.format(TASK_WITH_ID_IS_ALREADY_CLAIMED_BY, task.getId(), task.getOwner()));
+    }
+  }
+
+  private static boolean taskIsNotClaimed(TaskSummary task) {
+    return task.getClaimed() == null || task.getState() != TaskState.CLAIMED;
+  }
+
+  private static void checkIfTaskIsTerminatedOrCancelled(TaskSummary task)
+      throws InvalidStateException {
+    if (task.getState().in(TaskState.CANCELLED, TaskState.TERMINATED)) {
+      throw new InvalidStateException(
+          String.format(
+              "Cannot complete task %s because it is in state %s.", task.getId(), task.getState()));
+    }
+  }
+
+  private static void checkPreconditionsForCompleteTask(TaskSummary task)
+      throws InvalidStateException, InvalidOwnerException {
+    if (taskIsNotClaimed(task)) {
+      throw new InvalidStateException(
+          String.format(TASK_WITH_ID_HAS_TO_BE_CLAIMED_BEFORE, task.getId()));
+    } else if (!CurrentUserContext.getAccessIds().contains(task.getOwner())) {
+      throw new InvalidOwnerException(
+          String.format(
+              "Owner of task %s is %s, but current user is %s ",
+              task.getId(), task.getOwner(), CurrentUserContext.getUserid()));
+    }
   }
 
   private Task cancelClaim(String taskId, boolean forceUnclaim)
@@ -1227,34 +1310,16 @@ public class TaskServiceImpl implements TaskService {
         return task;
       }
 
-      if (task.getState().in(TaskState.CANCELLED, TaskState.TERMINATED)) {
-        throw new InvalidStateException(
-            String.format(
-                "Cannot complete task %s because it is in state %s.", taskId, task.getState()));
+      checkIfTaskIsTerminatedOrCancelled(task);
+
+      if (!isForced) {
+        checkPreconditionsForCompleteTask(task);
+      } else if (taskIsNotClaimed(task)) {
+        task = (TaskImpl) this.forceClaim(taskId);
       }
 
-      // check pre-conditions for non-forced invocation
-      if (!isForced) {
-        if (task.getClaimed() == null || task.getState() != TaskState.CLAIMED) {
-          throw new InvalidStateException(
-              String.format(TASK_WITH_ID_HAS_TO_BE_CLAIMED_BEFORE, taskId));
-        } else if (!CurrentUserContext.getAccessIds().contains(task.getOwner())) {
-          throw new InvalidOwnerException(
-              String.format(
-                  "Owner of task %s is %s, but current user is %s ",
-                  taskId, task.getOwner(), userId));
-        }
-      } else {
-        // CLAIM-forced, if task was not already claimed before.
-        if (task.getClaimed() == null || task.getState() != TaskState.CLAIMED) {
-          task = (TaskImpl) this.forceClaim(taskId);
-        }
-      }
       Instant now = Instant.now();
-      task.setCompleted(now);
-      task.setModified(now);
-      task.setState(TaskState.COMPLETED);
-      task.setOwner(userId);
+      completeActionsOnTask(task, userId, now);
       taskMapper.update(task);
       LOGGER.debug("Task '{}' completed by user '{}'.", taskId, userId);
       if (HistoryEventProducer.isHistoryEnabled()) {
@@ -1457,23 +1522,34 @@ public class TaskServiceImpl implements TaskService {
     }
   }
 
-  private void updateTasksToBeCompleted(Stream<TaskSummaryImpl> taskSummaries) {
+  private void updateTasksToBeCompleted(Stream<TaskSummaryImpl> taskSummaries, Instant now) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("entry to updateTasksToBeCompleted()");
     }
-
-    Instant now = Instant.now();
     List<String> taskIds = new ArrayList<>();
+    List<String> updateClaimedTaskIds = new ArrayList<>();
     List<TaskSummary> taskSummaryList =
         taskSummaries
-            .peek(summary -> summary.setModified(now))
-            .peek(summary -> summary.setCompleted(now))
-            .peek(summary -> summary.setState(TaskState.COMPLETED))
+            .peek(summary -> completeActionsOnTask(summary, CurrentUserContext.getUserid(), now))
             .peek(summary -> taskIds.add(summary.getId()))
+            .peek(
+                summary -> {
+                  if (summary.getClaimed().equals(now)) {
+                    updateClaimedTaskIds.add(summary.getId());
+                  }
+                })
             .collect(Collectors.toList());
+    TaskSummary claimedReference =
+        taskSummaryList.stream()
+            .filter(summary -> updateClaimedTaskIds.contains(summary.getId()))
+            .findFirst()
+            .orElse(null);
 
     if (!taskSummaryList.isEmpty()) {
       taskMapper.updateCompleted(taskIds, taskSummaryList.get(0));
+      if (!updateClaimedTaskIds.isEmpty()) {
+        taskMapper.updateClaimed(updateClaimedTaskIds, claimedReference);
+      }
       if (HistoryEventProducer.isHistoryEnabled()) {
         createTasksCompletedEvents(taskSummaryList);
       }
@@ -1741,7 +1817,7 @@ public class TaskServiceImpl implements TaskService {
 
     for (Map.Entry<String, String> entry : customFieldsToUpdate.entrySet()) {
       String key = entry.getKey();
-      if (!ALLOWED_KEYS.contains(key)) {
+      if (!ALLOWED_CUSTOM_KEYS.contains(key)) {
         throw new InvalidArgumentException(
             "The customFieldsToUpdate argument to updateTasks contains invalid key " + key);
       }

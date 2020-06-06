@@ -158,10 +158,19 @@ public interface TaskMapper {
 
   @Update(
       "<script>"
-          + " UPDATE TASK SET COMPLETED = #{referenceTask.completed}, MODIFIED = #{referenceTask.modified}, STATE = #{referenceTask.state}"
+          + " UPDATE TASK SET COMPLETED = #{referenceTask.completed}, MODIFIED = #{referenceTask.modified}, STATE = #{referenceTask.state}, OWNER = #{referenceTask.owner}"
           + " WHERE ID IN <foreach item='taskId' index='index' separator=',' open='(' close=')' collection='taskIds'>#{taskId}</foreach>"
           + "</script>")
   void updateCompleted(
+      @Param("taskIds") List<String> taskIds,
+      @Param("referenceTask") TaskSummary referenceTask);
+
+  @Update(
+      "<script>"
+          + " UPDATE TASK SET CLAIMED = #{referenceTask.claimed}, MODIFIED = #{referenceTask.modified}, STATE = #{referenceTask.state}, OWNER = #{referenceTask.owner}, IS_READ = #{referenceTask.isRead}"
+          + " WHERE ID IN <foreach item='taskId' index='index' separator=',' open='(' close=')' collection='taskIds'>#{taskId}</foreach>"
+          + "</script>")
+  void updateClaimed(
       @Param("taskIds") List<String> taskIds,
       @Param("referenceTask") TaskSummary referenceTask);
 
@@ -289,4 +298,5 @@ public interface TaskMapper {
   @Results(value = {@Result(property = "id", column = "ID")})
   List<String> filterTaskIdsNotAuthorizedFor(
       @Param("taskIds") List<String> taskIds, @Param("accessIds") List<String> accessIds);
+
 }
