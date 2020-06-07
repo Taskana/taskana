@@ -325,14 +325,14 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(completedTask1.getState()).isEqualTo(TaskState.COMPLETED);
     assertThat(completedTask1.getCompleted())
         .isEqualTo(completedTask1.getModified())
-        .isAfter(beforeBulkComplete);
+        .isAfterOrEqualTo(beforeBulkComplete);
     assertThat(completedTask1.getOwner()).isEqualTo("user-1-2");
 
     Task completedTask2 = TASK_SERVICE.getTask(id2);
     assertThat(completedTask2.getState()).isEqualTo(TaskState.COMPLETED);
     assertThat(completedTask2.getCompleted())
         .isEqualTo(completedTask2.getModified())
-        .isAfter(beforeBulkComplete);
+        .isAfterOrEqualTo(beforeBulkComplete);
     assertThat(completedTask2.getOwner()).isEqualTo("user-1-2");
   }
 
@@ -351,7 +351,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(completedTask.getState()).isEqualTo(TaskState.COMPLETED);
     assertThat(completedTask.getCompleted())
         .isEqualTo(completedTask.getModified())
-        .isAfter(beforeBulkComplete);
+        .isAfterOrEqualTo(beforeBulkComplete);
     assertThat(completedTask.getOwner()).isEqualTo("user-1-2");
   }
 
@@ -449,14 +449,14 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(completedTask1.getState()).isEqualTo(TaskState.COMPLETED);
     assertThat(completedTask1.getCompleted())
         .isEqualTo(completedTask1.getModified())
-        .isAfter(beforeBulkComplete);
+        .isAfterOrEqualTo(beforeBulkComplete);
     assertThat(completedTask1.getOwner()).isEqualTo("user-1-2");
 
     Task completedTask2 = TASK_SERVICE.getTask(id2);
     assertThat(completedTask2.getState()).isEqualTo(TaskState.COMPLETED);
     assertThat(completedTask2.getCompleted())
         .isEqualTo(completedTask2.getModified())
-        .isAfter(beforeBulkComplete);
+        .isAfterOrEqualTo(beforeBulkComplete);
     assertThat(completedTask2.getOwner()).isEqualTo("user-1-2");
   }
 
@@ -476,7 +476,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(completedTask.getState()).isEqualTo(TaskState.COMPLETED);
     assertThat(completedTask.getCompleted())
         .isEqualTo(completedTask.getModified())
-        .isAfter(beforeBulkComplete);
+        .isAfterOrEqualTo(beforeBulkComplete);
     assertThat(completedTask.getOwner()).isEqualTo("user-1-2");
   }
 
@@ -551,7 +551,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(afterClaim.getClaimed()).isEqualTo(beforeClaim.getClaimed());
     assertThat(afterClaim.getCompleted())
         .isEqualTo(afterClaim.getModified())
-        .isAfter(beforeBulkComplete);
+        .isAfterOrEqualTo(beforeBulkComplete);
     assertThat(afterClaim.getOwner()).isEqualTo("user-1-2");
   }
 
@@ -576,7 +576,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(task.getCompleted())
         .isEqualTo(task.getClaimed())
         .isEqualTo(task.getModified())
-        .isAfter(beforeBulkComplete);
+        .isAfterOrEqualTo(beforeBulkComplete);
     assertThat(task.getOwner()).isEqualTo("user-1-2");
   }
 }
