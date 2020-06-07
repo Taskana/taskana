@@ -5,8 +5,8 @@ import java.util.function.Consumer;
 import pro.taskana.common.api.exceptions.SystemException;
 
 @FunctionalInterface
-public interface CheckedConsumer<T> {
-  static <T> Consumer<T> wrap(CheckedConsumer<T> checkedConsumer) {
+public interface CheckedConsumer<T, E extends Throwable> {
+  static <T, E extends Throwable> Consumer<T> wrap(CheckedConsumer<T, E> checkedConsumer) {
     return t -> {
       try {
         checkedConsumer.accept(t);
@@ -16,6 +16,6 @@ public interface CheckedConsumer<T> {
     };
   }
 
-  void accept(T t) throws Throwable;
+  void accept(T t) throws E;
 }
 

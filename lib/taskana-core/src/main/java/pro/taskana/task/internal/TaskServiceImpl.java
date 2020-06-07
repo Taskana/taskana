@@ -36,6 +36,7 @@ import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.CustomPropertySelector;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.security.CurrentUserContext;
+import pro.taskana.common.internal.util.CheckedConsumer;
 import pro.taskana.common.internal.util.CheckedFunction;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.common.internal.util.Pair;
@@ -1020,13 +1021,27 @@ public class TaskServiceImpl implements TaskService {
       BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
 
       Instant now = Instant.now();
-      Stream<TaskSummaryImpl> filteredSummaries = filterNotExistingTaskIds(taskIds, bulkLog);
-      filteredSummaries = filterInvalidTaskStates(filteredSummaries, bulkLog);
-
+      Stream<TaskSummaryImpl> filteredSummaries =
+          filterNotExistingTaskIds(taskIds, bulkLog)
+              .filter(task -> task.getState() != TaskState.COMPLETED)
+              .filter(
+                  addErrorToBulkLog(TaskServiceImpl::checkIfTaskIsTerminatedOrCancelled, bulkLog));
       if (!forced) {
-        filteredSummaries = filterPreConditionForCompleteTasks(filteredSummaries, bulkLog);
+        filteredSummaries =
+            filteredSummaries.filter(
+                addErrorToBulkLog(TaskServiceImpl::checkPreconditionsForCompleteTask, bulkLog));
       } else {
-        filteredSummaries = claimNotClaimedTasks(filteredSummaries, forced, now, bulkLog);
+        String userId = CurrentUserContext.getUserid();
+        filteredSummaries =
+            filteredSummaries.filter(
+                addErrorToBulkLog(
+                    summary -> {
+                      if (taskIsNotClaimed(summary)) {
+                        checkPreconditionsForClaimTask(summary, true);
+                        claimActionsOnTask(summary, userId, now);
+                      }
+                    },
+                    bulkLog));
       }
 
       updateTasksToBeCompleted(filteredSummaries, now);
@@ -1038,41 +1053,6 @@ public class TaskServiceImpl implements TaskService {
     }
   }
 
-  private static Stream<TaskSummaryImpl> filterPreConditionForCompleteTasks(
-      Stream<TaskSummaryImpl> stream, BulkOperationResults<String, TaskanaException> bulkLog) {
-    return stream.filter(
-        summary -> {
-          try {
-            checkPreconditionsForCompleteTask(summary);
-            return true;
-          } catch (TaskanaException e) {
-            bulkLog.addError(summary.getId(), e);
-            return false;
-          }
-        });
-  }
-
-  private static Stream<TaskSummaryImpl> claimNotClaimedTasks(
-      Stream<TaskSummaryImpl> stream,
-      boolean forced,
-      Instant now,
-      BulkOperationResults<String, TaskanaException> bulkLog) {
-    String userId = CurrentUserContext.getUserid();
-    return stream.filter(
-        summary -> {
-          try {
-            if (taskIsNotClaimed(summary)) {
-              checkPreconditionsForClaimTask(summary, forced);
-              claimActionsOnTask(summary, userId, now);
-            }
-            return true;
-          } catch (TaskanaException e) {
-            bulkLog.addError(summary.getId(), e);
-            return false;
-          }
-        });
-  }
-
   private Stream<TaskSummaryImpl> filterNotExistingTaskIds(
       List<String> taskIds, BulkOperationResults<String, TaskanaException> bulkLog) {
 
@@ -1080,36 +1060,34 @@ public class TaskServiceImpl implements TaskService {
         getTasksToChange(taskIds).stream()
             .collect(Collectors.toMap(TaskSummary::getId, e -> (TaskSummaryImpl) e));
     return taskIds.stream()
-        .map(id -> Pair.of(id, taskSummaryMap.get(id)))
-        .filter(
-            pair -> {
-              if (pair.getRight() == null) {
-                String taskId = pair.getLeft();
-                bulkLog.addError(
-                    taskId,
-                    new TaskNotFoundException(
-                        taskId, String.format(TASK_WITH_ID_WAS_NOT_FOUND, taskId)));
-                return false;
-              }
-              return true;
-            })
-        .map(Pair::getRight);
+               .map(id -> Pair.of(id, taskSummaryMap.get(id)))
+               .filter(
+                   pair -> {
+                     if (pair.getRight() == null) {
+                       String taskId = pair.getLeft();
+                       bulkLog.addError(
+                           taskId,
+                           new TaskNotFoundException(
+                               taskId, String.format(TASK_WITH_ID_WAS_NOT_FOUND, taskId)));
+                       return false;
+                     }
+                     return true;
+                   })
+               .map(Pair::getRight);
   }
 
-  private static Stream<TaskSummaryImpl> filterInvalidTaskStates(
-      Stream<TaskSummaryImpl> stream, BulkOperationResults<String, TaskanaException> bulkLog) {
-    return stream
-        .filter(task -> task.getState() != TaskState.COMPLETED)
-        .filter(
-            summary -> {
-              try {
-                checkIfTaskIsTerminatedOrCancelled(summary);
-                return true;
-              } catch (TaskanaException e) {
-                bulkLog.addError(summary.getId(), e);
-                return false;
-              }
-            });
+  private static Predicate<TaskSummaryImpl> addErrorToBulkLog(
+      CheckedConsumer<TaskSummaryImpl, TaskanaException> checkedConsumer,
+      BulkOperationResults<String, TaskanaException> bulkLog) {
+    return summary -> {
+      try {
+        checkedConsumer.accept(summary);
+        return true;
+      } catch (TaskanaException e) {
+        bulkLog.addError(summary.getId(), e);
+        return false;
+      }
+    };
   }
 
   private void checkConcurrencyAndSetModified(TaskImpl newTaskImpl, TaskImpl oldTaskImpl)
