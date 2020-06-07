@@ -579,4 +579,42 @@ class CompleteTaskAccTest extends AbstractAccTest {
         .isAfterOrEqualTo(beforeBulkComplete);
     assertThat(task.getOwner()).isEqualTo("user-1-2");
   }
+
+  @WithAccessId(user = "user-3-2", groups = "group-2")
+  @Test
+  void should_OnlyClaimTasksWhichAreNotClaimed_When_BulkForceCompletingTasks() throws Exception {
+    String id1 = "TKI:000000000000000000000000000000000043"; // task is already claimed
+    String id2 = "TKI:000000000000000000000000000000000044"; // task is ready
+    List<String> taskIdList = Arrays.asList(id1, id2);
+
+    Task task = TASK_SERVICE.getTask(id2);
+    assertThat(task.getState()).isSameAs(TaskState.READY);
+    assertThat(task.getClaimed()).isNull();
+
+    final Instant beforeBulkComplete = Instant.now();
+
+    BulkOperationResults<String, TaskanaException> results =
+        TASK_SERVICE.forceCompleteTasks(taskIdList);
+
+    assertThat(results.containsErrors()).isFalse();
+
+    task = TASK_SERVICE.getTask(id1);
+    assertThat(task.getState()).isEqualTo(TaskState.COMPLETED);
+    // do not update claimed timestamp for already claimed task
+    assertThat(task.getClaimed()).isBefore(beforeBulkComplete);
+    assertThat(task.getCompleted())
+        .isEqualTo(task.getModified())
+        .isAfterOrEqualTo(beforeBulkComplete);
+    assertThat(task.getOwner()).isEqualTo("user-3-2");
+
+    task = TASK_SERVICE.getTask(id2);
+    assertThat(task.getState()).isEqualTo(TaskState.COMPLETED);
+    assertThat(task.getCompleted())
+        .isEqualTo(task.getClaimed())
+        .isEqualTo(task.getModified())
+        .isAfterOrEqualTo(beforeBulkComplete);
+    assertThat(task.getOwner()).isEqualTo("user-3-2");
+  }
+
+
 }

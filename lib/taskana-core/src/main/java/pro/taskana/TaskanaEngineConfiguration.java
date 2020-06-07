@@ -45,24 +45,18 @@ import pro.taskana.common.internal.configuration.SecurityVerifier;
  */
 public class TaskanaEngineConfiguration {
 
-  protected static final String TASKANA_SCHEMA_VERSION =
-      "3.0.0"; // must match the VERSION value in table
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineConfiguration.class);
-  private static final String USER_NAME = "sa";
-  private static final String USER_PASSWORD = "sa";
-  private static final String JDBC_H2_MEM_TASKANA =
-      "jdbc:h2:mem:taskana;IGNORECASE=TRUE;LOCK_MODE=0;"
-          + "INIT=CREATE SCHEMA IF NOT EXISTS TASKANA\\;"
-          + "SET COLLATION DEFAULT_de_DE ";
-  private static final String H2_DRIVER = "org.h2.Driver";
+
+  // must match the VERSION value in table
+  private static final String TASKANA_SCHEMA_VERSION = "3.0.0";
   private static final String TASKANA_PROPERTIES = "/taskana.properties";
   private static final String TASKANA_PROPERTY_SEPARATOR = "|";
-  private static final String TASKANA_JOB_BATCHSIZE = "taskana.jobs.batchSize";
+  private static final String TASKANA_JOB_BATCH_SIZE = "taskana.jobs.batchSize";
   private static final String TASKANA_JOB_RETRIES = "taskana.jobs.maxRetries";
   private static final String TASKANA_JOB_CLEANUP_RUN_EVERY = "taskana.jobs.cleanup.runEvery";
   private static final String TASKANA_JOB_CLEANUP_FIRST_RUN = "taskana.jobs.cleanup.firstRunAt";
   private static final String TASKANA_JOB_CLEANUP_MINIMUM_AGE = "taskana.jobs.cleanup.minimumAge";
-  private static final String TASKANA_JOB_TASK_CLEANUP_ALL_COMPLETED_SAME_PARENTE_BUSINESS =
+  private static final String TASKANA_JOB_TASK_CLEANUP_ALL_COMPLETED_SAME_PARENT_BUSINESS =
       "taskana.jobs.cleanup.allCompletedSameParentBusiness";
   private static final String TASKANA_DOMAINS_PROPERTY = "taskana.domains";
   private static final String TASKANA_CLASSIFICATION_TYPES_PROPERTY =
@@ -72,11 +66,11 @@ public class TaskanaEngineConfiguration {
   private static final String TASKANA_GERMAN_HOLIDAYS_ENABLED = "taskana.german.holidays.enabled";
   private static final String TASKANA_GERMAN_HOLIDAYS_CORPUS_CHRISTI_ENABLED =
       "taskana.german.holidays.corpus-christi.enabled";
+  private static final String TASKANA_CUSTOM_HOLIDAY = "taskana.custom.holidays";
+  private static final String TASKANA_CUSTOM_HOLIDAY_DAY_MONTH_SEPARATOR = ".";
   // TASKANA_SCHEMA_VERSION
   private static final String DEFAULT_SCHEMA_NAME = "TASKANA";
 
-  private static final String TASKANA_CUSTOM_HOLIDAY = "taskana.custom.holidays";
-  private static final String TASKANA_CUSTOM_HOLIDAY_DAY_MONTH_SEPERATOR = ".";
   private final List<CustomHoliday> customHolidays = new ArrayList<>();
   // Taskana properties file
   protected String propertiesFileName = TASKANA_PROPERTIES;
@@ -183,12 +177,20 @@ public class TaskanaEngineConfiguration {
   }
 
   public static DataSource createDefaultDataSource() {
-    LOGGER.info(
-        "No datasource is provided. A inmemory db is used: "
-            + "'org.h2.Driver', 'jdbc:h2:mem:taskana;IGNORECASE=TRUE;LOCK_MODE=0;"
+    String driverClass = "org.h2.Driver";
+    String jdbcUrl =
+        "jdbc:h2:mem:taskana;IGNORECASE=TRUE;LOCK_MODE=0;"
             + "INIT=CREATE SCHEMA IF NOT EXISTS TASKANA\\;"
-            + "SET COLLATION DEFAULT_de_DE', 'sa', 'sa'");
-    return createDatasource(H2_DRIVER, JDBC_H2_MEM_TASKANA, USER_NAME, USER_PASSWORD);
+            + "SET COLLATION DEFAULT_de_DE";
+    String username = "sa";
+    String password = "sa";
+    LOGGER.info(
+        "No datasource is provided. An in-memory db is used: " + "'{}', '{}', '{}', '{}'",
+        driverClass,
+        jdbcUrl,
+        username,
+        password);
+    return createDatasource(driverClass, jdbcUrl, username, password);
   }
 
   /**
@@ -381,7 +383,7 @@ public class TaskanaEngineConfiguration {
   }
 
   private void initJobParameters(Properties props) {
-    String jobBatchSizeProperty = props.getProperty(TASKANA_JOB_BATCHSIZE);
+    String jobBatchSizeProperty = props.getProperty(TASKANA_JOB_BATCH_SIZE);
     if (jobBatchSizeProperty != null && !jobBatchSizeProperty.isEmpty()) {
       try {
         jobBatchSize = Integer.parseInt(jobBatchSizeProperty);
@@ -442,7 +444,7 @@ public class TaskanaEngineConfiguration {
     }
 
     String taskCleanupJobAllCompletedSameParentBusinessProperty =
-        props.getProperty(TASKANA_JOB_TASK_CLEANUP_ALL_COMPLETED_SAME_PARENTE_BUSINESS);
+        props.getProperty(TASKANA_JOB_TASK_CLEANUP_ALL_COMPLETED_SAME_PARENT_BUSINESS);
     if (taskCleanupJobAllCompletedSameParentBusinessProperty != null
         && !taskCleanupJobAllCompletedSameParentBusinessProperty.isEmpty()) {
       try {
@@ -555,9 +557,7 @@ public class TaskanaEngineConfiguration {
     ensureRoleMapIsFullyInitialized();
 
     if (LOGGER.isDebugEnabled()) {
-      roleMap.forEach(
-          (k, v) ->
-              LOGGER.debug("Found Taskana RoleConfig {} : {} ", k, v));
+      roleMap.forEach((k, v) -> LOGGER.debug("Found Taskana RoleConfig {} : {} ", k, v));
     }
   }
 
@@ -579,7 +579,7 @@ public class TaskanaEngineConfiguration {
   private CustomHoliday createCustomHolidayFromPropsEntry(String customHolidayEntry)
       throws WrongCustomHolidayFormatException {
     String[] parts =
-        customHolidayEntry.split(Pattern.quote(TASKANA_CUSTOM_HOLIDAY_DAY_MONTH_SEPERATOR));
+        customHolidayEntry.split(Pattern.quote(TASKANA_CUSTOM_HOLIDAY_DAY_MONTH_SEPARATOR));
     if (parts.length == 2) {
       return CustomHoliday.of(Integer.valueOf(parts[0]), Integer.valueOf(parts[1]));
     }

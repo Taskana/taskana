@@ -20,7 +20,7 @@ import pro.taskana.simplehistory.impl.HistoryEventImpl;
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
 
 /** Set up database for tests. */
-public class AbstractAccTest {
+public abstract class AbstractAccTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAccTest.class);
   private static final int POOL_TIME_TO_WAIT = 50;
