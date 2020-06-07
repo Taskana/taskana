@@ -2,6 +2,7 @@ package pro.taskana.classification.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static pro.taskana.common.rest.RestHelper.TEMPLATE;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
@@ -12,7 +13,10 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +32,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.RestTemplate;
 
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
@@ -43,6 +46,7 @@ import pro.taskana.common.rest.models.TaskanaPagedModelKeys;
 
 /** Test classification definitions. */
 @TaskanaSpringBootTest
+@TestMethodOrder(OrderAnnotation.class)
 class ClassificationDefinitionControllerIntTest {
 
   private static final ParameterizedTypeReference<
@@ -50,7 +54,6 @@ class ClassificationDefinitionControllerIntTest {
       CLASSIFICATION_PAGE_MODEL_TYPE =
           new ParameterizedTypeReference<TaskanaPagedModel<ClassificationRepresentationModel>>() {};
   private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationController.class);
-  private static RestTemplate template = RestHelper.TEMPLATE;
 
   private final RestHelper restHelper;
   private final ObjectMapper mapper;
@@ -70,9 +73,10 @@ class ClassificationDefinitionControllerIntTest {
   }
 
   @Test
+  @Order(1) // since the import tests adds Classifications this has to be tested first.
   void testExportClassifications() {
     ResponseEntity<TaskanaPagedModel<ClassificationRepresentationModel>> response =
-        template.exchange(
+        TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_CLASSIFICATIONDEFINITIONS) + "?domain=DOMAIN_B",
             HttpMethod.GET,
             restHelper.defaultRequest(),
@@ -92,7 +96,7 @@ class ClassificationDefinitionControllerIntTest {
   @Test
   void testExportClassificationsFromWrongDomain() {
     ResponseEntity<TaskanaPagedModel<ClassificationRepresentationModel>> response =
-        template.exchange(
+        TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_CLASSIFICATIONDEFINITIONS) + "?domain=ADdfe",
             HttpMethod.GET,
             restHelper.defaultRequest(),
@@ -440,6 +444,6 @@ class ClassificationDefinitionControllerIntTest {
     HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
     String serverUrl = restHelper.toUrl(Mapping.URL_CLASSIFICATIONDEFINITIONS);
 
-    return template.postForEntity(serverUrl, requestEntity, Void.class);
+    return TEMPLATE.postForEntity(serverUrl, requestEntity, Void.class);
   }
 }
