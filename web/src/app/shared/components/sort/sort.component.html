@@ -31,7 +31,6 @@
       <mat-radio-button *ngFor="let sortingField of sortingFields | mapValues"
                         name="sort" id="sort-by-{{sortingField.key}}" [checked]="sortingField.key === defaultSortBy"
                         (change)="changeSortBy(sortingField.key)" [value]="sortingField.value"> {{ sortingField.value }}</mat-radio-button>
-      <!--TODO make sortingby the default checked and change theme colors to use taskana colors-->
     </mat-radio-group>
   </div>
 </div>
