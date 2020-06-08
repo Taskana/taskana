@@ -1,5 +1,6 @@
 import { Selector } from '@ngxs/store';
 import { WorkbasketState, WorkbasketStateModel } from './workbasket.state';
+<<<<<<< HEAD
 import { WorkbasketSummary } from '../../models/workbasket-summary';
 import { WorkbasketSummaryRepresentation } from '../../models/workbasket-summary-representation';
 import { Workbasket } from '../../models/workbasket';
@@ -53,4 +54,17 @@ export class WorkbasketSelectors {
 export interface WorkbasketAndAction {
   selectedWorkbasket: Workbasket,
   action: ACTION
+=======
+
+export class WorkbasketSelectors {
+  @Selector([WorkbasketState])
+  static workbaskets(state: WorkbasketStateModel) {
+    return state.workbaskets;
+  }
+
+  @Selector([WorkbasketState])
+  static selectedWorkbasket(state: WorkbasketStateModel) {
+    return state.selectedWorkbasket;
+  }
+>>>>>>> TSK-1215 initialized workbasket ngxs store with get all and select workbasket
 }

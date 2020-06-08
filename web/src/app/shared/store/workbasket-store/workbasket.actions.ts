@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Workbasket } from '../../models/workbasket';
 import { TaskanaQueryParameters } from '../../util/query-parameters';
 import { Direction } from '../../models/sorting';
@@ -22,6 +23,11 @@ export class GetWorkbasketsSummary {
     public requiredPermission?: string,
     public allPages: boolean = false) {
   }
+=======
+
+export class GetWorkbaskets {
+  static readonly type = '[Workbasket] Get all workbaskets';
+>>>>>>> TSK-1215 initialized workbasket ngxs store with get all and select workbasket
 }
 
 export class SelectWorkbasket {
@@ -29,6 +35,7 @@ export class SelectWorkbasket {
   constructor(public workbasketId: string) {
   }
 }
+<<<<<<< HEAD
 
 export class DeselectWorkbasket {
   static readonly type = '[Workbasket] Deselect workbasket';
@@ -100,3 +107,5 @@ export class UpdateWorkbasketDistributionTargets {
   constructor(public url: string, public distributionTargetsIds: string[]) {
   }
 }
+=======
+>>>>>>> TSK-1215 initialized workbasket ngxs store with get all and select workbasket

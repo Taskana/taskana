@@ -1,6 +1,7 @@
 import { Action, NgxsAfterBootstrap, State, StateContext } from '@ngxs/store';
 import { take, tap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
+<<<<<<< HEAD
 import { Location } from '@angular/common';
 import { WorkbasketService } from '../../services/workbasket/workbasket.service';
 import { Workbasket } from '../../models/workbasket';
@@ -24,6 +25,11 @@ import { NOTIFICATION_TYPES } from '../../models/notifications';
 import { NotificationService } from '../../services/notifications/notification.service';
 import { WorkbasketAccessItemsRepresentation } from '../../models/workbasket-access-items-representation';
 import { WorkbasketDistributionTargets } from '../../models/workbasket-distribution-targets';
+=======
+import { WorkbasketService } from '../../services/workbasket/workbasket.service';
+import { Workbasket } from '../../models/workbasket';
+import { GetWorkbaskets, SelectWorkbasket } from './workbasket.actions';
+>>>>>>> TSK-1215 initialized workbasket ngxs store with get all and select workbasket
 
 class InitializeStore {
   static readonly type = '[Workbasket] Initializing state';
@@ -31,6 +37,7 @@ class InitializeStore {
 
 @State<WorkbasketStateModel>({ name: 'workbasket' })
 export class WorkbasketState implements NgxsAfterBootstrap {
+<<<<<<< HEAD
   constructor(
     private workbasketService: WorkbasketService,
     private domainService: DomainService,
@@ -47,6 +54,17 @@ export class WorkbasketState implements NgxsAfterBootstrap {
       take(1), tap(paginatedWorkbasketsSummary => {
         ctx.patchState(
           { paginatedWorkbasketsSummary }
+=======
+  constructor(private workbasketService: WorkbasketService) {
+  }
+
+  @Action(GetWorkbaskets)
+  getWorkbaskets(ctx: StateContext<WorkbasketStateModel>): Observable<any> {
+    return this.workbasketService.getAllWorkBaskets().pipe(
+      take(1), tap(workbasketResource => {
+        ctx.patchState(
+          { workbaskets: workbasketResource.workbaskets }
+>>>>>>> TSK-1215 initialized workbasket ngxs store with get all and select workbasket
         );
       })
     );
@@ -54,14 +72,21 @@ export class WorkbasketState implements NgxsAfterBootstrap {
 
   @Action(SelectWorkbasket)
   selectWorkbasket(ctx: StateContext<WorkbasketStateModel>, action: SelectWorkbasket): Observable<any> {
+<<<<<<< HEAD
     this.location.go(this.location.path().replace(/(workbaskets).*/g, `workbaskets/(detail:${action.workbasketId})`));
+=======
+>>>>>>> TSK-1215 initialized workbasket ngxs store with get all and select workbasket
     const id = action.workbasketId;
     if (typeof id !== 'undefined') {
       return this.workbasketService.getWorkBasket(id).pipe(take(1), tap(
         selectedWorkbasket => {
           ctx.patchState({
+<<<<<<< HEAD
             selectedWorkbasket,
             action: ACTION.READ
+=======
+            selectedWorkbasket
+>>>>>>> TSK-1215 initialized workbasket ngxs store with get all and select workbasket
           });
         }
       ));
@@ -69,6 +94,7 @@ export class WorkbasketState implements NgxsAfterBootstrap {
     return of(null);
   }
 
+<<<<<<< HEAD
   @Action(DeselectWorkbasket)
   deselectWorkbasket(ctx: StateContext<WorkbasketStateModel>): Observable<any> {
     this.location.go(this.location.path().replace(/(workbaskets).*/g, 'workbaskets'));
@@ -230,11 +256,14 @@ export class WorkbasketState implements NgxsAfterBootstrap {
     ));
   }
 
+=======
+>>>>>>> TSK-1215 initialized workbasket ngxs store with get all and select workbasket
   ngxsAfterBootstrap(ctx?: StateContext<any>): void {
     ctx.dispatch(new InitializeStore());
   }
 }
 
+<<<<<<< HEAD
 function updateWorkbasketSummaryRepresentation(
   paginatedWorkbasketsSummary: WorkbasketSummaryRepresentation,
   selectedWorkbasket: Workbasket
@@ -253,4 +282,9 @@ export interface WorkbasketStateModel {
   action: ACTION,
   workbasketAccessItems: WorkbasketAccessItemsRepresentation,
   workbasketDistributionTargets: WorkbasketDistributionTargets
+=======
+export interface WorkbasketStateModel {
+  workbaskets: Workbasket[],
+  selectedWorkbasket: Workbasket
+>>>>>>> TSK-1215 initialized workbasket ngxs store with get all and select workbasket
 }
