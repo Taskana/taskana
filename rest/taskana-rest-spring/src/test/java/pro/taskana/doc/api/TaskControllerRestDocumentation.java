@@ -540,6 +540,20 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
   }
 
   @Test
+  void selectAndClaimTaskDocTest() throws Exception {
+    this.mockMvc
+        .perform(
+            RestDocumentationRequestBuilders.post(
+                restHelper.toUrl(Mapping.URL_TASKS_ID_SELECT_AND_CLAIM) + "?custom14=abc")
+                .accept("application/hal+json")
+                .header("Authorization", ADMIN_CREDENTIALS))
+        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andDo(
+            MockMvcRestDocumentation.document(
+                "SelectAndClaimTaskDocTest", responseFields(taskFieldDescriptors)));
+  }
+
+  @Test
   void createAndDeleteTaskDocTest() throws Exception {
 
     MvcResult result =

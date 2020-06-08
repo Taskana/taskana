@@ -85,6 +85,7 @@ public class TaskController extends AbstractPagingController {
   private static final String EXTERNAL_ID = "external-id";
   private static final String WILDCARD_SEARCH_VALUE = "wildcard-search-value";
   private static final String WILDCARD_SEARCH_FIELDS = "wildcard-search-fields";
+  private static final String CUSTOM = "custom";
 
   private static final String SORT_BY = "sort-by";
   private static final String SORT_DIRECTION = "order";
@@ -161,6 +162,30 @@ public class TaskController extends AbstractPagingController {
         ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from claimTask(), returning {}", result);
+    }
+
+    return result;
+  }
+
+  @PostMapping(path = Mapping.URL_TASKS_ID_SELECT_AND_CLAIM)
+  @Transactional(rollbackFor = Exception.class)
+  public ResponseEntity<TaskRepresentationModel> selectAndClaimTask(
+      @RequestParam MultiValueMap<String, String> params)
+      throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
+          NotAuthorizedException, InvalidArgumentException {
+
+    LOGGER.debug("Entry to selectAndClaimTask");
+
+    TaskQuery query = taskService.createTaskQuery();
+    query = applyFilterParams(query, params);
+    query = applySortingParams(query, params);
+
+    Task selectedAndClaimedTask = taskService.selectAndClaim(query);
+
+    ResponseEntity<TaskRepresentationModel> result =
+        ResponseEntity.ok(taskRepresentationModelAssembler.toModel(selectedAndClaimedTask));
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Exit from selectAndClaimTask(), returning {}", result);
     }
 
     return result;
@@ -414,8 +439,15 @@ public class TaskController extends AbstractPagingController {
       params.remove(EXTERNAL_ID);
     }
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from applyFilterParams(), returning {}", taskQuery);
+    for (int i = 1; i < 17; i++) {
+      if (params.containsKey(CUSTOM + i)) {
+        String[] customValues = extractCommaSeparatedFields(params.get(CUSTOM + i));
+        taskQuery.customAttributeIn(String.valueOf(i), customValues);
+        if (LOGGER.isDebugEnabled()) {
+          params.remove(CUSTOM + i);
+          LOGGER.debug("Exit from applyFilterParams(), returning {}", taskQuery);
+        }
+      }
     }
 
     return taskQuery;
