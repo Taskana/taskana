@@ -71,7 +71,7 @@
         <version.arquillian>1.5.0.Final</version.arquillian>
 
         <!--  LDAP dependencies -->
-        <version.unboundid-ldapsdk>4.0.14</version.unboundid-ldapsdk>
+        <version.unboundid-ldapsdk>5.1.0</version.unboundid-ldapsdk>
 
         <!-- test dependencies -->
         <version.assertj>3.16.1</version.assertj>
