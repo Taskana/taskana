@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { WorkbasketSummaryResource } from 'app/shared/models/workbasket-summary-resource';
 import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
@@ -12,6 +12,10 @@ import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.ser
 import { OrientationService } from 'app/shared/services/orientation/orientation.service';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { ImportExportService } from 'app/administration/services/import-export.service';
+import { Select, Store } from '@ngxs/store';
+import { GetWorkbaskets, SelectWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
+import { Workbasket } from '../../../shared/models/workbasket';
+import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
 
 @Component({
   selector: 'taskana-administration-workbasket-list',
@@ -36,6 +40,8 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   @ViewChild('wbToolbar', { static: true })
   private toolbarElement: ElementRef;
 
+  @Select(WorkbasketSelectors.workbaskets) workbaskets$: Observable<Workbasket[]>;
+
   private workBasketSummarySubscription: Subscription;
   private workbasketServiceSubscription: Subscription;
   private workbasketServiceSavedSubscription: Subscription;
@@ -43,6 +49,7 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   private importingExportingSubscription: Subscription;
 
   constructor(
+    private store: Store,
     private workbasketService: WorkbasketService,
     private router: Router,
     private route: ActivatedRoute,
@@ -52,6 +59,7 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.store.dispatch(new GetWorkbaskets());
     this.requestInProgress = true;
     this.workbasketServiceSubscription = this.workbasketService.getSelectedWorkBasket().subscribe(workbasketIdSelected => {
       // TODO should be done in a different way.
@@ -75,6 +83,7 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   }
 
   selectWorkbasket(id: string) {
+    this.store.dispatch(new SelectWorkbasket(id));
     this.selectedId = id;
     this.router.navigate([{ outlets: { detail: [this.selectedId] } }], { relativeTo: this.route });
   }
