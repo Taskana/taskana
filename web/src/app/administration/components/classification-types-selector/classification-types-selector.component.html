@@ -5,15 +5,11 @@
     <span class="caret"></span>
     <span class="sr-only">Toggle Dropdown</span>
   </button>
-  <div class="dropdown-menu dropdown-menu-right sortby-dropdown popup" aria-labelledby="sortingDropdown">
-    <li *ngFor="let classificationType of classificationTypes$ | async">
-      <a (click)="select(classificationType)">
-        <label>
-          <span data-toggle="tooltip" class="material-icons md-20 blue">{{(classificationTypeSelected$ | async) === classificationType?
-            'check_box': 'check_box_outline_blank'}}</span>
-          <span>{{classificationType}}</span>
-        </label>
-      </a>
-    </li>
+  <div class="dropdown-menu dropdown-menu-right popup" aria-labelledby="sortingDropdown">
+    <mat-radio-group name="classificationTypeSelector" color="accent" class="radio-group">
+      <mat-radio-button *ngFor="let classificationType of classificationTypes$ | async"
+                        name="classificationTypeSelector" id="select-{{classificationType}}" [checked]="classificationType === (classificationTypeSelected$ | async)"
+                        (change)="select(classificationType)" [value]="classificationType">{{classificationType}}</mat-radio-button>
+    </mat-radio-group>
   </div>
 </div>

@@ -10,6 +10,7 @@ import { TreeModule } from 'angular-tree-component';
 import { ClassificationTypesSelectorComponent } from 'app/administration/components/classification-types-selector/classification-types-selector.component';
 import { ClassificationCategoriesService } from 'app/shared/services/classification-categories/classification-categories.service';
 import { AccessItemsManagementComponent } from 'app/administration/components/access-items-management/access-items-management.component';
+import { MatRadioModule } from '@angular/material/radio';
 import { AdministrationRoutingModule } from './administration-routing.module';
 /**
  * Components
@@ -61,7 +62,10 @@ const DECLARATIONS = [
 
 @NgModule({
   declarations: DECLARATIONS,
-  imports: MODULES,
+  imports: [
+    MODULES,
+    MatRadioModule
+  ],
   providers: [
     ClassificationDefinitionService,
     WorkbasketDefinitionService,

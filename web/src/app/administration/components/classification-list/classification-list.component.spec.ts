@@ -21,6 +21,7 @@ import { configureTests } from 'app/app.test.configuration';
 import { TreeService } from 'app/shared/services/tree/tree.service';
 import { ImportExportService } from 'app/administration/services/import-export.service';
 import { NgxsModule } from '@ngxs/store';
+import { MatRadioModule } from '@angular/material/radio';
 import { ClassificationListComponent } from './classification-list.component';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 
@@ -46,7 +47,7 @@ describe('ClassificationListComponent', () => {
     testBed.configureTestingModule({
       declarations: [ClassificationListComponent, ImportExportComponent, ClassificationTypesSelectorComponent,
         DummyDetailComponent],
-      imports: [HttpClientModule, RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule, NgxsModule.forRoot()],
+      imports: [HttpClientModule, RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule, NgxsModule.forRoot(), MatRadioModule],
       providers: [
         HttpClient, WorkbasketDefinitionService, NotificationService,
         ClassificationsService, DomainService, ClassificationDefinitionService,
