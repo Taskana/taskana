@@ -326,6 +326,21 @@ public interface TaskService {
       throws TaskNotFoundException, InvalidStateException, NotAuthorizedException;
 
   /**
+   * Selects and claims the first task which is returned by the task query.
+   *
+   * @param taskQuery the task query.
+   * @return the task that got selected and claimed
+   * @throws TaskNotFoundException if the task with taskId was not found
+   * @throws InvalidStateException if the state of the task with taskId is not READY
+   * @throws InvalidOwnerException if the task with taskId is claimed by someone else
+   * @throws NotAuthorizedException if the current user has no read permission for the
+   *     workbasket the task is in
+   */
+  Task selectAndClaim(TaskQuery taskQuery)
+      throws TaskNotFoundException, NotAuthorizedException, InvalidStateException,
+          InvalidOwnerException;
+
+  /**
    * Deletes a list of tasks.
    *
    * @param tasks the ids of the tasks to delete.

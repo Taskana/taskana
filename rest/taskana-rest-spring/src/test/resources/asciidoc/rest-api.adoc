@@ -230,6 +230,24 @@ include::{snippets}/CancelClaimTaskDocTest/http-response.adoc[]
 The response-body is essentially the same as for getting a single task. +
 Therefore for the response fields you can refer to the <<task, single task>>.
 
+=== Select and Claim a task
+
+A `POST` request is used to select and claim a task
+
+==== Example Request
+
+Note the empty request-body in the example.
+
+include::{snippets}/SelectAndClaimTaskDocTest/http-request.adoc[]
+
+==== Example Response
+
+include::{snippets}/SelectAndClaimTaskDocTest/http-response.adoc[]
+
+==== Response Structure
+
+The response-body is essentially the same as for getting a single task. +
+Therefore for the response fields you can refer to the <<task, single task>>.
 
 === Complete a task
 

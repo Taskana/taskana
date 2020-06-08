@@ -149,6 +149,7 @@ public class TaskQueryImpl implements TaskQuery {
   private List<String> orderColumns;
   private WildcardSearchField[] wildcardSearchFieldIn;
   private String wildcardSearchValueLike;
+  private boolean selectAndClaim;
 
   private boolean useDistinctKeyword = false;
   private boolean joinWithAttachments = false;
@@ -446,6 +447,11 @@ public class TaskQueryImpl implements TaskQuery {
   @Override
   public TaskQuery transferredEquals(Boolean isTransferred) {
     this.isTransferred = isTransferred;
+    return this;
+  }
+
+  public TaskQuery selectAndClaimEquals(boolean selectAndClaim) {
+    this.selectAndClaim = selectAndClaim;
     return this;
   }
 
@@ -1105,7 +1111,11 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   public String getLinkToMapperScript() {
-    return DB.DB2.dbProductId.equals(getDatabaseId()) ? LINK_TO_MAPPER_DB2 : LINK_TO_MAPPER;
+    if (DB.DB2.dbProductId.equals(getDatabaseId()) && !selectAndClaim) {
+      return LINK_TO_MAPPER_DB2;
+    } else {
+      return LINK_TO_MAPPER;
+    }
   }
 
   public String getLinkToCounterTaskScript() {
@@ -1204,6 +1214,10 @@ public class TaskQueryImpl implements TaskQuery {
 
   public Boolean getIsTransferred() {
     return isTransferred;
+  }
+
+  public boolean getIsSelectAndClaim() {
+    return selectAndClaim;
   }
 
   public String[] getPorCompanyIn() {
@@ -1931,6 +1945,8 @@ public class TaskQueryImpl implements TaskQuery {
         + wildcardSearchFieldIn
         + ", wildcardSearchValueLike="
         + wildcardSearchValueLike
+        + ", selectAndClaim="
+        + selectAndClaim
         + "]";
   }
 }

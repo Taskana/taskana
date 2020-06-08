@@ -134,8 +134,11 @@ public interface TaskQueryMapper {
           + "<if test='attachmentReferenceLike != null'>AND (<foreach item='item' collection='attachmentReferenceLike' separator=' OR '>UPPER(a.REF_VALUE) LIKE #{item}</foreach>)</if> "
           + "<if test='attachmentReceivedIn !=null'> AND ( <foreach item='item' collection='attachmentReceivedIn' separator=' OR ' > ( <if test='item.begin!=null'> a.RECEIVED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> a.RECEIVED &lt;=#{item.end} </if>)</foreach>)</if> "
           + "<if test='wildcardSearchValueLike != null and wildcardSearchFieldIn != null'>AND (<foreach item='item' collection='wildcardSearchFieldIn' separator=' OR '>t.${item} LIKE #{wildcardSearchValueLike}</foreach>)</if> "
+          + "<if test='selectAndClaim == true'> AND t.STATE = 'READY' </if>"
           + "</where>"
           + "<if test='!orderBy.isEmpty()'>ORDER BY <foreach item='item' collection='orderBy' separator=',' >${item}</foreach></if> "
+          + "<if test='selectAndClaim == true'> FETCH FIRST ROW ONLY FOR UPDATE </if>"
+          + "<if test=\"_databaseId == 'db2'\">WITH RS USE AND KEEP UPDATE LOCKS </if> "
           + "</script>")
   @Results(
       value = {
@@ -334,6 +337,7 @@ public interface TaskQueryMapper {
           + "</if>"
           + "<if test=\"addAttachmentClassificationNameToSelectClauseForOrdering\">"
           + ", ACNAME "
+
           + "</if>"
           + ", FLAG ) "
           + "AS "
@@ -376,7 +380,8 @@ public interface TaskQueryMapper {
           + "${item}"
           + "</foreach>"
           + "</if> "
-          + "with UR "
+          + "<if test='selectAndClaim == true'>FETCH FIRST ROW ONLY FOR UPDATE WITH RS USE AND KEEP UPDATE LOCKS</if>"
+          + "<if test='selectAndClaim == false'> with UR</if>"
           + "</script>")
   @Results(
       value = {

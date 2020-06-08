@@ -478,6 +478,37 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
+  public Task selectAndClaim(TaskQuery taskQuery)
+      throws TaskNotFoundException, NotAuthorizedException, InvalidStateException,
+          InvalidOwnerException {
+
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("entry to selectAndClaim(taskQuery = {})", taskQuery);
+    }
+
+    try {
+
+      taskanaEngine.openConnection();
+
+      ((TaskQueryImpl) taskQuery).selectAndClaimEquals(true);
+
+      TaskSummary taskSummary = taskQuery.single();
+
+      if (taskSummary == null) {
+        throw new SystemException(
+            "No tasks matched the specified filter and sorting options,"
+                + " task query returned nothing!");
+      }
+
+      return claim(taskSummary.getId());
+
+    } finally {
+      LOGGER.debug("exit from selectAndClaim()");
+      taskanaEngine.returnConnection();
+    }
+  }
+
+  @Override
   public BulkOperationResults<String, TaskanaException> deleteTasks(List<String> taskIds)
       throws InvalidArgumentException, NotAuthorizedException {
     if (LOGGER.isDebugEnabled()) {

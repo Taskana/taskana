@@ -44,6 +44,7 @@ public abstract class AbstractAccTest {
   }
 
   public static void resetDb(boolean dropTables) throws SQLException {
+
     DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
     String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
     SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
