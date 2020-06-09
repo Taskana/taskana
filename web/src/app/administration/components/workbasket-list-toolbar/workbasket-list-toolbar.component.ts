@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { Sorting } from 'app/shared/models/sorting';
 import { Filter } from 'app/shared/models/filter';
-import { Subscription } from 'rxjs';
 import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
 
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';

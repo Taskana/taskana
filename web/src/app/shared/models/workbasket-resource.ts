@@ -1,9 +1,7 @@
 import { Links } from './links';
 import { Workbasket } from './workbasket';
 
-export class WorkbasketResource {
-  constructor(
-    public workbaskets: Array<Workbasket> = [],
-    public _links: Links = {}
-  ) { }
+export interface WorkbasketResource {
+  workbaskets: Workbasket[];
+  _links: Links;
 }
