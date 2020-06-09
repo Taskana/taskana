@@ -1,30 +1,28 @@
 import { Links } from './links';
 
-export class WorkbasketAccessItems {
-  constructor(
-    public accessItemId: string = '',
-    public workbasketId: string = '',
-    public accessId: string = '',
-    public accessName: string = '',
-    public permRead: boolean = false,
-    public permOpen: boolean = false,
-    public permAppend: boolean = false,
-    public permTransfer: boolean = false,
-    public permDistribute: boolean = false,
-    public permCustom1: boolean = false,
-    public permCustom2: boolean = false,
-    public permCustom3: boolean = false,
-    public permCustom4: boolean = false,
-    public permCustom5: boolean = false,
-    public permCustom6: boolean = false,
-    public permCustom7: boolean = false,
-    public permCustom8: boolean = false,
-    public permCustom9: boolean = false,
-    public permCustom10: boolean = false,
-    public permCustom11: boolean = false,
-    public permCustom12: boolean = false,
-    public _links: Links = {}
-  ) { }
+export interface WorkbasketAccessItems {
+  accessItemId: string;
+  workbasketId: string;
+  accessId: string;
+  accessName: string;
+  permRead: boolean;
+  permOpen: boolean;
+  permAppend: boolean;
+  permTransfer: boolean;
+  permDistribute: boolean;
+  permCustom1: boolean;
+  permCustom2: boolean;
+  permCustom3: boolean;
+  permCustom4: boolean;
+  permCustom5: boolean;
+  permCustom6: boolean;
+  permCustom7: boolean;
+  permCustom8: boolean;
+  permCustom9: boolean;
+  permCustom10: boolean;
+  permCustom11: boolean;
+  permCustom12: boolean;
+  _links: Links;
 }
 
 export const customFieldCount: number = 12;
