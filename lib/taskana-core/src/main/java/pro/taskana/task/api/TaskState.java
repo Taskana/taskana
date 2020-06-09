@@ -10,11 +10,13 @@ public enum TaskState {
   CANCELLED,
   TERMINATED;
 
+  public static TaskState[] END_STATES = {COMPLETED, CANCELLED, TERMINATED};
+
   public boolean in(TaskState... states) {
     return Arrays.stream(states).anyMatch(state -> state == this);
   }
 
   public boolean isEndState() {
-    return this == COMPLETED || this == CANCELLED || this == TERMINATED;
+    return in(END_STATES);
   }
 }
