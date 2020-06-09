@@ -1,7 +1,8 @@
 <div class="footer-space-pagination-list">
   <div #wbToolbar>
-    <taskana-administration-workbasket-list-toolbar [workbaskets]="workbaskets" (performFilter)="performFilter($event)"
-                                                    (performSorting)="performSorting($event)" (importSucessful)="refreshWorkbasketList()" [workbasketDefaultSortBy]="workbasketDefaultSortBy"></taskana-administration-workbasket-list-toolbar>
+    <taskana-workbasket-list-toolbar [workbaskets]="workbaskets" (performFilter)="performFilter($event)"
+      (performSorting)="performSorting($event)" [workbasketDefaultSortBy]="workbasketDefaultSortBy">#
+    </taskana-workbasket-list-toolbar>
   </div>
   <div *ngIf="(workbaskets && workbaskets.length > 0) else empty_workbaskets">
     <ul #wbList id="wb-list-container" class="list-group">
@@ -12,7 +13,7 @@
         type="text" (click)="selectWorkbasket(workbasket.workbasketId)">
         <div class="row">
           <dl class="col-xs-1">
-            <taskana-administration-icon-type class="vertical-align" [type]="workbasket.type" tooltip="true" [selected]="workbasket.workbasketId === selectedId"></taskana-administration-icon-type>
+            <taskana-icon-type class="vertical-align" [type]="workbasket.type" tooltip="true" [selected]="workbasket.workbasketId === selectedId"></taskana-icon-type>
           </dl>
           <dl class="col-xs-10">
             <dt data-toggle="tooltip" title="{{workbasket.name}}">{{workbasket.name}},
@@ -28,7 +29,7 @@
       </li>
     </ul>
   </div>
-  <taskana-shared-spinner [isRunning]="requestInProgress"></taskana-shared-spinner>
+  <taskana-spinner [isRunning]="requestInProgress"></taskana-spinner>
   <ng-template #empty_workbaskets>
     <div *ngIf="!requestInProgress" class="col-xs-12 container-no-items center-block">
       <h3 class="grey">There are no workbaskets</h3>
@@ -36,5 +37,5 @@
     </div>
   </ng-template>
 </div>
-<taskana-shared-pagination [(page)]="workbasketsResource ? workbasketsResource.page : workbasketsResource"
-                           [type]="type" [numberOfItems]="workbaskets.length" (changePage)="changePage($event)"></taskana-shared-pagination>
+<taskana-pagination [(page)]="workbasketsResource ? workbasketsResource.page : workbasketsResource"
+  [type]="type" [numberOfItems]="workbaskets.length" (changePage)="changePage($event)"></taskana-pagination>

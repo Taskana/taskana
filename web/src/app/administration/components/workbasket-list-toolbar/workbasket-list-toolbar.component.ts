@@ -10,7 +10,6 @@ import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.ser
 import { TaskanaType } from 'app/shared/models/taskana-type';
 import { expandDown } from 'theme/animations/expand.animation';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
-import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 
 @Component({
   selector: 'taskana-administration-workbasket-list-toolbar',
@@ -23,7 +22,7 @@ export class WorkbasketListToolbarComponent implements OnInit {
   @Input() workbasketDefaultSortBy: string;
   @Output() performSorting = new EventEmitter<Sorting>();
   @Output() performFilter = new EventEmitter<Filter>();
-  workbasketServiceSubscription: Subscription;
+
   selectionToImport = TaskanaType.WORKBASKETS;
   sortingFields = new Map([['name', 'Name'], ['key', 'Key'], ['description', 'Description'], ['owner', 'Owner'], ['type', 'Type']]);
   filteringTypes = new Map([['ALL', 'All'], ['PERSONAL', 'Personal'], ['GROUP', 'Group'],
