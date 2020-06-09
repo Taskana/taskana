@@ -3,7 +3,8 @@ import { take, tap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { WorkbasketService } from '../../services/workbasket/workbasket.service';
 import { Workbasket } from '../../models/workbasket';
-import { GetWorkbaskets, SelectWorkbasket } from './workbasket.actions';
+import { GetWorkbasketAccessItems, GetWorkbaskets, SelectWorkbasket } from './workbasket.actions';
+import { WorkbasketAccessItems } from '../../models/workbasket-access-items';
 
 class InitializeStore {
   static readonly type = '[Workbasket] Initializing state';
@@ -40,6 +41,17 @@ export class WorkbasketState implements NgxsAfterBootstrap {
     return of(null);
   }
 
+  @Action(GetWorkbasketAccessItems)
+  getWorkbasketAccessItems(ctx: StateContext<WorkbasketStateModel>, action: GetWorkbasketAccessItems): Observable<any> {
+    return this.workbasketService.getWorkBasketAccessItems(action.url).pipe(take(1), tap(
+      workbasketAccessItemsResource => {
+        ctx.patchState({
+          workbasketAccessItems: workbasketAccessItemsResource.accessItems
+        });
+      }
+    ));
+  }
+
   ngxsAfterBootstrap(ctx?: StateContext<any>): void {
     ctx.dispatch(new InitializeStore());
   }
@@ -47,5 +59,6 @@ export class WorkbasketState implements NgxsAfterBootstrap {
 
 export interface WorkbasketStateModel {
   workbaskets: Workbasket[],
-  selectedWorkbasket: Workbasket
+  selectedWorkbasket: Workbasket,
+  workbasketAccessItems: WorkbasketAccessItems
 }
