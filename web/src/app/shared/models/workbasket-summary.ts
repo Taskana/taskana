@@ -1,5 +1,4 @@
 import { ICONTYPES } from './icon-types';
-import { Page } from './page';
 import { Links } from './links';
 
 export class WorkbasketSummary {
@@ -16,9 +15,7 @@ export class WorkbasketSummary {
     public orgLevel2?: string,
     public orgLevel3?: string,
     public orgLevel4?: string,
-    public markedForDeletion: boolean = false,
-    public _links?: Links,
-    public page?: Page
+    public markedForDeletion?: boolean,
   ) {
   }
 }
