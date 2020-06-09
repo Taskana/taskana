@@ -20,7 +20,8 @@ export class Workbasket {
     public orgLevel2?: string,
     public orgLevel3?: string,
     public orgLevel4?: string,
-    public _links: Links = {}
+    public _links: Links = new Links(),
+    public markedForDeletion?: boolean
   ) {
   }
 }
