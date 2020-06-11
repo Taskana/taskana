@@ -49,9 +49,6 @@ class CustomFieldValueReportBuilderImplTest {
   @BeforeEach
   void setup() {
     when(internalTaskanaEngineMock.getEngine()).thenReturn(taskanaEngineMock);
-    when(taskanaEngineMock.getConfiguration()).thenReturn(taskanaEngineConfigurationMock);
-    when(taskanaEngineConfigurationMock.isGermanPublicHolidaysEnabled()).thenReturn(true);
-    when(taskanaEngineConfigurationMock.getCustomHolidays()).thenReturn(null);
   }
 
   @Test
@@ -96,11 +93,8 @@ class CustomFieldValueReportBuilderImplTest {
 
     verify(internalTaskanaEngineMock).openConnection();
     verify(taskanaEngineMock).checkRoleMembership(any());
-    verify(taskanaEngineMock).getConfiguration();
+    verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
     verify(internalTaskanaEngineMock, times(2)).getEngine();
-    verify(taskanaEngineConfigurationMock).isGermanPublicHolidaysEnabled();
-    verify(taskanaEngineConfigurationMock).isCorpusChristiEnabled();
-    verify(taskanaEngineConfigurationMock).getCustomHolidays();
     verify(monitorMapperMock)
         .getTaskCountOfCustomFieldValues(any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
@@ -161,11 +155,8 @@ class CustomFieldValueReportBuilderImplTest {
 
     verify(internalTaskanaEngineMock).openConnection();
     verify(taskanaEngineMock).checkRoleMembership(any());
-    verify(taskanaEngineMock).getConfiguration();
+    verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
     verify(internalTaskanaEngineMock, times(2)).getEngine();
-    verify(taskanaEngineConfigurationMock).isGermanPublicHolidaysEnabled();
-    verify(taskanaEngineConfigurationMock).isCorpusChristiEnabled();
-    verify(taskanaEngineConfigurationMock).getCustomHolidays();
     verify(monitorMapperMock)
         .getTaskCountOfCustomFieldValues(any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
@@ -226,11 +217,8 @@ class CustomFieldValueReportBuilderImplTest {
 
     verify(internalTaskanaEngineMock).openConnection();
     verify(taskanaEngineMock).checkRoleMembership(any());
-    verify(taskanaEngineMock).getConfiguration();
+    verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
     verify(internalTaskanaEngineMock, times(2)).getEngine();
-    verify(taskanaEngineConfigurationMock).isGermanPublicHolidaysEnabled();
-    verify(taskanaEngineConfigurationMock).isCorpusChristiEnabled();
-    verify(taskanaEngineConfigurationMock).getCustomHolidays();
     verify(monitorMapperMock)
         .getCustomAttributeValuesForReport(any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();

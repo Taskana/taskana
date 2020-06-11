@@ -2,13 +2,12 @@ package acceptance.task;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.fail;
 
 import acceptance.AbstractAccTest;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.List;
+import org.assertj.core.api.Condition;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +22,6 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
-import pro.taskana.common.internal.util.WorkingDaysToDaysConverter;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
 import pro.taskana.task.api.exceptions.InvalidStateException;
@@ -169,9 +167,8 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     assertThat(task.getAttachments().get(0).getChannel()).isEqualTo(newChannel);
     assertThat(task.getPriority()).isEqualTo(999);
 
-    WorkingDaysToDaysConverter converter = WorkingDaysToDaysConverter.initialize(Instant.now());
-    long calendarDays = converter.convertWorkingDaysToDays(task.getDue(), 1);
-    assertThat(task.getPlanned().plus(Duration.ofDays(calendarDays))).isEqualTo(task.getDue());
+    Instant expDue = converter.addWorkingDaysToInstant(task.getPlanned(), Duration.ofDays(1));
+    assertThat(task.getDue()).isEqualTo(expDue);
   }
 
   @WithAccessId(user = "user-1-1", groups = "group-1")
@@ -308,18 +305,14 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     assertThat(task.getAttachments()).hasSize(attachmentCount);
     assertThat(task.getAttachments().get(0).getChannel()).isEqualTo(newChannel);
     assertThat(task.getPriority()).isEqualTo(999);
-    WorkingDaysToDaysConverter converter = WorkingDaysToDaysConverter.initialize(Instant.now());
-    long calendarDays = converter.convertWorkingDaysToDays(task.getDue(), 1);
+    Instant expDue = converter.addWorkingDaysToInstant(task.getPlanned(), Duration.ofDays(1));
 
-    assertThat(task.getPlanned().plus(Duration.ofDays(calendarDays))).isEqualTo(task.getDue());
+    assertThat(task.getDue()).isEqualTo(expDue);
   }
 
   @WithAccessId(user = "user-1-1", groups = "group-1")
   @Test
-  void modifyExistingAttachment()
-      throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException,
-          InvalidStateException {
+  void modifyExistingAttachment() throws Exception {
     // setup test
     assertThat(task.getAttachments()).isEmpty();
     task.addAttachment(attachment);
@@ -339,33 +332,19 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     task.addAttachment(attachment2);
     task = taskService.updateTask(task);
     task = taskService.getTask(task.getId());
+
     assertThat(task.getPriority()).isEqualTo(101);
-    WorkingDaysToDaysConverter converter = WorkingDaysToDaysConverter.initialize(Instant.now());
-    long calendarDays = converter.convertWorkingDaysToDays(task.getDue(), 1);
-
-    assertThat(task.getPlanned().plus(Duration.ofDays(calendarDays))).isEqualTo(task.getDue());
-
-    assertThat(task.getAttachments()).hasSize(2);
-    List<Attachment> attachments = task.getAttachments();
-    boolean rohrpostFound = false;
-    boolean emailFound = false;
-    for (Attachment att : attachments) {
-      String channel = att.getChannel();
-      int custAttSize = att.getCustomAttributes().size();
-      if ("ROHRPOST".equals(channel)) {
-        rohrpostFound = true;
-        assertThat(task.getModified()).isEqualTo(att.getModified());
-      } else if ("E-MAIL".equals(channel)) {
-        emailFound = true;
-      } else {
-        fail("unexpected attachment detected " + att);
-      }
-      assertThat(
-              ("ROHRPOST".equals(channel) && custAttSize == 4)
-                  || ("E-MAIL".equals(channel) && custAttSize == 3))
-          .isTrue();
-    }
-    assertThat(rohrpostFound && emailFound).isTrue();
+    Instant expDue = converter.addWorkingDaysToInstant(task.getPlanned(), Duration.ofDays(1));
+    assertThat(task.getDue()).isEqualTo(expDue);
+    assertThat(task.getAttachments()).hasSize(2)
+        .areExactly(1,
+            new Condition<>(
+                e -> "E-MAIL".equals(e.getChannel()) && e.getCustomAttributes().size() == 3,
+                "E-MAIL with 3 custom attributes"))
+        .areExactly(1,
+            new Condition<>(
+                e -> "ROHRPOST".equals(e.getChannel()) && e.getCustomAttributes().size() == 4,
+                "ROHRPOST with 4 custom attributes"));
 
     ClassificationSummary newClassificationSummary =
         taskanaEngine
@@ -385,30 +364,18 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     task = taskService.getTask(task.getId());
     assertThat(task.getPriority()).isEqualTo(99);
 
-    calendarDays = converter.convertWorkingDaysToDays(task.getDue(), 16);
-
-    assertThat(task.getPlanned().plus(Duration.ofDays(calendarDays))).isEqualTo(task.getDue());
-
-    rohrpostFound = false;
-    boolean faxFound = false;
-
-    for (Attachment att : task.getAttachments()) {
-      String channel = att.getChannel();
-      int custAttSize = att.getCustomAttributes().size();
-      if ("FAX".equals(channel)) {
-        faxFound = true;
-      } else if ("ROHRPOST".equals(channel)) {
-        rohrpostFound = true;
-      } else {
-        fail("unexpected attachment detected " + att);
-      }
-
-      assertThat(
-              ("ROHRPOST".equals(channel) && custAttSize == 4)
-                  || ("FAX".equals(channel) && custAttSize == 3))
-          .isTrue();
-    }
-    assertThat(faxFound && rohrpostFound).isTrue();
+    expDue = converter.addWorkingDaysToInstant(task.getPlanned(), Duration.ofDays(16));
+    assertThat(task.getDue()).isEqualTo(expDue);
+    assertThat(task.getAttachments())
+        .hasSize(2)
+        .areExactly(1,
+            new Condition<>(
+                e -> "FAX".equals(e.getChannel()) && e.getCustomAttributes().size() == 3,
+                "FAX with 3 custom attributes"))
+        .areExactly(1,
+            new Condition<>(
+                e -> "ROHRPOST".equals(e.getChannel()) && e.getCustomAttributes().size() == 4,
+                "ROHRPOST with 4 custom attributes"));
   }
 
   @WithAccessId(user = "user-1-1", groups = "group-1")
@@ -528,19 +495,14 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
 
     assertThat(readTask.getPriority()).isEqualTo(99);
 
-    WorkingDaysToDaysConverter converter = WorkingDaysToDaysConverter.initialize(Instant.now());
-    long calendarDays = converter.convertWorkingDaysToDays(readTask.getPlanned(), 1);
+    Instant expDue = converter.addWorkingDaysToInstant(readTask.getPlanned(), Duration.ofDays(1));
 
-    assertThat(readTask.getPlanned().plus(Duration.ofDays(calendarDays)))
-        .isEqualTo(readTask.getDue());
+    assertThat(readTask.getDue()).isEqualTo(expDue);
   }
 
   @WithAccessId(user = "user-1-1", groups = "group-1")
   @Test
-  void testAddCustomAttributeToAttachment()
-      throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException,
-          InvalidStateException {
+  void testAddCustomAttributeToAttachment() throws Exception {
 
     TaskService taskService = taskanaEngine.getTaskService();
     task =

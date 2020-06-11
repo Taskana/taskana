@@ -35,6 +35,7 @@ import pro.taskana.classification.internal.ClassificationServiceImpl;
 import pro.taskana.common.api.JobService;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
+import pro.taskana.common.api.WorkingDaysToDaysConverter;
 import pro.taskana.common.api.exceptions.AutocommitFailedException;
 import pro.taskana.common.api.exceptions.ConnectionNotSetException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
@@ -70,14 +71,15 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   private static final String DEFAULT = "default";
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineImpl.class);
   private static final SessionStack SESSION_STACK = new SessionStack();
+  private final HistoryEventProducer historyEventProducer;
+  private final TaskRoutingManager taskRoutingManager;
+  private final InternalTaskanaEngineImpl internalTaskanaEngineImpl;
+  private final WorkingDaysToDaysConverter workingDaysToDaysConverter;
   protected TaskanaEngineConfiguration taskanaEngineConfiguration;
   protected TransactionFactory transactionFactory;
   protected SqlSessionManager sessionManager;
   protected ConnectionManagementMode mode = ConnectionManagementMode.PARTICIPATE;
-  protected java.sql.Connection connection = null;
-  private final HistoryEventProducer historyEventProducer;
-  private final TaskRoutingManager taskRoutingManager;
-  private final InternalTaskanaEngineImpl internalTaskanaEngineImpl;
+  protected Connection connection = null;
 
   protected TaskanaEngineImpl(TaskanaEngineConfiguration taskanaEngineConfiguration) {
     this.taskanaEngineConfiguration = taskanaEngineConfiguration;
@@ -86,6 +88,11 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     historyEventProducer = HistoryEventProducer.getInstance(taskanaEngineConfiguration);
     taskRoutingManager = TaskRoutingManager.getInstance(this);
     this.internalTaskanaEngineImpl = new InternalTaskanaEngineImpl();
+    workingDaysToDaysConverter =
+        new WorkingDaysToDaysConverter(
+            taskanaEngineConfiguration.isGermanPublicHolidaysEnabled(),
+            taskanaEngineConfiguration.isCorpusChristiEnabled(),
+            taskanaEngineConfiguration.getCustomHolidays());
   }
 
   public static TaskanaEngine createTaskanaEngine(
@@ -141,6 +148,11 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   }
 
   @Override
+  public WorkingDaysToDaysConverter getWorkingDaysToDaysConverter() {
+    return workingDaysToDaysConverter;
+  }
+
+  @Override
   public boolean isHistoryEnabled() {
     return HistoryEventProducer.isHistoryEnabled();
   }
@@ -159,7 +171,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   }
 
   @Override
-  public void setConnection(java.sql.Connection connection) throws SQLException {
+  public void setConnection(Connection connection) throws SQLException {
     if (connection != null) {
       this.connection = connection;
       // disabling auto commit for passed connection in order to gain full control over the

@@ -11,6 +11,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
@@ -22,13 +23,13 @@ import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.BulkOperationResults;
+import pro.taskana.common.api.WorkingDaysToDaysConverter;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
-import pro.taskana.common.internal.util.WorkingDaysToDaysConverter;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
 import pro.taskana.task.api.exceptions.InvalidStateException;
@@ -47,10 +48,9 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
   private final WorkingDaysToDaysConverter converter;
 
   ServiceLevelPriorityAccTest() {
-    WorkingDaysToDaysConverter.setGermanPublicHolidaysEnabled(true);
     taskService = taskanaEngine.getTaskService();
     classificationService = taskanaEngine.getClassificationService();
-    converter = WorkingDaysToDaysConverter.initialize();
+    converter = taskanaEngine.getWorkingDaysToDaysConverter();
   }
 
   /* CREATE TASK */
@@ -80,14 +80,9 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     assertThat(readTask).isNotNull();
     assertThat(readTask.getDue()).isEqualTo(due);
 
-    long calendarDaysToSubtract = converter.convertWorkingDaysToDays(due, -serviceLevelDays);
-
-    assertThat(calendarDaysToSubtract < 0).isTrue();
-    assertThat(calendarDaysToSubtract <= serviceLevelDays).isTrue();
-
     Instant expectedPlanned =
-        moveBackToWorkingDay(due.plus(Duration.ofDays(calendarDaysToSubtract)));
-    assertThat(expectedPlanned).isEqualTo(readTask.getPlanned());
+        converter.subtractWorkingDaysFromInstant(due, Duration.ofDays(serviceLevelDays));
+    assertThat(readTask.getPlanned()).isEqualTo(expectedPlanned);
   }
 
   @WithAccessId(user = "user-1-1", groups = "group-1")
@@ -115,11 +110,10 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     assertThat(readTask).isNotNull();
     assertThat(readTask.getPlanned()).isEqualTo(planned);
 
-    long calendarDays = converter.convertWorkingDaysToDays(readTask.getPlanned(), serviceLevelDays);
-
     Instant expectedDue =
-        moveForwardToWorkingDay(readTask.getPlanned().plus(Duration.ofDays(calendarDays)));
-    assertThat(expectedDue).isEqualTo(readTask.getDue());
+        converter.addWorkingDaysToInstant(readTask.getPlanned(), Duration.ofDays(serviceLevelDays));
+
+    assertThat(readTask.getDue()).isEqualTo(expectedDue);
   }
 
   @WithAccessId(user = "user-1-1", groups = "group-1")
@@ -138,15 +132,11 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     newTask.setOwner("user-1-1");
 
     // due date according to service level
-    long daysToDue = converter.convertWorkingDaysToDays(newTask.getPlanned(), duration);
     Instant expectedDue =
-        moveForwardToWorkingDay(newTask.getPlanned().plus(Duration.ofDays(daysToDue)));
+        converter.addWorkingDaysToInstant(newTask.getPlanned(), Duration.ofDays(duration));
 
     newTask.setDue(expectedDue);
-    ThrowingCallable call =
-        () -> {
-          taskService.createTask(newTask);
-        };
+    ThrowingCallable call = () -> taskService.createTask(newTask);
     assertThatCode(call).doesNotThrowAnyException();
   }
 
@@ -163,10 +153,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
 
     newTask.setPlanned(planned);
     newTask.setDue(planned); // due date not according to service level
-    ThrowingCallable call =
-        () -> {
-          taskService.createTask(newTask);
-        };
+    ThrowingCallable call = () -> taskService.createTask(newTask);
     assertThatThrownBy(call).isInstanceOf(InvalidArgumentException.class);
   }
 
@@ -275,10 +262,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1", groups = "group-2")
   @Test
-  void should_SetPlanned_When_RequestContainsTasksWithAttachments()
-      throws NotAuthorizedException, TaskNotFoundException, ClassificationNotFoundException,
-          InvalidArgumentException, InvalidStateException, ConcurrencyException,
-          AttachmentPersistenceException {
+  void should_SetPlanned_When_RequestContainsTasksWithAttachments() throws Exception {
 
     // This test works with the following tasks, attachments and classifications
     //
@@ -335,7 +319,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
 
     assertThat(results.containsErrors()).isFalse();
     assertThat(dueBulk0).isEqualTo(due0);
-    //    assertThat(dueBulk1).isEqualTo(due1); in this method, a bug in the code is visible
+    assertThat(dueBulk1).isEqualTo(due1);
     assertThat(dueBulk2).isEqualTo(due2);
   }
 
@@ -424,12 +408,11 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     Instant planned = getInstant("2020-05-03T07:00:00");
     // test bulk operation setPlanned...
     BulkOperationResults<String, TaskanaException> results =
-        taskService.setPlannedPropertyOfTasks(planned, Arrays.asList(taskId));
+        taskService.setPlannedPropertyOfTasks(planned, Collections.singletonList(taskId));
     Task task = taskService.getTask(taskId);
     assertThat(results.containsErrors()).isFalse();
-    WorkingDaysToDaysConverter converter = WorkingDaysToDaysConverter.initialize();
-    long days = converter.convertWorkingDaysToDays(task.getPlanned(), 1);
-    assertThat(task.getDue()).isEqualTo(planned.plus(Duration.ofDays(days)));
+    Instant expectedDue = converter.addWorkingDaysToInstant(task.getPlanned(), Duration.ofDays(1));
+    assertThat(task.getDue()).isEqualTo(expectedDue);
   }
 
   @WithAccessId(user = "admin", groups = "group-2")
@@ -439,13 +422,12 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
           ConcurrencyException, InvalidStateException, ClassificationNotFoundException,
           AttachmentPersistenceException {
     String taskId = "TKI:000000000000000000000000000000000002";
-    WorkingDaysToDaysConverter converter = WorkingDaysToDaysConverter.initialize();
     Task task = taskService.getTask(taskId);
     // test update of planned date via updateTask()
     task.setPlanned(task.getPlanned().plus(Duration.ofDays(3)));
     task = taskService.updateTask(task);
-    long days = converter.convertWorkingDaysToDays(task.getPlanned(), 1);
-    assertThat(task.getDue()).isEqualTo(task.getPlanned().plus(Duration.ofDays(days)));
+    Instant expectedDue = converter.addWorkingDaysToInstant(task.getPlanned(), Duration.ofDays(1));
+    assertThat(task.getDue()).isEqualTo(expectedDue);
   }
 
   @WithAccessId(user = "admin", groups = "group-2")
@@ -466,37 +448,33 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin", groups = "group-2")
   @Test
-  void should_SetDue_When_OnlyPlannedWasChanged()
-      throws NotAuthorizedException, TaskNotFoundException, InvalidArgumentException,
-          ConcurrencyException, InvalidStateException, ClassificationNotFoundException,
-          AttachmentPersistenceException {
+  void should_SetDue_When_OnlyPlannedWasChanged() throws Exception {
     String taskId = "TKI:000000000000000000000000000000000002";
     Instant planned = getInstant("2020-05-03T07:00:00");
     Task task = taskService.getTask(taskId);
-    task.setDue(planned.plus(Duration.ofDays(3)));
-    WorkingDaysToDaysConverter converter = WorkingDaysToDaysConverter.initialize();
-    long days = converter.convertWorkingDaysToDays(task.getDue(), -1);
-    task.setPlanned(task.getDue().plus(Duration.ofDays(-1)));
+    task.setPlanned(planned);
     task = taskService.updateTask(task);
-    days = converter.convertWorkingDaysToDays(task.getDue(), -1);
-    assertThat(task.getPlanned()).isEqualTo(task.getDue().plus(Duration.ofDays(days)));
+    String serviceLevel = task.getClassificationSummary().getServiceLevel();
+    Instant expDue = converter.addWorkingDaysToInstant(task.getPlanned(), Duration.parse(serviceLevel));
+    assertThat(task.getPlanned()).isEqualTo(planned);
+    assertThat(task.getDue()).isEqualTo(expDue);
   }
 
   @WithAccessId(user = "admin", groups = "group-2")
   @Test
-  void should_SetPlanned_When_DueIsChangedAndPlannedIsNulled()
-      throws NotAuthorizedException, TaskNotFoundException, InvalidArgumentException,
-          ConcurrencyException, InvalidStateException, ClassificationNotFoundException,
-          AttachmentPersistenceException {
+  void should_SetPlanned_When_DueIsChangedAndPlannedIsNulled() throws Exception {
     String taskId = "TKI:000000000000000000000000000000000002";
-    Instant planned = getInstant("2020-05-03T07:00:00");
+    Instant due = getInstant("2020-05-06T07:00:00");
     Task task = taskService.getTask(taskId);
-    task.setDue(planned.plus(Duration.ofDays(3)));
+    task.setDue(due);
     task.setPlanned(null);
     task = taskService.updateTask(task);
-    WorkingDaysToDaysConverter converter = WorkingDaysToDaysConverter.initialize();
-    long days = converter.convertWorkingDaysToDays(task.getDue(), -1);
-    assertThat(task.getPlanned()).isEqualTo(task.getDue().plus(Duration.ofDays(days)));
+
+    String serviceLevel = task.getClassificationSummary().getServiceLevel();
+    Instant expPlanned =
+        converter.subtractWorkingDaysFromInstant(task.getDue(), Duration.parse(serviceLevel));
+    assertThat(task.getPlanned()).isEqualTo(expPlanned);
+    assertThat(task.getDue()).isEqualTo(due);
   }
 
   @WithAccessId(user = "admin", groups = "group-2")
@@ -511,20 +489,19 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
 
     task.setPlanned(null);
     task = taskService.updateTask(task);
-    WorkingDaysToDaysConverter converter = WorkingDaysToDaysConverter.initialize();
-    long days = converter.convertWorkingDaysToDays(task.getPlanned(), 1);
-    assertThat(task.getDue()).isEqualTo(task.getPlanned().plus(Duration.ofDays(days)));
+    Instant expectedDue = converter.addWorkingDaysToInstant(task.getPlanned(), Duration.ofDays(1));
+    assertThat(task.getDue()).isEqualTo(expectedDue);
 
     task.setDue(null);
     task = taskService.updateTask(task);
-    days = converter.convertWorkingDaysToDays(task.getPlanned(), 1);
-    assertThat(task.getDue()).isEqualTo(task.getPlanned().plus(Duration.ofDays(days)));
+    expectedDue = converter.addWorkingDaysToInstant(task.getPlanned(), Duration.ofDays(1));
+    assertThat(task.getDue()).isEqualTo(expectedDue);
 
     task.setPlanned(planned.plus(Duration.ofDays(13))); // Saturday
     task.setDue(null);
     task = taskService.updateTask(task);
-    days = converter.convertWorkingDaysToDays(task.getPlanned(), 1);
-    assertThat(task.getDue()).isEqualTo(task.getPlanned().plus(Duration.ofDays(days)));
+    expectedDue = converter.addWorkingDaysToInstant(task.getPlanned(), Duration.ofDays(1));
+    assertThat(task.getDue()).isEqualTo(expectedDue);
 
     task.setDue(planned.plus(Duration.ofDays(13))); // Saturday
     task.setPlanned(null);

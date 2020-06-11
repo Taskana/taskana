@@ -437,10 +437,10 @@ class CreateTaskAccTest extends AbstractAccTest {
 
     assertThat(readTask.getPriority()).isEqualTo(99);
 
-    long calendarDays = converter.convertWorkingDaysToDays(readTask.getPlanned(), 1);
+    Instant expDue =
+        converter.addWorkingDaysToInstant(readTask.getPlanned(), Duration.ofDays(1));
 
-    assertThat(readTask.getPlanned().plus(Duration.ofDays(calendarDays)))
-        .isEqualTo(readTask.getDue());
+    assertThat(readTask.getDue()).isEqualTo(expDue);
   }
 
   @WithAccessId(user = "user-1-1", groups = "group-1")

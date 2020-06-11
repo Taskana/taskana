@@ -19,13 +19,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.api.models.Classification;
+import pro.taskana.common.api.WorkingDaysToDaysConverter;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.jobs.JobRunner;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
-import pro.taskana.common.internal.util.WorkingDaysToDaysConverter;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
@@ -225,7 +225,6 @@ class UpdateClassificationAccTest extends AbstractAccTest {
     // TODO - resume old behaviour after attachment query is possible.
     TaskService taskService = taskanaEngine.getTaskService();
 
-    WorkingDaysToDaysConverter converter = WorkingDaysToDaysConverter.initialize(Instant.now());
 
     List<String> tasksWithP1D =
         new ArrayList<>(
@@ -334,8 +333,6 @@ class UpdateClassificationAccTest extends AbstractAccTest {
     assertThat(modifiedBefore.isAfter(updatedClassification.getModified())).isFalse();
     // TODO - resume old behaviour after attachment query is possible.
     TaskService taskService = taskanaEngine.getTaskService();
-    WorkingDaysToDaysConverter.setGermanPublicHolidaysEnabled(true);
-    WorkingDaysToDaysConverter converter = WorkingDaysToDaysConverter.initialize(Instant.now());
 
     List<String> tasksWithPrio99 =
         new ArrayList<>(
@@ -473,8 +470,6 @@ class UpdateClassificationAccTest extends AbstractAccTest {
     assertThat(modifiedBefore.isAfter(updatedClassification.getModified())).isFalse();
     // TODO - resume old behaviour after attachment query is possible.
     TaskService taskService = taskanaEngine.getTaskService();
-    WorkingDaysToDaysConverter.setGermanPublicHolidaysEnabled(true);
-    WorkingDaysToDaysConverter converter = WorkingDaysToDaysConverter.initialize(Instant.now());
     List<String> tasksWithPD12 =
         new ArrayList<>(
             Arrays.asList(
@@ -563,15 +558,10 @@ class UpdateClassificationAccTest extends AbstractAccTest {
       assertThat(task.getModified())
           .describedAs("Task " + task.getId() + " has not been refreshed.")
           .isAfter(before);
-      long calendarDays = converter.convertWorkingDaysToDays(task.getPlanned(), serviceLevel);
+      Instant expDue =
+          converter.addWorkingDaysToInstant(task.getPlanned(), Duration.ofDays(serviceLevel));
 
-      String msg =
-          String.format(
-              "Task: %s and Due Date: %s do not match planned %s. Calendar days : %s.",
-              taskId, task.getDue(), task.getPlanned(), calendarDays);
-      assertThat(task.getDue())
-          .describedAs(msg)
-          .isEqualTo(task.getPlanned().plus(Duration.ofDays(calendarDays)));
+      assertThat(task.getDue()).isEqualTo(expDue);
       assertThat(task.getPriority()).isEqualTo(priority);
     }
   }

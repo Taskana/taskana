@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.ibatis.session.SqlSession;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,9 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.classification.api.models.Classification;
-import pro.taskana.classification.internal.ClassificationQueryImpl;
 import pro.taskana.classification.internal.ClassificationServiceImpl;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.internal.InternalTaskanaEngine;
@@ -38,8 +35,6 @@ class TaskServiceImplTest {
 
   private TaskServiceImpl cut;
 
-  @Mock private TaskanaEngineConfiguration taskanaEngineConfigurationMock;
-
   @Mock private InternalTaskanaEngine internalTaskanaEngineMock;
 
   @Mock private TaskanaEngine taskanaEngineMock;
@@ -48,25 +43,17 @@ class TaskServiceImplTest {
 
   @Mock private TaskCommentMapper taskCommentMapperMock;
 
-  @Mock private ObjectReferenceMapper objectReferenceMapperMock;
+  @Mock private AttachmentMapper attachmentMapperMock;
 
   @Mock private WorkbasketService workbasketServiceMock;
 
   @Mock private ClassificationServiceImpl classificationServiceImplMock;
-
-  @Mock private AttachmentMapper attachmentMapperMock;
-
-  @Mock private ClassificationQueryImpl classificationQueryImplMock;
-
-  @Mock private SqlSession sqlSessionMock;
 
   @BeforeEach
   void setup() {
     when(internalTaskanaEngineMock.getEngine()).thenReturn(taskanaEngineMock);
     when(taskanaEngineMock.getWorkbasketService()).thenReturn(workbasketServiceMock);
     when(taskanaEngineMock.getClassificationService()).thenReturn(classificationServiceImplMock);
-    when(taskanaEngineMock.getConfiguration()).thenReturn(taskanaEngineConfigurationMock);
-    when(taskanaEngineConfigurationMock.isGermanPublicHolidaysEnabled()).thenReturn(true);
     cut =
         new TaskServiceImpl(
             internalTaskanaEngineMock, taskMapperMock, taskCommentMapperMock, attachmentMapperMock);
