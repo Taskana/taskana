@@ -20,8 +20,8 @@ import pro.taskana.classification.api.exceptions.ClassificationNotFoundException
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.common.api.TimeInterval;
+import pro.taskana.common.api.WorkingDaysToDaysConverter;
 import pro.taskana.common.internal.TaskanaEngineTestConfiguration;
-import pro.taskana.common.internal.util.WorkingDaysToDaysConverter;
 import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.ObjectReference;
@@ -32,11 +32,6 @@ public abstract class AbstractAccTest {
   protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
   protected static TaskanaEngine taskanaEngine;
   protected static WorkingDaysToDaysConverter converter;
-
-  public AbstractAccTest() {
-    WorkingDaysToDaysConverter.setGermanPublicHolidaysEnabled(true);
-    converter = WorkingDaysToDaysConverter.initialize();
-  }
 
   @BeforeAll
   public static void setupTest() throws Exception {
@@ -55,6 +50,7 @@ public abstract class AbstractAccTest {
     taskanaEngineConfiguration.setGermanPublicHolidaysEnabled(true);
     taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
     taskanaEngine.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
+    converter = taskanaEngine.getWorkingDaysToDaysConverter();
     sampleDataGenerator.clearDb();
     sampleDataGenerator.generateTestData();
   }

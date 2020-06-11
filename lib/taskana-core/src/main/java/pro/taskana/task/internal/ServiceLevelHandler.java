@@ -17,10 +17,10 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.BulkOperationResults;
+import pro.taskana.common.api.WorkingDaysToDaysConverter;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
-import pro.taskana.common.internal.util.WorkingDaysToDaysConverter;
 import pro.taskana.task.api.exceptions.UpdateFailedException;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.AttachmentSummary;
@@ -46,11 +46,7 @@ class ServiceLevelHandler {
     this.taskanaEngine = taskanaEngine;
     this.taskMapper = taskMapper;
     this.attachmentMapper = attachmentMapper;
-    WorkingDaysToDaysConverter.setGermanPublicHolidaysEnabled(
-        taskanaEngine.getEngine().getConfiguration().isGermanPublicHolidaysEnabled());
-    WorkingDaysToDaysConverter.setCorpusChristiEnabled(
-        taskanaEngine.getEngine().getConfiguration().isCorpusChristiEnabled());
-    this.converter = WorkingDaysToDaysConverter.initialize();
+    converter = taskanaEngine.getEngine().getWorkingDaysToDaysConverter();
   }
 
   // use the same algorithm as setPlannedPropertyOfTasksImpl to refresh
@@ -91,9 +87,7 @@ class ServiceLevelHandler {
     List<ClassificationSummary> allInvolvedClassifications =
         findAllClassificationsReferencedByTasksAndAttachments(tasks, attachments);
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "found involved classifications {}.",
-          allInvolvedClassifications);
+      LOGGER.debug("found involved classifications {}.", allInvolvedClassifications);
     }
     List<ClassificationWithServiceLevelResolved> allInvolvedClassificationsWithDuration =
         resolveDurationsInClassifications(allInvolvedClassifications);
@@ -317,7 +311,7 @@ class ServiceLevelHandler {
     if (task.getPlanned() != null
         && !task.getPlanned().equals(calcPlanned)
         // manual entered planned date is a different working day than computed value
-        && (converter.isWorkingDay(0, task.getPlanned())
+        && (converter.isWorkingDay(task.getPlanned())
             || converter.hasWorkingDaysInBetween(task.getPlanned(), calcPlanned))) {
       throw new InvalidArgumentException(
           String.format(

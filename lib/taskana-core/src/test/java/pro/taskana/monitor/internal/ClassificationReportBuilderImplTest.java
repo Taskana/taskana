@@ -53,9 +53,6 @@ class ClassificationReportBuilderImplTest {
   @BeforeEach
   void setup() {
     when(internalTaskanaEngineMock.getEngine()).thenReturn(taskanaEngineMock);
-    when(taskanaEngineMock.getConfiguration()).thenReturn(taskanaEngineConfiguration);
-    when(taskanaEngineConfiguration.isGermanPublicHolidaysEnabled()).thenReturn(true);
-    when(taskanaEngineConfiguration.getCustomHolidays()).thenReturn(null);
   }
 
   @Test
@@ -99,12 +96,9 @@ class ClassificationReportBuilderImplTest {
 
     verify(internalTaskanaEngineMock).openConnection();
     verify(taskanaEngineMock).checkRoleMembership(any());
-    verify(taskanaEngineMock).getConfiguration();
+    verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
     verify(internalTaskanaEngineMock, times(2)).getEngine();
 
-    verify(taskanaEngineConfiguration).isGermanPublicHolidaysEnabled();
-    verify(taskanaEngineConfiguration).isCorpusChristiEnabled();
-    verify(taskanaEngineConfiguration).getCustomHolidays();
     verify(monitorMapperMock)
         .getTaskCountOfClassifications(any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
@@ -166,12 +160,9 @@ class ClassificationReportBuilderImplTest {
 
     verify(internalTaskanaEngineMock).openConnection();
     verify(taskanaEngineMock).checkRoleMembership(any());
-    verify(taskanaEngineMock).getConfiguration();
+    verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
     verify(internalTaskanaEngineMock, times(2)).getEngine();
 
-    verify(taskanaEngineConfiguration).isGermanPublicHolidaysEnabled();
-    verify(taskanaEngineConfiguration).isCorpusChristiEnabled();
-    verify(taskanaEngineConfiguration).getCustomHolidays();
     verify(monitorMapperMock)
         .getTaskCountOfClassifications(any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
@@ -231,12 +222,9 @@ class ClassificationReportBuilderImplTest {
 
     verify(internalTaskanaEngineMock).openConnection();
     verify(taskanaEngineMock).checkRoleMembership(any());
-    verify(taskanaEngineMock).getConfiguration();
+    verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
     verify(internalTaskanaEngineMock, times(2)).getEngine();
 
-    verify(taskanaEngineConfiguration).isGermanPublicHolidaysEnabled();
-    verify(taskanaEngineConfiguration).isCorpusChristiEnabled();
-    verify(taskanaEngineConfiguration).getCustomHolidays();
     verify(monitorMapperMock)
         .getTaskCountOfDetailedClassifications(any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
@@ -301,12 +289,9 @@ class ClassificationReportBuilderImplTest {
 
     verify(internalTaskanaEngineMock).openConnection();
     verify(taskanaEngineMock).checkRoleMembership(any());
-    verify(taskanaEngineMock).getConfiguration();
+    verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
     verify(internalTaskanaEngineMock, times(2)).getEngine();
 
-    verify(taskanaEngineConfiguration).isGermanPublicHolidaysEnabled();
-    verify(taskanaEngineConfiguration).isCorpusChristiEnabled();
-    verify(taskanaEngineConfiguration).getCustomHolidays();
     verify(monitorMapperMock)
         .getTaskCountOfDetailedClassifications(any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
@@ -378,12 +363,9 @@ class ClassificationReportBuilderImplTest {
 
     verify(internalTaskanaEngineMock).openConnection();
     verify(taskanaEngineMock).checkRoleMembership(any());
-    verify(taskanaEngineMock).getConfiguration();
+    verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
     verify(internalTaskanaEngineMock, times(2)).getEngine();
 
-    verify(taskanaEngineConfiguration).isGermanPublicHolidaysEnabled();
-    verify(taskanaEngineConfiguration).isCorpusChristiEnabled();
-    verify(taskanaEngineConfiguration).getCustomHolidays();
     verify(monitorMapperMock)
         .getTaskIdsForSelectedItems(
             any(), any(), any(), any(), any(), any(), any(), any(), any(), eq(false));
@@ -406,7 +388,7 @@ class ClassificationReportBuilderImplTest {
     List<SelectedItem> selectedItems = Collections.singletonList(selectedItem);
     List<String> result =
         cut.createClassificationReportBuilder()
-            .workbasketIdIn(Arrays.asList("DieGibtsEhNed"))
+            .workbasketIdIn(Collections.singletonList("DieGibtsEhNed"))
             .listTaskIdsForSelectedItems(selectedItems);
     assertThat(result).isNotNull();
   }
@@ -456,12 +438,9 @@ class ClassificationReportBuilderImplTest {
 
     verify(internalTaskanaEngineMock).openConnection();
     verify(taskanaEngineMock).checkRoleMembership(any());
-    verify(taskanaEngineMock).getConfiguration();
+    verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
     verify(internalTaskanaEngineMock, times(2)).getEngine();
 
-    verify(taskanaEngineConfiguration).isGermanPublicHolidaysEnabled();
-    verify(taskanaEngineConfiguration).isCorpusChristiEnabled();
-    verify(taskanaEngineConfiguration).getCustomHolidays();
     verify(monitorMapperMock)
         .getCustomAttributeValuesForReport(any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();

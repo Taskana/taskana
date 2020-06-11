@@ -48,7 +48,8 @@ public class WorkbasketReportBuilderImpl
               this.combinedClassificationFilter);
       report.addItems(
           monitorQueryItems,
-          new DaysToWorkingDaysReportPreProcessor<>(this.columnHeaders, this.inWorkingDays));
+          new DaysToWorkingDaysReportPreProcessor<>(
+              this.columnHeaders, converter, this.inWorkingDays));
       return report;
     } finally {
       this.taskanaEngine.returnConnection();
@@ -76,7 +77,8 @@ public class WorkbasketReportBuilderImpl
               this.combinedClassificationFilter);
       report.addItems(
           monitorQueryItems,
-          new DaysToWorkingDaysReportPreProcessor<>(this.columnHeaders, this.inWorkingDays));
+          new DaysToWorkingDaysReportPreProcessor<>(
+              this.columnHeaders, converter, this.inWorkingDays));
       return report;
     } finally {
       this.taskanaEngine.returnConnection();

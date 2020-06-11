@@ -8,12 +8,11 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaRole;
+import pro.taskana.common.api.WorkingDaysToDaysConverter;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
-import pro.taskana.common.internal.util.WorkingDaysToDaysConverter;
 import pro.taskana.monitor.api.SelectedItem;
 import pro.taskana.monitor.api.reports.ClassificationReport;
 import pro.taskana.monitor.api.reports.TimeIntervalReportBuilder;
@@ -50,12 +49,13 @@ abstract class TimeIntervalReportBuilderImpl<
   protected List<String> classificationIds;
   protected List<String> excludedClassificationIds;
   protected Map<CustomField, String> customAttributeFilter;
+  protected WorkingDaysToDaysConverter converter;
 
   TimeIntervalReportBuilderImpl(InternalTaskanaEngine taskanaEngine, MonitorMapper monitorMapper) {
     this.taskanaEngine = taskanaEngine;
     this.monitorMapper = monitorMapper;
     this.columnHeaders = Collections.emptyList();
-    configureWorkingDaysToDaysConverter();
+    converter = taskanaEngine.getEngine().getWorkingDaysToDaysConverter();
   }
 
   @Override
@@ -185,18 +185,10 @@ abstract class TimeIntervalReportBuilderImpl<
 
   protected abstract String determineGroupedBy();
 
-  private void configureWorkingDaysToDaysConverter() {
-    TaskanaEngineConfiguration configuration = taskanaEngine.getEngine().getConfiguration();
-    WorkingDaysToDaysConverter.setCustomHolidays(configuration.getCustomHolidays());
-    WorkingDaysToDaysConverter.setGermanPublicHolidaysEnabled(
-        configuration.isGermanPublicHolidaysEnabled());
-    WorkingDaysToDaysConverter.setCorpusChristiEnabled(configuration.isCorpusChristiEnabled());
-  }
-
   private List<SelectedItem> convertWorkingDaysToDays(
       List<SelectedItem> selectedItems, List<H> columnHeaders) throws InvalidArgumentException {
     WorkingDaysToDaysReportConverter instance =
-        WorkingDaysToDaysReportConverter.initialize(columnHeaders);
+        WorkingDaysToDaysReportConverter.initialize(columnHeaders, converter);
     for (SelectedItem selectedItem : selectedItems) {
       selectedItem.setLowerAgeLimit(
           Collections.min(instance.convertWorkingDaysToDays(selectedItem.getLowerAgeLimit())));

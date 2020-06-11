@@ -55,6 +55,13 @@ public interface TaskanaEngine {
   TaskanaEngineConfiguration getConfiguration();
 
   /**
+   * The WorkingDaysToDaysConverter used to compute holidays.
+   *
+   * @return the converter
+   */
+  WorkingDaysToDaysConverter getWorkingDaysToDaysConverter();
+
+  /**
    * Checks if the history plugin is enabled.
    *
    * @return true if the history is enabled. Otherwise false.

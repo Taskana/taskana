@@ -45,7 +45,8 @@ public class CategoryReportBuilderImpl
               this.customAttributeFilter);
       report.addItems(
           monitorQueryItems,
-          new DaysToWorkingDaysReportPreProcessor<>(this.columnHeaders, this.inWorkingDays));
+          new DaysToWorkingDaysReportPreProcessor<>(
+              this.columnHeaders, converter, this.inWorkingDays));
       return report;
     } finally {
       this.taskanaEngine.returnConnection();

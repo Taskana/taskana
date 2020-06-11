@@ -2,8 +2,8 @@ package pro.taskana.monitor.internal.preprocessor;
 
 import java.util.List;
 
+import pro.taskana.common.api.WorkingDaysToDaysConverter;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.internal.util.WorkingDaysToDaysConverter;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.AgeQueryItem;
 import pro.taskana.monitor.api.reports.item.QueryItemPreprocessor;
@@ -19,10 +19,12 @@ public class DaysToWorkingDaysReportPreProcessor<I extends AgeQueryItem>
   private WorkingDaysToDaysReportConverter instance;
 
   public DaysToWorkingDaysReportPreProcessor(
-      List<? extends TimeIntervalColumnHeader> columnHeaders, boolean activate)
+      List<? extends TimeIntervalColumnHeader> columnHeaders,
+      WorkingDaysToDaysConverter converter,
+      boolean activate)
       throws InvalidArgumentException {
     if (activate) {
-      instance = WorkingDaysToDaysReportConverter.initialize(columnHeaders);
+      instance = WorkingDaysToDaysReportConverter.initialize(columnHeaders, converter);
     }
   }
 

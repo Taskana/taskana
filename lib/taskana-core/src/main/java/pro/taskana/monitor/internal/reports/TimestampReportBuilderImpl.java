@@ -47,16 +47,6 @@ public class TimestampReportBuilderImpl
   }
 
   @Override
-  protected TimestampReport.Builder _this() {
-    return this;
-  }
-
-  @Override
-  protected String determineGroupedBy() {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
   public TimestampReport.Builder withTimestamps(List<Timestamp> statuses) {
     this.status = new ArrayList<>(statuses);
     return _this();
@@ -81,12 +71,24 @@ public class TimestampReportBuilderImpl
               .collect(Collectors.toList());
 
       report.addItems(
-          items, new DaysToWorkingDaysReportPreProcessor<>(this.columnHeaders, this.inWorkingDays));
+          items,
+          new DaysToWorkingDaysReportPreProcessor<>(
+              this.columnHeaders, converter, this.inWorkingDays));
       return report;
     } finally {
       this.taskanaEngine.returnConnection();
       LOGGER.debug("exit from buildDetailedReport().");
     }
+  }
+
+  @Override
+  protected TimestampReport.Builder _this() {
+    return this;
+  }
+
+  @Override
+  protected String determineGroupedBy() {
+    throw new UnsupportedOperationException();
   }
 
   private List<TimestampQueryItem> getTasksCountForStatusGroupedByOrgLevel(Timestamp s) {
