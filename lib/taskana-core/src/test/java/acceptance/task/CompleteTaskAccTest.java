@@ -615,6 +615,4 @@ class CompleteTaskAccTest extends AbstractAccTest {
         .isAfterOrEqualTo(beforeBulkComplete);
     assertThat(task.getOwner()).isEqualTo("user-3-2");
   }
-
-
 }

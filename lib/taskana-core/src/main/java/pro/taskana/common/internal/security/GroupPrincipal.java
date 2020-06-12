@@ -45,10 +45,6 @@ public class GroupPrincipal implements Group {
 
   @Override
   public String toString() {
-    return "GroupPrincipal [name="
-        + name
-        + ", members="
-        + this.members
-        + "]";
+    return "GroupPrincipal [name=" + name + ", members=" + this.members + "]";
   }
 }

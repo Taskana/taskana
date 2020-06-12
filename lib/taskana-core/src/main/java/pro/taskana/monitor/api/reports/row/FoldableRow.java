@@ -60,7 +60,6 @@ public abstract class FoldableRow<I extends QueryItem> extends SingleRow<I> {
   @Override
   public String toString() {
     return String.format(
-        "FoldableRow [detailRows= %s, columnSize= %d]",
-        this.foldableRows, columnSize);
+        "FoldableRow [detailRows= %s, columnSize= %d]", this.foldableRows, columnSize);
   }
 }

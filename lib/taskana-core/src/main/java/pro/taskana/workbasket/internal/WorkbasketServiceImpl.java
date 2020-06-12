@@ -40,9 +40,7 @@ import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 
-/**
- * This is the implementation of WorkbasketService.
- */
+/** This is the implementation of WorkbasketService. */
 public class WorkbasketServiceImpl implements WorkbasketService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketServiceImpl.class);
@@ -743,9 +741,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
   public BulkOperationResults<String, TaskanaException> deleteWorkbaskets(
       List<String> workbasketsIds) throws NotAuthorizedException, InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "entry to deleteWorkbaskets(workbasketId = {})",
-          workbasketsIds);
+      LOGGER.debug("entry to deleteWorkbaskets(workbasketId = {})", workbasketsIds);
     }
 
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);

@@ -5,9 +5,7 @@ import org.springframework.hateoas.RepresentationModel;
 import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
-/**
- * EntityModel class for {@link WorkbasketSummary}.
- */
+/** EntityModel class for {@link WorkbasketSummary}. */
 public class WorkbasketSummaryRepresentationModel
     extends RepresentationModel<WorkbasketSummaryRepresentationModel> {
 
@@ -155,5 +153,4 @@ public class WorkbasketSummaryRepresentationModel
   public void setMarkedForDeletion(boolean markedForDeletion) {
     this.markedForDeletion = markedForDeletion;
   }
-
 }

@@ -64,8 +64,8 @@ public class WorkbasketRepresentationModelAssembler
   }
 
   public Workbasket toEntityModel(WorkbasketRepresentationModel repModel) {
-    WorkbasketImpl workbasket = (WorkbasketImpl) workbasketService.newWorkbasket(repModel.getKey(),
-        repModel.getDomain());
+    WorkbasketImpl workbasket =
+        (WorkbasketImpl) workbasketService.newWorkbasket(repModel.getKey(), repModel.getDomain());
     workbasket.setId(repModel.getWorkbasketId());
     workbasket.setName(repModel.getName());
     workbasket.setType(repModel.getType());

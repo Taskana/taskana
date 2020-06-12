@@ -175,9 +175,7 @@ public class ClassificationDefinitionController {
       }
     }
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "Exit from mapChildrenToParentKeys(), returning {}",
-          childrenInFile);
+      LOGGER.debug("Exit from mapChildrenToParentKeys(), returning {}", childrenInFile);
     }
 
     return childrenInFile;

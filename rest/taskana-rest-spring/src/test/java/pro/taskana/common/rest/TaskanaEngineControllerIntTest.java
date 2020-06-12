@@ -19,8 +19,7 @@ import pro.taskana.common.rest.models.TaskanaUserInfoRepresentationModel;
 class TaskanaEngineControllerIntTest {
 
   private static RestTemplate template;
-  @Autowired
-  RestHelper restHelper;
+  @Autowired RestHelper restHelper;
 
   @BeforeAll
   static void init() {

@@ -53,15 +53,13 @@ public abstract class AbstractRessourcesAssembler {
             .withRel("last"));
     if (pageMetadata.getNumber() > 1L) {
       pagedResources.add(
-          (Link.of(
-              original.replaceQueryParam("page", pageMetadata.getNumber() - 1L).toUriString()))
+          (Link.of(original.replaceQueryParam("page", pageMetadata.getNumber() - 1L).toUriString()))
               .withRel("prev"));
     }
 
     if (pageMetadata.getNumber() < pageMetadata.getTotalPages()) {
       pagedResources.add(
-          (Link.of(
-              original.replaceQueryParam("page", pageMetadata.getNumber() + 1L).toUriString()))
+          (Link.of(original.replaceQueryParam("page", pageMetadata.getNumber() + 1L).toUriString()))
               .withRel("next"));
     }
 

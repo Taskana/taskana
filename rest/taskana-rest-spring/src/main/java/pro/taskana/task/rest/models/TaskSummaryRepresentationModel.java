@@ -11,9 +11,7 @@ import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 
-/**
- * EntityModel class for {@link WorkbasketSummary}.
- */
+/** EntityModel class for {@link WorkbasketSummary}. */
 public class TaskSummaryRepresentationModel
     extends RepresentationModel<TaskSummaryRepresentationModel> {
 
@@ -55,8 +53,7 @@ public class TaskSummaryRepresentationModel
   protected String custom14;
   protected String custom15;
   protected String custom16;
-  private List<AttachmentSummaryRepresentationModel> attachmentSummaries =
-      new ArrayList<>();
+  private List<AttachmentSummaryRepresentationModel> attachmentSummaries = new ArrayList<>();
 
   public String getTaskId() {
     return taskId;
@@ -183,8 +180,7 @@ public class TaskSummaryRepresentationModel
     return workbasketSummary;
   }
 
-  public void setWorkbasketSummary(
-      WorkbasketSummaryRepresentationModel workbasketSummary) {
+  public void setWorkbasketSummary(WorkbasketSummaryRepresentationModel workbasketSummary) {
     this.workbasketSummary = workbasketSummary;
   }
 
@@ -372,6 +368,4 @@ public class TaskSummaryRepresentationModel
   public void setCustom16(String custom16) {
     this.custom16 = custom16;
   }
-
-
 }

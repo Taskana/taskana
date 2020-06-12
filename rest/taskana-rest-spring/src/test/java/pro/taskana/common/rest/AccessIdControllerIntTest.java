@@ -25,8 +25,7 @@ class AccessIdControllerIntTest {
 
   private static RestTemplate template;
 
-  @Autowired
-  RestHelper restHelper;
+  @Autowired RestHelper restHelper;
 
   @BeforeAll
   static void init() {

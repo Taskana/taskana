@@ -62,8 +62,9 @@ public class ClassificationSummaryRepresentationModelAssembler
   public ClassificationSummary toEntityModel(ClassificationSummaryRepresentationModel repModel) {
     ClassificationSummaryImpl classification =
         (ClassificationSummaryImpl)
-            classificationService.newClassification(
-                repModel.getKey(), repModel.getDomain(), repModel.getType()).asSummary();
+            classificationService
+                .newClassification(repModel.getKey(), repModel.getDomain(), repModel.getType())
+                .asSummary();
     classification.setId(repModel.getClassificationId());
     classification.setApplicationEntryPoint(repModel.getApplicationEntryPoint());
     classification.setCategory(repModel.getCategory());

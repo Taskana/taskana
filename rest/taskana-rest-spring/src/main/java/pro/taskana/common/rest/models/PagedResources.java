@@ -76,5 +76,4 @@ public class PagedResources<T> extends RepresentationModel<PagedResources<T>> {
   public Collection<T> getContent() {
     return Collections.unmodifiableCollection(content);
   }
-
 }

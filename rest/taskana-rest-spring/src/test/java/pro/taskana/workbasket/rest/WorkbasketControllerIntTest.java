@@ -149,9 +149,7 @@ class WorkbasketControllerIntTest {
           TEMPLATE.exchange(
               restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketId),
               HttpMethod.PUT,
-              new HttpEntity<>(
-                  workbasketRepresentationModel,
-                  restHelper.getHeadersTeamlead_1()),
+              new HttpEntity<>(workbasketRepresentationModel, restHelper.getHeadersTeamlead_1()),
               ParameterizedTypeReference.forType(WorkbasketRepresentationModel.class));
         };
     assertThatThrownBy(httpCall)
@@ -287,8 +285,7 @@ class WorkbasketControllerIntTest {
             WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(response.getHeaders().getContentType())
-        .isEqualTo(MediaTypes.HAL_JSON);
+    assertThat(response.getHeaders().getContentType()).isEqualTo(MediaTypes.HAL_JSON);
     assertThat(response.getBody().getContent()).hasSize(4);
   }
 }

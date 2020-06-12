@@ -32,24 +32,24 @@ public class TaskHistoryEventListResourceAssembler extends AbstractRessourcesAss
               .withRel(IanaLinkRelations.FIRST));
       pagedResources.add(
           Link.of(
-              this.getOriginal()
-                  .replaceQueryParam("page", pageMetadata.getTotalPages())
-                  .toUriString())
+                  this.getOriginal()
+                      .replaceQueryParam("page", pageMetadata.getTotalPages())
+                      .toUriString())
               .withRel(IanaLinkRelations.LAST));
       if (pageMetadata.getNumber() > 1) {
         pagedResources.add(
             Link.of(
-                this.getOriginal()
-                    .replaceQueryParam("page", pageMetadata.getNumber() - 1)
-                    .toUriString())
+                    this.getOriginal()
+                        .replaceQueryParam("page", pageMetadata.getNumber() - 1)
+                        .toUriString())
                 .withRel(IanaLinkRelations.PREV));
       }
       if (pageMetadata.getNumber() < pageMetadata.getTotalPages()) {
         pagedResources.add(
             Link.of(
-                this.getOriginal()
-                    .replaceQueryParam("page", pageMetadata.getNumber() + 1)
-                    .toUriString())
+                    this.getOriginal()
+                        .replaceQueryParam("page", pageMetadata.getNumber() + 1)
+                        .toUriString())
                 .withRel(IanaLinkRelations.NEXT));
       }
     }

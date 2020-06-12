@@ -103,9 +103,8 @@ public class ClassificationController extends AbstractPagingController {
   @GetMapping(path = Mapping.URL_CLASSIFICATIONS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskanaPagedModel<ClassificationSummaryRepresentationModel>>
-      getClassifications(
-      @RequestParam MultiValueMap<String, String> params)
-      throws InvalidArgumentException {
+      getClassifications(@RequestParam MultiValueMap<String, String> params)
+          throws InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to getClassifications(params= {})", params);
     }
@@ -155,8 +154,8 @@ public class ClassificationController extends AbstractPagingController {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to createClassification(resource= {})", resource);
     }
-    Classification classification = classificationRepresentationModelAssembler
-                                        .toEntityModel(resource);
+    Classification classification =
+        classificationRepresentationModelAssembler.toEntityModel(resource);
     classification = classificationService.createClassification(classification);
 
     ResponseEntity<ClassificationRepresentationModel> response =
@@ -185,8 +184,8 @@ public class ClassificationController extends AbstractPagingController {
 
     ResponseEntity<ClassificationRepresentationModel> result;
     if (classificationId.equals(resource.getClassificationId())) {
-      Classification classification = classificationRepresentationModelAssembler
-                                          .toEntityModel(resource);
+      Classification classification =
+          classificationRepresentationModelAssembler.toEntityModel(resource);
       classification = classificationService.updateClassification(classification);
       result =
           ResponseEntity.ok(classificationRepresentationModelAssembler.toModel(classification));
@@ -229,7 +228,7 @@ public class ClassificationController extends AbstractPagingController {
     if (sortBy != null) {
       SortDirection sortDirection;
       if (params.getFirst(SORT_DIRECTION) != null
-              && "desc".equals(params.getFirst(SORT_DIRECTION))) {
+          && "desc".equals(params.getFirst(SORT_DIRECTION))) {
         sortDirection = SortDirection.DESCENDING;
       } else {
         sortDirection = SortDirection.ASCENDING;
@@ -260,8 +259,7 @@ public class ClassificationController extends AbstractPagingController {
     return query;
   }
 
-  private void applyFilterParams(
-      ClassificationQuery query, MultiValueMap<String, String> params)
+  private void applyFilterParams(ClassificationQuery query, MultiValueMap<String, String> params)
       throws InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to applyFilterParams(query= {}, params= {})", query, params);
@@ -332,6 +330,5 @@ public class ClassificationController extends AbstractPagingController {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from applyFilterParams(), returning {}", query);
     }
-
   }
 }

@@ -485,7 +485,6 @@ public class TaskHistoryEventController extends AbstractPagingController {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from applyFilterParams(), returning {}", query);
     }
-
   }
 
   private TimeInterval getTimeIntervalOf(String[] created) {

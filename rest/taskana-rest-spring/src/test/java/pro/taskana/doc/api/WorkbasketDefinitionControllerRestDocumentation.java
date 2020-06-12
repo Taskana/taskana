@@ -38,8 +38,8 @@ class WorkbasketDefinitionControllerRestDocumentation extends BaseRestDocumentat
   void exportAllWorkbasketDefinitions() throws Exception {
     this.mockMvc
         .perform(
-            RestDocumentationRequestBuilders
-                .get(restHelper.toUrl(Mapping.URL_WORKBASKET_DEFINITIONS))
+            RestDocumentationRequestBuilders.get(
+                    restHelper.toUrl(Mapping.URL_WORKBASKET_DEFINITIONS))
                 .accept("application/json")
                 .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())

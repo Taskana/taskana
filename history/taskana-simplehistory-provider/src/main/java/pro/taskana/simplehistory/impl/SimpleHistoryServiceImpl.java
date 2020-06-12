@@ -13,9 +13,7 @@ import pro.taskana.spi.history.api.TaskanaHistory;
 import pro.taskana.spi.history.api.events.TaskanaHistoryEvent;
 import pro.taskana.spi.history.api.exceptions.TaskanaHistoryEventNotFoundException;
 
-/**
- * This is the implementation of TaskanaHistory.
- */
+/** This is the implementation of TaskanaHistory. */
 public class SimpleHistoryServiceImpl implements TaskanaHistory {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SimpleHistoryServiceImpl.class);
@@ -25,7 +23,7 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
 
   @Override
   public void initialize(TaskanaEngineConfiguration taskanaEngineConfiguration) {
- 
+
     this.taskanaHistoryEngine = getTaskanaEngine(taskanaEngineConfiguration);
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(

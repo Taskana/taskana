@@ -35,8 +35,7 @@ public class ClassificationRepresentationModelAssembler
   @NonNull
   @Override
   public ClassificationRepresentationModel toModel(@NonNull Classification classification) {
-    ClassificationRepresentationModel repModel =
-        new ClassificationRepresentationModel();
+    ClassificationRepresentationModel repModel = new ClassificationRepresentationModel();
     repModel.setClassificationId(classification.getId());
     repModel.setApplicationEntryPoint(classification.getApplicationEntryPoint());
     repModel.setCategory(classification.getCategory());
@@ -63,8 +62,8 @@ public class ClassificationRepresentationModelAssembler
     try {
       repModel.add(
           WebMvcLinkBuilder.linkTo(
-              methodOn(ClassificationController.class)
-                  .getClassification(classification.getId()))
+                  methodOn(ClassificationController.class)
+                      .getClassification(classification.getId()))
               .withSelfRel());
     } catch (ClassificationNotFoundException e) {
       throw new SystemException("caught unexpected Exception.", e.getCause());
@@ -77,14 +76,11 @@ public class ClassificationRepresentationModelAssembler
     return TaskanaPagedModelKeys.CLASSIFICATIONS;
   }
 
-  public Classification toEntityModel(
-      ClassificationRepresentationModel repModel) {
+  public Classification toEntityModel(ClassificationRepresentationModel repModel) {
     ClassificationImpl classification =
         (ClassificationImpl)
             classificationService.newClassification(
-                repModel.getKey(),
-                repModel.getDomain(),
-                repModel.getType());
+                repModel.getKey(), repModel.getDomain(), repModel.getType());
 
     classification.setApplicationEntryPoint(repModel.getApplicationEntryPoint());
     classification.setCategory(repModel.getCategory());

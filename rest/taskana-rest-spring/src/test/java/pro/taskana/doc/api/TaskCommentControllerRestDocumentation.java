@@ -82,10 +82,10 @@ class TaskCommentControllerRestDocumentation extends BaseRestDocumentation {
         };
 
     allTaskCommentsFieldDescriptors =
-        new FieldDescriptor[]{
-            subsectionWithPath(TaskanaPagedModelKeys.TASK_COMMENTS.getPropertyName()).description(
-                "An Array of task comments"),
-            fieldWithPath("_links.self.href").ignored()
+        new FieldDescriptor[] {
+          subsectionWithPath(TaskanaPagedModelKeys.TASK_COMMENTS.getPropertyName())
+              .description("An Array of task comments"),
+          fieldWithPath("_links.self.href").ignored()
         };
   }
 

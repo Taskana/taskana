@@ -14,8 +14,7 @@ public interface TaskanaPagingAssembler<T, D extends RepresentationModel<? super
 
   TaskanaPagedModelKeys getProperty();
 
-  default TaskanaPagedModel<D> toPageModel(
-      Iterable<T> entities, PageMetadata pageMetadata) {
+  default TaskanaPagedModel<D> toPageModel(Iterable<T> entities, PageMetadata pageMetadata) {
     return StreamSupport.stream(entities.spliterator(), false)
         .map(this::toModel)
         .collect(
