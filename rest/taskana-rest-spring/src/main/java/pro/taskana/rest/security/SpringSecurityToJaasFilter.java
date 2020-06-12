@@ -44,33 +44,6 @@ public class SpringSecurityToJaasFilter extends GenericFilterBean {
     chain.doFilter(request, response);
   }
 
-  private void initializeUserPrincipalFromAuthentication(
-      Authentication authentication, Subject subject) {
-    if (subject.getPrincipals().isEmpty()) {
-      LOGGER.debug("Setting the principal of the subject with {}.", authentication.getPrincipal());
-      subject
-          .getPrincipals()
-          .add(new UserPrincipal(((UserDetails) authentication.getPrincipal()).getUsername()));
-    } else {
-      LOGGER.debug("Principal of the subject is already set to {}.", subject.getPrincipals());
-      throw new SystemException("Finding an existing principal is unexpected. Please investigate.");
-    }
-  }
-
-  private void initializeGroupPrincipalsFromAuthentication(
-      Authentication authentication, Subject subject) {
-
-    LOGGER.debug("Adding roles {} to subject.", authentication.getAuthorities());
-
-    authentication
-        .getAuthorities()
-        .forEach(
-            grantedAuthority ->
-                subject.getPrincipals().add(new GroupPrincipal(grantedAuthority.getAuthority())));
-
-    LOGGER.debug("{}", subject.getPublicCredentials(GroupPrincipal.class));
-  }
-
   /**
    * Obtains the <code>Subject</code> to run as or <code>null</code> if no <code>Subject</code> is
    * available.
@@ -99,5 +72,32 @@ public class SpringSecurityToJaasFilter extends GenericFilterBean {
 
   Optional<Authentication> getCurrentAuthentication() {
     return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication());
+  }
+
+  private void initializeUserPrincipalFromAuthentication(
+      Authentication authentication, Subject subject) {
+    if (subject.getPrincipals().isEmpty()) {
+      LOGGER.debug("Setting the principal of the subject with {}.", authentication.getPrincipal());
+      subject
+          .getPrincipals()
+          .add(new UserPrincipal(((UserDetails) authentication.getPrincipal()).getUsername()));
+    } else {
+      LOGGER.debug("Principal of the subject is already set to {}.", subject.getPrincipals());
+      throw new SystemException("Finding an existing principal is unexpected. Please investigate.");
+    }
+  }
+
+  private void initializeGroupPrincipalsFromAuthentication(
+      Authentication authentication, Subject subject) {
+
+    LOGGER.debug("Adding roles {} to subject.", authentication.getAuthorities());
+
+    authentication
+        .getAuthorities()
+        .forEach(
+            grantedAuthority ->
+                subject.getPrincipals().add(new GroupPrincipal(grantedAuthority.getAuthority())));
+
+    LOGGER.debug("{}", subject.getPublicCredentials(GroupPrincipal.class));
   }
 }

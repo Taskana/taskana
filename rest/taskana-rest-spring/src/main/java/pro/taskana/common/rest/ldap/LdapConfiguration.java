@@ -11,19 +11,15 @@ import org.springframework.ldap.core.support.LdapContextSource;
 @Configuration
 public class LdapConfiguration {
 
+  private final Environment env;
   @Value("${taskana.ldap.serverUrl:ldap://localhost:10389}")
   private String ldapServerUrl;
-
   @Value("${taskana.ldap.baseDn:OU=Test,O=TASKANA}")
   private String ldapBaseDn;
-
   @Value("${taskana.ldap.bindDn:uid=admin}")
   private String ldapBindDn;
-
   @Value("${taskana.ldap.bindPassword:secret}")
   private String ldapBindPassowrd;
-
-  private final Environment env;
 
   public LdapConfiguration(Environment env) {
     this.env = env;

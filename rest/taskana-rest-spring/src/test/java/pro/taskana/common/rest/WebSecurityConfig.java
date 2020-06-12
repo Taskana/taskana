@@ -67,36 +67,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     return bean;
   }
 
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
-
-    http.authorizeRequests()
-        .and()
-        .csrf()
-        .disable()
-        .httpBasic()
-        .and()
-        .addFilter(jaasApiIntegrationFilter())
-        .addFilterAfter(new SpringSecurityToJaasFilter(), JaasApiIntegrationFilter.class)
-        .authorizeRequests()
-        .anyRequest()
-        .fullyAuthenticated();
-  }
-
-  @Override
-  public void configure(AuthenticationManagerBuilder auth) throws Exception {
-    auth.ldapAuthentication()
-        .userDnPatterns(ldapUserDnPatterns)
-        .groupSearchBase(ldapGroupSearchBase)
-        .ldapAuthoritiesPopulator(authoritiesPopulator())
-        .authoritiesMapper(grantedAuthoritiesMapper())
-        .contextSource()
-        .url(ldapServerUrl + "/" + ldapBaseDn)
-        .and()
-        .passwordCompare()
-        .passwordAttribute("userPassword");
-  }
-
   @Bean
   public LdapAuthoritiesPopulator authoritiesPopulator() {
     Function<Map<String, List<String>>, GrantedAuthority> authorityMapper =
@@ -127,17 +97,47 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     return grantedAuthoritiesMapper;
   }
 
-  private static class CorsWebMvcConfigurer implements WebMvcConfigurer {
+  @Override
+  public void configure(AuthenticationManagerBuilder auth) throws Exception {
+    auth.ldapAuthentication()
+        .userDnPatterns(ldapUserDnPatterns)
+        .groupSearchBase(ldapGroupSearchBase)
+        .ldapAuthoritiesPopulator(authoritiesPopulator())
+        .authoritiesMapper(grantedAuthoritiesMapper())
+        .contextSource()
+        .url(ldapServerUrl + "/" + ldapBaseDn)
+        .and()
+        .passwordCompare()
+        .passwordAttribute("userPassword");
+  }
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-      registry.addMapping("/**").allowedOrigins("*");
-    }
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+
+    http.authorizeRequests()
+        .and()
+        .csrf()
+        .disable()
+        .httpBasic()
+        .and()
+        .addFilter(jaasApiIntegrationFilter())
+        .addFilterAfter(new SpringSecurityToJaasFilter(), JaasApiIntegrationFilter.class)
+        .authorizeRequests()
+        .anyRequest()
+        .fullyAuthenticated();
   }
 
   private JaasApiIntegrationFilter jaasApiIntegrationFilter() {
     JaasApiIntegrationFilter filter = new JaasApiIntegrationFilter();
     filter.setCreateEmptySubject(true);
     return filter;
+  }
+
+  private static class CorsWebMvcConfigurer implements WebMvcConfigurer {
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+      registry.addMapping("/**").allowedOrigins("*");
+    }
   }
 }

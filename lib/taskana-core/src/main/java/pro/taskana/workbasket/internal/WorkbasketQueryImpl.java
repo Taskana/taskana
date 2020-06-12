@@ -447,9 +447,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
       taskanaEngine.returnConnection();
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug(
-            "Exit from listValues. Returning {} resulting Objects: {} ",
-            result.size(),
-            result);
+            "Exit from listValues. Returning {} resulting Objects: {} ", result.size(), result);
       }
     }
   }

@@ -40,8 +40,8 @@ public class WorkingDaysToDaysReportConverter {
   }
 
   public static WorkingDaysToDaysReportConverter initialize(
-      List<? extends TimeIntervalColumnHeader> columnHeaders,
-      WorkingDaysToDaysConverter converter) throws InvalidArgumentException {
+      List<? extends TimeIntervalColumnHeader> columnHeaders, WorkingDaysToDaysConverter converter)
+      throws InvalidArgumentException {
     return initialize(columnHeaders, converter, Instant.now());
   }
 

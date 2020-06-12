@@ -336,12 +336,15 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     assertThat(task.getPriority()).isEqualTo(101);
     Instant expDue = converter.addWorkingDaysToInstant(task.getPlanned(), Duration.ofDays(1));
     assertThat(task.getDue()).isEqualTo(expDue);
-    assertThat(task.getAttachments()).hasSize(2)
-        .areExactly(1,
+    assertThat(task.getAttachments())
+        .hasSize(2)
+        .areExactly(
+            1,
             new Condition<>(
                 e -> "E-MAIL".equals(e.getChannel()) && e.getCustomAttributes().size() == 3,
                 "E-MAIL with 3 custom attributes"))
-        .areExactly(1,
+        .areExactly(
+            1,
             new Condition<>(
                 e -> "ROHRPOST".equals(e.getChannel()) && e.getCustomAttributes().size() == 4,
                 "ROHRPOST with 4 custom attributes"));
@@ -368,11 +371,13 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     assertThat(task.getDue()).isEqualTo(expDue);
     assertThat(task.getAttachments())
         .hasSize(2)
-        .areExactly(1,
+        .areExactly(
+            1,
             new Condition<>(
                 e -> "FAX".equals(e.getChannel()) && e.getCustomAttributes().size() == 3,
                 "FAX with 3 custom attributes"))
-        .areExactly(1,
+        .areExactly(
+            1,
             new Condition<>(
                 e -> "ROHRPOST".equals(e.getChannel()) && e.getCustomAttributes().size() == 4,
                 "ROHRPOST with 4 custom attributes"));

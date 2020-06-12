@@ -24,9 +24,7 @@ import pro.taskana.monitor.api.reports.item.DetailedMonitorQueryItem;
 import pro.taskana.monitor.api.reports.item.MonitorQueryItem;
 import pro.taskana.monitor.rest.assembler.ReportRepresentationModelAssembler;
 
-/**
- * Test for {@link ReportRepresentationModelAssembler}.
- */
+/** Test for {@link ReportRepresentationModelAssembler}. */
 @TaskanaSpringBootTest
 class ReportRepresentationModelTest {
 

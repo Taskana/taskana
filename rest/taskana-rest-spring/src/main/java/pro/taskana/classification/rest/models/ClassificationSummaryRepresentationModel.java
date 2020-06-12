@@ -4,9 +4,7 @@ import org.springframework.hateoas.RepresentationModel;
 
 import pro.taskana.classification.api.models.ClassificationSummary;
 
-/**
- * EntityModel class for {@link ClassificationSummary}.
- */
+/** EntityModel class for {@link ClassificationSummary}. */
 public class ClassificationSummaryRepresentationModel
     extends RepresentationModel<ClassificationSummaryRepresentationModel> {
 

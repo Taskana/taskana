@@ -71,8 +71,10 @@ class AsyncUpdateJobIntTest {
     classification.setServiceLevel("P5D");
     classification.setPriority(1000);
 
-    TEMPLATE.exchange(restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, CLASSIFICATION_ID),
-        HttpMethod.PUT, new HttpEntity<>(classification, restHelper.getHeadersTeamlead_1()),
+    TEMPLATE.exchange(
+        restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, CLASSIFICATION_ID),
+        HttpMethod.PUT,
+        new HttpEntity<>(classification, restHelper.getHeadersTeamlead_1()),
         ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
 
     // trigger jobs twice to refresh all entries. first entry on the first call and follow up on the

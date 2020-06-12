@@ -78,8 +78,6 @@ public class WorkbasketController extends AbstractPagingController {
   private final WorkbasketSummaryRepresentationModelAssembler
       workbasketSummaryRepresentationModelAssembler;
 
-
-
   private final WorkbasketAccessItemRepresentationModelAssembler
       workbasketAccessItemRepresentationModelAssembler;
 
@@ -146,7 +144,7 @@ public class WorkbasketController extends AbstractPagingController {
   public ResponseEntity<WorkbasketRepresentationModel> deleteWorkbasket(
       @PathVariable(value = "workbasketId") String workbasketId)
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-                 WorkbasketInUseException {
+          WorkbasketInUseException {
     LOGGER.debug("Entry to markWorkbasketForDeletion(workbasketId= {})", workbasketId);
     ResponseEntity<WorkbasketRepresentationModel> response;
 
@@ -223,7 +221,7 @@ public class WorkbasketController extends AbstractPagingController {
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskanaPagedModel<WorkbasketAccessItemRepresentationModel>>
       getWorkbasketAccessItems(@PathVariable(value = "workbasketId") String workbasketId)
-      throws NotAuthorizedException, WorkbasketNotFoundException {
+          throws NotAuthorizedException, WorkbasketNotFoundException {
     LOGGER.debug("Entry to getWorkbasketAccessItems(workbasketId= {})", workbasketId);
     ResponseEntity<TaskanaPagedModel<WorkbasketAccessItemRepresentationModel>> result;
 
@@ -244,10 +242,10 @@ public class WorkbasketController extends AbstractPagingController {
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskanaPagedModel<WorkbasketAccessItemRepresentationModel>>
       setWorkbasketAccessItems(
-      @PathVariable(value = "workbasketId") String workbasketId,
-      @RequestBody List<WorkbasketAccessItemRepresentationModel> workbasketAccessResourceItems)
-      throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-                 WorkbasketAccessItemAlreadyExistException {
+          @PathVariable(value = "workbasketId") String workbasketId,
+          @RequestBody List<WorkbasketAccessItemRepresentationModel> workbasketAccessResourceItems)
+          throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
+              WorkbasketAccessItemAlreadyExistException {
     LOGGER.debug("Entry to setWorkbasketAccessItems(workbasketId= {})", workbasketId);
     if (workbasketAccessResourceItems == null) {
       throw new InvalidArgumentException("Can´t create something with NULL body-value.");
@@ -255,8 +253,9 @@ public class WorkbasketController extends AbstractPagingController {
 
     List<WorkbasketAccessItem> wbAccessItems = new ArrayList<>();
     workbasketAccessResourceItems.forEach(
-        item -> wbAccessItems
-                    .add(workbasketAccessItemRepresentationModelAssembler.toEntityModel(item)));
+        item ->
+            wbAccessItems.add(
+                workbasketAccessItemRepresentationModelAssembler.toEntityModel(item)));
     workbasketService.setWorkbasketAccessItems(workbasketId, wbAccessItems);
     List<WorkbasketAccessItem> updatedWbAccessItems =
         workbasketService.getWorkbasketAccessItems(workbasketId);
@@ -276,14 +275,14 @@ public class WorkbasketController extends AbstractPagingController {
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskanaPagedModel<WorkbasketSummaryRepresentationModel>>
       getDistributionTargets(@PathVariable(value = "workbasketId") String workbasketId)
-      throws WorkbasketNotFoundException, NotAuthorizedException {
+          throws WorkbasketNotFoundException, NotAuthorizedException {
 
     LOGGER.debug("Entry to getDistributionTargets(workbasketId= {})", workbasketId);
     List<WorkbasketSummary> distributionTargets =
         workbasketService.getDistributionTargets(workbasketId);
     TaskanaPagedModel<WorkbasketSummaryRepresentationModel> distributionTargetListResource =
-        workbasketSummaryRepresentationModelAssembler
-            .toDistributionTargetPageModel(distributionTargets, null);
+        workbasketSummaryRepresentationModelAssembler.toDistributionTargetPageModel(
+            distributionTargets, null);
     ResponseEntity<TaskanaPagedModel<WorkbasketSummaryRepresentationModel>> result =
         ResponseEntity.ok(distributionTargetListResource);
     if (LOGGER.isDebugEnabled()) {
@@ -297,9 +296,9 @@ public class WorkbasketController extends AbstractPagingController {
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskanaPagedModel<WorkbasketSummaryRepresentationModel>>
       setDistributionTargetsForWorkbasketId(
-      @PathVariable(value = "workbasketId") String sourceWorkbasketId,
-      @RequestBody List<String> targetWorkbasketIds)
-      throws WorkbasketNotFoundException, NotAuthorizedException {
+          @PathVariable(value = "workbasketId") String sourceWorkbasketId,
+          @RequestBody List<String> targetWorkbasketIds)
+          throws WorkbasketNotFoundException, NotAuthorizedException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
           "Entry to getTasksStatusReport(workbasketId= {}, targetWorkbasketIds´= {})",
@@ -313,8 +312,8 @@ public class WorkbasketController extends AbstractPagingController {
         workbasketService.getDistributionTargets(sourceWorkbasketId);
     ResponseEntity<TaskanaPagedModel<WorkbasketSummaryRepresentationModel>> response =
         ResponseEntity.ok(
-            workbasketSummaryRepresentationModelAssembler
-                .toDistributionTargetPageModel(distributionTargets, null));
+            workbasketSummaryRepresentationModelAssembler.toDistributionTargetPageModel(
+                distributionTargets, null));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from getTasksStatusReport(), returning {}", response);
     }
@@ -326,8 +325,8 @@ public class WorkbasketController extends AbstractPagingController {
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskanaPagedModel<WorkbasketSummaryRepresentationModel>>
       removeDistributionTargetForWorkbasketId(
-      @PathVariable(value = "workbasketId") String targetWorkbasketId)
-      throws WorkbasketNotFoundException, NotAuthorizedException {
+          @PathVariable(value = "workbasketId") String targetWorkbasketId)
+          throws WorkbasketNotFoundException, NotAuthorizedException {
     LOGGER.debug(
         "Entry to removeDistributionTargetForWorkbasketId(workbasketId= {})", targetWorkbasketId);
 
@@ -354,7 +353,7 @@ public class WorkbasketController extends AbstractPagingController {
     if (sortBy != null) {
       SortDirection sortDirection;
       if (params.getFirst(SORT_DIRECTION) != null
-              && "desc".equals(params.getFirst(SORT_DIRECTION))) {
+          && "desc".equals(params.getFirst(SORT_DIRECTION))) {
         sortDirection = SortDirection.DESCENDING;
       } else {
         sortDirection = SortDirection.ASCENDING;
@@ -388,8 +387,8 @@ public class WorkbasketController extends AbstractPagingController {
     return query;
   }
 
-  private void applyFilterParams(
-      WorkbasketQuery query, MultiValueMap<String, String> params) throws InvalidArgumentException {
+  private void applyFilterParams(WorkbasketQuery query, MultiValueMap<String, String> params)
+      throws InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to applyFilterParams(query= {}, params= {})", query, params);
     }
@@ -512,6 +511,5 @@ public class WorkbasketController extends AbstractPagingController {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from applyFilterParams(), returning {}", query);
     }
-
   }
 }

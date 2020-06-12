@@ -32,9 +32,7 @@ import pro.taskana.task.api.models.TaskComment;
 import pro.taskana.task.rest.assembler.TaskCommentRepresentationModelAssembler;
 import pro.taskana.task.rest.models.TaskCommentRepresentationModel;
 
-/**
- * Controller for all {@link TaskComment} related endpoints.
- */
+/** Controller for all {@link TaskComment} related endpoints. */
 @RestController
 @EnableHypermediaSupport(type = HypermediaType.HAL)
 public class TaskCommentController {
@@ -45,7 +43,6 @@ public class TaskCommentController {
   private static final String SORT_DIRECTION = "order";
   private static final String CREATED = "created";
   private static final String MODIFIED = "modified";
-
 
   private final TaskService taskService;
   private final TaskCommentRepresentationModelAssembler taskCommentRepresentationModelAssembler;
@@ -63,7 +60,7 @@ public class TaskCommentController {
   public ResponseEntity<TaskCommentRepresentationModel> getTaskComment(
       @PathVariable String taskCommentId)
       throws NotAuthorizedException, TaskNotFoundException, TaskCommentNotFoundException,
-                 InvalidArgumentException {
+          InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to getTaskComment(taskCommentId= {})", taskCommentId);
     }
@@ -96,7 +93,7 @@ public class TaskCommentController {
 
     List<TaskComment> taskComments = taskService.getTaskComments(taskId);
 
-    //TODO Maybe introduce a query for task comments
+    // TODO Maybe introduce a query for task comments
     applySortingParams(taskComments, params);
 
     TaskanaPagedModel<TaskCommentRepresentationModel> taskCommentListResource =
@@ -117,7 +114,7 @@ public class TaskCommentController {
   public ResponseEntity<TaskCommentRepresentationModel> deleteTaskComment(
       @PathVariable String taskCommentId)
       throws NotAuthorizedException, TaskNotFoundException, TaskCommentNotFoundException,
-                 InvalidArgumentException {
+          InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to deleteTaskComment(taskCommentId= {})", taskCommentId);
     }
@@ -139,7 +136,7 @@ public class TaskCommentController {
       @PathVariable String taskCommentId,
       @RequestBody TaskCommentRepresentationModel taskCommentRepresentationModel)
       throws NotAuthorizedException, TaskNotFoundException, TaskCommentNotFoundException,
-                 InvalidArgumentException, ConcurrencyException {
+          InvalidArgumentException, ConcurrencyException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
           "Entry to updateTaskComment(taskCommentId= {}, taskCommentResource= {})",
@@ -204,12 +201,13 @@ public class TaskCommentController {
     return result;
   }
 
-  private List<TaskComment> applySortingParams(List<TaskComment> taskComments,
-      MultiValueMap<String, String> params) throws InvalidArgumentException {
+  private List<TaskComment> applySortingParams(
+      List<TaskComment> taskComments, MultiValueMap<String, String> params)
+      throws InvalidArgumentException {
 
     if (LOGGER.isDebugEnabled()) {
-      LOGGER
-          .debug("Entry to applySortingParams(taskComments= {}, params= {})", taskComments, params);
+      LOGGER.debug(
+          "Entry to applySortingParams(taskComments= {}, params= {})", taskComments, params);
     }
 
     String sortBy = params.getFirst(SORT_BY);
@@ -219,20 +217,18 @@ public class TaskCommentController {
       switch (sortBy) {
         case (CREATED):
           if (params.getFirst(SORT_DIRECTION) != null
-                  && "desc".equals(params.getFirst(SORT_DIRECTION))) {
+              && "desc".equals(params.getFirst(SORT_DIRECTION))) {
             taskComments.sort(Comparator.comparing(TaskComment::getCreated).reversed());
           } else {
             taskComments.sort(Comparator.comparing(TaskComment::getCreated));
-
           }
           break;
         case (MODIFIED):
           if (params.getFirst(SORT_DIRECTION) != null
-                  && "desc".equals(params.getFirst(SORT_DIRECTION))) {
+              && "desc".equals(params.getFirst(SORT_DIRECTION))) {
             taskComments.sort(Comparator.comparing(TaskComment::getModified).reversed());
           } else {
             taskComments.sort(Comparator.comparing(TaskComment::getModified));
-
           }
           break;
         default:

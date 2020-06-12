@@ -2,10 +2,7 @@ package pro.taskana.task.api;
 
 import pro.taskana.common.api.QueryColumnName;
 
-/**
- * Enum containing the column names for TaskQueryMapper.queryTaskColumnValues.
- *
- */
+/** Enum containing the column names for TaskQueryMapper.queryTaskColumnValues. */
 public enum TaskQueryColumnName implements QueryColumnName {
   ID("t.id"),
   EXTERNAL_ID("t.external_id"),

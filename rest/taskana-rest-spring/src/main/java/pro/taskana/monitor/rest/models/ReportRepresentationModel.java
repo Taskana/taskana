@@ -35,9 +35,7 @@ public class ReportRepresentationModel extends RepresentationModel<ReportReprese
     return sumRow;
   }
 
-  /**
-   * EntityModel class for {@link SingleRow}.
-   */
+  /** EntityModel class for {@link SingleRow}. */
   public static class RowResource {
 
     private final int[] cells;
@@ -87,9 +85,7 @@ public class ReportRepresentationModel extends RepresentationModel<ReportReprese
     }
   }
 
-  /**
-   * Meta Information about this ReportResource.
-   */
+  /** Meta Information about this ReportResource. */
   public static class MetaInformation {
 
     private static final String TOTAL_DESC = "Total";

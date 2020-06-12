@@ -133,8 +133,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
     }
 
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "exit from getTasksCompletedBefore(), returning {}", taskList);
+      LOGGER.debug("exit from getTasksCompletedBefore(), returning {}", taskList);
     }
 
     return taskList;
@@ -142,9 +141,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
 
   private int deleteTasksTransactionally(List<TaskSummary> tasksToBeDeleted) {
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "entry to deleteTasksTransactionally(tasksToBeDeleted = {})",
-          tasksToBeDeleted);
+      LOGGER.debug("entry to deleteTasksTransactionally(tasksToBeDeleted = {})", tasksToBeDeleted);
     }
 
     int deletedTaskCount = 0;

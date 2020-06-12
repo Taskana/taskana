@@ -976,10 +976,7 @@ public class TaskQueryImpl implements TaskQuery {
       List<TaskSummaryImpl> tasks =
           taskanaEngine.getSqlSession().selectList(getLinkToMapperScript(), this);
       if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "mapper returned {} resulting Objects: {} ",
-            tasks.size(),
-            tasks);
+        LOGGER.debug("mapper returned {} resulting Objects: {} ", tasks.size(), tasks);
       }
       result = taskService.augmentTaskSummariesByContainedSummaries(tasks);
       return result;
@@ -987,9 +984,7 @@ public class TaskQueryImpl implements TaskQuery {
       taskanaEngine.returnConnection();
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug(
-            "exit from list(). Returning {} resulting Objects: {} ",
-            result.size(),
-            result);
+            "exit from list(). Returning {} resulting Objects: {} ", result.size(), result);
       }
     }
   }
@@ -1061,9 +1056,7 @@ public class TaskQueryImpl implements TaskQuery {
       taskanaEngine.returnConnection();
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug(
-            "Exit from listValues. Returning {} resulting Objects: {} ",
-            result.size(),
-            result);
+            "Exit from listValues. Returning {} resulting Objects: {} ", result.size(), result);
       }
     }
   }

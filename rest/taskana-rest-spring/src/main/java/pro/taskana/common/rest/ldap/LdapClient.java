@@ -116,9 +116,7 @@ public class LdapClient {
             SearchControls.SUBTREE_SCOPE,
             userAttributesToReturn,
             new UserContextMapper());
-    LOGGER.debug(
-        "exit from searchUsersByName. Retrieved the following users: {}.",
-        accessIds);
+    LOGGER.debug("exit from searchUsersByName. Retrieved the following users: {}.", accessIds);
     return accessIds;
   }
 
@@ -144,9 +142,7 @@ public class LdapClient {
             SearchControls.SUBTREE_SCOPE,
             getLookUpGoupAttributesToReturn(),
             new GroupContextMapper());
-    LOGGER.debug(
-        "Exit from searchGroupsByName. Retrieved the following groups: {}",
-        accessIds);
+    LOGGER.debug("Exit from searchGroupsByName. Retrieved the following groups: {}", accessIds);
     return accessIds;
   }
 
@@ -187,8 +183,7 @@ public class LdapClient {
             userAttributesToReturn,
             new GroupContextMapper());
     LOGGER.debug(
-        "exit from searchGroupsofUsersIsMember. Retrieved the following users: {}.",
-        accessIds);
+        "exit from searchGroupsofUsersIsMember. Retrieved the following users: {}.", accessIds);
     return accessIds;
   }
 

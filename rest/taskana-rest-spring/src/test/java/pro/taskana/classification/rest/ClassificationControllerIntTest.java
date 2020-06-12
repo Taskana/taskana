@@ -110,15 +110,11 @@ class ClassificationControllerIntTest {
     assertThat(response.getBody().getContent()).hasSize(5);
     assertThat(response.getBody().getContent().iterator().next().getKey()).isEqualTo("L1050");
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
-    String href = response
-                      .getBody()
-                      .getRequiredLink(IanaLinkRelations.SELF)
-                      .getHref();
+    String href = response.getBody().getRequiredLink(IanaLinkRelations.SELF).getHref();
     assertThat(
-            href
-                .endsWith(
-                    "/api/v1/classifications?"
-                        + "domain=DOMAIN_A&sort-by=key&order=asc&page-size=5&page=2"))
+            href.endsWith(
+                "/api/v1/classifications?"
+                    + "domain=DOMAIN_A&sort-by=key&order=asc&page-size=5&page=2"))
         .isTrue();
     assertThat(response.getBody().getLink(IanaLinkRelations.FIRST)).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.LAST)).isNotNull();

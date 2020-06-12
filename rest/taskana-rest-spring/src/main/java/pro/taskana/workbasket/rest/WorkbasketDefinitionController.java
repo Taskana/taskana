@@ -152,8 +152,7 @@ public class WorkbasketDefinitionController {
 
     // STEP 1: update or create workbaskets from the import
     for (WorkbasketDefinitionRepresentationModel definition : definitions.getContent()) {
-      Workbasket importedWb =
-          workbasketAssembler.toEntityModel(definition.getWorkbasket());
+      Workbasket importedWb = workbasketAssembler.toEntityModel(definition.getWorkbasket());
       String newId;
       WorkbasketImpl wbWithoutId = (WorkbasketImpl) removeId(importedWb);
       if (systemIds.containsKey(logicalId(importedWb))) {
@@ -230,8 +229,7 @@ public class WorkbasketDefinitionController {
     List<String> identifiers = new ArrayList<>();
     Set<String> duplicates = new HashSet<>();
     for (WorkbasketDefinitionRepresentationModel definition : definitions) {
-      String identifier =
-          logicalId(workbasketAssembler.toEntityModel(definition.getWorkbasket()));
+      String identifier = logicalId(workbasketAssembler.toEntityModel(definition.getWorkbasket()));
       if (identifiers.contains(identifier)) {
         duplicates.add(identifier);
       } else {

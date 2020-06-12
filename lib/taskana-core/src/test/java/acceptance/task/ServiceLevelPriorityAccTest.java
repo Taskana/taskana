@@ -455,7 +455,8 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
     task.setPlanned(planned);
     task = taskService.updateTask(task);
     String serviceLevel = task.getClassificationSummary().getServiceLevel();
-    Instant expDue = converter.addWorkingDaysToInstant(task.getPlanned(), Duration.parse(serviceLevel));
+    Instant expDue =
+        converter.addWorkingDaysToInstant(task.getPlanned(), Duration.parse(serviceLevel));
     assertThat(task.getPlanned()).isEqualTo(planned);
     assertThat(task.getDue()).isEqualTo(expDue);
   }

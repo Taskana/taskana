@@ -225,7 +225,6 @@ class UpdateClassificationAccTest extends AbstractAccTest {
     // TODO - resume old behaviour after attachment query is possible.
     TaskService taskService = taskanaEngine.getTaskService();
 
-
     List<String> tasksWithP1D =
         new ArrayList<>(
             Arrays.asList(

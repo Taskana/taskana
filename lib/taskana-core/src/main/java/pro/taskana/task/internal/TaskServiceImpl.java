@@ -1060,20 +1060,20 @@ public class TaskServiceImpl implements TaskService {
         getTasksToChange(taskIds).stream()
             .collect(Collectors.toMap(TaskSummary::getId, e -> (TaskSummaryImpl) e));
     return taskIds.stream()
-               .map(id -> Pair.of(id, taskSummaryMap.get(id)))
-               .filter(
-                   pair -> {
-                     if (pair.getRight() == null) {
-                       String taskId = pair.getLeft();
-                       bulkLog.addError(
-                           taskId,
-                           new TaskNotFoundException(
-                               taskId, String.format(TASK_WITH_ID_WAS_NOT_FOUND, taskId)));
-                       return false;
-                     }
-                     return true;
-                   })
-               .map(Pair::getRight);
+        .map(id -> Pair.of(id, taskSummaryMap.get(id)))
+        .filter(
+            pair -> {
+              if (pair.getRight() == null) {
+                String taskId = pair.getLeft();
+                bulkLog.addError(
+                    taskId,
+                    new TaskNotFoundException(
+                        taskId, String.format(TASK_WITH_ID_WAS_NOT_FOUND, taskId)));
+                return false;
+              }
+              return true;
+            })
+        .map(Pair::getRight);
   }
 
   private static Predicate<TaskSummaryImpl> addErrorToBulkLog(

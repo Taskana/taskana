@@ -11,6 +11,7 @@ public class WorkbasketDefinitionRepresentationModel
 
   @JsonIgnoreProperties("_links")
   private WorkbasketRepresentationModel workbasket;
+
   private Collection<WorkbasketAccessItemRepresentationModel> authorizations;
   private Set<String> distributionTargets;
 

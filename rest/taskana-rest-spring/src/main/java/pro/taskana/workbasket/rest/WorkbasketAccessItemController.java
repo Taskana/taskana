@@ -55,13 +55,14 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
 
   @Autowired
   public WorkbasketAccessItemController(
-      LdapClient ldapClient, WorkbasketService workbasketService,
+      LdapClient ldapClient,
+      WorkbasketService workbasketService,
       WorkbasketAccessItemRepresentationModelAssembler
           workbasketAccessItemRepresentationModelAssembler) {
     this.ldapClient = ldapClient;
     this.workbasketService = workbasketService;
-    this.workbasketAccessItemRepresentationModelAssembler
-        = workbasketAccessItemRepresentationModelAssembler;
+    this.workbasketAccessItemRepresentationModelAssembler =
+        workbasketAccessItemRepresentationModelAssembler;
   }
 
   /**
@@ -69,14 +70,13 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
    *
    * @param params filter, order and access ids.
    * @return all WorkbasketAccesItemResource.
-   * @throws NotAuthorizedException   if the user is not authorized.
+   * @throws NotAuthorizedException if the user is not authorized.
    * @throws InvalidArgumentException if some argument is invalid.
    */
   @GetMapping(path = Mapping.URL_WORKBASKET_ACCESS_ITEMS)
   public ResponseEntity<TaskanaPagedModel<WorkbasketAccessItemRepresentationModel>>
-        getWorkbasketAccessItems(
-      @RequestParam MultiValueMap<String, String> params)
-      throws NotAuthorizedException, InvalidArgumentException {
+      getWorkbasketAccessItems(@RequestParam MultiValueMap<String, String> params)
+          throws NotAuthorizedException, InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to getWorkbasketAccessItems(params= {})", params);
     }
@@ -135,8 +135,7 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
     return response;
   }
 
-  private void getAccessIds(
-      WorkbasketAccessItemQuery query, MultiValueMap<String, String> params) {
+  private void getAccessIds(WorkbasketAccessItemQuery query, MultiValueMap<String, String> params) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to getAccessIds(query= {}, params= {})", query, params);
     }
@@ -150,7 +149,6 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from getAccessIds(), returning {}", query);
     }
-
   }
 
   private void applyFilterParams(
@@ -180,7 +178,6 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from applyFilterParams(), returning {}", query);
     }
-
   }
 
   private WorkbasketAccessItemQuery applySortingParams(
@@ -195,7 +192,7 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
     if (sortBy != null) {
       BaseQuery.SortDirection sortDirection;
       if (params.getFirst(SORT_DIRECTION) != null
-              && "desc".equals(params.getFirst(SORT_DIRECTION))) {
+          && "desc".equals(params.getFirst(SORT_DIRECTION))) {
         sortDirection = BaseQuery.SortDirection.DESCENDING;
       } else {
         sortDirection = BaseQuery.SortDirection.ASCENDING;

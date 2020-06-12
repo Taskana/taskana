@@ -4,11 +4,8 @@ import java.time.Instant;
 
 import pro.taskana.workbasket.api.models.Workbasket;
 
-/**
- * EntityModel class for {@link Workbasket}.
- */
-public class WorkbasketRepresentationModel
-    extends WorkbasketSummaryRepresentationModel {
+/** EntityModel class for {@link Workbasket}. */
+public class WorkbasketRepresentationModel extends WorkbasketSummaryRepresentationModel {
 
   private Instant created; // ISO-8601
   private Instant modified; // ISO-8601

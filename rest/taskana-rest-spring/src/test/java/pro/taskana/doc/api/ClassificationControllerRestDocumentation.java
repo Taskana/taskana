@@ -22,13 +22,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import pro.taskana.common.rest.Mapping;
 
-/**
- * Generate REST Dokumentation for ClassificationController.
- */
+/** Generate REST Dokumentation for ClassificationController. */
 class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
 
-  private final HashMap<String, String> classificationFieldDescriptionsMap =
-      new HashMap<>();
+  private final HashMap<String, String> classificationFieldDescriptionsMap = new HashMap<>();
 
   private FieldDescriptor[] allClassificationsFieldDescriptors;
   private FieldDescriptor[] classificationFieldDescriptors;
@@ -253,7 +250,7 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.get(
-                restHelper.toUrl(Mapping.URL_CLASSIFICATIONS) + "?domain=DOMAIN_B")
+                    restHelper.toUrl(Mapping.URL_CLASSIFICATIONS) + "?domain=DOMAIN_B")
                 .accept("application/hal+json")
                 .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())

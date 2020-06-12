@@ -60,11 +60,9 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
     taskFieldDescriptionsMap.put("priority", "The priority of the task");
     taskFieldDescriptionsMap.put("state", "he state of the task. See (...)");
     taskFieldDescriptionsMap.put(
-        "classificationSummary",
-        "The <<classification-subset, Classification>> of the task");
+        "classificationSummary", "The <<classification-subset, Classification>> of the task");
     taskFieldDescriptionsMap.put(
-        "workbasketSummary",
-        "The <<workbasket-subset, Workbasket>> of the task");
+        "workbasketSummary", "The <<workbasket-subset, Workbasket>> of the task");
     taskFieldDescriptionsMap.put("businessProcessId", "");
     taskFieldDescriptionsMap.put("parentBusinessProcessId", "");
     taskFieldDescriptionsMap.put(
@@ -133,30 +131,28 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
               .description(taskFieldDescriptionsMap.get("planned"))
               .type("String"),
           fieldWithPath("due").description(taskFieldDescriptionsMap.get("due")).type("String"),
-            fieldWithPath("name").description(taskFieldDescriptionsMap.get("name")),
-            fieldWithPath("creator").description(taskFieldDescriptionsMap.get("creator")),
-            fieldWithPath("description").description(taskFieldDescriptionsMap.get("description")),
-            fieldWithPath("note")
-                .description(taskFieldDescriptionsMap.get("note"))
-                .description("Some custom Note"),
-            fieldWithPath("priority").description(taskFieldDescriptionsMap.get("priority")),
-            fieldWithPath("state").description(taskFieldDescriptionsMap.get("state")),
-            subsectionWithPath("classificationSummary")
-                .description(
-                taskFieldDescriptionsMap.get("classificationSummary")),
-            subsectionWithPath("workbasketSummary")
-                .description(taskFieldDescriptionsMap.get("workbasketSummary")),
-            fieldWithPath("businessProcessId")
-                .description(taskFieldDescriptionsMap.get("businessProcessId")),
-            fieldWithPath("parentBusinessProcessId")
-                .description(taskFieldDescriptionsMap.get("parentBusinessProcessId")),
-            fieldWithPath("owner").description(taskFieldDescriptionsMap.get("owner")).type(
-                "String"),
-            fieldWithPath("primaryObjRef.id")
-                .description(taskFieldDescriptionsMap.get("primaryObjRef.id"))
-                .type("String"),
-            fieldWithPath("primaryObjRef.company")
-                .description(taskFieldDescriptionsMap.get("primaryObjRef.company")),
+          fieldWithPath("name").description(taskFieldDescriptionsMap.get("name")),
+          fieldWithPath("creator").description(taskFieldDescriptionsMap.get("creator")),
+          fieldWithPath("description").description(taskFieldDescriptionsMap.get("description")),
+          fieldWithPath("note")
+              .description(taskFieldDescriptionsMap.get("note"))
+              .description("Some custom Note"),
+          fieldWithPath("priority").description(taskFieldDescriptionsMap.get("priority")),
+          fieldWithPath("state").description(taskFieldDescriptionsMap.get("state")),
+          subsectionWithPath("classificationSummary")
+              .description(taskFieldDescriptionsMap.get("classificationSummary")),
+          subsectionWithPath("workbasketSummary")
+              .description(taskFieldDescriptionsMap.get("workbasketSummary")),
+          fieldWithPath("businessProcessId")
+              .description(taskFieldDescriptionsMap.get("businessProcessId")),
+          fieldWithPath("parentBusinessProcessId")
+              .description(taskFieldDescriptionsMap.get("parentBusinessProcessId")),
+          fieldWithPath("owner").description(taskFieldDescriptionsMap.get("owner")).type("String"),
+          fieldWithPath("primaryObjRef.id")
+              .description(taskFieldDescriptionsMap.get("primaryObjRef.id"))
+              .type("String"),
+          fieldWithPath("primaryObjRef.company")
+              .description(taskFieldDescriptionsMap.get("primaryObjRef.company")),
           fieldWithPath("primaryObjRef.system")
               .description(taskFieldDescriptionsMap.get("primaryObjRef.system")),
           fieldWithPath("primaryObjRef.systemInstance")
@@ -238,29 +234,28 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
               .description(taskFieldDescriptionsMap.get("planned"))
               .type("String"),
           fieldWithPath("due").description(taskFieldDescriptionsMap.get("due")).type("String"),
-            fieldWithPath("name").description(taskFieldDescriptionsMap.get("name")),
-            fieldWithPath("creator").description(taskFieldDescriptionsMap.get("creator")),
-            fieldWithPath("description").ignored(),
-            fieldWithPath("note")
-                .description(taskFieldDescriptionsMap.get("note"))
-                .description("Some custom Note"),
-            fieldWithPath("priority").description(taskFieldDescriptionsMap.get("priority")),
-            fieldWithPath("state").description(taskFieldDescriptionsMap.get("state")),
-            subsectionWithPath("classificationSummary")
-                .description(
-                taskFieldDescriptionsMap.get("classificationSummary")),
-            subsectionWithPath("workbasketSummary")
-                .description(taskFieldDescriptionsMap.get("workbasketSummary")),
-            fieldWithPath("businessProcessId")
-                .description(taskFieldDescriptionsMap.get("businessProcessId")),
-            fieldWithPath("parentBusinessProcessId")
-                .description(taskFieldDescriptionsMap.get("parentBusinessProcessId")),
-            fieldWithPath("owner").description(taskFieldDescriptionsMap.get("owner")),
-            fieldWithPath("primaryObjRef.id")
-                .description(taskFieldDescriptionsMap.get("primaryObjRef.id"))
-                .type("String"),
-            fieldWithPath("primaryObjRef.company")
-                .description(taskFieldDescriptionsMap.get("primaryObjRef.company")),
+          fieldWithPath("name").description(taskFieldDescriptionsMap.get("name")),
+          fieldWithPath("creator").description(taskFieldDescriptionsMap.get("creator")),
+          fieldWithPath("description").ignored(),
+          fieldWithPath("note")
+              .description(taskFieldDescriptionsMap.get("note"))
+              .description("Some custom Note"),
+          fieldWithPath("priority").description(taskFieldDescriptionsMap.get("priority")),
+          fieldWithPath("state").description(taskFieldDescriptionsMap.get("state")),
+          subsectionWithPath("classificationSummary")
+              .description(taskFieldDescriptionsMap.get("classificationSummary")),
+          subsectionWithPath("workbasketSummary")
+              .description(taskFieldDescriptionsMap.get("workbasketSummary")),
+          fieldWithPath("businessProcessId")
+              .description(taskFieldDescriptionsMap.get("businessProcessId")),
+          fieldWithPath("parentBusinessProcessId")
+              .description(taskFieldDescriptionsMap.get("parentBusinessProcessId")),
+          fieldWithPath("owner").description(taskFieldDescriptionsMap.get("owner")),
+          fieldWithPath("primaryObjRef.id")
+              .description(taskFieldDescriptionsMap.get("primaryObjRef.id"))
+              .type("String"),
+          fieldWithPath("primaryObjRef.company")
+              .description(taskFieldDescriptionsMap.get("primaryObjRef.company")),
           fieldWithPath("primaryObjRef.system")
               .description(taskFieldDescriptionsMap.get("primaryObjRef.system")),
           fieldWithPath("primaryObjRef.systemInstance")
@@ -294,21 +289,21 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
         };
 
     createTaskFieldDescriptors =
-        new FieldDescriptor[]{
-            subsectionWithPath("classificationSummary")
-                .description("The new classificationSummary for the task"),
-            subsectionWithPath("workbasketSummary")
-                .description("The new workbasketSummary for the task"),
-            fieldWithPath("externalId")
-                .description(taskFieldDescriptionsMap.get("externalId"))
-                .type("String")
-                .optional(),
-            fieldWithPath("primaryObjRef.company")
-                .description(taskFieldDescriptionsMap.get("primaryObjRef.company")),
-            fieldWithPath("primaryObjRef.system")
-                .description(taskFieldDescriptionsMap.get("primaryObjRef.system")),
-            fieldWithPath("primaryObjRef.systemInstance")
-                .description(taskFieldDescriptionsMap.get("primaryObjRef.systemInstance")),
+        new FieldDescriptor[] {
+          subsectionWithPath("classificationSummary")
+              .description("The new classificationSummary for the task"),
+          subsectionWithPath("workbasketSummary")
+              .description("The new workbasketSummary for the task"),
+          fieldWithPath("externalId")
+              .description(taskFieldDescriptionsMap.get("externalId"))
+              .type("String")
+              .optional(),
+          fieldWithPath("primaryObjRef.company")
+              .description(taskFieldDescriptionsMap.get("primaryObjRef.company")),
+          fieldWithPath("primaryObjRef.system")
+              .description(taskFieldDescriptionsMap.get("primaryObjRef.system")),
+          fieldWithPath("primaryObjRef.systemInstance")
+              .description(taskFieldDescriptionsMap.get("primaryObjRef.systemInstance")),
           fieldWithPath("primaryObjRef.type")
               .description(taskFieldDescriptionsMap.get("primaryObjRef.type")),
           fieldWithPath("primaryObjRef.value")

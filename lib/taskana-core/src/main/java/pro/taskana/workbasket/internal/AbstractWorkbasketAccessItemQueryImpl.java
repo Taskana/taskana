@@ -92,9 +92,7 @@ abstract class AbstractWorkbasketAccessItemQueryImpl<
       taskanaEngine.returnConnection();
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug(
-            "exit from list(). Returning {} resulting Objects: {} ",
-            result.size(),
-            result);
+            "exit from list(). Returning {} resulting Objects: {} ", result.size(), result);
       }
     }
   }
