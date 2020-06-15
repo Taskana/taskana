@@ -3,8 +3,9 @@ import { take, tap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { WorkbasketService } from '../../services/workbasket/workbasket.service';
 import { Workbasket } from '../../models/workbasket';
-import { GetWorkbasketAccessItems, GetWorkbaskets, SelectWorkbasket } from './workbasket.actions';
+import { GetWorkbasketAccessItems, GetWorkbaskets, GetWorkbasketsSummary, SelectWorkbasket } from './workbasket.actions';
 import { WorkbasketAccessItems } from '../../models/workbasket-access-items';
+import { WorkbasketSummaryRepresentation } from '../../models/workbasket-summary-representation';
 
 class InitializeStore {
   static readonly type = '[Workbasket] Initializing state';
@@ -13,6 +14,19 @@ class InitializeStore {
 @State<WorkbasketStateModel>({ name: 'workbasket' })
 export class WorkbasketState implements NgxsAfterBootstrap {
   constructor(private workbasketService: WorkbasketService) {
+  }
+
+  @Action(GetWorkbasketsSummary)
+  getWorkbasketsSummary(ctx: StateContext<WorkbasketStateModel>, action: GetWorkbasketsSummary): Observable<any> {
+    return this.workbasketService.getWorkBasketsSummary(action.forceRequest,
+      action.sortBy, action.order, action.name, action.nameLike, action.descLike, action.owner, action.ownerLike,
+      action.type, action.key, action.keyLike, action.requiredPermission, action.allPages).pipe(
+      take(1), tap(workbasketsSummary => {
+        ctx.patchState(
+          { workbasketsSummary }
+        );
+      })
+    );
   }
 
   @Action(GetWorkbaskets)
@@ -24,6 +38,17 @@ export class WorkbasketState implements NgxsAfterBootstrap {
         );
       })
     );
+  }
+
+  @Action(GetWorkbasketAccessItems)
+  getWorkbasketAccessItems(ctx: StateContext<WorkbasketStateModel>, action: GetWorkbasketAccessItems): Observable<any> {
+    return this.workbasketService.getWorkBasketAccessItems(action.url).pipe(take(1), tap(
+      workbasketAccessItemsResource => {
+        ctx.patchState({
+          workbasketAccessItems: workbasketAccessItemsResource.accessItems
+        });
+      }
+    ));
   }
 
   @Action(SelectWorkbasket)
@@ -41,23 +66,13 @@ export class WorkbasketState implements NgxsAfterBootstrap {
     return of(null);
   }
 
-  @Action(GetWorkbasketAccessItems)
-  getWorkbasketAccessItems(ctx: StateContext<WorkbasketStateModel>, action: GetWorkbasketAccessItems): Observable<any> {
-    return this.workbasketService.getWorkBasketAccessItems(action.url).pipe(take(1), tap(
-      workbasketAccessItemsResource => {
-        ctx.patchState({
-          workbasketAccessItems: workbasketAccessItemsResource.accessItems
-        });
-      }
-    ));
-  }
-
   ngxsAfterBootstrap(ctx?: StateContext<any>): void {
     ctx.dispatch(new InitializeStore());
   }
 }
 
 export interface WorkbasketStateModel {
+  workbasketsSummary: WorkbasketSummaryRepresentation,
   workbaskets: Workbasket[],
   selectedWorkbasket: Workbasket,
   workbasketAccessItems: WorkbasketAccessItems

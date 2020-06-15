@@ -13,7 +13,7 @@ import { DomainService } from 'app/shared/services/domain/domain.service';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { mergeMap, tap, catchError } from 'rxjs/operators';
 import { QueryParameters } from 'app/shared/models/query-parameters';
-import { WorkbasketResource } from '../../models/workbasket-resource';
+import { WorkbasketRepresentation } from '../../models/workbasket-representation';
 
 @Injectable()
 export class WorkbasketService {
@@ -65,8 +65,8 @@ export class WorkbasketService {
   }
 
   // GET
-  getAllWorkBaskets(): Observable<WorkbasketResource> {
-    return this.httpClient.get<WorkbasketResource>(`${environment.taskanaRestUrl}/v1/workbaskets?required-permission=OPEN`);
+  getAllWorkBaskets(): Observable<WorkbasketRepresentation> {
+    return this.httpClient.get<WorkbasketRepresentation>(`${environment.taskanaRestUrl}/v1/workbaskets?required-permission=OPEN`);
   }
 
   // POST
