@@ -13,7 +13,9 @@ import { OrientationService } from 'app/shared/services/orientation/orientation.
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { ImportExportService } from 'app/administration/services/import-export.service';
 import { Select, Store } from '@ngxs/store';
-import { GetWorkbaskets, SelectWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
+import { GetWorkbaskets,
+  GetWorkbasketsSummary,
+  SelectWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { Workbasket } from '../../../shared/models/workbasket';
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
 
@@ -59,7 +61,6 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.store.dispatch(new GetWorkbaskets());
     this.requestInProgress = true;
     this.workbasketServiceSubscription = this.workbasketService.getSelectedWorkBasket().subscribe(workbasketIdSelected => {
       // TODO should be done in a different way.
@@ -111,6 +112,10 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   }
 
   private performRequest(): void {
+    this.store.dispatch(new GetWorkbasketsSummary(true, this.sort.sortBy, this.sort.sortDirection, '',
+      this.filterBy.filterParams.name, this.filterBy.filterParams.description, '', this.filterBy.filterParams.owner,
+      this.filterBy.filterParams.type, '', this.filterBy.filterParams.key, ''));
+
     TaskanaQueryParameters.pageSize = this.cards;
     this.requestInProgress = true;
     this.workbaskets = [];

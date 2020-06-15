@@ -1,7 +1,34 @@
 import { Workbasket } from '../../models/workbasket';
+import { TaskanaQueryParameters } from '../../util/query-parameters';
+import { Direction } from '../../models/sorting';
+
+export class GetWorkbasketsSummary {
+  static readonly type = '[Workbasket List] Get all workbaskets\' summary';
+
+  constructor(public forceRequest: boolean = false,
+    public sortBy: string = TaskanaQueryParameters.parameters.KEY,
+    public order: string = Direction.ASC,
+    public name?: string,
+    public nameLike?: string,
+    public descLike?: string,
+    public owner?: string,
+    public ownerLike?: string,
+    public type?: string,
+    public key?: string,
+    public keyLike?: string,
+    public requiredPermission?: string,
+    public allPages: boolean = false) {
+  }
+}
 
 export class GetWorkbaskets {
   static readonly type = '[Workbasket] Get all workbaskets';
+}
+
+export class GetWorkbasketAccessItems {
+  static readonly type = '[Workbasket] Get all workbasket access items';
+  constructor(public url: string) {
+  }
 }
 
 export class SelectWorkbasket {
@@ -13,11 +40,5 @@ export class SelectWorkbasket {
 export class CreateWorkbasket {
   static readonly type = '[Workbasket] Create a workbasket';
   constructor(public workbasket: Workbasket) {
-  }
-}
-
-export class GetWorkbasketAccessItems {
-  static readonly type = '[Workbasket] Get all workbasket access items';
-  constructor(public url: string) {
   }
 }
