@@ -3,6 +3,7 @@ import { Links } from './links';
 export interface WorkbasketAccessItems {
   accessItemId: string;
   workbasketId: string;
+  workbasketKey: string;
   accessId: string;
   accessName: string;
   permRead: boolean;
