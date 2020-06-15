@@ -9,8 +9,8 @@ import { Subscription } from 'rxjs';
 
 import { Workbasket } from 'app/shared/models/workbasket';
 import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
-import { WorkbasketSummaryResource } from 'app/shared/models/workbasket-summary-resource';
-import { WorkbasketDistributionTargetsResource } from 'app/shared/models/workbasket-distribution-targets-resource';
+import { WorkbasketSummaryRepresentation } from 'app/shared/models/workbasket-summary-representation';
+import { WorkbasketDistributionTargets } from 'app/shared/models/workbasket-distribution-targets';
 import { ACTION } from 'app/shared/models/action';
 
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
@@ -50,7 +50,7 @@ export class WorkbasketDistributionTargetsComponent implements OnChanges, OnDest
   savingDistributionTargetsSubscription: Subscription;
   orientationSubscription: Subscription;
 
-  distributionTargetsSelectedResource: WorkbasketDistributionTargetsResource;
+  distributionTargetsSelectedResource: WorkbasketDistributionTargets;
   distributionTargetsLeft: Array<WorkbasketSummary>;
   distributionTargetsRight: Array<WorkbasketSummary>;
   distributionTargetsSelected: Array<WorkbasketSummary>;
@@ -174,7 +174,7 @@ export class WorkbasketDistributionTargetsComponent implements OnChanges, OnDest
     this.distributionTargetsSubscription = this.workbasketService.getWorkBasketsDistributionTargets(
       this.workbasket._links.distributionTargets.href
     ).subscribe(
-      (distributionTargetsSelectedResource: WorkbasketDistributionTargetsResource) => {
+      (distributionTargetsSelectedResource: WorkbasketDistributionTargets) => {
         this.distributionTargetsSelectedResource = distributionTargetsSelectedResource;
         this.distributionTargetsSelected = distributionTargetsSelectedResource.distributionTargets;
         this.distributionTargetsSelectedClone = Object.assign([], this.distributionTargetsSelected);
@@ -232,7 +232,7 @@ export class WorkbasketDistributionTargetsComponent implements OnChanges, OnDest
 
     this.workbasketSubscription = this.workbasketService.getWorkBasketsSummary(true)
       .subscribe(
-        (distributionTargetsAvailable: WorkbasketSummaryResource) => {
+        (distributionTargetsAvailable: WorkbasketSummaryRepresentation) => {
           if (TaskanaQueryParameters.page === 1) {
             this.distributionTargetsLeft = [];
             this.page = distributionTargetsAvailable.page;
