@@ -21,4 +21,5 @@
 		<module>taskana-rest-spring-example-boot</module>
 		<module>taskana-rest-spring-example-wildfly</module>
 	</modules>
+
 </project>
