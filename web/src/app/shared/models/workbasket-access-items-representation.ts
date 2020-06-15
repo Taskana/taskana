@@ -1,7 +1,7 @@
 import { Links } from './links';
 import { WorkbasketAccessItems } from './workbasket-access-items';
 
-export class WorkbasketAccessItemsResource {
+export interface WorkbasketAccessItemsRepresentation {
   accessItems: WorkbasketAccessItems[];
   _links: Links;
 }

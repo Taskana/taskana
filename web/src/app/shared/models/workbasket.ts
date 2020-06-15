@@ -3,14 +3,14 @@ import { ICONTYPES } from './icon-types';
 
 export class Workbasket {
   workbasketId?: string;
-  created?: string;
   key?: string;
+  name?: string;
   domain?: string;
   type: ICONTYPES;
-  modified?: string;
-  name?: string;
   description?: string;
   owner?: string;
+  created?: string;
+  modified?: string;
   custom1?: string;
   custom2?: string;
   custom3?: string;
