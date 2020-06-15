@@ -8,7 +8,7 @@ import { configureTests } from 'app/app.test.configuration';
 
 import { Workbasket } from 'app/shared/models/workbasket';
 import { WorkbasketAccessItems } from 'app/shared/models/workbasket-access-items';
-import { WorkbasketAccessItemsResource } from 'app/shared/models/workbasket-access-items-resource';
+import { WorkbasketAccessItemsRepresentation } from 'app/shared/models/workbasket-access-items-representation';
 import { ICONTYPES } from 'app/shared/models/icon-types';
 
 import { SavingWorkbasketService } from 'app/administration/services/saving-workbaskets.service';
@@ -68,7 +68,7 @@ describe('WorkbasketAccessItemsComponent', () => {
 
       workbasketService = testBed.get(WorkbasketService);
       notificationsService = testBed.get(NotificationService);
-      spyOn(workbasketService, 'getWorkBasketAccessItems').and.returnValue(of(new WorkbasketAccessItemsResource(
+      spyOn(workbasketService, 'getWorkBasketAccessItems').and.returnValue(of(new WorkbasketAccessItemsRepresentation(
         new Array<WorkbasketAccessItems>(
           new WorkbasketAccessItems('id1', '1', 'accessID1', '', false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false, false),

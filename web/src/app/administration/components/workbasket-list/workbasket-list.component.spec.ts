@@ -8,7 +8,7 @@ import { Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
-import { WorkbasketSummaryResource } from 'app/shared/models/workbasket-summary-resource';
+import { WorkbasketSummaryRepresentation } from 'app/shared/models/workbasket-summary-representation';
 import { Filter } from 'app/shared/models/filter';
 
 import { ImportExportComponent } from 'app/administration/components/import-export/import-export.component';
@@ -44,7 +44,7 @@ class PaginationComponent {
   @Output() changePage = new EventEmitter<any>();
 }
 
-const workbasketSummaryResource: WorkbasketSummaryResource = new WorkbasketSummaryResource(
+const workbasketSummaryResource: WorkbasketSummaryRepresentation = new WorkbasketSummaryRepresentation(
   new Array<WorkbasketSummary>(
     new WorkbasketSummary('1', 'key1', 'NAME1', 'description 1', 'owner 1', '', '', 'PERSONAL', '', '', '', ''),
     new WorkbasketSummary('2', 'key2', 'NAME2', 'description 2', 'owner 2', '', '', 'GROUP', '', '', '', '')

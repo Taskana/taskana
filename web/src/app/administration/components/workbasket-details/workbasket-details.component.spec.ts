@@ -9,11 +9,12 @@ import { of } from 'rxjs';
 
 import { Workbasket } from 'app/shared/models/workbasket';
 import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
-import { WorkbasketSummaryResource } from 'app/shared/models/workbasket-summary-resource';
-import { WorkbasketAccessItemsResource } from 'app/shared/models/workbasket-access-items-resource';
+import { WorkbasketSummaryRepresentation } from 'app/shared/models/workbasket-summary-representation';
+import { WorkbasketAccessItemsRepresentation } from 'app/shared/models/workbasket-access-items-representation';
 import { ICONTYPES } from 'app/shared/models/icon-types';
 import { Links } from 'app/shared/models/links';
 import { WorkbasketAccessItems } from 'app/shared/models/workbasket-access-items';
+import { LinksWorkbasketSummary } from 'app/shared/models/links-workbasket-summary';
 
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { MasterAndDetailService } from 'app/shared/services/master-and-detail/master-and-detail.service';
@@ -45,7 +46,7 @@ describe('WorkbasketDetailsComponent', () => {
   let workbasketService;
   let router;
   const workbasket = new Workbasket('1', '', '', '', ICONTYPES.TOPIC, '', '', '', '', '', '', '', '', '', '', '', '',
-    {});
+    new Links({ href: 'someurl' }, { href: 'someurl' }, { href: 'someurl' }));
 
   const routes: Routes = [
     { path: '*', component: DummyDetailComponent }
@@ -73,20 +74,20 @@ describe('WorkbasketDetailsComponent', () => {
       workbasketService = TestBed.get(WorkbasketService);
       spyOn(masterAndDetailService, 'getShowDetail').and.callFake(() => of(true));
       spyOn(workbasketService, 'getSelectedWorkBasket').and.callFake(() => of('id1'));
-      spyOn(workbasketService, 'getWorkBasketsSummary').and.callFake(() => of(new WorkbasketSummaryResource(
+      spyOn(workbasketService, 'getWorkBasketsSummary').and.callFake(() => of(new WorkbasketSummaryRepresentation(
         new Array<WorkbasketSummary>(
           new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '',
-            false, {})
+            false, new Links({ href: 'someurl' }))
         ),
-        {}
+        new LinksWorkbasketSummary({ href: 'someurl' })
       )));
 
       spyOn(workbasketService, 'getWorkBasket').and.callFake(() => of(workbasket));
-      spyOn(workbasketService, 'getWorkBasketAccessItems').and.callFake(() => of(new WorkbasketAccessItemsResource(
-        new Array<WorkbasketAccessItems>(), {}
+      spyOn(workbasketService, 'getWorkBasketAccessItems').and.callFake(() => of(new WorkbasketAccessItemsRepresentation(
+        new Array<WorkbasketAccessItems>(), new Links({ href: 'url' })
       )));
-      spyOn(workbasketService, 'getWorkBasketsDistributionTargets').and.callFake(() => of(new WorkbasketSummaryResource(
-        new Array<WorkbasketSummary>(), {}
+      spyOn(workbasketService, 'getWorkBasketsDistributionTargets').and.callFake(() => of(new WorkbasketSummaryRepresentation(
+        new Array<WorkbasketSummary>(), new LinksWorkbasketSummary({ href: 'url' })
       )));
       done();
     });
