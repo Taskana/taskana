@@ -1,14 +1,21 @@
-import { Component, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
+import { Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  OnDestroy, QueryList,
+  SimpleChanges,
+  ViewChildren } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { Select } from '@ngxs/store';
-import { FormArray, FormBuilder, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControlDirective, Validators } from '@angular/forms';
 
 import { Workbasket } from 'app/shared/models/workbasket';
 import { customFieldCount, WorkbasketAccessItems } from 'app/shared/models/workbasket-access-items';
 import { WorkbasketAccessItemsResource } from 'app/shared/models/workbasket-access-items-resource';
 import { ACTION } from 'app/shared/models/action';
 
-import { SavingInformation, SavingWorkbasketService } from 'app/administration/services/saving-workbaskets.service';
+import { SavingInformation,
+  SavingWorkbasketService } from 'app/administration/services/saving-workbaskets.service';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { highlight } from 'theme/animations/validation.animation';
@@ -17,7 +24,9 @@ import { AccessIdDefinition } from 'app/shared/models/access-id';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
-import { AccessItemsCustomisation, CustomField, getCustomFields } from '../../../shared/models/customisation';
+import { AccessItemsCustomisation,
+  CustomField,
+  getCustomFields } from '../../../shared/models/customisation';
 
 @Component({
   selector: 'taskana-workbasket-access-items',
@@ -34,6 +43,9 @@ export class WorkbasketAccessItemsComponent implements OnChanges, OnDestroy {
 
   @Input()
   active: string;
+
+  @ViewChildren('htmlInputElement') inputs: QueryList<ElementRef>;
+
 
   badgeMessage = '';
 
@@ -52,6 +64,7 @@ export class WorkbasketAccessItemsComponent implements OnChanges, OnDestroy {
 
   toogleValidationAccessIdMap = new Map<number, boolean>();
   private initialized = false;
+  private added = false;
 
   constructor(
     private workbasketService: WorkbasketService,
@@ -71,13 +84,10 @@ export class WorkbasketAccessItemsComponent implements OnChanges, OnDestroy {
     this.customFields$ = this.accessItemsCustomization$.pipe(getCustomFields(customFieldCount));
   }
 
-  setAccessItemsGroups(accessItems: Array<WorkbasketAccessItems>) {
-    const AccessItemsFormGroups = accessItems.map(accessItem => this.formBuilder.group(accessItem));
-    AccessItemsFormGroups.forEach(accessItemGroup => {
-      accessItemGroup.controls.accessId.setValidators(Validators.required);
+  ngAfterViewInit() {
+    this.inputs.changes.subscribe(next => {
+      if (this.added) next.last.nativeElement.focus();
     });
-    const AccessItemsFormArray = this.formBuilder.array(AccessItemsFormGroups);
-    this.AccessItemsForm.setControl('accessItemsGroups', AccessItemsFormArray);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -89,6 +99,39 @@ export class WorkbasketAccessItemsComponent implements OnChanges, OnDestroy {
     }
   }
 
+  private init() {
+    if (!this.workbasket._links.accessItems) {
+      return;
+    }
+    this.requestInProgress = true;
+    this.accessItemsubscription = this.workbasketService.getWorkBasketAccessItems(this.workbasket._links.accessItems.href)
+      .subscribe((accessItemsResource: WorkbasketAccessItemsResource) => {
+        this.accessItemsResource = accessItemsResource;
+        this.setAccessItemsGroups(accessItemsResource.accessItems);
+        this.accessItemsClone = this.cloneAccessItems(accessItemsResource.accessItems);
+        this.accessItemsResetClone = this.cloneAccessItems(accessItemsResource.accessItems);
+        this.requestInProgress = false;
+      });
+    this.savingAccessItemsSubscription = this.savingWorkbaskets.triggeredAccessItemsSaving()
+      .subscribe((savingInformation: SavingInformation) => {
+        if (this.action === ACTION.COPY) {
+          this.accessItemsResource._links.self.href = savingInformation.url;
+          this.setWorkbasketIdForCopy(savingInformation.workbasketId);
+          this.onSave();
+        }
+      });
+    this.initialized = true;
+  }
+
+  setAccessItemsGroups(accessItems: Array<WorkbasketAccessItems>) {
+    const AccessItemsFormGroups = accessItems.map(accessItem => this.formBuilder.group(accessItem));
+    AccessItemsFormGroups.forEach(accessItemGroup => {
+      accessItemGroup.controls.accessId.setValidators(Validators.required);
+    });
+    const AccessItemsFormArray = this.formBuilder.array(AccessItemsFormGroups);
+    this.AccessItemsForm.setControl('accessItemsGroups', AccessItemsFormArray);
+  }
+
   addAccessItem() {
     const workbasketAccessItems = new WorkbasketAccessItems();
     workbasketAccessItems.workbasketId = this.workbasket.workbasketId;
@@ -97,6 +140,7 @@ export class WorkbasketAccessItemsComponent implements OnChanges, OnDestroy {
     newForm.controls.accessId.setValidators(Validators.required);
     this.accessItemsGroups.push(newForm);
     this.accessItemsClone.push(workbasketAccessItems);
+    this.added = true;
   }
 
   clear() {
@@ -140,39 +184,6 @@ export class WorkbasketAccessItemsComponent implements OnChanges, OnDestroy {
     this.accessItemsGroups.controls[row].get('accessName').setValue(accessItem.name);
   }
 
-  ngOnDestroy(): void {
-    if (this.accessItemsubscription) {
-      this.accessItemsubscription.unsubscribe();
-    }
-    if (this.savingAccessItemsSubscription) {
-      this.savingAccessItemsSubscription.unsubscribe();
-    }
-  }
-
-  private init() {
-    this.initialized = true;
-    if (!this.workbasket._links.accessItems) {
-      return;
-    }
-    this.requestInProgress = true;
-    this.accessItemsubscription = this.workbasketService.getWorkBasketAccessItems(this.workbasket._links.accessItems.href)
-      .subscribe((accessItemsResource: WorkbasketAccessItemsResource) => {
-        this.accessItemsResource = accessItemsResource;
-        this.setAccessItemsGroups(accessItemsResource.accessItems);
-        this.accessItemsClone = this.cloneAccessItems(accessItemsResource.accessItems);
-        this.accessItemsResetClone = this.cloneAccessItems(accessItemsResource.accessItems);
-        this.requestInProgress = false;
-      });
-    this.savingAccessItemsSubscription = this.savingWorkbaskets.triggeredAccessItemsSaving()
-      .subscribe((savingInformation: SavingInformation) => {
-        if (this.action === ACTION.COPY) {
-          this.accessItemsResource._links.self.href = savingInformation.url;
-          this.setWorkbasketIdForCopy(savingInformation.workbasketId);
-          this.onSave();
-        }
-      });
-  }
-
   private onSave() {
     this.requestInProgressService.setRequestInProgress(true);
     this.workbasketService.updateWorkBasketAccessItem(
@@ -211,5 +222,21 @@ export class WorkbasketAccessItemsComponent implements OnChanges, OnDestroy {
 
   getAccessItemCustomProperty(customNumber: number): string {
     return `permCustom${customNumber}`;
+  }
+
+  focusNewInput(input: ElementRef) {
+    if (this.added) {
+      input.nativeElement.focus();
+    }
+  }
+
+
+  ngOnDestroy(): void {
+    if (this.accessItemsubscription) {
+      this.accessItemsubscription.unsubscribe();
+    }
+    if (this.savingAccessItemsSubscription) {
+      this.savingAccessItemsSubscription.unsubscribe();
+    }
   }
 }

@@ -42,7 +42,7 @@
 							'has-warning': (accessItemsClone[index].accessId !== accessItem.value.accessId),
 							'has-error': !accessItem.value.accessId }">
 							<taskana-type-ahead formControlName="accessId" placeHolderMessage="* Access id is required" [validationValue]="toogleValidationAccessIdMap.get(index)"
-							 [displayError]="!isFieldValid('accessItem.value.accessId', index)" (selectedItem)="accessItemSelected($event, index)"></taskana-type-ahead>
+							 [displayError]="!isFieldValid('accessItem.value.accessId', index)" (selectedItem)="accessItemSelected($event, index)" (inputField)="focusNewInput($event)"></taskana-type-ahead>
 						</td>
 						<ng-template #accessIdInput>
 							<td class="input-group text-align text-width">
@@ -50,7 +50,7 @@
 							 !accessItem.value.accessId && formSubmitAttempt}">
 									<input type="text" class="form-control" formControlName="accessId" placeholder="{{accessItem.invalid?
 							 '* Access id is required': ''}}"
-									 [@validation]="toogleValidationAccessIdMap.get(index)">
+									 [@validation]="toogleValidationAccessIdMap.get(index)" #htmlInputElement>
 								</div>
 							</td>
 						</ng-template>
