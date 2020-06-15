@@ -2,7 +2,7 @@ import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/co
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 
-import { WorkbasketSummaryResource } from 'app/shared/models/workbasket-summary-resource';
+import { WorkbasketSummaryRepresentation } from 'app/shared/models/workbasket-summary-representation';
 import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
 import { Filter } from 'app/shared/models/filter';
 import { Sorting } from 'app/shared/models/sorting';
@@ -24,7 +24,7 @@ import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/work
 })
 export class WorkbasketListComponent implements OnInit, OnDestroy {
   selectedId = '';
-  workbasketsResource: WorkbasketSummaryResource;
+  workbasketsResource: WorkbasketSummaryRepresentation;
   workbaskets: Array<WorkbasketSummary> = [];
   requestInProgress = false;
 
