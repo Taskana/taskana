@@ -1,4 +1,11 @@
-import { Component, OnInit, Input, ViewChild, forwardRef, Output, EventEmitter } from '@angular/core';
+import { Component,
+  OnInit,
+  Input,
+  ViewChild,
+  forwardRef,
+  Output,
+  EventEmitter,
+  OnChanges, ElementRef, AfterViewInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 
@@ -21,7 +28,7 @@ import { AccessIdDefinition } from 'app/shared/models/access-id';
     }
   ]
 })
-export class TypeAheadComponent implements OnInit, ControlValueAccessor {
+export class TypeAheadComponent implements AfterViewInit, ControlValueAccessor {
   dataSource: any;
   typing = false;
 
@@ -45,6 +52,9 @@ export class TypeAheadComponent implements OnInit, ControlValueAccessor {
 
   @Output()
   selectedItem = new EventEmitter<AccessIdDefinition>();
+
+  @Output()
+  inputField = new EventEmitter<ElementRef>();
 
   @ViewChild('inputTypeAhead', { static: false })
   private inputTypeAhead;
@@ -96,7 +106,8 @@ export class TypeAheadComponent implements OnInit, ControlValueAccessor {
   constructor(private accessIdsService: AccessIdsService) {
   }
 
-  ngOnInit() {
+  ngAfterViewInit() {
+    this.inputField.emit(this.inputTypeAhead);
   }
 
   initializeDataSource() {
