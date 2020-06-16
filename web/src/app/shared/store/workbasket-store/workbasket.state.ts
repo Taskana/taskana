@@ -32,9 +32,9 @@ export class WorkbasketState implements NgxsAfterBootstrap {
   @Action(GetWorkbaskets)
   getWorkbaskets(ctx: StateContext<WorkbasketStateModel>): Observable<any> {
     return this.workbasketService.getAllWorkBaskets().pipe(
-      take(1), tap(workbasketResource => {
+      take(1), tap(workbasketRepresentation => {
         ctx.patchState(
-          { workbaskets: workbasketResource.workbaskets }
+          { workbaskets: workbasketRepresentation }
         );
       })
     );

@@ -1,5 +1,7 @@
 import { Selector } from '@ngxs/store';
 import { WorkbasketState, WorkbasketStateModel } from './workbasket.state';
+import { WorkbasketSummary } from '../../models/workbasket-summary';
+import { WorkbasketSummaryRepresentation } from '../../models/workbasket-summary-representation';
 
 export class WorkbasketSelectors {
   @Selector([WorkbasketState])
@@ -10,5 +12,15 @@ export class WorkbasketSelectors {
   @Selector([WorkbasketState])
   static selectedWorkbasket(state: WorkbasketStateModel) {
     return state.selectedWorkbasket;
+  }
+
+  @Selector([WorkbasketState])
+  static workbasketsSummary(state: WorkbasketStateModel): WorkbasketSummary[] {
+    return state.workbasketsSummary.workbaskets;
+  }
+
+  @Selector([WorkbasketState])
+  static workbasketsSummaryRepresentation(state: WorkbasketStateModel): WorkbasketSummaryRepresentation {
+    return state.workbasketsSummary;
   }
 }
