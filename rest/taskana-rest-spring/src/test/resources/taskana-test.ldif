@@ -101,7 +101,7 @@ objectclass: inetorgperson
 objectclass: organizationalperson
 objectclass: person
 objectclass: top
-givenName: Frauke Faul
+givenName: Frauke
 description: desc
 uid: teamlead-2
 sn: Faul
@@ -134,6 +134,36 @@ sn: Schläfrig
 ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
 cn: Tim Schläfrig
 userPassword: user-2-1
+
+########################
+# Users Domäne B
+########################
+dn: uid=user-b-1,cn=users,OU=Test,O=TASKANA
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Bernd
+description: desc
+uid: user-b-1
+sn: Bern
+ou: Organisationseinheit/Organisationseinheit B
+cn: Bernd Bern
+userPassword: user-b-1
+
+dn: uid=user-b-2,cn=users,OU=Test,O=TASKANA
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Brunhilde
+description: desc
+uid: user-b-2
+sn: Bio
+ou: Organisationseinheit/Organisationseinheit B
+cn: Brunhilde Bio
+userPassword: user-b-2
+
 
 ########################
 # Groups
@@ -192,3 +222,9 @@ uniquemember: uid=user-2-2,cn=users,OU=Test,O=TASKANA
 cn: Organisationseinheit KSC 2
 objectclass: groupofuniquenames
 objectclass: top
+
+dn: cn=Organisationseinheit B,cn=organisation,OU=Test,O=TASKANA
+cn: Organisationseinheit B
+objectclass: groupofuniquenames
+objectclass: top
+

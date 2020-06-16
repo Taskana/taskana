@@ -25,9 +25,7 @@ import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 @ExtendWith(JaasExtension.class)
 class UpdateWorkbasketAccTest extends AbstractAccTest {
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {"group-1", "businessadmin"})
+  @WithAccessId(user = "businessadmin")
   @Test
   void testUpdateWorkbasket()
       throws NotAuthorizedException, WorkbasketNotFoundException, ConcurrencyException {
@@ -59,9 +57,7 @@ class UpdateWorkbasketAccTest extends AbstractAccTest {
     assertThat(updatedWorkbasket.getModified()).isNotEqualTo(modified);
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {"group-1", "businessadmin"})
+  @WithAccessId(user = "businessadmin")
   @Test
   void testUpdateWorkbasketWithConcurrentModificationShouldThrowException()
       throws NotAuthorizedException, WorkbasketNotFoundException {
@@ -77,9 +73,7 @@ class UpdateWorkbasketAccTest extends AbstractAccTest {
         .isThrownBy(() -> workbasketService.updateWorkbasket(workbasket));
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {"group-1", "businessadmin"})
+  @WithAccessId(user = "businessadmin")
   @Test
   void testUpdateWorkbasketOfNonExistingWorkbasketShouldThrowException()
       throws NotAuthorizedException, WorkbasketNotFoundException {
@@ -96,7 +90,7 @@ class UpdateWorkbasketAccTest extends AbstractAccTest {
         .isThrownBy(() -> workbasketService.updateWorkbasket(workbasket));
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(user = "user-1-1")
   @WithAccessId(user = "taskadmin")
   @TestTemplate
   void should_ThrowException_When_UserRoleIsNotAdminOrBusinessAdmin()

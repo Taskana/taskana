@@ -33,7 +33,7 @@ class QueryTaskWithAttachmentAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(user = "user-1-1")
   @Test
   void testGetAttachmentSummariesFromTask() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -57,7 +57,7 @@ class QueryTaskWithAttachmentAccTest extends AbstractAccTest {
     assertThat(attachmentSummaries).isEmpty();
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(user = "user-1-1")
   @Test
   void testIfNewTaskHasEmptyAttachmentList() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -66,7 +66,7 @@ class QueryTaskWithAttachmentAccTest extends AbstractAccTest {
     assertThat(task.asSummary().getAttachmentSummaries()).isNotNull();
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(user = "user-1-1")
   @Test
   void should_ConfirmIfAttachmentSummariesAreCorrect_When_UsingTaskQueryAndGetTaskById()
       throws TaskNotFoundException, NotAuthorizedException {
@@ -90,7 +90,7 @@ class QueryTaskWithAttachmentAccTest extends AbstractAccTest {
         .doesNotContainAnyElementsOf(originalAttachments); // but not same reference
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(user = "user-1-1")
   @Test
   void should_ConfirmIfAttachmentSummariesAreCorrect()
       throws InvalidArgumentException, TaskNotFoundException, NotAuthorizedException {

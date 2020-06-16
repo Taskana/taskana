@@ -25,9 +25,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {"group-1", "group-2"})
+  @WithAccessId(user = "admin")
   @Test
   void testCreatedWithin2Intervals() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -57,9 +55,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
     }
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {"group-1", "group-2"})
+  @WithAccessId(user = "admin")
   @Test
   void testCreatedBefore() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -82,9 +78,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
     }
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {"group-1", "group-2"})
+  @WithAccessId(user = "admin")
   @Test
   void testCreatedAfter() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -107,9 +101,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
     }
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {"group-1", "group-2"})
+  @WithAccessId(user = "admin")
   @Test
   void testClaimedWithin2Intervals() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -139,9 +131,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
     }
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {"group-1", "group-2"})
+  @WithAccessId(user = "admin")
   @Test
   void testCompletedWithin() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -164,9 +154,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
     }
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {"group-1", "group-2"})
+  @WithAccessId(user = "admin")
   @Test
   void testModifiedWithin() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -189,9 +177,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
     }
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {"group-1", "group-2"})
+  @WithAccessId(user = "admin")
   @Test
   void testPlannedWithin() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -214,9 +200,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
     }
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {"group-1", "group-2"})
+  @WithAccessId(user = "admin")
   @Test
   void testDueWithin() {
     TaskService taskService = taskanaEngine.getTaskService();

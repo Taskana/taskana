@@ -45,7 +45,7 @@ import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 @ExtendWith(JaasExtension.class)
 public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
 
-  @WithAccessId(user = "admin", groups = "group-1")
+  @WithAccessId(user = "admin")
   @Test
   void testTimestampsOnTaskUpdate()
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
@@ -70,7 +70,7 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
     assertThat(retrievedTask).isEqualTo(updatedTask);
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(user = "user-1-1")
   @Test
   void testCreatedTaskObjectEqualsReadTaskObjectInNewTimezone()
       throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
@@ -108,7 +108,7 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
     assertThat(readTask).isEqualTo(createdTask);
   }
 
-  @WithAccessId(user = "admin", groups = "group-1")
+  @WithAccessId(user = "admin")
   @Test
   void testTimestampsOnClassificationUpdate()
       throws ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
@@ -128,9 +128,7 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
     assertThat(retrievedClassification).isEqualTo(updatedClassification);
   }
 
-  @WithAccessId(
-      user = "teamlead_1",
-      groups = {"group-1", "businessadmin"})
+  @WithAccessId(user = "businessadmin")
   @Test
   void testTimestampsOnCreateMasterClassification()
       throws ClassificationAlreadyExistException, ClassificationNotFoundException,
@@ -154,7 +152,7 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
     assertThat(retrievedClassification).isEqualTo(classification);
   }
 
-  @WithAccessId(user = "admin", groups = "group-1")
+  @WithAccessId(user = "admin")
   @Test
   void testTimestampsOnWorkbasketUpdate()
       throws ConcurrencyException, NotAuthorizedException, WorkbasketNotFoundException {
@@ -171,7 +169,7 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
     assertThat(retrievedWorkbasket).isEqualTo(updatedWorkbasket);
   }
 
-  @WithAccessId(user = "user-1-2", groups = "businessadmin")
+  @WithAccessId(user = "businessadmin")
   @Test
   void testTimestampsOnCreateWorkbasket()
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
@@ -200,7 +198,7 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
     assertThat(retrievedWorkbasket).isEqualTo(workbasket);
   }
 
-  @WithAccessId(user = "user-1-2", groups = "businessadmin")
+  @WithAccessId(user = "user-1-2")
   @Test
   void testTimestampsOnCreateScheduledJob() throws SQLException {
     resetDb(true);

@@ -38,7 +38,9 @@ class TransferTaskAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(user = "teamlead-1", groups = "group-1")
+  @WithAccessId(
+      user = "teamlead-1",
+      groups = {GROUP_1_DN})
   @Test
   void should_TransferTaskToWorkbasket_When_WorkbasketIdIsProvided()
       throws NotAuthorizedException, WorkbasketNotFoundException, TaskNotFoundException,
@@ -77,7 +79,9 @@ class TransferTaskAccTest extends AbstractAccTest {
     assertThat(transferredTask.getState()).isEqualTo(TaskState.READY);
   }
 
-  @WithAccessId(user = "teamlead-1", groups = "group-1")
+  @WithAccessId(
+      user = "teamlead-1",
+      groups = {GROUP_1_DN})
   @Test
   void should_TransferTaskToWorkbasket_When_WorkbasketKeyAndDomainIsProvided()
       throws NotAuthorizedException, WorkbasketNotFoundException, TaskNotFoundException,
@@ -96,7 +100,9 @@ class TransferTaskAccTest extends AbstractAccTest {
     assertThat(transferredTask.getState()).isEqualTo(TaskState.READY);
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(
+      user = "user-1-1",
+      groups = {GROUP_1_DN})
   @Test
   void should_ChangeDomain_When_TransferingTaskToWorkbasketWithDifferentDomain()
       throws NotAuthorizedException, WorkbasketNotFoundException, TaskNotFoundException,
@@ -111,7 +117,7 @@ class TransferTaskAccTest extends AbstractAccTest {
     assertThat(transferedTask.getDomain()).isNotEqualTo(domain1);
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(user = "user-1-1")
   @Test
   void should_ThrowException_When_UserHasNoTransferAuthorization()
       throws NotAuthorizedException, TaskNotFoundException {
@@ -125,7 +131,9 @@ class TransferTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(user = "teamlead-1", groups = "group-1")
+  @WithAccessId(
+      user = "teamlead-1",
+      groups = {GROUP_1_DN})
   @Test
   void should_ThrowException_When_DestinationWorkbasketDoesNotExist()
       throws NotAuthorizedException, TaskNotFoundException, InvalidStateException,
@@ -142,7 +150,7 @@ class TransferTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(WorkbasketNotFoundException.class);
   }
 
-  @WithAccessId(user = "teamlead-1", groups = "group-1")
+  @WithAccessId(user = "teamlead-1")
   @Test
   void should_ThrowException_When_TaskToTransferDoesNotExist() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -174,7 +182,9 @@ class TransferTaskAccTest extends AbstractAccTest {
                 + "'WBI:100000000000000000000000000000000005' is needed.");
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(
+      user = "user-1-1",
+      groups = {GROUP_1_DN})
   @Test
   void should_ThrowException_When_TransferWithNoAppendAuthorization()
       throws NotAuthorizedException, TaskNotFoundException {
@@ -194,7 +204,7 @@ class TransferTaskAccTest extends AbstractAccTest {
                 + "'WBI:100000000000000000000000000000000008' is needed.");
   }
 
-  @WithAccessId(user = "teamlead-1", groups = "group-1")
+  @WithAccessId(user = "teamlead-1")
   @Test
   void should_ThrowException_When_TaskToTransferIsAlreadyCompleted()
       throws NotAuthorizedException, TaskNotFoundException {
@@ -208,7 +218,9 @@ class TransferTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(InvalidStateException.class);
   }
 
-  @WithAccessId(user = "teamlead-1", groups = "group-1")
+  @WithAccessId(
+      user = "teamlead-1",
+      groups = {GROUP_1_DN})
   @Test
   void should_BulkTransferTasks_When_WorkbasketIdIsProvided()
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
@@ -245,7 +257,9 @@ class TransferTaskAccTest extends AbstractAccTest {
     assertThat(transferredTask.getOwner()).isNull();
   }
 
-  @WithAccessId(user = "teamlead-1", groups = "group-1")
+  @WithAccessId(
+      user = "teamlead-1",
+      groups = {GROUP_1_DN})
   @Test
   void should_BulkTransferOnlyValidTasks_When_SomeTasksToTransferCauseExceptions()
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
@@ -322,7 +336,9 @@ class TransferTaskAccTest extends AbstractAccTest {
         .hasMessageContaining("APPEND");
   }
 
-  @WithAccessId(user = "teamlead-1", groups = "group-1")
+  @WithAccessId(
+      user = "teamlead-1",
+      groups = {GROUP_1_DN})
   @Test
   void should_TransferTasks_When_TransferTasksWithListNotSupportingRemove() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -336,7 +352,9 @@ class TransferTaskAccTest extends AbstractAccTest {
     assertThatCode(call).doesNotThrowAnyException();
   }
 
-  @WithAccessId(user = "teamlead-1", groups = "group-1")
+  @WithAccessId(
+      user = "teamlead-1",
+      groups = {GROUP_1_DN})
   @Test
   void should_ThrowException_When_TransferTasksWithInvalidTasksIdList() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -361,7 +379,9 @@ class TransferTaskAccTest extends AbstractAccTest {
         .hasMessage("TaskIds must not contain only invalid arguments.");
   }
 
-  @WithAccessId(user = "teamlead-1", groups = "group-1")
+  @WithAccessId(
+      user = "teamlead-1",
+      groups = {GROUP_1_DN})
   @Test
   void should_ThrowException_When_TransferEmptyTaskIdList() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -373,7 +393,9 @@ class TransferTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(InvalidArgumentException.class);
   }
 
-  @WithAccessId(user = "teamlead-1", groups = "group-1")
+  @WithAccessId(
+      user = "teamlead-1",
+      groups = {GROUP_1_DN})
   @Test
   void should_BulkTransferTasks_When_WorkbasketKeyAndDomainIsProvided()
       throws WorkbasketNotFoundException, NotAuthorizedException, InvalidArgumentException,

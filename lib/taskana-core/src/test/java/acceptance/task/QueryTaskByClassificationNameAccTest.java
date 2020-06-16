@@ -30,7 +30,7 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(user = "teamlead_1", groups = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testQueryTaskValuesForAttachmentClassificationName() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -44,7 +44,7 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
     assertThat(columnValueList).hasSize(8);
   }
 
-  @WithAccessId(user = "teamlead_1", groups = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testQueryTaskValuesForClassificationName() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -58,7 +58,7 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
     assertThat(columnValueList).hasSize(5);
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(user = "user-1-1")
   @Test
   void testQueryByClassificationNameIn() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -79,7 +79,9 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
     assertThat(tasks).hasSize(1);
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(
+      user = "user-1-1",
+      groups = {GROUP_1_DN})
   @Test
   void testQueryByClassificationNameLike() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -96,7 +98,7 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
     assertThat(tasks).hasSize(32);
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(user = "user-1-1")
   @Test
   void testSelectByAttachmentClassificationNameLike() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -117,7 +119,7 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
     assertThat(tasks).hasSize(7);
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(user = "user-1-1")
   @Test
   void testSelectByAttachmentClassificationNameIn() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -138,7 +140,7 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
     assertThat(tasks).hasSize(4);
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(user = "user-1-1")
   @Test
   void testQueryAndCountMatchForClassificationName() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -150,7 +152,7 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
     assertThat(tasks).hasSize((int) numberOfTasks);
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(user = "user-1-1")
   @Test
   void testQueryAndCountForAttachmentClassificationName() {
     TaskService taskService = taskanaEngine.getTaskService();

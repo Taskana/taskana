@@ -21,7 +21,7 @@ class QueryTasksWithPaginationAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(user = "teamlead-1", groups = "group-1")
+  @WithAccessId(user = "teamlead-1")
   @Test
   void testGetFirstPageOfTaskQueryWithOffset() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -33,7 +33,7 @@ class QueryTasksWithPaginationAccTest extends AbstractAccTest {
     assertThat(results).hasSize(10);
   }
 
-  @WithAccessId(user = "teamlead-1", groups = "group-1")
+  @WithAccessId(user = "teamlead-1")
   @Test
   void testSecondPageOfTaskQueryWithOffset() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -45,7 +45,7 @@ class QueryTasksWithPaginationAccTest extends AbstractAccTest {
     assertThat(results).hasSize(10);
   }
 
-  @WithAccessId(user = "teamlead-1", groups = "group-1")
+  @WithAccessId(user = "teamlead-1")
   @Test
   void testListOffsetAndLimitOutOfBounds() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -75,7 +75,7 @@ class QueryTasksWithPaginationAccTest extends AbstractAccTest {
     assertThat(results).hasSize(3);
   }
 
-  @WithAccessId(user = "teamlead-1", groups = "group-1")
+  @WithAccessId(user = "teamlead-1")
   @Test
   void testPaginationWithPages() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -121,7 +121,7 @@ class QueryTasksWithPaginationAccTest extends AbstractAccTest {
     assertThat(results).hasSize(2);
   }
 
-  @WithAccessId(user = "teamlead-1", groups = "group-1")
+  @WithAccessId(user = "teamlead-1")
   @Test
   void testPaginationNullAndNegativeLimitsIgnoring() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -157,7 +157,7 @@ class QueryTasksWithPaginationAccTest extends AbstractAccTest {
     assertThat(results).hasSize(10);
   }
 
-  @WithAccessId(user = "teamlead-1", groups = "group-1")
+  @WithAccessId(user = "teamlead-1")
   @Test
   void testCountOfTaskQuery() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -169,11 +169,11 @@ class QueryTasksWithPaginationAccTest extends AbstractAccTest {
     assertThat(count).isEqualTo(22L);
   }
 
-  @WithAccessId(user = "teamlead-1", groups = "group-1")
+  @WithAccessId(user = "teamlead-1")
   @Test
   void testCountOfTaskQueryWithAttachmentChannelFilter() {
     TaskService taskService = taskanaEngine.getTaskService();
     long count = taskService.createTaskQuery().attachmentChannelIn("ch6").count();
-    assertThat(count).isEqualTo(2L);
+    assertThat(count).isEqualTo(1L);
   }
 }

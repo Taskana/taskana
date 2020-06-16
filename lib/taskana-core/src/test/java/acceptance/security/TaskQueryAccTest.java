@@ -29,7 +29,7 @@ class TaskQueryAccTest extends AbstractAccTest {
     assertThat(results).isEmpty();
   }
 
-  @WithAccessId(user = "user-1-1") // , groupNames = {"businessadmin"})
+  @WithAccessId(user = "user-1-1")
   @Test
   void testTaskQueryUser_1_1() {
     TaskService taskService = taskanaEngine.getTaskService();

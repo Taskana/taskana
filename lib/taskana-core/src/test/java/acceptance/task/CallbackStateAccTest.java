@@ -37,7 +37,7 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 @ExtendWith(JaasExtension.class)
 class CallbackStateAccTest extends AbstractAccTest {
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(user = "user-1-1")
   @Test
   void testCreateTaskWithDifferentCallbackStates()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -63,7 +63,7 @@ class CallbackStateAccTest extends AbstractAccTest {
     assertThat(createdTask.getCallbackState()).isEqualTo(CallbackState.CLAIMED);
   }
 
-  @WithAccessId(user = "admin", groups = "group-1")
+  @WithAccessId(user = "admin")
   @Test
   void testDeletionOfTaskWithWrongCallbackStateIsBlocked()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -110,7 +110,7 @@ class CallbackStateAccTest extends AbstractAccTest {
         .hasMessageEndingWith(endOfMessage);
   }
 
-  @WithAccessId(user = "admin", groups = "group-1")
+  @WithAccessId(user = "admin")
   @Test
   void testUpdateOfCallbackState()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -176,7 +176,7 @@ class CallbackStateAccTest extends AbstractAccTest {
     assertThat(bulkResult3.containsErrors()).isFalse();
   }
 
-  @WithAccessId(user = "admin", groups = "group-1")
+  @WithAccessId(user = "admin")
   @Test
   void testInvalidUpdateOfCallbackStateToNone()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -212,7 +212,7 @@ class CallbackStateAccTest extends AbstractAccTest {
     assertThat(failedTaskIds).hasSize(3);
   }
 
-  @WithAccessId(user = "admin", groups = "group-1")
+  @WithAccessId(user = "admin")
   @Test
   void testInvalidUpdateOfCallbackStateToComplete()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -252,7 +252,7 @@ class CallbackStateAccTest extends AbstractAccTest {
     assertThat(failedTaskIds).hasSize(2).doesNotContain(createdTask3.getExternalId());
   }
 
-  @WithAccessId(user = "admin", groups = "group-1")
+  @WithAccessId(user = "admin")
   @Test
   void testInvalidUpdateOfCallbackStateToClaimed()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -296,7 +296,7 @@ class CallbackStateAccTest extends AbstractAccTest {
         .containsOnly(createdTask2.getExternalId(), createdTask3.getExternalId());
   }
 
-  @WithAccessId(user = "admin", groups = "group-1")
+  @WithAccessId(user = "admin")
   @Test
   void testInvalidUpdateOfCallbackStateToRequired()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -333,7 +333,7 @@ class CallbackStateAccTest extends AbstractAccTest {
     assertThat(failedTaskIds).containsOnly(createdTask3.getExternalId());
   }
 
-  @WithAccessId(user = "admin", groups = "group-1")
+  @WithAccessId(user = "admin")
   @Test
   void testQueriesWithCallbackState() throws Exception {
     resetDb(false);

@@ -28,7 +28,7 @@ class DeleteClassificationAccTest extends AbstractAccTest {
     classificationService = taskanaEngine.getClassificationService();
   }
 
-  @WithAccessId(user = "dummy", groups = "businessadmin")
+  @WithAccessId(user = "businessadmin")
   @Test
   void testDeleteClassificationInDomain()
       throws ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
@@ -37,15 +37,6 @@ class DeleteClassificationAccTest extends AbstractAccTest {
     Classification classification = classificationService.getClassification("L140101", "DOMAIN_A");
     assertThat(classification).isNotNull();
     assertThat(classification.getDomain()).isEqualTo("");
-  }
-
-  @WithAccessId(
-      user = "teamlead_1",
-      groups = {"group-1", "group-2"})
-  @Test
-  void testDeleteClassificationInDomainUserIsNotAuthorized() {
-    ThrowingCallable call = () -> classificationService.deleteClassification("L140101", "DOMAIN_A");
-    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(user = "taskadmin")
@@ -63,25 +54,21 @@ class DeleteClassificationAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(
-      user = "teamlead_1",
-      groups = {"group-1", "businessadmin"})
+  @WithAccessId(user = "businessadmin")
   @Test
   void testThrowExeptionIfDeleteClassificationWithExistingTasks() {
     ThrowingCallable call = () -> classificationService.deleteClassification("L1050", "DOMAIN_A");
     assertThatThrownBy(call).isInstanceOf(ClassificationInUseException.class);
   }
 
-  @WithAccessId(
-      user = "teamlead_1",
-      groups = {"group-1", "businessadmin"})
+  @WithAccessId(user = "businessadmin")
   @Test
   void testThrowExeptionIfDeleteMasterClassificationWithExistingTasks() {
     ThrowingCallable call = () -> classificationService.deleteClassification("L1050", "");
     assertThatThrownBy(call).isInstanceOf(ClassificationInUseException.class);
   }
 
-  @WithAccessId(user = "dummy", groups = "businessadmin")
+  @WithAccessId(user = "businessadmin")
   @Test
   void testDeleteMasterClassification()
       throws ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
@@ -91,16 +78,14 @@ class DeleteClassificationAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(ClassificationNotFoundException.class);
   }
 
-  @WithAccessId(user = "dummy", groups = "businessadmin")
+  @WithAccessId(user = "businessadmin")
   @Test
   void testDeleteMasterClassificationWithExistingAttachment() {
     ThrowingCallable call = () -> classificationService.deleteClassification("L12010", "");
     assertThatThrownBy(call).isInstanceOf(ClassificationInUseException.class);
   }
 
-  @WithAccessId(
-      user = "teamlead_1",
-      groups = {"group-1", "businessadmin"})
+  @WithAccessId(user = "businessadmin")
   @Test
   void testThrowExceptionWhenChildClassificationIsInUseAndRollback()
       throws ClassificationNotFoundException {
@@ -120,7 +105,7 @@ class DeleteClassificationAccTest extends AbstractAccTest {
     assertThat(rollbackA.getDomain()).isNotEqualTo(rollbackMaster.getDomain());
   }
 
-  @WithAccessId(user = "dummy", groups = "businessadmin")
+  @WithAccessId(user = "businessadmin")
   @Test
   void testThrowClassificationNotFoundIfClassificationNotExists() {
     ThrowingCallable call =
@@ -128,7 +113,7 @@ class DeleteClassificationAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(ClassificationNotFoundException.class);
   }
 
-  @WithAccessId(user = "dummy", groups = "businessadmin")
+  @WithAccessId(user = "businessadmin")
   @Test
   void testThrowClassificationNotFoundIfClassificationNotExistsInDomain() {
     ThrowingCallable call = () -> classificationService.deleteClassification("L10000", "DOMAIN_B");

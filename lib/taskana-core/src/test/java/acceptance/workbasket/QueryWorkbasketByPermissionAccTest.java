@@ -32,7 +32,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(user = "dummy", groups = "businessadmin")
+  @WithAccessId(user = "businessadmin")
   @Test
   void testQueryAllTransferTargetsForUser()
       throws NotAuthorizedException, InvalidArgumentException {
@@ -46,7 +46,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     assertThat(results.get(0).getKey()).isEqualTo("USER-1-1");
   }
 
-  @WithAccessId(user = "dummy")
+  @WithAccessId(user = "unknownuser")
   @Test
   void testQueryAllTransferTargetsForUserNotAuthorized() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -61,7 +61,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(user = "dummy", groups = "businessadmin")
+  @WithAccessId(user = "businessadmin")
   @Test
   void testQueryAllTransferTargetsForUserAndGroup()
       throws NotAuthorizedException, InvalidArgumentException, SystemException {
@@ -69,12 +69,12 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     List<WorkbasketSummary> results =
         workbasketService
             .createWorkbasketQuery()
-            .accessIdsHavePermission(WorkbasketPermission.APPEND, "user-1-1", "group-1")
+            .accessIdsHavePermission(WorkbasketPermission.APPEND, "user-1-1", GROUP_1_DN)
             .list();
     assertThat(results).hasSize(6);
   }
 
-  @WithAccessId(user = "dummy", groups = "businessadmin")
+  @WithAccessId(user = "businessadmin")
   @Test
   void testQueryAllTransferTargetsForUserAndGroupSortedByNameAscending()
       throws NotAuthorizedException, InvalidArgumentException, SystemException {
@@ -82,14 +82,14 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     List<WorkbasketSummary> results =
         workbasketService
             .createWorkbasketQuery()
-            .accessIdsHavePermission(WorkbasketPermission.APPEND, "user-1-1", "group-1")
+            .accessIdsHavePermission(WorkbasketPermission.APPEND, "user-1-1", GROUP_1_DN)
             .orderByName(asc)
             .list();
     assertThat(results).hasSize(6);
     assertThat(results.get(0).getKey()).isEqualTo("GPK_KSC_1");
   }
 
-  @WithAccessId(user = "dummy", groups = "businessadmin")
+  @WithAccessId(user = "businessadmin")
   @Test
   void testQueryAllTransferTargetsForUserAndGroupSortedByNameDescending()
       throws NotAuthorizedException, InvalidArgumentException, SystemException {
@@ -97,7 +97,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     List<WorkbasketSummary> results =
         workbasketService
             .createWorkbasketQuery()
-            .accessIdsHavePermission(WorkbasketPermission.APPEND, "user-1-1", "group-1")
+            .accessIdsHavePermission(WorkbasketPermission.APPEND, "user-1-1", GROUP_1_DN)
             .orderByName(desc)
             .orderByKey(asc)
             .list();
@@ -105,7 +105,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     assertThat(results.get(0).getKey()).isEqualTo("USER-2-2");
   }
 
-  @WithAccessId(user = "dummy", groups = "businessadmin")
+  @WithAccessId(user = "businessadmin")
   @Test
   void testQueryAllTransferSourcesForUserAndGroup()
       throws NotAuthorizedException, InvalidArgumentException, SystemException {
@@ -113,7 +113,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     List<WorkbasketSummary> results =
         workbasketService
             .createWorkbasketQuery()
-            .accessIdsHavePermission(WorkbasketPermission.DISTRIBUTE, "user-1-1", "group-1")
+            .accessIdsHavePermission(WorkbasketPermission.DISTRIBUTE, "user-1-1", GROUP_1_DN)
             .list();
     assertThat(results).hasSize(2);
     List<String> keys = new ArrayList<>(Arrays.asList("GPK_KSC_1", "USER-1-1"));
@@ -122,7 +122,9 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     }
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(
+      user = "user-1-1",
+      groups = {GROUP_1_DN})
   @Test
   void testQueryAllTransferTargetsForUserAndGroupFromSubject() throws SystemException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -146,7 +148,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     assertThat(results).hasSize(1);
   }
 
-  @WithAccessId(user = "teamlead-1", groups = "businessadmin")
+  @WithAccessId(user = "teamlead-1")
   @Test
   void testConsiderBusinessAdminPermissionsWhileQueryingWorkbaskets() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
