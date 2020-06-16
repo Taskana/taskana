@@ -1,3 +1,16 @@
-﻿pullRequestOpened: |
-  Did you update the [documentation](https://taskana.atlassian.net/wiki/spaces/TAS/overview)?
-  If you updated the documentation please react to this comment with a 👍 and comment which page you updated, if the documentation did not need an update react with a 👎.
+pullRequestOpened: |
+  ### For the submitter:
+  - [ ] In case it's necessary, update the [documentation](https://taskana.atlassian.net/wiki/spaces/TAS/overview)
+  - [ ] Include link of [SonarCloud branch analysis](https://taskana.atlassian.net/wiki/spaces/TAS/pages/1019969636/SonarCloud+Integration)
+  - [ ] Add description of changes in the [current release notes](https://taskana.atlassian.net/wiki/spaces/TAS/pages/1281392672/Current+Release+Notes+Taskana) if necessary
+  - [ ] Put ticket in review
+  - [ ] After integration of the pull request, verify bluemix test environment is not broken
+
+  ### For the reviewer:
+  - [ ] Check commit message format → TSK-XXX: Your commit message.
+  - [ ] Check the submitter's answer to the updated documentation
+  - [ ] Check the SonarCloud analysis link for new issues
+  - [ ] Check the update of the [current release notes](https://taskana.atlassian.net/wiki/spaces/TAS/pages/1281392672/Current+Release+Notes+Taskana)
+  - [ ] Check that the PR fulfills the ticket
+  - [ ] Check for edge cases and unwanted side effects
+  - [ ] Check for readability
