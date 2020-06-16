@@ -34,9 +34,7 @@ class CreateClassificationAccTest extends AbstractAccTest {
     classificationService = taskanaEngine.getClassificationService();
   }
 
-  @WithAccessId(
-      user = "teamlead_1",
-      groups = {"group-1", "businessadmin"})
+  @WithAccessId(user = "businessadmin")
   @Test
   void testCreateMasterClassification()
       throws ClassificationAlreadyExistException, ClassificationNotFoundException,
@@ -60,9 +58,7 @@ class CreateClassificationAccTest extends AbstractAccTest {
     assertThat(classification.getId()).startsWith(ID_PREFIX_CLASSIFICATION);
   }
 
-  @WithAccessId(
-      user = "teamlead_1",
-      groups = {"group-1", "businessadmin"})
+  @WithAccessId(user = "businessadmin")
   @Test
   void testCreateClassificationWithMasterCopy()
       throws ClassificationAlreadyExistException, ClassificationNotFoundException,
@@ -109,9 +105,7 @@ class CreateClassificationAccTest extends AbstractAccTest {
     assertThat(classification.getId()).startsWith(ID_PREFIX_CLASSIFICATION);
   }
 
-  @WithAccessId(
-      user = "teamlead_1",
-      groups = {"group-1", "businessadmin"})
+  @WithAccessId(user = "businessadmin")
   @Test
   void testCreateClassificationWithExistingMaster()
       throws DomainNotFoundException, ClassificationAlreadyExistException, NotAuthorizedException,
@@ -132,9 +126,7 @@ class CreateClassificationAccTest extends AbstractAccTest {
     assertThat(actual.getIsValidInDomain()).isTrue();
   }
 
-  @WithAccessId(
-      user = "teamlead_1",
-      groups = {"group-1", "businessadmin"})
+  @WithAccessId(user = "businessadmin")
   @Test
   void testCreateChildInDomainAndCopyInMaster() throws TaskanaException {
     Classification parent = classificationService.newClassification("Key0816", "DOMAIN_A", "TASK");
@@ -152,9 +144,7 @@ class CreateClassificationAccTest extends AbstractAccTest {
     assertThat(actualChild).isNotNull();
   }
 
-  @WithAccessId(
-      user = "teamlead_1",
-      groups = {"group-1", "businessadmin"})
+  @WithAccessId(user = "businessadmin")
   @Test
   void testCreateClassificationWithInvalidValues() {
     classificationService.createClassificationQuery().count();
@@ -174,9 +164,7 @@ class CreateClassificationAccTest extends AbstractAccTest {
         .isInstanceOf(InvalidArgumentException.class);
   }
 
-  @WithAccessId(
-      user = "teamlead_1",
-      groups = {"group-1", "businessadmin"})
+  @WithAccessId(user = "businessadmin")
   @Test
   void testCreateClassificationAlreadyExisting() throws TaskanaException {
     Classification classification = classificationService.newClassification("Key3", "", "TASK");
@@ -186,9 +174,7 @@ class CreateClassificationAccTest extends AbstractAccTest {
         .isInstanceOf(ClassificationAlreadyExistException.class);
   }
 
-  @WithAccessId(
-      user = "teamlead_1",
-      groups = {"group-1", "businessadmin"})
+  @WithAccessId(user = "businessadmin")
   @Test
   void testCreateClassificationInUnknownDomain() {
     Classification classification =
@@ -197,9 +183,7 @@ class CreateClassificationAccTest extends AbstractAccTest {
         .isInstanceOf(DomainNotFoundException.class);
   }
 
-  @WithAccessId(
-      user = "teamlead_1",
-      groups = {"group-1", "businessadmin"})
+  @WithAccessId(user = "businessadmin")
   @Test
   void testCreateClassificationOfUnknownType() {
     Classification classification =
@@ -208,9 +192,7 @@ class CreateClassificationAccTest extends AbstractAccTest {
         .isInstanceOf(InvalidArgumentException.class);
   }
 
-  @WithAccessId(
-      user = "teamlead_1",
-      groups = {"group-1", "businessadmin"})
+  @WithAccessId(user = "businessadmin")
   @Test
   void testCreateClassificationOfUnknownCategory() {
     Classification classification =
@@ -220,9 +202,7 @@ class CreateClassificationAccTest extends AbstractAccTest {
         .isInstanceOf(InvalidArgumentException.class);
   }
 
-  @WithAccessId(
-      user = "teamlead_1",
-      groups = {"group-1", "businessadmin"})
+  @WithAccessId(user = "businessadmin")
   @Test
   void testCreateClassificationWithInvalidParentId() {
     Classification classification = classificationService.newClassification("Key5", "", "TASK");
@@ -231,9 +211,7 @@ class CreateClassificationAccTest extends AbstractAccTest {
         .isInstanceOf(InvalidArgumentException.class);
   }
 
-  @WithAccessId(
-      user = "teamlead_1",
-      groups = {"group-1", "businessadmin"})
+  @WithAccessId(user = "businessadmin")
   @Test
   void testCreateClassificationWithInvalidParentKey() {
     Classification classification = classificationService.newClassification("Key5", "", "TASK");
@@ -242,9 +220,7 @@ class CreateClassificationAccTest extends AbstractAccTest {
         .isInstanceOf(InvalidArgumentException.class);
   }
 
-  @WithAccessId(
-      user = "teamlead_1",
-      groups = {"group-1", "businessadmin"})
+  @WithAccessId(user = "businessadmin")
   @Test
   void testCreateClassificationWithExplicitId() {
     ClassificationImpl classification =
@@ -254,9 +230,7 @@ class CreateClassificationAccTest extends AbstractAccTest {
         .isInstanceOf(InvalidArgumentException.class);
   }
 
-  @WithAccessId(
-      user = "teamlead_1",
-      groups = {"group-1", "businessadmin"})
+  @WithAccessId(user = "businessadmin")
   @Test
   void should_beAbleToCreateNewClassification_When_ClassificationCopy() throws Exception {
     ClassificationImpl oldClassification =

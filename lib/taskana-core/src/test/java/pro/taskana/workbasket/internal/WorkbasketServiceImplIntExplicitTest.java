@@ -74,7 +74,7 @@ class WorkbasketServiceImplIntExplicitTest {
     sampleDataGenerator.clearDb();
   }
 
-  @WithAccessId(user = "Elena", groups = "businessadmin")
+  @WithAccessId(user = "user-1-1", groups = "businessadmin")
   @Test
   void testUpdateWorkbasket() throws Exception {
     try (Connection connection = dataSource.getConnection()) {
@@ -84,19 +84,19 @@ class WorkbasketServiceImplIntExplicitTest {
       Workbasket workbasket0 =
           createTestWorkbasket(id0, "key0", "DOMAIN_A", "Superbasket", WorkbasketType.GROUP);
       workbasket0 = workBasketService.createWorkbasket(workbasket0);
-      createWorkbasketWithSecurity(workbasket0, "Elena", true, true, false, false);
+      createWorkbasketWithSecurity(workbasket0, "user-1-1", true, true, false, false);
 
       String id1 = IdGenerator.generateWithPrefix("TWB");
       Workbasket workbasket1 =
           createTestWorkbasket(id1, "key1", "DOMAIN_A", "Megabasket", WorkbasketType.GROUP);
       workbasket1 = workBasketService.createWorkbasket(workbasket1);
-      createWorkbasketWithSecurity(workbasket1, "Elena", true, true, false, false);
+      createWorkbasketWithSecurity(workbasket1, "user-1-1", true, true, false, false);
 
       String id2 = IdGenerator.generateWithPrefix("TWB");
       Workbasket workbasket2 =
           createTestWorkbasket(id2, "key2", "DOMAIN_A", "Hyperbasket", WorkbasketType.GROUP);
       workbasket2 = workBasketService.createWorkbasket(workbasket2);
-      createWorkbasketWithSecurity(workbasket2, "Elena", true, true, false, false);
+      createWorkbasketWithSecurity(workbasket2, "user-1-1", true, true, false, false);
 
       List<String> distTargets =
           new ArrayList<>(Arrays.asList(workbasket0.getId(), workbasket1.getId()));
@@ -108,7 +108,7 @@ class WorkbasketServiceImplIntExplicitTest {
           createTestWorkbasket(
               id3, "key3", "DOMAIN_A", "hm ... irgend ein basket", WorkbasketType.GROUP);
       workbasket3 = workBasketService.createWorkbasket(workbasket3);
-      createWorkbasketWithSecurity(workbasket3, "Elena", true, true, false, false);
+      createWorkbasketWithSecurity(workbasket3, "user-1-1", true, true, false, false);
 
       List<String> newDistTargets = new ArrayList<>(Arrays.asList(workbasket3.getId()));
       Thread.sleep(SLEEP_TIME);
@@ -130,7 +130,7 @@ class WorkbasketServiceImplIntExplicitTest {
     }
   }
 
-  @WithAccessId(user = "Elena", groups = "businessadmin")
+  @WithAccessId(user = "user-1-1", groups = "businessadmin")
   @Test
   void testInsertWorkbasketAccessUser()
       throws NotAuthorizedException, SQLException, InvalidArgumentException,
@@ -153,7 +153,7 @@ class WorkbasketServiceImplIntExplicitTest {
     }
   }
 
-  @WithAccessId(user = "Elena", groups = "businessadmin")
+  @WithAccessId(user = "user-1-1", groups = "businessadmin")
   @Test
   void testUpdateWorkbasketAccessUser()
       throws NotAuthorizedException, SQLException, InvalidArgumentException,

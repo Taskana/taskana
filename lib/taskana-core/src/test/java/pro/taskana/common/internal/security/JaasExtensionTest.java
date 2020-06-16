@@ -140,11 +140,11 @@ class JaasExtensionTest {
 
   @WithAccessId(
       user = "user",
-      groups = {"hans", "peter"})
+      groups = {"group1", "group2"})
   @Test
   void should_SetJaasSubjectWithGroups_When_AnnotationExistsWithGroups_On_Test() {
     assertThat(CurrentUserContext.getUserid()).isEqualTo("user");
-    assertThat(CurrentUserContext.getGroupIds()).containsOnly("hans", "peter");
+    assertThat(CurrentUserContext.getGroupIds()).containsOnly("group1", "group2");
   }
 
   @WithAccessId(user = "user")

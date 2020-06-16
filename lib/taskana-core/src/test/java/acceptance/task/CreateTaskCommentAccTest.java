@@ -23,7 +23,7 @@ public class CreateTaskCommentAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(user = "user-1-2")
   @Test
   void should_CreateTaskComment_For_TaskComment()
       throws TaskNotFoundException, NotAuthorizedException, InvalidArgumentException {
@@ -31,22 +31,22 @@ public class CreateTaskCommentAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
 
     List<TaskComment> taskComments =
-        taskService.getTaskComments("TKI:000000000000000000000000000000000026");
+        taskService.getTaskComments("TKI:000000000000000000000000000000000027");
     assertThat(taskComments).hasSize(2);
 
     TaskComment taskCommentToCreate =
-        taskService.newTaskComment("TKI:000000000000000000000000000000000026");
+        taskService.newTaskComment("TKI:000000000000000000000000000000000027");
     taskCommentToCreate.setTextField("a newly created taskComment");
 
     taskService.createTaskComment(taskCommentToCreate);
 
     // make sure that the new task comment was added
     List<TaskComment> taskCommentsAfterInsert =
-        taskService.getTaskComments("TKI:000000000000000000000000000000000026");
+        taskService.getTaskComments("TKI:000000000000000000000000000000000027");
     assertThat(taskCommentsAfterInsert).hasSize(3);
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(user = "user-1-2")
   @Test
   void should_FailToCreateTaskComment_When_TaskIdIsNullOrNonExisting() {
 

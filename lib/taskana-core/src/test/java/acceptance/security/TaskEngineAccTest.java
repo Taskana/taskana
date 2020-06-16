@@ -30,7 +30,7 @@ class TaskEngineAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(user = "user-1-1", groups = "businessadmin")
+  @WithAccessId(user = "businessadmin")
   @Test
   void should_RunAsAdminOnlyTemorarily_When_RunAsAdminMethodIsCalled()
       throws NoSuchFieldException, IllegalAccessException {
@@ -44,7 +44,7 @@ class TaskEngineAccTest extends AbstractAccTest {
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isFalse();
   }
 
-  @WithAccessId(user = "user-1-1") // , groupNames = {"businessadmin"})
+  @WithAccessId(user = "user-1-1")
   @Test
   void should_ThrowException_When_CheckingNormalUserForAdminRoles() {
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN)).isFalse();

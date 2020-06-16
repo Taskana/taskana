@@ -33,6 +33,13 @@ public abstract class AbstractAccTest {
   protected static TaskanaEngine taskanaEngine;
   protected static WorkingDaysToDaysConverter converter;
 
+  public static final String GROUP_1_DN =
+      "cn=Organisationseinheit KSC 1,cn=Organisationseinheit KSC,"
+          + "cn=organisation,OU=Test,O=TASKANA";
+  public static final String GROUP_2_DN =
+      "cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,"
+          + "cn=organisation,OU=Test,O=TASKANA";
+
   @BeforeAll
   public static void setupTest() throws Exception {
     resetDb(false);

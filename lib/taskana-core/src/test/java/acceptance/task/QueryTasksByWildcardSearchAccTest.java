@@ -19,9 +19,7 @@ import pro.taskana.task.api.models.TaskSummary;
 @ExtendWith(JaasExtension.class)
 public class QueryTasksByWildcardSearchAccTest extends AbstractAccTest {
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {"group-1", "group-2"})
+  @WithAccessId(user = "admin")
   @Test
   void should_ReturnAllTasksByWildcardSearch_For_ProvidedSearchValue() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -41,9 +39,7 @@ public class QueryTasksByWildcardSearchAccTest extends AbstractAccTest {
     assertThat(foundTasks).hasSize(4);
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {"group-1", "group-2"})
+  @WithAccessId(user = "admin")
   @Test
   void should_ReturnAllTasks_For_ProvidedSearchValueAndAdditionalParameters() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -65,9 +61,7 @@ public class QueryTasksByWildcardSearchAccTest extends AbstractAccTest {
     assertThat(foundTasks).hasSize(1);
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {"group-1", "group-2"})
+  @WithAccessId(user = "admin")
   @Test
   void should_ThrowException_When_NotUsingSearchFieldsAndValueParamsTogether() {
 

@@ -38,7 +38,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
 
   private static final TaskService TASK_SERVICE = taskanaEngine.getTaskService();
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(user = "user-1-1")
   @Test
   void testCompleteTask()
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
@@ -69,7 +69,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(completedTask.getModified()).isNotEqualTo(completedTask.getCreated());
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(user = "user-1-1")
   @Test
   void testCompleteTaskTwice()
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
@@ -79,7 +79,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(completedTask2).isEqualTo(completedTask);
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(user = "user-1-1")
   @Test
   void testForceCompleteAlreadyClaimed()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -103,7 +103,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(completedTask.getCompleted()).isEqualTo(completedTask.getModified());
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(user = "user-1-1")
   @Test
   void testForceCompleteNotClaimed()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -126,35 +126,50 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(completedTask.getCompleted()).isEqualTo(completedTask.getModified());
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(user = "user-1-1")
   @Test
-  void testCompleteTaskThrowsErrors() {
+  void should_ThrowException_When_TaskIsNotFound() {
     ThrowingCallable call =
         () -> {
           TASK_SERVICE.completeTask("TKI:0000000000000000000000000000000000xx");
         };
     assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
+  }
 
-    call =
-        () -> {
-          TASK_SERVICE.completeTask("TKI:000000000000000000000000000000000004");
-        };
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_ThrowException_When_UserIsNotAuthorizedOnTask() {
+    ThrowingCallable call =
+        call =
+            () -> {
+              TASK_SERVICE.completeTask("TKI:000000000000000000000000000000000004");
+            };
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
+  }
 
-    call =
-        () -> {
-          TASK_SERVICE.completeTask("TKI:000000000000000000000000000000000025");
-        };
+  @WithAccessId(user = "user-1-2")
+  @Test
+  void should_ThrowException_When_TaskIsInStateReady() {
+    ThrowingCallable call =
+        call =
+            () -> {
+              TASK_SERVICE.completeTask("TKI:000000000000000000000000000000000025");
+            };
     assertThatThrownBy(call).isInstanceOf(InvalidStateException.class);
+  }
 
-    call =
-        () -> {
-          TASK_SERVICE.completeTask("TKI:000000000000000000000000000000000027");
-        };
+  @WithAccessId(user = "user-1-2")
+  @Test
+  void should_ThrowException_When_TaskCallerIsNotTheOwner() {
+    ThrowingCallable call =
+        call =
+            () -> {
+              TASK_SERVICE.completeTask("TKI:000000000000000000000000000000000026");
+            };
     assertThatThrownBy(call).isInstanceOf(InvalidOwnerException.class);
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(user = "user-1-1")
   @Test
   void testClaimTaskWithDefaultFlag()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -182,7 +197,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(claimedTask.getModified()).isEqualTo(claimedTask.getClaimed());
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(user = "user-1-1")
   @Test
   void testForceClaimTaskFromOtherUser()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -210,7 +225,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(taskAfterClaim.isRead()).isTrue();
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(user = "user-1-1")
   @Test
   void testClaimTaskNotExisting() {
     ThrowingCallable call =
@@ -220,7 +235,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(user = "user-1-2")
   @Test
   void testClaimTaskWithInvalidState() {
     ThrowingCallable call =
@@ -230,17 +245,17 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(InvalidStateException.class);
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(user = "user-1-2")
   @Test
   void testClaimTaskWithInvalidOwner() {
     ThrowingCallable call =
         () -> {
-          TASK_SERVICE.claim("TKI:000000000000000000000000000000000100");
+          TASK_SERVICE.claim("TKI:000000000000000000000000000000000035");
         };
     assertThatThrownBy(call).isInstanceOf(InvalidOwnerException.class);
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(user = "user-1-2")
   @Test
   void testCancelClaimForcedWithInvalidState() {
     ThrowingCallable call =
@@ -250,7 +265,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(InvalidStateException.class);
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(user = "user-1-1")
   @Test
   void testCancelClaimDefaultFlag()
       throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
@@ -293,12 +308,12 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(taskAfter.isRead()).isTrue();
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(user = "user-1-2")
   @Test
   void testCancelClaimWithInvalidOwner() {
     ThrowingCallable call =
         () -> {
-          TASK_SERVICE.cancelClaim("TKI:000000000000000000000000000000000100");
+          TASK_SERVICE.cancelClaim("TKI:000000000000000000000000000000000035");
         };
     assertThatThrownBy(call).isInstanceOf(InvalidOwnerException.class);
   }
@@ -419,10 +434,10 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(before).isEqualTo(after);
   }
 
-  @WithAccessId(user = "user-1-2", groups = "group-1")
+  @WithAccessId(user = "user-1-2")
   @Test
   void should_AddErrorForTaskIfOwnerDoesNotMach_When_BulkCompletingTasks() throws Exception {
-    String id1 = "TKI:000000000000000000000000000000000066";
+    String id1 = "TKI:000000000000000000000000000000000035";
     List<String> taskIdList = Collections.singletonList(id1);
 
     BulkOperationResults<String, TaskanaException> results = TASK_SERVICE.completeTasks(taskIdList);
@@ -532,7 +547,9 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(before).isEqualTo(after);
   }
 
-  @WithAccessId(user = "user-1-2", groups = "group-1")
+  @WithAccessId(
+      user = "user-1-2",
+      groups = {"user-1-1"}) // to read task
   @Test
   void should_CompleteTaskWhenAlreadyClaimedByDifferentUser_When_BulkForceCompletingTasks()
       throws Exception {
@@ -555,7 +572,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(afterClaim.getOwner()).isEqualTo("user-1-2");
   }
 
-  @WithAccessId(user = "user-1-2", groups = "group-1")
+  @WithAccessId(user = "user-1-2")
   @Test
   void should_ClaimTaskWhenNotClaimed_When_BulkForceCompletingTasks() throws Exception {
     String id = "TKI:000000000000000000000000000000000033";
@@ -580,7 +597,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(task.getOwner()).isEqualTo("user-1-2");
   }
 
-  @WithAccessId(user = "user-3-2", groups = "group-2")
+  @WithAccessId(user = "user-b-2")
   @Test
   void should_OnlyClaimTasksWhichAreNotClaimed_When_BulkForceCompletingTasks() throws Exception {
     String id1 = "TKI:000000000000000000000000000000000043"; // task is already claimed
@@ -605,7 +622,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(task.getCompleted())
         .isEqualTo(task.getModified())
         .isAfterOrEqualTo(beforeBulkComplete);
-    assertThat(task.getOwner()).isEqualTo("user-3-2");
+    assertThat(task.getOwner()).isEqualTo("user-b-2");
 
     task = TASK_SERVICE.getTask(id2);
     assertThat(task.getState()).isEqualTo(TaskState.COMPLETED);
@@ -613,6 +630,6 @@ class CompleteTaskAccTest extends AbstractAccTest {
         .isEqualTo(task.getClaimed())
         .isEqualTo(task.getModified())
         .isAfterOrEqualTo(beforeBulkComplete);
-    assertThat(task.getOwner()).isEqualTo("user-3-2");
+    assertThat(task.getOwner()).isEqualTo("user-b-2");
   }
 }

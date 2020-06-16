@@ -44,16 +44,16 @@ class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
     assertThat(users).contains("user-1-1", "user-1-2");
 
     Set<String> admins = getConfiguration().getRoleMap().get(TaskanaRole.ADMIN);
-    assertThat(admins).contains("name=konrad,organisation=novatec", "admin");
+    assertThat(admins).contains("uid=admin,cn=users,ou=test,o=taskana", "admin");
 
     Set<String> taskAdmins = getConfiguration().getRoleMap().get(TaskanaRole.TASK_ADMIN);
-    assertThat(taskAdmins).contains("taskadmin", "peter");
+    assertThat(taskAdmins).contains("taskadmin");
 
     Set<String> businessAdmins = getConfiguration().getRoleMap().get(TaskanaRole.BUSINESS_ADMIN);
-    assertThat(businessAdmins).contains("max", "moritz");
+    assertThat(businessAdmins).contains("businessadmin", "teamlead-2");
 
     Set<String> monitorAccessIds = getConfiguration().getRoleMap().get(TaskanaRole.MONITOR);
-    assertThat(monitorAccessIds).contains("teamlead-2", "monitor");
+    assertThat(monitorAccessIds).contains("monitor");
   }
 
   @Test
@@ -69,13 +69,13 @@ class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
       assertThat(users).containsOnly("nobody");
 
       Set<String> admins = getConfiguration().getRoleMap().get(TaskanaRole.ADMIN);
-      assertThat(admins).containsOnly("holger", "stefan");
+      assertThat(admins).containsOnly("user", "username");
 
       Set<String> businessAdmins = getConfiguration().getRoleMap().get(TaskanaRole.BUSINESS_ADMIN);
-      assertThat(businessAdmins).containsOnly("ebe", "konstantin");
+      assertThat(businessAdmins).containsOnly("user2", "user3");
 
       Set<String> taskAdmins = getConfiguration().getRoleMap().get(TaskanaRole.TASK_ADMIN);
-      assertThat(taskAdmins).contains("taskadmin", "peter");
+      assertThat(taskAdmins).contains("taskadmin");
 
     } finally {
       deleteFile(propertiesFileName);
@@ -97,13 +97,13 @@ class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
       assertThat(users).isEmpty();
 
       Set<String> admins = getConfiguration().getRoleMap().get(TaskanaRole.ADMIN);
-      assertThat(admins).containsOnly("holger", "name=stefan,organisation=novatec");
+      assertThat(admins).containsOnly("user", "name=username,organisation=novatec");
 
       Set<String> businessAdmins = getConfiguration().getRoleMap().get(TaskanaRole.BUSINESS_ADMIN);
-      assertThat(businessAdmins).containsOnly("name=ebe, ou = bpm", "konstantin");
+      assertThat(businessAdmins).containsOnly("name=user2, ou = bpm", "user3");
 
       Set<String> taskAdmins = getConfiguration().getRoleMap().get(TaskanaRole.TASK_ADMIN);
-      assertThat(taskAdmins).contains("taskadmin", "peter");
+      assertThat(taskAdmins).contains("taskadmin");
 
     } finally {
       deleteFile(propertiesFileName);
@@ -115,8 +115,8 @@ class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
     Path file = Files.createFile(Paths.get(System.getProperty("user.home") + filename));
     List<String> lines =
         Arrays.asList(
-            "taskana.roles.Admin =hOlGeR " + delimiter + "name=Stefan,Organisation=novatec",
-            "  taskana.roles.businessadmin  = name=ebe, ou = bpm " + delimiter + " konstantin ",
+            "taskana.roles.Admin =uSeR " + delimiter + "name=Username,Organisation=novatec",
+            "  taskana.roles.businessadmin  = name=user2, ou = bpm " + delimiter + " user3 ",
             " taskana.roles.user = ");
     Files.write(file, lines, StandardCharsets.UTF_8);
     return file.toString();
@@ -133,8 +133,8 @@ class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
     Path file = Files.createFile(Paths.get(System.getProperty("user.home") + filename));
     List<String> lines =
         Arrays.asList(
-            "taskana.roles.Admin =hOlGeR|Stefan",
-            "  taskana.roles.businessadmin  = ebe  | konstantin ",
+            "taskana.roles.Admin =uSeR|Username",
+            "  taskana.roles.businessadmin  = user2  | user3 ",
             " taskana.roles.user = nobody");
 
     Files.write(file, lines, StandardCharsets.UTF_8);

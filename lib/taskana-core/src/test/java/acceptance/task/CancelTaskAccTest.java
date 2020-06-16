@@ -38,7 +38,7 @@ class CancelTaskAccTest extends AbstractAccTest {
     resetDb(false);
   }
 
-  @WithAccessId(user = "user-1-1", groups = "group-1")
+  @WithAccessId(user = "user-1-2")
   @Test
   void testQeryCancelledTasks() {
     List<TaskSummary> taskSummaries =
@@ -46,7 +46,7 @@ class CancelTaskAccTest extends AbstractAccTest {
     assertThat(taskSummaries).hasSize(5);
   }
 
-  @WithAccessId(user = "admin", groups = "group-1")
+  @WithAccessId(user = "admin")
   @Test
   void testCancelReadyTask()
       throws NotAuthorizedException, TaskNotFoundException, InvalidStateException {
@@ -73,25 +73,23 @@ class CancelTaskAccTest extends AbstractAccTest {
     assertThat(cancelledTask.getState()).isEqualTo(TaskState.CANCELLED);
   }
 
-  @WithAccessId(user = "user-1-2", groups = "group-1")
+  @WithAccessId(user = "user-1-2")
   @Test
   void testCancelClaimedTask()
       throws NotAuthorizedException, TaskNotFoundException, InvalidStateException {
     List<TaskSummary> taskSummaries =
         taskService.createTaskQuery().stateIn(TaskState.CLAIMED).list();
-    assertThat(taskSummaries).hasSize(17);
 
     long numTasksCancelled = taskService.createTaskQuery().stateIn(TaskState.CANCELLED).count();
-    assertThat(numTasksCancelled).isEqualTo(5);
 
     taskService.cancelTask(taskSummaries.get(0).getId());
     long numTasksClaimed = taskService.createTaskQuery().stateIn(TaskState.CLAIMED).count();
-    assertThat(numTasksClaimed).isEqualTo(16);
-    numTasksCancelled = taskService.createTaskQuery().stateIn(TaskState.CANCELLED).count();
-    assertThat(numTasksCancelled).isEqualTo(6);
+    assertThat(numTasksClaimed).isEqualTo(taskSummaries.size() - 1);
+    long newNumTasksCancelled = taskService.createTaskQuery().stateIn(TaskState.CANCELLED).count();
+    assertThat(newNumTasksCancelled).isEqualTo(numTasksCancelled + 1);
   }
 
-  @WithAccessId(user = "admin", groups = "group-1")
+  @WithAccessId(user = "admin")
   @Test
   void testCancelCompletedTask() {
     List<TaskSummary> taskSummaries =
@@ -103,7 +101,7 @@ class CancelTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(taskanaCall).isInstanceOf(InvalidStateException.class);
   }
 
-  @WithAccessId(user = "user-1-2", groups = "group-1")
+  @WithAccessId(user = "user-1-2")
   @Test
   void testCancelTerminatedTask() {
     List<TaskSummary> taskSummaries =
@@ -114,7 +112,7 @@ class CancelTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(taskanaCall).isInstanceOf(InvalidStateException.class);
   }
 
-  @WithAccessId(user = "user-1-2", groups = "group-1")
+  @WithAccessId(user = "user-1-2")
   @Test
   void testCancelCancelledTask() {
     List<TaskSummary> taskSummaries =

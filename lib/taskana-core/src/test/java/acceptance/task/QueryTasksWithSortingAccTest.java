@@ -29,16 +29,14 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {"group-1", "group-2"})
+  @WithAccessId(user = "admin")
   @Test
   void testSortByModifiedAndDomain() {
     TaskService taskService = taskanaEngine.getTaskService();
     List<TaskSummary> results =
         taskService
             .createTaskQuery()
-            .workbasketKeyDomainIn(new KeyDomain("USER-3-2", "DOMAIN_B"))
+            .workbasketKeyDomainIn(new KeyDomain("USER-B-2", "DOMAIN_B"))
             .orderByModified(desc)
             .orderByDomain(null)
             .list();
@@ -53,16 +51,14 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
     }
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {"group-1", "group-2"})
+  @WithAccessId(user = "admin")
   @Test
   void testSortByTaskIdDesc() {
     TaskService taskService = taskanaEngine.getTaskService();
     List<TaskSummary> results =
         taskService
             .createTaskQuery()
-            .workbasketKeyDomainIn(new KeyDomain("USER-3-2", "DOMAIN_B"))
+            .workbasketKeyDomainIn(new KeyDomain("USER-B-2", "DOMAIN_B"))
             .orderByTaskId(desc)
             .list();
 
@@ -80,16 +76,14 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
     }
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {"group-1", "group-2"})
+  @WithAccessId(user = "admin")
   @Test
   void testSortByTaskIdAsc() {
     TaskService taskService = taskanaEngine.getTaskService();
     List<TaskSummary> results =
         taskService
             .createTaskQuery()
-            .workbasketKeyDomainIn(new KeyDomain("USER-3-2", "DOMAIN_B"))
+            .workbasketKeyDomainIn(new KeyDomain("USER-B-2", "DOMAIN_B"))
             .orderByTaskId(null)
             .list();
 
@@ -104,9 +98,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
     }
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {"group-1", "group-2"})
+  @WithAccessId(user = "admin")
   @Test
   void testSortByDomainNameAndCreated() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -126,16 +118,14 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
                 .thenComparing(TaskSummary::getCreated));
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {"group-1", "group-2"})
+  @WithAccessId(user = "admin")
   @Test
   void testSortByPorSystemNoteDueAndOwner() {
     TaskService taskService = taskanaEngine.getTaskService();
     List<TaskSummary> results =
         taskService
             .createTaskQuery()
-            .workbasketKeyDomainIn(new KeyDomain("USER-3-2", "DOMAIN_B"))
+            .workbasketKeyDomainIn(new KeyDomain("USER-B-2", "DOMAIN_B"))
             .orderByPrimaryObjectReferenceSystem(SortDirection.DESCENDING)
             .orderByNote(null)
             .orderByDue(null)
@@ -158,16 +148,14 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
     }
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {"group-1", "group-2"})
+  @WithAccessId(user = "admin")
   @Test
   void testSortByPorSystemInstanceParentProcPlannedAndState() {
     TaskService taskService = taskanaEngine.getTaskService();
     List<TaskSummary> results =
         taskService
             .createTaskQuery()
-            .workbasketKeyDomainIn(new KeyDomain("USER-3-2", "DOMAIN_B"))
+            .workbasketKeyDomainIn(new KeyDomain("USER-B-2", "DOMAIN_B"))
             .orderByPrimaryObjectReferenceSystemInstance(desc)
             .orderByParentBusinessProcessId(asc)
             .orderByPlanned(asc)
@@ -190,16 +178,14 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
     }
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {"group-1", "group-2"})
+  @WithAccessId(user = "admin")
   @Test
   void testSortByPorCompanyAndClaimed() {
     TaskService taskService = taskanaEngine.getTaskService();
     List<TaskSummary> results =
         taskService
             .createTaskQuery()
-            .workbasketKeyDomainIn(new KeyDomain("USER-3-2", "DOMAIN_B"))
+            .workbasketKeyDomainIn(new KeyDomain("USER-B-2", "DOMAIN_B"))
             .orderByPrimaryObjectReferenceCompany(desc)
             .orderByClaimed(asc)
             .list();
@@ -223,9 +209,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
     }
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {"group-1", "group-2"})
+  @WithAccessId(user = "admin")
   @Test
   void testSortByWbKeyPrioPorValueAndCompleted() {
     TaskService taskService = taskanaEngine.getTaskService();
@@ -256,9 +240,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
     }
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {"group-1", "group-2"})
+  @WithAccessId(user = "admin")
   @Test
   void testSortBpIdClassificationIdDescriptionAndPorType() {
     TaskService taskService = taskanaEngine.getTaskService();

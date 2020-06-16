@@ -20,10 +20,10 @@ class WorkbasketQueryWithOrderedPaginationAccTest extends AbstractAccTest {
   private static SortDirection asc = SortDirection.ASCENDING;
   private static SortDirection desc = SortDirection.DESCENDING;
 
-  @Test
   @WithAccessId(
       user = "teamlead-1",
-      groups = {"group-1", "group-2"})
+      groups = {GROUP_1_DN, GROUP_2_DN})
+  @Test
   void testGetFirstPageOfTaskQueryWithOffset() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     List<WorkbasketSummary> results =
@@ -39,10 +39,10 @@ class WorkbasketQueryWithOrderedPaginationAccTest extends AbstractAccTest {
     assertThat(results.get(4).getKey()).isEqualTo("TPK_VIP");
   }
 
-  @Test
   @WithAccessId(
       user = "teamlead-1",
-      groups = {"group-1", "group-2"})
+      groups = {GROUP_1_DN, GROUP_2_DN})
+  @Test
   void testGetSecondPageOfTaskQueryWithOffset() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     List<WorkbasketSummary> results =

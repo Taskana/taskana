@@ -58,9 +58,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     assertThatThrownBy(updateWorkbasketAccessItemCall).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(
-      user = "teamlead_1",
-      groups = {"group-1", "businessadmin"})
+  @WithAccessId(user = "businessadmin")
   @Test
   void testUpdateWorkbasketAccessItemSucceeds()
       throws InvalidArgumentException, NotAuthorizedException, WorkbasketNotFoundException,
@@ -94,9 +92,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     assertThat(updatedItem.isPermCustom2()).isFalse();
   }
 
-  @WithAccessId(
-      user = "teamlead_1",
-      groups = {"group-1", "businessadmin"})
+  @WithAccessId(user = "businessadmin")
   @Test
   void testUpdateWorkbasketAccessItemRejected()
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
@@ -144,8 +140,8 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(
-      user = "user-1-1",
-      groups = {"group-2", "businessadmin"})
+      user = "businessadmin",
+      groups = {GROUP_2_DN})
   @Test
   void testUpdatedAccessItemLeadsToNotAuthorizedException()
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
@@ -155,7 +151,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
     String wbKey = "USER-2-1";
     String wbDomain = "DOMAIN_A";
-    final String groupName = "group-2";
+    final String groupName = GROUP_2_DN;
 
     Task newTask = taskService.newTask(wbKey, wbDomain);
     newTask.setClassificationKey("T2100");
@@ -189,9 +185,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedToQueryWorkbasketException.class);
   }
 
-  @WithAccessId(
-      user = "teamlead_1",
-      groups = {"group-1", "businessadmin"})
+  @WithAccessId(user = "businessadmin")
   @Test
   void testUpdatedAccessItemList() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -229,9 +223,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     assertThat(item1.isPermTransfer()).isFalse();
   }
 
-  @WithAccessId(
-      user = "teamlead_1",
-      groups = {"group-1", "businessadmin"})
+  @WithAccessId(user = "businessadmin")
   @Test
   void testInsertAccessItemList() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -267,9 +259,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     assertThat(item0.isPermTransfer()).isFalse();
   }
 
-  @WithAccessId(
-      user = "teamlead_1",
-      groups = {"group-1", "businessadmin"})
+  @WithAccessId(user = "businessadmin")
   @Test
   void testDeleteAccessItemForAccessItemId() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -282,7 +272,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     }
 
     List<WorkbasketAccessItem> accessList = new ArrayList<>(originalList);
-    WorkbasketAccessItem newItem = workbasketService.newWorkbasketAccessItem(wbId, "group-1");
+    WorkbasketAccessItem newItem = workbasketService.newWorkbasketAccessItem(wbId, GROUP_1_DN);
     accessList.add(newItem);
     assertThat(accessList).isNotEqualTo(originalList);
     workbasketService.setWorkbasketAccessItems(wbId, accessList);
@@ -301,11 +291,11 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     assertThat(new HashSet<>(listEqualToOriginal)).isEqualTo(new HashSet<>(originalList));
   }
 
-  @WithAccessId(user = "teamlead_1", groups = "businessadmin")
+  @WithAccessId(user = "businessadmin")
   @Test
   void testDeleteAccessItemsForAccessId() throws NotAuthorizedException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-    final String accessId = "group-1";
+    final String accessId = GROUP_1_DN;
     final long accessIdCountBefore =
         workbasketService.createWorkbasketAccessItemQuery().accessIdIn(accessId).count();
 
@@ -316,7 +306,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     assertThat(accessIdCountBefore > accessIdCountAfter).isTrue();
   }
 
-  @WithAccessId(user = "teamlead_1", groups = "businessadmin")
+  @WithAccessId(user = "businessadmin")
   @Test
   void testDeleteAccessItemsForAccessIdWithUnusedValuesThrowingNoException()
       throws NotAuthorizedException {

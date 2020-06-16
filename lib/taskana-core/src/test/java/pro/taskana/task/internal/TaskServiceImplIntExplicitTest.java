@@ -108,7 +108,7 @@ class TaskServiceImplIntExplicitTest {
     sampleDataGenerator.clearDb();
   }
 
-  @WithAccessId(user = "Elena", groups = "businessadmin")
+  @WithAccessId(user = "user-1-1", groups = "businessadmin")
   @Test
   void testStartTransactionFail()
       throws SQLException, TaskNotFoundException, NotAuthorizedException,
@@ -129,7 +129,7 @@ class TaskServiceImplIntExplicitTest {
           classificationService.newClassification("TEST", "DOMAIN_A", "TASK");
       taskanaEngineImpl.getWorkbasketService().createWorkbasket(workbasket);
 
-      WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem("1", "Elena");
+      WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem("1", "user-1-1");
       accessItem.setPermAppend(true);
       accessItem.setPermRead(true);
       accessItem.setPermOpen(true);
@@ -156,7 +156,7 @@ class TaskServiceImplIntExplicitTest {
     }
   }
 
-  @WithAccessId(user = "Elena", groups = "businessadmin")
+  @WithAccessId(user = "user-1-1", groups = "businessadmin")
   @Test
   void testCreateTask()
       throws SQLException, TaskNotFoundException, NotAuthorizedException,
@@ -170,7 +170,7 @@ class TaskServiceImplIntExplicitTest {
       final Task task = this.generateDummyTask();
       connection.commit();
 
-      WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem("1", "Elena");
+      WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem("1", "user-1-1");
       accessItem.setPermAppend(true);
       accessItem.setPermRead(true);
       accessItem.setPermOpen(true);
@@ -188,7 +188,7 @@ class TaskServiceImplIntExplicitTest {
     }
   }
 
-  @WithAccessId(user = "Elena", groups = "businessadmin")
+  @WithAccessId(user = "user-1-1", groups = "businessadmin")
   @Test
   void createTaskShouldThrowWorkbasketNotFoundException()
       throws NotAuthorizedException, SQLException, ClassificationAlreadyExistException,
@@ -207,7 +207,7 @@ class TaskServiceImplIntExplicitTest {
     }
   }
 
-  @WithAccessId(user = "Elena", groups = "businessadmin")
+  @WithAccessId(user = "user-1-1", groups = "businessadmin")
   @Test
   void createManualTaskShouldThrowClassificationNotFoundException()
       throws NotAuthorizedException, WorkbasketNotFoundException, SQLException,
@@ -242,9 +242,7 @@ class TaskServiceImplIntExplicitTest {
     }
   }
 
-  @WithAccessId(
-      user = "Elena",
-      groups = {"DummyGroup", "businessadmin"})
+  @WithAccessId(user = "user-1-1", groups = "businessadmin")
   @Test
   void should_ReturnList_when_BuilderIsUsed()
       throws SQLException, NotAuthorizedException, WorkbasketNotFoundException,
@@ -264,7 +262,7 @@ class TaskServiceImplIntExplicitTest {
       workbasket.setType(WorkbasketType.GROUP);
       workbasket = (WorkbasketImpl) workbasketService.createWorkbasket(workbasket);
 
-      WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem("1", "Elena");
+      WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem("1", "user-1-1");
       accessItem.setPermAppend(true);
       accessItem.setPermRead(true);
       accessItem.setPermOpen(true);
@@ -299,7 +297,7 @@ class TaskServiceImplIntExplicitTest {
     }
   }
 
-  @WithAccessId(user = "Elena", groups = "businessadmin")
+  @WithAccessId(user = "user-1-1", groups = "businessadmin")
   @Test
   void shouldTransferTaskToOtherWorkbasket()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
@@ -391,14 +389,14 @@ class TaskServiceImplIntExplicitTest {
     }
   }
 
-  @WithAccessId(user = "User", groups = "businessadmin")
+  @WithAccessId(user = "user-1-1", groups = "businessadmin")
   @Test
   void shouldNotTransferByFailingSecurity()
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
           ClassificationAlreadyExistException, SQLException, TaskAlreadyExistException,
           InvalidWorkbasketException, InvalidArgumentException, WorkbasketAlreadyExistException,
           DomainNotFoundException, WorkbasketAccessItemAlreadyExistException {
-    final String user = "User";
+    final String user = "user-1-1";
 
     // Set up Security for this Test
     final DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
