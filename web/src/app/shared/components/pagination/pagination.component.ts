@@ -46,7 +46,6 @@ export class PaginationComponent implements OnChanges {
     if (this.previousPageSelected !== page) {
       this.changePage.emit(page);
       this.previousPageSelected = page;
-      this.page.number = page;
       this.pageSelected = page;
     }
   }

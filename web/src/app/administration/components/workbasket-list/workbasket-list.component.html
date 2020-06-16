@@ -38,5 +38,9 @@
     </div>
   </ng-template>
 </div>
-<taskana-pagination [page]="(workbasketsSummaryRepresentation$ | async) ? (workbasketsSummaryRepresentation$ | async)?.page : (workbasketsSummaryRepresentation$ | async)"
-  [type]="type" [numberOfItems]="(workbasketsSummary$ | async)?.length" (changePage)="changePage($event)"></taskana-pagination>
+<taskana-pagination
+        [page]="(workbasketsSummaryRepresentation$ | async) ? (workbasketsSummaryRepresentation$ | async)?.page : (workbasketsSummaryRepresentation$ | async)"
+        [type]="type"
+        [numberOfItems]="(workbasketsSummary$ | async)?.length"
+        (changePage)="changePage($event)">
+</taskana-pagination>
