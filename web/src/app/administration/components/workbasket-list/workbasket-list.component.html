@@ -1,16 +1,17 @@
 <div class="footer-space-pagination-list">
   <div #wbToolbar>
-    <taskana-workbasket-list-toolbar [workbaskets]="workbaskets" (performFilter)="performFilter($event)"
+    <taskana-workbasket-list-toolbar [workbaskets]="workbasketsSummary$ | async" (performFilter)="performFilter($event)"
       (performSorting)="performSorting($event)" [workbasketDefaultSortBy]="workbasketDefaultSortBy">
     </taskana-workbasket-list-toolbar>
   </div>
-  <div *ngIf="(workbaskets && workbaskets.length > 0) else empty_workbaskets">
+  <div *ngIf="((workbasketsSummary$ | async) && (workbasketsSummary$ | async)?.length > 0) else empty_workbaskets">
     <ul #wbList id="wb-list-container" class="list-group">
       <li class="list-group-item no-space">
         <div class="row"></div>
       </li>
-      <li class="list-group-item" *ngFor="let workbasket of workbaskets" [class.active]="workbasket.workbasketId == selectedId"
-        type="text" (click)="selectWorkbasket(workbasket.workbasketId)">
+      <li class="list-group-item" *ngFor="let workbasket of (workbasketsSummary$ | async)"
+          [class.active]="workbasket.workbasketId == selectedId"
+          type="text" (click)="selectWorkbasket(workbasket.workbasketId)">
         <div class="row">
           <dl class="col-xs-1">
             <taskana-icon-type class="vertical-align" [type]="workbasket.type" tooltip="true" [selected]="workbasket.workbasketId === selectedId"></taskana-icon-type>
@@ -37,5 +38,5 @@
     </div>
   </ng-template>
 </div>
-<taskana-pagination [(page)]="workbasketsResource ? workbasketsResource.page : workbasketsResource"
-  [type]="type" [numberOfItems]="workbaskets.length" (changePage)="changePage($event)"></taskana-pagination>
+<taskana-pagination [page]="(workbasketsSummaryRepresentation$ | async) ? (workbasketsSummaryRepresentation$ | async)?.page : (workbasketsSummaryRepresentation$ | async)"
+  [type]="type" [numberOfItems]="(workbasketsSummary$ | async)?.length" (changePage)="changePage($event)"></taskana-pagination>
