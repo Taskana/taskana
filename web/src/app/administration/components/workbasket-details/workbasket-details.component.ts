@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 
 import { Workbasket } from 'app/shared/models/workbasket';
 import { ACTION } from 'app/shared/models/action';
@@ -29,9 +29,9 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
   private workbasketSubscription: Subscription;
   private routeSubscription: Subscription;
   private masterAndDetailSubscription: Subscription;
-  private permissionSubscription: Subscription;
   private domainSubscription: Subscription;
   private importingExportingSubscription: Subscription;
+  destroy$ = new Subject<void>();
 
   constructor(private service: WorkbasketService,
     private route: ActivatedRoute,
@@ -39,7 +39,8 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
     private masterAndDetailService: MasterAndDetailService,
     private domainService: DomainService,
     private errorsService: NotificationService,
-    private importExportService: ImportExportService) { }
+    private importExportService: ImportExportService) {
+  }
 
   ngOnInit() {
     this.workbasketSelectedSubscription = this.service.getSelectedWorkBasket().subscribe(workbasketIdSelected => {
@@ -127,11 +128,12 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
     if (this.workbasketSelectedSubscription) { this.workbasketSelectedSubscription.unsubscribe(); }
     if (this.workbasketSubscription) { this.workbasketSubscription.unsubscribe(); }
     if (this.routeSubscription) { this.routeSubscription.unsubscribe(); }
     if (this.masterAndDetailSubscription) { this.masterAndDetailSubscription.unsubscribe(); }
-    if (this.permissionSubscription) { this.permissionSubscription.unsubscribe(); }
     if (this.domainSubscription) { this.domainSubscription.unsubscribe(); }
     if (this.importingExportingSubscription) { this.importingExportingSubscription.unsubscribe(); }
   }
