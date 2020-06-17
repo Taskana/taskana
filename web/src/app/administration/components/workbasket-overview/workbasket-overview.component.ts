@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+<<<<<<< HEAD
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
@@ -8,6 +9,8 @@ import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/work
 import { CreateWorkbasket,
   SelectWorkbasket,
   SetActiveAction } from '../../../shared/store/workbasket-store/workbasket.actions';
+=======
+>>>>>>> TSK-1215 initialized workbasket-overview
 
 @Component({
   selector: 'app-workbasket-overview',
@@ -15,6 +18,7 @@ import { CreateWorkbasket,
   styleUrls: ['./workbasket-overview.component.scss']
 })
 export class WorkbasketOverviewComponent implements OnInit {
+<<<<<<< HEAD
   showDetail = false;
   @Select(WorkbasketSelectors.selectedWorkbasketAndAction) selectedWorkbasketAndAction$: Observable<any>;
   destroy$ = new Subject<void>();
@@ -54,4 +58,12 @@ export class WorkbasketOverviewComponent implements OnInit {
     this.destroy$.next();
     this.destroy$.complete();
   }
+=======
+
+  constructor() { }
+
+  ngOnInit() {
+  }
+
+>>>>>>> TSK-1215 initialized workbasket-overview
 }
