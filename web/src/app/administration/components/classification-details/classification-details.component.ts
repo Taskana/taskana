@@ -242,7 +242,6 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     return `custom${customNumber}`;
   }
 
-  // TODO: Remove when classification is in store
   getAvailableCategories(type: string) {
     let returnCategories: string[] = [];
     this.classificationTypes$.pipe(take(1)).subscribe(classTypes => {

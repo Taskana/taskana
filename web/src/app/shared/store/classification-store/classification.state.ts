@@ -83,7 +83,7 @@ export class ClassificationState implements NgxsAfterBootstrap {
           classification.children = !classification.children ? [] : classification.children;
         });
         ctx.patchState({
-          classifications: [...classifications]
+          classifications
         });
       }),
     );
@@ -159,16 +159,9 @@ export class ClassificationState implements NgxsAfterBootstrap {
 
   @Action(UpdateClassification)
   updateClassification(ctx: StateContext<ClassificationStateModel>, action: SaveClassification): Observable<any> {
-    return this.classificationsService.putClassification(action.classification).pipe(
-      // TODO remove this call when backend is fixed modified dates are not same
-      take(1), tap(() => this.classificationsService.getClassifications(ctx.getState().selectedClassificationType).subscribe(
-        classifications => {
-          ctx.patchState({
-            classifications
-          });
-        }
-      ))
-    );
+    return this.classificationsService.putClassification(action.classification).pipe(take(1), tap(
+      classifications => ctx.patchState({ classifications })
+    ));
   }
 
   // initialize after Startup service has configured the taskanaRestUrl properly.
