@@ -33,6 +33,7 @@ import { ClassificationDefinitionService } from './services/classification-defin
 import { WorkbasketDefinitionService } from './services/workbasket-definition.service';
 import { ImportExportService } from './services/import-export.service';
 import { ClassificationOverviewComponent } from './components/classification-overview/classification-overview.component';
+import { WorkbasketOverviewComponent } from './components/workbasket-overview/workbasket-overview.component';
 
 const MODULES = [
   CommonModule,
@@ -47,6 +48,7 @@ const MODULES = [
 ];
 
 const DECLARATIONS = [
+  WorkbasketOverviewComponent,
   WorkbasketListComponent,
   WorkbasketListToolbarComponent,
   WorkbasketAccessItemsComponent,
