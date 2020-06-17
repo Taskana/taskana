@@ -64,7 +64,7 @@
         <version.wildfly>11.0.0.Final</version.wildfly>
 
         <!-- java ee dependencies -->
-        <version.resteasy>4.5.4.Final</version.resteasy>
+        <version.resteasy>4.5.5.Final</version.resteasy>
         <version.thorntail>2.7.0.Final</version.thorntail>
         <version.wildfly.security>1.12.1.Final</version.wildfly.security>
         <version.javaee-api>8.0.1</version.javaee-api>
