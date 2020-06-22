@@ -1,6 +1,7 @@
 import { Workbasket } from '../../models/workbasket';
 import { TaskanaQueryParameters } from '../../util/query-parameters';
 import { Direction } from '../../models/sorting';
+import { ACTION } from '../../models/action';
 
 export class GetWorkbasketsSummary {
   static readonly type = '[Workbasket List] Get all workbaskets\' summary';
@@ -40,5 +41,17 @@ export class SelectWorkbasket {
 export class CreateWorkbasket {
   static readonly type = '[Workbasket] Create a workbasket';
   constructor(public workbasket: Workbasket) {
+  }
+}
+
+export class UpdateWorkbasket {
+  static readonly type = '[Workbasket] Update a workbasket';
+  constructor(public url: string, public workbasket: Workbasket) {
+  }
+}
+
+export class SetActiveAction {
+  static readonly type = '[Workbasket] Specify current action';
+  constructor(public action: ACTION) {
   }
 }
