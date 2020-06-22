@@ -18,6 +18,11 @@ const routes: Routes = [
         outlet: 'master'
       },
       {
+        path: 'new-classification/:id',
+        component: WorkbasketOverviewComponent,
+        outlet: 'detail'
+      },
+      {
         path: ':id',
         component: WorkbasketOverviewComponent,
         outlet: 'detail'
