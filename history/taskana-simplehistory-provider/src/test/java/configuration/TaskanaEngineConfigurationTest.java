@@ -35,13 +35,7 @@ class TaskanaEngineConfigurationTest extends AbstractAccTest {
     getHistoryService()
         .create(
             AbstractAccTest.createHistoryEvent(
-                "HEI:000000000000000000000000000000000000",
-                "wbKey1",
-                "taskId1",
-                "type1",
-                "Some comment",
-                "wbKey2",
-                "someUserId"));
+                "wbKey1", "taskId1", "type1", "Some comment", "wbKey2", "someUserId"));
     count = getHistoryService().createHistoryQuery().workbasketKeyIn("wbKey1").count();
     assertThat(count).isOne();
   }

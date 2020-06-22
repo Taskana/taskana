@@ -41,7 +41,7 @@ class CreateHistoryEventOnTransferAccTest extends AbstractAccTest {
         historyQueryMapper.queryHistoryEvent(
             (HistoryQueryImpl) historyService.createHistoryQuery().taskIdIn(taskId));
 
-    assertThat(listEvents).hasSize(0);
+    assertThat(listEvents).isEmpty();
 
     taskService.transfer(taskId, "WBI:100000000000000000000000000000000006");
 

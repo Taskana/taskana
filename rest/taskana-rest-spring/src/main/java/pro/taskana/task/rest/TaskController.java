@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.PagedModel.PageMetadata;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
@@ -138,7 +139,7 @@ public class TaskController extends AbstractPagingController {
 
   @DeleteMapping(path = Mapping.URL_TASKS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<CollectionModel<TaskSummaryRepresentationModel>> deleteTasks(
+  public ResponseEntity<TaskanaPagedModel<TaskSummaryRepresentationModel>> deleteTasks(
       @RequestParam MultiValueMap<String, String> params)
       throws InvalidArgumentException, NotAuthorizedException {
 
@@ -161,10 +162,9 @@ public class TaskController extends AbstractPagingController {
             .filter(summary -> !result.getFailedIds().contains(summary.getId()))
             .collect(Collectors.toList());
 
-    ResponseEntity<CollectionModel<TaskSummaryRepresentationModel>> response =
+    ResponseEntity<TaskanaPagedModel<TaskSummaryRepresentationModel>> response =
         ResponseEntity.ok(
-            taskSummaryRepresentationModelAssembler.toCollectionModel(
-                successfullyDeletedTaskSummaries));
+            taskSummaryRepresentationModelAssembler.toPageModel(successfullyDeletedTaskSummaries));
 
     LOGGER.debug("Exit from deleteTasks(), returning {}", response);
 
@@ -481,22 +481,15 @@ public class TaskController extends AbstractPagingController {
       params.remove(EXTERNAL_ID);
     }
 
-    for (int i = 1; i < 17; i++) {
-      if (params.containsKey(CUSTOM + i)) {
-        taskQuery.customAttributeIn(String.valueOf(i), params.get(CUSTOM + i).get(0));
-        params.remove(CUSTOM + i);
-      }
-    }
-
     for (int i = 1; i <= 16; i++) {
       if (params.containsKey(CUSTOM + i)) {
         String[] customValues = extractCommaSeparatedFields(params.get(CUSTOM + i));
         taskQuery.customAttributeIn(String.valueOf(i), customValues);
-        if (LOGGER.isDebugEnabled()) {
-          params.remove(CUSTOM + i);
-          LOGGER.debug("Exit from applyFilterParams(), returning {}", taskQuery);
-        }
+        params.remove(CUSTOM + i);
       }
+    }
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Exit from applyFilterParams(), returning {}", taskQuery);
     }
 
     return taskQuery;

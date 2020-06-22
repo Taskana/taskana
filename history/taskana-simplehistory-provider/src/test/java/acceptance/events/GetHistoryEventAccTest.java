@@ -7,11 +7,10 @@ import org.junit.jupiter.api.Test;
 
 import pro.taskana.spi.history.api.events.TaskanaHistoryEvent;
 
-
 class GetHistoryEventAccTest extends AbstractAccTest {
 
   @Test
-  void should_ReturnSpecificTaskHistoryEventWithDetails_For_HistoryEventId()
+  void should_ReturnSpecificTaskHistoryEventWithDetails_For_HistoryEventId() throws Exception {
 
     String detailsJson =
         "{\"changes\":[{"

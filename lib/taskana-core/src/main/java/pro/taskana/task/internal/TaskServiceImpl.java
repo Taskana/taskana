@@ -1395,7 +1395,7 @@ public class TaskServiceImpl implements TaskService {
 
       if (taskanaEngine.getEngine().isHistoryEnabled()
           && taskanaEngine.getEngine().getConfiguration().isDeleteHistoryOnTaskDeletionEnabled()) {
-        historyEventManager.deleteEvents(Arrays.asList(taskId));
+        historyEventManager.deleteEvents(Collections.singletonList(taskId));
       }
 
       LOGGER.debug("Task {} deleted.", taskId);

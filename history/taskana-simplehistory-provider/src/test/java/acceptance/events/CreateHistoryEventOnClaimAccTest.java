@@ -43,7 +43,7 @@ class CreateHistoryEventOnClaimAccTest extends AbstractAccTest {
         historyQueryMapper.queryHistoryEvent(
             (HistoryQueryImpl) historyService.createHistoryQuery().taskIdIn(taskId));
 
-    assertThat(listEvents).hasSize(0);
+    assertThat(listEvents).isEmpty();
 
     assertThat(taskService.getTask(taskId).getState()).isEqualTo(TaskState.READY);
     Task task = taskService.claim(taskId);

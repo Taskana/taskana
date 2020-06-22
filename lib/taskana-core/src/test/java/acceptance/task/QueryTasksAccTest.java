@@ -281,7 +281,7 @@ class QueryTasksAccTest extends AbstractAccTest {
             new Triplet<>("11", new String[] {"%"}, 3),
             new Triplet<>("12", new String[] {"%"}, 3),
             new Triplet<>("13", new String[] {"%"}, 3),
-            new Triplet<>("14", new String[] {"%"}, 84),
+            new Triplet<>("14", new String[] {"%"}, 87),
             new Triplet<>("15", new String[] {"%"}, 3),
             new Triplet<>("16", new String[] {"%"}, 3));
 
@@ -392,9 +392,9 @@ class QueryTasksAccTest extends AbstractAccTest {
   void testQueryAllPaged() {
     TaskQuery taskQuery = taskService.createTaskQuery();
     long numberOfTasks = taskQuery.count();
-    assertThat(numberOfTasks).isEqualTo(84);
+    assertThat(numberOfTasks).isEqualTo(87);
     List<TaskSummary> tasks = taskQuery.orderByDue(DESCENDING).list();
-    assertThat(tasks).hasSize(84);
+    assertThat(tasks).hasSize(87);
     List<TaskSummary> tasksp = taskQuery.orderByDue(DESCENDING).listPage(4, 5);
     assertThat(tasksp).hasSize(5);
     tasksp = taskQuery.orderByDue(DESCENDING).listPage(5, 5);

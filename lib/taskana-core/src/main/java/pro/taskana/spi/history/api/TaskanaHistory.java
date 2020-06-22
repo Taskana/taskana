@@ -26,7 +26,7 @@ public interface TaskanaHistory {
   void create(TaskanaHistoryEvent event);
 
   /**
-   * Delete history events by taskIds.
+   * Delete history events by taskIds. Invalid/non-existing taskIds will be ignored
    *
    * @param taskIds the task ids for which all history events must be deleted
    * @throws InvalidArgumentException If the list of taskIds is null

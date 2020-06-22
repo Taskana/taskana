@@ -31,17 +31,6 @@ class CreateHistoryEventOnTaskCreationAccTest extends AbstractAccTest {
     historyService = getHistoryService();
   }
 
-  protected ObjectReference createObjectRef(
-      String company, String system, String systemInstance, String type, String value) {
-    ObjectReference objectRef = new ObjectReference();
-    objectRef.setCompany(company);
-    objectRef.setSystem(system);
-    objectRef.setSystemInstance(systemInstance);
-    objectRef.setType(type);
-    objectRef.setValue(value);
-    return objectRef;
-  }
-
   @Test
   @WithAccessId(user = "admin")
   void should_CreateCreatedHistoryEvent_When_TaskIsCreated() throws Exception {
