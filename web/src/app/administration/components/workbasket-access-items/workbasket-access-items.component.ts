@@ -1,4 +1,4 @@
-import { AfterViewInit, Component,
+import { Component,
   ElementRef,
   Input,
   OnChanges,
@@ -7,11 +7,11 @@ import { AfterViewInit, Component,
   ViewChildren } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { Select } from '@ngxs/store';
-import { FormArray, FormBuilder, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControlDirective, Validators } from '@angular/forms';
 
 import { Workbasket } from 'app/shared/models/workbasket';
 import { customFieldCount, WorkbasketAccessItems } from 'app/shared/models/workbasket-access-items';
-import { WorkbasketAccessItemsResource } from 'app/shared/models/workbasket-access-items-resource';
+import { WorkbasketAccessItemsRepresentation } from 'app/shared/models/workbasket-access-items-representation';
 import { ACTION } from 'app/shared/models/action';
 
 import { SavingInformation,
@@ -27,6 +27,7 @@ import { NotificationService } from '../../../shared/services/notifications/noti
 import { AccessItemsCustomisation,
   CustomField,
   getCustomFields } from '../../../shared/models/customisation';
+import { Links } from '../../../shared/models/links';
 
 @Component({
   selector: 'taskana-workbasket-access-items',
@@ -34,7 +35,7 @@ import { AccessItemsCustomisation,
   animations: [highlight],
   styleUrls: ['./workbasket-access-items.component.scss']
 })
-export class WorkbasketAccessItemsComponent implements OnChanges, OnDestroy, AfterViewInit {
+export class WorkbasketAccessItemsComponent implements OnChanges, OnDestroy {
   @Input()
   workbasket: Workbasket;
 
@@ -46,22 +47,23 @@ export class WorkbasketAccessItemsComponent implements OnChanges, OnDestroy, Aft
 
   @ViewChildren('htmlInputElement') inputs: QueryList<ElementRef>;
 
+
   badgeMessage = '';
 
   @Select(EngineConfigurationSelectors.accessItemsCustomisation) accessItemsCustomization$: Observable<AccessItemsCustomisation>;
   customFields$: Observable<CustomField[]>;
 
-  accessItemsResource: WorkbasketAccessItemsResource;
+  accessItemsResource: WorkbasketAccessItemsRepresentation;
   accessItemsClone: Array<WorkbasketAccessItems>;
   accessItemsResetClone: Array<WorkbasketAccessItems>;
   requestInProgress = false;
-  accessItemSubscription: Subscription;
+  accessItemsubscription: Subscription;
   savingAccessItemsSubscription: Subscription;
   AccessItemsForm = this.formBuilder.group({
     accessItemsGroups: this.formBuilder.array([])
   });
 
-  toggleValidationAccessIdMap = new Map<number, boolean>();
+  toogleValidationAccessIdMap = new Map<number, boolean>();
   private initialized = false;
   private added = false;
 
@@ -103,8 +105,8 @@ export class WorkbasketAccessItemsComponent implements OnChanges, OnDestroy, Aft
       return;
     }
     this.requestInProgress = true;
-    this.accessItemSubscription = this.workbasketService.getWorkBasketAccessItems(this.workbasket._links.accessItems.href)
-      .subscribe((accessItemsResource: WorkbasketAccessItemsResource) => {
+    this.accessItemsubscription = this.workbasketService.getWorkBasketAccessItems(this.workbasket._links.accessItems.href)
+      .subscribe((accessItemsResource: WorkbasketAccessItemsRepresentation) => {
         this.accessItemsResource = accessItemsResource;
         this.setAccessItemsGroups(accessItemsResource.accessItems);
         this.accessItemsClone = this.cloneAccessItems(accessItemsResource.accessItems);
@@ -131,8 +133,37 @@ export class WorkbasketAccessItemsComponent implements OnChanges, OnDestroy, Aft
     this.AccessItemsForm.setControl('accessItemsGroups', AccessItemsFormArray);
   }
 
+  createWorkbasketAccessItems(): WorkbasketAccessItems {
+    const workbasketsAccessItems: WorkbasketAccessItems = {
+      accessItemId: '',
+      workbasketId: '',
+      workbasketKey: '',
+      accessId: '',
+      accessName: '',
+      permRead: false,
+      permOpen: false,
+      permAppend: false,
+      permTransfer: false,
+      permDistribute: false,
+      permCustom1: false,
+      permCustom2: false,
+      permCustom3: false,
+      permCustom4: false,
+      permCustom5: false,
+      permCustom6: false,
+      permCustom7: false,
+      permCustom8: false,
+      permCustom9: false,
+      permCustom10: false,
+      permCustom11: false,
+      permCustom12: false,
+      _links: {},
+    };
+    return workbasketsAccessItems;
+  }
+
   addAccessItem() {
-    const workbasketAccessItems = new WorkbasketAccessItems();
+    const workbasketAccessItems: WorkbasketAccessItems = this.createWorkbasketAccessItems();
     workbasketAccessItems.workbasketId = this.workbasket.workbasketId;
     workbasketAccessItems.permRead = true;
     const newForm = this.formBuilder.group(workbasketAccessItems);
@@ -161,7 +192,7 @@ export class WorkbasketAccessItemsComponent implements OnChanges, OnDestroy, Aft
 
   onSubmit() {
     this.formsValidatorService.formSubmitAttempt = true;
-    this.formsValidatorService.validateFormAccess(this.accessItemsGroups, this.toggleValidationAccessIdMap).then(value => {
+    this.formsValidatorService.validateFormAccess(this.accessItemsGroups, this.toogleValidationAccessIdMap).then(value => {
       if (value) {
         this.onSave();
       }
@@ -170,7 +201,7 @@ export class WorkbasketAccessItemsComponent implements OnChanges, OnDestroy, Aft
 
   checkAll(row: number, value: any) {
     const checkAll = value.target.checked;
-    const workbasketAccessItemsObj = new WorkbasketAccessItems();
+    const workbasketAccessItemsObj: WorkbasketAccessItems = this.createWorkbasketAccessItems();
     Object.keys(workbasketAccessItemsObj).forEach(property => {
       if (property !== 'accessId' && property !== '_links' && property !== 'workbasketId' && property !== 'accessItemId') {
         this.accessItemsGroups.controls[row].get(property).setValue(checkAll);
@@ -229,9 +260,10 @@ export class WorkbasketAccessItemsComponent implements OnChanges, OnDestroy, Aft
     }
   }
 
+
   ngOnDestroy(): void {
-    if (this.accessItemSubscription) {
-      this.accessItemSubscription.unsubscribe();
+    if (this.accessItemsubscription) {
+      this.accessItemsubscription.unsubscribe();
     }
     if (this.savingAccessItemsSubscription) {
       this.savingAccessItemsSubscription.unsubscribe();
