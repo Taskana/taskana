@@ -18,7 +18,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -241,10 +240,9 @@ class TaskControllerIntTest {
     assertThat(response.getBody().getContent()).hasSize(4);
   }
 
-
   @Test
   void should_DeleteAllTasks_For_ProvidedParams() {
-    ResponseEntity<CollectionModel<TaskSummaryRepresentationModel>> response =
+    ResponseEntity<TaskanaPagedModel<TaskSummaryRepresentationModel>> response =
         template.exchange(
             restHelper.toUrl(Mapping.URL_TASKS)
                 + "?task-id=TKI:000000000000000000000000000000000036,"
@@ -253,12 +251,10 @@ class TaskControllerIntTest {
                 + "&custom14=abc",
             HttpMethod.DELETE,
             new HttpEntity<String>(restHelper.getHeadersAdmin()),
-            new ParameterizedTypeReference<CollectionModel<TaskSummaryRepresentationModel>>() {
-            });
+            new ParameterizedTypeReference<TaskanaPagedModel<TaskSummaryRepresentationModel>>() {});
     ;
     assertThat(response.getBody()).isNotNull();
-    assertThat((response.getBody()).getLink(IanaLinkRelations.SELF))
-        .isNotNull();
+    assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(3);
   }
 

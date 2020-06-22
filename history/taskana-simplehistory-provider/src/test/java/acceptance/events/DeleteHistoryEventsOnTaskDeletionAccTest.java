@@ -61,7 +61,7 @@ class DeleteHistoryEventsOnTaskDeletionAccTest extends AbstractAccTest {
     listEvents =
         historyQueryMapper.queryHistoryEvent(
             (HistoryQueryImpl) historyService.createHistoryQuery().taskIdIn(taskid));
-    assertThat(listEvents).hasSize(0);
+    assertThat(listEvents).isEmpty();
   }
 
   @Test
@@ -99,7 +99,7 @@ class DeleteHistoryEventsOnTaskDeletionAccTest extends AbstractAccTest {
     listEvents =
         historyQueryMapper.queryHistoryEvent(
             (HistoryQueryImpl) historyService.createHistoryQuery().taskIdIn(taskId_1, taskId_2));
-    assertThat(listEvents).hasSize(0);
+    assertThat(listEvents).isEmpty();
   }
 
   @Test

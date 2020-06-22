@@ -589,6 +589,24 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
   }
 
   @Test
+  void deleteTasksDocTest() throws Exception {
+    this.mockMvc
+        .perform(
+            RestDocumentationRequestBuilders.get(
+                    restHelper.toUrl(Mapping.URL_TASKS)
+                        + "?task-id=TKI:000000000000000000000000000000000036,"
+                        + "TKI:000000000000000000000000000000000037,"
+                        + "TKI:000000000000000000000000000000000038"
+                        + "&custom14=abc")
+                .accept("application/hal+json")
+                .header("Authorization", ADMIN_CREDENTIALS))
+        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andDo(
+            MockMvcRestDocumentation.document(
+                "DeleteTasksDocTest", responseFields(allTasksFieldDescriptors)));
+  }
+
+  @Test
   void claimTaskDocTest() throws Exception {
 
     MvcResult result =

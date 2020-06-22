@@ -71,7 +71,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   private static final String DEFAULT = "default";
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineImpl.class);
   private static final SessionStack SESSION_STACK = new SessionStack();
-  private final HistoryEventProducer historyEventProducer;
+  private HistoryEventManager historyEventManager;
   private final TaskRoutingManager taskRoutingManager;
   private final InternalTaskanaEngineImpl internalTaskanaEngineImpl;
   private final WorkingDaysToDaysConverter workingDaysToDaysConverter;
@@ -80,7 +80,6 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   protected SqlSessionManager sessionManager;
   protected ConnectionManagementMode mode = ConnectionManagementMode.PARTICIPATE;
   protected Connection connection = null;
-  private HistoryEventManager historyEventManager;
 
   protected TaskanaEngineImpl(TaskanaEngineConfiguration taskanaEngineConfiguration) {
     this.taskanaEngineConfiguration = taskanaEngineConfiguration;

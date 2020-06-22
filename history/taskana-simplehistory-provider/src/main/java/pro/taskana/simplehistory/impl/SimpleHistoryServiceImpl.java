@@ -68,11 +68,12 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
 
     taskanaHistoryEngine.checkRoleMembership(TaskanaRole.ADMIN);
 
+    if (taskIds == null) {
+      throw new InvalidArgumentException("List of taskIds must not be null.");
+    }
+
     try {
       taskanaHistoryEngine.openConnection();
-      if (taskIds == null) {
-        throw new InvalidArgumentException("List of taskIds must not be null.");
-      }
 
       historyEventMapper.deleteMultipleByTaskIds(taskIds);
 

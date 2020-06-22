@@ -173,11 +173,11 @@ class SetOwnerAccTest extends AbstractAccTest {
         new Condition<>(
             c -> c.getClass() == NotAuthorizedException.class, "NotAuthorizedException");
     assertThat(results.getErrorMap())
-        .hasSize(62)
+        .hasSize(85)
         .extractingFromEntries(Entry::getValue)
         .hasOnlyElementsOfTypes(InvalidStateException.class, NotAuthorizedException.class)
-        .areExactly(39, invalidStateException)
-        .areExactly(54, notAuthorizedException);
+        .areExactly(28, invalidStateException)
+        .areExactly(57, notAuthorizedException);
   }
 
   @WithAccessId(user = "admin")

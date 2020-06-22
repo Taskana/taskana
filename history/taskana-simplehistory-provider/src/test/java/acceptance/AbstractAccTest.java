@@ -24,20 +24,19 @@ import pro.taskana.simplehistory.impl.HistoryEventImpl;
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
 import pro.taskana.simplehistory.impl.TaskanaHistoryEngineImpl;
 import pro.taskana.simplehistory.impl.mappings.HistoryQueryMapper;
+import pro.taskana.task.api.models.ObjectReference;
 
 /** Set up database for tests. */
 public abstract class AbstractAccTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAccTest.class);
   private static final String ID_PREFIX_HISTORY_EVENT = "HEI";
-
-  protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
-  protected static TaskanaHistoryEngineImpl taskanaHistoryEngine;
-  protected static TaskanaEngine taskanaEngine;
-
   private static final String USER_HOME_DIRECTORY = System.getProperty("user.home");
   private static final int POOL_TIME_TO_WAIT = 50;
   private static final DataSource DATA_SOURCE;
+  protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
+  protected static TaskanaHistoryEngineImpl taskanaHistoryEngine;
+  protected static TaskanaEngine taskanaEngine;
   private static SimpleHistoryServiceImpl historyService;
   private static String schemaName;
 
@@ -73,7 +72,9 @@ public abstract class AbstractAccTest {
       String previousWorkbasketId,
       String userid,
       String details) {
-    HistoryEventImpl historyEvent = new HistoryEventImpl(userid, details);
+    HistoryEventImpl historyEvent =
+        new HistoryEventImpl(
+            IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT), userid, details);
     historyEvent.setWorkbasketKey(workbasketKey);
     historyEvent.setTaskId(taskId);
     historyEvent.setEventType(type);
@@ -132,12 +133,28 @@ public abstract class AbstractAccTest {
 
   protected static SimpleHistoryServiceImpl getHistoryService() {
     return historyService;
-   * @param id the id of the event
-      String id,
-    HistoryEventImpl historyEvent =
-        new HistoryEventImpl(
-            IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT), userid, details);
-    historyEvent.setId(id);
+  }
+
+  protected HistoryQueryMapper getHistoryQueryMapper()
+      throws NoSuchFieldException, IllegalAccessException {
+
+    Field sessionManagerField = TaskanaHistoryEngineImpl.class.getDeclaredField("sessionManager");
+    sessionManagerField.setAccessible(true);
+    SqlSessionManager sqlSessionManager =
+        (SqlSessionManager) sessionManagerField.get(taskanaHistoryEngine);
+
+    return sqlSessionManager.getMapper(HistoryQueryMapper.class);
+  }
+
+  protected ObjectReference createObjectRef(
+      String company, String system, String systemInstance, String type, String value) {
+    ObjectReference objectRef = new ObjectReference();
+    objectRef.setCompany(company);
+    objectRef.setSystem(system);
+    objectRef.setSystemInstance(systemInstance);
+    objectRef.setType(type);
+    objectRef.setValue(value);
+    return objectRef;
   }
 
   @BeforeAll
@@ -256,16 +273,5 @@ public abstract class AbstractAccTest {
     }
 
     return schemaName;
-  }
-
-  protected HistoryQueryMapper getHistoryQueryMapper()
-      throws NoSuchFieldException, IllegalAccessException {
-
-    Field sessionManagerField = TaskanaHistoryEngineImpl.class.getDeclaredField("sessionManager");
-    sessionManagerField.setAccessible(true);
-    SqlSessionManager sqlSessionManager =
-        (SqlSessionManager) sessionManagerField.get(taskanaHistoryEngine);
-
-    return sqlSessionManager.getMapper(HistoryQueryMapper.class);
   }
 }

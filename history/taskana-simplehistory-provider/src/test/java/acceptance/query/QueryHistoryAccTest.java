@@ -125,7 +125,7 @@ class QueryHistoryAccTest extends AbstractAccTest {
 
     TimeInterval timeInterval = new TimeInterval(Instant.now().minusSeconds(10), Instant.now());
     returnValues = getHistoryService().createHistoryQuery().createdWithin(timeInterval).list();
-    assertThat(returnValues).hasSize(0);
+    assertThat(returnValues).isEmpty();
 
     returnValues = getHistoryService().createHistoryQuery().userIdIn("admin").list();
     assertThat(returnValues).hasSize(7);

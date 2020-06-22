@@ -16,6 +16,7 @@ import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
 import pro.taskana.simplehistory.impl.mappings.HistoryQueryMapper;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
+import pro.taskana.task.api.models.Task;
 
 @ExtendWith(JaasExtension.class)
 class CreateHistoryEventOnCompletionAccTest extends AbstractAccTest {
@@ -42,10 +43,11 @@ class CreateHistoryEventOnCompletionAccTest extends AbstractAccTest {
         historyQueryMapper.queryHistoryEvent(
             (HistoryQueryImpl) historyService.createHistoryQuery().taskIdIn(taskId));
 
-    assertThat(listEvents).hasSize(0);
+    assertThat(listEvents).isEmpty();
 
     assertThat(taskService.getTask(taskId).getState()).isEqualTo(TaskState.CLAIMED);
-    taskService.forceCompleteTask(taskId);
+    Task task = taskService.forceCompleteTask(taskId);
+    assertThat(task.getState()).isEqualTo(TaskState.COMPLETED);
 
     listEvents =
         historyQueryMapper.queryHistoryEvent(

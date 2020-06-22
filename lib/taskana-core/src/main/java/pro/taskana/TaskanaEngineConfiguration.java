@@ -48,7 +48,7 @@ public class TaskanaEngineConfiguration {
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineConfiguration.class);
 
   // must match the VERSION value in table
-  private static final String TASKANA_SCHEMA_VERSION = "3.0.0";
+  private static final String TASKANA_SCHEMA_VERSION = "4.0.0";
   private static final String TASKANA_PROPERTIES = "/taskana.properties";
   private static final String TASKANA_PROPERTY_SEPARATOR = "|";
   private static final String TASKANA_JOB_BATCH_SIZE = "taskana.jobs.batchSize";
