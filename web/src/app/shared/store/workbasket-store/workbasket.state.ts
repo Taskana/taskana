@@ -6,10 +6,15 @@ import { Workbasket } from '../../models/workbasket';
 import { CreateWorkbasket,
   GetWorkbasketAccessItems,
   GetWorkbaskets,
-  GetWorkbasketsSummary,
-  SelectWorkbasket, UpdateWorkbasket } from './workbasket.actions';
+  GetWorkbasketsSummary, SaveNewWorkbasket,
+  SelectWorkbasket, SetActiveAction, UpdateWorkbasket } from './workbasket.actions';
 import { WorkbasketAccessItems } from '../../models/workbasket-access-items';
 import { WorkbasketSummaryRepresentation } from '../../models/workbasket-summary-representation';
+import { ACTION } from '../../models/action';
+import { ClassificationDefinition } from '../../models/classification-definition';
+import { ICONTYPES } from '../../models/icon-types';
+import { TaskanaDate } from '../../util/taskana.date';
+import { DomainService } from '../../services/domain/domain.service';
 
 class InitializeStore {
   static readonly type = '[Workbasket] Initializing state';
@@ -17,7 +22,8 @@ class InitializeStore {
 
 @State<WorkbasketStateModel>({ name: 'workbasket' })
 export class WorkbasketState implements NgxsAfterBootstrap {
-  constructor(private workbasketService: WorkbasketService) {
+  constructor(private workbasketService: WorkbasketService,
+    private domainService: DomainService) {
   }
 
   @Action(GetWorkbasketsSummary)
@@ -62,7 +68,8 @@ export class WorkbasketState implements NgxsAfterBootstrap {
       return this.workbasketService.getWorkBasket(id).pipe(take(1), tap(
         selectedWorkbasket => {
           ctx.patchState({
-            selectedWorkbasket
+            selectedWorkbasket,
+            action: ACTION.COPY
           });
         }
       ));
@@ -72,6 +79,20 @@ export class WorkbasketState implements NgxsAfterBootstrap {
 
   @Action(CreateWorkbasket)
   createWorkbasket(ctx: StateContext<WorkbasketStateModel>, action: CreateWorkbasket): Observable<any> {
+    const emptyWorkbasket = new Workbasket();
+    emptyWorkbasket.domain = this.domainService.getSelectedDomainValue();
+    emptyWorkbasket.type = ICONTYPES.ALL;
+    const date = TaskanaDate.getDate();
+    emptyWorkbasket.created = date;
+    emptyWorkbasket.modified = date;
+    ctx.patchState({
+      selectedWorkbasket: emptyWorkbasket
+    });
+    return of(null);
+  }
+
+  @Action(SaveNewWorkbasket)
+  saveNewWorkbasket(ctx: StateContext<WorkbasketStateModel>, action: SaveNewWorkbasket): Observable<any> {
     return this.workbasketService.createWorkbasket(action.workbasket).pipe(take(1), tap(
       () => {
         this.getWorkbaskets(ctx);
@@ -88,6 +109,14 @@ export class WorkbasketState implements NgxsAfterBootstrap {
     ));
   }
 
+  @Action(SetActiveAction)
+  setActiveAction(ctx: StateContext<WorkbasketStateModel>, action: SetActiveAction): Observable<any> {
+    if (action.action === ACTION.CREATE) {
+      ctx.patchState({ action: action.action });
+    }
+    return of(null);
+  }
+
   ngxsAfterBootstrap(ctx?: StateContext<any>): void {
     ctx.dispatch(new InitializeStore());
   }
@@ -97,5 +126,6 @@ export interface WorkbasketStateModel {
   workbasketsSummary: WorkbasketSummaryRepresentation,
   workbaskets: Workbasket[],
   selectedWorkbasket: Workbasket,
+  action: ACTION,
   workbasketAccessItems: WorkbasketAccessItems
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 
@@ -9,10 +9,12 @@ import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.ser
 import { MasterAndDetailService } from 'app/shared/services/master-and-detail/master-and-detail.service';
 import { DomainService } from 'app/shared/services/domain/domain.service';
 import { ImportExportService } from 'app/administration/services/import-export.service';
-import { Select } from '@ngxs/store';
+import { Select, Store } from '@ngxs/store';
 import { takeUntil } from 'rxjs/operators';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
+import { TaskanaDate } from '../../../shared/util/taskana.date';
+import { ICONTYPES } from '../../../shared/models/icon-types';
 
 @Component({
   selector: 'taskana-workbasket-details',
@@ -30,6 +32,9 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
   @Select(WorkbasketSelectors.selectedWorkbasket)
   selectedWorkbasket$: Observable<Workbasket>;
 
+  @Select(WorkbasketSelectors.workbasketActiveAction)
+  activeAction$: Observable<ACTION>;
+
   destroy$ = new Subject<void>();
 
   constructor(private service: WorkbasketService,
@@ -38,7 +43,8 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
     private masterAndDetailService: MasterAndDetailService,
     private domainService: DomainService,
     private errorsService: NotificationService,
-    private importExportService: ImportExportService) {
+    private importExportService: ImportExportService,
+    private store: Store) {
   }
 
   ngOnInit() {
@@ -48,33 +54,15 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
         this.getWorkbasketInformation(selectedWorkbasket);
       });
 
-    this.route.params.subscribe(params => {
-      const { id } = params;
-      delete this.action;
-      if (id) {
-        if (id.indexOf('new-workbasket') !== -1) {
+    this.activeAction$.pipe(takeUntil(this.destroy$))
+      .subscribe(activeAction => {
+        this.action = activeAction;
+        console.log(this.action);
+        if (this.action === ACTION.CREATE) {
           this.tabSelected = 'information';
-          this.action = ACTION.CREATE;
-          this.getWorkbasketInformation();
-        } else if (id.indexOf('copy-workbasket') !== -1) {
-          if (!this.selectedId) {
-            this.router.navigate(['./'], { relativeTo: this.route.parent });
-            return;
-          }
-          this.action = ACTION.COPY;
-          delete this.workbasket.key;
-          this.workbasketCopy = this.workbasket;
-          this.getWorkbasketInformation();
-        } else {
-          this.selectWorkbasket(id);
+          this.selectedId = undefined;
+          this.initWorkbasket();
         }
-      }
-    });
-
-    this.masterAndDetailService.getShowDetail()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(showDetail => {
-        this.showDetail = showDetail;
       });
 
     this.importExportService.getImportingFinished()
@@ -86,6 +74,21 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
       });
   }
 
+  addDateToWorkbasket(workbasket: Workbasket) {
+    const date = TaskanaDate.getDate();
+    workbasket.created = date;
+    workbasket.modified = date;
+  }
+
+  initWorkbasket() {
+    const emptyWorkbasket = new Workbasket();
+    emptyWorkbasket.domain = this.domainService.getSelectedDomainValue();
+    emptyWorkbasket.type = ICONTYPES.ALL;
+    this.addDateToWorkbasket(emptyWorkbasket);
+    this.workbasket = emptyWorkbasket;
+    console.log(this.workbasket);
+  }
+
   backClicked(): void {
     this.service.selectWorkBasket();
     this.router.navigate(['./'], { relativeTo: this.route.parent });
@@ -95,18 +98,13 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
     this.tabSelected = this.action === ACTION.CREATE ? 'information' : tab;
   }
 
-  private selectWorkbasket(id: string) {
-    this.selectedId = id;
-    this.service.selectWorkBasket(id);
-  }
-
   private getWorkbasketInformation(selectedWorkbasket?: Workbasket) {
     let workbasketIdSelected: string;
     if (selectedWorkbasket) {
       workbasketIdSelected = selectedWorkbasket.workbasketId;
     }
     this.requestInProgress = true;
-
+    console.log('working');
     if (!workbasketIdSelected && this.action === ACTION.CREATE) { // CREATE
       this.workbasket = new Workbasket();
       this.domainService.getSelectedDomain()

@@ -37,9 +37,6 @@ export class WorkbasketOverviewComponent implements OnInit {
             this.showDetail = true;
             this.store.dispatch(new SelectWorkbasket(this.routerParams.id));
           }
-          if (this.routerParams.id && this.routerParams.id.indexOf('new-classification') !== -1) {
-            this.store.dispatch(new SetActiveAction(ACTION.CREATE));
-          }
         });
     }
 
