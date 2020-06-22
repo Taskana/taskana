@@ -181,7 +181,13 @@ export class ClassificationState implements NgxsAfterBootstrap {
   @Action(UpdateClassification)
   updateClassification(ctx: StateContext<ClassificationStateModel>, action: SaveClassification): Observable<any> {
     return this.classificationsService.putClassification(action.classification).pipe(take(1), tap(
-      classifications => ctx.patchState({ classifications })
+      () => {
+        this.getClassifications(ctx).subscribe(
+          classifications => {
+            ctx.patchState({ classifications });
+          }
+        );
+      }
     ));
   }
 
