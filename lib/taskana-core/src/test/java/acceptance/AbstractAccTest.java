@@ -29,16 +29,14 @@ import pro.taskana.task.api.models.ObjectReference;
 /** Base class for all acceptance tests. */
 public abstract class AbstractAccTest {
 
+  public static final String GROUP_1_DN =
+      "cn=Organisationseinheit KSC 1,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA";
+  public static final String GROUP_2_DN =
+      "cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA";
+  
   protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
   protected static TaskanaEngine taskanaEngine;
   protected static WorkingDaysToDaysConverter converter;
-
-  public static final String GROUP_1_DN =
-      "cn=Organisationseinheit KSC 1,cn=Organisationseinheit KSC,"
-          + "cn=organisation,OU=Test,O=TASKANA";
-  public static final String GROUP_2_DN =
-      "cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,"
-          + "cn=organisation,OU=Test,O=TASKANA";
 
   @BeforeAll
   public static void setupTest() throws Exception {

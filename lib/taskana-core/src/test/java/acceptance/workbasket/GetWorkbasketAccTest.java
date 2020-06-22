@@ -106,9 +106,7 @@ class GetWorkbasketAccTest extends AbstractAccTest {
     assertThat(workbasket.getCustom4()).isEqualTo("custom4");
   }
 
-  @WithAccessId(
-      user = "user-1-1",
-      groups = {GROUP_1_DN})
+  @WithAccessId(user = "user-1-1", groups = GROUP_1_DN)
   @Test
   void testGetWorkbasketPermissions() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();

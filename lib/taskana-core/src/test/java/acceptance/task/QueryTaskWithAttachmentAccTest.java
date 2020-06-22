@@ -85,7 +85,7 @@ class QueryTaskWithAttachmentAccTest extends AbstractAccTest {
 
     assertThat(queryAttachmentSummaries)
         .hasSize(originalAttachments.size())
-        .containsExactlyElementsOf(originalAttachments) // same values
+        .containsExactlyInAnyOrderElementsOf(originalAttachments) // same values
         .usingElementComparator(REFERENCE_COMPARATOR)
         .doesNotContainAnyElementsOf(originalAttachments); // but not same reference
   }
@@ -113,7 +113,7 @@ class QueryTaskWithAttachmentAccTest extends AbstractAccTest {
 
     assertThat(queryAttachmentSummaries)
         .hasSize(originalAttachments.size())
-        .containsExactlyElementsOf(originalAttachments) // same values
+        .containsExactlyInAnyOrderElementsOf(originalAttachments) // same values
         .usingElementComparator(REFERENCE_COMPARATOR)
         .doesNotContainAnyElementsOf(originalAttachments); // but not same reference
   }

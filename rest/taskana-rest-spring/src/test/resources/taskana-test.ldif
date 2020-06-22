@@ -25,6 +25,32 @@ objectclass: container
 ########################
 # Users General
 ########################
+dn: uid=monitor,cn=users,OU=Test,O=TASKANA
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Monitor
+description: desc
+uid: monitor
+sn: Monitor
+ou: Organisationseinheit/Organisationseinheit IT
+cn: monitor monitor
+userPassword: monitor
+
+dn: uid=taskadmin,cn=users,OU=Test,O=TASKANA
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Task
+description: desc
+uid: taskadmin
+sn: Admin
+ou: Organisationseinheit/Organisationseinheit IT
+cn: Task admin
+userPassword: taskadmin
+
 dn: uid=admin,cn=users,OU=Test,O=TASKANA
 objectclass: inetorgperson
 objectclass: organizationalperson

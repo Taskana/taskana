@@ -103,9 +103,7 @@ class UpdateClassificationAccTest extends AbstractAccTest {
     assertThatThrownBy(updateClassificationCall).isInstanceOf(NotAuthorizedException.class);
   }
 
-  @WithAccessId(
-      user = "businessadmin",
-      groups = {"user-1-1"}) // to read the task
+  @WithAccessId(user = "businessadmin", groups = "user-1-1") // to read the task
   @Test
   void testUpdateTaskOnClassificationKeyCategoryChange() throws Exception {
     setupTest();

@@ -20,9 +20,7 @@ class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {GROUP_1_DN})
+  @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void testGetFirstPageOfWorkbasketQueryWithOffset() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -31,9 +29,7 @@ class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
     assertThat(results).hasSize(5);
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {GROUP_1_DN})
+  @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void testGetSecondPageOfWorkbasketQueryWithOffset() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -61,9 +57,7 @@ class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
     assertThat(results).hasSize(3);
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {GROUP_1_DN})
+  @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void testPaginationWithPages() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -109,9 +103,7 @@ class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
     assertThat(results).hasSize(4);
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {GROUP_1_DN})
+  @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void testPaginationNullAndNegativeLimitsIgnoring() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -147,9 +139,7 @@ class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
     assertThat(results).hasSize(9);
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {GROUP_1_DN})
+  @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void testCountOfWorkbasketQuery() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -157,9 +147,7 @@ class QueryWorkbasketsWithPaginationAccTest extends AbstractAccTest {
     assertThat(count).isEqualTo(9L);
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {GROUP_1_DN})
+  @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void testWorkbasketQueryDomA() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();

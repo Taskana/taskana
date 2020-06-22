@@ -286,7 +286,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(TaskState.READY).isEqualTo(createdTask.getState());
   }
 
-  @WithAccessId(user = "admin", groups = "admin")
+  @WithAccessId(user = "admin")
   @Test
   void testForceCancelClaimSuccessfull()
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
@@ -547,9 +547,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(before).isEqualTo(after);
   }
 
-  @WithAccessId(
-      user = "user-1-2",
-      groups = {"user-1-1"}) // to read task
+  @WithAccessId(user = "user-1-2", groups = "user-1-1") // to read task
   @Test
   void should_CompleteTaskWhenAlreadyClaimedByDifferentUser_When_BulkForceCompletingTasks()
       throws Exception {
