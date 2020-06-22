@@ -1,1 +1,14 @@
-<p>workbasket-overview works!</p>
+<div class="no-gutter">
+    <div class="col-xs-12 col-md-4 vertical-right-divider">
+        <taskana-workbasket-list></taskana-workbasket-list>
+    </div>
+    <div class="col-xs-12 col-md-8" *ngIf="showDetail; else showEmptyPage">
+        <taskana-workbasket-details></taskana-workbasket-details>
+    </div>
+
+    <ng-template #showEmptyPage>
+        <div class="hidden-xs hidden-sm col-md-8 container-no-items">
+
+        </div>
+    </ng-template>
+</div>

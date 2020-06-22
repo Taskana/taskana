@@ -1,34 +1,30 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { WorkbasketListComponent } from 'app/administration/components/workbasket-list/workbasket-list.component';
-import { WorkbasketDetailsComponent } from 'app/administration/components/workbasket-details/workbasket-details.component';
-import { MasterAndDetailComponent } from 'app/shared/components/master-and-detail/master-and-detail.component';
-import { ClassificationListComponent } from 'app/administration/components/classification-list/classification-list.component';
-import { ClassificationDetailsComponent } from 'app/administration/components/classification-details/classification-details.component';
 import { DomainGuard } from 'app/shared/guards/domain.guard';
 import { AccessItemsManagementComponent } from './components/access-items-management/access-items-management.component';
 import { ClassificationOverviewComponent } from './components/classification-overview/classification-overview.component';
+import { WorkbasketOverviewComponent } from './components/workbasket-overview/workbasket-overview.component';
 
 const routes: Routes = [
   {
     path: 'workbaskets',
-    component: MasterAndDetailComponent,
+    component: WorkbasketOverviewComponent,
     canActivate: [DomainGuard],
     children: [
       {
         path: '',
-        component: WorkbasketListComponent,
+        component: WorkbasketOverviewComponent,
         outlet: 'master'
       },
       {
         path: 'new-classification/:id',
-        component: WorkbasketDetailsComponent,
+        component: WorkbasketOverviewComponent,
         outlet: 'detail'
       },
       {
         path: ':id',
-        component: WorkbasketDetailsComponent,
+        component: WorkbasketOverviewComponent,
         outlet: 'detail'
       },
       {
