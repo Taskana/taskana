@@ -8,7 +8,7 @@ import { Component,
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { NgForm } from '@angular/forms';
-import { Select } from '@ngxs/store';
+import { Select, Store } from '@ngxs/store';
 
 import { ICONTYPES } from 'app/shared/models/icon-types';
 import { ACTION } from 'app/shared/models/action';
@@ -26,6 +26,7 @@ import { NotificationService } from '../../../shared/services/notifications/noti
 import { CustomField,
   getCustomFields,
   WorkbasketsCustomisation } from '../../../shared/models/customisation';
+import { UpdateWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
 
 @Component({
   selector: 'taskana-workbasket-information',
@@ -63,7 +64,8 @@ implements OnInit, OnChanges, OnDestroy {
     private savingWorkbasket: SavingWorkbasketService,
     private requestInProgressService: RequestInProgressService,
     private formsValidatorService: FormsValidatorService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private store: Store
   ) {
   }
 
@@ -157,6 +159,7 @@ implements OnInit, OnChanges, OnDestroy {
       return;
     }
 
+    // this.store.dispatch(new UpdateWorkbasket(this.workbasket._links.self.href, this.workbasket));
     this.workbasketSubscription = this.workbasketService
       .updateWorkbasket(this.workbasket._links.self.href, this.workbasket)
       .subscribe(
