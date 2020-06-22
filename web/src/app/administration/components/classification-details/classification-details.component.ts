@@ -28,7 +28,8 @@ import { ClassificationCategoryImages,
 import { CreateClassification,
   RemoveSelectedClassification,
   RestoreSelectedClassification,
-  SaveClassification } from '../../../shared/store/classification-store/classification.actions';
+  SaveClassification,
+  SetActiveAction } from '../../../shared/store/classification-store/classification.actions';
 
 @Component({
   selector: 'taskana-classification-details',
@@ -82,6 +83,8 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
           this.classification = { ...initialClassification };
         });
         this.badgeMessage = 'Creating new classification';
+      } else if (this.action === ACTION.COPY) {
+        this.badgeMessage = `Copying Classification: ${this.classification.name}`;
       } else {
         this.badgeMessage = '';
       }
@@ -131,6 +134,11 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
+  onCopy() {
+    this.store.dispatch(new SetActiveAction(ACTION.COPY));
+    this.classification.key = '';
+  }
+
   selectCategory(category: string) {
     this.classification.category = category;
   }
@@ -157,7 +165,8 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
 
   private async onSave() {
     this.requestInProgressService.setRequestInProgress(true);
-    if (this.action === ACTION.CREATE) {
+    if (this.action) {
+      this.classification.classificationId = null; // in case the id has been set, but a new classification should be created
       this.store.dispatch(
         new CreateClassification(this.classification)
       ).pipe(take(1)).subscribe(store => {
