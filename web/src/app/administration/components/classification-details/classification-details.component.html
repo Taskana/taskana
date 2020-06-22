@@ -12,12 +12,15 @@
           <button type="button" (click)="onRestore()" class="btn btn-default" data-toggle="tooltip" title="Restore Previous Version">
             <span class="material-icons md-20 blue">restore</span>
           </button>
+          <button type="button" (click)="onCopy()" data-toggle="tooltip" title="Copy" class="btn btn-default">
+            <span class="material-icons md-20 green-blue">content_copy</span>
+          </button>
           <button type="button" (click)="removeClassification()" data-toggle="tooltip" title="Delete" class="btn btn-default">
             <span class="material-icons md-20 red">delete</span>
           </button>
         </div>
         <h4 class="panel-header">{{classification.name}}&nbsp; [{{classification.type}}]
-          <span *ngIf="action=== 0" class="badge warning"> {{badgeMessage}}</span>
+          <span *ngIf="action" class="badge warning"> {{badgeMessage}}</span>
         </h4>
       </div>
 
@@ -30,9 +33,9 @@
               <!-- KEY -->
               <div class="form-group required">
                 <label for="classification-key" class="control-label">Key</label>
-                <input type="text" required #key="ngModel" [disabled]="action!== 0" class="form-control"
+                <input type="text" required #key="ngModel" [disabled]="!action" class="form-control"
                        id="classification-key" placeholder="Key" [(ngModel)]="classification.key" name="classification.key">
-                <taskana-field-error-display *ngIf="action === 0" [displayError]="!isFieldValid('classification.key')"
+                <taskana-field-error-display *ngIf="action" [displayError]="!isFieldValid('classification.key')"
                   [validationTrigger]="this.toogleValidationMap.get('classification.key')" errorMessage="* Key is required">
                 </taskana-field-error-display>
               </div>
