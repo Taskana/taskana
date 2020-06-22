@@ -76,9 +76,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
     assertThat(workbaskets).hasSize(count);
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {GROUP_1_DN})
+  @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void testQueryWorkbasketValuesForColumnName() {
     List<String> columnValueList = workbasketService.createWorkbasketQuery().listValues(NAME, null);
@@ -95,9 +93,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
     assertThat(columnValueList).hasSize(4);
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {GROUP_1_DN})
+  @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void testQueryWorkbasketByDomain() {
     List<WorkbasketSummary> results =
@@ -105,9 +101,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
     assertThat(results).hasSize(1);
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {GROUP_1_DN})
+  @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void testQueryWorkbasketByDomainAndType() {
     List<WorkbasketSummary> results =
@@ -119,9 +113,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
     assertThat(results).hasSize(6);
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {GROUP_1_DN})
+  @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void testQueryWorkbasketByName() {
     List<WorkbasketSummary> results =
@@ -133,9 +125,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
         .isEqualTo("GPK_KSC");
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {GROUP_1_DN})
+  @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void testQueryWorkbasketByNameStartsWith() {
     List<WorkbasketSummary> results =
@@ -143,9 +133,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
     assertThat(results).hasSize(3);
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {GROUP_1_DN})
+  @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void testQueryWorkbasketByNameContains() {
     List<WorkbasketSummary> results =
@@ -156,9 +144,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
     assertThat(results).hasSize(5);
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {GROUP_1_DN})
+  @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void testQueryWorkbasketByNameContainsCaseInsensitive() {
     List<WorkbasketSummary> results =
@@ -166,9 +152,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
     assertThat(results).hasSize(2);
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {GROUP_1_DN})
+  @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void testQueryWorkbasketByDescription() {
     List<WorkbasketSummary> results =
@@ -181,9 +165,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
     assertThat(results).hasSize(9);
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {GROUP_1_DN})
+  @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void testQueryWorkbasketByOwnerLike() {
     List<WorkbasketSummary> results =
@@ -195,9 +177,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
     assertThat(results).hasSize(1);
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {GROUP_1_DN})
+  @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void testQueryWorkbasketByKey() {
     List<WorkbasketSummary> results =
@@ -205,9 +185,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
     assertThat(results).hasSize(1);
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {GROUP_1_DN})
+  @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void testQueryWorkbasketByMultipleKeys() {
     List<WorkbasketSummary> results =
@@ -215,9 +193,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
     assertThat(results).hasSize(2);
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {GROUP_1_DN})
+  @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void testQueryWorkbasketByMultipleKeysWithUnknownKey() {
     List<WorkbasketSummary> results =
@@ -225,9 +201,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
     assertThat(results).hasSize(2);
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {GROUP_1_DN})
+  @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void testQueryWorkbasketByKeyContains() {
     List<WorkbasketSummary> results =
@@ -235,9 +209,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
     assertThat(results).hasSize(3);
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {GROUP_1_DN})
+  @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void testQueryWorkbasketByKeyContainsIgnoreCase() {
     List<WorkbasketSummary> results =
@@ -245,9 +217,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
     assertThat(results).hasSize(3);
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {GROUP_1_DN})
+  @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void testQueryWorkbasketByKeyOrNameContainsIgnoreCase() {
     List<WorkbasketSummary> results =
@@ -255,9 +225,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
     assertThat(results).hasSize(9);
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {GROUP_1_DN})
+  @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void testQueryWorkbasketByNameStartsWithSortedByNameAscending() {
     List<WorkbasketSummary> results =
@@ -309,9 +277,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
         .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {GROUP_1_DN})
+  @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void testQueryWorkbasketByCreated() {
     List<WorkbasketSummary> results =
@@ -319,9 +285,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
     assertThat(results).hasSize(9);
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {GROUP_1_DN})
+  @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void testQueryWorkbasketByModified() {
     List<WorkbasketSummary> results =
@@ -351,9 +315,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
     assertThat(results).hasSize(13);
   }
 
-  @WithAccessId(
-      user = "teamlead-1",
-      groups = {GROUP_1_DN})
+  @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void testQueryWorkbasketByDomainLike() {
     List<WorkbasketSummary> results =

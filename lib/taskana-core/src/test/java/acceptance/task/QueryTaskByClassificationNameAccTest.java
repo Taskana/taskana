@@ -79,9 +79,7 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
     assertThat(tasks).hasSize(1);
   }
 
-  @WithAccessId(
-      user = "user-1-1",
-      groups = {GROUP_1_DN})
+  @WithAccessId(user = "user-1-1", groups = GROUP_1_DN)
   @Test
   void testQueryByClassificationNameLike() {
     TaskService taskService = taskanaEngine.getTaskService();

@@ -47,9 +47,7 @@ public class DeleteTaskCommentAccTest extends AbstractAccTest {
     assertThat(taskCommentsAfterDeletion).hasSize(1);
   }
 
-  @WithAccessId(
-      user = "user-1-2",
-      groups = {"user-1-1"}) // to read comments
+  @WithAccessId(user = "user-1-2", groups = "user-1-1") // to read comments
   @Test
   void should_FailToDeleteTaskComment_When_UserHasNoAuthorization()
       throws NotAuthorizedException, TaskNotFoundException {

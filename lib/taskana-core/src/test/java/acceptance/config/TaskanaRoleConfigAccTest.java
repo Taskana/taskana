@@ -41,19 +41,31 @@ class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
     assertThat(rolesConfigured).containsOnly(TaskanaRole.values());
 
     Set<String> users = getConfiguration().getRoleMap().get(TaskanaRole.USER);
-    assertThat(users).contains("user-1-1", "user-1-2");
+    assertThat(users)
+        .containsExactlyInAnyOrder(
+            "teamlead-1",
+            "teamlead-2",
+            "user-1-1",
+            "user-1-2",
+            "user-2-1",
+            "user-2-2",
+            "user-b-1",
+            "user-b-2");
 
     Set<String> admins = getConfiguration().getRoleMap().get(TaskanaRole.ADMIN);
-    assertThat(admins).contains("uid=admin,cn=users,ou=test,o=taskana", "admin");
+    assertThat(admins).containsExactlyInAnyOrder("uid=admin,cn=users,ou=test,o=taskana", "admin");
 
     Set<String> taskAdmins = getConfiguration().getRoleMap().get(TaskanaRole.TASK_ADMIN);
-    assertThat(taskAdmins).contains("taskadmin");
+    assertThat(taskAdmins).containsExactlyInAnyOrder("taskadmin");
 
     Set<String> businessAdmins = getConfiguration().getRoleMap().get(TaskanaRole.BUSINESS_ADMIN);
-    assertThat(businessAdmins).contains("businessadmin", "teamlead-2");
+    assertThat(businessAdmins)
+        .containsExactlyInAnyOrder(
+            "businessadmin", "cn=business-admins,cn=groups,ou=test,o=taskana");
 
     Set<String> monitorAccessIds = getConfiguration().getRoleMap().get(TaskanaRole.MONITOR);
-    assertThat(monitorAccessIds).contains("monitor");
+    assertThat(monitorAccessIds)
+        .containsExactlyInAnyOrder("monitor", "cn=monitor-users,cn=groups,ou=test,o=taskana");
   }
 
   @Test

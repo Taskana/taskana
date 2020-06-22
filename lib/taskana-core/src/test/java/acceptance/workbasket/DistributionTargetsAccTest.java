@@ -218,9 +218,7 @@ class DistributionTargetsAccTest extends AbstractAccTest {
     assertThat(distributionTargets).isEmpty();
   }
 
-  @WithAccessId(
-      user = "user-1-1",
-      groups = {GROUP_1_DN})
+  @WithAccessId(user = "user-1-1", groups = GROUP_1_DN)
   @Test
   void testAddDistributionTargetsFailsNotAuthorized()
       throws NotAuthorizedException, WorkbasketNotFoundException {

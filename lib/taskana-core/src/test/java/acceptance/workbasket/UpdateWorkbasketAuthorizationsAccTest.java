@@ -139,9 +139,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         .isInstanceOf(InvalidArgumentException.class);
   }
 
-  @WithAccessId(
-      user = "businessadmin",
-      groups = {GROUP_2_DN})
+  @WithAccessId(user = "businessadmin", groups = GROUP_2_DN)
   @Test
   void testUpdatedAccessItemLeadsToNotAuthorizedException()
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
@@ -167,7 +165,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         workbasketService.getWorkbasketAccessItems("WBI:100000000000000000000000000000000008");
     WorkbasketAccessItem theAccessItem =
         accessItems.stream()
-            .filter(x -> groupName.equals(x.getAccessId()))
+            .filter(x -> groupName.equalsIgnoreCase(x.getAccessId()))
             .findFirst()
             .orElse(null);
 
@@ -295,15 +293,14 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
   @Test
   void testDeleteAccessItemsForAccessId() throws NotAuthorizedException {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-    final String accessId = GROUP_1_DN;
     final long accessIdCountBefore =
-        workbasketService.createWorkbasketAccessItemQuery().accessIdIn(accessId).count();
+        workbasketService.createWorkbasketAccessItemQuery().accessIdIn(GROUP_1_DN).count();
 
-    workbasketService.deleteWorkbasketAccessItemsForAccessId(accessId);
+    workbasketService.deleteWorkbasketAccessItemsForAccessId(GROUP_1_DN);
 
     final long accessIdCountAfter =
-        workbasketService.createWorkbasketAccessItemQuery().accessIdIn(accessId).count();
-    assertThat(accessIdCountBefore > accessIdCountAfter).isTrue();
+        workbasketService.createWorkbasketAccessItemQuery().accessIdIn(GROUP_1_DN).count();
+    assertThat(accessIdCountBefore).isGreaterThan(accessIdCountAfter);
   }
 
   @WithAccessId(user = "businessadmin")

@@ -26,9 +26,7 @@ class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
     super();
   }
 
-  @WithAccessId(
-      user = "user-1-2",
-      groups = {GROUP_2_DN})
+  @WithAccessId(user = "user-1-2", groups = GROUP_2_DN)
   @Test
   void testQueryForWorkbasketKeyDomain() {
     TaskService taskService = taskanaEngine.getTaskService();

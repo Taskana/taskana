@@ -853,6 +853,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
     try {
       taskanaEngine.openConnection();
+      if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds() && accessId != null) {
+        accessId = accessId.toLowerCase();
+      }
       workbasketAccessMapper.deleteAccessItemsForAccessId(accessId);
     } finally {
       taskanaEngine.returnConnection();
