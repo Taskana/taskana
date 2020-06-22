@@ -40,6 +40,10 @@ export class SelectWorkbasket {
 
 export class CreateWorkbasket {
   static readonly type = '[Workbasket] Create a workbasket';
+}
+
+export class SaveNewWorkbasket {
+  static readonly type = '[Workbasket] Save new workbasket';
   constructor(public workbasket: Workbasket) {
   }
 }

@@ -14,6 +14,7 @@ import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { ImportExportService } from 'app/administration/services/import-export.service';
 import { Actions, ofActionCompleted, ofActionDispatched, Select, Store } from '@ngxs/store';
 import { takeUntil } from 'rxjs/operators';
+import { Location } from '@angular/common';
 import { GetWorkbasketsSummary,
   SelectWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
@@ -52,7 +53,8 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private orientationService: OrientationService,
     private importExportService: ImportExportService,
-    private ngxsActions$: Actions
+    private ngxsActions$: Actions,
+    private location: Location
   ) {
     this.ngxsActions$.pipe(ofActionDispatched(GetWorkbasketsSummary),
       takeUntil(this.destroy$))
@@ -98,7 +100,9 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   selectWorkbasket(id: string) {
     this.store.dispatch(new SelectWorkbasket(id));
     this.selectedId = id;
-    this.router.navigate([{ outlets: { detail: [this.selectedId] } }], { relativeTo: this.route });
+    this.location.go(this.location.path().replace(/(workbaskets).*/g, `workbaskets/(detail:${id})`));
+
+    // this.router.navigate([{ outlets: { detail: [this.selectedId] } }], { relativeTo: this.route });
   }
 
   performSorting(sort: Sorting) {

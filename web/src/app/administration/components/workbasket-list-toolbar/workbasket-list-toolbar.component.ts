@@ -8,7 +8,10 @@ import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { TaskanaType } from 'app/shared/models/taskana-type';
 import { expandDown } from 'theme/animations/expand.animation';
-import { NotificationService } from '../../../shared/services/notifications/notification.service';
+import { Store } from '@ngxs/store';
+import { Location } from '@angular/common';
+import { ACTION } from '../../../shared/models/action';
+import { CreateWorkbasket, SetActiveAction } from '../../../shared/store/workbasket-store/workbasket.actions';
 
 @Component({
   selector: 'taskana-workbasket-list-toolbar',
@@ -35,7 +38,8 @@ export class WorkbasketListToolbarComponent implements OnInit {
     private workbasketService: WorkbasketService,
     private route: ActivatedRoute,
     private router: Router,
-    private errors: NotificationService
+    private store: Store,
+    private location: Location
   ) {
   }
 
@@ -51,7 +55,10 @@ export class WorkbasketListToolbarComponent implements OnInit {
   }
 
   addWorkbasket() {
-    this.workbasketService.selectWorkBasket();
-    this.router.navigate([{ outlets: { detail: ['new-workbasket'] } }], { relativeTo: this.route });
+    this.store.dispatch(new SetActiveAction(ACTION.CREATE));
+    // this.store.dispatch(new CreateWorkbasket());
+    this.location.go(this.location.path().replace(/(workbaskets).*/g, 'workbaskets/new-workbasket'));
+    // this.workbasketService.selectWorkBasket();
+    // this.router.navigate([{ outlets: { detail: ['new-workbasket'] } }], { relativeTo: this.route });
   }
 }
