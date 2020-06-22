@@ -1,10 +1,4 @@
-import { AfterViewChecked,
-  Component,
-  ElementRef,
-  EventEmitter,
-  HostListener,
-  Input,
-  OnDestroy,
+import { AfterViewChecked, Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy,
   OnInit,
   Output,
   ViewChild } from '@angular/core';
@@ -12,8 +6,8 @@ import { TreeNodeModel } from 'app/shared/models/tree-node';
 
 import { ITreeOptions, KEYS, TREE_ACTIONS, TreeComponent } from 'angular-tree-component';
 import { Pair } from 'app/shared/models/pair';
-import { Observable, Subject } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { Observable, Subject, combineLatest } from 'rxjs';
+import { map, takeUntil, filter, tap } from 'rxjs/operators';
 import { Select, Store } from '@ngxs/store';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 
@@ -45,6 +39,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
   @Select(ClassificationSelectors.selectedClassificationId) selectedClassificationId$: Observable<string>;
   @Select(ClassificationSelectors.activeAction) activeAction$: Observable<ACTION>;
   @Select(ClassificationSelectors.classifications) classifications$: Observable<TreeNodeModel[]>;
+  @Select(ClassificationSelectors.selectedClassificationType) classificationTypeSelected$: Observable<string>;
 
   options: ITreeOptions = {
     displayField: 'name',
@@ -92,19 +87,24 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
       this.action = action;
     });
 
-    this.selectedClassificationId$.pipe(takeUntil(this.destroy$)).subscribe(selectedClassificationId => {
-      this.selectNodeId = typeof selectedClassificationId !== 'undefined' ? selectedClassificationId : undefined;
-      if (typeof this.tree.treeModel.getActiveNode() !== 'undefined') {
-        if (this.tree.treeModel.getActiveNode().data.classificationId !== this.selectNodeId) {
-          this.selectNode(this.selectNodeId);
-        }
-      }
-    });
+    const classificationCopy$: Observable<TreeNodeModel[]> = this.classifications$.pipe(
+      filter(classifications => typeof (classifications) !== 'undefined'),
+      map(classifications => classifications.map(this.classificationsDeepCopy.bind(this)))
+    );
 
-    this.classifications$.pipe(takeUntil(this.destroy$)).subscribe(classifications => {
-      if (typeof (classifications) !== 'undefined') {
-        this.classifications = classifications.map(this.classificationsDeepCopy.bind(this));
-      }
+    combineLatest(this.selectedClassificationId$, classificationCopy$).pipe(takeUntil(this.destroy$))
+      .subscribe(([selectedClassificationId, classifications]) => {
+        this.classifications = classifications;
+        this.selectNodeId = typeof selectedClassificationId !== 'undefined' ? selectedClassificationId : undefined;
+        if (typeof this.tree.treeModel.getActiveNode() !== 'undefined') {
+          if (this.tree.treeModel.getActiveNode().data.classificationId !== this.selectNodeId) {
+            this.selectNode(this.selectNodeId);
+          }
+        }
+      });
+
+    this.classificationTypeSelected$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      if (this.tree.treeModel.getActiveNode()) { this.deselectActiveNode(); }
     });
   }
 
@@ -118,6 +118,12 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
   ngAfterViewChecked(): void {
     if (this.selectNodeId && !this.tree.treeModel.getActiveNode()) {
       this.selectNode(this.selectNodeId);
+    }
+
+    if (typeof this.selectNodeId !== 'undefined') {
+      if (typeof this.getNode(this.selectNodeId) !== 'undefined') {
+        this.getNode(this.selectNodeId).ensureVisible();
+      }
     }
 
     if (this.filterTextOld !== this.filterText

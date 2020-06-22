@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
-import { ActivatedRoute } from '@angular/router';
 import { Actions, ofActionCompleted, ofActionDispatched, Select, Store } from '@ngxs/store';
 
 import { ImportExportService } from 'app/administration/services/import-export.service';
@@ -13,8 +12,6 @@ import { EngineConfigurationSelectors } from 'app/shared/store/engine-configurat
 import { ClassificationSelectors } from 'app/shared/store/classification-store/classification.selectors';
 import { Location } from '@angular/common';
 import { ClassificationCategoryImages } from '../../../shared/models/customisation';
-
-import { NotificationService } from '../../../shared/services/notifications/notification.service';
 
 import { GetClassifications, SetActiveAction } from '../../../shared/store/classification-store/classification.actions';
 import { ACTION } from '../../../shared/models/action';
@@ -46,9 +43,7 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
   constructor(
     private classificationService: ClassificationsService,
     private location: Location,
-    private route: ActivatedRoute,
     private importExportService: ImportExportService,
-    private notificationsService: NotificationService,
     private store: Store,
     private ngxsActions$: Actions
   ) {

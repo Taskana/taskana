@@ -1,6 +1,7 @@
 import { Action, NgxsAfterBootstrap, State, StateContext } from '@ngxs/store';
 import { Observable, of } from 'rxjs';
 import { take, tap } from 'rxjs/operators';
+import { TaskanaDate } from 'app/shared/util/taskana.date';
 import { CategoriesResponse,
   ClassificationCategoriesService } from '../../services/classification-categories/classification-categories.service';
 import { CreateClassification,
@@ -16,6 +17,7 @@ import { CreateClassification,
 import { ClassificationsService } from '../../services/classifications/classifications.service';
 import { ClassificationDefinition } from '../../models/classification-definition';
 import { ACTION } from '../../models/action';
+import { DomainService } from '../../services/domain/domain.service';
 
 class InitializeStore {
   static readonly type = '[ClassificationState] Initializing state';
@@ -23,15 +25,21 @@ class InitializeStore {
 
 @State<ClassificationStateModel>({ name: 'classification' })
 export class ClassificationState implements NgxsAfterBootstrap {
-  constructor(private categoryService: ClassificationCategoriesService,
-    private classificationsService: ClassificationsService) {
+  constructor(
+    private categoryService: ClassificationCategoriesService,
+    private classificationsService: ClassificationsService,
+    private domainService: DomainService
+  ) {
   }
 
   @Action(SetSelectedClassificationType)
   setSelectedClassificationType(ctx: StateContext<ClassificationStateModel>, action: SetSelectedClassificationType): Observable<null> {
     const state: ClassificationStateModel = ctx.getState();
     if (state.classificationTypes[action.selectedType]) {
-      ctx.patchState({ selectedClassificationType: action.selectedType });
+      ctx.patchState({
+        selectedClassificationType: action.selectedType,
+        selectedClassification: undefined
+      });
     }
     return of(null);
   }
@@ -141,7 +149,20 @@ export class ClassificationState implements NgxsAfterBootstrap {
   @Action(SetActiveAction)
   setActiveAction(ctx: StateContext<ClassificationStateModel>, action: SetActiveAction): Observable<null> {
     if (action.action === ACTION.CREATE) {
-      ctx.patchState({ selectedClassification: new ClassificationDefinition(), action: action.action });
+      // Initialization of a new classification
+      const initialClassification: ClassificationDefinition = new ClassificationDefinition();
+      const state: ClassificationStateModel = ctx.getState();
+      initialClassification.type = state.selectedClassificationType;
+      [initialClassification.category] = state.classificationTypes[initialClassification.type];
+      const date = TaskanaDate.getDate();
+      initialClassification.created = date;
+      initialClassification.modified = date;
+      initialClassification.domain = this.domainService.getSelectedDomainValue();
+      if (state.selectedClassification) {
+        initialClassification.parentId = state.selectedClassification.classificationId;
+        initialClassification.parentKey = state.selectedClassification.key;
+      }
+      ctx.patchState({ selectedClassification: initialClassification, action: action.action });
     } else {
       ctx.patchState({ action: action.action });
     }

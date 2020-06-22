@@ -2,12 +2,10 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subject, zip } from 'rxjs';
 
-import { ClassificationDefinition,
-  customFieldCount } from 'app/shared/models/classification-definition';
+import { ClassificationDefinition, customFieldCount } from 'app/shared/models/classification-definition';
 import { ACTION } from 'app/shared/models/action';
 
 import { highlight } from 'theme/animations/validation.animation';
-import { TaskanaDate } from 'app/shared/util/taskana.date';
 
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
@@ -80,7 +78,9 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     this.action$.pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.action = data;
       if (this.action === ACTION.CREATE) {
-        this.initClassificationOnCreation();
+        this.selectedClassification$.pipe(take(1)).subscribe(initialClassification => {
+          this.classification = { ...initialClassification };
+        });
         this.badgeMessage = 'Creating new classification';
       } else {
         this.badgeMessage = '';
@@ -207,23 +207,6 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     this.classification = { ...classificationSelected };
   }
 
-  private addDateToClassification(classification: ClassificationDefinition) {
-    const date = TaskanaDate.getDate();
-    classification.created = date;
-    classification.modified = date;
-  }
-
-  private initClassificationOnCreation() {
-    zip(this.categories$, this.selectedClassificationType$).pipe(take(1)).subscribe(([categories, selectedType]: [string[], string]) => {
-      const tempClassification: ClassificationDefinition = new ClassificationDefinition();
-      [tempClassification.category] = categories;
-      tempClassification.domain = this.domainService.getSelectedDomainValue();
-      tempClassification.type = selectedType;
-      this.addDateToClassification(tempClassification);
-      this.classification = tempClassification;
-    });
-  }
-
   private removeClassificationConfirmation() {
     if (!this.classification || !this.classification.classificationId) {
       this.notificationsService.triggerError(NOTIFICATION_TYPES.SELECT_ERR);
@@ -236,6 +219,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         new Map<string, string>([['classificationKey', this.classification.key]]));
       this.afterRequest();
     });
+    this.location.go(this.location.path().replace(/(classifications).*/g, 'classifications'));
   }
 
   getClassificationCustom(customNumber: number): string {
