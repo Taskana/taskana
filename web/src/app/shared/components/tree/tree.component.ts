@@ -51,8 +51,6 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
       }
     },
     useVirtualScroll: true,
-    animateExpand: true,
-    animateSpeed: 20,
     levelPadding: 20,
     allowDrag: true,
     allowDrop: true
@@ -89,7 +87,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
 
     const classificationCopy$: Observable<TreeNodeModel[]> = this.classifications$.pipe(
       filter(classifications => typeof (classifications) !== 'undefined'),
-      map(classifications => classifications.map(this.classificationsDeepCopy.bind(this)))
+      map(classifications => classifications.map(c => this.classificationsDeepCopy(c)))
     );
 
     combineLatest(this.selectedClassificationId$, classificationCopy$).pipe(takeUntil(this.destroy$))
@@ -111,7 +109,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
   classificationsDeepCopy(classification: TreeNodeModel) {
     const ret: TreeNodeModel = { ...classification };
     ret.children = ret.children ? [...ret.children] : [];
-    ret.children = ret.children.map(this.classificationsDeepCopy.bind(this));
+    ret.children = ret.children.map(children => this.classificationsDeepCopy(children));
     return ret;
   }
 
@@ -217,6 +215,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
   }
 
   private manageTreeState() {
+    this.tree.treeModel.collapseAll();
     if (this.filterText === '') {
       this.tree.treeModel.collapseAll();
     }
