@@ -8,12 +8,12 @@ import { ACTION } from '../../models/action';
 export class WorkbasketSelectors {
   @Selector([WorkbasketState])
   static workbaskets(state: WorkbasketStateModel) {
-    return state.workbaskets;
+    return { ...state.workbaskets };
   }
 
   @Selector([WorkbasketState])
   static selectedWorkbasket(state: WorkbasketStateModel): Workbasket {
-    return state.selectedWorkbasket;
+    return { ...state.selectedWorkbasket };
   }
 
   @Selector([WorkbasketState])
