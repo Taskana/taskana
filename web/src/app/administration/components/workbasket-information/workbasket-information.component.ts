@@ -26,7 +26,7 @@ import { NotificationService } from '../../../shared/services/notifications/noti
 import { CustomField,
   getCustomFields,
   WorkbasketsCustomisation } from '../../../shared/models/customisation';
-import { UpdateWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
+import { RemoveDistributionTarget, UpdateWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
 
 @Component({
   selector: 'taskana-workbasket-information',
@@ -130,26 +130,7 @@ implements OnInit, OnChanges, OnDestroy {
   }
 
   removeDistributionTargets() {
-    this.requestInProgressService.setRequestInProgress(true);
-    this.workbasketService
-      .removeDistributionTarget(
-        this.workbasket._links.removeDistributionTargets.href
-      )
-      .subscribe(
-        reponse => {
-          this.requestInProgressService.setRequestInProgress(false);
-          this.notificationService.showToast(
-            NOTIFICATION_TYPES.SUCCESS_ALERT_9,
-            new Map<string, string>([['workbasketId', this.workbasket.workbasketId]])
-          );
-        },
-        error => {
-          this.notificationService.triggerError(NOTIFICATION_TYPES.REMOVE_ERR_2,
-            error,
-            new Map<String, String>([['workbasketId', this.workbasket.workbasketId]]));
-          this.requestInProgressService.setRequestInProgress(false);
-        }
-      );
+    this.store.dispatch(new RemoveDistributionTarget(this.workbasket._links.removeDistributionTargets.href));
   }
 
   private onSave() {
@@ -159,8 +140,8 @@ implements OnInit, OnChanges, OnDestroy {
       return;
     }
 
-    // this.store.dispatch(new UpdateWorkbasket(this.workbasket._links.self.href, this.workbasket));
-    this.workbasketService
+    this.store.dispatch(new UpdateWorkbasket(this.workbasket._links.self.href, this.workbasket));
+    /* this.workbasketService
       .updateWorkbasket(this.workbasket._links.self.href, this.workbasket)
       .pipe(takeUntil(this.destroy$))
       .subscribe(
@@ -177,7 +158,7 @@ implements OnInit, OnChanges, OnDestroy {
           this.afterRequest();
           this.notificationService.triggerError(NOTIFICATION_TYPES.SAVE_ERR_4, error);
         }
-      );
+      ); */
   }
 
   private beforeRequest() {
