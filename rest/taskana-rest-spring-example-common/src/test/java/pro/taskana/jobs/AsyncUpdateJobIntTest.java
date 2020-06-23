@@ -50,7 +50,7 @@ class AsyncUpdateJobIntTest {
   }
 
   @Test
-  void testUpdateClassificationPrioServiceLevel() throws Exception {
+  void testUpdateClassificationPrioServiceLevel() {
 
     // 1st step: get old classification :
     final Instant before = Instant.now();

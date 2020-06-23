@@ -9,7 +9,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
@@ -21,7 +20,6 @@ import pro.taskana.simplehistory.rest.sampledata.SampleDataGenerator;
 
 /** Example Application to create the documentation. */
 @SpringBootApplication
-@ComponentScan(basePackages = "pro.taskana.rest.simplehistory")
 @Import({TaskHistoryRestConfiguration.class})
 public class ExampleDocumentationApplication {
 

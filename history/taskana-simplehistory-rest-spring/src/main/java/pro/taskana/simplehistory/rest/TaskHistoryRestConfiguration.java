@@ -10,7 +10,7 @@ import pro.taskana.simplehistory.rest.resource.TaskHistoryEventResourceAssembler
 
 /** Configuration for Taskana history REST service. */
 @Configuration
-@ComponentScan(basePackages = {"pro.taskana", "pro.taskana.simplehistory.rest"})
+@ComponentScan({"pro.taskana", "pro.taskana.simplehistory.rest"})
 @EnableTransactionManagement
 public class TaskHistoryRestConfiguration {
 

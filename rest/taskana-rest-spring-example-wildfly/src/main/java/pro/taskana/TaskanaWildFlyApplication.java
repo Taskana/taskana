@@ -23,6 +23,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import pro.taskana.common.rest.RestConfiguration;
 import pro.taskana.common.rest.ldap.LdapClient;
 import pro.taskana.common.rest.ldap.LdapConfiguration;
 import pro.taskana.jobs.TransactionalJobsConfiguration;

@@ -1,33 +1,36 @@
-package pro.taskana;
+package pro.taskana.common.rest;
 
 import com.fasterxml.jackson.databind.cfg.HandlerInstantiator;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
 import org.springframework.http.converter.json.SpringHandlerInstantiator;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import pro.taskana.SpringTaskanaEngineConfiguration;
+import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.common.rest.ldap.LdapClient;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.workbasket.api.WorkbasketService;
 
 /** Configuration for REST service. */
 @Configuration
-@ComponentScan
+@ComponentScan("pro.taskana")
 @EnableTransactionManagement
 public class RestConfiguration {
 
-  @Value("${taskana.schemaName:TASKANA}")
-  private String schemaName;
+  private final String schemaName;
+
+  public RestConfiguration(@Value("${taskana.schemaName:TASKANA}") String schemaName) {
+    this.schemaName = schemaName;
+  }
 
   @Bean
   public ClassificationService getClassificationService(TaskanaEngine taskanaEngine) {
@@ -50,21 +53,21 @@ public class RestConfiguration {
   }
 
   @Bean
-  @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
   public TaskanaEngine getTaskanaEngine(TaskanaEngineConfiguration taskanaEngineConfiguration) {
     return taskanaEngineConfiguration.buildTaskanaEngine();
   }
 
   @Bean
-  @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
+  @ConditionalOnMissingBean(TaskanaEngineConfiguration.class)
   public TaskanaEngineConfiguration taskanaEngineConfiguration(DataSource dataSource)
       throws SQLException {
     return new SpringTaskanaEngineConfiguration(dataSource, true, true, schemaName);
   }
 
   @Bean
-  public LdapClient ldapClient() {
-    return new LdapClient();
+  @ConditionalOnMissingBean(DataSource.class)
+  public DataSource dataSource() {
+    return TaskanaEngineConfiguration.createDefaultDataSource();
   }
 
   // Needed for injection into jackson deserializer.

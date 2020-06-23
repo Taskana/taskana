@@ -1,34 +1,28 @@
-package pro.taskana.rest;
+package pro.taskana;
 
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import pro.taskana.sampledata.SampleDataGenerator;
 
-@Configuration
-public class ExampleRestConfiguration {
-
-  private final String schemaName;
+@SpringBootApplication
+@DependsOn("getTaskanaEngine") // wait for schema to be created BEFORE inserting test data
+public class TestConfiguration {
 
   @Autowired
-  public ExampleRestConfiguration(@Value("${taskana.schemaName:TASKANA}") String schemaName) {
-    this.schemaName = schemaName;
+  public TestConfiguration(
+      @Value("${taskana.schemaName:TASKANA}") String schemaName, DataSource dataSource) {
+    new SampleDataGenerator(dataSource, schemaName).generateSampleData();
   }
 
   @Bean
   public PlatformTransactionManager txManager(DataSource dataSource) {
     return new DataSourceTransactionManager(dataSource);
-  }
-
-  @Bean
-  @DependsOn("getTaskanaEngine") // generate sample data after schema was inserted
-  public SampleDataGenerator generateSampleData(DataSource dataSource) {
-    return new SampleDataGenerator(dataSource, schemaName);
   }
 }
