@@ -128,7 +128,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     } else {
       this.store.dispatch(
         new RestoreSelectedClassification(this.classification.classificationId)
-      ).pipe(take(1)).subscribe(ctx => {
+      ).pipe(take(1)).subscribe(() => {
         this.notificationsService.showToast(NOTIFICATION_TYPES.INFO_ALERT);
       });
     }
@@ -136,7 +136,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
 
   onCopy() {
     this.store.dispatch(new SetActiveAction(ACTION.COPY));
-    this.classification.key = '';
+    this.classification.key = null;
   }
 
   selectCategory(category: string) {
@@ -214,6 +214,9 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
 
   private fillClassificationInformation(classificationSelected: ClassificationDefinition) {
     this.classification = { ...classificationSelected };
+    if (this.action === ACTION.COPY) {
+      this.classification.key = null;
+    }
   }
 
   private removeClassificationConfirmation() {
