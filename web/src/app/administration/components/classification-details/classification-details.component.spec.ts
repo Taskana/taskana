@@ -72,7 +72,31 @@ describe('ClassificationDetailsComponent', () => {
       classificationsService = testBed.get(ClassificationsService);
       spyOn(classificationsService, 'getClassifications').and.returnValue(of(treeNodes));
       spyOn(classificationsService, 'deleteClassification').and.returnValue(of(true));
-      component.classification = new ClassificationDefinition('id1');
+      component.classification = {
+        classificationId: 'CLI:100000000000000000000000000000000002',
+        key: 'L10303',
+        applicationEntryPoint: '',
+        category: 'EXTERNAL',
+        domain: 'DOMAIN_A',
+        name: 'Beratungsprotokoll',
+        parentId: '',
+        parentKey: '',
+        priority: 101,
+        serviceLevel: 'P1D',
+        type: 'TASK',
+        custom1: 'VNR,RVNR,KOLVNR, ANR',
+        custom2: '',
+        custom3: '',
+        custom4: '',
+        custom5: '',
+        custom6: '',
+        custom7: '',
+        custom8: '',
+        isValidInDomain: true,
+        created: '2020-06-22T12:51:31.164Z',
+        modified: '2020-06-22T12:51:31.164Z',
+        description: 'Beratungsprotokoll'
+      };
       component.classification._links = new LinksClassification({ self: '' });
       fixture.detectChanges();
       done();
@@ -82,5 +106,17 @@ describe('ClassificationDetailsComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should copy the classification without its key', async done => {
+    const startClassification = { ...component.classification };
+    const copyButton = fixture.debugElement.nativeElement.querySelector('#copyButton');
+    copyButton.click();
+    fixture.detectChanges();
+    expect(component.classification.name).toEqual(startClassification.name);
+    expect(component.classification.classificationId).toEqual(startClassification.classificationId);
+    expect(component.classification.key).toBeNull();
+    expect(fixture.debugElement.nativeElement.querySelector('#classification-key').disabled).toEqual(false);
+    done();
   });
 });
