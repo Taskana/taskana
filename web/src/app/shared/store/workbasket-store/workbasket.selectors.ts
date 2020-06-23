@@ -30,4 +30,12 @@ export class WorkbasketSelectors {
   static workbasketActiveAction(state: WorkbasketStateModel): ACTION {
     return state.action;
   }
+
+  @Selector([WorkbasketState])
+  static selectedWorkbasketAndAction(state: WorkbasketStateModel) {
+    return {
+      selectedWorkbasket: state.selectedWorkbasket,
+      action: state.action
+    };
+  }
 }
