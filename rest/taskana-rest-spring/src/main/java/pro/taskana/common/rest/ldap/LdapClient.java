@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
@@ -34,25 +33,21 @@ import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 @Component
 public class LdapClient {
 
-  static final String MISSING_CONFIGURATION_S =
-      "LdapClient was called but is not active due to missing configuration: %s ";
-
   private static final Logger LOGGER = LoggerFactory.getLogger(LdapClient.class);
-
   private static final String CN = "cn";
 
+  private final Environment env;
+  private final LdapTemplate ldapTemplate;
   private boolean active = false;
-
-  @Autowired private Environment env;
-
-  @Autowired(required = false)
-  private LdapTemplate ldapTemplate;
-
   private int minSearchForLength;
-
   private int maxNumberOfReturnedAccessIds;
-
   private String message;
+
+  @Autowired
+  public LdapClient(Environment env, LdapTemplate ldapTemplate) {
+    this.env = env;
+    this.ldapTemplate = ldapTemplate;
+  }
 
   /**
    * Search LDAP for matching users or groups.
@@ -164,7 +159,7 @@ public class LdapClient {
             getGroupSearchBase(),
             andFilter.encode(),
             SearchControls.SUBTREE_SCOPE,
-            getLookUpGoupAttributesToReturn(),
+            getLookUpGroupAttributesToReturn(),
             new GroupContextMapper());
     LOGGER.debug("Exit from searchGroupsByName. Retrieved the following groups: {}", accessIds);
     return accessIds;
@@ -182,7 +177,7 @@ public class LdapClient {
         "Removed baseDN {} from given DN. New DN to be used: {}", getBaseDn(), nameWithoutBaseDn);
     final AccessIdRepresentationModel accessId =
         ldapTemplate.lookup(
-            nameWithoutBaseDn, getLookUpGoupAttributesToReturn(), new GroupContextMapper());
+            nameWithoutBaseDn, getLookUpGroupAttributesToReturn(), new GroupContextMapper());
     LOGGER.debug("Exit from searchGroupByDn. Retrieved the following group: {}", accessId);
     return accessId;
   }
@@ -299,7 +294,9 @@ public class LdapClient {
 
   void isInitOrFail() {
     if (!active) {
-      throw new SystemException(String.format(MISSING_CONFIGURATION_S, message));
+      throw new SystemException(
+          String.format(
+              "LdapClient was called but is not active due to missing configuration: %s", message));
     }
   }
 
@@ -314,7 +311,7 @@ public class LdapClient {
     return name.replaceAll("(?i)" + Pattern.quote("," + getBaseDn()), "");
   }
 
-  String[] getLookUpGoupAttributesToReturn() {
+  String[] getLookUpGroupAttributesToReturn() {
     if (CN.equals(getGroupNameAttribute())) {
       return new String[] {CN};
     }
@@ -345,7 +342,7 @@ public class LdapClient {
         // optional settings
         .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_MAX_NUMBER_OF_RETURNED_ACCESS_IDS))
         .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_MIN_SEARCH_FOR_LENGTH))
-        .filter(p -> Objects.isNull(p.getValueFromEnv(env)))
+        .filter(p -> p.getValueFromEnv(env) == null)
         .collect(Collectors.toList());
   }
 

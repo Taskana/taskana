@@ -22,6 +22,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ActiveProfiles({"test"})
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
-    classes = RestConfiguration.class,
+    classes = CommonTestConfiguration.class,
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public @interface TaskanaSpringBootTest {}

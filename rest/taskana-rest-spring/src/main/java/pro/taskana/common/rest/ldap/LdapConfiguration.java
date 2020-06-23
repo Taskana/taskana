@@ -1,9 +1,9 @@
 package pro.taskana.common.rest.ldap;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.LdapContextSource;
 
@@ -11,33 +11,36 @@ import org.springframework.ldap.core.support.LdapContextSource;
 @Configuration
 public class LdapConfiguration {
 
-  private final Environment env;
-  @Value("${taskana.ldap.serverUrl:ldap://localhost:10389}")
-  private String ldapServerUrl;
-  @Value("${taskana.ldap.baseDn:OU=Test,O=TASKANA}")
-  private String ldapBaseDn;
-  @Value("${taskana.ldap.bindDn:uid=admin}")
-  private String ldapBindDn;
-  @Value("${taskana.ldap.bindPassword:secret}")
-  private String ldapBindPassowrd;
+  private final String ldapServerUrl;
+  private final String ldapBaseDn;
+  private final String ldapBindDn;
+  private final String ldapBindPassword;
 
-  public LdapConfiguration(Environment env) {
-    this.env = env;
+  public LdapConfiguration(
+      @Value("${taskana.ldap.serverUrl:ldap://localhost:10389}") String ldapServerUrl,
+      @Value("${taskana.ldap.baseDn:OU=Test,O=TASKANA}") String ldapBaseDn,
+      @Value("${taskana.ldap.bindDn:uid=admin}") String ldapBindDn,
+      @Value("${taskana.ldap.bindPassword:secret}") String ldapBindPassword) {
+    this.ldapServerUrl = ldapServerUrl;
+    this.ldapBaseDn = ldapBaseDn;
+    this.ldapBindDn = ldapBindDn;
+    this.ldapBindPassword = ldapBindPassword;
   }
 
   @Bean
+  @ConditionalOnMissingBean(LdapContextSource.class)
   public LdapContextSource ldapContextSource() {
-
     LdapContextSource contextSource = new LdapContextSource();
     contextSource.setUrl(ldapServerUrl);
     contextSource.setBase(ldapBaseDn);
     contextSource.setUserDn(ldapBindDn);
-    contextSource.setPassword(ldapBindPassowrd);
+    contextSource.setPassword(ldapBindPassword);
     return contextSource;
   }
 
-  @Bean(name = "ldapTemplate")
-  public LdapTemplate getActiveLdapTemplate() {
-    return new LdapTemplate(ldapContextSource());
+  @Bean
+  @ConditionalOnMissingBean(LdapTemplate.class)
+  public LdapTemplate ldapTemplate(LdapContextSource ldapContextSource) {
+    return new LdapTemplate(ldapContextSource);
   }
 }

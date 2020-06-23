@@ -101,10 +101,8 @@ class LdapClientTest {
 
   @Test
   void testLdap_checkForMissingConfigurations() {
-    // optional config fields
-    // minSearchForLength, maxNumberOfReturnedAccessIds
-    assertThat(new LdapClient().checkForMissingConfigurations())
-        .hasSize(LdapSettings.values().length - 2);
+    // optional config fields: minSearchForLength, maxNumberOfReturnedAccessIds
+    assertThat(cut.checkForMissingConfigurations()).hasSize(LdapSettings.values().length - 2);
   }
 
   @Test
