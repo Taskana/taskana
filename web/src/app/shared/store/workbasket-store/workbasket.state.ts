@@ -4,10 +4,10 @@ import { Observable, of } from 'rxjs';
 import { Location } from '@angular/common';
 import { WorkbasketService } from '../../services/workbasket/workbasket.service';
 import { Workbasket } from '../../models/workbasket';
-import { CopyWorkbasket, CreateWorkbasket, DeselectWorkbasket,
+import { CopyWorkbasket, CreateWorkbasket, DeleteWorkbasket, DeselectWorkbasket,
   GetWorkbasketAccessItems,
   GetWorkbaskets,
-  GetWorkbasketsSummary, SaveNewWorkbasket,
+  GetWorkbasketsSummary, RemoveDistributionTarget, SaveNewWorkbasket,
   SelectWorkbasket, SetActiveAction, UpdateWorkbasket } from './workbasket.actions';
 import { WorkbasketAccessItems } from '../../models/workbasket-access-items';
 import { WorkbasketSummaryRepresentation } from '../../models/workbasket-summary-representation';
@@ -131,6 +131,24 @@ export class WorkbasketState implements NgxsAfterBootstrap {
   setActiveAction(ctx: StateContext<WorkbasketStateModel>, action: SetActiveAction): Observable<any> {
     ctx.patchState({ action: action.action });
     return of(null);
+  }
+
+  @Action(RemoveDistributionTarget)
+  removeDistributionTarget(ctx: StateContext<WorkbasketStateModel>, action: RemoveDistributionTarget): Observable<any> {
+    return this.workbasketService.removeDistributionTarget(action.url).pipe(take(1), tap(
+      () => {
+
+      }
+    ));
+  }
+
+  @Action(DeleteWorkbasket)
+  deleteWorkbasket(ctx: StateContext<WorkbasketStateModel>, action: DeleteWorkbasket): Observable<any> {
+    return this.workbasketService.markWorkbasketForDeletion(action.url).pipe(take(1), map(
+      () => {
+
+      }
+    ));
   }
 
   ngxsAfterBootstrap(ctx?: StateContext<any>): void {
