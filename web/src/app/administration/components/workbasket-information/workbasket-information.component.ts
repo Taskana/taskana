@@ -6,7 +6,7 @@ import { Component,
   SimpleChanges,
   ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { NgForm } from '@angular/forms';
 import { Select, Store } from '@ngxs/store';
 
@@ -19,7 +19,7 @@ import { SavingWorkbasketService, SavingInformation } from 'app/administration/s
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
-import { map } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
@@ -38,24 +38,23 @@ implements OnInit, OnChanges, OnDestroy {
   @Input()
   workbasket: Workbasket;
 
-  workbasketClone: Workbasket;
-
   @Input()
   action: ACTION;
 
+  @ViewChild('WorkbasketForm', { static: false })
+  workbasketForm: NgForm;
+
+  workbasketClone: Workbasket;
   allTypes: Map<string, string>;
   requestInProgress = false;
   badgeMessage = '';
-
-  @Select(EngineConfigurationSelectors.workbasketsCustomisation) workbasketsCustomisation$: Observable<WorkbasketsCustomisation>;
-  customFields$: Observable<CustomField[]>;
-
-
   toogleValidationMap = new Map<string, boolean>();
 
-  private workbasketSubscription: Subscription;
-  @ViewChild('WorkbasketForm', { static: false })
-  workbasketForm: NgForm;
+  @Select(EngineConfigurationSelectors.workbasketsCustomisation)
+  workbasketsCustomisation$: Observable<WorkbasketsCustomisation>;
+
+  customFields$: Observable<CustomField[]>;
+  destroy$ = new Subject<void>();
 
   constructor(
     private workbasketService: WorkbasketService,
@@ -111,7 +110,7 @@ implements OnInit, OnChanges, OnDestroy {
     return this.formsValidatorService.isFieldValid(this.workbasketForm, field);
   }
 
-  onClear() {
+  onUndo() {
     this.formsValidatorService.formSubmitAttempt = false;
     this.notificationService.showToast(NOTIFICATION_TYPES.INFO_ALERT);
     this.workbasket = { ...this.workbasketClone };
@@ -161,8 +160,9 @@ implements OnInit, OnChanges, OnDestroy {
     }
 
     // this.store.dispatch(new UpdateWorkbasket(this.workbasket._links.self.href, this.workbasket));
-    this.workbasketSubscription = this.workbasketService
+    this.workbasketService
       .updateWorkbasket(this.workbasket._links.self.href, this.workbasket)
+      .pipe(takeUntil(this.destroy$))
       .subscribe(
         workbasketUpdated => {
           this.afterRequest();
@@ -255,13 +255,12 @@ implements OnInit, OnChanges, OnDestroy {
       );
   }
 
-  ngOnDestroy() {
-    if (this.workbasketSubscription) {
-      this.workbasketSubscription.unsubscribe();
-    }
-  }
-
   getWorkbasketCustomProperty(custom: number) {
     return `custom${custom}`;
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

@@ -229,7 +229,7 @@ export const notifications = new Map<NOTIFICATION_TYPES, Pair>([
   // taskdetails.component
   [NOTIFICATION_TYPES.INFO_ALERT, new Pair(
     '',
-    'Refreshed selected classification'
+    'Information restored'
   )],
   // classification-details.component
   [NOTIFICATION_TYPES.SUCCESS_ALERT_4, new Pair(
