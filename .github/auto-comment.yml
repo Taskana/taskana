@@ -6,7 +6,7 @@ pullRequestOpened: |
   - [ ] I added a description of changes on the [current release notes](https://taskana.atlassian.net/wiki/spaces/TAS/pages/1281392672/Current+Release+Notes+Taskana)
   - [ ] I did not update the [current release notes](https://taskana.atlassian.net/wiki/spaces/TAS/pages/1281392672/Current+Release+Notes+Taskana)
   - [ ] I put the ticket in review
-  - [ ] After integration of the pull request, i verified our [bluemix test environment] (http://taskana.mybluemix.net/taskana/) is not broken
+  - [ ] After integration of the pull request, i verified our [bluemix test environment](http://taskana.mybluemix.net/taskana) is not broken
 
   ### Verified by the reviewer:
   - [ ] Commit message format → TSK-XXX: Your commit message.
