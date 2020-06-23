@@ -69,3 +69,15 @@ export class SetActiveAction {
   constructor(public action: ACTION) {
   }
 }
+
+export class RemoveDistributionTarget {
+  static readonly type = '[Workbasket] Remove distribution targets of selected workbasket';
+  constructor(public url: string) {
+  }
+}
+
+export class DeleteWorkbasket {
+  static readonly type = '[Workbasket] Mark selected workbasket for deletion';
+  constructor(public url: string) {
+  }
+}
