@@ -1,5 +1,4 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, pipe, Subject, Subscription } from 'rxjs';
 
 import { WorkbasketSummaryRepresentation } from 'app/shared/models/workbasket-summary-representation';
@@ -15,9 +14,10 @@ import { ImportExportService } from 'app/administration/services/import-export.s
 import { Actions, ofActionCompleted, ofActionDispatched, Select, Store } from '@ngxs/store';
 import { takeUntil } from 'rxjs/operators';
 import { Location } from '@angular/common';
-import { GetWorkbasketsSummary,
+import { DeselectWorkbasket, GetWorkbasketsSummary,
   SelectWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
+import { Workbasket } from '../../../shared/models/workbasket';
 
 @Component({
   selector: 'taskana-administration-workbasket-list',
@@ -44,13 +44,14 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   @Select(WorkbasketSelectors.workbasketsSummaryRepresentation)
   workbasketsSummaryRepresentation$: Observable<WorkbasketSummaryRepresentation>;
 
+  @Select(WorkbasketSelectors.selectedWorkbasket)
+  selectedWorkbasket$: Observable<Workbasket>;
+
   destroy$ = new Subject<void>();
 
   constructor(
     private store: Store,
     private workbasketService: WorkbasketService,
-    private router: Router,
-    private route: ActivatedRoute,
     private orientationService: OrientationService,
     private importExportService: ImportExportService,
     private ngxsActions$: Actions,
@@ -70,12 +71,21 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.requestInProgress = true;
-    this.workbasketService.getSelectedWorkBasket().subscribe(workbasketIdSelected => {
+    /*    this.workbasketService.getSelectedWorkBasket().subscribe(workbasketIdSelected => {
       // TODO should be done in a different way.
       setTimeout(() => {
         this.selectedId = workbasketIdSelected;
       }, 0);
-    });
+    }); */
+
+    this.selectedWorkbasket$.pipe(takeUntil(this.destroy$))
+      .subscribe(selectedWorkbasket => {
+        if (typeof selectedWorkbasket !== 'undefined') {
+          this.selectedId = selectedWorkbasket.workbasketId;
+        } else {
+          this.selectedId = undefined;
+        }
+      });
 
     TaskanaQueryParameters.page = this.pageSelected;
     TaskanaQueryParameters.pageSize = this.pageSize;
@@ -98,10 +108,13 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   }
 
   selectWorkbasket(id: string) {
-    this.store.dispatch(new SelectWorkbasket(id));
-    this.selectedId = id;
-    this.location.go(this.location.path().replace(/(workbaskets).*/g, `workbaskets/(detail:${id})`));
-
+    console.log(this.selectedId, id);
+    if (this.selectedId === id) {
+      this.store.dispatch(new DeselectWorkbasket());
+    } else {
+      this.store.dispatch(new SelectWorkbasket(id));
+      this.location.go(this.location.path().replace(/(workbaskets).*/g, `workbaskets/(detail:${id})`));
+    }
     // this.router.navigate([{ outlets: { detail: [this.selectedId] } }], { relativeTo: this.route });
   }
 

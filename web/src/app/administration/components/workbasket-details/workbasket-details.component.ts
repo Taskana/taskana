@@ -40,9 +40,7 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
   constructor(private service: WorkbasketService,
     private route: ActivatedRoute,
     private router: Router,
-    private masterAndDetailService: MasterAndDetailService,
     private domainService: DomainService,
-    private errorsService: NotificationService,
     private importExportService: ImportExportService,
     private store: Store) {
   }
@@ -51,6 +49,7 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
     this.selectedWorkbasket$
       .pipe(takeUntil(this.destroy$))
       .subscribe(selectedWorkbasket => {
+        console.log('selected workbasket changed');
         this.getWorkbasketInformation(selectedWorkbasket);
       });
 
@@ -62,6 +61,10 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
           this.tabSelected = 'information';
           this.selectedId = undefined;
           this.initWorkbasket();
+        } else if (this.action === ACTION.COPY) {
+          // delete this.workbasket.key;
+          this.workbasketCopy = this.workbasket;
+          this.getWorkbasketInformation();
         }
       });
 
@@ -83,7 +86,7 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
   initWorkbasket() {
     const emptyWorkbasket = new Workbasket();
     emptyWorkbasket.domain = this.domainService.getSelectedDomainValue();
-    emptyWorkbasket.type = ICONTYPES.ALL;
+    emptyWorkbasket.type = ICONTYPES.PERSONAL;
     this.addDateToWorkbasket(emptyWorkbasket);
     this.workbasket = emptyWorkbasket;
     console.log(this.workbasket);

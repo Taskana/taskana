@@ -6,7 +6,9 @@ import { takeUntil } from 'rxjs/operators';
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
 import { Workbasket } from '../../../shared/models/workbasket';
 import { ACTION } from '../../../shared/models/action';
-import { SelectWorkbasket, SetActiveAction } from '../../../shared/store/workbasket-store/workbasket.actions';
+import { CreateWorkbasket,
+  SelectWorkbasket,
+  SetActiveAction } from '../../../shared/store/workbasket-store/workbasket.actions';
 
 @Component({
   selector: 'app-workbasket-overview',
@@ -32,14 +34,17 @@ export class WorkbasketOverviewComponent implements OnInit {
         .pipe(takeUntil(this.destroy$))
         .subscribe(params => {
           this.routerParams = params;
-
           if (this.routerParams.id) {
             this.showDetail = true;
-            this.store.dispatch(new SelectWorkbasket(this.routerParams.id));
+            if (this.routerParams.id === 'new-workbasket') {
+              console.log(params.id);
+              this.store.dispatch(new CreateWorkbasket());
+            } else {
+              this.store.dispatch(new SelectWorkbasket(this.routerParams.id));
+            }
           }
         });
     }
-
     this.selectedWorkbasket$
       .pipe(takeUntil(this.destroy$))
       .subscribe(selectedClassification => {
