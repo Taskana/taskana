@@ -39,7 +39,7 @@ implements OnInit, OnChanges, OnDestroy {
   workbasket: Workbasket;
 
   workbasketClone: Workbasket;
-  workbasketErrors;
+
   @Input()
   action: ACTION;
 
@@ -50,10 +50,10 @@ implements OnInit, OnChanges, OnDestroy {
   @Select(EngineConfigurationSelectors.workbasketsCustomisation) workbasketsCustomisation$: Observable<WorkbasketsCustomisation>;
   customFields$: Observable<CustomField[]>;
 
+
   toogleValidationMap = new Map<string, boolean>();
 
   private workbasketSubscription: Subscription;
-  private routeSubscription: Subscription;
   @ViewChild('WorkbasketForm', { static: false })
   workbasketForm: NgForm;
 
@@ -69,7 +69,7 @@ implements OnInit, OnChanges, OnDestroy {
   ) {
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.allTypes = new Map([
       ['PERSONAL', 'Personal'],
       ['GROUP', 'Group'],
@@ -80,6 +80,7 @@ implements OnInit, OnChanges, OnDestroy {
       map(customisation => customisation.information),
       getCustomFields(customFieldCount)
     );
+    console.log(this.workbasket);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -257,9 +258,6 @@ implements OnInit, OnChanges, OnDestroy {
   ngOnDestroy() {
     if (this.workbasketSubscription) {
       this.workbasketSubscription.unsubscribe();
-    }
-    if (this.routeSubscription) {
-      this.routeSubscription.unsubscribe();
     }
   }
 
