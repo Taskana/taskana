@@ -71,12 +71,6 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.requestInProgress = true;
-    /*    this.workbasketService.getSelectedWorkBasket().subscribe(workbasketIdSelected => {
-      // TODO should be done in a different way.
-      setTimeout(() => {
-        this.selectedId = workbasketIdSelected;
-      }, 0);
-    }); */
 
     this.selectedWorkbasket$.pipe(takeUntil(this.destroy$))
       .subscribe(selectedWorkbasket => {
@@ -113,9 +107,7 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
       this.store.dispatch(new DeselectWorkbasket());
     } else {
       this.store.dispatch(new SelectWorkbasket(id));
-      this.location.go(this.location.path().replace(/(workbaskets).*/g, `workbaskets/(detail:${id})`));
     }
-    // this.router.navigate([{ outlets: { detail: [this.selectedId] } }], { relativeTo: this.route });
   }
 
   performSorting(sort: Sorting) {

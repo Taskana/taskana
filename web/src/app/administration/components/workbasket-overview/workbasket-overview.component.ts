@@ -4,8 +4,7 @@ import { Observable, Subject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
-import { Workbasket } from '../../../shared/models/workbasket';
-import { ACTION } from '../../../shared/models/action';
+
 import { CreateWorkbasket,
   SelectWorkbasket,
   SetActiveAction } from '../../../shared/store/workbasket-store/workbasket.actions';
@@ -17,8 +16,8 @@ import { CreateWorkbasket,
 })
 export class WorkbasketOverviewComponent implements OnInit {
   showDetail = false;
-  @Select(WorkbasketSelectors.selectedWorkbasket) selectedWorkbasket$: Observable<Workbasket>;
-  private destroy$ = new Subject<void>();
+  @Select(WorkbasketSelectors.selectedWorkbasketAndAction) selectedWorkbasketAndAction$: Observable<any>;
+  destroy$ = new Subject<void>();
   routerParams: any;
 
   constructor(
@@ -37,7 +36,6 @@ export class WorkbasketOverviewComponent implements OnInit {
           if (this.routerParams.id) {
             this.showDetail = true;
             if (this.routerParams.id === 'new-workbasket') {
-              console.log(params.id);
               this.store.dispatch(new CreateWorkbasket());
             } else {
               this.store.dispatch(new SelectWorkbasket(this.routerParams.id));
@@ -45,10 +43,10 @@ export class WorkbasketOverviewComponent implements OnInit {
           }
         });
     }
-    this.selectedWorkbasket$
+    this.selectedWorkbasketAndAction$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(selectedClassification => {
-        this.showDetail = !!selectedClassification;
+      .subscribe(state => {
+        this.showDetail = !!state.selectedWorkbasket || state.action === 0;
       });
   }
 

@@ -64,6 +64,7 @@ export class WorkbasketState implements NgxsAfterBootstrap {
 
   @Action(SelectWorkbasket)
   selectWorkbasket(ctx: StateContext<WorkbasketStateModel>, action: SelectWorkbasket): Observable<any> {
+    this.location.go(this.location.path().replace(/(workbaskets).*/g, `workbaskets/(detail:${action.workbasketId})`));
     const id = action.workbasketId;
     if (typeof id !== 'undefined') {
       return this.workbasketService.getWorkBasket(id).pipe(take(1), tap(
@@ -82,14 +83,17 @@ export class WorkbasketState implements NgxsAfterBootstrap {
   deselectWorkbasket(ctx: StateContext<WorkbasketStateModel>): Observable<any> {
     this.location.go(this.location.path().replace(/(workbaskets).*/g, 'workbaskets'));
     ctx.patchState({
-      selectedWorkbasket: undefined
+      selectedWorkbasket: undefined,
+      action: ACTION.READ
     });
     return of(null);
   }
 
   @Action(CreateWorkbasket)
   createWorkbasket(ctx: StateContext<WorkbasketStateModel>, action: CreateWorkbasket): Observable<any> {
+    this.location.go(this.location.path().replace(/(workbaskets).*/g, 'workbaskets/(detail:new-workbasket)'));
     ctx.patchState({
+      selectedWorkbasket: undefined,
       action: ACTION.CREATE
     });
     return of(null);
