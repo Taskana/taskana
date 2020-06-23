@@ -13,6 +13,8 @@ import { WorkbasketAccessItems } from '../../models/workbasket-access-items';
 import { WorkbasketSummaryRepresentation } from '../../models/workbasket-summary-representation';
 import { ACTION } from '../../models/action';
 import { DomainService } from '../../services/domain/domain.service';
+import { NOTIFICATION_TYPES } from '../../models/notifications';
+import { NotificationService } from '../../services/notifications/notification.service';
 
 class InitializeStore {
   static readonly type = '[Workbasket] Initializing state';
@@ -23,7 +25,8 @@ export class WorkbasketState implements NgxsAfterBootstrap {
   constructor(
     private workbasketService: WorkbasketService,
     private domainService: DomainService,
-    private location: Location
+    private location: Location,
+    private notificationService: NotificationService
   ) {
   }
 
@@ -121,8 +124,15 @@ export class WorkbasketState implements NgxsAfterBootstrap {
   @Action(UpdateWorkbasket)
   updateWorkbasket(ctx: StateContext<WorkbasketStateModel>, action: UpdateWorkbasket): Observable<any> {
     return this.workbasketService.updateWorkbasket(action.url, action.workbasket).pipe(take(1), tap(
-      () => {
+      updatedWorkbasket => {
         this.getWorkbaskets(ctx);
+        this.notificationService.showToast(
+          NOTIFICATION_TYPES.SUCCESS_ALERT_10,
+          new Map<string, string>([['workbasketKey', updatedWorkbasket.key]])
+        );
+        ctx.patchState({
+          selectedWorkbasket: updatedWorkbasket
+        });
       }
     ));
   }
@@ -137,14 +147,21 @@ export class WorkbasketState implements NgxsAfterBootstrap {
   removeDistributionTarget(ctx: StateContext<WorkbasketStateModel>, action: RemoveDistributionTarget): Observable<any> {
     return this.workbasketService.removeDistributionTarget(action.url).pipe(take(1), tap(
       () => {
-
+        this.notificationService.showToast(
+          NOTIFICATION_TYPES.SUCCESS_ALERT_9,
+          new Map<string, string>([['workbasketId', ctx.getState().selectedWorkbasket.workbasketId]])
+        );
+      }, error => {
+        this.notificationService.triggerError(NOTIFICATION_TYPES.REMOVE_ERR_2,
+          error,
+          new Map<String, String>([['workbasketId', ctx.getState().selectedWorkbasket.workbasketId]]));
       }
     ));
   }
 
   @Action(DeleteWorkbasket)
   deleteWorkbasket(ctx: StateContext<WorkbasketStateModel>, action: DeleteWorkbasket): Observable<any> {
-    return this.workbasketService.markWorkbasketForDeletion(action.url).pipe(take(1), map(
+    return this.workbasketService.markWorkbasketForDeletion(action.url).pipe(take(1), tap(
       () => {
 
       }
