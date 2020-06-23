@@ -38,12 +38,22 @@ export class SelectWorkbasket {
   }
 }
 
+export class DeselectWorkbasket {
+  static readonly type = '[Workbasket] Deselect workbasket';
+}
+
 export class CreateWorkbasket {
-  static readonly type = '[Workbasket] Create a workbasket';
+  static readonly type = '[Workbasket] Create new workbasket';
 }
 
 export class SaveNewWorkbasket {
   static readonly type = '[Workbasket] Save new workbasket';
+  constructor(public workbasket: Workbasket) {
+  }
+}
+
+export class CopyWorkbasket {
+  static readonly type = '[Workbasket] Copy selected workbasket';
   constructor(public workbasket: Workbasket) {
   }
 }

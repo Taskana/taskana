@@ -55,9 +55,10 @@ export class WorkbasketListToolbarComponent implements OnInit {
   }
 
   addWorkbasket() {
-    this.store.dispatch(new SetActiveAction(ACTION.CREATE));
-    // this.store.dispatch(new CreateWorkbasket());
-    this.location.go(this.location.path().replace(/(workbaskets).*/g, 'workbaskets/new-workbasket'));
+    // this.store.dispatch(new SetActiveAction(ACTION.CREATE));
+    this.store.dispatch(new CreateWorkbasket());
+
+    this.location.go(this.location.path().replace(/(workbaskets).*/g, 'workbaskets/(detail:new-workbasket)'));
     // this.workbasketService.selectWorkBasket();
     // this.router.navigate([{ outlets: { detail: ['new-workbasket'] } }], { relativeTo: this.route });
   }

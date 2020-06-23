@@ -1,9 +1,10 @@
 import { Action, NgxsAfterBootstrap, State, StateContext } from '@ngxs/store';
 import { take, tap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
+import { Location } from '@angular/common';
 import { WorkbasketService } from '../../services/workbasket/workbasket.service';
 import { Workbasket } from '../../models/workbasket';
-import { CreateWorkbasket,
+import { CopyWorkbasket, CreateWorkbasket, DeselectWorkbasket,
   GetWorkbasketAccessItems,
   GetWorkbaskets,
   GetWorkbasketsSummary, SaveNewWorkbasket,
@@ -11,9 +12,6 @@ import { CreateWorkbasket,
 import { WorkbasketAccessItems } from '../../models/workbasket-access-items';
 import { WorkbasketSummaryRepresentation } from '../../models/workbasket-summary-representation';
 import { ACTION } from '../../models/action';
-import { ClassificationDefinition } from '../../models/classification-definition';
-import { ICONTYPES } from '../../models/icon-types';
-import { TaskanaDate } from '../../util/taskana.date';
 import { DomainService } from '../../services/domain/domain.service';
 
 class InitializeStore {
@@ -22,8 +20,11 @@ class InitializeStore {
 
 @State<WorkbasketStateModel>({ name: 'workbasket' })
 export class WorkbasketState implements NgxsAfterBootstrap {
-  constructor(private workbasketService: WorkbasketService,
-    private domainService: DomainService) {
+  constructor(
+    private workbasketService: WorkbasketService,
+    private domainService: DomainService,
+    private location: Location
+  ) {
   }
 
   @Action(GetWorkbasketsSummary)
@@ -69,7 +70,7 @@ export class WorkbasketState implements NgxsAfterBootstrap {
         selectedWorkbasket => {
           ctx.patchState({
             selectedWorkbasket,
-            action: ACTION.COPY
+            action: ACTION.READ
           });
         }
       ));
@@ -77,16 +78,19 @@ export class WorkbasketState implements NgxsAfterBootstrap {
     return of(null);
   }
 
+  @Action(DeselectWorkbasket)
+  deselectWorkbasket(ctx: StateContext<WorkbasketStateModel>): Observable<any> {
+    this.location.go(this.location.path().replace(/(workbaskets).*/g, 'workbaskets'));
+    ctx.patchState({
+      selectedWorkbasket: undefined
+    });
+    return of(null);
+  }
+
   @Action(CreateWorkbasket)
   createWorkbasket(ctx: StateContext<WorkbasketStateModel>, action: CreateWorkbasket): Observable<any> {
-    const emptyWorkbasket = new Workbasket();
-    emptyWorkbasket.domain = this.domainService.getSelectedDomainValue();
-    emptyWorkbasket.type = ICONTYPES.ALL;
-    const date = TaskanaDate.getDate();
-    emptyWorkbasket.created = date;
-    emptyWorkbasket.modified = date;
     ctx.patchState({
-      selectedWorkbasket: emptyWorkbasket
+      action: ACTION.CREATE
     });
     return of(null);
   }
@@ -100,6 +104,16 @@ export class WorkbasketState implements NgxsAfterBootstrap {
     ));
   }
 
+  @Action(CopyWorkbasket)
+  copyWorkbasket(ctx: StateContext<WorkbasketStateModel>, action: CopyWorkbasket): Observable<any> {
+    const workbasketCopy = action.workbasket;
+    ctx.patchState({
+      workbasketCopy,
+      action: ACTION.COPY
+    });
+    return of(null);
+  }
+
   @Action(UpdateWorkbasket)
   updateWorkbasket(ctx: StateContext<WorkbasketStateModel>, action: UpdateWorkbasket): Observable<any> {
     return this.workbasketService.updateWorkbasket(action.url, action.workbasket).pipe(take(1), tap(
@@ -111,9 +125,7 @@ export class WorkbasketState implements NgxsAfterBootstrap {
 
   @Action(SetActiveAction)
   setActiveAction(ctx: StateContext<WorkbasketStateModel>, action: SetActiveAction): Observable<any> {
-    if (action.action === ACTION.CREATE) {
-      ctx.patchState({ action: action.action });
-    }
+    ctx.patchState({ action: action.action });
     return of(null);
   }
 
@@ -126,6 +138,7 @@ export interface WorkbasketStateModel {
   workbasketsSummary: WorkbasketSummaryRepresentation,
   workbaskets: Workbasket[],
   selectedWorkbasket: Workbasket,
+  workbasketCopy: Workbasket,
   action: ACTION,
   workbasketAccessItems: WorkbasketAccessItems
 }
