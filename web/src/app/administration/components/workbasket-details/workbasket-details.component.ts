@@ -35,6 +35,9 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
   @Select(WorkbasketSelectors.workbasketActiveAction)
   activeAction$: Observable<ACTION>;
 
+  @Select(WorkbasketSelectors.selectedWorkbasketAndAction)
+  selectedWorkbasketAndAction$: Observable<any>;
+
   destroy$ = new Subject<void>();
 
   constructor(private service: WorkbasketService,
@@ -46,17 +49,10 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.selectedWorkbasket$
+    this.selectedWorkbasketAndAction$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(selectedWorkbasket => {
-        console.log('selected workbasket changed');
-        this.getWorkbasketInformation(selectedWorkbasket);
-      });
-
-    this.activeAction$.pipe(takeUntil(this.destroy$))
-      .subscribe(activeAction => {
-        this.action = activeAction;
-        console.log(this.action);
+      .subscribe(selectedWorkbasketAndAction => {
+        this.action = selectedWorkbasketAndAction.action;
         if (this.action === ACTION.CREATE) {
           this.tabSelected = 'information';
           this.selectedId = undefined;
@@ -65,6 +61,8 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
           // delete this.workbasket.key;
           this.workbasketCopy = this.workbasket;
           this.getWorkbasketInformation();
+        } else {
+          this.getWorkbasketInformation(selectedWorkbasketAndAction.selectedWorkbasket);
         }
       });
 
@@ -89,7 +87,6 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
     emptyWorkbasket.type = ICONTYPES.PERSONAL;
     this.addDateToWorkbasket(emptyWorkbasket);
     this.workbasket = emptyWorkbasket;
-    console.log(this.workbasket);
   }
 
   backClicked(): void {
@@ -107,7 +104,6 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
       workbasketIdSelected = selectedWorkbasket.workbasketId;
     }
     this.requestInProgress = true;
-    console.log('working');
     if (!workbasketIdSelected && this.action === ACTION.CREATE) { // CREATE
       this.workbasket = new Workbasket();
       this.domainService.getSelectedDomain()
