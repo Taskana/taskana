@@ -12,7 +12,7 @@ import { ImportExportService } from 'app/administration/services/import-export.s
 import { Select, Store } from '@ngxs/store';
 import { takeUntil } from 'rxjs/operators';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
-import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
+import { WorkbasketAndAction, WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
 import { TaskanaDate } from '../../../shared/util/taskana.date';
 import { ICONTYPES } from '../../../shared/models/icon-types';
 
@@ -36,7 +36,7 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
   activeAction$: Observable<ACTION>;
 
   @Select(WorkbasketSelectors.selectedWorkbasketAndAction)
-  selectedWorkbasketAndAction$: Observable<any>;
+  selectedWorkbasketAndAction$: Observable<WorkbasketAndAction>;
 
   destroy$ = new Subject<void>();
 
@@ -61,8 +61,9 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
           // delete this.workbasket.key;
           this.workbasketCopy = this.workbasket;
           this.getWorkbasketInformation();
-        } else {
-          this.getWorkbasketInformation(selectedWorkbasketAndAction.selectedWorkbasket);
+        } else if (typeof selectedWorkbasketAndAction.selectedWorkbasket !== 'undefined') {
+          this.workbasket = { ...selectedWorkbasketAndAction.selectedWorkbasket };
+          this.getWorkbasketInformation(this.workbasket);
         }
       });
 
