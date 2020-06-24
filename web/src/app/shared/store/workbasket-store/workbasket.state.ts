@@ -114,6 +114,8 @@ export class WorkbasketState implements NgxsAfterBootstrap {
   @Action(CopyWorkbasket)
   copyWorkbasket(ctx: StateContext<WorkbasketStateModel>, action: CopyWorkbasket): Observable<any> {
     const workbasketCopy = action.workbasket;
+    delete workbasketCopy.key;
+    this.location.go(this.location.path().replace(/(workbaskets).*/g, 'workbaskets/(detail:new-workbasket)'));
     ctx.patchState({
       workbasketCopy,
       action: ACTION.COPY
