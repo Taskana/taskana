@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
-import { Observable, Subject, zip } from 'rxjs';
+import { Observable, Subject, zip, combineLatest } from 'rxjs';
 
 import { ClassificationDefinition, customFieldCount } from 'app/shared/models/classification-definition';
 import { ACTION } from 'app/shared/models/action';
@@ -28,7 +28,7 @@ import { ClassificationCategoryImages,
 import { CreateClassification,
   RemoveSelectedClassification,
   RestoreSelectedClassification,
-  SaveClassification,
+  SaveClassification, SelectClassification,
   SetActiveAction } from '../../../shared/store/classification-store/classification.actions';
 
 @Component({
@@ -73,9 +73,25 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
       map(customisation => customisation.information),
       getCustomFields(customFieldCount)
     );
-    this.selectedClassification$.pipe(takeUntil(this.destroy$)).subscribe(data => {
-      this.fillClassificationInformation(data);
-    });
+
+    combineLatest(this.selectedClassification$, this.action$).pipe(takeUntil(this.destroy$))
+      .subscribe(([classification, action]) => {
+        this.action = action;
+        if (this.action === ACTION.CREATE) {
+          this.selectedClassification$.pipe(take(1)).subscribe(initialClassification => {
+            this.classification = { ...initialClassification };
+          });
+          this.badgeMessage = 'Creating new classification';
+        } else if (this.action === ACTION.COPY) {
+          this.badgeMessage = `Copying Classification: ${this.classification.name}`;
+          this.classification = { ...classification };
+          this.classification.key = null;
+        } else {
+          this.badgeMessage = '';
+          this.classification = { ...classification };
+        }
+      });
+
     this.action$.pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.action = data;
       if (this.action === ACTION.CREATE) {
@@ -91,9 +107,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     });
 
     this.importExportService.getImportingFinished().pipe(takeUntil(this.destroy$)).subscribe(() => {
-      if (this.classification.classificationId) {
-        this.selectClassification(this.classification.classificationId);
-      }
+      this.store.dispatch(new SelectClassification(this.classification.classificationId));
     });
   }
 
@@ -197,26 +211,6 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   private afterRequest() {
     this.requestInProgressService.setRequestInProgress(false);
     this.classificationsService.triggerClassificationSaved();
-  }
-
-  private async selectClassification(id: string) {
-    if (!this.classificationIsAlreadySelected()) {
-      this.requestInProgress = true;
-      const classification = await this.classificationsService.getClassification(id).toPromise();
-      this.fillClassificationInformation(classification);
-      this.requestInProgress = false;
-    }
-  }
-
-  private classificationIsAlreadySelected(): boolean {
-    return this.action === ACTION.CREATE && !!this.classification;
-  }
-
-  private fillClassificationInformation(classificationSelected: ClassificationDefinition) {
-    this.classification = { ...classificationSelected };
-    if (this.action === ACTION.COPY) {
-      this.classification.key = null;
-    }
   }
 
   private removeClassificationConfirmation() {
