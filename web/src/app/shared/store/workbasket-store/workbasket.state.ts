@@ -5,16 +5,18 @@ import { Location } from '@angular/common';
 import { WorkbasketService } from '../../services/workbasket/workbasket.service';
 import { Workbasket } from '../../models/workbasket';
 import { CopyWorkbasket, CreateWorkbasket, DeselectWorkbasket,
-  GetWorkbasketAccessItems,
+  GetWorkbasketAccessItems, GetWorkbasketDistributionTargets,
   GetWorkbaskets,
   GetWorkbasketsSummary, MarkWorkbasketForDeletion, RemoveDistributionTarget, SaveNewWorkbasket,
-  SelectWorkbasket, SetActiveAction, UpdateWorkbasket } from './workbasket.actions';
+  SelectWorkbasket, SetActiveAction, UpdateWorkbasket, UpdateWorkbasketDistributionTargets } from './workbasket.actions';
 import { WorkbasketAccessItems } from '../../models/workbasket-access-items';
 import { WorkbasketSummaryRepresentation } from '../../models/workbasket-summary-representation';
 import { ACTION } from '../../models/action';
 import { DomainService } from '../../services/domain/domain.service';
 import { NOTIFICATION_TYPES } from '../../models/notifications';
 import { NotificationService } from '../../services/notifications/notification.service';
+import { WorkbasketAccessItemsRepresentation } from '../../models/workbasket-access-items-representation';
+import { WorkbasketDistributionTargets } from '../../models/workbasket-distribution-targets';
 
 class InitializeStore {
   static readonly type = '[Workbasket] Initializing state';
@@ -54,17 +56,6 @@ export class WorkbasketState implements NgxsAfterBootstrap {
     );
   }
 
-  @Action(GetWorkbasketAccessItems)
-  getWorkbasketAccessItems(ctx: StateContext<WorkbasketStateModel>, action: GetWorkbasketAccessItems): Observable<any> {
-    return this.workbasketService.getWorkBasketAccessItems(action.url).pipe(take(1), tap(
-      workbasketAccessItemsResource => {
-        ctx.patchState({
-          workbasketAccessItems: workbasketAccessItemsResource.accessItems
-        });
-      }
-    ));
-  }
-
   @Action(SelectWorkbasket)
   selectWorkbasket(ctx: StateContext<WorkbasketStateModel>, action: SelectWorkbasket): Observable<any> {
     this.location.go(this.location.path().replace(/(workbaskets).*/g, `workbaskets/(detail:${action.workbasketId})`));
@@ -99,6 +90,12 @@ export class WorkbasketState implements NgxsAfterBootstrap {
       selectedWorkbasket: undefined,
       action: ACTION.CREATE
     });
+    return of(null);
+  }
+
+  @Action(SetActiveAction)
+  setActiveAction(ctx: StateContext<WorkbasketStateModel>, action: SetActiveAction): Observable<any> {
+    ctx.patchState({ action: action.action });
     return of(null);
   }
 
@@ -145,12 +142,6 @@ export class WorkbasketState implements NgxsAfterBootstrap {
     ));
   }
 
-  @Action(SetActiveAction)
-  setActiveAction(ctx: StateContext<WorkbasketStateModel>, action: SetActiveAction): Observable<any> {
-    ctx.patchState({ action: action.action });
-    return of(null);
-  }
-
   @Action(RemoveDistributionTarget)
   removeDistributionTarget(ctx: StateContext<WorkbasketStateModel>, action: RemoveDistributionTarget): Observable<any> {
     return this.workbasketService.removeDistributionTarget(action.url).pipe(take(1), tap(
@@ -186,6 +177,36 @@ export class WorkbasketState implements NgxsAfterBootstrap {
     ));
   }
 
+  @Action(GetWorkbasketAccessItems)
+  getWorkbasketAccessItems(ctx: StateContext<WorkbasketStateModel>, action: GetWorkbasketAccessItems): Observable<any> {
+    return this.workbasketService.getWorkBasketAccessItems(action.url).pipe(take(1), tap(
+      workbasketAccessItemsRepresentation => {
+        ctx.patchState({
+          workbasketAccessItems: workbasketAccessItemsRepresentation
+        });
+      }
+    ));
+  }
+
+  @Action(GetWorkbasketDistributionTargets)
+  getWorkbasketDistributionTargets(ctx: StateContext<WorkbasketStateModel>, action: GetWorkbasketDistributionTargets): Observable<any> {
+    return this.workbasketService.getWorkBasketsDistributionTargets(action.url).pipe(take(1), tap(
+      workbasketDistributionTargets => {
+        ctx.patchState({
+          workbasketDistributionTargets
+        });
+      }
+    ));
+  }
+
+  @Action(UpdateWorkbasketDistributionTargets)
+  updateWorkbasketDistributionTargets(ctx: StateContext<WorkbasketStateModel>, action: UpdateWorkbasketDistributionTargets): Observable<any> {
+    return this.workbasketService.updateWorkBasketsDistributionTargets(action.url, action.distributionTargetsIds).pipe(take(1), tap(
+      () => {
+      }
+    ));
+  }
+
   ngxsAfterBootstrap(ctx?: StateContext<any>): void {
     ctx.dispatch(new InitializeStore());
   }
@@ -197,5 +218,6 @@ export interface WorkbasketStateModel {
   selectedWorkbasket: Workbasket,
   workbasketCopy: Workbasket,
   action: ACTION,
-  workbasketAccessItems: WorkbasketAccessItems
+  workbasketAccessItems: WorkbasketAccessItemsRepresentation,
+  workbasketDistributionTargets: WorkbasketDistributionTargets
 }
