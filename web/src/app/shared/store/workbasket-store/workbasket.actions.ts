@@ -76,7 +76,7 @@ export class RemoveDistributionTarget {
   }
 }
 
-export class DeleteWorkbasket {
+export class MarkWorkbasketForDeletion {
   static readonly type = '[Workbasket] Mark selected workbasket for deletion';
   constructor(public url: string) {
   }
