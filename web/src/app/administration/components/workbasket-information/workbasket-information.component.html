@@ -1,4 +1,4 @@
-<taskana-shared-spinner [isRunning]="requestInProgress" class="floating"></taskana-shared-spinner>
+<taskana-spinner [isRunning]="requestInProgress" class="floating"></taskana-spinner>
 <div *ngIf="workbasket" id="wb-information" class="panel panel-default">
     <div class="panel-heading">
         <div class="pull-right btn-group">
@@ -27,54 +27,63 @@
     <div class="panel-body">
         <form #WorkbasketForm="ngForm">
             <div class="col-md-6">
+                <!-- KEY -->
                 <div class="form-group required">
                     <label for="wb-key" class="control-label">Key</label>
                     <input type="text" required #key="ngModel" class="form-control" id="wb-key" placeholder="Key"
                         [(ngModel)]="workbasket.key" name="workbasket.key">
-                    <taskana-shared-field-error-display [displayError]="!isFieldValid('workbasket.key')" [validationTrigger]="this.toogleValidationMap.get('workbasket.key')"
-                                                        errorMessage="* Key is required">
-                    </taskana-shared-field-error-display>
+                    <taskana-field-error-display [displayError]="!isFieldValid('workbasket.key')" [validationTrigger]="this.toogleValidationMap.get('workbasket.key')"
+                        errorMessage="* Key is required">
+                    </taskana-field-error-display>
                 </div>
+
+                <!-- NAME -->
                 <div class="form-group required">
                     <label for="wb-name" class="control-label">Name</label>
                     <input type="text" required #name="ngModel" class="form-control" id="wb-name" placeholder="Name"
                         [(ngModel)]="workbasket.name" name="workbasket.name">
-                    <taskana-shared-field-error-display [displayError]="!isFieldValid('workbasket.name')" [validationTrigger]="this.toogleValidationMap.get('workbasket.name')"
-                                                        errorMessage="* Name is required">
-                    </taskana-shared-field-error-display>
+                    <taskana-field-error-display [displayError]="!isFieldValid('workbasket.name')" [validationTrigger]="this.toogleValidationMap.get('workbasket.name')"
+                        errorMessage="* Name is required">
+                    </taskana-field-error-display>
                 </div>
+
+                <!-- OWNER -->
                 <div class="input-group form-group col-xs-12 required">
                     <label for="wb-owner" class="control-label ">Owner</label>
-                    <taskana-shared-type-ahead *ngIf="(workbasketsCustomisation$ | async)?.information?.lookupField else ownerInput" required #owner="ngModel" name="workbasket.owner"
-                                               [(ngModel)]="workbasket.owner" placeHolderMessage="* Owner is required" [validationValue]="this.toogleValidationMap.get('workbasket.owner')"
-                                               [displayError]="!isFieldValid('workbasket.owner')" width="100%"></taskana-shared-type-ahead>
+                    <taskana-type-ahead class="form-control" *ngIf="lookupField else ownerInput" required #owner="ngModel" name="workbasket.owner"
+                        [(ngModel)]="workbasket.owner" placeHolderMessage="* Owner is required" [validationValue]="this.toogleValidationMap.get('workbasket.owner')"
+                        [displayError]="!isFieldValid('workbasket.owner')" width="100%"></taskana-type-ahead>
                     <ng-template #ownerInput>
                         <input type="text" required #owner="ngModel" class="form-control" id="wb-owner" placeholder="Owner"
                             [(ngModel)]="workbasket.owner" name="workbasket.owner">
-                        <taskana-shared-field-error-display [displayError]="!isFieldValid('workbasket.owner')"
-                                                            [validationTrigger]="this.toogleValidationMap.get('workbasket.owner')" errorMessage="* Owner is required">
-                        </taskana-shared-field-error-display>
+                        <taskana-field-error-display [displayError]="!isFieldValid('workbasket.owner')"
+                            [validationTrigger]="this.toogleValidationMap.get('workbasket.owner')" errorMessage="* Owner is required">
+                        </taskana-field-error-display>
                     </ng-template>
                 </div>
+
+                <!-- DOMAIN -->
                 <div class="form-group ">
                     <label for="wb-domain" class="control-label">Domain</label>
                     <input type="text" #domain="ngModel" class="form-control" disabled id="wb-domain" placeholder="Domain"
                         [(ngModel)]="workbasket.domain" name="workbasket.domain">
                 </div>
+
+                <!-- TYPE & DESCRIPTION-->
                 <div class="row">
                     <div class="form-group col-xs-4">
                         <label class="control-label">Type</label>
                         <div class="dropdown">
                             <button class="btn btn-default" type="button" id="dropdownMenu24" data-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="true">
-                                <taskana-administration-icon-type [type]='workbasket.type'></taskana-administration-icon-type>
+                                <taskana-icon-type [type]='workbasket.type'></taskana-icon-type>
                                 {{allTypes.get(workbasket.type)}}
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu dropdown-menu" aria-labelledby="dropdownMenu">
                                 <li>
                                     <a *ngFor="let type of allTypes | mapValues | removeEmptyType" (click)="selectType(type.key)">
-                                        <taskana-administration-icon-type [type]='type.key' [text]="type.value"></taskana-administration-icon-type>
+                                        <taskana-icon-type [type]='type.key' [text]="type.value"></taskana-icon-type>
                                     </a>
                                 </li>
                             </ul>

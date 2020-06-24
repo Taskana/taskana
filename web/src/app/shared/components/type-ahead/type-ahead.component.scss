@@ -11,7 +11,6 @@
      }
     &> div{
         &> div {
-            border-bottom: 1px solid $pallete-blue;
             margin-top: 2px;
             padding-left: 12px;
             min-width: 175px;
@@ -41,12 +40,8 @@
     border-radius: 0px;
     min-width: 150px;
     height: 28px;
-    border-bottom: 1px solid $pallete-blue;
-    &:focus{
-        border-bottom: 1px solid $aquamarine;
-    }
     padding-left: 12px;
-    padding-right: 35px;
+    padding-right: 12px;
 
 }
 
@@ -77,6 +72,8 @@
     position: absolute;
     top: 0px;
     right: 0px;
+    padding-top: 0;
+    padding-right: 12px;
 
 }
 
@@ -97,5 +94,5 @@
 }
 
 .invalid {
-    border-bottom: 1px solid $invalid;
+    color: $invalid;
 }
