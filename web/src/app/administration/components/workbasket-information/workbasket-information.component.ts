@@ -26,7 +26,9 @@ import { NotificationService } from '../../../shared/services/notifications/noti
 import { CustomField,
   getCustomFields,
   WorkbasketsCustomisation } from '../../../shared/models/customisation';
-import { RemoveDistributionTarget, UpdateWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
+import { CopyWorkbasket,
+  RemoveDistributionTarget,
+  UpdateWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
 
 @Component({
   selector: 'taskana-administration-workbasket-information',
@@ -124,9 +126,7 @@ implements OnInit, OnChanges, OnDestroy {
   }
 
   copyWorkbasket() {
-    this.router.navigate([{ outlets: { detail: ['copy-workbasket'] } }], {
-      relativeTo: this.route.parent
-    });
+    this.store.dispatch(new CopyWorkbasket(this.workbasket));
   }
 
   removeDistributionTargets() {
