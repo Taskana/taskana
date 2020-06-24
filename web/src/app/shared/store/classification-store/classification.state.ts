@@ -51,7 +51,7 @@ export class ClassificationState implements NgxsAfterBootstrap {
         selectedClassification => {
           ctx.patchState({
             selectedClassification,
-            action: null
+            action: ACTION.DEFAULT
           });
         }
       ));
@@ -63,7 +63,7 @@ export class ClassificationState implements NgxsAfterBootstrap {
   deselectClassification(ctx: StateContext<ClassificationStateModel>): Observable<null> {
     ctx.patchState({
       selectedClassification: undefined,
-      action: null
+      action: ACTION.DEFAULT
     });
     return of(null);
   }
@@ -105,7 +105,7 @@ export class ClassificationState implements NgxsAfterBootstrap {
           {
             classifications: [...ctx.getState().classifications, classification],
             selectedClassification: classification,
-            action: null
+            action: ACTION.DEFAULT
           }
         );
       })

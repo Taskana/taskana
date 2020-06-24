@@ -7,9 +7,6 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { configureTests } from 'app/app.test.configuration';
 import { NgxsModule, Store } from '@ngxs/store';
 import { Location } from '@angular/common';
-
-
-import { ClassificationDefinition } from 'app/shared/models/classification-definition';
 import { LinksClassification } from 'app/shared/models/links-classfication';
 
 import { MasterAndDetailService } from 'app/shared/services/master-and-detail/master-and-detail.service';
@@ -21,6 +18,7 @@ import { EngineConfigurationSelectors } from 'app/shared/store/engine-configurat
 import { ClassificationSelectors } from 'app/shared/store/classification-store/classification.selectors';
 import { ClassificationDetailsComponent } from './classification-details.component';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
+import { ACTION } from '../../../shared/models/action';
 
 
 @Component({
@@ -36,8 +34,6 @@ describe('ClassificationDetailsComponent', () => {
   const treeNodes: Array<TreeNodeModel> = new Array(new TreeNodeModel());
 
   let classificationsService;
-  let removeConfirmationService;
-
   const locationSpy: jasmine.SpyObj<Location> = jasmine.createSpyObj('Location', ['go']);
   const storeSpy: jasmine.SpyObj<Store> = jasmine.createSpyObj('Store', ['select', 'dispatch']);
   const configure = (testBed: TestBed) => {
@@ -116,6 +112,13 @@ describe('ClassificationDetailsComponent', () => {
     expect(component.classification.name).toEqual(startClassification.name);
     expect(component.classification.classificationId).toEqual(startClassification.classificationId);
     expect(component.classification.key).toBeNull();
+    expect(fixture.debugElement.nativeElement.querySelector('#classification-key').disabled).toEqual(false);
+    done();
+  });
+
+  it('should enable editing of key on create', async done => {
+    component.action = ACTION.CREATE;
+    await fixture.detectChanges();
     expect(fixture.debugElement.nativeElement.querySelector('#classification-key').disabled).toEqual(false);
     done();
   });
