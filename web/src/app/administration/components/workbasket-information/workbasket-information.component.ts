@@ -26,7 +26,7 @@ import { NotificationService } from '../../../shared/services/notifications/noti
 import { CustomField,
   getCustomFields,
   WorkbasketsCustomisation } from '../../../shared/models/customisation';
-import { CopyWorkbasket,
+import { CopyWorkbasket, MarkWorkbasketForDeletion,
   RemoveDistributionTarget,
   UpdateWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
 
@@ -214,26 +214,7 @@ implements OnInit, OnChanges, OnDestroy {
   }
 
   private onRemoveConfirmed() {
-    this.requestInProgressService.setRequestInProgress(true);
-    this.workbasketService
-      .markWorkbasketForDeletion(this.workbasket._links.self.href)
-      .subscribe(
-        response => {
-          this.requestInProgressService.setRequestInProgress(false);
-          this.workbasketService.triggerWorkBasketSaved();
-          if (response.status === 202) {
-            this.notificationService.triggerError(NOTIFICATION_TYPES.MARK_ERR,
-              undefined,
-              new Map<String, String>([['workbasketId', this.workbasket.workbasketId]]));
-          } else {
-            this.notificationService.showToast(
-              NOTIFICATION_TYPES.SUCCESS_ALERT_12,
-              new Map<string, string>([['workbasketId', this.workbasket.workbasketId]])
-            );
-          }
-          this.router.navigate(['taskana/administration/workbaskets']);
-        }
-      );
+    this.store.dispatch(new MarkWorkbasketForDeletion(this.workbasket._links.self.href));
   }
 
   getWorkbasketCustomProperty(custom: number) {
