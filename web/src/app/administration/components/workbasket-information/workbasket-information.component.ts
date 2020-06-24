@@ -51,6 +51,7 @@ implements OnInit, OnChanges, OnDestroy {
   requestInProgress = false;
   badgeMessage = '';
   toogleValidationMap = new Map<string, boolean>();
+  lookupField = false;
 
   @Select(EngineConfigurationSelectors.workbasketsCustomisation)
   workbasketsCustomisation$: Observable<WorkbasketsCustomisation>;
@@ -81,10 +82,16 @@ implements OnInit, OnChanges, OnDestroy {
       map(customisation => customisation.information),
       getCustomFields(customFieldCount)
     );
-    console.log(this.workbasket);
+    this.workbasketsCustomisation$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(workbasketsCustomization => {
+        if (workbasketsCustomization.information.owner) {
+          this.lookupField = workbasketsCustomization.information.owner.lookupField;
+        }
+      });
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(changes: SimpleChanges) {
     this.workbasketClone = { ...this.workbasket };
     if (this.action === ACTION.CREATE) {
       this.badgeMessage = 'Creating new workbasket';
