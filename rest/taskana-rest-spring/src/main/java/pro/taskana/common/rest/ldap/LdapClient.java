@@ -75,7 +75,7 @@ public class LdapClient {
         accessIds.add(groupByDn);
       }
     } else {
-      accessIds.addAll(searchUsersByName(name));
+      accessIds.addAll(searchUsersByNameOrAccessId(name));
       accessIds.addAll(searchGroupsByName(name));
     }
     sortListOfAccessIdResources(accessIds);
@@ -90,9 +90,9 @@ public class LdapClient {
     return result;
   }
 
-  public List<AccessIdRepresentationModel> searchUsersByName(final String name)
+  public List<AccessIdRepresentationModel> searchUsersByNameOrAccessId(final String name)
       throws InvalidArgumentException {
-    LOGGER.debug("entry to searchUsersByName(name = {}).", name);
+    LOGGER.debug("entry to searchUsersByNameOrAccessId(name = {}).", name);
     isInitOrFail();
     testMinSearchForLength(name);
 
@@ -116,7 +116,31 @@ public class LdapClient {
             SearchControls.SUBTREE_SCOPE,
             userAttributesToReturn,
             new UserContextMapper());
-    LOGGER.debug("exit from searchUsersByName. Retrieved the following users: {}.", accessIds);
+    LOGGER.debug(
+        "exit from searchUsersByNameOrAccessId. Retrieved the following users: {}.", accessIds);
+    return accessIds;
+  }
+
+  public List<AccessIdRepresentationModel> getUsersByAccessId(final String accessId) {
+    LOGGER.debug("entry to searchUsersByAccessId(name = {}).", accessId);
+    isInitOrFail();
+
+    final AndFilter andFilter = new AndFilter();
+    andFilter.and(new EqualsFilter(getUserSearchFilterName(), getUserSearchFilterValue()));
+    andFilter.and(new EqualsFilter(getUserIdAttribute(), accessId));
+
+    String[] userAttributesToReturn = {
+      getUserFirstnameAttribute(), getUserLastnameAttribute(), getUserIdAttribute()
+    };
+
+    final List<AccessIdRepresentationModel> accessIds =
+        ldapTemplate.search(
+            getUserSearchBase(),
+            andFilter.encode(),
+            SearchControls.SUBTREE_SCOPE,
+            userAttributesToReturn,
+            new UserContextMapper());
+    LOGGER.debug("exit from searchUsersByAccessId. Retrieved the following users: {}.", accessIds);
     return accessIds;
   }
 
@@ -260,8 +284,8 @@ public class LdapClient {
     return LdapSettings.TASKANA_LDAP_GROUPS_OF_USER.getValueFromEnv(env);
   }
 
-  public boolean isGroup(String accessId) {
-    return accessId.contains(getGroupSearchBase());
+  public boolean isUser(String accessId) {
+    return !getUsersByAccessId(accessId).isEmpty();
   }
 
   boolean nameIsDn(String name) {
@@ -293,9 +317,8 @@ public class LdapClient {
   String[] getLookUpGoupAttributesToReturn() {
     if (CN.equals(getGroupNameAttribute())) {
       return new String[] {CN};
-    } else {
-      return new String[] {getGroupNameAttribute(), CN};
     }
+    return new String[] {getGroupNameAttribute(), CN};
   }
 
   @PostConstruct
