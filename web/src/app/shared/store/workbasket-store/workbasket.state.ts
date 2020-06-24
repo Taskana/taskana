@@ -4,10 +4,10 @@ import { Observable, of } from 'rxjs';
 import { Location } from '@angular/common';
 import { WorkbasketService } from '../../services/workbasket/workbasket.service';
 import { Workbasket } from '../../models/workbasket';
-import { CopyWorkbasket, CreateWorkbasket, DeleteWorkbasket, DeselectWorkbasket,
+import { CopyWorkbasket, CreateWorkbasket, DeselectWorkbasket,
   GetWorkbasketAccessItems,
   GetWorkbaskets,
-  GetWorkbasketsSummary, RemoveDistributionTarget, SaveNewWorkbasket,
+  GetWorkbasketsSummary, MarkWorkbasketForDeletion, RemoveDistributionTarget, SaveNewWorkbasket,
   SelectWorkbasket, SetActiveAction, UpdateWorkbasket } from './workbasket.actions';
 import { WorkbasketAccessItems } from '../../models/workbasket-access-items';
 import { WorkbasketSummaryRepresentation } from '../../models/workbasket-summary-representation';
@@ -93,7 +93,7 @@ export class WorkbasketState implements NgxsAfterBootstrap {
   }
 
   @Action(CreateWorkbasket)
-  createWorkbasket(ctx: StateContext<WorkbasketStateModel>, action: CreateWorkbasket): Observable<any> {
+  createWorkbasket(ctx: StateContext<WorkbasketStateModel>): Observable<any> {
     this.location.go(this.location.path().replace(/(workbaskets).*/g, 'workbaskets/(detail:new-workbasket)'));
     ctx.patchState({
       selectedWorkbasket: undefined,
@@ -105,7 +105,13 @@ export class WorkbasketState implements NgxsAfterBootstrap {
   @Action(SaveNewWorkbasket)
   saveNewWorkbasket(ctx: StateContext<WorkbasketStateModel>, action: SaveNewWorkbasket): Observable<any> {
     return this.workbasketService.createWorkbasket(action.workbasket).pipe(take(1), tap(
-      () => {
+      workbasketUpdated => {
+        this.notificationService.showToast(
+          NOTIFICATION_TYPES.SUCCESS_ALERT_11,
+          new Map<string, string>([['workbasketKey', workbasketUpdated.key]])
+        );
+        this.workbasketService.triggerWorkBasketSaved();
+        this.selectWorkbasket(ctx, workbasketUpdated.workbasketId);
         this.getWorkbaskets(ctx);
       }
     ));
@@ -161,11 +167,21 @@ export class WorkbasketState implements NgxsAfterBootstrap {
     ));
   }
 
-  @Action(DeleteWorkbasket)
-  deleteWorkbasket(ctx: StateContext<WorkbasketStateModel>, action: DeleteWorkbasket): Observable<any> {
+  @Action(MarkWorkbasketForDeletion)
+  deleteWorkbasket(ctx: StateContext<WorkbasketStateModel>, action: MarkWorkbasketForDeletion): Observable<any> {
     return this.workbasketService.markWorkbasketForDeletion(action.url).pipe(take(1), tap(
-      () => {
-
+      response => {
+        this.workbasketService.triggerWorkBasketSaved();
+        if (response.status === 202) {
+          this.notificationService.triggerError(NOTIFICATION_TYPES.MARK_ERR,
+            undefined,
+            new Map<String, String>([['workbasketId', ctx.getState().selectedWorkbasket.workbasketId]]));
+        } else {
+          this.notificationService.showToast(
+            NOTIFICATION_TYPES.SUCCESS_ALERT_12,
+            new Map<string, string>([['workbasketId', ctx.getState().selectedWorkbasket.workbasketId]])
+          );
+        }
       }
     ));
   }
