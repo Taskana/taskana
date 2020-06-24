@@ -120,9 +120,9 @@ class WorkbasketAccessItemControllerIntTest {
   }
 
   @Test
-  void testRemoveWorkbasketAccessItemsOfUser() {
+  void should_deleteAllAccessItemForUser_ifValidAccessIdOfUserIsSupplied() {
 
-    String parameters = "?access-id=user-1-1";
+    String parameters = "?access-id=teamlead-2";
     ResponseEntity<Void> response =
         template.exchange(
             restHelper.toUrl(Mapping.URL_WORKBASKET_ACCESS_ITEMS) + parameters,
@@ -134,8 +134,40 @@ class WorkbasketAccessItemControllerIntTest {
   }
 
   @Test
-  void testGetBadRequestIfTryingToDeleteAccessItemsForGroup() {
-    String parameters = "?access-id=cn=monitor-users,cn=groups,OU=Test,O=TASKANA";
+  void should_returnBadRequest_ifAccessIdIsSubStringOfUser() {
+    String parameters = "?access-id=user-1";
+    ThrowingCallable httpCall =
+        () ->
+            template.exchange(
+                restHelper.toUrl(Mapping.URL_WORKBASKET_ACCESS_ITEMS) + parameters,
+                HttpMethod.DELETE,
+                restHelper.defaultRequest(),
+                ParameterizedTypeReference.forType(Void.class));
+    assertThatThrownBy(httpCall)
+        .isInstanceOf(HttpClientErrorException.class)
+        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.BAD_REQUEST);
+  }
+
+  @Test
+  void should_returnBadRequest_ifAccessIdIsGroup() {
+    String parameters = "?access-id=cn=monitor-users,cn=groups,ou=test,o=taskana";
+    ThrowingCallable httpCall =
+        () ->
+            template.exchange(
+                restHelper.toUrl(Mapping.URL_WORKBASKET_ACCESS_ITEMS) + parameters,
+                HttpMethod.DELETE,
+                restHelper.defaultRequest(),
+                ParameterizedTypeReference.forType(Void.class));
+    assertThatThrownBy(httpCall)
+        .isInstanceOf(HttpClientErrorException.class)
+        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.BAD_REQUEST);
+  }
+
+  @Test
+  void should_returnBadRequest_ifAccessIdIsOrganizationalGroup() {
+    String parameters = "?access-id=cn=organisationseinheit ksc,cn=organisation,ou=test,o=taskana";
     ThrowingCallable httpCall =
         () ->
             template.exchange(

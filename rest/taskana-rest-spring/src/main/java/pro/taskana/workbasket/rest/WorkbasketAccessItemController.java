@@ -115,7 +115,7 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
       @RequestParam("access-id") String accessId)
       throws NotAuthorizedException, InvalidArgumentException {
     LOGGER.debug("Entry to removeWorkbasketAccessItems(access-id= {})", accessId);
-    if (!ldapClient.isGroup(accessId)) {
+    if (ldapClient.isUser(accessId)) {
       List<WorkbasketAccessItem> workbasketAccessItemList =
           workbasketService.createWorkbasketAccessItemQuery().accessIdIn(accessId).list();
 
@@ -125,8 +125,7 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
     } else {
       throw new InvalidArgumentException(
           String.format(
-              "%s corresponding to a group, not a user. "
-                  + "You just can remove access items for a user",
+              "AccessId '%s' is not a user. " + "You can remove all access items for users only.",
               accessId));
     }
 
