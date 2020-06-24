@@ -33,15 +33,15 @@
 				<tbody>
 					<tr *ngFor="let accessItem of accessItemsGroups.controls; let index = index;" [formGroupName]="index">
 						<td>
-							<button type="button" (click)="remove(index)" data-toggle="tooltip" title="Remove" class="btn btn-default">
-								<span class="material-icons md-20 red">clear</span>
+							<button type="button" style="width:50px; height: 50px;" (click)="remove(index)" data-toggle="tooltip" title="Remove" class="btn btn-default">
+								<span class="material-icons md-24 red">clear</span>
 							</button>
 						</td>
 						<td *ngIf="(accessItemsCustomization$ | async)?.accessId.lookupField else accessIdInput" class="input-group text-align text-width taskana-type-ahead"
 						 [ngClass]="{
 							'has-warning': (accessItemsClone[index].accessId !== accessItem.value.accessId),
 							'has-error': !accessItem.value.accessId }">
-							<taskana-type-ahead formControlName="accessId" placeHolderMessage="* Access id is required" [validationValue]="toggleValidationAccessIdMap.get(index)"
+							<taskana-type-ahead class="form-control" formControlName="accessId" placeHolderMessage="* Access id is required" [validationValue]="toogleValidationAccessIdMap.get(index)"
 							 [displayError]="!isFieldValid('accessItem.value.accessId', index)" (selectedItem)="accessItemSelected($event, index)" (inputField)="focusNewInput($event)"></taskana-type-ahead>
 						</td>
 						<ng-template #accessIdInput>
@@ -50,7 +50,7 @@
 							 !accessItem.value.accessId && formSubmitAttempt}">
 									<input type="text" class="form-control" formControlName="accessId" placeholder="{{accessItem.invalid?
 							 '* Access id is required': ''}}"
-												 [@validation]="toggleValidationAccessIdMap.get(index)" #htmlInputElement>
+									 [@validation]="toogleValidationAccessIdMap.get(index)" #htmlInputElement>
 								</div>
 							</td>
 						</ng-template>
