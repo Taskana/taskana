@@ -156,9 +156,9 @@ objectclass: top
 givenName: Tim
 description: desc
 uid: user-2-2
-sn: Schläfrig
+sn:: U2NobMOkZnJpZw==
 ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
-cn: Tim Schläfrig
+cn:: VGltIFNjaGzDpGZyaWc=
 userPassword: user-2-1
 
 ########################

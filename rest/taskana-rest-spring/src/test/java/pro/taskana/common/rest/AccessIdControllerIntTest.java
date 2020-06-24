@@ -77,6 +77,23 @@ class AccessIdControllerIntTest {
   }
 
   @Test
+  void should_returnAccessIdWithUmlauten_ifBased64EncodedUserIsLookedUp() {
+    ResponseEntity<List<AccessIdRepresentationModel>> response =
+        template.exchange(
+            restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=läf",
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
+            ParameterizedTypeReference.forType(AccessIdListResource.class));
+
+    List<AccessIdRepresentationModel> body = response.getBody();
+    assertThat(body).isNotNull();
+    assertThat(body).hasSize(1);
+    assertThat(body)
+        .extracting(AccessIdRepresentationModel::getName)
+        .containsExactlyInAnyOrder("Schläfrig, Tim");
+  }
+
+  @Test
   void testBadRequestWhenSearchForIsTooShort() {
     ThrowingCallable httpCall =
         () -> {
