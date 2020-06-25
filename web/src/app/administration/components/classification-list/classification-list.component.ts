@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { map, take, takeUntil } from 'rxjs/operators';
 import { Actions, ofActionCompleted, ofActionDispatched, Select, Store } from '@ngxs/store';
 
 import { ImportExportService } from 'app/administration/services/import-export.service';
@@ -16,6 +16,7 @@ import { ClassificationCategoryImages } from '../../../shared/models/customisati
 import { GetClassifications,
   SetActiveAction } from '../../../shared/store/classification-store/classification.actions';
 import { ACTION } from '../../../shared/models/action';
+import { DomainService } from '../../../shared/services/domain/domain.service';
 import { ClassificationSummary } from '../../../shared/models/classification-summary';
 
 @Component({
@@ -45,7 +46,8 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
     private location: Location,
     private importExportService: ImportExportService,
     private store: Store,
-    private ngxsActions$: Actions
+    private ngxsActions$: Actions,
+    private domainService: DomainService
   ) {
     this.ngxsActions$.pipe(ofActionDispatched(GetClassifications),
       takeUntil(this.destroy$))
@@ -82,6 +84,11 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
       .subscribe(action => {
         this.action = action;
       });
+
+    // needed, so that the list updates, when domain gets changed (could be placed anywhere and should be removed, when domain is in store)
+    this.domainService.getSelectedDomain().pipe(takeUntil(this.destroy$)).subscribe(domain => {
+      this.store.dispatch(GetClassifications);
+    });
   }
 
   addClassification() {

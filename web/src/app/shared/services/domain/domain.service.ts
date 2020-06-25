@@ -64,9 +64,7 @@ export class DomainService {
   }
 
   switchDomain(value: string) {
-    this.requestInProgressService.setRequestInProgress(true);
     this.selectDomain(value);
-    this.router.navigate([this.getNavigationUrl()]);
   }
 
   /*
