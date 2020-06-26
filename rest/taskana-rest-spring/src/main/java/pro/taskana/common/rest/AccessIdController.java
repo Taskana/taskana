@@ -63,11 +63,10 @@ public class AccessIdController {
     if (!validateAccessId(accessId)) {
       throw new InvalidArgumentException("The accessId is invalid");
     }
-    List<AccessIdRepresentationModel> accessIdUsers;
+    List<AccessIdRepresentationModel> accessIds;
     ResponseEntity<List<AccessIdRepresentationModel>> response;
-    accessIdUsers = ldapClient.searchUsersAndGroups(accessId);
-    accessIdUsers.addAll(ldapClient.searchGroupsofUsersIsMember(accessId));
-    response = ResponseEntity.ok(accessIdUsers);
+    accessIds = ldapClient.searchGroupsAccessIdIsMemberOf(accessId);
+    response = ResponseEntity.ok(accessIds);
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from getGroupsByAccessId(), returning {}", response);
     }
