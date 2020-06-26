@@ -183,15 +183,15 @@ public class LdapClient {
     return accessId;
   }
 
-  public List<AccessIdRepresentationModel> searchGroupsAccessIdIsMemberOf(final String name)
+  public List<AccessIdRepresentationModel> searchGroupsAccessIdIsMemberOf(final String accessId)
       throws InvalidArgumentException {
-    LOGGER.debug("entry to searchGroupsAccessIdIsMemberOf(name = {}).", name);
+    LOGGER.debug("entry to searchGroupsAccessIdIsMemberOf(name = {}).", accessId);
     isInitOrFail();
-    testMinSearchForLength(name);
+    testMinSearchForLength(accessId);
 
     final AndFilter andFilter = new AndFilter();
     andFilter.and(new EqualsFilter(getGroupSearchFilterName(), getGroupSearchFilterValue()));
-    andFilter.and(new LikeFilter(getGroupsOfUser(), "*" + name + "*"));
+    andFilter.and(new LikeFilter(getGroupsOfUser(), "*" + accessId + "*"));
 
     String[] userAttributesToReturn = {getUserIdAttribute(), getGroupNameAttribute()};
 
@@ -202,6 +202,7 @@ public class LdapClient {
             SearchControls.SUBTREE_SCOPE,
             userAttributesToReturn,
             new GroupContextMapper());
+
     LOGGER.debug(
         "exit from searchGroupsAccessIdIsMemberOf. Retrieved the following accessIds: {}.",
         accessIds);

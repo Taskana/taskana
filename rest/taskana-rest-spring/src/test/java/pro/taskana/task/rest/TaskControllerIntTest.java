@@ -83,7 +83,7 @@ class TaskControllerIntTest {
             TASK_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(response.getBody().getContent()).hasSize(25);
+    assertThat(response.getBody().getContent()).hasSize(48);
   }
 
   @Test
@@ -465,7 +465,7 @@ class TaskControllerIntTest {
             request,
             TASK_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
-    assertThat((response.getBody()).getContent()).hasSize(25);
+    assertThat((response.getBody()).getContent()).hasSize(48);
 
     response =
         TEMPLATE.exchange(
@@ -476,8 +476,8 @@ class TaskControllerIntTest {
     assertThat(response.getBody()).isNotNull();
     assertThat((response.getBody()).getContent()).hasSize(5);
     assertThat(response.getBody().getRequiredLink(IanaLinkRelations.LAST).getHref())
-        .contains("page=5");
-    assertThat("TKI:000000000000000000000000000000000023")
+        .contains("page=10");
+    assertThat("TKI:000000000000000000000000000000000005")
         .isEqualTo(response.getBody().getContent().iterator().next().getTaskId());
 
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();

@@ -82,7 +82,7 @@ class WorkbasketControllerIntTest {
             WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getRequiredLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(response.getBody().getContent()).hasSize(3);
+    assertThat(response.getBody().getContent()).hasSize(6);
   }
 
   @Test

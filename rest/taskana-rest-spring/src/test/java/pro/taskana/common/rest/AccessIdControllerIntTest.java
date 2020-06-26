@@ -10,6 +10,7 @@ import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -116,16 +117,16 @@ class AccessIdControllerIntTest {
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(AccessIdListResource.class));
 
-    List<AccessIdRepresentationModel> body = response.getBody();
-    assertThat(body).isNotNull();
-    assertThat(body)
+    assertThat(response.getBody())
+        .isNotNull()
         .extracting(AccessIdRepresentationModel::getAccessId)
         .usingElementComparator(String.CASE_INSENSITIVE_ORDER)
         .containsExactlyInAnyOrder(
             "cn=ksc-teamleads,cn=groups,OU=Test,O=TASKANA",
             "cn=business-admins,cn=groups,OU=Test,O=TASKANA",
             "cn=monitor-users,cn=groups,OU=Test,O=TASKANA",
-            "cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA");
+            "cn=Organisationseinheit KSC 2,"
+                + "cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA");
   }
 
   @Test
@@ -139,12 +140,43 @@ class AccessIdControllerIntTest {
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(AccessIdListResource.class));
 
-    List<AccessIdRepresentationModel> body = response.getBody();
-    assertThat(body).isNotNull();
-    assertThat(body)
+    assertThat(response.getBody())
+        .isNotNull()
         .extracting(AccessIdRepresentationModel::getAccessId)
         .usingElementComparator(String.CASE_INSENSITIVE_ORDER)
         .containsExactlyInAnyOrder("cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA");
+  }
+
+  @Test
+  void should_throwNotAuthorizedException_ifCallerOfGroupRetrievalIsNotAdminOrBusinessAdmin() {
+    ThrowingCallable call =
+        () ->
+            template.exchange(
+                restHelper.toUrl(Mapping.URL_ACCESSID_GROUPS) + "?access-id=teamlead-2",
+                HttpMethod.GET,
+                new HttpEntity<>(restHelper.getHeadersUser_1_1()),
+                ParameterizedTypeReference.forType(AccessIdListResource.class));
+
+    assertThatThrownBy(call)
+        .isInstanceOf(HttpClientErrorException.class)
+        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.FORBIDDEN);
+  }
+
+  @Test
+  void should_throwNotAuthorizedException_ifCallerOfValidationIsNotAdminOrBusinessAdmin() {
+    ThrowingCallable call =
+        () ->
+            template.exchange(
+                restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=al",
+                HttpMethod.GET,
+                new HttpEntity<>(restHelper.getHeadersUser_1_1()),
+                ParameterizedTypeReference.forType(AccessIdListResource.class));
+
+    assertThatThrownBy(call)
+        .isInstanceOf(HttpClientErrorException.class)
+        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.FORBIDDEN);
   }
 
   static class AccessIdListResource extends ArrayList<AccessIdRepresentationModel> {
