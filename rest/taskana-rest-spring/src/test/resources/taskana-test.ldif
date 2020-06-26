@@ -230,6 +230,8 @@ objectclass: top
 ######################
 dn: cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA
 cn: Organisationseinheit KSC
+uniquemember: cn=Organisationseinheit KSC 1,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA
+uniquemember: cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA
 objectclass: groupofuniquenames
 objectclass: top
 

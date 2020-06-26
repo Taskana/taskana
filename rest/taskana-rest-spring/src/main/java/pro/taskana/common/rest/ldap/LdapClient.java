@@ -18,6 +18,7 @@ import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.AbstractContextMapper;
 import org.springframework.ldap.filter.AndFilter;
 import org.springframework.ldap.filter.EqualsFilter;
+import org.springframework.ldap.filter.LikeFilter;
 import org.springframework.ldap.filter.OrFilter;
 import org.springframework.ldap.filter.WhitespaceWildcardsFilter;
 import org.springframework.stereotype.Component;
@@ -187,15 +188,15 @@ public class LdapClient {
     return accessId;
   }
 
-  public List<AccessIdRepresentationModel> searchGroupsofUsersIsMember(final String name)
+  public List<AccessIdRepresentationModel> searchGroupsAccessIdIsMemberOf(final String name)
       throws InvalidArgumentException {
-    LOGGER.debug("entry to searchGroupsofUsersIsMember(name = {}).", name);
+    LOGGER.debug("entry to searchGroupsAccessIdIsMemberOf(name = {}).", name);
     isInitOrFail();
     testMinSearchForLength(name);
 
     final AndFilter andFilter = new AndFilter();
-    andFilter.and(new WhitespaceWildcardsFilter(getGroupNameAttribute(), ""));
-    andFilter.and(new EqualsFilter(getGroupsOfUser(), name));
+    andFilter.and(new EqualsFilter(getGroupSearchFilterName(), getGroupSearchFilterValue()));
+    andFilter.and(new LikeFilter(getGroupsOfUser(), "*" + name + "*"));
 
     String[] userAttributesToReturn = {getUserIdAttribute(), getGroupNameAttribute()};
 
@@ -207,7 +208,8 @@ public class LdapClient {
             userAttributesToReturn,
             new GroupContextMapper());
     LOGGER.debug(
-        "exit from searchGroupsofUsersIsMember. Retrieved the following users: {}.", accessIds);
+        "exit from searchGroupsAccessIdIsMemberOf. Retrieved the following accessIds: {}.",
+        accessIds);
     return accessIds;
   }
 

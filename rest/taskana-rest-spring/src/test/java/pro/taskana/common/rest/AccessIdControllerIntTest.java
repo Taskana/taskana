@@ -110,6 +110,46 @@ class AccessIdControllerIntTest {
         .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
+  @Test
+  void should_returnAccessIdsOfGroupsTheAccessIdIsMemberOf_ifAccessIdOfUserIsGiven() {
+    ResponseEntity<List<AccessIdRepresentationModel>> response =
+        template.exchange(
+            restHelper.toUrl(Mapping.URL_ACCESSID_GROUPS) + "?access-id=teamlead-2",
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
+            ParameterizedTypeReference.forType(AccessIdListResource.class));
+
+    List<AccessIdRepresentationModel> body = response.getBody();
+    assertThat(body).isNotNull();
+    assertThat(body)
+        .extracting(AccessIdRepresentationModel::getAccessId)
+        .usingElementComparator(String.CASE_INSENSITIVE_ORDER)
+        .containsExactlyInAnyOrder(
+            "cn=ksc-teamleads,cn=groups,OU=Test,O=TASKANA",
+            "cn=business-admins,cn=groups,OU=Test,O=TASKANA",
+            "cn=monitor-users,cn=groups,OU=Test,O=TASKANA",
+            "cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA");
+  }
+
+  @Test
+  void should_returnAccessIdsOfGroupsTheAccessIdIsMemberOf_ifAccessIdOfGroupIsGiven() {
+    ResponseEntity<List<AccessIdRepresentationModel>> response =
+        template.exchange(
+            restHelper.toUrl(Mapping.URL_ACCESSID_GROUPS)
+                + "?access-id=cn=Organisationseinheit KSC 1,"
+                + "cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA",
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
+            ParameterizedTypeReference.forType(AccessIdListResource.class));
+
+    List<AccessIdRepresentationModel> body = response.getBody();
+    assertThat(body).isNotNull();
+    assertThat(body)
+        .extracting(AccessIdRepresentationModel::getAccessId)
+        .usingElementComparator(String.CASE_INSENSITIVE_ORDER)
+        .containsExactlyInAnyOrder("cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA");
+  }
+
   static class AccessIdListResource extends ArrayList<AccessIdRepresentationModel> {
     private static final long serialVersionUID = 1L;
   }
