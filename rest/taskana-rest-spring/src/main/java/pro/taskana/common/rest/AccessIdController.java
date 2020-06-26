@@ -11,7 +11,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.rest.ldap.LdapClient;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 
@@ -26,18 +29,23 @@ public class AccessIdController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AccessIdController.class);
 
-  LdapClient ldapClient;
+  private final LdapClient ldapClient;
+  private final TaskanaEngine taskanaEngine;
 
   @Autowired
-  public AccessIdController(LdapClient ldapClient) {
+  public AccessIdController(LdapClient ldapClient, TaskanaEngine taskanaEngine) {
     this.ldapClient = ldapClient;
+    this.taskanaEngine = taskanaEngine;
   }
 
   @GetMapping(path = Mapping.URL_ACCESSID)
   public ResponseEntity<List<AccessIdRepresentationModel>> validateAccessIds(
-      @RequestParam("search-for") String searchFor) throws InvalidArgumentException {
+      @RequestParam("search-for") String searchFor)
+      throws InvalidArgumentException, NotAuthorizedException {
 
     LOGGER.debug("Entry to validateAccessIds(search-for= {})", searchFor);
+
+    taskanaEngine.checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN);
 
     if (searchFor.length() < ldapClient.getMinSearchForLength()) {
       throw new InvalidArgumentException(
@@ -58,19 +66,24 @@ public class AccessIdController {
 
   @GetMapping(path = Mapping.URL_ACCESSID_GROUPS)
   public ResponseEntity<List<AccessIdRepresentationModel>> getGroupsByAccessId(
-      @RequestParam("access-id") String accessId) throws InvalidArgumentException {
+      @RequestParam("access-id") String accessId)
+      throws InvalidArgumentException, NotAuthorizedException {
+
     LOGGER.debug("Entry to getGroupsByAccessId(access-id= {})", accessId);
+
+    taskanaEngine.checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN);
+
     if (!validateAccessId(accessId)) {
       throw new InvalidArgumentException("The accessId is invalid");
     }
-    List<AccessIdRepresentationModel> accessIds;
-    ResponseEntity<List<AccessIdRepresentationModel>> response;
-    accessIds = ldapClient.searchGroupsAccessIdIsMemberOf(accessId);
-    response = ResponseEntity.ok(accessIds);
+
+    List<AccessIdRepresentationModel> accessIds =
+        ldapClient.searchGroupsAccessIdIsMemberOf(accessId);
+    ResponseEntity<List<AccessIdRepresentationModel>> response = ResponseEntity.ok(accessIds);
+
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from getGroupsByAccessId(), returning {}", response);
     }
-
     return response;
   }
 
