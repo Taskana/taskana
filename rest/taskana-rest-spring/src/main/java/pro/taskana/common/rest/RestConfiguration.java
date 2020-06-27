@@ -64,12 +64,6 @@ public class RestConfiguration {
     return new SpringTaskanaEngineConfiguration(dataSource, true, true, schemaName);
   }
 
-  @Bean
-  @ConditionalOnMissingBean(DataSource.class)
-  public DataSource dataSource() {
-    return TaskanaEngineConfiguration.createDefaultDataSource();
-  }
-
   // Needed for injection into jackson deserializer.
   @Bean
   public HandlerInstantiator handlerInstantiator(ApplicationContext context) {
