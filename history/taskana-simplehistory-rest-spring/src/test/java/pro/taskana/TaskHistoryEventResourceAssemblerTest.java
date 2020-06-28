@@ -77,7 +77,8 @@ public class TaskHistoryEventResourceAssemblerTest {
         .isEqualTo(taskHistoryEventResource.getWorkbasketKey());
     assertThat(historyEvent.getAttachmentClassificationKey())
         .isEqualTo(taskHistoryEventResource.getAttachmentClassificationKey());
-    assertThat(historyEvent.getCreated()).isEqualTo(taskHistoryEventResource.getCreated());
+    assertThat(historyEvent.getCreated())
+        .isEqualTo(Instant.parse(taskHistoryEventResource.getCreated()));
     assertThat(historyEvent.getOldValue()).isEqualTo(taskHistoryEventResource.getOldValue());
     assertThat(historyEvent.getNewValue()).isEqualTo(taskHistoryEventResource.getNewValue());
     assertThat(historyEvent.getPorCompany()).isEqualTo(taskHistoryEventResource.getPorCompany());

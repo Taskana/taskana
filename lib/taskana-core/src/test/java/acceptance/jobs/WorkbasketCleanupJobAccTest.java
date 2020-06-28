@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import acceptance.AbstractAccTest;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -24,14 +23,8 @@ import pro.taskana.workbasket.internal.jobs.WorkbasketCleanupJob;
 @ExtendWith(JaasExtension.class)
 class WorkbasketCleanupJobAccTest extends AbstractAccTest {
 
-  WorkbasketService workbasketService;
-  TaskService taskService;
-
-  @BeforeEach
-  void before() {
-    workbasketService = taskanaEngine.getWorkbasketService();
-    taskService = taskanaEngine.getTaskService();
-  }
+  WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+  TaskService taskService = taskanaEngine.getTaskService();
 
   @AfterEach
   void after() throws Exception {
@@ -50,8 +43,8 @@ class WorkbasketCleanupJobAccTest extends AbstractAccTest {
             .orderByKey(BaseQuery.SortDirection.ASCENDING)
             .list();
 
-    assertThat(0).isEqualTo(getNumberTaskNotCompleted(workbaskets.get(0).getId()));
-    assertThat(1).isEqualTo(getNumberTaskCompleted(workbaskets.get(0).getId()));
+    assertThat(getNumberTaskNotCompleted(workbaskets.get(0).getId())).isZero();
+    assertThat(getNumberTaskCompleted(workbaskets.get(0).getId())).isOne();
 
     // Workbasket with completed task will be marked for deletion.
     workbasketService.deleteWorkbasket(workbaskets.get(0).getId());
@@ -60,7 +53,7 @@ class WorkbasketCleanupJobAccTest extends AbstractAccTest {
     TaskCleanupJob taskCleanupJob = new TaskCleanupJob(taskanaEngine, null, null);
     taskCleanupJob.run();
 
-    assertThat(0).isEqualTo(getNumberTaskCompleted(workbaskets.get(0).getId()));
+    assertThat(getNumberTaskCompleted(workbaskets.get(0).getId())).isZero();
 
     WorkbasketCleanupJob workbasketCleanupJob = new WorkbasketCleanupJob(taskanaEngine, null, null);
     workbasketCleanupJob.run();
@@ -81,7 +74,7 @@ class WorkbasketCleanupJobAccTest extends AbstractAccTest {
             .orderByKey(BaseQuery.SortDirection.ASCENDING)
             .list();
 
-    assertThat(0).isNotEqualTo(getNumberTaskCompleted(workbaskets.get(0).getId()));
+    assertThat(getNumberTaskCompleted(workbaskets.get(0).getId())).isPositive();
 
     // Workbasket with completed task will be marked for deletion.
     workbasketService.deleteWorkbasket(workbaskets.get(0).getId());

@@ -217,8 +217,9 @@ class CompleteTaskAccTest extends AbstractAccTest {
     Task taskAfterClaim = TASK_SERVICE.forceClaim(createdTask.getId());
 
     assertThat(taskAfterClaim.getOwner()).isEqualTo(CurrentUserContext.getUserid());
-    assertThat(beforeForceClaim).isBeforeOrEqualTo(taskAfterClaim.getModified());
-    assertThat(beforeForceClaim).isBeforeOrEqualTo(taskAfterClaim.getClaimed());
+    assertThat(beforeForceClaim)
+        .isBeforeOrEqualTo(taskAfterClaim.getModified())
+        .isBeforeOrEqualTo(taskAfterClaim.getClaimed());
     assertThat(taskAfterClaim.getCreated()).isBeforeOrEqualTo(taskAfterClaim.getModified());
 
     assertThat(taskAfterClaim.getState()).isEqualTo(TaskState.CLAIMED);

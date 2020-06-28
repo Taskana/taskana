@@ -49,9 +49,9 @@ class ClassificationControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
+    assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(response.getHeaders().getContentType().toString())
-        .isEqualTo(MediaTypes.HAL_JSON_VALUE);
+    assertThat(response.getHeaders().getContentType()).isEqualTo(MediaTypes.HAL_JSON);
   }
 
   @Test
@@ -62,6 +62,7 @@ class ClassificationControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE);
+    assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
   }
 
@@ -73,6 +74,8 @@ class ClassificationControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE);
+
+    assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(13);
   }
@@ -86,14 +89,10 @@ class ClassificationControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE);
+    assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(
-            response
-                .getBody()
-                .getRequiredLink(IanaLinkRelations.SELF)
-                .getHref()
-                .endsWith("/api/v1/classifications?domain=DOMAIN_A&sort-by=key&order=asc"))
-        .isTrue();
+    assertThat(response.getBody().getRequiredLink(IanaLinkRelations.SELF).getHref())
+        .endsWith("/api/v1/classifications?domain=DOMAIN_A&sort-by=key&order=asc");
     assertThat(response.getBody().getContent()).hasSize(17);
     assertThat(response.getBody().getContent().iterator().next().getKey()).isEqualTo("A12");
   }
@@ -107,6 +106,7 @@ class ClassificationControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE);
+    assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(5);
     assertThat(response.getBody().getContent().iterator().next().getKey()).isEqualTo("L1050");
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
@@ -219,6 +219,8 @@ class ClassificationControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE);
+
+    assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     boolean foundClassificationCreated = false;
     for (ClassificationSummaryRepresentationModel classification :
@@ -290,6 +292,7 @@ class ClassificationControllerIntTest {
             HttpMethod.GET,
             request,
             ParameterizedTypeReference.forType(ClassificationSummaryRepresentationModel.class));
+    assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getName()).isEqualTo("Zustimmungserklärung");
   }
 

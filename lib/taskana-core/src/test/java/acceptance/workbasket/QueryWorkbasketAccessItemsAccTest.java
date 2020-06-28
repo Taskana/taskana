@@ -40,12 +40,10 @@ class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
 
     columnValueList =
         workbasketService.createWorkbasketAccessItemQuery().listValues(ACCESS_ID, null);
-    assertThat(columnValueList).isNotNull();
     assertThat(columnValueList).hasSize(10);
 
     columnValueList =
         workbasketService.createWorkbasketAccessItemQuery().listValues(WORKBASKET_KEY, null);
-    assertThat(columnValueList).isNotNull();
     assertThat(columnValueList).hasSize(24);
 
     long countEntries = workbasketService.createWorkbasketAccessItemQuery().count();
