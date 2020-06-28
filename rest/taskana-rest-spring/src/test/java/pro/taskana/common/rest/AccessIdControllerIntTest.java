@@ -2,11 +2,11 @@ package pro.taskana.common.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static pro.taskana.common.rest.RestHelper.TEMPLATE;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 
@@ -23,55 +22,55 @@ import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 @ActiveProfiles({"test"})
 class AccessIdControllerIntTest {
 
-  private static RestTemplate template;
+  private final RestHelper restHelper;
 
-  @Autowired RestHelper restHelper;
-
-  @BeforeAll
-  static void init() {
-    template = RestHelper.TEMPLATE;
+  @Autowired
+  AccessIdControllerIntTest(RestHelper restHelper) {
+    this.restHelper = restHelper;
   }
 
   @Test
   void testQueryGroupsByDn() {
     ResponseEntity<AccessIdListResource> response =
-        template.exchange(
+        TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_ACCESSID)
                 + "?search-for=cn=ksc-users,cn=groups,OU=Test,O=TASKANA",
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(AccessIdListResource.class));
-    assertThat(response.getBody()).hasSize(1);
-    assertThat(response.getBody().get(0).getAccessId())
-        .isEqualToIgnoringCase("cn=ksc-users,cn=groups,OU=Test,O=TASKANA");
+    assertThat(response.getBody())
+        .isNotNull()
+        .extracting(AccessIdRepresentationModel::getAccessId)
+        .usingElementComparator(String.CASE_INSENSITIVE_ORDER)
+        .containsExactly("cn=ksc-users,cn=groups,OU=Test,O=TASKANA");
   }
 
   @Test
   void testQueryGroupsByCn() {
     ResponseEntity<AccessIdListResource> response =
-        template.exchange(
+        TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=ksc-use",
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(AccessIdListResource.class));
-    assertThat(response.getBody()).hasSize(1);
-    assertThat(response.getBody().get(0).getAccessId())
-        .isEqualToIgnoringCase("cn=ksc-users,cn=groups,OU=Test,O=TASKANA");
+    assertThat(response.getBody())
+        .isNotNull()
+        .extracting(AccessIdRepresentationModel::getAccessId)
+        .usingElementComparator(String.CASE_INSENSITIVE_ORDER)
+        .containsExactly("cn=ksc-users,cn=groups,OU=Test,O=TASKANA");
   }
 
   @Test
   void testGetMatches() {
     ResponseEntity<List<AccessIdRepresentationModel>> response =
-        template.exchange(
+        TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=rig",
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(AccessIdListResource.class));
 
-    List<AccessIdRepresentationModel> body = response.getBody();
-    assertThat(body).isNotNull();
-    assertThat(body).hasSize(2);
-    assertThat(body)
+    assertThat(response.getBody())
+        .isNotNull()
         .extracting(AccessIdRepresentationModel::getName)
         .containsExactlyInAnyOrder("Schläfrig, Tim", "Eifrig, Elena");
   }
@@ -79,16 +78,14 @@ class AccessIdControllerIntTest {
   @Test
   void should_returnAccessIdWithUmlauten_ifBased64EncodedUserIsLookedUp() {
     ResponseEntity<List<AccessIdRepresentationModel>> response =
-        template.exchange(
+        TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=läf",
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(AccessIdListResource.class));
 
-    List<AccessIdRepresentationModel> body = response.getBody();
-    assertThat(body).isNotNull();
-    assertThat(body).hasSize(1);
-    assertThat(body)
+    assertThat(response.getBody())
+        .isNotNull()
         .extracting(AccessIdRepresentationModel::getName)
         .containsExactlyInAnyOrder("Schläfrig, Tim");
   }
@@ -97,7 +94,7 @@ class AccessIdControllerIntTest {
   void testBadRequestWhenSearchForIsTooShort() {
     ThrowingCallable httpCall =
         () -> {
-          template.exchange(
+          TEMPLATE.exchange(
               restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=al",
               HttpMethod.GET,
               restHelper.defaultRequest(),

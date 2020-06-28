@@ -31,7 +31,12 @@ public class RestHelper {
 
   public static final RestTemplate TEMPLATE = getRestTemplate();
 
-  @Autowired Environment environment;
+  private final Environment environment;
+
+  @Autowired
+  public RestHelper(Environment environment) {
+    this.environment = environment;
+  }
 
   public String toUrl(String relativeUrl, Object... uriVariables) {
     return UriComponentsBuilder.fromPath(relativeUrl)

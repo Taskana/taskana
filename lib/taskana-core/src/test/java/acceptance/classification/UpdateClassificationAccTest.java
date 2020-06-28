@@ -152,10 +152,7 @@ class UpdateClassificationAccTest extends AbstractAccTest {
     classification.setName("NOW IT´S MY TURN");
     classification.setDescription("IT SHOULD BE TO LATE...");
     ThrowingCallable call = () -> classificationService.updateClassification(classification);
-    assertThatThrownBy(call)
-        .isInstanceOf(ConcurrencyException.class)
-        .describedAs(
-            "The Classification should not be updated, because it was modified while editing.");
+    assertThatThrownBy(call).isInstanceOf(ConcurrencyException.class);
   }
 
   @WithAccessId(user = "businessadmin")
