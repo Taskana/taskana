@@ -38,7 +38,8 @@ export class ClassificationState implements NgxsAfterBootstrap {
     if (state.classificationTypes[action.selectedType]) {
       ctx.patchState({
         selectedClassificationType: action.selectedType,
-        selectedClassification: undefined
+        selectedClassification: undefined,
+        action: ACTION.DEFAULT
       });
     }
     return of(null);
