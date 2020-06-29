@@ -19,6 +19,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.simplehistory.impl.mappings.HistoryEventMapper;
 import pro.taskana.simplehistory.impl.mappings.HistoryQueryMapper;
 
@@ -36,6 +37,8 @@ class SimpleHistoryServiceImplTest {
 
   @Mock private TaskanaEngineConfiguration taskanaEngineConfiguration;
 
+  @Mock private TaskanaEngine taskanaEngine;
+
   @Mock private SqlSessionManager sqlSessionManagerMock;
 
   @Test
@@ -46,7 +49,11 @@ class SimpleHistoryServiceImplTest {
         .thenReturn(historyQueryMapperMock);
     when(taskanaHistoryEngineMock.getSqlSession()).thenReturn(sqlSessionManagerMock);
     doReturn(taskanaHistoryEngineMock).when(cutSpy).getTaskanaEngine(taskanaEngineConfiguration);
-    cutSpy.initialize(taskanaEngineConfiguration);
+    doReturn(taskanaEngine).when(taskanaEngineConfiguration).buildTaskanaEngine();
+    doReturn(taskanaEngineConfiguration).when(taskanaEngine).getConfiguration();
+
+
+    cutSpy.initialize(taskanaEngineConfiguration.buildTaskanaEngine());
 
     verify(sqlSessionManagerMock, times(2)).getMapper(any());
     verify(taskanaHistoryEngineMock, times(2)).getSqlSession();

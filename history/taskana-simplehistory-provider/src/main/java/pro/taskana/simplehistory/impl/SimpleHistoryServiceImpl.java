@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
@@ -25,14 +26,13 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
   private HistoryEventMapper historyEventMapper;
   private HistoryQueryMapper historyQueryMapper;
 
-  @Override
-  public void initialize(TaskanaEngineConfiguration taskanaEngineConfiguration) {
+  public void initialize(TaskanaEngine taskanaEngine) {
 
-    this.taskanaHistoryEngine = getTaskanaEngine(taskanaEngineConfiguration);
+    this.taskanaHistoryEngine = getTaskanaEngine(taskanaEngine.getConfiguration());
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
           "Simple history service implementation initialized with schemaName: {} ",
-          taskanaEngineConfiguration.getSchemaName());
+          taskanaEngine.getConfiguration().getSchemaName());
     }
 
     this.historyEventMapper =

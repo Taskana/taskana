@@ -119,6 +119,7 @@ class PojoTest {
     return new ClassFileImporter()
         .importPackages("pro.taskana").stream()
             .filter(javaClass -> javaClass.tryGetMethod("equals", Object.class).isPresent())
+               .filter(javaClass -> !javaClass.getSimpleName().equals("TaskanaHistoryEvent"))
             .map(JavaClass::reflect)
             .collect(Collectors.toList());
   }

@@ -85,7 +85,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     this.taskanaEngineConfiguration = taskanaEngineConfiguration;
     createTransactionFactory(taskanaEngineConfiguration.getUseManagedTransactions());
     this.sessionManager = createSqlSessionManager();
-    historyEventManager = HistoryEventManager.getInstance(taskanaEngineConfiguration);
+    historyEventManager = HistoryEventManager.getInstance(this);
     taskRoutingManager = TaskRoutingManager.getInstance(this);
     this.internalTaskanaEngineImpl = new InternalTaskanaEngineImpl();
     workingDaysToDaysConverter =

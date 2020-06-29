@@ -18,9 +18,9 @@
 	<dependencies>
 		<dependency>
 			<groupId>pro.taskana.simplehistory</groupId>
-			<artifactId>taskana-simplehistory-provider</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+      <artifactId>taskana-simplehistory-provider</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 		<dependency>
 			<groupId>pro.taskana</groupId>
 			<artifactId>taskana-rest-spring</artifactId>

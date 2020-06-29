@@ -6,7 +6,7 @@ import java.util.ServiceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.spi.history.api.TaskanaHistory;
@@ -20,10 +20,10 @@ public final class HistoryEventManager {
   private boolean enabled = false;
   private ServiceLoader<TaskanaHistory> serviceLoader;
 
-  private HistoryEventManager(TaskanaEngineConfiguration taskanaEngineConfiguration) {
+  private HistoryEventManager(TaskanaEngine taskanaEngine) {
     serviceLoader = ServiceLoader.load(TaskanaHistory.class);
     for (TaskanaHistory history : serviceLoader) {
-      history.initialize(taskanaEngineConfiguration);
+      history.initialize(taskanaEngine);
       LOGGER.info("Registered history provider: {}", history.getClass().getName());
       enabled = true;
     }
@@ -32,10 +32,9 @@ public final class HistoryEventManager {
     }
   }
 
-  public static synchronized HistoryEventManager getInstance(
-      TaskanaEngineConfiguration taskanaEngineConfiguration) {
+  public static synchronized HistoryEventManager getInstance(TaskanaEngine taskanaEngine) {
     if (singleton == null) {
-      singleton = new HistoryEventManager(taskanaEngineConfiguration);
+      singleton = new HistoryEventManager(taskanaEngine);
     }
     return singleton;
   }

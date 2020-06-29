@@ -94,7 +94,7 @@ public abstract class AbstractAccTest {
     taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
     taskanaEngine.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
     historyService = new SimpleHistoryServiceImpl();
-    historyService.initialize(taskanaEngineConfiguration);
+    historyService.initialize(taskanaEngineConfiguration.buildTaskanaEngine());
 
     SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, getSchemaName());
     sampleDataGenerator.clearDb();

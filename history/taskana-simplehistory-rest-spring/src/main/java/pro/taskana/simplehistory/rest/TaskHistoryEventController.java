@@ -94,7 +94,7 @@ public class TaskHistoryEventController extends AbstractPagingController {
       TaskHistoryEventRepresentationModelAssembler taskHistoryEventRepresentationModelAssembler) {
 
     this.simpleHistoryService = simpleHistoryServiceImpl;
-    this.simpleHistoryService.initialize(taskanaEngineConfiguration);
+    this.simpleHistoryService.initialize(taskanaEngineConfiguration.buildTaskanaEngine());
     this.taskHistoryEventRepresentationModelAssembler =
         taskHistoryEventRepresentationModelAssembler;
   }
