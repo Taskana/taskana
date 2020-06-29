@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ReportData } from 'app/monitor/models/report-data';
 
 @Component({
-  selector: 'taskana-report',
+  selector: 'taskana-monitor-report-table',
   templateUrl: './report-table.component.html',
   styleUrls: ['./report-table.component.scss']
 })

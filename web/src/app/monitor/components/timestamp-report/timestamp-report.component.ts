@@ -3,7 +3,7 @@ import { ReportData } from '../../models/report-data';
 import { RestConnectorService } from '../../services/rest-connector.service';
 
 @Component({
-  selector: 'taskana-monitor-timestamp',
+  selector: 'taskana-monitor-timestamp-report',
   templateUrl: './timestamp-report.component.html',
   styleUrls: ['./timestamp-report.component.scss']
 })

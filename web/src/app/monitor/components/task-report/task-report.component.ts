@@ -4,7 +4,7 @@ import { RestConnectorService } from '../../services/rest-connector.service';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 
 @Component({
-  selector: 'taskana-monitor-tasks',
+  selector: 'taskana-monitor-task-report',
   templateUrl: './task-report.component.html',
   styleUrls: ['./task-report.component.scss'],
 })
