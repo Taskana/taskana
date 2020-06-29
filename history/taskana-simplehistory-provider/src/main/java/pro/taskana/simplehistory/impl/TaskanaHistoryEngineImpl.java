@@ -54,7 +54,7 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
   public TaskanaHistory getTaskanaHistoryService() {
     if (taskanaHistoryService == null) {
       SimpleHistoryServiceImpl historyService = new SimpleHistoryServiceImpl();
-      historyService.initialize(taskanaEngineConfiguration);
+      historyService.initialize(taskanaEngineConfiguration.buildTaskanaEngine());
       this.taskanaHistoryService = historyService;
     }
     return this.taskanaHistoryService;

@@ -19,6 +19,7 @@
 		<module>taskana-simplehistory-provider</module>
 		<module>taskana-simplehistory-rest-spring</module>
 		<module>taskana-simplehistory-rest-spring-example</module>
-	</modules>
+    <module>taskana-loghistory-provider</module>
+  </modules>
 
 </project>
