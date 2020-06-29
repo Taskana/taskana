@@ -4,12 +4,21 @@ import { Observable, of } from 'rxjs';
 import { Location } from '@angular/common';
 import { WorkbasketService } from '../../services/workbasket/workbasket.service';
 import { Workbasket } from '../../models/workbasket';
-import { CopyWorkbasket, CreateWorkbasket, DeselectWorkbasket,
-  GetWorkbasketAccessItems, GetWorkbasketDistributionTargets,
+import { CopyWorkbasket,
+  CreateWorkbasket,
+  DeselectWorkbasket,
+  GetWorkbasketAccessItems,
+  GetWorkbasketDistributionTargets,
   GetWorkbaskets,
-  GetWorkbasketsSummary, MarkWorkbasketForDeletion, RemoveDistributionTarget, SaveNewWorkbasket,
-  SelectWorkbasket, SetActiveAction, UpdateWorkbasket, UpdateWorkbasketDistributionTargets } from './workbasket.actions';
-import { WorkbasketAccessItems } from '../../models/workbasket-access-items';
+  GetWorkbasketsSummary,
+  MarkWorkbasketForDeletion,
+  RemoveDistributionTarget,
+  SaveNewWorkbasket,
+  SelectWorkbasket,
+  SetActiveAction,
+  UpdateWorkbasket,
+  UpdateWorkbasketDistributionTargets,
+  UpdateworkbasketSummaryParams } from './workbasket.actions';
 import { WorkbasketSummaryRepresentation } from '../../models/workbasket-summary-representation';
 import { ACTION } from '../../models/action';
 import { DomainService } from '../../services/domain/domain.service';
@@ -107,9 +116,10 @@ export class WorkbasketState implements NgxsAfterBootstrap {
           NOTIFICATION_TYPES.SUCCESS_ALERT_11,
           new Map<string, string>([['workbasketKey', workbasketUpdated.key]])
         );
-        this.workbasketService.triggerWorkBasketSaved();
         this.selectWorkbasket(ctx, workbasketUpdated.workbasketId);
-        this.getWorkbaskets(ctx);
+        this.location.go(this.location.path().replace(/(workbaskets).*/g, 'workbaskets'));
+      }, error => {
+        this.notificationService.triggerError(NOTIFICATION_TYPES.CREATE_ERR_2, error);
       }
     ));
   }
@@ -130,13 +140,12 @@ export class WorkbasketState implements NgxsAfterBootstrap {
   updateWorkbasket(ctx: StateContext<WorkbasketStateModel>, action: UpdateWorkbasket): Observable<any> {
     return this.workbasketService.updateWorkbasket(action.url, action.workbasket).pipe(take(1), tap(
       updatedWorkbasket => {
-        this.getWorkbaskets(ctx);
         this.notificationService.showToast(
           NOTIFICATION_TYPES.SUCCESS_ALERT_10,
           new Map<string, string>([['workbasketKey', updatedWorkbasket.key]])
         );
         ctx.patchState({
-          selectedWorkbasket: updatedWorkbasket
+          selectedWorkbasket: updatedWorkbasket,
         });
       }
     ));
@@ -177,6 +186,11 @@ export class WorkbasketState implements NgxsAfterBootstrap {
     ));
   }
 
+  @Action(UpdateworkbasketSummaryParams)
+  triggerUpdateWorkbasketList(ctx: StateContext<WorkbasketStateModel>, action: UpdateworkbasketSummaryParams): Observable<any> {
+    return of(null);
+  }
+
   @Action(GetWorkbasketAccessItems)
   getWorkbasketAccessItems(ctx: StateContext<WorkbasketStateModel>, action: GetWorkbasketAccessItems): Observable<any> {
     return this.workbasketService.getWorkBasketAccessItems(action.url).pipe(take(1), tap(
@@ -200,7 +214,10 @@ export class WorkbasketState implements NgxsAfterBootstrap {
   }
 
   @Action(UpdateWorkbasketDistributionTargets)
-  updateWorkbasketDistributionTargets(ctx: StateContext<WorkbasketStateModel>, action: UpdateWorkbasketDistributionTargets): Observable<any> {
+  updateWorkbasketDistributionTargets(
+    ctx: StateContext<WorkbasketStateModel>,
+    action: UpdateWorkbasketDistributionTargets
+  ): Observable<any> {
     return this.workbasketService.updateWorkBasketsDistributionTargets(action.url, action.distributionTargetsIds).pipe(take(1), tap(
       () => {
       }
