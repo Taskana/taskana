@@ -479,8 +479,7 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   public Task selectAndClaim(TaskQuery taskQuery)
-      throws TaskNotFoundException, NotAuthorizedException, InvalidStateException,
-          InvalidOwnerException {
+      throws NotAuthorizedException, InvalidOwnerException {
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("entry to selectAndClaim(taskQuery = {})", taskQuery);
@@ -502,6 +501,8 @@ public class TaskServiceImpl implements TaskService {
 
       return claim(taskSummary.getId());
 
+    } catch (InvalidStateException | TaskNotFoundException e) {
+      throw new SystemException("Caught exception ", e);
     } finally {
       LOGGER.debug("exit from selectAndClaim()");
       taskanaEngine.returnConnection();
