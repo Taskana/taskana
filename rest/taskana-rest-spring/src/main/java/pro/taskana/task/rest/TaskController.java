@@ -439,7 +439,7 @@ public class TaskController extends AbstractPagingController {
       params.remove(EXTERNAL_ID);
     }
 
-    for (int i = 1; i < 17; i++) {
+    for (int i = 1; i <= 16; i++) {
       if (params.containsKey(CUSTOM + i)) {
         String[] customValues = extractCommaSeparatedFields(params.get(CUSTOM + i));
         taskQuery.customAttributeIn(String.valueOf(i), customValues);

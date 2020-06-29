@@ -1110,6 +1110,8 @@ public class TaskQueryImpl implements TaskQuery {
     }
   }
 
+  // optimized query for db2 can't be used for now in case of selectAndClaim because of temporary
+  // tables and the "for update" clause clashing in db2
   public String getLinkToMapperScript() {
     if (DB.DB2.dbProductId.equals(getDatabaseId()) && !selectAndClaim) {
       return LINK_TO_MAPPER_DB2;
