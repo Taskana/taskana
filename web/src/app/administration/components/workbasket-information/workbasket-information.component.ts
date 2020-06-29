@@ -27,7 +27,7 @@ import { CustomField,
   getCustomFields,
   WorkbasketsCustomisation } from '../../../shared/models/customisation';
 import { CopyWorkbasket, MarkWorkbasketForDeletion,
-  RemoveDistributionTarget,
+  RemoveDistributionTarget, SaveNewWorkbasket,
   UpdateWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
 
 @Component({
@@ -146,8 +146,8 @@ implements OnInit, OnChanges, OnDestroy {
       this.postNewWorkbasket();
       return;
     }
-
     this.store.dispatch(new UpdateWorkbasket(this.workbasket._links.self.href, this.workbasket));
+    this.afterRequest();
     /* this.workbasketService
       .updateWorkbasket(this.workbasket._links.self.href, this.workbasket)
       .pipe(takeUntil(this.destroy$))
@@ -179,19 +179,9 @@ implements OnInit, OnChanges, OnDestroy {
 
   private postNewWorkbasket() {
     this.addDateToWorkbasket();
-    this.workbasketService.createWorkbasket(this.workbasket).subscribe(
-      (workbasketUpdated: Workbasket) => {
-        this.notificationService.showToast(
-          NOTIFICATION_TYPES.SUCCESS_ALERT_11,
-          new Map<string, string>([['workbasketKey', workbasketUpdated.key]])
-        );
-        this.workbasket = workbasketUpdated;
+    this.store.dispatch(new SaveNewWorkbasket(this.workbasket)).subscribe(
+      () => {
         this.afterRequest();
-        this.workbasketService.triggerWorkBasketSaved();
-        this.workbasketService.selectWorkBasket(this.workbasket.workbasketId);
-        this.router.navigate([`../${this.workbasket.workbasketId}`], {
-          relativeTo: this.route
-        });
         if (this.action === ACTION.COPY) {
           this.savingWorkbasket.triggerDistributionTargetSaving(
             new SavingInformation(
@@ -206,10 +196,6 @@ implements OnInit, OnChanges, OnDestroy {
             )
           );
         }
-      },
-      error => {
-        this.notificationService.triggerError(NOTIFICATION_TYPES.CREATE_ERR_2, error);
-        this.requestInProgressService.setRequestInProgress(false);
       }
     );
   }

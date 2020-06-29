@@ -78,6 +78,24 @@ export class MarkWorkbasketForDeletion {
   }
 }
 
+export class UpdateworkbasketSummaryParams {
+  static readonly type = '[Workbasket] Update workbasket list summary parameters';
+  constructor(public forceRequest: boolean = false,
+    public sortBy: string = TaskanaQueryParameters.parameters.KEY,
+    public order: string = Direction.ASC,
+    public name?: string,
+    public nameLike?: string,
+    public descLike?: string,
+    public owner?: string,
+    public ownerLike?: string,
+    public type?: string,
+    public key?: string,
+    public keyLike?: string,
+    public requiredPermission?: string,
+    public allPages: boolean = false) {
+  }
+}
+
 // Workbasket Access Items
 export class GetWorkbasketAccessItems {
   static readonly type = '[Workbasket] Get all workbasket access items';
