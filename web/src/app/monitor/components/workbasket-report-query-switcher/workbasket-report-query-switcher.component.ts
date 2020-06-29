@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { QueryType } from '../../models/query-type';
 
 @Component({
-  selector: 'taskana-monitor-workbasket-query-switcher',
+  selector: 'taskana-monitor-workbasket-report-query-switcher',
   templateUrl: './workbasket-report-query-switcher.component.html',
   styleUrls: ['./workbasket-report-query-switcher.component.scss']
 })

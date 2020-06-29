@@ -3,7 +3,7 @@ import { MetaInfoData } from '../../models/meta-info-data';
 import { QueryType } from '../../models/query-type';
 
 @Component({
-  selector: 'taskana-monitor-workbaskets',
+  selector: 'taskana-monitor-workbasket-report',
   templateUrl: './workbasket-report.component.html',
   styleUrls: ['./workbasket-report.component.scss']
 })
