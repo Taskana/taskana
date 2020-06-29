@@ -13,7 +13,6 @@ import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { ImportExportService } from 'app/administration/services/import-export.service';
 import { Actions, ofActionCompleted, ofActionDispatched, Select, Store } from '@ngxs/store';
 import { takeUntil } from 'rxjs/operators';
-import { Location } from '@angular/common';
 import { DeselectWorkbasket, GetWorkbasketsSummary,
   SelectWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
@@ -55,7 +54,6 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
     private orientationService: OrientationService,
     private importExportService: ImportExportService,
     private ngxsActions$: Actions,
-    private location: Location
   ) {
     this.ngxsActions$.pipe(ofActionDispatched(GetWorkbasketsSummary),
       takeUntil(this.destroy$))
@@ -102,7 +100,6 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   }
 
   selectWorkbasket(id: string) {
-    console.log(this.selectedId, id);
     if (this.selectedId === id) {
       this.store.dispatch(new DeselectWorkbasket());
     } else {
