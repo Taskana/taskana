@@ -2,6 +2,7 @@ import { Workbasket } from '../../models/workbasket';
 import { TaskanaQueryParameters } from '../../util/query-parameters';
 import { Direction } from '../../models/sorting';
 import { ACTION } from '../../models/action';
+import { WorkbasketAccessItems } from '../../models/workbasket-access-items';
 
 // Workbasket List
 export class GetWorkbasketsSummary {
@@ -100,6 +101,12 @@ export class UpdateworkbasketSummaryParams {
 export class GetWorkbasketAccessItems {
   static readonly type = '[Workbasket] Get all workbasket access items';
   constructor(public url: string) {
+  }
+}
+
+export class UpdateWorkbasketAccessItems {
+  static readonly type = '[Workbasket] Update selected workbasket\'s access items';
+  constructor(public url: string, public workbasketAccessItems: WorkbasketAccessItems[]) {
   }
 }
 
