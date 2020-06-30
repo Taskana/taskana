@@ -1,6 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-<<<<<<< HEAD
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
@@ -15,15 +14,11 @@ import { WorkbasketDefinitionService } from '../../services/workbasket-definitio
 import { ImportExportService } from '../../services/import-export.service';
 import { DummyDetailComponent } from '../workbasket-list-toolbar/workbasket-list-toolbar.component.spec';
 import { OrientationService } from '../../../shared/services/orientation/orientation.service';
-=======
-import { WorkbasketOverviewComponent } from './workbasket-overview.component';
->>>>>>> TSK-1215 initialized workbasket-overview
 
 describe('WorkbasketOverviewComponent', () => {
   let component: WorkbasketOverviewComponent;
   let fixture: ComponentFixture<WorkbasketOverviewComponent>;
 
-<<<<<<< HEAD
   const routes: Routes = [
     { path: ':id', component: DummyDetailComponent, outlet: 'detail' }
   ];
@@ -39,13 +34,6 @@ describe('WorkbasketOverviewComponent', () => {
       ImportExportService
     ] })
       .compileComponents();
-=======
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ WorkbasketOverviewComponent ]
-    })
-    .compileComponents();
->>>>>>> TSK-1215 initialized workbasket-overview
   }));
 
   beforeEach(() => {
