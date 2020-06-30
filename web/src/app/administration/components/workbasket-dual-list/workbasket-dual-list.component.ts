@@ -11,8 +11,8 @@ import { Side } from '../workbasket-distribution-targets/workbasket-distribution
   animations: [expandDown]
 })
 export class WorkbasketDualListComponent implements OnInit {
-  @Input() distributionTargets: Array<WorkbasketSummary>;
-  @Input() distributionTargetsSelected: Array<WorkbasketSummary>;
+  @Input() distributionTargets: WorkbasketSummary[];
+  @Input() distributionTargetsSelected: WorkbasketSummary[];
   @Output() performDualListFilter = new EventEmitter<{ filterBy: Filter, side: Side }>();
   @Input() requestInProgress = false;
   @Input() loadingItems ? = false;
