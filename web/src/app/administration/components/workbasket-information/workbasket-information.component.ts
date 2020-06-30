@@ -207,7 +207,10 @@ implements OnInit, OnChanges, OnDestroy {
   }
 
   private onRemoveConfirmed() {
-    this.store.dispatch(new MarkWorkbasketForDeletion(this.workbasket._links.self.href));
+    this.beforeRequest();
+    this.store.dispatch(new MarkWorkbasketForDeletion(this.workbasket._links.self.href)).subscribe(() => {
+      this.afterRequest();
+    });
   }
 
   getWorkbasketCustomProperty(custom: number) {
