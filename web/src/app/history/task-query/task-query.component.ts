@@ -41,7 +41,6 @@ export class TaskQueryComponent implements OnInit {
     this.initTaskQueryForm();
   }
 
-
   getHeaderFieldDescription(property: string): string {
     switch (property) {
       case 'parentBusinessProcessId':

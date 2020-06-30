@@ -15,7 +15,6 @@ export class BusinessAdminGuard implements CanActivate {
     return this.navigateToWorkplace();
   }
 
-
   navigateToWorkplace(): boolean {
     this.router.navigate(['workplace']);
     return false;

@@ -43,7 +43,6 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   }));
 
-
   it('should render title in a <a> tag', (() => {
     fixture.detectChanges();
     expect(debugElement.querySelector('ul p a').textContent).toContain('Taskana administration');

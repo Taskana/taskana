@@ -16,10 +16,10 @@ import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.ser
 import { SavingWorkbasketService } from 'app/administration/services/saving-workbaskets.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 
-import { LinksWorkbasketSummary } from 'app/shared/models/links-workbasket-summary';
 import { configureTests } from 'app/app.test.configuration';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-import { WorkbasketDistributionTargetsComponent, Side } from './workbasket-distribution-targets.component';
+import { Side,
+  WorkbasketDistributionTargetsComponent } from './workbasket-distribution-targets.component';
 import { WorkbasketDualListComponent } from '../workbasket-dual-list/workbasket-dual-list.component';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 
@@ -28,10 +28,10 @@ describe('WorkbasketDistributionTargetsComponent', () => {
   let fixture: ComponentFixture<WorkbasketDistributionTargetsComponent>;
   let workbasketService;
   const workbasket = new Workbasket('1', '', '', '', ICONTYPES.TOPIC, '', '', '', '', '', '', '', '', '', '', '', '',
-    new Links({ href: 'someurl' }, { href: 'someurl' }, { href: 'someurl' }));
+    { distributionTargets: { href: 'someurl' } });
 
   beforeEach(done => {
-    const configure = (testBed: TestBed) => {
+    const configure = testBed => {
       testBed.configureTestingModule({
         imports: [AngularSvgIconModule, HttpClientModule, InfiniteScrollModule],
         declarations: [WorkbasketDistributionTargetsComponent, WorkbasketDualListComponent],
@@ -40,23 +40,23 @@ describe('WorkbasketDistributionTargetsComponent', () => {
       });
     };
     configureTests(configure).then(testBed => {
-      fixture = TestBed.createComponent(WorkbasketDistributionTargetsComponent);
+      fixture = testBed.createComponent(WorkbasketDistributionTargetsComponent);
       component = fixture.componentInstance;
       component.workbasket = workbasket;
-      workbasketService = TestBed.get(WorkbasketService);
+      workbasketService = testBed.get(WorkbasketService);
       spyOn(workbasketService, 'getWorkBasketsSummary').and.callFake(() => of(new WorkbasketSummaryResource(
         new Array<WorkbasketSummary>(
-          new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '', false, new Links({ href: 'someurl' })),
-          new WorkbasketSummary('id2', '', '', '', '', '', '', '', '', '', '', '', false, new Links({ href: 'someurl' })),
-          new WorkbasketSummary('id3', '', '', '', '', '', '', '', '', '', '', '', false, new Links({ href: 'someurl' }))
+          new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '', false, {}),
+          new WorkbasketSummary('id2', '', '', '', '', '', '', '', '', '', '', '', false, {}),
+          new WorkbasketSummary('id3', '', '', '', '', '', '', '', '', '', '', '', false, {})
         ),
-        new LinksWorkbasketSummary({ href: 'someurl' })
+        {}
       )));
       spyOn(workbasketService, 'getWorkBasketsDistributionTargets').and.callFake(() => of(new WorkbasketDistributionTargetsResource(
         new Array<WorkbasketSummary>(
-          new WorkbasketSummary('id2', '', '', '', '', '', '', '', '', '', '', '', false, new Links({ href: 'someurl' }))
+          new WorkbasketSummary('id2', '', '', '', '', '', '', '', '', '', '', '', false, {})
         ),
-        new LinksWorkbasketSummary({ href: 'someurl' })
+        { self: { href: 'someurl' } }
       )));
       component.ngOnChanges({
         active: new SimpleChange(undefined, 'distributionTargets', true)
@@ -85,7 +85,9 @@ describe('WorkbasketDistributionTargetsComponent', () => {
     expect(component.distributionTargetsRight.length).toBe(1);
     component.distributionTargetsLeft.forEach(leftElement => {
       component.distributionTargetsRight.forEach(rightElement => {
-        if (leftElement.workbasketId === rightElement.workbasketId) { repeteadElemens = true; }
+        if (leftElement.workbasketId === rightElement.workbasketId) {
+          repeteadElemens = true;
+        }
       });
     });
     expect(repeteadElemens).toBeFalsy();
@@ -99,7 +101,7 @@ describe('WorkbasketDistributionTargetsComponent', () => {
       side: Side.LEFT
     });
     component.distributionTargetsLeft = new Array<WorkbasketSummary>(
-      new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '', false, new Links({ href: 'someurl' }))
+      new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '', false, {})
     );
     expect(component.distributionTargetsLeft.length).toBe(1);
     expect(component.distributionTargetsLeft[0].workbasketId).toBe('id1');
@@ -109,10 +111,10 @@ describe('WorkbasketDistributionTargetsComponent', () => {
 
   it('should reset distribution target and distribution target selected on reset', () => {
     component.distributionTargetsLeft.push(
-      new WorkbasketSummary('id4', '', '', '', '', '', '', '', '', '', '', '', false, new Links({ href: 'someurl' }))
+      new WorkbasketSummary('id4', '', '', '', '', '', '', '', '', '', '', '', false, {})
     );
     component.distributionTargetsRight.push(
-      new WorkbasketSummary('id5', '', '', '', '', '', '', '', '', '', '', '', false, new Links({ href: 'someurl' }))
+      new WorkbasketSummary('id5', '', '', '', '', '', '', '', '', '', '', '', false, {})
     );
 
     expect(component.distributionTargetsLeft.length).toBe(3);
@@ -129,10 +131,10 @@ describe('WorkbasketDistributionTargetsComponent', () => {
     expect(component.distributionTargetsSelectedClone.length).toBe(1);
     spyOn(workbasketService, 'updateWorkBasketsDistributionTargets').and.callFake(() => of(new WorkbasketDistributionTargetsResource(
       new Array<WorkbasketSummary>(
-        new WorkbasketSummary('id2', '', '', '', '', '', '', '', '', '', '', '', false, new Links({ href: 'someurl' })),
-        new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '', false, new Links({ href: 'someurl' }))
+        new WorkbasketSummary('id2', '', '', '', '', '', '', '', '', '', '', '', false, {}),
+        new WorkbasketSummary('id1', '', '', '', '', '', '', '', '', '', '', '', false, {})
       ),
-      new LinksWorkbasketSummary({ href: 'someurl' })
+      {}
     )));
     component.onSave();
     fixture.detectChanges();

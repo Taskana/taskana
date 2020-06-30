@@ -16,7 +16,6 @@ export class SpreadNumberPipe implements PipeTransform {
     let leftDifference = 0;
     let rightDifference = 0;
 
-
     if (minArrayValue < 0) { leftDifference = Math.abs(minArrayValue); minArrayValue = 0; }
     if (maxArrayValue > maxPageNumber) {
       rightDifference = maxArrayValue - maxPageNumber;

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FormsModule } from '@angular/forms';
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
@@ -11,9 +11,7 @@ import { Component } from '@angular/core';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { SelectedRouteService } from 'app/shared/services/selected-route/selected-route';
 import { configureTests } from 'app/app.test.configuration';
-import { ClassificationResource } from 'app/shared/models/classification-resource';
-import { Classification } from 'app/shared/models/classification';
-import { Links } from 'app/shared/models/links';
+import { ClassificationPagingList } from 'app/shared/models/classification-paging-list';
 import { TaskdetailsGeneralFieldsComponent } from './general-fields.component';
 
 @Component({
@@ -35,7 +33,7 @@ xdescribe('GeneralComponent', () => {
 
   beforeEach(done => {
     const configure = (testBed: TestBed) => {
-      TestBed.configureTestingModule({
+      testBed.configureTestingModule({
         imports: [FormsModule, HttpClientModule, RouterTestingModule.withRoutes(routes)],
         declarations: [TaskdetailsGeneralFieldsComponent, DummyDetailComponent],
         providers: [HttpClient, ClassificationCategoriesService,
@@ -43,16 +41,31 @@ xdescribe('GeneralComponent', () => {
       });
     };
     configureTests(configure).then(testBed => {
-      classificationsService = TestBed.get(ClassificationsService);
-      spyOn(classificationsService, 'getClassificationsByDomain').and.returnValue(new ClassificationResource(
-        new Array<Classification>(
-          new Classification('id1', '1', 'category', 'type', 'domain_a', 'classification1', 'parentId',
-            1, 'service', new Links({ href: 'someurl' })),
-          new Classification('id2', '2', 'category', 'type', 'domain_a', 'classification2', 'parentId2',
-            1, 'service', new Links({ href: 'someurl' }))
-        ),
-        new Links({ href: 'someurl' })
-      ));
+      classificationsService = testBed.get(ClassificationsService);
+      const resource: ClassificationPagingList = {
+        classifications: [
+          {
+            classificationId: 'id1',
+            key: 'key1',
+            category: 'category',
+            type: 'type',
+            domain: 'DOMAIN_A',
+            name: 'classification1',
+            parentId: 'parentId',
+            parentKey: 'parentKey'
+          }, {
+            classificationId: 'id2',
+            key: 'key2',
+            category: 'category',
+            type: 'type',
+            domain: 'DOMAIN_A',
+            name: 'classification1',
+            parentId: 'parentId',
+            parentKey: 'parentKey'
+          },
+        ]
+      };
+      spyOn(classificationsService, 'getClassificationsByDomain').and.returnValue(resource);
       done();
     });
   });

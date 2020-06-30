@@ -1,4 +1,4 @@
-<tree-root #tree [nodes]="classifications" [options]="options" (activate)="onActivate($event)" (deactivate)="onDeactivate($event)"
+<tree-root #tree [nodes]="treeNodes" [options]="options" (activate)="onActivate($event)" (deactivate)="onDeactivate($event)"
            (moveNode)="onMoveNode($event)" (treeDrop)="onDrop($event)">
     <ng-template #treeNodeTemplate let-node let-index="index">
         <span class="text-top">

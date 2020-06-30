@@ -4,7 +4,6 @@ import { NotificationService } from '../../services/notifications/notification.s
 
 declare let $: any;
 
-
 @Component({
   selector: 'taskana-spinner',
   templateUrl: './spinner.component.html',

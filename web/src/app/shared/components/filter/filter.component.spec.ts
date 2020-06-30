@@ -13,7 +13,6 @@ describe('FilterComponent', () => {
   let fixture: ComponentFixture<FilterComponent>;
   let debugElement: any;
 
-
   beforeEach(done => {
     const configure = (testBed: TestBed) => {
       testBed.configureTestingModule({

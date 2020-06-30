@@ -6,7 +6,7 @@ export class RequestInProgressService {
   public requestInProgressTriggered = new Subject<boolean>();
 
   setRequestInProgress(value: boolean) {
-    setTimeout(() => this.requestInProgressTriggered.next(value), 0);
+    this.requestInProgressTriggered.next(value);
   }
 
   getRequestInProgress(): Observable<boolean> {

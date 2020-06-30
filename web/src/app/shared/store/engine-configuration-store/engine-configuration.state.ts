@@ -29,7 +29,6 @@ export class EngineConfigurationState implements NgxsOnInit {
   }
 }
 
-
 export interface EngineConfigurationStateModel {
   customisation: Customisation,
   language: string

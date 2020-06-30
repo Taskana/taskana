@@ -1,8 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
-import { Observable, Subject, zip, combineLatest } from 'rxjs';
+import { combineLatest, Observable, Subject } from 'rxjs';
 
-import { ClassificationDefinition, customFieldCount } from 'app/shared/models/classification-definition';
 import { ACTION } from 'app/shared/models/action';
 
 import { highlight } from 'theme/animations/validation.animation';
@@ -24,11 +23,15 @@ import { NotificationService } from '../../../shared/services/notifications/noti
 import { ClassificationCategoryImages,
   CustomField,
   getCustomFields } from '../../../shared/models/customisation';
+import { Classification } from '../../../shared/models/classification';
+import { customFieldCount } from '../../../shared/models/classification-summary';
+import { CategoriesResponse } from '../../../shared/services/classification-categories/classification-categories.service';
 
 import { CreateClassification,
   RemoveSelectedClassification,
   RestoreSelectedClassification,
-  SaveClassification, SelectClassification,
+  SaveClassification,
+  SelectClassification,
   SetActiveAction } from '../../../shared/store/classification-store/classification.actions';
 
 @Component({
@@ -38,14 +41,14 @@ import { CreateClassification,
   styleUrls: ['./classification-details.component.scss']
 })
 export class ClassificationDetailsComponent implements OnInit, OnDestroy {
-  classification: ClassificationDefinition;
+  classification: Classification;
   badgeMessage = '';
   requestInProgress = false;
   @Select(ClassificationSelectors.selectCategories) categories$: Observable<string[]>;
   @Select(EngineConfigurationSelectors.selectCategoryIcons) categoryIcons$: Observable<ClassificationCategoryImages>;
   @Select(ClassificationSelectors.selectedClassificationType) selectedClassificationType$: Observable<string>;
-  @Select(ClassificationSelectors.selectClassificationTypesObject) classificationTypes$: Observable<Object>;
-  @Select(ClassificationSelectors.selectedClassification) selectedClassification$: Observable<ClassificationDefinition>;
+  @Select(ClassificationSelectors.selectClassificationTypesObject) classificationTypes$: Observable<CategoriesResponse>;
+  @Select(ClassificationSelectors.selectedClassification) selectedClassification$: Observable<Classification>;
   @Select(ClassificationSelectors.activeAction) action$: Observable<ACTION>;
 
   spinnerIsRunning = false;
@@ -74,7 +77,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
       getCustomFields(customFieldCount)
     );
 
-    combineLatest(this.selectedClassification$, this.action$).pipe(takeUntil(this.destroy$))
+    combineLatest([this.selectedClassification$, this.action$]).pipe(takeUntil(this.destroy$))
       .subscribe(([classification, action]) => {
         this.action = action;
         if (this.action === ACTION.CREATE) {
@@ -92,28 +95,9 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         }
       });
 
-    this.action$.pipe(takeUntil(this.destroy$)).subscribe(data => {
-      this.action = data;
-      if (this.action === ACTION.CREATE) {
-        this.selectedClassification$.pipe(take(1)).subscribe(initialClassification => {
-          this.classification = { ...initialClassification };
-        });
-        this.badgeMessage = 'Creating new classification';
-      } else if (this.action === ACTION.COPY) {
-        this.badgeMessage = `Copying Classification: ${this.classification.name}`;
-      } else {
-        this.badgeMessage = '';
-      }
-    });
-
     this.importExportService.getImportingFinished().pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.store.dispatch(new SelectClassification(this.classification.classificationId));
     });
-  }
-
-
-  backClicked(): void {
-    this.location.go(this.location.path().replace(/(classifications).*/g, 'classifications'));
   }
 
   removeClassification() {
@@ -137,8 +121,12 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   onRestore() {
     this.formsValidatorService.formSubmitAttempt = false;
     if (this.action === ACTION.CREATE) {
-      this.classification = new ClassificationDefinition();
-      this.notificationsService.showToast(NOTIFICATION_TYPES.INFO_ALERT);
+      this.categories$.pipe(take(1)).subscribe(categories => {
+        const category = categories[0];
+        const { type, created, modified, domain, parentId, parentKey } = this.classification;
+        this.classification = { type, created, category, modified, domain, parentId, parentKey };
+        this.notificationsService.showToast(NOTIFICATION_TYPES.INFO_ALERT);
+      });
     } else {
       this.store.dispatch(
         new RestoreSelectedClassification(this.classification.classificationId)
@@ -149,8 +137,12 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   }
 
   onCopy() {
-    this.store.dispatch(new SetActiveAction(ACTION.COPY));
-    this.classification.key = null;
+    if (this.action !== ACTION.CREATE) {
+      this.store.dispatch(new SetActiveAction(ACTION.COPY));
+      this.classification.key = null;
+    } else {
+      this.notificationsService.showToast(NOTIFICATION_TYPES.WARNING_CANT_COPY);
+    }
   }
 
   selectCategory(category: string) {
@@ -177,6 +169,19 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     return this.domainService.getSelectedDomainValue() === '';
   }
 
+  getClassificationCustom(customNumber: number): string {
+    return `custom${customNumber}`;
+  }
+
+  getAvailableCategories(type: string): Observable<string[]> {
+    return this.classificationTypes$.pipe(take(1), map(classTypes => classTypes[type]));
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   private async onSave() {
     this.requestInProgressService.setRequestInProgress(true);
     if (this.action) {
@@ -188,6 +193,10 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
           NOTIFICATION_TYPES.SUCCESS_ALERT_2,
           new Map<string, string>([['classificationKey', store.classification.selectedClassification.key]])
         );
+        this.location.go(this.location.path().replace(
+          /(classifications).*/g,
+          `classifications/(detail:${store.classification.selectedClassification.classificationId})`
+        ));
         this.afterRequest();
       }, error => {
         this.notificationsService.triggerError(NOTIFICATION_TYPES.CREATE_ERR, error);
@@ -195,12 +204,14 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
       });
     } else {
       try {
-        this.store.dispatch(new SaveClassification(this.classification));
-        this.afterRequest();
-        this.notificationsService.showToast(
-          NOTIFICATION_TYPES.SUCCESS_ALERT_3,
-          new Map<string, string>([['classificationKey', this.classification.key]])
-        );
+        this.store.dispatch(new SaveClassification(this.classification))
+          .pipe(take(1)).subscribe(() => {
+            this.afterRequest();
+            this.notificationsService.showToast(
+              NOTIFICATION_TYPES.SUCCESS_ALERT_3,
+              new Map<string, string>([['classificationKey', this.classification.key]])
+            );
+          });
       } catch (error) {
         this.notificationsService.triggerError(NOTIFICATION_TYPES.SAVE_ERR, error);
         this.afterRequest();
@@ -210,7 +221,6 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
 
   private afterRequest() {
     this.requestInProgressService.setRequestInProgress(false);
-    this.classificationsService.triggerClassificationSaved();
   }
 
   private removeClassificationConfirmation() {
@@ -226,23 +236,5 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
       this.afterRequest();
     });
     this.location.go(this.location.path().replace(/(classifications).*/g, 'classifications'));
-  }
-
-  getClassificationCustom(customNumber: number): string {
-    return `custom${customNumber}`;
-  }
-
-  getAvailableCategories(type: string) {
-    let returnCategories: string[] = [];
-    this.classificationTypes$.pipe(take(1)).subscribe(classTypes => {
-      returnCategories = classTypes[type];
-    });
-
-    return returnCategories;
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

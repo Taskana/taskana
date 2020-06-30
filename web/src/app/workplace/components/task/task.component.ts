@@ -8,7 +8,6 @@ import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.ser
 import { Subscription } from 'rxjs';
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
 
-
 @Component({
   selector: 'taskana-task',
   templateUrl: './task.component.html',
@@ -24,7 +23,6 @@ export class TaskComponent implements OnInit, OnDestroy {
 
   task: Task = null;
   workbaskets: Workbasket[];
-
 
   constructor(private taskService: TaskService,
     private workbasketService: WorkbasketService,

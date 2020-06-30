@@ -13,7 +13,6 @@ import { RequestInProgressService } from '../../../shared/services/request-in-pr
 export class ClassificationReportComponent implements OnInit {
   reportData: ReportData;
 
-
   lineChartLabels: Array<any>;
   lineChartLegend = true;
   lineChartType = 'line';

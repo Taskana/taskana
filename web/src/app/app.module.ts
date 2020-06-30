@@ -77,7 +77,6 @@ export function startupServiceFactory(startupService: StartupService): () => Pro
   return (): Promise<any> => startupService.load();
 }
 
-
 @NgModule({
   declarations: DECLARATIONS,
   imports: MODULES,

@@ -1,7 +1,8 @@
 import { Selector } from '@ngxs/store';
 import { ClassificationStateModel, ClassificationState } from './classification.state';
-import { ClassificationDefinition } from '../../models/classification-definition';
 import { ACTION } from '../../models/action';
+import { Classification } from '../../models/classification';
+import { CategoriesResponse } from '../../services/classification-categories/classification-categories.service';
 
 export class ClassificationSelectors {
   @Selector([ClassificationState])
@@ -20,17 +21,17 @@ export class ClassificationSelectors {
   }
 
   @Selector([ClassificationState])
-  static selectClassificationTypesObject(state: ClassificationStateModel): Object {
+  static selectClassificationTypesObject(state: ClassificationStateModel): CategoriesResponse {
     return state.classificationTypes;
   }
 
   @Selector([ClassificationState])
-  static classifications(state: ClassificationStateModel): ClassificationDefinition[] {
+  static classifications(state: ClassificationStateModel): Classification[] {
     return state.classifications;
   }
 
   @Selector([ClassificationState])
-  static selectedClassification(state: ClassificationStateModel): ClassificationDefinition {
+  static selectedClassification(state: ClassificationStateModel): Classification {
     return state.selectedClassification;
   }
 

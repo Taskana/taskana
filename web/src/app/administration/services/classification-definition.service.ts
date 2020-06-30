@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'app/../environments/environment';
-import { ClassificationDefinition } from 'app/shared/models/classification-definition';
 import { TaskanaDate } from 'app/shared/util/taskana.date';
 import { BlobGenerator } from 'app/shared/util/blob-generator';
+import { Classification } from '../../shared/models/classification';
 
 @Injectable()
 export class ClassificationDefinitionService {
@@ -13,7 +13,7 @@ export class ClassificationDefinitionService {
   // GET
   async exportClassifications(domain: string) {
     const domainRequest = (domain ? '' : `?domain=${domain}`);
-    const classificationDefinitions = await this.httpClient.get<ClassificationDefinition[]>(this.url + domainRequest).toPromise();
+    const classificationDefinitions = await this.httpClient.get<Classification[]>(this.url + domainRequest).toPromise();
     BlobGenerator.saveFile(classificationDefinitions, `Classifications_${TaskanaDate.getDate()}.json`);
   }
 }

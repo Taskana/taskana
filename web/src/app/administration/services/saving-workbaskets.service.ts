@@ -7,7 +7,6 @@ export class SavingInformation {
   }
 }
 
-
 @Injectable()
 export class SavingWorkbasketService {
   public distributionTargetsSavingInformation = new Subject<SavingInformation>();

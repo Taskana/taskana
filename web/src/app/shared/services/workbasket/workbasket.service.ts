@@ -1,4 +1,3 @@
-
 import { throwError as observableThrowError, Observable, Subject } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -46,7 +45,6 @@ export class WorkbasketService {
       return this.workbasketSummaryRef;
     }
 
-
     return this.domainService.getSelectedDomain()
       .pipe(mergeMap(domain => {
         this.workbasketSummaryRef = this.httpClient.get<WorkbasketSummaryResource>(
@@ -54,7 +52,6 @@ export class WorkbasketService {
             .getQueryParameters(this.workbasketParameters(sortBy, order, name, nameLike, descLike, owner, ownerLike,
               type, key, keyLike, requiredPermission, allPages, domain))}`
         );
-        this.workbasketSummaryRef.pipe(tap((workbaskets => workbaskets)));
         return this.workbasketSummaryRef;
       }),
       tap(() => {
@@ -124,7 +121,6 @@ export class WorkbasketService {
     return this.httpClient.delete<string>(url);
   }
 
-
   // #endregion
   // #region "Service extras"
   selectWorkBasket(id?: string) {
@@ -158,7 +154,6 @@ export class WorkbasketService {
     }
     return observableThrowError(errMsg);
   }
-
 
   private workbasketParameters(
     sortBy: string = TaskanaQueryParameters.parameters.KEY,

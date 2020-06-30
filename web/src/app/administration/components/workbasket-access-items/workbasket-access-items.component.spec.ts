@@ -1,5 +1,5 @@
 import { SimpleChange } from '@angular/core';
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { AngularSvgIconModule } from 'angular-svg-icon';
@@ -7,7 +7,6 @@ import { of } from 'rxjs';
 import { configureTests } from 'app/app.test.configuration';
 
 import { Workbasket } from 'app/shared/models/workbasket';
-import { Links } from 'app/shared/models/links';
 import { WorkbasketAccessItems } from 'app/shared/models/workbasket-access-items';
 import { WorkbasketAccessItemsResource } from 'app/shared/models/workbasket-access-items-resource';
 import { ICONTYPES } from 'app/shared/models/icon-types';
@@ -64,8 +63,7 @@ describe('WorkbasketAccessItemsComponent', () => {
       component = fixture.componentInstance;
       component.workbasket = new Workbasket('1');
       component.workbasket.type = ICONTYPES.TOPIC;
-      component.workbasket._links = new Links();
-      component.workbasket._links.accessItems = { href: 'someurl' };
+      component.workbasket._links = { accessItems: { href: 'someurl' } };
 
       workbasketService = testBed.get(WorkbasketService);
       notificationsService = testBed.get(NotificationService);
@@ -74,8 +72,7 @@ describe('WorkbasketAccessItemsComponent', () => {
           new WorkbasketAccessItems('id1', '1', 'accessID1', '', false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false, false),
           new WorkbasketAccessItems('id2', '1', 'accessID2')
-        ),
-        new Links({ href: 'someurl' })
+        ), { self: { href: 'someurl' } }
       )));
       spyOn(workbasketService, 'updateWorkBasketAccessItem').and.returnValue(of(true));
       spyOn(notificationsService, 'showToast').and.returnValue(of(true));
@@ -96,7 +93,6 @@ describe('WorkbasketAccessItemsComponent', () => {
   afterEach(() => {
     document.body.removeChild(debugElement);
   });
-
 
   it('should create', () => {
     expect(component).toBeTruthy();

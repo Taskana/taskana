@@ -12,7 +12,6 @@ describe('PaginationComponent', () => {
   let fixture: ComponentFixture<PaginationComponent>;
   let debugElement;
 
-
   beforeEach(done => {
     const configure = (testBed: TestBed) => {
       testBed.configureTestingModule({

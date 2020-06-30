@@ -23,7 +23,6 @@ import { WorkbasketReportPlannedDateComponent } from './components/workbasket-re
 import { WorkbasketReportDueDateComponent } from './components/workbasket-report-due-date/workbasket-report-due-date.component';
 import { WorkbasketReportQuerySwitcherComponent } from './components/workbasket-report-query-switcher/workbasket-report-query-switcher.component';
 
-
 const MODULES = [
   CommonModule,
   MonitorRoutingModule,

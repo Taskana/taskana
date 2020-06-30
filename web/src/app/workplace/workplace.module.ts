@@ -20,7 +20,6 @@ import { TaskComponent } from './components/task/task.component';
 import { GeneralFieldsExtensionComponent } from './components/taskdetails-general-fields-extension/general-fields-extension.component';
 import { TaskListComponent } from './components/task-list/task-list.component';
 
-
 import { TaskService } from './services/task.service';
 import { TokenInterceptor } from './services/token-interceptor.service';
 import { WorkplaceService } from './services/workplace.service';

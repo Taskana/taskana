@@ -17,7 +17,6 @@ export class WorkbasketReportPlannedDateComponent implements OnInit {
 
   reportData: ReportData;
 
-
   lineChartLabels: Array<any>;
   lineChartLegend = true;
   lineChartType = 'line';

@@ -41,7 +41,6 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
     private errorsService: NotificationService,
     private importExportService: ImportExportService) { }
 
-
   ngOnInit() {
     this.workbasketSelectedSubscription = this.service.getSelectedWorkBasket().subscribe(workbasketIdSelected => {
       delete this.workbasket;
