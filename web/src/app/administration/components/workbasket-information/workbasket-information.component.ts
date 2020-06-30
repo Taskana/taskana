@@ -146,26 +146,11 @@ implements OnInit, OnChanges, OnDestroy {
       this.postNewWorkbasket();
       return;
     }
-    this.store.dispatch(new UpdateWorkbasket(this.workbasket._links.self.href, this.workbasket));
-    this.afterRequest();
-    /* this.workbasketService
-      .updateWorkbasket(this.workbasket._links.self.href, this.workbasket)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(
-        workbasketUpdated => {
-          this.afterRequest();
-          this.workbasket = workbasketUpdated;
-          this.workbasketClone = { ...this.workbasket };
-          this.notificationService.showToast(
-            NOTIFICATION_TYPES.SUCCESS_ALERT_10,
-            new Map<string, string>([['workbasketKey', workbasketUpdated.key]])
-          );
-        },
-        error => {
-          this.afterRequest();
-          this.notificationService.triggerError(NOTIFICATION_TYPES.SAVE_ERR_4, error);
-        }
-      ); */
+    this.store.dispatch(new UpdateWorkbasket(this.workbasket._links.self.href, this.workbasket))
+      .subscribe(state => {
+        this.afterRequest();
+        this.workbasketClone = { ...this.workbasket };
+      });
   }
 
   private beforeRequest() {

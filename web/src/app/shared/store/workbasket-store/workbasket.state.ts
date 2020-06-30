@@ -9,14 +9,13 @@ import { CopyWorkbasket,
   DeselectWorkbasket,
   GetWorkbasketAccessItems,
   GetWorkbasketDistributionTargets,
-  GetWorkbaskets,
   GetWorkbasketsSummary,
   MarkWorkbasketForDeletion,
   RemoveDistributionTarget,
   SaveNewWorkbasket,
   SelectWorkbasket,
   SetActiveAction,
-  UpdateWorkbasket,
+  UpdateWorkbasket, UpdateWorkbasketAccessItems,
   UpdateWorkbasketDistributionTargets,
   UpdateworkbasketSummaryParams } from './workbasket.actions';
 import { WorkbasketSummaryRepresentation } from '../../models/workbasket-summary-representation';
@@ -138,6 +137,9 @@ export class WorkbasketState implements NgxsAfterBootstrap {
         ctx.patchState({
           selectedWorkbasket: updatedWorkbasket,
         });
+      }, error => {
+        console.log(error);
+        this.notificationService.triggerError(NOTIFICATION_TYPES.SAVE_ERR_4, error);
       }
     ));
   }
@@ -207,6 +209,21 @@ export class WorkbasketState implements NgxsAfterBootstrap {
         });
       }
     ));
+  }
+
+  @Action(UpdateWorkbasketAccessItems)
+  updateWorkbasketAccessItems(ctx: StateContext<WorkbasketStateModel>,
+    action: UpdateWorkbasketAccessItems): Observable<any> {
+    return this.workbasketService.updateWorkBasketAccessItem(action.url, action.workbasketAccessItems)
+      .pipe(take(1), tap(workbasketAccessItems => {
+        ctx.patchState({
+          workbasketAccessItems
+        });
+        this.notificationService.showToast(NOTIFICATION_TYPES.SUCCESS_ALERT_7,
+          new Map<string, string>([['workbasketKey', ctx.getState().selectedWorkbasket.key]]));
+      }, error => {
+        this.notificationService.triggerError(NOTIFICATION_TYPES.SAVE_ERR_2, error);
+      }));
   }
 
   @Action(GetWorkbasketDistributionTargets)
