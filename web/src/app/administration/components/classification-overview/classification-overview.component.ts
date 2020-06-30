@@ -6,7 +6,8 @@ import { takeUntil } from 'rxjs/operators';
 import { ClassificationSelectors } from '../../../shared/store/classification-store/classification.selectors';
 import { ClassificationDefinition } from '../../../shared/models/classification-definition';
 import { ACTION } from '../../../shared/models/action';
-import { SelectClassification,
+import { GetClassifications,
+  SelectClassification,
   SetActiveAction } from '../../../shared/store/classification-store/classification.actions';
 
 @Component({
@@ -35,7 +36,8 @@ export class ClassificationOverviewComponent implements OnInit, OnDestroy {
 
           if (this.routerParams.id) {
             this.showDetail = true;
-            this.store.dispatch(new SelectClassification(this.routerParams.id));
+            this.store.dispatch(new SelectClassification(this.routerParams.id))
+              .subscribe(() => this.store.dispatch(new GetClassifications()));
           }
           if (this.routerParams.id && this.routerParams.id.indexOf('new-classification') !== -1) {
             this.store.dispatch(new SetActiveAction(ACTION.CREATE));
