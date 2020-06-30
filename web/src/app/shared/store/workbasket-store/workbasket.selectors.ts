@@ -7,6 +7,7 @@ import { ACTION } from '../../models/action';
 import { WorkbasketAccessItemsRepresentation } from '../../models/workbasket-access-items-representation';
 
 export class WorkbasketSelectors {
+  // Workbasket
   @Selector([WorkbasketState])
   static selectedWorkbasket(state: WorkbasketStateModel): Workbasket {
     return { ...state.selectedWorkbasket };
@@ -35,6 +36,7 @@ export class WorkbasketSelectors {
     };
   }
 
+  // Workbasket Access Items
   @Selector([WorkbasketState])
   static workbasketAccessItems(state: WorkbasketStateModel): WorkbasketAccessItemsRepresentation {
     return state.workbasketAccessItems;

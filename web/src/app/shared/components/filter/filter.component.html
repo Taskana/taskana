@@ -17,11 +17,10 @@
       </div>
       <div class="col-xs-4">
         <input type="text" [(ngModel)]="filter.filterParams.name" (keyup.enter)="search()" class="form-control input-sm"
-          id="display-name-filter" placeholder="Filter name">
+          placeholder="Filter name">
       </div>
       <div class="col-xs-4">
-        <input type="text" [(ngModel)]="filter.filterParams.key" (keyup.enter)="search()" class="form-control input-sm"
-          id="display-key-filter" placeholder="Filter key">
+        <input type="text" [(ngModel)]="filter.filterParams.key" (keyup.enter)="search()" class="form-control input-sm" placeholder="Filter key">
       </div>
       <button (click)="clear(); search()" type="button" class="btn btn-default btn-sm pull-right margin-right"
         data-toggle="tooltip" title="Clear">
@@ -31,13 +30,13 @@
     <div class="row">
       <div class="col-xs-8 col-xs-offset-2">
         <input type="text" [(ngModel)]="filter.filterParams.description" (keyup.enter)="search()" class="form-control input-sm"
-          id="display-name-description" placeholder="Filter description">
+          placeholder="Filter description">
       </div>
     </div>
     <div class="row">
       <div class="col-xs-8 col-xs-offset-2">
         <input type="text" [(ngModel)]="filter.filterParams.owner" (keyup.enter)="search()" class="form-control input-sm"
-          id="display-name-owner" placeholder="Filter owner">
+          placeholder="Filter owner">
       </div>
       <button (click)="search()" type="button" class="btn btn-default btn-sm pull-right margin-right" data-toggle="tooltip"
         title="Search">
