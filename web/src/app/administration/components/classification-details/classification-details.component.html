@@ -87,7 +87,7 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu" aria-labelledby="dropdownMenu">
                       <li>
-                        <a *ngFor="let category of getAvailableCategories(classification.type)" (click)="selectCategory(category)">
+                        <a *ngFor="let category of getAvailableCategories(classification.type) | async" (click)="selectCategory(category)">
                           <span class="text-top">
                             <svg-icon class="blue fa-fw" src="{{(getCategoryIcon(category) | async)?.name}}" data-toggle="tooltip"
                               [title]="(getCategoryIcon(category) | async)?.text"></svg-icon>

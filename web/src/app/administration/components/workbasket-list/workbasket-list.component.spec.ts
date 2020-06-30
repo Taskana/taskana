@@ -10,7 +10,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
 import { WorkbasketSummaryResource } from 'app/shared/models/workbasket-summary-resource';
 import { Filter } from 'app/shared/models/filter';
-import { LinksWorkbasketSummary } from 'app/shared/models/links-workbasket-summary';
 
 import { ImportExportComponent } from 'app/administration/components/import-export/import-export.component';
 
@@ -50,9 +49,8 @@ const workbasketSummaryResource: WorkbasketSummaryResource = new WorkbasketSumma
     new WorkbasketSummary('1', 'key1', 'NAME1', 'description 1', 'owner 1', '', '', 'PERSONAL', '', '', '', ''),
     new WorkbasketSummary('2', 'key2', 'NAME2', 'description 2', 'owner 2', '', '', 'GROUP', '', '', '', '')
   ),
-  new LinksWorkbasketSummary({ href: 'url' })
+  {}
 );
-
 
 describe('WorkbasketListComponent', () => {
   let component: WorkbasketListComponent;
@@ -65,7 +63,6 @@ describe('WorkbasketListComponent', () => {
     { path: ':id', component: DummyDetailComponent, outlet: 'detail' },
     { path: 'workbaskets', component: DummyDetailComponent }
   ];
-
 
   beforeEach(done => {
     const configure = (testBed: TestBed) => {

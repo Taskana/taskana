@@ -10,7 +10,8 @@
     "build:prod-silent": "ng build --prod=true --no-progress",
     "test": "ng test --karma-config karma.conf.js --watch=false --browsers Firefox",
     "test:watch": "ng test --karma-config karma.conf.js --browsers Chrome",
-    "lint": "eslint --ext .ts src"
+    "lint": "eslint --ext .ts src",
+    "lint:fix": "eslint --ext .ts src --fix"
   },
   "private": true,
   "dependencies": {

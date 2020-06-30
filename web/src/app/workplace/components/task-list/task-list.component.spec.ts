@@ -9,7 +9,6 @@ import { WorkplaceService } from 'app/workplace/services/workplace.service';
 import { TaskListComponent } from './task-list.component';
 import { DateTimeZonePipe } from '../../../shared/pipes/date-time-zone.pipe';
 
-
 @Component({
   selector: 'taskana-dummy-detail',
   template: 'dummydetail'

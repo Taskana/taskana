@@ -4,11 +4,11 @@ import { Observable, Subject } from 'rxjs';
 import { Select, Store } from '@ngxs/store';
 import { takeUntil } from 'rxjs/operators';
 import { ClassificationSelectors } from '../../../shared/store/classification-store/classification.selectors';
-import { ClassificationDefinition } from '../../../shared/models/classification-definition';
 import { ACTION } from '../../../shared/models/action';
 import { GetClassifications,
   SelectClassification,
   SetActiveAction } from '../../../shared/store/classification-store/classification.actions';
+import { Classification } from '../../../shared/models/classification';
 
 @Component({
   selector: 'app-classification-overview',
@@ -17,7 +17,7 @@ import { GetClassifications,
 })
 export class ClassificationOverviewComponent implements OnInit, OnDestroy {
   showDetail = false;
-  @Select(ClassificationSelectors.selectedClassification) selectedClassification$: Observable<ClassificationDefinition>;
+  @Select(ClassificationSelectors.selectedClassification) selectedClassification$: Observable<Classification>;
   private destroy$ = new Subject<void>();
   routerParams: any;
 

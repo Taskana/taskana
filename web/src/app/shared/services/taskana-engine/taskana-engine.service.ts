@@ -6,7 +6,6 @@ import { Version } from 'app/shared/models/version';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-
 @Injectable()
 export class TaskanaEngineService {
   currentUserInfo: UserInfo;

@@ -9,7 +9,6 @@ import { of } from 'rxjs';
 import { NgxsModule } from '@ngxs/store';
 import { AccessItemsManagementComponent } from './access-items-management.component';
 
-
 describe('AccessItemsManagementComponent', () => {
   let component: AccessItemsManagementComponent;
   let fixture: ComponentFixture<AccessItemsManagementComponent>;
@@ -22,7 +21,6 @@ describe('AccessItemsManagementComponent', () => {
       providers: [AccessIdsService, FormsValidatorService]
     });
   };
-
 
   beforeEach(done => {
     configureTests(configure).then(testBed => {

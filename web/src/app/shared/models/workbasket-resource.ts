@@ -4,6 +4,6 @@ import { Workbasket } from './workbasket';
 export class WorkbasketResource {
   constructor(
     public workbaskets: Array<Workbasket> = [],
-    public _links: Links = new Links()
+    public _links: Links = {}
   ) { }
 }

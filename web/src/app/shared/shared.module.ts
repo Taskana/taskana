@@ -10,7 +10,6 @@ import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
 
-
 /**
  * Components
  */
@@ -43,7 +42,6 @@ import { OrderBy } from './pipes/order-by.pipe';
 import { MapToIterable } from './pipes/map-to-iterable.pipe';
 import { NumberToArray } from './pipes/number-to-array.pipe';
 import { DateTimeZonePipe } from './pipes/date-time-zone.pipe';
-
 
 /**
  * Services

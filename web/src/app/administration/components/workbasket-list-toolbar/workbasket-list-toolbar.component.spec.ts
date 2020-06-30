@@ -58,19 +58,18 @@ describe('WorkbasketListToolbarComponent', () => {
       });
     };
     configureTests(configure).then(testBed => {
-      fixture = TestBed.createComponent(WorkbasketListToolbarComponent);
-      workbasketService = TestBed.get(WorkbasketService);
-      router = TestBed.get(Router);
+      fixture = testBed.createComponent(WorkbasketListToolbarComponent);
+      workbasketService = testBed.get(WorkbasketService);
+      router = testBed.get(Router);
       spyOn(workbasketService, 'markWorkbasketForDeletion').and.returnValue(of(''));
       spyOn(workbasketService, 'triggerWorkBasketSaved');
 
       debugElement = fixture.debugElement.nativeElement;
       component = fixture.componentInstance;
-      component.workbaskets = new Array<WorkbasketSummary>(
+      component.workbaskets = [
         new WorkbasketSummary('1', 'key1', 'NAME1', 'description 1', 'owner 1')
-      );
+      ];
       component.workbaskets[0].markedForDeletion = false;
-      component.workbaskets[0]._links = new Links({ href: 'selfLink' });
 
       fixture.detectChanges();
       done();
@@ -90,7 +89,6 @@ describe('WorkbasketListToolbarComponent', () => {
     component.addWorkbasket();
     expect(spy.calls.first().args[0][0].outlets.detail[0]).toBe('new-workbasket');
   });
-
 
   it('should emit performSorting when sorting is triggered', () => {
     let sort: Sorting;

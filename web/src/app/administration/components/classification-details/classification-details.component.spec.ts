@@ -7,7 +7,6 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { configureTests } from 'app/app.test.configuration';
 import { NgxsModule, Store } from '@ngxs/store';
 import { Location } from '@angular/common';
-import { LinksClassification } from 'app/shared/models/links-classfication';
 
 import { MasterAndDetailService } from 'app/shared/services/master-and-detail/master-and-detail.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
@@ -20,7 +19,6 @@ import { ClassificationDetailsComponent } from './classification-details.compone
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { ACTION } from '../../../shared/models/action';
 
-
 @Component({
   selector: 'taskana-dummy-detail',
   template: 'dummydetail'
@@ -31,9 +29,10 @@ class DummyDetailComponent {
 describe('ClassificationDetailsComponent', () => {
   let component: ClassificationDetailsComponent;
   let fixture: ComponentFixture<ClassificationDetailsComponent>;
-  const treeNodes: Array<TreeNodeModel> = new Array(new TreeNodeModel());
+  const treeNodes: TreeNodeModel[] = [];
 
   let classificationsService;
+
   const locationSpy: jasmine.SpyObj<Location> = jasmine.createSpyObj('Location', ['go']);
   const storeSpy: jasmine.SpyObj<Store> = jasmine.createSpyObj('Store', ['select', 'dispatch']);
   const configure = (testBed: TestBed) => {
@@ -60,7 +59,6 @@ describe('ClassificationDetailsComponent', () => {
             return of();
         }
       });
-
 
       fixture = testBed.createComponent(ClassificationDetailsComponent);
 
@@ -93,12 +91,10 @@ describe('ClassificationDetailsComponent', () => {
         modified: '2020-06-22T12:51:31.164Z',
         description: 'Beratungsprotokoll'
       };
-      component.classification._links = new LinksClassification({ self: '' });
       fixture.detectChanges();
       done();
     });
   });
-
 
   it('should create', () => {
     expect(component).toBeTruthy();

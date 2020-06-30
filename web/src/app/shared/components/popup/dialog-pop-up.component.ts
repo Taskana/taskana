@@ -1,6 +1,5 @@
-import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { HttpErrorResponse } from '@angular/common/http';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { notifications } from '../../models/notifications';
 
 @Component({
@@ -33,7 +32,8 @@ export class DialogPopUpComponent implements OnInit {
 
   initError() {
     this.title = notifications.get(this.data.key).name || '';
-    this.message = notifications.get(this.data.key).text || this.data.passedError.error ? this.data.passedError.error.message : '';
+    this.message = notifications.get(this.data.key).text
+      || (this.data && this.data.passedError && this.data.passedError.error) ? this.data.passedError.error.message : '';
     if (this.data.additions) {
       this.data.additions.forEach((value: string, replacementKey: string) => {
         this.message = this.message.replace(`{${replacementKey}}`, value);

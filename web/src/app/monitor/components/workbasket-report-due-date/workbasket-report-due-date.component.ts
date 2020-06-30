@@ -17,7 +17,6 @@ export class WorkbasketReportDueDateComponent implements OnInit {
 
   reportData: ReportData;
 
-
   lineChartLabels: Array<any>;
   lineChartLegend = true;
   lineChartType = 'line';
@@ -33,7 +32,6 @@ export class WorkbasketReportDueDateComponent implements OnInit {
     private requestInProgressService: RequestInProgressService
   ) {
   }
-
 
   async ngOnInit() {
     this.requestInProgressService.setRequestInProgress(true);

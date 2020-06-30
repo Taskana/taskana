@@ -8,7 +8,6 @@ import { MasterAndDetailService } from '../../services/master-and-detail/master-
 
 import { MasterAndDetailComponent } from './master-and-detail.component';
 
-
 @Component({
   selector: 'taskana-dummy-master',
   template: 'dummymaster'

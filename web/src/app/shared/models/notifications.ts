@@ -1,6 +1,5 @@
 import { Pair } from './pair';
 
-
 export enum NOTIFICATION_TYPES {
 
   // ERRORS
@@ -58,6 +57,7 @@ export enum NOTIFICATION_TYPES {
   SUCCESS_ALERT_14,
   WARNING_ALERT,
   WARNING_ALERT_2,
+  WARNING_CANT_COPY
 }
 
 export const notifications = new Map<NOTIFICATION_TYPES, Pair>([
@@ -310,5 +310,9 @@ export const notifications = new Map<NOTIFICATION_TYPES, Pair>([
   [NOTIFICATION_TYPES.INFO_ALERT_2, new Pair(
     '',
     'The selected Workbasket is empty!'
+  )],
+  [NOTIFICATION_TYPES.WARNING_CANT_COPY, new Pair(
+    '',
+    'Can\'t copy a not created classification'
   )]
 ]);

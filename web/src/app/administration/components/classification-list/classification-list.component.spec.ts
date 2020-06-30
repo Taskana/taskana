@@ -24,7 +24,6 @@ import { MatRadioModule } from '@angular/material/radio';
 import { ClassificationListComponent } from './classification-list.component';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 
-
 @Component({
   selector: 'taskana-dummy-detail',
   template: 'dummydetail'
@@ -39,7 +38,7 @@ const routes: Routes = [
 describe('ClassificationListComponent', () => {
   let component: ClassificationListComponent;
   let fixture: ComponentFixture<ClassificationListComponent>;
-  const treeNodes: Array<TreeNodeModel> = new Array(new TreeNodeModel());
+  const treeNodes: TreeNodeModel[] = [{ children: [] }];
   let classificationsService;
 
   const configure = (testBed: TestBed) => {

@@ -1,4 +1,3 @@
-
 export class QueryParameters {
   SORTBY: string;
   SORTDIRECTION: string;

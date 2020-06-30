@@ -13,10 +13,10 @@ import { ClassificationSelectors } from 'app/shared/store/classification-store/c
 import { Location } from '@angular/common';
 import { ClassificationCategoryImages } from '../../../shared/models/customisation';
 
-import { GetClassifications, SetActiveAction } from '../../../shared/store/classification-store/classification.actions';
+import { GetClassifications,
+  SetActiveAction } from '../../../shared/store/classification-store/classification.actions';
 import { ACTION } from '../../../shared/models/action';
-import { TreeNodeModel } from '../../../shared/models/tree-node';
-
+import { ClassificationSummary } from '../../../shared/models/classification-summary';
 
 @Component({
   selector: 'taskana-classification-list',
@@ -32,13 +32,13 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
   @Select(ClassificationSelectors.classificationTypes) classificationTypes$: Observable<string[]>;
   @Select(ClassificationSelectors.selectedClassificationType) classificationTypeSelected$: Observable<string>;
   @Select(ClassificationSelectors.selectCategories) categories$: Observable<string[]>;
-  @Select(ClassificationSelectors.classifications) classifications$: Observable<TreeNodeModel[]>;
+  @Select(ClassificationSelectors.classifications) classifications$: Observable<ClassificationSummary[]>;
   @Select(ClassificationSelectors.activeAction) activeAction$: Observable<ACTION>;
   @Select(EngineConfigurationSelectors.selectCategoryIcons) categoryIcons$: Observable<ClassificationCategoryImages>;
 
   action: ACTION;
   destroy$ = new Subject<void>();
-  classifications: TreeNodeModel[];
+  classifications: ClassificationSummary[];
 
   constructor(
     private classificationService: ClassificationsService,
@@ -61,17 +61,8 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.classifications$.pipe(takeUntil(this.destroy$)).subscribe(classifications => {
-      if (classifications) {
-        this.classifications = [...classifications];
-      }
+      this.classifications = classifications;
     });
-
-    this.classificationService
-      .classificationSavedTriggered()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.store.dispatch(new GetClassifications());
-      });
 
     this.classificationTypeSelected$
       .pipe(takeUntil(this.destroy$))

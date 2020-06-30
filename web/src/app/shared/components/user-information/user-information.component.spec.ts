@@ -7,12 +7,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Overlay } from '@angular/cdk/overlay';
 import { UserInformationComponent } from './user-information.component';
 
-
 describe('UserInformationComponent', () => {
   let component: UserInformationComponent;
   let fixture: ComponentFixture<UserInformationComponent>;
   let debugElement;
-
 
   beforeEach(done => {
     const configure = (testBed: TestBed) => {

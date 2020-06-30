@@ -1,4 +1,3 @@
-import { ClassificationDefinition } from '../../models/classification-definition';
 import { ACTION } from '../../models/action';
 import { Classification } from '../../models/classification';
 
@@ -20,13 +19,13 @@ export class DeselectClassification {
 
 export class CreateClassification {
   static readonly type = '[Classification] Create a new classification';
-  constructor(public classification: ClassificationDefinition) {
+  constructor(public classification: Classification) {
   }
 }
 
 export class SaveClassification {
   static readonly type = '[Classification] Save a classification and select it';
-  constructor(public classification: ClassificationDefinition) {
+  constructor(public classification: Classification) {
   }
 }
 

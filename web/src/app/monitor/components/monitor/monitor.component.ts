@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
-
 @Component({
   selector: 'taskana-monitor',
   templateUrl: './monitor.component.html',

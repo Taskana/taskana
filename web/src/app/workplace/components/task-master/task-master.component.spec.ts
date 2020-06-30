@@ -35,7 +35,6 @@ xdescribe('TaskMasterComponent', () => {
   let component: TaskMasterComponent;
   let fixture: ComponentFixture<TaskMasterComponent>;
 
-
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [FormsModule, TypeaheadModule,

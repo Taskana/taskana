@@ -97,7 +97,6 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
     });
   }
 
-
   performSorting(sort: Sorting) {
     this.sort = sort;
     this.getTasks();

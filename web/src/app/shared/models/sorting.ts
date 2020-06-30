@@ -3,7 +3,6 @@ export enum Direction {
   DESC = 'desc'
 }
 
-
 export class Sorting {
   sortBy: string;
   sortDirection: string;

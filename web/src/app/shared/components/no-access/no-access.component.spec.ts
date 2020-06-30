@@ -11,7 +11,6 @@ describe('NoAccessComponent', () => {
   let fixture: ComponentFixture<NoAccessComponent>;
   let debugElement;
 
-
   beforeEach(done => {
     const configure = (testBed: TestBed) => {
       testBed.configureTestingModule({

@@ -5,12 +5,10 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** Use this annotation to test with a spring context and a standardized configuration. */
 @Target(ElementType.TYPE)
@@ -20,7 +18,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 @Inherited
 @ActiveProfiles({"test"})
-@ExtendWith(SpringExtension.class)
 @SpringBootTest(
     classes = CommonTestConfiguration.class,
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

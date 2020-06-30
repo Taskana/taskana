@@ -1,17 +1,11 @@
-import { Links } from 'app/shared/models/links';
+import { ClassificationSummary } from './classification-summary';
+import { Links } from './links';
 
-export class Classification {
-  constructor(
-    public classificationId?: string, // newly created classifications don't have an id yet.
-    public key?: string,
-    public category?: string,
-    public type?: string,
-    public domain?: string,
-    public name?: string,
-    public parentId?: string,
-    public priority?: number,
-    public serviceLevel?: string,
-    public _links?: Links
-  ) {
-  }
+export interface Classification extends ClassificationSummary {
+  isValidInDomain?: boolean;
+  created?: string; // TODO: make this a Date
+  modified?: string; // TODO: make this a Date
+  description?: string;
+
+  _links?: Links;
 }

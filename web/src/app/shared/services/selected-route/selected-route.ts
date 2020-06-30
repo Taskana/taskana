@@ -10,7 +10,6 @@ export class SelectedRouteService {
 
   constructor(private router: Router) { }
 
-
   selectRoute(value) {
     this.selectedRouteTriggered.next(this.getRoute(value));
   }

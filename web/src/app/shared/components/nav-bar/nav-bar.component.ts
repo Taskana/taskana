@@ -86,7 +86,6 @@ export class NavBarComponent implements OnInit, OnDestroy {
     this.showNavbar = !this.showNavbar;
   }
 
-
   logout() {
     this.taskanaEngineService.logout().subscribe(() => {
     });

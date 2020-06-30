@@ -1,4 +1,4 @@
-import { Component,
+import { AfterViewInit, Component,
   ElementRef,
   Input,
   OnChanges,
@@ -7,7 +7,7 @@ import { Component,
   ViewChildren } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { Select } from '@ngxs/store';
-import { FormArray, FormBuilder, FormControlDirective, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, Validators } from '@angular/forms';
 
 import { Workbasket } from 'app/shared/models/workbasket';
 import { customFieldCount, WorkbasketAccessItems } from 'app/shared/models/workbasket-access-items';
@@ -34,7 +34,7 @@ import { AccessItemsCustomisation,
   animations: [highlight],
   styleUrls: ['./workbasket-access-items.component.scss']
 })
-export class WorkbasketAccessItemsComponent implements OnChanges, OnDestroy {
+export class WorkbasketAccessItemsComponent implements OnChanges, OnDestroy, AfterViewInit {
   @Input()
   workbasket: Workbasket;
 
@@ -46,7 +46,6 @@ export class WorkbasketAccessItemsComponent implements OnChanges, OnDestroy {
 
   @ViewChildren('htmlInputElement') inputs: QueryList<ElementRef>;
 
-
   badgeMessage = '';
 
   @Select(EngineConfigurationSelectors.accessItemsCustomisation) accessItemsCustomization$: Observable<AccessItemsCustomisation>;
@@ -56,13 +55,13 @@ export class WorkbasketAccessItemsComponent implements OnChanges, OnDestroy {
   accessItemsClone: Array<WorkbasketAccessItems>;
   accessItemsResetClone: Array<WorkbasketAccessItems>;
   requestInProgress = false;
-  accessItemsubscription: Subscription;
+  accessItemSubscription: Subscription;
   savingAccessItemsSubscription: Subscription;
   AccessItemsForm = this.formBuilder.group({
     accessItemsGroups: this.formBuilder.array([])
   });
 
-  toogleValidationAccessIdMap = new Map<number, boolean>();
+  toggleValidationAccessIdMap = new Map<number, boolean>();
   private initialized = false;
   private added = false;
 
@@ -104,7 +103,7 @@ export class WorkbasketAccessItemsComponent implements OnChanges, OnDestroy {
       return;
     }
     this.requestInProgress = true;
-    this.accessItemsubscription = this.workbasketService.getWorkBasketAccessItems(this.workbasket._links.accessItems.href)
+    this.accessItemSubscription = this.workbasketService.getWorkBasketAccessItems(this.workbasket._links.accessItems.href)
       .subscribe((accessItemsResource: WorkbasketAccessItemsResource) => {
         this.accessItemsResource = accessItemsResource;
         this.setAccessItemsGroups(accessItemsResource.accessItems);
@@ -162,7 +161,7 @@ export class WorkbasketAccessItemsComponent implements OnChanges, OnDestroy {
 
   onSubmit() {
     this.formsValidatorService.formSubmitAttempt = true;
-    this.formsValidatorService.validateFormAccess(this.accessItemsGroups, this.toogleValidationAccessIdMap).then(value => {
+    this.formsValidatorService.validateFormAccess(this.accessItemsGroups, this.toggleValidationAccessIdMap).then(value => {
       if (value) {
         this.onSave();
       }
@@ -230,10 +229,9 @@ export class WorkbasketAccessItemsComponent implements OnChanges, OnDestroy {
     }
   }
 
-
   ngOnDestroy(): void {
-    if (this.accessItemsubscription) {
-      this.accessItemsubscription.unsubscribe();
+    if (this.accessItemSubscription) {
+      this.accessItemSubscription.unsubscribe();
     }
     if (this.savingAccessItemsSubscription) {
       this.savingAccessItemsSubscription.unsubscribe();
