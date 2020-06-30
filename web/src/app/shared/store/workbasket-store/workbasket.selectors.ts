@@ -8,11 +8,6 @@ import { WorkbasketAccessItemsRepresentation } from '../../models/workbasket-acc
 
 export class WorkbasketSelectors {
   @Selector([WorkbasketState])
-  static workbaskets(state: WorkbasketStateModel) {
-    return { ...state.workbaskets };
-  }
-
-  @Selector([WorkbasketState])
   static selectedWorkbasket(state: WorkbasketStateModel): Workbasket {
     return { ...state.selectedWorkbasket };
   }
