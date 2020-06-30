@@ -10,6 +10,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
 import { WorkbasketSummaryRepresentation } from 'app/shared/models/workbasket-summary-representation';
 import { Filter } from 'app/shared/models/filter';
+import { LinksWorkbasketSummary } from 'app/shared/models/links-workbasket-summary';
 
 import { ImportExportComponent } from 'app/administration/components/import-export/import-export.component';
 
@@ -44,13 +45,33 @@ class PaginationComponent {
   @Output() changePage = new EventEmitter<any>();
 }
 
-const workbasketSummaryResource: WorkbasketSummaryRepresentation = new WorkbasketSummaryRepresentation(
-  new Array<WorkbasketSummary>(
-    new WorkbasketSummary('1', 'key1', 'NAME1', 'description 1', 'owner 1', '', '', 'PERSONAL', '', '', '', ''),
-    new WorkbasketSummary('2', 'key2', 'NAME2', 'description 2', 'owner 2', '', '', 'GROUP', '', '', '', '')
-  ),
-  {}
-);
+function createWorkbasketSummary(workbasketId, key, name, domain, type, description, owner, custom1, custom2, custom3, custom4) {
+  const workbasketSummary: WorkbasketSummary = {
+    workbasketId,
+    key,
+    name,
+    domain,
+    type,
+    description,
+    owner,
+    custom1,
+    custom2,
+    custom3,
+    custom4
+  };
+  return workbasketSummary;
+}
+const workbasketSummaryResource: WorkbasketSummaryRepresentation = {
+  workbaskets: [
+    createWorkbasketSummary('1', 'key1', 'NAME1', '', 'PERSONAL',
+      'description 1', 'owner1', '', '', '', ''),
+    createWorkbasketSummary('2', 'key2', 'NAME2', '', 'PERSONAL',
+      'description 2', 'owner2', '', '', '', ''),
+  ],
+  _links: new LinksWorkbasketSummary({ href: 'url' }),
+  page: {}
+};
+
 
 describe('WorkbasketListComponent', () => {
   let component: WorkbasketListComponent;
@@ -63,6 +84,7 @@ describe('WorkbasketListComponent', () => {
     { path: ':id', component: DummyDetailComponent, outlet: 'detail' },
     { path: 'workbaskets', component: DummyDetailComponent }
   ];
+
 
   beforeEach(done => {
     const configure = (testBed: TestBed) => {

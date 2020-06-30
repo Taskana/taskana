@@ -5,5 +5,5 @@ import { LinksWorkbasketSummary } from './links-workbasket-summary';
 export interface WorkbasketSummaryRepresentation {
   workbaskets: WorkbasketSummary[];
   _links: LinksWorkbasketSummary;
-  page: Page;
+  page?: Page;
 }
