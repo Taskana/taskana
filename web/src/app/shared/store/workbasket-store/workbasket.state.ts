@@ -183,16 +183,16 @@ export class WorkbasketState implements NgxsAfterBootstrap {
         forceRequest: action.forceRequest,
         sortBy: action.sortBy,
         order: action.order,
-        name: string,
-        nameLike?: string,
-        descLike?: string,
-        owner?: string,
-        ownerLike?: string,
-        type?: string,
-        key?: string,
-        keyLike?: string,
-        requiredPermission?: string,
-        allPages: boolean = false
+        name: action.name,
+        nameLike: action.nameLike,
+        descLike: action.descLike,
+        owner: action.owner,
+        ownerLike: action.ownerLike,
+        type: action.type,
+        key: action.key,
+        keyLike: action.keyLike,
+        requiredPermission: action.requiredPermission,
+        allPages: action.allPages
       }
     });
     return of(null);

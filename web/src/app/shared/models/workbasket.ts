@@ -20,7 +20,7 @@ export class Workbasket {
   markedForDeletion?: boolean;
   created?: string;
   modified?: string;
-  _links: Links;
+  _links?: Links;
 }
 
 export const customFieldCount: number = 4;

@@ -9,8 +9,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SharedModule } from 'app/shared/shared.module';
 import { AppModule } from 'app/app.module';
-
-import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
 import { Links } from 'app/shared/models/links';
 import { Filter } from 'app/shared/models/filter';
 import { Sorting } from 'app/shared/models/sorting';
@@ -23,6 +21,7 @@ import { WorkbasketDefinitionService } from 'app/administration/services/workbas
 import { configureTests } from 'app/app.test.configuration';
 import { ImportExportService } from 'app/administration/services/import-export.service';
 import { WorkbasketListToolbarComponent } from './workbasket-list-toolbar.component';
+import { ICONTYPES } from '../../../shared/models/icon-types';
 
 @Component({
   selector: 'taskana-dummy-detail',
@@ -58,17 +57,20 @@ describe('WorkbasketListToolbarComponent', () => {
       });
     };
     configureTests(configure).then(testBed => {
-      fixture = testBed.createComponent(WorkbasketListToolbarComponent);
-      workbasketService = testBed.get(WorkbasketService);
-      router = testBed.get(Router);
+      fixture = TestBed.createComponent(WorkbasketListToolbarComponent);
+      workbasketService = TestBed.get(WorkbasketService);
+      router = TestBed.get(Router);
       spyOn(workbasketService, 'markWorkbasketForDeletion').and.returnValue(of(''));
       spyOn(workbasketService, 'triggerWorkBasketSaved');
 
       debugElement = fixture.debugElement.nativeElement;
       component = fixture.componentInstance;
-      component.workbaskets = [
-        new WorkbasketSummary('1', 'key1', 'NAME1', 'description 1', 'owner 1')
-      ];
+      component.workbaskets = [{ workbasketId: '1',
+        key: 'key1',
+        name: 'NAME1',
+        description: 'description 1',
+        owner: 'owner 1',
+        type: ICONTYPES.PERSONAL }];
       component.workbaskets[0].markedForDeletion = false;
 
       fixture.detectChanges();
@@ -89,6 +91,7 @@ describe('WorkbasketListToolbarComponent', () => {
     component.addWorkbasket();
     expect(spy.calls.first().args[0][0].outlets.detail[0]).toBe('new-workbasket');
   });
+
 
   it('should emit performSorting when sorting is triggered', () => {
     let sort: Sorting;
