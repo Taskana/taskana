@@ -21,7 +21,7 @@ import { Page } from 'app/shared/models/page';
 import { OrientationService } from 'app/shared/services/orientation/orientation.service';
 import { Orientation } from 'app/shared/models/orientation';
 import { Select, Store } from '@ngxs/store';
-import { takeUntil } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { GetAllWorkbasketsSummary, GetWorkbasketDistributionTargets,
@@ -50,14 +50,9 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
 
   badgeMessage = '';
 
-  distributionTargetsSubscription: Subscription;
-  workbasketSubscription: Subscription;
-  workbasketFilterSubscription: Subscription;
-  orientationSubscription: Subscription;
-
   distributionTargetsSelectedResource: WorkbasketDistributionTargets;
-  distributionTargetsLeft: Array<WorkbasketSummary>;
-  distributionTargetsRight: Array<WorkbasketSummary>;
+  distributionTargetsLeft: Array<WorkbasketSummary> = [];
+  distributionTargetsRight: Array<WorkbasketSummary> = [];
   distributionTargetsSelected: Array<WorkbasketSummary>;
   distributionTargetsClone: Array<WorkbasketSummary>;
   distributionTargetsSelectedClone: Array<WorkbasketSummary>;
@@ -150,6 +145,7 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
       this.initialized = true;
       TaskanaQueryParameters.pageSize = this.cards + this.distributionTargetsSelected.length;
     }
+
     /*
     // this.store.dispatch(new GetWorkbasketsSummary));
     this.workbasketsSummaryRepresentation$.subscribe(workbasketsSummaryRepresentation => {
@@ -162,14 +158,16 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
       } else if (side === this.side.RIGHT) {
         this.distributionTargetsRight = Object.assign([], workbasketsSummaryRepresentation.workbaskets);
       } else {
-        this.distributionTargetsLeft.push(...workbasketsSummaryRepresentation.workbaskets);
+        const copy = [...workbasketsSummaryRepresentation.workbaskets];
+        this.distributionTargetsLeft.push(...copy);
         this.distributionTargetsRight = Object.assign([], workbasketsSummaryRepresentation.workbaskets);
         this.distributionTargetsClone = Object.assign([], workbasketsSummaryRepresentation.workbaskets);
       }
       this.onRequest(true);
-    }); */
-
-    this.workbasketSubscription = this.workbasketService.getWorkBasketsSummary(true)
+    });
+    */
+    this.workbasketService.getWorkBasketsSummary(true)
+      .pipe(takeUntil(this.destroy$))
       .subscribe(
         (distributionTargetsAvailable: WorkbasketSummaryRepresentation) => {
           if (TaskanaQueryParameters.page === 1) {
@@ -323,11 +321,6 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
   }
 
   ngOnDestroy() {
-    if (this.distributionTargetsSubscription) { this.distributionTargetsSubscription.unsubscribe(); }
-    if (this.workbasketSubscription) { this.workbasketSubscription.unsubscribe(); }
-    if (this.workbasketFilterSubscription) { this.workbasketFilterSubscription.unsubscribe(); }
-    if (this.orientationSubscription) { this.orientationSubscription.unsubscribe(); }
-
     this.destroy$.next();
     this.destroy$.complete();
   }
