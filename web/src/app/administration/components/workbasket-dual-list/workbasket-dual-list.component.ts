@@ -1,16 +1,16 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
 import { Filter } from 'app/shared/models/filter';
 import { expandDown } from 'theme/animations/expand.animation';
 import { Side } from '../workbasket-distribution-targets/workbasket-distribution-targets.component';
 
 @Component({
-  selector: 'taskana-administration-workbasket-dual-list',
+  selector: 'taskana-workbasket-dual-list',
   templateUrl: './workbasket-dual-list.component.html',
   styleUrls: ['./workbasket-dual-list.component.scss'],
   animations: [expandDown]
 })
-export class WorkbasketDualListComponent implements OnInit, OnChanges {
+export class WorkbasketDualListComponent implements OnInit {
   @Input() distributionTargets: WorkbasketSummary[];
   @Input() distributionTargetsSelected: WorkbasketSummary[];
   @Output() performDualListFilter = new EventEmitter<{ filterBy: Filter, side: Side }>();
@@ -27,11 +27,6 @@ export class WorkbasketDualListComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.sideNumber = this.side === Side.LEFT ? 0 : 1;
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    console.log(this.distributionTargets, this.distributionTargetsSelected);
-    // this.distributionTargets = this.distributionTargets.map(item => ({ ...item, selected: false }));
   }
 
   selectAll(selected: boolean) {
