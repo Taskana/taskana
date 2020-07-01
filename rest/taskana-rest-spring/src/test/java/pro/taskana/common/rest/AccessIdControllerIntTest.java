@@ -62,6 +62,17 @@ class AccessIdControllerIntTest {
   }
 
   @Test
+  void should_returnEmptyResults_ifInvalidCharacterIsUsedInCondition() {
+    ResponseEntity<AccessIdListResource> response =
+        TEMPLATE.exchange(
+            restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=ksc-teamleads,cn=groups",
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
+            ParameterizedTypeReference.forType(AccessIdListResource.class));
+    assertThat(response.getBody()).isNotNull().isEmpty();
+  }
+
+  @Test
   void testGetMatches() {
     ResponseEntity<List<AccessIdRepresentationModel>> response =
         TEMPLATE.exchange(
@@ -126,6 +137,23 @@ class AccessIdControllerIntTest {
             "cn=monitor-users,cn=groups,OU=Test,O=TASKANA",
             "cn=Organisationseinheit KSC 2,"
                 + "cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA");
+  }
+
+  @Test
+  void should_returnBadRequest_ifAccessIdOfUserContainsInvalidCharacter() {
+    ThrowingCallable call =
+        () ->
+            TEMPLATE.exchange(
+                restHelper.toUrl(Mapping.URL_ACCESSID_GROUPS) + "?access-id=teamlead-2,cn=users",
+                HttpMethod.GET,
+                restHelper.defaultRequest(),
+                ParameterizedTypeReference.forType(AccessIdListResource.class));
+
+    assertThatThrownBy(call)
+        .isInstanceOf(HttpClientErrorException.class)
+        .hasMessageContaining("The accessId is invalid")
+        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
   @Test

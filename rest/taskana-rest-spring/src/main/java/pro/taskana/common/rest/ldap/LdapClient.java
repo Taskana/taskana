@@ -17,9 +17,9 @@ import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.AbstractContextMapper;
 import org.springframework.ldap.filter.AndFilter;
 import org.springframework.ldap.filter.EqualsFilter;
-import org.springframework.ldap.filter.LikeFilter;
 import org.springframework.ldap.filter.OrFilter;
 import org.springframework.ldap.filter.WhitespaceWildcardsFilter;
+import org.springframework.ldap.support.LdapNameBuilder;
 import org.springframework.stereotype.Component;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -191,7 +191,18 @@ public class LdapClient {
 
     final AndFilter andFilter = new AndFilter();
     andFilter.and(new EqualsFilter(getGroupSearchFilterName(), getGroupSearchFilterValue()));
-    andFilter.and(new LikeFilter(getGroupsOfUser(), "*" + accessId + "*"));
+    final OrFilter orFilter = new OrFilter();
+    orFilter.or(new EqualsFilter(getGroupsOfUser(), accessId));
+    orFilter.or(
+        new EqualsFilter(
+            getGroupsOfUser(),
+            LdapNameBuilder.newInstance()
+                .add(getBaseDn())
+                .add(getUserSearchBase())
+                .add("uid", accessId)
+                .build()
+                .toString()));
+    andFilter.and(orFilter);
 
     String[] userAttributesToReturn = {getUserIdAttribute(), getGroupNameAttribute()};
 
