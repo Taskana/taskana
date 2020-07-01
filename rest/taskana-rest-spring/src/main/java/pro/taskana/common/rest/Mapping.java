@@ -30,9 +30,8 @@ public final class Mapping {
   public static final String URL_VERSION = PRE + "version";
   public static final String URL_TASKS = PRE + "tasks";
   public static final String URL_TASKS_ID = URL_TASKS + "/{taskId}";
-  public static final String URL_TASK_GET_POST_COMMENTS = URL_TASKS_ID + "/comments";
-  public static final String URL_TASK_COMMENTS = URL_TASKS + "/comments";
-  public static final String URL_TASK_COMMENT = URL_TASK_COMMENTS + "/{taskCommentId}";
+  public static final String URL_TASK_COMMENTS = URL_TASKS_ID + "/comments";
+  public static final String URL_TASK_COMMENT = URL_TASKS + "/comments/{taskCommentId}";
   public static final String URL_TASKS_ID_CLAIM = URL_TASKS_ID + "/claim";
   public static final String URL_TASKS_ID_SELECT_AND_CLAIM = URL_TASKS + "/select-and-claim";
   public static final String URL_TASKS_ID_COMPLETE = URL_TASKS_ID + "/complete";

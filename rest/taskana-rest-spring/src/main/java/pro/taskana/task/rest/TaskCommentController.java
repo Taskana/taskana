@@ -80,7 +80,7 @@ public class TaskCommentController {
     return response;
   }
 
-  @GetMapping(path = Mapping.URL_TASK_GET_POST_COMMENTS)
+  @GetMapping(path = Mapping.URL_TASK_COMMENTS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskanaPagedModel<TaskCommentRepresentationModel>> getTaskComments(
       @PathVariable String taskId,
@@ -168,7 +168,7 @@ public class TaskCommentController {
     return result;
   }
 
-  @PostMapping(path = Mapping.URL_TASK_GET_POST_COMMENTS)
+  @PostMapping(path = Mapping.URL_TASK_COMMENTS)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskCommentRepresentationModel> createTaskComment(
       @PathVariable String taskId,

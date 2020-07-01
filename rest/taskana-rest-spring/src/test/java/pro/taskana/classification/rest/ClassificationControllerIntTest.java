@@ -155,6 +155,28 @@ class ClassificationControllerIntTest {
 
   @Test
   @DirtiesContext
+  void should_ThrowNotAuthorized_WhenUserIsNotInRoleAdminOrBusinessAdmin_whileCreating() {
+    String newClassification =
+        "{\"classificationId\":\"\",\"category\":\"MANUAL\","
+            + "\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS\","
+            + "\"name\":\"new classification\",\"type\":\"TASK\"}";
+
+    ThrowingCallable httpCall =
+        () ->
+            template.exchange(
+                restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
+                HttpMethod.POST,
+                new HttpEntity<>(newClassification, restHelper.getHeadersUser_1_1()),
+                ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
+
+    assertThatThrownBy(httpCall)
+        .isInstanceOf(HttpClientErrorException.class)
+        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.FORBIDDEN);
+  }
+
+  @Test
+  @DirtiesContext
   void testCreateClassificationWithParentId() {
     String newClassification =
         "{\"classificationId\":\"\",\"category\":\"MANUAL\","

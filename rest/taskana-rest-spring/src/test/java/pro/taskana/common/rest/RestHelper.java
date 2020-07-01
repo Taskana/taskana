@@ -28,6 +28,8 @@ public class RestHelper {
       "Basic YnVzaW5lc3NhZG1pbjpidXNpbmVzc2FkbWlu";
   public static final String AUTHORIZATION_USER_1_1 = "Basic dXNlci0xLTE6dXNlci0xLTE=";
   public static final String AUTHORIZATION_USER_1_2 = "Basic dXNlci0xLTI6dXNlci0xLTI=";
+  public static final String AUTHORIZATION_USER_2_1 = "Basic dXNlci0yLTE6dXNlci0yLTE=";
+  public static final String AUTHORIZATION_USER_B_1 = "Basic dXNlci1iLTE6dXNlci1iLTE=";
 
   public static final RestTemplate TEMPLATE = getRestTemplate();
 
@@ -83,6 +85,20 @@ public class RestHelper {
   public HttpHeaders getHeadersUser_1_1() {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Authorization", AUTHORIZATION_USER_1_1);
+    headers.add("Content-Type", "application/json");
+    return headers;
+  }
+
+  public HttpHeaders getHeadersUser_2_1() {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Authorization", AUTHORIZATION_USER_2_1);
+    headers.add("Content-Type", "application/json");
+    return headers;
+  }
+
+  public HttpHeaders getHeadersUser_b_1() {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Authorization", AUTHORIZATION_USER_B_1);
     headers.add("Content-Type", "application/json");
     return headers;
   }
