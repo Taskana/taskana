@@ -73,7 +73,7 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
   @Select(WorkbasketSelectors.workbasketDistributionTargets)
   workbasketDistributionTargets$: Observable<WorkbasketDistributionTargets>;
 
-  @Select(WorkbasketSelectors.workbasketsSummaryRepresentation)
+  @Select(WorkbasketSelectors.allWorkbasketsSummaryRepresentation)
   workbasketsSummaryRepresentation$: Observable<WorkbasketSummaryRepresentation>;
 
   destroy$ = new Subject<void>();
@@ -146,24 +146,29 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
       TaskanaQueryParameters.pageSize = this.cards + this.distributionTargetsSelected.length;
     }
 
-    /*
-    // this.store.dispatch(new GetWorkbasketsSummary));
+    /* TODO: Implement this into NGXS
+    this.store.dispatch(new GetAllWorkbasketsSummary(true));
     this.workbasketsSummaryRepresentation$.subscribe(workbasketsSummaryRepresentation => {
-      if (TaskanaQueryParameters.page === 1) {
-        this.distributionTargetsLeft = [];
-        this.page = workbasketsSummaryRepresentation.page;
+      if (typeof workbasketsSummaryRepresentation !== 'undefined') {
+        console.log(workbasketsSummaryRepresentation);
+        if (TaskanaQueryParameters.page === 1) {
+          this.distributionTargetsLeft = [];
+          this.page = workbasketsSummaryRepresentation.page;
+        }
+        if (side === this.side.LEFT) {
+          this.distributionTargetsLeft.push(...workbasketsSummaryRepresentation.workbaskets);
+        } else if (side === this.side.RIGHT) {
+          this.distributionTargetsRight = Object.assign([], workbasketsSummaryRepresentation.workbaskets);
+        } else {
+          let copy = [...workbasketsSummaryRepresentation.workbaskets];
+          copy = copy.map(item => ({ ...item, selected: false }));
+
+          this.distributionTargetsLeft.push(...copy);
+          this.distributionTargetsRight = [...copy];
+          this.distributionTargetsClone = [...copy];
+        }
+        this.onRequest(true);
       }
-      if (side === this.side.LEFT) {
-        this.distributionTargetsLeft.push(...workbasketsSummaryRepresentation.workbaskets);
-      } else if (side === this.side.RIGHT) {
-        this.distributionTargetsRight = Object.assign([], workbasketsSummaryRepresentation.workbaskets);
-      } else {
-        const copy = [...workbasketsSummaryRepresentation.workbaskets];
-        this.distributionTargetsLeft.push(...copy);
-        this.distributionTargetsRight = Object.assign([], workbasketsSummaryRepresentation.workbaskets);
-        this.distributionTargetsClone = Object.assign([], workbasketsSummaryRepresentation.workbaskets);
-      }
-      this.onRequest(true);
     });
     */
     this.workbasketService.getWorkBasketsSummary(true)
@@ -201,12 +206,19 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
   }
 
   onSave() {
+    console.log(this.distributionTargetsSelectedResource._links.self.href, this.getSeletedIds());
     this.requestInProgressService.setRequestInProgress(true);
     this.store.dispatch(new UpdateWorkbasketDistributionTargets(
       this.distributionTargetsSelectedResource._links.self.href,
       this.getSeletedIds()
-    ));
-
+    )).subscribe(() => {
+      this.requestInProgressService.setRequestInProgress(false);
+      return true;
+    }, error => {
+      this.requestInProgressService.setRequestInProgress(false);
+      return false;
+    });
+    /*
     this.workbasketService.updateWorkBasketsDistributionTargets(
       this.distributionTargetsSelectedResource._links.self.href, this.getSeletedIds()
     ).subscribe(response => {
@@ -225,6 +237,7 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
       this.requestInProgressService.setRequestInProgress(false);
       return false;
     });
+    */
     return false;
   }
 

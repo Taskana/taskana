@@ -45,8 +45,13 @@ export class WorkbasketSelectors {
 
   // Workbasket Distribution Targets
   @Selector([WorkbasketState])
-  static workbasketDistributionTargets(state:WorkbasketStateModel): WorkbasketDistributionTargets {
+  static workbasketDistributionTargets(state: WorkbasketStateModel): WorkbasketDistributionTargets {
     return state.workbasketDistributionTargets;
+  }
+
+  @Selector([WorkbasketState])
+  static allWorkbasketsSummaryRepresentation(state: WorkbasketStateModel): WorkbasketSummaryRepresentation {
+    return state.allWorkbasketsSummary;
   }
 }
 
