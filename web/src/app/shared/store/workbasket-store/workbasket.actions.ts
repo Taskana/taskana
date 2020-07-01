@@ -24,8 +24,12 @@ export class GetWorkbasketsSummary {
   }
 }
 
-export class GetWorkbaskets {
+export class GetAllWorkbasketsSummary {
   static readonly type = '[Workbasket] Get all workbaskets';
+  constructor(public forceRequest: boolean = true,
+    public sortBy: string = TaskanaQueryParameters.parameters.KEY,
+    public order: string = Direction.ASC) {
+  }
 }
 
 export class SelectWorkbasket {

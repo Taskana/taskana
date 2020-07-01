@@ -7,6 +7,7 @@ import { Workbasket } from '../../models/workbasket';
 import { CopyWorkbasket,
   CreateWorkbasket,
   DeselectWorkbasket,
+  GetAllWorkbasketsSummary,
   GetWorkbasketAccessItems,
   GetWorkbasketDistributionTargets,
   GetWorkbasketsSummary,
@@ -25,8 +26,6 @@ import { NOTIFICATION_TYPES } from '../../models/notifications';
 import { NotificationService } from '../../services/notifications/notification.service';
 import { WorkbasketAccessItemsRepresentation } from '../../models/workbasket-access-items-representation';
 import { WorkbasketDistributionTargets } from '../../models/workbasket-distribution-targets';
-import { TaskanaQueryParameters } from '../../util/query-parameters';
-import { Direction } from '../../models/sorting';
 
 class InitializeStore {
   static readonly type = '[Workbasket] Initializing state';
@@ -53,6 +52,16 @@ export class WorkbasketState implements NgxsAfterBootstrap {
         );
       })
     );
+  }
+
+  @Action(GetAllWorkbasketsSummary)
+  getAllWorkbasketsSummary(ctx: StateContext<WorkbasketStateModel>, action: GetAllWorkbasketsSummary): Observable<any> {
+    return this.workbasketService.getWorkBasketsSummary(action.forceRequest, action.sortBy, action.order)
+      .pipe(take(1), tap(allWorkbasketsSummary => {
+        ctx.patchState({
+          allWorkbasketsSummary
+        });
+      }));
   }
 
   @Action(SelectWorkbasket)
@@ -243,7 +252,13 @@ export class WorkbasketState implements NgxsAfterBootstrap {
     action: UpdateWorkbasketDistributionTargets
   ): Observable<any> {
     return this.workbasketService.updateWorkBasketsDistributionTargets(action.url, action.distributionTargetsIds).pipe(take(1), tap(
-      () => {
+      updatedWorkbasketsDistributionTargets => {
+        this.notificationService.showToast(
+          NOTIFICATION_TYPES.SUCCESS_ALERT_8,
+          new Map<string, string>([['workbasketName', ctx.getState().selectedWorkbasket.name]])
+        );
+      }, error => {
+        this.notificationService.triggerError(NOTIFICATION_TYPES.SAVE_ERR_3, error);
       }
     ));
   }
@@ -255,6 +270,7 @@ export class WorkbasketState implements NgxsAfterBootstrap {
 
 export interface WorkbasketStateModel {
   workbasketsSummary: WorkbasketSummaryRepresentation,
+  allWorkbasketsSummary: WorkbasketSummaryRepresentation,
   workbasketsSummaryParams: {},
   selectedWorkbasket: Workbasket,
   workbasketCopy: Workbasket,
