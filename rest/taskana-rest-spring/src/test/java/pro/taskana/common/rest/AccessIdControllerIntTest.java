@@ -94,13 +94,12 @@ class AccessIdControllerIntTest {
   @Test
   void testBadRequestWhenSearchForIsTooShort() {
     ThrowingCallable httpCall =
-        () -> {
-          TEMPLATE.exchange(
-              restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=al",
-              HttpMethod.GET,
-              restHelper.defaultRequest(),
-              ParameterizedTypeReference.forType(List.class));
-        };
+        () ->
+            TEMPLATE.exchange(
+                restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=al",
+                HttpMethod.GET,
+                restHelper.defaultRequest(),
+                ParameterizedTypeReference.forType(List.class));
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
         .hasMessageContaining("Minimum searchFor length =")
@@ -111,7 +110,7 @@ class AccessIdControllerIntTest {
   @Test
   void should_returnAccessIdsOfGroupsTheAccessIdIsMemberOf_ifAccessIdOfUserIsGiven() {
     ResponseEntity<List<AccessIdRepresentationModel>> response =
-        template.exchange(
+        TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_ACCESSID_GROUPS) + "?access-id=teamlead-2",
             HttpMethod.GET,
             restHelper.defaultRequest(),
@@ -132,7 +131,7 @@ class AccessIdControllerIntTest {
   @Test
   void should_returnAccessIdsOfGroupsTheAccessIdIsMemberOf_ifAccessIdOfGroupIsGiven() {
     ResponseEntity<List<AccessIdRepresentationModel>> response =
-        template.exchange(
+        TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_ACCESSID_GROUPS)
                 + "?access-id=cn=Organisationseinheit KSC 1,"
                 + "cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA",
@@ -151,7 +150,7 @@ class AccessIdControllerIntTest {
   void should_throwNotAuthorizedException_ifCallerOfGroupRetrievalIsNotAdminOrBusinessAdmin() {
     ThrowingCallable call =
         () ->
-            template.exchange(
+            TEMPLATE.exchange(
                 restHelper.toUrl(Mapping.URL_ACCESSID_GROUPS) + "?access-id=teamlead-2",
                 HttpMethod.GET,
                 new HttpEntity<>(restHelper.getHeadersUser_1_1()),
@@ -167,7 +166,7 @@ class AccessIdControllerIntTest {
   void should_throwNotAuthorizedException_ifCallerOfValidationIsNotAdminOrBusinessAdmin() {
     ThrowingCallable call =
         () ->
-            template.exchange(
+            TEMPLATE.exchange(
                 restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=al",
                 HttpMethod.GET,
                 new HttpEntity<>(restHelper.getHeadersUser_1_1()),
