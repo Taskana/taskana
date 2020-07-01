@@ -95,7 +95,7 @@ class TaskCommentControllerRestDocumentation extends BaseRestDocumentation {
         .perform(
             RestDocumentationRequestBuilders.get(
                     restHelper.toUrl(
-                        Mapping.URL_TASK_GET_POST_COMMENTS,
+                        Mapping.URL_TASK_COMMENTS,
                         "TKI:000000000000000000000000000000000000"))
                 .accept(MediaTypes.HAL_JSON)
                 .header("Authorization", ADMIN_CREDENTIALS))
@@ -172,7 +172,7 @@ class TaskCommentControllerRestDocumentation extends BaseRestDocumentation {
             .perform(
                 RestDocumentationRequestBuilders.post(
                         restHelper.toUrl(
-                            Mapping.URL_TASK_GET_POST_COMMENTS,
+                            Mapping.URL_TASK_COMMENTS,
                             "TKI:000000000000000000000000000000000000"))
                     .contentType(MediaTypes.HAL_JSON)
                     .content(createTaskCommentContent)

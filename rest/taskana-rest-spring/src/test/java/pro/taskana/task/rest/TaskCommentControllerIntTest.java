@@ -7,7 +7,6 @@ import java.time.Instant;
 import java.util.Comparator;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -64,7 +63,6 @@ class TaskCommentControllerIntTest {
         .isEqualTo(HttpStatus.NOT_FOUND);
   }
 
-  @Disabled("Disabled until Authorization check is up!")
   @Test
   void should_FailToReturnTaskComments_When_TaskIstNotVisible() {
 
@@ -88,8 +86,7 @@ class TaskCommentControllerIntTest {
   void should_ReturnSortedAndOrederedTaskCommentsSortedByModified_When_UsingSortAndOrderParams() {
 
     String url =
-        restHelper.toUrl(
-            Mapping.URL_TASK_GET_POST_COMMENTS, "TKI:000000000000000000000000000000000000");
+        restHelper.toUrl(Mapping.URL_TASK_COMMENTS, "TKI:000000000000000000000000000000000000");
 
     ResponseEntity<TaskanaPagedModel<TaskCommentRepresentationModel>>
         getTaskCommentsSortedByModifiedOrderedByDescendingResponse =
@@ -148,8 +145,7 @@ class TaskCommentControllerIntTest {
   void should_ThrowException_When_UsingInvalidSortParam() {
 
     String url =
-        restHelper.toUrl(
-            Mapping.URL_TASK_GET_POST_COMMENTS, "TKI:000000000000000000000000000000000000");
+        restHelper.toUrl(Mapping.URL_TASK_COMMENTS, "TKI:000000000000000000000000000000000000");
 
     ThrowingCallable httpCall =
         () -> {
@@ -164,7 +160,6 @@ class TaskCommentControllerIntTest {
         .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
-  @Disabled("Disabled until Authorization check is up!")
   @Test
   void should_FailToReturnTaskComment_When_TaskIstNotVisible() {
 
@@ -184,7 +179,6 @@ class TaskCommentControllerIntTest {
         .isEqualTo(HttpStatus.FORBIDDEN);
   }
 
-  @Disabled("Disabled until Authorization check is up!")
   @Test
   void should_FailToCreateTaskComment_When_TaskIsNotVisible() {
 
@@ -197,10 +191,10 @@ class TaskCommentControllerIntTest {
         () -> {
           template.exchange(
               restHelper.toUrl(
-                  Mapping.URL_TASK_GET_POST_COMMENTS, "TKI:000000000000000000000000000000000000"),
+                  Mapping.URL_TASK_COMMENTS, "TKI:000000000000000000000000000000000000"),
               HttpMethod.POST,
               new HttpEntity<>(
-                  taskCommentRepresentationModelToCreate, restHelper.getHeadersUser_1_1()),
+                  taskCommentRepresentationModelToCreate, restHelper.getHeadersUser_b_1()),
               ParameterizedTypeReference.forType(TaskCommentRepresentationModel.class));
         };
     assertThatThrownBy(httpCall)
@@ -219,7 +213,7 @@ class TaskCommentControllerIntTest {
     ThrowingCallable httpCall =
         () -> {
           template.exchange(
-              restHelper.toUrl(Mapping.URL_TASK_GET_POST_COMMENTS, "DefinatelyNotExistingId"),
+              restHelper.toUrl(Mapping.URL_TASK_COMMENTS, "DefinatelyNotExistingId"),
               HttpMethod.POST,
               new HttpEntity<>(
                   taskCommentRepresentationModelToCreate, restHelper.getHeadersAdmin()),
@@ -262,7 +256,6 @@ class TaskCommentControllerIntTest {
         .isEqualTo(HttpStatus.CONFLICT);
   }
 
-  @Disabled("Disabled until Authorization check is up!")
   @Test
   void should_FailToUpdateTaskComment_When_UserHasNoAuthorization() {
     String url =
@@ -329,19 +322,18 @@ class TaskCommentControllerIntTest {
         .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
-  @Disabled("Disabled until Authorization check is up!")
   @Test
   void should_FailToDeleteTaskComment_When_UserHasNoAuthorization() {
 
     ResponseEntity<TaskanaPagedModel<TaskCommentRepresentationModel>>
-        getTaskCommentsBeforeDeleteionResponse =
+        getTaskCommentsBeforeDeletionResponse =
             template.exchange(
                 restHelper.toUrl(
                     Mapping.URL_TASK_COMMENTS, "TKI:000000000000000000000000000000000001"),
                 HttpMethod.GET,
-                new HttpEntity<String>(restHelper.getHeadersAdmin()),
+                new HttpEntity<String>(restHelper.getHeadersUser_1_2()),
                 TASK_COMMENT_PAGE_MODEL_TYPE);
-    assertThat(getTaskCommentsBeforeDeleteionResponse.getBody().getContent()).hasSize(2);
+    assertThat(getTaskCommentsBeforeDeletionResponse.getBody().getContent()).hasSize(2);
 
     String url =
         restHelper.toUrl(Mapping.URL_TASK_COMMENT, "TCI:000000000000000000000000000000000004");
@@ -355,6 +347,8 @@ class TaskCommentControllerIntTest {
               ParameterizedTypeReference.forType(TaskCommentRepresentationModel.class));
         };
     assertThatThrownBy(httpCall)
+        .isInstanceOf(HttpClientErrorException.class)
+        .hasMessageContaining("TaskComment creator and current user must match.")
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
         .isEqualTo(HttpStatus.FORBIDDEN);
   }

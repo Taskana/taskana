@@ -795,6 +795,23 @@ class TaskControllerIntTest {
         .hasMessageContaining("409");
   }
 
+  @Test
+  void should_ThrowNotAuthorized_When_UserHasNoAuthorizationOnTask() {
+    String url = restHelper.toUrl(Mapping.URL_TASKS_ID, "TKI:000000000000000000000000000000000000");
+
+    ThrowingCallable httpCall =
+        () ->
+            template.exchange(
+                url,
+                HttpMethod.GET,
+                new HttpEntity<String>(restHelper.getHeadersUser_b_1()),
+                ParameterizedTypeReference.forType(TaskRepresentationModel.class));
+
+    assertThatThrownBy(httpCall)
+        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.FORBIDDEN);
+  }
+
   private TaskRepresentationModel getTaskResourceSample() {
     ClassificationSummaryRepresentationModel classificationResource =
         new ClassificationSummaryRepresentationModel();
