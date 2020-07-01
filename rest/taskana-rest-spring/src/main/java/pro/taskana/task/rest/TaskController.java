@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.PagedModel.PageMetadata;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
@@ -92,12 +93,11 @@ public class TaskController extends AbstractPagingController {
 
   private static final String INDEFINITE = "";
 
-  private TaskService taskService;
+  private final TaskService taskService;
+  private final TaskRepresentationModelAssembler taskRepresentationModelAssembler;
+  private final TaskSummaryRepresentationModelAssembler taskSummaryRepresentationModelAssembler;
 
-  private TaskRepresentationModelAssembler taskRepresentationModelAssembler;
-
-  private TaskSummaryRepresentationModelAssembler taskSummaryRepresentationModelAssembler;
-
+  @Autowired
   TaskController(
       TaskService taskService,
       TaskRepresentationModelAssembler taskRepresentationModelAssembler,
@@ -171,8 +171,7 @@ public class TaskController extends AbstractPagingController {
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> selectAndClaimTask(
       @RequestParam MultiValueMap<String, String> params)
-      throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
-          NotAuthorizedException, InvalidArgumentException {
+      throws InvalidOwnerException, NotAuthorizedException, InvalidArgumentException {
 
     LOGGER.debug("Entry to selectAndClaimTask");
 
