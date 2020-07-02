@@ -47,6 +47,22 @@ class AccessIdControllerIntTest {
   }
 
   @Test
+  void testQueryUserByDn() {
+    ResponseEntity<AccessIdListResource> response =
+        TEMPLATE.exchange(
+            restHelper.toUrl(Mapping.URL_ACCESSID)
+                + "?search-for=uid=teamlead-1,cn=users,OU=Test,O=TASKANA",
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
+            ParameterizedTypeReference.forType(AccessIdListResource.class));
+    assertThat(response.getBody())
+        .isNotNull()
+        .extracting(AccessIdRepresentationModel::getAccessId)
+        .usingElementComparator(String.CASE_INSENSITIVE_ORDER)
+        .containsExactly("teamlead-1");
+  }
+
+  @Test
   void testQueryGroupsByCn() {
     ResponseEntity<AccessIdListResource> response =
         TEMPLATE.exchange(

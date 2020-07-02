@@ -42,11 +42,10 @@ class LdapClientTest {
     setUpEnvMock();
     cut.init();
 
-    cut.searchGroupByDn("cn=developersgroup,ou=groups,o=taskanatest");
+    cut.searchAccessIdByDn("cn=developersgroup,ou=groups,o=taskanatest");
 
     verify(ldapTemplate)
-        .lookup(
-            eq("cn=developersgroup,ou=groups"), any(), any(LdapClient.GroupContextMapper.class));
+        .lookup(eq("cn=developersgroup,ou=groups"), any(), any(LdapClient.DnContextMapper.class));
   }
 
   @Test
