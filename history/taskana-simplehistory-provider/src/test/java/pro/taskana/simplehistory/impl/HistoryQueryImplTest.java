@@ -5,7 +5,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.validateMockitoUsage;
 
-import java.sql.SQLException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +23,7 @@ import pro.taskana.simplehistory.impl.mappings.HistoryQueryMapper;
  * @author BV
  */
 @ExtendWith(MockitoExtension.class)
-public class HistoryQueryImplTest {
+class HistoryQueryImplTest {
 
   private HistoryQueryImpl historyQueryImpl;
 
@@ -33,12 +32,12 @@ public class HistoryQueryImplTest {
   @Mock private HistoryQueryMapper historyQueryMock;
 
   @BeforeEach
-  public void setup() {
+  void setup() {
     historyQueryImpl = new HistoryQueryImpl(taskanaHistoryEngineMock, historyQueryMock);
   }
 
   @Test
-  public void testShouldReturnList() throws SQLException {
+  void testShouldReturnList() throws Exception {
     List<HistoryEventImpl> returnList = new ArrayList<>();
     returnList.add(createHistoryEvent("abcd", "T22", "car", "BV", "this was important", null));
     TimeInterval interval = new TimeInterval(Instant.now().minusNanos(1000), Instant.now());

@@ -32,8 +32,7 @@ class TaskEngineAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void should_RunAsAdminOnlyTemorarily_When_RunAsAdminMethodIsCalled()
-      throws NoSuchFieldException, IllegalAccessException {
+  void should_RunAsAdminOnlyTemorarily_When_RunAsAdminMethodIsCalled() throws Exception {
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN)).isTrue();
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isFalse();
 
@@ -55,8 +54,7 @@ class TaskEngineAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1", groups = "businessadmin")
   @Test
-  void should_ConfirmBusinessAdminRole_When_AccessIdIsBusinessAdmin()
-      throws NotAuthorizedException {
+  void should_ConfirmBusinessAdminRole_When_AccessIdIsBusinessAdmin() throws Exception {
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN)).isTrue();
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isFalse();
     taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN);
@@ -64,7 +62,7 @@ class TaskEngineAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1", groups = "taskadmin")
   @Test
-  void should_ConfirmTaskAdminRole_When_AccessIdIsTaskAdmin() throws NotAuthorizedException {
+  void should_ConfirmTaskAdminRole_When_AccessIdIsTaskAdmin() throws Exception {
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.TASK_ADMIN)).isTrue();
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isFalse();
     taskanaEngine.checkRoleMembership(TaskanaRole.TASK_ADMIN);
@@ -72,7 +70,7 @@ class TaskEngineAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1", groups = "admin")
   @Test
-  void should_ConfirmAdminRole_When_AccessIdIsAdmin() throws NotAuthorizedException {
+  void should_ConfirmAdminRole_When_AccessIdIsAdmin() throws Exception {
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN)).isFalse();
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isTrue();
     taskanaEngine.checkRoleMembership(TaskanaRole.ADMIN);

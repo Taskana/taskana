@@ -30,7 +30,7 @@ class GetWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void testGetWorkbasketById() throws NotAuthorizedException, WorkbasketNotFoundException {
+  void testGetWorkbasketById() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
     Workbasket workbasket =
@@ -57,7 +57,7 @@ class GetWorkbasketAccTest extends AbstractAccTest {
   @WithAccessId(user = "taskadmin")
   @TestTemplate
   void should_ReturnWorkbasketByKeyAndDomain_When_NoExplicitPermissionButUserHasAdministrativeRole()
-      throws NotAuthorizedException, WorkbasketNotFoundException {
+      throws Exception {
 
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
@@ -73,7 +73,7 @@ class GetWorkbasketAccTest extends AbstractAccTest {
   @WithAccessId(user = "taskadmin")
   @TestTemplate
   void should_ReturnWorkbasketById_When_NoExplicitPermissionsButUserIsInAdministrativeRole()
-      throws NotAuthorizedException, WorkbasketNotFoundException {
+      throws Exception {
 
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
@@ -85,8 +85,7 @@ class GetWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void testGetWorkbasketByKeyAndDomain()
-      throws NotAuthorizedException, WorkbasketNotFoundException {
+  void testGetWorkbasketByKeyAndDomain() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
     Workbasket workbasket = workbasketService.getWorkbasket("USER-1-2", "DOMAIN_A");
@@ -132,7 +131,7 @@ class GetWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void testGetWorkbasketAsSummary() throws NotAuthorizedException, WorkbasketNotFoundException {
+  void testGetWorkbasketAsSummary() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
     WorkbasketSummary workbasketSummary =

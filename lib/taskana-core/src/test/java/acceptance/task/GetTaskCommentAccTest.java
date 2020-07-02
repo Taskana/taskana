@@ -9,25 +9,19 @@ import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
-import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.TaskComment;
 
 @ExtendWith(JaasExtension.class)
-public class GetTaskCommentAccTest extends AbstractAccTest {
-
-  GetTaskCommentAccTest() {
-    super();
-  }
+class GetTaskCommentAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_ReturnTaskComments_For_TaskId() throws NotAuthorizedException, TaskNotFoundException {
+  void should_ReturnTaskComments_For_TaskId() throws Exception {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
@@ -39,8 +33,7 @@ public class GetTaskCommentAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void should_ReturnEmptyList_When_TaskCommentsDontExist()
-      throws NotAuthorizedException, TaskNotFoundException {
+  void should_ReturnEmptyList_When_TaskCommentsDontExist() throws Exception {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
@@ -62,9 +55,7 @@ public class GetTaskCommentAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_ReturnTaskComment_For_TaskCommentId()
-      throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException,
-          InvalidArgumentException {
+  void should_ReturnTaskComment_For_TaskCommentId() throws Exception {
 
     TaskService taskService = taskanaEngine.getTaskService();
 

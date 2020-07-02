@@ -11,13 +11,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistException;
-import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.internal.models.ClassificationImpl;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 
@@ -36,9 +34,7 @@ class CreateClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testCreateMasterClassification()
-      throws ClassificationAlreadyExistException, ClassificationNotFoundException,
-          NotAuthorizedException, DomainNotFoundException, InvalidArgumentException {
+  void testCreateMasterClassification() throws Exception {
     long amountOfClassificationsBefore = classificationService.createClassificationQuery().count();
     Classification classification = classificationService.newClassification("Key0", "", "TASK");
     classification.setIsValidInDomain(true);
@@ -60,9 +56,7 @@ class CreateClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testCreateClassificationWithMasterCopy()
-      throws ClassificationAlreadyExistException, ClassificationNotFoundException,
-          NotAuthorizedException, DomainNotFoundException, InvalidArgumentException {
+  void testCreateClassificationWithMasterCopy() throws Exception {
     final long countClassificationsBefore =
         classificationService.createClassificationQuery().count();
     Classification classification =
@@ -107,9 +101,7 @@ class CreateClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testCreateClassificationWithExistingMaster()
-      throws DomainNotFoundException, ClassificationAlreadyExistException, NotAuthorizedException,
-          InvalidArgumentException {
+  void testCreateClassificationWithExistingMaster() throws Exception {
 
     classificationService.createClassification(
         classificationService.newClassification("Key0815", "", "TASK"));
@@ -128,7 +120,7 @@ class CreateClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testCreateChildInDomainAndCopyInMaster() throws TaskanaException {
+  void testCreateChildInDomainAndCopyInMaster() throws Exception {
     Classification parent = classificationService.newClassification("Key0816", "DOMAIN_A", "TASK");
     Classification actualParent = classificationService.createClassification(parent);
     assertThat(actualParent).isNotNull();
@@ -166,7 +158,7 @@ class CreateClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testCreateClassificationAlreadyExisting() throws TaskanaException {
+  void testCreateClassificationAlreadyExisting() throws Exception {
     Classification classification = classificationService.newClassification("Key3", "", "TASK");
     Classification classificationCreated =
         classificationService.createClassification(classification);

@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,24 +13,17 @@ import java.util.List;
 import javax.sql.DataSource;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.classification.api.ClassificationService;
-import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistException;
-import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.classification.internal.models.ClassificationImpl;
-import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.common.api.TimeInterval;
-import pro.taskana.common.api.exceptions.ConcurrencyException;
-import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.TaskanaEngineTestConfiguration;
 import pro.taskana.sampledata.SampleDataGenerator;
@@ -41,7 +33,7 @@ import pro.taskana.sampledata.SampleDataGenerator;
  *
  * @author BBR
  */
-public class ClassificationServiceImplIntExplicitTest {
+class ClassificationServiceImplIntExplicitTest {
 
   private static final String ID_PREFIX_CLASSIFICATION = "CLI";
 
@@ -50,40 +42,30 @@ public class ClassificationServiceImplIntExplicitTest {
   private DataSource dataSource;
   private ClassificationService classificationService;
   private TaskanaEngineConfiguration taskanaEngineConfiguration;
-  private TaskanaEngine taskanaEngine;
-  private TaskanaEngineImpl taskanaEngineImpl;
-
-  @BeforeAll
-  public static void resetDb() {
-    DataSource ds = TaskanaEngineTestConfiguration.getDataSource();
-    String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
-  }
+  private TaskanaEngineImpl taskanaEngine;
 
   @BeforeEach
-  public void setup() throws SQLException {
+  void setup() throws Exception {
     dataSource = TaskanaEngineTestConfiguration.getDataSource();
     String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
     taskanaEngineConfiguration =
         new TaskanaEngineConfiguration(dataSource, false, false, schemaName);
-    taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
+    taskanaEngine = (TaskanaEngineImpl) taskanaEngineConfiguration.buildTaskanaEngine();
+    taskanaEngine.setConnectionManagementMode(ConnectionManagementMode.EXPLICIT);
     classificationService = taskanaEngine.getClassificationService();
-    taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
-    taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.EXPLICIT);
     SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
     sampleDataGenerator.clearDb();
   }
 
   @AfterEach
-  public void cleanUp() throws SQLException {
-    taskanaEngineImpl.setConnection(null);
+  void cleanUp() throws Exception {
+    taskanaEngine.setConnection(null);
   }
 
   @Test
-  public void testInsertClassification()
-      throws SQLException, ClassificationNotFoundException, ClassificationAlreadyExistException,
-          NotAuthorizedException, DomainNotFoundException, InvalidArgumentException {
+  void testInsertClassification() throws Exception {
     try (Connection connection = dataSource.getConnection()) {
-      taskanaEngineImpl.setConnection(connection);
+      taskanaEngine.setConnection(connection);
 
       final String domain = "DOMAIN_A";
       final String key = "dummy-key";
@@ -128,11 +110,9 @@ public class ClassificationServiceImplIntExplicitTest {
   }
 
   @Test
-  public void testFindAllClassifications()
-      throws SQLException, ClassificationAlreadyExistException, NotAuthorizedException,
-          DomainNotFoundException, InvalidArgumentException {
+  void testFindAllClassifications() throws Exception {
     try (Connection connection = dataSource.getConnection()) {
-      taskanaEngineImpl.setConnection(connection);
+      taskanaEngine.setConnection(connection);
       Classification classification0 = this.createNewClassificationWithUniqueKey("", "TASK");
       classificationService.createClassification(classification0);
       Classification classification1 = this.createNewClassificationWithUniqueKey("", "TASK");
@@ -147,13 +127,10 @@ public class ClassificationServiceImplIntExplicitTest {
   }
 
   @Test
-  public void testModifiedClassification()
-      throws SQLException, ClassificationAlreadyExistException, ClassificationNotFoundException,
-          NotAuthorizedException, ConcurrencyException, DomainNotFoundException,
-          InvalidArgumentException {
+  void testModifiedClassification() throws Exception {
 
     try (Connection connection = dataSource.getConnection()) {
-      taskanaEngineImpl.setConnection(connection);
+      taskanaEngine.setConnection(connection);
       Classification classification = this.createNewClassificationWithUniqueKey("DOMAIN_A", "TASK");
       connection.commit();
       classification = classificationService.createClassification(classification);
@@ -171,11 +148,9 @@ public class ClassificationServiceImplIntExplicitTest {
   }
 
   @Test
-  public void testInsertAndClassificationQuery()
-      throws SQLException, ClassificationAlreadyExistException, NotAuthorizedException,
-          DomainNotFoundException, InvalidArgumentException {
+  void testInsertAndClassificationQuery() throws Exception {
     try (Connection connection = dataSource.getConnection()) {
-      taskanaEngineImpl.setConnection(connection);
+      taskanaEngine.setConnection(connection);
       Classification classification = this.createNewClassificationWithUniqueKey("DOMAIN_A", "TASK");
       classificationService.createClassification(classification);
       List<ClassificationSummary> list =
@@ -189,12 +164,9 @@ public class ClassificationServiceImplIntExplicitTest {
   }
 
   @Test
-  public void testUpdateAndClassificationQuery()
-      throws NotAuthorizedException, SQLException, ClassificationAlreadyExistException,
-          ClassificationNotFoundException, ConcurrencyException, DomainNotFoundException,
-          InvalidArgumentException {
+  void testUpdateAndClassificationQuery() throws Exception {
     try (Connection connection = dataSource.getConnection()) {
-      taskanaEngineImpl.setConnection(connection);
+      taskanaEngine.setConnection(connection);
       Classification classification = this.createNewClassificationWithUniqueKey("DOMAIN_A", "TASK");
       classification.setDescription("");
       classification = classificationService.createClassification(classification);
@@ -222,12 +194,9 @@ public class ClassificationServiceImplIntExplicitTest {
   }
 
   @Test
-  public void testDefaultSettingsWithClassificationQuery()
-      throws NotAuthorizedException, SQLException, ClassificationAlreadyExistException,
-          ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
-          DomainNotFoundException {
+  void testDefaultSettingsWithClassificationQuery() throws Exception {
     try (Connection connection = dataSource.getConnection()) {
-      taskanaEngineImpl.setConnection(connection);
+      taskanaEngine.setConnection(connection);
       Classification classification = this.createNewClassificationWithUniqueKey("DOMAIN_A", "TASK");
       classification = classificationService.createClassification(classification);
 

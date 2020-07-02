@@ -23,8 +23,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.monitor.api.SelectedItem;
 import pro.taskana.monitor.api.reports.CategoryReport;
@@ -53,8 +51,7 @@ class CategoryReportBuilderImplTest {
   }
 
   @Test
-  void testGetTotalNumbersOfCatgoryReport()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testGetTotalNumbersOfCatgoryReport() throws Exception {
     final List<String> workbasketIds =
         Collections.singletonList("WBI:000000000000000000000000000000000001");
     final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
@@ -110,8 +107,7 @@ class CategoryReportBuilderImplTest {
   }
 
   @Test
-  void testGetCategoryReportWithReportLineItemDefinitions()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testGetCategoryReportWithReportLineItemDefinitions() throws Exception {
     final List<String> workbasketIds =
         Collections.singletonList("WBI:000000000000000000000000000000000001");
     final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
@@ -172,8 +168,7 @@ class CategoryReportBuilderImplTest {
   }
 
   @Test
-  void testListTaskIdsOfCategoryReportForSelectedItems()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testListTaskIdsOfCategoryReportForSelectedItems() throws Exception {
     final List<String> workbasketIds =
         Collections.singletonList("WBI:000000000000000000000000000000000001");
     final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
@@ -238,8 +233,7 @@ class CategoryReportBuilderImplTest {
   }
 
   @Test
-  void testListTaskIdsForSelectedItemsIsEmptyResult()
-      throws NotAuthorizedException, InvalidArgumentException {
+  void testListTaskIdsForSelectedItemsIsEmptyResult() throws Exception {
     SelectedItem selectedItem = new SelectedItem();
     List<SelectedItem> selectedItems = Collections.singletonList(selectedItem);
     List<String> result =
@@ -248,7 +242,7 @@ class CategoryReportBuilderImplTest {
   }
 
   @Test
-  void testListCustomAttributeValuesForCustomAttributeName() throws NotAuthorizedException {
+  void testListCustomAttributeValuesForCustomAttributeName() throws Exception {
     final List<String> workbasketIds =
         Collections.singletonList("WBI:000000000000000000000000000000000001");
     final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
@@ -308,8 +302,7 @@ class CategoryReportBuilderImplTest {
   }
 
   @Test
-  void testListCustomAttributeValuesForCustomAttributeNameIsEmptyResult()
-      throws NotAuthorizedException {
+  void testListCustomAttributeValuesForCustomAttributeNameIsEmptyResult() throws Exception {
     List<String> result =
         cut.createCategoryReportBuilder()
             .workbasketIdIn(Collections.singletonList("DieGibtsSicherNed"))

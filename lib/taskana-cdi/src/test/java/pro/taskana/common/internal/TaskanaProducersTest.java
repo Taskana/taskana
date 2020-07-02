@@ -3,7 +3,6 @@ package pro.taskana.common.internal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -36,7 +35,7 @@ public class TaskanaProducersTest {
   }
 
   @Test
-  public void testCommit() throws SQLException, ClassNotFoundException {
+  public void testCommit() throws Exception {
 
     Client client = ClientBuilder.newClient();
     client.target("http://127.0.0.1:8090/rest/test").request().get();
@@ -56,7 +55,7 @@ public class TaskanaProducersTest {
   }
 
   @Test
-  public void testRollback() throws SQLException, ClassNotFoundException {
+  public void testRollback() throws Exception {
     Client client = ClientBuilder.newClient();
     client.target("http://127.0.0.1:8090/rest/test").request().post(null);
 
@@ -75,7 +74,7 @@ public class TaskanaProducersTest {
     Assert.assertEquals(0, resultCount);
   }
 
-  private Connection getConnection() throws SQLException {
+  private Connection getConnection() throws Exception {
     return DriverManager.getConnection(
         "jdbc:h2:~/taskana-h2-data/testdb;AUTO_SERVER=TRUE;IGNORECASE=TRUE;LOCK_MODE=0",
         "SA",

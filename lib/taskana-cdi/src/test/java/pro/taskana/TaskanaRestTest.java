@@ -12,22 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.classification.api.ClassificationService;
-import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistException;
-import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.api.models.Classification;
-import pro.taskana.common.api.exceptions.DomainNotFoundException;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.task.api.exceptions.InvalidOwnerException;
-import pro.taskana.task.api.exceptions.InvalidStateException;
-import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
-import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.workbasket.api.WorkbasketType;
-import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
-import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
-import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 
 /** TODO. */
@@ -41,11 +29,7 @@ public class TaskanaRestTest {
   @Inject private ClassificationService classificationService;
 
   @GET
-  public Response startTask()
-      throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
-          ClassificationAlreadyExistException, InvalidWorkbasketException,
-          TaskAlreadyExistException, InvalidArgumentException, WorkbasketAlreadyExistException,
-          DomainNotFoundException {
+  public Response startTask() throws Exception {
     Workbasket workbasket = taskanaEjb.getWorkbasketService().newWorkbasket("key", "cdiDomain");
     workbasket.setName("wb");
     workbasket.setType(WorkbasketType.PERSONAL);
@@ -71,18 +55,14 @@ public class TaskanaRestTest {
   }
 
   @POST
-  public Response rollbackTask()
-      throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
-          TaskAlreadyExistException, InvalidArgumentException {
+  public Response rollbackTask() throws Exception {
     taskanaEjb.triggerRollback();
     return Response.status(204).build();
   }
 
   @DELETE
   @Path("{id}")
-  public void completeTask(@PathParam("id") String id)
-      throws TaskNotFoundException, InvalidOwnerException, InvalidStateException,
-          NotAuthorizedException {
+  public void completeTask(@PathParam("id") String id) throws Exception {
     LOGGER.info(id);
     taskanaEjb.getTaskService().forceCompleteTask(id);
   }

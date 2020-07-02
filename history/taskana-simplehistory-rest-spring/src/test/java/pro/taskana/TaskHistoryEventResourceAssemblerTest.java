@@ -20,12 +20,12 @@ import pro.taskana.spi.history.api.events.TaskanaHistoryEvent;
 @SpringBootTest(
     classes = {TaskHistoryRestConfiguration.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class TaskHistoryEventResourceAssemblerTest {
+class TaskHistoryEventResourceAssemblerTest {
 
   private final TaskHistoryEventResourceAssembler taskHistoryEventResourceAssembler;
 
   @Autowired
-  public TaskHistoryEventResourceAssemblerTest(
+  TaskHistoryEventResourceAssemblerTest(
       TaskHistoryEventResourceAssembler taskHistoryEventResourceAssembler) {
     this.taskHistoryEventResourceAssembler = taskHistoryEventResourceAssembler;
   }

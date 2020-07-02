@@ -8,7 +8,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import acceptance.AbstractAccTest;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.ibatis.session.SqlSessionManager;
@@ -54,7 +53,7 @@ class SimpleHistoryServiceImplTest {
   }
 
   @Test
-  void testCreateEvent() throws SQLException {
+  void testCreateEvent() throws Exception {
     HistoryEventImpl expectedWb =
         AbstractAccTest.createHistoryEvent(
             "wbKey1", "taskId1", "type1", "wbKey2", "someUserId", "someDetails");
@@ -67,7 +66,7 @@ class SimpleHistoryServiceImplTest {
   }
 
   @Test
-  void testQueryEvent() throws SQLException {
+  void testQueryEvent() throws Exception {
     List<HistoryEventImpl> returnList = new ArrayList<>();
     returnList.add(
         AbstractAccTest.createHistoryEvent(

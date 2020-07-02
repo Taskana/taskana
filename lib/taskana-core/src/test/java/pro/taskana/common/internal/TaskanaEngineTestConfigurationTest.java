@@ -2,7 +2,6 @@ package pro.taskana.common.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +13,7 @@ import pro.taskana.common.api.TaskanaEngine;
 class TaskanaEngineTestConfigurationTest {
 
   @Test
-  void testCreateTaskanaEngine() throws SQLException {
+  void testCreateTaskanaEngine() throws Exception {
     DataSource ds = TaskanaEngineTestConfiguration.getDataSource();
     TaskanaEngineConfiguration taskEngineConfiguration =
         new TaskanaEngineConfiguration(ds, false, TaskanaEngineTestConfiguration.getSchemaName());
@@ -25,7 +24,7 @@ class TaskanaEngineTestConfigurationTest {
   }
 
   @Test
-  void should_SetCorpusChristiEnabled_When_PropertyIsSet() throws SQLException {
+  void should_SetCorpusChristiEnabled_When_PropertyIsSet() throws Exception {
     DataSource ds = TaskanaEngineTestConfiguration.getDataSource();
     TaskanaEngineConfiguration taskEngineConfiguration =
         new TaskanaEngineConfiguration(
@@ -41,7 +40,7 @@ class TaskanaEngineTestConfigurationTest {
 
   @Test
   void should_returnTheTwoCustomHolidays_When_twoCustomHolidaysAreConfiguredInThePropertiesFile()
-      throws SQLException {
+      throws Exception {
     DataSource ds = TaskanaEngineTestConfiguration.getDataSource();
     TaskanaEngineConfiguration taskEngineConfiguration =
         new TaskanaEngineConfiguration(
@@ -57,7 +56,7 @@ class TaskanaEngineTestConfigurationTest {
 
   @Test
   void should_returnEmptyCustomHolidaysList_When_allCustomHolidaysAreInWrongFormatInPropertiesFile()
-      throws SQLException {
+      throws Exception {
     DataSource ds = TaskanaEngineTestConfiguration.getDataSource();
     TaskanaEngineConfiguration taskEngineConfiguration =
         new TaskanaEngineConfiguration(

@@ -10,28 +10,19 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.exceptions.ConcurrencyException;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
-import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
-import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.TaskComment;
 import pro.taskana.task.internal.models.TaskCommentImpl;
 
 @ExtendWith(JaasExtension.class)
-public class UpdateTaskCommentAccTest extends AbstractAccTest {
-
-  UpdateTaskCommentAccTest() {
-    super();
-  }
+class UpdateTaskCommentAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void should_UpdateTaskComment_For_TaskComment()
-      throws TaskCommentNotFoundException, NotAuthorizedException, ConcurrencyException,
-          TaskNotFoundException, InvalidArgumentException {
+  void should_UpdateTaskComment_For_TaskComment() throws Exception {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
@@ -53,9 +44,7 @@ public class UpdateTaskCommentAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_FailToUpdateTaskComment_When_UserHasNoAuthorization()
-      throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException,
-          InvalidArgumentException {
+  void should_FailToUpdateTaskComment_When_UserHasNoAuthorization() throws Exception {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
@@ -81,8 +70,7 @@ public class UpdateTaskCommentAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-1")
   @Test
   void should_FailToUpdateTaskComment_When_UserTriesToUpdateTaskByManipulatingOwner()
-      throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException,
-          InvalidArgumentException {
+      throws Exception {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
@@ -101,9 +89,7 @@ public class UpdateTaskCommentAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_FailToUpdateTaskComment_When_TaskCommentWasModifiedConcurrently()
-      throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException,
-          ConcurrencyException, InvalidArgumentException {
+  void should_FailToUpdateTaskComment_When_TaskCommentWasModifiedConcurrently() throws Exception {
 
     TaskService taskService = taskanaEngine.getTaskService();
 

@@ -3,7 +3,6 @@ package configuration;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
-import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.Test;
 
@@ -15,10 +14,10 @@ import pro.taskana.common.api.TaskanaEngine;
  *
  * @author MMR
  */
-public class TaskanaEngineConfigurationTest extends AbstractAccTest {
+class TaskanaEngineConfigurationTest extends AbstractAccTest {
 
   @Test
-  public void testCreateTaskanaEngine() throws SQLException {
+  void testCreateTaskanaEngine() throws Exception {
     DataSource ds = getDataSource();
     TaskanaEngineConfiguration taskEngineConfiguration =
         new TaskanaEngineConfiguration(ds, false, getSchemaName());
@@ -29,7 +28,7 @@ public class TaskanaEngineConfigurationTest extends AbstractAccTest {
   }
 
   @Test
-  public void testCreateTaskanaHistoryEventWithNonDefaultSchemaName() throws SQLException {
+  void testCreateTaskanaHistoryEventWithNonDefaultSchemaName() throws Exception {
     resetDb("SOMECUSTOMSCHEMANAME");
     long count = getHistoryService().createHistoryQuery().workbasketKeyIn("wbKey1").count();
     assertThat(count).isZero();

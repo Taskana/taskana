@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
-import java.sql.SQLException;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
@@ -26,11 +24,9 @@ import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.InvalidOwnerException;
 import pro.taskana.task.api.exceptions.InvalidStateException;
-import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.TaskImpl;
-import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
 /** Acceptance tests for all claim and complete scenarios. */
 @ExtendWith(JaasExtension.class)
@@ -40,9 +36,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testCompleteTask()
-      throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
-          NotAuthorizedException {
+  void testCompleteTask() throws Exception {
     assertThat(TASK_SERVICE.getTask("TKI:000000000000000000000000000000000001").getState())
         .isEqualTo(TaskState.CLAIMED);
     Task completedTask = TASK_SERVICE.completeTask("TKI:000000000000000000000000000000000001");
@@ -56,8 +50,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @WithAccessId(user = "taskadmin")
   @TestTemplate
   void should_ForceCompleteTask_When_NoExplicitPermissionsButUserIsInAdministrativeRole()
-      throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
-          NotAuthorizedException, SQLException {
+      throws Exception {
     resetDb(false);
 
     assertThat(TASK_SERVICE.getTask("TKI:000000000000000000000000000000000000").getState())
@@ -71,9 +64,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testCompleteTaskTwice()
-      throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
-          NotAuthorizedException {
+  void testCompleteTaskTwice() throws Exception {
     Task completedTask = TASK_SERVICE.completeTask("TKI:000000000000000000000000000000000002");
     Task completedTask2 = TASK_SERVICE.completeTask("TKI:000000000000000000000000000000000002");
     assertThat(completedTask2).isEqualTo(completedTask);
@@ -81,10 +72,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testForceCompleteAlreadyClaimed()
-      throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException,
-          InvalidOwnerException, InvalidStateException {
+  void testForceCompleteAlreadyClaimed() throws Exception {
     Task newTask = TASK_SERVICE.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
     newTask.setOwner("other");
@@ -105,10 +93,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testForceCompleteNotClaimed()
-      throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException,
-          InvalidOwnerException, InvalidStateException {
+  void testForceCompleteNotClaimed() throws Exception {
     Task newTask = TASK_SERVICE.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
     newTask.setOwner("other");
@@ -130,9 +115,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @Test
   void should_ThrowException_When_TaskIsNotFound() {
     ThrowingCallable call =
-        () -> {
-          TASK_SERVICE.completeTask("TKI:0000000000000000000000000000000000xx");
-        };
+        () -> TASK_SERVICE.completeTask("TKI:0000000000000000000000000000000000xx");
     assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
   }
 
@@ -140,10 +123,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @Test
   void should_ThrowException_When_UserIsNotAuthorizedOnTask() {
     ThrowingCallable call =
-        call =
-            () -> {
-              TASK_SERVICE.completeTask("TKI:000000000000000000000000000000000004");
-            };
+        () -> TASK_SERVICE.completeTask("TKI:000000000000000000000000000000000004");
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
@@ -151,10 +131,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @Test
   void should_ThrowException_When_TaskIsInStateReady() {
     ThrowingCallable call =
-        call =
-            () -> {
-              TASK_SERVICE.completeTask("TKI:000000000000000000000000000000000025");
-            };
+        () -> TASK_SERVICE.completeTask("TKI:000000000000000000000000000000000025");
     assertThatThrownBy(call).isInstanceOf(InvalidStateException.class);
   }
 
@@ -162,19 +139,13 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @Test
   void should_ThrowException_When_TaskCallerIsNotTheOwner() {
     ThrowingCallable call =
-        call =
-            () -> {
-              TASK_SERVICE.completeTask("TKI:000000000000000000000000000000000026");
-            };
+        () -> TASK_SERVICE.completeTask("TKI:000000000000000000000000000000000026");
     assertThatThrownBy(call).isInstanceOf(InvalidOwnerException.class);
   }
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testClaimTaskWithDefaultFlag()
-      throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException,
-          InvalidStateException, InvalidOwnerException {
+  void testClaimTaskWithDefaultFlag() throws Exception {
     Task newTask = TASK_SERVICE.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
     newTask.setPrimaryObjRef(
@@ -199,10 +170,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testForceClaimTaskFromOtherUser()
-      throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException,
-          InvalidStateException, InvalidOwnerException {
+  void testForceClaimTaskFromOtherUser() throws Exception {
     Task newTask = TASK_SERVICE.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
     newTask.setPrimaryObjRef(
@@ -229,49 +197,35 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-1")
   @Test
   void testClaimTaskNotExisting() {
-    ThrowingCallable call =
-        () -> {
-          TASK_SERVICE.claim("NOT_EXISTING");
-        };
-    assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
+    assertThatThrownBy(() -> TASK_SERVICE.claim("NOT_EXISTING"))
+        .isInstanceOf(TaskNotFoundException.class);
   }
 
   @WithAccessId(user = "user-1-2")
   @Test
   void testClaimTaskWithInvalidState() {
-    ThrowingCallable call =
-        () -> {
-          TASK_SERVICE.forceClaim("TKI:000000000000000000000000000000000036");
-        };
-    assertThatThrownBy(call).isInstanceOf(InvalidStateException.class);
+    assertThatThrownBy(() -> TASK_SERVICE.forceClaim("TKI:000000000000000000000000000000000036"))
+        .isInstanceOf(InvalidStateException.class);
   }
 
   @WithAccessId(user = "user-1-2")
   @Test
   void testClaimTaskWithInvalidOwner() {
-    ThrowingCallable call =
-        () -> {
-          TASK_SERVICE.claim("TKI:000000000000000000000000000000000035");
-        };
-    assertThatThrownBy(call).isInstanceOf(InvalidOwnerException.class);
+    assertThatThrownBy(() -> TASK_SERVICE.claim("TKI:000000000000000000000000000000000035"))
+        .isInstanceOf(InvalidOwnerException.class);
   }
 
   @WithAccessId(user = "user-1-2")
   @Test
   void testCancelClaimForcedWithInvalidState() {
     ThrowingCallable call =
-        () -> {
-          TASK_SERVICE.forceCancelClaim("TKI:000000000000000000000000000000000036");
-        };
+        () -> TASK_SERVICE.forceCancelClaim("TKI:000000000000000000000000000000000036");
     assertThatThrownBy(call).isInstanceOf(InvalidStateException.class);
   }
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testCancelClaimDefaultFlag()
-      throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
-          TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException,
-          InvalidStateException, InvalidOwnerException {
+  void testCancelClaimDefaultFlag() throws Exception {
     Task newTask = TASK_SERVICE.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
     newTask.setPrimaryObjRef(
@@ -289,9 +243,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testForceCancelClaimSuccessfull()
-      throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
-          NotAuthorizedException, InterruptedException {
+  void testForceCancelClaimSuccessfull() throws Exception {
     Task taskBefore = TASK_SERVICE.getTask("TKI:000000000000000000000000000000000043");
 
     assertThat(taskBefore).isNotNull();
@@ -312,11 +264,8 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-2")
   @Test
   void testCancelClaimWithInvalidOwner() {
-    ThrowingCallable call =
-        () -> {
-          TASK_SERVICE.cancelClaim("TKI:000000000000000000000000000000000035");
-        };
-    assertThatThrownBy(call).isInstanceOf(InvalidOwnerException.class);
+    assertThatThrownBy(() -> TASK_SERVICE.cancelClaim("TKI:000000000000000000000000000000000035"))
+        .isInstanceOf(InvalidOwnerException.class);
   }
 
   @Test

@@ -36,7 +36,7 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testGetCustomAttributeValuesForOneWorkbasket() throws NotAuthorizedException {
+  void testGetCustomAttributeValuesForOneWorkbasket() throws Exception {
     MonitorService monitorService = taskanaEngine.getMonitorService();
 
     List<String> values =
@@ -50,7 +50,7 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testGetCustomAttributeValuesForOneDomain() throws NotAuthorizedException {
+  void testGetCustomAttributeValuesForOneDomain() throws Exception {
     MonitorService monitorService = taskanaEngine.getMonitorService();
 
     List<String> values =
@@ -63,7 +63,7 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testGetCustomAttributeValuesForCustomAttribute() throws NotAuthorizedException {
+  void testGetCustomAttributeValuesForCustomAttribute() throws Exception {
     MonitorService monitorService = taskanaEngine.getMonitorService();
 
     Map<CustomField, String> customAttributeFilter = new HashMap<>();
@@ -81,7 +81,7 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testGetCustomAttributeValuesForExcludedClassifications() throws NotAuthorizedException {
+  void testGetCustomAttributeValuesForExcludedClassifications() throws Exception {
     MonitorService monitorService = taskanaEngine.getMonitorService();
 
     List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");

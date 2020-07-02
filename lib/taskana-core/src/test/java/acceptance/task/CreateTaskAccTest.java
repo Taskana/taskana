@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.TaskanaEngineProxyForTest;
@@ -24,9 +23,7 @@ import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
-import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
-import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.AttachmentSummary;
 import pro.taskana.task.api.models.ObjectReference;
@@ -34,7 +31,6 @@ import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.AttachmentMapper;
 import pro.taskana.task.internal.TaskTestMapper;
 import pro.taskana.workbasket.api.WorkbasketService;
-import pro.taskana.workbasket.api.exceptions.WorkbasketInUseException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 
@@ -61,9 +57,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testCreateSimpleManualTask()
-      throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-          WorkbasketNotFoundException, TaskAlreadyExistException {
+  void testCreateSimpleManualTask() throws Exception {
 
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
@@ -96,9 +90,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_createTask_When_ObjectReferenceSystemAndSystemInstanceIsNull()
-      throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-          WorkbasketNotFoundException, TaskAlreadyExistException {
+  void should_createTask_When_ObjectReferenceSystemAndSystemInstanceIsNull() throws Exception {
 
     String currentUser = CurrentUserContext.getUserid();
 
@@ -118,8 +110,7 @@ class CreateTaskAccTest extends AbstractAccTest {
   @WithAccessId(user = "taskadmin")
   @TestTemplate
   void should_CreateTask_When_NoExplicitPermissionsButUserIsInAdministrativeRole()
-      throws TaskAlreadyExistException, InvalidArgumentException, WorkbasketNotFoundException,
-          NotAuthorizedException, ClassificationNotFoundException {
+      throws Exception {
 
     String currentUser = CurrentUserContext.getUserid();
 
@@ -137,9 +128,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testIdempotencyOfTaskCreation()
-      throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-          WorkbasketNotFoundException, TaskAlreadyExistException {
+  void testIdempotencyOfTaskCreation() throws Exception {
 
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setExternalId("MyExternalId");
@@ -179,10 +168,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testCreateSimpleTaskWithCustomAttributes()
-      throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-          WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException,
-          NoSuchFieldException, IllegalAccessException {
+  void testCreateSimpleTaskWithCustomAttributes() throws Exception {
 
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
@@ -247,10 +233,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testCreateExternalTaskWithAttachment()
-      throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-          WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException,
-          NoSuchFieldException, IllegalAccessException {
+  void testCreateExternalTaskWithAttachment() throws Exception {
 
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("L12010");
@@ -333,9 +316,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testCreateExternalTaskWithMultipleAttachments()
-      throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-          WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException {
+  void testCreateExternalTaskWithMultipleAttachments() throws Exception {
 
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("L12010");
@@ -385,9 +366,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testPrioDurationOfTaskFromAttachmentsAtCreate()
-      throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-          WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException {
+  void testPrioDurationOfTaskFromAttachmentsAtCreate() throws Exception {
 
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("L12010"); // prio 8, SL P7D
@@ -444,7 +423,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testThrowsExceptionIfAttachmentIsInvalid() throws ClassificationNotFoundException {
+  void testThrowsExceptionIfAttachmentIsInvalid() throws Exception {
 
     Consumer<Attachment> testCreateTask =
         invalidAttachment -> {
@@ -499,9 +478,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testUseCustomNameIfSetForNewTask()
-      throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-          WorkbasketNotFoundException, TaskAlreadyExistException {
+  void testUseCustomNameIfSetForNewTask() throws Exception {
 
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
@@ -517,9 +494,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testUseClassificationMetadataFromCorrectDomainForNewTask()
-      throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-          WorkbasketNotFoundException, TaskAlreadyExistException {
+  void testUseClassificationMetadataFromCorrectDomainForNewTask() throws Exception {
 
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
@@ -587,9 +562,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testSetDomainFromWorkbasket()
-      throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-          WorkbasketNotFoundException, TaskAlreadyExistException {
+  void testSetDomainFromWorkbasket() throws Exception {
 
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
@@ -609,9 +582,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testCreatedTaskObjectEqualsReadTaskObject()
-      throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-          WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException {
+  void testCreatedTaskObjectEqualsReadTaskObject() throws Exception {
 
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
@@ -643,9 +614,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testCreateSimpleTaskWithCallbackInfo()
-      throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException {
+  void testCreateSimpleTaskWithCallbackInfo() throws Exception {
 
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
@@ -690,7 +659,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testCreateTaskAlreadyExisting() throws NotAuthorizedException, TaskNotFoundException {
+  void testCreateTaskAlreadyExisting() throws Exception {
 
     Task existingTask = taskService.getTask("TKI:000000000000000000000000000000000000");
 
@@ -710,10 +679,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testCreateTaskWithWorkbasketMarkedForDeletion()
-      throws NotAuthorizedException, InvalidStateException, TaskNotFoundException,
-          TaskAlreadyExistException, InvalidArgumentException, WorkbasketNotFoundException,
-          ClassificationNotFoundException, WorkbasketInUseException {
+  void testCreateTaskWithWorkbasketMarkedForDeletion() throws Exception {
 
     String wbId = "WBI:100000000000000000000000000000000008";
     Task taskToPreventWorkbasketDeletion = taskService.newTask(wbId);

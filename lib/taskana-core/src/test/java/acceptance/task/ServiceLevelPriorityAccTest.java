@@ -20,28 +20,21 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.classification.api.ClassificationService;
-import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.WorkingDaysToDaysConverter;
-import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
-import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
-import pro.taskana.task.api.exceptions.InvalidStateException;
-import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
-import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
 /** Acceptance test for all "create task" scenarios. */
 @ExtendWith(JaasExtension.class)
-@SuppressWarnings({"checkstyle:LineLength"})
-public class ServiceLevelPriorityAccTest extends AbstractAccTest {
+class ServiceLevelPriorityAccTest extends AbstractAccTest {
 
   private final TaskService taskService;
   private final ClassificationService classificationService;
@@ -57,9 +50,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_CalculatePlannedDateAtCreate()
-      throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-          WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException {
+  void should_CalculatePlannedDateAtCreate() throws Exception {
 
     // P16D
     Classification classification = classificationService.getClassification("L110105", "DOMAIN_A");
@@ -87,9 +78,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_calculateDueDateAtCreate()
-      throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-          WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException {
+  void should_calculateDueDateAtCreate() throws Exception {
 
     // P16D
     Classification classification = classificationService.getClassification("L110105", "DOMAIN_A");
@@ -118,8 +107,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_NotThrowException_When_DueAndPlannedAreConsistent()
-      throws ClassificationNotFoundException {
+  void should_NotThrowException_When_DueAndPlannedAreConsistent() throws Exception {
 
     Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
     long duration = Duration.parse(classification.getServiceLevel()).toDays();
@@ -198,8 +186,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-b-2")
   @Test
-  void should_SetPlanned_When_SetPlannedRequestContainsDuplicateTaskIds()
-      throws NotAuthorizedException, TaskNotFoundException {
+  void should_SetPlanned_When_SetPlannedRequestContainsDuplicateTaskIds() throws Exception {
 
     // This test works with the following tasks (w/o attachments) and classifications
     //
@@ -235,8 +222,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-b-2")
   @Test
-  void should_SetPlanned_When_RequestContainsDuplicatesAndNotExistingTaskIds()
-      throws NotAuthorizedException, TaskNotFoundException {
+  void should_SetPlanned_When_RequestContainsDuplicatesAndNotExistingTaskIds() throws Exception {
 
     String tkId1 = "TKI:000000000000000000000000000000000058";
     String tkId2 = "TKI:000000000000000000000000000047110059";
@@ -359,8 +345,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void should_SetPlannedPropertyOfTasks_When_RequestedByAdminUser()
-      throws NotAuthorizedException, TaskNotFoundException {
+  void should_SetPlannedPropertyOfTasks_When_RequestedByAdminUser() throws Exception {
     String tkId1 = "TKI:000000000000000000000000000000000008";
     String tkId2 = "TKI:000000000000000000000000000000000009";
     String tkId3 = "TKI:000000000000000000000000000000000008";
@@ -402,8 +387,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
   // +-----------------------------------------+------------------------------------------+------+
   @WithAccessId(user = "admin")
   @Test
-  void should_SetPlannedPropertyWithBulkUpdate_When_RequestContainsASingleTask()
-      throws NotAuthorizedException, TaskNotFoundException {
+  void should_SetPlannedPropertyWithBulkUpdate_When_RequestContainsASingleTask() throws Exception {
     String taskId = "TKI:000000000000000000000000000000000002";
     Instant planned = getInstant("2020-05-03T07:00:00");
     // test bulk operation setPlanned...
@@ -417,10 +401,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void should_SetPlannedPropertyOnSingle_When_UpdateTaskWasCalled()
-      throws NotAuthorizedException, TaskNotFoundException, InvalidArgumentException,
-          ConcurrencyException, InvalidStateException, ClassificationNotFoundException,
-          AttachmentPersistenceException {
+  void should_SetPlannedPropertyOnSingle_When_UpdateTaskWasCalled() throws Exception {
     String taskId = "TKI:000000000000000000000000000000000002";
     Task task = taskService.getTask(taskId);
     // test update of planned date via updateTask()
@@ -432,10 +413,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void should_SetPlanned_When_OnlyDueWasChanged()
-      throws NotAuthorizedException, TaskNotFoundException, InvalidArgumentException,
-          ConcurrencyException, InvalidStateException, ClassificationNotFoundException,
-          AttachmentPersistenceException {
+  void should_SetPlanned_When_OnlyDueWasChanged() throws Exception {
     String taskId = "TKI:000000000000000000000000000000000002"; // P1D
     Instant planned = getInstant("2020-05-03T07:00:00");
     Task task = taskService.getTask(taskId);
@@ -480,10 +458,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void should_SetDue_When_TaskUpdateIsCalled()
-      throws NotAuthorizedException, TaskNotFoundException, InvalidArgumentException,
-          ConcurrencyException, InvalidStateException, ClassificationNotFoundException,
-          AttachmentPersistenceException {
+  void should_SetDue_When_TaskUpdateIsCalled() throws Exception {
     String taskId = "TKI:000000000000000000000000000000000002";
     final Instant planned = getInstant("2020-05-03T07:00:00"); // Sunday
     Task task = taskService.getTask(taskId);
@@ -513,10 +488,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void should_UpdateTaskPlannedOrDue_When_PlannedOrDueAreWeekendDays()
-      throws NotAuthorizedException, TaskNotFoundException, ClassificationNotFoundException,
-          InvalidArgumentException, InvalidStateException, ConcurrencyException,
-          AttachmentPersistenceException {
+  void should_UpdateTaskPlannedOrDue_When_PlannedOrDueAreWeekendDays() throws Exception {
     Task task = taskService.getTask("TKI:000000000000000000000000000000000030"); // SL=P13D
     task.setPlanned(getInstant("2020-03-21T07:00:00")); // planned = saturday
     task = taskService.updateTask(task);
@@ -545,9 +517,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-1")
   @Test
   void should_UpdateTaskPlannedOrDue_When_PlannedOrDueAreOnWeekends_ServiceLevel_P0D()
-      throws NotAuthorizedException, TaskNotFoundException, ClassificationNotFoundException,
-          InvalidArgumentException, InvalidStateException, ConcurrencyException,
-          AttachmentPersistenceException {
+      throws Exception {
     Task task = taskService.getTask("TKI:000000000000000000000000000000000066"); // P0D
 
     // nothing changed
@@ -617,10 +587,7 @@ public class ServiceLevelPriorityAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_notThrowServiceLevelViolation_IfWeekendOrHolidaysBetweenDates()
-      throws NotAuthorizedException, TaskNotFoundException, ClassificationNotFoundException,
-          InvalidArgumentException, InvalidStateException, ConcurrencyException,
-          AttachmentPersistenceException {
+  void should_notThrowServiceLevelViolation_IfWeekendOrHolidaysBetweenDates() throws Exception {
     Task task = taskService.getTask("TKI:000000000000000000000000000000000002"); // P1D
 
     // SLA is broken but only with holidays in between

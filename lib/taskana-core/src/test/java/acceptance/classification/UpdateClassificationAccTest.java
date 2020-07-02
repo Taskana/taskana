@@ -27,7 +27,6 @@ import pro.taskana.common.internal.jobs.JobRunner;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
-import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.TaskImpl;
 
@@ -40,9 +39,7 @@ class UpdateClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testUpdateClassification()
-      throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
-          InvalidArgumentException {
+  void testUpdateClassification() throws Exception {
     String newName = "updated Name";
     String newEntryPoint = "updated EntryPoint";
     Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
@@ -80,7 +77,7 @@ class UpdateClassificationAccTest extends AbstractAccTest {
   }
 
   @Test
-  void should_ThrowException_When_UserIsNotAuthorized() throws ClassificationNotFoundException {
+  void should_ThrowException_When_UserIsNotAuthorized() throws Exception {
     Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
     classification.setCustom1("newCustom1");
     ThrowingCallable call = () -> classificationService.updateClassification(classification);
@@ -90,8 +87,7 @@ class UpdateClassificationAccTest extends AbstractAccTest {
   @WithAccessId(user = "taskadmin")
   @WithAccessId(user = "user-1-1")
   @TestTemplate
-  void should_ThrowException_When_UserRoleIsNotAdminOrBusinessAdmin()
-      throws ClassificationNotFoundException {
+  void should_ThrowException_When_UserRoleIsNotAdminOrBusinessAdmin() throws Exception {
 
     Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
 
@@ -135,9 +131,7 @@ class UpdateClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testUpdateClassificationNotLatestAnymore()
-      throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
-          InterruptedException, InvalidArgumentException {
+  void testUpdateClassificationNotLatestAnymore() throws Exception {
     Classification base = classificationService.getClassification("T2100", "DOMAIN_A");
     final Classification classification =
         classificationService.getClassification("T2100", "DOMAIN_A");
@@ -157,7 +151,7 @@ class UpdateClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testUpdateClassificationParentIdToInvalid() throws ClassificationNotFoundException {
+  void testUpdateClassificationParentIdToInvalid() throws Exception {
     Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
     classification.setParentId("ID WHICH CANT BE FOUND");
     ThrowingCallable call = () -> classificationService.updateClassification(classification);
@@ -166,7 +160,7 @@ class UpdateClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testUpdateClassificationParentKeyToInvalid() throws ClassificationNotFoundException {
+  void testUpdateClassificationParentKeyToInvalid() throws Exception {
     Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
     classification.setParentKey("KEY WHICH CANT BE FOUND");
     ThrowingCallable call = () -> classificationService.updateClassification(classification);
@@ -175,9 +169,7 @@ class UpdateClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testUpdateClassificationPrioServiceLevel()
-      throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
-          InterruptedException, TaskNotFoundException, InvalidArgumentException {
+  void testUpdateClassificationPrioServiceLevel() throws Exception {
     final Instant before = Instant.now();
     Classification classification =
         classificationService.getClassification("CLI:100000000000000000000000000000000003");
@@ -259,7 +251,7 @@ class UpdateClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testUpdateClassificationWithSameKeyAndParentKey() throws ClassificationNotFoundException {
+  void testUpdateClassificationWithSameKeyAndParentKey() throws Exception {
 
     Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
 
@@ -283,9 +275,7 @@ class UpdateClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testUpdateClassificationChangePriority()
-      throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
-          InterruptedException, TaskNotFoundException, InvalidArgumentException {
+  void testUpdateClassificationChangePriority() throws Exception {
     final Instant before = Instant.now();
     Classification classification =
         classificationService.getClassification("CLI:100000000000000000000000000000000003");
@@ -420,9 +410,7 @@ class UpdateClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testUpdateClassificationChangeServiceLevel()
-      throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
-          InterruptedException, TaskNotFoundException, InvalidArgumentException {
+  void testUpdateClassificationChangeServiceLevel() throws Exception {
     final Instant before = Instant.now();
     Classification classification =
         classificationService.getClassification("CLI:100000000000000000000000000000000003");
@@ -500,8 +488,7 @@ class UpdateClassificationAccTest extends AbstractAccTest {
   }
 
   private void updateClassificationAndRunAssociatedJobs(Classification classification)
-      throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
-          InvalidArgumentException, InterruptedException {
+      throws Exception {
     classificationService.updateClassification(classification);
     Thread.sleep(10);
     // run the ClassificationChangedJob
@@ -520,7 +507,7 @@ class UpdateClassificationAccTest extends AbstractAccTest {
       WorkingDaysToDaysConverter converter,
       int serviceLevel,
       int priority)
-      throws TaskNotFoundException, NotAuthorizedException {
+      throws Exception {
     for (String taskId : tasksUpdated) {
       Task task = taskService.getTask(taskId);
 

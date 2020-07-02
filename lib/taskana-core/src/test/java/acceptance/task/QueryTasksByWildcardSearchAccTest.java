@@ -17,7 +17,7 @@ import pro.taskana.task.api.WildcardSearchField;
 import pro.taskana.task.api.models.TaskSummary;
 
 @ExtendWith(JaasExtension.class)
-public class QueryTasksByWildcardSearchAccTest extends AbstractAccTest {
+class QueryTasksByWildcardSearchAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test

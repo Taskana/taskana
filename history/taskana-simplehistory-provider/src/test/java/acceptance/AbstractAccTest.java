@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.SQLException;
 import java.util.Objects;
 import java.util.Properties;
 import javax.sql.DataSource;
@@ -23,78 +22,25 @@ import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
 public abstract class AbstractAccTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAccTest.class);
+
+  private static final String USER_HOME_DIRECTORY = System.getProperty("user.home");
   private static final int POOL_TIME_TO_WAIT = 50;
-
+  private static final DataSource DATA_SOURCE;
   private static SimpleHistoryServiceImpl historyService;
-
-  private static DataSource dataSource;
-  private static String schemaName = null;
+  private static String schemaName;
 
   static {
-    String userHomeDirectroy = System.getProperty("user.home");
-    String propertiesFileName = userHomeDirectroy + "/taskanaUnitTest.properties";
+    String propertiesFileName = USER_HOME_DIRECTORY + "/taskanaUnitTest.properties";
     File f = new File(propertiesFileName);
     if (f.exists() && !f.isDirectory()) {
-      dataSource = createDataSourceFromProperties(propertiesFileName);
+      DATA_SOURCE = createDataSourceFromProperties(propertiesFileName);
     } else {
-      dataSource = createDefaultDataSource();
+      DATA_SOURCE = createDefaultDataSource();
     }
   }
 
   protected AbstractAccTest() {
     // not called
-  }
-
-  @BeforeAll
-  public static void setupTest() throws Exception {
-    resetDb(null);
-  }
-
-  public static void resetDb(String schemaName) throws SQLException {
-    DataSource dataSource = getDataSource();
-
-    TaskanaEngineConfiguration taskanaEngineConfiguration =
-        new TaskanaEngineConfiguration(
-            dataSource,
-            false,
-            schemaName != null && !schemaName.isEmpty() ? schemaName : getSchemaName());
-    historyService = new SimpleHistoryServiceImpl();
-    historyService.initialize(taskanaEngineConfiguration);
-
-    DbWriter writer = new DbWriter();
-    writer.clearDB(dataSource);
-    writer.generateTestData(dataSource);
-  }
-
-  public static DataSource getDataSource() {
-    if (dataSource == null) {
-      throw new RuntimeException("Datasource should be already initialized");
-    }
-    return dataSource;
-  }
-
-  /**
-   * returns the SchemaName used for Junit test. If the file {user.home}/taskanaUnitTest.properties
-   * is present, the SchemaName is created according to the property schemaName. a sample properties
-   * file for DB2 looks as follows: jdbcDriver=com.ibm.db2.jcc.DB2Driver
-   * jdbcUrl=jdbc:db2://localhost:50000/tskdb dbUserName=db2user dbPassword=db2password
-   * schemaName=TASKANA If any of these properties is missing, or the file doesn't exist, the
-   * default schemaName TASKANA is created used.
-   *
-   * @return String for unit test
-   */
-  public static String getSchemaName() {
-    if (schemaName == null) {
-      String userHomeDirectroy = System.getProperty("user.home");
-      String propertiesFileName = userHomeDirectroy + "/taskanaUnitTest.properties";
-      File f = new File(propertiesFileName);
-      if (f.exists() && !f.isDirectory()) {
-        schemaName = getSchemaNameFromPropertiesObject(propertiesFileName);
-      } else {
-        schemaName = "TASKANA";
-      }
-    }
-    return schemaName;
   }
 
   /**
@@ -123,8 +69,59 @@ public abstract class AbstractAccTest {
     return historyEvent;
   }
 
-  public static SimpleHistoryServiceImpl getHistoryService() {
+  protected static void resetDb(String schemaName) throws Exception {
+    DataSource dataSource = getDataSource();
+
+    TaskanaEngineConfiguration taskanaEngineConfiguration =
+        new TaskanaEngineConfiguration(
+            dataSource,
+            false,
+            schemaName != null && !schemaName.isEmpty() ? schemaName : getSchemaName());
+    historyService = new SimpleHistoryServiceImpl();
+    historyService.initialize(taskanaEngineConfiguration);
+
+    DbWriter writer = new DbWriter();
+    writer.clearDB(dataSource);
+    writer.generateTestData(dataSource);
+  }
+
+  protected static DataSource getDataSource() {
+    if (DATA_SOURCE == null) {
+      throw new RuntimeException("Datasource should be already initialized");
+    }
+    return DATA_SOURCE;
+  }
+
+  /**
+   * returns the SchemaName used for Junit test. If the file {user.home}/taskanaUnitTest.properties
+   * is present, the SchemaName is created according to the property schemaName. a sample properties
+   * file for DB2 looks as follows: jdbcDriver=com.ibm.db2.jcc.DB2Driver
+   * jdbcUrl=jdbc:db2://localhost:50000/tskdb dbUserName=db2user dbPassword=db2password
+   * schemaName=TASKANA If any of these properties is missing, or the file doesn't exist, the
+   * default schemaName TASKANA is created used.
+   *
+   * @return String for unit test
+   */
+  protected static String getSchemaName() {
+    if (schemaName == null) {
+      String propertiesFileName = USER_HOME_DIRECTORY + "/taskanaUnitTest.properties";
+      File f = new File(propertiesFileName);
+      if (f.exists() && !f.isDirectory()) {
+        schemaName = getSchemaNameFromPropertiesObject(propertiesFileName);
+      } else {
+        schemaName = "TASKANA";
+      }
+    }
+    return schemaName;
+  }
+
+  protected static SimpleHistoryServiceImpl getHistoryService() {
     return historyService;
+  }
+
+  @BeforeAll
+  static void setupTest() throws Exception {
+    resetDb(null);
   }
 
   /**

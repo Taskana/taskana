@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import javax.sql.DataSource;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
@@ -22,7 +21,7 @@ import pro.taskana.sampledata.SampleDataGenerator;
 class TaskanaSecurityConfigAccTest {
 
   @BeforeEach
-  void cleanDb() throws SQLException {
+  void cleanDb() throws Exception {
     DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
     String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
 
@@ -34,7 +33,7 @@ class TaskanaSecurityConfigAccTest {
 
   @Test
   void should_ThrowException_When_CreatingUnsecuredEngineCfgWhileSecurityIsEnforced()
-      throws SQLException {
+      throws Exception {
 
     setSecurityFlag(true);
 
@@ -55,7 +54,7 @@ class TaskanaSecurityConfigAccTest {
 
   @Test
   void should_StartUpNormally_When_CreatingUnsecuredEngineCfgWhileSecurityIsNotEnforced()
-      throws SQLException {
+      throws Exception {
 
     setSecurityFlag(false);
 
@@ -74,7 +73,7 @@ class TaskanaSecurityConfigAccTest {
 
   @Test
   void should_SetSecurityFlagToFalse_When_CreatingUnsecureEngineCfgAndSecurityFlagIsNotSet()
-      throws SQLException {
+      throws Exception {
 
     assertThat(retrieveSecurityFlag()).isNull();
 
@@ -95,7 +94,7 @@ class TaskanaSecurityConfigAccTest {
 
   @Test
   void should_SetSecurityFlagToTrue_When_CreatingSecureEngineCfgAndSecurityFlagIsNotSet()
-      throws SQLException {
+      throws Exception {
 
     assertThat(retrieveSecurityFlag()).isNull();
 
@@ -114,7 +113,7 @@ class TaskanaSecurityConfigAccTest {
     assertThat(retrieveSecurityFlag()).isTrue();
   }
 
-  private Boolean retrieveSecurityFlag() throws SQLException {
+  private Boolean retrieveSecurityFlag() throws Exception {
 
     try (Connection connection = TaskanaEngineTestConfiguration.getDataSource().getConnection()) {
 
@@ -133,7 +132,7 @@ class TaskanaSecurityConfigAccTest {
     }
   }
 
-  private void setSecurityFlag(boolean securityFlag) throws SQLException {
+  private void setSecurityFlag(boolean securityFlag) throws Exception {
 
     try (Connection connection = TaskanaEngineTestConfiguration.getDataSource().getConnection()) {
 

@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
@@ -29,8 +28,7 @@ class GetTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_ReturnTask_When_RequestingTaskByTaskId()
-      throws TaskNotFoundException, NotAuthorizedException, InvalidArgumentException {
+  void should_ReturnTask_When_RequestingTaskByTaskId() throws Exception {
     TaskService taskService = taskanaEngine.getTaskService();
 
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
@@ -111,7 +109,7 @@ class GetTaskAccTest extends AbstractAccTest {
   @WithAccessId(user = "taskadmin")
   @TestTemplate
   void should_ReturnTask_When_NoExplicitPermissionsButUserIsInAdministrativeRole()
-      throws NotAuthorizedException, TaskNotFoundException {
+      throws Exception {
 
     TaskService taskService = taskanaEngine.getTaskService();
 

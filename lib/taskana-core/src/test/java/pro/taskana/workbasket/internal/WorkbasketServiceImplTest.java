@@ -31,15 +31,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
-import pro.taskana.common.api.exceptions.DomainNotFoundException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.task.api.TaskQuery;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.workbasket.api.WorkbasketType;
-import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
-import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
@@ -78,9 +74,7 @@ class WorkbasketServiceImplTest {
   }
 
   @Test
-  void testCreateWorkbasket_WithDistibutionTargets()
-      throws WorkbasketNotFoundException, NotAuthorizedException, InvalidWorkbasketException,
-          WorkbasketAlreadyExistException, DomainNotFoundException {
+  void testCreateWorkbasket_WithDistibutionTargets() throws Exception {
     final int distTargetAmount = 2;
     WorkbasketImpl expectedWb = createTestWorkbasket(null, "Key-1");
     doReturn(expectedWb).when(workbasketServiceSpy).getWorkbasket(any());
@@ -159,7 +153,7 @@ class WorkbasketServiceImplTest {
   }
 
   @Test
-  void testDeleteWorkbasketIsUsed() throws NotAuthorizedException, WorkbasketNotFoundException {
+  void testDeleteWorkbasketIsUsed() throws Exception {
     Workbasket wb = createTestWorkbasket("WBI:0", "wb-key");
 
     ThrowingCallable call =
@@ -228,9 +222,7 @@ class WorkbasketServiceImplTest {
     return workbasket;
   }
 
-  private List<String> createTestDistributionTargets(int amount)
-      throws InvalidWorkbasketException, NotAuthorizedException, WorkbasketAlreadyExistException,
-          DomainNotFoundException {
+  private List<String> createTestDistributionTargets(int amount) throws Exception {
     List<String> distributionsTargets = new ArrayList<>();
     amount = Math.max(amount, 0);
     for (int i = 0; i < amount; i++) {

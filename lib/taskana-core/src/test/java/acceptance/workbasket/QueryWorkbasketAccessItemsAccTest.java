@@ -31,7 +31,7 @@ class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testQueryWorkbasketAccessItemValuesForColumnName() throws NotAuthorizedException {
+  void testQueryWorkbasketAccessItemValuesForColumnName() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     List<String> columnValueList =
         workbasketService.createWorkbasketAccessItemQuery().listValues(WORKBASKET_ID, null);
@@ -52,7 +52,7 @@ class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testQueryAccessItemsForAccessIds() throws NotAuthorizedException {
+  void testQueryAccessItemsForAccessIds() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     List<WorkbasketAccessItem> results =
         workbasketService
@@ -79,7 +79,7 @@ class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testQueryAccessItemsForAccessIdsOrderedDescending() throws NotAuthorizedException {
+  void testQueryAccessItemsForAccessIdsOrderedDescending() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     WorkbasketAccessItemQuery query =
         workbasketService
@@ -95,7 +95,7 @@ class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testQueryAccessItemsForAccessIdsAndWorkbasketKey() throws NotAuthorizedException {
+  void testQueryAccessItemsForAccessIdsAndWorkbasketKey() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     List<WorkbasketAccessItem> results =
         workbasketService
@@ -110,7 +110,7 @@ class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testQueryAccessItemsForAccessIdsWorkbasketKeyLike() throws NotAuthorizedException {
+  void testQueryAccessItemsForAccessIdsWorkbasketKeyLike() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     List<WorkbasketAccessItem> results =
         workbasketService.createWorkbasketAccessItemQuery().workbasketKeyLike("GPK_KSC%").list();
@@ -119,8 +119,7 @@ class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testQueryAccessItemsForAccessIdsWorkbasketKeyLikeAndOrderAsc()
-      throws NotAuthorizedException {
+  void testQueryAccessItemsForAccessIdsWorkbasketKeyLikeAndOrderAsc() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     List<WorkbasketAccessItem> results =
         workbasketService
@@ -135,7 +134,7 @@ class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testQueryAccessItemsByWorkbasketKey() throws NotAuthorizedException {
+  void testQueryAccessItemsByWorkbasketKey() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     List<WorkbasketAccessItem> results =
         workbasketService
@@ -147,7 +146,7 @@ class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testQueryAccessItemsByWorkbasketKeyOrderedDescending() throws NotAuthorizedException {
+  void testQueryAccessItemsByWorkbasketKeyOrderedDescending() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     List<WorkbasketAccessItem> results =
         workbasketService
@@ -162,7 +161,7 @@ class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testQueryForIdIn() throws NotAuthorizedException {
+  void testQueryForIdIn() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     String[] expectedIds = {
       "WAI:100000000000000000000000000000000001",
@@ -176,7 +175,7 @@ class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testQueryForOrderById() throws NotAuthorizedException {
+  void testQueryForOrderById() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     List<WorkbasketAccessItem> results =
         workbasketService

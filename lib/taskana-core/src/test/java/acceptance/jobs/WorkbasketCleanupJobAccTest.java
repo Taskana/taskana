@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.BaseQuery;
-import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
@@ -33,7 +32,7 @@ class WorkbasketCleanupJobAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void shouldCleanWorkbasketMarkedForDeletionWithoutTasks() throws TaskanaException {
+  void shouldCleanWorkbasketMarkedForDeletionWithoutTasks() throws Exception {
     long totalWorkbasketCount = workbasketService.createWorkbasketQuery().count();
     assertThat(totalWorkbasketCount).isEqualTo(25);
     List<WorkbasketSummary> workbaskets =

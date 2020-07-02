@@ -3,7 +3,6 @@ package acceptance.task;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
-import java.sql.SQLException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,14 +21,12 @@ import pro.taskana.task.api.models.TaskSummary;
 
 /** Acceptance test for planned and prio of all tasks. */
 @ExtendWith(JaasExtension.class)
-@SuppressWarnings({"checkstyle:LineLength"})
-public class ServiceLevelOfAllTasksAccTest extends AbstractAccTest {
-  TaskService taskService;
+class ServiceLevelOfAllTasksAccTest extends AbstractAccTest {
+  TaskService taskService = taskanaEngine.getTaskService();
 
   @WithAccessId(user = "admin")
   @Test
-  void testSetPlannedPropertyOnAllTasks() throws SQLException {
-    taskService = taskanaEngine.getTaskService();
+  void testSetPlannedPropertyOnAllTasks() throws Exception {
     Instant planned = getInstant("2020-05-03T07:00:00");
     List<TaskSummary> allTasks = taskService.createTaskQuery().list();
     // Now update each task with updateTask() and new planned

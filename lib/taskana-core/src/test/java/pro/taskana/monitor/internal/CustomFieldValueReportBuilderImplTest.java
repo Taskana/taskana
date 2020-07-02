@@ -22,8 +22,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.monitor.api.SelectedItem;
 import pro.taskana.monitor.api.reports.CustomFieldValueReport;
@@ -52,8 +50,7 @@ class CustomFieldValueReportBuilderImplTest {
   }
 
   @Test
-  void testGetTotalNumbersOfCustomFieldValueReport()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testGetTotalNumbersOfCustomFieldValueReport() throws Exception {
     final List<String> workbasketIds =
         Collections.singletonList("WBI:000000000000000000000000000000000001");
     final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
@@ -110,8 +107,7 @@ class CustomFieldValueReportBuilderImplTest {
   }
 
   @Test
-  void testGetCustomFieldValueReportWithReportLineItemDefinitions()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testGetCustomFieldValueReportWithReportLineItemDefinitions() throws Exception {
     final List<String> workbasketIds =
         Collections.singletonList("WBI:000000000000000000000000000000000001");
     final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
@@ -173,7 +169,7 @@ class CustomFieldValueReportBuilderImplTest {
   }
 
   @Test
-  void testListCustomAttributeValuesForCustomAttributeName() throws NotAuthorizedException {
+  void testListCustomAttributeValuesForCustomAttributeName() throws Exception {
     final List<String> workbasketIds =
         Collections.singletonList("WBI:000000000000000000000000000000000001");
     final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);

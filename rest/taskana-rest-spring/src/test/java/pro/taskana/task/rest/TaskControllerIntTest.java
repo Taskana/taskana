@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static pro.taskana.common.rest.RestHelper.TEMPLATE;
 
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -54,13 +53,16 @@ class TaskControllerIntTest {
   private final RestHelper restHelper;
   private final DataSource dataSource;
 
-  @Value("${taskana.schemaName:TASKANA}")
-  public String schemaName;
+  private final String schemaName;
 
   @Autowired
-  TaskControllerIntTest(RestHelper restHelper, DataSource dataSource) {
+  TaskControllerIntTest(
+      RestHelper restHelper,
+      DataSource dataSource,
+      @Value("${taskana.schemaName:TASKANA}") String schemaName) {
     this.restHelper = restHelper;
     this.dataSource = dataSource;
+    this.schemaName = schemaName;
   }
 
   @BeforeAll
@@ -611,7 +613,7 @@ class TaskControllerIntTest {
   }
 
   @Test
-  void testCreateTaskWithInvalidParameter() throws IOException {
+  void testCreateTaskWithInvalidParameter() throws Exception {
     final String taskToCreateJson =
         "{\"classificationKey\":\"L11010\","
             + "\"workbasketSummaryResource\":"

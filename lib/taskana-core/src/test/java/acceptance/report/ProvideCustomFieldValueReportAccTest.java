@@ -15,7 +15,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
@@ -45,8 +44,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testGetTotalNumbersOfTasksOfCustomFieldValueReportForCustom1()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testGetTotalNumbersOfTasksOfCustomFieldValueReportForCustom1() throws Exception {
     MonitorService monitorService = taskanaEngine.getMonitorService();
 
     CustomFieldValueReport report =
@@ -71,8 +69,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testGetTotalNumbersOfTasksOfCustomFieldValueReportForCustom2()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testGetTotalNumbersOfTasksOfCustomFieldValueReportForCustom2() throws Exception {
     MonitorService monitorService = taskanaEngine.getMonitorService();
 
     CustomFieldValueReport report =
@@ -96,8 +93,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testGetCustomFieldValueReportWithReportLineItemDefinitions()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testGetCustomFieldValueReportWithReportLineItemDefinitions() throws Exception {
     MonitorService monitorService = taskanaEngine.getMonitorService();
 
     CustomField customField = CustomField.CUSTOM_1;
@@ -128,8 +124,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testEachItemOfCustomFieldValueReport()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testEachItemOfCustomFieldValueReport() throws Exception {
     MonitorService monitorService = taskanaEngine.getMonitorService();
 
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
@@ -160,8 +155,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testEachItemOfCustomFieldValueReportNotInWorkingDays()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testEachItemOfCustomFieldValueReportNotInWorkingDays() throws Exception {
     MonitorService monitorService = taskanaEngine.getMonitorService();
 
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
@@ -191,8 +185,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testEachItemOfCustomFieldValueReportWithWorkbasketFilter()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testEachItemOfCustomFieldValueReportWithWorkbasketFilter() throws Exception {
     MonitorService monitorService = taskanaEngine.getMonitorService();
 
     List<String> workbasketIds =
@@ -226,8 +219,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testEachItemOfCustomFieldValueReportWithStateFilter()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testEachItemOfCustomFieldValueReportWithStateFilter() throws Exception {
     MonitorService monitorService = taskanaEngine.getMonitorService();
 
     List<TaskState> states = Collections.singletonList(TaskState.READY);
@@ -260,8 +252,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testEachItemOfCustomFieldValueReportWithCategoryFilter()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testEachItemOfCustomFieldValueReportWithCategoryFilter() throws Exception {
     MonitorService monitorService = taskanaEngine.getMonitorService();
 
     List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
@@ -294,8 +285,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testEachItemOfCustomFieldValueReportWithDomainFilter()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testEachItemOfCustomFieldValueReportWithDomainFilter() throws Exception {
     MonitorService monitorService = taskanaEngine.getMonitorService();
 
     List<String> domains = Collections.singletonList("DOMAIN_A");
@@ -328,8 +318,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testEachItemOfCustomFieldValueReportWithCustomFieldValueFilter()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testEachItemOfCustomFieldValueReportWithCustomFieldValueFilter() throws Exception {
     MonitorService monitorService = taskanaEngine.getMonitorService();
 
     Map<CustomField, String> customAttributeFilter = new HashMap<>();

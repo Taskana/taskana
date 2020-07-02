@@ -19,16 +19,12 @@ import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.internal.ClassificationQueryImpl;
 import pro.taskana.classification.internal.ClassificationServiceImpl;
 import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.task.api.TaskState;
-import pro.taskana.task.api.exceptions.InvalidStateException;
-import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
-import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 
 /**
@@ -63,9 +59,7 @@ class TaskTransferrerTest {
   @Mock private SqlSession sqlSessionMock;
 
   @Test
-  void testTransferTaskToDestinationWorkbasketWithoutSecurity()
-      throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
-          InvalidStateException {
+  void testTransferTaskToDestinationWorkbasketWithoutSecurity() throws Exception {
     doReturn(taskanaEngineMock).when(internalTaskanaEngineMock).getEngine();
     doReturn(workbasketServiceMock).when(taskanaEngineMock).getWorkbasketService();
     cut = new TaskTransferrer(internalTaskanaEngineMock, taskMapperMock, taskServiceImplMock);

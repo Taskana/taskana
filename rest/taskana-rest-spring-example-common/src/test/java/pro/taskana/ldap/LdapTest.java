@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import pro.taskana.TaskanaSpringBootTest;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.rest.ldap.LdapClient;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 
@@ -18,7 +17,7 @@ class LdapTest {
   @Autowired private LdapClient ldapClient;
 
   @Test
-  void testFindUsers() throws InvalidArgumentException {
+  void testFindUsers() throws Exception {
     List<AccessIdRepresentationModel> usersAndGroups = ldapClient.searchUsersAndGroups("lead");
     assertThat(usersAndGroups)
         .extracting(AccessIdRepresentationModel::getAccessId)

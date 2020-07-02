@@ -3,12 +3,10 @@ package acceptance.config;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -27,7 +25,7 @@ import pro.taskana.common.internal.TaskanaEngineTestConfiguration;
  */
 class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
 
-  TaskanaRoleConfigAccTest() throws SQLException {
+  TaskanaRoleConfigAccTest() throws Exception {
     super(
         new TaskanaEngineConfiguration(
             TaskanaEngineTestConfiguration.getDataSource(),
@@ -69,7 +67,7 @@ class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
   }
 
   @Test
-  void testOtherConfigFileSameDelimiter() throws IOException {
+  void testOtherConfigFileSameDelimiter() throws Exception {
     String propertiesFileName = createNewConfigFileWithSameDelimiter("/dummyTestConfig.properties");
     try {
       getConfiguration().initTaskanaProperties(propertiesFileName, "|");
@@ -95,7 +93,7 @@ class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
   }
 
   @Test
-  void testOtherConfigFileDifferentDelimiter() throws IOException {
+  void testOtherConfigFileDifferentDelimiter() throws Exception {
     String delimiter = ";";
     String propertiesFileName =
         createNewConfigFileWithDifferentDelimiter("/dummyTestConfig.properties", delimiter);
@@ -123,7 +121,7 @@ class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
   }
 
   private String createNewConfigFileWithDifferentDelimiter(String filename, String delimiter)
-      throws IOException {
+      throws Exception {
     Path file = Files.createFile(Paths.get(System.getProperty("user.home") + filename));
     List<String> lines =
         Arrays.asList(
@@ -141,7 +139,7 @@ class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
     }
   }
 
-  private String createNewConfigFileWithSameDelimiter(String filename) throws IOException {
+  private String createNewConfigFileWithSameDelimiter(String filename) throws Exception {
     Path file = Files.createFile(Paths.get(System.getProperty("user.home") + filename));
     List<String> lines =
         Arrays.asList(
