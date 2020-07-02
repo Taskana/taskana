@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
 import javax.naming.directory.SearchControls;
 import org.slf4j.Logger;
@@ -66,7 +67,7 @@ public class LdapClient {
 
     List<AccessIdRepresentationModel> accessIds = new ArrayList<>();
     if (nameIsDn(name)) {
-      AccessIdRepresentationModel groupByDn = searchGroupByDn(name);
+      AccessIdRepresentationModel groupByDn = searchAccessIdByDn(name);
       if (groupByDn != null) {
         accessIds.add(groupByDn);
       }
@@ -101,16 +102,12 @@ public class LdapClient {
     orFilter.or(new WhitespaceWildcardsFilter(getUserIdAttribute(), name));
     andFilter.and(orFilter);
 
-    String[] userAttributesToReturn = {
-      getUserFirstnameAttribute(), getUserLastnameAttribute(), getUserIdAttribute()
-    };
-
     final List<AccessIdRepresentationModel> accessIds =
         ldapTemplate.search(
             getUserSearchBase(),
             andFilter.encode(),
             SearchControls.SUBTREE_SCOPE,
-            userAttributesToReturn,
+            getLookUpUserAttributesToReturn(),
             new UserContextMapper());
     LOGGER.debug(
         "exit from searchUsersByNameOrAccessId. Retrieved the following users: {}.", accessIds);
@@ -166,19 +163,19 @@ public class LdapClient {
     return accessIds;
   }
 
-  public AccessIdRepresentationModel searchGroupByDn(final String name) {
-    LOGGER.debug("entry to searchGroupByDn(name = {}).", name);
+  public AccessIdRepresentationModel searchAccessIdByDn(final String dn) {
+    LOGGER.debug("entry to searchGroupByDn(name = {}).", dn);
     isInitOrFail();
     // Obviously Spring LdapTemplate does have a inconsistency and always adds the base name to the
     // given DN.
     // https://stackoverflow.com/questions/55285743/spring-ldaptemplate-how-to-lookup-fully-qualified-dn-with-configured-base-dn
     // Therefore we have to remove the base name from the dn before performing the lookup
-    String nameWithoutBaseDn = getNameWithoutBaseDn(name);
+    String nameWithoutBaseDn = getNameWithoutBaseDn(dn);
     LOGGER.debug(
         "Removed baseDN {} from given DN. New DN to be used: {}", getBaseDn(), nameWithoutBaseDn);
     final AccessIdRepresentationModel accessId =
         ldapTemplate.lookup(
-            nameWithoutBaseDn, getLookUpGroupAttributesToReturn(), new GroupContextMapper());
+            nameWithoutBaseDn, getLookUpUserAndGroupAttributesToReturn(), new DnContextMapper());
     LOGGER.debug("Exit from searchGroupByDn. Retrieved the following group: {}", accessId);
     return accessId;
   }
@@ -332,6 +329,19 @@ public class LdapClient {
     return new String[] {getGroupNameAttribute(), CN};
   }
 
+  String[] getLookUpUserAndGroupAttributesToReturn() {
+    return Stream.concat(
+            Arrays.stream(getLookUpUserAttributesToReturn()),
+            Arrays.stream(getLookUpGroupAttributesToReturn()))
+        .toArray(String[]::new);
+  }
+
+  String[] getLookUpUserAttributesToReturn() {
+    return new String[] {
+      getUserFirstnameAttribute(), getUserLastnameAttribute(), getUserIdAttribute()
+    };
+  }
+
   @PostConstruct
   void init() {
     LOGGER.debug("Entry to init()");
@@ -400,6 +410,27 @@ public class LdapClient {
       String firstName = context.getStringAttribute(getUserFirstnameAttribute());
       String lastName = context.getStringAttribute(getUserLastnameAttribute());
       accessId.setName(String.format("%s, %s", lastName, firstName));
+      return accessId;
+    }
+  }
+
+  /** General Context Mapper for DNs, which can be both, user or groups. */
+  class DnContextMapper extends AbstractContextMapper<AccessIdRepresentationModel> {
+
+    @Override
+    public AccessIdRepresentationModel doMapFromContext(final DirContextOperations context) {
+      final AccessIdRepresentationModel accessId = new AccessIdRepresentationModel();
+      String userId = context.getStringAttribute(getUserIdAttribute());
+      if (userId != null) {
+        accessId.setAccessId(userId);
+        String firstName = context.getStringAttribute(getUserFirstnameAttribute());
+        String lastName = context.getStringAttribute(getUserLastnameAttribute());
+        accessId.setName(String.format("%s, %s", lastName, firstName));
+      } else {
+        String dn = getDnWithBaseDn(context.getDn().toString());
+        accessId.setAccessId(dn); // fully qualified dn
+        accessId.setName(context.getStringAttribute(getGroupNameAttribute()));
+      }
       return accessId;
     }
   }
