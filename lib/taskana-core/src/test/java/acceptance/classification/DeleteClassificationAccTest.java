@@ -30,8 +30,7 @@ class DeleteClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testDeleteClassificationInDomain()
-      throws ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
+  void testDeleteClassificationInDomain() throws Exception {
     classificationService.deleteClassification("L140101", "DOMAIN_A");
 
     Classification classification = classificationService.getClassification("L140101", "DOMAIN_A");
@@ -70,8 +69,7 @@ class DeleteClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testDeleteMasterClassification()
-      throws ClassificationNotFoundException, NotAuthorizedException, ClassificationInUseException {
+  void testDeleteMasterClassification() throws Exception {
 
     classificationService.deleteClassification("L3060", "");
     ThrowingCallable call = () -> classificationService.getClassification("L3060", "DOMAIN_A");
@@ -87,8 +85,7 @@ class DeleteClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testThrowExceptionWhenChildClassificationIsInUseAndRollback()
-      throws ClassificationNotFoundException {
+  void testThrowExceptionWhenChildClassificationIsInUseAndRollback() throws Exception {
 
     ThrowingCallable call = () -> classificationService.deleteClassification("L11010", "DOMAIN_A");
     assertThatThrownBy(call).isInstanceOf(ClassificationInUseException.class);

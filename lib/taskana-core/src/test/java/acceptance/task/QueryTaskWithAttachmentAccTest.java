@@ -9,12 +9,9 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
-import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.AttachmentSummary;
 import pro.taskana.task.api.models.Task;
@@ -69,7 +66,7 @@ class QueryTaskWithAttachmentAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-1")
   @Test
   void should_ConfirmIfAttachmentSummariesAreCorrect_When_UsingTaskQueryAndGetTaskById()
-      throws TaskNotFoundException, NotAuthorizedException {
+      throws Exception {
     TaskService taskService = taskanaEngine.getTaskService();
     // find Task with ID TKI:00...00
     List<TaskSummary> tasks =
@@ -92,8 +89,7 @@ class QueryTaskWithAttachmentAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_ConfirmIfAttachmentSummariesAreCorrect()
-      throws InvalidArgumentException, TaskNotFoundException, NotAuthorizedException {
+  void should_ConfirmIfAttachmentSummariesAreCorrect() throws Exception {
     TaskService taskService = taskanaEngine.getTaskService();
     // find Task with ID TKI:00...00
     List<TaskSummary> tasks =

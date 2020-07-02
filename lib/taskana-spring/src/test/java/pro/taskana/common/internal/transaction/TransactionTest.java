@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,14 +31,14 @@ import pro.taskana.task.api.TaskService;
 @EnableAutoConfiguration
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 @Disabled
-public class TransactionTest {
+class TransactionTest {
 
   @Autowired TaskService taskService;
   @LocalServerPort int port;
   @Autowired private TestRestTemplate restTemplate;
 
   @BeforeEach
-  public void init() throws SQLException, ClassNotFoundException {
+  void init() throws Exception {
     Class.forName("org.h2.Driver");
     try (Connection conn = getConnection()) {
       try (Statement statement = conn.createStatement()) {
@@ -50,7 +49,7 @@ public class TransactionTest {
   }
 
   @Test
-  public void testCommit() throws SQLException {
+  void testCommit() throws Exception {
     restTemplate.getForEntity("http://127.0.0.1:" + port + "/test", String.class);
 
     int resultCount = 0;
@@ -68,7 +67,7 @@ public class TransactionTest {
   }
 
   @Test
-  public void testRollback() throws SQLException {
+  void testRollback() throws Exception {
     restTemplate.postForEntity("http://127.0.0.1:" + port + "/test", null, String.class);
 
     int resultCount = 0;
@@ -85,7 +84,7 @@ public class TransactionTest {
     }
   }
 
-  private Connection getConnection() throws SQLException {
+  private Connection getConnection() throws Exception {
     return DriverManager.getConnection(
         "jdbc:h2:mem:task-engine;IGNORECASE=TRUE;LOCK_MODE=0", "SA", UUID.randomUUID().toString());
   }

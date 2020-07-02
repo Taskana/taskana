@@ -8,7 +8,6 @@ import static pro.taskana.common.rest.RestHelper.TEMPLATE;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -107,7 +106,7 @@ class WorkbasketDefinitionControllerIntTest {
   }
 
   @Test
-  void testImportEveryWorkbasketFromDomainA() throws IOException {
+  void testImportEveryWorkbasketFromDomainA() throws Exception {
     TaskanaPagedModel<WorkbasketDefinitionRepresentationModel> wbList =
         executeExportRequestForDomain("DOMAIN_A").getBody();
     assertThat(wbList).isNotNull();
@@ -117,7 +116,7 @@ class WorkbasketDefinitionControllerIntTest {
   }
 
   @Test
-  void testImportWorkbasketWithoutDistributionTargets() throws IOException {
+  void testImportWorkbasketWithoutDistributionTargets() throws Exception {
     TaskanaPagedModel<WorkbasketDefinitionRepresentationModel> pagedModel =
         executeExportRequestForDomain("DOMAIN_A").getBody();
     assertThat(pagedModel).isNotNull();
@@ -130,7 +129,7 @@ class WorkbasketDefinitionControllerIntTest {
   }
 
   @Test
-  void testImportWorkbasketWithDistributionTargetsInImportFile() throws IOException {
+  void testImportWorkbasketWithDistributionTargetsInImportFile() throws Exception {
     TaskanaPagedModel<WorkbasketDefinitionRepresentationModel> wbList =
         executeExportRequestForDomain("DOMAIN_A").getBody();
     assertThat(wbList).isNotNull();
@@ -155,7 +154,7 @@ class WorkbasketDefinitionControllerIntTest {
   }
 
   @Test
-  void testImportWorkbasketWithDistributionTargetsInSystem() throws IOException {
+  void testImportWorkbasketWithDistributionTargetsInSystem() throws Exception {
     TaskanaPagedModel<WorkbasketDefinitionRepresentationModel> wbList =
         executeExportRequestForDomain("DOMAIN_A").getBody();
 
@@ -212,7 +211,7 @@ class WorkbasketDefinitionControllerIntTest {
   }
 
   @Test
-  void testNoErrorWhenImportWithSameIdButDifferentKeyAndDomain() throws IOException {
+  void testNoErrorWhenImportWithSameIdButDifferentKeyAndDomain() throws Exception {
     TaskanaPagedModel<WorkbasketDefinitionRepresentationModel> wbList =
         executeExportRequestForDomain("DOMAIN_A").getBody();
 
@@ -270,7 +269,7 @@ class WorkbasketDefinitionControllerIntTest {
 
   private void expectStatusWhenExecutingImportRequestOfWorkbaskets(
       HttpStatus expectedStatus, WorkbasketDefinitionRepresentationModel... workbaskets)
-      throws IOException {
+      throws Exception {
     TaskanaPagedModel<WorkbasketDefinitionRepresentationModel> pagedModel =
         new TaskanaPagedModel<>(
             TaskanaPagedModelKeys.WORKBASKET_DEFINITIONS, Arrays.asList(workbaskets));
@@ -280,7 +279,7 @@ class WorkbasketDefinitionControllerIntTest {
   private void expectStatusWhenExecutingImportRequestOfWorkbaskets(
       HttpStatus expectedStatus,
       TaskanaPagedModel<WorkbasketDefinitionRepresentationModel> pageModel)
-      throws IOException {
+      throws Exception {
     File tmpFile = File.createTempFile("test", ".tmp");
     try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(tmpFile), UTF_8)) {
       objMapper.writeValue(writer, pageModel);

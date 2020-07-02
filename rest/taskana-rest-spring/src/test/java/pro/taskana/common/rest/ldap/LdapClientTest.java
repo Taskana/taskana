@@ -23,7 +23,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.env.Environment;
 import org.springframework.ldap.core.LdapTemplate;
 
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 
@@ -49,7 +48,7 @@ class LdapClientTest {
   }
 
   @Test
-  void testLdap_searchUsersAndGroups() throws InvalidArgumentException {
+  void testLdap_searchUsersAndGroups() throws Exception {
 
     setUpEnvMock();
     cut.init();

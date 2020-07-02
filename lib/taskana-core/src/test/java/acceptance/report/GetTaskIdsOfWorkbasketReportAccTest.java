@@ -10,7 +10,6 @@ import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
@@ -37,7 +36,7 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testGetTaskIdsOfWorkbasketReport() throws InvalidArgumentException, NotAuthorizedException {
+  void testGetTaskIdsOfWorkbasketReport() throws Exception {
     final MonitorService monitorService = taskanaEngine.getMonitorService();
 
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
@@ -82,8 +81,7 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testGetTaskIdsOfWorkbasketReportWithExcludedClassifications()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testGetTaskIdsOfWorkbasketReportWithExcludedClassifications() throws Exception {
     final MonitorService monitorService = taskanaEngine.getMonitorService();
 
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();

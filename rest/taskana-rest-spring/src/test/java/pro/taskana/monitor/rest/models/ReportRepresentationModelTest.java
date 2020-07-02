@@ -34,7 +34,7 @@ class ReportRepresentationModelTest {
   private List<TimeIntervalColumnHeader> headers;
 
   @Autowired
-  public ReportRepresentationModelTest(
+  ReportRepresentationModelTest(
       ReportRepresentationModelAssembler reportRepresentationModelAssembler) {
     this.reportRepresentationModelAssembler = reportRepresentationModelAssembler;
   }

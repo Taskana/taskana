@@ -31,7 +31,7 @@ class GetClassificationAccTest extends AbstractAccTest {
   }
 
   @Test
-  void testGetOneClassificationByKeyAndDomain() throws ClassificationNotFoundException {
+  void testGetOneClassificationByKeyAndDomain() throws Exception {
     Classification classification = classificationService.getClassification("T6310", "DOMAIN_A");
     assertThat(classification).isNotNull();
     assertThat(classification.getId()).isEqualTo("CLI:100000000000000000000000000000000011");
@@ -54,7 +54,7 @@ class GetClassificationAccTest extends AbstractAccTest {
   }
 
   @Test
-  void testGetOneClassificationById() throws ClassificationNotFoundException {
+  void testGetOneClassificationById() throws Exception {
     Classification classification =
         classificationService.getClassification("CLI:100000000000000000000000000000000011");
     assertThat(classification).isNotNull();
@@ -79,14 +79,14 @@ class GetClassificationAccTest extends AbstractAccTest {
   }
 
   @Test
-  void testGetClassificationWithSpecialCharacter() throws ClassificationNotFoundException {
+  void testGetClassificationWithSpecialCharacter() throws Exception {
     Classification classification =
         classificationService.getClassification("CLI:100000000000000000000000000000000009");
     assertThat(classification.getName()).isEqualTo("Zustimmungserklärung");
   }
 
   @Test
-  void testGetClassificationAsSummary() throws ClassificationNotFoundException {
+  void testGetClassificationAsSummary() throws Exception {
     ClassificationSummary classification =
         classificationService
             .getClassification("CLI:100000000000000000000000000000000011")
@@ -125,8 +125,7 @@ class GetClassificationAccTest extends AbstractAccTest {
   }
 
   @Test
-  void testGetOneClassificationForDomainAndGetClassificationFromMasterDomain()
-      throws ClassificationNotFoundException {
+  void testGetOneClassificationForDomainAndGetClassificationFromMasterDomain() throws Exception {
     Classification classification = classificationService.getClassification("L10000", "DOMAIN_B");
     assertThat(classification).isNotNull();
     assertThat(classification.getDomain()).isEqualTo("");
@@ -134,7 +133,7 @@ class GetClassificationAccTest extends AbstractAccTest {
   }
 
   @Test
-  void testGetOneClassificationForMasterDomain() throws ClassificationNotFoundException {
+  void testGetOneClassificationForMasterDomain() throws Exception {
     Classification classification = classificationService.getClassification("L10000", "");
     assertThat(classification).isNotNull();
     assertThat(classification.getDomain()).isEqualTo("");

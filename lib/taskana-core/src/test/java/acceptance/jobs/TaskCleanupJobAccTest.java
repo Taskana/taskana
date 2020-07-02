@@ -3,27 +3,18 @@ package acceptance.jobs;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
-import pro.taskana.task.api.exceptions.InvalidOwnerException;
-import pro.taskana.task.api.exceptions.InvalidStateException;
-import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
-import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.jobs.TaskCleanupJob;
-import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
 /** Acceptance test for all "jobs tasks runner" scenarios. */
 @ExtendWith(JaasExtension.class)
@@ -32,7 +23,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
   TaskService taskService;
 
   @BeforeEach
-  void before() throws SQLException {
+  void before() throws Exception {
     // required if single tests modify database
     // TODO split test class into readOnly & modifying tests to improve performance
     resetDb(false);
@@ -94,10 +85,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
     assertThat(completedCreatedTask).isNotNull();
   }
 
-  private Task createAndCompleteTask()
-      throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
-          TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException,
-          InvalidStateException, InvalidOwnerException {
+  private Task createAndCompleteTask() throws Exception {
     Task newTask = taskService.newTask("user-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
     newTask.setPrimaryObjRef(

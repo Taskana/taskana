@@ -18,7 +18,6 @@ import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.InvalidStateException;
-import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.TaskSummary;
 
 /** Acceptance tests for "terminate task" scenarios. */
@@ -27,7 +26,7 @@ class TerminateTaskAccTest extends AbstractAccTest {
   private static TaskService taskService;
 
   @BeforeEach
-  public void setupIndividualTest() throws Exception {
+  void setupIndividualTest() throws Exception {
     resetDb(false);
   }
 
@@ -47,8 +46,7 @@ class TerminateTaskAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @WithAccessId(user = "taskadmin")
   @TestTemplate
-  void should_TerminateTask_When_TaskStateIsReady()
-      throws NotAuthorizedException, TaskNotFoundException, InvalidStateException {
+  void should_TerminateTask_When_TaskStateIsReady() throws Exception {
     List<TaskSummary> taskSummaries = taskService.createTaskQuery().stateIn(TaskState.READY).list();
     assertThat(taskSummaries).hasSize(47);
     taskService.terminateTask(taskSummaries.get(0).getId());
@@ -61,8 +59,7 @@ class TerminateTaskAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @WithAccessId(user = "taskadmin")
   @TestTemplate
-  void should_TerminateTask_When_TaskStateIsClaimed()
-      throws NotAuthorizedException, TaskNotFoundException, InvalidStateException {
+  void should_TerminateTask_When_TaskStateIsClaimed() throws Exception {
     List<TaskSummary> taskSummaries =
         taskService.createTaskQuery().stateIn(TaskState.CLAIMED).list();
     assertThat(taskSummaries.size()).isEqualTo(20);

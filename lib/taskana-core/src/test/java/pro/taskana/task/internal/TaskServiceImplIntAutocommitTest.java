@@ -3,7 +3,6 @@ package pro.taskana.task.internal;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 import javax.sql.DataSource;
@@ -16,17 +15,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.classification.api.ClassificationService;
-import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistException;
-import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.internal.models.ClassificationImpl;
 import pro.taskana.common.api.KeyDomain;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
-import pro.taskana.common.api.exceptions.DomainNotFoundException;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.TaskanaEngineTestConfiguration;
 import pro.taskana.common.internal.security.CurrentUserContext;
@@ -35,8 +29,6 @@ import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.task.api.TaskState;
-import pro.taskana.task.api.exceptions.InvalidStateException;
-import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
@@ -44,10 +36,6 @@ import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
-import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
-import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
-import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
-import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
@@ -70,7 +58,7 @@ class TaskServiceImplIntAutocommitTest {
   private WorkbasketService workbasketService;
 
   @BeforeAll
-  static void beforeAll() throws SQLException {
+  static void beforeAll() throws Exception {
     DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
     String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
     sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
@@ -94,11 +82,7 @@ class TaskServiceImplIntAutocommitTest {
   }
 
   @Test
-  void testStart()
-      throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
-          ClassificationNotFoundException, ClassificationAlreadyExistException,
-          TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException,
-          WorkbasketAlreadyExistException, DomainNotFoundException {
+  void testStart() throws Exception {
 
     Workbasket wb = workbasketService.newWorkbasket("workbasket", "DOMAIN_A");
     wb.setName("workbasket");
@@ -123,11 +107,7 @@ class TaskServiceImplIntAutocommitTest {
   }
 
   @Test
-  void testStartTransactionFail()
-      throws TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException,
-          ClassificationNotFoundException, ClassificationAlreadyExistException,
-          TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException,
-          WorkbasketAlreadyExistException, DomainNotFoundException {
+  void testStartTransactionFail() throws Exception {
 
     Workbasket wb = workbasketService.newWorkbasket("wb1k1", "DOMAIN_A");
     wb.setName("sdf");
@@ -160,11 +140,7 @@ class TaskServiceImplIntAutocommitTest {
   }
 
   @Test
-  void should_ReturnList_when_BuilderIsUsed()
-      throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
-          ClassificationAlreadyExistException, TaskAlreadyExistException,
-          InvalidWorkbasketException, InvalidArgumentException, SystemException,
-          WorkbasketAlreadyExistException, DomainNotFoundException {
+  void should_ReturnList_when_BuilderIsUsed() throws Exception {
     Workbasket wb = workbasketService.newWorkbasket("key", "DOMAIN_A");
     wb.setName("workbasket");
     wb.setType(WorkbasketType.GROUP);
@@ -202,11 +178,7 @@ class TaskServiceImplIntAutocommitTest {
   }
 
   @Test
-  void shouldTransferTaskToOtherWorkbasket()
-      throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          ClassificationAlreadyExistException, TaskNotFoundException, InterruptedException,
-          TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException,
-          WorkbasketAlreadyExistException, DomainNotFoundException, InvalidStateException {
+  void shouldTransferTaskToOtherWorkbasket() throws Exception {
     final int sleepTime = 100;
 
     // Source Workbasket
@@ -267,11 +239,7 @@ class TaskServiceImplIntAutocommitTest {
 
   @WithAccessId(user = "user-1-1", groups = "businessadmin")
   @Test
-  void shouldNotTransferByFailingSecurity()
-      throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          ClassificationAlreadyExistException, SQLException, TaskAlreadyExistException,
-          InvalidWorkbasketException, InvalidArgumentException, WorkbasketAlreadyExistException,
-          DomainNotFoundException, WorkbasketAccessItemAlreadyExistException {
+  void shouldNotTransferByFailingSecurity() throws Exception {
     final String user = CurrentUserContext.getUserid();
 
     // Set up Security for this Test
@@ -367,11 +335,7 @@ class TaskServiceImplIntAutocommitTest {
   }
 
   @Test
-  void testWithPrimaryObjectRef()
-      throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
-          ClassificationNotFoundException, ClassificationAlreadyExistException,
-          TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException,
-          WorkbasketAlreadyExistException, DomainNotFoundException {
+  void testWithPrimaryObjectRef() throws Exception {
     Workbasket wb = workbasketService.newWorkbasket("workbasket", "DOMAIN_A");
     wb.setName("workbasket");
     wb.setType(WorkbasketType.GROUP);
@@ -409,8 +373,7 @@ class TaskServiceImplIntAutocommitTest {
       boolean permRead,
       boolean permAppend,
       boolean permTransfer)
-      throws InvalidArgumentException, NotAuthorizedException, WorkbasketNotFoundException,
-          WorkbasketAccessItemAlreadyExistException {
+      throws Exception {
     WorkbasketAccessItem accessItem =
         workbasketService.newWorkbasketAccessItem(wb.getId(), accessId);
     accessItem.setPermOpen(permOpen);

@@ -1,6 +1,7 @@
 package pro.taskana.task.internal.models;
 
 import java.time.Instant;
+import java.util.Objects;
 
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.TaskState;
@@ -99,6 +100,42 @@ public class MinimalTaskSummary {
 
   public void setCallbackState(CallbackState callbackState) {
     this.callbackState = callbackState;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        taskId,
+        externalId,
+        workbasketId,
+        classificationId,
+        owner,
+        taskState,
+        planned,
+        due,
+        modified,
+        callbackState);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (!(obj instanceof MinimalTaskSummary)) {
+      return false;
+    }
+    MinimalTaskSummary other = (MinimalTaskSummary) obj;
+    return Objects.equals(taskId, other.taskId)
+        && Objects.equals(externalId, other.externalId)
+        && Objects.equals(workbasketId, other.workbasketId)
+        && Objects.equals(classificationId, other.classificationId)
+        && Objects.equals(owner, other.owner)
+        && taskState == other.taskState
+        && Objects.equals(planned, other.planned)
+        && Objects.equals(due, other.due)
+        && Objects.equals(modified, other.modified)
+        && callbackState == other.callbackState;
   }
 
   @Override

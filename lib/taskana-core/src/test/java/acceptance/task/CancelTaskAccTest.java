@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
-import java.sql.SQLException;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,13 +11,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.InvalidStateException;
-import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 
@@ -34,7 +31,7 @@ class CancelTaskAccTest extends AbstractAccTest {
   }
 
   @BeforeEach
-  public void setupIndividualTest() throws Exception {
+  void setupIndividualTest() throws Exception {
     resetDb(false);
   }
 
@@ -48,8 +45,7 @@ class CancelTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testCancelReadyTask()
-      throws NotAuthorizedException, TaskNotFoundException, InvalidStateException {
+  void testCancelReadyTask() throws Exception {
     List<TaskSummary> taskSummaries = taskService.createTaskQuery().stateIn(TaskState.READY).list();
     assertThat(taskSummaries).hasSize(47);
     taskService.cancelTask(taskSummaries.get(0).getId());
@@ -63,7 +59,7 @@ class CancelTaskAccTest extends AbstractAccTest {
   @WithAccessId(user = "taskadmin")
   @TestTemplate
   void should_CancelTask_When_NoExplicitPermissionsButUserIsInAdministrativeRole()
-      throws NotAuthorizedException, TaskNotFoundException, InvalidStateException, SQLException {
+      throws Exception {
 
     resetDb(false);
     Task tasktoCancel = taskService.getTask("TKI:000000000000000000000000000000000001");
@@ -75,8 +71,7 @@ class CancelTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void testCancelClaimedTask()
-      throws NotAuthorizedException, TaskNotFoundException, InvalidStateException {
+  void testCancelClaimedTask() throws Exception {
     List<TaskSummary> taskSummaries =
         taskService.createTaskQuery().stateIn(TaskState.CLAIMED).list();
 

@@ -137,7 +137,7 @@ class TaskServiceImplTest {
   }
 
   @Test
-  void testTaskSummaryEqualsHashCode() throws InterruptedException {
+  void testTaskSummaryEqualsHashCode() throws Exception {
     Classification classification = CreateTaskModelHelper.createDummyClassification();
     Workbasket wb = CreateTaskModelHelper.createWorkbasket("WB-ID", "WB-Key");
     ObjectReference objectReference = JunitHelper.createDefaultObjRef();

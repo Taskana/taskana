@@ -14,24 +14,17 @@ import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.common.api.BulkOperationResults;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
-import pro.taskana.task.api.exceptions.InvalidOwnerException;
 import pro.taskana.task.api.exceptions.InvalidStateException;
-import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
-import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.TaskImpl;
-import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
 /** Acceptance test for all "create task" scenarios. */
 @ExtendWith(JaasExtension.class)
@@ -39,9 +32,7 @@ class CallbackStateAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testCreateTaskWithDifferentCallbackStates()
-      throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException {
+  void testCreateTaskWithDifferentCallbackStates() throws Exception {
 
     TaskService taskService = taskanaEngine.getTaskService();
     TaskImpl createdTask = createTask(taskService, CallbackState.NONE);
@@ -65,10 +56,7 @@ class CallbackStateAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testDeletionOfTaskWithWrongCallbackStateIsBlocked()
-      throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException,
-          InvalidStateException, InvalidOwnerException {
+  void testDeletionOfTaskWithWrongCallbackStateIsBlocked() throws Exception {
     TaskService taskService = taskanaEngine.getTaskService();
 
     final TaskImpl createdTask =
@@ -112,10 +100,7 @@ class CallbackStateAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testUpdateOfCallbackState()
-      throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException,
-          InvalidStateException, InvalidOwnerException {
+  void testUpdateOfCallbackState() throws Exception {
 
     TaskImpl createdTask1 =
         createTask(taskanaEngine.getTaskService(), CallbackState.CALLBACK_PROCESSING_REQUIRED);
@@ -178,9 +163,7 @@ class CallbackStateAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testInvalidUpdateOfCallbackStateToNone()
-      throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          TaskAlreadyExistException, InvalidArgumentException {
+  void testInvalidUpdateOfCallbackStateToNone() throws Exception {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
@@ -214,10 +197,7 @@ class CallbackStateAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testInvalidUpdateOfCallbackStateToComplete()
-      throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          TaskAlreadyExistException, InvalidArgumentException, InvalidOwnerException,
-          InvalidStateException, TaskNotFoundException {
+  void testInvalidUpdateOfCallbackStateToComplete() throws Exception {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
@@ -254,10 +234,7 @@ class CallbackStateAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testInvalidUpdateOfCallbackStateToClaimed()
-      throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException,
-          InvalidStateException, InvalidOwnerException {
+  void testInvalidUpdateOfCallbackStateToClaimed() throws Exception {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
@@ -298,9 +275,7 @@ class CallbackStateAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testInvalidUpdateOfCallbackStateToRequired()
-      throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          TaskAlreadyExistException, InvalidArgumentException {
+  void testInvalidUpdateOfCallbackStateToRequired() throws Exception {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
@@ -389,8 +364,7 @@ class CallbackStateAccTest extends AbstractAccTest {
   }
 
   private TaskImpl createTask(TaskService taskService, CallbackState callbackState)
-      throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          TaskAlreadyExistException, InvalidArgumentException {
+      throws Exception {
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("L12010");
     newTask.setPrimaryObjRef(

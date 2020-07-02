@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 import javax.sql.DataSource;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
@@ -23,8 +22,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.common.api.KeyDomain;
 import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.common.api.exceptions.DomainNotFoundException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
@@ -37,10 +34,7 @@ import pro.taskana.task.internal.jobs.TaskCleanupJob;
 import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
-import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
-import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketInUseException;
-import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.internal.jobs.WorkbasketCleanupJob;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
@@ -151,9 +145,7 @@ class TaskanaTransactionIntTest {
   }
 
   @Test
-  void testTransactionCustomDbWithSchemaSetToTaskana()
-      throws SQLException, NotAuthorizedException, WorkbasketNotFoundException,
-          DomainNotFoundException, InvalidWorkbasketException, WorkbasketAlreadyExistException {
+  void testTransactionCustomDbWithSchemaSetToTaskana() throws Exception {
 
     final TaskanaEngineImpl taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
     try (Connection connection = dataSource.getConnection()) {

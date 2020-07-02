@@ -12,10 +12,9 @@ import pro.taskana.common.api.TaskanaEngine;
  */
 public class TaskanaEngineProxyForTest {
 
-  private InternalTaskanaEngine engine;
+  private final InternalTaskanaEngine engine;
 
-  public TaskanaEngineProxyForTest(TaskanaEngine taskanaEngine)
-      throws NoSuchFieldException, IllegalAccessException {
+  public TaskanaEngineProxyForTest(TaskanaEngine taskanaEngine) throws Exception {
     Field internal = TaskanaEngineImpl.class.getDeclaredField("internalTaskanaEngineImpl");
     internal.setAccessible(true);
     engine = (InternalTaskanaEngine) internal.get(taskanaEngine);

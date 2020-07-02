@@ -14,11 +14,12 @@ import com.openpojo.validation.test.impl.GetterTester;
 import com.openpojo.validation.test.impl.SetterTester;
 import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
-import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
@@ -26,75 +27,76 @@ import org.junit.jupiter.api.TestFactory;
 /** check classes with a custom equals and hashcode implementation for correctness. */
 class PojoTest {
 
+  private static List<Class<?>> pojoClasses;
+
+  @BeforeAll
+  static void setup() {
+    pojoClasses = getPojoClasses();
+  }
+
   @Test
   void testsThatPojoClassesAreFound() {
-    assertThat(getPojoClasses().count() > 0).isTrue();
+    assertThat(pojoClasses.stream().count() > 0).isTrue();
   }
 
   @TestFactory
-  Collection<DynamicTest> equalsContract() {
-    return getPojoClasses()
+  Stream<DynamicTest> equalsContract() {
+    return pojoClasses.stream()
         .map(
             cl ->
                 DynamicTest.dynamicTest(
                     "Check Hash and Equals for " + cl.getSimpleName(),
-                    () -> verifyHashAndEquals(cl)))
-        .collect(Collectors.toList());
+                    () -> verifyHashAndEquals(cl)));
   }
 
   @TestFactory
-  Collection<DynamicTest> validateGetters() {
-    return getPojoClasses()
+  Stream<DynamicTest> validateGetters() {
+    return pojoClasses.stream()
         .map(
             cl ->
                 DynamicTest.dynamicTest(
                     "Check Getter exist for " + cl.getSimpleName(),
-                    () -> validateWithRules(cl, new GetterMustExistRule())))
-        .collect(Collectors.toList());
+                    () -> validateWithRules(cl, new GetterMustExistRule())));
   }
 
   @TestFactory
-  Collection<DynamicTest> validateSetters() {
-    return getPojoClasses()
+  Stream<DynamicTest> validateSetters() {
+    return pojoClasses.stream()
         .map(
             cl ->
                 DynamicTest.dynamicTest(
                     "Check Setter for " + cl.getSimpleName(),
-                    () -> validateWithRules(cl, new SetterMustExistRule())))
-        .collect(Collectors.toList());
+                    () -> validateWithRules(cl, new SetterMustExistRule())));
   }
 
   @TestFactory
-  Collection<DynamicTest> validateGetAndSet() {
-    return getPojoClasses()
+  Stream<DynamicTest> validateGetAndSet() {
+    return pojoClasses.stream()
         .map(
             cl ->
                 DynamicTest.dynamicTest(
                     "Test set & get " + cl.getSimpleName(),
-                    () -> validateWithTester(cl, new GetterTester(), new SetterTester())))
-        .collect(Collectors.toList());
+                    () -> validateWithTester(cl, new GetterTester(), new SetterTester())));
   }
 
   @TestFactory
-  Collection<DynamicTest> validateNoStaticExceptFinalFields() {
-    return getPojoClasses()
+  Stream<DynamicTest> validateNoStaticExceptFinalFields() {
+    return pojoClasses.stream()
         .map(
             cl ->
                 DynamicTest.dynamicTest(
                     "Check static fields for " + cl.getSimpleName(),
-                    () -> validateWithRules(cl, new NoStaticExceptFinalRule())))
-        .collect(Collectors.toList());
+                    () -> validateWithRules(cl, new NoStaticExceptFinalRule())));
   }
 
   @TestFactory
-  Collection<DynamicTest> validateNoPublicFields() {
-    return getPojoClasses()
+  Stream<DynamicTest> validateNoPublicFields() {
+    return pojoClasses.stream()
         .map(
             cl ->
                 DynamicTest.dynamicTest(
                     "Check public fields for " + cl.getSimpleName(),
-                    () -> validateWithRules(cl, new NoPublicFieldsRule())))
-        .collect(Collectors.toList());
+                    () -> validateWithRules(cl, new NoPublicFieldsRule())));
   }
 
   private void validateWithRules(Class<?> cl, Rule... rules) {
@@ -112,11 +114,12 @@ class PojoTest {
         .verify();
   }
 
-  private Stream<Class<?>> getPojoClasses() {
+  private static List<Class<?>> getPojoClasses() {
     // TODO how to identify pojos? Is overwritten equals method enough?
     return new ClassFileImporter()
         .importPackages("pro.taskana").stream()
             .filter(javaClass -> javaClass.tryGetMethod("equals", Object.class).isPresent())
-            .map(JavaClass::reflect);
+            .map(JavaClass::reflect)
+            .collect(Collectors.toList());
   }
 }

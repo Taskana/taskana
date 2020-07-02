@@ -23,8 +23,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.monitor.api.SelectedItem;
 import pro.taskana.monitor.api.reports.ClassificationReport;
@@ -56,8 +54,7 @@ class ClassificationReportBuilderImplTest {
   }
 
   @Test
-  void testGetTotalNumbersOfClassificationReport()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testGetTotalNumbersOfClassificationReport() throws Exception {
     final List<String> workbasketIds =
         Collections.singletonList("WBI:000000000000000000000000000000000001");
     final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
@@ -115,8 +112,7 @@ class ClassificationReportBuilderImplTest {
   }
 
   @Test
-  void testGetClassificationReportWithReportLineItemDefinitions()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testGetClassificationReportWithReportLineItemDefinitions() throws Exception {
     final List<String> workbasketIds =
         Collections.singletonList("WBI:000000000000000000000000000000000001");
     final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
@@ -181,8 +177,7 @@ class ClassificationReportBuilderImplTest {
   }
 
   @Test
-  void testGetTotalNumbersOfDetailedClassificationReport()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testGetTotalNumbersOfDetailedClassificationReport() throws Exception {
     final List<String> workbasketIds =
         Collections.singletonList("WBI:000000000000000000000000000000000001");
     final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
@@ -244,8 +239,7 @@ class ClassificationReportBuilderImplTest {
   }
 
   @Test
-  void testGetDetailedClassificationReportWithReportLineItemDefinitions()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testGetDetailedClassificationReportWithReportLineItemDefinitions() throws Exception {
     final List<String> workbasketIds =
         Collections.singletonList("WBI:000000000000000000000000000000000001");
     final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
@@ -315,7 +309,7 @@ class ClassificationReportBuilderImplTest {
   }
 
   @Test
-  void testGetTaskIdsForSelectedItems() throws InvalidArgumentException, NotAuthorizedException {
+  void testGetTaskIdsForSelectedItems() throws Exception {
     final List<String> workbasketIds =
         Collections.singletonList("WBI:000000000000000000000000000000000001");
     final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
@@ -381,8 +375,7 @@ class ClassificationReportBuilderImplTest {
   }
 
   @Test
-  void testGetTaskIdsForSelectedItemsIsEmptyResult()
-      throws NotAuthorizedException, InvalidArgumentException {
+  void testGetTaskIdsForSelectedItemsIsEmptyResult() throws Exception {
     SelectedItem selectedItem = new SelectedItem();
     selectedItem.setKey("GIBTSNED");
     List<SelectedItem> selectedItems = Collections.singletonList(selectedItem);
@@ -394,7 +387,7 @@ class ClassificationReportBuilderImplTest {
   }
 
   @Test
-  void testListCustomAttributeValuesForCustomAttributeName() throws NotAuthorizedException {
+  void testListCustomAttributeValuesForCustomAttributeName() throws Exception {
     final List<String> workbasketIds =
         Collections.singletonList("WBI:000000000000000000000000000000000001");
     final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
@@ -455,8 +448,7 @@ class ClassificationReportBuilderImplTest {
   }
 
   @Test
-  void testListCustomAttributeValuesForCustomAttributeNameIsEmptyResult()
-      throws NotAuthorizedException {
+  void testListCustomAttributeValuesForCustomAttributeNameIsEmptyResult() throws Exception {
     List<String> result =
         cut.createClassificationReportBuilder()
             .workbasketIdIn(Collections.singletonList("DieGibtsGarantiertNed"))

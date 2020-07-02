@@ -7,7 +7,6 @@ import static pro.taskana.common.rest.RestHelper.TEMPLATE;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
@@ -34,7 +33,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import pro.taskana.classification.api.ClassificationService;
-import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.rest.assembler.ClassificationRepresentationModelAssembler;
 import pro.taskana.classification.rest.models.ClassificationRepresentationModel;
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
@@ -106,7 +104,7 @@ class ClassificationDefinitionControllerIntTest {
   }
 
   @Test
-  void testImportFilledClassification() throws IOException {
+  void testImportFilledClassification() throws Exception {
     ClassificationRepresentationModel classification = new ClassificationRepresentationModel();
     classification.setClassificationId("classificationId_");
     classification.setKey("key drelf");
@@ -141,7 +139,7 @@ class ClassificationDefinitionControllerIntTest {
   }
 
   @Test
-  void testFailureWhenKeyIsMissing() throws IOException {
+  void testFailureWhenKeyIsMissing() throws Exception {
     ClassificationRepresentationModel classification = new ClassificationRepresentationModel();
     classification.setDomain("DOMAIN_A");
     TaskanaPagedModel<ClassificationRepresentationModel> clList =
@@ -156,7 +154,7 @@ class ClassificationDefinitionControllerIntTest {
   }
 
   @Test
-  void testFailureWhenDomainIsMissing() throws IOException {
+  void testFailureWhenDomainIsMissing() throws Exception {
     ClassificationRepresentationModel classification = new ClassificationRepresentationModel();
     classification.setKey("one");
     TaskanaPagedModel<ClassificationRepresentationModel> clList =
@@ -187,7 +185,7 @@ class ClassificationDefinitionControllerIntTest {
   }
 
   @Test
-  void testImportMultipleClassifications() throws IOException {
+  void testImportMultipleClassifications() throws Exception {
     ClassificationRepresentationModel classification1 =
         this.createClassification("id1", "ImportKey1", "DOMAIN_A", null, null);
 
@@ -423,12 +421,12 @@ class ClassificationDefinitionControllerIntTest {
   }
 
   private ClassificationRepresentationModel getClassificationWithKeyAndDomain(
-      String key, String domain) throws ClassificationNotFoundException {
+      String key, String domain) throws Exception {
     return classificationAssembler.toModel(classificationService.getClassification(key, domain));
   }
 
   private ResponseEntity<Void> importRequest(
-      TaskanaPagedModel<ClassificationRepresentationModel> clList) throws IOException {
+      TaskanaPagedModel<ClassificationRepresentationModel> clList) throws Exception {
     LOGGER.debug("Start Import");
     File tmpFile = File.createTempFile("test", ".tmp");
     OutputStreamWriter writer =

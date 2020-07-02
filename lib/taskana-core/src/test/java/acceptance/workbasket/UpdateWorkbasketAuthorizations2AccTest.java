@@ -15,11 +15,7 @@ import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 
 /** Acceptance test for all "update workbasket" scenarios that need a fresh database. */
 @ExtendWith(JaasExtension.class)
-public class UpdateWorkbasketAuthorizations2AccTest extends AbstractAccTest {
-
-  UpdateWorkbasketAuthorizations2AccTest() {
-    super();
-  }
+class UpdateWorkbasketAuthorizations2AccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test

@@ -13,7 +13,6 @@ import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.BulkOperationResults;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.security.JaasExtension;
@@ -67,8 +66,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testDeleteSingleTask()
-      throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
+  void testDeleteSingleTask() throws Exception {
 
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000036");
@@ -99,8 +97,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testThrowsExceptionIfTaskIsNotCompleted()
-      throws TaskNotFoundException, NotAuthorizedException {
+  void testThrowsExceptionIfTaskIsNotCompleted() throws Exception {
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000029");
 
@@ -113,8 +110,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testForceDeleteTaskIfNotCompleted()
-      throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
+  void testForceDeleteTaskIfNotCompleted() throws Exception {
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000027");
 
@@ -137,7 +133,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testBulkDeleteTask() throws InvalidArgumentException, NotAuthorizedException {
+  void testBulkDeleteTask() throws Exception {
 
     TaskService taskService = taskanaEngine.getTaskService();
     ArrayList<String> taskIdList = new ArrayList<>();
@@ -156,8 +152,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testBulkDeleteTasksWithException()
-      throws TaskNotFoundException, InvalidArgumentException, NotAuthorizedException {
+  void testBulkDeleteTasksWithException() throws Exception {
 
     TaskService taskService = taskanaEngine.getTaskService();
     ArrayList<String> taskIdList = new ArrayList<>();

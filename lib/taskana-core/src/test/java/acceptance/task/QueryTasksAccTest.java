@@ -14,7 +14,6 @@ import static pro.taskana.task.api.TaskQueryColumnName.OWNER;
 import static pro.taskana.task.api.TaskQueryColumnName.STATE;
 
 import acceptance.AbstractAccTest;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -26,7 +25,6 @@ import java.util.stream.Stream;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.assertj.core.api.SoftAssertions;
-import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DynamicTest;
@@ -34,13 +32,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.TimeInterval;
-import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.TaskanaEngineProxyForTest;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
@@ -48,10 +43,6 @@ import pro.taskana.common.internal.util.Triplet;
 import pro.taskana.task.api.TaskQuery;
 import pro.taskana.task.api.TaskQueryColumnName;
 import pro.taskana.task.api.TaskService;
-import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
-import pro.taskana.task.api.exceptions.InvalidStateException;
-import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
-import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.AttachmentSummary;
 import pro.taskana.task.api.models.ObjectReference;
@@ -59,7 +50,6 @@ import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.TaskTestMapper;
 import pro.taskana.task.internal.models.TaskImpl;
-import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
 /** Acceptance test for all "query tasks with sorting" scenarios. */
@@ -74,7 +64,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   }
 
   @BeforeEach
-  void before() throws SQLException {
+  void before() throws Exception {
     // required if single tests modify database
     // TODO split test class into readOnly & modifying tests to improve performance
     resetDb(false);
@@ -221,10 +211,7 @@ class QueryTasksAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryForAttachmentInSummary()
-      throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-          TaskNotFoundException, ConcurrencyException, AttachmentPersistenceException,
-          InvalidStateException {
+  void testQueryForAttachmentInSummary() throws Exception {
 
     Attachment attachment =
         createAttachment(
@@ -305,7 +292,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   }
 
   void testQueryForCustomX(String customValue, String[] searchArguments, int expectedResult)
-      throws InvalidArgumentException {
+      throws Exception {
     List<TaskSummary> results =
         taskService.createTaskQuery().customAttributeLike(customValue, searchArguments).list();
     assertThat(results).hasSize(expectedResult);
@@ -321,39 +308,24 @@ class QueryTasksAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void testQueryForCustom7WithExceptionInLike() {
-
-    ThrowingCallable call =
-        () -> {
-          List<TaskSummary> results = taskService.createTaskQuery().customAttributeLike("7").list();
-          assertThat(results).isEmpty();
-        };
-    assertThatThrownBy(call).isInstanceOf(InvalidArgumentException.class);
+    assertThatThrownBy(() -> taskService.createTaskQuery().customAttributeLike("7").list())
+        .isInstanceOf(InvalidArgumentException.class);
   }
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryForCustom7WithExceptionInIn() throws InvalidArgumentException {
-
+  void testQueryForCustom7WithExceptionInIn() throws Exception {
     List<TaskSummary> results =
         taskService.createTaskQuery().customAttributeLike("7", "fsdhfshk%").list();
     assertThat(results).isEmpty();
 
-    String[] ids =
-        results.stream().map(wrap(t -> t.getCustomAttribute("7"))).toArray(String[]::new);
-
-    ThrowingCallable call =
-        () -> {
-          List<TaskSummary> result2 =
-              taskService.createTaskQuery().customAttributeIn("7", ids).list();
-          assertThat(result2).isEmpty();
-        };
-    assertThatThrownBy(call).isInstanceOf(InvalidArgumentException.class);
+    assertThatThrownBy(() -> taskService.createTaskQuery().customAttributeIn("7").list())
+        .isInstanceOf(InvalidArgumentException.class);
   }
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryForCustom7WithException() throws InvalidArgumentException {
-
+  void testQueryForCustom7WithException() throws Exception {
     List<TaskSummary> results = taskService.createTaskQuery().customAttributeLike("7", "%").list();
     assertThat(results).hasSize(2);
 
@@ -366,11 +338,7 @@ class QueryTasksAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryTaskByCustomAttributes()
-      throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-          WorkbasketNotFoundException, TaskAlreadyExistException, NoSuchFieldException,
-          IllegalAccessException {
-
+  void testQueryTaskByCustomAttributes() throws Exception {
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
@@ -640,7 +608,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   }
 
   void testQueryForOrderByCustomX(String customValue, SortDirection sortDirection)
-      throws InvalidArgumentException {
+      throws Exception {
     List<TaskSummary> results =
         taskService.createTaskQuery().orderByCustomAttribute(customValue, sortDirection).list();
 

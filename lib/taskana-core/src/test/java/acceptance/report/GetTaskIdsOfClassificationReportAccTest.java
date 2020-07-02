@@ -9,7 +9,6 @@ import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
@@ -56,8 +55,7 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testGetTaskIdsOfClassificationReport()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testGetTaskIdsOfClassificationReport() throws Exception {
     final MonitorService monitorService = taskanaEngine.getMonitorService();
 
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
@@ -101,8 +99,7 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testGetTaskIdsOfClassificationReportWithAttachments()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testGetTaskIdsOfClassificationReportWithAttachments() throws Exception {
     final MonitorService monitorService = taskanaEngine.getMonitorService();
 
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
@@ -143,8 +140,7 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testGetTaskIdsOfClassificationReportWithDomainFilter()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testGetTaskIdsOfClassificationReportWithDomainFilter() throws Exception {
     final MonitorService monitorService = taskanaEngine.getMonitorService();
 
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();

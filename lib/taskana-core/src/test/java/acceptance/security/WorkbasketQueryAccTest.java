@@ -9,7 +9,6 @@ import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
@@ -64,8 +63,7 @@ class WorkbasketQueryAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testQueryWorkbasketByBusinessAdmin()
-      throws NotAuthorizedException, InvalidArgumentException {
+  void testQueryWorkbasketByBusinessAdmin() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     List<WorkbasketSummary> results =
         workbasketService.createWorkbasketQuery().nameLike("%").list();
@@ -84,7 +82,7 @@ class WorkbasketQueryAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryWorkbasketByAdmin() throws NotAuthorizedException, InvalidArgumentException {
+  void testQueryWorkbasketByAdmin() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     List<WorkbasketSummary> results =
         workbasketService.createWorkbasketQuery().nameLike("%").list();

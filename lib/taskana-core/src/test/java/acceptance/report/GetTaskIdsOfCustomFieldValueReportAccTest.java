@@ -44,8 +44,7 @@ class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testGetTaskIdsOfCustomFieldValueReport()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testGetTaskIdsOfCustomFieldValueReport() throws Exception {
     final MonitorService monitorService = taskanaEngine.getMonitorService();
 
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
@@ -91,8 +90,7 @@ class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testGetTaskIdsOfCustomFieldValueReportWithWorkbasketFilter()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testGetTaskIdsOfCustomFieldValueReportWithWorkbasketFilter() throws Exception {
     final MonitorService monitorService = taskanaEngine.getMonitorService();
 
     final List<String> workbasketIds =
@@ -136,8 +134,7 @@ class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testGetTaskIdsOfCustomFieldValueReportWithStateFilter()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testGetTaskIdsOfCustomFieldValueReportWithStateFilter() throws Exception {
     final MonitorService monitorService = taskanaEngine.getMonitorService();
 
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
@@ -183,8 +180,7 @@ class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testGetTaskIdsOfCustomFieldValueReportWithCategoryFilter()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testGetTaskIdsOfCustomFieldValueReportWithCategoryFilter() throws Exception {
     final MonitorService monitorService = taskanaEngine.getMonitorService();
 
     final List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
@@ -226,8 +222,7 @@ class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testGetTaskIdsOfCustomFieldValueReportWithDomainFilter()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testGetTaskIdsOfCustomFieldValueReportWithDomainFilter() throws Exception {
     final MonitorService monitorService = taskanaEngine.getMonitorService();
 
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
@@ -268,8 +263,7 @@ class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testGetTaskIdsOfCustomFieldValueReportWithCustomFieldValueFilter()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testGetTaskIdsOfCustomFieldValueReportWithCustomFieldValueFilter() throws Exception {
     final MonitorService monitorService = taskanaEngine.getMonitorService();
 
     final Map<CustomField, String> customAttributeFilter = new HashMap<>();
