@@ -7,7 +7,6 @@ import { Workbasket } from '../../models/workbasket';
 import { CopyWorkbasket,
   CreateWorkbasket,
   DeselectWorkbasket,
-  GetAllWorkbasketsSummary,
   GetWorkbasketAccessItems,
   GetWorkbasketDistributionTargets,
   GetWorkbasketsSummary,
@@ -17,8 +16,7 @@ import { CopyWorkbasket,
   SelectWorkbasket,
   SetActiveAction,
   UpdateWorkbasket, UpdateWorkbasketAccessItems,
-  UpdateWorkbasketDistributionTargets,
-  UpdateworkbasketSummaryParams } from './workbasket.actions';
+  UpdateWorkbasketDistributionTargets } from './workbasket.actions';
 import { WorkbasketSummaryRepresentation } from '../../models/workbasket-summary-representation';
 import { ACTION } from '../../models/action';
 import { DomainService } from '../../services/domain/domain.service';
@@ -46,22 +44,12 @@ export class WorkbasketState implements NgxsAfterBootstrap {
     return this.workbasketService.getWorkBasketsSummary(action.forceRequest,
       action.sortBy, action.order, action.name, action.nameLike, action.descLike, action.owner, action.ownerLike,
       action.type, action.key, action.keyLike, action.requiredPermission, action.allPages).pipe(
-      take(1), tap(workbasketsSummary => {
+      take(1), tap(paginatedWorkbasketsSummary => {
         ctx.patchState(
-          { workbasketsSummary }
+          { paginatedWorkbasketsSummary }
         );
       })
     );
-  }
-
-  @Action(GetAllWorkbasketsSummary)
-  getAllWorkbasketsSummary(ctx: StateContext<WorkbasketStateModel>, action: GetAllWorkbasketsSummary): Observable<any> {
-    return this.workbasketService.getWorkBasketsSummary(action.forceRequest, action.sortBy, action.order)
-      .pipe(take(1), tap(allWorkbasketsSummary => {
-        ctx.patchState({
-          allWorkbasketsSummary
-        });
-      }));
   }
 
   @Action(SelectWorkbasket)
@@ -125,11 +113,8 @@ export class WorkbasketState implements NgxsAfterBootstrap {
 
   @Action(CopyWorkbasket)
   copyWorkbasket(ctx: StateContext<WorkbasketStateModel>, action: CopyWorkbasket): Observable<any> {
-    const workbasketCopy = action.workbasket;
-    delete workbasketCopy.key;
     this.location.go(this.location.path().replace(/(workbaskets).*/g, 'workbaskets/(detail:new-workbasket)'));
     ctx.patchState({
-      workbasketCopy,
       action: ACTION.COPY
     });
     return of(null);
@@ -143,6 +128,10 @@ export class WorkbasketState implements NgxsAfterBootstrap {
           NOTIFICATION_TYPES.SUCCESS_ALERT_10,
           new Map<string, string>([['workbasketKey', updatedWorkbasket.key]])
         );
+        const workbasketsSummary = ctx.getState().paginatedWorkbasketsSummary.workbaskets;
+        const paginatedWorkbasketSummary = ctx.getState().paginatedWorkbasketsSummary;
+        paginatedWorkbasketSummary.workbaskets = this.updateWorkbasketDistributionTargets(workbasketsSummary, action.workbasket);
+        console.log(paginatedWorkbasketSummary);
         ctx.patchState({
           selectedWorkbasket: updatedWorkbasket,
         });
@@ -185,28 +174,6 @@ export class WorkbasketState implements NgxsAfterBootstrap {
         }
       }
     ));
-  }
-
-  @Action(UpdateworkbasketSummaryParams)
-  triggerUpdateWorkbasketList(ctx: StateContext<WorkbasketStateModel>, action: UpdateworkbasketSummaryParams): Observable<any> {
-    ctx.patchState({
-      workbasketsSummaryParams: {
-        forceRequest: action.forceRequest,
-        sortBy: action.sortBy,
-        order: action.order,
-        name: action.name,
-        nameLike: action.nameLike,
-        descLike: action.descLike,
-        owner: action.owner,
-        ownerLike: action.ownerLike,
-        type: action.type,
-        key: action.key,
-        keyLike: action.keyLike,
-        requiredPermission: action.requiredPermission,
-        allPages: action.allPages
-      }
-    });
-    return of(null);
   }
 
   @Action(GetWorkbasketAccessItems)
@@ -268,12 +235,21 @@ export class WorkbasketState implements NgxsAfterBootstrap {
   }
 }
 
+function updateWorkbasketSummaryRepresentation(
+  paginatedWorkbasketsSummary: WorkbasketSummaryRepresentation,
+  selectedWorkbasket: Workbasket
+) {
+  return paginatedWorkbasketsSummary.workbaskets.map(w => {
+    if (w.workbasketId === selectedWorkbasket.workbasketId) {
+      return selectedWorkbasket;
+    }
+    return w;
+  });
+}
+
 export interface WorkbasketStateModel {
-  workbasketsSummary: WorkbasketSummaryRepresentation,
-  allWorkbasketsSummary: WorkbasketSummaryRepresentation,
-  workbasketsSummaryParams: {},
+  paginatedWorkbasketsSummary: WorkbasketSummaryRepresentation,
   selectedWorkbasket: Workbasket,
-  workbasketCopy: Workbasket,
   action: ACTION,
   workbasketAccessItems: WorkbasketAccessItemsRepresentation,
   workbasketDistributionTargets: WorkbasketDistributionTargets

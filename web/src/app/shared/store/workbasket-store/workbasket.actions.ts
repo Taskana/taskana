@@ -24,14 +24,6 @@ export class GetWorkbasketsSummary {
   }
 }
 
-export class GetAllWorkbasketsSummary {
-  static readonly type = '[Workbasket] Get all workbaskets';
-  constructor(public forceRequest: boolean = true,
-    public sortBy: string = TaskanaQueryParameters.parameters.KEY,
-    public order: string = Direction.ASC) {
-  }
-}
-
 export class SelectWorkbasket {
   static readonly type = '[Workbasket] Select a workbasket';
   constructor(public workbasketId: string) {
@@ -80,24 +72,6 @@ export class RemoveDistributionTarget {
 export class MarkWorkbasketForDeletion {
   static readonly type = '[Workbasket] Mark selected workbasket for deletion';
   constructor(public url: string) {
-  }
-}
-
-export class UpdateworkbasketSummaryParams {
-  static readonly type = '[Workbasket] Update workbasket list summary parameters';
-  constructor(public forceRequest: boolean = false,
-    public sortBy: string = TaskanaQueryParameters.parameters.KEY,
-    public order: string = Direction.ASC,
-    public name?: string,
-    public nameLike?: string,
-    public descLike?: string,
-    public owner?: string,
-    public ownerLike?: string,
-    public type?: string,
-    public key?: string,
-    public keyLike?: string,
-    public requiredPermission?: string,
-    public allPages: boolean = false) {
   }
 }
 
