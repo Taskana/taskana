@@ -46,7 +46,7 @@ export class WorkbasketOverviewComponent implements OnInit {
     this.selectedWorkbasketAndAction$
       .pipe(takeUntil(this.destroy$))
       .subscribe(state => {
-        this.showDetail = !!state.selectedWorkbasket || state.action === 0;
+        this.showDetail = !!state.selectedWorkbasket || state.action === 1;
       });
   }
 
