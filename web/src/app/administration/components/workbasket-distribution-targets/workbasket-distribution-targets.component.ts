@@ -24,7 +24,7 @@ import { Select, Store } from '@ngxs/store';
 import { take, takeUntil } from 'rxjs/operators';
 import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
-import { GetAllWorkbasketsSummary, GetWorkbasketDistributionTargets,
+import { GetWorkbasketDistributionTargets,
   GetWorkbasketsSummary, UpdateWorkbasketDistributionTargets } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
 import { WorkbasketStateModel } from '../../../shared/store/workbasket-store/workbasket.state';
@@ -146,31 +146,7 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
       TaskanaQueryParameters.pageSize = this.cards + this.distributionTargetsSelected.length;
     }
 
-    /* TODO: Implement this into NGXS
-    this.store.dispatch(new GetAllWorkbasketsSummary(true));
-    this.workbasketsSummaryRepresentation$.subscribe(workbasketsSummaryRepresentation => {
-      if (typeof workbasketsSummaryRepresentation !== 'undefined') {
-        console.log(workbasketsSummaryRepresentation);
-        if (TaskanaQueryParameters.page === 1) {
-          this.distributionTargetsLeft = [];
-          this.page = workbasketsSummaryRepresentation.page;
-        }
-        if (side === this.side.LEFT) {
-          this.distributionTargetsLeft.push(...workbasketsSummaryRepresentation.workbaskets);
-        } else if (side === this.side.RIGHT) {
-          this.distributionTargetsRight = Object.assign([], workbasketsSummaryRepresentation.workbaskets);
-        } else {
-          let copy = [...workbasketsSummaryRepresentation.workbaskets];
-          copy = copy.map(item => ({ ...item, selected: false }));
-
-          this.distributionTargetsLeft.push(...copy);
-          this.distributionTargetsRight = [...copy];
-          this.distributionTargetsClone = [...copy];
-        }
-        this.onRequest(true);
-      }
-    });
-    */
+    // TODO: Implement this into NGXS
     this.workbasketService.getWorkBasketsSummary(true)
       .pipe(takeUntil(this.destroy$))
       .subscribe(
@@ -200,7 +176,7 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
       dualListFilter.filterBy.filterParams.name, dualListFilter.filterBy.filterParams.description, '',
       dualListFilter.filterBy.filterParams.owner, dualListFilter.filterBy.filterParams.type, '',
       dualListFilter.filterBy.filterParams.key, '', true)).subscribe((state: WorkbasketStateModel) => {
-      this.fillDistributionTargets(dualListFilter.side, state.workbasketsSummary.workbaskets);
+      this.fillDistributionTargets(dualListFilter.side, state.paginatedWorkbasketsSummary.workbaskets);
       this.onRequest(true, dualListFilter.side);
     });
   }
