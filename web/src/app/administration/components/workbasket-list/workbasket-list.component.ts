@@ -81,12 +81,13 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
 
     TaskanaQueryParameters.page = this.pageSelected;
     TaskanaQueryParameters.pageSize = this.pageSize;
-
+    /*
     this.workbasketService.workbasketSavedTriggered()
       .pipe(takeUntil(this.destroy$))
       .subscribe(value => {
         this.performRequest();
       });
+    */
     this.orientationService.getOrientation()
       .pipe(takeUntil(this.destroy$))
       .subscribe((orientation: Orientation) => {

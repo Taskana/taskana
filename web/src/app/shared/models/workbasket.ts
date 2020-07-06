@@ -1,12 +1,13 @@
 import { Links } from './links';
 import { ICONTYPES } from './icon-types';
+import { WorkbasketSummary } from './workbasket-summary';
 
-export class Workbasket {
+export interface Workbasket extends WorkbasketSummary {
   workbasketId?: string;
   key?: string;
   name?: string;
   domain?: string;
-  type: ICONTYPES;
+  type?: ICONTYPES;
   description?: string;
   owner?: string;
   custom1?: string;

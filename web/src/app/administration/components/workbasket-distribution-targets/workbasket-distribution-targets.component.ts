@@ -73,9 +73,6 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
   @Select(WorkbasketSelectors.workbasketDistributionTargets)
   workbasketDistributionTargets$: Observable<WorkbasketDistributionTargets>;
 
-  @Select(WorkbasketSelectors.allWorkbasketsSummaryRepresentation)
-  workbasketsSummaryRepresentation$: Observable<WorkbasketSummaryRepresentation>;
-
   destroy$ = new Subject<void>();
 
   constructor(

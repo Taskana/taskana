@@ -24,6 +24,7 @@ import { NOTIFICATION_TYPES } from '../../models/notifications';
 import { NotificationService } from '../../services/notifications/notification.service';
 import { WorkbasketAccessItemsRepresentation } from '../../models/workbasket-access-items-representation';
 import { WorkbasketDistributionTargets } from '../../models/workbasket-distribution-targets';
+import { WorkbasketSummary } from '../../models/workbasket-summary';
 
 class InitializeStore {
   static readonly type = '[Workbasket] Initializing state';
@@ -128,12 +129,14 @@ export class WorkbasketState implements NgxsAfterBootstrap {
           NOTIFICATION_TYPES.SUCCESS_ALERT_10,
           new Map<string, string>([['workbasketKey', updatedWorkbasket.key]])
         );
-        const workbasketsSummary = ctx.getState().paginatedWorkbasketsSummary.workbaskets;
-        const paginatedWorkbasketSummary = ctx.getState().paginatedWorkbasketsSummary;
-        paginatedWorkbasketSummary.workbaskets = this.updateWorkbasketDistributionTargets(workbasketsSummary, action.workbasket);
-        console.log(paginatedWorkbasketSummary);
+        const paginatedWorkbasketSummary = { ...ctx.getState().paginatedWorkbasketsSummary };
+        paginatedWorkbasketSummary.workbaskets = updateWorkbasketSummaryRepresentation(
+          paginatedWorkbasketSummary.workbaskets, action.workbasket
+        );
+
         ctx.patchState({
           selectedWorkbasket: updatedWorkbasket,
+          paginatedWorkbasketsSummary: paginatedWorkbasketSummary
         });
       }, error => {
         console.log(error);
@@ -236,12 +239,13 @@ export class WorkbasketState implements NgxsAfterBootstrap {
 }
 
 function updateWorkbasketSummaryRepresentation(
-  paginatedWorkbasketsSummary: WorkbasketSummaryRepresentation,
+  workbasketsSummary: WorkbasketSummary[],
   selectedWorkbasket: Workbasket
 ) {
-  return paginatedWorkbasketsSummary.workbaskets.map(w => {
+  return workbasketsSummary.map(w => {
     if (w.workbasketId === selectedWorkbasket.workbasketId) {
-      return selectedWorkbasket;
+      const workbasketSummary: WorkbasketSummary = selectedWorkbasket;
+      return workbasketSummary;
     }
     return w;
   });

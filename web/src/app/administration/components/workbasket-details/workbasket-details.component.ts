@@ -83,7 +83,7 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
   }
 
   initWorkbasket() {
-    const emptyWorkbasket = new Workbasket();
+    const emptyWorkbasket: Workbasket = {};
     emptyWorkbasket.domain = this.domainService.getSelectedDomainValue();
     emptyWorkbasket.type = ICONTYPES.PERSONAL;
     this.addDateToWorkbasket(emptyWorkbasket);
@@ -106,7 +106,7 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
     }
     this.requestInProgress = true;
     if (!workbasketIdSelected && this.action === ACTION.CREATE) { // CREATE
-      this.workbasket = new Workbasket();
+      this.workbasket = {};
       this.domainService.getSelectedDomain()
         .pipe(takeUntil(this.destroy$))
         .subscribe(domain => {

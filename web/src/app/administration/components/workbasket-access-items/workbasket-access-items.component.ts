@@ -2,20 +2,21 @@ import { Component,
   ElementRef,
   Input,
   OnChanges,
-  OnDestroy, OnInit, QueryList,
+  OnDestroy,
+  OnInit,
+  QueryList,
   SimpleChanges,
   ViewChildren } from '@angular/core';
-import { Observable, Subject, Subscription } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { Select, Store } from '@ngxs/store';
-import { FormArray, FormBuilder, FormControlDirective, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, Validators } from '@angular/forms';
 
 import { Workbasket } from 'app/shared/models/workbasket';
 import { customFieldCount, WorkbasketAccessItems } from 'app/shared/models/workbasket-access-items';
 import { WorkbasketAccessItemsRepresentation } from 'app/shared/models/workbasket-access-items-representation';
 import { ACTION } from 'app/shared/models/action';
 
-import { SavingInformation,
-  SavingWorkbasketService } from 'app/administration/services/saving-workbaskets.service';
+import { SavingInformation, SavingWorkbasketService } from 'app/administration/services/saving-workbaskets.service';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { highlight } from 'theme/animations/validation.animation';
@@ -25,9 +26,7 @@ import { EngineConfigurationSelectors } from 'app/shared/store/engine-configurat
 import { takeUntil } from 'rxjs/operators';
 import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
-import { AccessItemsCustomisation,
-  CustomField,
-  getCustomFields } from '../../../shared/models/customisation';
+import { AccessItemsCustomisation, CustomField, getCustomFields } from '../../../shared/models/customisation';
 import { GetWorkbasketAccessItems,
   UpdateWorkbasketAccessItems } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
@@ -50,7 +49,6 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
 
   @ViewChildren('htmlInputElement')
   inputs: QueryList<ElementRef>;
-
 
   badgeMessage = '';
 
@@ -148,7 +146,7 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
   }
 
   createWorkbasketAccessItems(): WorkbasketAccessItems {
-    const workbasketsAccessItems: WorkbasketAccessItems = {
+    return {
       accessItemId: '',
       workbasketId: '',
       workbasketKey: '',
@@ -173,7 +171,6 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
       permCustom12: false,
       _links: {},
     };
-    return workbasketsAccessItems;
   }
 
   addAccessItem() {
