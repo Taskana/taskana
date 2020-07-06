@@ -2,10 +2,10 @@ import { Selector } from '@ngxs/store';
 import { WorkbasketState, WorkbasketStateModel } from './workbasket.state';
 import { WorkbasketSummary } from '../../models/workbasket-summary';
 import { WorkbasketSummaryRepresentation } from '../../models/workbasket-summary-representation';
-import { Workbasket } from '../../models/workbasket';
 import { ACTION } from '../../models/action';
 import { WorkbasketAccessItemsRepresentation } from '../../models/workbasket-access-items-representation';
 import { WorkbasketDistributionTargets } from '../../models/workbasket-distribution-targets';
+import { Workbasket } from '../../models/workbasket';
 
 export class WorkbasketSelectors {
   // Workbasket

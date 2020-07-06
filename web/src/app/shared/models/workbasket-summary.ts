@@ -5,7 +5,7 @@ export interface WorkbasketSummary {
   key?: string,
   name?: string,
   domain?: string,
-  type: ICONTYPES,
+  type?: ICONTYPES,
   description?: string,
   owner?: string,
   custom1?: string,
