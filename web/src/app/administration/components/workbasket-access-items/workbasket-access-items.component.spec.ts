@@ -5,8 +5,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { of } from 'rxjs';
 import { configureTests } from 'app/app.test.configuration';
-
-import { Workbasket } from 'app/shared/models/workbasket';
 import { WorkbasketAccessItems } from 'app/shared/models/workbasket-access-items';
 import { WorkbasketAccessItemsRepresentation } from 'app/shared/models/workbasket-access-items-representation';
 import { ICONTYPES } from 'app/shared/models/icon-types';
@@ -62,7 +60,7 @@ describe('WorkbasketAccessItemsComponent', () => {
       fixture = testBed.createComponent(WorkbasketAccessItemsComponent);
 
       component = fixture.componentInstance;
-      component.workbasket = new Workbasket('1');
+      component.workbasket = { type: ICONTYPES.PERSONAL };
       component.workbasket.type = ICONTYPES.TOPIC;
       component.workbasket._links = { accessItems: { href: 'someurl' } };
 

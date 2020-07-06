@@ -16,12 +16,12 @@ export class WorkbasketSelectors {
 
   @Selector([WorkbasketState])
   static workbasketsSummary(state: WorkbasketStateModel): WorkbasketSummary[] {
-    return state.workbasketsSummary.workbaskets;
+    return state.paginatedWorkbasketsSummary.workbaskets;
   }
 
   @Selector([WorkbasketState])
   static workbasketsSummaryRepresentation(state: WorkbasketStateModel): WorkbasketSummaryRepresentation {
-    return state.workbasketsSummary;
+    return state.paginatedWorkbasketsSummary;
   }
 
   @Selector([WorkbasketState])
@@ -47,11 +47,6 @@ export class WorkbasketSelectors {
   @Selector([WorkbasketState])
   static workbasketDistributionTargets(state: WorkbasketStateModel): WorkbasketDistributionTargets {
     return state.workbasketDistributionTargets;
-  }
-
-  @Selector([WorkbasketState])
-  static allWorkbasketsSummaryRepresentation(state: WorkbasketStateModel): WorkbasketSummaryRepresentation {
-    return state.allWorkbasketsSummary;
   }
 }
 

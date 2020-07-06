@@ -1,6 +1,5 @@
 import { ICONTYPES } from './icon-types';
 
-
 export interface WorkbasketSummary {
   workbasketId?: string,
   key?: string,
