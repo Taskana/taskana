@@ -148,7 +148,7 @@ implements OnInit, OnChanges, OnDestroy {
     }
     this.store.dispatch(new UpdateWorkbasket(this.workbasket._links.self.href, this.workbasket))
       .subscribe(state => {
-        this.afterRequest();
+        this.requestInProgressService.setRequestInProgress(false);
         this.workbasketClone = { ...this.workbasket };
       });
   }

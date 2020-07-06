@@ -104,6 +104,7 @@ export class WorkbasketState implements NgxsAfterBootstrap {
           NOTIFICATION_TYPES.SUCCESS_ALERT_11,
           new Map<string, string>([['workbasketKey', workbasketUpdated.key]])
         );
+
         this.selectWorkbasket(ctx, workbasketUpdated.workbasketId);
         this.location.go(this.location.path().replace(/(workbaskets).*/g, 'workbaskets'));
       }, error => {
@@ -129,6 +130,7 @@ export class WorkbasketState implements NgxsAfterBootstrap {
           NOTIFICATION_TYPES.SUCCESS_ALERT_10,
           new Map<string, string>([['workbasketKey', updatedWorkbasket.key]])
         );
+
         const paginatedWorkbasketSummary = { ...ctx.getState().paginatedWorkbasketsSummary };
         paginatedWorkbasketSummary.workbaskets = updateWorkbasketSummaryRepresentation(
           paginatedWorkbasketSummary.workbaskets, action.workbasket
