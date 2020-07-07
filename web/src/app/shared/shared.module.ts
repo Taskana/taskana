@@ -15,7 +15,7 @@ import { ClassificationsService } from 'app/shared/services/classifications/clas
  */
 import { SpinnerComponent } from 'app/shared/components/spinner/spinner.component';
 import { MasterAndDetailComponent } from 'app/shared/components/master-and-detail/master-and-detail.component';
-import { TaskanaTreeComponent } from 'app/shared/components/tree/tree.component';
+import { TaskanaTreeComponent } from 'app/administration/components/tree/tree.component';
 import { TypeAheadComponent } from 'app/shared/components/type-ahead/type-ahead.component';
 import { FilterComponent } from 'app/shared/components/filter/filter.component';
 import { IconTypeComponent } from 'app/administration/components/type-icon/icon-type.component';
