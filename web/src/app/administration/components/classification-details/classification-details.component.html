@@ -1,5 +1,5 @@
 <div class="container-scrollable">
-  <taskana-spinner [isRunning]="requestInProgress" class="floating" (spinnerIsRunning)="spinnerRunning($event)"></taskana-spinner>
+  <taskana-shared-spinner [isRunning]="requestInProgress" class="floating" (spinnerIsRunning)="spinnerRunning($event)"></taskana-shared-spinner>
   <div id="classification-details" *ngIf="classification && !spinnerIsRunning">
     <div id="classification" class="panel panel-default classification">
 
@@ -35,9 +35,9 @@
                 <label for="classification-key" class="control-label">Key</label>
                 <input type="text" required #key="ngModel" [disabled]="!action" class="form-control"
                        id="classification-key" placeholder="Key" [(ngModel)]="classification.key" name="classification.key">
-                <taskana-field-error-display *ngIf="action" [displayError]="!isFieldValid('classification.key')"
-                  [validationTrigger]="this.toogleValidationMap.get('classification.key')" errorMessage="* Key is required">
-                </taskana-field-error-display>
+                <taskana-shared-field-error-display *ngIf="action" [displayError]="!isFieldValid('classification.key')"
+                                                    [validationTrigger]="this.toogleValidationMap.get('classification.key')" errorMessage="* Key is required">
+                </taskana-shared-field-error-display>
               </div>
 
               <!-- NAME -->
@@ -45,9 +45,9 @@
                 <label for="classification-name" class="control-label">Name</label>
                 <input type="text" required #name="ngModel" class="form-control" id="classification-name" placeholder="Name"
                   [(ngModel)]="classification.name" name="classification.name">
-                <taskana-field-error-display [displayError]="!isFieldValid('classification.name')" [validationTrigger]="this.toogleValidationMap.get('classification.name')"
-                  errorMessage="* Name is required">
-                </taskana-field-error-display>
+                <taskana-shared-field-error-display [displayError]="!isFieldValid('classification.name')" [validationTrigger]="this.toogleValidationMap.get('classification.name')"
+                                                    errorMessage="* Name is required">
+                </taskana-shared-field-error-display>
               </div>
 
               <!-- DOMAIN -->
@@ -68,10 +68,10 @@
               <div class="row">
                 <div class="form-group required col-xs-6">
                   <label for="classification-priority" class="control-label">Priority</label>
-                  <taskana-number-picker [(ngModel)]="classification.priority" name="classification.priority" id="classification-priority" [required]="true"></taskana-number-picker>
-                  <taskana-field-error-display [displayError]="!isFieldValid('classification.priority')" [validationTrigger]="this.toogleValidationMap.get('classification.priority')"
-                                               errorMessage="* Priority is required">
-                  </taskana-field-error-display>
+                  <taskana-shared-number-picker [(ngModel)]="classification.priority" name="classification.priority" id="classification-priority" [required]="true"></taskana-shared-number-picker>
+                  <taskana-shared-field-error-display [displayError]="!isFieldValid('classification.priority')" [validationTrigger]="this.toogleValidationMap.get('classification.priority')"
+                                                      errorMessage="* Priority is required">
+                  </taskana-shared-field-error-display>
                 </div>
                 <div class="form-group required btn-group col-xs-6">
                   <label for="classification-category" class="control-label">Category</label>

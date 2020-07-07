@@ -49,10 +49,10 @@
             <ng-container *ngFor="let taskHeader of taskQueryHeader | mapToIterable">
               <div *ngIf="isDate(taskHeader.key)"
                    class="table-cell table-cell--bold table-cell--justify divDate">
-                <taskana-date-picker (dateOutput)="updateDate($event)" [id]="'created'"
-                                     [name]="'this.created'" formControlName="{{taskHeader.key}}"
-                                     placeholder="{{getHeaderFieldDescription(taskHeader.key)}}"
-                                     type="text"></taskana-date-picker>
+                <taskana-shared-date-picker (dateOutput)="updateDate($event)" [id]="'created'"
+                                            [name]="'this.created'" formControlName="{{taskHeader.key}}"
+                                            placeholder="{{getHeaderFieldDescription(taskHeader.key)}}"
+                                            type="text"></taskana-shared-date-picker>
               </div>
               <div
                   *ngIf="!isDate(taskHeader.key) && filterFieldsToShow(taskHeader.key) && !filterExpandGroup(taskHeader.key)"
@@ -108,9 +108,9 @@
       </form>
     </div>
     <div *ngIf="taskQueryResource" class="divTablePagination">
-      <taskana-pagination (changePage)="changePage($event)" [(page)]="taskQueryResource.page"
-                          [numberOfItems]="taskQuery.length"
-                          type="Entries"></taskana-pagination>
+      <taskana-shared-pagination (changePage)="changePage($event)" [(page)]="taskQueryResource.page"
+                                 [numberOfItems]="taskQuery.length"
+                                 type="Entries"></taskana-shared-pagination>
     </div>
   </div>
 </div>

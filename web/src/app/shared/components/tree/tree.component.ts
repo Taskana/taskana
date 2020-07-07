@@ -31,7 +31,7 @@ import { ACTION } from '../../models/action';
 import { ClassificationTreeService } from '../../services/classification-tree/classification-tree.service';
 
 @Component({
-  selector: 'taskana-tree',
+  selector: 'taskana-shared-tree',
   templateUrl: './tree.component.html',
   styleUrls: ['./tree.component.scss'],
 })

@@ -31,7 +31,7 @@ class DummyDetailComponent {
 }
 
 @Component({
-  selector: 'taskana-pagination',
+  selector: 'taskana-shared-pagination',
   template: 'dummydetail'
 })
 class PaginationComponent {

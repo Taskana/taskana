@@ -1,5 +1,5 @@
 <div class="container-scrollable">
-    <taskana-spinner [isRunning]="requestInProgress"></taskana-spinner>
+    <taskana-shared-spinner [isRunning]="requestInProgress"></taskana-shared-spinner>
     <div id="workbasket-details" *ngIf="workbasket && !requestInProgress">
         <ul class="nav nav-tabs" role="tablist">
             <li *ngIf="showDetail" class="visible-xs visible-sm hidden">

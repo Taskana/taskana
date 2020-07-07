@@ -2,7 +2,7 @@ import { Component, OnInit, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
-  selector: 'taskana-number-picker',
+  selector: 'taskana-shared-number-picker',
   templateUrl: './number-picker.component.html',
   styleUrls: ['./number-picker.component.scss'],
   providers: [

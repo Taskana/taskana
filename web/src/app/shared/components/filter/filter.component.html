@@ -48,7 +48,7 @@
   <ng-template #tasktype>
     <div class="row">
       <div class="col-xs-2">
-        <taskana-number-picker [(ngModel)]="filter.filterParams.priority" (keyup.enter)="search()" title="priority" id="display-priority-filter"></taskana-number-picker>
+        <taskana-shared-number-picker [(ngModel)]="filter.filterParams.priority" (keyup.enter)="search()" title="priority" id="display-priority-filter"></taskana-shared-number-picker>
       </div>
       <div class="col-xs-4">
         <input type="text" [(ngModel)]="filter.filterParams.name" (keyup.enter)="search()" class="form-control" id="display-name-filter"

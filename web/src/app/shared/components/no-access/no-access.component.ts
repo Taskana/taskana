@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { TaskanaEngineService } from '../../services/taskana-engine/taskana-engine.service';
 
 @Component({
-  selector: 'taskana-no-access',
+  selector: 'taskana-shared-no-access',
   templateUrl: './no-access.component.html',
   styleUrls: ['./no-access.component.scss']
 })

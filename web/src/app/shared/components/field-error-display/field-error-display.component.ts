@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { highlight } from 'theme/animations/validation.animation';
 
 @Component({
-  selector: 'taskana-field-error-display',
+  selector: 'taskana-shared-field-error-display',
   templateUrl: './field-error-display.component.html',
   animations: [highlight],
   styleUrls: ['./field-error-display.component.scss']

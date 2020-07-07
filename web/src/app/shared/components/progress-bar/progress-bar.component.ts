@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, SimpleChanges, OnChanges } from '@angular/core';
 @Component({
-  selector: 'taskana-progress-bar',
+  selector: 'taskana-shared-progress-bar',
   templateUrl: './progress-bar.component.html',
   styleUrls: ['./progress-bar.component.scss']
 })
