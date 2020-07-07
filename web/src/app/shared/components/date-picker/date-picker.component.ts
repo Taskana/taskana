@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'taskana-date-picker',
+  selector: 'taskana-shared-date-picker',
   templateUrl: './date-picker.component.html',
   styleUrls: ['./date-picker.component.scss']
 })

@@ -28,7 +28,7 @@
       </li>
     </ul>
   </div>
-  <taskana-spinner [isRunning]="requestInProgress"></taskana-spinner>
+  <taskana-shared-spinner [isRunning]="requestInProgress"></taskana-shared-spinner>
   <ng-template #empty_workbaskets>
     <div *ngIf="!requestInProgress" class="col-xs-12 container-no-items center-block">
       <h3 class="grey">There are no workbaskets</h3>
@@ -36,5 +36,5 @@
     </div>
   </ng-template>
 </div>
-<taskana-pagination [(page)]="workbasketsResource ? workbasketsResource.page : workbasketsResource"
-  [type]="type" [numberOfItems]="workbaskets.length" (changePage)="changePage($event)"></taskana-pagination>
+<taskana-shared-pagination [(page)]="workbasketsResource ? workbasketsResource.page : workbasketsResource"
+                           [type]="type" [numberOfItems]="workbaskets.length" (changePage)="changePage($event)"></taskana-shared-pagination>

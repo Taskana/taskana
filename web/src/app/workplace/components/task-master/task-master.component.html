@@ -6,5 +6,5 @@
   </div>
   <taskana-task-list *ngIf="!requestInProgress" [tasks]="tasks" [(selectedId)]="selectedId"></taskana-task-list>
 </div>
-<taskana-pagination [numberOfItems]="tasks.length" *ngIf="tasks && tasks.length > 0" [(page)]="tasksPageInformation"
-  [type]="type" (changePage)="changePage($event)"></taskana-pagination>
+<taskana-shared-pagination [numberOfItems]="tasks.length" *ngIf="tasks && tasks.length > 0" [(page)]="tasksPageInformation"
+                           [type]="type" (changePage)="changePage($event)"></taskana-shared-pagination>

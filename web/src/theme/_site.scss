@@ -161,7 +161,7 @@ svg-icon {
 /*
  *Remove bootstrap cols padding for master and detail component
 */
-.no-gutter > taskana-master-and-detail > [class*='col-'] {
+.no-gutter > taskana-shared-master-and-detail > [class*='col-'] {
   padding-right: 0;
   padding-left: 0;
 }
@@ -303,7 +303,7 @@ span.flip {
   padding: 5px 15px;
 }
 
-.dual-list > taskana-filter > .list-group-search {
+.dual-list > taskana-shared-filter > .list-group-search {
   margin-top: 4px;
 }
 

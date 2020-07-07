@@ -4,8 +4,8 @@
   </div>
   <div class="panel-body">
     <div class="col-md-6 col-md-offset-3 margin">
-      <taskana-type-ahead #accesId="ngModel" name="accessIdSelected" [(ngModel)]="accessIdSelected" placeHolderMessage="Search for access id..."
-        (selectedItem)="onSelectAccessId($event)" displayError=true></taskana-type-ahead>
+      <taskana-shared-type-ahead #accesId="ngModel" name="accessIdSelected" [(ngModel)]="accessIdSelected" placeHolderMessage="Search for access id..."
+                                 (selectedItem)="onSelectAccessId($event)" displayError=true></taskana-shared-type-ahead>
     </div>
     <div *ngIf="!AccessItemsForm" class="center-block no-detail col-xs-12">
       <h3 class="grey">Select an access id</h3>
@@ -17,7 +17,7 @@
           <thead>
             <tr>
               <th>
-                <taskana-sort [sortingFields]="sortingFields" (performSorting)="sorting($event)" menuPosition="left" [defaultSortBy]="accessItemDefaultSortBy"></taskana-sort>
+                <taskana-shared-sort [sortingFields]="sortingFields" (performSorting)="sorting($event)" menuPosition="left" [defaultSortBy]="accessItemDefaultSortBy"></taskana-shared-sort>
               </th>
               <th class="text-align min-width">Workbasket Key</th>
               <th colspan="2" class="text-align">Access Id</th>
@@ -69,9 +69,9 @@
               </td>
               <td *ngIf="(accessItemsCustomization$ | async)?.accessId.lookupField else accessIdInput" colspan="2" class="text-align text-width taskana-type-ahead">
                 <div>
-                  <taskana-type-ahead formControlName="accessId" placeHolderMessage="* Access id is required"
-                    [validationValue]="toogleValidationAccessIdMap.get(index)" [displayError]="!isFieldValid('accessItem.value.accessId', index)"
-                    [disable]=true></taskana-type-ahead>
+                  <taskana-shared-type-ahead formControlName="accessId" placeHolderMessage="* Access id is required"
+                                             [validationValue]="toogleValidationAccessIdMap.get(index)" [displayError]="!isFieldValid('accessItem.value.accessId', index)"
+                                             [disable]=true></taskana-shared-type-ahead>
                 </div>
               </td>
               <ng-template #accessIdInput>

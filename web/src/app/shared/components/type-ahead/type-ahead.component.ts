@@ -16,7 +16,7 @@ import { mergeMap } from 'rxjs/operators';
 import { AccessIdDefinition } from 'app/shared/models/access-id';
 
 @Component({
-  selector: 'taskana-type-ahead',
+  selector: 'taskana-shared-type-ahead',
   templateUrl: './type-ahead.component.html',
   styleUrls: ['./type-ahead.component.scss'],
   animations: [highlight],

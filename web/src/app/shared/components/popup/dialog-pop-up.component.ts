@@ -3,7 +3,7 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { notifications } from '../../models/notifications';
 
 @Component({
-  selector: 'app-popup',
+  selector: 'taskana-shared-dialog-pop-up',
   templateUrl: './dialog-pop-up.component.html',
   styleUrls: ['./dialog-pop-up.component.scss']
 })

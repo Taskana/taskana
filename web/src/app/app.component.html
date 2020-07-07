@@ -1,9 +1,9 @@
-<taskana-nav-bar></taskana-nav-bar>
+<taskana-shared-nav-bar></taskana-shared-nav-bar>
 <div (window:resize)="onResize()" class="container-fluid container-main">
     <div class="row ">
         <router-outlet></router-outlet>
-        <taskana-spinner [isRunning]="requestInProgress" isModal=true></taskana-spinner>
-        <taskana-progress-bar [ngClass]="{hidden: currentProgressValue === 0}" currentValue={{currentProgressValue}}></taskana-progress-bar>
+        <taskana-shared-spinner [isRunning]="requestInProgress" isModal=true></taskana-shared-spinner>
+        <taskana-shared-progress-bar [ngClass]="{hidden: currentProgressValue === 0}" currentValue={{currentProgressValue}}></taskana-shared-progress-bar>
     </div>
-  <taskana-type-ahead></taskana-type-ahead>
+  <taskana-shared-type-ahead></taskana-shared-type-ahead>
 </div>
