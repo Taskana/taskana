@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { ComponentFixture, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -8,12 +8,11 @@ import { NgxsModule, Store } from '@ngxs/store';
 import { ClassificationSelectors } from 'app/shared/store/classification-store/classification.selectors';
 import { of } from 'rxjs';
 import { ACTION } from 'app/shared/models/action';
-import { TreeNodeModel } from 'app/shared/models/tree-node';
 import { Location } from '@angular/common';
 import { UpdateClassification } from 'app/shared/store/classification-store/classification.actions';
 import { TaskanaTreeComponent } from './tree.component';
-import { ClassificationsService } from '../../services/classifications/classifications.service';
-import { Classification } from '../../models/classification';
+import { ClassificationsService } from '../../../shared/services/classifications/classifications.service';
+import { Classification } from '../../../shared/models/classification';
 
 @Component({
   selector: 'tree-root',
