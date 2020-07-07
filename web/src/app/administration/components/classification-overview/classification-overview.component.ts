@@ -11,7 +11,7 @@ import { GetClassifications,
 import { Classification } from '../../../shared/models/classification';
 
 @Component({
-  selector: 'app-classification-overview',
+  selector: 'taskana-administration-classification-overview',
   templateUrl: './classification-overview.component.html',
   styleUrls: ['./classification-overview.component.scss']
 })

@@ -35,7 +35,7 @@ import { CreateClassification,
   SetActiveAction } from '../../../shared/store/classification-store/classification.actions';
 
 @Component({
-  selector: 'taskana-classification-details',
+  selector: 'taskana-administration-classification-details',
   templateUrl: './classification-details.component.html',
   animations: [highlight],
   styleUrls: ['./classification-details.component.scss']

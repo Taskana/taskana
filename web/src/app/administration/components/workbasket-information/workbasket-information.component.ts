@@ -28,7 +28,7 @@ import { CustomField,
   WorkbasketsCustomisation } from '../../../shared/models/customisation';
 
 @Component({
-  selector: 'taskana-workbasket-information',
+  selector: 'taskana-administration-workbasket-information',
   templateUrl: './workbasket-information.component.html',
   styleUrls: ['./workbasket-information.component.scss']
 })

@@ -29,7 +29,7 @@ import { AccessItemsCustomisation,
   getCustomFields } from '../../../shared/models/customisation';
 
 @Component({
-  selector: 'taskana-workbasket-access-items',
+  selector: 'taskana-administration-workbasket-access-items',
   templateUrl: './workbasket-access-items.component.html',
   animations: [highlight],
   styleUrls: ['./workbasket-access-items.component.scss']

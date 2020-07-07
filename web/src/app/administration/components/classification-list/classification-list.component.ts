@@ -20,7 +20,7 @@ import { DomainService } from '../../../shared/services/domain/domain.service';
 import { ClassificationSummary } from '../../../shared/models/classification-summary';
 
 @Component({
-  selector: 'taskana-classification-list',
+  selector: 'taskana-administration-classification-list',
   templateUrl: './classification-list.component.html',
   styleUrls: ['./classification-list.component.scss']
 })

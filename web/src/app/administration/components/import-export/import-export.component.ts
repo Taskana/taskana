@@ -11,7 +11,7 @@ import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 
 @Component({
-  selector: 'taskana-import-export-component',
+  selector: 'taskana-administration-import-export',
   templateUrl: './import-export.component.html',
   styleUrls: ['./import-export.component.scss']
 })

@@ -13,7 +13,7 @@ import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 
 @Component({
-  selector: 'taskana-workbasket-details',
+  selector: 'taskana-administration-workbasket-details',
   templateUrl: './workbasket-details.component.html'
 })
 export class WorkbasketDetailsComponent implements OnInit, OnDestroy {

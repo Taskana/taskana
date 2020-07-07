@@ -14,7 +14,7 @@ import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { ImportExportService } from 'app/administration/services/import-export.service';
 
 @Component({
-  selector: 'taskana-workbasket-list',
+  selector: 'taskana-administration-workbasket-list',
   templateUrl: './workbasket-list.component.html',
   styleUrls: ['./workbasket-list.component.scss']
 })
