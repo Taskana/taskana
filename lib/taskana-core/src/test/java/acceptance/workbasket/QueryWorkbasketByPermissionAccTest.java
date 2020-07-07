@@ -117,7 +117,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1", groups = GROUP_1_DN)
   @Test
-  void testQueryAllTransferTargetsForUserAndGroupFromSubject() throws Exception {
+  void testQueryAllTransferTargetsForUserAndGroupFromSubject() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     List<WorkbasketSummary> results =
         workbasketService

@@ -296,7 +296,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testDeleteAccessItemsForAccessIdWithUnusedValuesThrowingNoException() throws Exception {
+  void testDeleteAccessItemsForAccessIdWithUnusedValuesThrowingNoException() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     assertThatCode(() -> workbasketService.deleteWorkbasketAccessItemsForAccessId(""))
         .doesNotThrowAnyException();

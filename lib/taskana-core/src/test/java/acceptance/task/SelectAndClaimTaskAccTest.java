@@ -65,7 +65,7 @@ class SelectAndClaimTaskAccTest extends AbstractAccTest {
 
   @Test
   @WithAccessId(user = "admin")
-  void should_ThrowException_When_TryingToSelectAndClaimNonExistingTask() throws Exception {
+  void should_ThrowException_When_TryingToSelectAndClaimNonExistingTask() {
 
     TaskQuery query = taskanaEngine.getTaskService().createTaskQuery();
     query.idIn("notexisting");

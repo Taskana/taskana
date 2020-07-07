@@ -22,7 +22,7 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryTasksByExcactValueOfObjectReference() throws Exception {
+  void testQueryTasksByExcactValueOfObjectReference() {
     TaskService taskService = taskanaEngine.getTaskService();
     List<TaskSummary> results =
         taskService.createTaskQuery().primaryObjectReferenceValueIn("11223344", "22334455").list();
@@ -31,7 +31,7 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryTasksByExcactValueAndTypeOfObjectReference() throws Exception {
+  void testQueryTasksByExcactValueAndTypeOfObjectReference() {
     TaskService taskService = taskanaEngine.getTaskService();
     List<TaskSummary> results =
         taskService
@@ -44,7 +44,7 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryTasksByValueLikeOfObjectReference() throws Exception {
+  void testQueryTasksByValueLikeOfObjectReference() {
     TaskService taskService = taskanaEngine.getTaskService();
     List<TaskSummary> results =
         taskService.createTaskQuery().primaryObjectReferenceValueLike("%567%").list();
