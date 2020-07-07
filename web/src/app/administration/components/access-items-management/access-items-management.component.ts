@@ -19,7 +19,7 @@ import { AccessItemsCustomisation, CustomField, getCustomFields } from '../../..
 import { customFieldCount } from '../../../shared/models/workbasket-access-items';
 
 @Component({
-  selector: 'taskana-access-items-management',
+  selector: 'taskana-administration-access-items-management',
   templateUrl: './access-items-management.component.html',
   styleUrls: ['./access-items-management.component.scss']
 })

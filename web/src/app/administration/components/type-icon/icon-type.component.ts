@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ICONTYPES } from 'app/shared/models/icon-types';
 
 @Component({
-  selector: 'taskana-icon-type',
+  selector: 'taskana-administration-icon-type',
   templateUrl: './icon-type.component.html',
   styleUrls: ['./icon-type.component.scss']
 })

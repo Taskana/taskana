@@ -13,7 +13,7 @@ import { NotificationService } from '../../../shared/services/notifications/noti
 import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 
 @Component({
-  selector: 'taskana-workbasket-list-toolbar',
+  selector: 'taskana-administration-workbasket-list-toolbar',
   animations: [expandDown],
   templateUrl: './workbasket-list-toolbar.component.html',
   styleUrls: ['./workbasket-list-toolbar.component.scss']
