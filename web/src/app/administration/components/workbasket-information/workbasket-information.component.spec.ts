@@ -152,7 +152,7 @@ describe('WorkbasketInformationComponent', () => {
   it('should reset requestInProgress after saving request is done', async(() => {
     component.workbasket = createWorkbasket('id', 'created', 'keyModified', 'domain', ICONTYPES.TOPIC, 'modified', 'name', 'description',
       'owner', 'custom1', 'custom2', 'custom3', 'custom4', 'orgLevel1', 'orgLevel2',
-      'orgLevel3', 'orgLevel4', new Links({ href: 'someUrl' }));
+      'orgLevel3', 'orgLevel4', {});
     fixture.detectChanges();
     spyOn(workbasketService, 'updateWorkbasket').and.returnValue(of(component.workbasket));
     spyOn(workbasketService, 'triggerWorkBasketSaved').and.returnValue(of(component.workbasket));
@@ -163,7 +163,7 @@ describe('WorkbasketInformationComponent', () => {
   it('should trigger triggerWorkBasketSaved method after saving request is done', async(() => {
     component.workbasket = createWorkbasket('id', 'created', 'keyModified', 'domain', ICONTYPES.TOPIC, 'modified', 'name', 'description',
       'owner', 'custom1', 'custom2', 'custom3', 'custom4', 'orgLevel1', 'orgLevel2',
-      'orgLevel3', 'orgLevel4', new Links({ href: 'someUrl' }));
+      'orgLevel3', 'orgLevel4', {});
     spyOn(workbasketService, 'updateWorkbasket').and.returnValue(of(component.workbasket));
     spyOn(workbasketService, 'triggerWorkBasketSaved').and.returnValue(of(component.workbasket));
     fixture.detectChanges();
@@ -179,12 +179,12 @@ describe('WorkbasketInformationComponent', () => {
   it('should post a new workbasket when no workbasketId is defined and update workbasket', async(() => {
     const workbasket = createWorkbasket(undefined, 'created', 'keyModified', 'domain', ICONTYPES.TOPIC, 'modified', 'name', 'description',
       'owner', 'custom1', 'custom2', 'custom3', 'custom4', 'orgLevel1', 'orgLevel2',
-      'orgLevel3', 'orgLevel4', new Links({ href: 'someUrl' }));
+      'orgLevel3', 'orgLevel4', {});
     component.workbasket = workbasket;
     spyOn(workbasketService, 'createWorkbasket').and.returnValue(of(
       createWorkbasket('someNewId', 'created', 'keyModified', 'domain', ICONTYPES.TOPIC, 'modified', 'name', 'description',
         'owner', 'custom1', 'custom2', 'custom3', 'custom4', 'orgLevel1', 'orgLevel2',
-        'orgLevel3', 'orgLevel4', new Links({ href: 'someUrl' }))
+        'orgLevel3', 'orgLevel4', {})
     ));
     fixture.detectChanges();
     spyOn(formsValidatorService, 'validateFormAccess').and.returnValue(Promise.resolve(true));
@@ -201,14 +201,14 @@ describe('WorkbasketInformationComponent', () => {
     const workbasket = createWorkbasket(undefined, 'created', 'keyModified', 'domain', ICONTYPES.TOPIC,
       'modified', 'name', 'description', 'owner', 'custom1', 'custom2',
       'custom3', 'custom4', 'orgLevel1', 'orgLevel2',
-      'orgLevel3', 'orgLevel4', new Links({ href: 'someUrl' }));
+      'orgLevel3', 'orgLevel4', { });
     component.workbasket = workbasket;
     component.action = ACTION.COPY;
 
     spyOn(workbasketService, 'createWorkbasket').and.returnValue(of(
       createWorkbasket('someNewId', 'created', 'keyModified', 'domain', ICONTYPES.TOPIC, 'modified', 'name', 'description',
         'owner', 'custom1', 'custom2', 'custom3', 'custom4', 'orgLevel1', 'orgLevel2',
-        'orgLevel3', 'orgLevel4', new Links({ href: 'someUrl' }, { href: 'someUrl' }, { href: 'someUrl' }))
+        'orgLevel3', 'orgLevel4', {})
     ));
 
     spyOn(savingWorkbasketService, 'triggerDistributionTargetSaving');
@@ -226,7 +226,7 @@ describe('WorkbasketInformationComponent', () => {
   }));
 
   it('should trigger requestInProgress service true before  and requestInProgress false after remove a workbasket', () => {
-    const links = new Links({ href: 'someUrl' });
+    const links:Links = { };
     links.removeDistributionTargets = { href: 'someUrl' };
     const workbasket = createWorkbasket(undefined, 'created', 'keyModified', 'domain', ICONTYPES.TOPIC,
       'modified', 'name', 'description', 'owner', 'custom1', 'custom2',

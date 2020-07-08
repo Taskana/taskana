@@ -19,7 +19,9 @@ import { EngineConfigurationSelectors } from 'app/shared/store/engine-configurat
 import { WorkbasketAccessItemsComponent } from './workbasket-access-items.component';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
-import { AccessItemWorkbasketResource } from '../../../shared/models/access-item-workbasket-resource';
+import { WorkbasketSummaryRepresentation } from '../../../shared/models/workbasket-summary-representation';
+import { LinksWorkbasketSummary } from '../../../shared/models/links-workbasket-summary';
+import { Links } from '../../../shared/models/links';
 
 describe('WorkbasketAccessItemsComponent', () => {
   let component: WorkbasketAccessItemsComponent;
@@ -40,6 +42,7 @@ describe('WorkbasketAccessItemsComponent', () => {
         AccessIdsService, FormsValidatorService, { provide: Store, useValue: storeSpy }]
     });
   };
+  const storeSpy: jasmine.SpyObj<Store> = jasmine.createSpyObj('Store', ['select', 'dispatch']);
 
   beforeEach(done => {
     configureTests(configure).then(testBed => {
@@ -66,19 +69,39 @@ describe('WorkbasketAccessItemsComponent', () => {
 
       workbasketService = testBed.get(WorkbasketService);
       notificationsService = testBed.get(NotificationService);
-      spyOn(workbasketService, 'getWorkBasketAccessItems').and.returnValue(of(new WorkbasketAccessItemsRepresentation(
-        new Array<WorkbasketAccessItems>(
-          new WorkbasketAccessItems('id1', '1', 'accessID1', '', false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false),
-          new WorkbasketAccessItems('id2', '1', 'accessID2')
-        ), { self: { href: 'someurl' } }
-      )));
-      spyOn(workbasketService, 'updateWorkBasketAccessItem').and.returnValue(of(true));
-      spyOn(notificationsService, 'showToast').and.returnValue(of(true));
+      const workbasketAccessItemsRepresentation: WorkbasketAccessItemsRepresentation = {
+        accessItems: [{
+          accessId: 'accessID1',
+          workbasketId: 'id1',
+          workbasketKey: '1',
+          accessItemId: '',
+          accessName: '',
+          permRead: false,
+          permOpen: false,
+          permAppend: false,
+          permTransfer: false,
+          permDistribute: false,
+          permCustom1: false,
+          permCustom2: false,
+          permCustom3: false,
+          permCustom4: false,
+          permCustom5: false,
+          permCustom6: false,
+          permCustom7: false,
+          permCustom8: false,
+          permCustom9: false,
+          permCustom10: false,
+          permCustom11: false,
+          permCustom12: false,
+          _links: {},
+        }],
+        _links: { self: { href: 'someurl' } }
+      };
       debugElement = fixture.debugElement.nativeElement;
       accessIdsService = testBed.get(AccessIdsService);
-      spyOn(accessIdsService, 'searchForAccessId').and.returnValue(of(['accessID1', 'accessID2']));
-      spyOn(accessIdsService, 'getGroupsByAccessId').and.returnValue(of(['accessID1', 'accessID2']));
+      spyOn(accessIdsService, 'getAccessItemsInformation').and.returnValue(of(new Array<string>(
+        'accessID1', 'accessID2'
+      )));
       formsValidatorService = testBed.get(FormsValidatorService);
       component.ngOnChanges({
         active: new SimpleChange(undefined, 'accessItems', true)

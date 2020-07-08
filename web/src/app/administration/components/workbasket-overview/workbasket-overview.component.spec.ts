@@ -5,6 +5,8 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Routes } from '@angular/router';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { NgxsModule } from '@ngxs/store';
 import { WorkbasketOverviewComponent } from './workbasket-overview.component';
 import { SharedModule } from '../../../shared/shared.module';
 import { AppModule } from '../../../app.module';
@@ -23,16 +25,20 @@ describe('WorkbasketOverviewComponent', () => {
     { path: ':id', component: DummyDetailComponent, outlet: 'detail' }
   ];
   beforeEach(async(() => {
-    TestBed.configureTestingModule({ imports: [FormsModule, ReactiveFormsModule, AngularSvgIconModule,
-      HttpClientModule, RouterTestingModule.withRoutes(routes), SharedModule, AppModule],
-    declarations: [
-      WorkbasketOverviewComponent, DummyDetailComponent, ImportExportComponent],
-    providers: [
-      WorkbasketService,
-      WorkbasketDefinitionService,
-      OrientationService,
-      ImportExportService
-    ] })
+    TestBed.configureTestingModule(
+      { imports: [
+        FormsModule, ReactiveFormsModule, AngularSvgIconModule,
+        HttpClientModule, RouterTestingModule.withRoutes(routes), SharedModule, AppModule, NgxsModule.forRoot()
+      ],
+      declarations: [
+        WorkbasketOverviewComponent, DummyDetailComponent, ImportExportComponent],
+      providers: [
+        WorkbasketService,
+        WorkbasketDefinitionService,
+        OrientationService,
+        ImportExportService
+      ] }
+    )
       .compileComponents();
   }));
 

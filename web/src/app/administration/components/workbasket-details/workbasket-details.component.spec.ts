@@ -24,6 +24,7 @@ import { configureTests } from 'app/app.test.configuration';
 
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { ImportExportService } from 'app/administration/services/import-export.service';
+import { NgxsModule } from '@ngxs/store';
 import { WorkbasketDetailsComponent } from './workbasket-details.component';
 import { WorkbasketInformationComponent } from '../workbasket-information/workbasket-information.component';
 import { WorkbasketAccessItemsComponent } from '../workbasket-access-items/workbasket-access-items.component';
@@ -73,7 +74,7 @@ describe('WorkbasketDetailsComponent', () => {
   let workbasketService;
   let router;
   const workbasket = createWorkbasket('1', '', '', '', ICONTYPES.TOPIC, '', '', '', '', '', '', '', '', '', '', '', '',
-    new Links({ href: 'someurl' }, { href: 'someurl' }, { href: 'someurl' }));
+    {});
 
   const workbasketSummaryRepresentation: WorkbasketSummaryRepresentation = { workbaskets: [], _links: {}, page: {} };
 
@@ -86,7 +87,7 @@ describe('WorkbasketDetailsComponent', () => {
     const configure = (testBed: TestBed) => {
       testBed.configureTestingModule({
         imports: [RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule, HttpClientModule, ReactiveFormsModule,
-          InfiniteScrollModule],
+          InfiniteScrollModule, NgxsModule.forRoot()],
         declarations: [WorkbasketDetailsComponent, WorkbasketInformationComponent,
           WorkbasketAccessItemsComponent,
           WorkbasketDistributionTargetsComponent, WorkbasketDualListComponent, DummyDetailComponent],
