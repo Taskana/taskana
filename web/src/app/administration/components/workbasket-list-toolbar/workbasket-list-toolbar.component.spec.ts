@@ -86,13 +86,6 @@ describe('WorkbasketListToolbarComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should navigate to new-workbasket when click on add new workbasket', () => {
-    const spy = spyOn(router, 'navigate');
-    component.addWorkbasket();
-    expect(spy.calls.first().args[0][0].outlets.detail[0]).toBe('new-workbasket');
-  });
-
-
   it('should emit performSorting when sorting is triggered', () => {
     let sort: Sorting;
     const compareSort = new Sorting();
