@@ -8,13 +8,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { of } from 'rxjs';
 
 import { Workbasket } from 'app/shared/models/workbasket';
-import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
 import { WorkbasketSummaryRepresentation } from 'app/shared/models/workbasket-summary-representation';
 import { WorkbasketAccessItemsRepresentation } from 'app/shared/models/workbasket-access-items-representation';
 import { ICONTYPES } from 'app/shared/models/icon-types';
 import { Links } from 'app/shared/models/links';
-import { WorkbasketAccessItems } from 'app/shared/models/workbasket-access-items';
-import { LinksWorkbasketSummary } from 'app/shared/models/links-workbasket-summary';
 
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { MasterAndDetailService } from 'app/shared/services/master-and-detail/master-and-detail.service';
@@ -115,7 +112,7 @@ describe('WorkbasketDetailsComponent', () => {
   });
 
   afterEach(() => {
-    document.body.removeChild(debugElement);
+    fixture.destroy();
   });
 
   it('should be created', () => {

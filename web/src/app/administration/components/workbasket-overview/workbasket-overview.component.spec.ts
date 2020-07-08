@@ -1,46 +1,52 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AngularSvgIconModule } from 'angular-svg-icon';
-import { HttpClientModule } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Routes } from '@angular/router';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { NgxsModule } from '@ngxs/store';
+import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
+import { Location } from '@angular/common';
 import { WorkbasketOverviewComponent } from './workbasket-overview.component';
-import { SharedModule } from '../../../shared/shared.module';
-import { AppModule } from '../../../app.module';
-import { ImportExportComponent } from '../import-export/import-export.component';
-import { WorkbasketService } from '../../../shared/services/workbasket/workbasket.service';
-import { WorkbasketDefinitionService } from '../../services/workbasket-definition.service';
-import { ImportExportService } from '../../services/import-export.service';
-import { DummyDetailComponent } from '../workbasket-list-toolbar/workbasket-list-toolbar.component.spec';
-import { OrientationService } from '../../../shared/services/orientation/orientation.service';
 
+@Component({
+  selector: 'taskana-dummy-detail',
+  template: 'dummydetail'
+})
+export class DummyDetailComponent {
+}
+@Component({
+  selector: 'taskana-workbasket-list',
+  template: 'dummylist'
+})
+export class DummyListComponent {
+}
 describe('WorkbasketOverviewComponent', () => {
   let component: WorkbasketOverviewComponent;
   let fixture: ComponentFixture<WorkbasketOverviewComponent>;
-
+  const locationSpy: jasmine.SpyObj<Location> = jasmine.createSpyObj('Location', ['go']);
   const routes: Routes = [
-    { path: ':id', component: DummyDetailComponent, outlet: 'detail' }
+    { path: ':id', component: DummyDetailComponent }
   ];
+
   beforeEach(async(() => {
     TestBed.configureTestingModule(
       { imports: [
-        FormsModule, ReactiveFormsModule, AngularSvgIconModule,
-        HttpClientModule, RouterTestingModule.withRoutes(routes), SharedModule, AppModule, NgxsModule.forRoot()
+        RouterTestingModule.withRoutes(routes),
+        NgxsModule.forRoot()
       ],
       declarations: [
-        WorkbasketOverviewComponent, DummyDetailComponent, ImportExportComponent],
+        WorkbasketOverviewComponent,
+        DummyDetailComponent,
+        DummyListComponent],
       providers: [
-        WorkbasketService,
-        WorkbasketDefinitionService,
-        OrientationService,
-        ImportExportService
-      ] }
+        { provide: Location, useValue: locationSpy },
+      ],
+      schemas: [NO_ERRORS_SCHEMA] }
     )
       .compileComponents();
   }));
+
+  afterEach(() => {
+    fixture.destroy();
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(WorkbasketOverviewComponent);
