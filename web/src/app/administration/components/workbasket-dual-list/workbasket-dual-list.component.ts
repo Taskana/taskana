@@ -10,7 +10,7 @@ import { Side } from '../workbasket-distribution-targets/workbasket-distribution
   styleUrls: ['./workbasket-dual-list.component.scss'],
   animations: [expandDown]
 })
-export class WorkbasketDualListComponent implements OnInit, OnChanges {
+export class WorkbasketDualListComponent implements OnInit {
   @Input() distributionTargets: WorkbasketSummary[];
   @Input() distributionTargetsSelected: WorkbasketSummary[];
   @Output() performDualListFilter = new EventEmitter<{ filterBy: Filter, side: Side }>();
@@ -27,11 +27,6 @@ export class WorkbasketDualListComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.sideNumber = this.side === Side.LEFT ? 0 : 1;
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    console.log(this.distributionTargets, this.distributionTargetsSelected);
-    // this.distributionTargets = this.distributionTargets.map(item => ({ ...item, selected: false }));
   }
 
   selectAll(selected: boolean) {

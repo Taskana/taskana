@@ -141,7 +141,6 @@ export class WorkbasketState implements NgxsAfterBootstrap {
           paginatedWorkbasketsSummary: paginatedWorkbasketSummary
         });
       }, error => {
-        console.log(error);
         this.notificationService.triggerError(NOTIFICATION_TYPES.SAVE_ERR_4, error);
       }
     ));
