@@ -5,7 +5,7 @@ import { Component,
   OnDestroy, OnInit,
   SimpleChanges,
   ViewChild } from '@angular/core';
-import { Observable, Subject, Subscription } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 import { Workbasket } from 'app/shared/models/workbasket';
 import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
@@ -179,7 +179,6 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
   }
 
   onSave() {
-    console.log(this.distributionTargetsSelectedResource._links.self.href, this.getSeletedIds());
     this.requestInProgressService.setRequestInProgress(true);
     this.store.dispatch(new UpdateWorkbasketDistributionTargets(
       this.distributionTargetsSelectedResource._links.self.href,

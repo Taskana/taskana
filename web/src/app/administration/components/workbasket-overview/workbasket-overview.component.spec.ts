@@ -4,6 +4,8 @@ import { Routes } from '@angular/router';
 import { NgxsModule } from '@ngxs/store';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
 import { Location } from '@angular/common';
+import { take } from 'rxjs/operators';
+import { debug } from 'util';
 import { WorkbasketOverviewComponent } from './workbasket-overview.component';
 
 @Component({
@@ -19,6 +21,7 @@ export class DummyDetailComponent {
 export class DummyListComponent {
 }
 describe('WorkbasketOverviewComponent', () => {
+  let debugElement: any;
   let component: WorkbasketOverviewComponent;
   let fixture: ComponentFixture<WorkbasketOverviewComponent>;
   const locationSpy: jasmine.SpyObj<Location> = jasmine.createSpyObj('Location', ['go']);
@@ -51,10 +54,22 @@ describe('WorkbasketOverviewComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(WorkbasketOverviewComponent);
     component = fixture.componentInstance;
+    debugElement = fixture.debugElement.nativeElement;
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should not display detail component if showDetail is false', () => {
+    component.showDetail = false;
+    expect(debugElement.querySelector('taskana-workbasket-details')).toBeNull();
+  });
+
+  it('should display detail component if showDetail is true', () => {
+    component.showDetail = true;
+    fixture.detectChanges();
+    expect(debugElement.querySelector('taskana-workbasket-details')).toBeTruthy();
   });
 });
