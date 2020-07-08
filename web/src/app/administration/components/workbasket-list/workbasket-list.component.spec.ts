@@ -21,6 +21,8 @@ import { OrientationService } from 'app/shared/services/orientation/orientation.
 import { configureTests } from 'app/app.test.configuration';
 import { Page } from 'app/shared/models/page';
 import { ImportExportService } from 'app/administration/services/import-export.service';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { NgxsModule } from '@ngxs/store';
 import { WorkbasketListToolbarComponent } from '../workbasket-list-toolbar/workbasket-list-toolbar.component';
 import { WorkbasketListComponent } from './workbasket-list.component';
 
@@ -72,7 +74,6 @@ const workbasketSummaryResource: WorkbasketSummaryRepresentation = {
   page: {}
 };
 
-
 describe('WorkbasketListComponent', () => {
   let component: WorkbasketListComponent;
   let fixture: ComponentFixture<WorkbasketListComponent>;
@@ -84,7 +85,6 @@ describe('WorkbasketListComponent', () => {
     { path: ':id', component: DummyDetailComponent, outlet: 'detail' },
     { path: 'workbaskets', component: DummyDetailComponent }
   ];
-
 
   beforeEach(done => {
     const configure = (testBed: TestBed) => {
@@ -98,7 +98,8 @@ describe('WorkbasketListComponent', () => {
         imports: [
           AngularSvgIconModule,
           HttpClientModule,
-          RouterTestingModule.withRoutes(routes)
+          RouterTestingModule.withRoutes(routes),
+          NgxsModule.forRoot()
         ],
         providers: [
           WorkbasketService,
