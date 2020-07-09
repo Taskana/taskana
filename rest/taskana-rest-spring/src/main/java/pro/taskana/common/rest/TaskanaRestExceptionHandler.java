@@ -36,106 +36,112 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketInUseException;
 public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler {
 
   @ExceptionHandler(InvalidArgumentException.class)
-  protected ResponseEntity<Object> handleInvalidArgument(
+  protected ResponseEntity<TaskanaErrorData> handleInvalidArgument(
       InvalidArgumentException ex, WebRequest req) {
     return buildResponse(ex, req, HttpStatus.BAD_REQUEST, false);
   }
 
   @ExceptionHandler(NotAuthorizedException.class)
-  protected ResponseEntity<Object> handleNotAuthorized(NotAuthorizedException ex, WebRequest req) {
+  protected ResponseEntity<TaskanaErrorData> handleNotAuthorized(
+      NotAuthorizedException ex, WebRequest req) {
     return buildResponse(ex, req, HttpStatus.FORBIDDEN);
   }
 
   @ExceptionHandler(NotFoundException.class)
-  protected ResponseEntity<Object> handleTaskNotFound(NotFoundException ex, WebRequest req) {
+  protected ResponseEntity<TaskanaErrorData> handleTaskNotFound(
+      NotFoundException ex, WebRequest req) {
     return buildResponse(ex, req, HttpStatus.NOT_FOUND);
   }
 
   @ExceptionHandler(TaskAlreadyExistException.class)
-  protected ResponseEntity<Object> handleTaskAlreadyExist(
+  protected ResponseEntity<TaskanaErrorData> handleTaskAlreadyExist(
       TaskAlreadyExistException ex, WebRequest req) {
     return buildResponse(ex, req, HttpStatus.CONFLICT);
   }
 
   @ExceptionHandler(NotAuthorizedToQueryWorkbasketException.class)
-  protected ResponseEntity<Object> handleNotAuthorizedToQueryWorkbasket(
+  protected ResponseEntity<TaskanaErrorData> handleNotAuthorizedToQueryWorkbasket(
       NotAuthorizedToQueryWorkbasketException ex, WebRequest req) {
     return buildResponse(ex, req, HttpStatus.FORBIDDEN);
   }
 
   @ExceptionHandler(InvalidStateException.class)
-  protected ResponseEntity<Object> handleInvalidState(InvalidStateException ex, WebRequest req) {
+  protected ResponseEntity<TaskanaErrorData> handleInvalidState(
+      InvalidStateException ex, WebRequest req) {
     return buildResponse(ex, req, HttpStatus.CONFLICT);
   }
 
   @ExceptionHandler(InvalidOwnerException.class)
-  protected ResponseEntity<Object> handleInvalidOwner(InvalidOwnerException ex, WebRequest req) {
+  protected ResponseEntity<TaskanaErrorData> handleInvalidOwner(
+      InvalidOwnerException ex, WebRequest req) {
     return buildResponse(ex, req, HttpStatus.CONFLICT);
   }
 
   @ExceptionHandler(ClassificationAlreadyExistException.class)
-  protected ResponseEntity<Object> handleClassificationAlreadyExist(
+  protected ResponseEntity<TaskanaErrorData> handleClassificationAlreadyExist(
       ClassificationAlreadyExistException ex, WebRequest req) {
     return buildResponse(ex, req, HttpStatus.CONFLICT);
   }
 
   @ExceptionHandler(DuplicateKeyException.class)
-  protected ResponseEntity<Object> handleDuplicateKey(DuplicateKeyException ex, WebRequest req) {
+  protected ResponseEntity<TaskanaErrorData> handleDuplicateKey(
+      DuplicateKeyException ex, WebRequest req) {
     return buildResponse(ex, req, HttpStatus.CONFLICT);
   }
 
   @ExceptionHandler(ConcurrencyException.class)
-  protected ResponseEntity<Object> handleConcurrencyException(
+  protected ResponseEntity<TaskanaErrorData> handleConcurrencyException(
       ConcurrencyException ex, WebRequest req) {
     return buildResponse(ex, req, HttpStatus.CONFLICT);
   }
 
   @ExceptionHandler(WorkbasketInUseException.class)
-  protected ResponseEntity<Object> handleWorkbasketInUse(
+  protected ResponseEntity<TaskanaErrorData> handleWorkbasketInUse(
       WorkbasketInUseException ex, WebRequest req) {
     return buildResponse(ex, req, HttpStatus.LOCKED);
   }
 
   @ExceptionHandler(WorkbasketAlreadyExistException.class)
-  protected ResponseEntity<Object> handleWorkbasketAlreadyExist(
+  protected ResponseEntity<TaskanaErrorData> handleWorkbasketAlreadyExist(
       WorkbasketAlreadyExistException ex, WebRequest req) {
     return buildResponse(ex, req, HttpStatus.CONFLICT);
   }
 
   @ExceptionHandler(WorkbasketAccessItemAlreadyExistException.class)
-  protected ResponseEntity<Object> handleWorkbasketAccessItemAlreadyExist(
+  protected ResponseEntity<TaskanaErrorData> handleWorkbasketAccessItemAlreadyExist(
       WorkbasketAccessItemAlreadyExistException ex, WebRequest req) {
     return buildResponse(ex, req, HttpStatus.CONFLICT);
   }
 
   @ExceptionHandler(InvalidWorkbasketException.class)
-  protected ResponseEntity<Object> handleInvalidWorkbasket(
+  protected ResponseEntity<TaskanaErrorData> handleInvalidWorkbasket(
       InvalidWorkbasketException ex, WebRequest req) {
     return buildResponse(ex, req, HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(DomainNotFoundException.class)
-  protected ResponseEntity<Object> handleDomainNotFound(
+  protected ResponseEntity<TaskanaErrorData> handleDomainNotFound(
       DomainNotFoundException ex, WebRequest req) {
     return buildResponse(ex, req, HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(MaxUploadSizeExceededException.class)
-  protected ResponseEntity<Object> handleMaxUploadSizeExceededException(
+  protected ResponseEntity<TaskanaErrorData> handleMaxUploadSizeExceededException(
       MaxUploadSizeExceededException ex, WebRequest req) {
     return buildResponse(ex, req, HttpStatus.PAYLOAD_TOO_LARGE);
   }
 
   @ExceptionHandler(Exception.class)
-  protected ResponseEntity<Object> handleGeneralException(Exception ex, WebRequest req) {
+  protected ResponseEntity<TaskanaErrorData> handleGeneralException(Exception ex, WebRequest req) {
     return buildResponse(ex, req, HttpStatus.BAD_REQUEST);
   }
 
-  private ResponseEntity<Object> buildResponse(Exception ex, WebRequest req, HttpStatus status) {
+  private ResponseEntity<TaskanaErrorData> buildResponse(
+      Exception ex, WebRequest req, HttpStatus status) {
     return buildResponse(ex, req, status, true);
   }
 
-  private ResponseEntity<Object> buildResponse(
+  private ResponseEntity<TaskanaErrorData> buildResponse(
       Exception ex, WebRequest req, HttpStatus status, boolean logExceptionOnError) {
     TaskanaErrorData errorData = new TaskanaErrorData(status, ex, req);
     if (logExceptionOnError) {

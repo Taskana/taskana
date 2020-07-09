@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
-import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.KeyDomain;
 import pro.taskana.common.api.TimeInterval;
@@ -36,6 +35,7 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.rest.AbstractPagingController;
 import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.rest.QueryHelper;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
 import pro.taskana.task.api.TaskQuery;
 import pro.taskana.task.api.TaskService;
@@ -91,9 +91,6 @@ public class TaskController extends AbstractPagingController {
   private static final String WILDCARD_SEARCH_VALUE = "wildcard-search-value";
   private static final String WILDCARD_SEARCH_FIELDS = "wildcard-search-fields";
   private static final String CUSTOM = "custom";
-
-  private static final String SORT_BY = "sort-by";
-  private static final String SORT_DIRECTION = "order";
 
   private static final String INDEFINITE = "";
 
@@ -492,6 +489,9 @@ public class TaskController extends AbstractPagingController {
       LOGGER.debug("Exit from applyFilterParams(), returning {}", taskQuery);
     }
 
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Exit from applyFilterParams(), query: {}", taskQuery);
+    }
     return taskQuery;
   }
 
@@ -658,58 +658,50 @@ public class TaskController extends AbstractPagingController {
     return null;
   }
 
-  private TaskQuery applySortingParams(TaskQuery taskQuery, MultiValueMap<String, String> params)
+  private TaskQuery applySortingParams(TaskQuery query, MultiValueMap<String, String> params)
       throws InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Entry to applySortingParams(taskQuery= {}, params= {})", taskQuery, params);
+      LOGGER.debug("Entry to applySortingParams(query= {}, params= {})", query, params);
     }
 
-    // sorting
-    String sortBy = params.getFirst(SORT_BY);
-    if (sortBy != null) {
-      SortDirection sortDirection;
-      if (params.getFirst(SORT_DIRECTION) != null
-          && "desc".equals(params.getFirst(SORT_DIRECTION))) {
-        sortDirection = SortDirection.DESCENDING;
-      } else {
-        sortDirection = SortDirection.ASCENDING;
-      }
-      switch (sortBy) {
-        case (CLASSIFICATION_KEY):
-          taskQuery = taskQuery.orderByClassificationKey(sortDirection);
-          break;
-        case (POR_TYPE):
-          taskQuery = taskQuery.orderByPrimaryObjectReferenceType(sortDirection);
-          break;
-        case (POR_VALUE):
-          taskQuery = taskQuery.orderByPrimaryObjectReferenceValue(sortDirection);
-          break;
-        case (STATE):
-          taskQuery = taskQuery.orderByState(sortDirection);
-          break;
-        case (NAME):
-          taskQuery = taskQuery.orderByName(sortDirection);
-          break;
-        case (DUE):
-          taskQuery = taskQuery.orderByDue(sortDirection);
-          break;
-        case (PLANNED):
-          taskQuery = taskQuery.orderByPlanned(sortDirection);
-          break;
-        case (PRIORITY):
-          taskQuery = taskQuery.orderByPriority(sortDirection);
-          break;
-        default:
-          throw new InvalidArgumentException("Unknown filter attribute: " + sortBy);
-      }
-    }
-    params.remove(SORT_BY);
-    params.remove(SORT_DIRECTION);
+    QueryHelper.applyAndRemoveSortingParams(
+        params,
+        (sortBy, sortDirection) -> {
+          switch (sortBy) {
+            case (CLASSIFICATION_KEY):
+              query.orderByClassificationKey(sortDirection);
+              break;
+            case (POR_TYPE):
+              query.orderByPrimaryObjectReferenceType(sortDirection);
+              break;
+            case (POR_VALUE):
+              query.orderByPrimaryObjectReferenceValue(sortDirection);
+              break;
+            case (STATE):
+              query.orderByState(sortDirection);
+              break;
+            case (NAME):
+              query.orderByName(sortDirection);
+              break;
+            case (DUE):
+              query.orderByDue(sortDirection);
+              break;
+            case (PLANNED):
+              query.orderByPlanned(sortDirection);
+              break;
+            case (PRIORITY):
+              query.orderByPriority(sortDirection);
+              break;
+            default:
+              throw new InvalidArgumentException("Unknown filter attribute: " + sortBy);
+          }
+        });
+
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from applySortingParams(), returning {}", taskQuery);
+      LOGGER.debug("Exit from applySortingParams(), returning {}", query);
     }
 
-    return taskQuery;
+    return query;
   }
 
   private int[] extractPriorities(String[] prioritiesInString) {
