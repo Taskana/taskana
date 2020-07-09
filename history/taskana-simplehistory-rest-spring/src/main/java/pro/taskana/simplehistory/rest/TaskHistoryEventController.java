@@ -6,6 +6,7 @@ import java.time.ZoneId;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.PagedModel.PageMetadata;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.HttpStatus;
@@ -19,10 +20,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.TaskanaEngineConfiguration;
-import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.rest.AbstractPagingController;
+import pro.taskana.common.rest.QueryHelper;
 import pro.taskana.simplehistory.impl.HistoryEventImpl;
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
 import pro.taskana.simplehistory.query.HistoryQuery;
@@ -42,97 +43,53 @@ public class TaskHistoryEventController extends AbstractPagingController {
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskHistoryEventController.class);
 
   private static final String LIKE = "%";
-
   private static final String BUSINESS_PROCESS_ID = "business-process-id";
-
   private static final String BUSINESS_PROCESS_ID_LIKE = "business-process-id-like";
-
   private static final String PARENT_BUSINESS_PROCESS_ID = "parent-business-process-id";
-
   private static final String PARENT_BUSINESS_PROCESS_ID_LIKE = "parent-business-process-id-like";
-
   private static final String TASK_ID = "task-id";
-
   private static final String TASK_ID_LIKE = "task-id-like";
-
   private static final String EVENT_TYPE = "event-type";
-
   private static final String EVENT_TYPE_LIKE = "event-type-like";
-
   private static final String CREATED = "created";
-
   private static final String USER_ID = "user-id";
-
   private static final String USER_ID_LIKE = "user-id-like";
-
   private static final String DOMAIN = "domain";
-
   private static final String WORKBASKET_KEY = "workbasket-key";
-
   private static final String WORKBASKET_KEY_LIKE = "workbasket-key-like";
-
   private static final String POR_COMPANY = "por-company";
-
   private static final String POR_COMPANY_LIKE = "por-company-like";
-
   private static final String POR_SYSTEM = "por-system";
-
   private static final String POR_SYSTEM_LIKE = "por-system-like";
-
   private static final String POR_INSTANCE = "por-instance";
-
   private static final String POR_INSTANCE_LIKE = "por-instance-like";
-
   private static final String POR_TYPE = "por-type";
-
   private static final String POR_TYPE_LIKE = "por-type-like";
-
   private static final String POR_VALUE = "por-value";
-
   private static final String POR_VALUE_LIKE = "por-value-like";
-
   private static final String TASK_CLASSIFICATION_KEY = "task-classification-key";
-
   private static final String TASK_CLASSIFICATION_KEY_LIKE = "task-classification-key-like";
-
   private static final String TASK_CLASSIFICATION_CATEGORY = "task-classification-category";
-
   private static final String TASK_CLASSIFICATION_CATEGORY_LIKE =
       "task-classification-category-like";
-
   private static final String ATTACHMENT_CLASSIFICATION_KEY = "attachment-classification-key";
-
   private static final String ATTACHMENT_CLASSIFICATION_KEY_LIKE =
       "attachment-classification-key-like";
-
   private static final String CUSTOM_1 = "custom-1";
-
   private static final String CUSTOM_1_LIKE = "custom-1-like";
-
   private static final String CUSTOM_2 = "custom-2";
-
   private static final String CUSTOM_2_LIKE = "custom-2-like";
-
   private static final String CUSTOM_3 = "custom-3";
-
   private static final String CUSTOM_3_LIKE = "custom-3-like";
-
   private static final String CUSTOM_4 = "custom-4";
-
   private static final String CUSTOM_4_LIKE = "custom-4-like";
-
-  private static final String SORT_BY = "sort-by";
-
-  private static final String SORT_DIRECTION = "order";
-
   private static final String PAGING_PAGE = "page";
-
   private static final String PAGING_PAGE_SIZE = "page-size";
 
   private final SimpleHistoryServiceImpl simpleHistoryService;
-
   private final TaskHistoryEventResourceAssembler taskHistoryEventResourceAssembler;
 
+  @Autowired
   public TaskHistoryEventController(
       TaskanaEngineConfiguration taskanaEngineConfiguration,
       SimpleHistoryServiceImpl simpleHistoryServiceImpl,
@@ -153,7 +110,7 @@ public class TaskHistoryEventController extends AbstractPagingController {
 
     HistoryQuery query = simpleHistoryService.createHistoryQuery();
     query = applySortingParams(query, params);
-    applyFilterParams(query, params);
+    query = applyFilterParams(query, params);
 
     PageMetadata pageMetadata = null;
     List<HistoryEventImpl> historyEvents;
@@ -214,90 +171,83 @@ public class TaskHistoryEventController extends AbstractPagingController {
       LOGGER.debug("Entry to applySortingParams(params= {})", params);
     }
 
-    String sortBy = params.getFirst(SORT_BY);
-    if (sortBy != null) {
-      BaseQuery.SortDirection sortDirection;
-      if (params.getFirst(SORT_DIRECTION) != null
-          && "desc".equals(params.getFirst(SORT_DIRECTION))) {
-        sortDirection = BaseQuery.SortDirection.DESCENDING;
-      } else {
-        sortDirection = BaseQuery.SortDirection.ASCENDING;
-      }
-      switch (sortBy) {
-        case (BUSINESS_PROCESS_ID):
-          query = query.orderByBusinessProcessId(sortDirection);
-          break;
-        case (PARENT_BUSINESS_PROCESS_ID):
-          query = query.orderByParentBusinessProcessId(sortDirection);
-          break;
-        case (TASK_ID):
-          query = query.orderByTaskId(sortDirection);
-          break;
-        case (EVENT_TYPE):
-          query = query.orderByEventType(sortDirection);
-          break;
-        case (CREATED):
-          query = query.orderByCreated(sortDirection);
-          break;
-        case (USER_ID):
-          query = query.orderByUserId(sortDirection);
-          break;
-        case (DOMAIN):
-          query = query.orderByDomain(sortDirection);
-          break;
-        case (WORKBASKET_KEY):
-          query = query.orderByWorkbasketKey(sortDirection);
-          break;
-        case (POR_COMPANY):
-          query = query.orderByPorCompany(sortDirection);
-          break;
-        case (POR_SYSTEM):
-          query = query.orderByPorSystem(sortDirection);
-          break;
-        case (POR_INSTANCE):
-          query = query.orderByPorInstance(sortDirection);
-          break;
-        case (POR_TYPE):
-          query = query.orderByPorType(sortDirection);
-          break;
-        case (POR_VALUE):
-          query = query.orderByPorValue(sortDirection);
-          break;
-        case (TASK_CLASSIFICATION_KEY):
-          query = query.orderByTaskClassificationKey(sortDirection);
-          break;
-        case (TASK_CLASSIFICATION_CATEGORY):
-          query = query.orderByTaskClassificationCategory(sortDirection);
-          break;
-        case (ATTACHMENT_CLASSIFICATION_KEY):
-          query = query.orderByAttachmentClassificationKey(sortDirection);
-          break;
-        case (CUSTOM_1):
-          query = query.orderByCustomAttribute(1, sortDirection);
-          break;
-        case (CUSTOM_2):
-          query = query.orderByCustomAttribute(2, sortDirection);
-          break;
-        case (CUSTOM_3):
-          query = query.orderByCustomAttribute(3, sortDirection);
-          break;
-        case (CUSTOM_4):
-          query = query.orderByCustomAttribute(4, sortDirection);
-          break;
-        default:
-          throw new IllegalArgumentException("Unknown order '" + sortBy + "'");
-      }
-    }
-    params.remove(SORT_BY);
-    params.remove(SORT_DIRECTION);
+    QueryHelper.applyAndRemoveSortingParams(
+        params,
+        (sortBy, sortDirection) -> {
+          switch (sortBy) {
+            case (BUSINESS_PROCESS_ID):
+              query.orderByBusinessProcessId(sortDirection);
+              break;
+            case (PARENT_BUSINESS_PROCESS_ID):
+              query.orderByParentBusinessProcessId(sortDirection);
+              break;
+            case (TASK_ID):
+              query.orderByTaskId(sortDirection);
+              break;
+            case (EVENT_TYPE):
+              query.orderByEventType(sortDirection);
+              break;
+            case (CREATED):
+              query.orderByCreated(sortDirection);
+              break;
+            case (USER_ID):
+              query.orderByUserId(sortDirection);
+              break;
+            case (DOMAIN):
+              query.orderByDomain(sortDirection);
+              break;
+            case (WORKBASKET_KEY):
+              query.orderByWorkbasketKey(sortDirection);
+              break;
+            case (POR_COMPANY):
+              query.orderByPorCompany(sortDirection);
+              break;
+            case (POR_SYSTEM):
+              query.orderByPorSystem(sortDirection);
+              break;
+            case (POR_INSTANCE):
+              query.orderByPorInstance(sortDirection);
+              break;
+            case (POR_TYPE):
+              query.orderByPorType(sortDirection);
+              break;
+            case (POR_VALUE):
+              query.orderByPorValue(sortDirection);
+              break;
+            case (TASK_CLASSIFICATION_KEY):
+              query.orderByTaskClassificationKey(sortDirection);
+              break;
+            case (TASK_CLASSIFICATION_CATEGORY):
+              query.orderByTaskClassificationCategory(sortDirection);
+              break;
+            case (ATTACHMENT_CLASSIFICATION_KEY):
+              query.orderByAttachmentClassificationKey(sortDirection);
+              break;
+            case (CUSTOM_1):
+              query.orderByCustomAttribute(1, sortDirection);
+              break;
+            case (CUSTOM_2):
+              query.orderByCustomAttribute(2, sortDirection);
+              break;
+            case (CUSTOM_3):
+              query.orderByCustomAttribute(3, sortDirection);
+              break;
+            case (CUSTOM_4):
+              query.orderByCustomAttribute(4, sortDirection);
+              break;
+            default:
+              throw new IllegalArgumentException("Unknown order '" + sortBy + "'");
+          }
+        });
+
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from applySortingParams(), returning {}", query);
+      LOGGER.debug("Exit from applySortingParams(), returning: {}", query);
     }
 
     return query;
   }
 
-  private void applyFilterParams(HistoryQuery query, MultiValueMap<String, String> params) {
+  private HistoryQuery applyFilterParams(HistoryQuery query, MultiValueMap<String, String> params) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to applyFilterParams(query= {}, params= {})", query, params);
     }
@@ -485,6 +435,8 @@ public class TaskHistoryEventController extends AbstractPagingController {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from applyFilterParams(), returning {}", query);
     }
+
+    return query;
   }
 
   private TimeInterval getTimeIntervalOf(String[] created) {

@@ -21,13 +21,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.rest.AbstractPagingController;
 import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.rest.QueryHelper;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketQuery;
@@ -68,9 +68,6 @@ public class WorkbasketController extends AbstractPagingController {
   private static final String TYPE = "type";
   private static final String DESCRIPTION = "description";
 
-  private static final String SORT_BY = "sort-by";
-  private static final String SORT_DIRECTION = "order";
-
   private final WorkbasketService workbasketService;
 
   private final WorkbasketRepresentationModelAssembler workbasketRepresentationModelAssembler;
@@ -106,7 +103,7 @@ public class WorkbasketController extends AbstractPagingController {
 
     WorkbasketQuery query = workbasketService.createWorkbasketQuery();
     query = applySortingParams(query, params);
-    applyFilterParams(query, params);
+    query = applyFilterParams(query, params);
 
     PageMetadata pageMetadata = getPageMetadata(params, query);
     List<WorkbasketSummary> workbasketSummaries = getQueryList(query, pageMetadata);
@@ -348,47 +345,38 @@ public class WorkbasketController extends AbstractPagingController {
       LOGGER.debug("Entry to applySortingParams(query= {}, params={})", query, params);
     }
 
-    // sorting
-    String sortBy = params.getFirst(SORT_BY);
-    if (sortBy != null) {
-      SortDirection sortDirection;
-      if (params.getFirst(SORT_DIRECTION) != null
-          && "desc".equals(params.getFirst(SORT_DIRECTION))) {
-        sortDirection = SortDirection.DESCENDING;
-      } else {
-        sortDirection = SortDirection.ASCENDING;
-      }
-      switch (sortBy) {
-        case (NAME):
-          query = query.orderByName(sortDirection);
-          break;
-        case (KEY):
-          query = query.orderByKey(sortDirection);
-          break;
-        case (OWNER):
-          query = query.orderByOwner(sortDirection);
-          break;
-        case (TYPE):
-          query = query.orderByType(sortDirection);
-          break;
-        case (DESCRIPTION):
-          query = query.orderByDescription(sortDirection);
-          break;
-        default:
-          throw new InvalidArgumentException("Unknown order '" + sortBy + "'");
-      }
-    }
-    params.remove(SORT_BY);
-    params.remove(SORT_DIRECTION);
+    QueryHelper.applyAndRemoveSortingParams(
+        params,
+        (sortBy, sortDirection) -> {
+          switch (sortBy) {
+            case (NAME):
+              query.orderByName(sortDirection);
+              break;
+            case (KEY):
+              query.orderByKey(sortDirection);
+              break;
+            case (OWNER):
+              query.orderByOwner(sortDirection);
+              break;
+            case (TYPE):
+              query.orderByType(sortDirection);
+              break;
+            case (DESCRIPTION):
+              query.orderByDescription(sortDirection);
+              break;
+            default:
+              throw new InvalidArgumentException("Unknown order '" + sortBy + "'");
+          }
+        });
+
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from applySortingParams(), returning {}", query);
     }
-
     return query;
   }
 
-  private void applyFilterParams(WorkbasketQuery query, MultiValueMap<String, String> params)
-      throws InvalidArgumentException {
+  private WorkbasketQuery applyFilterParams(
+      WorkbasketQuery query, MultiValueMap<String, String> params) throws InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to applyFilterParams(query= {}, params= {})", query, params);
     }
@@ -428,82 +416,22 @@ public class WorkbasketController extends AbstractPagingController {
       query.domainIn(extractCommaSeparatedFields(params.get(DOMAIN)));
       params.remove(DOMAIN);
     }
-    if (params.containsKey(TYPE)) {
-      switch (params.getFirst(TYPE)) {
-        case "PERSONAL":
-          query.typeIn(WorkbasketType.PERSONAL);
-          break;
-        case "GROUP":
-          query.typeIn(WorkbasketType.GROUP);
-          break;
-        case "CLEARANCE":
-          query.typeIn(WorkbasketType.CLEARANCE);
-          break;
-        case "TOPIC":
-          query.typeIn(WorkbasketType.TOPIC);
-          break;
-        default:
-          throw new InvalidArgumentException(
-              "Unknown Workbasket type '" + params.getFirst(TYPE) + "'");
+    String type = params.getFirst(TYPE);
+    if (type != null) {
+      try {
+        query.typeIn(WorkbasketType.valueOf(type));
+      } catch (IllegalArgumentException e) {
+        throw new InvalidArgumentException("Unknown Workbasket type '" + type + "'");
       }
       params.remove(TYPE);
     }
-    if (params.containsKey(REQUIRED_PERMISSION)) {
-      for (String authorization : params.getFirst(REQUIRED_PERMISSION).split(",")) {
-        switch (authorization.trim()) {
-          case "READ":
-            query.callerHasPermission(WorkbasketPermission.READ);
-            break;
-          case "OPEN":
-            query.callerHasPermission(WorkbasketPermission.OPEN);
-            break;
-          case "APPEND":
-            query.callerHasPermission(WorkbasketPermission.APPEND);
-            break;
-          case "TRANSFER":
-            query.callerHasPermission(WorkbasketPermission.TRANSFER);
-            break;
-          case "DISTRIBUTE":
-            query.callerHasPermission(WorkbasketPermission.DISTRIBUTE);
-            break;
-          case "CUSTOM_1":
-            query.callerHasPermission(WorkbasketPermission.CUSTOM_1);
-            break;
-          case "CUSTOM_2":
-            query.callerHasPermission(WorkbasketPermission.CUSTOM_2);
-            break;
-          case "CUSTOM_3":
-            query.callerHasPermission(WorkbasketPermission.CUSTOM_3);
-            break;
-          case "CUSTOM_4":
-            query.callerHasPermission(WorkbasketPermission.CUSTOM_4);
-            break;
-          case "CUSTOM_5":
-            query.callerHasPermission(WorkbasketPermission.CUSTOM_5);
-            break;
-          case "CUSTOM_6":
-            query.callerHasPermission(WorkbasketPermission.CUSTOM_6);
-            break;
-          case "CUSTOM_7":
-            query.callerHasPermission(WorkbasketPermission.CUSTOM_7);
-            break;
-          case "CUSTOM_8":
-            query.callerHasPermission(WorkbasketPermission.CUSTOM_8);
-            break;
-          case "CUSTOM_9":
-            query.callerHasPermission(WorkbasketPermission.CUSTOM_9);
-            break;
-          case "CUSTOM_10":
-            query.callerHasPermission(WorkbasketPermission.CUSTOM_10);
-            break;
-          case "CUSTOM_11":
-            query.callerHasPermission(WorkbasketPermission.CUSTOM_11);
-            break;
-          case "CUSTOM_12":
-            query.callerHasPermission(WorkbasketPermission.CUSTOM_12);
-            break;
-          default:
-            throw new InvalidArgumentException("Unknown authorization '" + authorization + "'");
+    String permissions = params.getFirst(REQUIRED_PERMISSION);
+    if (permissions != null) {
+      for (String authorization : permissions.split(",")) {
+        try {
+          query.callerHasPermission(WorkbasketPermission.valueOf(authorization.trim()));
+        } catch (IllegalArgumentException e) {
+          throw new InvalidArgumentException("Unknown authorization '" + authorization + "'", e);
         }
       }
       params.remove(REQUIRED_PERMISSION);
@@ -511,5 +439,7 @@ public class WorkbasketController extends AbstractPagingController {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from applyFilterParams(), returning {}", query);
     }
+
+    return query;
   }
 }
