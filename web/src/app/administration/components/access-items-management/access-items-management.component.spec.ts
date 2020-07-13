@@ -27,8 +27,9 @@ describe('AccessItemsManagementComponent', () => {
       fixture = testBed.createComponent(AccessItemsManagementComponent);
       component = fixture.componentInstance;
       accessIdsService = testBed.get(AccessIdsService);
-      spyOn(accessIdsService, 'getAccessItemsPermissions').and.returnValue(of(new Array<AccessIdDefinition>()));
-      spyOn(accessIdsService, 'getAccessItemsInformation').and.returnValue(of(new AccessItemWorkbasketResource()));
+      spyOn(accessIdsService, 'getAccessItems').and.returnValue(of(new Array<AccessIdDefinition>()));
+      spyOn(accessIdsService, 'searchForAccessId').and.returnValue(of(new AccessItemWorkbasketResource()));
+      spyOn(accessIdsService, 'getGroupsByAccessId').and.returnValue(of(new AccessItemWorkbasketResource()));
       fixture.detectChanges();
       done();
     });

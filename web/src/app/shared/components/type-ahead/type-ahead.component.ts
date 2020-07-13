@@ -1,11 +1,10 @@
 import { Component,
-  OnInit,
   Input,
   ViewChild,
   forwardRef,
   Output,
   EventEmitter,
-  OnChanges, ElementRef, AfterViewInit } from '@angular/core';
+  ElementRef, AfterViewInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 
@@ -114,15 +113,15 @@ export class TypeAheadComponent implements AfterViewInit, ControlValueAccessor {
     this.dataSource = new Observable((observer: any) => {
       observer.next(this.value);
     }).pipe(mergeMap((token: string) => this.getUsersAsObservable(token)));
-    this.accessIdsService.getAccessItemsInformation(this.value).subscribe(items => {
+    this.accessIdsService.searchForAccessId(this.value).subscribe(items => {
       if (items.length > 0) {
         this.dataSource.selected = items.find(item => item.accessId.toLowerCase() === this.value.toLowerCase());
       }
     });
   }
 
-  getUsersAsObservable(token: string): Observable<any> {
-    return this.accessIdsService.getAccessItemsInformation(token);
+  getUsersAsObservable(accessId: string): Observable<any> {
+    return this.accessIdsService.searchForAccessId(accessId);
   }
 
   typeaheadOnSelect(event: TypeaheadMatch): void {

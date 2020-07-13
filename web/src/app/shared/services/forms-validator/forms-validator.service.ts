@@ -20,7 +20,7 @@ export class FormsValidatorService {
     if (!form) {
       return false;
     }
-    const forFieldsPromise = new Promise((resolve, reject) => {
+    const forFieldsPromise = new Promise(resolve => {
       Object.keys(form.form.controls).forEach(control => {
         if (control.indexOf('owner') === -1 && form.form.controls[control].invalid) {
           const validationState = toogleValidationMap.get(control);
@@ -31,10 +31,10 @@ export class FormsValidatorService {
       resolve(validSync);
     });
 
-    const ownerPromise = new Promise((resolve, reject) => {
+    const ownerPromise = new Promise(resolve => {
       const ownerString = 'owner';
       if (form.form.controls[this.workbasketOwner]) {
-        this.accessIdsService.getAccessItemsInformation(form.form.controls[this.workbasketOwner].value).subscribe(items => {
+        this.accessIdsService.searchForAccessId(form.form.controls[this.workbasketOwner].value).subscribe(items => {
           const validationState = toogleValidationMap.get(this.workbasketOwner);
           toogleValidationMap.set(this.workbasketOwner, !validationState);
           const valid = items.find(item => item.accessId === form.form.controls[this.workbasketOwner].value);
@@ -66,10 +66,10 @@ export class FormsValidatorService {
     const ownerPromise: Array<Promise<boolean>> = new Array<Promise<boolean>>();
 
     for (let i = 0; i < form.length; i++) {
-      ownerPromise.push(new Promise((resolve, reject) => {
+      ownerPromise.push(new Promise(resolve => {
         const validationState = toogleValidationAccessIdMap.get(i);
         toogleValidationAccessIdMap.set(i, !validationState);
-        this.accessIdsService.getAccessItemsInformation(form.controls[i].value.accessId).subscribe(items => {
+        this.accessIdsService.searchForAccessId(form.controls[i].value.accessId).subscribe(items => {
           resolve(new ResponseOwner({ valid: items.length > 0, field: 'access id' }));
         });
       }));
@@ -85,7 +85,7 @@ export class FormsValidatorService {
     if (!result) {
       this.notificationsService.showToast(
         NOTIFICATION_TYPES.WARNING_ALERT_2,
-        new Map<string, string>([['owner', responseOwner.field]])
+        new Map<string, string>([['owner', responseOwner ? responseOwner.field : 'owner']])
       );
     }
     return result;
@@ -103,7 +103,7 @@ export class FormsValidatorService {
   }
 }
 
-function ResponseOwner(obj) {
-  this.valid = obj.valid;
-  this.field = obj.field;
+function ResponseOwner(owner) {
+  this.valid = owner.valid;
+  this.field = owner.field;
 }
