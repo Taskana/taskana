@@ -21,6 +21,7 @@ import { EngineConfigurationSelectors } from 'app/shared/store/engine-configurat
 import { WorkbasketAccessItemsComponent } from './workbasket-access-items.component';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
+import { AccessItemWorkbasketResource } from '../../../shared/models/access-item-workbasket-resource';
 
 describe('WorkbasketAccessItemsComponent', () => {
   let component: WorkbasketAccessItemsComponent;
@@ -78,9 +79,8 @@ describe('WorkbasketAccessItemsComponent', () => {
       spyOn(notificationsService, 'showToast').and.returnValue(of(true));
       debugElement = fixture.debugElement.nativeElement;
       accessIdsService = testBed.get(AccessIdsService);
-      spyOn(accessIdsService, 'getAccessItemsInformation').and.returnValue(of(new Array<string>(
-        'accessID1', 'accessID2'
-      )));
+      spyOn(accessIdsService, 'searchForAccessId').and.returnValue(of(['accessID1', 'accessID2']));
+      spyOn(accessIdsService, 'getGroupsByAccessId').and.returnValue(of(['accessID1', 'accessID2']));
       formsValidatorService = testBed.get(FormsValidatorService);
       component.ngOnChanges({
         active: new SimpleChange(undefined, 'accessItems', true)
