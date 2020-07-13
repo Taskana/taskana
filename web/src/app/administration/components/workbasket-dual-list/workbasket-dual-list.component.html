@@ -21,10 +21,10 @@
         </div>
 
         <div [@toggleDown]="toolbarState">
-            <taskana-filter (performFilter)="performAvailableFilter($event)"></taskana-filter>
+            <taskana-shared-filter (performFilter)="performAvailableFilter($event)"></taskana-shared-filter>
         </div>
-        <taskana-spinner [isRunning]="requestInProgress" positionClass="centered-spinner"
-                         class="floating"></taskana-spinner>
+        <taskana-shared-spinner [isRunning]="requestInProgress" positionClass="centered-spinner"
+                         class="floating"></taskana-shared-spinner>
     </div>
 
     <!-- WORKBASKET LIST -->
@@ -37,7 +37,7 @@
                 (click)="distributionTarget.selected = !distributionTarget.selected">
                 <div class="row">
                     <dl class="col-xs-1">
-                        <taskana-icon-type [type]="distributionTarget.type"></taskana-icon-type>
+                        <taskana-administration-icon-type [type]="distributionTarget.type"></taskana-administration-icon-type>
                     </dl>
                     <dl class="col-xs-10">
                         <dt>{{distributionTarget.name}},
@@ -49,8 +49,8 @@
                 </div>
             </li>
             <li class="list-group-item" *ngIf="loadingItems">
-                <taskana-spinner [isRunning]="loadingItems" positionClass="centered-spinner"
-                                 class="floating"></taskana-spinner>
+                <taskana-shared-spinner [isRunning]="loadingItems" positionClass="centered-spinner"
+                                 class="floating"></taskana-shared-spinner>
             </li>
         </ul>
     </div>

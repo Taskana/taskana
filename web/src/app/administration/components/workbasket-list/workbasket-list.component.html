@@ -2,7 +2,7 @@
   <div #wbToolbar>
     <taskana-workbasket-list-toolbar [workbaskets]="workbasketsSummary$ | async" (performFilter)="performFilter($event)"
       (performSorting)="performSorting($event)" [workbasketDefaultSortBy]="workbasketDefaultSortBy">
-    </taskana-workbasket-list-toolbar>
+    </taskana-administration-workbasket-list-toolbar>
   </div>
   <div *ngIf="((workbasketsSummary$ | async) && (workbasketsSummary$ | async)?.length > 0) else empty_workbaskets">
     <ul #wbList id="wb-list-container" class="list-group">
@@ -43,4 +43,4 @@
         [type]="type"
         [numberOfItems]="(workbasketsSummary$ | async)?.length"
         (changePage)="changePage($event)">
-</taskana-pagination>
+</taskana-shared-pagination>
