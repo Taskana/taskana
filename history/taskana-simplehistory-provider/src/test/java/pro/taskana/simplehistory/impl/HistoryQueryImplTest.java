@@ -5,7 +5,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.validateMockitoUsage;
 
-import java.sql.SQLException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import pro.taskana.common.api.TimeInterval;
+import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.simplehistory.impl.mappings.HistoryQueryMapper;
 
 /**
@@ -24,7 +24,9 @@ import pro.taskana.simplehistory.impl.mappings.HistoryQueryMapper;
  * @author BV
  */
 @ExtendWith(MockitoExtension.class)
-public class HistoryQueryImplTest {
+class HistoryQueryImplTest {
+
+  private static final String ID_PREFIX_HISTORY_EVENT = "HEI";
 
   private HistoryQueryImpl historyQueryImpl;
 
@@ -33,12 +35,12 @@ public class HistoryQueryImplTest {
   @Mock private HistoryQueryMapper historyQueryMock;
 
   @BeforeEach
-  public void setup() {
+  void setup() {
     historyQueryImpl = new HistoryQueryImpl(taskanaHistoryEngineMock, historyQueryMock);
   }
 
   @Test
-  public void testShouldReturnList() throws SQLException {
+  void testShouldReturnList() throws Exception {
     List<HistoryEventImpl> returnList = new ArrayList<>();
     returnList.add(createHistoryEvent("abcd", "T22", "car", "BV", "this was important", null));
     TimeInterval interval = new TimeInterval(Instant.now().minusNanos(1000), Instant.now());
@@ -67,7 +69,9 @@ public class HistoryQueryImplTest {
       String userId,
       String details,
       Instant created) {
-    HistoryEventImpl he = new HistoryEventImpl(userId, details);
+    HistoryEventImpl he =
+        new HistoryEventImpl(
+            IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT), userId, details);
     he.setTaskId(taskId);
     he.setWorkbasketKey(workbasketKey);
     he.setEventType(type);

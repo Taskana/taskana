@@ -1,5 +1,5 @@
 <div class="container-scrollable">
-    <taskana-spinner [isRunning]="requestInProgress"></taskana-spinner>
+    <taskana-shared-spinner [isRunning]="requestInProgress"></taskana-shared-spinner>
     <div id="workbasket-details" *ngIf="workbasket && !requestInProgress">
         <ul class="nav nav-tabs" role="tablist">
             <li *ngIf="showDetail" class="visible-xs visible-sm hidden">
@@ -26,13 +26,13 @@
         </ul>
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active" [ngClass]="{'active':tabSelected === 'information'}" id="work-baskets">
-                <taskana-workbasket-information [workbasket]="workbasket" [action]="action"></taskana-workbasket-information>
+                <taskana-administration-workbasket-information [workbasket]="workbasket" [action]="action"></taskana-administration-workbasket-information>
             </div>
             <div role="tabpanel" class="tab-pane" id="access-items" [ngClass]="{'active':tabSelected === 'accessItems'}">
-                <taskana-workbasket-access-items [workbasket]="workbasket" [action]="action" [active]="tabSelected"></taskana-workbasket-access-items>
+                <taskana-administration-workbasket-access-items [workbasket]="workbasket" [action]="action" [active]="tabSelected"></taskana-administration-workbasket-access-items>
             </div>
             <div role="tabpanel" class="tab-pane" id="distribution-targets" [ngClass]="{'active':tabSelected === 'distributionTargets'}">
-                <taskana-workbaskets-distribution-targets [workbasket]="workbasket" [action]="action" [active]="tabSelected"></taskana-workbaskets-distribution-targets>
+                <taskana-administration-workbasket-distribution-targets [workbasket]="workbasket" [action]="action" [active]="tabSelected"></taskana-administration-workbasket-distribution-targets>
             </div>
         </div>
     </div>

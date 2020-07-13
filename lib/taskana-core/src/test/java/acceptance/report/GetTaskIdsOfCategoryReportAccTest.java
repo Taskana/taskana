@@ -41,7 +41,7 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testGetTaskIdsOfCategoryReport() throws InvalidArgumentException, NotAuthorizedException {
+  void testGetTaskIdsOfCategoryReport() throws Exception {
     final MonitorService monitorService = taskanaEngine.getMonitorService();
 
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
@@ -90,8 +90,7 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testGetTaskIdsOfCategoryReportWithWorkbasketFilter()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testGetTaskIdsOfCategoryReportWithWorkbasketFilter() throws Exception {
     final MonitorService monitorService = taskanaEngine.getMonitorService();
 
     final List<String> workbasketIds =
@@ -136,8 +135,7 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testGetTaskIdsOfCategoryReportWithStateFilter()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testGetTaskIdsOfCategoryReportWithStateFilter() throws Exception {
     final MonitorService monitorService = taskanaEngine.getMonitorService();
 
     final List<TaskState> states = Collections.singletonList(TaskState.READY);
@@ -188,8 +186,7 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testGetTaskIdsOfCategoryReportWithCategoryFilter()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testGetTaskIdsOfCategoryReportWithCategoryFilter() throws Exception {
     final MonitorService monitorService = taskanaEngine.getMonitorService();
 
     final List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
@@ -226,8 +223,7 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testGetTaskIdsOfCategoryReportWithDomainFilter()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testGetTaskIdsOfCategoryReportWithDomainFilter() throws Exception {
     final MonitorService monitorService = taskanaEngine.getMonitorService();
 
     final List<String> domains = Collections.singletonList("DOMAIN_A");
@@ -271,8 +267,7 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testGetTaskIdsOfCategoryReportWithCustomFieldValueFilter()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testGetTaskIdsOfCategoryReportWithCustomFieldValueFilter() throws Exception {
     final MonitorService monitorService = taskanaEngine.getMonitorService();
 
     Map<CustomField, String> customAttributeFilter = new HashMap<>();

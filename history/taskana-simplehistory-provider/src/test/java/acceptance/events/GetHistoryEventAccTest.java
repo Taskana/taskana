@@ -6,13 +6,11 @@ import acceptance.AbstractAccTest;
 import org.junit.jupiter.api.Test;
 
 import pro.taskana.spi.history.api.events.TaskanaHistoryEvent;
-import pro.taskana.spi.history.api.exceptions.TaskanaHistoryEventNotFoundException;
 
-public class GetHistoryEventAccTest extends AbstractAccTest {
+class GetHistoryEventAccTest extends AbstractAccTest {
 
   @Test
-  public void should_ReturnSpecificTaskHistoryEventWithDetails_For_HistoryEventId()
-      throws TaskanaHistoryEventNotFoundException {
+  void should_ReturnSpecificTaskHistoryEventWithDetails_For_HistoryEventId() throws Exception {
 
     String detailsJson =
         "{\"changes\":[{"
@@ -23,7 +21,8 @@ public class GetHistoryEventAccTest extends AbstractAccTest {
             + "\"fieldName\":\"owner\","
             + "\"oldValue\":\"owner1\"}]}";
 
-    TaskanaHistoryEvent taskHistoryEvent = getHistoryService().getHistoryEvent("4");
+    TaskanaHistoryEvent taskHistoryEvent =
+        getHistoryService().getHistoryEvent("HEI:000000000000000000000000000000000000");
     assertThat(taskHistoryEvent.getBusinessProcessId()).isEqualTo("BPI:01");
     assertThat(taskHistoryEvent.getUserId()).isEqualTo("admin");
     assertThat(taskHistoryEvent.getEventType()).isEqualTo("TASK_UPDATED");

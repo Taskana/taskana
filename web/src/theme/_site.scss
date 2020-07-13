@@ -161,7 +161,7 @@ svg-icon {
 /*
  *Remove bootstrap cols padding for master and detail component
 */
-.no-gutter > taskana-master-and-detail > [class*='col-'] {
+.no-gutter > taskana-shared-master-and-detail > [class*='col-'] {
   padding-right: 0;
   padding-left: 0;
 }
@@ -303,7 +303,7 @@ span.flip {
   padding: 5px 15px;
 }
 
-.dual-list > taskana-filter > .list-group-search {
+.dual-list > taskana-shared-filter > .list-group-search {
   margin-top: 4px;
 }
 
@@ -313,7 +313,7 @@ span.flip {
   }
 }
 
-taskana-workbasket-information, taskana-workbasket-access-items, taskana-workbaskets-distribution-targets, taskana-workbasket-details, taskana-monitor-task-report,
+taskana-administration-workbasket-information, taskana-administration-workbasket-access-items, taskana-administration-workbasket-distribution-targets, taskana-administration-workbasket-details, taskana-monitor-task-report,
 taskana-monitor-workbasket-report, taskana-monitor-classification-report, taskana-monitor-timestamp-report {
   & .panel {
     border: none;
@@ -328,7 +328,7 @@ taskana-monitor-workbasket-report, taskana-monitor-classification-report, taskan
   }
 }
 
-taskana-task-details, taskana-classification-details, taskana-access-items-management, taskana-task, taskana-task-query {
+taskana-task-details, taskana-administration-classification-details, taskana-administration-access-items-management, taskana-task, taskana-task-query {
   & .panel {
     border: none;
     box-shadow: none;
@@ -352,7 +352,7 @@ taskana-task-query {
 }
 
 
-taskana-monitor-task-report, taskana-monitor-workbasket-report, taskana-monitor-classification-report, taskana-access-items-management {
+taskana-monitor-task-report, taskana-monitor-workbasket-report, taskana-monitor-classification-report, taskana-administration-access-items-management {
   & .panel {
     & > .panel-heading {
       border-left: 1px solid #ddd;

@@ -4,7 +4,7 @@ import { Filter } from 'app/shared/models/filter';
 import { TaskanaType } from 'app/shared/models/taskana-type';
 
 @Component({
-  selector: 'taskana-filter',
+  selector: 'taskana-shared-filter',
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss']
 })

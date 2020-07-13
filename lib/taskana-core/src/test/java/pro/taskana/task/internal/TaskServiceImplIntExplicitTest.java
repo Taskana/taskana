@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.File;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 import javax.sql.DataSource;
@@ -18,17 +17,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.classification.api.ClassificationService;
-import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.internal.models.ClassificationImpl;
 import pro.taskana.common.api.KeyDomain;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
-import pro.taskana.common.api.exceptions.DomainNotFoundException;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.TaskanaEngineTestConfiguration;
 import pro.taskana.common.internal.configuration.DbSchemaCreator;
@@ -38,17 +33,13 @@ import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.task.api.TaskState;
-import pro.taskana.task.api.exceptions.InvalidStateException;
-import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
-import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
-import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
@@ -73,7 +64,7 @@ class TaskServiceImplIntExplicitTest {
   private WorkbasketService workbasketService;
 
   @BeforeAll
-  static void beforeAll() throws SQLException {
+  static void beforeAll() throws Exception {
     String userHomeDirectory = System.getProperty("user.home");
     String propertiesFileName = userHomeDirectory + "/taskanaUnitTest.properties";
 
@@ -89,7 +80,7 @@ class TaskServiceImplIntExplicitTest {
   }
 
   @BeforeEach
-  void setup() throws SQLException {
+  void setup() throws Exception {
     taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
     taskServiceImpl = (TaskServiceImpl) taskanaEngine.getTaskService();
     taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
@@ -110,12 +101,7 @@ class TaskServiceImplIntExplicitTest {
 
   @WithAccessId(user = "user-1-1", groups = "businessadmin")
   @Test
-  void testStartTransactionFail()
-      throws SQLException, TaskNotFoundException, NotAuthorizedException,
-          WorkbasketNotFoundException, ClassificationNotFoundException,
-          ClassificationAlreadyExistException, TaskAlreadyExistException,
-          InvalidWorkbasketException, InvalidArgumentException, WorkbasketAlreadyExistException,
-          DomainNotFoundException, WorkbasketAccessItemAlreadyExistException {
+  void testStartTransactionFail() throws Exception {
     try (Connection connection = dataSource.getConnection()) {
       taskanaEngineImpl.setConnection(connection);
 
@@ -158,12 +144,7 @@ class TaskServiceImplIntExplicitTest {
 
   @WithAccessId(user = "user-1-1", groups = "businessadmin")
   @Test
-  void testCreateTask()
-      throws SQLException, TaskNotFoundException, NotAuthorizedException,
-          WorkbasketNotFoundException, ClassificationNotFoundException,
-          ClassificationAlreadyExistException, TaskAlreadyExistException,
-          InvalidWorkbasketException, InvalidArgumentException, WorkbasketAlreadyExistException,
-          DomainNotFoundException, WorkbasketAccessItemAlreadyExistException {
+  void testCreateTask() throws Exception {
     try (Connection connection = dataSource.getConnection()) {
       taskanaEngineImpl.setConnection(connection);
 
@@ -190,10 +171,7 @@ class TaskServiceImplIntExplicitTest {
 
   @WithAccessId(user = "user-1-1", groups = "businessadmin")
   @Test
-  void createTaskShouldThrowWorkbasketNotFoundException()
-      throws NotAuthorizedException, SQLException, ClassificationAlreadyExistException,
-          InvalidWorkbasketException, InvalidArgumentException, WorkbasketAlreadyExistException,
-          DomainNotFoundException {
+  void createTaskShouldThrowWorkbasketNotFoundException() throws Exception {
     try (Connection connection = dataSource.getConnection()) {
       taskanaEngineImpl.setConnection(connection);
       Task test = this.generateDummyTask();
@@ -209,11 +187,7 @@ class TaskServiceImplIntExplicitTest {
 
   @WithAccessId(user = "user-1-1", groups = "businessadmin")
   @Test
-  void createManualTaskShouldThrowClassificationNotFoundException()
-      throws NotAuthorizedException, WorkbasketNotFoundException, SQLException,
-          ClassificationAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException,
-          WorkbasketAlreadyExistException, DomainNotFoundException,
-          WorkbasketAccessItemAlreadyExistException {
+  void createManualTaskShouldThrowClassificationNotFoundException() throws Exception {
     try (Connection connection = dataSource.getConnection()) {
       taskanaEngineImpl.setConnection(connection);
 
@@ -244,12 +218,7 @@ class TaskServiceImplIntExplicitTest {
 
   @WithAccessId(user = "user-1-1", groups = "businessadmin")
   @Test
-  void should_ReturnList_when_BuilderIsUsed()
-      throws SQLException, NotAuthorizedException, WorkbasketNotFoundException,
-          ClassificationNotFoundException, ClassificationAlreadyExistException,
-          TaskAlreadyExistException, InvalidWorkbasketException, InvalidArgumentException,
-          SystemException, WorkbasketAlreadyExistException, DomainNotFoundException,
-          WorkbasketAccessItemAlreadyExistException {
+  void should_ReturnList_when_BuilderIsUsed() throws Exception {
     try (Connection connection = dataSource.getConnection()) {
       taskanaEngineImpl.setConnection(connection);
       WorkbasketImpl workbasket =
@@ -299,12 +268,7 @@ class TaskServiceImplIntExplicitTest {
 
   @WithAccessId(user = "user-1-1", groups = "businessadmin")
   @Test
-  void shouldTransferTaskToOtherWorkbasket()
-      throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          ClassificationAlreadyExistException, TaskNotFoundException, InterruptedException,
-          TaskAlreadyExistException, SQLException, InvalidWorkbasketException,
-          InvalidArgumentException, WorkbasketAlreadyExistException, DomainNotFoundException,
-          InvalidStateException, WorkbasketAccessItemAlreadyExistException {
+  void shouldTransferTaskToOtherWorkbasket() throws Exception {
     final int sleepTime = 100;
     final String user = CurrentUserContext.getUserid();
     try (Connection connection = dataSource.getConnection()) {
@@ -377,7 +341,7 @@ class TaskServiceImplIntExplicitTest {
   }
 
   @Test
-  void shouldNotTransferAnyTask() throws SQLException {
+  void shouldNotTransferAnyTask() throws Exception {
     try (Connection connection = dataSource.getConnection()) {
       taskanaEngineImpl.setConnection(connection);
 
@@ -391,11 +355,7 @@ class TaskServiceImplIntExplicitTest {
 
   @WithAccessId(user = "user-1-1", groups = "businessadmin")
   @Test
-  void shouldNotTransferByFailingSecurity()
-      throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          ClassificationAlreadyExistException, SQLException, TaskAlreadyExistException,
-          InvalidWorkbasketException, InvalidArgumentException, WorkbasketAlreadyExistException,
-          DomainNotFoundException, WorkbasketAccessItemAlreadyExistException {
+  void shouldNotTransferByFailingSecurity() throws Exception {
     final String user = "user-1-1";
 
     // Set up Security for this Test
@@ -496,14 +456,11 @@ class TaskServiceImplIntExplicitTest {
   }
 
   @AfterEach
-  void cleanUp() throws SQLException {
+  void cleanUp() throws Exception {
     taskanaEngineImpl.setConnection(null);
   }
 
-  private Task generateDummyTask()
-      throws ClassificationAlreadyExistException, InvalidWorkbasketException,
-          NotAuthorizedException, WorkbasketAlreadyExistException, DomainNotFoundException,
-          InvalidArgumentException {
+  private Task generateDummyTask() throws Exception {
     WorkbasketImpl workbasket = (WorkbasketImpl) workbasketService.newWorkbasket("wb", "DOMAIN_A");
     workbasket.setName("wb");
     workbasket.setId("1"); // set id manually for authorization tests

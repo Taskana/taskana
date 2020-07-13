@@ -20,12 +20,12 @@ import pro.taskana.spi.history.api.events.TaskanaHistoryEvent;
 @SpringBootTest(
     classes = {TaskHistoryRestConfiguration.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class TaskHistoryEventResourceAssemblerTest {
+class TaskHistoryEventResourceAssemblerTest {
 
   private final TaskHistoryEventResourceAssembler taskHistoryEventResourceAssembler;
 
   @Autowired
-  public TaskHistoryEventResourceAssemblerTest(
+  TaskHistoryEventResourceAssemblerTest(
       TaskHistoryEventResourceAssembler taskHistoryEventResourceAssembler) {
     this.taskHistoryEventResourceAssembler = taskHistoryEventResourceAssembler;
   }
@@ -33,7 +33,8 @@ public class TaskHistoryEventResourceAssemblerTest {
   @Test
   void taskHistoryEventModelToResource() {
 
-    HistoryEventImpl historyEvent = new HistoryEventImpl("user1", "someDetails");
+    HistoryEventImpl historyEvent =
+        new HistoryEventImpl("HEI:000000000000000000000000000000000000", "user1", "someDetails");
 
     historyEvent.setEventType("TASK_CREATED");
     historyEvent.setBusinessProcessId("BPI:01");

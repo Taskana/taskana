@@ -7,16 +7,12 @@ import acceptance.AbstractAccTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
-import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.TaskImpl;
-import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
 /** Acceptance test for all "create task" scenarios. */
 @ExtendWith(JaasExtension.class)
@@ -24,9 +20,7 @@ class TaskRoutingAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testCreateTaskWithoutWorkbasketAndVoidNewTaskMethod()
-      throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          TaskAlreadyExistException, InvalidArgumentException {
+  void testCreateTaskWithoutWorkbasketAndVoidNewTaskMethod() throws Exception {
     TaskService taskService = taskanaEngine.getTaskService();
 
     Task newTask = taskService.newTask();
@@ -47,9 +41,7 @@ class TaskRoutingAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testCreateTaskWithNullWorkbasket()
-      throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          TaskAlreadyExistException, InvalidArgumentException {
+  void testCreateTaskWithNullWorkbasket() throws Exception {
     TaskImpl createdTaskA = createTask("DOMAIN_A", "L12010");
     assertThat("WBI:100000000000000000000000000000000001")
         .isEqualTo(createdTaskA.getWorkbasketSummary().getId());
@@ -62,7 +54,7 @@ class TaskRoutingAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testCreateTaskWithNullRouting() throws InvalidArgumentException {
+  void testCreateTaskWithNullRouting() throws Exception {
 
     TaskService taskService = taskanaEngine.getTaskService();
     Task newTask = taskService.newTask(null, "DOMAIN_A");
@@ -76,7 +68,7 @@ class TaskRoutingAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testCreateTaskWithRoutingToMultipleWorkbaskets() throws InvalidArgumentException {
+  void testCreateTaskWithRoutingToMultipleWorkbaskets() throws Exception {
 
     TaskService taskService = taskanaEngine.getTaskService();
     Task newTask = taskService.newTask(null, "DOMAIN_B");
@@ -88,9 +80,7 @@ class TaskRoutingAccTest extends AbstractAccTest {
         .isInstanceOf(InvalidArgumentException.class);
   }
 
-  private TaskImpl createTask(String domain, String classificationKey)
-      throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          TaskAlreadyExistException, InvalidArgumentException {
+  private TaskImpl createTask(String domain, String classificationKey) throws Exception {
     TaskService taskService = taskanaEngine.getTaskService();
 
     Task newTask = taskService.newTask(null, domain);

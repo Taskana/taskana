@@ -2,10 +2,14 @@ package pro.taskana.simplehistory.impl;
 
 import java.sql.SQLException;
 import java.time.Instant;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.common.api.TaskanaRole;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.simplehistory.impl.mappings.HistoryEventMapper;
 import pro.taskana.simplehistory.impl.mappings.HistoryQueryMapper;
 import pro.taskana.simplehistory.query.HistoryQuery;
@@ -51,6 +55,33 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
     } finally {
       taskanaHistoryEngine.returnConnection();
       LOGGER.debug("Exit from create(TaskanaHistoryEvent event). Returning object = {}.", event);
+    }
+  }
+
+  @Override
+  public void deleteHistoryEventsByTaskIds(List<String> taskIds)
+      throws InvalidArgumentException, NotAuthorizedException {
+
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("entry to deleteHistoryEventsByTaskIds(taskIds = {})", taskIds);
+    }
+
+    taskanaHistoryEngine.checkRoleMembership(TaskanaRole.ADMIN);
+
+    if (taskIds == null) {
+      throw new InvalidArgumentException("List of taskIds must not be null.");
+    }
+
+    try {
+      taskanaHistoryEngine.openConnection();
+
+      historyEventMapper.deleteMultipleByTaskIds(taskIds);
+
+    } catch (SQLException e) {
+      LOGGER.error("Caught exception while trying to delete history events", e);
+    } finally {
+      LOGGER.debug("exit from deleteHistoryEventsByTaskIds()");
+      taskanaHistoryEngine.returnConnection();
     }
   }
 

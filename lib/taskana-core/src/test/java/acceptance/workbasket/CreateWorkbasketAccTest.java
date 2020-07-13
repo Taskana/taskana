@@ -11,7 +11,6 @@ import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
@@ -20,7 +19,6 @@ import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
-import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 
@@ -34,10 +32,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testCreateWorkbasket()
-      throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-          InvalidWorkbasketException, WorkbasketAlreadyExistException, DomainNotFoundException,
-          WorkbasketAccessItemAlreadyExistException {
+  void testCreateWorkbasket() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     final int before = workbasketService.createWorkbasketQuery().domainIn("DOMAIN_A").list().size();
 
@@ -170,9 +165,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testThrowsExceptionIfWorkbasketWithCaseInsensitiveSameKeyDomainIsCreated()
-      throws NotAuthorizedException, InvalidWorkbasketException, WorkbasketAlreadyExistException,
-          DomainNotFoundException {
+  void testThrowsExceptionIfWorkbasketWithCaseInsensitiveSameKeyDomainIsCreated() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
     Workbasket workbasket = workbasketService.newWorkbasket("X123456", "DOMAIN_A");
@@ -195,8 +188,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
   @WithAccessId(user = "businessadmin")
   @Test
   void testCreateWorkbasketWithAlreadyExistingKeyAndDomainAndEmptyIdUpdatesOlderWorkbasket()
-      throws DomainNotFoundException, InvalidWorkbasketException, NotAuthorizedException,
-          WorkbasketAlreadyExistException {
+      throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     // First create a new Workbasket.
     Workbasket wb = workbasketService.newWorkbasket("newKey", "DOMAIN_A");
@@ -218,10 +210,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testWorkbasketAccessItemSetName()
-      throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-          InvalidWorkbasketException, WorkbasketAlreadyExistException, DomainNotFoundException,
-          WorkbasketAccessItemAlreadyExistException {
+  void testWorkbasketAccessItemSetName() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     workbasketService.createWorkbasketQuery().domainIn("DOMAIN_A").list().size();
 

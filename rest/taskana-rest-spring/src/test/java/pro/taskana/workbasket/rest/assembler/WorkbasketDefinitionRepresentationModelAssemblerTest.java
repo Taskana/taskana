@@ -14,10 +14,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.rest.TaskanaSpringBootTest;
 import pro.taskana.workbasket.api.WorkbasketService;
-import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
@@ -40,8 +38,7 @@ class WorkbasketDefinitionRepresentationModelAssemblerTest {
   }
 
   @Test
-  void should_ReturnDefinitionEntity_When_ConvertingWorkbasketToDefinition()
-      throws NotAuthorizedException, WorkbasketNotFoundException {
+  void should_ReturnDefinitionEntity_When_ConvertingWorkbasketToDefinition() throws Exception {
     WorkbasketImpl workbasket = (WorkbasketImpl) workbasketService.newWorkbasket("1", "DOMAIN_A");
     String id = "ID1";
     workbasket.setId(id);

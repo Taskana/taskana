@@ -3,7 +3,6 @@ package acceptance.persistence;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
-import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Collections;
@@ -13,44 +12,27 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.classification.api.ClassificationService;
-import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistException;
-import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.JobService;
 import pro.taskana.common.api.ScheduledJob;
-import pro.taskana.common.api.exceptions.ConcurrencyException;
-import pro.taskana.common.api.exceptions.DomainNotFoundException;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
-import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
-import pro.taskana.task.api.exceptions.InvalidStateException;
-import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
-import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
-import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
-import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
-import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
-import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 
 /** Acceptance test for access to timestamps from different timezones. */
 @ExtendWith(JaasExtension.class)
-public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
+class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testTimestampsOnTaskUpdate()
-      throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
-          ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
-          InvalidStateException {
+  void testTimestampsOnTaskUpdate() throws Exception {
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
     Instant now = Instant.now();
@@ -72,9 +54,7 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testCreatedTaskObjectEqualsReadTaskObjectInNewTimezone()
-      throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-          WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException {
+  void testCreatedTaskObjectEqualsReadTaskObjectInNewTimezone() throws Exception {
 
     TaskService taskService = taskanaEngine.getTaskService();
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
@@ -110,9 +90,7 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testTimestampsOnClassificationUpdate()
-      throws ClassificationNotFoundException, InvalidArgumentException, ConcurrencyException,
-          NotAuthorizedException {
+  void testTimestampsOnClassificationUpdate() throws Exception {
     ClassificationService classificationService = taskanaEngine.getClassificationService();
     Classification classification =
         classificationService.getClassification("CLI:000000000000000000000000000000000001");
@@ -130,9 +108,7 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testTimestampsOnCreateMasterClassification()
-      throws ClassificationAlreadyExistException, ClassificationNotFoundException,
-          NotAuthorizedException, DomainNotFoundException, InvalidArgumentException {
+  void testTimestampsOnCreateMasterClassification() throws Exception {
     ClassificationService classificationService = taskanaEngine.getClassificationService();
     long amountOfClassificationsBefore = classificationService.createClassificationQuery().count();
     Classification classification = classificationService.newClassification("Key0", "", "TASK");
@@ -154,8 +130,7 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testTimestampsOnWorkbasketUpdate()
-      throws ConcurrencyException, NotAuthorizedException, WorkbasketNotFoundException {
+  void testTimestampsOnWorkbasketUpdate() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     Workbasket workbasket =
         workbasketService.getWorkbasket("WBI:100000000000000000000000000000000001");
@@ -171,10 +146,7 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testTimestampsOnCreateWorkbasket()
-      throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-          InvalidWorkbasketException, WorkbasketAlreadyExistException, DomainNotFoundException,
-          WorkbasketAccessItemAlreadyExistException {
+  void testTimestampsOnCreateWorkbasket() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     final int before = workbasketService.createWorkbasketQuery().domainIn("DOMAIN_A").list().size();
 
@@ -200,7 +172,7 @@ public class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void testTimestampsOnCreateScheduledJob() throws SQLException {
+  void testTimestampsOnCreateScheduledJob() throws Exception {
     resetDb(true);
     ScheduledJob job = new ScheduledJob();
     job.setArguments(Collections.singletonMap("keyBla", "valueBla"));

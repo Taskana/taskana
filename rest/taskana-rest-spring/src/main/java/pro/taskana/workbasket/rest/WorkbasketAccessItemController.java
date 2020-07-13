@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.rest.AbstractPagingController;
 import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.rest.QueryHelper;
 import pro.taskana.common.rest.ldap.LdapClient;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
 import pro.taskana.workbasket.api.WorkbasketAccessItemQuery;
@@ -43,26 +43,18 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
   private static final String ACCESS_ID_LIKE = "access-id-like";
   private static final String ACCESS_IDS = "access-ids";
 
-  private static final String SORT_BY = "sort-by";
-  private static final String SORT_DIRECTION = "order";
-
-  final LdapClient ldapClient;
-
+  private final LdapClient ldapClient;
   private final WorkbasketService workbasketService;
-
-  private final WorkbasketAccessItemRepresentationModelAssembler
-      workbasketAccessItemRepresentationModelAssembler;
+  private final WorkbasketAccessItemRepresentationModelAssembler modelAssembler;
 
   @Autowired
   public WorkbasketAccessItemController(
       LdapClient ldapClient,
       WorkbasketService workbasketService,
-      WorkbasketAccessItemRepresentationModelAssembler
-          workbasketAccessItemRepresentationModelAssembler) {
+      WorkbasketAccessItemRepresentationModelAssembler modelAssembler) {
     this.ldapClient = ldapClient;
     this.workbasketService = workbasketService;
-    this.workbasketAccessItemRepresentationModelAssembler =
-        workbasketAccessItemRepresentationModelAssembler;
+    this.modelAssembler = modelAssembler;
   }
 
   /**
@@ -82,16 +74,15 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
     }
 
     WorkbasketAccessItemQuery query = workbasketService.createWorkbasketAccessItemQuery();
-    getAccessIds(query, params);
-    applyFilterParams(query, params);
+    query = applyAccessIdIn(query, params);
+    query = applyFilterParams(query, params);
     query = applySortingParams(query, params);
 
     PageMetadata pageMetadata = getPageMetadata(params, query);
     List<WorkbasketAccessItem> workbasketAccessItems = getQueryList(query, pageMetadata);
 
     TaskanaPagedModel<WorkbasketAccessItemRepresentationModel> pagedResources =
-        workbasketAccessItemRepresentationModelAssembler.toPageModel(
-            workbasketAccessItems, pageMetadata);
+        modelAssembler.toPageModel(workbasketAccessItems, pageMetadata);
 
     ResponseEntity<TaskanaPagedModel<WorkbasketAccessItemRepresentationModel>> response =
         ResponseEntity.ok(pagedResources);
@@ -134,7 +125,8 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
     return response;
   }
 
-  private void getAccessIds(WorkbasketAccessItemQuery query, MultiValueMap<String, String> params) {
+  private WorkbasketAccessItemQuery applyAccessIdIn(
+      WorkbasketAccessItemQuery query, MultiValueMap<String, String> params) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to getAccessIds(query= {}, params= {})", query, params);
     }
@@ -148,9 +140,10 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from getAccessIds(), returning {}", query);
     }
+    return query;
   }
 
-  private void applyFilterParams(
+  private WorkbasketAccessItemQuery applyFilterParams(
       WorkbasketAccessItemQuery query, MultiValueMap<String, String> params) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to applyFilterParams(query= {}, params= {})", query, params);
@@ -174,9 +167,11 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
       query.accessIdLike(LIKE + params.get(ACCESS_ID_LIKE).get(0) + LIKE);
       params.remove(ACCESS_ID_LIKE);
     }
+
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from applyFilterParams(), returning {}", query);
     }
+    return query;
   }
 
   private WorkbasketAccessItemQuery applySortingParams(
@@ -186,33 +181,24 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
       LOGGER.debug("Entry to applySortingParams(query= {}, params= {})", query, params);
     }
 
-    // sorting
-    String sortBy = params.getFirst(SORT_BY);
-    if (sortBy != null) {
-      BaseQuery.SortDirection sortDirection;
-      if (params.getFirst(SORT_DIRECTION) != null
-          && "desc".equals(params.getFirst(SORT_DIRECTION))) {
-        sortDirection = BaseQuery.SortDirection.DESCENDING;
-      } else {
-        sortDirection = BaseQuery.SortDirection.ASCENDING;
-      }
-      switch (sortBy) {
-        case (WORKBASKET_KEY):
-          query = query.orderByWorkbasketKey(sortDirection);
-          break;
-        case (ACCESS_ID):
-          query = query.orderByAccessId(sortDirection);
-          break;
-        default:
-          throw new InvalidArgumentException("Unknown order '" + sortBy + "'");
-      }
-    }
-    params.remove(SORT_BY);
-    params.remove(SORT_DIRECTION);
+    QueryHelper.applyAndRemoveSortingParams(
+        params,
+        (sortBy, sortDirection) -> {
+          switch (sortBy) {
+            case (WORKBASKET_KEY):
+              query.orderByWorkbasketKey(sortDirection);
+              break;
+            case (ACCESS_ID):
+              query.orderByAccessId(sortDirection);
+              break;
+            default:
+              throw new InvalidArgumentException("Unknown order '" + sortBy + "'");
+          }
+        });
+
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from applySortingParams(), returning {}", query);
     }
-
     return query;
   }
 

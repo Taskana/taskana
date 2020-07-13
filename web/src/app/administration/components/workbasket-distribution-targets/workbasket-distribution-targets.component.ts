@@ -34,7 +34,7 @@ export enum Side {
   RIGHT
 }
 @Component({
-  selector: 'taskana-workbaskets-distribution-targets',
+  selector: 'taskana-administration-workbasket-distribution-targets',
   templateUrl: './workbasket-distribution-targets.component.html',
   styleUrls: ['./workbasket-distribution-targets.component.scss']
 })

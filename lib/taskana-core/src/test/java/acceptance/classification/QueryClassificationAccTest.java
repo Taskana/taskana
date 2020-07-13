@@ -21,12 +21,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.classification.api.ClassificationService;
-import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.TimeInterval;
-import pro.taskana.common.api.exceptions.ConcurrencyException;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 
@@ -174,7 +170,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
   }
 
   @Test
-  void testGetClassificationsWithCustom1() throws InvalidArgumentException {
+  void testGetClassificationsWithCustom1() throws Exception {
     List<ClassificationSummary> classifications =
         classificationService
             .createClassificationQuery()
@@ -185,7 +181,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
   }
 
   @Test
-  void testGetClassificationsWithCustom1Like() throws InvalidArgumentException {
+  void testGetClassificationsWithCustom1Like() throws Exception {
     List<ClassificationSummary> classifications =
         classificationService
             .createClassificationQuery()
@@ -197,7 +193,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
   }
 
   @Test
-  void testGetClassificationsWithParentAndCustom2() throws InvalidArgumentException {
+  void testGetClassificationsWithParentAndCustom2() throws Exception {
     List<ClassificationSummary> classifications =
         classificationService
             .createClassificationQuery()
@@ -234,9 +230,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testFindClassificationByModifiedWithin()
-      throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
-          InvalidArgumentException {
+  void testFindClassificationByModifiedWithin() throws Exception {
     String clId = "CLI:200000000000000000000000000000000015";
     classificationService.updateClassification(classificationService.getClassification(clId));
 
@@ -310,7 +304,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
   }
 
   @Test
-  void testQueryForCustom1In() throws InvalidArgumentException {
+  void testQueryForCustom1In() throws Exception {
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
@@ -320,7 +314,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
   }
 
   @Test
-  void testQueryForCustom2In() throws InvalidArgumentException {
+  void testQueryForCustom2In() throws Exception {
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
@@ -330,7 +324,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
   }
 
   @Test
-  void testQueryForCustom3In() throws InvalidArgumentException {
+  void testQueryForCustom3In() throws Exception {
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
@@ -340,28 +334,28 @@ class QueryClassificationAccTest extends AbstractAccTest {
   }
 
   @Test
-  void testQueryForCustom4In() throws InvalidArgumentException {
+  void testQueryForCustom4In() throws Exception {
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().customAttributeIn("4", "custom4").list();
     assertThat(results).hasSize(5);
   }
 
   @Test
-  void testQueryForCustom5In() throws InvalidArgumentException {
+  void testQueryForCustom5In() throws Exception {
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().customAttributeIn("5", "custom5").list();
     assertThat(results).hasSize(5);
   }
 
   @Test
-  void testQueryForCustom6In() throws InvalidArgumentException {
+  void testQueryForCustom6In() throws Exception {
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().customAttributeIn("6", "custom6").list();
     assertThat(results).hasSize(5);
   }
 
   @Test
-  void testQueryForCustom7In() throws InvalidArgumentException {
+  void testQueryForCustom7In() throws Exception {
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
@@ -371,7 +365,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
   }
 
   @Test
-  void testQueryForCustom8In() throws InvalidArgumentException {
+  void testQueryForCustom8In() throws Exception {
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
@@ -381,49 +375,49 @@ class QueryClassificationAccTest extends AbstractAccTest {
   }
 
   @Test
-  void testQueryForCustom2Like() throws InvalidArgumentException {
+  void testQueryForCustom2Like() throws Exception {
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().customAttributeLike("2", "cus%").list();
     assertThat(results).hasSize(6);
   }
 
   @Test
-  void testQueryForCustom3Like() throws InvalidArgumentException {
+  void testQueryForCustom3Like() throws Exception {
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().customAttributeLike("3", "cus%").list();
     assertThat(results).hasSize(6);
   }
 
   @Test
-  void testQueryForCustom4Like() throws InvalidArgumentException {
+  void testQueryForCustom4Like() throws Exception {
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().customAttributeLike("4", "cus%").list();
     assertThat(results).hasSize(6);
   }
 
   @Test
-  void testQueryForCustom5Like() throws InvalidArgumentException {
+  void testQueryForCustom5Like() throws Exception {
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().customAttributeLike("5", "cus%").list();
     assertThat(results).hasSize(6);
   }
 
   @Test
-  void testQueryForCustom6Like() throws InvalidArgumentException {
+  void testQueryForCustom6Like() throws Exception {
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().customAttributeLike("6", "cus%").list();
     assertThat(results).hasSize(6);
   }
 
   @Test
-  void testQueryForCustom7Like() throws InvalidArgumentException {
+  void testQueryForCustom7Like() throws Exception {
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().customAttributeLike("7", "cus%").list();
     assertThat(results).hasSize(6);
   }
 
   @Test
-  void testQueryForCustom8Like() throws InvalidArgumentException {
+  void testQueryForCustom8Like() throws Exception {
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().customAttributeLike("8", "cus%").list();
     assertThat(results).hasSize(6);
@@ -552,7 +546,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
   }
 
   @Test
-  void testQueryForOrderByCustom1Desc() throws InvalidArgumentException {
+  void testQueryForOrderByCustom1Desc() throws Exception {
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
@@ -566,7 +560,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
   }
 
   @Test
-  void testQueryForOrderByCustom2Asc() throws InvalidArgumentException {
+  void testQueryForOrderByCustom2Asc() throws Exception {
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
@@ -580,7 +574,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
   }
 
   @Test
-  void testQueryForOrderByCustom3Desc() throws InvalidArgumentException {
+  void testQueryForOrderByCustom3Desc() throws Exception {
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
@@ -594,7 +588,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
   }
 
   @Test
-  void testQueryForOrderByCustom4Asc() throws InvalidArgumentException {
+  void testQueryForOrderByCustom4Asc() throws Exception {
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
@@ -608,7 +602,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
   }
 
   @Test
-  void testQueryForOrderByCustom5Desc() throws InvalidArgumentException {
+  void testQueryForOrderByCustom5Desc() throws Exception {
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
@@ -622,7 +616,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
   }
 
   @Test
-  void testQueryForOrderByCustom6Asc() throws InvalidArgumentException {
+  void testQueryForOrderByCustom6Asc() throws Exception {
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
@@ -636,7 +630,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
   }
 
   @Test
-  void testQueryForOrderByCustom7Desc() throws InvalidArgumentException {
+  void testQueryForOrderByCustom7Desc() throws Exception {
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
@@ -650,7 +644,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
   }
 
   @Test
-  void testQueryForOrderByCustom8Asc() throws InvalidArgumentException {
+  void testQueryForOrderByCustom8Asc() throws Exception {
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()

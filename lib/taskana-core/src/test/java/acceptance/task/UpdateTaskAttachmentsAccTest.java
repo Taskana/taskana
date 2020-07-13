@@ -13,26 +13,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.api.models.ClassificationSummary;
-import pro.taskana.common.api.exceptions.ConcurrencyException;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
-import pro.taskana.task.api.exceptions.InvalidStateException;
-import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
-import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.AttachmentSummary;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.AttachmentImpl;
 import pro.taskana.task.internal.models.TaskImpl;
-import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
 /**
  * Acceptance test for the usecase of adding/removing an attachment of a task and update the result
@@ -47,10 +39,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
 
   @BeforeEach
   @WithAccessId(user = "admin")
-  void setUp()
-      throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException,
-          InvalidStateException {
+  void setUp() throws Exception {
     taskService = taskanaEngine.getTaskService();
     task =
         taskService.getTask(
@@ -75,10 +64,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testAddNewAttachment()
-      throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException,
-          InvalidStateException {
+  void testAddNewAttachment() throws Exception {
     final int attachmentCount = task.getAttachments().size();
     assertThat(task.getPriority()).isEqualTo(1);
     assertThat(task.getPlanned().plus(Duration.ofDays(1))).isEqualTo(task.getDue());
@@ -95,10 +81,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testAddValidAttachmentTwice()
-      throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
-          ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
-          InvalidStateException {
+  void testAddValidAttachmentTwice() throws Exception {
     task.getAttachments().clear();
     task = taskService.updateTask(task);
     task = taskService.getTask(task.getId());
@@ -119,9 +102,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-1")
   @Test
   void testAddNewAttachmentTwiceWithoutTaskanaMethodWillThrowAttachmentPersistenceException()
-      throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
-          ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
-          InvalidStateException {
+      throws Exception {
     final int attachmentCount = 0;
     task.getAttachments().clear();
     task = taskService.updateTask(task);
@@ -138,10 +119,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testAddExistingAttachmentAgainWillUpdateWhenNotEqual()
-      throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException,
-          InvalidStateException {
+  void testAddExistingAttachmentAgainWillUpdateWhenNotEqual() throws Exception {
     // Add attachment before
     task = taskService.getTask(task.getId());
     final int attachmentCount = task.getAttachments().size();
@@ -173,10 +151,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testAddExistingAttachmentAgainWillDoNothingWhenEqual()
-      throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException,
-          InvalidStateException {
+  void testAddExistingAttachmentAgainWillDoNothingWhenEqual() throws Exception {
     // Add Attachment before
     final int attachmentCount = task.getAttachments().size();
     ((AttachmentImpl) attachment).setId("TAI:0001");
@@ -197,10 +172,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testAddAttachmentAsNullValueWillBeIgnored()
-      throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
-          ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
-          InvalidStateException {
+  void testAddAttachmentAsNullValueWillBeIgnored() throws Exception {
     // Try to add a single NULL-Element
     final int attachmentCount = task.getAttachments().size();
     task.addAttachment(null);
@@ -231,10 +203,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testRemoveAttachment()
-      throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
-          ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
-          InvalidStateException {
+  void testRemoveAttachment() throws Exception {
     task.addAttachment(attachment);
     task = taskService.updateTask(task);
     assertThat(task.getPriority()).isEqualTo(99);
@@ -253,10 +222,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testRemoveAttachmentWithNullAndNotAddedId()
-      throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
-          ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
-          InvalidStateException {
+  void testRemoveAttachmentWithNullAndNotAddedId() throws Exception {
     task.addAttachment(attachment);
     task = taskService.updateTask(task);
     int attachmentCount = task.getAttachments().size();
@@ -276,10 +242,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testUpdateAttachment()
-      throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
-          ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
-          InvalidStateException {
+  void testUpdateAttachment() throws Exception {
     ((TaskImpl) task).setAttachments(new ArrayList<>());
     task = taskService.updateTask(task);
     assertThat(task.getPriority()).isEqualTo(1);
@@ -385,10 +348,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void replaceExistingAttachments()
-      throws TaskNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException,
-          InvalidStateException {
+  void replaceExistingAttachments() throws Exception {
     // setup test
     assertThat(task.getAttachments()).isEmpty();
     task.addAttachment(attachment);
@@ -446,9 +406,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testPrioDurationOfTaskFromAttachmentsAtUpdate()
-      throws NotAuthorizedException, InvalidArgumentException, ClassificationNotFoundException,
-          WorkbasketNotFoundException, TaskAlreadyExistException, TaskNotFoundException {
+  void testPrioDurationOfTaskFromAttachmentsAtUpdate() throws Exception {
 
     TaskService taskService = taskanaEngine.getTaskService();
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");

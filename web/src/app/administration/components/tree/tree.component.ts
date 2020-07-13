@@ -8,7 +8,7 @@ import { AfterViewChecked,
   OnInit,
   Output,
   ViewChild } from '@angular/core';
-import { TreeNodeModel } from 'app/shared/models/tree-node';
+import { TreeNodeModel } from 'app/administration/models/tree-node';
 
 import { ITreeOptions, KEYS, TREE_ACTIONS, TreeComponent } from 'angular-tree-component';
 import { Pair } from 'app/shared/models/pair';
@@ -20,18 +20,18 @@ import { EngineConfigurationSelectors } from 'app/shared/store/engine-configurat
 import { Location } from '@angular/common';
 import { NOTIFICATION_TYPES } from 'app/shared/models/notifications';
 import { NotificationService } from 'app/shared/services/notifications/notification.service';
-import { Classification } from '../../models/classification';
-import { ClassificationsService } from '../../services/classifications/classifications.service';
-import { ClassificationCategoryImages } from '../../models/customisation';
-import { ClassificationSelectors } from '../../store/classification-store/classification.selectors';
+import { Classification } from '../../../shared/models/classification';
+import { ClassificationsService } from '../../../shared/services/classifications/classifications.service';
+import { ClassificationCategoryImages } from '../../../shared/models/customisation';
+import { ClassificationSelectors } from '../../../shared/store/classification-store/classification.selectors';
 import { DeselectClassification,
   SelectClassification,
-  UpdateClassification } from '../../store/classification-store/classification.actions';
-import { ACTION } from '../../models/action';
-import { ClassificationTreeService } from '../../services/classification-tree/classification-tree.service';
+  UpdateClassification } from '../../../shared/store/classification-store/classification.actions';
+import { ACTION } from '../../../shared/models/action';
+import { ClassificationTreeService } from '../../services/classification-tree.service';
 
 @Component({
-  selector: 'taskana-tree',
+  selector: 'taskana-administration-tree',
   templateUrl: './tree.component.html',
   styleUrls: ['./tree.component.scss'],
 })

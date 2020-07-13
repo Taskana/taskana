@@ -19,8 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.monitor.api.reports.TaskStatusReport;
 import pro.taskana.monitor.api.reports.item.TaskQueryItem;
@@ -44,8 +42,7 @@ class TaskStatusReportBuilderImplTest {
   }
 
   @Test
-  void testGetTaskStateReportWithoutFilters()
-      throws NotAuthorizedException, InvalidArgumentException {
+  void testGetTaskStateReportWithoutFilters() throws Exception {
     // given
     TaskQueryItem queryItem1 = new TaskQueryItem();
     queryItem1.setCount(50);
@@ -80,8 +77,7 @@ class TaskStatusReportBuilderImplTest {
   }
 
   @Test
-  void testGetTotalNumberOfTaskStateReport()
-      throws NotAuthorizedException, InvalidArgumentException {
+  void testGetTotalNumberOfTaskStateReport() throws Exception {
     // given
     TaskQueryItem queryItem1 = new TaskQueryItem();
     queryItem1.setCount(50);

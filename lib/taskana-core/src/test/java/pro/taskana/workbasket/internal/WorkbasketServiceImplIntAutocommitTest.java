@@ -3,7 +3,6 @@ package pro.taskana.workbasket.internal;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,9 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
-import pro.taskana.common.api.exceptions.DomainNotFoundException;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.TaskanaEngineTestConfiguration;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
@@ -27,9 +23,6 @@ import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
-import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
-import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
-import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
@@ -56,7 +49,7 @@ class WorkbasketServiceImplIntAutocommitTest {
   }
 
   @BeforeEach
-  void setup() throws SQLException {
+  void setup() throws Exception {
     DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
     String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
     TaskanaEngineConfiguration taskanaEngineConfiguration =
@@ -130,10 +123,7 @@ class WorkbasketServiceImplIntAutocommitTest {
 
   @WithAccessId(user = "user-1-1", groups = "businessadmin")
   @Test
-  void testInsertWorkbasketAccessUser()
-      throws NotAuthorizedException, InvalidArgumentException, DomainNotFoundException,
-          InvalidWorkbasketException, WorkbasketAlreadyExistException, WorkbasketNotFoundException,
-          WorkbasketAccessItemAlreadyExistException {
+  void testInsertWorkbasketAccessUser() throws Exception {
 
     Workbasket wb =
         createTestWorkbasket(
@@ -159,10 +149,7 @@ class WorkbasketServiceImplIntAutocommitTest {
 
   @WithAccessId(user = "user-1-1", groups = "businessadmin")
   @Test
-  void testUpdateWorkbasketAccessUser()
-      throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-          DomainNotFoundException, InvalidWorkbasketException, WorkbasketAlreadyExistException,
-          WorkbasketAccessItemAlreadyExistException {
+  void testUpdateWorkbasketAccessUser() throws Exception {
     WorkbasketImpl wb = (WorkbasketImpl) workBasketService.newWorkbasket("key", "DOMAIN_A");
     wb.setId("k200000000000000000000000000000000000000");
     wb.setName("name");
@@ -200,8 +187,7 @@ class WorkbasketServiceImplIntAutocommitTest {
       boolean permRead,
       boolean permAppend,
       boolean permTransfer)
-      throws InvalidArgumentException, NotAuthorizedException, WorkbasketNotFoundException,
-          WorkbasketAccessItemAlreadyExistException {
+      throws Exception {
     WorkbasketAccessItem accessItem =
         workBasketService.newWorkbasketAccessItem(wb.getId(), accessId);
     accessItem.setPermOpen(permOpen);

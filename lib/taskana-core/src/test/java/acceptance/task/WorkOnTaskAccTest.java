@@ -1,6 +1,7 @@
 package acceptance.task;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
@@ -13,8 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.BulkOperationResults;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
@@ -31,9 +30,7 @@ class WorkOnTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void testClaimTask()
-      throws NotAuthorizedException, TaskNotFoundException, InvalidStateException,
-          InvalidOwnerException {
+  void testClaimTask() throws Exception {
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000025");
 
@@ -51,8 +48,7 @@ class WorkOnTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void testThrowsExceptionIfTaskIsAlreadyClaimed()
-      throws NotAuthorizedException, TaskNotFoundException {
+  void testThrowsExceptionIfTaskIsAlreadyClaimed() throws Exception {
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000026");
 
@@ -65,19 +61,17 @@ class WorkOnTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void testClaimAlreadyClaimedByCallerTask()
-      throws NotAuthorizedException, TaskNotFoundException, InvalidStateException,
-          InvalidOwnerException {
+  void testClaimAlreadyClaimedByCallerTask() throws Exception {
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000027");
 
-    taskService.claim(task.getId());
+    assertThat(task.getState()).isSameAs(TaskState.CLAIMED);
+    assertThatCode(() -> taskService.claim(task.getId())).doesNotThrowAnyException();
   }
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void testForceClaimTaskWhichIsAlreadyClaimedByAnotherUser()
-      throws NotAuthorizedException, TaskNotFoundException {
+  void testForceClaimTaskWhichIsAlreadyClaimedByAnotherUser() throws Exception {
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000028");
 
@@ -90,9 +84,7 @@ class WorkOnTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void testCancelClaimTask()
-      throws NotAuthorizedException, TaskNotFoundException, InvalidStateException,
-          InvalidOwnerException {
+  void testCancelClaimTask() throws Exception {
     TaskService taskService = taskanaEngine.getTaskService();
     Task claimedTask = taskService.getTask("TKI:000000000000000000000000000000000029");
 
@@ -108,8 +100,7 @@ class WorkOnTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void testThrowsExceptionIfCancelClaimOfTaskFromAnotherUser()
-      throws NotAuthorizedException, TaskNotFoundException {
+  void testThrowsExceptionIfCancelClaimOfTaskFromAnotherUser() throws Exception {
     TaskService taskService = taskanaEngine.getTaskService();
     Task claimedTask = taskService.getTask("TKI:000000000000000000000000000000000030");
 
@@ -122,9 +113,7 @@ class WorkOnTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void testForceCancelClaimOfTaskFromAnotherUser()
-      throws NotAuthorizedException, TaskNotFoundException, InvalidStateException,
-          InvalidOwnerException {
+  void testForceCancelClaimOfTaskFromAnotherUser() throws Exception {
     TaskService taskService = taskanaEngine.getTaskService();
     Task claimedTask = taskService.getTask("TKI:000000000000000000000000000000000031");
 
@@ -140,9 +129,7 @@ class WorkOnTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void testCompleteTask()
-      throws NotAuthorizedException, TaskNotFoundException, InvalidStateException,
-          InvalidOwnerException {
+  void testCompleteTask() throws Exception {
     final Instant before = Instant.now().minus(Duration.ofSeconds(3L));
     TaskService taskService = taskanaEngine.getTaskService();
     Task claimedTask = taskService.getTask("TKI:000000000000000000000000000000000032");
@@ -162,9 +149,7 @@ class WorkOnTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void testForceCompleteUnclaimedTask()
-      throws NotAuthorizedException, TaskNotFoundException, InvalidStateException,
-          InvalidOwnerException {
+  void testForceCompleteUnclaimedTask() throws Exception {
     TaskService taskService = taskanaEngine.getTaskService();
     Task claimedTask = taskService.getTask("TKI:000000000000000000000000000000000033");
 
@@ -181,8 +166,7 @@ class WorkOnTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void testThrowsExceptionIfCompletingClaimedTaskOfAnotherUser()
-      throws NotAuthorizedException, TaskNotFoundException {
+  void testThrowsExceptionIfCompletingClaimedTaskOfAnotherUser() throws Exception {
     TaskService taskService = taskanaEngine.getTaskService();
     Task claimedTask = taskService.getTask("TKI:000000000000000000000000000000000034");
 
@@ -195,9 +179,7 @@ class WorkOnTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void testForceCompleteClaimedTaskOfAnotherUser()
-      throws NotAuthorizedException, TaskNotFoundException, InvalidStateException,
-          InvalidOwnerException {
+  void testForceCompleteClaimedTaskOfAnotherUser() throws Exception {
     TaskService taskService = taskanaEngine.getTaskService();
     Task claimedTask = taskService.getTask("TKI:000000000000000000000000000000000035");
 
@@ -214,7 +196,7 @@ class WorkOnTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testBulkDeleteTasksWithException() throws InvalidArgumentException, NotAuthorizedException {
+  void testBulkDeleteTasksWithException() throws Exception {
 
     TaskService taskService = taskanaEngine.getTaskService();
     String id1 = "TKI:000000000000000000000000000000000102";

@@ -1,6 +1,5 @@
 package acceptance;
 
-import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -16,7 +15,6 @@ import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeAll;
 
 import pro.taskana.TaskanaEngineConfiguration;
-import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.common.api.TimeInterval;
@@ -33,17 +31,17 @@ public abstract class AbstractAccTest {
       "cn=Organisationseinheit KSC 1,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA";
   public static final String GROUP_2_DN =
       "cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA";
-  
+
   protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
   protected static TaskanaEngine taskanaEngine;
   protected static WorkingDaysToDaysConverter converter;
 
   @BeforeAll
-  public static void setupTest() throws Exception {
+  protected static void setupTest() throws Exception {
     resetDb(false);
   }
 
-  public static void resetDb(boolean dropTables) throws SQLException {
+  protected static void resetDb(boolean dropTables) throws Exception {
 
     DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
     String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
@@ -84,7 +82,7 @@ public abstract class AbstractAccTest {
       String channel,
       String receivedDate,
       Map<String, String> customAttributes)
-      throws ClassificationNotFoundException {
+      throws Exception {
     Attachment attachment = taskanaEngine.getTaskService().newAttachment();
 
     attachment.setClassificationSummary(
@@ -94,7 +92,7 @@ public abstract class AbstractAccTest {
             .asSummary());
     attachment.setObjectReference(objRef);
     attachment.setChannel(channel);
-    Instant receivedTimestamp = null;
+    final Instant receivedTimestamp;
     if (receivedDate != null && receivedDate.length() < 11) {
       // contains only the date, not the time
       LocalDate date = LocalDate.parse(receivedDate);

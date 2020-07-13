@@ -27,8 +27,7 @@ class UpdateWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testUpdateWorkbasket()
-      throws NotAuthorizedException, WorkbasketNotFoundException, ConcurrencyException {
+  void testUpdateWorkbasket() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     Workbasket workbasket = workbasketService.getWorkbasket("GPK_KSC", "DOMAIN_A");
 
@@ -59,8 +58,7 @@ class UpdateWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testUpdateWorkbasketWithConcurrentModificationShouldThrowException()
-      throws NotAuthorizedException, WorkbasketNotFoundException {
+  void testUpdateWorkbasketWithConcurrentModificationShouldThrowException() throws Exception {
 
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
@@ -75,8 +73,7 @@ class UpdateWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testUpdateWorkbasketOfNonExistingWorkbasketShouldThrowException()
-      throws NotAuthorizedException, WorkbasketNotFoundException {
+  void testUpdateWorkbasketOfNonExistingWorkbasketShouldThrowException() throws Exception {
 
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
@@ -93,8 +90,7 @@ class UpdateWorkbasketAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-1")
   @WithAccessId(user = "taskadmin")
   @TestTemplate
-  void should_ThrowException_When_UserRoleIsNotAdminOrBusinessAdmin()
-      throws NotAuthorizedException, WorkbasketNotFoundException {
+  void should_ThrowException_When_UserRoleIsNotAdminOrBusinessAdmin() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     Workbasket workbasket = workbasketService.getWorkbasket("USER-1-1", "DOMAIN_A");
 

@@ -7,7 +7,6 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
@@ -23,7 +22,7 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryTasksByExcactValueOfObjectReference() throws SystemException {
+  void testQueryTasksByExcactValueOfObjectReference() {
     TaskService taskService = taskanaEngine.getTaskService();
     List<TaskSummary> results =
         taskService.createTaskQuery().primaryObjectReferenceValueIn("11223344", "22334455").list();
@@ -32,7 +31,7 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryTasksByExcactValueAndTypeOfObjectReference() throws SystemException {
+  void testQueryTasksByExcactValueAndTypeOfObjectReference() {
     TaskService taskService = taskanaEngine.getTaskService();
     List<TaskSummary> results =
         taskService
@@ -45,7 +44,7 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryTasksByValueLikeOfObjectReference() throws SystemException {
+  void testQueryTasksByValueLikeOfObjectReference() {
     TaskService taskService = taskanaEngine.getTaskService();
     List<TaskSummary> results =
         taskService.createTaskQuery().primaryObjectReferenceValueLike("%567%").list();

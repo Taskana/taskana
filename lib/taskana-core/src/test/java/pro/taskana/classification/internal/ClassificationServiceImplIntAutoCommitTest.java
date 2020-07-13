@@ -2,7 +2,6 @@ package pro.taskana.classification.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,17 +15,11 @@ import org.junit.jupiter.api.Test;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.classification.api.ClassificationService;
-import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistException;
-import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.common.api.TimeInterval;
-import pro.taskana.common.api.exceptions.ConcurrencyException;
-import pro.taskana.common.api.exceptions.DomainNotFoundException;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.TaskanaEngineTestConfiguration;
 import pro.taskana.sampledata.SampleDataGenerator;
@@ -43,7 +36,7 @@ class ClassificationServiceImplIntAutoCommitTest {
   private ClassificationService classificationService;
 
   @BeforeAll
-  static void beforeAll() throws SQLException {
+  static void beforeAll() throws Exception {
     DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
     String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
     sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
@@ -61,9 +54,7 @@ class ClassificationServiceImplIntAutoCommitTest {
   }
 
   @Test
-  void testFindAllClassifications()
-      throws ClassificationAlreadyExistException, NotAuthorizedException, DomainNotFoundException,
-          InvalidArgumentException {
+  void testFindAllClassifications() throws Exception {
     Classification classification0 = classificationService.newClassification("TEST1", "", "TASK");
     classificationService.createClassification(classification0);
     Classification classification1 = classificationService.newClassification("TEST2", "", "TASK");
@@ -76,10 +67,7 @@ class ClassificationServiceImplIntAutoCommitTest {
   }
 
   @Test
-  void testModifiedClassification()
-      throws ClassificationAlreadyExistException, ClassificationNotFoundException,
-          NotAuthorizedException, ConcurrencyException, DomainNotFoundException,
-          InvalidArgumentException {
+  void testModifiedClassification() throws Exception {
     final String description = "TEST SOMETHING";
     Classification classification =
         classificationService.newClassification("TEST434", "DOMAIN_A", "TASK");
@@ -95,9 +83,7 @@ class ClassificationServiceImplIntAutoCommitTest {
   }
 
   @Test
-  void testInsertClassification()
-      throws NotAuthorizedException, ClassificationAlreadyExistException, InvalidArgumentException,
-          DomainNotFoundException {
+  void testInsertClassification() throws Exception {
     Classification classification =
         classificationService.newClassification("TEST1333", "DOMAIN_A", "TASK");
     classificationService.createClassification(classification);
@@ -113,10 +99,7 @@ class ClassificationServiceImplIntAutoCommitTest {
   }
 
   @Test
-  void testUpdateClassification()
-      throws NotAuthorizedException, ClassificationAlreadyExistException,
-          ClassificationNotFoundException, ConcurrencyException, DomainNotFoundException,
-          InvalidArgumentException {
+  void testUpdateClassification() throws Exception {
     Classification classification =
         classificationService.newClassification("TEST32451", "DOMAIN_A", "TASK");
     classification = classificationService.createClassification(classification);
@@ -137,10 +120,7 @@ class ClassificationServiceImplIntAutoCommitTest {
   }
 
   @Test
-  void testDefaultSettings()
-      throws NotAuthorizedException, ClassificationAlreadyExistException,
-          ClassificationNotFoundException, ConcurrencyException, DomainNotFoundException,
-          InvalidArgumentException {
+  void testDefaultSettings() throws Exception {
     Classification classification =
         classificationService.newClassification("TEST7771", "DOMAIN_A", "TASK");
     classification = classificationService.createClassification(classification);

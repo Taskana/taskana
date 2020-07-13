@@ -13,15 +13,16 @@ import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.BulkOperationResults;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
+import pro.taskana.common.internal.TaskanaEngineProxyForTest;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
+import pro.taskana.task.internal.AttachmentMapper;
 
 /** Acceptance test for all "delete task" scenarios. */
 @ExtendWith(JaasExtension.class)
@@ -41,6 +42,82 @@ class DeleteTaskAccTest extends AbstractAccTest {
           taskService.deleteTask("TKI:000000000000000000000000000000000037");
         };
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_deleteAttachments_When_MultipleTasksAreDeleted() throws Exception {
+
+    TaskService taskService = taskanaEngine.getTaskService();
+
+    TaskanaEngineProxyForTest engineProxy = new TaskanaEngineProxyForTest(taskanaEngine);
+    AttachmentMapper attachmentMapper =
+        engineProxy.getEngine().getSqlSession().getMapper(AttachmentMapper.class);
+
+    try {
+
+      engineProxy.openConnection();
+
+      assertThat(
+              attachmentMapper.findAttachmentSummariesByTaskIds(
+                  Arrays.asList(
+                      "TKI:000000000000000000000000000000000067",
+                      "TKI:000000000000000000000000000000000068")))
+          .hasSize(4);
+    } finally {
+      engineProxy.returnConnection();
+    }
+
+    taskService.deleteTasks(
+        Arrays.asList(
+            "TKI:000000000000000000000000000000000067",
+            "TKI:000000000000000000000000000000000068"));
+    try {
+
+      assertThat(
+              attachmentMapper.findAttachmentSummariesByTaskIds(
+                  Arrays.asList(
+                      "TKI:000000000000000000000000000000000067",
+                      "TKI:000000000000000000000000000000000068")))
+          .isEmpty();
+
+    } finally {
+      engineProxy.returnConnection();
+    }
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_deleteAttachments_When_SingleTaskIsDeleted() throws Exception {
+
+    TaskService taskService = taskanaEngine.getTaskService();
+
+    TaskanaEngineProxyForTest engineProxy = new TaskanaEngineProxyForTest(taskanaEngine);
+    AttachmentMapper attachmentMapper =
+        engineProxy.getSqlSession().getMapper(AttachmentMapper.class);
+
+    try {
+
+      engineProxy.openConnection();
+
+      assertThat(
+              attachmentMapper.findAttachmentsByTaskId("TKI:000000000000000000000000000000000069"))
+          .hasSize(1);
+
+    } finally {
+      engineProxy.returnConnection();
+    }
+
+    taskService.deleteTask("TKI:000000000000000000000000000000000069");
+
+    try {
+
+      assertThat(
+              attachmentMapper.findAttachmentsByTaskId("TKI:000000000000000000000000000000000069"))
+          .isEmpty();
+    } finally {
+      engineProxy.returnConnection();
+    }
   }
 
   @WithAccessId(user = "businessadmin")
@@ -67,8 +144,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testDeleteSingleTask()
-      throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
+  void testDeleteSingleTask() throws Exception {
 
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000036");
@@ -99,8 +175,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testThrowsExceptionIfTaskIsNotCompleted()
-      throws TaskNotFoundException, NotAuthorizedException {
+  void testThrowsExceptionIfTaskIsNotCompleted() throws Exception {
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000029");
 
@@ -113,8 +188,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testForceDeleteTaskIfNotCompleted()
-      throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
+  void testForceDeleteTaskIfNotCompleted() throws Exception {
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000027");
 
@@ -137,7 +211,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testBulkDeleteTask() throws InvalidArgumentException, NotAuthorizedException {
+  void testBulkDeleteTask() throws Exception {
 
     TaskService taskService = taskanaEngine.getTaskService();
     ArrayList<String> taskIdList = new ArrayList<>();
@@ -156,8 +230,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testBulkDeleteTasksWithException()
-      throws TaskNotFoundException, InvalidArgumentException, NotAuthorizedException {
+  void testBulkDeleteTasksWithException() throws Exception {
 
     TaskService taskService = taskanaEngine.getTaskService();
     ArrayList<String> taskIdList = new ArrayList<>();

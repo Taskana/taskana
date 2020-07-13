@@ -12,9 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.BaseQuery.SortDirection;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketPermission;
@@ -34,8 +32,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testQueryAllTransferTargetsForUser()
-      throws NotAuthorizedException, InvalidArgumentException {
+  void testQueryAllTransferTargetsForUser() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     List<WorkbasketSummary> results =
         workbasketService
@@ -63,8 +60,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testQueryAllTransferTargetsForUserAndGroup()
-      throws NotAuthorizedException, InvalidArgumentException, SystemException {
+  void testQueryAllTransferTargetsForUserAndGroup() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     List<WorkbasketSummary> results =
         workbasketService
@@ -76,8 +72,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testQueryAllTransferTargetsForUserAndGroupSortedByNameAscending()
-      throws NotAuthorizedException, InvalidArgumentException, SystemException {
+  void testQueryAllTransferTargetsForUserAndGroupSortedByNameAscending() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     List<WorkbasketSummary> results =
         workbasketService
@@ -91,8 +86,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testQueryAllTransferTargetsForUserAndGroupSortedByNameDescending()
-      throws NotAuthorizedException, InvalidArgumentException, SystemException {
+  void testQueryAllTransferTargetsForUserAndGroupSortedByNameDescending() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     List<WorkbasketSummary> results =
         workbasketService
@@ -107,8 +101,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testQueryAllTransferSourcesForUserAndGroup()
-      throws NotAuthorizedException, InvalidArgumentException, SystemException {
+  void testQueryAllTransferSourcesForUserAndGroup() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     List<WorkbasketSummary> results =
         workbasketService
@@ -124,7 +117,7 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1", groups = GROUP_1_DN)
   @Test
-  void testQueryAllTransferTargetsForUserAndGroupFromSubject() throws SystemException {
+  void testQueryAllTransferTargetsForUserAndGroupFromSubject() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     List<WorkbasketSummary> results =
         workbasketService

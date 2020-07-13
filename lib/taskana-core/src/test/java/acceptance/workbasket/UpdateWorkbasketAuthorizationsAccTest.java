@@ -1,6 +1,7 @@
 package acceptance.workbasket;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
@@ -12,20 +13,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.common.api.KeyDomain;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
-import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.exceptions.NotAuthorizedToQueryWorkbasketException;
-import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
-import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
 
@@ -60,9 +57,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testUpdateWorkbasketAccessItemSucceeds()
-      throws InvalidArgumentException, NotAuthorizedException, WorkbasketNotFoundException,
-          WorkbasketAccessItemAlreadyExistException {
+  void testUpdateWorkbasketAccessItemSucceeds() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     WorkbasketAccessItem accessItem =
         workbasketService.newWorkbasketAccessItem(
@@ -94,9 +89,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testUpdateWorkbasketAccessItemRejected()
-      throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-          WorkbasketAccessItemAlreadyExistException {
+  void testUpdateWorkbasketAccessItemRejected() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     WorkbasketAccessItem accessItem =
         workbasketService.newWorkbasketAccessItem(
@@ -141,9 +134,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin", groups = GROUP_2_DN)
   @Test
-  void testUpdatedAccessItemLeadsToNotAuthorizedException()
-      throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-          ClassificationNotFoundException, TaskAlreadyExistException {
+  void testUpdatedAccessItemLeadsToNotAuthorizedException() throws Exception {
     TaskService taskService = taskanaEngine.getTaskService();
     final WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
@@ -291,7 +282,7 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testDeleteAccessItemsForAccessId() throws NotAuthorizedException {
+  void testDeleteAccessItemsForAccessId() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     final long accessIdCountBefore =
         workbasketService.createWorkbasketAccessItemQuery().accessIdIn(GROUP_1_DN).count();
@@ -305,11 +296,13 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testDeleteAccessItemsForAccessIdWithUnusedValuesThrowingNoException()
-      throws NotAuthorizedException {
+  void testDeleteAccessItemsForAccessIdWithUnusedValuesThrowingNoException() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-    workbasketService.deleteWorkbasketAccessItemsForAccessId("");
-    workbasketService.deleteWorkbasketAccessItemsForAccessId(null);
-    workbasketService.deleteWorkbasketAccessItemsForAccessId("123UNUSED456");
+    assertThatCode(() -> workbasketService.deleteWorkbasketAccessItemsForAccessId(""))
+        .doesNotThrowAnyException();
+    assertThatCode(() -> workbasketService.deleteWorkbasketAccessItemsForAccessId(null))
+        .doesNotThrowAnyException();
+    assertThatCode(() -> workbasketService.deleteWorkbasketAccessItemsForAccessId("123UNUSED456"))
+        .doesNotThrowAnyException();
   }
 }

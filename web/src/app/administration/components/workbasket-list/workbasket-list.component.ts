@@ -19,7 +19,7 @@ import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/work
 import { Workbasket } from '../../../shared/models/workbasket';
 
 @Component({
-  selector: 'taskana-workbasket-list',
+  selector: 'taskana-administration-workbasket-list',
   templateUrl: './workbasket-list.component.html',
   styleUrls: ['./workbasket-list.component.scss']
 })

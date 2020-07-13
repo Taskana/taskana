@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static pro.taskana.common.rest.RestHelper.TEMPLATE;
 
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -54,13 +53,16 @@ class TaskControllerIntTest {
   private final RestHelper restHelper;
   private final DataSource dataSource;
 
-  @Value("${taskana.schemaName:TASKANA}")
-  public String schemaName;
+  private final String schemaName;
 
   @Autowired
-  TaskControllerIntTest(RestHelper restHelper, DataSource dataSource) {
+  TaskControllerIntTest(
+      RestHelper restHelper,
+      DataSource dataSource,
+      @Value("${taskana.schemaName:TASKANA}") String schemaName) {
     this.restHelper = restHelper;
     this.dataSource = dataSource;
+    this.schemaName = schemaName;
   }
 
   @BeforeAll
@@ -236,6 +238,24 @@ class TaskControllerIntTest {
     assertThat(response.getBody()).isNotNull();
     assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(4);
+  }
+
+  @Test
+  void should_DeleteAllTasks_For_ProvidedParams() {
+    ResponseEntity<TaskanaPagedModel<TaskSummaryRepresentationModel>> response =
+        template.exchange(
+            restHelper.toUrl(Mapping.URL_TASKS)
+                + "?task-id=TKI:000000000000000000000000000000000036,"
+                + "TKI:000000000000000000000000000000000037,"
+                + "TKI:000000000000000000000000000000000038"
+                + "&custom14=abc",
+            HttpMethod.DELETE,
+            new HttpEntity<String>(restHelper.getHeadersAdmin()),
+            new ParameterizedTypeReference<TaskanaPagedModel<TaskSummaryRepresentationModel>>() {});
+    ;
+    assertThat(response.getBody()).isNotNull();
+    assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
+    assertThat(response.getBody().getContent()).hasSize(3);
   }
 
   @Test
@@ -611,7 +631,7 @@ class TaskControllerIntTest {
   }
 
   @Test
-  void testCreateTaskWithInvalidParameter() throws IOException {
+  void testCreateTaskWithInvalidParameter() throws Exception {
     final String taskToCreateJson =
         "{\"classificationKey\":\"L11010\","
             + "\"workbasketSummaryResource\":"

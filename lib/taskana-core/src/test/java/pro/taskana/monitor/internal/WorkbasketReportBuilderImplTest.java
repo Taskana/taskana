@@ -26,7 +26,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.monitor.api.CombinedClassificationFilter;
 import pro.taskana.monitor.api.SelectedItem;
@@ -54,8 +53,7 @@ class WorkbasketReportBuilderImplTest {
   }
 
   @Test
-  void testGetTotalNumbersOfWorkbasketReportBasedOnDueDate()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testGetTotalNumbersOfWorkbasketReportBasedOnDueDate() throws Exception {
     final List<String> workbasketIds =
         Collections.singletonList("WBI:000000000000000000000000000000000001");
     final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
@@ -115,8 +113,7 @@ class WorkbasketReportBuilderImplTest {
   }
 
   @Test
-  void testGetWorkbasketReportWithReportLineItemDefinitions()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testGetWorkbasketReportWithReportLineItemDefinitions() throws Exception {
     final List<String> workbasketIds =
         Collections.singletonList("WBI:000000000000000000000000000000000001");
     final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
@@ -182,8 +179,7 @@ class WorkbasketReportBuilderImplTest {
   }
 
   @Test
-  void testGetTaskIdsOfCategoryReportForSelectedItems()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testGetTaskIdsOfCategoryReportForSelectedItems() throws Exception {
     final List<String> workbasketIds =
         Collections.singletonList("WBI:000000000000000000000000000000000001");
     final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
@@ -258,7 +254,7 @@ class WorkbasketReportBuilderImplTest {
   }
 
   @Test
-  void testListCustomAttributeValuesForCustomAttributeName() throws NotAuthorizedException {
+  void testListCustomAttributeValuesForCustomAttributeName() throws Exception {
     final List<String> workbasketIds =
         Collections.singletonList("WBI:000000000000000000000000000000000001");
     final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
@@ -314,8 +310,7 @@ class WorkbasketReportBuilderImplTest {
   }
 
   @Test
-  void testListCustomAttributeValuesForCustomAttributeNameIsEmptyResult()
-      throws NotAuthorizedException {
+  void testListCustomAttributeValuesForCustomAttributeNameIsEmptyResult() throws Exception {
     List<String> result =
         cut.createWorkbasketReportBuilder()
             .workbasketIdIn(Arrays.asList("GibtsSicherNed"))
@@ -324,8 +319,7 @@ class WorkbasketReportBuilderImplTest {
   }
 
   @Test
-  void testGetTotalNumbersOfWorkbasketReportBasedOnCreatedDate()
-      throws InvalidArgumentException, NotAuthorizedException {
+  void testGetTotalNumbersOfWorkbasketReportBasedOnCreatedDate() throws Exception {
     final List<String> workbasketIds =
         Collections.singletonList("WBI:000000000000000000000000000000000001");
     final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);

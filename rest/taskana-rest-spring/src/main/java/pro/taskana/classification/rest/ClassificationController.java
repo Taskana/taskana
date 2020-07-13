@@ -3,6 +3,7 @@ package pro.taskana.classification.rest;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.PagedModel.PageMetadata;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
@@ -31,13 +32,13 @@ import pro.taskana.classification.rest.assembler.ClassificationRepresentationMod
 import pro.taskana.classification.rest.assembler.ClassificationSummaryRepresentationModelAssembler;
 import pro.taskana.classification.rest.models.ClassificationRepresentationModel;
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
-import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.rest.AbstractPagingController;
 import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.rest.QueryHelper;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
 
 /** Controller for all {@link Classification} related endpoints. */
@@ -48,56 +49,33 @@ public class ClassificationController extends AbstractPagingController {
   private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationController.class);
 
   private static final String LIKE = "%";
-
   private static final String NAME = "name";
-
   private static final String NAME_LIKE = "name-like";
-
   private static final String KEY = "key";
-
   private static final String DOMAIN = "domain";
-
   private static final String CATEGORY = "category";
-
   private static final String TYPE = "type";
-
   private static final String CUSTOM_1_LIKE = "custom-1-like";
-
   private static final String CUSTOM_2_LIKE = "custom-2-like";
-
   private static final String CUSTOM_3_LIKE = "custom-3-like";
-
   private static final String CUSTOM_4_LIKE = "custom-4-like";
-
   private static final String CUSTOM_5_LIKE = "custom-5-like";
-
   private static final String CUSTOM_6_LIKE = "custom-6-like";
-
   private static final String CUSTOM_7_LIKE = "custom-7-like";
-
   private static final String CUSTOM_8_LIKE = "custom-8-like";
 
-  private static final String SORT_BY = "sort-by";
-
-  private static final String SORT_DIRECTION = "order";
-
   private final ClassificationService classificationService;
+  private final ClassificationRepresentationModelAssembler modelAssembler;
+  private final ClassificationSummaryRepresentationModelAssembler summaryModelAssembler;
 
-  private final ClassificationRepresentationModelAssembler
-      classificationRepresentationModelAssembler;
-
-  private final ClassificationSummaryRepresentationModelAssembler
-      classificationSummaryRepresentationModelAssembler;
-
+  @Autowired
   ClassificationController(
       ClassificationService classificationService,
-      ClassificationRepresentationModelAssembler classificationRepresentationModelAssembler,
-      ClassificationSummaryRepresentationModelAssembler
-          classificationSummaryRepresentationModelAssembler) {
+      ClassificationRepresentationModelAssembler modelAssembler,
+      ClassificationSummaryRepresentationModelAssembler summaryModelAssembler) {
     this.classificationService = classificationService;
-    this.classificationRepresentationModelAssembler = classificationRepresentationModelAssembler;
-    this.classificationSummaryRepresentationModelAssembler =
-        classificationSummaryRepresentationModelAssembler;
+    this.modelAssembler = modelAssembler;
+    this.summaryModelAssembler = summaryModelAssembler;
   }
 
   @GetMapping(path = Mapping.URL_CLASSIFICATIONS)
@@ -110,16 +88,14 @@ public class ClassificationController extends AbstractPagingController {
     }
 
     ClassificationQuery query = classificationService.createClassificationQuery();
+    query = applyFilterParams(query, params);
     query = applySortingParams(query, params);
-    applyFilterParams(query, params);
 
     PageMetadata pageMetadata = getPageMetadata(params, query);
     List<ClassificationSummary> classificationSummaries = getQueryList(query, pageMetadata);
 
     ResponseEntity<TaskanaPagedModel<ClassificationSummaryRepresentationModel>> response =
-        ResponseEntity.ok(
-            classificationSummaryRepresentationModelAssembler.toPageModel(
-                classificationSummaries, pageMetadata));
+        ResponseEntity.ok(summaryModelAssembler.toPageModel(classificationSummaries, pageMetadata));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from getClassifications(), returning {}", response);
     }
@@ -137,7 +113,7 @@ public class ClassificationController extends AbstractPagingController {
 
     Classification classification = classificationService.getClassification(classificationId);
     ResponseEntity<ClassificationRepresentationModel> response =
-        ResponseEntity.ok(classificationRepresentationModelAssembler.toModel(classification));
+        ResponseEntity.ok(modelAssembler.toModel(classification));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from getClassification(), returning {}", response);
     }
@@ -154,13 +130,11 @@ public class ClassificationController extends AbstractPagingController {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to createClassification(resource= {})", resource);
     }
-    Classification classification =
-        classificationRepresentationModelAssembler.toEntityModel(resource);
+    Classification classification = modelAssembler.toEntityModel(resource);
     classification = classificationService.createClassification(classification);
 
     ResponseEntity<ClassificationRepresentationModel> response =
-        ResponseEntity.status(HttpStatus.CREATED)
-            .body(classificationRepresentationModelAssembler.toModel(classification));
+        ResponseEntity.status(HttpStatus.CREATED).body(modelAssembler.toModel(classification));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from createClassification(), returning {}", response);
     }
@@ -184,11 +158,9 @@ public class ClassificationController extends AbstractPagingController {
 
     ResponseEntity<ClassificationRepresentationModel> result;
     if (classificationId.equals(resource.getClassificationId())) {
-      Classification classification =
-          classificationRepresentationModelAssembler.toEntityModel(resource);
+      Classification classification = modelAssembler.toEntityModel(resource);
       classification = classificationService.updateClassification(classification);
-      result =
-          ResponseEntity.ok(classificationRepresentationModelAssembler.toModel(classification));
+      result = ResponseEntity.ok(modelAssembler.toModel(classification));
     } else {
       throw new InvalidArgumentException(
           "ClassificationId ('"
@@ -223,43 +195,35 @@ public class ClassificationController extends AbstractPagingController {
       LOGGER.debug("Entry to applySortingParams(query= {}, params= {})", query, params);
     }
 
-    // sorting
-    String sortBy = params.getFirst(SORT_BY);
-    if (sortBy != null) {
-      SortDirection sortDirection;
-      if (params.getFirst(SORT_DIRECTION) != null
-          && "desc".equals(params.getFirst(SORT_DIRECTION))) {
-        sortDirection = SortDirection.DESCENDING;
-      } else {
-        sortDirection = SortDirection.ASCENDING;
-      }
-      switch (sortBy) {
-        case (CATEGORY):
-          query = query.orderByCategory(sortDirection);
-          break;
-        case (DOMAIN):
-          query = query.orderByDomain(sortDirection);
-          break;
-        case (KEY):
-          query = query.orderByKey(sortDirection);
-          break;
-        case (NAME):
-          query = query.orderByName(sortDirection);
-          break;
-        default:
-          throw new InvalidArgumentException("Unknown order '" + sortBy + "'");
-      }
-    }
-    params.remove(SORT_BY);
-    params.remove(SORT_DIRECTION);
+    QueryHelper.applyAndRemoveSortingParams(
+        params,
+        (sortBy, sortDirection) -> {
+          switch (sortBy) {
+            case (CATEGORY):
+              query.orderByCategory(sortDirection);
+              break;
+            case (DOMAIN):
+              query.orderByDomain(sortDirection);
+              break;
+            case (KEY):
+              query.orderByKey(sortDirection);
+              break;
+            case (NAME):
+              query.orderByName(sortDirection);
+              break;
+            default:
+              throw new InvalidArgumentException("Unknown order '" + sortBy + "'");
+          }
+        });
+
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from applySortingParams(), returning {}", query);
     }
-
     return query;
   }
 
-  private void applyFilterParams(ClassificationQuery query, MultiValueMap<String, String> params)
+  private ClassificationQuery applyFilterParams(
+      ClassificationQuery query, MultiValueMap<String, String> params)
       throws InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to applyFilterParams(query= {}, params= {})", query, params);
@@ -330,5 +294,6 @@ public class ClassificationController extends AbstractPagingController {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from applyFilterParams(), returning {}", query);
     }
+    return query;
   }
 }

@@ -20,10 +20,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.rest.QueryHelper;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
@@ -39,8 +41,6 @@ public class TaskCommentController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskCommentController.class);
 
-  private static final String SORT_BY = "sort-by";
-  private static final String SORT_DIRECTION = "order";
   private static final String CREATED = "created";
   private static final String MODIFIED = "modified";
 
@@ -94,7 +94,7 @@ public class TaskCommentController {
     List<TaskComment> taskComments = taskService.getTaskComments(taskId);
 
     // TODO Maybe introduce a query for task comments
-    applySortingParams(taskComments, params);
+    taskComments = applySortingParams(taskComments, params);
 
     TaskanaPagedModel<TaskCommentRepresentationModel> taskCommentListResource =
         taskCommentRepresentationModelAssembler.toPageModel(taskComments, null);
@@ -204,42 +204,33 @@ public class TaskCommentController {
   private List<TaskComment> applySortingParams(
       List<TaskComment> taskComments, MultiValueMap<String, String> params)
       throws InvalidArgumentException {
-
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
           "Entry to applySortingParams(taskComments= {}, params= {})", taskComments, params);
     }
-
-    String sortBy = params.getFirst(SORT_BY);
-
-    if (sortBy != null) {
-
-      switch (sortBy) {
-        case (CREATED):
-          if (params.getFirst(SORT_DIRECTION) != null
-              && "desc".equals(params.getFirst(SORT_DIRECTION))) {
-            taskComments.sort(Comparator.comparing(TaskComment::getCreated).reversed());
-          } else {
-            taskComments.sort(Comparator.comparing(TaskComment::getCreated));
+    QueryHelper.applyAndRemoveSortingParams(
+        params,
+        (sortBy, sortDirection) -> {
+          Comparator<TaskComment> comparator;
+          switch (sortBy) {
+            case (CREATED):
+              comparator = Comparator.comparing(TaskComment::getCreated);
+              break;
+            case (MODIFIED):
+              comparator = Comparator.comparing(TaskComment::getModified);
+              break;
+            default:
+              throw new InvalidArgumentException("Unknown sort attribute: " + sortBy);
           }
-          break;
-        case (MODIFIED):
-          if (params.getFirst(SORT_DIRECTION) != null
-              && "desc".equals(params.getFirst(SORT_DIRECTION))) {
-            taskComments.sort(Comparator.comparing(TaskComment::getModified).reversed());
-          } else {
-            taskComments.sort(Comparator.comparing(TaskComment::getModified));
+          if (sortDirection == SortDirection.DESCENDING) {
+            comparator = comparator.reversed();
           }
-          break;
-        default:
-          throw new InvalidArgumentException("Unknown sort attribute: " + sortBy);
-      }
-    }
+          taskComments.sort(comparator);
+        });
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from applySortingParams(), returning {}", taskComments);
     }
-
     return taskComments;
   }
 }

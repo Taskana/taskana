@@ -10,7 +10,7 @@ import { UserGuard } from 'app/shared/guards/user.guard';
 import { expandRight } from 'theme/animations/expand.animation';
 import { TaskanaEngineService } from '../../services/taskana-engine/taskana-engine.service';
 @Component({
-  selector: 'taskana-nav-bar',
+  selector: 'taskana-shared-nav-bar',
   templateUrl: './nav-bar.component.html',
   styleUrls: ['./nav-bar.component.scss'],
   animations: [expandRight],

@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChange
 import { Page } from 'app/shared/models/page';
 
 @Component({
-  selector: 'taskana-pagination',
+  selector: 'taskana-shared-pagination',
   templateUrl: './pagination.component.html',
   styleUrls: ['./pagination.component.scss']
 })

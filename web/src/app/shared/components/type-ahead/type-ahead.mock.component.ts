@@ -2,7 +2,7 @@ import { Component, forwardRef, Input } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 @Component({
-  selector: 'taskana-type-ahead',
+  selector: 'taskana-shared-type-ahead',
   template: 'dummydetail',
   providers: [
     {

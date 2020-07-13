@@ -7,7 +7,7 @@ import { Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 
-import { TreeNodeModel } from 'app/shared/models/tree-node';
+import { TreeNodeModel } from 'app/administration/models/tree-node';
 
 import { ImportExportComponent } from 'app/administration/components/import-export/import-export.component';
 import { ClassificationTypesSelectorComponent } from 'app/administration/components/classification-types-selector/classification-types-selector.component';

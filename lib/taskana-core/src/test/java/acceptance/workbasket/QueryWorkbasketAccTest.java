@@ -13,8 +13,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketPermission;
@@ -295,7 +293,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryWorkbasketByAdmin() throws NotAuthorizedException, InvalidArgumentException {
+  void testQueryWorkbasketByAdmin() throws Exception {
     List<WorkbasketSummary> results =
         workbasketService.createWorkbasketQuery().nameLike("%").orderByName(DESCENDING).list();
     assertThat(results)

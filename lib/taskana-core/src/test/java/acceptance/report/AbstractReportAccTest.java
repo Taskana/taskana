@@ -1,6 +1,5 @@
 package acceptance.report;
 
-import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeAll;
 
@@ -18,12 +17,7 @@ public class AbstractReportAccTest {
   // checkstyle needs this constructor, since this is only a "utility" class
   protected AbstractReportAccTest() {}
 
-  @BeforeAll
-  public static void setupTest() throws Exception {
-    resetDb();
-  }
-
-  protected static void resetDb() throws SQLException {
+  protected static void resetDb() throws Exception {
     DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
     String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
     taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, schemaName);
@@ -33,5 +27,10 @@ public class AbstractReportAccTest {
     SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
     sampleDataGenerator.clearDb();
     sampleDataGenerator.generateMonitorData();
+  }
+
+  @BeforeAll
+  static void setupTest() throws Exception {
+    resetDb();
   }
 }

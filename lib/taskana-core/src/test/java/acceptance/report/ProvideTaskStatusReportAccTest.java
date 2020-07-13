@@ -2,19 +2,19 @@ package acceptance.report;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
@@ -25,8 +25,6 @@ import pro.taskana.monitor.api.reports.item.TaskQueryItem;
 import pro.taskana.monitor.api.reports.row.Row;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
-import pro.taskana.task.api.exceptions.InvalidStateException;
-import pro.taskana.task.api.exceptions.TaskNotFoundException;
 
 /** Acceptance test for all "task status report" scenarios. */
 @ExtendWith(JaasExtension.class)
@@ -35,29 +33,42 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
   private static final Logger LOGGER =
       LoggerFactory.getLogger(ProvideWorkbasketReportAccTest.class);
 
+  MonitorService monitorService = taskanaEngine.getMonitorService();
+
   @BeforeEach
-  public void reset() throws Exception {
+  void reset() throws Exception {
     resetDb();
   }
 
   @Test
-  void testRoleCheck() {
-    MonitorService monitorService = taskanaEngine.getMonitorService();
-    ThrowingCallable call =
-        () -> {
-          monitorService.createTaskStatusReportBuilder().buildReport();
-        };
-    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
+  void should_ThrowException_IfUserIsNotAuthorized() {
+    assertThatThrownBy(() -> monitorService.createTaskStatusReportBuilder().buildReport())
+        .isInstanceOf(NotAuthorizedException.class);
+  }
+
+  @WithAccessId(user = "unknown")
+  @WithAccessId(user = "user-1-1")
+  @WithAccessId(user = "businessadmin")
+  @WithAccessId(user = "taskadmin")
+  @TestTemplate
+  void should_ThrowException_IfUserIsNotAdminOrMonitor() {
+    assertThatThrownBy(() -> monitorService.createTaskStatusReportBuilder().buildReport())
+        .isInstanceOf(NotAuthorizedException.class);
+  }
+
+  @WithAccessId(user = "admin")
+  @WithAccessId(user = "monitor")
+  @TestTemplate
+  void should_BuildReport_IfUserIsAdminOrMonitor() {
+    assertThatCode(() -> monitorService.createTaskStatusReportBuilder().buildReport())
+        .doesNotThrowAnyException();
   }
 
   @WithAccessId(user = "monitor")
   @Test
-  void testCompleteTaskStatusReport() throws NotAuthorizedException, InvalidArgumentException {
-    // given
-    MonitorService monitorService = taskanaEngine.getMonitorService();
-    // when
+  void testCompleteTaskStatusReport() throws Exception {
     TaskStatusReport report = monitorService.createTaskStatusReportBuilder().buildReport();
-    // then
+
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(reportToString(report));
     }
@@ -81,27 +92,15 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     assertThat(sumRow.getTotalValue()).isEqualTo(50);
   }
 
-  @WithAccessId(user = "admin")
-  @Test
-  void testCompleteTaskStatusReportAsAdmin()
-      throws NotAuthorizedException, InvalidArgumentException {
-    MonitorService monitorService = taskanaEngine.getMonitorService();
-    monitorService.createTaskStatusReportBuilder().buildReport();
-  }
-
   @WithAccessId(user = "monitor")
   @Test
-  void testCompleteTaskStatusReportWithDomainFilter()
-      throws NotAuthorizedException, InvalidArgumentException {
-    // given
-    MonitorService monitorService = taskanaEngine.getMonitorService();
-    // when
+  void testCompleteTaskStatusReportWithDomainFilter() throws Exception {
     TaskStatusReport report =
         monitorService
             .createTaskStatusReportBuilder()
             .domainIn(asList("DOMAIN_C", "DOMAIN_A"))
             .buildReport();
-    // then
+
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(reportToString(report));
     }
@@ -123,17 +122,13 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testCompleteTaskStatusReportWithStateFilter()
-      throws NotAuthorizedException, InvalidArgumentException {
-    // given
-    MonitorService monitorService = taskanaEngine.getMonitorService();
-    // when
+  void testCompleteTaskStatusReportWithStateFilter() throws Exception {
     TaskStatusReport report =
         monitorService
             .createTaskStatusReportBuilder()
             .stateIn(Collections.singletonList(TaskState.READY))
             .buildReport();
-    // then
+
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(reportToString(report));
     }
@@ -159,17 +154,13 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor", groups = "admin")
   @Test
-  void testCompleteTaskStatusReportWithStates()
-      throws NotAuthorizedException, InvalidArgumentException, InvalidStateException,
-          TaskNotFoundException {
-
+  void testCompleteTaskStatusReportWithStates() throws Exception {
     TaskService taskService = taskanaEngine.getTaskService();
     taskService.terminateTask("TKI:000000000000000000000000000000000010");
     taskService.terminateTask("TKI:000000000000000000000000000000000011");
     taskService.terminateTask("TKI:000000000000000000000000000000000012");
     taskService.cancelTask("TKI:000000000000000000000000000000000013");
     taskService.cancelTask("TKI:000000000000000000000000000000000014");
-    MonitorService monitorService = taskanaEngine.getMonitorService();
     TaskStatusReport report =
         monitorService
             .createTaskStatusReportBuilder()
@@ -181,8 +172,6 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
                     TaskState.CANCELLED,
                     TaskState.TERMINATED))
             .buildReport();
-    // String rep = reportToString(report);
-    // System.out.println(rep);
     int[] summaryNumbers = report.getSumRow().getCells();
     assertThat(summaryNumbers.length).isEqualTo(5);
     assertThat(summaryNumbers[3]).isEqualTo(2); // number of cancelled tasks

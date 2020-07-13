@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.rest.Mapping;
 import pro.taskana.common.rest.TaskanaSpringBootTest;
 import pro.taskana.task.api.TaskService;
@@ -51,8 +50,7 @@ class TaskRepresentationModelAssemberTest {
   }
 
   @Test
-  void should_ReturnEntity_When_ConvertingRepresentationModelToEntity()
-      throws InvalidArgumentException {
+  void should_ReturnEntity_When_ConvertingRepresentationModelToEntity() throws Exception {
     // given
     ObjectReference primaryObjRef = new ObjectReference();
     primaryObjRef.setId("abc");
@@ -119,7 +117,7 @@ class TaskRepresentationModelAssemberTest {
 
   @Test
   void should_ReturnRepresentationModel_When_ConvertingEntityToRepresentationModel()
-      throws InvalidArgumentException {
+      throws Exception {
     // given
     ObjectReference primaryObjRef = new ObjectReference();
     primaryObjRef.setId("abc");
@@ -239,8 +237,7 @@ class TaskRepresentationModelAssemberTest {
     assertThat(task).hasNoNullFieldsOrProperties().isNotSameAs(task2).isEqualTo(task2);
   }
 
-  private void testEquality(Task task, TaskRepresentationModel repModel)
-      throws InvalidArgumentException {
+  private void testEquality(Task task, TaskRepresentationModel repModel) throws Exception {
     TaskSummaryRepresentationModelAssemblerTest.testEquality(task, repModel);
 
     testEqualityCustomAttributes(task.getCustomAttributes(), repModel.getCustomAttributes());

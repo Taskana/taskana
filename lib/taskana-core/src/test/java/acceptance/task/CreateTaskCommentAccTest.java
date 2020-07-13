@@ -8,8 +8,6 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
@@ -17,7 +15,7 @@ import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.TaskComment;
 
 @ExtendWith(JaasExtension.class)
-public class CreateTaskCommentAccTest extends AbstractAccTest {
+class CreateTaskCommentAccTest extends AbstractAccTest {
 
   CreateTaskCommentAccTest() {
     super();
@@ -25,8 +23,7 @@ public class CreateTaskCommentAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void should_CreateTaskComment_For_TaskComment()
-      throws TaskNotFoundException, NotAuthorizedException, InvalidArgumentException {
+  void should_CreateTaskComment_For_TaskComment() throws Exception {
 
     TaskService taskService = taskanaEngine.getTaskService();
 

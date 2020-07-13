@@ -35,7 +35,7 @@ import pro.taskana.simplehistory.rest.resource.TaskHistoryEventResource;
 @SpringBootTest(
     classes = {TaskHistoryRestConfiguration.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class TaskHistoryEventControllerIntTest {
+class TaskHistoryEventControllerIntTest {
 
   @Value("${taskana.schemaName:TASKANA}")
   public String schemaName;
@@ -49,7 +49,7 @@ public class TaskHistoryEventControllerIntTest {
   @LocalServerPort int port;
 
   @Test
-  public void testGetAllHistoryEvent() {
+  void testGetAllHistoryEvent() {
     ResponseEntity<TaskHistoryEventListResource> response =
         template.exchange(
             server + port + "/api/v1/task-history-event",
@@ -61,7 +61,7 @@ public class TaskHistoryEventControllerIntTest {
   }
 
   @Test
-  public void testGetAllHistoryEventDescendingOrder() {
+  void testGetAllHistoryEventDescendingOrder() {
     String parameters =
         "/api/v1/task-history-event?sort-by=business-process-id&order=desc&page-size=3&page=1";
     ResponseEntity<TaskHistoryEventListResource> response =
@@ -82,7 +82,7 @@ public class TaskHistoryEventControllerIntTest {
   }
 
   @Test
-  public void should_ReturnSpecificTaskHistoryEventWithoutDetails_When_ListIsQueried() {
+  void should_ReturnSpecificTaskHistoryEventWithoutDetails_When_ListIsQueried() {
     ResponseEntity<TaskHistoryEventListResource> response =
         template.exchange(
             server
@@ -101,10 +101,10 @@ public class TaskHistoryEventControllerIntTest {
   }
 
   @Test
-  public void should_ReturnSpecificTaskHistoryEventWithDetails_When_SingleEventIsQueried() {
+  void should_ReturnSpecificTaskHistoryEventWithDetails_When_SingleEventIsQueried() {
     ResponseEntity<TaskHistoryEventResource> response =
         template.exchange(
-            server + port + "/api/v1/task-history-event/45",
+            server + port + "/api/v1/task-history-event/HEI:000000000000000000000000000000000000",
             HttpMethod.GET,
             request,
             ParameterizedTypeReference.forType(TaskHistoryEventResource.class));
@@ -115,7 +115,7 @@ public class TaskHistoryEventControllerIntTest {
   }
 
   @Test
-  public void testThrowsExceptionIfInvalidFilterIsUsed() {
+  void testThrowsExceptionIfInvalidFilterIsUsed() {
     ThrowingCallable httpCall =
         () -> {
           template.exchange(
@@ -132,7 +132,7 @@ public class TaskHistoryEventControllerIntTest {
   }
 
   @Test
-  public void testGetHistoryEventOfDate() {
+  void testGetHistoryEventOfDate() {
     String currentTime = LocalDateTime.now().toString();
     final String finalCurrentTime = currentTime;
     ThrowingCallable httpCall =
@@ -162,7 +162,7 @@ public class TaskHistoryEventControllerIntTest {
   }
 
   @Test
-  public void testGetSecondPageSortedByKey() {
+  void testGetSecondPageSortedByKey() {
     String parameters =
         "/api/v1/task-history-event?sort-by=workbasket-key&order=desc&page=2&page-size=2";
     ResponseEntity<TaskHistoryEventListResource> response =

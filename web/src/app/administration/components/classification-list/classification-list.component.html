@@ -9,14 +9,14 @@
 					<span class="material-icons md-20 green-blue">add_circle_outline</span>
 				</button>
 
-				<taskana-import-export-component
+				<taskana-administration-import-export
 						class ="btn-group" [currentSelection]="taskanaType.CLASSIFICATIONS">
-				</taskana-import-export-component>
+				</taskana-administration-import-export>
 			</div>
 			<div class="col-xs-6">
-				<taskana-classification-types-selector
+				<taskana-administration-classification-types-selector
 						class="pull-right">
-				</taskana-classification-types-selector>
+				</taskana-administration-classification-types-selector>
 			</div>
 		</div>
 	</li>
@@ -51,9 +51,9 @@
 	<div class="col-xs-12 horizontal-bottom-divider"></div>
 
 	<!-- CLASSIFICATION TREE -->
-	<taskana-spinner class="col-xs-12" [isRunning]="requestInProgress" positionClass="centered-spinner-whole-screen"></taskana-spinner>
-	<taskana-tree class="col-xs-12" *ngIf="(classifications && classifications.length) else empty_classifications"
-	 [filterText]="inputValue" [filterIcon]="selectedCategory" (switchTaskanaSpinnerEmit)="requestInProgress=$event"></taskana-tree>
+	<taskana-shared-spinner class="col-xs-12" [isRunning]="requestInProgress" positionClass="centered-spinner-whole-screen"></taskana-shared-spinner>
+	<taskana-administration-tree class="col-xs-12" *ngIf="(classifications && classifications.length) else empty_classifications"
+                                 [filterText]="inputValue" [filterIcon]="selectedCategory" (switchTaskanaSpinnerEmit)="requestInProgress=$event"></taskana-administration-tree>
 	<ng-template #empty_classifications>
 		<div *ngIf="!requestInProgress" class="col-xs-12 container-no-items center-block">
 			<h3 class="grey">There are no classifications</h3>

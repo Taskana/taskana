@@ -1,100 +1,57 @@
 package acceptance;
 
-import configuration.DbWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.SQLException;
+import java.lang.reflect.Field;
 import java.util.Objects;
 import java.util.Properties;
 import javax.sql.DataSource;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
+import org.apache.ibatis.session.SqlSessionManager;
 import org.junit.jupiter.api.BeforeAll;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
+import pro.taskana.common.internal.util.IdGenerator;
+import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.simplehistory.impl.HistoryEventImpl;
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
+import pro.taskana.simplehistory.impl.TaskanaHistoryEngineImpl;
+import pro.taskana.simplehistory.impl.mappings.HistoryQueryMapper;
+import pro.taskana.task.api.models.ObjectReference;
 
 /** Set up database for tests. */
 public abstract class AbstractAccTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAccTest.class);
+  private static final String ID_PREFIX_HISTORY_EVENT = "HEI";
+  private static final String USER_HOME_DIRECTORY = System.getProperty("user.home");
   private static final int POOL_TIME_TO_WAIT = 50;
-
+  private static final DataSource DATA_SOURCE;
+  protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
+  protected static TaskanaHistoryEngineImpl taskanaHistoryEngine;
+  protected static TaskanaEngine taskanaEngine;
   private static SimpleHistoryServiceImpl historyService;
-
-  private static DataSource dataSource;
-  private static String schemaName = null;
+  private static String schemaName;
 
   static {
-    String userHomeDirectroy = System.getProperty("user.home");
-    String propertiesFileName = userHomeDirectroy + "/taskanaUnitTest.properties";
+    String propertiesFileName = USER_HOME_DIRECTORY + "/taskanaUnitTest.properties";
     File f = new File(propertiesFileName);
     if (f.exists() && !f.isDirectory()) {
-      dataSource = createDataSourceFromProperties(propertiesFileName);
+      DATA_SOURCE = createDataSourceFromProperties(propertiesFileName);
     } else {
-      dataSource = createDefaultDataSource();
+      DATA_SOURCE = createDefaultDataSource();
     }
   }
 
   protected AbstractAccTest() {
     // not called
-  }
-
-  @BeforeAll
-  public static void setupTest() throws Exception {
-    resetDb(null);
-  }
-
-  public static void resetDb(String schemaName) throws SQLException {
-    DataSource dataSource = getDataSource();
-
-    TaskanaEngineConfiguration taskanaEngineConfiguration =
-        new TaskanaEngineConfiguration(
-            dataSource,
-            false,
-            schemaName != null && !schemaName.isEmpty() ? schemaName : getSchemaName());
-    historyService = new SimpleHistoryServiceImpl();
-    historyService.initialize(taskanaEngineConfiguration);
-
-    DbWriter writer = new DbWriter();
-    writer.clearDB(dataSource);
-    writer.generateTestData(dataSource);
-  }
-
-  public static DataSource getDataSource() {
-    if (dataSource == null) {
-      throw new RuntimeException("Datasource should be already initialized");
-    }
-    return dataSource;
-  }
-
-  /**
-   * returns the SchemaName used for Junit test. If the file {user.home}/taskanaUnitTest.properties
-   * is present, the SchemaName is created according to the property schemaName. a sample properties
-   * file for DB2 looks as follows: jdbcDriver=com.ibm.db2.jcc.DB2Driver
-   * jdbcUrl=jdbc:db2://localhost:50000/tskdb dbUserName=db2user dbPassword=db2password
-   * schemaName=TASKANA If any of these properties is missing, or the file doesn't exist, the
-   * default schemaName TASKANA is created used.
-   *
-   * @return String for unit test
-   */
-  public static String getSchemaName() {
-    if (schemaName == null) {
-      String userHomeDirectroy = System.getProperty("user.home");
-      String propertiesFileName = userHomeDirectroy + "/taskanaUnitTest.properties";
-      File f = new File(propertiesFileName);
-      if (f.exists() && !f.isDirectory()) {
-        schemaName = getSchemaNameFromPropertiesObject(propertiesFileName);
-      } else {
-        schemaName = "TASKANA";
-      }
-    }
-    return schemaName;
   }
 
   /**
@@ -115,7 +72,9 @@ public abstract class AbstractAccTest {
       String previousWorkbasketId,
       String userid,
       String details) {
-    HistoryEventImpl historyEvent = new HistoryEventImpl(userid, details);
+    HistoryEventImpl historyEvent =
+        new HistoryEventImpl(
+            IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT), userid, details);
     historyEvent.setWorkbasketKey(workbasketKey);
     historyEvent.setTaskId(taskId);
     historyEvent.setEventType(type);
@@ -123,8 +82,84 @@ public abstract class AbstractAccTest {
     return historyEvent;
   }
 
-  public static SimpleHistoryServiceImpl getHistoryService() {
+  protected static void resetDb(String schemaName) throws Exception {
+    DataSource dataSource = getDataSource();
+
+    taskanaEngineConfiguration =
+        new TaskanaEngineConfiguration(
+            dataSource,
+            false,
+            schemaName != null && !schemaName.isEmpty() ? schemaName : getSchemaName());
+    taskanaHistoryEngine = TaskanaHistoryEngineImpl.createTaskanaEngine(taskanaEngineConfiguration);
+    taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
+    taskanaEngine.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
+    historyService = new SimpleHistoryServiceImpl();
+    historyService.initialize(taskanaEngineConfiguration);
+
+    SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, getSchemaName());
+    sampleDataGenerator.clearDb();
+    sampleDataGenerator.generateTestData();
+  }
+
+  protected static DataSource getDataSource() {
+    if (DATA_SOURCE == null) {
+      throw new RuntimeException("Datasource should be already initialized");
+    }
+    return DATA_SOURCE;
+  }
+
+  /**
+   * returns the SchemaName used for Junit test. If the file {user.home}/taskanaUnitTest.properties
+   * is present, the SchemaName is created according to the property schemaName. a sample properties
+   * file for DB2 looks as follows: jdbcDriver=com.ibm.db2.jcc.DB2Driver
+   * jdbcUrl=jdbc:db2://localhost:50000/tskdb dbUserName=db2user dbPassword=db2password
+   * schemaName=TASKANA If any of these properties is missing, or the file doesn't exist, the
+   * default schemaName TASKANA is created used.
+   *
+   * @return String for unit test
+   */
+  protected static String getSchemaName() {
+    if (schemaName == null) {
+      String propertiesFileName = USER_HOME_DIRECTORY + "/taskanaUnitTest.properties";
+      File f = new File(propertiesFileName);
+      if (f.exists() && !f.isDirectory()) {
+        schemaName = getSchemaNameFromPropertiesObject(propertiesFileName);
+      } else {
+        schemaName = "TASKANA";
+      }
+    }
+    return schemaName;
+  }
+
+  protected static SimpleHistoryServiceImpl getHistoryService() {
     return historyService;
+  }
+
+  protected HistoryQueryMapper getHistoryQueryMapper()
+      throws NoSuchFieldException, IllegalAccessException {
+
+    Field sessionManagerField = TaskanaHistoryEngineImpl.class.getDeclaredField("sessionManager");
+    sessionManagerField.setAccessible(true);
+    SqlSessionManager sqlSessionManager =
+        (SqlSessionManager) sessionManagerField.get(taskanaHistoryEngine);
+
+    return sqlSessionManager.getMapper(HistoryQueryMapper.class);
+  }
+
+  protected ObjectReference createObjectRef(
+      String company, String system, String systemInstance, String type, String value) {
+    ObjectReference objectRef = new ObjectReference();
+    objectRef.setCompany(company);
+    objectRef.setSystem(system);
+    objectRef.setSystemInstance(systemInstance);
+    objectRef.setType(type);
+    objectRef.setValue(value);
+    return objectRef;
+  }
+
+  @BeforeAll
+  static void setupTest() throws Exception {
+    resetDb(null);
   }
 
   /**

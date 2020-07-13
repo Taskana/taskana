@@ -46,7 +46,7 @@ import pro.taskana.spi.history.api.events.task.ClaimedEvent;
 import pro.taskana.spi.history.api.events.task.CompletedEvent;
 import pro.taskana.spi.history.api.events.task.CreatedEvent;
 import pro.taskana.spi.history.api.events.task.UpdatedEvent;
-import pro.taskana.spi.history.internal.HistoryEventProducer;
+import pro.taskana.spi.history.internal.HistoryEventManager;
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.TaskQuery;
 import pro.taskana.task.api.TaskService;
@@ -101,18 +101,19 @@ public class TaskServiceImpl implements TaskService {
   private static final String ID_PREFIX_BUSINESS_PROCESS = "BPI";
   private static final Set<String> ALLOWED_CUSTOM_KEYS =
       IntStream.rangeClosed(1, 16).mapToObj(String::valueOf).collect(Collectors.toSet());
+  private static final String ID_PREFIX_HISTORY_EVENT = "HEI";
   private static final String TASK_WITH_ID_IS_ALREADY_IN_END_STATE =
       "Task with Id %s is already in an end state.";
   private final InternalTaskanaEngine taskanaEngine;
   private final WorkbasketService workbasketService;
   private final ClassificationService classificationService;
   private final TaskMapper taskMapper;
-  private final AttachmentMapper attachmentMapper;
-  private final HistoryEventProducer historyEventProducer;
   private final TaskTransferrer taskTransferrer;
   private final TaskCommentServiceImpl taskCommentService;
   private final ServiceLevelHandler serviceLevelHandler;
   private final AttachmentHandler attachmentHandler;
+  private AttachmentMapper attachmentMapper;
+  private HistoryEventManager historyEventManager;
 
   public TaskServiceImpl(
       InternalTaskanaEngine taskanaEngine,
@@ -124,7 +125,7 @@ public class TaskServiceImpl implements TaskService {
     this.workbasketService = taskanaEngine.getEngine().getWorkbasketService();
     this.attachmentMapper = attachmentMapper;
     this.classificationService = taskanaEngine.getEngine().getClassificationService();
-    this.historyEventProducer = taskanaEngine.getHistoryEventProducer();
+    this.historyEventManager = taskanaEngine.getHistoryEventManager();
     this.taskTransferrer = new TaskTransferrer(taskanaEngine, taskMapper, this);
     this.taskCommentService = new TaskCommentServiceImpl(taskanaEngine, taskCommentMapper, this);
     this.serviceLevelHandler = new ServiceLevelHandler(taskanaEngine, taskMapper, attachmentMapper);
@@ -231,11 +232,15 @@ public class TaskServiceImpl implements TaskService {
       try {
         this.taskMapper.insert(task);
         LOGGER.debug("Method createTask() created Task '{}'.", task.getId());
-        if (HistoryEventProducer.isHistoryEnabled()) {
+        if (HistoryEventManager.isHistoryEnabled()) {
 
           String details = determineChangesInTaskAttributes(newTask(), task);
-          historyEventProducer.createEvent(
-              new CreatedEvent(task, CurrentUserContext.getUserid(), details));
+          historyEventManager.createEvent(
+              new CreatedEvent(
+                  IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT),
+                  task,
+                  CurrentUserContext.getUserid(),
+                  details));
         }
       } catch (PersistenceException e) {
         // Error messages:
@@ -434,13 +439,17 @@ public class TaskServiceImpl implements TaskService {
 
       LOGGER.debug("Method updateTask() updated task '{}' for user '{}'.", task.getId(), userId);
 
-      if (HistoryEventProducer.isHistoryEnabled()) {
+      if (HistoryEventManager.isHistoryEnabled()) {
 
         String changeDetails = determineChangesInTaskAttributes(oldTaskImpl, newTaskImpl);
 
         LOGGER.warn(changeDetails);
-        historyEventProducer.createEvent(
-            new UpdatedEvent(task, CurrentUserContext.getUserid(), changeDetails));
+        historyEventManager.createEvent(
+            new UpdatedEvent(
+                IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT),
+                task,
+                CurrentUserContext.getUserid(),
+                changeDetails));
       }
 
     } finally {
@@ -537,8 +546,18 @@ public class TaskServiceImpl implements TaskService {
       while (taskIdIterator.hasNext()) {
         removeSingleTaskForTaskDeletionById(bulkLog, taskSummaries, taskIdIterator);
       }
+
       if (!taskIds.isEmpty()) {
+        attachmentMapper.deleteMultipleByTaskIds(taskIds);
         taskMapper.deleteMultiple(taskIds);
+
+        if (taskanaEngine.getEngine().isHistoryEnabled()
+            && taskanaEngine
+                .getEngine()
+                .getConfiguration()
+                .isDeleteHistoryOnTaskDeletionEnabled()) {
+          historyEventManager.deleteEvents(taskIds);
+        }
       }
       return bulkLog;
     } finally {
@@ -1198,8 +1217,12 @@ public class TaskServiceImpl implements TaskService {
       claimActionsOnTask(task, userId, now);
       taskMapper.update(task);
       LOGGER.debug("Task '{}' claimed by user '{}'.", taskId, userId);
-      if (HistoryEventProducer.isHistoryEnabled()) {
-        historyEventProducer.createEvent(new ClaimedEvent(task, CurrentUserContext.getUserid()));
+      if (HistoryEventManager.isHistoryEnabled()) {
+        historyEventManager.createEvent(
+            new ClaimedEvent(
+                IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT),
+                task,
+                CurrentUserContext.getUserid()));
       }
     } finally {
       taskanaEngine.returnConnection();
@@ -1294,9 +1317,12 @@ public class TaskServiceImpl implements TaskService {
       task.setState(TaskState.READY);
       taskMapper.update(task);
       LOGGER.debug("Task '{}' unclaimed by user '{}'.", taskId, userId);
-      if (HistoryEventProducer.isHistoryEnabled()) {
-        historyEventProducer.createEvent(
-            new ClaimCancelledEvent(task, CurrentUserContext.getUserid()));
+      if (HistoryEventManager.isHistoryEnabled()) {
+        historyEventManager.createEvent(
+            new ClaimCancelledEvent(
+                IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT),
+                task,
+                CurrentUserContext.getUserid()));
       }
     } finally {
       taskanaEngine.returnConnection();
@@ -1332,8 +1358,12 @@ public class TaskServiceImpl implements TaskService {
       completeActionsOnTask(task, userId, now);
       taskMapper.update(task);
       LOGGER.debug("Task '{}' completed by user '{}'.", taskId, userId);
-      if (HistoryEventProducer.isHistoryEnabled()) {
-        historyEventProducer.createEvent(new CompletedEvent(task, CurrentUserContext.getUserid()));
+      if (HistoryEventManager.isHistoryEnabled()) {
+        historyEventManager.createEvent(
+            new CompletedEvent(
+                IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT),
+                task,
+                CurrentUserContext.getUserid()));
       }
     } finally {
       taskanaEngine.returnConnection();
@@ -1360,7 +1390,14 @@ public class TaskServiceImpl implements TaskService {
         throw new InvalidStateException(String.format(TASK_WITH_ID_CALLBACK_NOT_PROCESSED, taskId));
       }
 
+      attachmentMapper.deleteMultipleByTaskIds(Arrays.asList(taskId));
       taskMapper.delete(taskId);
+
+      if (taskanaEngine.getEngine().isHistoryEnabled()
+          && taskanaEngine.getEngine().getConfiguration().isDeleteHistoryOnTaskDeletionEnabled()) {
+        historyEventManager.deleteEvents(Collections.singletonList(taskId));
+      }
+
       LOGGER.debug("Task {} deleted.", taskId);
     } finally {
       taskanaEngine.returnConnection();
@@ -1560,7 +1597,7 @@ public class TaskServiceImpl implements TaskService {
       if (!updateClaimedTaskIds.isEmpty()) {
         taskMapper.updateClaimed(updateClaimedTaskIds, claimedReference);
       }
-      if (HistoryEventProducer.isHistoryEnabled()) {
+      if (HistoryEventManager.isHistoryEnabled()) {
         createTasksCompletedEvents(taskSummaryList);
       }
     }
@@ -1906,7 +1943,10 @@ public class TaskServiceImpl implements TaskService {
   private void createTasksCompletedEvents(List<? extends TaskSummary> taskSummaries) {
     taskSummaries.forEach(
         task ->
-            historyEventProducer.createEvent(
-                new CompletedEvent(task, CurrentUserContext.getUserid())));
+            historyEventManager.createEvent(
+                new CompletedEvent(
+                    IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT),
+                    task,
+                    CurrentUserContext.getUserid())));
   }
 }

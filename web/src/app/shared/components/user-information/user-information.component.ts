@@ -4,7 +4,7 @@ import { UserInfo } from 'app/shared/models/user-info';
 import { expandDown } from '../../../../theme/animations/expand.animation';
 
 @Component({
-  selector: 'taskana-user-information',
+  selector: 'taskana-shared-user-information',
   templateUrl: './user-information.component.html',
   styleUrls: ['./user-information.component.scss'],
   animations: [expandDown],

@@ -50,20 +50,22 @@ class SelectAndClaimTaskAccTest extends AbstractAccTest {
       threads[i].join();
     }
 
-    assertThat(selectedAndClaimedTasks).extracting(Task::getId)
+    assertThat(selectedAndClaimedTasks)
+        .extracting(Task::getId)
         .containsExactlyInAnyOrder(
             "TKI:000000000000000000000000000000000003",
             "TKI:000000000000000000000000000000000004",
             "TKI:000000000000000000000000000000000005",
             "TKI:000000000000000000000000000000000006");
 
-    assertThat(selectedAndClaimedTasks).extracting(Task::getOwner)
+    assertThat(selectedAndClaimedTasks)
+        .extracting(Task::getOwner)
         .containsExactlyInAnyOrder("admin", "taskadmin", "teamlead-1", "teamlead-2");
   }
 
   @Test
   @WithAccessId(user = "admin")
-  void should_ThrowException_When_TryingToSelectAndClaimNonExistingTask() throws Exception {
+  void should_ThrowException_When_TryingToSelectAndClaimNonExistingTask() {
 
     TaskQuery query = taskanaEngine.getTaskService().createTaskQuery();
     query.idIn("notexisting");

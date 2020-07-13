@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,10 +14,7 @@ import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.common.api.BulkOperationResults;
-import pro.taskana.common.api.exceptions.ConcurrencyException;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.TaskanaEngineProxyForTest;
@@ -26,8 +22,6 @@ import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
-import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
-import pro.taskana.task.api.exceptions.InvalidOwnerException;
 import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
@@ -35,14 +29,11 @@ import pro.taskana.task.api.models.TaskSummary;
 
 /** Acceptance test for all "set owner" scenarios. */
 @ExtendWith(JaasExtension.class)
-public class SetOwnerAccTest extends AbstractAccTest {
+class SetOwnerAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void testSetOwnerAndSubsequentClaimSucceeds()
-      throws TaskNotFoundException, NotAuthorizedException, InvalidStateException,
-          InvalidOwnerException, ClassificationNotFoundException, InvalidArgumentException,
-          ConcurrencyException, AttachmentPersistenceException {
+  void testSetOwnerAndSubsequentClaimSucceeds() throws Exception {
 
     TaskService taskService = taskanaEngine.getTaskService();
     String taskReadyId = "TKI:000000000000000000000000000000000025";
@@ -75,7 +66,7 @@ public class SetOwnerAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void testSetOwnerOfClaimedTaskFails() throws TaskNotFoundException, NotAuthorizedException {
+  void testSetOwnerOfClaimedTaskFails() throws Exception {
 
     TaskService taskService = taskanaEngine.getTaskService();
     String taskClaimedId = "TKI:000000000000000000000000000000000026";
@@ -163,8 +154,7 @@ public class SetOwnerAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void testSetOwnerWithAllTasksAndVariousExceptions()
-      throws NoSuchFieldException, IllegalAccessException, SQLException {
+  void testSetOwnerWithAllTasksAndVariousExceptions() throws Exception {
     resetDb(false);
     List<TaskSummary> allTaskSummaries =
         new TaskanaEngineProxyForTest(taskanaEngine)
@@ -174,7 +164,7 @@ public class SetOwnerAccTest extends AbstractAccTest {
         allTaskSummaries.stream().map(TaskSummary::getId).collect(Collectors.toList());
     BulkOperationResults<String, TaskanaException> results =
         taskanaEngine.getTaskService().setOwnerOfTasks("theWorkaholic", allTaskIds);
-    assertThat(allTaskSummaries).hasSize(84);
+    assertThat(allTaskSummaries).hasSize(87);
     assertThat(results.containsErrors()).isTrue();
 
     Condition<Object> invalidStateException =
@@ -183,34 +173,31 @@ public class SetOwnerAccTest extends AbstractAccTest {
         new Condition<>(
             c -> c.getClass() == NotAuthorizedException.class, "NotAuthorizedException");
     assertThat(results.getErrorMap())
-        .hasSize(82)
+        .hasSize(85)
         .extractingFromEntries(Entry::getValue)
         .hasOnlyElementsOfTypes(InvalidStateException.class, NotAuthorizedException.class)
         .areExactly(28, invalidStateException)
-        .areExactly(54, notAuthorizedException);
+        .areExactly(57, notAuthorizedException);
   }
 
   @WithAccessId(user = "admin")
   @Test
-  void testSetOwnerWithAllTasksAndVariousExceptionsAsAdmin() throws SQLException {
+  void testSetOwnerWithAllTasksAndVariousExceptionsAsAdmin() throws Exception {
     resetDb(false);
     List<TaskSummary> allTaskSummaries = taskanaEngine.getTaskService().createTaskQuery().list();
     List<String> allTaskIds =
         allTaskSummaries.stream().map(TaskSummary::getId).collect(Collectors.toList());
     BulkOperationResults<String, TaskanaException> results =
         taskanaEngine.getTaskService().setOwnerOfTasks("theWorkaholic", allTaskIds);
-    assertThat(allTaskSummaries).hasSize(84);
+    assertThat(allTaskSummaries).hasSize(87);
     assertThat(results.containsErrors()).isTrue();
     assertThat(results.getErrorMap())
-        .hasSize(37)
+        .hasSize(40)
         .extractingFromEntries(Entry::getValue)
         .hasOnlyElementsOfType(InvalidStateException.class);
   }
 
-  private Task setOwner(String taskReadyId, String anyUserName)
-      throws TaskNotFoundException, NotAuthorizedException, ClassificationNotFoundException,
-          InvalidArgumentException, ConcurrencyException, AttachmentPersistenceException,
-          InvalidStateException {
+  private Task setOwner(String taskReadyId, String anyUserName) throws Exception {
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask(taskReadyId);
     task.setOwner(anyUserName);

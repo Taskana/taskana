@@ -1,16 +1,12 @@
 import { Component,
-  ElementRef,
   EventEmitter,
   Input,
   OnInit,
-  Output,
-  ViewChild, ViewChildren,
-  ViewRef } from '@angular/core';
+  Output } from '@angular/core';
 import { Direction, Sorting } from 'app/shared/models/sorting';
-import { MatRadioButton } from '@angular/material/radio';
 
 @Component({
-  selector: 'taskana-sort',
+  selector: 'taskana-shared-sort',
   templateUrl: './sort.component.html',
   styleUrls: ['./sort.component.scss']
 })

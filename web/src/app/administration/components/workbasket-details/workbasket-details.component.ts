@@ -17,7 +17,7 @@ import { TaskanaDate } from '../../../shared/util/taskana.date';
 import { ICONTYPES } from '../../../shared/models/icon-types';
 
 @Component({
-  selector: 'taskana-workbasket-details',
+  selector: 'taskana-administration-workbasket-details',
   templateUrl: './workbasket-details.component.html'
 })
 export class WorkbasketDetailsComponent implements OnInit, OnDestroy {

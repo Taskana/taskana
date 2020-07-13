@@ -3,7 +3,7 @@ import { MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
 import { NOTIFICATION_TYPES, notifications } from '../../models/notifications';
 
 @Component({
-  selector: 'app-toast',
+  selector: 'taskana-shared-toast',
   templateUrl: './toast.component.html',
   styleUrls: ['./toast.component.scss']
 })

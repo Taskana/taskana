@@ -304,6 +304,18 @@ include::{snippets}/DeleteTaskDocTest/http-request.adoc[]
 
 include::{snippets}/DeleteTaskDocTest/http-response.adoc[]
 
+=== Delete multiple tasks
+
+A `DELETE` request is used to delete multiple tasks.
+
+==== Example request
+
+include::{snippets}/DeleteTasksDocTest/http-request.adoc[]
+
+==== Example response
+
+include::{snippets}/DeleteTasksDocTest/http-response.adoc[]
+
 === Transfer a task to another workbasket
 
 A `POST` request is used to transfer a task from one to another workbasket.

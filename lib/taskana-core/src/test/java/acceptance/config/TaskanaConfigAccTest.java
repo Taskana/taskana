@@ -3,12 +3,10 @@ package acceptance.config;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +26,7 @@ import pro.taskana.common.internal.TaskanaEngineTestConfiguration;
  */
 class TaskanaConfigAccTest extends TaskanaEngineImpl {
 
-  TaskanaConfigAccTest() throws SQLException {
+  TaskanaConfigAccTest() throws Exception {
     super(
         new TaskanaEngineConfiguration(
             TaskanaEngineTestConfiguration.getDataSource(),
@@ -53,7 +51,7 @@ class TaskanaConfigAccTest extends TaskanaEngineImpl {
   }
 
   @Test
-  void testDoesNotExistPropertyClassificationTypeOrItIsEmpty() throws IOException {
+  void testDoesNotExistPropertyClassificationTypeOrItIsEmpty() throws Exception {
     taskanaEngineConfiguration.setClassificationTypes(new ArrayList<>());
     String propertiesFileName = createNewConfigFile("/dummyTestConfig.properties", false, true);
     String delimiter = ";";
@@ -66,7 +64,7 @@ class TaskanaConfigAccTest extends TaskanaEngineImpl {
   }
 
   @Test
-  void testDoesNotExistPropertyClassificationCategoryOrItIsEmpty() throws IOException {
+  void testDoesNotExistPropertyClassificationCategoryOrItIsEmpty() throws Exception {
     taskanaEngineConfiguration.setClassificationTypes(new ArrayList<>());
     taskanaEngineConfiguration.setClassificationCategoriesByType(new HashMap<>());
     String propertiesFileName = createNewConfigFile("/dummyTestConfig.properties", true, false);
@@ -83,7 +81,7 @@ class TaskanaConfigAccTest extends TaskanaEngineImpl {
   }
 
   @Test
-  void testWithCategoriesAndClassificationFilled() throws IOException {
+  void testWithCategoriesAndClassificationFilled() throws Exception {
     taskanaEngineConfiguration.setClassificationTypes(new ArrayList<>());
     taskanaEngineConfiguration.setClassificationCategoriesByType(new HashMap<>());
     String propertiesFileName = createNewConfigFile("/dummyTestConfig.properties", true, true);
@@ -116,7 +114,7 @@ class TaskanaConfigAccTest extends TaskanaEngineImpl {
   }
 
   private String createNewConfigFile(
-      String filename, boolean addingTypes, boolean addingClassification) throws IOException {
+      String filename, boolean addingTypes, boolean addingClassification) throws Exception {
     Path file = Files.createFile(Paths.get(System.getProperty("user.home") + filename));
     List<String> lines =
         Stream.of(

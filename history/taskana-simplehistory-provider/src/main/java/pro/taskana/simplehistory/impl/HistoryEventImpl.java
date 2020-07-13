@@ -7,7 +7,7 @@ public class HistoryEventImpl extends TaskanaHistoryEvent {
 
   public HistoryEventImpl() {}
 
-  public HistoryEventImpl(String userId, String details) {
-    super(userId, details);
+  public HistoryEventImpl(String id, String userId, String details) {
+    super(id, userId, details);
   }
 }

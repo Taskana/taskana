@@ -16,8 +16,9 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.security.CurrentUserContext;
+import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.spi.history.api.events.task.TransferredEvent;
-import pro.taskana.spi.history.internal.HistoryEventProducer;
+import pro.taskana.spi.history.internal.HistoryEventManager;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
@@ -41,12 +42,13 @@ public class TaskTransferrer {
   private static final String TASK_WITH_ID = "Task with id ";
   private static final String WAS_MARKED_FOR_DELETION = " was marked for deletion";
   private static final String THE_WORKBASKET = "The workbasket ";
+  private static final String ID_PREFIX_HISTORY_EVENT = "HEI";
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskTransferrer.class);
   private InternalTaskanaEngine taskanaEngine;
   private WorkbasketService workbasketService;
   private TaskServiceImpl taskService;
   private TaskMapper taskMapper;
-  private HistoryEventProducer historyEventProducer;
+  private HistoryEventManager historyEventManager;
 
   TaskTransferrer(
       InternalTaskanaEngine taskanaEngine, TaskMapper taskMapper, TaskServiceImpl taskService) {
@@ -55,7 +57,7 @@ public class TaskTransferrer {
     this.taskService = taskService;
     this.taskMapper = taskMapper;
     this.workbasketService = taskanaEngine.getEngine().getWorkbasketService();
-    this.historyEventProducer = taskanaEngine.getHistoryEventProducer();
+    this.historyEventManager = taskanaEngine.getHistoryEventManager();
   }
 
   Task transfer(String taskId, String destinationWorkbasketKey, String domain)
@@ -110,7 +112,7 @@ public class TaskTransferrer {
           "Method transfer() transferred Task '{}' to destination workbasket {}",
           taskId,
           destinationWorkbasket.getId());
-      if (HistoryEventProducer.isHistoryEnabled()) {
+      if (HistoryEventManager.isHistoryEnabled()) {
         createTaskTransferredEvent(task, oldWorkbasketSummary, destinationWorkbasket.asSummary());
       }
       return task;
@@ -167,7 +169,7 @@ public class TaskTransferrer {
           "Method transfer() transferred Task '{}' to destination workbasket {}",
           taskId,
           destinationWorkbasketId);
-      if (HistoryEventProducer.isHistoryEnabled()) {
+      if (HistoryEventManager.isHistoryEnabled()) {
         createTaskTransferredEvent(task, oldWorkbasketSummary, destinationWorkbasket.asSummary());
       }
       return task;
@@ -364,9 +366,13 @@ public class TaskTransferrer {
 
   private void createTaskTransferredEvent(
       Task task, WorkbasketSummary oldWorkbasketSummary, WorkbasketSummary newWorkbasketSummary) {
-    historyEventProducer.createEvent(
+    historyEventManager.createEvent(
         new TransferredEvent(
-            task, oldWorkbasketSummary, newWorkbasketSummary, CurrentUserContext.getUserid()));
+            IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT),
+            task,
+            oldWorkbasketSummary,
+            newWorkbasketSummary,
+            CurrentUserContext.getUserid()));
   }
 
   private void updateTasksToBeTransferred(
@@ -397,7 +403,7 @@ public class TaskTransferrer {
       updateObject.setState(TaskState.READY);
       updateObject.setOwner(null);
       taskMapper.updateTransfered(taskIds, updateObject);
-      if (HistoryEventProducer.isHistoryEnabled()) {
+      if (HistoryEventManager.isHistoryEnabled()) {
         createTasksTransferredEvents(taskSummaries, updateObject);
       }
     }

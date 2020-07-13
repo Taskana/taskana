@@ -4,8 +4,8 @@ import pro.taskana.task.api.models.Task;
 
 public class UpdatedEvent extends TaskEvent {
 
-  public UpdatedEvent(Task updatedTask, String userId, String details) {
-    super(updatedTask, userId, details);
+  public UpdatedEvent(String id, Task updatedTask, String userId, String details) {
+    super(id, updatedTask, userId, details);
     eventType = "TASK_UPDATED";
     created = updatedTask.getModified();
   }

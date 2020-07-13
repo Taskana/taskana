@@ -16,12 +16,8 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
-import pro.taskana.task.api.exceptions.InvalidOwnerException;
-import pro.taskana.task.api.exceptions.InvalidStateException;
-import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.WorkbasketService;
-import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketInUseException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
@@ -43,7 +39,7 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testDeleteWorkbasket() throws WorkbasketNotFoundException, NotAuthorizedException {
+  void testDeleteWorkbasket() throws Exception {
     Workbasket wb = workbasketService.getWorkbasket("USER-2-2", "DOMAIN_A");
 
     ThrowingCallable call =
@@ -89,8 +85,7 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testDeleteWorkbasketAlsoAsDistributionTarget()
-      throws WorkbasketNotFoundException, NotAuthorizedException {
+  void testDeleteWorkbasketAlsoAsDistributionTarget() throws Exception {
     Workbasket wb = workbasketService.getWorkbasket("GPK_KSC_1", "DOMAIN_A");
     int distTargets =
         workbasketService.getDistributionTargets("WBI:100000000000000000000000000000000001").size();
@@ -148,8 +143,7 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2", groups = "businessadmin")
   @Test
-  void testDeleteWorkbasketWhichIsUsed()
-      throws WorkbasketNotFoundException, NotAuthorizedException {
+  void testDeleteWorkbasketWhichIsUsed() throws Exception {
     Workbasket wb =
         workbasketService.getWorkbasket("user-1-2", "DOMAIN_A"); // all rights, DOMAIN_A with Tasks
     ThrowingCallable call =
@@ -161,9 +155,7 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testCascadingDeleteOfAccessItems()
-      throws WorkbasketNotFoundException, NotAuthorizedException, InvalidArgumentException,
-          WorkbasketAccessItemAlreadyExistException {
+  void testCascadingDeleteOfAccessItems() throws Exception {
     Workbasket wb = workbasketService.getWorkbasket("WBI:100000000000000000000000000000000008");
     String wbId = wb.getId();
     // create 2 access Items
@@ -195,10 +187,7 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testMarkWorkbasketForDeletion()
-      throws WorkbasketInUseException, NotAuthorizedException, WorkbasketNotFoundException,
-          InvalidArgumentException, InvalidOwnerException, InvalidStateException,
-          TaskNotFoundException {
+  void testMarkWorkbasketForDeletion() throws Exception {
     final Workbasket wb =
         workbasketService.getWorkbasket("WBI:100000000000000000000000000000000006");
 

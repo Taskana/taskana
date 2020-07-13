@@ -21,7 +21,7 @@
 
 		<!-- DISTRIBUTION LEFT LIST -->
         <div class="dual-list list-left col-xs-12 col-md-5-6 container">
-            <taskana-workbasket-dual-list #dualListLeft id="dual-list-Left" header="Available distribution targets"
+            <taskana-administration-workbasket-dual-list #dualListLeft id="dual-list-Left" header="Available distribution targets"
                                           [distributionTargets]="distributionTargetsLeft"
                                           [distributionTargetsSelected]="distributionTargetsSelected"
                                           (performDualListFilter)="performFilter($event)"
@@ -29,7 +29,7 @@
                                           [side]="side.LEFT"
                                           [requestInProgress]="requestInProgressLeft"
 										  [loadingItems]="loadingItems"
-                                          [(allSelected)]="selectAllLeft"></taskana-workbasket-dual-list>
+                                          [(allSelected)]="selectAllLeft"></taskana-administration-workbasket-dual-list>
         </div>
 
 		<!-- DISTRIBUTION ACTION BUTTONS -->
