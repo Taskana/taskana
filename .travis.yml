@@ -35,7 +35,7 @@ stages:
 
 env:
   global:
-    - NODE_VERSION=12.18.2
+    - NODE_VERSION=12.10.0
   jobs:
     - DB=H2
     - DB=DB2_11_1
