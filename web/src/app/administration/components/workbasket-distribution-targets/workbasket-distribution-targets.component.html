@@ -64,13 +64,13 @@
 
 		<!-- DISTRIBUTION RIGHT LIST -->
         <div class="dual-list list-right col-xs-12 col-md-5-6 container">
-            <taskana-workbasket-dual-list #dualListRight id="dual-list-right" header="Selected distribution targets"
+            <taskana-administration-workbasket-dual-list #dualListRight id="dual-list-right" header="Selected distribution targets"
                                           [distributionTargets]="distributionTargetsRight"
                                           [distributionTargetsSelected]="distributionTargetsSelected"
                                           (performDualListFilter)="performFilter($event)"
                                           [requestInProgress]="requestInProgressRight"
                                           [side]="side.RIGHT"
-                                          [(allSelected)]="selectAllRight"></taskana-workbasket-dual-list>
+                                          [(allSelected)]="selectAllRight"></taskana-administration-workbasket-dual-list>
         </div>
     </div>
 </div>
