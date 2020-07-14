@@ -1,6 +1,8 @@
 module.exports = {
   "extends": [
-    "airbnb-typescript/base"
+    "airbnb-typescript/base",
+    'prettier/@typescript-eslint',
+    'plugin:prettier/recommended',
   ],
   "env": {
     "browser": true,
@@ -15,6 +17,7 @@ module.exports = {
         "@typescript-eslint/tslint"
   ],
   "rules": {
+    /*
     "arrow-parens": ["error", "as-needed"],
     "@typescript-eslint/indent": ['error', 2],
     "max-len": ["error", { "code": 140, "ignorePattern": "import *" }], // smaller than 140?
@@ -35,7 +38,7 @@ module.exports = {
     "import/prefer-default-export": "off",
     "max-classes-per-file": "off",
     "@typescript-eslint/no-unused-vars": "off",
-
+    */
     // all following rules MUST be removed (mostly autofix)
     "linebreak-style": ["off", "unix"], // own PR
   }
