@@ -28,8 +28,8 @@ td {
     max-width: 150px;
     border-bottom: none;
 }
-taskana-type-ahead {
+taskana-shared-type-ahead {
     border-bottom: 1px solid $pallete-blue !important;
     border-radius: 4px !important;
-    min-height: 50px;
+    height: 50px !important;
 }

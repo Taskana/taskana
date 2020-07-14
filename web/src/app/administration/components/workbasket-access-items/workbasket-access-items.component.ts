@@ -62,7 +62,7 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
     accessItemsGroups: this.formBuilder.array([])
   });
 
-  toogleValidationAccessIdMap = new Map<number, boolean>();
+  toggleValidationAccessIdMap = new Map<number, boolean>();
   initialized = false;
   added = false;
   destroy$ = new Subject<void>();
