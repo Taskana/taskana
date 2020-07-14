@@ -190,7 +190,7 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
       this.requestInProgressService.setRequestInProgress(false);
       return false;
     });
-    /*
+    /* TODO: OLD IMPLEMENTATION, KEPT HERE FOR REFERENCE
     this.workbasketService.updateWorkBasketsDistributionTargets(
       this.distributionTargetsSelectedResource._links.self.href, this.getSeletedIds()
     ).subscribe(response => {
@@ -218,18 +218,19 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
       const itemsLeft = this.distributionTargetsLeft.length;
       const itemsRight = this.distributionTargetsRight.length;
       const itemsSelected = this.getSelectedItems(this.distributionTargetsLeft);
-      this.distributionTargetsSelected = this.distributionTargetsSelected.concat(itemsSelected);
+      this.distributionTargetsSelected = [...this.distributionTargetsSelected, ...itemsSelected];
       this.distributionTargetsRight = this.distributionTargetsRight.concat(itemsSelected);
       if (((itemsLeft - itemsSelected.length) <= TaskanaQueryParameters.pageSize) && ((itemsLeft + itemsRight) < this.page.totalElements)) {
         this.getNextPage(side);
       }
+      this.unselectItems(this.distributionTargetsSelected);
     } else {
       const itemsSelected = this.getSelectedItems(this.distributionTargetsRight);
       this.distributionTargetsSelected = this.removeSelectedItems(this.distributionTargetsSelected, itemsSelected);
       this.distributionTargetsRight = this.removeSelectedItems(this.distributionTargetsRight, itemsSelected);
       this.distributionTargetsLeft = this.distributionTargetsLeft.concat(itemsSelected);
+      this.unselectItems(itemsSelected);
     }
-    this.uncheckSelectAll(side);
   }
 
   onClear() {
@@ -267,6 +268,16 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
 
   getSelectedItems(originList: any): Array<any> {
     return originList.filter((item: any) => (item.selected === true));
+  }
+
+  unselectItems(originList: any): Array<any> {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const item of originList) {
+      if (item.selected && item.selected == true) {
+        item.selected = false;
+      }
+    }
+    return originList;
   }
 
   removeSelectedItems(originList: any, selectedItemList) {
