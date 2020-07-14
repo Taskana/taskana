@@ -208,7 +208,7 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
 
   onSubmit() {
     this.formsValidatorService.formSubmitAttempt = true;
-    this.formsValidatorService.validateFormAccess(this.accessItemsGroups, this.toogleValidationAccessIdMap).then(value => {
+    this.formsValidatorService.validateFormAccess(this.accessItemsGroups, this.toggleValidationAccessIdMap).then(value => {
       if (value) {
         this.onSave();
       }

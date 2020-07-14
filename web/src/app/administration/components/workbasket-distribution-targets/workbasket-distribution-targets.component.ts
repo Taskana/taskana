@@ -273,7 +273,7 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
   unselectItems(originList: any): Array<any> {
     // eslint-disable-next-line no-restricted-syntax
     for (const item of originList) {
-      if (item.selected && item.selected == true) {
+      if (item.selected && item.selected === true) {
         item.selected = false;
       }
     }

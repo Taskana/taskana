@@ -64,12 +64,12 @@ describe('WorkbasketOverviewComponent', () => {
 
   it('should not display detail component if showDetail is false', () => {
     component.showDetail = false;
-    expect(debugElement.querySelector('taskana-workbasket-details')).toBeNull();
+    expect(debugElement.querySelector('taskana-administration-workbasket-details')).toBeNull();
   });
 
   it('should display detail component if showDetail is true', () => {
     component.showDetail = true;
     fixture.detectChanges();
-    expect(debugElement.querySelector('taskana-workbasket-details')).toBeTruthy();
+    expect(debugElement.querySelector('taskana-administration-workbasket-details')).toBeTruthy();
   });
 });
