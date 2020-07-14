@@ -9,7 +9,6 @@ import acceptance.security.WithAccessId;
 import java.util.Arrays;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -23,15 +22,8 @@ import pro.taskana.task.api.exceptions.TaskNotFoundException;
 @ExtendWith(JaasExtension.class)
 class DeleteHistoryEventsOnTaskDeletionAccTest extends AbstractAccTest {
 
-  private TaskService taskService;
-  private SimpleHistoryServiceImpl historyService;
-
-  @BeforeEach
-  public void setUp() {
-
-    taskService = taskanaEngine.getTaskService();
-    historyService = getHistoryService();
-  }
+  private final TaskService taskService = taskanaEngine.getTaskService();
+  private final SimpleHistoryServiceImpl historyService = getHistoryService();
 
   @Test
   @WithAccessId(user = "admin")

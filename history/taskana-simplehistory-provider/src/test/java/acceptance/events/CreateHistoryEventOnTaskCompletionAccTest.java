@@ -6,7 +6,6 @@ import acceptance.AbstractAccTest;
 import acceptance.security.JaasExtension;
 import acceptance.security.WithAccessId;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -19,23 +18,16 @@ import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.models.Task;
 
 @ExtendWith(JaasExtension.class)
-class CreateHistoryEventOnClaimAccTest extends AbstractAccTest {
+class CreateHistoryEventOnTaskCompletionAccTest extends AbstractAccTest {
 
-  private TaskService taskService;
-  private SimpleHistoryServiceImpl historyService;
-
-  @BeforeEach
-  public void setUp() {
-
-    taskService = taskanaEngine.getTaskService();
-    historyService = getHistoryService();
-  }
+  private final TaskService taskService = taskanaEngine.getTaskService();
+  private final SimpleHistoryServiceImpl historyService = getHistoryService();
 
   @WithAccessId(user = "admin")
   @Test
-  void should_CreateClaimedHistoryEvent_When_TaskIsClaimed() throws Exception {
+  void should_CreateCompletedHistoryEvent_When_TaskIsCompleted() throws Exception {
 
-    final String taskId = "TKI:000000000000000000000000000000000047";
+    final String taskId = "TKI:000000000000000000000000000000000001";
 
     HistoryQueryMapper historyQueryMapper = getHistoryQueryMapper();
 
@@ -45,9 +37,9 @@ class CreateHistoryEventOnClaimAccTest extends AbstractAccTest {
 
     assertThat(listEvents).isEmpty();
 
-    assertThat(taskService.getTask(taskId).getState()).isEqualTo(TaskState.READY);
-    Task task = taskService.claim(taskId);
-    assertThat(task.getState()).isEqualTo(TaskState.CLAIMED);
+    assertThat(taskService.getTask(taskId).getState()).isEqualTo(TaskState.CLAIMED);
+    Task task = taskService.forceCompleteTask(taskId);
+    assertThat(task.getState()).isEqualTo(TaskState.COMPLETED);
 
     listEvents =
         historyQueryMapper.queryHistoryEvent(
@@ -55,6 +47,6 @@ class CreateHistoryEventOnClaimAccTest extends AbstractAccTest {
 
     assertThat(listEvents).hasSize(1);
     assertThat(historyService.getHistoryEvent(listEvents.get(0).getId()).getEventType())
-        .isEqualTo("TASK_CLAIMED");
+        .isEqualTo("TASK_COMPLETED");
   }
 }

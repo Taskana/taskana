@@ -41,10 +41,12 @@ import pro.taskana.common.internal.util.CheckedFunction;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.common.internal.util.Pair;
 import pro.taskana.common.internal.util.Triplet;
+import pro.taskana.spi.history.api.events.task.CancelledEvent;
 import pro.taskana.spi.history.api.events.task.ClaimCancelledEvent;
 import pro.taskana.spi.history.api.events.task.ClaimedEvent;
 import pro.taskana.spi.history.api.events.task.CompletedEvent;
 import pro.taskana.spi.history.api.events.task.CreatedEvent;
+import pro.taskana.spi.history.api.events.task.TerminatedEvent;
 import pro.taskana.spi.history.api.events.task.UpdatedEvent;
 import pro.taskana.spi.history.internal.HistoryEventManager;
 import pro.taskana.task.api.CallbackState;
@@ -801,13 +803,26 @@ public class TaskServiceImpl implements TaskService {
   public Task cancelTask(String taskId)
       throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
     LOGGER.debug("entry to cancelTask(task = {})", taskId);
+
+    Task cancelledTask;
+
     try {
       taskanaEngine.openConnection();
-      return terminateCancelCommonActions(taskId, TaskState.CANCELLED);
+      cancelledTask = terminateCancelCommonActions(taskId, TaskState.CANCELLED);
+
+      if (HistoryEventManager.isHistoryEnabled()) {
+        historyEventManager.createEvent(
+            new CancelledEvent(
+                IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT),
+                cancelledTask,
+                CurrentUserContext.getUserid()));
+      }
     } finally {
       taskanaEngine.returnConnection();
       LOGGER.debug("exit from cancelTask()");
     }
+
+    return cancelledTask;
   }
 
   @Override
@@ -817,13 +832,25 @@ public class TaskServiceImpl implements TaskService {
 
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.TASK_ADMIN);
 
+    Task terminatedTask;
+
     try {
       taskanaEngine.openConnection();
-      return terminateCancelCommonActions(taskId, TaskState.TERMINATED);
+      terminatedTask = terminateCancelCommonActions(taskId, TaskState.TERMINATED);
+
+      if (HistoryEventManager.isHistoryEnabled()) {
+        historyEventManager.createEvent(
+            new TerminatedEvent(
+                IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT),
+                terminatedTask,
+                CurrentUserContext.getUserid()));
+      }
+
     } finally {
       taskanaEngine.returnConnection();
       LOGGER.debug("exit from terminateTask()");
     }
+    return terminatedTask;
   }
 
   public List<String> findTasksIdsAffectedByClassificationChange(String classificationId) {
