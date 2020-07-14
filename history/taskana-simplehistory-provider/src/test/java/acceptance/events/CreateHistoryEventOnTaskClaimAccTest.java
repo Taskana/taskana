@@ -6,7 +6,6 @@ import acceptance.AbstractAccTest;
 import acceptance.security.JaasExtension;
 import acceptance.security.WithAccessId;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -15,25 +14,20 @@ import pro.taskana.simplehistory.impl.HistoryQueryImpl;
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
 import pro.taskana.simplehistory.impl.mappings.HistoryQueryMapper;
 import pro.taskana.task.api.TaskService;
+import pro.taskana.task.api.TaskState;
+import pro.taskana.task.api.models.Task;
 
 @ExtendWith(JaasExtension.class)
-class CreateHistoryEventOnTransferAccTest extends AbstractAccTest {
+class CreateHistoryEventOnTaskClaimAccTest extends AbstractAccTest {
 
-  private TaskService taskService;
-  private SimpleHistoryServiceImpl historyService;
-
-  @BeforeEach
-  public void setUp() {
-
-    taskService = taskanaEngine.getTaskService();
-    historyService = getHistoryService();
-  }
+  private final TaskService taskService = taskanaEngine.getTaskService();
+  private final SimpleHistoryServiceImpl historyService = getHistoryService();
 
   @WithAccessId(user = "admin")
   @Test
-  void should_CreateTransferredHistoryEvent_When_TaskIstransferred() throws Exception {
+  void should_CreateClaimedHistoryEvent_When_TaskIsClaimed() throws Exception {
 
-    final String taskId = "TKI:000000000000000000000000000000000003";
+    final String taskId = "TKI:000000000000000000000000000000000047";
 
     HistoryQueryMapper historyQueryMapper = getHistoryQueryMapper();
 
@@ -43,7 +37,9 @@ class CreateHistoryEventOnTransferAccTest extends AbstractAccTest {
 
     assertThat(listEvents).isEmpty();
 
-    taskService.transfer(taskId, "WBI:100000000000000000000000000000000006");
+    assertThat(taskService.getTask(taskId).getState()).isEqualTo(TaskState.READY);
+    Task task = taskService.claim(taskId);
+    assertThat(task.getState()).isEqualTo(TaskState.CLAIMED);
 
     listEvents =
         historyQueryMapper.queryHistoryEvent(
@@ -51,6 +47,6 @@ class CreateHistoryEventOnTransferAccTest extends AbstractAccTest {
 
     assertThat(listEvents).hasSize(1);
     assertThat(historyService.getHistoryEvent(listEvents.get(0).getId()).getEventType())
-        .isEqualTo("TASK_TRANSFERRED");
+        .isEqualTo("TASK_CLAIMED");
   }
 }
