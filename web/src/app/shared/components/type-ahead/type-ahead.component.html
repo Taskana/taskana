@@ -37,8 +37,8 @@
         [typeaheadOptionsInScrollableView]="typeaheadOptionsInScrollableView" [typeaheadMinLength]="typeaheadMinLength"
         [typeaheadWaitMs]="typeaheadWaitMs" (typeaheadLoading)="changeTypeaheadLoading($event)" placeholder="{{displayError? placeHolderMessage: ''}}"
         [@validation]="validationValue">
-      <button *ngIf="!typeaheadLoading" type="button" title="search" class="btn rounded blue">
-        <span class="material-icons md-20 blue" style="margin-top: 6px;">search</span>
+      <button *ngIf="!typeaheadLoading" type="button" title="search" class="btn rounded blue search-button" >
+        <span class="material-icons md-20 blue">search</span>
       </button>
       <div *ngIf="typeaheadLoading" class="loading">
         <taskana-shared-spinner [isRunning]="typeaheadLoading" positionClass="type-ahead-spinner"></taskana-shared-spinner>
