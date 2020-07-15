@@ -21,6 +21,7 @@ describe('PaginationComponent', () => {
     configureTests(configure).then(testBed => {
       fixture = TestBed.createComponent(PaginationComponent);
       component = fixture.componentInstance;
+      component.page = new Page(6, 3, 3, 1);
       debugElement = fixture.debugElement.nativeElement;
       fixture.detectChanges();
       done();
