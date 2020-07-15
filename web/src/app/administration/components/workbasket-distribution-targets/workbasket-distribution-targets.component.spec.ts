@@ -30,7 +30,6 @@ describe('WorkbasketDistributionTargetsComponent', () => {
   let workbasketService;
   const workbasket = createWorkbasket('1', '', '', '', ICONTYPES.TOPIC, '', '', '', '', '', '', '', '', '', '', '', '',
     {});
-
   function createWorkbasket(workbasketId?, created?, key?, domain?, type?, modified?, name?, description?,
     owner?, custom1?, custom2?, custom3?, custom4?, orgLevel1?, orgLevel2?, orgLevel3?, orgLevel4?,
     _links?: Links, markedForDeletion?: boolean): Workbasket {
@@ -73,7 +72,6 @@ describe('WorkbasketDistributionTargetsComponent', () => {
     };
     return workbasketSummary;
   }
-
   const workbasketSummaryResource: WorkbasketSummaryRepresentation = {
     workbaskets: [
       createWorkbasketSummary('1', 'key1', 'NAME1', '', 'PERSONAL',

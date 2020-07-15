@@ -5,8 +5,8 @@
     height: 47px;
     & label {
         margin-bottom: 0px;
-        font-style: italic;
-        color: grey;
+        //font-style: italic;
+        //color: grey;
         overflow: hidden;
      }
     &> div{
@@ -17,29 +17,36 @@
         }
     }
     > div{
+        border-bottom: 1px solid $pallete-blue !important;
+        border-radius: 4px !important;
+        height: 32px;
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
         margin-right: 35px;
+        padding-left: 12px;
     }
 
 }
 .custom-form-control {
     margin-top: -5px;
-    height: 40px;
+    max-height: 57px;
     &  .input-group{
         width: 100%;
     }
 }
 
 .input-text {
-    background: none;
+    margin-top: 4px;
+    margin-bottom: 16px;
+    background: white;
     box-shadow: none;
-    border: none;
-    padding: 0px;
-    border-radius: 0px;
+    border-radius: 4px !important;
+    //border-color: lightgray;
+    border-bottom: 1px solid $pallete-blue !important;
     min-width: 150px;
-    height: 28px;
+    height: 32px;
+    padding: 13px 6px;
 }
 
 .field-label-wrapper{
@@ -54,7 +61,7 @@
 }
 
 .form-control:focus {
-    border-color: unset;
+    //border-color: unset;
     box-shadow: none;
 }
 

@@ -42,7 +42,7 @@
 					<tr *ngFor="let accessItem of accessItemsGroups.controls; let index = index;" [formGroupName]="index">
 						<!-- REMOVE BUTTON -->
 						<td>
-							<button type="button" style="width:50px; height: 50px;" (click)="remove(index)" data-toggle="tooltip" title="Remove" class="btn btn-default">
+							<button type="button" style="padding: 3px;" (click)="remove(index)" data-toggle="tooltip" title="Remove" class="btn btn-default">
 								<span class="material-icons md-24 red">clear</span>
 							</button>
 						</td>
@@ -52,7 +52,7 @@
 						 [ngClass]="{
 							'has-warning': (accessItemsClone[index].accessId !== accessItem.value.accessId),
 							'has-error': !accessItem.value.accessId }">
-							<taskana-shared-type-ahead class="form-control" formControlName="accessId" placeHolderMessage="* Access id is required" [validationValue]="toggleValidationAccessIdMap.get(index)"
+							<taskana-shared-type-ahead formControlName="accessId" placeHolderMessage="* Access id is required" [validationValue]="toggleValidationAccessIdMap.get(index)"
 													   [displayError]="!isFieldValid('accessItem.value.accessId', index)" (selectedItem)="accessItemSelected($event, index)" (inputField)="focusNewInput($event)"></taskana-shared-type-ahead>
             </td>
 						<ng-template #accessIdInput>
