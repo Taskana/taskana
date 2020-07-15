@@ -443,7 +443,6 @@ public class TaskServiceImpl implements TaskService {
 
         String changeDetails = determineChangesInTaskAttributes(oldTaskImpl, newTaskImpl);
 
-        LOGGER.warn(changeDetails);
         historyEventManager.createEvent(
             new UpdatedEvent(
                 IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT),
