@@ -162,6 +162,8 @@ class ArchitectureTest {
                 .that()
                 .haveNameNotMatching(".*TaskanaEngine.*")
                 .and()
+                .haveSimpleNameNotEndingWith("ObjectAttributeChangeDetectorTest")
+                .and()
                 .haveSimpleNameNotEndingWith("AbstractTaskanaJob")
                 .and()
                 .resideInAPackage("..common..")

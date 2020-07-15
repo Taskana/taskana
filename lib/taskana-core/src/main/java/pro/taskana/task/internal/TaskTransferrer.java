@@ -17,7 +17,7 @@ import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.common.internal.util.IdGenerator;
-import pro.taskana.spi.history.api.events.task.TransferredEvent;
+import pro.taskana.spi.history.api.events.task.TaskTransferredEvent;
 import pro.taskana.spi.history.internal.HistoryEventManager;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.InvalidStateException;
@@ -367,7 +367,7 @@ public class TaskTransferrer {
   private void createTaskTransferredEvent(
       Task task, WorkbasketSummary oldWorkbasketSummary, WorkbasketSummary newWorkbasketSummary) {
     historyEventManager.createEvent(
-        new TransferredEvent(
+        new TaskTransferredEvent(
             IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT),
             task,
             oldWorkbasketSummary,

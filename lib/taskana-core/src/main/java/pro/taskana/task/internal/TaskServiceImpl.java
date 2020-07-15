@@ -1,9 +1,7 @@
 package pro.taskana.task.internal;
 
-import java.lang.reflect.Field;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -11,13 +9,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.ibatis.exceptions.PersistenceException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,17 +31,16 @@ import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.common.internal.util.CheckedConsumer;
-import pro.taskana.common.internal.util.CheckedFunction;
 import pro.taskana.common.internal.util.IdGenerator;
+import pro.taskana.common.internal.util.ObjectAttributeChangeDetector;
 import pro.taskana.common.internal.util.Pair;
-import pro.taskana.common.internal.util.Triplet;
-import pro.taskana.spi.history.api.events.task.CancelledEvent;
-import pro.taskana.spi.history.api.events.task.ClaimCancelledEvent;
-import pro.taskana.spi.history.api.events.task.ClaimedEvent;
-import pro.taskana.spi.history.api.events.task.CompletedEvent;
-import pro.taskana.spi.history.api.events.task.CreatedEvent;
-import pro.taskana.spi.history.api.events.task.TerminatedEvent;
-import pro.taskana.spi.history.api.events.task.UpdatedEvent;
+import pro.taskana.spi.history.api.events.task.TaskCancelledEvent;
+import pro.taskana.spi.history.api.events.task.TaskClaimCancelledEvent;
+import pro.taskana.spi.history.api.events.task.TaskClaimedEvent;
+import pro.taskana.spi.history.api.events.task.TaskCompletedEvent;
+import pro.taskana.spi.history.api.events.task.TaskCreatedEvent;
+import pro.taskana.spi.history.api.events.task.TaskTerminatedEvent;
+import pro.taskana.spi.history.api.events.task.TaskUpdatedEvent;
 import pro.taskana.spi.history.internal.HistoryEventManager;
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.TaskCustomField;
@@ -233,9 +228,10 @@ public class TaskServiceImpl implements TaskService {
         LOGGER.debug("Method createTask() created Task '{}'.", task.getId());
         if (HistoryEventManager.isHistoryEnabled()) {
 
-          String details = determineChangesInTaskAttributes(newTask(), task);
+          String details =
+              ObjectAttributeChangeDetector.determineChangesInAttributes(newTask(), task);
           historyEventManager.createEvent(
-              new CreatedEvent(
+              new TaskCreatedEvent(
                   IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT),
                   task,
                   CurrentUserContext.getUserid(),
@@ -440,10 +436,11 @@ public class TaskServiceImpl implements TaskService {
 
       if (HistoryEventManager.isHistoryEnabled()) {
 
-        String changeDetails = determineChangesInTaskAttributes(oldTaskImpl, newTaskImpl);
+        String changeDetails =
+            ObjectAttributeChangeDetector.determineChangesInAttributes(oldTaskImpl, newTaskImpl);
 
         historyEventManager.createEvent(
-            new UpdatedEvent(
+            new TaskUpdatedEvent(
                 IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT),
                 task,
                 CurrentUserContext.getUserid(),
@@ -807,7 +804,7 @@ public class TaskServiceImpl implements TaskService {
 
       if (HistoryEventManager.isHistoryEnabled()) {
         historyEventManager.createEvent(
-            new CancelledEvent(
+            new TaskCancelledEvent(
                 IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT),
                 cancelledTask,
                 CurrentUserContext.getUserid()));
@@ -835,7 +832,7 @@ public class TaskServiceImpl implements TaskService {
 
       if (HistoryEventManager.isHistoryEnabled()) {
         historyEventManager.createEvent(
-            new TerminatedEvent(
+            new TaskTerminatedEvent(
                 IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT),
                 terminatedTask,
                 CurrentUserContext.getUserid()));
@@ -919,58 +916,6 @@ public class TaskServiceImpl implements TaskService {
       LOGGER.debug("exit from refreshPriorityAndDueDateOfTasks");
       taskanaEngine.returnConnection();
     }
-  }
-
-  protected String determineChangesInTaskAttributes(Task oldTaskImpl, Task newTaskImpl) {
-
-    LOGGER.debug(
-        "Entry to determineChangesInTaskAttributes (oldTaskImpl = {}, newTaskImpl = {}",
-        oldTaskImpl,
-        newTaskImpl);
-
-    List<Field> fields = new ArrayList<>();
-
-    Class<?> currentClass = oldTaskImpl.getClass();
-    while (currentClass.getSuperclass() != null) {
-      fields.addAll(Arrays.asList(currentClass.getDeclaredFields()));
-      currentClass = currentClass.getSuperclass();
-    }
-
-    Predicate<Triplet<Field, Object, Object>> areFieldsNotEqual =
-        fieldAndValuePairTriplet ->
-            !Objects.equals(
-                fieldAndValuePairTriplet.getMiddle(), fieldAndValuePairTriplet.getRight());
-    Predicate<Triplet<Field, Object, Object>> isFieldNotCustomAttributes =
-        fieldAndValuePairTriplet ->
-            !fieldAndValuePairTriplet.getLeft().getName().equals("customAttributes");
-
-    List<JSONObject> changedAttributes =
-        fields.stream()
-            .peek(field -> field.setAccessible(true))
-            .map(
-                CheckedFunction.wrap(
-                    field -> new Triplet<>(field, field.get(oldTaskImpl), field.get(newTaskImpl))))
-            .filter(areFieldsNotEqual.and(isFieldNotCustomAttributes))
-            .map(
-                fieldAndValuePairTriplet -> {
-                  JSONObject changedAttribute = new JSONObject();
-                  changedAttribute.put("fieldName", fieldAndValuePairTriplet.getLeft().getName());
-                  changedAttribute.put(
-                      "oldValue",
-                      Optional.ofNullable(fieldAndValuePairTriplet.getMiddle()).orElse(""));
-                  changedAttribute.put(
-                      "newValue",
-                      Optional.ofNullable(fieldAndValuePairTriplet.getRight()).orElse(""));
-                  return changedAttribute;
-                })
-            .collect(Collectors.toList());
-
-    JSONObject changes = new JSONObject();
-    changes.put("changes", changedAttributes);
-
-    LOGGER.debug("Exit from determineChangesInTaskAttributes()");
-
-    return changes.toString();
   }
 
   Pair<List<MinimalTaskSummary>, BulkLog> getMinimalTaskSummaries(List<String> argTaskIds) {
@@ -1241,7 +1186,7 @@ public class TaskServiceImpl implements TaskService {
       LOGGER.debug("Task '{}' claimed by user '{}'.", taskId, userId);
       if (HistoryEventManager.isHistoryEnabled()) {
         historyEventManager.createEvent(
-            new ClaimedEvent(
+            new TaskClaimedEvent(
                 IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT),
                 task,
                 CurrentUserContext.getUserid()));
@@ -1341,7 +1286,7 @@ public class TaskServiceImpl implements TaskService {
       LOGGER.debug("Task '{}' unclaimed by user '{}'.", taskId, userId);
       if (HistoryEventManager.isHistoryEnabled()) {
         historyEventManager.createEvent(
-            new ClaimCancelledEvent(
+            new TaskClaimCancelledEvent(
                 IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT),
                 task,
                 CurrentUserContext.getUserid()));
@@ -1382,7 +1327,7 @@ public class TaskServiceImpl implements TaskService {
       LOGGER.debug("Task '{}' completed by user '{}'.", taskId, userId);
       if (HistoryEventManager.isHistoryEnabled()) {
         historyEventManager.createEvent(
-            new CompletedEvent(
+            new TaskCompletedEvent(
                 IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT),
                 task,
                 CurrentUserContext.getUserid()));
@@ -1957,7 +1902,7 @@ public class TaskServiceImpl implements TaskService {
     taskSummaries.forEach(
         task ->
             historyEventManager.createEvent(
-                new CompletedEvent(
+                new TaskCompletedEvent(
                     IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT),
                     task,
                     CurrentUserContext.getUserid())));

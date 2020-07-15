@@ -9,11 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import pro.taskana.simplehistory.impl.HistoryEventImpl;
 import pro.taskana.simplehistory.rest.TaskHistoryRestConfiguration;
 import pro.taskana.simplehistory.rest.models.TaskHistoryEventRepresentationModel;
 import pro.taskana.spi.history.api.events.TaskHistoryCustomField;
-import pro.taskana.spi.history.api.events.TaskanaHistoryEvent;
+import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 
 /** Test for {@link TaskHistoryEventRepresentationModelAssembler}. */
 @ExtendWith(SpringExtension.class)
@@ -35,8 +34,7 @@ class TaskHistoryEventRepresentationModelAssemblerTest {
   @Test
   void taskHistoryEventModelToResource() {
 
-    HistoryEventImpl historyEvent =
-        new HistoryEventImpl("HEI:000000000000000000000000000000000000", "user1", "someDetails");
+    TaskHistoryEvent historyEvent = new TaskHistoryEvent();
 
     historyEvent.setEventType("TASK_CREATED");
     historyEvent.setBusinessProcessId("BPI:01");
@@ -65,7 +63,7 @@ class TaskHistoryEventRepresentationModelAssemblerTest {
   }
 
   private void testEquality(
-      TaskanaHistoryEvent historyEvent,
+      TaskHistoryEvent historyEvent,
       TaskHistoryEventRepresentationModel taskHistoryEventRepresentationModel) {
 
     assertThat(historyEvent.getEventType())
