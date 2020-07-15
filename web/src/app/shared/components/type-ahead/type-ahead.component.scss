@@ -46,7 +46,7 @@
     border-bottom: 1px solid $pallete-blue !important;
     min-width: 150px;
     height: 32px;
-    padding: 13px 6px;
+    padding: 13px 0 13px 12px;
 }
 
 .field-label-wrapper{
@@ -76,6 +76,10 @@
     top: 0px;
     right: 0px;
     padding-top: 0;
+}
+.search-button {
+    z-index: 999;
+    margin-top: 8px;
 }
 
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
