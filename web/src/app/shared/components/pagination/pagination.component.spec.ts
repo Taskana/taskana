@@ -34,7 +34,6 @@ describe('PaginationComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-    expect(debugElement.querySelectorAll('#wb-pagination > li').length).toBe(2);
   });
 
   it('should create 3 pages if total pages are 3', () => {
