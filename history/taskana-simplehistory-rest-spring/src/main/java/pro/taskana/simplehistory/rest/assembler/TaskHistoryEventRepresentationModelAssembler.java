@@ -7,20 +7,18 @@ import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.lang.NonNull;
 
 import pro.taskana.common.api.exceptions.SystemException;
-import pro.taskana.simplehistory.impl.HistoryEventImpl;
 import pro.taskana.simplehistory.rest.TaskHistoryEventController;
 import pro.taskana.simplehistory.rest.models.TaskHistoryEventRepresentationModel;
 import pro.taskana.spi.history.api.events.TaskHistoryCustomField;
-import pro.taskana.spi.history.api.events.TaskanaHistoryEvent;
+import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 
-/** Transforms any {@link HistoryEventImpl} into its {@link TaskHistoryEventRepresentationModel}. */
+/** Transforms any {@link TaskHistoryEvent} into its {@link TaskHistoryEventRepresentationModel}. */
 public class TaskHistoryEventRepresentationModelAssembler
-    implements RepresentationModelAssembler<
-        TaskanaHistoryEvent, TaskHistoryEventRepresentationModel> {
+    implements RepresentationModelAssembler<TaskHistoryEvent, TaskHistoryEventRepresentationModel> {
 
   @NonNull
   @Override
-  public TaskHistoryEventRepresentationModel toModel(@NonNull TaskanaHistoryEvent historyEvent) {
+  public TaskHistoryEventRepresentationModel toModel(@NonNull TaskHistoryEvent historyEvent) {
     TaskHistoryEventRepresentationModel repModel = new TaskHistoryEventRepresentationModel();
     repModel.setTaskHistoryId(historyEvent.getId());
     repModel.setBusinessProcessId(historyEvent.getBusinessProcessId());

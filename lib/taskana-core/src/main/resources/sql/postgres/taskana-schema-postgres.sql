@@ -204,7 +204,7 @@ CREATE TABLE SCHEDULED_JOB(
         PRIMARY KEY (JOB_ID)
 );
 
-CREATE TABLE HISTORY_EVENTS
+CREATE TABLE TASK_HISTORY_EVENT
 (
     ID VARCHAR(40) NOT NULL,
     BUSINESS_PROCESS_ID           VARCHAR(128) NULL,
@@ -229,6 +229,31 @@ CREATE TABLE HISTORY_EVENTS
     CUSTOM_2                      VARCHAR(128) NULL,
     CUSTOM_3                      VARCHAR(128) NULL,
     CUSTOM_4                      VARCHAR(128) NULL,
+    DETAILS                       TEXT         NULL,
+    PRIMARY KEY (ID)
+);
+
+CREATE TABLE WORKBASKET_HISTORY_EVENT
+(
+    ID                            VARCHAR(40) NOT NULL,
+    WORKBASKET_ID                 VARCHAR(40)  NULL,
+    EVENT_TYPE                    VARCHAR(40)  NULL,
+    CREATED                       TIMESTAMP    NULL,
+    USER_ID                       VARCHAR(32)  NULL,
+    DOMAIN                        VARCHAR(32)  NULL,
+    WORKBASKET_KEY                VARCHAR(64)  NULL,
+    WORKBASKET_TYPE               VARCHAR(64)  NULL,
+    OWNER                         VARCHAR(32)  NULL,
+    OLD_VALUE                     VARCHAR(255) NULL,
+    NEW_VALUE                     VARCHAR(255) NULL,
+    CUSTOM_1                      VARCHAR(128) NULL,
+    CUSTOM_2                      VARCHAR(128) NULL,
+    CUSTOM_3                      VARCHAR(128) NULL,
+    CUSTOM_4                      VARCHAR(128) NULL,
+    ORGLEVEL_1                    VARCHAR(128) NULL,
+    ORGLEVEL_2                    VARCHAR(128) NULL,
+    ORGLEVEL_3                    VARCHAR(128) NULL,
+    ORGLEVEL_4                    VARCHAR(128) NULL,
     DETAILS                       TEXT         NULL,
     PRIMARY KEY (ID)
 );

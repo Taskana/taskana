@@ -11,11 +11,13 @@ import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.simplehistory.impl.mappings.HistoryEventMapper;
-import pro.taskana.simplehistory.impl.mappings.HistoryQueryMapper;
-import pro.taskana.simplehistory.query.HistoryQuery;
+import pro.taskana.simplehistory.impl.task.TaskHistoryEventMapper;
+import pro.taskana.simplehistory.impl.task.TaskHistoryQuery;
+import pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryEventMapper;
+import pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryQuery;
 import pro.taskana.spi.history.api.TaskanaHistory;
-import pro.taskana.spi.history.api.events.TaskanaHistoryEvent;
+import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
+import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 import pro.taskana.spi.history.api.exceptions.TaskanaHistoryEventNotFoundException;
 
 /** This is the implementation of TaskanaHistory. */
@@ -23,35 +25,53 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SimpleHistoryServiceImpl.class);
   private TaskanaHistoryEngineImpl taskanaHistoryEngine;
-  private HistoryEventMapper historyEventMapper;
-  private HistoryQueryMapper historyQueryMapper;
+  private TaskHistoryEventMapper taskHistoryEventMapper;
+  private WorkbasketHistoryEventMapper workbasketHistoryEventMapper;
 
   public void initialize(TaskanaEngine taskanaEngine) {
 
     this.taskanaHistoryEngine = getTaskanaEngine(taskanaEngine.getConfiguration());
+
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
           "Simple history service implementation initialized with schemaName: {} ",
           taskanaEngine.getConfiguration().getSchemaName());
     }
 
-    this.historyEventMapper =
-        this.taskanaHistoryEngine.getSqlSession().getMapper(HistoryEventMapper.class);
-    this.historyQueryMapper =
-        this.taskanaHistoryEngine.getSqlSession().getMapper(HistoryQueryMapper.class);
+    this.taskHistoryEventMapper =
+        this.taskanaHistoryEngine.getSqlSession().getMapper(TaskHistoryEventMapper.class);
+    this.workbasketHistoryEventMapper =
+        this.taskanaHistoryEngine.getSqlSession().getMapper(WorkbasketHistoryEventMapper.class);
   }
 
   @Override
-  public void create(TaskanaHistoryEvent event) {
+  public void create(TaskHistoryEvent event) {
     try {
       taskanaHistoryEngine.openConnection();
       if (event.getCreated() == null) {
         Instant now = Instant.now();
         event.setCreated(now);
       }
-      historyEventMapper.insert(event);
+      taskHistoryEventMapper.insert(event);
     } catch (SQLException e) {
-      LOGGER.error("Error while inserting history event into historyEventMapper", e);
+      LOGGER.error("Error while inserting task history event into database", e);
+    } finally {
+      taskanaHistoryEngine.returnConnection();
+      LOGGER.debug("Exit from create(TaskanaHistoryEvent event). Returning object = {}.", event);
+    }
+  }
+
+  @Override
+  public void create(WorkbasketHistoryEvent event) {
+    try {
+      taskanaHistoryEngine.openConnection();
+      if (event.getCreated() == null) {
+        Instant now = Instant.now();
+        event.setCreated(now);
+      }
+      workbasketHistoryEventMapper.insert(event);
+    } catch (SQLException e) {
+      LOGGER.error("Error while inserting workbasket history event into database", e);
     } finally {
       taskanaHistoryEngine.returnConnection();
       LOGGER.debug("Exit from create(TaskanaHistoryEvent event). Returning object = {}.", event);
@@ -75,7 +95,7 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
     try {
       taskanaHistoryEngine.openConnection();
 
-      historyEventMapper.deleteMultipleByTaskIds(taskIds);
+      taskHistoryEventMapper.deleteMultipleByTaskIds(taskIds);
 
     } catch (SQLException e) {
       LOGGER.error("Caught exception while trying to delete history events", e);
@@ -85,18 +105,18 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
     }
   }
 
-  public TaskanaHistoryEvent getHistoryEvent(String historyEventId)
+  public TaskHistoryEvent getTaskHistoryEvent(String historyEventId)
       throws TaskanaHistoryEventNotFoundException {
-    LOGGER.debug("entry to getHistoryEvent (id = {})", historyEventId);
-    TaskanaHistoryEvent resultEvent = null;
+    LOGGER.debug("entry to getTaskHistoryEvent (id = {})", historyEventId);
+    TaskHistoryEvent resultEvent = null;
     try {
       taskanaHistoryEngine.openConnection();
-      resultEvent = historyEventMapper.findById(historyEventId);
+      resultEvent = taskHistoryEventMapper.findById(historyEventId);
 
       if (resultEvent == null) {
         throw new TaskanaHistoryEventNotFoundException(
             historyEventId,
-            String.format("TaskanaHistoryEvent for id %s was not found", historyEventId));
+            String.format("TaskHistoryEvent for id %s was not found", historyEventId));
       }
 
       return resultEvent;
@@ -110,8 +130,12 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
     }
   }
 
-  public HistoryQuery createHistoryQuery() {
-    return new HistoryQueryImpl(taskanaHistoryEngine, historyQueryMapper);
+  public TaskHistoryQuery createTaskHistoryQuery() {
+    return new TaskHistoryQueryImpl(taskanaHistoryEngine);
+  }
+
+  public WorkbasketHistoryQuery createWorkbasketHistoryQuery() {
+    return new WorkbasketHistoryQueryImpl(taskanaHistoryEngine);
   }
 
   /*

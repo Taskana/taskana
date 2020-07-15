@@ -95,6 +95,7 @@ class WorkbasketServiceImplTest {
     verify(taskanaEngine, times(4)).checkRoleMembership(any());
     verify(internalTaskanaEngineMock, times(4)).getEngine();
     verify(internalTaskanaEngineMock, times(3)).domainExists(any());
+    verify(internalTaskanaEngineMock, times(1)).getHistoryEventManager();
     verifyNoMoreInteractions(
         taskQueryMock,
         taskServiceMock,
@@ -141,6 +142,8 @@ class WorkbasketServiceImplTest {
     verify(distributionTargetMapperMock)
         .deleteAllDistributionTargetsBySourceId(eq(expectedWb.getId()));
     verify(workbasketMapperMock).update(eq(expectedWb));
+    verify(internalTaskanaEngineMock, times(1)).getHistoryEventManager();
+
     verifyNoMoreInteractions(
         taskQueryMock,
         taskServiceMock,
