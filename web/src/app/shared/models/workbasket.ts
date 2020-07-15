@@ -1,8 +1,7 @@
 import { Links } from './links';
 import { ICONTYPES } from './icon-types';
-import { WorkbasketSummary } from './workbasket-summary';
 
-export interface Workbasket extends WorkbasketSummary {
+export interface Workbasket {
   workbasketId?: string;
   key?: string;
   name?: string;

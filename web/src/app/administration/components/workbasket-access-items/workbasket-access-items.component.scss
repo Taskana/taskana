@@ -20,6 +20,7 @@ td > input[type="checkbox"] {
 }
 
 td {
+    vertical-align: bottom !important;
     &.has-changes {
         border-bottom: 1px solid #f0ad4e;;
     }
@@ -29,7 +30,5 @@ td {
     border-bottom: none;
 }
 taskana-shared-type-ahead {
-    border-bottom: 1px solid $pallete-blue !important;
-    border-radius: 4px !important;
-    height: 50px !important;
+    top: 0;
 }
