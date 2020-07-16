@@ -58,7 +58,7 @@
       <div class="row">
         <div class="form-group col-xs-6 required">
           <label for="classification" class="control-label">Classification</label>
-          <taskana-shared-dropdown [list]="classifications" (performClassification)="changedClassification($event)" [itemSelected]="task?.classificationSummaryResource" id="classification"></taskana-shared-dropdown>
+          <taskana-shared-dropdown [list]="classifications" (performClassification)="changedClassification($event)" [itemSelected]="task?.classificationSummary" id="classification"></taskana-shared-dropdown>
         </div>
         <div class="form-group col-xs-4">
           <label for="task-due" class="control-label">Due date</label>

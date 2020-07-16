@@ -7,7 +7,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 })
 export class DropdownComponent implements OnInit {
   @Input() itemSelected: any;
-  @Input() list: Array<any>;
+  @Input() list: any[];
   @Output() performClassification = new EventEmitter<any>();
 
   ngOnInit(): void {
