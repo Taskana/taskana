@@ -79,7 +79,7 @@
               <td *ngIf="(accessItemsCustomization$ | async)?.accessId.lookupField else accessIdInput" colspan="2" class="text-align text-width taskana-type-ahead">
                 <div>
                   <taskana-shared-type-ahead formControlName="accessId" placeHolderMessage="* Access id is required"
-                                             [validationValue]="toogleValidationAccessIdMap.get(index)" [displayError]="!isFieldValid('accessItem.value.accessId', index)"
+                                             [validationValue]="toggleValidationAccessIdMap.get(index)" [displayError]="!isFieldValid('accessItem.value.accessId', index)"
                                              [disable]=true></taskana-shared-type-ahead>
                 </div>
               </td>
