@@ -50,7 +50,7 @@ public class MonitorController {
       @RequestParam(required = false) List<String> domains,
       @RequestParam(required = false) List<TaskState> states)
       throws NotAuthorizedException, InvalidArgumentException {
-    LOGGER.debug("Entry to getTasksStatusReport()");
+    LOGGER.debug("Entry to getTasksStatusReport(), states to include {}", states);
     ResponseEntity<ReportRepresentationModel> response =
         ResponseEntity.ok(
             reportRepresentationModelAssembler.toModel(
@@ -73,13 +73,14 @@ public class MonitorController {
   public ResponseEntity<ReportRepresentationModel> getTasksWorkbasketReport(
       @RequestParam(value = "states") List<TaskState> states)
       throws NotAuthorizedException, InvalidArgumentException {
-    LOGGER.debug("Entry to getTasksWorkbasketReport()");
+    LOGGER.debug("Entry to getTasksWorkbasketReport(), states to include {}", states);
 
     ReportRepresentationModel report =
         reportRepresentationModelAssembler.toModel(
             monitorService
                 .createWorkbasketReportBuilder()
                 .withColumnHeaders(getRangeTimeInterval())
+                .stateIn(states)
                 .buildReport(),
             states);
 
@@ -96,7 +97,11 @@ public class MonitorController {
       @RequestParam(value = "daysInPast") int daysInPast,
       @RequestParam(value = "states") List<TaskState> states)
       throws NotAuthorizedException, InvalidArgumentException {
-    LOGGER.debug("Entry to getTasksWorkbasketPlannedDateReport()");
+    LOGGER.debug(
+        "Entry to getTasksWorkbasketPlannedDateReport(), "
+            + "upto {} days in the past, states to include {}",
+        daysInPast,
+        states);
 
     ReportRepresentationModel report =
         reportRepresentationModelAssembler.toModel(
