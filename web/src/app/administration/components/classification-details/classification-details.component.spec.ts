@@ -17,7 +17,6 @@ import { EngineConfigurationSelectors } from 'app/shared/store/engine-configurat
 import { ClassificationSelectors } from 'app/shared/store/classification-store/classification.selectors';
 import { ClassificationDetailsComponent } from './classification-details.component';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
-import { ACTION } from '../../../shared/models/action';
 
 @Component({
   selector: 'taskana-dummy-detail',
@@ -100,20 +99,8 @@ describe('ClassificationDetailsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should copy the classification without its key', async done => {
-    const startClassification = { ...component.classification };
-    const copyButton = fixture.debugElement.nativeElement.querySelector('#copyButton');
-    copyButton.click();
-    fixture.detectChanges();
-    expect(component.classification.name).toEqual(startClassification.name);
-    expect(component.classification.classificationId).toEqual(startClassification.classificationId);
-    expect(component.classification.key).toBeNull();
-    expect(fixture.debugElement.nativeElement.querySelector('#classification-key').disabled).toEqual(false);
-    done();
-  });
-
-  it('should enable editing of key on create', async done => {
-    component.action = ACTION.CREATE;
+  it('should enable editing of key on create and on copy', async done => {
+    component.isCreatingNewClassification = true;
     await fixture.detectChanges();
     expect(fixture.debugElement.nativeElement.querySelector('#classification-key').disabled).toEqual(false);
     done();

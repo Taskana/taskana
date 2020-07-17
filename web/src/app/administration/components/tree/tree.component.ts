@@ -27,7 +27,6 @@ import { ClassificationSelectors } from '../../../shared/store/classification-st
 import { DeselectClassification,
   SelectClassification,
   UpdateClassification } from '../../../shared/store/classification-store/classification.actions';
-import { ACTION } from '../../../shared/models/action';
 import { ClassificationTreeService } from '../../services/classification-tree.service';
 
 @Component({
@@ -44,7 +43,6 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
   @Output() switchTaskanaSpinnerEmit = new EventEmitter<boolean>();
   @Select(EngineConfigurationSelectors.selectCategoryIcons) categoryIcons$: Observable<ClassificationCategoryImages>;
   @Select(ClassificationSelectors.selectedClassificationId) selectedClassificationId$: Observable<string>;
-  @Select(ClassificationSelectors.activeAction) activeAction$: Observable<ACTION>;
   @Select(ClassificationSelectors.classifications) classifications$: Observable<Classification[]>;
   @Select(ClassificationSelectors.selectedClassificationType) classificationTypeSelected$: Observable<string>;
 
@@ -68,7 +66,6 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
 
   private filterTextOld: string;
   private filterIconOld = '';
-  private action: ACTION;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -89,10 +86,6 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
   }
 
   ngOnInit() {
-    this.activeAction$.pipe(takeUntil(this.destroy$)).subscribe(action => {
-      this.action = action;
-    });
-
     const computedTreeNodes$: Observable<TreeNodeModel[]> = this.classifications$.pipe(
       filter(classifications => typeof (classifications) !== 'undefined'),
       map(classifications => this.classificationTreeService.transformToTreeNode(classifications))
@@ -146,7 +139,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
   }
 
   onDeactivate(event: any) {
-    if (!event.treeModel.activeNodes.length && this.action !== ACTION.CREATE) {
+    if (!event.treeModel.activeNodes.length) {
       this.store.dispatch(new DeselectClassification());
       this.location.go(this.location.path().replace(/(classifications).*/g, 'classifications'));
     }

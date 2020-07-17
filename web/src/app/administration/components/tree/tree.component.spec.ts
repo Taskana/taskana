@@ -7,7 +7,6 @@ import { configureTests } from 'app/app.test.configuration';
 import { NgxsModule, Store } from '@ngxs/store';
 import { ClassificationSelectors } from 'app/shared/store/classification-store/classification.selectors';
 import { of } from 'rxjs';
-import { ACTION } from 'app/shared/models/action';
 import { Location } from '@angular/common';
 import { UpdateClassification } from 'app/shared/store/classification-store/classification.actions';
 import { TaskanaTreeComponent } from './tree.component';
@@ -51,8 +50,6 @@ describe('TaskanaTreeComponent', () => {
         switch (selector) {
           case ClassificationSelectors.selectedClassificationId:
             return of('id4');
-          case ClassificationSelectors.activeAction:
-            return of(ACTION.CREATE);
           case ClassificationSelectors.classifications:
             return of([{ classificationId: 'id4' }]);
           default:

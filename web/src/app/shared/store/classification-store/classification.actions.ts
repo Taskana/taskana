@@ -1,4 +1,3 @@
-import { ACTION } from '../../models/action';
 import { Classification } from '../../models/classification';
 
 export class SetSelectedClassificationType {
@@ -19,12 +18,20 @@ export class DeselectClassification {
 
 export class CreateClassification {
   static readonly type = '[Classification] Create a new classification';
+}
+
+export class CopyClassification {
+  static readonly type = '[Classification] Copy a classification';
+}
+
+export class SaveCreatedClassification {
+  static readonly type = '[Classification] Save a classification that has been newly created or copied';
   constructor(public classification: Classification) {
   }
 }
 
-export class SaveClassification {
-  static readonly type = '[Classification] Save a classification and select it';
+export class SaveModifiedClassification {
+  static readonly type = '[Classification] Save an existing classification that has been modified';
   constructor(public classification: Classification) {
   }
 }
@@ -32,12 +39,6 @@ export class SaveClassification {
 export class RestoreSelectedClassification {
   static readonly type = '[Classification] Fetch and restore a classification';
   constructor(public classificationId: string) {
-  }
-}
-
-export class SetActiveAction {
-  static readonly type = '[Classification] Set the currently active Action';
-  constructor(public action?: ACTION) {
   }
 }
 

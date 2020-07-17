@@ -3,7 +3,7 @@ import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse
 import { Observable } from 'rxjs';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { environment } from 'environments/environment';
-import { map, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { NotificationService } from '../notifications/notification.service';
 import { NOTIFICATION_TYPES } from '../../models/notifications';
 
