@@ -1,6 +1,5 @@
 import { Selector } from '@ngxs/store';
 import { ClassificationStateModel, ClassificationState } from './classification.state';
-import { ACTION } from '../../models/action';
 import { Classification } from '../../models/classification';
 import { CategoriesResponse } from '../../services/classification-categories/classification-categories.service';
 
@@ -36,12 +35,12 @@ export class ClassificationSelectors {
   }
 
   @Selector([ClassificationState])
-  static activeAction(state: ClassificationStateModel): ACTION {
-    return state.action;
+  static selectedClassificationId(state: ClassificationStateModel): string {
+    return state.selectedClassification.classificationId;
   }
 
   @Selector([ClassificationState])
-  static selectedClassificationId(state: ClassificationStateModel): string {
-    return state.selectedClassification.classificationId;
+  static getBadgeMessage(state: ClassificationStateModel): string {
+    return state.badgeMessage;
   }
 }

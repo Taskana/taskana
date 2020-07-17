@@ -4,10 +4,7 @@ import { Observable, Subject } from 'rxjs';
 import { Select, Store } from '@ngxs/store';
 import { takeUntil } from 'rxjs/operators';
 import { ClassificationSelectors } from '../../../shared/store/classification-store/classification.selectors';
-import { ACTION } from '../../../shared/models/action';
-import { GetClassifications,
-  SelectClassification,
-  SetActiveAction } from '../../../shared/store/classification-store/classification.actions';
+import { GetClassifications, SelectClassification, CreateClassification } from '../../../shared/store/classification-store/classification.actions';
 import { Classification } from '../../../shared/models/classification';
 
 @Component({
@@ -40,7 +37,7 @@ export class ClassificationOverviewComponent implements OnInit, OnDestroy {
               .subscribe(() => this.store.dispatch(new GetClassifications()));
           }
           if (this.routerParams.id && this.routerParams.id.indexOf('new-classification') !== -1) {
-            this.store.dispatch(new SetActiveAction(ACTION.CREATE));
+            this.store.dispatch(new CreateClassification());
           }
         });
     }

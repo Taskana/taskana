@@ -1,21 +1,19 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { map, take, takeUntil } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { Actions, ofActionCompleted, ofActionDispatched, Select, Store } from '@ngxs/store';
 
 import { ImportExportService } from 'app/administration/services/import-export.service';
 
 import { TaskanaType } from 'app/shared/models/taskana-type';
 import { Pair } from 'app/shared/models/pair';
-import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { ClassificationSelectors } from 'app/shared/store/classification-store/classification.selectors';
 import { Location } from '@angular/common';
 import { ClassificationCategoryImages } from '../../../shared/models/customisation';
 
 import { GetClassifications,
-  SetActiveAction } from '../../../shared/store/classification-store/classification.actions';
-import { ACTION } from '../../../shared/models/action';
+  CreateClassification } from '../../../shared/store/classification-store/classification.actions';
 import { DomainService } from '../../../shared/services/domain/domain.service';
 import { ClassificationSummary } from '../../../shared/models/classification-summary';
 
@@ -34,15 +32,12 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
   @Select(ClassificationSelectors.selectedClassificationType) classificationTypeSelected$: Observable<string>;
   @Select(ClassificationSelectors.selectCategories) categories$: Observable<string[]>;
   @Select(ClassificationSelectors.classifications) classifications$: Observable<ClassificationSummary[]>;
-  @Select(ClassificationSelectors.activeAction) activeAction$: Observable<ACTION>;
   @Select(EngineConfigurationSelectors.selectCategoryIcons) categoryIcons$: Observable<ClassificationCategoryImages>;
 
-  action: ACTION;
   destroy$ = new Subject<void>();
   classifications: ClassificationSummary[];
 
   constructor(
-    private classificationService: ClassificationsService,
     private location: Location,
     private importExportService: ImportExportService,
     private store: Store,
@@ -79,12 +74,6 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
         this.store.dispatch(new GetClassifications());
       });
 
-    this.activeAction$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(action => {
-        this.action = action;
-      });
-
     // needed, so that the list updates, when domain gets changed (could be placed anywhere and should be removed, when domain is in store)
     this.domainService.getSelectedDomain().pipe(takeUntil(this.destroy$)).subscribe(domain => {
       this.store.dispatch(GetClassifications);
@@ -92,9 +81,7 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
   }
 
   addClassification() {
-    if (this.action !== ACTION.CREATE) {
-      this.store.dispatch(new SetActiveAction(ACTION.CREATE));
-    }
+    this.store.dispatch(new CreateClassification());
     this.location.go(this.location.path().replace(/(classifications).*/g, 'classifications/new-classification'));
   }
 

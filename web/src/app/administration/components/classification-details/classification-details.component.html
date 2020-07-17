@@ -20,7 +20,7 @@
           </button>
         </div>
         <h4 class="panel-header">{{classification.name}}&nbsp; [{{classification.type}}]
-          <span *ngIf="action" class="badge warning"> {{badgeMessage}}</span>
+          <span *ngIf="isCreatingNewClassification" class="badge warning"> {{badgeMessage$ | async}}</span>
         </h4>
       </div>
 
@@ -33,9 +33,9 @@
               <!-- KEY -->
               <div class="form-group required">
                 <label for="classification-key" class="control-label">Key</label>
-                <input type="text" required #key="ngModel" [disabled]="!action" class="form-control"
+                <input type="text" required #key="ngModel" [disabled]="!isCreatingNewClassification" class="form-control"
                        id="classification-key" placeholder="Key" [(ngModel)]="classification.key" name="classification.key">
-                <taskana-shared-field-error-display *ngIf="action" [displayError]="!isFieldValid('classification.key')"
+                <taskana-shared-field-error-display *ngIf="isCreatingNewClassification" [displayError]="!isFieldValid('classification.key')"
                                                     [validationTrigger]="this.toogleValidationMap.get('classification.key')" errorMessage="* Key is required">
                 </taskana-shared-field-error-display>
               </div>
