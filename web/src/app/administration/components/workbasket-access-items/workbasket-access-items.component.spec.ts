@@ -88,10 +88,8 @@ describe('WorkbasketAccessItemsComponent', () => {
       };
       debugElement = fixture.debugElement.nativeElement;
       accessIdsService = testBed.get(AccessIdsService);
-      spyOn(accessIdsService, 'getAccessItemsInformation').and.returnValue(of(new Array<string>(
-        'accessID1', 'accessID2'
-      )));
-
+      spyOn(accessIdsService, 'searchForAccessId').and.returnValue(of(['accessID1', 'accessID2']));
+      spyOn(accessIdsService, 'getGroupsByAccessId').and.returnValue(of(['accessID1', 'accessID2']));
       formsValidatorService = testBed.get(FormsValidatorService);
       component.ngOnChanges({
         active: new SimpleChange(undefined, 'accessItems', true)

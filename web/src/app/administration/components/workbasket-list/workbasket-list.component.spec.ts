@@ -91,7 +91,7 @@ describe('WorkbasketListComponent', () => {
           WorkbasketListComponent,
           DummyDetailComponent,
           WorkbasketListToolbarComponent,
-          ImportExportComponent
+          ImportExportComponent,
         ],
         imports: [
           AngularSvgIconModule,
@@ -111,6 +111,13 @@ describe('WorkbasketListComponent', () => {
     configureTests(configure).then(testBed => {
       fixture = TestBed.createComponent(WorkbasketListComponent);
       component = fixture.componentInstance;
+      Object.defineProperty(component, 'workbasketsSummaryRepresentation$', { writable: true });
+      const page = {
+        workbaskets: [],
+        _links: {},
+        page: new Page(6, 3, 3, 1)
+      };
+      component.workbasketsSummaryRepresentation$ = of(page);
       debugElement = fixture.debugElement.nativeElement;
       workbasketService = TestBed.get(WorkbasketService);
       const orientationService = TestBed.get(OrientationService);
