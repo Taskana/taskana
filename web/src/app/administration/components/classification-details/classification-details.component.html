@@ -30,22 +30,23 @@
           <div class="row" style="padding: 15px">
             <div class="col-md-6">
 
+              <!--TODO pattern?-->
               <!-- KEY -->
               <div class="form-group required">
                 <label for="classification-key" class="control-label">Key</label>
                 <input type="text" required #key="ngModel" [disabled]="!isCreatingNewClassification" class="form-control"
                        id="classification-key" placeholder="Key" [(ngModel)]="classification.key" name="classification.key">
-                <taskana-shared-field-error-display *ngIf="isCreatingNewClassification" [displayError]="!isFieldValid('classification.key')"
-                                                    [validationTrigger]="this.toogleValidationMap.get('classification.key')" errorMessage="* Key is required">
+                <taskana-shared-field-error-display [displayError]="key.invalid"
+                                                    [validationTrigger]="this.toggleValidationMap.get('classification.key')" errorMessage="* Key is required">
                 </taskana-shared-field-error-display>
               </div>
 
               <!-- NAME -->
               <div class="form-group required">
                 <label for="classification-name" class="control-label">Name</label>
-                <input type="text" required #name="ngModel" class="form-control" id="classification-name" placeholder="Name"
+                <input type="text" required ="255" #name="ngModel" class="form-control" id="classification-name" placeholder="Name"
                   [(ngModel)]="classification.name" name="classification.name">
-                <taskana-shared-field-error-display [displayError]="!isFieldValid('classification.name')" [validationTrigger]="this.toogleValidationMap.get('classification.name')"
+                <taskana-shared-field-error-display [displayError]="name.invalid"
                                                     errorMessage="* Name is required">
                 </taskana-shared-field-error-display>
               </div>
@@ -53,7 +54,7 @@
               <!-- DOMAIN -->
               <div class="form-group">
                 <label for="classification-domain" class="control-label">Domain</label>
-                <input type="text" disabled #domain="ngModel" class="form-control" id="classification-domain"
+                <input type="text" disabled #domain class="form-control" id="classification-domain"
                   placeholder="Domain" [(ngModel)]="classification.domain" name="classification.domain">
                 <a *ngIf="!masterDomainSelected()" (click)="validChanged()">
                   <label>
@@ -69,7 +70,7 @@
                 <div class="form-group required col-xs-6">
                   <label for="classification-priority" class="control-label">Priority</label>
                   <taskana-shared-number-picker [(ngModel)]="classification.priority" name="classification.priority" id="classification-priority" [required]="true"></taskana-shared-number-picker>
-                  <taskana-shared-field-error-display [displayError]="!isFieldValid('classification.priority')" [validationTrigger]="this.toogleValidationMap.get('classification.priority')"
+                  <taskana-shared-field-error-display [displayError]="!isFieldValid('classification.priority')" [validationTrigger]="this.toggleValidationMap.get('classification.priority')"
                                                       errorMessage="* Priority is required">
                   </taskana-shared-field-error-display>
                 </div>
@@ -105,21 +106,21 @@
               <!-- SERVICE LEVEL -->
               <div class="form-group">
                 <label for="classification-service-level" class="control-label">Service Level</label>
-                <input type="text" class="form-control" id="classification-service-level" placeholder="Service Level"
+                <input type="text" maxlength="255" class="form-control" id="classification-service-level" placeholder="Service Level"
                   [(ngModel)]="classification.serviceLevel" name="classification.serviceLevel">
               </div>
 
               <!-- APPLICATION ENTRY POINT -->
               <div class="form-group">
                 <label for="classification-application-entry-point" class="control-label">Application entry point</label>
-                <input type="text" class="form-control" id="classification-application-entry-point" placeholder="Application entry point"
+                <input type="text" maxlength="255" class="form-control" id="classification-application-entry-point" placeholder="Application entry point"
                   [(ngModel)]="classification.applicationEntryPoint" name="classification.applicationEntryPoint">
               </div>
 
               <!-- DESCRIPTION -->
               <div class="form-group">
                 <label for="classification-description" class="control-label">Description</label>
-                <textarea class="form-control" rows="5" id="classification-description" placeholder="Description"
+                <textarea class="form-control" maxlength="255" rows="5" id="classification-description" placeholder="Description"
                   [(ngModel)]="classification.description" name="classification.description"></textarea>
               </div>
             </div>
@@ -131,7 +132,7 @@
                  style="width: 50%;">
               <div *ngIf="customField.visible" class="form-group custom-field-wrapper">
                 <label for="classification-custom-{{i + 1}}" class="control-label">{{customField.field}}</label>
-                <input type="text" class="form-control" id="classification-custom-{{i + 1}}" placeholder="{{customField.field}}"
+                <input type="text" maxlength="255" class="form-control" id="classification-custom-{{i + 1}}" placeholder="{{customField.field}}"
                   [(ngModel)]="classification[getClassificationCustom(i + 1)]" name="classification.custom{{i + 1}}">
               </div>
             </div>
