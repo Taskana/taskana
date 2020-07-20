@@ -19,8 +19,6 @@ import { NotificationService } from '../../../shared/services/notifications/noti
 import { WorkbasketState } from '../../../shared/store/workbasket-store/workbasket.state';
 import { EngineConfigurationState } from '../../../shared/store/engine-configuration-store/engine-configuration.state';
 import { ClassificationCategoriesService } from '../../../shared/services/classification-categories/classification-categories.service';
-import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
-import { AccessItemWorkbasketResource } from '../../../shared/models/access-item-workbasket-resource';
 
 describe('WorkbasketAccessItemsComponent', () => {
   let component: WorkbasketAccessItemsComponent;
@@ -90,9 +88,6 @@ describe('WorkbasketAccessItemsComponent', () => {
       };
       debugElement = fixture.debugElement.nativeElement;
       accessIdsService = testBed.get(AccessIdsService);
-      spyOn(accessIdsService, 'getAccessItemsInformation').and.returnValue(of(new Array<string>(
-        'accessID1', 'accessID2'
-      )));
       spyOn(accessIdsService, 'searchForAccessId').and.returnValue(of(['accessID1', 'accessID2']));
       spyOn(accessIdsService, 'getGroupsByAccessId').and.returnValue(of(['accessID1', 'accessID2']));
       formsValidatorService = testBed.get(FormsValidatorService);
