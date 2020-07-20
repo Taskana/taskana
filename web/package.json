@@ -11,7 +11,9 @@
     "test": "ng test --karma-config karma.conf.js --watch=false --browsers Firefox",
     "test:watch": "ng test --karma-config karma.conf.js --browsers Chrome",
     "lint": "eslint --ext .ts src",
-    "lint:fix": "eslint --ext .ts src --fix"
+    "lint:fix": "eslint --ext .ts src --fix",
+    "format": "prettier --write \"**/*.{js,ts,css,scss,md,json,yml}\"",
+    "format:html": "prettier --write \"**/*.{html}\""
   },
   "private": true,
   "dependencies": {
