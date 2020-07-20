@@ -1,12 +1,12 @@
-import { Classification } from 'app/shared/models/classification';
 import { Workbasket } from 'app/shared/models/workbasket';
 import { ObjectReference } from './object-reference';
+import { ClassificationSummary } from '../../shared/models/classification-summary';
 
 export class Task {
   constructor(public taskId: string,
     public primaryObjRef: ObjectReference = new ObjectReference(),
     public workbasketSummaryResource?: Workbasket,
-    public classificationSummaryResource?: Classification,
+    public classificationSummary?: ClassificationSummary,
     public businessProcessId?: string,
     public parentBusinessProcessId?: string,
     public owner?: string,

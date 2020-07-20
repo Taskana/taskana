@@ -52,10 +52,6 @@ export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges {
     }
   }
 
-  selectClassification(classification: Classification) {
-    this.task.classificationSummaryResource = classification;
-  }
-
   isFieldValid(field: string): boolean {
     return this.formsValidatorService.isFieldValid(this.taskForm, field);
   }
@@ -77,8 +73,8 @@ export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges {
       });
   }
 
-  private changedClassification(itemSelected: any) {
-    this.task.classificationSummaryResource = itemSelected;
+  changedClassification(itemSelected: Classification) {
+    this.task.classificationSummary = itemSelected;
   }
 
   private async getClassificationByDomain() {

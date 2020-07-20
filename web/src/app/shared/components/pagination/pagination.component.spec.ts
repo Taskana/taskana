@@ -21,6 +21,7 @@ describe('PaginationComponent', () => {
     configureTests(configure).then(testBed => {
       fixture = TestBed.createComponent(PaginationComponent);
       component = fixture.componentInstance;
+      component.page = new Page(6, 3, 3, 1);
       debugElement = fixture.debugElement.nativeElement;
       fixture.detectChanges();
       done();
@@ -34,7 +35,6 @@ describe('PaginationComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-    expect(debugElement.querySelectorAll('#wb-pagination > li').length).toBe(2);
   });
 
   it('should create 3 pages if total pages are 3', () => {

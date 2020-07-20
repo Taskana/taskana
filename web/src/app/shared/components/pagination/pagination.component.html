@@ -13,6 +13,9 @@
     <a *ngIf="hasItems" (click)="changeToPage(page?.totalPages)" aria-label="Last">Last</a>
   </li>
 </ul>
-<span class="footer pull-right">
+<span class="footer pull-right" [hidden]="numberOfItems === 0">
   <i [innerHTML]="getPagesTextToShow()"></i>
+</span>
+<span class="footer pull-right" [hidden]="numberOfItems !== 0 && page.totalElements !== 0">
+  <i>Loading...</i>
 </span>
