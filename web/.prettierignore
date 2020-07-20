@@ -8,4 +8,4 @@ dist*/**
 build/**
 coverage/**
 **/dist/**
-**/*.html
+out-tsc/**
