@@ -34,7 +34,9 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
     List<SelectedItem> selectedItems = new ArrayList<>();
     ThrowingCallable call =
         () -> {
-          monitorService.createCategoryReportBuilder().listTaskIdsForSelectedItems(selectedItems);
+          monitorService
+              .createClassificationCategoryReportBuilder()
+              .listTaskIdsForSelectedItems(selectedItems);
         };
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
@@ -68,7 +70,7 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
 
     List<String> ids =
         monitorService
-            .createCategoryReportBuilder()
+            .createClassificationCategoryReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .listTaskIdsForSelectedItems(selectedItems);
@@ -119,7 +121,7 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
 
     List<String> ids =
         monitorService
-            .createCategoryReportBuilder()
+            .createClassificationCategoryReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .workbasketIdIn(workbasketIds)
@@ -163,7 +165,7 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
 
     List<String> ids =
         monitorService
-            .createCategoryReportBuilder()
+            .createClassificationCategoryReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .stateIn(states)
@@ -208,7 +210,7 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
 
     List<String> ids =
         monitorService
-            .createCategoryReportBuilder()
+            .createClassificationCategoryReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .classificationCategoryIn(categories)
@@ -251,7 +253,7 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
 
     List<String> ids =
         monitorService
-            .createCategoryReportBuilder()
+            .createClassificationCategoryReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .domainIn(domains)
@@ -296,7 +298,7 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
 
     List<String> ids =
         monitorService
-            .createCategoryReportBuilder()
+            .createClassificationCategoryReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .customAttributeFilterIn(customAttributeFilter)
@@ -330,7 +332,7 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
     ThrowingCallable call =
         () -> {
           monitorService
-              .createCategoryReportBuilder()
+              .createClassificationCategoryReportBuilder()
               .withColumnHeaders(columnHeaders)
               .listTaskIdsForSelectedItems(selectedItems);
         };

@@ -27,6 +27,7 @@ import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.ClassificationReport.DetailedClassificationReport;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.DetailedMonitorQueryItem;
+import pro.taskana.monitor.api.reports.row.DetailedClassificationRow;
 import pro.taskana.monitor.api.reports.row.FoldableRow;
 import pro.taskana.monitor.api.reports.row.Row;
 import pro.taskana.task.api.CustomField;
@@ -43,6 +44,44 @@ class ProvideDetailedClassificationReportAccTest extends AbstractReportAccTest {
     ThrowingCallable call =
         () -> MONITOR_SERVICE.createClassificationReportBuilder().buildDetailedReport();
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_augmentDisplayNames_When_ReportIsBuild() throws Exception {
+    DetailedClassificationReport report =
+        MONITOR_SERVICE.createClassificationReportBuilder().buildDetailedReport();
+
+    assertThat(report.getRows()).hasSize(5);
+
+    DetailedClassificationRow row = report.getRow("L10000");
+    assertThat(row.getDisplayName()).isEqualTo("OLD-Leistungsfall");
+    assertThat(row.getFoldableRowCount()).isEqualTo(2);
+    assertThat(row.getFoldableRow("L11000").getDisplayName()).isEqualTo("Anhang 1");
+    assertThat(row.getFoldableRow("N/A").getDisplayName()).isEqualTo("N/A");
+
+    row = report.getRow("L20000");
+    assertThat(row.getDisplayName()).isEqualTo("Beratungsprotokoll");
+    assertThat(row.getFoldableRowCount()).isEqualTo(2);
+    assertThat(row.getFoldableRow("L22000").getDisplayName()).isEqualTo("Anhang 2");
+    assertThat(row.getFoldableRow("N/A").getDisplayName()).isEqualTo("N/A");
+
+    row = report.getRow("L30000");
+    assertThat(row.getDisplayName()).isEqualTo("Widerruf");
+    assertThat(row.getFoldableRowCount()).isEqualTo(3);
+    assertThat(row.getFoldableRow("L33000").getDisplayName()).isEqualTo("Anhang 3");
+    assertThat(row.getFoldableRow("L99000").getDisplayName()).isEqualTo("Anhang 9");
+    assertThat(row.getFoldableRow("N/A").getDisplayName()).isEqualTo("N/A");
+
+    row = report.getRow("L40000");
+    assertThat(row.getDisplayName()).isEqualTo("Dynamikaenderung");
+    assertThat(row.getFoldableRowCount()).isOne();
+    assertThat(row.getFoldableRow("N/A").getDisplayName()).isEqualTo("N/A");
+
+    row = report.getRow("L50000");
+    assertThat(row.getDisplayName()).isEqualTo("Dynamik-Ablehnung");
+    assertThat(row.getFoldableRowCount()).isOne();
+    assertThat(row.getFoldableRow("N/A").getDisplayName()).isEqualTo("N/A");
   }
 
   @WithAccessId(user = "monitor")

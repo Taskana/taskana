@@ -324,7 +324,7 @@ class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAccTest {
     ThrowingCallable call =
         () -> {
           monitorService
-              .createCategoryReportBuilder()
+              .createClassificationCategoryReportBuilder()
               .withColumnHeaders(columnHeaders)
               .listTaskIdsForSelectedItems(selectedItems);
         };

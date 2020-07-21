@@ -19,7 +19,7 @@ import pro.taskana.monitor.api.reports.row.Row;
 public class ClassificationReport extends Report<MonitorQueryItem, TimeIntervalColumnHeader> {
 
   public ClassificationReport(List<TimeIntervalColumnHeader> timeIntervalColumnHeaders) {
-    super(timeIntervalColumnHeaders, new String[] {"CLASSIFICATION KEYS"});
+    super(timeIntervalColumnHeaders, new String[] {"CLASSIFICATION"});
   }
 
   /** Builder for {@link ClassificationReport}. */
@@ -62,7 +62,7 @@ public class ClassificationReport extends Report<MonitorQueryItem, TimeIntervalC
         List<TimeIntervalColumnHeader> workbasketLevelReportColumnHeaders) {
       super(
           workbasketLevelReportColumnHeaders,
-          new String[] {"TASK CLASSIFICATION KEYS", "ATTACHMENT"});
+          new String[] {"TASK CLASSIFICATION", "ATTACHMENT"});
     }
 
     @Override

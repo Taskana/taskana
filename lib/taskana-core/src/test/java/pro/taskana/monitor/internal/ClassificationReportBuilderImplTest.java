@@ -3,6 +3,7 @@ package pro.taskana.monitor.internal;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -22,6 +23,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.classification.api.ClassificationQuery;
+import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.monitor.api.SelectedItem;
@@ -40,18 +43,26 @@ import pro.taskana.task.api.TaskState;
 class ClassificationReportBuilderImplTest {
 
   @InjectMocks private MonitorServiceImpl cut;
-
   @Mock private InternalTaskanaEngine internalTaskanaEngineMock;
-
   @Mock private TaskanaEngine taskanaEngineMock;
-
   @Mock private TaskanaEngineConfiguration taskanaEngineConfiguration;
-
   @Mock private MonitorMapper monitorMapperMock;
+  @Mock private ClassificationService classificationService;
+
+  private Object[] mocks;
 
   @BeforeEach
   void setup() {
     when(internalTaskanaEngineMock.getEngine()).thenReturn(taskanaEngineMock);
+    when(taskanaEngineMock.getClassificationService()).thenReturn(classificationService);
+    mocks =
+        new Object[] {
+          internalTaskanaEngineMock,
+          taskanaEngineMock,
+          monitorMapperMock,
+          taskanaEngineConfiguration,
+          classificationService
+        };
   }
 
   @Test
@@ -82,6 +93,12 @@ class ClassificationReportBuilderImplTest {
             customAttributeFilter))
         .thenReturn(expectedResult);
 
+    ClassificationQuery queryMock = mock(ClassificationQuery.class);
+    when(classificationService.createClassificationQuery()).thenReturn(queryMock);
+    when(queryMock.keyIn(any())).thenReturn(queryMock);
+    when(queryMock.domainIn(any())).thenReturn(queryMock);
+    when(queryMock.list()).thenReturn(Collections.emptyList());
+
     final ClassificationReport actualResult =
         cut.createClassificationReportBuilder()
             .workbasketIdIn(workbasketIds)
@@ -96,16 +113,15 @@ class ClassificationReportBuilderImplTest {
     verify(internalTaskanaEngineMock).openConnection();
     verify(taskanaEngineMock).checkRoleMembership(any());
     verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
-    verify(internalTaskanaEngineMock, times(2)).getEngine();
+    verify(taskanaEngineMock).getClassificationService();
+    verify(internalTaskanaEngineMock, times(3)).getEngine();
 
     verify(monitorMapperMock)
         .getTaskCountOfClassifications(any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
-    verifyNoMoreInteractions(
-        internalTaskanaEngineMock,
-        taskanaEngineMock,
-        monitorMapperMock,
-        taskanaEngineConfiguration);
+
+    verifyNoMoreInteractions(queryMock);
+    verifyNoMoreInteractions(mocks);
 
     assertThat(actualResult).isNotNull();
     assertThat(actualResult.getRow("CLI:000000000000000000000000000000000001").getTotalValue())
@@ -144,6 +160,11 @@ class ClassificationReportBuilderImplTest {
             excludedClassificationIds,
             customAttributeFilter))
         .thenReturn(expectedResult);
+    ClassificationQuery queryMock = mock(ClassificationQuery.class);
+    when(classificationService.createClassificationQuery()).thenReturn(queryMock);
+    when(queryMock.keyIn(any())).thenReturn(queryMock);
+    when(queryMock.domainIn(any())).thenReturn(queryMock);
+    when(queryMock.list()).thenReturn(Collections.emptyList());
 
     final ClassificationReport actualResult =
         cut.createClassificationReportBuilder()
@@ -160,16 +181,14 @@ class ClassificationReportBuilderImplTest {
     verify(internalTaskanaEngineMock).openConnection();
     verify(taskanaEngineMock).checkRoleMembership(any());
     verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
-    verify(internalTaskanaEngineMock, times(2)).getEngine();
+    verify(taskanaEngineMock).getClassificationService();
+    verify(internalTaskanaEngineMock, times(3)).getEngine();
 
     verify(monitorMapperMock)
         .getTaskCountOfClassifications(any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
-    verifyNoMoreInteractions(
-        internalTaskanaEngineMock,
-        taskanaEngineMock,
-        monitorMapperMock,
-        taskanaEngineConfiguration);
+    verifyNoMoreInteractions(queryMock);
+    verifyNoMoreInteractions(mocks);
 
     assertThat(actualResult).isNotNull();
     assertThat(actualResult.getRow("CLI:000000000000000000000000000000000001").getTotalValue())
@@ -207,6 +226,11 @@ class ClassificationReportBuilderImplTest {
             excludedClassificationIds,
             customAttributeFilter))
         .thenReturn(expectedResult);
+    ClassificationQuery queryMock = mock(ClassificationQuery.class);
+    when(classificationService.createClassificationQuery()).thenReturn(queryMock);
+    when(queryMock.keyIn(any())).thenReturn(queryMock);
+    when(queryMock.domainIn(any())).thenReturn(queryMock);
+    when(queryMock.list()).thenReturn(Collections.emptyList());
 
     final DetailedClassificationReport actualResult =
         cut.createClassificationReportBuilder()
@@ -222,17 +246,15 @@ class ClassificationReportBuilderImplTest {
     verify(internalTaskanaEngineMock).openConnection();
     verify(taskanaEngineMock).checkRoleMembership(any());
     verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
-    verify(internalTaskanaEngineMock, times(2)).getEngine();
+    verify(taskanaEngineMock).getClassificationService();
+    verify(internalTaskanaEngineMock, times(3)).getEngine();
 
     verify(monitorMapperMock)
         .getTaskCountOfDetailedClassifications(
             any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
-    verifyNoMoreInteractions(
-        internalTaskanaEngineMock,
-        taskanaEngineMock,
-        monitorMapperMock,
-        taskanaEngineConfiguration);
+    verifyNoMoreInteractions(queryMock);
+    verifyNoMoreInteractions(mocks);
 
     FoldableRow<DetailedMonitorQueryItem> line =
         actualResult.getRow("CLI:000000000000000000000000000000000001");
@@ -274,6 +296,11 @@ class ClassificationReportBuilderImplTest {
             excludedClassificationIds,
             customAttributeFilter))
         .thenReturn(expectedResult);
+    ClassificationQuery queryMock = mock(ClassificationQuery.class);
+    when(classificationService.createClassificationQuery()).thenReturn(queryMock);
+    when(queryMock.keyIn(any())).thenReturn(queryMock);
+    when(queryMock.domainIn(any())).thenReturn(queryMock);
+    when(queryMock.list()).thenReturn(Collections.emptyList());
 
     final DetailedClassificationReport actualResult =
         cut.createClassificationReportBuilder()
@@ -290,17 +317,15 @@ class ClassificationReportBuilderImplTest {
     verify(internalTaskanaEngineMock).openConnection();
     verify(taskanaEngineMock).checkRoleMembership(any());
     verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
-    verify(internalTaskanaEngineMock, times(2)).getEngine();
+    verify(taskanaEngineMock).getClassificationService();
+    verify(internalTaskanaEngineMock, times(3)).getEngine();
 
     verify(monitorMapperMock)
         .getTaskCountOfDetailedClassifications(
             any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
-    verifyNoMoreInteractions(
-        internalTaskanaEngineMock,
-        taskanaEngineMock,
-        monitorMapperMock,
-        taskanaEngineConfiguration);
+    verifyNoMoreInteractions(queryMock);
+    verifyNoMoreInteractions(mocks);
 
     FoldableRow<DetailedMonitorQueryItem> line =
         actualResult.getRow("CLI:000000000000000000000000000000000001");
@@ -365,17 +390,14 @@ class ClassificationReportBuilderImplTest {
     verify(internalTaskanaEngineMock).openConnection();
     verify(taskanaEngineMock).checkRoleMembership(any());
     verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
-    verify(internalTaskanaEngineMock, times(2)).getEngine();
+    verify(internalTaskanaEngineMock, times(3)).getEngine();
 
     verify(monitorMapperMock)
         .getTaskIdsForSelectedItems(
             any(), any(), any(), any(), any(), any(), any(), any(), any(), eq(false));
     verify(internalTaskanaEngineMock).returnConnection();
-    verifyNoMoreInteractions(
-        internalTaskanaEngineMock,
-        taskanaEngineMock,
-        monitorMapperMock,
-        taskanaEngineConfiguration);
+    verify(taskanaEngineMock).getClassificationService();
+    verifyNoMoreInteractions(mocks);
 
     assertThat(actualResult).isNotNull();
     assertThat(actualResult).isEqualTo(expectedResult);
@@ -439,16 +461,13 @@ class ClassificationReportBuilderImplTest {
     verify(internalTaskanaEngineMock).openConnection();
     verify(taskanaEngineMock).checkRoleMembership(any());
     verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
-    verify(internalTaskanaEngineMock, times(2)).getEngine();
+    verify(internalTaskanaEngineMock, times(3)).getEngine();
 
     verify(monitorMapperMock)
         .getCustomAttributeValuesForReport(any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
-    verifyNoMoreInteractions(
-        internalTaskanaEngineMock,
-        taskanaEngineMock,
-        monitorMapperMock,
-        taskanaEngineConfiguration);
+    verify(taskanaEngineMock).getClassificationService();
+    verifyNoMoreInteractions(mocks);
 
     assertThat(actualResult).isNotNull();
     assertThat(actualResult).isEqualTo(expectedResult);

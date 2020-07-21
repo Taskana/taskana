@@ -37,15 +37,28 @@ class ProvideClassificationCategoryReportAccTest extends AbstractReportAccTest {
 
   @Test
   void testRoleCheck() {
-    assertThatThrownBy(() -> MONITOR_SERVICE.createCategoryReportBuilder().buildReport())
-        .isInstanceOf(NotAuthorizedException.class);
+    ThrowingCallable call =
+        () -> MONITOR_SERVICE.createClassificationCategoryReportBuilder().buildReport();
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_augmentDisplayNames_When_ReportIsBuild() throws Exception {
+    ClassificationCategoryReport report =
+        MONITOR_SERVICE.createClassificationCategoryReportBuilder().buildReport();
+
+    assertThat(report.getRows()).hasSize(3);
+    assertThat(report.getRow("AUTOMATIC").getDisplayName()).isEqualTo("AUTOMATIC");
+    assertThat(report.getRow("EXTERN").getDisplayName()).isEqualTo("EXTERN");
+    assertThat(report.getRow("MANUAL").getDisplayName()).isEqualTo("MANUAL");
   }
 
   @WithAccessId(user = "monitor")
   @Test
   void testGetTotalNumbersOfTasksOfCategoryReport() throws Exception {
     ClassificationCategoryReport report =
-        MONITOR_SERVICE.createCategoryReportBuilder().buildReport();
+        MONITOR_SERVICE.createClassificationCategoryReportBuilder().buildReport();
 
     assertThat(report).isNotNull();
     assertThat(report.rowSize()).isEqualTo(3);
@@ -66,7 +79,7 @@ class ProvideClassificationCategoryReportAccTest extends AbstractReportAccTest {
 
     ClassificationCategoryReport report =
         MONITOR_SERVICE
-            .createCategoryReportBuilder()
+            .createClassificationCategoryReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .buildReport();
@@ -90,7 +103,7 @@ class ProvideClassificationCategoryReportAccTest extends AbstractReportAccTest {
 
     ClassificationCategoryReport report =
         MONITOR_SERVICE
-            .createCategoryReportBuilder()
+            .createClassificationCategoryReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .buildReport();
@@ -115,7 +128,10 @@ class ProvideClassificationCategoryReportAccTest extends AbstractReportAccTest {
     ThrowingConsumer<TaskTimestamp> test =
         timestamp -> {
           ThrowingCallable callable =
-              () -> MONITOR_SERVICE.createCategoryReportBuilder().buildReport(timestamp);
+              () ->
+                  MONITOR_SERVICE
+                      .createClassificationCategoryReportBuilder()
+                      .buildReport(timestamp);
           assertThatCode(callable).doesNotThrowAnyException();
         };
     return DynamicTest.stream(iterator, t -> "for TaskState " + t, test);
@@ -128,7 +144,7 @@ class ProvideClassificationCategoryReportAccTest extends AbstractReportAccTest {
 
     ClassificationCategoryReport report =
         MONITOR_SERVICE
-            .createCategoryReportBuilder()
+            .createClassificationCategoryReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .buildReport(TaskTimestamp.PLANNED);
@@ -153,7 +169,7 @@ class ProvideClassificationCategoryReportAccTest extends AbstractReportAccTest {
 
     ClassificationCategoryReport report =
         MONITOR_SERVICE
-            .createCategoryReportBuilder()
+            .createClassificationCategoryReportBuilder()
             .withColumnHeaders(columnHeaders)
             .buildReport();
 
@@ -179,7 +195,7 @@ class ProvideClassificationCategoryReportAccTest extends AbstractReportAccTest {
 
     ClassificationCategoryReport report =
         MONITOR_SERVICE
-            .createCategoryReportBuilder()
+            .createClassificationCategoryReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .workbasketIdIn(workbasketIds)
@@ -206,7 +222,7 @@ class ProvideClassificationCategoryReportAccTest extends AbstractReportAccTest {
 
     ClassificationCategoryReport report =
         MONITOR_SERVICE
-            .createCategoryReportBuilder()
+            .createClassificationCategoryReportBuilder()
             .withColumnHeaders(columnHeaders)
             .stateIn(states)
             .inWorkingDays()
@@ -233,7 +249,7 @@ class ProvideClassificationCategoryReportAccTest extends AbstractReportAccTest {
 
     ClassificationCategoryReport report =
         MONITOR_SERVICE
-            .createCategoryReportBuilder()
+            .createClassificationCategoryReportBuilder()
             .withColumnHeaders(columnHeaders)
             .classificationCategoryIn(categories)
             .inWorkingDays()
@@ -257,7 +273,7 @@ class ProvideClassificationCategoryReportAccTest extends AbstractReportAccTest {
 
     ClassificationCategoryReport report =
         MONITOR_SERVICE
-            .createCategoryReportBuilder()
+            .createClassificationCategoryReportBuilder()
             .withColumnHeaders(columnHeaders)
             .domainIn(domains)
             .inWorkingDays()
@@ -285,7 +301,7 @@ class ProvideClassificationCategoryReportAccTest extends AbstractReportAccTest {
 
     ClassificationCategoryReport report =
         MONITOR_SERVICE
-            .createCategoryReportBuilder()
+            .createClassificationCategoryReportBuilder()
             .withColumnHeaders(columnHeaders)
             .customAttributeFilterIn(customAttributeFilter)
             .inWorkingDays()

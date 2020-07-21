@@ -19,8 +19,8 @@ import pro.taskana.task.api.CustomField;
 /** This is the implementation of MonitorService. */
 public class MonitorServiceImpl implements MonitorService {
 
-  private InternalTaskanaEngine taskanaEngine;
-  private MonitorMapper monitorMapper;
+  private final InternalTaskanaEngine taskanaEngine;
+  private final MonitorMapper monitorMapper;
 
   public MonitorServiceImpl(InternalTaskanaEngine taskanaEngine, MonitorMapper monitorMapper) {
     super();
@@ -34,7 +34,7 @@ public class MonitorServiceImpl implements MonitorService {
   }
 
   @Override
-  public ClassificationCategoryReport.Builder createCategoryReportBuilder() {
+  public ClassificationCategoryReport.Builder createClassificationCategoryReportBuilder() {
     return new ClassificationCategoryReportBuilderImpl(taskanaEngine, monitorMapper);
   }
 

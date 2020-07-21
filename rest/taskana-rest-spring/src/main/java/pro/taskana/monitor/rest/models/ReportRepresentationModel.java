@@ -94,7 +94,8 @@ public class ReportRepresentationModel extends RepresentationModel<ReportReprese
     private final String[] rowDesc;
     private final String totalDesc;
 
-    public MetaInformation(String name, String date, String[] header, String[] rowDesc, String totalDesc) {
+    public MetaInformation(
+        String name, String date, String[] header, String[] rowDesc, String totalDesc) {
       this.name = name;
       this.date = date;
       this.header = header;

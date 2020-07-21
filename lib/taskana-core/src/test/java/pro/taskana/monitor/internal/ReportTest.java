@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -233,6 +234,38 @@ class ReportTest {
     Row<MonitorQueryItem> sumRow = report.getSumRow();
     assertThat(sumRow.getCells()).isEqualTo(new int[] {0, 0, item.getValue(), 0, item.getValue()});
     assertThat(sumRow.getTotalValue()).isEqualTo(2 * item.getValue());
+  }
+
+  @Test
+  void should_FallBackToKey_When_DisplayMapDoesNotContainName() {
+    report.augmentDisplayNames(new HashMap<>());
+
+    assertThat(report.getSumRow().getDisplayName()).isEqualTo(report.getSumRow().getKey());
+  }
+
+  @Test
+  void should_SetDisplayName_When_DisplayMapContainsName() {
+    HashMap<String, String> displayMap = new HashMap<>();
+    displayMap.put(report.getSumRow().getKey(), "BLA BLA");
+    report.augmentDisplayNames(displayMap);
+
+    assertThat(report.getSumRow().getDisplayName()).isEqualTo("BLA BLA");
+  }
+
+  @Test
+  void should_SetDisplayNameForFoldableRows_When_DisplayMapContainsNames() {
+    ReportWithFoldableRow report =
+        new ReportWithFoldableRow(HEADERS, new String[] {"totalDesc", "foldalbeRowDesc"});
+    report.addItem(item);
+
+    HashMap<String, String> displayMap = new HashMap<>();
+    displayMap.put("key", "displayname for key");
+    displayMap.put("KEY", "displayname for KEY");
+    report.augmentDisplayNames(displayMap);
+
+    FoldableTestRow row = report.getRow("key");
+    assertThat(row.getDisplayName()).isEqualTo("displayname for key");
+    assertThat(row.getFoldableRow("KEY").getDisplayName()).isEqualTo("displayname for KEY");
   }
 
   private static class MonitorQueryItemTimeIntervalColumnHeaderReport

@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DynamicTest;
@@ -45,6 +44,16 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
+  void should_augmentDisplayNames_When_ReportIsBuild() throws Exception {
+    WorkbasketReport report = MONITOR_SERVICE.createWorkbasketReportBuilder().buildReport();
+    assertThat(report.getRows()).hasSize(3);
+    assertThat(report.getRow("USER-1-1").getDisplayName()).isEqualTo("PPK User 1 KSC 1");
+    assertThat(report.getRow("USER-1-2").getDisplayName()).isEqualTo("PPK User 1 KSC 2");
+    assertThat(report.getRow("USER-1-3").getDisplayName()).isEqualTo("PPK User 1 KSC 3");
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
   void testGetTotalNumbersOfTasksOfWorkbasketReportBasedOnDueDate() throws Exception {
     WorkbasketReport report = MONITOR_SERVICE.createWorkbasketReportBuilder().buildReport();
 
@@ -70,8 +79,6 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
             .inWorkingDays()
             .buildReport();
 
-    final int sumLineCount = IntStream.of(report.getSumRow().getCells()).sum();
-
     assertThat(report).isNotNull();
     assertThat(report.rowSize()).isEqualTo(3);
 
@@ -81,9 +88,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
 
     int[] sumRow = report.getSumRow().getCells();
     assertThat(sumRow).isEqualTo(new int[] {10, 9, 11, 0, 4, 0, 7, 4, 5});
-
     assertThat(report.getSumRow().getTotalValue()).isEqualTo(50);
-    assertThat(sumLineCount).isEqualTo(50);
   }
 
   @WithAccessId(user = "monitor")

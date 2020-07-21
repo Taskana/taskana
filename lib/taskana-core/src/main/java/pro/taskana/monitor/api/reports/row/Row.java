@@ -1,5 +1,7 @@
 package pro.taskana.monitor.api.reports.row;
 
+import java.util.Map;
+
 import pro.taskana.monitor.api.reports.Report;
 import pro.taskana.monitor.api.reports.header.ColumnHeader;
 import pro.taskana.monitor.api.reports.item.QueryItem;
@@ -29,6 +31,10 @@ public interface Row<I extends QueryItem> {
   void updateTotalValue(I item);
 
   String getKey();
+
+  String getDisplayName();
+
+  void setDisplayName(Map<String, String> displayMap);
 
   int getTotalValue();
 

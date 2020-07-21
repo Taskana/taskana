@@ -24,6 +24,17 @@ import pro.taskana.monitor.api.reports.row.TimestampRow;
 @ExtendWith(JaasExtension.class)
 class ProvideTimestampReportAccTest extends AbstractReportAccTest {
 
+  private static final MonitorService MONITOR_SERVICE = taskanaEngine.getMonitorService();
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_augmentDisplayNames_When_ReportIsBuild() throws Exception {
+    TimestampReport report = MONITOR_SERVICE.createTimestampReportBuilder().buildReport();
+    assertThat(report.getRows()).hasSize(2);
+    assertThat(report.getRow("CREATED").getDisplayName()).isEqualTo("CREATED");
+    assertThat(report.getRow("COMPLETED").getDisplayName()).isEqualTo("COMPLETED");
+  }
+
   /**
    * This test covers every insert operation of the TimestampReport. We have two definitions for org
    * level 1: 'org1' and 'N/A'. All other org levels only contain 'N/A'. Thus this test only tests
@@ -35,7 +46,6 @@ class ProvideTimestampReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "monitor")
   @Test
   void testProperInsertionOfQueryItems() throws Exception {
-    MonitorService monitorService = taskanaEngine.getMonitorService();
 
     // last 14 days. Today excluded.
     List<TimeIntervalColumnHeader> headers =
@@ -43,7 +53,7 @@ class ProvideTimestampReportAccTest extends AbstractReportAccTest {
             .mapToObj(TimeIntervalColumnHeader.Date::new)
             .collect(Collectors.toList());
     TimestampReport timestampReport =
-        monitorService.createTimestampReportBuilder().withColumnHeaders(headers).buildReport();
+        MONITOR_SERVICE.createTimestampReportBuilder().withColumnHeaders(headers).buildReport();
     final HashSet<String> org1Set = new HashSet<>(Arrays.asList("N/A", "org1"));
     final HashSet<String> allOtherOrgLevelSet = new HashSet<>(Collections.singletonList("N/A"));
 

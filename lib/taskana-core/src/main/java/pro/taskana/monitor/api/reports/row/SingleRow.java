@@ -1,5 +1,7 @@
 package pro.taskana.monitor.api.reports.row;
 
+import java.util.Map;
+
 import pro.taskana.monitor.api.reports.Report;
 import pro.taskana.monitor.api.reports.header.ColumnHeader;
 import pro.taskana.monitor.api.reports.item.QueryItem;
@@ -13,11 +15,13 @@ import pro.taskana.monitor.api.reports.item.QueryItem;
 public class SingleRow<I extends QueryItem> implements Row<I> {
 
   private final int[] cells;
-  private int total = 0;
   private final String key;
+  private int total = 0;
+  private String displayName;
 
   public SingleRow(String key, int columnCount) {
     this.key = key;
+    this.displayName = key;
     cells = new int[columnCount];
   }
 
@@ -35,6 +39,16 @@ public class SingleRow<I extends QueryItem> implements Row<I> {
   @Override
   public String getKey() {
     return key;
+  }
+
+  @Override
+  public String getDisplayName() {
+    return displayName;
+  }
+
+  @Override
+  public void setDisplayName(Map<String, String> displayMap) {
+    displayName = displayMap.getOrDefault(key, key);
   }
 
   @Override

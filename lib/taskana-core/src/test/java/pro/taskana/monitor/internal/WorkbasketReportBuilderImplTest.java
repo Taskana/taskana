@@ -86,6 +86,7 @@ class WorkbasketReportBuilderImplTest {
             customAttributeFilter,
             combinedClassificationFilter))
         .thenReturn(expectedResult);
+    when(internalTaskanaEngineMock.runAsAdmin(any())).thenReturn(Collections.emptyMap());
 
     final WorkbasketReport actualResult =
         cut.createWorkbasketReportBuilder()
@@ -102,10 +103,12 @@ class WorkbasketReportBuilderImplTest {
     verify(internalTaskanaEngineMock).openConnection();
     verify(taskanaEngineMock).checkRoleMembership(any());
     verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
-    verify(internalTaskanaEngineMock, times(2)).getEngine();
+    verify(internalTaskanaEngineMock, times(3)).getEngine();
     verify(monitorMapperMock)
         .getTaskCountOfWorkbaskets(any(), any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
+    verify(internalTaskanaEngineMock).runAsAdmin(any());
+    verify(taskanaEngineMock).getWorkbasketService();
     verifyNoMoreInteractions(internalTaskanaEngineMock, taskanaEngineMock, monitorMapperMock);
 
     assertThat(actualResult).isNotNull();
@@ -150,6 +153,7 @@ class WorkbasketReportBuilderImplTest {
             customAttributeFilter,
             combinedClassificationFilter))
         .thenReturn(expectedResult);
+    when(internalTaskanaEngineMock.runAsAdmin(any())).thenReturn(Collections.emptyMap());
 
     final WorkbasketReport actualResult =
         cut.createWorkbasketReportBuilder()
@@ -167,10 +171,11 @@ class WorkbasketReportBuilderImplTest {
     verify(internalTaskanaEngineMock).openConnection();
     verify(taskanaEngineMock).checkRoleMembership(any());
     verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
-    verify(internalTaskanaEngineMock, times(2)).getEngine();
+    verify(internalTaskanaEngineMock, times(3)).getEngine();
     verify(monitorMapperMock)
         .getTaskCountOfWorkbaskets(any(), any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
+    verify(taskanaEngineMock).getWorkbasketService();
     verifyNoMoreInteractions(internalTaskanaEngineMock, taskanaEngineMock, monitorMapperMock);
 
     assertThat(actualResult).isNotNull();
@@ -231,11 +236,12 @@ class WorkbasketReportBuilderImplTest {
     verify(internalTaskanaEngineMock).openConnection();
     verify(taskanaEngineMock).checkRoleMembership(any());
     verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
-    verify(internalTaskanaEngineMock, times(2)).getEngine();
+    verify(internalTaskanaEngineMock, times(3)).getEngine();
     verify(monitorMapperMock)
         .getTaskIdsForSelectedItems(
             any(), any(), any(), any(), any(), any(), any(), any(), any(), eq(false));
     verify(internalTaskanaEngineMock).returnConnection();
+    verify(taskanaEngineMock).getWorkbasketService();
     verifyNoMoreInteractions(internalTaskanaEngineMock, taskanaEngineMock, monitorMapperMock);
 
     assertThat(actualResult).isNotNull();
@@ -302,10 +308,11 @@ class WorkbasketReportBuilderImplTest {
     verify(internalTaskanaEngineMock).openConnection();
     verify(taskanaEngineMock).checkRoleMembership(any());
     verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
-    verify(internalTaskanaEngineMock, times(2)).getEngine();
+    verify(internalTaskanaEngineMock, times(3)).getEngine();
     verify(monitorMapperMock)
         .getCustomAttributeValuesForReport(any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
+    verify(taskanaEngineMock).getWorkbasketService();
     verifyNoMoreInteractions(internalTaskanaEngineMock, taskanaEngineMock, monitorMapperMock);
 
     assertThat(actualResult).isNotNull();
@@ -333,7 +340,7 @@ class WorkbasketReportBuilderImplTest {
     Map<CustomField, String> customAttributeFilter = new HashMap<>();
     customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
     final List<CombinedClassificationFilter> combinedClassificationFilter =
-        Arrays.asList(
+        Collections.singletonList(
             new CombinedClassificationFilter(
                 "CLI:000000000000000000000000000000000003",
                 "CLI:000000000000000000000000000000000008"));
@@ -355,6 +362,8 @@ class WorkbasketReportBuilderImplTest {
             combinedClassificationFilter))
         .thenReturn(expectedResult);
 
+    when(internalTaskanaEngineMock.runAsAdmin(any())).thenReturn(Collections.emptyMap());
+
     final WorkbasketReport actualResult =
         cut.createWorkbasketReportBuilder()
             .workbasketIdIn(workbasketIds)
@@ -370,7 +379,7 @@ class WorkbasketReportBuilderImplTest {
     verify(internalTaskanaEngineMock).openConnection();
     verify(taskanaEngineMock).checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
     verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
-    verify(internalTaskanaEngineMock, times(2)).getEngine();
+    verify(internalTaskanaEngineMock, times(3)).getEngine();
     verify(monitorMapperMock)
         .getTaskCountOfWorkbaskets(
             workbasketIds,
@@ -383,6 +392,7 @@ class WorkbasketReportBuilderImplTest {
             customAttributeFilter,
             combinedClassificationFilter);
     verify(internalTaskanaEngineMock).returnConnection();
+    verify(taskanaEngineMock).getWorkbasketService();
     verifyNoMoreInteractions(internalTaskanaEngineMock, taskanaEngineMock, monitorMapperMock);
 
     assertThat(actualResult).isNotNull();

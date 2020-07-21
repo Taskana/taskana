@@ -107,18 +107,18 @@ public class ReportRepresentationModelAssembler {
 
     // iterate over each Row and transform it to a RowResource while keeping the domain key.
     List<ReportRepresentationModel.RowResource> rows =
-        report.getRows().entrySet().stream()
+        report.getRows().values().stream()
             .sorted(Comparator.comparing(e -> e.getKey().toLowerCase()))
             .map(
                 i ->
                     transformRow(
-                        i.getValue(), i.getKey(), new String[report.getRowDesc().length], 0))
+                        i, new String[report.getRowDesc().length], 0))
             .flatMap(Collection::stream)
             .collect(Collectors.toList());
 
     List<ReportRepresentationModel.RowResource> sumRow =
         transformRow(
-            report.getSumRow(), meta.getTotalDesc(), new String[report.getRowDesc().length], 0);
+            report.getSumRow(), new String[report.getRowDesc().length], 0);
 
     return new ReportRepresentationModel(meta, rows, sumRow);
   }
@@ -129,36 +129,36 @@ public class ReportRepresentationModelAssembler {
   }
 
   private <I extends QueryItem> List<ReportRepresentationModel.RowResource> transformRow(
-      Row<I> row, String currentDesc, String[] desc, int depth) {
+      Row<I> row, String[] desc, int depth) {
     // This is a very dirty solution.. Personally I'd prefer to use a visitor-like pattern here.
     // The issue with that: Addition of the visitor code within taskana-core - and having clean code
     // is not
     // a reason to append code somewhere where it doesn't belong.
     if (row.getClass() == SingleRow.class) {
       return Collections.singletonList(
-          transformSingleRow((SingleRow<I>) row, currentDesc, desc, depth));
+          transformSingleRow((SingleRow<I>) row, desc, depth));
     }
-    return transformFoldableRow((FoldableRow<I>) row, currentDesc, desc, depth);
+    return transformFoldableRow((FoldableRow<I>) row, desc, depth);
   }
 
   private <I extends QueryItem> ReportRepresentationModel.RowResource transformSingleRow(
-      SingleRow<I> row, String currentDesc, String[] previousRowDesc, int depth) {
+      SingleRow<I> row, String[] previousRowDesc, int depth) {
     String[] rowDesc = new String[previousRowDesc.length];
     System.arraycopy(previousRowDesc, 0, rowDesc, 0, depth);
-    rowDesc[depth] = currentDesc;
+    rowDesc[depth] = row.getDisplayName();
     return new ReportRepresentationModel.RowResource(
         row.getCells(), row.getTotalValue(), depth, rowDesc, depth == 0);
   }
 
   private <I extends QueryItem> List<ReportRepresentationModel.RowResource> transformFoldableRow(
-      FoldableRow<I> row, String currentDesc, String[] previousRowDesc, int depth) {
+      FoldableRow<I> row, String[] previousRowDesc, int depth) {
     ReportRepresentationModel.RowResource baseRow =
-        transformSingleRow(row, currentDesc, previousRowDesc, depth);
+        transformSingleRow(row, previousRowDesc, depth);
     List<ReportRepresentationModel.RowResource> rowList = new LinkedList<>();
     rowList.add(baseRow);
     row.getFoldableRowKeySet().stream()
         .sorted(String.CASE_INSENSITIVE_ORDER)
-        .map(s -> transformRow(row.getFoldableRow(s), s, baseRow.getDesc(), depth + 1))
+        .map(s -> transformRow(row.getFoldableRow(s), baseRow.getDesc(), depth + 1))
         .flatMap(Collection::stream)
         .forEachOrdered(rowList::add);
     return rowList;

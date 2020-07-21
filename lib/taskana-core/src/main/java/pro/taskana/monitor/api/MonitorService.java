@@ -26,7 +26,7 @@ public interface MonitorService {
    *
    * @return a {@link ClassificationCategoryReport.Builder}
    */
-  ClassificationCategoryReport.Builder createCategoryReportBuilder();
+  ClassificationCategoryReport.Builder createClassificationCategoryReportBuilder();
 
   /**
    * Provides a {@link ClassificationReport.Builder} for creating a {@link ClassificationReport} or
