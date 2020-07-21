@@ -1,3 +1,5 @@
+@import "src/theme/_colors.scss";
+
 .custom-field-row {
   display: flex;
   flex-wrap: wrap;
@@ -13,4 +15,12 @@
 }
 .dropdown-menu > li {
   cursor: pointer;
+}
+
+input:invalid.dirty {
+  border-color: $invalid;
+}
+
+div.error {
+  color: $invalid;
 }
