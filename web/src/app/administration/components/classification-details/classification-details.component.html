@@ -1,21 +1,26 @@
 <div class="container-scrollable">
-  <taskana-shared-spinner [isRunning]="requestInProgress" class="floating" (spinnerIsRunning)="spinnerRunning($event)"></taskana-shared-spinner>
+  <taskana-shared-spinner [isRunning]="requestInProgress" class="floating"
+                          (spinnerIsRunning)="spinnerRunning($event)"></taskana-shared-spinner>
   <div id="classification-details" *ngIf="classification && !spinnerIsRunning">
     <div id="classification" class="panel panel-default classification">
 
       <!-- TITLE + ACTION BUTTONS -->
       <div class="panel-heading">
         <div class="pull-right btn-group">
-          <button type="button" (click)="onSubmit()" class="btn btn-default btn-primary" data-toggle="tooltip" title="Save">
+          <button type="button" (click)="onSubmit()" class="btn btn-default btn-primary"
+                  data-toggle="tooltip" title="Save">
             <span class="material-icons md-20">save</span>
           </button>
-          <button type="button" (click)="onRestore()" class="btn btn-default" data-toggle="tooltip" title="Restore Previous Version">
+          <button type="button" (click)="onRestore()" class="btn btn-default" data-toggle="tooltip"
+                  title="Restore Previous Version">
             <span class="material-icons md-20 blue">restore</span>
           </button>
-          <button type="button" (click)="onCopy()" data-toggle="tooltip" title="Copy" class="btn btn-default" id="copyButton">
+          <button type="button" (click)="onCopy()" data-toggle="tooltip" title="Copy"
+                  class="btn btn-default" id="copyButton">
             <span class="material-icons md-20 green-blue">content_copy</span>
           </button>
-          <button type="button" (click)="removeClassification()" data-toggle="tooltip" title="Delete" class="btn btn-default">
+          <button type="button" (click)="removeClassification()" data-toggle="tooltip"
+                  title="Delete" class="btn btn-default">
             <span class="material-icons md-20 red">delete</span>
           </button>
         </div>
@@ -34,19 +39,23 @@
               <!-- KEY -->
               <div class="form-group required">
                 <label for="classification-key" class="control-label">Key</label>
-                <input type="text" required #key="ngModel" [disabled]="!isCreatingNewClassification" class="form-control"
-                       id="classification-key" placeholder="Key" [(ngModel)]="classification.key" name="classification.key">
-                <taskana-shared-field-error-display [displayError]="key.invalid"
-                                                    [validationTrigger]="this.toggleValidationMap.get('classification.key')" errorMessage="* Key is required">
+                <input type="text" required maxlength="32" #key="ngModel" [disabled]="!isCreatingNewClassification" class="form-control"
+                       id="classification-key" placeholder="Key" [(ngModel)]="classification.key" name="classification.key" (keypress)="onKeyPressed($event, key, 32)">
+                <div *ngIf="tooLongMap.get(key.name)" class="error">{{lengthError}}</div>
+                <taskana-shared-field-error-display [displayError]="key.invalid && key.dirty"
+                                                    errorMessage="* Key is required">
                 </taskana-shared-field-error-display>
               </div>
 
               <!-- NAME -->
               <div class="form-group required">
                 <label for="classification-name" class="control-label">Name</label>
-                <input type="text" required ="255" #name="ngModel" class="form-control" id="classification-name" placeholder="Name"
-                  [(ngModel)]="classification.name" name="classification.name">
-                <taskana-shared-field-error-display [displayError]="name.invalid"
+                <input type="text" required maxlength="255" #name="ngModel"
+                       class="form-control"
+                       id="classification-name" placeholder="Name"
+                       [(ngModel)]="classification.name" name="classification.name" (keypress)="onKeyPressed($event, name, 255)">
+                <div *ngIf="tooLongMap.get(name.name)" class="error">{{lengthError}}</div>
+                <taskana-shared-field-error-display [displayError]="name.invalid && name.dirty"
                                                     errorMessage="* Name is required">
                 </taskana-shared-field-error-display>
               </div>
@@ -55,12 +64,14 @@
               <div class="form-group">
                 <label for="classification-domain" class="control-label">Domain</label>
                 <input type="text" disabled #domain class="form-control" id="classification-domain"
-                  placeholder="Domain" [(ngModel)]="classification.domain" name="classification.domain">
+                       placeholder="Domain" [(ngModel)]="classification.domain"
+                       name="classification.domain">
                 <a *ngIf="!masterDomainSelected()" (click)="validChanged()">
                   <label>
                     <b>Valid in Domain:</b>
-                    <span class="material-icons md-20 blue ">{{classification.isValidInDomain ? 'check_box':
-                      'check_box_outline_blank'}}</span>
+                    <span class="material-icons md-20 blue ">{{classification.isValidInDomain
+                        ? 'check_box' :
+                        'check_box_outline_blank'}}</span>
                   </label>
                 </a>
               </div>
@@ -69,29 +80,40 @@
               <div class="row">
                 <div class="form-group required col-xs-6">
                   <label for="classification-priority" class="control-label">Priority</label>
-                  <taskana-shared-number-picker [(ngModel)]="classification.priority" name="classification.priority" id="classification-priority" [required]="true"></taskana-shared-number-picker>
-                  <taskana-shared-field-error-display [displayError]="!isFieldValid('classification.priority')" [validationTrigger]="this.toggleValidationMap.get('classification.priority')"
-                                                      errorMessage="* Priority is required">
+                  <taskana-shared-number-picker [(ngModel)]="classification.priority"
+                                                name="classification.priority"
+                                                id="classification-priority"
+                                                [required]="true"></taskana-shared-number-picker>
+                  <taskana-shared-field-error-display
+                      [displayError]="!isFieldValid('classification.priority')"
+                      [validationTrigger]="this.toggleValidationMap.get('classification.priority.name')"
+                      errorMessage="* Priority is required">
                   </taskana-shared-field-error-display>
                 </div>
                 <div class="form-group required btn-group col-xs-6">
                   <label for="classification-category" class="control-label">Category</label>
-                  <div class="dropdown clearfix ">
-                    <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true"
-                      aria-expanded="true" id="classification-category">
+                  <div class="dropdown clearfix">
+                    <button class="btn btn-default" type="button" data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="true" id="classification-category">
                       <span class="text-top">
-                        <svg-icon class="blue fa-fw" src="{{(getCategoryIcon(classification.category) | async)?.name}}"
-                          data-toggle="tooltip" [title]="(getCategoryIcon(classification.category) | async)?.text"></svg-icon>
+                        <svg-icon class="blue fa-fw"
+                                  src="{{(getCategoryIcon(classification.category) | async)?.name}}"
+                                  data-toggle="tooltip"
+                                  [title]="(getCategoryIcon(classification.category) | async)?.text"></svg-icon>
                       </span>
                       {{classification.category}}
                       <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu" aria-labelledby="dropdownMenu">
                       <li>
-                        <a *ngFor="let category of getAvailableCategories(classification.type) | async" (click)="selectCategory(category)">
+                        <a *ngFor="let category of getAvailableCategories(classification.type) | async"
+                           (click)="selectCategory(category)">
                           <span class="text-top">
-                            <svg-icon class="blue fa-fw" src="{{(getCategoryIcon(category) | async)?.name}}" data-toggle="tooltip"
-                              [title]="(getCategoryIcon(category) | async)?.text"></svg-icon>
+                            <svg-icon class="blue fa-fw"
+                                      src="{{(getCategoryIcon(category) | async)?.name}}"
+                                      data-toggle="tooltip"
+                                      [title]="(getCategoryIcon(category) | async)?.text"></svg-icon>
                             {{category}}
                           </span>
                         </a>
@@ -105,35 +127,51 @@
 
               <!-- SERVICE LEVEL -->
               <div class="form-group">
-                <label for="classification-service-level" class="control-label">Service Level</label>
-                <input type="text" maxlength="255" class="form-control" id="classification-service-level" placeholder="Service Level"
-                  [(ngModel)]="classification.serviceLevel" name="classification.serviceLevel">
+                <label for="classification-service-level" class="control-label">Service
+                  Level</label>
+                <input type="text" maxlength="255" class="form-control"
+                       id="classification-service-level" placeholder="Service Level"
+                       [(ngModel)]="classification.serviceLevel" name="classification.serviceLevel" #serviceLevel="ngModel" (keypress)="onKeyPressed($event, serviceLevel, 255)">
+                <div *ngIf="tooLongMap.get(serviceLevel.name)" class="error">{{lengthError}}</div>
               </div>
 
               <!-- APPLICATION ENTRY POINT -->
               <div class="form-group">
-                <label for="classification-application-entry-point" class="control-label">Application entry point</label>
-                <input type="text" maxlength="255" class="form-control" id="classification-application-entry-point" placeholder="Application entry point"
-                  [(ngModel)]="classification.applicationEntryPoint" name="classification.applicationEntryPoint">
+                <label for="classification-application-entry-point" class="control-label">
+                  Application entry point</label>
+                <input type="text"  maxlength="255" class="form-control"
+                       id="classification-application-entry-point"
+                       placeholder="Application entry point"
+                       [(ngModel)]="classification.applicationEntryPoint"
+                       name="classification.applicationEntryPoint" #appEntryPoint="ngModel" (keypress)="onKeyPressed($event, appEntryPoint, 255)">
+                <div *ngIf="tooLongMap.get(appEntryPoint.name)" class="error">{{lengthError}}</div>
               </div>
 
               <!-- DESCRIPTION -->
               <div class="form-group">
                 <label for="classification-description" class="control-label">Description</label>
-                <textarea class="form-control" maxlength="255" rows="5" id="classification-description" placeholder="Description"
-                  [(ngModel)]="classification.description" name="classification.description"></textarea>
+                <textarea class="form-control" maxlength="255" rows="5"
+                          id="classification-description" placeholder="Description"
+                          [(ngModel)]="classification.description"
+                          name="classification.description" #description="ngModel" (keypress)="onKeyPressed($event, description, 255)"></textarea>
+                <div *ngIf="tooLongMap.get(description.name)" class="error">{{lengthError}}</div>
               </div>
             </div>
           </div>
 
           <!-- CUSTOM FIELDS -->
           <div class="row custom-field-row">
-            <div class="custom-classification-form" *ngFor="let customField of (customFields$ | async), let i = index"
+            <div class="custom-classification-form"
+                 *ngFor="let customField of (customFields$ | async), let i = index"
                  style="width: 50%;">
               <div *ngIf="customField.visible" class="form-group custom-field-wrapper">
-                <label for="classification-custom-{{i + 1}}" class="control-label">{{customField.field}}</label>
-                <input type="text" maxlength="255" class="form-control" id="classification-custom-{{i + 1}}" placeholder="{{customField.field}}"
-                  [(ngModel)]="classification[getClassificationCustom(i + 1)]" name="classification.custom{{i + 1}}">
+                <label for="classification-custom-{{i + 1}}"
+                       class="control-label">{{customField.field}}</label>
+                <input type="text" maxlength="255" class="form-control"
+                       id="classification-custom-{{i + 1}}" placeholder="{{customField.field}}"
+                       [(ngModel)]="classification[getClassificationCustom(i + 1)]"
+                       name="classification.custom{{i + 1}}" #custom="ngModel" (keypress)="onKeyPressed($event, custom, 255)">
+                <div *ngIf="tooLongMap.get(custom.name)" class="error">{{lengthError}}</div>
               </div>
             </div>
           </div>

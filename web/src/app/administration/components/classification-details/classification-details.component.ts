@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
-import { Observable, Subject } from 'rxjs';
+import { combineLatest, Observable, Subject, Subscription, timer } from 'rxjs';
 
 import { highlight } from 'theme/animations/validation.animation';
 
@@ -8,7 +8,7 @@ import { RequestInProgressService } from 'app/shared/services/request-in-progres
 
 import { DomainService } from 'app/shared/services/domain/domain.service';
 import { Pair } from 'app/shared/models/pair';
-import { NgForm } from '@angular/forms';
+import { NgForm, NgModel } from '@angular/forms';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { ImportExportService } from 'app/administration/services/import-export.service';
 import { map, take, takeUntil } from 'rxjs/operators';
@@ -52,8 +52,12 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   isCreatingNewClassification: boolean = false;
 
   @ViewChild('ClassificationForm', { static: false }) classificationForm: NgForm;
-  toogleValidationMap = new Map<string, boolean>();
+  toggleValidationMap = new Map<string, boolean>();
   destroy$ = new Subject<void>();
+
+  private timeout = new Map<string, Subscription>();
+  readonly lengthError = 'You have reached the maximal length';
+  tooLongMap = new Map<string, boolean>();
 
   constructor(
     private location: Location,
@@ -232,5 +236,15 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         this.afterRequest();
       });
     this.location.go(this.location.path().replace(/(classifications).*/g, 'classifications'));
+  }
+
+  onKeyPressed(event: KeyboardEvent, model: NgModel, max: Number): void {
+    if (this.timeout.has(model.name)) {
+      this.timeout.get(model.name).unsubscribe();
+    }
+    if (model.value.length >= max && !event.altKey && !event.ctrlKey) {
+      this.tooLongMap.set(model.name, true);
+      this.timeout.set(model.name, timer(3000).subscribe(() => this.tooLongMap.set(model.name, false)));
+    }
   }
 }
