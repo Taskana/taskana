@@ -17,7 +17,7 @@ import { CreateWorkbasket, SetActiveAction } from '../../../shared/store/workbas
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
 
 @Component({
-  selector: 'taskana-workbasket-list-toolbar',
+  selector: 'taskana-administration-workbasket-list-toolbar',
   animations: [expandDown],
   templateUrl: './workbasket-list-toolbar.component.html',
   styleUrls: ['./workbasket-list-toolbar.component.scss']

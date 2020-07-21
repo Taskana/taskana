@@ -5,7 +5,7 @@ import { expandDown } from 'theme/animations/expand.animation';
 import { Side } from '../workbasket-distribution-targets/workbasket-distribution-targets.component';
 
 @Component({
-  selector: 'taskana-workbasket-dual-list',
+  selector: 'taskana-administration-workbasket-dual-list',
   templateUrl: './workbasket-dual-list.component.html',
   styleUrls: ['./workbasket-dual-list.component.scss'],
   animations: [expandDown]

@@ -32,7 +32,7 @@ import { GetWorkbasketAccessItems,
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
 
 @Component({
-  selector: 'taskana-workbasket-access-items',
+  selector: 'taskana-administration-workbasket-access-items',
   templateUrl: './workbasket-access-items.component.html',
   animations: [highlight],
   styleUrls: ['./workbasket-access-items.component.scss']
@@ -102,7 +102,9 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
 
   ngAfterViewInit() {
     this.inputs.changes.subscribe(next => {
-      if (this.added) next.last.nativeElement.focus();
+      if (typeof next.last !== 'undefined') {
+        if (this.added) next.last.nativeElement.focus();
+      }
     });
   }
 

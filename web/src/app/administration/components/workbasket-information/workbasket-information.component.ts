@@ -31,7 +31,7 @@ import { CopyWorkbasket, MarkWorkbasketForDeletion,
   UpdateWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
 
 @Component({
-  selector: 'taskana-workbasket-information',
+  selector: 'taskana-administration-workbasket-information',
   templateUrl: './workbasket-information.component.html',
   styleUrls: ['./workbasket-information.component.scss']
 })

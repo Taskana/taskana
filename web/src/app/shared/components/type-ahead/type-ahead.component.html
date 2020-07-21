@@ -33,7 +33,7 @@
       <input #inputTypeAhead class="form-control input-text" [ngClass]="{'invalid': !dataSource.length && isRequired}"  (blur)="typeaheadOnSelect({'item':dataSource.selected})"
         name="accessItem-{{index}}" [required]="isRequired ? 'required' : null" #accessItemName="ngModel" [(ngModel)]="value"
         [typeahead]="dataSource" typeaheadOptionField="name" [typeaheadItemTemplate]="customItemTemplate"
-        (typeaheadOnSelect)="typeaheadOnSelect($event, index)" [typeaheadScrollable]="true"
+        (typeaheadOnSelect)="typeaheadOnSelect($event)" [typeaheadScrollable]="true"
         [typeaheadOptionsInScrollableView]="typeaheadOptionsInScrollableView" [typeaheadMinLength]="typeaheadMinLength"
         [typeaheadWaitMs]="typeaheadWaitMs" (typeaheadLoading)="changeTypeaheadLoading($event)" placeholder="{{displayError? placeHolderMessage: ''}}"
         [@validation]="validationValue">
