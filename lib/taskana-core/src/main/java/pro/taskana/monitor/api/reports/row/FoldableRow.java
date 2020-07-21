@@ -52,8 +52,18 @@ public abstract class FoldableRow<I extends QueryItem> extends SingleRow<I> {
         .updateTotalValue(item);
   }
 
+  @Override
+  public void setDisplayName(Map<String, String> displayMap) {
+    super.setDisplayName(displayMap);
+    foldableRows.values().forEach(row -> row.setDisplayName(displayMap));
+  }
+
   public Row<I> getFoldableRow(String key) {
     return foldableRows.get(key);
+  }
+
+  public Map<String, Row<I>> getFoldableRows() {
+    return foldableRows;
   }
 
   protected abstract Row<I> buildRow(String key, int columnSize);

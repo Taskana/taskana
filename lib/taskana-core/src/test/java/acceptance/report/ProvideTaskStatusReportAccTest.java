@@ -26,7 +26,7 @@ import pro.taskana.task.api.TaskState;
 @ExtendWith(JaasExtension.class)
 class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
 
-  MonitorService monitorService = taskanaEngine.getMonitorService();
+  private static final MonitorService MONITOR_SERVICE = taskanaEngine.getMonitorService();
 
   @BeforeEach
   void reset() throws Exception {
@@ -35,7 +35,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
 
   @Test
   void should_ThrowException_IfUserIsNotAuthorized() {
-    assertThatThrownBy(() -> monitorService.createTaskStatusReportBuilder().buildReport())
+    assertThatThrownBy(() -> MONITOR_SERVICE.createTaskStatusReportBuilder().buildReport())
         .isInstanceOf(NotAuthorizedException.class);
   }
 
@@ -45,7 +45,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "taskadmin")
   @TestTemplate
   void should_ThrowException_IfUserIsNotAdminOrMonitor() {
-    assertThatThrownBy(() -> monitorService.createTaskStatusReportBuilder().buildReport())
+    assertThatThrownBy(() -> MONITOR_SERVICE.createTaskStatusReportBuilder().buildReport())
         .isInstanceOf(NotAuthorizedException.class);
   }
 
@@ -53,14 +53,25 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "monitor")
   @TestTemplate
   void should_BuildReport_IfUserIsAdminOrMonitor() {
-    assertThatCode(() -> monitorService.createTaskStatusReportBuilder().buildReport())
+    assertThatCode(() -> MONITOR_SERVICE.createTaskStatusReportBuilder().buildReport())
         .doesNotThrowAnyException();
   }
 
   @WithAccessId(user = "monitor")
   @Test
+  void should_augmentDisplayNames_When_ReportIsBuild() throws Exception {
+    TaskStatusReport report = MONITOR_SERVICE.createTaskStatusReportBuilder().buildReport();
+
+    assertThat(report.getRows()).hasSize(3);
+    assertThat(report.getRow("DOMAIN_A").getDisplayName()).isEqualTo("DOMAIN_A");
+    assertThat(report.getRow("DOMAIN_B").getDisplayName()).isEqualTo("DOMAIN_B");
+    assertThat(report.getRow("DOMAIN_C").getDisplayName()).isEqualTo("DOMAIN_C");
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
   void testCompleteTaskStatusReport() throws Exception {
-    TaskStatusReport report = monitorService.createTaskStatusReportBuilder().buildReport();
+    TaskStatusReport report = MONITOR_SERVICE.createTaskStatusReportBuilder().buildReport();
 
     assertThat(report).isNotNull();
     assertThat(report.rowSize()).isEqualTo(3);
@@ -86,7 +97,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
   @Test
   void testCompleteTaskStatusReportWithDomainFilter() throws Exception {
     TaskStatusReport report =
-        monitorService
+        MONITOR_SERVICE
             .createTaskStatusReportBuilder()
             .domainIn(asList("DOMAIN_C", "DOMAIN_A"))
             .buildReport();
@@ -111,7 +122,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
   @Test
   void testCompleteTaskStatusReportWithStateFilter() throws Exception {
     TaskStatusReport report =
-        monitorService
+        MONITOR_SERVICE
             .createTaskStatusReportBuilder()
             .stateIn(Collections.singletonList(TaskState.READY))
             .buildReport();
@@ -146,7 +157,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     taskService.cancelTask("TKI:000000000000000000000000000000000013");
     taskService.cancelTask("TKI:000000000000000000000000000000000014");
     TaskStatusReport report =
-        monitorService
+        MONITOR_SERVICE
             .createTaskStatusReportBuilder()
             .stateIn(
                 Arrays.asList(

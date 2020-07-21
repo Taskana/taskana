@@ -72,7 +72,7 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
 
     List<String> values =
         monitorService
-            .createCategoryReportBuilder()
+            .createClassificationCategoryReportBuilder()
             .customAttributeFilterIn(customAttributeFilter)
             .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_16);
 
@@ -88,7 +88,7 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
 
     List<String> values =
         monitorService
-            .createCategoryReportBuilder()
+            .createClassificationCategoryReportBuilder()
             .domainIn(domains)
             .excludedClassificationIdIn(
                 Collections.singletonList("CLI:000000000000000000000000000000000003"))

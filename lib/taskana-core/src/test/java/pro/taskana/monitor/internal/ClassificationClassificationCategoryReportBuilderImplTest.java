@@ -80,7 +80,7 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
         .thenReturn(expectedResult);
 
     final ClassificationCategoryReport actualResult =
-        cut.createCategoryReportBuilder()
+        cut.createClassificationCategoryReportBuilder()
             .workbasketIdIn(workbasketIds)
             .stateIn(states)
             .classificationCategoryIn(categories)
@@ -140,7 +140,7 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
         .thenReturn(expectedResult);
 
     final ClassificationCategoryReport actualResult =
-        cut.createCategoryReportBuilder()
+        cut.createClassificationCategoryReportBuilder()
             .workbasketIdIn(workbasketIds)
             .stateIn(states)
             .classificationCategoryIn(categories)
@@ -206,7 +206,7 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
         .thenReturn(expectedResult);
 
     final List<String> actualResult =
-        cut.createCategoryReportBuilder()
+        cut.createClassificationCategoryReportBuilder()
             .workbasketIdIn(workbasketIds)
             .stateIn(states)
             .classificationCategoryIn(categories)
@@ -239,7 +239,7 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
     SelectedItem selectedItem = new SelectedItem();
     List<SelectedItem> selectedItems = Collections.singletonList(selectedItem);
     List<String> result =
-        cut.createCategoryReportBuilder().listTaskIdsForSelectedItems(selectedItems);
+        cut.createClassificationCategoryReportBuilder().listTaskIdsForSelectedItems(selectedItems);
     assertThat(result).isNotNull();
   }
 
@@ -275,7 +275,7 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
         .thenReturn(expectedResult);
 
     final List<String> actualResult =
-        cut.createCategoryReportBuilder()
+        cut.createClassificationCategoryReportBuilder()
             .workbasketIdIn(workbasketIds)
             .stateIn(states)
             .classificationCategoryIn(categories)
@@ -305,7 +305,7 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
   @Test
   void testListCustomAttributeValuesForCustomAttributeNameIsEmptyResult() throws Exception {
     List<String> result =
-        cut.createCategoryReportBuilder()
+        cut.createClassificationCategoryReportBuilder()
             .workbasketIdIn(Collections.singletonList("DieGibtsSicherNed"))
             .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_1);
     assertThat(result).isNotNull();

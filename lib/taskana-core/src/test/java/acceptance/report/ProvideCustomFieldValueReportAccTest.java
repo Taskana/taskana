@@ -46,6 +46,21 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
+  void should_augmentDisplayNames_When_ReportIsBuild() throws Exception {
+    CustomFieldValueReport report =
+        MONITOR_SERVICE.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1).buildReport();
+
+    assertThat(report.getRows()).hasSize(3);
+    assertThat(report.getRow("Geschaeftsstelle A").getDisplayName())
+        .isEqualTo("Geschaeftsstelle A");
+    assertThat(report.getRow("Geschaeftsstelle B").getDisplayName())
+        .isEqualTo("Geschaeftsstelle B");
+    assertThat(report.getRow("Geschaeftsstelle C").getDisplayName())
+        .isEqualTo("Geschaeftsstelle C");
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
   void testGetTotalNumbersOfTasksOfCustomFieldValueReportForCustom1() throws Exception {
     CustomFieldValueReport report =
         MONITOR_SERVICE.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1).buildReport();

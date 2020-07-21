@@ -43,6 +43,19 @@ class ProvideClassificationReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
+  void should_augmentDisplayNames_When_ReportIsBuild() throws Exception {
+    ClassificationReport report = MONITOR_SERVICE.createClassificationReportBuilder().buildReport();
+
+    assertThat(report.getRows()).hasSize(5);
+    assertThat(report.getRow("L10000").getDisplayName()).isEqualTo("OLD-Leistungsfall");
+    assertThat(report.getRow("L20000").getDisplayName()).isEqualTo("Beratungsprotokoll");
+    assertThat(report.getRow("L30000").getDisplayName()).isEqualTo("Widerruf");
+    assertThat(report.getRow("L40000").getDisplayName()).isEqualTo("Dynamikaenderung");
+    assertThat(report.getRow("L50000").getDisplayName()).isEqualTo("Dynamik-Ablehnung");
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
   void testGetTotalNumbersOfTasksOfClassificationReport() throws Exception {
     ClassificationReport report = MONITOR_SERVICE.createClassificationReportBuilder().buildReport();
 

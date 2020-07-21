@@ -99,6 +99,11 @@ public abstract class Report<I extends QueryItem, H extends ColumnHeader<? super
     items.forEach(this::addItem);
   }
 
+  public final void augmentDisplayNames(Map<String, String> displayMap) {
+    reportRows.values().forEach(row -> row.setDisplayName(displayMap));
+    sumRow.setDisplayName(displayMap);
+  }
+
   protected Row<I> createRow(String key, int columnSize) {
     return new SingleRow<>(key, columnSize);
   }

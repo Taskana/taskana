@@ -1,9 +1,14 @@
 package pro.taskana.monitor.internal.reports;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.classification.api.ClassificationService;
+import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
@@ -15,6 +20,7 @@ import pro.taskana.monitor.api.reports.ClassificationReport.DetailedClassificati
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.DetailedMonitorQueryItem;
 import pro.taskana.monitor.api.reports.item.MonitorQueryItem;
+import pro.taskana.monitor.api.reports.row.Row;
 import pro.taskana.monitor.internal.MonitorMapper;
 import pro.taskana.monitor.internal.preprocessor.DaysToWorkingDaysReportPreProcessor;
 
@@ -25,10 +31,12 @@ public class ClassificationReportBuilderImpl
 
   private static final Logger LOGGER =
       LoggerFactory.getLogger(ClassificationReportBuilderImpl.class);
+  private final ClassificationService classificationService;
 
   public ClassificationReportBuilderImpl(
       InternalTaskanaEngine taskanaEngine, MonitorMapper monitorMapper) {
     super(taskanaEngine, monitorMapper);
+    classificationService = taskanaEngine.getEngine().getClassificationService();
   }
 
   @Override
@@ -59,6 +67,17 @@ public class ClassificationReportBuilderImpl
           monitorQueryItems,
           new DaysToWorkingDaysReportPreProcessor<>(
               this.columnHeaders, converter, this.inWorkingDays));
+      Map<String, String> displayMap =
+          classificationService
+              .createClassificationQuery()
+              .keyIn(report.getRows().keySet().toArray(new String[0]))
+              .domainIn(domains != null ? domains.toArray(new String[0]) : null)
+              .list()
+              .stream()
+              .collect(
+                  Collectors.toMap(
+                      ClassificationSummary::getKey, ClassificationSummary::getName, (a, b) -> a));
+      report.augmentDisplayNames(displayMap);
       return report;
     } finally {
       this.taskanaEngine.returnConnection();
@@ -95,7 +114,24 @@ public class ClassificationReportBuilderImpl
           detailedMonitorQueryItems,
           new DaysToWorkingDaysReportPreProcessor<>(
               this.columnHeaders, converter, this.inWorkingDays));
-
+      Stream<String> attachmentKeys =
+          report.getRows().keySet().stream()
+              .map(report::getRow)
+              .flatMap(row -> row.getFoldableRows().values().stream())
+              .map(Row::getKey);
+      Map<String, String> displayMap =
+          classificationService
+              .createClassificationQuery()
+              .keyIn(
+                  Stream.concat(attachmentKeys, report.getRows().keySet().stream())
+                      .toArray(String[]::new))
+              .domainIn(domains != null ? domains.toArray(new String[0]) : null)
+              .list()
+              .stream()
+              .collect(
+                  Collectors.toMap(
+                      ClassificationSummary::getKey, ClassificationSummary::getName, (a, b) -> a));
+      report.augmentDisplayNames(displayMap);
       return report;
     } finally {
       this.taskanaEngine.returnConnection();

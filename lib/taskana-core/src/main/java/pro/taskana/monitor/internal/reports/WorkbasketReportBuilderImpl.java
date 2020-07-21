@@ -1,6 +1,8 @@
 package pro.taskana.monitor.internal.reports;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +18,8 @@ import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.MonitorQueryItem;
 import pro.taskana.monitor.internal.MonitorMapper;
 import pro.taskana.monitor.internal.preprocessor.DaysToWorkingDaysReportPreProcessor;
+import pro.taskana.workbasket.api.WorkbasketService;
+import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
 /** The implementation of WorkbasketReportBuilder. */
 public class WorkbasketReportBuilderImpl
@@ -23,11 +27,13 @@ public class WorkbasketReportBuilderImpl
     implements WorkbasketReport.Builder {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketReportBuilderImpl.class);
+  private final WorkbasketService workbasketService;
   private List<CombinedClassificationFilter> combinedClassificationFilter;
 
   public WorkbasketReportBuilderImpl(
       InternalTaskanaEngine taskanaEngine, MonitorMapper monitorMapper) {
     super(taskanaEngine, monitorMapper);
+    workbasketService = taskanaEngine.getEngine().getWorkbasketService();
   }
 
   @Override
@@ -58,6 +64,20 @@ public class WorkbasketReportBuilderImpl
           monitorQueryItems,
           new DaysToWorkingDaysReportPreProcessor<>(
               this.columnHeaders, converter, this.inWorkingDays));
+
+      Map<String, String> displayMap =
+          taskanaEngine.runAsAdmin(
+              () ->
+                  workbasketService
+                      .createWorkbasketQuery()
+                      .keyIn(report.getRows().keySet().toArray(new String[0]))
+                      .domainIn(domains != null ? domains.toArray(new String[0]) : null)
+                      .list()
+                      .stream()
+                      .collect(
+                          Collectors.toMap(
+                              WorkbasketSummary::getKey, WorkbasketSummary::getName, (a, b) -> a)));
+      report.augmentDisplayNames(displayMap);
       return report;
     } finally {
       this.taskanaEngine.returnConnection();

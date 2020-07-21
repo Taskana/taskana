@@ -16,8 +16,8 @@ import pro.taskana.task.api.TaskState;
 public class TaskStatusReportBuilderImpl implements TaskStatusReport.Builder {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskStatusReportBuilderImpl.class);
-  private InternalTaskanaEngine taskanaEngine;
-  private MonitorMapper monitorMapper;
+  private final InternalTaskanaEngine taskanaEngine;
+  private final MonitorMapper monitorMapper;
   private List<String> domains;
   private List<TaskState> states;
 

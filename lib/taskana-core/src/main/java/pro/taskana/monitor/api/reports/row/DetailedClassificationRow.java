@@ -13,7 +13,7 @@ public class DetailedClassificationRow extends FoldableRow<DetailedMonitorQueryI
     super(
         key,
         columnSize,
-        (item) -> item.getAttachmentKey() != null ? item.getAttachmentKey() : "N/A");
+        item -> item.getAttachmentKey() != null ? item.getAttachmentKey() : "N/A");
   }
 
   @Override

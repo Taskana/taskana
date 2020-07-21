@@ -62,7 +62,7 @@ class ReportRepresentationModelTest {
     ReportRepresentationModel.MetaInformation meta = resource.getMeta();
     assertEquals("WorkbasketReport", meta.getName());
     assertEquals("2019-01-02T00:00:00Z", meta.getDate());
-    assertArrayEquals(new String[] {"WORKBASKET KEYS"}, meta.getRowDesc());
+    assertArrayEquals(new String[] {"WORKBASKET"}, meta.getRowDesc());
     assertArrayEquals(
         headers.stream().map(TimeIntervalColumnHeader::getDisplayName).toArray(), meta.getHeader());
     assertEquals("Total", meta.getTotalDesc());
@@ -98,7 +98,7 @@ class ReportRepresentationModelTest {
     ReportRepresentationModel.MetaInformation meta = resource.getMeta();
     assertEquals("ClassificationReport", meta.getName());
     assertEquals("2019-01-02T00:00:00Z", meta.getDate());
-    assertArrayEquals(new String[] {"CLASSIFICATION KEYS"}, meta.getRowDesc());
+    assertArrayEquals(new String[] {"CLASSIFICATION"}, meta.getRowDesc());
     assertArrayEquals(
         headers.stream().map(TimeIntervalColumnHeader::getDisplayName).toArray(), meta.getHeader());
     assertEquals("Total", meta.getTotalDesc());
@@ -144,7 +144,7 @@ class ReportRepresentationModelTest {
     ReportRepresentationModel.MetaInformation meta = resource.getMeta();
     assertEquals("ClassificationReport", meta.getName());
     assertEquals("2019-01-02T00:00:00Z", meta.getDate());
-    assertArrayEquals(new String[] {"CLASSIFICATION KEYS"}, meta.getRowDesc());
+    assertArrayEquals(new String[] {"CLASSIFICATION"}, meta.getRowDesc());
     assertArrayEquals(
         headers.stream().map(TimeIntervalColumnHeader::getDisplayName).toArray(), meta.getHeader());
     assertEquals("Total", meta.getTotalDesc());
@@ -199,7 +199,7 @@ class ReportRepresentationModelTest {
     ReportRepresentationModel.MetaInformation meta = resource.getMeta();
     assertEquals("DetailedClassificationReport", meta.getName());
     assertEquals("2019-01-02T00:00:00Z", meta.getDate());
-    assertArrayEquals(new String[] {"TASK CLASSIFICATION KEYS", "ATTACHMENT"}, meta.getRowDesc());
+    assertArrayEquals(new String[] {"TASK CLASSIFICATION", "ATTACHMENT"}, meta.getRowDesc());
     assertArrayEquals(
         headers.stream().map(TimeIntervalColumnHeader::getDisplayName).toArray(), meta.getHeader());
     assertEquals("Total", meta.getTotalDesc());
@@ -279,7 +279,7 @@ class ReportRepresentationModelTest {
     ReportRepresentationModel.MetaInformation meta = resource.getMeta();
     assertEquals("DetailedClassificationReport", meta.getName());
     assertEquals("2019-01-02T00:00:00Z", meta.getDate());
-    assertArrayEquals(new String[] {"TASK CLASSIFICATION KEYS", "ATTACHMENT"}, meta.getRowDesc());
+    assertArrayEquals(new String[] {"TASK CLASSIFICATION", "ATTACHMENT"}, meta.getRowDesc());
     assertArrayEquals(
         headers.stream().map(TimeIntervalColumnHeader::getDisplayName).toArray(), meta.getHeader());
     assertEquals("Total", meta.getTotalDesc());
