@@ -4,6 +4,7 @@ import java.util.List;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.MonitorQueryItem;
 
@@ -15,17 +16,23 @@ import pro.taskana.monitor.api.reports.item.MonitorQueryItem;
  * also the number of tasks of the respective cluster. The age of the tasks can be counted in days
  * or in working days. Tasks with Timestamp DUE = null are not considered.
  */
-public class CategoryReport extends Report<MonitorQueryItem, TimeIntervalColumnHeader> {
+public class ClassificationCategoryReport
+    extends Report<MonitorQueryItem, TimeIntervalColumnHeader> {
 
-  public CategoryReport(List<TimeIntervalColumnHeader> timeIntervalColumnHeaders) {
+  public ClassificationCategoryReport(List<TimeIntervalColumnHeader> timeIntervalColumnHeaders) {
     super(timeIntervalColumnHeaders, new String[] {"CLASSIFICATION CATEGORIES"});
   }
 
-  /** Builder for {@link CategoryReport}. */
+  /** Builder for {@link ClassificationCategoryReport}. */
   public interface Builder
       extends TimeIntervalReportBuilder<Builder, MonitorQueryItem, TimeIntervalColumnHeader> {
 
     @Override
-    CategoryReport buildReport() throws NotAuthorizedException, InvalidArgumentException;
+    ClassificationCategoryReport buildReport()
+        throws NotAuthorizedException, InvalidArgumentException;
+
+    @Override
+    ClassificationCategoryReport buildReport(TaskTimestamp timestamp)
+        throws NotAuthorizedException, InvalidArgumentException;
   }
 }

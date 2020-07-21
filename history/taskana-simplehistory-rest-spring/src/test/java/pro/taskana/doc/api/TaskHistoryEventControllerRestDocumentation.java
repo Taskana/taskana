@@ -173,7 +173,9 @@ public class TaskHistoryEventControllerRestDocumentation {
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.get(
-                    "http://127.0.0.1:" + port + "/api/v1/task-history-event/HEI:000000000000000000000000000000000000")
+                    "http://127.0.0.1:"
+                        + port
+                        + "/api/v1/task-history-event/HEI:000000000000000000000000000000000000")
                 .accept("application/hal+json")
                 .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
         .andExpect(MockMvcResultMatchers.status().isOk())

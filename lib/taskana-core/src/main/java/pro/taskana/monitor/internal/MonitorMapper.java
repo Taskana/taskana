@@ -9,13 +9,13 @@ import org.apache.ibatis.annotations.Select;
 
 import pro.taskana.monitor.api.CombinedClassificationFilter;
 import pro.taskana.monitor.api.SelectedItem;
+import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.item.DetailedMonitorQueryItem;
 import pro.taskana.monitor.api.reports.item.MonitorQueryItem;
 import pro.taskana.monitor.api.reports.item.TaskQueryItem;
 import pro.taskana.monitor.api.reports.item.TimestampQueryItem;
 import pro.taskana.task.api.CustomField;
 import pro.taskana.task.api.TaskState;
-import pro.taskana.task.api.Timestamp;
 
 /** This class is the mybatis mapping of task monitoring. */
 @SuppressWarnings({"checkstyle:LineLength", "checkstyle:Indentation"})
@@ -24,9 +24,9 @@ public interface MonitorMapper {
   @Select(
       "<script>"
           + "SELECT B.WORKBASKET_KEY, B.AGE_IN_DAYS, COUNT(B.AGE_IN_DAYS) AS NUMBER_OF_TASKS FROM ("
-          + "<if test=\"_databaseId == 'db2'\">SELECT T.WORKBASKET_KEY, (DAYS(T.DUE) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS </if> "
-          + "<if test=\"_databaseId == 'h2'\">SELECT T.WORKBASKET_KEY, DATEDIFF('DAY', CURRENT_TIMESTAMP, T.DUE) as AGE_IN_DAYS </if> "
-          + "<if test=\"_databaseId == 'postgres'\">SELECT T.WORKBASKET_KEY, DATE_PART('DAY', T.DUE - CURRENT_TIMESTAMP) as AGE_IN_DAYS </if> "
+          + "<if test=\"_databaseId == 'db2'\">SELECT T.WORKBASKET_KEY, (DAYS(T.${timestamp}) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS </if> "
+          + "<if test=\"_databaseId == 'h2'\">SELECT T.WORKBASKET_KEY, DATEDIFF('DAY', CURRENT_TIMESTAMP, T.${timestamp}) as AGE_IN_DAYS </if> "
+          + "<if test=\"_databaseId == 'postgres'\">SELECT T.WORKBASKET_KEY, DATE_PART('DAY', T.${timestamp} - CURRENT_TIMESTAMP) as AGE_IN_DAYS </if> "
           + "FROM TASK AS T LEFT JOIN ATTACHMENT AS A ON T.ID = A.TASK_ID "
           + "<where>"
           + "<if test=\"workbasketIds != null\">"
@@ -35,8 +35,8 @@ public interface MonitorMapper {
           + "<if test=\"states != null\">"
           + "AND T.STATE IN (<foreach collection='states' item='state' separator=','>#{state}</foreach>) "
           + "</if>"
-          + "<if test=\"categories != null\">"
-          + "AND T.CLASSIFICATION_CATEGORY IN (<foreach collection='categories' item='category' separator=','>#{category}</foreach>) "
+          + "<if test=\"classificationCategories != null\">"
+          + "AND T.CLASSIFICATION_CATEGORY IN (<foreach collection='classificationCategories' item='category' separator=','>#{category}</foreach>) "
           + "</if>"
           + "<if test=\"domains != null\">"
           + "AND T.DOMAIN IN (<foreach collection='domains' item='domain' separator=','>#{domain}</foreach>) "
@@ -69,66 +69,9 @@ public interface MonitorMapper {
   List<MonitorQueryItem> getTaskCountOfWorkbaskets(
       @Param("workbasketIds") List<String> workbasketIds,
       @Param("states") List<TaskState> states,
-      @Param("categories") List<String> categories,
+      @Param("classificationCategories") List<String> classificationCategories,
       @Param("domains") List<String> domains,
-      @Param("classificationIds") List<String> classificationIds,
-      @Param("excludedClassificationIds") List<String> excludedClassificationIds,
-      @Param("customAttributeFilter") Map<CustomField, String> customAttributeFilter,
-      @Param("combinedClassificationFilter")
-          List<CombinedClassificationFilter> combinedClassificationFilter);
-
-  @Select(
-      "<script>"
-          + "SELECT B.WORKBASKET_KEY, B.AGE_IN_DAYS, COUNT(B.AGE_IN_DAYS) AS NUMBER_OF_TASKS FROM ("
-          + "<if test=\"_databaseId == 'db2'\">SELECT T.WORKBASKET_KEY, (DAYS(T.PLANNED) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS </if> "
-          + "<if test=\"_databaseId == 'h2'\">SELECT T.WORKBASKET_KEY, DATEDIFF('DAY', CURRENT_TIMESTAMP, T.PLANNED) as AGE_IN_DAYS </if> "
-          + "<if test=\"_databaseId == 'postgres'\">SELECT T.WORKBASKET_KEY, DATE_PART('DAY', T.PLANNED - CURRENT_TIMESTAMP) as AGE_IN_DAYS </if> "
-          + "FROM TASK AS T LEFT JOIN ATTACHMENT AS A ON T.ID = A.TASK_ID "
-          + "<where>"
-          + "<if test=\"workbasketIds != null\">"
-          + "T.WORKBASKET_ID IN (<foreach collection='workbasketIds' item='workbasketId' separator=','>#{workbasketId}</foreach>) "
-          + "</if>"
-          + "<if test=\"states != null\">"
-          + "AND T.STATE IN (<foreach collection='states' item='state' separator=','>#{state}</foreach>) "
-          + "</if>"
-          + "<if test=\"categories != null\">"
-          + "AND T.CLASSIFICATION_CATEGORY IN (<foreach collection='categories' item='category' separator=','>#{category}</foreach>) "
-          + "</if>"
-          + "<if test=\"domains != null\">"
-          + "AND T.DOMAIN IN (<foreach collection='domains' item='domain' separator=','>#{domain}</foreach>) "
-          + "</if>"
-          + "<if test='classificationIds != null'>"
-          + "AND CLASSIFICATION_ID IN (<foreach collection='classificationIds' item='classificationId' separator=','>#{classificationId}</foreach>) "
-          + "</if>"
-          + "<if test='excludedClassificationIds != null'>"
-          + "AND CLASSIFICATION_ID NOT IN (<foreach collection='excludedClassificationIds' item='excludedClassificationId' separator=','>#{excludedClassificationId}</foreach>) "
-          + "</if>"
-          + "<if test='customAttributeFilter != null'>"
-          + "AND (<foreach collection='customAttributeFilter.keys' item='key' separator=' AND '>(${key} = '${customAttributeFilter.get(key)}')</foreach>) "
-          + "</if>"
-          + "<if test=\"combinedClassificationFilter != null\">"
-          + "AND <foreach collection='combinedClassificationFilter' item='item' separator='OR'> "
-          + "T.CLASSIFICATION_ID = #{item.taskClassificationId}"
-          + "<if test=\"item.attachmentClassificationId != null\">"
-          + "AND A.CLASSIFICATION_ID = #{item.attachmentClassificationId}"
-          + "</if>"
-          + "</foreach>"
-          + "</if>"
-          + "AND T.PLANNED IS NOT NULL "
-          + "</where>"
-          + ") AS B "
-          + "GROUP BY B.WORKBASKET_KEY, B.AGE_IN_DAYS"
-          + "</script>")
-  @Results({
-    @Result(column = "WORKBASKET_KEY", property = "key"),
-    @Result(column = "AGE_IN_DAYS", property = "ageInDays"),
-    @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks")
-  })
-  List<MonitorQueryItem> getTaskCountOfWorkbasketsBasedOnPlannedDate(
-      @Param("workbasketIds") List<String> workbasketIds,
-      @Param("states") List<TaskState> states,
-      @Param("categories") List<String> categories,
-      @Param("domains") List<String> domains,
+      @Param("timestamp") TaskTimestamp timestamp,
       @Param("classificationIds") List<String> classificationIds,
       @Param("excludedClassificationIds") List<String> excludedClassificationIds,
       @Param("customAttributeFilter") Map<CustomField, String> customAttributeFilter,
@@ -138,9 +81,9 @@ public interface MonitorMapper {
   @Select(
       "<script>"
           + "SELECT B.CLASSIFICATION_CATEGORY, B.AGE_IN_DAYS, COUNT(B.AGE_IN_DAYS) AS NUMBER_OF_TASKS FROM ("
-          + "<if test=\"_databaseId == 'db2'\">SELECT CLASSIFICATION_CATEGORY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS </if> "
-          + "<if test=\"_databaseId == 'h2'\">SELECT CLASSIFICATION_CATEGORY, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE) as AGE_IN_DAYS </if> "
-          + "<if test=\"_databaseId == 'postgres'\">SELECT CLASSIFICATION_CATEGORY, DATE_PART('DAY', DUE - CURRENT_TIMESTAMP) as AGE_IN_DAYS </if> "
+          + "<if test=\"_databaseId == 'db2'\">SELECT CLASSIFICATION_CATEGORY, (DAYS(${timestamp}) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS </if> "
+          + "<if test=\"_databaseId == 'h2'\">SELECT CLASSIFICATION_CATEGORY, DATEDIFF('DAY', CURRENT_TIMESTAMP, ${timestamp}) as AGE_IN_DAYS </if> "
+          + "<if test=\"_databaseId == 'postgres'\">SELECT CLASSIFICATION_CATEGORY, DATE_PART('DAY', ${timestamp} - CURRENT_TIMESTAMP) as AGE_IN_DAYS </if> "
           + "FROM TASK "
           + "<where>"
           + "<if test=\"workbasketIds != null\">"
@@ -149,8 +92,8 @@ public interface MonitorMapper {
           + "<if test=\"states != null\">"
           + "AND STATE IN (<foreach collection='states' item='state' separator=','>#{state}</foreach>) "
           + "</if>"
-          + "<if test=\"categories != null\">"
-          + "AND CLASSIFICATION_CATEGORY IN (<foreach collection='categories' item='category' separator=','>#{category}</foreach>) "
+          + "<if test=\"classificationCategories != null\">"
+          + "AND CLASSIFICATION_CATEGORY IN (<foreach collection='classificationCategories' item='category' separator=','>#{category}</foreach>) "
           + "</if>"
           + "<if test=\"domains != null\">"
           + "AND DOMAIN IN (<foreach collection='domains' item='domain' separator=','>#{domain}</foreach>) "
@@ -177,8 +120,9 @@ public interface MonitorMapper {
   List<MonitorQueryItem> getTaskCountOfCategories(
       @Param("workbasketIds") List<String> workbasketIds,
       @Param("states") List<TaskState> states,
-      @Param("categories") List<String> categories,
+      @Param("classificationCategories") List<String> classificationCategories,
       @Param("domains") List<String> domains,
+      @Param("timestamp") TaskTimestamp timestamp,
       @Param("classificationIds") List<String> classificationIds,
       @Param("excludedClassificationIds") List<String> excludedClassificationIds,
       @Param("customAttributeFilter") Map<CustomField, String> customAttributeFilter);
@@ -186,9 +130,9 @@ public interface MonitorMapper {
   @Select(
       "<script>"
           + "SELECT B.CLASSIFICATION_KEY, B.AGE_IN_DAYS, COUNT(B.AGE_IN_DAYS) AS NUMBER_OF_TASKS FROM ("
-          + "<if test=\"_databaseId == 'db2'\">SELECT CLASSIFICATION_KEY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS </if> "
-          + "<if test=\"_databaseId == 'h2'\">SELECT CLASSIFICATION_KEY, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE) as AGE_IN_DAYS </if> "
-          + "<if test=\"_databaseId == 'postgres'\">SELECT CLASSIFICATION_KEY, DATE_PART('DAY', DUE - CURRENT_TIMESTAMP) as AGE_IN_DAYS </if> "
+          + "<if test=\"_databaseId == 'db2'\">SELECT CLASSIFICATION_KEY, (DAYS(${timestamp}) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS </if> "
+          + "<if test=\"_databaseId == 'h2'\">SELECT CLASSIFICATION_KEY, DATEDIFF('DAY', CURRENT_TIMESTAMP, ${timestamp}) as AGE_IN_DAYS </if> "
+          + "<if test=\"_databaseId == 'postgres'\">SELECT CLASSIFICATION_KEY, DATE_PART('DAY', ${timestamp} - CURRENT_TIMESTAMP) as AGE_IN_DAYS </if> "
           + "FROM TASK "
           + "<where>"
           + "<if test=\"workbasketIds != null\">"
@@ -197,8 +141,8 @@ public interface MonitorMapper {
           + "<if test=\"states != null\">"
           + "AND STATE IN (<foreach collection='states' item='state' separator=','>#{state}</foreach>) "
           + "</if>"
-          + "<if test=\"categories != null\">"
-          + "AND CLASSIFICATION_CATEGORY IN (<foreach collection='categories' item='category' separator=','>#{category}</foreach>) "
+          + "<if test=\"classificationCategories != null\">"
+          + "AND CLASSIFICATION_CATEGORY IN (<foreach collection='classificationCategories' item='category' separator=','>#{category}</foreach>) "
           + "</if>"
           + "<if test=\"domains != null\">"
           + "AND DOMAIN IN (<foreach collection='domains' item='domain' separator=','>#{domain}</foreach>) "
@@ -225,8 +169,9 @@ public interface MonitorMapper {
   List<MonitorQueryItem> getTaskCountOfClassifications(
       @Param("workbasketIds") List<String> workbasketIds,
       @Param("states") List<TaskState> states,
-      @Param("categories") List<String> categories,
+      @Param("classificationCategories") List<String> classificationCategories,
       @Param("domains") List<String> domains,
+      @Param("timestamp") TaskTimestamp timestamp,
       @Param("classificationIds") List<String> classificationIds,
       @Param("excludedClassificationIds") List<String> excludedClassificationIds,
       @Param("customAttributeFilter") Map<CustomField, String> customAttributeFilter);
@@ -234,9 +179,9 @@ public interface MonitorMapper {
   @Select(
       "<script>"
           + "SELECT B.TASK_CLASSIFICATION_KEY, B.ATTACHMENT_CLASSIFICATION_KEY, B.AGE_IN_DAYS, COUNT(B.AGE_IN_DAYS) AS NUMBER_OF_TASKS FROM ("
-          + "<if test=\"_databaseId == 'db2'\">SELECT T.CLASSIFICATION_KEY as TASK_CLASSIFICATION_KEY, A.CLASSIFICATION_KEY as ATTACHMENT_CLASSIFICATION_KEY, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS </if> "
-          + "<if test=\"_databaseId == 'h2'\">SELECT T.CLASSIFICATION_KEY as TASK_CLASSIFICATION_KEY, A.CLASSIFICATION_KEY as ATTACHMENT_CLASSIFICATION_KEY, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE) as AGE_IN_DAYS </if> "
-          + "<if test=\"_databaseId == 'postgres'\">SELECT T.CLASSIFICATION_KEY as TASK_CLASSIFICATION_KEY, A.CLASSIFICATION_KEY as ATTACHMENT_CLASSIFICATION_KEY, DATE_PART('DAY', DUE - CURRENT_TIMESTAMP) as AGE_IN_DAYS </if> "
+          + "<if test=\"_databaseId == 'db2'\">SELECT T.CLASSIFICATION_KEY as TASK_CLASSIFICATION_KEY, A.CLASSIFICATION_KEY as ATTACHMENT_CLASSIFICATION_KEY, (DAYS(T.${timestamp}) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS </if> "
+          + "<if test=\"_databaseId == 'h2'\">SELECT T.CLASSIFICATION_KEY as TASK_CLASSIFICATION_KEY, A.CLASSIFICATION_KEY as ATTACHMENT_CLASSIFICATION_KEY, DATEDIFF('DAY', CURRENT_TIMESTAMP, T.${timestamp}) as AGE_IN_DAYS </if> "
+          + "<if test=\"_databaseId == 'postgres'\">SELECT T.CLASSIFICATION_KEY as TASK_CLASSIFICATION_KEY, A.CLASSIFICATION_KEY as ATTACHMENT_CLASSIFICATION_KEY, DATE_PART('DAY', T.${timestamp} - CURRENT_TIMESTAMP) as AGE_IN_DAYS </if> "
           + "FROM TASK AS T LEFT JOIN ATTACHMENT AS A ON T.ID = A.TASK_ID "
           + "<where>"
           + "<if test=\"workbasketIds != null\">"
@@ -245,8 +190,8 @@ public interface MonitorMapper {
           + "<if test=\"states != null\">"
           + "AND STATE IN (<foreach collection='states' item='state' separator=','>#{state}</foreach>) "
           + "</if>"
-          + "<if test=\"categories != null\">"
-          + "AND CLASSIFICATION_CATEGORY IN (<foreach collection='categories' item='category' separator=','>#{category}</foreach>) "
+          + "<if test=\"classificationCategories != null\">"
+          + "AND CLASSIFICATION_CATEGORY IN (<foreach collection='classificationCategories' item='category' separator=','>#{category}</foreach>) "
           + "</if>"
           + "<if test=\"domains != null\">"
           + "AND DOMAIN IN (<foreach collection='domains' item='domain' separator=','>#{domain}</foreach>) "
@@ -274,8 +219,9 @@ public interface MonitorMapper {
   List<DetailedMonitorQueryItem> getTaskCountOfDetailedClassifications(
       @Param("workbasketIds") List<String> workbasketIds,
       @Param("states") List<TaskState> states,
-      @Param("categories") List<String> categories,
+      @Param("classificationCategories") List<String> classificationCategories,
       @Param("domains") List<String> domains,
+      @Param("timestamp") TaskTimestamp timestamp,
       @Param("classificationIds") List<String> classificationIds,
       @Param("excludedClassificationIds") List<String> excludedClassificationIds,
       @Param("customAttributeFilter") Map<CustomField, String> customAttributeFilter);
@@ -283,9 +229,9 @@ public interface MonitorMapper {
   @Select(
       "<script>"
           + "SELECT B.CUSTOM_FIELD, B.AGE_IN_DAYS, COUNT(B.AGE_IN_DAYS) AS NUMBER_OF_TASKS FROM ("
-          + "<if test=\"_databaseId == 'db2'\">SELECT ${customField} as CUSTOM_FIELD, (DAYS(DUE) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS </if> "
-          + "<if test=\"_databaseId == 'h2'\">SELECT ${customField} as CUSTOM_FIELD, DATEDIFF('DAY', CURRENT_TIMESTAMP, DUE) as AGE_IN_DAYS </if> "
-          + "<if test=\"_databaseId == 'postgres'\">SELECT ${customField} as CUSTOM_FIELD, DATE_PART('DAY', DUE - CURRENT_TIMESTAMP) as AGE_IN_DAYS </if> "
+          + "<if test=\"_databaseId == 'db2'\">SELECT ${customField} as CUSTOM_FIELD, (DAYS(${timestamp}) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS </if> "
+          + "<if test=\"_databaseId == 'h2'\">SELECT ${customField} as CUSTOM_FIELD, DATEDIFF('DAY', CURRENT_TIMESTAMP, ${timestamp}) as AGE_IN_DAYS </if> "
+          + "<if test=\"_databaseId == 'postgres'\">SELECT ${customField} as CUSTOM_FIELD, DATE_PART('DAY', ${timestamp} - CURRENT_TIMESTAMP) as AGE_IN_DAYS </if> "
           + "FROM TASK "
           + "<where>"
           + "<if test=\"workbasketIds != null\">"
@@ -294,8 +240,8 @@ public interface MonitorMapper {
           + "<if test=\"states != null\">"
           + "AND STATE IN (<foreach collection='states' item='state' separator=','>#{state}</foreach>) "
           + "</if>"
-          + "<if test=\"categories != null\">"
-          + "AND CLASSIFICATION_CATEGORY IN (<foreach collection='categories' item='category' separator=','>#{category}</foreach>) "
+          + "<if test=\"classificationCategories != null\">"
+          + "AND CLASSIFICATION_CATEGORY IN (<foreach collection='classificationCategories' item='category' separator=','>#{category}</foreach>) "
           + "</if>"
           + "<if test=\"domains != null\">"
           + "AND DOMAIN IN (<foreach collection='domains' item='domain' separator=','>#{domain}</foreach>) "
@@ -323,8 +269,9 @@ public interface MonitorMapper {
       @Param("customField") CustomField customField,
       @Param("workbasketIds") List<String> workbasketIds,
       @Param("states") List<TaskState> states,
-      @Param("categories") List<String> categories,
+      @Param("classificationCategories") List<String> classificationCategories,
       @Param("domains") List<String> domains,
+      @Param("timestamp") TaskTimestamp timestamp,
       @Param("classificationIds") List<String> classificationIds,
       @Param("excludedClassificationIds") List<String> excludedClassificationIds,
       @Param("customAttributeFilter") Map<CustomField, String> customAttributeFilter);
@@ -342,8 +289,8 @@ public interface MonitorMapper {
           + "<if test=\"states != null\">"
           + "AND T.STATE IN (<foreach collection='states' item='state' separator=','>#{state}</foreach>) "
           + "</if>"
-          + "<if test=\"categories != null\">"
-          + "AND T.CLASSIFICATION_CATEGORY IN (<foreach collection='categories' item='category' separator=','>#{category}</foreach>) "
+          + "<if test=\"classificationCategories != null\">"
+          + "AND T.CLASSIFICATION_CATEGORY IN (<foreach collection='classificationCategories' item='category' separator=','>#{category}</foreach>) "
           + "</if>"
           + "<if test=\"domains != null\">"
           + "AND DOMAIN IN (<foreach collection='domains' item='domain' separator=','>#{domain}</foreach>) "
@@ -382,7 +329,7 @@ public interface MonitorMapper {
   List<String> getTaskIdsForSelectedItems(
       @Param("workbasketIds") List<String> workbasketIds,
       @Param("states") List<TaskState> states,
-      @Param("categories") List<String> categories,
+      @Param("classificationCategories") List<String> classificationCategories,
       @Param("domains") List<String> domains,
       @Param("classificationIds") List<String> classificationIds,
       @Param("excludedClassificationIds") List<String> excludedClassificationIds,
@@ -424,8 +371,8 @@ public interface MonitorMapper {
           + "<if test='states != null'>"
           + "AND STATE IN (<foreach collection='states' item='state' separator=','>#{state}</foreach>) "
           + "</if>"
-          + "<if test='categories != null'>"
-          + "AND CLASSIFICATION_CATEGORY IN (<foreach collection='categories' item='category' separator=','>#{category}</foreach>) "
+          + "<if test='classificationCategories != null'>"
+          + "AND CLASSIFICATION_CATEGORY IN (<foreach collection='classificationCategories' item='category' separator=','>#{category}</foreach>) "
           + "</if>"
           + "<if test='domains != null'>"
           + "AND DOMAIN IN (<foreach collection='domains' item='domain' separator=','>#{domain}</foreach>) "
@@ -444,7 +391,7 @@ public interface MonitorMapper {
   List<String> getCustomAttributeValuesForReport(
       @Param("workbasketIds") List<String> workbasketIds,
       @Param("states") List<TaskState> states,
-      @Param("categories") List<String> categories,
+      @Param("classificationCategories") List<String> classificationCategories,
       @Param("domains") List<String> domains,
       @Param("classificationIds") List<String> classificationIds,
       @Param("excludedClassificationIds") List<String> excludedClassificationIds,
@@ -471,8 +418,8 @@ public interface MonitorMapper {
           + "<if test=\"status.name() == 'COMPLETED'\">"
           + "T.COMPLETED IS NOT NULL"
           + "</if>"
-          + "<if test='categories != null'>"
-          + "AND CLASSIFICATION_CATEGORY IN (<foreach collection='categories' item='category' separator=','>#{category}</foreach>) "
+          + "<if test='classificationCategories != null'>"
+          + "AND CLASSIFICATION_CATEGORY IN (<foreach collection='classificationCategories' item='category' separator=','>#{category}</foreach>) "
           + "</if>"
           + "<if test='classificationIds != null'>"
           + "AND CLASSIFICATION_ID IN (<foreach collection='classificationIds' item='classificationId' separator=','>#{classificationId}</foreach>) "
@@ -500,8 +447,8 @@ public interface MonitorMapper {
     @Result(column = "ORG_LEVEL_4", property = "orgLevel4")
   })
   List<TimestampQueryItem> getTasksCountForStatusGroupedByOrgLevel(
-      @Param("status") Timestamp status,
-      @Param("categories") List<String> categories,
+      @Param("status") TaskTimestamp status,
+      @Param("classificationCategories") List<String> classificationCategories,
       @Param("classificationIds") List<String> classificationIds,
       @Param("excludedClassificationIds") List<String> excludedClassificationIds,
       @Param("domains") List<String> domains,

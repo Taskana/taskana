@@ -4,10 +4,10 @@ import java.util.List;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.TimestampQueryItem;
 import pro.taskana.monitor.api.reports.row.TimestampRow;
-import pro.taskana.task.api.Timestamp;
 
 /** A {@link TimestampReport} displays created and competed tasks for a specific dates. */
 public class TimestampReport extends Report<TimestampQueryItem, TimeIntervalColumnHeader> {
@@ -35,6 +35,6 @@ public class TimestampReport extends Report<TimestampQueryItem, TimeIntervalColu
     @Override
     TimestampReport buildReport() throws NotAuthorizedException, InvalidArgumentException;
 
-    Builder withTimestamps(List<Timestamp> statuses);
+    Builder withTimestamps(List<TaskTimestamp> statuses);
   }
 }

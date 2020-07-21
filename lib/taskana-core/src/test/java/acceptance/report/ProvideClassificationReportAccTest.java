@@ -1,25 +1,29 @@
 package acceptance.report;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.jupiter.api.function.ThrowingConsumer;
 
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.monitor.api.MonitorService;
+import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.ClassificationReport;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.task.api.CustomField;
@@ -29,30 +33,18 @@ import pro.taskana.task.api.TaskState;
 @ExtendWith(JaasExtension.class)
 class ProvideClassificationReportAccTest extends AbstractReportAccTest {
 
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(ProvideClassificationReportAccTest.class);
+  private static final MonitorService MONITOR_SERVICE = taskanaEngine.getMonitorService();
 
   @Test
   void testRoleCheck() {
-    MonitorService monitorService = taskanaEngine.getMonitorService();
-
-    ThrowingCallable call =
-        () -> {
-          monitorService.createClassificationReportBuilder().buildReport();
-        };
-    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
+    assertThatThrownBy(() -> MONITOR_SERVICE.createClassificationReportBuilder().buildReport())
+        .isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(user = "monitor")
   @Test
   void testGetTotalNumbersOfTasksOfClassificationReport() throws Exception {
-    MonitorService monitorService = taskanaEngine.getMonitorService();
-
-    ClassificationReport report = monitorService.createClassificationReportBuilder().buildReport();
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(reportToString(report));
-    }
+    ClassificationReport report = MONITOR_SERVICE.createClassificationReportBuilder().buildReport();
 
     assertThat(report).isNotNull();
     assertThat(report.rowSize()).isEqualTo(5);
@@ -73,22 +65,14 @@ class ProvideClassificationReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "monitor")
   @Test
   void testGetClassificationReportWithReportLineItemDefinitions() throws Exception {
-    MonitorService monitorService = taskanaEngine.getMonitorService();
-
     List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnsHeaders();
 
     ClassificationReport report =
-        monitorService
+        MONITOR_SERVICE
             .createClassificationReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .buildReport();
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(reportToString(report, columnHeaders));
-    }
-
-    final int sumLineCount = IntStream.of(report.getSumRow().getCells()).sum();
 
     assertThat(report).isNotNull();
     assertThat(report.rowSize()).isEqualTo(5);
@@ -99,36 +83,21 @@ class ProvideClassificationReportAccTest extends AbstractReportAccTest {
     assertThat(report.getRow("L40000").getTotalValue()).isEqualTo(10);
     assertThat(report.getRow("L50000").getTotalValue()).isEqualTo(13);
 
-    assertThat(report.getSumRow().getCells()[0]).isEqualTo(10);
-    assertThat(report.getSumRow().getCells()[1]).isEqualTo(9);
-    assertThat(report.getSumRow().getCells()[2]).isEqualTo(11);
-    assertThat(report.getSumRow().getCells()[3]).isEqualTo(0);
-    assertThat(report.getSumRow().getCells()[4]).isEqualTo(4);
-    assertThat(report.getSumRow().getCells()[5]).isEqualTo(0);
-    assertThat(report.getSumRow().getCells()[6]).isEqualTo(7);
-    assertThat(report.getSumRow().getCells()[7]).isEqualTo(4);
-    assertThat(report.getSumRow().getCells()[8]).isEqualTo(5);
+    assertThat(report.getSumRow().getCells()).isEqualTo(new int[] {10, 9, 11, 0, 4, 0, 7, 4, 5});
     assertThat(report.getSumRow().getTotalValue()).isEqualTo(50);
-    assertThat(sumLineCount).isEqualTo(50);
   }
 
   @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfClassificationReport() throws Exception {
-    MonitorService monitorService = taskanaEngine.getMonitorService();
-
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     ClassificationReport report =
-        monitorService
+        MONITOR_SERVICE
             .createClassificationReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .buildReport();
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(reportToString(report, columnHeaders));
-    }
 
     assertThat(report).isNotNull();
     assertThat(report.rowSize()).isEqualTo(5);
@@ -150,21 +119,59 @@ class ProvideClassificationReportAccTest extends AbstractReportAccTest {
   }
 
   @WithAccessId(user = "monitor")
-  @Test
-  void testEachItemOfClassificationReportNotInWorkingDays() throws Exception {
-    MonitorService monitorService = taskanaEngine.getMonitorService();
+  @TestFactory
+  Stream<DynamicTest> should_NotThrowError_When_buildReportForTaskState() {
+    Iterator<TaskTimestamp> iterator = Arrays.stream(TaskTimestamp.values()).iterator();
+    ThrowingConsumer<TaskTimestamp> test =
+        timestamp -> {
+          ThrowingCallable callable =
+              () -> MONITOR_SERVICE.createClassificationReportBuilder().buildReport(timestamp);
+          assertThatCode(callable).doesNotThrowAnyException();
+        };
+    return DynamicTest.stream(iterator, t -> "for TaskState " + t, test);
+  }
 
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_computeNumbersAccordingToPlannedDate_When_BuildReportForPlanned() throws Exception {
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     ClassificationReport report =
-        monitorService
+        MONITOR_SERVICE
+            .createClassificationReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .inWorkingDays()
+            .buildReport(TaskTimestamp.PLANNED);
+
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(5);
+
+    int[] row1 = report.getRow("L10000").getCells();
+    assertThat(row1).isEqualTo(new int[] {0, 2, 8, 0, 0});
+
+    int[] row2 = report.getRow("L20000").getCells();
+    assertThat(row2).isEqualTo(new int[] {0, 1, 9, 0, 0});
+
+    int[] row3 = report.getRow("L30000").getCells();
+    assertThat(row3).isEqualTo(new int[] {0, 0, 7, 0, 0});
+
+    int[] row4 = report.getRow("L40000").getCells();
+    assertThat(row4).isEqualTo(new int[] {0, 0, 10, 0, 0});
+
+    int[] row5 = report.getRow("L50000").getCells();
+    assertThat(row5).isEqualTo(new int[] {0, 0, 13, 0, 0});
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void testEachItemOfClassificationReportNotInWorkingDays() throws Exception {
+    List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
+
+    ClassificationReport report =
+        MONITOR_SERVICE
             .createClassificationReportBuilder()
             .withColumnHeaders(columnHeaders)
             .buildReport();
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(reportToString(report, columnHeaders));
-    }
 
     assertThat(report).isNotNull();
     assertThat(report.rowSize()).isEqualTo(5);
@@ -188,23 +195,17 @@ class ProvideClassificationReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfClassificationReportWithWorkbasketFilter() throws Exception {
-    MonitorService monitorService = taskanaEngine.getMonitorService();
-
     List<String> workbasketIds =
         Collections.singletonList("WBI:000000000000000000000000000000000001");
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     ClassificationReport report =
-        monitorService
+        MONITOR_SERVICE
             .createClassificationReportBuilder()
             .withColumnHeaders(columnHeaders)
             .workbasketIdIn(workbasketIds)
             .inWorkingDays()
             .buildReport();
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(reportToString(report, columnHeaders));
-    }
 
     assertThat(report).isNotNull();
     assertThat(report.rowSize()).isEqualTo(5);
@@ -228,22 +229,16 @@ class ProvideClassificationReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfClassificationReportWithStateFilter() throws Exception {
-    MonitorService monitorService = taskanaEngine.getMonitorService();
-
     List<TaskState> states = Collections.singletonList(TaskState.READY);
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     ClassificationReport report =
-        monitorService
+        MONITOR_SERVICE
             .createClassificationReportBuilder()
             .withColumnHeaders(columnHeaders)
             .stateIn(states)
             .inWorkingDays()
             .buildReport();
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(reportToString(report, columnHeaders));
-    }
 
     assertThat(report).isNotNull();
     assertThat(report.rowSize()).isEqualTo(5);
@@ -267,22 +262,16 @@ class ProvideClassificationReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfClassificationReportWithCategoryFilter() throws Exception {
-    MonitorService monitorService = taskanaEngine.getMonitorService();
-
     List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     ClassificationReport report =
-        monitorService
+        MONITOR_SERVICE
             .createClassificationReportBuilder()
             .withColumnHeaders(columnHeaders)
-            .categoryIn(categories)
+            .classificationCategoryIn(categories)
             .inWorkingDays()
             .buildReport();
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(reportToString(report, columnHeaders));
-    }
 
     assertThat(report).isNotNull();
     assertThat(report.rowSize()).isEqualTo(2);
@@ -297,22 +286,16 @@ class ProvideClassificationReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfClassificationReportWithDomainFilter() throws Exception {
-    MonitorService monitorService = taskanaEngine.getMonitorService();
-
     List<String> domains = Collections.singletonList("DOMAIN_A");
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     ClassificationReport report =
-        monitorService
+        MONITOR_SERVICE
             .createClassificationReportBuilder()
             .withColumnHeaders(columnHeaders)
             .domainIn(domains)
             .inWorkingDays()
             .buildReport();
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(reportToString(report, columnHeaders));
-    }
 
     assertThat(report).isNotNull();
     assertThat(report.rowSize()).isEqualTo(5);
@@ -336,23 +319,17 @@ class ProvideClassificationReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfClassificationReportWithCustomFieldValueFilter() throws Exception {
-    MonitorService monitorService = taskanaEngine.getMonitorService();
-
     Map<CustomField, String> customAttributeFilter = new HashMap<>();
     customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     ClassificationReport report =
-        monitorService
+        MONITOR_SERVICE
             .createClassificationReportBuilder()
             .withColumnHeaders(columnHeaders)
             .customAttributeFilterIn(customAttributeFilter)
             .inWorkingDays()
             .buildReport();
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(reportToString(report, columnHeaders));
-    }
 
     assertThat(report).isNotNull();
     assertThat(report.rowSize()).isEqualTo(5);
@@ -395,76 +372,5 @@ class ProvideClassificationReportAccTest extends AbstractReportAccTest {
     reportLineItemDefinitions.add(new TimeIntervalColumnHeader(1, 5));
     reportLineItemDefinitions.add(new TimeIntervalColumnHeader(6, Integer.MAX_VALUE));
     return reportLineItemDefinitions;
-  }
-
-  private String reportToString(ClassificationReport report) {
-    return reportToString(report, null);
-  }
-
-  private String reportToString(
-      ClassificationReport report, List<TimeIntervalColumnHeader> columnHeaders) {
-    final String formatColumWidth = "| %-7s ";
-    final String formatFirstColumn = "| %-36s  %-4s ";
-    final String formatFirstColumnFirstLine = "| %-29s %12s ";
-    final String formatFirstColumnSumLine = "| %-36s  %-5s";
-    int reportWidth = columnHeaders == null ? 46 : columnHeaders.size() * 10 + 46;
-
-    StringBuilder builder = new StringBuilder();
-    builder.append("\n");
-    for (int i = 0; i < reportWidth; i++) {
-      builder.append("-");
-    }
-    builder.append("\n");
-    builder.append(String.format(formatFirstColumnFirstLine, "Classifications", "Total"));
-    if (columnHeaders != null) {
-      for (TimeIntervalColumnHeader def : columnHeaders) {
-        if (def.getLowerAgeLimit() == Integer.MIN_VALUE) {
-          builder.append(String.format(formatColumWidth, "< " + def.getUpperAgeLimit()));
-        } else if (def.getUpperAgeLimit() == Integer.MAX_VALUE) {
-          builder.append(String.format(formatColumWidth, "> " + def.getLowerAgeLimit()));
-        } else if (def.getLowerAgeLimit() == def.getUpperAgeLimit()) {
-          if (def.getLowerAgeLimit() == 0) {
-            builder.append(String.format(formatColumWidth, "today"));
-          } else {
-            builder.append(String.format(formatColumWidth, def.getLowerAgeLimit()));
-          }
-        } else {
-          builder.append(
-              String.format(
-                  formatColumWidth, def.getLowerAgeLimit() + ".." + def.getUpperAgeLimit()));
-        }
-      }
-    }
-    builder.append("|\n");
-
-    for (int i = 0; i < reportWidth; i++) {
-      builder.append("-");
-    }
-    builder.append("\n");
-
-    for (String rl : report.rowTitles()) {
-      builder.append(String.format(formatFirstColumn, rl, report.getRow(rl).getTotalValue()));
-      if (columnHeaders != null) {
-        for (int cell : report.getRow(rl).getCells()) {
-          builder.append(String.format(formatColumWidth, cell));
-        }
-      }
-      builder.append("|\n");
-      for (int i = 0; i < reportWidth; i++) {
-        builder.append("-");
-      }
-      builder.append("\n");
-    }
-    builder.append(
-        String.format(formatFirstColumnSumLine, "Total", report.getSumRow().getTotalValue()));
-    for (int cell : report.getSumRow().getCells()) {
-      builder.append(String.format(formatColumWidth, cell));
-    }
-    builder.append("|\n");
-    for (int i = 0; i < reportWidth; i++) {
-      builder.append("-");
-    }
-    builder.append("\n");
-    return builder.toString();
   }
 }

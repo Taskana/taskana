@@ -87,8 +87,7 @@ public class JaasExtension implements InvocationInterceptor, TestTemplateInvocat
       Invocation<T> invocation,
       ReflectiveInvocationContext<Method> invocationContext,
       ExtensionContext extensionContext) {
-    WithAccessIds annotation = invocationContext.getExecutable().getAnnotation(
-        WithAccessIds.class);
+    WithAccessIds annotation = invocationContext.getExecutable().getAnnotation(WithAccessIds.class);
     if (annotation != null) {
       // our goal is to run each test returned from the test factory X times. X is the amount of
       // WithAccessId annotations. In order to achieve this we are wrapping the result from the
@@ -236,8 +235,7 @@ public class JaasExtension implements InvocationInterceptor, TestTemplateInvocat
 
   private static <T> T extractAccessIdAndPerformInvocation(
       Invocation<T> invocation, AnnotatedElement executable) {
-    return performInvocationWithAccessId(invocation, executable.getAnnotation(
-        WithAccessId.class));
+    return performInvocationWithAccessId(invocation, executable.getAnnotation(WithAccessId.class));
   }
 
   private static <T> T performInvocationWithAccessId(
@@ -250,8 +248,7 @@ public class JaasExtension implements InvocationInterceptor, TestTemplateInvocat
     return Subject.doAs(subject, performInvocation);
   }
 
-  private static List<Principal> getPrincipals(
-      WithAccessId withAccessId) {
+  private static List<Principal> getPrincipals(WithAccessId withAccessId) {
     if (withAccessId != null) {
       return Stream.concat(
               Stream.of(withAccessId.user()).map(UserPrincipal::new),
@@ -289,16 +286,14 @@ public class JaasExtension implements InvocationInterceptor, TestTemplateInvocat
     return context.getStore(Namespace.create(getClass(), context.getRequiredTestMethod()));
   }
 
-  private static String getDisplayNameForAccessId(
-      WithAccessId withAccessId) {
+  private static String getDisplayNameForAccessId(WithAccessId withAccessId) {
     return String.format("for user '%s'", withAccessId.user());
   }
 
   private static class JaasExtensionInvocationContext implements TestTemplateInvocationContext {
     private final WithAccessId withAccessId;
 
-    private JaasExtensionInvocationContext(
-        WithAccessId withAccessId) {
+    private JaasExtensionInvocationContext(WithAccessId withAccessId) {
       this.withAccessId = withAccessId;
     }
 

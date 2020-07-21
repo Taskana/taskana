@@ -32,7 +32,7 @@ class WorkbasketAccessItemQueryImplTest {
   @Mock private SqlSession sqlSession;
 
   @Test
-  void should_ReturnList_when_BuilderIsUsed() {
+  void should_ReturnList_When_BuilderIsUsed() {
     when(internalTaskanaEngine.openAndReturnConnection(any())).thenReturn(new ArrayList<>());
 
     List<WorkbasketAccessItem> result =
@@ -41,7 +41,7 @@ class WorkbasketAccessItemQueryImplTest {
   }
 
   @Test
-  void should_ReturnListWithOffset_when_BuilderIsUsed() {
+  void should_ReturnListWithOffset_When_BuilderIsUsed() {
     when(internalTaskanaEngine.getSqlSession()).thenReturn(sqlSession);
     when(sqlSession.selectList(any(), any(), any())).thenReturn(new ArrayList<>());
 
@@ -51,7 +51,7 @@ class WorkbasketAccessItemQueryImplTest {
   }
 
   @Test
-  void should_ReturnOneItem_when_BuilderIsUsed() {
+  void should_ReturnOneItem_When_BuilderIsUsed() {
     when(internalTaskanaEngine.getSqlSession()).thenReturn(sqlSession);
     when(sqlSession.selectOne(any(), any())).thenReturn(new WorkbasketAccessItemImpl());
 

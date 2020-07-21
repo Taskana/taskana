@@ -4,6 +4,7 @@ import java.util.List;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.MonitorQueryItem;
 
@@ -27,5 +28,9 @@ public class CustomFieldValueReport extends Report<MonitorQueryItem, TimeInterva
 
     @Override
     CustomFieldValueReport buildReport() throws NotAuthorizedException, InvalidArgumentException;
+
+    @Override
+    CustomFieldValueReport buildReport(TaskTimestamp timestamp)
+        throws NotAuthorizedException, InvalidArgumentException;
   }
 }

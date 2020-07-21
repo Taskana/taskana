@@ -8,6 +8,7 @@ import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
+import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.ClassificationReport;
 import pro.taskana.monitor.api.reports.ClassificationReport.Builder;
 import pro.taskana.monitor.api.reports.ClassificationReport.DetailedClassificationReport;
@@ -22,7 +23,8 @@ public class ClassificationReportBuilderImpl
     extends TimeIntervalReportBuilderImpl<Builder, MonitorQueryItem, TimeIntervalColumnHeader>
     implements ClassificationReport.Builder {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationReport.Builder.class);
+  private static final Logger LOGGER =
+      LoggerFactory.getLogger(ClassificationReportBuilderImpl.class);
 
   public ClassificationReportBuilderImpl(
       InternalTaskanaEngine taskanaEngine, MonitorMapper monitorMapper) {
@@ -31,6 +33,12 @@ public class ClassificationReportBuilderImpl
 
   @Override
   public ClassificationReport buildReport()
+      throws NotAuthorizedException, InvalidArgumentException {
+    return buildReport(TaskTimestamp.DUE);
+  }
+
+  @Override
+  public ClassificationReport buildReport(TaskTimestamp timestamp)
       throws InvalidArgumentException, NotAuthorizedException {
     LOGGER.debug("entry to buildReport(), this = {}", this);
     this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
@@ -41,8 +49,9 @@ public class ClassificationReportBuilderImpl
           this.monitorMapper.getTaskCountOfClassifications(
               this.workbasketIds,
               this.states,
-              this.categories,
+              this.classificationCategory,
               this.domains,
+              timestamp,
               this.classificationIds,
               this.excludedClassificationIds,
               this.customAttributeFilter);
@@ -60,6 +69,12 @@ public class ClassificationReportBuilderImpl
   @Override
   public DetailedClassificationReport buildDetailedReport()
       throws InvalidArgumentException, NotAuthorizedException {
+    return buildDetailedReport(TaskTimestamp.DUE);
+  }
+
+  @Override
+  public DetailedClassificationReport buildDetailedReport(TaskTimestamp timestamp)
+      throws InvalidArgumentException, NotAuthorizedException {
     LOGGER.debug("entry to buildDetailedReport(), this = {}", this);
     this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
     try {
@@ -69,8 +84,9 @@ public class ClassificationReportBuilderImpl
           this.monitorMapper.getTaskCountOfDetailedClassifications(
               this.workbasketIds,
               this.states,
-              this.categories,
+              this.classificationCategory,
               this.domains,
+              timestamp,
               this.classificationIds,
               this.excludedClassificationIds,
               this.customAttributeFilter);

@@ -51,8 +51,7 @@ class ProvideTimestampReportAccTest extends AbstractReportAccTest {
     assertThat(timestampReport.getRows().keySet())
         .isEqualTo(new HashSet<>(Arrays.asList("CREATED", "COMPLETED")));
 
-    // * * * * * * * * * * * * * * * * * *  * *  * TEST THE CREATED ROW * * * * * * * * * * * * * *
-    // * * * * * * *
+    // * * * * * * * * * * * * * * * * * * TEST THE CREATED ROW * * * * * * * * * * * * * * * * * *
 
     TimestampRow statusRow = timestampReport.getRow("CREATED");
     assertThat(statusRow.getFoldableRowCount()).isEqualTo(2);
@@ -123,8 +122,7 @@ class ProvideTimestampReportAccTest extends AbstractReportAccTest {
     assertThat(org4Row.getCells()).isEqualTo(org3Row.getCells());
     assertThat(org4Row.getTotalValue()).isEqualTo(org3Row.getTotalValue());
 
-    // * * * * * * * * * * * * * * * * * *  * *  * TEST THE COMPLETED ROW * * * * * * * * * * * * *
-    // * * * * * * * *
+    // * * * * * * * * * * * * * * * * * * TEST THE COMPLETED ROW * * * * * * * * * * * * * * * * *
 
     statusRow = timestampReport.getRow("COMPLETED");
     assertThat(statusRow.getFoldableRowCount()).isEqualTo(2);

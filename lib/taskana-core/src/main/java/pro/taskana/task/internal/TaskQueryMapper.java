@@ -337,7 +337,6 @@ public interface TaskQueryMapper {
           + "</if>"
           + "<if test=\"addAttachmentClassificationNameToSelectClauseForOrdering\">"
           + ", ACNAME "
-
           + "</if>"
           + ", FLAG ) "
           + "AS "

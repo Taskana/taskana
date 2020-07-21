@@ -22,7 +22,7 @@ import pro.taskana.common.api.exceptions.SystemException;
  * The WorkingDaysToDaysConverter provides a method to convert an age in working days into an age in
  * days.
  */
-public final class WorkingDaysToDaysConverter {
+public class WorkingDaysToDaysConverter {
 
   // offset in days from easter sunday
   private static final long OFFSET_GOOD_FRIDAY = -2; // Good Friday

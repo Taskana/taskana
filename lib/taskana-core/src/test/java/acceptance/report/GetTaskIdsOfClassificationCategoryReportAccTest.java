@@ -25,7 +25,7 @@ import pro.taskana.task.api.TaskState;
 
 /** Acceptance test for all "get task ids of category report" scenarios. */
 @ExtendWith(JaasExtension.class)
-class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
+class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccTest {
 
   @Test
   void testRoleCheck() {
@@ -211,7 +211,7 @@ class GetTaskIdsOfCategoryReportAccTest extends AbstractReportAccTest {
             .createCategoryReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
-            .categoryIn(categories)
+            .classificationCategoryIn(categories)
             .listTaskIdsForSelectedItems(selectedItems);
 
     assertThat(ids)

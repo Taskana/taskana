@@ -29,6 +29,7 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.monitor.api.CombinedClassificationFilter;
 import pro.taskana.monitor.api.SelectedItem;
+import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.WorkbasketReport;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.MonitorQueryItem;
@@ -79,6 +80,7 @@ class WorkbasketReportBuilderImplTest {
             states,
             categories,
             domains,
+            TaskTimestamp.DUE,
             classificationIds,
             excludedClassificationIds,
             customAttributeFilter,
@@ -89,7 +91,7 @@ class WorkbasketReportBuilderImplTest {
         cut.createWorkbasketReportBuilder()
             .workbasketIdIn(workbasketIds)
             .stateIn(states)
-            .categoryIn(categories)
+            .classificationCategoryIn(categories)
             .domainIn(domains)
             .classificationIdIn(classificationIds)
             .excludedClassificationIdIn(excludedClassificationIds)
@@ -102,7 +104,7 @@ class WorkbasketReportBuilderImplTest {
     verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
     verify(internalTaskanaEngineMock, times(2)).getEngine();
     verify(monitorMapperMock)
-        .getTaskCountOfWorkbaskets(any(), any(), any(), any(), any(), any(), any(), any());
+        .getTaskCountOfWorkbaskets(any(), any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
     verifyNoMoreInteractions(internalTaskanaEngineMock, taskanaEngineMock, monitorMapperMock);
 
@@ -142,6 +144,7 @@ class WorkbasketReportBuilderImplTest {
             states,
             categories,
             domains,
+            TaskTimestamp.DUE,
             classificationIds,
             excludedClassificationIds,
             customAttributeFilter,
@@ -152,7 +155,7 @@ class WorkbasketReportBuilderImplTest {
         cut.createWorkbasketReportBuilder()
             .workbasketIdIn(workbasketIds)
             .stateIn(states)
-            .categoryIn(categories)
+            .classificationCategoryIn(categories)
             .domainIn(domains)
             .classificationIdIn(classificationIds)
             .excludedClassificationIdIn(excludedClassificationIds)
@@ -166,7 +169,7 @@ class WorkbasketReportBuilderImplTest {
     verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
     verify(internalTaskanaEngineMock, times(2)).getEngine();
     verify(monitorMapperMock)
-        .getTaskCountOfWorkbaskets(any(), any(), any(), any(), any(), any(), any(), any());
+        .getTaskCountOfWorkbaskets(any(), any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
     verifyNoMoreInteractions(internalTaskanaEngineMock, taskanaEngineMock, monitorMapperMock);
 
@@ -217,7 +220,7 @@ class WorkbasketReportBuilderImplTest {
         cut.createWorkbasketReportBuilder()
             .workbasketIdIn(workbasketIds)
             .stateIn(states)
-            .categoryIn(categories)
+            .classificationCategoryIn(categories)
             .domainIn(domains)
             .classificationIdIn(classificationIds)
             .excludedClassificationIdIn(excludedClassificationIds)
@@ -288,7 +291,7 @@ class WorkbasketReportBuilderImplTest {
         cut.createWorkbasketReportBuilder()
             .workbasketIdIn(workbasketIds)
             .stateIn(states)
-            .categoryIn(categories)
+            .classificationCategoryIn(categories)
             .domainIn(domains)
             .classificationIdIn(classificationIds)
             .excludedClassificationIdIn(excludedClassificationIds)
@@ -340,11 +343,12 @@ class WorkbasketReportBuilderImplTest {
     monitorQueryItem.setKey("WBI:000000000000000000000000000000000001");
     monitorQueryItem.setNumberOfTasks(1);
     expectedResult.add(monitorQueryItem);
-    when(monitorMapperMock.getTaskCountOfWorkbasketsBasedOnPlannedDate(
+    when(monitorMapperMock.getTaskCountOfWorkbaskets(
             workbasketIds,
             states,
             categories,
             domains,
+            TaskTimestamp.PLANNED,
             classificationIds,
             excludedClassificationIds,
             customAttributeFilter,
@@ -355,24 +359,25 @@ class WorkbasketReportBuilderImplTest {
         cut.createWorkbasketReportBuilder()
             .workbasketIdIn(workbasketIds)
             .stateIn(states)
-            .categoryIn(categories)
+            .classificationCategoryIn(categories)
             .domainIn(domains)
             .classificationIdIn(classificationIds)
             .excludedClassificationIdIn(excludedClassificationIds)
             .customAttributeFilterIn(customAttributeFilter)
             .combinedClassificationFilterIn(combinedClassificationFilter)
-            .buildPlannedDateBasedReport();
+            .buildReport(TaskTimestamp.PLANNED);
 
     verify(internalTaskanaEngineMock).openConnection();
     verify(taskanaEngineMock).checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
     verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
     verify(internalTaskanaEngineMock, times(2)).getEngine();
     verify(monitorMapperMock)
-        .getTaskCountOfWorkbasketsBasedOnPlannedDate(
+        .getTaskCountOfWorkbaskets(
             workbasketIds,
             states,
             categories,
             domains,
+            TaskTimestamp.PLANNED,
             classificationIds,
             excludedClassificationIds,
             customAttributeFilter,

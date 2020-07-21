@@ -544,7 +544,7 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.post(
-                restHelper.toUrl(Mapping.URL_TASKS_ID_SELECT_AND_CLAIM) + "?custom14=abc")
+                    restHelper.toUrl(Mapping.URL_TASKS_ID_SELECT_AND_CLAIM) + "?custom14=abc")
                 .accept("application/hal+json")
                 .header("Authorization", ADMIN_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())

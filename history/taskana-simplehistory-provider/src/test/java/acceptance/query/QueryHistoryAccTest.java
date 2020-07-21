@@ -53,13 +53,9 @@ class QueryHistoryAccTest extends AbstractAccTest {
             .orderByCreated(SortDirection.DESCENDING);
 
     List<HistoryEventImpl> results = query.list();
-    assertThat(results)
-        .extracting(TaskanaHistoryEvent::getUserId)
-        .containsOnly("admin", "peter");
+    assertThat(results).extracting(TaskanaHistoryEvent::getUserId).containsOnly("admin", "peter");
     results = query.orderByUserId(SortDirection.DESCENDING).list();
-    assertThat(results)
-        .extracting(TaskanaHistoryEvent::getUserId)
-        .containsOnly("admin", "peter");
+    assertThat(results).extracting(TaskanaHistoryEvent::getUserId).containsOnly("admin", "peter");
     assertThat(query.domainLike().count()).isEqualTo(13);
   }
 

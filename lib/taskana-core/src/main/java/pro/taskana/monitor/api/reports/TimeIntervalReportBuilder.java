@@ -6,6 +6,7 @@ import java.util.Map;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.monitor.api.SelectedItem;
+import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.AgeQueryItem;
 import pro.taskana.task.api.CustomField;
@@ -59,13 +60,13 @@ public interface TimeIntervalReportBuilder<
   B stateIn(List<TaskState> states);
 
   /**
-   * Adds a list of categories to the builder. The created report contains only tasks with a
-   * category in this list.
+   * Adds a list of classificationCategories to the builder. The created report contains only tasks
+   * with a category in this list.
    *
-   * @param categories a list of categories
+   * @param classificationCategory a list of classificationCategories
    * @return the TimeIntervalReportBuilder
    */
-  B categoryIn(List<String> categories);
+  B classificationCategoryIn(List<String> classificationCategory);
 
   /**
    * Adds a list of classificationIds to the builder. The created report contains only tasks with a
@@ -123,4 +124,7 @@ public interface TimeIntervalReportBuilder<
    */
   List<String> listCustomAttributeValuesForCustomAttributeName(CustomField customField)
       throws NotAuthorizedException;
+
+  Report<I, H> buildReport(TaskTimestamp timestamp)
+      throws NotAuthorizedException, InvalidArgumentException;
 }

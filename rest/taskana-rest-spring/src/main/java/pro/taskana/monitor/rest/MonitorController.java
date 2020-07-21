@@ -20,6 +20,7 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.rest.Mapping;
 import pro.taskana.monitor.api.MonitorService;
+import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.rest.assembler.ReportRepresentationModelAssembler;
 import pro.taskana.monitor.rest.models.ReportRepresentationModel;
@@ -109,7 +110,7 @@ public class MonitorController {
                 .createWorkbasketReportBuilder()
                 .stateIn(states)
                 .withColumnHeaders(getDateTimeInterval(daysInPast))
-                .buildPlannedDateBasedReport(),
+                .buildReport(TaskTimestamp.PLANNED),
             daysInPast,
             states);
     if (LOGGER.isDebugEnabled()) {

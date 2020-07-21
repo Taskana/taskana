@@ -9,13 +9,10 @@ import pro.taskana.common.internal.TaskanaEngineTestConfiguration;
 import pro.taskana.sampledata.SampleDataGenerator;
 
 /** Abstract test class for all report building tests. */
-public class AbstractReportAccTest {
+public abstract class AbstractReportAccTest {
 
   protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
   protected static TaskanaEngine taskanaEngine;
-
-  // checkstyle needs this constructor, since this is only a "utility" class
-  protected AbstractReportAccTest() {}
 
   protected static void resetDb() throws Exception {
     DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();

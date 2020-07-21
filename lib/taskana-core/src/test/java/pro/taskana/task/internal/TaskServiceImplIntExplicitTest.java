@@ -218,7 +218,7 @@ class TaskServiceImplIntExplicitTest {
 
   @WithAccessId(user = "user-1-1", groups = "businessadmin")
   @Test
-  void should_ReturnList_when_BuilderIsUsed() throws Exception {
+  void should_ReturnList_When_BuilderIsUsed() throws Exception {
     try (Connection connection = dataSource.getConnection()) {
       taskanaEngineImpl.setConnection(connection);
       WorkbasketImpl workbasket =

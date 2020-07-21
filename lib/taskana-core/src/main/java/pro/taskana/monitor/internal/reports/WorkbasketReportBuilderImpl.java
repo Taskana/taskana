@@ -9,6 +9,7 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.monitor.api.CombinedClassificationFilter;
+import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.WorkbasketReport;
 import pro.taskana.monitor.api.reports.WorkbasketReport.Builder;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
@@ -30,7 +31,13 @@ public class WorkbasketReportBuilderImpl
   }
 
   @Override
-  public WorkbasketReport buildReport() throws InvalidArgumentException, NotAuthorizedException {
+  public WorkbasketReport buildReport() throws NotAuthorizedException, InvalidArgumentException {
+    return buildReport(TaskTimestamp.DUE);
+  }
+
+  @Override
+  public WorkbasketReport buildReport(TaskTimestamp timestamp)
+      throws InvalidArgumentException, NotAuthorizedException {
     LOGGER.debug("entry to buildReport(), this = {}", this);
     this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
     try {
@@ -40,8 +47,9 @@ public class WorkbasketReportBuilderImpl
           this.monitorMapper.getTaskCountOfWorkbaskets(
               this.workbasketIds,
               this.states,
-              this.categories,
+              this.classificationCategory,
               this.domains,
+              timestamp,
               this.classificationIds,
               this.excludedClassificationIds,
               this.customAttributeFilter,
@@ -54,35 +62,6 @@ public class WorkbasketReportBuilderImpl
     } finally {
       this.taskanaEngine.returnConnection();
       LOGGER.debug("exit from buildReport().");
-    }
-  }
-
-  @Override
-  public WorkbasketReport buildPlannedDateBasedReport()
-      throws NotAuthorizedException, InvalidArgumentException {
-    LOGGER.debug("entry to buildPlannedDateReport(), this = {}", this);
-    this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
-    try {
-      this.taskanaEngine.openConnection();
-      WorkbasketReport report = new WorkbasketReport(this.columnHeaders);
-      List<MonitorQueryItem> monitorQueryItems =
-          this.monitorMapper.getTaskCountOfWorkbasketsBasedOnPlannedDate(
-              this.workbasketIds,
-              this.states,
-              this.categories,
-              this.domains,
-              this.classificationIds,
-              this.excludedClassificationIds,
-              this.customAttributeFilter,
-              this.combinedClassificationFilter);
-      report.addItems(
-          monitorQueryItems,
-          new DaysToWorkingDaysReportPreProcessor<>(
-              this.columnHeaders, converter, this.inWorkingDays));
-      return report;
-    } finally {
-      this.taskanaEngine.returnConnection();
-      LOGGER.debug("exit from buildPlannedDateReport().");
     }
   }
 
