@@ -9,8 +9,11 @@ import pro.taskana.monitor.api.reports.item.DetailedMonitorQueryItem;
  */
 public class DetailedClassificationRow extends FoldableRow<DetailedMonitorQueryItem> {
 
-  public DetailedClassificationRow(int columnSize) {
-    super(columnSize, (item) -> item.getAttachmentKey() != null ? item.getAttachmentKey() : "N/A");
+  public DetailedClassificationRow(String key, int columnSize) {
+    super(
+        key,
+        columnSize,
+        (item) -> item.getAttachmentKey() != null ? item.getAttachmentKey() : "N/A");
   }
 
   @Override
@@ -19,7 +22,7 @@ public class DetailedClassificationRow extends FoldableRow<DetailedMonitorQueryI
   }
 
   @Override
-  Row<DetailedMonitorQueryItem> buildRow(int columnSize) {
-    return new SingleRow<>(columnSize);
+  protected Row<DetailedMonitorQueryItem> buildRow(String key, int columnSize) {
+    return new SingleRow<>(key, columnSize);
   }
 }

@@ -17,12 +17,13 @@ import pro.taskana.monitor.api.reports.item.QueryItem;
  */
 public abstract class FoldableRow<I extends QueryItem> extends SingleRow<I> {
 
-  private Map<String, Row<I>> foldableRows = new LinkedHashMap<>();
-  private Function<? super I, String> calcFoldableRowKey;
-  private int columnSize;
+  private final Map<String, Row<I>> foldableRows = new LinkedHashMap<>();
+  private final Function<? super I, String> calcFoldableRowKey;
+  private final int columnSize;
 
-  protected FoldableRow(int columnSize, Function<? super I, String> calcFoldableRowKey) {
-    super(columnSize);
+  protected FoldableRow(
+      String key, int columnSize, Function<? super I, String> calcFoldableRowKey) {
+    super(key, columnSize);
     this.columnSize = columnSize;
     this.calcFoldableRowKey = calcFoldableRowKey;
   }
@@ -39,7 +40,7 @@ public abstract class FoldableRow<I extends QueryItem> extends SingleRow<I> {
   public void addItem(I item, int index) throws IndexOutOfBoundsException {
     super.addItem(item, index);
     foldableRows
-        .computeIfAbsent(calcFoldableRowKey.apply(item), (s) -> buildRow(columnSize))
+        .computeIfAbsent(calcFoldableRowKey.apply(item), key -> buildRow(key, columnSize))
         .addItem(item, index);
   }
 
@@ -47,7 +48,7 @@ public abstract class FoldableRow<I extends QueryItem> extends SingleRow<I> {
   public void updateTotalValue(I item) {
     super.updateTotalValue(item);
     foldableRows
-        .computeIfAbsent(calcFoldableRowKey.apply(item), (s) -> buildRow(columnSize))
+        .computeIfAbsent(calcFoldableRowKey.apply(item), key -> buildRow(key, columnSize))
         .updateTotalValue(item);
   }
 
@@ -55,7 +56,7 @@ public abstract class FoldableRow<I extends QueryItem> extends SingleRow<I> {
     return foldableRows.get(key);
   }
 
-  abstract Row<I> buildRow(int columnSize);
+  protected abstract Row<I> buildRow(String key, int columnSize);
 
   @Override
   public String toString() {

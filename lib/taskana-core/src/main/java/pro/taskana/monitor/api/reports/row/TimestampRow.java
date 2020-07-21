@@ -9,8 +9,8 @@ import pro.taskana.monitor.api.reports.item.TimestampQueryItem;
  */
 public class TimestampRow extends FoldableRow<TimestampQueryItem> {
 
-  public TimestampRow(int columnSize) {
-    super(columnSize, TimestampQueryItem::getOrgLevel1);
+  public TimestampRow(String key, int columnSize) {
+    super(key, columnSize, TimestampQueryItem::getOrgLevel1);
   }
 
   @Override
@@ -19,8 +19,8 @@ public class TimestampRow extends FoldableRow<TimestampQueryItem> {
   }
 
   @Override
-  OrgLevel1Row buildRow(int columnSize) {
-    return new OrgLevel1Row(columnSize);
+  protected OrgLevel1Row buildRow(String key, int columnSize) {
+    return new OrgLevel1Row(key, columnSize);
   }
 
   /**
@@ -29,8 +29,8 @@ public class TimestampRow extends FoldableRow<TimestampQueryItem> {
    */
   public static final class OrgLevel1Row extends FoldableRow<TimestampQueryItem> {
 
-    private OrgLevel1Row(int columnSize) {
-      super(columnSize, TimestampQueryItem::getOrgLevel2);
+    private OrgLevel1Row(String key, int columnSize) {
+      super(key, columnSize, TimestampQueryItem::getOrgLevel2);
     }
 
     @Override
@@ -39,8 +39,8 @@ public class TimestampRow extends FoldableRow<TimestampQueryItem> {
     }
 
     @Override
-    OrgLevel2Row buildRow(int columnSize) {
-      return new OrgLevel2Row(columnSize);
+    protected OrgLevel2Row buildRow(String key, int columnSize) {
+      return new OrgLevel2Row(key, columnSize);
     }
   }
 
@@ -50,8 +50,8 @@ public class TimestampRow extends FoldableRow<TimestampQueryItem> {
    */
   public static final class OrgLevel2Row extends FoldableRow<TimestampQueryItem> {
 
-    private OrgLevel2Row(int columnSize) {
-      super(columnSize, TimestampQueryItem::getOrgLevel3);
+    private OrgLevel2Row(String key, int columnSize) {
+      super(key, columnSize, TimestampQueryItem::getOrgLevel3);
     }
 
     @Override
@@ -60,8 +60,8 @@ public class TimestampRow extends FoldableRow<TimestampQueryItem> {
     }
 
     @Override
-    OrgLevel3Row buildRow(int columnSize) {
-      return new OrgLevel3Row(columnSize);
+    protected OrgLevel3Row buildRow(String key, int columnSize) {
+      return new OrgLevel3Row(key, columnSize);
     }
   }
 
@@ -71,8 +71,8 @@ public class TimestampRow extends FoldableRow<TimestampQueryItem> {
    */
   public static final class OrgLevel3Row extends FoldableRow<TimestampQueryItem> {
 
-    private OrgLevel3Row(int columnSize) {
-      super(columnSize, TimestampQueryItem::getOrgLevel4);
+    private OrgLevel3Row(String key,  int columnSize) {
+      super(key, columnSize, TimestampQueryItem::getOrgLevel4);
     }
 
     @Override
@@ -81,8 +81,8 @@ public class TimestampRow extends FoldableRow<TimestampQueryItem> {
     }
 
     @Override
-    Row<TimestampQueryItem> buildRow(int columnSize) {
-      return new SingleRow<>(columnSize);
+    protected Row<TimestampQueryItem> buildRow(String key, int columnSize) {
+      return new SingleRow<>(key, columnSize);
     }
   }
 }

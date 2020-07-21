@@ -14,8 +14,10 @@ public class SingleRow<I extends QueryItem> implements Row<I> {
 
   private final int[] cells;
   private int total = 0;
+  private final String key;
 
-  public SingleRow(int columnCount) {
+  public SingleRow(String key, int columnCount) {
+    this.key = key;
     cells = new int[columnCount];
   }
 
@@ -28,6 +30,11 @@ public class SingleRow<I extends QueryItem> implements Row<I> {
   @Override
   public void updateTotalValue(I item) {
     total += item.getValue();
+  }
+
+  @Override
+  public String getKey() {
+    return key;
   }
 
   @Override

@@ -23,8 +23,8 @@ public class TimestampReport extends Report<TimestampQueryItem, TimeIntervalColu
   }
 
   @Override
-  protected TimestampRow createRow(int columnSize) {
-    return new TimestampRow(columnSize);
+  protected TimestampRow createRow(String key, int columnSize) {
+    return new TimestampRow(key, columnSize);
   }
 
   /** Builder for {@link TimestampReport}. */

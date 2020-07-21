@@ -34,7 +34,7 @@ public abstract class Report<I extends QueryItem, H extends ColumnHeader<? super
 
   protected Report(List<H> columnHeaders, String[] rowDesc) {
     this.rowDesc = rowDesc;
-    sumRow = createRow(columnHeaders.size());
+    sumRow = createRow("Total", columnHeaders.size());
     this.columnHeaders = new ArrayList<>(columnHeaders);
   }
 
@@ -69,14 +69,16 @@ public abstract class Report<I extends QueryItem, H extends ColumnHeader<? super
   public final void addItem(I item) {
     Row<I> row = null;
     if (columnHeaders.isEmpty()) {
-      row = reportRows.computeIfAbsent(item.getKey(), (s) -> createRow(columnHeaders.size()));
+      row = reportRows.computeIfAbsent(item.getKey(), key -> createRow(key, columnHeaders.size()));
       row.updateTotalValue(item);
       sumRow.updateTotalValue(item);
     } else {
       for (int i = 0; i < columnHeaders.size(); i++) {
         if (columnHeaders.get(i).fits(item)) {
           if (row == null) {
-            row = reportRows.computeIfAbsent(item.getKey(), (s) -> createRow(columnHeaders.size()));
+            row =
+                reportRows.computeIfAbsent(
+                    item.getKey(), key -> createRow(key, columnHeaders.size()));
           }
           row.addItem(item, i);
           sumRow.addItem(item, i);
@@ -97,8 +99,8 @@ public abstract class Report<I extends QueryItem, H extends ColumnHeader<? super
     items.forEach(this::addItem);
   }
 
-  protected Row<I> createRow(int columnSize) {
-    return new SingleRow<>(columnSize);
+  protected Row<I> createRow(String key, int columnSize) {
+    return new SingleRow<>(key, columnSize);
   }
 
   /**
