@@ -99,7 +99,11 @@ public class ReportRepresentationModelAssembler {
         report.getColumnHeaders().stream().map(H::getDisplayName).toArray(String[]::new);
     ReportRepresentationModel.MetaInformation meta =
         new ReportRepresentationModel.MetaInformation(
-            report.getClass().getSimpleName(), time.toString(), header, report.getRowDesc());
+            report.getClass().getSimpleName(),
+            time.toString(),
+            header,
+            report.getRowDesc(),
+            report.getSumRow().getKey());
 
     // iterate over each Row and transform it to a RowResource while keeping the domain key.
     List<ReportRepresentationModel.RowResource> rows =

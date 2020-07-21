@@ -15,7 +15,9 @@ import pro.taskana.monitor.api.reports.Report;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.MonitorQueryItem;
 import pro.taskana.monitor.api.reports.item.QueryItemPreprocessor;
+import pro.taskana.monitor.api.reports.row.FoldableRow;
 import pro.taskana.monitor.api.reports.row.Row;
+import pro.taskana.monitor.api.reports.row.SingleRow;
 
 /** Tests for {@link Report}. */
 class ReportTest {
@@ -37,7 +39,12 @@ class ReportTest {
   }
 
   @Test
-  void testEmptyReport() {
+  void should_HaveSumRowTotalKey_When_ReportExists() {
+    assertThat(report.getSumRow().getKey()).isEqualTo("Total");
+  }
+
+  @Test
+  void should_HaveEmptySumRow_When_ReportIsEmpty() {
     // then
     assertThat(report.getRows()).isEmpty();
     Row<MonitorQueryItem> sumRow = report.getSumRow();
@@ -46,7 +53,54 @@ class ReportTest {
   }
 
   @Test
-  void testInsertSingleItem() {
+  void should_CreateRowAndSetKey_When_InsertingItemWithUnknownKey() {
+    // when
+    report.addItem(item);
+
+    // then
+    assertThat(report.getRows()).hasSize(1);
+    Row<MonitorQueryItem> row = report.getRow("key");
+    assertThat(row.getKey()).isEqualTo("key");
+  }
+
+  @Test
+  void should_CreateFoldableRowAndSetKey_When_InsertingItemWithUnknownKey() {
+    // when
+    ReportWithFoldableRow report =
+        new ReportWithFoldableRow(HEADERS, new String[] {"rowDesc", "foldableRowDesc"});
+    report.addItem(item);
+
+    // then
+    assertThat(report.getRows()).hasSize(1);
+    FoldableTestRow row = report.getRow("key");
+    assertThat(row.getKey()).isEqualTo("key");
+
+    assertThat(row.getFoldableRowCount()).isOne();
+    Row<MonitorQueryItem> foldableRow = row.getFoldableRow("KEY");
+    assertThat(foldableRow.getKey()).isEqualTo("KEY");
+  }
+
+  @Test
+  void should_AppendItemValueInFoldableRow_When_ItemIsInserted() {
+    // when
+    ReportWithFoldableRow report =
+        new ReportWithFoldableRow(HEADERS, new String[] {"rowDesc", "foldableRowDesc"});
+    report.addItem(item);
+
+    // then
+    assertThat(report.getRows()).hasSize(1);
+    FoldableTestRow row = report.getRow("key");
+    assertThat(row.getCells()).isEqualTo(new int[] {item.getValue(), 0, 0, 0});
+    assertThat(row.getTotalValue()).isEqualTo(item.getValue());
+
+    assertThat(row.getFoldableRowCount()).isOne();
+    Row<MonitorQueryItem> foldableRow = row.getFoldableRow("KEY");
+    assertThat(foldableRow.getCells()).isEqualTo(new int[] {item.getValue(), 0, 0, 0});
+    assertThat(foldableRow.getTotalValue()).isEqualTo(item.getValue());
+  }
+
+  @Test
+  void should_AppendItemValue_When_ItemIsInserted() {
     // when
     report.addItem(item);
 
@@ -58,7 +112,7 @@ class ReportTest {
   }
 
   @Test
-  void testInsertSameItemMultipleTimes() {
+  void should_AppendItemValue_When_CellAlreadyContainsValue() {
     // when
     report.addItem(item);
     report.addItem(item);
@@ -71,13 +125,7 @@ class ReportTest {
   }
 
   @Test
-  void testInsertSameItemMultipleTimes2() {
-    // given
-    MonitorQueryItem item = new MonitorQueryItem();
-    item.setKey("key");
-    item.setAgeInDays(0);
-    item.setNumberOfTasks(3);
-
+  void should_AppendItemValue_When_UsingBulkOperationToInsertItems() {
     // when
     report.addItems(Arrays.asList(item, item));
 
@@ -89,80 +137,7 @@ class ReportTest {
   }
 
   @Test
-  void testInsertSameItemMultipleTimesWithPreProcessor() {
-    // given
-    int overrideValue = 5;
-    QueryItemPreprocessor<MonitorQueryItem> preprocessor =
-        (item) -> {
-          item.setNumberOfTasks(overrideValue);
-          return item;
-        };
-    // when
-    report.addItems(Arrays.asList(item, item), preprocessor);
-
-    // then
-    assertThat(report.getRows()).hasSize(1);
-    Row<MonitorQueryItem> row = report.getRow("key");
-    assertThat(row.getCells()).isEqualTo(new int[] {2 * overrideValue, 0, 0, 0});
-    assertThat(row.getTotalValue()).isEqualTo(2 * overrideValue);
-  }
-
-  @Test
-  void testInsertItemWithNoColumnHeaders() {
-    // given
-    List<TimeIntervalColumnHeader> headerList = Collections.emptyList();
-    report =
-        new MonitorQueryItemTimeIntervalColumnHeaderReport(headerList, new String[] {"rowDesc"});
-
-    // when
-    report.addItem(item);
-
-    // then
-    assertThat(report.getRows()).hasSize(1);
-    assertThat(report.getRow("key").getCells()).isEqualTo(new int[0]);
-    assertThat(report.getRow("key").getTotalValue()).isEqualTo(item.getValue());
-  }
-
-  @Test
-  void testInsertItemWhichIsNotInHeaderScopes() {
-    // given
-    item.setAgeInDays(-2);
-    // when
-    report.addItem(item);
-
-    // then
-    assertThat(report.getRows()).isEmpty();
-    Row<MonitorQueryItem> sumRow = report.getSumRow();
-    assertThat(sumRow.getCells()).isEqualTo(new int[] {0, 0, 0, 0});
-    assertThat(sumRow.getTotalValue()).isEqualTo(0);
-  }
-
-  @Test
-  void testInsertItemWhichIsInMultipleHeaderScopes() {
-    // given
-    List<TimeIntervalColumnHeader> headers = new ArrayList<>(HEADERS);
-    headers.add(new TimeIntervalColumnHeader(0, 3));
-    report = new MonitorQueryItemTimeIntervalColumnHeaderReport(headers, new String[] {"rowDesc"});
-
-    item.setAgeInDays(2);
-
-    // when
-    report.addItem(item);
-
-    // then
-    assertThat(report.getRows()).hasSize(1);
-
-    Row<MonitorQueryItem> row = report.getRow("key");
-    assertThat(row.getCells()).isEqualTo(new int[] {0, 0, item.getValue(), 0, item.getValue()});
-    assertThat(row.getTotalValue()).isEqualTo(2 * item.getValue());
-
-    Row<MonitorQueryItem> sumRow = report.getSumRow();
-    assertThat(sumRow.getCells()).isEqualTo(new int[] {0, 0, item.getValue(), 0, item.getValue()});
-    assertThat(sumRow.getTotalValue()).isEqualTo(2 * item.getValue());
-  }
-
-  @Test
-  void testInsertItemWithPreProcessor() {
+  void should_PreProcessItem_When_PreprocessorIsDefined() {
     // given
     int overrideValue = 5;
     QueryItemPreprocessor<MonitorQueryItem> preprocessor =
@@ -187,12 +162,116 @@ class ReportTest {
     assertThat(sumRow.getTotalValue()).isEqualTo(overrideValue);
   }
 
+  @Test
+  void should_PreProcessItem_When_PreprocessorIsDefinedForBulkInsert() {
+    // given
+    int overrideValue = 5;
+    QueryItemPreprocessor<MonitorQueryItem> preprocessor =
+        (item) -> {
+          item.setNumberOfTasks(overrideValue);
+          return item;
+        };
+    // when
+    report.addItems(Arrays.asList(item, item), preprocessor);
+
+    // then
+    assertThat(report.getRows()).hasSize(1);
+    Row<MonitorQueryItem> row = report.getRow("key");
+    assertThat(row.getCells()).isEqualTo(new int[] {2 * overrideValue, 0, 0, 0});
+    assertThat(row.getTotalValue()).isEqualTo(2 * overrideValue);
+  }
+
+  @Test
+  void should_OnlyContainTotalRows_When_ReportContainsNoHeaders() {
+    // given
+    List<TimeIntervalColumnHeader> headerList = Collections.emptyList();
+    report =
+        new MonitorQueryItemTimeIntervalColumnHeaderReport(headerList, new String[] {"rowDesc"});
+
+    // when
+    report.addItem(item);
+
+    // then
+    assertThat(report.getRows()).hasSize(1);
+    assertThat(report.getRow("key").getCells()).isEqualTo(new int[0]);
+    assertThat(report.getRow("key").getTotalValue()).isEqualTo(item.getValue());
+  }
+
+  @Test
+  void should_NotInsertItem_When_ItemIsOutOfHeaderScope() {
+    // given
+    item.setAgeInDays(-2);
+    // when
+    report.addItem(item);
+
+    // then
+    assertThat(report.getRows()).isEmpty();
+    Row<MonitorQueryItem> sumRow = report.getSumRow();
+    assertThat(sumRow.getCells()).isEqualTo(new int[] {0, 0, 0, 0});
+    assertThat(sumRow.getTotalValue()).isEqualTo(0);
+  }
+
+  @Test
+  void should_InsertItemMultipleTimes_When_HeaderFitsMultipleTimes() {
+    // given
+    List<TimeIntervalColumnHeader> headers = new ArrayList<>(HEADERS);
+    headers.add(new TimeIntervalColumnHeader(0, 3));
+    report = new MonitorQueryItemTimeIntervalColumnHeaderReport(headers, new String[] {"rowDesc"});
+
+    item.setAgeInDays(2);
+
+    // when
+    report.addItem(item);
+
+    // then
+    assertThat(report.getRows()).hasSize(1);
+
+    Row<MonitorQueryItem> row = report.getRow("key");
+    assertThat(row.getCells()).isEqualTo(new int[] {0, 0, item.getValue(), 0, item.getValue()});
+    assertThat(row.getTotalValue()).isEqualTo(2 * item.getValue());
+
+    Row<MonitorQueryItem> sumRow = report.getSumRow();
+    assertThat(sumRow.getCells()).isEqualTo(new int[] {0, 0, item.getValue(), 0, item.getValue()});
+    assertThat(sumRow.getTotalValue()).isEqualTo(2 * item.getValue());
+  }
+
   private static class MonitorQueryItemTimeIntervalColumnHeaderReport
       extends Report<MonitorQueryItem, TimeIntervalColumnHeader> {
 
     public MonitorQueryItemTimeIntervalColumnHeaderReport(
         List<TimeIntervalColumnHeader> headerList, String[] rowDesc) {
       super(headerList, rowDesc);
+    }
+  }
+
+  private static class ReportWithFoldableRow
+      extends Report<MonitorQueryItem, TimeIntervalColumnHeader> {
+
+    protected ReportWithFoldableRow(
+        List<TimeIntervalColumnHeader> columnHeaders, String[] rowDesc) {
+      super(columnHeaders, rowDesc);
+    }
+
+    @Override
+    public FoldableTestRow getRow(String key) {
+      return (FoldableTestRow) super.getRow(key);
+    }
+
+    @Override
+    protected Row<MonitorQueryItem> createRow(String key, int columnSize) {
+      return new FoldableTestRow(key, columnSize);
+    }
+  }
+
+  private static class FoldableTestRow extends FoldableRow<MonitorQueryItem> {
+
+    protected FoldableTestRow(String key, int columnSize) {
+      super(key, columnSize, (item) -> item.getKey().toUpperCase());
+    }
+
+    @Override
+    protected Row<MonitorQueryItem> buildRow(String key, int columnSize) {
+      return new SingleRow<>(key, columnSize);
     }
   }
 }

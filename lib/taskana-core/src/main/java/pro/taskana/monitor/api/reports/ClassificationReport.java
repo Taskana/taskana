@@ -71,8 +71,8 @@ public class ClassificationReport extends Report<MonitorQueryItem, TimeIntervalC
     }
 
     @Override
-    protected DetailedClassificationRow createRow(int columnSize) {
-      return new DetailedClassificationRow(columnSize);
+    protected DetailedClassificationRow createRow(String key, int columnSize) {
+      return new DetailedClassificationRow(key, columnSize);
     }
   }
 }

@@ -28,6 +28,8 @@ public interface Row<I extends QueryItem> {
    */
   void updateTotalValue(I item);
 
+  String getKey();
+
   int getTotalValue();
 
   int[] getCells();

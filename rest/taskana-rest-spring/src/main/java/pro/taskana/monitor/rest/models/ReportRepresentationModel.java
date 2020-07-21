@@ -88,22 +88,22 @@ public class ReportRepresentationModel extends RepresentationModel<ReportReprese
   /** Meta Information about this ReportResource. */
   public static class MetaInformation {
 
-    private static final String TOTAL_DESC = "Total";
-
     private final String name;
     private final String date;
     private final String[] header;
     private final String[] rowDesc;
+    private final String totalDesc;
 
-    public MetaInformation(String name, String date, String[] header, String[] rowDesc) {
+    public MetaInformation(String name, String date, String[] header, String[] rowDesc, String totalDesc) {
       this.name = name;
       this.date = date;
       this.header = header;
       this.rowDesc = rowDesc;
+      this.totalDesc = totalDesc;
     }
 
     public String getTotalDesc() {
-      return TOTAL_DESC;
+      return totalDesc;
     }
 
     public String getName() {
