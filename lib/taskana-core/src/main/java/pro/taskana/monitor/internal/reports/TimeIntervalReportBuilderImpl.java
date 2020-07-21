@@ -44,7 +44,7 @@ abstract class TimeIntervalReportBuilderImpl<
   protected boolean inWorkingDays;
   protected List<String> workbasketIds;
   protected List<TaskState> states;
-  protected List<String> categories;
+  protected List<String> classificationCategory;
   protected List<String> domains;
   protected List<String> classificationIds;
   protected List<String> excludedClassificationIds;
@@ -83,8 +83,8 @@ abstract class TimeIntervalReportBuilderImpl<
   }
 
   @Override
-  public B categoryIn(List<String> categories) {
-    this.categories = new ArrayList<>(categories);
+  public B classificationCategoryIn(List<String> classificationCategory) {
+    this.classificationCategory = new ArrayList<>(classificationCategory);
     return _this();
   }
 
@@ -141,7 +141,7 @@ abstract class TimeIntervalReportBuilderImpl<
       return this.monitorMapper.getTaskIdsForSelectedItems(
           this.workbasketIds,
           this.states,
-          this.categories,
+          this.classificationCategory,
           this.domains,
           this.classificationIds,
           this.excludedClassificationIds,
@@ -168,7 +168,7 @@ abstract class TimeIntervalReportBuilderImpl<
       return monitorMapper.getCustomAttributeValuesForReport(
           this.workbasketIds,
           this.states,
-          this.categories,
+          this.classificationCategory,
           this.domains,
           this.classificationIds,
           this.excludedClassificationIds,

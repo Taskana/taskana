@@ -7,20 +7,16 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.monitor.api.reports.TaskStatusReport;
-import pro.taskana.monitor.api.reports.header.TaskStatusColumnHeader;
 import pro.taskana.monitor.api.reports.item.TaskQueryItem;
 import pro.taskana.monitor.api.reports.row.Row;
 import pro.taskana.task.api.TaskService;
@@ -29,9 +25,6 @@ import pro.taskana.task.api.TaskState;
 /** Acceptance test for all "task status report" scenarios. */
 @ExtendWith(JaasExtension.class)
 class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
-
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(ProvideWorkbasketReportAccTest.class);
 
   MonitorService monitorService = taskanaEngine.getMonitorService();
 
@@ -69,9 +62,6 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
   void testCompleteTaskStatusReport() throws Exception {
     TaskStatusReport report = monitorService.createTaskStatusReportBuilder().buildReport();
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(reportToString(report));
-    }
     assertThat(report).isNotNull();
     assertThat(report.rowSize()).isEqualTo(3);
 
@@ -101,9 +91,6 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
             .domainIn(asList("DOMAIN_C", "DOMAIN_A"))
             .buildReport();
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(reportToString(report));
-    }
     assertThat(report).isNotNull();
     assertThat(report.rowSize()).isEqualTo(2);
 
@@ -129,9 +116,6 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
             .stateIn(Collections.singletonList(TaskState.READY))
             .buildReport();
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(reportToString(report));
-    }
     assertThat(report).isNotNull();
     assertThat(report.rowSize()).isEqualTo(3);
 
@@ -176,54 +160,5 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     assertThat(summaryNumbers.length).isEqualTo(5);
     assertThat(summaryNumbers[3]).isEqualTo(2); // number of cancelled tasks
     assertThat(summaryNumbers[4]).isEqualTo(3); // number of terminated tasks
-  }
-
-  private String reportToString(TaskStatusReport report) {
-    List<TaskStatusColumnHeader> columnHeaders = report.getColumnHeaders();
-    String formatColumnWidth = "| %-7s ";
-    String formatFirstColumn = "| %-36s  %-4s ";
-    final String formatFirstColumnFirstLine = "| %-29s %12s ";
-    final String formatFirstColumnSumLine = "| %-36s  %-5s";
-    int reportWidth = columnHeaders.size() * 10 + 46;
-
-    StringBuilder builder = new StringBuilder();
-    builder.append("\n");
-    for (int i = 0; i < reportWidth; i++) {
-      builder.append("-");
-    }
-    builder.append("\n");
-    builder.append(String.format(formatFirstColumnFirstLine, "Domain", "Total"));
-    for (TaskStatusColumnHeader def : columnHeaders) {
-      builder.append(String.format(formatColumnWidth, def.getDisplayName()));
-    }
-    builder.append("|\n");
-
-    for (int i = 0; i < reportWidth; i++) {
-      builder.append("-");
-    }
-    builder.append("\n");
-
-    for (String rl : report.rowTitles()) {
-      builder.append(String.format(formatFirstColumn, rl, report.getRow(rl).getTotalValue()));
-      for (int cell : report.getRow(rl).getCells()) {
-        builder.append(String.format(formatColumnWidth, cell));
-      }
-      builder.append("|\n");
-      for (int i = 0; i < reportWidth; i++) {
-        builder.append("-");
-      }
-      builder.append("\n");
-    }
-    builder.append(
-        String.format(formatFirstColumnSumLine, "Total", report.getSumRow().getTotalValue()));
-    for (int cell : report.getSumRow().getCells()) {
-      builder.append(String.format(formatColumnWidth, cell));
-    }
-    builder.append("|\n");
-    for (int i = 0; i < reportWidth; i++) {
-      builder.append("-");
-    }
-    builder.append("\n");
-    return builder.toString();
   }
 }

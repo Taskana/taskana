@@ -25,7 +25,8 @@ import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.monitor.api.SelectedItem;
-import pro.taskana.monitor.api.reports.CategoryReport;
+import pro.taskana.monitor.api.TaskTimestamp;
+import pro.taskana.monitor.api.reports.ClassificationCategoryReport;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.MonitorQueryItem;
 import pro.taskana.task.api.CustomField;
@@ -33,7 +34,7 @@ import pro.taskana.task.api.TaskState;
 
 /** Unit Test for CategoryBuilderImpl. */
 @ExtendWith(MockitoExtension.class)
-class CategoryReportBuilderImplTest {
+class ClassificationClassificationCategoryReportBuilderImplTest {
 
   @InjectMocks private MonitorServiceImpl cut;
 
@@ -72,16 +73,17 @@ class CategoryReportBuilderImplTest {
             states,
             categories,
             domains,
+            TaskTimestamp.DUE,
             classificationIds,
             excludedClassificationIds,
             customAttributeFilter))
         .thenReturn(expectedResult);
 
-    final CategoryReport actualResult =
+    final ClassificationCategoryReport actualResult =
         cut.createCategoryReportBuilder()
             .workbasketIdIn(workbasketIds)
             .stateIn(states)
-            .categoryIn(categories)
+            .classificationCategoryIn(categories)
             .domainIn(domains)
             .classificationIdIn(classificationIds)
             .excludedClassificationIdIn(excludedClassificationIds)
@@ -93,7 +95,7 @@ class CategoryReportBuilderImplTest {
     verify(taskanaEngineMock).checkRoleMembership(any());
     verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
     verify(monitorMapperMock)
-        .getTaskCountOfCategories(any(), any(), any(), any(), any(), any(), any());
+        .getTaskCountOfCategories(any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
     verifyNoMoreInteractions(
         internalTaskanaEngineMock,
@@ -102,8 +104,8 @@ class CategoryReportBuilderImplTest {
         taskanaEngineConfiguration);
 
     assertThat(actualResult).isNotNull();
-    assertThat(1).isEqualTo(actualResult.getRow("EXTERN").getTotalValue());
-    assertThat(1).isEqualTo(actualResult.getSumRow().getTotalValue());
+    assertThat(actualResult.getRow("EXTERN").getTotalValue()).isOne();
+    assertThat(actualResult.getSumRow().getTotalValue()).isOne();
   }
 
   @Test
@@ -131,16 +133,17 @@ class CategoryReportBuilderImplTest {
             states,
             categories,
             domains,
+            TaskTimestamp.DUE,
             classificationIds,
             excludedClassificationIds,
             customAttributeFilter))
         .thenReturn(expectedResult);
 
-    final CategoryReport actualResult =
+    final ClassificationCategoryReport actualResult =
         cut.createCategoryReportBuilder()
             .workbasketIdIn(workbasketIds)
             .stateIn(states)
-            .categoryIn(categories)
+            .classificationCategoryIn(categories)
             .domainIn(domains)
             .classificationIdIn(classificationIds)
             .excludedClassificationIdIn(excludedClassificationIds)
@@ -153,7 +156,7 @@ class CategoryReportBuilderImplTest {
     verify(taskanaEngineMock).checkRoleMembership(any());
     verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
     verify(monitorMapperMock)
-        .getTaskCountOfCategories(any(), any(), any(), any(), any(), any(), any());
+        .getTaskCountOfCategories(any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
     verifyNoMoreInteractions(
         internalTaskanaEngineMock,
@@ -162,9 +165,9 @@ class CategoryReportBuilderImplTest {
         taskanaEngineConfiguration);
 
     assertThat(actualResult).isNotNull();
-    assertThat(1).isEqualTo(actualResult.getRow("EXTERN").getTotalValue());
-    assertThat(1).isEqualTo(actualResult.getRow("EXTERN").getCells()[0]);
-    assertThat(1).isEqualTo(actualResult.getSumRow().getTotalValue());
+    assertThat(actualResult.getRow("EXTERN").getTotalValue()).isOne();
+    assertThat(actualResult.getRow("EXTERN").getCells()[0]).isOne();
+    assertThat(actualResult.getSumRow().getTotalValue()).isOne();
   }
 
   @Test
@@ -206,7 +209,7 @@ class CategoryReportBuilderImplTest {
         cut.createCategoryReportBuilder()
             .workbasketIdIn(workbasketIds)
             .stateIn(states)
-            .categoryIn(categories)
+            .classificationCategoryIn(categories)
             .domainIn(domains)
             .classificationIdIn(classificationIds)
             .excludedClassificationIdIn(excludedClassificationIds)
@@ -228,7 +231,6 @@ class CategoryReportBuilderImplTest {
         monitorMapperMock,
         taskanaEngineConfiguration);
 
-    assertThat(actualResult).isNotNull();
     assertThat(actualResult).isEqualTo(expectedResult);
   }
 
@@ -276,7 +278,7 @@ class CategoryReportBuilderImplTest {
         cut.createCategoryReportBuilder()
             .workbasketIdIn(workbasketIds)
             .stateIn(states)
-            .categoryIn(categories)
+            .classificationCategoryIn(categories)
             .domainIn(domains)
             .classificationIdIn(classificationIds)
             .excludedClassificationIdIn(excludedClassificationIds)
@@ -297,7 +299,6 @@ class CategoryReportBuilderImplTest {
         monitorMapperMock,
         taskanaEngineConfiguration);
 
-    assertThat(actualResult).isNotNull();
     assertThat(actualResult).isEqualTo(expectedResult);
   }
 

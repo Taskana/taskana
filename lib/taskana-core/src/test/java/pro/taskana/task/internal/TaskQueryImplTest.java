@@ -50,7 +50,7 @@ class TaskQueryImplTest {
   }
 
   @Test
-  void should_ReturnList_when_BuilderIsUsed() {
+  void should_ReturnList_When_BuilderIsUsed() {
     when(sqlSession.selectList(any(), any())).thenReturn(new ArrayList<>());
     List<TaskSummary> intermediate = new ArrayList<>();
     intermediate.add(new TaskSummaryImpl());
@@ -66,7 +66,7 @@ class TaskQueryImplTest {
   }
 
   @Test
-  void should_ReturnListWithOffset_when_BuilderIsUsed() {
+  void should_ReturnListWithOffset_When_BuilderIsUsed() {
     when(sqlSession.selectList(any(), any(), any())).thenReturn(new ArrayList<>());
     List<TaskSummary> intermediate = new ArrayList<>();
     intermediate.add(new TaskSummaryImpl());
@@ -82,7 +82,7 @@ class TaskQueryImplTest {
   }
 
   @Test
-  void should_ReturnOneItem_when_BuilderIsUsed() {
+  void should_ReturnOneItem_When_BuilderIsUsed() {
     when(sqlSession.selectOne(any(), any())).thenReturn(new TaskSummaryImpl());
     List<TaskSummary> intermediate = new ArrayList<>();
     intermediate.add(new TaskSummaryImpl());

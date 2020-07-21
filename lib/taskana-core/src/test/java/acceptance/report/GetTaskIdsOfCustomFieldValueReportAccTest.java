@@ -211,7 +211,7 @@ class GetTaskIdsOfCustomFieldValueReportAccTest extends AbstractReportAccTest {
             .createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
-            .categoryIn(categories)
+            .classificationCategoryIn(categories)
             .listTaskIdsForSelectedItems(selectedItems);
 
     assertThat(ids).hasSize(3);

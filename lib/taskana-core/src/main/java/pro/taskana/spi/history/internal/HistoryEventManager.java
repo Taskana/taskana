@@ -12,9 +12,7 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.spi.history.api.TaskanaHistory;
 import pro.taskana.spi.history.api.events.TaskanaHistoryEvent;
 
-/**
- * Creates and deletes events and emits them to the registered history service providers.
- */
+/** Creates and deletes events and emits them to the registered history service providers. */
 public final class HistoryEventManager {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HistoryEventManager.class);
@@ -53,12 +51,13 @@ public final class HistoryEventManager {
 
   public void deleteEvents(List<String> taskIds) {
     LOGGER.debug("Sending taskIds to history service providers: {}", taskIds);
-    serviceLoader.forEach(historyProvider -> {
-      try {
-        historyProvider.deleteHistoryEventsByTaskIds(taskIds);
-      } catch (InvalidArgumentException | NotAuthorizedException e) {
-        LOGGER.warn("Caught an exception while trying to delete HistoryEvents", e);
-      }
-    });
+    serviceLoader.forEach(
+        historyProvider -> {
+          try {
+            historyProvider.deleteHistoryEventsByTaskIds(taskIds);
+          } catch (InvalidArgumentException | NotAuthorizedException e) {
+            LOGGER.warn("Caught an exception while trying to delete HistoryEvents", e);
+          }
+        });
   }
 }

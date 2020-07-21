@@ -1,14 +1,14 @@
 package pro.taskana.monitor.api.reports.item;
 
+import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.TimestampReport;
-import pro.taskana.task.api.Timestamp;
 
 /** The TimestampQueryItem contains the necessary information for the {@link TimestampReport}. */
 public class TimestampQueryItem implements AgeQueryItem {
 
   private static final String N_A = "N/A";
   private int count;
-  private Timestamp status;
+  private TaskTimestamp status;
   private int ageInDays;
   private String orgLevel1;
   private String orgLevel2;

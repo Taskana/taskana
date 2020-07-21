@@ -140,7 +140,7 @@ class TaskServiceImplIntAutocommitTest {
   }
 
   @Test
-  void should_ReturnList_when_BuilderIsUsed() throws Exception {
+  void should_ReturnList_When_BuilderIsUsed() throws Exception {
     Workbasket wb = workbasketService.newWorkbasket("key", "DOMAIN_A");
     wb.setName("workbasket");
     wb.setType(WorkbasketType.GROUP);

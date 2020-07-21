@@ -27,10 +27,10 @@ import pro.taskana.monitor.api.reports.row.SingleRow;
  */
 public abstract class Report<I extends QueryItem, H extends ColumnHeader<? super I>> {
 
+  private final Map<String, Row<I>> reportRows = new LinkedHashMap<>();
+  private final Row<I> sumRow;
+  private final String[] rowDesc;
   protected List<H> columnHeaders;
-  private Map<String, Row<I>> reportRows = new LinkedHashMap<>();
-  private Row<I> sumRow;
-  private String[] rowDesc;
 
   protected Report(List<H> columnHeaders, String[] rowDesc) {
     this.rowDesc = rowDesc;

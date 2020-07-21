@@ -13,6 +13,8 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.monitor.api.SelectedItem;
+import pro.taskana.monitor.api.TaskTimestamp;
+import pro.taskana.monitor.api.reports.Report;
 import pro.taskana.monitor.api.reports.TimestampReport;
 import pro.taskana.monitor.api.reports.TimestampReport.Builder;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
@@ -20,15 +22,15 @@ import pro.taskana.monitor.api.reports.item.TimestampQueryItem;
 import pro.taskana.monitor.internal.MonitorMapper;
 import pro.taskana.monitor.internal.preprocessor.DaysToWorkingDaysReportPreProcessor;
 import pro.taskana.task.api.TaskState;
-import pro.taskana.task.api.Timestamp;
 
 /** The implementation of {@link TimestampReport.Builder}. */
 public class TimestampReportBuilderImpl
     extends TimeIntervalReportBuilderImpl<Builder, TimestampQueryItem, TimeIntervalColumnHeader>
     implements TimestampReport.Builder {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(TimestampReport.Builder.class);
-  private List<Timestamp> status = Arrays.asList(Timestamp.CREATED, Timestamp.COMPLETED);
+  private static final Logger LOGGER = LoggerFactory.getLogger(TimestampReportBuilderImpl.class);
+  private List<TaskTimestamp> status =
+      Arrays.asList(TaskTimestamp.CREATED, TaskTimestamp.COMPLETED);
 
   public TimestampReportBuilderImpl(
       InternalTaskanaEngine taskanaEngine, MonitorMapper monitorMapper) {
@@ -47,9 +49,15 @@ public class TimestampReportBuilderImpl
   }
 
   @Override
-  public TimestampReport.Builder withTimestamps(List<Timestamp> statuses) {
+  public TimestampReport.Builder withTimestamps(List<TaskTimestamp> statuses) {
     this.status = new ArrayList<>(statuses);
     return _this();
+  }
+
+  @Override
+  public Report<TimestampQueryItem, TimeIntervalColumnHeader> buildReport(TaskTimestamp timestamp)
+      throws NotAuthorizedException, InvalidArgumentException {
+    return buildReport();
   }
 
   @Override
@@ -58,22 +66,19 @@ public class TimestampReportBuilderImpl
     this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
     try {
       this.taskanaEngine.openConnection();
-      TimestampReport report = new TimestampReport(this.columnHeaders);
+      TimestampReport report = new TimestampReport(columnHeaders);
       List<TimestampQueryItem> items =
           status.stream()
               // This can also be implemented into a single sql query which combines all statuses
-              // with the union
-              // operator. That would reduce the readability of the sql template. That's why "the
-              // loop" is done
-              // outside of mybatis.
+              // with the union operator. That would reduce the readability of the sql template.
+              // That's why "the loop" is done outside of mybatis.
               .map(this::getTasksCountForStatusGroupedByOrgLevel)
               .flatMap(Collection::stream)
               .collect(Collectors.toList());
 
       report.addItems(
           items,
-          new DaysToWorkingDaysReportPreProcessor<>(
-              this.columnHeaders, converter, this.inWorkingDays));
+          new DaysToWorkingDaysReportPreProcessor<>(columnHeaders, converter, inWorkingDays));
       return report;
     } finally {
       this.taskanaEngine.returnConnection();
@@ -91,10 +96,10 @@ public class TimestampReportBuilderImpl
     throw new UnsupportedOperationException();
   }
 
-  private List<TimestampQueryItem> getTasksCountForStatusGroupedByOrgLevel(Timestamp s) {
+  private List<TimestampQueryItem> getTasksCountForStatusGroupedByOrgLevel(TaskTimestamp s) {
     return monitorMapper.getTasksCountForStatusGroupedByOrgLevel(
         s,
-        categories,
+        classificationCategory,
         classificationIds,
         excludedClassificationIds,
         domains,

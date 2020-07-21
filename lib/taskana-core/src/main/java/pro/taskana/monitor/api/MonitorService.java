@@ -1,6 +1,6 @@
 package pro.taskana.monitor.api;
 
-import pro.taskana.monitor.api.reports.CategoryReport;
+import pro.taskana.monitor.api.reports.ClassificationCategoryReport;
 import pro.taskana.monitor.api.reports.ClassificationReport;
 import pro.taskana.monitor.api.reports.CustomFieldValueReport;
 import pro.taskana.monitor.api.reports.TaskStatusReport;
@@ -20,12 +20,13 @@ public interface MonitorService {
   WorkbasketReport.Builder createWorkbasketReportBuilder();
 
   /**
-   * Provides a {@link CategoryReport.Builder} for creating a {@link CategoryReport}, list the task
-   * ids of this report and list the values of an entered custom attribute.
+   * Provides a {@link ClassificationCategoryReport.Builder} for creating a {@link
+   * ClassificationCategoryReport}, list the task ids of this report and list the values of an
+   * entered custom attribute.
    *
-   * @return a {@link CategoryReport.Builder}
+   * @return a {@link ClassificationCategoryReport.Builder}
    */
-  CategoryReport.Builder createCategoryReportBuilder();
+  ClassificationCategoryReport.Builder createCategoryReportBuilder();
 
   /**
    * Provides a {@link ClassificationReport.Builder} for creating a {@link ClassificationReport} or

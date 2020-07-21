@@ -4,6 +4,7 @@ import java.util.List;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.DetailedMonitorQueryItem;
 import pro.taskana.monitor.api.reports.item.MonitorQueryItem;
@@ -28,6 +29,10 @@ public class ClassificationReport extends Report<MonitorQueryItem, TimeIntervalC
     @Override
     ClassificationReport buildReport() throws NotAuthorizedException, InvalidArgumentException;
 
+    @Override
+    ClassificationReport buildReport(TaskTimestamp timestamp)
+        throws NotAuthorizedException, InvalidArgumentException;
+
     /**
      * Returns a {@link DetailedClassificationReport} containing all tasks after applying the
      * filters. If the column headers are set the report is subdivided into clusters. Its {@link
@@ -39,6 +44,9 @@ public class ClassificationReport extends Report<MonitorQueryItem, TimeIntervalC
      * @throws NotAuthorizedException if the user has no rights to access the monitor
      */
     DetailedClassificationReport buildDetailedReport()
+        throws InvalidArgumentException, NotAuthorizedException;
+
+    DetailedClassificationReport buildDetailedReport(TaskTimestamp timestamp)
         throws InvalidArgumentException, NotAuthorizedException;
   }
 

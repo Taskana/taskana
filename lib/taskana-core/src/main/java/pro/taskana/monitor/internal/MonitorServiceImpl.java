@@ -2,13 +2,13 @@ package pro.taskana.monitor.internal;
 
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.monitor.api.MonitorService;
-import pro.taskana.monitor.api.reports.CategoryReport;
+import pro.taskana.monitor.api.reports.ClassificationCategoryReport;
 import pro.taskana.monitor.api.reports.ClassificationReport;
 import pro.taskana.monitor.api.reports.CustomFieldValueReport;
 import pro.taskana.monitor.api.reports.TaskStatusReport;
 import pro.taskana.monitor.api.reports.TimestampReport;
 import pro.taskana.monitor.api.reports.WorkbasketReport;
-import pro.taskana.monitor.internal.reports.CategoryReportBuilderImpl;
+import pro.taskana.monitor.internal.reports.ClassificationCategoryReportBuilderImpl;
 import pro.taskana.monitor.internal.reports.ClassificationReportBuilderImpl;
 import pro.taskana.monitor.internal.reports.CustomFieldValueReportBuilderImpl;
 import pro.taskana.monitor.internal.reports.TaskStatusReportBuilderImpl;
@@ -34,8 +34,8 @@ public class MonitorServiceImpl implements MonitorService {
   }
 
   @Override
-  public CategoryReport.Builder createCategoryReportBuilder() {
-    return new CategoryReportBuilderImpl(taskanaEngine, monitorMapper);
+  public ClassificationCategoryReport.Builder createCategoryReportBuilder() {
+    return new ClassificationCategoryReportBuilderImpl(taskanaEngine, monitorMapper);
   }
 
   @Override

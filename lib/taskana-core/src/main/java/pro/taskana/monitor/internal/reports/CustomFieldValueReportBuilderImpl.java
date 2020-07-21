@@ -8,6 +8,7 @@ import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
+import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.CustomFieldValueReport;
 import pro.taskana.monitor.api.reports.CustomFieldValueReport.Builder;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
@@ -24,7 +25,7 @@ public class CustomFieldValueReportBuilderImpl
   private static final Logger LOGGER =
       LoggerFactory.getLogger(CustomFieldValueReportBuilderImpl.class);
 
-  private CustomField customField;
+  private final CustomField customField;
 
   public CustomFieldValueReportBuilderImpl(
       InternalTaskanaEngine taskanaEngine, MonitorMapper monitorMapper, CustomField customField) {
@@ -34,6 +35,12 @@ public class CustomFieldValueReportBuilderImpl
 
   @Override
   public CustomFieldValueReport buildReport()
+      throws NotAuthorizedException, InvalidArgumentException {
+    return buildReport(TaskTimestamp.DUE);
+  }
+
+  @Override
+  public CustomFieldValueReport buildReport(TaskTimestamp timestamp)
       throws InvalidArgumentException, NotAuthorizedException {
     LOGGER.debug("entry to buildReport(customField = {}), this = {}", this.customField, this);
     this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR);
@@ -45,8 +52,9 @@ public class CustomFieldValueReportBuilderImpl
               this.customField,
               this.workbasketIds,
               this.states,
-              this.categories,
+              this.classificationCategory,
               this.domains,
+              timestamp,
               this.classificationIds,
               this.excludedClassificationIds,
               this.customAttributeFilter);

@@ -70,8 +70,7 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
             .map(role -> getConfiguration().getRoleMap().get(role))
             .collect(HashSet::new, Set::addAll, Set::addAll);
 
-    return CurrentUserContext.getAccessIds().stream()
-        .anyMatch(rolesMembers::contains);
+    return CurrentUserContext.getAccessIds().stream().anyMatch(rolesMembers::contains);
   }
 
   public void checkRoleMembership(TaskanaRole... roles) throws NotAuthorizedException {

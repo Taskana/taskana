@@ -8,38 +8,48 @@ import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
-import pro.taskana.monitor.api.reports.CategoryReport;
-import pro.taskana.monitor.api.reports.CategoryReport.Builder;
+import pro.taskana.monitor.api.TaskTimestamp;
+import pro.taskana.monitor.api.reports.ClassificationCategoryReport;
+import pro.taskana.monitor.api.reports.ClassificationCategoryReport.Builder;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.MonitorQueryItem;
 import pro.taskana.monitor.internal.MonitorMapper;
 import pro.taskana.monitor.internal.preprocessor.DaysToWorkingDaysReportPreProcessor;
 
 /** The implementation of CategoryReportBuilder. */
-public class CategoryReportBuilderImpl
+public class ClassificationCategoryReportBuilderImpl
     extends TimeIntervalReportBuilderImpl<Builder, MonitorQueryItem, TimeIntervalColumnHeader>
-    implements CategoryReport.Builder {
+    implements ClassificationCategoryReport.Builder {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(CategoryReport.Builder.class);
+  private static final Logger LOGGER =
+      LoggerFactory.getLogger(ClassificationCategoryReportBuilderImpl.class);
 
-  public CategoryReportBuilderImpl(
+  public ClassificationCategoryReportBuilderImpl(
       InternalTaskanaEngine taskanaEngine, MonitorMapper monitorMapper) {
     super(taskanaEngine, monitorMapper);
   }
 
   @Override
-  public CategoryReport buildReport() throws InvalidArgumentException, NotAuthorizedException {
+  public ClassificationCategoryReport buildReport()
+      throws NotAuthorizedException, InvalidArgumentException {
+    return buildReport(TaskTimestamp.DUE);
+  }
+
+  @Override
+  public ClassificationCategoryReport buildReport(TaskTimestamp timestamp)
+      throws InvalidArgumentException, NotAuthorizedException {
     LOGGER.debug("entry to buildReport(), this = {}", this);
     this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR);
     try {
       this.taskanaEngine.openConnection();
-      CategoryReport report = new CategoryReport(this.columnHeaders);
+      ClassificationCategoryReport report = new ClassificationCategoryReport(this.columnHeaders);
       List<MonitorQueryItem> monitorQueryItems =
           this.monitorMapper.getTaskCountOfCategories(
               this.workbasketIds,
               this.states,
-              this.categories,
+              this.classificationCategory,
               this.domains,
+              timestamp,
               this.classificationIds,
               this.excludedClassificationIds,
               this.customAttributeFilter);
@@ -55,7 +65,7 @@ public class CategoryReportBuilderImpl
   }
 
   @Override
-  protected CategoryReport.Builder _this() {
+  protected ClassificationCategoryReport.Builder _this() {
     return this;
   }
 

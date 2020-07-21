@@ -24,6 +24,7 @@ import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.monitor.api.SelectedItem;
+import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.CustomFieldValueReport;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.MonitorQueryItem;
@@ -72,6 +73,7 @@ class CustomFieldValueReportBuilderImplTest {
             states,
             categories,
             domains,
+            TaskTimestamp.DUE,
             classificationIds,
             excludedClassificationIds,
             customAttributeFilter))
@@ -81,7 +83,7 @@ class CustomFieldValueReportBuilderImplTest {
         cut.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
             .workbasketIdIn(workbasketIds)
             .stateIn(states)
-            .categoryIn(categories)
+            .classificationCategoryIn(categories)
             .domainIn(domains)
             .classificationIdIn(classificationIds)
             .excludedClassificationIdIn(excludedClassificationIds)
@@ -93,7 +95,8 @@ class CustomFieldValueReportBuilderImplTest {
     verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
     verify(internalTaskanaEngineMock, times(2)).getEngine();
     verify(monitorMapperMock)
-        .getTaskCountOfCustomFieldValues(any(), any(), any(), any(), any(), any(), any(), any());
+        .getTaskCountOfCustomFieldValues(
+            any(), any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
     verifyNoMoreInteractions(
         internalTaskanaEngineMock,
@@ -132,6 +135,7 @@ class CustomFieldValueReportBuilderImplTest {
             states,
             categories,
             domains,
+            TaskTimestamp.DUE,
             classificationIds,
             excludedClassificationIds,
             customAttributeFilter))
@@ -141,7 +145,7 @@ class CustomFieldValueReportBuilderImplTest {
         cut.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
             .workbasketIdIn(workbasketIds)
             .stateIn(states)
-            .categoryIn(categories)
+            .classificationCategoryIn(categories)
             .domainIn(domains)
             .classificationIdIn(classificationIds)
             .excludedClassificationIdIn(excludedClassificationIds)
@@ -154,7 +158,8 @@ class CustomFieldValueReportBuilderImplTest {
     verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
     verify(internalTaskanaEngineMock, times(2)).getEngine();
     verify(monitorMapperMock)
-        .getTaskCountOfCustomFieldValues(any(), any(), any(), any(), any(), any(), any(), any());
+        .getTaskCountOfCustomFieldValues(
+            any(), any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
     verifyNoMoreInteractions(
         internalTaskanaEngineMock,
@@ -203,7 +208,7 @@ class CustomFieldValueReportBuilderImplTest {
         cut.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
             .workbasketIdIn(workbasketIds)
             .stateIn(states)
-            .categoryIn(categories)
+            .classificationCategoryIn(categories)
             .domainIn(domains)
             .classificationIdIn(classificationIds)
             .excludedClassificationIdIn(excludedClassificationIds)
