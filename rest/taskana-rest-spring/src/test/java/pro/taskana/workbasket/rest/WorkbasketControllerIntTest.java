@@ -5,11 +5,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static pro.taskana.common.rest.RestHelper.TEMPLATE;
 
 import java.time.Instant;
+import java.util.Optional;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -49,14 +51,18 @@ class WorkbasketControllerIntTest {
 
   @Test
   void testGetWorkbasket() {
+    final String url = restHelper.toUrl(Mapping.URL_WORKBASKET_ID,
+        "WBI:100000000000000000000000000000000006");
     ResponseEntity<WorkbasketRepresentationModel> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_WORKBASKET_ID, "WBI:100000000000000000000000000000000006"),
+            url,
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(WorkbasketRepresentationModel.class));
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF))
+        .isEqualTo(Optional.of(Link.of(url)));
     assertThat(response.getHeaders().getContentType()).isEqualTo(MediaTypes.HAL_JSON);
   }
 
