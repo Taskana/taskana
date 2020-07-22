@@ -4,22 +4,22 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'environments/environment';
 import { Workbasket } from 'app/shared/models/workbasket';
 import { WorkbasketAccessItems } from 'app/shared/models/workbasket-access-items';
-import { WorkbasketSummaryResource } from 'app/shared/models/workbasket-summary-resource';
-import { WorkbasketAccessItemsResource } from 'app/shared/models/workbasket-access-items-resource';
-import { WorkbasketDistributionTargetsResource } from 'app/shared/models/workbasket-distribution-targets-resource';
+import { WorkbasketSummaryRepresentation } from 'app/shared/models/workbasket-summary-representation';
+import { WorkbasketAccessItemsRepresentation } from 'app/shared/models/workbasket-access-items-representation';
+import { WorkbasketDistributionTargets } from 'app/shared/models/workbasket-distribution-targets';
 import { Direction } from 'app/shared/models/sorting';
 
 import { DomainService } from 'app/shared/services/domain/domain.service';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { mergeMap, tap, catchError } from 'rxjs/operators';
 import { QueryParameters } from 'app/shared/models/query-parameters';
-import { WorkbasketResource } from '../../models/workbasket-resource';
+import { WorkbasketRepresentation } from '../../models/workbasket-representation';
 
 @Injectable()
 export class WorkbasketService {
   public workBasketSelected = new Subject<string>();
   public workBasketSaved = new Subject<number>();
-  private workbasketSummaryRef: Observable<WorkbasketSummaryResource> = new Observable();
+  private workbasketSummaryRef: Observable<WorkbasketSummaryRepresentation> = new Observable();
 
   constructor(
     private httpClient: HttpClient,
@@ -47,7 +47,7 @@ export class WorkbasketService {
 
     return this.domainService.getSelectedDomain()
       .pipe(mergeMap(domain => {
-        this.workbasketSummaryRef = this.httpClient.get<WorkbasketSummaryResource>(
+        this.workbasketSummaryRef = this.httpClient.get<WorkbasketSummaryRepresentation>(
           `${environment.taskanaRestUrl}/v1/workbaskets/${TaskanaQueryParameters
             .getQueryParameters(this.workbasketParameters(sortBy, order, name, nameLike, descLike, owner, ownerLike,
               type, key, keyLike, requiredPermission, allPages, domain))}`
@@ -65,8 +65,8 @@ export class WorkbasketService {
   }
 
   // GET
-  getAllWorkBaskets(): Observable<WorkbasketResource> {
-    return this.httpClient.get<WorkbasketResource>(`${environment.taskanaRestUrl}/v1/workbaskets?required-permission=OPEN`);
+  getAllWorkBaskets(): Observable<WorkbasketRepresentation> {
+    return this.httpClient.get<WorkbasketRepresentation>(`${environment.taskanaRestUrl}/v1/workbaskets?required-permission=OPEN`);
   }
 
   // POST
@@ -90,8 +90,8 @@ export class WorkbasketService {
   }
 
   // GET
-  getWorkBasketAccessItems(url: string): Observable<WorkbasketAccessItemsResource> {
-    return this.httpClient.get<WorkbasketAccessItemsResource>(url);
+  getWorkBasketAccessItems(url: string): Observable<WorkbasketAccessItemsRepresentation> {
+    return this.httpClient.get<WorkbasketAccessItemsRepresentation>(url);
   }
 
   // POST
@@ -106,14 +106,14 @@ export class WorkbasketService {
   }
 
   // GET
-  getWorkBasketsDistributionTargets(url: string): Observable<WorkbasketDistributionTargetsResource> {
-    return this.httpClient.get<WorkbasketDistributionTargetsResource>(url);
+  getWorkBasketsDistributionTargets(url: string): Observable<WorkbasketDistributionTargets> {
+    return this.httpClient.get<WorkbasketDistributionTargets>(url);
   }
 
   // PUT
   updateWorkBasketsDistributionTargets(url: string, distributionTargetsIds: Array<string>):
-  Observable<WorkbasketDistributionTargetsResource> {
-    return this.httpClient.put<WorkbasketDistributionTargetsResource>(url, distributionTargetsIds);
+  Observable<WorkbasketDistributionTargets> {
+    return this.httpClient.put<WorkbasketDistributionTargets>(url, distributionTargetsIds);
   }
 
   // DELETE

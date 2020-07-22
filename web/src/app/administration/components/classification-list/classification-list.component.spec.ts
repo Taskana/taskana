@@ -45,7 +45,7 @@ describe('ClassificationListComponent', () => {
     testBed.configureTestingModule({
       declarations: [ClassificationListComponent, ImportExportComponent, ClassificationTypesSelectorComponent,
         DummyDetailComponent],
-      imports: [HttpClientModule, RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule, NgxsModule.forRoot(), MatRadioModule],
+      imports: [HttpClientModule, RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule, NgxsModule.forRoot([]), MatRadioModule],
       providers: [
         HttpClient, WorkbasketDefinitionService, NotificationService,
         ClassificationsService, DomainService, ClassificationDefinitionService,

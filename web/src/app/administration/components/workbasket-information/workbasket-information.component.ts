@@ -6,9 +6,9 @@ import { Component,
   SimpleChanges,
   ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { NgForm } from '@angular/forms';
-import { Select } from '@ngxs/store';
+import { Select, Store } from '@ngxs/store';
 
 import { ICONTYPES } from 'app/shared/models/icon-types';
 import { ACTION } from 'app/shared/models/action';
@@ -19,13 +19,16 @@ import { SavingWorkbasketService, SavingInformation } from 'app/administration/s
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
-import { map } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { CustomField,
   getCustomFields,
   WorkbasketsCustomisation } from '../../../shared/models/customisation';
+import { CopyWorkbasket, MarkWorkbasketForDeletion,
+  RemoveDistributionTarget, SaveNewWorkbasket,
+  UpdateWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
 
 @Component({
   selector: 'taskana-administration-workbasket-information',
@@ -37,24 +40,24 @@ implements OnInit, OnChanges, OnDestroy {
   @Input()
   workbasket: Workbasket;
 
-  workbasketClone: Workbasket;
-  workbasketErrors;
   @Input()
   action: ACTION;
 
+  @ViewChild('WorkbasketForm', { static: false })
+  workbasketForm: NgForm;
+
+  workbasketClone: Workbasket;
   allTypes: Map<string, string>;
   requestInProgress = false;
   badgeMessage = '';
-
-  @Select(EngineConfigurationSelectors.workbasketsCustomisation) workbasketsCustomisation$: Observable<WorkbasketsCustomisation>;
-  customFields$: Observable<CustomField[]>;
-
   toogleValidationMap = new Map<string, boolean>();
+  lookupField = false;
 
-  private workbasketSubscription: Subscription;
-  private routeSubscription: Subscription;
-  @ViewChild('WorkbasketForm', { static: false })
-  workbasketForm: NgForm;
+  @Select(EngineConfigurationSelectors.workbasketsCustomisation)
+  workbasketsCustomisation$: Observable<WorkbasketsCustomisation>;
+
+  customFields$: Observable<CustomField[]>;
+  destroy$ = new Subject<void>();
 
   constructor(
     private workbasketService: WorkbasketService,
@@ -63,11 +66,12 @@ implements OnInit, OnChanges, OnDestroy {
     private savingWorkbasket: SavingWorkbasketService,
     private requestInProgressService: RequestInProgressService,
     private formsValidatorService: FormsValidatorService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private store: Store
   ) {
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.allTypes = new Map([
       ['PERSONAL', 'Personal'],
       ['GROUP', 'Group'],
@@ -78,9 +82,16 @@ implements OnInit, OnChanges, OnDestroy {
       map(customisation => customisation.information),
       getCustomFields(customFieldCount)
     );
+    this.workbasketsCustomisation$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(workbasketsCustomization => {
+        if (workbasketsCustomization.information.owner) {
+          this.lookupField = workbasketsCustomization.information.owner.lookupField;
+        }
+      });
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(changes: SimpleChanges) {
     this.workbasketClone = { ...this.workbasket };
     if (this.action === ACTION.CREATE) {
       this.badgeMessage = 'Creating new workbasket';
@@ -108,7 +119,7 @@ implements OnInit, OnChanges, OnDestroy {
     return this.formsValidatorService.isFieldValid(this.workbasketForm, field);
   }
 
-  onClear() {
+  onUndo() {
     this.formsValidatorService.formSubmitAttempt = false;
     this.notificationService.showToast(NOTIFICATION_TYPES.INFO_ALERT);
     this.workbasket = { ...this.workbasketClone };
@@ -122,32 +133,11 @@ implements OnInit, OnChanges, OnDestroy {
   }
 
   copyWorkbasket() {
-    this.router.navigate([{ outlets: { detail: ['copy-workbasket'] } }], {
-      relativeTo: this.route.parent
-    });
+    this.store.dispatch(new CopyWorkbasket(this.workbasket));
   }
 
   removeDistributionTargets() {
-    this.requestInProgressService.setRequestInProgress(true);
-    this.workbasketService
-      .removeDistributionTarget(
-        this.workbasket._links.removeDistributionTargets.href
-      )
-      .subscribe(
-        reponse => {
-          this.requestInProgressService.setRequestInProgress(false);
-          this.notificationService.showToast(
-            NOTIFICATION_TYPES.SUCCESS_ALERT_9,
-            new Map<string, string>([['workbasketId', this.workbasket.workbasketId]])
-          );
-        },
-        error => {
-          this.notificationService.triggerError(NOTIFICATION_TYPES.REMOVE_ERR_2,
-            error,
-            new Map<String, String>([['workbasketId', this.workbasket.workbasketId]]));
-          this.requestInProgressService.setRequestInProgress(false);
-        }
-      );
+    this.store.dispatch(new RemoveDistributionTarget(this.workbasket._links.removeDistributionTargets.href));
   }
 
   private onSave() {
@@ -156,24 +146,11 @@ implements OnInit, OnChanges, OnDestroy {
       this.postNewWorkbasket();
       return;
     }
-
-    this.workbasketSubscription = this.workbasketService
-      .updateWorkbasket(this.workbasket._links.self.href, this.workbasket)
-      .subscribe(
-        workbasketUpdated => {
-          this.afterRequest();
-          this.workbasket = workbasketUpdated;
-          this.workbasketClone = { ...this.workbasket };
-          this.notificationService.showToast(
-            NOTIFICATION_TYPES.SUCCESS_ALERT_10,
-            new Map<string, string>([['workbasketKey', workbasketUpdated.key]])
-          );
-        },
-        error => {
-          this.afterRequest();
-          this.notificationService.triggerError(NOTIFICATION_TYPES.SAVE_ERR_4, error);
-        }
-      );
+    this.store.dispatch(new UpdateWorkbasket(this.workbasket._links.self.href, this.workbasket))
+      .subscribe(state => {
+        this.requestInProgressService.setRequestInProgress(false);
+        this.workbasketClone = { ...this.workbasket };
+      });
   }
 
   private beforeRequest() {
@@ -187,19 +164,9 @@ implements OnInit, OnChanges, OnDestroy {
 
   private postNewWorkbasket() {
     this.addDateToWorkbasket();
-    this.workbasketService.createWorkbasket(this.workbasket).subscribe(
-      (workbasketUpdated: Workbasket) => {
-        this.notificationService.showToast(
-          NOTIFICATION_TYPES.SUCCESS_ALERT_11,
-          new Map<string, string>([['workbasketKey', workbasketUpdated.key]])
-        );
-        this.workbasket = workbasketUpdated;
+    this.store.dispatch(new SaveNewWorkbasket(this.workbasket)).subscribe(
+      () => {
         this.afterRequest();
-        this.workbasketService.triggerWorkBasketSaved();
-        this.workbasketService.selectWorkBasket(this.workbasket.workbasketId);
-        this.router.navigate([`../${this.workbasket.workbasketId}`], {
-          relativeTo: this.route
-        });
         if (this.action === ACTION.COPY) {
           this.savingWorkbasket.triggerDistributionTargetSaving(
             new SavingInformation(
@@ -214,10 +181,6 @@ implements OnInit, OnChanges, OnDestroy {
             )
           );
         }
-      },
-      error => {
-        this.notificationService.triggerError(NOTIFICATION_TYPES.CREATE_ERR_2, error);
-        this.requestInProgressService.setRequestInProgress(false);
       }
     );
   }
@@ -229,38 +192,18 @@ implements OnInit, OnChanges, OnDestroy {
   }
 
   private onRemoveConfirmed() {
-    this.requestInProgressService.setRequestInProgress(true);
-    this.workbasketService
-      .markWorkbasketForDeletion(this.workbasket._links.self.href)
-      .subscribe(
-        response => {
-          this.requestInProgressService.setRequestInProgress(false);
-          this.workbasketService.triggerWorkBasketSaved();
-          if (response.status === 202) {
-            this.notificationService.triggerError(NOTIFICATION_TYPES.MARK_ERR,
-              undefined,
-              new Map<String, String>([['workbasketId', this.workbasket.workbasketId]]));
-          } else {
-            this.notificationService.showToast(
-              NOTIFICATION_TYPES.SUCCESS_ALERT_12,
-              new Map<string, string>([['workbasketId', this.workbasket.workbasketId]])
-            );
-          }
-          this.router.navigate(['taskana/administration/workbaskets']);
-        }
-      );
-  }
-
-  ngOnDestroy() {
-    if (this.workbasketSubscription) {
-      this.workbasketSubscription.unsubscribe();
-    }
-    if (this.routeSubscription) {
-      this.routeSubscription.unsubscribe();
-    }
+    this.beforeRequest();
+    this.store.dispatch(new MarkWorkbasketForDeletion(this.workbasket._links.self.href)).subscribe(() => {
+      this.afterRequest();
+    });
   }
 
   getWorkbasketCustomProperty(custom: number) {
     return `custom${custom}`;
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

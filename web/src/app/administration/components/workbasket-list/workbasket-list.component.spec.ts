@@ -8,8 +8,8 @@ import { Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
-import { WorkbasketSummaryResource } from 'app/shared/models/workbasket-summary-resource';
-import { Filter } from 'app/shared/models/filter';
+import { WorkbasketSummaryRepresentation } from 'app/shared/models/workbasket-summary-representation';
+import { LinksWorkbasketSummary } from 'app/shared/models/links-workbasket-summary';
 
 import { ImportExportComponent } from 'app/administration/components/import-export/import-export.component';
 
@@ -20,6 +20,7 @@ import { OrientationService } from 'app/shared/services/orientation/orientation.
 import { configureTests } from 'app/app.test.configuration';
 import { Page } from 'app/shared/models/page';
 import { ImportExportService } from 'app/administration/services/import-export.service';
+import { NgxsModule } from '@ngxs/store';
 import { WorkbasketListToolbarComponent } from '../workbasket-list-toolbar/workbasket-list-toolbar.component';
 import { WorkbasketListComponent } from './workbasket-list.component';
 
@@ -31,7 +32,7 @@ class DummyDetailComponent {
 }
 
 @Component({
-  selector: 'taskana-shared-pagination',
+  selector: 'taskana-pagination',
   template: 'dummydetail'
 })
 class PaginationComponent {
@@ -44,13 +45,32 @@ class PaginationComponent {
   @Output() changePage = new EventEmitter<any>();
 }
 
-const workbasketSummaryResource: WorkbasketSummaryResource = new WorkbasketSummaryResource(
-  new Array<WorkbasketSummary>(
-    new WorkbasketSummary('1', 'key1', 'NAME1', 'description 1', 'owner 1', '', '', 'PERSONAL', '', '', '', ''),
-    new WorkbasketSummary('2', 'key2', 'NAME2', 'description 2', 'owner 2', '', '', 'GROUP', '', '', '', '')
-  ),
-  {}
-);
+function createWorkbasketSummary(workbasketId, key, name, domain, type, description, owner, custom1, custom2, custom3, custom4) {
+  const workbasketSummary: WorkbasketSummary = {
+    workbasketId,
+    key,
+    name,
+    domain,
+    type,
+    description,
+    owner,
+    custom1,
+    custom2,
+    custom3,
+    custom4
+  };
+  return workbasketSummary;
+}
+const workbasketSummaryResource: WorkbasketSummaryRepresentation = {
+  workbaskets: [
+    createWorkbasketSummary('1', 'key1', 'NAME1', '', 'PERSONAL',
+      'description 1', 'owner1', '', '', '', ''),
+    createWorkbasketSummary('2', 'key2', 'NAME2', '', 'PERSONAL',
+      'description 2', 'owner2', '', '', '', ''),
+  ],
+  _links: new LinksWorkbasketSummary({ href: 'url' }),
+  page: {}
+};
 
 describe('WorkbasketListComponent', () => {
   let component: WorkbasketListComponent;
@@ -71,12 +91,13 @@ describe('WorkbasketListComponent', () => {
           WorkbasketListComponent,
           DummyDetailComponent,
           WorkbasketListToolbarComponent,
-          ImportExportComponent
+          ImportExportComponent,
         ],
         imports: [
           AngularSvgIconModule,
           HttpClientModule,
-          RouterTestingModule.withRoutes(routes)
+          RouterTestingModule.withRoutes(routes),
+          NgxsModule.forRoot()
         ],
         providers: [
           WorkbasketService,
@@ -90,6 +111,13 @@ describe('WorkbasketListComponent', () => {
     configureTests(configure).then(testBed => {
       fixture = TestBed.createComponent(WorkbasketListComponent);
       component = fixture.componentInstance;
+      Object.defineProperty(component, 'workbasketsSummaryRepresentation$', { writable: true });
+      const page = {
+        workbaskets: [],
+        _links: {},
+        page: new Page(6, 3, 3, 1)
+      };
+      component.workbasketsSummaryRepresentation$ = of(page);
       debugElement = fixture.debugElement.nativeElement;
       workbasketService = TestBed.get(WorkbasketService);
       const orientationService = TestBed.get(OrientationService);
@@ -111,14 +139,6 @@ describe('WorkbasketListComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call workbasketService.getWorkbasketsSummary method on init', () => {
-    component.ngOnInit();
-    expect(workbasketService.getWorkBasketsSummary).toHaveBeenCalled();
-    workbasketService.getWorkBasketsSummary().subscribe(value => {
-      expect(value).toBe(workbasketSummaryResource);
-    });
-  });
-
   it('should have wb-action-toolbar, wb-search-bar, wb-list-container, wb-pagination,'
         + ' collapsedMenufilterWb and taskana-filter created in the html', () => {
     expect(debugElement.querySelector('#wb-action-toolbar')).toBeDefined();
@@ -127,27 +147,6 @@ describe('WorkbasketListComponent', () => {
     expect(debugElement.querySelector('#wb-list-container')).toBeDefined();
     expect(debugElement.querySelector('#collapsedMenufilterWb')).toBeDefined();
     expect(debugElement.querySelector('taskana-filter')).toBeDefined();
-    expect(debugElement.querySelectorAll('#wb-list-container > li').length).toBe(3);
-  });
-
-  // it('should have two workbasketsummary rows created with the second one selected.', fakeAsync(() => {
-  //   tick(0);
-  //   fixture.detectChanges();
-  //   fixture.whenStable().then(() => {
-  //     expect(debugElement.querySelectorAll('#wb-list-container > li').length).toBe(3);
-  //     expect(debugElement.querySelectorAll('#wb-list-container > li')[1].getAttribute('class'))
-  //       .toBe('list-group-item ng-star-inserted');
-  //     expect(debugElement.querySelectorAll('#wb-list-container > li')[2].getAttribute('class'))
-  //       .toBe('list-group-item ng-star-inserted active');
-  //   })
-  //
-  // }));
-
-  it('should have two workbasketsummary rows created with two different icons: user and users', () => {
-    expect(debugElement.querySelectorAll('#wb-list-container > li')[1]
-      .querySelector('svg-icon').getAttribute('ng-reflect-src')).toBe('./assets/icons/user.svg');
-    expect(debugElement.querySelectorAll('#wb-list-container > li')[2]
-      .querySelector('svg-icon').getAttribute('ng-reflect-src')).toBe('./assets/icons/users.svg');
   });
 
   it('should have rendered sort by: name, id, description, owner and type', () => {
@@ -157,18 +156,4 @@ describe('WorkbasketListComponent', () => {
     expect(debugElement.querySelector('#sort-by-owner')).toBeDefined();
     expect(debugElement.querySelector('#sort-by-type')).toBeDefined();
   });
-
-  it('should have performRequest with forced = true after performFilter is triggered', (() => {
-    const filter = new Filter({
-      name: 'someName',
-      owner: 'someOwner',
-      description: 'someDescription',
-      key: 'someKey',
-      type: 'PERSONAL'
-    });
-    component.performFilter(filter);
-
-    expect(workbasketSummarySpy.calls.all()[1].args).toEqual([true, 'name', 'asc',
-      '', 'someName', 'someDescription', '', 'someOwner', 'PERSONAL', '', 'someKey', '']);
-  }));
 });

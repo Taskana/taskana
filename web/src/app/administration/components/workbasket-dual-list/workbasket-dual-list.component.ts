@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
 import { Filter } from 'app/shared/models/filter';
 import { expandDown } from 'theme/animations/expand.animation';
@@ -11,8 +11,8 @@ import { Side } from '../workbasket-distribution-targets/workbasket-distribution
   animations: [expandDown]
 })
 export class WorkbasketDualListComponent implements OnInit {
-  @Input() distributionTargets: Array<WorkbasketSummary>;
-  @Input() distributionTargetsSelected: Array<WorkbasketSummary>;
+  @Input() distributionTargets: WorkbasketSummary[];
+  @Input() distributionTargetsSelected: WorkbasketSummary[];
   @Output() performDualListFilter = new EventEmitter<{ filterBy: Filter, side: Side }>();
   @Input() requestInProgress = false;
   @Input() loadingItems ? = false;

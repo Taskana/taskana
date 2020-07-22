@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 import { Workbasket } from 'app/shared/models/workbasket';
 import { ACTION } from 'app/shared/models/action';
@@ -9,8 +9,12 @@ import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.ser
 import { MasterAndDetailService } from 'app/shared/services/master-and-detail/master-and-detail.service';
 import { DomainService } from 'app/shared/services/domain/domain.service';
 import { ImportExportService } from 'app/administration/services/import-export.service';
-import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
+import { Select, Store } from '@ngxs/store';
+import { takeUntil } from 'rxjs/operators';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
+import { WorkbasketAndAction, WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
+import { TaskanaDate } from '../../../shared/util/taskana.date';
+import { ICONTYPES } from '../../../shared/models/icon-types';
 
 @Component({
   selector: 'taskana-administration-workbasket-details',
@@ -25,58 +29,65 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
   action: ACTION;
   tabSelected = 'information';
 
-  private workbasketSelectedSubscription: Subscription;
-  private workbasketSubscription: Subscription;
-  private routeSubscription: Subscription;
-  private masterAndDetailSubscription: Subscription;
-  private permissionSubscription: Subscription;
-  private domainSubscription: Subscription;
-  private importingExportingSubscription: Subscription;
+  @Select(WorkbasketSelectors.selectedWorkbasket)
+  selectedWorkbasket$: Observable<Workbasket>;
+
+  @Select(WorkbasketSelectors.workbasketActiveAction)
+  activeAction$: Observable<ACTION>;
+
+  @Select(WorkbasketSelectors.selectedWorkbasketAndAction)
+  selectedWorkbasketAndAction$: Observable<WorkbasketAndAction>;
+
+  destroy$ = new Subject<void>();
 
   constructor(private service: WorkbasketService,
     private route: ActivatedRoute,
     private router: Router,
-    private masterAndDetailService: MasterAndDetailService,
     private domainService: DomainService,
-    private errorsService: NotificationService,
-    private importExportService: ImportExportService) { }
+    private importExportService: ImportExportService,
+    private store: Store) {
+  }
 
   ngOnInit() {
-    this.workbasketSelectedSubscription = this.service.getSelectedWorkBasket().subscribe(workbasketIdSelected => {
-      delete this.workbasket;
-      this.getWorkbasketInformation(workbasketIdSelected);
-    });
-
-    this.routeSubscription = this.route.params.subscribe(params => {
-      const { id } = params;
-      delete this.action;
-      if (id) {
-        if (id.indexOf('new-workbasket') !== -1) {
+    this.selectedWorkbasketAndAction$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(selectedWorkbasketAndAction => {
+        this.action = selectedWorkbasketAndAction.action;
+        if (this.action === ACTION.CREATE) {
           this.tabSelected = 'information';
-          this.action = ACTION.CREATE;
-          this.getWorkbasketInformation();
-        } else if (id.indexOf('copy-workbasket') !== -1) {
-          if (!this.selectedId) {
-            this.router.navigate(['./'], { relativeTo: this.route.parent });
-            return;
-          }
-          this.action = ACTION.COPY;
-          delete this.workbasket.key;
+          this.selectedId = undefined;
+          this.initWorkbasket();
+        } else if (this.action === ACTION.COPY) {
+          // delete this.workbasket.key;
           this.workbasketCopy = this.workbasket;
           this.getWorkbasketInformation();
-        } else {
-          this.selectWorkbasket(id);
+        } else if (typeof selectedWorkbasketAndAction.selectedWorkbasket !== 'undefined') {
+          this.workbasket = { ...selectedWorkbasketAndAction.selectedWorkbasket };
+          this.getWorkbasketInformation(this.workbasket);
         }
-      }
-    });
+      });
 
-    this.masterAndDetailSubscription = this.masterAndDetailService.getShowDetail().subscribe(showDetail => {
-      this.showDetail = showDetail;
-    });
+    this.importExportService.getImportingFinished()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        if (this.workbasket) {
+          this.getWorkbasketInformation(this.workbasket);
+        }
+      });
+  }
 
-    this.importingExportingSubscription = this.importExportService.getImportingFinished().subscribe(() => {
-      if (this.workbasket) { this.getWorkbasketInformation(this.workbasket.workbasketId); }
-    });
+  addDateToWorkbasket(workbasket: Workbasket) {
+    const date = TaskanaDate.getDate();
+    workbasket.created = date;
+    workbasket.modified = date;
+  }
+
+  initWorkbasket() {
+    const emptyWorkbasket: Workbasket = {};
+    emptyWorkbasket.domain = this.domainService.getSelectedDomainValue();
+    emptyWorkbasket.type = ICONTYPES.PERSONAL;
+    this.addDateToWorkbasket(emptyWorkbasket);
+    this.workbasket = emptyWorkbasket;
   }
 
   backClicked(): void {
@@ -88,19 +99,19 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
     this.tabSelected = this.action === ACTION.CREATE ? 'information' : tab;
   }
 
-  private selectWorkbasket(id: string) {
-    this.selectedId = id;
-    this.service.selectWorkBasket(id);
-  }
-
-  private getWorkbasketInformation(workbasketIdSelected?: string) {
+  private getWorkbasketInformation(selectedWorkbasket?: Workbasket) {
+    let workbasketIdSelected: string;
+    if (selectedWorkbasket) {
+      workbasketIdSelected = selectedWorkbasket.workbasketId;
+    }
     this.requestInProgress = true;
-
     if (!workbasketIdSelected && this.action === ACTION.CREATE) { // CREATE
-      this.workbasket = new Workbasket();
-      this.domainSubscription = this.domainService.getSelectedDomain().subscribe(domain => {
-        this.workbasket.domain = domain;
-      });
+      this.workbasket = {};
+      this.domainService.getSelectedDomain()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(domain => {
+          this.workbasket.domain = domain;
+        });
       this.requestInProgress = false;
     } else if (!workbasketIdSelected && this.action === ACTION.COPY) { // COPY
       this.workbasket = { ...this.workbasketCopy };
@@ -108,31 +119,24 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
       this.requestInProgress = false;
     }
     if (workbasketIdSelected) {
-      this.workbasketSubscription = this.service.getWorkBasket(workbasketIdSelected).subscribe(workbasket => {
-        this.workbasket = workbasket;
-        this.requestInProgress = false;
-        this.checkDomainAndRedirect();
-      }, error => {
-        this.errorsService.triggerError(NOTIFICATION_TYPES.FETCH_ERR_4, error);
-      });
+      this.workbasket = selectedWorkbasket;
+      this.requestInProgress = false;
+      this.checkDomainAndRedirect();
     }
   }
 
   private checkDomainAndRedirect() {
-    this.domainSubscription = this.domainService.getSelectedDomain().subscribe(domain => {
-      if (domain !== '' && this.workbasket && this.workbasket.domain !== domain) {
-        this.backClicked();
-      }
-    });
+    this.domainService.getSelectedDomain()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(domain => {
+        if (domain !== '' && this.workbasket && this.workbasket.domain !== domain) {
+          this.backClicked();
+        }
+      });
   }
 
   ngOnDestroy(): void {
-    if (this.workbasketSelectedSubscription) { this.workbasketSelectedSubscription.unsubscribe(); }
-    if (this.workbasketSubscription) { this.workbasketSubscription.unsubscribe(); }
-    if (this.routeSubscription) { this.routeSubscription.unsubscribe(); }
-    if (this.masterAndDetailSubscription) { this.masterAndDetailSubscription.unsubscribe(); }
-    if (this.permissionSubscription) { this.permissionSubscription.unsubscribe(); }
-    if (this.domainSubscription) { this.domainSubscription.unsubscribe(); }
-    if (this.importingExportingSubscription) { this.importingExportingSubscription.unsubscribe(); }
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

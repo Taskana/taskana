@@ -5,7 +5,7 @@
             <button type="button" (click)="onSubmit()" data-toggle="tooltip" title="Save" class="btn btn-default btn-primary">
                 <span class="material-icons md-20">save</span>
             </button>
-            <button type="button" (click)="onClear()" data-toggle="tooltip" title="Undo Changes" class="btn btn-default">
+            <button type="button" (click)="onUndo()" data-toggle="tooltip" title="Undo Changes" class="btn btn-default">
                 <span class="material-icons md-20 blue">undo</span>
             </button>
             <button type="button" (click)="removeDistributionTargets()" data-toggle="tooltip" title="Remove workbasket as distribution target"
@@ -23,9 +23,11 @@
             <span *ngIf="!workbasket.workbasketId" class="badge warning"> {{badgeMessage}}</span>
         </h4>
     </div>
+
     <div class="panel-body">
         <form #WorkbasketForm="ngForm">
             <div class="col-md-6">
+                <!-- KEY -->
                 <div class="form-group required">
                     <label for="wb-key" class="control-label">Key</label>
                     <input type="text" required #key="ngModel" class="form-control" id="wb-key" placeholder="Key"
@@ -34,6 +36,8 @@
                                                         errorMessage="* Key is required">
                     </taskana-shared-field-error-display>
                 </div>
+
+                <!-- NAME -->
                 <div class="form-group required">
                     <label for="wb-name" class="control-label">Name</label>
                     <input type="text" required #name="ngModel" class="form-control" id="wb-name" placeholder="Name"
@@ -42,11 +46,13 @@
                                                         errorMessage="* Name is required">
                     </taskana-shared-field-error-display>
                 </div>
+
+                <!-- OWNER -->
                 <div class="input-group form-group col-xs-12 required">
                     <label for="wb-owner" class="control-label ">Owner</label>
-                    <taskana-shared-type-ahead *ngIf="(workbasketsCustomisation$ | async)?.information?.lookupField else ownerInput" required #owner="ngModel" name="workbasket.owner"
-                                               [(ngModel)]="workbasket.owner" placeHolderMessage="* Owner is required" [validationValue]="this.toogleValidationMap.get('workbasket.owner')"
-                                               [displayError]="!isFieldValid('workbasket.owner')" width="100%"></taskana-shared-type-ahead>
+                    <taskana-shared-type-ahead *ngIf="lookupField else ownerInput" required #owner="ngModel" name="workbasket.owner"
+                        [(ngModel)]="workbasket.owner" placeHolderMessage="* Owner is required" [validationValue]="this.toogleValidationMap.get('workbasket.owner')"
+                        [displayError]="!isFieldValid('workbasket.owner')" width="100%"></taskana-shared-type-ahead>
                     <ng-template #ownerInput>
                         <input type="text" required #owner="ngModel" class="form-control" id="wb-owner" placeholder="Owner"
                             [(ngModel)]="workbasket.owner" name="workbasket.owner">
@@ -55,11 +61,15 @@
                         </taskana-shared-field-error-display>
                     </ng-template>
                 </div>
+
+                <!-- DOMAIN -->
                 <div class="form-group ">
                     <label for="wb-domain" class="control-label">Domain</label>
                     <input type="text" #domain="ngModel" class="form-control" disabled id="wb-domain" placeholder="Domain"
                         [(ngModel)]="workbasket.domain" name="workbasket.domain">
                 </div>
+
+                <!-- TYPE & DESCRIPTION-->
                 <div class="row">
                     <div class="form-group col-xs-4">
                         <label class="control-label">Type</label>
@@ -97,7 +107,7 @@
                     <input type="text" class="form-control" id="wb-org-level-2" placeholder="OrgLevel 2" [(ngModel)]="workbasket.orgLevel2"
                         name="workbasket.orgLevel2">
                 </div>
-                <div class="form-group">
+                <div class="form-group" style="padding-top: 18px;">
                     <label for="wb-org-level-3" class="control-label">OrgLevel 3</label>
                     <input type="text" class="form-control" id="wb-org-level-3" placeholder="OrgLevel 3" [(ngModel)]="workbasket.orgLevel3"
                         name="workbasket.orgLevel3">

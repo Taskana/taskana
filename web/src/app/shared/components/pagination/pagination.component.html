@@ -16,6 +16,6 @@
 <span class="footer pull-right" [hidden]="numberOfItems === 0">
   <i [innerHTML]="getPagesTextToShow()"></i>
 </span>
-<span class="footer pull-right" [hidden]="numberOfItems !== 0 && page.totalElements !== 0">
+<span class="footer pull-right" [hidden]="numberOfItems !== 0 && page?.totalElements !== 0">
   <i>Loading...</i>
 </span>
