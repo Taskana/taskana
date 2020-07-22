@@ -1,4 +1,5 @@
-import { AfterViewChecked,
+import {
+  AfterViewChecked,
   Component,
   ElementRef,
   EventEmitter,
@@ -7,7 +8,8 @@ import { AfterViewChecked,
   OnDestroy,
   OnInit,
   Output,
-  ViewChild } from '@angular/core';
+  ViewChild
+} from '@angular/core';
 import { TreeNodeModel } from 'app/administration/models/tree-node';
 
 import { ITreeOptions, KEYS, TREE_ACTIONS, TreeComponent } from 'angular-tree-component';
@@ -24,15 +26,17 @@ import { Classification } from '../../../shared/models/classification';
 import { ClassificationsService } from '../../../shared/services/classifications/classifications.service';
 import { ClassificationCategoryImages } from '../../../shared/models/customisation';
 import { ClassificationSelectors } from '../../../shared/store/classification-store/classification.selectors';
-import { DeselectClassification,
+import {
+  DeselectClassification,
   SelectClassification,
-  UpdateClassification } from '../../../shared/store/classification-store/classification.actions';
+  UpdateClassification
+} from '../../../shared/store/classification-store/classification.actions';
 import { ClassificationTreeService } from '../../services/classification-tree.service';
 
 @Component({
   selector: 'taskana-administration-tree',
   templateUrl: './tree.component.html',
-  styleUrls: ['./tree.component.scss'],
+  styleUrls: ['./tree.component.scss']
 })
 export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy {
   treeNodes: TreeNodeModel[];
@@ -75,8 +79,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
     private store: Store,
     private notificationsService: NotificationService,
     private classificationTreeService: ClassificationTreeService
-  ) {
-  }
+  ) {}
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event) {
@@ -87,11 +90,12 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
 
   ngOnInit() {
     const computedTreeNodes$: Observable<TreeNodeModel[]> = this.classifications$.pipe(
-      filter(classifications => typeof (classifications) !== 'undefined'),
-      map(classifications => this.classificationTreeService.transformToTreeNode(classifications))
+      filter((classifications) => typeof classifications !== 'undefined'),
+      map((classifications) => this.classificationTreeService.transformToTreeNode(classifications))
     );
 
-    combineLatest([this.selectedClassificationId$, computedTreeNodes$]).pipe(takeUntil(this.destroy$))
+    combineLatest([this.selectedClassificationId$, computedTreeNodes$])
+      .pipe(takeUntil(this.destroy$))
       .subscribe(([selectedClassificationId, treeNodes]) => {
         this.treeNodes = treeNodes;
         this.selectNodeId = typeof selectedClassificationId !== 'undefined' ? selectedClassificationId : undefined;
@@ -122,8 +126,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
       }
     }
 
-    if (this.filterTextOld !== this.filterText
-        || this.filterIconOld !== this.filterIcon) {
+    if (this.filterTextOld !== this.filterText || this.filterIconOld !== this.filterIcon) {
       this.filterIconOld = this.filterIcon;
       this.filterTextOld = this.filterText;
       this.filterNodes(this.filterText ? this.filterText : '', this.filterIcon);
@@ -166,11 +169,13 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
   }
 
   getCategoryIcon(category: string): Observable<Pair> {
-    return this.categoryIcons$.pipe(map(
-      iconMap => (iconMap[category]
-        ? new Pair(iconMap[category], category)
-        : new Pair(iconMap.missing, 'Category does not match with the configuration'))
-    ));
+    return this.categoryIcons$.pipe(
+      map((iconMap) =>
+        iconMap[category]
+          ? new Pair(iconMap[category], category)
+          : new Pair(iconMap.missing, 'Category does not match with the configuration')
+      )
+    );
   }
 
   switchTaskanaSpinner(active: boolean) {
@@ -203,18 +208,20 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
   }
 
   private filterNodes(text, iconText) {
-    this.tree.treeModel.filterNodes(node => TaskanaTreeComponent.checkNameAndKey(node, text)
-        && TaskanaTreeComponent.checkIcon(node, iconText));
+    this.tree.treeModel.filterNodes(
+      (node) => TaskanaTreeComponent.checkNameAndKey(node, text) && TaskanaTreeComponent.checkIcon(node, iconText)
+    );
   }
 
   private static checkNameAndKey(node: any, text: string): boolean {
-    return (node.data.name.toUpperCase().includes(text.toUpperCase())
-        || node.data.key.toUpperCase().includes(text.toUpperCase()));
+    return (
+      node.data.name.toUpperCase().includes(text.toUpperCase()) ||
+      node.data.key.toUpperCase().includes(text.toUpperCase())
+    );
   }
 
   private static checkIcon(node: any, iconText: string): boolean {
-    return (node.data.category.toUpperCase() === iconText.toUpperCase()
-        || iconText === '');
+    return node.data.category.toUpperCase() === iconText.toUpperCase() || iconText === '';
   }
 
   private manageTreeState() {
@@ -225,10 +232,10 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
   }
 
   private checkValidElements(event): boolean {
-    return (this.elementRef.nativeElement.contains(event.target)
-        || this.elementRef.nativeElement === event.target)
-        && (event.target.localName === 'tree-viewport'
-            || event.target.localName === 'taskana-tree');
+    return (
+      (this.elementRef.nativeElement.contains(event.target) || this.elementRef.nativeElement === event.target) &&
+      (event.target.localName === 'tree-viewport' || event.target.localName === 'taskana-tree')
+    );
   }
 
   private getClassification(classificationId: string): Promise<Classification> {
@@ -236,14 +243,13 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
   }
 
   private updateClassification(classification: Classification) {
-    this.store.dispatch(new UpdateClassification(classification))
-      .subscribe(() => {
-        this.notificationsService.showToast(
-          NOTIFICATION_TYPES.SUCCESS_ALERT_5,
-          new Map<string, string>([['classificationKey', classification.key]])
-        );
-        this.switchTaskanaSpinner(false);
-      });
+    this.store.dispatch(new UpdateClassification(classification)).subscribe(() => {
+      this.notificationsService.showToast(
+        NOTIFICATION_TYPES.SUCCESS_ALERT_5,
+        new Map<string, string>([['classificationKey', classification.key]])
+      );
+      this.switchTaskanaSpinner(false);
+    });
   }
 
   private collapseParentNodeIfItIsTheLastChild(node: any) {

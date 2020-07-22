@@ -60,7 +60,7 @@ export class TaskanaQueryParameters {
   public static getQueryParameters(queryParametersModel: QueryParameters): string {
     let query = '?';
 
-    Object.keys(queryParametersModel).forEach(key => {
+    Object.keys(queryParametersModel).forEach((key) => {
       const value = queryParametersModel[key];
       query += value ? `${TaskanaQueryParameters.parameters[key]}=${value}&` : '';
     });

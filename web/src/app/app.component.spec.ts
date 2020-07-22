@@ -13,21 +13,12 @@ describe('AppComponent', () => {
   let fixture;
   let debugElement;
 
-  const routes: Routes = [
-    { path: 'classifications', component: AppComponent }
-  ];
+  const routes: Routes = [{ path: 'classifications', component: AppComponent }];
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        AppComponent, NavBarComponent
-      ],
-      imports: [
-        AngularSvgIconModule,
-        RouterTestingModule.withRoutes(routes),
-        HttpClientModule,
-        SharedModule
-      ]
+      declarations: [AppComponent, NavBarComponent],
+      imports: [AngularSvgIconModule, RouterTestingModule.withRoutes(routes), HttpClientModule, SharedModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(AppComponent);
@@ -39,19 +30,22 @@ describe('AppComponent', () => {
     document.body.removeChild(debugElement);
   }));
 
-  it('should create the app', (() => {
+  it('should create the app', () => {
     expect(app).toBeTruthy();
-  }));
+  });
 
-  it('should render title in a <a> tag', (() => {
+  it('should render title in a <a> tag', () => {
     fixture.detectChanges();
     expect(debugElement.querySelector('ul p a').textContent).toContain('Taskana administration');
-  }));
+  });
 
-  it('should call Router.navigateByUrl("classifications") and workbasketRoute should be false', (inject([Router], (router: Router) => {
-    expect(app.workbasketsRoute).toBe(true);
-    fixture.detectChanges();
-    router.navigateByUrl('/classifications');
-    expect(app.workbasketsRoute).toBe(false);
-  })));
+  it('should call Router.navigateByUrl("classifications") and workbasketRoute should be false', inject(
+    [Router],
+    (router: Router) => {
+      expect(app.workbasketsRoute).toBe(true);
+      fixture.detectChanges();
+      router.navigateByUrl('/classifications');
+      expect(app.workbasketsRoute).toBe(false);
+    }
+  ));
 });

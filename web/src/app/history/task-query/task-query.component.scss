@@ -1,41 +1,41 @@
 @import '../../../theme/colors';
 
 .table {
-	max-height: calc(100vh - 152px);
-	padding-right: 15px;
+  max-height: calc(100vh - 152px);
+  padding-right: 15px;
 }
 
 .table-header {
-	background-color: $light-grey;
-	cursor: pointer;
+  background-color: $light-grey;
+  cursor: pointer;
 }
 
 .table-footer {
-	display: block;
+  display: block;
 }
 
 .table-cell {
-	height: 35px;
-	max-height: 35px;
-	min-height: 35px;
+  height: 35px;
+  max-height: 35px;
+  min-height: 35px;
 }
 
 .divDate {
-    padding-right: 20px;
+  padding-right: 20px;
 }
 
-.btn-xs{
-	padding: 0px;
+.btn-xs {
+  padding: 0px;
 }
 
 .table .btn {
-	border: none;
+  border: none;
 }
 
 .icon-space {
-	margin-right: 20px;
+  margin-right: 20px;
 }
 
 .divTablePagination {
-	margin: 0 auto;
+  margin: 0 auto;
 }

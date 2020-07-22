@@ -22,8 +22,7 @@ import { NotificationService } from '../../../shared/services/notifications/noti
   selector: 'taskana-dummy-detail',
   template: 'dummydetail'
 })
-class DummyDetailComponent {
-}
+class DummyDetailComponent {}
 
 describe('ClassificationDetailsComponent', () => {
   let component: ClassificationDetailsComponent;
@@ -38,17 +37,22 @@ describe('ClassificationDetailsComponent', () => {
     testBed.configureTestingModule({
       imports: [FormsModule, HttpClientModule, AngularSvgIconModule, NgxsModule.forRoot()],
       declarations: [ClassificationDetailsComponent, DummyDetailComponent],
-      providers: [MasterAndDetailService, RequestInProgressService, ClassificationsService,
-        HttpClient, NotificationService,
+      providers: [
+        MasterAndDetailService,
+        RequestInProgressService,
+        ClassificationsService,
+        HttpClient,
+        NotificationService,
         ImportExportService,
         { provide: Location, useValue: locationSpy },
-        { provide: Store, useValue: storeSpy }]
+        { provide: Store, useValue: storeSpy }
+      ]
     });
   };
 
-  beforeEach(done => {
-    configureTests(configure).then(testBed => {
-      storeSpy.select.and.callFake(selector => {
+  beforeEach((done) => {
+    configureTests(configure).then((testBed) => {
+      storeSpy.select.and.callFake((selector) => {
         switch (selector) {
           case EngineConfigurationSelectors.classificationsCustomisation:
             return of({ information: {} });
@@ -99,7 +103,7 @@ describe('ClassificationDetailsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should enable editing of key on create and on copy', async done => {
+  it('should enable editing of key on create and on copy', async (done) => {
     component.isCreatingNewClassification = true;
     await fixture.detectChanges();
     expect(fixture.debugElement.nativeElement.querySelector('#classification-key').disabled).toEqual(false);

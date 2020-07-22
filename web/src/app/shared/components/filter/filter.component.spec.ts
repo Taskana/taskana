@@ -13,14 +13,14 @@ describe('FilterComponent', () => {
   let fixture: ComponentFixture<FilterComponent>;
   let debugElement: any;
 
-  beforeEach(done => {
+  beforeEach((done) => {
     const configure = (testBed: TestBed) => {
       testBed.configureTestingModule({
         providers: [MatSnackBar, Overlay],
         imports: [AngularSvgIconModule, FormsModule, HttpClientModule]
       });
     };
-    configureTests(configure).then(testBed => {
+    configureTests(configure).then((testBed) => {
       fixture = TestBed.createComponent(FilterComponent);
       component = fixture.componentInstance;
       component.filterParams = {

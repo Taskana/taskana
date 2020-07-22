@@ -24,16 +24,17 @@ export class TaskComponent implements OnInit, OnDestroy {
   task: Task = null;
   workbaskets: Workbasket[];
 
-  constructor(private taskService: TaskService,
+  constructor(
+    private taskService: TaskService,
     private workbasketService: WorkbasketService,
     private classificationService: ClassificationsService,
     private route: ActivatedRoute,
     private router: Router,
-    private sanitizer: DomSanitizer) {
-  }
+    private sanitizer: DomSanitizer
+  ) {}
 
   ngOnInit() {
-    this.routeSubscription = this.route.params.subscribe(params => {
+    this.routeSubscription = this.route.params.subscribe((params) => {
       const { id } = params;
       this.getTask(id);
     });
@@ -42,9 +43,9 @@ export class TaskComponent implements OnInit, OnDestroy {
   async getTask(id: string) {
     this.requestInProgress = true;
     this.task = await this.taskService.getTask(id).toPromise();
-    const classification = await this.classificationService.getClassification(
-      this.task.classificationSummary.classificationId
-    ).toPromise();
+    const classification = await this.classificationService
+      .getClassification(this.task.classificationSummary.classificationId)
+      .toPromise();
     this.address = this.extractUrl(classification.applicationEntryPoint) || `${this.address}/?q=${this.task.name}`;
     this.link = this.sanitizer.bypassSecurityTrustResourceUrl(this.address);
     this.getWorkbaskets();
@@ -53,11 +54,13 @@ export class TaskComponent implements OnInit, OnDestroy {
 
   getWorkbaskets() {
     this.requestInProgress = true;
-    this.workbasketService.getAllWorkBaskets().subscribe(workbaskets => {
+    this.workbasketService.getAllWorkBaskets().subscribe((workbaskets) => {
       this.requestInProgress = false;
       this.workbaskets = workbaskets.workbaskets;
 
-      const index = this.workbaskets.findIndex(workbasket => workbasket.name === this.task.workbasketSummaryResource.name);
+      const index = this.workbaskets.findIndex(
+        (workbasket) => workbasket.name === this.task.workbasketSummaryResource.name
+      );
       if (index !== -1) {
         this.workbaskets.splice(index, 1);
       }
@@ -66,40 +69,40 @@ export class TaskComponent implements OnInit, OnDestroy {
 
   transferTask(workbasket: Workbasket) {
     this.requestInProgress = true;
-    this.taskService.transferTask(this.task.taskId, workbasket.workbasketId).subscribe(
-      task => {
-        this.requestInProgress = false;
-        this.task = task;
-      }
-    );
+    this.taskService.transferTask(this.task.taskId, workbasket.workbasketId).subscribe((task) => {
+      this.requestInProgress = false;
+      this.task = task;
+    });
     this.navigateBack();
   }
 
   completeTask() {
     this.requestInProgress = true;
-    this.taskService.completeTask(this.task.taskId).subscribe(
-      task => {
-        this.requestInProgress = false;
-        this.task = task;
-        this.taskService.publishUpdatedTask(task);
-        this.navigateBack();
-      }
-    );
+    this.taskService.completeTask(this.task.taskId).subscribe((task) => {
+      this.requestInProgress = false;
+      this.task = task;
+      this.taskService.publishUpdatedTask(task);
+      this.navigateBack();
+    });
   }
 
   navigateBack() {
-    this.router.navigate([{ outlets: { detail: `taskdetail/${this.task.taskId}` } }], { relativeTo: this.route.parent });
+    this.router.navigate([{ outlets: { detail: `taskdetail/${this.task.taskId}` } }], {
+      relativeTo: this.route.parent
+    });
   }
 
   private extractUrl(url: string): string {
     const me = this;
     const extractedExpressions = url.match(this.regex);
-    if (!extractedExpressions) { return url; }
+    if (!extractedExpressions) {
+      return url;
+    }
     let extractedUrl = url;
-    extractedExpressions.forEach(expression => {
+    extractedExpressions.forEach((expression) => {
       const parameter = expression.substring(2, expression.length - 1);
       let objectValue: any = me;
-      parameter.split('.').forEach(property => {
+      parameter.split('.').forEach((property) => {
         objectValue = this.getReflectiveProperty(objectValue, property);
       });
       extractedUrl = extractedUrl.replace(expression, objectValue);

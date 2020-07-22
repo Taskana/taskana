@@ -14,15 +14,14 @@ export class HistoryGuard implements CanActivate {
     private taskanaEngineService: TaskanaEngineService,
     public router: Router,
     private errorsService: NotificationService
-  ) {
-  }
+  ) {}
 
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
     return this.taskanaEngineService.isHistoryProviderEnabled().pipe(
-      map(value => {
+      map((value) => {
         if (value) {
           return value;
         }

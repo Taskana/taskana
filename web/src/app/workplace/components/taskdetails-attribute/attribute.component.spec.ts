@@ -12,8 +12,7 @@ xdescribe('AttributeComponent', () => {
     TestBed.configureTestingModule({
       imports: [FormsModule],
       declarations: [TaskdetailsAttributeComponent]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

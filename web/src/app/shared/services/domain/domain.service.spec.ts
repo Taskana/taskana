@@ -12,20 +12,14 @@ import { SelectedRouteService } from '../selected-route/selected-route';
   selector: 'taskana-dummy-detail',
   template: 'dummydetail'
 })
-class DummyDetailComponent {
-}
+class DummyDetailComponent {}
 
-const routes: Routes = [
-  { path: '', component: DummyDetailComponent }
-];
+const routes: Routes = [{ path: '', component: DummyDetailComponent }];
 
 describe('DomainService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientModule,
-        RouterTestingModule.withRoutes(routes)
-      ],
+      imports: [HttpClientModule, RouterTestingModule.withRoutes(routes)],
       providers: [HttpClient, DomainService, RequestInProgressService, SelectedRouteService],
       declarations: [DummyDetailComponent]
     });

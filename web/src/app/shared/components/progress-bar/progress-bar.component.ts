@@ -16,8 +16,7 @@ export class ProgressBarComponent implements OnInit, OnChanges {
 
   inProgress = false;
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (!this.inProgress && changes.currentValue.currentValue > this.min) {

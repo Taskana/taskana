@@ -1,36 +1,37 @@
 @import '../../../../theme/colors';
 
 .margin {
-    margin-top: 10px;
-    margin-bottom: 20px;
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
 
 .required-header:after {
-
-    content:" *";
-    color: $invalid;
+  content: ' *';
+  color: $invalid;
 }
 
 td {
-    &.has-changes {
-        border-bottom: 1px solid $brown;
-    }
+  &.has-changes {
+    border-bottom: 1px solid $brown;
+  }
 }
 .table > thead > tr > th {
-    max-width: 150px;
-    border-bottom: none;
+  max-width: 150px;
+  border-bottom: none;
 }
 
 .table > thead > tr:last-child > th {
-    max-width: 150px;
-    border-bottom: 2px solid $grey;
+  max-width: 150px;
+  border-bottom: 2px solid $grey;
 }
 
-.wrap{
-    max-width: 150px;
-    word-wrap:break-word;
+.wrap {
+  max-width: 150px;
+  word-wrap: break-word;
 }
-.min-width{ min-width: 135px;}
+.min-width {
+  min-width: 135px;
+}
 
 .modal-title {
   font-weight: bold;

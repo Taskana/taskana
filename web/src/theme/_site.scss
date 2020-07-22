@@ -1,4 +1,3 @@
-
 .placeholder img {
   display: inline-block;
   border-radius: 50%;
@@ -157,7 +156,6 @@ svg-icon {
   background-color: #e1e1e1;
 }
 
-
 /*
  *Remove bootstrap cols padding for master and detail component
 */
@@ -197,10 +195,9 @@ svg-icon {
 }
 
 .form-group.required .control-label:after {
-  content: " *";
+  content: ' *';
   color: red;
 }
-
 
 .user-select {
   margin-left: 2px;
@@ -240,7 +237,6 @@ body {
 .dropdown-menu-users > li {
   margin-bottom: 5px;
 }
-
 
 .toolbar {
   padding: 13px 15px;
@@ -313,8 +309,14 @@ span.flip {
   }
 }
 
-taskana-administration-workbasket-information, taskana-administration-workbasket-access-items, taskana-administration-workbasket-distribution-targets, taskana-administration-workbasket-details, taskana-monitor-task-report,
-taskana-monitor-workbasket-report, taskana-monitor-classification-report, taskana-monitor-timestamp-report {
+taskana-administration-workbasket-information,
+taskana-administration-workbasket-access-items,
+taskana-administration-workbasket-distribution-targets,
+taskana-administration-workbasket-details,
+taskana-monitor-task-report,
+taskana-monitor-workbasket-report,
+taskana-monitor-classification-report,
+taskana-monitor-timestamp-report {
   & .panel {
     border: none;
     box-shadow: none;
@@ -328,7 +330,11 @@ taskana-monitor-workbasket-report, taskana-monitor-classification-report, taskan
   }
 }
 
-taskana-task-details, taskana-administration-classification-details, taskana-administration-access-items-management, taskana-task, taskana-task-query {
+taskana-task-details,
+taskana-administration-classification-details,
+taskana-administration-access-items-management,
+taskana-task,
+taskana-task-query {
   & .panel {
     border: none;
     box-shadow: none;
@@ -351,8 +357,10 @@ taskana-task-query {
   }
 }
 
-
-taskana-monitor-task-report, taskana-monitor-workbasket-report, taskana-monitor-classification-report, taskana-administration-access-items-management {
+taskana-monitor-task-report,
+taskana-monitor-workbasket-report,
+taskana-monitor-classification-report,
+taskana-administration-access-items-management {
   & .panel {
     & > .panel-heading {
       border-left: 1px solid #ddd;
@@ -386,7 +394,8 @@ li.list-group-item:hover {
   border-bottom: 1px solid #ccc;
 }
 
-.center-block > span.empty-icon, .empty-icon {
+.center-block > span.empty-icon,
+.empty-icon {
   display: block;
   width: 150px;
   height: 150px;
@@ -422,7 +431,8 @@ li.list-group-item:hover {
   border-radius: 50%;
   background-color: transparent;
 
-  &:focus, &:active:focus {
+  &:focus,
+  &:active:focus {
     outline: none;
   }
 }
@@ -442,7 +452,7 @@ li.list-group-item:hover {
   bottom: 0;
   top: 0;
   z-index: 990;
-  background-color: rgba(180,180,180,0.7);
+  background-color: rgba(180, 180, 180, 0.7);
   opacity: 0.8;
 }
 

@@ -12,7 +12,7 @@ import { TaskanaEngineService } from '../../services/taskana-engine/taskana-engi
 })
 export class NoAccessComponent implements OnInit {
   showNoAccess = false;
-  constructor(private taskanaEngineService: TaskanaEngineService, public router: Router) { }
+  constructor(private taskanaEngineService: TaskanaEngineService, public router: Router) {}
 
   ngOnInit() {
     if (this.taskanaEngineService.hasRole(BusinessAdminGuard.roles)) {

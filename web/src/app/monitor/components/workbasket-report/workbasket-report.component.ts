@@ -12,8 +12,7 @@ export class WorkbasketReportComponent implements OnInit {
   showMonitorQueryPlannedDate: Boolean;
   showMonitorQueryDueDate: Boolean;
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   getMetaInformation(metaInformation: MetaInfoData) {
     this.metaInformation = metaInformation;

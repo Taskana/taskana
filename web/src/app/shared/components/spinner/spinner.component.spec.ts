@@ -13,8 +13,7 @@ describe('SpinnerComponent', () => {
     TestBed.configureTestingModule({
       declarations: [SpinnerComponent],
       providers: [MatSnackBar, Overlay, MatDialog, { provide: MAT_DIALOG_SCROLL_STRATEGY }]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

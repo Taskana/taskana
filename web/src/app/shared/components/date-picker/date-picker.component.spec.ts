@@ -1,6 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BsDatepickerModule, BsDatepickerConfig, ComponentLoaderFactory, PositioningService, BsLocaleService } from 'ngx-bootstrap';
+import {
+  BsDatepickerModule,
+  BsDatepickerConfig,
+  ComponentLoaderFactory,
+  PositioningService,
+  BsLocaleService
+} from 'ngx-bootstrap';
 import { DatePickerComponent } from './date-picker.component';
 
 describe('DatePickerComponent', () => {
@@ -11,10 +17,8 @@ describe('DatePickerComponent', () => {
     TestBed.configureTestingModule({
       imports: [BsDatepickerModule],
       declarations: [DatePickerComponent],
-      providers: [BsDatepickerConfig, ComponentLoaderFactory, PositioningService,
-        BsLocaleService]
-    })
-      .compileComponents();
+      providers: [BsDatepickerConfig, ComponentLoaderFactory, PositioningService, BsLocaleService]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

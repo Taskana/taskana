@@ -8,7 +8,7 @@ import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
     {
       provide: NG_VALUE_ACCESSOR,
       multi: true,
-      useExisting: forwardRef(() => TaskanaTypeAheadMockComponent),
+      useExisting: forwardRef(() => TaskanaTypeAheadMockComponent)
     }
   ]
 })
@@ -19,19 +19,11 @@ export class TaskanaTypeAheadMockComponent implements ControlValueAccessor {
   @Input()
   validationValue;
 
-  writeValue(obj: any): void {
+  writeValue(obj: any): void {}
 
-  }
+  registerOnChange(fn: any): void {}
 
-  registerOnChange(fn: any): void {
+  registerOnTouched(fn: any): void {}
 
-  }
-
-  registerOnTouched(fn: any): void {
-
-  }
-
-  setDisabledState?(isDisabled: boolean): void {
-
-  }
+  setDisabledState?(isDisabled: boolean): void {}
 }

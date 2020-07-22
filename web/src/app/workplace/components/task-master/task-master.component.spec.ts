@@ -27,8 +27,7 @@ import { NotificationService } from '../../../shared/services/notifications/noti
   selector: 'taskana-dummy-detail',
   template: 'dummydetail'
 })
-export class DummyDetailComponent {
-}
+export class DummyDetailComponent {}
 
 // TODO: test pending to test. Failing random
 xdescribe('TaskMasterComponent', () => {
@@ -37,16 +36,34 @@ xdescribe('TaskMasterComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [FormsModule, TypeaheadModule,
-        HttpClientModule, BrowserAnimationsModule],
-      declarations: [TaskMasterComponent, TaskListToolbarComponent, SvgIconComponent,
-        PaginationComponent, SortComponent, FilterComponent,
-        SpreadNumberPipe, MapValuesPipe, IconTypeComponent, DummyDetailComponent],
-      providers: [TaskService, HttpClient, WorkplaceService, NotificationService, OrientationService,
-        WorkbasketService, DomainService, RequestInProgressService, SelectedRouteService,
-        ComponentLoaderFactory, PositioningService, SvgIconRegistryService]
-    })
-      .compileComponents();
+      imports: [FormsModule, TypeaheadModule, HttpClientModule, BrowserAnimationsModule],
+      declarations: [
+        TaskMasterComponent,
+        TaskListToolbarComponent,
+        SvgIconComponent,
+        PaginationComponent,
+        SortComponent,
+        FilterComponent,
+        SpreadNumberPipe,
+        MapValuesPipe,
+        IconTypeComponent,
+        DummyDetailComponent
+      ],
+      providers: [
+        TaskService,
+        HttpClient,
+        WorkplaceService,
+        NotificationService,
+        OrientationService,
+        WorkbasketService,
+        DomainService,
+        RequestInProgressService,
+        SelectedRouteService,
+        ComponentLoaderFactory,
+        PositioningService,
+        SvgIconRegistryService
+      ]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

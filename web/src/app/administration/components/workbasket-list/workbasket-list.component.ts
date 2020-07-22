@@ -13,8 +13,11 @@ import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { ImportExportService } from 'app/administration/services/import-export.service';
 import { Actions, ofActionCompleted, ofActionDispatched, Select, Store } from '@ngxs/store';
 import { takeUntil } from 'rxjs/operators';
-import { DeselectWorkbasket, GetWorkbasketsSummary,
-  SelectWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
+import {
+  DeselectWorkbasket,
+  GetWorkbasketsSummary,
+  SelectWorkbasket
+} from '../../../shared/store/workbasket-store/workbasket.actions';
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
 import { Workbasket } from '../../../shared/models/workbasket';
 
@@ -53,47 +56,45 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
     private workbasketService: WorkbasketService,
     private orientationService: OrientationService,
     private importExportService: ImportExportService,
-    private ngxsActions$: Actions,
+    private ngxsActions$: Actions
   ) {
-    this.ngxsActions$.pipe(ofActionDispatched(GetWorkbasketsSummary),
-      takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.requestInProgress = true;
-      });
-    this.ngxsActions$.pipe(ofActionCompleted(GetWorkbasketsSummary),
-      takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.requestInProgress = false;
-      });
+    this.ngxsActions$.pipe(ofActionDispatched(GetWorkbasketsSummary), takeUntil(this.destroy$)).subscribe(() => {
+      this.requestInProgress = true;
+    });
+    this.ngxsActions$.pipe(ofActionCompleted(GetWorkbasketsSummary), takeUntil(this.destroy$)).subscribe(() => {
+      this.requestInProgress = false;
+    });
   }
 
   ngOnInit() {
     this.requestInProgress = true;
 
-    this.selectedWorkbasket$.pipe(takeUntil(this.destroy$))
-      .subscribe(selectedWorkbasket => {
-        if (typeof selectedWorkbasket !== 'undefined') {
-          this.selectedId = selectedWorkbasket.workbasketId;
-        } else {
-          this.selectedId = undefined;
-        }
-      });
+    this.selectedWorkbasket$.pipe(takeUntil(this.destroy$)).subscribe((selectedWorkbasket) => {
+      if (typeof selectedWorkbasket !== 'undefined') {
+        this.selectedId = selectedWorkbasket.workbasketId;
+      } else {
+        this.selectedId = undefined;
+      }
+    });
 
     TaskanaQueryParameters.page = this.pageSelected;
     TaskanaQueryParameters.pageSize = this.pageSize;
 
-    this.workbasketService.workbasketSavedTriggered()
+    this.workbasketService
+      .workbasketSavedTriggered()
       .pipe(takeUntil(this.destroy$))
-      .subscribe(value => {
+      .subscribe((value) => {
         this.performRequest();
       });
 
-    this.orientationService.getOrientation()
+    this.orientationService
+      .getOrientation()
       .pipe(takeUntil(this.destroy$))
       .subscribe((orientation: Orientation) => {
         this.refreshWorkbasketList();
       });
-    this.importExportService.getImportingFinished()
+    this.importExportService
+      .getImportingFinished()
       .pipe(takeUntil(this.destroy$))
       .subscribe((value: Boolean) => {
         this.refreshWorkbasketList();
@@ -125,15 +126,31 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
 
   refreshWorkbasketList() {
     this.cards = this.orientationService.calculateNumberItemsList(
-      window.innerHeight, 72, 170 + this.toolbarElement.nativeElement.offsetHeight, false
+      window.innerHeight,
+      72,
+      170 + this.toolbarElement.nativeElement.offsetHeight,
+      false
     );
     this.performRequest();
   }
 
   private performRequest(): void {
-    this.store.dispatch(new GetWorkbasketsSummary(true, this.sort.sortBy, this.sort.sortDirection, '',
-      this.filterBy.filterParams.name, this.filterBy.filterParams.description, '', this.filterBy.filterParams.owner,
-      this.filterBy.filterParams.type, '', this.filterBy.filterParams.key, ''));
+    this.store.dispatch(
+      new GetWorkbasketsSummary(
+        true,
+        this.sort.sortBy,
+        this.sort.sortDirection,
+        '',
+        this.filterBy.filterParams.name,
+        this.filterBy.filterParams.description,
+        '',
+        this.filterBy.filterParams.owner,
+        this.filterBy.filterParams.type,
+        '',
+        this.filterBy.filterParams.key,
+        ''
+      )
+    );
     TaskanaQueryParameters.pageSize = this.cards;
   }
 

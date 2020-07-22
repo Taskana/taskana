@@ -6,9 +6,16 @@ import { Router, ActivatedRoute, NavigationStart } from '@angular/router';
 export class SelectedRouteService {
   public selectedRouteTriggered = new Subject<string>();
 
-  private detailRoutes: Array<string> = ['workbaskets', 'classifications', 'monitor', 'workplace', 'access-items-management', 'history'];
+  private detailRoutes: Array<string> = [
+    'workbaskets',
+    'classifications',
+    'monitor',
+    'workplace',
+    'access-items-management',
+    'history'
+  ];
 
-  constructor(private router: Router) { }
+  constructor(private router: Router) {}
 
   selectRoute(value) {
     this.selectedRouteTriggered.next(this.getRoute(value));
@@ -26,6 +33,6 @@ export class SelectedRouteService {
   }
 
   private checkUrl(url: string): string {
-    return this.detailRoutes.find(routeDetail => url.indexOf(routeDetail) !== -1) || '';
+    return this.detailRoutes.find((routeDetail) => url.indexOf(routeDetail) !== -1) || '';
   }
 }

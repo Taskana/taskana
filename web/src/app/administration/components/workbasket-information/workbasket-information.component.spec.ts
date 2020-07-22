@@ -23,8 +23,7 @@ import { NotificationService } from '../../../shared/services/notifications/noti
   selector: 'taskana-dummy-detail',
   template: 'dummydetail'
 })
-export class DummyDetailComponent {
-}
+export class DummyDetailComponent {}
 
 const routes: Routes = [
   { path: ':id', component: DummyDetailComponent, outlet: 'detail' },
@@ -44,17 +43,44 @@ describe('WorkbasketInformationComponent', () => {
   const configure = (testBed: TestBed) => {
     testBed.configureTestingModule({
       declarations: [WorkbasketInformationComponent, DummyDetailComponent],
-      imports: [FormsModule, AngularSvgIconModule, HttpClientModule, RouterTestingModule.withRoutes(routes),
-        NgxsModule.forRoot()],
-      providers: [WorkbasketService, NotificationService, SavingWorkbasketService,
-        RequestInProgressService, FormsValidatorService]
-
+      imports: [
+        FormsModule,
+        AngularSvgIconModule,
+        HttpClientModule,
+        RouterTestingModule.withRoutes(routes),
+        NgxsModule.forRoot()
+      ],
+      providers: [
+        WorkbasketService,
+        NotificationService,
+        SavingWorkbasketService,
+        RequestInProgressService,
+        FormsValidatorService
+      ]
     });
   };
 
-  function createWorkbasket(workbasketId?, created?, key?, domain?, type?, modified?, name?, description?,
-    owner?, custom1?, custom2?, custom3?, custom4?, orgLevel1?, orgLevel2?, orgLevel3?, orgLevel4?,
-    _links?: Links, markedForDeletion?: boolean) {
+  function createWorkbasket(
+    workbasketId?,
+    created?,
+    key?,
+    domain?,
+    type?,
+    modified?,
+    name?,
+    description?,
+    owner?,
+    custom1?,
+    custom2?,
+    custom3?,
+    custom4?,
+    orgLevel1?,
+    orgLevel2?,
+    orgLevel3?,
+    orgLevel4?,
+    _links?: Links,
+    markedForDeletion?: boolean
+  ) {
     if (!type) {
       // eslint-disable-next-line no-param-reassign
       type = 'PERSONAL';
@@ -83,8 +109,8 @@ describe('WorkbasketInformationComponent', () => {
     return workbasket;
   }
 
-  beforeEach(done => {
-    configureTests(configure).then(testBed => {
+  beforeEach((done) => {
+    configureTests(configure).then((testBed) => {
       fixture = testBed.createComponent(WorkbasketInformationComponent);
       component = fixture.componentInstance;
       debugElement = fixture.debugElement.nativeElement;
@@ -119,11 +145,26 @@ describe('WorkbasketInformationComponent', () => {
 
   it('should create a copy of workbasket when workbasket is selected', () => {
     expect(component.workbasketClone).toBeUndefined();
-    component.workbasket = createWorkbasket('id', 'created', 'keyModified', 'domain', ICONTYPES.TOPIC, 'modified', 'name', 'description',
-      'owner', 'custom1', 'custom2', 'custom3', 'custom4', 'orgLevel1', 'orgLevel2', 'orgLevel3', 'orgLevel4');
-    component.ngOnChanges(
-      undefined
+    component.workbasket = createWorkbasket(
+      'id',
+      'created',
+      'keyModified',
+      'domain',
+      ICONTYPES.TOPIC,
+      'modified',
+      'name',
+      'description',
+      'owner',
+      'custom1',
+      'custom2',
+      'custom3',
+      'custom4',
+      'orgLevel1',
+      'orgLevel2',
+      'orgLevel3',
+      'orgLevel4'
     );
+    component.ngOnChanges(undefined);
     fixture.detectChanges();
     expect(component.workbasket.workbasketId).toEqual(component.workbasketClone.workbasketId);
   });

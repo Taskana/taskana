@@ -3,7 +3,8 @@ import { ObjectReference } from './object-reference';
 import { ClassificationSummary } from '../../shared/models/classification-summary';
 
 export class Task {
-  constructor(public taskId: string,
+  constructor(
+    public taskId: string,
     public primaryObjRef: ObjectReference = new ObjectReference(),
     public workbasketSummaryResource?: Workbasket,
     public classificationSummary?: ClassificationSummary,
@@ -41,8 +42,8 @@ export class Task {
     public custom13?: string,
     public custom14?: string,
     public custom15?: string,
-    public custom16?: string) {
-  }
+    public custom16?: string
+  ) {}
 }
 
 export class CustomAttribute {

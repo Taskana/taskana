@@ -13,9 +13,7 @@ import { QueryParameters } from 'app/shared/models/query-parameters';
 })
 export class AccessIdsService {
   private url = `${environment.taskanaRestUrl}/v1/access-ids`;
-  constructor(
-    private httpClient: HttpClient
-  ) { }
+  constructor(private httpClient: HttpClient) {}
 
   searchForAccessId(accessId: string): Observable<AccessIdDefinition[]> {
     if (!accessId || accessId.length < 3) {
@@ -37,19 +35,19 @@ export class AccessIdsService {
     workbasketKeyLike?: string,
     sortModel: Sorting = new Sorting('workbasket-key')
   ): Observable<AccessItemWorkbasketResource> {
-    return this.httpClient.get<AccessItemWorkbasketResource>(encodeURI(
-      `${environment.taskanaRestUrl}/v1/workbasket-access-items/${TaskanaQueryParameters.getQueryParameters(
-        AccessIdsService.accessIdsParameters(sortModel,
-          accessIds,
-          accessIdLike,
-          workbasketKeyLike)
-      )}`
-    ));
+    return this.httpClient.get<AccessItemWorkbasketResource>(
+      encodeURI(
+        `${environment.taskanaRestUrl}/v1/workbasket-access-items/${TaskanaQueryParameters.getQueryParameters(
+          AccessIdsService.accessIdsParameters(sortModel, accessIds, accessIdLike, workbasketKeyLike)
+        )}`
+      )
+    );
   }
 
   removeAccessItemsPermissions(accessId: string) {
-    return this.httpClient
-      .delete<AccessItemWorkbasketResource>(`${environment.taskanaRestUrl}/v1/workbasket-access-items/?access-id=${accessId}`);
+    return this.httpClient.delete<AccessItemWorkbasketResource>(
+      `${environment.taskanaRestUrl}/v1/workbasket-access-items/?access-id=${accessId}`
+    );
   }
 
   private static accessIdsParameters(
@@ -57,7 +55,8 @@ export class AccessIdsService {
     accessIds: AccessIdDefinition[],
     accessIdLike?: string,
     workbasketKeyLike?: string
-  ): QueryParameters { // TODO extend this query for support of multiple sortbys
+  ): QueryParameters {
+    // TODO extend this query for support of multiple sortbys
     const parameters = new QueryParameters();
     parameters.SORTBY = sortModel.sortBy;
     parameters.SORTDIRECTION = sortModel.sortDirection;

@@ -29,9 +29,7 @@ export class SpinnerComponent implements OnDestroy {
   @ViewChild('spinnerModal', { static: true })
   private modal;
 
-  constructor(private errorsService: NotificationService) {
-
-  }
+  constructor(private errorsService: NotificationService) {}
 
   set isDelayedRunning(value: boolean) {
     this.showSpinner = value;

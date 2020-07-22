@@ -1,83 +1,82 @@
 .table {
-	width: 100%;
-	display: table;
+  width: 100%;
+  display: table;
 }
 
 .table-striped .table-body .table-row:nth-of-type(odd),
 .table-body-striped .table-body:nth-of-type(odd) {
-	background-color: #f9f9f9;
+  background-color: #f9f9f9;
 }
 
 .table-caption {
-	display: table-caption;
+  display: table-caption;
 }
 
-.table-header, .table-footer {
-	display: table-header-group;
+.table-header,
+.table-footer {
+  display: table-header-group;
 }
 
 .table-header > .table-row:last-child > .table-cell {
-	border-bottom: 2px solid #ddd;
+  border-bottom: 2px solid #ddd;
 }
 
 .table-footer > .table-row:first-child > .table-cell {
-	border-top: 1px solid #ddd;
+  border-top: 1px solid #ddd;
 }
 
 .table-footer > .table-row:last-of-type > .table-cell,
 .table-header > .table-row > .table-cell {
-	border-bottom: none;
+  border-bottom: none;
 }
 
 .table-body {
-	display: table-row-group;
+  display: table-row-group;
 }
 
 .table-row {
-	display: table-row;
+  display: table-row;
 }
 
 .table-cell {
-	display: table-cell;
-	padding: 5px;
-	white-space: nowrap;
-	min-width: 50px;
-	vertical-align: middle;
-	text-align: center;
-	border-bottom: 1px solid #ddd;
-	cursor: default;
+  display: table-cell;
+  padding: 5px;
+  white-space: nowrap;
+  min-width: 50px;
+  vertical-align: middle;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+  cursor: default;
 }
 
 .table-cell--justify {
-	text-align: justify;
+  text-align: justify;
 }
 
 .table-cell--bold {
-	font-weight: bold;
+  font-weight: bold;
 }
 
 .table-cell--separator {
-	border-left: 2px solid #ddd;
-	border-right: 2px solid #ddd;
-	background-color: $light-grey;
+  border-left: 2px solid #ddd;
+  border-right: 2px solid #ddd;
+  background-color: $light-grey;
 
-	&.zoom-in {
-		cursor: zoom-in;
-	}
+  &.zoom-in {
+    cursor: zoom-in;
+  }
 
+  &.zoom-out {
+    cursor: zoom-out;
+  }
 
-	&.zoom-out {
-		cursor: zoom-out;
-	}
-
-	min-width: 0;
+  min-width: 0;
 }
 
 .table-cell--border-right {
-	border-right: 2px solid #ddd;
+  border-right: 2px solid #ddd;
 }
 
-
 .table-cell--border-left {
-	border-left: 2px solid #ddd;
+  border-left: 2px solid #ddd;
 }

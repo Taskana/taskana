@@ -34,18 +34,27 @@ describe('WorkbasketAccessItemsComponent', () => {
     testBed.configureTestingModule({
       declarations: [WorkbasketAccessItemsComponent],
       imports: [
-        FormsModule, AngularSvgIconModule,
-        HttpClientModule, ReactiveFormsModule,
-        NgxsModule.forRoot([WorkbasketState, EngineConfigurationState])],
-      providers: [WorkbasketService, NotificationService, SavingWorkbasketService, RequestInProgressService,
-        AccessIdsService, FormsValidatorService, ClassificationCategoriesService,
-        { provide: Location, useValue: locationSpy },
+        FormsModule,
+        AngularSvgIconModule,
+        HttpClientModule,
+        ReactiveFormsModule,
+        NgxsModule.forRoot([WorkbasketState, EngineConfigurationState])
+      ],
+      providers: [
+        WorkbasketService,
+        NotificationService,
+        SavingWorkbasketService,
+        RequestInProgressService,
+        AccessIdsService,
+        FormsValidatorService,
+        ClassificationCategoriesService,
+        { provide: Location, useValue: locationSpy }
       ]
     });
   };
 
-  beforeEach(done => {
-    configureTests(configure).then(testBed => {
+  beforeEach((done) => {
+    configureTests(configure).then((testBed) => {
       const store: Store = testBed.get(Store);
       store.reset([WorkbasketState, EngineConfigurationState]);
 
@@ -59,31 +68,33 @@ describe('WorkbasketAccessItemsComponent', () => {
       workbasketService = testBed.get(WorkbasketService);
       notificationsService = testBed.get(NotificationService);
       const workbasketAccessItemsRepresentation: WorkbasketAccessItemsRepresentation = {
-        accessItems: [{
-          accessId: 'accessID1',
-          workbasketId: 'id1',
-          workbasketKey: '1',
-          accessItemId: '',
-          accessName: '',
-          permRead: false,
-          permOpen: false,
-          permAppend: false,
-          permTransfer: false,
-          permDistribute: false,
-          permCustom1: false,
-          permCustom2: false,
-          permCustom3: false,
-          permCustom4: false,
-          permCustom5: false,
-          permCustom6: false,
-          permCustom7: false,
-          permCustom8: false,
-          permCustom9: false,
-          permCustom10: false,
-          permCustom11: false,
-          permCustom12: false,
-          _links: {},
-        }],
+        accessItems: [
+          {
+            accessId: 'accessID1',
+            workbasketId: 'id1',
+            workbasketKey: '1',
+            accessItemId: '',
+            accessName: '',
+            permRead: false,
+            permOpen: false,
+            permAppend: false,
+            permTransfer: false,
+            permDistribute: false,
+            permCustom1: false,
+            permCustom2: false,
+            permCustom3: false,
+            permCustom4: false,
+            permCustom5: false,
+            permCustom6: false,
+            permCustom7: false,
+            permCustom8: false,
+            permCustom9: false,
+            permCustom10: false,
+            permCustom11: false,
+            permCustom12: false,
+            _links: {}
+          }
+        ],
         _links: { self: { href: 'someurl' } }
       };
       debugElement = fixture.debugElement.nativeElement;

@@ -1,4 +1,5 @@
-import { Component,
+import {
+  Component,
   ElementRef,
   Input,
   OnChanges,
@@ -6,7 +7,8 @@ import { Component,
   OnInit,
   QueryList,
   SimpleChanges,
-  ViewChildren } from '@angular/core';
+  ViewChildren
+} from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { Select, Store } from '@ngxs/store';
 import { FormArray, FormBuilder, Validators } from '@angular/forms';
@@ -27,8 +29,10 @@ import { takeUntil } from 'rxjs/operators';
 import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { AccessItemsCustomisation, CustomField, getCustomFields } from '../../../shared/models/customisation';
-import { GetWorkbasketAccessItems,
-  UpdateWorkbasketAccessItems } from '../../../shared/store/workbasket-store/workbasket.actions';
+import {
+  GetWorkbasketAccessItems,
+  UpdateWorkbasketAccessItems
+} from '../../../shared/store/workbasket-store/workbasket.actions';
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
 
 @Component({
@@ -81,8 +85,7 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
     private formsValidatorService: FormsValidatorService,
     private notificationsService: NotificationService,
     private store: Store
-  ) {
-  }
+  ) {}
 
   get accessItemsGroups(): FormArray {
     return this.AccessItemsForm.get('accessItemsGroups') as FormArray;
@@ -90,7 +93,7 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
 
   ngOnInit() {
     this.customFields$ = this.accessItemsCustomization$.pipe(getCustomFields(customFieldCount));
-    this.accessItemsRepresentation$.subscribe(accessItemsRepresentation => {
+    this.accessItemsRepresentation$.subscribe((accessItemsRepresentation) => {
       if (typeof accessItemsRepresentation !== 'undefined') {
         this.accessItemsRepresentation = accessItemsRepresentation;
         this.setAccessItemsGroups(accessItemsRepresentation.accessItems);
@@ -101,7 +104,7 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
   }
 
   ngAfterViewInit() {
-    this.inputs.changes.subscribe(next => {
+    this.inputs.changes.subscribe((next) => {
       if (typeof next.last !== 'undefined') {
         if (this.added) next.last.nativeElement.focus();
       }
@@ -131,7 +134,8 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
       this.requestInProgress = false;
     });
 
-    this.savingWorkbaskets.triggeredAccessItemsSaving()
+    this.savingWorkbaskets
+      .triggeredAccessItemsSaving()
       .pipe(takeUntil(this.destroy$))
       .subscribe((savingInformation: SavingInformation) => {
         if (this.action === ACTION.COPY) {
@@ -144,8 +148,8 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
   }
 
   setAccessItemsGroups(accessItems: Array<WorkbasketAccessItems>) {
-    const AccessItemsFormGroups = accessItems.map(accessItem => this.formBuilder.group(accessItem));
-    AccessItemsFormGroups.forEach(accessItemGroup => {
+    const AccessItemsFormGroups = accessItems.map((accessItem) => this.formBuilder.group(accessItem));
+    AccessItemsFormGroups.forEach((accessItemGroup) => {
       accessItemGroup.controls.accessId.setValidators(Validators.required);
     });
     const AccessItemsFormArray = this.formBuilder.array(AccessItemsFormGroups);
@@ -176,7 +180,7 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
       permCustom10: false,
       permCustom11: false,
       permCustom12: false,
-      _links: {},
+      _links: {}
     };
   }
 
@@ -210,18 +214,25 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
 
   onSubmit() {
     this.formsValidatorService.formSubmitAttempt = true;
-    this.formsValidatorService.validateFormAccess(this.accessItemsGroups, this.toggleValidationAccessIdMap).then(value => {
-      if (value) {
-        this.onSave();
-      }
-    });
+    this.formsValidatorService
+      .validateFormAccess(this.accessItemsGroups, this.toggleValidationAccessIdMap)
+      .then((value) => {
+        if (value) {
+          this.onSave();
+        }
+      });
   }
 
   checkAll(row: number, value: any) {
     const checkAll = value.target.checked;
     const workbasketAccessItemsObj: WorkbasketAccessItems = this.createWorkbasketAccessItems();
-    Object.keys(workbasketAccessItemsObj).forEach(property => {
-      if (property !== 'accessId' && property !== '_links' && property !== 'workbasketId' && property !== 'accessItemId') {
+    Object.keys(workbasketAccessItemsObj).forEach((property) => {
+      if (
+        property !== 'accessId' &&
+        property !== '_links' &&
+        property !== 'workbasketId' &&
+        property !== 'accessItemId'
+      ) {
         this.accessItemsGroups.controls[row].get(property).setValue(checkAll);
       }
     });
@@ -234,12 +245,16 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
 
   private onSave() {
     this.requestInProgressService.setRequestInProgress(true);
-    this.store.dispatch(new UpdateWorkbasketAccessItems(
-      this.accessItemsRepresentation._links.self.href,
-      this.AccessItemsForm.value.accessItemsGroups
-    )).subscribe(() => {
-      this.requestInProgressService.setRequestInProgress(false);
-    });
+    this.store
+      .dispatch(
+        new UpdateWorkbasketAccessItems(
+          this.accessItemsRepresentation._links.self.href,
+          this.AccessItemsForm.value.accessItemsGroups
+        )
+      )
+      .subscribe(() => {
+        this.requestInProgressService.setRequestInProgress(false);
+      });
   }
 
   private setBadge() {
@@ -249,13 +264,13 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
   }
 
   private cloneAccessItems(inputaccessItem): Array<WorkbasketAccessItems> {
-    return this.AccessItemsForm.value.accessItemsGroups.map(
-      (accessItems: WorkbasketAccessItems) => ({ ...accessItems })
-    );
+    return this.AccessItemsForm.value.accessItemsGroups.map((accessItems: WorkbasketAccessItems) => ({
+      ...accessItems
+    }));
   }
 
   private setWorkbasketIdForCopy(workbasketId: string) {
-    this.accessItemsGroups.value.forEach(element => {
+    this.accessItemsGroups.value.forEach((element) => {
       delete element.accessItemId;
       element.workbasketId = workbasketId;
     });

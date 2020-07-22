@@ -7,13 +7,13 @@ import { expandDown } from '../../../../theme/animations/expand.animation';
   selector: 'taskana-shared-user-information',
   templateUrl: './user-information.component.html',
   styleUrls: ['./user-information.component.scss'],
-  animations: [expandDown],
+  animations: [expandDown]
 })
 export class UserInformationComponent implements OnInit {
   userInformation: UserInfo;
   roles = '';
   showRoles = false;
-  constructor(private taskanaEngineService: TaskanaEngineService) { }
+  constructor(private taskanaEngineService: TaskanaEngineService) {}
 
   ngOnInit() {
     this.userInformation = this.taskanaEngineService.currentUserInfo;

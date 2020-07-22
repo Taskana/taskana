@@ -12,13 +12,13 @@ describe('PaginationComponent', () => {
   let fixture: ComponentFixture<PaginationComponent>;
   let debugElement;
 
-  beforeEach(done => {
+  beforeEach((done) => {
     const configure = (testBed: TestBed) => {
       testBed.configureTestingModule({
         imports: [FormsModule, SharedModule]
       });
     };
-    configureTests(configure).then(testBed => {
+    configureTests(configure).then((testBed) => {
       fixture = TestBed.createComponent(PaginationComponent);
       component = fixture.componentInstance;
       component.page = new Page(6, 3, 3, 1);
@@ -47,7 +47,7 @@ describe('PaginationComponent', () => {
     component.page = new Page(6, 3, 3, 1);
     component.previousPageSelected = 2;
     fixture.detectChanges();
-    component.changePage.subscribe(value => {
+    component.changePage.subscribe((value) => {
       expect(value).toBe(1);
     });
     component.changeToPage(1);
@@ -57,7 +57,7 @@ describe('PaginationComponent', () => {
     component.page = new Page(6, 3, 3, 1);
     component.previousPageSelected = 2;
     fixture.detectChanges();
-    component.changePage.subscribe(value => {
+    component.changePage.subscribe((value) => {
       expect(false).toBe(true);
     });
     component.changeToPage(2);
@@ -67,7 +67,7 @@ describe('PaginationComponent', () => {
     component.page = new Page(6, 3, 3, 1);
     component.previousPageSelected = 2;
     fixture.detectChanges();
-    component.changePage.subscribe(value => {
+    component.changePage.subscribe((value) => {
       expect(value).toBe(3);
     });
     component.changeToPage(100);
@@ -77,7 +77,7 @@ describe('PaginationComponent', () => {
     component.page = new Page(6, 3, 3, 1);
     component.previousPageSelected = 2;
     fixture.detectChanges();
-    component.changePage.subscribe(value => {
+    component.changePage.subscribe((value) => {
       expect(value).toBe(1);
     });
     component.changeToPage(0);

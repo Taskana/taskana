@@ -19,8 +19,7 @@ export class TaskService {
   taskSelectedSource = new Subject<Task>();
   taskSelectedStream = this.taskSelectedSource.asObservable();
 
-  constructor(private httpClient: HttpClient) {
-  }
+  constructor(private httpClient: HttpClient) {}
 
   publishUpdatedTask(task: Task = new Task('empty')) {
     this.taskChangedSource.next(task);
@@ -34,7 +33,8 @@ export class TaskService {
     return this.taskSelectedStream;
   }
 
-  findTasksWithWorkbasket(basketId: string,
+  findTasksWithWorkbasket(
+    basketId: string,
     sortBy: string,
     sortDirection: string,
     nameLike: string,
@@ -43,19 +43,22 @@ export class TaskService {
     state: string,
     objRefTypeLike: string,
     objRefValueLike: string,
-    allPages: boolean = false): Observable<TaskResource> {
-    const url = `${this.url}${TaskanaQueryParameters.getQueryParameters(this.accessIdsParameters(
-      basketId,
-      sortBy,
-      sortDirection,
-      nameLike,
-      ownerLike,
-      priority,
-      state,
-      objRefTypeLike,
-      objRefValueLike,
-      allPages
-    ))}`;
+    allPages: boolean = false
+  ): Observable<TaskResource> {
+    const url = `${this.url}${TaskanaQueryParameters.getQueryParameters(
+      this.accessIdsParameters(
+        basketId,
+        sortBy,
+        sortDirection,
+        nameLike,
+        ownerLike,
+        priority,
+        state,
+        objRefTypeLike,
+        objRefValueLike,
+        allPages
+      )
+    )}`;
     return this.httpClient.get<TaskResource>(url);
   }
 
@@ -89,12 +92,24 @@ export class TaskService {
   }
 
   private convertTasksDatesToGMT(task: Task): Task {
-    if (task.created) { task.created = new Date(task.created).toISOString(); }
-    if (task.claimed) { task.claimed = new Date(task.claimed).toISOString(); }
-    if (task.completed) { task.completed = new Date(task.completed).toISOString(); }
-    if (task.modified) { task.modified = new Date(task.modified).toISOString(); }
-    if (task.planned) { task.planned = new Date(task.planned).toISOString(); }
-    if (task.due) { task.due = new Date(task.due).toISOString(); }
+    if (task.created) {
+      task.created = new Date(task.created).toISOString();
+    }
+    if (task.claimed) {
+      task.claimed = new Date(task.claimed).toISOString();
+    }
+    if (task.completed) {
+      task.completed = new Date(task.completed).toISOString();
+    }
+    if (task.modified) {
+      task.modified = new Date(task.modified).toISOString();
+    }
+    if (task.planned) {
+      task.planned = new Date(task.planned).toISOString();
+    }
+    if (task.due) {
+      task.due = new Date(task.due).toISOString();
+    }
     return task;
   }
 

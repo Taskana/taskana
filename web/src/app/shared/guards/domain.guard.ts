@@ -8,12 +8,11 @@ import { NOTIFICATION_TYPES } from '../models/notifications';
 
 @Injectable()
 export class DomainGuard implements CanActivate {
-  constructor(private domainService: DomainService, private errorsService: NotificationService) {
-  }
+  constructor(private domainService: DomainService, private errorsService: NotificationService) {}
 
   canActivate() {
     return this.domainService.getDomains().pipe(
-      map(domain => true),
+      map((domain) => true),
       catchError(() => {
         this.errorsService.triggerError(NOTIFICATION_TYPES.FETCH_ERR_5);
         return of(false);

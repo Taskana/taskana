@@ -9,8 +9,7 @@ describe('WorkbasketReportQuerySwitcherComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [WorkbasketReportQuerySwitcherComponent]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

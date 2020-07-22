@@ -5,8 +5,7 @@ import { MasterAndDetailService } from 'app/shared/services/master-and-detail/ma
 @Component({
   selector: 'taskana-shared-master-and-detail',
   templateUrl: './master-and-detail.component.html',
-  styleUrls: ['./master-and-detail.component.scss'],
-
+  styleUrls: ['./master-and-detail.component.scss']
 })
 export class MasterAndDetailComponent implements OnInit {
   private classifications = 'classifications';
@@ -16,13 +15,16 @@ export class MasterAndDetailComponent implements OnInit {
 
   showDetail = false;
   currentRoute = '';
-  constructor(private route: ActivatedRoute, private router: Router, private masterAndDetailService: MasterAndDetailService) {
-  }
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private masterAndDetailService: MasterAndDetailService
+  ) {}
 
   ngOnInit(): void {
     this.showDetail = this.showDetails();
     this.masterAndDetailService.setShowDetail(this.showDetail);
-    this.router.events.subscribe(event => {
+    this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
         this.showDetail = this.showDetails(event);
         this.masterAndDetailService.setShowDetail(this.showDetail);
@@ -43,7 +45,7 @@ export class MasterAndDetailComponent implements OnInit {
 
   private checkUrl(url: string): boolean {
     this.checkRoute(url);
-    return this.detailRoutes.some(routeDetail => url.indexOf(routeDetail) !== -1);
+    return this.detailRoutes.some((routeDetail) => url.indexOf(routeDetail) !== -1);
   }
 
   private checkRoute(url: string) {

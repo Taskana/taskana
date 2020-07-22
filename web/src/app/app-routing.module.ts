@@ -14,22 +14,22 @@ const appRoutes: Routes = [
       {
         canActivate: [BusinessAdminGuard],
         path: 'administration',
-        loadChildren: () => import('./administration/administration.module').then(m => m.AdministrationModule),
+        loadChildren: () => import('./administration/administration.module').then((m) => m.AdministrationModule)
       },
       {
         canActivate: [MonitorGuard],
         path: 'monitor',
-        loadChildren: () => import('./monitor/monitor.module').then(m => m.MonitorModule),
+        loadChildren: () => import('./monitor/monitor.module').then((m) => m.MonitorModule)
       },
       {
         canActivate: [UserGuard],
         path: 'workplace',
-        loadChildren: () => import('./workplace/workplace.module').then(m => m.WorkplaceModule)
+        loadChildren: () => import('./workplace/workplace.module').then((m) => m.WorkplaceModule)
       },
       {
         canActivate: [HistoryGuard],
         path: 'history',
-        loadChildren: () => import('./history/history.module').then(m => m.HistoryModule)
+        loadChildren: () => import('./history/history.module').then((m) => m.HistoryModule)
       },
       {
         path: 'no-role',
@@ -37,13 +37,13 @@ const appRoutes: Routes = [
       },
       {
         path: 'administration',
-        redirectTo: 'administration/workbaskets',
+        redirectTo: 'administration/workbaskets'
       },
       {
         path: '**',
         redirectTo: 'workplace'
-      },
-    ],
+      }
+    ]
   },
   {
     path: 'no-role',
@@ -52,16 +52,10 @@ const appRoutes: Routes = [
   {
     path: '**',
     redirectTo: 'taskana/workplace'
-  },
+  }
 ];
 @NgModule({
-  imports: [
-    RouterModule.forRoot(
-      appRoutes, { useHash: true }
-    )
-  ],
-  exports: [
-    RouterModule
-  ]
+  imports: [RouterModule.forRoot(appRoutes, { useHash: true })],
+  exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

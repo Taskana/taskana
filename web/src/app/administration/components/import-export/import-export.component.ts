@@ -32,15 +32,12 @@ export class ImportExportComponent implements OnInit {
     public uploadservice: UploadService,
     private errorsService: NotificationService,
     private importExportService: ImportExportService
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
-    this.domainService.getDomains().subscribe(
-      data => {
-        this.domains = data;
-      }
-    );
+    this.domainService.getDomains().subscribe((data) => {
+      this.domains = data;
+    });
   }
 
   export(domain = '') {

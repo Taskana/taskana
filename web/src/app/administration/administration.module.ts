@@ -44,7 +44,7 @@ const MODULES = [
   SharedModule,
   AdministrationRoutingModule,
   TypeaheadModule,
-  InfiniteScrollModule,
+  InfiniteScrollModule
 ];
 
 const DECLARATIONS = [
@@ -66,17 +66,13 @@ const DECLARATIONS = [
 
 @NgModule({
   declarations: DECLARATIONS,
-  imports: [
-    MODULES,
-    MatRadioModule
-  ],
+  imports: [MODULES, MatRadioModule],
   providers: [
     ClassificationDefinitionService,
     WorkbasketDefinitionService,
     SavingWorkbasketService,
     ClassificationCategoriesService,
-    ImportExportService,
+    ImportExportService
   ]
 })
-export class AdministrationModule {
-}
+export class AdministrationModule {}

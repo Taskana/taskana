@@ -37,16 +37,18 @@ describe('TaskanaTreeComponent', () => {
     testBed.configureTestingModule({
       imports: [AngularSvgIconModule, HttpClientModule, NgxsModule.forRoot()],
       declarations: [TreeVendorComponent],
-      providers: [ClassificationsService,
+      providers: [
+        ClassificationsService,
         { provide: Location, useValue: locationSpy },
-        { provide: Store, useValue: storeSpy }]
+        { provide: Store, useValue: storeSpy }
+      ]
     });
   };
 
-  beforeEach(done => {
-    configureTests(configure).then(testBed => {
+  beforeEach((done) => {
+    configureTests(configure).then((testBed) => {
       locationSpy.path.and.callFake(() => '');
-      storeSpy.select.and.callFake(selector => {
+      storeSpy.select.and.callFake((selector) => {
         switch (selector) {
           case ClassificationSelectors.selectedClassificationId:
             return of('id4');
@@ -96,7 +98,7 @@ describe('TaskanaTreeComponent', () => {
       name: 'classification4',
       description: 'description',
       priority: 1,
-      serviceLevel: 'level',
+      serviceLevel: 'level'
     };
 
     // using parameter 'any' since getClassification is a private method

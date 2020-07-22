@@ -16,9 +16,7 @@ import { AccessIdsService } from '../../../shared/services/access-ids/access-ids
 import { AccessIdDefinition } from '../../../shared/models/access-id';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
-import { AccessItemsCustomisation,
-  CustomField,
-  getCustomFields } from '../../../shared/models/customisation';
+import { AccessItemsCustomisation, CustomField, getCustomFields } from '../../../shared/models/customisation';
 import { customFieldCount } from '../../../shared/models/workbasket-access-items';
 
 @Component({
@@ -34,22 +32,28 @@ export class AccessItemsManagementComponent implements OnInit {
   toggleValidationAccessIdMap = new Map<number, boolean>();
   accessId: AccessIdDefinition;
   groups: AccessIdDefinition[];
-  sortingFields = new Map([['access-id', 'Access id'], ['workbasket-key', 'Workbasket Key']]);
+  sortingFields = new Map([
+    ['access-id', 'Access id'],
+    ['workbasket-key', 'Workbasket Key']
+  ]);
   sortModel: Sorting = new Sorting('access-id', Direction.DESC);
   isGroup: boolean = false;
 
-  @Select(EngineConfigurationSelectors.accessItemsCustomisation) accessItemsCustomization$: Observable<AccessItemsCustomisation>;
+  @Select(EngineConfigurationSelectors.accessItemsCustomisation) accessItemsCustomization$: Observable<
+    AccessItemsCustomisation
+  >;
   customFields$: Observable<CustomField[]>;
 
-  constructor(private formBuilder: FormBuilder,
+  constructor(
+    private formBuilder: FormBuilder,
     private accessIdsService: AccessIdsService,
     private formsValidatorService: FormsValidatorService,
     private requestInProgressService: RequestInProgressService,
-    private notificationService: NotificationService) {
-  }
+    private notificationService: NotificationService
+  ) {}
 
   get accessItemsGroups(): FormArray {
-    return this.accessItemsForm ? this.accessItemsForm.get('accessItemsGroups') as FormArray : null;
+    return this.accessItemsForm ? (this.accessItemsForm.get('accessItemsGroups') as FormArray) : null;
   }
 
   ngOnInit() {
@@ -57,10 +61,10 @@ export class AccessItemsManagementComponent implements OnInit {
   }
 
   setAccessItemsGroups(accessItems: Array<AccessItemWorkbasket>) {
-    const AccessItemsFormGroups = accessItems.map(accessItem => this.formBuilder.group(accessItem));
-    AccessItemsFormGroups.forEach(accessItemGroup => {
+    const AccessItemsFormGroups = accessItems.map((accessItem) => this.formBuilder.group(accessItem));
+    AccessItemsFormGroups.forEach((accessItemGroup) => {
       accessItemGroup.controls.accessId.setValidators(Validators.required);
-      Object.keys(accessItemGroup.controls).forEach(key => {
+      Object.keys(accessItemGroup.controls).forEach((key) => {
         accessItemGroup.controls[key].disable();
       });
     });
@@ -86,16 +90,20 @@ export class AccessItemsManagementComponent implements OnInit {
     if (this.accessIdPrevious !== selected.accessId) {
       this.accessIdPrevious = selected.accessId;
 
-      this.accessIdsService.getGroupsByAccessId(selected.accessId)
-        .pipe(take(1)).subscribe((groups: AccessIdDefinition[]) => {
-          this.accessId = selected;
-          this.groups = groups;
-          this.searchForAccessItemsWorkbaskets();
-        },
-        error => {
-          this.requestInProgressService.setRequestInProgress(false);
-          this.notificationService.triggerError(NOTIFICATION_TYPES.FETCH_ERR, error);
-        });
+      this.accessIdsService
+        .getGroupsByAccessId(selected.accessId)
+        .pipe(take(1))
+        .subscribe(
+          (groups: AccessIdDefinition[]) => {
+            this.accessId = selected;
+            this.groups = groups;
+            this.searchForAccessItemsWorkbaskets();
+          },
+          (error) => {
+            this.requestInProgressService.setRequestInProgress(false);
+            this.notificationService.triggerError(NOTIFICATION_TYPES.FETCH_ERR, error);
+          }
+        );
     }
   }
 
@@ -110,41 +118,48 @@ export class AccessItemsManagementComponent implements OnInit {
 
   searchForAccessItemsWorkbaskets() {
     this.requestInProgressService.setRequestInProgress(true);
-    this.accessIdsService.getAccessItems(
-      [this.accessId, ...this.groups],
-      this.accessItemsForm ? this.accessItemsForm.value.accessIdFilter : undefined,
-      this.accessItemsForm ? this.accessItemsForm.value.workbasketKeyFilter : undefined,
-      this.sortModel
-    ).pipe(take(1)).subscribe((accessItemsResource: AccessItemWorkbasketResource) => {
-      this.setAccessItemsGroups(accessItemsResource ? accessItemsResource.accessItems : []);
-      this.requestInProgressService.setRequestInProgress(false);
-    }, error => {
-      this.requestInProgressService.setRequestInProgress(false);
-      this.notificationService.triggerError(NOTIFICATION_TYPES.FETCH_ERR_2, error);
-    });
+    this.accessIdsService
+      .getAccessItems(
+        [this.accessId, ...this.groups],
+        this.accessItemsForm ? this.accessItemsForm.value.accessIdFilter : undefined,
+        this.accessItemsForm ? this.accessItemsForm.value.workbasketKeyFilter : undefined,
+        this.sortModel
+      )
+      .pipe(take(1))
+      .subscribe(
+        (accessItemsResource: AccessItemWorkbasketResource) => {
+          this.setAccessItemsGroups(accessItemsResource ? accessItemsResource.accessItems : []);
+          this.requestInProgressService.setRequestInProgress(false);
+        },
+        (error) => {
+          this.requestInProgressService.setRequestInProgress(false);
+          this.notificationService.triggerError(NOTIFICATION_TYPES.FETCH_ERR_2, error);
+        }
+      );
   }
 
   revokeAccess() {
     this.notificationService.showDialog(
-      `You are going to delete all access related: ${
-        this.accessIdSelected
-      }. Can you confirm this action?`,
+      `You are going to delete all access related: ${this.accessIdSelected}. Can you confirm this action?`,
       this.onRemoveConfirmed.bind(this)
     );
   }
 
   private onRemoveConfirmed() {
     this.requestInProgressService.setRequestInProgress(true);
-    this.accessIdsService.removeAccessItemsPermissions(this.accessIdSelected)
-      .pipe(take(1)).subscribe(
+    this.accessIdsService
+      .removeAccessItemsPermissions(this.accessIdSelected)
+      .pipe(take(1))
+      .subscribe(
         () => {
           this.requestInProgressService.setRequestInProgress(false);
           this.notificationService.showToast(
-            NOTIFICATION_TYPES.SUCCESS_ALERT, new Map<string, string>([['accessId', this.accessIdSelected]])
+            NOTIFICATION_TYPES.SUCCESS_ALERT,
+            new Map<string, string>([['accessId', this.accessIdSelected]])
           );
           this.searchForAccessItemsWorkbaskets();
         },
-        error => {
+        (error) => {
           this.requestInProgressService.setRequestInProgress(false);
           this.notificationService.triggerError(NOTIFICATION_TYPES.DELETE_ERR, error);
         }

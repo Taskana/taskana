@@ -30,8 +30,7 @@ export class WorkbasketReportDueDateComponent implements OnInit {
   constructor(
     private restConnectorService: RestConnectorService,
     private requestInProgressService: RequestInProgressService
-  ) {
-  }
+  ) {}
 
   async ngOnInit() {
     this.requestInProgressService.setRequestInProgress(true);

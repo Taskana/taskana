@@ -1,10 +1,4 @@
-import { Component,
-  Input,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  SimpleChanges,
-  ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { NgForm } from '@angular/forms';
@@ -23,20 +17,21 @@ import { map, takeUntil } from 'rxjs/operators';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
-import { CustomField,
-  getCustomFields,
-  WorkbasketsCustomisation } from '../../../shared/models/customisation';
-import { CopyWorkbasket, MarkWorkbasketForDeletion,
-  RemoveDistributionTarget, SaveNewWorkbasket,
-  UpdateWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
+import { CustomField, getCustomFields, WorkbasketsCustomisation } from '../../../shared/models/customisation';
+import {
+  CopyWorkbasket,
+  MarkWorkbasketForDeletion,
+  RemoveDistributionTarget,
+  SaveNewWorkbasket,
+  UpdateWorkbasket
+} from '../../../shared/store/workbasket-store/workbasket.actions';
 
 @Component({
   selector: 'taskana-administration-workbasket-information',
   templateUrl: './workbasket-information.component.html',
   styleUrls: ['./workbasket-information.component.scss']
 })
-export class WorkbasketInformationComponent
-implements OnInit, OnChanges, OnDestroy {
+export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDestroy {
   @Input()
   workbasket: Workbasket;
 
@@ -68,8 +63,7 @@ implements OnInit, OnChanges, OnDestroy {
     private formsValidatorService: FormsValidatorService,
     private notificationService: NotificationService,
     private store: Store
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
     this.allTypes = new Map([
@@ -79,16 +73,14 @@ implements OnInit, OnChanges, OnDestroy {
       ['TOPIC', 'Topic']
     ]);
     this.customFields$ = this.workbasketsCustomisation$.pipe(
-      map(customisation => customisation.information),
+      map((customisation) => customisation.information),
       getCustomFields(customFieldCount)
     );
-    this.workbasketsCustomisation$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(workbasketsCustomization => {
-        if (workbasketsCustomization.information.owner) {
-          this.lookupField = workbasketsCustomization.information.owner.lookupField;
-        }
-      });
+    this.workbasketsCustomisation$.pipe(takeUntil(this.destroy$)).subscribe((workbasketsCustomization) => {
+      if (workbasketsCustomization.information.owner) {
+        this.lookupField = workbasketsCustomization.information.owner.lookupField;
+      }
+    });
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -106,13 +98,11 @@ implements OnInit, OnChanges, OnDestroy {
 
   onSubmit() {
     this.formsValidatorService.formSubmitAttempt = true;
-    this.formsValidatorService
-      .validateFormInformation(this.workbasketForm, this.toogleValidationMap)
-      .then(value => {
-        if (value) {
-          this.onSave();
-        }
-      });
+    this.formsValidatorService.validateFormInformation(this.workbasketForm, this.toogleValidationMap).then((value) => {
+      if (value) {
+        this.onSave();
+      }
+    });
   }
 
   isFieldValid(field: string): boolean {
@@ -146,11 +136,10 @@ implements OnInit, OnChanges, OnDestroy {
       this.postNewWorkbasket();
       return;
     }
-    this.store.dispatch(new UpdateWorkbasket(this.workbasket._links.self.href, this.workbasket))
-      .subscribe(state => {
-        this.requestInProgressService.setRequestInProgress(false);
-        this.workbasketClone = { ...this.workbasket };
-      });
+    this.store.dispatch(new UpdateWorkbasket(this.workbasket._links.self.href, this.workbasket)).subscribe((state) => {
+      this.requestInProgressService.setRequestInProgress(false);
+      this.workbasketClone = { ...this.workbasket };
+    });
   }
 
   private beforeRequest() {
@@ -164,25 +153,17 @@ implements OnInit, OnChanges, OnDestroy {
 
   private postNewWorkbasket() {
     this.addDateToWorkbasket();
-    this.store.dispatch(new SaveNewWorkbasket(this.workbasket)).subscribe(
-      () => {
-        this.afterRequest();
-        if (this.action === ACTION.COPY) {
-          this.savingWorkbasket.triggerDistributionTargetSaving(
-            new SavingInformation(
-              this.workbasket._links.distributionTargets.href,
-              this.workbasket.workbasketId
-            )
-          );
-          this.savingWorkbasket.triggerAccessItemsSaving(
-            new SavingInformation(
-              this.workbasket._links.accessItems.href,
-              this.workbasket.workbasketId
-            )
-          );
-        }
+    this.store.dispatch(new SaveNewWorkbasket(this.workbasket)).subscribe(() => {
+      this.afterRequest();
+      if (this.action === ACTION.COPY) {
+        this.savingWorkbasket.triggerDistributionTargetSaving(
+          new SavingInformation(this.workbasket._links.distributionTargets.href, this.workbasket.workbasketId)
+        );
+        this.savingWorkbasket.triggerAccessItemsSaving(
+          new SavingInformation(this.workbasket._links.accessItems.href, this.workbasket.workbasketId)
+        );
       }
-    );
+    });
   }
 
   private addDateToWorkbasket() {

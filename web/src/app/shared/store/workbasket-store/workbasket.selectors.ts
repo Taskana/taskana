@@ -51,6 +51,6 @@ export class WorkbasketSelectors {
 }
 
 export interface WorkbasketAndAction {
-  selectedWorkbasket: Workbasket,
-  action: ACTION
+  selectedWorkbasket: Workbasket;
+  action: ACTION;
 }

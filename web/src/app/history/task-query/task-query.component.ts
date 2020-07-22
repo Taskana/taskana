@@ -31,8 +31,7 @@ export class TaskQueryComponent implements OnInit {
     private orientationService: OrientationService,
     private requestInProgressService: RequestInProgressService,
     private errorsService: NotificationService
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
     this.orientationSubscription = this.orientationService.getOrientation().subscribe((orientation: Orientation) => {
@@ -99,12 +98,18 @@ export class TaskQueryComponent implements OnInit {
   }
 
   isDate(fieldName: string): boolean {
-    return (fieldName === 'created');
+    return fieldName === 'created';
   }
 
   filterFieldsToAllowQuerying(fieldName: string): boolean {
-    if (!fieldName || fieldName === 'oldData' || fieldName === 'newData' || fieldName === 'comment'
-        || fieldName === 'oldValue' || fieldName === 'newValue') {
+    if (
+      !fieldName ||
+      fieldName === 'oldData' ||
+      fieldName === 'newData' ||
+      fieldName === 'comment' ||
+      fieldName === 'oldValue' ||
+      fieldName === 'newValue'
+    ) {
       return false;
     }
 
@@ -119,9 +124,17 @@ export class TaskQueryComponent implements OnInit {
   }
 
   filterExpandGroup(fieldName: string): boolean {
-    if (fieldName === 'custom1' || fieldName === 'custom2' || fieldName === 'custom3' || fieldName === 'custom4'
-        || fieldName === 'oldData' || fieldName === 'newData' || fieldName === 'comment'
-        || fieldName === 'oldValue' || fieldName === 'newValue') {
+    if (
+      fieldName === 'custom1' ||
+      fieldName === 'custom2' ||
+      fieldName === 'custom3' ||
+      fieldName === 'custom4' ||
+      fieldName === 'oldData' ||
+      fieldName === 'newData' ||
+      fieldName === 'comment' ||
+      fieldName === 'oldValue' ||
+      fieldName === 'newValue'
+    ) {
       return true;
     }
     return false;
@@ -179,21 +192,23 @@ export class TaskQueryComponent implements OnInit {
   private performRequest() {
     this.requestInProgressService.setRequestInProgress(true);
     this.calculateQueryPages();
-    this.taskQuerySubscription = this.taskQueryService.queryTask(
-      this.orderBy.sortBy.replace(/([A-Z])|([0-9])/g, g => `-${g[0].toLowerCase()}`),
-      this.orderBy.sortDirection,
-      new TaskHistoryEventData(this.taskQueryForm.value),
-      false
-    ).subscribe(taskQueryResource => {
-      this.requestInProgressService.setRequestInProgress(false);
-      this.taskQueryResource = taskQueryResource.taskHistoryEvents ? taskQueryResource : null;
-      this.taskQuery = taskQueryResource.taskHistoryEvents ? taskQueryResource.taskHistoryEvents : null;
-    });
+    this.taskQuerySubscription = this.taskQueryService
+      .queryTask(
+        this.orderBy.sortBy.replace(/([A-Z])|([0-9])/g, (g) => `-${g[0].toLowerCase()}`),
+        this.orderBy.sortDirection,
+        new TaskHistoryEventData(this.taskQueryForm.value),
+        false
+      )
+      .subscribe((taskQueryResource) => {
+        this.requestInProgressService.setRequestInProgress(false);
+        this.taskQueryResource = taskQueryResource.taskHistoryEvents ? taskQueryResource : null;
+        this.taskQuery = taskQueryResource.taskHistoryEvents ? taskQueryResource.taskHistoryEvents : null;
+      });
   }
 
   private initTaskQueryForm() {
     const me = this;
-    Object.keys(new TaskHistoryEventData()).forEach(key => {
+    Object.keys(new TaskHistoryEventData()).forEach((key) => {
       me.taskQueryForm.addControl(key, new FormControl());
     });
   }
@@ -202,7 +217,7 @@ export class TaskQueryComponent implements OnInit {
     const rowHeight = 34;
     const unusedHeight = 300;
     const totalHeight = window.innerHeight;
-    const cards = Math.round((totalHeight - (unusedHeight)) / rowHeight);
+    const cards = Math.round((totalHeight - unusedHeight) / rowHeight);
     TaskanaQueryParameters.page = TaskanaQueryParameters.page ? TaskanaQueryParameters.page : 1;
     TaskanaQueryParameters.pageSize = cards > 0 ? cards : 1;
   }

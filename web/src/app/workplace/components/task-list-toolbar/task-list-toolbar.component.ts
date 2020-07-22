@@ -27,7 +27,12 @@ export class TaskListToolbarComponent implements OnInit {
   @Output() performFilter = new EventEmitter<Filter>();
   @Output() selectSearchType = new EventEmitter();
 
-  sortingFields = new Map([['name', 'Name'], ['priority', 'Priority'], ['due', 'Due'], ['planned', 'Planned']]);
+  sortingFields = new Map([
+    ['name', 'Name'],
+    ['priority', 'Priority'],
+    ['due', 'Due'],
+    ['planned', 'Planned']
+  ]);
   filterParams = { name: '', key: '', owner: '', priority: '', state: '' };
   tasks: Task[] = [];
 
@@ -46,21 +51,22 @@ export class TaskListToolbarComponent implements OnInit {
   resultType = '';
   resultValue = '';
 
-  constructor(private taskService: TaskService,
+  constructor(
+    private taskService: TaskService,
     private workbasketService: WorkbasketService,
     private workplaceService: WorkplaceService,
     private router: Router,
-    private route: ActivatedRoute) {
-  }
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
-    this.workbasketService.getAllWorkBaskets().subscribe(workbaskets => {
+    this.workbasketService.getAllWorkBaskets().subscribe((workbaskets) => {
       this.workbaskets = workbaskets.workbaskets;
-      this.workbaskets.forEach(workbasket => {
+      this.workbaskets.forEach((workbasket) => {
         this.workbasketNames.push(workbasket.name);
       });
     });
-    this.taskService.getSelectedTask().subscribe(t => {
+    this.taskService.getSelectedTask().subscribe((t) => {
       if (!this.resultName) {
         this.resultName = t.workbasketSummaryResource.name;
         this.resultId = t.workbasketSummaryResource.workbasketId;
@@ -90,7 +96,7 @@ export class TaskListToolbarComponent implements OnInit {
     } else {
       this.workplaceService.selectObjectReference();
       if (this.workbaskets) {
-        this.workbaskets.forEach(workbasket => {
+        this.workbaskets.forEach((workbasket) => {
           if (workbasket.name === this.resultName) {
             this.resultId = workbasket.workbasketId;
             this.currentBasket = workbasket;

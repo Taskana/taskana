@@ -1,8 +1,4 @@
-import { Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Direction, Sorting } from 'app/shared/models/sorting';
 
 @Component({
@@ -24,7 +20,7 @@ export class SortComponent implements OnInit {
   }
 
   changeOrder(sortDirection: string) {
-    this.sort.sortDirection = (sortDirection === Direction.ASC) ? Direction.ASC : Direction.DESC;
+    this.sort.sortDirection = sortDirection === Direction.ASC ? Direction.ASC : Direction.DESC;
     this.search();
   }
 

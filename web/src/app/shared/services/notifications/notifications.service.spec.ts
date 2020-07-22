@@ -16,9 +16,16 @@ describe('NotificationService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [ToastComponent],
-      providers: [NotificationService, Overlay, { provide: MAT_DIALOG_SCROLL_STRATEGY }, { provide: MAT_SNACK_BAR_DATA }],
-      imports: [MatSnackBarModule, MatDialogModule, NoopAnimationsModule],
-    }).overrideModule(BrowserDynamicTestingModule, { set: { entryComponents: [ToastComponent] } }).compileComponents();
+      providers: [
+        NotificationService,
+        Overlay,
+        { provide: MAT_DIALOG_SCROLL_STRATEGY },
+        { provide: MAT_SNACK_BAR_DATA }
+      ],
+      imports: [MatSnackBarModule, MatDialogModule, NoopAnimationsModule]
+    })
+      .overrideModule(BrowserDynamicTestingModule, { set: { entryComponents: [ToastComponent] } })
+      .compileComponents();
   });
 
   beforeEach(() => {
@@ -31,14 +38,17 @@ describe('NotificationService', () => {
     expect(service).toBeTruthy();
   }));
 
-  it('should apply the correct panelClasses for the different alerts', inject([NotificationService], (service:NotificationService) => {
-    let ref = service.showToast(NOTIFICATION_TYPES.INFO_ALERT);
-    expect(ref.containerInstance.snackBarConfig.panelClass).toEqual(['white', 'background-darkgreen']);
-    ref = service.showToast(NOTIFICATION_TYPES.DANGER_ALERT);
-    expect(ref.containerInstance.snackBarConfig.panelClass).toEqual(['red', 'background-white']);
-    ref = service.showToast(NOTIFICATION_TYPES.WARNING_ALERT);
-    expect(ref.containerInstance.snackBarConfig.panelClass).toEqual(['brown', 'background-white']);
-    ref = service.showToast(NOTIFICATION_TYPES.SUCCESS_ALERT);
-    expect(ref.containerInstance.snackBarConfig.panelClass).toEqual(['white', 'background-bluegreen']);
-  }));
+  it('should apply the correct panelClasses for the different alerts', inject(
+    [NotificationService],
+    (service: NotificationService) => {
+      let ref = service.showToast(NOTIFICATION_TYPES.INFO_ALERT);
+      expect(ref.containerInstance.snackBarConfig.panelClass).toEqual(['white', 'background-darkgreen']);
+      ref = service.showToast(NOTIFICATION_TYPES.DANGER_ALERT);
+      expect(ref.containerInstance.snackBarConfig.panelClass).toEqual(['red', 'background-white']);
+      ref = service.showToast(NOTIFICATION_TYPES.WARNING_ALERT);
+      expect(ref.containerInstance.snackBarConfig.panelClass).toEqual(['brown', 'background-white']);
+      ref = service.showToast(NOTIFICATION_TYPES.SUCCESS_ALERT);
+      expect(ref.containerInstance.snackBarConfig.panelClass).toEqual(['white', 'background-bluegreen']);
+    }
+  ));
 });

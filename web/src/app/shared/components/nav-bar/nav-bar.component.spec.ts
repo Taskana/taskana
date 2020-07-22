@@ -24,20 +24,13 @@ describe('NavBarComponent', () => {
   let debugElement;
   let navBar;
 
-  const routes: Routes = [
-    { path: 'classifications', component: NavBarComponent }
-  ];
+  const routes: Routes = [{ path: 'classifications', component: NavBarComponent }];
 
-  beforeEach(done => {
+  beforeEach((done) => {
     const configure = (testBed: TestBed) => {
       testBed.configureTestingModule({
         declarations: [NavBarComponent, UserInformationComponent],
-        imports: [
-          AngularSvgIconModule,
-          HttpClientModule,
-          RouterTestingModule.withRoutes(routes),
-          SharedModule
-        ],
+        imports: [AngularSvgIconModule, HttpClientModule, RouterTestingModule.withRoutes(routes), SharedModule],
         providers: [
           SelectedRouteService,
           BusinessAdminGuard,
@@ -45,10 +38,11 @@ describe('NavBarComponent', () => {
           WindowRefService,
           RequestInProgressService,
           MatSnackBar,
-          Overlay]
+          Overlay
+        ]
       });
     };
-    configureTests(configure).then(testBed => {
+    configureTests(configure).then((testBed) => {
       fixture = TestBed.createComponent(NavBarComponent);
       component = fixture.componentInstance;
       debugElement = fixture.debugElement.nativeElement;
@@ -67,7 +61,7 @@ describe('NavBarComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have as title \'\'', (() => {
+  it("should have as title ''", () => {
     expect(navBar.title).toEqual('');
-  }));
+  });
 });

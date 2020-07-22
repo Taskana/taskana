@@ -22,8 +22,8 @@ describe('AccessItemsManagementComponent', () => {
     });
   };
 
-  beforeEach(done => {
-    configureTests(configure).then(testBed => {
+  beforeEach((done) => {
+    configureTests(configure).then((testBed) => {
       fixture = testBed.createComponent(AccessItemsManagementComponent);
       component = fixture.componentInstance;
       accessIdsService = testBed.get(AccessIdsService);

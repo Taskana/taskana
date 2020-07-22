@@ -9,11 +9,20 @@ import { TaskanaType } from 'app/shared/models/taskana-type';
   styleUrls: ['./filter.component.scss']
 })
 export class FilterComponent implements OnInit {
-  @Input() allTypes: Map<string, string> = new Map([['ALL', 'All'], ['PERSONAL', 'Personal'], ['GROUP', 'Group'],
-    ['CLEARANCE', 'Clearance'], ['TOPIC', 'Topic']]);
+  @Input() allTypes: Map<string, string> = new Map([
+    ['ALL', 'All'],
+    ['PERSONAL', 'Personal'],
+    ['GROUP', 'Group'],
+    ['CLEARANCE', 'Clearance'],
+    ['TOPIC', 'Topic']
+  ]);
 
-  @Input() allStates: Map<string, string> = new Map([['ALL', 'All'], ['READY', 'Ready'], ['CLAIMED', 'Claimed'],
-    ['COMPLETED', 'Completed']]);
+  @Input() allStates: Map<string, string> = new Map([
+    ['ALL', 'All'],
+    ['READY', 'Ready'],
+    ['CLAIMED', 'Claimed'],
+    ['COMPLETED', 'Completed']
+  ]);
 
   @Input() filterParams = { name: '', key: '', type: '', description: '', owner: '' };
 
@@ -35,15 +44,17 @@ export class FilterComponent implements OnInit {
   }
 
   selectType(type: ICONTYPES) {
-    this.filter.filterParams.type = (type === ICONTYPES.ALL) ? '' : type;
+    this.filter.filterParams.type = type === ICONTYPES.ALL ? '' : type;
   }
 
   selectState(state: ICONTYPES) {
-    this.filter.filterParams.state = (state === 'ALL') ? '' : state;
+    this.filter.filterParams.state = state === 'ALL' ? '' : state;
   }
 
   clear() {
-    Object.keys(this.filterParams).forEach(key => { this.filterParams[key] = ''; });
+    Object.keys(this.filterParams).forEach((key) => {
+      this.filterParams[key] = '';
+    });
     this.initializeFilterModel();
   }
 
@@ -68,6 +79,6 @@ export class FilterComponent implements OnInit {
    * @returns {string[]}
    */
   getUnusedKeys(): string[] {
-    return Object.keys(this.filterParamKeys).filter(key => ['name', 'key', 'type'].indexOf(key) < 0);
+    return Object.keys(this.filterParamKeys).filter((key) => ['name', 'key', 'type'].indexOf(key) < 0);
   }
 }

@@ -10,8 +10,7 @@ export class DropdownComponent implements OnInit {
   @Input() list: any[];
   @Output() performClassification = new EventEmitter<any>();
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   selectItem(item: any) {
     this.itemSelected = item;

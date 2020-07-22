@@ -5,7 +5,7 @@ import { TaskanaEngineService } from 'app/shared/services/taskana-engine/taskana
 @Injectable()
 export class MonitorGuard implements CanActivate {
   static roles = ['ADMIN', 'MONITOR'];
-  constructor(private taskanaEngineService: TaskanaEngineService, public router: Router) { }
+  constructor(private taskanaEngineService: TaskanaEngineService, public router: Router) {}
 
   canActivate() {
     if (this.taskanaEngineService.hasRole(MonitorGuard.roles)) {

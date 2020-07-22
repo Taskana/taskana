@@ -21,18 +21,28 @@ export const configureTests = (configure: (testBed: TestBed) => void) => {
   const testBed = getTestBed();
 
   if (testBed.platform == null) {
-    testBed.initTestEnvironment(
-      BrowserDynamicTestingModule,
-      platformBrowserDynamicTesting()
-    );
+    testBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
   }
 
   configure(testBed);
   testBed.configureTestingModule({
-    imports: [BrowserAnimationsModule, SharedModule, FormsModule, ReactiveFormsModule, HttpClientModule, AngularSvgIconModule],
-    providers: [{ provide: TaskanaEngineService, useClass: TaskanaEngineServiceMock },
-      { provide: DomainService, useClass: DomainServiceMock }, NotificationService,
-      RequestInProgressService, OrientationService, SelectedRouteService, FormsValidatorService]
+    imports: [
+      BrowserAnimationsModule,
+      SharedModule,
+      FormsModule,
+      ReactiveFormsModule,
+      HttpClientModule,
+      AngularSvgIconModule
+    ],
+    providers: [
+      { provide: TaskanaEngineService, useClass: TaskanaEngineServiceMock },
+      { provide: DomainService, useClass: DomainServiceMock },
+      NotificationService,
+      RequestInProgressService,
+      OrientationService,
+      SelectedRouteService,
+      FormsValidatorService
+    ]
   });
 
   return testBed.compileComponents().then(() => testBed);

@@ -11,7 +11,9 @@
     "test": "ng test --karma-config karma.conf.js --watch=false --browsers Firefox",
     "test:watch": "ng test --karma-config karma.conf.js --browsers Chrome",
     "lint": "eslint --ext .ts src",
-    "lint:fix": "eslint --ext .ts src --fix"
+    "lint:fix": "eslint --ext .ts src --fix",
+    "format": "prettier --write \"**/*.{js,ts,css,scss,md,json,yml}\"",
+    "format:html": "prettier --write \"**/*.{html,}\""
   },
   "private": true,
   "dependencies": {
@@ -62,6 +64,8 @@
     "eslint-config-airbnb-typescript": "6.3.1",
     "eslint-plugin-import": "2.22.0",
     "@hapi/hoek": "9.0.4",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.4",
     "jasmine-core": "3.5.0",
     "jasmine-spec-reporter": "4.2.1",
     "karma": "5.1.0",
@@ -73,6 +77,7 @@
     "karma-jasmine-html-reporter": "1.4.0",
     "moment": "2.22.1",
     "ng2-mock-component": "0.1.1",
+    "prettier": "^2.0.5",
     "protractor": "7.0.0",
     "ts-mockito": "2.3.0",
     "ts-node": "4.1.0",

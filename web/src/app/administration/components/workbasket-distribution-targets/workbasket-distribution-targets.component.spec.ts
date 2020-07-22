@@ -21,18 +21,55 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { NgxsModule, Store } from '@ngxs/store';
 import { WorkbasketDistributionTargetsComponent, Side } from './workbasket-distribution-targets.component';
 import { WorkbasketDualListComponent } from '../workbasket-dual-list/workbasket-dual-list.component';
-import { NotificationService } from '../../../shared/services/notifications/notification.service'; import { ClassificationSelectors } from '../../../shared/store/classification-store/classification.selectors';
+import { NotificationService } from '../../../shared/services/notifications/notification.service';
+import { ClassificationSelectors } from '../../../shared/store/classification-store/classification.selectors';
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
 
 describe('WorkbasketDistributionTargetsComponent', () => {
   let component: WorkbasketDistributionTargetsComponent;
   let fixture: ComponentFixture<WorkbasketDistributionTargetsComponent>;
   let workbasketService;
-  const workbasket = createWorkbasket('1', '', '', '', ICONTYPES.TOPIC, '', '', '', '', '', '', '', '', '', '', '', '',
-    {});
-  function createWorkbasket(workbasketId?, created?, key?, domain?, type?, modified?, name?, description?,
-    owner?, custom1?, custom2?, custom3?, custom4?, orgLevel1?, orgLevel2?, orgLevel3?, orgLevel4?,
-    _links?: Links, markedForDeletion?: boolean): Workbasket {
+  const workbasket = createWorkbasket(
+    '1',
+    '',
+    '',
+    '',
+    ICONTYPES.TOPIC,
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    {}
+  );
+  function createWorkbasket(
+    workbasketId?,
+    created?,
+    key?,
+    domain?,
+    type?,
+    modified?,
+    name?,
+    description?,
+    owner?,
+    custom1?,
+    custom2?,
+    custom3?,
+    custom4?,
+    orgLevel1?,
+    orgLevel2?,
+    orgLevel3?,
+    orgLevel4?,
+    _links?: Links,
+    markedForDeletion?: boolean
+  ): Workbasket {
     return {
       workbasketId,
       created,
@@ -56,7 +93,19 @@ describe('WorkbasketDistributionTargetsComponent', () => {
     };
   }
 
-  function createWorkbasketSummary(workbasketId, key, name, domain, type, description, owner, custom1, custom2, custom3, custom4) {
+  function createWorkbasketSummary(
+    workbasketId,
+    key,
+    name,
+    domain,
+    type,
+    description,
+    owner,
+    custom1,
+    custom2,
+    custom3,
+    custom4
+  ) {
     const workbasketSummary: WorkbasketSummary = {
       workbasketId,
       key,
@@ -74,10 +123,8 @@ describe('WorkbasketDistributionTargetsComponent', () => {
   }
   const workbasketSummaryResource: WorkbasketSummaryRepresentation = {
     workbaskets: [
-      createWorkbasketSummary('1', 'key1', 'NAME1', '', 'PERSONAL',
-        'description 1', 'owner1', '', '', '', ''),
-      createWorkbasketSummary('2', 'key2', 'NAME2', '', 'PERSONAL',
-        'description 2', 'owner2', '', '', '', ''),
+      createWorkbasketSummary('1', 'key1', 'NAME1', '', 'PERSONAL', 'description 1', 'owner1', '', '', '', ''),
+      createWorkbasketSummary('2', 'key2', 'NAME2', '', 'PERSONAL', 'description 2', 'owner2', '', '', '', '')
     ],
     _links: new LinksWorkbasketSummary({ href: 'url' }),
     page: {}
@@ -90,17 +137,22 @@ describe('WorkbasketDistributionTargetsComponent', () => {
 
   const storeSpy: jasmine.SpyObj<Store> = jasmine.createSpyObj('Store', ['select', 'dispatch']);
 
-  beforeEach(done => {
+  beforeEach((done) => {
     const configure = (testBed: TestBed) => {
       testBed.configureTestingModule({
         imports: [AngularSvgIconModule, HttpClientModule, InfiniteScrollModule, NgxsModule.forRoot()],
         declarations: [WorkbasketDistributionTargetsComponent, WorkbasketDualListComponent],
-        providers: [WorkbasketService, NotificationService, SavingWorkbasketService, RequestInProgressService,
-          { provide: Store, useValue: storeSpy }]
+        providers: [
+          WorkbasketService,
+          NotificationService,
+          SavingWorkbasketService,
+          RequestInProgressService,
+          { provide: Store, useValue: storeSpy }
+        ]
       });
     };
-    configureTests(configure).then(testBed => {
-      storeSpy.select.and.callFake(selector => {
+    configureTests(configure).then((testBed) => {
+      storeSpy.select.and.callFake((selector) => {
         switch (selector) {
           case WorkbasketSelectors.workbasketDistributionTargets:
             return of(['distributionTargets', '_links']);
@@ -113,7 +165,9 @@ describe('WorkbasketDistributionTargetsComponent', () => {
       component.workbasket = workbasket;
       workbasketService = TestBed.get(WorkbasketService);
       spyOn(workbasketService, 'getWorkBasketsSummary').and.callFake(() => of(workbasketSummaryResource));
-      spyOn(workbasketService, 'getWorkBasketsDistributionTargets').and.callFake(() => of(workbasketDistributionTargets));
+      spyOn(workbasketService, 'getWorkBasketsDistributionTargets').and.callFake(() =>
+        of(workbasketDistributionTargets)
+      );
       component.ngOnChanges({
         active: new SimpleChange(undefined, 'distributionTargets', true)
       });
@@ -139,21 +193,19 @@ describe('WorkbasketDistributionTargetsComponent', () => {
     let repeteadElemens = false;
     expect(component.distributionTargetsLeft.length).toBe(2);
     expect(component.distributionTargetsRight.length).toBe(2);
-    component.distributionTargetsLeft.forEach(leftElement => {
-      component.distributionTargetsRight.forEach(rightElement => {
-        if (leftElement.workbasketId === rightElement.workbasketId) { repeteadElemens = true; }
+    component.distributionTargetsLeft.forEach((leftElement) => {
+      component.distributionTargetsRight.forEach((rightElement) => {
+        if (leftElement.workbasketId === rightElement.workbasketId) {
+          repeteadElemens = true;
+        }
       });
     });
     expect(repeteadElemens).toBeTruthy();
   });
 
   it('should reset distribution target and distribution target selected on reset', () => {
-    component.distributionTargetsLeft.push(
-      createWorkbasketSummary('id4', '', '', '', '', '', '', '', '', '', '')
-    );
-    component.distributionTargetsRight.push(
-      createWorkbasketSummary('id5', '', '', '', '', '', '', '', '', '', '')
-    );
+    component.distributionTargetsLeft.push(createWorkbasketSummary('id4', '', '', '', '', '', '', '', '', '', ''));
+    component.distributionTargetsRight.push(createWorkbasketSummary('id5', '', '', '', '', '', '', '', '', '', ''));
 
     expect(component.distributionTargetsLeft.length).toBe(3);
     expect(component.distributionTargetsRight.length).toBe(3);

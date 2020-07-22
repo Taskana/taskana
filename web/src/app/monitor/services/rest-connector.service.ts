@@ -9,36 +9,36 @@ const monitorUrl = '/v1/monitor/';
 
 @Injectable()
 export class RestConnectorService {
-  constructor(private httpClient: HttpClient) {
-  }
+  constructor(private httpClient: HttpClient) {}
 
   getTaskStatusReport(): Observable<ReportData> {
-    return this.httpClient.get<ReportData>(`${environment.taskanaRestUrl + monitorUrl
-    }tasks-status-report?states=READY,CLAIMED,COMPLETED`);
+    return this.httpClient.get<ReportData>(
+      `${environment.taskanaRestUrl + monitorUrl}tasks-status-report?states=READY,CLAIMED,COMPLETED`
+    );
   }
 
   getWorkbasketStatisticsQueryingByDueDate(): Observable<ReportData> {
-    return this.httpClient.get<ReportData>(`${environment.taskanaRestUrl
-      + monitorUrl}tasks-workbasket-report?states=READY,CLAIMED,COMPLETED`);
+    return this.httpClient.get<ReportData>(
+      `${environment.taskanaRestUrl + monitorUrl}tasks-workbasket-report?states=READY,CLAIMED,COMPLETED`
+    );
   }
 
   getWorkbasketStatisticsQueryingByPlannedDate(): Observable<ReportData> {
-    return this.httpClient.get<ReportData>(`${environment.taskanaRestUrl
-    }/v1/monitor/tasks-workbasket-planned-date-report?daysInPast=7&states=READY,CLAIMED,COMPLETED`);
+    return this.httpClient.get<ReportData>(
+      `${environment.taskanaRestUrl}/v1/monitor/tasks-workbasket-planned-date-report?daysInPast=7&states=READY,CLAIMED,COMPLETED`
+    );
   }
 
   getClassificationTasksReport(): Observable<ReportData> {
-    return this.httpClient.get<ReportData>(`${environment.taskanaRestUrl
-      + monitorUrl}tasks-classification-report`);
+    return this.httpClient.get<ReportData>(`${environment.taskanaRestUrl + monitorUrl}tasks-classification-report`);
   }
 
   getDailyEntryExitReport(): Observable<ReportData> {
-    return this.httpClient.get<ReportData>(`${environment.taskanaRestUrl
-      + monitorUrl}timestamp-report`);
+    return this.httpClient.get<ReportData>(`${environment.taskanaRestUrl + monitorUrl}timestamp-report`);
   }
 
   getChartData(source: ReportData): Array<ChartData> {
-    return source.rows.map(row => {
+    return source.rows.map((row) => {
       const rowData = new ChartData();
       [rowData.label] = row.desc;
       rowData.data = row.cells;

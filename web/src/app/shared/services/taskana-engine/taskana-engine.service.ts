@@ -10,17 +10,18 @@ import { map } from 'rxjs/operators';
 export class TaskanaEngineService {
   currentUserInfo: UserInfo;
 
-  constructor(
-    private httpClient: HttpClient
-  ) { }
+  constructor(private httpClient: HttpClient) {}
 
   // GET
   getUserInformation(): Promise<any> {
-    return this.httpClient.get<any>(`${environment.taskanaRestUrl}/v1/current-user-info`).pipe(map(
-      data => {
-        this.currentUserInfo = data;
-      }
-    )).toPromise();
+    return this.httpClient
+      .get<any>(`${environment.taskanaRestUrl}/v1/current-user-info`)
+      .pipe(
+        map((data) => {
+          this.currentUserInfo = data;
+        })
+      )
+      .toPromise();
   }
 
   hasRole(roles2Find: Array<string>): boolean {
@@ -38,8 +39,7 @@ export class TaskanaEngineService {
   }
 
   logout(): Observable<string> {
-    return this.httpClient
-      .post<string>(`${environment.taskanaLogoutUrl}`, '');
+    return this.httpClient.post<string>(`${environment.taskanaLogoutUrl}`, '');
   }
 
   isHistoryProviderEnabled(): Observable<boolean> {
@@ -47,6 +47,6 @@ export class TaskanaEngineService {
   }
 
   private findRole(roles2Find: Array<string>) {
-    return this.currentUserInfo.roles.find(role => roles2Find.some(roleLookingFor => role === roleLookingFor));
+    return this.currentUserInfo.roles.find((role) => roles2Find.some((roleLookingFor) => role === roleLookingFor));
   }
 }

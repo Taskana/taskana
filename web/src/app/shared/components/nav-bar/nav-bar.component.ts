@@ -13,7 +13,7 @@ import { TaskanaEngineService } from '../../services/taskana-engine/taskana-engi
   selector: 'taskana-shared-nav-bar',
   templateUrl: './nav-bar.component.html',
   styleUrls: ['./nav-bar.component.scss'],
-  animations: [expandRight],
+  animations: [expandRight]
 })
 export class NavBarComponent implements OnInit, OnDestroy {
   selectedRoute = '';
@@ -50,22 +50,22 @@ export class NavBarComponent implements OnInit, OnDestroy {
     private domainService: DomainService,
     private taskanaEngineService: TaskanaEngineService,
     private window: WindowRefService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.selectedRouteSubscription = this.selectedRouteService.getSelectedRoute().subscribe((value: string) => {
       this.selectedRoute = value;
       this.setTitle(value);
     });
-    this.getDomainsSubscription = this.domainService.getDomains().subscribe(domains => {
+    this.getDomainsSubscription = this.domainService.getDomains().subscribe((domains) => {
       this.domains = domains;
     });
 
-    this.domainService.getSelectedDomain().subscribe(domain => {
+    this.domainService.getSelectedDomain().subscribe((domain) => {
       this.selectedDomain = domain;
     });
 
-    this.taskanaEngineService.getVersion().subscribe(restVersion => {
+    this.taskanaEngineService.getVersion().subscribe((restVersion) => {
       this.version = restVersion.version;
     });
 
@@ -73,7 +73,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
     this.monitorAccess = this.taskanaEngineService.hasRole(MonitorGuard.roles);
     this.workplaceAccess = this.taskanaEngineService.hasRole(UserGuard.roles);
 
-    this.taskanaEngineService.isHistoryProviderEnabled().subscribe(value => {
+    this.taskanaEngineService.isHistoryProviderEnabled().subscribe((value) => {
       this.historyAccess = value;
     });
   }
@@ -87,15 +87,16 @@ export class NavBarComponent implements OnInit, OnDestroy {
   }
 
   logout() {
-    this.taskanaEngineService.logout().subscribe(() => {
-    });
+    this.taskanaEngineService.logout().subscribe(() => {});
     this.window.nativeWindow.location.href = environment.taskanaLogoutUrl;
   }
 
   showDomainSelector(): boolean {
-    return this.selectedRoute.indexOf('administration') !== -1
-      || this.selectedRoute.indexOf('workbaskets') !== -1
-      || this.selectedRoute.indexOf('classifications') !== -1;
+    return (
+      this.selectedRoute.indexOf('administration') !== -1 ||
+      this.selectedRoute.indexOf('workbaskets') !== -1 ||
+      this.selectedRoute.indexOf('classifications') !== -1
+    );
   }
 
   private setTitle(value: string = 'workbaskets') {
@@ -115,7 +116,11 @@ export class NavBarComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.selectedRouteSubscription) { this.selectedRouteSubscription.unsubscribe(); }
-    if (this.getDomainsSubscription) { this.getDomainsSubscription.unsubscribe(); }
+    if (this.selectedRouteSubscription) {
+      this.selectedRouteSubscription.unsubscribe();
+    }
+    if (this.getDomainsSubscription) {
+      this.getDomainsSubscription.unsubscribe();
+    }
   }
 }

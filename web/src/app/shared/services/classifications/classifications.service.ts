@@ -18,11 +18,7 @@ export class ClassificationsService {
   private classificationResourcePromise: Promise<ClassificationPagingList>;
   private lastDomain: string;
 
-  constructor(
-    private httpClient: HttpClient,
-    private domainService: DomainService,
-  ) {
-  }
+  constructor(private httpClient: HttpClient, private domainService: DomainService) {}
 
   private static classificationParameters(domain: string, type?: string): QueryParameters {
     const parameters = new QueryParameters();
@@ -39,11 +35,13 @@ export class ClassificationsService {
   // GET
   getClassifications(classificationType?: string): Observable<ClassificationPagingList> {
     return this.domainService.getSelectedDomain().pipe(
-      mergeMap(domain => this.httpClient.get<ClassificationPagingList>(
-        `${this.url}${TaskanaQueryParameters.getQueryParameters(
-          ClassificationsService.classificationParameters(domain, classificationType)
-        )}`
-      )),
+      mergeMap((domain) =>
+        this.httpClient.get<ClassificationPagingList>(
+          `${this.url}${TaskanaQueryParameters.getQueryParameters(
+            ClassificationsService.classificationParameters(domain, classificationType)
+          )}`
+        )
+      ),
       tap(() => this.domainService.domainChangedComplete())
     );
   }
@@ -52,9 +50,13 @@ export class ClassificationsService {
   getClassificationsByDomain(domain: string, forceRefresh = false): Promise<ClassificationPagingList> {
     if (this.lastDomain !== domain || !this.classificationResourcePromise || forceRefresh) {
       this.lastDomain = domain;
-      this.classificationResourcePromise = this.httpClient.get<ClassificationPagingList>(
-        `${this.url}${TaskanaQueryParameters.getQueryParameters(ClassificationsService.classificationParameters(domain))}`
-      ).toPromise();
+      this.classificationResourcePromise = this.httpClient
+        .get<ClassificationPagingList>(
+          `${this.url}${TaskanaQueryParameters.getQueryParameters(
+            ClassificationsService.classificationParameters(domain)
+          )}`
+        )
+        .toPromise();
     }
     return this.classificationResourcePromise;
   }

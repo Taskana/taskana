@@ -7,13 +7,7 @@ import { HistoryRoutingModule } from './history-routing.module';
 import { TaskQueryComponent } from './task-query/task-query.component';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    HistoryRoutingModule,
-    SharedModule,
-    FormsModule,
-    ReactiveFormsModule
-  ],
+  imports: [CommonModule, HistoryRoutingModule, SharedModule, FormsModule, ReactiveFormsModule],
   declarations: [TaskQueryComponent]
 })
-export class HistoryModule { }
+export class HistoryModule {}

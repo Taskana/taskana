@@ -33,12 +33,29 @@ import { NotificationService } from '../../../shared/services/notifications/noti
   selector: 'taskana-dummy-detail',
   template: 'dummydetail'
 })
-export class DummyDetailComponent {
-}
+export class DummyDetailComponent {}
 
-function createWorkbasket(workbasketId?, created?, key?, domain?, type?, modified?, name?, description?,
-  owner?, custom1?, custom2?, custom3?, custom4?, orgLevel1?, orgLevel2?, orgLevel3?, orgLevel4?,
-  _links?: Links, markedForDeletion?: boolean) {
+function createWorkbasket(
+  workbasketId?,
+  created?,
+  key?,
+  domain?,
+  type?,
+  modified?,
+  name?,
+  description?,
+  owner?,
+  custom1?,
+  custom2?,
+  custom3?,
+  custom4?,
+  orgLevel1?,
+  orgLevel2?,
+  orgLevel3?,
+  orgLevel4?,
+  _links?: Links,
+  markedForDeletion?: boolean
+) {
   const workbasket: Workbasket = {
     workbasketId,
     created,
@@ -70,29 +87,63 @@ describe('WorkbasketDetailsComponent', () => {
   let masterAndDetailService;
   let workbasketService;
   let router;
-  const workbasket = createWorkbasket('1', '', '', '', ICONTYPES.TOPIC, '', '', '', '', '', '', '', '', '', '', '', '',
-    {});
+  const workbasket = createWorkbasket(
+    '1',
+    '',
+    '',
+    '',
+    ICONTYPES.TOPIC,
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    {}
+  );
 
   const workbasketSummaryRepresentation: WorkbasketSummaryRepresentation = { workbaskets: [], _links: {}, page: {} };
 
   const workbasketAccessItemsRepresentation: WorkbasketAccessItemsRepresentation = { accessItems: [], _links: {} };
-  const routes: Routes = [
-    { path: '*', component: DummyDetailComponent }
-  ];
+  const routes: Routes = [{ path: '*', component: DummyDetailComponent }];
 
-  beforeEach(done => {
+  beforeEach((done) => {
     const configure = (testBed: TestBed) => {
       testBed.configureTestingModule({
-        imports: [RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule, HttpClientModule, ReactiveFormsModule,
-          InfiniteScrollModule, NgxsModule.forRoot()],
-        declarations: [WorkbasketDetailsComponent, WorkbasketInformationComponent,
+        imports: [
+          RouterTestingModule.withRoutes(routes),
+          FormsModule,
+          AngularSvgIconModule,
+          HttpClientModule,
+          ReactiveFormsModule,
+          InfiniteScrollModule,
+          NgxsModule.forRoot()
+        ],
+        declarations: [
+          WorkbasketDetailsComponent,
+          WorkbasketInformationComponent,
           WorkbasketAccessItemsComponent,
-          WorkbasketDistributionTargetsComponent, WorkbasketDualListComponent, DummyDetailComponent],
-        providers: [WorkbasketService, MasterAndDetailService, RequestInProgressService,
-          NotificationService, SavingWorkbasketService, ImportExportService]
+          WorkbasketDistributionTargetsComponent,
+          WorkbasketDualListComponent,
+          DummyDetailComponent
+        ],
+        providers: [
+          WorkbasketService,
+          MasterAndDetailService,
+          RequestInProgressService,
+          NotificationService,
+          SavingWorkbasketService,
+          ImportExportService
+        ]
       });
     };
-    configureTests(configure).then(testBed => {
+    configureTests(configure).then((testBed) => {
       fixture = TestBed.createComponent(WorkbasketDetailsComponent);
       component = fixture.componentInstance;
       debugElement = fixture.debugElement.nativeElement;
@@ -106,7 +157,9 @@ describe('WorkbasketDetailsComponent', () => {
 
       spyOn(workbasketService, 'getWorkBasket').and.callFake(() => of(workbasket));
       spyOn(workbasketService, 'getWorkBasketAccessItems').and.callFake(() => of(workbasketAccessItemsRepresentation));
-      spyOn(workbasketService, 'getWorkBasketsDistributionTargets').and.callFake(() => of(workbasketSummaryRepresentation));
+      spyOn(workbasketService, 'getWorkBasketsDistributionTargets').and.callFake(() =>
+        of(workbasketSummaryRepresentation)
+      );
       done();
     });
   });

@@ -19,12 +19,9 @@ import { NotificationService } from '../../../shared/services/notifications/noti
   selector: 'taskana-dummy-detail',
   template: 'dummydetail'
 })
-class DummyDetailComponent {
-}
+class DummyDetailComponent {}
 
-const routes: Routes = [
-  { path: 'workplace/taskdetail/:id', component: DummyDetailComponent }
-];
+const routes: Routes = [{ path: 'workplace/taskdetail/:id', component: DummyDetailComponent }];
 
 // TODO: test pending to test. Failing random
 xdescribe('TaskdetailsComponent', () => {
@@ -33,14 +30,17 @@ xdescribe('TaskdetailsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [TaskdetailsComponent, SpinnerComponent,
-        TaskdetailsGeneralFieldsComponent, TaskdetailsCustomFieldsComponent,
-        TaskdetailsAttributeComponent, DummyDetailComponent],
+      declarations: [
+        TaskdetailsComponent,
+        SpinnerComponent,
+        TaskdetailsGeneralFieldsComponent,
+        TaskdetailsCustomFieldsComponent,
+        TaskdetailsAttributeComponent,
+        DummyDetailComponent
+      ],
       imports: [FormsModule, RouterTestingModule.withRoutes(routes), HttpClientModule],
-      providers:
-          [TaskService, HttpClient, WorkplaceService, RequestInProgressService, NotificationService]
-    })
-      .compileComponents();
+      providers: [TaskService, HttpClient, WorkplaceService, RequestInProgressService, NotificationService]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -23,7 +23,7 @@ export class WorkbasketReportPlannedDateComponent implements OnInit {
   lineChartData: Array<ChartData>;
   lineChartOptions: any = {
     responsive: true,
-    scales: { xAxes: [{}], yAxes: [{}] },
+    scales: { xAxes: [{}], yAxes: [{}] }
   };
 
   lineChartColors = ChartColorsDefinition.getColors();
@@ -31,8 +31,7 @@ export class WorkbasketReportPlannedDateComponent implements OnInit {
   constructor(
     private restConnectorService: RestConnectorService,
     private requestInProgressService: RequestInProgressService
-  ) {
-  }
+  ) {}
 
   async ngOnInit() {
     this.requestInProgressService.setRequestInProgress(true);

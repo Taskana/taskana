@@ -9,13 +9,13 @@ describe('IconTypeComponent', () => {
   let fixture: ComponentFixture<IconTypeComponent>;
   let debugElement;
 
-  beforeEach(done => {
+  beforeEach((done) => {
     const configure = (testBed: TestBed) => {
       testBed.configureTestingModule({
         imports: [AngularSvgIconModule, HttpClientModule]
       });
     };
-    configureTests(configure).then(testBed => {
+    configureTests(configure).then((testBed) => {
       fixture = TestBed.createComponent(IconTypeComponent);
       component = fixture.componentInstance;
       debugElement = fixture.debugElement.nativeElement;

@@ -7,8 +7,7 @@ import { Version } from '../../models/version';
 export class TaskanaEngineServiceMock {
   currentUserInfo: UserInfo;
 
-  constructor(
-  ) {
+  constructor() {
     this.getUserInformation();
   }
 
@@ -38,6 +37,6 @@ export class TaskanaEngineServiceMock {
   }
 
   private findRole(roles2Find: Array<string>) {
-    return this.currentUserInfo.roles.find(role => roles2Find.some(roleLookingFor => role === roleLookingFor));
+    return this.currentUserInfo.roles.find((role) => roles2Find.some((roleLookingFor) => role === roleLookingFor));
   }
 }

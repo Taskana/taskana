@@ -38,9 +38,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private formsValidatorService: FormsValidatorService,
     private errorService: NotificationService,
     public uploadService: UploadService
-  ) {
-
-  }
+  ) {}
 
   @HostListener('window:resize', ['$event'])
   onResize() {
@@ -48,16 +46,18 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.routerSubscription = this.router.events.subscribe(event => {
+    this.routerSubscription = this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
         this.selectedRouteService.selectRoute(event);
         this.formsValidatorService.formSubmitAttempt = false;
       }
     });
 
-    this.requestInProgressSubscription = this.requestInProgressService.getRequestInProgress().subscribe((value: boolean) => {
-      this.requestInProgress = value;
-    });
+    this.requestInProgressSubscription = this.requestInProgressService
+      .getRequestInProgress()
+      .subscribe((value: boolean) => {
+        this.requestInProgress = value;
+      });
 
     this.selectedRouteSubscription = this.selectedRouteService.getSelectedRoute().subscribe((value: string) => {
       if (value.indexOf('classifications') !== -1) {
@@ -65,7 +65,7 @@ export class AppComponent implements OnInit, OnDestroy {
       }
       this.selectedRoute = value;
     });
-    this.uploadingFileSubscription = this.uploadService.getCurrentProgressValue().subscribe(value => {
+    this.uploadingFileSubscription = this.uploadService.getCurrentProgressValue().subscribe((value) => {
       this.currentProgressValue = value;
     });
   }

@@ -23,28 +23,45 @@ import { TaskListToolbarComponent } from './task-list-toolbar.component';
   selector: 'taskana-dummy-detail',
   template: 'dummydetail'
 })
-export class DummyDetailComponent {
-}
+export class DummyDetailComponent {}
 
 // TODO: test pending to test. Failing random
 xdescribe('TasklistToolbarComponent', () => {
   let component: TaskListToolbarComponent;
   let fixture: ComponentFixture<TaskListToolbarComponent>;
 
-  const routes: Routes = [
-    { path: '*', component: DummyDetailComponent }
-  ];
+  const routes: Routes = [{ path: '*', component: DummyDetailComponent }];
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [TaskListToolbarComponent, SortComponent, FilterComponent, MapValuesPipe,
-        IconTypeComponent, SvgIconComponent, DummyDetailComponent],
-      imports: [FormsModule, TypeaheadModule, HttpClientModule, RouterTestingModule.withRoutes(routes),
-        BrowserAnimationsModule],
-      providers: [TaskService, HttpClient, WorkbasketService, DomainService, RequestInProgressService,
-        SelectedRouteService, WorkplaceService, ComponentLoaderFactory, PositioningService]
-    })
-      .compileComponents();
+      declarations: [
+        TaskListToolbarComponent,
+        SortComponent,
+        FilterComponent,
+        MapValuesPipe,
+        IconTypeComponent,
+        SvgIconComponent,
+        DummyDetailComponent
+      ],
+      imports: [
+        FormsModule,
+        TypeaheadModule,
+        HttpClientModule,
+        RouterTestingModule.withRoutes(routes),
+        BrowserAnimationsModule
+      ],
+      providers: [
+        TaskService,
+        HttpClient,
+        WorkbasketService,
+        DomainService,
+        RequestInProgressService,
+        SelectedRouteService,
+        WorkplaceService,
+        ComponentLoaderFactory,
+        PositioningService
+      ]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

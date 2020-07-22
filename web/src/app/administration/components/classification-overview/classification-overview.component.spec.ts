@@ -10,8 +10,7 @@ import { ClassificationOverviewComponent } from './classification-overview.compo
   selector: 'taskana-dummy-detail',
   template: 'dummydetail'
 })
-export class DummyDetailComponent {
-}
+export class DummyDetailComponent {}
 
 describe('ClassificationOverviewComponent', () => {
   let component: ClassificationOverviewComponent;
@@ -20,21 +19,13 @@ describe('ClassificationOverviewComponent', () => {
   let debugElement;
   const locationSpy: jasmine.SpyObj<Location> = jasmine.createSpyObj('Location', ['go']);
 
-  beforeEach((() => {
-    const routes: Routes = [
-      { path: ':id', component: DummyDetailComponent }
-    ];
+  beforeEach(() => {
+    const routes: Routes = [{ path: ':id', component: DummyDetailComponent }];
 
     TestBed.configureTestingModule({
-      declarations: [
-        ClassificationOverviewComponent,
-        DummyDetailComponent],
-      imports: [
-        RouterTestingModule.withRoutes(routes),
-        NgxsModule.forRoot()],
-      providers: [
-        { provide: Location, useValue: locationSpy },
-      ],
+      declarations: [ClassificationOverviewComponent, DummyDetailComponent],
+      imports: [RouterTestingModule.withRoutes(routes), NgxsModule.forRoot()],
+      providers: [{ provide: Location, useValue: locationSpy }],
       schemas: [NO_ERRORS_SCHEMA]
     });
 
@@ -44,7 +35,7 @@ describe('ClassificationOverviewComponent', () => {
     router = TestBed.get(Router);
 
     fixture.detectChanges();
-  }));
+  });
 
   it('should create', () => {
     expect(component).toBeTruthy();

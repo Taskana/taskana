@@ -1,4 +1,10 @@
-import { WorkbasketsCustomisation, ClassificationsCustomisation, AccessItemsCustomisation, TasksCustomisation, ClassificationCategoryImages } from 'app/shared/models/customisation';
+import {
+  WorkbasketsCustomisation,
+  ClassificationsCustomisation,
+  AccessItemsCustomisation,
+  TasksCustomisation,
+  ClassificationCategoryImages
+} from 'app/shared/models/customisation';
 import { Selector } from '@ngxs/store';
 import { EngineConfigurationStateModel, EngineConfigurationState } from './engine-configuration.state';
 
@@ -26,7 +32,7 @@ export class EngineConfigurationSelectors {
   @Selector([EngineConfigurationState])
   static selectCategoryIcons(state: EngineConfigurationStateModel): ClassificationCategoryImages {
     return {
-      ...state.customisation[state.language].classifications.categories,
+      ...state.customisation[state.language].classifications.categories
     };
   }
 }

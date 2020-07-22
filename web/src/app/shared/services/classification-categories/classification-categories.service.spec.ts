@@ -18,9 +18,9 @@ describe('ClassificationCategoriesService', () => {
   });
 
   it('should insert missing icon into customisation', async(() => {
-    const expectedCustomisationContent: CustomisationContent = { classifications:
-      { categories:
-        { missing: missingIcon } } };
+    const expectedCustomisationContent: CustomisationContent = {
+      classifications: { categories: { missing: missingIcon } }
+    };
 
     const expectedCustomisation: Customisation = { EN: expectedCustomisationContent, DE: expectedCustomisationContent };
 
@@ -30,9 +30,10 @@ describe('ClassificationCategoriesService', () => {
       { EN: {}, DE: {} }
     ];
 
-    initialCustomisations.forEach(initialCustomisation => {
-      categoryService.getCustomisation()
-        .subscribe(customisation => { expect(customisation).toEqual(expectedCustomisation); });
+    initialCustomisations.forEach((initialCustomisation) => {
+      categoryService.getCustomisation().subscribe((customisation) => {
+        expect(customisation).toEqual(expectedCustomisation);
+      });
 
       httpMock.expectOne('environments/data-sources/taskana-customization.json').flush(initialCustomisation);
 

@@ -2,9 +2,7 @@ import { Injectable } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 
 export class SavingInformation {
-  constructor(public url: string,
-    public workbasketId: string) {
-  }
+  constructor(public url: string, public workbasketId: string) {}
 }
 
 @Injectable()

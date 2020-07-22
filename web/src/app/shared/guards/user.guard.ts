@@ -5,7 +5,7 @@ import { TaskanaEngineService } from 'app/shared/services/taskana-engine/taskana
 @Injectable()
 export class UserGuard implements CanActivate {
   static roles = ['ADMIN', 'USER'];
-  constructor(private taskanaEngineService: TaskanaEngineService, private router: Router) { }
+  constructor(private taskanaEngineService: TaskanaEngineService, private router: Router) {}
   canActivate() {
     if (this.taskanaEngineService.hasRole(UserGuard.roles)) {
       return true;

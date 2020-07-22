@@ -14,7 +14,7 @@ export interface CustomisationContent {
 export interface TasksCustomisation {
   information?: {
     owner: LookupField;
-  }
+  };
 }
 
 export interface ClassificationsCustomisation {
@@ -47,10 +47,15 @@ export interface LookupField {
 }
 
 export function getCustomFields(amount: number): OperatorFunction<CustomFields, CustomField[]> {
-  return map<CustomFields, CustomField[]>(customisation => [...Array(amount).keys()]
-    .map(x => x + 1)
-    .map(x => customisation[`custom${x}`] || {
-      field: `Custom ${x}`,
-      visible: true
-    }));
+  return map<CustomFields, CustomField[]>((customisation) =>
+    [...Array(amount).keys()]
+      .map((x) => x + 1)
+      .map(
+        (x) =>
+          customisation[`custom${x}`] || {
+            field: `Custom ${x}`,
+            visible: true
+          }
+      )
+  );
 }
