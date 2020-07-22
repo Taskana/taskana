@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subject, Subscription } from 'rxjs';
-import { NgForm } from '@angular/forms';
+import { Observable, Subject, Subscription, timer } from 'rxjs';
+import { NgForm, NgModel } from '@angular/forms';
 import { Select, Store } from '@ngxs/store';
 
 import { ICONTYPES } from 'app/shared/models/icon-types';
@@ -53,6 +53,9 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
 
   customFields$: Observable<CustomField[]>;
   destroy$ = new Subject<void>();
+  readonly lengthError = 'You have reached the maximum length';
+  tooLongMap = new Map<string, boolean>();
+  private timeout = new Map<string, Subscription>();
 
   constructor(
     private workbasketService: WorkbasketService,
@@ -186,5 +189,19 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  onKeyPressed(model: NgModel, max: Number): void {
+    if (this.timeout.has(model.name)) {
+      this.timeout.get(model.name).unsubscribe();
+    }
+    console.log(model.name);
+    if (model.value.length >= max) {
+      this.tooLongMap.set(model.name, true);
+      this.timeout.set(
+        model.name,
+        timer(3000).subscribe(() => this.tooLongMap.set(model.name, false))
+      );
+    }
   }
 }

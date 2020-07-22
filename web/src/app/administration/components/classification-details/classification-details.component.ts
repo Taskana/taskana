@@ -101,11 +101,13 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     this.formsValidatorService.formSubmitAttempt = true;
-    this.formsValidatorService.validateFormInformation(this.classificationForm, this.toggleValidationMap).then(value => {
-      if (value) {
-        this.onSave();
-      }
-    });
+    this.formsValidatorService
+      .validateFormInformation(this.classificationForm, this.toggleValidationMap)
+      .then((value) => {
+        if (value) {
+          this.onSave();
+        }
+      });
   }
 
   onRestore() {
@@ -244,7 +246,10 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     }
     if (model.value.length >= max && !event.altKey && !event.ctrlKey) {
       this.tooLongMap.set(model.name, true);
-      this.timeout.set(model.name, timer(3000).subscribe(() => this.tooLongMap.set(model.name, false)));
+      this.timeout.set(
+        model.name,
+        timer(3000).subscribe(() => this.tooLongMap.set(model.name, false))
+      );
     }
   }
 }
