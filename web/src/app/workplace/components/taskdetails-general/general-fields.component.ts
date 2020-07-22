@@ -1,4 +1,14 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild, SimpleChanges, OnChanges, HostListener } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+  SimpleChanges,
+  OnChanges,
+  HostListener
+} from '@angular/core';
 import { Task } from 'app/workplace/models/task';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { NgForm } from '@angular/forms';
@@ -39,15 +49,17 @@ export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges {
     private classificationService: ClassificationsService,
     private formsValidatorService: FormsValidatorService,
     private domainService: DomainService
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
     this.getClassificationByDomain();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.saveToggleTriggered && changes.saveToggleTriggered.currentValue !== changes.saveToggleTriggered.previousValue) {
+    if (
+      changes.saveToggleTriggered &&
+      changes.saveToggleTriggered.currentValue !== changes.saveToggleTriggered.previousValue
+    ) {
       this.validate();
     }
   }
@@ -64,13 +76,11 @@ export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges {
 
   private validate() {
     this.formsValidatorService.formSubmitAttempt = true;
-    this.formsValidatorService
-      .validateFormInformation(this.taskForm, this.toogleValidationMap)
-      .then(value => {
-        if (value) {
-          this.formValid.emit(true);
-        }
-      });
+    this.formsValidatorService.validateFormInformation(this.taskForm, this.toogleValidationMap).then((value) => {
+      if (value) {
+        this.formValid.emit(true);
+      }
+    });
   }
 
   changedClassification(itemSelected: Classification) {
@@ -79,8 +89,9 @@ export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges {
 
   private async getClassificationByDomain() {
     this.requestInProgress = true;
-    this.classifications = (await this.classificationService.getClassificationsByDomain(this.domainService.getSelectedDomainValue()))
-      .classifications;
+    this.classifications = (
+      await this.classificationService.getClassificationsByDomain(this.domainService.getSelectedDomainValue())
+    ).classifications;
     this.requestInProgress = false;
   }
 }

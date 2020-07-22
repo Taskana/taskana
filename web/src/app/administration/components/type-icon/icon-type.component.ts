@@ -20,20 +20,28 @@ export class IconTypeComponent implements OnInit {
   text: string;
 
   public static get allTypes(): Map<string, string> {
-    return new Map([['PERSONAL', 'Personal'], ['GROUP', 'Group'], ['CLEARANCE', 'Clearance'], ['TOPIC', 'Topic']]);
+    return new Map([
+      ['PERSONAL', 'Personal'],
+      ['GROUP', 'Group'],
+      ['CLEARANCE', 'Clearance'],
+      ['TOPIC', 'Topic']
+    ]);
   }
 
-  ngOnInit() {
-
-  }
+  ngOnInit() {}
 
   getIconPath(type: string) {
     switch (type) {
-      case 'PERSONAL': return 'user.svg';
-      case 'GROUP': return 'users.svg';
-      case 'TOPIC': return 'topic.svg';
-      case 'CLEARANCE': return 'clearance.svg';
-      default: return 'asterisk.svg';
+      case 'PERSONAL':
+        return 'user.svg';
+      case 'GROUP':
+        return 'users.svg';
+      case 'TOPIC':
+        return 'topic.svg';
+      case 'CLEARANCE':
+        return 'clearance.svg';
+      default:
+        return 'asterisk.svg';
     }
   }
 }

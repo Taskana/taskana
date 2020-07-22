@@ -6,7 +6,7 @@ import { RequestInProgressService } from '../../../shared/services/request-in-pr
 @Component({
   selector: 'taskana-monitor-task-report',
   templateUrl: './task-report.component.html',
-  styleUrls: ['./task-report.component.scss'],
+  styleUrls: ['./task-report.component.scss']
 })
 export class TaskReportComponent implements OnInit {
   pieChartLabels: string[];
@@ -17,14 +17,13 @@ export class TaskReportComponent implements OnInit {
   constructor(
     private restConnectorService: RestConnectorService,
     private requestInProgressService: RequestInProgressService
-  ) {
-  }
+  ) {}
 
   async ngOnInit() {
     this.requestInProgressService.setRequestInProgress(true);
     this.reportData = await this.restConnectorService.getTaskStatusReport().toPromise();
     this.pieChartLabels = this.reportData.meta.header;
-    this.reportData.sumRow[0].cells.forEach(c => {
+    this.reportData.sumRow[0].cells.forEach((c) => {
       this.pieChartData.push(c);
     });
     this.requestInProgressService.setRequestInProgress(false);

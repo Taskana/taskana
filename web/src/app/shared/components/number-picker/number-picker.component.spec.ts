@@ -9,14 +9,9 @@ describe('NumberPickerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        NumberPickerComponent],
-      imports: [
-        FormsModule,
-        ReactiveFormsModule
-      ]
-    })
-      .compileComponents();
+      declarations: [NumberPickerComponent],
+      imports: [FormsModule, ReactiveFormsModule]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(NumberPickerComponent);
     component = fixture.componentInstance;

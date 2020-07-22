@@ -4,5 +4,5 @@ export class Page {
     public totalElements?: number,
     public totalPages?: number,
     public number?: number
-  ) { }
+  ) {}
 }

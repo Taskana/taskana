@@ -43,7 +43,7 @@ const DECLARATIONS = [
   WorkbasketReportDueDateComponent,
   WorkbasketReportQuerySwitcherComponent,
   TaskReportComponent,
-  ClassificationReportComponent,
+  ClassificationReportComponent
 ];
 
 @NgModule({
@@ -51,5 +51,4 @@ const DECLARATIONS = [
   imports: MODULES,
   providers: [RestConnectorService, MapToIterable]
 })
-export class MonitorModule {
-}
+export class MonitorModule {}

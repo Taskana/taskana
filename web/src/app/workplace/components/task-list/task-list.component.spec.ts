@@ -13,42 +13,26 @@ import { DateTimeZonePipe } from '../../../shared/pipes/date-time-zone.pipe';
   selector: 'taskana-dummy-detail',
   template: 'dummydetail'
 })
-export class DummyDetailComponent {
-}
+export class DummyDetailComponent {}
 
 @Component({
   selector: 'svg-icon',
   template: '<p>Mock Icon Component</p>'
 })
-export class MockSvgIconComponent {
-}
+export class MockSvgIconComponent {}
 
 describe('TaskListComponent', () => {
   let component: TaskListComponent;
   let fixture: ComponentFixture<TaskListComponent>;
 
-  const routes: Routes = [
-    { path: '*', component: DummyDetailComponent }
-  ];
+  const routes: Routes = [{ path: '*', component: DummyDetailComponent }];
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        FormsModule,
-        RouterTestingModule.withRoutes(routes),
-        HttpClientModule],
-      declarations: [
-        TaskListComponent,
-        DummyDetailComponent,
-        MockSvgIconComponent,
-        DateTimeZonePipe
-      ],
-      providers: [
-        WorkplaceService,
-        ChangeDetectorRef
-      ]
-    })
-      .compileComponents();
+      imports: [FormsModule, RouterTestingModule.withRoutes(routes), HttpClientModule],
+      declarations: [TaskListComponent, DummyDetailComponent, MockSvgIconComponent, DateTimeZonePipe],
+      providers: [WorkplaceService, ChangeDetectorRef]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

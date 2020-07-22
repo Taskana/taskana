@@ -7,15 +7,13 @@ import { notifications } from '../../models/notifications';
   templateUrl: './dialog-pop-up.component.html',
   styleUrls: ['./dialog-pop-up.component.scss']
 })
-
 export class DialogPopUpComponent implements OnInit {
   title: string;
   message: string;
   isDialog: false;
   callback: Function;
 
-  constructor(@Inject(MAT_DIALOG_DATA) private data: any) {
-  }
+  constructor(@Inject(MAT_DIALOG_DATA) private data: any) {}
 
   ngOnInit() {
     if (this.data) {
@@ -32,8 +30,10 @@ export class DialogPopUpComponent implements OnInit {
 
   initError() {
     this.title = notifications.get(this.data.key).name || '';
-    this.message = notifications.get(this.data.key).text
-      || (this.data && this.data.passedError && this.data.passedError.error) ? this.data.passedError.error.message : '';
+    this.message =
+      notifications.get(this.data.key).text || (this.data && this.data.passedError && this.data.passedError.error)
+        ? this.data.passedError.error.message
+        : '';
     if (this.data.additions) {
       this.data.additions.forEach((value: string, replacementKey: string) => {
         this.message = this.message.replace(`{${replacementKey}}`, value);

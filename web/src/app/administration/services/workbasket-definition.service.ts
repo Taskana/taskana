@@ -9,12 +9,14 @@ import { BlobGenerator } from 'app/shared/util/blob-generator';
 export class WorkbasketDefinitionService {
   url: string = `${environment.taskanaRestUrl}/v1/workbasket-definitions`;
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient) {}
 
   // GET
   async exportWorkbaskets(domain: string) {
-    const domainRequest = (domain === '' ? domain : `?domain=${domain}`);
-    const workbasketDefinitions = await this.httpClient.get<WorkbasketDefinition[]>(this.url + domainRequest).toPromise();
+    const domainRequest = domain === '' ? domain : `?domain=${domain}`;
+    const workbasketDefinitions = await this.httpClient
+      .get<WorkbasketDefinition[]>(this.url + domainRequest)
+      .toPromise();
     BlobGenerator.saveFile(workbasketDefinitions, `Workbaskets_${TaskanaDate.getDate()}.json`);
   }
 }

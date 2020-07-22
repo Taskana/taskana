@@ -11,14 +11,14 @@ describe('NoAccessComponent', () => {
   let fixture: ComponentFixture<NoAccessComponent>;
   let debugElement;
 
-  beforeEach(done => {
+  beforeEach((done) => {
     const configure = (testBed: TestBed) => {
       testBed.configureTestingModule({
         imports: [RouterTestingModule, AngularSvgIconModule, HttpClientModule],
         declarations: [NoAccessComponent]
       });
     };
-    configureTests(configure).then(testBed => {
+    configureTests(configure).then((testBed) => {
       fixture = TestBed.createComponent(NoAccessComponent);
       component = fixture.componentInstance;
       debugElement = fixture.debugElement.nativeElement;

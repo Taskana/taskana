@@ -21,16 +21,8 @@ describe('StartupService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientModule,
-        HttpClientTestingModule
-      ],
-      providers: [
-        StartupService,
-        HttpClient,
-        TaskanaEngineService,
-        WindowRefService
-      ]
+      imports: [HttpClientModule, HttpClientTestingModule],
+      providers: [StartupService, HttpClient, TaskanaEngineService, WindowRefService]
     });
   });
 
@@ -45,10 +37,10 @@ describe('StartupService', () => {
     expect(service).toBeTruthy();
   }));
 
-  it('should initialize rest and logout url from external file', done => {
+  it('should initialize rest and logout url from external file', (done) => {
     environment.taskanaRestUrl = '';
     environment.taskanaLogoutUrl = '';
-    service.getEnvironmentFilePromise().then(res => {
+    service.getEnvironmentFilePromise().then((res) => {
       expect(environment.taskanaRestUrl).toBe(someRestUrl);
       expect(environment.taskanaLogoutUrl).toBe(someLogoutUrl);
       done();
@@ -59,10 +51,10 @@ describe('StartupService', () => {
     httpMock.verify();
   });
 
-  it('should initialize rest and logout url from external file and override previous config', done => {
+  it('should initialize rest and logout url from external file and override previous config', (done) => {
     environment.taskanaRestUrl = 'oldRestUrl';
     environment.taskanaLogoutUrl = 'oldLogoutUrl';
-    service.getEnvironmentFilePromise().then(res => {
+    service.getEnvironmentFilePromise().then((res) => {
       expect(environment.taskanaRestUrl).toBe(someRestUrl);
       expect(environment.taskanaLogoutUrl).toBe(someLogoutUrl);
       done();

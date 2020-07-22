@@ -17,6 +17,5 @@ export class FieldErrorDisplayComponent implements OnInit {
   @Input()
   validationTrigger: boolean;
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 }

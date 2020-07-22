@@ -1,13 +1,13 @@
-var SeedReporter = function(baseReporterDecorator) {
+var SeedReporter = function (baseReporterDecorator) {
   baseReporterDecorator(this);
 
-  this.onBrowserComplete = function(browser, result) {
+  this.onBrowserComplete = function (browser, result) {
     if (result.order && result.order.random && result.order.seed) {
-      this.write("%s: Randomized with seed %s\n", browser, result.order.seed);
+      this.write('%s: Randomized with seed %s\n', browser, result.order.seed);
     }
   };
 };
 
 module.exports = {
-  "reporter:jasmine-seed": ["type", SeedReporter]
+  'reporter:jasmine-seed': ['type', SeedReporter]
 };

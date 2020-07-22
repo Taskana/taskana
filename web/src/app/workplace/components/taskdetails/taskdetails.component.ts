@@ -32,21 +32,22 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   private masterAndDetailSubscription: Subscription;
   private deleteTaskSubscription: Subscription;
 
-  constructor(private route: ActivatedRoute,
+  constructor(
+    private route: ActivatedRoute,
     private taskService: TaskService,
     private workplaceService: WorkplaceService,
     private router: Router,
     private requestInProgressService: RequestInProgressService,
     private notificationService: NotificationService,
-    private masterAndDetailService: MasterAndDetailService) {
-  }
+    private masterAndDetailService: MasterAndDetailService
+  ) {}
 
   ngOnInit() {
     this.currentWorkbasket = this.workplaceService.currentWorkbasket;
-    this.workbasketSubscription = this.workplaceService.getSelectedWorkbasket().subscribe(workbasket => {
+    this.workbasketSubscription = this.workplaceService.getSelectedWorkbasket().subscribe((workbasket) => {
       this.currentWorkbasket = workbasket;
     });
-    this.routeSubscription = this.route.params.subscribe(params => {
+    this.routeSubscription = this.route.params.subscribe((params) => {
       this.currentId = params.id;
       // redirect if user enters through a deep-link
       if (!this.currentWorkbasket && this.currentId === 'new-task') {
@@ -54,7 +55,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
       }
       this.getTask();
     });
-    this.masterAndDetailSubscription = this.masterAndDetailService.getShowDetail().subscribe(showDetail => {
+    this.masterAndDetailSubscription = this.masterAndDetailService.getShowDetail().subscribe((showDetail) => {
       this.showDetail = showDetail;
     });
   }
@@ -73,14 +74,17 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
       this.requestInProgress = false;
       this.task = new Task('', new ObjectReference(), this.currentWorkbasket);
     } else {
-      this.taskService.getTask(this.currentId).subscribe(task => {
-        this.requestInProgress = false;
-        this.task = task;
-        this.cloneTask();
-        this.taskService.selectTask(task);
-      }, error => {
-        this.notificationService.triggerError(NOTIFICATION_TYPES.FETCH_ERR_7, error);
-      });
+      this.taskService.getTask(this.currentId).subscribe(
+        (task) => {
+          this.requestInProgress = false;
+          this.task = task;
+          this.cloneTask();
+          this.taskService.selectTask(task);
+        },
+        (error) => {
+          this.notificationService.triggerError(NOTIFICATION_TYPES.FETCH_ERR_7, error);
+        }
+      );
     }
   }
 
@@ -104,13 +108,16 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   }
 
   deleteTaskConfirmation(): void {
-    this.deleteTaskSubscription = this.taskService.deleteTask(this.task).subscribe(() => {
-      this.taskService.publishUpdatedTask();
-      this.task = null;
-      this.router.navigate(['taskana/workplace/tasks']);
-    }, error => {
-      this.notificationService.triggerError(NOTIFICATION_TYPES.DELETE_ERR_2, error);
-    });
+    this.deleteTaskSubscription = this.taskService.deleteTask(this.task).subscribe(
+      () => {
+        this.taskService.publishUpdatedTask();
+        this.task = null;
+        this.router.navigate(['taskana/workplace/tasks']);
+      },
+      (error) => {
+        this.notificationService.triggerError(NOTIFICATION_TYPES.DELETE_ERR_2, error);
+      }
+    );
   }
 
   selectTab(tab: string): void {
@@ -144,35 +151,41 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
 
   private updateTask() {
     this.requestInProgressService.setRequestInProgress(true);
-    this.taskService.updateTask(this.task).subscribe(task => {
-      this.requestInProgressService.setRequestInProgress(false);
-      this.task = task;
-      this.cloneTask();
-      this.taskService.publishUpdatedTask(task);
-      this.notificationService.showToast(NOTIFICATION_TYPES.SUCCESS_ALERT_14);
-    }, () => {
-      this.requestInProgressService.setRequestInProgress(false);
-      this.notificationService.showToast(NOTIFICATION_TYPES.DANGER_ALERT);
-    });
+    this.taskService.updateTask(this.task).subscribe(
+      (task) => {
+        this.requestInProgressService.setRequestInProgress(false);
+        this.task = task;
+        this.cloneTask();
+        this.taskService.publishUpdatedTask(task);
+        this.notificationService.showToast(NOTIFICATION_TYPES.SUCCESS_ALERT_14);
+      },
+      () => {
+        this.requestInProgressService.setRequestInProgress(false);
+        this.notificationService.showToast(NOTIFICATION_TYPES.DANGER_ALERT);
+      }
+    );
   }
 
   private createTask() {
     this.requestInProgressService.setRequestInProgress(true);
     this.addDateToTask();
-    this.taskService.createTask(this.task).subscribe(task => {
-      this.requestInProgressService.setRequestInProgress(false);
-      this.notificationService.showToast(
-        NOTIFICATION_TYPES.SUCCESS_ALERT_13,
-        new Map<string, string>([['taskId', task.name]])
-      );
-      this.task = task;
-      this.taskService.selectTask(this.task);
-      this.taskService.publishUpdatedTask(task);
-      this.router.navigate([`../${task.taskId}`], { relativeTo: this.route });
-    }, () => {
-      this.requestInProgressService.setRequestInProgress(false);
-      this.notificationService.showToast(NOTIFICATION_TYPES.DANGER_ALERT_2);
-    });
+    this.taskService.createTask(this.task).subscribe(
+      (task) => {
+        this.requestInProgressService.setRequestInProgress(false);
+        this.notificationService.showToast(
+          NOTIFICATION_TYPES.SUCCESS_ALERT_13,
+          new Map<string, string>([['taskId', task.name]])
+        );
+        this.task = task;
+        this.taskService.selectTask(this.task);
+        this.taskService.publishUpdatedTask(task);
+        this.router.navigate([`../${task.taskId}`], { relativeTo: this.route });
+      },
+      () => {
+        this.requestInProgressService.setRequestInProgress(false);
+        this.notificationService.showToast(NOTIFICATION_TYPES.DANGER_ALERT_2);
+      }
+    );
   }
 
   private addDateToTask() {

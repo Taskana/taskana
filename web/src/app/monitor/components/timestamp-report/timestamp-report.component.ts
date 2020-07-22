@@ -10,8 +10,7 @@ import { RestConnectorService } from '../../services/rest-connector.service';
 export class TimestampReportComponent implements OnInit {
   reportData: ReportData;
 
-  constructor(private restConnectorService: RestConnectorService) {
-  }
+  constructor(private restConnectorService: RestConnectorService) {}
 
   ngOnInit() {
     this.restConnectorService.getDailyEntryExitReport().subscribe((data: ReportData) => {

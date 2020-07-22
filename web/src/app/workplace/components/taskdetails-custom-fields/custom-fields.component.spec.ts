@@ -12,8 +12,7 @@ xdescribe('CustomComponent', () => {
     TestBed.configureTestingModule({
       imports: [FormsModule],
       declarations: [TaskdetailsCustomFieldsComponent]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

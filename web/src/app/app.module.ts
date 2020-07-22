@@ -66,12 +66,7 @@ const MODULES = [
   NgxsReduxDevtoolsPluginModule.forRoot({ disabled: environment.production, maxAge: 25 })
 ];
 
-const DECLARATIONS = [
-  AppComponent,
-  NavBarComponent,
-  UserInformationComponent,
-  NoAccessComponent,
-];
+const DECLARATIONS = [AppComponent, NavBarComponent, UserInformationComponent, NoAccessComponent];
 
 export function startupServiceFactory(startupService: StartupService): () => Promise<any> {
   return (): Promise<any> => startupService.load();
@@ -102,9 +97,8 @@ export function startupServiceFactory(startupService: StartupService): () => Pro
     FormsValidatorService,
     UploadService,
     NotificationService,
-    ClassificationCategoriesService,
+    ClassificationCategoriesService
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-}
+export class AppModule {}

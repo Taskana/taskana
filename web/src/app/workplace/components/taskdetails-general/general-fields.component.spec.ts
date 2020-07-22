@@ -18,8 +18,7 @@ import { TaskdetailsGeneralFieldsComponent } from './general-fields.component';
   selector: 'taskana-dummy-detail',
   template: 'dummydetail'
 })
-export class DummyDetailComponent {
-}
+export class DummyDetailComponent {}
 
 // TODO: test pending to test. Failing random
 xdescribe('GeneralComponent', () => {
@@ -27,20 +26,24 @@ xdescribe('GeneralComponent', () => {
   let fixture: ComponentFixture<TaskdetailsGeneralFieldsComponent>;
   let classificationsService;
 
-  const routes: Routes = [
-    { path: '*', component: DummyDetailComponent }
-  ];
+  const routes: Routes = [{ path: '*', component: DummyDetailComponent }];
 
-  beforeEach(done => {
+  beforeEach((done) => {
     const configure = (testBed: TestBed) => {
       testBed.configureTestingModule({
         imports: [FormsModule, HttpClientModule, RouterTestingModule.withRoutes(routes)],
         declarations: [TaskdetailsGeneralFieldsComponent, DummyDetailComponent],
-        providers: [HttpClient, ClassificationCategoriesService,
-          DomainService, RequestInProgressService, SelectedRouteService, ClassificationsService]
+        providers: [
+          HttpClient,
+          ClassificationCategoriesService,
+          DomainService,
+          RequestInProgressService,
+          SelectedRouteService,
+          ClassificationsService
+        ]
       });
     };
-    configureTests(configure).then(testBed => {
+    configureTests(configure).then((testBed) => {
       classificationsService = testBed.get(ClassificationsService);
       const resource: ClassificationPagingList = {
         classifications: [
@@ -53,7 +56,8 @@ xdescribe('GeneralComponent', () => {
             name: 'classification1',
             parentId: 'parentId',
             parentKey: 'parentKey'
-          }, {
+          },
+          {
             classificationId: 'id2',
             key: 'key2',
             category: 'category',
@@ -62,7 +66,7 @@ xdescribe('GeneralComponent', () => {
             name: 'classification1',
             parentId: 'parentId',
             parentKey: 'parentKey'
-          },
+          }
         ]
       };
       spyOn(classificationsService, 'getClassificationsByDomain').and.returnValue(resource);
@@ -80,7 +84,7 @@ xdescribe('GeneralComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call to getClassificationsByDomain', done => {
+  it('should call to getClassificationsByDomain', (done) => {
     component.ngOnInit();
     expect(classificationsService.getClassificationsByDomain).toHaveBeenCalled();
     done();

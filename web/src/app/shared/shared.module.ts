@@ -95,10 +95,7 @@ const DECLARATIONS = [
 
 @NgModule({
   declarations: DECLARATIONS,
-  imports: [
-    MODULES,
-    MatRadioModule
-  ],
+  imports: [MODULES, MatRadioModule],
   exports: DECLARATIONS,
   providers: [
     {
@@ -112,5 +109,4 @@ const DECLARATIONS = [
   ],
   entryComponents: [ToastComponent, DialogPopUpComponent]
 })
-export class SharedModule {
-}
+export class SharedModule {}

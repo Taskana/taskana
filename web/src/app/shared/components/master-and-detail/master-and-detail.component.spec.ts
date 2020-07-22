@@ -12,17 +12,13 @@ import { MasterAndDetailComponent } from './master-and-detail.component';
   selector: 'taskana-dummy-master',
   template: 'dummymaster'
 })
-export class DummyMasterComponent {
-
-}
+export class DummyMasterComponent {}
 
 @Component({
   selector: 'taskana-dummy-detail',
   template: 'dummydetail'
 })
-export class DummyDetailComponent {
-
-}
+export class DummyDetailComponent {}
 
 describe('MasterAndDetailComponent ', () => {
   let component;
@@ -51,18 +47,10 @@ describe('MasterAndDetailComponent ', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        MasterAndDetailComponent,
-        DummyMasterComponent,
-        DummyDetailComponent],
-      imports: [
-        RouterTestingModule.withRoutes(routes),
-        AngularSvgIconModule,
-        HttpClientModule
-      ],
+      declarations: [MasterAndDetailComponent, DummyMasterComponent, DummyDetailComponent],
+      imports: [RouterTestingModule.withRoutes(routes), AngularSvgIconModule, HttpClientModule],
       providers: [MasterAndDetailService]
-    })
-      .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MasterAndDetailComponent);
     component = fixture.debugElement.componentInstance;

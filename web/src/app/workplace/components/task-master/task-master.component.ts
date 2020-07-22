@@ -59,39 +59,39 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
     private notificationsService: NotificationService,
     private orientationService: OrientationService
   ) {
-    this.taskChangeSubscription = this.taskService.taskChangedStream.subscribe(task => {
+    this.taskChangeSubscription = this.taskService.taskChangedStream.subscribe((task) => {
       this.getTasks();
       this.selectedId = task ? task.taskId : '';
     });
 
-    this.workbasketChangeSubscription = this.workplaceService.workbasketSelectedStream.subscribe(workbasket => {
+    this.workbasketChangeSubscription = this.workplaceService.workbasketSelectedStream.subscribe((workbasket) => {
       this.currentBasket = workbasket;
       if (this.selectedSearchType === Search.byWorkbasket) {
         this.getTasks();
       }
     });
 
-    this.objectReferenceSubscription = this.workplaceService.objectReferenceSelectedStream.subscribe(objectReference => {
-      this.objectReference = objectReference;
-      delete this.currentBasket;
-      if (objectReference) {
-        this.getTasks();
-      }
-    });
-  }
-
-  ngOnInit() {
-    this.taskService.getSelectedTask().subscribe(
-      task => {
-        if (!this.currentBasket) {
-          this.selectedId = task.taskId;
-          this.currentBasket = task.workbasketSummaryResource;
-        }
-        if (!task) {
-          this.selectedId = '';
+    this.objectReferenceSubscription = this.workplaceService.objectReferenceSelectedStream.subscribe(
+      (objectReference) => {
+        this.objectReference = objectReference;
+        delete this.currentBasket;
+        if (objectReference) {
+          this.getTasks();
         }
       }
     );
+  }
+
+  ngOnInit() {
+    this.taskService.getSelectedTask().subscribe((task) => {
+      if (!this.currentBasket) {
+        this.selectedId = task.taskId;
+        this.currentBasket = task.workbasketSummaryResource;
+      }
+      if (!task) {
+        this.selectedId = '';
+      }
+    });
     this.orientationSubscription = this.orientationService.getOrientation().subscribe((orientation: Orientation) => {
       this.refreshWorkbasketList();
     });
@@ -141,11 +141,19 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
       this.tasks = [];
     } else {
       this.calculateHeightCard();
-      this.taskService.findTasksWithWorkbasket(this.currentBasket ? this.currentBasket.workbasketId : '',
-        this.sort.sortBy, this.sort.sortDirection, this.filterBy.filterParams.name, this.filterBy.filterParams.owner,
-        this.filterBy.filterParams.priority, this.filterBy.filterParams.state, this.objectReference ? this.objectReference.type : '',
-        this.objectReference ? this.objectReference.value : '')
-        .subscribe(taskResource => {
+      this.taskService
+        .findTasksWithWorkbasket(
+          this.currentBasket ? this.currentBasket.workbasketId : '',
+          this.sort.sortBy,
+          this.sort.sortDirection,
+          this.filterBy.filterParams.name,
+          this.filterBy.filterParams.owner,
+          this.filterBy.filterParams.priority,
+          this.filterBy.filterParams.state,
+          this.objectReference ? this.objectReference.type : '',
+          this.objectReference ? this.objectReference.value : ''
+        )
+        .subscribe((taskResource) => {
           this.requestInProgress = false;
           if (taskResource.tasks && taskResource.tasks.length > 1) {
             this.tasks = taskResource.tasks;

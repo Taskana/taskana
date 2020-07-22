@@ -21,14 +21,12 @@ export class WorkbasketService {
   public workBasketSaved = new Subject<number>();
   private workbasketSummaryRef: Observable<WorkbasketSummaryRepresentation> = new Observable();
 
-  constructor(
-    private httpClient: HttpClient,
-    private domainService: DomainService
-  ) { }
+  constructor(private httpClient: HttpClient, private domainService: DomainService) {}
 
   // #region "REST calls"
   // GET
-  getWorkBasketsSummary(forceRequest: boolean = false,
+  getWorkBasketsSummary(
+    forceRequest: boolean = false,
     sortBy: string = TaskanaQueryParameters.parameters.KEY,
     order: string = Direction.ASC,
     name?: string,
@@ -40,23 +38,39 @@ export class WorkbasketService {
     key?: string,
     keyLike?: string,
     requiredPermission?: string,
-    allPages: boolean = false) {
+    allPages: boolean = false
+  ) {
     if (this.workbasketSummaryRef && !forceRequest) {
       return this.workbasketSummaryRef;
     }
 
-    return this.domainService.getSelectedDomain()
-      .pipe(mergeMap(domain => {
+    return this.domainService.getSelectedDomain().pipe(
+      mergeMap((domain) => {
         this.workbasketSummaryRef = this.httpClient.get<WorkbasketSummaryRepresentation>(
-          `${environment.taskanaRestUrl}/v1/workbaskets/${TaskanaQueryParameters
-            .getQueryParameters(this.workbasketParameters(sortBy, order, name, nameLike, descLike, owner, ownerLike,
-              type, key, keyLike, requiredPermission, allPages, domain))}`
+          `${environment.taskanaRestUrl}/v1/workbaskets/${TaskanaQueryParameters.getQueryParameters(
+            this.workbasketParameters(
+              sortBy,
+              order,
+              name,
+              nameLike,
+              descLike,
+              owner,
+              ownerLike,
+              type,
+              key,
+              keyLike,
+              requiredPermission,
+              allPages,
+              domain
+            )
+          )}`
         );
         return this.workbasketSummaryRef;
       }),
       tap(() => {
         this.domainService.domainChangedComplete();
-      }));
+      })
+    );
   }
 
   // GET
@@ -66,27 +80,24 @@ export class WorkbasketService {
 
   // GET
   getAllWorkBaskets(): Observable<WorkbasketRepresentation> {
-    return this.httpClient.get<WorkbasketRepresentation>(`${environment.taskanaRestUrl}/v1/workbaskets?required-permission=OPEN`);
+    return this.httpClient.get<WorkbasketRepresentation>(
+      `${environment.taskanaRestUrl}/v1/workbaskets?required-permission=OPEN`
+    );
   }
 
   // POST
   createWorkbasket(workbasket: Workbasket): Observable<Workbasket> {
-    return this.httpClient
-      .post<Workbasket>(`${environment.taskanaRestUrl}/v1/workbaskets`, workbasket);
+    return this.httpClient.post<Workbasket>(`${environment.taskanaRestUrl}/v1/workbaskets`, workbasket);
   }
 
   // PUT
   updateWorkbasket(url: string, workbasket: Workbasket): Observable<Workbasket> {
-    return this.httpClient
-      .put<Workbasket>(url, workbasket).pipe(
-      catchError(this.handleError)
-    );
+    return this.httpClient.put<Workbasket>(url, workbasket).pipe(catchError(this.handleError));
   }
 
   // delete
   markWorkbasketForDeletion(url: string): Observable<any> {
-    return this.httpClient
-      .delete<any>(url, { observe: 'response' });
+    return this.httpClient.delete<any>(url, { observe: 'response' });
   }
 
   // GET
@@ -95,14 +106,16 @@ export class WorkbasketService {
   }
 
   // POST
-  createWorkBasketAccessItem(url: string, workbasketAccessItem: WorkbasketAccessItems): Observable<WorkbasketAccessItems> {
+  createWorkBasketAccessItem(
+    url: string,
+    workbasketAccessItem: WorkbasketAccessItems
+  ): Observable<WorkbasketAccessItems> {
     return this.httpClient.post<WorkbasketAccessItems>(url, workbasketAccessItem);
   }
 
   // PUT
   updateWorkBasketAccessItem(url: string, workbasketAccessItem: Array<WorkbasketAccessItems>): Observable<string> {
-    return this.httpClient.put<string>(url,
-      workbasketAccessItem);
+    return this.httpClient.put<string>(url, workbasketAccessItem);
   }
 
   // GET
@@ -111,8 +124,10 @@ export class WorkbasketService {
   }
 
   // PUT
-  updateWorkBasketsDistributionTargets(url: string, distributionTargetsIds: Array<string>):
-  Observable<WorkbasketDistributionTargets> {
+  updateWorkBasketsDistributionTargets(
+    url: string,
+    distributionTargetsIds: Array<string>
+  ): Observable<WorkbasketDistributionTargets> {
     return this.httpClient.put<WorkbasketDistributionTargets>(url, distributionTargetsIds);
   }
 

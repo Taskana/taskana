@@ -23,5 +23,5 @@ export class AccessItemWorkbasket {
     public permCustom11: boolean = false,
     public permCustom12: boolean = false,
     public _links?: Links
-  ) { }
+  ) {}
 }

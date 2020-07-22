@@ -9,13 +9,13 @@ describe('SortComponent', () => {
   let fixture: ComponentFixture<SortComponent>;
   let debugElement;
 
-  beforeEach(done => {
+  beforeEach((done) => {
     const configure = (testBed: TestBed) => {
       testBed.configureTestingModule({
         declarations: []
       });
     };
-    configureTests(configure).then(testBed => {
+    configureTests(configure).then((testBed) => {
       fixture = TestBed.createComponent(SortComponent);
       component = fixture.componentInstance;
       debugElement = fixture.debugElement.nativeElement;

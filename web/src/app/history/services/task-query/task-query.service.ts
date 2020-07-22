@@ -14,7 +14,7 @@ import { environment } from 'environments/environment';
 export class TaskQueryService {
   private url = environment.taskanaRestUrl;
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient) {}
 
   queryTask(
     orderBy: string = 'created',
@@ -22,31 +22,33 @@ export class TaskQueryService {
     searchForValues: TaskHistoryEventData,
     allPages: boolean = false
   ): Observable<TaskHistoryEventResourceData> {
-    return this.httpClient.get<TaskHistoryEventResourceData>(`${this.url}/v1/task-history-event${this.getQueryParameters(
-      orderBy,
-      sortDirection,
-      searchForValues.taskId,
-      searchForValues.parentBusinessProcessId,
-      searchForValues.businessProcessId,
-      searchForValues.eventType,
-      searchForValues.userId,
-      searchForValues.domain,
-      searchForValues.workbasketKey,
-      searchForValues.porCompany,
-      searchForValues.porSystem,
-      searchForValues.porInstance,
-      searchForValues.porType,
-      searchForValues.porValue,
-      searchForValues.taskClassificationKey,
-      searchForValues.taskClassificationCategory,
-      searchForValues.attachmentClassificationKey,
-      searchForValues.custom1,
-      searchForValues.custom2,
-      searchForValues.custom3,
-      searchForValues.custom4,
-      searchForValues.created,
-      allPages
-    )}`);
+    return this.httpClient.get<TaskHistoryEventResourceData>(
+      `${this.url}/v1/task-history-event${this.getQueryParameters(
+        orderBy,
+        sortDirection,
+        searchForValues.taskId,
+        searchForValues.parentBusinessProcessId,
+        searchForValues.businessProcessId,
+        searchForValues.eventType,
+        searchForValues.userId,
+        searchForValues.domain,
+        searchForValues.workbasketKey,
+        searchForValues.porCompany,
+        searchForValues.porSystem,
+        searchForValues.porInstance,
+        searchForValues.porType,
+        searchForValues.porValue,
+        searchForValues.taskClassificationKey,
+        searchForValues.taskClassificationCategory,
+        searchForValues.attachmentClassificationKey,
+        searchForValues.custom1,
+        searchForValues.custom2,
+        searchForValues.custom3,
+        searchForValues.custom4,
+        searchForValues.created,
+        allPages
+      )}`
+    );
   }
 
   private getQueryParameters(
@@ -98,7 +100,10 @@ export class TaskQueryService {
     parameters.CUSTOM_4_LIKE = custom4;
     parameters.CREATED = created;
 
-    if (allPages) { delete TaskanaQueryParameters.page; delete TaskanaQueryParameters.pageSize; }
+    if (allPages) {
+      delete TaskanaQueryParameters.page;
+      delete TaskanaQueryParameters.pageSize;
+    }
 
     return TaskanaQueryParameters.getQueryParameters(parameters);
   }

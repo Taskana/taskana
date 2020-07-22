@@ -1,34 +1,33 @@
 @import '../../../../theme/colors';
 
-td > input[type="checkbox"] {
-    margin-top: 0px;
+td > input[type='checkbox'] {
+  margin-top: 0px;
 }
 .panel-body {
-    overflow-x: auto;
+  overflow-x: auto;
 }
-.text-width{
-    width: 100%;
-    min-width: 180px;
+.text-width {
+  width: 100%;
+  min-width: 180px;
 }
 .required-header {
-    width: 200px;
+  width: 200px;
 }
 .required-header:after {
-
-    content:" *";
-    color: red;
+  content: ' *';
+  color: red;
 }
 
 td {
-    vertical-align: bottom !important;
-    &.has-changes {
-        border-bottom: 1px solid #f0ad4e;;
-    }
+  vertical-align: bottom !important;
+  &.has-changes {
+    border-bottom: 1px solid #f0ad4e;
+  }
 }
 .table > thead > tr > th {
-    max-width: 150px;
-    border-bottom: none;
+  max-width: 150px;
+  border-bottom: none;
 }
 taskana-shared-type-ahead {
-    top: 0;
+  top: 0;
 }

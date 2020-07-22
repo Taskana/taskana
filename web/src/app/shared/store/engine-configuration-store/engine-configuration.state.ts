@@ -10,17 +10,18 @@ class InitializeStore {
 
 @State<EngineConfigurationStateModel>({ name: 'engineConfiguration' })
 export class EngineConfigurationState implements NgxsOnInit {
-  constructor(private categoryService: ClassificationCategoriesService) {
-  }
+  constructor(private categoryService: ClassificationCategoriesService) {}
 
   @Action(InitializeStore)
   initializeStore(ctx: StateContext<EngineConfigurationStateModel>): Observable<any> {
     return this.categoryService.getCustomisation().pipe(
-      tap(customisation => ctx.setState({
-        ...ctx.getState(),
-        customisation,
-        language: 'EN'
-      })),
+      tap((customisation) =>
+        ctx.setState({
+          ...ctx.getState(),
+          customisation,
+          language: 'EN'
+        })
+      )
     );
   }
 
@@ -30,6 +31,6 @@ export class EngineConfigurationState implements NgxsOnInit {
 }
 
 export interface EngineConfigurationStateModel {
-  customisation: Customisation,
-  language: string
+  customisation: Customisation;
+  language: string;
 }

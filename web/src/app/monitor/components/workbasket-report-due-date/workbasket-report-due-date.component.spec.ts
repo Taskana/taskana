@@ -9,8 +9,7 @@ describe('WorkbasketReportDueDateComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [WorkbasketReportDueDateComponent]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

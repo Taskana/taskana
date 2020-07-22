@@ -31,9 +31,16 @@ export class OrientationService {
     }
   }
 
-  calculateNumberItemsList(heightContainer: number, cardHeight: number, unusedHeight: number, doubleList = false): number {
+  calculateNumberItemsList(
+    heightContainer: number,
+    cardHeight: number,
+    unusedHeight: number,
+    doubleList = false
+  ): number {
     let cards = Math.round((heightContainer - unusedHeight) / cardHeight);
-    if (doubleList && window.innerWidth < 992) { cards = Math.floor(cards / 2); }
+    if (doubleList && window.innerWidth < 992) {
+      cards = Math.floor(cards / 2);
+    }
     TaskanaQueryParameters.pageSize = cards > 0 ? cards : 1;
     return cards;
   }

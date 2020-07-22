@@ -18,12 +18,9 @@ import { TaskComponent } from './task.component';
   selector: 'taskana-dummy-detail',
   template: 'dummydetail'
 })
-class DummyDetailComponent {
-}
+class DummyDetailComponent {}
 
-const routes: Routes = [
-  { path: 'workplace/tasks', component: DummyDetailComponent }
-];
+const routes: Routes = [{ path: 'workplace/tasks', component: DummyDetailComponent }];
 
 // TODO: test pending to test. Failing random
 xdescribe('TaskComponent', () => {
@@ -34,8 +31,15 @@ xdescribe('TaskComponent', () => {
     TestBed.configureTestingModule({
       imports: [FormsModule, HttpClientModule, RouterTestingModule.withRoutes(routes)],
       declarations: [TaskComponent, SpinnerComponent, DummyDetailComponent],
-      providers: [TaskService, HttpClient, WorkbasketService, DomainService, RequestInProgressService,
-        SelectedRouteService, ClassificationsService]
+      providers: [
+        TaskService,
+        HttpClient,
+        WorkbasketService,
+        DomainService,
+        RequestInProgressService,
+        SelectedRouteService,
+        ClassificationsService
+      ]
     }).compileComponents();
   }));
 

@@ -2,14 +2,12 @@ import { Classification } from '../../models/classification';
 
 export class SetSelectedClassificationType {
   static readonly type = '[Classification-Selected Type] Set selected classification type';
-  constructor(public selectedType: string) {
-  }
+  constructor(public selectedType: string) {}
 }
 
 export class SelectClassification {
   static readonly type = '[Classification] Select a classification';
-  constructor(public classificationId: string) {
-  }
+  constructor(public classificationId: string) {}
 }
 
 export class DeselectClassification {
@@ -26,20 +24,17 @@ export class CopyClassification {
 
 export class SaveCreatedClassification {
   static readonly type = '[Classification] Save a classification that has been newly created or copied';
-  constructor(public classification: Classification) {
-  }
+  constructor(public classification: Classification) {}
 }
 
 export class SaveModifiedClassification {
   static readonly type = '[Classification] Save an existing classification that has been modified';
-  constructor(public classification: Classification) {
-  }
+  constructor(public classification: Classification) {}
 }
 
 export class RestoreSelectedClassification {
   static readonly type = '[Classification] Fetch and restore a classification';
-  constructor(public classificationId: string) {
-  }
+  constructor(public classificationId: string) {}
 }
 
 export class RemoveSelectedClassification {
@@ -52,6 +47,5 @@ export class GetClassifications {
 
 export class UpdateClassification {
   static readonly type = '[Tree] Update a classification and refetch all classifications';
-  constructor(public classification: Classification) {
-  }
+  constructor(public classification: Classification) {}
 }

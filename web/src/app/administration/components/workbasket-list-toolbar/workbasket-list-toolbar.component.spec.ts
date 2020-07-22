@@ -27,9 +27,7 @@ import { ICONTYPES } from '../../../shared/models/icon-types';
   selector: 'taskana-dummy-detail',
   template: 'dummydetail'
 })
-export class DummyDetailComponent {
-
-}
+export class DummyDetailComponent {}
 
 describe('WorkbasketListToolbarComponent', () => {
   let component: WorkbasketListToolbarComponent;
@@ -38,15 +36,20 @@ describe('WorkbasketListToolbarComponent', () => {
   let workbasketService;
   let router;
 
-  const routes: Routes = [
-    { path: ':id', component: DummyDetailComponent, outlet: 'detail' }
-  ];
+  const routes: Routes = [{ path: ':id', component: DummyDetailComponent, outlet: 'detail' }];
 
-  beforeEach(done => {
+  beforeEach((done) => {
     const configure = (testBed: TestBed) => {
       testBed.configureTestingModule({
-        imports: [FormsModule, ReactiveFormsModule, AngularSvgIconModule,
-          HttpClientModule, RouterTestingModule.withRoutes(routes), SharedModule, AppModule],
+        imports: [
+          FormsModule,
+          ReactiveFormsModule,
+          AngularSvgIconModule,
+          HttpClientModule,
+          RouterTestingModule.withRoutes(routes),
+          SharedModule,
+          AppModule
+        ],
         declarations: [WorkbasketListToolbarComponent, DummyDetailComponent, ImportExportComponent],
         providers: [
           WorkbasketService,
@@ -56,7 +59,7 @@ describe('WorkbasketListToolbarComponent', () => {
         ]
       });
     };
-    configureTests(configure).then(testBed => {
+    configureTests(configure).then((testBed) => {
       fixture = TestBed.createComponent(WorkbasketListToolbarComponent);
       workbasketService = TestBed.get(WorkbasketService);
       router = TestBed.get(Router);
@@ -65,12 +68,16 @@ describe('WorkbasketListToolbarComponent', () => {
 
       debugElement = fixture.debugElement.nativeElement;
       component = fixture.componentInstance;
-      component.workbaskets = [{ workbasketId: '1',
-        key: 'key1',
-        name: 'NAME1',
-        description: 'description 1',
-        owner: 'owner 1',
-        type: ICONTYPES.PERSONAL }];
+      component.workbaskets = [
+        {
+          workbasketId: '1',
+          key: 'key1',
+          name: 'NAME1',
+          description: 'description 1',
+          owner: 'owner 1',
+          type: ICONTYPES.PERSONAL
+        }
+      ];
       component.workbaskets[0].markedForDeletion = false;
 
       fixture.detectChanges();
@@ -90,7 +97,9 @@ describe('WorkbasketListToolbarComponent', () => {
     let sort: Sorting;
     const compareSort = new Sorting();
 
-    component.performSorting.subscribe(value => { sort = value; });
+    component.performSorting.subscribe((value) => {
+      sort = value;
+    });
     component.sorting(compareSort);
     expect(sort).toBe(compareSort);
   });
@@ -99,7 +108,9 @@ describe('WorkbasketListToolbarComponent', () => {
     let filter: Filter;
     const compareFilter = new Filter();
 
-    component.performFilter.subscribe(value => { filter = value; });
+    component.performFilter.subscribe((value) => {
+      filter = value;
+    });
     component.filtering(compareFilter);
     expect(filter).toBe(compareFilter);
   });

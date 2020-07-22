@@ -7,12 +7,12 @@
   border: none;
 }
 
-.tab-align{
+.tab-align {
   margin-bottom: 0px;
   border-bottom: 1px dotted #ddd;
   padding: 8px 12px 8px 4px;
-  &>div{
-   margin: 6px 0px;
+  & > div {
+    margin: 6px 0px;
   }
 }
 
@@ -25,10 +25,10 @@ input.filter-input {
 }
 
 .category-filter {
-    margin: 7px 2px;
+  margin: 7px 2px;
 }
 
-.dropdown-menu-classification{
+.dropdown-menu-classification {
   margin-left: 15px;
   min-width: 0px;
 }

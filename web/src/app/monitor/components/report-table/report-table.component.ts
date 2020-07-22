@@ -12,24 +12,25 @@ export class ReportTableComponent implements OnInit {
   @Input()
   reportData: ReportData;
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   toggleFold(indexNumber: number, sumRow: boolean = false) {
     let rows = sumRow ? this.reportData.sumRow : this.reportData.rows;
     let index = indexNumber;
-    const toggleRow = rows[index += 1];
+    const toggleRow = rows[(index += 1)];
     if (toggleRow.depth < this.reportData.meta.rowDesc.length - 1) {
-      const firstChildRow = rows[index += 1];
+      const firstChildRow = rows[(index += 1)];
       firstChildRow.display = !firstChildRow.display;
 
-      const endIndex = rows.findIndex(row => row.depth <= toggleRow.depth);
+      const endIndex = rows.findIndex((row) => row.depth <= toggleRow.depth);
       rows = endIndex >= 0 ? rows.slice(0, endIndex) : rows;
-      rows.forEach(row => { row.display = firstChildRow.display && row.depth === firstChildRow.depth; });
+      rows.forEach((row) => {
+        row.display = firstChildRow.display && row.depth === firstChildRow.depth;
+      });
 
       this.currentExpHeaders = Math.max(
-        ...this.reportData.rows.filter(r => r.display).map(r => r.depth),
-        ...this.reportData.sumRow.filter(r => r.display).map(r => r.depth)
+        ...this.reportData.rows.filter((r) => r.display).map((r) => r.depth),
+        ...this.reportData.sumRow.filter((r) => r.display).map((r) => r.depth)
       );
     }
   }

@@ -1,5 +1,3 @@
 export class Version {
-  constructor(
-    public version: string = ''
-  ) { }
+  constructor(public version: string = '') {}
 }

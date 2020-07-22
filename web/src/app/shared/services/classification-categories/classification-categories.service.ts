@@ -11,7 +11,9 @@ const customisationUrl = 'environments/data-sources/taskana-customization.json';
 
 export const missingIcon = 'assets/icons/categories/missing-icon.svg';
 
-export interface CategoriesResponse { [key: string]: string[] }
+export interface CategoriesResponse {
+  [key: string]: string[];
+}
 
 @Injectable()
 export class ClassificationCategoriesService {
@@ -24,8 +26,8 @@ export class ClassificationCategoriesService {
 
   getCustomisation(): Observable<Customisation> {
     return this.httpClient.get<Customisation>(customisationUrl).pipe(
-      map(customisation => {
-        Object.keys(customisation).forEach(lang => {
+      map((customisation) => {
+        Object.keys(customisation).forEach((lang) => {
           set(customisation[lang], 'classifications.categories.missing', missingIcon);
         });
         return customisation;

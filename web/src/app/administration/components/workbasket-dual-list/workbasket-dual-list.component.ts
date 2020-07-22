@@ -13,9 +13,9 @@ import { Side } from '../workbasket-distribution-targets/workbasket-distribution
 export class WorkbasketDualListComponent implements OnInit {
   @Input() distributionTargets: WorkbasketSummary[];
   @Input() distributionTargetsSelected: WorkbasketSummary[];
-  @Output() performDualListFilter = new EventEmitter<{ filterBy: Filter, side: Side }>();
+  @Output() performDualListFilter = new EventEmitter<{ filterBy: Filter; side: Side }>();
   @Input() requestInProgress = false;
-  @Input() loadingItems ? = false;
+  @Input() loadingItems? = false;
   @Input() side: Side;
   @Input() header: string;
   @Output() scrolling = new EventEmitter<Side>();

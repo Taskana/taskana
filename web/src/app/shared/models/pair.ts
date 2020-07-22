@@ -1,6 +1,3 @@
 export class Pair {
-  constructor(
-    public name?: string,
-    public text?: string,
-  ) { }
+  constructor(public name?: string, public text?: string) {}
 }

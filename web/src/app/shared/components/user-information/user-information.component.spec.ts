@@ -12,16 +12,15 @@ describe('UserInformationComponent', () => {
   let fixture: ComponentFixture<UserInformationComponent>;
   let debugElement;
 
-  beforeEach(done => {
+  beforeEach((done) => {
     const configure = (testBed: TestBed) => {
       testBed.configureTestingModule({
-        imports: [AngularSvgIconModule,
-          HttpClientModule],
+        imports: [AngularSvgIconModule, HttpClientModule],
         declarations: [UserInformationComponent],
         providers: [MatSnackBar, Overlay]
       });
     };
-    configureTests(configure).then(testBed => {
+    configureTests(configure).then((testBed) => {
       fixture = TestBed.createComponent(UserInformationComponent);
       component = fixture.componentInstance;
       debugElement = fixture.debugElement.nativeElement;

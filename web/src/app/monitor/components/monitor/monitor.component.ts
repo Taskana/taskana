@@ -8,11 +8,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 export class MonitorComponent implements OnInit, OnDestroy {
   tabSelected = 'tasks';
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
-  ngOnDestroy(): void {
-  }
+  ngOnDestroy(): void {}
 
   selectTab(tab) {
     this.tabSelected = tab;

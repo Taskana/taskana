@@ -1,10 +1,10 @@
 @import 'colors';
 @import 'mixin/colors';
 
-@mixin degraded-bar ($direction, $width, $height) {
-    display: block;
-    width: $width;
-    height: $height;
-    background-image: linear-gradient(to $direction, $pallete-blue 30%, $pallete-green 50%);
-    content: ' ';
+@mixin degraded-bar($direction, $width, $height) {
+  display: block;
+  width: $width;
+  height: $height;
+  background-image: linear-gradient(to $direction, $pallete-blue 30%, $pallete-green 50%);
+  content: ' ';
 }

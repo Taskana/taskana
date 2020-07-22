@@ -14,9 +14,7 @@ describe('ClassificationTypesSelectorComponent', () => {
     TestBed.configureTestingModule({
       imports: [NgxsModule.forRoot(), MatRadioModule],
       declarations: [ClassificationTypesSelectorComponent],
-      providers: [
-        { provide: Location, useValue: locationSpy },
-      ]
+      providers: [{ provide: Location, useValue: locationSpy }]
     }).compileComponents();
   }));
 

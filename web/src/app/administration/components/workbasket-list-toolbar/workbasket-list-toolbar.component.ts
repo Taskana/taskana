@@ -29,9 +29,20 @@ export class WorkbasketListToolbarComponent implements OnInit {
   @Output() performFilter = new EventEmitter<Filter>();
 
   selectionToImport = TaskanaType.WORKBASKETS;
-  sortingFields = new Map([['name', 'Name'], ['key', 'Key'], ['description', 'Description'], ['owner', 'Owner'], ['type', 'Type']]);
-  filteringTypes = new Map([['ALL', 'All'], ['PERSONAL', 'Personal'], ['GROUP', 'Group'],
-    ['CLEARANCE', 'Clearance'], ['TOPIC', 'Topic']]);
+  sortingFields = new Map([
+    ['name', 'Name'],
+    ['key', 'Key'],
+    ['description', 'Description'],
+    ['owner', 'Owner'],
+    ['type', 'Type']
+  ]);
+  filteringTypes = new Map([
+    ['ALL', 'All'],
+    ['PERSONAL', 'Personal'],
+    ['GROUP', 'Group'],
+    ['CLEARANCE', 'Clearance'],
+    ['TOPIC', 'Topic']
+  ]);
 
   filterParams = { name: '', key: '', type: '', description: '', owner: '' };
   toolbarState = false;
@@ -49,15 +60,12 @@ export class WorkbasketListToolbarComponent implements OnInit {
     private router: Router,
     private store: Store,
     private location: Location
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
-    this.workbasketActiveAction$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(action => {
-        this.action = action;
-      });
+    this.workbasketActiveAction$.pipe(takeUntil(this.destroy$)).subscribe((action) => {
+      this.action = action;
+    });
   }
 
   sorting(sort: Sorting) {

@@ -1,69 +1,69 @@
 {
-    "EN": {
-        "workbaskets": {
-            "information": {
-                "owner": {
-                    "lookupField": true
-                },
-                "custom1": {
-                    "field": "Customized field 1 title",
-                    "visible": true
-                },
-                "custom3": {
-                    "field": "",
-                    "visible": false
-                }
-            },
-            "access-items": {
-                "accessId": {
-                    "lookupField": true
-                },
-                "custom3": {
-                    "field": "",
-                    "visible": false
-                },
-                "custom9": {
-                    "field": "Some custom field",
-                    "visible": true
-                },
-                "custom10": {
-                    "field": "",
-                    "visible": false
-                },
-                "custom11": {
-                    "field": "",
-                    "visible": false
-                },
-                "custom12": {
-                    "field": "",
-                    "visible": false
-                }
-            }
+  "EN": {
+    "workbaskets": {
+      "information": {
+        "owner": {
+          "lookupField": true
         },
-        "classifications": {
-            "information": {
-                "custom1": {
-                    "field": "Classification custom 1",
-                    "visible": true
-                },
-                "custom3": {
-                    "field": "",
-                    "visible": false
-                }
-            },
-            "categories": {
-                "EXTERNAL": "assets/icons/categories/external.svg",
-                "MANUAL": "assets/icons/categories/manual.svg",
-                "AUTOMATIC": "assets/icons/categories/automatic.svg",
-                "PROCESS": "assets/icons/categories/process.svg"
-            }
+        "custom1": {
+          "field": "Customized field 1 title",
+          "visible": true
         },
-        "tasks": {
-            "information": {
-                "owner": {
-                    "lookupField": true
-                }
-            }
+        "custom3": {
+          "field": "",
+          "visible": false
         }
+      },
+      "access-items": {
+        "accessId": {
+          "lookupField": true
+        },
+        "custom3": {
+          "field": "",
+          "visible": false
+        },
+        "custom9": {
+          "field": "Some custom field",
+          "visible": true
+        },
+        "custom10": {
+          "field": "",
+          "visible": false
+        },
+        "custom11": {
+          "field": "",
+          "visible": false
+        },
+        "custom12": {
+          "field": "",
+          "visible": false
+        }
+      }
+    },
+    "classifications": {
+      "information": {
+        "custom1": {
+          "field": "Classification custom 1",
+          "visible": true
+        },
+        "custom3": {
+          "field": "",
+          "visible": false
+        }
+      },
+      "categories": {
+        "EXTERNAL": "assets/icons/categories/external.svg",
+        "MANUAL": "assets/icons/categories/manual.svg",
+        "AUTOMATIC": "assets/icons/categories/automatic.svg",
+        "PROCESS": "assets/icons/categories/process.svg"
+      }
+    },
+    "tasks": {
+      "information": {
+        "owner": {
+          "lookupField": true
+        }
+      }
     }
+  }
 }

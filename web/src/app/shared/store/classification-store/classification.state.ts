@@ -2,17 +2,23 @@ import { Action, NgxsAfterBootstrap, State, StateContext } from '@ngxs/store';
 import { Observable, of } from 'rxjs';
 import { take, tap } from 'rxjs/operators';
 import { TaskanaDate } from 'app/shared/util/taskana.date';
-import { CategoriesResponse,
-  ClassificationCategoriesService } from '../../services/classification-categories/classification-categories.service';
-import { SaveCreatedClassification,
+import {
+  CategoriesResponse,
+  ClassificationCategoriesService
+} from '../../services/classification-categories/classification-categories.service';
+import {
+  SaveCreatedClassification,
   DeselectClassification,
-  GetClassifications, CopyClassification, CreateClassification,
+  GetClassifications,
+  CopyClassification,
+  CreateClassification,
   RemoveSelectedClassification,
   RestoreSelectedClassification,
   SaveModifiedClassification,
   SelectClassification,
   SetSelectedClassificationType,
-  UpdateClassification } from './classification.actions';
+  UpdateClassification
+} from './classification.actions';
 import { ClassificationsService } from '../../services/classifications/classifications.service';
 import { DomainService } from '../../services/domain/domain.service';
 import { Classification } from '../../models/classification';
@@ -28,25 +34,27 @@ export class ClassificationState implements NgxsAfterBootstrap {
     private categoryService: ClassificationCategoriesService,
     private classificationsService: ClassificationsService,
     private domainService: DomainService
-  ) {
-  }
+  ) {}
 
   @Action(InitializeStore)
   initializeStore(ctx: StateContext<ClassificationStateModel>): Observable<any> {
     return this.categoryService.getClassificationCategoriesByType().pipe(
       take(1),
-      tap(classificationTypes => {
+      tap((classificationTypes) => {
         ctx.patchState({
           classificationTypes,
           classifications: undefined,
-          selectedClassificationType: Object.keys(classificationTypes)[0],
+          selectedClassificationType: Object.keys(classificationTypes)[0]
         });
-      }),
+      })
     );
   }
 
   @Action(SetSelectedClassificationType)
-  setSelectedClassificationType(ctx: StateContext<ClassificationStateModel>, action: SetSelectedClassificationType): Observable<null> {
+  setSelectedClassificationType(
+    ctx: StateContext<ClassificationStateModel>,
+    action: SetSelectedClassificationType
+  ): Observable<null> {
     if (ctx.getState().classificationTypes[action.selectedType]) {
       ctx.patchState({
         selectedClassificationType: action.selectedType,
@@ -57,14 +65,19 @@ export class ClassificationState implements NgxsAfterBootstrap {
   }
 
   @Action(SelectClassification)
-  selectClassification(ctx: StateContext<ClassificationStateModel>, action: SelectClassification): Observable<Classification | null> {
+  selectClassification(
+    ctx: StateContext<ClassificationStateModel>,
+    action: SelectClassification
+  ): Observable<Classification | null> {
     if (typeof action.classificationId !== 'undefined') {
       return this.classificationsService.getClassification(action.classificationId).pipe(
         take(1),
-        tap(selectedClassification => ctx.patchState({
-          selectedClassification,
-          selectedClassificationType: selectedClassification.type
-        }))
+        tap((selectedClassification) =>
+          ctx.patchState({
+            selectedClassification,
+            selectedClassificationType: selectedClassification.type
+          })
+        )
       );
     }
     return of(null);
@@ -83,20 +96,28 @@ export class ClassificationState implements NgxsAfterBootstrap {
     const { selectedClassificationType } = ctx.getState();
     return this.classificationsService.getClassifications(selectedClassificationType).pipe(
       take(1),
-      tap(list => ctx.patchState({
-        classifications: list.classifications
-      })),
+      tap((list) =>
+        ctx.patchState({
+          classifications: list.classifications
+        })
+      )
     );
   }
 
   @Action(SaveCreatedClassification)
   // this action is called when a copied or a new classification is saved
-  createClassification(ctx: StateContext<ClassificationStateModel>, action: SaveCreatedClassification): Observable<any> {
+  createClassification(
+    ctx: StateContext<ClassificationStateModel>,
+    action: SaveCreatedClassification
+  ): Observable<any> {
     return this.classificationsService.postClassification(action.classification).pipe(
-      take(1), tap(classification => ctx.patchState({
-        classifications: [...ctx.getState().classifications, classification],
-        selectedClassification: classification
-      }))
+      take(1),
+      tap((classification) =>
+        ctx.patchState({
+          classifications: [...ctx.getState().classifications, classification],
+          selectedClassification: classification
+        })
+      )
     );
   }
 
@@ -104,23 +125,28 @@ export class ClassificationState implements NgxsAfterBootstrap {
   saveClassification(ctx: StateContext<ClassificationStateModel>, action: SaveModifiedClassification): Observable<any> {
     return this.classificationsService.putClassification(action.classification).pipe(
       take(1),
-      tap(savedClassification => ctx.patchState({
-        classifications: updateClassificationList(ctx.getState().classifications, savedClassification),
-        selectedClassification: savedClassification
-      }))
+      tap((savedClassification) =>
+        ctx.patchState({
+          classifications: updateClassificationList(ctx.getState().classifications, savedClassification),
+          selectedClassification: savedClassification
+        })
+      )
     );
   }
 
   @Action(RestoreSelectedClassification)
-  restoreSelectedClassification(ctx: StateContext<ClassificationStateModel>, action: RestoreSelectedClassification): Observable<any> {
+  restoreSelectedClassification(
+    ctx: StateContext<ClassificationStateModel>,
+    action: RestoreSelectedClassification
+  ): Observable<any> {
     const state = ctx.getState();
 
     // check whether the classification already exists
     // returns true in case the classification was edited or copied
-    if (state.classifications.some(classification => classification.classificationId === action.classificationId)) {
+    if (state.classifications.some((classification) => classification.classificationId === action.classificationId)) {
       return this.classificationsService.getClassification(action.classificationId).pipe(
         take(1),
-        tap(selectedClassification => {
+        tap((selectedClassification) => {
           ctx.patchState({ selectedClassification });
         })
       );
@@ -144,7 +170,7 @@ export class ClassificationState implements NgxsAfterBootstrap {
       category: state.classificationTypes[state.selectedClassificationType][0],
       created: date,
       modified: date,
-      domain: this.domainService.getSelectedDomainValue(),
+      domain: this.domainService.getSelectedDomainValue()
     };
     if (state.selectedClassification) {
       initialClassification.parentId = state.selectedClassification.classificationId;
@@ -175,29 +201,32 @@ export class ClassificationState implements NgxsAfterBootstrap {
     return this.classificationsService.deleteClassification(sel.classificationId).pipe(
       take(1),
       tap(() => {
-        const classifications = ctx.getState().classifications.filter(el => el.classificationId !== sel.classificationId);
+        const classifications = ctx
+          .getState()
+          .classifications.filter((el) => el.classificationId !== sel.classificationId);
         ctx.patchState({ selectedClassification: undefined, classifications });
       })
     );
   }
 
   @Action(UpdateClassification)
-  updateClassification(ctx: StateContext<ClassificationStateModel>, action: SaveModifiedClassification): Observable<any> {
+  updateClassification(
+    ctx: StateContext<ClassificationStateModel>,
+    action: SaveModifiedClassification
+  ): Observable<any> {
     return this.classificationsService.putClassification(action.classification).pipe(
       take(1),
-      tap(
-        classification => {
-          const state = ctx.getState();
-          let { selectedClassification } = state;
-          if (selectedClassification && selectedClassification.classificationId === classification.classificationId) {
-            selectedClassification = classification;
-          }
-          ctx.patchState({
-            classifications: updateClassificationList(state.classifications, classification),
-            selectedClassification
-          });
+      tap((classification) => {
+        const state = ctx.getState();
+        let { selectedClassification } = state;
+        if (selectedClassification && selectedClassification.classificationId === classification.classificationId) {
+          selectedClassification = classification;
         }
-      )
+        ctx.patchState({
+          classifications: updateClassificationList(state.classifications, classification),
+          selectedClassification
+        });
+      })
     );
   }
 
@@ -209,7 +238,7 @@ export class ClassificationState implements NgxsAfterBootstrap {
 }
 
 function updateClassificationList(classifications: ClassificationSummary[], classification: Classification) {
-  return classifications.map(c => {
+  return classifications.map((c) => {
     if (c.classificationId === classification.classificationId) {
       return classification;
     }
@@ -218,9 +247,9 @@ function updateClassificationList(classifications: ClassificationSummary[], clas
 }
 
 export interface ClassificationStateModel {
-  classifications: ClassificationSummary[],
-  selectedClassification: Classification,
+  classifications: ClassificationSummary[];
+  selectedClassification: Classification;
   selectedClassificationType: string;
-  classificationTypes: CategoriesResponse,
-  badgeMessage: string
+  classificationTypes: CategoriesResponse;
+  badgeMessage: string;
 }

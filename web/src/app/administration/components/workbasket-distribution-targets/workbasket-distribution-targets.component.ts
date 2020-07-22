@@ -1,10 +1,4 @@
-import { Component,
-  ElementRef,
-  Input,
-  OnChanges,
-  OnDestroy, OnInit,
-  SimpleChanges,
-  ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 
 import { Workbasket } from 'app/shared/models/workbasket';
@@ -24,8 +18,11 @@ import { Select, Store } from '@ngxs/store';
 import { take, takeUntil } from 'rxjs/operators';
 import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
-import { GetWorkbasketDistributionTargets,
-  GetWorkbasketsSummary, UpdateWorkbasketDistributionTargets } from '../../../shared/store/workbasket-store/workbasket.actions';
+import {
+  GetWorkbasketDistributionTargets,
+  GetWorkbasketsSummary,
+  UpdateWorkbasketDistributionTargets
+} from '../../../shared/store/workbasket-store/workbasket.actions';
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
 import { WorkbasketStateModel } from '../../../shared/store/workbasket-store/workbasket.state';
 
@@ -82,10 +79,10 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
     private orientationService: OrientationService,
     private notificationsService: NotificationService,
     private store: Store
-  ) { }
+  ) {}
 
   ngOnInit() {
-    this.workbasketDistributionTargets$.subscribe(workbasketDistributionTargets => {
+    this.workbasketDistributionTargets$.subscribe((workbasketDistributionTargets) => {
       if (typeof workbasketDistributionTargets !== 'undefined') {
         this.distributionTargetsSelectedResource = { ...workbasketDistributionTargets };
         this.distributionTargetsSelected = this.distributionTargetsSelectedResource.distributionTargets;
@@ -120,7 +117,8 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
     }
 
     this.store.dispatch(new GetWorkbasketDistributionTargets(this.workbasket._links.distributionTargets.href));
-    this.savingWorkbaskets.triggeredDistributionTargetsSaving()
+    this.savingWorkbaskets
+      .triggeredDistributionTargetsSaving()
       .pipe(takeUntil(this.destroy$))
       .subscribe((savingInformation: SavingInformation) => {
         if (this.action === ACTION.COPY) {
@@ -129,7 +127,8 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
         }
       });
 
-    this.orientationService.getOrientation()
+    this.orientationService
+      .getOrientation()
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.calculateNumberItemsList();
@@ -144,52 +143,73 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
     }
 
     // TODO: Implement this into NGXS
-    this.workbasketService.getWorkBasketsSummary(true)
+    this.workbasketService
+      .getWorkBasketsSummary(true)
       .pipe(takeUntil(this.destroy$))
-      .subscribe(
-        (distributionTargetsAvailable: WorkbasketSummaryRepresentation) => {
-          if (TaskanaQueryParameters.page === 1) {
-            this.distributionTargetsLeft = [];
-            this.page = distributionTargetsAvailable.page;
-          }
-          if (side === this.side.LEFT) {
-            this.distributionTargetsLeft.push(...distributionTargetsAvailable.workbaskets);
-          } else if (side === this.side.RIGHT) {
-            this.distributionTargetsRight = Object.assign([], distributionTargetsAvailable.workbaskets);
-          } else {
-            this.distributionTargetsLeft.push(...distributionTargetsAvailable.workbaskets);
-            this.distributionTargetsRight = Object.assign([], distributionTargetsAvailable.workbaskets);
-            this.distributionTargetsClone = Object.assign([], distributionTargetsAvailable.workbaskets);
-          }
-          this.onRequest(true);
+      .subscribe((distributionTargetsAvailable: WorkbasketSummaryRepresentation) => {
+        if (TaskanaQueryParameters.page === 1) {
+          this.distributionTargetsLeft = [];
+          this.page = distributionTargetsAvailable.page;
         }
-      );
+        if (side === this.side.LEFT) {
+          this.distributionTargetsLeft.push(...distributionTargetsAvailable.workbaskets);
+        } else if (side === this.side.RIGHT) {
+          this.distributionTargetsRight = Object.assign([], distributionTargetsAvailable.workbaskets);
+        } else {
+          this.distributionTargetsLeft.push(...distributionTargetsAvailable.workbaskets);
+          this.distributionTargetsRight = Object.assign([], distributionTargetsAvailable.workbaskets);
+          this.distributionTargetsClone = Object.assign([], distributionTargetsAvailable.workbaskets);
+        }
+        this.onRequest(true);
+      });
   }
 
   performFilter(dualListFilter: any) {
     this.fillDistributionTargets(dualListFilter.side, undefined);
     this.onRequest(false, dualListFilter.side);
-    this.store.dispatch(new GetWorkbasketsSummary(true, '', '', '',
-      dualListFilter.filterBy.filterParams.name, dualListFilter.filterBy.filterParams.description, '',
-      dualListFilter.filterBy.filterParams.owner, dualListFilter.filterBy.filterParams.type, '',
-      dualListFilter.filterBy.filterParams.key, '', true)).subscribe((state: WorkbasketStateModel) => {
-      this.fillDistributionTargets(dualListFilter.side, state.paginatedWorkbasketsSummary.workbaskets);
-      this.onRequest(true, dualListFilter.side);
-    });
+    this.store
+      .dispatch(
+        new GetWorkbasketsSummary(
+          true,
+          '',
+          '',
+          '',
+          dualListFilter.filterBy.filterParams.name,
+          dualListFilter.filterBy.filterParams.description,
+          '',
+          dualListFilter.filterBy.filterParams.owner,
+          dualListFilter.filterBy.filterParams.type,
+          '',
+          dualListFilter.filterBy.filterParams.key,
+          '',
+          true
+        )
+      )
+      .subscribe((state: WorkbasketStateModel) => {
+        this.fillDistributionTargets(dualListFilter.side, state.paginatedWorkbasketsSummary.workbaskets);
+        this.onRequest(true, dualListFilter.side);
+      });
   }
 
   onSave() {
     this.requestInProgressService.setRequestInProgress(true);
-    this.store.dispatch(new UpdateWorkbasketDistributionTargets(
-      this.distributionTargetsSelectedResource._links.self.href,
-      this.getSeletedIds()
-    )).subscribe(() => {
-      this.requestInProgressService.setRequestInProgress(false);
-      return true;
-    }, error => {
-      this.requestInProgressService.setRequestInProgress(false);
-      return false;
-    });
+    this.store
+      .dispatch(
+        new UpdateWorkbasketDistributionTargets(
+          this.distributionTargetsSelectedResource._links.self.href,
+          this.getSeletedIds()
+        )
+      )
+      .subscribe(
+        () => {
+          this.requestInProgressService.setRequestInProgress(false);
+          return true;
+        },
+        (error) => {
+          this.requestInProgressService.setRequestInProgress(false);
+          return false;
+        }
+      );
     /* TODO: OLD IMPLEMENTATION, KEPT HERE FOR REFERENCE
     this.workbasketService.updateWorkBasketsDistributionTargets(
       this.distributionTargetsSelectedResource._links.self.href, this.getSeletedIds()
@@ -220,7 +240,10 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
       const itemsSelected = this.getSelectedItems(this.distributionTargetsLeft);
       this.distributionTargetsSelected = [...this.distributionTargetsSelected, ...itemsSelected];
       this.distributionTargetsRight = this.distributionTargetsRight.concat(itemsSelected);
-      if (((itemsLeft - itemsSelected.length) <= TaskanaQueryParameters.pageSize) && ((itemsLeft + itemsRight) < this.page.totalElements)) {
+      if (
+        itemsLeft - itemsSelected.length <= TaskanaQueryParameters.pageSize &&
+        itemsLeft + itemsRight < this.page.totalElements
+      ) {
         this.getNextPage(side);
       }
       this.unselectItems(this.distributionTargetsSelected);
@@ -244,9 +267,13 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
     if (this.panelBody) {
       const cardHeight = 72;
       const unusedHeight = 100;
-      this.cards = this.orientationService.calculateNumberItemsList(
-        this.panelBody.nativeElement.offsetHeight, cardHeight, unusedHeight, true
-      ) + 1; // TODO: warum +1
+      this.cards =
+        this.orientationService.calculateNumberItemsList(
+          this.panelBody.nativeElement.offsetHeight,
+          cardHeight,
+          unusedHeight,
+          true
+        ) + 1; // TODO: warum +1
     }
   }
 
@@ -267,7 +294,7 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
   }
 
   getSelectedItems(originList: any): Array<any> {
-    return originList.filter((item: any) => (item.selected === true));
+    return originList.filter((item: any) => item.selected === true);
   }
 
   unselectItems(originList: any): Array<any> {
@@ -282,7 +309,7 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
 
   removeSelectedItems(originList: any, selectedItemList) {
     for (let index = originList.length - 1; index >= 0; index--) {
-      if (selectedItemList.some(itemToRemove => (originList[index].workbasketId === itemToRemove.workbasketId))) {
+      if (selectedItemList.some((itemToRemove) => originList[index].workbasketId === itemToRemove.workbasketId)) {
         originList.splice(index, 1);
       }
     }
@@ -293,9 +320,11 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
     this.loadingItems = false;
     const inProgress = !finished;
     switch (side) {
-      case Side.LEFT: this.requestInProgressLeft = inProgress;
+      case Side.LEFT:
+        this.requestInProgressLeft = inProgress;
         break;
-      case Side.RIGHT: this.requestInProgressRight = inProgress;
+      case Side.RIGHT:
+        this.requestInProgressRight = inProgress;
         break;
       default:
         this.requestInProgressLeft = inProgress;
@@ -305,15 +334,19 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
 
   getSeletedIds(): Array<string> {
     const distributionTargetsSelelected: Array<string> = [];
-    this.distributionTargetsSelected.forEach(item => {
+    this.distributionTargetsSelected.forEach((item) => {
       distributionTargetsSelelected.push(item.workbasketId);
     });
     return distributionTargetsSelelected;
   }
 
   private uncheckSelectAll(side: number) {
-    if (side === Side.LEFT && this.selectAllLeft) { this.selectAllLeft = false; }
-    if (side === Side.RIGHT && this.selectAllRight) { this.selectAllRight = false; }
+    if (side === Side.LEFT && this.selectAllLeft) {
+      this.selectAllLeft = false;
+    }
+    if (side === Side.RIGHT && this.selectAllRight) {
+      this.selectAllRight = false;
+    }
   }
 
   ngOnDestroy() {

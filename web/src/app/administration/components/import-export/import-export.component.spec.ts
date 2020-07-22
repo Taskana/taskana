@@ -15,16 +15,21 @@ describe('ImportExportComponent', () => {
   let fixture: ComponentFixture<ImportExportComponent>;
   let debugElement;
 
-  beforeEach(done => {
+  beforeEach((done) => {
     const configure = (testBed: TestBed) => {
       testBed.configureTestingModule({
         declarations: [ImportExportComponent],
         imports: [HttpClientModule, AngularSvgIconModule],
-        providers: [WorkbasketService, ClassificationDefinitionService, WorkbasketDefinitionService, NotificationService,
-          ImportExportService]
+        providers: [
+          WorkbasketService,
+          ClassificationDefinitionService,
+          WorkbasketDefinitionService,
+          NotificationService,
+          ImportExportService
+        ]
       });
     };
-    configureTests(configure).then(testBed => {
+    configureTests(configure).then((testBed) => {
       fixture = TestBed.createComponent(ImportExportComponent);
       component = fixture.componentInstance;
       debugElement = fixture.debugElement.nativeElement;

@@ -20,17 +20,13 @@ export class DomainServiceMock {
     this.domainSelected.next(value);
   }
 
-  domainChangedComplete() {
-  }
+  domainChangedComplete() {}
 
-  getSelectedDomainValue() {
-  }
+  getSelectedDomainValue() {}
 
-  addMasterDomain() {
-  }
+  addMasterDomain() {}
 
-  removeMasterDomain() {
-  }
+  removeMasterDomain() {}
 
   switchDomain(value: string) {
     this.selectDomain(value);

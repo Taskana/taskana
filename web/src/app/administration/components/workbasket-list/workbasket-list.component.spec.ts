@@ -28,8 +28,7 @@ import { WorkbasketListComponent } from './workbasket-list.component';
   selector: 'taskana-dummy-detail',
   template: 'dummydetail'
 })
-class DummyDetailComponent {
-}
+class DummyDetailComponent {}
 
 @Component({
   selector: 'taskana-pagination',
@@ -45,7 +44,19 @@ class PaginationComponent {
   @Output() changePage = new EventEmitter<any>();
 }
 
-function createWorkbasketSummary(workbasketId, key, name, domain, type, description, owner, custom1, custom2, custom3, custom4) {
+function createWorkbasketSummary(
+  workbasketId,
+  key,
+  name,
+  domain,
+  type,
+  description,
+  owner,
+  custom1,
+  custom2,
+  custom3,
+  custom4
+) {
   const workbasketSummary: WorkbasketSummary = {
     workbasketId,
     key,
@@ -63,10 +74,8 @@ function createWorkbasketSummary(workbasketId, key, name, domain, type, descript
 }
 const workbasketSummaryResource: WorkbasketSummaryRepresentation = {
   workbaskets: [
-    createWorkbasketSummary('1', 'key1', 'NAME1', '', 'PERSONAL',
-      'description 1', 'owner1', '', '', '', ''),
-    createWorkbasketSummary('2', 'key2', 'NAME2', '', 'PERSONAL',
-      'description 2', 'owner2', '', '', '', ''),
+    createWorkbasketSummary('1', 'key1', 'NAME1', '', 'PERSONAL', 'description 1', 'owner1', '', '', '', ''),
+    createWorkbasketSummary('2', 'key2', 'NAME2', '', 'PERSONAL', 'description 2', 'owner2', '', '', '', '')
   ],
   _links: new LinksWorkbasketSummary({ href: 'url' }),
   page: {}
@@ -84,21 +93,16 @@ describe('WorkbasketListComponent', () => {
     { path: 'workbaskets', component: DummyDetailComponent }
   ];
 
-  beforeEach(done => {
+  beforeEach((done) => {
     const configure = (testBed: TestBed) => {
       testBed.configureTestingModule({
         declarations: [
           WorkbasketListComponent,
           DummyDetailComponent,
           WorkbasketListToolbarComponent,
-          ImportExportComponent,
+          ImportExportComponent
         ],
-        imports: [
-          AngularSvgIconModule,
-          HttpClientModule,
-          RouterTestingModule.withRoutes(routes),
-          NgxsModule.forRoot()
-        ],
+        imports: [AngularSvgIconModule, HttpClientModule, RouterTestingModule.withRoutes(routes), NgxsModule.forRoot()],
         providers: [
           WorkbasketService,
           WorkbasketDefinitionService,
@@ -108,7 +112,7 @@ describe('WorkbasketListComponent', () => {
         ]
       });
     };
-    configureTests(configure).then(testBed => {
+    configureTests(configure).then((testBed) => {
       fixture = TestBed.createComponent(WorkbasketListComponent);
       component = fixture.componentInstance;
       Object.defineProperty(component, 'workbasketsSummaryRepresentation$', { writable: true });
@@ -121,7 +125,9 @@ describe('WorkbasketListComponent', () => {
       debugElement = fixture.debugElement.nativeElement;
       workbasketService = TestBed.get(WorkbasketService);
       const orientationService = TestBed.get(OrientationService);
-      workbasketSummarySpy = spyOn(workbasketService, 'getWorkBasketsSummary').and.returnValue(of(workbasketSummaryResource));
+      workbasketSummarySpy = spyOn(workbasketService, 'getWorkBasketsSummary').and.returnValue(
+        of(workbasketSummaryResource)
+      );
       spyOn(workbasketService, 'getSelectedWorkBasket').and.returnValue(of('2'));
       spyOn(orientationService, 'getOrientation').and.returnValue(of(undefined));
 
@@ -139,15 +145,18 @@ describe('WorkbasketListComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have wb-action-toolbar, wb-search-bar, wb-list-container, wb-pagination,'
-        + ' collapsedMenufilterWb and taskana-filter created in the html', () => {
-    expect(debugElement.querySelector('#wb-action-toolbar')).toBeDefined();
-    expect(debugElement.querySelector('#wb-search-bar')).toBeDefined();
-    expect(debugElement.querySelector('#wb-pagination')).toBeDefined();
-    expect(debugElement.querySelector('#wb-list-container')).toBeDefined();
-    expect(debugElement.querySelector('#collapsedMenufilterWb')).toBeDefined();
-    expect(debugElement.querySelector('taskana-filter')).toBeDefined();
-  });
+  it(
+    'should have wb-action-toolbar, wb-search-bar, wb-list-container, wb-pagination,' +
+      ' collapsedMenufilterWb and taskana-filter created in the html',
+    () => {
+      expect(debugElement.querySelector('#wb-action-toolbar')).toBeDefined();
+      expect(debugElement.querySelector('#wb-search-bar')).toBeDefined();
+      expect(debugElement.querySelector('#wb-pagination')).toBeDefined();
+      expect(debugElement.querySelector('#wb-list-container')).toBeDefined();
+      expect(debugElement.querySelector('#collapsedMenufilterWb')).toBeDefined();
+      expect(debugElement.querySelector('taskana-filter')).toBeDefined();
+    }
+  );
 
   it('should have rendered sort by: name, id, description, owner and type', () => {
     expect(debugElement.querySelector('#sort-by-name')).toBeDefined();

@@ -12,39 +12,26 @@ import { WorkbasketOverviewComponent } from './workbasket-overview.component';
   selector: 'taskana-dummy-detail',
   template: 'dummydetail'
 })
-export class DummyDetailComponent {
-}
+export class DummyDetailComponent {}
 @Component({
   selector: 'taskana-workbasket-list',
   template: 'dummylist'
 })
-export class DummyListComponent {
-}
+export class DummyListComponent {}
 describe('WorkbasketOverviewComponent', () => {
   let debugElement: any;
   let component: WorkbasketOverviewComponent;
   let fixture: ComponentFixture<WorkbasketOverviewComponent>;
   const locationSpy: jasmine.SpyObj<Location> = jasmine.createSpyObj('Location', ['go']);
-  const routes: Routes = [
-    { path: ':id', component: DummyDetailComponent }
-  ];
+  const routes: Routes = [{ path: ':id', component: DummyDetailComponent }];
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule(
-      { imports: [
-        RouterTestingModule.withRoutes(routes),
-        NgxsModule.forRoot()
-      ],
-      declarations: [
-        WorkbasketOverviewComponent,
-        DummyDetailComponent,
-        DummyListComponent],
-      providers: [
-        { provide: Location, useValue: locationSpy },
-      ],
-      schemas: [NO_ERRORS_SCHEMA] }
-    )
-      .compileComponents();
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule.withRoutes(routes), NgxsModule.forRoot()],
+      declarations: [WorkbasketOverviewComponent, DummyDetailComponent, DummyListComponent],
+      providers: [{ provide: Location, useValue: locationSpy }],
+      schemas: [NO_ERRORS_SCHEMA]
+    }).compileComponents();
   }));
 
   afterEach(() => {

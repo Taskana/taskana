@@ -28,12 +28,9 @@ import { NotificationService } from '../../../shared/services/notifications/noti
   selector: 'taskana-dummy-detail',
   template: 'dummydetail'
 })
-class DummyDetailComponent {
-}
+class DummyDetailComponent {}
 
-const routes: Routes = [
-  { path: ':id', component: DummyDetailComponent }
-];
+const routes: Routes = [{ path: ':id', component: DummyDetailComponent }];
 
 describe('ClassificationListComponent', () => {
   let component: ClassificationListComponent;
@@ -43,19 +40,35 @@ describe('ClassificationListComponent', () => {
 
   const configure = (testBed: TestBed) => {
     testBed.configureTestingModule({
-      declarations: [ClassificationListComponent, ImportExportComponent, ClassificationTypesSelectorComponent,
-        DummyDetailComponent],
-      imports: [HttpClientModule, RouterTestingModule.withRoutes(routes), FormsModule, AngularSvgIconModule, NgxsModule.forRoot([]), MatRadioModule],
+      declarations: [
+        ClassificationListComponent,
+        ImportExportComponent,
+        ClassificationTypesSelectorComponent,
+        DummyDetailComponent
+      ],
+      imports: [
+        HttpClientModule,
+        RouterTestingModule.withRoutes(routes),
+        FormsModule,
+        AngularSvgIconModule,
+        NgxsModule.forRoot([]),
+        MatRadioModule
+      ],
       providers: [
-        HttpClient, WorkbasketDefinitionService, NotificationService,
-        ClassificationsService, DomainService, ClassificationDefinitionService,
-        RequestInProgressService, ImportExportService
+        HttpClient,
+        WorkbasketDefinitionService,
+        NotificationService,
+        ClassificationsService,
+        DomainService,
+        ClassificationDefinitionService,
+        RequestInProgressService,
+        ImportExportService
       ]
     });
   };
 
-  beforeEach(done => {
-    configureTests(configure).then(testBed => {
+  beforeEach((done) => {
+    configureTests(configure).then((testBed) => {
       fixture = testBed.createComponent(ClassificationListComponent);
       component = fixture.componentInstance;
 

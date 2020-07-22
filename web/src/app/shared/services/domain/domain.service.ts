@@ -41,7 +41,7 @@ export class DomainService {
   getDomains(forceRefresh = false): Observable<string[]> {
     if (!this.dataObs$.observers.length || forceRefresh) {
       this.httpClient.get<string[]>(this.url).subscribe(
-        domains => {
+        (domains) => {
           this.domainRestValue = domains;
           this.domainValue = domains;
           this.dataObs$.next(this.hasMasterDomain ? this.addEmptyDomain(domains) : domains);
@@ -49,7 +49,7 @@ export class DomainService {
             this.selectDomain(this.domainValue[0]);
           }
         },
-        error => {
+        (error) => {
           this.dataObs$.error(error);
           this.dataObs$ = new ReplaySubject(1);
         }
@@ -79,13 +79,13 @@ export class DomainService {
   }
 
   addMasterDomain() {
-    if (this.domainValue.some(domain => domain !== '')) {
+    if (this.domainValue.some((domain) => domain !== '')) {
       this.dataObs$.next(this.addEmptyDomain(this.domainRestValue));
     }
   }
 
   removeMasterDomain() {
-    if (this.domainValue.some(domain => domain === '')) {
+    if (this.domainValue.some((domain) => domain === '')) {
       this.domainValue = this.domainRestValue;
       this.dataObs$.next(this.domainValue);
     }
@@ -105,7 +105,8 @@ export class DomainService {
   private getNavigationUrl(): string {
     if (this.router.url.indexOf('workbaskets') !== -1) {
       return 'taskana/administration/workbaskets';
-    } if (this.router.url.indexOf('classifications') !== -1) {
+    }
+    if (this.router.url.indexOf('classifications') !== -1) {
       return 'taskana/administration/classifications';
     }
     return '';

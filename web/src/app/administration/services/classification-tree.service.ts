@@ -7,25 +7,27 @@ import { Classification } from '../../shared/models/classification';
 })
 export class ClassificationTreeService {
   transformToTreeNode(classifications: Classification[]): TreeNodeModel[] {
-    const classificationsAsTree: TreeNodeModel[] = classifications.map(c => ({
-      ...c,
-      children: []
-    })).sort((a: TreeNodeModel, b: TreeNodeModel) => a.key.localeCompare(b.key));
+    const classificationsAsTree: TreeNodeModel[] = classifications
+      .map((c) => ({
+        ...c,
+        children: []
+      }))
+      .sort((a: TreeNodeModel, b: TreeNodeModel) => a.key.localeCompare(b.key));
     const roots: TreeNodeModel[] = [];
     const children: TreeNodeModel[] = [];
-    classificationsAsTree.forEach(item => {
+    classificationsAsTree.forEach((item) => {
       const parent = item.parentId;
-      const target = !parent ? roots : (children[parent] || (children[parent] = []));
+      const target = !parent ? roots : children[parent] || (children[parent] = []);
       target.push(item);
     });
-    roots.forEach(parent => this.findChildren(parent, children));
+    roots.forEach((parent) => this.findChildren(parent, children));
     return roots;
   }
 
   private findChildren(parent: TreeNodeModel, children: TreeNodeModel[]) {
     if (children[parent.classificationId]) {
       parent.children = children[parent.classificationId];
-      parent.children.forEach(child => this.findChildren(child, children));
+      parent.children.forEach((child) => this.findChildren(child, children));
     }
   }
 }

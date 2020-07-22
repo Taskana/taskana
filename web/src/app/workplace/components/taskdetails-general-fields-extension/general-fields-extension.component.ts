@@ -10,6 +10,5 @@ export class GeneralFieldsExtensionComponent implements OnInit {
   @Input() task: Task;
   @Output() taskChange: EventEmitter<Task> = new EventEmitter<Task>();
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 }

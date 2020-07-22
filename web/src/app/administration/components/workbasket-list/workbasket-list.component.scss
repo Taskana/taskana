@@ -1,37 +1,38 @@
 .row.list-group {
-    margin-left: 2px;
+  margin-left: 2px;
 }
 
 .list-group > li {
-    border-left: none;
-    border-right: none;
+  border-left: none;
+  border-right: none;
 }
 
-a > label{
-    height: 2em;
-    width: 100%;
+a > label {
+  height: 2em;
+  width: 100%;
 }
-dd, dt {
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
+dd,
+dt {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 dt > i {
-    font-weight: normal;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
+  font-weight: normal;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 li > div.row > dl {
-    margin-bottom: 0px;
+  margin-bottom: 0px;
 }
 li > div.row > dl:first-child {
-    margin-left: 15px;
+  margin-left: 15px;
 }
 
 .no-space {
-    border-top: none;
-    padding: 0px
+  border-top: none;
+  padding: 0px;
 }

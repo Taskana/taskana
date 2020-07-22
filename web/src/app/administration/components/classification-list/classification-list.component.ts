@@ -12,8 +12,10 @@ import { ClassificationSelectors } from 'app/shared/store/classification-store/c
 import { Location } from '@angular/common';
 import { ClassificationCategoryImages } from '../../../shared/models/customisation';
 
-import { GetClassifications,
-  CreateClassification } from '../../../shared/store/classification-store/classification.actions';
+import {
+  GetClassifications,
+  CreateClassification
+} from '../../../shared/store/classification-store/classification.actions';
 import { DomainService } from '../../../shared/services/domain/domain.service';
 import { ClassificationSummary } from '../../../shared/models/classification-summary';
 
@@ -44,40 +46,38 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
     private ngxsActions$: Actions,
     private domainService: DomainService
   ) {
-    this.ngxsActions$.pipe(ofActionDispatched(GetClassifications),
-      takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.requestInProgress = true;
-      });
-    this.ngxsActions$.pipe(ofActionCompleted(GetClassifications),
-      takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.requestInProgress = false;
-      });
+    this.ngxsActions$.pipe(ofActionDispatched(GetClassifications), takeUntil(this.destroy$)).subscribe(() => {
+      this.requestInProgress = true;
+    });
+    this.ngxsActions$.pipe(ofActionCompleted(GetClassifications), takeUntil(this.destroy$)).subscribe(() => {
+      this.requestInProgress = false;
+    });
   }
 
   ngOnInit() {
-    this.classifications$.pipe(takeUntil(this.destroy$)).subscribe(classifications => {
+    this.classifications$.pipe(takeUntil(this.destroy$)).subscribe((classifications) => {
       this.classifications = classifications;
     });
 
-    this.classificationTypeSelected$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.store.dispatch(new GetClassifications());
-        this.selectedCategory = '';
-      });
+    this.classificationTypeSelected$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.store.dispatch(new GetClassifications());
+      this.selectedCategory = '';
+    });
 
-    this.importExportService.getImportingFinished()
+    this.importExportService
+      .getImportingFinished()
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.store.dispatch(new GetClassifications());
       });
 
     // needed, so that the list updates, when domain gets changed (could be placed anywhere and should be removed, when domain is in store)
-    this.domainService.getSelectedDomain().pipe(takeUntil(this.destroy$)).subscribe(domain => {
-      this.store.dispatch(GetClassifications);
-    });
+    this.domainService
+      .getSelectedDomain()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((domain) => {
+        this.store.dispatch(GetClassifications);
+      });
   }
 
   addClassification() {
@@ -91,10 +91,10 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 
   getCategoryIcon(category: string): Observable<Pair> {
     return this.categoryIcons$.pipe(
-      map(
-        iconMap => (iconMap[category]
+      map((iconMap) =>
+        iconMap[category]
           ? new Pair(iconMap[category], category)
-          : new Pair(iconMap.missing, 'Category does not match with the configuration'))
+          : new Pair(iconMap.missing, 'Category does not match with the configuration')
       )
     );
   }

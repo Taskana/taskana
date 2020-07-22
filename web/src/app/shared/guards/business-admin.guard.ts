@@ -6,7 +6,7 @@ import { TaskanaEngineService } from 'app/shared/services/taskana-engine/taskana
 export class BusinessAdminGuard implements CanActivate {
   static roles = ['ADMIN', 'BUSINESS_ADMIN'];
 
-  constructor(private taskanaEngineService: TaskanaEngineService, public router: Router) { }
+  constructor(private taskanaEngineService: TaskanaEngineService, public router: Router) {}
 
   canActivate() {
     if (this.taskanaEngineService.hasRole(BusinessAdminGuard.roles)) {

@@ -40,34 +40,34 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 
   destroy$ = new Subject<void>();
 
-  constructor(private service: WorkbasketService,
+  constructor(
+    private service: WorkbasketService,
     private route: ActivatedRoute,
     private router: Router,
     private domainService: DomainService,
     private importExportService: ImportExportService,
-    private store: Store) {
-  }
+    private store: Store
+  ) {}
 
   ngOnInit() {
-    this.selectedWorkbasketAndAction$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(selectedWorkbasketAndAction => {
-        this.action = selectedWorkbasketAndAction.action;
-        if (this.action === ACTION.CREATE) {
-          this.tabSelected = 'information';
-          this.selectedId = undefined;
-          this.initWorkbasket();
-        } else if (this.action === ACTION.COPY) {
-          // delete this.workbasket.key;
-          this.workbasketCopy = this.workbasket;
-          this.getWorkbasketInformation();
-        } else if (typeof selectedWorkbasketAndAction.selectedWorkbasket !== 'undefined') {
-          this.workbasket = { ...selectedWorkbasketAndAction.selectedWorkbasket };
-          this.getWorkbasketInformation(this.workbasket);
-        }
-      });
+    this.selectedWorkbasketAndAction$.pipe(takeUntil(this.destroy$)).subscribe((selectedWorkbasketAndAction) => {
+      this.action = selectedWorkbasketAndAction.action;
+      if (this.action === ACTION.CREATE) {
+        this.tabSelected = 'information';
+        this.selectedId = undefined;
+        this.initWorkbasket();
+      } else if (this.action === ACTION.COPY) {
+        // delete this.workbasket.key;
+        this.workbasketCopy = this.workbasket;
+        this.getWorkbasketInformation();
+      } else if (typeof selectedWorkbasketAndAction.selectedWorkbasket !== 'undefined') {
+        this.workbasket = { ...selectedWorkbasketAndAction.selectedWorkbasket };
+        this.getWorkbasketInformation(this.workbasket);
+      }
+    });
 
-    this.importExportService.getImportingFinished()
+    this.importExportService
+      .getImportingFinished()
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         if (this.workbasket) {
@@ -105,15 +105,18 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
       workbasketIdSelected = selectedWorkbasket.workbasketId;
     }
     this.requestInProgress = true;
-    if (!workbasketIdSelected && this.action === ACTION.CREATE) { // CREATE
+    if (!workbasketIdSelected && this.action === ACTION.CREATE) {
+      // CREATE
       this.workbasket = {};
-      this.domainService.getSelectedDomain()
+      this.domainService
+        .getSelectedDomain()
         .pipe(takeUntil(this.destroy$))
-        .subscribe(domain => {
+        .subscribe((domain) => {
           this.workbasket.domain = domain;
         });
       this.requestInProgress = false;
-    } else if (!workbasketIdSelected && this.action === ACTION.COPY) { // COPY
+    } else if (!workbasketIdSelected && this.action === ACTION.COPY) {
+      // COPY
       this.workbasket = { ...this.workbasketCopy };
       delete this.workbasket.workbasketId;
       this.requestInProgress = false;
@@ -126,9 +129,10 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
   }
 
   private checkDomainAndRedirect() {
-    this.domainService.getSelectedDomain()
+    this.domainService
+      .getSelectedDomain()
       .pipe(takeUntil(this.destroy$))
-      .subscribe(domain => {
+      .subscribe((domain) => {
         if (domain !== '' && this.workbasket && this.workbasket.domain !== domain) {
           this.backClicked();
         }

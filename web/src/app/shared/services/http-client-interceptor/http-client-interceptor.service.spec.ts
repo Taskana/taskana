@@ -12,7 +12,14 @@ describe('HttpExtensionService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientModule],
-      providers: [HttpClientInterceptor, RequestInProgressService, MatSnackBar, Overlay, MatDialog, { provide: MAT_DIALOG_SCROLL_STRATEGY }]
+      providers: [
+        HttpClientInterceptor,
+        RequestInProgressService,
+        MatSnackBar,
+        Overlay,
+        MatDialog,
+        { provide: MAT_DIALOG_SCROLL_STRATEGY }
+      ]
     });
   });
 

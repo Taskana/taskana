@@ -18,10 +18,7 @@ declare let require: any;
 __karma__.loaded = function noop() {};
 
 // First, initialize the Angular testing environment.
-getTestBed().initTestEnvironment(
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting()
-);
+getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 // Then we find all the tests.
 const contextAdministration = require.context('./app/administration', true, /\.spec\.ts$/);
 const contextWorkplace = require.context('./app/workplace', true, /\.spec\.ts$/);

@@ -46,7 +46,7 @@ const DECLARATIONS = [
   TaskdetailsAttributeComponent,
   TaskComponent,
   GeneralFieldsExtensionComponent,
-  TaskListComponent,
+  TaskListComponent
 ];
 
 @NgModule({
@@ -60,8 +60,7 @@ const DECLARATIONS = [
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,
       multi: true
-    },
+    }
   ]
 })
-export class WorkplaceModule {
-}
+export class WorkplaceModule {}
