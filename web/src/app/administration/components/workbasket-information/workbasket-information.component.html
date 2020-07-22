@@ -1,130 +1,168 @@
 <taskana-shared-spinner [isRunning]="requestInProgress" class="floating"></taskana-shared-spinner>
 <div *ngIf="workbasket" id="wb-information" class="panel panel-default">
-    <div class="panel-heading">
-        <div class="pull-right btn-group">
-            <button type="button" (click)="onSubmit()" data-toggle="tooltip" title="Save" class="btn btn-default btn-primary">
-                <span class="material-icons md-20">save</span>
-            </button>
-            <button type="button" (click)="onUndo()" data-toggle="tooltip" title="Undo Changes" class="btn btn-default">
-                <span class="material-icons md-20 blue">undo</span>
-            </button>
-            <button type="button" (click)="removeDistributionTargets()" data-toggle="tooltip" title="Remove workbasket as distribution target"
-                class="btn btn-default">
-                <span class="material-icons md-20 red">remove_circle_outline</span>
-            </button>
-            <button type="button" (click)="copyWorkbasket()" data-toggle="tooltip" title="Copy" class="btn btn-default">
-                <span class="material-icons md-20 green-blue">content_copy</span>
-            </button>
-            <button type="button" (click)="removeWorkbasket()" data-toggle="tooltip" title="Remove" class="btn btn-default">
-                <span class="material-icons md-20 red">delete</span>
-            </button>
+  <div class="panel-heading">
+    <div class="pull-right btn-group">
+      <button type="button" (click)="onSubmit()" data-toggle="tooltip" title="Save"
+              class="btn btn-default btn-primary">
+        <span class="material-icons md-20">save</span>
+      </button>
+      <button type="button" (click)="onUndo()" data-toggle="tooltip" title="Undo Changes"
+              class="btn btn-default">
+        <span class="material-icons md-20 blue">undo</span>
+      </button>
+      <button type="button" (click)="removeDistributionTargets()" data-toggle="tooltip"
+              title="Remove workbasket as distribution target"
+              class="btn btn-default">
+        <span class="material-icons md-20 red">remove_circle_outline</span>
+      </button>
+      <button type="button" (click)="copyWorkbasket()" data-toggle="tooltip" title="Copy"
+              class="btn btn-default">
+        <span class="material-icons md-20 green-blue">content_copy</span>
+      </button>
+      <button type="button" (click)="removeWorkbasket()" data-toggle="tooltip" title="Remove"
+              class="btn btn-default">
+        <span class="material-icons md-20 red">delete</span>
+      </button>
+    </div>
+    <h4 class="panel-header">{{workbasket.name}}&nbsp;
+      <span *ngIf="!workbasket.workbasketId" class="badge warning"> {{badgeMessage}}</span>
+    </h4>
+  </div>
+
+  <div class="panel-body">
+    <form #WorkbasketForm="ngForm">
+      <div class="col-md-6">
+        <!-- KEY -->
+        <div class="form-group required">
+          <label for="wb-key" class="control-label">Key</label>
+          <input type="text" required maxlength="64" #key="ngModel" class="form-control" id="wb-key"
+                 placeholder="Key"
+                 [(ngModel)]="workbasket.key" name="workbasket.key" (keypress)="onKeyPressed(key, 64)">
+          <div *ngIf="tooLongMap.get(key.name)" class="error">{{lengthError}}</div>
+          <taskana-shared-field-error-display [displayError]="!isFieldValid('workbasket.key')"
+                                              [validationTrigger]="this.toogleValidationMap.get('workbasket.key')"
+                                              errorMessage="* Key is required">
+          </taskana-shared-field-error-display>
         </div>
-        <h4 class="panel-header">{{workbasket.name}}&nbsp;
-            <span *ngIf="!workbasket.workbasketId" class="badge warning"> {{badgeMessage}}</span>
-        </h4>
-    </div>
 
-    <div class="panel-body">
-        <form #WorkbasketForm="ngForm">
-            <div class="col-md-6">
-                <!-- KEY -->
-                <div class="form-group required">
-                    <label for="wb-key" class="control-label">Key</label>
-                    <input type="text" required #key="ngModel" class="form-control" id="wb-key" placeholder="Key"
-                        [(ngModel)]="workbasket.key" name="workbasket.key">
-                    <taskana-shared-field-error-display [displayError]="!isFieldValid('workbasket.key')" [validationTrigger]="this.toogleValidationMap.get('workbasket.key')"
-                                                        errorMessage="* Key is required">
-                    </taskana-shared-field-error-display>
-                </div>
+        <!-- NAME -->
+        <div class="form-group required">
+          <label for="wb-name" class="control-label">Name</label>
+          <input type="text" required maxlength="255" #name="ngModel" class="form-control" id="wb-name"
+                 placeholder="Name"
+                 [(ngModel)]="workbasket.name" name="workbasket.name" (keypress)="onKeyPressed(name, 255)">
+          <div *ngIf="tooLongMap.get(name.name)" class="error">{{lengthError}}</div>
+          <taskana-shared-field-error-display [displayError]="!isFieldValid('workbasket.name')"
+                                              [validationTrigger]="this.toogleValidationMap.get('workbasket.name')"
+                                              errorMessage="* Name is required">
+          </taskana-shared-field-error-display>
+        </div>
 
-                <!-- NAME -->
-                <div class="form-group required">
-                    <label for="wb-name" class="control-label">Name</label>
-                    <input type="text" required #name="ngModel" class="form-control" id="wb-name" placeholder="Name"
-                        [(ngModel)]="workbasket.name" name="workbasket.name">
-                    <taskana-shared-field-error-display [displayError]="!isFieldValid('workbasket.name')" [validationTrigger]="this.toogleValidationMap.get('workbasket.name')"
-                                                        errorMessage="* Name is required">
-                    </taskana-shared-field-error-display>
-                </div>
+        <!-- OWNER -->
+        <div class="input-group form-group col-xs-12 required">
+          <label for="wb-owner" class="control-label ">Owner</label>
+          <taskana-shared-type-ahead *ngIf="lookupField else ownerInput" required maxlength="128" #owner="ngModel"
+                                     name="workbasket.owner"
+                                     [(ngModel)]="workbasket.owner"
+                                     placeHolderMessage="* Owner is required"
+                                     [validationValue]="this.toogleValidationMap.get('workbasket.owner')"
+                                     [displayError]="!isFieldValid('workbasket.owner')"
+                                     width="100%" (keypress)="onKeyPressed(owner, 128)">
+            <div *ngIf="tooLongMap.get(owner.name)" class="error">{{lengthError}}</div>
+          </taskana-shared-type-ahead>
+          <ng-template #ownerInput>
+            <input type="text" required maxlength="128" #owner="ngModel" class="form-control" id="wb-owner"
+                   placeholder="Owner"
+                   [(ngModel)]="workbasket.owner" name="workbasket.owner" (keypress)="onKeyPressed(owner, 128)">
+            <div *ngIf="tooLongMap.get(owner.name)" class="error">{{lengthError}}</div>
+            <taskana-shared-field-error-display [displayError]="!isFieldValid('workbasket.owner')"
+                                                [validationTrigger]="this.toogleValidationMap.get('workbasket.owner')"
+                                                errorMessage="* Owner is required">
+            </taskana-shared-field-error-display>
+          </ng-template>
+        </div>
 
-                <!-- OWNER -->
-                <div class="input-group form-group col-xs-12 required">
-                    <label for="wb-owner" class="control-label ">Owner</label>
-                    <taskana-shared-type-ahead *ngIf="lookupField else ownerInput" required #owner="ngModel" name="workbasket.owner"
-                        [(ngModel)]="workbasket.owner" placeHolderMessage="* Owner is required" [validationValue]="this.toogleValidationMap.get('workbasket.owner')"
-                        [displayError]="!isFieldValid('workbasket.owner')" width="100%"></taskana-shared-type-ahead>
-                    <ng-template #ownerInput>
-                        <input type="text" required #owner="ngModel" class="form-control" id="wb-owner" placeholder="Owner"
-                            [(ngModel)]="workbasket.owner" name="workbasket.owner">
-                        <taskana-shared-field-error-display [displayError]="!isFieldValid('workbasket.owner')"
-                                                            [validationTrigger]="this.toogleValidationMap.get('workbasket.owner')" errorMessage="* Owner is required">
-                        </taskana-shared-field-error-display>
-                    </ng-template>
-                </div>
+        <!-- DOMAIN -->
+        <div class="form-group ">
+          <label for="wb-domain" class="control-label">Domain</label>
+          <input type="text" #domain="ngModel" class="form-control" disabled id="wb-domain"
+                 placeholder="Domain"
+                 [(ngModel)]="workbasket.domain" name="workbasket.domain">
+        </div>
 
-                <!-- DOMAIN -->
-                <div class="form-group ">
-                    <label for="wb-domain" class="control-label">Domain</label>
-                    <input type="text" #domain="ngModel" class="form-control" disabled id="wb-domain" placeholder="Domain"
-                        [(ngModel)]="workbasket.domain" name="workbasket.domain">
-                </div>
-
-                <!-- TYPE & DESCRIPTION-->
-                <div class="row">
-                    <div class="form-group col-xs-4">
-                        <label class="control-label">Type</label>
-                        <div class="dropdown">
-                            <button class="btn btn-default" type="button" id="dropdownMenu24" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="true">
-                                <taskana-administration-icon-type [type]='workbasket.type'></taskana-administration-icon-type>
-                                {{allTypes.get(workbasket.type)}}
-                                <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu" aria-labelledby="dropdownMenu">
-                                <li>
-                                    <a *ngFor="let type of allTypes | mapValues | removeEmptyType" (click)="selectType(type.key)">
-                                        <taskana-administration-icon-type [type]='type.key' [text]="type.value"></taskana-administration-icon-type>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="form-group col-xs-8">
-                        <label for="wb-description" class="control-label">Description</label>
-                        <textarea class="form-control" rows="7" id="wb-description" placeholder="Description"
-                            [(ngModel)]="workbasket.description" name="workbasket.description"></textarea>
-                    </div>
-                </div>
+        <!-- TYPE & DESCRIPTION-->
+        <div class="row">
+          <div class="form-group col-xs-4">
+            <label class="control-label">Type</label>
+            <div class="dropdown">
+              <button class="btn btn-default" type="button" id="dropdownMenu24"
+                      data-toggle="dropdown"
+                      aria-haspopup="true" aria-expanded="true">
+                <taskana-administration-icon-type
+                  [type]='workbasket.type'></taskana-administration-icon-type>
+                {{allTypes.get(workbasket.type)}}
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu dropdown-menu" aria-labelledby="dropdownMenu">
+                <li>
+                  <a *ngFor="let type of allTypes | mapValues | removeEmptyType"
+                     (click)="selectType(type.key)">
+                    <taskana-administration-icon-type [type]='type.key'
+                                                      [text]="type.value"></taskana-administration-icon-type>
+                  </a>
+                </li>
+              </ul>
             </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="wb-org-level-1" class="control-label">OrgLevel 1</label>
-                    <input type="text" class="form-control" id="wb-org-level-1" placeholder="OrgLevel 1" [(ngModel)]="workbasket.orgLevel1"
-                        name="workbasket.orgLevel1">
-                </div>
-                <div class="form-group">
-                    <label for="wb-org-level-2" class="control-label">OrgLevel 2</label>
-                    <input type="text" class="form-control" id="wb-org-level-2" placeholder="OrgLevel 2" [(ngModel)]="workbasket.orgLevel2"
-                        name="workbasket.orgLevel2">
-                </div>
-                <div class="form-group" style="padding-top: 18px;">
-                    <label for="wb-org-level-3" class="control-label">OrgLevel 3</label>
-                    <input type="text" class="form-control" id="wb-org-level-3" placeholder="OrgLevel 3" [(ngModel)]="workbasket.orgLevel3"
-                        name="workbasket.orgLevel3">
-                </div>
-                <div class="form-group">
-                    <label for="wb-org-level-4" class="control-label">OrgLevel 4</label>
-                    <input type="text" class="form-control" id="wb-org-level-4" placeholder="OrgLevel 4" [(ngModel)]="workbasket.orgLevel4"
-                        name="workbasket.orgLevel4">
-                </div>
-                <ng-container *ngFor="let customField of customFields$ | async; let index = index">
-                    <div *ngIf="customField.visible" class="form-group">
-                        <label for='wb-custom-{{index+1}}' class="control-label">{{customField.field}}</label>
-                        <input type="text" class="form-control" id="wb-custom-{{index+1}}" [placeholder]="customField.field"
-                               [(ngModel)]="workbasket[getWorkbasketCustomProperty(index + 1)]" name="workbasket[{{getWorkbasketCustomProperty(index + 1)}}]">
-                    </div>
-                </ng-container>
-            </div>
-        </form>
-    </div>
+          </div>
+          <div class="form-group col-xs-8">
+            <label for="wb-description" class="control-label">Description</label>
+            <textarea #description="ngModel" maxlength="255" class="form-control" rows="7" id="wb-description" placeholder="Description"
+                      [(ngModel)]="workbasket.description" name="workbasket.description"
+                      (keypress)="onKeyPressed(description, 255)"></textarea>
+            <div *ngIf="tooLongMap.get(description.name)" class="error">{{lengthError}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="wb-org-level-1" class="control-label">OrgLevel 1</label>
+          <input type="text" class="form-control" id="wb-org-level-1" placeholder="OrgLevel 1"
+                 [(ngModel)]="workbasket.orgLevel1"
+                 name="workbasket.orgLevel1" maxlength="255" #orgLevel1="ngModel" (keypress)="onKeyPressed(orgLevel1, 255)">
+          <div *ngIf="tooLongMap.get(orgLevel1.name)" class="error">{{lengthError}}</div>
+        </div>
+        <div class="form-group">
+          <label for="wb-org-level-2" class="control-label">OrgLevel 2</label>
+          <input type="text" class="form-control" id="wb-org-level-2" placeholder="OrgLevel 2"
+                 [(ngModel)]="workbasket.orgLevel2"
+                 name="workbasket.orgLevel2" maxlength="255" #orgLevel2="ngModel" (keypress)="onKeyPressed(orgLevel2, 255)">
+          <div *ngIf="tooLongMap.get(orgLevel2.name)" class="error">{{lengthError}}</div>
+        </div>
+        <div class="form-group" style="padding-top: 18px;">
+          <label for="wb-org-level-3" class="control-label">OrgLevel 3</label>
+          <input type="text" class="form-control" id="wb-org-level-3" placeholder="OrgLevel 3"
+                 [(ngModel)]="workbasket.orgLevel3"
+                 name="workbasket.orgLevel3" maxlength="255" #orgLevel3="ngModel" (keypress)="onKeyPressed(orgLevel3, 255)">
+          <div *ngIf="tooLongMap.get(orgLevel3.name)" class="error">{{lengthError}}</div>
+        </div>
+        <div class="form-group">
+          <label for="wb-org-level-4" class="control-label">OrgLevel 4</label>
+          <input type="text" class="form-control" id="wb-org-level-4" placeholder="OrgLevel 4"
+                 [(ngModel)]="workbasket.orgLevel4"
+                 name="workbasket.orgLevel4" maxlength="255" #orgLevel4="ngModel" (keypress)="onKeyPressed(orgLevel4, 255)">
+          <div *ngIf="tooLongMap.get(orgLevel4.name)" class="error">{{lengthError}}</div>
+        </div>
+        <ng-container *ngFor="let customField of customFields$ | async; let index = index">
+          <div *ngIf="customField.visible" class="form-group">
+            <label for='wb-custom-{{index+1}}' class="control-label">{{customField.field}}</label>
+            <input type="text" class="form-control" id="wb-custom-{{index+1}}"
+                   [placeholder]="customField.field"
+                   [(ngModel)]="workbasket[getWorkbasketCustomProperty(index + 1)]"
+                   name="workbasket[{{getWorkbasketCustomProperty(index + 1)}}]" maxlength="255" #custom="ngModel" (keypress)="onKeyPressed(custom, 255)">
+            <div *ngIf="tooLongMap.get(custom.name)" class="error">{{lengthError}}</div>
+          </div>
+        </ng-container>
+      </div>
+    </form>
+  </div>
 </div>
