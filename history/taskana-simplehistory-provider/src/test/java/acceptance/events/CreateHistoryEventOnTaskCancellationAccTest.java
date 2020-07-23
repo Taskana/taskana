@@ -12,8 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import pro.taskana.simplehistory.impl.HistoryEventImpl;
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
 import pro.taskana.task.api.TaskService;
-import pro.taskana.task.api.TaskState;
-import pro.taskana.task.api.models.Task;
 
 @ExtendWith(JaasExtension.class)
 class CreateHistoryEventOnTaskCancellationAccTest extends AbstractAccTest {
@@ -23,7 +21,7 @@ class CreateHistoryEventOnTaskCancellationAccTest extends AbstractAccTest {
 
   @Test
   @WithAccessId(user = "admin")
-  void should_CreateCancelledHistoryEvent_When_TaskIsCancelled() throws Exception {
+  void should_CreateCancelledHistoryEvent_When_CancelTaskInStateClaimed() throws Exception {
 
     final String taskId = "TKI:000000000000000000000000000000000001";
 
@@ -31,15 +29,35 @@ class CreateHistoryEventOnTaskCancellationAccTest extends AbstractAccTest {
 
     assertThat(listEvents).isEmpty();
 
-    assertThat(taskService.getTask(taskId).getState()).isEqualTo(TaskState.CLAIMED);
-
-    Task task = taskService.cancelTask(taskId);
-    assertThat(task.getState()).isEqualTo(TaskState.CANCELLED);
+    taskService.cancelTask(taskId);
 
     listEvents = historyService.createHistoryQuery().taskIdIn(taskId).list();
 
     assertThat(listEvents).hasSize(1);
-    assertThat(historyService.getHistoryEvent(listEvents.get(0).getId()).getEventType())
-        .isEqualTo("TASK_CANCELLED");
+
+    String eventType = historyService.getHistoryEvent(listEvents.get(0).getId()).getEventType();
+
+    assertThat(eventType).isEqualTo("TASK_CANCELLED");
+  }
+
+  @Test
+  @WithAccessId(user = "admin")
+  void should_CreateCancelledHistoryEvent_When_CancelTaskInStateReady() throws Exception {
+
+    final String taskId = "TKI:000000000000000000000000000000000003";
+
+    List<HistoryEventImpl> listEvents = historyService.createHistoryQuery().taskIdIn(taskId).list();
+
+    assertThat(listEvents).isEmpty();
+
+    taskService.cancelTask(taskId);
+
+    listEvents = historyService.createHistoryQuery().taskIdIn(taskId).list();
+
+    assertThat(listEvents).hasSize(1);
+
+    String eventType = historyService.getHistoryEvent(listEvents.get(0).getId()).getEventType();
+
+    assertThat(eventType).isEqualTo("TASK_CANCELLED");
   }
 }
