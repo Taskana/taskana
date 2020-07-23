@@ -8,6 +8,6 @@ public class TerminatedEvent extends TaskEvent {
   public TerminatedEvent(String id, Task task, String userId) {
     super(id, task, userId, null);
     eventType = "TASK_TERMINATED";
-    created = task.getModified();
+    created = task.getCompleted();
   }
 }

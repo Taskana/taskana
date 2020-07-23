@@ -8,6 +8,6 @@ public class CancelledEvent extends TaskEvent {
   public CancelledEvent(String id, Task task, String userId) {
     super(id, task, userId, null);
     eventType = "TASK_CANCELLED";
-    created = task.getModified();
+    created = task.getCompleted();
   }
 }
