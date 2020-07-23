@@ -127,7 +127,7 @@ class TaskServiceImplTest {
 
     Map<String, String> customAttriutes = new HashMap<>();
     customAttriutes.put("new key", "new value");
-    newTask.setCustomAttributes(customAttriutes);
+    newTask.setCustomAttributeMap(customAttriutes);
 
     JSONArray changedAttributes =
         new JSONObject(cut.determineChangesInTaskAttributes(oldTask, newTask))

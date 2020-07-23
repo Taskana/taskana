@@ -8,13 +8,19 @@ import static pro.taskana.workbasket.api.WorkbasketQueryColumnName.NAME;
 
 import acceptance.AbstractAccTest;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.ThrowingConsumer;
 
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
+import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketQuery;
 import pro.taskana.workbasket.api.WorkbasketService;
@@ -359,7 +365,10 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
   @Test
   void testQueryForCustom1In() {
     List<WorkbasketSummary> results =
-        workbasketService.createWorkbasketQuery().custom1In("ABCQVW").list();
+        workbasketService
+            .createWorkbasketQuery()
+            .customAttributeIn(WorkbasketCustomField.CUSTOM_1, "ABCQVW")
+            .list();
 
     assertThat(results).hasSize(1);
     assertThat(results.get(0).getId()).isEqualTo("WBI:100000000000000000000000000000000001");
@@ -369,7 +378,10 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
   @Test
   void testQueryForCustom1Like() {
     List<WorkbasketSummary> results =
-        workbasketService.createWorkbasketQuery().custom1Like("custo%").list();
+        workbasketService
+            .createWorkbasketQuery()
+            .customAttributeLike(WorkbasketCustomField.CUSTOM_1, "custo%")
+            .list();
     assertThat(results).hasSize(2);
   }
 
@@ -377,7 +389,10 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
   @Test
   void testQueryForCustom2In() {
     List<WorkbasketSummary> results =
-        workbasketService.createWorkbasketQuery().custom2In("cust2", "custom2").list();
+        workbasketService
+            .createWorkbasketQuery()
+            .customAttributeIn(WorkbasketCustomField.CUSTOM_2, "cust2", "custom2")
+            .list();
     assertThat(results).hasSize(3);
   }
 
@@ -385,7 +400,10 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
   @Test
   void testQueryForCustom2Like() {
     List<WorkbasketSummary> results =
-        workbasketService.createWorkbasketQuery().custom2Like("cusTo%").list();
+        workbasketService
+            .createWorkbasketQuery()
+            .customAttributeLike(WorkbasketCustomField.CUSTOM_2, "cusTo%")
+            .list();
     assertThat(results).hasSize(3);
   }
 
@@ -393,7 +411,10 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
   @Test
   void testQueryForCustom3In() {
     List<WorkbasketSummary> results =
-        workbasketService.createWorkbasketQuery().custom3In("custom3").list();
+        workbasketService
+            .createWorkbasketQuery()
+            .customAttributeLike(WorkbasketCustomField.CUSTOM_3, "custom3")
+            .list();
     assertThat(results).hasSize(2);
   }
 
@@ -401,7 +422,10 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
   @Test
   void testQueryForCustom3Like() {
     List<WorkbasketSummary> results =
-        workbasketService.createWorkbasketQuery().custom3Like("cu%").list();
+        workbasketService
+            .createWorkbasketQuery()
+            .customAttributeLike(WorkbasketCustomField.CUSTOM_3, "cu%")
+            .list();
     assertThat(results).hasSize(3);
   }
 
@@ -409,7 +433,10 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
   @Test
   void testQueryForCustom4In() {
     List<WorkbasketSummary> results =
-        workbasketService.createWorkbasketQuery().custom4In("custom4", "team").list();
+        workbasketService
+            .createWorkbasketQuery()
+            .customAttributeIn(WorkbasketCustomField.CUSTOM_4, "custom4", "team")
+            .list();
     assertThat(results).hasSize(3);
   }
 
@@ -417,7 +444,10 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
   @Test
   void testQueryForCustom4Like() {
     List<WorkbasketSummary> results =
-        workbasketService.createWorkbasketQuery().custom4Like("%u%").list();
+        workbasketService
+            .createWorkbasketQuery()
+            .customAttributeLike(WorkbasketCustomField.CUSTOM_4, "%u%")
+            .list();
     assertThat(results).hasSize(5);
   }
 
@@ -534,50 +564,46 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(user = "admin")
-  @Test
-  void testQueryForOrderByCustom1Asc() {
-    List<WorkbasketSummary> results =
-        workbasketService.createWorkbasketQuery().orderByCustom1(ASCENDING).list();
+  @TestFactory
+  Stream<DynamicTest> should_SortQueryAsc_When_OrderingByCustomAttribute() {
+    Iterator<WorkbasketCustomField> iterator = Arrays.stream(WorkbasketCustomField.values())
+                                                   .iterator();
 
-    assertThat(results)
-        .hasSizeGreaterThan(2)
-        .extracting(WorkbasketSummary::getCustom1)
-        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
+    ThrowingConsumer<WorkbasketCustomField> test = customField -> {
+      List<WorkbasketSummary> results =
+          workbasketService
+              .createWorkbasketQuery()
+              .orderByCustomAttribute(customField, ASCENDING)
+              .list();
+
+      assertThat(results)
+          .hasSizeGreaterThan(2)
+          .extracting(w -> w.getCustomAttribute(customField))
+          .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
+    };
+    return DynamicTest.stream(iterator, c -> "for " + c,
+        test);
   }
 
   @WithAccessId(user = "admin")
-  @Test
-  void testQueryForOrderByCustom2Desc() {
-    List<WorkbasketSummary> results =
-        workbasketService.createWorkbasketQuery().orderByCustom2(DESCENDING).list();
+  @TestFactory
+  Stream<DynamicTest> should_SortQueryDesc_When_OrderingByCustomAttribute() {
+    Iterator<WorkbasketCustomField> iterator = Arrays.stream(WorkbasketCustomField.values())
+                                                   .iterator();
 
-    assertThat(results)
-        .hasSizeGreaterThan(2)
-        .extracting(WorkbasketSummary::getCustom2)
-        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
-  }
+    ThrowingConsumer<WorkbasketCustomField> test = customField -> {
+      List<WorkbasketSummary> results =
+          workbasketService
+              .createWorkbasketQuery()
+              .orderByCustomAttribute(customField, DESCENDING)
+              .list();
 
-  @WithAccessId(user = "admin")
-  @Test
-  void testQueryForOrderByCustom3Asc() {
-    List<WorkbasketSummary> results =
-        workbasketService.createWorkbasketQuery().orderByCustom3(ASCENDING).list();
-
-    assertThat(results)
-        .hasSizeGreaterThan(2)
-        .extracting(WorkbasketSummary::getCustom3)
-        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
-  }
-
-  @WithAccessId(user = "admin")
-  @Test
-  void testQueryForOrderByCustom4Desc() {
-    List<WorkbasketSummary> results =
-        workbasketService.createWorkbasketQuery().orderByCustom4(DESCENDING).list();
-
-    assertThat(results)
-        .hasSizeGreaterThan(2)
-        .extracting(WorkbasketSummary::getCustom4)
-        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
+      assertThat(results)
+          .hasSizeGreaterThan(2)
+          .extracting(w -> w.getCustomAttribute(customField))
+          .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
+    };
+    return DynamicTest.stream(iterator, c -> "for " + c,
+        test);
   }
 }

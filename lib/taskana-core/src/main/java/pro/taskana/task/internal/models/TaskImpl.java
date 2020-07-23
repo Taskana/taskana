@@ -9,19 +9,17 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.task.api.CallbackState;
+import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.AttachmentSummary;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 
-/** Task entity. */
 public class TaskImpl extends TaskSummaryImpl implements Task {
 
-  private static final String NOT_A_VALID_NUMBER_SET =
-      "Argument '%s' of setCustomAttribute() cannot be converted to a number between 1 and 16";
   // All objects have to be serializable
   private Map<String, String> customAttributes = Collections.emptyMap();
   private Map<String, String> callbackInfo = Collections.emptyMap();
@@ -36,6 +34,14 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
     callbackInfo = new HashMap<>(copyFrom.callbackInfo);
     callbackState = copyFrom.callbackState;
     attachments = copyFrom.attachments.stream().map(Attachment::copy).collect(Collectors.toList());
+  }
+
+  public Map<String, String> getCustomAttributes() {
+    return customAttributes;
+  }
+
+  public void setCustomAttributes(Map<String, String> customAttributes) {
+    this.customAttributes = customAttributes;
   }
 
   public String getClassificationId() {
@@ -73,13 +79,13 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
   }
 
   @Override
-  public Map<String, String> getCustomAttributes() {
-    return customAttributes;
+  public Map<String, String> getCustomAttributeMap() {
+    return getCustomAttributes();
   }
 
   @Override
-  public void setCustomAttributes(Map<String, String> customAttributes) {
-    this.customAttributes = customAttributes;
+  public void setCustomAttributeMap(Map<String, String> customAttributes) {
+    setCustomAttributes(customAttributes);
   }
 
   public CallbackState getCallbackState() {
@@ -104,66 +110,58 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
   }
 
   @Override
-  public void setCustomAttribute(String number, String value) throws InvalidArgumentException {
-    int num;
-    try {
-      num = Integer.parseInt(number);
-    } catch (NumberFormatException e) {
-      throw new InvalidArgumentException(
-          String.format(NOT_A_VALID_NUMBER_SET, number), e.getCause());
-    }
-
-    switch (num) {
-      case 1:
+  public void setCustomAttribute(TaskCustomField customField, String value) {
+    switch (customField) {
+      case CUSTOM_1:
         custom1 = value;
         break;
-      case 2:
+      case CUSTOM_2:
         custom2 = value;
         break;
-      case 3:
+      case CUSTOM_3:
         custom3 = value;
         break;
-      case 4:
+      case CUSTOM_4:
         custom4 = value;
         break;
-      case 5:
+      case CUSTOM_5:
         custom5 = value;
         break;
-      case 6:
+      case CUSTOM_6:
         custom6 = value;
         break;
-      case 7:
+      case CUSTOM_7:
         custom7 = value;
         break;
-      case 8:
+      case CUSTOM_8:
         custom8 = value;
         break;
-      case 9:
+      case CUSTOM_9:
         custom9 = value;
         break;
-      case 10:
+      case CUSTOM_10:
         custom10 = value;
         break;
-      case 11:
+      case CUSTOM_11:
         custom11 = value;
         break;
-      case 12:
+      case CUSTOM_12:
         custom12 = value;
         break;
-      case 13:
+      case CUSTOM_13:
         custom13 = value;
         break;
-      case 14:
+      case CUSTOM_14:
         custom14 = value;
         break;
-      case 15:
+      case CUSTOM_15:
         custom15 = value;
         break;
-      case 16:
+      case CUSTOM_16:
         custom16 = value;
         break;
       default:
-        throw new InvalidArgumentException(String.format(NOT_A_VALID_NUMBER_SET, number));
+        throw new SystemException("Unknown customField '" + customField + "'");
     }
   }
 
@@ -306,7 +304,15 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
 
   @Override
   public String toString() {
-    return "TaskImpl [id="
+    return "TaskImpl [customAttributes="
+        + customAttributes
+        + ", callbackInfo="
+        + callbackInfo
+        + ", callbackState="
+        + callbackState
+        + ", attachments="
+        + attachments
+        + ", id="
         + id
         + ", externalId="
         + externalId
@@ -326,10 +332,10 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
         + name
         + ", creator="
         + creator
-        + ", description="
-        + description
         + ", note="
         + note
+        + ", description="
+        + description
         + ", priority="
         + priority
         + ", state="
@@ -350,14 +356,8 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
         + isRead
         + ", isTransferred="
         + isTransferred
-        + ", customAttributes="
-        + customAttributes
-        + ", callbackInfo="
-        + callbackInfo
-        + ", callbackState="
-        + callbackState
-        + ", attachments="
-        + attachments
+        + ", attachmentSummaries="
+        + attachmentSummaries
         + ", custom1="
         + custom1
         + ", custom2="

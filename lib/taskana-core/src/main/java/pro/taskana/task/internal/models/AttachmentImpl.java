@@ -24,16 +24,13 @@ public class AttachmentImpl extends AttachmentSummaryImpl implements Attachment 
   }
 
   @Override
-  public Map<String, String> getCustomAttributes() {
-    if (customAttributes == null) {
-      customAttributes = new HashMap<>();
-    }
-    return customAttributes;
+  public Map<String, String> getCustomAttributeMap() {
+    return getCustomAttributes();
   }
 
   @Override
-  public void setCustomAttributes(Map<String, String> customAttributes) {
-    this.customAttributes = customAttributes;
+  public void setCustomAttributeMap(Map<String, String> customAttributes) {
+    setCustomAttributes(customAttributes);
   }
 
   @Override
@@ -48,6 +45,17 @@ public class AttachmentImpl extends AttachmentSummaryImpl implements Attachment 
     summary.setChannel(this.channel);
     summary.setObjectReference(this.objectReference);
     return summary;
+  }
+
+  public Map<String, String> getCustomAttributes() {
+    if (customAttributes == null) {
+      customAttributes = new HashMap<>();
+    }
+    return customAttributes;
+  }
+
+  public void setCustomAttributes(Map<String, String> customAttributes) {
+    this.customAttributes = customAttributes;
   }
 
   @Override

@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static pro.taskana.common.api.BaseQuery.SortDirection.ASCENDING;
 import static pro.taskana.common.api.BaseQuery.SortDirection.DESCENDING;
-import static pro.taskana.common.internal.util.CheckedFunction.wrap;
+import static pro.taskana.task.api.TaskCustomField.CUSTOM_7;
 import static pro.taskana.task.api.TaskQueryColumnName.A_CHANNEL;
 import static pro.taskana.task.api.TaskQueryColumnName.A_CLASSIFICATION_ID;
 import static pro.taskana.task.api.TaskQueryColumnName.A_REF_VALUE;
@@ -20,7 +20,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
@@ -40,6 +39,7 @@ import pro.taskana.common.internal.TaskanaEngineProxyForTest;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.common.internal.util.Triplet;
+import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskQuery;
 import pro.taskana.task.api.TaskQueryColumnName;
 import pro.taskana.task.api.TaskService;
@@ -224,7 +224,7 @@ class QueryTasksAccTest extends AbstractAccTest {
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL",
             "2018-01-15",
-            createSimpleCustomProperties(3));
+            createSimpleCustomPropertyMap(3));
 
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
     task.addAttachment(attachment);
@@ -266,49 +266,51 @@ class QueryTasksAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @TestFactory
   Stream<DynamicTest> testQueryForCustomX() {
-    List<Triplet<String, String[], Integer>> list =
+    List<Triplet<TaskCustomField, String[], Integer>> list =
         Arrays.asList(
-            new Triplet<>("1", new String[] {"custom%", "p%", "%xyz%", "efg"}, 3),
-            new Triplet<>("2", new String[] {"custom%", "a%"}, 2),
-            new Triplet<>("3", new String[] {"ffg"}, 1),
-            new Triplet<>("4", new String[] {"%ust%", "%ty"}, 2),
-            new Triplet<>("5", new String[] {"ew", "al"}, 6),
-            new Triplet<>("6", new String[] {"%custom6%", "%vvg%", "11%"}, 5),
-            new Triplet<>("7", new String[] {"%"}, 2),
-            new Triplet<>("8", new String[] {"%"}, 2),
-            new Triplet<>("9", new String[] {"%"}, 2),
-            new Triplet<>("10", new String[] {"%"}, 3),
-            new Triplet<>("11", new String[] {"%"}, 3),
-            new Triplet<>("12", new String[] {"%"}, 3),
-            new Triplet<>("13", new String[] {"%"}, 3),
-            new Triplet<>("14", new String[] {"%"}, 87),
-            new Triplet<>("15", new String[] {"%"}, 3),
-            new Triplet<>("16", new String[] {"%"}, 3));
+            new Triplet<>(
+                TaskCustomField.CUSTOM_1, new String[] {"custom%", "p%", "%xyz%", "efg"}, 3),
+            new Triplet<>(TaskCustomField.CUSTOM_2, new String[] {"custom%", "a%"}, 2),
+            new Triplet<>(TaskCustomField.CUSTOM_3, new String[] {"ffg"}, 1),
+            new Triplet<>(TaskCustomField.CUSTOM_4, new String[] {"%ust%", "%ty"}, 2),
+            new Triplet<>(TaskCustomField.CUSTOM_5, new String[] {"ew", "al"}, 6),
+            new Triplet<>(TaskCustomField.CUSTOM_6, new String[] {"%custom6%", "%vvg%", "11%"}, 5),
+            new Triplet<>(TaskCustomField.CUSTOM_7, new String[] {"%"}, 2),
+            new Triplet<>(TaskCustomField.CUSTOM_8, new String[] {"%"}, 2),
+            new Triplet<>(TaskCustomField.CUSTOM_9, new String[] {"%"}, 2),
+            new Triplet<>(TaskCustomField.CUSTOM_10, new String[] {"%"}, 3),
+            new Triplet<>(TaskCustomField.CUSTOM_11, new String[] {"%"}, 3),
+            new Triplet<>(TaskCustomField.CUSTOM_12, new String[] {"%"}, 3),
+            new Triplet<>(TaskCustomField.CUSTOM_13, new String[] {"%"}, 3),
+            new Triplet<>(TaskCustomField.CUSTOM_14, new String[] {"%"}, 87),
+            new Triplet<>(TaskCustomField.CUSTOM_15, new String[] {"%"}, 3),
+            new Triplet<>(TaskCustomField.CUSTOM_16, new String[] {"%"}, 3));
+    assertThat(list).hasSameSizeAs(TaskCustomField.values());
 
     return DynamicTest.stream(
         list.iterator(),
-        t -> ("custom" + t.getLeft()),
+        t -> t.getLeft().name(),
         t -> testQueryForCustomX(t.getLeft(), t.getMiddle(), t.getRight()));
   }
 
-  void testQueryForCustomX(String customValue, String[] searchArguments, int expectedResult)
-      throws Exception {
+  void testQueryForCustomX(
+      TaskCustomField customField, String[] searchArguments, int expectedResult) throws Exception {
     List<TaskSummary> results =
-        taskService.createTaskQuery().customAttributeLike(customValue, searchArguments).list();
+        taskService.createTaskQuery().customAttributeLike(customField, searchArguments).list();
     assertThat(results).hasSize(expectedResult);
 
     String[] ids =
-        results.stream().map(wrap(t -> t.getCustomAttribute(customValue))).toArray(String[]::new);
+        results.stream().map(t -> t.getCustomAttribute(customField)).toArray(String[]::new);
 
     List<TaskSummary> result2 =
-        taskService.createTaskQuery().customAttributeIn(customValue, ids).list();
+        taskService.createTaskQuery().customAttributeIn(customField, ids).list();
     assertThat(result2).hasSize(expectedResult);
   }
 
   @WithAccessId(user = "admin")
   @Test
   void testQueryForCustom7WithExceptionInLike() {
-    assertThatThrownBy(() -> taskService.createTaskQuery().customAttributeLike("7").list())
+    assertThatThrownBy(() -> taskService.createTaskQuery().customAttributeLike(CUSTOM_7).list())
         .isInstanceOf(InvalidArgumentException.class);
   }
 
@@ -316,23 +318,24 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void testQueryForCustom7WithExceptionInIn() throws Exception {
     List<TaskSummary> results =
-        taskService.createTaskQuery().customAttributeLike("7", "fsdhfshk%").list();
+        taskService.createTaskQuery().customAttributeLike(CUSTOM_7, "fsdhfshk%").list();
     assertThat(results).isEmpty();
 
-    assertThatThrownBy(() -> taskService.createTaskQuery().customAttributeIn("7").list())
+    assertThatThrownBy(() -> taskService.createTaskQuery().customAttributeIn(CUSTOM_7).list())
         .isInstanceOf(InvalidArgumentException.class);
   }
 
   @WithAccessId(user = "admin")
   @Test
   void testQueryForCustom7WithException() throws Exception {
-    List<TaskSummary> results = taskService.createTaskQuery().customAttributeLike("7", "%").list();
+    List<TaskSummary> results =
+        taskService.createTaskQuery().customAttributeLike(CUSTOM_7, "%").list();
     assertThat(results).hasSize(2);
 
-    String[] ids =
-        results.stream().map(wrap(t -> t.getCustomAttribute("7"))).toArray(String[]::new);
+    String[] ids = results.stream().map(t -> t.getCustomAttribute(CUSTOM_7)).toArray(String[]::new);
 
-    List<TaskSummary> result2 = taskService.createTaskQuery().customAttributeIn("7", ids).list();
+    List<TaskSummary> result2 =
+        taskService.createTaskQuery().customAttributeIn(CUSTOM_7, ids).list();
     assertThat(result2).hasSize(2);
   }
 
@@ -344,8 +347,8 @@ class QueryTasksAccTest extends AbstractAccTest {
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
     newTask.setClassificationKey("T2100");
     Map<String, String> customAttributesForCreate =
-        createSimpleCustomProperties(20000); // about 1 Meg
-    newTask.setCustomAttributes(customAttributesForCreate);
+        createSimpleCustomPropertyMap(20000); // about 1 Meg
+    newTask.setCustomAttributeMap(customAttributesForCreate);
     Task createdTask = taskService.createTask(newTask);
 
     assertThat(createdTask).isNotNull();
@@ -369,8 +372,7 @@ class QueryTasksAccTest extends AbstractAccTest {
       assertThat(retrievedTask.getId()).isEqualTo(createdTask.getId());
 
       // verify that the map is correctly retrieved from the database
-      Map<String, String> customAttributesFromDb = retrievedTask.getCustomAttributes();
-      assertThat(customAttributesFromDb).isNotNull();
+      Map<String, String> customAttributesFromDb = retrievedTask.getCustomAttributeMap();
       assertThat(customAttributesFromDb).isEqualTo(customAttributesForCreate);
 
     } finally {
@@ -589,35 +591,34 @@ class QueryTasksAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @TestFactory
   Stream<DynamicTest> testQueryForOrderByCustomXAsc() {
-    Iterator<String> iterator = IntStream.rangeClosed(1, 16).mapToObj(String::valueOf).iterator();
+    Iterator<TaskCustomField> iterator = Arrays.stream(TaskCustomField.values()).iterator();
     return DynamicTest.stream(
         iterator,
-        s -> String.format("order by custom%s asc", s),
+        s -> String.format("order by %s asc", s),
         s -> testQueryForOrderByCustomX(s, ASCENDING));
   }
 
   @WithAccessId(user = "admin")
   @TestFactory
   Stream<DynamicTest> testQueryForOrderByCustomXDesc() {
-    Iterator<String> iterator = IntStream.rangeClosed(1, 16).mapToObj(String::valueOf).iterator();
+    Iterator<TaskCustomField> iterator = Arrays.stream(TaskCustomField.values()).iterator();
 
     return DynamicTest.stream(
         iterator,
-        s -> String.format("order by custom%s desc", s),
+        s -> String.format("order by %s desc", s),
         s -> testQueryForOrderByCustomX(s, DESCENDING));
   }
 
-  void testQueryForOrderByCustomX(String customValue, SortDirection sortDirection)
-      throws Exception {
+  void testQueryForOrderByCustomX(TaskCustomField customField, SortDirection sortDirection) {
     List<TaskSummary> results =
-        taskService.createTaskQuery().orderByCustomAttribute(customValue, sortDirection).list();
+        taskService.createTaskQuery().orderByCustomAttribute(customField, sortDirection).list();
 
     Comparator<String> comparator =
         sortDirection == ASCENDING ? CASE_INSENSITIVE_ORDER : CASE_INSENSITIVE_ORDER.reversed();
 
     assertThat(results)
         .hasSizeGreaterThan(2)
-        .extracting(t -> t.getCustomAttribute(customValue))
+        .extracting(t -> t.getCustomAttribute(customField))
         .filteredOn(Objects::nonNull)
         .isSortedAccordingTo(comparator);
   }

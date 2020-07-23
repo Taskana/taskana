@@ -39,7 +39,7 @@ public class TaskHistoryEventControllerRestDocumentation {
 
   private MockMvc mockMvc;
 
-  private HashMap<String, String> taskHistoryEventFieldDescriptionsMap = new HashMap<>();
+  private final HashMap<String, String> taskHistoryEventFieldDescriptionsMap = new HashMap<>();
 
   private FieldDescriptor[] allTaskHistoryEventFieldDescriptors;
 

@@ -32,11 +32,13 @@ import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.sampledata.SampleDataGenerator;
+import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.TaskImpl;
+import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
@@ -116,9 +118,9 @@ class TaskServiceImplIntExplicitTest {
       taskanaEngineImpl.getWorkbasketService().createWorkbasket(workbasket);
 
       WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem("1", "user-1-1");
-      accessItem.setPermAppend(true);
-      accessItem.setPermRead(true);
-      accessItem.setPermOpen(true);
+      accessItem.setPermission(WorkbasketPermission.APPEND, true);
+      accessItem.setPermission(WorkbasketPermission.READ, true);
+      accessItem.setPermission(WorkbasketPermission.OPEN, true);
       workbasketService.createWorkbasketAccessItem(accessItem);
 
       taskanaEngineImpl.getClassificationService().createClassification(classification);
@@ -133,11 +135,8 @@ class TaskServiceImplIntExplicitTest {
 
       TaskanaEngineImpl te2 = (TaskanaEngineImpl) taskanaEngineConfiguration.buildTaskanaEngine();
       TaskServiceImpl taskServiceImpl2 = (TaskServiceImpl) te2.getTaskService();
-      ThrowingCallable call =
-          () -> {
-            taskServiceImpl2.getTask(workbasket.getId());
-          };
-      assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
+      assertThatThrownBy(() -> taskServiceImpl2.getTask(workbasket.getId()))
+          .isInstanceOf(TaskNotFoundException.class);
       connection.commit();
     }
   }
@@ -152,9 +151,9 @@ class TaskServiceImplIntExplicitTest {
       connection.commit();
 
       WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem("1", "user-1-1");
-      accessItem.setPermAppend(true);
-      accessItem.setPermRead(true);
-      accessItem.setPermOpen(true);
+      accessItem.setPermission(WorkbasketPermission.APPEND, true);
+      accessItem.setPermission(WorkbasketPermission.READ, true);
+      accessItem.setPermission(WorkbasketPermission.OPEN, true);
       workbasketService.createWorkbasketAccessItem(accessItem);
 
       task.setPrimaryObjRef(JunitHelper.createDefaultObjRef());
@@ -177,11 +176,8 @@ class TaskServiceImplIntExplicitTest {
       Task test = this.generateDummyTask();
       ((WorkbasketSummaryImpl) (test.getWorkbasketSummary())).setId("2");
 
-      ThrowingCallable call =
-          () -> {
-            taskServiceImpl.createTask(test);
-          };
-      assertThatThrownBy(call).isInstanceOf(WorkbasketNotFoundException.class);
+      assertThatThrownBy(() -> taskServiceImpl.createTask(test))
+          .isInstanceOf(WorkbasketNotFoundException.class);
     }
   }
 
@@ -208,11 +204,8 @@ class TaskServiceImplIntExplicitTest {
       ((TaskImpl) task).setWorkbasketSummary(wb.asSummary());
       task.setClassificationKey(classification.getKey());
 
-      ThrowingCallable call =
-          () -> {
-            taskServiceImpl.createTask(task);
-          };
-      assertThatThrownBy(call).isInstanceOf(ClassificationNotFoundException.class);
+      assertThatThrownBy(() -> taskServiceImpl.createTask(task))
+          .isInstanceOf(ClassificationNotFoundException.class);
     }
   }
 
@@ -232,9 +225,9 @@ class TaskServiceImplIntExplicitTest {
       workbasket = (WorkbasketImpl) workbasketService.createWorkbasket(workbasket);
 
       WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem("1", "user-1-1");
-      accessItem.setPermAppend(true);
-      accessItem.setPermRead(true);
-      accessItem.setPermOpen(true);
+      accessItem.setPermission(WorkbasketPermission.APPEND, true);
+      accessItem.setPermission(WorkbasketPermission.READ, true);
+      accessItem.setPermission(WorkbasketPermission.OPEN, true);
       workbasketService.createWorkbasketAccessItem(accessItem);
 
       Task task = taskServiceImpl.newTask(workbasket.getId());
@@ -252,7 +245,7 @@ class TaskServiceImplIntExplicitTest {
               .stateIn(TaskState.CLAIMED)
               .workbasketKeyDomainIn(new KeyDomain("k1", "DOMAIN_A"))
               .ownerIn("test", "test2", "bla")
-              .customAttributeLike("13", "test")
+              .customAttributeLike(TaskCustomField.CUSTOM_13, "test")
               .classificationKeyIn("pId1", "pId2")
               .primaryObjectReferenceCompanyIn("first comp", "sonstwo gmbh")
               .primaryObjectReferenceSystemIn("sys")
@@ -287,11 +280,10 @@ class TaskServiceImplIntExplicitTest {
           createWorkbasketWithSecurity(wb, wb.getOwner(), true, true, true, true));
       connection.commit();
       ThrowingCallable call =
-          () -> {
-            workbasketService.createWorkbasketAccessItem(
-                createWorkbasketWithSecurity(
-                    sourceWB, sourceWB.getOwner(), false, false, false, false));
-          };
+          () ->
+              workbasketService.createWorkbasketAccessItem(
+                  createWorkbasketWithSecurity(
+                      sourceWB, sourceWB.getOwner(), false, false, false, false));
       assertThatThrownBy(call).isInstanceOf(WorkbasketAccessItemAlreadyExistException.class);
       connection.rollback();
 
@@ -345,11 +337,8 @@ class TaskServiceImplIntExplicitTest {
     try (Connection connection = dataSource.getConnection()) {
       taskanaEngineImpl.setConnection(connection);
 
-      ThrowingCallable call =
-          () -> {
-            taskServiceImpl.transfer(UUID.randomUUID() + "_X", "1");
-          };
-      assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
+      assertThatThrownBy(() -> taskServiceImpl.transfer(UUID.randomUUID() + "_X", "1"))
+          .isInstanceOf(TaskNotFoundException.class);
     }
   }
 
@@ -419,9 +408,7 @@ class TaskServiceImplIntExplicitTest {
 
     // Check failing with missing APPEND
     ThrowingCallable call =
-        () -> {
-          taskServiceImpl.transfer(taskCreated.getId(), wbNoAppendCreated.getId());
-        };
+        () -> taskServiceImpl.transfer(taskCreated.getId(), wbNoAppendCreated.getId());
     assertThatThrownBy(call)
         .describedAs(
             "Transfer Task should be FAILED, "
@@ -439,11 +426,7 @@ class TaskServiceImplIntExplicitTest {
     taskCreated.getWorkbasketSummaryImpl().setId(wbNoTransfer.getId());
     taskCreated.setExternalId(IdGenerator.generateWithPrefix("TST"));
     TaskImpl taskCreated2 = (TaskImpl) taskServiceImpl.createTask(taskCreated);
-    call =
-        () -> {
-          taskServiceImpl.transfer(taskCreated2.getId(), wbCreated.getId());
-        };
-    assertThatThrownBy(call)
+    assertThatThrownBy(() -> taskServiceImpl.transfer(taskCreated2.getId(), wbCreated.getId()))
         .describedAs(
             "Transfer Task should be FAILED, because there are no TRANSFER-Rights on current WB.")
         .isInstanceOf(NotAuthorizedException.class)
@@ -485,10 +468,10 @@ class TaskServiceImplIntExplicitTest {
       boolean permTransfer) {
     WorkbasketAccessItem accessItem =
         workbasketService.newWorkbasketAccessItem(wb.getId(), accessId);
-    accessItem.setPermOpen(permOpen);
-    accessItem.setPermRead(permRead);
-    accessItem.setPermAppend(permAppend);
-    accessItem.setPermTransfer(permTransfer);
+    accessItem.setPermission(WorkbasketPermission.OPEN, permOpen);
+    accessItem.setPermission(WorkbasketPermission.READ, permRead);
+    accessItem.setPermission(WorkbasketPermission.APPEND, permAppend);
+    accessItem.setPermission(WorkbasketPermission.TRANSFER, permTransfer);
     return accessItem;
   }
 }

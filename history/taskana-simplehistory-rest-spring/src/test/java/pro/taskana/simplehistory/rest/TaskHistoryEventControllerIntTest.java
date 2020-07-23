@@ -1,10 +1,13 @@
-package pro.taskana;
+package pro.taskana.simplehistory.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
@@ -15,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.mediatype.hal.Jackson2HalModule;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -26,9 +30,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import pro.taskana.simplehistory.rest.TaskHistoryRestConfiguration;
-import pro.taskana.simplehistory.rest.resource.TaskHistoryEventListResource;
-import pro.taskana.simplehistory.rest.resource.TaskHistoryEventResource;
+import pro.taskana.simplehistory.rest.models.TaskHistoryEventListResource;
+import pro.taskana.simplehistory.rest.models.TaskHistoryEventRepresentationModel;
 
 /** Controller for integration test. */
 @ExtendWith(SpringExtension.class)
@@ -56,6 +59,7 @@ class TaskHistoryEventControllerIntTest {
             HttpMethod.GET,
             request,
             ParameterizedTypeReference.forType(TaskHistoryEventListResource.class));
+    assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(45);
   }
@@ -70,15 +74,14 @@ class TaskHistoryEventControllerIntTest {
             HttpMethod.GET,
             request,
             ParameterizedTypeReference.forType(TaskHistoryEventListResource.class));
-    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
+    assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(3);
-    assertThat(
-            response
-                .getBody()
-                .getRequiredLink(IanaLinkRelations.SELF)
-                .getHref()
-                .endsWith(parameters))
-        .isTrue();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF))
+        .isNotNull()
+        .get()
+        .extracting(Link::getHref)
+        .asString()
+        .endsWith(parameters);
   }
 
   @Test
@@ -92,38 +95,36 @@ class TaskHistoryEventControllerIntTest {
             HttpMethod.GET,
             request,
             ParameterizedTypeReference.forType(TaskHistoryEventListResource.class));
-
+    assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(response.getBody().getLinks()).isNotNull();
     assertThat(response.getBody().getMetadata()).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(1);
-    assertThat(response.getBody().getContent().stream().findFirst().get().getDetails()).isNull();
+    assertThat(response.getBody().getContent().iterator().next().getDetails()).isNull();
   }
 
   @Test
   void should_ReturnSpecificTaskHistoryEventWithDetails_When_SingleEventIsQueried() {
-    ResponseEntity<TaskHistoryEventResource> response =
+    ResponseEntity<TaskHistoryEventRepresentationModel> response =
         template.exchange(
             server + port + "/api/v1/task-history-event/HEI:000000000000000000000000000000000000",
             HttpMethod.GET,
             request,
-            ParameterizedTypeReference.forType(TaskHistoryEventResource.class));
+            ParameterizedTypeReference.forType(TaskHistoryEventRepresentationModel.class));
 
+    assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(response.getBody().getLinks()).isNotNull();
     assertThat(response.getBody().getDetails()).isNotNull();
   }
 
   @Test
   void testThrowsExceptionIfInvalidFilterIsUsed() {
     ThrowingCallable httpCall =
-        () -> {
-          template.exchange(
-              server + port + "/api/v1/task-history-event?invalid=BPI:01",
-              HttpMethod.GET,
-              request,
-              ParameterizedTypeReference.forType(TaskHistoryEventListResource.class));
-        };
+        () ->
+            template.exchange(
+                server + port + "/api/v1/task-history-event?invalid=BPI:01",
+                HttpMethod.GET,
+                request,
+                ParameterizedTypeReference.forType(TaskHistoryEventListResource.class));
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
         .hasMessageContaining("[invalid]")
@@ -136,13 +137,12 @@ class TaskHistoryEventControllerIntTest {
     String currentTime = LocalDateTime.now().toString();
     final String finalCurrentTime = currentTime;
     ThrowingCallable httpCall =
-        () -> {
-          template.exchange(
-              server + port + "/api/v1/task-history-event?created=" + finalCurrentTime,
-              HttpMethod.GET,
-              request,
-              ParameterizedTypeReference.forType(TaskHistoryEventListResource.class));
-        };
+        () ->
+            template.exchange(
+                server + port + "/api/v1/task-history-event?created=" + finalCurrentTime,
+                HttpMethod.GET,
+                request,
+                ParameterizedTypeReference.forType(TaskHistoryEventListResource.class));
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
         .hasMessageContaining(currentTime)
@@ -157,6 +157,7 @@ class TaskHistoryEventControllerIntTest {
             HttpMethod.GET,
             request,
             ParameterizedTypeReference.forType(TaskHistoryEventListResource.class));
+    assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(23);
   }
@@ -172,25 +173,23 @@ class TaskHistoryEventControllerIntTest {
             request,
             ParameterizedTypeReference.forType(TaskHistoryEventListResource.class));
 
+    assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(2);
     assertThat(response.getBody().getContent().iterator().next().getWorkbasketKey())
         .isEqualTo("WBI:100000000000000000000000000000000002");
-    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(
-            response
-                .getBody()
-                .getRequiredLink(IanaLinkRelations.SELF)
-                .getHref()
-                .endsWith(parameters))
-        .isTrue();
-    assertThat(response.getBody().getLink("allTaskHistoryEvent")).isNotNull();
-    assertThat(
-            response
-                .getBody()
-                .getRequiredLink("allTaskHistoryEvent")
-                .getHref()
-                .endsWith("/api/v1/task-history-event"))
-        .isTrue();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF))
+        .isNotNull()
+        .get()
+        .extracting(Link::getHref)
+        .asString()
+        .endsWith(parameters);
+    assertThat(response.getBody().getLink("allTaskHistoryEvent"))
+        .isNotNull()
+        .get()
+        .extracting(Link::getHref)
+        .asString()
+        .endsWith("/api/v1/task-history-event");
+
     assertThat(response.getBody().getLink(IanaLinkRelations.FIRST)).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.LAST)).isNotNull();
   }
@@ -204,6 +203,10 @@ class TaskHistoryEventControllerIntTest {
     ObjectMapper mapper = new ObjectMapper();
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     mapper.registerModule(new Jackson2HalModule());
+    mapper
+        .registerModule(new ParameterNamesModule())
+        .registerModule(new Jdk8Module())
+        .registerModule(new JavaTimeModule());
 
     MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
     converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/hal+json"));

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.classification.api.ClassificationQuery;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistException;
@@ -48,6 +49,7 @@ public class ClassificationController extends AbstractPagingController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationController.class);
 
+
   private static final String LIKE = "%";
   private static final String NAME = "name";
   private static final String NAME_LIKE = "name-like";
@@ -55,14 +57,6 @@ public class ClassificationController extends AbstractPagingController {
   private static final String DOMAIN = "domain";
   private static final String CATEGORY = "category";
   private static final String TYPE = "type";
-  private static final String CUSTOM_1_LIKE = "custom-1-like";
-  private static final String CUSTOM_2_LIKE = "custom-2-like";
-  private static final String CUSTOM_3_LIKE = "custom-3-like";
-  private static final String CUSTOM_4_LIKE = "custom-4-like";
-  private static final String CUSTOM_5_LIKE = "custom-5-like";
-  private static final String CUSTOM_6_LIKE = "custom-6-like";
-  private static final String CUSTOM_7_LIKE = "custom-7-like";
-  private static final String CUSTOM_8_LIKE = "custom-8-like";
 
   private final ClassificationService classificationService;
   private final ClassificationRepresentationModelAssembler modelAssembler;
@@ -88,8 +82,8 @@ public class ClassificationController extends AbstractPagingController {
     }
 
     ClassificationQuery query = classificationService.createClassificationQuery();
-    query = applyFilterParams(query, params);
-    query = applySortingParams(query, params);
+    applyFilterParams(query, params);
+    applySortingParams(query, params);
 
     PageMetadata pageMetadata = getPageMetadata(params, query);
     List<ClassificationSummary> classificationSummaries = getQueryList(query, pageMetadata);
@@ -188,8 +182,7 @@ public class ClassificationController extends AbstractPagingController {
     return response;
   }
 
-  private ClassificationQuery applySortingParams(
-      ClassificationQuery query, MultiValueMap<String, String> params)
+  private void applySortingParams(ClassificationQuery query, MultiValueMap<String, String> params)
       throws InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to applySortingParams(query= {}, params= {})", query, params);
@@ -219,11 +212,9 @@ public class ClassificationController extends AbstractPagingController {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from applySortingParams(), returning {}", query);
     }
-    return query;
   }
 
-  private ClassificationQuery applyFilterParams(
-      ClassificationQuery query, MultiValueMap<String, String> params)
+  private void applyFilterParams(ClassificationQuery query, MultiValueMap<String, String> params)
       throws InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to applyFilterParams(query= {}, params= {})", query, params);
@@ -258,42 +249,21 @@ public class ClassificationController extends AbstractPagingController {
       query.typeIn(names);
       params.remove(TYPE);
     }
-    if (params.containsKey(CUSTOM_1_LIKE)) {
-      query.customAttributeLike("1", LIKE + params.get(CUSTOM_1_LIKE).get(0) + LIKE);
-      params.remove(CUSTOM_1_LIKE);
-    }
-    if (params.containsKey(CUSTOM_2_LIKE)) {
-      query.customAttributeLike("2", LIKE + params.get(CUSTOM_2_LIKE).get(0) + LIKE);
-      params.remove(CUSTOM_2_LIKE);
-    }
-    if (params.containsKey(CUSTOM_3_LIKE)) {
-      query.customAttributeLike("3", LIKE + params.get(CUSTOM_3_LIKE).get(0) + LIKE);
-      params.remove(CUSTOM_3_LIKE);
-    }
-    if (params.containsKey(CUSTOM_4_LIKE)) {
-      query.customAttributeLike("4", LIKE + params.get(CUSTOM_4_LIKE).get(0) + LIKE);
-      params.remove(CUSTOM_4_LIKE);
-    }
-    if (params.containsKey(CUSTOM_5_LIKE)) {
-      query.customAttributeLike("5", LIKE + params.get(CUSTOM_5_LIKE).get(0) + LIKE);
-      params.remove(CUSTOM_5_LIKE);
-    }
-    if (params.containsKey(CUSTOM_6_LIKE)) {
-      query.customAttributeLike("6", LIKE + params.get(CUSTOM_6_LIKE).get(0) + LIKE);
-      params.remove(CUSTOM_6_LIKE);
-    }
-    if (params.containsKey(CUSTOM_7_LIKE)) {
-      query.customAttributeLike("7", LIKE + params.get(CUSTOM_7_LIKE).get(0) + LIKE);
-      params.remove(CUSTOM_7_LIKE);
-    }
-    if (params.containsKey(CUSTOM_8_LIKE)) {
-      query.customAttributeLike("8", LIKE + params.get(CUSTOM_8_LIKE).get(0) + LIKE);
-      params.remove(CUSTOM_8_LIKE);
+
+    for (ClassificationCustomField customField : ClassificationCustomField.values()) {
+      List<String> customFieldParams =
+          params.remove(customField.name().replace("_", "-").toLowerCase() + "-like");
+      if (customFieldParams != null) {
+        String[] customValues = extractCommaSeparatedFields(customFieldParams);
+        for (int i = 0; i < customValues.length; i++) {
+          customValues[i] = LIKE + customValues[i] + LIKE;
+        }
+        query.customAttributeLike(customField, customValues);
+      }
     }
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from applyFilterParams(), returning {}", query);
     }
-    return query;
   }
 }

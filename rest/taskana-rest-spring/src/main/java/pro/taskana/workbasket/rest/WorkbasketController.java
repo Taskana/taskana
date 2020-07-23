@@ -102,8 +102,8 @@ public class WorkbasketController extends AbstractPagingController {
     }
 
     WorkbasketQuery query = workbasketService.createWorkbasketQuery();
-    query = applySortingParams(query, params);
-    query = applyFilterParams(query, params);
+    applySortingParams(query, params);
+    applyFilterParams(query, params);
 
     PageMetadata pageMetadata = getPageMetadata(params, query);
     List<WorkbasketSummary> workbasketSummaries = getQueryList(query, pageMetadata);
@@ -339,8 +339,8 @@ public class WorkbasketController extends AbstractPagingController {
     return response;
   }
 
-  private WorkbasketQuery applySortingParams(
-      WorkbasketQuery query, MultiValueMap<String, String> params) throws InvalidArgumentException {
+  private void applySortingParams(WorkbasketQuery query, MultiValueMap<String, String> params)
+      throws InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to applySortingParams(query= {}, params={})", query, params);
     }
@@ -372,11 +372,10 @@ public class WorkbasketController extends AbstractPagingController {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from applySortingParams(), returning {}", query);
     }
-    return query;
   }
 
-  private WorkbasketQuery applyFilterParams(
-      WorkbasketQuery query, MultiValueMap<String, String> params) throws InvalidArgumentException {
+  private void applyFilterParams(WorkbasketQuery query, MultiValueMap<String, String> params)
+      throws InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to applyFilterParams(query= {}, params= {})", query, params);
     }
@@ -439,7 +438,5 @@ public class WorkbasketController extends AbstractPagingController {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from applyFilterParams(), returning {}", query);
     }
-
-    return query;
   }
 }

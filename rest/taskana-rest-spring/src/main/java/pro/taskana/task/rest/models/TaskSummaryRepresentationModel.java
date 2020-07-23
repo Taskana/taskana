@@ -17,12 +17,12 @@ public class TaskSummaryRepresentationModel
 
   protected String taskId;
   protected String externalId;
-  protected Instant created; // ISO-8601
-  protected Instant claimed; // ISO-8601
-  protected Instant completed; // ISO-8601
-  protected Instant modified; // ISO-8601
-  protected Instant planned; // ISO-8601
-  protected Instant due; // ISO-8601
+  protected Instant created;
+  protected Instant claimed;
+  protected Instant completed;
+  protected Instant modified;
+  protected Instant planned;
+  protected Instant due;
   protected String name;
   protected String creator;
   protected String note;

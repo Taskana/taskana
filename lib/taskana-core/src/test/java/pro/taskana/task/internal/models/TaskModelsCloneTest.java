@@ -51,7 +51,7 @@ class TaskModelsCloneTest {
             "dummyTaskId", "dummyTaskName", "workbasketKey", createDummyClassification());
     Map<String, String> dummyCustomAttributesPreClone = new HashMap<>();
     dummyCustomAttributesPreClone.put("dummyAttributeKey", "dummyAttributeValue");
-    dummyTask.setCustomAttributes(dummyCustomAttributesPreClone);
+    dummyTask.setCustomAttributeMap(dummyCustomAttributesPreClone);
     Map<String, String> dummyCallbackInfoPreClone = new HashMap<>();
     dummyCallbackInfoPreClone.put("dummyCallbackKey", "dummyCallbackValue");
     dummyTask.setCallbackInfo(dummyCallbackInfoPreClone);
@@ -156,7 +156,7 @@ class TaskModelsCloneTest {
 
     Map<String, String> dummyMapPreClone = new HashMap<>();
     dummyMapPreClone.put("dummyString1", "dummyString2");
-    dummyAttachment.setCustomAttributes(dummyMapPreClone);
+    dummyAttachment.setCustomAttributeMap(dummyMapPreClone);
 
     AttachmentImpl dummyAttachmentCloned = dummyAttachment.copy();
     assertThat(dummyAttachmentCloned).isNotEqualTo(dummyAttachment);

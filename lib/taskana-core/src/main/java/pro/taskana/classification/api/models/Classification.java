@@ -2,6 +2,8 @@ package pro.taskana.classification.api.models;
 
 import java.time.Instant;
 
+import pro.taskana.classification.api.ClassificationCustomField;
+
 /** Interface used to specify the Classification-Model. */
 public interface Classification extends ClassificationSummary {
 
@@ -123,60 +125,12 @@ public interface Classification extends ClassificationSummary {
   void setServiceLevel(String serviceLevel);
 
   /**
-   * Set/Change the 1. custom-attribute.
+   * Sets the value for custom Attribute.
    *
-   * @param custom1 the first custom attribute
+   * @param customField identifies which custom attribute is to be set.
+   * @param value the value of the custom attribute to be set
    */
-  void setCustom1(String custom1);
-
-  /**
-   * Set/Change the 2. custom-attribute.
-   *
-   * @param custom2 the second custom attribute
-   */
-  void setCustom2(String custom2);
-
-  /**
-   * Set/Change the 3. custom-attribute.
-   *
-   * @param custom3 the third custom attribute
-   */
-  void setCustom3(String custom3);
-
-  /**
-   * Set/Change the 4. custom-attribute.
-   *
-   * @param custom4 the fourth custom attribute
-   */
-  void setCustom4(String custom4);
-
-  /**
-   * Set/Change the 5. custom-attribute.
-   *
-   * @param custom5 the fifth custom attribute
-   */
-  void setCustom5(String custom5);
-
-  /**
-   * Set/Change the 6. custom-attribute.
-   *
-   * @param custom6 the sixth custom attribute
-   */
-  void setCustom6(String custom6);
-
-  /**
-   * Set/Change the 7. custom-attribute.
-   *
-   * @param custom7 the seventh custom attribute
-   */
-  void setCustom7(String custom7);
-
-  /**
-   * Set/Change the 8. custom-attribute.
-   *
-   * @param custom8 the eight custom attribute
-   */
-  void setCustom8(String custom8);
+  void setCustomAttribute(ClassificationCustomField customField, String value);
 
   /**
    * Return a summary of the current Classification.

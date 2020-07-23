@@ -4,7 +4,7 @@ import java.time.Instant;
 import java.util.List;
 
 import pro.taskana.classification.api.models.ClassificationSummary;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
@@ -183,15 +183,12 @@ public interface TaskSummary {
   boolean isTransferred();
 
   /**
-   * Gets the custom attribute number num of the task.
+   * Gets the custom attribute of the task.
    *
-   * @param num identifies which custom attribute is requested. Taskana concatenates "custom_" with
-   *     num and the resulting String must match the name of the database column that contains the
-   *     custom attribute. Valid values are "1", "2" .. "16"
-   * @return the value of custom attribute number num
-   * @throws InvalidArgumentException if num has not a value of "1", "2" ... "16"
+   * @param customField identifies which custom attribute is requested.
+   * @return the value for the given customField
    */
-  String getCustomAttribute(String num) throws InvalidArgumentException;
+  String getCustomAttribute(TaskCustomField customField);
 
   /**
    * Duplicates this TaskSummary without the internal and external id.

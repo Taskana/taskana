@@ -37,6 +37,7 @@ import pro.taskana.common.rest.AbstractPagingController;
 import pro.taskana.common.rest.Mapping;
 import pro.taskana.common.rest.QueryHelper;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
+import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskQuery;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
@@ -90,7 +91,6 @@ public class TaskController extends AbstractPagingController {
   private static final String EXTERNAL_ID = "external-id";
   private static final String WILDCARD_SEARCH_VALUE = "wildcard-search-value";
   private static final String WILDCARD_SEARCH_FIELDS = "wildcard-search-fields";
-  private static final String CUSTOM = "custom";
 
   private static final String INDEFINITE = "";
 
@@ -117,8 +117,8 @@ public class TaskController extends AbstractPagingController {
     }
 
     TaskQuery query = taskService.createTaskQuery();
-    query = applyFilterParams(query, params);
-    query = applySortingParams(query, params);
+    applyFilterParams(query, params);
+    applySortingParams(query, params);
 
     PageMetadata pageMetadata = getPageMetadata(params, query);
     List<TaskSummary> taskSummaries = getQueryList(query, pageMetadata);
@@ -143,7 +143,7 @@ public class TaskController extends AbstractPagingController {
     LOGGER.debug("Entry to deleteTasks(params= {})", params);
 
     TaskQuery query = taskService.createTaskQuery();
-    query = applyFilterParams(query, params);
+    applyFilterParams(query, params);
     validateNoInvalidParameterIsLeft(params);
 
     List<TaskSummary> taskSummaries = getQueryList(query, null);
@@ -211,8 +211,8 @@ public class TaskController extends AbstractPagingController {
     LOGGER.debug("Entry to selectAndClaimTask");
 
     TaskQuery query = taskService.createTaskQuery();
-    query = applyFilterParams(query, params);
-    query = applySortingParams(query, params);
+    applyFilterParams(query, params);
+    applySortingParams(query, params);
 
     Task selectedAndClaimedTask = taskService.selectAndClaim(query);
 
@@ -342,7 +342,7 @@ public class TaskController extends AbstractPagingController {
     return result;
   }
 
-  private TaskQuery applyFilterParams(TaskQuery taskQuery, MultiValueMap<String, String> params)
+  private void applyFilterParams(TaskQuery taskQuery, MultiValueMap<String, String> params)
       throws InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to applyFilterParams(taskQuery= {}, params= {})", taskQuery, params);
@@ -478,13 +478,15 @@ public class TaskController extends AbstractPagingController {
       params.remove(EXTERNAL_ID);
     }
 
-    for (int i = 1; i <= 16; i++) {
-      if (params.containsKey(CUSTOM + i)) {
-        String[] customValues = extractCommaSeparatedFields(params.get(CUSTOM + i));
-        taskQuery.customAttributeIn(String.valueOf(i), customValues);
-        params.remove(CUSTOM + i);
+    for (TaskCustomField customField : TaskCustomField.values()) {
+      List<String> customFieldParams =
+          params.remove(customField.name().replace("_", "").toLowerCase());
+      if (customFieldParams != null) {
+        String[] customValues = extractCommaSeparatedFields(customFieldParams);
+        taskQuery.customAttributeIn(customField, customValues);
       }
     }
+
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from applyFilterParams(), returning {}", taskQuery);
     }
@@ -492,7 +494,6 @@ public class TaskController extends AbstractPagingController {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from applyFilterParams(), query: {}", taskQuery);
     }
-    return taskQuery;
   }
 
   private WildcardSearchField[] createWildcardSearchFields(String[] wildcardFields) {
@@ -658,7 +659,7 @@ public class TaskController extends AbstractPagingController {
     return null;
   }
 
-  private TaskQuery applySortingParams(TaskQuery query, MultiValueMap<String, String> params)
+  private void applySortingParams(TaskQuery query, MultiValueMap<String, String> params)
       throws InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to applySortingParams(query= {}, params= {})", query, params);
@@ -701,7 +702,6 @@ public class TaskController extends AbstractPagingController {
       LOGGER.debug("Exit from applySortingParams(), returning {}", query);
     }
 
-    return query;
   }
 
   private int[] extractPriorities(String[] prioritiesInString) {

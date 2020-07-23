@@ -1,5 +1,7 @@
 package pro.taskana.classification.api.models;
 
+import pro.taskana.classification.api.ClassificationCustomField;
+
 /**
  * Interface for ClassificationSummaries. This is a specific short model-object which only requieres
  * the most important informations. Specific ones can be load afterwards via ID.
@@ -85,60 +87,12 @@ public interface ClassificationSummary {
   int getPriority();
 
   /**
-   * Get the 1. custom-attribute.
+   * Gets the custom attribute of the classification.
    *
-   * @return custom1
+   * @param customField identifies which custom attribute is requested.
+   * @return the value for the given customField
    */
-  String getCustom1();
-
-  /**
-   * Get the 2. custom-attribute.
-   *
-   * @return custom2
-   */
-  String getCustom2();
-
-  /**
-   * Get the 3. custom-attribute.
-   *
-   * @return custom3
-   */
-  String getCustom3();
-
-  /**
-   * Get the 4. custom-attribute.
-   *
-   * @return custom4
-   */
-  String getCustom4();
-
-  /**
-   * Get the 5. custom-attribute.
-   *
-   * @return custom5
-   */
-  String getCustom5();
-
-  /**
-   * Get the 6. custom-attribute.
-   *
-   * @return custom6
-   */
-  String getCustom6();
-
-  /**
-   * Get the 7. custom-attribute.
-   *
-   * @return custom7
-   */
-  String getCustom7();
-
-  /**
-   * Get the 8. custom-attribute.
-   *
-   * @return custom8
-   */
-  String getCustom8();
+  String getCustomAttribute(ClassificationCustomField customField);
 
   /**
    * Duplicates this ClassificationSummary without the id.

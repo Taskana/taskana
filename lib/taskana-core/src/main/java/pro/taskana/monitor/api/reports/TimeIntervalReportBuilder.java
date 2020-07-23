@@ -9,7 +9,7 @@ import pro.taskana.monitor.api.SelectedItem;
 import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.AgeQueryItem;
-import pro.taskana.task.api.CustomField;
+import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
 
 /**
@@ -102,7 +102,7 @@ public interface TimeIntervalReportBuilder<
    * @param customAttributeFilter a map of custom attributes and custom attribute value
    * @return the TimeIntervalReportBuilder
    */
-  B customAttributeFilterIn(Map<CustomField, String> customAttributeFilter);
+  B customAttributeFilterIn(Map<TaskCustomField, String> customAttributeFilter);
 
   /**
    * Returns a list of all taskIds of the report that are in the list of selected items.
@@ -118,11 +118,11 @@ public interface TimeIntervalReportBuilder<
   /**
    * Returns a list of all values of an entered custom field that are in the report.
    *
-   * @param customField the customField whose values should appear in the list
+   * @param taskCustomField the customField whose values should appear in the list
    * @return the list of all custom attribute values
    * @throws NotAuthorizedException if the user has no rights to access the monitor
    */
-  List<String> listCustomAttributeValuesForCustomAttributeName(CustomField customField)
+  List<String> listCustomAttributeValuesForCustomAttributeName(TaskCustomField taskCustomField)
       throws NotAuthorizedException;
 
   Report<I, H> buildReport(TaskTimestamp timestamp)

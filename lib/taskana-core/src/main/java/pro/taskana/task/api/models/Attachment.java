@@ -41,7 +41,7 @@ public interface Attachment extends AttachmentSummary {
    *
    * @return customAttributes as {@link Map}
    */
-  Map<String, String> getCustomAttributes();
+  Map<String, String> getCustomAttributeMap();
 
   /**
    * Sets the custom attribute Map of the attachment.
@@ -49,7 +49,7 @@ public interface Attachment extends AttachmentSummary {
    * @param customAttributes a {@link Map} that contains the custom attributes of the attachment as
    *     key, value pairs
    */
-  void setCustomAttributes(Map<String, String> customAttributes);
+  void setCustomAttributeMap(Map<String, String> customAttributes);
 
   /**
    * Return a summary of the current Attachment.

@@ -14,6 +14,7 @@ import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
 import pro.taskana.common.rest.Mapping;
 import pro.taskana.common.rest.TaskanaSpringBootTest;
+import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.models.Attachment;
@@ -150,25 +151,25 @@ class TaskRepresentationModelAssemberTest {
     task.setPrimaryObjRef(primaryObjRef);
     task.setRead(true);
     task.setTransferred(true);
-    task.setCustomAttributes(Collections.singletonMap("abc", "def"));
+    task.setCustomAttributeMap(Collections.singletonMap("abc", "def"));
     task.setCallbackInfo(Collections.singletonMap("ghi", "jkl"));
     task.setAttachments(Collections.singletonList(attachment));
-    task.setCustom1("custom1");
-    task.setCustom2("custom2");
-    task.setCustom3("custom3");
-    task.setCustom4("custom4");
-    task.setCustom5("custom5");
-    task.setCustom6("custom6");
-    task.setCustom7("custom7");
-    task.setCustom8("custom8");
-    task.setCustom9("custom9");
-    task.setCustom10("custom10");
-    task.setCustom11("custom11");
-    task.setCustom12("custom12");
-    task.setCustom13("custom13");
-    task.setCustom14("custom14");
-    task.setCustom15("custom15");
-    task.setCustom16("custom16");
+    task.setCustomAttribute(TaskCustomField.CUSTOM_1, "custom1");
+    task.setCustomAttribute(TaskCustomField.CUSTOM_2, "custom2");
+    task.setCustomAttribute(TaskCustomField.CUSTOM_3, "custom3");
+    task.setCustomAttribute(TaskCustomField.CUSTOM_4, "custom4");
+    task.setCustomAttribute(TaskCustomField.CUSTOM_5, "custom5");
+    task.setCustomAttribute(TaskCustomField.CUSTOM_6, "custom6");
+    task.setCustomAttribute(TaskCustomField.CUSTOM_7, "custom7");
+    task.setCustomAttribute(TaskCustomField.CUSTOM_8, "custom8");
+    task.setCustomAttribute(TaskCustomField.CUSTOM_9, "custom9");
+    task.setCustomAttribute(TaskCustomField.CUSTOM_10, "custom10");
+    task.setCustomAttribute(TaskCustomField.CUSTOM_11, "custom11");
+    task.setCustomAttribute(TaskCustomField.CUSTOM_12, "custom12");
+    task.setCustomAttribute(TaskCustomField.CUSTOM_13, "custom13");
+    task.setCustomAttribute(TaskCustomField.CUSTOM_14, "custom14");
+    task.setCustomAttribute(TaskCustomField.CUSTOM_15, "custom15");
+    task.setCustomAttribute(TaskCustomField.CUSTOM_16, "custom16");
     // when
     TaskRepresentationModel repModel = assembler.toModel(task);
     // then
@@ -211,7 +212,7 @@ class TaskRepresentationModelAssemberTest {
     task.setPrimaryObjRef(primaryObjRef);
     task.setRead(true);
     task.setTransferred(true);
-    task.setCustomAttributes(Collections.singletonMap("abc", "def"));
+    task.setCustomAttributeMap(Collections.singletonMap("abc", "def"));
     task.setCallbackInfo(Collections.singletonMap("ghi", "jkl"));
     task.setAttachments(Collections.singletonList(attachment));
     task.setCustom1("custom1");
@@ -240,7 +241,7 @@ class TaskRepresentationModelAssemberTest {
   private void testEquality(Task task, TaskRepresentationModel repModel) throws Exception {
     TaskSummaryRepresentationModelAssemblerTest.testEquality(task, repModel);
 
-    testEqualityCustomAttributes(task.getCustomAttributes(), repModel.getCustomAttributes());
+    testEqualityCustomAttributes(task.getCustomAttributeMap(), repModel.getCustomAttributes());
     testEqualityCustomAttributes(task.getCallbackInfo(), repModel.getCallbackInfo());
     testEqualityAttachments(task.getAttachments(), repModel.getAttachments());
   }

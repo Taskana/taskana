@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
+import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.TaskImpl;
@@ -61,7 +62,7 @@ class TaskRoutingAccTest extends AbstractAccTest {
     newTask.setClassificationKey("L12010");
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-    newTask.setCustomAttribute("7", "noRouting");
+    newTask.setCustomAttribute(TaskCustomField.CUSTOM_7, "noRouting");
     assertThatThrownBy(() -> taskService.createTask(newTask))
         .isInstanceOf(InvalidArgumentException.class);
   }
@@ -75,7 +76,7 @@ class TaskRoutingAccTest extends AbstractAccTest {
     newTask.setClassificationKey("L12010");
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-    newTask.setCustomAttribute("7", "multipleWorkbaskets");
+    newTask.setCustomAttribute(TaskCustomField.CUSTOM_7, "multipleWorkbaskets");
     assertThatThrownBy(() -> taskService.createTask(newTask))
         .isInstanceOf(InvalidArgumentException.class);
   }
@@ -88,7 +89,6 @@ class TaskRoutingAccTest extends AbstractAccTest {
 
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-    TaskImpl createdTask = (TaskImpl) taskService.createTask(newTask);
-    return createdTask;
+    return (TaskImpl) taskService.createTask(newTask);
   }
 }

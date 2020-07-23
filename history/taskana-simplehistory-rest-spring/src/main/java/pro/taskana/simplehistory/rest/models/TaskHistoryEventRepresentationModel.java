@@ -1,18 +1,20 @@
-package pro.taskana.simplehistory.rest.resource;
+package pro.taskana.simplehistory.rest.models;
 
+import java.time.Instant;
 import org.springframework.hateoas.RepresentationModel;
 
 import pro.taskana.spi.history.api.events.TaskanaHistoryEvent;
 
 /** Resource class for {@link TaskanaHistoryEvent}. */
-public class TaskHistoryEventResource extends RepresentationModel<TaskHistoryEventResource> {
+public class TaskHistoryEventRepresentationModel
+    extends RepresentationModel<TaskHistoryEventRepresentationModel> {
 
-  private String taskHistoryEventId;
+  private String taskHistoryId;
   private String businessProcessId;
   private String parentBusinessProcessId;
   private String taskId;
   private String eventType;
-  private String created;
+  private Instant created;
   private String userId;
   private String domain;
   private String workbasketKey;
@@ -33,11 +35,11 @@ public class TaskHistoryEventResource extends RepresentationModel<TaskHistoryEve
   private String details;
 
   public String getTaskHistoryId() {
-    return taskHistoryEventId;
+    return taskHistoryId;
   }
 
   public void setTaskHistoryId(String taskHistoryId) {
-    this.taskHistoryEventId = taskHistoryId;
+    this.taskHistoryId = taskHistoryId;
   }
 
   public String getBusinessProcessId() {
@@ -72,11 +74,11 @@ public class TaskHistoryEventResource extends RepresentationModel<TaskHistoryEve
     this.eventType = eventType;
   }
 
-  public String getCreated() {
+  public Instant getCreated() {
     return created;
   }
 
-  public void setCreated(String created) {
+  public void setCreated(Instant created) {
     this.created = created;
   }
 
@@ -226,31 +228,54 @@ public class TaskHistoryEventResource extends RepresentationModel<TaskHistoryEve
 
   @Override
   public String toString() {
-    return "TaskHistoryEventResource ["
-        + "taskHistoryEventId= "
-        + this.taskHistoryEventId
-        + "businessProcessId= "
-        + this.businessProcessId
-        + "parentBusinessProcessId= "
-        + this.parentBusinessProcessId
-        + "taskId= "
-        + this.taskId
-        + "eventType= "
-        + this.eventType
-        + "created= "
-        + this.created
-        + "userId= "
-        + this.userId
-        + "domain= "
-        + this.domain
-        + "workbasketKey= "
-        + this.workbasketKey
-        + "oldValue= "
-        + this.oldValue
-        + "newValue= "
-        + this.newValue
-        + "details= "
-        + this.details
+    return "TaskHistoryEventRepresentationModel [taskHistoryEventId="
+        + taskHistoryId
+        + ", businessProcessId="
+        + businessProcessId
+        + ", parentBusinessProcessId="
+        + parentBusinessProcessId
+        + ", taskId="
+        + taskId
+        + ", eventType="
+        + eventType
+        + ", created="
+        + created
+        + ", userId="
+        + userId
+        + ", domain="
+        + domain
+        + ", workbasketKey="
+        + workbasketKey
+        + ", porCompany="
+        + porCompany
+        + ", porType="
+        + porType
+        + ", porSystem="
+        + porSystem
+        + ", porInstance="
+        + porInstance
+        + ", porValue="
+        + porValue
+        + ", taskClassificationKey="
+        + taskClassificationKey
+        + ", taskClassificationCategory="
+        + taskClassificationCategory
+        + ", attachmentClassificationKey="
+        + attachmentClassificationKey
+        + ", oldValue="
+        + oldValue
+        + ", newValue="
+        + newValue
+        + ", custom1="
+        + custom1
+        + ", custom2="
+        + custom2
+        + ", custom3="
+        + custom3
+        + ", custom4="
+        + custom4
+        + ", details="
+        + details
         + "]";
   }
 }

@@ -13,9 +13,11 @@ import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.security.CurrentUserContext;
+import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketQuery;
 import pro.taskana.workbasket.api.WorkbasketQueryColumnName;
@@ -240,23 +242,9 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
   }
 
   @Override
-  public WorkbasketQuery orderByCustom1(SortDirection sortDirection) {
-    return addOrderCriteria("CUSTOM_1", sortDirection);
-  }
-
-  @Override
-  public WorkbasketQuery orderByCustom2(SortDirection sortDirection) {
-    return addOrderCriteria("CUSTOM_2", sortDirection);
-  }
-
-  @Override
-  public WorkbasketQuery orderByCustom3(SortDirection sortDirection) {
-    return addOrderCriteria("CUSTOM_3", sortDirection);
-  }
-
-  @Override
-  public WorkbasketQuery orderByCustom4(SortDirection sortDirection) {
-    return addOrderCriteria("CUSTOM_4", sortDirection);
+  public WorkbasketQuery orderByCustomAttribute(
+      WorkbasketCustomField customField, SortDirection sortDirection) {
+    return addOrderCriteria(customField.name(), sortDirection);
   }
 
   @Override
@@ -280,50 +268,46 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
   }
 
   @Override
-  public WorkbasketQuery custom1In(String... custom1) {
-    this.custom1In = custom1;
+  public WorkbasketQuery customAttributeIn(
+      WorkbasketCustomField customField, String... searchArguments) {
+    switch (customField) {
+      case CUSTOM_1:
+        custom1In = searchArguments;
+        break;
+      case CUSTOM_2:
+        custom2In = searchArguments;
+        break;
+      case CUSTOM_3:
+        custom3In = searchArguments;
+        break;
+      case CUSTOM_4:
+        custom4In = searchArguments;
+        break;
+      default:
+        throw new SystemException("Unknown customField '" + customField + "'");
+    }
     return this;
   }
 
   @Override
-  public WorkbasketQuery custom1Like(String... custom1) {
-    this.custom1Like = toUpperCopy(custom1);
-    return this;
-  }
-
-  @Override
-  public WorkbasketQuery custom2In(String... custom2) {
-    this.custom2In = custom2;
-    return this;
-  }
-
-  @Override
-  public WorkbasketQuery custom2Like(String... custom2) {
-    this.custom2Like = toUpperCopy(custom2);
-    return this;
-  }
-
-  @Override
-  public WorkbasketQuery custom3In(String... custom3) {
-    this.custom3In = custom3;
-    return this;
-  }
-
-  @Override
-  public WorkbasketQuery custom3Like(String... custom3) {
-    this.custom3Like = toUpperCopy(custom3);
-    return this;
-  }
-
-  @Override
-  public WorkbasketQuery custom4In(String... custom4) {
-    this.custom4In = custom4;
-    return this;
-  }
-
-  @Override
-  public WorkbasketQuery custom4Like(String... custom4) {
-    this.custom4Like = toUpperCopy(custom4);
+  public WorkbasketQuery customAttributeLike(
+      WorkbasketCustomField customField, String... searchArguments) {
+    switch (customField) {
+      case CUSTOM_1:
+        custom1Like = toUpperCopy(searchArguments);
+        break;
+      case CUSTOM_2:
+        custom2Like = toUpperCopy(searchArguments);
+        break;
+      case CUSTOM_3:
+        custom3Like = toUpperCopy(searchArguments);
+        break;
+      case CUSTOM_4:
+        custom4Like = toUpperCopy(searchArguments);
+        break;
+      default:
+        throw new SystemException("Unknown customField '" + customField + "'");
+    }
     return this;
   }
 
@@ -683,8 +667,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
       if (this.accessId == null) {
         String[] accessIds = new String[0];
         List<String> ucAccessIds = CurrentUserContext.getAccessIds();
-        if (ucAccessIds != null && !ucAccessIds.isEmpty()) {
-          accessIds = new String[ucAccessIds.size()];
+        if (!ucAccessIds.isEmpty()) {
           accessIds = ucAccessIds.toArray(accessIds);
         }
         this.accessId = accessIds;
@@ -704,83 +687,88 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
 
   @Override
   public String toString() {
-    return "WorkbasketQueryImpl ["
-        + "columnName="
-        + this.columnName
+    return "WorkbasketQueryImpl [columnName="
+        + columnName
         + ", accessId="
-        + Arrays.toString(this.accessId)
+        + Arrays.toString(accessId)
         + ", idIn="
-        + Arrays.toString(this.idIn)
+        + Arrays.toString(idIn)
         + ", permission="
-        + this.permission
+        + permission
         + ", nameIn="
-        + Arrays.toString(this.nameIn)
+        + Arrays.toString(nameIn)
         + ", nameLike="
-        + Arrays.toString(this.nameLike)
+        + Arrays.toString(nameLike)
         + ", keyIn="
-        + Arrays.toString(this.keyIn)
+        + Arrays.toString(keyIn)
         + ", keyLike="
-        + Arrays.toString(this.keyLike)
+        + Arrays.toString(keyLike)
         + ", keyOrNameLike="
-        + Arrays.toString(this.keyOrNameLike)
+        + Arrays.toString(keyOrNameLike)
         + ", domainIn="
-        + Arrays.toString(this.domainIn)
+        + Arrays.toString(domainIn)
         + ", domainLike="
-        + Arrays.toString(this.domainLike)
+        + Arrays.toString(domainLike)
         + ", type="
-        + Arrays.toString(this.type)
+        + Arrays.toString(type)
         + ", createdIn="
-        + Arrays.toString(this.createdIn)
+        + Arrays.toString(createdIn)
         + ", modifiedIn="
-        + Arrays.toString(this.modifiedIn)
+        + Arrays.toString(modifiedIn)
         + ", descriptionLike="
-        + Arrays.toString(this.descriptionLike)
+        + Arrays.toString(descriptionLike)
         + ", ownerIn="
-        + Arrays.toString(this.ownerIn)
+        + Arrays.toString(ownerIn)
         + ", ownerLike="
-        + Arrays.toString(this.ownerLike)
+        + Arrays.toString(ownerLike)
         + ", custom1In="
-        + Arrays.toString(this.custom1In)
+        + Arrays.toString(custom1In)
         + ", custom1Like="
-        + Arrays.toString(this.custom1Like)
+        + Arrays.toString(custom1Like)
         + ", custom2In="
-        + Arrays.toString(this.custom2In)
+        + Arrays.toString(custom2In)
         + ", custom2Like="
-        + Arrays.toString(this.custom2Like)
+        + Arrays.toString(custom2Like)
         + ", custom3In="
-        + Arrays.toString(this.custom3In)
+        + Arrays.toString(custom3In)
         + ", custom3Like="
-        + Arrays.toString(this.custom3Like)
+        + Arrays.toString(custom3Like)
         + ", custom4In="
-        + Arrays.toString(this.custom4In)
+        + Arrays.toString(custom4In)
         + ", custom4Like="
-        + Arrays.toString(this.custom4Like)
+        + Arrays.toString(custom4Like)
         + ", orgLevel1In="
-        + Arrays.toString(this.orgLevel1In)
+        + Arrays.toString(orgLevel1In)
         + ", orgLevel1Like="
-        + Arrays.toString(this.orgLevel1Like)
+        + Arrays.toString(orgLevel1Like)
         + ", orgLevel2In="
-        + Arrays.toString(this.orgLevel2In)
+        + Arrays.toString(orgLevel2In)
         + ", orgLevel2Like="
-        + Arrays.toString(this.orgLevel2Like)
+        + Arrays.toString(orgLevel2Like)
         + ", orgLevel3In="
-        + Arrays.toString(this.orgLevel3In)
+        + Arrays.toString(orgLevel3In)
         + ", orgLevel3Like="
-        + Arrays.toString(this.orgLevel3Like)
+        + Arrays.toString(orgLevel3Like)
         + ", orgLevel4In="
-        + Arrays.toString(this.orgLevel4In)
+        + Arrays.toString(orgLevel4In)
         + ", orgLevel4Like="
-        + Arrays.toString(this.orgLevel4Like)
+        + Arrays.toString(orgLevel4Like)
         + ", markedForDeletion="
-        + this.markedForDeletion
+        + markedForDeletion
+        + ", taskanaEngine="
+        + taskanaEngine
         + ", orderBy="
-        + this.orderBy
+        + orderBy
+        + ", orderColumns="
+        + orderColumns
         + ", joinWithAccessList="
-        + this.joinWithAccessList
+        + joinWithAccessList
         + ", checkReadPermission="
-        + this.checkReadPermission
+        + checkReadPermission
         + ", usedToAugmentTasks="
-        + this.usedToAugmentTasks
+        + usedToAugmentTasks
+        + ", callerRolesAndAccessIdsAlreadyHandled="
+        + callerRolesAndAccessIdsAlreadyHandled
         + "]";
   }
 }

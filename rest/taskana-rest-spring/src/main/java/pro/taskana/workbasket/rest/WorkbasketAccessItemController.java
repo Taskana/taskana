@@ -74,9 +74,9 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
     }
 
     WorkbasketAccessItemQuery query = workbasketService.createWorkbasketAccessItemQuery();
-    query = applyAccessIdIn(query, params);
-    query = applyFilterParams(query, params);
-    query = applySortingParams(query, params);
+    applyAccessIdIn(query, params);
+    applyFilterParams(query, params);
+    applySortingParams(query, params);
 
     PageMetadata pageMetadata = getPageMetadata(params, query);
     List<WorkbasketAccessItem> workbasketAccessItems = getQueryList(query, pageMetadata);
@@ -125,7 +125,7 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
     return response;
   }
 
-  private WorkbasketAccessItemQuery applyAccessIdIn(
+  private void applyAccessIdIn(
       WorkbasketAccessItemQuery query, MultiValueMap<String, String> params) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to getAccessIds(query= {}, params= {})", query, params);
@@ -140,10 +140,9 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from getAccessIds(), returning {}", query);
     }
-    return query;
   }
 
-  private WorkbasketAccessItemQuery applyFilterParams(
+  private void applyFilterParams(
       WorkbasketAccessItemQuery query, MultiValueMap<String, String> params) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to applyFilterParams(query= {}, params= {})", query, params);
@@ -171,10 +170,9 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from applyFilterParams(), returning {}", query);
     }
-    return query;
   }
 
-  private WorkbasketAccessItemQuery applySortingParams(
+  private void applySortingParams(
       WorkbasketAccessItemQuery query, MultiValueMap<String, String> params)
       throws InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
@@ -199,7 +197,6 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from applySortingParams(), returning {}", query);
     }
-    return query;
   }
 
   private String[] extractVerticalBarSeparatedFields(List<String> searchFor) {

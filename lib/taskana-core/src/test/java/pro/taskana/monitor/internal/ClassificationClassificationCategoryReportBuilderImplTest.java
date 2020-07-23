@@ -29,7 +29,7 @@ import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.ClassificationCategoryReport;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.MonitorQueryItem;
-import pro.taskana.task.api.CustomField;
+import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
 
 /** Unit Test for CategoryBuilderImpl. */
@@ -60,8 +60,8 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
     final List<String> domains = Collections.singletonList("DOMAIN_A");
     final List<String> classificationIds = Collections.singletonList("L10000");
     final List<String> excludedClassificationIds = Collections.singletonList("L20000");
-    Map<CustomField, String> customAttributeFilter = new HashMap<>();
-    customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
+    Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
+    customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
 
     List<MonitorQueryItem> expectedResult = new ArrayList<>();
     MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
@@ -117,8 +117,8 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
     final List<String> domains = Collections.singletonList("DOMAIN_A");
     final List<String> classificationIds = Collections.singletonList("L10000");
     final List<String> excludedClassificationIds = Collections.singletonList("L20000");
-    Map<CustomField, String> customAttributeFilter = new HashMap<>();
-    customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
+    Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
+    customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
     final List<TimeIntervalColumnHeader> columnHeaders =
         Collections.singletonList(new TimeIntervalColumnHeader(0, 0));
 
@@ -179,8 +179,8 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
     final List<String> domains = Collections.singletonList("DOMAIN_A");
     final List<String> classificationIds = Collections.singletonList("L10000");
     final List<String> excludedClassificationIds = Collections.singletonList("L20000");
-    final Map<CustomField, String> customAttributeFilter = new HashMap<>();
-    customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
+    final Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
+    customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
     final List<TimeIntervalColumnHeader> columnHeaders =
         Collections.singletonList(new TimeIntervalColumnHeader(0, 0));
 
@@ -252,8 +252,8 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
     final List<String> domains = Collections.singletonList("DOMAIN_A");
     final List<String> classificationIds = Collections.singletonList("L10000");
     final List<String> excludedClassificationIds = Collections.singletonList("L20000");
-    Map<CustomField, String> customAttributeFilter = new HashMap<>();
-    customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
+    Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
+    customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
     final List<TimeIntervalColumnHeader> columnHeaders =
         Collections.singletonList(new TimeIntervalColumnHeader(0, 0));
 
@@ -271,7 +271,7 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
             classificationIds,
             excludedClassificationIds,
             customAttributeFilter,
-            CustomField.CUSTOM_1))
+            TaskCustomField.CUSTOM_1))
         .thenReturn(expectedResult);
 
     final List<String> actualResult =
@@ -284,7 +284,7 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
             .excludedClassificationIdIn(excludedClassificationIds)
             .customAttributeFilterIn(customAttributeFilter)
             .withColumnHeaders(columnHeaders)
-            .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_1);
+            .listCustomAttributeValuesForCustomAttributeName(TaskCustomField.CUSTOM_1);
 
     verify(internalTaskanaEngineMock).openConnection();
     verify(internalTaskanaEngineMock, times(2)).getEngine();
@@ -307,7 +307,7 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
     List<String> result =
         cut.createClassificationCategoryReportBuilder()
             .workbasketIdIn(Collections.singletonList("DieGibtsSicherNed"))
-            .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_1);
+            .listCustomAttributeValuesForCustomAttributeName(TaskCustomField.CUSTOM_1);
     assertThat(result).isNotNull();
   }
 }

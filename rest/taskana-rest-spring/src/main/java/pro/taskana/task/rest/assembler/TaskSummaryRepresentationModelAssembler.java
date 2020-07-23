@@ -10,13 +10,12 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import pro.taskana.classification.rest.assembler.ClassificationSummaryRepresentationModelAssembler;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.rest.Mapping;
 import pro.taskana.common.rest.assembler.TaskanaPagingAssembler;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
 import pro.taskana.common.rest.models.TaskanaPagedModelKeys;
 import pro.taskana.resource.rest.PageLinks;
+import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.TaskSummaryImpl;
@@ -76,26 +75,22 @@ public class TaskSummaryRepresentationModelAssembler
         taskSummary.getAttachmentSummaries().stream()
             .map(attachmentAssembler::toModel)
             .collect(Collectors.toList()));
-    try {
-      repModel.setCustom1(taskSummary.getCustomAttribute("1"));
-      repModel.setCustom2(taskSummary.getCustomAttribute("2"));
-      repModel.setCustom3(taskSummary.getCustomAttribute("3"));
-      repModel.setCustom4(taskSummary.getCustomAttribute("4"));
-      repModel.setCustom5(taskSummary.getCustomAttribute("5"));
-      repModel.setCustom6(taskSummary.getCustomAttribute("6"));
-      repModel.setCustom7(taskSummary.getCustomAttribute("7"));
-      repModel.setCustom8(taskSummary.getCustomAttribute("8"));
-      repModel.setCustom9(taskSummary.getCustomAttribute("9"));
-      repModel.setCustom10(taskSummary.getCustomAttribute("10"));
-      repModel.setCustom11(taskSummary.getCustomAttribute("11"));
-      repModel.setCustom12(taskSummary.getCustomAttribute("12"));
-      repModel.setCustom13(taskSummary.getCustomAttribute("13"));
-      repModel.setCustom14(taskSummary.getCustomAttribute("14"));
-      repModel.setCustom15(taskSummary.getCustomAttribute("15"));
-      repModel.setCustom16(taskSummary.getCustomAttribute("16"));
-    } catch (InvalidArgumentException e) {
-      throw new SystemException("caught unexpected Exception.", e.getCause());
-    }
+    repModel.setCustom1(taskSummary.getCustomAttribute(TaskCustomField.CUSTOM_1));
+    repModel.setCustom2(taskSummary.getCustomAttribute(TaskCustomField.CUSTOM_2));
+    repModel.setCustom3(taskSummary.getCustomAttribute(TaskCustomField.CUSTOM_3));
+    repModel.setCustom4(taskSummary.getCustomAttribute(TaskCustomField.CUSTOM_4));
+    repModel.setCustom5(taskSummary.getCustomAttribute(TaskCustomField.CUSTOM_5));
+    repModel.setCustom6(taskSummary.getCustomAttribute(TaskCustomField.CUSTOM_6));
+    repModel.setCustom7(taskSummary.getCustomAttribute(TaskCustomField.CUSTOM_7));
+    repModel.setCustom8(taskSummary.getCustomAttribute(TaskCustomField.CUSTOM_8));
+    repModel.setCustom9(taskSummary.getCustomAttribute(TaskCustomField.CUSTOM_9));
+    repModel.setCustom10(taskSummary.getCustomAttribute(TaskCustomField.CUSTOM_10));
+    repModel.setCustom11(taskSummary.getCustomAttribute(TaskCustomField.CUSTOM_11));
+    repModel.setCustom12(taskSummary.getCustomAttribute(TaskCustomField.CUSTOM_12));
+    repModel.setCustom13(taskSummary.getCustomAttribute(TaskCustomField.CUSTOM_13));
+    repModel.setCustom14(taskSummary.getCustomAttribute(TaskCustomField.CUSTOM_14));
+    repModel.setCustom15(taskSummary.getCustomAttribute(TaskCustomField.CUSTOM_15));
+    repModel.setCustom16(taskSummary.getCustomAttribute(TaskCustomField.CUSTOM_16));
     return repModel;
   }
 

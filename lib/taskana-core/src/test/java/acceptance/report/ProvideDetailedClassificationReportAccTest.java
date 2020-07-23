@@ -30,7 +30,7 @@ import pro.taskana.monitor.api.reports.item.DetailedMonitorQueryItem;
 import pro.taskana.monitor.api.reports.row.DetailedClassificationRow;
 import pro.taskana.monitor.api.reports.row.FoldableRow;
 import pro.taskana.monitor.api.reports.row.Row;
-import pro.taskana.task.api.CustomField;
+import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
 
 /** Acceptance test for all "detailed classification report" scenarios. */
@@ -556,8 +556,8 @@ class ProvideDetailedClassificationReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfDetailedClassificationReportWithCustomFieldValueFilter() throws Exception {
-    Map<CustomField, String> customAttributeFilter = new HashMap<>();
-    customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
+    Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
+    customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     DetailedClassificationReport report =

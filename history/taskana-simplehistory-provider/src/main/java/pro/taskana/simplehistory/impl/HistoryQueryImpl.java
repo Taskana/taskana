@@ -7,25 +7,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.TimeInterval;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.simplehistory.impl.mappings.HistoryQueryMapper;
 import pro.taskana.simplehistory.query.HistoryQuery;
 import pro.taskana.simplehistory.query.HistoryQueryColumnName;
+import pro.taskana.spi.history.api.events.TaskHistoryCustomField;
 
 /** Implementation for generating dynamic sql. */
 public class HistoryQueryImpl implements HistoryQuery {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HistoryQueryImpl.class);
 
-  private TaskanaHistoryEngineImpl taskanaHistoryEngine;
-  private HistoryQueryMapper historyQueryMapper;
+  private final TaskanaHistoryEngineImpl taskanaHistoryEngine;
+  private final HistoryQueryMapper historyQueryMapper;
 
-  private HistoryQueryColumnName columnName;
-  private List<String> orderBy;
-  private List<String> orderColumns;
+  private final List<String> orderBy;
+  private final List<String> orderColumns;
   private int
       maxRows; // limit for rows. used to make list(offset, limit) and single() more efficient.
 
+  private HistoryQueryColumnName columnName;
   private String[] idIn;
   private String[] businessProcessIdIn;
   private String[] parentBusinessProcessIdIn;
@@ -196,30 +197,6 @@ public class HistoryQueryImpl implements HistoryQuery {
   }
 
   @Override
-  public HistoryQuery custom1In(String... custom1) {
-    this.custom1In = toUpperCopy(custom1);
-    return this;
-  }
-
-  @Override
-  public HistoryQuery custom2In(String... custom2) {
-    this.custom2In = toUpperCopy(custom2);
-    return this;
-  }
-
-  @Override
-  public HistoryQuery custom3In(String... custom3) {
-    this.custom3In = toUpperCopy(custom3);
-    return this;
-  }
-
-  @Override
-  public HistoryQuery custom4In(String... custom4) {
-    this.custom4In = toUpperCopy(custom4);
-    return this;
-  }
-
-  @Override
   public HistoryQuery businessProcessIdLike(String... businessProcessId) {
     this.businessProcessIdLike = toUpperCopy(businessProcessId);
     return this;
@@ -322,26 +299,46 @@ public class HistoryQueryImpl implements HistoryQuery {
   }
 
   @Override
-  public HistoryQuery custom1Like(String... custom1) {
-    this.custom1Like = toUpperCopy(custom1);
+  public HistoryQuery customAttributeIn(
+      TaskHistoryCustomField customField, String... searchArguments) {
+    switch (customField) {
+      case CUSTOM_1:
+        custom1In = toUpperCopy(searchArguments);
+        break;
+      case CUSTOM_2:
+        custom2In = toUpperCopy(searchArguments);
+        break;
+      case CUSTOM_3:
+        custom3In = toUpperCopy(searchArguments);
+        break;
+      case CUSTOM_4:
+        custom4In = toUpperCopy(searchArguments);
+        break;
+      default:
+        throw new SystemException("Unknown customField '" + customField + "'");
+    }
     return this;
   }
 
   @Override
-  public HistoryQuery custom2Like(String... custom2) {
-    this.custom2Like = toUpperCopy(custom2);
-    return this;
-  }
-
-  @Override
-  public HistoryQuery custom3Like(String... custom3) {
-    this.custom3Like = toUpperCopy(custom3);
-    return this;
-  }
-
-  @Override
-  public HistoryQuery custom4Like(String... custom4) {
-    this.custom4Like = toUpperCopy(custom4);
+  public HistoryQuery customAttributeLike(
+      TaskHistoryCustomField customField, String... searchArguments) {
+    switch (customField) {
+      case CUSTOM_1:
+        custom1Like = toUpperCopy(searchArguments);
+        break;
+      case CUSTOM_2:
+        custom2Like = toUpperCopy(searchArguments);
+        break;
+      case CUSTOM_3:
+        custom3Like = toUpperCopy(searchArguments);
+        break;
+      case CUSTOM_4:
+        custom4Like = toUpperCopy(searchArguments);
+        break;
+      default:
+        throw new SystemException("Unknown customField '" + customField + "'");
+    }
     return this;
   }
 
@@ -436,22 +433,9 @@ public class HistoryQueryImpl implements HistoryQuery {
   }
 
   @Override
-  public HistoryQuery orderByCustomAttribute(int num, SortDirection sortDirection)
-      throws InvalidArgumentException {
-
-    switch (num) {
-      case 1:
-        return addOrderCriteria("CUSTOM_1", sortDirection);
-      case 2:
-        return addOrderCriteria("CUSTOM_2", sortDirection);
-      case 3:
-        return addOrderCriteria("CUSTOM_3", sortDirection);
-      case 4:
-        return addOrderCriteria("CUSTOM_4", sortDirection);
-      default:
-        throw new InvalidArgumentException(
-            "Custom number has to be between 1 and 4, but this is: " + num);
-    }
+  public HistoryQuery orderByCustomAttribute(
+      TaskHistoryCustomField customField, SortDirection sortDirection) {
+    return addOrderCriteria(customField.name(), sortDirection);
   }
 
   @Override
@@ -512,7 +496,6 @@ public class HistoryQueryImpl implements HistoryQuery {
         this);
     List<String> result = new ArrayList<>();
     this.columnName = dbColumnName;
-    List<String> cacheOrderBy = this.orderBy;
     this.orderBy.clear();
     this.addOrderCriteria(columnName.toString(), sortDirection);
 
@@ -529,8 +512,6 @@ public class HistoryQueryImpl implements HistoryQuery {
       LOGGER.error("No History Event found.");
       return result;
     } finally {
-      this.orderBy = cacheOrderBy;
-      this.columnName = null;
       this.orderColumns.remove(orderColumns.size() - 1);
       taskanaHistoryEngine.returnConnection();
     }

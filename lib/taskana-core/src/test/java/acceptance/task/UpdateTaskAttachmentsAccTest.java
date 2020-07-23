@@ -56,7 +56,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL",
             "2018-01-15",
-            createSimpleCustomProperties(3));
+            createSimpleCustomPropertyMap(3));
     task.getAttachments().clear();
     taskService.updateTask(task);
     assertThat(task).isNotNull();
@@ -291,7 +291,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
                 "ABC45678901234567890123456789012345678901234567890"),
             "ROHRPOST",
             "2018-01-15",
-            createSimpleCustomProperties(4));
+            createSimpleCustomPropertyMap(4));
     task.addAttachment(attachment2);
     task = taskService.updateTask(task);
     task = taskService.getTask(task.getId());
@@ -304,12 +304,12 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         .areExactly(
             1,
             new Condition<>(
-                e -> "E-MAIL".equals(e.getChannel()) && e.getCustomAttributes().size() == 3,
+                e -> "E-MAIL".equals(e.getChannel()) && e.getCustomAttributeMap().size() == 3,
                 "E-MAIL with 3 custom attributes"))
         .areExactly(
             1,
             new Condition<>(
-                e -> "ROHRPOST".equals(e.getChannel()) && e.getCustomAttributes().size() == 4,
+                e -> "ROHRPOST".equals(e.getChannel()) && e.getCustomAttributeMap().size() == 4,
                 "ROHRPOST with 4 custom attributes"));
 
     ClassificationSummary newClassificationSummary =
@@ -320,7 +320,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     // modify existing attachment
     for (Attachment att : task.getAttachments()) {
       att.setClassificationSummary(newClassificationSummary);
-      if (att.getCustomAttributes().size() == 3) {
+      if (att.getCustomAttributeMap().size() == 3) {
         att.setChannel("FAX");
       }
     }
@@ -337,12 +337,12 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         .areExactly(
             1,
             new Condition<>(
-                e -> "FAX".equals(e.getChannel()) && e.getCustomAttributes().size() == 3,
+                e -> "FAX".equals(e.getChannel()) && e.getCustomAttributeMap().size() == 3,
                 "FAX with 3 custom attributes"))
         .areExactly(
             1,
             new Condition<>(
-                e -> "ROHRPOST".equals(e.getChannel()) && e.getCustomAttributes().size() == 4,
+                e -> "ROHRPOST".equals(e.getChannel()) && e.getCustomAttributeMap().size() == 4,
                 "ROHRPOST with 4 custom attributes"));
   }
 
@@ -363,7 +363,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
                 "ABC45678901234567890123456789012345678901234567890"),
             "E-MAIL",
             "2018-01-15",
-            createSimpleCustomProperties(4));
+            createSimpleCustomPropertyMap(4));
     task.addAttachment(attachment2);
     task = taskService.updateTask(task);
     task = taskService.getTask(task.getId());
@@ -382,7 +382,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
                 "ABC4567890123456789012345678901234567890DEF"),
             "DHL",
             "2018-01-15",
-            createSimpleCustomProperties(4));
+            createSimpleCustomPropertyMap(4));
 
     // replace existing attachments by new via addAttachment call
     task.getAttachments().clear();
@@ -425,7 +425,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL",
             "2018-01-15",
-            createSimpleCustomProperties(3)));
+            createSimpleCustomPropertyMap(3)));
     newTask.addAttachment(
         createAttachment(
             "L1060", // prio 1, SL P1D
@@ -437,7 +437,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL",
             "2018-01-15",
-            createSimpleCustomProperties(3)));
+            createSimpleCustomPropertyMap(3)));
     Task createdTask = taskService.createTask(newTask);
 
     assertThat(createdTask.getId()).isNotNull();
@@ -483,7 +483,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
             "E-MAIL",
             "2018-01-15",
             null);
-    attachment.getCustomAttributes().put("TEST_KEY", "TEST_VALUE");
+    attachment.getCustomAttributeMap().put("TEST_KEY", "TEST_VALUE");
     task.addAttachment(attachment);
     taskService.updateTask(task);
     Task updatedTask = taskService.getTask("TKI:000000000000000000000000000000000000");
@@ -494,6 +494,6 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
             .orElse(null);
     assertThat(updatedAttachment).isNotNull();
     assertThat(updatedTask.getModified()).isEqualTo(updatedAttachment.getModified());
-    assertThat(updatedAttachment.getCustomAttributes().get("TEST_KEY")).isEqualTo("TEST_VALUE");
+    assertThat(updatedAttachment.getCustomAttributeMap().get("TEST_KEY")).isEqualTo("TEST_VALUE");
   }
 }

@@ -27,10 +27,11 @@ import pro.taskana.common.rest.QueryHelper;
 import pro.taskana.simplehistory.impl.HistoryEventImpl;
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
 import pro.taskana.simplehistory.query.HistoryQuery;
-import pro.taskana.simplehistory.rest.resource.TaskHistoryEventListResource;
-import pro.taskana.simplehistory.rest.resource.TaskHistoryEventListResourceAssembler;
-import pro.taskana.simplehistory.rest.resource.TaskHistoryEventResource;
-import pro.taskana.simplehistory.rest.resource.TaskHistoryEventResourceAssembler;
+import pro.taskana.simplehistory.rest.assembler.TaskHistoryEventListResourceAssembler;
+import pro.taskana.simplehistory.rest.assembler.TaskHistoryEventRepresentationModelAssembler;
+import pro.taskana.simplehistory.rest.models.TaskHistoryEventListResource;
+import pro.taskana.simplehistory.rest.models.TaskHistoryEventRepresentationModel;
+import pro.taskana.spi.history.api.events.TaskHistoryCustomField;
 import pro.taskana.spi.history.api.events.TaskanaHistoryEvent;
 import pro.taskana.spi.history.api.exceptions.TaskanaHistoryEventNotFoundException;
 
@@ -76,28 +77,26 @@ public class TaskHistoryEventController extends AbstractPagingController {
   private static final String ATTACHMENT_CLASSIFICATION_KEY_LIKE =
       "attachment-classification-key-like";
   private static final String CUSTOM_1 = "custom-1";
-  private static final String CUSTOM_1_LIKE = "custom-1-like";
   private static final String CUSTOM_2 = "custom-2";
-  private static final String CUSTOM_2_LIKE = "custom-2-like";
   private static final String CUSTOM_3 = "custom-3";
-  private static final String CUSTOM_3_LIKE = "custom-3-like";
   private static final String CUSTOM_4 = "custom-4";
-  private static final String CUSTOM_4_LIKE = "custom-4-like";
   private static final String PAGING_PAGE = "page";
   private static final String PAGING_PAGE_SIZE = "page-size";
 
   private final SimpleHistoryServiceImpl simpleHistoryService;
-  private final TaskHistoryEventResourceAssembler taskHistoryEventResourceAssembler;
+  private final TaskHistoryEventRepresentationModelAssembler
+      taskHistoryEventRepresentationModelAssembler;
 
   @Autowired
   public TaskHistoryEventController(
       TaskanaEngineConfiguration taskanaEngineConfiguration,
       SimpleHistoryServiceImpl simpleHistoryServiceImpl,
-      TaskHistoryEventResourceAssembler taskHistoryEventResourceAssembler) {
+      TaskHistoryEventRepresentationModelAssembler taskHistoryEventRepresentationModelAssembler) {
 
     this.simpleHistoryService = simpleHistoryServiceImpl;
     this.simpleHistoryService.initialize(taskanaEngineConfiguration);
-    this.taskHistoryEventResourceAssembler = taskHistoryEventResourceAssembler;
+    this.taskHistoryEventRepresentationModelAssembler =
+        taskHistoryEventRepresentationModelAssembler;
   }
 
   @GetMapping
@@ -109,8 +108,8 @@ public class TaskHistoryEventController extends AbstractPagingController {
     }
 
     HistoryQuery query = simpleHistoryService.createHistoryQuery();
-    query = applySortingParams(query, params);
-    query = applyFilterParams(query, params);
+    applySortingParams(query, params);
+    applyFilterParams(query, params);
 
     PageMetadata pageMetadata = null;
     List<HistoryEventImpl> historyEvents;
@@ -144,7 +143,7 @@ public class TaskHistoryEventController extends AbstractPagingController {
 
   @GetMapping(path = "/{historyEventId}", produces = "application/hal+json")
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<TaskHistoryEventResource> getTaskHistoryEvent(
+  public ResponseEntity<TaskHistoryEventRepresentationModel> getTaskHistoryEvent(
       @PathVariable String historyEventId) throws TaskanaHistoryEventNotFoundException {
 
     if (LOGGER.isDebugEnabled()) {
@@ -153,8 +152,8 @@ public class TaskHistoryEventController extends AbstractPagingController {
 
     TaskanaHistoryEvent resultEvent = simpleHistoryService.getHistoryEvent(historyEventId);
 
-    TaskHistoryEventResource taskEventResource =
-        taskHistoryEventResourceAssembler.toModel(resultEvent);
+    TaskHistoryEventRepresentationModel taskEventResource =
+        taskHistoryEventRepresentationModelAssembler.toModel(resultEvent);
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
@@ -165,7 +164,7 @@ public class TaskHistoryEventController extends AbstractPagingController {
     return new ResponseEntity<>(taskEventResource, HttpStatus.OK);
   }
 
-  private HistoryQuery applySortingParams(HistoryQuery query, MultiValueMap<String, String> params)
+  private void applySortingParams(HistoryQuery query, MultiValueMap<String, String> params)
       throws InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to applySortingParams(params= {})", params);
@@ -175,65 +174,65 @@ public class TaskHistoryEventController extends AbstractPagingController {
         params,
         (sortBy, sortDirection) -> {
           switch (sortBy) {
-            case (BUSINESS_PROCESS_ID):
+            case BUSINESS_PROCESS_ID:
               query.orderByBusinessProcessId(sortDirection);
               break;
-            case (PARENT_BUSINESS_PROCESS_ID):
+            case PARENT_BUSINESS_PROCESS_ID:
               query.orderByParentBusinessProcessId(sortDirection);
               break;
-            case (TASK_ID):
+            case TASK_ID:
               query.orderByTaskId(sortDirection);
               break;
-            case (EVENT_TYPE):
+            case EVENT_TYPE:
               query.orderByEventType(sortDirection);
               break;
-            case (CREATED):
+            case CREATED:
               query.orderByCreated(sortDirection);
               break;
-            case (USER_ID):
+            case USER_ID:
               query.orderByUserId(sortDirection);
               break;
-            case (DOMAIN):
+            case DOMAIN:
               query.orderByDomain(sortDirection);
               break;
-            case (WORKBASKET_KEY):
+            case WORKBASKET_KEY:
               query.orderByWorkbasketKey(sortDirection);
               break;
-            case (POR_COMPANY):
+            case POR_COMPANY:
               query.orderByPorCompany(sortDirection);
               break;
-            case (POR_SYSTEM):
+            case POR_SYSTEM:
               query.orderByPorSystem(sortDirection);
               break;
-            case (POR_INSTANCE):
+            case POR_INSTANCE:
               query.orderByPorInstance(sortDirection);
               break;
-            case (POR_TYPE):
+            case POR_TYPE:
               query.orderByPorType(sortDirection);
               break;
-            case (POR_VALUE):
+            case POR_VALUE:
               query.orderByPorValue(sortDirection);
               break;
-            case (TASK_CLASSIFICATION_KEY):
+            case TASK_CLASSIFICATION_KEY:
               query.orderByTaskClassificationKey(sortDirection);
               break;
-            case (TASK_CLASSIFICATION_CATEGORY):
+            case TASK_CLASSIFICATION_CATEGORY:
               query.orderByTaskClassificationCategory(sortDirection);
               break;
-            case (ATTACHMENT_CLASSIFICATION_KEY):
+            case ATTACHMENT_CLASSIFICATION_KEY:
               query.orderByAttachmentClassificationKey(sortDirection);
               break;
-            case (CUSTOM_1):
-              query.orderByCustomAttribute(1, sortDirection);
+            case CUSTOM_1:
+              query.orderByCustomAttribute(TaskHistoryCustomField.CUSTOM_1, sortDirection);
               break;
-            case (CUSTOM_2):
-              query.orderByCustomAttribute(2, sortDirection);
+            case CUSTOM_2:
+              query.orderByCustomAttribute(TaskHistoryCustomField.CUSTOM_2, sortDirection);
               break;
-            case (CUSTOM_3):
-              query.orderByCustomAttribute(3, sortDirection);
+            case CUSTOM_3:
+              query.orderByCustomAttribute(TaskHistoryCustomField.CUSTOM_3, sortDirection);
               break;
-            case (CUSTOM_4):
-              query.orderByCustomAttribute(4, sortDirection);
+            case CUSTOM_4:
+              query.orderByCustomAttribute(TaskHistoryCustomField.CUSTOM_4, sortDirection);
               break;
             default:
               throw new IllegalArgumentException("Unknown order '" + sortBy + "'");
@@ -243,11 +242,9 @@ public class TaskHistoryEventController extends AbstractPagingController {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from applySortingParams(), returning: {}", query);
     }
-
-    return query;
   }
 
-  private HistoryQuery applyFilterParams(HistoryQuery query, MultiValueMap<String, String> params) {
+  private void applyFilterParams(HistoryQuery query, MultiValueMap<String, String> params) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to applyFilterParams(query= {}, params= {})", query, params);
     }
@@ -396,47 +393,23 @@ public class TaskHistoryEventController extends AbstractPagingController {
           LIKE + params.get(ATTACHMENT_CLASSIFICATION_KEY_LIKE).get(0) + LIKE);
       params.remove(ATTACHMENT_CLASSIFICATION_KEY_LIKE);
     }
-    if (params.containsKey(CUSTOM_1)) {
-      String[] custom1 = extractCommaSeparatedFields(params.get(CUSTOM_1));
-      query.custom1In(custom1);
-      params.remove(CUSTOM_1);
-    }
-    if (params.containsKey(CUSTOM_1_LIKE)) {
-      query.custom1Like(LIKE + params.get(CUSTOM_1_LIKE).get(0) + LIKE);
-      params.remove(CUSTOM_1_LIKE);
-    }
-    if (params.containsKey(CUSTOM_2)) {
-      String[] custom2 = extractCommaSeparatedFields(params.get(CUSTOM_2));
-      query.custom2In(custom2);
-      params.remove(CUSTOM_2);
-    }
-    if (params.containsKey(CUSTOM_2_LIKE)) {
-      query.custom2Like(LIKE + params.get(CUSTOM_2_LIKE).get(0) + LIKE);
-      params.remove(CUSTOM_2_LIKE);
-    }
-    if (params.containsKey(CUSTOM_3)) {
-      String[] custom3 = extractCommaSeparatedFields(params.get(CUSTOM_3));
-      query.custom3In(custom3);
-      params.remove(CUSTOM_3);
-    }
-    if (params.containsKey(CUSTOM_3_LIKE)) {
-      query.custom3Like(LIKE + params.get(CUSTOM_3_LIKE).get(0) + LIKE);
-      params.remove(CUSTOM_3_LIKE);
-    }
-    if (params.containsKey(CUSTOM_4)) {
-      String[] custom4 = extractCommaSeparatedFields(params.get(CUSTOM_4));
-      query.custom4In(custom4);
-      params.remove(CUSTOM_4);
-    }
-    if (params.containsKey(CUSTOM_4_LIKE)) {
-      query.custom4Like(LIKE + params.get(CUSTOM_4_LIKE).get(0) + LIKE);
-      params.remove(CUSTOM_4_LIKE);
+    for (TaskHistoryCustomField customField : TaskHistoryCustomField.values()) {
+      List<String> list = params.remove(customField.name().replace("_", "-").toLowerCase());
+      if (list != null) {
+        query.customAttributeIn(customField, extractCommaSeparatedFields(list));
+      }
+      list = params.remove(customField.name().replace("_", "-").toLowerCase() + "-like");
+      if (list != null) {
+        String[] values = extractCommaSeparatedFields(list);
+        for (int i = 0; i < values.length; i++) {
+          values[i] = LIKE + values[i] + LIKE;
+        }
+        query.customAttributeLike(customField, values);
+      }
     }
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from applyFilterParams(), returning {}", query);
     }
-
-    return query;
   }
 
   private TimeInterval getTimeIntervalOf(String[] created) {

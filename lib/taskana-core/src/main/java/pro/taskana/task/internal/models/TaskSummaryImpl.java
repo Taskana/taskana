@@ -7,7 +7,8 @@ import java.util.Objects;
 
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.SystemException;
+import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.models.AttachmentSummary;
 import pro.taskana.task.api.models.ObjectReference;
@@ -17,9 +18,6 @@ import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 
 /** Entity which contains the most important informations about a Task. */
 public class TaskSummaryImpl implements TaskSummary {
-
-  private static final String NOT_A_VALID_NUMBER_GET =
-      "Argument '%s' of getCustomAttribute() cannot be converted to a number between 1 and 16";
 
   protected String id;
   protected String externalId;
@@ -104,10 +102,6 @@ public class TaskSummaryImpl implements TaskSummary {
     custom16 = copyFrom.custom16;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.TaskSummary#getTaskId()
-   */
   @Override
   public String getId() {
     return id;
@@ -117,10 +111,6 @@ public class TaskSummaryImpl implements TaskSummary {
     this.id = id;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.TaskSummary#getExternalId()
-   */
   @Override
   public String getExternalId() {
     return externalId;
@@ -130,10 +120,6 @@ public class TaskSummaryImpl implements TaskSummary {
     this.externalId = externalId;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.TaskSummary#getCreator()
-   */
   @Override
   public String getCreator() {
     return creator;
@@ -143,10 +129,6 @@ public class TaskSummaryImpl implements TaskSummary {
     this.creator = creator;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.TaskSummary#getCreated()
-   */
   @Override
   public Instant getCreated() {
     return created;
@@ -156,10 +138,6 @@ public class TaskSummaryImpl implements TaskSummary {
     this.created = created;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.TaskSummary#getClaimed()
-   */
   @Override
   public Instant getClaimed() {
     return claimed;
@@ -169,10 +147,6 @@ public class TaskSummaryImpl implements TaskSummary {
     this.claimed = claimed;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.TaskSummary#getCompleted()
-   */
   @Override
   public Instant getCompleted() {
     return completed;
@@ -182,10 +156,6 @@ public class TaskSummaryImpl implements TaskSummary {
     this.completed = completed;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.TaskSummary#getModified()
-   */
   @Override
   public Instant getModified() {
     return modified;
@@ -195,10 +165,6 @@ public class TaskSummaryImpl implements TaskSummary {
     this.modified = modified;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.TaskSummary#getPlanned()
-   */
   @Override
   public Instant getPlanned() {
     return planned;
@@ -208,10 +174,6 @@ public class TaskSummaryImpl implements TaskSummary {
     this.planned = planned;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.TaskSummary#getDue()
-   */
   @Override
   public Instant getDue() {
     return due;
@@ -221,10 +183,6 @@ public class TaskSummaryImpl implements TaskSummary {
     this.due = due;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.TaskSummary#getName()
-   */
   @Override
   public String getName() {
     return name;
@@ -234,10 +192,6 @@ public class TaskSummaryImpl implements TaskSummary {
     this.name = name;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.TaskSummary#getNote()
-   */
   @Override
   public String getNote() {
     return note;
@@ -247,10 +201,6 @@ public class TaskSummaryImpl implements TaskSummary {
     this.note = note;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.TaskSummary#getDescription()
-   */
   @Override
   public String getDescription() {
     return description;
@@ -260,10 +210,6 @@ public class TaskSummaryImpl implements TaskSummary {
     this.description = description;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.TaskSummary#getPriority()
-   */
   @Override
   public int getPriority() {
     return priority;
@@ -273,10 +219,6 @@ public class TaskSummaryImpl implements TaskSummary {
     this.priority = priority;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.TaskSummary#getState()
-   */
   @Override
   public TaskState getState() {
     return state;
@@ -286,10 +228,6 @@ public class TaskSummaryImpl implements TaskSummary {
     this.state = state;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.TaskSummary#getClassificationSummary()
-   */
   @Override
   public ClassificationSummary getClassificationSummary() {
     return classificationSummary;
@@ -299,10 +237,6 @@ public class TaskSummaryImpl implements TaskSummary {
     this.classificationSummary = classificationSummary;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.TaskSummary#getWorkbasketSummary()
-   */
   @Override
   public WorkbasketSummary getWorkbasketSummary() {
     return workbasketSummary;
@@ -321,10 +255,6 @@ public class TaskSummaryImpl implements TaskSummary {
     this.attachmentSummaries = attachmentSummaries;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.TaskSummary#getDomain()
-   */
   @Override
   public String getDomain() {
     return workbasketSummary == null ? null : workbasketSummary.getDomain();
@@ -337,10 +267,6 @@ public class TaskSummaryImpl implements TaskSummary {
     ((WorkbasketSummaryImpl) this.workbasketSummary).setDomain(domain);
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.TaskSummary#getBusinessProcessId()
-   */
   @Override
   public String getBusinessProcessId() {
     return businessProcessId;
@@ -350,10 +276,6 @@ public class TaskSummaryImpl implements TaskSummary {
     this.businessProcessId = businessProcessId;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.TaskSummary#getParentBusinessProcessId()
-   */
   @Override
   public String getParentBusinessProcessId() {
     return parentBusinessProcessId;
@@ -363,10 +285,6 @@ public class TaskSummaryImpl implements TaskSummary {
     this.parentBusinessProcessId = parentBusinessProcessId;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.TaskSummary#getOwner()
-   */
   @Override
   public String getOwner() {
     return owner;
@@ -376,10 +294,6 @@ public class TaskSummaryImpl implements TaskSummary {
     this.owner = owner;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.TaskSummary#getPrimaryObjRef()
-   */
   @Override
   public ObjectReference getPrimaryObjRef() {
     return primaryObjRef;
@@ -389,10 +303,6 @@ public class TaskSummaryImpl implements TaskSummary {
     this.primaryObjRef = primaryObjRef;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.TaskSummary#isRead()
-   */
   @Override
   public boolean isRead() {
     return isRead;
@@ -402,10 +312,6 @@ public class TaskSummaryImpl implements TaskSummary {
     this.isRead = isRead;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.TaskSummary#isTransferred()
-   */
   @Override
   public boolean isTransferred() {
     return isTransferred;
@@ -415,55 +321,44 @@ public class TaskSummaryImpl implements TaskSummary {
     this.isTransferred = isTransferred;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.TaskSummary#getCustomAttribute(String number)
-   */
   @Override
-  public String getCustomAttribute(String number) throws InvalidArgumentException {
-    int num = 0;
-    try {
-      num = Integer.parseInt(number);
-    } catch (NumberFormatException e) {
-      throw new InvalidArgumentException(
-          String.format(NOT_A_VALID_NUMBER_GET, number), e.getCause());
-    }
+  public String getCustomAttribute(TaskCustomField customField) {
 
-    switch (num) {
-      case 1:
+    switch (customField) {
+      case CUSTOM_1:
         return custom1;
-      case 2:
+      case CUSTOM_2:
         return custom2;
-      case 3:
+      case CUSTOM_3:
         return custom3;
-      case 4:
+      case CUSTOM_4:
         return custom4;
-      case 5:
+      case CUSTOM_5:
         return custom5;
-      case 6:
+      case CUSTOM_6:
         return custom6;
-      case 7:
+      case CUSTOM_7:
         return custom7;
-      case 8:
+      case CUSTOM_8:
         return custom8;
-      case 9:
+      case CUSTOM_9:
         return custom9;
-      case 10:
+      case CUSTOM_10:
         return custom10;
-      case 11:
+      case CUSTOM_11:
         return custom11;
-      case 12:
+      case CUSTOM_12:
         return custom12;
-      case 13:
+      case CUSTOM_13:
         return custom13;
-      case 14:
+      case CUSTOM_14:
         return custom14;
-      case 15:
+      case CUSTOM_15:
         return custom15;
-      case 16:
+      case CUSTOM_16:
         return custom16;
       default:
-        throw new InvalidArgumentException(String.format(NOT_A_VALID_NUMBER_GET, number));
+        throw new SystemException("Unknown custom field '" + customField + "'");
     }
   }
 

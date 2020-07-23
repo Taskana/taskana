@@ -20,10 +20,6 @@ import pro.taskana.common.internal.security.WithAccessId;
 @ExtendWith(JaasExtension.class)
 class ClassificationQueryAccTest extends AbstractAccTest {
 
-  ClassificationQueryAccTest() {
-    super();
-  }
-
   @Test
   void testFindClassificationsByDomainUnauthenticated() {
     ClassificationService classificationService = taskanaEngine.getClassificationService();

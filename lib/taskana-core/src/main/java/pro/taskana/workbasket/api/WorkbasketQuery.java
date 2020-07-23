@@ -227,40 +227,15 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
   WorkbasketQuery domainLike(String... domain);
 
   /**
-   * Sort the query result by custom property 1.
+   * This method sorts the query result according to the value of a custom field.
    *
+   * @param customField identifies which custom attribute is affected.
    * @param sortDirection Determines whether the result is sorted in ascending or descending order.
    *     If sortDirection is null, the result is sorted in ascending order
    * @return the query
    */
-  WorkbasketQuery orderByCustom1(SortDirection sortDirection);
-
-  /**
-   * Sort the query result by custom property 2.
-   *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
-   * @return the query
-   */
-  WorkbasketQuery orderByCustom2(SortDirection sortDirection);
-
-  /**
-   * Sort the query result by custom property 3.
-   *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
-   * @return the query
-   */
-  WorkbasketQuery orderByCustom3(SortDirection sortDirection);
-
-  /**
-   * Sort the query result by custom property 4.
-   *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
-   * @return the query
-   */
-  WorkbasketQuery orderByCustom4(SortDirection sortDirection);
+  WorkbasketQuery orderByCustomAttribute(
+      WorkbasketCustomField customField, SortDirection sortDirection);
 
   /**
    * Sort the query result by organization level 1.
@@ -299,76 +274,24 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
   WorkbasketQuery orderByOrgLevel4(SortDirection sortDirection);
 
   /**
-   * Add the 1st custom property to your query.
+   * Add the values of custom attributes for exact matching to your query.
    *
-   * @param custom1 the 1st custom property as String
+   * @param customField identifies which custom attribute is affected.
+   * @param searchArguments the customField values of the searched for tasks
    * @return the query
    */
-  WorkbasketQuery custom1In(String... custom1);
+  WorkbasketQuery customAttributeIn(WorkbasketCustomField customField, String... searchArguments);
 
   /**
-   * Add the 1st custom property for pattern matching to your query. It will be compared in SQL with
-   * the LIKE operator. You may use a wildcard like % to specify the pattern. If you specify
-   * multiple arguments they are combined with the OR keyword.
+   * Add the values of custom attributes for pattern matching to your query. They will be compared
+   * in SQL with the LIKE operator. You may use a wildcard like % to specify the pattern. If you
+   * specify multiple arguments they are combined with the OR keyword.
    *
-   * @param custom1 the 1st custom property of workbaskets as Strings
+   * @param customField identifies which custom attribute is affected.
+   * @param searchArguments the customField values of the searched-for tasks
    * @return the query
    */
-  WorkbasketQuery custom1Like(String... custom1);
-
-  /**
-   * Add the 2nd custom property to your query.
-   *
-   * @param custom2 the 2nd custom property as String
-   * @return the query
-   */
-  WorkbasketQuery custom2In(String... custom2);
-
-  /**
-   * Add the 2nd custom property for pattern matching to your query. It will be compared in SQL with
-   * the LIKE operator. You may use a wildcard like % to specify the pattern. If you specify
-   * multiple arguments they are combined with the OR keyword.
-   *
-   * @param custom2 the 2nd custom property of workbaskets as Strings
-   * @return the query
-   */
-  WorkbasketQuery custom2Like(String... custom2);
-
-  /**
-   * Add the 3rd custom property to your query.
-   *
-   * @param custom3 the 3rd custom property as String
-   * @return the query
-   */
-  WorkbasketQuery custom3In(String... custom3);
-
-  /**
-   * Add the 3rd custom property for pattern matching to your query. It will be compared in SQL with
-   * the LIKE operator. You may use a wildcard like % to specify the pattern. If you specify
-   * multiple arguments they are combined with the OR keyword.
-   *
-   * @param custom3 the 3rd custom property of workbaskets as Strings
-   * @return the query
-   */
-  WorkbasketQuery custom3Like(String... custom3);
-
-  /**
-   * Add the 4th custom property to your query.
-   *
-   * @param custom4 the 4th custom property as String
-   * @return the query
-   */
-  WorkbasketQuery custom4In(String... custom4);
-
-  /**
-   * Add the 4th custom property for pattern matching to your query. It will be compared in SQL with
-   * the LIKE operator. You may use a wildcard like % to specify the pattern. If you specify
-   * multiple arguments they are combined with the OR keyword.
-   *
-   * @param custom4 the 4th custom property of workbaskets as Strings
-   * @return the query
-   */
-  WorkbasketQuery custom4Like(String... custom4);
+  WorkbasketQuery customAttributeLike(WorkbasketCustomField customField, String... searchArguments);
 
   /**
    * Add the 1st organization level to your query.

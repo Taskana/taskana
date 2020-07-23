@@ -428,31 +428,27 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
   TaskQuery businessProcessIdLike(String... businessProcessIds);
 
   /**
-   * Add the values of custom attribute number num for exact matching to your query.
+   * Add the values of custom attributes for exact matching to your query.
    *
-   * @param num identifies which custom attribute is affected. Taskana concatenates "custom_" with
-   *     num and the resulting String must match the name of the database column that contains the
-   *     custom attribute. Valid values are "1", "2" .. "16"
-   * @param searchArguments the custom_num values of the searched for tasks
+   * @param customField identifies which custom attribute is affected.
+   * @param searchArguments the customField values of the searched for tasks
    * @return the query
-   * @throws InvalidArgumentException if num has not a value of "1", "2" ... "16"
+   * @throws InvalidArgumentException when searchArguments is not given
    */
-  TaskQuery customAttributeIn(String num, String... searchArguments)
+  TaskQuery customAttributeIn(TaskCustomField customField, String... searchArguments)
       throws InvalidArgumentException;
 
   /**
-   * Add the values of custom attribute number num for pattern matching to your query. They will be
-   * compared in SQL with the LIKE operator. You may use a wildcard like % to specify the pattern.
-   * If you specify multiple arguments they are combined with the OR keyword.
+   * Add the values of custom attributes for pattern matching to your query. They will be compared
+   * in SQL with the LIKE operator. You may use a wildcard like % to specify the pattern. If you
+   * specify multiple arguments they are combined with the OR keyword.
    *
-   * @param num identifies which custom attribute is affected. Taskana concatenates "custom_" with
-   *     num and the resulting String must match the name of the database column that contains the
-   *     custom attribute. Valid values are "1", "2" .. "16"
-   * @param searchArguments the custom_num values of the searched-for tasks
+   * @param customField identifies which custom attribute is affected.
+   * @param searchArguments the customField values of the searched-for tasks
    * @return the query
-   * @throws InvalidArgumentException if num has not a value of "1", "2" ... "16"
+   * @throws InvalidArgumentException if searchArguments is not given
    */
-  TaskQuery customAttributeLike(String num, String... searchArguments)
+  TaskQuery customAttributeLike(TaskCustomField customField, String... searchArguments)
       throws InvalidArgumentException;
 
   /**
@@ -812,19 +808,14 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
   TaskQuery orderByWorkbasketKey(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to the value of a custom field. The custom field
-   * is choosen by parameter num.
+   * This method sorts the query result according to the value of a custom field.
    *
-   * @param num identifies which custom attribute is affected. Taskana concatenates "custom_" with
-   *     num and the resulting String must match the name of the database column that contains the
-   *     custom attribute. Valid values are "1", "2" .. "16"
+   * @param customField identifies which custom attribute is affected.
    * @param sortDirection Determines whether the result is sorted in ascending or descending order.
    *     If sortDirection is null, the result is sorted in ascending order
    * @return the query
-   * @throws InvalidArgumentException when number is not a valid number between 1 and 16
    */
-  TaskQuery orderByCustomAttribute(String num, SortDirection sortDirection)
-      throws InvalidArgumentException;
+  TaskQuery orderByCustomAttribute(TaskCustomField customField, SortDirection sortDirection);
 
   /**
    * Filter for summaries which are containing one of the given taskIds.

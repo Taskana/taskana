@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
-import pro.taskana.simplehistory.rest.resource.TaskHistoryEventResourceAssembler;
+import pro.taskana.simplehistory.rest.assembler.TaskHistoryEventRepresentationModelAssembler;
 
 /** Configuration for Taskana history REST service. */
 @Configuration
@@ -20,7 +20,7 @@ public class TaskHistoryRestConfiguration {
   }
 
   @Bean
-  public TaskHistoryEventResourceAssembler getTaskHistoryEventResourceAssembler() {
-    return new TaskHistoryEventResourceAssembler();
+  public TaskHistoryEventRepresentationModelAssembler getTaskHistoryEventResourceAssembler() {
+    return new TaskHistoryEventRepresentationModelAssembler();
   }
 }

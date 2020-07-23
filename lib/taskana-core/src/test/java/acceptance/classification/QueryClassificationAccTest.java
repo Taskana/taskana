@@ -2,6 +2,14 @@ package acceptance.classification;
 
 import static java.lang.String.CASE_INSENSITIVE_ORDER;
 import static org.assertj.core.api.Assertions.assertThat;
+import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_1;
+import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_2;
+import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_3;
+import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_4;
+import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_5;
+import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_6;
+import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_7;
+import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_8;
 import static pro.taskana.classification.api.ClassificationQueryColumnName.CREATED;
 import static pro.taskana.classification.api.ClassificationQueryColumnName.NAME;
 import static pro.taskana.classification.api.ClassificationQueryColumnName.TYPE;
@@ -12,14 +20,21 @@ import static pro.taskana.common.api.BaseQuery.SortDirection.DESCENDING;
 import acceptance.AbstractAccTest;
 import java.text.Collator;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Stream;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.ThrowingConsumer;
 
+import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.TimeInterval;
@@ -174,7 +189,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
     List<ClassificationSummary> classifications =
         classificationService
             .createClassificationQuery()
-            .customAttributeIn("1", "VNR,RVNR,KOLVNR", "VNR")
+            .customAttributeIn(CUSTOM_1, "VNR,RVNR,KOLVNR", "VNR")
             .domainIn("DOMAIN_A")
             .list();
     assertThat(classifications).hasSize(14);
@@ -185,7 +200,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
     List<ClassificationSummary> classifications =
         classificationService
             .createClassificationQuery()
-            .customAttributeLike("1", "%RVNR%")
+            .customAttributeLike(CUSTOM_1, "%RVNR%")
             .domainIn("DOMAIN_A")
             .typeIn("TASK")
             .list();
@@ -198,7 +213,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
         classificationService
             .createClassificationQuery()
             .parentIdIn("CLI:100000000000000000000000000000000004")
-            .customAttributeIn("2", "TEXT_1", "TEXT_2")
+            .customAttributeIn(CUSTOM_2, "TEXT_1", "TEXT_2")
             .list();
 
     assertThat(classifications).hasSize(3);
@@ -308,7 +323,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
-            .customAttributeIn("1", "VNR,RVNR,KOLVNR, ANR", "VNR")
+            .customAttributeIn(CUSTOM_1, "VNR,RVNR,KOLVNR, ANR", "VNR")
             .list();
     assertThat(results).hasSize(17);
   }
@@ -318,7 +333,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
-            .customAttributeIn("2", "CUSTOM2", "custom2")
+            .customAttributeIn(CUSTOM_2, "CUSTOM2", "custom2")
             .list();
     assertThat(results).hasSize(5);
   }
@@ -328,7 +343,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
-            .customAttributeIn("3", "Custom3", "custom3")
+            .customAttributeIn(CUSTOM_3, "Custom3", "custom3")
             .list();
     assertThat(results).hasSize(5);
   }
@@ -336,21 +351,30 @@ class QueryClassificationAccTest extends AbstractAccTest {
   @Test
   void testQueryForCustom4In() throws Exception {
     List<ClassificationSummary> results =
-        classificationService.createClassificationQuery().customAttributeIn("4", "custom4").list();
+        classificationService
+            .createClassificationQuery()
+            .customAttributeIn(CUSTOM_4, "custom4")
+            .list();
     assertThat(results).hasSize(5);
   }
 
   @Test
   void testQueryForCustom5In() throws Exception {
     List<ClassificationSummary> results =
-        classificationService.createClassificationQuery().customAttributeIn("5", "custom5").list();
+        classificationService
+            .createClassificationQuery()
+            .customAttributeIn(CUSTOM_5, "custom5")
+            .list();
     assertThat(results).hasSize(5);
   }
 
   @Test
   void testQueryForCustom6In() throws Exception {
     List<ClassificationSummary> results =
-        classificationService.createClassificationQuery().customAttributeIn("6", "custom6").list();
+        classificationService
+            .createClassificationQuery()
+            .customAttributeIn(CUSTOM_6, "custom6")
+            .list();
     assertThat(results).hasSize(5);
   }
 
@@ -359,7 +383,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
-            .customAttributeIn("7", "custom7", "custom_7")
+            .customAttributeIn(CUSTOM_7, "custom7", "custom_7")
             .list();
     assertThat(results).hasSize(5);
   }
@@ -369,7 +393,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
     List<ClassificationSummary> results =
         classificationService
             .createClassificationQuery()
-            .customAttributeIn("8", "custom_8", "custom8")
+            .customAttributeIn(CUSTOM_8, "custom_8", "custom8")
             .list();
     assertThat(results).hasSize(5);
   }
@@ -377,49 +401,70 @@ class QueryClassificationAccTest extends AbstractAccTest {
   @Test
   void testQueryForCustom2Like() throws Exception {
     List<ClassificationSummary> results =
-        classificationService.createClassificationQuery().customAttributeLike("2", "cus%").list();
+        classificationService
+            .createClassificationQuery()
+            .customAttributeLike(CUSTOM_2, "cus%")
+            .list();
     assertThat(results).hasSize(6);
   }
 
   @Test
   void testQueryForCustom3Like() throws Exception {
     List<ClassificationSummary> results =
-        classificationService.createClassificationQuery().customAttributeLike("3", "cus%").list();
+        classificationService
+            .createClassificationQuery()
+            .customAttributeLike(CUSTOM_3, "cus%")
+            .list();
     assertThat(results).hasSize(6);
   }
 
   @Test
   void testQueryForCustom4Like() throws Exception {
     List<ClassificationSummary> results =
-        classificationService.createClassificationQuery().customAttributeLike("4", "cus%").list();
+        classificationService
+            .createClassificationQuery()
+            .customAttributeLike(CUSTOM_4, "cus%")
+            .list();
     assertThat(results).hasSize(6);
   }
 
   @Test
   void testQueryForCustom5Like() throws Exception {
     List<ClassificationSummary> results =
-        classificationService.createClassificationQuery().customAttributeLike("5", "cus%").list();
+        classificationService
+            .createClassificationQuery()
+            .customAttributeLike(CUSTOM_5, "cus%")
+            .list();
     assertThat(results).hasSize(6);
   }
 
   @Test
   void testQueryForCustom6Like() throws Exception {
     List<ClassificationSummary> results =
-        classificationService.createClassificationQuery().customAttributeLike("6", "cus%").list();
+        classificationService
+            .createClassificationQuery()
+            .customAttributeLike(CUSTOM_6, "cus%")
+            .list();
     assertThat(results).hasSize(6);
   }
 
   @Test
   void testQueryForCustom7Like() throws Exception {
     List<ClassificationSummary> results =
-        classificationService.createClassificationQuery().customAttributeLike("7", "cus%").list();
+        classificationService
+            .createClassificationQuery()
+            .customAttributeLike(CUSTOM_7, "cus%")
+            .list();
     assertThat(results).hasSize(6);
   }
 
   @Test
   void testQueryForCustom8Like() throws Exception {
     List<ClassificationSummary> results =
-        classificationService.createClassificationQuery().customAttributeLike("8", "cus%").list();
+        classificationService
+            .createClassificationQuery()
+            .customAttributeLike(CUSTOM_8, "cus%")
+            .list();
     assertThat(results).hasSize(6);
   }
 
@@ -545,115 +590,41 @@ class QueryClassificationAccTest extends AbstractAccTest {
         .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
   }
 
-  @Test
-  void testQueryForOrderByCustom1Desc() throws Exception {
-    List<ClassificationSummary> results =
-        classificationService
-            .createClassificationQuery()
-            .orderByCustomAttribute("1", DESCENDING)
-            .list();
+  @TestFactory
+  Stream<DynamicTest> should_SortQueryAsc_When_OrderingByCustomAttribute() {
+    Iterator<ClassificationCustomField> iterator = Arrays.stream(ClassificationCustomField.values())
+                                                       .iterator();
+    ThrowingConsumer<ClassificationCustomField> test = customField -> {
+      List<ClassificationSummary> results =
+          classificationService
+              .createClassificationQuery()
+              .orderByCustomAttribute(customField, ASCENDING)
+              .list();
 
-    assertThat(results)
-        .hasSizeGreaterThan(2)
-        .extracting(ClassificationSummary::getCustom1)
-        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
+      assertThat(results)
+          .hasSizeGreaterThan(2)
+          .extracting(c -> c.getCustomAttribute(customField))
+          .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
+    };
+    return DynamicTest.stream(iterator, c -> "for " + c, test);
   }
 
-  @Test
-  void testQueryForOrderByCustom2Asc() throws Exception {
-    List<ClassificationSummary> results =
-        classificationService
-            .createClassificationQuery()
-            .orderByCustomAttribute("2", ASCENDING)
-            .list();
+  @TestFactory
+  Stream<DynamicTest> should_SortQueryDesc_When_OrderingByCustomAttribute() {
+    Iterator<ClassificationCustomField> iterator = Arrays.stream(ClassificationCustomField.values())
+                                                       .iterator();
+    ThrowingConsumer<ClassificationCustomField> test = customField -> {
+      List<ClassificationSummary> results =
+          classificationService
+              .createClassificationQuery()
+              .orderByCustomAttribute(customField, DESCENDING)
+              .list();
 
-    assertThat(results)
-        .hasSizeGreaterThan(2)
-        .extracting(ClassificationSummary::getCustom2)
-        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
-  }
-
-  @Test
-  void testQueryForOrderByCustom3Desc() throws Exception {
-    List<ClassificationSummary> results =
-        classificationService
-            .createClassificationQuery()
-            .orderByCustomAttribute("3", DESCENDING)
-            .list();
-
-    assertThat(results)
-        .hasSizeGreaterThan(2)
-        .extracting(ClassificationSummary::getCustom3)
-        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
-  }
-
-  @Test
-  void testQueryForOrderByCustom4Asc() throws Exception {
-    List<ClassificationSummary> results =
-        classificationService
-            .createClassificationQuery()
-            .orderByCustomAttribute("4", ASCENDING)
-            .list();
-
-    assertThat(results)
-        .hasSizeGreaterThan(2)
-        .extracting(ClassificationSummary::getCustom4)
-        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
-  }
-
-  @Test
-  void testQueryForOrderByCustom5Desc() throws Exception {
-    List<ClassificationSummary> results =
-        classificationService
-            .createClassificationQuery()
-            .orderByCustomAttribute("5", DESCENDING)
-            .list();
-
-    assertThat(results)
-        .hasSizeGreaterThan(2)
-        .extracting(ClassificationSummary::getCustom5)
-        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
-  }
-
-  @Test
-  void testQueryForOrderByCustom6Asc() throws Exception {
-    List<ClassificationSummary> results =
-        classificationService
-            .createClassificationQuery()
-            .orderByCustomAttribute("6", ASCENDING)
-            .list();
-
-    assertThat(results)
-        .hasSizeGreaterThan(2)
-        .extracting(ClassificationSummary::getCustom6)
-        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
-  }
-
-  @Test
-  void testQueryForOrderByCustom7Desc() throws Exception {
-    List<ClassificationSummary> results =
-        classificationService
-            .createClassificationQuery()
-            .orderByCustomAttribute("7", DESCENDING)
-            .list();
-
-    assertThat(results)
-        .hasSizeGreaterThan(2)
-        .extracting(ClassificationSummary::getCustom7)
-        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
-  }
-
-  @Test
-  void testQueryForOrderByCustom8Asc() throws Exception {
-    List<ClassificationSummary> results =
-        classificationService
-            .createClassificationQuery()
-            .orderByCustomAttribute("8", ASCENDING)
-            .list();
-
-    assertThat(results)
-        .hasSizeGreaterThan(2)
-        .extracting(ClassificationSummary::getCustom8)
-        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
+      assertThat(results)
+          .hasSizeGreaterThan(2)
+          .extracting(c -> c.getCustomAttribute(customField))
+          .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
+    };
+    return DynamicTest.stream(iterator, c -> "for " + c, test);
   }
 }

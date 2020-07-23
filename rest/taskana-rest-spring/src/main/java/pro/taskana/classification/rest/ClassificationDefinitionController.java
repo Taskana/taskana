@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.classification.api.ClassificationQuery;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistException;
@@ -253,14 +254,14 @@ public class ClassificationDefinitionController {
     currentClassification.setPriority(cl.getPriority());
     currentClassification.setServiceLevel(cl.getServiceLevel());
     currentClassification.setApplicationEntryPoint(cl.getApplicationEntryPoint());
-    currentClassification.setCustom1(cl.getCustom1());
-    currentClassification.setCustom2(cl.getCustom2());
-    currentClassification.setCustom3(cl.getCustom3());
-    currentClassification.setCustom4(cl.getCustom4());
-    currentClassification.setCustom5(cl.getCustom5());
-    currentClassification.setCustom6(cl.getCustom6());
-    currentClassification.setCustom7(cl.getCustom7());
-    currentClassification.setCustom8(cl.getCustom8());
+    currentClassification.setCustomAttribute(ClassificationCustomField.CUSTOM_1, cl.getCustom1());
+    currentClassification.setCustomAttribute(ClassificationCustomField.CUSTOM_2, cl.getCustom2());
+    currentClassification.setCustomAttribute(ClassificationCustomField.CUSTOM_3, cl.getCustom3());
+    currentClassification.setCustomAttribute(ClassificationCustomField.CUSTOM_4, cl.getCustom4());
+    currentClassification.setCustomAttribute(ClassificationCustomField.CUSTOM_5, cl.getCustom5());
+    currentClassification.setCustomAttribute(ClassificationCustomField.CUSTOM_6, cl.getCustom6());
+    currentClassification.setCustomAttribute(ClassificationCustomField.CUSTOM_7, cl.getCustom7());
+    currentClassification.setCustomAttribute(ClassificationCustomField.CUSTOM_8, cl.getCustom8());
     classificationService.updateClassification(currentClassification);
     LOGGER.debug("Exit from updateExistingClassification()");
   }

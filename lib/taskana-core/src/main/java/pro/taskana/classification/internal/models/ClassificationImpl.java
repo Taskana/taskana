@@ -3,8 +3,10 @@ package pro.taskana.classification.internal.models;
 import java.time.Instant;
 import java.util.Objects;
 
+import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.api.models.ClassificationSummary;
+import pro.taskana.common.api.exceptions.SystemException;
 
 /** Classification entity. */
 public class ClassificationImpl extends ClassificationSummaryImpl implements Classification {
@@ -76,6 +78,38 @@ public class ClassificationImpl extends ClassificationSummaryImpl implements Cla
   @Override
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  @Override
+  public void setCustomAttribute(ClassificationCustomField customField, String value) {
+    switch (customField) {
+      case CUSTOM_1:
+        custom1 = value;
+        break;
+      case CUSTOM_2:
+        custom2 = value;
+        break;
+      case CUSTOM_3:
+        custom3 = value;
+        break;
+      case CUSTOM_4:
+        custom4 = value;
+        break;
+      case CUSTOM_5:
+        custom5 = value;
+        break;
+      case CUSTOM_6:
+        custom6 = value;
+        break;
+      case CUSTOM_7:
+        custom7 = value;
+        break;
+      case CUSTOM_8:
+        custom8 = value;
+        break;
+      default:
+        throw new SystemException("Unknown customField '" + customField + "'");
+    }
   }
 
   @Override

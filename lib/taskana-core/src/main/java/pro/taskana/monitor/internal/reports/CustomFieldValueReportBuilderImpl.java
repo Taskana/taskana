@@ -9,47 +9,49 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.monitor.api.TaskTimestamp;
-import pro.taskana.monitor.api.reports.CustomFieldValueReport;
-import pro.taskana.monitor.api.reports.CustomFieldValueReport.Builder;
+import pro.taskana.monitor.api.reports.TaskCustomFieldValueReport;
+import pro.taskana.monitor.api.reports.TaskCustomFieldValueReport.Builder;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.MonitorQueryItem;
 import pro.taskana.monitor.internal.MonitorMapper;
 import pro.taskana.monitor.internal.preprocessor.DaysToWorkingDaysReportPreProcessor;
-import pro.taskana.task.api.CustomField;
+import pro.taskana.task.api.TaskCustomField;
 
 /** The implementation of CustomFieldValueReportBuilder. */
 public class CustomFieldValueReportBuilderImpl
     extends TimeIntervalReportBuilderImpl<Builder, MonitorQueryItem, TimeIntervalColumnHeader>
-    implements CustomFieldValueReport.Builder {
+    implements TaskCustomFieldValueReport.Builder {
 
   private static final Logger LOGGER =
       LoggerFactory.getLogger(CustomFieldValueReportBuilderImpl.class);
 
-  private final CustomField customField;
+  private final TaskCustomField taskCustomField;
 
   public CustomFieldValueReportBuilderImpl(
-      InternalTaskanaEngine taskanaEngine, MonitorMapper monitorMapper, CustomField customField) {
+      InternalTaskanaEngine taskanaEngine,
+      MonitorMapper monitorMapper,
+      TaskCustomField taskCustomField) {
     super(taskanaEngine, monitorMapper);
-    this.customField = customField;
+    this.taskCustomField = taskCustomField;
   }
 
   @Override
-  public CustomFieldValueReport buildReport()
+  public TaskCustomFieldValueReport buildReport()
       throws NotAuthorizedException, InvalidArgumentException {
     return buildReport(TaskTimestamp.DUE);
   }
 
   @Override
-  public CustomFieldValueReport buildReport(TaskTimestamp timestamp)
+  public TaskCustomFieldValueReport buildReport(TaskTimestamp timestamp)
       throws InvalidArgumentException, NotAuthorizedException {
-    LOGGER.debug("entry to buildReport(customField = {}), this = {}", this.customField, this);
+    LOGGER.debug("entry to buildReport(taskCustomField = {}), this = {}", taskCustomField, this);
     this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR);
     try {
       this.taskanaEngine.openConnection();
-      CustomFieldValueReport report = new CustomFieldValueReport(this.columnHeaders);
+      TaskCustomFieldValueReport report = new TaskCustomFieldValueReport(this.columnHeaders);
       List<MonitorQueryItem> monitorQueryItems =
           this.monitorMapper.getTaskCountOfCustomFieldValues(
-              this.customField,
+              this.taskCustomField,
               this.workbasketIds,
               this.states,
               this.classificationCategory,
@@ -71,12 +73,12 @@ public class CustomFieldValueReportBuilderImpl
   }
 
   @Override
-  protected CustomFieldValueReport.Builder _this() {
+  protected TaskCustomFieldValueReport.Builder _this() {
     return this;
   }
 
   @Override
   protected String determineGroupedBy() {
-    return customField.name();
+    return taskCustomField.name();
   }
 }

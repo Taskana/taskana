@@ -14,7 +14,7 @@ import pro.taskana.monitor.api.reports.item.DetailedMonitorQueryItem;
 import pro.taskana.monitor.api.reports.item.MonitorQueryItem;
 import pro.taskana.monitor.api.reports.item.TaskQueryItem;
 import pro.taskana.monitor.api.reports.item.TimestampQueryItem;
-import pro.taskana.task.api.CustomField;
+import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
 
 /** This class is the mybatis mapping of task monitoring. */
@@ -74,7 +74,7 @@ public interface MonitorMapper {
       @Param("timestamp") TaskTimestamp timestamp,
       @Param("classificationIds") List<String> classificationIds,
       @Param("excludedClassificationIds") List<String> excludedClassificationIds,
-      @Param("customAttributeFilter") Map<CustomField, String> customAttributeFilter,
+      @Param("customAttributeFilter") Map<TaskCustomField, String> customAttributeFilter,
       @Param("combinedClassificationFilter")
           List<CombinedClassificationFilter> combinedClassificationFilter);
 
@@ -125,7 +125,7 @@ public interface MonitorMapper {
       @Param("timestamp") TaskTimestamp timestamp,
       @Param("classificationIds") List<String> classificationIds,
       @Param("excludedClassificationIds") List<String> excludedClassificationIds,
-      @Param("customAttributeFilter") Map<CustomField, String> customAttributeFilter);
+      @Param("customAttributeFilter") Map<TaskCustomField, String> customAttributeFilter);
 
   @Select(
       "<script>"
@@ -174,7 +174,7 @@ public interface MonitorMapper {
       @Param("timestamp") TaskTimestamp timestamp,
       @Param("classificationIds") List<String> classificationIds,
       @Param("excludedClassificationIds") List<String> excludedClassificationIds,
-      @Param("customAttributeFilter") Map<CustomField, String> customAttributeFilter);
+      @Param("customAttributeFilter") Map<TaskCustomField, String> customAttributeFilter);
 
   @Select(
       "<script>"
@@ -224,7 +224,7 @@ public interface MonitorMapper {
       @Param("timestamp") TaskTimestamp timestamp,
       @Param("classificationIds") List<String> classificationIds,
       @Param("excludedClassificationIds") List<String> excludedClassificationIds,
-      @Param("customAttributeFilter") Map<CustomField, String> customAttributeFilter);
+      @Param("customAttributeFilter") Map<TaskCustomField, String> customAttributeFilter);
 
   @Select(
       "<script>"
@@ -266,7 +266,7 @@ public interface MonitorMapper {
     @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks")
   })
   List<MonitorQueryItem> getTaskCountOfCustomFieldValues(
-      @Param("customField") CustomField customField,
+      @Param("customField") TaskCustomField taskCustomField,
       @Param("workbasketIds") List<String> workbasketIds,
       @Param("states") List<TaskState> states,
       @Param("classificationCategories") List<String> classificationCategories,
@@ -274,7 +274,7 @@ public interface MonitorMapper {
       @Param("timestamp") TaskTimestamp timestamp,
       @Param("classificationIds") List<String> classificationIds,
       @Param("excludedClassificationIds") List<String> excludedClassificationIds,
-      @Param("customAttributeFilter") Map<CustomField, String> customAttributeFilter);
+      @Param("customAttributeFilter") Map<TaskCustomField, String> customAttributeFilter);
 
   @Select(
       "<script>"
@@ -333,7 +333,7 @@ public interface MonitorMapper {
       @Param("domains") List<String> domains,
       @Param("classificationIds") List<String> classificationIds,
       @Param("excludedClassificationIds") List<String> excludedClassificationIds,
-      @Param("customAttributeFilter") Map<CustomField, String> customAttributeFilter,
+      @Param("customAttributeFilter") Map<TaskCustomField, String> customAttributeFilter,
       @Param("groupedBy") String groupedBy,
       @Param("selectedItems") List<SelectedItem> selectedItems,
       @Param("joinWithAttachments") boolean joinWithAttachments);
@@ -395,8 +395,8 @@ public interface MonitorMapper {
       @Param("domains") List<String> domains,
       @Param("classificationIds") List<String> classificationIds,
       @Param("excludedClassificationIds") List<String> excludedClassificationIds,
-      @Param("customAttributeFilter") Map<CustomField, String> customAttributeFilter,
-      @Param("customField") CustomField customField);
+      @Param("customAttributeFilter") Map<TaskCustomField, String> customAttributeFilter,
+      @Param("customField") TaskCustomField taskCustomField);
 
   @Select(
       "<script>"
@@ -452,5 +452,5 @@ public interface MonitorMapper {
       @Param("classificationIds") List<String> classificationIds,
       @Param("excludedClassificationIds") List<String> excludedClassificationIds,
       @Param("domains") List<String> domains,
-      @Param("customAttributeFilter") Map<CustomField, String> customAttributeFilter);
+      @Param("customAttributeFilter") Map<TaskCustomField, String> customAttributeFilter);
 }

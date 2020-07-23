@@ -15,7 +15,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.json.JSONObject;
@@ -33,7 +32,6 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.TaskanaException;
-import pro.taskana.common.internal.CustomPropertySelector;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.common.internal.util.CheckedConsumer;
@@ -48,6 +46,7 @@ import pro.taskana.spi.history.api.events.task.CreatedEvent;
 import pro.taskana.spi.history.api.events.task.UpdatedEvent;
 import pro.taskana.spi.history.internal.HistoryEventManager;
 import pro.taskana.task.api.CallbackState;
+import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskQuery;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
@@ -92,6 +91,8 @@ public class TaskServiceImpl implements TaskService {
       "Task wit Id %s cannot be deleted because its callback is not yet processed";
   private static final String TASK_WITH_ID_IS_ALREADY_CLAIMED_BY =
       "Task with id %s is already claimed by %s.";
+  private static final String TASK_WITH_ID_IS_ALREADY_IN_END_STATE =
+      "Task with Id %s is already in an end state.";
   private static final String WAS_MARKED_FOR_DELETION = " was marked for deletion";
   private static final String THE_WORKBASKET = "The workbasket ";
   private static final String TASK = "Task";
@@ -99,11 +100,7 @@ public class TaskServiceImpl implements TaskService {
   private static final String ID_PREFIX_TASK = "TKI";
   private static final String ID_PREFIX_EXT_TASK_ID = "ETI";
   private static final String ID_PREFIX_BUSINESS_PROCESS = "BPI";
-  private static final Set<String> ALLOWED_CUSTOM_KEYS =
-      IntStream.rangeClosed(1, 16).mapToObj(String::valueOf).collect(Collectors.toSet());
   private static final String ID_PREFIX_HISTORY_EVENT = "HEI";
-  private static final String TASK_WITH_ID_IS_ALREADY_IN_END_STATE =
-      "Task with Id %s is already in an end state.";
   private final InternalTaskanaEngine taskanaEngine;
   private final WorkbasketService workbasketService;
   private final ClassificationService classificationService;
@@ -112,8 +109,8 @@ public class TaskServiceImpl implements TaskService {
   private final TaskCommentServiceImpl taskCommentService;
   private final ServiceLevelHandler serviceLevelHandler;
   private final AttachmentHandler attachmentHandler;
-  private AttachmentMapper attachmentMapper;
-  private HistoryEventManager historyEventManager;
+  private final AttachmentMapper attachmentMapper;
+  private final HistoryEventManager historyEventManager;
 
   public TaskServiceImpl(
       InternalTaskanaEngine taskanaEngine,
@@ -579,7 +576,7 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   public List<String> updateTasks(
-      ObjectReference selectionCriteria, Map<String, String> customFieldsToUpdate)
+      ObjectReference selectionCriteria, Map<TaskCustomField, String> customFieldsToUpdate)
       throws InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
@@ -589,7 +586,7 @@ public class TaskServiceImpl implements TaskService {
     }
     ObjectReference.validate(selectionCriteria, "ObjectReference", "updateTasks call");
     validateCustomFields(customFieldsToUpdate);
-    CustomPropertySelector fieldSelector = new CustomPropertySelector();
+    TaskCustomPropertySelector fieldSelector = new TaskCustomPropertySelector();
     TaskImpl updated = initUpdatedTask(customFieldsToUpdate, fieldSelector);
 
     try {
@@ -617,7 +614,8 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
-  public List<String> updateTasks(List<String> taskIds, Map<String, String> customFieldsToUpdate)
+  public List<String> updateTasks(
+      List<String> taskIds, Map<TaskCustomField, String> customFieldsToUpdate)
       throws InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
@@ -627,7 +625,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     validateCustomFields(customFieldsToUpdate);
-    CustomPropertySelector fieldSelector = new CustomPropertySelector();
+    TaskCustomPropertySelector fieldSelector = new TaskCustomPropertySelector();
     TaskImpl updatedTask = initUpdatedTask(customFieldsToUpdate, fieldSelector);
 
     try {
@@ -743,9 +741,7 @@ public class TaskServiceImpl implements TaskService {
               .map(MinimalTaskSummary::getTaskId)
               .collect(Collectors.toList());
       bulkLog.addAllErrors(resultsPair.getRight());
-      if (taskIds.isEmpty()) {
-        return bulkLog;
-      } else {
+      if (!taskIds.isEmpty()) {
         final int numberOfAffectedTasks = taskMapper.setOwnerOfTasks(owner, taskIds, Instant.now());
         if (numberOfAffectedTasks != taskIds.size()) { // all tasks were updated
           // check the outcome
@@ -761,8 +757,8 @@ public class TaskServiceImpl implements TaskService {
                 bulkLog.getFailedIds().size());
           }
         }
-        return bulkLog;
       }
+      return bulkLog;
     } finally {
       LOGGER.debug("exit from setOwnerOfTasks()");
       taskanaEngine.returnConnection();
@@ -1389,7 +1385,7 @@ public class TaskServiceImpl implements TaskService {
         throw new InvalidStateException(String.format(TASK_WITH_ID_CALLBACK_NOT_PROCESSED, taskId));
       }
 
-      attachmentMapper.deleteMultipleByTaskIds(Arrays.asList(taskId));
+      attachmentMapper.deleteMultipleByTaskIds(Collections.singletonList(taskId));
       taskMapper.delete(taskId);
 
       if (taskanaEngine.getEngine().isHistoryEnabled()
@@ -1825,8 +1821,7 @@ public class TaskServiceImpl implements TaskService {
   }
 
   private TaskImpl initUpdatedTask(
-      Map<String, String> customFieldsToUpdate, CustomPropertySelector fieldSelector)
-      throws InvalidArgumentException {
+      Map<TaskCustomField, String> customFieldsToUpdate, TaskCustomPropertySelector fieldSelector) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
           "entry to initUpdatedTask(customFieldsToUpdate = {}, fieldSelector = {})",
@@ -1837,8 +1832,8 @@ public class TaskServiceImpl implements TaskService {
     TaskImpl newTask = new TaskImpl();
     newTask.setModified(Instant.now());
 
-    for (Map.Entry<String, String> entry : customFieldsToUpdate.entrySet()) {
-      String key = entry.getKey();
+    for (Map.Entry<TaskCustomField, String> entry : customFieldsToUpdate.entrySet()) {
+      TaskCustomField key = entry.getKey();
       fieldSelector.setCustomProperty(key, true);
       newTask.setCustomAttribute(key, entry.getValue());
     }
@@ -1849,7 +1844,7 @@ public class TaskServiceImpl implements TaskService {
     return newTask;
   }
 
-  private void validateCustomFields(Map<String, String> customFieldsToUpdate)
+  private void validateCustomFields(Map<TaskCustomField, String> customFieldsToUpdate)
       throws InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
@@ -1859,14 +1854,6 @@ public class TaskServiceImpl implements TaskService {
     if (customFieldsToUpdate == null || customFieldsToUpdate.isEmpty()) {
       throw new InvalidArgumentException(
           "The customFieldsToUpdate argument to updateTasks must not be empty.");
-    }
-
-    for (Map.Entry<String, String> entry : customFieldsToUpdate.entrySet()) {
-      String key = entry.getKey();
-      if (!ALLOWED_CUSTOM_KEYS.contains(key)) {
-        throw new InvalidArgumentException(
-            "The customFieldsToUpdate argument to updateTasks contains invalid key " + key);
-      }
     }
     LOGGER.debug("exit from validateCustomFields()");
   }

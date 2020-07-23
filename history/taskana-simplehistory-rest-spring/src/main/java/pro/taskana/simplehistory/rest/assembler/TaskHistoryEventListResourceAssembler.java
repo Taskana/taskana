@@ -1,4 +1,4 @@
-package pro.taskana.simplehistory.rest.resource;
+package pro.taskana.simplehistory.rest.assembler;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -11,6 +11,8 @@ import org.springframework.hateoas.PagedModel.PageMetadata;
 import pro.taskana.resource.rest.AbstractRessourcesAssembler;
 import pro.taskana.simplehistory.impl.HistoryEventImpl;
 import pro.taskana.simplehistory.rest.TaskHistoryEventController;
+import pro.taskana.simplehistory.rest.models.TaskHistoryEventListResource;
+import pro.taskana.simplehistory.rest.models.TaskHistoryEventRepresentationModel;
 
 /** Mapper to convert from a list of HistoryEventImpl to a TaskHistoryEventResource. */
 public class TaskHistoryEventListResourceAssembler extends AbstractRessourcesAssembler {
@@ -18,8 +20,9 @@ public class TaskHistoryEventListResourceAssembler extends AbstractRessourcesAss
   public TaskHistoryEventListResource toResources(
       List<HistoryEventImpl> historyEvents, PageMetadata pageMetadata) {
 
-    TaskHistoryEventResourceAssembler assembler = new TaskHistoryEventResourceAssembler();
-    List<TaskHistoryEventResource> resources =
+    TaskHistoryEventRepresentationModelAssembler assembler =
+        new TaskHistoryEventRepresentationModelAssembler();
+    List<TaskHistoryEventRepresentationModel> resources =
         new ArrayList<>(assembler.toCollectionModel(historyEvents).getContent());
     TaskHistoryEventListResource pagedResources =
         new TaskHistoryEventListResource(resources, pageMetadata);

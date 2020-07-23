@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
+import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.AttachmentSummary;
@@ -96,7 +97,7 @@ class QueryTaskWithAttachmentAccTest extends AbstractAccTest {
         taskService
             .createTaskQuery()
             .classificationKeyIn("T2000")
-            .customAttributeIn("1", "custom1")
+            .customAttributeIn(TaskCustomField.CUSTOM_1, "custom1")
             .list();
     assertThat(tasks).hasSize(1);
     List<AttachmentSummary> queryAttachmentSummaries = tasks.get(0).getAttachmentSummaries();

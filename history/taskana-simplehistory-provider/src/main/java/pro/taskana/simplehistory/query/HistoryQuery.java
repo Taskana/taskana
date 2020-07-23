@@ -2,8 +2,8 @@ package pro.taskana.simplehistory.query;
 
 import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.TimeInterval;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.simplehistory.impl.HistoryEventImpl;
+import pro.taskana.spi.history.api.events.TaskHistoryCustomField;
 
 /** HistoryQuery for generating dynamic sql. */
 public interface HistoryQuery extends BaseQuery<HistoryEventImpl, HistoryQueryColumnName> {
@@ -162,38 +162,6 @@ public interface HistoryQuery extends BaseQuery<HistoryEventImpl, HistoryQueryCo
   HistoryQuery newValueIn(String... newValue);
 
   /**
-   * Add your custom1 to your query.
-   *
-   * @param custom1 as String
-   * @return the query
-   */
-  HistoryQuery custom1In(String... custom1);
-
-  /**
-   * Add your custom2 to your query.
-   *
-   * @param custom2 as String
-   * @return the query
-   */
-  HistoryQuery custom2In(String... custom2);
-
-  /**
-   * Add your custom3 to your query.
-   *
-   * @param custom3 as String
-   * @return the query
-   */
-  HistoryQuery custom3In(String... custom3);
-
-  /**
-   * Add your custom4 to your query.
-   *
-   * @param custom4 as String
-   * @return the query
-   */
-  HistoryQuery custom4In(String... custom4);
-
-  /**
    * Add your businessProcessId to your query. It will be compared in SQL with an LIKE. If you use a
    * wildcard like % then it will be transmitted to the database.
    *
@@ -347,40 +315,24 @@ public interface HistoryQuery extends BaseQuery<HistoryEventImpl, HistoryQueryCo
   HistoryQuery newValueLike(String... newValue);
 
   /**
-   * Add your custom1 to your query. It will be compared in SQL with an LIKE. If you use a wildcard
-   * like % then it will be transmitted to the database.
+   * Add the values of custom attributes for exact matching to your query.
    *
-   * @param custom1 as String
+   * @param customField identifies which custom attribute is affected.
+   * @param searchArguments the customField values of the searched for tasks
    * @return the query
    */
-  HistoryQuery custom1Like(String... custom1);
+  HistoryQuery customAttributeIn(TaskHistoryCustomField customField, String... searchArguments);
 
   /**
-   * Add your custom2 to your query. It will be compared in SQL with an LIKE. If you use a wildcard
-   * like % then it will be transmitted to the database.
+   * Add the values of custom attributes for pattern matching to your query. They will be compared
+   * in SQL with the LIKE operator. You may use a wildcard like % to specify the pattern. If you
+   * specify multiple arguments they are combined with the OR keyword.
    *
-   * @param custom2 as String
+   * @param customField identifies which custom attribute is affected.
+   * @param searchArguments the customField values of the searched-for tasks
    * @return the query
    */
-  HistoryQuery custom2Like(String... custom2);
-
-  /**
-   * Add your custom3 to your query. It will be compared in SQL with an LIKE. If you use a wildcard
-   * like % then it will be transmitted to the database.
-   *
-   * @param custom3 as String
-   * @return the query
-   */
-  HistoryQuery custom3Like(String... custom3);
-
-  /**
-   * Add your custom4 to your query. It will be compared in SQL with an LIKE. If you use a wildcard
-   * like % then it will be transmitted to the database.
-   *
-   * @param custom4 as String
-   * @return the query
-   */
-  HistoryQuery custom4Like(String... custom4);
+  HistoryQuery customAttributeLike(TaskHistoryCustomField customField, String... searchArguments);
 
   /**
    * Sort the query result by businessProcessId.
@@ -545,14 +497,13 @@ public interface HistoryQuery extends BaseQuery<HistoryEventImpl, HistoryQueryCo
   HistoryQuery orderByNewValue(SortDirection sortDirection);
 
   /**
-   * Sort the query result by a custom attribute.
+   * This method sorts the query result according to the value of a custom field.
    *
-   * @param num the number of the custom attribute as String (eg "4")
+   * @param customField identifies which custom attribute is affected.
    * @param sortDirection Determines whether the result is sorted in ascending or descending order.
    *     If sortDirection is null, the result is sorted in ascending order
    * @return the query
-   * @throws InvalidArgumentException when the number of the custom is incorrect.
    */
-  HistoryQuery orderByCustomAttribute(int num, SortDirection sortDirection)
-      throws InvalidArgumentException;
+  HistoryQuery orderByCustomAttribute(
+      TaskHistoryCustomField customField, SortDirection sortDirection);
 }

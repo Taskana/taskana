@@ -43,7 +43,7 @@ public class TaskRepresentationModel extends TaskSummaryRepresentationModel {
 
   /**
    * A CustomAttribute is a user customized attribute which is saved as a Map and can be retreived
-   * from either {@link Task#getCustomAttributes()} or {@link Task#getCallbackInfo()}.
+   * from either {@link Task#getCustomAttributeMap()} or {@link Task#getCallbackInfo()}.
    */
   public static class CustomAttribute {
 

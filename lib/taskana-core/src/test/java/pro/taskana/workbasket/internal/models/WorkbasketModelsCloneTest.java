@@ -1,9 +1,14 @@
 package pro.taskana.workbasket.internal.models;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_1;
+import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_2;
+import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_3;
+import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_4;
 
 import org.junit.jupiter.api.Test;
 
+import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.models.Workbasket;
 
 class WorkbasketModelsCloneTest {
@@ -11,10 +16,10 @@ class WorkbasketModelsCloneTest {
   @Test
   void should_CopyWithoutId_When_WorkbasketSummaryClone() {
     Workbasket dummyWorkbasketForSummaryTest = new WorkbasketImpl();
-    dummyWorkbasketForSummaryTest.setCustom1("dummyCustom1");
-    dummyWorkbasketForSummaryTest.setCustom2("dummyCustom2");
-    dummyWorkbasketForSummaryTest.setCustom3("dummyCustom3");
-    dummyWorkbasketForSummaryTest.setCustom4("dummyCustom4");
+    dummyWorkbasketForSummaryTest.setCustomAttribute(CUSTOM_1, "dummyCustom1");
+    dummyWorkbasketForSummaryTest.setCustomAttribute(CUSTOM_2, "dummyCustom2");
+    dummyWorkbasketForSummaryTest.setCustomAttribute(CUSTOM_3, "dummyCustom3");
+    dummyWorkbasketForSummaryTest.setCustomAttribute(CUSTOM_4, "dummyCustom4");
     dummyWorkbasketForSummaryTest.setDescription("dummyDescription");
     dummyWorkbasketForSummaryTest.setMarkedForDeletion(false);
     dummyWorkbasketForSummaryTest.setName("dummyName");
@@ -65,23 +70,23 @@ class WorkbasketModelsCloneTest {
     WorkbasketAccessItemImpl dummyWorkbasketAccessItem = new WorkbasketAccessItemImpl();
     dummyWorkbasketAccessItem.setId("dummyId");
     dummyWorkbasketAccessItem.setAccessName("dummyAccessName");
-    dummyWorkbasketAccessItem.setPermAppend(false);
-    dummyWorkbasketAccessItem.setPermCustom1(false);
-    dummyWorkbasketAccessItem.setPermCustom2(false);
-    dummyWorkbasketAccessItem.setPermCustom3(false);
-    dummyWorkbasketAccessItem.setPermCustom4(false);
-    dummyWorkbasketAccessItem.setPermCustom5(false);
-    dummyWorkbasketAccessItem.setPermCustom6(false);
-    dummyWorkbasketAccessItem.setPermCustom7(false);
-    dummyWorkbasketAccessItem.setPermCustom8(false);
-    dummyWorkbasketAccessItem.setPermCustom9(false);
-    dummyWorkbasketAccessItem.setPermCustom10(false);
-    dummyWorkbasketAccessItem.setPermCustom11(false);
-    dummyWorkbasketAccessItem.setPermCustom12(false);
-    dummyWorkbasketAccessItem.setPermDistribute(false);
-    dummyWorkbasketAccessItem.setPermOpen(false);
-    dummyWorkbasketAccessItem.setPermRead(false);
-    dummyWorkbasketAccessItem.setPermTransfer(false);
+    dummyWorkbasketAccessItem.setPermission(WorkbasketPermission.OPEN, false);
+    dummyWorkbasketAccessItem.setPermission(WorkbasketPermission.READ, false);
+    dummyWorkbasketAccessItem.setPermission(WorkbasketPermission.APPEND, false);
+    dummyWorkbasketAccessItem.setPermission(WorkbasketPermission.TRANSFER, false);
+    dummyWorkbasketAccessItem.setPermission(WorkbasketPermission.DISTRIBUTE, false);
+    dummyWorkbasketAccessItem.setPermission(WorkbasketPermission.CUSTOM_1, false);
+    dummyWorkbasketAccessItem.setPermission(WorkbasketPermission.CUSTOM_2, false);
+    dummyWorkbasketAccessItem.setPermission(WorkbasketPermission.CUSTOM_3, false);
+    dummyWorkbasketAccessItem.setPermission(WorkbasketPermission.CUSTOM_4, false);
+    dummyWorkbasketAccessItem.setPermission(WorkbasketPermission.CUSTOM_5, false);
+    dummyWorkbasketAccessItem.setPermission(WorkbasketPermission.CUSTOM_6, false);
+    dummyWorkbasketAccessItem.setPermission(WorkbasketPermission.CUSTOM_7, false);
+    dummyWorkbasketAccessItem.setPermission(WorkbasketPermission.CUSTOM_8, false);
+    dummyWorkbasketAccessItem.setPermission(WorkbasketPermission.CUSTOM_9, false);
+    dummyWorkbasketAccessItem.setPermission(WorkbasketPermission.CUSTOM_10, false);
+    dummyWorkbasketAccessItem.setPermission(WorkbasketPermission.CUSTOM_11, false);
+    dummyWorkbasketAccessItem.setPermission(WorkbasketPermission.CUSTOM_12, false);
 
     WorkbasketAccessItemImpl dummyWorkbasketAccessItemCloned = dummyWorkbasketAccessItem.copy();
 

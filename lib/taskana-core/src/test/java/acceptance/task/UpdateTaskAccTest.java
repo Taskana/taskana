@@ -3,6 +3,15 @@ package acceptance.task;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static pro.taskana.task.api.TaskCustomField.CUSTOM_1;
+import static pro.taskana.task.api.TaskCustomField.CUSTOM_10;
+import static pro.taskana.task.api.TaskCustomField.CUSTOM_12;
+import static pro.taskana.task.api.TaskCustomField.CUSTOM_14;
+import static pro.taskana.task.api.TaskCustomField.CUSTOM_16;
+import static pro.taskana.task.api.TaskCustomField.CUSTOM_2;
+import static pro.taskana.task.api.TaskCustomField.CUSTOM_3;
+import static pro.taskana.task.api.TaskCustomField.CUSTOM_5;
+import static pro.taskana.task.api.TaskCustomField.CUSTOM_7;
 
 import acceptance.AbstractAccTest;
 import java.time.Instant;
@@ -20,6 +29,7 @@ import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
+import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
@@ -120,10 +130,10 @@ class UpdateTaskAccTest extends AbstractAccTest {
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
     final Task task2 = taskService.getTask("TKI:000000000000000000000000000000000000");
 
-    task.setCustomAttribute("1", "willi");
+    task.setCustomAttribute(CUSTOM_1, "willi");
     Thread.sleep(10);
     taskService.updateTask(task);
-    task2.setCustomAttribute("2", "Walter");
+    task2.setCustomAttribute(CUSTOM_2, "Walter");
     // TODO flaky test ... if speed is too high,
     assertThatThrownBy(() -> taskService.updateTask(task2))
         .isInstanceOf(ConcurrencyException.class)
@@ -184,7 +194,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
   @Test
   void should_UpdateTask_When_CustomPropertiesOfTaskWereChanged() throws Exception {
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
-    task.setCustomAttribute("1", "T2100");
+    task.setCustomAttribute(CUSTOM_1, "T2100");
     Task updatedTask = taskService.updateTask(task);
     updatedTask = taskService.getTask(updatedTask.getId());
 
@@ -212,11 +222,11 @@ class UpdateTaskAccTest extends AbstractAccTest {
     por.setSystemInstance("00");
     por.setType("VNR");
     por.setValue("22334455");
-    Map<String, String> customProperties = new HashMap<>();
-    customProperties.put("7", "This is modifiedValue 7");
-    customProperties.put("14", null);
-    customProperties.put("3", "This is modifiedValue 3");
-    customProperties.put("16", "This is modifiedValue 16");
+    Map<TaskCustomField, String> customProperties = new HashMap<>();
+    customProperties.put(CUSTOM_7, "This is modifiedValue 7");
+    customProperties.put(CUSTOM_14, null);
+    customProperties.put(CUSTOM_3, "This is modifiedValue 3");
+    customProperties.put(CUSTOM_16, "This is modifiedValue 16");
 
     List<String> taskIds = taskService.updateTasks(por, customProperties);
     assertThat(taskIds).isEmpty();
@@ -231,20 +241,20 @@ class UpdateTaskAccTest extends AbstractAccTest {
     por.setSystemInstance("00");
     por.setType("VNR");
     por.setValue("22334455");
-    Map<String, String> customProperties = new HashMap<>();
-    customProperties.put("7", "This is modifiedValue 7");
-    customProperties.put("14", null);
-    customProperties.put("3", "This is modifiedValue 3");
-    customProperties.put("16", "This is modifiedValue 16");
+    Map<TaskCustomField, String> customProperties = new HashMap<>();
+    customProperties.put(CUSTOM_7, "This is modifiedValue 7");
+    customProperties.put(CUSTOM_14, null);
+    customProperties.put(CUSTOM_3, "This is modifiedValue 3");
+    customProperties.put(CUSTOM_16, "This is modifiedValue 16");
 
     List<String> taskIds = taskService.updateTasks(por, customProperties);
     assertThat(taskIds).hasSize(6);
     for (String taskId : taskIds) {
       Task task = taskService.getTask(taskId);
-      assertThat(task.getCustomAttribute("3")).isEqualTo("This is modifiedValue 3");
-      assertThat(task.getCustomAttribute("7")).isEqualTo("This is modifiedValue 7");
-      assertThat(task.getCustomAttribute("16")).isEqualTo("This is modifiedValue 16");
-      assertThat(task.getCustomAttribute("14")).isNull();
+      assertThat(task.getCustomAttribute(CUSTOM_3)).isEqualTo("This is modifiedValue 3");
+      assertThat(task.getCustomAttribute(CUSTOM_7)).isEqualTo("This is modifiedValue 7");
+      assertThat(task.getCustomAttribute(CUSTOM_16)).isEqualTo("This is modifiedValue 16");
+      assertThat(task.getCustomAttribute(CUSTOM_14)).isNull();
     }
   }
 
@@ -256,21 +266,21 @@ class UpdateTaskAccTest extends AbstractAccTest {
             "TKI:000000000000000000000000000000000008",
             "TKI:000000000000000000000000000000000009",
             "TKI:000000000000000000000000000000000010");
-    Map<String, String> customProperties = new HashMap<>();
-    customProperties.put("1", "This is modifiedValue 1");
-    customProperties.put("5", "This is modifiedValue 5");
-    customProperties.put("10", "This is modifiedValue 10");
-    customProperties.put("12", "This is modifiedValue 12");
+    Map<TaskCustomField, String> customProperties = new HashMap<>();
+    customProperties.put(CUSTOM_1, "This is modifiedValue 1");
+    customProperties.put(CUSTOM_5, "This is modifiedValue 5");
+    customProperties.put(CUSTOM_10, "This is modifiedValue 10");
+    customProperties.put(CUSTOM_12, "This is modifiedValue 12");
 
     List<String> changedTasks = taskService.updateTasks(taskIds, customProperties);
     assertThat(changedTasks).hasSize(3);
     for (String taskId : changedTasks) {
       Task task = taskService.getTask(taskId);
-      assertThat(task.getCustomAttribute("1")).isEqualTo("This is modifiedValue 1");
-      assertThat(task.getCustomAttribute("5")).isEqualTo("This is modifiedValue 5");
-      assertThat(task.getCustomAttribute("10")).isEqualTo("This is modifiedValue 10");
-      assertThat(task.getCustomAttribute("12")).isEqualTo("This is modifiedValue 12");
-      assertThat(task.getCustomAttribute("2")).isNull();
+      assertThat(task.getCustomAttribute(CUSTOM_1)).isEqualTo("This is modifiedValue 1");
+      assertThat(task.getCustomAttribute(CUSTOM_5)).isEqualTo("This is modifiedValue 5");
+      assertThat(task.getCustomAttribute(CUSTOM_10)).isEqualTo("This is modifiedValue 10");
+      assertThat(task.getCustomAttribute(CUSTOM_12)).isEqualTo("This is modifiedValue 12");
+      assertThat(task.getCustomAttribute(CUSTOM_2)).isNull();
     }
   }
 

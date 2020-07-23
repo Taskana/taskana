@@ -8,11 +8,13 @@ import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.classification.api.ClassificationQuery;
 import pro.taskana.classification.api.ClassificationQueryColumnName;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 
@@ -31,7 +33,9 @@ public class ClassificationQueryImpl implements ClassificationQuery {
       "pro.taskana.classification.internal.ClassificationQueryMapper."
           + "queryClassificationColumnValues";
   private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationQueryImpl.class);
-  private InternalTaskanaEngine taskanaEngine;
+  private final InternalTaskanaEngine taskanaEngine;
+  private final List<String> orderBy;
+  private final List<String> orderColumns;
   private ClassificationQueryColumnName columnName;
   private String[] key;
   private String[] idIn;
@@ -67,8 +71,6 @@ public class ClassificationQueryImpl implements ClassificationQuery {
   private String[] custom7Like;
   private String[] custom8In;
   private String[] custom8Like;
-  private List<String> orderBy;
-  private List<String> orderColumns;
 
   ClassificationQueryImpl(InternalTaskanaEngine taskanaEngine) {
     this.taskanaEngine = taskanaEngine;
@@ -195,106 +197,80 @@ public class ClassificationQueryImpl implements ClassificationQuery {
   }
 
   @Override
-  public ClassificationQuery customAttributeIn(String number, String... customIn)
-      throws InvalidArgumentException {
-    int num = 0;
-    try {
-      num = Integer.parseInt(number);
-    } catch (NumberFormatException e) {
-      throw new InvalidArgumentException(
-          "Argument '"
-              + number
-              + "' to getCustomAttribute cannot be converted to a number between 1 and 8",
-          e.getCause());
-    }
+  public ClassificationQuery customAttributeIn(
+      ClassificationCustomField customField, String... customIn) throws InvalidArgumentException {
     if (customIn.length == 0) {
       throw new InvalidArgumentException(
           "At least one string has to be provided as a search parameter");
     }
 
-    switch (num) {
-      case 1:
+    switch (customField) {
+      case CUSTOM_1:
         this.custom1In = customIn;
         break;
-      case 2:
+      case CUSTOM_2:
         this.custom2In = customIn;
         break;
-      case 3:
+      case CUSTOM_3:
         this.custom3In = customIn;
         break;
-      case 4:
+      case CUSTOM_4:
         this.custom4In = customIn;
         break;
-      case 5:
+      case CUSTOM_5:
         this.custom5In = customIn;
         break;
-      case 6:
+      case CUSTOM_6:
         this.custom6In = customIn;
         break;
-      case 7:
+      case CUSTOM_7:
         this.custom7In = customIn;
         break;
-      case 8:
+      case CUSTOM_8:
         this.custom8In = customIn;
         break;
       default:
-        throw new InvalidArgumentException(
-            "Argument '"
-                + number
-                + "' to getCustomAttribute does not represent a number between 1 and 8");
+        throw new SystemException("Unknown customField '" + customField + "'");
     }
 
     return this;
   }
 
   @Override
-  public ClassificationQuery customAttributeLike(String number, String... customLike)
-      throws InvalidArgumentException {
-    int num = 0;
-    try {
-      num = Integer.parseInt(number);
-    } catch (NumberFormatException e) {
-      throw new InvalidArgumentException(
-          "Argument '"
-              + number
-              + "' to getCustomAttribute cannot be converted to a number between 1 and 16",
-          e.getCause());
-    }
+  public ClassificationQuery customAttributeLike(
+      ClassificationCustomField customField, String... customLike) throws InvalidArgumentException {
     if (customLike.length == 0) {
       throw new InvalidArgumentException(
           "At least one string has to be provided as a search parameter");
     }
 
-    switch (num) {
-      case 1:
+    switch (customField) {
+      case CUSTOM_1:
         this.custom1Like = toUpperCopy(customLike);
         break;
-      case 2:
+      case CUSTOM_2:
         this.custom2Like = toUpperCopy(customLike);
         break;
-      case 3:
+      case CUSTOM_3:
         this.custom3Like = toUpperCopy(customLike);
         break;
-      case 4:
+      case CUSTOM_4:
         this.custom4Like = toUpperCopy(customLike);
         break;
-      case 5:
+      case CUSTOM_5:
         this.custom5Like = toUpperCopy(customLike);
         break;
-      case 6:
+      case CUSTOM_6:
         this.custom6Like = toUpperCopy(customLike);
         break;
-      case 7:
+      case CUSTOM_7:
         this.custom7Like = toUpperCopy(customLike);
         break;
-      case 8:
+      case CUSTOM_8:
         this.custom8Like = toUpperCopy(customLike);
         break;
       default:
-        throw new InvalidArgumentException(
-            "Argument '"
-                + number
-                + "' to getCustomAttribute does not represent a number between 1 and 16");
+        throw new SystemException("Unknown customField '" + customField + "'");
     }
 
     return this;
@@ -346,42 +322,9 @@ public class ClassificationQueryImpl implements ClassificationQuery {
   }
 
   @Override
-  public ClassificationQuery orderByCustomAttribute(String number, SortDirection sortDirection)
-      throws InvalidArgumentException {
-    int num = 0;
-    try {
-      num = Integer.parseInt(number);
-    } catch (NumberFormatException e) {
-      throw new InvalidArgumentException(
-          "Argument '"
-              + number
-              + "' to getCustomAttribute cannot be converted to a number between 1 and 16",
-          e.getCause());
-    }
-
-    switch (num) {
-      case 1:
-        return addOrderCriteria("CUSTOM_1", sortDirection);
-      case 2:
-        return addOrderCriteria("CUSTOM_2", sortDirection);
-      case 3:
-        return addOrderCriteria("CUSTOM_3", sortDirection);
-      case 4:
-        return addOrderCriteria("CUSTOM_4", sortDirection);
-      case 5:
-        return addOrderCriteria("CUSTOM_5", sortDirection);
-      case 6:
-        return addOrderCriteria("CUSTOM_6", sortDirection);
-      case 7:
-        return addOrderCriteria("CUSTOM_7", sortDirection);
-      case 8:
-        return addOrderCriteria("CUSTOM_8", sortDirection);
-      default:
-        throw new InvalidArgumentException(
-            "Argument '"
-                + number
-                + "' to getCustomAttribute does not represent a number between 1 and 16");
-    }
+  public ClassificationQuery orderByCustomAttribute(
+      ClassificationCustomField customField, SortDirection sortDirection) {
+    return addOrderCriteria(customField.name(), sortDirection);
   }
 
   @Override
@@ -410,15 +353,13 @@ public class ClassificationQueryImpl implements ClassificationQuery {
       RowBounds rowBounds = new RowBounds(offset, limit);
       result = taskanaEngine.getSqlSession().selectList(LINK_TO_SUMMARYMAPPER, this, rowBounds);
       return result;
-    } catch (Exception e) {
-      if (e instanceof PersistenceException) {
-        if (e.getMessage().contains("ERRORCODE=-4470")) {
-          TaskanaRuntimeException ex =
-              new TaskanaRuntimeException(
-                  "The offset beginning was set over the amount of result-rows.", e.getCause());
-          ex.setStackTrace(e.getStackTrace());
-          throw ex;
-        }
+    } catch (PersistenceException e) {
+      if (e.getMessage().contains("ERRORCODE=-4470")) {
+        TaskanaRuntimeException ex =
+            new TaskanaRuntimeException(
+                "The offset beginning was set over the amount of result-rows.", e.getCause());
+        ex.setStackTrace(e.getStackTrace());
+        throw ex;
       }
       throw e;
     } finally {

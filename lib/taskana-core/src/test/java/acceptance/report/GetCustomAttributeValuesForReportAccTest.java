@@ -16,7 +16,7 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.monitor.api.MonitorService;
-import pro.taskana.task.api.CustomField;
+import pro.taskana.task.api.TaskCustomField;
 
 /** Acceptance test for all "classification report" scenarios. */
 @ExtendWith(JaasExtension.class)
@@ -29,7 +29,7 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
         () -> {
           monitorService
               .createWorkbasketReportBuilder()
-              .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_2);
+              .listCustomAttributeValuesForCustomAttributeName(TaskCustomField.CUSTOM_2);
         };
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
@@ -43,7 +43,7 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
         monitorService
             .createWorkbasketReportBuilder()
             .workbasketIdIn(Collections.singletonList("WBI:000000000000000000000000000000000001"))
-            .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_2);
+            .listCustomAttributeValuesForCustomAttributeName(TaskCustomField.CUSTOM_2);
 
     assertThat(values).containsOnly("Vollkasko", "Teilkasko");
   }
@@ -57,7 +57,7 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
         monitorService
             .createWorkbasketReportBuilder()
             .domainIn(Collections.singletonList("DOMAIN_A"))
-            .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_16);
+            .listCustomAttributeValuesForCustomAttributeName(TaskCustomField.CUSTOM_16);
     assertThat(values).hasSize(26);
   }
 
@@ -66,15 +66,15 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
   void testGetCustomAttributeValuesForCustomAttribute() throws Exception {
     MonitorService monitorService = taskanaEngine.getMonitorService();
 
-    Map<CustomField, String> customAttributeFilter = new HashMap<>();
-    customAttributeFilter.put(CustomField.CUSTOM_2, "Vollkasko");
-    customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
+    Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
+    customAttributeFilter.put(TaskCustomField.CUSTOM_2, "Vollkasko");
+    customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
 
     List<String> values =
         monitorService
             .createClassificationCategoryReportBuilder()
             .customAttributeFilterIn(customAttributeFilter)
-            .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_16);
+            .listCustomAttributeValuesForCustomAttributeName(TaskCustomField.CUSTOM_16);
 
     assertThat(values).hasSize(12);
   }
@@ -92,7 +92,7 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
             .domainIn(domains)
             .excludedClassificationIdIn(
                 Collections.singletonList("CLI:000000000000000000000000000000000003"))
-            .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_16);
+            .listCustomAttributeValuesForCustomAttributeName(TaskCustomField.CUSTOM_16);
 
     assertThat(values).hasSize(43);
   }
