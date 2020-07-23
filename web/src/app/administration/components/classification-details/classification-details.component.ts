@@ -50,14 +50,13 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   spinnerIsRunning = false;
   customFields$: Observable<CustomField[]>;
   isCreatingNewClassification: boolean = false;
+  readonly lengthError = 'You have reached the maximum length for this field';
+  inputOverflowMap = new Map<string, boolean>();
+  validateKeypress: Function;
 
   @ViewChild('ClassificationForm', { static: false }) classificationForm: NgForm;
   toggleValidationMap = new Map<string, boolean>();
   destroy$ = new Subject<void>();
-
-  private timeout = new Map<string, Subscription>();
-  readonly lengthError = 'You have reached the maximal length';
-  tooLongMap = new Map<string, boolean>();
 
   constructor(
     private location: Location,
@@ -86,6 +85,13 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.store.dispatch(new SelectClassification(this.classification.classificationId));
       });
+
+    this.formsValidatorService.inputOverflowObservable.subscribe((inputOverflowMap) => {
+      this.inputOverflowMap = inputOverflowMap;
+    });
+    this.validateKeypress = (inputFieldModel, maxLength) => {
+      this.formsValidatorService.validateKeypress(inputFieldModel, maxLength);
+    };
   }
 
   removeClassification() {
@@ -238,18 +244,5 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         this.afterRequest();
       });
     this.location.go(this.location.path().replace(/(classifications).*/g, 'classifications'));
-  }
-
-  onKeyPressed(event: KeyboardEvent, model: NgModel, max: Number): void {
-    if (this.timeout.has(model.name)) {
-      this.timeout.get(model.name).unsubscribe();
-    }
-    if (model.value.length >= max && !event.altKey && !event.ctrlKey) {
-      this.tooLongMap.set(model.name, true);
-      this.timeout.set(
-        model.name,
-        timer(3000).subscribe(() => this.tooLongMap.set(model.name, false))
-      );
-    }
   }
 }

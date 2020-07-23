@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subject, Subscription, timer } from 'rxjs';
-import { NgForm, NgModel } from '@angular/forms';
+import { Observable, Subject } from 'rxjs';
+import { NgForm } from '@angular/forms';
 import { Select, Store } from '@ngxs/store';
 
 import { ICONTYPES } from 'app/shared/models/icon-types';
@@ -9,7 +9,7 @@ import { ACTION } from 'app/shared/models/action';
 import { customFieldCount, Workbasket } from 'app/shared/models/workbasket';
 import { TaskanaDate } from 'app/shared/util/taskana.date';
 
-import { SavingWorkbasketService, SavingInformation } from 'app/administration/services/saving-workbaskets.service';
+import { SavingInformation, SavingWorkbasketService } from 'app/administration/services/saving-workbaskets.service';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
@@ -45,17 +45,18 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
   allTypes: Map<string, string>;
   requestInProgress = false;
   badgeMessage = '';
-  toogleValidationMap = new Map<string, boolean>();
+  toggleValidationMap = new Map<string, boolean>();
   lookupField = false;
+
+  readonly lengthError = 'You have reached the maximum length for this field';
+  inputOverflowMap = new Map<string, boolean>();
+  validateKeypress: Function;
 
   @Select(EngineConfigurationSelectors.workbasketsCustomisation)
   workbasketsCustomisation$: Observable<WorkbasketsCustomisation>;
 
   customFields$: Observable<CustomField[]>;
   destroy$ = new Subject<void>();
-  readonly lengthError = 'You have reached the maximum length';
-  tooLongMap = new Map<string, boolean>();
-  private timeout = new Map<string, Subscription>();
 
   constructor(
     private workbasketService: WorkbasketService,
@@ -84,6 +85,12 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
         this.lookupField = workbasketsCustomization.information.owner.lookupField;
       }
     });
+    this.formsValidatorService.inputOverflowObservable.subscribe((inputOverflowMap) => {
+      this.inputOverflowMap = inputOverflowMap;
+    });
+    this.validateKeypress = (inputFieldModel, maxLength) => {
+      this.formsValidatorService.validateKeypress(inputFieldModel, maxLength);
+    };
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -101,7 +108,7 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
 
   onSubmit() {
     this.formsValidatorService.formSubmitAttempt = true;
-    this.formsValidatorService.validateFormInformation(this.workbasketForm, this.toogleValidationMap).then((value) => {
+    this.formsValidatorService.validateFormInformation(this.workbasketForm, this.toggleValidationMap).then((value) => {
       if (value) {
         this.onSave();
       }
@@ -189,19 +196,5 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  onKeyPressed(model: NgModel, max: Number): void {
-    if (this.timeout.has(model.name)) {
-      this.timeout.get(model.name).unsubscribe();
-    }
-    console.log(model.name);
-    if (model.value.length >= max) {
-      this.tooLongMap.set(model.name, true);
-      this.timeout.set(
-        model.name,
-        timer(3000).subscribe(() => this.tooLongMap.set(model.name, false))
-      );
-    }
   }
 }

@@ -1,4 +1,4 @@
-@import "src/theme/_colors.scss";
+@import 'src/theme/_colors.scss';
 
 .custom-field-row {
   display: flex;
@@ -19,8 +19,4 @@
 
 input:invalid.dirty {
   border-color: $invalid;
-}
-
-div.error {
-  color: $invalid;
 }

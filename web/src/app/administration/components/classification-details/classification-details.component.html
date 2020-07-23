@@ -39,9 +39,11 @@
               <!-- KEY -->
               <div class="form-group required">
                 <label for="classification-key" class="control-label">Key</label>
-                <input type="text" required maxlength="32" #key="ngModel" [disabled]="!isCreatingNewClassification" class="form-control"
-                       id="classification-key" placeholder="Key" [(ngModel)]="classification.key" name="classification.key" (keypress)="onKeyPressed($event, key, 32)">
-                <div *ngIf="tooLongMap.get(key.name)" class="error">{{lengthError}}</div>
+                <input type="text" required maxlength="32" #key="ngModel" [disabled]="!isCreatingNewClassification"
+                       class="form-control"
+                       id="classification-key" placeholder="Key" [(ngModel)]="classification.key"
+                       name="classification.key" (keypress)="validateKeypress(key, 32)">
+                <div *ngIf="inputOverflowMap.get(key.name)" class="error">{{lengthError}}</div>
                 <taskana-shared-field-error-display [displayError]="key.invalid && key.dirty"
                                                     errorMessage="* Key is required">
                 </taskana-shared-field-error-display>
@@ -53,8 +55,9 @@
                 <input type="text" required maxlength="255" #name="ngModel"
                        class="form-control"
                        id="classification-name" placeholder="Name"
-                       [(ngModel)]="classification.name" name="classification.name" (keypress)="onKeyPressed($event, name, 255)">
-                <div *ngIf="tooLongMap.get(name.name)" class="error">{{lengthError}}</div>
+                       [(ngModel)]="classification.name" name="classification.name"
+                       (keypress)="validateKeypress(name, 255)">
+                <div *ngIf="inputOverflowMap.get(name.name)" class="error">{{lengthError}}</div>
                 <taskana-shared-field-error-display [displayError]="name.invalid && name.dirty"
                                                     errorMessage="* Name is required">
                 </taskana-shared-field-error-display>
@@ -131,20 +134,22 @@
                   Level</label>
                 <input type="text" maxlength="255" class="form-control"
                        id="classification-service-level" placeholder="Service Level"
-                       [(ngModel)]="classification.serviceLevel" name="classification.serviceLevel" #serviceLevel="ngModel" (keypress)="onKeyPressed($event, serviceLevel, 255)">
-                <div *ngIf="tooLongMap.get(serviceLevel.name)" class="error">{{lengthError}}</div>
+                       [(ngModel)]="classification.serviceLevel" name="classification.serviceLevel"
+                       #serviceLevel="ngModel" (keypress)="validateKeypress(serviceLevel, 255)">
+                <div *ngIf="inputOverflowMap.get(serviceLevel.name)" class="error">{{lengthError}}</div>
               </div>
 
               <!-- APPLICATION ENTRY POINT -->
               <div class="form-group">
                 <label for="classification-application-entry-point" class="control-label">
                   Application entry point</label>
-                <input type="text"  maxlength="255" class="form-control"
+                <input type="text" maxlength="255" class="form-control"
                        id="classification-application-entry-point"
                        placeholder="Application entry point"
                        [(ngModel)]="classification.applicationEntryPoint"
-                       name="classification.applicationEntryPoint" #appEntryPoint="ngModel" (keypress)="onKeyPressed($event, appEntryPoint, 255)">
-                <div *ngIf="tooLongMap.get(appEntryPoint.name)" class="error">{{lengthError}}</div>
+                       name="classification.applicationEntryPoint" #appEntryPoint="ngModel"
+                       (keypress)="validateKeypress(appEntryPoint, 255)">
+                <div *ngIf="inputOverflowMap.get(appEntryPoint.name)" class="error">{{lengthError}}</div>
               </div>
 
               <!-- DESCRIPTION -->
@@ -153,8 +158,9 @@
                 <textarea class="form-control" maxlength="255" rows="5"
                           id="classification-description" placeholder="Description"
                           [(ngModel)]="classification.description"
-                          name="classification.description" #description="ngModel" (keypress)="onKeyPressed($event, description, 255)"></textarea>
-                <div *ngIf="tooLongMap.get(description.name)" class="error">{{lengthError}}</div>
+                          name="classification.description" #description="ngModel"
+                          (keypress)="validateKeypress(description, 255)"></textarea>
+                <div *ngIf="inputOverflowMap.get(description.name)" class="error">{{lengthError}}</div>
               </div>
             </div>
           </div>
@@ -170,8 +176,9 @@
                 <input type="text" maxlength="255" class="form-control"
                        id="classification-custom-{{i + 1}}" placeholder="{{customField.field}}"
                        [(ngModel)]="classification[getClassificationCustom(i + 1)]"
-                       name="classification.custom{{i + 1}}" #custom="ngModel" (keypress)="onKeyPressed($event, custom, 255)">
-                <div *ngIf="tooLongMap.get(custom.name)" class="error">{{lengthError}}</div>
+                       name="classification.custom{{i + 1}}" #custom="ngModel"
+                       (keypress)="validateKeypress(custom, 255)">
+                <div *ngIf="inputOverflowMap.get(custom.name)" class="error">{{lengthError}}</div>
               </div>
             </div>
           </div>
