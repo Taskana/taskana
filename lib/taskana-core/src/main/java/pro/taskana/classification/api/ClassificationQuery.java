@@ -157,25 +157,29 @@ public interface ClassificationQuery
   ClassificationQuery applicationEntryPointLike(String... applicationEntryPointLike);
 
   /**
-   * Add a custom to your query.
+   * Add the values of custom attributes for exact matching to your query.
    *
-   * @param num the number of the custom as String (eg "4")
-   * @param customIn filter for this custom
+   * @param customField identifies which custom attribute is affected.
+   * @param searchArguments the customField values of the searched for tasks
    * @return the query
-   * @throws InvalidArgumentException when the number of the custom is incorrect.
+   * @throws InvalidArgumentException when searchArguments is empty or null
    */
-  ClassificationQuery customAttributeIn(String num, String... customIn)
+  ClassificationQuery customAttributeIn(
+      ClassificationCustomField customField, String... searchArguments)
       throws InvalidArgumentException;
 
   /**
-   * Add a custom to your query.
+   * Add the values of custom attributes for pattern matching to your query. They will be compared
+   * in SQL with the LIKE operator. You may use a wildcard like % to specify the pattern. If you
+   * specify multiple arguments they are combined with the OR keyword.
    *
-   * @param num the number of the custom as String (eg "4")
-   * @param customLike filter for this custom with a LIKE-query
+   * @param customField identifies which custom attribute is affected.
+   * @param searchArguments the customField values of the searched-for tasks
    * @return the query
-   * @throws InvalidArgumentException when the number of the custom is incorrect.
+   * @throws InvalidArgumentException when searchArguments is empty or null
    */
-  ClassificationQuery customAttributeLike(String num, String... customLike)
+  ClassificationQuery customAttributeLike(
+      ClassificationCustomField customField, String... searchArguments)
       throws InvalidArgumentException;
 
   /**
@@ -260,14 +264,13 @@ public interface ClassificationQuery
   ClassificationQuery orderByApplicationEntryPoint(SortDirection sortDirection);
 
   /**
-   * Sort the query result by a custom.
+   * This method sorts the query result according to the value of a custom field.
    *
-   * @param num the number of the custom as String (eg "4")
+   * @param customField identifies which custom attribute is affected.
    * @param sortDirection Determines whether the result is sorted in ascending or descending order.
    *     If sortDirection is null, the result is sorted in ascending order
    * @return the query
-   * @throws InvalidArgumentException when the number of the custom is incorrect.
    */
-  ClassificationQuery orderByCustomAttribute(String num, SortDirection sortDirection)
-      throws InvalidArgumentException;
+  ClassificationQuery orderByCustomAttribute(
+      ClassificationCustomField customField, SortDirection sortDirection);
 }

@@ -3,6 +3,8 @@ package pro.taskana.workbasket.internal.models;
 import java.time.Instant;
 import java.util.Objects;
 
+import pro.taskana.common.api.exceptions.SystemException;
+import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
@@ -19,6 +21,26 @@ public class WorkbasketImpl extends WorkbasketSummaryImpl implements Workbasket 
     created = copyFrom.created;
     modified = copyFrom.modified;
     this.key = key;
+  }
+
+  @Override
+  public void setCustomAttribute(WorkbasketCustomField customField, String value) {
+    switch (customField) {
+      case CUSTOM_1:
+        custom1 = value;
+        break;
+      case CUSTOM_2:
+        custom2 = value;
+        break;
+      case CUSTOM_3:
+        custom3 = value;
+        break;
+      case CUSTOM_4:
+        custom4 = value;
+        break;
+      default:
+        throw new SystemException("Unknown customField '" + customField + "'");
+    }
   }
 
   @Override
@@ -113,14 +135,14 @@ public class WorkbasketImpl extends WorkbasketSummaryImpl implements Workbasket 
 
   @Override
   public String toString() {
-    return "WorkbasketImpl [id="
-        + id
-        + ", key="
-        + key
-        + ", created="
+    return "WorkbasketImpl [created="
         + created
         + ", modified="
         + modified
+        + ", id="
+        + id
+        + ", key="
+        + key
         + ", name="
         + name
         + ", description="

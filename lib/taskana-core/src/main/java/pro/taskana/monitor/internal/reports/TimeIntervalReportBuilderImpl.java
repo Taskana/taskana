@@ -20,7 +20,7 @@ import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.AgeQueryItem;
 import pro.taskana.monitor.internal.MonitorMapper;
 import pro.taskana.monitor.internal.preprocessor.WorkingDaysToDaysReportConverter;
-import pro.taskana.task.api.CustomField;
+import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
 
 /**
@@ -48,7 +48,7 @@ abstract class TimeIntervalReportBuilderImpl<
   protected List<String> domains;
   protected List<String> classificationIds;
   protected List<String> excludedClassificationIds;
-  protected Map<CustomField, String> customAttributeFilter;
+  protected Map<TaskCustomField, String> customAttributeFilter;
   protected WorkingDaysToDaysConverter converter;
 
   TimeIntervalReportBuilderImpl(InternalTaskanaEngine taskanaEngine, MonitorMapper monitorMapper) {
@@ -107,7 +107,7 @@ abstract class TimeIntervalReportBuilderImpl<
   }
 
   @Override
-  public B customAttributeFilterIn(Map<CustomField, String> customAttributeFilter) {
+  public B customAttributeFilterIn(Map<TaskCustomField, String> customAttributeFilter) {
     this.customAttributeFilter = new HashMap<>(customAttributeFilter);
     return _this();
   }
@@ -156,11 +156,12 @@ abstract class TimeIntervalReportBuilderImpl<
   }
 
   @Override
-  public List<String> listCustomAttributeValuesForCustomAttributeName(CustomField customField)
+  public List<String> listCustomAttributeValuesForCustomAttributeName(
+      TaskCustomField taskCustomField)
       throws NotAuthorizedException {
     LOGGER.debug(
         "entry to listCustomAttributeValuesForCustomAttributeName(customField = {}), this = {}",
-        customField,
+        taskCustomField,
         this);
     this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR);
     try {
@@ -173,7 +174,7 @@ abstract class TimeIntervalReportBuilderImpl<
           this.classificationIds,
           this.excludedClassificationIds,
           this.customAttributeFilter,
-          customField);
+          taskCustomField);
     } finally {
       this.taskanaEngine.returnConnection();
       LOGGER.debug("exit from listCustomAttributeValuesForCustomAttributeName().");

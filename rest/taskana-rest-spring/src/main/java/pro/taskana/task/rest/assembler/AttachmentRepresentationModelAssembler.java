@@ -44,7 +44,7 @@ public class AttachmentRepresentationModelAssembler
         classificationSummaryAssembler.toModel(attachment.getClassificationSummary()));
     repModel.setObjectReference(attachment.getObjectReference());
     repModel.setChannel(attachment.getChannel());
-    repModel.setCustomAttributes(attachment.getCustomAttributes());
+    repModel.setCustomAttributes(attachment.getCustomAttributeMap());
     repModel.add(linkTo(AttachmentController.class).slash(attachment.getId()).withSelfRel());
     return repModel;
   }
@@ -61,7 +61,7 @@ public class AttachmentRepresentationModelAssembler
             attachmentRepresentationModel.getClassificationSummary()));
     attachment.setObjectReference(attachmentRepresentationModel.getObjectReference());
     attachment.setChannel(attachmentRepresentationModel.getChannel());
-    attachment.setCustomAttributes(attachmentRepresentationModel.getCustomAttributes());
+    attachment.setCustomAttributeMap(attachmentRepresentationModel.getCustomAttributes());
     return attachment;
   }
 }

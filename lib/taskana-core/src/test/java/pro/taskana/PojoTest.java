@@ -36,7 +36,7 @@ class PojoTest {
 
   @Test
   void testsThatPojoClassesAreFound() {
-    assertThat(pojoClasses.stream().count() > 0).isTrue();
+    assertThat(pojoClasses).isNotEmpty();
   }
 
   @TestFactory

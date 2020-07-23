@@ -35,7 +35,7 @@ import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.DetailedMonitorQueryItem;
 import pro.taskana.monitor.api.reports.item.MonitorQueryItem;
 import pro.taskana.monitor.api.reports.row.FoldableRow;
-import pro.taskana.task.api.CustomField;
+import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
 
 /** Unit Test for ClassificationReportBuilderImpl. */
@@ -74,8 +74,8 @@ class ClassificationReportBuilderImplTest {
     final List<String> domains = Collections.singletonList("DOMAIN_A");
     final List<String> classificationIds = Collections.singletonList("L10000");
     final List<String> excludedClassificationIds = Collections.singletonList("L20000");
-    Map<CustomField, String> customAttributeFilter = new HashMap<>();
-    customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
+    Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
+    customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
 
     final List<MonitorQueryItem> expectedResult = new ArrayList<>();
     MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
@@ -126,7 +126,7 @@ class ClassificationReportBuilderImplTest {
     assertThat(actualResult).isNotNull();
     assertThat(actualResult.getRow("CLI:000000000000000000000000000000000001").getTotalValue())
         .isEqualTo(1);
-    assertThat(1).isEqualTo(actualResult.getSumRow().getTotalValue());
+    assertThat(actualResult.getSumRow().getTotalValue()).isOne();
   }
 
   @Test
@@ -138,8 +138,8 @@ class ClassificationReportBuilderImplTest {
     final List<String> domains = Collections.singletonList("DOMAIN_A");
     final List<String> classificationIds = Collections.singletonList("L10000");
     final List<String> excludedClassificationIds = Collections.singletonList("L20000");
-    Map<CustomField, String> customAttributeFilter = new HashMap<>();
-    customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
+    Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
+    customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
 
     final List<TimeIntervalColumnHeader> columnHeaders =
         Collections.singletonList(new TimeIntervalColumnHeader(0, 0));
@@ -192,10 +192,10 @@ class ClassificationReportBuilderImplTest {
 
     assertThat(actualResult).isNotNull();
     assertThat(actualResult.getRow("CLI:000000000000000000000000000000000001").getTotalValue())
-        .isEqualTo(1);
-    assertThat(1)
-        .isEqualTo(actualResult.getRow("CLI:000000000000000000000000000000000001").getCells()[0]);
-    assertThat(1).isEqualTo(actualResult.getSumRow().getTotalValue());
+        .isOne();
+    assertThat(actualResult.getRow("CLI:000000000000000000000000000000000001").getCells())
+        .isEqualTo(new int[] {1});
+    assertThat(actualResult.getSumRow().getTotalValue()).isOne();
   }
 
   @Test
@@ -207,8 +207,8 @@ class ClassificationReportBuilderImplTest {
     final List<String> domains = Collections.singletonList("DOMAIN_A");
     final List<String> classificationIds = Collections.singletonList("L10000");
     final List<String> excludedClassificationIds = Collections.singletonList("L20000");
-    Map<CustomField, String> customAttributeFilter = new HashMap<>();
-    customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
+    Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
+    customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
 
     final List<DetailedMonitorQueryItem> expectedResult = new ArrayList<>();
     DetailedMonitorQueryItem detailedMonitorQueryItem = new DetailedMonitorQueryItem();
@@ -259,10 +259,10 @@ class ClassificationReportBuilderImplTest {
     FoldableRow<DetailedMonitorQueryItem> line =
         actualResult.getRow("CLI:000000000000000000000000000000000001");
     assertThat(actualResult).isNotNull();
-    assertThat(1).isEqualTo(line.getTotalValue());
+    assertThat(line.getTotalValue()).isOne();
     assertThat(line.getFoldableRow("CLI:000000000000000000000000000000000006").getTotalValue())
-        .isEqualTo(1);
-    assertThat(1).isEqualTo(actualResult.getSumRow().getTotalValue());
+        .isOne();
+    assertThat(actualResult.getSumRow().getTotalValue()).isOne();
   }
 
   @Test
@@ -274,8 +274,8 @@ class ClassificationReportBuilderImplTest {
     final List<String> domains = Collections.singletonList("DOMAIN_A");
     final List<String> classificationIds = Collections.singletonList("L10000");
     final List<String> excludedClassificationIds = Collections.singletonList("L20000");
-    Map<CustomField, String> customAttributeFilter = new HashMap<>();
-    customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
+    Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
+    customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
     final List<TimeIntervalColumnHeader> columnHeaders =
         Collections.singletonList(new TimeIntervalColumnHeader(0, 0));
 
@@ -330,14 +330,14 @@ class ClassificationReportBuilderImplTest {
     FoldableRow<DetailedMonitorQueryItem> line =
         actualResult.getRow("CLI:000000000000000000000000000000000001");
     assertThat(actualResult).isNotNull();
-    assertThat(1).isEqualTo(line.getTotalValue());
+    assertThat(line.getTotalValue()).isOne();
     assertThat(line.getFoldableRow("CLI:000000000000000000000000000000000006").getTotalValue())
-        .isEqualTo(1);
-    assertThat(1).isEqualTo(line.getCells()[0]);
-    assertThat(1)
-        .isEqualTo(line.getFoldableRow("CLI:000000000000000000000000000000000006").getCells()[0]);
-    assertThat(1).isEqualTo(actualResult.getSumRow().getTotalValue());
-    assertThat(1).isEqualTo(actualResult.getSumRow().getCells()[0]);
+        .isOne();
+    assertThat(line.getCells()).isEqualTo(new int[] {1});
+    assertThat(line.getFoldableRow("CLI:000000000000000000000000000000000006").getCells())
+        .isEqualTo(new int[] {1});
+    assertThat(actualResult.getSumRow().getTotalValue()).isOne();
+    assertThat(actualResult.getSumRow().getCells()).isEqualTo(new int[] {1});
   }
 
   @Test
@@ -349,8 +349,8 @@ class ClassificationReportBuilderImplTest {
     final List<String> domains = Collections.singletonList("DOMAIN_A");
     final List<String> classificationIds = Collections.singletonList("L10000");
     final List<String> excludedClassificationIds = Collections.singletonList("L20000");
-    Map<CustomField, String> customAttributeFilter = new HashMap<>();
-    customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
+    Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
+    customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
     final List<TimeIntervalColumnHeader> columnHeaders =
         Collections.singletonList(new TimeIntervalColumnHeader(0, 0));
 
@@ -424,8 +424,8 @@ class ClassificationReportBuilderImplTest {
     final List<String> domains = Collections.singletonList("DOMAIN_A");
     final List<String> classificationIds = Collections.singletonList("L10000");
     final List<String> excludedClassificationIds = Collections.singletonList("L20000");
-    Map<CustomField, String> customAttributeFilter = new HashMap<>();
-    customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
+    Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
+    customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
     final List<TimeIntervalColumnHeader> columnHeaders =
         Collections.singletonList(new TimeIntervalColumnHeader(0, 0));
 
@@ -443,7 +443,7 @@ class ClassificationReportBuilderImplTest {
             classificationIds,
             excludedClassificationIds,
             customAttributeFilter,
-            CustomField.CUSTOM_1))
+            TaskCustomField.CUSTOM_1))
         .thenReturn(expectedResult);
 
     final List<String> actualResult =
@@ -456,7 +456,7 @@ class ClassificationReportBuilderImplTest {
             .excludedClassificationIdIn(excludedClassificationIds)
             .customAttributeFilterIn(customAttributeFilter)
             .withColumnHeaders(columnHeaders)
-            .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_1);
+            .listCustomAttributeValuesForCustomAttributeName(TaskCustomField.CUSTOM_1);
 
     verify(internalTaskanaEngineMock).openConnection();
     verify(taskanaEngineMock).checkRoleMembership(any());
@@ -478,7 +478,7 @@ class ClassificationReportBuilderImplTest {
     List<String> result =
         cut.createClassificationReportBuilder()
             .workbasketIdIn(Collections.singletonList("DieGibtsGarantiertNed"))
-            .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_10);
+            .listCustomAttributeValuesForCustomAttributeName(TaskCustomField.CUSTOM_10);
     assertThat(result).isNotNull();
   }
 }

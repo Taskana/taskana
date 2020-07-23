@@ -17,6 +17,7 @@ import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.internal.models.TaskImpl;
+import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.exceptions.WorkbasketInUseException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
@@ -75,12 +76,8 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
 
   @Test
   void testGetWorkbasketNotAuthorized() {
-
-    ThrowingCallable call =
-        () -> {
-          workbasketService.getWorkbasket("TEAMLEAD-2", "DOMAIN_A");
-        };
-    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
+    assertThatThrownBy(() -> workbasketService.getWorkbasket("TEAMLEAD-2", "DOMAIN_A"))
+        .isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(user = "businessadmin")
@@ -109,22 +106,14 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
   @Test
   void testDeleteWorkbasketWithNullOrEmptyParam() {
     // Test Null-Value
-    ThrowingCallable call =
-        () -> {
-          workbasketService.deleteWorkbasket(null);
-        };
-    assertThatThrownBy(call)
+    assertThatThrownBy(() -> workbasketService.deleteWorkbasket(null))
         .describedAs(
             "delete() should have thrown an InvalidArgumentException, "
                 + "when the param ID is null.")
         .isInstanceOf(InvalidArgumentException.class);
 
     // Test EMPTY-Value
-    call =
-        () -> {
-          workbasketService.deleteWorkbasket("");
-        };
-    assertThatThrownBy(call)
+    assertThatThrownBy(() -> workbasketService.deleteWorkbasket(""))
         .describedAs(
             "delete() should have thrown an InvalidArgumentException, \"\n"
                 + "            + \"when the param ID is EMPTY-String.")
@@ -134,11 +123,8 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
   @WithAccessId(user = "businessadmin")
   @Test
   void testDeleteWorkbasketButNotExisting() {
-    ThrowingCallable call =
-        () -> {
-          workbasketService.deleteWorkbasket("SOME NOT EXISTING ID");
-        };
-    assertThatThrownBy(call).isInstanceOf(WorkbasketNotFoundException.class);
+    assertThatThrownBy(() -> workbasketService.deleteWorkbasket("SOME NOT EXISTING ID"))
+        .isInstanceOf(WorkbasketNotFoundException.class);
   }
 
   @WithAccessId(user = "user-1-2", groups = "businessadmin")
@@ -146,11 +132,8 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
   void testDeleteWorkbasketWhichIsUsed() throws Exception {
     Workbasket wb =
         workbasketService.getWorkbasket("user-1-2", "DOMAIN_A"); // all rights, DOMAIN_A with Tasks
-    ThrowingCallable call =
-        () -> {
-          workbasketService.deleteWorkbasket(wb.getId());
-        };
-    assertThatThrownBy(call).isInstanceOf(WorkbasketInUseException.class);
+    assertThatThrownBy(() -> workbasketService.deleteWorkbasket(wb.getId()))
+        .isInstanceOf(WorkbasketInUseException.class);
   }
 
   @WithAccessId(user = "businessadmin")
@@ -160,14 +143,14 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
     String wbId = wb.getId();
     // create 2 access Items
     WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem(wbId, "TEAMLEAD-2");
-    accessItem.setPermAppend(true);
-    accessItem.setPermRead(true);
-    accessItem.setPermOpen(true);
+    accessItem.setPermission(WorkbasketPermission.APPEND, true);
+    accessItem.setPermission(WorkbasketPermission.READ, true);
+    accessItem.setPermission(WorkbasketPermission.OPEN, true);
     workbasketService.createWorkbasketAccessItem(accessItem);
     accessItem = workbasketService.newWorkbasketAccessItem(wbId, "elena");
-    accessItem.setPermAppend(true);
-    accessItem.setPermRead(true);
-    accessItem.setPermOpen(true);
+    accessItem.setPermission(WorkbasketPermission.APPEND, true);
+    accessItem.setPermission(WorkbasketPermission.READ, true);
+    accessItem.setPermission(WorkbasketPermission.OPEN, true);
     workbasketService.createWorkbasketAccessItem(accessItem);
     List<WorkbasketAccessItem> accessItemsBefore = workbasketService.getWorkbasketAccessItems(wbId);
     assertThat(accessItemsBefore).hasSize(5);

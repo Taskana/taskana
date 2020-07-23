@@ -2,11 +2,11 @@ package pro.taskana.monitor.api;
 
 import pro.taskana.monitor.api.reports.ClassificationCategoryReport;
 import pro.taskana.monitor.api.reports.ClassificationReport;
-import pro.taskana.monitor.api.reports.CustomFieldValueReport;
+import pro.taskana.monitor.api.reports.TaskCustomFieldValueReport;
 import pro.taskana.monitor.api.reports.TaskStatusReport;
 import pro.taskana.monitor.api.reports.TimestampReport;
 import pro.taskana.monitor.api.reports.WorkbasketReport;
-import pro.taskana.task.api.CustomField;
+import pro.taskana.task.api.TaskCustomField;
 
 /** The Monitor Service manages operations on tasks regarding the monitoring. */
 public interface MonitorService {
@@ -38,13 +38,14 @@ public interface MonitorService {
   ClassificationReport.Builder createClassificationReportBuilder();
 
   /**
-   * Provides a {@link CustomFieldValueReport.Builder} for creating a {@link CustomFieldValueReport}
-   * and list the values of an entered custom attribute.
+   * Provides a {@link TaskCustomFieldValueReport.Builder} for creating a {@link
+   * TaskCustomFieldValueReport} and list the values of an entered custom attribute.
    *
-   * @param customField the customField whose values should appear in the report
-   * @return a {@link CustomFieldValueReport.Builder}
+   * @param taskCustomField the customField whose values should appear in the report
+   * @return a {@link TaskCustomFieldValueReport.Builder}
    */
-  CustomFieldValueReport.Builder createCustomFieldValueReportBuilder(CustomField customField);
+  TaskCustomFieldValueReport.Builder createCustomFieldValueReportBuilder(
+      TaskCustomField taskCustomField);
 
   /**
    * Provides a {@link TaskStatusReport.Builder} for creating a {@link TaskStatusReport}.

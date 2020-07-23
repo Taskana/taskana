@@ -2,7 +2,7 @@ package pro.taskana.task.internal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.EnumSet;
 import java.util.List;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.RowBounds;
@@ -14,12 +14,14 @@ import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.configuration.DB;
 import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.ObjectReferenceQuery;
+import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskQuery;
 import pro.taskana.task.api.TaskQueryColumnName;
 import pro.taskana.task.api.TaskState;
@@ -34,9 +36,6 @@ import pro.taskana.workbasket.internal.WorkbasketQueryImpl;
 /** TaskQuery for generating dynamic sql. */
 public class TaskQueryImpl implements TaskQuery {
 
-  private static final String ARGUMENT = "Argument '";
-  private static final String GET_CUSTOM_ATTRIBUTE_NOT_A_NUMBER_BETWEEN_1_AND_16 =
-      "' to getCustomAttribute does not represent a number between 1 and 16";
   private static final String LINK_TO_MAPPER =
       "pro.taskana.task.internal.TaskQueryMapper.queryTaskSummaries";
   private static final String LINK_TO_MAPPER_DB2 =
@@ -45,13 +44,15 @@ public class TaskQueryImpl implements TaskQuery {
       "pro.taskana.task.internal.TaskQueryMapper.countQueryTasks";
   private static final String LINK_TO_COUNTER_DB2 =
       "pro.taskana.task.internal.TaskQueryMapper.countQueryTasksDb2";
-  private static final String LINK_TO_VALUEMAPPER =
+  private static final String LINK_TO_VALUE_MAPPER =
       "pro.taskana.task.internal.TaskQueryMapper.queryTaskColumnValues";
   private static final String TIME_INTERVAL = "TimeInterval ";
   private static final String IS_INVALID = " is invalid.";
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskQueryImpl.class);
-  private InternalTaskanaEngine taskanaEngine;
-  private TaskServiceImpl taskService;
+  private final InternalTaskanaEngine taskanaEngine;
+  private final TaskServiceImpl taskService;
+  private final List<String> orderBy;
+  private final List<String> orderColumns;
   private TaskQueryColumnName columnName;
   private String[] nameIn;
   private String[] nameLike;
@@ -145,8 +146,6 @@ public class TaskQueryImpl implements TaskQuery {
   private TimeInterval[] modifiedIn;
   private TimeInterval[] plannedIn;
   private TimeInterval[] dueIn;
-  private List<String> orderBy;
-  private List<String> orderColumns;
   private WildcardSearchField[] wildcardSearchFieldIn;
   private String wildcardSearchValueLike;
   private boolean selectAndClaim;
@@ -229,12 +228,8 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery stateNotIn(TaskState... states) {
-    // No benefit in introducing a new variable
-    List<TaskState> stateIn = new LinkedList<>(Arrays.asList(TaskState.values()));
-    for (TaskState state : states) {
-      stateIn.remove(state);
-    }
-    this.stateIn = stateIn.toArray(new TaskState[0]);
+    this.stateIn =
+        EnumSet.complementOf(EnumSet.copyOf(Arrays.asList(states))).toArray(new TaskState[0]);
     return this;
   }
 
@@ -480,147 +475,127 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
-  public TaskQuery customAttributeIn(String number, String... strings)
+  public TaskQuery customAttributeIn(TaskCustomField customField, String... strings)
       throws InvalidArgumentException {
-    int num = 0;
-    try {
-      num = Integer.parseInt(number);
-    } catch (NumberFormatException e) {
-      throw new InvalidArgumentException(
-          ARGUMENT + number + GET_CUSTOM_ATTRIBUTE_NOT_A_NUMBER_BETWEEN_1_AND_16, e.getCause());
-    }
     if (strings.length == 0) {
       throw new InvalidArgumentException(
           "At least one string has to be provided as a search parameter");
     }
-
-    switch (num) {
-      case 1:
+    switch (customField) {
+      case CUSTOM_1:
         this.custom1In = strings;
         break;
-      case 2:
+      case CUSTOM_2:
         this.custom2In = strings;
         break;
-      case 3:
+      case CUSTOM_3:
         this.custom3In = strings;
         break;
-      case 4:
+      case CUSTOM_4:
         this.custom4In = strings;
         break;
-      case 5:
+      case CUSTOM_5:
         this.custom5In = strings;
         break;
-      case 6:
+      case CUSTOM_6:
         this.custom6In = strings;
         break;
-      case 7:
+      case CUSTOM_7:
         this.custom7In = strings;
         break;
-      case 8:
+      case CUSTOM_8:
         this.custom8In = strings;
         break;
-      case 9:
+      case CUSTOM_9:
         this.custom9In = strings;
         break;
-      case 10:
+      case CUSTOM_10:
         this.custom10In = strings;
         break;
-      case 11:
+      case CUSTOM_11:
         this.custom11In = strings;
         break;
-      case 12:
+      case CUSTOM_12:
         this.custom12In = strings;
         break;
-      case 13:
+      case CUSTOM_13:
         this.custom13In = strings;
         break;
-      case 14:
+      case CUSTOM_14:
         this.custom14In = strings;
         break;
-      case 15:
+      case CUSTOM_15:
         this.custom15In = strings;
         break;
-      case 16:
+      case CUSTOM_16:
         this.custom16In = strings;
         break;
       default:
-        throw new InvalidArgumentException(
-            ARGUMENT + number + GET_CUSTOM_ATTRIBUTE_NOT_A_NUMBER_BETWEEN_1_AND_16);
+        throw new SystemException("Unknown custom attribute '" + customField + "'");
     }
 
     return this;
   }
 
   @Override
-  public TaskQuery customAttributeLike(String number, String... strings)
+  public TaskQuery customAttributeLike(TaskCustomField customField, String... strings)
       throws InvalidArgumentException {
-    int num = 0;
-    try {
-      num = Integer.parseInt(number);
-    } catch (NumberFormatException e) {
-      throw new InvalidArgumentException(
-          ARGUMENT
-              + number
-              + "' to getCustomAttribute cannot be converted to a number between 1 and 16",
-          e.getCause());
-    }
     if (strings.length == 0) {
       throw new InvalidArgumentException(
           "At least one string has to be provided as a search parameter");
     }
 
-    switch (num) {
-      case 1:
+    switch (customField) {
+      case CUSTOM_1:
         this.custom1Like = toUpperCopy(strings);
         break;
-      case 2:
+      case CUSTOM_2:
         this.custom2Like = toUpperCopy(strings);
         break;
-      case 3:
+      case CUSTOM_3:
         this.custom3Like = toUpperCopy(strings);
         break;
-      case 4:
+      case CUSTOM_4:
         this.custom4Like = toUpperCopy(strings);
         break;
-      case 5:
+      case CUSTOM_5:
         this.custom5Like = toUpperCopy(strings);
         break;
-      case 6:
+      case CUSTOM_6:
         this.custom6Like = toUpperCopy(strings);
         break;
-      case 7:
+      case CUSTOM_7:
         this.custom7Like = toUpperCopy(strings);
         break;
-      case 8:
+      case CUSTOM_8:
         this.custom8Like = toUpperCopy(strings);
         break;
-      case 9:
+      case CUSTOM_9:
         this.custom9Like = toUpperCopy(strings);
         break;
-      case 10:
+      case CUSTOM_10:
         this.custom10Like = toUpperCopy(strings);
         break;
-      case 11:
+      case CUSTOM_11:
         this.custom11Like = toUpperCopy(strings);
         break;
-      case 12:
+      case CUSTOM_12:
         this.custom12Like = toUpperCopy(strings);
         break;
-      case 13:
+      case CUSTOM_13:
         this.custom13Like = toUpperCopy(strings);
         break;
-      case 14:
+      case CUSTOM_14:
         this.custom14Like = toUpperCopy(strings);
         break;
-      case 15:
+      case CUSTOM_15:
         this.custom15Like = toUpperCopy(strings);
         break;
-      case 16:
+      case CUSTOM_16:
         this.custom16Like = toUpperCopy(strings);
         break;
       default:
-        throw new InvalidArgumentException(
-            ARGUMENT + number + GET_CUSTOM_ATTRIBUTE_NOT_A_NUMBER_BETWEEN_1_AND_16);
+        throw new SystemException("Unknown custom field '" + customField + "'");
     }
 
     return this;
@@ -858,56 +833,9 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
-  public TaskQuery orderByCustomAttribute(String number, SortDirection sortDirection)
-      throws InvalidArgumentException {
-    int num = 0;
-    try {
-      num = Integer.parseInt(number);
-    } catch (NumberFormatException e) {
-      throw new InvalidArgumentException(
-          ARGUMENT
-              + number
-              + "' to getCustomAttribute cannot be converted to a number between 1 and 16",
-          e.getCause());
-    }
-
-    switch (num) {
-      case 1:
-        return addOrderCriteria("CUSTOM_1", sortDirection);
-      case 2:
-        return addOrderCriteria("CUSTOM_2", sortDirection);
-      case 3:
-        return addOrderCriteria("CUSTOM_3", sortDirection);
-      case 4:
-        return addOrderCriteria("CUSTOM_4", sortDirection);
-      case 5:
-        return addOrderCriteria("CUSTOM_5", sortDirection);
-      case 6:
-        return addOrderCriteria("CUSTOM_6", sortDirection);
-      case 7:
-        return addOrderCriteria("CUSTOM_7", sortDirection);
-      case 8:
-        return addOrderCriteria("CUSTOM_8", sortDirection);
-      case 9:
-        return addOrderCriteria("CUSTOM_9", sortDirection);
-      case 10:
-        return addOrderCriteria("CUSTOM_10", sortDirection);
-      case 11:
-        return addOrderCriteria("CUSTOM_11", sortDirection);
-      case 12:
-        return addOrderCriteria("CUSTOM_12", sortDirection);
-      case 13:
-        return addOrderCriteria("CUSTOM_13", sortDirection);
-      case 14:
-        return addOrderCriteria("CUSTOM_14", sortDirection);
-      case 15:
-        return addOrderCriteria("CUSTOM_15", sortDirection);
-      case 16:
-        return addOrderCriteria("CUSTOM_16", sortDirection);
-      default:
-        throw new InvalidArgumentException(
-            ARGUMENT + number + GET_CUSTOM_ATTRIBUTE_NOT_A_NUMBER_BETWEEN_1_AND_16);
-    }
+  public TaskQuery orderByCustomAttribute(
+      TaskCustomField customField, SortDirection sortDirection) {
+    return addOrderCriteria(customField.name(), sortDirection);
   }
 
   @Override
@@ -1056,7 +984,7 @@ public class TaskQueryImpl implements TaskQuery {
       }
 
       setupJoinAndOrderParameters();
-      result = taskanaEngine.getSqlSession().selectList(LINK_TO_VALUEMAPPER, this);
+      result = taskanaEngine.getSqlSession().selectList(LINK_TO_VALUE_MAPPER, this);
       return result;
     } finally {
       taskanaEngine.returnConnection();
@@ -1743,7 +1671,11 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public String toString() {
-    return "TaskQueryImpl [columnName="
+    return "TaskQueryImpl [taskanaEngine="
+        + taskanaEngine
+        + ", taskService="
+        + taskService
+        + ", columnName="
         + columnName
         + ", nameIn="
         + Arrays.toString(nameIn)
@@ -1825,6 +1757,8 @@ public class TaskQueryImpl implements TaskQuery {
         + Arrays.toString(businessProcessIdIn)
         + ", businessProcessIdLike="
         + Arrays.toString(businessProcessIdLike)
+        + ", callbackStateIn="
+        + Arrays.toString(callbackStateIn)
         + ", custom1In="
         + Arrays.toString(custom1In)
         + ", custom1Like="
@@ -1931,11 +1865,19 @@ public class TaskQueryImpl implements TaskQuery {
         + orderBy
         + ", orderColumns="
         + orderColumns
+        + ", wildcardSearchFieldIn="
+        + Arrays.toString(wildcardSearchFieldIn)
+        + ", wildcardSearchValueLike="
+        + wildcardSearchValueLike
+        + ", selectAndClaim="
+        + selectAndClaim
+        + ", useDistinctKeyword="
+        + useDistinctKeyword
         + ", joinWithAttachments="
         + joinWithAttachments
         + ", joinWithClassifications="
         + joinWithClassifications
-        + ", joinWithAttachmentsClassifications="
+        + ", joinWithAttachmentClassifications="
         + joinWithAttachmentClassifications
         + ", addAttachmentColumnsToSelectClauseForOrdering="
         + addAttachmentColumnsToSelectClauseForOrdering
@@ -1943,12 +1885,6 @@ public class TaskQueryImpl implements TaskQuery {
         + addClassificationNameToSelectClauseForOrdering
         + ", addAttachmentClassificationNameToSelectClauseForOrdering="
         + addAttachmentClassificationNameToSelectClauseForOrdering
-        + ", wildcardSearchFieldsIn="
-        + wildcardSearchFieldIn
-        + ", wildcardSearchValueLike="
-        + wildcardSearchValueLike
-        + ", selectAndClaim="
-        + selectAndClaim
         + "]";
   }
 }

@@ -2,6 +2,7 @@ package pro.taskana.workbasket.api.models;
 
 import java.time.Instant;
 
+import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.WorkbasketType;
 
 /** Workbasket entity interface. */
@@ -29,32 +30,12 @@ public interface Workbasket extends WorkbasketSummary {
   void setType(WorkbasketType type);
 
   /**
-   * Sets the value for custom1 Attribute.
+   * Sets the value for custom Attribute.
    *
-   * @param custom1 the custom1 property of the workbasket
+   * @param customField identifies which custom attribute is to be set.
+   * @param value the value of the custom attribute to be set
    */
-  void setCustom1(String custom1);
-
-  /**
-   * Sets the value for custom2 attribute.
-   *
-   * @param custom2 the custom2 property of the workbasket
-   */
-  void setCustom2(String custom2);
-
-  /**
-   * Sets the value for custom3 attribute.
-   *
-   * @param custom3 the custom3 property of the workbasket
-   */
-  void setCustom3(String custom3);
-
-  /**
-   * Sets the value for custom4 attribute.
-   *
-   * @param custom4 the custom4 property of the workbasket
-   */
-  void setCustom4(String custom4);
+  void setCustomAttribute(WorkbasketCustomField customField, String value);
 
   /**
    * Sets the value for orgLevel1 attribute.

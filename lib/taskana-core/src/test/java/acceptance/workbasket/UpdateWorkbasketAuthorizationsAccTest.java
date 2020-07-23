@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
@@ -21,6 +22,7 @@ import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
+import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
@@ -29,10 +31,6 @@ import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
 /** Acceptance test for all "update workbasket authorizations" scenarios. */
 @ExtendWith(JaasExtension.class)
 class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
-
-  UpdateWorkbasketAuthorizationsAccTest() {
-    super();
-  }
 
   @WithAccessId(user = "user-1-1")
   @WithAccessId(user = "taskadmin")
@@ -45,14 +43,10 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         workbasketService.newWorkbasketAccessItem(
             "WBI:100000000000000000000000000000000008", "newAccessIdForUpdate");
 
-    workbasketAccessItem.setPermCustom1(true);
+    workbasketAccessItem.setPermission(WorkbasketPermission.CUSTOM_1, true);
 
-    ThrowingCallable updateWorkbasketAccessItemCall =
-        () -> {
-          workbasketService.updateWorkbasketAccessItem(workbasketAccessItem);
-        };
-
-    assertThatThrownBy(updateWorkbasketAccessItemCall).isInstanceOf(NotAuthorizedException.class);
+    assertThatThrownBy(() -> workbasketService.updateWorkbasketAccessItem(workbasketAccessItem))
+        .isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(user = "businessadmin")
@@ -62,14 +56,14 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     WorkbasketAccessItem accessItem =
         workbasketService.newWorkbasketAccessItem(
             "WBI:100000000000000000000000000000000002", "user1");
-    accessItem.setPermAppend(true);
-    accessItem.setPermCustom11(true);
-    accessItem.setPermRead(true);
+    accessItem.setPermission(WorkbasketPermission.READ, true);
+    accessItem.setPermission(WorkbasketPermission.APPEND, true);
+    accessItem.setPermission(WorkbasketPermission.CUSTOM_11, true);
     accessItem = workbasketService.createWorkbasketAccessItem(accessItem);
 
     final WorkbasketAccessItem newItem = accessItem;
-    accessItem.setPermCustom1(true);
-    accessItem.setPermAppend(false);
+    accessItem.setPermission(WorkbasketPermission.CUSTOM_1, true);
+    accessItem.setPermission(WorkbasketPermission.APPEND, false);
     accessItem.setAccessName("Rojas, Miguel");
     workbasketService.updateWorkbasketAccessItem(accessItem);
     List<WorkbasketAccessItem> items =
@@ -80,11 +74,11 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
     assertThat(updatedItem).isNotNull();
     assertThat(updatedItem.getAccessName()).isEqualTo("Rojas, Miguel");
-    assertThat(updatedItem.isPermAppend()).isFalse();
-    assertThat(updatedItem.isPermRead()).isTrue();
-    assertThat(updatedItem.isPermCustom11()).isTrue();
-    assertThat(updatedItem.isPermCustom1()).isTrue();
-    assertThat(updatedItem.isPermCustom2()).isFalse();
+    assertThat(updatedItem.getPermission(WorkbasketPermission.APPEND)).isFalse();
+    assertThat(updatedItem.getPermission(WorkbasketPermission.READ)).isTrue();
+    assertThat(updatedItem.getPermission(WorkbasketPermission.CUSTOM_11)).isTrue();
+    assertThat(updatedItem.getPermission(WorkbasketPermission.CUSTOM_1)).isTrue();
+    assertThat(updatedItem.getPermission(WorkbasketPermission.CUSTOM_2)).isFalse();
   }
 
   @WithAccessId(user = "businessadmin")
@@ -94,40 +88,32 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     WorkbasketAccessItem accessItem =
         workbasketService.newWorkbasketAccessItem(
             "WBI:100000000000000000000000000000000001", "user1");
-    accessItem.setPermAppend(true);
-    accessItem.setPermCustom11(true);
-    accessItem.setPermRead(true);
+    accessItem.setPermission(WorkbasketPermission.APPEND, true);
+    accessItem.setPermission(WorkbasketPermission.CUSTOM_11, true);
+    accessItem.setPermission(WorkbasketPermission.READ, true);
     WorkbasketAccessItem accessItemCreated =
         workbasketService.createWorkbasketAccessItem(accessItem);
 
-    accessItemCreated.setPermCustom1(true);
-    accessItemCreated.setPermAppend(false);
+    accessItemCreated.setPermission(WorkbasketPermission.CUSTOM_1, true);
+    accessItemCreated.setPermission(WorkbasketPermission.APPEND, false);
     ((WorkbasketAccessItemImpl) accessItemCreated).setAccessId("willi");
 
-    ThrowingCallable call =
-        () -> {
-          workbasketService.updateWorkbasketAccessItem(accessItemCreated);
-        };
-    assertThatThrownBy(call)
+    assertThatThrownBy(() -> workbasketService.updateWorkbasketAccessItem(accessItemCreated))
         .describedAs("InvalidArgumentException was expected because access id was changed")
         .isInstanceOf(InvalidArgumentException.class);
 
     ((WorkbasketAccessItemImpl) accessItemCreated).setAccessId("user1");
     WorkbasketAccessItem accessItemUpdated =
         workbasketService.updateWorkbasketAccessItem(accessItemCreated);
-    assertThat(accessItemUpdated.isPermAppend()).isFalse();
-    assertThat(accessItemUpdated.isPermRead()).isTrue();
-    assertThat(accessItemUpdated.isPermCustom11()).isTrue();
-    assertThat(accessItemUpdated.isPermCustom1()).isTrue();
-    assertThat(accessItemUpdated.isPermCustom2()).isFalse();
+    assertThat(accessItemUpdated.getPermission(WorkbasketPermission.APPEND)).isFalse();
+    assertThat(accessItemUpdated.getPermission(WorkbasketPermission.READ)).isTrue();
+    assertThat(accessItemUpdated.getPermission(WorkbasketPermission.CUSTOM_11)).isTrue();
+    assertThat(accessItemUpdated.getPermission(WorkbasketPermission.CUSTOM_1)).isTrue();
+    assertThat(accessItemUpdated.getPermission(WorkbasketPermission.CUSTOM_2)).isFalse();
 
     ((WorkbasketAccessItemImpl) accessItemUpdated).setWorkbasketId("2");
 
-    call =
-        () -> {
-          workbasketService.updateWorkbasketAccessItem(accessItemUpdated);
-        };
-    assertThatThrownBy(call)
+    assertThatThrownBy(() -> workbasketService.updateWorkbasketAccessItem(accessItemUpdated))
         .describedAs("InvalidArgumentException was expected because key was changed")
         .isInstanceOf(InvalidArgumentException.class);
   }
@@ -140,7 +126,6 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
     String wbKey = "USER-2-1";
     String wbDomain = "DOMAIN_A";
-    final String groupName = GROUP_2_DN;
 
     Task newTask = taskService.newTask(wbKey, wbDomain);
     newTask.setClassificationKey("T2100");
@@ -156,21 +141,20 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         workbasketService.getWorkbasketAccessItems("WBI:100000000000000000000000000000000008");
     WorkbasketAccessItem theAccessItem =
         accessItems.stream()
-            .filter(x -> groupName.equalsIgnoreCase(x.getAccessId()))
+            .filter(x -> GROUP_2_DN.equalsIgnoreCase(x.getAccessId()))
             .findFirst()
             .orElse(null);
 
     assertThat(theAccessItem).isNotNull();
-    theAccessItem.setPermOpen(false);
+    theAccessItem.setPermission(WorkbasketPermission.OPEN, false);
     workbasketService.updateWorkbasketAccessItem(theAccessItem);
 
     ThrowingCallable call =
-        () -> {
-          taskService
-              .createTaskQuery()
-              .workbasketKeyDomainIn(new KeyDomain(wbKey, wbDomain))
-              .list();
-        };
+        () ->
+            taskService
+                .createTaskQuery()
+                .workbasketKeyDomainIn(new KeyDomain(wbKey, wbDomain))
+                .list();
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedToQueryWorkbasketException.class);
   }
 
@@ -180,36 +164,38 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     final String wbId = "WBI:100000000000000000000000000000000004";
     List<WorkbasketAccessItem> accessItems = workbasketService.getWorkbasketAccessItems(wbId);
-    final int countBefore = accessItems.size();
 
     // update some values
     WorkbasketAccessItem item0 = accessItems.get(0);
-    item0.setPermAppend(false);
-    item0.setPermOpen(false);
-    item0.setPermTransfer(false);
-    final String updateId0 = item0.getId();
+    item0.setPermission(WorkbasketPermission.APPEND, false);
+    item0.setPermission(WorkbasketPermission.OPEN, false);
+    item0.setPermission(WorkbasketPermission.TRANSFER, false);
+
     WorkbasketAccessItem item1 = accessItems.get(1);
-    item1.setPermAppend(false);
-    item1.setPermOpen(false);
-    item1.setPermTransfer(false);
-    final String updateId1 = item1.getId();
+    item1.setPermission(WorkbasketPermission.APPEND, false);
+    item1.setPermission(WorkbasketPermission.OPEN, false);
+    item1.setPermission(WorkbasketPermission.TRANSFER, false);
 
     workbasketService.setWorkbasketAccessItems(wbId, accessItems);
 
     List<WorkbasketAccessItem> updatedAccessItems =
         workbasketService.getWorkbasketAccessItems(wbId);
-    int countAfter = updatedAccessItems.size();
-    assertThat(countAfter).isEqualTo(countBefore);
+    assertThat(updatedAccessItems)
+        .hasSameSizeAs(accessItems)
+        .usingElementComparator(Comparator.comparing(WorkbasketAccessItem::getId))
+        .contains(item0, item1);
 
-    item0 = updatedAccessItems.stream().filter(i -> i.getId().equals(updateId0)).findFirst().get();
-    assertThat(item0.isPermAppend()).isFalse();
-    assertThat(item0.isPermOpen()).isFalse();
-    assertThat(item0.isPermTransfer()).isFalse();
+    WorkbasketAccessItem item =
+        updatedAccessItems.stream().filter(i -> i.getId().equals(item0.getId())).findFirst().get();
+    assertThat(item.getPermission(WorkbasketPermission.APPEND)).isFalse();
+    assertThat(item.getPermission(WorkbasketPermission.OPEN)).isFalse();
+    assertThat(item.getPermission(WorkbasketPermission.TRANSFER)).isFalse();
 
-    item1 = updatedAccessItems.stream().filter(i -> i.getId().equals(updateId1)).findFirst().get();
-    assertThat(item1.isPermAppend()).isFalse();
-    assertThat(item1.isPermOpen()).isFalse();
-    assertThat(item1.isPermTransfer()).isFalse();
+    item =
+        updatedAccessItems.stream().filter(i -> i.getId().equals(item1.getId())).findFirst().get();
+    assertThat(item.getPermission(WorkbasketPermission.APPEND)).isFalse();
+    assertThat(item.getPermission(WorkbasketPermission.OPEN)).isFalse();
+    assertThat(item.getPermission(WorkbasketPermission.TRANSFER)).isFalse();
   }
 
   @WithAccessId(user = "businessadmin")
@@ -222,30 +208,27 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 
     // update some values
     WorkbasketAccessItem item0 = accessItems.get(0);
-    item0.setPermAppend(false);
-    item0.setPermOpen(false);
-    item0.setPermTransfer(false);
+    item0.setPermission(WorkbasketPermission.APPEND, false);
+    item0.setPermission(WorkbasketPermission.OPEN, false);
+    item0.setPermission(WorkbasketPermission.TRANSFER, false);
     final String updateId0 = item0.getId();
     // insert new entry
     WorkbasketAccessItem newItem = workbasketService.newWorkbasketAccessItem(wbId, "dummyUser1");
-    newItem.setPermRead(true);
-    newItem.setPermOpen(true);
-    newItem.setPermCustom12(true);
+    newItem.setPermission(WorkbasketPermission.READ, true);
+    newItem.setPermission(WorkbasketPermission.OPEN, true);
+    newItem.setPermission(WorkbasketPermission.CUSTOM_12, true);
     accessItems.add(newItem);
 
     workbasketService.setWorkbasketAccessItems(wbId, accessItems);
 
     List<WorkbasketAccessItem> updatedAccessItems =
         workbasketService.getWorkbasketAccessItems(wbId);
-    int countAfter = updatedAccessItems.size();
-    assertThat(countAfter).isEqualTo((countBefore + 1));
+    assertThat(updatedAccessItems).hasSize(countBefore + 1);
 
     item0 = updatedAccessItems.stream().filter(i -> i.getId().equals(updateId0)).findFirst().get();
-    assertThat(item0.isPermAppend()).isFalse();
-    assertThat(item0.isPermOpen()).isFalse();
-    assertThat(item0.isPermTransfer()).isFalse();
-    assertThat(item0.isPermAppend()).isFalse();
-    assertThat(item0.isPermTransfer()).isFalse();
+    assertThat(item0.getPermission(WorkbasketPermission.APPEND)).isFalse();
+    assertThat(item0.getPermission(WorkbasketPermission.OPEN)).isFalse();
+    assertThat(item0.getPermission(WorkbasketPermission.TRANSFER)).isFalse();
   }
 
   @WithAccessId(user = "businessadmin")

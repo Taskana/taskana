@@ -16,21 +16,22 @@ import pro.taskana.monitor.api.reports.item.MonitorQueryItem;
  * contains also the number of tasks of the respective cluster. The age of the tasks can be counted
  * in days or in working days. Tasks with Timestamp DUE = null are not considered.
  */
-public class CustomFieldValueReport extends Report<MonitorQueryItem, TimeIntervalColumnHeader> {
+public class TaskCustomFieldValueReport extends Report<MonitorQueryItem, TimeIntervalColumnHeader> {
 
-  public CustomFieldValueReport(List<TimeIntervalColumnHeader> timeIntervalColumnHeaders) {
-    super(timeIntervalColumnHeaders, new String[] {"CUSTOM FIELDS"});
+  public TaskCustomFieldValueReport(List<TimeIntervalColumnHeader> timeIntervalColumnHeaders) {
+    super(timeIntervalColumnHeaders, new String[] {"TASK CUSTOM FIELDS"});
   }
 
-  /** Builder for {@link CustomFieldValueReport}. */
+  /** Builder for {@link TaskCustomFieldValueReport}. */
   public interface Builder
       extends TimeIntervalReportBuilder<Builder, MonitorQueryItem, TimeIntervalColumnHeader> {
 
     @Override
-    CustomFieldValueReport buildReport() throws NotAuthorizedException, InvalidArgumentException;
+    TaskCustomFieldValueReport buildReport()
+        throws NotAuthorizedException, InvalidArgumentException;
 
     @Override
-    CustomFieldValueReport buildReport(TaskTimestamp timestamp)
+    TaskCustomFieldValueReport buildReport(TaskTimestamp timestamp)
         throws NotAuthorizedException, InvalidArgumentException;
   }
 }

@@ -2,6 +2,8 @@ package pro.taskana.workbasket.internal.models;
 
 import java.util.Objects;
 
+import pro.taskana.common.api.exceptions.SystemException;
+import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
@@ -44,10 +46,6 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
     markedForDeletion = copyFrom.markedForDeletion;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.impl.WorkbasketSummary#getId()
-   */
   @Override
   public String getId() {
     return id;
@@ -57,10 +55,6 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
     this.id = id;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.impl.WorkbasketSummary#getKey()
-   */
   @Override
   public String getKey() {
     return key;
@@ -70,10 +64,6 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
     this.key = key;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.impl.WorkbasketSummary#getName()
-   */
   @Override
   public String getName() {
     return name;
@@ -83,10 +73,6 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
     this.name = name;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.impl.WorkbasketSummary#getDescription()
-   */
   @Override
   public String getDescription() {
     return description;
@@ -96,10 +82,6 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
     this.description = description;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.impl.WorkbasketSummary#getOwner()
-   */
   @Override
   public String getOwner() {
     return owner;
@@ -109,10 +91,6 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
     this.owner = owner;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.impl.WorkbasketSummary#getDomain()
-   */
   @Override
   public String getDomain() {
     return domain;
@@ -122,10 +100,6 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
     this.domain = domain;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.impl.WorkbasketSummary#getType()
-   */
   @Override
   public WorkbasketType getType() {
     return type;
@@ -135,11 +109,22 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
     this.type = type;
   }
 
-  /*
-   *  (non-Javadoc)
-   *  @see pro.taskana.impl.WorkbasketSummary#getCustom1()
-   */
   @Override
+  public String getCustomAttribute(WorkbasketCustomField customField) {
+    switch (customField) {
+      case CUSTOM_1:
+        return custom1;
+      case CUSTOM_2:
+        return custom2;
+      case CUSTOM_3:
+        return custom3;
+      case CUSTOM_4:
+        return custom4;
+      default:
+        throw new SystemException("Unknown customField '" + customField + "'");
+    }
+  }
+
   public String getCustom1() {
     return custom1;
   }
@@ -148,11 +133,6 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
     this.custom1 = custom1;
   }
 
-  /*
-   *  (non-Javadoc)
-   *  @see pro.taskana.impl.WorkbasketSummary#getCustom2()
-   */
-  @Override
   public String getCustom2() {
     return custom2;
   }
@@ -161,11 +141,6 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
     this.custom2 = custom2;
   }
 
-  /*
-   *  (non-Javadoc)
-   *  @see pro.taskana.impl.WorkbasketSummary#getCustom3()
-   */
-  @Override
   public String getCustom3() {
     return custom3;
   }
@@ -174,11 +149,6 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
     this.custom3 = custom3;
   }
 
-  /*
-   *  (non-Javadoc)
-   *  @see pro.taskana.impl.WorkbasketSummary#getCustom4()
-   */
-  @Override
   public String getCustom4() {
     return custom4;
   }
@@ -187,10 +157,6 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
     this.custom4 = custom4;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.impl.WorkbasketSummary#getOrgLevel1()
-   */
   @Override
   public String getOrgLevel1() {
     return orgLevel1;
@@ -200,10 +166,6 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
     this.orgLevel1 = orgLevel1;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.impl.WorkbasketSummary#getOrgLevel2()
-   */
   @Override
   public String getOrgLevel2() {
     return orgLevel2;
@@ -213,10 +175,6 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
     this.orgLevel2 = orgLevel2;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.impl.WorkbasketSummary#getOrgLevel3()
-   */
   @Override
   public String getOrgLevel3() {
     return orgLevel3;
@@ -226,10 +184,6 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
     this.orgLevel3 = orgLevel3;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.impl.WorkbasketSummary#getOrgLevel4()
-   */
   @Override
   public String getOrgLevel4() {
     return orgLevel4;

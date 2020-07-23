@@ -2,6 +2,8 @@ package pro.taskana.spi.history.api.events;
 
 import java.time.Instant;
 
+import pro.taskana.common.api.exceptions.SystemException;
+
 /** Super class for all specific events from the TASKANA engine. */
 public class TaskanaHistoryEvent {
 
@@ -36,6 +38,40 @@ public class TaskanaHistoryEvent {
     this.id = id;
     this.userId = userId;
     this.details = details;
+  }
+
+  public void setCustomAttribute(TaskHistoryCustomField customField, String value) {
+    switch (customField) {
+      case CUSTOM_1:
+        custom1 = value;
+        break;
+      case CUSTOM_2:
+        custom2 = value;
+        break;
+      case CUSTOM_3:
+        custom3 = value;
+        break;
+      case CUSTOM_4:
+        custom4 = value;
+        break;
+      default:
+        throw new SystemException("Unknown customField '" + customField + "'");
+    }
+  }
+
+  public String getCustomAttribute(TaskHistoryCustomField customField) {
+    switch (customField) {
+      case CUSTOM_1:
+        return custom1;
+      case CUSTOM_2:
+        return custom2;
+      case CUSTOM_3:
+        return custom3;
+      case CUSTOM_4:
+        return custom4;
+      default:
+        throw new SystemException("Unknown customField '" + customField + "'");
+    }
   }
 
   public String getId() {
@@ -188,38 +224,6 @@ public class TaskanaHistoryEvent {
 
   public void setNewValue(String newValue) {
     this.newValue = newValue;
-  }
-
-  public String getCustom1() {
-    return custom1;
-  }
-
-  public void setCustom1(String custom1) {
-    this.custom1 = custom1;
-  }
-
-  public String getCustom2() {
-    return custom2;
-  }
-
-  public void setCustom2(String custom2) {
-    this.custom2 = custom2;
-  }
-
-  public String getCustom3() {
-    return custom3;
-  }
-
-  public void setCustom3(String custom3) {
-    this.custom3 = custom3;
-  }
-
-  public String getCustom4() {
-    return custom4;
-  }
-
-  public void setCustom4(String custom4) {
-    this.custom4 = custom4;
   }
 
   public String getDetails() {

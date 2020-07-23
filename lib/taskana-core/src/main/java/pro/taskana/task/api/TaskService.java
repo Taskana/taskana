@@ -373,15 +373,13 @@ public interface TaskService {
    *
    * @param selectionCriteria the {@link ObjectReference} that is used to select the tasks.
    * @param customFieldsToUpdate a {@link Map} that contains as key the identification of the custom
-   *     field and as value the corresponding new value of that custom field. The key for
-   *     identification of the custom field must be a String with value "1", "2" ... "16" as in the
-   *     setCustomAttribute or getCustomAttribute method of {@link Task}
+   *     field and as value the corresponding new value of that custom field.
    * @return a list of the Ids of all modified tasks
-   * @throws InvalidArgumentException If the customFieldsToUpdate map contains an invalid key or if
-   *     the selectionCriteria is invalid
+   * @throws InvalidArgumentException if the given selectionCriteria is invalid or the given
+   *     customFieldsToUpdate are null or empty.
    */
   List<String> updateTasks(
-      ObjectReference selectionCriteria, Map<String, String> customFieldsToUpdate)
+      ObjectReference selectionCriteria, Map<TaskCustomField, String> customFieldsToUpdate)
       throws InvalidArgumentException;
 
   /**
@@ -389,14 +387,11 @@ public interface TaskService {
    *
    * @param taskIds the taskIds that are used to select the tasks.
    * @param customFieldsToUpdate a {@link Map} that contains as key the identification of the custom
-   *     field and as value the corresponding new value of that custom field. The key for
-   *     identification of the custom field must be a String with value "1", "2" ... "16" as in the
-   *     setCustomAttribute or getCustomAttribute method of {@link Task}
+   *     field and as value the corresponding new value of that custom field.
    * @return a list of the Ids of all modified tasks
-   * @throws InvalidArgumentException If the customFieldsToUpdate map contains an invalid key or if
-   *     the selectionCriteria is invalid
+   * @throws InvalidArgumentException if the given customFieldsToUpdate are null or empty.
    */
-  List<String> updateTasks(List<String> taskIds, Map<String, String> customFieldsToUpdate)
+  List<String> updateTasks(List<String> taskIds, Map<TaskCustomField, String> customFieldsToUpdate)
       throws InvalidArgumentException;
 
   /**

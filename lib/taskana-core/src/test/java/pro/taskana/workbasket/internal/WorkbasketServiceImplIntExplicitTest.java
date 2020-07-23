@@ -3,8 +3,8 @@ package pro.taskana.workbasket.internal;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.AfterEach;
@@ -22,6 +22,7 @@ import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.sampledata.SampleDataGenerator;
+import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.api.models.Workbasket;
@@ -39,10 +40,7 @@ class WorkbasketServiceImplIntExplicitTest {
 
   private static final int SLEEP_TIME = 100;
 
-  static int counter = 0;
-
   private DataSource dataSource;
-  private TaskanaEngineConfiguration taskanaEngineConfiguration;
   private TaskanaEngine taskanaEngine;
   private TaskanaEngineImpl taskanaEngineImpl;
   private WorkbasketService workBasketService;
@@ -58,7 +56,8 @@ class WorkbasketServiceImplIntExplicitTest {
   void setup() throws Exception {
     dataSource = TaskanaEngineTestConfiguration.getDataSource();
     String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
-    taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, schemaName);
+    TaskanaEngineConfiguration taskanaEngineConfiguration =
+        new TaskanaEngineConfiguration(dataSource, false, schemaName);
     taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
     taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
     taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.EXPLICIT);
@@ -90,8 +89,7 @@ class WorkbasketServiceImplIntExplicitTest {
       workbasket2 = workBasketService.createWorkbasket(workbasket2);
       createWorkbasketWithSecurity(workbasket2, "user-1-1", true, true, false, false);
 
-      List<String> distTargets =
-          new ArrayList<>(Arrays.asList(workbasket0.getId(), workbasket1.getId()));
+      List<String> distTargets = Arrays.asList(workbasket0.getId(), workbasket1.getId());
       Thread.sleep(SLEEP_TIME);
       workBasketService.setDistributionTargets(workbasket2.getId(), distTargets);
 
@@ -102,7 +100,7 @@ class WorkbasketServiceImplIntExplicitTest {
       workbasket3 = workBasketService.createWorkbasket(workbasket3);
       createWorkbasketWithSecurity(workbasket3, "user-1-1", true, true, false, false);
 
-      List<String> newDistTargets = new ArrayList<>(Arrays.asList(workbasket3.getId()));
+      List<String> newDistTargets = Collections.singletonList(workbasket3.getId());
       Thread.sleep(SLEEP_TIME);
       workBasketService.setDistributionTargets(workbasket2.getId(), newDistTargets);
 
@@ -133,8 +131,8 @@ class WorkbasketServiceImplIntExplicitTest {
       workBasketService.createWorkbasket(wb);
       WorkbasketAccessItem accessItem =
           workBasketService.newWorkbasketAccessItem("id1", "Arthur Dent");
-      accessItem.setPermOpen(true);
-      accessItem.setPermRead(true);
+      accessItem.setPermission(WorkbasketPermission.OPEN, true);
+      accessItem.setPermission(WorkbasketPermission.READ, true);
       workBasketService.createWorkbasketAccessItem(accessItem);
 
       assertThat(workBasketService.getWorkbasketAccessItems("id1")).hasSize(1);
@@ -154,8 +152,8 @@ class WorkbasketServiceImplIntExplicitTest {
       workBasketService.createWorkbasket(wb);
       WorkbasketAccessItem accessItem =
           workBasketService.newWorkbasketAccessItem("key2", "Zaphod Beeblebrox");
-      accessItem.setPermOpen(true);
-      accessItem.setPermRead(true);
+      accessItem.setPermission(WorkbasketPermission.OPEN, true);
+      accessItem.setPermission(WorkbasketPermission.READ, true);
       workBasketService.createWorkbasketAccessItem(accessItem);
 
       assertThat(workBasketService.getWorkbasketAccessItems("key2")).hasSize(1);
@@ -179,10 +177,10 @@ class WorkbasketServiceImplIntExplicitTest {
       throws Exception {
     WorkbasketAccessItem accessItem =
         workBasketService.newWorkbasketAccessItem(wb.getId(), accessId);
-    accessItem.setPermOpen(permOpen);
-    accessItem.setPermRead(permRead);
-    accessItem.setPermAppend(permAppend);
-    accessItem.setPermTransfer(permTransfer);
+    accessItem.setPermission(WorkbasketPermission.OPEN, permOpen);
+    accessItem.setPermission(WorkbasketPermission.READ, permRead);
+    accessItem.setPermission(WorkbasketPermission.APPEND, permAppend);
+    accessItem.setPermission(WorkbasketPermission.TRANSFER, permTransfer);
     workBasketService.createWorkbasketAccessItem(accessItem);
   }
 

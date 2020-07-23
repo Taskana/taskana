@@ -25,15 +25,15 @@ import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.monitor.api.SelectedItem;
 import pro.taskana.monitor.api.TaskTimestamp;
-import pro.taskana.monitor.api.reports.CustomFieldValueReport;
+import pro.taskana.monitor.api.reports.TaskCustomFieldValueReport;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.MonitorQueryItem;
-import pro.taskana.task.api.CustomField;
+import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
 
 /** Unit Test for CustomFieldValueReportBuilderImpl. */
 @ExtendWith(MockitoExtension.class)
-class CustomFieldValueReportBuilderImplTest {
+class TaskCustomFieldValueReportBuilderImplTest {
 
   @InjectMocks private MonitorServiceImpl cut;
 
@@ -59,8 +59,8 @@ class CustomFieldValueReportBuilderImplTest {
     final List<String> domains = Collections.singletonList("DOMAIN_A");
     final List<String> classificationIds = Collections.singletonList("L10000");
     final List<String> excludedClassificationIds = Collections.singletonList("L20000");
-    Map<CustomField, String> customAttributeFilter = new HashMap<>();
-    customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
+    Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
+    customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
 
     final List<MonitorQueryItem> expectedResult = new ArrayList<>();
     MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
@@ -68,7 +68,7 @@ class CustomFieldValueReportBuilderImplTest {
     monitorQueryItem.setNumberOfTasks(1);
     expectedResult.add(monitorQueryItem);
     when(monitorMapperMock.getTaskCountOfCustomFieldValues(
-            CustomField.CUSTOM_1,
+            TaskCustomField.CUSTOM_1,
             workbasketIds,
             states,
             categories,
@@ -79,8 +79,8 @@ class CustomFieldValueReportBuilderImplTest {
             customAttributeFilter))
         .thenReturn(expectedResult);
 
-    final CustomFieldValueReport actualResult =
-        cut.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
+    final TaskCustomFieldValueReport actualResult =
+        cut.createCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
             .workbasketIdIn(workbasketIds)
             .stateIn(states)
             .classificationCategoryIn(categories)
@@ -105,8 +105,8 @@ class CustomFieldValueReportBuilderImplTest {
         taskanaEngineConfigurationMock);
 
     assertThat(actualResult).isNotNull();
-    assertThat(1).isEqualTo(actualResult.getRow("Geschaeftsstelle A").getTotalValue());
-    assertThat(1).isEqualTo(actualResult.getSumRow().getTotalValue());
+    assertThat(actualResult.getRow("Geschaeftsstelle A").getTotalValue()).isOne();
+    assertThat(actualResult.getSumRow().getTotalValue()).isOne();
   }
 
   @Test
@@ -118,8 +118,8 @@ class CustomFieldValueReportBuilderImplTest {
     final List<String> domains = Collections.singletonList("DOMAIN_A");
     final List<String> classificationIds = Collections.singletonList("L10000");
     final List<String> excludedClassificationIds = Collections.singletonList("L20000");
-    Map<CustomField, String> customAttributeFilter = new HashMap<>();
-    customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
+    Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
+    customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
     final List<TimeIntervalColumnHeader> columnHeaders =
         Collections.singletonList(new TimeIntervalColumnHeader(0, 0));
 
@@ -130,7 +130,7 @@ class CustomFieldValueReportBuilderImplTest {
     monitorQueryItem.setNumberOfTasks(1);
     expectedResult.add(monitorQueryItem);
     when(monitorMapperMock.getTaskCountOfCustomFieldValues(
-            CustomField.CUSTOM_1,
+            TaskCustomField.CUSTOM_1,
             workbasketIds,
             states,
             categories,
@@ -141,8 +141,8 @@ class CustomFieldValueReportBuilderImplTest {
             customAttributeFilter))
         .thenReturn(expectedResult);
 
-    final CustomFieldValueReport actualResult =
-        cut.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
+    final TaskCustomFieldValueReport actualResult =
+        cut.createCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
             .workbasketIdIn(workbasketIds)
             .stateIn(states)
             .classificationCategoryIn(categories)
@@ -168,9 +168,9 @@ class CustomFieldValueReportBuilderImplTest {
         taskanaEngineConfigurationMock);
 
     assertThat(actualResult).isNotNull();
-    assertThat(1).isEqualTo(actualResult.getRow("Geschaeftsstelle A").getTotalValue());
-    assertThat(1).isEqualTo(actualResult.getRow("Geschaeftsstelle A").getCells()[0]);
-    assertThat(1).isEqualTo(actualResult.getSumRow().getTotalValue());
+    assertThat(actualResult.getRow("Geschaeftsstelle A").getTotalValue()).isOne();
+    assertThat(actualResult.getRow("Geschaeftsstelle A").getCells()[0]).isOne();
+    assertThat(actualResult.getSumRow().getTotalValue()).isOne();
   }
 
   @Test
@@ -182,8 +182,8 @@ class CustomFieldValueReportBuilderImplTest {
     final List<String> domains = Collections.singletonList("DOMAIN_A");
     final List<String> classificationIds = Collections.singletonList("L10000");
     final List<String> excludedClassificationIds = Collections.singletonList("L20000");
-    Map<CustomField, String> customAttributeFilter = new HashMap<>();
-    customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
+    Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
+    customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
     final List<TimeIntervalColumnHeader> columnHeaders =
         Collections.singletonList(new TimeIntervalColumnHeader(0, 0));
 
@@ -201,11 +201,11 @@ class CustomFieldValueReportBuilderImplTest {
             classificationIds,
             excludedClassificationIds,
             customAttributeFilter,
-            CustomField.CUSTOM_1))
+            TaskCustomField.CUSTOM_1))
         .thenReturn(expectedResult);
 
     final List<String> actualResult =
-        cut.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
+        cut.createCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
             .workbasketIdIn(workbasketIds)
             .stateIn(states)
             .classificationCategoryIn(categories)
@@ -214,7 +214,7 @@ class CustomFieldValueReportBuilderImplTest {
             .excludedClassificationIdIn(excludedClassificationIds)
             .customAttributeFilterIn(customAttributeFilter)
             .withColumnHeaders(columnHeaders)
-            .listCustomAttributeValuesForCustomAttributeName(CustomField.CUSTOM_1);
+            .listCustomAttributeValuesForCustomAttributeName(TaskCustomField.CUSTOM_1);
 
     verify(internalTaskanaEngineMock).openConnection();
     verify(taskanaEngineMock).checkRoleMembership(any());
@@ -229,7 +229,6 @@ class CustomFieldValueReportBuilderImplTest {
         monitorMapperMock,
         taskanaEngineConfigurationMock);
 
-    assertThat(actualResult).isNotNull();
     assertThat(actualResult).isEqualTo(expectedResult);
   }
 }

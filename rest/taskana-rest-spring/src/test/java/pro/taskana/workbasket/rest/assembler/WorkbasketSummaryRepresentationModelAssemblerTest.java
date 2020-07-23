@@ -1,6 +1,10 @@
 package pro.taskana.workbasket.rest.assembler;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_1;
+import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_2;
+import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_3;
+import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_4;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
@@ -114,10 +118,10 @@ class WorkbasketSummaryRepresentationModelAssemblerTest {
     Assert.assertEquals(summary.getId(), repModel.getWorkbasketId());
     Assert.assertEquals(summary.getKey(), repModel.getKey());
     Assert.assertEquals(summary.getName(), repModel.getName());
-    Assert.assertEquals(summary.getCustom1(), repModel.getCustom1());
-    Assert.assertEquals(summary.getCustom2(), repModel.getCustom2());
-    Assert.assertEquals(summary.getCustom3(), repModel.getCustom3());
-    Assert.assertEquals(summary.getCustom4(), repModel.getCustom4());
+    Assert.assertEquals(summary.getCustomAttribute(CUSTOM_1), repModel.getCustom1());
+    Assert.assertEquals(summary.getCustomAttribute(CUSTOM_2), repModel.getCustom2());
+    Assert.assertEquals(summary.getCustomAttribute(CUSTOM_3), repModel.getCustom3());
+    Assert.assertEquals(summary.getCustomAttribute(CUSTOM_4), repModel.getCustom4());
     Assert.assertEquals(summary.getOrgLevel1(), repModel.getOrgLevel1());
     Assert.assertEquals(summary.getOrgLevel2(), repModel.getOrgLevel2());
     Assert.assertEquals(summary.getOrgLevel3(), repModel.getOrgLevel3());

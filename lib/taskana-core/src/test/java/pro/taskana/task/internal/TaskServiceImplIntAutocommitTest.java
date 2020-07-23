@@ -28,12 +28,14 @@ import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.sampledata.SampleDataGenerator;
+import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.TaskImpl;
+import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.api.models.Workbasket;
@@ -50,7 +52,6 @@ class TaskServiceImplIntAutocommitTest {
 
   private static SampleDataGenerator sampleDataGenerator;
   private static TaskanaEngineConfiguration taskanaEngineConfiguration;
-  private DataSource dataSource;
   private TaskServiceImpl taskServiceImpl;
   private TaskanaEngine taskanaEngine;
   private TaskanaEngineImpl taskanaEngineImpl;
@@ -132,11 +133,8 @@ class TaskServiceImplIntAutocommitTest {
     TaskanaEngineImpl te2 = (TaskanaEngineImpl) taskanaEngineConfiguration.buildTaskanaEngine();
     TaskServiceImpl taskServiceImpl2 = (TaskServiceImpl) te2.getTaskService();
 
-    ThrowingCallable call =
-        () -> {
-          taskServiceImpl2.getTask(wb.getId());
-        };
-    assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
+    assertThatThrownBy(() -> taskServiceImpl2.getTask(wb.getId()))
+        .isInstanceOf(TaskNotFoundException.class);
   }
 
   @Test
@@ -165,7 +163,7 @@ class TaskServiceImplIntAutocommitTest {
             .workbasketKeyDomainIn(
                 new KeyDomain("asd", "novatec"), new KeyDomain("asdasdasd", "DOMAIN_A"))
             .ownerIn("test", "test2", "bla")
-            .customAttributeIn("16", "test")
+            .customAttributeIn(TaskCustomField.CUSTOM_16, "test")
             .classificationKeyIn("pId1", "pId2")
             .primaryObjectReferenceCompanyIn("first comp", "sonstwo gmbh")
             .primaryObjectReferenceSystemIn("sys")
@@ -229,12 +227,8 @@ class TaskServiceImplIntAutocommitTest {
 
   @Test
   void shouldNotTransferAnyTask() {
-
-    ThrowingCallable call =
-        () -> {
-          taskServiceImpl.transfer(UUID.randomUUID() + "_X", "1");
-        };
-    assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
+    assertThatThrownBy(() -> taskServiceImpl.transfer(UUID.randomUUID() + "_X", "1"))
+        .isInstanceOf(TaskNotFoundException.class);
   }
 
   @WithAccessId(user = "user-1-1", groups = "businessadmin")
@@ -243,7 +237,7 @@ class TaskServiceImplIntAutocommitTest {
     final String user = CurrentUserContext.getUserid();
 
     // Set up Security for this Test
-    dataSource = TaskanaEngineTestConfiguration.getDataSource();
+    DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
     taskanaEngineConfiguration =
         new TaskanaEngineConfiguration(
             dataSource, false, true, TaskanaEngineTestConfiguration.getSchemaName());
@@ -299,9 +293,7 @@ class TaskServiceImplIntAutocommitTest {
     TaskImpl taskCreated = (TaskImpl) taskServiceImpl.createTask(task);
 
     ThrowingCallable call =
-        () -> {
-          taskServiceImpl.transfer(taskCreated.getId(), wbNoAppendCreated.getId());
-        };
+        () -> taskServiceImpl.transfer(taskCreated.getId(), wbNoAppendCreated.getId());
     assertThatThrownBy(call)
         .describedAs(
             "Transfer Task should be FAILD, because there are no APPEND-Rights on destination WB.")
@@ -320,11 +312,7 @@ class TaskServiceImplIntAutocommitTest {
 
     TaskImpl taskCreated2 = (TaskImpl) taskServiceImpl.createTask(taskCreated);
 
-    call =
-        () -> {
-          taskServiceImpl.transfer(taskCreated2.getId(), wbCreated.getId());
-        };
-    assertThatThrownBy(call)
+    assertThatThrownBy(() -> taskServiceImpl.transfer(taskCreated2.getId(), wbCreated.getId()))
         .describedAs(
             "Transfer Task should be FAILED, because there are no TRANSFER-Rights on current WB.")
         .isInstanceOf(NotAuthorizedException.class)
@@ -376,10 +364,10 @@ class TaskServiceImplIntAutocommitTest {
       throws Exception {
     WorkbasketAccessItem accessItem =
         workbasketService.newWorkbasketAccessItem(wb.getId(), accessId);
-    accessItem.setPermOpen(permOpen);
-    accessItem.setPermRead(permRead);
-    accessItem.setPermAppend(permAppend);
-    accessItem.setPermTransfer(permTransfer);
+    accessItem.setPermission(WorkbasketPermission.OPEN, permOpen);
+    accessItem.setPermission(WorkbasketPermission.READ, permRead);
+    accessItem.setPermission(WorkbasketPermission.APPEND, permAppend);
+    accessItem.setPermission(WorkbasketPermission.TRANSFER, permTransfer);
     workbasketService.createWorkbasketAccessItem(accessItem);
   }
 }

@@ -1,6 +1,14 @@
 package pro.taskana.classification.internal.models;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_1;
+import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_2;
+import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_3;
+import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_4;
+import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_5;
+import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_6;
+import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_7;
+import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_8;
 
 import org.junit.jupiter.api.Test;
 
@@ -13,14 +21,14 @@ class ClassificationModelsCloneTest {
     Classification dummyClassificationForSummaryTest = new ClassificationImpl();
     dummyClassificationForSummaryTest.setApplicationEntryPoint("dummyEntryPoint");
     dummyClassificationForSummaryTest.setCategory("dummyCategory");
-    dummyClassificationForSummaryTest.setCustom1("dummyCustom1");
-    dummyClassificationForSummaryTest.setCustom2("dummyCustom2");
-    dummyClassificationForSummaryTest.setCustom3("dummyCustom3");
-    dummyClassificationForSummaryTest.setCustom4("dummyCustom4");
-    dummyClassificationForSummaryTest.setCustom5("dummyCustom5");
-    dummyClassificationForSummaryTest.setCustom6("dummyCustom6");
-    dummyClassificationForSummaryTest.setCustom7("dummyCustom7");
-    dummyClassificationForSummaryTest.setCustom8("dummyCustom8");
+    dummyClassificationForSummaryTest.setCustomAttribute(CUSTOM_1, "dummyCustom1");
+    dummyClassificationForSummaryTest.setCustomAttribute(CUSTOM_2, "dummyCustom2");
+    dummyClassificationForSummaryTest.setCustomAttribute(CUSTOM_3, "dummyCustom3");
+    dummyClassificationForSummaryTest.setCustomAttribute(CUSTOM_4, "dummyCustom4");
+    dummyClassificationForSummaryTest.setCustomAttribute(CUSTOM_5, "dummyCustom5");
+    dummyClassificationForSummaryTest.setCustomAttribute(CUSTOM_6, "dummyCustom6");
+    dummyClassificationForSummaryTest.setCustomAttribute(CUSTOM_7, "dummyCustom7");
+    dummyClassificationForSummaryTest.setCustomAttribute(CUSTOM_8, "dummyCustom8");
     dummyClassificationForSummaryTest.setDescription("dummyDescription");
     dummyClassificationForSummaryTest.setIsValidInDomain(true);
     dummyClassificationForSummaryTest.setParentId("dummyParentId");
@@ -46,14 +54,14 @@ class ClassificationModelsCloneTest {
     dummyClassification.setId("dummyId");
     dummyClassification.setApplicationEntryPoint("dummyEntryPoint");
     dummyClassification.setCategory("dummyCategory");
-    dummyClassification.setCustom1("dummyCustom1");
-    dummyClassification.setCustom2("dummyCustom2");
-    dummyClassification.setCustom3("dummyCustom3");
-    dummyClassification.setCustom4("dummyCustom4");
-    dummyClassification.setCustom5("dummyCustom5");
-    dummyClassification.setCustom6("dummyCustom6");
-    dummyClassification.setCustom7("dummyCustom7");
-    dummyClassification.setCustom8("dummyCustom8");
+    dummyClassification.setCustomAttribute(CUSTOM_1, "dummyCustom1");
+    dummyClassification.setCustomAttribute(CUSTOM_2, "dummyCustom2");
+    dummyClassification.setCustomAttribute(CUSTOM_3, "dummyCustom3");
+    dummyClassification.setCustomAttribute(CUSTOM_4, "dummyCustom4");
+    dummyClassification.setCustomAttribute(CUSTOM_5, "dummyCustom5");
+    dummyClassification.setCustomAttribute(CUSTOM_6, "dummyCustom6");
+    dummyClassification.setCustomAttribute(CUSTOM_7, "dummyCustom7");
+    dummyClassification.setCustomAttribute(CUSTOM_8, "dummyCustom8");
     dummyClassification.setDescription("dummyDescription");
     dummyClassification.setIsValidInDomain(true);
     dummyClassification.setParentId("dummyParentId");

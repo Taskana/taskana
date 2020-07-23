@@ -70,7 +70,7 @@ public abstract class AbstractAccTest {
     return objectReference;
   }
 
-  protected Map<String, String> createSimpleCustomProperties(int propertiesCount) {
+  protected Map<String, String> createSimpleCustomPropertyMap(int propertiesCount) {
     return IntStream.rangeClosed(1, propertiesCount)
         .mapToObj(String::valueOf)
         .collect(Collectors.toMap("Property_"::concat, "Property Value of Property_"::concat));
@@ -102,7 +102,7 @@ public abstract class AbstractAccTest {
     }
     attachment.setReceived(receivedTimestamp);
     if (customAttributes != null) {
-      attachment.setCustomAttributes(customAttributes);
+      attachment.setCustomAttributeMap(customAttributes);
     }
 
     return attachment;

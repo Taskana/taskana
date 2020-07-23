@@ -24,14 +24,14 @@ import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.monitor.api.TaskTimestamp;
-import pro.taskana.monitor.api.reports.CustomFieldValueReport;
+import pro.taskana.monitor.api.reports.TaskCustomFieldValueReport;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
-import pro.taskana.task.api.CustomField;
+import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
 
 /** Acceptance test for all "classification report" scenarios. */
 @ExtendWith(JaasExtension.class)
-class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
+class ProvideTaskCustomFieldValueReportAccTest extends AbstractReportAccTest {
 
   private static final MonitorService MONITOR_SERVICE = taskanaEngine.getMonitorService();
 
@@ -39,7 +39,9 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
   void testRoleCheck() {
     ThrowingCallable call =
         () -> {
-          MONITOR_SERVICE.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1).buildReport();
+          MONITOR_SERVICE
+              .createCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
+              .buildReport();
         };
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
@@ -47,8 +49,8 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "monitor")
   @Test
   void should_augmentDisplayNames_When_ReportIsBuild() throws Exception {
-    CustomFieldValueReport report =
-        MONITOR_SERVICE.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1).buildReport();
+    TaskCustomFieldValueReport report =
+        MONITOR_SERVICE.createCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1).buildReport();
 
     assertThat(report.getRows()).hasSize(3);
     assertThat(report.getRow("Geschaeftsstelle A").getDisplayName())
@@ -62,8 +64,8 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "monitor")
   @Test
   void testGetTotalNumbersOfTasksOfCustomFieldValueReportForCustom1() throws Exception {
-    CustomFieldValueReport report =
-        MONITOR_SERVICE.createCustomFieldValueReportBuilder(CustomField.CUSTOM_1).buildReport();
+    TaskCustomFieldValueReport report =
+        MONITOR_SERVICE.createCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1).buildReport();
 
     assertThat(report).isNotNull();
     assertThat(report.rowSize()).isEqualTo(3);
@@ -71,9 +73,9 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
     assertThat(report.getRow("Geschaeftsstelle A").getTotalValue()).isEqualTo(25);
     assertThat(report.getRow("Geschaeftsstelle B").getTotalValue()).isEqualTo(10);
     assertThat(report.getRow("Geschaeftsstelle C").getTotalValue()).isEqualTo(15);
-    assertThat(report.getRow("Geschaeftsstelle A").getCells().length).isEqualTo(0);
-    assertThat(report.getRow("Geschaeftsstelle B").getCells().length).isEqualTo(0);
-    assertThat(report.getRow("Geschaeftsstelle C").getCells().length).isEqualTo(0);
+    assertThat(report.getRow("Geschaeftsstelle A").getCells()).isEmpty();
+    assertThat(report.getRow("Geschaeftsstelle B").getCells()).isEmpty();
+    assertThat(report.getRow("Geschaeftsstelle C").getCells()).isEmpty();
 
     assertThat(report.getSumRow().getTotalValue()).isEqualTo(50);
   }
@@ -81,8 +83,8 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "monitor")
   @Test
   void testGetTotalNumbersOfTasksOfCustomFieldValueReportForCustom2() throws Exception {
-    CustomFieldValueReport report =
-        MONITOR_SERVICE.createCustomFieldValueReportBuilder(CustomField.CUSTOM_2).buildReport();
+    TaskCustomFieldValueReport report =
+        MONITOR_SERVICE.createCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_2).buildReport();
 
     assertThat(report).isNotNull();
     assertThat(report.rowSize()).isEqualTo(2);
@@ -90,8 +92,8 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
     assertThat(report.getRow("Vollkasko").getTotalValue()).isEqualTo(21);
     assertThat(report.getRow("Teilkasko").getTotalValue()).isEqualTo(29);
 
-    assertThat(report.getRow("Vollkasko").getCells().length).isEqualTo(0);
-    assertThat(report.getRow("Teilkasko").getCells().length).isEqualTo(0);
+    assertThat(report.getRow("Vollkasko").getCells()).isEmpty();
+    assertThat(report.getRow("Teilkasko").getCells()).isEmpty();
 
     assertThat(report.getSumRow().getTotalValue()).isEqualTo(50);
   }
@@ -99,12 +101,12 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "monitor")
   @Test
   void testGetCustomFieldValueReportWithReportLineItemDefinitions() throws Exception {
-    CustomField customField = CustomField.CUSTOM_1;
+    TaskCustomField taskCustomField = TaskCustomField.CUSTOM_1;
     List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    CustomFieldValueReport report =
+    TaskCustomFieldValueReport report =
         MONITOR_SERVICE
-            .createCustomFieldValueReportBuilder(customField)
+            .createCustomFieldValueReportBuilder(taskCustomField)
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .buildReport();
@@ -130,7 +132,7 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
           ThrowingCallable callable =
               () ->
                   MONITOR_SERVICE
-                      .createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
+                      .createCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
                       .buildReport(timestamp);
           assertThatCode(callable).doesNotThrowAnyException();
         };
@@ -142,9 +144,9 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
   void testEachItemOfCustomFieldValueReport() throws Exception {
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-    CustomFieldValueReport report =
+    TaskCustomFieldValueReport report =
         MONITOR_SERVICE
-            .createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
+            .createCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .buildReport();
@@ -167,9 +169,9 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
   void should_computeNumbersAccordingToPlannedDate_When_BuildReportForPlanned() throws Exception {
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-    CustomFieldValueReport report =
+    TaskCustomFieldValueReport report =
         MONITOR_SERVICE
-            .createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
+            .createCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .buildReport(TaskTimestamp.PLANNED);
@@ -192,9 +194,9 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
   void testEachItemOfCustomFieldValueReportNotInWorkingDays() throws Exception {
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-    CustomFieldValueReport report =
+    TaskCustomFieldValueReport report =
         MONITOR_SERVICE
-            .createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
+            .createCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
             .withColumnHeaders(columnHeaders)
             .buildReport();
 
@@ -218,9 +220,9 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
         Collections.singletonList("WBI:000000000000000000000000000000000001");
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-    CustomFieldValueReport report =
+    TaskCustomFieldValueReport report =
         MONITOR_SERVICE
-            .createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
+            .createCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .workbasketIdIn(workbasketIds)
@@ -245,9 +247,9 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
     List<TaskState> states = Collections.singletonList(TaskState.READY);
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-    CustomFieldValueReport report =
+    TaskCustomFieldValueReport report =
         MONITOR_SERVICE
-            .createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
+            .createCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .stateIn(states)
@@ -272,9 +274,9 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
     List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-    CustomFieldValueReport report =
+    TaskCustomFieldValueReport report =
         MONITOR_SERVICE
-            .createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
+            .createCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .classificationCategoryIn(categories)
@@ -299,9 +301,9 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
     List<String> domains = Collections.singletonList("DOMAIN_A");
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-    CustomFieldValueReport report =
+    TaskCustomFieldValueReport report =
         MONITOR_SERVICE
-            .createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
+            .createCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .domainIn(domains)
@@ -323,13 +325,13 @@ class ProvideCustomFieldValueReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfCustomFieldValueReportWithCustomFieldValueFilter() throws Exception {
-    Map<CustomField, String> customAttributeFilter = new HashMap<>();
-    customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
+    Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
+    customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
-    CustomFieldValueReport report =
+    TaskCustomFieldValueReport report =
         MONITOR_SERVICE
-            .createCustomFieldValueReportBuilder(CustomField.CUSTOM_1)
+            .createCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
             .customAttributeFilterIn(customAttributeFilter)
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()

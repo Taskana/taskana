@@ -1,5 +1,13 @@
 package pro.taskana.classification.rest.assembler;
 
+import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_1;
+import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_2;
+import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_3;
+import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_4;
+import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_5;
+import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_6;
+import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_7;
+import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_8;
 import static pro.taskana.common.rest.models.TaskanaPagedModelKeys.CLASSIFICATIONS;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,14 +56,14 @@ public class ClassificationSummaryRepresentationModelAssembler
     repModel.setPriority(classificationSummary.getPriority());
     repModel.setServiceLevel(classificationSummary.getServiceLevel());
     repModel.setType(classificationSummary.getType());
-    repModel.setCustom1(classificationSummary.getCustom1());
-    repModel.setCustom2(classificationSummary.getCustom2());
-    repModel.setCustom3(classificationSummary.getCustom3());
-    repModel.setCustom4(classificationSummary.getCustom4());
-    repModel.setCustom5(classificationSummary.getCustom5());
-    repModel.setCustom6(classificationSummary.getCustom6());
-    repModel.setCustom7(classificationSummary.getCustom7());
-    repModel.setCustom8(classificationSummary.getCustom8());
+    repModel.setCustom1(classificationSummary.getCustomAttribute(CUSTOM_1));
+    repModel.setCustom2(classificationSummary.getCustomAttribute(CUSTOM_2));
+    repModel.setCustom3(classificationSummary.getCustomAttribute(CUSTOM_3));
+    repModel.setCustom4(classificationSummary.getCustomAttribute(CUSTOM_4));
+    repModel.setCustom5(classificationSummary.getCustomAttribute(CUSTOM_5));
+    repModel.setCustom6(classificationSummary.getCustomAttribute(CUSTOM_6));
+    repModel.setCustom7(classificationSummary.getCustomAttribute(CUSTOM_7));
+    repModel.setCustom8(classificationSummary.getCustomAttribute(CUSTOM_8));
     return repModel;
   }
 

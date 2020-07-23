@@ -18,9 +18,12 @@ import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
+import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.TaskImpl;
+import pro.taskana.workbasket.api.WorkbasketCustomField;
+import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.api.models.Workbasket;
@@ -61,10 +64,10 @@ class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
     newTask.setClassificationKey("T2100");
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-    for (int i = 1; i < 16; i++) {
-      newTask.setCustomAttribute(Integer.toString(i), "VALUE " + i);
+    for (TaskCustomField taskCustomField : TaskCustomField.values()) {
+      newTask.setCustomAttribute(taskCustomField, taskCustomField.name());
     }
-    newTask.setCustomAttributes(createSimpleCustomProperties(5));
+    newTask.setCustomAttributeMap(createSimpleCustomPropertyMap(5));
     newTask.setDescription("Description of test task");
     newTask.setNote("My note");
     newTask.addAttachment(
@@ -78,7 +81,7 @@ class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL",
             "2018-01-15",
-            createSimpleCustomProperties(3)));
+            createSimpleCustomPropertyMap(3)));
 
     TimeZone originalZone = TimeZone.getDefault();
     Task createdTask = taskService.createTask(newTask);
@@ -134,7 +137,7 @@ class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     Workbasket workbasket =
         workbasketService.getWorkbasket("WBI:100000000000000000000000000000000001");
-    workbasket.setCustom1("bla");
+    workbasket.setCustomAttribute(WorkbasketCustomField.CUSTOM_1, "bla");
 
     TimeZone originalZone = TimeZone.getDefault();
     Workbasket updatedWorkbasket = workbasketService.updateWorkbasket(workbasket);
@@ -157,7 +160,7 @@ class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
     workbasket = workbasketService.createWorkbasket(workbasket);
     WorkbasketAccessItem wbai =
         workbasketService.newWorkbasketAccessItem(workbasket.getId(), "user-1-2");
-    wbai.setPermRead(true);
+    wbai.setPermission(WorkbasketPermission.READ, true);
     workbasketService.createWorkbasketAccessItem(wbai);
 
     int after = workbasketService.createWorkbasketQuery().domainIn("DOMAIN_A").list().size();

@@ -21,6 +21,7 @@ import pro.taskana.common.internal.TaskanaEngineProxyForTest;
 import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
+import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
@@ -174,8 +175,8 @@ class CreateTaskAccTest extends AbstractAccTest {
     newTask.setClassificationKey("T2100");
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-    Map<String, String> customAttributesForCreate = createSimpleCustomProperties(13);
-    newTask.setCustomAttributes(customAttributesForCreate);
+    Map<String, String> customAttributesForCreate = createSimpleCustomPropertyMap(13);
+    newTask.setCustomAttributeMap(customAttributesForCreate);
     Task createdTask = taskService.createTask(newTask);
     Instant expectedPlanned = moveForwardToWorkingDay(createdTask.getCreated());
 
@@ -226,7 +227,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     }
     // verify that the map is correctly retrieved from the database
     Task retrievedTask = taskService.getTask(createdTask.getId());
-    Map<String, String> customAttributesFromDb = retrievedTask.getCustomAttributes();
+    Map<String, String> customAttributesFromDb = retrievedTask.getCustomAttributeMap();
     assertThat(customAttributesFromDb).isNotNull();
     assertThat(customAttributesForCreate).isEqualTo(customAttributesFromDb);
   }
@@ -237,7 +238,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("L12010");
-    Map<String, String> customAttributesForCreate = createSimpleCustomProperties(27);
+    Map<String, String> customAttributesForCreate = createSimpleCustomPropertyMap(27);
     newTask.addAttachment(
         createAttachment(
             "DOCTYPE_DEFAULT",
@@ -309,7 +310,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(readTask.getAttachments().get(0).getObjectReference()).isNotNull();
     // verify that the map is correctly retrieved from the database
     Map<String, String> customAttributesFromDb =
-        readTask.getAttachments().get(0).getCustomAttributes();
+        readTask.getAttachments().get(0).getCustomAttributeMap();
     assertThat(customAttributesFromDb).isNotNull();
     assertThat(customAttributesForCreate).isEqualTo(customAttributesFromDb);
   }
@@ -333,7 +334,7 @@ class CreateTaskAccTest extends AbstractAccTest {
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL",
             "2018-01-15",
-            createSimpleCustomProperties(3)));
+            createSimpleCustomPropertyMap(3)));
     newTask.addAttachment(
         createAttachment(
             "DOCTYPE_DEFAULT",
@@ -345,7 +346,7 @@ class CreateTaskAccTest extends AbstractAccTest {
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL",
             "2018-01-15",
-            createSimpleCustomProperties(3)));
+            createSimpleCustomPropertyMap(3)));
     Task createdTask = taskService.createTask(newTask);
 
     assertThat(createdTask.getId()).isNotNull();
@@ -384,7 +385,7 @@ class CreateTaskAccTest extends AbstractAccTest {
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL",
             "2018-01-15",
-            createSimpleCustomProperties(3)));
+            createSimpleCustomPropertyMap(3)));
     newTask.addAttachment(
         createAttachment(
             "L1060", // prio 1, SL P1D
@@ -396,7 +397,7 @@ class CreateTaskAccTest extends AbstractAccTest {
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL",
             "2018-01-15",
-            createSimpleCustomProperties(3)));
+            createSimpleCustomPropertyMap(3)));
     Task createdTask = taskService.createTask(newTask);
 
     assertThat(createdTask.getId()).isNotNull();
@@ -439,7 +440,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
     testCreateTask.accept(
         createAttachment(
-            "DOCTYPE_DEFAULT", null, "E-MAIL", "2018-01-15", createSimpleCustomProperties(3)));
+            "DOCTYPE_DEFAULT", null, "E-MAIL", "2018-01-15", createSimpleCustomPropertyMap(3)));
 
     testCreateTask.accept(
         createAttachment(
@@ -447,7 +448,7 @@ class CreateTaskAccTest extends AbstractAccTest {
             createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchiveId", null),
             "E-MAIL",
             "2018-01-15",
-            createSimpleCustomProperties(3)));
+            createSimpleCustomPropertyMap(3)));
 
     testCreateTask.accept(
         createAttachment(
@@ -460,7 +461,7 @@ class CreateTaskAccTest extends AbstractAccTest {
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL",
             "2018-01-15",
-            createSimpleCustomProperties(3)));
+            createSimpleCustomPropertyMap(3)));
 
     testCreateTask.accept(
         createAttachment(
@@ -473,7 +474,7 @@ class CreateTaskAccTest extends AbstractAccTest {
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL",
             "2018-01-15",
-            createSimpleCustomProperties(3)));
+            createSimpleCustomPropertyMap(3)));
   }
 
   @WithAccessId(user = "user-1-1")
@@ -588,10 +589,10 @@ class CreateTaskAccTest extends AbstractAccTest {
     newTask.setClassificationKey("T2100");
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-    for (int i = 1; i < 16; i++) {
-      newTask.setCustomAttribute(Integer.toString(i), "VALUE " + i);
+    for (TaskCustomField taskCustomField : TaskCustomField.values()) {
+      newTask.setCustomAttribute(taskCustomField, taskCustomField.name());
     }
-    newTask.setCustomAttributes(createSimpleCustomProperties(5));
+    newTask.setCustomAttributeMap(createSimpleCustomPropertyMap(5));
     newTask.setDescription("Description of test task");
     newTask.setNote("My note");
     newTask.addAttachment(
@@ -605,7 +606,7 @@ class CreateTaskAccTest extends AbstractAccTest {
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL",
             "2018-01-15",
-            createSimpleCustomProperties(3)));
+            createSimpleCustomPropertyMap(3)));
     Task createdTask = taskService.createTask(newTask);
     Task readTask = taskService.getTask(createdTask.getId());
 
@@ -621,7 +622,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
 
-    Map<String, String> callbackInfo = createSimpleCustomProperties(10);
+    Map<String, String> callbackInfo = createSimpleCustomPropertyMap(10);
     newTask.setCallbackInfo(callbackInfo);
     Task createdTask = taskService.createTask(newTask);
     Instant expectedPlanned = moveForwardToWorkingDay(createdTask.getCreated());

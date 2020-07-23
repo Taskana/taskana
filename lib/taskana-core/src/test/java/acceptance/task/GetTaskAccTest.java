@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
+import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
@@ -59,23 +60,23 @@ class GetTaskAccTest extends AbstractAccTest {
     assertThat(task.isRead()).isTrue();
     assertThat(task.isTransferred()).isFalse();
     assertThat(task.getCallbackInfo()).isEqualTo(new HashMap<String, String>());
-    assertThat(task.getCustomAttributes()).isEqualTo(new HashMap<String, String>());
-    assertThat(task.getCustomAttribute("1")).isEqualTo("custom1");
-    assertThat(task.getCustomAttribute("2")).isEqualTo("custom2");
-    assertThat(task.getCustomAttribute("3")).isEqualTo("custom3");
-    assertThat(task.getCustomAttribute("4")).isEqualTo("custom4");
-    assertThat(task.getCustomAttribute("5")).isEqualTo("custom5");
-    assertThat(task.getCustomAttribute("6")).isEqualTo("custom6");
-    assertThat(task.getCustomAttribute("7")).isEqualTo("custom7");
-    assertThat(task.getCustomAttribute("8")).isEqualTo("custom8");
-    assertThat(task.getCustomAttribute("9")).isEqualTo("custom9");
-    assertThat(task.getCustomAttribute("10")).isEqualTo("custom10");
-    assertThat(task.getCustomAttribute("11")).isEqualTo("custom11");
-    assertThat(task.getCustomAttribute("12")).isEqualTo("custom12");
-    assertThat(task.getCustomAttribute("13")).isEqualTo("custom13");
-    assertThat(task.getCustomAttribute("14")).isEqualTo("abc");
-    assertThat(task.getCustomAttribute("15")).isEqualTo("custom15");
-    assertThat(task.getCustomAttribute("16")).isEqualTo("custom16");
+    assertThat(task.getCustomAttributeMap()).isEqualTo(new HashMap<String, String>());
+    assertThat(task.getCustomAttribute(TaskCustomField.CUSTOM_1)).isEqualTo("custom1");
+    assertThat(task.getCustomAttribute(TaskCustomField.CUSTOM_2)).isEqualTo("custom2");
+    assertThat(task.getCustomAttribute(TaskCustomField.CUSTOM_3)).isEqualTo("custom3");
+    assertThat(task.getCustomAttribute(TaskCustomField.CUSTOM_4)).isEqualTo("custom4");
+    assertThat(task.getCustomAttribute(TaskCustomField.CUSTOM_5)).isEqualTo("custom5");
+    assertThat(task.getCustomAttribute(TaskCustomField.CUSTOM_6)).isEqualTo("custom6");
+    assertThat(task.getCustomAttribute(TaskCustomField.CUSTOM_7)).isEqualTo("custom7");
+    assertThat(task.getCustomAttribute(TaskCustomField.CUSTOM_8)).isEqualTo("custom8");
+    assertThat(task.getCustomAttribute(TaskCustomField.CUSTOM_9)).isEqualTo("custom9");
+    assertThat(task.getCustomAttribute(TaskCustomField.CUSTOM_10)).isEqualTo("custom10");
+    assertThat(task.getCustomAttribute(TaskCustomField.CUSTOM_11)).isEqualTo("custom11");
+    assertThat(task.getCustomAttribute(TaskCustomField.CUSTOM_12)).isEqualTo("custom12");
+    assertThat(task.getCustomAttribute(TaskCustomField.CUSTOM_13)).isEqualTo("custom13");
+    assertThat(task.getCustomAttribute(TaskCustomField.CUSTOM_14)).isEqualTo("abc");
+    assertThat(task.getCustomAttribute(TaskCustomField.CUSTOM_15)).isEqualTo("custom15");
+    assertThat(task.getCustomAttribute(TaskCustomField.CUSTOM_16)).isEqualTo("custom16");
   }
 
   @WithAccessId(user = "user-1-1")
@@ -83,8 +84,6 @@ class GetTaskAccTest extends AbstractAccTest {
   void should_ThrowException_When_RequestedTaskByIdIsNotExisting() {
     TaskService taskService = taskanaEngine.getTaskService();
 
-    //    Assertions.assertThrows(TaskNotFoundException.class, () ->
-    // taskService.getTask("INVALID"));
     ThrowingCallable call =
         () -> {
           taskService.getTask("INVALID");

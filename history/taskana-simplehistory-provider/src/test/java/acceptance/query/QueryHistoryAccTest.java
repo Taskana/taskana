@@ -13,14 +13,11 @@ import pro.taskana.common.api.TimeInterval;
 import pro.taskana.simplehistory.impl.HistoryEventImpl;
 import pro.taskana.simplehistory.query.HistoryQuery;
 import pro.taskana.simplehistory.query.HistoryQueryColumnName;
+import pro.taskana.spi.history.api.events.TaskHistoryCustomField;
 import pro.taskana.spi.history.api.events.TaskanaHistoryEvent;
 
 /** Test for History queries. */
 class QueryHistoryAccTest extends AbstractAccTest {
-
-  public QueryHistoryAccTest() {
-    super();
-  }
 
   @Test
   void should_ConfirmEquality_When_UsingListValuesAscendingAndDescending() {
@@ -166,16 +163,32 @@ class QueryHistoryAccTest extends AbstractAccTest {
             .list();
     assertThat(returnValues).hasSize(6);
 
-    returnValues = getHistoryService().createHistoryQuery().custom1In("custom1").list();
+    returnValues =
+        getHistoryService()
+            .createHistoryQuery()
+            .customAttributeIn(TaskHistoryCustomField.CUSTOM_1, "custom1")
+            .list();
     assertThat(returnValues).hasSize(13);
 
-    returnValues = getHistoryService().createHistoryQuery().custom2In("custom2").list();
+    returnValues =
+        getHistoryService()
+            .createHistoryQuery()
+            .customAttributeIn(TaskHistoryCustomField.CUSTOM_2, "custom2")
+            .list();
     assertThat(returnValues).hasSize(1);
 
-    returnValues = getHistoryService().createHistoryQuery().custom3In("custom3").list();
+    returnValues =
+        getHistoryService()
+            .createHistoryQuery()
+            .customAttributeIn(TaskHistoryCustomField.CUSTOM_3, "custom3")
+            .list();
     assertThat(returnValues).hasSize(7);
 
-    returnValues = getHistoryService().createHistoryQuery().custom4In("custom4").list();
+    returnValues =
+        getHistoryService()
+            .createHistoryQuery()
+            .customAttributeIn(TaskHistoryCustomField.CUSTOM_4, "custom4")
+            .list();
     assertThat(returnValues).hasSize(1);
 
     returnValues = getHistoryService().createHistoryQuery().oldValueIn("old_val").list();

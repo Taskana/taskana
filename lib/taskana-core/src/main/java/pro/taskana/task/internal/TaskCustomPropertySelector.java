@@ -1,13 +1,12 @@
-package pro.taskana.common.internal;
+package pro.taskana.task.internal;
 
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.SystemException;
+import pro.taskana.task.api.TaskCustomField;
 
 /**
  * Determines which custom properties are to be updated.
- *
- * @author bbr
  */
-public class CustomPropertySelector {
+public class TaskCustomPropertySelector {
 
   boolean custom1 = false;
   boolean custom2 = false;
@@ -26,70 +25,58 @@ public class CustomPropertySelector {
   boolean custom15 = false;
   boolean custom16 = false;
 
-  public void setCustomProperty(String propertyNumber, boolean value)
-      throws InvalidArgumentException {
-    int num = 0;
-    try {
-      num = Integer.parseInt(propertyNumber);
-    } catch (NumberFormatException e) {
-      throw new InvalidArgumentException(
-          "propertyNumber '"
-              + propertyNumber
-              + "' cannot be converted to a number between 1 and 16");
-    }
-
-    switch (num) {
-      case 1:
+  public void setCustomProperty(TaskCustomField customField, boolean value) {
+    switch (customField) {
+      case CUSTOM_1:
         this.setCustom1(value);
         break;
-      case 2:
+      case CUSTOM_2:
         this.setCustom2(value);
         break;
-      case 3:
+      case CUSTOM_3:
         this.setCustom3(value);
         break;
-      case 4:
+      case CUSTOM_4:
         this.setCustom4(value);
         break;
-      case 5:
+      case CUSTOM_5:
         this.setCustom5(value);
         break;
-      case 6:
+      case CUSTOM_6:
         this.setCustom6(value);
         break;
-      case 7:
+      case CUSTOM_7:
         this.setCustom7(value);
         break;
-      case 8:
+      case CUSTOM_8:
         this.setCustom8(value);
         break;
-      case 9:
+      case CUSTOM_9:
         this.setCustom9(value);
         break;
-      case 10:
+      case CUSTOM_10:
         this.setCustom10(value);
         break;
-      case 11:
+      case CUSTOM_11:
         this.setCustom11(value);
         break;
-      case 12:
+      case CUSTOM_12:
         this.setCustom12(value);
         break;
-      case 13:
+      case CUSTOM_13:
         this.setCustom13(value);
         break;
-      case 14:
+      case CUSTOM_14:
         this.setCustom14(value);
         break;
-      case 15:
+      case CUSTOM_15:
         this.setCustom15(value);
         break;
-      case 16:
+      case CUSTOM_16:
         this.setCustom16(value);
         break;
       default:
-        throw new InvalidArgumentException(
-            "propertyNumber '" + propertyNumber + "' does not represent a number between 1 and 16");
+        throw new SystemException("Unknown customField '" + customField + "'");
     }
   }
 

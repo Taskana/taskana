@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import pro.taskana.common.rest.Mapping;
 import pro.taskana.common.rest.TaskanaSpringBootTest;
+import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.api.models.Workbasket;
@@ -96,10 +97,10 @@ class WorkbasketRepresentationModelAssemblerTest {
     workbasket.setOrgLevel3("Org3");
     workbasket.setOrgLevel4("Org4");
     workbasket.setDescription("A test workbasket");
-    workbasket.setCustom1("1");
-    workbasket.setCustom2("2");
-    workbasket.setCustom3("3");
-    workbasket.setCustom4("4");
+    workbasket.setCustomAttribute(WorkbasketCustomField.CUSTOM_1, "1");
+    workbasket.setCustomAttribute(WorkbasketCustomField.CUSTOM_2, "2");
+    workbasket.setCustomAttribute(WorkbasketCustomField.CUSTOM_3, "3");
+    workbasket.setCustomAttribute(WorkbasketCustomField.CUSTOM_4, "4");
     workbasket.setOwner("Lars");
     workbasket.setCreated(Instant.parse("2010-01-01T12:00:00Z"));
     workbasket.setModified(Instant.parse("2010-01-01T12:00:00Z"));

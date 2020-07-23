@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import pro.taskana.classification.api.models.Classification;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskService;
 
 /** task-Interface to specify attribute interactions. */
@@ -77,14 +77,14 @@ public interface Task extends TaskSummary {
    *
    * @return customAttributes as {@link Map}
    */
-  Map<String, String> getCustomAttributes();
+  Map<String, String> getCustomAttributeMap();
 
   /**
    * Sets a Map of custom Attributes.
    *
    * @param customAttributes a {@link Map} that contains the custom attributes
    */
-  void setCustomAttributes(Map<String, String> customAttributes);
+  void setCustomAttributeMap(Map<String, String> customAttributes);
 
   /**
    * Returns a Map of Callback info.
@@ -101,15 +101,12 @@ public interface Task extends TaskSummary {
   void setCallbackInfo(Map<String, String> callbackInfo);
 
   /**
-   * Sets the value for custom Attribute number num.
+   * Sets the value for custom Attribute.
    *
-   * @param num identifies which custom attribute is to be set. Taskana concatenates "custom_" with
-   *     num and the resulting String must match the name of the database column that contains the
-   *     custom attribute. Valid values are "1", "2" .. "16"
+   * @param customField identifies which custom attribute is to be set.
    * @param value the value of the custom attribute to be set
-   * @throws InvalidArgumentException if num has not a value of "1", "2" ... "16"
    */
-  void setCustomAttribute(String num, String value) throws InvalidArgumentException;
+  void setCustomAttribute(TaskCustomField customField, String value);
 
   /**
    * Add an attachment.<br>

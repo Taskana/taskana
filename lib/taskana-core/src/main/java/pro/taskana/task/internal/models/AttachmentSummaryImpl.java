@@ -31,10 +31,6 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
     received = copyFrom.received;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.impl.AttachmentSummary#getId()
-   */
   @Override
   public String getId() {
     return id;
@@ -44,10 +40,6 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
     this.id = id;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.impl.AttachmentSummary#getTaskId()
-   */
   @Override
   public String getTaskId() {
     return taskId;
@@ -57,10 +49,6 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
     this.taskId = taskId;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.impl.AttachmentSummary#getCreated()
-   */
   @Override
   public Instant getCreated() {
     return created;
@@ -70,10 +58,6 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
     this.created = created;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.impl.AttachmentSummary#getModified()
-   */
   @Override
   public Instant getModified() {
     return modified;
@@ -83,10 +67,6 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
     this.modified = modified;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.AttachmentSummary#getObjectReference()
-   */
   @Override
   public ObjectReference getObjectReference() {
     return objectReference;
@@ -96,10 +76,6 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
     this.objectReference = objectReference;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.AttachmentSummary#getChannel()
-   */
   @Override
   public String getChannel() {
     return channel;
@@ -109,10 +85,6 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
     this.channel = channel;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.impl.AttachmentSummary#getClassification()
-   */
   @Override
   public ClassificationSummary getClassificationSummary() {
     return classificationSummary;
@@ -122,10 +94,6 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
     this.classificationSummary = classificationSummary;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see pro.taskana.impl.AttachmentSummary#getReceived()
-   */
   @Override
   public Instant getReceived() {
     return received;

@@ -67,7 +67,7 @@ class AttachmentRepresentationModelAssemblerTest {
     ClassificationSummary summary =
         classService.newClassification("ckey", "cdomain", "MANUAL").asSummary();
     reference.setId("abc");
-    attachment.setCustomAttributes(Collections.singletonMap("abc", "def"));
+    attachment.setCustomAttributeMap(Collections.singletonMap("abc", "def"));
     attachment.setClassificationSummary(summary);
     attachment.setId("id");
     attachment.setTaskId("taskId");
@@ -90,7 +90,7 @@ class AttachmentRepresentationModelAssemblerTest {
     ClassificationSummary summary =
         classService.newClassification("ckey", "cdomain", "MANUAL").asSummary();
     reference.setId("abc");
-    attachment.setCustomAttributes(Collections.singletonMap("abc", "def"));
+    attachment.setCustomAttributeMap(Collections.singletonMap("abc", "def"));
     attachment.setClassificationSummary(summary);
     attachment.setId("id");
     attachment.setTaskId("taskId");
@@ -112,7 +112,7 @@ class AttachmentRepresentationModelAssemblerTest {
   void testEquality(Attachment attachment, AttachmentRepresentationModel repModel) {
     AttachmentSummaryRepresentationModelAssemblerTest.testEquality(attachment, repModel);
 
-    assertThat(attachment.getCustomAttributes()).isEqualTo(repModel.getCustomAttributes());
+    assertThat(attachment.getCustomAttributeMap()).isEqualTo(repModel.getCustomAttributes());
   }
 
   void testLinks(AttachmentRepresentationModel repModel) {}

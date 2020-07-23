@@ -20,7 +20,7 @@ import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.monitor.api.SelectedItem;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
-import pro.taskana.task.api.CustomField;
+import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
 
 /** Acceptance test for all "get task ids of category report" scenarios. */
@@ -272,8 +272,8 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
   void testGetTaskIdsOfCategoryReportWithCustomFieldValueFilter() throws Exception {
     final MonitorService monitorService = taskanaEngine.getMonitorService();
 
-    Map<CustomField, String> customAttributeFilter = new HashMap<>();
-    customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
+    Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
+    customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
     final List<SelectedItem> selectedItems = new ArrayList<>();

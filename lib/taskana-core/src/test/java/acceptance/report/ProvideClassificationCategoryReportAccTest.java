@@ -26,7 +26,7 @@ import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.ClassificationCategoryReport;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
-import pro.taskana.task.api.CustomField;
+import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
 
 /** Acceptance test for all "category report" scenarios. */
@@ -295,8 +295,8 @@ class ProvideClassificationCategoryReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfCategoryReportWithCustomFieldValueFilter() throws Exception {
-    Map<CustomField, String> customAttributeFilter = new HashMap<>();
-    customAttributeFilter.put(CustomField.CUSTOM_1, "Geschaeftsstelle A");
+    Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
+    customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     ClassificationCategoryReport report =

@@ -94,7 +94,7 @@ public class TaskCommentController {
     List<TaskComment> taskComments = taskService.getTaskComments(taskId);
 
     // TODO Maybe introduce a query for task comments
-    taskComments = applySortingParams(taskComments, params);
+    applySortingParams(taskComments, params);
 
     TaskanaPagedModel<TaskCommentRepresentationModel> taskCommentListResource =
         taskCommentRepresentationModelAssembler.toPageModel(taskComments, null);
@@ -201,7 +201,7 @@ public class TaskCommentController {
     return result;
   }
 
-  private List<TaskComment> applySortingParams(
+  private void applySortingParams(
       List<TaskComment> taskComments, MultiValueMap<String, String> params)
       throws InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
@@ -231,6 +231,5 @@ public class TaskCommentController {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from applySortingParams(), returning {}", taskComments);
     }
-    return taskComments;
   }
 }

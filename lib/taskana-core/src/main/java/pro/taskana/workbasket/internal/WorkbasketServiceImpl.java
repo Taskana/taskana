@@ -963,56 +963,10 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     if (workbasketAccessItem == null) {
       return permissions;
     }
-    if (workbasketAccessItem.isPermOpen()) {
-      permissions.add(WorkbasketPermission.OPEN);
-    }
-    if (workbasketAccessItem.isPermRead()) {
-      permissions.add(WorkbasketPermission.READ);
-    }
-    if (workbasketAccessItem.isPermAppend()) {
-      permissions.add(WorkbasketPermission.APPEND);
-    }
-    if (workbasketAccessItem.isPermTransfer()) {
-      permissions.add(WorkbasketPermission.TRANSFER);
-    }
-    if (workbasketAccessItem.isPermDistribute()) {
-      permissions.add(WorkbasketPermission.DISTRIBUTE);
-    }
-    if (workbasketAccessItem.isPermCustom1()) {
-      permissions.add(WorkbasketPermission.CUSTOM_1);
-    }
-    if (workbasketAccessItem.isPermCustom2()) {
-      permissions.add(WorkbasketPermission.CUSTOM_2);
-    }
-    if (workbasketAccessItem.isPermCustom3()) {
-      permissions.add(WorkbasketPermission.CUSTOM_3);
-    }
-    if (workbasketAccessItem.isPermCustom4()) {
-      permissions.add(WorkbasketPermission.CUSTOM_4);
-    }
-    if (workbasketAccessItem.isPermCustom5()) {
-      permissions.add(WorkbasketPermission.CUSTOM_5);
-    }
-    if (workbasketAccessItem.isPermCustom6()) {
-      permissions.add(WorkbasketPermission.CUSTOM_6);
-    }
-    if (workbasketAccessItem.isPermCustom7()) {
-      permissions.add(WorkbasketPermission.CUSTOM_7);
-    }
-    if (workbasketAccessItem.isPermCustom8()) {
-      permissions.add(WorkbasketPermission.CUSTOM_8);
-    }
-    if (workbasketAccessItem.isPermCustom9()) {
-      permissions.add(WorkbasketPermission.CUSTOM_9);
-    }
-    if (workbasketAccessItem.isPermCustom10()) {
-      permissions.add(WorkbasketPermission.CUSTOM_10);
-    }
-    if (workbasketAccessItem.isPermCustom11()) {
-      permissions.add(WorkbasketPermission.CUSTOM_11);
-    }
-    if (workbasketAccessItem.isPermCustom12()) {
-      permissions.add(WorkbasketPermission.CUSTOM_12);
+    for (WorkbasketPermission permission : WorkbasketPermission.values()) {
+      if (workbasketAccessItem.getPermission(permission)) {
+        permissions.add(permission);
+      }
     }
     return permissions;
   }

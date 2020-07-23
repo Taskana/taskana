@@ -3,13 +3,13 @@ package acceptance.workbasket;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
-import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
+import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 
@@ -25,13 +25,10 @@ class CreateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     WorkbasketAccessItem accessItem =
         workbasketService.newWorkbasketAccessItem(
             "WBI:100000000000000000000000000000000001", "user1");
-    accessItem.setPermAppend(true);
-    accessItem.setPermCustom11(true);
-    accessItem.setPermRead(true);
-    ThrowingCallable call =
-        () -> {
-          workbasketService.createWorkbasketAccessItem(accessItem);
-        };
-    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
+    accessItem.setPermission(WorkbasketPermission.APPEND, true);
+    accessItem.setPermission(WorkbasketPermission.CUSTOM_11, true);
+    accessItem.setPermission(WorkbasketPermission.READ, true);
+    assertThatThrownBy(() -> workbasketService.createWorkbasketAccessItem(accessItem))
+        .isInstanceOf(NotAuthorizedException.class);
   }
 }

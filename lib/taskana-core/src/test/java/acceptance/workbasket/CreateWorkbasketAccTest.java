@@ -14,6 +14,7 @@ import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
+import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
@@ -43,7 +44,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     workbasket = workbasketService.createWorkbasket(workbasket);
     WorkbasketAccessItem wbai =
         workbasketService.newWorkbasketAccessItem(workbasket.getId(), "user-1-2");
-    wbai.setPermRead(true);
+    wbai.setPermission(WorkbasketPermission.READ, true);
     workbasketService.createWorkbasketAccessItem(wbai);
 
     int after = workbasketService.createWorkbasketQuery().domainIn("DOMAIN_A").list().size();
@@ -109,58 +110,46 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     workbasket.setType(WorkbasketType.GROUP);
     workbasket.setOrgLevel1("company");
     // missing key
-    ThrowingCallable call = () -> workbasketService.createWorkbasket(workbasket);
-    assertThatThrownBy(call).isInstanceOf(InvalidWorkbasketException.class);
+    assertThatThrownBy(() -> workbasketService.createWorkbasket(workbasket))
+        .isInstanceOf(InvalidWorkbasketException.class);
 
     Workbasket workbasket2 = workbasketService.newWorkbasket("key", "novatec");
     workbasket2.setType(WorkbasketType.GROUP);
     workbasket2.setOrgLevel1("company");
     // missing name
-    call =
-        () -> {
-          workbasketService.createWorkbasket(workbasket2);
-        };
-    assertThatThrownBy(call).isInstanceOf(InvalidWorkbasketException.class);
+    assertThatThrownBy(() -> workbasketService.createWorkbasket(workbasket2))
+        .isInstanceOf(InvalidWorkbasketException.class);
 
     Workbasket workbasket3 = workbasketService.newWorkbasket("key", "novatec");
     workbasket3.setName("Megabasket");
     workbasket3.setOrgLevel1("company");
     // missing type
-    call = () -> workbasketService.createWorkbasket(workbasket3);
-    assertThatThrownBy(call).isInstanceOf(InvalidWorkbasketException.class);
+    assertThatThrownBy(() -> workbasketService.createWorkbasket(workbasket3))
+        .isInstanceOf(InvalidWorkbasketException.class);
 
     Workbasket workbasket4 = workbasketService.newWorkbasket("key", null);
     workbasket4.setName("Megabasket");
     workbasket4.setType(WorkbasketType.GROUP);
     workbasket4.setOrgLevel1("company");
     // missing domain
-    call =
-        () -> {
-          workbasketService.createWorkbasket(workbasket4);
-        };
-    assertThatThrownBy(call).isInstanceOf(InvalidWorkbasketException.class);
+    assertThatThrownBy(() -> workbasketService.createWorkbasket(workbasket4))
+        .isInstanceOf(InvalidWorkbasketException.class);
 
     Workbasket workbasket5 = workbasketService.newWorkbasket("", "novatec");
     workbasket5.setName("Megabasket");
     workbasket5.setType(WorkbasketType.GROUP);
     workbasket5.setOrgLevel1("company");
     // empty key
-    call =
-        () -> {
-          workbasketService.createWorkbasket(workbasket5);
-        };
-    assertThatThrownBy(call).isInstanceOf(InvalidWorkbasketException.class);
+    assertThatThrownBy(() -> workbasketService.createWorkbasket(workbasket5))
+        .isInstanceOf(InvalidWorkbasketException.class);
 
     Workbasket workbasket6 = workbasketService.newWorkbasket("key", "novatec");
     workbasket6.setName("");
     workbasket6.setType(WorkbasketType.GROUP);
     workbasket6.setOrgLevel1("company");
     // empty name
-    call =
-        () -> {
-          workbasketService.createWorkbasket(workbasket);
-        };
-    assertThatThrownBy(call).isInstanceOf(InvalidWorkbasketException.class);
+    assertThatThrownBy(() -> workbasketService.createWorkbasket(workbasket))
+        .isInstanceOf(InvalidWorkbasketException.class);
   }
 
   @WithAccessId(user = "businessadmin")
@@ -178,11 +167,8 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     duplicateWorkbasketWithSmallX.setName("Personal Workbasket for UID X123456");
     duplicateWorkbasketWithSmallX.setType(WorkbasketType.PERSONAL);
 
-    ThrowingCallable call =
-        () -> {
-          workbasketService.createWorkbasket(duplicateWorkbasketWithSmallX);
-        };
-    assertThatThrownBy(call).isInstanceOf(WorkbasketAlreadyExistException.class);
+    assertThatThrownBy(() -> workbasketService.createWorkbasket(duplicateWorkbasketWithSmallX))
+        .isInstanceOf(WorkbasketAlreadyExistException.class);
   }
 
   @WithAccessId(user = "businessadmin")
@@ -201,18 +187,14 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     sameKeyAndDomain.setType(WorkbasketType.TOPIC);
     sameKeyAndDomain.setName("new name");
 
-    ThrowingCallable call =
-        () -> {
-          workbasketService.createWorkbasket(sameKeyAndDomain);
-        };
-    assertThatThrownBy(call).isInstanceOf(WorkbasketAlreadyExistException.class);
+    assertThatThrownBy(() -> workbasketService.createWorkbasket(sameKeyAndDomain))
+        .isInstanceOf(WorkbasketAlreadyExistException.class);
   }
 
   @WithAccessId(user = "businessadmin")
   @Test
   void testWorkbasketAccessItemSetName() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-    workbasketService.createWorkbasketQuery().domainIn("DOMAIN_A").list().size();
 
     Workbasket workbasket = workbasketService.newWorkbasket("WBAIT1234", "DOMAIN_A");
     workbasket.setName("MyNewBasket");
@@ -221,7 +203,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     workbasket = workbasketService.createWorkbasket(workbasket);
     WorkbasketAccessItem wbai =
         workbasketService.newWorkbasketAccessItem(workbasket.getId(), "user-1-2");
-    wbai.setPermRead(true);
+    wbai.setPermission(WorkbasketPermission.READ, true);
     wbai.setAccessName("Karl Napf");
     workbasketService.createWorkbasketAccessItem(wbai);
 
@@ -233,7 +215,10 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
         workbasketService.getWorkbasketAccessItems(createdWorkbasket.getId());
     WorkbasketAccessItem item =
         accessItems.stream().filter(t -> wbai.getId().equals(t.getId())).findFirst().orElse(null);
-    assertThat("Karl Napf").isEqualTo(item.getAccessName());
+    assertThat(item)
+        .isNotNull()
+        .extracting(WorkbasketAccessItem::getAccessName)
+        .isEqualTo("Karl Napf");
   }
 
   @WithAccessId(user = "businessadmin")
@@ -248,13 +233,10 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     workbasket = workbasketService.createWorkbasket(workbasket);
     WorkbasketAccessItem wbai =
         workbasketService.newWorkbasketAccessItem(workbasket.getId(), "user-3-2");
-    wbai.setPermRead(true);
+    wbai.setPermission(WorkbasketPermission.READ, true);
     workbasketService.createWorkbasketAccessItem(wbai);
 
-    ThrowingCallable call =
-        () -> {
-          workbasketService.createWorkbasketAccessItem(wbai);
-        };
-    assertThatThrownBy(call).isInstanceOf(WorkbasketAccessItemAlreadyExistException.class);
+    assertThatThrownBy(() -> workbasketService.createWorkbasketAccessItem(wbai))
+        .isInstanceOf(WorkbasketAccessItemAlreadyExistException.class);
   }
 }

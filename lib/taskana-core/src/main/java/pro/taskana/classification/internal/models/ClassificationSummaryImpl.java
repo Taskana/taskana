@@ -2,7 +2,9 @@ package pro.taskana.classification.internal.models;
 
 import java.util.Objects;
 
+import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.classification.api.models.ClassificationSummary;
+import pro.taskana.common.api.exceptions.SystemException;
 
 /** Implementation for the short summaries of a classification entity. */
 public class ClassificationSummaryImpl implements ClassificationSummary {
@@ -149,6 +151,29 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
   }
 
   @Override
+  public String getCustomAttribute(ClassificationCustomField customField) {
+    switch (customField) {
+      case CUSTOM_1:
+        return custom1;
+      case CUSTOM_2:
+        return custom2;
+      case CUSTOM_3:
+        return custom3;
+      case CUSTOM_4:
+        return custom4;
+      case CUSTOM_5:
+        return custom5;
+      case CUSTOM_6:
+        return custom6;
+      case CUSTOM_7:
+        return custom7;
+      case CUSTOM_8:
+        return custom8;
+      default:
+        throw new SystemException("Unknown customField '" + customField + "'");
+    }
+  }
+
   public String getCustom1() {
     return custom1;
   }
@@ -157,7 +182,6 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
     this.custom1 = custom1;
   }
 
-  @Override
   public String getCustom2() {
     return custom2;
   }
@@ -166,7 +190,6 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
     this.custom2 = custom2;
   }
 
-  @Override
   public String getCustom3() {
     return custom3;
   }
@@ -175,7 +198,6 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
     this.custom3 = custom3;
   }
 
-  @Override
   public String getCustom4() {
     return custom4;
   }
@@ -184,7 +206,6 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
     this.custom4 = custom4;
   }
 
-  @Override
   public String getCustom5() {
     return custom5;
   }
@@ -193,7 +214,6 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
     this.custom5 = custom5;
   }
 
-  @Override
   public String getCustom6() {
     return custom6;
   }
@@ -202,7 +222,6 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
     this.custom6 = custom6;
   }
 
-  @Override
   public String getCustom7() {
     return custom7;
   }
@@ -211,7 +230,6 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
     this.custom7 = custom7;
   }
 
-  @Override
   public String getCustom8() {
     return custom8;
   }

@@ -1,5 +1,6 @@
 package pro.taskana.workbasket.api.models;
 
+import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.WorkbasketType;
 
 /**
@@ -58,32 +59,12 @@ public interface WorkbasketSummary {
   WorkbasketType getType();
 
   /**
-   * Gets the custom1 property of the workbasket.
+   * Gets the custom attribute of the workbasket.
    *
-   * @return the workbasket's custom1 property.
+   * @param customField identifies which custom attribute is requested.
+   * @return the value for the given customField
    */
-  String getCustom1();
-
-  /**
-   * Gets the custom2 property of the workbasket.
-   *
-   * @return the workbasket's custom2 property.
-   */
-  String getCustom2();
-
-  /**
-   * Gets the custom3 property of the workbasket.
-   *
-   * @return the workbasket's custom3 property.
-   */
-  String getCustom3();
-
-  /**
-   * Gets the custom4 property of the workbasket.
-   *
-   * @return the workbasket's custom4 property.
-   */
-  String getCustom4();
+  String getCustomAttribute(WorkbasketCustomField customField);
 
   /**
    * Gets the orglevel1 property of the workbasket.

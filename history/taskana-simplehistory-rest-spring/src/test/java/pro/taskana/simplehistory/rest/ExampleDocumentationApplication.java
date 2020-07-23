@@ -1,4 +1,4 @@
-package pro.taskana.rest;
+package pro.taskana.simplehistory.rest;
 
 import java.sql.SQLException;
 import javax.sql.DataSource;
@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import pro.taskana.simplehistory.rest.TaskHistoryRestConfiguration;
 import pro.taskana.simplehistory.rest.sampledata.SampleDataGenerator;
 
 /** Example Application to create the documentation. */

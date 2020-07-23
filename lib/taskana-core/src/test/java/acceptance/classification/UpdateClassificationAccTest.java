@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.api.models.Classification;
@@ -48,14 +49,14 @@ class UpdateClassificationAccTest extends AbstractAccTest {
 
     classification.setApplicationEntryPoint(newEntryPoint);
     classification.setCategory("PROCESS");
-    classification.setCustom1("newCustom1");
-    classification.setCustom2("newCustom2");
-    classification.setCustom3("newCustom3");
-    classification.setCustom4("newCustom4");
-    classification.setCustom5("newCustom5");
-    classification.setCustom6("newCustom6");
-    classification.setCustom7("newCustom7");
-    classification.setCustom8("newCustom8");
+    classification.setCustomAttribute(ClassificationCustomField.CUSTOM_1, "newCustom1");
+    classification.setCustomAttribute(ClassificationCustomField.CUSTOM_2, "newCustom2");
+    classification.setCustomAttribute(ClassificationCustomField.CUSTOM_3, "newCustom3");
+    classification.setCustomAttribute(ClassificationCustomField.CUSTOM_4, "newCustom4");
+    classification.setCustomAttribute(ClassificationCustomField.CUSTOM_5, "newCustom5");
+    classification.setCustomAttribute(ClassificationCustomField.CUSTOM_6, "newCustom6");
+    classification.setCustomAttribute(ClassificationCustomField.CUSTOM_7, "newCustom7");
+    classification.setCustomAttribute(ClassificationCustomField.CUSTOM_8, "newCustom8");
     classification.setDescription("newDescription");
     classification.setIsValidInDomain(false);
     classification.setName(newName);
@@ -79,7 +80,7 @@ class UpdateClassificationAccTest extends AbstractAccTest {
   @Test
   void should_ThrowException_When_UserIsNotAuthorized() throws Exception {
     Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
-    classification.setCustom1("newCustom1");
+    classification.setCustomAttribute(ClassificationCustomField.CUSTOM_1, "newCustom1");
     ThrowingCallable call = () -> classificationService.updateClassification(classification);
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }

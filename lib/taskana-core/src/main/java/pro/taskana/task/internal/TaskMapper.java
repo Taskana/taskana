@@ -12,7 +12,6 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
-import pro.taskana.common.internal.CustomPropertySelector;
 import pro.taskana.common.internal.persistence.InstantTypeHandler;
 import pro.taskana.common.internal.persistence.MapTypeHandler;
 import pro.taskana.common.internal.util.Pair;
@@ -229,7 +228,7 @@ public interface TaskMapper {
   void updateTasks(
       @Param("taskIds") List<String> taskIds,
       @Param("task") TaskImpl task,
-      @Param("fields") CustomPropertySelector fields);
+      @Param("fields") TaskCustomPropertySelector fields);
 
   @Update(
       "<script>"
