@@ -153,7 +153,9 @@ If it is required to filter the list with multiple planned or due time intervals
  planned-from/due-from and/or planned-until/due-until parameters +
 
 It can also be sorted by using this set of parameters: +
-sortBy = { classification.key | por.type | por.value | state | name| due | planned | priority } | order={ desc | asc }
+sort-by = { classification.key | por.type | por.value | state | name| due | planned | priority } | order={ desc | asc } +
+It is possible to define multiply sort-by parameters.
+If done so the same amount of order parameters have to be defined aswell.
 
 === Get a single task
 
@@ -353,8 +355,9 @@ include::{snippets}/GetAllTaskCommentsForSpecificTaskDocTest/response-fields.ado
 
 === Sort options
 
-sort-by={ created | modified } | order={ desc | asc }
-
+sort-by={ created | modified } | order={ desc | asc } +
+It is possible to define multiply sort-by parameters.
+If done so the same amount of order parameters have to be defined aswell.
 
 === Get a specific task comment
 
@@ -459,7 +462,9 @@ The list generated in the response can be filtered using following parameters in
 name | name-like | key | category | domain | type | custom-{1...8}-like +
 
 It can also be sorted by using this set of parameters: +
-sortBy = {category | domain | key | name } | order={desc | asc }
+sort-by = {category | domain | key | name } | order={desc | asc } +
+It is possible to define multiply sort-by parameters.
+If done so the same amount of order parameters have to be defined aswell.
 
 === Get a single classification
 
@@ -595,7 +600,9 @@ type={GROUP | PERSONAL | TOPIC | CLEARANCE} | +
 required-permission={READ|OPEN|APPEND|TRANSFER|DISTRIBUTE|CUSTOM_1...12} +
 
 It can also be sorted by using this set of parameters: +
-sortBy = {key | name | owner | type } | order={desc | asc }
+sort-by = {key | name | owner | type } | order={desc | asc } +
+It is possible to define multiply sort-by parameters.
+If done so the same amount of order parameters have to be defined aswell.
 
 === Get a single workbasket
 
@@ -782,7 +789,9 @@ workbasket-key | workbasket-key-like | access-id | access-id-like +
 name | name-like | key | key-like | owner | owner-like | description-like | domain | +
 
 It can also be sorted by using this set of parameters: +
-sortBy = { workbasket-key | access-id } | order={ desc | asc }
+sort-by = { workbasket-key | access-id } | order={ desc | asc } +
+It is possible to define multiply sort-by parameters.
+If done so the same amount of order parameters have to be defined aswell.
 
 === Delete a workbasketAccessItems
 
