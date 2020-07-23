@@ -1,23 +1,26 @@
 import { Component, OnInit } from '@angular/core';
-import { Select } from '@ngxs/store';
+import { Select, Store } from '@ngxs/store';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-
-import { Observable } from 'rxjs';
-
+import { Observable, Subject } from 'rxjs';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { AccessItemWorkbasketResource } from 'app/shared/models/access-item-workbasket-resource';
 import { AccessItemWorkbasket } from 'app/shared/models/access-item-workbasket';
 import { Direction, Sorting } from 'app/shared/models/sorting';
-
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
-import { take } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 import { AccessIdsService } from '../../../shared/services/access-ids/access-ids.service';
 import { AccessIdDefinition } from '../../../shared/models/access-id';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
-import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { AccessItemsCustomisation, CustomField, getCustomFields } from '../../../shared/models/customisation';
 import { customFieldCount } from '../../../shared/models/workbasket-access-items';
+import {
+  GetAccessItems,
+  GetGroupsByAccessId,
+  RemoveAccessItemsPermissions
+} from '../../../shared/store/access-items-management-store/access-items-management.actions';
+import { AccessItemsManagementSelector } from '../../../shared/store/access-items-management-store/access-items-management.selector';
+import { AccessItemsManagementStateModel } from '../../../shared/store/access-items-management-store/access-items-management.state';
 
 @Component({
   selector: 'taskana-administration-access-items-management',
@@ -25,8 +28,8 @@ import { customFieldCount } from '../../../shared/models/workbasket-access-items
   styleUrls: ['./access-items-management.component.scss']
 })
 export class AccessItemsManagementComponent implements OnInit {
-  accessIdSelected;
-  accessIdPrevious;
+  accessIdSelected: string;
+  accessIdPrevious: string;
 
   accessItemsForm: FormGroup;
   toggleValidationAccessIdMap = new Map<number, boolean>();
@@ -42,14 +45,17 @@ export class AccessItemsManagementComponent implements OnInit {
   @Select(EngineConfigurationSelectors.accessItemsCustomisation) accessItemsCustomization$: Observable<
     AccessItemsCustomisation
   >;
+  @Select(AccessItemsManagementSelector.groups) groups$: Observable<AccessIdDefinition[]>;
   customFields$: Observable<CustomField[]>;
+  destroy$ = new Subject<void>();
 
   constructor(
     private formBuilder: FormBuilder,
     private accessIdsService: AccessIdsService,
     private formsValidatorService: FormsValidatorService,
     private requestInProgressService: RequestInProgressService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private store: Store
   ) {}
 
   get accessItemsGroups(): FormArray {
@@ -58,6 +64,39 @@ export class AccessItemsManagementComponent implements OnInit {
 
   ngOnInit() {
     this.customFields$ = this.accessItemsCustomization$.pipe(getCustomFields(customFieldCount));
+    this.groups$.pipe(takeUntil(this.destroy$)).subscribe((groups) => {
+      this.groups = groups;
+    });
+  }
+
+  onSelectAccessId(selected: AccessIdDefinition) {
+    if (selected) {
+      this.accessId = selected;
+      if (this.accessIdPrevious !== selected.accessId) {
+        this.accessIdPrevious = selected.accessId;
+
+        this.store.dispatch(new GetGroupsByAccessId(selected.accessId)).subscribe(() => {
+          this.searchForAccessItemsWorkbaskets();
+        });
+      }
+    } else {
+      this.accessItemsForm = null;
+    }
+  }
+
+  searchForAccessItemsWorkbaskets() {
+    this.store
+      .dispatch(
+        new GetAccessItems(
+          [this.accessId, ...this.groups],
+          this.accessItemsForm ? this.accessItemsForm.value.accessIdFilter : undefined,
+          this.accessItemsForm ? this.accessItemsForm.value.workbasketKeyFilter : undefined,
+          this.sortModel
+        )
+      )
+      .subscribe((state: AccessItemsManagementStateModel) => {
+        this.setAccessItemsGroups(state.accessItemsResource ? state.accessItemsResource.accessItems : []);
+      });
   }
 
   setAccessItemsGroups(accessItems: Array<AccessItemWorkbasket>) {
@@ -81,30 +120,17 @@ export class AccessItemsManagementComponent implements OnInit {
     }
   }
 
-  onSelectAccessId(selected: AccessIdDefinition) {
-    if (!selected) {
-      this.accessItemsForm = null;
-      return;
-    }
+  revokeAccess() {
+    this.notificationService.showDialog(
+      `You are going to delete all access related: ${this.accessIdSelected}. Can you confirm this action?`,
+      this.onRemoveConfirmed.bind(this)
+    );
+  }
 
-    if (this.accessIdPrevious !== selected.accessId) {
-      this.accessIdPrevious = selected.accessId;
-
-      this.accessIdsService
-        .getGroupsByAccessId(selected.accessId)
-        .pipe(take(1))
-        .subscribe(
-          (groups: AccessIdDefinition[]) => {
-            this.accessId = selected;
-            this.groups = groups;
-            this.searchForAccessItemsWorkbaskets();
-          },
-          (error) => {
-            this.requestInProgressService.setRequestInProgress(false);
-            this.notificationService.triggerError(NOTIFICATION_TYPES.FETCH_ERR, error);
-          }
-        );
-    }
+  onRemoveConfirmed() {
+    this.store.dispatch(new RemoveAccessItemsPermissions(this.accessIdSelected)).subscribe(() => {
+      this.searchForAccessItemsWorkbaskets();
+    });
   }
 
   isFieldValid(field: string, index: number): boolean {
@@ -116,53 +142,8 @@ export class AccessItemsManagementComponent implements OnInit {
     this.searchForAccessItemsWorkbaskets();
   }
 
-  searchForAccessItemsWorkbaskets() {
-    this.requestInProgressService.setRequestInProgress(true);
-    this.accessIdsService
-      .getAccessItems(
-        [this.accessId, ...this.groups],
-        this.accessItemsForm ? this.accessItemsForm.value.accessIdFilter : undefined,
-        this.accessItemsForm ? this.accessItemsForm.value.workbasketKeyFilter : undefined,
-        this.sortModel
-      )
-      .pipe(take(1))
-      .subscribe(
-        (accessItemsResource: AccessItemWorkbasketResource) => {
-          this.setAccessItemsGroups(accessItemsResource ? accessItemsResource.accessItems : []);
-          this.requestInProgressService.setRequestInProgress(false);
-        },
-        (error) => {
-          this.requestInProgressService.setRequestInProgress(false);
-          this.notificationService.triggerError(NOTIFICATION_TYPES.FETCH_ERR_2, error);
-        }
-      );
-  }
-
-  revokeAccess() {
-    this.notificationService.showDialog(
-      `You are going to delete all access related: ${this.accessIdSelected}. Can you confirm this action?`,
-      this.onRemoveConfirmed.bind(this)
-    );
-  }
-
-  private onRemoveConfirmed() {
-    this.requestInProgressService.setRequestInProgress(true);
-    this.accessIdsService
-      .removeAccessItemsPermissions(this.accessIdSelected)
-      .pipe(take(1))
-      .subscribe(
-        () => {
-          this.requestInProgressService.setRequestInProgress(false);
-          this.notificationService.showToast(
-            NOTIFICATION_TYPES.SUCCESS_ALERT,
-            new Map<string, string>([['accessId', this.accessIdSelected]])
-          );
-          this.searchForAccessItemsWorkbaskets();
-        },
-        (error) => {
-          this.requestInProgressService.setRequestInProgress(false);
-          this.notificationService.triggerError(NOTIFICATION_TYPES.DELETE_ERR, error);
-        }
-      );
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
