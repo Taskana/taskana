@@ -85,11 +85,11 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
         this.lookupField = workbasketsCustomization.information.owner.lookupField;
       }
     });
-    this.formsValidatorService.inputOverflowObservable.subscribe((inputOverflowMap) => {
+    this.formsValidatorService.inputOverflowObservable.pipe(takeUntil(this.destroy$)).subscribe((inputOverflowMap) => {
       this.inputOverflowMap = inputOverflowMap;
     });
     this.validateKeypress = (inputFieldModel, maxLength) => {
-      this.formsValidatorService.validateKeypress(inputFieldModel, maxLength);
+      this.formsValidatorService.validateInputOverflow(inputFieldModel, maxLength);
     };
   }
 

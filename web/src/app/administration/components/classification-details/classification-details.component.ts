@@ -86,11 +86,11 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         this.store.dispatch(new SelectClassification(this.classification.classificationId));
       });
 
-    this.formsValidatorService.inputOverflowObservable.subscribe((inputOverflowMap) => {
+    this.formsValidatorService.inputOverflowObservable.pipe(takeUntil(this.destroy$)).subscribe((inputOverflowMap) => {
       this.inputOverflowMap = inputOverflowMap;
     });
     this.validateKeypress = (inputFieldModel, maxLength) => {
-      this.formsValidatorService.validateKeypress(inputFieldModel, maxLength);
+      this.formsValidatorService.validateInputOverflow(inputFieldModel, maxLength);
     };
   }
 
