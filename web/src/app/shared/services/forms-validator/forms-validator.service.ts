@@ -109,7 +109,7 @@ export class FormsValidatorService {
     );
   }
 
-  validateKeypress(inputFieldModel: NgModel, maxLength: Number): void {
+  validateInputOverflow(inputFieldModel: NgModel, maxLength: Number): void {
     if (this.overflowErrorSubscriptionMap.has(inputFieldModel.name)) {
       this.overflowErrorSubscriptionMap.get(inputFieldModel.name).unsubscribe();
     }

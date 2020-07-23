@@ -3,100 +3,116 @@
     <div class="form-group">
       <label for="task-custom1" class="control-label">Custom1</label>
       <input type="text" class="form-control" id="task-custom1" placeholder="Custom1"
-             [(ngModel)]="task.custom1"
-             name="task.custom1">
+             [(ngModel)]="task.custom1" name="task.custom1" maxlength="255" #custom1
+             (keypress)="validateKeypress(custom1, 255)">
+      <div *ngIf="inputOverflowMap.get(custom1.name)" class="error">{{lengthError}}</div>
     </div>
     <div class="form-group">
       <label for="task-custom2" class="control-label">Custom2</label>
       <input type="text" class="form-control" id="task-custom2" placeholder="Custom2"
-             [(ngModel)]="task.custom2"
-             name="task.custom2">
+             [(ngModel)]="task.custom2" name="task.custom2" maxlength="255" #custom2
+                 (keypress)="validateKeypress(custom2, 255)">
+          <div *ngIf="inputOverflowMap.get(custom2.name)" class="error">{{lengthError}}</div>
     </div>
     <div class="form-group">
       <label for="task-custom3" class="control-label">Custom3</label>
       <input type="text" class="form-control" id="task-custom3" placeholder="Custom3"
-             [(ngModel)]="task.custom3"
-             name="task.custom3">
+             [(ngModel)]="task.custom3" name="task.custom3" maxlength="255" #custom3
+                 (keypress)="validateKeypress(custom3, 255)">
+          <div *ngIf="inputOverflowMap.get(custom3.name)" class="error">{{lengthError}}</div>
     </div>
     <div class="form-group">
       <label for="task-custom4" class="control-label">Custom4</label>
       <input type="text" class="form-control" id="task-custom4" placeholder="Custom4"
-             [(ngModel)]="task.custom4"
-             name="task.custom4">
+             [(ngModel)]="task.custom4" name="task.custom4" maxlength="255" #custom4
+                 (keypress)="validateKeypress(custom4, 255)">
+          <div *ngIf="inputOverflowMap.get(custom4.name)" class="error">{{lengthError}}</div>
     </div>
     <div class="form-group">
       <label for="task-custom5" class="control-label">Custom5</label>
       <input type="text" class="form-control" id="task-custom5" placeholder="Custom5"
-             [(ngModel)]="task.custom5"
-             name="task.custom5">
+             [(ngModel)]="task.custom5" name="task.custom5" maxlength="255" #custom5
+                 (keypress)="validateKeypress(custom5, 255)">
+          <div *ngIf="inputOverflowMap.get(custom5.name)" class="error">{{lengthError}}</div>
     </div>
     <div class="form-group">
       <label for="task-custom6" class="control-label">Custom6</label>
       <input type="text" class="form-control" id="task-custom6" placeholder="Custom6"
-             [(ngModel)]="task.custom6"
-             name="task.custom6">
+             [(ngModel)]="task.custom6" name="task.custom6" maxlength="255" #custom6
+                 (keypress)="validateKeypress(custom6, 255)">
+          <div *ngIf="inputOverflowMap.get(custom6.name)" class="error">{{lengthError}}</div>
     </div>
     <div class="form-group">
       <label for="task-custom7" class="control-label">Custom7</label>
       <input type="text" class="form-control" id="task-custom7" placeholder="Custom7"
-             [(ngModel)]="task.custom7"
-             name="task.custom7">
+             [(ngModel)]="task.custom7" name="task.custom7" maxlength="255" #custom7
+                 (keypress)="validateKeypress(custom7, 255)">
+          <div *ngIf="inputOverflowMap.get(custom7.name)" class="error">{{lengthError}}</div>
     </div>
     <div class="form-group">
       <label for="task-custom8" class="control-label">Custom8</label>
       <input type="text" class="form-control" id="task-custom8" placeholder="Custom8"
-             [(ngModel)]="task.custom8"
-             name="task.custom8">
+             [(ngModel)]="task.custom8" name="task.custom8" maxlength="255" #custom8
+                 (keypress)="validateKeypress(custom8, 255)">
+          <div *ngIf="inputOverflowMap.get(custom8.name)" class="error">{{lengthError}}</div>
     </div>
   </div>
   <div class="col-md-6">
     <div class="form-group">
       <label for="task-custom9" class="control-label">Custom9</label>
       <input type="text" class="form-control" id="task-custom9" placeholder="Custom9"
-             [(ngModel)]="task.custom9"
-             name="task.custom9">
+             [(ngModel)]="task.custom9" name="task.custom9" maxlength="255" #custom9
+                 (keypress)="validateKeypress(custom9, 255)">
+          <div *ngIf="inputOverflowMap.get(custom9.name)" class="error">{{lengthError}}</div>
     </div>
     <div class="form-group">
       <label for="task-custom10" class="control-label">Custom10</label>
       <input type="text" class="form-control" id="task-custom10" placeholder="Custom10"
-             [(ngModel)]="task.custom10"
-             name="task.custom10">
+             [(ngModel)]="task.custom10" name="task.custom10" maxlength="255" #custom10
+                 (keypress)="validateKeypress(custom10, 255)">
+          <div *ngIf="inputOverflowMap.get(custom10.name)" class="error">{{lengthError}}</div>
     </div>
     <div class="form-group">
       <label for="task-custom11" class="control-label">Custom11</label>
       <input type="text" class="form-control" id="task-custom11" placeholder="Custom11"
-             [(ngModel)]="task.custom11"
-             name="task.custom11">
+             [(ngModel)]="task.custom11" name="task.custom11" maxlength="255" #custom11
+                 (keypress)="validateKeypress(custom11, 255)">
+          <div *ngIf="inputOverflowMap.get(custom11.name)" class="error">{{lengthError}}</div>
     </div>
     <div class="form-group">
       <label for="task-custom12" class="control-label">Custom12</label>
       <input type="text" class="form-control" id="task-custom12" placeholder="Custom12"
-             [(ngModel)]="task.custom12"
-             name="task.custom12">
+             [(ngModel)]="task.custom12" name="task.custom12" maxlength="255" #custom12
+                 (keypress)="validateKeypress(custom12, 255)">
+          <div *ngIf="inputOverflowMap.get(custom12.name)" class="error">{{lengthError}}</div>
     </div>
     <div class="form-group">
       <label for="task-custom13" class="control-label">Custom13</label>
       <input type="text" class="form-control" id="task-custom13" placeholder="Custom13"
-             [(ngModel)]="task.custom13"
-             name="task.custom13">
+             [(ngModel)]="task.custom13" name="task.custom13" maxlength="255" #custom13
+                 (keypress)="validateKeypress(custom13, 255)">
+          <div *ngIf="inputOverflowMap.get(custom13.name)" class="error">{{lengthError}}</div>
     </div>
     <div class="form-group">
       <label for="task-custom14" class="control-label">Custom14</label>
       <input type="text" class="form-control" id="task-custom14" placeholder="Custom14"
-             [(ngModel)]="task.custom14"
-             name="task.custom14">
+             [(ngModel)]="task.custom14" name="task.custom14" maxlength="255" #custom14
+                 (keypress)="validateKeypress(custom14, 255)">
+          <div *ngIf="inputOverflowMap.get(custom14.name)" class="error">{{lengthError}}</div>
     </div>
     <div class="form-group">
       <label for="task-custom15" class="control-label">Custom15</label>
       <input type="text" class="form-control" id="task-custom15" placeholder="Custom15"
-             [(ngModel)]="task.custom15"
-             name="task.custom15">
+             [(ngModel)]="task.custom15" name="task.custom15" maxlength="255" #custom15
+                 (keypress)="validateKeypress(custom15, 255)">
+          <div *ngIf="inputOverflowMap.get(custom15.name)" class="error">{{lengthError}}</div>
     </div>
     <div class="form-group">
       <label for="task-custom16" class="control-label">Custom16</label>
       <input type="text" class="form-control" id="task-custom16" placeholder="Custom16"
-             [(ngModel)]="task.custom16"
-             name="task.custom16">
+             [(ngModel)]="task.custom16" name="task.custom16" maxlength="255" #custom16
+                 (keypress)="validateKeypress(custom16, 255)">
+          <div *ngIf="inputOverflowMap.get(custom16.name)" class="error">{{lengthError}}</div>
     </div>
   </div>
 </ng-container>
