@@ -18,9 +18,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
-import java.util.StringTokenizer;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.sql.DataSource;
@@ -37,6 +41,8 @@ import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.configuration.DB;
 import pro.taskana.common.internal.configuration.DbSchemaCreator;
 import pro.taskana.common.internal.configuration.SecurityVerifier;
+import pro.taskana.common.internal.util.CheckedFunction;
+import pro.taskana.common.internal.util.Pair;
 
 /**
  * This central class creates the TaskanaEngine and holds all the information about DB and Security.
@@ -82,7 +88,7 @@ public class TaskanaEngineConfiguration {
   protected String schemaName;
   // Taskana role configuration
   protected String propertiesSeparator = TASKANA_PROPERTY_SEPARATOR;
-  protected Map<TaskanaRole, Set<String>> roleMap = new HashMap<>();
+  protected Map<TaskanaRole, Set<String>> roleMap;
   // global switch to enable JAAS based authentication and Taskana
   // authorizations
   protected boolean securityEnabled;
@@ -163,21 +169,24 @@ public class TaskanaEngineConfiguration {
     securityVerifier.checkSecureAccess(securityEnabled);
   }
 
-  public void initTaskanaProperties(String propertiesFile, String rolesSeparator) {
+  public void initTaskanaProperties(String propertiesFile, String separator) {
     LOGGER.debug(
-        "Reading taskana configuration from {} with role separator {}",
-        propertiesFile,
-        rolesSeparator);
+        "Reading taskana configuration from {} with separator {}", propertiesFile, separator);
     Properties props = readPropertiesFromFile(propertiesFile);
-    initTaskanaRoles(props, rolesSeparator);
+    initTaskanaRoles(props, separator);
     initJobParameters(props);
     initDomains(props);
     initClassificationTypes(props);
     initClassificationCategories(props);
-    initBooleanFlag(props, TASKANA_GERMAN_HOLIDAYS_ENABLED);
-    initBooleanFlag(props, TASKANA_GERMAN_HOLIDAYS_CORPUS_CHRISTI_ENABLED);
-    initBooleanFlag(props, TASKANA_HISTORY_DELETION_ON_TASK_DELETION_ENABLED);
-    initCustomHolidays(props);
+    initBooleanProperty(
+        props, TASKANA_GERMAN_HOLIDAYS_ENABLED, this::setGermanPublicHolidaysEnabled);
+    initBooleanProperty(
+        props, TASKANA_GERMAN_HOLIDAYS_CORPUS_CHRISTI_ENABLED, this::setCorpusChristiEnabled);
+    initBooleanProperty(
+        props,
+        TASKANA_HISTORY_DELETION_ON_TASK_DELETION_ENABLED,
+        this::setDeleteHistoryOnTaskDeletionEnabled);
+    initCustomHolidays(props, separator);
   }
 
   public static DataSource createDefaultDataSource() {
@@ -232,28 +241,20 @@ public class TaskanaEngineConfiguration {
     return this.useManagedTransactions;
   }
 
-  public String getPropertiesFileName() {
-    return this.propertiesFileName;
-  }
-
-  public void setPropertiesFileName(String propertiesFileName) {
-    this.propertiesFileName = propertiesFileName;
-  }
-
   public int getMaxNumberOfUpdatesPerTransaction() {
     return jobBatchSize;
+  }
+
+  public void setMaxNumberOfUpdatesPerTransaction(int jobBatchSize) {
+    this.jobBatchSize = jobBatchSize;
   }
 
   public int getMaxNumberOfJobRetries() {
     return maxNumberOfJobRetries;
   }
 
-  public String getPropertiesSeparator() {
-    return this.propertiesSeparator;
-  }
-
-  public void setPropertiesSeparator(String propertiesSeparator) {
-    this.propertiesSeparator = propertiesSeparator;
+  public void setMaxNumberOfJobRetries(int maxNumberOfJobRetries) {
+    this.maxNumberOfJobRetries = maxNumberOfJobRetries;
   }
 
   public boolean isCorpusChristiEnabled() {
@@ -292,6 +293,7 @@ public class TaskanaEngineConfiguration {
     return roleMap;
   }
 
+  @SuppressWarnings("unused")
   public void setRoleMap(Map<TaskanaRole, Set<String>> roleMap) {
     this.roleMap = roleMap;
   }
@@ -338,12 +340,24 @@ public class TaskanaEngineConfiguration {
     return cleanupJobFirstRun;
   }
 
+  public void setCleanupJobFirstRun(Instant cleanupJobFirstRun) {
+    this.cleanupJobFirstRun = cleanupJobFirstRun;
+  }
+
   public Duration getCleanupJobRunEvery() {
     return cleanupJobRunEvery;
   }
 
+  public void setCleanupJobRunEvery(Duration cleanupJobRunEvery) {
+    this.cleanupJobRunEvery = cleanupJobRunEvery;
+  }
+
   public Duration getCleanupJobMinimumAge() {
     return cleanupJobMinimumAge;
+  }
+
+  public void setCleanupJobMinimumAge(Duration cleanupJobMinimumAge) {
+    this.cleanupJobMinimumAge = cleanupJobMinimumAge;
   }
 
   public boolean isTaskCleanupJobAllCompletedSameParentBusiness() {
@@ -374,99 +388,45 @@ public class TaskanaEngineConfiguration {
     return true;
   }
 
-  private void initBooleanFlag(Properties props, String propName) {
-    String enabled = props.getProperty(propName);
-    if (enabled != null && !enabled.isEmpty()) {
-      boolean isEnabled = Boolean.parseBoolean(enabled);
-      if (propName.equals(TASKANA_GERMAN_HOLIDAYS_ENABLED)) {
-        germanPublicHolidaysEnabled = isEnabled;
-      } else if (propName.equals(TASKANA_GERMAN_HOLIDAYS_CORPUS_CHRISTI_ENABLED)) {
-        corpusChristiEnabled = isEnabled;
-      } else if (propName.equals(TASKANA_HISTORY_DELETION_ON_TASK_DELETION_ENABLED)) {
-        deleteHistoryOnTaskDeletionEnabled = isEnabled;
+  private <T> Optional<T> parseProperty(
+      Properties props, String key, CheckedFunction<String, T> function) {
+    String property = props.getProperty(key, "");
+    if (!property.isEmpty()) {
+      try {
+        return Optional.ofNullable(function.apply(property));
+      } catch (Throwable t) {
+        LOGGER.warn(
+            "Could not parse property {} ({}). Using default. Exception: {}",
+            key,
+            property,
+            t.getMessage());
       }
     }
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(String.format("%s = %b", propName, Boolean.parseBoolean(enabled)));
-    }
+    return Optional.empty();
   }
 
   private void initJobParameters(Properties props) {
-    String jobBatchSizeProperty = props.getProperty(TASKANA_JOB_BATCH_SIZE);
-    if (jobBatchSizeProperty != null && !jobBatchSizeProperty.isEmpty()) {
-      try {
-        jobBatchSize = Integer.parseInt(jobBatchSizeProperty);
-      } catch (Exception e) {
-        LOGGER.warn(
-            "Could not parse jobBatchSizeProperty ({}). Using default. Exception: {} ",
-            jobBatchSizeProperty,
-            e.getMessage());
-      }
-    }
 
-    String maxNumberOfJobRetriesProperty = props.getProperty(TASKANA_JOB_RETRIES);
-    if (maxNumberOfJobRetriesProperty != null && !maxNumberOfJobRetriesProperty.isEmpty()) {
-      try {
-        maxNumberOfJobRetries = Integer.parseInt(maxNumberOfJobRetriesProperty);
-      } catch (Exception e) {
-        LOGGER.warn(
-            "Could not parse maxNumberOfJobRetriesProperty ({}). Using default. Exception: {} ",
-            maxNumberOfJobRetriesProperty,
-            e.getMessage());
-      }
-    }
+    parseProperty(props, TASKANA_JOB_BATCH_SIZE, Integer::parseInt)
+        .ifPresent(this::setMaxNumberOfUpdatesPerTransaction);
 
-    String taskCleanupJobFirstRunProperty = props.getProperty(TASKANA_JOB_CLEANUP_FIRST_RUN);
-    if (taskCleanupJobFirstRunProperty != null && !taskCleanupJobFirstRunProperty.isEmpty()) {
-      try {
-        cleanupJobFirstRun = Instant.parse(taskCleanupJobFirstRunProperty);
-      } catch (Exception e) {
-        LOGGER.warn(
-            "Could not parse taskCleanupJobFirstRunProperty ({}). Using default. Exception: {} ",
-            taskCleanupJobFirstRunProperty,
-            e.getMessage());
-      }
-    }
+    parseProperty(props, TASKANA_JOB_RETRIES, Integer::parseInt)
+        .ifPresent(this::setMaxNumberOfJobRetries);
 
-    String taskCleanupJobRunEveryProperty = props.getProperty(TASKANA_JOB_CLEANUP_RUN_EVERY);
-    if (taskCleanupJobRunEveryProperty != null && !taskCleanupJobRunEveryProperty.isEmpty()) {
-      try {
-        cleanupJobRunEvery = Duration.parse(taskCleanupJobRunEveryProperty);
-      } catch (Exception e) {
-        LOGGER.warn(
-            "Could not parse taskCleanupJobRunEveryProperty ({}). Using default. Exception: {} ",
-            taskCleanupJobRunEveryProperty,
-            e.getMessage());
-      }
-    }
+    parseProperty(props, TASKANA_JOB_CLEANUP_FIRST_RUN, Instant::parse)
+        .ifPresent(this::setCleanupJobFirstRun);
 
-    String taskCleanupJobMinimumAgeProperty = props.getProperty(TASKANA_JOB_CLEANUP_MINIMUM_AGE);
-    if (taskCleanupJobMinimumAgeProperty != null && !taskCleanupJobMinimumAgeProperty.isEmpty()) {
-      try {
-        cleanupJobMinimumAge = Duration.parse(taskCleanupJobMinimumAgeProperty);
-      } catch (Exception e) {
-        LOGGER.warn(
-            "Could not parse taskCleanupJobMinimumAgeProperty ({}). Using default. Exception: {} ",
-            taskCleanupJobMinimumAgeProperty,
-            e.getMessage());
-      }
-    }
+    parseProperty(props, TASKANA_JOB_CLEANUP_RUN_EVERY, Duration::parse)
+        .ifPresent(this::setCleanupJobRunEvery);
 
-    String taskCleanupJobAllCompletedSameParentBusinessProperty =
-        props.getProperty(TASKANA_JOB_TASK_CLEANUP_ALL_COMPLETED_SAME_PARENT_BUSINESS);
-    if (taskCleanupJobAllCompletedSameParentBusinessProperty != null
-        && !taskCleanupJobAllCompletedSameParentBusinessProperty.isEmpty()) {
-      try {
-        taskCleanupJobAllCompletedSameParentBusiness =
-            Boolean.parseBoolean(taskCleanupJobAllCompletedSameParentBusinessProperty);
-      } catch (Exception e) {
-        LOGGER.warn(
-            "Could not parse taskCleanupJobAllCompletedSameParentBusinessProperty "
-                + "({}). Using default. Exception: {} ",
-            taskCleanupJobAllCompletedSameParentBusinessProperty,
-            e.getMessage());
-      }
-    }
+    parseProperty(props, TASKANA_JOB_CLEANUP_MINIMUM_AGE, Duration::parse)
+        .ifPresent(this::setCleanupJobMinimumAge);
+
+    parseProperty(
+            props,
+            TASKANA_JOB_TASK_CLEANUP_ALL_COMPLETED_SAME_PARENT_BUSINESS,
+            Boolean::parseBoolean)
+        .ifPresent(this::setTaskCleanupJobAllCompletedSameParentBusiness);
 
     LOGGER.debug(
         "Configured number of task and workbasket updates per transaction: {}", jobBatchSize);
@@ -483,51 +443,45 @@ public class TaskanaEngineConfiguration {
   }
 
   private void initDomains(Properties props) {
-    String domainNames = props.getProperty(TASKANA_DOMAINS_PROPERTY);
-    if (domainNames != null && !domainNames.isEmpty()) {
-      StringTokenizer st = new StringTokenizer(domainNames, ",");
-      while (st.hasMoreTokens()) {
-        domains.add(st.nextToken().trim().toUpperCase());
-      }
-    }
+    CheckedFunction<String, List<String>> parseFunction =
+        p -> splitStringAndTrimElements(p, ",", String::toUpperCase);
+    parseProperty(props, TASKANA_DOMAINS_PROPERTY, parseFunction).ifPresent(this::setDomains);
+
     LOGGER.debug("Configured domains: {}", domains);
   }
 
   private void initClassificationTypes(Properties props) {
-    String classificationTypesNames = props.getProperty(TASKANA_CLASSIFICATION_TYPES_PROPERTY);
-    if (classificationTypesNames != null && !classificationTypesNames.isEmpty()) {
-      StringTokenizer st = new StringTokenizer(classificationTypesNames, ",");
-      while (st.hasMoreTokens()) {
-        classificationTypes.add(st.nextToken().trim().toUpperCase());
-      }
-    } else {
-      LOGGER.warn("Configuration issue. Classification type is missing");
-    }
+    CheckedFunction<String, List<String>> parseFunction =
+        p -> splitStringAndTrimElements(p, ",", String::toUpperCase);
+    parseProperty(props, TASKANA_CLASSIFICATION_TYPES_PROPERTY, parseFunction)
+        .ifPresent(this::setClassificationTypes);
+
     LOGGER.debug("Configured classificationTypes: {}", classificationTypes);
   }
 
   private void initClassificationCategories(Properties props) {
-    if (classificationTypes != null && !classificationTypes.isEmpty()) {
-      String classificationCategoryNames;
-      StringTokenizer st;
-      List<String> classificationCategoriesAux;
-      for (String type : classificationTypes) {
-        classificationCategoriesAux = new ArrayList<>();
-        classificationCategoryNames =
-            props.getProperty(
-                TASKANA_CLASSIFICATION_CATEGORIES_PROPERTY + "." + type.toLowerCase());
-        if (classificationCategoryNames != null && !classificationCategoryNames.isEmpty()) {
-          st = new StringTokenizer(classificationCategoryNames, ",");
-          while (st.hasMoreTokens()) {
-            classificationCategoriesAux.add(st.nextToken().trim().toUpperCase());
-          }
-          classificationCategoriesByTypeMap.put(type, classificationCategoriesAux);
-        } else {
-          LOGGER.warn("Configuration issue. Classification categories by type is missing");
-        }
-      }
-    }
-    LOGGER.debug("Configured classification categories : {}", domains);
+    Function<String, List<String>> getClassificationCategoriesForType =
+        type -> {
+          CheckedFunction<String, List<String>> parseFunction =
+              s -> splitStringAndTrimElements(s, ",", String::toUpperCase);
+          return parseProperty(
+                  props,
+                  TASKANA_CLASSIFICATION_CATEGORIES_PROPERTY + "." + type.toLowerCase(),
+                  parseFunction)
+              .orElseGet(ArrayList::new);
+        };
+
+    classificationCategoriesByTypeMap =
+        classificationTypes.stream()
+            .map(type -> Pair.of(type, getClassificationCategoriesForType.apply(type)))
+            .collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
+
+    LOGGER.debug("Configured classification categories : {}", classificationCategoriesByTypeMap);
+  }
+
+  private void initBooleanProperty(
+      Properties props, String propertyName, Consumer<Boolean> consumer) {
+    parseProperty(props, propertyName, Boolean::parseBoolean).ifPresent(consumer);
   }
 
   private void initSchemaName(String schemaName) {
@@ -552,45 +506,54 @@ public class TaskanaEngineConfiguration {
   }
 
   private void initTaskanaRoles(Properties props, String rolesSeparator) {
-    List<String> validPropertyNames = TaskanaRole.getValidPropertyNames();
+    Function<TaskanaRole, Set<String>> getAccessIdsForRole =
+        role -> {
+          List<String> accessIds =
+              splitStringAndTrimElements(
+                  props.getProperty(role.getPropertyName().toLowerCase(), ""),
+                  rolesSeparator,
+                  shouldUseLowerCaseForAccessIds()
+                      ? String::toLowerCase
+                      : UnaryOperator.identity());
+          return new HashSet<>(accessIds);
+        };
 
-    props.keySet().stream()
-        .map(String::valueOf)
-        .filter(propertyName -> validPropertyNames.contains(propertyName.toLowerCase().trim()))
-        .forEach(
-            validPropertyName ->
-                roleMap.put(
-                    TaskanaRole.fromPropertyName(validPropertyName),
-                    getTokensWithCollection(props.getProperty(validPropertyName), rolesSeparator)));
-
-    ensureRoleMapIsFullyInitialized();
+    roleMap =
+        Arrays.stream(TaskanaRole.values())
+            .map(role -> Pair.of(role, getAccessIdsForRole.apply(role)))
+            .collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
 
     if (LOGGER.isDebugEnabled()) {
       roleMap.forEach((k, v) -> LOGGER.debug("Found Taskana RoleConfig {} : {} ", k, v));
     }
   }
 
-  private void initCustomHolidays(Properties props) {
-    if (props.getProperty(TASKANA_CUSTOM_HOLIDAY) != null) {
-      Arrays.asList(
-              props.getProperty(TASKANA_CUSTOM_HOLIDAY).split(Pattern.quote(propertiesSeparator)))
-          .forEach(
-              entry -> {
-                try {
-                  customHolidays.add(createCustomHolidayFromPropsEntry(entry));
-                } catch (WrongCustomHolidayFormatException e) {
-                  LOGGER.warn(e.getMessage());
-                }
-              });
-    }
+  private void initCustomHolidays(Properties props, String separator) {
+    CheckedFunction<String, List<CustomHoliday>> parseFunction =
+        s ->
+            splitStringAndTrimElements(s, separator).stream()
+                .map(
+                    str -> {
+                      try {
+                        return createCustomHolidayFromPropsEntry(str);
+                      } catch (WrongCustomHolidayFormatException e) {
+                        LOGGER.warn(e.getMessage());
+                        return null;
+                      }
+                    })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    parseProperty(props, TASKANA_CUSTOM_HOLIDAY, parseFunction).ifPresent(this::addCustomHolidays);
+
+    LOGGER.debug("Configured custom Holidays : {}", customHolidays);
   }
 
   private CustomHoliday createCustomHolidayFromPropsEntry(String customHolidayEntry)
       throws WrongCustomHolidayFormatException {
-    String[] parts =
-        customHolidayEntry.split(Pattern.quote(TASKANA_CUSTOM_HOLIDAY_DAY_MONTH_SEPARATOR));
-    if (parts.length == 2) {
-      return CustomHoliday.of(Integer.valueOf(parts[0]), Integer.valueOf(parts[1]));
+    List<String> parts =
+        splitStringAndTrimElements(customHolidayEntry, TASKANA_CUSTOM_HOLIDAY_DAY_MONTH_SEPARATOR);
+    if (parts.size() == 2) {
+      return CustomHoliday.of(Integer.valueOf(parts.get(0)), Integer.valueOf(parts.get(1)));
     }
     throw new WrongCustomHolidayFormatException(
         String.format(
@@ -599,10 +562,17 @@ public class TaskanaEngineConfiguration {
             customHolidayEntry));
   }
 
-  private HashSet<String> getTokensWithCollection(String str, String rolesSeparator) {
-    return Collections.list(new StringTokenizer(str, rolesSeparator)).stream()
-        .map(token -> String.valueOf(token).toLowerCase().trim())
-        .collect(Collectors.toCollection(HashSet::new));
+  private List<String> splitStringAndTrimElements(String str, String separator) {
+    return splitStringAndTrimElements(str, separator, UnaryOperator.identity());
+  }
+
+  private List<String> splitStringAndTrimElements(
+      String str, String separator, UnaryOperator<String> modifier) {
+    return Arrays.stream(str.split(Pattern.quote(separator)))
+        .filter(s -> !s.isEmpty())
+        .map(String::trim)
+        .map(modifier)
+        .collect(Collectors.toList());
   }
 
   private Properties readPropertiesFromFile(String propertiesFile) {
@@ -637,10 +607,5 @@ public class TaskanaEngineConfiguration {
       loadFromClasspath = false;
     }
     return loadFromClasspath;
-  }
-
-  private void ensureRoleMapIsFullyInitialized() {
-    // make sure that roleMap does not return null for any role
-    Arrays.stream(TaskanaRole.values()).forEach(role -> roleMap.putIfAbsent(role, new HashSet<>()));
   }
 }

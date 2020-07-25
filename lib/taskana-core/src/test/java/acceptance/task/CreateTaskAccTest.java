@@ -17,7 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.common.internal.TaskanaEngineProxyForTest;
+import pro.taskana.common.internal.TaskanaEngineProxy;
 import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
@@ -196,7 +196,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(createdTask.isRead()).isFalse();
     assertThat(createdTask.isTransferred()).isFalse();
     // verify that the database content is as expected
-    TaskanaEngineProxyForTest engineProxy = new TaskanaEngineProxyForTest(taskanaEngine);
+    TaskanaEngineProxy engineProxy = new TaskanaEngineProxy(taskanaEngine);
     try {
       SqlSession session = engineProxy.getSqlSession();
       Configuration config = session.getConfiguration();
@@ -258,7 +258,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(createdTask.getCreator()).isEqualTo(CurrentUserContext.getUserid());
 
     // verify that the database content is as expected
-    TaskanaEngineProxyForTest engineProxy = new TaskanaEngineProxyForTest(taskanaEngine);
+    TaskanaEngineProxy engineProxy = new TaskanaEngineProxy(taskanaEngine);
     try {
       SqlSession session = engineProxy.getSqlSession();
       AttachmentMapper mapper = session.getMapper(AttachmentMapper.class);

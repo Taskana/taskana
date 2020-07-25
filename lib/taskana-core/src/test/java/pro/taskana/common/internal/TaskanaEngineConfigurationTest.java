@@ -10,7 +10,7 @@ import pro.taskana.common.api.CustomHoliday;
 import pro.taskana.common.api.TaskanaEngine;
 
 /** Test of configuration. */
-class TaskanaEngineTestConfigurationTest {
+class TaskanaEngineConfigurationTest {
 
   @Test
   void testCreateTaskanaEngine() throws Exception {

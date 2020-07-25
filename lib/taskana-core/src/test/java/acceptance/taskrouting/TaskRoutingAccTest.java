@@ -36,19 +36,19 @@ class TaskRoutingAccTest extends AbstractAccTest {
         .isInstanceOf(InvalidArgumentException.class);
     ((TaskImpl) taskToCreate).setDomain("DOMAIN_B");
     Task createdTask = taskService.createTask(taskToCreate);
-    assertThat("WBI:100000000000000000000000000000000011")
-        .isEqualTo(createdTask.getWorkbasketSummary().getId());
+    assertThat(createdTask.getWorkbasketSummary().getId())
+        .isEqualTo("WBI:100000000000000000000000000000000011");
   }
 
   @WithAccessId(user = "admin")
   @Test
   void testCreateTaskWithNullWorkbasket() throws Exception {
     TaskImpl createdTaskA = createTask("DOMAIN_A", "L12010");
-    assertThat("WBI:100000000000000000000000000000000001")
-        .isEqualTo(createdTaskA.getWorkbasketSummary().getId());
+    assertThat(createdTaskA.getWorkbasketSummary().getId())
+        .isEqualTo("WBI:100000000000000000000000000000000001");
     TaskImpl createdTaskB = createTask("DOMAIN_B", "T21001");
-    assertThat("WBI:100000000000000000000000000000000011")
-        .isEqualTo(createdTaskB.getWorkbasketSummary().getId());
+    assertThat(createdTaskB.getWorkbasketSummary().getId())
+        .isEqualTo("WBI:100000000000000000000000000000000011");
     assertThatThrownBy(() -> createTask(null, "L12010"))
         .isInstanceOf(InvalidArgumentException.class);
   }

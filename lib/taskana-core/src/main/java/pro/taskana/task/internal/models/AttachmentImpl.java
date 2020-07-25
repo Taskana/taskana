@@ -63,6 +63,7 @@ public class AttachmentImpl extends AttachmentSummaryImpl implements Attachment 
     return new AttachmentImpl(this);
   }
 
+  @Override
   protected boolean canEqual(Object other) {
     return (!(other instanceof AttachmentImpl));
   }

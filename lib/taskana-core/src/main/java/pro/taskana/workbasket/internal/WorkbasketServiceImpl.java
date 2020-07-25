@@ -436,7 +436,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
       throws InvalidArgumentException, NotAuthorizedException,
           WorkbasketAccessItemAlreadyExistException {
     LOGGER.debug(
-        "entry to setWorkbasketAccessItems(workbasketAccessItems = {})", wbAccessItems.toString());
+        "entry to setWorkbasketAccessItems(workbasketAccessItems = {})", wbAccessItems);
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
 
     Set<String> ids = new HashSet<>();

@@ -15,7 +15,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.undertow.WARArchive;
 
-/** TODO. */
 @RunWith(Arquillian.class)
 public class TaskanaProducersTest {
 

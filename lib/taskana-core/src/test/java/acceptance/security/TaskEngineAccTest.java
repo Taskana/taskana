@@ -10,7 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.common.internal.TaskanaEngineProxyForTest;
+import pro.taskana.common.internal.TaskanaEngineProxy;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 
@@ -36,7 +36,7 @@ class TaskEngineAccTest extends AbstractAccTest {
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN)).isTrue();
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isFalse();
 
-    new TaskanaEngineProxyForTest(taskanaEngine)
+    new TaskanaEngineProxy(taskanaEngine)
         .getEngine()
         .runAsAdmin(() -> assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isTrue());
 

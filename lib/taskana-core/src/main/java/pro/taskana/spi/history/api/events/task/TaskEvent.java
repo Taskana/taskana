@@ -57,124 +57,56 @@ public class TaskEvent extends TaskanaHistoryEvent {
     }
   }
 
-  public String getBusinessProcessId() {
-    return businessProcessId;
-  }
-
-  public void setBusinessProcessId(String businessProcessId) {
-    this.businessProcessId = businessProcessId;
-  }
-
-  public String getParentBusinessProcessId() {
-    return parentBusinessProcessId;
-  }
-
-  public void setParentBusinessProcessId(String parentBusinessProcessId) {
-    this.parentBusinessProcessId = parentBusinessProcessId;
-  }
-
-  public String getTaskId() {
-    return taskId;
-  }
-
-  public void setTaskId(String taskId) {
-    this.taskId = taskId;
-  }
-
-  public String getDomain() {
-    return domain;
-  }
-
-  public void setDomain(String domain) {
-    this.domain = domain;
-  }
-
-  public String getWorkbasketKey() {
-    return workbasketKey;
-  }
-
-  public void setWorkbasketKey(String workbasketKey) {
-    this.workbasketKey = workbasketKey;
-  }
-
-  public String getPorCompany() {
-    return porCompany;
-  }
-
-  public void setPorCompany(String porCompany) {
-    this.porCompany = porCompany;
-  }
-
-  public String getPorSystem() {
-    return porSystem;
-  }
-
-  public void setPorSystem(String porSystem) {
-    this.porSystem = porSystem;
-  }
-
-  public String getPorInstance() {
-    return porInstance;
-  }
-
-  public void setPorInstance(String porInstance) {
-    this.porInstance = porInstance;
-  }
-
-  public String getPorType() {
-    return porType;
-  }
-
-  public void setPorType(String porType) {
-    this.porType = porType;
-  }
-
-  public String getPorValue() {
-    return porValue;
-  }
-
-  public void setPorValue(String porValue) {
-    this.porValue = porValue;
-  }
-
-  public String getTaskClassificationKey() {
-    return taskClassificationKey;
-  }
-
-  public void setTaskClassificationKey(String taskClassificationKey) {
-    this.taskClassificationKey = taskClassificationKey;
-  }
-
-  public String getTaskClassificationCategory() {
-    return taskClassificationCategory;
-  }
-
-  public void setTaskClassificationCategory(String taskClassificationCategory) {
-    this.taskClassificationCategory = taskClassificationCategory;
-  }
-
-  public String getAttachmentClassificationKey() {
-    return attachmentClassificationKey;
-  }
-
-  public void setAttachmentClassificationKey(String attachmentClassificationKey) {
-    this.attachmentClassificationKey = attachmentClassificationKey;
-  }
-
   @Override
   public String toString() {
-    return "TaskEvent [taskId= "
-        + this.taskId
-        + ", businessProcessId= "
-        + this.businessProcessId
-        + ", parentBusinessProcessId= "
-        + this.parentBusinessProcessId
-        + ", domain= "
-        + this.domain
-        + ", workbasketKey= "
-        + this.workbasketKey
-        + ", details= "
-        + this.details
+    return "TaskEvent [id="
+        + id
+        + ", businessProcessId="
+        + businessProcessId
+        + ", parentBusinessProcessId="
+        + parentBusinessProcessId
+        + ", taskId="
+        + taskId
+        + ", eventType="
+        + eventType
+        + ", created="
+        + created
+        + ", userId="
+        + userId
+        + ", domain="
+        + domain
+        + ", workbasketKey="
+        + workbasketKey
+        + ", porCompany="
+        + porCompany
+        + ", porSystem="
+        + porSystem
+        + ", porInstance="
+        + porInstance
+        + ", porType="
+        + porType
+        + ", porValue="
+        + porValue
+        + ", taskClassificationKey="
+        + taskClassificationKey
+        + ", taskClassificationCategory="
+        + taskClassificationCategory
+        + ", attachmentClassificationKey="
+        + attachmentClassificationKey
+        + ", oldValue="
+        + oldValue
+        + ", newValue="
+        + newValue
+        + ", custom1="
+        + custom1
+        + ", custom2="
+        + custom2
+        + ", custom3="
+        + custom3
+        + ", custom4="
+        + custom4
+        + ", details="
+        + details
         + "]";
   }
 }

@@ -136,7 +136,7 @@ class ClassificationControllerIntTest {
             ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
 
     assertThat(responseEntity).isNotNull();
-    assertThat(HttpStatus.CREATED).isEqualTo(responseEntity.getStatusCode());
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
     newClassification =
         "{\"classificationId\":\"\",\"category\":\"MANUAL\","
@@ -150,7 +150,7 @@ class ClassificationControllerIntTest {
             new HttpEntity<>(newClassification, restHelper.getHeadersTeamlead_1()),
             ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
 
-    assertThat(HttpStatus.CREATED).isEqualTo(responseEntity.getStatusCode());
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
   }
 
   @Test
@@ -192,7 +192,7 @@ class ClassificationControllerIntTest {
             ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
 
     assertThat(responseEntity).isNotNull();
-    assertThat(HttpStatus.CREATED).isEqualTo(responseEntity.getStatusCode());
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
   }
 
   @Test
@@ -212,7 +212,7 @@ class ClassificationControllerIntTest {
             ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
 
     assertThat(responseEntity).isNotNull();
-    assertThat(HttpStatus.CREATED).isEqualTo(responseEntity.getStatusCode());
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
   }
 
   @Test
@@ -231,7 +231,7 @@ class ClassificationControllerIntTest {
             ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
 
     assertThat(responseEntity).isNotNull();
-    assertThat(HttpStatus.CREATED).isEqualTo(responseEntity.getStatusCode());
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
     ResponseEntity<TaskanaPagedModel<ClassificationSummaryRepresentationModel>> response =
         template.exchange(
@@ -328,7 +328,6 @@ class ClassificationControllerIntTest {
             HttpMethod.DELETE,
             request,
             ParameterizedTypeReference.forType(ClassificationSummaryRepresentationModel.class));
-    assertThat(HttpStatus.NO_CONTENT).isEqualTo(response.getStatusCode());
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
     ThrowingCallable httpCall =

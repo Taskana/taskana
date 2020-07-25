@@ -456,8 +456,8 @@ class TaskControllerIntTest {
     assertThat((response.getBody()).getContent()).hasSize(1);
     assertThat(response.getBody().getRequiredLink(IanaLinkRelations.LAST).getHref())
         .contains("page=14");
-    assertThat("TKI:100000000000000000000000000000000000")
-        .isEqualTo(response.getBody().getContent().iterator().next().getTaskId());
+    assertThat(response.getBody().getContent().iterator().next().getTaskId())
+        .isEqualTo("TKI:100000000000000000000000000000000000");
 
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getRequiredLink(IanaLinkRelations.SELF).getHref())
@@ -497,8 +497,8 @@ class TaskControllerIntTest {
     assertThat((response.getBody()).getContent()).hasSize(5);
     assertThat(response.getBody().getRequiredLink(IanaLinkRelations.LAST).getHref())
         .contains("page=10");
-    assertThat("TKI:000000000000000000000000000000000005")
-        .isEqualTo(response.getBody().getContent().iterator().next().getTaskId());
+    assertThat(response.getBody().getContent().iterator().next().getTaskId())
+        .isEqualTo("TKI:000000000000000000000000000000000005");
 
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getRequiredLink(IanaLinkRelations.SELF).getHref())
@@ -591,7 +591,7 @@ class TaskControllerIntTest {
             HttpMethod.POST,
             new HttpEntity<>(taskRepresentationModel, restHelper.getHeadersTeamlead_1()),
             TASK_MODEL_TYPE);
-    assertThat(HttpStatus.CREATED).isEqualTo(responseCreate.getStatusCode());
+    assertThat(responseCreate.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     assertThat(responseCreate.getBody()).isNotNull();
 
     String taskIdOfCreatedTask = responseCreate.getBody().getTaskId();

@@ -270,6 +270,7 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
     ((ClassificationSummaryImpl) this.classificationSummary).setCategory(classificationCategory);
   }
 
+  @Override
   protected boolean canEqual(Object other) {
     return (other instanceof TaskImpl);
   }

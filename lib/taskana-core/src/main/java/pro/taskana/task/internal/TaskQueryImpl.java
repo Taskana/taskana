@@ -1585,7 +1585,7 @@ public class TaskQueryImpl implements TaskQuery {
       joinWithAttachments = true;
       joinWithAttachmentClassifications = true;
     }
-    if (joinWithAttachments || joinWithClassifications || joinWithAttachmentClassifications) {
+    if (joinWithAttachments || joinWithClassifications) {
       useDistinctKeyword = true;
     }
   }
@@ -1597,7 +1597,7 @@ public class TaskQueryImpl implements TaskQuery {
     } else if (this.accessIdIn == null) {
       String[] accessIds = new String[0];
       List<String> ucAccessIds = CurrentUserContext.getAccessIds();
-      if (ucAccessIds != null && !ucAccessIds.isEmpty()) {
+      if (!ucAccessIds.isEmpty()) {
         accessIds = new String[ucAccessIds.size()];
         accessIds = ucAccessIds.toArray(accessIds);
       }
