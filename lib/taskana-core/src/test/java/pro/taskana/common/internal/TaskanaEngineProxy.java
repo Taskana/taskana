@@ -10,11 +10,11 @@ import pro.taskana.common.api.TaskanaEngine;
  *
  * @author bbr
  */
-public class TaskanaEngineProxyForTest {
+public class TaskanaEngineProxy {
 
   private final InternalTaskanaEngine engine;
 
-  public TaskanaEngineProxyForTest(TaskanaEngine taskanaEngine) throws Exception {
+  public TaskanaEngineProxy(TaskanaEngine taskanaEngine) throws Exception {
     Field internal = TaskanaEngineImpl.class.getDeclaredField("internalTaskanaEngineImpl");
     internal.setAccessible(true);
     engine = (InternalTaskanaEngine) internal.get(taskanaEngine);

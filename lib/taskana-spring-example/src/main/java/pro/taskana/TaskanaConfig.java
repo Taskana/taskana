@@ -36,11 +36,7 @@ public class TaskanaConfig {
   @Bean
   @Primary
   public DataSource dataSource(DataSourceProperties properties) {
-    DataSource dataSource = properties.initializeDataSourceBuilder().build();
-    // if TaskanaEngineImpl runs with SpringManagedTransactionFactory, then
-    // there is no need to wrap the dataSource into TransactionAwareDataSourceProxy ...
-    // return new TransactionAwareDataSourceProxy(dataSource);
-    return dataSource;
+    return properties.initializeDataSourceBuilder().build();
   }
 
   @Bean
@@ -53,16 +49,12 @@ public class TaskanaConfig {
   @Bean
   public SpringTaskanaEngineConfiguration taskanaEngineConfiguration(DataSource dataSource)
       throws SQLException {
-    SpringTaskanaEngineConfiguration taskanaEngineConfiguration =
-        new SpringTaskanaEngineConfiguration(dataSource, true, false, schemaName);
-    return taskanaEngineConfiguration;
+    return new SpringTaskanaEngineConfiguration(dataSource, true, false, schemaName);
   }
 
   @Bean
   public TaskanaEngine taskanaEngine(SpringTaskanaEngineConfiguration taskanaEngineConfiguration) {
-    TaskanaEngine taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
-    // taskanaEngine.setConnectionManagementMode(TaskanaEngine.ConnectionManagementMode.EXPLICIT);
-    return taskanaEngine;
+    return taskanaEngineConfiguration.buildTaskanaEngine();
   }
 
   @Bean
@@ -85,7 +77,6 @@ public class TaskanaConfig {
     return new ExampleBootstrap();
   }
 
-  /** TODO. */
   @Profile("inmemorydb")
   @Configuration
   @PropertySource("classpath:customdb.properties")

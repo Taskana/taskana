@@ -119,7 +119,7 @@ class TaskanaConfigAccTest extends TaskanaEngineImpl {
     Path file = Files.createFile(Paths.get(System.getProperty("user.home") + filename));
     List<String> lines =
         Stream.of(
-                "taskana.roles.Admin =Holger|Stefan",
+                "taskana.roles.admin =Holger|Stefan",
                 "taskana.roles.businessadmin  = ebe  | konstantin ",
                 "taskana.roles.user = nobody")
             .collect(Collectors.toList());

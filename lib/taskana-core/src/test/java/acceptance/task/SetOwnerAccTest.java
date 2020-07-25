@@ -17,7 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
-import pro.taskana.common.internal.TaskanaEngineProxyForTest;
+import pro.taskana.common.internal.TaskanaEngineProxy;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
@@ -157,7 +157,7 @@ class SetOwnerAccTest extends AbstractAccTest {
   void testSetOwnerWithAllTasksAndVariousExceptions() throws Exception {
     resetDb(false);
     List<TaskSummary> allTaskSummaries =
-        new TaskanaEngineProxyForTest(taskanaEngine)
+        new TaskanaEngineProxy(taskanaEngine)
             .getEngine()
             .runAsAdmin(() -> taskanaEngine.getTaskService().createTaskQuery().list());
     List<String> allTaskIds =

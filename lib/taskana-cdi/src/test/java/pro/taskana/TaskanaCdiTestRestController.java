@@ -18,11 +18,10 @@ import pro.taskana.task.api.models.Task;
 import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.api.models.Workbasket;
 
-/** TODO. */
 @Path("/test")
-public class TaskanaRestTest {
+public class TaskanaCdiTestRestController {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaRestTest.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaCdiTestRestController.class);
 
   @EJB private TaskanaEjb taskanaEjb;
 

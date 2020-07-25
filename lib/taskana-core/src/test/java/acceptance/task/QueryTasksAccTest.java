@@ -35,7 +35,7 @@ import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.internal.TaskanaEngineProxyForTest;
+import pro.taskana.common.internal.TaskanaEngineProxy;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.common.internal.util.Triplet;
@@ -353,7 +353,7 @@ class QueryTasksAccTest extends AbstractAccTest {
 
     assertThat(createdTask).isNotNull();
     // query the task by custom attributes
-    TaskanaEngineProxyForTest engineProxy = new TaskanaEngineProxyForTest(taskanaEngine);
+    TaskanaEngineProxy engineProxy = new TaskanaEngineProxy(taskanaEngine);
     try {
       SqlSession session = engineProxy.getSqlSession();
       Configuration config = session.getConfiguration();

@@ -54,7 +54,7 @@ public interface BaseQuery<T, U extends Enum<U> & QueryColumnName> {
    */
   default List<T> listPage(int pageNumber, int pageSize) {
     int offset = (pageNumber < 1) ? 0 : ((pageNumber - 1) * pageSize);
-    int limit = (pageSize < 0) ? 0 : pageSize;
+    int limit = Math.max(pageSize, 0);
     return list(offset, limit);
   }
 

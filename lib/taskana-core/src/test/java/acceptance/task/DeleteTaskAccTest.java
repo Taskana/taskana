@@ -15,7 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
-import pro.taskana.common.internal.TaskanaEngineProxyForTest;
+import pro.taskana.common.internal.TaskanaEngineProxy;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
@@ -50,7 +50,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
-    TaskanaEngineProxyForTest engineProxy = new TaskanaEngineProxyForTest(taskanaEngine);
+    TaskanaEngineProxy engineProxy = new TaskanaEngineProxy(taskanaEngine);
     AttachmentMapper attachmentMapper =
         engineProxy.getEngine().getSqlSession().getMapper(AttachmentMapper.class);
 
@@ -92,7 +92,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
-    TaskanaEngineProxyForTest engineProxy = new TaskanaEngineProxyForTest(taskanaEngine);
+    TaskanaEngineProxy engineProxy = new TaskanaEngineProxy(taskanaEngine);
     AttachmentMapper attachmentMapper =
         engineProxy.getSqlSession().getMapper(AttachmentMapper.class);
 

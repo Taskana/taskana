@@ -179,7 +179,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     Task createdTask = TASK_SERVICE.createTask(newTask);
 
     assertThat(createdTask).isNotNull();
-    assertThat("other_user").isEqualTo(createdTask.getOwner());
+    assertThat(createdTask.getOwner()).isEqualTo("other_user");
 
     Instant beforeForceClaim = Instant.now();
     Task taskAfterClaim = TASK_SERVICE.forceClaim(createdTask.getId());
@@ -233,12 +233,12 @@ class CompleteTaskAccTest extends AbstractAccTest {
     Task createdTask = TASK_SERVICE.createTask(newTask);
 
     assertThat(createdTask).isNotNull();
-    assertThat(TaskState.READY).isEqualTo(createdTask.getState());
+    assertThat(createdTask.getState()).isSameAs(TaskState.READY);
 
     createdTask = TASK_SERVICE.cancelClaim(createdTask.getId());
 
     assertThat(createdTask).isNotNull();
-    assertThat(TaskState.READY).isEqualTo(createdTask.getState());
+    assertThat(createdTask.getState()).isSameAs(TaskState.READY);
   }
 
   @WithAccessId(user = "admin")

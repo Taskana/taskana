@@ -14,7 +14,6 @@ import pro.taskana.task.api.models.Task;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
-/** TODO. */
 @Stateless
 public class TaskanaEjb {
 

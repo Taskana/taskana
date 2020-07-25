@@ -105,7 +105,7 @@ class ServiceLevelHandler {
     boolean onlyPriority = false;
     if (newTaskImpl.getClassificationSummary() == null
         || newTaskImpl.getClassificationSummary().getServiceLevel() == null) {
-      newTaskImpl = setPlannedDueOnMissingServiceLevel(newTaskImpl);
+      setPlannedDueOnMissingServiceLevel(newTaskImpl);
       onlyPriority = true;
     }
 
@@ -154,7 +154,7 @@ class ServiceLevelHandler {
     return getFinalPrioDurationOfTask(resolvedClassifications, onlyPriority);
   }
 
-  private TaskImpl setPlannedDueOnMissingServiceLevel(TaskImpl task) {
+  private void setPlannedDueOnMissingServiceLevel(TaskImpl task) {
     Instant now = Instant.now();
     if (task.getDue() == null && task.getPlanned() == null) {
       task.setDue(now);
@@ -164,7 +164,6 @@ class ServiceLevelHandler {
     } else {
       task.setPlanned(task.getDue());
     }
-    return task;
   }
 
   private void updateTaskPriorityOnClassificationUpdate(

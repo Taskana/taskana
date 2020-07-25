@@ -125,9 +125,10 @@ class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
     Path file = Files.createFile(Paths.get(System.getProperty("user.home") + filename));
     List<String> lines =
         Arrays.asList(
-            "taskana.roles.Admin =uSeR " + delimiter + "name=Username,Organisation=novatec",
+            "taskana.roles.admin =uSeR " + delimiter + "name=Username,Organisation=novatec",
             "  taskana.roles.businessadmin  = name=user2, ou = bpm " + delimiter + " user3 ",
-            " taskana.roles.user = ");
+            " taskana.roles.user = ",
+            "taskana.roles.taskadmin= taskadmin");
     Files.write(file, lines, StandardCharsets.UTF_8);
     return file.toString();
   }
@@ -143,9 +144,10 @@ class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
     Path file = Files.createFile(Paths.get(System.getProperty("user.home") + filename));
     List<String> lines =
         Arrays.asList(
-            "taskana.roles.Admin =uSeR|Username",
+            "taskana.roles.admin =uSeR|Username",
             "  taskana.roles.businessadmin  = user2  | user3 ",
-            " taskana.roles.user = nobody");
+            " taskana.roles.user = nobody",
+            "taskana.roles.taskadmin= taskadmin");
 
     Files.write(file, lines, StandardCharsets.UTF_8);
 

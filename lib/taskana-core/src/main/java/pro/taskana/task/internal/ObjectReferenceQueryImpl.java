@@ -28,14 +28,14 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
   private static final String LINK_TO_VALUEMAPPER =
       "pro.taskana.task.internal.TaskQueryMapper.queryObjectReferenceColumnValues";
   private static final Logger LOGGER = LoggerFactory.getLogger(ObjectReferenceQueryImpl.class);
-  private InternalTaskanaEngine taskanaEngine;
+  private final InternalTaskanaEngine taskanaEngine;
+  private final List<String> orderBy;
   private ObjectReferenceQueryColumnName columnName;
   private String[] company;
   private String[] system;
   private String[] systemInstance;
   private String[] type;
   private String[] value;
-  private List<String> orderBy;
 
   ObjectReferenceQueryImpl(InternalTaskanaEngine taskanaEngine) {
     this.taskanaEngine = taskanaEngine;
@@ -98,15 +98,13 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
       RowBounds rowBounds = new RowBounds(offset, limit);
       result = taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
       return result;
-    } catch (Exception e) {
-      if (e instanceof PersistenceException) {
-        if (e.getMessage().contains("ERRORCODE=-4470")) {
-          TaskanaRuntimeException ex =
-              new TaskanaRuntimeException(
-                  "The offset beginning was set over the amount of result-rows.", e.getCause());
-          ex.setStackTrace(e.getStackTrace());
-          throw ex;
-        }
+    } catch (PersistenceException e) {
+      if (e.getMessage().contains("ERRORCODE=-4470")) {
+        TaskanaRuntimeException ex =
+            new TaskanaRuntimeException(
+                "The offset beginning was set over the amount of result-rows.", e.getCause());
+        ex.setStackTrace(e.getStackTrace());
+        throw ex;
       }
       throw e;
     } finally {
