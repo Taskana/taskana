@@ -80,7 +80,7 @@ class TaskCustomFieldValueReportBuilderImplTest {
         .thenReturn(expectedResult);
 
     final TaskCustomFieldValueReport actualResult =
-        cut.createCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
+        cut.createTaskCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
             .workbasketIdIn(workbasketIds)
             .stateIn(states)
             .classificationCategoryIn(categories)
@@ -142,7 +142,7 @@ class TaskCustomFieldValueReportBuilderImplTest {
         .thenReturn(expectedResult);
 
     final TaskCustomFieldValueReport actualResult =
-        cut.createCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
+        cut.createTaskCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
             .workbasketIdIn(workbasketIds)
             .stateIn(states)
             .classificationCategoryIn(categories)
@@ -205,7 +205,7 @@ class TaskCustomFieldValueReportBuilderImplTest {
         .thenReturn(expectedResult);
 
     final List<String> actualResult =
-        cut.createCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
+        cut.createTaskCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
             .workbasketIdIn(workbasketIds)
             .stateIn(states)
             .classificationCategoryIn(categories)

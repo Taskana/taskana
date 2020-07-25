@@ -36,7 +36,7 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
     ThrowingCallable call =
         () ->
             monitorService
-                .createCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
+                .createTaskCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
                 .listTaskIdsForSelectedItems(selectedItems);
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
@@ -70,7 +70,7 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
 
     List<String> ids =
         monitorService
-            .createCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
+            .createTaskCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .listTaskIdsForSelectedItems(selectedItems);
@@ -118,7 +118,7 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
 
     List<String> ids =
         monitorService
-            .createCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
+            .createTaskCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .workbasketIdIn(workbasketIds)
@@ -160,7 +160,7 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
 
     List<String> ids =
         monitorService
-            .createCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
+            .createTaskCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .stateIn(Collections.singletonList(TaskState.READY))
@@ -207,7 +207,7 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
 
     List<String> ids =
         monitorService
-            .createCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
+            .createTaskCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .classificationCategoryIn(categories)
@@ -248,7 +248,7 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
 
     List<String> ids =
         monitorService
-            .createCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
+            .createTaskCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .domainIn(Collections.singletonList("DOMAIN_A"))
@@ -291,7 +291,7 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
 
     List<String> ids =
         monitorService
-            .createCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
+            .createTaskCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .customAttributeFilterIn(customAttributeFilter)

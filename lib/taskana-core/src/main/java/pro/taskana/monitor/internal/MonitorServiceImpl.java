@@ -44,7 +44,7 @@ public class MonitorServiceImpl implements MonitorService {
   }
 
   @Override
-  public TaskCustomFieldValueReport.Builder createCustomFieldValueReportBuilder(
+  public TaskCustomFieldValueReport.Builder createTaskCustomFieldValueReportBuilder(
       TaskCustomField taskCustomField) {
     return new CustomFieldValueReportBuilderImpl(taskanaEngine, monitorMapper, taskCustomField);
   }

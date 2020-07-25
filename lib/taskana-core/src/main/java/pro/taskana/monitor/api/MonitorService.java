@@ -44,7 +44,7 @@ public interface MonitorService {
    * @param taskCustomField the customField whose values should appear in the report
    * @return a {@link TaskCustomFieldValueReport.Builder}
    */
-  TaskCustomFieldValueReport.Builder createCustomFieldValueReportBuilder(
+  TaskCustomFieldValueReport.Builder createTaskCustomFieldValueReportBuilder(
       TaskCustomField taskCustomField);
 
   /**
