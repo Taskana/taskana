@@ -108,11 +108,13 @@ public interface TimeIntervalReportBuilder<
    * Returns a list of all taskIds of the report that are in the list of selected items.
    *
    * @param selectedItems a list of selectedItems
+   * @param timestamp the task timestamp of interest
    * @return the list of all taskIds
    * @throws InvalidArgumentException if the column headers are not initialized
    * @throws NotAuthorizedException if the user has no rights to access the monitor
    */
-  List<String> listTaskIdsForSelectedItems(List<SelectedItem> selectedItems)
+  List<String> listTaskIdsForSelectedItems(
+      List<SelectedItem> selectedItems, TaskTimestamp timestamp)
       throws NotAuthorizedException, InvalidArgumentException;
 
   /**
@@ -125,6 +127,14 @@ public interface TimeIntervalReportBuilder<
   List<String> listCustomAttributeValuesForCustomAttributeName(TaskCustomField taskCustomField)
       throws NotAuthorizedException;
 
+  /**
+   * Builds the given report.
+   *
+   * @param timestamp The task timestamp of interest
+   * @return The build report
+   * @throws NotAuthorizedException if the user has no rights to access the monitor
+   * @throws InvalidArgumentException when an error occurs
+   */
   Report<I, H> buildReport(TaskTimestamp timestamp)
       throws NotAuthorizedException, InvalidArgumentException;
 }

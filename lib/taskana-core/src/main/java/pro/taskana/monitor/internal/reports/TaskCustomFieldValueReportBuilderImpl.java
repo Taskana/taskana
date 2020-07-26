@@ -18,16 +18,16 @@ import pro.taskana.monitor.internal.preprocessor.DaysToWorkingDaysReportPreProce
 import pro.taskana.task.api.TaskCustomField;
 
 /** The implementation of CustomFieldValueReportBuilder. */
-public class CustomFieldValueReportBuilderImpl
+public class TaskCustomFieldValueReportBuilderImpl
     extends TimeIntervalReportBuilderImpl<Builder, MonitorQueryItem, TimeIntervalColumnHeader>
     implements TaskCustomFieldValueReport.Builder {
 
   private static final Logger LOGGER =
-      LoggerFactory.getLogger(CustomFieldValueReportBuilderImpl.class);
+      LoggerFactory.getLogger(TaskCustomFieldValueReportBuilderImpl.class);
 
   private final TaskCustomField taskCustomField;
 
-  public CustomFieldValueReportBuilderImpl(
+  public TaskCustomFieldValueReportBuilderImpl(
       InternalTaskanaEngine taskanaEngine,
       MonitorMapper monitorMapper,
       TaskCustomField taskCustomField) {

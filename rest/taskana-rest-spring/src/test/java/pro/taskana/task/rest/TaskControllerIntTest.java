@@ -527,7 +527,7 @@ class TaskControllerIntTest {
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent())
         .extracting(TaskSummaryRepresentationModel::getTaskId)
-        .containsOnly("TKI:000000000000000000000000000000000013");
+        .containsExactlyInAnyOrder("TKI:000000000000000000000000000000000013");
 
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
 

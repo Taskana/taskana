@@ -354,11 +354,8 @@ class ClassificationReportBuilderImplTest {
     final List<TimeIntervalColumnHeader> columnHeaders =
         Collections.singletonList(new TimeIntervalColumnHeader(0, 0));
 
-    SelectedItem selectedItem = new SelectedItem();
-    selectedItem.setKey("EXTERN");
-    selectedItem.setLowerAgeLimit(1);
-    selectedItem.setUpperAgeLimit(5);
-    final List<SelectedItem> selectedItems = Collections.singletonList(selectedItem);
+    final List<SelectedItem> selectedItems =
+        Collections.singletonList(new SelectedItem("EXTERN", null, 1, 5));
 
     final List<String> expectedResult =
         Collections.singletonList("TKI:000000000000000000000000000000000001");
@@ -371,6 +368,7 @@ class ClassificationReportBuilderImplTest {
             excludedClassificationIds,
             customAttributeFilter,
             "CLASSIFICATION_KEY",
+            TaskTimestamp.DUE,
             selectedItems,
             false))
         .thenReturn(expectedResult);
@@ -385,7 +383,7 @@ class ClassificationReportBuilderImplTest {
             .excludedClassificationIdIn(excludedClassificationIds)
             .customAttributeFilterIn(customAttributeFilter)
             .withColumnHeaders(columnHeaders)
-            .listTaskIdsForSelectedItems(selectedItems);
+            .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
 
     verify(internalTaskanaEngineMock).openConnection();
     verify(taskanaEngineMock).checkRoleMembership(any());
@@ -394,24 +392,32 @@ class ClassificationReportBuilderImplTest {
 
     verify(monitorMapperMock)
         .getTaskIdsForSelectedItems(
-            any(), any(), any(), any(), any(), any(), any(), any(), any(), eq(false));
+            any(),
+            any(),
+            any(),
+            any(),
+            any(),
+            any(),
+            any(),
+            any(),
+            eq(TaskTimestamp.DUE),
+            any(),
+            eq(false));
     verify(internalTaskanaEngineMock).returnConnection();
     verify(taskanaEngineMock).getClassificationService();
     verifyNoMoreInteractions(mocks);
 
-    assertThat(actualResult).isNotNull();
     assertThat(actualResult).isEqualTo(expectedResult);
   }
 
   @Test
   void testGetTaskIdsForSelectedItemsIsEmptyResult() throws Exception {
-    SelectedItem selectedItem = new SelectedItem();
-    selectedItem.setKey("GIBTSNED");
-    List<SelectedItem> selectedItems = Collections.singletonList(selectedItem);
+    List<SelectedItem> selectedItems =
+        Collections.singletonList(new SelectedItem("GIBTSNED", null, 0, 0));
     List<String> result =
         cut.createClassificationReportBuilder()
             .workbasketIdIn(Collections.singletonList("DieGibtsEhNed"))
-            .listTaskIdsForSelectedItems(selectedItems);
+            .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
     assertThat(result).isNotNull();
   }
 
@@ -428,11 +434,6 @@ class ClassificationReportBuilderImplTest {
     customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
     final List<TimeIntervalColumnHeader> columnHeaders =
         Collections.singletonList(new TimeIntervalColumnHeader(0, 0));
-
-    SelectedItem selectedItem = new SelectedItem();
-    selectedItem.setKey("EXTERN");
-    selectedItem.setLowerAgeLimit(1);
-    selectedItem.setUpperAgeLimit(5);
 
     final List<String> expectedResult = Collections.singletonList("Geschaeftsstelle A");
     when(monitorMapperMock.getCustomAttributeValuesForReport(

@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +15,7 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.monitor.api.SelectedItem;
+import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.ClassificationReport;
 import pro.taskana.monitor.api.reports.TimeIntervalReportBuilder;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
@@ -113,7 +115,8 @@ abstract class TimeIntervalReportBuilderImpl<
   }
 
   @Override
-  public List<String> listTaskIdsForSelectedItems(List<SelectedItem> selectedItems)
+  public List<String> listTaskIdsForSelectedItems(
+      List<SelectedItem> selectedItems, TaskTimestamp timestamp)
       throws NotAuthorizedException, InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
@@ -147,6 +150,7 @@ abstract class TimeIntervalReportBuilderImpl<
           this.excludedClassificationIds,
           this.customAttributeFilter,
           determineGroupedBy(),
+          timestamp,
           selectedItems,
           joinWithAttachments);
     } finally {
@@ -157,8 +161,7 @@ abstract class TimeIntervalReportBuilderImpl<
 
   @Override
   public List<String> listCustomAttributeValuesForCustomAttributeName(
-      TaskCustomField taskCustomField)
-      throws NotAuthorizedException {
+      TaskCustomField taskCustomField) throws NotAuthorizedException {
     LOGGER.debug(
         "entry to listCustomAttributeValuesForCustomAttributeName(customField = {}), this = {}",
         taskCustomField,
@@ -190,13 +193,15 @@ abstract class TimeIntervalReportBuilderImpl<
       List<SelectedItem> selectedItems, List<H> columnHeaders) throws InvalidArgumentException {
     WorkingDaysToDaysReportConverter instance =
         WorkingDaysToDaysReportConverter.initialize(columnHeaders, converter);
-    for (SelectedItem selectedItem : selectedItems) {
-      selectedItem.setLowerAgeLimit(
-          Collections.min(instance.convertWorkingDaysToDays(selectedItem.getLowerAgeLimit())));
-      selectedItem.setUpperAgeLimit(
-          Collections.max(instance.convertWorkingDaysToDays(selectedItem.getUpperAgeLimit())));
-    }
-    return selectedItems;
+    return selectedItems.stream()
+        .map(
+            s ->
+                new SelectedItem(
+                    s.getKey(),
+                    s.getSubKey(),
+                    Collections.min(instance.convertWorkingDaysToDays(s.getLowerAgeLimit())),
+                    Collections.max(instance.convertWorkingDaysToDays(s.getUpperAgeLimit()))))
+        .collect(Collectors.toList());
   }
 
   private boolean subKeyIsSet(List<SelectedItem> selectedItems) {

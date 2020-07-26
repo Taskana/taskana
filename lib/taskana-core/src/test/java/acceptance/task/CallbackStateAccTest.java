@@ -270,7 +270,7 @@ class CallbackStateAccTest extends AbstractAccTest {
     assertThat(failedTaskIds)
         .hasSize(2)
         .doesNotContain(createdTask1.getExternalId())
-        .containsOnly(createdTask2.getExternalId(), createdTask3.getExternalId());
+        .containsExactlyInAnyOrder(createdTask2.getExternalId(), createdTask3.getExternalId());
   }
 
   @WithAccessId(user = "admin")
@@ -305,7 +305,7 @@ class CallbackStateAccTest extends AbstractAccTest {
             externalIds, CallbackState.CALLBACK_PROCESSING_REQUIRED);
     assertThat(bulkResult.containsErrors()).isTrue();
     List<String> failedTaskIds = bulkResult.getFailedIds();
-    assertThat(failedTaskIds).containsOnly(createdTask3.getExternalId());
+    assertThat(failedTaskIds).containsExactlyInAnyOrder(createdTask3.getExternalId());
   }
 
   @WithAccessId(user = "admin")

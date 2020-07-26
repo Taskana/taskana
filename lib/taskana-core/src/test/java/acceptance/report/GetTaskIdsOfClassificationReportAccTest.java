@@ -1,94 +1,103 @@
 package acceptance.report;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.ThrowingConsumer;
 
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.monitor.api.SelectedItem;
+import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 
 /** Acceptance test for all "get task ids of classification report" scenarios. */
 @ExtendWith(JaasExtension.class)
 class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
 
+  private static final MonitorService MONITOR_SERVICE = taskanaEngine.getMonitorService();
+
+  private static final SelectedItem L_10000 = new SelectedItem("L10000", null, 0, 0);
+  private static final SelectedItem L_10000_1 =
+      new SelectedItem("L10000", null, Integer.MIN_VALUE, -11);
+  private static final SelectedItem L_30000 =
+      new SelectedItem("L30000", null, Integer.MIN_VALUE, -11);
+
   @Test
   void testRoleCheck() {
-    final MonitorService monitorService = taskanaEngine.getMonitorService();
-
-    final List<SelectedItem> selectedItems = new ArrayList<>();
-
-    SelectedItem s1 = new SelectedItem();
-    s1.setKey("L10000");
-    s1.setLowerAgeLimit(0);
-    s1.setUpperAgeLimit(0);
-    selectedItems.add(s1);
-
-    SelectedItem s2 = new SelectedItem();
-    s2.setKey("L10000");
-    s2.setLowerAgeLimit(Integer.MIN_VALUE);
-    s2.setUpperAgeLimit(-11);
-    selectedItems.add(s2);
-
-    SelectedItem s3 = new SelectedItem();
-    s3.setKey("L30000");
-    s3.setLowerAgeLimit(Integer.MIN_VALUE);
-    s3.setUpperAgeLimit(-11);
-    selectedItems.add(s3);
+    List<SelectedItem> selectedItems = Arrays.asList(L_10000, L_10000_1, L_30000);
 
     ThrowingCallable call =
-        () -> {
-          monitorService
-              .createClassificationReportBuilder()
-              .listTaskIdsForSelectedItems(selectedItems);
-        };
+        () ->
+            MONITOR_SERVICE
+                .createClassificationReportBuilder()
+                .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
+  }
+
+  @WithAccessId(user = "monitor")
+  @TestFactory
+  Stream<DynamicTest> should_NotThrowError_When_buildReportForTaskState() {
+    Iterator<TaskTimestamp> iterator = Arrays.stream(TaskTimestamp.values()).iterator();
+
+    ThrowingConsumer<TaskTimestamp> test =
+        timestamp -> {
+          ThrowingCallable callable =
+              () ->
+                  MONITOR_SERVICE
+                      .createClassificationReportBuilder()
+                      .listTaskIdsForSelectedItems(Collections.singletonList(L_10000), timestamp);
+          assertThatCode(callable).doesNotThrowAnyException();
+        };
+
+    return DynamicTest.stream(iterator, t -> "for " + t, test);
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_selectCompletedItems_When_CompletedTimeStampIsRequested() throws Exception {
+    List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+    List<SelectedItem> selectedItems = Arrays.asList(L_10000, L_10000_1, L_30000);
+
+    List<String> ids =
+        MONITOR_SERVICE
+            .createClassificationReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .inWorkingDays()
+            .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.COMPLETED);
+
+    assertThat(ids).containsExactlyInAnyOrder("TKI:000000000000000000000000000000000001");
   }
 
   @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfClassificationReport() throws Exception {
-    final MonitorService monitorService = taskanaEngine.getMonitorService();
-
-    final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
-
-    final List<SelectedItem> selectedItems = new ArrayList<>();
-
-    SelectedItem s1 = new SelectedItem();
-    s1.setKey("L10000");
-    s1.setLowerAgeLimit(0);
-    s1.setUpperAgeLimit(0);
-    selectedItems.add(s1);
-
-    SelectedItem s2 = new SelectedItem();
-    s2.setKey("L10000");
-    s2.setLowerAgeLimit(Integer.MIN_VALUE);
-    s2.setUpperAgeLimit(-11);
-    selectedItems.add(s2);
-
-    SelectedItem s3 = new SelectedItem();
-    s3.setKey("L30000");
-    s3.setLowerAgeLimit(Integer.MIN_VALUE);
-    s3.setUpperAgeLimit(-11);
-    selectedItems.add(s3);
+    List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+    List<SelectedItem> selectedItems = Arrays.asList(L_10000, L_10000_1, L_30000);
 
     List<String> ids =
-        monitorService
+        MONITOR_SERVICE
             .createClassificationReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
-            .listTaskIdsForSelectedItems(selectedItems);
+            .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
 
     assertThat(ids)
-        .containsOnly(
+        .containsExactlyInAnyOrder(
             "TKI:000000000000000000000000000000000001",
             "TKI:000000000000000000000000000000000004",
             "TKI:000000000000000000000000000000000007",
@@ -100,85 +109,42 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfClassificationReportWithAttachments() throws Exception {
-    final MonitorService monitorService = taskanaEngine.getMonitorService();
-
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    final List<SelectedItem> selectedItems = new ArrayList<>();
-
-    SelectedItem s1 = new SelectedItem();
-    s1.setKey("L10000");
-    s1.setSubKey("L11000");
-    s1.setLowerAgeLimit(0);
-    s1.setUpperAgeLimit(0);
-    selectedItems.add(s1);
-
-    SelectedItem s2 = new SelectedItem();
-    s2.setKey("L10000");
-    s2.setSubKey("L11000");
-    s2.setLowerAgeLimit(Integer.MIN_VALUE);
-    s2.setUpperAgeLimit(-11);
-    selectedItems.add(s2);
-
-    SelectedItem s3 = new SelectedItem();
-    s3.setKey("L30000");
-    s3.setLowerAgeLimit(Integer.MIN_VALUE);
-    s3.setUpperAgeLimit(-11);
-    selectedItems.add(s3);
+    final List<SelectedItem> selectedItems =
+        Arrays.asList(
+            new SelectedItem("L10000", "L11000", 0, 0),
+            new SelectedItem("L10000", "L11000", Integer.MIN_VALUE, -11));
 
     List<String> ids =
-        monitorService
+        MONITOR_SERVICE
             .createClassificationReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
-            .listTaskIdsForSelectedItems(selectedItems);
+            .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
 
     assertThat(ids)
-        .containsOnly(
+        .containsExactlyInAnyOrder(
             "TKI:000000000000000000000000000000000001", "TKI:000000000000000000000000000000000033");
   }
 
   @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfClassificationReportWithDomainFilter() throws Exception {
-    final MonitorService monitorService = taskanaEngine.getMonitorService();
-
-    final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
-
-    final List<SelectedItem> selectedItems = new ArrayList<>();
-
-    SelectedItem s1 = new SelectedItem();
-    s1.setKey("L10000");
-    s1.setLowerAgeLimit(0);
-    s1.setUpperAgeLimit(0);
-    selectedItems.add(s1);
-
-    SelectedItem s2 = new SelectedItem();
-    s2.setKey("L10000");
-    s2.setLowerAgeLimit(Integer.MIN_VALUE);
-    s2.setUpperAgeLimit(-11);
-    selectedItems.add(s2);
-
-    SelectedItem s3 = new SelectedItem();
-    s3.setKey("L30000");
-    s3.setLowerAgeLimit(Integer.MIN_VALUE);
-    s3.setUpperAgeLimit(-11);
-    selectedItems.add(s3);
-
-    List<String> domains = new ArrayList<>();
-    domains.add("DOMAIN_B");
-    domains.add("DOMAIN_C");
+    List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+    List<SelectedItem> selectedItems = Arrays.asList(L_10000, L_10000_1, L_30000);
+    List<String> domains = Arrays.asList("DOMAIN_B", "DOMAIN_C");
 
     List<String> ids =
-        monitorService
+        MONITOR_SERVICE
             .createClassificationReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .domainIn(domains)
-            .listTaskIdsForSelectedItems(selectedItems);
+            .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
 
     assertThat(ids)
-        .containsOnly(
+        .containsExactlyInAnyOrder(
             "TKI:000000000000000000000000000000000001",
             "TKI:000000000000000000000000000000000004",
             "TKI:000000000000000000000000000000000006");

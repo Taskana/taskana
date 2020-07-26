@@ -144,7 +144,7 @@ class JaasExtensionTest {
   @Test
   void should_SetJaasSubjectWithGroups_When_AnnotationExistsWithGroups_On_Test() {
     assertThat(CurrentUserContext.getUserid()).isEqualTo("user");
-    assertThat(CurrentUserContext.getGroupIds()).containsOnly("group1", "group2");
+    assertThat(CurrentUserContext.getGroupIds()).containsExactlyInAnyOrder("group1", "group2");
   }
 
   @WithAccessId(user = "user")
@@ -217,7 +217,7 @@ class JaasExtensionTest {
   @TestTemplate
   void should_InjectCorrectAccessId_When_AnnotationExists_On_TestTemplate(WithAccessId accessId) {
     assertThat(accessId.user()).isEqualTo("testtemplate1");
-    assertThat(accessId.groups()).containsOnly("abc");
+    assertThat(accessId.groups()).containsExactly("abc");
   }
 
   // endregion

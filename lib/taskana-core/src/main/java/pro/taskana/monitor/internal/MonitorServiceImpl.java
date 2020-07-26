@@ -10,7 +10,7 @@ import pro.taskana.monitor.api.reports.TimestampReport;
 import pro.taskana.monitor.api.reports.WorkbasketReport;
 import pro.taskana.monitor.internal.reports.ClassificationCategoryReportBuilderImpl;
 import pro.taskana.monitor.internal.reports.ClassificationReportBuilderImpl;
-import pro.taskana.monitor.internal.reports.CustomFieldValueReportBuilderImpl;
+import pro.taskana.monitor.internal.reports.TaskCustomFieldValueReportBuilderImpl;
 import pro.taskana.monitor.internal.reports.TaskStatusReportBuilderImpl;
 import pro.taskana.monitor.internal.reports.TimestampReportBuilderImpl;
 import pro.taskana.monitor.internal.reports.WorkbasketReportBuilderImpl;
@@ -46,7 +46,7 @@ public class MonitorServiceImpl implements MonitorService {
   @Override
   public TaskCustomFieldValueReport.Builder createTaskCustomFieldValueReportBuilder(
       TaskCustomField taskCustomField) {
-    return new CustomFieldValueReportBuilderImpl(taskanaEngine, monitorMapper, taskCustomField);
+    return new TaskCustomFieldValueReportBuilderImpl(taskanaEngine, monitorMapper, taskCustomField);
   }
 
   @Override

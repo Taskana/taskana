@@ -99,10 +99,10 @@ class TaskModelsCloneTest {
 
     assertThat(dummyTaskCloned.getAttachments())
         .extracting(AttachmentSummary::getId)
-        .containsOnly((String) null);
+        .containsOnlyNulls();
     assertThat(dummyTaskCloned.getAttachments())
         .extracting(AttachmentSummary::getTaskId)
-        .containsOnly((String) null);
+        .containsOnlyNulls();
   }
 
   @Test

@@ -1,17 +1,23 @@
 package acceptance.report;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.ThrowingConsumer;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
@@ -19,6 +25,7 @@ import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.monitor.api.SelectedItem;
+import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
@@ -27,56 +34,74 @@ import pro.taskana.task.api.TaskState;
 @ExtendWith(JaasExtension.class)
 class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccTest {
 
+  private static final MonitorService MONITOR_SERVICE = taskanaEngine.getMonitorService();
+
+  private static final SelectedItem EXTERN = new SelectedItem("EXTERN", null, -5, -2);
+  private static final SelectedItem AUTOMATIC =
+      new SelectedItem("AUTOMATIC", null, Integer.MIN_VALUE, -11);
+  private static final SelectedItem MANUAL = new SelectedItem("MANUAL", null, 0, 0);
+
   @Test
   void testRoleCheck() {
-    MonitorService monitorService = taskanaEngine.getMonitorService();
-
-    List<SelectedItem> selectedItems = new ArrayList<>();
     ThrowingCallable call =
-        () -> {
-          monitorService
-              .createClassificationCategoryReportBuilder()
-              .listTaskIdsForSelectedItems(selectedItems);
-        };
+        () ->
+            MONITOR_SERVICE
+                .createClassificationCategoryReportBuilder()
+                .listTaskIdsForSelectedItems(Collections.emptyList(), TaskTimestamp.DUE);
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
+  }
+
+  @WithAccessId(user = "monitor")
+  @TestFactory
+  Stream<DynamicTest> should_NotThrowError_When_buildReportForTaskState() {
+    Iterator<TaskTimestamp> iterator = Arrays.stream(TaskTimestamp.values()).iterator();
+
+    ThrowingConsumer<TaskTimestamp> test =
+        timestamp -> {
+          ThrowingCallable callable =
+              () ->
+                  MONITOR_SERVICE
+                      .createClassificationCategoryReportBuilder()
+                      .listTaskIdsForSelectedItems(Collections.singletonList(EXTERN), timestamp);
+          assertThatCode(callable).doesNotThrowAnyException();
+        };
+
+    return DynamicTest.stream(iterator, t -> "for " + t, test);
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_selectCompletedItems_When_CompletedTimeStampIsRequested() throws Exception {
+    final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+
+    final List<SelectedItem> selectedItems = Arrays.asList(EXTERN, AUTOMATIC, MANUAL);
+
+    List<String> ids =
+        MONITOR_SERVICE
+            .createClassificationCategoryReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .inWorkingDays()
+            .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.COMPLETED);
+
+    assertThat(ids).containsExactly("TKI:000000000000000000000000000000000032");
   }
 
   @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfCategoryReport() throws Exception {
-    final MonitorService monitorService = taskanaEngine.getMonitorService();
-
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    final List<SelectedItem> selectedItems = new ArrayList<>();
-
-    SelectedItem s1 = new SelectedItem();
-    s1.setKey("EXTERN");
-    s1.setLowerAgeLimit(-5);
-    s1.setUpperAgeLimit(-2);
-    selectedItems.add(s1);
-
-    SelectedItem s2 = new SelectedItem();
-    s2.setKey("AUTOMATIC");
-    s2.setLowerAgeLimit(Integer.MIN_VALUE);
-    s2.setUpperAgeLimit(-11);
-    selectedItems.add(s2);
-
-    SelectedItem s3 = new SelectedItem();
-    s3.setKey("MANUAL");
-    s3.setLowerAgeLimit(0);
-    s3.setUpperAgeLimit(0);
-    selectedItems.add(s3);
+    final List<SelectedItem> selectedItems = Arrays.asList(EXTERN, AUTOMATIC, MANUAL);
 
     List<String> ids =
-        monitorService
+        MONITOR_SERVICE
             .createClassificationCategoryReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
-            .listTaskIdsForSelectedItems(selectedItems);
+            .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
 
     assertThat(ids)
-        .containsOnly(
+        .containsExactlyInAnyOrder(
             "TKI:000000000000000000000000000000000006",
             "TKI:000000000000000000000000000000000020",
             "TKI:000000000000000000000000000000000021",
@@ -93,42 +118,22 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
   @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfCategoryReportWithWorkbasketFilter() throws Exception {
-    final MonitorService monitorService = taskanaEngine.getMonitorService();
-
     final List<String> workbasketIds =
         Collections.singletonList("WBI:000000000000000000000000000000000001");
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    final List<SelectedItem> selectedItems = new ArrayList<>();
-
-    SelectedItem s1 = new SelectedItem();
-    s1.setKey("EXTERN");
-    s1.setLowerAgeLimit(-5);
-    s1.setUpperAgeLimit(-2);
-    selectedItems.add(s1);
-
-    SelectedItem s2 = new SelectedItem();
-    s2.setKey("AUTOMATIC");
-    s2.setLowerAgeLimit(Integer.MIN_VALUE);
-    s2.setUpperAgeLimit(-11);
-    selectedItems.add(s2);
-
-    SelectedItem s3 = new SelectedItem();
-    s3.setKey("MANUAL");
-    s3.setLowerAgeLimit(0);
-    s3.setUpperAgeLimit(0);
-    selectedItems.add(s3);
+    final List<SelectedItem> selectedItems = Arrays.asList(EXTERN, AUTOMATIC, MANUAL);
 
     List<String> ids =
-        monitorService
+        MONITOR_SERVICE
             .createClassificationCategoryReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .workbasketIdIn(workbasketIds)
-            .listTaskIdsForSelectedItems(selectedItems);
+            .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
 
     assertThat(ids)
-        .containsOnly(
+        .containsExactlyInAnyOrder(
             "TKI:000000000000000000000000000000000006",
             "TKI:000000000000000000000000000000000020",
             "TKI:000000000000000000000000000000000026",
@@ -138,41 +143,21 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
   @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfCategoryReportWithStateFilter() throws Exception {
-    final MonitorService monitorService = taskanaEngine.getMonitorService();
-
     final List<TaskState> states = Collections.singletonList(TaskState.READY);
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    final List<SelectedItem> selectedItems = new ArrayList<>();
-
-    SelectedItem s1 = new SelectedItem();
-    s1.setKey("EXTERN");
-    s1.setLowerAgeLimit(-5);
-    s1.setUpperAgeLimit(-2);
-    selectedItems.add(s1);
-
-    SelectedItem s2 = new SelectedItem();
-    s2.setKey("AUTOMATIC");
-    s2.setLowerAgeLimit(Integer.MIN_VALUE);
-    s2.setUpperAgeLimit(-11);
-    selectedItems.add(s2);
-
-    SelectedItem s3 = new SelectedItem();
-    s3.setKey("MANUAL");
-    s3.setLowerAgeLimit(0);
-    s3.setUpperAgeLimit(0);
-    selectedItems.add(s3);
+    final List<SelectedItem> selectedItems = Arrays.asList(EXTERN, AUTOMATIC, MANUAL);
 
     List<String> ids =
-        monitorService
+        MONITOR_SERVICE
             .createClassificationCategoryReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .stateIn(states)
-            .listTaskIdsForSelectedItems(selectedItems);
+            .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
 
     assertThat(ids)
-        .containsOnly(
+        .containsExactlyInAnyOrder(
             "TKI:000000000000000000000000000000000006",
             "TKI:000000000000000000000000000000000020",
             "TKI:000000000000000000000000000000000021",
@@ -189,35 +174,21 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
   @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfCategoryReportWithCategoryFilter() throws Exception {
-    final MonitorService monitorService = taskanaEngine.getMonitorService();
-
     final List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    final List<SelectedItem> selectedItems = new ArrayList<>();
-
-    SelectedItem s1 = new SelectedItem();
-    s1.setKey("AUTOMATIC");
-    s1.setLowerAgeLimit(Integer.MIN_VALUE);
-    s1.setUpperAgeLimit(-11);
-    selectedItems.add(s1);
-
-    SelectedItem s2 = new SelectedItem();
-    s2.setKey("MANUAL");
-    s2.setLowerAgeLimit(0);
-    s2.setUpperAgeLimit(0);
-    selectedItems.add(s2);
+    final List<SelectedItem> selectedItems = Arrays.asList(AUTOMATIC, MANUAL);
 
     List<String> ids =
-        monitorService
+        MONITOR_SERVICE
             .createClassificationCategoryReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .classificationCategoryIn(categories)
-            .listTaskIdsForSelectedItems(selectedItems);
+            .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
 
     assertThat(ids)
-        .containsOnly(
+        .containsExactlyInAnyOrder(
             "TKI:000000000000000000000000000000000006",
             "TKI:000000000000000000000000000000000031",
             "TKI:000000000000000000000000000000000032");
@@ -226,41 +197,21 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
   @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfCategoryReportWithDomainFilter() throws Exception {
-    final MonitorService monitorService = taskanaEngine.getMonitorService();
-
     final List<String> domains = Collections.singletonList("DOMAIN_A");
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    final List<SelectedItem> selectedItems = new ArrayList<>();
-
-    SelectedItem s1 = new SelectedItem();
-    s1.setKey("EXTERN");
-    s1.setLowerAgeLimit(-5);
-    s1.setUpperAgeLimit(-2);
-    selectedItems.add(s1);
-
-    SelectedItem s2 = new SelectedItem();
-    s2.setKey("AUTOMATIC");
-    s2.setLowerAgeLimit(Integer.MIN_VALUE);
-    s2.setUpperAgeLimit(-11);
-    selectedItems.add(s2);
-
-    SelectedItem s3 = new SelectedItem();
-    s3.setKey("MANUAL");
-    s3.setLowerAgeLimit(0);
-    s3.setUpperAgeLimit(0);
-    selectedItems.add(s3);
+    final List<SelectedItem> selectedItems = Arrays.asList(EXTERN, AUTOMATIC, MANUAL);
 
     List<String> ids =
-        monitorService
+        MONITOR_SERVICE
             .createClassificationCategoryReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .domainIn(domains)
-            .listTaskIdsForSelectedItems(selectedItems);
+            .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
 
     assertThat(ids)
-        .containsOnly(
+        .containsExactlyInAnyOrder(
             "TKI:000000000000000000000000000000000020",
             "TKI:000000000000000000000000000000000021",
             "TKI:000000000000000000000000000000000022",
@@ -270,42 +221,22 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
   @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfCategoryReportWithCustomFieldValueFilter() throws Exception {
-    final MonitorService monitorService = taskanaEngine.getMonitorService();
-
     Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
     customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    final List<SelectedItem> selectedItems = new ArrayList<>();
-
-    SelectedItem s1 = new SelectedItem();
-    s1.setKey("EXTERN");
-    s1.setLowerAgeLimit(-5);
-    s1.setUpperAgeLimit(-2);
-    selectedItems.add(s1);
-
-    SelectedItem s2 = new SelectedItem();
-    s2.setKey("AUTOMATIC");
-    s2.setLowerAgeLimit(Integer.MIN_VALUE);
-    s2.setUpperAgeLimit(-11);
-    selectedItems.add(s2);
-
-    SelectedItem s3 = new SelectedItem();
-    s3.setKey("MANUAL");
-    s3.setLowerAgeLimit(0);
-    s3.setUpperAgeLimit(0);
-    selectedItems.add(s3);
+    final List<SelectedItem> selectedItems = Arrays.asList(EXTERN, AUTOMATIC, MANUAL);
 
     List<String> ids =
-        monitorService
+        MONITOR_SERVICE
             .createClassificationCategoryReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .customAttributeFilterIn(customAttributeFilter)
-            .listTaskIdsForSelectedItems(selectedItems);
+            .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
 
     assertThat(ids)
-        .containsOnly(
+        .containsExactlyInAnyOrder(
             "TKI:000000000000000000000000000000000020",
             "TKI:000000000000000000000000000000000024",
             "TKI:000000000000000000000000000000000027",
@@ -316,26 +247,17 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
   @WithAccessId(user = "monitor")
   @Test
   void testThrowsExceptionIfSubKeysAreUsed() {
-    final MonitorService monitorService = taskanaEngine.getMonitorService();
-
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    final List<SelectedItem> selectedItems = new ArrayList<>();
-
-    SelectedItem s1 = new SelectedItem();
-    s1.setKey("EXTERN");
-    s1.setSubKey("INVALID");
-    s1.setLowerAgeLimit(-5);
-    s1.setUpperAgeLimit(-2);
-    selectedItems.add(s1);
+    final List<SelectedItem> selectedItems =
+        Collections.singletonList(new SelectedItem("EXTERN", "INVALID", -5, -2));
 
     ThrowingCallable call =
-        () -> {
-          monitorService
-              .createClassificationCategoryReportBuilder()
-              .withColumnHeaders(columnHeaders)
-              .listTaskIdsForSelectedItems(selectedItems);
-        };
+        () ->
+            MONITOR_SERVICE
+                .createClassificationCategoryReportBuilder()
+                .withColumnHeaders(columnHeaders)
+                .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
     assertThatThrownBy(call).isInstanceOf(InvalidArgumentException.class);
   }
 
