@@ -200,11 +200,8 @@ class WorkbasketReportBuilderImplTest {
     final List<TimeIntervalColumnHeader> columnHeaders =
         Collections.singletonList(new TimeIntervalColumnHeader(0, 0));
 
-    SelectedItem selectedItem = new SelectedItem();
-    selectedItem.setKey("EXTERN");
-    selectedItem.setLowerAgeLimit(1);
-    selectedItem.setUpperAgeLimit(5);
-    List<SelectedItem> selectedItems = Collections.singletonList(selectedItem);
+    List<SelectedItem> selectedItems =
+        Collections.singletonList(new SelectedItem("EXTERN", null, 1, 5));
 
     List<String> expectedResult =
         Collections.singletonList("TKI:000000000000000000000000000000000001");
@@ -217,6 +214,7 @@ class WorkbasketReportBuilderImplTest {
             excludedClassificationIds,
             customAttributeFilter,
             "WORKBASKET_KEY",
+            TaskTimestamp.DUE,
             selectedItems,
             false))
         .thenReturn(expectedResult);
@@ -231,7 +229,7 @@ class WorkbasketReportBuilderImplTest {
             .excludedClassificationIdIn(excludedClassificationIds)
             .customAttributeFilterIn(customAttributeFilter)
             .withColumnHeaders(columnHeaders)
-            .listTaskIdsForSelectedItems(selectedItems);
+            .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
 
     verify(internalTaskanaEngineMock).openConnection();
     verify(taskanaEngineMock).checkRoleMembership(any());
@@ -239,7 +237,17 @@ class WorkbasketReportBuilderImplTest {
     verify(internalTaskanaEngineMock, times(3)).getEngine();
     verify(monitorMapperMock)
         .getTaskIdsForSelectedItems(
-            any(), any(), any(), any(), any(), any(), any(), any(), any(), eq(false));
+            any(),
+            any(),
+            any(),
+            any(),
+            any(),
+            any(),
+            any(),
+            any(),
+            eq(TaskTimestamp.DUE),
+            any(),
+            eq(false));
     verify(internalTaskanaEngineMock).returnConnection();
     verify(taskanaEngineMock).getWorkbasketService();
     verifyNoMoreInteractions(internalTaskanaEngineMock, taskanaEngineMock, monitorMapperMock);
@@ -256,7 +264,7 @@ class WorkbasketReportBuilderImplTest {
           List<String> result =
               cut.createWorkbasketReportBuilder()
                   .workbasketIdIn(Collections.singletonList("DieGibtsGarantiertNed"))
-                  .listTaskIdsForSelectedItems(selectedItems);
+                  .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
           assertThat(result).isNotNull();
         };
     assertThatThrownBy(call).isInstanceOf(InvalidArgumentException.class);
@@ -275,11 +283,6 @@ class WorkbasketReportBuilderImplTest {
     customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
     final List<TimeIntervalColumnHeader> columnHeaders =
         Collections.singletonList(new TimeIntervalColumnHeader(0, 0));
-
-    SelectedItem selectedItem = new SelectedItem();
-    selectedItem.setKey("EXTERN");
-    selectedItem.setLowerAgeLimit(1);
-    selectedItem.setUpperAgeLimit(5);
 
     List<String> expectedResult = Collections.singletonList("Geschaeftsstelle A");
     when(monitorMapperMock.getCustomAttributeValuesForReport(
@@ -323,7 +326,7 @@ class WorkbasketReportBuilderImplTest {
   void testListCustomAttributeValuesForCustomAttributeNameIsEmptyResult() throws Exception {
     List<String> result =
         cut.createWorkbasketReportBuilder()
-            .workbasketIdIn(Arrays.asList("GibtsSicherNed"))
+            .workbasketIdIn(Collections.singletonList("GibtsSicherNed"))
             .listCustomAttributeValuesForCustomAttributeName(TaskCustomField.CUSTOM_14);
     assertThat(result).isNotNull();
   }

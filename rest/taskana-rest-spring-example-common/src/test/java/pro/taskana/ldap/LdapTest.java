@@ -21,6 +21,7 @@ class LdapTest {
     List<AccessIdRepresentationModel> usersAndGroups = ldapClient.searchUsersAndGroups("lead");
     assertThat(usersAndGroups)
         .extracting(AccessIdRepresentationModel::getAccessId)
-        .containsOnly("teamlead-1", "teamlead-2", "cn=ksc-teamleads,cn=groups,ou=Test,O=TASKANA");
+        .containsExactlyInAnyOrder(
+            "teamlead-1", "teamlead-2", "cn=ksc-teamleads,cn=groups,ou=Test,O=TASKANA");
   }
 }

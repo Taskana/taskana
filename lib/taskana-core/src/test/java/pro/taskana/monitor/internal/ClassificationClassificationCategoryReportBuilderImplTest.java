@@ -184,11 +184,8 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
     final List<TimeIntervalColumnHeader> columnHeaders =
         Collections.singletonList(new TimeIntervalColumnHeader(0, 0));
 
-    SelectedItem selectedItem = new SelectedItem();
-    selectedItem.setKey("EXTERN");
-    selectedItem.setLowerAgeLimit(1);
-    selectedItem.setUpperAgeLimit(5);
-    List<SelectedItem> selectedItems = Collections.singletonList(selectedItem);
+    List<SelectedItem> selectedItems =
+        Collections.singletonList(new SelectedItem("EXTERN", null, 1, 5));
 
     List<String> expectedResult =
         Collections.singletonList("TKI:000000000000000000000000000000000001");
@@ -201,6 +198,7 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
             excludedClassificationIds,
             customAttributeFilter,
             "CLASSIFICATION_CATEGORY",
+            TaskTimestamp.DUE,
             selectedItems,
             false))
         .thenReturn(expectedResult);
@@ -215,7 +213,7 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
             .excludedClassificationIdIn(excludedClassificationIds)
             .customAttributeFilterIn(customAttributeFilter)
             .withColumnHeaders(columnHeaders)
-            .listTaskIdsForSelectedItems(selectedItems);
+            .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
 
     verify(internalTaskanaEngineMock).openConnection();
     verify(internalTaskanaEngineMock, times(2)).getEngine();
@@ -223,7 +221,17 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
     verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
     verify(monitorMapperMock)
         .getTaskIdsForSelectedItems(
-            any(), any(), any(), any(), any(), any(), any(), any(), any(), eq(false));
+            any(),
+            any(),
+            any(),
+            any(),
+            any(),
+            any(),
+            any(),
+            any(),
+            eq(TaskTimestamp.DUE),
+            any(),
+            eq(false));
     verify(internalTaskanaEngineMock).returnConnection();
     verifyNoMoreInteractions(
         internalTaskanaEngineMock,
@@ -236,10 +244,10 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
 
   @Test
   void testListTaskIdsForSelectedItemsIsEmptyResult() throws Exception {
-    SelectedItem selectedItem = new SelectedItem();
-    List<SelectedItem> selectedItems = Collections.singletonList(selectedItem);
     List<String> result =
-        cut.createClassificationCategoryReportBuilder().listTaskIdsForSelectedItems(selectedItems);
+        cut.createClassificationCategoryReportBuilder()
+            .listTaskIdsForSelectedItems(
+                Collections.singletonList(new SelectedItem("BLA", null, 0, 0)), TaskTimestamp.DUE);
     assertThat(result).isNotNull();
   }
 
@@ -256,11 +264,6 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
     customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
     final List<TimeIntervalColumnHeader> columnHeaders =
         Collections.singletonList(new TimeIntervalColumnHeader(0, 0));
-
-    SelectedItem selectedItem = new SelectedItem();
-    selectedItem.setKey("EXTERN");
-    selectedItem.setLowerAgeLimit(1);
-    selectedItem.setUpperAgeLimit(5);
 
     List<String> expectedResult = Collections.singletonList("Geschaeftsstelle A");
     when(monitorMapperMock.getCustomAttributeValuesForReport(

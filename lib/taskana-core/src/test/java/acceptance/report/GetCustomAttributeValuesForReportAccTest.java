@@ -22,39 +22,35 @@ import pro.taskana.task.api.TaskCustomField;
 @ExtendWith(JaasExtension.class)
 class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
 
+  private static final MonitorService MONITOR_SERVICE = taskanaEngine.getMonitorService();
+
   @Test
   void testRoleCheck() {
-    MonitorService monitorService = taskanaEngine.getMonitorService();
     ThrowingCallable call =
-        () -> {
-          monitorService
-              .createWorkbasketReportBuilder()
-              .listCustomAttributeValuesForCustomAttributeName(TaskCustomField.CUSTOM_2);
-        };
+        () ->
+            MONITOR_SERVICE
+                .createWorkbasketReportBuilder()
+                .listCustomAttributeValuesForCustomAttributeName(TaskCustomField.CUSTOM_2);
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(user = "monitor")
   @Test
   void testGetCustomAttributeValuesForOneWorkbasket() throws Exception {
-    MonitorService monitorService = taskanaEngine.getMonitorService();
-
     List<String> values =
-        monitorService
+        MONITOR_SERVICE
             .createWorkbasketReportBuilder()
             .workbasketIdIn(Collections.singletonList("WBI:000000000000000000000000000000000001"))
             .listCustomAttributeValuesForCustomAttributeName(TaskCustomField.CUSTOM_2);
 
-    assertThat(values).containsOnly("Vollkasko", "Teilkasko");
+    assertThat(values).containsExactlyInAnyOrder("Vollkasko", "Teilkasko");
   }
 
   @WithAccessId(user = "monitor")
   @Test
   void testGetCustomAttributeValuesForOneDomain() throws Exception {
-    MonitorService monitorService = taskanaEngine.getMonitorService();
-
     List<String> values =
-        monitorService
+        MONITOR_SERVICE
             .createWorkbasketReportBuilder()
             .domainIn(Collections.singletonList("DOMAIN_A"))
             .listCustomAttributeValuesForCustomAttributeName(TaskCustomField.CUSTOM_16);
@@ -64,14 +60,12 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "monitor")
   @Test
   void testGetCustomAttributeValuesForCustomAttribute() throws Exception {
-    MonitorService monitorService = taskanaEngine.getMonitorService();
-
     Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
     customAttributeFilter.put(TaskCustomField.CUSTOM_2, "Vollkasko");
     customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
 
     List<String> values =
-        monitorService
+        MONITOR_SERVICE
             .createClassificationCategoryReportBuilder()
             .customAttributeFilterIn(customAttributeFilter)
             .listCustomAttributeValuesForCustomAttributeName(TaskCustomField.CUSTOM_16);
@@ -82,12 +76,10 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "monitor")
   @Test
   void testGetCustomAttributeValuesForExcludedClassifications() throws Exception {
-    MonitorService monitorService = taskanaEngine.getMonitorService();
-
     List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
 
     List<String> values =
-        monitorService
+        MONITOR_SERVICE
             .createClassificationCategoryReportBuilder()
             .domainIn(domains)
             .excludedClassificationIdIn(

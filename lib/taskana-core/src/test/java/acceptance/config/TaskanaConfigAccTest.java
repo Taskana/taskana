@@ -36,18 +36,19 @@ class TaskanaConfigAccTest extends TaskanaEngineImpl {
 
   @Test
   void testDomains() {
-    assertThat(getConfiguration().getDomains()).containsOnly("DOMAIN_A", "DOMAIN_B");
+    assertThat(getConfiguration().getDomains()).containsExactlyInAnyOrder("DOMAIN_A", "DOMAIN_B");
   }
 
   @Test
   void testClassificationTypes() {
-    assertThat(getConfiguration().getClassificationTypes()).containsOnly("TASK", "DOCUMENT");
+    assertThat(getConfiguration().getClassificationTypes())
+        .containsExactlyInAnyOrder("TASK", "DOCUMENT");
   }
 
   @Test
   void testClassificationCategories() {
     assertThat(getConfiguration().getClassificationCategoriesByType("TASK"))
-        .containsOnly("EXTERNAL", "MANUAL", "AUTOMATIC", "PROCESS");
+        .containsExactlyInAnyOrder("EXTERNAL", "MANUAL", "AUTOMATIC", "PROCESS");
   }
 
   @Test

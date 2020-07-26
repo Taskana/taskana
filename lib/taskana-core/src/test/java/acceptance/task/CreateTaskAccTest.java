@@ -53,7 +53,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(newTask.getId()).isNotEqualTo(oldTask.getId());
     assertThat(newTask.getAttachments())
         .extracting(AttachmentSummary::getTaskId)
-        .containsOnly(newTask.getId());
+        .contains(newTask.getId());
   }
 
   @WithAccessId(user = "user-1-1")

@@ -23,7 +23,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.internal.InternalTaskanaEngine;
-import pro.taskana.monitor.api.SelectedItem;
 import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.TaskCustomFieldValueReport;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
@@ -186,11 +185,6 @@ class TaskCustomFieldValueReportBuilderImplTest {
     customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
     final List<TimeIntervalColumnHeader> columnHeaders =
         Collections.singletonList(new TimeIntervalColumnHeader(0, 0));
-
-    SelectedItem selectedItem = new SelectedItem();
-    selectedItem.setKey("EXTERN");
-    selectedItem.setLowerAgeLimit(1);
-    selectedItem.setUpperAgeLimit(5);
 
     List<String> expectedResult = Collections.singletonList("Geschaeftsstelle A");
     when(monitorMapperMock.getCustomAttributeValuesForReport(

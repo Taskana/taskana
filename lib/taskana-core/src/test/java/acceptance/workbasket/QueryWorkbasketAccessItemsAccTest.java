@@ -170,7 +170,9 @@ class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
     };
     List<WorkbasketAccessItem> results =
         workbasketService.createWorkbasketAccessItemQuery().idIn(expectedIds).list();
-    assertThat(results).extracting(WorkbasketAccessItem::getId).containsOnly(expectedIds);
+    assertThat(results)
+        .extracting(WorkbasketAccessItem::getId)
+        .containsExactlyInAnyOrder(expectedIds);
   }
 
   @WithAccessId(user = "businessadmin")

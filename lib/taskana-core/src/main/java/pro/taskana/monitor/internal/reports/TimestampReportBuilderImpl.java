@@ -44,7 +44,8 @@ public class TimestampReportBuilderImpl
   }
 
   @Override
-  public List<String> listTaskIdsForSelectedItems(List<SelectedItem> selectedItems) {
+  public List<String> listTaskIdsForSelectedItems(
+      List<SelectedItem> selectedItems, TaskTimestamp timestamp) {
     throw new UnsupportedOperationException();
   }
 

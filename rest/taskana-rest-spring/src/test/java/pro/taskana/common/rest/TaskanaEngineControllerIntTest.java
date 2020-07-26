@@ -45,7 +45,7 @@ class TaskanaEngineControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(List.class));
-    assertThat(response.getBody()).containsOnly("TASK", "DOCUMENT");
+    assertThat(response.getBody()).containsExactlyInAnyOrder("TASK", "DOCUMENT");
   }
 
   @Test
@@ -56,7 +56,8 @@ class TaskanaEngineControllerIntTest {
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(List.class));
-    assertThat(response.getBody()).containsOnly("MANUAL", "EXTERNAL", "AUTOMATIC", "PROCESS");
+    assertThat(response.getBody())
+        .containsExactlyInAnyOrder("MANUAL", "EXTERNAL", "AUTOMATIC", "PROCESS", "EXTERNAL");
   }
 
   @Test

@@ -76,7 +76,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         .hasSize(attachmentCount + 1)
         .contains(attachment)
         .extracting(Attachment::getModified)
-        .containsOnly(task.getModified());
+        .containsExactlyInAnyOrder(task.getModified());
   }
 
   @WithAccessId(user = "user-1-1")
@@ -96,7 +96,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     assertThat(task.getAttachments())
         .hasSize(1)
         .extracting(AttachmentSummary::getModified)
-        .containsOnly(task.getModified());
+        .containsExactlyInAnyOrder(task.getModified());
   }
 
   @WithAccessId(user = "user-1-1")

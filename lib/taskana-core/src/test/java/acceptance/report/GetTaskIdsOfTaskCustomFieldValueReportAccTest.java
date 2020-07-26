@@ -1,17 +1,23 @@
 package acceptance.report;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.ThrowingConsumer;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
@@ -19,6 +25,7 @@ import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.monitor.api.SelectedItem;
+import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
@@ -27,56 +34,77 @@ import pro.taskana.task.api.TaskState;
 @ExtendWith(JaasExtension.class)
 class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTest {
 
+  private static final MonitorService MONITOR_SERVICE = taskanaEngine.getMonitorService();
+
+  private static final SelectedItem GESCHAEFTSSTELLE_A =
+      new SelectedItem("Geschaeftsstelle A", null, -5, -2);
+  private static final SelectedItem GESCHAEFTSSTELLE_B =
+      new SelectedItem("Geschaeftsstelle B", null, Integer.MIN_VALUE, -11);
+  private static final SelectedItem GESCHAEFTSSTELLE_C =
+      new SelectedItem("Geschaeftsstelle C", null, 0, 0);
+
   @Test
   void testRoleCheck() {
-    MonitorService monitorService = taskanaEngine.getMonitorService();
-
-    List<SelectedItem> selectedItems = new ArrayList<>();
-
     ThrowingCallable call =
         () ->
-            monitorService
+            MONITOR_SERVICE
                 .createTaskCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
-                .listTaskIdsForSelectedItems(selectedItems);
+                .listTaskIdsForSelectedItems(Collections.emptyList(), TaskTimestamp.DUE);
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
+  }
+
+  @WithAccessId(user = "monitor")
+  @TestFactory
+  Stream<DynamicTest> should_NotThrowError_When_buildReportForTaskState() {
+    Iterator<TaskTimestamp> iterator = Arrays.stream(TaskTimestamp.values()).iterator();
+
+    ThrowingConsumer<TaskTimestamp> test =
+        timestamp -> {
+          ThrowingCallable callable =
+              () ->
+                  MONITOR_SERVICE
+                      .createTaskCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
+                      .listTaskIdsForSelectedItems(
+                          Collections.singletonList(GESCHAEFTSSTELLE_A), timestamp);
+          assertThatCode(callable).doesNotThrowAnyException();
+        };
+
+    return DynamicTest.stream(iterator, t -> "for " + t, test);
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_selectCompletedItems_When_CompletedTimeStampIsRequested() throws Exception {
+    List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+    List<SelectedItem> selectedItems =
+        Arrays.asList(GESCHAEFTSSTELLE_A, GESCHAEFTSSTELLE_B, GESCHAEFTSSTELLE_C);
+
+    List<String> ids =
+        MONITOR_SERVICE
+            .createTaskCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
+            .withColumnHeaders(columnHeaders)
+            .inWorkingDays()
+            .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.COMPLETED);
+
+    assertThat(ids).containsExactly("TKI:000000000000000000000000000000000029");
   }
 
   @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfCustomFieldValueReport() throws Exception {
-    final MonitorService monitorService = taskanaEngine.getMonitorService();
-
-    final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
-
-    final List<SelectedItem> selectedItems = new ArrayList<>();
-
-    SelectedItem s1 = new SelectedItem();
-    s1.setKey("Geschaeftsstelle A");
-    s1.setLowerAgeLimit(-5);
-    s1.setUpperAgeLimit(-2);
-    selectedItems.add(s1);
-
-    SelectedItem s2 = new SelectedItem();
-    s2.setKey("Geschaeftsstelle B");
-    s2.setLowerAgeLimit(Integer.MIN_VALUE);
-    s2.setUpperAgeLimit(-11);
-    selectedItems.add(s2);
-
-    SelectedItem s3 = new SelectedItem();
-    s3.setKey("Geschaeftsstelle C");
-    s3.setLowerAgeLimit(0);
-    s3.setUpperAgeLimit(0);
-    selectedItems.add(s3);
+    List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+    List<SelectedItem> selectedItems =
+        Arrays.asList(GESCHAEFTSSTELLE_A, GESCHAEFTSSTELLE_B, GESCHAEFTSSTELLE_C);
 
     List<String> ids =
-        monitorService
+        MONITOR_SERVICE
             .createTaskCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
-            .listTaskIdsForSelectedItems(selectedItems);
+            .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
 
     assertThat(ids)
-        .containsOnly(
+        .containsExactlyInAnyOrder(
             "TKI:000000000000000000000000000000000002",
             "TKI:000000000000000000000000000000000006",
             "TKI:000000000000000000000000000000000009",
@@ -90,42 +118,22 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
   @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfCustomFieldValueReportWithWorkbasketFilter() throws Exception {
-    final MonitorService monitorService = taskanaEngine.getMonitorService();
-
     final List<String> workbasketIds =
         Collections.singletonList("WBI:000000000000000000000000000000000001");
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
-
-    final List<SelectedItem> selectedItems = new ArrayList<>();
-
-    SelectedItem s1 = new SelectedItem();
-    s1.setKey("Geschaeftsstelle A");
-    s1.setLowerAgeLimit(-5);
-    s1.setUpperAgeLimit(-2);
-    selectedItems.add(s1);
-
-    SelectedItem s2 = new SelectedItem();
-    s2.setKey("Geschaeftsstelle B");
-    s2.setLowerAgeLimit(Integer.MIN_VALUE);
-    s2.setUpperAgeLimit(-11);
-    selectedItems.add(s2);
-
-    SelectedItem s3 = new SelectedItem();
-    s3.setKey("Geschaeftsstelle C");
-    s3.setLowerAgeLimit(0);
-    s3.setUpperAgeLimit(0);
-    selectedItems.add(s3);
+    List<SelectedItem> selectedItems =
+        Arrays.asList(GESCHAEFTSSTELLE_A, GESCHAEFTSSTELLE_B, GESCHAEFTSSTELLE_C);
 
     List<String> ids =
-        monitorService
+        MONITOR_SERVICE
             .createTaskCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .workbasketIdIn(workbasketIds)
-            .listTaskIdsForSelectedItems(selectedItems);
+            .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
 
     assertThat(ids)
-        .containsOnly(
+        .containsExactlyInAnyOrder(
             "TKI:000000000000000000000000000000000006",
             "TKI:000000000000000000000000000000000009",
             "TKI:000000000000000000000000000000000020");
@@ -134,37 +142,17 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
   @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfCustomFieldValueReportWithStateFilter() throws Exception {
-    final MonitorService monitorService = taskanaEngine.getMonitorService();
-
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
-
-    final List<SelectedItem> selectedItems = new ArrayList<>();
-
-    SelectedItem s1 = new SelectedItem();
-    s1.setKey("Geschaeftsstelle A");
-    s1.setLowerAgeLimit(-5);
-    s1.setUpperAgeLimit(-2);
-    selectedItems.add(s1);
-
-    SelectedItem s2 = new SelectedItem();
-    s2.setKey("Geschaeftsstelle B");
-    s2.setLowerAgeLimit(Integer.MIN_VALUE);
-    s2.setUpperAgeLimit(-11);
-    selectedItems.add(s2);
-
-    SelectedItem s3 = new SelectedItem();
-    s3.setKey("Geschaeftsstelle C");
-    s3.setLowerAgeLimit(0);
-    s3.setUpperAgeLimit(0);
-    selectedItems.add(s3);
+    List<SelectedItem> selectedItems =
+        Arrays.asList(GESCHAEFTSSTELLE_A, GESCHAEFTSSTELLE_B, GESCHAEFTSSTELLE_C);
 
     List<String> ids =
-        monitorService
+        MONITOR_SERVICE
             .createTaskCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .stateIn(Collections.singletonList(TaskState.READY))
-            .listTaskIdsForSelectedItems(selectedItems);
+            .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
 
     assertThat(ids).hasSize(8);
     assertThat(ids.contains("TKI:000000000000000000000000000000000002")).isTrue();
@@ -180,38 +168,18 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
   @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfCustomFieldValueReportWithCategoryFilter() throws Exception {
-    final MonitorService monitorService = taskanaEngine.getMonitorService();
-
     final List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
-
-    final List<SelectedItem> selectedItems = new ArrayList<>();
-
-    SelectedItem s1 = new SelectedItem();
-    s1.setKey("Geschaeftsstelle A");
-    s1.setLowerAgeLimit(-5);
-    s1.setUpperAgeLimit(-2);
-    selectedItems.add(s1);
-
-    SelectedItem s2 = new SelectedItem();
-    s2.setKey("Geschaeftsstelle B");
-    s2.setLowerAgeLimit(Integer.MIN_VALUE);
-    s2.setUpperAgeLimit(-11);
-    selectedItems.add(s2);
-
-    SelectedItem s3 = new SelectedItem();
-    s3.setKey("Geschaeftsstelle C");
-    s3.setLowerAgeLimit(0);
-    s3.setUpperAgeLimit(0);
-    selectedItems.add(s3);
+    List<SelectedItem> selectedItems =
+        Arrays.asList(GESCHAEFTSSTELLE_A, GESCHAEFTSSTELLE_B, GESCHAEFTSSTELLE_C);
 
     List<String> ids =
-        monitorService
+        MONITOR_SERVICE
             .createTaskCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .classificationCategoryIn(categories)
-            .listTaskIdsForSelectedItems(selectedItems);
+            .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
 
     assertThat(ids).hasSize(3);
     assertThat(ids.contains("TKI:000000000000000000000000000000000006")).isTrue();
@@ -222,37 +190,17 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
   @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfCustomFieldValueReportWithDomainFilter() throws Exception {
-    final MonitorService monitorService = taskanaEngine.getMonitorService();
-
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
-
-    final List<SelectedItem> selectedItems = new ArrayList<>();
-
-    SelectedItem s1 = new SelectedItem();
-    s1.setKey("Geschaeftsstelle A");
-    s1.setLowerAgeLimit(-5);
-    s1.setUpperAgeLimit(-2);
-    selectedItems.add(s1);
-
-    SelectedItem s2 = new SelectedItem();
-    s2.setKey("Geschaeftsstelle B");
-    s2.setLowerAgeLimit(Integer.MIN_VALUE);
-    s2.setUpperAgeLimit(-11);
-    selectedItems.add(s2);
-
-    SelectedItem s3 = new SelectedItem();
-    s3.setKey("Geschaeftsstelle C");
-    s3.setLowerAgeLimit(0);
-    s3.setUpperAgeLimit(0);
-    selectedItems.add(s3);
+    List<SelectedItem> selectedItems =
+        Arrays.asList(GESCHAEFTSSTELLE_A, GESCHAEFTSSTELLE_B, GESCHAEFTSSTELLE_C);
 
     List<String> ids =
-        monitorService
+        MONITOR_SERVICE
             .createTaskCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .domainIn(Collections.singletonList("DOMAIN_A"))
-            .listTaskIdsForSelectedItems(selectedItems);
+            .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
 
     assertThat(ids).hasSize(3);
     assertThat(ids.contains("TKI:000000000000000000000000000000000009")).isTrue();
@@ -263,39 +211,19 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
   @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfCustomFieldValueReportWithCustomFieldValueFilter() throws Exception {
-    final MonitorService monitorService = taskanaEngine.getMonitorService();
-
     final Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
     customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
-
-    final List<SelectedItem> selectedItems = new ArrayList<>();
-
-    SelectedItem s1 = new SelectedItem();
-    s1.setKey("Geschaeftsstelle A");
-    s1.setLowerAgeLimit(-5);
-    s1.setUpperAgeLimit(-2);
-    selectedItems.add(s1);
-
-    SelectedItem s2 = new SelectedItem();
-    s2.setKey("Geschaeftsstelle B");
-    s2.setLowerAgeLimit(Integer.MIN_VALUE);
-    s2.setUpperAgeLimit(-11);
-    selectedItems.add(s2);
-
-    SelectedItem s3 = new SelectedItem();
-    s3.setKey("Geschaeftsstelle C");
-    s3.setLowerAgeLimit(0);
-    s3.setUpperAgeLimit(0);
-    selectedItems.add(s3);
+    List<SelectedItem> selectedItems =
+        Arrays.asList(GESCHAEFTSSTELLE_A, GESCHAEFTSSTELLE_B, GESCHAEFTSSTELLE_C);
 
     List<String> ids =
-        monitorService
+        MONITOR_SERVICE
             .createTaskCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .customAttributeFilterIn(customAttributeFilter)
-            .listTaskIdsForSelectedItems(selectedItems);
+            .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
 
     assertThat(ids).hasSize(4);
     assertThat(ids.contains("TKI:000000000000000000000000000000000020")).isTrue();
@@ -307,25 +235,16 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
   @WithAccessId(user = "monitor")
   @Test
   void testThrowsExceptionIfSubKeysAreUsed() {
-    final MonitorService monitorService = taskanaEngine.getMonitorService();
-
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
-
-    final List<SelectedItem> selectedItems = new ArrayList<>();
-
-    SelectedItem s1 = new SelectedItem();
-    s1.setKey("Geschaeftsstelle A");
-    s1.setSubKey("INVALID");
-    s1.setLowerAgeLimit(-5);
-    s1.setUpperAgeLimit(-2);
-    selectedItems.add(s1);
+    final List<SelectedItem> selectedItems =
+        Collections.singletonList(new SelectedItem("Geschaeftsstelle A", "INVALID", -5, -2));
 
     ThrowingCallable call =
         () ->
-            monitorService
+            MONITOR_SERVICE
                 .createClassificationCategoryReportBuilder()
                 .withColumnHeaders(columnHeaders)
-                .listTaskIdsForSelectedItems(selectedItems);
+                .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
     assertThatThrownBy(call).isInstanceOf(InvalidArgumentException.class);
   }
 
