@@ -5,7 +5,7 @@
         <div class="form-group col-xs-6 required">
           <label for="task-name" class="control-label">Name</label>
           <input type="text" class="form-control" id="task-name" placeholder="Name" [(ngModel)]="task.name"
-                 name="task.name" maxlength="255" #name (keypress)="validateKeypress(name, 255)">
+                 name="task.name" maxlength="255" #name (input)="validateInputOverflow(name, 255)">
           <div *ngIf="inputOverflowMap.get(name.name)" class="error">{{lengthError}}</div>
           <taskana-shared-field-error-display [displayError]="!isFieldValid('task.name')"
                                               [validationTrigger]="this.toggleValidationMap.get('task.name')"
@@ -17,7 +17,7 @@
           <input type="text" class="form-control" id="task.primaryObjRef.company" required
                  placeholder="Company description"
                  [(ngModel)]="task.primaryObjRef.company" name="task.primaryObjRef.company" maxlength="32" #company
-                 (keypress)="validateKeypress(company, 32)">
+                 (input)="validateInputOverflow(company, 32)">
           <div *ngIf="inputOverflowMap.get(company.name)" class="error">{{lengthError}}</div>
           <taskana-shared-field-error-display [displayError]="!isFieldValid('task.primaryObjRef.company')"
                                               [validationTrigger]="this.toggleValidationMap.get('task.primaryObjRef.company')"
@@ -32,7 +32,7 @@
           <input type="text" class="form-control" id="task.primaryObjRef.system" required
                  placeholder="System description"
                  [(ngModel)]="task.primaryObjRef.system" name="task.primaryObjRef.system" maxlength="32" #system
-                 (keypress)="validateKeypress(system, 32)">
+                 (input)="validateInputOverflow(system, 32)">
           <div *ngIf="inputOverflowMap.get(system.name)" class="error">{{lengthError}}</div>
           <taskana-shared-field-error-display [displayError]="!isFieldValid('task.primaryObjRef.system')"
                                               [validationTrigger]="this.toggleValidationMap.get('task.primaryObjRef.system')"
@@ -44,7 +44,7 @@
           <input type="text" class="form-control" id="task.primaryObjRef.systemInstance" required
                  placeholder="System Instance description"
                  [(ngModel)]="task.primaryObjRef.systemInstance" name="task.primaryObjRef.systemInstance" maxlength="32"
-                 #instance (keypress)="validateKeypress(instance, 32)">
+                 #instance (input)="validateInputOverflow(instance, 32)">
           <div *ngIf="inputOverflowMap.get(instance.name)" class="error">{{lengthError}}</div>
           <taskana-shared-field-error-display [displayError]="!isFieldValid('task.primaryObjRef.systemInstance')"
                                               [validationTrigger]="this.toggleValidationMap.get('task.primaryObjRef.systemInstance')"
@@ -57,7 +57,7 @@
           <label for="task.primaryObjRef.type" class="control-label">Reference type</label>
           <input type="text" class="form-control" id="task.primaryObjRef.type" required placeholder="Reference type"
                  [(ngModel)]="task.primaryObjRef.type" name="task.primaryObjRef.type" maxlength="32" #type
-                 (keypress)="validateKeypress(type, 32)">
+                 (input)="validateInputOverflow(type, 32)">
           <div *ngIf="inputOverflowMap.get(type.name)" class="error">{{lengthError}}</div>
           <taskana-shared-field-error-display [displayError]="!isFieldValid('task.primaryObjRef.type')"
                                               [validationTrigger]="this.toggleValidationMap.get('task.primaryObjRef.type')"
@@ -68,7 +68,7 @@
           <label for="task.primaryObjRef.value" class="control-label">Reference value</label>
           <input type="text" class="form-control" id="task.primaryObjRef.value" required placeholder="Reference value"
                  [(ngModel)]="task.primaryObjRef.value" name="task.primaryObjRef.value" maxlength="32" #value
-                 (keypress)="validateKeypress(value, 32)">
+                 (input)="validateInputOverflow(value, 32)">
           <div *ngIf="inputOverflowMap.get(value.name)" class="error">{{lengthError}}</div>
           <taskana-shared-field-error-display [displayError]="!isFieldValid('task.primaryObjRef.value')"
                                               [validationTrigger]="this.toggleValidationMap.get('task.primaryObjRef.value')"
@@ -101,14 +101,14 @@
         <input type="text" class="form-control" id="task-parent-business-p-id" placeholder="Parent business process iD"
                [(ngModel)]="task.parentBusinessProcessId" name="task.parentBusinessProcessId" maxlength="128"
                #parentBusinessProcessId
-               (keypress)="validateKeypress(parentBusinessProcessId, 128)">
+               (input)="validateInputOverflow(parentBusinessProcessId, 128)">
         <div *ngIf="inputOverflowMap.get(parentBusinessProcessId.name)" class="error">{{lengthError}}</div>
       </div>
       <div class="form-group">
         <label for="task-business-p-id" class="control-label">Business process iD</label>
         <input type="text" class="form-control" id="task-business-p-id" placeholder="Business process id"
                [(ngModel)]="task.businessProcessId" name="task.businessProcessId" maxlength="128" #businessProcessId
-               (keypress)="validateKeypress(businessProcessId, 128)">
+               (input)="validateInputOverflow(businessProcessId, 128)">
         <div *ngIf="inputOverflowMap.get(businessProcessId.name)" class="error">{{lengthError}}</div>
       </div>
       <div class="input-group form-group col-xs-12">
@@ -120,7 +120,7 @@
         <ng-template #ownerInput>
           <input type="text" #owner="ngModel" class="form-control" id="ts-owner" placeholder="Owner"
                  [(ngModel)]="task.owner" name="task.owner" maxlength="32"
-                 (keypress)="validateKeypress(owner, 32)">
+                 (input)="validateInputOverflow(owner, 32)">
           <div *ngIf="inputOverflowMap.get(owner.name)" class="error">{{lengthError}}</div>
         </ng-template>
       </div>
@@ -130,7 +130,7 @@
             <label for="task-note" class="control-label">Note</label>
             <textarea class="form-control" rows="2" id="task-note" placeholder="Note" [(ngModel)]="task.note"
                       name="task.note" maxlength="4096" #note
-            (keypress)="validateKeypress(note, 4096)"></textarea>
+            (input)="validateInputOverflow(note, 4096)"></textarea>
             <div *ngIf="inputOverflowMap.get(note.name)" class="error">{{lengthError}}</div>
           </div>
         </div>

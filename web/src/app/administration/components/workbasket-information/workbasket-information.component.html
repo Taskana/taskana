@@ -37,7 +37,7 @@
           <label for="wb-key" class="control-label">Key</label>
           <input type="text" required maxlength="64" #key="ngModel" class="form-control" id="wb-key"
                  placeholder="Key"
-                 [(ngModel)]="workbasket.key" name="workbasket.key" (keypress)="validateKeypress(key, 64)">
+                 [(ngModel)]="workbasket.key" name="workbasket.key" (input)="validateInputOverflow(key, 64, $event)">
           <div *ngIf="inputOverflowMap.get(key.name)" class="error">{{lengthError}}</div>
           <taskana-shared-field-error-display [displayError]="!isFieldValid('workbasket.key')"
                                               [validationTrigger]="this.toggleValidationMap.get('workbasket.key')"
@@ -50,7 +50,7 @@
           <label for="wb-name" class="control-label">Name</label>
           <input type="text" required maxlength="255" #name="ngModel" class="form-control" id="wb-name"
                  placeholder="Name"
-                 [(ngModel)]="workbasket.name" name="workbasket.name" (keypress)="validateKeypress(name, 255)">
+                 [(ngModel)]="workbasket.name" name="workbasket.name" (input)="validateInputOverflow(name, 255)">
           <div *ngIf="inputOverflowMap.get(name.name)" class="error">{{lengthError}}</div>
           <taskana-shared-field-error-display [displayError]="!isFieldValid('workbasket.name')"
                                               [validationTrigger]="this.toggleValidationMap.get('workbasket.name')"
@@ -67,13 +67,13 @@
                                      placeHolderMessage="* Owner is required"
                                      [validationValue]="this.toggleValidationMap.get('workbasket.owner')"
                                      [displayError]="!isFieldValid('workbasket.owner')"
-                                     width="100%" (keypress)="validateKeypress(owner, 128)">
+                                     width="100%" (input)="validateInputOverflow(owner, 128)">
             <div *ngIf="inputOverflowMap.get(owner.name)" class="error">{{lengthError}}</div>
           </taskana-shared-type-ahead>
           <ng-template #ownerInput>
             <input type="text" required maxlength="128" #owner="ngModel" class="form-control" id="wb-owner"
                    placeholder="Owner"
-                   [(ngModel)]="workbasket.owner" name="workbasket.owner" (keypress)="validateKeypress(owner, 128)">
+                   [(ngModel)]="workbasket.owner" name="workbasket.owner" (input)="validateInputOverflow(owner, 128)">
             <div *ngIf="inputOverflowMap.get(owner.name)" class="error">{{lengthError}}</div>
             <taskana-shared-field-error-display [displayError]="!isFieldValid('workbasket.owner')"
                                                 [validationTrigger]="this.toggleValidationMap.get('workbasket.owner')"
@@ -119,7 +119,7 @@
             <textarea #description="ngModel" maxlength="255" class="form-control" rows="7" id="wb-description"
                       placeholder="Description"
                       [(ngModel)]="workbasket.description" name="workbasket.description"
-                      (keypress)="validateKeypress(description, 255)"></textarea>
+                      (input)="validateInputOverflow(description, 255)"></textarea>
             <div *ngIf="inputOverflowMap.get(description.name)" class="error">{{lengthError}}</div>
           </div>
         </div>
@@ -130,7 +130,7 @@
           <input type="text" class="form-control" id="wb-org-level-1" placeholder="OrgLevel 1"
                  [(ngModel)]="workbasket.orgLevel1"
                  name="workbasket.orgLevel1" maxlength="255" #orgLevel1="ngModel"
-                 (keypress)="validateKeypress(orgLevel1, 255)">
+                 (input)="validateInputOverflow(orgLevel1, 255)">
           <div *ngIf="inputOverflowMap.get(orgLevel1.name)" class="error">{{lengthError}}</div>
         </div>
         <div class="form-group">
@@ -138,7 +138,7 @@
           <input type="text" class="form-control" id="wb-org-level-2" placeholder="OrgLevel 2"
                  [(ngModel)]="workbasket.orgLevel2"
                  name="workbasket.orgLevel2" maxlength="255" #orgLevel2="ngModel"
-                 (keypress)="validateKeypress(orgLevel2, 255)">
+                 (input)="validateInputOverflow(orgLevel2, 255)">
           <div *ngIf="inputOverflowMap.get(orgLevel2.name)" class="error">{{lengthError}}</div>
         </div>
         <div class="form-group" style="padding-top: 18px;">
@@ -146,7 +146,7 @@
           <input type="text" class="form-control" id="wb-org-level-3" placeholder="OrgLevel 3"
                  [(ngModel)]="workbasket.orgLevel3"
                  name="workbasket.orgLevel3" maxlength="255" #orgLevel3="ngModel"
-                 (keypress)="validateKeypress(orgLevel3, 255)">
+                 (input)="validateInputOverflow(orgLevel3, 255)">
           <div *ngIf="inputOverflowMap.get(orgLevel3.name)" class="error">{{lengthError}}</div>
         </div>
         <div class="form-group">
@@ -154,7 +154,7 @@
           <input type="text" class="form-control" id="wb-org-level-4" placeholder="OrgLevel 4"
                  [(ngModel)]="workbasket.orgLevel4"
                  name="workbasket.orgLevel4" maxlength="255" #orgLevel4="ngModel"
-                 (keypress)="validateKeypress(orgLevel4, 255)">
+                 (input)="validateInputOverflow(orgLevel4, 255)">
           <div *ngIf="inputOverflowMap.get(orgLevel4.name)" class="error">{{lengthError}}</div>
         </div>
         <ng-container *ngFor="let customField of customFields$ | async; let index = index">
@@ -164,7 +164,7 @@
                    [placeholder]="customField.field"
                    [(ngModel)]="workbasket[getWorkbasketCustomProperty(index + 1)]"
                    name="workbasket[{{getWorkbasketCustomProperty(index + 1)}}]" maxlength="255" #custom="ngModel"
-                   (keypress)="validateKeypress(custom, 255)">
+                   (input)="validateInputOverflow(custom, 255)">
             <div *ngIf="inputOverflowMap.get(custom.name)" class="error">{{lengthError}}</div>
           </div>
         </ng-container>

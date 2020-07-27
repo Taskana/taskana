@@ -50,7 +50,7 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
 
   readonly lengthError = 'You have reached the maximum length for this field';
   inputOverflowMap = new Map<string, boolean>();
-  validateKeypress: Function;
+  validateInputOverflow: Function;
 
   @Select(EngineConfigurationSelectors.workbasketsCustomisation)
   workbasketsCustomisation$: Observable<WorkbasketsCustomisation>;
@@ -88,7 +88,7 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
     this.formsValidatorService.inputOverflowObservable.pipe(takeUntil(this.destroy$)).subscribe((inputOverflowMap) => {
       this.inputOverflowMap = inputOverflowMap;
     });
-    this.validateKeypress = (inputFieldModel, maxLength) => {
+    this.validateInputOverflow = (inputFieldModel, maxLength) => {
       this.formsValidatorService.validateInputOverflow(inputFieldModel, maxLength);
     };
   }

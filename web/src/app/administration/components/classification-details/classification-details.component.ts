@@ -52,7 +52,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   isCreatingNewClassification: boolean = false;
   readonly lengthError = 'You have reached the maximum length for this field';
   inputOverflowMap = new Map<string, boolean>();
-  validateKeypress: Function;
+  validateInputOverflow: Function;
 
   @ViewChild('ClassificationForm', { static: false }) classificationForm: NgForm;
   toggleValidationMap = new Map<string, boolean>();
@@ -89,7 +89,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     this.formsValidatorService.inputOverflowObservable.pipe(takeUntil(this.destroy$)).subscribe((inputOverflowMap) => {
       this.inputOverflowMap = inputOverflowMap;
     });
-    this.validateKeypress = (inputFieldModel, maxLength) => {
+    this.validateInputOverflow = (inputFieldModel, maxLength) => {
       this.formsValidatorService.validateInputOverflow(inputFieldModel, maxLength);
     };
   }

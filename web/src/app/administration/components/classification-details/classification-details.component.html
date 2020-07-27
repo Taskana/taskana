@@ -42,7 +42,7 @@
                 <input type="text" required maxlength="32" #key="ngModel" [disabled]="!isCreatingNewClassification"
                        class="form-control"
                        id="classification-key" placeholder="Key" [(ngModel)]="classification.key"
-                       name="classification.key" (keypress)="validateKeypress(key, 32)">
+                       name="classification.key" (input)="validateInputOverflow(key, 32)">
                 <div *ngIf="inputOverflowMap.get(key.name)" class="error">{{lengthError}}</div>
                 <taskana-shared-field-error-display [displayError]="key.invalid && key.dirty"
                                                     errorMessage="* Key is required">
@@ -56,7 +56,7 @@
                        class="form-control"
                        id="classification-name" placeholder="Name"
                        [(ngModel)]="classification.name" name="classification.name"
-                       (keypress)="validateKeypress(name, 255)">
+                       (input)="validateInputOverflow(name, 255)">
                 <div *ngIf="inputOverflowMap.get(name.name)" class="error">{{lengthError}}</div>
                 <taskana-shared-field-error-display [displayError]="name.invalid && name.dirty"
                                                     errorMessage="* Name is required">
@@ -135,7 +135,7 @@
                 <input type="text" maxlength="255" class="form-control"
                        id="classification-service-level" placeholder="Service Level"
                        [(ngModel)]="classification.serviceLevel" name="classification.serviceLevel"
-                       #serviceLevel="ngModel" (keypress)="validateKeypress(serviceLevel, 255)">
+                       #serviceLevel="ngModel" (input)="validateInputOverflow(serviceLevel, 255)">
                 <div *ngIf="inputOverflowMap.get(serviceLevel.name)" class="error">{{lengthError}}</div>
               </div>
 
@@ -148,7 +148,7 @@
                        placeholder="Application entry point"
                        [(ngModel)]="classification.applicationEntryPoint"
                        name="classification.applicationEntryPoint" #appEntryPoint="ngModel"
-                       (keypress)="validateKeypress(appEntryPoint, 255)">
+                       (input)="validateInputOverflow(appEntryPoint, 255)">
                 <div *ngIf="inputOverflowMap.get(appEntryPoint.name)" class="error">{{lengthError}}</div>
               </div>
 
@@ -159,7 +159,7 @@
                           id="classification-description" placeholder="Description"
                           [(ngModel)]="classification.description"
                           name="classification.description" #description="ngModel"
-                          (keypress)="validateKeypress(description, 255)"></textarea>
+                          (input)="validateInputOverflow(description, 255)"></textarea>
                 <div *ngIf="inputOverflowMap.get(description.name)" class="error">{{lengthError}}</div>
               </div>
             </div>
@@ -177,7 +177,7 @@
                        id="classification-custom-{{i + 1}}" placeholder="{{customField.field}}"
                        [(ngModel)]="classification[getClassificationCustom(i + 1)]"
                        name="classification.custom{{i + 1}}" #custom="ngModel"
-                       (keypress)="validateKeypress(custom, 255)">
+                       (input)="validateInputOverflow(custom, 255)">
                 <div *ngIf="inputOverflowMap.get(custom.name)" class="error">{{lengthError}}</div>
               </div>
             </div>
