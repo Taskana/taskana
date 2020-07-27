@@ -1,5 +1,5 @@
 <ng-container *ngIf="task && !requestInProgress">
-  <form #TaskForm="ngForm" autocomplete="off">
+  <ng-form #TaskForm="ngForm" autocomplete="off">
     <div class="col-md-6">
       <div class="row">
         <div class="form-group col-xs-6 required">
@@ -136,5 +136,5 @@
         </div>
       </div>
     </div>
-  </form>
+  </ng-form>
 </ng-container>
