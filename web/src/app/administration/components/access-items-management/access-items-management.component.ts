@@ -20,7 +20,6 @@ import {
   RemoveAccessItemsPermissions
 } from '../../../shared/store/access-items-management-store/access-items-management.actions';
 import { AccessItemsManagementSelector } from '../../../shared/store/access-items-management-store/access-items-management.selector';
-import { AccessItemsManagementStateModel } from '../../../shared/store/access-items-management-store/access-items-management.state';
 
 @Component({
   selector: 'taskana-administration-access-items-management',
@@ -58,10 +57,6 @@ export class AccessItemsManagementComponent implements OnInit {
     private store: Store
   ) {}
 
-  get accessItemsGroups(): FormArray {
-    return this.accessItemsForm ? (this.accessItemsForm.get('accessItemsGroups') as FormArray) : null;
-  }
-
   ngOnInit() {
     this.customFields$ = this.accessItemsCustomization$.pipe(getCustomFields(customFieldCount));
     this.groups$.pipe(takeUntil(this.destroy$)).subscribe((groups) => {
@@ -74,7 +69,6 @@ export class AccessItemsManagementComponent implements OnInit {
       this.accessId = selected;
       if (this.accessIdPrevious !== selected.accessId) {
         this.accessIdPrevious = selected.accessId;
-
         this.store.dispatch(new GetGroupsByAccessId(selected.accessId)).subscribe(() => {
           this.searchForAccessItemsWorkbaskets();
         });
@@ -94,8 +88,12 @@ export class AccessItemsManagementComponent implements OnInit {
           this.sortModel
         )
       )
-      .subscribe((state: AccessItemsManagementStateModel) => {
-        this.setAccessItemsGroups(state.accessItemsResource ? state.accessItemsResource.accessItems : []);
+      .subscribe((state) => {
+        this.setAccessItemsGroups(
+          state['accessItemsManagement'].accessItemsResource
+            ? state['accessItemsManagement'].accessItemsResource.accessItems
+            : []
+        );
       });
   }
 
@@ -131,6 +129,10 @@ export class AccessItemsManagementComponent implements OnInit {
     this.store.dispatch(new RemoveAccessItemsPermissions(this.accessIdSelected)).subscribe(() => {
       this.searchForAccessItemsWorkbaskets();
     });
+  }
+
+  get accessItemsGroups(): FormArray {
+    return this.accessItemsForm ? (this.accessItemsForm.get('accessItemsGroups') as FormArray) : null;
   }
 
   isFieldValid(field: string, index: number): boolean {
