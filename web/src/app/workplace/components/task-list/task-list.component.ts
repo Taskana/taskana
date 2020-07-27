@@ -1,18 +1,7 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  ChangeDetectionStrategy,
-  Output,
-  EventEmitter,
-  SimpleChanges,
-  OnChanges,
-  ChangeDetectorRef
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Task } from 'app/workplace/models/task';
-import { TaskanaDate } from 'app/shared/util/taskana.date';
 import { WorkplaceService } from 'app/workplace/services/workplace.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'taskana-task-list',
