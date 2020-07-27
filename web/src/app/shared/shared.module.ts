@@ -5,7 +5,9 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { RouterModule } from '@angular/router';
 import { TreeModule } from 'angular-tree-component';
-import { AlertModule, TypeaheadModule, BsDatepickerModule } from 'ngx-bootstrap';
+import { AlertModule, TypeaheadModule } from 'ngx-bootstrap';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+
 import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
