@@ -13,18 +13,19 @@
       </taskana-shared-type-ahead>
     </div>
 
-    <!--No Id Placeholder-->
+    <!-- NO ID PLACEHOLDER -->
     <div *ngIf="!accessItemsForm" class="center-block no-detail col-xs-12">
       <h3 class="grey">Select an access id</h3>
       <svg-icon class="empty-icon" src="./assets/icons/users.svg"></svg-icon>
     </div>
 
-    <!--Content-->
+    <!-- CONTENT -->
     <div *ngIf="accessItemsForm" class="row col-xs-12">
       <form [formGroup]="accessItemsForm">
-        <!--Table With AccessIds-->
+        <!-- TABLE WITH ACCESS ID -->
         <table id="table-access-items" class="table table-striped table-center">
           <thead>
+          <!-- TABLE FIRST ROW -->
           <tr>
             <th>
               <taskana-shared-sort [sortingFields]="sortingFields"
@@ -45,6 +46,7 @@
               </th>
             </ng-container>
           </tr>
+          <!-- TABLE SECOND ROW -->
           <tr>
             <th colspan="2" class="text-align"><label>
               <input type="text" formControlName="workbasketKeyFilter" (keyup.enter)="searchForAccessItemsWorkbaskets()"
@@ -80,14 +82,16 @@
             <th></th>
           </tr>
           </thead>
+
+          <!-- ACCESS ITEMS GROUPS -->
           <tbody formArrayName="accessItemsGroups">
-          <tr *ngFor="let accessItem of accessItemsGroups.controls; let index = index;"
+          <tr class="table__access-item-groups" *ngFor="let accessItem of accessItemsGroups.controls; let index = index;"
               [formGroupName]="index.toString()">
             <td colspan="2">
               <label class="wrap">{{accessItem.value.workbasketKey}}</label>
             </td>
             <td *ngIf="(accessItemsCustomization$ | async)?.accessId.lookupField else accessIdInput" colspan="2"
-                class="text-align text-width taskana-type-ahead">
+                class="text-align text-width taskana-type-ahead" style="padding-top: 0;">
               <div>
                 <taskana-shared-type-ahead formControlName="accessId" placeHolderMessage="* Access id is required"
                                            [validationValue]="toggleValidationAccessIdMap.get(index)"
@@ -135,13 +139,13 @@
           </tr>
           </tbody>
         </table>
-        <!--Belonging Groups Button-->
+        <!-- BELONGING GROUPS BUTTONS -->
         <button class="btn btn-primary pull-left btn-group" type="button"
                 data-toggle="modal"
                 data-target="#myModal">
           Belonging groups
         </button>
-        <!--Revoke Access Button-->
+        <!-- REVOKE ACCESS BUTTON -->
         <div class="pull-right btn-group">
           <button *ngIf="accessItemsForm" type="button" (click)="revokeAccess()" class="btn btn-default"
                   data-toggle="tooltip"
