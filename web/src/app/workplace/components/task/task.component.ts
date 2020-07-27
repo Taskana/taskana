@@ -58,9 +58,7 @@ export class TaskComponent implements OnInit, OnDestroy {
       this.requestInProgress = false;
       this.workbaskets = workbaskets.workbaskets;
 
-      const index = this.workbaskets.findIndex(
-        (workbasket) => workbasket.name === this.task.workbasketSummaryResource.name
-      );
+      const index = this.workbaskets.findIndex((workbasket) => workbasket.name === this.task.workbasketSummary.name);
       if (index !== -1) {
         this.workbaskets.splice(index, 1);
       }

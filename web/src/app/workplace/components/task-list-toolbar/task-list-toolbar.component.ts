@@ -68,9 +68,9 @@ export class TaskListToolbarComponent implements OnInit {
     });
     this.taskService.getSelectedTask().subscribe((t) => {
       if (!this.resultName) {
-        this.resultName = t.workbasketSummaryResource.name;
-        this.resultId = t.workbasketSummaryResource.workbasketId;
-        this.currentBasket = t.workbasketSummaryResource;
+        this.resultName = t.workbasketSummary.name;
+        this.resultId = t.workbasketSummary.workbasketId;
+        this.currentBasket = t.workbasketSummary;
         this.workplaceService.selectWorkbasket(this.currentBasket);
         this.workbasketSelected = true;
       }
