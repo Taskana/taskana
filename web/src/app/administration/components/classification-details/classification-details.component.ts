@@ -54,8 +54,9 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   inputOverflowMap = new Map<string, boolean>();
   validateInputOverflow: Function;
 
-  @ViewChild('ClassificationForm', { static: false }) classificationForm: NgForm;
-  toggleValidationMap = new Map<string, boolean>();
+  @ViewChild('ClassificationForm') classificationForm: NgForm;
+  toogleValidationMap = new Map<string, boolean>();
+
   destroy$ = new Subject<void>();
 
   constructor(
