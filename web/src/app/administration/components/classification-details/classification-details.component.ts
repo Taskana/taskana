@@ -51,7 +51,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   customFields$: Observable<CustomField[]>;
   isCreatingNewClassification: boolean = false;
 
-  @ViewChild('ClassificationForm', { static: false }) classificationForm: NgForm;
+  @ViewChild('ClassificationForm') classificationForm: NgForm;
   toogleValidationMap = new Map<string, boolean>();
   destroy$ = new Subject<void>();
 

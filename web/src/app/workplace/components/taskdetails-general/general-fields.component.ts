@@ -36,7 +36,7 @@ export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges {
 
   @Output() formValid: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  @ViewChild('TaskForm', { static: false })
+  @ViewChild('TaskForm')
   taskForm: NgForm;
 
   toogleValidationMap = new Map<string, boolean>();
