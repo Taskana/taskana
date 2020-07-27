@@ -47,7 +47,7 @@ export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges, OnD
 
   readonly lengthError = 'You have reached the maximum length';
   inputOverflowMap = new Map<string, boolean>();
-  validateKeypress: Function;
+  validateInputOverflow: Function;
 
   @Select(EngineConfigurationSelectors.tasksCustomisation) tasksCustomisation$: Observable<TasksCustomisation>;
   private destroy$ = new Subject<void>();
@@ -63,7 +63,7 @@ export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges, OnD
     this.formsValidatorService.inputOverflowObservable.pipe(takeUntil(this.destroy$)).subscribe((inputOverflowMap) => {
       this.inputOverflowMap = inputOverflowMap;
     });
-    this.validateKeypress = (inputFieldModel, maxLength) => {
+    this.validateInputOverflow = (inputFieldModel, maxLength) => {
       this.formsValidatorService.validateInputOverflow(inputFieldModel, maxLength);
     };
   }

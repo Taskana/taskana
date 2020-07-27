@@ -109,7 +109,8 @@ export class FormsValidatorService {
     );
   }
 
-  validateInputOverflow(inputFieldModel: NgModel, maxLength: Number): void {
+  validateInputOverflow(inputFieldModel: NgModel, maxLength: Number, event?: any): void {
+    console.log(event);
     if (this.overflowErrorSubscriptionMap.has(inputFieldModel.name)) {
       this.overflowErrorSubscriptionMap.get(inputFieldModel.name).unsubscribe();
     }
@@ -123,6 +124,8 @@ export class FormsValidatorService {
           this.inputOverflow.next(this.inputOverflowInternalMap);
         })
       );
+    } else {
+      this.inputOverflowInternalMap.set(inputFieldModel.name, false);
     }
   }
 }
