@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
-import { Observable, Subject } from 'rxjs';
+import { combineLatest, Observable, Subject, Subscription, timer } from 'rxjs';
 
 import { highlight } from 'theme/animations/validation.animation';
 
@@ -8,7 +8,7 @@ import { RequestInProgressService } from 'app/shared/services/request-in-progres
 
 import { DomainService } from 'app/shared/services/domain/domain.service';
 import { Pair } from 'app/shared/models/pair';
-import { NgForm } from '@angular/forms';
+import { NgForm, NgModel } from '@angular/forms';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { ImportExportService } from 'app/administration/services/import-export.service';
 import { map, take, takeUntil } from 'rxjs/operators';
@@ -50,9 +50,12 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   spinnerIsRunning = false;
   customFields$: Observable<CustomField[]>;
   isCreatingNewClassification: boolean = false;
+  readonly lengthError = 'You have reached the maximum length for this field';
+  inputOverflowMap = new Map<string, boolean>();
+  validateInputOverflow: Function;
 
   @ViewChild('ClassificationForm') classificationForm: NgForm;
-  toogleValidationMap = new Map<string, boolean>();
+  toggleValidationMap = new Map<string, boolean>();
   destroy$ = new Subject<void>();
 
   constructor(
@@ -82,6 +85,13 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.store.dispatch(new SelectClassification(this.classification.classificationId));
       });
+
+    this.formsValidatorService.inputOverflowObservable.pipe(takeUntil(this.destroy$)).subscribe((inputOverflowMap) => {
+      this.inputOverflowMap = inputOverflowMap;
+    });
+    this.validateInputOverflow = (inputFieldModel, maxLength) => {
+      this.formsValidatorService.validateInputOverflow(inputFieldModel, maxLength);
+    };
   }
 
   removeClassification() {
@@ -98,7 +108,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   onSubmit() {
     this.formsValidatorService.formSubmitAttempt = true;
     this.formsValidatorService
-      .validateFormInformation(this.classificationForm, this.toogleValidationMap)
+      .validateFormInformation(this.classificationForm, this.toggleValidationMap)
       .then((value) => {
         if (value) {
           this.onSave();
