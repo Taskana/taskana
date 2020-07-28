@@ -121,14 +121,12 @@ export class AccessItemsManagementComponent implements OnInit {
   revokeAccess() {
     this.notificationService.showDialog(
       `You are going to delete all access related: ${this.accessIdSelected}. Can you confirm this action?`,
-      this.onRemoveConfirmed.bind(this)
+      () => {
+        this.store.dispatch(new RemoveAccessItemsPermissions(this.accessIdSelected)).subscribe(() => {
+          this.searchForAccessItemsWorkbaskets();
+        });
+      }
     );
-  }
-
-  onRemoveConfirmed() {
-    this.store.dispatch(new RemoveAccessItemsPermissions(this.accessIdSelected)).subscribe(() => {
-      this.searchForAccessItemsWorkbaskets();
-    });
   }
 
   get accessItemsGroups(): FormArray {
