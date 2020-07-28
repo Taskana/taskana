@@ -82,7 +82,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
     this.domainService.switchDomain(domain);
   }
 
-  toogleNavBar() {
+  toggleNavBar() {
     this.showNavbar = !this.showNavbar;
   }
 

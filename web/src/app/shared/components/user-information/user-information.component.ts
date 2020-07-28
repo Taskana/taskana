@@ -22,7 +22,7 @@ export class UserInformationComponent implements OnInit {
     }
   }
 
-  toogleRoles() {
+  toggleRoles() {
     this.showRoles = !this.showRoles;
   }
 }

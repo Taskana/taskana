@@ -1,7 +1,7 @@
 <nav class="navbar main navbar-fixed-top">
   <div class="navbar  no-border-radius navbar-inverse no-gutter col-xs-12">
     <div class="pull-left col-sm-3 col-md-4">
-      <button type="button" *ngIf="!showNavbar" class="btn btn-default navbar-toggle show pull-left" (click)="toogleNavBar();"
+      <button type="button" *ngIf="!showNavbar" class="btn btn-default navbar-toggle show pull-left" (click)="toggleNavBar();"
         aria-expanded="true" aria-controls="navbar" data-toggle="tooltip" title="Menu">
         <span class="material-icons md-24 white">menu</span>
       </button>
@@ -45,34 +45,34 @@
     <div class="nav-content">
       <taskana-shared-user-information></taskana-shared-user-information>
       <div *ngIf="administrationAccess" class="row menu">
-        <span (click)="toogleNavBar()" routerLink="taskana/administration/workbaskets" aria-controls="administration"
+        <span (click)="toggleNavBar()" routerLink="taskana/administration/workbaskets" aria-controls="administration"
           routerLinkActive="active">Administration</span>
         <div class="row submenu" [ngClass]="{'selected': selectedRoute.indexOf('workbaskets') !== -1 }">
-          <span (click)="toogleNavBar()" class="col-xs-6" routerLink="taskana/administration/workbaskets" aria-controls="Workbaskets"
+          <span (click)="toggleNavBar()" class="col-xs-6" routerLink="taskana/administration/workbaskets" aria-controls="Workbaskets"
             routerLinkActive="active">Workbaskets</span>
         </div>
         <div class="row submenu" [ngClass]="{'selected': selectedRoute.indexOf('classifications') !== -1}">
-          <span (click)="toogleNavBar()" class="col-xs-6" routerLink="taskana/administration/classifications" aria-controls="Classifications"
+          <span (click)="toggleNavBar()" class="col-xs-6" routerLink="taskana/administration/classifications" aria-controls="Classifications"
             routerLinkActive="active">Classifications</span>
         </div>
         <div class="row submenu" [ngClass]="{'selected': selectedRoute.indexOf('access-items-management') !== -1}">
-          <span (click)="toogleNavBar()" class="col-xs-6" routerLink="taskana/administration/access-items-management"
+          <span (click)="toggleNavBar()" class="col-xs-6" routerLink="taskana/administration/access-items-management"
             aria-controls="Access items" routerLinkActive="active">Access items</span>
         </div>
       </div>
       <div *ngIf="monitorAccess" class="row menu" [ngClass]="{'selected': selectedRoute.indexOf('monitor') !== -1}">
-        <span (click)="toogleNavBar()" routerLink="{{monitorUrl}}" aria-controls="Monitor" routerLinkActive="active">Monitor</span>
+        <span (click)="toggleNavBar()" routerLink="{{monitorUrl}}" aria-controls="Monitor" routerLinkActive="active">Monitor</span>
       </div>
       <div *ngIf="workplaceAccess" class="row menu" [ngClass]="{'selected': selectedRoute.indexOf('workplace') !== -1 || selectedRoute === ''}">
-        <span (click)="toogleNavBar()" routerLink="{{workplaceUrl}}" aria-controls="Workplace" routerLinkActive="active">Workplace</span>
+        <span (click)="toggleNavBar()" routerLink="{{workplaceUrl}}" aria-controls="Workplace" routerLinkActive="active">Workplace</span>
       </div>
       <div *ngIf="historyAccess" class="row menu" [ngClass]="{'selected': selectedRoute.indexOf('history') !== -1}">
-        <span (click)="toogleNavBar()" routerLink="{{historyUrl}}" aria-controls="history" routerLinkActive="active">History</span>
+        <span (click)="toggleNavBar()" routerLink="{{historyUrl}}" aria-controls="history" routerLinkActive="active">History</span>
       </div>
     </div>
     <div class="nav-version">
       <p id="taskana-version"> Taskana version: {{version}} </p>
     </div>
   </div>
-  <div *ngIf="showNavbar" class="backdrop" (click)="toogleNavBar()"></div>
+  <div *ngIf="showNavbar" class="backdrop" (click)="toggleNavBar()"></div>
 </nav>
