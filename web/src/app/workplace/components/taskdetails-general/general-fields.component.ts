@@ -7,27 +7,25 @@ import {
   ViewChild,
   SimpleChanges,
   OnChanges,
-  HostListener,
-  OnDestroy
+  HostListener
 } from '@angular/core';
 import { Task } from 'app/workplace/models/task';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { NgForm } from '@angular/forms';
 import { DomainService } from 'app/shared/services/domain/domain.service';
 import { Select } from '@ngxs/store';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { ClassificationsService } from '../../../shared/services/classifications/classifications.service';
 import { Classification } from '../../../shared/models/classification';
 import { TasksCustomisation } from '../../../shared/models/customisation';
-import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'taskana-task-details-general-fields',
   templateUrl: './general-fields.component.html',
   styleUrls: ['./general-fields.component.scss']
 })
-export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges, OnDestroy {
+export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges {
   @Input()
   task: Task;
 
@@ -41,16 +39,11 @@ export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges, OnD
   @ViewChild('TaskForm')
   taskForm: NgForm;
 
-  toggleValidationMap = new Map<string, boolean>();
+  toogleValidationMap = new Map<string, boolean>();
   requestInProgress = false;
   classifications: Classification[];
 
-  readonly lengthError = 'You have reached the maximum length';
-  inputOverflowMap = new Map<string, boolean>();
-  validateInputOverflow: Function;
-
   @Select(EngineConfigurationSelectors.tasksCustomisation) tasksCustomisation$: Observable<TasksCustomisation>;
-  private destroy$ = new Subject<void>();
 
   constructor(
     private classificationService: ClassificationsService,
@@ -60,12 +53,6 @@ export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges, OnD
 
   ngOnInit() {
     this.getClassificationByDomain();
-    this.formsValidatorService.inputOverflowObservable.pipe(takeUntil(this.destroy$)).subscribe((inputOverflowMap) => {
-      this.inputOverflowMap = inputOverflowMap;
-    });
-    this.validateInputOverflow = (inputFieldModel, maxLength) => {
-      this.formsValidatorService.validateInputOverflow(inputFieldModel, maxLength);
-    };
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -75,11 +62,6 @@ export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges, OnD
     ) {
       this.validate();
     }
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   isFieldValid(field: string): boolean {
@@ -94,7 +76,7 @@ export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges, OnD
 
   private validate() {
     this.formsValidatorService.formSubmitAttempt = true;
-    this.formsValidatorService.validateFormInformation(this.taskForm, this.toggleValidationMap).then((value) => {
+    this.formsValidatorService.validateFormInformation(this.taskForm, this.toogleValidationMap).then((value) => {
       if (value) {
         this.formValid.emit(true);
       }

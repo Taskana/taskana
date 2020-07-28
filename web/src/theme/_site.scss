@@ -156,10 +156,6 @@ svg-icon {
   background-color: #e1e1e1;
 }
 
-div.error {
-  color: $invalid;
-}
-
 /*
  *Remove bootstrap cols padding for master and detail component
 */
@@ -200,7 +196,7 @@ div.error {
 
 .form-group.required .control-label:after {
   content: ' *';
-  color: $invalid;
+  color: red;
 }
 
 .user-select {

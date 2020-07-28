@@ -1,24 +1,17 @@
-import { FormArray, NgForm, NgModel } from '@angular/forms';
+import { FormArray, NgForm } from '@angular/forms';
 import { Injectable } from '@angular/core';
 import { AccessIdsService } from 'app/shared/services/access-ids/access-ids.service';
 import { NOTIFICATION_TYPES } from '../../models/notifications';
 import { NotificationService } from '../notifications/notification.service';
-import { Observable, Subject, Subscription, timer } from 'rxjs';
 
 @Injectable()
 export class FormsValidatorService {
-  get inputOverflowObservable(): Observable<Map<string, boolean>> {
-    return this.inputOverflow.asObservable();
-  }
-  formSubmitAttempt = false;
+  public formSubmitAttempt = false;
   private workbasketOwner = 'workbasket.owner';
-  private inputOverflowInternalMap = new Map<string, boolean>();
-  private inputOverflow = new Subject<Map<string, boolean>>();
-  private overflowErrorSubscriptionMap = new Map<string, Subscription>();
 
   constructor(private notificationsService: NotificationService, private accessIdsService: AccessIdsService) {}
 
-  async validateFormInformation(form: NgForm, toggleValidationMap: Map<any, boolean>): Promise<any> {
+  public async validateFormInformation(form: NgForm, toogleValidationMap: Map<any, boolean>): Promise<any> {
     let validSync = true;
     if (!form) {
       return false;
@@ -26,8 +19,8 @@ export class FormsValidatorService {
     const forFieldsPromise = new Promise((resolve) => {
       Object.keys(form.form.controls).forEach((control) => {
         if (control.indexOf('owner') === -1 && form.form.controls[control].invalid) {
-          const validationState = toggleValidationMap.get(control);
-          toggleValidationMap.set(this.workbasketOwner, !validationState);
+          const validationState = toogleValidationMap.get(control);
+          toogleValidationMap.set(this.workbasketOwner, !validationState);
           validSync = false;
         }
       });
@@ -38,14 +31,14 @@ export class FormsValidatorService {
       const ownerString = 'owner';
       if (form.form.controls[this.workbasketOwner]) {
         this.accessIdsService.searchForAccessId(form.form.controls[this.workbasketOwner].value).subscribe((items) => {
-          const validationState = toggleValidationMap.get(this.workbasketOwner);
-          toggleValidationMap.set(this.workbasketOwner, !validationState);
+          const validationState = toogleValidationMap.get(this.workbasketOwner);
+          toogleValidationMap.set(this.workbasketOwner, !validationState);
           const valid = items.find((item) => item.accessId === form.form.controls[this.workbasketOwner].value);
           resolve(new ResponseOwner({ valid, field: ownerString }));
         });
       } else {
-        const validationState = toggleValidationMap.get(form.form.controls[this.workbasketOwner]);
-        toggleValidationMap.set(this.workbasketOwner, !validationState);
+        const validationState = toogleValidationMap.get(form.form.controls[this.workbasketOwner]);
+        toogleValidationMap.set(this.workbasketOwner, !validationState);
         resolve(new ResponseOwner({ valid: true, field: ownerString }));
       }
     });
@@ -65,14 +58,14 @@ export class FormsValidatorService {
     return values[0] && responseOwner.valid;
   }
 
-  async validateFormAccess(form: FormArray, toggleValidationAccessIdMap: Map<any, boolean>): Promise<boolean> {
+  public async validateFormAccess(form: FormArray, toogleValidationAccessIdMap: Map<any, boolean>): Promise<boolean> {
     const ownerPromise: Array<Promise<boolean>> = new Array<Promise<boolean>>();
 
     for (let i = 0; i < form.length; i++) {
       ownerPromise.push(
         new Promise((resolve) => {
-          const validationState = toggleValidationAccessIdMap.get(i);
-          toggleValidationAccessIdMap.set(i, !validationState);
+          const validationState = toogleValidationAccessIdMap.get(i);
+          toogleValidationAccessIdMap.set(i, !validationState);
           this.accessIdsService.searchForAccessId(form.controls[i].value.accessId).subscribe((items) => {
             resolve(new ResponseOwner({ valid: items.length > 0, field: 'access id' }));
           });
@@ -96,7 +89,7 @@ export class FormsValidatorService {
     return result;
   }
 
-  isFieldValid(ngForm: NgForm, field: string) {
+  public isFieldValid(ngForm: NgForm, field: string) {
     if (!ngForm || !ngForm.form.controls || !ngForm.form.controls[field]) {
       return false;
     }
@@ -107,26 +100,6 @@ export class FormsValidatorService {
       (this.formSubmitAttempt && ngForm.form.controls[field].valid) ||
       (ngForm.form.controls[field].touched && ngForm.form.controls[field].valid)
     );
-  }
-
-  validateInputOverflow(inputFieldModel: NgModel, maxLength: Number, event?: any): void {
-    console.log(event);
-    if (this.overflowErrorSubscriptionMap.has(inputFieldModel.name)) {
-      this.overflowErrorSubscriptionMap.get(inputFieldModel.name).unsubscribe();
-    }
-    if (inputFieldModel.value.length >= maxLength) {
-      this.inputOverflowInternalMap.set(inputFieldModel.name, true);
-      this.inputOverflow.next(this.inputOverflowInternalMap);
-      this.overflowErrorSubscriptionMap.set(
-        inputFieldModel.name,
-        timer(3000).subscribe(() => {
-          this.inputOverflowInternalMap.set(inputFieldModel.name, false);
-          this.inputOverflow.next(this.inputOverflowInternalMap);
-        })
-      );
-    } else {
-      this.inputOverflowInternalMap.set(inputFieldModel.name, false);
-    }
   }
 }
 
