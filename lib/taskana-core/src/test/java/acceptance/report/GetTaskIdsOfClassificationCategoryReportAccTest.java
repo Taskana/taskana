@@ -74,8 +74,7 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
   void should_selectCompletedItems_When_CompletedTimeStampIsRequested() throws Exception {
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    final List<SelectedItem> selectedItems =
-        Collections.singletonList(new SelectedItem("EXTERN", null, 0, 0));
+    final List<SelectedItem> selectedItems = Arrays.asList(EXTERN, AUTOMATIC, MANUAL);
 
     List<String> ids =
         MONITOR_SERVICE
@@ -84,9 +83,7 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
             .inWorkingDays()
             .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.COMPLETED);
 
-    assertThat(ids)
-        .containsExactly(
-            "TKI:000000000000000000000000000000000001", "TKI:000000000000000000000000000000000002");
+    assertThat(ids).containsExactly("TKI:000000000000000000000000000000000032");
   }
 
   @WithAccessId(user = "monitor")
