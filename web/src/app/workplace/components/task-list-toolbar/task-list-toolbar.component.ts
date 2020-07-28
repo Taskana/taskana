@@ -7,7 +7,7 @@ import { Sorting } from 'app/shared/models/sorting';
 import { Filter } from 'app/shared/models/filter';
 import { TaskanaType } from 'app/shared/models/taskana-type';
 import { expandDown } from 'theme/animations/expand.animation';
-import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { WorkplaceService } from 'app/workplace/services/workplace.service';
 import { ObjectReference } from 'app/workplace/models/object-reference';
 
@@ -15,6 +15,7 @@ export enum Search {
   byWorkbasket = 'workbasket',
   byTypeAndValue = 'type-and-value'
 }
+
 @Component({
   selector: 'taskana-task-list-toolbar',
   animations: [expandDown],
@@ -94,7 +95,6 @@ export class TaskListToolbarComponent implements OnInit {
       this.workplaceService.selectObjectReference(objectReference);
       this.searched = true;
     } else {
-      this.workplaceService.selectObjectReference();
       if (this.workbaskets) {
         this.workbaskets.forEach((workbasket) => {
           if (workbasket.name === this.resultName) {
@@ -141,5 +141,6 @@ export class TaskListToolbarComponent implements OnInit {
     };
 
     this.router.navigate([''], navigationExtras);
+    this.searchBasket();
   }
 }

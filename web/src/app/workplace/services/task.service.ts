@@ -6,22 +6,20 @@ import { environment } from 'environments/environment';
 import { TaskResource } from 'app/workplace/models/task-resource';
 import { Direction } from 'app/shared/models/sorting';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
-import { TaskanaDate } from 'app/shared/util/taskana.date';
-import { map } from 'rxjs/operators';
 import { QueryParameters } from 'app/shared/models/query-parameters';
 
 @Injectable()
 export class TaskService {
   url = `${environment.taskanaRestUrl}/v1/tasks`;
 
-  taskChangedSource = new Subject<Task>();
+  private taskChangedSource = new Subject<Task>();
   taskChangedStream = this.taskChangedSource.asObservable();
-  taskSelectedSource = new Subject<Task>();
+  private taskSelectedSource = new Subject<Task>();
   taskSelectedStream = this.taskSelectedSource.asObservable();
 
   constructor(private httpClient: HttpClient) {}
 
-  publishUpdatedTask(task: Task = new Task('empty')) {
+  publishUpdatedTask(task?: Task) {
     this.taskChangedSource.next(task);
   }
 
@@ -46,7 +44,7 @@ export class TaskService {
     allPages: boolean = false
   ): Observable<TaskResource> {
     const url = `${this.url}${TaskanaQueryParameters.getQueryParameters(
-      this.accessIdsParameters(
+      TaskService.accessIdsParameters(
         basketId,
         sortBy,
         sortDirection,
@@ -70,16 +68,17 @@ export class TaskService {
     return this.httpClient.post<Task>(`${this.url}/${id}/complete`, '');
   }
 
-  claimTask(id: string): Observable<Task> {
+  // currently unused
+  /*  claimTask(id: string): Observable<Task> {
     return this.httpClient.post<Task>(`${this.url}/${id}/claim`, 'test');
-  }
+  } */
 
   transferTask(taskId: string, workbasketId: string): Observable<Task> {
     return this.httpClient.post<Task>(`${this.url}/${taskId}/transfer/${workbasketId}`, '');
   }
 
   updateTask(task: Task): Observable<Task> {
-    const taskConv = this.convertTasksDatesToGMT(task);
+    const taskConv = TaskService.convertTasksDatesToGMT(task);
     return this.httpClient.put<Task>(`${this.url}/${task.taskId}`, taskConv);
   }
 
@@ -91,29 +90,17 @@ export class TaskService {
     return this.httpClient.post<Task>(this.url, task);
   }
 
-  private convertTasksDatesToGMT(task: Task): Task {
-    if (task.created) {
-      task.created = new Date(task.created).toISOString();
-    }
-    if (task.claimed) {
-      task.claimed = new Date(task.claimed).toISOString();
-    }
-    if (task.completed) {
-      task.completed = new Date(task.completed).toISOString();
-    }
-    if (task.modified) {
-      task.modified = new Date(task.modified).toISOString();
-    }
-    if (task.planned) {
-      task.planned = new Date(task.planned).toISOString();
-    }
-    if (task.due) {
-      task.due = new Date(task.due).toISOString();
-    }
+  private static convertTasksDatesToGMT(task: Task): Task {
+    const timeAttributes = ['created', 'claimed', 'completed', 'modified', 'planned', 'due'];
+    timeAttributes.forEach((attributeName) => {
+      if (task[attributeName]) {
+        task[attributeName] = new Date(task[attributeName]).toISOString();
+      }
+    });
     return task;
   }
 
-  private accessIdsParameters(
+  private static accessIdsParameters(
     basketId: string,
     sortBy = 'priority',
     sortDirection: string = Direction.ASC,

@@ -39,7 +39,6 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
   });
 
   requestInProgress = false;
-  objectReference: ObjectReference;
   selectedSearchType: Search = Search.byWorkbasket;
 
   destroy$ = new Subject();
@@ -55,19 +54,18 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.taskService
-      .getSelectedTask()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((task: Task) => {
-        if (!this.currentBasket) {
-          this.selectedId = task.taskId;
-          this.currentBasket = task.workbasketSummary;
-          this.getTasks();
-        }
-        if (!task) {
-          this.selectedId = '';
-        }
-      });
+    this.taskService.taskSelectedStream.pipe(takeUntil(this.destroy$)).subscribe((task: Task) => {
+      this.selectedId = task ? task.taskId : '';
+      if (!this.tasks) {
+        this.currentBasket = task.workbasketSummary;
+        this.getTasks();
+      }
+    });
+
+    this.taskService.taskChangedStream.pipe(takeUntil(this.destroy$)).subscribe((task) => {
+      this.currentBasket = task.workbasketSummary;
+      this.getTasks();
+    });
 
     this.orientationService
       .getOrientation()
@@ -75,11 +73,6 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.refreshWorkbasketList();
       });
-
-    this.taskService.taskChangedStream.pipe(takeUntil(this.destroy$)).subscribe((task) => {
-      this.getTasks();
-      this.selectedId = task ? task.taskId : '';
-    });
 
     this.workplaceService.workbasketSelectedStream.pipe(takeUntil(this.destroy$)).subscribe((workbasket) => {
       this.currentBasket = workbasket;
@@ -89,10 +82,9 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
     });
 
     this.workplaceService.objectReferenceSelectedStream.pipe(takeUntil(this.destroy$)).subscribe((objectReference) => {
-      this.objectReference = objectReference;
-      delete this.currentBasket;
       if (objectReference) {
-        this.getTasks();
+        delete this.currentBasket;
+        this.getTasks(objectReference);
       }
     });
   }
@@ -134,9 +126,9 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getTasks(): void {
+  private getTasks(objectReference?: ObjectReference): void {
     this.requestInProgress = true;
-    if (!this.currentBasket && !this.objectReference) {
+    if (!this.currentBasket && !objectReference) {
       this.requestInProgress = false;
       this.tasks = [];
     } else {
@@ -150,8 +142,8 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
           this.filterBy.filterParams.owner,
           this.filterBy.filterParams.priority,
           this.filterBy.filterParams.state,
-          this.objectReference ? this.objectReference.type : '',
-          this.objectReference ? this.objectReference.value : ''
+          objectReference ? objectReference.type : '',
+          objectReference ? objectReference.value : ''
         )
         .pipe(takeUntil(this.destroy$))
         .subscribe((taskResource) => {

@@ -23,7 +23,6 @@ export class TaskListComponent implements OnInit {
   ngOnInit() {}
 
   selectTask(taskId: string) {
-    this.workplaceService.selectObjectReference();
     this.selectedId = taskId;
     this.selectedIdChange.emit(taskId);
     this.router.navigate([{ outlets: { detail: `taskdetail/${this.selectedId}` } }], { relativeTo: this.route });
