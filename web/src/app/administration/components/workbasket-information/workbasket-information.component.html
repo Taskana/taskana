@@ -32,7 +32,7 @@
                     <label for="wb-key" class="control-label">Key</label>
                     <input type="text" required #key="ngModel" class="form-control" id="wb-key" placeholder="Key"
                         [(ngModel)]="workbasket.key" name="workbasket.key">
-                    <taskana-shared-field-error-display [displayError]="!isFieldValid('workbasket.key')" [validationTrigger]="this.toogleValidationMap.get('workbasket.key')"
+                    <taskana-shared-field-error-display [displayError]="!isFieldValid('workbasket.key')" [validationTrigger]="this.tgogleValidationMap.get('workbasket.key')"
                                                         errorMessage="* Key is required">
                     </taskana-shared-field-error-display>
                 </div>
@@ -42,7 +42,7 @@
                     <label for="wb-name" class="control-label">Name</label>
                     <input type="text" required #name="ngModel" class="form-control" id="wb-name" placeholder="Name"
                         [(ngModel)]="workbasket.name" name="workbasket.name">
-                    <taskana-shared-field-error-display [displayError]="!isFieldValid('workbasket.name')" [validationTrigger]="this.toogleValidationMap.get('workbasket.name')"
+                    <taskana-shared-field-error-display [displayError]="!isFieldValid('workbasket.name')" [validationTrigger]="this.toggleValidationMap.get('workbasket.name')"
                                                         errorMessage="* Name is required">
                     </taskana-shared-field-error-display>
                 </div>
@@ -57,7 +57,7 @@
                         <input type="text" required #owner="ngModel" class="form-control" id="wb-owner" placeholder="Owner"
                             [(ngModel)]="workbasket.owner" name="workbasket.owner">
                         <taskana-shared-field-error-display [displayError]="!isFieldValid('workbasket.owner')"
-                                                            [validationTrigger]="this.toogleValidationMap.get('workbasket.owner')" errorMessage="* Owner is required">
+                                                            [validationTrigger]="this.toggleValidationMap.get('workbasket.owner')" errorMessage="* Owner is required">
                         </taskana-shared-field-error-display>
                     </ng-template>
                 </div>
