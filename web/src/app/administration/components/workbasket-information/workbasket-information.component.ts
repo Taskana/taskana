@@ -38,7 +38,7 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
   @Input()
   action: ACTION;
 
-  @ViewChild('WorkbasketForm', { static: false })
+  @ViewChild('WorkbasketForm')
   workbasketForm: NgForm;
 
   workbasketClone: Workbasket;

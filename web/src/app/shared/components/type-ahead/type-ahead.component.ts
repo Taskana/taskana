@@ -58,7 +58,7 @@ export class TypeAheadComponent implements AfterViewInit, ControlValueAccessor {
   @Output()
   inputField = new EventEmitter<ElementRef>();
 
-  @ViewChild('inputTypeAhead', { static: false })
+  @ViewChild('inputTypeAhead')
   private inputTypeAhead;
 
   typeaheadLoading = false;

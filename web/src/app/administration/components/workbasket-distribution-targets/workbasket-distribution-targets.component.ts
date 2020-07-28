@@ -64,7 +64,7 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
   selectAllLeft = false;
   selectAllRight = false;
 
-  @ViewChild('panelBody', { static: false })
+  @ViewChild('panelBody')
   panelBody: ElementRef;
 
   @Select(WorkbasketSelectors.workbasketDistributionTargets)

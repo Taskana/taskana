@@ -28,7 +28,7 @@
   </div>
   <div class="panel-body" *ngIf="task">
     <div class="row">
-      <form #TaskForm="ngForm">
+      <ng-form #TaskForm="ngForm">
         <div class="col-md-6">
           <div class="form-group">
             <label for="task-description" class="control-label">Description</label>
@@ -48,7 +48,7 @@
               [(ngModel)]="task.due" name="task.due">
           </div>
         </div>
-      </form>
+      </ng-form>
     </div>
     <div class="row">
       <iframe class="col-xs-12" *ngIf="link" [src]="link"></iframe>
