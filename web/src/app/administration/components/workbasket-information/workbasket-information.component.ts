@@ -45,7 +45,7 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
   allTypes: Map<string, string>;
   requestInProgress = false;
   badgeMessage = '';
-  toogleValidationMap = new Map<string, boolean>();
+  toggleValidationMap = new Map<string, boolean>();
   lookupField = false;
 
   @Select(EngineConfigurationSelectors.workbasketsCustomisation)
@@ -98,7 +98,7 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
 
   onSubmit() {
     this.formsValidatorService.formSubmitAttempt = true;
-    this.formsValidatorService.validateFormInformation(this.workbasketForm, this.toogleValidationMap).then((value) => {
+    this.formsValidatorService.validateFormInformation(this.workbasketForm, this.toggleValidationMap).then((value) => {
       if (value) {
         this.onSave();
       }
