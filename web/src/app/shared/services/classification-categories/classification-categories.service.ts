@@ -4,7 +4,6 @@ import { Injectable } from '@angular/core';
 import { environment } from 'environments/environment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import set from 'set-value';
 import { Customisation } from '../../models/customisation';
 
 const customisationUrl = 'environments/data-sources/taskana-customization.json';
@@ -28,7 +27,15 @@ export class ClassificationCategoriesService {
     return this.httpClient.get<Customisation>(customisationUrl).pipe(
       map((customisation) => {
         Object.keys(customisation).forEach((lang) => {
-          set(customisation[lang], 'classifications.categories.missing', missingIcon);
+          if (customisation[lang]?.classifications?.categories) {
+            customisation[lang].classifications.categories.missing = missingIcon;
+          } else {
+            if (customisation[lang]?.classifications) {
+              customisation[lang].classifications.categories = { missing: missingIcon };
+            } else {
+              customisation[lang].classifications = { categories: { missing: missingIcon } };
+            }
+          }
         });
         return customisation;
       })
