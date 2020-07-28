@@ -43,6 +43,7 @@ export class TaskComponent implements OnInit, OnDestroy {
   async getTask(id: string) {
     this.requestInProgress = true;
     this.task = await this.taskService.getTask(id).toPromise();
+    this.taskService.selectTask(this.task);
     const classification = await this.classificationService
       .getClassification(this.task.classificationSummary.classificationId)
       .toPromise();
