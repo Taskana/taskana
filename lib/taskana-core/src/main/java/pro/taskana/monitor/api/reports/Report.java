@@ -34,8 +34,8 @@ public abstract class Report<I extends QueryItem, H extends ColumnHeader<? super
 
   protected Report(List<H> columnHeaders, String[] rowDesc) {
     this.rowDesc = rowDesc;
-    sumRow = createRow("Total", columnHeaders.size());
     this.columnHeaders = new ArrayList<>(columnHeaders);
+    sumRow = createRow("Total");
   }
 
   public final Map<String, Row<I>> getRows() {
@@ -69,16 +69,14 @@ public abstract class Report<I extends QueryItem, H extends ColumnHeader<? super
   public final void addItem(I item) {
     Row<I> row = null;
     if (columnHeaders.isEmpty()) {
-      row = reportRows.computeIfAbsent(item.getKey(), key -> createRow(key, columnHeaders.size()));
+      row = reportRows.computeIfAbsent(item.getKey(), this::createRow);
       row.updateTotalValue(item);
       sumRow.updateTotalValue(item);
     } else {
       for (int i = 0; i < columnHeaders.size(); i++) {
         if (columnHeaders.get(i).fits(item)) {
           if (row == null) {
-            row =
-                reportRows.computeIfAbsent(
-                    item.getKey(), key -> createRow(key, columnHeaders.size()));
+            row = reportRows.computeIfAbsent(item.getKey(), this::createRow);
           }
           row.addItem(item, i);
           sumRow.addItem(item, i);
@@ -102,6 +100,10 @@ public abstract class Report<I extends QueryItem, H extends ColumnHeader<? super
   public final void augmentDisplayNames(Map<String, String> displayMap) {
     reportRows.values().forEach(row -> row.setDisplayName(displayMap));
     sumRow.setDisplayName(displayMap);
+  }
+
+  public final Row<I> createRow(String key) {
+    return createRow(key, columnHeaders.size());
   }
 
   protected Row<I> createRow(String key, int columnSize) {
