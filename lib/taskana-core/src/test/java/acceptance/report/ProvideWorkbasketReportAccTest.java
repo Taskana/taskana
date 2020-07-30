@@ -69,6 +69,26 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
+  void should_FilterTasksAccordingToClassificationId_When_ClassificationIdFilterIsAplied()
+      throws Exception {
+    List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+    WorkbasketReport report =
+        MONITOR_SERVICE
+            .createWorkbasketReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .classificationIdIn(
+                Collections.singletonList("CLI:000000000000000000000000000000000001"))
+            .buildReport();
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(2);
+    assertThat(report.getRow("USER-1-1").getCells())
+        .isEqualTo(new int[] {6, 0, 0, 0, 0, 0, 0, 0, 0});
+    assertThat(report.getRow("USER-1-2").getCells())
+        .isEqualTo(new int[] {1, 2, 0, 0, 1, 0, 0, 0, 0});
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
   void testGetWorkbasketReportWithReportLineItemDefinitions() throws Exception {
     List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
