@@ -1,10 +1,11 @@
 @import '../../../../theme/colors';
 
 td > input[type='checkbox'] {
-  margin-top: 0px;
+  margin-top: 0;
 }
 .panel-body {
   overflow-x: auto;
+  padding-top: 0;
 }
 .text-width {
   width: 100%;
@@ -16,6 +17,13 @@ td > input[type='checkbox'] {
 .required-header:after {
   content: ' *';
   color: red;
+}
+
+th {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background: white;
 }
 
 td {
