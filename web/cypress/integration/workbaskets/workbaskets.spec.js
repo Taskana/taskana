@@ -1,12 +1,6 @@
 context("TASKANA Workbaskets", () => {
-<<<<<<< Updated upstream
   it("should be able to see all Workbaskets", () => {
     cy.visit(Cypress.env("baseUrl") + Cypress.env("adminUrl") + "/workbaskets");
-=======
-  /* it("should be able to see all Workbaskets", () => {
-    cy.visit(Cypress.config().adminUrl + "/workbaskets");
->>>>>>> Stashed changes
-
     cy.location().should(location => {
       expect(location.href).to.eq(
         Cypress.env("baseUrl") + Cypress.env("adminUrl") + "/workbaskets"
@@ -67,16 +61,6 @@ context("TASKANA Workbaskets", () => {
     });
   });
 
-  // it("should be able to navigate via pagination", () => {
-  //   cy.visit(Cypress.env("adminUrl") + "/workbaskets");
-  //   cy.get("#wb-pagination > :nth-child(3) > .ng-star-inserted")
-  //     .click()
-  //     .then(() => {
-  //       cy.log("i dont know how to test this");
-  //       expect(true).to.be.false;
-  //     });
-  // });
-
   it("should be possibile to edit workbasket description", () => {
     cy.visitTestWorkbasket();
 
@@ -131,7 +115,7 @@ context("TASKANA Workbaskets", () => {
   it("should be possibile to visit the access page", () => {
     cy.visitTestWorkbasket();
     cy.visitWorkbasketsAccessPage();
-  }); */
+  });
 
   it("should be possibile to add new access", () => {
     cy.visitTestWorkbasket();
