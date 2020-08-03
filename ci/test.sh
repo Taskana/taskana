@@ -57,7 +57,7 @@ function main() {
     ### TEST ###
     mvn -q verify -B -f $REL/.. -Dmaven.javadoc.skip -Dcheckstyle.skip -pl :taskana-core
     # Same as above (H2) we can not use the fancy '-f' maven option
-    (cd $REL/.. && mvn -q verify -B -pl :taskana-rest-spring-example-wildfly -P postgres -Dmaven.javadoc.skip -Dcheckstyle.skip)
+    (cd $REL/.. && mvn -q verify -B -pl :taskana-rest-spring-example-wildfly -Ddb.type=postgres -Dmaven.javadoc.skip -Dcheckstyle.skip)
     ;;
   HISTORY)
     set -x

@@ -1,29 +1,17 @@
 package pro.taskana.wildfly.security;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
-import org.springframework.security.web.authentication.preauth.j2ee.J2eePreAuthenticatedProcessingFilter;
-import org.wildfly.security.auth.server.SecurityDomain;
-import org.wildfly.security.auth.server.SecurityIdentity;
-import org.wildfly.security.authz.Roles;
-
-import pro.taskana.rest.security.WebSecurityConfig;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.jaasapi.JaasApiIntegrationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * Default basic configuration for taskana web example running on Wildfly / JBoss with Elytron or
@@ -31,111 +19,46 @@ import pro.taskana.rest.security.WebSecurityConfig;
  */
 @Configuration
 @EnableWebSecurity
-@Order(1)
-public class WildflyWebSecurityConfig extends WebSecurityConfig {
-
-  @Value("${devMode:false}")
-  private boolean devMode;
+public class WildflyWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Bean
-  public J2eePreAuthenticatedProcessingFilter preAuthFilter() {
-    J2eePreAuthenticatedProcessingFilter filter = new J2eePreAuthenticatedProcessingFilter();
-    filter.setAuthenticationManager(preAuthManager());
+  public WebMvcConfigurer corsConfigurer() {
+    return new CorsWebMvcConfigurer();
+  }
+
+  @Bean
+  public FilterRegistrationBean<CorsFilter> corsFilter() {
+    final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    CorsConfiguration config = new CorsConfiguration();
+    config.setAllowCredentials(true);
+    config.addAllowedOrigin("*");
+    config.addAllowedHeader("*");
+    config.addAllowedMethod("*");
+    source.registerCorsConfiguration("/**", config);
+    FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(source));
+    bean.setOrder(0);
+    return bean;
+  }
+
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    http.addFilter(jaasApiIntegrationFilter())
+        .addFilterAfter(new ElytronToJaasFilter(), JaasApiIntegrationFilter.class)
+        .csrf()
+        .disable();
+  }
+
+  protected JaasApiIntegrationFilter jaasApiIntegrationFilter() {
+    JaasApiIntegrationFilter filter = new JaasApiIntegrationFilter();
+    filter.setCreateEmptySubject(true);
     return filter;
   }
 
-  @Bean
-  public AuthenticationManager preAuthManager() {
-    return new AuthenticationManager() {
-
-      @Override
-      public Authentication authenticate(Authentication authentication)
-          throws AuthenticationException {
-        return preauthAuthProvider().authenticate(authentication);
-      }
-    };
-  }
-
-  @Bean
-  public PreAuthenticatedAuthenticationProvider preauthAuthProvider() {
-    PreAuthenticatedAuthenticationProvider preauthAuthProvider =
-        new PreAuthenticatedAuthenticationProvider();
-    preauthAuthProvider.setPreAuthenticatedUserDetailsService(authenticationUserDetailsService());
-    return preauthAuthProvider;
-  }
-
-  @Bean
-  public AuthenticationUserDetailsService<PreAuthenticatedAuthenticationToken>
-      authenticationUserDetailsService() {
-    return new PreAuthenticatedAuthenticationTokenAuthenticationUserDetailsService();
-  }
-
-  private static class PreAuthenticatedAuthenticationTokenAuthenticationUserDetailsService
-      implements AuthenticationUserDetailsService<PreAuthenticatedAuthenticationToken> {
+  private static class CorsWebMvcConfigurer implements WebMvcConfigurer {
 
     @Override
-    public UserDetails loadUserDetails(PreAuthenticatedAuthenticationToken token)
-        throws UsernameNotFoundException {
-      return new MyUserDetails(token);
-    }
-
-    private static class MyUserDetails implements UserDetails {
-
-      private static final long serialVersionUID = 1L;
-      private final PreAuthenticatedAuthenticationToken token;
-
-      public MyUserDetails(PreAuthenticatedAuthenticationToken token) {
-        this.token = token;
-      }
-
-      @Override
-      public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        SecurityIdentity securityIdentity = getSecurityIdentity();
-        if (securityIdentity != null) {
-          Roles roles = securityIdentity.getRoles();
-          roles.forEach(role -> authorities.add(new SimpleGrantedAuthority(role)));
-        }
-        return authorities;
-      }
-
-      @Override
-      public String getPassword() {
-        return (String) token.getCredentials();
-      }
-
-      @Override
-      public String getUsername() {
-        return token.getName();
-      }
-
-      @Override
-      public boolean isAccountNonExpired() {
-        return true;
-      }
-
-      @Override
-      public boolean isAccountNonLocked() {
-        return true;
-      }
-
-      @Override
-      public boolean isCredentialsNonExpired() {
-        return true;
-      }
-
-      @Override
-      public boolean isEnabled() {
-        return true;
-      }
-
-      private SecurityIdentity getSecurityIdentity() {
-        SecurityDomain current = SecurityDomain.getCurrent();
-        if (current != null) {
-          return current.getCurrentSecurityIdentity();
-        }
-        return null;
-      }
+    public void addCorsMappings(CorsRegistry registry) {
+      registry.addMapping("/**").allowedOrigins("*");
     }
   }
 }

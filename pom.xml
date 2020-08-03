@@ -38,7 +38,8 @@
         <version.maven.resources>3.1.0</version.maven.resources>
         <version.maven.surefire>3.0.0-M5</version.maven.surefire>
         <version.maven.asciidoctor>1.6.0</version.maven.asciidoctor>
-        <version.maven.wildfly>2.0.2.Final</version.maven.wildfly>
+        <version.maven.clean>3.1.0</version.maven.clean>
+        <version.maven.dependency>3.1.2</version.maven.dependency>
 
         <!-- release dependencies -->
         <version.maven.gpg>1.6</version.maven.gpg>
@@ -50,14 +51,14 @@
         <version.spring.mybatis>2.0.5</version.spring.mybatis>
 
         <!-- wildfly dependencies -->
-        <version.wildfly>11.0.0.Final</version.wildfly>
+        <version.wildfly>13.0.0.Final</version.wildfly>
 
         <!-- java ee dependencies -->
         <version.resteasy>4.5.6.Final</version.resteasy>
         <version.thorntail>2.7.0.Final</version.thorntail>
-        <version.wildfly.security>1.12.1.Final</version.wildfly.security>
         <version.javaee-api>8.0.1</version.javaee-api>
         <version.arquillian>1.5.0.Final</version.arquillian>
+        <version.arquillian.managed.wildfly>2.2.0.Final</version.arquillian.managed.wildfly>
 
         <!-- test dependencies -->
         <version.archunit>0.14.1</version.archunit>
