@@ -15,24 +15,14 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <properties>
-        <skipIntegrationTests>true</skipIntegrationTests>
-        <!-- Default H2 DB configuration -->
-        <connection-url>jdbc:h2:mem:taskana;IGNORECASE=TRUE;LOCK_MODE=0</connection-url>
-        <driver-class>org.h2.Driver</driver-class>
-        <driver-name>h2</driver-name>
-        <user-name>sa</user-name>
-        <password>sa</password>
-    </properties>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>io.thorntail</groupId>
-                <artifactId>bom</artifactId>
-                <version>${version.thorntail}</version>
+                <groupId>org.wildfly.bom</groupId>
+                <artifactId>wildfly-javaee7</artifactId>
                 <scope>import</scope>
                 <type>pom</type>
+                <version>${version.wildfly}</version>
             </dependency>
             <dependency>
                 <groupId>org.jboss.arquillian</groupId>
@@ -70,10 +60,6 @@
             <scope>provided</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
         <dependency>
             <groupId>com.h2database</groupId>
@@ -83,7 +69,7 @@
         <dependency>
             <groupId>org.wildfly.security</groupId>
             <artifactId>wildfly-elytron</artifactId>
-            <version>${version.wildfly.security}</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- test dependencies -->
@@ -95,20 +81,35 @@
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-client</artifactId>
-            <version>${version.resteasy}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
             <scope>test</scope>
         </dependency>
         <!-- Brought in via WildFly Swarm bom -->
         <dependency>
-            <groupId>io.thorntail</groupId>
-            <artifactId>arquillian</artifactId>
-            <scope>test</scope>
+            <groupId>org.wildfly.arquillian</groupId>
+            <artifactId>wildfly-arquillian-container-managed</artifactId>
+            <version>${version.arquillian.managed.wildfly}</version>
+            <scope>provided</scope>
         </dependency>
         <!-- Brought in via Arquillian BOM, see dependencyManagement section 
             above -->
         <dependency>
             <groupId>org.jboss.arquillian.junit</groupId>
             <artifactId>arquillian-junit-container</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.protocol</groupId>
+            <artifactId>arquillian-protocol-servlet</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -121,159 +122,66 @@
             <artifactId>shrinkwrap-resolver-api-maven</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
-    <profiles>
-        <profile>
-            <id>postgres</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <!-- Reading properties from file and use then as data source 
-                properties is a pending improvement of Jboss development team check out -> 
-                https://issues.jboss.org/browse/WFMP-70 That's why we are including postgres 
-                connection properties directly in this pom file. -->
-            <properties>
-                <driver-class>org.postgresql.Driver</driver-class>
-                <connection-url>jdbc:postgresql://localhost:50102/postgres</connection-url>
-                <driver-name>postgresqldriver</driver-name>
-                <user-name>postgres</user-name>
-                <password>postgres</password>
-                <activatedProperties>postgres</activatedProperties>
-                <skipIntegrationTests>false</skipIntegrationTests>
-            </properties>
-        </profile>
-    </profiles>
-
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
         <plugins>
             <plugin>
-                <groupId>org.wildfly.plugins</groupId>
-                <artifactId>wildfly-maven-plugin</artifactId>
-                <version>${version.maven.wildfly}</version>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>${version.maven.clean}</version>
                 <configuration>
-                    <version>${version.wildfly}</version>
-                    <add-user>
-                        <users>
-                            <user>
-                                <username>admin</username>
-                                <password>admin</password>
-                            </user>
-                            <user>
-                                <username>admin</username>
-                                <password>admin</password>
-                                <groups>
-                                    <group>testGroup</group>
-                                </groups>
-                                <applicationUser>true</applicationUser>
-                            </user>
-                        </users>
-                    </add-user>
+                    <excludeDefaultDirectories>true</excludeDefaultDirectories>
+                    <filesets>
+                        <fileset>
+                            <directory>target</directory>
+                            <excludes>
+                                <exclude>wildfly-${version.wildfly}</exclude>
+                                <exclude>wildfly-${version.wildfly}/**</exclude>
+                            </excludes>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                    </filesets>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>${version.maven.dependency}</version>
                 <executions>
                     <execution>
-                        <id>run-wildfly</id>
-                        <phase>install</phase>
+                        <id>unpack-wildfly</id>
+                        <phase>process-test-classes</phase>
                         <goals>
-                            <goal>start</goal>
-                        </goals>
-                    </execution>
-                    <!-- Deploy the JDBC library in JBoss -->
-                    <execution>
-                        <id>deploy-driver</id>
-                        <phase>install</phase>
-                        <configuration>
-                            <groupId>org.postgresql</groupId>
-                            <artifactId>postgresql</artifactId>
-                            <name>postgresqldriver</name>
-                        </configuration>
-                        <goals>
-                            <goal>deploy-artifact</goal>
-                        </goals>
-                    </execution>
-                    <!-- Add a data source -->
-                    <execution>
-                        <id>add-datasource</id>
-                        <phase>install</phase>
-                        <configuration>
-                            <address>subsystem=datasources,data-source=java:/TaskanaDS</address>
-                            <resources>
-                                <resource>
-                                    <properties>
-                                        <jndi-name>java:/TaskanaDS</jndi-name>
-                                        <enabled>true</enabled>
-                                        <connection-url>${connection-url}</connection-url>
-                                        <driver-class>${driver-class}</driver-class>
-                                        <driver-name>${driver-name}</driver-name>
-                                        <user-name>${user-name}</user-name>
-                                        <password>${password}</password>
-                                    </properties>
-                                </resource>
-                            </resources>
-                        </configuration>
-                        <goals>
-                            <goal>add-resource</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>edit-undertow</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>execute-commands</goal>
+                            <goal>unpack</goal>
                         </goals>
                         <configuration>
-                            <commands>
-                                <command>/subsystem=undertow:write-attribute(name=default-server,value=default-server)</command>
-                                <command>/subsystem=undertow:write-attribute(name=default-virtual-host,value=default-host)</command>
-                                <command>/subsystem=undertow:write-attribute(name=default-servlet-container,value=default)</command>
-                                <command>/subsystem=undertow:write-attribute(name=default-security-domain,value=ApplicationDomain)</command>
-                            </commands>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.wildfly</groupId>
+                                    <artifactId>wildfly-dist</artifactId>
+                                    <version>${version.wildfly}</version>
+                                    <type>zip</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>add-application-security-domain</id>
-                        <phase>install</phase>
+                        <id>copy-postgres-db-driver</id>
+                        <phase>process-test-classes</phase>
                         <goals>
-                            <goal>add-resource</goal>
+                            <goal>copy</goal>
                         </goals>
                         <configuration>
-                            <address>subsystem=undertow</address>
-                            <resources>
-                                <resource>
-                                    <address>application-security-domain=ApplicationDomain</address>
-                                    <properties>
-                                        <http-authentication-factory>application-http-authentication</http-authentication-factory>
-                                    </properties>
-                                </resource>
-                            </resources>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.postgresql</groupId>
+                                    <artifactId>postgresql</artifactId>
+                                    <outputDirectory>${project.build.directory}/wildfly-${version.wildfly}/modules/system/layers/base/org/postgresql/main</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
                         </configuration>
-                    </execution>
-                    <!-- Deploy the application on install -->
-                    <execution>
-                        <id>wildfly-deploy</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>deploy</goal>
-                        </goals>
-                    </execution>
-                    <!-- shutdown the application on install -->
-                    <execution>
-                        <id>wildfly-shutdown</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>shutdown</goal>
-                        </goals>
                     </execution>
                 </executions>
             </plugin>
@@ -295,7 +203,6 @@
                             <goal>test</goal>
                         </goals>
                         <configuration>
-                            <skip>${skipIntegrationTests}</skip>
                             <includes>
                                 <include>**/*Test.java</include>
                             </includes>
@@ -308,6 +215,24 @@
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>${version.maven.resources}</version>
                 <executions>
+                    <execution>
+                        <id>copy-module-xml</id>
+                        <phase>process-test-classes</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/wildfly-${version.wildfly}/modules/system/layers/base/org/postgresql/main</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/test/resources</directory>
+                                    <includes>
+                                        <include>module.xml</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
                     <execution>
                         <id>copy-documentation-to-static-folder</id>
                         <phase>prepare-package</phase>

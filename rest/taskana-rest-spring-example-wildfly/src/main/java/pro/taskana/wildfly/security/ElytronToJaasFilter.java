@@ -7,8 +7,6 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 import org.wildfly.security.auth.server.SecurityDomain;
 import org.wildfly.security.auth.server.SecurityIdentity;
@@ -24,52 +22,45 @@ public class ElytronToJaasFilter extends GenericFilterBean {
       throws IOException, ServletException {
     SecurityIdentity securityIdentity = getSecurityIdentity();
     if (securityIdentity != null) {
-      Roles roles = securityIdentity.getRoles();
-      Subject subject = obtainSubject(request);
-      if (subject != null) {
-        if (subject.getPrincipals().size() == 0) {
-          subject.getPrincipals().add(securityIdentity.getPrincipal());
-        }
-        if (subject.getPrincipals(GroupPrincipal.class).size() == 0) {
-          roles.forEach(role -> subject.getPrincipals().add(new GroupPrincipal(role)));
-        }
-      }
+      applySecurityIdentityToSubject(securityIdentity);
     }
     chain.doFilter(request, response);
   }
 
-  /**
-   * Obtains the <code>Subject</code> to run as or <code>null</code> if no <code>Subject</code> is
-   * available.
-   *
-   * <p>The default implementation attempts to obtain the <code>Subject</code> from the <code>
-   * SecurityContext</code>'s <code>Authentication</code>. If it is of type <code>
-   * JaasAuthenticationToken</code> and is authenticated, the <code>Subject</code> is returned from
-   * it. Otherwise, <code>null</code> is returned.
-   *
-   * @param request the current <code>ServletRequest</code>
-   * @return the Subject to run as or <code>null</code> if no <code>Subject</code> is available.
-   */
-  protected Subject obtainSubject(ServletRequest request) {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    if (logger.isDebugEnabled()) {
-      logger.debug("Attempting to obtainSubject using authentication : " + authentication);
+  private void applySecurityIdentityToSubject(SecurityIdentity securityIdentity) {
+    Roles roles = securityIdentity.getRoles();
+    Subject subject = obtainSubject();
+    if (subject != null) {
+      if (subject.getPrincipals().size() == 0) {
+        subject.getPrincipals().add(securityIdentity.getPrincipal());
+      }
+      if (subject.getPrincipals(GroupPrincipal.class).size() == 0) {
+        roles.forEach(role -> subject.getPrincipals().add(new GroupPrincipal(role)));
+      }
+      if (logger.isDebugEnabled()) {
+        logger.debug("Current JAAS subject after applying Elytron SecurityIdentity: " + subject);
+      }
     }
-    if (authentication == null) {
-      return null;
-    }
-    if (!authentication.isAuthenticated()) {
-      return null;
-    }
+  }
 
-    return Subject.getSubject(AccessController.getContext());
+  private Subject obtainSubject() {
+    Subject subject = Subject.getSubject(AccessController.getContext());
+    if (logger.isDebugEnabled()) {
+      logger.debug("Current JAAS subject: " + subject);
+    }
+    return subject;
   }
 
   private SecurityIdentity getSecurityIdentity() {
     SecurityDomain current = SecurityDomain.getCurrent();
+    SecurityIdentity identity = null;
     if (current != null) {
-      return current.getCurrentSecurityIdentity();
+      identity = current.getCurrentSecurityIdentity();
     }
-    return null;
+    if (logger.isDebugEnabled()) {
+      logger.debug("Current Elytron SecurityIdentity: " + identity);
+    }
+
+    return identity;
   }
 }

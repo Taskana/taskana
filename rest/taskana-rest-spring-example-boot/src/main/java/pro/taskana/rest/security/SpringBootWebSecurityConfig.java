@@ -30,7 +30,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 /** Default basic configuration for taskana web example. */
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class SpringBootWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Value("${taskana.ldap.serverUrl:ldap://localhost:10389}")
   private String ldapServerUrl;
@@ -63,7 +63,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     config.addAllowedOrigin("*");
     config.addAllowedHeader("*");
     config.addAllowedMethod("*");
-    config.addAllowedMethod("POST");
     source.registerCorsConfiguration("/**", config);
     FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(source));
     bean.setOrder(0);

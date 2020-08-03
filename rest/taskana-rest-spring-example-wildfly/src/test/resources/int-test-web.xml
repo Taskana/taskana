@@ -35,11 +35,7 @@
         <role-name>*</role-name>
     </security-role>
     <login-config>
-        <auth-method>FORM</auth-method>
+        <auth-method>BASIC</auth-method>
         <realm-name>taskanaApplicationDomain</realm-name>
-        <form-login-config>
-            <form-login-page>/login</form-login-page>
-            <form-error-page>/login?error</form-error-page>
-        </form-login-config>
     </login-config>
 </web-app>
