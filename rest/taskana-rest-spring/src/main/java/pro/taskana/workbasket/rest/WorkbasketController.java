@@ -220,11 +220,10 @@ public class WorkbasketController extends AbstractPagingController {
       getWorkbasketAccessItems(@PathVariable(value = "workbasketId") String workbasketId)
           throws NotAuthorizedException, WorkbasketNotFoundException {
     LOGGER.debug("Entry to getWorkbasketAccessItems(workbasketId= {})", workbasketId);
-    ResponseEntity<TaskanaPagedModel<WorkbasketAccessItemRepresentationModel>> result;
 
     List<WorkbasketAccessItem> accessItems =
         workbasketService.getWorkbasketAccessItems(workbasketId);
-    result =
+    final ResponseEntity<TaskanaPagedModel<WorkbasketAccessItemRepresentationModel>> result =
         ResponseEntity.ok(
             workbasketAccessItemRepresentationModelAssembler.toPageModelForSingleWorkbasket(
                 workbasketId, accessItems, null));

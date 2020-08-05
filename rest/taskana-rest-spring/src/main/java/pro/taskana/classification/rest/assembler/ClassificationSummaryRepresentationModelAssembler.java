@@ -19,11 +19,9 @@ import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
-import pro.taskana.common.rest.Mapping;
 import pro.taskana.common.rest.assembler.TaskanaPagingAssembler;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
 import pro.taskana.common.rest.models.TaskanaPagedModelKeys;
-import pro.taskana.resource.rest.PageLinks;
 
 /** EntityModel assembler for {@link ClassificationSummaryRepresentationModel}. */
 @Component
@@ -98,9 +96,9 @@ public class ClassificationSummaryRepresentationModelAssembler
   }
 
   @Override
-  @PageLinks(Mapping.URL_CLASSIFICATIONS)
   public TaskanaPagedModel<ClassificationSummaryRepresentationModel> toPageModel(
       Iterable<ClassificationSummary> entities, PageMetadata pageMetadata) {
-    return TaskanaPagingAssembler.super.toPageModel(entities, pageMetadata);
+    return addLinksToPagedResource(
+        TaskanaPagingAssembler.super.toPageModel(entities, pageMetadata));
   }
 }

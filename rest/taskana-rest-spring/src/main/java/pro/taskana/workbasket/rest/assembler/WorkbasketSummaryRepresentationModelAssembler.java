@@ -10,11 +10,9 @@ import org.springframework.hateoas.PagedModel.PageMetadata;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
-import pro.taskana.common.rest.Mapping;
 import pro.taskana.common.rest.assembler.TaskanaPagingAssembler;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
 import pro.taskana.common.rest.models.TaskanaPagedModelKeys;
-import pro.taskana.resource.rest.PageLinks;
 import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
@@ -86,13 +84,12 @@ public class WorkbasketSummaryRepresentationModelAssembler
   }
 
   @Override
-  @PageLinks(Mapping.URL_WORKBASKET)
   public TaskanaPagedModel<WorkbasketSummaryRepresentationModel> toPageModel(
       Iterable<WorkbasketSummary> entities, PageMetadata pageMetadata) {
-    return TaskanaPagingAssembler.super.toPageModel(entities, pageMetadata);
+    return addLinksToPagedResource(
+        TaskanaPagingAssembler.super.toPageModel(entities, pageMetadata));
   }
 
-  @PageLinks(Mapping.URL_WORKBASKET_ID_DISTRIBUTION)
   public TaskanaPagedModel<WorkbasketSummaryRepresentationModel> toDistributionTargetPageModel(
       List<WorkbasketSummary> workbasketSummaries, PageMetadata pageMetadata) {
     return workbasketSummaries.stream()
@@ -100,6 +97,8 @@ public class WorkbasketSummaryRepresentationModelAssembler
         .collect(
             Collectors.collectingAndThen(
                 Collectors.toList(),
-                list -> new TaskanaPagedModel<>(DISTRIBUTION_TARGETS, list, pageMetadata)));
+                list ->
+                    addLinksToPagedResource(
+                        new TaskanaPagedModel<>(DISTRIBUTION_TARGETS, list, pageMetadata))));
   }
 }
