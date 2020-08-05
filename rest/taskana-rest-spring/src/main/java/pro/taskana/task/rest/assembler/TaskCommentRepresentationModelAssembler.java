@@ -10,11 +10,9 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import pro.taskana.common.api.exceptions.SystemException;
-import pro.taskana.common.rest.Mapping;
 import pro.taskana.common.rest.assembler.TaskanaPagingAssembler;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
 import pro.taskana.common.rest.models.TaskanaPagedModelKeys;
-import pro.taskana.resource.rest.PageLinks;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.TaskComment;
 import pro.taskana.task.internal.models.TaskCommentImpl;
@@ -70,9 +68,9 @@ public class TaskCommentRepresentationModelAssembler
   }
 
   @Override
-  @PageLinks(Mapping.URL_TASK_COMMENTS)
   public TaskanaPagedModel<TaskCommentRepresentationModel> toPageModel(
       Iterable<TaskComment> taskComments, PageMetadata pageMetadata) {
-    return TaskanaPagingAssembler.super.toPageModel(taskComments, pageMetadata);
+    return addLinksToPagedResource(
+        TaskanaPagingAssembler.super.toPageModel(taskComments, pageMetadata));
   }
 }
