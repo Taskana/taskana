@@ -36,6 +36,7 @@ nbdist/
 # compiled output
 tmp/
 out-tsc/
+coverage/
 
 # dependencies
 node_modules/
