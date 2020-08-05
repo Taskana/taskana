@@ -4,8 +4,6 @@ import { Routes } from '@angular/router';
 import { NgxsModule } from '@ngxs/store';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
 import { Location } from '@angular/common';
-import { take } from 'rxjs/operators';
-import { debug } from 'util';
 import { WorkbasketOverviewComponent } from './workbasket-overview.component';
 
 @Component({
