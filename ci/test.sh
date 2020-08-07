@@ -69,9 +69,20 @@ function main() {
     ;;
   WEB)
     set -x
-    (cd $REL/../web && npm install --silent && npm run test)
+    ### INSTALL ###
+    (cd $REL/../web && npm install --silent)
+
+    mvn -q install -B -f $REL/.. -am -T 4C -pl :taskana-rest-spring-example-boot -Dasciidoctor.skip -DskipTests -Dmaven.javadoc.skip -Dcheckstyle.skip
+    mvn spring-boot:run -f $REL/../rest/taskana-rest-spring-example-boot > /dev/null &
+    (cd $REL/../web && npm run start > /dev/null &)
+
+    ### TEST ###
+    (cd $REL/../web && npm run test -- --coverageReporters text-summary)
+    (cd $REL/../web && npm run e2e -- --config-file ../ci/cypress.json)
+
+    ### CLEANUP ###
+    jobs -p | xargs -rn10 kill
     ;;
   esac
 }
-
 main "$@"
