@@ -197,13 +197,13 @@ public interface MonitorMapper {
           + "AND DOMAIN IN (<foreach collection='domains' item='domain' separator=','>#{domain}</foreach>) "
           + "</if>"
           + "<if test='classificationIds != null'>"
-          + "AND CLASSIFICATION_ID IN (<foreach collection='classificationIds' item='classificationId' separator=','>#{classificationId}</foreach>) "
+          + "AND T.CLASSIFICATION_ID IN (<foreach collection='classificationIds' item='classificationId' separator=','>#{classificationId}</foreach>) "
           + "</if>"
           + "<if test='excludedClassificationIds != null'>"
-          + "AND CLASSIFICATION_ID NOT IN (<foreach collection='excludedClassificationIds' item='excludedClassificationId' separator=','>#{excludedClassificationId}</foreach>) "
+          + "AND T.CLASSIFICATION_ID NOT IN (<foreach collection='excludedClassificationIds' item='excludedClassificationId' separator=','>#{excludedClassificationId}</foreach>) "
           + "</if>"
           + "<if test='customAttributeFilter != null'>"
-          + "AND (<foreach collection='customAttributeFilter.keys' item='key' separator=' AND '>(${key} = '${customAttributeFilter.get(key)}')</foreach>) "
+          + "AND (<foreach collection='customAttributeFilter.keys' item='key' separator=' AND '>(T.${key} = '${customAttributeFilter.get(key)}')</foreach>) "
           + "</if>"
           + "AND T.${timestamp} IS NOT NULL "
           + "</where>"
@@ -265,7 +265,7 @@ public interface MonitorMapper {
     @Result(column = "AGE_IN_DAYS", property = "ageInDays"),
     @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks")
   })
-  List<MonitorQueryItem> getTaskCountOfCustomFieldValues(
+  List<MonitorQueryItem> getTaskCountOfTaskCustomFieldValues(
       @Param("customField") TaskCustomField taskCustomField,
       @Param("workbasketIds") List<String> workbasketIds,
       @Param("states") List<TaskState> states,
@@ -417,22 +417,22 @@ public interface MonitorMapper {
           + "FROM TASK AS T INNER JOIN WORKBASKET AS W ON T.WORKBASKET_KEY=W.KEY "
           + "<where>"
           + "<if test=\"status.name() == 'COMPLETED'\">"
-          + "T.COMPLETED IS NOT NULL"
+          + "T.COMPLETED IS NOT NULL "
           + "</if>"
           + "<if test='classificationCategories != null'>"
-          + "AND CLASSIFICATION_CATEGORY IN (<foreach collection='classificationCategories' item='category' separator=','>#{category}</foreach>) "
+          + "AND T.CLASSIFICATION_CATEGORY IN (<foreach collection='classificationCategories' item='category' separator=','>#{category}</foreach>) "
           + "</if>"
           + "<if test='classificationIds != null'>"
-          + "AND CLASSIFICATION_ID IN (<foreach collection='classificationIds' item='classificationId' separator=','>#{classificationId}</foreach>) "
+          + "AND T.CLASSIFICATION_ID IN (<foreach collection='classificationIds' item='classificationId' separator=','>#{classificationId}</foreach>) "
           + "</if>"
           + "<if test='excludedClassificationIds != null'>"
-          + "AND CLASSIFICATION_ID NOT IN (<foreach collection='excludedClassificationIds' item='excludedClassificationId' separator=','>#{excludedClassificationId}</foreach>) "
+          + "AND T.CLASSIFICATION_ID NOT IN (<foreach collection='excludedClassificationIds' item='excludedClassificationId' separator=','>#{excludedClassificationId}</foreach>) "
           + "</if>"
           + "<if test='domains != null'>"
           + "AND DOMAIN IN (<foreach collection='domains' item='domain' separator=','>#{domain}</foreach>) "
           + "</if>"
           + "<if test='customAttributeFilter != null'>"
-          + "AND (<foreach collection='customAttributeFilter.keys' item='key' separator=' AND '>(${key} = '${customAttributeFilter.get(key)}')</foreach>) "
+          + "AND (<foreach collection='customAttributeFilter.keys' item='key' separator=' AND '>(T.${key} = '${customAttributeFilter.get(key)}')</foreach>) "
           + "</if>"
           + "</where>"
           + ") AS A "

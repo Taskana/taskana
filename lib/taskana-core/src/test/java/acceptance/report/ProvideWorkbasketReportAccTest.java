@@ -69,7 +69,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void should_FilterTasksAccordingToClassificationId_When_ClassificationIdFilterIsAplied()
+  void should_FilterTasksAccordingToClassificationId_When_ClassificationIdFilterIsApplied()
       throws Exception {
     List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
     WorkbasketReport report =

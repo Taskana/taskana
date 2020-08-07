@@ -50,7 +50,7 @@ public class TaskCustomFieldValueReportBuilderImpl
       this.taskanaEngine.openConnection();
       TaskCustomFieldValueReport report = new TaskCustomFieldValueReport(this.columnHeaders);
       List<MonitorQueryItem> monitorQueryItems =
-          this.monitorMapper.getTaskCountOfCustomFieldValues(
+          this.monitorMapper.getTaskCountOfTaskCustomFieldValues(
               this.taskCustomField,
               this.workbasketIds,
               this.states,
