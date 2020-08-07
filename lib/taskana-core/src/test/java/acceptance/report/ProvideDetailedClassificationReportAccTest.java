@@ -48,6 +48,29 @@ class ProvideDetailedClassificationReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
+  void should_FilterTasksAccordingToClassificationId_When_ClassificationIdFilterIsApplied()
+      throws Exception {
+    List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+    DetailedClassificationReport report =
+        MONITOR_SERVICE
+            .createClassificationReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .classificationIdIn(
+                Collections.singletonList("CLI:000000000000000000000000000000000001"))
+            .buildDetailedReport();
+    assertThat(report).isNotNull();
+
+    assertThat(report.rowSize()).isOne();
+    DetailedClassificationRow row = report.getRow("L10000");
+    assertThat(row.getCells()).isEqualTo(new int[] {7, 2, 0, 0, 1, 0, 0, 0, 0});
+    assertThat(row.getFoldableRow("L11000").getCells())
+        .isEqualTo(new int[] {2, 0, 0, 0, 1, 0, 0, 0, 0});
+    assertThat(row.getFoldableRow("N/A").getCells())
+        .isEqualTo(new int[] {5, 2, 0, 0, 0, 0, 0, 0, 0});
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
   void should_augmentDisplayNames_When_ReportIsBuild() throws Exception {
     DetailedClassificationReport report =
         MONITOR_SERVICE.createClassificationReportBuilder().buildDetailedReport();

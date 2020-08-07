@@ -35,6 +35,30 @@ class ProvideTimestampReportAccTest extends AbstractReportAccTest {
     assertThat(report.getRow("COMPLETED").getDisplayName()).isEqualTo("COMPLETED");
   }
 
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_FilterTasksAccordingToClassificationId_When_ClassificationIdFilterIsApplied()
+      throws Exception {
+    List<TimeIntervalColumnHeader> headers =
+        IntStream.rangeClosed(-14, 0)
+            .mapToObj(TimeIntervalColumnHeader.Date::new)
+            .collect(Collectors.toList());
+    TimestampReport report =
+        MONITOR_SERVICE
+            .createTimestampReportBuilder()
+            .withColumnHeaders(headers)
+            .classificationIdIn(
+                Collections.singletonList("CLI:000000000000000000000000000000000001"))
+            .buildReport();
+    assertThat(report).isNotNull();
+
+    assertThat(report.rowSize()).isEqualTo(2);
+    assertThat(report.getRow("CREATED").getCells())
+        .isEqualTo(new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10});
+    assertThat(report.getRow("COMPLETED").getCells())
+        .isEqualTo(new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1});
+  }
+
   /**
    * This test covers every insert operation of the TimestampReport. We have two definitions for org
    * level 1: 'org1' and 'N/A'. All other org levels only contain 'N/A'. Thus this test only tests

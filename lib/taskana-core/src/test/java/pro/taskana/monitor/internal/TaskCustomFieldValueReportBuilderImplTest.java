@@ -66,7 +66,7 @@ class TaskCustomFieldValueReportBuilderImplTest {
     monitorQueryItem.setKey("Geschaeftsstelle A");
     monitorQueryItem.setNumberOfTasks(1);
     expectedResult.add(monitorQueryItem);
-    when(monitorMapperMock.getTaskCountOfCustomFieldValues(
+    when(monitorMapperMock.getTaskCountOfTaskCustomFieldValues(
             TaskCustomField.CUSTOM_1,
             workbasketIds,
             states,
@@ -94,7 +94,7 @@ class TaskCustomFieldValueReportBuilderImplTest {
     verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
     verify(internalTaskanaEngineMock, times(2)).getEngine();
     verify(monitorMapperMock)
-        .getTaskCountOfCustomFieldValues(
+        .getTaskCountOfTaskCustomFieldValues(
             any(), any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
     verifyNoMoreInteractions(
@@ -128,7 +128,7 @@ class TaskCustomFieldValueReportBuilderImplTest {
     monitorQueryItem.setAgeInDays(0);
     monitorQueryItem.setNumberOfTasks(1);
     expectedResult.add(monitorQueryItem);
-    when(monitorMapperMock.getTaskCountOfCustomFieldValues(
+    when(monitorMapperMock.getTaskCountOfTaskCustomFieldValues(
             TaskCustomField.CUSTOM_1,
             workbasketIds,
             states,
@@ -157,7 +157,7 @@ class TaskCustomFieldValueReportBuilderImplTest {
     verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
     verify(internalTaskanaEngineMock, times(2)).getEngine();
     verify(monitorMapperMock)
-        .getTaskCountOfCustomFieldValues(
+        .getTaskCountOfTaskCustomFieldValues(
             any(), any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
     verifyNoMoreInteractions(
