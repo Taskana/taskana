@@ -53,7 +53,7 @@ class TaskStatusReportBuilderImplTest {
     queryItem2.setState(TaskState.COMPLETED);
     queryItem2.setDomain("DOMAIN_X");
     List<TaskQueryItem> queryItems = Arrays.asList(queryItem1, queryItem2);
-    when(monitorMapperMock.getTasksCountByState(null, null)).thenReturn(queryItems);
+    when(monitorMapperMock.getTasksCountByState(null, null, null)).thenReturn(queryItems);
 
     // when
     final TaskStatusReport report = cut.createTaskStatusReportBuilder().buildReport();
@@ -63,7 +63,7 @@ class TaskStatusReportBuilderImplTest {
     inOrder.verify(internalTaskanaEngineMock).getEngine();
     inOrder.verify(taskanaEngineMock).checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
     inOrder.verify(internalTaskanaEngineMock).openConnection();
-    inOrder.verify(monitorMapperMock).getTasksCountByState(eq(null), eq(null));
+    inOrder.verify(monitorMapperMock).getTasksCountByState(eq(null), eq(null), eq(null));
     inOrder.verify(internalTaskanaEngineMock).returnConnection();
     inOrder.verifyNoMoreInteractions();
     verifyNoMoreInteractions(taskanaEngineMock, internalTaskanaEngineMock, monitorMapperMock);
@@ -88,7 +88,7 @@ class TaskStatusReportBuilderImplTest {
     queryItem2.setState(TaskState.COMPLETED);
     queryItem2.setDomain("DOMAIN_X");
     List<TaskQueryItem> queryItems = Arrays.asList(queryItem1, queryItem2);
-    when(monitorMapperMock.getTasksCountByState(eq(null), eq(Collections.emptyList())))
+    when(monitorMapperMock.getTasksCountByState(eq(null), eq(Collections.emptyList()), eq(null)))
         .thenReturn(queryItems);
 
     // when
@@ -100,7 +100,9 @@ class TaskStatusReportBuilderImplTest {
     inOrder.verify(internalTaskanaEngineMock).getEngine();
     inOrder.verify(taskanaEngineMock).checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
     inOrder.verify(internalTaskanaEngineMock).openConnection();
-    inOrder.verify(monitorMapperMock).getTasksCountByState(eq(null), eq(Collections.emptyList()));
+    inOrder
+        .verify(monitorMapperMock)
+        .getTasksCountByState(eq(null), eq(Collections.emptyList()), eq(null));
     inOrder.verify(internalTaskanaEngineMock).returnConnection();
     inOrder.verifyNoMoreInteractions();
     verifyNoMoreInteractions(taskanaEngineMock, monitorMapperMock, internalTaskanaEngineMock);

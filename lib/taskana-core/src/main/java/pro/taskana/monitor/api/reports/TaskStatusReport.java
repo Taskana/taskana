@@ -48,5 +48,14 @@ public class TaskStatusReport extends Report<TaskQueryItem, TaskStatusColumnHead
      * @return the Builder
      */
     Builder domainIn(List<String> domains);
+
+    /**
+     * Adds a list of workbasketIds to the builder. The created report contains only tasks from a
+     * workbakset in this list
+     *
+     * @param workbasketIds a list of workbasketIds
+     * @return the Builder
+     */
+    Builder workbasketIdsIn(List<String> workbasketIds);
   }
 }

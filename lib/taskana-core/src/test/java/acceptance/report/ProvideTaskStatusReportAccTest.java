@@ -172,4 +172,33 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     assertThat(summaryNumbers[3]).isEqualTo(2); // number of cancelled tasks
     assertThat(summaryNumbers[4]).isEqualTo(3); // number of terminated tasks
   }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_FilterTasksByWorkbasket_When_BuilderIsFilteredWithWorkbasketIds() throws Exception {
+    TaskStatusReport report =
+        MONITOR_SERVICE
+            .createTaskStatusReportBuilder()
+            .workbasketIdsIn(Collections.singletonList("WBI:000000000000000000000000000000000003"))
+            .buildReport();
+
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(3);
+
+    Row<TaskQueryItem> row1 = report.getRow("DOMAIN_A");
+    assertThat(row1.getCells()).isEqualTo(new int[] {2, 2, 0, 0, 0});
+    assertThat(row1.getTotalValue()).isEqualTo(4);
+
+    Row<TaskQueryItem> row2 = report.getRow("DOMAIN_B");
+    assertThat(row2.getCells()).isEqualTo(new int[] {1, 3, 0, 0, 0});
+    assertThat(row2.getTotalValue()).isEqualTo(4);
+
+    Row<TaskQueryItem> row3 = report.getRow("DOMAIN_C");
+    assertThat(row3.getCells()).isEqualTo(new int[] {1, 1, 0, 0, 0});
+    assertThat(row3.getTotalValue()).isEqualTo(2);
+
+    Row<TaskQueryItem> sumRow = report.getSumRow();
+    assertThat(sumRow.getCells()).isEqualTo(new int[] {4, 6, 0, 0, 0});
+    assertThat(sumRow.getTotalValue()).isEqualTo(10);
+  }
 }
