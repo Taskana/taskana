@@ -350,6 +350,9 @@ public interface MonitorMapper {
           + "<if test='states != null'>"
           + "AND STATE IN (<foreach collection='states' item='state' separator=','>#{state}</foreach>) "
           + "</if>"
+          + "<if test='workbasketIds != null'>"
+          + "AND WORKBASKET_ID IN (<foreach collection='workbasketIds' item='workbasketId' separator=','>#{workbasketId}</foreach>) "
+          + "</if>"
           + "</where>"
           + "GROUP BY DOMAIN, STATE"
           + "</script>")
@@ -359,7 +362,9 @@ public interface MonitorMapper {
     @Result(column = "COUNT", property = "count"),
   })
   List<TaskQueryItem> getTasksCountByState(
-      @Param("domains") List<String> domains, @Param("states") List<TaskState> states);
+      @Param("domains") List<String> domains,
+      @Param("states") List<TaskState> states,
+      @Param("workbasketIds") List<String> workbasketIds);
 
   @Select(
       "<script>"

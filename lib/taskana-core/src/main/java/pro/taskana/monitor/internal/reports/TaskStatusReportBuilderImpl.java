@@ -8,6 +8,7 @@ import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.monitor.api.reports.TaskStatusReport;
+import pro.taskana.monitor.api.reports.TaskStatusReport.Builder;
 import pro.taskana.monitor.api.reports.item.TaskQueryItem;
 import pro.taskana.monitor.internal.MonitorMapper;
 import pro.taskana.task.api.TaskState;
@@ -20,6 +21,7 @@ public class TaskStatusReportBuilderImpl implements TaskStatusReport.Builder {
   private final MonitorMapper monitorMapper;
   private List<String> domains;
   private List<TaskState> states;
+  private List<String> workbasketIds;
 
   public TaskStatusReportBuilderImpl(
       InternalTaskanaEngine taskanaEngine, MonitorMapper monitorMapper) {
@@ -34,7 +36,7 @@ public class TaskStatusReportBuilderImpl implements TaskStatusReport.Builder {
     try {
       this.taskanaEngine.openConnection();
       List<TaskQueryItem> tasks =
-          this.monitorMapper.getTasksCountByState(this.domains, this.states);
+          this.monitorMapper.getTasksCountByState(this.domains, this.states, this.workbasketIds);
       TaskStatusReport report = new TaskStatusReport(this.states);
       report.addItems(tasks);
       return report;
@@ -53,6 +55,12 @@ public class TaskStatusReportBuilderImpl implements TaskStatusReport.Builder {
   @Override
   public TaskStatusReportBuilderImpl domainIn(List<String> domains) {
     this.domains = domains;
+    return this;
+  }
+
+  @Override
+  public Builder workbasketIdsIn(List<String> workbasketIds) {
+    this.workbasketIds = workbasketIds;
     return this;
   }
 }
