@@ -63,9 +63,9 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     TaskStatusReport report = MONITOR_SERVICE.createTaskStatusReportBuilder().buildReport();
 
     assertThat(report.getRows()).hasSize(3);
-    assertThat(report.getRow("DOMAIN_A").getDisplayName()).isEqualTo("DOMAIN_A");
-    assertThat(report.getRow("DOMAIN_B").getDisplayName()).isEqualTo("DOMAIN_B");
-    assertThat(report.getRow("DOMAIN_C").getDisplayName()).isEqualTo("DOMAIN_C");
+    assertThat(report.getRow("USER-1-1").getDisplayName()).isEqualTo("PPK User 1 KSC 1");
+    assertThat(report.getRow("USER-1-2").getDisplayName()).isEqualTo("PPK User 1 KSC 2");
+    assertThat(report.getRow("USER-1-3").getDisplayName()).isEqualTo("PPK User 1 KSC 3");
   }
 
   @WithAccessId(user = "monitor")
@@ -76,17 +76,17 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     assertThat(report).isNotNull();
     assertThat(report.rowSize()).isEqualTo(3);
 
-    Row<TaskQueryItem> row1 = report.getRow("DOMAIN_A");
-    assertThat(row1.getCells()).isEqualTo(new int[] {22, 4, 0, 0, 0});
-    assertThat(row1.getTotalValue()).isEqualTo(26);
+    Row<TaskQueryItem> row1 = report.getRow("USER-1-1");
+    assertThat(row1.getCells()).isEqualTo(new int[] {18, 2, 0, 0, 0});
+    assertThat(row1.getTotalValue()).isEqualTo(20);
 
-    Row<TaskQueryItem> row2 = report.getRow("DOMAIN_B");
-    assertThat(row2.getCells()).isEqualTo(new int[] {9, 3, 0, 0, 0});
-    assertThat(row2.getTotalValue()).isEqualTo(12);
+    Row<TaskQueryItem> row2 = report.getRow("USER-1-2");
+    assertThat(row2.getCells()).isEqualTo(new int[] {19, 1, 0, 0, 0});
+    assertThat(row2.getTotalValue()).isEqualTo(20);
 
-    Row<TaskQueryItem> row3 = report.getRow("DOMAIN_C");
-    assertThat(row3.getCells()).isEqualTo(new int[] {10, 2, 0, 0, 0});
-    assertThat(row3.getTotalValue()).isEqualTo(12);
+    Row<TaskQueryItem> row3 = report.getRow("USER-1-3");
+    assertThat(row3.getCells()).isEqualTo(new int[] {4, 6, 0, 0, 0});
+    assertThat(row3.getTotalValue()).isEqualTo(10);
 
     Row<TaskQueryItem> sumRow = report.getSumRow();
     assertThat(sumRow.getCells()).isEqualTo(new int[] {41, 9, 0, 0, 0});
@@ -103,15 +103,19 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
             .buildReport();
 
     assertThat(report).isNotNull();
-    assertThat(report.rowSize()).isEqualTo(2);
+    assertThat(report.rowSize()).isEqualTo(3);
 
-    Row<TaskQueryItem> row1 = report.getRow("DOMAIN_A");
-    assertThat(row1.getCells()).isEqualTo(new int[] {22, 4, 0, 0, 0});
-    assertThat(row1.getTotalValue()).isEqualTo(26);
+    Row<TaskQueryItem> row1 = report.getRow("USER-1-1");
+    assertThat(row1.getCells()).isEqualTo(new int[] {15, 2, 0, 0, 0});
+    assertThat(row1.getTotalValue()).isEqualTo(17);
 
-    Row<TaskQueryItem> row2 = report.getRow("DOMAIN_C");
-    assertThat(row2.getCells()).isEqualTo(new int[] {10, 2, 0, 0, 0});
-    assertThat(row2.getTotalValue()).isEqualTo(12);
+    Row<TaskQueryItem> row2 = report.getRow("USER-1-2");
+    assertThat(row2.getCells()).isEqualTo(new int[] {14, 1, 0, 0, 0});
+    assertThat(row2.getTotalValue()).isEqualTo(15);
+
+    Row<TaskQueryItem> row3 = report.getRow("USER-1-3");
+    assertThat(row3.getCells()).isEqualTo(new int[] {3, 3, 0, 0, 0});
+    assertThat(row3.getTotalValue()).isEqualTo(6);
 
     Row<TaskQueryItem> sumRow = report.getSumRow();
     assertThat(sumRow.getCells()).isEqualTo(new int[] {32, 6, 0, 0, 0});
@@ -130,17 +134,17 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     assertThat(report).isNotNull();
     assertThat(report.rowSize()).isEqualTo(3);
 
-    Row<TaskQueryItem> row1 = report.getRow("DOMAIN_A");
-    assertThat(row1.getCells()).isEqualTo(new int[] {22});
-    assertThat(row1.getTotalValue()).isEqualTo(22);
+    Row<TaskQueryItem> row1 = report.getRow("USER-1-1");
+    assertThat(row1.getCells()).isEqualTo(new int[] {18});
+    assertThat(row1.getTotalValue()).isEqualTo(18);
 
-    Row<TaskQueryItem> row2 = report.getRow("DOMAIN_B");
-    assertThat(row2.getCells()).isEqualTo(new int[] {9});
-    assertThat(row2.getTotalValue()).isEqualTo(9);
+    Row<TaskQueryItem> row2 = report.getRow("USER-1-2");
+    assertThat(row2.getCells()).isEqualTo(new int[] {19});
+    assertThat(row2.getTotalValue()).isEqualTo(19);
 
-    Row<TaskQueryItem> row3 = report.getRow("DOMAIN_C");
-    assertThat(row3.getCells()).isEqualTo(new int[] {10});
-    assertThat(row3.getTotalValue()).isEqualTo(10);
+    Row<TaskQueryItem> row3 = report.getRow("USER-1-3");
+    assertThat(row3.getCells()).isEqualTo(new int[] {4});
+    assertThat(row3.getTotalValue()).isEqualTo(4);
 
     Row<TaskQueryItem> sumRow = report.getSumRow();
     assertThat(sumRow.getCells()).isEqualTo(new int[] {41});
@@ -183,19 +187,11 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
             .buildReport();
 
     assertThat(report).isNotNull();
-    assertThat(report.rowSize()).isEqualTo(3);
+    assertThat(report.rowSize()).isEqualTo(1);
 
-    Row<TaskQueryItem> row1 = report.getRow("DOMAIN_A");
-    assertThat(row1.getCells()).isEqualTo(new int[] {2, 2, 0, 0, 0});
-    assertThat(row1.getTotalValue()).isEqualTo(4);
-
-    Row<TaskQueryItem> row2 = report.getRow("DOMAIN_B");
-    assertThat(row2.getCells()).isEqualTo(new int[] {1, 3, 0, 0, 0});
-    assertThat(row2.getTotalValue()).isEqualTo(4);
-
-    Row<TaskQueryItem> row3 = report.getRow("DOMAIN_C");
-    assertThat(row3.getCells()).isEqualTo(new int[] {1, 1, 0, 0, 0});
-    assertThat(row3.getTotalValue()).isEqualTo(2);
+    Row<TaskQueryItem> row1 = report.getRow("USER-1-3");
+    assertThat(row1.getCells()).isEqualTo(new int[] {4, 6, 0, 0, 0});
+    assertThat(row1.getTotalValue()).isEqualTo(10);
 
     Row<TaskQueryItem> sumRow = report.getSumRow();
     assertThat(sumRow.getCells()).isEqualTo(new int[] {4, 6, 0, 0, 0});

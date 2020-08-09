@@ -341,7 +341,7 @@ public interface MonitorMapper {
 
   @Select(
       "<script>"
-          + "SELECT DOMAIN, STATE, COUNT(STATE) as COUNT "
+          + "SELECT WORKBASKET_KEY, STATE, COUNT(STATE) as COUNT "
           + "FROM TASK "
           + "<where>"
           + "<if test='domains != null'>"
@@ -354,10 +354,10 @@ public interface MonitorMapper {
           + "AND WORKBASKET_ID IN (<foreach collection='workbasketIds' item='workbasketId' separator=','>#{workbasketId}</foreach>) "
           + "</if>"
           + "</where>"
-          + "GROUP BY DOMAIN, STATE"
+          + "GROUP BY WORKBASKET_KEY, STATE"
           + "</script>")
   @Results({
-    @Result(column = "DOMAIN", property = "domain"),
+    @Result(column = "WORKBASKET_KEY", property = "workbasketKey"),
     @Result(column = "STATE", property = "state"),
     @Result(column = "COUNT", property = "count"),
   })
