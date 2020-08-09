@@ -7,12 +7,12 @@ import pro.taskana.task.api.TaskState;
  */
 public class TaskQueryItem implements QueryItem {
 
-  private String domain;
+  private String workbasketKey;
   private TaskState state;
   private int count;
 
-  public void setDomain(String domain) {
-    this.domain = domain;
+  public void setWorkbasketKey(String workbasketKey) {
+    this.workbasketKey = workbasketKey;
   }
 
   public void setCount(int count) {
@@ -29,7 +29,7 @@ public class TaskQueryItem implements QueryItem {
 
   @Override
   public String getKey() {
-    return domain;
+    return workbasketKey;
   }
 
   @Override
@@ -41,7 +41,7 @@ public class TaskQueryItem implements QueryItem {
   public String toString() {
     return "TaskQueryItem ["
         + "domain= "
-        + this.domain
+        + this.workbasketKey
         + ", state= "
         + this.state.name()
         + ", count= "

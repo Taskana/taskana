@@ -1,6 +1,7 @@
 package pro.taskana.monitor.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -23,6 +24,7 @@ import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.monitor.api.reports.TaskStatusReport;
 import pro.taskana.monitor.api.reports.item.TaskQueryItem;
 import pro.taskana.task.api.TaskState;
+import pro.taskana.workbasket.api.WorkbasketService;
 
 /** Unit Test for TaskStatusReportBuilderImpl. */
 @ExtendWith(MockitoExtension.class)
@@ -36,9 +38,18 @@ class TaskStatusReportBuilderImplTest {
 
   @Mock private MonitorMapper monitorMapperMock;
 
+  @Mock private WorkbasketService workbasketService;
+
+  private Object[] mocks;
+
   @BeforeEach
   void setup() {
     when(internalTaskanaEngineMock.getEngine()).thenReturn(taskanaEngineMock);
+    when(taskanaEngineMock.getWorkbasketService()).thenReturn(workbasketService);
+    mocks =
+        new Object[] {
+          internalTaskanaEngineMock, taskanaEngineMock, monitorMapperMock, workbasketService
+        };
   }
 
   @Test
@@ -47,32 +58,34 @@ class TaskStatusReportBuilderImplTest {
     TaskQueryItem queryItem1 = new TaskQueryItem();
     queryItem1.setCount(50);
     queryItem1.setState(TaskState.READY);
-    queryItem1.setDomain("DOMAIN_X");
+    queryItem1.setWorkbasketKey("KEY_1");
     TaskQueryItem queryItem2 = new TaskQueryItem();
     queryItem2.setCount(30);
     queryItem2.setState(TaskState.COMPLETED);
-    queryItem2.setDomain("DOMAIN_X");
+    queryItem2.setWorkbasketKey("KEY_1");
     List<TaskQueryItem> queryItems = Arrays.asList(queryItem1, queryItem2);
     when(monitorMapperMock.getTasksCountByState(null, null, null)).thenReturn(queryItems);
+    when(internalTaskanaEngineMock.runAsAdmin(any())).thenReturn(Collections.emptyMap());
 
     // when
     final TaskStatusReport report = cut.createTaskStatusReportBuilder().buildReport();
 
     // then
-    InOrder inOrder = inOrder(taskanaEngineMock, internalTaskanaEngineMock, monitorMapperMock);
+    InOrder inOrder = inOrder(mocks);
     inOrder.verify(internalTaskanaEngineMock).getEngine();
     inOrder.verify(taskanaEngineMock).checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
     inOrder.verify(internalTaskanaEngineMock).openConnection();
     inOrder.verify(monitorMapperMock).getTasksCountByState(eq(null), eq(null), eq(null));
+    inOrder.verify(internalTaskanaEngineMock).runAsAdmin(any());
     inOrder.verify(internalTaskanaEngineMock).returnConnection();
     inOrder.verifyNoMoreInteractions();
-    verifyNoMoreInteractions(taskanaEngineMock, internalTaskanaEngineMock, monitorMapperMock);
+    verifyNoMoreInteractions(mocks);
 
     assertThat(report).isNotNull();
     assertThat(report.rowSize()).isEqualTo(1);
-    assertThat(report.getRow("DOMAIN_X").getCells()).isEqualTo(new int[] {50, 0, 30, 0, 0});
+    assertThat(report.getRow("KEY_1").getCells()).isEqualTo(new int[] {50, 0, 30, 0, 0});
     assertThat(report.getSumRow().getCells()).isEqualTo(new int[] {50, 0, 30, 0, 0});
-    assertThat(report.getRow("DOMAIN_X").getTotalValue()).isEqualTo(80);
+    assertThat(report.getRow("KEY_1").getTotalValue()).isEqualTo(80);
     assertThat(report.getSumRow().getTotalValue()).isEqualTo(80);
   }
 
@@ -82,36 +95,38 @@ class TaskStatusReportBuilderImplTest {
     TaskQueryItem queryItem1 = new TaskQueryItem();
     queryItem1.setCount(50);
     queryItem1.setState(TaskState.READY);
-    queryItem1.setDomain("DOMAIN_X");
+    queryItem1.setWorkbasketKey("KEY_1");
     TaskQueryItem queryItem2 = new TaskQueryItem();
     queryItem2.setCount(30);
     queryItem2.setState(TaskState.COMPLETED);
-    queryItem2.setDomain("DOMAIN_X");
+    queryItem2.setWorkbasketKey("KEY_1");
     List<TaskQueryItem> queryItems = Arrays.asList(queryItem1, queryItem2);
     when(monitorMapperMock.getTasksCountByState(eq(null), eq(Collections.emptyList()), eq(null)))
         .thenReturn(queryItems);
+    when(internalTaskanaEngineMock.runAsAdmin(any())).thenReturn(Collections.emptyMap());
 
     // when
     final TaskStatusReport report =
         cut.createTaskStatusReportBuilder().stateIn(Collections.emptyList()).buildReport();
 
     // then
-    InOrder inOrder = inOrder(taskanaEngineMock, monitorMapperMock, internalTaskanaEngineMock);
+    InOrder inOrder = inOrder(mocks);
     inOrder.verify(internalTaskanaEngineMock).getEngine();
     inOrder.verify(taskanaEngineMock).checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
     inOrder.verify(internalTaskanaEngineMock).openConnection();
     inOrder
         .verify(monitorMapperMock)
         .getTasksCountByState(eq(null), eq(Collections.emptyList()), eq(null));
+    inOrder.verify(internalTaskanaEngineMock).runAsAdmin(any());
     inOrder.verify(internalTaskanaEngineMock).returnConnection();
     inOrder.verifyNoMoreInteractions();
-    verifyNoMoreInteractions(taskanaEngineMock, monitorMapperMock, internalTaskanaEngineMock);
+    verifyNoMoreInteractions(mocks);
 
     assertThat(report).isNotNull();
     assertThat(report.rowSize()).isEqualTo(1);
-    assertThat(report.getRow("DOMAIN_X").getCells()).isEqualTo(new int[0]);
+    assertThat(report.getRow("KEY_1").getCells()).isEqualTo(new int[0]);
     assertThat(report.getSumRow().getCells()).isEqualTo(new int[0]);
-    assertThat(report.getRow("DOMAIN_X").getTotalValue()).isEqualTo(80);
+    assertThat(report.getRow("KEY_1").getTotalValue()).isEqualTo(80);
     assertThat(report.getSumRow().getTotalValue()).isEqualTo(80);
   }
 }
