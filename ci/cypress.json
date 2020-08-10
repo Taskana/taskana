@@ -1,15 +1,15 @@
 {
   "env": {
-    "baseUrl": "http://localhost:4200/#/taskana",
+    "baseUrl": "http://localhost:8080/taskana",
     "monitorUrl": "/monitor",
     "adminUrl": "/administration",
+    "appUrl": "http://localhost:8080/taskana/#/taskana",
     "pageReload": 200,
     "dropdownWait": 50,
     "testValueClassificationSelectionName": "L10303",
     "testValueClassifications": "CY-TEST-CLASSIFICATIONS",
-    "testValueWorkbasketSelectionName": "GPK_KSC",
+    "testValueWorkbasketSelectionName": "basxet0",
     "testValueWorkbaskets": "CY-TEST-WORKBASKETS",
-    "bluemixBaseUrl": "https://taskana.mybluemix.net/taskana",
     "screenshotOnRunFailure": false,
     "video": false,
     "videoUploadOnPasses": false

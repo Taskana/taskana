@@ -10,7 +10,6 @@
     "testValueClassifications": "CY-TEST-CLASSIFICATIONS",
     "testValueWorkbasketSelectionName": "basxet0",
     "testValueWorkbaskets": "CY-TEST-WORKBASKETS",
-    "isLocal": true,
-    "watchForFileChanges": false
+    "isLocal": true
   }
 }
