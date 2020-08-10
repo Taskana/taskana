@@ -72,7 +72,8 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
   @WithAccessId(user = "monitor")
   @Test
   void should_selectCompletedItems_When_CompletedTimeStampIsRequested() throws Exception {
-    final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+    final List<TimeIntervalColumnHeader> columnHeaders =
+        Collections.singletonList(new TimeIntervalColumnHeader(0));
 
     final List<SelectedItem> selectedItems =
         Collections.singletonList(new SelectedItem("EXTERN", null, 0, 0));
