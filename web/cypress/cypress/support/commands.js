@@ -23,33 +23,3 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
-
-Cypress.Commands.add('visitWorkbasketsAccessPage', () => {
-  cy.get('.nav a').contains('Access').click();
-});
-
-Cypress.Commands.add('saveWorkbaskets', () => {
-  cy.get('.tab-pane.active > > .panel>.panel-heading>.pull-right > .btn-primary').click();
-});
-
-Cypress.Commands.add('visitTestWorkbasket', () => {
-  cy.visit(Cypress.env('appUrl') + Cypress.env('adminUrl') + '/workbaskets');
-  cy.contains(Cypress.env('testValueWorkbasketSelectionName')).click();
-});
-
-Cypress.Commands.add('reloadPageWithWait', () => {
-  cy.reload();
-  cy.wait(Cypress.env('pageReload'));
-});
-
-Cypress.Commands.add('loginAs', (username) => {
-  return cy.request({
-    method: 'POST',
-    url: Cypress.env('baseUrl') + '/login',
-    form: true,
-    body: {
-      username,
-      password: username
-    }
-  });
-});

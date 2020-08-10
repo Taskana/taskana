@@ -9,7 +9,7 @@
     "testValueClassifications": "CY-TEST-CLASSIFICATIONS",
     "testValueWorkbasketSelectionName": "GPK_KSC",
     "testValueWorkbaskets": "CY-TEST-WORKBASKETS",
-    "bluemixBaseUrl": "https://taskana.mybluemix.net/taskana",
-    "isLocal" : true
+    "loginUrl": "https://taskana.mybluemix.net/taskana",
+    "isLocal": true
   }
 }
