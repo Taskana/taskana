@@ -4,8 +4,8 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <parent>
-    <groupId>pro.taskana.simplehistory</groupId>
-    <artifactId>taskana-simplehistory-parent</artifactId>
+    <groupId>pro.taskana.history</groupId>
+    <artifactId>taskana-history-parent</artifactId>
     <version>3.2.1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
