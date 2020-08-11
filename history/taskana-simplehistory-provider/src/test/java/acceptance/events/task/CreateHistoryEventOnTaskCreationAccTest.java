@@ -44,6 +44,6 @@ class CreateHistoryEventOnTaskCreationAccTest extends AbstractAccTest {
 
     String eventType = events.get(0).getEventType();
 
-    assertThat(eventType).isEqualTo(TaskHistoryEventType.TASK_CREATED.getName());
+    assertThat(eventType).isEqualTo(TaskHistoryEventType.CREATED.getName());
   }
 }

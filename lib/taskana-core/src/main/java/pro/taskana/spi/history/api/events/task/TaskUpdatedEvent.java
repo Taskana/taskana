@@ -6,7 +6,7 @@ public class TaskUpdatedEvent extends TaskHistoryEvent {
 
   public TaskUpdatedEvent(String id, Task updatedTask, String userId, String details) {
     super(id, updatedTask, userId, details);
-    eventType = TaskHistoryEventType.TASK_UPDATED.getName();
+    eventType = TaskHistoryEventType.UPDATED.getName();
     created = updatedTask.getModified();
   }
 }

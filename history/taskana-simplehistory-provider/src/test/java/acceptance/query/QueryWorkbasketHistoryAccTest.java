@@ -53,7 +53,7 @@ class QueryWorkbasketHistoryAccTest extends AbstractAccTest {
     WorkbasketHistoryQuery query =
         historyService
             .createWorkbasketHistoryQuery()
-            .eventTypeIn(WorkbasketHistoryEventType.WORKBASKET_CREATED.getName())
+            .eventTypeIn(WorkbasketHistoryEventType.CREATED.getName())
             .domainLike("%A")
             .custom1In("custom1", "otherCustom1")
             .orderByCreated(SortDirection.DESCENDING);
@@ -97,12 +97,12 @@ class QueryWorkbasketHistoryAccTest extends AbstractAccTest {
     WorkbasketHistoryEvent single =
         historyService.createWorkbasketHistoryQuery().userIdIn("peter").single();
     assertThat(single.getEventType())
-        .isEqualTo(WorkbasketHistoryEventType.WORKBASKET_CREATED.getName());
+        .isEqualTo(WorkbasketHistoryEventType.CREATED.getName());
 
     single =
         historyService
             .createWorkbasketHistoryQuery()
-            .eventTypeIn(WorkbasketHistoryEventType.WORKBASKET_CREATED.getName(), "xy")
+            .eventTypeIn(WorkbasketHistoryEventType.CREATED.getName(), "xy")
             .single();
     assertThat(single.getUserId()).isEqualTo("peter");
   }
@@ -133,7 +133,7 @@ class QueryWorkbasketHistoryAccTest extends AbstractAccTest {
     returnValues =
         historyService
             .createWorkbasketHistoryQuery()
-            .eventTypeIn(WorkbasketHistoryEventType.WORKBASKET_CREATED.getName())
+            .eventTypeIn(WorkbasketHistoryEventType.CREATED.getName())
             .list();
     assertThat(returnValues).hasSize(6);
 
@@ -147,7 +147,7 @@ class QueryWorkbasketHistoryAccTest extends AbstractAccTest {
     returnValues = historyService.createWorkbasketHistoryQuery().domainIn("DOMAIN_A").list();
     assertThat(returnValues).hasSize(10);
 
-    returnValues = historyService.createWorkbasketHistoryQuery().workbasketKeyIn("soRt003").list();
+    returnValues = historyService.createWorkbasketHistoryQuery().keyIn("soRt003").list();
     assertThat(returnValues).hasSize(5);
 
     returnValues = historyService.createWorkbasketHistoryQuery().custom1In("custom1").list();
@@ -186,7 +186,7 @@ class QueryWorkbasketHistoryAccTest extends AbstractAccTest {
     assertThat(returnValues).hasSize(10);
 
     returnValues =
-        historyService.createWorkbasketHistoryQuery().eventTypeLike("WORKBASKET_C%").list();
+        historyService.createWorkbasketHistoryQuery().eventTypeLike("C%").list();
     assertThat(returnValues).hasSize(6);
 
     returnValues = historyService.createWorkbasketHistoryQuery().userIdLike("p%", "c%").list();
@@ -252,13 +252,13 @@ class QueryWorkbasketHistoryAccTest extends AbstractAccTest {
     returnedList =
         historyService
             .createWorkbasketHistoryQuery()
-            .listValues(WorkbasketHistoryQueryColumnName.WORKBASKET_KEY, null);
+            .listValues(WorkbasketHistoryQueryColumnName.KEY, null);
     assertThat(returnedList).hasSize(2);
 
     returnedList =
         historyService
             .createWorkbasketHistoryQuery()
-            .listValues(WorkbasketHistoryQueryColumnName.WORKBASKET_TYPE, null);
+            .listValues(WorkbasketHistoryQueryColumnName.TYPE, null);
     assertThat(returnedList).hasSize(1);
 
     returnedList =

@@ -6,7 +6,7 @@ public class WorkbasketUpdatedEvent extends WorkbasketHistoryEvent {
 
   public WorkbasketUpdatedEvent(String id, Workbasket workbasket, String userId, String details) {
     super(id, workbasket, userId, details);
-    eventType = WorkbasketHistoryEventType.WORKBASKET_UPDATED.getName();
+    eventType = WorkbasketHistoryEventType.UPDATED.getName();
     created = workbasket.getModified();
   }
 }

@@ -1,6 +1,7 @@
 package pro.taskana.spi.history.api.events.workbasket;
 
 import java.time.Instant;
+import java.util.Objects;
 
 import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
@@ -14,8 +15,8 @@ public class WorkbasketHistoryEvent {
   protected String userId;
   protected String domain;
   protected String workbasketId;
-  protected String workbasketKey;
-  protected String workbasketType;
+  protected String key;
+  protected String type;
   protected String owner;
   protected String custom1;
   protected String custom2;
@@ -36,8 +37,8 @@ public class WorkbasketHistoryEvent {
     this.details = details;
     workbasketId = workbasket.getId();
     domain = workbasket.getDomain();
-    workbasketKey = workbasket.getKey();
-    workbasketType = workbasket.getType().name();
+    key = workbasket.getKey();
+    type = workbasket.getType().name();
     owner = workbasket.getOwner();
     custom1 = workbasket.getCustomAttribute(WorkbasketCustomField.CUSTOM_1);
     custom2 = workbasket.getCustomAttribute(WorkbasketCustomField.CUSTOM_2);
@@ -47,6 +48,43 @@ public class WorkbasketHistoryEvent {
     orgLevel2 = workbasket.getOrgLevel2();
     orgLevel3 = workbasket.getOrgLevel3();
     orgLevel4 = workbasket.getOrgLevel4();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (!(obj instanceof WorkbasketHistoryEvent)) {
+      return false;
+    }
+    WorkbasketHistoryEvent other = (WorkbasketHistoryEvent) obj;
+    return Objects.equals(getId(), other.getId())
+               && Objects.equals(getEventType(), other.getEventType())
+               && Objects.equals(getCreated(), other.getCreated())
+               && Objects.equals(getUserId(), other.getUserId())
+               && Objects.equals(getDomain(), other.getDomain())
+               && Objects.equals(getWorkbasketId(), other.getWorkbasketId())
+               && Objects.equals(getKey(), other.getKey())
+               && Objects.equals(getType(), other.getType())
+               && Objects.equals(getOwner(), other.getOwner())
+               && Objects.equals(getCustom1(), other.getCustom1())
+               && Objects.equals(getCustom2(), other.getCustom2())
+               && Objects.equals(getCustom3(), other.getCustom3())
+               && Objects.equals(getCustom4(), other.getCustom4())
+               && Objects.equals(getOrgLevel1(), other.getOrgLevel1())
+               && Objects.equals(getOrgLevel2(), other.getOrgLevel2())
+               && Objects.equals(getOrgLevel3(), other.getOrgLevel3())
+               && Objects.equals(getOrgLevel4(), other.getOrgLevel4())
+               && Objects.equals(getDetails(), other.getDetails());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getId(), getEventType(), getCreated(), getUserId(), getDomain(),
+        getWorkbasketId(), getKey(), getType(), getOwner(), getCustom1(),
+        getCustom2(), getCustom3(), getCustom4(), getOrgLevel1(), getOrgLevel2(), getOrgLevel3(),
+        getOrgLevel4(), getDetails());
   }
 
   public String getId() {
@@ -97,20 +135,20 @@ public class WorkbasketHistoryEvent {
     this.workbasketId = workbasketId;
   }
 
-  public String getWorkbasketKey() {
-    return workbasketKey;
+  public String getKey() {
+    return key;
   }
 
-  public void setWorkbasketKey(String workbasketKey) {
-    this.workbasketKey = workbasketKey;
+  public void setKey(String key) {
+    this.key = key;
   }
 
-  public String getWorkbasketType() {
-    return workbasketType;
+  public String getType() {
+    return type;
   }
 
-  public void setWorkbasketType(String workbasketType) {
-    this.workbasketType = workbasketType;
+  public void setType(String type) {
+    this.type = type;
   }
 
   public String getOwner() {
@@ -208,9 +246,9 @@ public class WorkbasketHistoryEvent {
         + ", workbasketId="
         + workbasketId
         + ", workbasketKey="
-        + workbasketKey
+        + key
         + ", workbasketType="
-        + workbasketType
+        + type
         + ", owner="
         + owner
         + ", custom1="

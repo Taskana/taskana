@@ -23,6 +23,7 @@ import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
 import pro.taskana.simplehistory.impl.TaskanaHistoryEngineImpl;
 import pro.taskana.simplehistory.impl.task.TaskHistoryQueryMapper;
+import pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryEventMapper;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 import pro.taskana.task.api.models.ObjectReference;
@@ -94,15 +95,12 @@ public abstract class AbstractAccTest {
    * @return Workbasket History event object created.
    */
   public static WorkbasketHistoryEvent createWorkbasketHistoryEvent(
-      String workbasketKey,
-      String type,
-      String userid,
-      String details) {
+      String workbasketKey, String type, String userid, String details) {
     WorkbasketHistoryEvent historyEvent = new WorkbasketHistoryEvent();
     historyEvent.setId(IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT));
     historyEvent.setUserId(userid);
     historyEvent.setDetails(details);
-    historyEvent.setWorkbasketKey(workbasketKey);
+    historyEvent.setKey(workbasketKey);
     historyEvent.setEventType(type);
     return historyEvent;
   }
@@ -180,6 +178,24 @@ public abstract class AbstractAccTest {
     objectRef.setType(type);
     objectRef.setValue(value);
     return objectRef;
+  }
+
+  protected static WorkbasketHistoryEventMapper getWorkbasketHistoryEventMapper() {
+
+    SqlSessionManager manager = null;
+
+    Field sessionManager;
+    try {
+      sessionManager = TaskanaHistoryEngineImpl.class.getDeclaredField("sessionManager");
+
+      sessionManager.setAccessible(true);
+
+      manager = (SqlSessionManager) sessionManager.get(taskanaHistoryEngine);
+
+    } catch (Exception e) {
+      LOGGER.warn("Caught unexpected exception ", e);
+    }
+    return manager.getMapper(WorkbasketHistoryEventMapper.class);
   }
 
   @BeforeAll

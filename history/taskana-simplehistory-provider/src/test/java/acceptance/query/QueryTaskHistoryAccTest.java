@@ -14,6 +14,7 @@ import pro.taskana.simplehistory.impl.task.TaskHistoryQuery;
 import pro.taskana.simplehistory.impl.task.TaskHistoryQueryColumnName;
 import pro.taskana.spi.history.api.events.TaskHistoryCustomField;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
+import pro.taskana.spi.history.api.events.task.TaskHistoryEventType;
 
 /** Test for Task History queries. */
 class QueryTaskHistoryAccTest extends AbstractAccTest {
@@ -85,10 +86,13 @@ class QueryTaskHistoryAccTest extends AbstractAccTest {
   void should_ReturnSingleHistoryEvent_When_UsingSingleMethod() {
     TaskHistoryEvent single =
         getHistoryService().createTaskHistoryQuery().userIdIn("peter").single();
-    assertThat(single.getEventType()).isEqualTo("TASK_CREATED");
+    assertThat(single.getEventType()).isEqualTo(TaskHistoryEventType.CREATED.getName());
 
     single =
-        getHistoryService().createTaskHistoryQuery().eventTypeIn("TASK_CREATED", "xy").single();
+        getHistoryService()
+            .createTaskHistoryQuery()
+            .eventTypeIn(TaskHistoryEventType.CREATED.getName(), "xy")
+            .single();
     assertThat(single.getUserId()).isEqualTo("peter");
   }
 
@@ -122,7 +126,11 @@ class QueryTaskHistoryAccTest extends AbstractAccTest {
             .list();
     assertThat(returnValues).hasSize(2);
 
-    returnValues = getHistoryService().createTaskHistoryQuery().eventTypeIn("TASK_CREATED").list();
+    returnValues =
+        getHistoryService()
+            .createTaskHistoryQuery()
+            .eventTypeIn(TaskHistoryEventType.CREATED.getName())
+            .list();
     assertThat(returnValues).hasSize(12);
 
     TimeInterval timeInterval = new TimeInterval(Instant.now().minusSeconds(10), Instant.now());

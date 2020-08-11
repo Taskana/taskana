@@ -46,6 +46,6 @@ class CreateHistoryEventOnTaskTransferAccTest extends AbstractAccTest {
 
     String eventType = events.get(0).getEventType();
 
-    assertThat(eventType).isEqualTo(TaskHistoryEventType.TASK_TRANSFERRED.getName());
+    assertThat(eventType).isEqualTo(TaskHistoryEventType.TRANSFERRED.getName());
   }
 }

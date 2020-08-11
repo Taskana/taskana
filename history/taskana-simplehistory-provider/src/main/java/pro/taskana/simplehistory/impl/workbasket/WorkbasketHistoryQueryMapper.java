@@ -14,7 +14,7 @@ public interface WorkbasketHistoryQueryMapper {
 
   @Select(
       "<script>"
-          + "SELECT ID, WORKBASKET_ID, EVENT_TYPE, CREATED, USER_ID, DOMAIN, WORKBASKET_KEY, WORKBASKET_TYPE,"
+          + "SELECT ID, WORKBASKET_ID, EVENT_TYPE, CREATED, USER_ID, DOMAIN, KEY, TYPE,"
           + "OWNER, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, ORGLEVEL_1, ORGLEVEL_2, ORGLEVEL_3, ORGLEVEL_4 "
           + "FROM WORKBASKET_HISTORY_EVENT"
           + "<where>"
@@ -25,8 +25,8 @@ public interface WorkbasketHistoryQueryMapper {
           + "<if test='createdIn !=null'> AND ( <foreach item='item' collection='createdIn' separator=',' > ( <if test='item.begin!=null'> CREATED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> CREATED &lt;=#{item.end} </if>)</foreach>)</if> "
           + "<if test='userIdIn != null'>AND UPPER(USER_ID) IN (<foreach item='item' collection='userIdIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='domainIn != null'>AND UPPER(DOMAIN) IN (<foreach item='item' collection='domainIn' separator=',' >#{item}</foreach>)</if> "
-          + "<if test='workbasketKeyIn != null'>AND UPPER(WORKBASKET_KEY) IN (<foreach item='item' collection='workbasketKeyIn' separator=',' >#{item}</foreach>)</if> "
-          + "<if test='workbasketTypeIn != null'>AND UPPER(WORKBASKET_TYPE) IN (<foreach item='item' collection='workbasketTypeIn' separator=',' >#{item}</foreach>)</if> "
+          + "<if test='keyIn != null'>AND UPPER(KEY) IN (<foreach item='item' collection='keyIn' separator=',' >#{item}</foreach>)</if> "
+          + "<if test='typeIn != null'>AND UPPER(TYPE) IN (<foreach item='item' collection='typeIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='ownerIn != null'>AND UPPER(OWNER) IN (<foreach item='item' collection='ownerIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='custom1In != null'>AND UPPER(CUSTOM_1) IN (<foreach item='item' collection='custom1In' separator=',' >#{item}</foreach>)</if> "
           + "<if test='custom2In != null'>AND UPPER(CUSTOM_2) IN (<foreach item='item' collection='custom2In' separator=',' >#{item}</foreach>)</if> "
@@ -41,8 +41,8 @@ public interface WorkbasketHistoryQueryMapper {
           + "<if test='eventTypeLike != null'>AND (<foreach item='item' collection='eventTypeLike' separator=' OR ' >UPPER(EVENT_TYPE) LIKE #{item}</foreach>)</if> "
           + "<if test='userIdLike != null'>AND (<foreach item='item' collection='userIdLike' separator=' OR ' >UPPER(USER_ID) LIKE #{item}</foreach>)</if> "
           + "<if test='domainLike != null'>AND (<foreach item='item' collection='domainLike' separator=' OR ' >UPPER(DOMAIN) LIKE #{item}</foreach>)</if> "
-          + "<if test='workbasketKeyLike != null'>AND (<foreach item='item' collection='workbasketKeyLike' separator=' OR ' >UPPER(WORKBASKET_KEY) LIKE #{item}</foreach>)</if> "
-          + "<if test='workbasketTypeLike != null'>AND (<foreach item='item' collection='workbasketTypeLike' separator=' OR ' >UPPER(WORKBASKET_TYPE) LIKE #{item}</foreach>)</if> "
+          + "<if test='keyLike != null'>AND (<foreach item='item' collection='keyLike' separator=' OR ' >UPPER(KEY) LIKE #{item}</foreach>)</if> "
+          + "<if test='typeLike != null'>AND (<foreach item='item' collection='typeLike' separator=' OR ' >UPPER(TYPE) LIKE #{item}</foreach>)</if> "
           + "<if test='ownerLike != null'>AND (<foreach item='item' collection='ownerLike' separator=' OR ' >UPPER(OWNER) LIKE #{item}</foreach>)</if> "
           + "<if test='custom1Like != null'>AND (<foreach item='item' collection='custom1Like' separator=' OR ' >UPPER(CUSTOM_1) LIKE #{item}</foreach>)</if> "
           + "<if test='custom2Like != null'>AND (<foreach item='item' collection='custom2Like' separator=' OR ' >UPPER(CUSTOM_2) LIKE #{item}</foreach>)</if> "
@@ -63,8 +63,8 @@ public interface WorkbasketHistoryQueryMapper {
         @Result(property = "created", column = "CREATED"),
         @Result(property = "userId", column = "USER_ID"),
         @Result(property = "domain", column = "DOMAIN"),
-        @Result(property = "workbasketKey", column = "WORKBASKET_KEY"),
-        @Result(property = "workbasketType", column = "WORKBASKET_TYPE"),
+        @Result(property = "key", column = "KEY"),
+        @Result(property = "type", column = "TYPE"),
         @Result(property = "owner", column = "OWNER"),
         @Result(property = "custom1", column = "CUSTOM_1"),
         @Result(property = "custom2", column = "CUSTOM_2"),
@@ -88,8 +88,8 @@ public interface WorkbasketHistoryQueryMapper {
           + "<if test='createdIn !=null'> AND ( <foreach item='item' collection='createdIn' separator=',' > ( <if test='item.begin!=null'> CREATED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> CREATED &lt;=#{item.end} </if>)</foreach>)</if> "
           + "<if test='userIdIn != null'>AND UPPER(USER_ID) IN (<foreach item='item' collection='userIdIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='domainIn != null'>AND UPPER(DOMAIN) IN (<foreach item='item' collection='domainIn' separator=',' >#{item}</foreach>)</if> "
-          + "<if test='workbasketKeyIn != null'>AND UPPER(WORKBASKET_KEY) IN (<foreach item='item' collection='workbasketKeyIn' separator=',' >#{item}</foreach>)</if> "
-          + "<if test='workbasketTypeIn != null'>AND UPPER(WORKBASKET_TYPE) IN (<foreach item='item' collection='workbasketTypeIn' separator=',' >#{item}</foreach>)</if> "
+          + "<if test='keyIn != null'>AND UPPER(KEY) IN (<foreach item='item' collection='keyIn' separator=',' >#{item}</foreach>)</if> "
+          + "<if test='typeIn != null'>AND UPPER(TYPE) IN (<foreach item='item' collection='typeIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='ownerIn != null'>AND UPPER(OWNER) IN (<foreach item='item' collection='ownerIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='custom1In != null'>AND UPPER(CUSTOM_1) IN (<foreach item='item' collection='custom1In' separator=',' >#{item}</foreach>)</if> "
           + "<if test='custom2In != null'>AND UPPER(CUSTOM_2) IN (<foreach item='item' collection='custom2In' separator=',' >#{item}</foreach>)</if> "
@@ -104,8 +104,8 @@ public interface WorkbasketHistoryQueryMapper {
           + "<if test='eventTypeLike != null'>AND (<foreach item='item' collection='eventTypeLike' separator=' OR ' >UPPER(EVENT_TYPE) LIKE #{item}</foreach>)</if> "
           + "<if test='userIdLike != null'>AND (<foreach item='item' collection='userIdLike' separator=' OR ' >UPPER(USER_ID) LIKE #{item}</foreach>)</if> "
           + "<if test='domainLike != null'>AND (<foreach item='item' collection='domainLike' separator=' OR ' >UPPER(DOMAIN) LIKE #{item}</foreach>)</if> "
-          + "<if test='workbasketKeyLike != null'>AND (<foreach item='item' collection='workbasketKeyLike' separator=' OR ' >UPPER(WORKBASKET_KEY) LIKE #{item}</foreach>)</if> "
-          + "<if test='workbasketTypeLike != null'>AND (<foreach item='item' collection='workbasketTypeLike' separator=' OR ' >UPPER(WORKBASKET_TYPE) LIKE #{item}</foreach>)</if> "
+          + "<if test='keyLike != null'>AND (<foreach item='item' collection='keyLike' separator=' OR ' >UPPER(KEY) LIKE #{item}</foreach>)</if> "
+          + "<if test='typeLike != null'>AND (<foreach item='item' collection='typeLike' separator=' OR ' >UPPER(TYPE) LIKE #{item}</foreach>)</if> "
           + "<if test='ownerLike != null'>AND (<foreach item='item' collection='ownerLike' separator=' OR ' >UPPER(OWNER) LIKE #{item}</foreach>)</if> "
           + "<if test='custom1Like != null'>AND (<foreach item='item' collection='custom1Like' separator=' OR ' >UPPER(CUSTOM_1) LIKE #{item}</foreach>)</if> "
           + "<if test='custom2Like != null'>AND (<foreach item='item' collection='custom2Like' separator=' OR ' >UPPER(CUSTOM_2) LIKE #{item}</foreach>)</if> "
@@ -129,8 +129,8 @@ public interface WorkbasketHistoryQueryMapper {
           + "<if test='createdIn !=null'> AND ( <foreach item='item' collection='createdIn' separator=',' > ( <if test='item.begin!=null'> CREATED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> CREATED &lt;=#{item.end} </if>)</foreach>)</if> "
           + "<if test='userIdIn != null'>AND UPPER(USER_ID) IN (<foreach item='item' collection='userIdIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='domainIn != null'>AND UPPER(DOMAIN) IN (<foreach item='item' collection='domainIn' separator=',' >#{item}</foreach>)</if> "
-          + "<if test='workbasketKeyIn != null'>AND UPPER(WORKBASKET_KEY) IN (<foreach item='item' collection='workbasketKeyIn' separator=',' >#{item}</foreach>)</if> "
-          + "<if test='workbasketTypeIn != null'>AND UPPER(WORKBASKET_TYPE) IN (<foreach item='item' collection='workbasketTypeIn' separator=',' >#{item}</foreach>)</if> "
+          + "<if test='keyIn != null'>AND UPPER(KEY) IN (<foreach item='item' collection='keyIn' separator=',' >#{item}</foreach>)</if> "
+          + "<if test='typeIn != null'>AND UPPER(TYPE) IN (<foreach item='item' collection='typeIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='ownerIn != null'>AND UPPER(OWNER) IN (<foreach item='item' collection='ownerIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='custom1In != null'>AND UPPER(CUSTOM_1) IN (<foreach item='item' collection='custom1In' separator=',' >#{item}</foreach>)</if> "
           + "<if test='custom2In != null'>AND UPPER(CUSTOM_2) IN (<foreach item='item' collection='custom2In' separator=',' >#{item}</foreach>)</if> "
@@ -145,8 +145,8 @@ public interface WorkbasketHistoryQueryMapper {
           + "<if test='eventTypeLike != null'>AND (<foreach item='item' collection='eventTypeLike' separator=' OR ' >UPPER(EVENT_TYPE) LIKE #{item}</foreach>)</if> "
           + "<if test='userIdLike != null'>AND (<foreach item='item' collection='userIdLike' separator=' OR ' >UPPER(USER_ID) LIKE #{item}</foreach>)</if> "
           + "<if test='domainLike != null'>AND (<foreach item='item' collection='domainLike' separator=' OR ' >UPPER(DOMAIN) LIKE #{item}</foreach>)</if> "
-          + "<if test='workbasketKeyLike != null'>AND (<foreach item='item' collection='workbasketKeyLike' separator=' OR ' >UPPER(WORKBASKET_KEY) LIKE #{item}</foreach>)</if> "
-          + "<if test='workbasketTypeLike != null'>AND (<foreach item='item' collection='workbasketTypeLike' separator=' OR ' >UPPER(WORKBASKET_TYPE) LIKE #{item}</foreach>)</if> "
+          + "<if test='keyLike != null'>AND (<foreach item='item' collection='keyLike' separator=' OR ' >UPPER(KEY) LIKE #{item}</foreach>)</if> "
+          + "<if test='typeLike != null'>AND (<foreach item='item' collection='typeLike' separator=' OR ' >UPPER(TYPE) LIKE #{item}</foreach>)</if> "
           + "<if test='ownerLike != null'>AND (<foreach item='item' collection='ownerLike' separator=' OR ' >UPPER(OWNER) LIKE #{item}</foreach>)</if> "
           + "<if test='custom1Like != null'>AND (<foreach item='item' collection='custom1Like' separator=' OR ' >UPPER(CUSTOM_1) LIKE #{item}</foreach>)</if> "
           + "<if test='custom2Like != null'>AND (<foreach item='item' collection='custom2Like' separator=' OR ' >UPPER(CUSTOM_2) LIKE #{item}</foreach>)</if> "

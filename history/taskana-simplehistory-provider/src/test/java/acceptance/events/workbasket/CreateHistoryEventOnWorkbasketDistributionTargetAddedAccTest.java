@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
+import pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryEventMapper;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEventType;
 import pro.taskana.workbasket.api.WorkbasketService;
@@ -19,6 +20,8 @@ class CreateHistoryEventOnWorkbasketDistributionTargetAddedAccTest extends Abstr
 
   private final WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
   private final SimpleHistoryServiceImpl historyService = getHistoryService();
+  private final WorkbasketHistoryEventMapper workbasketHistoryEventMapper =
+      getWorkbasketHistoryEventMapper();
 
   @WithAccessId(user = "admin")
   @Test
@@ -41,8 +44,11 @@ class CreateHistoryEventOnWorkbasketDistributionTargetAddedAccTest extends Abstr
     assertThat(events).hasSize(1);
 
     String eventType = events.get(0).getEventType();
+    String details = workbasketHistoryEventMapper.findById(events.get(0).getId()).getDetails();
 
     assertThat(eventType)
-        .isEqualTo(WorkbasketHistoryEventType.WORKBASKET_DISTRIBUTION_TARGET_ADDED.getName());
+        .isEqualTo(WorkbasketHistoryEventType.DISTRIBUTION_TARGET_ADDED.getName());
+
+    assertThat(details).contains("\"newValue\":\"WBI:100000000000000000000000000000000001\"");
   }
 }

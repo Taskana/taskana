@@ -9,7 +9,7 @@ public class WorkbasketAccessItemDeletedForAccessIdEvent extends WorkbasketHisto
   public WorkbasketAccessItemDeletedForAccessIdEvent(
       String id, Workbasket workbasket, String userId) {
     super(id, workbasket, userId, null);
-    eventType = WorkbasketHistoryEventType.WORKBASKET_ACCESS_ITEM_DELETED_FOR_ACCESS_ID.getName();
+    eventType = WorkbasketHistoryEventType.ACCESS_ITEM_DELETED_FOR_ACCESS_ID.getName();
     created = Instant.now();
   }
 }

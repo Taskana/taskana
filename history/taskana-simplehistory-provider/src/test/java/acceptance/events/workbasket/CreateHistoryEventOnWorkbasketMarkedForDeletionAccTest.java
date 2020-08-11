@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
+import pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryEventMapper;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEventType;
 import pro.taskana.workbasket.api.WorkbasketService;
@@ -19,6 +20,8 @@ class CreateHistoryEventOnWorkbasketMarkedForDeletionAccTest extends AbstractAcc
 
   private final WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
   private final SimpleHistoryServiceImpl historyService = getHistoryService();
+  private final WorkbasketHistoryEventMapper workbasketHistoryEventMapper =
+      getWorkbasketHistoryEventMapper();
 
   @WithAccessId(user = "admin")
   @Test
@@ -39,8 +42,12 @@ class CreateHistoryEventOnWorkbasketMarkedForDeletionAccTest extends AbstractAcc
     assertThat(events).hasSize(1);
 
     String eventType = events.get(0).getEventType();
+    String eventWorkbasketId = events.get(0).getWorkbasketId();
+    String details = workbasketHistoryEventMapper.findById(events.get(0).getId()).getDetails();
 
     assertThat(eventType)
-        .isEqualTo(WorkbasketHistoryEventType.WORKBASKET_MARKED_FOR_DELETION.getName());
+        .isEqualTo(WorkbasketHistoryEventType.MARKED_FOR_DELETION.getName());
+
+    assertThat(eventWorkbasketId).isEqualTo(workbasketId);
   }
 }

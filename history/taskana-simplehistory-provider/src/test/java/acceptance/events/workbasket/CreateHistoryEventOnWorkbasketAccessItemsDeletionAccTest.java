@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
+import pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryEventMapper;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEventType;
 import pro.taskana.workbasket.api.WorkbasketService;
@@ -19,6 +20,8 @@ class CreateHistoryEventOnWorkbasketAccessItemsDeletionAccTest extends AbstractA
 
   private final WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
   private final SimpleHistoryServiceImpl historyService = getHistoryService();
+  private final WorkbasketHistoryEventMapper workbasketHistoryEventMapper =
+      getWorkbasketHistoryEventMapper();
 
   @WithAccessId(user = "admin")
   @Test
@@ -46,9 +49,13 @@ class CreateHistoryEventOnWorkbasketAccessItemsDeletionAccTest extends AbstractA
 
     assertThat(events).hasSize(4);
 
+    String details = workbasketHistoryEventMapper.findById(events.get(0).getId()).getDetails();
+
     assertThat(events)
         .extracting(WorkbasketHistoryEvent::getEventType)
-        .containsOnly(WorkbasketHistoryEventType.WORKBASKET_ACCESS_ITEM_DELETED.getName());
+        .containsOnly(WorkbasketHistoryEventType.ACCESS_ITEM_DELETED.getName());
+
+    assertThat(details).contains("\"oldValue\":\"WBI:100000000000000000000000000000000001\"");
   }
 
   @WithAccessId(user = "admin")

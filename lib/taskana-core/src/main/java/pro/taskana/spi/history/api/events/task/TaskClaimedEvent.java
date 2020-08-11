@@ -7,7 +7,7 @@ public class TaskClaimedEvent extends TaskHistoryEvent {
 
   public TaskClaimedEvent(String id, Task task, String userId) {
     super(id, task, userId, null);
-    eventType = (TaskHistoryEventType.TASK_CLAIMED.getName());
+    eventType = (TaskHistoryEventType.CLAIMED.getName());
     created = task.getClaimed();
   }
 }
