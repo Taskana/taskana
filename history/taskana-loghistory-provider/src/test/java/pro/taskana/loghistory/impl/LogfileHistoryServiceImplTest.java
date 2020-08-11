@@ -15,10 +15,10 @@ import uk.org.lidalia.slf4jtest.TestLoggerFactory;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.spi.history.api.events.TaskanaHistoryEvent;
 
-class LogfileHistoryServiceProviderTest {
+class LogfileHistoryServiceImplTest {
 
   static ObjectMapper objectMapper = new ObjectMapper();
-  LogfileHistoryServiceProvider logfileHistoryServiceProvider = new LogfileHistoryServiceProvider();
+  LogfileHistoryServiceImpl logfileHistoryServiceImpl = new LogfileHistoryServiceImpl();
   TestLogger logger = TestLoggerFactory.getTestLogger("AUDIT");
   @Mock TaskanaEngine taskanaEngine;
 
@@ -35,7 +35,7 @@ class LogfileHistoryServiceProviderTest {
   @Test
   void should_LogEventAsJson_When_CreateIsCalled() throws Exception {
 
-    logfileHistoryServiceProvider.initialize(taskanaEngine);
+    logfileHistoryServiceImpl.initialize(taskanaEngine);
     TaskanaHistoryEvent eventToBeLogged = new TaskanaHistoryEvent();
     eventToBeLogged.setId("someId");
     eventToBeLogged.setUserId("someUser");
@@ -50,7 +50,7 @@ class LogfileHistoryServiceProviderTest {
     eventToBeLogged.setTaskClassificationCategory("someTaskClassificationCategory");
     eventToBeLogged.setDetails("someDetails");
 
-    logfileHistoryServiceProvider.create(eventToBeLogged);
+    logfileHistoryServiceImpl.create(eventToBeLogged);
 
     String logMessage = logger.getLoggingEvents().asList().get(0).getMessage();
 

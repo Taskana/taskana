@@ -32,6 +32,10 @@
       <artifactId>jackson-databind</artifactId>
       <version>${version.jackson-databind}</version>
     </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+    </dependency>
 
     <!-- test dependencies -->
     <dependency>
@@ -39,10 +43,6 @@
       <artifactId>slf4j-test</artifactId>
       <version>${version.slf4j-test}</version>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.datatype</groupId>
-      <artifactId>jackson-datatype-jsr310</artifactId>
     </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
