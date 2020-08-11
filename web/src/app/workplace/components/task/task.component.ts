@@ -7,6 +7,7 @@ import { TaskService } from 'app/workplace/services/task.service';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { Subscription } from 'rxjs';
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'taskana-task',
@@ -37,6 +38,16 @@ export class TaskComponent implements OnInit, OnDestroy {
     this.routeSubscription = this.route.params.subscribe((params) => {
       const { id } = params;
       this.getTask(id);
+
+      this.requestInProgress = true;
+      this.taskService
+        .claimTask(id)
+        .pipe(take(1))
+        .subscribe((task) => {
+          this.task = task;
+          this.taskService.publishUpdatedTask(task);
+          this.requestInProgress = false;
+        });
     });
   }
 
@@ -83,6 +94,19 @@ export class TaskComponent implements OnInit, OnDestroy {
       this.taskService.publishUpdatedTask(task);
       this.navigateBack();
     });
+  }
+
+  cancelClaimTask() {
+    this.requestInProgress = true;
+    this.taskService
+      .cancelClaimTask(this.task.taskId)
+      .pipe(take(1))
+      .subscribe((task) => {
+        this.task = task;
+        this.taskService.publishUpdatedTask(task);
+        this.requestInProgress = false;
+      });
+    this.navigateBack();
   }
 
   navigateBack() {

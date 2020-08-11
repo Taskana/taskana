@@ -68,10 +68,13 @@ export class TaskService {
     return this.httpClient.post<Task>(`${this.url}/${id}/complete`, '');
   }
 
-  // currently unused
-  /*  claimTask(id: string): Observable<Task> {
+  claimTask(id: string): Observable<Task> {
     return this.httpClient.post<Task>(`${this.url}/${id}/claim`, 'test');
-  } */
+  }
+
+  cancelClaimTask(id: string): Observable<Task> {
+    return this.httpClient.delete<Task>(`${this.url}/${id}/claim`);
+  }
 
   transferTask(taskId: string, workbasketId: string): Observable<Task> {
     return this.httpClient.post<Task>(`${this.url}/${taskId}/transfer/${workbasketId}`, '');
