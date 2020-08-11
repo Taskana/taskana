@@ -26,7 +26,7 @@ export class WorkbasketOverviewComponent implements OnInit {
 
   ngOnInit() {
     if (this.route.firstChild) {
-      this.route.firstChild.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      this.route.firstChild.params.subscribe((params) => {
         this.routerParams = params;
         if (this.routerParams.id) {
           this.showDetail = true;

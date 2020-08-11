@@ -22,7 +22,6 @@ import {
 } from './workbasket.actions';
 import { WorkbasketSummaryRepresentation } from '../../models/workbasket-summary-representation';
 import { ACTION } from '../../models/action';
-import { DomainService } from '../../services/domain/domain.service';
 import { NOTIFICATION_TYPES } from '../../models/notifications';
 import { NotificationService } from '../../services/notifications/notification.service';
 import { WorkbasketAccessItemsRepresentation } from '../../models/workbasket-access-items-representation';
@@ -37,7 +36,6 @@ class InitializeStore {
 export class WorkbasketState implements NgxsAfterBootstrap {
   constructor(
     private workbasketService: WorkbasketService,
-    private domainService: DomainService,
     private location: Location,
     private notificationService: NotificationService
   ) {}
