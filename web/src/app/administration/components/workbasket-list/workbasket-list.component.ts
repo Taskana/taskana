@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Observable, pipe, Subject, Subscription } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 import { WorkbasketSummaryRepresentation } from 'app/shared/models/workbasket-summary-representation';
 import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
@@ -93,6 +93,7 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
       .subscribe((orientation: Orientation) => {
         this.refreshWorkbasketList();
       });
+
     this.importExportService
       .getImportingFinished()
       .pipe(takeUntil(this.destroy$))
@@ -134,7 +135,7 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
     this.performRequest();
   }
 
-  private performRequest(): void {
+  performRequest(): void {
     this.store.dispatch(
       new GetWorkbasketsSummary(
         true,

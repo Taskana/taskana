@@ -57,7 +57,6 @@ describe('WorkbasketOverviewComponent', () => {
   }));
 
   it('should create the component', () => {
-    component.ngOnInit();
     expect(component).toBeTruthy();
   });
 
