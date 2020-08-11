@@ -3,13 +3,11 @@ import { Select, Store } from '@ngxs/store';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable, Subject } from 'rxjs';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
-import { AccessItemWorkbasketResource } from 'app/shared/models/access-item-workbasket-resource';
 import { AccessItemWorkbasket } from 'app/shared/models/access-item-workbasket';
 import { Direction, Sorting } from 'app/shared/models/sorting';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { takeUntil } from 'rxjs/operators';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
-import { AccessIdsService } from '../../../shared/services/access-ids/access-ids.service';
 import { AccessIdDefinition } from '../../../shared/models/access-id';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { AccessItemsCustomisation, CustomField, getCustomFields } from '../../../shared/models/customisation';
@@ -50,7 +48,6 @@ export class AccessItemsManagementComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private accessIdsService: AccessIdsService,
     private formsValidatorService: FormsValidatorService,
     private requestInProgressService: RequestInProgressService,
     private notificationService: NotificationService,
