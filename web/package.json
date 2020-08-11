@@ -13,7 +13,9 @@
     "lint": "eslint --ext .ts src",
     "lint:fix": "eslint --ext .ts src --fix",
     "format": "prettier --write \"**/*.{js,ts,css,scss,md,json,yml}\"",
-    "format:html": "prettier --write \"**/*.{html,}\""
+    "format:html": "prettier --write \"**/*.{html,}\"",
+    "e2e": "cypress install && cypress run",
+    "e2e:open": "cypress install && cypress open"
   },
   "private": true,
   "dependencies": {
@@ -56,6 +58,8 @@
     "@typescript-eslint/eslint-plugin-tslint": "2.15.0",
     "@typescript-eslint/parser": "2.15.0",
     "compression-webpack-plugin": "4.0.0",
+    "cypress": "^3.8.3",
+    "cypress-intellij-reporter": "0.0.4",
     "eslint": "6.8.0",
     "eslint-config-prettier": "6.11.0",
     "eslint-plugin-import": "2.22.0",
