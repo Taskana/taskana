@@ -20,7 +20,7 @@
   <Appenders>
  
     <RollingFile name="auditFileJson"
-        fileName="_audit.json"
+        fileName="target/_audit.json"
         filePattern="${LOG_FOLDER}/${QUALIFIED_SERVICE_NAME}_audit-%d{yyyy-MM-dd}-%i.json">
       <JsonLayout compact="true" complete="false" properties="true" locationInfo="true"
         propertiesAsList="false" eventEol="true" stacktraceAsString="true">

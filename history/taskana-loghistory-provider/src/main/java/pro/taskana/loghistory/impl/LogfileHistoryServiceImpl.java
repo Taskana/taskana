@@ -20,9 +20,9 @@ import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.spi.history.api.TaskanaHistory;
 import pro.taskana.spi.history.api.events.TaskanaHistoryEvent;
 
-public class LogfileHistoryServiceProvider implements TaskanaHistory {
+public class LogfileHistoryServiceImpl implements TaskanaHistory {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(LogfileHistoryServiceProvider.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(LogfileHistoryServiceImpl.class);
   private static final String TASKANA_PROPERTIES = "/taskana.properties";
   private static final String TASKANA_HISTORYLOGGER_NAME = "taskana.historylogger.name";
   private static Logger historyLogger;
