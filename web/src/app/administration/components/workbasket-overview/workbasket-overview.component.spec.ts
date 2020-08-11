@@ -1,8 +1,8 @@
-import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkbasketOverviewComponent } from './workbasket-overview.component';
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
-import { Actions, NgxsModule, Store } from '@ngxs/store';
-import { Observable, of } from 'rxjs';
+import { NgxsModule, Store } from '@ngxs/store';
+import { of } from 'rxjs';
 import { WorkbasketState } from '../../../shared/store/workbasket-store/workbasket.state';
 import { WorkbasketService } from '../../../shared/services/workbasket/workbasket.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -22,9 +22,9 @@ const NotificationServiceSpy = jest.fn().mockImplementation(
 );
 const mockActivatedRoute = {
   firstChild: {
-    params: {
-      id: '123'
-    }
+    params: of({
+      id: 'new-workbasket'
+    })
   }
 };
 
@@ -33,7 +33,6 @@ describe('WorkbasketOverviewComponent', () => {
   let debugElement: DebugElement;
   let component: WorkbasketOverviewComponent;
   let store: Store;
-  let action$: Observable<any>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -42,7 +41,7 @@ describe('WorkbasketOverviewComponent', () => {
       providers: [
         WorkbasketService,
         { provide: NotificationService, useClass: NotificationServiceSpy },
-        { provide: ActivatedRoute, useValue: of(mockActivatedRoute) },
+        { provide: ActivatedRoute, useValue: mockActivatedRoute },
         DomainService,
         RequestInProgressService,
         SelectedRouteService
@@ -53,7 +52,7 @@ describe('WorkbasketOverviewComponent', () => {
     debugElement = fixture.debugElement;
     component = fixture.debugElement.componentInstance;
     store = TestBed.inject(Store);
-    action$ = TestBed.inject(Actions);
+    fixture.detectChanges();
   }));
 
   it('should create the component', () => {
@@ -73,4 +72,10 @@ describe('WorkbasketOverviewComponent', () => {
     fixture.detectChanges();
     expect(debugElement.nativeElement.querySelector('taskana-administration-workbasket-details')).toBeTruthy();
   });
+
+  it('should display details when params id exists', async(() => {
+    expect(component.routerParams.id).toBeTruthy();
+    expect(component.showDetail).toBeTruthy();
+    expect(debugElement.nativeElement.querySelector('taskana-administration-workbasket-details')).toBeTruthy();
+  }));
 });
