@@ -18,7 +18,8 @@ import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.spi.history.api.TaskanaHistory;
-import pro.taskana.spi.history.api.events.TaskanaHistoryEvent;
+import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
+import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 
 public class LogfileHistoryServiceImpl implements TaskanaHistory {
 
@@ -49,7 +50,19 @@ public class LogfileHistoryServiceImpl implements TaskanaHistory {
   }
 
   @Override
-  public void create(TaskanaHistoryEvent event) {
+  public void create(TaskHistoryEvent event) {
+
+    try {
+      if (historyLogger.isInfoEnabled()) {
+        historyLogger.info(objectMapper.writeValueAsString(event));
+      }
+    } catch (JsonProcessingException e) {
+      throw new SystemException("Caught exception while serializing history event to JSON ", e);
+    }
+  }
+
+  @Override
+  public void create(WorkbasketHistoryEvent event) {
 
     try {
       if (historyLogger.isInfoEnabled()) {

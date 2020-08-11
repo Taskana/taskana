@@ -9,7 +9,7 @@ public class WorkbasketAccessItemsUpdatedEvent extends WorkbasketHistoryEvent {
   public WorkbasketAccessItemsUpdatedEvent(
       String id, Workbasket workbasket, String userId, String details) {
     super(id, workbasket, userId, details);
-    eventType = WorkbasketHistoryEventType.WORKBASKET_ACCESS_ITEMS_UPDATED.getName();
+    eventType = WorkbasketHistoryEventType.ACCESS_ITEMS_UPDATED.getName();
     created = Instant.now();
   }
 }

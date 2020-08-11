@@ -50,7 +50,7 @@ class CreateHistoryEventOnTaskCancelClaimAccTest extends AbstractAccTest {
 
     String eventType = events.get(0).getEventType();
 
-    assertThat(eventType).isEqualTo(TaskHistoryEventType.TASK_CLAIM_CANCELLED.getName());
+    assertThat(eventType).isEqualTo(TaskHistoryEventType.CLAIM_CANCELLED.getName());
 
   }
 }

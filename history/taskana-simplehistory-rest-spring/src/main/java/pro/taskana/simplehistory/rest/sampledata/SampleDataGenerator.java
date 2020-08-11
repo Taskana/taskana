@@ -21,7 +21,7 @@ public class SampleDataGenerator {
   private static final Logger LOGGER = LoggerFactory.getLogger(SampleDataGenerator.class);
   private static final String TEST_DATA = "/sql.sample-data";
   private static final String CLEAR = TEST_DATA + "/clear-db.sql";
-  private static final String HISTORY_EVENT = TEST_DATA + "/history-event.sql";
+  private static final String TASK_HISTORY_EVENT = TEST_DATA + "/task-history-event.sql";
   DataSource dataSource;
   String dbProductName;
 
@@ -58,7 +58,7 @@ public class SampleDataGenerator {
       runner.runScript(
           new BufferedReader(
               new InputStreamReader(
-                  SampleDataGenerator.class.getResourceAsStream(HISTORY_EVENT),
+                  SampleDataGenerator.class.getResourceAsStream(TASK_HISTORY_EVENT),
                   StandardCharsets.UTF_8)));
 
     } catch (Exception e) {

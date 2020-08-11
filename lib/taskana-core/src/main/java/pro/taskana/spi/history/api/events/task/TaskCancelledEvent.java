@@ -7,7 +7,7 @@ public class TaskCancelledEvent extends TaskHistoryEvent {
 
   public TaskCancelledEvent(String id, Task task, String userId) {
     super(id, task, userId, null);
-    eventType = "TASK_CANCELLED";
+    eventType = TaskHistoryEventType.CANCELLED.getName();
     created = task.getCompleted();
   }
 }

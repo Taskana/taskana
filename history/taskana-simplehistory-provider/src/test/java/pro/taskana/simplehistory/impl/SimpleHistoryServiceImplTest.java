@@ -89,7 +89,7 @@ class SimpleHistoryServiceImplTest {
     WorkbasketHistoryEvent expectedEvent =
         AbstractAccTest.createWorkbasketHistoryEvent(
             "wbKey1",
-            WorkbasketHistoryEventType.WORKBASKET_CREATED.getName(),
+            WorkbasketHistoryEventType.CREATED.getName(),
             "someUserId",
             "someDetails");
 
@@ -128,20 +128,20 @@ class SimpleHistoryServiceImplTest {
     returnList.add(
         AbstractAccTest.createWorkbasketHistoryEvent(
             "wbKey1",
-            WorkbasketHistoryEventType.WORKBASKET_CREATED.getName(),
+            WorkbasketHistoryEventType.CREATED.getName(),
             "someUserId",
             "someDetails"));
     when(taskanaHistoryEngineMock.getSqlSession()).thenReturn(sqlSessionMock);
     when(sqlSessionMock.selectList(any(), any())).thenReturn(new ArrayList<>(returnList));
 
     final List<WorkbasketHistoryEvent> result =
-        cutSpy.createWorkbasketHistoryQuery().workbasketKeyIn("wbKey1").list();
+        cutSpy.createWorkbasketHistoryQuery().keyIn("wbKey1").list();
 
     verify(taskanaHistoryEngineMock, times(1)).openConnection();
     verify(taskanaHistoryEngineMock, times(1)).getSqlSession();
     verify(sqlSessionMock, times(1)).selectList(any(), any());
     verify(taskanaHistoryEngineMock, times(1)).returnConnection();
     assertThat(result).hasSize(returnList.size());
-    assertThat(result.get(0).getWorkbasketKey()).isEqualTo(returnList.get(0).getWorkbasketKey());
+    assertThat(result.get(0).getKey()).isEqualTo(returnList.get(0).getKey());
   }
 }

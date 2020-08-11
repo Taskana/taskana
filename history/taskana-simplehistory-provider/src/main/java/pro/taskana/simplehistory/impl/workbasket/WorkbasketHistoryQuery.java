@@ -64,7 +64,7 @@ public interface WorkbasketHistoryQuery
    * @param workbasketKey as String
    * @return the query
    */
-  WorkbasketHistoryQuery workbasketKeyIn(String... workbasketKey);
+  WorkbasketHistoryQuery keyIn(String... workbasketKey);
 
   /**
    * Add your workbasketType to your query.
@@ -72,7 +72,7 @@ public interface WorkbasketHistoryQuery
    * @param workbasketType as String
    * @return the query
    */
-  WorkbasketHistoryQuery workbasketTypeIn(String... workbasketType);
+  WorkbasketHistoryQuery typeIn(String... workbasketType);
 
   /**
    * Add your owner to your query.
@@ -334,7 +334,7 @@ public interface WorkbasketHistoryQuery
    *     If sortDirection is null, the result is sorted in ascending order
    * @return the query
    */
-  WorkbasketHistoryQuery orderByWorkbasketKey(SortDirection sortDirection);
+  WorkbasketHistoryQuery orderByKey(SortDirection sortDirection);
 
   /**
    * Sort the query result by WorkbasketType.
@@ -343,7 +343,7 @@ public interface WorkbasketHistoryQuery
    *     If sortDirection is null, the result is sorted in ascending order
    * @return the query
    */
-  WorkbasketHistoryQuery orderByWorkbasketType(SortDirection sortDirection);
+  WorkbasketHistoryQuery orderByType(SortDirection sortDirection);
 
   /**
    * Sort the query result by a custom attribute.

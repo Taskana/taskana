@@ -40,8 +40,8 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
   private TimeInterval[] createdIn;
   private String[] userIdIn;
   private String[] domainIn;
-  private String[] workbasketKeyIn;
-  private String[] workbasketTypeIn;
+  private String[] keyIn;
+  private String[] typeIn;
   private String[] ownerIn;
   private String[] custom1In;
   private String[] custom2In;
@@ -56,8 +56,8 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
   private String[] eventTypeLike;
   private String[] userIdLike;
   private String[] domainLike;
-  private String[] workbasketKeyLike;
-  private String[] workbasketTypeLike;
+  private String[] keyLike;
+  private String[] typeLike;
   private String[] ownerLike;
   private String[] custom1Like;
   private String[] custom2Like;
@@ -98,12 +98,12 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
     return domainIn;
   }
 
-  public String[] getWorkbasketKeyIn() {
-    return workbasketKeyIn;
+  public String[] getKeyIn() {
+    return keyIn;
   }
 
-  public String[] getWorkbasketTypeIn() {
-    return workbasketTypeIn;
+  public String[] getTypeIn() {
+    return typeIn;
   }
 
   public String[] getOwnerIn() {
@@ -158,12 +158,12 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
     return domainLike;
   }
 
-  public String[] getWorkbasketKeyLike() {
-    return workbasketKeyLike;
+  public String[] getKeyLike() {
+    return keyLike;
   }
 
-  public String[] getWorkbasketTypeLike() {
-    return workbasketTypeLike;
+  public String[] getTypeLike() {
+    return typeLike;
   }
 
   public String[] getOwnerLike() {
@@ -239,14 +239,14 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
   }
 
   @Override
-  public WorkbasketHistoryQuery workbasketKeyIn(String... workbasketKey) {
-    this.workbasketKeyIn = toUpperCopy(workbasketKey);
+  public WorkbasketHistoryQuery keyIn(String... workbasketKey) {
+    this.keyIn = toUpperCopy(workbasketKey);
     return this;
   }
 
   @Override
-  public WorkbasketHistoryQuery workbasketTypeIn(String... workbasketType) {
-    this.workbasketTypeIn = toUpperCopy(workbasketType);
+  public WorkbasketHistoryQuery typeIn(String... workbasketType) {
+    this.typeIn = toUpperCopy(workbasketType);
     return this;
   }
 
@@ -330,13 +330,13 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
 
   @Override
   public WorkbasketHistoryQuery workbasketKeyLike(String... workbasketKey) {
-    this.workbasketKeyLike = toUpperCopy(workbasketKey);
+    this.keyLike = toUpperCopy(workbasketKey);
     return this;
   }
 
   @Override
   public WorkbasketHistoryQuery workbasketTypeLike(String... workbasketType) {
-    this.workbasketTypeLike = toUpperCopy(workbasketType);
+    this.typeLike = toUpperCopy(workbasketType);
     return this;
   }
 
@@ -420,13 +420,13 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
   }
 
   @Override
-  public WorkbasketHistoryQuery orderByWorkbasketKey(SortDirection sortDirection) {
-    return addOrderCriteria("WORKBASKET_KEY", sortDirection);
+  public WorkbasketHistoryQuery orderByKey(SortDirection sortDirection) {
+    return addOrderCriteria("KEY", sortDirection);
   }
 
   @Override
-  public WorkbasketHistoryQuery orderByWorkbasketType(SortDirection sortDirection) {
-    return addOrderCriteria("WORKBASKET_TYPE", sortDirection);
+  public WorkbasketHistoryQuery orderByType(SortDirection sortDirection) {
+    return addOrderCriteria("TYPE", sortDirection);
   }
 
   @Override

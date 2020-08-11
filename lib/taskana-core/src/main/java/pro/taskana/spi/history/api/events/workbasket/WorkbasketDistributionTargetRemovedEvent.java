@@ -9,7 +9,7 @@ public class WorkbasketDistributionTargetRemovedEvent extends WorkbasketHistoryE
   public WorkbasketDistributionTargetRemovedEvent(
       String id, Workbasket workbasket, String userId, String details) {
     super(id, workbasket, userId, details);
-    eventType = WorkbasketHistoryEventType.WORKBASKET_DISTRIBUTION_TARGET_REMOVED.getName();
+    eventType = WorkbasketHistoryEventType.DISTRIBUTION_TARGET_REMOVED.getName();
     created = Instant.now();
   }
 }

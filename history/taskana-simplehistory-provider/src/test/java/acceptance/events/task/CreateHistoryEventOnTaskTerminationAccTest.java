@@ -39,7 +39,7 @@ class CreateHistoryEventOnTaskTerminationAccTest extends AbstractAccTest {
 
     String eventType = events.get(0).getEventType();
 
-    assertThat(eventType).isEqualTo(TaskHistoryEventType.TASK_TERMINATED.getName());
+    assertThat(eventType).isEqualTo(TaskHistoryEventType.TERMINATED.getName());
   }
 
   @Test
@@ -61,6 +61,6 @@ class CreateHistoryEventOnTaskTerminationAccTest extends AbstractAccTest {
 
     String eventType = events.get(0).getEventType();
 
-    assertThat(eventType).isEqualTo(TaskHistoryEventType.TASK_TERMINATED.getName());
+    assertThat(eventType).isEqualTo(TaskHistoryEventType.TERMINATED.getName());
   }
 }

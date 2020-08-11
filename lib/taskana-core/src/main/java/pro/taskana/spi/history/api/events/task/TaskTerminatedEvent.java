@@ -7,7 +7,7 @@ public class TaskTerminatedEvent extends TaskHistoryEvent {
 
   public TaskTerminatedEvent(String id, Task task, String userId) {
     super(id, task, userId, null);
-    eventType = "TASK_TERMINATED";
+    eventType = TaskHistoryEventType.TERMINATED.getName();
     created = task.getCompleted();
   }
 }

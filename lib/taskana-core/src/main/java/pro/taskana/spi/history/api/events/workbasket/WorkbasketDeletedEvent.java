@@ -6,7 +6,7 @@ public class WorkbasketDeletedEvent extends WorkbasketHistoryEvent {
 
   public WorkbasketDeletedEvent(String id, Workbasket workbasket, String userId, String details) {
     super(id, workbasket, userId, details);
-    eventType = WorkbasketHistoryEventType.WORKBASKET_DELETED.getName();
+    eventType = WorkbasketHistoryEventType.DELETED.getName();
     created = workbasket.getModified();
   }
 }

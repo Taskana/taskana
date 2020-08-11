@@ -44,7 +44,7 @@ class WorkbasketHistoryQueryImplTest {
     returnList.add(
         createHistoryEvent(
             "abcd",
-            WorkbasketHistoryEventType.WORKBASKET_CREATED.getName(),
+            WorkbasketHistoryEventType.CREATED.getName(),
             "someUserId",
             "someDetails",
             null));
@@ -58,7 +58,7 @@ class WorkbasketHistoryQueryImplTest {
     List<WorkbasketHistoryEvent> result =
         historyQueryImpl
             .workbasketIdIn("WBI:01")
-            .workbasketKeyIn("abcd", "some_random_string")
+            .keyIn("abcd", "some_random_string")
             .userIdIn("someUserId")
             .createdWithin(interval)
             .list();
@@ -73,7 +73,7 @@ class WorkbasketHistoryQueryImplTest {
     he.setId(IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT));
     he.setUserId(userId);
     he.setDetails(details);
-    he.setWorkbasketKey(workbasketKey);
+    he.setKey(workbasketKey);
     he.setEventType(type);
     he.setCreated(created);
     return he;

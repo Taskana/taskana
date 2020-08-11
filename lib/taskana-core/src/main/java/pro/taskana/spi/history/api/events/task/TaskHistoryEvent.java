@@ -263,75 +263,52 @@ public class TaskHistoryEvent {
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hash(
-        getId(),
-        getBusinessProcessId(),
-        getParentBusinessProcessId(),
-        getTaskId(),
-        getEventType(),
-        getCreated(),
-        getUserId(),
-        getDomain(),
-        getWorkbasketKey(),
-        getPorCompany(),
-        getPorSystem(),
-        getPorInstance(),
-        getPorType(),
-        getPorValue(),
-        getTaskClassificationKey(),
-        getTaskClassificationCategory(),
-        getAttachmentClassificationKey(),
-        getOldValue(),
-        getNewValue(),
-        getCustomAttribute(TaskHistoryCustomField.CUSTOM_1),
-        getCustomAttribute(TaskHistoryCustomField.CUSTOM_2),
-        getCustomAttribute(TaskHistoryCustomField.CUSTOM_3),
-        getCustomAttribute(TaskHistoryCustomField.CUSTOM_4),
-        getDetails());
-  }
-
-  @Override
   public boolean equals(Object obj) {
     if (this == obj) {
       return true;
     }
-    if (!(obj instanceof TaskanaHistoryEvent)) {
+    if (!(obj instanceof TaskHistoryEvent)) {
       return false;
     }
-    TaskanaHistoryEvent other = (TaskanaHistoryEvent) obj;
+    TaskHistoryEvent other = (TaskHistoryEvent) obj;
     return Objects.equals(getId(), other.getId())
-        && Objects.equals(getBusinessProcessId(), other.getBusinessProcessId())
-        && Objects.equals(getParentBusinessProcessId(), other.getParentBusinessProcessId())
-        && Objects.equals(getTaskId(), other.getTaskId())
-        && Objects.equals(getEventType(), other.getEventType())
-        && Objects.equals(getCreated(), other.getCreated())
-        && Objects.equals(getUserId(), other.getUserId())
-        && Objects.equals(getDomain(), other.getDomain())
-        && Objects.equals(getWorkbasketKey(), other.getWorkbasketKey())
-        && Objects.equals(getPorCompany(), other.getPorCompany())
-        && Objects.equals(getPorSystem(), other.getPorSystem())
-        && Objects.equals(getPorInstance(), other.getPorInstance())
-        && Objects.equals(getPorType(), other.getPorType())
-        && Objects.equals(getPorValue(), other.getPorValue())
-        && Objects.equals(getTaskClassificationKey(), other.getTaskClassificationKey())
-        && Objects.equals(getTaskClassificationCategory(), other.getTaskClassificationCategory())
-        && Objects.equals(getAttachmentClassificationKey(), other.getAttachmentClassificationKey())
-        && Objects.equals(getOldValue(), other.getOldValue())
-        && Objects.equals(getNewValue(), other.getNewValue())
-        && Objects.equals(
-            getCustomAttribute(TaskHistoryCustomField.CUSTOM_1),
-            other.getCustomAttribute(TaskHistoryCustomField.CUSTOM_1))
-        && Objects.equals(
-            getCustomAttribute(TaskHistoryCustomField.CUSTOM_2),
-            other.getCustomAttribute(TaskHistoryCustomField.CUSTOM_2))
-        && Objects.equals(
-            getCustomAttribute(TaskHistoryCustomField.CUSTOM_3),
-            other.getCustomAttribute(TaskHistoryCustomField.CUSTOM_3))
-        && Objects.equals(
-            getCustomAttribute(TaskHistoryCustomField.CUSTOM_4),
-            other.getCustomAttribute(TaskHistoryCustomField.CUSTOM_4))
-        && Objects.equals(getDetails(), other.getDetails());
+               && Objects.equals(getBusinessProcessId(), other.getBusinessProcessId())
+               && Objects
+                      .equals(getParentBusinessProcessId(), other.getParentBusinessProcessId())
+               && Objects.equals(getTaskId(), other.getTaskId())
+               && Objects.equals(getEventType(), other.getEventType())
+               && Objects.equals(getCreated(), other.getCreated())
+               && Objects.equals(getUserId(), other.getUserId())
+               && Objects.equals(getDomain(), other.getDomain())
+               && Objects.equals(getWorkbasketKey(), other.getWorkbasketKey())
+               && Objects.equals(getPorCompany(), other.getPorCompany())
+               && Objects.equals(getPorSystem(), other.getPorSystem())
+               && Objects.equals(getPorInstance(), other.getPorInstance())
+               && Objects.equals(getPorType(), other.getPorType())
+               && Objects.equals(getPorValue(), other.getPorValue())
+               && Objects
+                      .equals(getTaskClassificationKey(), other.getTaskClassificationKey())
+               && Objects
+                      .equals(getTaskClassificationCategory(),
+                          other.getTaskClassificationCategory())
+               && Objects.equals(getAttachmentClassificationKey(),
+        other.getAttachmentClassificationKey())
+               && Objects.equals(getOldValue(), other.getOldValue())
+               && Objects.equals(getNewValue(), other.getNewValue())
+               && Objects.equals(custom1, other.custom1)
+               && Objects.equals(custom2, other.custom2)
+               && Objects.equals(custom3, other.custom3)
+               && Objects.equals(custom4, other.custom4)
+               && Objects.equals(getDetails(), other.getDetails());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getId(), getBusinessProcessId(), getParentBusinessProcessId(), getTaskId(),
+        getEventType(), getCreated(), getUserId(), getDomain(), getWorkbasketKey(), getPorCompany(),
+        getPorSystem(), getPorInstance(), getPorType(), getPorValue(), getTaskClassificationKey(),
+        getTaskClassificationCategory(), getAttachmentClassificationKey(), getOldValue(),
+        getNewValue(), custom1, custom2, custom3, custom4, getDetails());
   }
 
   @Override

@@ -6,6 +6,7 @@ import acceptance.AbstractAccTest;
 import org.junit.jupiter.api.Test;
 
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
+import pro.taskana.spi.history.api.events.task.TaskHistoryEventType;
 
 
 class GetTaskHistoryEventAccTest extends AbstractAccTest {
@@ -26,7 +27,7 @@ class GetTaskHistoryEventAccTest extends AbstractAccTest {
         getHistoryService().getTaskHistoryEvent("HEI:000000000000000000000000000000000000");
     assertThat(taskHistoryEvent.getBusinessProcessId()).isEqualTo("BPI:01");
     assertThat(taskHistoryEvent.getUserId()).isEqualTo("admin");
-    assertThat(taskHistoryEvent.getEventType()).isEqualTo("TASK_UPDATED");
+    assertThat(taskHistoryEvent.getEventType()).isEqualTo(TaskHistoryEventType.UPDATED.getName());
     assertThat(taskHistoryEvent.getDetails()).isEqualTo(detailsJson);
   }
 }

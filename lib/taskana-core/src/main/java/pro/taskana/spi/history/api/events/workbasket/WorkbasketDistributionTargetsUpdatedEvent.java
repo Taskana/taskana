@@ -9,7 +9,7 @@ public class WorkbasketDistributionTargetsUpdatedEvent extends WorkbasketHistory
   public WorkbasketDistributionTargetsUpdatedEvent(
       String id, Workbasket workbasket, String userId, String details) {
     super(id, workbasket, userId, details);
-    eventType = WorkbasketHistoryEventType.WORKBASKET_DISTRIBUTION_TARGETS_UPDATED.getName();
+    eventType = WorkbasketHistoryEventType.DISTRIBUTION_TARGETS_UPDATED.getName();
     created = Instant.now();
   }
 
