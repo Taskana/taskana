@@ -15,7 +15,7 @@ context('TASKANA Workbaskets', () => {
     cy.get('#collapsedMenufilterWb').click();
 
     cy.get('[placeholder="Filter owner"]')
-      .type('teamlead-1')
+      .type('owner0815')
       .type('{enter}')
       .then(() => {
         // Length equal to 2 because the empty starting element of the list, only one ListEntry with values added
