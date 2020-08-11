@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TaskanaEngineService } from 'app/shared/services/taskana-engine/taskana-engine.service';
 import { UserInfo } from 'app/shared/models/user-info';
-import { expandDown } from '../../../../theme/animations/expand.animation';
+import { expandDown } from '../../animations/expand.animation';
 
 @Component({
   selector: 'taskana-shared-user-information',

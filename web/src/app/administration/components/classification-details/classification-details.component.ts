@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { combineLatest, Observable, Subject, Subscription, timer } from 'rxjs';
 
-import { highlight } from 'theme/animations/validation.animation';
+import { highlight } from 'app/shared/animations/validation.animation';
 
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 

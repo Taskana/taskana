@@ -6,7 +6,7 @@ import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.ser
 import { Sorting } from 'app/shared/models/sorting';
 import { Filter } from 'app/shared/models/filter';
 import { TaskanaType } from 'app/shared/models/taskana-type';
-import { expandDown } from 'theme/animations/expand.animation';
+import { expandDown } from 'app/shared/animations/expand.animation';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { WorkplaceService } from 'app/workplace/services/workplace.service';
 import { ObjectReference } from 'app/workplace/models/object-reference';
