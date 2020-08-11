@@ -10,9 +10,9 @@ context('TASKANA Workbaskets', () => {
   });
 
   it('should be able to filter workbaskets via owner', () => {
-    cy.visit(Cypress.env('appUrl') + Cypress.env('adminUrl') + '/workbaskets');
-
-    cy.get('#collapsedMenufilterWb').click();
+    cy.visit(Cypress.env('appUrl') + Cypress.env('adminUrl') + '/workbaskets').then(() =>
+      cy.get('#collapsedMenufilterWb').click()
+    );
 
     cy.get('[placeholder="Filter owner"]')
       .type('owner0815')
