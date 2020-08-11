@@ -7,7 +7,7 @@ import { BusinessAdminGuard } from 'app/shared/guards/business-admin.guard';
 import { MonitorGuard } from 'app/shared/guards/monitor.guard';
 import { WindowRefService } from 'app/shared/services/window/window.service';
 import { UserGuard } from 'app/shared/guards/user.guard';
-import { expandRight } from 'theme/animations/expand.animation';
+import { expandRight } from 'app/shared/animations/expand.animation';
 import { TaskanaEngineService } from '../../services/taskana-engine/taskana-engine.service';
 @Component({
   selector: 'taskana-shared-nav-bar',

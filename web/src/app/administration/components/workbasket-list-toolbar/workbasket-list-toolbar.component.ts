@@ -3,7 +3,7 @@ import { Sorting } from 'app/shared/models/sorting';
 import { Filter } from 'app/shared/models/filter';
 import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
 import { TaskanaType } from 'app/shared/models/taskana-type';
-import { expandDown } from 'theme/animations/expand.animation';
+import { expandDown } from 'app/shared/animations/expand.animation';
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';

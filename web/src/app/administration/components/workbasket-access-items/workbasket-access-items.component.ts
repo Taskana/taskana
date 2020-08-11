@@ -21,7 +21,7 @@ import { ACTION } from 'app/shared/models/action';
 import { SavingInformation, SavingWorkbasketService } from 'app/administration/services/saving-workbaskets.service';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
-import { highlight } from 'theme/animations/validation.animation';
+import { highlight } from 'app/shared/animations/validation.animation';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { AccessIdDefinition } from 'app/shared/models/access-id';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
