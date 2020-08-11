@@ -12,6 +12,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { CreateWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Filter } from '../../../shared/models/filter';
+import { Sorting } from '../../../shared/models/sorting';
+import { ACTION } from '../../../shared/models/action';
 
 const getDomainFn = jest.fn().mockReturnValue(true);
 const domainServiceMock = jest.fn().mockImplementation(
@@ -46,6 +48,7 @@ describe('WorkbasketListToolbarComponent', () => {
     component = fixture.debugElement.componentInstance;
     store = TestBed.inject(Store);
     actions$ = TestBed.inject(Actions);
+    component.action = ACTION.COPY;
   }));
 
   it('should create the component', () => {
@@ -55,20 +58,39 @@ describe('WorkbasketListToolbarComponent', () => {
 
   it('should dispatch CreateWorkbasket when addWorkbasket is called', async((done) => {
     component.addWorkbasket();
-    actions$.pipe(ofActionDispatched(CreateWorkbasket)).subscribe((action) => {
+    actions$.pipe(ofActionDispatched(CreateWorkbasket)).subscribe(async (action) => {
       expect(action).toBeTruthy();
       done();
     });
   }));
 
-  it('should emit value when sorting is called', () => {
-    let hasEmitted = false;
-    component.sorting({ sortBy: '123', sortDirection: 'asc' });
-    component.performFilter.subscribe((filter: Filter) => {
-      hasEmitted = true;
-    });
-    jest.spyOn(component.performFilter, 'emit');
+  it('should not do anything in addWorkbasket if action is create ', async((done) => {
+    component.action = ACTION.CREATE;
     fixture.detectChanges();
-    expect(hasEmitted).toBeTruthy();
+    component.addWorkbasket();
+    actions$.pipe(ofActionDispatched(CreateWorkbasket)).subscribe(async (action) => {
+      expect(action).toBeFalsy();
+      done();
+    });
+  }));
+
+  it('should emit value when sorting is called', () => {
+    const mockSort: Sorting = { sortBy: '123', sortDirection: 'asc' };
+    let sort: Sorting = { sortBy: '123', sortDirection: 'asc' };
+    component.performSorting.subscribe((sortBy: Sorting) => {
+      sort = sortBy;
+    });
+    component.sorting(sort);
+    expect(sort).toMatchObject(mockSort);
+  });
+
+  it('should emit value when filtering is called', () => {
+    const mockFilter: Filter = { filterParams: 'abc' };
+    let filterBy: Filter = { filterParams: 'abc' };
+    component.performFilter.subscribe((filter: Filter) => {
+      filterBy = filter;
+    });
+    component.filtering(filterBy);
+    expect(filterBy).toMatchObject(mockFilter);
   });
 });
