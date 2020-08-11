@@ -52,7 +52,6 @@ describe('WorkbasketListToolbarComponent', () => {
   }));
 
   it('should create the component', () => {
-    component.ngOnInit();
     expect(component).toBeTruthy();
   });
 
