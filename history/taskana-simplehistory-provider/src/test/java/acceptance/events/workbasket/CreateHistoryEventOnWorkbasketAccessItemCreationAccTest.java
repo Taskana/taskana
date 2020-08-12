@@ -48,8 +48,7 @@ class CreateHistoryEventOnWorkbasketAccessItemCreationAccTest extends AbstractAc
     String eventType = events.get(0).getEventType();
     String details = workbasketHistoryEventMapper.findById(events.get(0).getId()).getDetails();
 
-    assertThat(eventType)
-        .isEqualTo(WorkbasketHistoryEventType.ACCESS_ITEM_CREATED.getName());
+    assertThat(eventType).isEqualTo(WorkbasketHistoryEventType.ACCESS_ITEM_CREATED.getName());
 
     assertThat(details).contains("\"newValue\":\"peter\"");
   }

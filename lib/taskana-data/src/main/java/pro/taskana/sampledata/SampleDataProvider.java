@@ -15,6 +15,8 @@ public final class SampleDataProvider {
   static final String TEST_ATTACHMENT = "/sql/test-data/attachment.sql";
   static final String TEST_TASK_HISTORY_EVENT = "/sql/test-data/task-history-event.sql";
   static final String TEST_WORKBASKET_HISTORY_EVENT = "/sql/test-data/workbasket-history-event.sql";
+  static final String TEST_CLASSIFICATION_HISTORY_EVENT =
+      "/sql/test-data/classification-history-event.sql";
   static final String MONITOR_SAMPLE_DATA = "/sql/monitor-data/monitor-sample-data.sql";
   private static final String DB_CLEAR_TABLES_SCRIPT = "/sql/clear/clear-db.sql";
   private static final String DB_DROP_TABLES_SCRIPT = "/sql/clear/drop-tables.sql";
@@ -45,8 +47,7 @@ public final class SampleDataProvider {
   }
 
   static Stream<String> getScriptsWithEvents() {
-    return Stream.concat(
-        getSampleDataCreationScripts(), Stream.of(SAMPLE_TASK_HISTORY_EVENT));
+    return Stream.concat(getSampleDataCreationScripts(), Stream.of(SAMPLE_TASK_HISTORY_EVENT));
   }
 
   static Stream<String> getScriptsToClearDatabase() {
@@ -64,6 +65,7 @@ public final class SampleDataProvider {
         TEST_TASK,
         TEST_TASK_HISTORY_EVENT,
         TEST_WORKBASKET_HISTORY_EVENT,
+        TEST_CLASSIFICATION_HISTORY_EVENT,
         TEST_TASK_COMMENT,
         TEST_WORKBASKET_ACCESS_LIST,
         TEST_DISTRIBUTION_TARGETS,

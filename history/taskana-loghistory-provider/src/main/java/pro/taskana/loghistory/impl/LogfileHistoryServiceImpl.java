@@ -18,6 +18,7 @@ import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.spi.history.api.TaskanaHistory;
+import pro.taskana.spi.history.api.events.classification.ClassificationHistoryEvent;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 
@@ -26,6 +27,8 @@ public class LogfileHistoryServiceImpl implements TaskanaHistory {
   private static final Logger LOGGER = LoggerFactory.getLogger(LogfileHistoryServiceImpl.class);
   private static final String TASKANA_PROPERTIES = "/taskana.properties";
   private static final String TASKANA_HISTORYLOGGER_NAME = "taskana.historylogger.name";
+  private static final String JSON_EXCEPTION =
+      "Caught exception while serializing history event to JSON ";
   private static Logger historyLogger;
   ObjectMapper objectMapper = new ObjectMapper();
 
@@ -57,7 +60,7 @@ public class LogfileHistoryServiceImpl implements TaskanaHistory {
         historyLogger.info(objectMapper.writeValueAsString(event));
       }
     } catch (JsonProcessingException e) {
-      throw new SystemException("Caught exception while serializing history event to JSON ", e);
+      throw new SystemException(JSON_EXCEPTION, e);
     }
   }
 
@@ -69,7 +72,19 @@ public class LogfileHistoryServiceImpl implements TaskanaHistory {
         historyLogger.info(objectMapper.writeValueAsString(event));
       }
     } catch (JsonProcessingException e) {
-      throw new SystemException("Caught exception while serializing history event to JSON ", e);
+      throw new SystemException(JSON_EXCEPTION, e);
+    }
+  }
+
+  @Override
+  public void create(ClassificationHistoryEvent event) {
+
+    try {
+      if (historyLogger.isInfoEnabled()) {
+        historyLogger.info(objectMapper.writeValueAsString(event));
+      }
+    } catch (JsonProcessingException e) {
+      throw new SystemException(JSON_EXCEPTION, e);
     }
   }
 

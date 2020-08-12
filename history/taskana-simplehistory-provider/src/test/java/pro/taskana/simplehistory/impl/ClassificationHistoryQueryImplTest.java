@@ -6,7 +6,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.validateMockitoUsage;
 import static org.mockito.Mockito.when;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.ibatis.session.SqlSession;
@@ -16,17 +15,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.internal.util.IdGenerator;
-import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
+import pro.taskana.spi.history.api.events.classification.ClassificationHistoryEvent;
+import pro.taskana.spi.history.api.events.classification.ClassificationHistoryEventType;
 
-/** Unit Test for TaskHistoryQueryImplTest. */
+/** Unit Test for ClassificationQueryImplTest. */
 @ExtendWith(MockitoExtension.class)
-class TaskHistoryQueryImplTest {
+class ClassificationHistoryQueryImplTest {
 
-  private static final String ID_PREFIX_HISTORY_EVENT = "HEI";
+  private static final String ID_PREFIX_HISTORY_EVENT = "CHI";
 
-  private TaskHistoryQueryImpl historyQueryImpl;
+  private ClassificationHistoryQueryImpl historyQueryImpl;
 
   @Mock private TaskanaHistoryEngineImpl taskanaHistoryEngineMock;
 
@@ -34,48 +33,38 @@ class TaskHistoryQueryImplTest {
 
   @BeforeEach
   void setup() {
-    historyQueryImpl = new TaskHistoryQueryImpl(taskanaHistoryEngineMock);
+    historyQueryImpl = new ClassificationHistoryQueryImpl(taskanaHistoryEngineMock);
   }
 
   @Test
   void should_returnList_When_CallingListMethodOnTaskHistoryQuery() throws Exception {
-    List<TaskHistoryEvent> returnList = new ArrayList<>();
-    returnList.add(createHistoryEvent("abcd", "T22", "car", "BV", "this was important", null));
-    TimeInterval interval = new TimeInterval(Instant.now().minusNanos(1000), Instant.now());
+    List<ClassificationHistoryEvent> returnList = new ArrayList<>();
+    returnList.add(
+        createHistoryEvent(
+            ClassificationHistoryEventType.CREATED.getName(), "admin", "someDetails"));
 
     doNothing().when(taskanaHistoryEngineMock).openConnection();
     doNothing().when(taskanaHistoryEngineMock).returnConnection();
     when(taskanaHistoryEngineMock.getSqlSession()).thenReturn(sqlSessionMock);
     when(sqlSessionMock.selectList(any(), any())).thenReturn(new ArrayList<>(returnList));
 
-    List<TaskHistoryEvent> result =
+    List<ClassificationHistoryEvent> result =
         historyQueryImpl
-            .taskIdIn("TKI:01")
-            .workbasketKeyIn(
-                "T22", "some_long_long, long loooooooooooooooooooooooooooooooooooong String.")
-            .userIdIn("BV")
-            .createdWithin(interval)
+            .userIdIn("admin")
+            .typeIn(ClassificationHistoryEventType.CREATED.getName())
             .list();
 
     validateMockitoUsage();
     assertThat(result).isEqualTo(returnList);
   }
 
-  private TaskHistoryEvent createHistoryEvent(
-      String taskId,
-      String workbasketKey,
-      String type,
-      String userId,
-      String details,
-      Instant created) {
-    TaskHistoryEvent he = new TaskHistoryEvent();
+  private ClassificationHistoryEvent createHistoryEvent(
+      String type, String userId, String details) {
+    ClassificationHistoryEvent he = new ClassificationHistoryEvent();
     he.setId(IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT));
     he.setUserId(userId);
     he.setDetails(details);
-    he.setTaskId(taskId);
-    he.setWorkbasketKey(workbasketKey);
     he.setEventType(type);
-    he.setCreated(created);
     return he;
   }
 }

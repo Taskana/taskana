@@ -11,11 +11,14 @@ import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.simplehistory.impl.classification.ClassificationHistoryEventMapper;
+import pro.taskana.simplehistory.impl.classification.ClassificationHistoryQuery;
 import pro.taskana.simplehistory.impl.task.TaskHistoryEventMapper;
 import pro.taskana.simplehistory.impl.task.TaskHistoryQuery;
 import pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryEventMapper;
 import pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryQuery;
 import pro.taskana.spi.history.api.TaskanaHistory;
+import pro.taskana.spi.history.api.events.classification.ClassificationHistoryEvent;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 import pro.taskana.spi.history.api.exceptions.TaskanaHistoryEventNotFoundException;
@@ -27,6 +30,7 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
   private TaskanaHistoryEngineImpl taskanaHistoryEngine;
   private TaskHistoryEventMapper taskHistoryEventMapper;
   private WorkbasketHistoryEventMapper workbasketHistoryEventMapper;
+  private ClassificationHistoryEventMapper classificationHistoryEventMapper;
 
   public void initialize(TaskanaEngine taskanaEngine) {
 
@@ -42,6 +46,8 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
         this.taskanaHistoryEngine.getSqlSession().getMapper(TaskHistoryEventMapper.class);
     this.workbasketHistoryEventMapper =
         this.taskanaHistoryEngine.getSqlSession().getMapper(WorkbasketHistoryEventMapper.class);
+    this.classificationHistoryEventMapper =
+        this.taskanaHistoryEngine.getSqlSession().getMapper(ClassificationHistoryEventMapper.class);
   }
 
   @Override
@@ -57,7 +63,7 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
       LOGGER.error("Error while inserting task history event into database", e);
     } finally {
       taskanaHistoryEngine.returnConnection();
-      LOGGER.debug("Exit from create(TaskanaHistoryEvent event). Returning object = {}.", event);
+      LOGGER.debug("Exit from create(TaskHistoryEvent event). Returning object = {}.", event);
     }
   }
 
@@ -74,7 +80,25 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
       LOGGER.error("Error while inserting workbasket history event into database", e);
     } finally {
       taskanaHistoryEngine.returnConnection();
-      LOGGER.debug("Exit from create(TaskanaHistoryEvent event). Returning object = {}.", event);
+      LOGGER.debug("Exit from create(WorkbasketHistoryEvent event). Returning object = {}.", event);
+    }
+  }
+
+  @Override
+  public void create(ClassificationHistoryEvent event) {
+    try {
+      taskanaHistoryEngine.openConnection();
+      if (event.getCreated() == null) {
+        Instant now = Instant.now();
+        event.setCreated(now);
+      }
+      classificationHistoryEventMapper.insert(event);
+    } catch (SQLException e) {
+      LOGGER.error("Error while inserting classification history event into database", e);
+    } finally {
+      taskanaHistoryEngine.returnConnection();
+      LOGGER.debug(
+          "Exit from create(ClassificationHistoryEvent event). Returning object = {}.", event);
     }
   }
 
@@ -136,6 +160,10 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
 
   public WorkbasketHistoryQuery createWorkbasketHistoryQuery() {
     return new WorkbasketHistoryQueryImpl(taskanaHistoryEngine);
+  }
+
+  public ClassificationHistoryQuery createClassificationHistoryQuery() {
+    return new ClassificationHistoryQueryImpl(taskanaHistoryEngine);
   }
 
   /*

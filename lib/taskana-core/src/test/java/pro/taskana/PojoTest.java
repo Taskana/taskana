@@ -122,7 +122,8 @@ class PojoTest {
             .filter(
                 javaClass ->
                     !javaClass.getSimpleName().equals("TaskHistoryEvent")
-                        && !javaClass.getSimpleName().equals("WorkbasketHistoryEvent"))
+                        && !javaClass.getSimpleName().equals("WorkbasketHistoryEvent")
+                        && !javaClass.getSimpleName().equals("ClassificationHistoryEvent"))
             .map(JavaClass::reflect)
             .collect(Collectors.toList());
   }

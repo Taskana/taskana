@@ -24,7 +24,6 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
           + "WorkbasketHistoryQueryMapper.queryHistoryColumnValues";
   private static final String LINK_TO_COUNTER =
       "pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryQueryMapper.countHistoryEvents";
-
   private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketHistoryQueryImpl.class);
 
   private static final String SQL_EXCEPTION_MESSAGE =

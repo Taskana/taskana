@@ -21,7 +21,7 @@ import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEventType;
 
-/** Unit Test for SimpleHistoryServiceImplTest. */
+/** Unit Test for WorkbasketHistoryQueryImplTest. */
 @ExtendWith(MockitoExtension.class)
 class WorkbasketHistoryQueryImplTest {
 

@@ -13,8 +13,12 @@ import uk.org.lidalia.slf4jtest.TestLogger;
 import uk.org.lidalia.slf4jtest.TestLoggerFactory;
 
 import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.spi.history.api.events.classification.ClassificationHistoryEvent;
+import pro.taskana.spi.history.api.events.classification.ClassificationHistoryEventType;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
+import pro.taskana.spi.history.api.events.task.TaskHistoryEventType;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
+import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEventType;
 
 class LogfileHistoryServiceImplTest {
 
@@ -40,7 +44,7 @@ class LogfileHistoryServiceImplTest {
     TaskHistoryEvent eventToBeLogged = new TaskHistoryEvent();
     eventToBeLogged.setId("someId");
     eventToBeLogged.setUserId("someUser");
-    eventToBeLogged.setEventType("TASK_CREATED");
+    eventToBeLogged.setEventType(TaskHistoryEventType.CREATED.getName());
     eventToBeLogged.setDomain("DOMAIN_A");
     eventToBeLogged.setCreated(Instant.now());
     eventToBeLogged.setNewValue("someNewValue");
@@ -68,7 +72,7 @@ class LogfileHistoryServiceImplTest {
     WorkbasketHistoryEvent eventToBeLogged = new WorkbasketHistoryEvent();
     eventToBeLogged.setId("someId");
     eventToBeLogged.setUserId("someUser");
-    eventToBeLogged.setEventType("TASK_CREATED");
+    eventToBeLogged.setEventType(WorkbasketHistoryEventType.CREATED.getName());
     eventToBeLogged.setDomain("DOMAIN_A");
     eventToBeLogged.setCreated(Instant.now());
     eventToBeLogged.setKey("someWorkbasketKey");
@@ -80,6 +84,29 @@ class LogfileHistoryServiceImplTest {
 
     WorkbasketHistoryEvent deserializedEventFromLogMessage =
         objectMapper.readValue(logMessage, WorkbasketHistoryEvent.class);
+
+    assertThat(eventToBeLogged).isEqualTo(deserializedEventFromLogMessage);
+  }
+
+  @Test
+  void should_LogClassificationEventAsJson_When_CreateIsCalled() throws Exception {
+
+    logfileHistoryServiceImpl.initialize(taskanaEngine);
+    ClassificationHistoryEvent eventToBeLogged = new ClassificationHistoryEvent();
+    eventToBeLogged.setId("someId");
+    eventToBeLogged.setUserId("someUser");
+    eventToBeLogged.setEventType(ClassificationHistoryEventType.CREATED.getName());
+    eventToBeLogged.setDomain("DOMAIN_A");
+    eventToBeLogged.setCreated(Instant.now());
+    eventToBeLogged.setKey("someClassificationKey");
+    eventToBeLogged.setDetails("someDetails");
+
+    logfileHistoryServiceImpl.create(eventToBeLogged);
+
+    String logMessage = logger.getLoggingEvents().asList().get(0).getMessage();
+
+    ClassificationHistoryEvent deserializedEventFromLogMessage =
+        objectMapper.readValue(logMessage, ClassificationHistoryEvent.class);
 
     assertThat(eventToBeLogged).isEqualTo(deserializedEventFromLogMessage);
   }

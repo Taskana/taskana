@@ -10,6 +10,7 @@ import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.spi.history.api.TaskanaHistory;
+import pro.taskana.spi.history.api.events.classification.ClassificationHistoryEvent;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 
@@ -17,6 +18,7 @@ import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 public final class HistoryEventManager {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HistoryEventManager.class);
+  private static final String SENDING_EVENT = "Sending event to history service providers: {}";
   private static HistoryEventManager singleton;
   private boolean enabled = false;
   private ServiceLoader<TaskanaHistory> serviceLoader;
@@ -45,12 +47,17 @@ public final class HistoryEventManager {
   }
 
   public void createEvent(TaskHistoryEvent event) {
-    LOGGER.debug("Sending event to history service providers: {}", event);
+    LOGGER.debug(SENDING_EVENT, event);
     serviceLoader.forEach(historyProvider -> historyProvider.create(event));
   }
 
   public void createEvent(WorkbasketHistoryEvent event) {
-    LOGGER.debug("Sending event to history service providers: {}", event);
+    LOGGER.debug(SENDING_EVENT, event);
+    serviceLoader.forEach(historyProvider -> historyProvider.create(event));
+  }
+
+  public void createEvent(ClassificationHistoryEvent event) {
+    LOGGER.debug(SENDING_EVENT, event);
     serviceLoader.forEach(historyProvider -> historyProvider.create(event));
   }
 
