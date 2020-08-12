@@ -45,7 +45,7 @@
             </activation>
             <dependencies>
                 <dependency>
-                    <groupId>pro.taskana.simplehistory</groupId>
+                    <groupId>pro.taskana.history</groupId>
                     <artifactId>taskana-simplehistory-rest-spring</artifactId>
                     <version>${project.version}</version>
                 </dependency>
@@ -58,7 +58,7 @@
             </activation>
             <dependencies>
                 <dependency>
-                    <groupId>pro.taskana.simplehistory</groupId>
+                    <groupId>pro.taskana.history</groupId>
                     <artifactId>taskana-loghistory-provider</artifactId>
                     <version>${project.version}</version>
                 </dependency>
