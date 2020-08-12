@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkbasketListComponent } from './workbasket-list.component';
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { Actions, NgxsModule, ofActionDispatched, Store } from '@ngxs/store';
-import { Observable, of } from 'rxjs';
+import { Observable, of, zip } from 'rxjs';
 import { WorkbasketState } from '../../../shared/store/workbasket-store/workbasket.state';
 import { WorkbasketService } from '../../../shared/services/workbasket/workbasket.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -71,8 +71,10 @@ describe('WorkbasketListComponent', () => {
 
   it('should dispatch SelectWorkbasket when selecting a workbasket', async((done) => {
     component.selectWorkbasket('1');
-    actions$.pipe(ofActionDispatched(SelectWorkbasket)).subscribe(async (action) => {
-      expect(action).toBeTruthy();
+    let actionDispatched = false;
+    actions$.pipe(ofActionDispatched(SelectWorkbasket)).subscribe(() => {
+      actionDispatched = true;
+      expect(actionDispatched).toBe(true);
       done();
     });
   }));
@@ -80,8 +82,10 @@ describe('WorkbasketListComponent', () => {
   it('should dispatch DeselectWorkbasket when selecting a workbasket again', async((done) => {
     component.selectedId = '1';
     component.selectWorkbasket('1');
-    actions$.pipe(ofActionDispatched(DeselectWorkbasket)).subscribe(async (action) => {
-      expect(action).toBeTruthy();
+    let actionDispatched = false;
+    actions$.pipe(ofActionDispatched(DeselectWorkbasket)).subscribe(() => {
+      actionDispatched = true;
+      expect(actionDispatched).toBe(true);
       done();
     });
   }));

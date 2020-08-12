@@ -2,14 +2,14 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkbasketListToolbarComponent } from './workbasket-list-toolbar.component';
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { Actions, NgxsModule, ofActionDispatched, Store } from '@ngxs/store';
-import { Observable } from 'rxjs';
+import { Observable, zip } from 'rxjs';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { WorkbasketState } from '../../../shared/store/workbasket-store/workbasket.state';
 import { WorkbasketService } from '../../../shared/services/workbasket/workbasket.service';
 import { DomainService } from '../../../shared/services/domain/domain.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
-import { CreateWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
+import { CreateWorkbasket, DeselectWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Filter } from '../../../shared/models/filter';
 import { Sorting } from '../../../shared/models/sorting';
@@ -57,8 +57,10 @@ describe('WorkbasketListToolbarComponent', () => {
 
   it('should dispatch CreateWorkbasket when addWorkbasket is called', async((done) => {
     component.addWorkbasket();
-    actions$.pipe(ofActionDispatched(CreateWorkbasket)).subscribe(async (action) => {
-      expect(action).toBeTruthy();
+    let actionDispatched = false;
+    actions$.pipe(ofActionDispatched(CreateWorkbasket)).subscribe(() => {
+      actionDispatched = true;
+      expect(actionDispatched).toBe(true);
       done();
     });
   }));
@@ -67,27 +69,31 @@ describe('WorkbasketListToolbarComponent', () => {
     component.action = ACTION.CREATE;
     fixture.detectChanges();
     component.addWorkbasket();
-    actions$.pipe(ofActionDispatched(CreateWorkbasket)).subscribe(async (action) => {
-      expect(action).toBeFalsy();
+    let actionDispatched = false;
+    actions$.pipe(ofActionDispatched(CreateWorkbasket)).subscribe(() => {
+      actionDispatched = true;
+      expect(actionDispatched).toBe(false);
       done();
     });
   }));
 
-  it('should emit value when sorting is called', () => {
+  it('should emit value when sorting is called', (done) => {
     const mockSort: Sorting = { sortBy: '123', sortDirection: 'asc' };
     let sort: Sorting = { sortBy: '123', sortDirection: 'asc' };
     component.performSorting.subscribe((sortBy: Sorting) => {
       sort = sortBy;
+      done();
     });
     component.sorting(sort);
     expect(sort).toMatchObject(mockSort);
   });
 
-  it('should emit value when filtering is called', () => {
+  it('should emit value when filtering is called', (done) => {
     const mockFilter: Filter = { filterParams: 'abc' };
     let filterBy: Filter = { filterParams: 'abc' };
     component.performFilter.subscribe((filter: Filter) => {
       filterBy = filter;
+      done();
     });
     component.filtering(filterBy);
     expect(filterBy).toMatchObject(mockFilter);
