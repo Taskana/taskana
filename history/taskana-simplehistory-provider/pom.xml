@@ -9,8 +9,8 @@
 	<description>The taskana history events plugin to include in your project.</description>
 
 	<parent>
-		<groupId>pro.taskana.simplehistory</groupId>
-		<artifactId>taskana-simplehistory-parent</artifactId>
+		<groupId>pro.taskana.history</groupId>
+		<artifactId>taskana-history-parent</artifactId>
 		<version>3.2.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
