@@ -87,10 +87,10 @@ public class TaskanaWildflyWithSimpleHistoryEnabled extends AbstractAccTest {
         performGetHistoryEventsRestCall();
     assertThat(getHistoryEventsResponse.getBody()).isNotNull();
     assertThat(getHistoryEventsResponse.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(getHistoryEventsResponse.getBody().getContent()).hasSize(0);
+    assertThat(getHistoryEventsResponse.getBody().getContent()).isEmpty();
 
     ResponseEntity<TaskRepresentationModel> responseCreateTask = performCreateTaskRestCall();
-    assertThat(HttpStatus.CREATED).isEqualTo(responseCreateTask.getStatusCode());
+    assertThat(responseCreateTask.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     assertThat(responseCreateTask.getBody()).isNotNull();
 
     getHistoryEventsResponse = performGetHistoryEventsRestCall();
