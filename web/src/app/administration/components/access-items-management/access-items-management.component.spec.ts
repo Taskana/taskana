@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, async, inject } from '@angular/core/testing';
 import { AccessItemsManagementComponent } from './access-items-management.component';
 import { FormsValidatorService } from '../../../shared/services/forms-validator/forms-validator.service';
-import { Actions, NgxsModule, ofActionCompleted, ofActionDispatched, Store } from '@ngxs/store';
+import { Actions, NgxsModule, ofActionDispatched, Store } from '@ngxs/store';
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
@@ -148,11 +148,10 @@ describe('AccessItemsManagementComponent', () => {
   it('should dispatch GetAccessItems action in searchForAccessItemsWorkbaskets', async((done) => {
     app.searchForAccessItemsWorkbaskets();
     let actionDispatched = false;
-    zip(actions$.pipe(ofActionCompleted(GetAccessItems))).subscribe(() => {
+    zip(actions$.pipe(ofActionDispatched(GetAccessItems))).subscribe(() => {
       actionDispatched = true;
       expect(actionDispatched).toBe(true);
       expect(app.setAccessItemsGroups).toBeCalled();
-
       done();
     });
   }));
