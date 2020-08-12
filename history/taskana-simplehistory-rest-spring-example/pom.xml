@@ -17,7 +17,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>pro.taskana.simplehistory</groupId>
+            <groupId>pro.taskana.history</groupId>
             <artifactId>taskana-simplehistory-rest-spring</artifactId>
             <version>${project.version}</version>
         </dependency>
