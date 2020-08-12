@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, async, inject } from '@angular/core/testing';
 import { AccessItemsManagementComponent } from './access-items-management.component';
 import { FormsValidatorService } from '../../../shared/services/forms-validator/forms-validator.service';
-import { Actions, NgxsModule, ofActionDispatched, Store } from '@ngxs/store';
+import { Actions, NgxsModule, ofActionCompleted, ofActionDispatched, Store } from '@ngxs/store';
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
@@ -11,7 +11,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { EngineConfigurationState } from '../../../shared/store/engine-configuration-store/engine-configuration.state';
 import { ClassificationCategoriesService } from '../../../shared/services/classification-categories/classification-categories.service';
 import { AccessItemsManagementState } from '../../../shared/store/access-items-management-store/access-items-management.state';
-import { Observable } from 'rxjs';
+import { Observable, zip } from 'rxjs';
 import { GetAccessItems } from '../../../shared/store/access-items-management-store/access-items-management.actions';
 
 const isFieldValidFn = jest.fn().mockReturnValue(true);
@@ -27,6 +27,40 @@ const NotificationServiceSpy = jest.fn().mockImplementation(
     showDialog: showDialogFn
   })
 );
+
+export const engineConfigInitState = {
+  customisation: {
+    EN: {
+      workbaskets: {
+        'access-items': {
+          accessId: {
+            lookupField: true
+          },
+          custom3: {
+            field: '',
+            visible: false
+          },
+          custom9: {
+            field: 'Some custom field',
+            visible: true
+          },
+          custom10: {
+            field: '',
+            visible: false
+          },
+          custom11: {
+            field: '',
+            visible: false
+          },
+          custom12: {
+            field: '',
+            visible: false
+          }
+        }
+      }
+    }
+  }
+};
 
 describe('AccessItemsManagementComponent', () => {
   let fixture: ComponentFixture<AccessItemsManagementComponent>;
@@ -59,7 +93,12 @@ describe('AccessItemsManagementComponent', () => {
     app = fixture.debugElement.componentInstance;
     store = TestBed.inject(Store);
     actions$ = TestBed.inject(Actions);
-    app.accessId = { accessId: '', name: '' };
+    store.reset({
+      ...store.snapshot(),
+      engineConfiguration: engineConfigInitState
+    });
+    app.accessId = { accessId: '1', name: '' };
+    app.accessIdSelected = '1';
     app.groups = [];
   }));
 
@@ -67,31 +106,35 @@ describe('AccessItemsManagementComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it('header should display access items management', () => {
+  it('should display header correctly as Access items management', () => {
     const panelHeader = () => debugElement.nativeElement.querySelector('h4.panel-header').textContent;
     expect(panelHeader()).toBe('Access items management');
   });
 
-  it('search type ahead is rendered', () => {
+  it('should render search type ahead', () => {
     const typeAhead = () => debugElement.nativeElement.querySelector('taskana-shared-type-ahead');
     expect(typeAhead()).toBeTruthy();
   });
 
-  it('result table should not display when search bar is empty', () => {
+  it('should not display result table when search bar is empty', () => {
     const form = () => debugElement.nativeElement.querySelector('ng-form');
     expect(form()).toBeFalsy();
   });
 
-  it('app is initialized with ngxs store', () => {
+  it('should initialize app with ngxs store', () => {
     store.selectOnce((state) => state).subscribe((state) => expect(state).toBeTruthy);
-    const engineConfigs = store.selectSnapshot((state) => state.engineConfiguration);
-    expect(engineConfigs).toBeTruthy();
+    const engineConfigs = store.selectSnapshot((state) => {
+      console.debug(state.engineConfiguration.customisation.EN.workbaskets['access-items']);
+      return state.engineConfiguration.customisation.EN.workbaskets['access-items'];
+    });
+    expect(engineConfigs).not.toEqual([]);
+
     const groups = store.selectSnapshot((state) => state.accessItemsManagement);
     expect(groups).toBeTruthy();
   });
 
-  it('onSelectedAccessId is called correctly', () => {
-    const selectedAccessId = { accessId: '', name: '' };
+  it('should be able to get groups if selected access ID is not null in onSelectAccessId', () => {
+    const selectedAccessId = { accessId: '1', name: '' };
     app.onSelectAccessId(selectedAccessId);
     const groups = store.selectSnapshot((state) => state.accessItemsManagement);
     expect(selectedAccessId).not.toBeNull();
@@ -102,15 +145,19 @@ describe('AccessItemsManagementComponent', () => {
     expect(app.accessItemsForm).toBeNull();
   });
 
-  it('GetAccessItems action is called in searchForAccessItemsWorkbaskets', async((done) => {
+  it('should dispatch GetAccessItems action in searchForAccessItemsWorkbaskets', async((done) => {
     app.searchForAccessItemsWorkbaskets();
-    actions$.pipe(ofActionDispatched(GetAccessItems)).subscribe(async (action) => {
-      await expect(action).toBeTruthy();
+    let actionDispatched = false;
+    zip(actions$.pipe(ofActionCompleted(GetAccessItems))).subscribe(() => {
+      actionDispatched = true;
+      expect(actionDispatched).toBe(true);
+      expect(app.setAccessItemsGroups).toBeCalled();
+
       done();
     });
   }));
 
-  it('revokeAccess displays a dialog', async(() => {
+  it('should display a dialog in when access is revoked', async(() => {
     inject([NotificationService], (notificationService: NotificationService) => {
       app.revokeAccess();
       expect(app.revokeAccess).toHaveBeenCalled();
@@ -118,7 +165,7 @@ describe('AccessItemsManagementComponent', () => {
     });
   }));
 
-  it('setAccessItemsGroups creates accessItemsForm', () => {
+  it('should create accessItemsForm in setAccessItemsGroups', () => {
     app.setAccessItemsGroups([]);
     expect(app.accessItemsForm).toBeTruthy();
     expect(app.accessItemsForm).not.toBeNull();
