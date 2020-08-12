@@ -64,11 +64,10 @@ class SimpleHistoryServiceImplTest {
     doReturn(taskanaEngine).when(taskanaEngineConfiguration).buildTaskanaEngine();
     doReturn(taskanaEngineConfiguration).when(taskanaEngine).getConfiguration();
 
-
     cutSpy.initialize(taskanaEngineConfiguration.buildTaskanaEngine());
 
-    verify(sqlSessionManagerMock, times(2)).getMapper(any());
-    verify(taskanaHistoryEngineMock, times(2)).getSqlSession();
+    verify(sqlSessionManagerMock, times(3)).getMapper(any());
+    verify(taskanaHistoryEngineMock, times(3)).getSqlSession();
   }
 
   @Test
@@ -88,10 +87,7 @@ class SimpleHistoryServiceImplTest {
   void should_VerifyMethodInvocations_When_CreateWorkbasketHisoryEvent() throws Exception {
     WorkbasketHistoryEvent expectedEvent =
         AbstractAccTest.createWorkbasketHistoryEvent(
-            "wbKey1",
-            WorkbasketHistoryEventType.CREATED.getName(),
-            "someUserId",
-            "someDetails");
+            "wbKey1", WorkbasketHistoryEventType.CREATED.getName(), "someUserId", "someDetails");
 
     cutSpy.create(expectedEvent);
     verify(taskanaHistoryEngineMock, times(1)).openConnection();
@@ -127,10 +123,7 @@ class SimpleHistoryServiceImplTest {
     List<WorkbasketHistoryEvent> returnList = new ArrayList<>();
     returnList.add(
         AbstractAccTest.createWorkbasketHistoryEvent(
-            "wbKey1",
-            WorkbasketHistoryEventType.CREATED.getName(),
-            "someUserId",
-            "someDetails"));
+            "wbKey1", WorkbasketHistoryEventType.CREATED.getName(), "someUserId", "someDetails"));
     when(taskanaHistoryEngineMock.getSqlSession()).thenReturn(sqlSessionMock);
     when(sqlSessionMock.selectList(any(), any())).thenReturn(new ArrayList<>(returnList));
 

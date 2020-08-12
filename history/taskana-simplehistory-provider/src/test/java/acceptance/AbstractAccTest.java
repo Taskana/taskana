@@ -22,6 +22,7 @@ import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
 import pro.taskana.simplehistory.impl.TaskanaHistoryEngineImpl;
+import pro.taskana.simplehistory.impl.classification.ClassificationHistoryEventMapper;
 import pro.taskana.simplehistory.impl.task.TaskHistoryQueryMapper;
 import pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryEventMapper;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
@@ -196,6 +197,24 @@ public abstract class AbstractAccTest {
       LOGGER.warn("Caught unexpected exception ", e);
     }
     return manager.getMapper(WorkbasketHistoryEventMapper.class);
+  }
+
+  protected static ClassificationHistoryEventMapper getClassificationHistoryEventMapper() {
+
+    SqlSessionManager manager = null;
+
+    Field sessionManager;
+    try {
+      sessionManager = TaskanaHistoryEngineImpl.class.getDeclaredField("sessionManager");
+
+      sessionManager.setAccessible(true);
+
+      manager = (SqlSessionManager) sessionManager.get(taskanaHistoryEngine);
+
+    } catch (Exception e) {
+      LOGGER.warn("Caught unexpected exception ", e);
+    }
+    return manager.getMapper(ClassificationHistoryEventMapper.class);
   }
 
   @BeforeAll

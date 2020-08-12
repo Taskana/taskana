@@ -29,8 +29,14 @@ import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
+import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.common.internal.util.LogSanitizer;
+import pro.taskana.common.internal.util.ObjectAttributeChangeDetector;
+import pro.taskana.spi.history.api.events.classification.ClassificationCreatedEvent;
+import pro.taskana.spi.history.api.events.classification.ClassificationDeletedEvent;
+import pro.taskana.spi.history.api.events.classification.ClassificationUpdatedEvent;
+import pro.taskana.spi.history.internal.HistoryEventManager;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.TaskMapper;
 
@@ -38,7 +44,9 @@ import pro.taskana.task.internal.TaskMapper;
 public class ClassificationServiceImpl implements ClassificationService {
 
   private static final String ID_PREFIX_CLASSIFICATION = "CLI";
+  private static final String ID_PREFIX_CLASSIFICATION_HISTORY_EVENT = "CHI";
   private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationServiceImpl.class);
+  private final HistoryEventManager historyEventManager;
   private ClassificationMapper classificationMapper;
   private TaskMapper taskMapper;
   private InternalTaskanaEngine taskanaEngine;
@@ -50,6 +58,7 @@ public class ClassificationServiceImpl implements ClassificationService {
     this.taskanaEngine = taskanaEngine;
     this.classificationMapper = classificationMapper;
     this.taskMapper = taskMapper;
+    this.historyEventManager = taskanaEngine.getHistoryEventManager();
   }
 
   @Override
@@ -132,6 +141,20 @@ public class ClassificationServiceImpl implements ClassificationService {
 
       try {
         this.classificationMapper.deleteClassification(classificationId);
+
+        if (HistoryEventManager.isHistoryEnabled()) {
+          String details =
+              ObjectAttributeChangeDetector.determineChangesInAttributes(
+                  classification, newClassification("", "", ""));
+
+          historyEventManager.createEvent(
+              new ClassificationDeletedEvent(
+                  IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION_HISTORY_EVENT),
+                  classification,
+                  CurrentUserContext.getUserid(),
+                  details));
+        }
+
       } catch (PersistenceException e) {
         if (isReferentialIntegrityConstraintViolation(e)) {
           throw new ClassificationInUseException(
@@ -204,6 +227,20 @@ public class ClassificationServiceImpl implements ClassificationService {
       validateAndPopulateParentInformation(classificationImpl);
 
       classificationMapper.insert(classificationImpl);
+
+      if (HistoryEventManager.isHistoryEnabled()) {
+        String details =
+            ObjectAttributeChangeDetector.determineChangesInAttributes(
+                newClassification("", "", ""), classificationImpl);
+
+        historyEventManager.createEvent(
+            new ClassificationCreatedEvent(
+                IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION_HISTORY_EVENT),
+                classificationImpl,
+                CurrentUserContext.getUserid(),
+                details));
+      }
+
       LOGGER.debug("Method createClassification created classification {}.", classificationImpl);
 
       if (!classification.getDomain().isEmpty()) {
@@ -244,6 +281,18 @@ public class ClassificationServiceImpl implements ClassificationService {
       classificationMapper.update(classificationImpl);
       this.createJobIfPriorityOrServiceLevelHasChanged(oldClassification, classificationImpl);
 
+      if (HistoryEventManager.isHistoryEnabled()) {
+        String details =
+            ObjectAttributeChangeDetector.determineChangesInAttributes(
+                oldClassification, classificationImpl);
+
+        historyEventManager.createEvent(
+            new ClassificationUpdatedEvent(
+                IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION_HISTORY_EVENT),
+                classificationImpl,
+                CurrentUserContext.getUserid(),
+                details));
+      }
       LOGGER.debug(
           "Method updateClassification() updated the classification {}.", classificationImpl);
       return classification;

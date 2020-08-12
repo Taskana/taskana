@@ -5,6 +5,7 @@ import java.util.List;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.spi.history.api.events.classification.ClassificationHistoryEvent;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 
@@ -31,6 +32,13 @@ public interface TaskanaHistory {
    * @param event {@link WorkbasketHistoryEvent} The event to be created.
    */
   void create(WorkbasketHistoryEvent event);
+
+  /**
+   * Create a new classification history event.
+   *
+   * @param event {@link ClassificationHistoryEvent} The event to be created.
+   */
+  void create(ClassificationHistoryEvent event);
 
   /**
    * Delete history events by taskIds. Invalid/non-existing taskIds will be ignored

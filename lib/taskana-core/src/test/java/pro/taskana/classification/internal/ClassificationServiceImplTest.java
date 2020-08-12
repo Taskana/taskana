@@ -2,6 +2,8 @@ package pro.taskana.classification.internal;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
@@ -36,6 +38,7 @@ class ClassificationServiceImplTest {
   @Test
   void testCreateClassificationQuery() {
     cutSpy.createClassificationQuery();
+    verify(internalTaskanaEngineMock, times(1)).getHistoryEventManager();
     verifyNoMoreInteractions(
         classificationMapperMock,
         internalTaskanaEngineMock,

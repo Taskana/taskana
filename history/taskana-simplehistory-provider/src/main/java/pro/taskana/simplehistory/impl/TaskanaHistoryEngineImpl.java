@@ -23,6 +23,8 @@ import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.simplehistory.TaskanaHistoryEngine;
+import pro.taskana.simplehistory.impl.classification.ClassificationHistoryEventMapper;
+import pro.taskana.simplehistory.impl.classification.ClassificationHistoryQueryMapper;
 import pro.taskana.simplehistory.impl.task.TaskHistoryEventMapper;
 import pro.taskana.simplehistory.impl.task.TaskHistoryQueryMapper;
 import pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryEventMapper;
@@ -104,6 +106,9 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
     configuration.addMapper(TaskHistoryQueryMapper.class);
     configuration.addMapper(WorkbasketHistoryEventMapper.class);
     configuration.addMapper(WorkbasketHistoryQueryMapper.class);
+    configuration.addMapper(ClassificationHistoryEventMapper.class);
+    configuration.addMapper(ClassificationHistoryQueryMapper.class);
+
     SqlSessionFactory localSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
     return SqlSessionManager.newInstance(localSessionFactory);
   }
