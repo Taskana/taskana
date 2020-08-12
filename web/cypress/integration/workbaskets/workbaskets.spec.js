@@ -106,9 +106,7 @@ context('TASKANA Workbaskets', () => {
     cy.get('[title="Add new access"]')
       .click()
       .then(() => {
-        cy.get(
-          '.ng-invalid.ng-star-inserted > .text-align > > .custom-form-control > :nth-child(2) > .input-group > .form-control'
-        )
+        cy.get('[data-cy=typeahead_input].ng-pristine.ng-invalid')
           // .contains("Access id is required")
           .type('teamlead-2');
         cy.get('.input-group > .dropdown > .dropdown-menu >').click();
