@@ -72,8 +72,8 @@ function main() {
     ### INSTALL ###
 
     (cd $REL/../web && npm install --silent && npm run build:prod-silent)
-    mvn -q install -B -f $REL/.. -am -T 4C -pl :taskana-rest-spring-example-boot -Dasciidoctor.skip -DskipTests -Dmaven.javadoc.skip -Dcheckstyle.skip
-    mvn spring-boot:run -f $REL/../rest/taskana-rest-spring-example-boot > /dev/null &
+    mvn -q install -B -f $REL/.. -am -T 4C -pl :taskana-rest-spring-example-boot -Dasciidoctor.skip -DskipTests -Dmaven.javadoc.skip -Dcheckstyle.skip -P history.plugin
+    mvn spring-boot:run -P history.plugin -f $REL/../rest/taskana-rest-spring-example-boot > /dev/null &
 
     ### TEST ###
     (cd $REL/../web && npm run test -- --coverageReporters text-summary)
