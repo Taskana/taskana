@@ -94,11 +94,6 @@ context('TASKANA Workbaskets', () => {
     cy.saveWorkbaskets();
   });
 
-  it('should be possible to visit the access page', () => {
-    cy.visitTestWorkbasket();
-    cy.visitWorkbasketsAccessPage();
-  });
-
   it('should be possible to add new access', () => {
     cy.visitTestWorkbasket();
     cy.visitWorkbasketsAccessPage();
@@ -115,5 +110,27 @@ context('TASKANA Workbaskets', () => {
         cy.saveWorkbaskets();
       });
     cy.reloadPageWithWait();
+    cy.visitWorkbasketsAccessPage();
+    cy.get('table#table-access-items > tbody > tr').should('have.length', 2);
+  });
+
+  it('should be possible to add a distribution target', () => {
+    cy.server();
+    cy.route(
+      'http://localhost:8080/taskana/api/v1/workbaskets/WBI:000000000000000000000000000000000900/distribution-targets'
+    ).as('workbasketsDistributionTargets');
+
+    cy.visitTestWorkbasket();
+    cy.visitWorkbasketsDistributionTargetsPage();
+    cy.get('#dual-list-Left > .dual-list.list-left > .infinite-scroll > .list-group > :nth-child(1)').click();
+    cy.get('.list-arrows > .move-right').contains('chevron_right').click();
+    cy.saveWorkbaskets();
+    cy.reloadPageWithWait();
+    cy.visitWorkbasketsDistributionTargetsPage();
+    cy.wait('@workbasketsDistributionTargets');
+    cy.get('#dual-list-right > .dual-list.list-left > .infinite-scroll > .list-group').should('have.length', 1);
+    cy.get('#dual-list-right > .dual-list.list-left > .infinite-scroll > .list-group')
+      .contains('owner0815')
+      .should('exist');
   });
 });
