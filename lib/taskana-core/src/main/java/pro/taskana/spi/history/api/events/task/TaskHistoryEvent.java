@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.util.Objects;
 
 import pro.taskana.common.api.exceptions.SystemException;
-import pro.taskana.spi.history.api.events.TaskHistoryCustomField;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.models.TaskSummary;
 

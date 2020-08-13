@@ -2,7 +2,7 @@ package pro.taskana.simplehistory.impl.task;
 
 import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.TimeInterval;
-import pro.taskana.spi.history.api.events.TaskHistoryCustomField;
+import pro.taskana.spi.history.api.events.task.TaskHistoryCustomField;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 
 /** HistoryQuery for generating dynamic sql. */

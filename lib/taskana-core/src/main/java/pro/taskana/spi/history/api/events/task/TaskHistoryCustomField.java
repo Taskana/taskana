@@ -1,4 +1,4 @@
-package pro.taskana.spi.history.api.events;
+package pro.taskana.spi.history.api.events.task;
 
 public enum TaskHistoryCustomField {
   CUSTOM_1,

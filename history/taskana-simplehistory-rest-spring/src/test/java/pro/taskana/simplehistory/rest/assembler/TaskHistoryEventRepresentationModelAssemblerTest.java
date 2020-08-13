@@ -11,7 +11,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import pro.taskana.simplehistory.rest.TaskHistoryRestConfiguration;
 import pro.taskana.simplehistory.rest.models.TaskHistoryEventRepresentationModel;
-import pro.taskana.spi.history.api.events.TaskHistoryCustomField;
+import pro.taskana.spi.history.api.events.task.TaskHistoryCustomField;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 
 /** Test for {@link TaskHistoryEventRepresentationModelAssembler}. */
