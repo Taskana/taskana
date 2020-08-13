@@ -60,7 +60,7 @@ public class SampleDataGenerator {
           Stream<String> scripts;
           String cacheKey;
           // dbtable constants?
-          if (tableExists("HISTORY_EVENTS")) {
+          if (tableExists("TASK_HISTORY_EVENT")) {
             scripts = SampleDataProvider.getScriptsWithEvents();
             cacheKey = CACHED_EVENTSAMPLE;
           } else {
