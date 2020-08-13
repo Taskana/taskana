@@ -115,5 +115,29 @@ context('TASKANA Workbaskets', () => {
         cy.saveWorkbaskets();
       });
     cy.reloadPageWithWait();
+    cy.visitWorkbasketsAccessPage();
+    cy.get('table#table-access-items > tbody').should('have.length', 2);
+  });
+
+  it('should be possible to add a workbasket as distribution target', () => {
+    cy.server();
+    cy.route(
+      'http://localhost:8080/taskana/api/v1/workbaskets/WBI:000000000000000000000000000000000900/distribution-targets'
+    ).as('workbasketsDistributionTargets');
+
+    cy.visitTestWorkbasket();
+    cy.visitWorkbasketsDistributionTargetsPage();
+    cy.get('#dual-list-Left > .dual-list.list-left > .infinite-scroll > .list-group > :nth-child(1)')
+      .contains('owner0815')
+      .click();
+    cy.get('.list-arrows > .move-right').contains('chevron_right').click();
+    cy.saveWorkbaskets();
+    cy.reloadPageWithWait();
+    cy.visitWorkbasketsDistributionTargetsPage();
+    cy.wait('@workbasketsDistributionTargets');
+    cy.get('#dual-list-right > .dual-list.list-left > .infinite-scroll > .list-group').should('have.length', 1);
+    cy.get('#dual-list-right > .dual-list.list-left > .infinite-scroll > .list-group')
+      .contains('owner0815')
+      .should('exist');
   });
 });

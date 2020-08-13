@@ -28,6 +28,10 @@ Cypress.Commands.add('visitWorkbasketsAccessPage', () => {
   cy.get('.nav a').contains('Access').click();
 });
 
+Cypress.Commands.add('visitWorkbasketsDistributionTargetsPage', () => {
+  cy.get('.nav a').contains('Distribution targets').click();
+});
+
 Cypress.Commands.add('saveWorkbaskets', () => {
   cy.get('.tab-pane.active > > .panel>.panel-heading>.pull-right > .btn-primary').click();
 });
