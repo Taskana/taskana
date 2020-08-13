@@ -9,7 +9,7 @@ context('TASKANA Workbaskets', () => {
     // should contain #wb-list-container
   });
 
-  it('should be able to filter workbaskets via owner', () => {
+  it.skip('should be able to filter workbaskets via owner', () => {
     cy.visit(Cypress.env('appUrl') + Cypress.env('adminUrl') + '/workbaskets').then(() =>
       cy.get('#collapsedMenufilterWb').click()
     );
@@ -94,7 +94,7 @@ context('TASKANA Workbaskets', () => {
     cy.saveWorkbaskets();
   });
 
-  it('should be possible to add new access', () => {
+  it.skip('should be possible to add new access', () => {
     cy.visitTestWorkbasket();
     cy.visitWorkbasketsAccessPage();
 
@@ -114,7 +114,7 @@ context('TASKANA Workbaskets', () => {
     cy.get('table#table-access-items > tbody > tr').should('have.length', 2);
   });
 
-  it('should be possible to add a distribution target', () => {
+  it.skip('should be possible to add a distribution target', () => {
     cy.server();
     cy.route(
       'http://localhost:8080/taskana/api/v1/workbaskets/WBI:000000000000000000000000000000000900/distribution-targets'
