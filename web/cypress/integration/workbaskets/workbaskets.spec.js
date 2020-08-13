@@ -94,11 +94,6 @@ context('TASKANA Workbaskets', () => {
     cy.saveWorkbaskets();
   });
 
-  it('should be possible to visit the access page', () => {
-    cy.visitTestWorkbasket();
-    cy.visitWorkbasketsAccessPage();
-  });
-
   it('should be possible to add new access', () => {
     cy.visitTestWorkbasket();
     cy.visitWorkbasketsAccessPage();
@@ -116,7 +111,7 @@ context('TASKANA Workbaskets', () => {
       });
     cy.reloadPageWithWait();
     cy.visitWorkbasketsAccessPage();
-    cy.get('table#table-access-items > tbody').should('have.length', 2);
+    cy.get('table#table-access-items > tbody > tr').should('have.length', 2);
   });
 
   it('should be possible to add a workbasket as distribution target', () => {
