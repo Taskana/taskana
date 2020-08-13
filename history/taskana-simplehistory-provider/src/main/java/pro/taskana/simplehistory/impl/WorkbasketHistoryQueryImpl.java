@@ -9,8 +9,10 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryQuery;
 import pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryQueryColumnName;
+import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryCustomField;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 
 public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
@@ -257,30 +259,6 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
   }
 
   @Override
-  public WorkbasketHistoryQuery custom1In(String... custom1) {
-    this.custom1In = toUpperCopy(custom1);
-    return this;
-  }
-
-  @Override
-  public WorkbasketHistoryQuery custom2In(String... custom2) {
-    this.custom2In = toUpperCopy(custom2);
-    return this;
-  }
-
-  @Override
-  public WorkbasketHistoryQuery custom3In(String... custom3) {
-    this.custom3In = toUpperCopy(custom3);
-    return this;
-  }
-
-  @Override
-  public WorkbasketHistoryQuery custom4In(String... custom4) {
-    this.custom4In = toUpperCopy(custom4);
-    return this;
-  }
-
-  @Override
   public WorkbasketHistoryQuery orgLevel1In(String... orgLevel1) {
     this.orgLevel1In = toUpperCopy(orgLevel1);
     return this;
@@ -301,6 +279,50 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
   @Override
   public WorkbasketHistoryQuery orgLevel4In(String... orgLevel4) {
     this.orgLevel4In = toUpperCopy(orgLevel4);
+    return this;
+  }
+
+  @Override
+  public WorkbasketHistoryQuery customAttributeIn(
+      WorkbasketHistoryCustomField customField, String... searchArguments) {
+    switch (customField) {
+      case CUSTOM_1:
+        custom1In = toUpperCopy(searchArguments);
+        break;
+      case CUSTOM_2:
+        custom2In = toUpperCopy(searchArguments);
+        break;
+      case CUSTOM_3:
+        custom3In = toUpperCopy(searchArguments);
+        break;
+      case CUSTOM_4:
+        custom4In = toUpperCopy(searchArguments);
+        break;
+      default:
+        throw new SystemException("Unknown customField '" + customField + "'");
+    }
+    return this;
+  }
+
+  @Override
+  public WorkbasketHistoryQuery customAttributeLike(
+      WorkbasketHistoryCustomField customField, String... searchArguments) {
+    switch (customField) {
+      case CUSTOM_1:
+        custom1Like = toUpperCopy(searchArguments);
+        break;
+      case CUSTOM_2:
+        custom2Like = toUpperCopy(searchArguments);
+        break;
+      case CUSTOM_3:
+        custom3Like = toUpperCopy(searchArguments);
+        break;
+      case CUSTOM_4:
+        custom4Like = toUpperCopy(searchArguments);
+        break;
+      default:
+        throw new SystemException("Unknown customField '" + customField + "'");
+    }
     return this;
   }
 
@@ -343,30 +365,6 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
   @Override
   public WorkbasketHistoryQuery ownerLike(String... ownerLike) {
     this.ownerLike = toUpperCopy(ownerLike);
-    return this;
-  }
-
-  @Override
-  public WorkbasketHistoryQuery custom1Like(String... custom1) {
-    this.custom1Like = toUpperCopy(custom1);
-    return this;
-  }
-
-  @Override
-  public WorkbasketHistoryQuery custom2Like(String... custom2) {
-    this.custom2Like = toUpperCopy(custom2);
-    return this;
-  }
-
-  @Override
-  public WorkbasketHistoryQuery custom3Like(String... custom3) {
-    this.custom3Like = toUpperCopy(custom3);
-    return this;
-  }
-
-  @Override
-  public WorkbasketHistoryQuery custom4Like(String... custom4) {
-    this.custom4Like = toUpperCopy(custom4);
     return this;
   }
 
