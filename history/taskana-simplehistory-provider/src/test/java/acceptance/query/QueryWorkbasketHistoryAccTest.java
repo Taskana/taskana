@@ -13,6 +13,7 @@ import pro.taskana.common.api.TimeInterval;
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
 import pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryQuery;
 import pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryQueryColumnName;
+import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryCustomField;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEventType;
 
@@ -55,7 +56,7 @@ class QueryWorkbasketHistoryAccTest extends AbstractAccTest {
             .createWorkbasketHistoryQuery()
             .eventTypeIn(WorkbasketHistoryEventType.CREATED.getName())
             .domainLike("%A")
-            .custom1In("custom1", "otherCustom1")
+            .customAttributeIn(WorkbasketHistoryCustomField.CUSTOM_1, "otherCustom1")
             .orderByCreated(SortDirection.DESCENDING);
 
     List<WorkbasketHistoryEvent> results = query.list();
@@ -66,7 +67,7 @@ class QueryWorkbasketHistoryAccTest extends AbstractAccTest {
     assertThat(results)
         .extracting(WorkbasketHistoryEvent::getUserId)
         .containsOnly("claudia", "peter", "sven");
-    assertThat(query.count()).isEqualTo(6);
+    assertThat(results).hasSize(3);
   }
 
   @Test
@@ -96,8 +97,7 @@ class QueryWorkbasketHistoryAccTest extends AbstractAccTest {
   void should_ReturnSingleHistoryEvent_When_UsingSingleMethod() {
     WorkbasketHistoryEvent single =
         historyService.createWorkbasketHistoryQuery().userIdIn("peter").single();
-    assertThat(single.getEventType())
-        .isEqualTo(WorkbasketHistoryEventType.CREATED.getName());
+    assertThat(single.getEventType()).isEqualTo(WorkbasketHistoryEventType.CREATED.getName());
 
     single =
         historyService
@@ -150,16 +150,32 @@ class QueryWorkbasketHistoryAccTest extends AbstractAccTest {
     returnValues = historyService.createWorkbasketHistoryQuery().keyIn("soRt003").list();
     assertThat(returnValues).hasSize(5);
 
-    returnValues = historyService.createWorkbasketHistoryQuery().custom1In("custom1").list();
+    returnValues =
+        historyService
+            .createWorkbasketHistoryQuery()
+            .customAttributeIn(WorkbasketHistoryCustomField.CUSTOM_1, "custom1")
+            .list();
     assertThat(returnValues).hasSize(5);
 
-    returnValues = historyService.createWorkbasketHistoryQuery().custom2In("custom2").list();
+    returnValues =
+        historyService
+            .createWorkbasketHistoryQuery()
+            .customAttributeIn(WorkbasketHistoryCustomField.CUSTOM_2, "custom2")
+            .list();
     assertThat(returnValues).hasSize(5);
 
-    returnValues = historyService.createWorkbasketHistoryQuery().custom3In("custom3").list();
+    returnValues =
+        historyService
+            .createWorkbasketHistoryQuery()
+            .customAttributeIn(WorkbasketHistoryCustomField.CUSTOM_3, "custom3")
+            .list();
     assertThat(returnValues).hasSize(5);
 
-    returnValues = historyService.createWorkbasketHistoryQuery().custom4In("custom4").list();
+    returnValues =
+        historyService
+            .createWorkbasketHistoryQuery()
+            .customAttributeIn(WorkbasketHistoryCustomField.CUSTOM_4, "custom4")
+            .list();
     assertThat(returnValues).hasSize(5);
 
     returnValues = historyService.createWorkbasketHistoryQuery().orgLevel1In("orgLevel1").list();
@@ -185,8 +201,7 @@ class QueryWorkbasketHistoryAccTest extends AbstractAccTest {
             .list();
     assertThat(returnValues).hasSize(10);
 
-    returnValues =
-        historyService.createWorkbasketHistoryQuery().eventTypeLike("C%").list();
+    returnValues = historyService.createWorkbasketHistoryQuery().eventTypeLike("C%").list();
     assertThat(returnValues).hasSize(6);
 
     returnValues = historyService.createWorkbasketHistoryQuery().userIdLike("p%", "c%").list();
@@ -204,7 +219,11 @@ class QueryWorkbasketHistoryAccTest extends AbstractAccTest {
     returnValues = historyService.createWorkbasketHistoryQuery().ownerLike("adm%").list();
     assertThat(returnValues).hasSize(10);
 
-    returnValues = historyService.createWorkbasketHistoryQuery().custom1Like("other%").list();
+    returnValues =
+        historyService
+            .createWorkbasketHistoryQuery()
+            .customAttributeLike(WorkbasketHistoryCustomField.CUSTOM_1, "other%")
+            .list();
     assertThat(returnValues).hasSize(5);
 
     returnValues = historyService.createWorkbasketHistoryQuery().orgLevel1Like("org%").list();
