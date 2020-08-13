@@ -18,8 +18,7 @@ public final class SampleDataProvider {
   static final String MONITOR_SAMPLE_DATA = "/sql/monitor-data/monitor-sample-data.sql";
   private static final String DB_CLEAR_TABLES_SCRIPT = "/sql/clear/clear-db.sql";
   private static final String DB_DROP_TABLES_SCRIPT = "/sql/clear/drop-tables.sql";
-  private static final String CLEAR_HISTORY_EVENTS = "/sql/clear/clear-history-events.sql";
-  private static final String SAMPLE_HISTORY_EVENT = "/sql/sample-data/history-event.sql";
+  private static final String SAMPLE_TASK_HISTORY_EVENT = "/sql/sample-data/task-history-event.sql";
   private static final String SAMPLE_TASK = "/sql/sample-data/task.sql";
   private static final String SAMPLE_TASK_COMMENT = "/sql/sample-data/task-comment.sql";
   private static final String SAMPLE_WORKBASKET = "/sql/sample-data/workbasket.sql";
@@ -47,7 +46,7 @@ public final class SampleDataProvider {
 
   static Stream<String> getScriptsWithEvents() {
     return Stream.concat(
-        getSampleDataCreationScripts(), Stream.of(CLEAR_HISTORY_EVENTS, SAMPLE_HISTORY_EVENT));
+        getSampleDataCreationScripts(), Stream.of(SAMPLE_TASK_HISTORY_EVENT));
   }
 
   static Stream<String> getScriptsToClearDatabase() {
