@@ -37,7 +37,7 @@ function main() {
     ;;
   REST)
     set -x
-    mvn -q install -B -f $REL/.. -pl :taskana-spring -am -Dasciidoctor.skip -DskipTests -Dcheckstyle.skip -Dmaven.javadoc.skip
+    mvn -q install -B -f $REL/.. -pl :taskana-simplehistory-rest-spring -am -Dasciidoctor.skip -DskipTests -Dcheckstyle.skip -Dmaven.javadoc.skip
     mvn -q test-compile -B -f $REL/../rest
     ;;
   HISTORY)
