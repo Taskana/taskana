@@ -9,7 +9,7 @@ import org.springframework.lang.NonNull;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.simplehistory.rest.TaskHistoryEventController;
 import pro.taskana.simplehistory.rest.models.TaskHistoryEventRepresentationModel;
-import pro.taskana.spi.history.api.events.TaskHistoryCustomField;
+import pro.taskana.spi.history.api.events.task.TaskHistoryCustomField;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 
 /** Transforms any {@link TaskHistoryEvent} into its {@link TaskHistoryEventRepresentationModel}. */

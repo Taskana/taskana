@@ -30,7 +30,7 @@ import pro.taskana.simplehistory.rest.assembler.TaskHistoryEventListResourceAsse
 import pro.taskana.simplehistory.rest.assembler.TaskHistoryEventRepresentationModelAssembler;
 import pro.taskana.simplehistory.rest.models.TaskHistoryEventListResource;
 import pro.taskana.simplehistory.rest.models.TaskHistoryEventRepresentationModel;
-import pro.taskana.spi.history.api.events.TaskHistoryCustomField;
+import pro.taskana.spi.history.api.events.task.TaskHistoryCustomField;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 import pro.taskana.spi.history.api.exceptions.TaskanaHistoryEventNotFoundException;
 
