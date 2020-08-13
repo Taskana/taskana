@@ -114,7 +114,7 @@ context('TASKANA Workbaskets', () => {
     cy.get('table#table-access-items > tbody > tr').should('have.length', 2);
   });
 
-  it('should be possible to add a workbasket as distribution target', () => {
+  it('should be possible to add a distribution target', () => {
     cy.server();
     cy.route(
       'http://localhost:8080/taskana/api/v1/workbaskets/WBI:000000000000000000000000000000000900/distribution-targets'
@@ -122,9 +122,7 @@ context('TASKANA Workbaskets', () => {
 
     cy.visitTestWorkbasket();
     cy.visitWorkbasketsDistributionTargetsPage();
-    cy.get('#dual-list-Left > .dual-list.list-left > .infinite-scroll > .list-group > :nth-child(1)')
-      .contains('owner0815')
-      .click();
+    cy.get('#dual-list-Left > .dual-list.list-left > .infinite-scroll > .list-group > :nth-child(1)').click();
     cy.get('.list-arrows > .move-right').contains('chevron_right').click();
     cy.saveWorkbaskets();
     cy.reloadPageWithWait();
