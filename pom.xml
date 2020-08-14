@@ -48,7 +48,7 @@
 
         <!-- spring dependencies -->
         <version.spring.core>2.0.0.RELEASE</version.spring.core>
-        <version.spring.boot>2.3.2.RELEASE</version.spring.boot>
+        <version.spring.boot>2.3.3.RELEASE</version.spring.boot>
         <version.spring.mybatis>2.0.5</version.spring.mybatis>
 
         <!-- wildfly dependencies -->
