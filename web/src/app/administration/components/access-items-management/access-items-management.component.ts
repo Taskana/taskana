@@ -76,6 +76,7 @@ export class AccessItemsManagementComponent implements OnInit {
   }
 
   searchForAccessItemsWorkbaskets() {
+    console.log(this.accessId, this.groups, this.sortModel);
     this.store
       .dispatch(
         new GetAccessItems(

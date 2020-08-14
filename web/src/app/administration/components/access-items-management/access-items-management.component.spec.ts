@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed, async, inject } from '@angular/core/testing'
 import { AccessItemsManagementComponent } from './access-items-management.component';
 import { FormsValidatorService } from '../../../shared/services/forms-validator/forms-validator.service';
 import { Actions, NgxsModule, ofActionDispatched, Store } from '@ngxs/store';
-import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
@@ -13,18 +13,16 @@ import { ClassificationCategoriesService } from '../../../shared/services/classi
 import { AccessItemsManagementState } from '../../../shared/store/access-items-management-store/access-items-management.state';
 import { Observable, zip } from 'rxjs';
 import { GetAccessItems } from '../../../shared/store/access-items-management-store/access-items-management.actions';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialogModule } from '@angular/material/dialog';
+import { TypeAheadComponent } from '../../../shared/components/type-ahead/type-ahead.component';
+import { TypeaheadModule } from 'ngx-bootstrap';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const isFieldValidFn = jest.fn().mockReturnValue(true);
 const formValidatorServiceSpy = jest.fn().mockImplementation(
   (): Partial<FormsValidatorService> => ({
     isFieldValid: isFieldValidFn
-  })
-);
-
-const showDialogFn = jest.fn().mockReturnValue(true);
-const NotificationServiceSpy = jest.fn().mockImplementation(
-  (): Partial<NotificationService> => ({
-    showDialog: showDialogFn
   })
 );
 
@@ -69,6 +67,9 @@ describe('AccessItemsManagementComponent', () => {
   let store: Store;
   let actions$: Observable<any>;
 
+  @Component({ selector: 'taskana-shared-type-ahead', template: '' })
+  class TypeAheadStub {}
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -76,12 +77,16 @@ describe('AccessItemsManagementComponent', () => {
         NgxsModule.forRoot([EngineConfigurationState, AccessItemsManagementState]),
         FormsModule,
         ReactiveFormsModule,
-        AngularSvgIconModule
+        AngularSvgIconModule,
+        MatSnackBarModule,
+        MatDialogModule,
+        TypeaheadModule.forRoot(),
+        BrowserAnimationsModule
       ],
-      declarations: [AccessItemsManagementComponent],
+      declarations: [AccessItemsManagementComponent, TypeAheadComponent],
       providers: [
         { provide: FormsValidatorService, useClass: formValidatorServiceSpy },
-        { provide: NotificationService, useClass: NotificationServiceSpy },
+        NotificationService,
         RequestInProgressService,
         ClassificationCategoriesService
       ],
@@ -100,6 +105,7 @@ describe('AccessItemsManagementComponent', () => {
     app.accessId = { accessId: '1', name: '' };
     app.accessIdSelected = '1';
     app.groups = [];
+    fixture.detectChanges();
   }));
 
   it('should create the app', () => {
@@ -122,15 +128,14 @@ describe('AccessItemsManagementComponent', () => {
   });
 
   it('should initialize app with ngxs store', () => {
-    store.selectOnce((state) => state).subscribe((state) => expect(state).toBeTruthy);
     const engineConfigs = store.selectSnapshot((state) => {
-      console.debug(state.engineConfiguration.customisation.EN.workbaskets['access-items']);
       return state.engineConfiguration.customisation.EN.workbaskets['access-items'];
     });
+    expect(engineConfigs).toBeDefined();
     expect(engineConfigs).not.toEqual([]);
 
     const groups = store.selectSnapshot((state) => state.accessItemsManagement);
-    expect(groups).toBeTruthy();
+    expect(groups).toBeDefined();
   });
 
   it('should be able to get groups if selected access ID is not null in onSelectAccessId', () => {
@@ -160,7 +165,11 @@ describe('AccessItemsManagementComponent', () => {
     inject([NotificationService], (notificationService: NotificationService) => {
       app.revokeAccess();
       expect(app.revokeAccess).toHaveBeenCalled();
-      expect(notificationService.showDialog).toHaveBeenCalled();
+
+      // Currently not working
+      expect(notificationService.showDialog).toHaveBeenCalledWith(
+        `Y1231231ou are going to delete all access related: ${app.accessIdSelected}. Can you confirm this action?`
+      );
     });
   }));
 
