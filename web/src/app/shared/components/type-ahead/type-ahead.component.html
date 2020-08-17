@@ -36,7 +36,7 @@
         (typeaheadOnSelect)="typeaheadOnSelect($event)" [typeaheadScrollable]="true"
         [typeaheadOptionsInScrollableView]="typeaheadOptionsInScrollableView" [typeaheadMinLength]="typeaheadMinLength"
         [typeaheadWaitMs]="typeaheadWaitMs" (typeaheadLoading)="changeTypeaheadLoading($event)" placeholder="{{displayError? placeHolderMessage: ''}}"
-        [@validation]="validationValue">
+        [@validation]="validationValue" data-cy="typeahead_input">
       <button *ngIf="!typeaheadLoading" type="button" title="search" class="btn rounded blue search-button" >
         <span class="material-icons md-20 blue">search</span>
       </button>
