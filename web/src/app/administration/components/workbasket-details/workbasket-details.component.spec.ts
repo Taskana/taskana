@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkbasketDetailsComponent } from './workbasket-details.component';
 import { DebugElement } from '@angular/core';
-import { Store } from '@ngxs/store';
+import { Actions, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 
 describe('WorkbasketDetailsComponent', () => {
@@ -17,5 +17,16 @@ describe('WorkbasketDetailsComponent', () => {
       declarations: [WorkbasketDetailsComponent],
       providers: []
     }).compileComponents();
+
+    fixture = TestBed.createComponent(WorkbasketDetailsComponent);
+    debugElement = fixture.debugElement;
+    component = fixture.debugElement.componentInstance;
+    store = TestBed.inject(Store);
+    actions$ = TestBed.inject(Actions);
+    fixture.detectChanges();
   }));
+
+  it('should create component', () => {
+    expect(component).toBeTruthy();
+  });
 });
