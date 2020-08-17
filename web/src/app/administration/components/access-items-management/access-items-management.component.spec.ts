@@ -195,7 +195,7 @@ describe('AccessItemsManagementComponent', () => {
 
   it('should create accessItemsForm in setAccessItemsGroups', () => {
     app.setAccessItemsGroups([]);
-    expect(app.accessItemsForm).toBeTruthy();
+    expect(app.accessItemsForm).toBeDefined();
     expect(app.accessItemsForm).not.toBeNull();
   });
 
@@ -207,7 +207,7 @@ describe('AccessItemsManagementComponent', () => {
     expect(app.sortModel).toMatchObject(newSort);
   });
 
-  it('should return accessItemsGroups', () => {
+  it('should not return accessItemsGroups when accessItemsForm is null', () => {
     app.accessItemsForm = null;
     expect(app.accessItemsGroups).toBeNull();
   });
