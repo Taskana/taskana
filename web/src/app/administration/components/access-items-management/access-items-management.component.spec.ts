@@ -2,7 +2,15 @@ import { ComponentFixture, TestBed, async, inject } from '@angular/core/testing'
 import { AccessItemsManagementComponent } from './access-items-management.component';
 import { FormsValidatorService } from '../../../shared/services/forms-validator/forms-validator.service';
 import { Actions, NgxsModule, ofActionDispatched, Store } from '@ngxs/store';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
+import {
+  Component,
+  CUSTOM_ELEMENTS_SCHEMA,
+  DebugElement,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output
+} from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
@@ -18,6 +26,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { TypeAheadComponent } from '../../../shared/components/type-ahead/type-ahead.component';
 import { TypeaheadModule } from 'ngx-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { Sorting } from '../../../shared/models/sorting';
+import { AccessIdDefinition } from '../../../shared/models/access-id';
 
 const isFieldValidFn = jest.fn().mockReturnValue(true);
 const formValidatorServiceSpy = jest.fn().mockImplementation(
@@ -68,7 +78,19 @@ describe('AccessItemsManagementComponent', () => {
   let actions$: Observable<any>;
 
   @Component({ selector: 'taskana-shared-type-ahead', template: '' })
-  class TypeAheadStub {}
+  class TaskanaSharedTypeAheadStub {
+    @Input() validationValue;
+    @Input() displayError;
+    @Input() disable;
+    @Output() selectedItem = new EventEmitter<AccessIdDefinition>();
+    @Output() inputField = new EventEmitter<ElementRef>();
+  }
+
+  @Component({ selector: 'taskana-shared-sort', template: '' })
+  class TaskanaSharedSortStub {
+    @Input() sortingFields: Map<string, string>;
+    @Output() performSorting = new EventEmitter<Sorting>();
+  }
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -83,14 +105,13 @@ describe('AccessItemsManagementComponent', () => {
         TypeaheadModule.forRoot(),
         BrowserAnimationsModule
       ],
-      declarations: [AccessItemsManagementComponent, TypeAheadComponent],
+      declarations: [AccessItemsManagementComponent, TaskanaSharedTypeAheadStub, TaskanaSharedSortStub],
       providers: [
         { provide: FormsValidatorService, useClass: formValidatorServiceSpy },
         NotificationService,
         RequestInProgressService,
         ClassificationCategoriesService
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(AccessItemsManagementComponent);
