@@ -68,7 +68,6 @@ describe('WorkbasketOverviewComponent', () => {
 
   it('should create the component', () => {
     let activatedRoute = TestBed.inject(ActivatedRoute);
-    console.log(activatedRoute.firstChild.params);
     expect(component).toBeTruthy();
     activatedRoute.firstChild.params.subscribe((params) => {
       expect(component.routerParams).toMatchObject(params);
