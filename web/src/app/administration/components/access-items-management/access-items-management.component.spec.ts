@@ -76,7 +76,9 @@ describe('AccessItemsManagementComponent', () => {
   let actions$: Observable<any>;
 
   @Component({ selector: 'taskana-shared-spinner', template: '' })
-  class TaskanaSharedSpinnerStub {}
+  class TaskanaSharedSpinnerStub {
+    @Input() isRunning: boolean;
+  }
 
   @Component({ selector: 'taskana-shared-sort', template: '' })
   class TaskanaSharedSortStub {
