@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkbasketDetailsComponent } from './workbasket-details.component';
+<<<<<<< HEAD
 import { Component, DebugElement, Input } from '@angular/core';
 import { Actions, NgxsModule, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
@@ -96,6 +97,12 @@ export const workbasketReadState = {
   selectedWorkbasket,
   action: ACTION.READ
 };
+=======
+import { DebugElement } from '@angular/core';
+import { Store } from '@ngxs/store';
+import { Observable } from 'rxjs';
+
+>>>>>>> TSK-1349: init test file for workbasket details
 describe('WorkbasketDetailsComponent', () => {
   let fixture: ComponentFixture<WorkbasketDetailsComponent>;
   let debugElement: DebugElement;
@@ -105,6 +112,7 @@ describe('WorkbasketDetailsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+<<<<<<< HEAD
       imports: [
         NgxsModule.forRoot([WorkbasketState]),
         HttpClientTestingModule,
@@ -200,4 +208,11 @@ describe('WorkbasketDetailsComponent', () => {
     component.selectTab('workbasket');
     expect(component.tabSelected).toEqual('information');
   });
+=======
+      imports: [],
+      declarations: [WorkbasketDetailsComponent],
+      providers: []
+    }).compileComponents();
+  }));
+>>>>>>> TSK-1349: init test file for workbasket details
 });
