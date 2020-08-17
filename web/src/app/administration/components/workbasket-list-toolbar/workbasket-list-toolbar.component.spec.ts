@@ -1,19 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkbasketListToolbarComponent } from './workbasket-list-toolbar.component';
-import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
+import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
 import { Actions, NgxsModule, ofActionDispatched, Store } from '@ngxs/store';
-import { Observable, zip } from 'rxjs';
+import { Observable } from 'rxjs';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { WorkbasketState } from '../../../shared/store/workbasket-store/workbasket.state';
 import { WorkbasketService } from '../../../shared/services/workbasket/workbasket.service';
 import { DomainService } from '../../../shared/services/domain/domain.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
-import { CreateWorkbasket, DeselectWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
+import { CreateWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Filter } from '../../../shared/models/filter';
 import { Sorting } from '../../../shared/models/sorting';
 import { ACTION } from '../../../shared/models/action';
+import { TaskanaType } from '../../../shared/models/taskana-type';
 
 const getDomainFn = jest.fn().mockReturnValue(true);
 const domainServiceMock = jest.fn().mockImplementation(
@@ -21,6 +22,23 @@ const domainServiceMock = jest.fn().mockImplementation(
     getDomains: getDomainFn
   })
 );
+
+@Component({ selector: 'taskana-administration-import-export', template: '' })
+class ImportExportStub {
+  @Input() currentSelection: TaskanaType;
+}
+
+@Component({ selector: 'taskana-shared-sort', template: '' })
+class SortStub {
+  @Input() sortingFields: Map<string, string>;
+  @Input() defaultSortBy = 'key';
+  @Output() performSorting = new EventEmitter<Sorting>();
+}
+
+@Component({ selector: 'taskana-shared-filter', template: '' })
+class FilterStub {
+  @Output() performFilter = new EventEmitter<Filter>();
+}
 
 describe('WorkbasketListToolbarComponent', () => {
   let fixture: ComponentFixture<WorkbasketListToolbarComponent>;
@@ -38,9 +56,8 @@ describe('WorkbasketListToolbarComponent', () => {
         MatDialogModule,
         BrowserAnimationsModule
       ],
-      declarations: [WorkbasketListToolbarComponent],
-      providers: [{ provide: DomainService, useClass: domainServiceMock }, WorkbasketService],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      declarations: [WorkbasketListToolbarComponent, ImportExportStub, SortStub, FilterStub],
+      providers: [{ provide: DomainService, useClass: domainServiceMock }, WorkbasketService]
     }).compileComponents();
 
     fixture = TestBed.createComponent(WorkbasketListToolbarComponent);

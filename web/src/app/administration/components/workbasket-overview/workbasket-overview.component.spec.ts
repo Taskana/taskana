@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkbasketOverviewComponent } from './workbasket-overview.component';
-import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
+import { Component, DebugElement } from '@angular/core';
 import { Actions, NgxsModule, ofActionDispatched, Store } from '@ngxs/store';
 import { Observable, of } from 'rxjs';
 import { WorkbasketState } from '../../../shared/store/workbasket-store/workbasket.state';
@@ -21,6 +21,7 @@ const NotificationServiceSpy = jest.fn().mockImplementation(
     showToast: showDialogFn
   })
 );
+
 const mockActivatedRoute = {
   firstChild: {
     params: of({
@@ -28,6 +29,7 @@ const mockActivatedRoute = {
     })
   }
 };
+
 const mockActivatedRouteAlternative = {
   firstChild: {
     params: of({
@@ -35,7 +37,17 @@ const mockActivatedRouteAlternative = {
     })
   }
 };
+
 const mockActivatedRouteNoParams = {};
+
+@Component({ selector: 'taskana-administration-workbasket-list', template: '' })
+class WorkbasketListStub {}
+
+@Component({ selector: 'taskana-administration-workbasket-details', template: '' })
+class WorkbasketDetailsStub {}
+
+@Component({ selector: 'svg-icon', template: '' })
+class SvgIconStub {}
 
 describe('WorkbasketOverviewComponent', () => {
   let fixture: ComponentFixture<WorkbasketOverviewComponent>;
@@ -47,7 +59,7 @@ describe('WorkbasketOverviewComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([]), NgxsModule.forRoot([WorkbasketState])],
-      declarations: [WorkbasketOverviewComponent],
+      declarations: [WorkbasketOverviewComponent, WorkbasketListStub, WorkbasketDetailsStub, SvgIconStub],
       providers: [
         WorkbasketService,
         { provide: NotificationService, useClass: NotificationServiceSpy },
@@ -55,9 +67,9 @@ describe('WorkbasketOverviewComponent', () => {
         DomainService,
         RequestInProgressService,
         SelectedRouteService
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      ]
     }).compileComponents();
+
     fixture = TestBed.createComponent(WorkbasketOverviewComponent);
     debugElement = fixture.debugElement;
     component = fixture.debugElement.componentInstance;
@@ -102,7 +114,6 @@ describe('WorkbasketOverviewComponent', () => {
 
 describe('WorkbasketOverviewComponent Alternative Params ID', () => {
   let fixture: ComponentFixture<WorkbasketOverviewComponent>;
-  let debugElement: DebugElement;
   let component: WorkbasketOverviewComponent;
   let store: Store;
   let actions$: Observable<any>;
@@ -110,7 +121,7 @@ describe('WorkbasketOverviewComponent Alternative Params ID', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([]), NgxsModule.forRoot([WorkbasketState])],
-      declarations: [WorkbasketOverviewComponent],
+      declarations: [WorkbasketOverviewComponent, WorkbasketListStub, WorkbasketDetailsStub, SvgIconStub],
       providers: [
         WorkbasketService,
         { provide: NotificationService, useClass: NotificationServiceSpy },
@@ -118,11 +129,9 @@ describe('WorkbasketOverviewComponent Alternative Params ID', () => {
         DomainService,
         RequestInProgressService,
         SelectedRouteService
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      ]
     }).compileComponents();
     fixture = TestBed.createComponent(WorkbasketOverviewComponent);
-    debugElement = fixture.debugElement;
     component = fixture.debugElement.componentInstance;
     store = TestBed.inject(Store);
     actions$ = TestBed.inject(Actions);
@@ -141,15 +150,12 @@ describe('WorkbasketOverviewComponent Alternative Params ID', () => {
 
 describe('WorkbasketOverviewComponent No Params', () => {
   let fixture: ComponentFixture<WorkbasketOverviewComponent>;
-  let debugElement: DebugElement;
   let component: WorkbasketOverviewComponent;
-  let store: Store;
-  let actions$: Observable<any>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([]), NgxsModule.forRoot([WorkbasketState])],
-      declarations: [WorkbasketOverviewComponent],
+      declarations: [WorkbasketOverviewComponent, WorkbasketListStub, WorkbasketDetailsStub, SvgIconStub],
       providers: [
         WorkbasketService,
         { provide: NotificationService, useClass: NotificationServiceSpy },
@@ -157,14 +163,10 @@ describe('WorkbasketOverviewComponent No Params', () => {
         DomainService,
         RequestInProgressService,
         SelectedRouteService
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      ]
     }).compileComponents();
     fixture = TestBed.createComponent(WorkbasketOverviewComponent);
-    debugElement = fixture.debugElement;
     component = fixture.debugElement.componentInstance;
-    store = TestBed.inject(Store);
-    actions$ = TestBed.inject(Actions);
     fixture.detectChanges();
   }));
 

@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkbasketListComponent } from './workbasket-list.component';
-import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
+import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
 import { Actions, NgxsModule, ofActionDispatched, Store } from '@ngxs/store';
-import { Observable, of, zip } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { WorkbasketState } from '../../../shared/store/workbasket-store/workbasket.state';
 import { WorkbasketService } from '../../../shared/services/workbasket/workbasket.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -11,6 +11,11 @@ import { OrientationService } from '../../../shared/services/orientation/orienta
 import { ImportExportService } from '../../services/import-export.service';
 import { DeselectWorkbasket, SelectWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { TaskanaQueryParameters } from '../../../shared/util/query-parameters';
+import { WorkbasketSummary } from '../../../shared/models/workbasket-summary';
+import { Sorting } from '../../../shared/models/sorting';
+import { Filter } from '../../../shared/models/filter';
+import { ICONTYPES } from '../../../shared/models/icon-types';
+import { Page } from '../../../shared/models/page';
 
 const workbasketSavedTriggeredFn = jest.fn().mockReturnValue(of(1));
 const workbasketSummaryFn = jest.fn().mockReturnValue(of({}));
@@ -38,6 +43,36 @@ const importExportServiceMock = jest.fn().mockImplementation(
   })
 );
 
+@Component({ selector: 'taskana-administration-workbasket-list-toolbar', template: '' })
+class WorkbasketListToolbarStub {
+  @Input() workbaskets: Array<WorkbasketSummary>;
+  @Input() workbasketDefaultSortBy: string;
+  @Output() performSorting = new EventEmitter<Sorting>();
+  @Output() performFilter = new EventEmitter<Filter>();
+}
+
+@Component({ selector: 'taskana-administration-icon-type', template: '' })
+class IconTypeStub {
+  @Input() type: ICONTYPES = ICONTYPES.ALL;
+  @Input() selected = false;
+}
+
+@Component({ selector: 'taskana-shared-spinner', template: '' })
+class SpinnerStub {
+  @Input() isRunning: boolean;
+}
+
+@Component({ selector: 'taskana-shared-pagination', template: '' })
+class PaginationStub {
+  @Input() page: Page;
+  @Input() type: String;
+  @Output() changePage = new EventEmitter<number>();
+  @Input() numberOfItems: number;
+}
+
+@Component({ selector: 'svg-icon', template: '' })
+class SvgIconStub {}
+
 describe('WorkbasketListComponent', () => {
   let fixture: ComponentFixture<WorkbasketListComponent>;
   let debugElement: DebugElement;
@@ -48,13 +83,19 @@ describe('WorkbasketListComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [NgxsModule.forRoot([WorkbasketState]), MatSnackBarModule, MatDialogModule],
-      declarations: [WorkbasketListComponent],
+      declarations: [
+        WorkbasketListComponent,
+        WorkbasketListToolbarStub,
+        IconTypeStub,
+        SpinnerStub,
+        PaginationStub,
+        SvgIconStub
+      ],
       providers: [
         { provide: WorkbasketService, useClass: workbasketServiceMock },
         { provide: OrientationService, useClass: orientationServiceMock },
         { provide: ImportExportService, useClass: importExportServiceMock }
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(WorkbasketListComponent);
